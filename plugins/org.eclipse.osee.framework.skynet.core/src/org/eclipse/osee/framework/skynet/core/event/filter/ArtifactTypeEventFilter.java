@@ -14,8 +14,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidRelation;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -28,17 +28,17 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  */
 public class ArtifactTypeEventFilter implements IEventFilter {
 
-   private final Collection<IArtifactType> artifactTypes;
+   private final Collection<ArtifactTypeId> artifactTypes;
    private final IArtifactTypeProvider typeProvider;
 
    /**
     * Provide artifact types of events to be passed through. All others will be ignored.
     */
-   public ArtifactTypeEventFilter(IArtifactType... artifactTypes) {
+   public ArtifactTypeEventFilter(ArtifactTypeId... artifactTypes) {
       this(new ArtifactTypeProvider(), artifactTypes);
    }
 
-   public ArtifactTypeEventFilter(IArtifactTypeProvider typeProvider, IArtifactType... artifactTypes) {
+   public ArtifactTypeEventFilter(IArtifactTypeProvider typeProvider, ArtifactTypeId... artifactTypes) {
       this.typeProvider = typeProvider;
       this.artifactTypes = Arrays.asList(artifactTypes);
    }
@@ -50,12 +50,12 @@ public class ArtifactTypeEventFilter implements IEventFilter {
    public boolean isMatchArtifacts(List<? extends DefaultBasicGuidArtifact> guidArts) {
       try {
          for (DefaultBasicGuidArtifact guidArt : guidArts) {
-            IArtifactType artType = typeProvider.getTypeByGuid(guidArt.getArtTypeGuid());
-            for (IArtifactType artifactType : artifactTypes) {
+            ArtifactTypeId artType = typeProvider.getTypeByGuid(guidArt.getArtTypeGuid());
+            for (ArtifactTypeId artifactType : artifactTypes) {
                if (typeProvider.inheritsFrom(artType, artifactType)) {
                   return true;
                }
-               for (IArtifactType matchArtType : artifactTypes) {
+               for (ArtifactTypeId matchArtType : artifactTypes) {
                   if (matchArtType.equals(artType)) {
                      return true;
                   }

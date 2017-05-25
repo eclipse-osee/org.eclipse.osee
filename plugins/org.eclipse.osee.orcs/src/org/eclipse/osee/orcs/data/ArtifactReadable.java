@@ -13,11 +13,10 @@ package org.eclipse.osee.orcs.data;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -34,7 +33,7 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
    TransactionId getLastModifiedTransaction();
 
-   boolean isOfType(IArtifactType... otherTypes) throws OseeCoreException;
+   boolean isOfType(ArtifactTypeId... otherTypes) throws OseeCoreException;
 
    ////////////////////
 

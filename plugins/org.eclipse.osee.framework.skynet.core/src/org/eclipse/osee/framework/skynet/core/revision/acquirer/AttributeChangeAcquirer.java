@@ -17,8 +17,8 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChangeBuilder;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChangeBuilder;
@@ -112,7 +111,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
             int artId = chStmt.getInt("art_id");
             int sourceGamma = chStmt.getInt("gamma_id");
             long attrTypeId = chStmt.getLong("attr_type_id");
-            long artTypeId = chStmt.getLong("art_type_id");
+            ArtifactTypeId artifactType = ArtifactTypeId.valueOf(chStmt.getLong("art_type_id"));
             String isValue = chStmt.getString("is_value");
             ModificationType modificationType = ModificationType.getMod(chStmt.getInt("mod_type"));
 
@@ -128,9 +127,8 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
                // NEW or DELETED and these changes are not for a specific artifact
                if (artModType == ModificationType.MODIFIED && !modifiedArtifacts.contains(artId)) {
 
-                  ArtifactChangeBuilder artifactChangeBuilder =
-                     new ArtifactChangeBuilder(sourceBranch, ArtifactTypeManager.getTypeByGuid(artTypeId), -1, artId,
-                        txDelta, ModificationType.MODIFIED, !hasBranch);
+                  ArtifactChangeBuilder artifactChangeBuilder = new ArtifactChangeBuilder(sourceBranch, artifactType,
+                     -1, artId, txDelta, ModificationType.MODIFIED, !hasBranch);
 
                   changeBuilders.add(artifactChangeBuilder);
                   modifiedArtifacts.add(artId);
@@ -140,7 +138,6 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
                if (modificationType == ModificationType.MODIFIED && artModType != ModificationType.INTRODUCED) {
                   modificationType = ModificationType.NEW;
                }
-               IArtifactType artifactType = ArtifactTypeManager.getTypeByGuid(artTypeId);
                AttributeType attributeType = AttributeTypeManager.getTypeByGuid(attrTypeId);
                attributeChangeBuilder = new AttributeChangeBuilder(sourceBranch, artifactType, sourceGamma, artId,
                   txDelta, modificationType, !hasBranch, isValue, "", attrId, attributeType, artModType);

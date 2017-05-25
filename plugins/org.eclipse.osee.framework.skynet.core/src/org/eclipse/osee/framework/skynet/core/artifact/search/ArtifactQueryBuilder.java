@@ -27,7 +27,6 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -120,7 +119,7 @@ public class ArtifactQueryBuilder {
          allowDeleted, loadLevel);
    }
 
-   public ArtifactQueryBuilder(Collection<? extends IArtifactType> artifactTypes, BranchId branch, LoadLevel loadLevel, DeletionFlag allowDeleted) {
+   public ArtifactQueryBuilder(Collection<? extends ArtifactTypeId> artifactTypes, BranchId branch, LoadLevel loadLevel, DeletionFlag allowDeleted) {
       this(null, ArtifactId.SENTINEL, null, null, artifactTypes, branch, TransactionToken.SENTINEL, allowDeleted,
          loadLevel);
       emptyCriteria = artifactTypes.isEmpty();

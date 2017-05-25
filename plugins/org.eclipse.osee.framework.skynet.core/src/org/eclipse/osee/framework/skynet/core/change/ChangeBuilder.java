@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.change;
 
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 
@@ -24,10 +24,10 @@ public abstract class ChangeBuilder {
    private final TransactionDelta txDelta;
    private ModificationType modType;
    private final BranchId branch;
-   private final IArtifactType artifactType;
+   private final ArtifactTypeId artifactType;
    private final boolean isHistorical;
 
-   public ChangeBuilder(BranchId branch, IArtifactType artifactType, int sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical) {
+   public ChangeBuilder(BranchId branch, ArtifactTypeId artifactType, int sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical) {
       super();
       this.sourceGamma = sourceGamma;
       this.artId = artId;
@@ -62,7 +62,7 @@ public abstract class ChangeBuilder {
       return branch;
    }
 
-   public IArtifactType getArtifactType() {
+   public ArtifactTypeId getArtifactType() {
       return artifactType;
    }
 

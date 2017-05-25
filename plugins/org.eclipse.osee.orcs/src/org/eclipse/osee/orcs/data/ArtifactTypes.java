@@ -36,7 +36,7 @@ public interface ArtifactTypes extends IdCollection<IArtifactType> {
 
    boolean isAbstract(IArtifactType artType) throws OseeCoreException;
 
-   boolean inheritsFrom(IArtifactType artType, IArtifactType... otherTypes) throws OseeCoreException;
+   boolean inheritsFrom(ArtifactTypeId artType, ArtifactTypeId... otherTypes) throws OseeCoreException;
 
    Map<BranchId, Collection<AttributeTypeToken>> getAllAttributeTypes(IArtifactType artType) throws OseeCoreException;
 

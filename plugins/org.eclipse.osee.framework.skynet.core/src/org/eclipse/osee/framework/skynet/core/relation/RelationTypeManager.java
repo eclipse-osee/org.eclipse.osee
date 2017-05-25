@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.skynet.core.relation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
@@ -39,7 +39,7 @@ public class RelationTypeManager {
       return getCacheService().getRelationTypeCache();
    }
 
-   public static List<RelationType> getValidTypes(IArtifactType artifactType, BranchId branch) throws OseeCoreException {
+   public static List<RelationType> getValidTypes(ArtifactTypeId artifactType, BranchId branch) throws OseeCoreException {
       Collection<RelationType> relationTypes = getAllTypes();
       List<RelationType> validRelationTypes = new ArrayList<>();
       for (RelationType relationType : relationTypes) {
@@ -54,7 +54,7 @@ public class RelationTypeManager {
       return validRelationTypes;
    }
 
-   public static int getRelationSideMax(IRelationType relType, IArtifactType artifactType, RelationSide relationSide) throws OseeCoreException {
+   public static int getRelationSideMax(IRelationType relType, ArtifactTypeId artifactType, RelationSide relationSide) throws OseeCoreException {
       RelationType relationType = getType(relType);
       int toReturn = 0;
       ArtifactType type = getCacheService().getArtifactTypeCache().get(artifactType);

@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -66,7 +67,7 @@ public class ChangeArtifactType {
    private static final IStatus promptStatus = new Status(IStatus.WARNING, Activator.PLUGIN_ID, 257, "", null);
    private final Map<Integer, Integer> gammaToArtId = new HashMap<>();
 
-   public static void changeArtifactType(Collection<? extends Artifact> inputArtifacts, IArtifactType newArtifactTypeToken, boolean prompt) throws OseeCoreException {
+   public static void changeArtifactType(Collection<? extends Artifact> inputArtifacts, ArtifactTypeId newArtifactTypeToken, boolean prompt) throws OseeCoreException {
 
       ChangeArtifactType app = new ChangeArtifactType();
       if (inputArtifacts.isEmpty()) {
@@ -190,7 +191,7 @@ public class ChangeArtifactType {
       message.append("Relation Types:\n" + relationTypes + "\n");
    }
 
-   private void deleteInvalidAttributes(Artifact artifact, IArtifactType artifactType) throws OseeCoreException {
+   private void deleteInvalidAttributes(Artifact artifact, ArtifactTypeId artifactType) throws OseeCoreException {
 
       for (AttributeTypeId attributeType : artifact.getAttributeTypes()) {
          ArtifactType aType = ArtifactTypeManager.getType(artifactType);
@@ -201,7 +202,7 @@ public class ChangeArtifactType {
       }
    }
 
-   private void deleteInvalidRelations(Artifact artifact, IArtifactType artifactType) throws OseeCoreException {
+   private void deleteInvalidRelations(Artifact artifact, ArtifactTypeId artifactType) throws OseeCoreException {
 
       for (RelationLink link : artifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
          if (RelationTypeManager.getRelationSideMax(link.getRelationType(), artifactType,

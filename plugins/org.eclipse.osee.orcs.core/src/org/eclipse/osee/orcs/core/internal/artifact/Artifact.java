@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.core.internal.artifact;
 
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -31,7 +32,7 @@ public interface Artifact extends ArtifactId, AttributeManager, HasTransaction, 
 
    void setName(String name) throws OseeCoreException;
 
-   boolean isOfType(IArtifactType... otherTypes) throws OseeCoreException;
+   boolean isOfType(ArtifactTypeId... otherTypes) throws OseeCoreException;
 
    void setNotDirty();
 

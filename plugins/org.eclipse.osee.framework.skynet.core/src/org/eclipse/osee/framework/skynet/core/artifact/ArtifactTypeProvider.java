@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 
 /**
@@ -29,7 +30,7 @@ public class ArtifactTypeProvider implements IArtifactTypeProvider {
    }
 
    @Override
-   public boolean inheritsFrom(IArtifactType artifactType, IArtifactType... parentTypes) {
+   public boolean inheritsFrom(ArtifactTypeId artifactType, ArtifactTypeId... parentTypes) {
       return ArtifactTypeManager.inheritsFrom(artifactType, parentTypes);
    }
 

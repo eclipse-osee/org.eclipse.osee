@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -125,7 +124,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       this.branch = branch;
    }
 
-   public Artifact(BranchId branch, IArtifactType artifactType) {
+   public Artifact(BranchId branch, ArtifactTypeId artifactType) {
       this(null, branch, artifactType);
    }
 
@@ -250,7 +249,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
    /**
     * Determines if this artifact's type equals, or is a sub-type of, at least one of the given artifact types.
     */
-   public final boolean isOfType(IArtifactType... artifactTypes) {
+   public final boolean isOfType(ArtifactTypeId... artifactTypes) {
       return getArtifactType().inheritsFrom(artifactTypes);
    }
 
@@ -432,7 +431,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       addRelation(sorterId, Default_Hierarchical__Child, artifact);
    }
 
-   public final Artifact addNewChild(RelationSorter sorterId, IArtifactType artifactType, String name) throws OseeCoreException {
+   public final Artifact addNewChild(RelationSorter sorterId, ArtifactTypeId artifactType, String name) throws OseeCoreException {
       Artifact child = ArtifactTypeManager.addArtifact(artifactType, branch);
       child.setName(name);
       addChild(sorterId, child);
@@ -1467,7 +1466,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       return duplicate(branch, getArtifactType(), excludeAttributeTypes);
    }
 
-   public final Artifact duplicate(BranchId branch, IArtifactType newType, Collection<AttributeTypeId> excludeAttributeTypes) throws OseeCoreException {
+   public final Artifact duplicate(BranchId branch, ArtifactTypeId newType, Collection<AttributeTypeId> excludeAttributeTypes) throws OseeCoreException {
       Artifact newArtifact = ArtifactTypeManager.addArtifact(newType, branch);
       // we do this because attributes were added on creation to meet the
       // minimum attribute requirements
@@ -1504,8 +1503,8 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
    }
 
    Artifact introduceShallowArtifact(BranchId destinationBranch) throws OseeCoreException {
-      Artifact shallowArt = ArtifactTypeManager.getFactory(getArtifactType()).reflectExisitingArtifact(artId, getGuid(),
-         getArtifactType(), gammaId, destinationBranch, modType, applicabilityId);
+      Artifact shallowArt = ArtifactTypeManager.getFactory(getArtifactTypeId()).reflectExisitingArtifact(this,
+         getGuid(), getArtifactType(), gammaId, destinationBranch, modType, applicabilityId);
       return shallowArt;
    }
 
@@ -1636,8 +1635,8 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       return getAttributes(attributeType).size();
    }
 
-   void setArtId(int artifactId) {
-      this.artId = artifactId;
+   void setArtId(Long artifactId) {
+      this.artId = artifactId.intValue();
    }
 
    /**

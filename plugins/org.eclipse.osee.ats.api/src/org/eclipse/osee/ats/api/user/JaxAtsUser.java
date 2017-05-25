@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.eclipse.osee.ats.api.config.JaxAtsObject;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -82,7 +83,7 @@ public class JaxAtsUser extends JaxAtsObject implements IAtsUser {
    }
 
    @Override
-   public boolean isOfType(IArtifactType... artifactTypes) {
+   public boolean isOfType(ArtifactTypeId... artifactTypes) {
       return Collections.asHashSet(artifactTypes).contains(getArtifactType());
    }
 

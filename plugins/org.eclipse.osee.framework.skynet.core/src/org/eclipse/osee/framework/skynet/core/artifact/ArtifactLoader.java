@@ -21,11 +21,10 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -267,8 +266,7 @@ public final class ArtifactLoader {
 
          Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery();
          for (Pair<ArtifactId, BranchId> pair : toLoad) {
-            joinQuery.add(BranchId.valueOf(pair.getSecond().getId()), ArtifactId.valueOf(pair.getFirst().getId()),
-               TransactionId.valueOf(transactionId.getId()), pair.getSecond().getViewId());
+            joinQuery.add(pair.getSecond(), pair.getFirst(), transactionId, pair.getSecond().getViewId());
          }
          loadArtifacts(artifacts, joinQuery, loadLevel, null, reload, transactionId, allowDeleted, isArchived);
       }
@@ -342,11 +340,12 @@ public final class ArtifactLoader {
 
       Artifact artifact = historical ? null : ArtifactCache.getActive(artifactId, branch);
       if (artifact == null) {
-         IArtifactType artifactType = ArtifactTypeManager.getTypeByGuid(chStmt.getLong("art_type_id"));
+         ArtifactTypeId artifactType = ArtifactTypeId.valueOf(chStmt.getLong("art_type_id"));
          ArtifactFactory factory = ArtifactTypeManager.getFactory(artifactType);
 
-        artifact = factory.loadExisitingArtifact(artifactId.getId().intValue(), chStmt.getString("guid"), artifactType,
-        	chStmt.getInt("gamma_id"), branch, transactionId, ModificationType.getMod(chStmt.getInt("mod_type")), appId, historical);
+         artifact =
+            factory.loadExisitingArtifact(artifactId, chStmt.getString("guid"), artifactType, chStmt.getInt("gamma_id"),
+               branch, transactionId, ModificationType.getMod(chStmt.getInt("mod_type")), appId, historical);
       }
 
       if (reload == LoadType.RELOAD_CACHE) {

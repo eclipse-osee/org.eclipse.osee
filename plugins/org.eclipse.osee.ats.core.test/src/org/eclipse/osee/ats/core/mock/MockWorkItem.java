@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.internal.log.AtsLogFactory;
 import org.eclipse.osee.ats.core.internal.state.StateManager;
 import org.eclipse.osee.ats.core.util.AtsUserGroup;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -262,7 +263,7 @@ public class MockWorkItem implements IAtsWorkItem {
    }
 
    @Override
-   public boolean isOfType(IArtifactType... artifactTypes) {
+   public boolean isOfType(ArtifactTypeId... artifactTypes) {
       return false;
    }
 }

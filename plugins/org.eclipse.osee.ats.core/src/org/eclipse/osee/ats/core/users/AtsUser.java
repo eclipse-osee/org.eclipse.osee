@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.users;
 
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -101,7 +102,7 @@ public class AtsUser extends NamedIdBase implements IAtsUser {
    }
 
    @Override
-   public boolean isOfType(IArtifactType... artifactTypes) {
+   public boolean isOfType(ArtifactTypeId... artifactTypes) {
       return Collections.asHashSet(artifactTypes).contains(getArtifactType());
    }
 

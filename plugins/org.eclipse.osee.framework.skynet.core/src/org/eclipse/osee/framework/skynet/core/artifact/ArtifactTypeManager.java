@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.OrcsTypesData;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -152,22 +151,22 @@ public class ArtifactTypeManager {
    /**
     * Get a new instance of type artifactTypeName
     */
-   public static Artifact addArtifact(IArtifactType artifactType, BranchId branch) throws OseeCoreException {
+   public static Artifact addArtifact(ArtifactTypeId artifactType, BranchId branch) throws OseeCoreException {
       return addArtifact(artifactType, branch, null, null);
    }
 
    /**
     * Get a new instance of type artifactTypeName and set it's name.
     */
-   public static Artifact addArtifact(IArtifactType artifactType, BranchId branch, String name) throws OseeCoreException {
+   public static Artifact addArtifact(ArtifactTypeId artifactType, BranchId branch, String name) throws OseeCoreException {
       return addArtifact(artifactType, branch, name, null);
    }
 
-   public static Artifact addArtifact(IArtifactType artifactType, BranchId branch, String name, String guid) throws OseeCoreException {
+   public static Artifact addArtifact(ArtifactTypeId artifactType, BranchId branch, String name, String guid) throws OseeCoreException {
       return getFactory(artifactType).makeNewArtifact(branch, artifactType, name, guid);
    }
 
-   public static Artifact addArtifact(IArtifactType artifactType, BranchId branch, String name, String guid, long uuid) {
+   public static Artifact addArtifact(ArtifactTypeId artifactType, BranchId branch, String name, String guid, long uuid) {
       Conditions.checkExpressionFailOnTrue(uuid <= 0L, "Invalid Uuid %d. Must be > 0", uuid);
       return getFactory(artifactType).makeNewArtifact(branch, artifactType, name, guid, uuid);
    }
@@ -180,8 +179,8 @@ public class ArtifactTypeManager {
    private static final String COUNT_ARTIFACT_OCCURRENCE =
       "select count(1) from (select DISTINCT(art_id) FROM osee_artifact where art_type_id = ?) t1";
 
-   public static void purgeArtifactType(IArtifactType artifactType) throws OseeCoreException {
-      int artifactCount = ConnectionHandler.getJdbcClient().fetch(0, COUNT_ARTIFACT_OCCURRENCE, artifactType.getGuid());
+   public static void purgeArtifactType(ArtifactTypeId artifactType) throws OseeCoreException {
+      int artifactCount = ConnectionHandler.getJdbcClient().fetch(0, COUNT_ARTIFACT_OCCURRENCE, artifactType);
 
       if (artifactCount != 0) {
          throw new OseeArgumentException(
@@ -197,8 +196,8 @@ public class ArtifactTypeManager {
     * @param purgeArtifactTypes types to be converted and purged
     * @param newArtifactType new type to convert any existing artifacts of the old type
     */
-   public static void purgeArtifactTypesWithCheck(Collection<? extends IArtifactType> purgeArtifactTypes, IArtifactType newArtifactType) throws OseeCoreException {
-      for (IArtifactType purgeArtifactType : purgeArtifactTypes) {
+   public static void purgeArtifactTypesWithCheck(Collection<? extends ArtifactTypeId> purgeArtifactTypes, ArtifactTypeId newArtifactType) throws OseeCoreException {
+      for (ArtifactTypeId purgeArtifactType : purgeArtifactTypes) {
          // find all artifact of this type on all branches and make a unique list for type change (since it is not by branch)
          Set<Artifact> artifacts = new LinkedHashSet<>();
          for (BranchId branch : BranchManager.getBranches(new BranchFilter())) {
@@ -228,7 +227,7 @@ public class ArtifactTypeManager {
    /**
     * @return Returns the ArtifactType factory.
     */
-   public static ArtifactFactory getFactory(IArtifactType artifactType) throws OseeCoreException {
+   public static ArtifactFactory getFactory(ArtifactTypeId artifactType) throws OseeCoreException {
       if (artifactType == null) {
          throw new OseeArgumentException("Artifact Type cannot be null");
       }
@@ -248,7 +247,7 @@ public class ArtifactTypeManager {
       return new OseeTypesExportOperation(typesEndpoint, outputStream);
    }
 
-   public static boolean isUserCreationAllowed(IArtifactType artifactType) {
+   public static boolean isUserCreationAllowed(ArtifactTypeId artifactType) {
       boolean userCreationoAllowed = false;
       ArtifactFactory factory = factoryManager.getFactory(artifactType);
       if (factory != null && factory.isUserCreationEnabled(artifactType)) {

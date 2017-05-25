@@ -15,8 +15,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -68,11 +69,11 @@ public abstract class ArtifactFactory {
       return artifact;
    }
 
-   public static int getNextArtifactId(Long uuid) {
-      return uuid == null ? (int) ConnectionHandler.getNextSequence(OseeData.ART_ID_SEQ, true) : uuid.intValue();
+   public static Long getNextArtifactId(Long uuid) {
+      return uuid == null ? ConnectionHandler.getNextSequence(OseeData.ART_ID_SEQ, true) : uuid;
    }
 
-   public synchronized Artifact reflectExisitingArtifact(int artId, String guid, ArtifactTypeId artifactType, int gammaId, BranchId branch, ModificationType modificationType, ApplicabilityId applicabilityId) throws OseeCoreException {
+   public synchronized Artifact reflectExisitingArtifact(ArtifactId artId, String guid, ArtifactTypeId artifactType, int gammaId, BranchId branch, ModificationType modificationType, ApplicabilityId applicabilityId) throws OseeCoreException {
       Artifact toReturn = internalExistingArtifact(artId, guid, artifactType, gammaId, branch, modificationType,
          applicabilityId, false, TransactionToken.SENTINEL, true);
       ArtifactCache.cache(toReturn);
@@ -82,10 +83,10 @@ public abstract class ArtifactFactory {
    /**
     * This method does not cache the artifact, ArtifactLoader will cache existing artifacts
     */
-   private Artifact internalExistingArtifact(int artId, String guid, ArtifactTypeId artifactType, int gammaId, BranchId branch, ModificationType modType, ApplicabilityId applicabilityId, boolean historical, TransactionToken transactionId, boolean useBackingData) throws OseeCoreException {
+   private Artifact internalExistingArtifact(ArtifactId artId, String guid, ArtifactTypeId artifactType, int gammaId, BranchId branch, ModificationType modType, ApplicabilityId applicabilityId, boolean historical, TransactionToken transactionId, boolean useBackingData) throws OseeCoreException {
       Artifact artifact = getArtifactInstance(guid, branch, artifactType, true);
 
-      artifact.setArtId(artId);
+      artifact.setArtId(artId.getId());
       artifact.internalSetPersistenceData(gammaId, transactionId, modType, applicabilityId, historical, useBackingData);
 
       return artifact;
@@ -94,7 +95,7 @@ public abstract class ArtifactFactory {
    /**
     * This method does not cache the artifact, ArtifactLoader will cache existing artifacts
     */
-   public synchronized Artifact loadExisitingArtifact(int artId, String guid, ArtifactTypeId artifactType, int gammaId, BranchId branch, TransactionToken transactionId, ModificationType modType, ApplicabilityId applicabilityId, boolean historical) throws OseeCoreException {
+   public synchronized Artifact loadExisitingArtifact(ArtifactId artId, String guid, ArtifactTypeId artifactType, int gammaId, BranchId branch, TransactionToken transactionId, ModificationType modType, ApplicabilityId applicabilityId, boolean historical) throws OseeCoreException {
       return internalExistingArtifact(artId, guid, artifactType, gammaId, branch, modType, applicabilityId, historical,
          transactionId, false);
    }

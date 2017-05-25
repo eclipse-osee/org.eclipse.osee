@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -96,7 +97,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public boolean isOfType(IArtifactType... otherTypes) throws OseeCoreException {
+   public boolean isOfType(ArtifactTypeId... otherTypes) throws OseeCoreException {
       return getProxiedObject().isOfType(otherTypes);
    }
 

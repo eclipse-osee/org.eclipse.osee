@@ -62,7 +62,7 @@ public class ArtifactTypeIndex extends TokenTypeIndex<IArtifactType, XArtifactTy
       return metaData.attributeTypes;
    }
 
-   public Collection<IArtifactType> getSuperTypes(IArtifactType artifactType) {
+   public Collection<IArtifactType> getSuperTypes(ArtifactTypeId artifactType) {
       ArtifactTypeMetaData metaData = tokenToTypeData.get(artifactType);
       return metaData != null ? metaData.getSuperTypes() : Collections.<IArtifactType> emptyList();
    }
@@ -76,9 +76,9 @@ public class ArtifactTypeIndex extends TokenTypeIndex<IArtifactType, XArtifactTy
       return !getSuperTypes(artType).isEmpty();
    }
 
-   public boolean inheritsFrom(IArtifactType thisType, IArtifactType... otherTypes) {
+   public boolean inheritsFrom(ArtifactTypeId thisType, ArtifactTypeId... otherTypes) {
       boolean result = false;
-      for (IArtifactType otherType : otherTypes) {
+      for (ArtifactTypeId otherType : otherTypes) {
          if (inheritsFromSingle(thisType, otherType)) {
             result = true;
             break;
@@ -87,7 +87,7 @@ public class ArtifactTypeIndex extends TokenTypeIndex<IArtifactType, XArtifactTy
       return result;
    }
 
-   private boolean inheritsFromSingle(IArtifactType thisType, IArtifactType otherType) {
+   private boolean inheritsFromSingle(ArtifactTypeId thisType, ArtifactTypeId otherType) {
       boolean result = false;
       if (thisType.equals(otherType)) {
          result = true;

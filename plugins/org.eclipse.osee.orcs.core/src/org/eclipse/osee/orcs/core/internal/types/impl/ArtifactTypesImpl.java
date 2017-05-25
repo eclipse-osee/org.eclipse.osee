@@ -82,7 +82,7 @@ public class ArtifactTypesImpl implements ArtifactTypes {
    }
 
    @Override
-   public boolean inheritsFrom(IArtifactType thisType, IArtifactType... otherTypes) throws OseeCoreException {
+   public boolean inheritsFrom(ArtifactTypeId thisType, ArtifactTypeId... otherTypes) throws OseeCoreException {
       Conditions.checkNotNull(thisType, "thisArtifactType");
       Conditions.checkNotNull(otherTypes, "otherArtifactTypes");
       return getArtifactTypesIndex().inheritsFrom(thisType, otherTypes);

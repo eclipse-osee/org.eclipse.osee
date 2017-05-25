@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -33,7 +32,6 @@ public class ArtifactTypeSqlHandler extends SqlHandler<CriteriaArtifactType> {
    private String artAlias;
    private String txsAlias;
    private AbstractJoinQuery joinQuery;
-   private Collection<Long> typeIds;
 
    private List<String> artAliases;
    private List<String> txsAliases;
@@ -48,8 +46,8 @@ public class ArtifactTypeSqlHandler extends SqlHandler<CriteriaArtifactType> {
 
    @Override
    public void addTables(AbstractSqlWriter writer) throws OseeCoreException {
-      typeIds = getLocalTypeIds();
-      if (typeIds.size() > 1) {
+      Collection<? extends ArtifactTypeId> types = criteria.getTypes();
+      if (types.size() > 1) {
          jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
       }
 
@@ -68,20 +66,11 @@ public class ArtifactTypeSqlHandler extends SqlHandler<CriteriaArtifactType> {
       txsAliases = writer.getAliases(TableEnum.TXS_TABLE);
    }
 
-   private Collection<Long> getLocalTypeIds() throws OseeCoreException {
-      Collection<? extends ArtifactTypeId> types = criteria.getTypes();
-      Collection<Long> toReturn = new HashSet<>();
-      for (ArtifactTypeId type : types) {
-         toReturn.add(type.getId());
-      }
-      return toReturn;
-   }
-
    @Override
    public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
-
-      if (typeIds.size() > 1) {
-         joinQuery = writer.writeIdJoin(typeIds);
+      Collection<? extends ArtifactTypeId> types = criteria.getTypes();
+      if (types.size() > 1) {
+         joinQuery = writer.writeJoin(types);
          writer.write(jIdAlias);
          writer.write(".query_id = ?");
          writer.addParameter(joinQuery.getQueryId());
@@ -101,14 +90,14 @@ public class ArtifactTypeSqlHandler extends SqlHandler<CriteriaArtifactType> {
             }
          }
       } else {
-         long localId = typeIds.iterator().next();
+         ArtifactTypeId artifactType = types.iterator().next();
 
          int aSize = artAliases.size();
          for (int index = 0; index < aSize; index++) {
             String artAlias = artAliases.get(index);
             writer.write(artAlias);
             writer.write(".art_type_id = ?");
-            writer.addParameter(localId);
+            writer.addParameter(artifactType);
             if (index + 1 < aSize) {
                writer.write(" AND ");
             }
