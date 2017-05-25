@@ -67,6 +67,7 @@ public final class CoreAttributeTypes {
    public static final AttributeTypeToken Name = AttributeTypeToken.valueOf(1152921504606847088L, "Name");
    public static final AttributeTypeToken NativeContent = AttributeTypeToken.valueOf(1152921504606847097L, "Native Content");
    public static final AttributeTypeToken Notes = AttributeTypeToken.valueOf(1152921504606847085L, "Notes");
+   public static final AttributeTypeToken OseeAppDefinition = AttributeTypeToken.valueOf(1152921504606847380L, "Osee App Definition");
    public static final AttributeTypeToken PageType = AttributeTypeToken.valueOf(1152921504606847091L, "Page Type");
    public static final AttributeTypeToken ParagraphNumber = AttributeTypeToken.valueOf(1152921504606847101L, "Paragraph Number");
    public static final AttributeTypeToken Partition = AttributeTypeToken.valueOf(1152921504606847111L, "Partition");
