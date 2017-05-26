@@ -10,8 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.app;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -39,18 +40,20 @@ public final class OseeAppResource {
    /**
     * get a list of all of the available OSEE Application artifacts
     *
-    * @return provides json containing a map of Application token, description
+    * @return provides json containing a collection of Application name, description, link
     */
    @GET
    @Produces(MediaType.APPLICATION_JSON)
-   public Map<String, Long> getOseeAppListJson() {
+   public Collection<OseeAppTransfer> getOseeAppListJson() {
+      List<OseeAppTransfer> results = new LinkedList<OseeAppTransfer>();
       BranchId branchId =
          orcsApi.getQueryFactory().branchQuery().andNameEquals("Common").getResultsAsId().getExactlyOne();
       ResultSet<ArtifactReadable> apps =
          orcsApi.getQueryFactory().fromBranch(branchId).andTypeEquals(CoreArtifactTypes.OseeApp).getResults();
-      Map<String, Long> results = new HashMap<String, Long>();
       for (ArtifactReadable art : apps) {
-         results.put(art.getName(), art.getUuid());
+         String description = art.getSoleAttributeAsString(CoreAttributeTypes.Description, "Not Available");
+         String uuid = String.format("%d", art.getUuid());
+         results.add(createTransfer(art.getName(), description, uuid));
       }
       return results;
    }
@@ -70,5 +73,13 @@ public final class OseeAppResource {
       ArtifactReadable app =
          orcsApi.getQueryFactory().fromBranch(branchId).andId(ArtifactId.valueOf(id)).getResults().getExactlyOne();
       return app.getSoleAttributeAsString(CoreAttributeTypes.OseeAppDefinition);
+   }
+
+   private OseeAppTransfer createTransfer(String name, String description, String uuid) {
+      OseeAppTransfer item = new OseeAppTransfer();
+      item.setName(name);
+      item.setDescription(description);
+      item.setUuid(uuid);
+      return item;
    }
 }

@@ -1,0 +1,38 @@
+/* app css stylesheet */
+
+.stateLink{
+    width: 100%
+}
+.selected {
+    border-radius:20px;
+    background-color: rgba(51, 122, 183, 0.2);
+}
+.jsf hr.creation-separator {
+    border: 1px inset black
+}
+
+.osee-textarea {
+    height: 100px;
+    background-color: cyan;
+    max-width: 100%;
+    min-width: 100%;
+}
+
+.oseeopt-textarea {
+    height: 100px;
+    background-color: cyan;
+    max-width: 100%;
+    min-width: 100%;
+}
+
+#searchLabelDiv {
+    display: inline-block
+}
+#searchInputDiv {
+    display: inline-block
+}
+
+.myGrid {
+    width: 500px;
+    height: 250px;
+}
