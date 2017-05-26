@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -46,6 +47,7 @@ import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.utility.Id4JoinQuery;
 import org.eclipse.osee.framework.skynet.core.utility.IdJoinQuery;
 import org.eclipse.osee.framework.skynet.core.utility.JoinUtility;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
@@ -205,34 +207,24 @@ public class ConflictManagerInternal {
    }
 
    private static void loadMultiplicityConflicts(Collection<AttributeTypeId> types, BranchId source, BranchId dest, List<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet) {
-      IdJoinQuery joinQuery = JoinUtility.createIdJoinQuery();
-      JdbcStatement chStmt = ConnectionHandler.getStatement();
+      JdbcClient jdbcClient = ConnectionHandler.getJdbcClient();
       List<Object[]> batchParams = new LinkedList<>();
-      try {
-         for (AttributeTypeId type : types) {
-            joinQuery.add(type);
-         }
-         joinQuery.store();
+      try (IdJoinQuery joinQuery = JoinUtility.createIdJoinQuery()) {
+         joinQuery.addAndStore(types);
 
-         chStmt.runPreparedQuery(MULTIPLICITY_DETECTION, source, BranchManager.getBaseTransaction(source),
-            joinQuery.getQueryId(), dest);
-
-         while (chStmt.next()) {
-            Long artId = chStmt.getLong("art_id");
-            Long sAttrId = chStmt.getLong("source_attr_id");
-            Long dAttrId = chStmt.getLong("dest_attr_id");
+         Consumer<JdbcStatement> consumer = stmt -> {
+            Long artId = stmt.getLong("art_id");
+            Long sAttrId = stmt.getLong("source_attr_id");
+            Long dAttrId = stmt.getLong("dest_attr_id");
             artIdSet.add(artId.intValue());
             batchParams.add(new Object[] {dAttrId, sAttrId, artId});
-         }
-
-      } finally {
-         joinQuery.delete();
-         chStmt.close();
+         };
+         jdbcClient.runQuery(consumer, MULTIPLICITY_DETECTION, source, BranchManager.getBaseTransaction(source),
+            joinQuery.getQueryId(), dest);
       }
-
       if (!batchParams.isEmpty()) {
          String updateSql = "update osee_attribute set attr_id = ? where attr_id = ? and art_id = ?";
-         ConnectionHandler.runBatchUpdate(updateSql, batchParams);
+         jdbcClient.runBatchUpdate(updateSql, batchParams);
          // update cached source artifacts
          for (Object[] params : batchParams) {
             ArtifactQuery.reloadArtifactFromId(ArtifactId.valueOf((Long) params[2]), source);
@@ -367,16 +359,13 @@ public class ConflictManagerInternal {
    private static void cleanUpConflictDB(Collection<Conflict> conflicts, long branchUuid, IProgressMonitor monitor) throws OseeCoreException {
       monitor.subTask("Cleaning up old conflict data");
       if (conflicts != null && conflicts.size() != 0 && branchUuid != 0) {
-         Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery();
-         try {
+         try (Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery()) {
             for (Conflict conflict : conflicts) {
                joinQuery.add(BranchId.valueOf(branchUuid), ArtifactId.valueOf(conflict.getObjectId()),
                   TransactionId.valueOf(conflict.getConflictType().getValue()));
             }
             joinQuery.store();
             ConnectionHandler.runPreparedUpdate(CONFLICT_CLEANUP, branchUuid, joinQuery.getQueryId());
-         } finally {
-            joinQuery.delete();
          }
       }
       monitor.worked(10);

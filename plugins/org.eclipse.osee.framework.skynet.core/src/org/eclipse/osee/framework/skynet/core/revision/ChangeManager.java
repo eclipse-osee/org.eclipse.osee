@@ -108,24 +108,23 @@ public final class ChangeManager {
     * @return a map of artifact to collection of TransactionIds which affected the given artifact
     */
    public static HashCollection<Artifact, TransactionId> getModifingTransactions(Collection<Artifact> artifacts) throws OseeCoreException {
-      Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery();
-      CompositeKeyHashMap<Integer, BranchId, Artifact> artifactMap = new CompositeKeyHashMap<>();
-      for (Artifact artifact : artifacts) {
-         BranchId branch = artifact.getBranch();
-         artifactMap.put(artifact.getArtId(), branch, artifact);
-         TransactionId transaction = TransactionManager.getHeadTransaction(branch);
-         joinQuery.add(branch, artifact, transaction, branch.getViewId());
-
-         // for each combination of artifact and its branch hierarchy
-         while (!branch.equals(CoreBranches.SYSTEM_ROOT)) {
-            transaction = BranchManager.getSourceTransaction(branch);
-            branch = BranchManager.getParentBranch(branch);
-            joinQuery.add(branch, artifact, transaction);
-         }
-      }
-
       HashCollection<Artifact, TransactionId> transactionMap = new HashCollection<>();
-      try {
+      try (Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery()) {
+         CompositeKeyHashMap<Integer, BranchId, Artifact> artifactMap = new CompositeKeyHashMap<>();
+         for (Artifact artifact : artifacts) {
+            BranchId branch = artifact.getBranch();
+            artifactMap.put(artifact.getArtId(), branch, artifact);
+            TransactionId transaction = TransactionManager.getHeadTransaction(branch);
+            joinQuery.add(branch, artifact, transaction, branch.getViewId());
+
+            // for each combination of artifact and its branch hierarchy
+            while (!branch.equals(CoreBranches.SYSTEM_ROOT)) {
+               transaction = BranchManager.getSourceTransaction(branch);
+               branch = BranchManager.getParentBranch(branch);
+               joinQuery.add(branch, artifact, transaction);
+            }
+         }
+
          joinQuery.store();
          JdbcStatement chStmt = ConnectionHandler.getStatement();
          try {
@@ -139,8 +138,6 @@ public final class ChangeManager {
          } finally {
             chStmt.close();
          }
-      } finally {
-         joinQuery.delete();
       }
       return transactionMap;
    }
@@ -152,24 +149,24 @@ public final class ChangeManager {
     * @return a map of artifact to collection of branches which affected the given artifact
     */
    public static HashCollection<Artifact, BranchId> getModifingBranches(Collection<Artifact> artifacts) throws OseeCoreException {
-      Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery();
-
-      CompositeKeyHashMap<Integer, BranchId, Artifact> artifactMap =
-         new CompositeKeyHashMap<Integer, BranchId, Artifact>();
-      for (Artifact artifact : artifacts) {
-         artifactMap.put(artifact.getArtId(), artifact.getBranch(), artifact);
-         // for each combination of artifact and all working branches in its hierarchy
-         for (BranchId workingBranch : BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING)) {
-            if (artifact.isOnBranch(BranchManager.getParentBranch(workingBranch))) {
-               joinQuery.add(workingBranch, artifact, TransactionId.SENTINEL, workingBranch.getViewId());
+      HashCollection<Artifact, BranchId> branchMap = new HashCollection<>();
+      try (Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery()) {
+         CompositeKeyHashMap<Integer, BranchId, Artifact> artifactMap =
+            new CompositeKeyHashMap<Integer, BranchId, Artifact>();
+         for (Artifact artifact : artifacts) {
+            artifactMap.put(artifact.getArtId(), artifact.getBranch(), artifact);
+            // for each combination of artifact and all working branches in its hierarchy
+            for (BranchId workingBranch : BranchManager.getBranches(BranchArchivedState.UNARCHIVED,
+               BranchType.WORKING)) {
+               if (artifact.isOnBranch(BranchManager.getParentBranch(workingBranch))) {
+                  joinQuery.add(workingBranch, artifact, TransactionId.SENTINEL, workingBranch.getViewId());
+               }
             }
          }
-      }
 
-      HashCollection<Artifact, BranchId> branchMap = new HashCollection<>();
-      try {
          joinQuery.store();
          JdbcStatement chStmt = ConnectionHandler.getStatement();
+
          try {
             chStmt.runPreparedQuery(joinQuery.size() * 2, ServiceUtil.getSql(OseeSql.CHANGE_BRANCH_MODIFYING),
                joinQuery.getQueryId());
@@ -183,8 +180,6 @@ public final class ChangeManager {
          } finally {
             chStmt.close();
          }
-      } finally {
-         joinQuery.delete();
       }
       return branchMap;
    }

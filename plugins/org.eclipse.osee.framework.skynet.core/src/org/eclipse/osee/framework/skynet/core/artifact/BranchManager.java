@@ -426,28 +426,23 @@ public final class BranchManager {
    }
 
    private static IOseeBranch createMergeBranch(final IOseeBranch sourceBranch, final IOseeBranch destBranch, final ArrayList<Integer> expectedArtIds) throws OseeCoreException {
-      Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery();
-      for (int artId : expectedArtIds) {
-         joinQuery.add(sourceBranch, ArtifactId.valueOf(artId), TransactionId.SENTINEL, sourceBranch.getViewId());
-      }
-      BranchId branch;
-      try {
+      try (Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery()) {
+         for (int artId : expectedArtIds) {
+            joinQuery.add(sourceBranch, ArtifactId.valueOf(artId), TransactionId.SENTINEL, sourceBranch.getViewId());
+         }
          joinQuery.store();
 
          TransactionToken parentTx = getBaseTransaction(sourceBranch);
          String creationComment = String.format("New Merge Branch from %s(%s) and %s", sourceBranch.getName(),
             parentTx.getId(), destBranch.getName());
          String branchName = "Merge " + sourceBranch.getShortName() + " <=> " + destBranch.getShortName();
-         branch = createBranch(BranchType.MERGE, parentTx, branchName, UserManager.getUser(), creationComment,
+         BranchId branch = createBranch(BranchType.MERGE, parentTx, branchName, UserManager.getUser(), creationComment,
             joinQuery.getQueryId(), destBranch);
-      } finally {
-         joinQuery.delete();
+         MergeBranch mergeBranch = (MergeBranch) BranchManager.getBranch(branch);
+         mergeBranch.setSourceBranch(sourceBranch);
+         mergeBranch.setDestinationBranch(destBranch);
+         return mergeBranch;
       }
-
-      MergeBranch mergeBranch = (MergeBranch) BranchManager.getBranch(branch);
-      mergeBranch.setSourceBranch(sourceBranch);
-      mergeBranch.setDestinationBranch(destBranch);
-      return mergeBranch;
    }
 
    /**

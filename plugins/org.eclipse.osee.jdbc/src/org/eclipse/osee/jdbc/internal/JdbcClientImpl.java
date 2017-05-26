@@ -503,8 +503,17 @@ public final class JdbcClientImpl implements JdbcClient {
    @Override
    public OseePreparedStatement getBatchStatement(JdbcConnection connection, String query, int batchIncrementSize) {
       try {
-         PreparedStatement preparedStatement = ((JdbcConnectionImpl) connection).prepareStatement(query);
-         return new OseePreparedStatement(preparedStatement, batchIncrementSize);
+         JdbcConnectionImpl connect;
+         boolean autoClose = false;
+         if (connection == null) {
+            connect = getConnection();
+            autoClose = true;
+         } else {
+            connect = ((JdbcConnectionImpl) connection);
+         }
+
+         PreparedStatement preparedStatement = connect.prepareStatement(query);
+         return new OseePreparedStatement(preparedStatement, batchIncrementSize, connect, autoClose);
       } catch (SQLException ex) {
          throw newJdbcException(ex);
       }

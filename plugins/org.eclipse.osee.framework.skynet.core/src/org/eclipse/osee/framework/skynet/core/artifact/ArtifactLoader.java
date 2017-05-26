@@ -294,7 +294,7 @@ public final class ArtifactLoader {
                OseeLog.logf(Activator.class, Level.FINE, new Exception("Artifact Load Time"),
                   "Artifact Load Time [%s] for [%d] artifacts. ", Lib.getElapseString(time), loadedItems.size());
             } finally {
-               joinQuery.delete();
+               joinQuery.close();
             }
          }
       }
@@ -380,9 +380,7 @@ public final class ArtifactLoader {
    }
 
    static void loadArtifactData(Artifact artifact, LoadLevel loadLevel, boolean isArchived) throws OseeCoreException {
-      Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery();
-
-      try {
+      try (Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery()) {
          joinQuery.add(artifact.getBranch(), ArtifactId.valueOf(artifact.getId()), TransactionId.SENTINEL,
             artifact.getBranch().getViewId());
          joinQuery.store();
@@ -391,8 +389,6 @@ public final class ArtifactLoader {
          artifacts.add(artifact);
          loadArtifactsData(joinQuery.getQueryId(), artifacts, loadLevel, LoadType.INCLUDE_CACHE, TransactionId.SENTINEL,
             artifact.isDeleted() ? DeletionFlag.INCLUDE_DELETED : DeletionFlag.EXCLUDE_DELETED, isArchived);
-      } finally {
-         joinQuery.delete();
       }
    }
 

@@ -34,13 +34,13 @@ import org.eclipse.osee.jdbc.JdbcConstants;
 public class PurgeAttributes extends AbstractDbTxOperation {
 
    private static final String DELETE_TXS =
-      "DELETE FROM osee_txs txs1 WHERE EXISTS (select 1 from osee_join_id jt1 WHERE jt1.query_id = ? AND jt1.id = txs1.gamma_id)";
+      "DELETE FROM osee_txs WHERE EXISTS (select 1 from osee_join_id WHERE query_id = ? AND id = gamma_id)";
 
    private static final String DELETE_ATTR =
-      "DELETE FROM osee_attribute attr1 WHERE EXISTS (select 1 from osee_join_id jt1 WHERE jt1.query_id = ? AND jt1.id = attr1.gamma_id)";
+      "DELETE FROM osee_attribute WHERE EXISTS (select 1 from osee_join_id WHERE query_id = ? AND id = gamma_id)";
 
    private static final String SELECT_ATTR_GAMMAS =
-      "SELECT gamma_id FROM osee_attribute t1, osee_join_id t2 where t1.attr_id = t2.id and t2.query_id = ?";
+      "SELECT gamma_id FROM osee_attribute, osee_join_id where attr_id = id and query_id = ?";
 
    private final Collection<Attribute<?>> attributesToPurge;
    private boolean success;
@@ -52,38 +52,24 @@ public class PurgeAttributes extends AbstractDbTxOperation {
 
    @Override
    protected void doTxWork(IProgressMonitor monitor, JdbcConnection connection) throws OseeCoreException {
-      IdJoinQuery txsJoin = populateTxsJoinTable();
-      try {
-         getJdbcClient().runPreparedUpdate(connection, DELETE_TXS, txsJoin.getQueryId());
-         getJdbcClient().runPreparedUpdate(connection, DELETE_ATTR, txsJoin.getQueryId());
-
-         for (Attribute<?> attribute : attributesToPurge) {
-            attribute.purge();
-         }
+      try (IdJoinQuery idJoin = populateIdJoin(connection)) {
+         getJdbcClient().runPreparedUpdate(connection, DELETE_TXS, idJoin.getQueryId());
+         getJdbcClient().runPreparedUpdate(connection, DELETE_ATTR, idJoin.getQueryId());
+         attributesToPurge.forEach(Attribute::purge);
          success = true;
-      } finally {
-         txsJoin.delete();
       }
-
    }
 
-   private IdJoinQuery populateTxsJoinTable() throws OseeDataStoreException, OseeCoreException {
-      IdJoinQuery attributeJoin = JoinUtility.createIdJoinQuery(getJdbcClient());
+   private IdJoinQuery populateIdJoin(JdbcConnection connection) throws OseeDataStoreException, OseeCoreException {
+      IdJoinQuery idJoin = JoinUtility.createIdJoinQuery(getJdbcClient(), connection);
 
-      for (Attribute<?> attribute : attributesToPurge) {
-         attributeJoin.add(attribute.getId());
+      try (IdJoinQuery attributeJoin = JoinUtility.createIdJoinQuery(getJdbcClient(), connection)) {
+         attributeJoin.addAndStore(attributesToPurge);
+         getJdbcClient().runQuery(connection, stmt -> idJoin.add(stmt.getLong("gamma_id")),
+            JdbcConstants.JDBC__MAX_FETCH_SIZE, SELECT_ATTR_GAMMAS, attributeJoin.getQueryId());
+         idJoin.store();
       }
-
-      IdJoinQuery txsJoin = JoinUtility.createIdJoinQuery(getJdbcClient());
-      try {
-         attributeJoin.store();
-         getJdbcClient().runQuery(stmt -> txsJoin.add(stmt.getInt("gamma_id")), JdbcConstants.JDBC__MAX_FETCH_SIZE,
-            SELECT_ATTR_GAMMAS, attributeJoin.getQueryId());
-         txsJoin.store();
-      } finally {
-         attributeJoin.delete();
-      }
-      return txsJoin;
+      return idJoin;
    }
 
    @Override
@@ -102,5 +88,4 @@ public class PurgeAttributes extends AbstractDbTxOperation {
          OseeEventManager.kickPersistEvent(this, artifactEvent);
       }
    }
-
 }

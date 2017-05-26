@@ -44,6 +44,8 @@ import org.eclipse.osee.jdbc.JdbcStatement;
  * @author Jeff C. Phillips
  */
 public class AttributeChangeAcquirer extends ChangeAcquirer {
+   private final Map<Integer, ChangeBuilder> attributesWasValueCache = new HashMap<>();
+   private int previousAttrId = -1;
 
    public AttributeChangeAcquirer(BranchId sourceBranch, TransactionToken transactionId, IProgressMonitor monitor, Artifact specificArtifact, Set<Integer> artIds, ArrayList<ChangeBuilder> changeBuilders, Set<Integer> newAndDeletedArtifactIds) {
       super(sourceBranch, transactionId, monitor, specificArtifact, artIds, changeBuilders, newAndDeletedArtifactIds);
@@ -51,7 +53,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
 
    @Override
    public ArrayList<ChangeBuilder> acquireChanges() throws OseeCoreException {
-      Map<Integer, ChangeBuilder> attributesWasValueCache = new HashMap<>();
+
       Map<Integer, ModificationType> artModTypes = new HashMap<>();
       Set<Integer> modifiedArtifacts = new HashSet<>();
       JdbcStatement chStmt = ConnectionHandler.getStatement();
@@ -173,47 +175,40 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
             sqlParamter = transactionId;
          }
 
-         Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery();
-         try {
+         try (Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery()) {
             for (int artId : artIds) {
                joinQuery.add(wasValueBranch, ArtifactId.valueOf(artId), TransactionId.SENTINEL,
                   wasValueBranch.getViewId());
             }
             joinQuery.store();
 
-            JdbcStatement chStmt = ConnectionHandler.getStatement();
-            try {
-               chStmt.runPreparedQuery(sql, sqlParamter, joinQuery.getQueryId());
-               int previousAttrId = -1;
-               while (chStmt.next()) {
-                  int attrId = chStmt.getInt("attr_id");
-
-                  if (previousAttrId != attrId) {
-                     String wasValue = chStmt.getString("was_value");
-                     if (attributesWasValueCache.containsKey(
-                        attrId) && attributesWasValueCache.get(attrId) instanceof AttributeChangeBuilder) {
-                        AttributeChangeBuilder changeBuilder =
-                           (AttributeChangeBuilder) attributesWasValueCache.get(attrId);
-
-                        if (changeBuilder.getArtModType() != ModificationType.NEW) {
-                           if (changeBuilder.getModType() != ModificationType.DELETED && changeBuilder.getModType() != ModificationType.ARTIFACT_DELETED) {
-                              changeBuilder.setModType(ModificationType.MODIFIED);
-                           }
-                           changeBuilder.setWasValue(wasValue);
-                        }
-                     }
-                     previousAttrId = attrId;
-                  }
-               }
-            } finally {
-               chStmt.close();
-            }
-         } finally {
-            joinQuery.delete();
+            previousAttrId = -1;
+            ConnectionHandler.getJdbcClient().runQuery(this::buildAttributeChange, sql, sqlParamter,
+               joinQuery.getQueryId());
          }
          if (getMonitor() != null) {
             monitor.worked(12);
          }
+      }
+   }
+
+   private void buildAttributeChange(JdbcStatement stmt) {
+      int attrId = stmt.getInt("attr_id");
+
+      if (previousAttrId != attrId) {
+         String wasValue = stmt.getString("was_value");
+         if (attributesWasValueCache.containsKey(
+            attrId) && attributesWasValueCache.get(attrId) instanceof AttributeChangeBuilder) {
+            AttributeChangeBuilder changeBuilder = (AttributeChangeBuilder) attributesWasValueCache.get(attrId);
+
+            if (changeBuilder.getArtModType() != ModificationType.NEW) {
+               if (changeBuilder.getModType() != ModificationType.DELETED && changeBuilder.getModType() != ModificationType.ARTIFACT_DELETED) {
+                  changeBuilder.setModType(ModificationType.MODIFIED);
+               }
+               changeBuilder.setWasValue(wasValue);
+            }
+         }
+         previousAttrId = attrId;
       }
    }
 }

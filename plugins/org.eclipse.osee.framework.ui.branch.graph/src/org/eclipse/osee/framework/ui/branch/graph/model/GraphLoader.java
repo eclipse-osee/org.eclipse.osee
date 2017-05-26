@@ -60,14 +60,13 @@ public class GraphLoader {
    }
 
    private static void addParentTxData(GraphCache graphCache, BranchModel current, boolean recurse, IProgressListener listener) throws OseeCoreException {
-      IdJoinQuery joinQuery = JoinUtility.createIdJoinQuery();
-      try {
+      try (IdJoinQuery joinQuery = JoinUtility.createIdJoinQuery()) {
          List<BranchId> branches = new ArrayList<>(BranchManager.getChildBranches(current.getBranch(), recurse));
          branches.add(current.getBranch());
          for (BranchId branch : branches) {
             TransactionRecord tr = BranchManager.getSourceTransaction(branch);
             if (tr != null) {
-               joinQuery.add(tr.getId());
+               joinQuery.add(tr);
             }
          }
          joinQuery.store();
@@ -76,8 +75,6 @@ public class GraphLoader {
             BranchModel branchModel = graphCache.getOrCreateBranchModel(txData.getBranch());
             branchModel.addTx(graphCache.getOrCreateTxModel(txData));
          }
-      } finally {
-         joinQuery.delete();
       }
    }
 

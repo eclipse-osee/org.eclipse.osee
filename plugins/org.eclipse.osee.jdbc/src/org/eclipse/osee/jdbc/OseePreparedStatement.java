@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.jdbc;
 
+import java.io.Closeable;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import org.eclipse.osee.jdbc.internal.JdbcUtil;
@@ -21,15 +22,20 @@ import org.eclipse.osee.jdbc.internal.JdbcUtil;
  *
  * @author Ryan D. Brooks
  */
-public class OseePreparedStatement {
+public class OseePreparedStatement implements Closeable {
    private final PreparedStatement preparedStatement;
    private final int batchIncrementSize;
+   private final boolean autoClose;
+   private final JdbcConnection connection;
    private int currentBatchSize;
    private int resultCount;
+   private int size;
 
-   public OseePreparedStatement(PreparedStatement preparedStatement, int batchIncrementSize) {
+   public OseePreparedStatement(PreparedStatement preparedStatement, int batchIncrementSize, JdbcConnection connection, boolean autoClose) {
       this.preparedStatement = preparedStatement;
       this.batchIncrementSize = batchIncrementSize;
+      this.autoClose = autoClose;
+      this.connection = connection;
    }
 
    public void addToBatch(Object... params) {
@@ -79,6 +85,7 @@ public class OseePreparedStatement {
          preparedStatement.addBatch();
          preparedStatement.clearParameters();
          currentBatchSize++;
+         size++;
          if (currentBatchSize >= batchIncrementSize) {
             int[] updates = preparedStatement.executeBatch();
             resultCount += JdbcUtil.calculateBatchUpdateResults(updates);
@@ -93,15 +100,26 @@ public class OseePreparedStatement {
       if (currentBatchSize == 0) {
          return resultCount;
       } else {
-         int[] updates;
          try {
-            updates = preparedStatement.executeBatch();
+            return resultCount += JdbcUtil.calculateBatchUpdateResults(preparedStatement.executeBatch());
          } catch (SQLException ex) {
             throw JdbcException.newJdbcException(ex);
          } finally {
-            JdbcUtil.close(preparedStatement);
+            close();
          }
-         return resultCount + JdbcUtil.calculateBatchUpdateResults(updates);
+
+      }
+   }
+
+   public int size() {
+      return size;
+   }
+
+   @Override
+   public void close() {
+      JdbcUtil.close(preparedStatement);
+      if (autoClose) {
+         connection.close();
       }
    }
 }

@@ -162,20 +162,17 @@ public class UpdateMergeBranch extends AbstractDbTxOperation {
          throw new IllegalArgumentException("Artifact IDs can not be null or empty");
       }
 
-      Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery(getJdbcClient());
-      for (int artId : artIds) {
-         joinQuery.add(sourceBranch, ArtifactId.valueOf(artId), TransactionId.SENTINEL, sourceBranch.getViewId());
-      }
-      try {
-         joinQuery.store(connection);
+      try (Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery(getJdbcClient(), connection)) {
+         for (int artId : artIds) {
+            joinQuery.add(sourceBranch, ArtifactId.valueOf(artId), TransactionId.SENTINEL, sourceBranch.getViewId());
+         }
+         joinQuery.store();
          TransactionId startTx = BranchManager.getBaseTransaction(mergeBranch);
          insertGammas(connection, INSERT_ATTRIBUTE_GAMMAS, startTx, joinQuery.getQueryId(), sourceBranch, mergeBranch);
          insertGammas(connection, INSERT_ARTIFACT_GAMMAS, startTx, joinQuery.getQueryId(), sourceBranch, mergeBranch);
       } catch (OseeCoreException ex) {
          throw new OseeCoreException("Source Branch %s Artifact Ids: %s", sourceBranch.getId(),
             Collections.toString(",", artIds));
-      } finally {
-         joinQuery.delete(connection);
       }
    }
 

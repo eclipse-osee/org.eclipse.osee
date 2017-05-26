@@ -11,57 +11,23 @@
 package org.eclipse.osee.framework.skynet.core.utility;
 
 import org.eclipse.osee.framework.jdk.core.type.Id;
-import org.eclipse.osee.framework.skynet.core.utility.DatabaseJoinAccessor.JoinItem;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConnection;
 
 /**
  * @author Roberto E. Escobar
  */
 public class IdJoinQuery extends AbstractJoinQuery {
 
-   private final class TempIdEntry implements IJoinRow {
-      private final Long id;
-
-      private TempIdEntry(Long id) {
-         this.id = id;
-      }
-
-      @Override
-      public Object[] toArray() {
-         return new Object[] {getQueryId(), id};
-      }
-
-      @Override
-      public boolean equals(Object obj) {
-         if (obj == this) {
-            return true;
-         }
-         if (!(obj instanceof TempIdEntry)) {
-            return false;
-         }
-         TempIdEntry other = (TempIdEntry) obj;
-         return other.id.equals(this.id);
-      }
-
-      @Override
-      public int hashCode() {
-         return 37 * id.hashCode();
-      }
-
-      @Override
-      public String toString() {
-         return "id = " + id;
-      }
+   public IdJoinQuery(JdbcClient jdbcClient, JdbcConnection connection) {
+      super(JoinItem.ID, jdbcClient, connection);
    }
 
-   public IdJoinQuery(IJoinAccessor joinAccessor, Long expiresIn, int queryId) {
-      super(joinAccessor, JoinItem.ID, expiresIn, queryId);
-   }
-
-   public void add(Number id) {
-      entries.add(new TempIdEntry(id.longValue()));
+   public void add(Long id) {
+      addToBatch(id);
    }
 
    public void add(Id id) {
-      entries.add(new TempIdEntry(id.getId()));
+      addToBatch(id);
    }
 }

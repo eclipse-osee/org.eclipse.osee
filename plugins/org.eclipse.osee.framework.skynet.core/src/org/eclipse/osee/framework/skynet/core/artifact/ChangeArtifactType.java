@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -130,8 +131,7 @@ public class ChangeArtifactType {
       IdJoinQuery artifactJoin = populateArtIdsInJoinIdTable(inputArtifacts);
       IdJoinQuery branchJoin = populateBranchIdsJoinIdTable();
       IdJoinQuery gammaJoin = populateGammaIdsJoinIdTable(artifactJoin);
-      JdbcStatement chStmt = ConnectionHandler.getStatement();
-      try {
+      try (JdbcStatement chStmt = ConnectionHandler.getStatement()) {
          chStmt.runPreparedQuery(
             "select branch_id, gamma_id from osee_join_id jid1, osee_join_id jid2, osee_txs txs where jid1.query_id = ? and jid2.query_id = ? and jid1.id = txs.gamma_id and jid2.id = txs.branch_id and txs.tx_current = ?",
             gammaJoin.getQueryId(), branchJoin.getQueryId(), TxChange.CURRENT.getValue());
@@ -150,10 +150,9 @@ public class ChangeArtifactType {
             }
          }
       } finally {
-         chStmt.close();
-         artifactJoin.delete();
-         branchJoin.delete();
-         gammaJoin.delete();
+         artifactJoin.close();
+         branchJoin.close();
+         gammaJoin.close();
       }
    }
 
@@ -260,52 +259,32 @@ public class ChangeArtifactType {
 
    private IdJoinQuery populateArtIdsInJoinIdTable(Collection<? extends Artifact> inputArtifacts) throws OseeDataStoreException, OseeCoreException {
       IdJoinQuery artifactJoin = JoinUtility.createIdJoinQuery();
-      for (Artifact artifact : inputArtifacts) {
-         artifactJoin.add(artifact.getArtId());
-      }
-
-      artifactJoin.store();
-
+      artifactJoin.addAndStore(inputArtifacts);
       return artifactJoin;
    }
 
    private IdJoinQuery populateBranchIdsJoinIdTable() throws OseeDataStoreException, OseeCoreException {
       IdJoinQuery branchJoin = JoinUtility.createIdJoinQuery();
-
-      // loop through all non-archieved non-deleted non-purged
-
       BranchFilter branchFilter = new BranchFilter(BranchArchivedState.UNARCHIVED);
       branchFilter.setNegatedBranchStates(BranchState.PURGED, BranchState.DELETED);
-      for (BranchId branch : BranchManager.getBranches(branchFilter)) {
-         branchJoin.add(branch.getUuid());
-      }
-
-      branchJoin.store();
-
+      branchJoin.addAndStore(BranchManager.getBranches(branchFilter));
       return branchJoin;
    }
 
    private IdJoinQuery populateGammaIdsJoinIdTable(IdJoinQuery artIds) throws OseeDataStoreException, OseeCoreException {
       IdJoinQuery gammaJoin = JoinUtility.createIdJoinQuery();
-      JdbcStatement chStmt = ConnectionHandler.getStatement();
-      try {
-         chStmt.runPreparedQuery(
-            "select art_id, gamma_id from osee_artifact art, osee_join_id jid where jid.query_id = ? and jid.id = art.art_id",
-            artIds.getQueryId());
 
-         while (chStmt.next()) {
-            Integer artId = chStmt.getInt("art_id");
-            Integer gammaId = chStmt.getInt("gamma_id");
-            gammaToArtId.put(gammaId, artId);
-            gammaJoin.add(gammaId);
-         }
-      } finally {
-         chStmt.close();
-      }
+      Consumer<JdbcStatement> consumer = stmt -> {
+         Integer artId = stmt.getInt("art_id");
+         Long gammaId = stmt.getLong("gamma_id");
+         gammaToArtId.put(gammaId.intValue(), artId);
+         gammaJoin.add(gammaId);
+      };
+      ConnectionHandler.getJdbcClient().runQuery(consumer,
+         "select art_id, gamma_id from osee_artifact art, osee_join_id jid where jid.query_id = ? and jid.id = art.art_id",
+         artIds.getQueryId());
 
       gammaJoin.store();
-
       return gammaJoin;
    }
-
 }
