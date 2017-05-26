@@ -1837,6 +1837,21 @@ relationType "Related Feature" {
 	multiplicity MANY_TO_MANY
 }
 
+artifactType "OSEE App" extends "Artifact" {
+	id 89
+	attribute "Osee App Definition"
+	attribute "Description"
+}
+
+attributeType "Osee App Definition" extends StringAttribute {
+	id 1152921504606847380
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	description "Json that defines the parameters, action(s), and metadata of an OSEE Single Page App"
+	mediaType "application/json"
+}
+
 artifactType "Breaker" extends "Artifact" {
    id 188458869981236
    attribute "Display Text"
