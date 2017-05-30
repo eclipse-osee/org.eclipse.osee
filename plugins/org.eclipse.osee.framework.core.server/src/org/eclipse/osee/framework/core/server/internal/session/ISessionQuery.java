@@ -10,15 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server.internal.session;
 
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-
 /**
  * @author Roberto E. Escobar
  */
 public interface ISessionQuery {
 
-   void selectAllServerManagedSessions(ISessionCollector collector) throws OseeCoreException;
+   void selectAllServerManagedSessions(ISessionCollector collector);
 
-   void selectSessionsById(ISessionCollector collector, Iterable<? extends String> ids) throws OseeCoreException;
+   void selectSessionById(ISessionCollector collector, String id);
 
 }

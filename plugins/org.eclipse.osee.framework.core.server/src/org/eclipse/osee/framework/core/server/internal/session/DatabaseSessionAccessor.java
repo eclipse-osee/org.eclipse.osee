@@ -85,7 +85,7 @@ public final class DatabaseSessionAccessor implements CacheDataLoader<String, Se
          }
       };
 
-      getSessionQuery().selectSessionsById(collector, sessionIds);
+      getSessionQuery().selectSessionById(collector, sessionIds.iterator().next());
       return sessions;
    }
 

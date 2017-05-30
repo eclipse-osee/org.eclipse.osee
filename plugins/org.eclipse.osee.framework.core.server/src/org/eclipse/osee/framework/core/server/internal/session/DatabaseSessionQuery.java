@@ -11,14 +11,8 @@
 package org.eclipse.osee.framework.core.server.internal.session;
 
 import java.util.Date;
-import java.util.Random;
 import java.util.function.Consumer;
-import org.eclipse.osee.framework.core.server.internal.util.CharJoinQuery;
-import org.eclipse.osee.framework.core.server.internal.util.DatabaseJoinAccessor;
-import org.eclipse.osee.framework.core.server.internal.util.IJoinAccessor;
-import org.eclipse.osee.framework.core.server.internal.util.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
 
@@ -26,22 +20,13 @@ import org.eclipse.osee.jdbc.JdbcStatement;
  * @author Roberto E. Escobar
  */
 public final class DatabaseSessionQuery implements ISessionQuery {
-   private static final Long DEFAULT_JOIN_EXPIRATION_SECONDS = 3L * 60L * 60L; // 3 hours
-   private static final String EXPIRATION_SECS__CHAR_JOIN_QUERY = "char.join.expiration.secs";
-
    private static final String SELECT_ALL_SESSIONS = "select * from osee_session";
-
-   private static final String SELECT_SESSIONS_BY_SESSION_ID =
-      "select * from osee_session, osee_join_char_id jid WHERE session_id = jid.id and jid.query_id = ?";
+   private static final String SELECT_SESSION_BY_ID = "select * from osee_session WHERE session_id = ?";
 
    private final JdbcClient jdbcClient;
-   private final IJoinAccessor joinAccessor;
-   private final Random random = new Random();
 
    public DatabaseSessionQuery(JdbcClient jdbcClient) {
-      super();
       this.jdbcClient = jdbcClient;
-      this.joinAccessor = new DatabaseJoinAccessor(jdbcClient);
    }
 
    @Override
@@ -50,17 +35,8 @@ public final class DatabaseSessionQuery implements ISessionQuery {
    }
 
    @Override
-   public void selectSessionsById(ISessionCollector collector, Iterable<? extends String> ids) throws OseeCoreException {
-      CharJoinQuery joinQuery = createCharJoinQuery();
-      try {
-         for (String id : ids) {
-            joinQuery.add(id);
-         }
-         joinQuery.store();
-         querySessions(collector, SELECT_SESSIONS_BY_SESSION_ID, joinQuery.getQueryId());
-      } finally {
-         joinQuery.delete();
-      }
+   public void selectSessionById(ISessionCollector collector, String id) {
+      querySessions(collector, SELECT_SESSION_BY_ID, id);
    }
 
    private void querySessions(ISessionCollector collector, String sql, Object... params) throws OseeCoreException {
@@ -76,27 +52,5 @@ public final class DatabaseSessionQuery implements ISessionQuery {
             clientPort);
       };
       jdbcClient.runQuery(consumer, sql, params);
-   }
-
-   private int getNewQueryId() {
-      return random.nextInt();
-   }
-
-   private CharJoinQuery createCharJoinQuery() {
-      Long actualExpiration = getExpiresIn(null, EXPIRATION_SECS__CHAR_JOIN_QUERY);
-      return new CharJoinQuery(joinAccessor, actualExpiration, getNewQueryId());
-   }
-
-   private Long getExpiresIn(Long actual, String defaultKey) {
-      Long toReturn = DEFAULT_JOIN_EXPIRATION_SECONDS;
-      if (actual != null) {
-         toReturn = actual;
-      } else {
-         String expiration = OseeInfo.getCachedValue(jdbcClient, defaultKey);
-         if (Strings.isNumeric(expiration)) {
-            toReturn = Long.parseLong(expiration);
-         }
-      }
-      return toReturn;
    }
 }
