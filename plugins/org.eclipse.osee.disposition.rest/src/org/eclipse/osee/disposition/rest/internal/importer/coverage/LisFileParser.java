@@ -17,6 +17,8 @@ import static org.eclipse.osee.disposition.model.DispoSummarySeverity.WARNING;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -104,8 +106,10 @@ public class LisFileParser implements DispoImporterApi {
 
       Collection<VCastInstrumentedFile> instrumentedFiles = getInstrumentedFiles(dataStore, report);
 
+      HashMap<String, File> nameToFileMap = createNameToFileMap(report);
+
       for (VCastInstrumentedFile instrumentedFile : instrumentedFiles) {
-         processInstrumented(dataStore, instrumentedFile, report);
+         processInstrumented(dataStore, instrumentedFile, nameToFileMap, report);
       }
 
       Collection<VCastResult> results = getResultFiles(dataStore);
@@ -120,6 +124,29 @@ public class LisFileParser implements DispoImporterApi {
       processExceptionHandled(report);
 
       return createItems(exisitingItems, report);
+   }
+
+   private HashMap<String, File> createNameToFileMap(OperationReport report) {
+      HashMap<String, File> fileNameToFileMap = new HashMap<>();
+      File vcastDir = new File(vCastDir);
+      FilenameFilter filter = new FilenameFilter() {
+
+         @Override
+         public boolean accept(File dir, String name) {
+            return name.endsWith(".lis") || name.endsWith(".LIS");
+         }
+      };
+
+      File[] lisFiles = vcastDir.listFiles(filter);
+      for (File file : lisFiles) {
+         String fileNameLowerCase = normalizeLisFileLame(file.getName());
+         if (fileNameToFileMap.containsKey(fileNameLowerCase)) {
+            report.addEntry("DIRECTORY", String.format("Collision with file name: %s", fileNameLowerCase), ERROR);
+         } else {
+            fileNameToFileMap.put(fileNameLowerCase, file);
+         }
+      }
+      return fileNameToFileMap;
    }
 
    private List<DispoItem> createItems(Map<String, DispoItem> exisitingItems, OperationReport report) {
@@ -213,7 +240,7 @@ public class LisFileParser implements DispoImporterApi {
       return instrumentedFiles;
    }
 
-   private void processInstrumented(VCastDataStore dataStore, VCastInstrumentedFile instrumentedFile, OperationReport report) {
+   private void processInstrumented(VCastDataStore dataStore, VCastInstrumentedFile instrumentedFile, HashMap<String, File> nameToFileMap, OperationReport report) {
       VCastSourceFileJoin sourceFile = null;
       try {
          sourceFile = dataStore.getSourceFileJoin(instrumentedFile);
@@ -234,25 +261,34 @@ public class LisFileParser implements DispoImporterApi {
                   "Error: instrumented_file has invalid LIS_file value.  ID:(" + instrumentedFile.getId() + ")"),
                ERROR);
          }
-         String normalizedPath = lisFileNameFullPath.replaceAll("\\\\", "/");
-         File lisFile = new File(normalizedPath);
-         String lisFileName = lisFile.getName();
-         VCastLisFileParser lisFileParser = new VCastLisFileParser(lisFileName, vCastDir);
+         String normalizedName = normalizeLisFileLame(lisFileNameFullPath);
+         File file = nameToFileMap.get(normalizedName);
+         if (file != null) {
+            VCastLisFileParser lisFileParser = new VCastLisFileParser(file);
+            try {
+               lisFileParser.loadFileText();
+            } catch (IOException ex1) {
+               report.addEntry("VCast", String.format("Could not load file: %s", normalizedName), ERROR);
+            }
 
-         Collection<VCastFunction> functions = Collections.emptyList();
-         try {
-            functions = dataStore.getFunctions(instrumentedFile);
-         } catch (OseeCoreException ex) {
-            report.addEntry("SQL",
-               String.format("SQL error while reading functions for instrumented_file id: [%s]. Error Message: [%s]",
-                  instrumentedFile.getId(), ex.getMessage()),
-               ERROR);
+            Collection<VCastFunction> functions = Collections.emptyList();
+            try {
+               functions = dataStore.getFunctions(instrumentedFile);
+            } catch (OseeCoreException ex) {
+               report.addEntry("SQL",
+                  String.format("SQL error while reading functions for instrumented_file id: [%s]. Error Message: [%s]",
+                     instrumentedFile.getId(), ex.getMessage()),
+                  ERROR);
+            }
+
+            for (VCastFunction function : functions) {
+               processFunction(instrumentedFile, lisFileParser, fileNum, dataStore, instrumentedFile, function,
+                  dataStore.getIsMCDC(), report);
+            }
+         } else {
+            report.addEntry("VCast", String.format("Could not find file: %s", normalizedName), ERROR);
          }
 
-         for (VCastFunction function : functions) {
-            processFunction(instrumentedFile, lisFileParser, fileNum, dataStore, instrumentedFile, function,
-               dataStore.getIsMCDC(), report);
-         }
       }
    }
 
@@ -626,5 +662,9 @@ public class LisFileParser implements DispoImporterApi {
       Collection<VCastResult> results = null;
       results = dataStore.getAllResults();
       return results;
+   }
+
+   private String normalizeLisFileLame(String fileName) {
+      return fileName.replaceAll("^.*(\\\\|\\/)", "").toLowerCase();
    }
 }
