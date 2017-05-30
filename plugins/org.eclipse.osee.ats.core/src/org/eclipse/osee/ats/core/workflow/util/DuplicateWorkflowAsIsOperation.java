@@ -11,11 +11,8 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
-import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.util.IAtsUtilService;
-import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAttribute;
@@ -89,7 +86,6 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
    private IAtsWorkItem duplicateWorkItem(IAtsChangeSet changes, IAtsWorkItem workItem) {
       ArtifactId newWorkItemArt = changes.createArtifact(
          services.getStoreService().getArtifactType(workItem.getStoreObject()), getTitle(workItem));
-      changes.setSoleAttributeFromString(newWorkItemArt, AtsAttributeTypes.AtsId, getNexAtsId(workItem));
 
       if (workItem.isTeamWorkflow()) {
          changes.relate(newWorkItemArt, AtsRelationTypes.ActionToWorkflow_Action, workItem.getParentAction());
@@ -116,7 +112,9 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
             changes.addAttribute(newWorkItemArt, attr.getAttrType(), attr.getValue());
          }
       }
-      return services.getWorkItemFactory().getWorkItem(newWorkItemArt);
+      IAtsWorkItem newWorkItem = services.getWorkItemFactory().getWorkItem(newWorkItemArt);
+      services.getActionFactory().setAtsId(newWorkItem, workItem.getParentTeamWorkflow().getTeamDefinition(), changes);
+      return newWorkItem;
    }
 
    private List<AttributeTypeId> getExcludeTypes() {
@@ -145,16 +143,6 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
          }
       }
       return excludeTypes;
-   }
-
-   private String getNexAtsId(IAtsWorkItem workItem) {
-      IAtsUtilService utilService = services.getUtilService();
-      ISequenceProvider sequenceProvider = services.getSequenceProvider();
-
-      IAtsTeamDefinition teamDefinition = workItem.getParentTeamWorkflow().getTeamDefinition();
-      String nextAtsId = utilService.getNextAtsId(sequenceProvider, null, teamDefinition);
-
-      return nextAtsId;
    }
 
 }

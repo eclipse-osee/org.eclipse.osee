@@ -54,7 +54,7 @@ public class AtsTestUtilTest extends AtsTestUtil {
       Assert.assertNotNull(AtsTestUtil.getTeamWf().getStateDefinition());
       Assert.assertNotNull(AtsTestUtil.getTeamWf().getTeamDefinition());
       String atsId = AtsTestUtil.getTeamWf().getAtsId();
-      Assert.assertTrue(atsId.startsWith("ATS"));
+      Assert.assertTrue(atsId.startsWith("TW"));
 
       AtsTestUtil.cleanup();
 

@@ -155,8 +155,8 @@ public class AgileFactory {
       ArtifactToken sprintArt = changes.createArtifact(AtsArtifactTypes.AgileSprint, name, guid, uuid);
       IAgileSprint sprint = services.getWorkItemFactory().getAgileSprint(sprintArt);
 
-      services.getUtilService().setAtsId(services.getSequenceProvider(), sprint,
-         TeamDefinitions.getTopTeamDefinition(services.getQueryService()), changes);
+      services.getActionFactory().setAtsId(sprint, TeamDefinitions.getTopTeamDefinition(services.getQueryService()),
+         changes);
 
       // Initialize state machine
       services.getActionFactory().initializeNewStateMachine(sprint, Arrays.asList(AtsCoreUsers.UNASSIGNED_USER),
@@ -185,8 +185,8 @@ public class AgileFactory {
       ArtifactToken backlogArt = changes.createArtifact(AtsArtifactTypes.Goal, name, guid, uuid);
       IAgileBacklog sprint = services.getWorkItemFactory().getAgileBacklog(backlogArt);
 
-      services.getUtilService().setAtsId(services.getSequenceProvider(), sprint,
-         TeamDefinitions.getTopTeamDefinition(services.getQueryService()), changes);
+      services.getActionFactory().setAtsId(sprint, TeamDefinitions.getTopTeamDefinition(services.getQueryService()),
+         changes);
 
       // Initialize state machine
       services.getActionFactory().initializeNewStateMachine(sprint, Arrays.asList(AtsCoreUsers.UNASSIGNED_USER),

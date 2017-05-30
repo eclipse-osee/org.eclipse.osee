@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -52,7 +53,7 @@ public interface IAtsStoreService {
 
    boolean isDateType(AttributeTypeId attributeType);
 
-   boolean isOfType(ArtifactId artifact, IArtifactType... artifactType);
+   boolean isOfType(ArtifactId artifact, ArtifactTypeId... artifactType);
 
    IArtifactType getArtifactType(Long artTypeId);
 

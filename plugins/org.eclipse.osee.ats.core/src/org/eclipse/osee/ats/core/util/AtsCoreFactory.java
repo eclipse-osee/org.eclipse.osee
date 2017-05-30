@@ -13,8 +13,6 @@ package org.eclipse.osee.ats.core.util;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.column.IAtsColumnService;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
-import org.eclipse.osee.ats.api.util.IAtsUtilService;
-import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
@@ -22,7 +20,6 @@ import org.eclipse.osee.ats.core.internal.column.ev.AtsColumnService;
 import org.eclipse.osee.ats.core.internal.log.AtsLogFactory;
 import org.eclipse.osee.ats.core.internal.state.AtsStateFactory;
 import org.eclipse.osee.ats.core.internal.state.AtsWorkStateFactory;
-import org.eclipse.osee.ats.core.internal.util.AtsUtilService;
 
 /**
  * @author Donald G. Dunne
@@ -53,7 +50,4 @@ public final class AtsCoreFactory {
       return new AtsLogFactory();
    }
 
-   public static IAtsUtilService getUtilService(IAttributeResolver attrResolver) {
-      return new AtsUtilService(attrResolver);
-   }
 }

@@ -33,7 +33,6 @@ import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.util.IAtsUtilService;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
@@ -49,6 +48,7 @@ import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.internal.util.AtsIdProvider;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.workflow.state.StateManagerUtility;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
@@ -67,7 +67,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public class ActionFactory implements IAtsActionFactory {
 
    private final IAtsWorkItemFactory workItemFactory;
-   private final IAtsUtilService utilService;
    private final ISequenceProvider sequenceProvider;
    private final IAtsActionableItemService actionableItemManager;
    private final IAttributeResolver attrResolver;
@@ -75,9 +74,8 @@ public class ActionFactory implements IAtsActionFactory {
    private final IAtsServices services;
    private IAtsTeamDefinition topTeamDefinition;
 
-   public ActionFactory(IAtsWorkItemFactory workItemFactory, IAtsUtilService utilService, ISequenceProvider sequenceProvider, IAtsActionableItemService actionableItemManager, IAttributeResolver attrResolver, IAtsStateFactory stateFactory, IAtsServices atsServices) {
+   public ActionFactory(IAtsWorkItemFactory workItemFactory, ISequenceProvider sequenceProvider, IAtsActionableItemService actionableItemManager, IAttributeResolver attrResolver, IAtsStateFactory stateFactory, IAtsServices atsServices) {
       this.workItemFactory = workItemFactory;
-      this.utilService = utilService;
       this.sequenceProvider = sequenceProvider;
       this.actionableItemManager = actionableItemManager;
       this.attrResolver = attrResolver;
@@ -94,7 +92,7 @@ public class ActionFactory implements IAtsActionFactory {
       Object actionArt = changes.createArtifact(AtsArtifactTypes.Action, title);
       IAtsAction action = workItemFactory.getAction((ArtifactId) actionArt);
       IAtsTeamDefinition topTeamDefinition = getTopTeamDef();
-      utilService.setAtsId(sequenceProvider, action, topTeamDefinition, changes);
+      setAtsId(action, topTeamDefinition, changes);
       changes.add(action);
       setArtifactIdentifyData(action, title, desc, changeType, priority, validationRequired, needByDate, changes);
 
@@ -211,7 +209,7 @@ public class ActionFactory implements IAtsActionFactory {
       // Relate WorkFlow to Team Definition (by guid due to relation loading issues)
       changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.TeamDefinition, AtsUtilCore.getGuid(teamDef));
 
-      utilService.setAtsId(sequenceProvider, teamWf, teamWf.getTeamDefinition(), changes);
+      setAtsId(teamWf, teamWf.getTeamDefinition(), changes);
 
       // If work def id is specified by listener, set as attribute
       boolean set = false;
@@ -404,6 +402,12 @@ public class ActionFactory implements IAtsActionFactory {
    public IAtsAction getAction(IAtsTeamWorkflow teamWf) {
       return services.getRelationResolver().getRelatedOrNull(teamWf, AtsRelationTypes.ActionToWorkflow_Action,
          IAtsAction.class);
+   }
+
+   @Override
+   public void setAtsId(IAtsObject newObject, IAtsTeamDefinition teamDef, IAtsChangeSet changes) {
+      new AtsIdProvider(services.getSequenceProvider(), services.getAttributeResolver(), newObject, teamDef).setAtsId(
+         changes);
    }
 
 }

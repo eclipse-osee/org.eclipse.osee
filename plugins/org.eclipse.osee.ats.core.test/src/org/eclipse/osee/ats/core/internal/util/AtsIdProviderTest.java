@@ -15,6 +15,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -29,7 +30,7 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Test Case for {@link AtsIdProvider}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsIdProviderTest {
@@ -66,19 +67,19 @@ public class AtsIdProviderTest {
             null);
       when(teamDef.getTeamDefinitionHoldingVersions()).thenReturn(null);
 
-      Assert.assertNull(atsIdProvider.getAttrValue(AtsAttributeTypes.AtsIdPrefix));
+      Assert.assertNull(atsIdProvider.getAttrValueFromTeamDef(AtsAttributeTypes.AtsIdPrefix));
 
       when(teamDef.getTeamDefinitionHoldingVersions()).thenReturn(parentTeamDef);
       when(attrResolver.getSoleAttributeValueAsString(parentTeamDef, AtsAttributeTypes.AtsIdPrefix,
          (String) null)).thenReturn("ATS");
 
-      Assert.assertEquals("ATS", atsIdProvider.getAttrValue(AtsAttributeTypes.AtsIdPrefix));
+      Assert.assertEquals("ATS", atsIdProvider.getAttrValueFromTeamDef(AtsAttributeTypes.AtsIdPrefix));
 
       when(
          attrResolver.getSoleAttributeValueAsString(teamDef, AtsAttributeTypes.AtsIdPrefix, (String) null)).thenReturn(
             "TEST");
 
-      Assert.assertEquals("TEST", atsIdProvider.getAttrValue(AtsAttributeTypes.AtsIdPrefix));
+      Assert.assertEquals("TEST", atsIdProvider.getAttrValueFromTeamDef(AtsAttributeTypes.AtsIdPrefix));
    }
 
    @Test
@@ -91,6 +92,37 @@ public class AtsIdProviderTest {
       when(sequenceProvider.getNext("ASDF_SEQ")).thenReturn(333L);
 
       Assert.assertEquals("ASDF333", atsIdProvider.getNextAtsId());
+   }
+
+   @Test
+   public void testGetNextAtsIdWithPrefixAndSequenceName() {
+      when(
+         attrResolver.getSoleAttributeValueAsString(teamDef, AtsAttributeTypes.AtsIdPrefix, (String) null)).thenReturn(
+            "");
+      when(attrResolver.getSoleAttributeValueAsString(teamDef, AtsAttributeTypes.AtsIdSequenceName,
+         (String) null)).thenReturn("");
+
+      when(sequenceProvider.getNext(AtsIdProvider.DEFAULT_WORKFLOW_SEQ_NAME)).thenReturn(333L);
+      when(newObject.isOfType(AtsArtifactTypes.TeamWorkflow)).thenReturn(true);
+      Assert.assertEquals(AtsIdProvider.DEFAULT_WORKFLOW_ID_PREFIX + "333", atsIdProvider.getNextAtsId());
+
+      when(sequenceProvider.getNext(AtsIdProvider.DEFAULT_ACTION_SEQ_NAME)).thenReturn(333L);
+      when(newObject.isOfType(AtsArtifactTypes.TeamWorkflow)).thenReturn(false);
+      when(newObject.isOfType(AtsArtifactTypes.Action)).thenReturn(true);
+      Assert.assertEquals(AtsIdProvider.DEFAULT_ACTION_ID_PREFIX + "333", atsIdProvider.getNextAtsId());
+
+      when(sequenceProvider.getNext(AtsIdProvider.DEFAULT_REVIEW_SEQ_NAME)).thenReturn(333L);
+      when(newObject.isOfType(AtsArtifactTypes.TeamWorkflow)).thenReturn(false);
+      when(newObject.isOfType(AtsArtifactTypes.Action)).thenReturn(false);
+      when(newObject.isOfType(AtsArtifactTypes.ReviewArtifact)).thenReturn(true);
+      Assert.assertEquals(AtsIdProvider.DEFAULT_REVIEW_ID_PREFIX + "333", atsIdProvider.getNextAtsId());
+
+      when(sequenceProvider.getNext(AtsIdProvider.DEFAULT_TASK_SEQ_NAME)).thenReturn(333L);
+      when(newObject.isOfType(AtsArtifactTypes.TeamWorkflow)).thenReturn(false);
+      when(newObject.isOfType(AtsArtifactTypes.Action)).thenReturn(false);
+      when(newObject.isOfType(AtsArtifactTypes.ReviewArtifact)).thenReturn(false);
+      when(newObject.isOfType(AtsArtifactTypes.Task)).thenReturn(true);
+      Assert.assertEquals(AtsIdProvider.DEFAULT_TASK_ID_PREFIX + "333", atsIdProvider.getNextAtsId());
    }
 
    @Test

@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -126,7 +127,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    }
 
    @Override
-   public boolean isOfType(ArtifactId artifact, IArtifactType... artifactType) {
+   public boolean isOfType(ArtifactId artifact, ArtifactTypeId... artifactType) {
       return ((ArtifactReadable) artifact).isOfType(artifactType);
    }
 

@@ -40,7 +40,6 @@ import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IArtifactResolver;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
-import org.eclipse.osee.ats.api.util.IAtsUtilService;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.version.IVersionFactory;
@@ -120,7 +119,6 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
    protected IAtsWorkStateFactory workStateFactory;
    protected IAtsLogFactory logFactory;
    protected IAtsColumnService columnServices;
-   protected IAtsUtilService utilService;
    protected IAtsWorkItemFactory workItemFactory;
    protected IAtsConfigItemFactory configItemFactory;
    protected IAtsActionableItemService actionableItemManager;
@@ -468,11 +466,6 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
          logFactory = AtsCoreFactory.getLogFactory();
       }
       return logFactory;
-   }
-
-   @Override
-   public IAtsUtilService getUtilService() {
-      return utilService;
    }
 
    @Override

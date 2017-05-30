@@ -131,9 +131,8 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
 
       queryService = new AtsQueryServiceImpl(this, jdbcService);
       actionableItemManager = new ActionableItemManager(attributeResolverService, storeService, this);
-      utilService = AtsCoreFactory.getUtilService(attributeResolverService);
 
-      actionFactory = new ActionFactory(workItemFactory, utilService, getSequenceProvider(), actionableItemManager,
+      actionFactory = new ActionFactory(workItemFactory, getSequenceProvider(), actionableItemManager,
          attributeResolverService, stateFactory, getServices());
       taskService = new AtsTaskService(this);
 

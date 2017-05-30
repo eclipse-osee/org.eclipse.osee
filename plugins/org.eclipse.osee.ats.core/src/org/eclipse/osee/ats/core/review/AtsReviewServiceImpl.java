@@ -176,8 +176,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       IAtsDecisionReview decRev = (IAtsDecisionReview) services.getWorkItemFactory().getReview(decRevArt);
 
       changes.relate(teamWf, AtsRelationTypes.TeamWorkflowToReview_Review, decRev);
-      services.getUtilService().setAtsId(services.getSequenceProvider(), decRev,
-         decRev.getParentTeamWorkflow().getTeamDefinition(), changes);
+      services.getActionFactory().setAtsId(decRev, decRev.getParentTeamWorkflow().getTeamDefinition(), changes);
 
       // Initialize state machine
       services.getActionFactory().initializeNewStateMachine(decRev, assignees, createdDate, createdBy, changes);

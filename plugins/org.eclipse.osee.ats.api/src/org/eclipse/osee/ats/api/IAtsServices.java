@@ -35,7 +35,6 @@ import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IArtifactResolver;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
-import org.eclipse.osee.ats.api.util.IAtsUtilService;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.version.IVersionFactory;
@@ -138,8 +137,6 @@ public interface IAtsServices extends IAtsEarnedValueServiceProvider, IAtsConfig
    IAtsWorkDefinitionAdmin getWorkDefinitionAdmin();
 
    IAtsCache getCache();
-
-   IAtsUtilService getUtilService();
 
    ISequenceProvider getSequenceProvider();
 

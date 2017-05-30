@@ -258,8 +258,7 @@ public class CreateTasksOperation {
             IAtsTask task = atsServer.getWorkItemFactory().getTask(taskArt);
 
             IAtsTeamWorkflow teamWf = uuidToTeamWf.get(newTaskData.getTeamWfUuid());
-            atsServer.getUtilService().setAtsId(atsServer.getSequenceProvider(), task, teamWf.getTeamDefinition(),
-               changes);
+            atsServer.getActionFactory().setAtsId(task, teamWf.getTeamDefinition(), changes);
             changes.relate(teamWf, AtsRelationTypes.TeamWfToTask_Task, taskArt);
 
             List<IAtsUser> assignees = new ArrayList<>();

@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.api.workflow;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.ChangeType;
@@ -47,5 +48,7 @@ public interface IAtsActionFactory {
    IAtsAction getAction(IAtsTeamWorkflow teamWf);
 
    void initializeNewStateMachine(IAtsWorkItem workItem, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IAtsWorkDefinition workDefinition, IAtsChangeSet changes);
+
+   void setAtsId(IAtsObject atsObject, IAtsTeamDefinition teamDef, IAtsChangeSet changes);
 
 }

@@ -65,7 +65,7 @@ public class GoalManager extends MembersManager<GoalArtifact> {
       GoalArtifact goalArt = (GoalArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Goal,
          AtsClientService.get().getAtsBranch(), title);
 
-      AtsClientService.get().getUtilService().setAtsId(AtsClientService.get().getSequenceProvider(), goalArt,
+      AtsClientService.get().getActionFactory().setAtsId(goalArt,
          TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService()), changes);
 
       // Initialize state machine

@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.model.impl.AtsObject;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
@@ -312,6 +313,11 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    @Override
    public boolean isPeerReview() {
       return this instanceof IAtsPeerToPeerReview;
+   }
+
+   @Override
+   public boolean isOfType(ArtifactTypeId... artifactTypes) {
+      return services.getStoreService().isOfType(this.getStoreObject(), artifactTypes);
    }
 
 }

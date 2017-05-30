@@ -182,8 +182,7 @@ public class PeerToPeerReviewManager {
          teamArt.addRelation(AtsRelationTypes.TeamWorkflowToReview_Review, peerToPeerRev);
       }
 
-      AtsClientService.get().getUtilService().setAtsId(AtsClientService.get().getSequenceProvider(), peerToPeerRev,
-         teamDef, changes);
+      AtsClientService.get().getActionFactory().setAtsId(peerToPeerRev, teamDef, changes);
 
       // Initialize state machine
       peerToPeerRev.setSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, workDefinition.getId());
