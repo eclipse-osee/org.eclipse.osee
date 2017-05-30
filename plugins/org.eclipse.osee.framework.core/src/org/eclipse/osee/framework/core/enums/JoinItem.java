@@ -8,17 +8,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.utility;
+package org.eclipse.osee.framework.core.enums;
 
 /**
  * @author Roberto E. Escobar
  */
 public enum JoinItem {
 
-   TRANSACTION("osee_join_transaction", "INSERT INTO osee_join_transaction (query_id, gamma_id, transaction_id, branch_id) VALUES (?, ?, ?, ?)"),
-   ID("osee_join_id", "INSERT INTO osee_join_id (query_id, id) VALUES (?, ?)"),
    CHAR_ID("osee_join_char_id", "INSERT INTO osee_join_char_id (query_id, id) VALUES (?, ?)"),
-   ID4("osee_join_id4", "INSERT INTO osee_join_id4 (query_id, id1, id2, id3, id4) VALUES (?, ?, ?, ?, ?)");
+   EXPORT_IMPORT("osee_join_export_import", "INSERT INTO osee_join_export_import (query_id, id1, id2) VALUES (?, ?, ?)"),
+   ID("osee_join_id", "INSERT INTO osee_join_id (query_id, id) VALUES (?, ?)"),
+   ID4("osee_join_id4", "INSERT INTO osee_join_id4 (query_id, id1, id2, id3, id4) VALUES (?, ?, ?, ?, ?)"),
+   TAG_GAMMA_QUEUE("osee_tag_gamma_queue", "INSERT INTO osee_tag_gamma_queue (query_id, gamma_id) VALUES (?, ?)"),
+   TRANSACTION("osee_join_transaction", "INSERT INTO osee_join_transaction (query_id, gamma_id, transaction_id, branch_id) VALUES (?, ?, ?, ?)");
 
    private final String tableName;
    private final String deleteSql;

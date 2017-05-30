@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.sql.join;
 
-import org.eclipse.osee.orcs.db.internal.sql.join.DatabaseJoinAccessor.JoinItem;
+import org.eclipse.osee.framework.core.enums.JoinItem;
 
 /**
  * @author Roberto E. Escobar

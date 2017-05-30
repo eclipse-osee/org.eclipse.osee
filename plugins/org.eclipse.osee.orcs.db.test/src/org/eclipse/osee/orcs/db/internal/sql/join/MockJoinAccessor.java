@@ -12,9 +12,9 @@ package org.eclipse.osee.orcs.db.internal.sql.join;
 
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.enums.JoinItem;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcConnection;
-import org.eclipse.osee.orcs.db.internal.sql.join.DatabaseJoinAccessor.JoinItem;
 
 /**
  * @author Roberto E. Escobar

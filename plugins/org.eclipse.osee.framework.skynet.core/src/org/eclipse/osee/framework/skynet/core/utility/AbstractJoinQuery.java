@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.utility;
 
 import java.util.Collection;
 import java.util.Random;
+import org.eclipse.osee.framework.core.enums.JoinItem;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
