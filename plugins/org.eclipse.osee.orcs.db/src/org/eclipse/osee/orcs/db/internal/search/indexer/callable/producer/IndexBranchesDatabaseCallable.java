@@ -168,9 +168,7 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
             searchQuery = FIND_ALL_TAGGABLE_ATTRIBUTES;
          }
       } else {
-         for (Long id : branchUuids) {
-            branchJoin.add(id);
-         }
+         branchJoin.addAll(branchUuids);
          params = new Object[] {branchJoin.getQueryId(), typeJoin.getQueryId()};
          if (tagOnlyMissingGammas) {
             countQuery = COUNT_MISSING_BY_BRANCH;

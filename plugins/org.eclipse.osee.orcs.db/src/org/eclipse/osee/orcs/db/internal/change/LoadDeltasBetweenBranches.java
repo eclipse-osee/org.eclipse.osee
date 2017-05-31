@@ -121,7 +121,7 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
       try (ExportImportJoinQuery idJoin = joinFactory.createExportImportJoinQuery()) {
          for (Integer i : changeData.getKeySetOne()) {
             for (ChangeItem item : changeData.allValues(i)) {
-               idJoin.add(Long.valueOf(i), item.getItemId().getId());
+               idJoin.add(i, item.getItemId());
             }
          }
          idJoin.store();

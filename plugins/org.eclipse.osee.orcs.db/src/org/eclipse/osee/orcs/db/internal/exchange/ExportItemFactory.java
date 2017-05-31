@@ -36,18 +36,18 @@ public class ExportItemFactory {
       "SELECT last_sequence FROM osee_sequence WHERE sequence_name = '" + OseeData.TRANSACTION_ID_SEQ + "'";
 
    private static final String BRANCH_TABLE_QUERY =
-      "SELECT br.* FROM osee_join_export_import jex, osee_branch br WHERE jex.query_id=? AND jex.id1=br.branch_id ORDER BY br.branch_id";
+      "SELECT br.* FROM osee_join_id, osee_branch br WHERE query_id=? AND id=br.branch_id ORDER BY br.branch_id";
 
    private static final String TX_DETAILS_TABLE_QUERY =
-      "SELECT txd.* FROM osee_join_export_import jex, osee_tx_details txd WHERE jex.query_id=? AND jex.id1=txd.branch_id";
+      "SELECT txd.* FROM osee_join_id, osee_tx_details txd WHERE query_id=? AND id=txd.branch_id";
 
    private static final String TXS_TABLE_QUERY =
-      "SELECT txs.* FROM osee_join_export_import jex, osee_txs txs WHERE jex.query_id=? AND jex.id1=txs.branch_id";
+      "SELECT txs.* FROM osee_join_id, osee_txs txs WHERE query_id=? AND id=txs.branch_id";
 
    private static final String TXS_ARCHIVE_TABLE_QUERY = TXS_TABLE_QUERY.replace("osee_txs", "osee_txs_archived");
 
    private static final String ARTIFACT_TABLE_QUERY =
-      "SELECT item.* FROM osee_join_id oji, osee_artifact item WHERE oji.query_id = ? AND oji.id = item.gamma_id";
+      "SELECT item.* FROM osee_join_id, osee_artifact item WHERE query_id = ? AND id = item.gamma_id";
 
    private static final String ATTRIBUTE_TABLE_QUERY = ARTIFACT_TABLE_QUERY.replace("osee_artifact", "osee_attribute");
 
@@ -55,16 +55,16 @@ public class ExportItemFactory {
       ARTIFACT_TABLE_QUERY.replace("osee_artifact", "osee_relation_link");
 
    private static final String MERGE_TABLE_QUERY =
-      "SELECT om.* FROM osee_join_export_import jex, osee_merge om WHERE jex.query_id=? AND jex.id1=om.merge_branch_id ORDER BY om.merge_branch_id";
+      "SELECT om.* FROM osee_join_id, osee_merge om WHERE query_id=? AND id=om.merge_branch_id ORDER BY om.merge_branch_id";
 
    private static final String CONFLICT_TABLE_QUERY =
-      "SELECT oc.* FROM osee_join_export_import jex, osee_merge om, osee_conflict oc WHERE jex.query_id=? AND jex.id1=om.merge_branch_id AND om.merge_branch_id=oc.merge_branch_id";
+      "SELECT oc.* FROM osee_join_id, osee_merge om, osee_conflict oc WHERE query_id=? AND id=om.merge_branch_id AND om.merge_branch_id=oc.merge_branch_id";
 
    private static final String ARTIFACT_ACL_QUERY =
-      "SELECT aac.* FROM osee_join_export_import jex, osee_artifact_acl aac WHERE jex.query_id=? AND jex.id1=aac.branch_id ORDER BY aac.branch_id";
+      "SELECT aac.* FROM osee_join_id, osee_artifact_acl aac WHERE query_id=? AND id=aac.branch_id ORDER BY aac.branch_id";
 
    private static final String BRANCH_ACL_QUERY =
-      "SELECT bac.* FROM osee_join_export_import jex, osee_branch_acl bac WHERE jex.query_id=? AND jex.id1=bac.branch_id ORDER BY bac.branch_id";
+      "SELECT bac.* FROM osee_join_id, osee_branch_acl bac WHERE query_id=? AND id=bac.branch_id ORDER BY bac.branch_id";
 
    private final Log logger;
    private final SystemPreferences preferences;
@@ -96,34 +96,34 @@ public class ExportItemFactory {
       return orcsTypes;
    }
 
-   public List<AbstractExportItem> createTaskList(int joinId, PropertyStore options) throws OseeCoreException {
+   public List<AbstractExportItem> createTaskList(Long branchJoinId, PropertyStore options) throws OseeCoreException {
       List<AbstractExportItem> items = new ArrayList<>();
 
       processTxOptions(options);
 
-      int gammaJoinId = createGammaJoin(getDbService(), joinId, options);
+      int gammaJoinId = createGammaJoin(getDbService(), branchJoinId, options);
 
       items.add(new ManifestExportItem(logger, preferences, items, options));
       items.add(new MetadataExportItem(logger, items, getDbService()));
       items.add(new OseeTypeModelExportItem(logger, getOrcsTypes()));
 
-      addItem(items, joinId, options, gammaJoinId, ExportItem.OSEE_BRANCH_DATA, BRANCH_TABLE_QUERY);
-      addItem(items, joinId, options, gammaJoinId, ExportItem.OSEE_TX_DETAILS_DATA, TX_DETAILS_TABLE_QUERY);
-      addItem(items, joinId, options, gammaJoinId, ExportItem.OSEE_TXS_DATA, TXS_TABLE_QUERY);
-      addItem(items, joinId, options, gammaJoinId, ExportItem.OSEE_TXS_ARCHIVED_DATA, TXS_ARCHIVE_TABLE_QUERY);
-      addItem(items, joinId, options, gammaJoinId, ExportItem.OSEE_ARTIFACT_DATA, ARTIFACT_TABLE_QUERY);
-      addItem(items, joinId, options, gammaJoinId, ExportItem.OSEE_ATTRIBUTE_DATA, ATTRIBUTE_TABLE_QUERY);
-      addItem(items, joinId, options, gammaJoinId, ExportItem.OSEE_RELATION_LINK_DATA, RELATION_LINK_TABLE_QUERY);
-      addItem(items, joinId, options, gammaJoinId, ExportItem.OSEE_MERGE_DATA, MERGE_TABLE_QUERY);
-      addItem(items, joinId, options, gammaJoinId, ExportItem.OSEE_CONFLICT_DATA, CONFLICT_TABLE_QUERY);
-      addItem(items, joinId, options, gammaJoinId, ExportItem.OSEE_BRANCH_ACL_DATA, BRANCH_ACL_QUERY);
-      addItem(items, joinId, options, gammaJoinId, ExportItem.OSEE_ARTIFACT_ACL_DATA, ARTIFACT_ACL_QUERY);
+      addItem(items, branchJoinId, options, gammaJoinId, ExportItem.OSEE_BRANCH_DATA, BRANCH_TABLE_QUERY);
+      addItem(items, branchJoinId, options, gammaJoinId, ExportItem.OSEE_TX_DETAILS_DATA, TX_DETAILS_TABLE_QUERY);
+      addItem(items, branchJoinId, options, gammaJoinId, ExportItem.OSEE_TXS_DATA, TXS_TABLE_QUERY);
+      addItem(items, branchJoinId, options, gammaJoinId, ExportItem.OSEE_TXS_ARCHIVED_DATA, TXS_ARCHIVE_TABLE_QUERY);
+      addItem(items, branchJoinId, options, gammaJoinId, ExportItem.OSEE_ARTIFACT_DATA, ARTIFACT_TABLE_QUERY);
+      addItem(items, branchJoinId, options, gammaJoinId, ExportItem.OSEE_ATTRIBUTE_DATA, ATTRIBUTE_TABLE_QUERY);
+      addItem(items, branchJoinId, options, gammaJoinId, ExportItem.OSEE_RELATION_LINK_DATA, RELATION_LINK_TABLE_QUERY);
+      addItem(items, branchJoinId, options, gammaJoinId, ExportItem.OSEE_MERGE_DATA, MERGE_TABLE_QUERY);
+      addItem(items, branchJoinId, options, gammaJoinId, ExportItem.OSEE_CONFLICT_DATA, CONFLICT_TABLE_QUERY);
+      addItem(items, branchJoinId, options, gammaJoinId, ExportItem.OSEE_BRANCH_ACL_DATA, BRANCH_ACL_QUERY);
+      addItem(items, branchJoinId, options, gammaJoinId, ExportItem.OSEE_ARTIFACT_ACL_DATA, ARTIFACT_ACL_QUERY);
       return items;
    }
 
-   private void addItem(List<AbstractExportItem> items, int exportJoinId, PropertyStore options, int gammaJoinId, ExportItem exportItem, String query) throws OseeCoreException {
+   private void addItem(List<AbstractExportItem> items, Long branchJoinId, PropertyStore options, int gammaJoinId, ExportItem exportItem, String query) throws OseeCoreException {
       StringBuilder modifiedQuery = new StringBuilder(query);
-      Object[] bindData = prepareQuery(exportItem, modifiedQuery, options, exportJoinId, gammaJoinId);
+      Object[] bindData = prepareQuery(exportItem, modifiedQuery, options, branchJoinId, gammaJoinId);
       items.add(new DbTableExportItem(getLogger(), getDbService(), getResourceManager(), exportItem,
          modifiedQuery.toString(), bindData));
    }
@@ -136,17 +136,17 @@ public class ExportItemFactory {
       }
    }
 
-   private int createGammaJoin(JdbcClient jdbcClient, int exportJoinId, PropertyStore options) throws OseeCoreException {
+   private int createGammaJoin(JdbcClient jdbcClient, Long branchJoinId, PropertyStore options) throws OseeCoreException {
       List<Object> bindList = new ArrayList<>();
       int gammaJoinId = new Random().nextInt();
       StringBuilder sql = new StringBuilder(
-         "INSERT INTO osee_join_id (id, query_id) SELECT DISTINCT(gamma_id), %s FROM osee_join_export_import jex, osee_txs txs WHERE jex.query_id=? AND jex.id1 = txs.branch_id");
-      bindList.add(exportJoinId);
+         "INSERT INTO osee_join_id (id, query_id) SELECT DISTINCT(gamma_id), %s FROM osee_join_id, osee_txs txs WHERE query_id=? AND id = txs.branch_id");
+      bindList.add(branchJoinId);
       addMaxMinFilter(sql, bindList, options);
 
       sql.append(
-         " UNION SELECT DISTINCT(gamma_id), %s FROM osee_join_export_import jex, osee_txs_archived txs WHERE jex.query_id=? AND jex.id1 = txs.branch_id");
-      bindList.add(exportJoinId);
+         " UNION SELECT DISTINCT(gamma_id), %s FROM osee_join_id, osee_txs_archived txs WHERE query_id = ? AND id = txs.branch_id");
+      bindList.add(branchJoinId);
       addMaxMinFilter(sql, bindList, options);
 
       Object[] bindData = bindList.toArray(new Object[bindList.size()]);
@@ -158,14 +158,14 @@ public class ExportItemFactory {
       return gammaJoinId;
    }
 
-   private static Object[] prepareQuery(ExportItem exportItem, StringBuilder query, PropertyStore options, int exportJoinId, int gammaJionId) throws OseeCoreException {
+   private static Object[] prepareQuery(ExportItem exportItem, StringBuilder query, PropertyStore options, Long branchJoinId, int gammaJionId) throws OseeCoreException {
       List<Object> bindData = new ArrayList<>();
 
       if (exportItem.matches(ExportItem.OSEE_ARTIFACT_DATA, ExportItem.OSEE_ATTRIBUTE_DATA,
          ExportItem.OSEE_RELATION_LINK_DATA)) {
          bindData.add(gammaJionId);
       } else {
-         bindData.add(exportJoinId);
+         bindData.add(branchJoinId);
       }
 
       if (exportItem.matches(ExportItem.OSEE_TX_DETAILS_DATA, ExportItem.OSEE_TXS_DATA,

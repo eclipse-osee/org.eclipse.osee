@@ -186,7 +186,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
       try (ExportImportJoinQuery idJoin = joinFactory.createExportImportJoinQuery()) {
          for (Integer i : changeData.getKeySetOne()) {
             for (ChangeItem item : changeData.get(i)) {
-               idJoin.add(Long.valueOf(i), item.getItemId().getId());
+               idJoin.add(i, item.getItemId());
             }
          }
          idJoin.store();

@@ -32,8 +32,7 @@ import org.eclipse.osee.orcs.db.internal.exchange.ExchangeUtil;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportItemFactory;
 import org.eclipse.osee.orcs.db.internal.exchange.export.AbstractExportItem;
 import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
-import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
-import org.eclipse.osee.orcs.db.internal.sql.join.ExportImportJoinQuery;
+import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
@@ -108,16 +107,9 @@ public class ExportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
    }
 
    private void doWork() throws Exception {
-      ExportImportJoinQuery joinQuery = joinFactory.createExportImportJoinQuery();
-
-      for (BranchId branch : branches) {
-         long branchUuid = branch.getUuid();
-         joinQuery.add(branchUuid, -1L);
-      }
-      joinQuery.store();
-
-      List<AbstractExportItem> taskList = factory.createTaskList(joinQuery.getQueryId(), options);
-      try {
+      try (IdJoinQuery joinQuery = joinFactory.createIdJoinQuery()) {
+         joinQuery.addAndStore(branches);
+         List<AbstractExportItem> taskList = factory.createTaskList((long) joinQuery.getQueryId(), options);
          File tempFolder = createTempFolder();
 
          for (AbstractExportItem exportItem : taskList) {
@@ -127,19 +119,10 @@ public class ExportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
          executeTasks(taskList);
 
          finishExport(tempFolder);
-      } finally {
-         cleanUp(joinQuery, taskList);
-      }
-   }
 
-   private void cleanUp(AbstractJoinQuery joinQuery, List<AbstractExportItem> taskList) {
-      for (AbstractExportItem exportItem : taskList) {
-         exportItem.cleanUp();
-      }
-      try {
-         joinQuery.close();
-      } catch (OseeCoreException ex) {
-         getLogger().warn(ex, "Error during export clean-up");
+         for (AbstractExportItem exportItem : taskList) {
+            exportItem.cleanUp();
+         }
       }
    }
 

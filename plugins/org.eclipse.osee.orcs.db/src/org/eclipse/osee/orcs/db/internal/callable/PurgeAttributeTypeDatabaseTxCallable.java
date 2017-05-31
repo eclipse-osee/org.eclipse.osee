@@ -73,10 +73,7 @@ public final class PurgeAttributeTypeDatabaseTxCallable extends AbstractDatastor
             sql = RETRIEVE_GAMMAS_OF_ATTR_TYPE;
             param = types.iterator().next();
          } else {
-            for (AttributeTypeId type : types) {
-               joinQuery.add(type);
-            }
-            joinQuery.store();
+            joinQuery.addAndStore(types);
             sql = RETRIEVE_GAMMAS_OF_ATTR_MULT_TYPES;
             param = joinQuery.getQueryId();
          }
@@ -87,22 +84,18 @@ public final class PurgeAttributeTypeDatabaseTxCallable extends AbstractDatastor
 
    private List<Object[]> retrieveBranchAndGammaIds(JdbcConnection connection, Collection<? extends AttributeTypeId> types) throws OseeCoreException {
       List<Object[]> gammasAndBranchIds = new LinkedList<>();
-      JdbcStatement chStmt = getJdbcClient().getStatement(connection);
-      IdJoinQuery joinQuery = joinFactory.createIdJoinQuery();
-      try {
+
+      try (IdJoinQuery joinQuery = joinFactory.createIdJoinQuery();
+         JdbcStatement chStmt = getJdbcClient().getStatement(connection)) {
          if (types.size() == 1) {
             chStmt.runPreparedQuery(RETRIEVE_GAMMAS_WITH_BRANCH_IDS, types.iterator().next());
          } else {
-            for (AttributeTypeId type : types) {
-               joinQuery.add(type);
-            }
+            joinQuery.addAndStore(types);
             chStmt.runPreparedQuery(RETRIEVE_GAMMAS_WITH_BRANCH_IDS_MULT_TYPES, joinQuery.getQueryId());
          }
          while (chStmt.next()) {
             gammasAndBranchIds.add(new Long[] {chStmt.getLong("gamma_id"), chStmt.getLong("branch_id")});
          }
-      } finally {
-         chStmt.close();
       }
 
       return gammasAndBranchIds;

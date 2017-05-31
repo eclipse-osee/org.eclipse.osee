@@ -23,7 +23,7 @@ public final class ExportImportJoinQuery extends AbstractJoinQuery {
       super(JoinItem.EXPORT_IMPORT, jdbcClient, connection);
    }
 
-   public void add(Long id1, Long id2) {
+   public void add(Object id1, Object id2) {
       addToBatch(id1, id2);
    }
 }

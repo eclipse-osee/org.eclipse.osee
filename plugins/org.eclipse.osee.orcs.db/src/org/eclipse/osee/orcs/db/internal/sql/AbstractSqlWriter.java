@@ -330,21 +330,21 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
    public CharJoinQuery writeCharJoin(Collection<String> ids) {
       CharJoinQuery joinQuery = joinFactory.createCharJoinQuery();
-      ids.forEach(id -> joinQuery.add(id));
+      joinQuery.addAll(ids);
       addJoin(joinQuery);
       return joinQuery;
    }
 
    public IdJoinQuery writeJoin(Collection<? extends Id> ids) {
       IdJoinQuery joinQuery = joinFactory.createIdJoinQuery();
-      ids.forEach(id -> joinQuery.add(id));
+      joinQuery.addAll(ids);
       addJoin(joinQuery);
       return joinQuery;
    }
 
    public IdJoinQuery writeIdJoin(Collection<? extends Number> ids) {
       IdJoinQuery joinQuery = joinFactory.createIdJoinQuery();
-      ids.forEach(id -> joinQuery.add(id));
+      joinQuery.addAll(ids);
       addJoin(joinQuery);
       return joinQuery;
    }

@@ -65,10 +65,7 @@ public class UuidsLoadExecutor extends AbstractLoadExecutor {
       Id4JoinQuery toReturn = joinFactory.createId4JoinQuery();
 
       try (CharJoinQuery guidJoin = joinFactory.createCharJoinQuery()) {
-         for (String id : artifactIds) {
-            guidJoin.add(id);
-         }
-         guidJoin.store();
+         guidJoin.addAndStore(artifactIds);
          TransactionId transactionId = OptionsUtil.getFromTransaction(options);
 
          getJdbcClient().runQuery(stmt -> {

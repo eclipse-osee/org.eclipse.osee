@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
 import org.eclipse.osee.framework.core.enums.JoinItem;
-import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
@@ -112,10 +111,14 @@ public abstract class AbstractJoinQuery implements AutoCloseable {
       addressing.addToBatch(queryId, obj1, obj2, obj3, obj4);
    }
 
-   public void addAndStore(Collection<? extends Id> ids) {
-      for (Id id : ids) {
-         addressing.addToBatch(queryId, id);
+   public void addAll(Iterable<?> values) {
+      for (Object value : values) {
+         addressing.addToBatch(queryId, value);
       }
+   }
+
+   public void addAndStore(Iterable<?> values) {
+      addAll(values);
       store();
    }
 }
