@@ -85,7 +85,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.ws.AWorkspace;
-import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
  * Test utility that will create a new work definition, team definition, versions and allow tests to easily
@@ -579,7 +578,6 @@ public class AtsTestUtil {
             EXCLUDE_DELETED, QueryOption.CONTAINS_MATCH_OPTIONS));
       }
       Operations.executeWorkAndCheckStatus(new PurgeArtifacts(artifacts));
-      TestUtil.sleep(4000);
    }
 
    public static Result transitionTo(AtsTestUtilState atsTestUtilState, IAtsUser user, IAtsChangeSet changes, TransitionOption... transitionOptions) throws OseeCoreException {
