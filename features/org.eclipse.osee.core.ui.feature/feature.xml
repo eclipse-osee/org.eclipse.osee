@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.osee.core.ui.feature"
       label="%featureName"
-      version="0.25.4.qualifier"
+      version="0.26.0.qualifier"
       provider-name="%providerName">
 
    <description>
@@ -44,7 +44,7 @@
       <import plugin="org.eclipse.core.commands"/>
       <import plugin="org.eclipse.core.jobs"/>
       <import plugin="org.eclipse.osgi"/>
-      <import feature="org.eclipse.osee.core.feature" version="0.25.4.qualifier"/>
+      <import feature="org.eclipse.osee.core.feature" version="0.26.0.qualifier"/>
    </requires>
 
    <plugin

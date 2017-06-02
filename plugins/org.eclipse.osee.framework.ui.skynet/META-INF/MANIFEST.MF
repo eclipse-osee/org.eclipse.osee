@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Gui Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.framework.ui.skynet;singleton:=true
-Bundle-Version: 0.25.4.qualifier
+Bundle-Version: 0.26.0.qualifier
 Eclipse-ExtensibleAPI: true
 Bundle-Activator: org.eclipse.osee.framework.ui.skynet.internal.Activator
 Service-Component: OSGI-INF/*.xml

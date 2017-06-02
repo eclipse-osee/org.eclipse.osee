@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.eclipse.osee</groupId>
 		<artifactId>org.eclipse.osee.x.core.parent</artifactId>
-		<version>0.25.4-SNAPSHOT</version>
+		<version>0.26.0-SNAPSHOT</version>
 		<relativePath>../../plugins/org.eclipse.osee.x.core.parent</relativePath>
 	</parent>
 

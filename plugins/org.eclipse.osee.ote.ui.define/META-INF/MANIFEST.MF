@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OTE UI Define Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ote.ui.define;singleton:=true
-Bundle-Version: 0.25.4.qualifier
+Bundle-Version: 0.26.0.qualifier
 Bundle-Activator: org.eclipse.osee.ote.ui.define.OteUiDefinePlugin
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.filesystem,

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Workspace
 Bundle-SymbolicName: org.eclipse.osee.framework.ui.ws;singleton:=true
-Bundle-Version: 0.25.4.qualifier
+Bundle-Version: 0.26.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.ui.ws.internal.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
