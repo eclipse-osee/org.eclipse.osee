@@ -17,6 +17,7 @@ public enum AtsSearchUserType {
 
    None,
    Assignee,
+   AssigneeWas, // user was assigned sometime in past states
    Originated,
    Subscribed,
    Favorites;

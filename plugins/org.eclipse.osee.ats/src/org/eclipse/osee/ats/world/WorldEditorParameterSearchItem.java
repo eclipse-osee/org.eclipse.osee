@@ -110,15 +110,6 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    public Result isParameterSelectionValid() {
       try {
          if (getUserType() != null && getUserType().get() == AtsSearchUserType.Assignee) {
-            IAtsUser assignee = getUser().get();
-            if (assignee != null) {
-               if (getStateType().getTypes().contains(StateType.Completed)) {
-                  return new Result("Assignee and Completed are not compatible selections.");
-               }
-               if (getStateType().getTypes().contains(StateType.Completed)) {
-                  return new Result("Assignee and Cancelled are not compatible selections.");
-               }
-            }
             if (getAi() != null && getAi().get() != null && !getAi().get().isEmpty() && getTeamDef() != null && getTeamDef().get() != null && !getTeamDef().get().isEmpty()) {
                return new Result("Actionable Item(s) and Team Definition(s) are not compatible selections.");
             }

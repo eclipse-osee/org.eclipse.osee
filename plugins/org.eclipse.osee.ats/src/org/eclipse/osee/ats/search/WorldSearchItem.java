@@ -11,7 +11,9 @@
 package org.eclipse.osee.ats.search;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.AtsSearchUserType;
@@ -51,6 +53,20 @@ public class WorldSearchItem extends WorldUISearchItem {
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
+
+      boolean assigneesWithCompletedOrCancelled = false;
+      List<StateType> stateTypes = data.getStateTypes();
+      AtsSearchUserType userType = data.getUserType();
+
+      /**
+       * Case where searching Assignee and either Completed or Cancelled; Search must be performed multiple times, once
+       * for Assignees and another for AssigeesWas (user was assigned in some state)
+       */
+      if (userType == AtsSearchUserType.Assignee && (stateTypes.contains(StateType.Completed) || stateTypes.contains(
+         StateType.Cancelled))) {
+         assigneesWithCompletedOrCancelled = true;
+      }
+
       List<WorkItemType> workItemTypes = data.getWorkItemTypes();
       if (workItemTypes.isEmpty()) {
          workItemTypes.add(WorkItemType.WorkItem);
@@ -64,7 +80,6 @@ public class WorldSearchItem extends WorldUISearchItem {
          query.andStateType(data.getStateTypes().toArray(new StateType[data.getStateTypes().size()]));
       }
       if (Strings.isValid(data.getUserId())) {
-         AtsSearchUserType userType = data.getUserType();
          IAtsUser userById = AtsClientService.get().getUserService().getUserById(data.getUserId());
          if (userType == AtsSearchUserType.Originated) {
             query.andOriginator(userById);
@@ -72,7 +87,9 @@ public class WorldSearchItem extends WorldUISearchItem {
             query.andSubscribed(userById);
          } else if (userType == AtsSearchUserType.Favorites) {
             query.andFavorite(userById);
-         } else {
+         } else if (userType == AtsSearchUserType.AssigneeWas) {
+            query.andAssigneeWas(userById);
+         } else if (userType == AtsSearchUserType.Assignee) {
             query.andAssignee(userById);
          }
       }
@@ -104,7 +121,21 @@ public class WorldSearchItem extends WorldUISearchItem {
          query.andColorTeam(data.getColorTeam());
       }
       performSearch(query);
-      return Collections.castAll(query.getResultArtifacts().getList());
+
+      Set<Artifact> results = new HashSet<>();
+      results.addAll(Collections.castAll(query.getResultArtifacts().getList()));
+
+      /**
+       * Perform a second search (see above) and add results to return set. This is because the framework search api
+       * does not support OR-ing attribute values. This should be removed once that is implemented.
+       */
+      if (assigneesWithCompletedOrCancelled) {
+         AtsSearchData data2 = data.copy();
+         data2.setUserType(AtsSearchUserType.AssigneeWas);
+         WorldSearchItem item2 = new WorldSearchItem(data2);
+         results.addAll(item2.performSearch(SearchType.Search));
+      }
+      return results;
    }
 
    /**

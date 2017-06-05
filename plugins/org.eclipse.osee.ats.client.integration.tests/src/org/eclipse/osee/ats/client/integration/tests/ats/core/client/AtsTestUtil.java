@@ -40,6 +40,7 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
@@ -581,7 +582,11 @@ public class AtsTestUtil {
    }
 
    public static Result transitionTo(AtsTestUtilState atsTestUtilState, IAtsUser user, IAtsChangeSet changes, TransitionOption... transitionOptions) throws OseeCoreException {
-      if (atsTestUtilState == AtsTestUtilState.Analyze && teamWf.isInState(AtsTestUtilState.Analyze)) {
+      return transitionTo(teamWf, atsTestUtilState, user, changes, transitionOptions);
+   }
+
+   public static Result transitionTo(IAtsTeamWorkflow teamWf, AtsTestUtilState atsTestUtilState, IAtsUser user, IAtsChangeSet changes, TransitionOption... transitionOptions) throws OseeCoreException {
+      if (atsTestUtilState == AtsTestUtilState.Analyze && teamWf.getStateMgr().isInState(AtsTestUtilState.Analyze)) {
          return Result.TrueResult;
       }
 
@@ -613,9 +618,9 @@ public class AtsTestUtil {
 
    }
 
-   private static Result transitionToState(TeamWorkFlowArtifact teamArt, IStateToken toState, IAtsUser user, IAtsChangeSet changes, TransitionOption... transitionOptions) {
+   private static Result transitionToState(IAtsTeamWorkflow teamWf, IStateToken toState, IAtsUser user, IAtsChangeSet changes, TransitionOption... transitionOptions) {
       TransitionHelper helper =
-         new TransitionHelper("Transition to " + toState.getName(), Arrays.asList(teamArt), toState.getName(),
+         new TransitionHelper("Transition to " + toState.getName(), Arrays.asList(teamWf), toState.getName(),
             Arrays.asList(user), null, changes, AtsClientService.get().getServices(), transitionOptions);
       IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
       TransitionResults results = transitionMgr.handleAll();

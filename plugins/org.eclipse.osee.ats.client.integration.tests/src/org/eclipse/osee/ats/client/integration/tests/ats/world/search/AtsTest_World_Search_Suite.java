@@ -21,6 +21,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   WorldSearchItemTest.class,
    AtsQueryServiceImplTest.class,
    AtsConfigQueryImplTest.class,
    AtsQueryImplTest.class,
