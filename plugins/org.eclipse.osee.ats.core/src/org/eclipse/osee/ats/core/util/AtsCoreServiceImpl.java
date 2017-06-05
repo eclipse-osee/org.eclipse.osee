@@ -405,7 +405,7 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
    @Override
    public IAtsImplementerService getImplementerService() {
       if (implementerService == null) {
-         implementerService = new AtsImplementersService(this);
+         implementerService = new AtsImplementersService();
       }
       return implementerService;
    }

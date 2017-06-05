@@ -29,7 +29,7 @@ public class GoalCheckTreeDialog extends FilteredCheckboxTreeArtifactDialog {
    @Override
    protected Control createDialogArea(Composite container) {
       Control control = super.createDialogArea(container);
-      getTreeViewer().setSorter(new MembersViewerSorter());
+      getTreeViewer().getViewer().setComparator(new MembersViewerSorter());
       return control;
    }
 

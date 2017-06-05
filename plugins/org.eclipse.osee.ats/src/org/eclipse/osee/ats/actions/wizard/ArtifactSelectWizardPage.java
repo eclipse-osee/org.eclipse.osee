@@ -19,7 +19,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -96,8 +96,7 @@ public class ArtifactSelectWizardPage extends WizardPage {
                }
             }
          });
-         artTypeList.setSorter(new ViewerSorter() {
-            @SuppressWarnings("unchecked")
+         artTypeList.setComparator(new ViewerComparator() {
             @Override
             public int compare(Viewer viewer, Object e1, Object e2) {
                return getComparator().compare(((IArtifactType) e1).getName(), ((IArtifactType) e2).getName());
@@ -125,8 +124,7 @@ public class ArtifactSelectWizardPage extends WizardPage {
          artList.setContentProvider(new ArrayContentProvider());
          artList.setLabelProvider(new AtsObjectLabelProvider());
 
-         artList.setSorter(new ViewerSorter() {
-            @SuppressWarnings("unchecked")
+         artList.setComparator(new ViewerComparator() {
             @Override
             public int compare(Viewer viewer, Object e1, Object e2) {
                return getComparator().compare(((Artifact) e1).getName(), ((Artifact) e2).getName());

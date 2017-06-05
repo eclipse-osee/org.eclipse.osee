@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
@@ -46,12 +45,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * @author Donald G. Dunne
  */
 public class AtsImplementersService implements IAtsImplementerService {
-
-   private final IAtsServices services;
-
-   public AtsImplementersService(IAtsServices services) {
-      this.services = services;
-   }
 
    @Override
    public String getImplementersStr(IAtsObject atsObject) throws OseeCoreException {

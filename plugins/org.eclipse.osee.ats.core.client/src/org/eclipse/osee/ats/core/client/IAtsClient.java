@@ -16,13 +16,8 @@ import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.notify.IAtsNotifier;
-import org.eclipse.osee.ats.api.query.IAtsSearchDataProvider;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
-import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
-import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
-import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.util.IAtsEventService;
-import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.api.version.IAtsVersionServiceProvider;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolverProvider;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchServiceProvider;
@@ -63,38 +58,14 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
 
    void reloadWorkDefinitionCache(boolean pend);
 
-   @Override
-   void invalidateWorkDefinitionCache();
-
    void reloadAllCaches(boolean pend);
-
-   @Override
-   void invalidateAllCaches();
 
    IAtsUserServiceClient getUserServiceClient();
 
    IAtsServices getServices();
 
    @Override
-   IAtsTeamDefinitionService getTeamDefinitionService();
-
-   @Override
-   Artifact getArtifact(Long uuid);
-
-   @Override
-   IAtsVersionService getVersionService();
-
-   @Override
-   IAtsWorkItemFactory getWorkItemFactory();
-
-   @Override
-   IAtsConfigItemFactory getConfigItemFactory();
-
-   @Override
    Artifact getArtifactByGuid(String guid);
-
-   @Override
-   Artifact getArtifactByAtsId(String id);
 
    IArtifactMembersCache<GoalArtifact> getGoalMembersCache();
 
@@ -103,7 +74,7 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
    Artifact checkArtifactFromId(long uuid, BranchId atsBranch);
 
    @Override
-   List<IAtsSearchDataProvider> getSearchDataProviders();
+   Artifact getArtifact(Long uuid);
 
    IAtsEventService getEventService();
 

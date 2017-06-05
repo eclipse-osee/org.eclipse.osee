@@ -60,7 +60,7 @@ public class ImplementersColumnTest extends AbstractUserTest {
       when(services.getUserService()).thenReturn(userService);
       when(services.getAttributeResolver()).thenReturn(attributeResolver);
 
-      impService = new AtsImplementersService(services);
+      impService = new AtsImplementersService();
       assigneeColumn = new AssigneeColumn(services);
    }
 

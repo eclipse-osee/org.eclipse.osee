@@ -68,7 +68,7 @@ public class XHistoryViewer extends GenericXWidget {
       ActionContributionItem item = new ActionContributionItem(refreshAction);
       item.fill(toolBar, 0);
 
-      xViewer = new HistoryXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
+      xViewer = new HistoryXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
       xViewer.setContentProvider(new ArrayTreeContentProvider());
       xViewer.setLabelProvider(new HistoryLabelProvider(xViewer));
       new ActionContributionItem(xViewer.getCustomizeAction()).fill(toolBar, -1);

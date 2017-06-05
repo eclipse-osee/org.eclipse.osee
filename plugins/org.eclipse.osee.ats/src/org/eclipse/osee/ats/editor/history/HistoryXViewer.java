@@ -18,11 +18,8 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class HistoryXViewer extends XViewer {
 
-   private final XHistoryViewer xUserRoleViewer;
-
-   public HistoryXViewer(Composite parent, int style, XHistoryViewer xUserRoleViewer) {
+   public HistoryXViewer(Composite parent, int style) {
       super(parent, style, new HistoryXViewerFactory());
-      this.xUserRoleViewer = xUserRoleViewer;
    }
 
    @Override

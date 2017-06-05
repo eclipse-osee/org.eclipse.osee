@@ -17,7 +17,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
@@ -129,7 +129,7 @@ public class FilteredDialogExampleUtil {
          return children;
       }
    }
-   public static class MyViewSorter extends ViewerSorter {
+   public static class MyViewSorter extends ViewerComparator {
 
       @Override
       public int compare(Viewer viewer, Object o1, Object o2) {

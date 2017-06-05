@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.goal;
 
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 /**
  * @author Donald G. Dunne
  */
-public class MembersViewerSorter extends ViewerSorter {
+public class MembersViewerSorter extends ViewerComparator {
 
    @Override
    public int compare(Viewer viewer, Object o1, Object o2) {
@@ -58,7 +58,6 @@ public class MembersViewerSorter extends ViewerSorter {
       return 0;
    }
 
-   @SuppressWarnings("unchecked")
    private int compare(Artifact a1, Artifact a2) {
       return getComparator().compare(a1.getName(), a2.getName());
    }

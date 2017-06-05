@@ -17,5 +17,5 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 public class JaxNewAtsConfigObject extends JaxAtsObject {
-   // do nothing
+   // for subclassing
 }

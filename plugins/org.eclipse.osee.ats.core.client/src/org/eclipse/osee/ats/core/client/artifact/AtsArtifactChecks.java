@@ -127,7 +127,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
 
    private String isWorkflowOrActionPermittedByAnyone(Artifact art, Collection<Artifact> allArtifacts) {
       if (art.isOfType(AtsArtifactTypes.Action)) {
-         for (IAtsTeamWorkflow teamWf : AtsClientService.get().getWorkItemService().getTeams((IAtsAction) art)) {
+         for (IAtsTeamWorkflow teamWf : AtsClientService.get().getWorkItemService().getTeams(art)) {
             if (!allArtifacts.contains(teamWf)) {
                return String.format("Can't delete action %s without deleting workflow %s, use ATS World Editor",
                   art.toStringWithId(), teamWf.toStringWithId());
@@ -159,8 +159,9 @@ public class AtsArtifactChecks extends ArtifactCheck {
    private IStatus checkActionableItems(boolean isAtsAdmin, Collection<Artifact> artifacts) throws OseeCoreException {
       Set<String> aiaGuids = getActionableItemGuidsWithRecurse(new HashSet<String>(), artifacts);
       if (!aiaGuids.isEmpty()) {
-         List<Artifact> teamWfsRelatedToAis = ArtifactQuery.getArtifactListFromTypeAndAttribute(
-            AtsArtifactTypes.TeamWorkflow, AtsAttributeTypes.ActionableItem, aiaGuids, AtsClientService.get().getAtsBranch(), 10);
+         List<Artifact> teamWfsRelatedToAis =
+            ArtifactQuery.getArtifactListFromTypeAndAttribute(AtsArtifactTypes.TeamWorkflow,
+               AtsAttributeTypes.ActionableItem, aiaGuids, AtsClientService.get().getAtsBranch(), 10);
          if (!teamWfsRelatedToAis.isEmpty()) {
             return createStatus(String.format(
                "Actionable Items (or children AIs) [%s] selected to delete have related Team Workflows; Delete or re-assign Team Workflows first.",

@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.Import.ImportActionsViaSpreadsheetBlam;
 import org.eclipse.osee.ats.util.Import.ImportActionsViaSpreadsheetBlam.ImportOption;

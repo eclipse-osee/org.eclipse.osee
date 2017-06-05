@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchUtil;
@@ -193,7 +193,7 @@ public final class AtsBranchManager {
          }
       }
 
-      ViewerSorter sorter = new ViewerSorter() {
+      ViewerComparator comparator = new ViewerComparator() {
          @Override
          public int compare(Viewer viewer, Object e1, Object e2) {
             if (e1 == null || e2 == null) {
@@ -211,7 +211,7 @@ public final class AtsBranchManager {
          }
       };
       FilteredTreeDialog dialog = new FilteredTreeDialog(title, "Select Commit Branch", new ArrayTreeContentProvider(),
-         new NameLabelProvider(), sorter);
+         new NameLabelProvider(), comparator);
 
       dialog.setInput(branchToTx.keySet());
       if (dialog.open() == 0) {

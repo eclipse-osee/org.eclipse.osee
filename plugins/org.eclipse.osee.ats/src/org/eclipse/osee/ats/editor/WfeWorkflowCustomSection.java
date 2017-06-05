@@ -24,6 +24,4 @@ public class WfeWorkflowCustomSection extends WfeWorkflowSection {
       super(parent, style, page, sma, editor);
    }
 
-   private void createSectionBody(StateXWidgetPage statePage, Composite workComp) {
-   }
 }

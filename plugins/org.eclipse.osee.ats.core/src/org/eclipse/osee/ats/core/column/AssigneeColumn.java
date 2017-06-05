@@ -92,7 +92,7 @@ public class AssigneeColumn extends AbstractServicesColumn {
 
    private IAtsImplementerService getImplementersStringProvider() {
       if (implementStrProvider == null) {
-         implementStrProvider = new AtsImplementersService(services);
+         implementStrProvider = new AtsImplementersService();
       }
       return implementStrProvider;
    }

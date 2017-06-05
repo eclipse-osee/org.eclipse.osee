@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;

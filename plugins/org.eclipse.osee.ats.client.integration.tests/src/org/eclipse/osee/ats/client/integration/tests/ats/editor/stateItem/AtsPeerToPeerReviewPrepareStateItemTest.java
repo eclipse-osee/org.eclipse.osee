@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewState;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.demo.api.DemoActionableItems;
 import org.eclipse.osee.ats.editor.stateItem.AtsPeerToPeerReviewPrepareStateItem;
 import org.eclipse.osee.ats.util.AtsUtil;

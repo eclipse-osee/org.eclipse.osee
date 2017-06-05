@@ -65,5 +65,4 @@ public class ListAndBulletRule extends AbstractValidationRule {
    public String getRuleTitle() {
       return String.format("Formatting Check for :", workType);
    }
-
 }

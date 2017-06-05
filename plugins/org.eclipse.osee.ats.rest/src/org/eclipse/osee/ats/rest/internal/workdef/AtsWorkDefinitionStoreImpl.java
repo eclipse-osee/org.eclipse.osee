@@ -77,7 +77,6 @@ public class AtsWorkDefinitionStoreImpl implements IAtsWorkDefinitionStore {
       return modelText;
    }
 
-   @SuppressWarnings("unchecked")
    @Override
    public String loadRuleDefinitionString() throws OseeCoreException {
       ArtifactReadable artifact = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(

@@ -25,7 +25,6 @@ import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;

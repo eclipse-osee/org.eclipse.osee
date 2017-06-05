@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;

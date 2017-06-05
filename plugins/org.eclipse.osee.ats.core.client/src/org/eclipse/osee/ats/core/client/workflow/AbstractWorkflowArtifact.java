@@ -36,7 +36,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
-import org.eclipse.osee.ats.api.workflow.note.IAtsWorkItemNotes;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.artifact.AbstractAtsArtifact;
@@ -89,7 +88,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    private IAtsLog atsLog;
    private TransactionId atsLogTx;
    private TransactionId stateMgrTransactionNumber;
-   private IAtsWorkItemNotes atsNote;
    private IAtsStateManager stateMgr;
 
    public AbstractWorkflowArtifact(String guid, BranchId branch, ArtifactTypeId artifactType) {

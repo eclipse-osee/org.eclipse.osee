@@ -16,7 +16,6 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -52,12 +51,6 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
          AtsRelationTypes.ParallelVersion_Child.getGuid(), AtsRelationTypes.ParallelVersion_Parent.getGuid());
    private static List<Long> configReloadArtifactTypeGuids = Arrays.asList(AtsArtifactTypes.Version.getGuid(),
       AtsArtifactTypes.TeamDefinition.getGuid(), AtsArtifactTypes.ActionableItem.getGuid());
-
-   private IAtsClient atsClient;
-
-   public void setAtsClient(IAtsClient atsClient) {
-      this.atsClient = atsClient;
-   }
 
    @Override
    public List<? extends IEventFilter> getEventFilters() {
