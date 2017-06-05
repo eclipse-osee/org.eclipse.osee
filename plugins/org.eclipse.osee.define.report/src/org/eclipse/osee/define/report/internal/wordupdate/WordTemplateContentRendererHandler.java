@@ -31,13 +31,12 @@ public class WordTemplateContentRendererHandler {
    public static final String PGNUMTYPE_START_1 = "<w:pgNumType [^>]*w:start=\"1\"/>";
    public static final String PL_STYLE_WITH_RETURN =
       "<w:rPr><w:rStyle w:val=\"ProductLineApplicability\"((?=/>)(/>)|(.*?</w:rStyle>)).*?</w:rPr>";
-   public static final String PL_STYLE =
-      "<w:rStyle w:val=\"ProductLineApplicability\"((?=/>)(/>)|(.*?</w:rStyle>))";
+   public static final String PL_STYLE = "<w:rStyle w:val=\"ProductLineApplicability\"((?=/>)(/>)|(.*?</w:rStyle>))";
    public static final String PL_HIGHLIGHT =
       "<w:highlight w:val=\"light-gray\"></w:highlight><w:shd w:color=\"auto\" w:fill=\"BFBFBF\" w:val=\"clear\"></w:shd>";
    public static final String EMPTY_PARAGRAPHS = "<w:r wsp:rsidRPr=\"\\d+\"><w:t></w:t></w:r>";
    public static final String EXTRA_SPACES = "<w:r><w:t> </w:t></w:r>";
-   private OrcsApi orcsApi;
+   private final OrcsApi orcsApi;
 
    public WordTemplateContentRendererHandler(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -93,7 +92,7 @@ public class WordTemplateContentRendererHandler {
                if (lastIndex != -1) {
                   // temp should equal <w:p wsp:rsidR ..</w:p> ...
                   String temp = data.substring(lastIndex);
-                  temp = temp.replaceAll("<w:p wsp:rsidR=\".*?\" wsp:rsidRDefault=\".*?\"></w:p>", "");
+                  temp = temp.replaceAll("<w:p wsp:rsidR=\"[^\"]\" wsp:rsidRDefault=\"[^\"]\"></w:p>", "");
                   data = data.substring(0, lastIndex) + temp;
                }
             }
