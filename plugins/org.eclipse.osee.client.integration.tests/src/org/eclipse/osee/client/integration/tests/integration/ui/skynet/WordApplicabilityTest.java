@@ -30,7 +30,6 @@ import org.junit.Test;
  */
 public class WordApplicabilityTest {
 
-   private static final String TEST_INCONSISTENT_TAGS = "support/WordInconsistentApplicabilityTags.xml";
    private static final String TEST_INVALID_TAGS = "support/WordInvalidApplicabilityTags.xml";
    private static final String TEST_VALID_TAGS = "support/WordValidApplicabilityTags.xml";
    private static final String TEST_ElSE_TAGS = "support/WordApplicabilityElseTags.xml";
@@ -43,14 +42,6 @@ public class WordApplicabilityTest {
    public void setup() {
       oseeClient = ServiceUtil.getOseeClient();
       validFeatureValuesForBranch = getValidFeatureValuesForBranch(DemoBranches.SAW_Bld_1);
-   }
-
-   @Test
-   public void testInconsistentApplicabilityTags() throws IOException {
-      String content = Lib.fileToString(getClass(), TEST_INCONSISTENT_TAGS);
-
-      assertTrue(
-         WordCoreUtil.areApplicabilityTagsInvalid(content, DemoBranches.SAW_Bld_1, validFeatureValuesForBranch));
    }
 
    @Test

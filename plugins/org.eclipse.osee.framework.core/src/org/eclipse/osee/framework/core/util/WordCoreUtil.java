@@ -34,14 +34,19 @@ import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 
 public class WordCoreUtil {
    public static String FEATUREAPP = "feature";
-   public static String CONFIGAPP = "config";
+   public static String CONFIGAPP = "configuration";
 
    public static String MAX_TAG_OCCURENCE = "30";
    public static String WORD_ML_TAGS = "(\\<[^>]*?>){0," + MAX_TAG_OCCURENCE + "}";
 
    public static String TABLE_CELL = "<w:tc>";
    public static String TABLE = "<w:tbl>";
+   public static String START_TABLE_ROW = "<w:tr wsp:rsidR=";
+   public static String END_TABLE_ROW = "</w:tr>";
    public static String LIST = "<w:listPr>";
+   public static String START_PARAGRAPH = "<w:p wsp:rsid";
+   public static String WHOLE_END_PARAGRAPH = "</w:t></w:r></w:p>";
+   public static String END_PARAGRAPH = "</w:p>";
 
    public static String END = "E" + WORD_ML_TAGS + "n" + WORD_ML_TAGS + "d ?" + WORD_ML_TAGS + " ?";
    public static String ELSE = "E" + WORD_ML_TAGS + "l" + WORD_ML_TAGS + "s" + WORD_ML_TAGS + "e ?";
@@ -155,13 +160,6 @@ public class WordCoreUtil {
       if (applicabilityBlock.getType() != ApplicabilityType.Configuration) {
          return true;
       }
-      String optionalEndBracketConfig =
-         matcher.group(60) != null ? WordCoreUtil.textOnly("Configuration" + matcher.group(60)) : null;
-
-      String applicabilityExpression = applicabilityBlock.getApplicabilityExpression();
-      if (optionalEndBracketConfig != null && !optionalEndBracketConfig.equalsIgnoreCase(applicabilityExpression)) {
-         return true;
-      }
 
       return false;
    }
@@ -172,13 +170,6 @@ public class WordCoreUtil {
          return true;
       }
       String applicabilityExpression = applicabilityBlock.getApplicabilityExpression();
-
-      String optionalEndBracketFeature =
-         matcher.group(23) != null ? WordCoreUtil.textOnly("Feature" + matcher.group(23)) : null;
-
-      if (optionalEndBracketFeature != null && !optionalEndBracketFeature.equalsIgnoreCase(applicabilityExpression)) {
-         return true;
-      }
 
       if (isExpressionInvalid(applicabilityExpression, branch, validFeatureValues)) {
          return true;

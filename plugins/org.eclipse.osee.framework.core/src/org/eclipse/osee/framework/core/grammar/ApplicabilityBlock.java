@@ -27,20 +27,12 @@ public class ApplicabilityBlock {
    private boolean isInTable;
 
    private String beforeElseText, afterElseText, beforeEmbeddedBlockText, afterEmbeddedBlockText, fullText;
-   private Integer startInsertIndex, endInsertIndex, startTextIndex, endTextIndex;
+   private int startInsertIndex, endInsertIndex, startTextIndex, endTextIndex;
 
    public ApplicabilityBlock() {
       embeddedApplicabilityBlocks = new ArrayList<>();
       outerExpressionOperators = new ArrayList<>();
-      applicabilityExpression = null;
-      optionalEndExpression = null;
       isInTable = false;
-
-      beforeElseText = null;
-      afterElseText = null;
-      beforeEmbeddedBlockText = null;
-      afterEmbeddedBlockText = null;
-      fullText = null;
 
       startInsertIndex = Integer.MAX_VALUE;
       startTextIndex = Integer.MAX_VALUE;
@@ -48,35 +40,35 @@ public class ApplicabilityBlock {
       endTextIndex = Integer.MIN_VALUE;
    }
 
-   public Integer getStartInsertIndex() {
+   public int getStartInsertIndex() {
       return startInsertIndex;
    }
 
-   public void setStartInsertIndex(Integer startInsertIndex) {
+   public void setStartInsertIndex(int startInsertIndex) {
       this.startInsertIndex = startInsertIndex;
    }
 
-   public Integer getEndInsertIndex() {
+   public int getEndInsertIndex() {
       return endInsertIndex;
    }
 
-   public void setEndInsertIndex(Integer endInsertIndex) {
+   public void setEndInsertIndex(int endInsertIndex) {
       this.endInsertIndex = endInsertIndex;
    }
 
-   public Integer getEndTextIndex() {
+   public int getEndTextIndex() {
       return endTextIndex;
    }
 
-   public void setEndTextIndex(Integer endTextIndex) {
+   public void setEndTextIndex(int endTextIndex) {
       this.endTextIndex = endTextIndex;
    }
 
-   public Integer getStartTextIndex() {
+   public int getStartTextIndex() {
       return startTextIndex;
    }
 
-   public void setStartTextIndex(Integer startTextIndex) {
+   public void setStartTextIndex(int startTextIndex) {
       this.startTextIndex = startTextIndex;
    }
 

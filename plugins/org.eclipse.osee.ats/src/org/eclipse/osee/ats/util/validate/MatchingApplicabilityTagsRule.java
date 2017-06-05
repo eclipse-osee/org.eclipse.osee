@@ -28,6 +28,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public class MatchingApplicabilityTagsRule extends AbstractValidationRule {
 
    private final IAtsClient atsClient;
+   private List<FeatureDefinitionData> featureDefinitionData;
+   private HashCollection<String, String> validFeatureValues;
 
    public MatchingApplicabilityTagsRule(IAtsClient atsClient) {
       this.atsClient = atsClient;
@@ -38,21 +40,28 @@ public class MatchingApplicabilityTagsRule extends AbstractValidationRule {
       Collection<String> errorMessages = new ArrayList<>();
       String wordml = artToValidate.getSoleAttributeValue(CoreAttributeTypes.WordTemplateContent, "");
 
-      List<FeatureDefinitionData> featureDefinitionData =
-         atsClient.getOseeClient().getApplicabilityEndpoint(artToValidate.getBranch()).getFeatureDefinitionData();
-
-      HashCollection<String, String> validFeatureValues = new HashCollection<>();
-      for (FeatureDefinitionData feat : featureDefinitionData) {
-         validFeatureValues.put(feat.getName(), feat.getValues());
+      if (featureDefinitionData == null) {
+         featureDefinitionData =
+            atsClient.getOseeClient().getApplicabilityEndpoint(artToValidate.getBranch()).getFeatureDefinitionData();
       }
 
-      boolean validationPassed =
-         !WordCoreUtil.areApplicabilityTagsInvalid(wordml, artToValidate.getBranch(), validFeatureValues);
-      if (!validationPassed) {
-         errorMessages.add(String.format(
-            "Validation Failed. The following artifact has invalid feature values and/or mismatching start and end applicability tags: " //
-               + "Artifact Id: [%s], Artifact Name: [%s]",
-            artToValidate.getId(), artToValidate.getSafeName()));
+      if (validFeatureValues == null) {
+         validFeatureValues = new HashCollection<>();
+         for (FeatureDefinitionData feat : featureDefinitionData) {
+            validFeatureValues.put(feat.getName(), feat.getValues());
+         }
+      }
+
+      boolean validationPassed = true;
+      if (!validFeatureValues.isEmpty()) {
+         validationPassed =
+            !WordCoreUtil.areApplicabilityTagsInvalid(wordml, artToValidate.getBranch(), validFeatureValues);
+         if (!validationPassed) {
+            errorMessages.add(String.format(
+               "Validation Failed. The following artifact has invalid feature values and/or mismatching start and end applicability tags: " //
+                  + "Artifact Id: [%s], Artifact Name: [%s]",
+               artToValidate.getId(), artToValidate.getSafeName()));
+         }
       }
 
       return new ValidationResult(errorMessages, validationPassed);

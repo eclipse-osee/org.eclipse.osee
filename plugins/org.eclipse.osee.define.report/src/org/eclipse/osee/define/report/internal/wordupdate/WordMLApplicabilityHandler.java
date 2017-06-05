@@ -44,68 +44,80 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 public class WordMLApplicabilityHandler {
 
-   public static String previewValidApplicabilityContent(OrcsApi orcsApi, Log logger, String content, BranchId branch, ArtifactId viewId) throws OseeCoreException {
-      Map<String, List<String>> featureValuesAllowed = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-      BranchId branchToUse = getBranchToUse(orcsApi, branch, viewId);
+   private static String SCRIPT_ENGINE_NAME = "JavaScript";
 
-      featureValuesAllowed =
-         orcsApi.getQueryFactory().applicabilityQuery().getBranchViewFeatureValues(branchToUse, viewId);
+   private Map<String, List<String>> viewApplicabilitiesMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+   private final Collection<String> configurationsAllowed;
+   private final Stack<ApplicabilityBlock> applicBlocks;
+   private final String featureDefinitionJson;
+   private ScriptEngine se;
+   private final Log logger;
 
-      String toReturn = content;
+   public WordMLApplicabilityHandler(OrcsApi orcsApi, Log logger, BranchId branch, ArtifactId view) {
+      this.applicBlocks = new Stack<>();
+      this.logger = logger;
+
+      ScriptEngineManager sem = new ScriptEngineManager();
+      se = sem.getEngineByName(SCRIPT_ENGINE_NAME);
+
+      BranchId branchToUse = getBranchToUse(orcsApi, branch, view);
+
+      viewApplicabilitiesMap =
+         orcsApi.getQueryFactory().applicabilityQuery().getBranchViewFeatureValues(branchToUse, view);
+      configurationsAllowed = viewApplicabilitiesMap.get("config");
 
       ArtifactReadable featureDefArt = orcsApi.getQueryFactory().fromBranch(branch).andTypeEquals(
          CoreArtifactTypes.FeatureDefinition).getResults().getExactlyOne();
-      String featureDefJson = featureDefArt.getSoleAttributeAsString(CoreAttributeTypes.GeneralStringData);
+      featureDefinitionJson = featureDefArt.getSoleAttributeAsString(CoreAttributeTypes.GeneralStringData);
+   }
 
-      Collection<String> configurations = featureValuesAllowed.get("Config");
-      // Only care about the configuration that is included (all others assumed to be excluded)
-      String includedConfiguration = "";
-      for (String config : configurations) {
-         if (!config.toLowerCase().contains("excluded")) {
-            includedConfiguration = config;
-         }
-      }
-
-      Stack<ApplicabilityBlock> applicabilityBlocks = new Stack<>();
+   public String previewValidApplicabilityContent(String content) throws OseeCoreException {
+      String toReturn = content;
+      int searchIndex = 0;
+      int applicBlockCount = 0;
 
       Matcher matcher = WordCoreUtil.FULL_PATTERN.matcher(toReturn);
 
-      int searchIndex = 0;
-      int applicBlockCount = 0;
       while (searchIndex < toReturn.length() && matcher.find(searchIndex)) {
-         String beginFeature = matcher.group(1) != null ? WordCoreUtil.textOnly(matcher.group(1)) : null;
-         String beginConfiguration = matcher.group(26) != null ? WordCoreUtil.textOnly(matcher.group(26)) : null;
+         String beginFeature = matcher.group(1) != null ? matcher.group(1) : null;
+         String beginConfig = matcher.group(26) != null ? matcher.group(26) : null;
 
-         String endFeature = matcher.group(12) != null ? WordCoreUtil.textOnly(matcher.group(12)) : null;
-         String endConfiguration = matcher.group(43) != null ? WordCoreUtil.textOnly(matcher.group(43)) : null;
+         String endFeature = matcher.group(12) != null ? WordCoreUtil.textOnly(matcher.group(12)).toLowerCase() : null;
+         String endConfig = matcher.group(43) != null ? WordCoreUtil.textOnly(matcher.group(43)).toLowerCase() : null;
 
-         if (beginFeature != null && beginFeature.toLowerCase().contains(WordCoreUtil.FEATUREAPP)) {
+         if (beginFeature != null && WordCoreUtil.textOnly(beginFeature).toLowerCase().contains(
+            WordCoreUtil.FEATUREAPP)) {
             applicBlockCount += 1;
-            searchIndex = addBeginApplicabilityBlock(ApplicabilityType.Feature, applicabilityBlocks, matcher,
-               beginFeature, searchIndex);
-         } else if (beginConfiguration != null && beginConfiguration.toLowerCase().contains(WordCoreUtil.CONFIGAPP)) {
+            searchIndex =
+               addApplicabilityBlock(ApplicabilityType.Feature, matcher, beginFeature, searchIndex, toReturn);
+
+         } else if (beginConfig != null && WordCoreUtil.textOnly(beginConfig).toLowerCase().contains(
+            WordCoreUtil.CONFIGAPP)) {
             applicBlockCount += 1;
-            searchIndex = addBeginApplicabilityBlock(ApplicabilityType.Configuration, applicabilityBlocks, matcher,
-               beginConfiguration, searchIndex);
-         } else if ((endFeature != null && endFeature.toLowerCase().contains(
-            WordCoreUtil.FEATUREAPP)) || (endConfiguration != null && endConfiguration.toLowerCase().contains(
-               WordCoreUtil.CONFIGAPP))) {
+            searchIndex =
+               addApplicabilityBlock(ApplicabilityType.Configuration, matcher, beginConfig, searchIndex, toReturn);
+
+         } else if ((endFeature != null && endFeature.contains(
+            WordCoreUtil.FEATUREAPP)) || (endConfig != null && endConfig.contains(WordCoreUtil.CONFIGAPP))) {
+
             applicBlockCount -= 1;
 
-            ApplicabilityBlock applicabilityBlock = getFullApplicabilityBlock(applicabilityBlocks, matcher, toReturn);
+            ApplicabilityBlock applicabilityBlock = getFullApplicabilityBlock(matcher, toReturn);
 
-            int endBracketGroup = applicabilityBlock.getType().equals(ApplicabilityType.Feature) ? 25 : 60;
-            String optionalEndBracket =
-               matcher.group(endBracketGroup) != null ? WordCoreUtil.textOnly(matcher.group(endBracketGroup)) : null;
+            if (applicabilityBlock == null) {
+               searchIndex = matcher.end();
+            } else {
+               applicBlockCount -= 1;
+               String toInsert = evaluateApplicabilityBlock(applicabilityBlock, toReturn);
 
-            String toInsert = evaluateApplicabilityBlock(applicabilityBlock, optionalEndBracket, toReturn,
-               featureDefJson, featureValuesAllowed, includedConfiguration);
+               String toReplace =
+                  toReturn.substring(applicabilityBlock.getStartInsertIndex(), applicabilityBlock.getEndInsertIndex());
+               toReturn = toReturn.replace(toReplace, toInsert);
+               searchIndex =
+                  applicabilityBlock.getStartInsertIndex() + (applicabilityBlock.isInTable() ? 0 : toInsert.length());
+               matcher = WordCoreUtil.FULL_PATTERN.matcher(toReturn);
+            }
 
-            String toReplace =
-               toReturn.substring(applicabilityBlock.getStartInsertIndex(), applicabilityBlock.getEndInsertIndex());
-            toReturn = toReturn.replace(toReplace, toInsert);
-            searchIndex = applicabilityBlock.getStartInsertIndex() + toInsert.length();
-            matcher = WordCoreUtil.FULL_PATTERN.matcher(toReturn);
          } else {
             break;
          }
@@ -119,10 +131,194 @@ public class WordMLApplicabilityHandler {
       return toReturn;
    }
 
+   private String removeExtraParagraphs(String fullWordMl, String toInsert, ApplicabilityBlock applicabilityBlock) {
+      int startInsertIndex = applicabilityBlock.getStartInsertIndex();
+
+      if (toInsert.isEmpty() || toInsert.startsWith(WordCoreUtil.WHOLE_END_PARAGRAPH)) {
+         String findParagraphStart = fullWordMl.substring(0, startInsertIndex);
+         int paragraphStartIndex = findParagraphStart.lastIndexOf(WordCoreUtil.START_PARAGRAPH);
+
+         // check this doesn't contain feature/config tags
+         String beginningText = fullWordMl.substring(paragraphStartIndex, startInsertIndex);
+
+         if (toInsert.isEmpty() && paragraphStartIndex >= 0 && !beginningText.matches(
+            "(?i).*?(" + WordCoreUtil.BEGINFEATURE + "|" + WordCoreUtil.BEGINCONFIG + "|" + WordCoreUtil.ENDCONFIG + "|" + WordCoreUtil.ENDFEATURE + ").*?")) {
+            int endInsertIndex = applicabilityBlock.getEndInsertIndex();
+            String findParagraphEnd = fullWordMl.substring(endInsertIndex);
+            int paragraphEndIndex = findParagraphEnd.indexOf(WordCoreUtil.END_PARAGRAPH) + endInsertIndex + 6;
+
+            // check this doesn't contain feature/config tags
+            String endText = fullWordMl.substring(endInsertIndex, paragraphEndIndex);
+
+            if (paragraphEndIndex >= 0 && !endText.matches(
+               "(?i).*?(" + WordCoreUtil.BEGINFEATURE + "|" + WordCoreUtil.BEGINCONFIG + "|" + WordCoreUtil.ENDCONFIG + "|" + WordCoreUtil.ENDFEATURE + ").*?")) {
+               applicabilityBlock.setStartInsertIndex(paragraphStartIndex);
+               applicabilityBlock.setStartTextIndex(paragraphStartIndex);
+               applicabilityBlock.setEndInsertIndex(paragraphEndIndex);
+               applicabilityBlock.setEndTextIndex(paragraphEndIndex);
+            }
+         } else {
+            String findParagraphEnd = fullWordMl.substring(startInsertIndex);
+            int paragraphEndIndex = findParagraphEnd.indexOf(WordCoreUtil.END_PARAGRAPH) + startInsertIndex + 6;
+
+            if (paragraphStartIndex >= 0 && paragraphEndIndex >= 0 && paragraphEndIndex > paragraphStartIndex) {
+               String fullParagraph = fullWordMl.substring(paragraphStartIndex, paragraphEndIndex);
+               fullParagraph =
+                  fullParagraph.replaceFirst("(?i)" + WordCoreUtil.BEGINFEATURE + "|" + WordCoreUtil.BEGINCONFIG, "");
+               if (WordCoreUtil.textOnly(fullParagraph).isEmpty()) {
+                  toInsert = toInsert.replaceFirst(WordCoreUtil.WHOLE_END_PARAGRAPH, "");
+                  applicabilityBlock.setStartInsertIndex(paragraphStartIndex);
+                  applicabilityBlock.setStartTextIndex(paragraphEndIndex);
+               }
+            }
+         }
+      }
+
+      if (!applicabilityBlock.isInTable() && toInsert.matches(
+         ".*?<w:p wsp:rsid[^>]+><w:pPr><w:spacing w:after=[^>]+></w:spacing></w:pPr><w:r><w:t>$")) {
+         int origLength = toInsert.length();
+         int lastParaIndex = toInsert.lastIndexOf(WordCoreUtil.START_PARAGRAPH);
+         toInsert = toInsert.substring(0, lastParaIndex);
+
+         applicabilityBlock.setEndTextIndex(applicabilityBlock.getEndTextIndex() - (origLength - lastParaIndex));
+         applicabilityBlock.setEndInsertIndex(
+            applicabilityBlock.getEndInsertIndex() + WordCoreUtil.WHOLE_END_PARAGRAPH.length());
+      }
+
+      return toInsert;
+   }
+
+   // End Bracket can contain multiple feature/value pairs
+   private boolean isValidEndBracket(String optionalEndBracket) {
+      String text = WordCoreUtil.textOnly(optionalEndBracket);
+      text = text.replaceAll("\\[", "");
+      text = text.replaceAll("\\]", "").trim();
+
+      // Split on ORs and ANDs
+      String[] featureValueStrings = text.split("\\||&");
+      for (String featureValueString : featureValueStrings) {
+         String[] split = featureValueString.split("=");
+         String featName = split[0].trim();
+         String featVal = split.length > 1 ? split[1].trim() : null;
+
+         if (viewApplicabilitiesMap.containsKey(featName)) {
+            List<String> values = viewApplicabilitiesMap.get(featName);
+            if (featVal != null && !containsIgnoreCase(values, featVal)) {
+               return false;
+            }
+         } else {
+            return false;
+         }
+      }
+
+      return true;
+   }
+
+   private String evaluateApplicabilityBlock(ApplicabilityBlock applicabilityBlock, String fullWordML) {
+      Map<String, String> binDataMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+      saveBinData(applicabilityBlock.getFullText(), binDataMap);
+
+      String toInsert = evaluateApplicabilityExpression(applicabilityBlock);
+      toInsert = insertMissingbinData(toInsert, binDataMap);
+      toInsert = removeExtraParagraphs(fullWordML, toInsert, applicabilityBlock);
+
+      return toInsert;
+   }
+
+   private String removeEmptyLists(String wordML) {
+      return wordML.replaceAll(WordCoreUtil.EMPTY_LIST_REGEX, "");
+   }
+
+   private String insertMissingbinData(String toInsert, Map<String, String> binDataMap) {
+      String temp = toInsert;
+      Matcher matcher = WordCoreUtil.IMG_SRC_PATTERN.matcher(temp);
+      while (matcher.find()) {
+         String srcId = matcher.group(1);
+         if (binDataMap.containsKey(srcId)) {
+            String binData = binDataMap.get(srcId);
+            if (!temp.contains(binData)) {
+               temp = binData + temp;
+            }
+         }
+      }
+
+      return temp;
+   }
+
+   private void saveBinData(String fullText, Map<String, String> binDataMap) {
+      Matcher matcher = WordCoreUtil.BIN_DATA_PATTERN.matcher(fullText);
+      while (matcher.find()) {
+         binDataMap.put(matcher.group(1), matcher.group(0));
+      }
+   }
+
+   private int addApplicabilityBlock(ApplicabilityType type, Matcher matcher, String applicabilityExpression, int searchIndex, String fullWordMl) {
+      ApplicabilityBlock beginApplic = new ApplicabilityBlock();
+      beginApplic.setType(type);
+      //Remove extra space
+      String applicExpText = WordCoreUtil.textOnly(applicabilityExpression).toLowerCase().replace(" [", "[");
+      beginApplic.setApplicabilityExpression(applicExpText);
+      beginApplic.setStartInsertIndex(matcher.start());
+      beginApplic.setStartTextIndex(matcher.end());
+      applicBlocks.push(beginApplic);
+      searchIndex = matcher.end();
+
+      return searchIndex;
+   }
+
+   private ApplicabilityBlock getFullApplicabilityBlock(Matcher matcher, String toReturn) {
+      if (applicBlocks.isEmpty()) {
+         throw new OseeCoreException("An applicability block of text is missing a start Feature/Configuration tag");
+      }
+      ApplicabilityBlock applic = applicBlocks.pop();
+
+      // set end insert index - Check if End Bracket is valid
+      int endBracketGroup = applic.getType().equals(ApplicabilityType.Feature) ? 23 : 60;
+      String optionalEndBracket = matcher.group(endBracketGroup) != null ? matcher.group(endBracketGroup) : null;
+
+      if (optionalEndBracket != null && !isValidEndBracket(optionalEndBracket)) {
+         int newEndInsertIndex = matcher.end() - optionalEndBracket.length();
+         applic.setEndInsertIndex(newEndInsertIndex);
+      } else {
+         applic.setEndInsertIndex(matcher.end());
+      }
+      applic.setEndTextIndex(matcher.start());
+
+      String insideText = toReturn.substring(applic.getStartTextIndex(), applic.getEndTextIndex());
+      applic.setFullText(insideText);
+
+      // Adjust start and end insert indicies if tags are inside a table
+      if (!applic.getFullText().contains(WordCoreUtil.TABLE) && applic.getFullText().contains(
+         WordCoreUtil.TABLE_CELL)) {
+         String findStartOfRow = toReturn.substring(0, applic.getStartInsertIndex());
+         int startRowIndex = findStartOfRow.lastIndexOf(WordCoreUtil.START_TABLE_ROW);
+
+         if (startRowIndex != -1) {
+            // find end of row after the END configuration/feature tag
+            String findEndOfRow = toReturn.substring(matcher.end());
+            int endRowIndex = findEndOfRow.indexOf(WordCoreUtil.END_TABLE_ROW);
+            if (endRowIndex != -1) {
+               endRowIndex = endRowIndex + matcher.end() + 7;
+               String fullText = toReturn.substring(startRowIndex, endRowIndex);
+               applic.setIsInTable(true);
+               applic.setStartInsertIndex(startRowIndex);
+               applic.setEndInsertIndex(startRowIndex + fullText.length());
+
+               fullText =
+                  fullText.replaceFirst("(?i)(" + WordCoreUtil.ENDFEATURE + "|" + WordCoreUtil.ENDCONFIG + ")", "");
+               fullText =
+                  fullText.replaceFirst("(?i)(" + WordCoreUtil.BEGINFEATURE + "|" + WordCoreUtil.BEGINCONFIG + ")", "");
+               applic.setFullText(fullText);
+            }
+         }
+      }
+
+      return applic;
+   }
+
    private static BranchId getBranchToUse(OrcsApi orcsApi, BranchId branch, ArtifactId viewId) {
       BranchId branchView = findBranchView(orcsApi, viewId);
       return branchView == null ? branch : branchView;
-
    }
 
    private static BranchId findBranchView(OrcsApi orcsApi, ArtifactId viewId) {
@@ -145,111 +341,7 @@ public class WordMLApplicabilityHandler {
       return branchToUse;
    }
 
-   private static String evaluateApplicabilityBlock(ApplicabilityBlock applicabilityBlock, String optionalEndBracket, String fullWordML, String featureDefJson, Map<String, List<String>> featureValuesAllowed, String configurations) {
-      //Remove Logical Messages that were mistaken for optional end brackets
-      if (optionalEndBracket != null && optionalEndBracket.contains(".")) {
-         int originalEnd = applicabilityBlock.getEndInsertIndex();
-         applicabilityBlock.setEndInsertIndex(originalEnd - optionalEndBracket.length());
-      } else {
-         Integer endTextIndex = applicabilityBlock.getEndTextIndex();
-         Integer endInsertIndex = applicabilityBlock.getEndInsertIndex();
-         String toCheck = fullWordML.substring(endTextIndex, endInsertIndex);
-
-         int indexOf = WordCoreUtil.indexOf(toCheck, WordCoreUtil.LOGICAL_STRING);
-         if (indexOf != -1) {
-            applicabilityBlock.setEndInsertIndex(endTextIndex + indexOf);
-         }
-      }
-
-      Map<String, String> binDataMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-      saveBinData(applicabilityBlock.getFullText(), binDataMap);
-      String toInsert =
-         evaluateApplicabilityExpression(applicabilityBlock, featureDefJson, configurations, featureValuesAllowed);
-      toInsert = insertMissingbinData(toInsert, binDataMap);
-
-      return toInsert;
-   }
-
-   private static String removeEmptyLists(String wordML) {
-      return wordML.replaceAll(WordCoreUtil.EMPTY_LIST_REGEX, "");
-   }
-
-   private static String insertMissingbinData(String toInsert, Map<String, String> binDataMap) {
-      String temp = toInsert;
-      Matcher matcher = WordCoreUtil.IMG_SRC_PATTERN.matcher(temp);
-      while (matcher.find()) {
-         String srcId = matcher.group(1);
-         if (binDataMap.containsKey(srcId)) {
-            String binData = binDataMap.get(srcId);
-            if (!temp.contains(binData)) {
-               temp = binData + temp;
-            }
-         }
-      }
-
-      return temp;
-   }
-
-   private static void saveBinData(String fullText, Map<String, String> binDataMap) {
-      Matcher matcher = WordCoreUtil.BIN_DATA_PATTERN.matcher(fullText);
-      while (matcher.find()) {
-         binDataMap.put(matcher.group(1), matcher.group(0));
-      }
-   }
-
-   private static int addBeginApplicabilityBlock(ApplicabilityType type, Stack<ApplicabilityBlock> applicabilityBlocks, Matcher matcher, String applicabilityExpression, int searchIndex) {
-      ApplicabilityBlock beginApplic = new ApplicabilityBlock();
-      beginApplic.setType(type);
-      //Remove extra space
-      applicabilityExpression = applicabilityExpression.replace(" [", "[");
-      beginApplic.setApplicabilityExpression(applicabilityExpression);
-      beginApplic.setStartInsertIndex(matcher.start());
-      beginApplic.setStartTextIndex(matcher.end());
-      applicabilityBlocks.push(beginApplic);
-      searchIndex = matcher.end();
-
-      return searchIndex;
-   }
-
-   private static ApplicabilityBlock getFullApplicabilityBlock(Stack<ApplicabilityBlock> applicabilityBlocks, Matcher matcher, String toReturn) {
-      if (applicabilityBlocks.isEmpty()) {
-         throw new OseeCoreException("An applicability block of text is missing a start Feature/Configuration tag");
-      }
-      ApplicabilityBlock applic = applicabilityBlocks.pop();
-      applic.setEndInsertIndex(matcher.end());
-      applic.setEndTextIndex(matcher.start());
-
-      String insideText = toReturn.substring(applic.getStartTextIndex(), applic.getEndTextIndex());
-      applic.setFullText(insideText);
-
-      // Adjust start and end insert indicies if tags are inside a table
-      if (!applic.getFullText().contains(WordCoreUtil.TABLE) && applic.getFullText().contains(
-         WordCoreUtil.TABLE_CELL)) {
-         String findStartOfRow = toReturn.substring(0, applic.getStartInsertIndex());
-         int startRowIndex = findStartOfRow.lastIndexOf("<w:tr wsp:rsidR=");
-
-         if (startRowIndex != -1) {
-            // find end of row after the END configuration/feature tag
-            String findEndOfRow = toReturn.substring(matcher.end());
-            int endRowIndex = findEndOfRow.indexOf("</w:tr>");
-            if (endRowIndex != -1) {
-               endRowIndex = endRowIndex + matcher.end() + 7;
-               String fullText = toReturn.substring(startRowIndex, endRowIndex);
-               applic.setIsInTable(true);
-               applic.setStartInsertIndex(startRowIndex);
-               applic.setEndInsertIndex(startRowIndex + fullText.length());
-
-               fullText = fullText.replaceAll(WordCoreUtil.ENDFEATURE + "|" + WordCoreUtil.ENDCONFIG, "");
-               fullText = fullText.replaceAll(WordCoreUtil.BEGINFEATURE + "|" + WordCoreUtil.BEGINCONFIG, "");
-               applic.setFullText(fullText);
-            }
-         }
-      }
-
-      return applic;
-   }
-
-   private static String evaluateApplicabilityExpression(ApplicabilityBlock applic, String featureDefJson, String configuration, Map<String, List<String>> featureValuesAllowed) {
+   private String evaluateApplicabilityExpression(ApplicabilityBlock applic) {
       String applicabilityExpression = applic.getApplicabilityExpression();
       String toInsert = "";
       try {
@@ -263,10 +355,10 @@ public class WordMLApplicabilityHandler {
          parser.start();
 
          if (applic.getType().equals(ApplicabilityType.Feature)) {
-            toInsert = getValidFeatureContent(fullText, applic.isInTable(), parser.getIdValuesMap(),
-               parser.getOperators(), featureDefJson, featureValuesAllowed);
+            toInsert =
+               getValidFeatureContent(fullText, applic.isInTable(), parser.getIdValuesMap(), parser.getOperators());
          } else if (applic.getType().equals(ApplicabilityType.Configuration)) {
-            toInsert = getValidConfigurationContent(fullText, parser.getIdValuesMap(), configuration);
+            toInsert = getValidConfigurationContent(fullText, parser.getIdValuesMap());
          }
 
       } catch (RecognitionException ex) {
@@ -277,7 +369,7 @@ public class WordMLApplicabilityHandler {
       return toInsert;
    }
 
-   public static String getValidConfigurationContent(String fullText, HashMap<String, List<String>> id_value_map, String configuration) {
+   public String getValidConfigurationContent(String fullText, HashMap<String, List<String>> id_value_map) {
       Matcher match = WordCoreUtil.ELSE_PATTERN.matcher(fullText);
       String beginningText = fullText;
       String elseText = "";
@@ -293,7 +385,7 @@ public class WordMLApplicabilityHandler {
       String toReturn = "";
 
       // Note: this assumes only OR's are put in between configurations
-      List<String> values = id_value_map.get(configuration.toUpperCase());
+      List<String> values = id_value_map.get(configurationsAllowed.iterator().next().toUpperCase());
       if (values != null) {
          String value = values.get(0);
          if (!value.toLowerCase().equals("excluded")) {
@@ -304,9 +396,7 @@ public class WordMLApplicabilityHandler {
       return toReturn;
    }
 
-   private static String getValidFeatureContent(String fullText, boolean isInTable, HashMap<String, List<String>> featureIdValuesMap, ArrayList<String> featureOperators, String featureDefJson, Map<String, List<String>> featureValuesAllowed) {
-      ScriptEngineManager sem = new ScriptEngineManager();
-      ScriptEngine se = sem.getEngineByName("JavaScript");
+   private String getValidFeatureContent(String fullText, boolean isInTable, HashMap<String, List<String>> featureIdValuesMap, ArrayList<String> featureOperators) {
 
       Matcher match = WordCoreUtil.ELSE_PATTERN.matcher(fullText);
       String beginningText = fullText;
@@ -317,7 +407,7 @@ public class WordMLApplicabilityHandler {
          if (isInTable) {
             String temp = fullText.substring(0, match.end());
             // Find last occurence of table row
-            int lastIndexOf = temp.lastIndexOf("<w:tr wsp:rsidR=");
+            int lastIndexOf = temp.lastIndexOf(WordCoreUtil.START_TABLE_ROW);
             if (lastIndexOf != -1) {
                elseText = fullText.substring(lastIndexOf);
                elseText = elseText.replaceAll(WordCoreUtil.ELSE_EXP, "");
@@ -333,8 +423,7 @@ public class WordMLApplicabilityHandler {
       }
 
       String toReturn = "";
-      String expression =
-         createFeatureExpression(featureIdValuesMap, featureOperators, featureDefJson, featureValuesAllowed);
+      String expression = createFeatureExpression(featureIdValuesMap, featureOperators);
 
       boolean result = false;
       try {
@@ -352,9 +441,7 @@ public class WordMLApplicabilityHandler {
       return toReturn;
    }
 
-   private static String createFeatureExpression(HashMap<String, List<String>> featureIdValuesMap, ArrayList<String> featureOperators, String featureDefJson, Map<String, List<String>> featureValuesAllowed) {
-      ScriptEngineManager sem = new ScriptEngineManager();
-      ScriptEngine se = sem.getEngineByName("JavaScript");
+   private String createFeatureExpression(HashMap<String, List<String>> featureIdValuesMap, ArrayList<String> featureOperators) {
 
       String myFeatureExpression = "";
       Iterator<String> iterator = featureOperators.iterator();
@@ -362,7 +449,7 @@ public class WordMLApplicabilityHandler {
       for (String feature : featureIdValuesMap.keySet()) {
          List<String> values = featureIdValuesMap.get(feature);
 
-         String valueExpression = createValueExpression(feature, values, featureDefJson, featureValuesAllowed);
+         String valueExpression = createValueExpression(feature, values);
 
          boolean result = false;
 
@@ -387,7 +474,7 @@ public class WordMLApplicabilityHandler {
       return myFeatureExpression;
    }
 
-   private static String createValueExpression(String feature, List<String> values, String featureDefJson, Map<String, List<String>> featureValuesAllowed) {
+   private String createValueExpression(String feature, List<String> values) {
       String myValueExpression = "";
       for (String value : values) {
          if (value.equals("(")) {
@@ -399,7 +486,7 @@ public class WordMLApplicabilityHandler {
          } else if (value.equals("&")) {
             myValueExpression += "&& ";
          } else {
-            boolean eval = isFeatureValuePairValid(feature, value, featureDefJson, featureValuesAllowed);
+            boolean eval = isFeatureValuePairValid(feature, value);
             myValueExpression += eval + " ";
          }
       }
@@ -407,11 +494,11 @@ public class WordMLApplicabilityHandler {
       return myValueExpression;
    }
 
-   private static boolean isFeatureValuePairValid(String feature, String value, String featureDefJson, Map<String, List<String>> featureValuesAllowed) {
-      if (featureValuesAllowed.containsKey(feature)) {
-         Collection<String> validValues = featureValuesAllowed.get(feature);
+   private boolean isFeatureValuePairValid(String feature, String value) {
+      if (viewApplicabilitiesMap.containsKey(feature)) {
+         Collection<String> validValues = viewApplicabilitiesMap.get(feature);
 
-         value = value.equalsIgnoreCase("Default") ? getDefaultValue(feature, featureDefJson) : value;
+         value = value.equalsIgnoreCase("Default") ? getDefaultValue(feature) : value;
 
          if (containsIgnoreCase(validValues, value)) {
             return true;
@@ -421,7 +508,7 @@ public class WordMLApplicabilityHandler {
       return false;
    }
 
-   private static boolean containsIgnoreCase(Collection<String> validValues, String val) {
+   private boolean containsIgnoreCase(Collection<String> validValues, String val) {
       for (String validValue : validValues) {
          if (validValue.equalsIgnoreCase(val)) {
             return true;
@@ -430,11 +517,11 @@ public class WordMLApplicabilityHandler {
       return false;
    }
 
-   private static String getDefaultValue(String feature, String featureDefJson) {
+   private String getDefaultValue(String feature) {
       String toReturn = null;
       try {
          ObjectMapper mapper = new ObjectMapper();
-         FeatureDefinitionData[] featDataList = mapper.readValue(featureDefJson, FeatureDefinitionData[].class);
+         FeatureDefinitionData[] featDataList = mapper.readValue(featureDefinitionJson, FeatureDefinitionData[].class);
 
          for (FeatureDefinitionData featData : featDataList) {
             if (featData.getName().equalsIgnoreCase(feature)) {

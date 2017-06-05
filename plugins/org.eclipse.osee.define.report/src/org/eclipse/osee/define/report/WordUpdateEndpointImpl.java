@@ -60,6 +60,7 @@ public final class WordUpdateEndpointImpl implements WordUpdateEndpoint {
    @Override
    public Pair<String, Set<String>> renderWordTemplateContent(WordTemplateContentData data) throws OseeCoreException {
       WordTemplateContentRendererHandler wordRendererHandler = new WordTemplateContentRendererHandler(orcsApi, logger);
+
       return wordRendererHandler.renderWordML(data);
    }
 }

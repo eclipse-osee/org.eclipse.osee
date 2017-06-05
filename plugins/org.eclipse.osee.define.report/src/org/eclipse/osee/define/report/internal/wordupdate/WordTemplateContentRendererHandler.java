@@ -41,6 +41,8 @@ public class WordTemplateContentRendererHandler {
    private OrcsApi orcsApi;
    private Log logger;
 
+   private WordMLApplicabilityHandler applicHandler;
+
    public WordTemplateContentRendererHandler(OrcsApi orcsApi, Log logger) {
       this.orcsApi = orcsApi;
       this.logger = logger;
@@ -103,11 +105,16 @@ public class WordTemplateContentRendererHandler {
 
             if (!wtcData.getIsEdit() && (wtcData.getBranch().getViewId().notEqual(
                ArtifactId.SENTINEL) || isWtcViewIdValid(wtcData))) {
+
+               if (applicHandler == null) {
+                  this.applicHandler =
+                     new WordMLApplicabilityHandler(orcsApi, logger, wtcData.getBranch(), wtcData.getViewId());
+               }
+
                data = data.replaceAll(PL_STYLE_WITH_RETURN, "");
                data = data.replaceAll(PL_STYLE, "");
                data = data.replaceAll(PL_HIGHLIGHT, "");
-               data = WordMLApplicabilityHandler.previewValidApplicabilityContent(orcsApi, logger, data,
-                  wtcData.getBranch(), wtcData.getViewId());
+               data = applicHandler.previewValidApplicabilityContent(data);
                data = data.replaceAll(EMPTY_PARAGRAPHS, "");
             }
 
