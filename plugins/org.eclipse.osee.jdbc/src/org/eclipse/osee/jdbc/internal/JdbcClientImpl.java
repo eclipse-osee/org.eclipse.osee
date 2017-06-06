@@ -339,6 +339,13 @@ public final class JdbcClientImpl implements JdbcClient {
       return rowCount;
    }
 
+   @Override
+   public void runCall(String call, Object... data) {
+      try (JdbcStatement stmt = getStatement()) {
+         stmt.runPreparedQuery(call, data);
+      }
+   }
+
    private static final String LimitStart = "select * from (";
    private static final String LimitEnd = ") where rownum <= ?";
 

@@ -71,6 +71,8 @@ public interface JdbcClient {
     */
    <T> T runFunction(T defaultValue, String function, Object... data);
 
+   void runCall(String call, Object... data);
+
    Map<String, String> getStatistics();
 
    //////////  QUESTIONABLE? MAYBE ONLY FOR TX SUPPORT
