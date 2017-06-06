@@ -22,6 +22,7 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.jdbc.JdbcStatement;
+import org.eclipse.osee.jdbc.OseePreparedStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.db.internal.sql.join.ExportImportJoinQuery;
@@ -45,11 +46,11 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
 
    private static final String DELETE_RELATIONS = "delete from osee_relation_link where gamma_id = ?";
 
-   private final List<Object[]> relationDeleteData = new ArrayList<>(14000);
    private final List<Long> obsoleteGammas = new ArrayList<>();
    private final StringBuilder addressingBackup = new StringBuilder(100000);
-   private final List<Object[]> addressingToDelete = new ArrayList<>(13000);
-   private final List<Object[]> updateAddressingData = new ArrayList<>(5000);
+   private OseePreparedStatement deleteAddressing;
+   private OseePreparedStatement updateAddressing;
+   private OseePreparedStatement deleteRelations;
    private ExportImportJoinQuery gammaJoin;
    private JdbcConnection connection;
    private long previousRelationTypeId;
@@ -58,9 +59,8 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
    private long netGamma;
    private String netRationale;
    boolean materiallyDifferent;
-   boolean updateAddressing;
+   boolean updatedAddressing;
    private int counter;
-   private JdbcStatement chStmt;
 
    private final SqlJoinFactory joinFactory;
    private final Console console;
@@ -83,17 +83,17 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
       previousArtifactAId = -1;
       previousArtiafctBId = -1;
       materiallyDifferent = true;
-      relationDeleteData.clear();
       obsoleteGammas.clear();
-      updateAddressingData.clear();
-      addressingToDelete.clear();
+
+      updateAddressing = getJdbcClient().getBatchStatement(connection, UPDATE_TXS_GAMMAS);
+      deleteAddressing = getJdbcClient().getBatchStatement(connection, DELETE_TXS);
+      deleteRelations = getJdbcClient().getBatchStatement(connection, DELETE_RELATIONS);
       addressingBackup.delete(0, 999999999);
-      updateAddressing = false;
+      updatedAddressing = false;
 
       previousNetGammaId = -1;
       previousTransactionId = -1;
       previousBranchId = -1;
-      chStmt = getJdbcClient().getStatement();
       gammaJoin = joinFactory.createExportImportJoinQuery();
 
       counter = 0;
@@ -104,36 +104,33 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
       this.connection = connection;
       console.writeln("Consolidating relations:");
       init();
+      try {
+         getJdbcClient().runQuery(this::findObsoleteRelations, JdbcConstants.JDBC__MAX_FETCH_SIZE, SELECT_RELATIONS);
 
-      findObsoleteRelations();
+         console.writeln("gamma join size: [%s]", gammaJoin.size());
 
-      console.writeln("gamma join size: [%s]", gammaJoin.size());
-
-      determineAffectedAddressing();
+         determineAffectedAddressing();
+      } finally {
+         gammaJoin.delete();
+      }
 
       updateGammas();
       console.writeln("...done.");
       return null;
    }
 
-   private void findObsoleteRelations() throws OseeCoreException {
-      try {
-         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, SELECT_RELATIONS);
-         while (chStmt.next()) {
-            long relationTypeId = chStmt.getLong("rel_link_type_id");
-            int artifactAId = chStmt.getInt("a_art_id");
-            int artiafctBId = chStmt.getInt("b_art_id");
+   private void findObsoleteRelations(JdbcStatement stmt) {
+      long relationTypeId = stmt.getLong("rel_link_type_id");
+      int artifactAId = stmt.getInt("a_art_id");
+      int artiafctBId = stmt.getInt("b_art_id");
 
-            if (isNextConceptualRelation(relationTypeId, artifactAId, artiafctBId)) {
-               consolidate();
-               initNextConceptualRelation(relationTypeId, artifactAId, artiafctBId);
-            } else {
-               obsoleteGammas.add(chStmt.getLong("gamma_id"));
-               relationMateriallyDiffers(chStmt);
-            }
-         }
-      } finally {
-         chStmt.close();
+      if (isNextConceptualRelation(relationTypeId, artifactAId, artiafctBId)) {
+         consolidate();
+         initNextConceptualRelation(relationTypeId, artifactAId, artiafctBId, stmt.getLong("gamma_id"),
+            stmt.getString("rationale"));
+      } else {
+         obsoleteGammas.add(stmt.getLong("gamma_id"));
+         relationMateriallyDiffers(stmt.getString("rationale"));
       }
    }
 
@@ -142,7 +139,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
          gammaJoin.add(netGamma, netGamma);
          for (Long obsoleteGamma : obsoleteGammas) {
             gammaJoin.add(netGamma, obsoleteGamma);
-            relationDeleteData.add(new Long[] {obsoleteGamma});
+            deleteRelations.addToBatch(obsoleteGamma);
          }
       }
       if (materiallyDifferent) {
@@ -155,48 +152,38 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
    private void determineAffectedAddressing() throws OseeCoreException {
       gammaJoin.store();
 
-      try {
-         console.writeln("counter: [%s]", counter);
-         console.writeln("query id: [%s]", gammaJoin.getQueryId());
-         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, SELECT_RELATION_ADDRESSING,
-            gammaJoin.getQueryId());
+      console.writeln("counter: [%s]", counter);
+      console.writeln("query id: [%s]", gammaJoin.getQueryId());
+      getJdbcClient().runQuery(this::determineAffectedAddressing, JdbcConstants.JDBC__MAX_FETCH_SIZE,
+         SELECT_RELATION_ADDRESSING, gammaJoin.getQueryId());
+   }
 
-         while (chStmt.next()) {
-            long obsoleteGammaId = chStmt.getLong("gamma_id");
-            long transactionId = chStmt.getLong("transaction_id");
-            long netGammaId = chStmt.getLong("net_gamma_id");
-            int modType = chStmt.getInt("mod_type");
-            TxChange txCurrent = TxChange.getChangeType(chStmt.getInt("tx_current"));
-            long branchId = chStmt.getLong("branch_id");
+   private void determineAffectedAddressing(JdbcStatement stmt) {
+      long obsoleteGammaId = stmt.getLong("gamma_id");
+      long transactionId = stmt.getLong("transaction_id");
+      long netGammaId = stmt.getLong("net_gamma_id");
+      int modType = stmt.getInt("mod_type");
+      TxChange txCurrent = TxChange.getChangeType(stmt.getInt("tx_current"));
+      long branchId = stmt.getLong("branch_id");
 
-            if (isNextAddressing(netGammaId, transactionId)) {
-               if (updateAddressing) {
-                  updateAddressingData.add(new Object[] {
-                     previousNetGammaId,
-                     netModType.getValue(),
-                     netTxCurrent.getValue(),
-                     previousBranchId,
-                     previousTransactionId,
-                     previousObsoleteGammaId});
-               }
-               updateAddressing = obsoleteGammaId != netGammaId;
-               previousNetGammaId = netGammaId;
-               previousObsoleteGammaId = obsoleteGammaId;
-               previousTransactionId = transactionId;
-               previousBranchId = branchId;
-               netModType = ModificationType.getMod(modType);
-               netTxCurrent = txCurrent;
-            } else {
-               addressingToDelete.add(new Object[] {branchId, transactionId, obsoleteGammaId});
-               computeNetAddressing(ModificationType.getMod(modType), txCurrent);
-            }
-
-            writeAddressingBackup(obsoleteGammaId, transactionId, netGammaId, modType, txCurrent);
+      if (isNextAddressing(netGammaId, transactionId)) {
+         if (updatedAddressing) {
+            updateAddressing.addToBatch(previousNetGammaId, netModType.getValue(), netTxCurrent.getValue(),
+               previousBranchId, previousTransactionId, previousObsoleteGammaId);
          }
-      } finally {
-         chStmt.close();
+         updatedAddressing = obsoleteGammaId != netGammaId;
+         previousNetGammaId = netGammaId;
+         previousObsoleteGammaId = obsoleteGammaId;
+         previousTransactionId = transactionId;
+         previousBranchId = branchId;
+         netModType = ModificationType.getMod(modType);
+         netTxCurrent = txCurrent;
+      } else {
+         deleteAddressing.addToBatch(branchId, transactionId, obsoleteGammaId);
+         computeNetAddressing(ModificationType.getMod(modType), txCurrent);
       }
-      gammaJoin.delete();
+
+      writeAddressingBackup(obsoleteGammaId, transactionId, netGammaId, modType, txCurrent);
    }
 
    private boolean isNextAddressing(long netGammaId, long transactionId) {
@@ -206,12 +193,12 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
    private void computeNetAddressing(ModificationType modificationType, TxChange txCurrent) throws OseeStateException {
       if (netTxCurrentNeedsUpdate(txCurrent)) {
          netTxCurrent = txCurrent;
-         updateAddressing = true;
+         updatedAddressing = true;
       }
 
       if (netModTypeNeedsUpdate(modificationType)) {
          netModType = modificationType;
-         updateAddressing = true;
+         updatedAddressing = true;
       } else if (!ignoreNetModType(modificationType)) {
          throw new OseeStateException("    modType [%s] != [%s]", modificationType, netModType);
       }
@@ -241,14 +228,9 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
    }
 
    private void updateGammas() throws OseeCoreException {
-      console.writeln("Number of txs rows deleted: [%s]",
-         getJdbcClient().runBatchUpdate(connection, DELETE_TXS, addressingToDelete));
-
-      console.writeln("Number of relation rows deleted: [%s]",
-         getJdbcClient().runBatchUpdate(connection, DELETE_RELATIONS, relationDeleteData));
-
-      console.writeln("Number of txs rows updated: [%s]",
-         getJdbcClient().runBatchUpdate(connection, UPDATE_TXS_GAMMAS, updateAddressingData));
+      console.writeln("Number of txs rows deleted: [%s]", deleteAddressing.execute());
+      console.writeln("Number of relation rows deleted: [%s]", deleteRelations.execute());
+      console.writeln("Number of txs rows updated: [%s]", updateAddressing.execute());
    }
 
    private void writeAddressingBackup(long obsoleteGammaId, long transactionId, long netGammaId, int modType, TxChange txCurrent) {
@@ -271,20 +253,19 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
       return previousRelationTypeId != relationTypeId || previousArtifactAId != artifactAId || previousArtiafctBId != artiafctBId;
    }
 
-   private void relationMateriallyDiffers(JdbcStatement chStmt) throws OseeCoreException {
+   private void relationMateriallyDiffers(String currentRationale) throws OseeCoreException {
       if (!materiallyDifferent) {
-         String currentRationale = chStmt.getString("rationale");
          materiallyDifferent |= Strings.isValid(currentRationale) && !currentRationale.equals(netRationale);
       }
    }
 
-   private void initNextConceptualRelation(long relationTypeId, int artifactAId, int artiafctBId) throws OseeCoreException {
+   private void initNextConceptualRelation(long relationTypeId, int artifactAId, int artiafctBId, long gammaId, String rationale) throws OseeCoreException {
       obsoleteGammas.clear();
       previousRelationTypeId = relationTypeId;
       previousArtifactAId = artifactAId;
       previousArtiafctBId = artiafctBId;
-      netGamma = chStmt.getInt("gamma_id");
-      netRationale = chStmt.getString("rationale");
+      netGamma = gammaId;
+      netRationale = rationale;
       materiallyDifferent = false;
    }
 }
