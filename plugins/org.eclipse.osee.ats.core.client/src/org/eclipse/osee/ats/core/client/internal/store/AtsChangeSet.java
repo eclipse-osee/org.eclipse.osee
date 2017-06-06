@@ -355,7 +355,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          }
       }
       if (!found) {
-         throw new OseeStateException("Attribute Id %d does not exist on Artifact %s", attrId, artifact);
+         throw new OseeStateException("Attribute Id %s does not exist on Artifact %s", attrId, artifact);
       }
       add(artifact);
    }
