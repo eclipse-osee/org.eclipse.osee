@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
@@ -107,32 +108,24 @@ public class StateDefinition extends AbstractWorkDefItem implements IAtsStateDef
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + (getFullName() == null ? 0 : getFullName().hashCode());
+      result = prime * result + (getName() == null ? 0 : getName().hashCode());
       return result;
    }
 
    @Override
    public boolean equals(Object obj) {
+      boolean equals = false;
       if (this == obj) {
-         return true;
-      }
-      if (obj == null) {
-         return false;
-      }
-      if (getClass() != obj.getClass()) {
-         return false;
-      }
-      IAtsStateDefinition other = (IAtsStateDefinition) obj;
-      if (getFullName() == null) {
-         if (other.getFullName() != null) {
-            return false;
-         } else {
-            return false;
+         equals = true;
+      } else if (obj != null) {
+         if (getClass() == obj.getClass()) {
+            IAtsStateDefinition other = (IAtsStateDefinition) obj;
+            if (Strings.isValid(getName()) && Strings.isValid(other.getName()) && getName().equals(other.getName())) {
+               equals = true;
+            }
          }
-      } else if (!getFullName().equals(other.getFullName())) {
-         return false;
       }
-      return true;
+      return equals;
    }
 
    @Override

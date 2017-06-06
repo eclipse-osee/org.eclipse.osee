@@ -240,6 +240,11 @@ public class XComboViewer extends GenericXWidget {
 
    public void setSelected(List<Object> selected) {
       comboViewer.setSelection(new StructuredSelection(selected.toArray(new Object[selected.size()])));
+      if (selected.isEmpty()) {
+         selected = null;
+      } else {
+         this.selected = selected.iterator().next();
+      }
       updateListWidget();
    }
 
