@@ -40,7 +40,7 @@ public interface IAtsConfigQuery {
 
    IAtsConfigQuery andAttr(AttributeTypeId attributeType, Collection<String> values, QueryOption... queryOptions) throws OseeCoreException;
 
-   IAtsConfigQuery andUuids(Long... uuids);
+   IAtsConfigQuery andId(ArtifactId id);
 
    IAtsConfigQuery andProgram(IAtsProgram program);
 

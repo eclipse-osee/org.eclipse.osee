@@ -88,8 +88,8 @@ public class TeamDefinitions {
    }
 
    public static IAtsTeamDefinition getTopTeamDefinition(IAtsQueryService queryService) throws OseeCoreException {
-      return queryService.createQuery(AtsArtifactTypes.TeamDefinition).andUuids(
-         AtsArtifactToken.TopTeamDefinition.getId()).getOneOrNull(IAtsTeamDefinition.class);
+      return queryService.createQuery(AtsArtifactTypes.TeamDefinition).andId(
+         AtsArtifactToken.TopTeamDefinition).getOneOrNull(IAtsTeamDefinition.class);
    }
 
    public static Set<IAtsTeamDefinition> getTeamReleaseableDefinitions(Active active, IAtsQueryService queryService) throws OseeCoreException {

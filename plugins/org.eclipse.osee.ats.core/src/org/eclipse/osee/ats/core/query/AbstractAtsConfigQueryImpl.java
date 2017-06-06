@@ -45,7 +45,7 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
 
    protected final List<AtsAttributeQuery> andAttr;
    protected List<IArtifactType> artifactTypes;
-   protected Collection<Long> uuids;
+   protected ArtifactId artifactId;
    protected final IAtsServices services;
    protected Collection<Long> aiUuids;
    protected List<ArtifactId> onlyIds = null;
@@ -55,7 +55,6 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
       this.services = services;
       andAttr = new ArrayList<>();
       aiUuids = new ArrayList<>();
-      uuids = new ArrayList<>();
       queryFilters = new ArrayList<>();
    }
 
@@ -76,8 +75,8 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
          queryAndIsOfType(artifactTypes);
       }
 
-      if (uuids != null && uuids.size() > 0) {
-         addUuidCriteria(uuids);
+      if (artifactId != null) {
+         queryAndArtifactId(artifactId);
       }
 
       addAttributeCriteria();
@@ -166,8 +165,8 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
    }
 
    @Override
-   public IAtsConfigQuery andUuids(Long... uuids) {
-      this.uuids = Arrays.asList(uuids);
+   public IAtsConfigQuery andId(ArtifactId artifactId) {
+      this.artifactId = artifactId;
       return this;
    }
 
@@ -220,17 +219,7 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
 
    public abstract void queryAnd(AttributeTypeId attrType, String value, QueryOption[] queryOption);
 
-   private void addUuidCriteria(Collection<Long> uuids) {
-      if (uuids != null) {
-         List<Integer> artIds = new LinkedList<>();
-         for (Long uuid : uuids) {
-            artIds.add(uuid.intValue());
-         }
-         queryAndLocalIds(artIds);
-      }
-   }
-
-   public abstract void queryAndLocalIds(List<Integer> artIds);
+   public abstract void queryAndArtifactId(ArtifactId artifactId);
 
    public abstract void queryAnd(AttributeTypeId attrType, Collection<String> values);
 

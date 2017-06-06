@@ -94,8 +94,8 @@ public class AtsConfigQueryImpl extends AbstractAtsConfigQueryImpl {
    }
 
    @Override
-   public void queryAndLocalIds(List<Integer> artIds) {
-      getQuery().andLocalIds(artIds);
+   public void queryAndArtifactId(ArtifactId artifactId) {
+      getQuery().andLocalId(artifactId);
    }
 
    @Override

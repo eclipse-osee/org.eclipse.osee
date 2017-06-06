@@ -68,7 +68,7 @@ public class SqlHandlerFactoryUtilTest {
    public void testQueryModuleFactory() throws Exception {
       List<Criteria> criteria = new ArrayList<>();
       criteria.add(new CriteriaArtifactGuids(null));
-      criteria.add(new CriteriaArtifactIds((Collection<? extends ArtifactId>) null));
+      criteria.add(new CriteriaArtifactIds(Collections.emptyList()));
       criteria.add(new CriteriaRelationTypeFollow(null));
       criteria.add(new CriteriaArtifactType(null, null, true));
       criteria.add(new CriteriaRelationTypeExists(null));

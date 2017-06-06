@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.rest.internal.query;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.core.query.AbstractAtsConfigQueryImpl;
 import org.eclipse.osee.ats.rest.IAtsServer;
@@ -95,12 +94,8 @@ public class AtsConfigQueryImpl extends AbstractAtsConfigQueryImpl {
    }
 
    @Override
-   public void queryAndLocalIds(List<Integer> artIds) {
-      List<Long> results = new LinkedList<>();
-      for (Integer artId : artIds) {
-         results.add(new Long(artId));
-      }
-      getQuery().andUuids(results);
+   public void queryAndArtifactId(ArtifactId artifactId) {
+      getQuery().andId(artifactId);
    }
 
    @Override

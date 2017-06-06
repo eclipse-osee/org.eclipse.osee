@@ -24,8 +24,13 @@ public class CriteriaArtifactIds extends Criteria {
    private final ArtifactId id;
 
    public CriteriaArtifactIds(Collection<? extends ArtifactId> ids) {
-      this.ids = ids;
-      id = null;
+      if (ids.size() == 1) {
+         id = ids.iterator().next();
+         this.ids = null;
+      } else {
+         this.ids = ids;
+         id = null;
+      }
    }
 
    public CriteriaArtifactIds(ArtifactId id) {
