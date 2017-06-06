@@ -98,22 +98,17 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
 
    private Map<String, MetaData> getTargetDbMetadata() throws SQLException, OseeCoreException {
       Map<String, MetaData> targetDbMetadata = new HashMap<>();
-      JdbcConnection connection = service.getConnection();
-      try {
+      try (JdbcConnection connection = service.getConnection()) {
          DatabaseMetaData dbMetaData = connection.getMetaData();
          for (String sourceTables : importMetadataMap.keySet()) {
             processMetaData(targetDbMetadata, dbMetaData, sourceTables);
          }
-      } finally {
-         connection.close();
       }
       return targetDbMetadata;
    }
 
    private void processMetaData(Map<String, MetaData> targetDbMetadata, DatabaseMetaData dbMetaData, String targetTable) throws SQLException, OseeCoreException {
-      ResultSet resultSet = null;
-      try {
-         resultSet = dbMetaData.getTables(null, null, null, new String[] {"TABLE"});
+      try (ResultSet resultSet = dbMetaData.getTables(null, null, null, new String[] {"TABLE"})) {
          if (resultSet != null) {
             while (resultSet.next()) {
                String tableName = resultSet.getString("TABLE_NAME");
@@ -125,10 +120,6 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
                   processColumnMetaData(currentMetadata, dbMetaData, schemaName, tableName);
                }
             }
-         }
-      } finally {
-         if (resultSet != null) {
-            resultSet.close();
          }
       }
    }

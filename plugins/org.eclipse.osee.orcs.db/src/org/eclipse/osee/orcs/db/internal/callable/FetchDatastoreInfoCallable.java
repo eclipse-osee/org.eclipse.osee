@@ -79,8 +79,7 @@ public class FetchDatastoreInfoCallable extends AbstractDatastoreCallable<DataSt
    }
 
    private void addDbMetaData(Map<String, String> props) throws OseeCoreException {
-      JdbcConnection connection = getJdbcClient().getConnection();
-      try {
+      try (JdbcConnection connection = getJdbcClient().getConnection()) {
          DatabaseMetaData meta = connection.getMetaData();
          props.put("db.connection.url", meta.getURL());
          props.put("db.connection.username", meta.getUserName());
@@ -93,9 +92,6 @@ public class FetchDatastoreInfoCallable extends AbstractDatastoreCallable<DataSt
 
       } catch (SQLException ex) {
          OseeCoreException.wrapAndThrow(ex);
-      } finally {
-         connection.close();
       }
    }
-
 }

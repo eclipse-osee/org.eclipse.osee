@@ -11,7 +11,6 @@
 package org.eclipse.osee.jdbc.internal;
 
 import static org.eclipse.osee.jdbc.JdbcException.newJdbcException;
-import java.sql.Connection;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,8 +35,11 @@ public class PooledConnectionProvider implements JdbcConnectionProvider {
 
    @Override
    public JdbcConnectionImpl getConnection(JdbcConnectionInfo dbInfo) throws JdbcException {
-      DataSource dataSource = getDataSource(dbInfo);
-      return getOseeConnection(dataSource);
+      try {
+         return new JdbcConnectionImpl(getDataSource(dbInfo).getConnection());
+      } catch (Exception ex) {
+         throw newJdbcException(ex);
+      }
    }
 
    private DataSource getDataSource(final JdbcConnectionInfo dbInfo) {
@@ -57,16 +59,6 @@ public class PooledConnectionProvider implements JdbcConnectionProvider {
          }
       }
       return provider.get();
-   }
-
-   private JdbcConnectionImpl getOseeConnection(DataSource dataSource) throws JdbcException {
-      Connection connection = null;
-      try {
-         connection = dataSource.getConnection();
-      } catch (Exception ex) {
-         throw newJdbcException(ex);
-      }
-      return new JdbcConnectionImpl(connection);
    }
 
    @Override

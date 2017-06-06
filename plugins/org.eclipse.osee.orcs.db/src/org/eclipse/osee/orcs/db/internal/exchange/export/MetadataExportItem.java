@@ -43,19 +43,14 @@ public class MetadataExportItem extends AbstractXmlExportItem {
    @Override
    protected void doWork(Appendable appendable) throws Exception {
       ExportImportXml.openXmlNode(appendable, ExportImportXml.METADATA);
-      try {
-         JdbcConnection connection = jdbcClient.getConnection();
-         try {
-            DatabaseMetaData metaData = connection.getMetaData();
-            String[] tableTypes = getTypes(metaData);
-            String schema = getSchema(metaData);
-            for (AbstractExportItem item : exportItems) {
-               if (!item.equals(this) && Strings.isValid(item.getSource())) {
-                  processMetaData(appendable, metaData, schema, tableTypes, item.getSource());
-               }
+      try (JdbcConnection connection = jdbcClient.getConnection()) {
+         DatabaseMetaData metaData = connection.getMetaData();
+         String[] tableTypes = getTypes(metaData);
+         String schema = getSchema(metaData);
+         for (AbstractExportItem item : exportItems) {
+            if (!item.equals(this) && Strings.isValid(item.getSource())) {
+               processMetaData(appendable, metaData, schema, tableTypes, item.getSource());
             }
-         } finally {
-            connection.close();
          }
       } finally {
          ExportImportXml.closeXmlNode(appendable, ExportImportXml.METADATA);

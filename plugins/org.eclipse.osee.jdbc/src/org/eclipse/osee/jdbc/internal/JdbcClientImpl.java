@@ -194,11 +194,8 @@ public final class JdbcClientImpl implements JdbcClient {
 
    @Override
    public int runBatchUpdate(String query, Iterable<Object[]> dataList) throws JdbcException {
-      JdbcConnection connection = getConnection();
-      try {
+      try (JdbcConnection connection = getConnection()) {
          return runBatchUpdate(connection, query, dataList);
-      } finally {
-         connection.close();
       }
    }
 

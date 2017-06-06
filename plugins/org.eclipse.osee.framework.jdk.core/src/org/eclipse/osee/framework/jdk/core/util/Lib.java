@@ -16,7 +16,6 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -1689,11 +1688,11 @@ public final class Lib {
       return toReturn;
    }
 
-   public static void close(Closeable closable) {
+   public static void close(AutoCloseable closable) {
       if (closable != null) {
          try {
             closable.close();
-         } catch (IOException ex) {
+         } catch (Exception ex) {
             // Do Nothing
          }
       }
