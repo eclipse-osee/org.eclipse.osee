@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.framework.core.model.change.ChangeVersion;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
@@ -33,7 +34,6 @@ import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.accessor.UpdatePreviousTxCurrent;
-import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
  * @author Ryan D. Brooks
@@ -58,7 +58,6 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
 
    private static final String UPDATE_SOURCE_BRANCH_STATE = "update osee_branch set branch_state=? where branch_id=?";
 
-   private final SqlJoinFactory joinFactory;
    private final IdentityManager idManager;
    private final ArtifactId committer;
    private final BranchReadable sourceBranch;
@@ -68,9 +67,8 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
 
    private final Long buildVersionId;
 
-   public CommitBranchDatabaseTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, IdentityManager idManager, ArtifactId committer, BranchReadable sourceBranch, BranchReadable destinationBranch, BranchId mergeBranch, List<ChangeItem> changes, Long buildVersionId) {
+   public CommitBranchDatabaseTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, IdentityManager idManager, ArtifactId committer, BranchReadable sourceBranch, BranchReadable destinationBranch, BranchId mergeBranch, List<ChangeItem> changes, Long buildVersionId) {
       super(logger, session, jdbcClient);
-      this.joinFactory = joinFactory;
       this.idManager = idManager;
       this.committer = committer;
       this.sourceBranch = sourceBranch;
@@ -126,24 +124,11 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
    }
 
    private void updatePreviousCurrentsOnDestinationBranch(JdbcConnection connection) throws OseeCoreException {
-      UpdatePreviousTxCurrent updater =
-         new UpdatePreviousTxCurrent(getJdbcClient(), joinFactory, connection, destinationBranch);
+      UpdatePreviousTxCurrent updater = new UpdatePreviousTxCurrent(getJdbcClient(), connection, destinationBranch);
       for (ChangeItem change : changes) {
-         switch (change.getChangeType()) {
-            case ARTIFACT_CHANGE:
-               updater.addArtifact(change.getItemId());
-               break;
-            case ATTRIBUTE_CHANGE:
-               updater.addAttribute(change.getItemId());
-               break;
-            case RELATION_CHANGE:
-               updater.addRelation(change.getItemId());
-               break;
-            case TUPLE_CHANGE:
-               updater.addTuple(change.getCurrentVersion().getGammaId());
-               break;
-            default:
-               throw new OseeStateException("Unexpected change type");
+         ChangeVersion destVersion = change.getDestinationVersion();
+         if (destVersion.isValid()) {
+            updater.addGamma(destVersion.getGammaId());
          }
       }
       updater.updateTxNotCurrents();

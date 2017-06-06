@@ -88,7 +88,7 @@ public class BranchModule {
 
          @Override
          public void createBranchCopyTx(CreateBranchData branchData) {
-            jdbcClient.runTransaction(new BranchCopyTxCallable(jdbcClient, joinFactory, idManager, branchData,
+            jdbcClient.runTransaction(new BranchCopyTxCallable(jdbcClient, idManager, branchData,
                OseeCodeVersion.getVersionId()));
          }
 

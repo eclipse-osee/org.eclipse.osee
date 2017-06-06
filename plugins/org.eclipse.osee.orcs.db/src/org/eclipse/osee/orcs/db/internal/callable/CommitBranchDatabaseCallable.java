@@ -97,7 +97,7 @@ public class CommitBranchDatabaseCallable extends AbstractDatastoreCallable<Tran
       List<ChangeItem> changes = callComputeChanges(mergeBranch);
 
       CancellableCallable<TransactionId> commitCallable =
-         new CommitBranchDatabaseTxCallable(getLogger(), getSession(), getJdbcClient(), joinFactory, idManager,
+         new CommitBranchDatabaseTxCallable(getLogger(), getSession(), getJdbcClient(), idManager,
             committer, source, destination, mergeBranch, changes, OseeCodeVersion.getVersionId());
       TransactionId newTx = callAndCheckForCancel(commitCallable);
 
