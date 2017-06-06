@@ -8,10 +8,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.api.workflow;
+package org.eclipse.osee.framework.core.data;
 
-import org.eclipse.osee.framework.core.data.AttributeId;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -21,11 +19,5 @@ public interface IAttribute<T> extends AttributeId {
 
    public T getValue() throws OseeCoreException;
 
-   public Object getData();
-
-   public void delete() throws OseeCoreException;
-
-   public void setValue(T value) throws OseeCoreException;
-
-   public AttributeTypeToken getAttrType();
+   public AttributeTypeId getAttributeType();
 }

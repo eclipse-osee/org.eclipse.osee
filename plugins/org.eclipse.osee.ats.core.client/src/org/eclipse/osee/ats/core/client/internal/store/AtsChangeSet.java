@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
-import org.eclipse.osee.ats.api.workflow.IAttribute;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.util.AbstractAtsChangeSet;
@@ -33,6 +32,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -228,7 +228,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    public <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, AttributeTypeId attributeType, T value) throws OseeCoreException {
       Artifact artifact = AtsClientService.get().getArtifact(workItem);
       @SuppressWarnings("unchecked")
-      Attribute<T> attribute = (Attribute<T>) attr.getData();
+      Attribute<T> attribute = (Attribute<T>) attr;
       attribute.setValue(value);
       add(artifact);
    }
@@ -236,7 +236,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    @Override
    public <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr) throws OseeCoreException {
       Artifact artifact = AtsClientService.get().getArtifact(workItem);
-      Attribute<?> attribute = (Attribute<?>) attr.getData();
+      Attribute<?> attribute = (Attribute<?>) attr;
       attribute.delete();
       add(artifact);
    }

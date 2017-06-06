@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
-import org.eclipse.osee.ats.api.workflow.IAttribute;
+import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 
@@ -167,7 +167,7 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
                AtsAttributeTypes.Role)) {
                UserRole storedRole = new UserRole((String) attr.getValue());
                if (storedRole.equals(delUserRole)) {
-                  attr.delete();
+                  changes.deleteAttribute(peerRev, attr);
                }
             }
          }

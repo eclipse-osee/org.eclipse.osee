@@ -21,13 +21,12 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
-import org.eclipse.osee.ats.api.workflow.IAttribute;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
-import org.eclipse.osee.ats.core.client.internal.workdef.AttributeWrapper;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -148,8 +147,7 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
    public <T> Collection<IAttribute<T>> getAttributes(IAtsWorkItem workItem, AttributeTypeId attributeType) throws OseeCoreException {
       List<IAttribute<T>> attrs = new ArrayList<>();
       for (Attribute<Object> attr : AtsClientService.get().getArtifact(workItem).getAttributes(attributeType)) {
-         attrs.add(new AttributeWrapper<T>((Attribute<T>) attr));
-
+         attrs.add((IAttribute<T>) attr);
       }
       return attrs;
    }
@@ -162,14 +160,14 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
    @Override
    public <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, AttributeTypeId attributeType, T value) throws OseeCoreException {
       @SuppressWarnings("unchecked")
-      Attribute<T> attribute = (Attribute<T>) attr.getData();
+      Attribute<T> attribute = (Attribute<T>) attr;
       attribute.setValue(value);
    }
 
    @Override
    public <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr) throws OseeCoreException {
       Artifact artifact = AtsClientService.get().getArtifact(workItem);
-      Attribute<?> attribute = (Attribute<?>) attr.getData();
+      Attribute<?> attribute = (Attribute<?>) attr;
       Attribute<?> attributeById = artifact.getAttributeById(attribute.getId(), false);
       attributeById.delete();
    }
@@ -216,7 +214,7 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
          changes.setValue(workItem, attr, attributeType, value);
       } else {
          @SuppressWarnings("unchecked")
-         Attribute<T> attribute = (Attribute<T>) attr.getData();
+         Attribute<T> attribute = (Attribute<T>) attr;
          attribute.setValue(value);
       }
    }
@@ -227,7 +225,7 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
          changes.deleteAttribute(workItem, attr);
       } else {
          Artifact artifact = AtsClientService.get().getArtifact(workItem);
-         Attribute<?> attribute = (Attribute<?>) attr.getData();
+         Attribute<?> attribute = (Attribute<?>) attr;
          Attribute<?> attributeById = artifact.getAttributeById(attribute.getId(), false);
          attributeById.delete();
       }
@@ -259,7 +257,7 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
       Assert.isNotNull(attributeType, "Attribute Type can not be null");
       List<IAttribute<T>> attributes = new LinkedList<>();
       for (Attribute<Object> attr : AtsClientService.get().getArtifact(artifact).getAttributes(attributeType)) {
-         attributes.add(new AttributeWrapper<T>((Attribute<T>) attr));
+         attributes.add((IAttribute<T>) attr);
       }
       return attributes;
    }
@@ -269,7 +267,7 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
    public <T> Collection<IAttribute<T>> getAttributes(ArtifactId artifact) {
       List<IAttribute<T>> attributes = new LinkedList<>();
       for (Attribute<?> attr : AtsClientService.get().getArtifact(artifact).getAttributes()) {
-         attributes.add(new AttributeWrapper<T>((Attribute<T>) attr));
+         attributes.add((IAttribute<T>) attr);
       }
       return attributes;
    }

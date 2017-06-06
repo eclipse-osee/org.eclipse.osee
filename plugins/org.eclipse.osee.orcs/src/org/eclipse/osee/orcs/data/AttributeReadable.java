@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.data;
 
-import org.eclipse.osee.framework.core.data.AttributeId;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -20,17 +20,19 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  * @author Roberto E. Escobar
  * @author Andrew M. Finkbeiner
  */
-public interface AttributeReadable<T> extends AttributeId, OrcsReadable {
+public interface AttributeReadable<T> extends OrcsReadable, IAttribute<T> {
 
    long getGammaId();
 
    @Override
    ModificationType getModificationType();
 
+   @Override
    AttributeTypeToken getAttributeType() throws OseeCoreException;
 
    boolean isOfType(AttributeTypeId otherAttributeType) throws OseeCoreException;
 
+   @Override
    T getValue() throws OseeCoreException;
 
    String getDisplayableString() throws OseeCoreException;

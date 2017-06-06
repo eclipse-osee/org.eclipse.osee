@@ -21,10 +21,10 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
-import org.eclipse.osee.ats.api.workflow.IAttribute;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -170,7 +170,7 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
    public <T> Collection<IAttribute<T>> getAttributes(IAtsWorkItem workItem, AttributeTypeId attributeType) throws OseeCoreException {
       Collection<IAttribute<T>> attrs = new ArrayList<>();
       for (AttributeReadable<Object> attr : getArtifact(workItem).getAttributes(attributeType)) {
-         attrs.add(new AttributeWrapper<T>((AttributeReadable<T>) attr));
+         attrs.add((IAttribute<T>) attr);
       }
       return attrs;
    }
@@ -247,7 +247,7 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
       Assert.isNotNull(attributeType, "Attribute Type can not be null");
       List<IAttribute<T>> attributes = new LinkedList<>();
       for (AttributeReadable<Object> attr : ((ArtifactReadable) artifact).getAttributes(attributeType)) {
-         attributes.add(new AttributeReadableWrapper<T>((AttributeReadable<T>) attr));
+         attributes.add((IAttribute<T>) attr);
       }
       return attributes;
    }
@@ -262,7 +262,7 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
    public <T> Collection<IAttribute<T>> getAttributes(ArtifactId artifact) {
       List<IAttribute<T>> attributes = new LinkedList<>();
       for (AttributeReadable<Object> attr : getArtifact(artifact).getAttributes()) {
-         attributes.add(new AttributeWrapper<T>((AttributeReadable<T>) attr));
+         attributes.add((IAttribute<T>) attr);
       }
       return attributes;
    }

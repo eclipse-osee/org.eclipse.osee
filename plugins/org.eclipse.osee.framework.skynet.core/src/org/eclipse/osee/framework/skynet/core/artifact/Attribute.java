@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -38,7 +39,7 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 /**
  * @author Ryan D. Brooks
  */
-public abstract class Attribute<T> implements Comparable<Attribute<T>>, AttributeId {
+public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribute<T> {
    private WeakReference<Artifact> artifactRef;
    private IAttributeDataProvider attributeDataProvider;
    private AttributeId attrId = AttributeId.SENTINEL;
@@ -183,8 +184,6 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Attribut
     */
    protected abstract boolean subClassSetValue(T value) throws OseeCoreException;
 
-   public abstract T getValue() throws OseeCoreException;
-
    public String getDisplayableString() throws OseeCoreException {
       return getAttributeDataProvider().getDisplayableString();
    }
@@ -235,6 +234,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Attribut
    /**
     * @return attributeType Attribute Type Information
     */
+   @Override
    public AttributeType getAttributeType() {
       return AttributeTypeManager.getType(attributeTypeToken);
    }
@@ -375,4 +375,5 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Attribut
    public int compareTo(Attribute<T> other) {
       return toString().compareTo(other.toString());
    }
+
 }

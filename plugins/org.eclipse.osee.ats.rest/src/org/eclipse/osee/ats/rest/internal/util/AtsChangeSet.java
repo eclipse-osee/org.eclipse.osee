@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
-import org.eclipse.osee.ats.api.workflow.IAttribute;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.core.util.AbstractAtsChangeSet;
@@ -31,6 +30,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -146,13 +146,13 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    @Override
    public <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, AttributeTypeId attributeType, T value) throws OseeCoreException {
       ArtifactId artifactId = getArtifact(workItem);
-      getTransaction().setAttributeById(artifactId, new AttributeIdWrapper(attr), value);
+      getTransaction().setAttributeById(artifactId, attr, value);
       add(workItem);
    }
 
    @Override
    public <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr) throws OseeCoreException {
-      getTransaction().deleteByAttributeId(getArtifact(workItem), new AttributeIdWrapper(attr));
+      getTransaction().deleteByAttributeId(getArtifact(workItem), attr);
       add(workItem);
    }
 

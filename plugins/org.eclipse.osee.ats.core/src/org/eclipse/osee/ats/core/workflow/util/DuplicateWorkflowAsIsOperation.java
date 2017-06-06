@@ -15,12 +15,12 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.api.workflow.IAttribute;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.core.util.AtsCoreFactory;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -108,8 +108,8 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
       }
 
       for (IAttribute<Object> attr : services.getAttributeResolver().getAttributes(workItem.getStoreObject())) {
-         if (!getExcludeTypes().contains(attr.getAttrType())) {
-            changes.addAttribute(newWorkItemArt, attr.getAttrType(), attr.getValue());
+         if (!getExcludeTypes().contains(attr.getAttributeType())) {
+            changes.addAttribute(newWorkItemArt, attr.getAttributeType(), attr.getValue());
          }
       }
       IAtsWorkItem newWorkItem = services.getWorkItemFactory().getWorkItem(newWorkItemArt);

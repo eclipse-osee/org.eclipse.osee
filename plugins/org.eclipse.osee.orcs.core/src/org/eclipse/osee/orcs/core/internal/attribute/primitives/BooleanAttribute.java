@@ -33,4 +33,5 @@ public class BooleanAttribute extends CharacterBackedAttribute<Boolean> {
    protected Boolean convertStringToValue(String value) {
       return Boolean.valueOf(value);
    }
+
 }
