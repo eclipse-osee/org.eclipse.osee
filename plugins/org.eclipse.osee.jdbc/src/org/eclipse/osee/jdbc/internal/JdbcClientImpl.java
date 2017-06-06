@@ -518,4 +518,28 @@ public final class JdbcClientImpl implements JdbcClient {
          throw newJdbcException(ex);
       }
    }
+
+   @Override
+   public int clearTable(String tableName) {
+      String cmd = isTruncateSupported(tableName) ? "TRUNCATE TABLE" : "DELETE FROM";
+      return runPreparedUpdate(String.format("%s %s", cmd, tableName));
+   }
+
+   private boolean isTruncateSupported(String tableName) {
+      try (JdbcConnection connection = getConnection(); ResultSet resultSet = getPrivileges(connection, tableName)) {
+         while (resultSet.next()) {
+            String value = resultSet.getString("PRIVILEGE");
+            if ("TRUNCATE".equalsIgnoreCase(value)) {
+               return true;
+            }
+         }
+      } catch (SQLException ex) {
+         return false;
+      }
+      return false;
+   }
+
+   private ResultSet getPrivileges(JdbcConnection connection, String tableName) throws SQLException {
+      return connection.getMetaData().getTablePrivileges(null, null, tableName.toUpperCase());
+   }
 }

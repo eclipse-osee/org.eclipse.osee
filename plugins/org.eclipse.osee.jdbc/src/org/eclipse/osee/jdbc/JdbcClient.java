@@ -99,4 +99,6 @@ public interface JdbcClient {
    long getNextSequence(String sequenceName, boolean aggressiveFetch);
 
    void invalidateSequences();
+
+   int clearTable(String tableName);
 }

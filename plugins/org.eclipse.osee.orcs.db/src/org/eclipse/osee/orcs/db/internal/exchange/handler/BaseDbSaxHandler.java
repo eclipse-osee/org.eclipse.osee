@@ -10,9 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.exchange.handler;
 
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -102,47 +99,8 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
       }
    }
 
-   private boolean isTruncateSupported() throws OseeCoreException {
-      boolean isTruncateSupported = false;
-      JdbcConnection connection = service.getConnection();
-      try {
-         DatabaseMetaData metaData = connection.getMetaData();
-         ResultSet resultSet = null;
-         try {
-            resultSet = metaData.getTablePrivileges(null, null, getMetaData().getTableName().toUpperCase());
-            while (resultSet.next()) {
-               String value = resultSet.getString("PRIVILEGE");
-               if ("TRUNCATE".equalsIgnoreCase(value)) {
-                  isTruncateSupported = true;
-                  break;
-               }
-            }
-         } catch (SQLException ex1) {
-            logger.info(ex1, "Error determining truncate support");
-         } finally {
-            if (resultSet != null) {
-               try {
-                  resultSet.close();
-               } catch (SQLException ex) {
-                  // Do Nothing
-               }
-            }
-         }
-      } finally {
-         connection.close();
-      }
-      return isTruncateSupported;
-   }
-
    public void clearDataTable() throws OseeCoreException {
-      String cmd = isTruncateSupported() ? "TRUNCATE TABLE" : "DELETE FROM";
-      String deleteSql = String.format("%s %s", cmd, getMetaData().getTableName());
-      try {
-         getDatabaseService().runPreparedUpdate(deleteSql);
-      } catch (OseeCoreException ex) {
-         logger.info(ex, "Error clearing: %s", deleteSql);
-         throw ex;
-      }
+      service.clearTable(getMetaData().getTableName());
    }
 
    protected JdbcClient getDatabaseService() {
