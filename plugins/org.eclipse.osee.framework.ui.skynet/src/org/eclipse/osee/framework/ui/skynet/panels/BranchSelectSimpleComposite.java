@@ -125,9 +125,9 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
       notifyListener(new Event());
    }
 
-   private void setBranchName(IOseeBranch branch) {
+   private void setBranchName(BranchId branch) {
       if (branch != null) {
-         String branchName = branch.getName();
+         String branchName = BranchManager.getBranchName(branch);
          String[] currentItems = this.branchSelectCombo.getItems();
          int selectionIndex = -1;
          for (int i = 0; i < currentItems.length; i++) {
@@ -142,7 +142,7 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
             newItems[oldLength] = branchName;
             this.branchSelectCombo.setItems(newItems);
             selectionIndex = oldLength;
-            branchSelectCombo.setData(branch.getName(), branch);
+            branchSelectCombo.setData(branchName, branch);
             branchSelectCombo.setData(branch.getIdString(), branch);
          }
          this.branchSelectCombo.select(selectionIndex);

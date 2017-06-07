@@ -85,7 +85,7 @@ public final class BranchManager {
    private static final String LAST_DEFAULT_BRANCH = "LastDefaultBranchUuid";
    public static final String COMMIT_COMMENT = "Commit Branch ";
    private static final String SELECT_BRANCH_BY_NAME = "select * from osee_branch where branch_name = ?";
-   private static IOseeBranch lastBranch;
+   private static BranchId lastBranch;
 
    private BranchManager() {
       // this private empty constructor exists to prevent the default constructor from allowing public construction
@@ -560,7 +560,7 @@ public final class BranchManager {
       return COMMON;
    }
 
-   public static IOseeBranch getLastBranch() {
+   public static BranchId getLastBranch() {
       if (lastBranch == null) {
          try {
             Long branchUuid = Long.valueOf(UserManager.getSetting(LAST_DEFAULT_BRANCH));
@@ -577,7 +577,7 @@ public final class BranchManager {
       return lastBranch;
    }
 
-   public static void setLastBranch(IOseeBranch branch) {
+   public static void setLastBranch(BranchId branch) {
       lastBranch = branch;
    }
 

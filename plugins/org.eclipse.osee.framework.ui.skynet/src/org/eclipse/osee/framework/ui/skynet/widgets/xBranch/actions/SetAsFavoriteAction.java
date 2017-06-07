@@ -16,7 +16,6 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -54,7 +53,7 @@ public class SetAsFavoriteAction extends Action {
             AWorkbench.popup("Can not set favorite as system user");
             return;
          }
-         List<IOseeBranch> branches = xBranchViewer.getSelectedBranches();
+         List<BranchId> branches = xBranchViewer.getSelectedBranches();
          if (branches.isEmpty()) {
             AWorkbench.popup("Must select branches");
             return;

@@ -19,8 +19,6 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchOptionsEnum;
@@ -48,7 +46,7 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class BranchSelectionDialog extends MessageDialog implements IBranchWidgetMenuListener {
 
-   private IOseeBranch selected;
+   private BranchId selected;
    private BranchId defaultSelected;
    private static BranchId lastSelectedBranch;
    private XBranchWidget branchWidget;
@@ -72,7 +70,7 @@ public class BranchSelectionDialog extends MessageDialog implements IBranchWidge
       defaultSelected = branch;
    }
 
-   public IOseeBranch getSelection() {
+   public BranchId getSelection() {
       return selected;
    }
 
@@ -155,7 +153,7 @@ public class BranchSelectionDialog extends MessageDialog implements IBranchWidge
    }
 
    private void storeSelectedBranch() {
-      List<IOseeBranch> branches = branchWidget.getSelectedBranches();
+      List<BranchId> branches = branchWidget.getSelectedBranches();
 
       if (!branches.isEmpty()) {
          selected = branches.iterator().next();
@@ -169,8 +167,8 @@ public class BranchSelectionDialog extends MessageDialog implements IBranchWidge
       okPressed();
    }
 
-   private static IOseeBranch createDialog(boolean allowOnlyWorkingBranches) {
-      IOseeBranch toReturn = null;
+   private static BranchId createDialog(boolean allowOnlyWorkingBranches) {
+      BranchId toReturn = null;
       BranchSelectionDialog branchSelection = new BranchSelectionDialog("Select Branch", allowOnlyWorkingBranches);
       if (lastSelectedBranch != null) {
          try {
@@ -188,11 +186,11 @@ public class BranchSelectionDialog extends MessageDialog implements IBranchWidge
       return toReturn;
    }
 
-   public static IOseeBranch getBranchFromUser() {
+   public static BranchId getBranchFromUser() {
       return createDialog(false);
    }
 
-   public static IOseeBranch getWorkingBranchFromUser() {
+   public static BranchId getWorkingBranchFromUser() {
       return createDialog(true);
    }
 }

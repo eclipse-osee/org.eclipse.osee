@@ -16,7 +16,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -120,12 +119,12 @@ public class BranchSelectComposite extends Composite {
    private void handleSelectedBranch(Event event) {
       if (event.widget == branchSelectButton || event.widget == branchSelectTextWidget && branchSelectTextWidget.getDoubleClickEnabled()) {
          if (areOnlyWorkingBranchesAllowed()) {
-            IOseeBranch newBranch = BranchSelectionDialog.getWorkingBranchFromUser();
+            BranchId newBranch = BranchSelectionDialog.getWorkingBranchFromUser();
             if (newBranch != null) {
                setSelected(newBranch);
             }
          } else {
-            IOseeBranch newBranch = BranchSelectionDialog.getBranchFromUser();
+            BranchId newBranch = BranchSelectionDialog.getBranchFromUser();
             if (newBranch != null) {
                setSelected(newBranch);
             }

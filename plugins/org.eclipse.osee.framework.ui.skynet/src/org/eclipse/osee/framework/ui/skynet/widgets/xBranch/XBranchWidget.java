@@ -219,8 +219,8 @@ public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProv
       }
    }
 
-   public ArrayList<IOseeBranch> getSelectedBranches() {
-      ArrayList<IOseeBranch> items = new ArrayList<>();
+   public ArrayList<BranchId> getSelectedBranches() {
+      ArrayList<BranchId> items = new ArrayList<>();
       if (branchXViewer == null || branchXViewer.getSelection().isEmpty()) {
          return items;
       }
@@ -228,8 +228,8 @@ public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProv
       while (i.hasNext()) {
          Object obj = i.next();
 
-         if (obj instanceof IOseeBranch) {
-            items.add((IOseeBranch) obj);
+         if (obj instanceof BranchId) {
+            items.add((BranchId) obj);
          }
       }
       return items;
