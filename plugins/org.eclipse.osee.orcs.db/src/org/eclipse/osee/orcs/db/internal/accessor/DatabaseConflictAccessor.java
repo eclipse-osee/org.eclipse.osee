@@ -96,7 +96,7 @@ public class DatabaseConflictAccessor {
    private Object[] toInsertValues(Conflict conflict) {
       return new Object[] {
          conflict.getId(),
-         conflict.getMergeBranch().getUuid(),
+         conflict.getMergeBranch(),
          conflict.getSourceGammaId(),
          conflict.getDestinationGammaId(),
          conflict.getStatus().getValue(),
@@ -108,12 +108,12 @@ public class DatabaseConflictAccessor {
          conflict.getSourceGammaId(),
          conflict.getDestinationGammaId(),
          conflict.getStatus().getValue(),
-         conflict.getMergeBranch().getUuid(),
+         conflict.getMergeBranch(),
          conflict.getId(),
          conflict.getType().getValue()};
    }
 
    private Object[] toDeleteValues(Conflict conflict) {
-      return new Object[] {conflict.getMergeBranch().getUuid(), conflict.getId(), conflict.getType().getValue()};
+      return new Object[] {conflict.getMergeBranch(), conflict.getId(), conflict.getType().getValue()};
    }
 }

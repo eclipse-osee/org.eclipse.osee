@@ -362,13 +362,12 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       } catch (Exception ex) {
          throw new OseeWebApplicationException(ex, Status.INTERNAL_SERVER_ERROR, "Error creating new branch");
       }
-      long newBranchUuid = newBranch.getUuid();
 
       // Introduce all ATS heading artifacts to new branch
       introduceAtsHeadingArtifacts(fromBranch, newBranch, user);
 
       // Create config artifact on Common
-      AtsConfiguration config = createConfigArtifactOnCommon(newBranchName, user, newBranchUuid);
+      AtsConfiguration config = createConfigArtifactOnCommon(newBranchName, user, newBranch);
 
       // Return new branch uuid
       return config;
@@ -423,16 +422,16 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       return artifact;
    }
 
-   private AtsConfiguration createConfigArtifactOnCommon(String branchName, ArtifactId userArt, long newBranchUuid) {
+   private AtsConfiguration createConfigArtifactOnCommon(String branchName, ArtifactId userArt, BranchId branch) {
       TransactionBuilder tx =
          orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, userArt, "Add ATS Configuration");
       AtsConfiguration config = new AtsConfiguration();
       config.setName(branchName);
-      config.setBranchUuid(newBranchUuid);
+      config.setBranchUuid(branch.getId());
       config.setIsDefault(false);
       ArtifactId configArt = tx.createArtifact(AtsArtifactTypes.Configuration, branchName);
       config.setUuid(((ArtifactReadable) configArt).getId());
-      tx.createAttribute(configArt, AtsAttributeTypes.AtsConfiguredBranch, String.valueOf(newBranchUuid));
+      tx.createAttribute(configArt, AtsAttributeTypes.AtsConfiguredBranch, branch.getIdString());
       XResultData rd = new XResultData();
       UpdateAtsConfiguration update = new UpdateAtsConfiguration((IAtsServer) services);
 

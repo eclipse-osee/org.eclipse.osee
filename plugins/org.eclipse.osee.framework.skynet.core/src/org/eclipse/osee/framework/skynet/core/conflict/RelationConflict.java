@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.skynet.core.conflict;
 
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
@@ -101,7 +102,7 @@ public class RelationConflict extends Conflict {
    }
 
    @Override
-   public boolean applyPreviousMerge(long mergeBranchId, long destBranchId) {
+   public boolean applyPreviousMerge(BranchId mergeBranchId, BranchId destBranchId) {
       return false;
    }
 }

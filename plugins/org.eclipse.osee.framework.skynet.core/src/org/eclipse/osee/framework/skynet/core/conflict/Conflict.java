@@ -150,7 +150,7 @@ public abstract class Conflict implements Adaptable {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       TransactionId baseTx = BranchManager.getBaseTransaction(mergeBranch);
-      status = ConflictStatusManager.computeStatus(sourceGamma, destGamma, mergeBranch.getUuid(), objectID,
+      status = ConflictStatusManager.computeStatus(sourceGamma, destGamma, mergeBranch, objectID,
          getConflictType().getValue(), passedStatus, baseTx);
       return status;
    }
@@ -159,12 +159,8 @@ public abstract class Conflict implements Adaptable {
       if (this.status.equals(status)) {
          return;
       }
-      ConflictStatusManager.setStatus(status, sourceGamma, destGamma, mergeBranch.getUuid());
+      ConflictStatusManager.setStatus(status, sourceGamma, destGamma, mergeBranch);
       this.status = status;
-   }
-
-   public long getMergeBranchID() {
-      return mergeBranch.getUuid();
    }
 
    public String getArtifactName() throws OseeCoreException {
@@ -237,5 +233,5 @@ public abstract class Conflict implements Adaptable {
 
    public abstract int getObjectId() throws OseeCoreException;
 
-   public abstract boolean applyPreviousMerge(long mergeBranchId, long destBranchId) throws OseeCoreException;
+   public abstract boolean applyPreviousMerge(BranchId mergeBranchId, BranchId destBranchId);
 }

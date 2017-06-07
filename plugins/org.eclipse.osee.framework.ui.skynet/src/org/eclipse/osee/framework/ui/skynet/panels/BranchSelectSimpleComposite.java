@@ -102,8 +102,8 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
    }
 
    public IOseeBranch getSelectedBranch() {
-      IOseeBranch toReturn = null;
-      if (branchSelectCombo != null && branchSelectCombo.isDisposed() != true) {
+      IOseeBranch toReturn = IOseeBranch.SENTINEL;
+      if (branchSelectCombo != null && !branchSelectCombo.isDisposed()) {
          String branchName = branchSelectCombo.getText();
          if (Strings.isValid(branchName)) {
             toReturn = (IOseeBranch) branchSelectCombo.getData(branchName);
@@ -111,6 +111,7 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
                try {
                   toReturn = BranchManager.getBranch(branchName);
                } catch (Exception ex) {
+                  toReturn = IOseeBranch.SENTINEL;
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
             }

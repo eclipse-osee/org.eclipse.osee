@@ -90,29 +90,26 @@ public class User extends Artifact {
 
    public void toggleFavoriteBranch(BranchId favoriteBranch) throws OseeCoreException {
       Conditions.checkNotNull(favoriteBranch, "Branch");
-      HashSet<Long> branchUuids = new HashSet<>();
-      for (BranchId branch : BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING,
-         BranchType.BASELINE)) {
-         branchUuids.add(branch.getUuid());
-      }
+      HashSet<BranchId> branches = new HashSet<>(
+         BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING, BranchType.BASELINE));
 
       boolean found = false;
       @SuppressWarnings("deprecation")
       Collection<Attribute<String>> attributes = getAttributes(CoreAttributeTypes.FavoriteBranch);
       for (Attribute<String> attribute : attributes) {
          // Remove attributes that are no longer valid
-         Long uuid = 0L;
+         BranchId branch;
          try {
-            uuid = Long.valueOf(attribute.getValue());
+            branch = BranchId.valueOf(attribute.getValue());
          } catch (Exception ex) {
             continue;
          }
-         if (!branchUuids.contains(uuid)) {
+         if (!branches.contains(branch)) {
             attribute.delete();
-         } else if (favoriteBranch.equals(uuid)) {
+         } else if (favoriteBranch.equals(branch)) {
             attribute.delete();
             found = true;
-            // Do not break here in case there are multiples of same branch uuid
+            // Do not break here in case there are multiples of same branch
          }
       }
 
@@ -128,7 +125,7 @@ public class User extends Artifact {
       Collection<String> attributes = getAttributesToStringList(CoreAttributeTypes.FavoriteBranch);
       for (String value : attributes) {
          try {
-            if (branch.equals(Long.valueOf(value))) {
+            if (branch.equals(BranchId.valueOf(value))) {
                return true;
             }
          } catch (Exception ex) {

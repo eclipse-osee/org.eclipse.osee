@@ -78,9 +78,9 @@ public class HtmlWriter {
    private Map<String, Object> toData(ArtifactReadable artifact) throws OseeCoreException {
       Map<String, Object> data = new LinkedHashMap<>();
       data.put("Name", artifact.getName());
-      data.put("Artifact Id", artifact.getUuid());
+      data.put("Artifact Id", artifact.getId());
       data.put("Tx Id", artifact.getTransaction());
-      Long branchId = artifact.getBranch().getId();
+      String branchId = artifact.getBranch().getIdString();
       String branchName = null;
       ResultSet<BranchReadable> results =
          OrcsApplication.getOrcsApi().getQueryFactory().branchQuery().andId(artifact.getBranch()).getResults();
@@ -94,7 +94,7 @@ public class HtmlWriter {
       } else {
          uri = uriInfo.getAbsolutePathBuilder().path("../../../{uuid}").build(branchId);
       }
-      data.put("Branch Id", asLink(uri.toASCIIString(), branchId.toString()));
+      data.put("Branch Id", asLink(uri.toASCIIString(), branchId));
       data.put("Branch Name", asLink(uri.toASCIIString(), branchName));
 
       Collection<AttributeTypeToken> types = artifact.getExistingAttributeTypes();
@@ -111,9 +111,9 @@ public class HtmlWriter {
       for (ArtifactReadable art : artifact.getChildren()) {
          URI uri1;
          if (isAtEndOfPath(uriInfo.getPath(), "artifact")) {
-            uri1 = uriInfo.getAbsolutePathBuilder().path("{uuid}").build(art.getUuid());
+            uri1 = uriInfo.getAbsolutePathBuilder().path("{uuid}").build(art.getIdString());
          } else {
-            uri1 = uriInfo.getAbsolutePathBuilder().path("../{uuid}").build(art.getUuid());
+            uri1 = uriInfo.getAbsolutePathBuilder().path("../{uuid}").build(art.getIdString());
          }
          String value = art.getName();
          data.put("Child " + ++count, asLink(uri1.getPath(), value == null ? "<NULL>" : value));
@@ -124,8 +124,7 @@ public class HtmlWriter {
    private Map<String, Object> toData(BranchReadable branch) throws OseeCoreException {
       Map<String, Object> data = new LinkedHashMap<>();
       data.put("Name", branch.getName());
-      data.put("Uuid", branch.getUuid());
-      data.put("Local Id", branch.getId());
+      data.put("Branch Id", branch.getId());
       data.put("State", branch.getBranchState());
       data.put("Type", branch.getBranchType());
       data.put("Archived", branch.getArchiveState());
@@ -134,10 +133,11 @@ public class HtmlWriter {
             IOseeBranch parent = getBranchFromId(branch.getParentBranch());
 
             URI uri;
+            String parentId = parent.getIdString();
             if (isAtEndOfPath(uriInfo.getPath(), "branch")) {
-               uri = uriInfo.getAbsolutePathBuilder().path("{uuid}").build(parent.getGuid());
+               uri = uriInfo.getAbsolutePathBuilder().path("{uuid}").build(parentId);
             } else {
-               uri = uriInfo.getAbsolutePathBuilder().path("../{uuid}").build(parent.getGuid());
+               uri = uriInfo.getAbsolutePathBuilder().path("../{uuid}").build(parentId);
             }
             data.put("Parent", asLink(uri.getPath(), parent.getName()));
          } catch (OseeCoreException ex) {
@@ -146,9 +146,9 @@ public class HtmlWriter {
 
          URI uri;
          if (isAtEndOfPath(uriInfo.getPath(), "branch")) {
-            uri = uriInfo.getAbsolutePathBuilder().path("{uuid}/artifact").build(branch.getUuid());
+            uri = uriInfo.getAbsolutePathBuilder().path("{uuid}/artifact").build(branch.getIdString());
          } else {
-            uri = uriInfo.getAbsolutePathBuilder().path("../{uuid}/artifact").build(branch.getUuid());
+            uri = uriInfo.getAbsolutePathBuilder().path("../{uuid}/artifact").build(branch.getIdString());
          }
          data.put("Artifacts", asLink(uri.getPath(), "Hierarchy"));
       }
@@ -171,9 +171,9 @@ public class HtmlWriter {
 
       URI uri;
       if (isAtEndOfPath(uriInfo.getPath(), "branch")) {
-         uri = uriInfo.getAbsolutePathBuilder().path("{uuid}").build(branch.getUuid());
+         uri = uriInfo.getAbsolutePathBuilder().path("{uuid}").build(branch.getIdString());
       } else {
-         uri = uriInfo.getAbsolutePathBuilder().path("../{uuid}").build(branch.getUuid());
+         uri = uriInfo.getAbsolutePathBuilder().path("../{uuid}").build(branch.getIdString());
       }
       data.put("Branch", asLink(uri.getPath(), branch.getName()));
       return data;

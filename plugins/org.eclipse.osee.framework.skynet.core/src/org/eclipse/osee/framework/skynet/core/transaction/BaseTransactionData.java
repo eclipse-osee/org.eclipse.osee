@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.transaction;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
@@ -31,7 +32,7 @@ public abstract class BaseTransactionData {
 
       TransactionId getTransaction();
 
-      Long getBranchId();
+      BranchId getBranch();
 
       void internalAddInsertToBatch(int insertPriority, String insertSql, Object... data);
    }
@@ -68,7 +69,7 @@ public abstract class BaseTransactionData {
 
       internalAddInsertToBatch(collector, Integer.MAX_VALUE, INSERT_INTO_TRANSACTION_TABLE, collector.getTransaction(),
          getGammaId(), modTypeToStore.getValue(), TxChange.getCurrent(modTypeToStore).getValue(),
-         collector.getBranchId(), getApplicId());
+         collector.getBranch(), getApplicId());
       //TODO: remove hack defaulting to 1
    }
 

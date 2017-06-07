@@ -116,7 +116,7 @@ public class UpdateBranchHandler extends CommandHandler {
                try {
                   IWorkbenchPage page = AWorkbench.getActivePage();
                   IViewPart viewPart = page.showView(MergeView.VIEW_ID,
-                     String.valueOf(sourceBranch.getUuid() * 100000 + destinationBranch.getUuid()),
+                     String.valueOf(sourceBranch.getId() * 100000 + destinationBranch.getId()),
                      IWorkbenchPage.VIEW_ACTIVATE);
                   if (viewPart instanceof MergeView) {
                      MergeView mergeView = (MergeView) viewPart;

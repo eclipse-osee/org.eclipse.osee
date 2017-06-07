@@ -65,10 +65,9 @@ public class XBranchSelectByWidgetDam extends XBranchSelectWidget implements IAt
    public Result isDirty() {
       if (isEditable()) {
          try {
-            Long storedUuid = getStoredUuid();
             BranchId widgetInput = getSelection();
-            Long widgetUuid = widgetInput == null ? 0L : widgetInput.getUuid();
-            if (!storedUuid.equals(widgetUuid)) {
+            BranchId widgetUuid = widgetInput == null ? BranchId.SENTINEL : widgetInput;
+            if (widgetUuid.notEqual(getStoredUuid())) {
                return new Result(true, getAttributeType() + " is dirty");
             }
          } catch (OseeCoreException ex) {

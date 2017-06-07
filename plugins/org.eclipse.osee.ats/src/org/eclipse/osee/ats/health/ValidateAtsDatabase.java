@@ -249,17 +249,6 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       }
    }
 
-   @SuppressWarnings({"unused"})
-   private List<Collection<Integer>> getFromGuids() {
-      List<String> guids = Arrays.asList("AD3zXUb9kkF08ltQPwQA", "AD3zWI5UrUmhDxwBekAA", "BPLQGf99g2qG_LoknEQA");
-      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(guids, AtsClientService.get().getAtsBranch());
-      List<Integer> artIds = new ArrayList<>();
-      for (Artifact art : artifacts) {
-         artIds.add(art.getArtId());
-      }
-      return Arrays.asList((Collection<Integer>) artIds);
-   }
-
    public void testCompletedCancelledStateAttributesSetWithPersist(Collection<Artifact> artifacts) {
       try {
          SkynetTransaction transaction =

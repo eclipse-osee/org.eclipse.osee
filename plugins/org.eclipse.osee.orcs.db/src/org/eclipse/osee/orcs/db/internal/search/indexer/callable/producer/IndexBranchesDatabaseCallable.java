@@ -11,10 +11,9 @@
 package org.eclipse.osee.orcs.db.internal.search.indexer.callable.producer;
 
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.function.Consumer;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Triplet;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -82,14 +81,9 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
    public Integer call() throws Exception {
       getLogger().info(getParamInfo());
 
-      Set<Long> branchUuids = new HashSet<>();
-      for (BranchReadable branch : branches) {
-         branchUuids.add(branch.getUuid());
-      }
-
       try (IdJoinQuery branchJoin = joinFactory.createIdJoinQuery();
          IdJoinQuery typeJoin = joinFactory.createIdJoinQuery()) {
-         Triplet<String, String, Object[]> data = createQueries(branchUuids, branchJoin, typeJoin);
+         Triplet<String, String, Object[]> data = createQueries(branches, branchJoin, typeJoin);
          String countQuery = data.getFirst();
          String searchQuery = data.getSecond();
          Object[] params = data.getThird();
@@ -110,7 +104,7 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
 
          fetchAndProcessGammas(searchQuery, params);
       }
-      return branchUuids.size();
+      return branches.size();
    }
 
    public void storeAndAddQueryId(TagQueueJoinQuery joinQuery) {
@@ -154,11 +148,11 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
       return builder.toString();
    }
 
-   private Triplet<String, String, Object[]> createQueries(Collection<Long> branchUuids, IdJoinQuery branchJoin, IdJoinQuery typeJoin) {
+   private Triplet<String, String, Object[]> createQueries(Collection<? extends Id> branches, IdJoinQuery branchJoin, IdJoinQuery typeJoin) {
       Object[] params;
       String countQuery;
       String searchQuery;
-      if (branchUuids.isEmpty()) {
+      if (branches.isEmpty()) {
          params = new Object[] {typeJoin.getQueryId()};
          if (tagOnlyMissingGammas) {
             countQuery = COUNT_MISSING;
@@ -168,7 +162,7 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
             searchQuery = FIND_ALL_TAGGABLE_ATTRIBUTES;
          }
       } else {
-         branchJoin.addAll(branchUuids);
+         branchJoin.addAll(branches);
          params = new Object[] {branchJoin.getQueryId(), typeJoin.getQueryId()};
          if (tagOnlyMissingGammas) {
             countQuery = COUNT_MISSING_BY_BRANCH;

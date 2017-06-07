@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -44,7 +45,7 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
    }
 
    private final List<IResourceLocator> transferredBinaryContent;
-   private final Set<Long> branchesToImport;
+   private final Set<BranchId> branchesToImport;
    private final IOseeExchangeDataProvider exportDataProvider;
 
    private final IResourceManager resourceManager;
@@ -68,12 +69,10 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
       return identityService;
    }
 
-   public void setSelectedBranchIds(long... branchUuids) {
-      if (branchUuids != null && branchUuids.length > 0) {
-         this.branchesToImport.clear();
-         for (long branchUuid : branchUuids) {
-            this.branchesToImport.add(branchUuid);
-         }
+   public void setSelectedBranchIds(Iterable<? extends BranchId> branchesToImport) {
+      this.branchesToImport.clear();
+      for (BranchId branch : branchesToImport) {
+         this.branchesToImport.add(branch);
       }
    }
 

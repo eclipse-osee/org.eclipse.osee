@@ -18,8 +18,10 @@ import java.net.URI;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -79,7 +81,6 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
    private MetaDataSaxHandler metadataHandler;
    private IOseeExchangeDataProvider exportDataProvider;
    private ExchangeDataProcessor exchangeDataProcessor;
-   private long[] branchesToImport;
 
    public ImportBranchDatabaseCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, SystemPreferences preferences, IResourceManager resourceManager, IdentityLocator identityService, OrcsTypes orcsTypes, URI exchangeFile, List<? extends BranchId> selectedBranches, PropertyStore options) {
       super(logger, session, jdbcClient);
@@ -115,13 +116,7 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
          savePointManager.setCurrentSetPointId("init_relational_objects");
          savePointManager.addCurrentSavePointToProcessed();
 
-         branchesToImport = new long[selectedBranches.size()];
-         int index = 0;
-         for (BranchId branch : selectedBranches) {
-            branchesToImport[index++] = branch.getUuid();
-         }
-
-         processImportFiles(branchesToImport, manifestHandler.getImportFiles());
+         processImportFiles(selectedBranches, manifestHandler.getImportFiles());
 
          importBranchesTx.updateBaselineAndParentTransactionId();
 
@@ -192,7 +187,7 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
       savePointManager.loadSavePoints(manifestHandler.getSourceDatabaseId(), manifestHandler.getSourceExportDate());
    }
 
-   private void processImportFiles(long[] branchesToImport, Collection<IExportItem> importItems) throws Exception {
+   private void processImportFiles(Iterable<? extends BranchId> branchesToImport, Collection<IExportItem> importItems) throws Exception {
       final DbTableSaxHandler handler = DbTableSaxHandler.createWithLimitedCache(getLogger(), getJdbcClient(),
          resourceManager, identityService, exportDataProvider, 50000);
       handler.setSelectedBranchIds(branchesToImport);
@@ -330,14 +325,14 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
       private final SavePointManager savePointManager;
       private final BranchDataSaxHandler branchHandler;
       private final IExportItem branchExportItem;
-      private long[] branchesStored;
+      private Set<BranchId> branchesStored;
 
       public ImportBranchesTx(Log logger, OrcsSession session, JdbcClient jdbcClient, SavePointManager savePointManager, IExportItem branchExportItem) {
          super(logger, session, jdbcClient);
          this.savePointManager = savePointManager;
          this.branchExportItem = branchExportItem;
          branchHandler = BranchDataSaxHandler.createWithCacheAll(logger, jdbcClient);
-         branchesStored = new long[0];
+         branchesStored = Collections.emptySet();
       }
 
       public void updateBaselineAndParentTransactionId() throws OseeCoreException {
@@ -358,12 +353,12 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
          process(branchHandler, branchExportItem);
 
          if (!savePointManager.isCurrentInProcessed()) {
-            branchesStored = branchHandler.store(connection, true, branchesToImport);
+            branchesStored = branchHandler.store(connection, true, selectedBranches);
             savePointManager.addCurrentSavePointToProcessed();
          } else {
             // This step has already been performed - only get branches needed for remaining operations
             getLogger().info("Save point found for: [%s] - skipping", savePointManager.getCurrentSetPointId());
-            branchesStored = branchHandler.store(connection, false, branchesToImport);
+            branchesStored = branchHandler.store(connection, false, selectedBranches);
          }
 
          return null;

@@ -121,7 +121,7 @@ public class ArtifactConflict extends Conflict {
    }
 
    @Override
-   public boolean applyPreviousMerge(long mergeBranchId, long destBranchId) {
+   public boolean applyPreviousMerge(BranchId mergeBranchId, BranchId destBranchId) {
       return false;
    }
 

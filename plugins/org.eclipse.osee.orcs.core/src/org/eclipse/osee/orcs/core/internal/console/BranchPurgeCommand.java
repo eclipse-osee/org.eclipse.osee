@@ -44,7 +44,7 @@ public final class BranchPurgeCommand implements ConsoleCommand {
 
    private OrcsApi orcsApi;
    private static final String ERROR_STRING =
-      "Branch %s[%s] is a %s branch and that option was not specified!  It will not be purged!\n";
+      "Branch [%s] is a %s branch and that option was not specified!  It will not be purged!\n";
 
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -138,13 +138,13 @@ public final class BranchPurgeCommand implements ConsoleCommand {
 
       private boolean filterBranch(BranchReadable branch) {
          if (!includeBaseline && branch.getBranchType().isBaselineBranch()) {
-            console.writeln(ERROR_STRING, branch, branch.getUuid(), branch.getBranchType());
+            console.writeln(ERROR_STRING, branch, branch.getBranchType());
             return true;
          } else if (!includeUnarchived && branch.getArchiveState() == BranchArchivedState.UNARCHIVED) {
-            console.writeln(ERROR_STRING, branch, branch.getUuid(), branch.getArchiveState());
+            console.writeln(ERROR_STRING, branch, branch.getArchiveState());
             return true;
          } else if (!includeUndeleted && branch.getBranchState() != BranchState.DELETED) {
-            console.writeln(ERROR_STRING, branch, branch.getUuid(), branch.getBranchState());
+            console.writeln(ERROR_STRING, branch, branch.getBranchState());
             return true;
          }
          return false;
@@ -223,7 +223,7 @@ public final class BranchPurgeCommand implements ConsoleCommand {
             List<? extends IOseeBranch> orderedBranches = BranchUtil.orderByParentReadable(branchesToPurge);
 
             for (IOseeBranch toPurge : orderedBranches) {
-               console.writeln("Branch [%s] guid [%s] will be purged!", toPurge.getName(), toPurge.getGuid());
+               console.writeln("Branch [%s] will be purged!", toPurge);
             }
 
             List<BranchId> purged = new LinkedList<>();

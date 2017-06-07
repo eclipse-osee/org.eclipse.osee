@@ -100,8 +100,8 @@ public class AttributeConflict extends Conflict {
    private Attribute<?> getAttribute(Artifact artifact) throws OseeCoreException {
       Attribute<?> attribute = artifact.getAttributeById(attrId, false);
       if (attribute == null) {
-         throw new AttributeDoesNotExist("Attribute %d could not be found on artifact %d on branch %s", attrId,
-            artifact.getArtId(), artifact.getBranch().getGuid());
+         throw new AttributeDoesNotExist("Attribute %s could not be found on artifact %s on branch %s", attrId,
+            artifact.getArtId(), artifact.getBranch());
       }
       return attribute;
    }
@@ -426,7 +426,7 @@ public class AttributeConflict extends Conflict {
    }
 
    @Override
-   public boolean applyPreviousMerge(long mergeBranchId, long destBranchId) throws OseeCoreException {
+   public boolean applyPreviousMerge(BranchId mergeBranchId, BranchId destBranchId) throws OseeCoreException {
       if (DEBUG) {
          System.out.println("Apply the merge using the merge branch value " + mergeBranchId);
       }
@@ -434,8 +434,8 @@ public class AttributeConflict extends Conflict {
          Artifact mergeArtifact;
          Artifact destArtifact;
          try {
-            mergeArtifact = ArtifactQuery.getArtifactFromId(getArtifact(), BranchId.valueOf(mergeBranchId));
-            destArtifact = ArtifactQuery.getArtifactFromId(getArtifact(), BranchId.valueOf(destBranchId));
+            mergeArtifact = ArtifactQuery.getArtifactFromId(getArtifact(), mergeBranchId);
+            destArtifact = ArtifactQuery.getArtifactFromId(getArtifact(), destBranchId);
          } catch (ArtifactDoesNotExist ex) {
             return false;
          }

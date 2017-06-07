@@ -65,8 +65,7 @@ import org.osgi.service.event.EventHandler;
 public class AtsBranchAccessManager implements IArtifactEventListener, EventHandler {
 
    // Cache to store artifact guid to context id list so don't have to re-compute
-   private final Map<Long, Collection<IAccessContextId>> branchUuidToContextIdCache =
-      new HashMap<Long, Collection<IAccessContextId>>(50);
+   private final Map<BranchId, Collection<IAccessContextId>> branchUuidToContextIdCache = new HashMap<>(50);
 
    private static final List<Long> atsConfigArtifactTypes =
       Arrays.asList(AtsArtifactTypes.ActionableItem.getGuid(), AtsArtifactTypes.TeamDefinition.getGuid());
@@ -102,7 +101,9 @@ public class AtsBranchAccessManager implements IArtifactEventListener, EventHand
    }
 
    public Collection<IAccessContextId> getContextId(BranchId branch) {
-
+      if (branchUuidToContextIdCache.containsKey(branch)) {
+         return branchUuidToContextIdCache.get(branch);
+      }
       Collection<IAccessContextId> contextIds = new ArrayList<>();
 
       if (branch.isInvalid()) {
@@ -111,11 +112,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, EventHand
          return contextIds;
       }
 
-      if (branchUuidToContextIdCache.containsKey(branch.getUuid())) {
-         return branchUuidToContextIdCache.get(branch.getUuid());
-      }
-
-      branchUuidToContextIdCache.put(branch.getUuid(), contextIds);
+      branchUuidToContextIdCache.put(branch, contextIds);
       try {
          // don't access control common branch artifacts...yet
          if (!AtsClientService.get().getAtsBranch().equals(branch)) {
@@ -249,7 +246,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, EventHand
             if (ArtifactTypeManager.getType(guidArt).inheritsFrom(AtsArtifactTypes.TeamWorkflow)) {
                TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) ArtifactCache.getActive(guidArt);
                if (teamArt != null && teamArt.getWorkingBranch().isValid()) {
-                  branchUuidToContextIdCache.remove(teamArt.getWorkingBranch().getGuid());
+                  branchUuidToContextIdCache.remove(teamArt.getWorkingBranch());
                }
             }
          } catch (OseeCoreException ex) {

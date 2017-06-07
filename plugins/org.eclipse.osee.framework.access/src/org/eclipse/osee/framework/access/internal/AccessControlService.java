@@ -403,7 +403,6 @@ public class AccessControlService implements IAccessControlService {
       Long artId = artifact.getId();
       BranchId branch = artifact.getBranch();
 
-      //      accessObject = accessObjectCache.get(artId, branchUuid);
       accessObject = ArtifactAccessObject.getArtifactAccessObjectFromCache(artifact);
 
       if (artifactLockCache.containsKey(branch, artId)) {

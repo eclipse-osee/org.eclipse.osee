@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.skynet.core.conflict;
 
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
@@ -35,25 +36,25 @@ public class ConflictStatusManager {
    private static final String MERGE_BRANCH_GAMMAS =
       "UPDATE osee_txs SET gamma_id = ? where (transaction_id, gamma_id) = (SELECT tx.transaction_id, tx.gamma_id FROM osee_txs tx, osee_attribute atr WHERE tx.branch_id = ? AND tx.transaction_id = ? AND atr.gamma_id = tx.gamma_id AND atr.attr_id = ? )";
 
-   public static void setStatus(ConflictStatus status, int sourceGamma, int destGamma, long mergeBranchId) throws OseeCoreException {
+   public static void setStatus(ConflictStatus status, int sourceGamma, int destGamma, BranchId mergeBranch) throws OseeCoreException {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       //Gammas should be up to date so you can use them to get entry just update the status field.
       try {
          ConnectionHandler.runPreparedUpdate(MERGE_UPDATE_STATUS, status.getValue(), sourceGamma, destGamma,
-            mergeBranchId);
+            mergeBranch);
       } finally {
          chStmt.close();
       }
    }
 
-   public static ConflictStatus computeStatus(int sourceGamma, int destGamma, long branchID, int objectID, int conflictType, ConflictStatus passedStatus, TransactionId transactionId) throws OseeCoreException {
+   public static ConflictStatus computeStatus(int sourceGamma, int destGamma, BranchId branch, int objectID, int conflictType, ConflictStatus passedStatus, TransactionId transactionId) throws OseeCoreException {
       //Check for a value in the table, if there is not one in there then
       //add it with an unedited setting and return unedited
       //If gammas are out of date, update the gammas and down grade markedMerged to Edited
 
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
-         chStmt.runPreparedQuery(MERGE_ATTRIBUTE_STATUS, branchID, objectID, conflictType);
+         chStmt.runPreparedQuery(MERGE_ATTRIBUTE_STATUS, branch, objectID, conflictType);
 
          if (chStmt.next()) {
             //There was an entry so lets check it and update it.
@@ -66,10 +67,10 @@ public class ConflictStatusManager {
                if (intStatus == ConflictStatus.EDITED.getValue() || intStatus == ConflictStatus.PREVIOUS_MERGE_APPLIED_CAUTION.getValue()) {
                   intStatus = ConflictStatus.OUT_OF_DATE.getValue();
                }
-               ConnectionHandler.runPreparedUpdate(MERGE_UPDATE_GAMMAS, sourceGamma, destGamma, intStatus, branchID,
+               ConnectionHandler.runPreparedUpdate(MERGE_UPDATE_GAMMAS, sourceGamma, destGamma, intStatus, branch,
                   objectID, conflictType);
                if (conflictType == ConflictType.ATTRIBUTE.getValue()) {
-                  ConnectionHandler.runPreparedUpdate(MERGE_BRANCH_GAMMAS, sourceGamma, branchID, transactionId,
+                  ConnectionHandler.runPreparedUpdate(MERGE_BRANCH_GAMMAS, sourceGamma, branch, transactionId,
                      objectID);
                }
             }
@@ -82,7 +83,7 @@ public class ConflictStatusManager {
       } finally {
          chStmt.close();
       }
-      ConnectionHandler.runPreparedUpdate(MERGE_INSERT_STATUS, objectID, branchID, sourceGamma, destGamma,
+      ConnectionHandler.runPreparedUpdate(MERGE_INSERT_STATUS, objectID, branch, sourceGamma, destGamma,
          passedStatus.getValue(), conflictType);
 
       return passedStatus;

@@ -17,7 +17,6 @@ import java.util.Map;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -91,7 +90,7 @@ public class BranchCallableQueryFactory {
 
                @Override
                public IOseeBranch createBranch(BranchData data) {
-                  return IOseeBranch.create(data.getUuid(), data.getName());
+                  return data;
                }
 
             };
@@ -124,7 +123,7 @@ public class BranchCallableQueryFactory {
 
       @Override
       public void onData(BranchData data) throws OseeCoreException {
-         Long key = data.getUuid();
+         Long key = data.getId();
          T branch = branchMap.get(key);
          if (branch == null) {
             branch = createBranch(data);

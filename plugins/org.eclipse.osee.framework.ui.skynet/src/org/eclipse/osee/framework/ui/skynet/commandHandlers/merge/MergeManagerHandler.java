@@ -60,7 +60,7 @@ public class MergeManagerHandler extends CommandHandler {
             BranchId selectedBranch = branches.iterator().next();
             try {
                if (selectedBranch != null && !ConflictManagerInternal.getDestinationBranchesMerged(
-                  selectedBranch.getUuid()).isEmpty()) {
+                  selectedBranch).isEmpty()) {
                   enabled = true;
                } else {
                   enabled = selectedBranch != null && !ServiceUtil.getOseeCmService().isPcrArtifact(

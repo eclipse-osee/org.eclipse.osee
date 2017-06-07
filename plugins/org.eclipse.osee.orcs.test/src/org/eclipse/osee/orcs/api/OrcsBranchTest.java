@@ -201,43 +201,39 @@ public class OrcsBranchTest {
       branchOps.createBaselineBranch(branch, SystemUser.OseeSystem, CoreBranches.SYSTEM_ROOT, SENTINEL).call();
 
       BranchReadable actual = getBranch(branch);
-      Long id = actual.getUuid();
-      assertBranch(actual, id, branchName, BranchState.CREATED, BranchType.BASELINE, SENTINEL);
+      assertBranch(actual, branchName, BranchState.CREATED, BranchType.BASELINE, SENTINEL);
 
       branchName = "another-name";
       branchOps.changeBranchName(branch, branchName).call();
 
       actual = getBranch(branch);
-      assertBranch(actual, id, branchName, BranchState.CREATED, BranchType.BASELINE, SENTINEL);
+      assertBranch(actual, branchName, BranchState.CREATED, BranchType.BASELINE, SENTINEL);
 
       BranchState branchState = BranchState.DELETED;
       branchOps.changeBranchState(branch, branchState).call();
 
       actual = getBranch(branch);
-      assertBranch(actual, id, branchName, branchState, BranchType.BASELINE, SENTINEL);
+      assertBranch(actual, branchName, branchState, BranchType.BASELINE, SENTINEL);
 
       BranchType branchType = BranchType.WORKING;
       branchOps.changeBranchType(branch, branchType).call();
 
       actual = getBranch(branch);
-      assertBranch(actual, id, branchName, branchState, branchType, SENTINEL);
+      assertBranch(actual, branchName, branchState, branchType, SENTINEL);
 
       ArtifactId assocArtifact = SystemUser.OseeSystem;
       branchOps.associateBranchToArtifact(branch, assocArtifact).call();
 
       actual = getBranch(branch);
-      assertBranch(actual, id, branchName, branchState, branchType, assocArtifact);
+      assertBranch(actual, branchName, branchState, branchType, assocArtifact);
 
       branchOps.unassociateBranch(branch).call();
 
       actual = getBranch(branch);
-      assertBranch(actual, id, branchName, branchState, branchType, SENTINEL);
+      assertBranch(actual, branchName, branchState, branchType, SENTINEL);
    }
 
-   private void assertBranch(BranchReadable branch, Long id, String name, BranchState state, BranchType type, ArtifactId assocArtId) {
-      assertEquals(id, branch.getGuid());
-      assertEquals(id, branch.getUuid());
-
+   private void assertBranch(BranchReadable branch, String name, BranchState state, BranchType type, ArtifactId assocArtId) {
       assertEquals(name, branch.getName());
       assertEquals(state, branch.getBranchState());
       assertEquals(type, branch.getBranchType());

@@ -183,7 +183,7 @@ public class ConflictManagerInternal {
             conflicts.add(conflict);
          }
       }
-      cleanUpConflictDB(conflicts, mergeBranch.getUuid(), monitor);
+      cleanUpConflictDB(conflicts, mergeBranch, monitor);
       return conflicts;
    }
 
@@ -356,26 +356,26 @@ public class ConflictManagerInternal {
       return ConnectionHandler.getJdbcClient().fetch(0, sql, destinationGammaId, branch, endTransaction) == 0;
    }
 
-   private static void cleanUpConflictDB(Collection<Conflict> conflicts, long branchUuid, IProgressMonitor monitor) throws OseeCoreException {
+   private static void cleanUpConflictDB(Collection<Conflict> conflicts, BranchId branch, IProgressMonitor monitor) throws OseeCoreException {
       monitor.subTask("Cleaning up old conflict data");
-      if (conflicts != null && conflicts.size() != 0 && branchUuid != 0) {
+      if (conflicts != null && conflicts.size() != 0 && branch.isValid()) {
          try (Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery()) {
             for (Conflict conflict : conflicts) {
-               joinQuery.add(BranchId.valueOf(branchUuid), ArtifactId.valueOf(conflict.getObjectId()),
+               joinQuery.add(branch, ArtifactId.valueOf(conflict.getObjectId()),
                   TransactionId.valueOf(conflict.getConflictType().getValue()));
             }
             joinQuery.store();
-            ConnectionHandler.runPreparedUpdate(CONFLICT_CLEANUP, branchUuid, joinQuery.getQueryId());
+            ConnectionHandler.runPreparedUpdate(CONFLICT_CLEANUP, branch, joinQuery.getQueryId());
          }
       }
       monitor.worked(10);
    }
 
-   public static Collection<Long> getDestinationBranchesMerged(long sourceBranchId) throws OseeCoreException {
+   public static Collection<Long> getDestinationBranchesMerged(BranchId sourceBranch) throws OseeCoreException {
       List<Long> destinationBranches = new LinkedList<>();
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
-         chStmt.runPreparedQuery(GET_DESTINATION_BRANCHES, sourceBranchId);
+         chStmt.runPreparedQuery(GET_DESTINATION_BRANCHES, sourceBranch);
          while (chStmt.next()) {
             destinationBranches.add(chStmt.getLong("dest_branch_id"));
          }

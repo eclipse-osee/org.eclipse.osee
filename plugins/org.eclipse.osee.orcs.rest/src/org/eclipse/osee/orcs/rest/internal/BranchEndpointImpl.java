@@ -319,7 +319,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
          if (Strings.isNumeric(value)) {
             try {
                Long id = Long.parseLong(value);
-               if (branch.getGuid().equals(id)) {
+               if (branch.equals(id)) {
                   location = uriInfo.getRequestUri();
                }
             } catch (Exception ex) {

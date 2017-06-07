@@ -12,13 +12,13 @@ package org.eclipse.osee.orcs.db.internal.exchange.handler;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -36,7 +36,7 @@ import org.eclipse.osee.orcs.db.internal.exchange.ExchangeDb;
  */
 public class BranchDataSaxHandler extends BaseDbSaxHandler {
 
-   private final Map<Long, BranchData> idToImportFileBranchData;
+   private final Map<BranchId, BranchData> idToImportFileBranchData;
    private JdbcConnection connection;
 
    public static BranchDataSaxHandler createWithCacheAll(Log logger, JdbcClient service) {
@@ -60,7 +60,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
          String value = dataMap.get(columnName);
          branchData.setData(columnName, toObject(columnName, value));
       }
-      this.idToImportFileBranchData.put(branchData.getId(), branchData);
+      this.idToImportFileBranchData.put(BranchId.valueOf(branchData.getId()), branchData);
    }
 
    private Object toObject(String key, String value) throws OseeArgumentException {
@@ -74,61 +74,54 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       return toReturn;
    }
 
-   public boolean areAvailable(long... branchUuids) {
-      boolean toReturn = false;
-      if (branchUuids != null && branchUuids.length > 0) {
-         Set<Long> toCheck = new HashSet<>();
-         for (long entry : branchUuids) {
-            toCheck.add(entry);
-         }
-         toReturn = this.idToImportFileBranchData.keySet().containsAll(toCheck);
+   public boolean areAvailable(List<? extends BranchId> branchesToImport) {
+      Set<BranchId> toCheck = new HashSet<>();
+      for (BranchId entry : branchesToImport) {
+         toCheck.add(entry);
       }
-      return toReturn;
+      return this.idToImportFileBranchData.keySet().containsAll(toCheck);
    }
 
    public Collection<BranchData> getAllBranchDataFromImportFile() {
       return this.idToImportFileBranchData.values();
    }
 
-   private List<BranchData> getSelectedBranchesToImport(long... branchesToImport) {
+   private List<BranchData> getSelectedBranchesToImport(Collection<? extends BranchId> branchesToImport) {
       List<BranchData> toReturn = new ArrayList<>();
-      if (branchesToImport != null && branchesToImport.length > 0) {
-         for (long branchUuid : branchesToImport) {
-            BranchData data = this.idToImportFileBranchData.get(branchUuid);
+      if (branchesToImport.isEmpty()) {
+         toReturn.addAll(this.idToImportFileBranchData.values());
+      } else {
+         for (BranchId branch : branchesToImport) {
+            BranchData data = this.idToImportFileBranchData.get(branch);
             if (data != null) {
                toReturn.add(data);
             }
          }
-      } else {
-         toReturn.addAll(this.idToImportFileBranchData.values());
       }
       return toReturn;
    }
 
-   private void checkSelectedBranches(long... branchesToImport) throws OseeDataStoreException {
-      if (branchesToImport != null && branchesToImport.length > 0) {
-         if (!areAvailable(branchesToImport)) {
-            throw new OseeDataStoreException(
-               "Branches not found in import file:\n\t\t- selected to import: [%s]\n\t\t- in import file: [%s]",
-               branchesToImport, getAllBranchDataFromImportFile());
-         }
+   private void checkSelectedBranches(List<? extends BranchId> branchesToImport) throws OseeDataStoreException {
+      if (!areAvailable(branchesToImport)) {
+         throw new OseeDataStoreException(
+            "Branches not found in import file:\n\t\t- selected to import: [%s]\n\t\t- in import file: [%s]",
+            branchesToImport, getAllBranchDataFromImportFile());
       }
    }
 
-   public long[] store(JdbcConnection connection, boolean writeToDb, long... branchesToImport) throws OseeCoreException {
+   public Set<BranchId> store(JdbcConnection connection, boolean writeToDb, List<? extends BranchId> branchesToImport) throws OseeCoreException {
       checkSelectedBranches(branchesToImport);
       Collection<BranchData> branchesToStore = getSelectedBranchesToImport(branchesToImport);
 
       branchesToStore = checkTargetDbBranches(connection, branchesToStore);
-      long[] toReturn = new long[branchesToStore.size()];
-      int index = 0;
+      Set<BranchId> toReturn = new HashSet<>(branchesToImport.size());
       for (BranchData branchData : branchesToStore) {
          if (!getOptions().getBoolean(ImportOptions.CLEAN_BEFORE_IMPORT.name()) //
             && SYSTEM_ROOT.equals(branchData.getId())) {
             continue;
          }
 
-         toReturn[index] = branchData.getId();
+         toReturn.add(BranchId.valueOf(branchData.getId()));
          if (getOptions().getBoolean(ImportOptions.ALL_AS_ROOT_BRANCHES.name())) {
             branchData.setParentBranchId(1);
             branchData.setBranchType(BranchType.BASELINE);
@@ -142,7 +135,6 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
          if (data != null) {
             addData(data);
          }
-         index++;
       }
       if (writeToDb) {
          super.store(connection);
@@ -150,7 +142,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       return toReturn;
    }
 
-   public void updateBaselineAndParentTransactionId(long[] branchesStored) throws OseeCoreException {
+   public void updateBaselineAndParentTransactionId(Set<BranchId> branchesStored) throws OseeCoreException {
       List<BranchData> branches = getSelectedBranchesToImport(branchesStored);
       List<Object[]> data = new ArrayList<>();
       for (BranchData branchData : branches) {
@@ -171,10 +163,10 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
             "update osee_branch set parent_transaction_id = ?, baseline_transaction_id = ? where branch_id = ?";
          int updateCount = getDatabaseService().runBatchUpdate(query, data);
          getLogger().info("Updated [%s] baseline and parent transaction id info on branches [%s]", updateCount,
-            Arrays.toString(branchesStored));
+            branchesStored);
       } else {
          getLogger().info("No branches found to update baseline and parent txs: branches - [%s] - skipping",
-            Arrays.toString(branchesStored));
+            branchesStored);
       }
    }
 

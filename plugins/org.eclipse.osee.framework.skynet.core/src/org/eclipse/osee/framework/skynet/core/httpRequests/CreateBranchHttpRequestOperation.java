@@ -97,11 +97,11 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
    }
 
    private Branch getBranchUuid(Response response) {
-      Long toReturn = -1L;
+      BranchId branchId = BranchId.SENTINEL;
       if (response.hasEntity()) {
          org.eclipse.osee.orcs.rest.model.Branch branch =
             response.readEntity(org.eclipse.osee.orcs.rest.model.Branch.class);
-         toReturn = branch.getBranchUuid();
+         branchId = BranchId.valueOf(branch.getBranchUuid());
       } else {
          URI location = response.getLocation();
          if (location != null) {
@@ -110,13 +110,13 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
             if (index > 0 && index < path.length()) {
                String value = path.substring(index);
                if (Strings.isNumeric(value)) {
-                  toReturn = Long.parseLong(value);
+                  branchId = BranchId.valueOf(value);
                }
             }
          }
       }
       // can't use TokenFactory here because some places assume branch will be cached such as getBranchesByName
-      return BranchManager.getBranch(toReturn);
+      return BranchManager.getBranch(branchId);
    }
 
    public IOseeBranch getNewBranch() {

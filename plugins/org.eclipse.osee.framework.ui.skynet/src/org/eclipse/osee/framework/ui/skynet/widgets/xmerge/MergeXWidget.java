@@ -207,7 +207,7 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
                try {
                   BranchId destinationBranch = BranchId.valueOf(destBranchId);
                   IOseeBranch mergeBranch = BranchManager.getMergeBranch(conflict.getSourceBranch(), destinationBranch);
-                  conflict.applyPreviousMerge(mergeBranch.getUuid(), destBranchId);
+                  conflict.applyPreviousMerge(mergeBranch, destinationBranch);
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                } finally {
@@ -693,11 +693,10 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
                ArrayList<String> selections = new ArrayList<>();
                ArrayList<Long> branchUuids = new ArrayList<>();
                try {
-                  Collection<Long> destBranches =
-                     ConflictManagerInternal.getDestinationBranchesMerged(sourceBranch.getUuid());
+                  Collection<Long> destBranches = ConflictManagerInternal.getDestinationBranchesMerged(sourceBranch);
                   for (Long branchUuid : destBranches) {
                      if (destBranch.notEqual(branchUuid)) {
-                        selections.add(BranchManager.getBranchName(branchUuid));
+                        selections.add(BranchManager.getBranchName(BranchId.valueOf(branchUuid)));
                         branchUuids.add(branchUuid);
                      }
                   }

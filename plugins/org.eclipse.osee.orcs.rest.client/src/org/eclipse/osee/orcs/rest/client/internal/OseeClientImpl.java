@@ -125,7 +125,7 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
 
       SearchRequest params = new SearchRequest(branch, predicates, requestType, fromTx, includeDeleted);
 
-      JaxRsWebTarget resource = newTarget("branch/{branch-uuid}/artifact/search/v1", branch.getUuid());
+      JaxRsWebTarget resource = newTarget("branch/{branch-uuid}/artifact/search/v1", branch.getIdString());
       try {
          return resource.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(params), SearchResponse.class);
       } catch (Exception ex) {

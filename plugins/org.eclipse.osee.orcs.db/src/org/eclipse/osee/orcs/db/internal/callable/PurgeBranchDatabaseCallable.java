@@ -13,12 +13,12 @@ package org.eclipse.osee.orcs.db.internal.callable;
 
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.JdbcDbType;
-import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.BranchReadable;
@@ -48,40 +48,37 @@ public class PurgeBranchDatabaseCallable extends AbstractDatastoreTxCallable<Voi
 
    @Override
    protected Void handleTxWork(JdbcConnection connection) throws OseeCoreException {
-      List<Pair<Long, Boolean>> branches = findMergeBranches(connection);
-      branches.add(new Pair<Long, Boolean>(toDelete.getUuid(), toDelete.getArchiveState().isArchived()));
-      for (Pair<Long, Boolean> toPurge : branches) {
+      List<Pair<BranchId, Boolean>> branches = findMergeBranches(connection);
+      branches.add(new Pair<BranchId, Boolean>(toDelete, toDelete.getArchiveState().isArchived()));
+      for (Pair<BranchId, Boolean> toPurge : branches) {
          purgeBranch(connection, toPurge.getFirst(), toPurge.getSecond());
       }
       return null;
    }
 
-   private void purgeBranch(JdbcConnection connection, Long branchUuid, boolean isArchived) {
+   private void purgeBranch(JdbcConnection connection, BranchId branch, boolean isArchived) {
       String sourceTableName = isArchived ? "osee_txs_archived" : "osee_txs";
       String sql = String.format("DELETE FROM %s WHERE branch_id = ?", sourceTableName);
-      purgeFromTable(connection, sql, 0.20, branchUuid);
+      purgeFromTable(connection, sql, 0.20, branch);
 
       if (getJdbcClient().getDbType().equals(JdbcDbType.hsql) || getJdbcClient().getDbType().equals(JdbcDbType.mysql)) {
          // update the branch table so that the baseline transaction ID of the given branch is '1'
-         purgeFromTable(connection, TEMPORARY_BRANCH_UPDATE, 0.01, branchUuid);
+         purgeFromTable(connection, TEMPORARY_BRANCH_UPDATE, 0.01, branch);
       }
 
-      purgeFromTable(connection, DELETE_FROM_TX_DETAILS, 0.09, branchUuid);
-      purgeFromTable(connection, DELETE_FROM_CONFLICT, 0.01, branchUuid);
-      purgeFromTable(connection, DELETE_FROM_MERGE, 0.01, branchUuid);
-      purgeFromTable(connection, DELETE_FROM_BRANCH_TABLE, 0.01, branchUuid);
-      purgeFromTable(connection, DELETE_ARTIFACT_ACL_FROM_BRANCH, 0.01, branchUuid);
+      purgeFromTable(connection, DELETE_FROM_TX_DETAILS, 0.09, branch);
+      purgeFromTable(connection, DELETE_FROM_CONFLICT, 0.01, branch);
+      purgeFromTable(connection, DELETE_FROM_MERGE, 0.01, branch);
+      purgeFromTable(connection, DELETE_FROM_BRANCH_TABLE, 0.01, branch);
+      purgeFromTable(connection, DELETE_ARTIFACT_ACL_FROM_BRANCH, 0.01, branch);
    }
 
-   private List<Pair<Long, Boolean>> findMergeBranches(JdbcConnection connection) {
-      List<Pair<Long, Boolean>> toReturn = new LinkedList<>();
-      JdbcStatement stmt = getJdbcClient().getStatement(connection);
-      stmt.runPreparedQuery(SELECT_MERGE_BRANCHES, toDelete, toDelete);
-      while (stmt.next()) {
-         Pair<Long, Boolean> toAdd =
-            new Pair<Long, Boolean>(stmt.getLong("merge_branch_id"), stmt.getBoolean("archived"));
-         toReturn.add(toAdd);
-      }
+   private List<Pair<BranchId, Boolean>> findMergeBranches(JdbcConnection connection) {
+      List<Pair<BranchId, Boolean>> toReturn = new LinkedList<>();
+      getJdbcClient().runQuery(connection,
+         stmt -> toReturn.add(
+            new Pair<>(BranchId.valueOf(stmt.getLong("merge_branch_id")), stmt.getBoolean("archived"))),
+         SELECT_MERGE_BRANCHES, toDelete, toDelete);
       return toReturn;
    }
 

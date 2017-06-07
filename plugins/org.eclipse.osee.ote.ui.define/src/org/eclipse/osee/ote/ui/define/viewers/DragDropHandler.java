@@ -29,7 +29,6 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -182,7 +181,7 @@ public class DragDropHandler {
 
    private void handleResourceDrops(URI[] iFiles) throws OseeCoreException {
       BranchId branch = BranchComboDialog.getBranchFromUser();
-      if (branch != null) {
+      if (branch.isValid()) {
          OutfileToArtifactJob artifactJob = new OutfileToArtifactJob(branch, iFiles);
          artifactJob.addJobChangeListener(new JobChangeAdapter() {
 

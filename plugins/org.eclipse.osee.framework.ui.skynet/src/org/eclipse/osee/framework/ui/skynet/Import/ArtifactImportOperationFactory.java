@@ -182,9 +182,8 @@ public final class ArtifactImportOperationFactory {
             children.addAll(this.destination.getDescendants());
          } catch (OseeCoreException ex) {
             throw new OseeCoreException(String.format("Unable to get artifact children: artifact:[%s] branch:[%s]",
-               this.destination.getGuid(), this.destination.getBranch().getGuid()), ex);
+               this.destination.getId(), this.destination.getBranch()), ex);
          }
       }
    }
-
 }

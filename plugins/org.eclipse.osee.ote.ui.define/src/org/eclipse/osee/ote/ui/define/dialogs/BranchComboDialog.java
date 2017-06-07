@@ -81,17 +81,10 @@ public class BranchComboDialog extends TitleAreaDialog implements Listener {
       return branchSelectComposite.getSelectedBranch();
    }
 
-   private boolean isValid() {
-      return getSelection() != null;
-   }
-
    private void checkState() {
-      getButton(IDialogConstants.OK_ID).setEnabled(isValid());
-      if (isValid() != true) {
-         setErrorMessage("Branch cannot be empty.");
-      } else {
-         setErrorMessage(null);
-      }
+      boolean isValid = getSelection().isValid();
+      getButton(IDialogConstants.OK_ID).setEnabled(isValid);
+      setErrorMessage(isValid ? null : "Branch cannot be empty.");
    }
 
    @Override
@@ -125,7 +118,7 @@ public class BranchComboDialog extends TitleAreaDialog implements Listener {
 
          try {
             BranchId branch = getSelection();
-            if (branch != null) {
+            if (branch.isValid()) {
                String lastBranchSelected = branch.getIdString();
 
                List<String> history = new ArrayList<>(Arrays.asList(branchUuids));
@@ -152,7 +145,7 @@ public class BranchComboDialog extends TitleAreaDialog implements Listener {
    }
 
    public static BranchId getBranchFromUser() throws OseeCoreException {
-      BranchId toReturn = null;
+      BranchId toReturn = BranchId.SENTINEL;
       BranchComboDialog branchSelection = new BranchComboDialog(AWorkbench.getActiveShell());
       int result = branchSelection.open();
       if (result == Window.OK) {

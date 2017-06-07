@@ -142,7 +142,7 @@ public final class BranchManager {
 
    public static Collection<IOseeBranch> getBranchesByName(String branchName) throws OseeCoreException {
       Collection<IOseeBranch> branches = new ArrayList<>(1);
-      ConnectionHandler.getJdbcClient().runQuery(stmt -> branches.add(getBranch(stmt.getLong("branch_id"))),
+      ConnectionHandler.getJdbcClient().runQuery(stmt -> branches.add(getBranchToken(stmt.getLong("branch_id"))),
          SELECT_BRANCH_BY_NAME, branchName);
       return branches;
    }
@@ -152,37 +152,32 @@ public final class BranchManager {
    }
 
    public static IOseeBranch getBranchToken(Long branchId) throws OseeCoreException {
-      return getBranch(branchId);
+      return getBranch(BranchId.valueOf(branchId));
    }
 
    public static Branch getBranch(BranchId branch) throws OseeCoreException {
       if (branch instanceof Branch) {
          return (Branch) branch;
       } else {
-         return getBranch(branch.getId(), branch.getViewId());
+         return getBranch(branch, branch.getViewId());
       }
    }
 
-   public static Branch getBranch(Long branchId) throws OseeCoreException {
-      return getBranch(branchId, ArtifactId.SENTINEL);
-   }
-
-   public static Branch getBranch(Long branchId, ArtifactId view) throws OseeCoreException {
+   public static Branch getBranch(BranchId branchId, ArtifactId view) throws OseeCoreException {
       if (branchId == null) {
          throw new BranchDoesNotExist("Branch Uuid is null");
       }
 
       Branch branch = null;
       if (view.notEqual(ArtifactId.SENTINEL)) {
-         List<Branch> views = getCache().getViews();
-         for (Branch branchView : views) {
-            if (branchView.getId().equals(branchId) && branchView.getBranchView().equals(view)) {
+         for (Branch branchView : getCache().getViews()) {
+            if (branchView.equals(branchId) && branchView.getBranchView().equals(view)) {
                branch = branchView;
                break;
             }
          }
       } else {
-         branch = getCache().getById(branchId);
+         branch = getCache().get(branchId);
          if (branch == null) {
             branch = loadBranchToCache(branchId);
          }
@@ -195,11 +190,11 @@ public final class BranchManager {
     */
    public static synchronized void checkAndReload(BranchId branch) throws OseeCoreException {
       if (!branchExists(branch)) {
-         loadBranchToCache(branch.getId());
+         loadBranchToCache(branch);
       }
    }
 
-   private static Branch loadBranchToCache(Long branchId) {
+   private static Branch loadBranchToCache(BranchId branchId) {
       Branch branch = DatabaseBranchAccessor.loadBranch(getCache(), branchId);
       getCache().cache(branch);
       return branch;
@@ -250,7 +245,7 @@ public final class BranchManager {
    }
 
    public static void reloadBranch(BranchId branch) {
-      loadBranchToCache(branch.getId());
+      loadBranchToCache(branch);
    }
 
    public static IStatus isDeleteable(Collection<Artifact> artifacts) throws OseeCoreException {
@@ -558,12 +553,11 @@ public final class BranchManager {
    public static BranchId getLastBranch() {
       if (lastBranch == null) {
          try {
-            Long branchUuid = Long.valueOf(UserManager.getSetting(LAST_DEFAULT_BRANCH));
-            lastBranch = getBranch(branchUuid);
+            lastBranch = getBranchToken(BranchId.valueOf(UserManager.getSetting(LAST_DEFAULT_BRANCH)));
          } catch (Exception ex) {
             try {
                lastBranch = getBranchToken(getDefaultInitialBranch());
-               UserManager.setSetting(LAST_DEFAULT_BRANCH, lastBranch.getUuid());
+               UserManager.setSetting(LAST_DEFAULT_BRANCH, lastBranch.getId());
             } catch (OseeCoreException ex1) {
                OseeLog.log(Activator.class, Level.SEVERE, ex1);
             }
@@ -711,10 +705,6 @@ public final class BranchManager {
       return getBranch(branch).getName();
    }
 
-   public static String getBranchName(Long branchId) {
-      return getBranch(branchId).getName();
-   }
-
    public static String getBranchShortName(BranchId branch) {
       return getBranch(branch).getShortName();
    }
@@ -732,6 +722,6 @@ public final class BranchManager {
    }
 
    public static Branch getBranch(TransactionToken transaction) {
-      return getBranch(transaction.getBranchId());
+      return getBranch(transaction.getBranch());
    }
 }

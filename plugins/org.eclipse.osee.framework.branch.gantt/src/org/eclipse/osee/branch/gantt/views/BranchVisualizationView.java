@@ -102,7 +102,7 @@ public class BranchVisualizationView extends ViewPart {
          BranchId selectedBranch = xBranchSelectWidget.getData();
          if (selectedBranch != null) {
             try {
-               UserManager.getUser().setSetting(BRANCH_KEY, selectedBranch.getUuid());
+               UserManager.getUser().setSetting(BRANCH_KEY, selectedBranch.getId());
                UserManager.getUser().persist("Store Branch Visualization Default Branch");
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);

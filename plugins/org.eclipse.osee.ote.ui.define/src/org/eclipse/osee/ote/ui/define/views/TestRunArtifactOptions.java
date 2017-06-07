@@ -12,7 +12,6 @@ package org.eclipse.osee.ote.ui.define.views;
 
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TestRunStorageKey;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.IPropertyStore;
 import org.eclipse.osee.framework.ui.plugin.widgets.IPropertyStoreBasedControl;
 import org.eclipse.osee.ote.ui.define.panels.GrayableBranchSelectionComposite;
@@ -49,18 +48,14 @@ public class TestRunArtifactOptions implements IPropertyStoreBasedControl {
       propertyStore.put(TestRunStorageKey.BRANCH_IDS, this.panel.getBranchIds());
 
       BranchId branch = this.panel.getSelectedBranch();
-      long branchUuid = -1;
-      if (branch != null) {
-         branchUuid = branch.getUuid();
-      }
-      propertyStore.put(TestRunStorageKey.SELECTED_BRANCH_ID, branchUuid);
+      propertyStore.put(TestRunStorageKey.SELECTED_BRANCH_ID, branch.getId());
    }
 
    @Override
    public boolean areSettingsValid() {
       boolean result = true;
       if (this.panel.isBranchSelectEnabled() != false) {
-         result &= this.panel.getSelectedBranch() != null;
+         result &= this.panel.getSelectedBranch().isValid();
       }
       return result;
    }

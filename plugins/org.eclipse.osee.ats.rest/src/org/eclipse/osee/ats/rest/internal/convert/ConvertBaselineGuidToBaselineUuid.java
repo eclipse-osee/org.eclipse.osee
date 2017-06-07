@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -65,19 +66,18 @@ public class ConvertBaselineGuidToBaselineUuid extends AbstractConvertGuidToUuid
                if (branch == null) {
                   data.errorf("Branch with guid %s can't be found", guid);
                } else {
-                  long branchUuid = branch.getUuid();
-                  String uuid = art.getSoleAttributeAsString(AtsAttributeTypes.BaselineBranchUuid, null);
-                  if (!Strings.isValid(uuid) || isUuidDifferent(uuid, branchUuid)) {
-                     if (!Strings.isValid(uuid)) {
-                        data.logf("Adding uuid attribute of value %d to artifact type [%s] name [%s] id [%s]\n",
-                           branchUuid, art.getArtifactType(), art.getName(), art.getGuid());
-                     } else if (isUuidDifferent(uuid, branchUuid)) {
-                        data.logf("Updating uuid attribute of value %d to artifact type [%s] name [%s] id [%s]\n",
-                           branchUuid, art.getArtifactType(), art.getName(), art.getGuid());
+                  String baseLine = art.getSoleAttributeAsString(AtsAttributeTypes.BaselineBranchUuid, null);
+                  if (!Strings.isValid(baseLine) || isUuidDifferent(baseLine, branch)) {
+                     if (!Strings.isValid(baseLine)) {
+                        data.logf("Adding uuid attribute of value %s to artifact type [%s] name [%s] id [%s]\n", branch,
+                           art.getArtifactType(), art.getName(), art.getGuid());
+                     } else if (isUuidDifferent(baseLine, branch)) {
+                        data.logf("Updating uuid attribute of value %s to artifact type [%s] name [%s] id [%s]\n",
+                           branch, art.getArtifactType(), art.getName(), art.getGuid());
                      }
                      numChanges++;
                      if (!reportOnly) {
-                        tx.setSoleAttributeValue(art, AtsAttributeTypes.BaselineBranchUuid, String.valueOf(branchUuid));
+                        tx.setSoleAttributeValue(art, AtsAttributeTypes.BaselineBranchUuid, branch.getIdString());
                      }
                   }
                }
@@ -112,7 +112,7 @@ public class ConvertBaselineGuidToBaselineUuid extends AbstractConvertGuidToUuid
       return "ConvertBaselineGuidToBaselineUuid";
    }
 
-   private boolean isUuidDifferent(String uuid, long branchUuid) {
-      return Strings.isValid(uuid) && !Long.valueOf(uuid).equals(branchUuid);
+   private boolean isUuidDifferent(String uuid, BranchId branch) {
+      return Strings.isValid(uuid) && branch.notEqual(Long.valueOf(uuid));
    }
 }
