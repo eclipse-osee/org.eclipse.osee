@@ -31,6 +31,7 @@ import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
+import org.eclipse.osee.disposition.model.DispoSummarySeverity;
 import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.disposition.rest.DispoImporterApi;
 import org.eclipse.osee.disposition.rest.internal.DispoConnector;
@@ -64,6 +65,7 @@ public class LisFileParser implements DispoImporterApi {
    private final Map<String, DispoItemData> datIdToItem = new HashMap<>();
    private final Set<String> datIdsCoveredByException = new HashSet<>();
    private final Set<String> alreadyUsedDatIds = new HashSet<>();
+   private final Set<String> alreadyUsedFileNames = new HashSet<>();
 
    private final DispoConnector dispoConnector = new DispoConnector();
 
@@ -340,7 +342,7 @@ public class LisFileParser implements DispoImporterApi {
       File resultsFile = new File(resultPathAbs);
       if (!resultsFile.exists()) {
          report.addEntry("SQL", String.format("Could not find DAT file [%s]", resultPathAbs), ERROR);
-      } else if (!resultsFile.getName().endsWith(".DAT")) {
+      } else if (isDupcliateFile(resultsFile, report)) {
          // Ignore
       } else {
          //Start reading line by line
@@ -380,6 +382,17 @@ public class LisFileParser implements DispoImporterApi {
          } finally {
             Lib.close(br);
          }
+      }
+   }
+
+   private boolean isDupcliateFile(File file, OperationReport report) {
+      String normalizedFileName = file.getName().replaceAll("//....", "");
+      if (alreadyUsedFileNames.contains(normalizedFileName)) {
+         report.addEntry(file.getName(), "Duplicate File skipped", DispoSummarySeverity.WARNING);
+         return true;
+      } else {
+         alreadyUsedFileNames.add(normalizedFileName);
+         return false;
       }
    }
 
