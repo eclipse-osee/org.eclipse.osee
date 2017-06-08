@@ -46,7 +46,7 @@ public class UpdateBranchHandler extends CommandHandler {
    protected boolean isValid(IOseeBranch branch) throws OseeCoreException {
       return !BranchManager.isParentSystemRoot(branch) && BranchManager.isEditable(
          branch) && BranchManager.getType(branch).isOfType(BranchType.WORKING,
-            BranchType.BASELINE) && BranchManager.hasChildren(branch);
+            BranchType.BASELINE) && !BranchManager.hasChildren(branch);
    }
 
    private IOseeBranch getSelectedBranch(IStructuredSelection selection) {
