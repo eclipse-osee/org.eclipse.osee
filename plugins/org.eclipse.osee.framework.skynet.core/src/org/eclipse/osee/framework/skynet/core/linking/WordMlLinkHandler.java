@@ -81,7 +81,7 @@ public class WordMlLinkHandler {
    private static final Matcher WORDML_LINK =
       Pattern.compile("<w:hlink\\s+w:dest=\"(.*?)\"[^>]*?(/>|>.*?</w:hlink\\s*>)", Pattern.DOTALL).matcher("");
    private static final Matcher HYPERLINK_PATTERN = Pattern.compile(
-      "<w:r[^>]*><w:instrText>\\s*HYPERLINK\\s+\"(.+?)\"\\s*</w:instrText></w:r>(.*?</w:t>.+?</w:fldChar></w:r>)?",
+      "<w:r[^>]*><w:instrText>\\s*HYPERLINK\\s+\"(.+?)\"\\s*</w:instrText></w:r>([^<]</w:t>.+?</w:fldChar></w:r>)?",
       Pattern.DOTALL).matcher("");
 
    private static final OseeLinkBuilder linkBuilder = new OseeLinkBuilder();
