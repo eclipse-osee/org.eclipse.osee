@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.skynet.panels.SearchComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxArtifactTypeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxAttributeTypeDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -78,6 +79,8 @@ public class QuickSearchOptionComposite extends Composite {
 
    private Text attributeSearchText;
    private Text artifactSearchText;
+
+   private SearchComposite attrSearchComposite;
 
    public QuickSearchOptionComposite(Composite parent, int style) {
       super(parent, style);
@@ -133,6 +136,12 @@ public class QuickSearchOptionComposite extends Composite {
       updateExactMatchOptions();
    }
 
+   private void updateSearchEnablement() {
+      if (Widgets.isAccessible(attrSearchComposite)) {
+         attrSearchComposite.updateWidgetEnablements();
+      }
+   }
+
    private void updateExactMatchOptions() {
       Button caseBtn = optionsButtons.get(SearchOption.Case_Sensitive);
       Button mwoBtn = optionsButtons.get(SearchOption.Match_Word_Order);
@@ -173,6 +182,7 @@ public class QuickSearchOptionComposite extends Composite {
                optionsMap.put((SearchOption) button.getData(), button.getSelection());
 
                updateExactMatchOptions();
+               updateSearchEnablement();
             }
          }
       });
@@ -244,6 +254,7 @@ public class QuickSearchOptionComposite extends Composite {
          } else if (option.equals(SearchOption.Artifact_Types)) {
             artifactSearchText.setText(configHandler.toString());
          }
+         updateSearchEnablement();
       }
    }
 
@@ -310,6 +321,7 @@ public class QuickSearchOptionComposite extends Composite {
       }
       initializeOptions(options);
       initializeConfigurations(configs);
+      updateSearchEnablement();
    }
 
    private void initializeConfigurations(Map<SearchOption, String[]> items) {
@@ -621,6 +633,10 @@ public class QuickSearchOptionComposite extends Composite {
          }
          return guids;
       }
+   }
+
+   public void setAttrSearchComposite(SearchComposite attrSearchComposite) {
+      this.attrSearchComposite = attrSearchComposite;
    }
 
 }

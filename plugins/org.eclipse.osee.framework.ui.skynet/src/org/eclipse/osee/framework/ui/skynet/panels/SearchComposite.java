@@ -21,6 +21,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.HelpContext;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
+import org.eclipse.osee.framework.ui.skynet.search.QuickSearchOptionComposite;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -55,6 +56,7 @@ public class SearchComposite extends Composite implements Listener {
    private Button clear;
    private boolean entryChanged;
    private final String buttonText, groupBoxText;
+   private QuickSearchOptionComposite optionsComposite;
 
    public SearchComposite(Composite parent, int style, String buttonText, String groupBoxText) {
       super(parent, style);
@@ -188,14 +190,20 @@ public class SearchComposite extends Composite implements Listener {
       return toReturn;
    }
 
-   private void updateWidgetEnablements() {
+   public void updateWidgetEnablements() {
       if (Widgets.isAccessible(this.searchArea)) {
+         boolean artTypeSelected = optionsComposite.getArtifactTypeFilter().length > 0;
+         boolean attrTypeSelected = optionsComposite.getAttributeTypeFilter().length > 0;
          String value = this.searchArea.getText();
          if (value != null) {
             value = value.trim();
          }
          if (Widgets.isAccessible(this.executeSearch)) {
-            this.executeSearch.setEnabled(Strings.isValid(value));
+            if (!Strings.isValid(value) && artTypeSelected && !attrTypeSelected) {
+               this.executeSearch.setEnabled(true);
+            } else {
+               this.executeSearch.setEnabled(Strings.isValid(value));
+            }
          }
          if (Widgets.isAccessible(this.clear)) {
             this.clear.setEnabled(this.searchArea.getItemCount() > 0);
@@ -301,5 +309,9 @@ public class SearchComposite extends Composite implements Listener {
          children = Arrays.asList(this, searchArea, executeSearch, clear);
       }
       return children;
+   }
+
+   public void setOptionsComposite(QuickSearchOptionComposite optionsComposite) {
+      this.optionsComposite = optionsComposite;
    }
 }

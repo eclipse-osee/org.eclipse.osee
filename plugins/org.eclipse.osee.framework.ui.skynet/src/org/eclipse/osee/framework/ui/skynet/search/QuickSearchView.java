@@ -22,6 +22,7 @@ import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
@@ -30,6 +31,8 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.artifact.search.SearchOptions;
 import org.eclipse.osee.framework.skynet.core.artifact.search.SearchRequest;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -37,6 +40,8 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.access.AccessControlService;
 import org.eclipse.osee.framework.ui.skynet.panels.SearchComposite;
+import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModel;
+import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModelList;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
@@ -199,6 +204,8 @@ public class QuickSearchView extends GenericViewPart {
          optionsComposite = new QuickSearchOptionComposite(attrSearchGroup, SWT.NONE);
          optionsComposite.setLayout(ALayout.getZeroMarginLayout());
          optionsComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+         attrSearchComposite.setOptionsComposite(optionsComposite);
+         optionsComposite.setAttrSearchComposite(attrSearchComposite);
 
          guidSearchComposite = new SearchComposite(panel, SWT.NONE, "Search", "Search by ID:");
          guidSearchComposite.addListener(idSearchListener);
@@ -268,21 +275,45 @@ public class QuickSearchView extends GenericViewPart {
                AWorkbench.popup(String.format("Access Denied for branch [%s]", branch));
             } else if (Widgets.isAccessible(attrSearchComposite) && attrSearchComposite.isExecuteSearchEvent(
                event) && Widgets.isAccessible(optionsComposite)) {
-               DeletionFlag allowDeleted = isIncludeDeletedEnabled() ? INCLUDE_DELETED : EXCLUDE_DELETED;
-               NewSearchUI.activateSearchResultView();
 
-               ISearchQuery query;
-               SearchOptions options = new SearchOptions();
-               options.setDeletedIncluded(allowDeleted);
-               options.setAttributeTypeFilter(optionsComposite.getAttributeTypeFilter());
-               options.setArtifactTypeFilter(optionsComposite.getArtifactTypeFilter());
-               options.setCaseSensive(optionsComposite.isCaseSensitiveEnabled());
-               options.setMatchWordOrder(optionsComposite.isMatchWordOrderEnabled());
-               options.setExactMatch(optionsComposite.isExactMatchEnabled());
+               // if just search artifact type without attribute value
+               if (optionsComposite.getArtifactTypeFilter().length > 0 && optionsComposite.getAttributeTypeFilter().length == 0) {
+                  NewSearchUI.activateSearchResultView();
+                  FilterModelList filterModelList = new FilterModelList();
 
-               SearchRequest searchRequest = new SearchRequest(branch, attrSearchComposite.getQuery(), options);
-               query = new RemoteArtifactSearch(searchRequest);
-               NewSearchUI.runQueryInBackground(query);
+                  List<IArtifactType> artTypes = new LinkedList<>();
+                  for (IArtifactType artType : optionsComposite.getArtifactTypeFilter()) {
+                     artTypes.add(artType);
+                  }
+                  ISearchPrimitive primitive = new ArtifactTypeSearch(artTypes);
+                  FilterModel model = new FilterModel(primitive,
+                     String.format("All of Artifact Type [%s]", Collections.toString(";", artTypes)),
+                     artTypes.toString(), "");
+
+                  filterModelList.addFilter(model, true);
+                  AbstractArtifactSearchQuery searchQuery = new FilterArtifactSearchQuery(filterModelList, branch);
+                  NewSearchUI.runQueryInBackground(searchQuery);
+
+               }
+               // else search for attribute type values as well
+               else {
+                  DeletionFlag allowDeleted = isIncludeDeletedEnabled() ? INCLUDE_DELETED : EXCLUDE_DELETED;
+                  NewSearchUI.activateSearchResultView();
+
+                  ISearchQuery query;
+                  SearchOptions options = new SearchOptions();
+                  options.setDeletedIncluded(allowDeleted);
+                  options.setAttributeTypeFilter(optionsComposite.getAttributeTypeFilter());
+                  options.setArtifactTypeFilter(optionsComposite.getArtifactTypeFilter());
+                  options.setCaseSensive(optionsComposite.isCaseSensitiveEnabled());
+                  options.setMatchWordOrder(optionsComposite.isMatchWordOrderEnabled());
+                  options.setExactMatch(optionsComposite.isExactMatchEnabled());
+
+                  SearchRequest searchRequest = new SearchRequest(branch, attrSearchComposite.getQuery(), options);
+                  query = new RemoteArtifactSearch(searchRequest);
+                  NewSearchUI.runQueryInBackground(query);
+               }
+
             } else {
                // branch has been selected; allow user to set up search string
                compositeEnablement(attrSearchComposite, true);
