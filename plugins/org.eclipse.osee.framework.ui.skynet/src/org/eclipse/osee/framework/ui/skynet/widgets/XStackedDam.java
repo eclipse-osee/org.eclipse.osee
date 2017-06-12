@@ -443,12 +443,14 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
 
    @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
-      if (artifactEvent.isHasEvent(artifact)) {
+      if (!artifact.isDeleted() && artifactEvent.isHasEvent(artifact)) {
          Displays.ensureInDisplayThread(new Runnable() {
 
             @Override
             public void run() {
-               refresh();
+               if (Widgets.isAccessible(getControl())) {
+                  refresh();
+               }
             }
          });
       }
