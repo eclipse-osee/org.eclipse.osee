@@ -303,7 +303,31 @@ public final class ArtifactLoader {
    /**
     * Determines the artIds and branchUuids of artifacts to load based on sql and queryParameters
     */
-   private static List<Pair<ArtifactId, BranchId>> selectArtifacts(String sql, Object[] queryParameters, int artifactCountEstimate) throws OseeCoreException {
+   public static List<ArtifactId> selectArtifactIds(String sql, Object[] queryParameters, int artifactCountEstimate) throws OseeCoreException {
+      JdbcStatement chStmt = ConnectionHandler.getStatement();
+      long time = System.currentTimeMillis();
+
+      List<ArtifactId> toLoad = new ArrayList<>();
+
+      try {
+         chStmt.runPreparedQuery(artifactCountEstimate, sql, queryParameters);
+         while (chStmt.next()) {
+            int artId = chStmt.getInt("art_id");
+            toLoad.add(ArtifactId.valueOf(artId));
+         }
+      } finally {
+         chStmt.close();
+      }
+      OseeLog.logf(Activator.class, Level.FINE, new Exception("Artifact Selection Time"),
+         "Artifact Selection Time [%s], [%d] artifacts selected", Lib.getElapseString(time), toLoad.size());
+      return toLoad;
+      //      processList(queryId, toLoad, artifacts, insertParameters, transactionId, reload, locks);
+   }
+
+   /**
+    * Determines the artIds and branchUuids of artifacts to load based on sql and queryParameters
+    */
+   public static List<Pair<ArtifactId, BranchId>> selectArtifacts(String sql, Object[] queryParameters, int artifactCountEstimate) throws OseeCoreException {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       long time = System.currentTimeMillis();
 

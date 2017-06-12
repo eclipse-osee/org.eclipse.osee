@@ -122,7 +122,6 @@ public class ViewApplicabilityUtil {
             } catch (ArtifactDoesNotExist e) {
                // Do Nothing
             }
-
          }
       }
       return viewsToBranchData;

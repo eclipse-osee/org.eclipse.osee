@@ -190,8 +190,10 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
 
       Boolean isDiff = (Boolean) variableMap.getValue(PUBLISH_AS_DIFF);
       int toProcessSize = 0;
-      for (Artifact art : artifacts) {
-         toProcessSize += art.getDescendants().size();
+      if (isDiff) {
+         for (Artifact art : artifacts) {
+            toProcessSize += art.getDescendants().size();
+         }
       }
 
       final int totalSize = toProcessSize;

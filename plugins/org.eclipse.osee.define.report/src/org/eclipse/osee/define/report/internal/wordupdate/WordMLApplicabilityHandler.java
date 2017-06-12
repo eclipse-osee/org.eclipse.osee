@@ -100,8 +100,6 @@ public class WordMLApplicabilityHandler {
          } else if ((endFeature != null && endFeature.contains(
             WordCoreUtil.FEATUREAPP)) || (endConfig != null && endConfig.contains(WordCoreUtil.CONFIGAPP))) {
 
-            applicBlockCount -= 1;
-
             ApplicabilityBlock applicabilityBlock = getFullApplicabilityBlock(matcher, toReturn);
 
             if (applicabilityBlock == null) {
@@ -109,7 +107,6 @@ public class WordMLApplicabilityHandler {
             } else {
                applicBlockCount -= 1;
                String toInsert = evaluateApplicabilityBlock(applicabilityBlock, toReturn);
-
                String toReplace =
                   toReturn.substring(applicabilityBlock.getStartInsertIndex(), applicabilityBlock.getEndInsertIndex());
                toReturn = toReturn.replace(toReplace, toInsert);
@@ -117,7 +114,6 @@ public class WordMLApplicabilityHandler {
                   applicabilityBlock.getStartInsertIndex() + (applicabilityBlock.isInTable() ? 0 : toInsert.length());
                matcher = WordCoreUtil.FULL_PATTERN.matcher(toReturn);
             }
-
          } else {
             break;
          }
@@ -134,7 +130,8 @@ public class WordMLApplicabilityHandler {
    private String removeExtraParagraphs(String fullWordMl, String toInsert, ApplicabilityBlock applicabilityBlock) {
       int startInsertIndex = applicabilityBlock.getStartInsertIndex();
 
-      if (toInsert.isEmpty() || toInsert.startsWith(WordCoreUtil.WHOLE_END_PARAGRAPH)) {
+      if (!applicabilityBlock.isInTable() && (toInsert.isEmpty() || toInsert.startsWith(
+         WordCoreUtil.WHOLE_END_PARAGRAPH))) {
          String findParagraphStart = fullWordMl.substring(0, startInsertIndex);
          int paragraphStartIndex = findParagraphStart.lastIndexOf(WordCoreUtil.START_PARAGRAPH);
 
@@ -145,7 +142,14 @@ public class WordMLApplicabilityHandler {
             "(?i).*?(" + WordCoreUtil.BEGINFEATURE + "|" + WordCoreUtil.BEGINCONFIG + "|" + WordCoreUtil.ENDCONFIG + "|" + WordCoreUtil.ENDFEATURE + ").*?")) {
             int endInsertIndex = applicabilityBlock.getEndInsertIndex();
             String findParagraphEnd = fullWordMl.substring(endInsertIndex);
+
             int paragraphEndIndex = findParagraphEnd.indexOf(WordCoreUtil.END_PARAGRAPH) + endInsertIndex + 6;
+            if (paragraphEndIndex >= 0) {
+               applicabilityBlock.setStartInsertIndex(paragraphStartIndex);
+               applicabilityBlock.setStartTextIndex(paragraphStartIndex);
+               applicabilityBlock.setEndInsertIndex(paragraphEndIndex);
+               applicabilityBlock.setEndTextIndex(paragraphEndIndex);
+            }
 
             // check this doesn't contain feature/config tags
             String endText = fullWordMl.substring(endInsertIndex, paragraphEndIndex);
@@ -165,6 +169,7 @@ public class WordMLApplicabilityHandler {
                String fullParagraph = fullWordMl.substring(paragraphStartIndex, paragraphEndIndex);
                fullParagraph =
                   fullParagraph.replaceFirst("(?i)" + WordCoreUtil.BEGINFEATURE + "|" + WordCoreUtil.BEGINCONFIG, "");
+
                if (WordCoreUtil.textOnly(fullParagraph).isEmpty()) {
                   toInsert = toInsert.replaceFirst(WordCoreUtil.WHOLE_END_PARAGRAPH, "");
                   applicabilityBlock.setStartInsertIndex(paragraphStartIndex);
@@ -176,13 +181,15 @@ public class WordMLApplicabilityHandler {
 
       if (!applicabilityBlock.isInTable() && toInsert.matches(
          ".*?<w:p wsp:rsid[^>]+><w:pPr><w:spacing w:after=[^>]+></w:spacing></w:pPr><w:r><w:t>$")) {
+
          int origLength = toInsert.length();
          int lastParaIndex = toInsert.lastIndexOf(WordCoreUtil.START_PARAGRAPH);
-         toInsert = toInsert.substring(0, lastParaIndex);
-
-         applicabilityBlock.setEndTextIndex(applicabilityBlock.getEndTextIndex() - (origLength - lastParaIndex));
-         applicabilityBlock.setEndInsertIndex(
-            applicabilityBlock.getEndInsertIndex() + WordCoreUtil.WHOLE_END_PARAGRAPH.length());
+         if (lastParaIndex >= 0) {
+            toInsert = toInsert.substring(0, lastParaIndex);
+            applicabilityBlock.setEndTextIndex(applicabilityBlock.getEndTextIndex() - (origLength - lastParaIndex));
+            applicabilityBlock.setEndInsertIndex(
+               applicabilityBlock.getEndInsertIndex() + WordCoreUtil.WHOLE_END_PARAGRAPH.length());
+         }
       }
 
       return toInsert;
@@ -268,7 +275,8 @@ public class WordMLApplicabilityHandler {
 
    private ApplicabilityBlock getFullApplicabilityBlock(Matcher matcher, String toReturn) {
       if (applicBlocks.isEmpty()) {
-         throw new OseeCoreException("An applicability block of text is missing a start Feature/Configuration tag");
+         logger.error("An applicability block of text is missing a start Feature/Configuration tag");
+         return null;
       }
       ApplicabilityBlock applic = applicBlocks.pop();
 
@@ -362,7 +370,7 @@ public class WordMLApplicabilityHandler {
          }
 
       } catch (RecognitionException ex) {
-         throw new OseeCoreException(
+         logger.error(
             "Failed to parse expression: " + applicabilityExpression + " at start Index: " + applic.getStartInsertIndex());
       }
 
@@ -429,7 +437,7 @@ public class WordMLApplicabilityHandler {
       try {
          result = (boolean) se.eval(expression);
       } catch (ScriptException ex) {
-         throw new OseeCoreException("Failed to parse expression: " + expression);
+         logger.error("Failed to parse expression: " + expression);
       }
 
       if (result) {
@@ -456,7 +464,7 @@ public class WordMLApplicabilityHandler {
          try {
             result = (boolean) se.eval(valueExpression);
          } catch (ScriptException ex) {
-            throw new OseeCoreException("Failed to parse expression: " + valueExpression);
+            logger.error("Failed to parse expression: " + valueExpression);
          }
 
          myFeatureExpression += result + " ";
@@ -530,7 +538,7 @@ public class WordMLApplicabilityHandler {
             }
          }
       } catch (Exception e) {
-         throw new OseeCoreException("Error getting default value for feature: " + feature);
+         logger.error("Error getting default value for feature: " + feature);
       }
 
       return toReturn;

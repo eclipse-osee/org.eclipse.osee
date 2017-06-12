@@ -108,7 +108,7 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
 
    @Override
    public Map<String, List<String>> getBranchViewFeatureValues(BranchId branch, ArtifactId viewId) {
-      Map<String, List<String>> toReturn = new TreeMap<>();
+      Map<String, List<String>> toReturn = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
       List<ApplicabilityToken> result = getViewApplicabilityTokens(viewId, branch);
 
       for (ApplicabilityToken app : result) {

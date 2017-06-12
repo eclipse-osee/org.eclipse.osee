@@ -71,7 +71,6 @@ public enum OseeSql {
    CHANGE_BRANCH_MODIFYING("SELECT count(txs.transaction_id) as tx_count, arj.id1, arj.id2, arj.id4 FROM osee_join_id4 arj, osee_artifact art, osee_txs txs, osee_branch br where arj.query_id = ? AND arj.id2 = art.art_id AND art.gamma_id = txs.gamma_id AND txs.branch_id = arj.id1 and txs.branch_id = br.branch_id AND txs.transaction_id <> br.baseline_transaction_id group by arj.id2, arj.id1", Strings.HintsOrdered),
 
    IS_ARTIFACT_ON_BRANCH("SELECT%s count(1) from osee_artifact av1, osee_txs txs1 where av1.art_id = ? and av1.gamma_id = txs1.gamma_id and txs1.branch_id = ?", Strings.HintsOrdered);
-
    private final String sql;
    private final String hints;
 

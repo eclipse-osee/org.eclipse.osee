@@ -65,6 +65,7 @@ import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -94,6 +95,8 @@ import org.json.JSONObject;
  */
 public class WordTemplateProcessor {
 
+   private static final String LOAD_EXCLUDED_ARTIFACTIDS =
+      "select art_id from osee_artifact art, osee_txs txs where art.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.tx_current = 1 and not exists (select null from osee_tuple2 t2, osee_txs txsP where tuple_type = 2 and e1 = ? and t2.gamma_id = txsP.gamma_id and txsP.branch_id = ? and txsP.tx_current = 1 and e2 = txs.app_id)";
    private static final String ARTIFACT = "Artifact";
    private static final String ARTIFACT_TYPE = "Artifact Type";
    private static final Object ARTIFACT_ID = "Artifact Id";
@@ -160,12 +163,14 @@ public class WordTemplateProcessor {
    private final DataRightProvider provider;
    private IArtifactType[] excludeArtifactTypes;
    private HashMap<ApplicabilityId, ApplicabilityToken> applicabilityTokens;
+   private HashMap<ArtifactId, ArtifactId> artifactsToExclude;
 
    public WordTemplateProcessor(WordTemplateRenderer renderer, DataRightProvider provider) {
       this.renderer = renderer;
       this.provider = provider;
       loadIgnoreAttributeExtensions();
       request = provider.createRequest();
+      artifactsToExclude = new HashMap<>();
    }
 
    /**
@@ -261,6 +266,8 @@ public class WordTemplateProcessor {
     */
    public InputStream applyTemplate(List<Artifact> artifacts, String templateContent, String templateOptions, String templateStyles, IContainer folder, String outlineNumber, String outlineType, PresentationType presentationType) throws OseeCoreException {
       excludeFolders = renderer.getBooleanOption("Exclude Folders");
+      ArtifactId view = (ArtifactId) renderer.getOption(IRenderer.VIEW_ID);
+      artifactsToExclude = getNonApplicableArtifacts(artifacts, view == null ? ArtifactId.SENTINEL : view);
 
       if (!artifacts.isEmpty()) {
          ApplicabilityEndpoint applEndpoint =
@@ -536,6 +543,7 @@ public class WordTemplateProcessor {
             recurseChildren);
       } else {
          populateRequest(artifacts, request);
+
          DataRightResult response = provider.getDataRights(request);
 
          for (Artifact artifact : artifacts) {
@@ -548,13 +556,31 @@ public class WordTemplateProcessor {
       processedArtifacts.clear();
    }
 
+   private HashMap<ArtifactId, ArtifactId> getNonApplicableArtifacts(List<Artifact> artifacts, ArtifactId view) {
+      HashMap<ArtifactId, ArtifactId> toReturn = new HashMap<>();
+
+      if (artifacts != null && !artifacts.isEmpty()) {
+         BranchId branch = artifacts.get(0).getBranch();
+         Object[] objs = {branch, view, branch};
+
+         List<ArtifactId> excludedArtifacts = ArtifactLoader.selectArtifactIds(LOAD_EXCLUDED_ARTIFACTIDS, objs, 300);
+         for (ArtifactId artId : excludedArtifacts) {
+            toReturn.put(artId, artId);
+         }
+      }
+
+      return toReturn;
+   }
+
    private void processObjectArtifact(Artifact artifact, WordMLProducer wordMl, String outlineType, PresentationType presentationType, DataRightResult data) throws OseeCoreException {
       if (!artifact.isAttributeTypeValid(CoreAttributeTypes.WholeWordContent) && !artifact.isAttributeTypeValid(
          CoreAttributeTypes.NativeContent)) {
          // If the artifact has not been processed
          if (!processedArtifacts.contains(artifact)) {
 
-            boolean ignoreArtifact = excludeFolders && artifact.isOfType(CoreArtifactTypes.Folder);
+            boolean ignoreArtifact = excludeFolders && artifact.isOfType(
+               CoreArtifactTypes.Folder) && !artifactsToExclude.containsKey(artifact.getId());
+
             boolean ignoreArtType = excludeArtifactTypes != null && artifact.isOfType(excludeArtifactTypes);
             boolean publishInline = artifact.getSoleAttributeValue(CoreAttributeTypes.PublishInline, false);
             boolean startedSection = false;
