@@ -27,7 +27,7 @@ public interface ISheetWriter {
 
    public void writeRow(Object... row) throws IOException;
 
-   public void writeRow(Collection<Object> row) throws IOException;
+   public void writeRow(Collection<?> row) throws IOException;
 
    public void writeCell(Object cellData) throws IOException;
 
