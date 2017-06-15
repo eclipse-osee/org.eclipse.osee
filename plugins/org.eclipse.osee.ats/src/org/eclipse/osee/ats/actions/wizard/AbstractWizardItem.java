@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
+import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -34,17 +35,19 @@ import org.eclipse.osee.ats.core.client.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.ActionableItems;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.widgets.XAssigneesHyperlinkWidget;
 import org.eclipse.osee.ats.util.widgets.XOriginatorHyperlinkWidget;
 import org.eclipse.osee.ats.util.widgets.XWorkPackageHyperlinkWidget;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XFloat;
-import org.eclipse.osee.framework.ui.skynet.widgets.XInteger;
 import org.eclipse.osee.framework.ui.skynet.widgets.XLabel;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -141,10 +144,13 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
       pointsComp.setLayout(layout);
       pointsComp.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
 
-      XInteger points = new XInteger(WizardFields.Points.getDisplayName());
-      points.setFillHorizontally(false);
-      points.createWidgets(pointsComp, 1);
-      teamDefFieldToWidget.put(teamDef, WizardFields.Points, points);
+      XComboViewer pointsCombo = new XComboViewer("Points", SWT.NONE);
+      Collection<Object> objects = new LinkedList<>();
+      objects.addAll(AttributeTypeManager.getEnumerationValues(AtsAttributeTypes.Points));
+      pointsCombo.setInput(objects);
+      pointsCombo.setFillHorizontally(false);
+      pointsCombo.createWidgets(pointsComp, 2);
+      teamDefFieldToWidget.put(teamDef, WizardFields.Points, pointsCombo);
    }
 
    private void createAssigneeWidget(IAtsTeamDefinition teamDef, Composite teamComp) {
@@ -381,11 +387,29 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
    }
 
    private void wizardCompletedPoints(IAtsTeamWorkflow teamWf, IAtsTeamDefinition teamDef, IAtsChangeSet changes) {
-      XFloat xFloat = (XFloat) teamDefFieldToWidget.get(teamDef, WizardFields.Points);
-      if (xFloat != null) {
-         String points = xFloat.get();
-         if (Strings.isValid(points)) {
-            changes.setSoleAttributeFromString(teamWf, AtsAttributeTypes.Points, points);
+      ArtifactToken agileTeamArt = AtsClientService.get().getRelationResolver().getRelatedOrNull(teamDef,
+         AtsRelationTypes.AgileTeamToAtsTeam_AgileTeam);
+      if (agileTeamArt != null) {
+         IAgileTeam agileTeam = AtsClientService.get().getConfigItemFactory().getAgileTeam(agileTeamArt);
+         AttributeTypeId agileTeamPointsAttributeType =
+            AtsClientService.get().getAgileService().getAgileTeamPointsAttributeType(agileTeam);
+         XWidget widget = (XWidget) teamDefFieldToWidget.get(teamDef, agileTeamPointsAttributeType.equals(
+            AtsAttributeTypes.Points) ? WizardFields.Points : WizardFields.PointsNumeric);
+         if (widget != null) {
+            if (widget instanceof XFloat) {
+               XFloat xFloat = (XFloat) widget;
+               String pointsStr = xFloat.get();
+               if (Strings.isNumeric(pointsStr)) {
+                  Double points = Double.valueOf(pointsStr);
+                  changes.setSoleAttributeValue(teamWf, agileTeamPointsAttributeType, points);
+               }
+            } else if (widget instanceof XComboViewer) {
+               XComboViewer pointsCombo = (XComboViewer) widget;
+               String pointsStr = (String) pointsCombo.getSelected();
+               if (Strings.isValid(pointsStr)) {
+                  changes.setSoleAttributeValue(teamWf, agileTeamPointsAttributeType, pointsStr);
+               }
+            }
          }
       }
    }
