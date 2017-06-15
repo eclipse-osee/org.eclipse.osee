@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -77,19 +78,19 @@ import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResult;
 public class ArtifactQuery {
    private static Map<Long, String> uuidToGuid;
 
-   public static Artifact getArtifactFromToken(ArtifactToken artifactToken, BranchId branch) throws OseeCoreException {
+   public static <T extends ArtifactId & HasBranch> Artifact getArtifactFromToken(T artifactToken, BranchId branch) throws OseeCoreException {
       return getArtifactFromId(artifactToken.getUuid(), branch);
    }
 
-   public static Artifact getArtifactFromToken(ArtifactToken artifactToken, DeletionFlag deletionFlag) {
+   public static <T extends ArtifactId & HasBranch> Artifact getArtifactFromToken(T artifactToken, DeletionFlag deletionFlag) {
       return getArtifactFromId(artifactToken.getUuid(), artifactToken.getBranch(), deletionFlag);
    }
 
-   public static Artifact getArtifactFromToken(ArtifactToken artifactToken, BranchId branch, DeletionFlag deletionFlag) {
+   public static <T extends ArtifactId & HasBranch> Artifact getArtifactFromToken(T artifactToken, BranchId branch, DeletionFlag deletionFlag) {
       return getArtifactFromId(artifactToken.getUuid(), branch, deletionFlag);
    }
 
-   public static Artifact getArtifactFromTokenOrNull(ArtifactToken artifactToken, IOseeBranch branch, DeletionFlag deletionFlag) {
+   public static <T extends ArtifactId & HasBranch> Artifact getArtifactFromTokenOrNull(T artifactToken, IOseeBranch branch, DeletionFlag deletionFlag) {
       Artifact artifact = null;
       try {
          artifact = getArtifactFromToken(artifactToken, branch, deletionFlag);
@@ -99,7 +100,7 @@ public class ArtifactQuery {
       return artifact;
    }
 
-   public static Artifact getArtifactFromToken(ArtifactToken artifactToken) {
+   public static <T extends ArtifactId & HasBranch> Artifact getArtifactFromToken(T artifactToken) {
       return getArtifactFromId(artifactToken.getId(), artifactToken.getBranch());
    }
 

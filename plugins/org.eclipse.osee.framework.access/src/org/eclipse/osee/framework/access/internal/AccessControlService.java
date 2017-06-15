@@ -506,17 +506,16 @@ public class AccessControlService implements IAccessControlService {
          try {
 
             if (data.isBirth()) {
-               getJdbcClient().runPreparedUpdate(INSERT_INTO_ARTIFACT_ACL, artifactAccessObject.getArtId(),
+               getJdbcClient().runPreparedUpdate(INSERT_INTO_ARTIFACT_ACL, artifactAccessObject,
                   data.getPermission().getPermId(), data.getSubject().getArtId(), artifactAccessObject.getBranch());
             } else {
                getJdbcClient().runPreparedUpdate(UPDATE_ARTIFACT_ACL, data.getPermission().getPermId(),
-                  data.getSubject().getArtId(), artifactAccessObject.getArtId(), artifactAccessObject.getBranch());
+                  data.getSubject().getArtId(), artifactAccessObject, artifactAccessObject.getBranch());
             }
-            event.addArtifact(artifactAccessObject.getArtId());
+            event.addArtifact(artifactAccessObject);
 
             if (recurse) {
-               Artifact artifact =
-                  ArtifactQuery.getArtifactFromId(artifactAccessObject.getArtId(), artifactAccessObject.getBranch());
+               Artifact artifact = ArtifactQuery.getArtifactFromToken(artifactAccessObject);
 
                for (Artifact child : artifact.getChildren()) {
                   AccessControlData childAccessControlData = null;
@@ -646,7 +645,7 @@ public class AccessControlService implements IAccessControlService {
       AccessTopicEventPayload event = new AccessTopicEventPayload();
       event.setBranch(accessControlledObject.getBranch());
       if (isArtifact) {
-         event.addArtifact(((ArtifactAccessObject) accessControlledObject).getArtId());
+         event.addArtifact(((ArtifactAccessObject) accessControlledObject));
       }
 
       OseeEventManager.kickAccessTopicEvent(this, event, AccessTopicEvent.ACCESS_ARTIFACT_MODIFIED);

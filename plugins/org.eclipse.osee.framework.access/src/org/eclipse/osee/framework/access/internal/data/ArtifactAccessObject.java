@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 /**
  * @author Jeff C. Phillips
  */
-public class ArtifactAccessObject extends AccessObject {
+public class ArtifactAccessObject extends AccessObject implements ArtifactId {
 
    private final ArtifactId artId;
    private final BranchId branch;
@@ -33,15 +33,16 @@ public class ArtifactAccessObject extends AccessObject {
    }
 
    @Override
+   public String getGuid() {
+      return null;
+   }
+
+   @Override
    public int hashCode() {
       int result = 17;
       result = 31 * result + artId.hashCode();
       result = 31 * result + branch.hashCode();
       return result;
-   }
-
-   public ArtifactId getArtId() {
-      return artId;
    }
 
    @Override
