@@ -192,14 +192,14 @@ public class SearchComposite extends Composite implements Listener {
 
    public void updateWidgetEnablements() {
       if (Widgets.isAccessible(this.searchArea)) {
-         boolean artTypeSelected = optionsComposite.getArtifactTypeFilter().length > 0;
-         boolean attrTypeSelected = optionsComposite.getAttributeTypeFilter().length > 0;
+         boolean artTypeSelected = optionsComposite != null && optionsComposite.getArtifactTypeFilter().length > 0;
+         boolean attrTypeSelected = optionsComposite != null && optionsComposite.getAttributeTypeFilter().length > 0;
          String value = this.searchArea.getText();
          if (value != null) {
             value = value.trim();
          }
          if (Widgets.isAccessible(this.executeSearch)) {
-            if (!Strings.isValid(value) && artTypeSelected && !attrTypeSelected) {
+            if (isAttributeComposite() && !Strings.isValid(value) && artTypeSelected && !attrTypeSelected) {
                this.executeSearch.setEnabled(true);
             } else {
                this.executeSearch.setEnabled(Strings.isValid(value));
@@ -209,6 +209,13 @@ public class SearchComposite extends Composite implements Listener {
             this.clear.setEnabled(this.searchArea.getItemCount() > 0);
          }
       }
+   }
+
+   private boolean isAttributeComposite() {
+      Composite parent = getParent();
+      boolean isAttribute =
+         (parent != null && (parent instanceof Group) && ((Group) parent).getText().contains("Attribute"));
+      return isAttribute;
    }
 
    @Override
