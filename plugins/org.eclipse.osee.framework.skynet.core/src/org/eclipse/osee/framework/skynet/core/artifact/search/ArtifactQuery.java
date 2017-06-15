@@ -75,8 +75,6 @@ import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResult;
  * @author Ryan D. Brooks
  */
 public class ArtifactQuery {
-
-   private static Map<String, Long> guidToUuid;
    private static Map<Long, String> uuidToGuid;
 
    public static Artifact getArtifactFromToken(ArtifactToken artifactToken, BranchId branch) throws OseeCoreException {
@@ -784,23 +782,6 @@ public class ArtifactQuery {
 
          return ResultSets.newResultSet(matches.values());
       }
-   }
-
-   public static Long getUuidFromGuid(String guid, BranchId branch) {
-      if (guidToUuid == null) {
-         guidToUuid = new HashMap<>(200);
-      }
-      Long result = null;
-      if (guidToUuid.containsKey(guid)) {
-         result = guidToUuid.get(guid);
-      } else {
-         Artifact art = getArtifactFromId(guid, branch);
-         if (art != null) {
-            result = art.getUuid();
-            guidToUuid.put(guid, result);
-         }
-      }
-      return result;
    }
 
    public static String getGuidFromUuid(long uuid, BranchId branch) {

@@ -25,8 +25,9 @@ import org.eclipse.osee.define.internal.Activator;
 import org.eclipse.osee.define.traceability.ITraceUnitResourceLocator;
 import org.eclipse.osee.define.traceability.ResourceIdentifier;
 import org.eclipse.osee.define.traceability.TraceUnitExtensionManager;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -105,12 +106,10 @@ public final class FindTraceUnitFromResource {
                for (ResourceIdentifier resource : items) {
                   try {
                      if (GUID.isValid(resource.getGuid())) {
-                        Long uuidFromGuid = ArtifactQuery.getUuidFromGuid(resource.getGuid(), branch);
-                        if (uuidFromGuid != null) {
-                           Artifact checkArtifactFromId = ArtifactQuery.checkArtifactFromId(uuidFromGuid, branch);
-                           if (checkArtifactFromId != null) {
-                              artifacts.add(checkArtifactFromId);
-                           }
+                        Artifact checkArtifactFromId =
+                           ArtifactQuery.checkArtifactFromId(resource.getGuid(), branch, DeletionFlag.EXCLUDE_DELETED);
+                        if (checkArtifactFromId != null) {
+                           artifacts.add(checkArtifactFromId);
                         }
                      } else {
                         artifacts.addAll(
