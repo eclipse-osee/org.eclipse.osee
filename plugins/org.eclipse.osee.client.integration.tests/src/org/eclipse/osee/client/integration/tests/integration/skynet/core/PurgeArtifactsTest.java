@@ -77,8 +77,7 @@ public class PurgeArtifactsTest {
       PurgeArtifacts purge = new PurgeArtifacts(Collections.singleton(childFolder));
       purge.run(null);
 
-      childFolder =
-         ArtifactQuery.getArtifactFromTokenOrNull(childFolder, CoreBranches.COMMON, DeletionFlag.INCLUDE_DELETED);
+      childFolder = ArtifactQuery.getArtifactOrNull(childFolder, DeletionFlag.INCLUDE_DELETED);
       Assert.assertNull(childFolder);
 
       changes.clear();

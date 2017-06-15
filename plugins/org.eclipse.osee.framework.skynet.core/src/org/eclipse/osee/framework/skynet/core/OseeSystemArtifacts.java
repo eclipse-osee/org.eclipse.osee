@@ -15,8 +15,6 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -32,13 +30,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 public final class OseeSystemArtifacts {
 
    public static Artifact getGlobalPreferenceArtifact() throws OseeCoreException {
-      Artifact artifact =
-         ArtifactQuery.getArtifactFromToken(CoreArtifactTokens.GlobalPreferences, COMMON, DeletionFlag.EXCLUDE_DELETED);
-      if (artifact == null) {
-         artifact = getCachedArtifact(CoreArtifactTypes.GlobalPreferences,
-            CoreArtifactTypes.GlobalPreferences.getName(), COMMON);
-      }
-      return artifact;
+      return ArtifactQuery.getArtifactFromToken(CoreArtifactTokens.GlobalPreferences);
    }
 
    public static Artifact getDefaultHierarchyRootArtifact(BranchId branch) throws OseeCoreException {

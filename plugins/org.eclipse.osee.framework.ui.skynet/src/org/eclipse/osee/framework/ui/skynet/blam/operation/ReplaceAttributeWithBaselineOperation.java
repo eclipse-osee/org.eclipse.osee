@@ -54,8 +54,7 @@ public class ReplaceAttributeWithBaselineOperation extends AbstractOperation {
          for (Change change : changes) {
             monitor.subTask("Reverting: " + changes.toString());
             monitor.worked(1);
-            Artifact artifact =
-               ArtifactQuery.getArtifactFromId(change.getArtId().getId().intValue(), change.getBranch());
+            Artifact artifact = ArtifactQuery.getArtifactFromId(change.getArtId(), change.getBranch());
             revertAttribute(artifact, change);
             artifactHistory.add(artifact);
             artifact.persist(transaction);

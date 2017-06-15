@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasBranch;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -90,14 +89,9 @@ public class ArtifactQuery {
       return getArtifactFromId(artifactToken.getUuid(), branch, deletionFlag);
    }
 
-   public static <T extends ArtifactId & HasBranch> Artifact getArtifactFromTokenOrNull(T artifactToken, IOseeBranch branch, DeletionFlag deletionFlag) {
-      Artifact artifact = null;
-      try {
-         artifact = getArtifactFromToken(artifactToken, branch, deletionFlag);
-      } catch (ArtifactDoesNotExist ex) {
-         // do nothing
-      }
-      return artifact;
+   public static <T extends ArtifactId & HasBranch> Artifact getArtifactOrNull(T artifactToken, DeletionFlag deletionFlag) {
+      return getOrCheckArtifactFromId(artifactToken.getId().intValue(), artifactToken.getBranch(), deletionFlag,
+         QueryType.CHECK);
    }
 
    public static <T extends ArtifactId & HasBranch> Artifact getArtifactFromToken(T artifactToken) {
@@ -145,6 +139,10 @@ public class ArtifactQuery {
 
    public static Artifact getArtifactFromId(Long artId, BranchId branch, DeletionFlag allowDeleted) throws OseeCoreException {
       return getOrCheckArtifactFromId(artId.intValue(), branch, allowDeleted, QueryType.GET);
+   }
+
+   public static Artifact getArtifactOrNull(ArtifactId artifactId, BranchId branch, DeletionFlag deletionFlag) {
+      return getOrCheckArtifactFromId(artifactId.getId().intValue(), branch, deletionFlag, QueryType.CHECK);
    }
 
    private static Artifact getOrCheckArtifactFromId(int artId, BranchId branch, DeletionFlag allowDeleted, QueryType queryType) throws OseeCoreException {

@@ -135,7 +135,7 @@ public class PurgeUser extends AbstractBlam {
    }
 
    private void deleteArtifact(final User fromUser) throws OseeCoreException {
-      Artifact art = ArtifactQuery.getArtifactFromId(fromUser.getArtId(), fromUser.getBranch());
+      Artifact art = ArtifactQuery.getArtifactFromToken(fromUser);
       art.purgeFromBranch();
    }
 

@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.core.data;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
 
@@ -49,7 +50,7 @@ public final class TokenFactory {
    }
 
    public static ArtifactToken createArtifactToken(long id, String guid, String name, IArtifactType artifactType) {
-      return ArtifactToken.valueOf(id, guid, name, BranchId.SENTINEL, artifactType);
+      return ArtifactToken.valueOf(id, guid, name, CoreBranches.COMMON, artifactType);
    }
 
    private final static class ArtifactTypeToken extends NamedIdBase implements IArtifactType {

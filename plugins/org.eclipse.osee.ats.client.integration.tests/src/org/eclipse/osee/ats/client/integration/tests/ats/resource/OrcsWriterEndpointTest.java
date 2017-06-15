@@ -13,13 +13,12 @@ package org.eclipse.osee.ats.client.integration.tests.ats.resource;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import java.util.Collections;
-import java.util.List;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -114,7 +113,8 @@ public class OrcsWriterEndpointTest extends AbstractRestTest {
          getClass().getSimpleName());
       artifact.persist(getClass().getSimpleName());
 
-      Artifact artifactFromId1 = ArtifactQuery.getArtifactFromId(artifact.getId(), CoreBranches.COMMON);
+      Artifact artifactFromId1 = ArtifactQuery.getArtifactFromToken(artifact);
+
       assertNotNull(artifactFromId1);
 
       OwCollector collector = getDefaultOwCollector();
@@ -135,8 +135,7 @@ public class OrcsWriterEndpointTest extends AbstractRestTest {
 
       ArtifactCache.deCache(artifactFromId1);
 
-      List<Artifact> artifacts =
-         ArtifactQuery.getArtifactListFromIds(Collections.singleton(artifact.getId().intValue()), CoreBranches.COMMON);
-      assertTrue(artifacts.iterator().next().isDeleted());
+      Artifact artifactReloaded = ArtifactQuery.getArtifactFromToken(artifact, DeletionFlag.INCLUDE_DELETED);
+      assertTrue(artifactReloaded.isDeleted());
    }
 }

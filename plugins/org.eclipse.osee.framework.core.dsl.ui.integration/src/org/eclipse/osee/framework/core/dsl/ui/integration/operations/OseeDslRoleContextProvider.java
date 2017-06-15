@@ -120,7 +120,7 @@ public class OseeDslRoleContextProvider implements RoleContextProvider {
          if (user instanceof Artifact) {
             artifact = (Artifact) user;
          } else {
-            artifact = ArtifactQuery.getArtifactFromId(user, user.getBranch());
+            artifact = ArtifactQuery.getArtifactFromToken(user);
          }
          groups = artifact.getRelatedArtifacts(CoreRelationTypes.Users_Artifact);
       } catch (OseeCoreException ex) {

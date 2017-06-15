@@ -11,14 +11,11 @@
 
 package org.eclipse.osee.framework.skynet.core;
 
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.XViewerGlobalCustomization;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import java.util.concurrent.TimeUnit;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -44,13 +41,7 @@ public final class GlobalXViewerSettings {
    }
 
    private static Artifact loadConfigArtifact() {
-      Artifact configArt = ArtifactQuery.getArtifactFromTokenOrNull(CoreArtifactTokens.XViewerGlobalCustomization,
-         CoreBranches.COMMON, DeletionFlag.EXCLUDE_DELETED);
-      if (configArt == null) {
-         configArt = OseeSystemArtifacts.getCachedArtifact(CoreArtifactTypes.XViewerGlobalCustomization,
-            CoreArtifactTypes.XViewerGlobalCustomization.getName(), COMMON);
-      }
-      return configArt;
+      return ArtifactQuery.getArtifactFromToken(XViewerGlobalCustomization);
    }
 
    public static Artifact getCustomArtifact() throws OseeCoreException {
@@ -58,6 +49,6 @@ public final class GlobalXViewerSettings {
    }
 
    public static Artifact createCustomArtifact() throws OseeCoreException {
-      return ArtifactTypeManager.addArtifact(CoreArtifactTokens.XViewerGlobalCustomization, COMMON);
+      return ArtifactTypeManager.addArtifact(XViewerGlobalCustomization, COMMON);
    }
 }

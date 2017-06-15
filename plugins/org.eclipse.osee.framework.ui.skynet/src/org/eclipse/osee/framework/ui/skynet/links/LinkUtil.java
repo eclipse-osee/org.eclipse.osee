@@ -111,7 +111,7 @@ public class LinkUtil {
 
    public static Artifact getStoreArtifact(boolean global) {
       if (global) {
-         return ArtifactQuery.getArtifactFromId(SystemUser.Anonymous.getUuid(), CoreBranches.COMMON);
+         return ArtifactQuery.getArtifactFromToken(SystemUser.Anonymous);
       }
       return LinkUtil.getPersonalLinksArtifact();
    }
@@ -198,7 +198,7 @@ public class LinkUtil {
    }
 
    public static Artifact getPersonalLinksArtifact() {
-      return ArtifactQuery.getArtifactFromId(UserManager.getUser().getArtId(), CoreBranches.COMMON);
+      return UserManager.getUser();
    }
 
 }

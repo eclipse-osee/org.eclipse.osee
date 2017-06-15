@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.explorer;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -41,8 +40,7 @@ class CheckArtifactBeforeReveal extends AbstractOperation {
          throw new OseeStateException("The artifact [%s] has been deleted.", artifact.getName());
       } else {
          if (artifact.isHistorical()) {
-            artifactData.setArtifact(ArtifactQuery.getArtifactFromId(artifact.getArtId(), artifact.getBranch(),
-               DeletionFlag.EXCLUDE_DELETED));
+            artifactData.setArtifact(ArtifactQuery.getArtifactFromToken(artifact));
          }
 
          if (artifact.isNotRootedInDefaultRoot()) {

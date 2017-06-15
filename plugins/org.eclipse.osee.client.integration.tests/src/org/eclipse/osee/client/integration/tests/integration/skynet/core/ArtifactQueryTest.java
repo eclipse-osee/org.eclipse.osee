@@ -80,7 +80,7 @@ public class ArtifactQueryTest {
       newArtifact.persist(getClass().getSimpleName());
 
       // Should exist
-      Artifact searchedArtifact = ArtifactQuery.getArtifactFromId(newArtifact.getUuid(), COMMON);
+      Artifact searchedArtifact = ArtifactQuery.getArtifactFromToken(newArtifact);
       Assert.assertNotNull(searchedArtifact);
 
       // Should exist with allowDeleted

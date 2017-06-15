@@ -533,7 +533,7 @@ public class ArtifactExplorerMenu {
             if (branch != null) {
                for (Artifact artifact : getSelection().toList()) {
                   try {
-                     ArtifactExplorer.revealArtifact(ArtifactQuery.getArtifactFromId(artifact.getArtId(), branch));
+                     ArtifactExplorer.revealArtifact(ArtifactQuery.getArtifactFromId(artifact, branch));
                   } catch (OseeCoreException ex) {
                      OseeLog.logf(Activator.class, OseeLevel.SEVERE_POPUP,
                         "Could not find Artifact \'%s\' on Branch \'%s\'", artifact.getName(), branch);

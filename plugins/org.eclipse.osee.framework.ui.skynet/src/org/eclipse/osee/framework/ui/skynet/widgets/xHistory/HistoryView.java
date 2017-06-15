@@ -257,8 +257,8 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
             if (selectedObject instanceof AttributeChange) {
                try {
                   AttributeChange attributeChange = (AttributeChange) selectedObject;
-                  Artifact artifact = ArtifactQuery.getArtifactFromId(attributeChange.getArtId().getId().intValue(),
-                     attributeChange.getBranch());
+                  Artifact artifact =
+                     ArtifactQuery.getArtifactFromId(attributeChange.getArtId(), attributeChange.getBranch());
 
                   for (Attribute<?> attribute : artifact.getAttributes(attributeChange.getAttributeType())) {
                      if (attribute.getId() == attributeChange.getAttrId().getId().intValue()) {
