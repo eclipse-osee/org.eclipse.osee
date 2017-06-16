@@ -79,11 +79,11 @@ public final class ArtifactLoader {
       return loadArtifacts(artifacts, branch, loadLevel, reload, allowDeleted, transactionId);
    }
 
-   public static List<Artifact> loadArtifacts(Collection<ArtifactId> artIds, BranchId branch, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted) {
+   public static List<Artifact> loadArtifacts(Collection<? extends ArtifactId> artIds, BranchId branch, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted) {
       return loadArtifacts(artIds, branch, loadLevel, reload, allowDeleted, TransactionId.SENTINEL);
    }
 
-   public static List<Artifact> loadArtifacts(Collection<ArtifactId> artIds, BranchId branch, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted, TransactionId transactionId) {
+   public static List<Artifact> loadArtifacts(Collection<? extends ArtifactId> artIds, BranchId branch, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted, TransactionId transactionId) {
       List<Pair<ArtifactId, BranchId>> toLoad = new LinkedList<>();
       for (ArtifactId artId : new HashSet<>(artIds)) {
          toLoad.add(new Pair<ArtifactId, BranchId>(artId, branch));

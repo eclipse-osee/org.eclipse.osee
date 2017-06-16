@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.client.internal.query;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -229,8 +230,8 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public Collection<ArtifactToken> getArtifacts(Collection<Integer> ids, BranchId branch) {
-      return Collections.castAll(ArtifactQuery.getArtifactListFromIds(ids, branch));
+   public Collection<ArtifactToken> getArtifacts(List<ArtifactId> ids, BranchId branch) {
+      return Collections.castAll(ArtifactQuery.getArtifactListFrom(ids, branch));
    }
 
    @Override

@@ -36,7 +36,7 @@ public class WorkPackageSearchProvider implements IWorkPackageProvider {
       Collection<ArtifactToken> selectableWorkPackageTokens = ArtifactQuery.getArtifactTokenListFromTypeAndActive(
          AtsArtifactTypes.WorkPackage, AtsAttributeTypes.Active, AtsClientService.get().getAtsBranch());
       Collection<IAtsWorkPackage> items = new LinkedList<>();
-      for (Artifact art : ArtifactQuery.getArtifactListFromTokens(selectableWorkPackageTokens,
+      for (Artifact art : ArtifactQuery.getArtifactListFrom(selectableWorkPackageTokens,
          AtsClientService.get().getAtsBranch())) {
          items.add(AtsClientService.get().getConfigItemFactory().getWorkPackage(art));
       }
@@ -48,7 +48,7 @@ public class WorkPackageSearchProvider implements IWorkPackageProvider {
       Collection<ArtifactToken> selectableWorkPackageTokens = ArtifactQuery.getArtifactTokenListFromType(
          AtsArtifactTypes.WorkPackage, AtsClientService.get().getAtsBranch());
       Collection<IAtsWorkPackage> items = new LinkedList<>();
-      for (Artifact art : ArtifactQuery.getArtifactListFromTokens(selectableWorkPackageTokens,
+      for (Artifact art : ArtifactQuery.getArtifactListFrom(selectableWorkPackageTokens,
          AtsClientService.get().getAtsBranch())) {
          items.add(AtsClientService.get().getConfigItemFactory().getWorkPackage(art));
       }

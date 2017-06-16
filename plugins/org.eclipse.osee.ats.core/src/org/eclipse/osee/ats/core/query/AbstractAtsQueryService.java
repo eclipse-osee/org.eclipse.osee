@@ -17,10 +17,10 @@ import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.jdbc.JdbcService;
-import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * @author Donald G. Dunne
@@ -37,16 +37,8 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
 
    @Override
    public Collection<IAtsWorkItem> getWorkItemsFromQuery(String query, Object... data) {
-      JdbcStatement chStmt = jdbcService.getClient().getStatement();
-      List<Integer> ids = new LinkedList<Integer>();
-      try {
-         chStmt.runPreparedQuery(query, data);
-         while (chStmt.next()) {
-            ids.add(chStmt.getInt("art_id"));
-         }
-      } finally {
-         chStmt.close();
-      }
+      List<ArtifactId> ids = new LinkedList<>();
+      jdbcService.getClient().runQuery(stmt -> ids.add(ArtifactId.valueOf(stmt.getLong("art_id"))), query, data);
       List<IAtsWorkItem> workItems = new LinkedList<>();
       for (ArtifactToken art : services.getQueryService().getArtifacts(ids, services.getAtsBranch())) {
          if (services.getStoreService().isOfType(art, AtsArtifactTypes.AbstractWorkflowArtifact)) {
@@ -61,16 +53,8 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
 
    @Override
    public Collection<ArtifactToken> getArtifactsFromQuery(String query, Object... data) {
-      JdbcStatement chStmt = jdbcService.getClient().getStatement();
-      List<Integer> ids = new LinkedList<Integer>();
-      try {
-         chStmt.runPreparedQuery(query, data);
-         while (chStmt.next()) {
-            ids.add(chStmt.getInt("art_id"));
-         }
-      } finally {
-         chStmt.close();
-      }
+      List<ArtifactId> ids = new LinkedList<>();
+      jdbcService.getClient().runQuery(stmt -> ids.add(ArtifactId.valueOf(stmt.getLong("art_id"))), query, data);
       return services.getQueryService().getArtifacts(ids, services.getAtsBranch());
    }
 
@@ -78,5 +62,4 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
    public void runUpdate(String query, Object... data) {
       jdbcService.getClient().runPreparedUpdate(query, data);
    }
-
 }

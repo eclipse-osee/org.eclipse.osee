@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.rest.internal.query;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
@@ -25,6 +24,7 @@ import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.query.AbstractAtsQueryService;
 import org.eclipse.osee.ats.core.query.AtsWorkItemFilter;
 import org.eclipse.osee.ats.rest.IAtsServer;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -96,13 +96,9 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public Collection<ArtifactToken> getArtifacts(Collection<Integer> ids, BranchId branch) {
-      List<Long> uuids = new LinkedList<>();
-      for (Integer id : ids) {
-         uuids.add(Long.valueOf(id));
-      }
+   public Collection<ArtifactToken> getArtifacts(List<ArtifactId> ids, BranchId branch) {
       return Collections.castAll(
-         atsServer.getOrcsApi().getQueryFactory().fromBranch(branch).andUuids(uuids).getResults().getList());
+         atsServer.getOrcsApi().getQueryFactory().fromBranch(branch).andIds(ids).getResults().getList());
    }
 
    @Override

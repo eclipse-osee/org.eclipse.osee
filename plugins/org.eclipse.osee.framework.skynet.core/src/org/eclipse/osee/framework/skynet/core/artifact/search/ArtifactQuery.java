@@ -285,14 +285,6 @@ public class ArtifactQuery {
          options).getOrCheckArtifact(QueryType.CHECK);
    }
 
-   public static List<Artifact> getArtifactListFromTokens(Collection<ArtifactToken> tokens, BranchId branch) {
-      List<Integer> ids = new LinkedList<>();
-      for (ArtifactToken token : tokens) {
-         ids.add(token.getId().intValue());
-      }
-      return getArtifactListFromIds(ids, branch);
-   }
-
    /**
     * search for un-deleted artifacts with any of the given artifact ids
     *
@@ -307,7 +299,7 @@ public class ArtifactQuery {
     *
     * @return a collection of the artifacts found or an empty collection if none are found
     */
-   public static List<Artifact> getArtifactListFrom(Collection<ArtifactId> artifactIds, BranchId branch) throws OseeCoreException {
+   public static List<Artifact> getArtifactListFrom(Collection<? extends ArtifactId> artifactIds, BranchId branch) throws OseeCoreException {
       return ArtifactLoader.loadArtifacts(artifactIds, branch, LoadLevel.ALL, INCLUDE_CACHE, INCLUDE_DELETED);
    }
 

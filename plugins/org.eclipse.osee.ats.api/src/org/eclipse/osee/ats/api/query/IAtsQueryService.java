@@ -12,10 +12,12 @@ package org.eclipse.osee.ats.api.query;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -49,7 +51,7 @@ public interface IAtsQueryService {
    @NonNull
    IAtsConfigQuery createQuery(IArtifactType... artifactType);
 
-   Collection<ArtifactToken> getArtifacts(Collection<Integer> ids, BranchId branch);
+   Collection<ArtifactToken> getArtifacts(List<ArtifactId> ids, BranchId branch);
 
    void runUpdate(String query, Object... data);
 
