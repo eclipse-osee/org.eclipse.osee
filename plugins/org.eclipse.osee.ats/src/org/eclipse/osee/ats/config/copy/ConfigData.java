@@ -108,7 +108,7 @@ public class ConfigData {
       if (fromAias.size() == 1) {
          parentActionableItem = fromAias.iterator().next().getParentActionableItem();
       } else {
-         parentActionableItem = ActionableItems.getTopActionableItem(AtsClientService.get().getQueryService());
+         parentActionableItem = ActionableItems.getTopActionableItem(AtsClientService.get());
       }
       return parentActionableItem;
    }

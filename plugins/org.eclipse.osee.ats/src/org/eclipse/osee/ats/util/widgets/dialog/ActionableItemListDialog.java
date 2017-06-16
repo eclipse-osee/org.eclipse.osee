@@ -32,7 +32,7 @@ public class ActionableItemListDialog extends FilteredCheckboxTreeDialog {
       super("Select Actionable Item(s)", "Select Actionable Item(s)", new AITreeContentProvider(active),
          new AtsObjectLabelProvider(), new ArtifactNameSorter());
       try {
-         setInput(ActionableItems.getTopLevelActionableItems(active, AtsClientService.get().getQueryService()));
+         setInput(ActionableItems.getTopLevelActionableItems(active, AtsClientService.get()));
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }

@@ -39,7 +39,7 @@ public class AtsConfigResultsEditorNavigateItem extends XNavigateItemAction {
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
       final List<IAtsConfigObject> objs = new ArrayList<>();
       objs.add(TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService()));
-      objs.add(ActionableItems.getTopActionableItem(AtsClientService.get().getQueryService()));
+      objs.add(ActionableItems.getTopActionableItem(AtsClientService.get()));
       Job job = new Job("ATS Config Viewer") {
 
          @Override

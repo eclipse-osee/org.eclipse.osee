@@ -86,8 +86,7 @@ public class ConfigDataTest {
 
       tda = DemoTestUtil.getTeamDef(DemoTeam.CIS_SW);
       data.setTeamDef(tda);
-      Assert.assertEquals(ActionableItems.getTopActionableItem(AtsClientService.get().getQueryService()),
-         data.getParentActionableItem());
+      Assert.assertEquals(ActionableItems.getTopActionableItem(AtsClientService.get()), data.getParentActionableItem());
 
    }
 }

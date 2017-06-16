@@ -38,7 +38,6 @@ import org.eclipse.osee.ats.dsl.atsDsl.VersionDef;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.UserToken;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
@@ -78,8 +77,8 @@ public class ImportAIsAndTeamDefinitionsToDb {
       importUserDefinitions(atsDsl.getUserDef());
       importTeamDefinitions(atsDsl.getTeamDef(), AtsClientService.get().getConfigArtifact(
          TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService())));
-      importActionableItems(atsDsl.getActionableItemDef(), AtsClientService.get().getConfigArtifact(
-         ActionableItems.getTopActionableItem(AtsClientService.get().getQueryService())));
+      importActionableItems(atsDsl.getActionableItemDef(),
+         AtsClientService.get().getConfigArtifact(ActionableItems.getTopActionableItem(AtsClientService.get())));
       importProgram(atsDsl.getProgram());
    }
 
@@ -108,8 +107,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
    }
 
    private UserToken getOseeUser(final UserDef dslUserDef) {
-      return UserToken.create(Lib.generateArtifactIdAsInt(), GUID.create(),
-         Strings.unquote(dslUserDef.getName()),
+      return UserToken.create(Lib.generateArtifactIdAsInt(), GUID.create(), Strings.unquote(dslUserDef.getName()),
          Strings.isValid(dslUserDef.getEmail()) ? dslUserDef.getEmail() : Strings.unquote(dslUserDef.getName()),
          Strings.isValid(dslUserDef.getUserId()) ? dslUserDef.getUserId() : Strings.unquote(dslUserDef.getName()),
          BooleanDefUtil.get(dslUserDef.getActive(), true), false, true);
@@ -368,7 +366,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
             parent = (Artifact) TeamDefinitions.getTopTeamDefinition(
                AtsClientService.get().getQueryService()).getStoreObject();
          } else {
-            parent = (Artifact) ActionableItems.getTopActionableItem(AtsClientService.get().getQueryService());
+            parent = (Artifact) ActionableItems.getTopActionableItem(AtsClientService.get());
          }
          changes.execute();
       }

@@ -156,7 +156,7 @@ public class AtsConfigOperation extends AbstractOperation {
       IAtsActionableItem safetyAi = AtsClientService.get().createActionableItem(teamDefName, changes, services);
       changes.setSoleAttributeValue(safetyAi, AtsAttributeTypes.Actionable, false);
       changes.relate(safetyTeamDef, AtsRelationTypes.TeamActionableItem_ActionableItem, safetyAi);
-      changes.relate(ActionableItems.getTopActionableItem(AtsClientService.get().getQueryService()),
+      changes.relate(ActionableItems.getTopActionableItem(AtsClientService.get()),
          CoreRelationTypes.Default_Hierarchical__Child, safetyAi);
 
       aias.add(safetyAi);

@@ -40,7 +40,7 @@ public class NewPeerToPeerReviewItem extends XNavigateItemAction {
       try {
          NewPeerReviewDialog dialog = new NewPeerReviewDialog("Add New Stand-alone Peer to Peer Review",
             "Enter Title, Select Review Type and select Actionable Item", null, null,
-            ActionableItems.getTopLevelActionableItems(Active.Active, AtsClientService.get().getQueryService()));
+            ActionableItems.getTopLevelActionableItems(Active.Active, AtsClientService.get()));
          if (dialog.open() == 0) {
             if (!Strings.isValid(dialog.getReviewTitle())) {
                AWorkbench.popup("ERROR", "Must enter review title");

@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -82,17 +83,17 @@ public class ActionableItems {
       return "Action can not be written against " + configObject.getName() + " \"" + configObject + "\" (" + configObject.getId() + ").\n\nChoose another item.";
    }
 
-   public static IAtsActionableItem getTopActionableItem(IAtsQueryService queryService) throws OseeCoreException {
-      return queryService.createQuery(AtsArtifactTypes.ActionableItem).andUuids(
-         AtsArtifactToken.TopActionableItem.getId()).getItems(IAtsActionableItem.class).iterator().next();
+   public static IAtsActionableItem getTopActionableItem(IAtsServices services) throws OseeCoreException {
+      ArtifactToken artifact = services.getArtifact(AtsArtifactToken.TopActionableItem.getId());
+      return services.getConfigItem(artifact);
    }
 
    public static List<IAtsActionableItem> getActionableItemsAll(IAtsQueryService queryService) throws OseeCoreException {
       return getActionableItems(Active.Both, queryService);
    }
 
-   public static List<IAtsActionableItem> getTopLevelActionableItems(Active active, IAtsQueryService queryService) throws OseeCoreException {
-      IAtsActionableItem topAi = getTopActionableItem(queryService);
+   public static List<IAtsActionableItem> getTopLevelActionableItems(Active active, IAtsServices services) throws OseeCoreException {
+      IAtsActionableItem topAi = getTopActionableItem(services);
       if (topAi == null) {
          return java.util.Collections.emptyList();
       }

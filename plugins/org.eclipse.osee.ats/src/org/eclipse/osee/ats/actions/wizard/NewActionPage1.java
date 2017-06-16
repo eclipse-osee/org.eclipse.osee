@@ -150,7 +150,7 @@ public class NewActionPage1 extends WizardPage {
       try {
          if (selectableAis == null) {
             List<IAtsActionableItem> topLevelActionableItems =
-               ActionableItems.getTopLevelActionableItems(Active.Active, AtsClientService.get().getQueryService());
+               ActionableItems.getTopLevelActionableItems(Active.Active, AtsClientService.get());
             treeViewer.getViewer().setInput(topLevelActionableItems);
          } else {
             treeViewer.getViewer().setInput(selectableAis);
