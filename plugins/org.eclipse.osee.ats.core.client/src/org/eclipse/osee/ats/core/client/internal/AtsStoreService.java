@@ -87,12 +87,12 @@ public class AtsStoreService implements IAtsStoreService {
 
    @Override
    public boolean isDeleted(IAtsObject atsObject) {
-      return ((Artifact) atsObject.getStoreObject()).isDeleted();
+      return AtsClientService.get().getArtifact(atsObject).isDeleted();
    }
 
    @Override
    public String getGuid(IAtsObject atsObject) {
-      return ((Artifact) atsObject.getStoreObject()).getGuid();
+      return AtsClientService.get().getArtifact(atsObject).getGuid();
    }
 
    /**
@@ -114,7 +114,7 @@ public class AtsStoreService implements IAtsStoreService {
 
    @Override
    public boolean isAttributeTypeValid(IAtsObject atsObject, AttributeTypeId attributeType) {
-      return isAttributeTypeValid(atsObject.getStoreObject(), attributeType);
+      return isAttributeTypeValid(AtsClientService.get().getArtifact(atsObject), attributeType);
    }
 
    @Override
@@ -182,12 +182,12 @@ public class AtsStoreService implements IAtsStoreService {
 
    @Override
    public IArtifactType getArtifactType(IAtsObject atsObject) {
-      return getArtifactType(atsObject.getStoreObject());
+      return getArtifactType(AtsClientService.get().getArtifact(atsObject));
    }
 
    @Override
    public boolean isOfType(IAtsObject atsObject, IArtifactType artifactType) {
-      return isOfType(atsObject.getStoreObject(), artifactType);
+      return isOfType(AtsClientService.get().getArtifact(atsObject), artifactType);
    }
 
 }

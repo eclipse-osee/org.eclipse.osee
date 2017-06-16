@@ -96,7 +96,7 @@ public class AtsBranchUtil {
                "Committed branch already exists. Can not create another working branch once changes have been committed.");
          }
          BranchId parentBranch = AtsClientService.get().getBranchService().getConfiguredBranchForWorkflow(teamArt);
-         if (parentBranch == null) {
+         if (parentBranch == null || parentBranch.isInvalid()) {
             return new Result(
                "Parent Branch can not be determined.\n\nPlease specify " + "parent branch through Version Artifact or Team Definition Artifact.\n\n" + "Contact your team lead to configure this.");
          }

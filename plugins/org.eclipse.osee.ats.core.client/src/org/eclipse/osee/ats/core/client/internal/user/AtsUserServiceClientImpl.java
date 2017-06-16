@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -64,7 +65,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
    @Override
    public User getOseeUser(IAtsUser atsUser) throws OseeCoreException {
       User oseeUser = null;
-      if (atsUser.getStoreObject() != null) {
+      if (atsUser.getStoreObject() instanceof User) {
          oseeUser = (User) atsUser.getStoreObject();
       } else {
          oseeUser = getOseeUserById(atsUser.getUserId());
@@ -203,6 +204,16 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
          user = createFromArtifact((Artifact) userArt);
       }
       return user;
+   }
+
+   @Override
+   public List<IAtsUser> getUsersFromDb() {
+      List<IAtsUser> users = new ArrayList<>();
+      for (ArtifactId userArt : ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.User, CoreBranches.COMMON)) {
+         JaxAtsUser atsUser = createFromArtifact((Artifact) userArt);
+         users.add(atsUser);
+      }
+      return users;
    }
 
 }

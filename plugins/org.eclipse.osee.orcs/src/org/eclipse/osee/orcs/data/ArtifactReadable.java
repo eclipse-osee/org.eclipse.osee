@@ -102,4 +102,8 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
    ResultSet<RelationReadable> getRelations(RelationTypeSide relationTypeSide);
 
+   Collection<Long> getChildrentIds();
+
+   Collection<Long> getRelatedIds(RelationTypeSide relationTypeSide);
+
 }

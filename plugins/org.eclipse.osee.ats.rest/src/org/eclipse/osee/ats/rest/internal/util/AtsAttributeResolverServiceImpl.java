@@ -16,6 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
@@ -40,6 +41,7 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
 
    private OrcsApi orcsApi;
    private Log logger;
+   private IAtsServices services;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -50,11 +52,11 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
    }
 
    private ArtifactReadable getArtifact(IAtsObject atsObject) {
-      return (ArtifactReadable) atsObject.getStoreObject();
+      return (ArtifactReadable) services.getArtifact(atsObject);
    }
 
    private ArtifactReadable getArtifact(ArtifactId artifact) {
-      return (ArtifactReadable) artifact;
+      return (ArtifactReadable) services.getArtifact(artifact);
    }
 
    public void start() throws OseeCoreException {
@@ -268,6 +270,10 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
    @Override
    public <T> Collection<IAttribute<T>> getAttributes(IAtsWorkItem workItem) throws OseeCoreException {
       return getAttributes(workItem.getStoreObject());
+   }
+
+   public void setServices(IAtsServices services) {
+      this.services = services;
    }
 
 }

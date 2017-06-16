@@ -93,6 +93,7 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
    @Override
    Artifact getArtifactByGuid(String guid);
 
+   @Override
    Artifact getArtifactByAtsId(String id);
 
    IArtifactMembersCache<GoalArtifact> getGoalMembersCache();

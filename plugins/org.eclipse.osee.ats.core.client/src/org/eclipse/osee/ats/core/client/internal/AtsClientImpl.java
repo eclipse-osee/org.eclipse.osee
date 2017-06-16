@@ -25,6 +25,8 @@ import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.config.JaxActionableItem;
+import org.eclipse.osee.ats.api.config.JaxTeamDefinition;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
@@ -60,8 +62,10 @@ import org.eclipse.osee.ats.core.client.util.IArtifactMembersCache;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionListeners;
+import org.eclipse.osee.ats.core.config.ActionableItem2;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
+import org.eclipse.osee.ats.core.config.TeamDefinition2;
 import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.core.util.AtsCoreFactory;
 import org.eclipse.osee.ats.core.util.AtsCoreServiceImpl;
@@ -132,8 +136,8 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
       queryService = new AtsQueryServiceImpl(this, jdbcService);
       actionableItemManager = new ActionableItemManager(attributeResolverService, storeService, this);
 
-      actionFactory = new ActionFactory(workItemFactory, getSequenceProvider(), actionableItemManager,
-         attributeResolverService, stateFactory, getServices());
+      actionFactory = new ActionFactory(workItemFactory, actionableItemManager, attributeResolverService, stateFactory,
+         getServices());
       taskService = new AtsTaskService(this);
 
       eventService = new AtsEventServiceImpl();
@@ -156,7 +160,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
 
    @Override
    public Artifact getConfigArtifact(IAtsConfigObject atsConfigObject) throws OseeCoreException {
-      return (Artifact) atsConfigObject.getStoreObject();
+      return AtsClientService.get().getArtifact(atsConfigObject);
    }
 
    @Override
@@ -214,24 +218,32 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
 
    @Override
    public void reloadConfigCache(boolean pend) {
+      final IAtsServices client = this;
       Runnable reload = new Runnable() {
 
          @Override
          public void run() {
             try {
-               List<Integer> ids = new LinkedList<>();
-               for (Long id : configProvider.getConfigurations().getAtsConfigIds()) {
-                  ids.add(id.intValue());
-               }
-               List<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(ids, getAtsBranch());
-               for (Artifact artifact : artifacts) {
-                  IAtsConfigObject configObj = configItemFactory.getConfigObject(artifact);
-                  if (configObj != null) {
-                     atsCache.cacheAtsObject(configObj);
-                  }
-               }
+               cacheActionableItems(configProvider.getConfigurations().getIdToAi().get(
+                  configProvider.getConfigurations().getTopActionableItem()));
+               cacheTeamDefinitions(configProvider.getConfigurations().getIdToTeamDef().get(
+                  configProvider.getConfigurations().getTopTeamDefinition()));
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+         }
+
+         private void cacheTeamDefinitions(JaxTeamDefinition jaxTeamDef) {
+            atsCache.cacheAtsObject(new TeamDefinition2(getLogger(), client, jaxTeamDef));
+            for (Long childId : jaxTeamDef.getChildren()) {
+               cacheTeamDefinitions(configProvider.getConfigurations().getIdToTeamDef().get(childId));
+            }
+         }
+
+         private void cacheActionableItems(JaxActionableItem jaxAi) {
+            atsCache.cacheAtsObject(new ActionableItem2(getLogger(), client, jaxAi));
+            for (Long child : jaxAi.getChildren()) {
+               cacheActionableItems(configProvider.getConfigurations().getIdToAi().get(child));
             }
          }
       };
@@ -303,7 +315,19 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    public Artifact getArtifact(IAtsObject atsObject) throws OseeCoreException {
       Artifact results = null;
       if (atsObject.getStoreObject() != null) {
-         results = (Artifact) atsObject.getStoreObject();
+         if (atsObject.getStoreObject() instanceof Artifact) {
+            results = (Artifact) atsObject.getStoreObject();
+         } else {
+            results = AtsClientService.get().getArtifact(atsObject.getId());
+            if (results != null) {
+               atsObject.setStoreObject(results);
+            }
+         }
+      } else {
+         results = getArtifact(atsObject.getId());
+         if (results != null) {
+            atsObject.setStoreObject(results);
+         }
       }
       return results;
    }

@@ -31,9 +31,27 @@ import org.eclipse.osee.framework.jdk.core.type.ViewModel;
 @Path("config")
 public interface AtsConfigEndpointApi {
 
+   /**
+    * @return cached copy of AtsConfigurations that is reloaded every 5 minutes. Use getFromDb() for latest copy from
+    * database.
+    */
    @GET
    @Produces(MediaType.APPLICATION_JSON)
    public AtsConfigurations get();
+
+   /**
+    * @return non-cached copy of AtsConfigurations read straight from database. Can take 30ish seconds to load. Use
+    * get() for quick access to cached copy.
+    */
+   @GET
+   @Path("fromdb")
+   @Produces(MediaType.APPLICATION_JSON)
+   public AtsConfigurations getFromDb();
+
+   @GET
+   @Path("clearcache")
+   @Produces(MediaType.APPLICATION_JSON)
+   public AtsConfigurations clearCaches();
 
    /**
     * @return html5 action entry page

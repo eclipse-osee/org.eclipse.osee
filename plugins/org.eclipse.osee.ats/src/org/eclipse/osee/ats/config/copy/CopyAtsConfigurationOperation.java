@@ -121,7 +121,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       } else {
          processedFromAis.add(fromAiArt);
       }
-      Artifact parentAiArt = (Artifact) parentAi.getStoreObject();
+      Artifact parentAiArt = AtsClientService.get().getArtifact(parentAi);
 
       // Get or create new team definition
       Artifact newAiArt = duplicateTeamDefinitionOrActionableItem(changes, fromAiArt);

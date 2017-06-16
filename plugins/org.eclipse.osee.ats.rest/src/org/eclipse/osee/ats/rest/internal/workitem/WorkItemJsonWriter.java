@@ -100,7 +100,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
    protected static void addWorkItem(IAtsServer atsServer, IAtsWorkItem config, Annotation[] annotations, JsonGenerator writer, boolean identityView, AttributeTypes attributeTypes) throws IOException, JsonGenerationException, JsonProcessingException {
       ArtifactReadable action = (ArtifactReadable) config.getStoreObject();
       writer.writeStartObject();
-      writer.writeNumberField("uuid", ConfigJsonWriter.getUuid(config));
+      writer.writeNumberField("uuid", ConfigJsonWriter.getUuid(config, atsServer));
       writer.writeStringField("Name", config.getName());
       String atsId = action.getSoleAttributeValue(AtsAttributeTypes.AtsId, "");
       writer.writeStringField("AtsId", atsId);

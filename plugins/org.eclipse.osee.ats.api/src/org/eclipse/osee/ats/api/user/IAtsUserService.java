@@ -51,6 +51,8 @@ public interface IAtsUserService {
 
    List<? extends IAtsUser> getUsers();
 
+   List<? extends IAtsUser> getUsersFromDb();
+
    IAtsUser getUserByAccountId(Long accountId);
 
 }

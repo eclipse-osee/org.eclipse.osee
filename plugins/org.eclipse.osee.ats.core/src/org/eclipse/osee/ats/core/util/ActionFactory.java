@@ -33,7 +33,6 @@ import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
@@ -67,16 +66,14 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public class ActionFactory implements IAtsActionFactory {
 
    private final IAtsWorkItemFactory workItemFactory;
-   private final ISequenceProvider sequenceProvider;
    private final IAtsActionableItemService actionableItemManager;
    private final IAttributeResolver attrResolver;
    private final IAtsStateFactory stateFactory;
    private final IAtsServices services;
    private IAtsTeamDefinition topTeamDefinition;
 
-   public ActionFactory(IAtsWorkItemFactory workItemFactory, ISequenceProvider sequenceProvider, IAtsActionableItemService actionableItemManager, IAttributeResolver attrResolver, IAtsStateFactory stateFactory, IAtsServices atsServices) {
+   public ActionFactory(IAtsWorkItemFactory workItemFactory, IAtsActionableItemService actionableItemManager, IAttributeResolver attrResolver, IAtsStateFactory stateFactory, IAtsServices atsServices) {
       this.workItemFactory = workItemFactory;
-      this.sequenceProvider = sequenceProvider;
       this.actionableItemManager = actionableItemManager;
       this.attrResolver = attrResolver;
       this.stateFactory = stateFactory;

@@ -118,8 +118,9 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
       return super.getEditorTitle();
    }
 
-   public void setTeamDefinition(IAtsTeamDefinition tda) throws OseeCoreException {
-      this.setSoleAttributeValue(AtsAttributeTypes.TeamDefinition, ((Artifact) tda.getStoreObject()).getGuid());
+   public void setTeamDefinition(IAtsTeamDefinition teamDef) throws OseeCoreException {
+      this.setSoleAttributeValue(AtsAttributeTypes.TeamDefinition,
+         AtsClientService.get().getArtifact(teamDef).getGuid());
    }
 
    @Override

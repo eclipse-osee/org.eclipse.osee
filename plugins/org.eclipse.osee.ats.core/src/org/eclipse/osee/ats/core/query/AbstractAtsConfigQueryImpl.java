@@ -19,7 +19,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.config.WorkType;
@@ -191,7 +190,7 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
          if (configObject == null) {
             OseeLog.log(AbstractAtsConfigQueryImpl.class, Level.SEVERE, "Null found in results");
          } else {
-            items.add((T) configObject.getStoreObject());
+            items.add((T) services.getArtifact(configObject));
          }
       }
       // filter on original artifact types

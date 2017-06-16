@@ -17,6 +17,7 @@ import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
@@ -99,7 +100,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
    public static void addProgramObject(IAtsServer atsServer, IAtsObject atsObject, Annotation[] annotations, JsonGenerator writer, boolean identityView, AttributeTypes attributeTypes) throws IOException, JsonGenerationException, JsonProcessingException {
       ArtifactReadable artifact = (ArtifactReadable) atsObject.getStoreObject();
       writer.writeStartObject();
-      writer.writeNumberField("uuid", getUuid(atsObject));
+      writer.writeNumberField("uuid", getUuid(atsObject, atsServer));
       writer.writeStringField("Name", atsObject.getName());
       writer.writeStringField("Description", atsObject.getDescription());
 
@@ -254,10 +255,10 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
       writer.writeEndObject();
    }
 
-   public static Long getUuid(IAtsObject atsObject) {
+   public static Long getUuid(IAtsObject atsObject, IAtsServices services) {
       long uuid = atsObject.getId();
       if (uuid <= 0L) {
-         uuid = ((ArtifactReadable) atsObject.getStoreObject()).getId();
+         uuid = ((ArtifactReadable) services.getArtifact(atsObject)).getId();
       }
       return uuid;
    }

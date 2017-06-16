@@ -86,7 +86,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
                   AtsClientService.get().getAttributeResolver(), this);
             }
          }
-         transaction.addArtifact((Artifact) atsObject.getStoreObject());
+         transaction.addArtifact(AtsClientService.get().getArtifact(atsObject));
       }
       for (ArtifactId artifact : artifacts) {
          if (artifact instanceof Artifact) {
@@ -104,7 +104,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          }
       }
       for (IAtsObject atsObject : deleteAtsObjects) {
-         ((Artifact) atsObject.getStoreObject()).deleteAndPersist(transaction);
+         AtsClientService.get().getArtifact(atsObject).deleteAndPersist(transaction);
       }
       TransactionId transactionRecord = transaction.execute();
       for (IExecuteListener listener : listeners) {

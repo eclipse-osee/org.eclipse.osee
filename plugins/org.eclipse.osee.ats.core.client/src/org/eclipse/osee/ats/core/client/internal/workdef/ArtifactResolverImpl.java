@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IArtifactResolver;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -86,7 +87,7 @@ public class ArtifactResolverImpl implements IArtifactResolver {
    public boolean isOfType(IAtsObject atsObject, IArtifactType artifactType) {
       Assert.isNotNull(atsObject, "ATS Object can not be null");
       Assert.isNotNull(artifactType, "Artifact Type can not be null");
-      return isOfType(atsObject.getStoreObject(), artifactType);
+      return isOfType(AtsClientService.get().getArtifact(atsObject), artifactType);
    }
 
    @Override

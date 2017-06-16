@@ -149,6 +149,8 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
          if (atsObject.getStoreObject() instanceof ArtifactReadable) {
             useArt = (ArtifactReadable) atsObject.getStoreObject();
          }
+      } else if (object instanceof ArtifactId) {
+         useArt = atsServer.getArtifact(((ArtifactId) object).getId());
       }
       return useArt;
    }
@@ -201,4 +203,13 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
       return art.getRelatedCount(relationTypeSide);
    }
 
+   @Override
+   public Collection<Long> getRelatedIds(ArtifactId artifact, RelationTypeSide relationTypeSide) {
+      List<Long> related = new LinkedList<>();
+      ArtifactReadable art = getArtifact(artifact);
+      for (ArtifactReadable rel : art.getRelated(relationTypeSide)) {
+         related.add(rel.getId());
+      }
+      return related;
+   }
 }

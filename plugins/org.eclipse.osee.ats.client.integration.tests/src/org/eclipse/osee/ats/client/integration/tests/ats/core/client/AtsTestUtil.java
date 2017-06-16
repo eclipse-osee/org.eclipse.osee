@@ -498,16 +498,16 @@ public class AtsTestUtil {
       delete(changes, actionArt3);
       delete(changes, actionArt4);
       if (verArt1 != null) {
-         delete(changes, (Artifact) verArt1.getStoreObject());
+         delete(changes, AtsClientService.get().getArtifact(verArt1));
       }
       if (verArt2 != null) {
-         delete(changes, (Artifact) verArt2.getStoreObject());
+         delete(changes, AtsClientService.get().getArtifact(verArt2));
       }
       if (verArt3 != null) {
-         delete(changes, (Artifact) verArt3.getStoreObject());
+         delete(changes, AtsClientService.get().getArtifact(verArt3));
       }
       if (verArt4 != null) {
-         delete(changes, (Artifact) verArt4.getStoreObject());
+         delete(changes, AtsClientService.get().getArtifact(verArt4));
       }
       if (!changes.isEmpty()) {
          changes.execute();
@@ -521,8 +521,8 @@ public class AtsTestUtil {
       SkynetTransaction transaction = TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(),
          AtsTestUtil.class.getSimpleName() + " - cleanup config");
       for (IAtsConfigObject config : Arrays.asList(teamDef, testAi, testAi2, testAi3, testAi4)) {
-         if (config != null && config.getStoreObject() instanceof Artifact) {
-            Artifact art = (Artifact) config.getStoreObject();
+         if (config != null) {
+            Artifact art = AtsClientService.get().getArtifact(config);
             art.deleteAndPersist(transaction);
          }
       }

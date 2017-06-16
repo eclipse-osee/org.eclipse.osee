@@ -206,7 +206,12 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       if (object instanceof ArtifactReadable) {
          artifact = (ArtifactReadable) object;
       } else if (object instanceof IAtsObject) {
-         artifact = (ArtifactReadable) ((IAtsObject) object).getStoreObject();
+         IAtsObject atsObject = (IAtsObject) object;
+         if (atsObject.getStoreObject() instanceof ArtifactReadable) {
+            artifact = (ArtifactReadable) atsObject.getStoreObject();
+         } else {
+            artifact = atsServer.getArtifact(atsObject.getId());
+         }
       }
       return artifact;
    }

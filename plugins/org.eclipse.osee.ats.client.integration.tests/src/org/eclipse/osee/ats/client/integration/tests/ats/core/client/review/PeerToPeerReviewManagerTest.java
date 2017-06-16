@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -124,7 +123,7 @@ public class PeerToPeerReviewManagerTest extends PeerToPeerReviewManager {
          peerArt.isDirty());
       Assert.assertEquals(PeerToPeerReviewState.Prepare.getName(), peerArt.getCurrentStateName());
       Assert.assertEquals("Joe Smith", peerArt.getStateMgr().getAssigneesStr());
-      Assert.assertEquals(((Artifact) AtsTestUtil.getTestAi().getStoreObject()).getGuid(),
+      Assert.assertEquals(AtsClientService.get().getArtifact(AtsTestUtil.getTestAi()).getGuid(),
          peerArt.getSoleAttributeValue(AtsAttributeTypes.ActionableItem));
    }
 }

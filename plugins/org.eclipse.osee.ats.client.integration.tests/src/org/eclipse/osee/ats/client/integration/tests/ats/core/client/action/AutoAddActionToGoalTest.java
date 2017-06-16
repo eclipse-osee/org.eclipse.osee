@@ -82,7 +82,7 @@ public class AutoAddActionToGoalTest {
       IAtsTeamDefinition teamDef = AtsTestUtil.getTestTeamDef();
 
       for (IAtsVersion version : teamDef.getVersions()) {
-         changes.deleteArtifact(version.getStoreObject());
+         changes.deleteArtifact(AtsClientService.get().getArtifact(version));
       }
       changes.execute();
 
@@ -114,7 +114,7 @@ public class AutoAddActionToGoalTest {
       GoalArtifact goalArt = GoalManager.createGoal("AutoAddActionToGoalTest - AddActionToGoalFromTeamDef", changes);
       IAtsTeamDefinition teamDef = AtsTestUtil.getTestTeamDef();
       for (IAtsVersion version : teamDef.getVersions()) {
-         changes.deleteArtifact(version.getStoreObject());
+         changes.deleteArtifact(AtsClientService.get().getArtifact(version));
       }
       changes.execute();
 
@@ -143,7 +143,7 @@ public class AutoAddActionToGoalTest {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       IAtsTeamDefinition teamDef = AtsTestUtil.getTestTeamDef();
       for (IAtsVersion version : teamDef.getVersions()) {
-         changes.deleteArtifact(version.getStoreObject());
+         changes.deleteArtifact(AtsClientService.get().getArtifact(version));
       }
 
       Artifact testAI2Art = AtsClientService.get().getArtifact(AtsTestUtil.getTestAi2());
@@ -186,7 +186,7 @@ public class AutoAddActionToGoalTest {
 
       IAtsTeamDefinition teamDef = AtsTestUtil.getTestTeamDef();
       for (IAtsVersion version : teamDef.getVersions()) {
-         changes.deleteArtifact(version.getStoreObject());
+         changes.deleteArtifact(AtsClientService.get().getArtifact(version));
       }
       changes.execute();
 

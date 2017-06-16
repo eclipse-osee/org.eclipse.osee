@@ -25,6 +25,7 @@ public class JaxAtsObject {
    private String name;
    @JsonSerialize(using = ToStringSerializer.class)
    private Long uuid;
+   private String guid;
    private boolean active;
    private String description;
 
@@ -112,6 +113,14 @@ public class JaxAtsObject {
 
    public void setDescription(String description) {
       this.description = description;
+   }
+
+   public String getGuid() {
+      return guid;
+   }
+
+   public void setGuid(String guid) {
+      this.guid = guid;
    }
 
 }

@@ -132,6 +132,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
 
       relationResolver = new AtsRelationResolverServiceImpl(this);
       ((AtsAttributeResolverServiceImpl) attributeResolverService).setOrcsApi(orcsApi);
+      ((AtsAttributeResolverServiceImpl) attributeResolverService).setServices(this);
       workDefService.setWorkDefinitionStringProvider(this);
 
       logFactory = AtsCoreFactory.newLogFactory();
@@ -141,8 +142,8 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
 
       queryService = new AtsQueryServiceImpl(this, jdbcService);
       actionableItemManager = new ActionableItemManager(attributeResolverService, storeService, this);
-      actionFactory = new ActionFactory(workItemFactory, getSequenceProvider(), actionableItemManager,
-         attributeResolverService, stateFactory, getServices());
+      actionFactory = new ActionFactory(workItemFactory, actionableItemManager, attributeResolverService, stateFactory,
+         getServices());
 
       agileService = new AgileService(logger, this);
       taskService = new AtsTaskService(this);
@@ -171,7 +172,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
          result = (ArtifactReadable) artifact;
       } else if (artifact instanceof IAtsObject) {
          IAtsObject atsObject = (IAtsObject) artifact;
-         if (atsObject.getStoreObject() != null) {
+         if (atsObject.getStoreObject() instanceof ArtifactReadable) {
             result = (ArtifactReadable) atsObject.getStoreObject();
          } else {
             result = orcsApi.getQueryFactory().fromBranch(getAtsBranch()).andUuid(
@@ -186,11 +187,14 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    @Override
    public ArtifactReadable getArtifact(IAtsObject atsObject) throws OseeCoreException {
       ArtifactReadable result = null;
-      if (atsObject.getStoreObject() != null) {
+      if (atsObject.getStoreObject() instanceof ArtifactReadable) {
          result = (ArtifactReadable) atsObject.getStoreObject();
       } else {
          result = orcsApi.getQueryFactory().fromBranch(getAtsBranch()).andUuid(
             atsObject.getId()).getResults().getAtMostOneOrNull();
+         if (result != null) {
+            atsObject.setStoreObject(result);
+         }
       }
       return result;
    }

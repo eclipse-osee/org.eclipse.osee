@@ -33,9 +33,14 @@ public class AtsConfigurations implements IWorkDefinitionStringProvider {
    private ColorColumns colorColumns = new ColorColumns();
    List<JaxAtsUser> users = new ArrayList<>();
    List<Long> atsAdmins = new ArrayList<>();
-   List<Long> atsConfigIds = new ArrayList<>();
+   Long topActionableItem;
+   Long topTeamDefinition;
+   List<JaxVersion> versions = new ArrayList<>();
    private Collection<String> validStateNames = new ArrayList<>();
    private Map<String, String> workDefIdToWorkDef = new HashMap<>();
+   private Map<Long, JaxActionableItem> idToAi = new HashMap<>();
+   private Map<Long, JaxTeamDefinition> idToTeamDef = new HashMap<>();
+   private Map<Long, JaxVersion> idToVersion = new HashMap<>();
 
    public List<AtsConfiguration> getConfigs() {
       return configs;
@@ -63,19 +68,6 @@ public class AtsConfigurations implements IWorkDefinitionStringProvider {
 
    public void setUsers(List<JaxAtsUser> users) {
       this.users = users;
-   }
-
-   public String getAtsConfigIdsStr() {
-      return Collections.toString(",", atsConfigIds);
-   }
-
-   @JsonIgnore
-   public List<Long> getAtsConfigIds() {
-      return atsConfigIds;
-   }
-
-   public void setAtsConfigIdsStr(String atsConfigIdsStr) {
-      parseStringOfLongs(this.atsConfigIds, atsConfigIdsStr);
    }
 
    public Collection<String> getValidStateNames() {
@@ -118,6 +110,62 @@ public class AtsConfigurations implements IWorkDefinitionStringProvider {
 
    public void setWorkDefIdToWorkDef(Map<String, String> workDefIdToWorkDef) {
       this.workDefIdToWorkDef = workDefIdToWorkDef;
+   }
+
+   public Map<Long, JaxActionableItem> getIdToAi() {
+      return idToAi;
+   }
+
+   public void setIdToAi(Map<Long, JaxActionableItem> idToAi) {
+      this.idToAi = idToAi;
+   }
+
+   public Map<Long, JaxTeamDefinition> getIdToTeamDef() {
+      return idToTeamDef;
+   }
+
+   public void setIdToTeamDef(Map<Long, JaxTeamDefinition> idToTeamDef) {
+      this.idToTeamDef = idToTeamDef;
+   }
+
+   public Map<Long, JaxVersion> getIdToVersion() {
+      return idToVersion;
+   }
+
+   public void setIdToVersion(Map<Long, JaxVersion> idToVersion) {
+      this.idToVersion = idToVersion;
+   }
+
+   public Long getTopActionableItem() {
+      return topActionableItem;
+   }
+
+   public void setTopActionableItem(Long topActionableItem) {
+      this.topActionableItem = topActionableItem;
+   }
+
+   public Long getTopTeamDefinition() {
+      return topTeamDefinition;
+   }
+
+   public void setTopTeamDefinition(Long topTeamDefinition) {
+      this.topTeamDefinition = topTeamDefinition;
+   }
+
+   public void addTeamDef(JaxTeamDefinition teamDef) {
+      idToTeamDef.put(teamDef.getUuid(), teamDef);
+   }
+
+   public void addAi(JaxActionableItem ai) {
+      idToAi.put(ai.getUuid(), ai);
+   }
+
+   public void addVersion(JaxVersion version) {
+      idToVersion.put(version.getUuid(), version);
+   }
+
+   public void addWorkDefinition(String id, String workDefStr) {
+      workDefIdToWorkDef.put(id, workDefStr);
    }
 
 }

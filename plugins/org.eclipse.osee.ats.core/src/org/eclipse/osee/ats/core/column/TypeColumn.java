@@ -31,7 +31,7 @@ public class TypeColumn extends AbstractServicesColumn {
          } else if (services.getAgileService().isBacklog(atsObject)) {
             return "Backlog";
          } else {
-            return atsObject.getStoreObject().getArtifactType().getName();
+            return services.getStoreService().getArtifactType(atsObject).getName();
          }
       }
       return "(Deleted)";

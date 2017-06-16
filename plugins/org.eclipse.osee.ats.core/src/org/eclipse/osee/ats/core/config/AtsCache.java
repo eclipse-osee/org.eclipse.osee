@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.config.IAtsCache;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 
@@ -74,9 +75,10 @@ public class AtsCache implements IAtsCache {
    @Override
    public void cacheAtsObject(IAtsObject atsObject) {
       Conditions.checkNotNull(atsObject, "atsObject");
-      if (atsObject.getStoreObject() != null) {
-         guidToAtsObjectCache.put(atsObject.getStoreObject().getGuid(), atsObject);
-         uuidToArtifactIdCache.put(atsObject.getId(), atsObject.getStoreObject());
+      ArtifactToken storeObject = services.getArtifact(atsObject.getStoreObject());
+      if (storeObject != null) {
+         guidToAtsObjectCache.put(storeObject.getGuid(), atsObject);
+         uuidToArtifactIdCache.put(atsObject.getId(), storeObject);
       }
       uuidToAtsObjectCache.put(atsObject.getId(), atsObject);
    }
@@ -131,8 +133,8 @@ public class AtsCache implements IAtsCache {
    @Override
    public void deCacheAtsObject(IAtsObject atsObject) {
       Conditions.checkNotNull(atsObject, "atsObject");
-      if (atsObject.getStoreObject() != null) {
-         guidToAtsObjectCache.invalidate(atsObject.getStoreObject().getGuid());
+      if (services.getArtifact(atsObject) != null) {
+         guidToAtsObjectCache.invalidate(services.getArtifact(atsObject).getGuid());
       }
 
       uuidToAtsObjectCache.invalidate(atsObject.getId());
