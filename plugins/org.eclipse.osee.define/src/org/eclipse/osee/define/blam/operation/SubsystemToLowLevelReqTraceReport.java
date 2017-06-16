@@ -206,10 +206,14 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       RelationManager.getRelatedArtifacts(artifacts, 999, INCLUDE_DELETED,
          CoreRelationTypes.Default_Hierarchical__Child);
       for (Artifact artifact : artifacts) {
-         if (!artifact.isOfType(CoreArtifactTypes.Folder)) {
+         if (!artifact.isOfType(CoreArtifactTypes.Folder, CoreArtifactTypes.ImplementationDetails)) {
             lowLevelReqs.add(artifact);
          }
-         lowLevelReqs.addAll(artifact.getDescendants());
+         for (Artifact descendant : artifact.getDescendants()) {
+            if (!descendant.isOfType(CoreArtifactTypes.Folder, CoreArtifactTypes.ImplementationDetails)) {
+               lowLevelReqs.add(descendant);
+            }
+         }
       }
    }
 
@@ -217,10 +221,14 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       RelationManager.getRelatedArtifacts(artifacts, 999, INCLUDE_DELETED,
          CoreRelationTypes.Default_Hierarchical__Child);
       for (Artifact artifact : artifacts) {
-         if (!artifact.isOfType(CoreArtifactTypes.Folder)) {
+         if (!artifact.isOfType(CoreArtifactTypes.Folder, CoreArtifactTypes.ImplementationDetails)) {
             components.add(artifact);
          }
-         components.addAll(artifact.getDescendants());
+         for (Artifact descendant : artifact.getDescendants()) {
+            if (!descendant.isOfType(CoreArtifactTypes.Folder, CoreArtifactTypes.ImplementationDetails)) {
+               components.add(descendant);
+            }
+         }
       }
    }
 
@@ -250,8 +258,8 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
    @Override
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"Lower Level Requirements\" />" + //
-      "<XWidget xwidgetType=\"XListDropViewer\" displayName=\"Allocation Components\" />" + //
-      "<XWidget xwidgetType=\"XArtifactTypeMultiChoiceSelect\" displayName=\"Low Level Requirement Type(s)\" multiSelect=\"true\" /></xWidgets>";
+         "<XWidget xwidgetType=\"XListDropViewer\" displayName=\"Allocation Components\" />" + //
+         "<XWidget xwidgetType=\"XArtifactTypeMultiChoiceSelect\" displayName=\"Low Level Requirement Type(s)\" multiSelect=\"true\" /></xWidgets>";
    }
 
    @Override
