@@ -71,8 +71,6 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
 
    IArtifactMembersCache<SprintArtifact> getSprintItemsCache();
 
-   Artifact checkArtifactFromId(long uuid, BranchId atsBranch);
-
    @Override
    Artifact getArtifact(Long uuid);
 

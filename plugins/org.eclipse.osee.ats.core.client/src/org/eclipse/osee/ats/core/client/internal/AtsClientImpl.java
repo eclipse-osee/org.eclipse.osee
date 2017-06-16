@@ -467,11 +467,6 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
-   public Artifact checkArtifactFromId(long uuid, BranchId atsBranch) {
-      return ArtifactQuery.checkArtifactFromId((int) uuid, getAtsBranch(), DeletionFlag.EXCLUDE_DELETED);
-   }
-
-   @Override
    public <A extends IAtsConfigObject> A getSoleByUuid(long uuid, Class<A> clazz) throws OseeCoreException {
       return getCache().getAtsObject(uuid);
    }

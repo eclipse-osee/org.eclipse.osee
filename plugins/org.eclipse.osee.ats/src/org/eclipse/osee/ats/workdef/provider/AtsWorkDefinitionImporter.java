@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
 import org.eclipse.osee.ats.dsl.atsDsl.AtsDsl;
 import org.eclipse.osee.ats.dsl.atsDsl.StateDef;
@@ -107,8 +106,8 @@ public class AtsWorkDefinitionImporter {
          }
       } else {
          resultData.log(String.format("Imported new WorkDefinition [%s]", workDefName));
-         artifact =
-            ArtifactTypeManager.addArtifact(AtsArtifactTypes.WorkDefinition, AtsClientService.get().getAtsBranch(), sheetName);
+         artifact = ArtifactTypeManager.addArtifact(AtsArtifactTypes.WorkDefinition,
+            AtsClientService.get().getAtsBranch(), sheetName);
       }
       artifact.setSoleAttributeValue(AtsAttributeTypes.DslSheet, workDefXml);
       changes.add(artifact);
