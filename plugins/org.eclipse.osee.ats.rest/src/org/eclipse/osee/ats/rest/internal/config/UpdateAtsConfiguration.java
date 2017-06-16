@@ -101,10 +101,8 @@ public class UpdateAtsConfiguration {
 
    private void createUpdateConfigAttributes(ArtifactReadable configArt, ArtifactReadable userArt, XResultData rd) throws OseeCoreException {
       try {
-         int x = 1;
          AtsViews databaseViews = getConfigViews();
          for (String viewsJson : getViewsJsonStrings()) {
-            String comment = "Create Update Config Attributes - " + x++;
             AtsViews atsViews = gson.fromJson(viewsJson, AtsViews.class);
             // merge any new default view items to current database view items
             List<AtsAttributeValueColumn> toAdd = new LinkedList<>();

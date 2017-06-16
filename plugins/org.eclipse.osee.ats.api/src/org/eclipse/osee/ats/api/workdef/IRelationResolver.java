@@ -58,4 +58,6 @@ public interface IRelationResolver {
 
    int getRelatedCount(ArtifactToken artifact, RelationTypeSide relationTypeSide);
 
+   Collection<Long> getRelatedIds(ArtifactId artifact, RelationTypeSide relationTypeSide);
+
 }
