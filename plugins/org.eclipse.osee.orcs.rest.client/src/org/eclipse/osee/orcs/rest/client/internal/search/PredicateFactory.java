@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.rest.client.internal.search;
 
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -25,9 +26,9 @@ import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
  */
 public interface PredicateFactory {
 
-   Predicate createUuidSearch(Collection<String> ids);
+   Predicate createUuidSearch(List<String> ids);
 
-   Predicate createLocalIdsSearch(Collection<Integer> ids);
+   Predicate createLocalIdsSearch(Collection<? extends ArtifactId> ids);
 
    Predicate createIdSearch(Collection<? extends Identity<String>> ids);
 

@@ -66,7 +66,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    protected Collection<StateType> stateTypes;
    protected Collection<WorkItemType> workItemTypes;
    protected Collection<IArtifactType> artifactTypes;
-   protected Collection<Long> uuids;
+   protected Collection<ArtifactId> artifactIds;
    protected final IAtsServices services;
    protected Collection<Long> aiUuids;
    protected Long versionUuid;
@@ -89,7 +89,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       artifactTypes = new ArrayList<>();
       teamDefUuids = new ArrayList<>();
       aiUuids = new ArrayList<>();
-      uuids = new ArrayList<>();
+      artifactIds = new ArrayList<>();
       teamWorkflowAttr = new ArrayList<>();
       queryFilters = new ArrayList<>();
    }
@@ -541,7 +541,9 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    @Override
    public IAtsQuery andUuids(Long... uuids) {
-      this.uuids = Arrays.asList(uuids);
+      for (Long artifactId : uuids) {
+         artifactIds.add(ArtifactId.valueOf(artifactId));
+      }
       return this;
    }
 
@@ -751,8 +753,8 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
          queryAndIsOfType(artTypes);
       }
 
-      if (withUuids && uuids != null && uuids.size() > 0) {
-         addUuidCriteria(uuids);
+      if (withUuids && !artifactIds.isEmpty()) {
+         queryAndLocalIds(artifactIds);
       }
 
       addStateTypeNameAndAttributeCriteria();
@@ -870,11 +872,11 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
          for (Long uuid : uuids) {
             artIds.add(uuid.intValue());
          }
-         queryAndLocalIds(artIds);
+
       }
    }
 
-   public abstract void queryAndLocalIds(List<Integer> artIds);
+   public abstract void queryAndLocalIds(Collection<ArtifactId> artIds);
 
    public void addProgramCriteria() {
       if (!isInsertionSpecified()) {

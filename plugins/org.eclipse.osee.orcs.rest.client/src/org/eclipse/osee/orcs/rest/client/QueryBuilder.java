@@ -57,7 +57,7 @@ public interface QueryBuilder {
    /**
     * Search criteria that finds a given artifact ids
     */
-   QueryBuilder andLocalIds(Collection<Integer> artifactIds) throws OseeCoreException;
+   QueryBuilder andLocalIds(Collection<? extends ArtifactId> artifactIds);
 
    /**
     * Search criteria that finds a given artifact with guids
@@ -67,7 +67,7 @@ public interface QueryBuilder {
    /**
     * Search criteria that finds a given artifact with guids
     */
-   QueryBuilder andGuids(Collection<String> ids) throws OseeCoreException;
+   QueryBuilder andGuids(List<String> ids) throws OseeCoreException;
 
    /**
     * Artifacts matching token id(s)

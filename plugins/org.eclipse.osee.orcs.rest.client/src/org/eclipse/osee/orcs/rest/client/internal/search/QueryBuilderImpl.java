@@ -94,11 +94,11 @@ public class QueryBuilderImpl implements QueryBuilder {
 
    @Override
    public QueryBuilder andLocalId(ArtifactId artifactId) {
-      return andLocalIds(Collections.singletonList(artifactId.getId().intValue()));
+      return andLocalIds(Collections.singletonList(artifactId));
    }
 
    @Override
-   public QueryBuilder andLocalIds(Collection<Integer> artifactIds) {
+   public QueryBuilder andLocalIds(Collection<? extends ArtifactId> artifactIds) {
       predicates.add(predicateFactory.createLocalIdsSearch(artifactIds));
       return this;
    }
@@ -109,7 +109,7 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public QueryBuilder andGuids(Collection<String> ids) {
+   public QueryBuilder andGuids(List<String> ids) {
       predicates.add(predicateFactory.createUuidSearch(ids));
       return this;
    }

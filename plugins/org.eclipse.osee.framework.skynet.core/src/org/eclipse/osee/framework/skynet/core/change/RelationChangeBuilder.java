@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.change;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -20,12 +21,12 @@ import org.eclipse.osee.framework.core.model.type.RelationType;
  * @author Jeff C. Phillips
  */
 public class RelationChangeBuilder extends ChangeBuilder {
-   private final int bArtId;
+   private final ArtifactId bArtId;
    private final int relLinkId;
    private final String rationale;
    private final RelationType relationType;
 
-   public RelationChangeBuilder(BranchId branch, ArtifactTypeId artifactType, int sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, int bArtId, int relLinkId, String rationale, RelationType relationType, boolean isHistorical) {
+   public RelationChangeBuilder(BranchId branch, ArtifactTypeId artifactType, int sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, ArtifactId bArtId, int relLinkId, String rationale, RelationType relationType, boolean isHistorical) {
       super(branch, artifactType, sourceGamma, artId, txDelta, modType, isHistorical);
       this.bArtId = bArtId;
       this.relLinkId = relLinkId;
@@ -33,7 +34,7 @@ public class RelationChangeBuilder extends ChangeBuilder {
       this.relationType = relationType;
    }
 
-   public int getbArtId() {
+   public ArtifactId getbArtId() {
       return bArtId;
    }
 

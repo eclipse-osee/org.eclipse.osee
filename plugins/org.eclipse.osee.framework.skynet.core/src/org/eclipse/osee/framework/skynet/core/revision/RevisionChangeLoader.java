@@ -197,8 +197,8 @@ public final class RevisionChangeLoader {
       monitor.done();
    }
 
-   private CompositeKeyHashMap<TransactionToken, Integer, Artifact> getBulkLoadedArtifacts(BranchId branch, boolean isHistorical, List<ChangeBuilder> changeBuilders) throws OseeCoreException {
-      HashCollection<TransactionToken, Integer> loadMap = new HashCollection<>(false, HashSet.class);
+   private CompositeKeyHashMap<TransactionToken, ArtifactId, Artifact> getBulkLoadedArtifacts(BranchId branch, boolean isHistorical, List<ChangeBuilder> changeBuilders) throws OseeCoreException {
+      HashCollection<TransactionToken, ArtifactId> loadMap = new HashCollection<>(false, HashSet.class);
       for (ChangeBuilder builder : changeBuilders) {
          TransactionToken endTx = builder.getTxDelta().getEndTx();
          loadMap.put(endTx, builder.getArtId());
@@ -208,25 +208,25 @@ public final class RevisionChangeLoader {
          }
       }
 
-      CompositeKeyHashMap<TransactionToken, Integer, Artifact> loadedMap = new CompositeKeyHashMap<>();
+      CompositeKeyHashMap<TransactionToken, ArtifactId, Artifact> loadedMap = new CompositeKeyHashMap<>();
 
-      for (Entry<TransactionToken, Collection<Integer>> entry : loadMap.entrySet()) {
+      for (Entry<TransactionToken, Collection<ArtifactId>> entry : loadMap.entrySet()) {
          Collection<Artifact> artifacts;
          if (isHistorical) {
             artifacts = ArtifactQuery.getHistoricalArtifactListFromIds(entry.getValue(), entry.getKey(),
                DeletionFlag.INCLUDE_DELETED);
          } else {
-            artifacts = ArtifactQuery.getArtifactListFromIds(entry.getValue(), branch, DeletionFlag.INCLUDE_DELETED);
+            artifacts = ArtifactQuery.getArtifactListFrom(entry.getValue(), branch);
          }
          for (Artifact artifact : artifacts) {
-            loadedMap.put(entry.getKey(), artifact.getArtId(), artifact);
+            loadedMap.put(entry.getKey(), artifact, artifact);
          }
       }
       return loadedMap;
    }
 
    private Collection<Change> getChanges(BranchId branch, boolean isHistorical, List<ChangeBuilder> changeBuilders) throws OseeCoreException {
-      CompositeKeyHashMap<TransactionToken, Integer, Artifact> loadedMap =
+      CompositeKeyHashMap<TransactionToken, ArtifactId, Artifact> loadedMap =
          getBulkLoadedArtifacts(branch, isHistorical, changeBuilders);
 
       Collection<Change> changes = new ArrayList<>();
@@ -237,28 +237,25 @@ public final class RevisionChangeLoader {
          if (changeArtifact != null) {
             ArtifactDelta delta = new ArtifactDelta(builder.getTxDelta(), changeArtifact, null);
             if (builder instanceof ArtifactChangeBuilder) {
-               toReturn = new ArtifactChange(branch, GammaId.valueOf(builder.getSourceGamma()),
-                  ArtifactId.valueOf(builder.getArtId()), builder.getTxDelta(), builder.getModType(), "", "",
-                  isHistorical, changeArtifact, delta);
+               toReturn = new ArtifactChange(branch, GammaId.valueOf(builder.getSourceGamma()), builder.getArtId(),
+                  builder.getTxDelta(), builder.getModType(), "", "", isHistorical, changeArtifact, delta);
             } else if (builder instanceof AttributeChangeBuilder) {
                AttributeChangeBuilder attrBuilder = (AttributeChangeBuilder) builder;
                toReturn = new AttributeChange(branch, GammaId.valueOf(attrBuilder.getSourceGamma()),
-                  ArtifactId.valueOf(attrBuilder.getArtId()), attrBuilder.getTxDelta(), attrBuilder.getModType(),
-                  attrBuilder.getIsValue(), attrBuilder.getWasValue(), AttributeId.valueOf(attrBuilder.getAttrId()),
+                  attrBuilder.getArtId(), attrBuilder.getTxDelta(), attrBuilder.getModType(), attrBuilder.getIsValue(),
+                  attrBuilder.getWasValue(), AttributeId.valueOf(attrBuilder.getAttrId()),
                   attrBuilder.getAttributeType(), attrBuilder.getArtModType(), isHistorical, changeArtifact, delta);
             } else if (builder instanceof RelationChangeBuilder) {
                RelationChangeBuilder relBuilder = (RelationChangeBuilder) builder;
                Artifact bArtifact = loadedMap.get(builder.getTxDelta().getEndTx(), relBuilder.getbArtId());
-               toReturn = new RelationChange(branch, GammaId.valueOf(builder.getSourceGamma()),
-                  ArtifactId.valueOf(builder.getArtId()), builder.getTxDelta(), builder.getModType(),
-                  ArtifactId.valueOf(relBuilder.getbArtId()),
+               toReturn = new RelationChange(branch, GammaId.valueOf(builder.getSourceGamma()), builder.getArtId(),
+                  builder.getTxDelta(), builder.getModType(), relBuilder.getbArtId(),
                   RelationId.valueOf(Long.valueOf(relBuilder.getRelLinkId())), relBuilder.getRationale(), "",
                   relBuilder.getRelationType(), isHistorical, changeArtifact, delta, bArtifact);
             }
          } else {
-            toReturn = new ArtifactChange(branch, GammaId.valueOf(builder.getSourceGamma()),
-               ArtifactId.valueOf(builder.getArtId()), builder.getTxDelta(), builder.getModType(), "", "", isHistorical,
-               null, null);
+            toReturn = new ArtifactChange(branch, GammaId.valueOf(builder.getSourceGamma()), builder.getArtId(),
+               builder.getTxDelta(), builder.getModType(), "", "", isHistorical, null, null);
          }
          changes.add(toReturn);
       }

@@ -361,7 +361,7 @@ public class ChangeDataLoader extends AbstractOperation {
    }
 
    private void bulkLoadArtifactDeltas(CompositeKeyHashMap<TransactionId, ArtifactId, Artifact> bulkLoaded, Collection<ChangeItem> changeItems) throws OseeCoreException {
-      Set<Integer> artIds = asArtIds(changeItems);
+      Set<ArtifactId> artIds = asArtIds(changeItems);
 
       preloadArtifacts(bulkLoaded, artIds, txDelta.getStartTx(), txDelta.areOnTheSameBranch());
       if (!txDelta.getStartTx().equals(txDelta.getEndTx())) {
@@ -373,25 +373,25 @@ public class ChangeDataLoader extends AbstractOperation {
       }
    }
 
-   private static void preloadArtifacts(CompositeKeyHashMap<TransactionId, ArtifactId, Artifact> bulkLoaded, Collection<Integer> artIds, TransactionToken tx, boolean isHistorical) throws OseeCoreException {
+   private static void preloadArtifacts(CompositeKeyHashMap<TransactionId, ArtifactId, Artifact> bulkLoaded, Collection<ArtifactId> artIds, TransactionToken tx, boolean isHistorical) throws OseeCoreException {
       List<Artifact> artifacts;
 
       if (isHistorical) {
          artifacts = ArtifactQuery.getHistoricalArtifactListFromIds(artIds, tx, INCLUDE_DELETED);
       } else {
-         artifacts = ArtifactQuery.getArtifactListFromIds(artIds, tx.getBranch(), INCLUDE_DELETED);
+         artifacts = ArtifactQuery.getArtifactListFrom(artIds, tx.getBranch());
       }
       for (Artifact artifact : artifacts) {
          bulkLoaded.put(tx, ArtifactId.valueOf(artifact.getId()), artifact);
       }
    }
 
-   private static Set<Integer> asArtIds(Collection<ChangeItem> changeItems) {
-      Set<Integer> artIds = new HashSet<>();
+   private static Set<ArtifactId> asArtIds(Collection<ChangeItem> changeItems) {
+      Set<ArtifactId> artIds = new HashSet<>();
       for (ChangeItem item : changeItems) {
-         artIds.add(item.getArtId().getId().intValue());
+         artIds.add(item.getArtId());
          if (item.getChangeType().isRelationChange()) {
-            artIds.add(item.getArtIdB().getId().intValue());
+            artIds.add(item.getArtIdB());
          }
       }
       return artIds;

@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.revision.acquirer;
 import java.util.ArrayList;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -84,7 +85,7 @@ public class RelationChangeAcquirer extends ChangeAcquirer {
 
                getChangeBuilders().add(new RelationChangeBuilder(getSourceBranch(),
                   ArtifactTypeManager.getTypeByGuid(chStmt.getLong("art_type_id")), chStmt.getInt("gamma_id"), aArtId,
-                  txDelta, modificationType, bArtId, relLinkId, rationale,
+                  txDelta, modificationType, ArtifactId.valueOf(bArtId), relLinkId, rationale,
                   RelationTypeManager.getTypeByGuid(chStmt.getLong("rel_link_type_id")), !hasBranch));
             }
          }

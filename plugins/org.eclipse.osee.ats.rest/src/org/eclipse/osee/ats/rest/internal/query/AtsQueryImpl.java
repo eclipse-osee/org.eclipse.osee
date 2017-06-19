@@ -110,12 +110,8 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    }
 
    @Override
-   public void queryAndLocalIds(List<Integer> artIds) {
-      List<Long> results = new LinkedList<>();
-      for (Integer artId : artIds) {
-         results.add(new Long(artId));
-      }
-      query.andUuids(results);
+   public void queryAndLocalIds(Collection<ArtifactId> artIds) {
+      query.andIds(artIds);
    }
 
    @Override

@@ -40,16 +40,15 @@ public class PredicateFactoryImpl implements PredicateFactory {
    }
 
    @Override
-   public Predicate createUuidSearch(Collection<String> ids) {
-      List<String> strIds = new LinkedList<>(ids);
-      return createIdsSearch(SearchMethod.GUIDS, strIds);
+   public Predicate createUuidSearch(List<String> ids) {
+      return createIdsSearch(SearchMethod.GUIDS, ids);
    }
 
    @Override
-   public Predicate createLocalIdsSearch(Collection<Integer> ids) {
+   public Predicate createLocalIdsSearch(Collection<? extends ArtifactId> ids) {
       List<String> strIds = new LinkedList<>();
-      for (Integer value : ids) {
-         strIds.add(String.valueOf(value));
+      for (ArtifactId value : ids) {
+         strIds.add(value.getIdString());
       }
       return createIdsSearch(SearchMethod.IDS, strIds);
    }

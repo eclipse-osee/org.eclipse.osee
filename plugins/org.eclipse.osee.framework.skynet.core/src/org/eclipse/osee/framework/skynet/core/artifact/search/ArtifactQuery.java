@@ -337,7 +337,7 @@ public class ArtifactQuery {
       return new ArtifactQueryBuilder(guids, transactionId, allowDeleted, ALL).getArtifacts(30, null);
    }
 
-   public static List<Artifact> getHistoricalArtifactListFromIds(Collection<Integer> artifactIds, TransactionToken transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
+   public static List<Artifact> getHistoricalArtifactListFromIds(Collection<ArtifactId> artifactIds, TransactionToken transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
       return new ArtifactQueryBuilder(artifactIds, transactionId, allowDeleted, ALL).getArtifacts(30, null);
    }
 
@@ -635,11 +635,10 @@ public class ArtifactQuery {
          // separate/group artifacts by branch since ArtifactQueryBuilder only supports a single branch
          branchMap.put(artifact.getBranch(), artifact);
       }
-      Set<Integer> artIds = new HashSet<>();
+      Set<ArtifactId> artIds = new HashSet<>();
       for (Entry<BranchId, Collection<ArtifactToken>> entrySet : branchMap.entrySet()) {
-
          for (ArtifactToken artifact : entrySet.getValue()) {
-            artIds.add(artifact.getUuid().intValue());
+            artIds.add(artifact);
          }
 
          ArtifactQueryBuilder query = new ArtifactQueryBuilder(artIds, entrySet.getKey(), INCLUDE_DELETED, ALL);

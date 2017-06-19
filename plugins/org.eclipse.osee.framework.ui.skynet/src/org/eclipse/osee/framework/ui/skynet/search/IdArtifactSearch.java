@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -38,11 +39,11 @@ final class IdArtifactSearch extends AbstractLegacyArtifactSearchQuery {
 
    @Override
    public Collection<Artifact> getArtifacts() throws Exception {
-      List<Integer> artIds = new LinkedList<>();
+      List<ArtifactId> artIds = new LinkedList<>();
       List<String> guids = new LinkedList<>();
       for (String id : Arrays.asList(searchString.split("[\\s,]+"))) {
          if (Strings.isNumeric(id)) {
-            artIds.add(Integer.parseInt(id));
+            artIds.add(ArtifactId.valueOf(id));
          } else {
             guids.add(id);
          }

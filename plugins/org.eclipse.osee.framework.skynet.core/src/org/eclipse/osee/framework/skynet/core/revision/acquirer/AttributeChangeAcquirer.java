@@ -68,7 +68,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
          boolean hasSpecificArtifact = getSpecificArtifact() != null;
 
          for (ChangeBuilder changeBuilder : getChangeBuilders()) {// cache in map for performance look ups
-            artModTypes.put(changeBuilder.getArtId(), changeBuilder.getModType());
+            artModTypes.put(changeBuilder.getArtId().getId().intValue(), changeBuilder.getModType());
          }
          //Changes per a branch
          if (hasBranch) {

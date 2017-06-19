@@ -105,7 +105,7 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    }
 
    @Override
-   public void queryAndLocalIds(List<Integer> artIds) {
+   public void queryAndLocalIds(Collection<ArtifactId> artIds) {
       query.andLocalIds(artIds);
    }
 
