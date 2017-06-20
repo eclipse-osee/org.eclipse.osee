@@ -374,8 +374,4 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
       }
    }
 
-   @Override
-   protected void writeCellText(Object data, int cellIndex, int rowLength) throws IOException {
-      writeCellText(data, cellIndex);
-   }
 }

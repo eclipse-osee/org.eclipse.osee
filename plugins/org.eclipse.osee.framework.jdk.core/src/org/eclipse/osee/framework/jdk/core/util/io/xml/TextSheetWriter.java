@@ -23,6 +23,7 @@ public final class TextSheetWriter extends AbstractSheetWriter {
    private CharBackedInputStream currentStream;
    private boolean wasDataAdded;
    private final String lineSeparator;
+   private int columnCount;
 
    public TextSheetWriter() {
       sheetMap = new LinkedHashMap<>();
@@ -54,17 +55,12 @@ public final class TextSheetWriter extends AbstractSheetWriter {
 
    @Override
    protected void writeCellText(Object data, int cellIndex) throws IOException {
-      writeCellText(data, cellIndex, cellIndex + 1);
-   }
-
-   @Override
-   protected void writeCellText(Object data, int cellIndex, int rowLength) throws IOException {
       if (data instanceof String) {
          String dataStr = (String) data;
          if (Strings.isValid(dataStr)) {
             currentStream.append(dataStr);
          }
-         if (cellIndex < rowLength) {
+         if (cellIndex < columnCount - 1) {
             currentStream.append("\t");
          }
          wasDataAdded = true;
@@ -89,6 +85,7 @@ public final class TextSheetWriter extends AbstractSheetWriter {
 
    @Override
    public void startSheet(String worksheetName, int columnCount) throws IOException {
+      this.columnCount = columnCount;
       currentStream = new CharBackedInputStream();
       sheetMap.put(worksheetName, currentStream);
    }
