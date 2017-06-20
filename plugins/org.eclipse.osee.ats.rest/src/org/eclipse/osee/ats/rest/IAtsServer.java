@@ -55,7 +55,7 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
    ArtifactReadable getArtifact(Long uuid);
 
    @Override
-   Collection<ArtifactToken> getArtifacts(List<Long> uuids);
+   Collection<ArtifactToken> getArtifacts(Collection<Long> uuids);
 
    void addAtsDatabaseConversion(IAtsDatabaseConversion conversion);
 

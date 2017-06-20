@@ -176,7 +176,7 @@ public interface IAtsServices extends IAtsEarnedValueServiceProvider, IAtsConfig
 
    void sendNotifications(AtsNotificationCollector notifications);
 
-   Collection<ArtifactToken> getArtifacts(List<Long> ids);
+   Collection<ArtifactToken> getArtifacts(Collection<Long> ids);
 
    IAgileService getAgileService();
 

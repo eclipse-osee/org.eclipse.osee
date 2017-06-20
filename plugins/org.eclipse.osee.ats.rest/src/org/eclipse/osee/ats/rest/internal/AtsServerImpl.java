@@ -234,7 +234,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    }
 
    @Override
-   public Collection<ArtifactToken> getArtifacts(List<Long> uuids) {
+   public Collection<ArtifactToken> getArtifacts(Collection<Long> uuids) {
       Collection<ArtifactToken> artifacts = new LinkedList<>();
       Iterator<ArtifactReadable> iterator =
          orcsApi.getQueryFactory().fromBranch(getAtsBranch()).andUuids(uuids).getResults().iterator();

@@ -36,6 +36,7 @@ import org.eclipse.osee.ats.rest.internal.config.VersionResource;
 import org.eclipse.osee.ats.rest.internal.cpa.CpaResource;
 import org.eclipse.osee.ats.rest.internal.cpa.CpaServiceRegistry;
 import org.eclipse.osee.ats.rest.internal.notify.AtsNotifyEndpointImpl;
+import org.eclipse.osee.ats.rest.internal.util.health.HealthResource;
 import org.eclipse.osee.ats.rest.internal.workitem.ActionUiResource;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsActionEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsRuleEndpointImpl;
@@ -112,6 +113,7 @@ public class AtsApplication extends Application {
       singletons.add(new CpaResource(orcsApi, atsServer, cpaRegistry));
       singletons.add(new UserResource(atsServer.getUserService()));
       singletons.add(new WorldResource(atsServer));
+      singletons.add(new HealthResource(atsServer, jdbcService));
 
       // Endpoints
       singletons.add(new AgileEndpointImpl(atsServer, registry, jdbcService));

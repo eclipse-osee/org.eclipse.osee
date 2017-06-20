@@ -524,7 +524,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
-   public Collection<ArtifactToken> getArtifacts(List<Long> ids) {
+   public Collection<ArtifactToken> getArtifacts(Collection<Long> ids) {
       List<ArtifactId> artifactIds = new ArrayList<>(ids.size());
       for (Long id : ids) {
          artifactIds.add(ArtifactId.valueOf(id));
