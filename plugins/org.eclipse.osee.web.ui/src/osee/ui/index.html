@@ -12,6 +12,8 @@
       </link>
       <link rel="stylesheet" href="/ajax/libs/ui-grid/3.0.0/ui-grid.min.css">
       </link>
+      <link rel="stylesheet" href="/osee/css/landing.css">
+      </link>
       <script src="/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
       <script src="/ajax/libs/angularjs/1.3.11/angular.js"></script>
       <script src="/ajax/libs/angularjs/1.3.11/angular-route.min.js"></script>
@@ -40,9 +42,18 @@
    </body>
     <script>
    	 app.controller("indexController", [
- 				"$scope", '$location', '$window',
- 				function($scope, $location, $window) {
- 					$scope.links = [ { ref: '', name: 'Home'}, { ref: 'me', name: 'Me'},{ ref: 'about', name: 'About'}, { ref: 'wiki', name: 'Wiki'}, { ref: 'contactUs', name: 'Contact Us'}];
+ 				"$scope", '$location', '$window', 'Preferences', 'Attribute',
+ 				function($scope, $location, $window, Preferences, Attribute) {
+ 					$scope.links = [ { ref: '', name: 'Home'}];
+		        	Preferences.get({
+		        		id: '11'
+		        	}, function(data) {
+		        		$scope.toolLinks = Object.keys(data.links).map(function (key) {return data.links[key]});
+		        	});
+		        	Attribute.get({
+		        	}, function(data) {
+		        		$scope.defaultLinks = data.links;
+		        	});
  				}]);
  	</script>
 </html>

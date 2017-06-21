@@ -34,19 +34,23 @@ app.controller('userController', [
                 cursor: 'row-resize'
             });
         }
-
+        console.log(window.value);
         // if this is a search result view, populate program, set and items from parent scope
-        if (window.opener != null && window.opener.$windowScope != undefined) {
-            $scope.programs = window.opener.$windowScope.programs;
-            $scope.sets = window.opener.$windowScope.sets;
-            $scope.programSelection = window.opener.$windowScope.programSelection;
-            $scope.setSelection = window.opener.$windowScope.setSelection;
-            $scope.items = window.opener.$windowScope.searchData;
+        if (window.opener != undefined && window.opener != null && window.parentScope != undefined) {
+            if(!$scope.isFirstSplit) {
+            	setTimeout(split, 100);
+            	$scope.isFirstSplit = true;
+            } 
+            $scope.programs = window.parentScope.programs;
+            $scope.sets = window.parentScope.sets;
+            $scope.programSelection = window.parentScope.programSelection;
+            $scope.setSelection = window.parentScope.setSelection;
+            $scope.items = window.parentScope.searchData;
 
             $scope.isSearchView = true;
-            $scope.searchValue = window.opener.$windowScope.searchValue;
+            $scope.searchValue = window.parentScope.searchValue;
 
-            $scope.type = window.opener.$windowScope.type;
+            $scope.type = window.parentScope.type;
         } else {
             // Get programs from server
             Program.query(function(data) {
@@ -634,9 +638,10 @@ app.controller('userController', [
                     }
                 } else {
                     $scope.searchData = data;
-                    window.$windowScope = $scope;
                     $scope.searchValue = value;
-                    window.open("/dispo/main.html#/search");
+                    var popupWindow = window.open("/coverage/ui/index.html#/user");
+                    popupWindow.parentScope = $scope;
+
                 }
             }, function(data) {
                 if ($scope.isSearchView) {

@@ -82,14 +82,6 @@ app.controller('meController', [
     		$scope.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
     	}
     	
-    	$scope.getDefaultPreferences = function() {
-        	Preferences.get({
-        		id: '1896'
-        	}, function(data) {
-        		$scope.defaultLinks = Object.keys(data.links).map(function (key) {return data.links[key]});
-        	});
-    	}
-
     	
     	$scope.getPreferences = function() {
         	Preferences.get({

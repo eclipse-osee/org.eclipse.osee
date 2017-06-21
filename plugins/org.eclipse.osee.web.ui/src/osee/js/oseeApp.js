@@ -43,3 +43,13 @@ app.provider('Preferences', function() {
         }
     ];
 });
+
+app.provider('Attribute', function() {
+    this.$get = ['$resource',
+        function($resource) {
+            var Attribute = $resource('http://localhost:8092/orcs/branch/570/artifact/18026/attribute/87782590', {}, {
+            });
+            return Attribute;
+        }
+    ];
+});

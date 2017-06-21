@@ -1,0 +1,20 @@
+.intro-message {
+    text-align: center;
+}
+.panelDiv{
+	 width: 45%;
+    border: 2px solid #000;
+}
+
+.panelDiv h3{
+    text-align: center;
+    margin-top: -10px;
+    height: 20px;
+    line-height: 20px;
+}
+
+.panelDiv h3 span{
+	    background-color: #eee;
+	}
+}
+
