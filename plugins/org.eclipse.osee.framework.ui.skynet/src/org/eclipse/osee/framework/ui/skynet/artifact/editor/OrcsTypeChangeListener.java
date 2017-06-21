@@ -39,7 +39,7 @@ public class OrcsTypeChangeListener implements IArtifactEventListener {
 
    @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
-      if (sender.isRemote() || !artifactEvent.isForBranch(CoreBranches.COMMON)) {
+      if (sender.isRemote() || !artifactEvent.isOnBranch(CoreBranches.COMMON)) {
          return;
       }
       boolean found = false;

@@ -87,7 +87,7 @@ public class WorldXViewerEventManager {
             }
          }
          try {
-            if (artifactEvent.isForBranch(AtsClientService.get().getAtsBranch())) {
+            if (artifactEvent.isOnBranch(AtsClientService.get().getAtsBranch())) {
                Runnable runnable = createDisplayRunnable(artifactEvent, handlers);
                Displays.ensureInDisplayThread(runnable);
             }

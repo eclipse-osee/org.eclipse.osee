@@ -491,7 +491,7 @@ public class GroupExplorer extends GenericViewPart implements IArtifactEventList
 
    @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
-      if (rootArt == null || branch == null || !artifactEvent.isForBranch(branch)) {
+      if (rootArt == null || branch == null || !artifactEvent.isOnBranch(branch)) {
          return;
       }
       try {

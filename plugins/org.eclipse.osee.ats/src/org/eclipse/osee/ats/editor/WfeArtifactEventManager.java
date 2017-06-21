@@ -79,7 +79,7 @@ public class WfeArtifactEventManager implements IArtifactEventListener {
          }
       }
       try {
-         if (!artifactEvent.isForBranch(AtsClientService.get().getAtsBranch())) {
+         if (!artifactEvent.isOnBranch(AtsClientService.get().getAtsBranch())) {
             return;
          }
       } catch (OseeCoreException ex) {

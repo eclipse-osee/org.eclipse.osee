@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -29,7 +30,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 
-public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
+public class ArtifactEvent implements FrameworkEvent, HasNetworkSender, HasBranch {
 
    public static enum ArtifactEventType {
       RELOAD_ARTIFACTS,
@@ -67,16 +68,13 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
       return ArtifactEventType.RELOAD_ARTIFACTS == reloadEvent;
    }
 
+   @Override
    public BranchId getBranch() {
       return branch;
    }
 
    public Set<DefaultBasicUuidRelationReorder> getRelationOrderRecords() {
       return relationReorderRecords;
-   }
-
-   public boolean isForBranch(BranchId branch) {
-      return getBranch().equals(branch);
    }
 
    public TransactionId getTransactionId() {
