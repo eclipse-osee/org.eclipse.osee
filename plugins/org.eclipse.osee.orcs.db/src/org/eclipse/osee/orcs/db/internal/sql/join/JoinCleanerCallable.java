@@ -10,19 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.sql.join;
 
-import com.google.common.base.Supplier;
-import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multimaps;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.HashMap;
 import java.util.function.Consumer;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
+import org.eclipse.osee.jdbc.OseePreparedStatement;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -50,7 +43,8 @@ public class JoinCleanerCallable extends CancellableCallable<Void> {
    @Override
    public Void call() throws Exception {
       try {
-         final ListMultimap<String, Object[]> expiredItems = newListMultimap();
+         OseePreparedStatement cleanupDelete = jdbcClient.getBatchStatement(DELETE_JOIN_CLEANUP);
+         HashMap<String, OseePreparedStatement> joinDeletes = new HashMap<>();
 
          Consumer<JdbcStatement> consumer = stmt -> {
             Long issuedAt = stmt.getLong("issued_at");
@@ -58,34 +52,26 @@ public class JoinCleanerCallable extends CancellableCallable<Void> {
             if (isExpired(issuedAt, expiresIn)) {
                String tableName = stmt.getString("table_name");
                Integer queryId = stmt.getInt("query_id");
-               expiredItems.put(tableName, new Integer[] {queryId});
+
+               OseePreparedStatement joinDelete = joinDeletes.get(tableName);
+               if (joinDelete == null) {
+                  joinDelete = jdbcClient.getBatchStatement("DELETE FROM " + tableName + " WHERE query_id = ?");
+                  joinDeletes.put(tableName, joinDelete);
+               }
+
+               joinDelete.addToBatch(queryId);
+               cleanupDelete.addToBatch(queryId);
             }
          };
          jdbcClient.runQuery(consumer, SELECT_FROM_JOIN_CLEANUP);
 
-         if (!expiredItems.isEmpty()) {
-            for (Entry<String, Collection<Object[]>> entry : expiredItems.asMap().entrySet()) {
-               String query = String.format("DELETE FROM %s WHERE query_id = ?", entry.getKey());
-               List<Object[]> ids = (List<Object[]>) entry.getValue();
-               jdbcClient.runBatchUpdate(query, ids);
-               jdbcClient.runBatchUpdate(DELETE_JOIN_CLEANUP, ids);
-            }
+         cleanupDelete.execute();
+         for (OseePreparedStatement joinDelete : joinDeletes.values()) {
+            joinDelete.execute();
          }
       } catch (Exception ex) {
          logger.error(ex, "Error cleaning join");
-         throw ex;
       }
       return null;
    }
-
-   private static <K, V> ListMultimap<K, V> newListMultimap() {
-      Map<K, Collection<V>> map = Maps.newLinkedHashMap();
-      return Multimaps.newListMultimap(map, new Supplier<List<V>>() {
-         @Override
-         public List<V> get() {
-            return Lists.newArrayList();
-         }
-      });
-   }
-
 }
