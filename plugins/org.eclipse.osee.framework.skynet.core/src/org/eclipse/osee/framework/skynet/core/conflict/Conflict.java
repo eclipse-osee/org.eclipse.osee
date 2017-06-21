@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.skynet.core.conflict;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.Adaptable;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -38,7 +39,7 @@ public abstract class Conflict implements Adaptable {
    protected ConflictStatus status;
    protected int sourceGamma;
    protected int destGamma;
-   private int artId;
+   private final ArtifactId artId;
    private final TransactionToken toTransactionId;
    private final TransactionToken commitTransactionId;
    private Artifact artifact;
@@ -51,7 +52,7 @@ public abstract class Conflict implements Adaptable {
    private String sourceDiffFile = null;
    private String destDiffFile = null;
 
-   protected Conflict(int sourceGamma, int destGamma, int artId, TransactionToken toTransactionId, TransactionToken commitTransactionId, BranchId mergeBranch, IOseeBranch sourceBranch, IOseeBranch destBranch) {
+   protected Conflict(int sourceGamma, int destGamma, ArtifactId artId, TransactionToken toTransactionId, TransactionToken commitTransactionId, BranchId mergeBranch, IOseeBranch sourceBranch, IOseeBranch destBranch) {
       this.sourceGamma = sourceGamma;
       this.destGamma = destGamma;
       this.artId = artId;
@@ -122,12 +123,8 @@ public abstract class Conflict implements Adaptable {
       this.destGamma = destGamma;
    }
 
-   public int getArtId() {
+   public ArtifactId getArtId() {
       return artId;
-   }
-
-   public void setArtId(int artId) {
-      this.artId = artId;
    }
 
    public TransactionToken getToTransactionId() {

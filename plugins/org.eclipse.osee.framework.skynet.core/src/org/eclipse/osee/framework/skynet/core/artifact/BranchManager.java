@@ -408,7 +408,7 @@ public final class BranchManager {
     * Calls the getMergeBranch method and if it returns null it will create a new merge branch based on the artIds from
     * the source branch.
     */
-   public static IOseeBranch getOrCreateMergeBranch(IOseeBranch sourceBranch, IOseeBranch destBranch, ArrayList<Integer> expectedArtIds) throws OseeCoreException {
+   public static IOseeBranch getOrCreateMergeBranch(IOseeBranch sourceBranch, IOseeBranch destBranch, ArrayList<ArtifactId> expectedArtIds) {
       IOseeBranch mergeBranch = getMergeBranch(sourceBranch, destBranch);
       if (mergeBranch == null) {
          mergeBranch = createMergeBranch(sourceBranch, destBranch, expectedArtIds);
@@ -420,10 +420,10 @@ public final class BranchManager {
       return mergeBranch;
    }
 
-   private static IOseeBranch createMergeBranch(final IOseeBranch sourceBranch, final IOseeBranch destBranch, final ArrayList<Integer> expectedArtIds) throws OseeCoreException {
+   private static IOseeBranch createMergeBranch(final IOseeBranch sourceBranch, final IOseeBranch destBranch, final ArrayList<ArtifactId> expectedArtIds) {
       try (Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery()) {
-         for (int artId : expectedArtIds) {
-            joinQuery.add(sourceBranch, ArtifactId.valueOf(artId), TransactionId.SENTINEL, sourceBranch.getViewId());
+         for (ArtifactId artId : expectedArtIds) {
+            joinQuery.add(sourceBranch, artId, TransactionId.SENTINEL, sourceBranch.getViewId());
          }
          joinQuery.store();
 

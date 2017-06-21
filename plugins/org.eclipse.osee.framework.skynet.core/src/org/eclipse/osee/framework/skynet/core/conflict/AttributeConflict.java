@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -63,7 +64,7 @@ public class AttributeConflict extends Conflict {
    private static final boolean DEBUG =
       "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Merge"));
 
-   public AttributeConflict(int sourceGamma, int destGamma, int artId, TransactionToken toTransactionId, TransactionToken commitTransaction, String sourceValue, int attrId, long attrTypeId, BranchId mergeBranch, IOseeBranch sourceBranch, IOseeBranch destBranch) throws OseeCoreException {
+   public AttributeConflict(int sourceGamma, int destGamma, ArtifactId artId, TransactionToken toTransactionId, TransactionToken commitTransaction, String sourceValue, int attrId, long attrTypeId, BranchId mergeBranch, IOseeBranch sourceBranch, IOseeBranch destBranch) throws OseeCoreException {
       super(sourceGamma, destGamma, artId, toTransactionId, commitTransaction, mergeBranch, sourceBranch, destBranch);
       this.attrId = attrId;
       this.attrTypeId = attrTypeId;
@@ -79,10 +80,10 @@ public class AttributeConflict extends Conflict {
       Attribute<?> sourceAttribute = getSourceArtifact().getAttributeById(attrId, allowDeleted);
       if (sourceAttribute == null) {
          if (sourceBranch != null) {
-            throw new AttributeDoesNotExist("Attribute %d could not be found on artifact %d on branch %s", attrId,
+            throw new AttributeDoesNotExist("Attribute %s could not be found on artifact %s on branch %s", attrId,
                getArtId(), sourceBranch);
          } else {
-            throw new AttributeDoesNotExist("Attribute %d could not be found on artifact %d", attrId, getArtId());
+            throw new AttributeDoesNotExist("Attribute %s could not be found on artifact %s", attrId, getArtId());
          }
       }
       return sourceAttribute;
@@ -91,7 +92,7 @@ public class AttributeConflict extends Conflict {
    public Attribute<?> getDestAttribute() throws OseeCoreException {
       Attribute<?> destAttribute = getDestArtifact().getAttributeById(attrId, false);
       if (destAttribute == null) {
-         throw new AttributeDoesNotExist("Attribute %d could not be found on artifact %d on branch %s", attrId,
+         throw new AttributeDoesNotExist("Attribute %s could not be found on artifact %s on branch %s", attrId,
             getArtId(), destBranch);
       }
       return destAttribute;

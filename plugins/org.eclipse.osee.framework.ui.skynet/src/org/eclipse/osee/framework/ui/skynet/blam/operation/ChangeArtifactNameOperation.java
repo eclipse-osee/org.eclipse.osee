@@ -47,13 +47,11 @@ public class ChangeArtifactNameOperation extends AbstractOperation {
       HashMap<String, String> pairs = getPairs();
       SkynetTransaction tx = TransactionManager.createTransaction(branch, "Rename Artifact");
       for (Entry<String, String> entry : pairs.entrySet()) {
-         Artifact artifact = ArtifactQuery.getArtifactFromIdOrNull(ArtifactId.valueOf(entry.getKey()), branch,
-            DeletionFlag.EXCLUDE_DELETED);
-         if (artifact != null) {
-            if (!artifact.getName().equals(entry.getValue())) {
-               artifact.setName(entry.getValue());
-               artifact.persist(tx);
-            }
+         Artifact artifact =
+            ArtifactQuery.getArtifactFromId(ArtifactId.valueOf(entry.getKey()), branch, DeletionFlag.EXCLUDE_DELETED);
+         if (!artifact.getName().equals(entry.getValue())) {
+            artifact.setName(entry.getValue());
+            artifact.persist(tx);
          }
       }
       tx.execute();

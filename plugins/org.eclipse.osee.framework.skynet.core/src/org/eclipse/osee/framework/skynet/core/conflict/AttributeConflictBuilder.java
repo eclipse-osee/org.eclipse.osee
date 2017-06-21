@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.skynet.core.conflict;
 
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -32,7 +33,7 @@ public class AttributeConflictBuilder extends ConflictBuilder {
    private final int attrId;
    private final long attrTypeId;
 
-   public AttributeConflictBuilder(int sourceGamma, int destGamma, int artId, TransactionToken toTransactionId, IOseeBranch sourceBranch, IOseeBranch destBranch, String sourceValue, int attrId, long attrTypeId) {
+   public AttributeConflictBuilder(int sourceGamma, int destGamma, ArtifactId artId, TransactionToken toTransactionId, IOseeBranch sourceBranch, IOseeBranch destBranch, String sourceValue, int attrId, long attrTypeId) {
       super(sourceGamma, destGamma, artId, toTransactionId, sourceBranch, destBranch);
       this.sourceValue = sourceValue;
       this.attrId = attrId;
@@ -40,9 +41,9 @@ public class AttributeConflictBuilder extends ConflictBuilder {
    }
 
    @Override
-   public Conflict getConflict(BranchId mergeBranch, Set<Integer> artIdSet) throws OseeCoreException {
-      for (Integer integer : artIdSet) {
-         if (integer.intValue() == artId) {
+   public Conflict getConflict(BranchId mergeBranch, Set<ArtifactId> artIdSet) throws OseeCoreException {
+      for (ArtifactId artifact : artIdSet) {
+         if (artId.equals(artifact)) {
             return null;
          }
       }

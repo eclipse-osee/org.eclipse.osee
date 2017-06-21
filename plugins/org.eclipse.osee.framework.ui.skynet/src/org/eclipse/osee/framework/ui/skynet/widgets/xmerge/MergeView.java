@@ -330,7 +330,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
    }
 
    private boolean conflictInvovlesArtifact(Artifact artifact, Conflict conflict) {
-      if (artifact.getArtId() == conflict.getArtId()) {
+      if (artifact.equals(conflict.getArtId())) {
          BranchId branch = artifact.getBranch();
          return branch.equals(conflict.getSourceBranch()) || branch.equals(conflict.getDestBranch());
       }

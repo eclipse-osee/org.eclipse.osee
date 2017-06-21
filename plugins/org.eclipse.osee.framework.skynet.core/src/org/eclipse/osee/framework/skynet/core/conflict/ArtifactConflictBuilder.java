@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.skynet.core.conflict;
 
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -25,7 +26,7 @@ public class ArtifactConflictBuilder extends ConflictBuilder {
    private final ModificationType destModType;
    private final long artTypeId;
 
-   public ArtifactConflictBuilder(int sourceGamma, int destGamma, int artId, TransactionToken toTransactionId, IOseeBranch sourceBranch, IOseeBranch destBranch, ModificationType sourceModType, ModificationType destModType, long artTypeId) {
+   public ArtifactConflictBuilder(int sourceGamma, int destGamma, ArtifactId artId, TransactionToken toTransactionId, IOseeBranch sourceBranch, IOseeBranch destBranch, ModificationType sourceModType, ModificationType destModType, long artTypeId) {
       super(sourceGamma, destGamma, artId, toTransactionId, sourceBranch, destBranch);
       this.artTypeId = artTypeId;
       this.sourceModType = sourceModType;
@@ -33,7 +34,7 @@ public class ArtifactConflictBuilder extends ConflictBuilder {
    }
 
    @Override
-   public Conflict getConflict(BranchId mergeBranch, Set<Integer> artIdSet) {
+   public Conflict getConflict(BranchId mergeBranch, Set<ArtifactId> artIdSet) {
       return new ArtifactConflict(sourceGamma, destGamma, artId, toTransactionId, mergeBranch, sourceBranch, destBranch,
          sourceModType, destModType, artTypeId);
    }
