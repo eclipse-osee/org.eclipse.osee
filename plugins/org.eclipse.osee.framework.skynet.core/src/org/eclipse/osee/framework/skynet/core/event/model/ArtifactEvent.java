@@ -16,9 +16,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasBranch;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
@@ -156,24 +157,30 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender, HasBranc
       return java.util.Collections.emptyList();
    }
 
-   public Collection<DefaultBasicGuidArtifact> getRelOrderChangedArtifacts() {
-      return getRelOrderChangedArtifacts((IRelationType[]) null);
-   }
-
-   private Collection<DefaultBasicGuidArtifact> getRelOrderChangedArtifacts(IRelationType... relationTypes) {
-      Set<DefaultBasicGuidArtifact> guidArts = new HashSet<>();
-      for (DefaultBasicUuidRelationReorder record : relationReorderRecords) {
-         if (relationTypes == null) {
-            guidArts.add(record.getParentArt());
-         } else {
-            for (IRelationType type : relationTypes) {
-               if (type.equals(record.getRelTypeGuid())) {
-                  guidArts.add(record.getParentArt());
+   public Collection<Artifact> getRelationOrderArtifacts(RelationTypeId relationType, ArtifactTypeId artifactType) {
+      Collection<Artifact> reordered = new HashSet<>(relationReorderRecords.size());
+      for (DefaultBasicUuidRelationReorder reorder : relationReorderRecords) {
+         if (relationType == null || relationType.equals(reorder.getRelTypeGuid())) {
+            Artifact artifact = ArtifactCache.getActive(reorder.getParentArt());
+            if (artifact != null) {
+               if (artifactType == null || artifact.isOfType(artifactType)) {
+                  reordered.add(artifact);
                }
             }
          }
       }
-      return guidArts;
+      return reordered;
+   }
+
+   public Collection<Artifact> getRelationOrderArtifacts() {
+      return getRelationOrderArtifacts(null, null);
+   }
+
+   public void addArtifact(Artifact artifact) {
+      EventModifiedBasicGuidArtifact guidArt = new EventModifiedBasicGuidArtifact(artifact.getBranch(),
+         artifact.getArtifactType(), artifact.getGuid(), artifact.getDirtyFrameworkAttributeChanges());
+      artifacts.add(guidArt);
+      relationReorderRecords.addAll(artifact.getRelationOrderRecords());
    }
 
    public Collection<EventBasicGuidArtifact> get(EventModType... eventModTypes) {

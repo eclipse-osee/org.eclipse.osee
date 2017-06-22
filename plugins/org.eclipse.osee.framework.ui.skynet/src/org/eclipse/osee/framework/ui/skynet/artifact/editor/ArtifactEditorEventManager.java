@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.EventUtil;
@@ -81,7 +80,7 @@ public class ArtifactEditorEventManager implements IArtifactEventListener, IBran
       final Collection<Artifact> relModifiedArts = artifactEvent.getRelCacheArtifacts();
       final Collection<EventBasicGuidArtifact> deletedPurgedChangedArts =
          artifactEvent.get(EventModType.Deleted, EventModType.Purged);
-      final Collection<DefaultBasicGuidArtifact> relOrderChangedArtifacts = artifactEvent.getRelOrderChangedArtifacts();
+      final Collection<Artifact> relOrderChangedArtifacts = artifactEvent.getRelationOrderArtifacts();
 
       Displays.ensureInDisplayThread(new Runnable() {
          @Override

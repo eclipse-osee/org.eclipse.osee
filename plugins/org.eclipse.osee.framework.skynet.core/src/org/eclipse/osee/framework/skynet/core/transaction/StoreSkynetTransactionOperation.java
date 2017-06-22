@@ -36,7 +36,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.EventModifiedBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData.InsertDataCollector;
@@ -192,14 +191,7 @@ public final class StoreSkynetTransactionOperation extends AbstractDbTxOperation
       // Collect attribute events
       for (Artifact artifact : artifactReferences) {
          if (artifact.hasDirtyAttributes()) {
-            EventModifiedBasicGuidArtifact guidArt = new EventModifiedBasicGuidArtifact(artifact.getBranch(),
-               artifact.getArtifactType(), artifact.getGuid(), artifact.getDirtyFrameworkAttributeChanges());
-            artifactEvent.getArtifacts().add(guidArt);
-
-            // Collection relation reorder records for events
-            if (!artifact.getRelationOrderRecords().isEmpty()) {
-               artifactEvent.getRelationOrderRecords().addAll(artifact.getRelationOrderRecords());
-            }
+            artifactEvent.addArtifact(artifact);
          }
       }
 

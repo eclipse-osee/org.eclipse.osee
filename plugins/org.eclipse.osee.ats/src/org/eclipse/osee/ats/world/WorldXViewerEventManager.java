@@ -27,11 +27,9 @@ import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
@@ -107,7 +105,6 @@ public class WorldXViewerEventManager {
          Collection<Artifact> relModifiedArts = artifactEvent.getRelCacheArtifacts();
          Collection<EventBasicGuidArtifact> deletedPurgedArts =
             artifactEvent.get(EventModType.Deleted, EventModType.Purged);
-         Collection<Artifact> goalMemberReordered = new HashSet<>();
 
          // create list of items to updatePreComputedColumnValues; includes arts and parent arts
          Set<Artifact> allModAndParents = new HashSet<>((modifiedArts.size() * 2) + relModifiedArts.size());
@@ -129,24 +126,10 @@ public class WorldXViewerEventManager {
                }
             }
          }
-
-         for (DefaultBasicUuidRelationReorder reorder : artifactEvent.getRelationOrderRecords()) {
-            if (reorder.is(AtsRelationTypes.Goal_Member)) {
-               Artifact cachedArt = ArtifactCache.getActive(reorder.getParentArt());
-               if (cachedArt != null && cachedArt.isOfType(AtsArtifactTypes.Goal)) {
-                  goalMemberReordered.add(cachedArt);
-               }
-            }
-         }
-         Collection<Artifact> sprintMemberReordered = new HashSet<>();
-         for (DefaultBasicUuidRelationReorder reorder : artifactEvent.getRelationOrderRecords()) {
-            if (reorder.is(AtsRelationTypes.AgileSprintToItem_AtsItem)) {
-               Artifact cachedArt = ArtifactCache.getActive(reorder.getParentArt());
-               if (cachedArt != null && cachedArt.isOfType(AtsArtifactTypes.AgileSprint)) {
-                  sprintMemberReordered.add(cachedArt);
-               }
-            }
-         }
+         Collection<Artifact> goalMemberReordered =
+            artifactEvent.getRelationOrderArtifacts(AtsRelationTypes.Goal_Member, AtsArtifactTypes.Goal);
+         Collection<Artifact> sprintMemberReordered =
+            artifactEvent.getRelationOrderArtifacts(AtsRelationTypes.AgileSprintToItem_AtsItem, AtsArtifactTypes.AgileSprint);
 
          return new DisplayRunnable(modifiedArts, allModAndParents, relModifiedArts, deletedPurgedArts,
             goalMemberReordered, sprintMemberReordered, handlers);

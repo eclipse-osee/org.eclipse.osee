@@ -17,10 +17,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchState;
-import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.EventUtil;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -107,7 +105,6 @@ public class ArtifactExplorerEventManager implements IArtifactEventListener, Eve
       artifactEvent.getRelCacheArtifacts();
       final Collection<EventBasicGuidArtifact> deletedPurgedArts =
          artifactEvent.get(EventModType.Deleted, EventModType.Purged);
-      final Collection<DefaultBasicGuidArtifact> relOrderChangedArtifacts = artifactEvent.getRelOrderChangedArtifacts();
 
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
@@ -139,12 +136,9 @@ public class ArtifactExplorerEventManager implements IArtifactEventListener, Eve
                      // We do not need to refresh each artifact for each handler, just the handler itself
                      handler.getArtifactExplorer().getTreeViewer().refresh();
 
-                     for (DefaultBasicGuidArtifact guidArt : relOrderChangedArtifacts) {
+                     for (Artifact artifact : artifactEvent.getRelationOrderArtifacts()) {
                         try {
-                           Artifact artifact = ArtifactCache.getActive(guidArt);
-                           if (artifact != null) {
-                              handler.getArtifactExplorer().getTreeViewer().refresh(artifact);
-                           }
+                           handler.getArtifactExplorer().getTreeViewer().refresh(artifact);
                         } catch (Exception ex) {
                            OseeLog.log(Activator.class, Level.SEVERE, ex);
                         }

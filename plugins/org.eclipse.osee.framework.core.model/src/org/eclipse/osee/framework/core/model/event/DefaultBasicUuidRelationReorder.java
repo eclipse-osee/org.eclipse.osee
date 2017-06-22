@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.core.model.event;
 
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IRelationType;
 
 /**
  * @author Donald G. Dunne
@@ -97,15 +96,6 @@ public class DefaultBasicUuidRelationReorder implements IBasicRelationReorder {
          return false;
       }
       return true;
-   }
-
-   public boolean is(IRelationType... relationTypes) {
-      for (IRelationType relType : relationTypes) {
-         if (relType.equals(getRelTypeGuid())) {
-            return true;
-         }
-      }
-      return false;
    }
 
    @Override
