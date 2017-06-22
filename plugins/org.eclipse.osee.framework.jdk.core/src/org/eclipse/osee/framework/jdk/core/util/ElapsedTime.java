@@ -45,6 +45,7 @@ public class ElapsedTime {
 
    public static enum Units {
       SEC,
+      MSEC,
       MIN
    }
 
