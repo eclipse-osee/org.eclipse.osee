@@ -89,14 +89,14 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
       if (criteria.hasMultipleIds()) {
          jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
       }
+      relAlias = writer.addTable(TableEnum.RELATION_TABLE);
+      txsAlias = writer.addTable(TableEnum.TXS_TABLE, ObjectType.RELATION);
 
       List<String> artAliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
       if (artAliases.isEmpty()) {
          artAlias = writer.addTable(TableEnum.ARTIFACT_TABLE);
          artTxsAlias = writer.addTable(TableEnum.TXS_TABLE, ObjectType.ARTIFACT);
       }
-      relAlias = writer.addTable(TableEnum.RELATION_TABLE);
-      txsAlias = writer.addTable(TableEnum.TXS_TABLE, ObjectType.RELATION);
    }
 
    private String getPredicate(AbstractSqlWriter writer, String txsAliasName, String relAliasName) throws OseeCoreException {
