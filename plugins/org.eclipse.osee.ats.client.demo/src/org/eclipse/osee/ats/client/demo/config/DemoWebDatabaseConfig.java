@@ -45,7 +45,7 @@ public class DemoWebDatabaseConfig implements IDbInitializationTask {
       oseeWebArt.addRelation(CoreRelationTypes.Universal_Grouping__Members, demoProgramsArt);
       oseeWebArt.persist(transaction);
 
-      Artifact sawTeam = ArtifactQuery.getArtifactFromToken(DemoArtifactToken.SAW_Bld_1, atsBranch);
+      Artifact sawTeam = ArtifactQuery.getArtifactFromId(DemoArtifactToken.SAW_Bld_1, atsBranch);
       sawTeam.addRelation(CoreRelationTypes.SupportingInfo_SupportedBy, demoProgramsArt);
       sawTeam.persist(transaction);
 

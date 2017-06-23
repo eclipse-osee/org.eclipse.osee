@@ -35,7 +35,7 @@ public final class OseeSystemArtifacts {
    }
 
    public static Artifact getDefaultHierarchyRootArtifact(BranchId branch) throws OseeCoreException {
-      return ArtifactQuery.getArtifactFromToken(CoreArtifactTokens.DefaultHierarchyRoot, branch);
+      return ArtifactQuery.getArtifactFromId(CoreArtifactTokens.DefaultHierarchyRoot, branch);
    }
 
    public static Artifact createGlobalPreferenceArtifact() throws OseeCoreException {

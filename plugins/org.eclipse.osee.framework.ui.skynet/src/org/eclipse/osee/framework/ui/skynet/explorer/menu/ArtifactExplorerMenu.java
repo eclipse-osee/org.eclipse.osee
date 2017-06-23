@@ -698,7 +698,7 @@ public class ArtifactExplorerMenu {
       if (selection != null) {
          if (selection.isEmpty()) {
             destinationArtifact =
-               ArtifactQuery.getArtifactFromToken(CoreArtifactTokens.DefaultHierarchyRoot, getBranch());
+               ArtifactQuery.getArtifactFromId(CoreArtifactTokens.DefaultHierarchyRoot, getBranch());
          } else if (selection.getFirstElement() instanceof Artifact) {
             Object object = selection.getFirstElement();
             Artifact artifact = (Artifact) object;

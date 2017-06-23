@@ -67,6 +67,6 @@ public class TeamResourceTest extends AbstractConfigurationRestTest {
    }
 
    private Artifact getSawSwTeamDef() {
-      return ArtifactQuery.getArtifactFromToken(DemoTeam.SAW_SW.getTeamDefToken(), AtsClientService.get().getAtsBranch());
+      return ArtifactQuery.getArtifactFromId(DemoTeam.SAW_SW.getTeamDefToken(), AtsClientService.get().getAtsBranch());
    }
 }

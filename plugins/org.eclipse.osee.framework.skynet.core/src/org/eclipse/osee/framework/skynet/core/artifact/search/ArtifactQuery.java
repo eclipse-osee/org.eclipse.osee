@@ -76,16 +76,8 @@ import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResult;
 public class ArtifactQuery {
    private static Map<Long, String> uuidToGuid;
 
-   public static <T extends ArtifactId & HasBranch> Artifact getArtifactFromToken(T artifactToken, BranchId branch) throws OseeCoreException {
-      return getOrCheckArtifactFromId(artifactToken, branch, EXCLUDE_DELETED, QueryType.GET);
-   }
-
    public static <T extends ArtifactId & HasBranch> Artifact getArtifactFromToken(T artifactToken, DeletionFlag deletionFlag) {
       return getOrCheckArtifactFromId(artifactToken, artifactToken.getBranch(), deletionFlag, QueryType.GET);
-   }
-
-   public static <T extends ArtifactId & HasBranch> Artifact getArtifactFromToken(T artifactToken, BranchId branch, DeletionFlag deletionFlag) {
-      return getOrCheckArtifactFromId(artifactToken, branch, deletionFlag, QueryType.GET);
    }
 
    public static <T extends ArtifactId & HasBranch> Artifact getArtifactOrNull(T artifactToken, DeletionFlag deletionFlag) {
@@ -884,7 +876,7 @@ public class ArtifactQuery {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          String query = attributeTokenQuery.replaceFirst("ART_IDS_HERE", ids);
-         chStmt.runPreparedQuery(query, branch.getId(), branch.getId(), attributetype.getId(), value);
+         chStmt.runPreparedQuery(query, branch, branch, attributetype, value);
          List<ArtifactToken> tokens = extractTokensFromQuery(chStmt);
          return tokens;
       } finally {

@@ -45,7 +45,7 @@ public class AtsConfig2DataExample extends AbstractAtsConfig2Data {
 
    @Override
    public void performPostConfig(IAtsChangeSet changes, AbstractAtsConfig2Data data) {
-      Artifact dtsSoftware = ArtifactQuery.getArtifactFromToken(Software_Team, AtsClientService.get().getAtsBranch());
+      Artifact dtsSoftware = ArtifactQuery.getArtifactFromId(Software_Team, AtsClientService.get().getAtsBranch());
       dtsSoftware.addAttribute(AtsAttributeTypes.RelatedTaskWorkDefinition, "WorkDef_Task_AtsConfig2Example");
       changes.add(dtsSoftware);
    }

@@ -77,6 +77,6 @@ public class UniversalGroup {
    }
 
    public static Artifact getTopUniversalGroupArtifact(BranchId branch) throws OseeCoreException {
-      return ArtifactQuery.getArtifactFromToken(CoreArtifactTokens.UniversalGroupRoot, branch);
+      return ArtifactQuery.getArtifactFromId(CoreArtifactTokens.UniversalGroupRoot, branch);
    }
 }

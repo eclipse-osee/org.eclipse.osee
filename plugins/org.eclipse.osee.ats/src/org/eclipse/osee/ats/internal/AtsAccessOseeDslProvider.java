@@ -30,7 +30,7 @@ public class AtsAccessOseeDslProvider extends AbstractOseeDslProvider {
 
    private Artifact getStorageArtifact() {
       try {
-         return ArtifactQuery.getArtifactFromToken(AtsArtifactToken.AtsCmAccessControl, CoreBranches.COMMON);
+         return ArtifactQuery.getArtifactFromId(AtsArtifactToken.AtsCmAccessControl, CoreBranches.COMMON);
       } catch (OseeCoreException ex) {
          return null;
       }

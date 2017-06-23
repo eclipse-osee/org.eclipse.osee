@@ -372,7 +372,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    @Override
    public String getConfigValue(String key) {
       String result = null;
-      Artifact atsConfig = ArtifactQuery.getArtifactFromToken(AtsArtifactToken.AtsConfig, getAtsBranch());
+      Artifact atsConfig = ArtifactQuery.getArtifactFromId(AtsArtifactToken.AtsConfig, getAtsBranch());
       if (atsConfig != null) {
          for (Object obj : atsConfig.getAttributeValues(CoreAttributeTypes.GeneralStringData)) {
             String str = (String) obj;

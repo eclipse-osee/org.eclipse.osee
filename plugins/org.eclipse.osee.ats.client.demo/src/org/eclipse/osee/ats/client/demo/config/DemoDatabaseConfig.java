@@ -292,7 +292,7 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
          TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Create Work Packages");
 
       Artifact codeTeamArt =
-         ArtifactQuery.getArtifactFromToken(DemoArtifactToken.SAW_Code, AtsClientService.get().getAtsBranch());
+         ArtifactQuery.getArtifactFromId(DemoArtifactToken.SAW_Code, AtsClientService.get().getAtsBranch());
 
       Artifact workPkg1 = createWorkPackage(DemoArtifactToken.SAW_Code_Team_WorkPackage_01, "ASDHFA443");
       workPkg1.addRelation(AtsRelationTypes.WorkPackage_TeamDefOrAi, codeTeamArt);
@@ -311,7 +311,7 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
       workPkg3.persist(transaction);
 
       Artifact testTeamArt =
-         ArtifactQuery.getArtifactFromToken(DemoArtifactToken.SAW_Test_AI, AtsClientService.get().getAtsBranch());
+         ArtifactQuery.getArtifactFromId(DemoArtifactToken.SAW_Test_AI, AtsClientService.get().getAtsBranch());
 
       Artifact workPkg11 = createWorkPackage(DemoArtifactToken.SAW_Test_AI_WorkPackage_0A, "AHESSH3");
       workPkg11.addRelation(AtsRelationTypes.WorkPackage_TeamDefOrAi, testTeamArt);

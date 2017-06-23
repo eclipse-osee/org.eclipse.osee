@@ -41,7 +41,7 @@ public class WfeEditorAddSupportingArtifactsTest {
       TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
 
       Artifact rootArt =
-         ArtifactQuery.getArtifactFromToken(CoreArtifactTokens.DefaultHierarchyRoot, AtsClientService.get().getAtsBranch());
+         ArtifactQuery.getArtifactFromId(CoreArtifactTokens.DefaultHierarchyRoot, AtsClientService.get().getAtsBranch());
       Artifact firstArt = null, secondArt = null;
       for (Artifact child : rootArt.getChildren()) {
          if (firstArt == null) {

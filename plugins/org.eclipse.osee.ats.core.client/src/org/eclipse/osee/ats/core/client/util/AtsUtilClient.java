@@ -145,7 +145,7 @@ public class AtsUtilClient {
    public static Artifact getFromToken(ArtifactToken token) {
       Artifact toReturn = null;
       try {
-         toReturn = ArtifactQuery.getArtifactFromToken(token, AtsClientService.get().getAtsBranch());
+         toReturn = ArtifactQuery.getArtifactFromId(token, AtsClientService.get().getAtsBranch());
       } catch (OseeCoreException ex) {
          // Do Nothing;
       }

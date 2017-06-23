@@ -319,7 +319,7 @@ public class ArtifactQueryTest {
 
       transaction = folder.getTransaction();
 
-      Artifact rootArt = ArtifactQuery.getArtifactFromToken(CoreArtifactTokens.DefaultHierarchyRoot, COMMON);
+      Artifact rootArt = ArtifactQuery.getArtifactFromId(CoreArtifactTokens.DefaultHierarchyRoot, COMMON);
       rootArt.addChild(folder);
       rootArt.persist(getClass().getName());
       Assert.assertFalse(ArtifactQuery.isArtifactChangedViaEntries(folder));
