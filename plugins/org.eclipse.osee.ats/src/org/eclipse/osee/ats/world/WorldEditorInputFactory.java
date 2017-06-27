@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.ats.search.AtsSearchWorkflowSearchItem;
@@ -20,6 +19,8 @@ import org.eclipse.osee.ats.world.search.AtsSearchReviewSearchItem;
 import org.eclipse.osee.ats.world.search.AtsSearchTaskSearchItem;
 import org.eclipse.osee.ats.world.search.AtsSearchTeamWorkflowSearchItem;
 import org.eclipse.osee.ats.world.search.AtsSearchWorkPackageSearchItem;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.ui.IElementFactory;
@@ -42,18 +43,12 @@ public class WorldEditorInputFactory implements IElementFactory {
    @Override
    public IAdaptable createElement(IMemento memento) {
       long atsSearchUuid = 0L;
-      long branchUuid = 0;
+      BranchId branch = BranchId.SENTINEL;
       String title = memento.getString(TITLE);
       if (Strings.isValid(memento.getString(BRANCH_KEY))) {
-         branchUuid = Long.valueOf(memento.getString(BRANCH_KEY));
+         branch = BranchId.valueOf(memento.getString(BRANCH_KEY));
       }
-      List<Integer> artUuids = new ArrayList<>();
-      String artUuidsStr = memento.getString(ART_UUIDS);
-      if (Strings.isValid(artUuidsStr)) {
-         for (String artUuid : artUuidsStr.split(",")) {
-            artUuids.add(Integer.valueOf(artUuid));
-         }
-      }
+      List<ArtifactId> artUuids = Collections.fromString(memento.getString(ART_UUIDS), ArtifactId::valueOf);
       String atsSearchUuidStr = memento.getString(ATS_SEARCH_UUID);
       if (Strings.isNumeric(atsSearchUuidStr)) {
          atsSearchUuid = Long.valueOf(atsSearchUuidStr);
@@ -100,16 +95,16 @@ public class WorldEditorInputFactory implements IElementFactory {
       } catch (Exception ex) {
          // do nothing
       }
-      return new WorldEditorInput(new WorldEditorReloadProvider(title, branchUuid, artUuids));
+      return new WorldEditorInput(new WorldEditorReloadProvider(title, branch, artUuids));
    }
 
    public static void saveState(IMemento memento, WorldEditorInput input) {
       String title = input.getName();
-      String artUuids = Collections.toString(",", input.getGuids());
-      long branchUuid = input.getBranchUuid();
+      String artUuids = input.getIdString();
+      BranchId branch = input.getBranch();
 
-      if (Strings.isValid(artUuids) && branchUuid > 0 && Strings.isValid(title)) {
-         memento.putString(BRANCH_KEY, String.valueOf(branchUuid));
+      if (Strings.isValid(artUuids) && branch.isValid() && Strings.isValid(title)) {
+         memento.putString(BRANCH_KEY, branch.getIdString());
          memento.putString(ART_UUIDS, artUuids);
          memento.putString(TITLE, title);
       }

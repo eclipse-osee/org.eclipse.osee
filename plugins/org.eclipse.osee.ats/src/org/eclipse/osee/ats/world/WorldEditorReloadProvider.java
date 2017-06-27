@@ -18,6 +18,8 @@ import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -29,26 +31,26 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLo
 public class WorldEditorReloadProvider extends WorldEditorProvider {
 
    private final String name;
-   private final Collection<Integer> artUuids;
+   private final Collection<ArtifactId> artifactIds;
    private Collection<Artifact> artifacts;
    private boolean reload = true;
-   private final long branchUuid;
+   private final BranchId branch;
 
-   public WorldEditorReloadProvider(String name, long branchUuid, Collection<Integer> artUuids) {
-      this(name, branchUuid, artUuids, null, TableLoadOption.None);
+   public WorldEditorReloadProvider(String name, BranchId branch, Collection<ArtifactId> artifactIds) {
+      this(name, branch, artifactIds, null, TableLoadOption.None);
    }
 
-   public WorldEditorReloadProvider(String name, long branchUuid, Collection<Integer> artUuids, CustomizeData customizeData, TableLoadOption... tableLoadOption) {
+   public WorldEditorReloadProvider(String name, BranchId branch, Collection<ArtifactId> artifactIds, CustomizeData customizeData, TableLoadOption... tableLoadOption) {
       super(customizeData, tableLoadOption);
       this.name = name;
-      this.branchUuid = branchUuid;
-      this.artUuids = artUuids;
+      this.branch = branch;
+      this.artifactIds = artifactIds;
    }
 
    @Override
    public IWorldEditorProvider copyProvider() {
       WorldEditorReloadProvider provider =
-         new WorldEditorReloadProvider(name, branchUuid, artUuids, customizeData, tableLoadOptions);
+         new WorldEditorReloadProvider(name, branch, artifactIds, customizeData, tableLoadOptions);
       provider.setReload(reload);
       provider.artifacts = artifacts;
       return provider;
@@ -63,31 +65,32 @@ public class WorldEditorReloadProvider extends WorldEditorProvider {
       return reload;
    }
 
-   public long getBranchUuid() {
-      return branchUuid;
+   public BranchId getBranch() {
+      return branch;
    }
 
    public boolean searchAndLoad() {
-      List<Integer> validartUuids = getValidArtUuids();
-      if (validartUuids.isEmpty()) {
+      List<ArtifactId> validArtifactIds = getValidArtUuids();
+      if (validArtifactIds.isEmpty()) {
          AWorkbench.popup("No valid ids to load");
       } else {
-         artifacts = new ArrayList<>();
-         if (AtsClientService.get().getAtsBranch().equals(branchUuid)) {
-            artifacts.addAll(ArtifactQuery.getArtifactListFromIds(new ArrayList<Integer>(validartUuids),
-               AtsClientService.get().getAtsBranch()));
+         BranchId atsBranch = AtsClientService.get().getAtsBranch();
+         if (atsBranch.equals(branch)) {
+            artifacts = ArtifactQuery.getArtifactListFrom(validArtifactIds, atsBranch);
             AtsBulkLoad.bulkLoadArtifacts(artifacts);
+         } else {
+            artifacts = new ArrayList<>();
          }
       }
       reload = false;
-      return artifacts.size() > 0;
+      return !artifacts.isEmpty();
    }
 
-   public List<Integer> getValidArtUuids() {
-      List<Integer> validartUuids = new ArrayList<>();
-      for (Integer artUuid : artUuids) {
-         if (artUuid > 0) {
-            validartUuids.add(artUuid);
+   public List<ArtifactId> getValidArtUuids() {
+      List<ArtifactId> validartUuids = new ArrayList<>();
+      for (ArtifactId artifactId : artifactIds) {
+         if (artifactId.isValid()) {
+            validartUuids.add(artifactId);
          }
       }
       return validartUuids;

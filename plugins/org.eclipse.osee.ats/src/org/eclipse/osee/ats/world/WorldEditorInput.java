@@ -18,9 +18,11 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.search.AtsSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.framework.core.data.Adaptable;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IMemento;
@@ -101,13 +103,15 @@ public class WorldEditorInput implements IEditorInput, IPersistableElement, Adap
       }
    }
 
-   public Collection<Integer> getGuids() {
+   public String getIdString() {
+      Collection<? extends ArtifactId> artifactIds;
       if (editor.isReloadTabShown() && iWorldEditorProvider instanceof WorldEditorReloadProvider) {
          WorldEditorReloadProvider provider = (WorldEditorReloadProvider) iWorldEditorProvider;
-         return provider.getValidArtUuids();
+         artifactIds = provider.getValidArtUuids();
       } else {
-         return Artifacts.toIds(editor.getLoadedArtifacts());
+         artifactIds = editor.getLoadedArtifacts();
       }
+      return Collections.toString(artifactIds, ",", ArtifactId::getIdString);
    }
 
    public WorldEditor getEditor() {
@@ -127,17 +131,17 @@ public class WorldEditorInput implements IEditorInput, IPersistableElement, Adap
       return reload;
    }
 
-   public long getBranchUuid() {
-      long branchUuid = 0;
+   public BranchId getBranch() {
+      BranchId branch = BranchId.SENTINEL;
       if (editor.isReloadTabShown() && iWorldEditorProvider instanceof WorldEditorReloadProvider) {
          WorldEditorReloadProvider provider = (WorldEditorReloadProvider) iWorldEditorProvider;
-         branchUuid = provider.getBranchUuid();
+         branch = provider.getBranch();
       } else {
          if (!editor.getLoadedArtifacts().isEmpty()) {
-            branchUuid = editor.getLoadedArtifacts().iterator().next().getBranch().getId();
+            branch = editor.getLoadedArtifacts().iterator().next().getBranch();
          }
       }
-      return branchUuid;
+      return branch;
    }
 
    public Long getAtsSearchUuid() {

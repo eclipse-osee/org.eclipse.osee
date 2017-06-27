@@ -61,7 +61,15 @@ public class Collections {
     * @return A String which starts with 'start', followed by the elements in the Collection c separated by 'separator',
     * ending with 'end'.
     */
-   public static String toString(Iterable<?> items, String prefix, String separator, String suffix) {
+   public static <T> String toString(Iterable<T> items, String prefix, String separator, String suffix) {
+      return toString(items, prefix, separator, suffix, String::valueOf);
+   }
+
+   public static <T> String toString(Iterable<T> items, String separator, Function<T, String> function) {
+      return toString(items, null, separator, null, function);
+   }
+
+   public static <T> String toString(Iterable<T> items, String prefix, String separator, String suffix, Function<T, String> function) {
       StringBuilder strB = new StringBuilder();
 
       if (prefix != null) {
@@ -69,13 +77,13 @@ public class Collections {
       }
 
       boolean first = true;
-      for (Object item : items) {
+      for (T item : items) {
          if (first) {
             first = false;
          } else {
             strB.append(separator);
          }
-         strB.append(String.valueOf(item));
+         strB.append(function.apply(item));
       }
 
       if (suffix != null) {
