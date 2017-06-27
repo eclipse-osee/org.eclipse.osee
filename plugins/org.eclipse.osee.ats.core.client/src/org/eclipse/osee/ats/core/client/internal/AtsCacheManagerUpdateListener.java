@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.internal;
 
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.ActionableItem;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamDefinition;
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Version;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -49,8 +52,6 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
          AtsRelationTypes.TeamDefinitionToVersion_Version.getGuid(), AtsRelationTypes.TeamActionableItem_Team.getGuid(),
          AtsRelationTypes.PrivilegedMember_Team.getGuid(), AtsRelationTypes.TeamLead_Team.getGuid(),
          AtsRelationTypes.ParallelVersion_Child.getGuid(), AtsRelationTypes.ParallelVersion_Parent.getGuid());
-   private static List<Long> configReloadArtifactTypeGuids = Arrays.asList(AtsArtifactTypes.Version.getGuid(),
-      AtsArtifactTypes.TeamDefinition.getGuid(), AtsArtifactTypes.ActionableItem.getGuid());
 
    @Override
    public List<? extends IEventFilter> getEventFilters() {
@@ -106,7 +107,7 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
    private boolean processArtifacts(ArtifactEvent artifactEvent) {
       boolean reload = false;
       for (EventBasicGuidArtifact guidArt : artifactEvent.getArtifacts()) {
-         if (configReloadArtifactTypeGuids.contains(guidArt.getArtTypeGuid())) {
+         if (guidArt.getArtifactType().matches(Version, TeamDefinition, ActionableItem)) {
             reload = true;
             break;
          }
@@ -156,16 +157,15 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
    }
 
    private void handleCachesForDeletedPurged(EventBasicGuidArtifact guidArt) throws OseeCoreException {
-      if (guidArt.is(AtsArtifactTypes.Task) && guidArt.is(EventModType.Deleted, EventModType.Purged)) {
-         Artifact artifact = ArtifactCache.getActive(guidArt);
+      Artifact artifact = ArtifactCache.getActive(guidArt);
+      if (guidArt.getArtifactType().equals(AtsArtifactTypes.Task) && guidArt.is(EventModType.Deleted,
+         EventModType.Purged)) {
          if (artifact != null && !artifact.isDeleted()) {
             AtsTaskCache.decache(((TaskArtifact) artifact).getParentAWA());
          }
       }
-      Artifact artifact = ArtifactCache.getActive(guidArt);
       if (artifact instanceof TeamWorkFlowArtifact) {
          AtsTaskCache.decache(artifact);
       }
    }
-
 }

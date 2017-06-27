@@ -35,11 +35,11 @@ public class EventChangeTypeBasicGuidArtifact extends EventBasicGuidArtifact {
    public String toString() {
       try {
          return String.format("[%s - %s from type [%s][%s] to [%s][%s]]", EventModType.ChangeType.name(), getGuid(),
-            fromArtTypeGuid, ArtifactTypeManager.getType(fromArtTypeGuid), getArtTypeGuid(),
-            ArtifactTypeManager.getTypeByGuid(getArtTypeGuid()));
+            fromArtTypeGuid, ArtifactTypeManager.getType(fromArtTypeGuid), getArtifactType(),
+            ArtifactTypeManager.getType(getArtifactType()));
       } catch (OseeCoreException ex) {
          return String.format("[%s - %s from type [%s] to [%s]]", EventModType.ChangeType.name(), getGuid(),
-            fromArtTypeGuid, getArtTypeGuid());
+            fromArtTypeGuid, getArtifactType());
       }
    }
 

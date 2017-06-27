@@ -14,7 +14,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasBranch;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 
@@ -73,14 +72,8 @@ public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements Ha
       boolean equals = super.equals(obj);
       if (!equals && obj instanceof DefaultBasicGuidArtifact) {
          DefaultBasicGuidArtifact other = (DefaultBasicGuidArtifact) obj;
-
-         if (artifactType == null || other.getArtTypeGuid() == null) {
-            equals = false;
-         }
-         equals = artifactType.equals(other.getArtTypeGuid());
-
+         equals = other.artifactType.equals(artifactType);
          equals &= isOnSameBranch(other);
-
          if (equals && getGuid() == null || other.getGuid() == null) {
             equals = false;
          } else if (equals) {
@@ -92,14 +85,5 @@ public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements Ha
 
    public void setArtTypeGuid(ArtifactTypeId artifactType) {
       this.artifactType = artifactType;
-   }
-
-   public boolean is(IArtifactType... artifactTypes) {
-      for (IArtifactType artifactType : artifactTypes) {
-         if (artifactType.getGuid().equals(getArtTypeGuid())) {
-            return true;
-         }
-      }
-      return false;
    }
 }

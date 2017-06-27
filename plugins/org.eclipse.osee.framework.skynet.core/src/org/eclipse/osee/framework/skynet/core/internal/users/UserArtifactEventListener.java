@@ -76,15 +76,12 @@ public class UserArtifactEventListener implements IArtifactEventListener {
    }
 
    private boolean areUsers(ArtifactEvent artifactEvent, EventModType... eventType) {
-      boolean result = false;
-      Collection<EventBasicGuidArtifact> collection = artifactEvent.get(eventType);
-      for (EventBasicGuidArtifact artifact : collection) {
-         if (CoreArtifactTypes.User.getGuid().equals(artifact.getArtTypeGuid())) {
-            result = true;
-            break;
+      for (EventBasicGuidArtifact artifact : artifactEvent.get(eventType)) {
+         if (artifact.getArtifactType().equals(CoreArtifactTypes.User)) {
+            return true;
          }
       }
-      return result;
+      return false;
    }
 
    private Set<String> getKeysToInvalidate(Collection<Artifact> cacheArtifacts) {

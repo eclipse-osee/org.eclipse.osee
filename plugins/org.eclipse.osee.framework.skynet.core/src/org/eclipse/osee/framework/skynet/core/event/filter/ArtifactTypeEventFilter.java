@@ -50,7 +50,7 @@ public class ArtifactTypeEventFilter implements IEventFilter {
    public boolean isMatchArtifacts(List<? extends DefaultBasicGuidArtifact> guidArts) {
       try {
          for (DefaultBasicGuidArtifact guidArt : guidArts) {
-            ArtifactTypeId artType = typeProvider.getTypeByGuid(guidArt.getArtTypeGuid());
+            ArtifactTypeId artType = guidArt.getArtifactType();
             for (ArtifactTypeId artifactType : artifactTypes) {
                if (typeProvider.inheritsFrom(artType, artifactType)) {
                   return true;

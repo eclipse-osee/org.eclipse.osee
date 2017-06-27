@@ -128,7 +128,7 @@ public final class FrameworkEventUtil {
             RemoteBasicGuidArtifact1 remGuidArt =
                getRemoteBasicGuidArtifact(guidArt.getModType().getGuid(), guidArt, null);
             remGuidArt.setArtTypeGuid(changeGuidArt.getFromArtTypeGuid().getId());
-            remGuidArt.setToArtTypeGuid(changeGuidArt.getArtTypeGuid());
+            remGuidArt.setToArtTypeGuid(changeGuidArt.getArtifactType().getId());
             event.getArtifacts().add(remGuidArt);
          } else {
             event.getArtifacts().add(getRemoteBasicGuidArtifact(guidArt.getModType().getGuid(), guidArt, null));
@@ -201,7 +201,7 @@ public final class FrameworkEventUtil {
    public static RemoteBasicGuidArtifact1 getRemoteBasicGuidArtifact(DefaultBasicGuidArtifact guidArt) {
       RemoteBasicGuidArtifact1 event = new RemoteBasicGuidArtifact1();
       event.setBranch(guidArt.getBranch());
-      event.setArtTypeGuid(guidArt.getArtTypeGuid());
+      event.setArtTypeGuid(guidArt.getArtifactType().getId());
       event.setArtGuid(guidArt.getGuid());
       return event;
    }
@@ -270,7 +270,7 @@ public final class FrameworkEventUtil {
       RemoteBasicGuidArtifact1 remoteGuidArt = new RemoteBasicGuidArtifact1();
       remoteGuidArt.setArtGuid(guidArt.getGuid());
       remoteGuidArt.setBranch(guidArt.getBranch());
-      remoteGuidArt.setArtTypeGuid(guidArt.getArtTypeGuid());
+      remoteGuidArt.setArtTypeGuid(guidArt.getArtifactType().getId());
       remoteGuidArt.setModTypeGuid(modTypeGuid);
       if (attributeChanges != null) {
          for (AttributeChange attrChg : attributeChanges) {

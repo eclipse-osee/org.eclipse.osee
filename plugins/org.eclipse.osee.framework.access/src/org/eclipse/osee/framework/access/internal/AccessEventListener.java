@@ -44,7 +44,7 @@ public final class AccessEventListener implements IBranchEventListener, IArtifac
    @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
       for (EventBasicGuidArtifact guidArt : artifactEvent.getArtifacts()) {
-         if (guidArt.is(EventModType.Added) && guidArt.is(CoreArtifactTypes.User)) {
+         if (guidArt.is(EventModType.Added) && guidArt.getArtifactType().equals(CoreArtifactTypes.User)) {
             try {
                accessControlCacheHandler.reloadCache(service);
             } catch (OseeCoreException ex) {

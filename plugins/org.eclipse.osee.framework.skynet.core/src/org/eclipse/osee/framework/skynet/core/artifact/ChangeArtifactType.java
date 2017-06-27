@@ -175,7 +175,7 @@ public class ChangeArtifactType {
          }
          ArtifactCache.deCache(artifact);
          RelationManager.deCache(artifact);
-         artifact.setArtifactType(ArtifactTypeManager.getType(guidArt));
+         artifact.setArtifactType(guidArt.getArtifactType());
          artifact.clearEditState();
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Error handling remote change type", ex);

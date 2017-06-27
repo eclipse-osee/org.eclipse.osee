@@ -67,9 +67,6 @@ public class AtsBranchAccessManager implements IArtifactEventListener, EventHand
    // Cache to store artifact guid to context id list so don't have to re-compute
    private final Map<BranchId, Collection<IAccessContextId>> branchUuidToContextIdCache = new HashMap<>(50);
 
-   private static final List<Long> atsConfigArtifactTypes =
-      Arrays.asList(AtsArtifactTypes.ActionableItem.getGuid(), AtsArtifactTypes.TeamDefinition.getGuid());
-
    private final RoleContextProvider roleContextProvider;
    private volatile long cacheUpdated = 0;
 
@@ -238,12 +235,12 @@ public class AtsBranchAccessManager implements IArtifactEventListener, EventHand
    @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
       for (EventBasicGuidArtifact guidArt : artifactEvent.getArtifacts()) {
-         if (atsConfigArtifactTypes.contains(guidArt.getArtTypeGuid())) {
+         if (guidArt.getArtifactType().matches(AtsArtifactTypes.ActionableItem, AtsArtifactTypes.TeamDefinition)) {
             clearCache();
             return;
          }
          try {
-            if (ArtifactTypeManager.getType(guidArt).inheritsFrom(AtsArtifactTypes.TeamWorkflow)) {
+            if (ArtifactTypeManager.getType(guidArt.getArtifactType()).inheritsFrom(AtsArtifactTypes.TeamWorkflow)) {
                TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) ArtifactCache.getActive(guidArt);
                if (teamArt != null && teamArt.getWorkingBranch().isValid()) {
                   branchUuidToContextIdCache.remove(teamArt.getWorkingBranch());

@@ -44,7 +44,7 @@ public class OrcsTypeChangeListener implements IArtifactEventListener {
       }
       boolean found = false;
       for (EventBasicGuidArtifact art : artifactEvent.getArtifacts()) {
-         if (art.getArtTypeGuid() == CoreArtifactTypes.OseeTypeDefinition.getGuid()) {
+         if (art.getArtifactType().equals(CoreArtifactTypes.OseeTypeDefinition)) {
             found = true;
             break;
          }

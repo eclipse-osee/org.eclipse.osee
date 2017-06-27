@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
-import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
@@ -100,10 +99,6 @@ public class ArtifactTypeManager {
     */
    public static Collection<ArtifactType> getAllTypes() throws OseeCoreException {
       return getCache().getAll();
-   }
-
-   public static ArtifactType getType(DefaultBasicGuidArtifact guidArt) throws OseeCoreException {
-      return getTypeByGuid(guidArt.getArtTypeGuid());
    }
 
    /**
