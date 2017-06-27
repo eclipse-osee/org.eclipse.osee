@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.core.util.VisitedItemCache;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -39,11 +40,11 @@ public class VisitedItems extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
-      List<Integer> artIds = new ArrayList<>();
+      List<ArtifactId> artIds = new ArrayList<>();
       for (IAtsWorkItem workItem : getCache().getReverseVisited()) {
-         artIds.add(new Long(workItem.getId()).intValue());
+         artIds.add(ArtifactId.valueOf(workItem.getId()));
       }
-      Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(artIds, AtsClientService.get().getAtsBranch());
+      Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFrom(artIds, AtsClientService.get().getAtsBranch());
       WorldEditor.open(new WorldEditorSimpleProvider(getName(), artifacts, null, tableLoadOptions));
    }
 

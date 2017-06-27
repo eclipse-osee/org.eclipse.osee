@@ -514,12 +514,12 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
 
    @Override
    public Collection<ArtifactToken> getArtifacts(List<Long> ids) {
-      List<Integer> intIds = new LinkedList<>();
+      List<ArtifactId> artifactIds = new ArrayList<>(ids.size());
       for (Long id : ids) {
-         intIds.add(id.intValue());
+         artifactIds.add(ArtifactId.valueOf(id));
       }
       return Collections.castAll(
-         ArtifactQuery.getArtifactListFromIds(intIds, getAtsBranch(), DeletionFlag.EXCLUDE_DELETED));
+         ArtifactQuery.getArtifactListFrom(artifactIds, getAtsBranch(), DeletionFlag.EXCLUDE_DELETED));
    }
 
    @Override

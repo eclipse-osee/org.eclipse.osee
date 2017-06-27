@@ -37,10 +37,10 @@ import org.eclipse.osee.ats.util.widgets.dialog.AtsObjectNameSorter;
 import org.eclipse.osee.ats.world.IWorldEditorConsumer;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -220,8 +220,8 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
 
       // This does artId search
       if (data.isIncludeArtIds() && data.getBranchForIncludeArtIds() != null) {
-         for (Artifact art : ArtifactQuery.getArtifactListFromIds(Lib.stringToIntegerList(data.getEnteredIds()),
-            data.getBranchForIncludeArtIds())) {
+         List<ArtifactId> artifactIds = Collections.fromString(data.getEnteredIds(), ArtifactId::valueOf);
+         for (Artifact art : ArtifactQuery.getArtifactListFrom(artifactIds, data.getBranchForIncludeArtIds())) {
             artifacts.add(art);
          }
       }

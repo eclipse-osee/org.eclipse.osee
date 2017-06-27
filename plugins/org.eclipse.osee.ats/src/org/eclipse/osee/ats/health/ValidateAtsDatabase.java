@@ -51,6 +51,7 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
@@ -149,11 +150,10 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
 
       int count = 0;
       // Break artifacts into blocks so don't run out of memory
-      List<Collection<Integer>> artIdLists = null;
 
       // Un-comment to process whole Common branch - Normal Mode
       //      ElapsedTime elapsedTime = new ElapsedTime("ValidateAtsDatabase - load ArtIds");
-      artIdLists = loadAtsBranchArtifactIds(xResultData, monitor);
+      List<Collection<ArtifactId>> artIdLists = loadAtsBranchArtifactIds(xResultData, monitor);
       //      elapsedTime.end();
 
       // Un-comment to process specific artifact from common - Test Mode
@@ -177,14 +177,14 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          legacyPcrIdToParentId.clear();
 
          //         int artSetNum = 1;
-         for (Collection<Integer> artIdList : artIdLists) {
+         for (Collection<ArtifactId> artIdList : artIdLists) {
             // Don't process all lists if just trying to test this report
             //            elapsedTime =
             //               new ElapsedTime(String.format("ValidateAtsDatabase - load Artifact set %d/%d", artSetNum++,
             //                  artIdLists.size()));
             Date date = new Date();
             Collection<Artifact> allArtifacts =
-               ArtifactQuery.getArtifactListFromIds(artIdList, AtsClientService.get().getAtsBranch());
+               ArtifactQuery.getArtifactListFrom(artIdList, AtsClientService.get().getAtsBranch());
             results.logTestTimeSpent(date, "ArtifactQuery.getArtifactListFromIds");
             //            elapsedTime.end();
 
@@ -774,12 +774,12 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       results.logTestTimeSpent(date, "validateBranchUuid");
    }
 
-   public static List<Collection<Integer>> loadAtsBranchArtifactIds(XResultData xResultData, IProgressMonitor monitor) throws OseeCoreException {
+   public static List<Collection<ArtifactId>> loadAtsBranchArtifactIds(XResultData xResultData, IProgressMonitor monitor) throws OseeCoreException {
       if (xResultData == null) {
          xResultData = new XResultData();
       }
       xResultData.log(monitor, "testLoadAllCommonArtifactIds - Started " + DateUtil.getMMDDYYHHMM());
-      List<Integer> artIds = getCommonArtifactIds(xResultData);
+      List<ArtifactId> artIds = getCommonArtifactIds(xResultData);
       if (artIds.isEmpty()) {
          xResultData.error("Error: Artifact load returned 0 artifacts to check");
       }
@@ -787,14 +787,14 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       return Collections.subDivide(artIds, 4000);
    }
 
-   private static List<Integer> getCommonArtifactIds(XResultData xResultData) throws OseeCoreException {
-      List<Integer> artIds = new ArrayList<>();
+   private static List<ArtifactId> getCommonArtifactIds(XResultData xResultData) throws OseeCoreException {
+      List<ArtifactId> artIds = new ArrayList<>();
       xResultData.log(null, "getCommonArtifactIds - Started " + DateUtil.getMMDDYYHHMM());
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(SELECT_COMMON_ART_IDS, AtsClientService.get().getAtsBranch());
          while (chStmt.next()) {
-            artIds.add(chStmt.getInt(1));
+            artIds.add(ArtifactId.valueOf(chStmt.getLong(1)));
          }
       } finally {
          chStmt.close();

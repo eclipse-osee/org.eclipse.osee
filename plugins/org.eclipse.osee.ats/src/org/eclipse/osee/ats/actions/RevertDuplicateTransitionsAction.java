@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -60,13 +61,13 @@ public class RevertDuplicateTransitionsAction extends Action {
 
                @Override
                protected void doWork(IProgressMonitor monitor) throws Exception {
-                  List<Integer> artIds = getArtIdsWithDuplicateTransitions();
+                  List<ArtifactId> artIds = getArtIdsWithDuplicateTransitions();
                   XResultData results = new XResultData();
                   SkynetTransaction trans =
                      TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), getName());
 
                   boolean changed = false;
-                  for (Artifact art : ArtifactQuery.getArtifactListFromIds(artIds,
+                  for (Artifact art : ArtifactQuery.getArtifactListFrom(artIds,
                      AtsClientService.get().getAtsBranch())) {
                      results.logf("\n\nReverting transition for %s\n\n", art.toStringWithId());
                      if (RevertDuplicateTransitionByIdAction.revertTransition(art, results, persist, trans)) {
@@ -92,12 +93,12 @@ public class RevertDuplicateTransitionsAction extends Action {
       }
    }
 
-   protected List<Integer> getArtIdsWithDuplicateTransitions() {
-      List<Integer> artIds = new LinkedList<>();
+   protected List<ArtifactId> getArtIdsWithDuplicateTransitions() {
+      List<ArtifactId> artIds = new LinkedList<>();
       for (AttributeTypeId attrType : Arrays.asList(AtsAttributeTypes.CompletedDate, AtsAttributeTypes.CancelledDate)) {
          for (IAtsWorkItem workItem : AtsClientService.get().getQueryService().getWorkItemsFromQuery(
             DUPLICATE_TRANSITION_QUERY, AtsClientService.get().getAtsBranch().getId(), attrType.getId())) {
-            artIds.add(workItem.getId().intValue());
+            artIds.add(ArtifactId.valueOf(workItem.getId()));
          }
       }
       return artIds;

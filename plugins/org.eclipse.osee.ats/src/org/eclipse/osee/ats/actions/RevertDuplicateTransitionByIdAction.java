@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -64,11 +65,11 @@ public class RevertDuplicateTransitionByIdAction extends Action {
                @Override
                protected void doWork(IProgressMonitor monitor) throws Exception {
                   List<String> atsIds = new LinkedList<>();
-                  List<Integer> artIds = new LinkedList<>();
+                  List<ArtifactId> artIds = new LinkedList<>();
                   for (String id : dialog.getEntry().split(",")) {
                      id = id.replaceAll(" ", "");
                      if (Strings.isNumeric(id)) {
-                        artIds.add(Integer.valueOf(id));
+                        artIds.add(ArtifactId.valueOf(id));
                      } else {
                         atsIds.add(id);
                      }
@@ -78,7 +79,7 @@ public class RevertDuplicateTransitionByIdAction extends Action {
                      TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), getName());
 
                   boolean changed = false;
-                  for (Artifact art : ArtifactQuery.getArtifactListFromIds(artIds,
+                  for (Artifact art : ArtifactQuery.getArtifactListFrom(artIds,
                      AtsClientService.get().getAtsBranch())) {
                      results.logf("\n\nReverting transition for %s\n\n", art.toStringWithId());
                      if (revertTransition(art, results, persist, trans)) {

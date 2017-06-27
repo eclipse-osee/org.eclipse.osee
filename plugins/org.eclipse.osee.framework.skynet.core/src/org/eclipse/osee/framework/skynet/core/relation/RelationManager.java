@@ -132,7 +132,7 @@ public class RelationManager {
       } else {
          relatedArtifacts = new ArrayList<>(selectedRelations.size());
 
-         ArtifactQuery.getArtifactListFromIds(
+         ArtifactQuery.getArtifactListFrom(
             getRelatedArtifactIds(selectedRelations, relationSide, DeletionFlag.EXCLUDE_DELETED), artifact.getBranch());
 
          for (RelationLink relation : selectedRelations) {
@@ -154,12 +154,12 @@ public class RelationManager {
       return relatedArtifacts;
    }
 
-   private static Collection<Integer> getRelatedArtifactIds(List<RelationLink> relations, RelationSide side, DeletionFlag allowDeleted) {
-      Collection<Integer> ret = new HashSet<>();
+   private static Collection<ArtifactId> getRelatedArtifactIds(List<RelationLink> relations, RelationSide side, DeletionFlag allowDeleted) {
+      Collection<ArtifactId> ret = new HashSet<>();
       if (relations != null) {
          for (RelationLink rel : relations) {
             if (allowDeleted == INCLUDE_DELETED || allowDeleted == EXCLUDE_DELETED && !rel.isDeleted()) {
-               ret.add(rel.getArtifactId(side).getId().intValue());
+               ret.add(rel.getArtifactId(side));
             }
          }
       }
@@ -176,7 +176,7 @@ public class RelationManager {
       Set<Artifact> relatedArtifacts = new HashSet<>(artifacts.size() * 8);
       Collection<Artifact> newArtifactsToSearch = new ArrayList<>(artifacts);
       Collection<Artifact> newArtifacts = new ArrayList<>();
-      Set<Integer> relatedArtIds = new HashSet<>();
+      Set<ArtifactId> relatedArtIds = new HashSet<>();
       if (artifacts.isEmpty()) {
          return relatedArtifacts;
       }
@@ -219,7 +219,7 @@ public class RelationManager {
 
          if (relatedArtIds.size() > 0) {
             BranchId branch = artifacts.iterator().next().getBranch();
-            newArtifacts = ArtifactQuery.getArtifactListFromIds(relatedArtIds, branch, allowDeleted);
+            newArtifacts = ArtifactQuery.getArtifactListFrom(relatedArtIds, branch, allowDeleted);
          }
          newArtifactsToSearch.clear();
          newArtifactsToSearch.addAll(newArtifacts);

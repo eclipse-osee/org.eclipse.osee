@@ -377,8 +377,8 @@ public class WordTemplateProcessor {
             List<Artifact> artifacts = null;
 
             if (Strings.isValid(artifactId)) {
-               artifacts = ArtifactQuery.getArtifactListFromIds(Arrays.asList(Integer.valueOf(artifactId)), branch,
-                  EXCLUDE_DELETED);
+               List<ArtifactId> artIds = Arrays.asList(ArtifactId.valueOf(artifactId));
+               artifacts = ArtifactQuery.getArtifactListFrom(artIds, branch, EXCLUDE_DELETED);
             } else if (Strings.isValid(artifactName)) {
                artifacts = ArtifactQuery.getArtifactListFromName(artifactName, branch, EXCLUDE_DELETED);
             } else if (Strings.isValid(orcsQuery)) {

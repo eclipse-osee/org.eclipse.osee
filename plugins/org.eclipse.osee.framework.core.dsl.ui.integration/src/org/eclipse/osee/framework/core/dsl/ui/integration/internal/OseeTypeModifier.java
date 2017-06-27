@@ -22,6 +22,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.OrcsTypesConfig;
 import org.eclipse.osee.framework.core.data.OrcsTypesData;
 import org.eclipse.osee.framework.core.data.OrcsTypesSheet;
@@ -58,17 +59,17 @@ public class OseeTypeModifier implements AttributeModifier {
          if (javax.ws.rs.core.Response.Status.OK.getStatusCode() != response.getStatus()) {
             throw new OseeStateException("Error retrieving orcs types config " + response);
          }
-         List<Integer> artIds = new LinkedList<>();
+         List<ArtifactId> artIds = new LinkedList<>();
          OrcsTypesConfig config = response.readEntity(OrcsTypesConfig.class);
          for (OrcsTypesVersion version : config.getVersions()) {
             if (OrcsTypesData.OSEE_TYPE_VERSION.intValue() == version.getVersionNum()) {
                for (OrcsTypesSheet sheet : version.getSheets()) {
-                  artIds.add(new Long(sheet.getArtifactId()).intValue());
+                  artIds.add(ArtifactId.valueOf(sheet.getArtifactId()));
                }
             }
          }
 
-         List<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(artIds, COMMON);
+         List<Artifact> artifacts = ArtifactQuery.getArtifactListFrom(artIds, COMMON);
          StringBuilder combinedSheets = new StringBuilder();
          for (Artifact art : artifacts) {
             String sheetData;

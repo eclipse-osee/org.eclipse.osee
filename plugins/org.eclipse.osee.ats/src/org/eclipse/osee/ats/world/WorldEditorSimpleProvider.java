@@ -11,8 +11,6 @@
 package org.eclipse.osee.ats.world;
 
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
@@ -65,11 +63,7 @@ public class WorldEditorSimpleProvider extends WorldEditorProvider {
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) {
       if (searchType == SearchType.ReSearch) {
-         List<Integer> ids = new LinkedList<>();
-         for (Artifact art : artifacts) {
-            ids.add(art.getArtId());
-         }
-         artifacts = ArtifactQuery.getArtifactListFromIds(ids, AtsClientService.get().getAtsBranch());
+         artifacts = ArtifactQuery.getArtifactListFrom(artifacts, AtsClientService.get().getAtsBranch());
       }
       return artifacts;
    }
