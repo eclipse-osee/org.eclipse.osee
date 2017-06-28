@@ -28,6 +28,13 @@ public interface ArtifactId extends Identity<String>, Id {
       return getId();
    }
 
+   public static ArtifactId valueOf(Id id) {
+      if (id instanceof ArtifactId) {
+         return (ArtifactId) id;
+      }
+      return valueOf(id.getId());
+   }
+
    public static ArtifactId valueOf(String id) {
       return valueOf(Long.valueOf(id));
    }

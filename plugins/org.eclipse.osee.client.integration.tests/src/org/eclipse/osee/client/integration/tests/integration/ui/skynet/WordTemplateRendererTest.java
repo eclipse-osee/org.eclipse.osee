@@ -278,7 +278,7 @@ public class WordTemplateRendererTest {
       modifyOption("Branch", updateBranch);
       modifyOption("Publish As Diff", true);
       List<Artifact> artifacts = new ArrayList<>();
-      Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder.getArtId(), updateBranch);
+      Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder, updateBranch);
       artifacts.add(updateDoc);
       renderer.publish(singleTemplate, null, artifacts, options);
 
@@ -317,7 +317,7 @@ public class WordTemplateRendererTest {
       modifyOption("Branch", updateBranch);
       modifyOption("Publish As Diff", true);
       List<Artifact> artifacts = new ArrayList<>();
-      Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder.getArtId(), updateBranch);
+      Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder, updateBranch);
       artifacts.add(updateDoc);
       renderer.publish(recurseTemplate, null, artifacts, options);
 
@@ -339,7 +339,7 @@ public class WordTemplateRendererTest {
       modifyOption("compareBranch", rootBranch);
       modifyOption("linkType", LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER);
       List<Artifact> artifacts = new ArrayList<>();
-      Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder.getArtId(), updateBranch);
+      Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder, updateBranch);
       artifacts.add(updateDoc);
       renderer.publish(singleTemplate, null, artifacts, options);
 
@@ -373,7 +373,7 @@ public class WordTemplateRendererTest {
       modifyOption("compareBranch", null);
       modifyOption("linkType", LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER_AND_NAME);
       List<Artifact> artifacts = new ArrayList<>();
-      Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder.getArtId(), updateBranch);
+      Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder, updateBranch);
       artifacts.add(updateDoc);
       renderer.publish(singleTemplateAttrib, null, artifacts, options);
 
@@ -428,7 +428,7 @@ public class WordTemplateRendererTest {
       modifyOption("linkType", LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER_AND_NAME);
       modifyOption(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION, true);
       List<Artifact> artifacts = new ArrayList<>();
-      Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder.getArtId(), updateBranch);
+      Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder, updateBranch);
       artifacts.add(updateDoc);
       renderer.publish(singleTemplateAttrib, null, artifacts, options);
 
@@ -464,7 +464,7 @@ public class WordTemplateRendererTest {
       modifyOption("linkType", LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER_AND_NAME);
       modifyOption(ITemplateRenderer.USE_TEMPLATE_ONCE, false);
       List<Artifact> artifacts = new ArrayList<>();
-      Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder.getArtId(), updateBranch);
+      Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder, updateBranch);
       artifacts.add(updateDoc);
       renderer.publish(singleTemplateAttrib, null, artifacts, options);
 
@@ -589,7 +589,7 @@ public class WordTemplateRendererTest {
       modifyOption("Publish As Diff", true);
       List<Artifact> artifacts = new ArrayList<>();
       setupFieldCodeChange();
-      Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder.getArtId(), updateBranch);
+      Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder, updateBranch);
       artifacts.add(updateDoc);
       renderer.publish(singleTemplate, null, artifacts, options);
 
@@ -613,7 +613,7 @@ public class WordTemplateRendererTest {
       List<Artifact> artifacts = new ArrayList<>();
       setupFieldCodeChange();
       UserManager.setSetting(MsWordPreferencePage.IGNORE_FIELD_CODE_CHANGES, "true");
-      Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder.getArtId(), updateBranch);
+      Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder, updateBranch);
       artifacts.add(updateDoc);
       renderer.publish(singleTemplate, null, artifacts, options);
 

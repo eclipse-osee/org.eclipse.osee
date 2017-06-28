@@ -23,7 +23,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -138,13 +137,13 @@ public final class WordTemplateFileDiffer {
                addedIds.add(artId);
             }
             // If artifact on the old branch didn't exist then return the entire artifact as a diff
-         } else if (ArtifactQuery.checkArtifactFromId(artId, endBranch, DeletionFlag.EXCLUDE_DELETED) == null) {
+         } else if (ArtifactQuery.checkArtifactFromId(art, endBranch) == null) {
             // Return the current artifact as being new
             artifactDeltas.add(new ArtifactDelta(txDelta, null, art));
             addedIds.add(artId);
          } else {
             // No change to this artifact, so show the WAS version as is.
-            Artifact wasArt = ArtifactQuery.getArtifactFromId(artId, endBranch);
+            Artifact wasArt = ArtifactQuery.getArtifactFromId(art, endBranch);
             artifactDeltas.add(new ArtifactDelta(txDelta, wasArt, wasArt, wasArt));
             addedIds.add(artId);
 

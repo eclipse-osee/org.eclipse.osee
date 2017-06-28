@@ -328,7 +328,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
       Conditions.checkExpressionFailOnTrue(uuid <= 0, "Uuid must be > 0; is %d", uuid);
       Artifact result = null;
       try {
-         result = ArtifactQuery.getArtifactFromId(uuid.intValue(), getAtsBranch());
+         result = ArtifactQuery.getArtifactFromId(uuid, getAtsBranch());
       } catch (ArtifactDoesNotExist ex) {
          // do nothing
       }

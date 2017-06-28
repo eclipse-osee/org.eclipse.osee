@@ -72,10 +72,7 @@ public class ChangeManagerTest {
 
    @org.junit.Test
    public void testChangeManager() throws Exception {
-      SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
-      OseeLog.registerLoggerListener(monitorLog);
-
-      modArtifact = ArtifactQuery.getArtifactFromId(modArtifact.getArtId(), branch);
+      modArtifact = ArtifactQuery.getArtifactFromId(modArtifact, branch);
 
       assertTrue("Check artifact new", checkArtifactModType(newArtifact, ModificationType.NEW));
       newArtifact.setSoleAttributeFromString(CoreAttributeTypes.WordTemplateContent, "new content");

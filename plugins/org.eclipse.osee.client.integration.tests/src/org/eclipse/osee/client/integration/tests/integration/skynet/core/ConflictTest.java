@@ -220,7 +220,7 @@ public class ConflictTest {
       BranchId child1 = BranchManager.createWorkingBranch(parent, "Child1");
       IOseeBranch child2 = BranchManager.createWorkingBranch(parent, "Child2");
 
-      Artifact onChild1 = ArtifactQuery.getArtifactFromId(testArt.getArtId(), child1);
+      Artifact onChild1 = ArtifactQuery.getArtifactFromId(testArt, child1);
       onChild1.setSoleAttributeFromString(CoreAttributeTypes.ParagraphNumber, "1");
       onChild1.persist("Save paragraph number on child1");
 
@@ -232,7 +232,7 @@ public class ConflictTest {
       BranchManager.commitBranch(new NullProgressMonitor(), mgr, true, false);
       Assert.assertFalse(mgr.originalConflictsExist());
 
-      Artifact onChild2 = ArtifactQuery.getArtifactFromId(testArt.getArtId(), child2);
+      Artifact onChild2 = ArtifactQuery.getArtifactFromId(testArt, child2);
       onChild2.setSoleAttributeFromString(CoreAttributeTypes.ParagraphNumber, "2");
       onChild2.persist("Save paragraph number on child2");
 

@@ -51,13 +51,13 @@ public class CreateNewAgileTeam extends XNavigateItemAction {
                newTeam.setName(ed.getEntry());
                Response response = agileEp.createTeam(newTeam);
                Object entity = null;
-               if(response != null){
+               if (response != null) {
                   entity = response.readEntity(JaxAgileTeam.class);
                }
                if (entity != null) {
                   JaxAgileTeam team = (JaxAgileTeam) entity;
                   Artifact teamArt =
-                     ArtifactQuery.getArtifactFromId(new Long(team.getUuid()).intValue(), AtsClientService.get().getAtsBranch());
+                     ArtifactQuery.getArtifactFromId(team.getUuid(), AtsClientService.get().getAtsBranch());
                   teamArt.getParent().reloadAttributesAndRelations();
                   AtsUtil.openArtifact(team.getUuid(), OseeCmEditor.CmPcrEditor);
                } else {

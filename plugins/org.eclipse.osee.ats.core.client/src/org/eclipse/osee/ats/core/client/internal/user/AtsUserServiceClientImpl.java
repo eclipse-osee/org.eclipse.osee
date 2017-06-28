@@ -199,7 +199,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
    @Override
    protected IAtsUser loadUserByAccountId(Long accountId) {
       IAtsUser user = null;
-      ArtifactId userArt = ArtifactQuery.getArtifactFromId(accountId.intValue(), AtsClientService.get().getAtsBranch());
+      ArtifactId userArt = ArtifactQuery.getArtifactFromId(accountId, AtsClientService.get().getAtsBranch());
       if (userArt != null) {
          user = createFromArtifact((Artifact) userArt);
       }

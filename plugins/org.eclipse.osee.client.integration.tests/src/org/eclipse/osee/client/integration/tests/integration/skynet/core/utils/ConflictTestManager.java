@@ -179,7 +179,7 @@ public class ConflictTestManager {
       sourceBranch = BranchManager.createWorkingBranch(destBranch, SOURCE_BRANCH);
 
       for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
-         sourceArtifacts[i] = ArtifactQuery.getArtifactFromId(destArtifacts[i].getArtId(), sourceBranch);
+         sourceArtifacts[i] = ArtifactQuery.getArtifactFromId(destArtifacts[i], sourceBranch);
       }
       // create attribute conflicts
 

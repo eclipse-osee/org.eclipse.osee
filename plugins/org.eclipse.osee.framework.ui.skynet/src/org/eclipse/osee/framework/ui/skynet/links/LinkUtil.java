@@ -16,6 +16,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.eclipse.osee.account.rest.client.AccountClient;
 import org.eclipse.osee.account.rest.model.AccountWebPreferences;
 import org.eclipse.osee.account.rest.model.Link;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -59,7 +60,7 @@ public class LinkUtil {
       Conditions.checkNotNull(golbalArtifact, "Guest accountId: " + SystemUser.Anonymous.getUuid());
       deleteLink(deleteLink, true, golbalArtifact);
 
-      Artifact userArt = ArtifactQuery.getArtifactFromId(new Integer(accountId), CoreBranches.COMMON);
+      Artifact userArt = ArtifactQuery.getArtifactFromId(ArtifactId.valueOf(accountId), CoreBranches.COMMON);
       Conditions.checkNotNull(userArt, "User Artifact accountId: " + accountId);
       deleteLink(deleteLink, false, userArt);
    }

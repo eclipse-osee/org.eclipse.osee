@@ -95,7 +95,7 @@ public class InterArtifactDropTest {
          false);
       Operations.executeWork(dropHandler);
       // Acquire the introduced artifact
-      Artifact destArtifact = ArtifactQuery.getArtifactFromId(sourceArtifact1.getArtId(), destinationBranch);
+      Artifact destArtifact = ArtifactQuery.getArtifactFromId(sourceArtifact1, destinationBranch);
 
       assertTrue(sourceArtifact1.getName().equals(destArtifact.getName()));
       assertTrue(sourceArtifact1.getGammaId() == destArtifact.getGammaId());
@@ -106,7 +106,7 @@ public class InterArtifactDropTest {
    public void testUpdateBranch() throws Exception {
       // source artifact updated and introduced to existing destination
       // artifact
-      Artifact updateTestArtifact = ArtifactQuery.getArtifactFromId(sourceArtifact1.getArtId(), updateTestBranch2);
+      Artifact updateTestArtifact = ArtifactQuery.getArtifactFromId(sourceArtifact1, updateTestBranch2);
       Attribute<Object> testAttr = updateTestArtifact.getSoleAttribute(CoreAttributeTypes.Name);
       testAttr.setFromString("I am an update branch test");
       Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(updateTestBranch2);
@@ -118,8 +118,7 @@ public class InterArtifactDropTest {
       Operations.executeWork(dropHandler);
 
       // Acquire the updated artifact
-      Artifact destArtifact =
-         ArtifactQuery.getArtifactFromId(updateTestArtifact.getArtId(), sourceArtifact1.getBranch());
+      Artifact destArtifact = ArtifactQuery.getArtifactFromId(updateTestArtifact, sourceArtifact1.getBranch());
       destArtifact.reloadAttributesAndRelations();
       assertTrue(updateTestArtifact.getName().equals(destArtifact.getName()));
       assertTrue(updateTestArtifact.getGammaId() == destArtifact.getGammaId());
@@ -130,7 +129,7 @@ public class InterArtifactDropTest {
    public void testDeleteAttributeFromArtifactBranch() throws Exception {
       // attribute deleted and introduced to existing attribute on
       // sourceBranch
-      Artifact deleteTestArtifact = ArtifactQuery.getArtifactFromId(sourceArtifact2.getArtId(), updateTestBranch1);
+      Artifact deleteTestArtifact = ArtifactQuery.getArtifactFromId(sourceArtifact2, updateTestBranch1);
       Attribute<Object> destAttribute = deleteTestArtifact.getSoleAttribute(CoreAttributeTypes.StaticId);
       deleteTestArtifact.deleteAttribute(destAttribute);
       deleteTestArtifact.persist(getClass().getSimpleName());
@@ -139,8 +138,7 @@ public class InterArtifactDropTest {
          new InterArtifactExplorerDropHandlerOperation(sourceArtifact2, new Artifact[] {deleteTestArtifact}, false);
       Operations.executeWork(dropHandler);
 
-      Artifact destArtifact =
-         ArtifactQuery.getArtifactFromId(deleteTestArtifact.getArtId(), sourceArtifact2.getBranch());
+      Artifact destArtifact = ArtifactQuery.getArtifactFromId(deleteTestArtifact, sourceArtifact2.getBranch());
       Attribute<?> destAttr = destArtifact.getAttributeById(destAttribute.getId(), true);
       assertTrue(destAttr.getModificationType().equals(ModificationType.DELETED));
    }
@@ -168,7 +166,7 @@ public class InterArtifactDropTest {
    @Test
    public void testDeleteArtifactBranch() throws Exception {
       // artifact deleted and introduced to existing destination sourceBranch
-      Artifact deleteTestArtifact = ArtifactQuery.getArtifactFromId(sourceArtifact2.getArtId(), updateTestBranch1);
+      Artifact deleteTestArtifact = ArtifactQuery.getArtifactFromId(sourceArtifact2, updateTestBranch1);
       Attribute<Object> destAttribute = deleteTestArtifact.getSoleAttribute(CoreAttributeTypes.Name);
       deleteTestArtifact.delete();
       deleteTestArtifact.persist(getClass().getSimpleName());
@@ -177,8 +175,8 @@ public class InterArtifactDropTest {
          new InterArtifactExplorerDropHandlerOperation(sourceArtifact2, new Artifact[] {deleteTestArtifact}, false);
       Operations.executeWork(dropHandler);
 
-      Artifact destArtifact = ArtifactQuery.getArtifactFromId(deleteTestArtifact.getArtId(),
-         sourceArtifact2.getBranch(), DeletionFlag.INCLUDE_DELETED);
+      Artifact destArtifact =
+         ArtifactQuery.getArtifactFromId(deleteTestArtifact, sourceArtifact2.getBranch(), DeletionFlag.INCLUDE_DELETED);
       assertTrue(destArtifact.getModType().equals(ModificationType.DELETED));
       Attribute<?> destAttr = destArtifact.getAttributeById(destAttribute.getId(), true);
       assertTrue(destAttr.getModificationType().equals(ModificationType.ARTIFACT_DELETED));
@@ -197,8 +195,8 @@ public class InterArtifactDropTest {
          false);
       Operations.executeWork(dropHandler);
 
-      Artifact destArtifact = ArtifactQuery.getArtifactFromId(sourceDeleteArtifact1.getArtId(), destinationBranch,
-         DeletionFlag.INCLUDE_DELETED);
+      Artifact destArtifact =
+         ArtifactQuery.getArtifactFromId(sourceDeleteArtifact1, destinationBranch, DeletionFlag.INCLUDE_DELETED);
       // artifact should be introduced
       assertNotNull(destArtifact);
       assertTrue(sourceDeleteArtifact1.getName().equals(destArtifact.getName()));
@@ -210,14 +208,14 @@ public class InterArtifactDropTest {
    public void testUndeleteArtifactOnBranch() throws Exception {
       // artifact deleted on updateBranch2 and introduced as non-deleted
       // artifact on updateTestBranch2
-      Artifact testArtifact = ArtifactQuery.getArtifactFromId(sourceDeleteArtifact1.getArtId(), updateTestBranch3);
+      Artifact testArtifact = ArtifactQuery.getArtifactFromId(sourceDeleteArtifact1, updateTestBranch3);
 
       InterArtifactExplorerDropHandlerOperation dropHandler = new InterArtifactExplorerDropHandlerOperation(
          OseeSystemArtifacts.getDefaultHierarchyRootArtifact(updateTestBranch2), new Artifact[] {testArtifact}, false);
       Operations.executeWork(dropHandler);
 
-      Artifact destArtifact = ArtifactQuery.getArtifactFromId(sourceDeleteArtifact1.getArtId(), updateTestBranch2,
-         DeletionFlag.EXCLUDE_DELETED);
+      Artifact destArtifact =
+         ArtifactQuery.getArtifactFromId(sourceDeleteArtifact1, updateTestBranch2, DeletionFlag.EXCLUDE_DELETED);
       // artifact should be introduced
       assertNotNull(destArtifact);
       assertTrue(testArtifact.getName().equals(destArtifact.getName()));

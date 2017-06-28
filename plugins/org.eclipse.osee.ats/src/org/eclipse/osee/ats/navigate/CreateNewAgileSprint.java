@@ -84,8 +84,8 @@ public class CreateNewAgileSprint extends XNavigateItemAction {
                      }
                      if (sprint != null) {
                         long uuid = sprint.getUuid();
-                        Artifact sprintArt = ArtifactQuery.getArtifactFromId(new Long(uuid).intValue(),
-                           AtsClientService.get().getAtsBranch());
+                        Artifact sprintArt =
+                           ArtifactQuery.getArtifactFromId(uuid, AtsClientService.get().getAtsBranch());
                         sprintArt.getParent().reloadAttributesAndRelations();
                         AtsUtil.openArtifact(sprintArt.getGuid(), OseeCmEditor.CmPcrEditor);
                      } else {

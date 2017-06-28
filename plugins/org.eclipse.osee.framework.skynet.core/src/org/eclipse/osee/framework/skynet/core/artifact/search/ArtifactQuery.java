@@ -50,7 +50,6 @@ import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
@@ -78,24 +77,23 @@ public class ArtifactQuery {
    private static Map<Long, String> uuidToGuid;
 
    public static <T extends ArtifactId & HasBranch> Artifact getArtifactFromToken(T artifactToken, BranchId branch) throws OseeCoreException {
-      return getArtifactFromId(artifactToken.getUuid(), branch);
+      return getOrCheckArtifactFromId(artifactToken, branch, EXCLUDE_DELETED, QueryType.GET);
    }
 
    public static <T extends ArtifactId & HasBranch> Artifact getArtifactFromToken(T artifactToken, DeletionFlag deletionFlag) {
-      return getArtifactFromId(artifactToken.getUuid(), artifactToken.getBranch(), deletionFlag);
+      return getOrCheckArtifactFromId(artifactToken, artifactToken.getBranch(), deletionFlag, QueryType.GET);
    }
 
    public static <T extends ArtifactId & HasBranch> Artifact getArtifactFromToken(T artifactToken, BranchId branch, DeletionFlag deletionFlag) {
-      return getArtifactFromId(artifactToken.getUuid(), branch, deletionFlag);
+      return getOrCheckArtifactFromId(artifactToken, branch, deletionFlag, QueryType.GET);
    }
 
    public static <T extends ArtifactId & HasBranch> Artifact getArtifactOrNull(T artifactToken, DeletionFlag deletionFlag) {
-      return getOrCheckArtifactFromId(artifactToken.getId().intValue(), artifactToken.getBranch(), deletionFlag,
-         QueryType.CHECK);
+      return getOrCheckArtifactFromId(artifactToken, artifactToken.getBranch(), deletionFlag, QueryType.CHECK);
    }
 
    public static <T extends ArtifactId & HasBranch> Artifact getArtifactFromToken(T artifactToken) {
-      return getArtifactFromId(artifactToken.getId(), artifactToken.getBranch());
+      return getOrCheckArtifactFromId(artifactToken, artifactToken.getBranch(), EXCLUDE_DELETED, QueryType.GET);
    }
 
    /**
@@ -105,16 +103,12 @@ public class ArtifactQuery {
     * @return exactly one artifact by one its id - otherwise throw an exception
     * @throws ArtifactDoesNotExist if no artifacts are found
     */
-   public static Artifact getArtifactFromId(int artId, BranchId branch) throws OseeCoreException {
-      return getArtifactFromId(artId, branch, EXCLUDE_DELETED);
-   }
-
    public static Artifact getArtifactFromId(long artId, BranchId branch) throws OseeCoreException {
-      return getArtifactFromId(new Long(artId).intValue(), branch, EXCLUDE_DELETED);
+      return getOrCheckArtifactFromId(ArtifactId.valueOf(artId), branch, EXCLUDE_DELETED, QueryType.GET);
    }
 
    public static Artifact getArtifactFromId(ArtifactId artId, BranchId branch) {
-      return getArtifactFromId(artId.getId(), branch);
+      return getOrCheckArtifactFromId(artId, branch, EXCLUDE_DELETED, QueryType.GET);
    }
 
    public static Artifact getArtifactFromId(ArtifactId artifactId, BranchId branch, DeletionFlag includeDeleted) {
@@ -129,43 +123,34 @@ public class ArtifactQuery {
     * @return exactly one artifact by one its id - otherwise throw an exception
     * @throws ArtifactDoesNotExist if no artifacts are found
     */
-   public static Artifact getArtifactFromId(int artId, BranchId branch, DeletionFlag allowDeleted) throws OseeCoreException {
-      return getOrCheckArtifactFromId(artId, branch, allowDeleted, QueryType.GET);
+   public static Artifact getArtifactFromId(long artId, BranchId branch, DeletionFlag allowDeleted) throws OseeCoreException {
+      return getOrCheckArtifactFromId(ArtifactId.valueOf(artId), branch, allowDeleted, QueryType.GET);
    }
 
-   public static Artifact getArtifactFromIdOrNull(ArtifactId artId, BranchId branch, DeletionFlag allowDeleted) throws OseeCoreException {
-      return getOrCheckArtifactFromId(artId.getId().intValue(), branch, allowDeleted, QueryType.GET, false);
-   }
-
-   public static Artifact getArtifactFromId(Long artId, BranchId branch, DeletionFlag allowDeleted) throws OseeCoreException {
-      return getOrCheckArtifactFromId(artId.intValue(), branch, allowDeleted, QueryType.GET);
+   public static Artifact getArtifactFromIdOrNull(ArtifactId artifactId, BranchId branch, DeletionFlag allowDeleted) {
+      return getOrCheckArtifactFromId(artifactId, branch, allowDeleted, QueryType.CHECK);
    }
 
    public static Artifact getArtifactOrNull(ArtifactId artifactId, BranchId branch, DeletionFlag deletionFlag) {
-      return getOrCheckArtifactFromId(artifactId.getId().intValue(), branch, deletionFlag, QueryType.CHECK);
+      return getOrCheckArtifactFromId(artifactId, branch, deletionFlag, QueryType.CHECK);
    }
 
-   private static Artifact getOrCheckArtifactFromId(int artId, BranchId branch, DeletionFlag allowDeleted, QueryType queryType) throws OseeCoreException {
-      return getOrCheckArtifactFromId(artId, branch, allowDeleted, queryType, true);
-
+   public static Artifact getArtifactFromId(Long artId, BranchId branch, DeletionFlag allowDeleted) throws OseeCoreException {
+      return getOrCheckArtifactFromId(ArtifactId.valueOf(artId), branch, allowDeleted, QueryType.GET);
    }
 
-   private static Artifact getOrCheckArtifactFromId(int artId, BranchId branch, DeletionFlag allowDeleted, QueryType queryType, boolean exceptionIfNotFound) throws OseeCoreException {
-      if (artId < 1) {
-         throw new OseeArgumentException("Invalid Artifact Id: [%d]", artId);
-      }
-      Artifact artifact = ArtifactCache.getActive(ArtifactToken.valueOf(artId, branch));
+   private static Artifact getOrCheckArtifactFromId(ArtifactId artifactId, BranchId branch, DeletionFlag allowDeleted, QueryType queryType) {
+      Artifact artifact = ArtifactCache.getActive(ArtifactToken.valueOf(artifactId, branch));
       if (artifact != null) {
          if (artifact.isDeleted() && allowDeleted == EXCLUDE_DELETED) {
             if (queryType == QueryType.CHECK) {
                artifact = null;
-            } else if (exceptionIfNotFound) {
+            } else {
                throw new ArtifactDoesNotExist("Deleted artifact unexpectedly returned");
             }
          }
       } else {
-         artifact = new ArtifactQueryBuilder(ArtifactId.valueOf(artId), branch, allowDeleted, ALL).getOrCheckArtifact(
-            queryType);
+         artifact = new ArtifactQueryBuilder(artifactId, branch, allowDeleted, ALL).getOrCheckArtifact(queryType);
       }
       return artifact;
    }
@@ -178,7 +163,7 @@ public class ArtifactQuery {
     * @return one artifact by one its id if it exists, otherwise null
     */
    public static Artifact checkArtifactFromId(int artifactId, BranchId branch, DeletionFlag allowDeleted) throws OseeCoreException {
-      return getOrCheckArtifactFromId(artifactId, branch, allowDeleted, QueryType.CHECK);
+      return getOrCheckArtifactFromId(ArtifactId.valueOf(artifactId), branch, allowDeleted, QueryType.CHECK);
    }
 
    /**
@@ -195,15 +180,15 @@ public class ArtifactQuery {
    /**
     * Checks for existence of an artifact by one its guid or human readable id - otherwise throw an exception
     *
-    * @param uuid of the desired artifact
+    * @param artifactId of the desired artifact
     * @return one artifact by its guid if it exists, otherwise null
     */
    public static Artifact checkArtifactFromId(long uuid, BranchId branch) throws OseeCoreException {
-      return getOrCheckArtifactFromId(new Long(uuid).intValue(), branch, EXCLUDE_DELETED, QueryType.CHECK);
+      return getOrCheckArtifactFromId(ArtifactId.valueOf(uuid), branch, EXCLUDE_DELETED, QueryType.CHECK);
    }
 
    public static Artifact checkArtifactFromId(ArtifactId artifactId, BranchId branch) {
-      return getOrCheckArtifactFromId(artifactId.getId().intValue(), branch, EXCLUDE_DELETED, QueryType.CHECK);
+      return getOrCheckArtifactFromId(artifactId, branch, EXCLUDE_DELETED, QueryType.CHECK);
    }
 
    /**

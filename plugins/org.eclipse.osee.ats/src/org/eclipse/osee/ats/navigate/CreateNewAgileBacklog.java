@@ -82,8 +82,8 @@ public class CreateNewAgileBacklog extends XNavigateItemAction {
                   }
                   if (entity != null) {
                      JaxAgileBacklog backlog = (JaxAgileBacklog) entity;
-                     Artifact backlogart = ArtifactQuery.getArtifactFromId(new Long(backlog.getUuid()).intValue(),
-                        AtsClientService.get().getAtsBranch());
+                     Artifact backlogart =
+                        ArtifactQuery.getArtifactFromId(backlog.getUuid(), AtsClientService.get().getAtsBranch());
                      backlogart.getParent().reloadAttributesAndRelations();
                      AtsUtil.openArtifact(backlog.getUuid(), OseeCmEditor.CmPcrEditor);
                   } else {

@@ -83,8 +83,8 @@ public class CreateNewAgileFeatureGroup extends XNavigateItemAction {
                      }
                      if (entity != null) {
                         JaxAgileFeatureGroup group = (JaxAgileFeatureGroup) entity;
-                        Artifact groupArt = ArtifactQuery.getArtifactFromId(new Long(group.getUuid()).intValue(),
-                           AtsClientService.get().getAtsBranch());
+                        Artifact groupArt =
+                           ArtifactQuery.getArtifactFromId(group.getUuid(), AtsClientService.get().getAtsBranch());
                         groupArt.getParent().reloadAttributesAndRelations();
                         AtsUtil.openArtifact(group.getUuid(), OseeCmEditor.CmPcrEditor);
                      } else {
