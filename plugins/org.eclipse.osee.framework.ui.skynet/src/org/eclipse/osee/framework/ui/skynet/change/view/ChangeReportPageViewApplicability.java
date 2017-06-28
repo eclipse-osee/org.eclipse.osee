@@ -99,7 +99,7 @@ public class ChangeReportPageViewApplicability {
       ChangeReportEditorInput editorInput = editor.getEditorInput();
       if (editorInput != null) {
          BranchId branch = editorInput.getBranch();
-         if (branch == null) {
+         if (branch == null && button != null && !button.isDisposed()) {
             button.setEnabled(false);
          }
          return branch;
