@@ -151,7 +151,7 @@ public final class ViewWordChangeAndDiffTest {
    }
 
    private static Artifact loadHistorical(Artifact artifact) throws OseeCoreException {
-      return ArtifactQuery.getHistoricalArtifactFromId(artifact.getArtId(), artifact.getTransaction(), INCLUDE_DELETED);
+      return ArtifactQuery.getHistoricalArtifactFromId(artifact, artifact.getTransaction(), INCLUDE_DELETED);
    }
 
    private static void checkPermissions(List<Artifact> artifacts) throws OseeCoreException {

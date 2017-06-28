@@ -61,7 +61,7 @@ public class ReplaceArtifactWithBaselineOperation extends AbstractOperation {
                monitor.subTask("Reverting: " + artifact.getName());
                monitor.worked(1);
                Artifact sourceArtifact =
-                  ArtifactQuery.checkHistoricalArtifactFromId(artifact, txRecord, DeletionFlag.INCLUDE_DELETED);
+                  ArtifactQuery.getHistoricalArtifactOrNull(artifact, txRecord, DeletionFlag.INCLUDE_DELETED);
                try {
                   if (sourceArtifact != null) {
                      String userId = ClientSessionManager.getCurrentUserToken().getUserId();

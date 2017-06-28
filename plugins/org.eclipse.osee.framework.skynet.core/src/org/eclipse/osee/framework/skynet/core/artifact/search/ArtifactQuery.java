@@ -314,36 +314,17 @@ public class ArtifactQuery {
       return new ArtifactQueryBuilder(artifactIds, transactionId, allowDeleted, ALL).getArtifacts(30, null);
    }
 
-   public static Artifact getHistoricalArtifactFromId(int artifactId, TransactionToken transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
-      return getHistoricalArtifactFromId(ArtifactId.valueOf(artifactId), transactionId, allowDeleted);
-   }
-
    public static Artifact getHistoricalArtifactFromId(ArtifactId artifactId, TransactionToken transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
       return new ArtifactQueryBuilder(artifactId, transactionId, allowDeleted, ALL).getOrCheckArtifact(QueryType.GET);
    }
 
-   public static Artifact getHistoricalArtifactFromIdOrNull(int artifactId, TransactionToken transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
-      try {
-         return new ArtifactQueryBuilder(ArtifactId.valueOf(artifactId), transactionId, allowDeleted,
-            ALL).getOrCheckArtifact(QueryType.GET);
-      } catch (ArtifactDoesNotExist ex) {
-         // do nothing
-      }
-      return null;
+   public static Artifact getHistoricalArtifactOrNull(ArtifactId artifactId, TransactionToken transactionId, DeletionFlag allowDeleted) {
+      return new ArtifactQueryBuilder(artifactId, transactionId, allowDeleted, ALL).getOrCheckArtifact(QueryType.CHECK);
    }
 
    public static Artifact getHistoricalArtifactFromId(String guid, TransactionToken transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
       return new ArtifactQueryBuilder(Arrays.asList(guid), transactionId, allowDeleted, ALL).getOrCheckArtifact(
          QueryType.GET);
-   }
-
-   public static Artifact checkHistoricalArtifactFromId(Artifact artifactId, TransactionToken transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
-      return new ArtifactQueryBuilder(artifactId, transactionId, allowDeleted, ALL).getOrCheckArtifact(QueryType.CHECK);
-   }
-
-   public static Artifact checkHistoricalArtifactFromId(String guid, TransactionToken transactionId, DeletionFlag allowDeleted) throws OseeCoreException {
-      return new ArtifactQueryBuilder(Arrays.asList(guid), transactionId, allowDeleted, ALL).getOrCheckArtifact(
-         QueryType.CHECK);
    }
 
    public static List<Artifact> getArtifactListFromName(String artifactName, BranchId branch, DeletionFlag allowDeleted, QueryOption... options) throws OseeCoreException {
@@ -825,7 +806,7 @@ public class ArtifactQuery {
    private static List<ArtifactToken> extractTokensFromQuery(JdbcStatement chStmt) {
       List<ArtifactToken> tokens = new LinkedList<>();
       while (chStmt.next()) {
-         Integer artId = chStmt.getInt("art_id");
+         Long artId = chStmt.getLong("art_id");
          Long artTypeId = chStmt.getLong("art_type_id");
          String name = chStmt.getString("value");
          String guid = chStmt.getString("guid");

@@ -241,7 +241,7 @@ public class ArtifactQueryTest {
       ArtifactCache.deCache(toCheck);
 
       Assert.assertNotNull(
-         ArtifactQuery.checkHistoricalArtifactFromId(firstCreated, beforeDelete, DeletionFlag.EXCLUDE_DELETED));
+         ArtifactQuery.getHistoricalArtifactOrNull(firstCreated, beforeDelete, DeletionFlag.EXCLUDE_DELETED));
    }
 
    @Test
@@ -311,7 +311,7 @@ public class ArtifactQueryTest {
 
       // load historical artifact; this should return as changed cause of new attribute
       Artifact historicalArtifactFromId =
-         ArtifactQuery.getHistoricalArtifactFromId(folder.getArtId(), transaction, DeletionFlag.EXCLUDE_DELETED);
+         ArtifactQuery.getHistoricalArtifactFromId(folder, transaction, DeletionFlag.EXCLUDE_DELETED);
       Assert.assertTrue(ArtifactQuery.isArtifactChangedViaEntries(historicalArtifactFromId));
 
       transaction = folder.getTransaction();

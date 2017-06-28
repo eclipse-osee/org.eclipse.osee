@@ -151,8 +151,8 @@ public class MergeUtility {
       try {
          if (Conditions.notNull(conflict.getSourceBranch())) {
             TransactionToken baseTransaction = BranchManager.getBaseTransaction(conflict.getSourceBranch());
-            toReturn = ArtifactQuery.getHistoricalArtifactFromId(conflict.getArtifact().getGuid(), baseTransaction,
-               INCLUDE_DELETED);
+            toReturn =
+               ArtifactQuery.getHistoricalArtifactFromId(conflict.getArtifact(), baseTransaction, INCLUDE_DELETED);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -166,8 +166,8 @@ public class MergeUtility {
          if (Conditions.notNull(conflict.getSourceBranch())) {
             TransactionToken commonTransaction =
                ConflictManagerInternal.findCommonTransaction(conflict.getSourceBranch(), conflict.getDestBranch());
-            toReturn = ArtifactQuery.getHistoricalArtifactFromId(conflict.getArtifact().getGuid(), commonTransaction,
-               INCLUDE_DELETED);
+            toReturn =
+               ArtifactQuery.getHistoricalArtifactFromId(conflict.getArtifact(), commonTransaction, INCLUDE_DELETED);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

@@ -17,6 +17,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.PresentationType;
@@ -106,7 +107,7 @@ public final class CompareArtifactAction extends Action {
          Conditions.checkExpressionFailOnTrue(!changeA.getArtId().equals(changeB.getArtId()),
             "Change art ids don't match [%s:%s]", changeA.getArtId(), changeB.getArtId());
 
-         int artId = changeA.getArtId().getId().intValue();
+         ArtifactId artId = changeA.getArtId();
          TransactionDelta txDelta = asTxDelta(changeA, changeB);
 
          Artifact startArtifact =
