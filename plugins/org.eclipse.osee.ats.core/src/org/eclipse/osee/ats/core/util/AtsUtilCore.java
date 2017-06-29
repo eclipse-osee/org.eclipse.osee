@@ -33,7 +33,6 @@ public class AtsUtilCore {
    public static final String ATS_DEFAULT_ACTION_URL = "/ats/ui/action/UUID";
 
    private static Map<Long, String> uuidToGuidMap = new HashMap<>(50);
-   private static Map<String, Long> guidToUuidMap = new HashMap<>(50);
 
    public static List<String> toGuids(Collection<? extends IAtsObject> atsObjects) {
       List<String> guids = new ArrayList<>(atsObjects.size());
@@ -77,11 +76,6 @@ public class AtsUtilCore {
 
    public static void putUuidToGuid(String guid, IAtsObject atsObject) {
       uuidToGuidMap.put(atsObject.getId(), guid);
-      guidToUuidMap.put(guid, atsObject.getId());
-   }
-
-   public static Long getUuidFromGuid(String guid) {
-      return guidToUuidMap.get(guid);
    }
 
    public static Dictionary<String, ?> hashTable(String key, String value) {
