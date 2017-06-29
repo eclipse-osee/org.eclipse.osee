@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Stack;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
@@ -50,7 +51,7 @@ public class WordMLApplicabilityHandler {
    private final Collection<String> configurationsAllowed;
    private final Stack<ApplicabilityBlock> applicBlocks;
    private final String featureDefinitionJson;
-   private ScriptEngine se;
+   private final ScriptEngine se;
    private final Log logger;
 
    public WordMLApplicabilityHandler(OrcsApi orcsApi, Log logger, BranchId branch, ArtifactId view) {
@@ -399,8 +400,17 @@ public class WordMLApplicabilityHandler {
          if (!value.toLowerCase().equals("excluded")) {
             toReturn = beginningText;
          }
+      } else {
+         boolean isExcluded = false;
+         for (Entry<String, List<String>> entry : id_value_map.entrySet()) {
+            List<String> value = entry.getValue();
+            isExcluded = value.get(0).toLowerCase().equals("excluded") ? true : false;
+            if (!isExcluded) {
+               break;
+            }
+         }
+         toReturn = isExcluded ? beginningText : "";
       }
-
       return toReturn;
    }
 
