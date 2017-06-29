@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.ui.skynet.branch.ViewApplicabilityUtil;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditorInput;
+import org.eclipse.osee.framework.ui.skynet.change.ChangeUiData;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ViewBranchViewFilterTreeDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -99,6 +100,14 @@ public class ChangeReportPageViewApplicability {
       ChangeReportEditorInput editorInput = editor.getEditorInput();
       if (editorInput != null) {
          BranchId branch = editorInput.getBranch();
+         if (branch == null) {
+            ChangeUiData changeData = editorInput.getChangeData();
+            if (changeData != null) {
+               if (!changeData.getChanges().isEmpty()) {
+                  branch = changeData.getChanges().iterator().next().getBranch();
+               }
+            }
+         }
          if (branch == null && button != null && !button.isDisposed()) {
             button.setEnabled(false);
          }
