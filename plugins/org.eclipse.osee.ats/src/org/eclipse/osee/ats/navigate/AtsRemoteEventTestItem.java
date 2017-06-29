@@ -102,7 +102,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
    private static Set<IAtsActionableItem> getActionableItems() {
       Set<IAtsActionableItem> aias = new HashSet<>();
       IAtsActionableItem sawCodeAi = (IAtsActionableItem) AtsClientService.get().getQueryService().createQuery(
-         AtsArtifactTypes.ActionableItem).andName("SAW Code").getResults().getAtMostOneOrNull();
+         AtsArtifactTypes.ActionableItem).andName("SAW Code").getConfigObjectResultSet().getAtMostOneOrNull();
       Conditions.checkNotNull(sawCodeAi, "SAW Code AI; DBInit should be Demo DbInit");
       aias.add(sawCodeAi);
       return aias;

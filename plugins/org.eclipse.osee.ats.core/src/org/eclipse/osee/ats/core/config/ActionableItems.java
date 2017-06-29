@@ -76,7 +76,7 @@ public class ActionableItems {
 
    public static List<IAtsActionableItem> getActionableItems(Active active, IAtsQueryService queryService) throws OseeCoreException {
       return Collections.castAll(
-         getActive(queryService.createQuery(AtsArtifactTypes.ActionableItem).getItems(), active));
+         getActive(queryService.createQuery(AtsArtifactTypes.ActionableItem).getConfigObjects(), active));
    }
 
    public static String getNotActionableItemError(IAtsConfigObject configObject) {

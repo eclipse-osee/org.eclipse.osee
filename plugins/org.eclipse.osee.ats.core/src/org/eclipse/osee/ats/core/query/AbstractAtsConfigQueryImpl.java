@@ -18,7 +18,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.config.WorkType;
@@ -37,7 +36,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
-import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Donald G. Dunne
@@ -60,16 +58,39 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
    }
 
    @Override
-   public Collection<ArtifactId> getItemIds() throws OseeCoreException {
+   public Collection<ArtifactId> getIds() throws OseeCoreException {
       onlyIds = new LinkedList<>();
-      getItems();
+      getArtifacts();
       return onlyIds;
    }
 
    public abstract void createQueryBuilder();
 
+   @SuppressWarnings("unchecked")
    @Override
-   public <T extends IAtsConfigObject> Collection<T> getItems() {
+   public <T extends IAtsConfigObject> Collection<T> getConfigObjects() {
+      Set<T> allResults = new HashSet<>();
+      for (ArtifactToken artifact : getArtifacts()) {
+         IAtsConfigObject configObj = services.getConfigItemFactory().getConfigObject(artifact);
+         if (configObj == null) {
+            throw new OseeArgumentException("Non-AtsConfigObject Artifact Returned %s", artifact.toStringWithId());
+         }
+         allResults.add((T) configObj);
+      }
+      return allResults;
+   }
+
+   @Override
+   public <T extends IAtsConfigObject> ResultSet<T> getConfigObjectResultSet() {
+      return ResultSets.newResultSet(getConfigObjects());
+   }
+
+   public abstract Collection<ArtifactId> runQuery();
+
+   @SuppressWarnings("unchecked")
+   @Override
+   public <T extends ArtifactToken> Collection<T> getArtifacts() {
+      Set<T> results = new HashSet<>();
       createQueryBuilder();
 
       if (artifactTypes != null) {
@@ -82,17 +103,6 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
 
       addAttributeCriteria();
 
-      Set<T> allResults = new HashSet<>();
-      collectResults(allResults, artifactTypes);
-
-      return allResults;
-   }
-
-   public abstract Collection<ArtifactId> runQuery();
-
-   @SuppressWarnings("unchecked")
-   private <T> Collection<T> collectResults(Set<T> allResults, List<IArtifactType> artifactTypes) {
-      Set<T> results = new HashSet<>();
       if (isOnlyIds()) {
          onlyIds.addAll(queryGetIds());
       }
@@ -101,26 +111,16 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
          Collection<ArtifactId> artifacts = runQuery();
          for (ArtifactId artifact : artifacts) {
             if (artifactTypes != null || isArtifactTypeMatch(artifact, artifactTypes)) {
-               results.add((T) createFromFactory(artifact));
+               results.add((T) artifact);
             }
          }
       }
-      addtoResultsWithNullCheck(allResults, results);
-
       return results;
    }
 
-   @SuppressWarnings("unchecked")
-   private <T> T createFromFactory(ArtifactId artifact) {
-      return (T) services.getConfigItemFactory().getConfigObject(artifact);
-   }
-
-   private <T> void addtoResultsWithNullCheck(Set<T> allResults, Collection<? extends T> configObjects) {
-      if (configObjects.contains(null)) {
-         OseeLog.log(AbstractAtsConfigQueryImpl.class, Level.SEVERE, "Null found in results");
-      } else {
-         allResults.addAll(configObjects);
-      }
+   @Override
+   public <T extends ArtifactToken> ResultSet<T> getArtifactResultSet() {
+      return ResultSets.newResultSet(getArtifacts());
    }
 
    private boolean isArtifactTypeMatch(ArtifactId artifact, List<IArtifactType> artTypes) {
@@ -174,34 +174,6 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
    @Override
    public IAtsConfigQuery andAttr(AttributeTypeId attributeType, String value, QueryOption... queryOption) {
       return andAttr(attributeType, Collections.singleton(value), queryOption);
-   }
-
-   @Override
-   public <T extends IAtsConfigObject> ResultSet<T> getResults() {
-      return ResultSets.newResultSet(getItems());
-   }
-
-   @SuppressWarnings("unchecked")
-   @Override
-   public <T extends ArtifactToken> ResultSet<T> getResultArtifacts() {
-      List<T> items = new ArrayList<>();
-      ResultSet<IAtsConfigObject> results = getResults();
-      for (IAtsConfigObject configObject : results) {
-         if (configObject == null) {
-            OseeLog.log(AbstractAtsConfigQueryImpl.class, Level.SEVERE, "Null found in results");
-         } else {
-            items.add((T) services.getArtifact(configObject));
-         }
-      }
-      // filter on original artifact types
-      List<T> artifacts = new LinkedList<>();
-      for (ArtifactId artifact : items) {
-         boolean artifactTypeMatch = isArtifactTypeMatch(artifact, artifactTypes);
-         if (artifactTypeMatch) {
-            artifacts.add((T) artifact);
-         }
-      }
-      return ResultSets.newResultSet(artifacts);
    }
 
    public abstract void queryAndIsOfType(List<IArtifactType> artTypes);
@@ -284,7 +256,7 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
 
    @Override
    public <T extends IAtsConfigObject> Collection<T> getItems(Class<T> clazz) {
-      return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(getItems());
+      return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(getConfigObjects());
    }
 
    @Override

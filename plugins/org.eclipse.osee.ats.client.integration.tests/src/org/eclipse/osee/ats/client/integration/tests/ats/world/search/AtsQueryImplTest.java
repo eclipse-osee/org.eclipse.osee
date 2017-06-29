@@ -218,7 +218,7 @@ public class AtsQueryImplTest {
 
       IAtsWorkPackage workPackage =
          (IAtsWorkPackage) client.getQueryService().createQuery(AtsArtifactTypes.WorkPackage).andName(
-            "Work Pkg 0A").getResults().getAtMostOneOrNull();
+            "Work Pkg 0A").getConfigObjectResultSet().getAtMostOneOrNull();
       Assert.assertNotNull(workPackage);
    }
 }

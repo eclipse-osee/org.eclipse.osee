@@ -165,8 +165,7 @@ public class AtsProgramService implements IAtsProgramService {
    @Override
    public Collection<IAtsProgram> getPrograms() {
       List<IAtsProgram> programs = new ArrayList<>();
-      for (ArtifactId artifact : services.getQueryService().createQuery(
-         AtsArtifactTypes.Program).getResultArtifacts()) {
+      for (ArtifactId artifact : services.getQueryService().createQuery(AtsArtifactTypes.Program).getArtifacts()) {
          programs.add(services.getConfigItemFactory().getProgram(artifact));
       }
       return programs;
@@ -237,7 +236,8 @@ public class AtsProgramService implements IAtsProgramService {
       }
       if (program == null) {
          program = (IAtsProgram) services.getQueryService().createQuery(AtsArtifactTypes.Program).andAttr(
-            AtsAttributeTypes.TeamDefinition, services.getStoreService().getGuid(teamDef)).getResults().getOneOrNull();
+            AtsAttributeTypes.TeamDefinition,
+            services.getStoreService().getGuid(teamDef)).getConfigObjectResultSet().getOneOrNull();
       }
       return program;
    }
@@ -268,7 +268,7 @@ public class AtsProgramService implements IAtsProgramService {
       return Collections.castAll(services.getQueryService() //
          .createQuery(AtsArtifactTypes.ActionableItem) //
          .andAttr(AtsAttributeTypes.ProgramUuid, String.valueOf(program.getId())) //
-         .getResults().getList());
+         .getConfigObjectResultSet().getList());
    }
 
    @Override
@@ -276,13 +276,13 @@ public class AtsProgramService implements IAtsProgramService {
       return Collections.castAll(services.getQueryService() //
          .createQuery(AtsArtifactTypes.TeamDefinition) //
          .andAttr(AtsAttributeTypes.ProgramUuid, String.valueOf(program.getId())) //
-         .getResults().getList());
+         .getConfigObjectResultSet().getList());
    }
 
    @Override
    public Collection<IAtsProgram> getPrograms(IArtifactType artifactType) {
       return Collections.castAll(services.getQueryService() //
-         .createQuery(artifactType).getResults().getList());
+         .createQuery(artifactType).getConfigObjectResultSet().getList());
    }
 
    @Override
@@ -305,7 +305,7 @@ public class AtsProgramService implements IAtsProgramService {
          types.add(type.name());
       }
       query.andAttr(AtsAttributeTypes.WorkType, types, QueryOption.EXACT_MATCH_OPTIONS);
-      return Collections.castAll(query.getResults().getList());
+      return Collections.castAll(query.getConfigObjectResultSet().getList());
    }
 
    @Override
@@ -318,7 +318,7 @@ public class AtsProgramService implements IAtsProgramService {
          types.add(type.name());
       }
       query.andAttr(AtsAttributeTypes.WorkType, types, QueryOption.EXACT_MATCH_OPTIONS);
-      return Collections.castAll(query.getResults().getList());
+      return Collections.castAll(query.getConfigObjectResultSet().getList());
    }
 
    @Override
@@ -415,7 +415,7 @@ public class AtsProgramService implements IAtsProgramService {
    public Collection<IAtsTeamWorkflow> getWorkflows(IAtsProgram program, Collection<WorkType> workTypes) {
       Collection<IAtsTeamDefinition> teamDefs =
          services.getQueryService().createQuery(AtsArtifactTypes.TeamDefinition).andProgram(program).andWorkType(
-            workTypes).getItems();
+            workTypes).getConfigObjects();
       return Collections.castAll(
          services.getQueryService().createQuery(WorkItemType.TeamWorkflow).andTeam(teamDefs).getResults().getList());
    }

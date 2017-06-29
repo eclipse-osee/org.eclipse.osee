@@ -123,8 +123,7 @@ public class AgileService implements IAgileService {
    @Override
    public Collection<IAgileTeam> getTeams() {
       List<IAgileTeam> teams = new ArrayList<>();
-      for (ArtifactId teamArt : services.getQueryService().createQuery(
-         AtsArtifactTypes.AgileTeam).getResultArtifacts()) {
+      for (ArtifactId teamArt : services.getQueryService().createQuery(AtsArtifactTypes.AgileTeam).getArtifacts()) {
          teams.add(getAgileTeam(teamArt));
       }
       return teams;

@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.client.integration.tests.ats.world.search;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.WorkType;
@@ -54,20 +55,20 @@ public class AtsConfigQueryImplTest {
    @Test
    public void test() {
       IAtsConfigQuery query = queryService.createQuery(AtsArtifactTypes.TeamDefinition);
-      ResultSet<IAtsTeamDefinition> teamDefs = query.getResults();
+      ResultSet<IAtsTeamDefinition> teamDefs = query.getConfigObjectResultSet();
       assertEquals(18, teamDefs.size());
 
-      ResultSet<ArtifactToken> resultArtifacts = query.getResultArtifacts();
+      Collection<ArtifactToken> resultArtifacts = query.getArtifacts();
       assertEquals(18, resultArtifacts.size());
 
       query.andAttr(CoreAttributeTypes.Name, DemoTeam.SAW_Code.getTeamDefToken().getName());
-      IAtsTeamDefinition teamDef = (IAtsTeamDefinition) query.getResults().getOneOrNull();
+      IAtsTeamDefinition teamDef = (IAtsTeamDefinition) query.getConfigObjectResultSet().getOneOrNull();
 
       assertNotNull(teamDef);
       assertEquals(DemoTeam.SAW_Code.getTeamDefToken().getName(), teamDef.getName());
 
       query = queryService.createQuery(AtsArtifactTypes.ActionableItem);
-      ResultSet<IAtsActionableItem> ais = query.getResults();
+      ResultSet<IAtsActionableItem> ais = query.getConfigObjectResultSet();
 
       assertEquals(46, ais.size());
    }
@@ -75,11 +76,11 @@ public class AtsConfigQueryImplTest {
    @Test
    public void testWorkType() {
       IAtsConfigQuery query = queryService.createQuery(AtsArtifactTypes.TeamDefinition).andWorkType(WorkType.Code);
-      ResultSet<IAtsTeamDefinition> teamDefs = query.getResults();
+      ResultSet<IAtsTeamDefinition> teamDefs = query.getConfigObjectResultSet();
       assertEquals(1, teamDefs.size());
 
       query = queryService.createQuery(AtsArtifactTypes.TeamDefinition).andWorkType(WorkType.Code, WorkType.Test);
-      teamDefs = query.getResults();
+      teamDefs = query.getConfigObjectResultSet();
       assertEquals(2, teamDefs.size());
    }
 
@@ -88,12 +89,12 @@ public class AtsConfigQueryImplTest {
       IAtsConfigQuery query =
          queryService.createQuery(AtsArtifactTypes.TeamDefinition).andWorkType(WorkType.Code, WorkType.Test).andCsci(
             Collections.singleton(DemoCsci.SP.name()));
-      ResultSet<IAtsTeamDefinition> teamDefs = query.getResults();
+      ResultSet<IAtsTeamDefinition> teamDefs = query.getConfigObjectResultSet();
       assertEquals(1, teamDefs.size());
 
       query =
          queryService.createQuery(AtsArtifactTypes.TeamDefinition).andCsci(Collections.singleton(DemoCsci.SP.name()));
-      teamDefs = query.getResults();
+      teamDefs = query.getConfigObjectResultSet();
       assertEquals(4, teamDefs.size());
    }
 
@@ -101,7 +102,7 @@ public class AtsConfigQueryImplTest {
    public void testProgram() {
       IAtsConfigQuery query =
          queryService.createQuery(AtsArtifactTypes.TeamDefinition).andProgram(DemoArtifactToken.SAW_Program.getId());
-      ResultSet<IAtsTeamDefinition> teamDefs = query.getResults();
+      ResultSet<IAtsTeamDefinition> teamDefs = query.getConfigObjectResultSet();
       assertEquals(5, teamDefs.size());
 
    }

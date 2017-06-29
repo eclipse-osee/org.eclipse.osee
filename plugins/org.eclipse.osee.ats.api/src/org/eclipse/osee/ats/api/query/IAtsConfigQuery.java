@@ -29,11 +29,11 @@ public interface IAtsConfigQuery {
 
    IAtsConfigQuery andAttr(AttributeTypeId attributeType, String value, QueryOption... queryOption);
 
-   <T extends IAtsConfigObject> ResultSet<T> getResults();
+   <T extends IAtsConfigObject> ResultSet<T> getConfigObjectResultSet();
 
-   Collection<ArtifactId> getItemIds() throws OseeCoreException;
+   Collection<ArtifactId> getIds() throws OseeCoreException;
 
-   <T extends IAtsConfigObject> Collection<T> getItems();
+   <T extends IAtsConfigObject> Collection<T> getConfigObjects();
 
    <T extends IAtsConfigObject> Collection<T> getItems(Class<T> clazz);
 
@@ -53,7 +53,7 @@ public interface IAtsConfigQuery {
 
    IAtsConfigQuery andCsci(Collection<String> cscis);
 
-   <T extends ArtifactToken> ResultSet<T> getResultArtifacts();
+   <T extends ArtifactToken> ResultSet<T> getArtifactResultSet();
 
    IAtsConfigQuery andName(String name);
 
@@ -62,5 +62,7 @@ public interface IAtsConfigQuery {
    IAtsConfigQuery andActive(boolean active);
 
    <T extends IAtsConfigObject> T getOneOrNull(Class<T> clazz);
+
+   <T extends ArtifactToken> Collection<T> getArtifacts();
 
 }

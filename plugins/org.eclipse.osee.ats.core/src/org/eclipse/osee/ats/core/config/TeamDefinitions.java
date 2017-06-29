@@ -76,7 +76,7 @@ public class TeamDefinitions {
 
    public static List<IAtsTeamDefinition> getTeamDefinitions(Active active, IAtsQueryService queryService) throws OseeCoreException {
       return Collections.castAll(
-         getActive(queryService.createQuery(AtsArtifactTypes.TeamDefinition).getItems(), active));
+         getActive(queryService.createQuery(AtsArtifactTypes.TeamDefinition).getConfigObjects(), active));
    }
 
    public static List<IAtsTeamDefinition> getTeamTopLevelDefinitions(Active active, IAtsQueryService queryService) throws OseeCoreException {

@@ -59,7 +59,7 @@ public class ConvertVersionToAgileSprint extends XNavigateItemAction {
       List<IAgileTeam> activeAgileTeams = new LinkedList<>();
       IAtsClient client = AtsClientService.get();
       activeAgileTeams.addAll(
-         client.getQueryService().createQuery(AtsArtifactTypes.AgileTeam).andActive(true).getItems());
+         client.getQueryService().createQuery(AtsArtifactTypes.AgileTeam).andActive(true).getConfigObjects());
 
       AtsConfigCheckTreeDialog<IAgileTeam> teamDialog =
          new AtsConfigCheckTreeDialog<IAgileTeam>(getName(), "Select Agile Team", activeAgileTeams, true);
