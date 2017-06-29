@@ -13,10 +13,13 @@ package org.eclipse.osee.framework.core.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -29,20 +32,20 @@ import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
  */
 public class XResultData {
 
-   public static final Pattern ErrorPattern = Pattern.compile("Error: ");
-   public static final Pattern WarningPattern = Pattern.compile("Warning: ");
-   public List<IResultDataListener> listeners;
-   public String title;
-
    public static enum Type {
       Severe,
       Warning,
       Info;
    }
 
-   private StringBuilder sb;
+   public static final Pattern ErrorPattern = Pattern.compile("Error: ");
+   public static final Pattern WarningPattern = Pattern.compile("Warning: ");
+   @JsonIgnore
+   public List<IResultDataListener> listeners;
+   public String title;
+   private List<String> results = new LinkedList<>();
    private CountingMap<Type> count;
-
+   @JsonIgnore
    private boolean enableOseeLog;
 
    public XResultData() {
@@ -65,12 +68,12 @@ public class XResultData {
    }
 
    public void clear() {
-      sb = new StringBuilder();
+      results.clear();
       count = new CountingMap<>();
    }
 
    public void addRaw(String str) {
-      sb.append(str);
+      results.add(str);
    }
 
    public void reportSevereLoggingMonitor(SevereLoggingMonitor monitorLog) {
@@ -154,7 +157,7 @@ public class XResultData {
 
    @Override
    public String toString() {
-      return sb.toString();
+      return Collections.toString("", results);
    }
 
    private int getCount(Type type) {
@@ -203,6 +206,14 @@ public class XResultData {
 
    public void setTitle(String title) {
       this.title = title;
+   }
+
+   public void setResults(List<String> results) {
+      this.results = results;
+   }
+
+   public List<String> getResults() {
+      return results;
    }
 
 }

@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileService;
+import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
@@ -90,7 +91,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    private final List<IAtsNotifierServer> notifiers = new CopyOnWriteArrayList<>();
    private final Map<String, IAtsDatabaseConversion> externalConversions =
       new ConcurrentHashMap<String, IAtsDatabaseConversion>();
-   private AtsConfigEndpointImpl configurationsProvider;
+   private AtsConfigEndpointImpl configurationEndpoint;
 
    public AtsServerImpl() {
       super();
@@ -403,10 +404,15 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
 
    @Override
    public AtsConfigurations getConfigurations() {
-      if (configurationsProvider == null) {
-         configurationsProvider = new AtsConfigEndpointImpl(this, orcsApi, logger);
+      return getConfigurationEndpoint().get();
+   }
+
+   @Override
+   public AtsConfigEndpointApi getConfigurationEndpoint() {
+      if (configurationEndpoint == null) {
+         configurationEndpoint = new AtsConfigEndpointImpl(this, orcsApi, logger);
       }
-      return configurationsProvider.get();
+      return configurationEndpoint;
    }
 
    @Override

@@ -23,6 +23,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.workdef.JaxAtsWorkDef;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
 
 /**
@@ -93,5 +94,10 @@ public interface AtsConfigEndpointApi {
    @Path("workDef")
    @Consumes(MediaType.APPLICATION_JSON)
    public Response storeWorkDef(JaxAtsWorkDef jaxWorkDef);
+
+   @GET
+   @Path("alive")
+   @Produces(MediaType.APPLICATION_JSON)
+   public XResultData alive();
 
 }

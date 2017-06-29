@@ -557,4 +557,14 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       return result;
    }
 
+   @Override
+   @GET
+   @Path("alive")
+   @Produces(MediaType.APPLICATION_JSON)
+   public XResultData alive() {
+      XResultData results = new XResultData();
+      results.logf("Alive");
+      return results;
+   }
+
 }

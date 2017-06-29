@@ -15,6 +15,7 @@ import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactoryProvider;
@@ -68,5 +69,7 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
    Collection<CustomizeData> getCustomizations(String namespace);
 
    Collection<CustomizeData> getCustomizationsGlobal(String namespace);
+
+   AtsConfigEndpointApi getConfigurationEndpoint();
 
 }
