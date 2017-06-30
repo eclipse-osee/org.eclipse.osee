@@ -57,6 +57,10 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
       return false;
    }
 
+   public boolean isOverrideWorkingBranchCheck() {
+      return false;
+   }
+
    @Override
    public boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf) throws OseeCoreException {
       return services.getBranchService().isWorkingBranchInWork(teamWf);

@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.rest.internal.config;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.WordTemplateContent;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,8 +39,6 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeTypes;
-import org.eclipse.osee.orcs.data.TransactionReadable;
-import org.eclipse.osee.orcs.search.TransactionQuery;
 
 /**
  * @author Angel Avila
@@ -149,17 +148,10 @@ public class ReportResource {
    }
 
    private List<ChangeItem> getChanges(BranchId branch) {
-      TransactionQuery transactionQuery2 = orcsApi.getQueryFactory().transactionQuery();
-      TransactionQuery transactionQuery3 = orcsApi.getQueryFactory().transactionQuery();
-
-      BranchId parentBranch = atsServer.getBranchService().getParentBranch(branch);
-
-      TransactionReadable startTx = transactionQuery2.andIsHead(branch).getResults().getExactlyOne();
-
-      TransactionReadable endTx = transactionQuery3.andIsHead(parentBranch).getResults().getExactlyOne();
-
-      CompareResults results = orcsApi.getTransactionFactory().compareTxs(startTx, endTx);
-
-      return results.getChanges();
+      CompareResults results = atsServer.getBranchService().getChangeData(branch);
+      if (results != null) {
+         return results.getChanges();
+      }
+      return Collections.emptyList();
    }
 }

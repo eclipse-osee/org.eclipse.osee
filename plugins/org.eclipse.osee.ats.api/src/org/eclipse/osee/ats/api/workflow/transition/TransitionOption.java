@@ -18,5 +18,7 @@ public enum TransitionOption {
    // Allows transition to occur with UnAssigned, OseeSystem or Guest
    OverrideAssigneeCheck,
    // Skip reloading workflow prior to transition
-   OverrideReload
+   OverrideReload,
+   // Allow Transition regardless of working branch
+   OverrideWorkingBranchCheck
 };

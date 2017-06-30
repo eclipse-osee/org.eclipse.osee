@@ -53,6 +53,8 @@ public interface ITransitionHelper {
 
    boolean isOverrideAssigneeCheck();
 
+   boolean isOverrideWorkingBranchCheck();
+
    boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 
    boolean isBranchInCommit(IAtsTeamWorkflow teamWf) throws OseeCoreException;

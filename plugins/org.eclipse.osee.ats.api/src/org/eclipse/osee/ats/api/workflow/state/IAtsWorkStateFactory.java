@@ -23,7 +23,7 @@ public interface IAtsWorkStateFactory {
 
    public abstract String toStoreStr(IAtsStateManager stateMgr, String stateName) throws OseeCoreException;
 
-   public abstract WorkState fromStoreStr(String xml) throws OseeCoreException;
+   public abstract WorkState fromStoreStr(String storeStr) throws OseeCoreException;
 
    public abstract String getStorageString(Collection<IAtsUser> users) throws OseeCoreException;
 

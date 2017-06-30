@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.change.CompareResults;
 import org.eclipse.osee.framework.core.util.Result;
@@ -202,4 +203,12 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
       return results;
    }
 
+   @Override
+   public void setAssociatedArtId(BranchId branch, ArtifactId artifact) {
+      try {
+         orcsApi.getBranchOps().associateBranchToArtifact(branch, artifact).call();
+      } catch (Exception ex) {
+         throw new OseeWrappedException(ex, "Error setting associated branch %s to artifact %s", branch, artifact);
+      }
+   }
 }

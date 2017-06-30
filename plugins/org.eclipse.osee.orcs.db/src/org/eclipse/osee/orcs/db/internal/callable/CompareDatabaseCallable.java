@@ -55,12 +55,15 @@ public class CompareDatabaseCallable extends AbstractDatastoreCallable<List<Chan
       TransactionTokenDelta txDelta = new TransactionTokenDelta(sourceTx, destinationTx);
 
       Callable<List<ChangeItem>> callable;
+      BranchId branch = BranchId.SENTINEL;
       if (txDelta.areOnTheSameBranch()) {
          callable = new LoadDeltasBetweenTxsOnTheSameBranch(getLogger(), getSession(), getJdbcClient(), joinFactory,
             txDelta, applicQuery);
+         branch = txDelta.getStartTx().getBranch();
       } else {
          BranchId mergeBranch = getJdbcClient().fetch(BranchId.SENTINEL, SELECT_MERGE_BRANCH_UUID, sourceTx.getBranch(),
             destinationTx.getBranch());
+         branch = sourceTx.getBranch();
 
          TransactionId mergeTx = TransactionId.SENTINEL;
          if (mergeBranch.isValid()) {
@@ -76,7 +79,8 @@ public class CompareDatabaseCallable extends AbstractDatastoreCallable<List<Chan
       Callable<List<ChangeItem>> computeChanges = new ComputeNetChangeCallable(changes);
       changes = callAndCheckForCancel(computeChanges);
 
-      AddSyntheticArtifactChangeData addArtifactData = new AddSyntheticArtifactChangeData(changes);
+      AddSyntheticArtifactChangeData addArtifactData =
+         new AddSyntheticArtifactChangeData(changes, getJdbcClient(), branch);
       return addArtifactData.doWork();
    }
 

@@ -84,4 +84,8 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
 
    void clearCaches();
 
+   @Override
+   default String toStringWithId() {
+      return String.format("[%s]-[%s]-[%s]", getName(), getAtsId(), getId());
+   }
 }

@@ -59,10 +59,10 @@ public class AtsWorkStateFactory implements IAtsWorkStateFactory {
    }
 
    @Override
-   public WorkStateImpl fromStoreStr(String xml) throws OseeCoreException {
+   public WorkStateImpl fromStoreStr(String storeStr) throws OseeCoreException {
       WorkStateImpl state = new WorkStateImpl("Unknown");
-      if (Strings.isValid(xml)) {
-         Matcher m = storagePattern.matcher(xml);
+      if (Strings.isValid(storeStr)) {
+         Matcher m = storagePattern.matcher(storeStr);
          if (m.find()) {
             state.setName(m.group(1));
             if (!m.group(3).equals("")) {
@@ -75,7 +75,7 @@ public class AtsWorkStateFactory implements IAtsWorkStateFactory {
             List<IAtsUser> users = getUsers(userStr);
             state.setAssignees(users);
          } else {
-            throw new OseeArgumentException("Can't unpack state data [%s]", xml);
+            throw new OseeArgumentException("Can't unpack state data [%s]", storeStr);
          }
       }
       return state;

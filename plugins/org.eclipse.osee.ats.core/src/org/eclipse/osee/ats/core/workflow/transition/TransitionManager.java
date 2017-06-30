@@ -177,9 +177,11 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
                }
 
                // Validate Working Branch
-               isWorkingBranchTransitionable(results, workItem, toStateDef);
-               if (results.isCancelled()) {
-                  continue;
+               if (!helper.isOverrideWorkingBranchCheck()) {
+                  isWorkingBranchTransitionable(results, workItem, toStateDef);
+                  if (results.isCancelled()) {
+                     continue;
+                  }
                }
 
                // Validate Assignees (UnAssigned ok cause will be resolve to current user upon transition

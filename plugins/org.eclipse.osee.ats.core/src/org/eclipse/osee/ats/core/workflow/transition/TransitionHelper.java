@@ -67,6 +67,11 @@ public class TransitionHelper extends TransitionHelperAdapter {
    }
 
    @Override
+   public boolean isOverrideWorkingBranchCheck() {
+      return Arrays.asList(transitionOption).contains(TransitionOption.OverrideWorkingBranchCheck);
+   }
+
+   @Override
    public boolean isReload() {
       return !Arrays.asList(transitionOption).contains(TransitionOption.OverrideReload);
    }

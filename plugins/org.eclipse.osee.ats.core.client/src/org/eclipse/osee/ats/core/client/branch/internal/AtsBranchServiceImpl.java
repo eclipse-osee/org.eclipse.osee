@@ -179,4 +179,8 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
       throw new UnsupportedOperationException("Not supported on client");
    }
 
+   @Override
+   public void setAssociatedArtId(BranchId branch, ArtifactId artifact) {
+      BranchManager.setAssociatedArtifactId(branch, artifact);
+   }
 }
