@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.osee.define.report.api.WordArtifactChange;
@@ -139,10 +140,11 @@ public class WordUpdateArtifact {
 
                boolean hasTrackedChanges = WordCoreUtil.containsWordAnnotations(content);
                HashCollection<String, String> validFeatureValues = getValidFeatureValuesForBranch(data.getBranch());
-
+               HashSet<String> validConfigurations = getValidConfigurations(data.getBranch());
+               
                // If artifact has InvalidApplicabilityTags, do not block the save
                boolean hasInvalidApplicabilityTags =
-                  WordCoreUtil.areApplicabilityTagsInvalid(content, data.getBranch(), validFeatureValues);
+                  WordCoreUtil.areApplicabilityTagsInvalid(content, data.getBranch(), validFeatureValues, validConfigurations);
 
                /**
                 * Only update if: a. editing a single artifact or b. in multi-edit mode only update if the artifact has
@@ -245,5 +247,9 @@ public class WordUpdateArtifact {
       }
 
       return validFeatureValues;
+   }
+   
+   private HashSet<String> getValidConfigurations(BranchId branch) {
+      return WordMLApplicabilityHandler.getValidConfigurations(orcsApi, branch);
    }
 }

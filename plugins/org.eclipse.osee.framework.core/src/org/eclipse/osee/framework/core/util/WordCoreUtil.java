@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.core.util;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -70,10 +71,9 @@ public class WordCoreUtil {
 
    public static Pattern FEATURE_CONFIG_PATTERN =
       Pattern.compile("(" + BEGINFEATURE + "(.*?)" + ENDFEATURE + ")|(" + BEGINCONFIG + "(.*?)" + ENDCONFIG + ")",
-         Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+         Pattern.DOTALL | Pattern.MULTILINE);
 
-   public static Pattern ELSE_PATTERN =
-      Pattern.compile(ELSE_EXP, Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   public static Pattern ELSE_PATTERN = Pattern.compile(ELSE_EXP, Pattern.DOTALL | Pattern.MULTILINE);
 
    public static String BIN_DATA_STRING = "<w:binData.*?w:name=\"(.*?)\".*?</w:binData>";
    public static Pattern BIN_DATA_PATTERN =
@@ -83,12 +83,11 @@ public class WordCoreUtil {
 
    public static Pattern FULL_PATTERN =
       Pattern.compile("(" + BEGINFEATURE + ")|(" + ENDFEATURE + ")|(" + BEGINCONFIG + ")|(" + ENDCONFIG + ")",
-         Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-
-   public static Pattern START_PATTERN = Pattern.compile("(" + BEGINFEATURE + ") | (" + BEGINCONFIG + ")",
-      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   public static Pattern END_PATTERN = Pattern.compile("(" + ENDFEATURE + ") | (" + ENDCONFIG + ")",
-      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+         Pattern.DOTALL | Pattern.MULTILINE);
+   public static Pattern START_PATTERN =
+      Pattern.compile("(" + BEGINFEATURE + ") | (" + BEGINCONFIG + ")", Pattern.DOTALL | Pattern.MULTILINE);
+   public static Pattern END_PATTERN =
+      Pattern.compile("(" + ENDFEATURE + ") | (" + ENDCONFIG + ")", Pattern.DOTALL | Pattern.MULTILINE);
 
    public static String EMPTY_LIST_REGEX =
       "<w:p wsp:rsidP=\"[^\"]*?\" wsp:rsidR=\"[^\"]*?\" wsp:rsidRDefault=\"[^\"]*?\"><w:pPr><w:pStyle w:val=\"[^\"]*?\"></w:pStyle><w:listPr><wx:t wx:val=\"([^>]*?)\"></wx:t><wx:font wx:val=\"[^\"]*?\"></wx:font></w:listPr></w:pPr><w:r><w:t></w:t></w:r></w:p>";
@@ -116,7 +115,7 @@ public class WordCoreUtil {
       return response;
    }
 
-   public static boolean areApplicabilityTagsInvalid(String wordml, BranchId branch, HashCollection<String, String> validFeatureValues) {
+   public static boolean areApplicabilityTagsInvalid(String wordml, BranchId branch, HashCollection<String, String> validFeatureValues, Set<String> allValidConfigurations) {
 
       Matcher matcher = FULL_PATTERN.matcher(wordml);
       Stack<ApplicabilityBlock> applicabilityBlocks = new Stack<>();
@@ -133,8 +132,10 @@ public class WordCoreUtil {
             applicBlockCount += 1;
             applicabilityBlocks.add(createApplicabilityBlock(ApplicabilityType.Feature, beginFeature));
          } else if (beginConfiguration != null && beginConfiguration.toLowerCase().contains(CONFIGAPP)) {
-            applicBlockCount += 1;
-            applicabilityBlocks.add(createApplicabilityBlock(ApplicabilityType.Configuration, beginConfiguration));
+            if (isValidConfigurationBracket(beginConfiguration, allValidConfigurations)) {
+               applicBlockCount += 1;
+               applicabilityBlocks.add(createApplicabilityBlock(ApplicabilityType.Configuration, beginConfiguration));
+            }
          } else if ((endFeature != null && endFeature.toLowerCase().contains(FEATUREAPP))) {
             applicBlockCount -= 1;
 
@@ -163,6 +164,23 @@ public class WordCoreUtil {
       }
 
       return false;
+   }
+
+   private static boolean isValidConfigurationBracket(String beginConfig, Set<String> allValidConfigurations) {
+      beginConfig = WordCoreUtil.textOnly(beginConfig);
+      int start = beginConfig.indexOf("[") + 1;
+      int end = beginConfig.indexOf("]");
+      String applicExpText = beginConfig.substring(start, end);
+
+      String[] configs = applicExpText.split("&|\\|");
+      for (int i = 0; i < configs.length; i++) {
+         configs[i] = configs[i].split("=")[0];
+         if (!containsIgnoreCase(allValidConfigurations, configs[i])) {
+            return false;
+         }
+      }
+
+      return true;
    }
 
    private static boolean isInvalidConfigurationBlock(ApplicabilityBlock applicabilityBlock, Matcher matcher) {

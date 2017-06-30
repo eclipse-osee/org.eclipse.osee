@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
 import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
+import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 
 /**
  * @author Theron Virgin
@@ -71,7 +72,8 @@ public class CatchWordMlChanges implements CommitAction {
                      Boolean.valueOf(OseeInfo.getCachedValue("osee.are.applicability.tags.invalid"));
                   Boolean isInvalidTags =
                      useInvalidTagsCheck ? (((WordAttribute) attribute).areApplicabilityTagsInvalid(destinationBranch,
-                        getValidFeatureValuesForBranch(destinationBranch))) : useInvalidTagsCheck;
+                        getValidFeatureValuesForBranch(destinationBranch),
+                        WordUtil.getValidConfigurations(destinationBranch))) : useInvalidTagsCheck;
                   if (isInvalidTags) {
                      applicabilityTags.put(attribute.getArtifact().getArtId(), attribute.getArtifact().getSafeName());
                   }
@@ -135,5 +137,4 @@ public class CatchWordMlChanges implements CommitAction {
 
       return validFeatureValues;
    }
-
 }

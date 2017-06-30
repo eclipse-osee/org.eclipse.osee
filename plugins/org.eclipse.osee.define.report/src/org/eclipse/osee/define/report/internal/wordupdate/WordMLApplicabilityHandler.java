@@ -13,10 +13,12 @@ package org.eclipse.osee.define.report.internal.wordupdate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.Stack;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
@@ -39,6 +41,7 @@ import org.eclipse.osee.framework.core.grammar.ApplicabilityGrammarLexer;
 import org.eclipse.osee.framework.core.grammar.ApplicabilityGrammarParser;
 import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -47,8 +50,9 @@ public class WordMLApplicabilityHandler {
 
    private static String SCRIPT_ENGINE_NAME = "JavaScript";
 
+   private Set<String> validConfigurations;
    private Map<String, List<String>> viewApplicabilitiesMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-   private final Collection<String> configurationsAllowed;
+   private final String configurationToView;
    private final Stack<ApplicabilityBlock> applicBlocks;
    private final String featureDefinitionJson;
    private final ScriptEngine se;
@@ -63,9 +67,11 @@ public class WordMLApplicabilityHandler {
 
       BranchId branchToUse = getBranchToUse(orcsApi, branch, view);
 
+      validConfigurations = getValidConfigurations(orcsApi, branch);
+
       viewApplicabilitiesMap =
          orcsApi.getQueryFactory().applicabilityQuery().getBranchViewFeatureValues(branchToUse, view);
-      configurationsAllowed = viewApplicabilitiesMap.get("config");
+      configurationToView = viewApplicabilitiesMap.get("config").iterator().next();
 
       ArtifactReadable featureDefArt = orcsApi.getQueryFactory().fromBranch(branch).andTypeEquals(
          CoreArtifactTypes.FeatureDefinition).getResults().getExactlyOne();
@@ -94,9 +100,13 @@ public class WordMLApplicabilityHandler {
 
          } else if (beginConfig != null && WordCoreUtil.textOnly(beginConfig).toLowerCase().contains(
             WordCoreUtil.CONFIGAPP)) {
-            applicBlockCount += 1;
-            searchIndex =
-               addApplicabilityBlock(ApplicabilityType.Configuration, matcher, beginConfig, searchIndex, toReturn);
+            if (isValidConfigurationBracket(beginConfig)) {
+               applicBlockCount += 1;
+               searchIndex =
+                  addApplicabilityBlock(ApplicabilityType.Configuration, matcher, beginConfig, searchIndex, toReturn);
+            } else {
+               searchIndex = matcher.end();
+            }
 
          } else if ((endFeature != null && endFeature.contains(
             WordCoreUtil.FEATUREAPP)) || (endConfig != null && endConfig.contains(WordCoreUtil.CONFIGAPP))) {
@@ -126,6 +136,23 @@ public class WordMLApplicabilityHandler {
       }
 
       return toReturn;
+   }
+
+   private boolean isValidConfigurationBracket(String beginConfig) {
+      beginConfig = WordCoreUtil.textOnly(beginConfig);
+      int start = beginConfig.indexOf("[") + 1;
+      int end = beginConfig.indexOf("]");
+      String applicExpText = beginConfig.substring(start, end);
+
+      String[] configs = applicExpText.split("&|\\|");
+      for (int i = 0; i < configs.length; i++) {
+         configs[i] = configs[i].split("=")[0];
+         if (!containsIgnoreCase(validConfigurations, configs[i])) {
+            return false;
+         }
+      }
+
+      return true;
    }
 
    private String removeExtraParagraphs(String fullWordMl, String toInsert, ApplicabilityBlock applicabilityBlock) {
@@ -197,7 +224,7 @@ public class WordMLApplicabilityHandler {
    }
 
    // End Bracket can contain multiple feature/value pairs
-   private boolean isValidEndBracket(String optionalEndBracket) {
+   private boolean isValidFeatureBracket(String optionalEndBracket) {
       String text = WordCoreUtil.textOnly(optionalEndBracket);
       text = text.replaceAll("\\[", "");
       text = text.replaceAll("\\]", "").trim();
@@ -282,10 +309,19 @@ public class WordMLApplicabilityHandler {
       ApplicabilityBlock applic = applicBlocks.pop();
 
       // set end insert index - Check if End Bracket is valid
-      int endBracketGroup = applic.getType().equals(ApplicabilityType.Feature) ? 23 : 60;
-      String optionalEndBracket = matcher.group(endBracketGroup) != null ? matcher.group(endBracketGroup) : null;
+      String optionalEndBracket = null;
+      boolean isValidBracket = false;
+      if (applic.getType().equals(ApplicabilityType.Configuration)) {
+         int endBracketGroup = 60;
+         optionalEndBracket = matcher.group(endBracketGroup);
+         isValidBracket = optionalEndBracket == null ? false : isValidConfigurationBracket(optionalEndBracket);
+      } else {
+         int endBracketGroup = 23;
+         optionalEndBracket = matcher.group(endBracketGroup);
+         isValidBracket = optionalEndBracket == null ? false : isValidFeatureBracket(optionalEndBracket);
+      }
 
-      if (optionalEndBracket != null && !isValidEndBracket(optionalEndBracket)) {
+      if (optionalEndBracket != null && !isValidBracket) {
          int newEndInsertIndex = matcher.end() - optionalEndBracket.length();
          applic.setEndInsertIndex(newEndInsertIndex);
       } else {
@@ -394,7 +430,7 @@ public class WordMLApplicabilityHandler {
       String toReturn = "";
 
       // Note: this assumes only OR's are put in between configurations
-      List<String> values = id_value_map.get(configurationsAllowed.iterator().next().toUpperCase());
+      List<String> values = id_value_map.get(configurationToView.toUpperCase());
       if (values != null) {
          String value = values.get(0);
          if (!value.toLowerCase().equals("excluded")) {
@@ -552,5 +588,22 @@ public class WordMLApplicabilityHandler {
       }
 
       return toReturn;
+   }
+
+   public static HashSet<String> getValidConfigurations(OrcsApi orcsApi, BranchId branch) {
+      HashSet<String> validConfigurations = new HashSet<>();
+      List<BranchViewData> branchViews = orcsApi.getQueryFactory().applicabilityQuery().getViews();
+
+      for (BranchViewData branchView : branchViews) {
+
+         ResultSet<ArtifactReadable> configs =
+            orcsApi.getQueryFactory().fromBranch(branch).andIds(branchView.getBranchViews()).getResults();
+
+         for (ArtifactReadable config : configs) {
+            validConfigurations.add(config.getName());
+         }
+      }
+
+      return validConfigurations;
    }
 }

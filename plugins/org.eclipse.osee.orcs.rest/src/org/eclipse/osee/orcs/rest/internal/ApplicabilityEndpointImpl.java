@@ -64,8 +64,8 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       TransactionBuilder tx =
          orcsApi.getTransactionFactory().createTransaction(branch, SystemUser.OseeSystem, "Create Demo Applicability");
 
-      ArtifactId config1 = tx.createArtifact(CoreArtifactTypes.BranchView, "PL Config 1");
-      ArtifactId config2 = tx.createArtifact(CoreArtifactTypes.BranchView, "PL Config 2");
+      ArtifactId config1 = tx.createArtifact(CoreArtifactTypes.BranchView, "Config1");
+      ArtifactId config2 = tx.createArtifact(CoreArtifactTypes.BranchView, "Config2");
       ArtifactId folder = tx.createArtifact(CoreArtifactTypes.Folder, "Product Line");
       ArtifactId featureDefinition =
          tx.createArtifact(CoreArtifactTypes.FeatureDefinition, "Feature Definition_SAW_Bld_1");

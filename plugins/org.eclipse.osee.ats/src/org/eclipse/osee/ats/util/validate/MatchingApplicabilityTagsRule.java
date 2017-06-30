@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.util.validate;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.core.client.IAtsClient;
@@ -21,6 +22,7 @@ import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 
 /**
  * @author Morgan E. Cook
@@ -30,6 +32,7 @@ public class MatchingApplicabilityTagsRule extends AbstractValidationRule {
    private final IAtsClient atsClient;
    private List<FeatureDefinitionData> featureDefinitionData;
    private HashCollection<String, String> validFeatureValues;
+   private HashSet<String> validConfigurations;
 
    public MatchingApplicabilityTagsRule(IAtsClient atsClient) {
       this.atsClient = atsClient;
@@ -52,10 +55,14 @@ public class MatchingApplicabilityTagsRule extends AbstractValidationRule {
          }
       }
 
+      if (validConfigurations == null) {
+         validConfigurations = WordUtil.getValidConfigurations(artToValidate.getBranch());
+      }
+
       boolean validationPassed = true;
       if (!validFeatureValues.isEmpty()) {
-         validationPassed =
-            !WordCoreUtil.areApplicabilityTagsInvalid(wordml, artToValidate.getBranch(), validFeatureValues);
+         validationPassed = !WordCoreUtil.areApplicabilityTagsInvalid(wordml, artToValidate.getBranch(),
+            validFeatureValues, validConfigurations);
          if (!validationPassed) {
             errorMessages.add(String.format(
                "Validation Failed. The following artifact has invalid feature values and/or mismatching start and end applicability tags: " //

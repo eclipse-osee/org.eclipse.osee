@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.io.InputStream;
+import java.util.HashSet;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -79,8 +80,8 @@ public class WordAttribute extends StringAttribute {
       return WordCoreUtil.containsWordAnnotations(temp);
    }
 
-   public boolean areApplicabilityTagsInvalid(BranchId branch, HashCollection<String, String> validFeatureValues) {
-      return WordCoreUtil.areApplicabilityTagsInvalid(getValue(), branch, validFeatureValues);
+   public boolean areApplicabilityTagsInvalid(BranchId branch, HashCollection<String, String> validFeatureValues, HashSet<String> validConfigurations) {
+      return WordCoreUtil.areApplicabilityTagsInvalid(getValue(), branch, validFeatureValues, validConfigurations);
    }
 
    @Override
