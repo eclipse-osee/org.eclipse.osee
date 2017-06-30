@@ -75,10 +75,10 @@ public class ArtifactTransactionData extends BaseTransactionData {
             // transactionEvent populated in SkynetTransaction after all attribute changes have been made
             break;
          case DELETED:
-            artifactEvent.getArtifacts().add(new EventBasicGuidArtifact(EventModType.Deleted, artifact));
+            artifactEvent.addArtifact(new EventBasicGuidArtifact(EventModType.Deleted, artifact));
             break;
          default:
-            artifactEvent.getArtifacts().add(new EventBasicGuidArtifact(EventModType.Added, artifact));
+            artifactEvent.addArtifact(new EventBasicGuidArtifact(EventModType.Added, artifact));
             break;
       }
    }

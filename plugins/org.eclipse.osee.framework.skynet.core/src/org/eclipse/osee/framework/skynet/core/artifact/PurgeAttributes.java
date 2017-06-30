@@ -83,7 +83,7 @@ public class PurgeAttributes extends AbstractDbTxOperation {
          // Kick Local and Remote Events
          ArtifactEvent artifactEvent = new ArtifactEvent(attributesToPurge.iterator().next().getArtifact().getBranch());
          for (EventBasicGuidArtifact guidArt : artifactChanges) {
-            artifactEvent.getArtifacts().add(guidArt);
+            artifactEvent.addArtifact(guidArt);
          }
          OseeEventManager.kickPersistEvent(this, artifactEvent);
       }

@@ -96,7 +96,7 @@ public class UpdateArtifactOperation extends AbstractOperation {
                if (!attrChanges.isEmpty()) {
                   EventModifiedBasicGuidArtifact guidArt = new EventModifiedBasicGuidArtifact(artifact.getBranch(),
                      artifact.getArtifactType(), artifact.getGuid(), attrChanges);
-                  artifactEvent.getArtifacts().add(guidArt);
+                  artifactEvent.addArtifact(guidArt);
                }
             }
          }
@@ -167,8 +167,7 @@ public class UpdateArtifactOperation extends AbstractOperation {
                      resultData.setTitle("Artifacts with Invalid Applicability Tags");
                      resultData.addRaw(
                         "The following artifacts contain invalid feature values and/or inconsistent start and ends tags." //
-                           + "\nPlease make sure the feature values used are found in the FeatureDefinition Artifact and the start and end tags match.\n"
-                           + "This must be fixed before commit into the parent branch occurs.\n\n");
+                           + "\nPlease make sure the feature values used are found in the FeatureDefinition Artifact and the start and end tags match.\n" + "This must be fixed before commit into the parent branch occurs.\n\n");
 
                      for (Map.Entry<Long, String> entry : change.getInvalidApplicabilityTagArts().entrySet()) {
                         resultData.addRaw("Artifact ");

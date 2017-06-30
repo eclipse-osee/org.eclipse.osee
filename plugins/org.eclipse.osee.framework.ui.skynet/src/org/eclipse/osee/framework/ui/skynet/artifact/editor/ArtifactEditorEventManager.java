@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
-import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -78,24 +77,20 @@ public class ArtifactEditorEventManager implements IArtifactEventListener, IBran
       final Collection<Artifact> modifiedArts =
          artifactEvent.getCacheArtifacts(EventModType.Modified, EventModType.Reloaded);
       final Collection<Artifact> relModifiedArts = artifactEvent.getRelCacheArtifacts();
-      final Collection<EventBasicGuidArtifact> deletedPurgedChangedArts =
-         artifactEvent.get(EventModType.Deleted, EventModType.Purged);
       final Collection<Artifact> relOrderChangedArtifacts = artifactEvent.getRelationOrderArtifacts();
 
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            if (!deletedPurgedChangedArts.isEmpty()) {
-               for (IArtifactEditorEventHandler handler : handlers) {
-                  try {
-                     if (!handler.isDisposed() && handler.getArtifactFromEditorInput() != null && deletedPurgedChangedArts.contains(
-                        handler.getArtifactFromEditorInput())) {
-                        handler.closeEditor();
-                     }
-                  } catch (Exception ex) {
-                     OseeLog.log(Activator.class, Level.SEVERE,
-                        "Error processing event handler for deleted - " + handler, ex);
+            for (IArtifactEditorEventHandler handler : handlers) {
+               try {
+                  if (!handler.isDisposed() && handler.getArtifactFromEditorInput() != null && artifactEvent.containsArtifact(
+                     handler.getArtifactFromEditorInput(), EventModType.Deleted, EventModType.Purged)) {
+                     handler.closeEditor();
                   }
+               } catch (Exception ex) {
+                  OseeLog.log(Activator.class, Level.SEVERE, "Error processing event handler for deleted - " + handler,
+                     ex);
                }
             }
             if (!modifiedArts.isEmpty() || !relModifiedArts.isEmpty() || !relOrderChangedArtifacts.isEmpty()) {

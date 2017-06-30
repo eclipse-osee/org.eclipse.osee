@@ -17,8 +17,8 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.osee.activity.api.Activity;
 import org.eclipse.osee.activity.api.ActivityLog;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -176,7 +176,9 @@ public final class OseeEventManager {
       }
       ArtifactEvent artifactEvent =
          new ArtifactEvent(artifacts.iterator().next().getBranch(), ArtifactEventType.RELOAD_ARTIFACTS);
-      artifactEvent.getArtifacts().addAll(EventBasicGuidArtifact.get(EventModType.Reloaded, artifacts));
+      for (ArtifactToken guidArt : artifacts) {
+         artifactEvent.addArtifact(new EventBasicGuidArtifact(EventModType.Reloaded, guidArt));
+      }
       getEventService().send(source, artifactEvent);
    }
 

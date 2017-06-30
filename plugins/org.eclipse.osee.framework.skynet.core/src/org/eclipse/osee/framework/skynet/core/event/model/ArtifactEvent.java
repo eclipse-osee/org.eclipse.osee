@@ -195,6 +195,17 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender, HasBranc
       return guidArts;
    }
 
+   public boolean containsArtifact(Artifact artifact, EventModType... eventModTypes) {
+      for (EventBasicGuidArtifact guidArt : artifacts) {
+         for (EventModType modType : eventModTypes) {
+            if (guidArt.getModType() == modType && guidArt.equals(artifact)) {
+               return true;
+            }
+         }
+      }
+      return false;
+   }
+
    private Collection<DefaultBasicGuidArtifact> getRelationsArts(RelationEventType... eventModTypes) {
       Set<DefaultBasicGuidArtifact> guidArts = new HashSet<>();
       for (EventBasicGuidRelation guidRel : getRelations(eventModTypes)) {
@@ -295,5 +306,4 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender, HasBranc
          return String.format(" %d Relations (data hidden)", relations.size());
       }
    }
-
 }

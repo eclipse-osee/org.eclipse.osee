@@ -153,11 +153,11 @@ public final class FrameworkEventUtil {
             OseeLog.logf(Activator.class, Level.WARNING, "Unhandled remote artifact [%s]", remGuidArt);
          } else {
             if (modType == EventModType.Modified) {
-               event.getArtifacts().add(getEventModifiedBasicGuidArtifact(modType, remGuidArt));
+               event.addArtifact(getEventModifiedBasicGuidArtifact(modType, remGuidArt));
             } else if (modType == EventModType.ChangeType) {
-               event.getArtifacts().add(getEventChangeTypeBasicGuidArtifact(modType, remGuidArt));
+               event.addArtifact(getEventChangeTypeBasicGuidArtifact(modType, remGuidArt));
             } else {
-               event.getArtifacts().add(getEventBasicGuidArtifact(modType, remGuidArt));
+               event.addArtifact(getEventBasicGuidArtifact(modType, remGuidArt));
             }
          }
       }

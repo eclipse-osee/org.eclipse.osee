@@ -121,7 +121,7 @@ public class ChangeArtifactType {
    private void sendLocalAndRemoteEvents(Collection<? extends Artifact> artifacts) throws OseeCoreException {
       ArtifactEvent artifactEvent = new ArtifactEvent(artifacts.iterator().next().getBranch());
       for (EventBasicGuidArtifact guidArt : artifactChanges) {
-         artifactEvent.getArtifacts().add(guidArt);
+         artifactEvent.addArtifact(guidArt);
       }
 
       OseeEventManager.kickPersistEvent(ChangeArtifactType.class, artifactEvent);

@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.artifact.massEditor;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -87,10 +88,19 @@ public class MassContentProvider implements ITreeContentProvider {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
+            Iterator<Artifact> iterator = rootSet.iterator();
+            while (iterator.hasNext()) {
+               Artifact artifact = iterator.next();
+               for (EventBasicGuidArtifact art : arts) {
+                  if (art.equals(artifact)) {
+                     iterator.remove();
+                  }
+               }
+            }
+
             if (xViewer.getInput() == null) {
                xViewer.setInput(rootSet);
             }
-            rootSet.removeAll(arts);
             xViewer.refresh();
          };
       });
