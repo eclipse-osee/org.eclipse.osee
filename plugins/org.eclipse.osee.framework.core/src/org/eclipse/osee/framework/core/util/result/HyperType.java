@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Boeing.
+ * Copyright (c) 2017 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,17 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.api.util;
+package org.eclipse.osee.framework.core.util.result;
 
-import org.eclipse.osee.ats.api.IAtsServices;
-import org.eclipse.osee.framework.core.util.result.XResultData;
-
-public interface IAtsDatabaseConversion {
-
-   public String getName();
-
-   public void run(XResultData data, boolean reportOnly, IAtsServices services);
-
-   public String getDescription();
-
-}
+/**
+ * @author Donald G. Dunne
+ */
+public enum HyperType {
+   ATS,
+   ART,
+   BOTH
+};

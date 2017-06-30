@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.demo.api.DemoActionableItems;
 import org.eclipse.osee.ats.demo.api.DemoTeam;
-import org.eclipse.osee.framework.core.util.XResultData;
+import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.junit.Assert;
 
 /**

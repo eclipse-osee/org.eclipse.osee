@@ -19,11 +19,12 @@ import java.util.List;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.core.util.XResultData;
+import org.eclipse.osee.framework.core.util.result.Manipulations;
+import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -32,7 +33,6 @@ import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorTab;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditorConverter;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage;
-import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsEditorTableTab;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
 
@@ -150,8 +150,10 @@ public class DatabaseIntegrityCheckApplication implements IApplication {
             new XViewerColumn("1", "Operation", 220, XViewerAlign.Left, true, SortDataType.String, false, ""));
          mainTab.addColumn(
             new XViewerColumn("2", "Status", 80, XViewerAlign.Left, true, SortDataType.String, false, ""));
-         mainTab.addColumn(new XViewerColumn("3", "Count", 80, XViewerAlign.Left, true, SortDataType.String, false, ""));
-         mainTab.addColumn(new XViewerColumn("4", "Links", 80, XViewerAlign.Left, true, SortDataType.String, false, ""));
+         mainTab.addColumn(
+            new XViewerColumn("3", "Count", 80, XViewerAlign.Left, true, SortDataType.String, false, ""));
+         mainTab.addColumn(
+            new XViewerColumn("4", "Links", 80, XViewerAlign.Left, true, SortDataType.String, false, ""));
          tabs.add(mainTab);
       }
 

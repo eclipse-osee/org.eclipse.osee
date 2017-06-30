@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.results;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.util.IResultDataListener;
-import org.eclipse.osee.framework.core.util.XResultData;
+import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**

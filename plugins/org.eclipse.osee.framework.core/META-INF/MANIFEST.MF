@@ -40,6 +40,7 @@ Export-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.ops,
  org.eclipse.osee.framework.core.sql,
  org.eclipse.osee.framework.core.threading,
- org.eclipse.osee.framework.core.util
+ org.eclipse.osee.framework.core.util,
+ org.eclipse.osee.framework.core.util.result
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime;visibility:=reexport

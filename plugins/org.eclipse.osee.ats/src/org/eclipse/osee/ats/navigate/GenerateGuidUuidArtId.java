@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.navigate;
 
 import java.util.Random;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.framework.core.util.XResultData;
+import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;

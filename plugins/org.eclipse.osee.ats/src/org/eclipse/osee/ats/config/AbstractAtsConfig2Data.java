@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.config;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
-import org.eclipse.osee.framework.core.util.XResultData;
+import org.eclipse.osee.framework.core.util.result.XResultData;
 
 /**
  * @author Donald G. Dunne

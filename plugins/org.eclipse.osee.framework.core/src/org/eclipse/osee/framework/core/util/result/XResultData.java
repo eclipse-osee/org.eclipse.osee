@@ -9,7 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.core.util;
+package org.eclipse.osee.framework.core.util.result;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.util.IResultDataListener;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;

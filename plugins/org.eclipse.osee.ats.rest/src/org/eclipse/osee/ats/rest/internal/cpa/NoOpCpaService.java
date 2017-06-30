@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.cpa.CpaPcr;
 import org.eclipse.osee.ats.api.cpa.CpaProgram;
 import org.eclipse.osee.ats.api.cpa.IAtsCpaService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.framework.core.util.XResultData;
+import org.eclipse.osee.framework.core.util.result.XResultData;
 
 /**
  * @author Roberto E. Escobar

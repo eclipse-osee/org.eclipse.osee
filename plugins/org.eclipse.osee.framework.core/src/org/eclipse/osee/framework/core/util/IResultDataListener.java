@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.util;
 
+import org.eclipse.osee.framework.core.util.result.XResultData;
+
 /**
  * @author Donald G. Dunne
  */

@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.ui.skynet.relation.explorer;
 
 import java.util.ArrayList;
 import org.eclipse.jface.viewers.StructuredViewer;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;

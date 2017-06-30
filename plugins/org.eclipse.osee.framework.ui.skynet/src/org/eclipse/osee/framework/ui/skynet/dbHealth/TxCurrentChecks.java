@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.skynet.core.utility.InvalidTxCurrentsAndModTypes;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsTableLogger;
