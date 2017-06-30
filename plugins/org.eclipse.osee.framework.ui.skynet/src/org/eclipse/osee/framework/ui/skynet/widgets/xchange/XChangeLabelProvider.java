@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.ErrorChange;
 import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
@@ -83,6 +84,9 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
          } else if (cCol.equals(ChangeXViewerFactory.Item_Type)) {
             return change.getItemTypeName();
          } else if (cCol.equals(ChangeXViewerFactory.Is_Value)) {
+            if (attributeWasDeleted(change)) {
+               return "";
+            }
             if (isBinaryAttributeType(change)) {
                return "<large>";
             }
@@ -104,6 +108,20 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
          return XViewerCells.getCellExceptionString(ex);
       }
       return "unhandled column";
+   }
+
+   private boolean attributeWasDeleted(Change change) {
+      if (change.getChangeArtifact().isDeleted()) {
+         return true;
+      }
+      boolean found = false;
+      for (Attribute<?> attr : change.getChangeArtifact().getAttributes()) {
+         if (change.getItemId().equals(attr.getId())) {
+            found = true;
+            break;
+         }
+      }
+      return !found;
    }
 
    private final Map<Id, Boolean> attrTypeIdToIsBinaryMap = new HashMap<>(20);
