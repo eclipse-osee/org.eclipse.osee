@@ -39,6 +39,10 @@ public class ActionArtifact extends Artifact implements IAtsAction {
       super(branch, AtsArtifactTypes.Action);
    }
 
+   public ActionArtifact(Long id, BranchId branch) {
+      super(id, branch, AtsArtifactTypes.Action);
+   }
+
    public Set<IAtsActionableItem> getActionableItems() throws OseeCoreException {
       Set<IAtsActionableItem> aias = new HashSet<>();
       for (TeamWorkFlowArtifact team : getTeams()) {

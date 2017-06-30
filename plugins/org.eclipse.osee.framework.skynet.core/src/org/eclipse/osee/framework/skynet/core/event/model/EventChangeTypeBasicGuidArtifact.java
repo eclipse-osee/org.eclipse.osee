@@ -44,33 +44,12 @@ public class EventChangeTypeBasicGuidArtifact extends EventBasicGuidArtifact {
    }
 
    @Override
-   public int hashCode() {
-      final int prime = 31;
-      int result = super.hashCode();
-      result = prime * result + (fromArtTypeGuid == null ? 0 : fromArtTypeGuid.hashCode());
-      return result;
-   }
-
-   @Override
    public boolean equals(Object obj) {
-      if (this == obj) {
-         return true;
+      boolean equal = super.equals(obj);
+      if (equal && obj instanceof EventChangeTypeBasicGuidArtifact) {
+         EventChangeTypeBasicGuidArtifact other = (EventChangeTypeBasicGuidArtifact) obj;
+         return fromArtTypeGuid.equals(other.fromArtTypeGuid);
       }
-      if (!super.equals(obj)) {
-         return false;
-      }
-      if (getClass() != obj.getClass()) {
-         return false;
-      }
-      EventChangeTypeBasicGuidArtifact other = (EventChangeTypeBasicGuidArtifact) obj;
-      if (fromArtTypeGuid == null) {
-         if (other.fromArtTypeGuid != null) {
-            return false;
-         }
-      } else if (!fromArtTypeGuid.equals(other.fromArtTypeGuid)) {
-         return false;
-      }
-      return true;
+      return equal;
    }
-
 }

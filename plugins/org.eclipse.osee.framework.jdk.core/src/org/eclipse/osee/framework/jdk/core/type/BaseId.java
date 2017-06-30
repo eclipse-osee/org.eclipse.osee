@@ -35,8 +35,8 @@ public class BaseId implements Id, Cloneable {
       if (obj instanceof Id) {
          return id.equals(((Id) obj).getId());
       }
-      if (obj instanceof Identity<?>) {
-         return id.equals(((Identity<?>) obj).getGuid());
+      if (obj instanceof Identity<?> && this instanceof Identity<?>) {
+         return ((Identity<?>) this).getGuid().equals(((Identity<?>) obj).getGuid());
       }
       if (obj instanceof Long) {
          return id.equals(obj);

@@ -41,11 +41,13 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -61,8 +63,12 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
    private boolean creatingWorkingBranch = false;
    private boolean committingWorkingBranch = false;
 
-   public TeamWorkFlowArtifact(String guid, BranchId branch, ArtifactTypeId artifactType) {
-      super(guid, branch, artifactType);
+   public TeamWorkFlowArtifact(Long id, String guid, BranchId branch, ArtifactTypeId artifactType) {
+      super(id, guid, branch, artifactType);
+   }
+
+   public TeamWorkFlowArtifact(ArtifactTypeId artifactType) {
+      super(Lib.generateUuid(), null, CoreBranches.COMMON, artifactType);
    }
 
    @Override

@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
@@ -52,7 +51,7 @@ public class RelationOrderDataTest {
 
    @Before
    public void setUp() throws OseeCoreException {
-      artifact = new Artifact(CoreBranches.SYSTEM_ROOT, CoreArtifactTypes.Artifact);
+      artifact = new Artifact(CoreBranches.SYSTEM_ROOT);
       accessor = new MockRelationOrderAccessor();
       data = new RelationOrderData(accessor, artifact);
 

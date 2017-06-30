@@ -26,8 +26,8 @@ public abstract class CollectorArtifact extends AbstractWorkflowArtifact impleme
 
    private final RelationTypeSide membersRelationType;
 
-   public CollectorArtifact(String guid, BranchId branch, ArtifactTypeId artifactType, RelationTypeSide membersRelationType) {
-      super(guid, branch, artifactType);
+   public CollectorArtifact(Long id, String guid, BranchId branch, ArtifactTypeId artifactType, RelationTypeSide membersRelationType) {
+      super(id, guid, branch, artifactType);
       this.membersRelationType = membersRelationType;
    }
 

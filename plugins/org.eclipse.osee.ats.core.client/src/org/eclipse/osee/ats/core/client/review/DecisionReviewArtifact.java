@@ -24,8 +24,8 @@ public class DecisionReviewArtifact extends AbstractReviewArtifact implements IA
 
    public DecisionOptions decisionOptions;
 
-   public DecisionReviewArtifact(String guid, BranchId branch, ArtifactTypeId artifactType) {
-      super(guid, branch, artifactType);
+   public DecisionReviewArtifact(Long id, String guid, BranchId branch, ArtifactTypeId artifactType) {
+      super(id, guid, branch, artifactType);
       decisionOptions = new DecisionOptions(this, AtsClientService.get());
    }
 

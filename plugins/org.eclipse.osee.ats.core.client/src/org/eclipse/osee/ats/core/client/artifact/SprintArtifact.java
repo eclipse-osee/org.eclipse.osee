@@ -28,8 +28,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class SprintArtifact extends CollectorArtifact implements IAgileSprint {
 
-   public SprintArtifact(String guid, BranchId branch, ArtifactTypeId artifactType) {
-      super(guid, branch, artifactType, AtsRelationTypes.AgileSprintToItem_AtsItem);
+   public SprintArtifact(Long id, String guid, BranchId branch, ArtifactTypeId artifactType) {
+      super(id, guid, branch, artifactType, AtsRelationTypes.AgileSprintToItem_AtsItem);
    }
 
    @Override

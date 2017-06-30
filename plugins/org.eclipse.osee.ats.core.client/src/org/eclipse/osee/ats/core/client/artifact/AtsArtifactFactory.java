@@ -81,24 +81,22 @@ public class AtsArtifactFactory extends ArtifactFactory {
    }
 
    @Override
-   public Artifact getArtifactInstance(String guid, BranchId branch, ArtifactTypeId artifactType, boolean inDataStore) throws OseeCoreException {
+   public Artifact getArtifactInstance(Long id, String guid, BranchId branch, ArtifactTypeId artifactType, boolean inDataStore) throws OseeCoreException {
       Artifact toReturn;
       if (artifactType.equals(Task)) {
-         toReturn = new TaskArtifact(guid, branch, artifactType);
+         toReturn = new TaskArtifact(id, guid, branch, artifactType);
       } else if (ArtifactTypeManager.inheritsFrom(artifactType, TeamWorkflow)) {
-         toReturn = new TeamWorkFlowArtifact(guid, branch, artifactType);
+         toReturn = new TeamWorkFlowArtifact(id, guid, branch, artifactType);
       } else if (artifactType.equals(DecisionReview)) {
-         toReturn = new DecisionReviewArtifact(guid, branch, artifactType);
+         toReturn = new DecisionReviewArtifact(id, guid, branch, artifactType);
       } else if (artifactType.equals(PeerToPeerReview)) {
-         toReturn = new PeerToPeerReviewArtifact(guid, branch, artifactType);
-      } else if (artifactType.equals(Goal)) {
-         toReturn = new GoalArtifact(guid, branch, artifactType);
-      } else if (artifactType.equals(AgileBacklog)) {
-         toReturn = new GoalArtifact(guid, branch, artifactType);
+         toReturn = new PeerToPeerReviewArtifact(id, guid, branch, artifactType);
+      } else if (artifactType.matches(Goal, AgileBacklog)) {
+         toReturn = new GoalArtifact(id, guid, branch, artifactType);
       } else if (artifactType.equals(AgileSprint)) {
-         toReturn = new SprintArtifact(guid, branch, artifactType);
+         toReturn = new SprintArtifact(id, guid, branch, artifactType);
       } else if (artifactType.equals(Action)) {
-         toReturn = new ActionArtifact(branch);
+         toReturn = new ActionArtifact(id, branch);
       } else {
          throw new OseeArgumentException("AtsArtifactFactory did not recognize the artifact type [%s]", artifactType);
       }

@@ -89,8 +89,8 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    private TransactionId stateMgrTransactionNumber;
    private IAtsStateManager stateMgr;
 
-   public AbstractWorkflowArtifact(String guid, BranchId branch, ArtifactTypeId artifactType) {
-      super(guid, branch, artifactType);
+   public AbstractWorkflowArtifact(Long id, String guid, BranchId branch, ArtifactTypeId artifactType) {
+      super(id, guid, branch, artifactType);
    }
 
    public void initializeNewStateMachine(List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException {

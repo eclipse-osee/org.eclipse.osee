@@ -15,6 +15,7 @@ import static org.junit.Assert.assertFalse;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -36,7 +37,7 @@ import org.junit.Before;
 
 /**
  * This test is intended to be run against a demo database.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class ImportActionsViaSpreadsheetTest {
@@ -119,14 +120,14 @@ public class ImportActionsViaSpreadsheetTest {
       List<Artifact> members = goal.getRelatedArtifacts(AtsRelationTypes.Goal_Member);
       Assert.assertEquals("Should be 5 members", 5, members.size());
       Assert.assertTrue("members should be in order",
-         ((Artifact) members.toArray()[0]).getDescription().startsWith("Phase 1"));
+         ((IAtsObject) members.toArray()[0]).getDescription().startsWith("Phase 1"));
       Assert.assertTrue("members should be in order",
-         ((Artifact) members.toArray()[1]).getDescription().startsWith("Phase 2"));
+         ((IAtsObject) members.toArray()[1]).getDescription().startsWith("Phase 2"));
       Assert.assertTrue("members should be in order",
-         ((Artifact) members.toArray()[2]).getDescription().startsWith("What needs"));
+         ((IAtsObject) members.toArray()[2]).getDescription().startsWith("What needs"));
       Assert.assertEquals("members should be in order", "This is the description of what to do",
-         ((Artifact) members.toArray()[3]).getDescription());
+         ((IAtsObject) members.toArray()[3]).getDescription());
       Assert.assertEquals("members should be in order", "Support what they need",
-         ((Artifact) members.toArray()[4]).getDescription());
+         ((IAtsObject) members.toArray()[4]).getDescription());
    }
 }

@@ -31,8 +31,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 public class TaskArtifact extends AbstractWorkflowArtifact implements IAtsTask, IATSStateMachineArtifact {
    Set<Long> taskHasNoParent = new HashSet<>();
 
-   public TaskArtifact(String guid, BranchId branch, ArtifactTypeId artifactType) {
-      super(guid, branch, artifactType);
+   public TaskArtifact(Long id, String guid, BranchId branch, ArtifactTypeId artifactType) {
+      super(id, guid, branch, artifactType);
    }
 
    public boolean isRelatedToParentWorkflowCurrentState() throws OseeCoreException {

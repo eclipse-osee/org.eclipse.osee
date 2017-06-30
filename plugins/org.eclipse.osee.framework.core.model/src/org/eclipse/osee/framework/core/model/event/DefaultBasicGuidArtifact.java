@@ -56,12 +56,6 @@ public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements Ha
       return String.format("branchId = %s; artType = %s; guid = %s", branch.getId(), artifactType.getId(), getGuid());
    }
 
-   @Override
-   public int hashCode() {
-      // NOTE This hashcode MUST match that of Artifact class
-      return super.hashCode();
-   }
-
    /**
     * Note: DefaultBasicGuidArtifact class does not implement the hashCode, but instead uses the one implemented by
     * Identity. It can not use the branch uuid due to the need for IArtifactTokens to match Artifact instances. In
@@ -70,15 +64,9 @@ public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements Ha
    @Override
    public boolean equals(Object obj) {
       boolean equals = super.equals(obj);
-      if (!equals && obj instanceof DefaultBasicGuidArtifact) {
+      if (equals && obj instanceof DefaultBasicGuidArtifact) {
          DefaultBasicGuidArtifact other = (DefaultBasicGuidArtifact) obj;
-         equals = other.artifactType.equals(artifactType);
-         equals &= isOnSameBranch(other);
-         if (equals && getGuid() == null || other.getGuid() == null) {
-            equals = false;
-         } else if (equals) {
-            equals = getGuid().equals(other.getGuid());
-         }
+         return other.artifactType.equals(artifactType) & isOnSameBranch(other);
       }
       return equals;
    }

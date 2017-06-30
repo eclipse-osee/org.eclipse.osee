@@ -37,8 +37,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact implements IAtsAbstractReview {
 
-   public AbstractReviewArtifact(String guid, BranchId branch, ArtifactTypeId artifactType) throws OseeCoreException {
-      super(guid, branch, artifactType);
+   public AbstractReviewArtifact(Long id, String guid, BranchId branch, ArtifactTypeId artifactType) throws OseeCoreException {
+      super(id, guid, branch, artifactType);
    }
 
    public static List<IAtsUser> getImplementersByState(AbstractWorkflowArtifact workflow, IStateToken state) throws OseeCoreException {

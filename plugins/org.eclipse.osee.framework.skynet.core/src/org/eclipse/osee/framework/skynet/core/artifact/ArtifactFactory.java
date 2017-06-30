@@ -55,9 +55,8 @@ public abstract class ArtifactFactory {
             "Invalid guid [%s] during artifact creation [name: %s]", guid, artifactName);
       }
 
-      Artifact artifact = getArtifactInstance(guid, branch, artifactTypeId, false);
+      Artifact artifact = getArtifactInstance(getNextArtifactId(uuid), guid, branch, artifactTypeId, false);
 
-      artifact.setArtId(getNextArtifactId(uuid));
       artifact.meetMinimumAttributeCounts(true);
       ArtifactCache.cache(artifact);
       artifact.setLinksLoaded(true);
@@ -84,9 +83,8 @@ public abstract class ArtifactFactory {
     * This method does not cache the artifact, ArtifactLoader will cache existing artifacts
     */
    private Artifact internalExistingArtifact(ArtifactId artId, String guid, ArtifactTypeId artifactType, int gammaId, BranchId branch, ModificationType modType, ApplicabilityId applicabilityId, boolean historical, TransactionToken transactionId, boolean useBackingData) throws OseeCoreException {
-      Artifact artifact = getArtifactInstance(guid, branch, artifactType, true);
+      Artifact artifact = getArtifactInstance(artId.getId(), guid, branch, artifactType, true);
 
-      artifact.setArtId(artId.getId());
       artifact.internalSetPersistenceData(gammaId, transactionId, modType, applicabilityId, historical, useBackingData);
 
       return artifact;
@@ -105,11 +103,8 @@ public abstract class ArtifactFactory {
     * call to the persistence manager to acquire the <code>Artifact</code> or else an infinite loop will occur since
     * this method is used by the persistence manager when it needs a new instance of the class to work with and can not
     * come up with it on its own.
-    *
-    * @param branch branch on which this instance of this artifact will be associated
-    * @param hrid
     */
-   protected abstract Artifact getArtifactInstance(String guid, BranchId branch, ArtifactTypeId artifactType, boolean inDataStore) throws OseeCoreException;
+   protected abstract Artifact getArtifactInstance(Long id, String guid, BranchId branch, ArtifactTypeId artifactType, boolean inDataStore) throws OseeCoreException;
 
    @Override
    public String toString() {

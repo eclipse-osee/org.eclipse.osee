@@ -27,8 +27,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class GoalArtifact extends CollectorArtifact implements IAtsGoal {
 
-   public GoalArtifact(String guid, BranchId branch, ArtifactTypeId artifactType) {
-      super(guid, branch, artifactType, AtsRelationTypes.Goal_Member);
+   public GoalArtifact(Long id, String guid, BranchId branch, ArtifactTypeId artifactType) {
+      super(id, guid, branch, artifactType, AtsRelationTypes.Goal_Member);
    }
 
    @Override

@@ -168,25 +168,6 @@ public final class ArtifactTest {
    }
 
    @Test
-   public void testHashCode() throws OseeCoreException {
-      Artifact art = ArtifactTypeManager.addArtifact(GeneralData, COMMON, ArtifactTest.class.getSimpleName());
-      art.persist("test");
-
-      DefaultBasicGuidArtifact equalGuid =
-         new DefaultBasicGuidArtifact(SYSTEM_ROOT, CoreArtifactTypes.SoftwareDesign, art);
-      Assert.assertEquals(art.hashCode(), equalGuid.hashCode());
-
-      DefaultBasicGuidArtifact equalGuidArtType = new DefaultBasicGuidArtifact(SYSTEM_ROOT, GeneralData, art);
-      Assert.assertEquals(art.hashCode(), equalGuidArtType.hashCode());
-
-      DefaultBasicGuidArtifact equalGuidArtTypeBranchUuid = new DefaultBasicGuidArtifact(COMMON, GeneralData, art);
-      Assert.assertEquals(art.hashCode(), equalGuidArtTypeBranchUuid.hashCode());
-
-      DefaultBasicGuidArtifact equalArtTypeBranchUuidNotGuid = new DefaultBasicGuidArtifact(COMMON, GeneralData);
-      Assert.assertNotSame(art.hashCode(), equalArtTypeBranchUuidNotGuid.hashCode());
-   }
-
-   @Test
    public void testEquals() throws OseeCoreException {
       Artifact art = ArtifactTypeManager.addArtifact(GeneralData, COMMON, ArtifactTest.class.getSimpleName());
       art.persist("test");

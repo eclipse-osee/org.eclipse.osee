@@ -22,8 +22,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public abstract class AbstractAtsArtifact extends Artifact implements IAtsObject {
 
-   public AbstractAtsArtifact(String guid, BranchId branch, ArtifactTypeId artifactType) {
-      super(guid, branch, artifactType);
+   public AbstractAtsArtifact(Long id, String guid, BranchId branch, ArtifactTypeId artifactType) {
+      super(id, guid, branch, artifactType);
    }
 
    public Artifact getParentAtsArtifact() throws OseeCoreException {

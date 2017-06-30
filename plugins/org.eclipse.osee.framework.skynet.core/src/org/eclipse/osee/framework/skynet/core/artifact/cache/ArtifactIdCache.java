@@ -40,9 +40,6 @@ public class ArtifactIdCache {
    }
 
    public Artifact getById(ArtifactToken artifact) {
-      if (artifact instanceof Artifact) {
-         artifact = ((Artifact) artifact).getHashableToken();
-      }
       return asArtifact(idCache.get(artifact));
    }
 
@@ -52,13 +49,13 @@ public class ArtifactIdCache {
 
    public Object cache(Artifact artifact) {
       Object object = asCacheObject(artifact);
-      idCache.put(artifact.getHashableToken(), object);
+      idCache.put(artifact, object);
       guidCache.put(artifact.getGuid(), artifact.getBranch(), object);
       return object;
    }
 
    public void deCache(Artifact artifact) {
-      idCache.remove(artifact.getHashableToken());
+      idCache.remove(artifact);
       guidCache.removeAndGet(artifact.getGuid(), artifact.getBranch());
    }
 
@@ -119,9 +116,6 @@ public class ArtifactIdCache {
 
    @SuppressWarnings("unchecked")
    public void updateReferenceType(ArtifactToken token) {
-      if (token instanceof Artifact) {
-         token = ((Artifact) token).getHashableToken();
-      }
       Object obj = idCache.get(token);
       if (obj != null) {
          if (obj instanceof Artifact) {
