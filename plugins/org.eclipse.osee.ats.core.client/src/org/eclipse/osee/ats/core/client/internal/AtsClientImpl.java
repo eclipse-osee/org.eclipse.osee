@@ -269,24 +269,24 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
 
    @Override
    public IAtsTeamDefinition createTeamDefinition(String name, IAtsChangeSet changes, IAtsServices services) throws OseeCoreException {
-      return createTeamDefinition(GUID.create(), name, AtsUtilClient.createConfigObjectUuid(), changes, services);
+      return createTeamDefinition(name, AtsUtilClient.createConfigObjectUuid(), changes, services);
    }
 
    @Override
-   public IAtsTeamDefinition createTeamDefinition(String guid, String name, long uuid, IAtsChangeSet changes, IAtsServices services) throws OseeCoreException {
-      IAtsTeamDefinition item = teamDefFactory.createTeamDefinition(guid, name, uuid, changes, services);
+   public IAtsTeamDefinition createTeamDefinition(String name, long uuid, IAtsChangeSet changes, IAtsServices services) throws OseeCoreException {
+      IAtsTeamDefinition item = teamDefFactory.createTeamDefinition(name, uuid, changes, services);
       atsCache.cacheAtsObject(item);
       return item;
    }
 
    @Override
    public IAtsActionableItem createActionableItem(String name, IAtsChangeSet changes, IAtsServices services) throws OseeCoreException {
-      return createActionableItem(GUID.create(), name, AtsUtilClient.createConfigObjectUuid(), changes, services);
+      return createActionableItem(name, AtsUtilClient.createConfigObjectUuid(), changes, services);
    }
 
    @Override
-   public IAtsActionableItem createActionableItem(String guid, String name, long uuid, IAtsChangeSet changes, IAtsServices services) throws OseeCoreException {
-      IAtsActionableItem item = actionableItemFactory.createActionableItem(guid, name, uuid, changes, services);
+   public IAtsActionableItem createActionableItem(String name, long uuid, IAtsChangeSet changes, IAtsServices services) throws OseeCoreException {
+      IAtsActionableItem item = actionableItemFactory.createActionableItem(name, uuid, changes, services);
       atsCache.cacheAtsObject(item);
       return item;
    }

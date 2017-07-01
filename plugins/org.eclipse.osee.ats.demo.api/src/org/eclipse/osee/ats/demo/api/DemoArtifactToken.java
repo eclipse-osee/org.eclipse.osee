@@ -21,55 +21,55 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 public final class DemoArtifactToken {
 
    public static final ArtifactToken SAW_Test_AI =
-      TokenFactory.createArtifactToken(75881049, "ABirZS0j81dpAiAyqUwA", "SAW Test", AtsArtifactTypes.ActionableItem);
+      TokenFactory.createArtifactToken(75881049, "SAW Test", AtsArtifactTypes.ActionableItem);
    public static final ArtifactToken SAW_Code_AI =
-      TokenFactory.createArtifactToken(733306468, "ADubGYmXm0FaNNuDCdAA", "SAW Code", AtsArtifactTypes.ActionableItem);
+      TokenFactory.createArtifactToken(733306468, "SAW Code", AtsArtifactTypes.ActionableItem);
 
-   public static ArtifactToken Process_Team = TokenFactory.createArtifactToken(55170736, "At2WHxBtYhx4Nxrck6gA",
-      "Process_Team", AtsArtifactTypes.TeamDefinition);
+   public static ArtifactToken Process_Team =
+      TokenFactory.createArtifactToken(55170736, "Process_Team", AtsArtifactTypes.TeamDefinition);
    public static ArtifactToken Tools_Team =
-      TokenFactory.createArtifactToken(4830548, "At2WHxCFyQPidx78iuAA", "Tools_Team", AtsArtifactTypes.TeamDefinition);
+      TokenFactory.createArtifactToken(4830548, "Tools_Team", AtsArtifactTypes.TeamDefinition);
 
    public static final ArtifactToken SAW_Program =
-      TokenFactory.createArtifactToken(19196003, "At2WHxCeMCHacr02EkAA", "SAW Program", AtsArtifactTypes.Program);
+      TokenFactory.createArtifactToken(19196003, "SAW Program", AtsArtifactTypes.Program);
    public static ArtifactToken SAW_HW =
-      TokenFactory.createArtifactToken(2876840, "At2WHxCeMCHfcr02EkAA", "SAW HW", AtsArtifactTypes.TeamDefinition);
+      TokenFactory.createArtifactToken(2876840, "SAW HW", AtsArtifactTypes.TeamDefinition);
    public static ArtifactToken SAW_Code =
-      TokenFactory.createArtifactToken(30013695, "At2WHxC2lxLOGB0YiuQA", "SAW Code", AtsArtifactTypes.TeamDefinition);
+      TokenFactory.createArtifactToken(30013695, "SAW Code", AtsArtifactTypes.TeamDefinition);
    public static ArtifactToken SAW_Test =
-      TokenFactory.createArtifactToken(31608252, "At2WHxDuXkCIJFEtQ0AA", "SAW Test", AtsArtifactTypes.TeamDefinition);
-   public static ArtifactToken SAW_SW_Design = TokenFactory.createArtifactToken(138220, "At2WHxEGxl7nWuqx7FQA",
-      "SAW SW Design", AtsArtifactTypes.TeamDefinition);
-   public static ArtifactToken SAW_Requirements = TokenFactory.createArtifactToken(20592, "At2WHxEfLXfCLytmLlAA",
-      "SAW Requirements", AtsArtifactTypes.TeamDefinition);
+      TokenFactory.createArtifactToken(31608252, "SAW Test", AtsArtifactTypes.TeamDefinition);
+   public static ArtifactToken SAW_SW_Design =
+      TokenFactory.createArtifactToken(138220, "SAW SW Design", AtsArtifactTypes.TeamDefinition);
+   public static ArtifactToken SAW_Requirements =
+      TokenFactory.createArtifactToken(20592, "SAW Requirements", AtsArtifactTypes.TeamDefinition);
    public static ArtifactToken SAW_SW =
-      TokenFactory.createArtifactToken(3902389, "At2WHxFk5VVE2cafF5AA", "SAW SW", AtsArtifactTypes.TeamDefinition);
+      TokenFactory.createArtifactToken(3902389, "SAW SW", AtsArtifactTypes.TeamDefinition);
    public static ArtifactToken SAW_CSCI_AI =
-      TokenFactory.createArtifactToken(1866, "AZ2uRHybOnvKPIuRqKAA", "SAW CSCI", AtsArtifactTypes.ActionableItem);
+      TokenFactory.createArtifactToken(1866, "SAW CSCI", AtsArtifactTypes.ActionableItem);
 
    // SAW_SW Versions
    public static ArtifactToken SAW_Bld_1 =
-      TokenFactory.createArtifactToken(2749182, "A8msa8LTDG36oWAnq3QA", "SAW_Bld_1", AtsArtifactTypes.Version);
+      TokenFactory.createArtifactToken(2749182, "SAW_Bld_1", AtsArtifactTypes.Version);
    public static ArtifactToken SAW_Bld_2 =
-      TokenFactory.createArtifactToken(7632957, "A8YqcqyKh3HCkcHfEVwA", "SAW_Bld_2", AtsArtifactTypes.Version);
+      TokenFactory.createArtifactToken(7632957, "SAW_Bld_2", AtsArtifactTypes.Version);
    public static ArtifactToken SAW_Bld_3 =
-      TokenFactory.createArtifactToken(577781, "A8msa8LrcxhyrUTsbuwA", "SAW_Bld_3", AtsArtifactTypes.Version);
+      TokenFactory.createArtifactToken(577781, "SAW_Bld_3", AtsArtifactTypes.Version);
 
    public static final ArtifactToken CIS_Program =
-      TokenFactory.createArtifactToken(8242414, "At2WHxCeMCHbcr02EkAA", "CIS Program", AtsArtifactTypes.Program);
+      TokenFactory.createArtifactToken(8242414, "CIS Program", AtsArtifactTypes.Program);
 
    public static ArtifactToken CIS_SW =
-      TokenFactory.createArtifactToken(695910, "At2WHxF7jmUa8jXR3iwA", "CIS_SW", AtsArtifactTypes.TeamDefinition);
+      TokenFactory.createArtifactToken(695910, "CIS_SW", AtsArtifactTypes.TeamDefinition);
    public static ArtifactToken CIS_Code =
-      TokenFactory.createArtifactToken(1629262, "At2WHxGo4A1nnGWYjgwA", "CIS_Code", AtsArtifactTypes.TeamDefinition);
+      TokenFactory.createArtifactToken(1629262, "CIS_Code", AtsArtifactTypes.TeamDefinition);
    public static ArtifactToken CIS_Test =
-      TokenFactory.createArtifactToken(541255, "At2WHxHZrl0bKPA6uUgA", "CIS_Test", AtsArtifactTypes.TeamDefinition);
+      TokenFactory.createArtifactToken(541255, "CIS_Test", AtsArtifactTypes.TeamDefinition);
 
    public static ArtifactToken Facilities_Team =
-      TokenFactory.createArtifactToken(4811031, "At2WHxIMOz66yR56eRAA", "Facilities_Team", CoreArtifactTypes.Folder);
+      TokenFactory.createArtifactToken(4811031, "Facilities_Team", CoreArtifactTypes.Folder);
 
    public static ArtifactToken DemoPrograms =
-      TokenFactory.createArtifactToken(90120, "Awsk_RtnczAchcuSxagA", "Demo Programs", CoreArtifactTypes.Artifact);
+      TokenFactory.createArtifactToken(90120, "Demo Programs", CoreArtifactTypes.Artifact);
 
    public static ArtifactToken SAW_Code_Team_WorkPackage_01 =
       TokenFactory.createArtifactToken(38512616, "AZp8M1dPuESWYBPPbDgA", "Work Pkg 01", AtsArtifactTypes.WorkPackage);

@@ -26,17 +26,14 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 public class ActionableItemFactory implements IActionableItemFactory {
 
    @Override
-   public IAtsActionableItem createActionableItem(String guid, String name, long uuid, IAtsChangeSet changes, IAtsServices services) {
-      if (guid == null) {
-         throw new IllegalArgumentException("guid can not be null");
-      }
-      ArtifactToken artifact = changes.createArtifact(AtsArtifactTypes.ActionableItem, name, guid, uuid);
+   public IAtsActionableItem createActionableItem(String name, long uuid, IAtsChangeSet changes, IAtsServices services) {
+      ArtifactToken artifact = changes.createArtifact(AtsArtifactTypes.ActionableItem, name, GUID.create(), uuid);
       return new ActionableItem(services.getLogger(), services, artifact);
    }
 
    @Override
    public IAtsActionableItem createActionableItem(String name, IAtsChangeSet changes, IAtsServices services) {
-      return createActionableItem(GUID.create(), name, AtsUtilClient.createConfigObjectUuid(), changes, services);
+      return createActionableItem(name, AtsUtilClient.createConfigObjectUuid(), changes, services);
    }
 
 }

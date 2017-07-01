@@ -27,8 +27,7 @@ teamDefinition "Teams" GetOrCreate {
 	children {
 
 		teamDefinition "CIS SW" {
-			guid "At2WHxF7jmUa8jXR3iwA"
-			uuid 695910
+			id 695910
 			staticId "cis.teamDefHoldingVersions"
 			lead named "Kay Jason"
 			member named "Steven Kohn"
@@ -47,8 +46,7 @@ teamDefinition "Teams" GetOrCreate {
 			children {
 
 				teamDefinition "CIS Code" {
-					guid "At2WHxGo4A1nnGWYjgwA"
-					uuid 1629262
+					id 1629262
 					staticId "cis.code" 
 					lead named "Jason Michael"
 					member named "Jason Michael"
@@ -72,8 +70,7 @@ teamDefinition "Teams" GetOrCreate {
 				}
 
 				teamDefinition "CIS Test" {
-					guid "At2WHxHZrl0bKPA6uUgA"
-					uuid 541255
+					id 541255
 					staticId "cis.test"
 					lead named "Kay Jones"
 					member named "Kay Jones"
@@ -84,8 +81,7 @@ teamDefinition "Teams" GetOrCreate {
 		}
 
 		teamDefinition "Facilities Team" {
-			guid "At2WHxIMOz66yR56eRAA"
-			uuid 4811031
+			id 4811031
 			lead named "John Stevens"
 			member named "John Stevens"
 			member named "Steven Michael"
@@ -106,8 +102,7 @@ teamDefinition "Teams" GetOrCreate {
 		}
 
 		teamDefinition "Process Team" {
-			guid "At2WHxBtYhx4Nxrck6gA"
-			uuid 55170736
+			id 55170736
 			lead named "Alex Kay"
 			member named "Keith Johnson"
 			member named "Michael Alex"
@@ -117,8 +112,7 @@ teamDefinition "Teams" GetOrCreate {
 		}
 
 		teamDefinition "SAW SW" {
-			guid "At2WHxFk5VVE2cafF5AA"
-			uuid 3902389
+			id 3902389
 			staticId "saw.teamDefHoldingVersions"
 			lead named "Kay Jason"
 			member named "Maichael Johnson"
@@ -126,22 +120,19 @@ teamDefinition "Teams" GetOrCreate {
 			member named "Kay Jason"
 			workDefinition "WorkDef_Team_Default"
 			version "SAW_Bld_1" {
-				guid "A8msa8LTDG36oWAnq3QA"
-				uuid 2749182
+				id 2749182
 				staticId "saw.teamDefHoldingVersions"
 				released True
 				baselineBranchUuid "3"
 			}
 			version "SAW_Bld_2" {
-				guid "A8YqcqyKh3HCkcHfEVwA"
-				uuid 7632957
+				id 7632957
 				staticId "saw.teamDefHoldingVersions"
 				next True allowCreateBranch True allowCommitBranch True
 				baselineBranchUuid "5"
 			}
 			version "SAW_Bld_3" {
-				guid "A8msa8LrcxhyrUTsbuwA"
-				uuid 577781
+				id 577781
 				staticId "saw.teamDefHoldingVersions"
 				next True allowCreateBranch True allowCommitBranch True
 				baselineBranchUuid "6"
@@ -149,8 +140,7 @@ teamDefinition "Teams" GetOrCreate {
 			children {
 
 				teamDefinition "SAW Code" {
-					guid "At2WHxC2lxLOGB0YiuQA"
-					uuid 30013695
+					id 30013695
 					staticId "saw.code"
 					lead named "Joe Smith"
 					member named "Joe Smith"
@@ -159,8 +149,7 @@ teamDefinition "Teams" GetOrCreate {
 				}
 
 				teamDefinition "SAW HW" {
-					guid "At2WHxCeMCHfcr02EkAA"
-					uuid 2876840
+					id 2876840
 					lead named "Jason Michael"
 					member named "Jason Michael"
 					workDefinition "WorkDef_Team_Default"
@@ -168,8 +157,7 @@ teamDefinition "Teams" GetOrCreate {
 				}
 
 				teamDefinition "SAW Requirements" {
-					guid "At2WHxEfLXfCLytmLlAA"
-					uuid 20592
+					id 20592
 					staticId "saw.requirements"
 					lead named "Joe Smith"
 					member named "Joe Smith"
@@ -178,8 +166,7 @@ teamDefinition "Teams" GetOrCreate {
 				}
 
 				teamDefinition "SAW SW Design" {
-					guid "At2WHxEGxl7nWuqx7FQA"
-					uuid 138220
+					id 138220
 					staticId "saw.sw_design"
 					lead named "Kay Jones"
 					member named "Kay Jones"
@@ -187,8 +174,7 @@ teamDefinition "Teams" GetOrCreate {
 				}
 
 				teamDefinition "SAW Test" {
-					guid "At2WHxDuXkCIJFEtQ0AA"
-					uuid 31608252
+					id 31608252
 					staticId "saw.test"
 					lead named "Kay Jones"
 					member named "Kay Jones" privileged named "Joe Smith"
@@ -199,8 +185,7 @@ teamDefinition "Teams" GetOrCreate {
 		}
 
 		teamDefinition "Tools Team" {
-			guid "At2WHxCFyQPidx78iuAA"
-			uuid 4830548
+			id 4830548
 			lead named "Jeffery Kay"
 			member named "Jeffery Kay"
 			member named "Roland Stevens"
@@ -264,13 +249,11 @@ actionableItem "Actionable Items" GetOrCreate {
 			}
 		}
 		actionableItem "SAW CSCI" {
-			guid "AZ2uRHybOnvKPIuRqKAA"
-			uuid 1866
+			id 1866
 			actionable False
 			children {
 				actionableItem "SAW Code" {
-					guid "ADubGYmXm0FaNNuDCdAA"
-					uuid 733306468
+					id 733306468
 					team "SAW Code"
 					children {
 						actionableItem "COMM"
@@ -300,8 +283,7 @@ actionableItem "Actionable Items" GetOrCreate {
 					team "SAW SW Design"
 				}
 				actionableItem "SAW Test" {
-					guid "ABirZS0j81dpAiAyqUwA"
-					uuid 75881049
+					id 75881049
 					team "SAW Test"
 					children {
 						actionableItem "ADT"
@@ -328,16 +310,14 @@ actionableItem "Actionable Items" GetOrCreate {
 }
 	
 program "SAW Program" {
-	guid "At2WHxCeMCHacr02EkAA"
-	uuid 19196003
+	id 19196003
 	namespace "org.demo.saw"
 	teamDefinition "SAW SW"
 	attribute "ats.Description" value "Program object for SAW Program"
 }
 
 program "CIS Program" {
-	guid "At2WHxCeMCHbcr02EkAA"
-	uuid 8242414
+	id 8242414
 	namespace "org.demo.cis"
 	teamDefinition "CIS SW"
 	attribute "ats.Description" value "Program object for CIS Program"

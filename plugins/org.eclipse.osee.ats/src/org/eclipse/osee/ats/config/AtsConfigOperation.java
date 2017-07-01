@@ -136,8 +136,8 @@ public class AtsConfigOperation extends AbstractOperation {
       if (teamDefToken == null) {
          teamDef = AtsClientService.get().createTeamDefinition(teamDefName, changes, services);
       } else {
-         teamDef = AtsClientService.get().createTeamDefinition(teamDefToken.getGuid(), teamDefToken.getName(),
-            teamDefToken.getId(), changes, services);
+         teamDef = AtsClientService.get().createTeamDefinition(teamDefToken.getName(), teamDefToken.getId(),
+            changes, services);
       }
       changes.relate(TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService()),
          AtsRelationTypes.TeamMember_Member, AtsClientService.get().getUserService().getCurrentUser());
@@ -167,8 +167,8 @@ public class AtsConfigOperation extends AbstractOperation {
             addChildAi(safetyAi, childAi, changes, aias);
          }
       } else {
-         IAtsActionableItem childAi = AtsClientService.get().createActionableItem(actionableItemToken.getGuid(),
-            actionableItemToken.getName(), actionableItemToken.getId(), changes, services);
+         IAtsActionableItem childAi = AtsClientService.get().createActionableItem(actionableItemToken.getName(),
+            actionableItemToken.getId(), changes, services);
          addChildAi(safetyAi, childAi, changes, aias);
       }
       return aias;

@@ -76,7 +76,6 @@ import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -298,32 +297,27 @@ public class AtsTestUtil {
 
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(AtsTestUtil.class.getSimpleName());
 
-      String guid = GUID.create();
-      testAi = AtsClientService.get().createActionableItem(guid, getTitle("AI", postFixName),
+      testAi = AtsClientService.get().createActionableItem(getTitle("AI", postFixName),
          AtsUtilClient.createConfigObjectUuid(), changes, AtsClientService.get());
       changes.setSoleAttributeValue(testAi, AtsAttributeTypes.Active, true);
       changes.setSoleAttributeValue(testAi, AtsAttributeTypes.Actionable, true);
 
-      guid = GUID.create();
-      testAi2 = AtsClientService.get().createActionableItem(guid, getTitle("AI2", postFixName),
+      testAi2 = AtsClientService.get().createActionableItem(getTitle("AI2", postFixName),
          AtsUtilClient.createConfigObjectUuid(), changes, AtsClientService.get());
       changes.setSoleAttributeValue(testAi2, AtsAttributeTypes.Active, true);
       changes.setSoleAttributeValue(testAi2, AtsAttributeTypes.Actionable, true);
 
-      guid = GUID.create();
-      testAi3 = AtsClientService.get().createActionableItem(guid, getTitle("AI3", postFixName),
+      testAi3 = AtsClientService.get().createActionableItem(getTitle("AI3", postFixName),
          AtsUtilClient.createConfigObjectUuid(), changes, AtsClientService.get());
       changes.setSoleAttributeValue(testAi3, AtsAttributeTypes.Active, true);
       changes.setSoleAttributeValue(testAi3, AtsAttributeTypes.Actionable, true);
 
-      guid = GUID.create();
-      testAi4 = AtsClientService.get().createActionableItem(guid, getTitle("AI4", postFixName),
+      testAi4 = AtsClientService.get().createActionableItem(getTitle("AI4", postFixName),
          AtsUtilClient.createConfigObjectUuid(), changes, AtsClientService.get());
       changes.setSoleAttributeValue(testAi4, AtsAttributeTypes.Active, true);
       changes.setSoleAttributeValue(testAi4, AtsAttributeTypes.Actionable, true);
 
-      guid = GUID.create();
-      teamDef = AtsClientService.get().createTeamDefinition(guid, getTitle("Team Def", postFixName),
+      teamDef = AtsClientService.get().createTeamDefinition(getTitle("Team Def", postFixName),
          AtsUtilClient.createConfigObjectUuid(), changes, AtsClientService.get());
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.WorkflowDefinition, WORK_DEF_NAME);
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.Active, true);
@@ -333,23 +327,19 @@ public class AtsTestUtil {
       changes.relate(teamDef, AtsRelationTypes.TeamActionableItem_ActionableItem, testAi3);
       changes.relate(teamDef, AtsRelationTypes.TeamActionableItem_ActionableItem, testAi4);
 
-      guid = GUID.create();
-      verArt1 = AtsClientService.get().getVersionService().createVersion(getTitle("ver 1.0", postFixName), guid,
+      verArt1 = AtsClientService.get().getVersionService().createVersion(getTitle("ver 1.0", postFixName),
          AtsUtilClient.createConfigObjectUuid(), changes);
       changes.relate(teamDef, AtsRelationTypes.TeamDefinitionToVersion_Version, verArt1);
 
-      guid = GUID.create();
-      verArt2 = AtsClientService.get().getVersionService().createVersion(getTitle("ver 2.0", postFixName), guid,
+      verArt2 = AtsClientService.get().getVersionService().createVersion(getTitle("ver 2.0", postFixName),
          AtsUtilClient.createConfigObjectUuid(), changes);
       changes.relate(teamDef, AtsRelationTypes.TeamDefinitionToVersion_Version, verArt2);
 
-      guid = GUID.create();
-      verArt3 = AtsClientService.get().getVersionService().createVersion(getTitle("ver 3.0", postFixName), guid,
+      verArt3 = AtsClientService.get().getVersionService().createVersion(getTitle("ver 3.0", postFixName),
          AtsUtilClient.createConfigObjectUuid(), changes);
       changes.relate(teamDef, AtsRelationTypes.TeamDefinitionToVersion_Version, verArt3);
 
-      guid = GUID.create();
-      verArt4 = AtsClientService.get().getVersionService().createVersion(getTitle("ver 4.0", postFixName), guid,
+      verArt4 = AtsClientService.get().getVersionService().createVersion(getTitle("ver 4.0", postFixName),
          AtsUtilClient.createConfigObjectUuid(), changes);
       changes.relate(teamDef, AtsRelationTypes.TeamDefinitionToVersion_Version, verArt4);
 

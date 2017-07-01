@@ -4,15 +4,13 @@ teamDefinition "AtsConfig2" GetOrCreate {
    children {
 
       teamDefinition "AtsConfig2 Software" {
-      	guid "AGZs2EW0tWRkIv3OqfAA"
-      	uuid 4696084
+      	id 4696084
          lead named "Smith, Joe"
          member named "Smith, Joe"
          workDefinition "WorkDef_Team_AtsConfig2Example"
       }
       teamDefinition "AtsConfig2 Requirements" {
-      	guid "AGZs2EU1d3db9M57WJQA"
-      	uuid 4696085
+      	id 4696085
          lead named "Smith, Joe"
          member named "Smith, Joe"
          workDefinition "WorkDef_Team_AtsConfig2Example"

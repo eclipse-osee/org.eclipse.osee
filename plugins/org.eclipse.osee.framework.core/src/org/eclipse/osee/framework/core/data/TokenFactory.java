@@ -49,6 +49,10 @@ public final class TokenFactory {
       return new AccessContextIdToken(guid, name);
    }
 
+   public static ArtifactToken createArtifactToken(long id, String name, IArtifactType artifactType) {
+      return ArtifactToken.valueOf(id, null, name, CoreBranches.COMMON, artifactType);
+   }
+
    public static ArtifactToken createArtifactToken(long id, String guid, String name, IArtifactType artifactType) {
       return ArtifactToken.valueOf(id, guid, name, CoreBranches.COMMON, artifactType);
    }

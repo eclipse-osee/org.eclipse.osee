@@ -226,8 +226,8 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    }
 
    @Override
-   public IAtsVersion createVersion(String title, String guid, long uuid, IAtsChangeSet changes) throws OseeCoreException {
-      return services.getVersionFactory().createVersion(title, guid, uuid, changes, services);
+   public IAtsVersion createVersion(String title, long uuid, IAtsChangeSet changes) throws OseeCoreException {
+      return services.getVersionFactory().createVersion(title, uuid, changes, services);
    }
 
    @Override

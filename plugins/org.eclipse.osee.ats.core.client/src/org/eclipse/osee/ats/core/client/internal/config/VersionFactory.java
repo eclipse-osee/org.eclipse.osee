@@ -27,12 +27,12 @@ public class VersionFactory implements IVersionFactory {
 
    @Override
    public IAtsVersion createVersion(String title, IAtsChangeSet changes, IAtsServices services) {
-      return createVersion(title, GUID.create(), AtsUtilClient.createConfigObjectUuid(), changes, services);
+      return createVersion(title, AtsUtilClient.createConfigObjectUuid(), changes, services);
    }
 
    @Override
-   public IAtsVersion createVersion(String name, String guid, long uuid, IAtsChangeSet changes, IAtsServices services) {
-      ArtifactToken artifact = changes.createArtifact(AtsArtifactTypes.Version, name, guid, uuid);
+   public IAtsVersion createVersion(String name, long uuid, IAtsChangeSet changes, IAtsServices services) {
+      ArtifactToken artifact = changes.createArtifact(AtsArtifactTypes.Version, name, GUID.create(), uuid);
       return new Version(services.getLogger(), services, artifact);
    }
 

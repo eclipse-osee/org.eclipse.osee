@@ -4,7 +4,7 @@
     editorDirectory="/org.eclipse.osee.ats.dsl.editor/src" modelPluginID="org.eclipse.osee.ats.dsl"
     forceOverwrite="true" modelName="AtsDsl" updateClasspath="false" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
     complianceLevel="6.0" copyrightFields="false" editPluginID="org.eclipse.osee.ats.dsl.edit"
-    editorPluginID="org.eclipse.osee.ats.dsl.editor" runtimeVersion="2.11">
+    editorPluginID="org.eclipse.osee.ats.dsl.editor" runtimeVersion="2.12">
   <genPackages prefix="AtsDsl" basePackage="org.eclipse.osee.ats.dsl" disposableProviderFactory="true"
       ecorePackage="AtsDsl.ecore#/">
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="AtsDsl.ecore#//OnEventType">
@@ -64,7 +64,6 @@
     <genClasses ecoreClass="AtsDsl.ecore#//ProgramDef">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ProgramDef/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ProgramDef/programDefOption"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ProgramDef/guid"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ProgramDef/uuid"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ProgramDef/artifactTypeName"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ProgramDef/active"/>
@@ -75,7 +74,6 @@
     <genClasses ecoreClass="AtsDsl.ecore#//TeamDef">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//TeamDef/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//TeamDef/teamDefOption"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//TeamDef/guid"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//TeamDef/uuid"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//TeamDef/active"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//TeamDef/staticId"/>
@@ -93,7 +91,6 @@
     <genClasses ecoreClass="AtsDsl.ecore#//ActionableItemDef">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ActionableItemDef/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ActionableItemDef/aiDefOption"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ActionableItemDef/guid"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ActionableItemDef/uuid"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ActionableItemDef/active"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//ActionableItemDef/actionable"/>
@@ -107,7 +104,6 @@
     </genClasses>
     <genClasses ecoreClass="AtsDsl.ecore#//VersionDef">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//VersionDef/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//VersionDef/guid"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//VersionDef/uuid"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//VersionDef/staticId"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute AtsDsl.ecore#//VersionDef/next"/>

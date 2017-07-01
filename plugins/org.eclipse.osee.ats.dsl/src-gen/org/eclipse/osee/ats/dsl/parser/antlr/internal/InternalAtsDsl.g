@@ -95,7 +95,7 @@ ruleAtsDsl returns [EObject current=null]
        			$current, 
        			"userDef",
         		lv_userDef_1_0, 
-        		"UserDef");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.UserDef");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -117,7 +117,7 @@ ruleAtsDsl returns [EObject current=null]
        			$current, 
        			"teamDef",
         		lv_teamDef_3_0, 
-        		"TeamDef");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.TeamDef");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -139,7 +139,7 @@ ruleAtsDsl returns [EObject current=null]
        			$current, 
        			"actionableItemDef",
         		lv_actionableItemDef_5_0, 
-        		"ActionableItemDef");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.ActionableItemDef");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -161,7 +161,7 @@ ruleAtsDsl returns [EObject current=null]
        			$current, 
        			"workDef",
         		lv_workDef_7_0, 
-        		"WorkDef");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.WorkDef");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -183,7 +183,7 @@ ruleAtsDsl returns [EObject current=null]
        			$current, 
        			"program",
         		lv_program_9_0, 
-        		"ProgramDef");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.ProgramDef");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -206,7 +206,7 @@ ruleAtsDsl returns [EObject current=null]
        			$current, 
        			"rule",
         		lv_rule_11_0, 
-        		"Rule");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.Rule");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -273,7 +273,7 @@ ruleUserDef returns [EObject current=null]
        			$current, 
        			"name",
         		lv_name_0_0, 
-        		"USER_DEF_REFERENCE");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.USER_DEF_REFERENCE");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -291,7 +291,7 @@ ruleUserDef returns [EObject current=null]
        			$current, 
        			"userDefOption",
         		lv_userDefOption_1_0, 
-        		"UserDefOption");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.UserDefOption");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -317,7 +317,7 @@ ruleUserDef returns [EObject current=null]
        			$current, 
        			"active",
         		lv_active_4_0, 
-        		"BooleanDef");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.BooleanDef");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -340,7 +340,7 @@ ruleUserDef returns [EObject current=null]
        			$current, 
        			"userId",
         		lv_userId_6_0, 
-        		"STRING");
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
@@ -362,7 +362,7 @@ ruleUserDef returns [EObject current=null]
        			$current, 
        			"email",
         		lv_email_8_0, 
-        		"STRING");
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
@@ -383,7 +383,7 @@ ruleUserDef returns [EObject current=null]
        			$current, 
        			"admin",
         		lv_admin_10_0, 
-        		"BooleanDef");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.BooleanDef");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -454,7 +454,7 @@ ruleAttrDef returns [EObject current=null]
        			$current, 
        			"name",
         		lv_name_0_0, 
-        		"ATTR_DEF_REFERENCE");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.ATTR_DEF_REFERENCE");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -472,7 +472,7 @@ ruleAttrDef returns [EObject current=null]
        			$current, 
        			"option",
         		lv_option_1_0, 
-        		"AttrDefOptions");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.AttrDefOptions");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -556,7 +556,7 @@ ruleAttrValueDef returns [EObject current=null]
        			$current, 
        			"value",
         		lv_value_1_0, 
-        		"STRING");
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
@@ -585,9 +585,9 @@ ruleAttrFullDef returns [EObject current=null]
     {
     	newLeafNode(otherlv_0, grammarAccess.getAttrFullDefAccess().getLeftCurlyBracketKeyword_0());
     }
-(	otherlv_1='uuid' 
+(	otherlv_1='id' 
     {
-    	newLeafNode(otherlv_1, grammarAccess.getAttrFullDefAccess().getUuidKeyword_1_0());
+    	newLeafNode(otherlv_1, grammarAccess.getAttrFullDefAccess().getIdKeyword_1_0());
     }
 (
 (
@@ -603,7 +603,7 @@ ruleAttrFullDef returns [EObject current=null]
        			$current, 
        			"uuid",
         		lv_uuid_2_0, 
-        		"STRING");
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
@@ -625,7 +625,7 @@ ruleAttrFullDef returns [EObject current=null]
        			$current, 
        			"values",
         		lv_values_4_0, 
-        		"STRING");
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
@@ -695,7 +695,7 @@ ruleProgramDef returns [EObject current=null]
        			$current, 
        			"name",
         		lv_name_0_0, 
-        		"PROGRAM_REFERENCE");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.PROGRAM_REFERENCE");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -713,7 +713,7 @@ ruleProgramDef returns [EObject current=null]
        			$current, 
        			"programDefOption",
         		lv_programDefOption_1_0, 
-        		"ProgramDefOption");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.ProgramDefOption");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -722,37 +722,15 @@ ruleProgramDef returns [EObject current=null]
     {
     	newLeafNode(otherlv_2, grammarAccess.getProgramDefAccess().getLeftCurlyBracketKeyword_2());
     }
-(	otherlv_3='guid' 
+(	otherlv_3='id' 
     {
-    	newLeafNode(otherlv_3, grammarAccess.getProgramDefAccess().getGuidKeyword_3_0());
+    	newLeafNode(otherlv_3, grammarAccess.getProgramDefAccess().getIdKeyword_3_0());
     }
 (
 (
-		lv_guid_4_0=RULE_STRING
+		lv_uuid_4_0=RULE_INT
 		{
-			newLeafNode(lv_guid_4_0, grammarAccess.getProgramDefAccess().getGuidSTRINGTerminalRuleCall_3_1_0()); 
-		}
-		{
-	        if ($current==null) {
-	            $current = createModelElement(grammarAccess.getProgramDefRule());
-	        }
-       		setWithLastConsumed(
-       			$current, 
-       			"guid",
-        		lv_guid_4_0, 
-        		"STRING");
-	    }
-
-)
-))?(	otherlv_5='uuid' 
-    {
-    	newLeafNode(otherlv_5, grammarAccess.getProgramDefAccess().getUuidKeyword_4_0());
-    }
-(
-(
-		lv_uuid_6_0=RULE_INT
-		{
-			newLeafNode(lv_uuid_6_0, grammarAccess.getProgramDefAccess().getUuidINTTerminalRuleCall_4_1_0()); 
+			newLeafNode(lv_uuid_4_0, grammarAccess.getProgramDefAccess().getUuidINTTerminalRuleCall_3_1_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -761,20 +739,20 @@ ruleProgramDef returns [EObject current=null]
        		setWithLastConsumed(
        			$current, 
        			"uuid",
-        		lv_uuid_6_0, 
-        		"INT");
+        		lv_uuid_4_0, 
+        		"org.eclipse.xtext.common.Terminals.INT");
 	    }
 
 )
-))?(	otherlv_7='artifactType' 
+))?(	otherlv_5='artifactType' 
     {
-    	newLeafNode(otherlv_7, grammarAccess.getProgramDefAccess().getArtifactTypeKeyword_5_0());
+    	newLeafNode(otherlv_5, grammarAccess.getProgramDefAccess().getArtifactTypeKeyword_4_0());
     }
 (
 (
-		lv_artifactTypeName_8_0=RULE_STRING
+		lv_artifactTypeName_6_0=RULE_STRING
 		{
-			newLeafNode(lv_artifactTypeName_8_0, grammarAccess.getProgramDefAccess().getArtifactTypeNameSTRINGTerminalRuleCall_5_1_0()); 
+			newLeafNode(lv_artifactTypeName_6_0, grammarAccess.getProgramDefAccess().getArtifactTypeNameSTRINGTerminalRuleCall_4_1_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -783,42 +761,42 @@ ruleProgramDef returns [EObject current=null]
        		setWithLastConsumed(
        			$current, 
        			"artifactTypeName",
-        		lv_artifactTypeName_8_0, 
-        		"STRING");
+        		lv_artifactTypeName_6_0, 
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
-))?(	otherlv_9='active' 
+))?(	otherlv_7='active' 
     {
-    	newLeafNode(otherlv_9, grammarAccess.getProgramDefAccess().getActiveKeyword_6_0());
+    	newLeafNode(otherlv_7, grammarAccess.getProgramDefAccess().getActiveKeyword_5_0());
     }
 (
 (
 		{ 
-	        newCompositeNode(grammarAccess.getProgramDefAccess().getActiveBooleanDefEnumRuleCall_6_1_0()); 
+	        newCompositeNode(grammarAccess.getProgramDefAccess().getActiveBooleanDefEnumRuleCall_5_1_0()); 
 	    }
-		lv_active_10_0=ruleBooleanDef		{
+		lv_active_8_0=ruleBooleanDef		{
 	        if ($current==null) {
 	            $current = createModelElementForParent(grammarAccess.getProgramDefRule());
 	        }
        		set(
        			$current, 
        			"active",
-        		lv_active_10_0, 
-        		"BooleanDef");
+        		lv_active_8_0, 
+        		"org.eclipse.osee.ats.dsl.AtsDsl.BooleanDef");
 	        afterParserOrEnumRuleCall();
 	    }
 
 )
-))?(	otherlv_11='namespace' 
+))?(	otherlv_9='namespace' 
     {
-    	newLeafNode(otherlv_11, grammarAccess.getProgramDefAccess().getNamespaceKeyword_7_0());
+    	newLeafNode(otherlv_9, grammarAccess.getProgramDefAccess().getNamespaceKeyword_6_0());
     }
 (
 (
-		lv_namespace_12_0=RULE_STRING
+		lv_namespace_10_0=RULE_STRING
 		{
-			newLeafNode(lv_namespace_12_0, grammarAccess.getProgramDefAccess().getNamespaceSTRINGTerminalRuleCall_7_1_0()); 
+			newLeafNode(lv_namespace_10_0, grammarAccess.getProgramDefAccess().getNamespaceSTRINGTerminalRuleCall_6_1_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -827,58 +805,58 @@ ruleProgramDef returns [EObject current=null]
        		setWithLastConsumed(
        			$current, 
        			"namespace",
-        		lv_namespace_12_0, 
-        		"STRING");
+        		lv_namespace_10_0, 
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
-))*(	otherlv_13='teamDefinition' 
+))*(	otherlv_11='teamDefinition' 
     {
-    	newLeafNode(otherlv_13, grammarAccess.getProgramDefAccess().getTeamDefinitionKeyword_8_0());
+    	newLeafNode(otherlv_11, grammarAccess.getProgramDefAccess().getTeamDefinitionKeyword_7_0());
     }
 (
 (
 		{ 
-	        newCompositeNode(grammarAccess.getProgramDefAccess().getTeamDefinitionTEAM_DEF_REFERENCEParserRuleCall_8_1_0()); 
+	        newCompositeNode(grammarAccess.getProgramDefAccess().getTeamDefinitionTEAM_DEF_REFERENCEParserRuleCall_7_1_0()); 
 	    }
-		lv_teamDefinition_14_0=ruleTEAM_DEF_REFERENCE		{
+		lv_teamDefinition_12_0=ruleTEAM_DEF_REFERENCE		{
 	        if ($current==null) {
 	            $current = createModelElementForParent(grammarAccess.getProgramDefRule());
 	        }
        		set(
        			$current, 
        			"teamDefinition",
-        		lv_teamDefinition_14_0, 
-        		"TEAM_DEF_REFERENCE");
+        		lv_teamDefinition_12_0, 
+        		"org.eclipse.osee.ats.dsl.AtsDsl.TEAM_DEF_REFERENCE");
 	        afterParserOrEnumRuleCall();
 	    }
 
 )
-))*(	otherlv_15='attribute' 
+))*(	otherlv_13='attribute' 
     {
-    	newLeafNode(otherlv_15, grammarAccess.getProgramDefAccess().getAttributeKeyword_9_0());
+    	newLeafNode(otherlv_13, grammarAccess.getProgramDefAccess().getAttributeKeyword_8_0());
     }
 (
 (
 		{ 
-	        newCompositeNode(grammarAccess.getProgramDefAccess().getAttributesAttrDefParserRuleCall_9_1_0()); 
+	        newCompositeNode(grammarAccess.getProgramDefAccess().getAttributesAttrDefParserRuleCall_8_1_0()); 
 	    }
-		lv_attributes_16_0=ruleAttrDef		{
+		lv_attributes_14_0=ruleAttrDef		{
 	        if ($current==null) {
 	            $current = createModelElementForParent(grammarAccess.getProgramDefRule());
 	        }
        		add(
        			$current, 
        			"attributes",
-        		lv_attributes_16_0, 
-        		"AttrDef");
+        		lv_attributes_14_0, 
+        		"org.eclipse.osee.ats.dsl.AtsDsl.AttrDef");
 	        afterParserOrEnumRuleCall();
 	    }
 
 )
-))*	otherlv_17='}' 
+))*	otherlv_15='}' 
     {
-    	newLeafNode(otherlv_17, grammarAccess.getProgramDefAccess().getRightCurlyBracketKeyword_10());
+    	newLeafNode(otherlv_15, grammarAccess.getProgramDefAccess().getRightCurlyBracketKeyword_9());
     }
 )
 ;
@@ -942,7 +920,7 @@ ruleTeamDef returns [EObject current=null]
        			$current, 
        			"name",
         		lv_name_0_0, 
-        		"TEAM_DEF_REFERENCE");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.TEAM_DEF_REFERENCE");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -960,7 +938,7 @@ ruleTeamDef returns [EObject current=null]
        			$current, 
        			"teamDefOption",
         		lv_teamDefOption_1_0, 
-        		"TeamDefOption");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.TeamDefOption");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -969,37 +947,15 @@ ruleTeamDef returns [EObject current=null]
     {
     	newLeafNode(otherlv_2, grammarAccess.getTeamDefAccess().getLeftCurlyBracketKeyword_2());
     }
-(	otherlv_3='guid' 
+(	otherlv_3='id' 
     {
-    	newLeafNode(otherlv_3, grammarAccess.getTeamDefAccess().getGuidKeyword_3_0());
+    	newLeafNode(otherlv_3, grammarAccess.getTeamDefAccess().getIdKeyword_3_0());
     }
 (
 (
-		lv_guid_4_0=RULE_STRING
+		lv_uuid_4_0=RULE_INT
 		{
-			newLeafNode(lv_guid_4_0, grammarAccess.getTeamDefAccess().getGuidSTRINGTerminalRuleCall_3_1_0()); 
-		}
-		{
-	        if ($current==null) {
-	            $current = createModelElement(grammarAccess.getTeamDefRule());
-	        }
-       		setWithLastConsumed(
-       			$current, 
-       			"guid",
-        		lv_guid_4_0, 
-        		"STRING");
-	    }
-
-)
-))?(	otherlv_5='uuid' 
-    {
-    	newLeafNode(otherlv_5, grammarAccess.getTeamDefAccess().getUuidKeyword_4_0());
-    }
-(
-(
-		lv_uuid_6_0=RULE_INT
-		{
-			newLeafNode(lv_uuid_6_0, grammarAccess.getTeamDefAccess().getUuidINTTerminalRuleCall_4_1_0()); 
+			newLeafNode(lv_uuid_4_0, grammarAccess.getTeamDefAccess().getUuidINTTerminalRuleCall_3_1_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -1008,42 +964,42 @@ ruleTeamDef returns [EObject current=null]
        		setWithLastConsumed(
        			$current, 
        			"uuid",
-        		lv_uuid_6_0, 
-        		"INT");
+        		lv_uuid_4_0, 
+        		"org.eclipse.xtext.common.Terminals.INT");
 	    }
 
 )
-))?(	otherlv_7='active' 
+))?(	otherlv_5='active' 
     {
-    	newLeafNode(otherlv_7, grammarAccess.getTeamDefAccess().getActiveKeyword_5_0());
+    	newLeafNode(otherlv_5, grammarAccess.getTeamDefAccess().getActiveKeyword_4_0());
     }
 (
 (
 		{ 
-	        newCompositeNode(grammarAccess.getTeamDefAccess().getActiveBooleanDefEnumRuleCall_5_1_0()); 
+	        newCompositeNode(grammarAccess.getTeamDefAccess().getActiveBooleanDefEnumRuleCall_4_1_0()); 
 	    }
-		lv_active_8_0=ruleBooleanDef		{
+		lv_active_6_0=ruleBooleanDef		{
 	        if ($current==null) {
 	            $current = createModelElementForParent(grammarAccess.getTeamDefRule());
 	        }
        		set(
        			$current, 
        			"active",
-        		lv_active_8_0, 
-        		"BooleanDef");
+        		lv_active_6_0, 
+        		"org.eclipse.osee.ats.dsl.AtsDsl.BooleanDef");
 	        afterParserOrEnumRuleCall();
 	    }
 
 )
-))?(	otherlv_9='staticId' 
+))?(	otherlv_7='staticId' 
     {
-    	newLeafNode(otherlv_9, grammarAccess.getTeamDefAccess().getStaticIdKeyword_6_0());
+    	newLeafNode(otherlv_7, grammarAccess.getTeamDefAccess().getStaticIdKeyword_5_0());
     }
 (
 (
-		lv_staticId_10_0=RULE_STRING
+		lv_staticId_8_0=RULE_STRING
 		{
-			newLeafNode(lv_staticId_10_0, grammarAccess.getTeamDefAccess().getStaticIdSTRINGTerminalRuleCall_6_1_0()); 
+			newLeafNode(lv_staticId_8_0, grammarAccess.getTeamDefAccess().getStaticIdSTRINGTerminalRuleCall_5_1_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -1052,86 +1008,86 @@ ruleTeamDef returns [EObject current=null]
        		addWithLastConsumed(
        			$current, 
        			"staticId",
-        		lv_staticId_10_0, 
-        		"STRING");
+        		lv_staticId_8_0, 
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
-))*(	otherlv_11='lead' 
+))*(	otherlv_9='lead' 
     {
-    	newLeafNode(otherlv_11, grammarAccess.getTeamDefAccess().getLeadKeyword_7_0());
+    	newLeafNode(otherlv_9, grammarAccess.getTeamDefAccess().getLeadKeyword_6_0());
     }
 (
 (
 		{ 
-	        newCompositeNode(grammarAccess.getTeamDefAccess().getLeadUserRefParserRuleCall_7_1_0()); 
+	        newCompositeNode(grammarAccess.getTeamDefAccess().getLeadUserRefParserRuleCall_6_1_0()); 
 	    }
-		lv_lead_12_0=ruleUserRef		{
+		lv_lead_10_0=ruleUserRef		{
 	        if ($current==null) {
 	            $current = createModelElementForParent(grammarAccess.getTeamDefRule());
 	        }
        		add(
        			$current, 
        			"lead",
-        		lv_lead_12_0, 
-        		"UserRef");
+        		lv_lead_10_0, 
+        		"org.eclipse.osee.ats.dsl.AtsDsl.UserRef");
 	        afterParserOrEnumRuleCall();
 	    }
 
 )
-))*(	otherlv_13='member' 
+))*(	otherlv_11='member' 
     {
-    	newLeafNode(otherlv_13, grammarAccess.getTeamDefAccess().getMemberKeyword_8_0());
+    	newLeafNode(otherlv_11, grammarAccess.getTeamDefAccess().getMemberKeyword_7_0());
     }
 (
 (
 		{ 
-	        newCompositeNode(grammarAccess.getTeamDefAccess().getMemberUserRefParserRuleCall_8_1_0()); 
+	        newCompositeNode(grammarAccess.getTeamDefAccess().getMemberUserRefParserRuleCall_7_1_0()); 
 	    }
-		lv_member_14_0=ruleUserRef		{
+		lv_member_12_0=ruleUserRef		{
 	        if ($current==null) {
 	            $current = createModelElementForParent(grammarAccess.getTeamDefRule());
 	        }
        		add(
        			$current, 
        			"member",
-        		lv_member_14_0, 
-        		"UserRef");
+        		lv_member_12_0, 
+        		"org.eclipse.osee.ats.dsl.AtsDsl.UserRef");
 	        afterParserOrEnumRuleCall();
 	    }
 
 )
-))*(	otherlv_15='privileged' 
+))*(	otherlv_13='privileged' 
     {
-    	newLeafNode(otherlv_15, grammarAccess.getTeamDefAccess().getPrivilegedKeyword_9_0());
+    	newLeafNode(otherlv_13, grammarAccess.getTeamDefAccess().getPrivilegedKeyword_8_0());
     }
 (
 (
 		{ 
-	        newCompositeNode(grammarAccess.getTeamDefAccess().getPrivilegedUserRefParserRuleCall_9_1_0()); 
+	        newCompositeNode(grammarAccess.getTeamDefAccess().getPrivilegedUserRefParserRuleCall_8_1_0()); 
 	    }
-		lv_privileged_16_0=ruleUserRef		{
+		lv_privileged_14_0=ruleUserRef		{
 	        if ($current==null) {
 	            $current = createModelElementForParent(grammarAccess.getTeamDefRule());
 	        }
        		add(
        			$current, 
        			"privileged",
-        		lv_privileged_16_0, 
-        		"UserRef");
+        		lv_privileged_14_0, 
+        		"org.eclipse.osee.ats.dsl.AtsDsl.UserRef");
 	        afterParserOrEnumRuleCall();
 	    }
 
 )
-))*(	otherlv_17='workDefinition' 
+))*(	otherlv_15='workDefinition' 
     {
-    	newLeafNode(otherlv_17, grammarAccess.getTeamDefAccess().getWorkDefinitionKeyword_10_0());
+    	newLeafNode(otherlv_15, grammarAccess.getTeamDefAccess().getWorkDefinitionKeyword_9_0());
     }
 (
 (
-		lv_workDefinition_18_0=RULE_STRING
+		lv_workDefinition_16_0=RULE_STRING
 		{
-			newLeafNode(lv_workDefinition_18_0, grammarAccess.getTeamDefAccess().getWorkDefinitionSTRINGTerminalRuleCall_10_1_0()); 
+			newLeafNode(lv_workDefinition_16_0, grammarAccess.getTeamDefAccess().getWorkDefinitionSTRINGTerminalRuleCall_9_1_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -1140,20 +1096,20 @@ ruleTeamDef returns [EObject current=null]
        		setWithLastConsumed(
        			$current, 
        			"workDefinition",
-        		lv_workDefinition_18_0, 
-        		"STRING");
+        		lv_workDefinition_16_0, 
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
-))?(	otherlv_19='relatedTaskWorkDefinition' 
+))?(	otherlv_17='relatedTaskWorkDefinition' 
     {
-    	newLeafNode(otherlv_19, grammarAccess.getTeamDefAccess().getRelatedTaskWorkDefinitionKeyword_11_0());
+    	newLeafNode(otherlv_17, grammarAccess.getTeamDefAccess().getRelatedTaskWorkDefinitionKeyword_10_0());
     }
 (
 (
-		lv_relatedTaskWorkDefinition_20_0=RULE_STRING
+		lv_relatedTaskWorkDefinition_18_0=RULE_STRING
 		{
-			newLeafNode(lv_relatedTaskWorkDefinition_20_0, grammarAccess.getTeamDefAccess().getRelatedTaskWorkDefinitionSTRINGTerminalRuleCall_11_1_0()); 
+			newLeafNode(lv_relatedTaskWorkDefinition_18_0, grammarAccess.getTeamDefAccess().getRelatedTaskWorkDefinitionSTRINGTerminalRuleCall_10_1_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -1162,20 +1118,20 @@ ruleTeamDef returns [EObject current=null]
        		setWithLastConsumed(
        			$current, 
        			"relatedTaskWorkDefinition",
-        		lv_relatedTaskWorkDefinition_20_0, 
-        		"STRING");
+        		lv_relatedTaskWorkDefinition_18_0, 
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
-))?(	otherlv_21='teamWorkflowArtifactType' 
+))?(	otherlv_19='teamWorkflowArtifactType' 
     {
-    	newLeafNode(otherlv_21, grammarAccess.getTeamDefAccess().getTeamWorkflowArtifactTypeKeyword_12_0());
+    	newLeafNode(otherlv_19, grammarAccess.getTeamDefAccess().getTeamWorkflowArtifactTypeKeyword_11_0());
     }
 (
 (
-		lv_teamWorkflowArtifactType_22_0=RULE_STRING
+		lv_teamWorkflowArtifactType_20_0=RULE_STRING
 		{
-			newLeafNode(lv_teamWorkflowArtifactType_22_0, grammarAccess.getTeamDefAccess().getTeamWorkflowArtifactTypeSTRINGTerminalRuleCall_12_1_0()); 
+			newLeafNode(lv_teamWorkflowArtifactType_20_0, grammarAccess.getTeamDefAccess().getTeamWorkflowArtifactTypeSTRINGTerminalRuleCall_11_1_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -1184,20 +1140,20 @@ ruleTeamDef returns [EObject current=null]
        		setWithLastConsumed(
        			$current, 
        			"teamWorkflowArtifactType",
-        		lv_teamWorkflowArtifactType_22_0, 
-        		"STRING");
+        		lv_teamWorkflowArtifactType_20_0, 
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
-))?(	otherlv_23='accessContextId' 
+))?(	otherlv_21='accessContextId' 
     {
-    	newLeafNode(otherlv_23, grammarAccess.getTeamDefAccess().getAccessContextIdKeyword_13_0());
+    	newLeafNode(otherlv_21, grammarAccess.getTeamDefAccess().getAccessContextIdKeyword_12_0());
     }
 (
 (
-		lv_accessContextId_24_0=RULE_STRING
+		lv_accessContextId_22_0=RULE_STRING
 		{
-			newLeafNode(lv_accessContextId_24_0, grammarAccess.getTeamDefAccess().getAccessContextIdSTRINGTerminalRuleCall_13_1_0()); 
+			newLeafNode(lv_accessContextId_22_0, grammarAccess.getTeamDefAccess().getAccessContextIdSTRINGTerminalRuleCall_12_1_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -1206,92 +1162,92 @@ ruleTeamDef returns [EObject current=null]
        		addWithLastConsumed(
        			$current, 
        			"accessContextId",
-        		lv_accessContextId_24_0, 
-        		"STRING");
+        		lv_accessContextId_22_0, 
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
-))*(	otherlv_25='version' 
+))*(	otherlv_23='version' 
     {
-    	newLeafNode(otherlv_25, grammarAccess.getTeamDefAccess().getVersionKeyword_14_0());
+    	newLeafNode(otherlv_23, grammarAccess.getTeamDefAccess().getVersionKeyword_13_0());
     }
 (
 (
 		{ 
-	        newCompositeNode(grammarAccess.getTeamDefAccess().getVersionVersionDefParserRuleCall_14_1_0()); 
+	        newCompositeNode(grammarAccess.getTeamDefAccess().getVersionVersionDefParserRuleCall_13_1_0()); 
 	    }
-		lv_version_26_0=ruleVersionDef		{
+		lv_version_24_0=ruleVersionDef		{
 	        if ($current==null) {
 	            $current = createModelElementForParent(grammarAccess.getTeamDefRule());
 	        }
        		add(
        			$current, 
        			"version",
-        		lv_version_26_0, 
-        		"VersionDef");
+        		lv_version_24_0, 
+        		"org.eclipse.osee.ats.dsl.AtsDsl.VersionDef");
 	        afterParserOrEnumRuleCall();
 	    }
 
 )
-))*(	otherlv_27='rule' 
+))*(	otherlv_25='rule' 
     {
-    	newLeafNode(otherlv_27, grammarAccess.getTeamDefAccess().getRuleKeyword_15_0());
+    	newLeafNode(otherlv_25, grammarAccess.getTeamDefAccess().getRuleKeyword_14_0());
     }
 (
 (
 		{ 
-	        newCompositeNode(grammarAccess.getTeamDefAccess().getRulesRuleRefParserRuleCall_15_1_0()); 
+	        newCompositeNode(grammarAccess.getTeamDefAccess().getRulesRuleRefParserRuleCall_14_1_0()); 
 	    }
-		lv_rules_28_0=ruleRuleRef		{
+		lv_rules_26_0=ruleRuleRef		{
 	        if ($current==null) {
 	            $current = createModelElementForParent(grammarAccess.getTeamDefRule());
 	        }
        		add(
        			$current, 
        			"rules",
-        		lv_rules_28_0, 
-        		"RuleRef");
+        		lv_rules_26_0, 
+        		"org.eclipse.osee.ats.dsl.AtsDsl.RuleRef");
 	        afterParserOrEnumRuleCall();
 	    }
 
 )
-))*(	otherlv_29='children' 
+))*(	otherlv_27='children' 
     {
-    	newLeafNode(otherlv_29, grammarAccess.getTeamDefAccess().getChildrenKeyword_16_0());
+    	newLeafNode(otherlv_27, grammarAccess.getTeamDefAccess().getChildrenKeyword_15_0());
     }
-	otherlv_30='{' 
+	otherlv_28='{' 
     {
-    	newLeafNode(otherlv_30, grammarAccess.getTeamDefAccess().getLeftCurlyBracketKeyword_16_1());
+    	newLeafNode(otherlv_28, grammarAccess.getTeamDefAccess().getLeftCurlyBracketKeyword_15_1());
     }
-(	otherlv_31='teamDefinition' 
+(	otherlv_29='teamDefinition' 
     {
-    	newLeafNode(otherlv_31, grammarAccess.getTeamDefAccess().getTeamDefinitionKeyword_16_2_0());
+    	newLeafNode(otherlv_29, grammarAccess.getTeamDefAccess().getTeamDefinitionKeyword_15_2_0());
     }
 (
 (
 		{ 
-	        newCompositeNode(grammarAccess.getTeamDefAccess().getChildrenTeamDefParserRuleCall_16_2_1_0()); 
+	        newCompositeNode(grammarAccess.getTeamDefAccess().getChildrenTeamDefParserRuleCall_15_2_1_0()); 
 	    }
-		lv_children_32_0=ruleTeamDef		{
+		lv_children_30_0=ruleTeamDef		{
 	        if ($current==null) {
 	            $current = createModelElementForParent(grammarAccess.getTeamDefRule());
 	        }
        		add(
        			$current, 
        			"children",
-        		lv_children_32_0, 
-        		"TeamDef");
+        		lv_children_30_0, 
+        		"org.eclipse.osee.ats.dsl.AtsDsl.TeamDef");
 	        afterParserOrEnumRuleCall();
 	    }
 
 )
-))+	otherlv_33='}' 
+))+	otherlv_31='}' 
     {
-    	newLeafNode(otherlv_33, grammarAccess.getTeamDefAccess().getRightCurlyBracketKeyword_16_3());
+    	newLeafNode(otherlv_31, grammarAccess.getTeamDefAccess().getRightCurlyBracketKeyword_15_3());
     }
-)?	otherlv_34='}' 
+)?	otherlv_32='}' 
     {
-    	newLeafNode(otherlv_34, grammarAccess.getTeamDefAccess().getRightCurlyBracketKeyword_17());
+    	newLeafNode(otherlv_32, grammarAccess.getTeamDefAccess().getRightCurlyBracketKeyword_16());
     }
 )
 ;
@@ -1355,7 +1311,7 @@ ruleActionableItemDef returns [EObject current=null]
        			$current, 
        			"name",
         		lv_name_0_0, 
-        		"AI_DEF_REFERENCE");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.AI_DEF_REFERENCE");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -1373,7 +1329,7 @@ ruleActionableItemDef returns [EObject current=null]
        			$current, 
        			"aiDefOption",
         		lv_aiDefOption_1_0, 
-        		"ActionableItemOption");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.ActionableItemOption");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -1382,37 +1338,15 @@ ruleActionableItemDef returns [EObject current=null]
     {
     	newLeafNode(otherlv_2, grammarAccess.getActionableItemDefAccess().getLeftCurlyBracketKeyword_2_0());
     }
-(	otherlv_3='guid' 
+(	otherlv_3='id' 
     {
-    	newLeafNode(otherlv_3, grammarAccess.getActionableItemDefAccess().getGuidKeyword_2_1_0());
+    	newLeafNode(otherlv_3, grammarAccess.getActionableItemDefAccess().getIdKeyword_2_1_0());
     }
 (
 (
-		lv_guid_4_0=RULE_STRING
+		lv_uuid_4_0=RULE_INT
 		{
-			newLeafNode(lv_guid_4_0, grammarAccess.getActionableItemDefAccess().getGuidSTRINGTerminalRuleCall_2_1_1_0()); 
-		}
-		{
-	        if ($current==null) {
-	            $current = createModelElement(grammarAccess.getActionableItemDefRule());
-	        }
-       		setWithLastConsumed(
-       			$current, 
-       			"guid",
-        		lv_guid_4_0, 
-        		"STRING");
-	    }
-
-)
-))?(	otherlv_5='uuid' 
-    {
-    	newLeafNode(otherlv_5, grammarAccess.getActionableItemDefAccess().getUuidKeyword_2_2_0());
-    }
-(
-(
-		lv_uuid_6_0=RULE_INT
-		{
-			newLeafNode(lv_uuid_6_0, grammarAccess.getActionableItemDefAccess().getUuidINTTerminalRuleCall_2_2_1_0()); 
+			newLeafNode(lv_uuid_4_0, grammarAccess.getActionableItemDefAccess().getUuidINTTerminalRuleCall_2_1_1_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -1421,108 +1355,108 @@ ruleActionableItemDef returns [EObject current=null]
        		setWithLastConsumed(
        			$current, 
        			"uuid",
-        		lv_uuid_6_0, 
-        		"INT");
+        		lv_uuid_4_0, 
+        		"org.eclipse.xtext.common.Terminals.INT");
 	    }
 
 )
-))?(	otherlv_7='active' 
+))?(	otherlv_5='active' 
     {
-    	newLeafNode(otherlv_7, grammarAccess.getActionableItemDefAccess().getActiveKeyword_2_3_0());
+    	newLeafNode(otherlv_5, grammarAccess.getActionableItemDefAccess().getActiveKeyword_2_2_0());
     }
 (
 (
 		{ 
-	        newCompositeNode(grammarAccess.getActionableItemDefAccess().getActiveBooleanDefEnumRuleCall_2_3_1_0()); 
+	        newCompositeNode(grammarAccess.getActionableItemDefAccess().getActiveBooleanDefEnumRuleCall_2_2_1_0()); 
 	    }
-		lv_active_8_0=ruleBooleanDef		{
+		lv_active_6_0=ruleBooleanDef		{
 	        if ($current==null) {
 	            $current = createModelElementForParent(grammarAccess.getActionableItemDefRule());
 	        }
        		set(
        			$current, 
        			"active",
-        		lv_active_8_0, 
-        		"BooleanDef");
+        		lv_active_6_0, 
+        		"org.eclipse.osee.ats.dsl.AtsDsl.BooleanDef");
 	        afterParserOrEnumRuleCall();
 	    }
 
 )
-))?(	otherlv_9='actionable' 
+))?(	otherlv_7='actionable' 
     {
-    	newLeafNode(otherlv_9, grammarAccess.getActionableItemDefAccess().getActionableKeyword_2_4_0());
+    	newLeafNode(otherlv_7, grammarAccess.getActionableItemDefAccess().getActionableKeyword_2_3_0());
     }
 (
 (
 		{ 
-	        newCompositeNode(grammarAccess.getActionableItemDefAccess().getActionableBooleanDefEnumRuleCall_2_4_1_0()); 
+	        newCompositeNode(grammarAccess.getActionableItemDefAccess().getActionableBooleanDefEnumRuleCall_2_3_1_0()); 
 	    }
-		lv_actionable_10_0=ruleBooleanDef		{
+		lv_actionable_8_0=ruleBooleanDef		{
 	        if ($current==null) {
 	            $current = createModelElementForParent(grammarAccess.getActionableItemDefRule());
 	        }
        		set(
        			$current, 
        			"actionable",
-        		lv_actionable_10_0, 
-        		"BooleanDef");
+        		lv_actionable_8_0, 
+        		"org.eclipse.osee.ats.dsl.AtsDsl.BooleanDef");
 	        afterParserOrEnumRuleCall();
 	    }
 
 )
-))?(	otherlv_11='lead' 
+))?(	otherlv_9='lead' 
     {
-    	newLeafNode(otherlv_11, grammarAccess.getActionableItemDefAccess().getLeadKeyword_2_5_0());
+    	newLeafNode(otherlv_9, grammarAccess.getActionableItemDefAccess().getLeadKeyword_2_4_0());
     }
 (
 (
 		{ 
-	        newCompositeNode(grammarAccess.getActionableItemDefAccess().getLeadUserRefParserRuleCall_2_5_1_0()); 
+	        newCompositeNode(grammarAccess.getActionableItemDefAccess().getLeadUserRefParserRuleCall_2_4_1_0()); 
 	    }
-		lv_lead_12_0=ruleUserRef		{
+		lv_lead_10_0=ruleUserRef		{
 	        if ($current==null) {
 	            $current = createModelElementForParent(grammarAccess.getActionableItemDefRule());
 	        }
        		add(
        			$current, 
        			"lead",
-        		lv_lead_12_0, 
-        		"UserRef");
+        		lv_lead_10_0, 
+        		"org.eclipse.osee.ats.dsl.AtsDsl.UserRef");
 	        afterParserOrEnumRuleCall();
 	    }
 
 )
-))*(	otherlv_13='owner' 
+))*(	otherlv_11='owner' 
     {
-    	newLeafNode(otherlv_13, grammarAccess.getActionableItemDefAccess().getOwnerKeyword_2_6_0());
+    	newLeafNode(otherlv_11, grammarAccess.getActionableItemDefAccess().getOwnerKeyword_2_5_0());
     }
 (
 (
 		{ 
-	        newCompositeNode(grammarAccess.getActionableItemDefAccess().getOwnerUserRefParserRuleCall_2_6_1_0()); 
+	        newCompositeNode(grammarAccess.getActionableItemDefAccess().getOwnerUserRefParserRuleCall_2_5_1_0()); 
 	    }
-		lv_owner_14_0=ruleUserRef		{
+		lv_owner_12_0=ruleUserRef		{
 	        if ($current==null) {
 	            $current = createModelElementForParent(grammarAccess.getActionableItemDefRule());
 	        }
        		add(
        			$current, 
        			"owner",
-        		lv_owner_14_0, 
-        		"UserRef");
+        		lv_owner_12_0, 
+        		"org.eclipse.osee.ats.dsl.AtsDsl.UserRef");
 	        afterParserOrEnumRuleCall();
 	    }
 
 )
-))*(	otherlv_15='staticId' 
+))*(	otherlv_13='staticId' 
     {
-    	newLeafNode(otherlv_15, grammarAccess.getActionableItemDefAccess().getStaticIdKeyword_2_7_0());
+    	newLeafNode(otherlv_13, grammarAccess.getActionableItemDefAccess().getStaticIdKeyword_2_6_0());
     }
 (
 (
-		lv_staticId_16_0=RULE_STRING
+		lv_staticId_14_0=RULE_STRING
 		{
-			newLeafNode(lv_staticId_16_0, grammarAccess.getActionableItemDefAccess().getStaticIdSTRINGTerminalRuleCall_2_7_1_0()); 
+			newLeafNode(lv_staticId_14_0, grammarAccess.getActionableItemDefAccess().getStaticIdSTRINGTerminalRuleCall_2_6_1_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -1531,20 +1465,20 @@ ruleActionableItemDef returns [EObject current=null]
        		addWithLastConsumed(
        			$current, 
        			"staticId",
-        		lv_staticId_16_0, 
-        		"STRING");
+        		lv_staticId_14_0, 
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
-))*(	otherlv_17='team' 
+))*(	otherlv_15='team' 
     {
-    	newLeafNode(otherlv_17, grammarAccess.getActionableItemDefAccess().getTeamKeyword_2_8_0());
+    	newLeafNode(otherlv_15, grammarAccess.getActionableItemDefAccess().getTeamKeyword_2_7_0());
     }
 (
 (
-		lv_teamDef_18_0=RULE_STRING
+		lv_teamDef_16_0=RULE_STRING
 		{
-			newLeafNode(lv_teamDef_18_0, grammarAccess.getActionableItemDefAccess().getTeamDefSTRINGTerminalRuleCall_2_8_1_0()); 
+			newLeafNode(lv_teamDef_16_0, grammarAccess.getActionableItemDefAccess().getTeamDefSTRINGTerminalRuleCall_2_7_1_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -1553,20 +1487,20 @@ ruleActionableItemDef returns [EObject current=null]
        		setWithLastConsumed(
        			$current, 
        			"teamDef",
-        		lv_teamDef_18_0, 
-        		"STRING");
+        		lv_teamDef_16_0, 
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
-))?(	otherlv_19='accessContextId' 
+))?(	otherlv_17='accessContextId' 
     {
-    	newLeafNode(otherlv_19, grammarAccess.getActionableItemDefAccess().getAccessContextIdKeyword_2_9_0());
+    	newLeafNode(otherlv_17, grammarAccess.getActionableItemDefAccess().getAccessContextIdKeyword_2_8_0());
     }
 (
 (
-		lv_accessContextId_20_0=RULE_STRING
+		lv_accessContextId_18_0=RULE_STRING
 		{
-			newLeafNode(lv_accessContextId_20_0, grammarAccess.getActionableItemDefAccess().getAccessContextIdSTRINGTerminalRuleCall_2_9_1_0()); 
+			newLeafNode(lv_accessContextId_18_0, grammarAccess.getActionableItemDefAccess().getAccessContextIdSTRINGTerminalRuleCall_2_8_1_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -1575,70 +1509,70 @@ ruleActionableItemDef returns [EObject current=null]
        		addWithLastConsumed(
        			$current, 
        			"accessContextId",
-        		lv_accessContextId_20_0, 
-        		"STRING");
+        		lv_accessContextId_18_0, 
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
-))*(	otherlv_21='rule' 
+))*(	otherlv_19='rule' 
     {
-    	newLeafNode(otherlv_21, grammarAccess.getActionableItemDefAccess().getRuleKeyword_2_10_0());
+    	newLeafNode(otherlv_19, grammarAccess.getActionableItemDefAccess().getRuleKeyword_2_9_0());
     }
 (
 (
 		{ 
-	        newCompositeNode(grammarAccess.getActionableItemDefAccess().getRulesRuleRefParserRuleCall_2_10_1_0()); 
+	        newCompositeNode(grammarAccess.getActionableItemDefAccess().getRulesRuleRefParserRuleCall_2_9_1_0()); 
 	    }
-		lv_rules_22_0=ruleRuleRef		{
+		lv_rules_20_0=ruleRuleRef		{
 	        if ($current==null) {
 	            $current = createModelElementForParent(grammarAccess.getActionableItemDefRule());
 	        }
        		add(
        			$current, 
        			"rules",
-        		lv_rules_22_0, 
-        		"RuleRef");
+        		lv_rules_20_0, 
+        		"org.eclipse.osee.ats.dsl.AtsDsl.RuleRef");
 	        afterParserOrEnumRuleCall();
 	    }
 
 )
-))*(	otherlv_23='children' 
+))*(	otherlv_21='children' 
     {
-    	newLeafNode(otherlv_23, grammarAccess.getActionableItemDefAccess().getChildrenKeyword_2_11_0());
+    	newLeafNode(otherlv_21, grammarAccess.getActionableItemDefAccess().getChildrenKeyword_2_10_0());
     }
-	otherlv_24='{' 
+	otherlv_22='{' 
     {
-    	newLeafNode(otherlv_24, grammarAccess.getActionableItemDefAccess().getLeftCurlyBracketKeyword_2_11_1());
+    	newLeafNode(otherlv_22, grammarAccess.getActionableItemDefAccess().getLeftCurlyBracketKeyword_2_10_1());
     }
-(	otherlv_25='actionableItem' 
+(	otherlv_23='actionableItem' 
     {
-    	newLeafNode(otherlv_25, grammarAccess.getActionableItemDefAccess().getActionableItemKeyword_2_11_2_0());
+    	newLeafNode(otherlv_23, grammarAccess.getActionableItemDefAccess().getActionableItemKeyword_2_10_2_0());
     }
 (
 (
 		{ 
-	        newCompositeNode(grammarAccess.getActionableItemDefAccess().getChildrenActionableItemDefParserRuleCall_2_11_2_1_0()); 
+	        newCompositeNode(grammarAccess.getActionableItemDefAccess().getChildrenActionableItemDefParserRuleCall_2_10_2_1_0()); 
 	    }
-		lv_children_26_0=ruleActionableItemDef		{
+		lv_children_24_0=ruleActionableItemDef		{
 	        if ($current==null) {
 	            $current = createModelElementForParent(grammarAccess.getActionableItemDefRule());
 	        }
        		add(
        			$current, 
        			"children",
-        		lv_children_26_0, 
-        		"ActionableItemDef");
+        		lv_children_24_0, 
+        		"org.eclipse.osee.ats.dsl.AtsDsl.ActionableItemDef");
 	        afterParserOrEnumRuleCall();
 	    }
 
 )
-))+	otherlv_27='}' 
+))+	otherlv_25='}' 
     {
-    	newLeafNode(otherlv_27, grammarAccess.getActionableItemDefAccess().getRightCurlyBracketKeyword_2_11_3());
+    	newLeafNode(otherlv_25, grammarAccess.getActionableItemDefAccess().getRightCurlyBracketKeyword_2_10_3());
     }
-)?	otherlv_28='}' 
+)?	otherlv_26='}' 
     {
-    	newLeafNode(otherlv_28, grammarAccess.getActionableItemDefAccess().getRightCurlyBracketKeyword_2_12());
+    	newLeafNode(otherlv_26, grammarAccess.getActionableItemDefAccess().getRightCurlyBracketKeyword_2_11());
     }
 )?)
 ;
@@ -1702,7 +1636,7 @@ ruleVersionDef returns [EObject current=null]
        			$current, 
        			"name",
         		lv_name_0_0, 
-        		"VERSION_DEF_REFERENCE");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.VERSION_DEF_REFERENCE");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -1711,37 +1645,15 @@ ruleVersionDef returns [EObject current=null]
     {
     	newLeafNode(otherlv_1, grammarAccess.getVersionDefAccess().getLeftCurlyBracketKeyword_1());
     }
-(	otherlv_2='guid' 
+(	otherlv_2='id' 
     {
-    	newLeafNode(otherlv_2, grammarAccess.getVersionDefAccess().getGuidKeyword_2_0());
+    	newLeafNode(otherlv_2, grammarAccess.getVersionDefAccess().getIdKeyword_2_0());
     }
 (
 (
-		lv_guid_3_0=RULE_STRING
+		lv_uuid_3_0=RULE_INT
 		{
-			newLeafNode(lv_guid_3_0, grammarAccess.getVersionDefAccess().getGuidSTRINGTerminalRuleCall_2_1_0()); 
-		}
-		{
-	        if ($current==null) {
-	            $current = createModelElement(grammarAccess.getVersionDefRule());
-	        }
-       		setWithLastConsumed(
-       			$current, 
-       			"guid",
-        		lv_guid_3_0, 
-        		"STRING");
-	    }
-
-)
-))?(	otherlv_4='uuid' 
-    {
-    	newLeafNode(otherlv_4, grammarAccess.getVersionDefAccess().getUuidKeyword_3_0());
-    }
-(
-(
-		lv_uuid_5_0=RULE_INT
-		{
-			newLeafNode(lv_uuid_5_0, grammarAccess.getVersionDefAccess().getUuidINTTerminalRuleCall_3_1_0()); 
+			newLeafNode(lv_uuid_3_0, grammarAccess.getVersionDefAccess().getUuidINTTerminalRuleCall_2_1_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -1750,20 +1662,20 @@ ruleVersionDef returns [EObject current=null]
        		setWithLastConsumed(
        			$current, 
        			"uuid",
-        		lv_uuid_5_0, 
-        		"INT");
+        		lv_uuid_3_0, 
+        		"org.eclipse.xtext.common.Terminals.INT");
 	    }
 
 )
-))?(	otherlv_6='staticId' 
+))?(	otherlv_4='staticId' 
     {
-    	newLeafNode(otherlv_6, grammarAccess.getVersionDefAccess().getStaticIdKeyword_4_0());
+    	newLeafNode(otherlv_4, grammarAccess.getVersionDefAccess().getStaticIdKeyword_3_0());
     }
 (
 (
-		lv_staticId_7_0=RULE_STRING
+		lv_staticId_5_0=RULE_STRING
 		{
-			newLeafNode(lv_staticId_7_0, grammarAccess.getVersionDefAccess().getStaticIdSTRINGTerminalRuleCall_4_1_0()); 
+			newLeafNode(lv_staticId_5_0, grammarAccess.getVersionDefAccess().getStaticIdSTRINGTerminalRuleCall_3_1_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -1772,108 +1684,108 @@ ruleVersionDef returns [EObject current=null]
        		addWithLastConsumed(
        			$current, 
        			"staticId",
-        		lv_staticId_7_0, 
-        		"STRING");
+        		lv_staticId_5_0, 
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
-))*(	otherlv_8='next' 
+))*(	otherlv_6='next' 
     {
-    	newLeafNode(otherlv_8, grammarAccess.getVersionDefAccess().getNextKeyword_5_0());
+    	newLeafNode(otherlv_6, grammarAccess.getVersionDefAccess().getNextKeyword_4_0());
     }
 (
 (
 		{ 
-	        newCompositeNode(grammarAccess.getVersionDefAccess().getNextBooleanDefEnumRuleCall_5_1_0()); 
+	        newCompositeNode(grammarAccess.getVersionDefAccess().getNextBooleanDefEnumRuleCall_4_1_0()); 
 	    }
-		lv_next_9_0=ruleBooleanDef		{
+		lv_next_7_0=ruleBooleanDef		{
 	        if ($current==null) {
 	            $current = createModelElementForParent(grammarAccess.getVersionDefRule());
 	        }
        		set(
        			$current, 
        			"next",
-        		lv_next_9_0, 
-        		"BooleanDef");
+        		lv_next_7_0, 
+        		"org.eclipse.osee.ats.dsl.AtsDsl.BooleanDef");
 	        afterParserOrEnumRuleCall();
 	    }
 
 )
-))?(	otherlv_10='released' 
+))?(	otherlv_8='released' 
     {
-    	newLeafNode(otherlv_10, grammarAccess.getVersionDefAccess().getReleasedKeyword_6_0());
+    	newLeafNode(otherlv_8, grammarAccess.getVersionDefAccess().getReleasedKeyword_5_0());
     }
 (
 (
 		{ 
-	        newCompositeNode(grammarAccess.getVersionDefAccess().getReleasedBooleanDefEnumRuleCall_6_1_0()); 
+	        newCompositeNode(grammarAccess.getVersionDefAccess().getReleasedBooleanDefEnumRuleCall_5_1_0()); 
 	    }
-		lv_released_11_0=ruleBooleanDef		{
+		lv_released_9_0=ruleBooleanDef		{
 	        if ($current==null) {
 	            $current = createModelElementForParent(grammarAccess.getVersionDefRule());
 	        }
        		set(
        			$current, 
        			"released",
-        		lv_released_11_0, 
-        		"BooleanDef");
+        		lv_released_9_0, 
+        		"org.eclipse.osee.ats.dsl.AtsDsl.BooleanDef");
 	        afterParserOrEnumRuleCall();
 	    }
 
 )
-))?(	otherlv_12='allowCreateBranch' 
+))?(	otherlv_10='allowCreateBranch' 
     {
-    	newLeafNode(otherlv_12, grammarAccess.getVersionDefAccess().getAllowCreateBranchKeyword_7_0());
+    	newLeafNode(otherlv_10, grammarAccess.getVersionDefAccess().getAllowCreateBranchKeyword_6_0());
     }
 (
 (
 		{ 
-	        newCompositeNode(grammarAccess.getVersionDefAccess().getAllowCreateBranchBooleanDefEnumRuleCall_7_1_0()); 
+	        newCompositeNode(grammarAccess.getVersionDefAccess().getAllowCreateBranchBooleanDefEnumRuleCall_6_1_0()); 
 	    }
-		lv_allowCreateBranch_13_0=ruleBooleanDef		{
+		lv_allowCreateBranch_11_0=ruleBooleanDef		{
 	        if ($current==null) {
 	            $current = createModelElementForParent(grammarAccess.getVersionDefRule());
 	        }
        		set(
        			$current, 
        			"allowCreateBranch",
-        		lv_allowCreateBranch_13_0, 
-        		"BooleanDef");
+        		lv_allowCreateBranch_11_0, 
+        		"org.eclipse.osee.ats.dsl.AtsDsl.BooleanDef");
 	        afterParserOrEnumRuleCall();
 	    }
 
 )
-))?(	otherlv_14='allowCommitBranch' 
+))?(	otherlv_12='allowCommitBranch' 
     {
-    	newLeafNode(otherlv_14, grammarAccess.getVersionDefAccess().getAllowCommitBranchKeyword_8_0());
+    	newLeafNode(otherlv_12, grammarAccess.getVersionDefAccess().getAllowCommitBranchKeyword_7_0());
     }
 (
 (
 		{ 
-	        newCompositeNode(grammarAccess.getVersionDefAccess().getAllowCommitBranchBooleanDefEnumRuleCall_8_1_0()); 
+	        newCompositeNode(grammarAccess.getVersionDefAccess().getAllowCommitBranchBooleanDefEnumRuleCall_7_1_0()); 
 	    }
-		lv_allowCommitBranch_15_0=ruleBooleanDef		{
+		lv_allowCommitBranch_13_0=ruleBooleanDef		{
 	        if ($current==null) {
 	            $current = createModelElementForParent(grammarAccess.getVersionDefRule());
 	        }
        		set(
        			$current, 
        			"allowCommitBranch",
-        		lv_allowCommitBranch_15_0, 
-        		"BooleanDef");
+        		lv_allowCommitBranch_13_0, 
+        		"org.eclipse.osee.ats.dsl.AtsDsl.BooleanDef");
 	        afterParserOrEnumRuleCall();
 	    }
 
 )
-))?(	otherlv_16='baselineBranchUuid' 
+))?(	otherlv_14='baselineBranchUuid' 
     {
-    	newLeafNode(otherlv_16, grammarAccess.getVersionDefAccess().getBaselineBranchUuidKeyword_9_0());
+    	newLeafNode(otherlv_14, grammarAccess.getVersionDefAccess().getBaselineBranchUuidKeyword_8_0());
     }
 (
 (
-		lv_baselineBranchUuid_17_0=RULE_STRING
+		lv_baselineBranchUuid_15_0=RULE_STRING
 		{
-			newLeafNode(lv_baselineBranchUuid_17_0, grammarAccess.getVersionDefAccess().getBaselineBranchUuidSTRINGTerminalRuleCall_9_1_0()); 
+			newLeafNode(lv_baselineBranchUuid_15_0, grammarAccess.getVersionDefAccess().getBaselineBranchUuidSTRINGTerminalRuleCall_8_1_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -1882,20 +1794,20 @@ ruleVersionDef returns [EObject current=null]
        		setWithLastConsumed(
        			$current, 
        			"baselineBranchUuid",
-        		lv_baselineBranchUuid_17_0, 
-        		"STRING");
+        		lv_baselineBranchUuid_15_0, 
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
-))?(	otherlv_18='parallelVersion' 
+))?(	otherlv_16='parallelVersion' 
     {
-    	newLeafNode(otherlv_18, grammarAccess.getVersionDefAccess().getParallelVersionKeyword_10_0());
+    	newLeafNode(otherlv_16, grammarAccess.getVersionDefAccess().getParallelVersionKeyword_9_0());
     }
 (
 (
-		lv_parallelVersion_19_0=RULE_STRING
+		lv_parallelVersion_17_0=RULE_STRING
 		{
-			newLeafNode(lv_parallelVersion_19_0, grammarAccess.getVersionDefAccess().getParallelVersionSTRINGTerminalRuleCall_10_1_0()); 
+			newLeafNode(lv_parallelVersion_17_0, grammarAccess.getVersionDefAccess().getParallelVersionSTRINGTerminalRuleCall_9_1_0()); 
 		}
 		{
 	        if ($current==null) {
@@ -1904,14 +1816,14 @@ ruleVersionDef returns [EObject current=null]
        		addWithLastConsumed(
        			$current, 
        			"parallelVersion",
-        		lv_parallelVersion_19_0, 
-        		"STRING");
+        		lv_parallelVersion_17_0, 
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
-))*	otherlv_20='}' 
+))*	otherlv_18='}' 
     {
-    	newLeafNode(otherlv_20, grammarAccess.getVersionDefAccess().getRightCurlyBracketKeyword_11());
+    	newLeafNode(otherlv_18, grammarAccess.getVersionDefAccess().getRightCurlyBracketKeyword_10());
     }
 )
 ;
@@ -1947,7 +1859,7 @@ ruleWorkDef returns [EObject current=null]
        			$current, 
        			"name",
         		lv_name_0_0, 
-        		"WORK_DEFINITION_NAME_REFERENCE");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.WORK_DEFINITION_NAME_REFERENCE");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -1974,7 +1886,7 @@ ruleWorkDef returns [EObject current=null]
        			$current, 
        			"id",
         		lv_id_3_0, 
-        		"STRING");
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
@@ -2010,7 +1922,7 @@ ruleWorkDef returns [EObject current=null]
        			$current, 
        			"widgetDefs",
         		lv_widgetDefs_6_0, 
-        		"WidgetDef");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.WidgetDef");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -2028,7 +1940,7 @@ ruleWorkDef returns [EObject current=null]
        			$current, 
        			"decisionReviewDefs",
         		lv_decisionReviewDefs_7_0, 
-        		"DecisionReviewDef");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.DecisionReviewDef");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -2046,7 +1958,7 @@ ruleWorkDef returns [EObject current=null]
        			$current, 
        			"peerReviewDefs",
         		lv_peerReviewDefs_8_0, 
-        		"PeerReviewDef");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.PeerReviewDef");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -2064,7 +1976,7 @@ ruleWorkDef returns [EObject current=null]
        			$current, 
        			"states",
         		lv_states_9_0, 
-        		"StateDef");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.StateDef");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -2111,7 +2023,7 @@ ruleWidgetDef returns [EObject current=null]
        			$current, 
        			"name",
         		lv_name_1_0, 
-        		"WIDGET_NAME_REFERENCE");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.WIDGET_NAME_REFERENCE");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -2138,7 +2050,7 @@ ruleWidgetDef returns [EObject current=null]
        			$current, 
        			"attributeName",
         		lv_attributeName_4_0, 
-        		"STRING");
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
@@ -2160,7 +2072,7 @@ ruleWidgetDef returns [EObject current=null]
        			$current, 
        			"description",
         		lv_description_6_0, 
-        		"STRING");
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
@@ -2182,7 +2094,7 @@ ruleWidgetDef returns [EObject current=null]
        			$current, 
        			"xWidgetName",
         		lv_xWidgetName_8_0, 
-        		"STRING");
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
@@ -2204,7 +2116,7 @@ ruleWidgetDef returns [EObject current=null]
        			$current, 
        			"defaultValue",
         		lv_defaultValue_10_0, 
-        		"STRING");
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
@@ -2226,7 +2138,7 @@ ruleWidgetDef returns [EObject current=null]
        			$current, 
        			"height",
         		lv_height_12_0, 
-        		"INT");
+        		"org.eclipse.xtext.common.Terminals.INT");
 	    }
 
 )
@@ -2247,7 +2159,7 @@ ruleWidgetDef returns [EObject current=null]
        			$current, 
        			"option",
         		lv_option_14_0, 
-        		"WidgetOption");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.WidgetOption");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -2270,7 +2182,7 @@ ruleWidgetDef returns [EObject current=null]
        			$current, 
        			"minConstraint",
         		lv_minConstraint_16_0, 
-        		"STRING");
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
@@ -2292,7 +2204,7 @@ ruleWidgetDef returns [EObject current=null]
        			$current, 
        			"maxConstraint",
         		lv_maxConstraint_18_0, 
-        		"STRING");
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
@@ -2379,7 +2291,7 @@ ruleAttrWidget returns [EObject current=null]
        			$current, 
        			"attributeName",
         		lv_attributeName_1_0, 
-        		"STRING");
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
@@ -2400,7 +2312,7 @@ ruleAttrWidget returns [EObject current=null]
        			$current, 
        			"option",
         		lv_option_3_0, 
-        		"WidgetOption");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.WidgetOption");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -2443,7 +2355,7 @@ ruleStateDef returns [EObject current=null]
        			$current, 
        			"name",
         		lv_name_1_0, 
-        		"STATE_NAME_REFERENCE");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.STATE_NAME_REFERENCE");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -2470,7 +2382,7 @@ ruleStateDef returns [EObject current=null]
        			$current, 
        			"description",
         		lv_description_4_0, 
-        		"STRING");
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
@@ -2491,7 +2403,7 @@ ruleStateDef returns [EObject current=null]
        			$current, 
        			"pageType",
         		lv_pageType_6_0, 
-        		"PageType");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.PageType");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -2514,7 +2426,7 @@ ruleStateDef returns [EObject current=null]
        			$current, 
        			"ordinal",
         		lv_ordinal_8_0, 
-        		"INT");
+        		"org.eclipse.xtext.common.Terminals.INT");
 	    }
 
 )
@@ -2531,7 +2443,7 @@ ruleStateDef returns [EObject current=null]
        			$current, 
        			"transitionStates",
         		lv_transitionStates_9_0, 
-        		"ToState");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.ToState");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -2553,7 +2465,7 @@ ruleStateDef returns [EObject current=null]
        			$current, 
        			"rules",
         		lv_rules_11_0, 
-        		"RuleRef");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.RuleRef");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -2571,7 +2483,7 @@ ruleStateDef returns [EObject current=null]
        			$current, 
        			"decisionReviews",
         		lv_decisionReviews_12_0, 
-        		"DecisionReviewRef");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.DecisionReviewRef");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -2589,7 +2501,7 @@ ruleStateDef returns [EObject current=null]
        			$current, 
        			"peerReviews",
         		lv_peerReviews_13_0, 
-        		"PeerReviewRef");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.PeerReviewRef");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -2612,7 +2524,7 @@ ruleStateDef returns [EObject current=null]
        			$current, 
        			"percentWeight",
         		lv_percentWeight_15_0, 
-        		"INT");
+        		"org.eclipse.xtext.common.Terminals.INT");
 	    }
 
 )
@@ -2634,7 +2546,7 @@ ruleStateDef returns [EObject current=null]
        			$current, 
        			"recommendedPercentComplete",
         		lv_recommendedPercentComplete_17_0, 
-        		"INT");
+        		"org.eclipse.xtext.common.Terminals.INT");
 	    }
 
 )
@@ -2655,7 +2567,7 @@ ruleStateDef returns [EObject current=null]
        			$current, 
        			"color",
         		lv_color_19_0, 
-        		"StateColor");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.StateColor");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -2673,7 +2585,7 @@ ruleStateDef returns [EObject current=null]
        			$current, 
        			"layout",
         		lv_layout_20_0, 
-        		"LayoutType");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.LayoutType");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -2760,7 +2672,7 @@ ruleDecisionReviewDef returns [EObject current=null]
        			$current, 
        			"name",
         		lv_name_1_0, 
-        		"DECISION_REVIEW_NAME_REFERENCE");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.DECISION_REVIEW_NAME_REFERENCE");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -2787,7 +2699,7 @@ ruleDecisionReviewDef returns [EObject current=null]
        			$current, 
        			"title",
         		lv_title_4_0, 
-        		"STRING");
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
@@ -2809,7 +2721,7 @@ ruleDecisionReviewDef returns [EObject current=null]
        			$current, 
        			"description",
         		lv_description_6_0, 
-        		"STRING");
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
@@ -2849,7 +2761,7 @@ ruleDecisionReviewDef returns [EObject current=null]
        			$current, 
        			"blockingType",
         		lv_blockingType_10_0, 
-        		"ReviewBlockingType");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.ReviewBlockingType");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -2871,7 +2783,7 @@ ruleDecisionReviewDef returns [EObject current=null]
        			$current, 
        			"stateEvent",
         		lv_stateEvent_12_0, 
-        		"WorkflowEventType");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.WorkflowEventType");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -2893,7 +2805,7 @@ ruleDecisionReviewDef returns [EObject current=null]
        			$current, 
        			"assigneeRefs",
         		lv_assigneeRefs_14_0, 
-        		"UserRef");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.UserRef");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -2915,7 +2827,7 @@ ruleDecisionReviewDef returns [EObject current=null]
        			$current, 
        			"autoTransitionToDecision",
         		lv_autoTransitionToDecision_16_0, 
-        		"BooleanDef");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.BooleanDef");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -2933,7 +2845,7 @@ ruleDecisionReviewDef returns [EObject current=null]
        			$current, 
        			"options",
         		lv_options_17_0, 
-        		"DecisionReviewOpt");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.DecisionReviewOpt");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -3008,7 +2920,7 @@ ruleDecisionReviewOpt returns [EObject current=null]
        			$current, 
        			"name",
         		lv_name_1_0, 
-        		"DECISION_REVIEW_OPT_REF");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.DECISION_REVIEW_OPT_REF");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -3026,7 +2938,7 @@ ruleDecisionReviewOpt returns [EObject current=null]
        			$current, 
        			"followup",
         		lv_followup_2_0, 
-        		"FollowupRef");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.FollowupRef");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -3109,7 +3021,7 @@ rulePeerReviewDef returns [EObject current=null]
        			$current, 
        			"name",
         		lv_name_1_0, 
-        		"PEER_REVIEW_NAME_REFERENCE");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.PEER_REVIEW_NAME_REFERENCE");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -3136,7 +3048,7 @@ rulePeerReviewDef returns [EObject current=null]
        			$current, 
        			"title",
         		lv_title_4_0, 
-        		"STRING");
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
@@ -3158,7 +3070,7 @@ rulePeerReviewDef returns [EObject current=null]
        			$current, 
        			"description",
         		lv_description_6_0, 
-        		"STRING");
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
@@ -3180,7 +3092,7 @@ rulePeerReviewDef returns [EObject current=null]
        			$current, 
        			"location",
         		lv_location_8_0, 
-        		"STRING");
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
@@ -3220,7 +3132,7 @@ rulePeerReviewDef returns [EObject current=null]
        			$current, 
        			"blockingType",
         		lv_blockingType_12_0, 
-        		"ReviewBlockingType");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.ReviewBlockingType");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -3242,7 +3154,7 @@ rulePeerReviewDef returns [EObject current=null]
        			$current, 
        			"stateEvent",
         		lv_stateEvent_14_0, 
-        		"WorkflowEventType");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.WorkflowEventType");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -3264,7 +3176,7 @@ rulePeerReviewDef returns [EObject current=null]
        			$current, 
        			"assigneeRefs",
         		lv_assigneeRefs_16_0, 
-        		"UserRef");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.UserRef");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -3315,7 +3227,7 @@ ruleFollowupRef returns [EObject current=null]
        			$current, 
        			"assigneeRefs",
         		lv_assigneeRefs_2_0, 
-        		"UserRef");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.UserRef");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -3399,7 +3311,7 @@ ruleUserByUserId returns [EObject current=null]
        			$current, 
        			"userId",
         		lv_userId_1_0, 
-        		"STRING");
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
@@ -3442,7 +3354,7 @@ ruleUserByName returns [EObject current=null]
        			$current, 
        			"userName",
         		lv_userName_1_0, 
-        		"STRING");
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
@@ -3639,7 +3551,7 @@ ruleToState returns [EObject current=null]
        			$current, 
        			"options",
         		lv_options_2_0, 
-        		"TransitionOption");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.TransitionOption");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -3726,7 +3638,7 @@ ruleLayoutDef returns [EObject current=null]
        			$current, 
        			"layoutItems",
         		lv_layoutItems_2_0, 
-        		"LayoutItem");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.LayoutItem");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -3872,7 +3784,7 @@ ruleComposite returns [EObject current=null]
        			$current, 
        			"numColumns",
         		lv_numColumns_3_0, 
-        		"INT");
+        		"org.eclipse.xtext.common.Terminals.INT");
 	    }
 
 )
@@ -3889,7 +3801,7 @@ ruleComposite returns [EObject current=null]
        			$current, 
        			"layoutItems",
         		lv_layoutItems_4_0, 
-        		"LayoutItem");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.LayoutItem");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -3911,7 +3823,7 @@ ruleComposite returns [EObject current=null]
        			$current, 
        			"options",
         		lv_options_6_0, 
-        		"CompositeOption");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.CompositeOption");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -4395,7 +4307,7 @@ ruleRuleDef returns [EObject current=null]
        			$current, 
        			"name",
         		lv_name_1_0, 
-        		"RULE_NAME_REFERENCE");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.RULE_NAME_REFERENCE");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -4422,7 +4334,7 @@ ruleRuleDef returns [EObject current=null]
        			$current, 
        			"title",
         		lv_title_4_0, 
-        		"STRING");
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
@@ -4444,7 +4356,7 @@ ruleRuleDef returns [EObject current=null]
        			$current, 
        			"description",
         		lv_description_6_0, 
-        		"STRING");
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
@@ -4465,7 +4377,7 @@ ruleRuleDef returns [EObject current=null]
        			$current, 
        			"ruleLocation",
         		lv_ruleLocation_8_0, 
-        		"RuleLocation");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.RuleLocation");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -4512,7 +4424,7 @@ ruleCreateTaskRuleDef returns [EObject current=null]
        			$current, 
        			"name",
         		lv_name_1_0, 
-        		"RULE_NAME_REFERENCE");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.RULE_NAME_REFERENCE");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -4539,7 +4451,7 @@ ruleCreateTaskRuleDef returns [EObject current=null]
        			$current, 
        			"title",
         		lv_title_4_0, 
-        		"STRING");
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
@@ -4561,7 +4473,7 @@ ruleCreateTaskRuleDef returns [EObject current=null]
        			$current, 
        			"description",
         		lv_description_6_0, 
-        		"STRING");
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
@@ -4582,7 +4494,7 @@ ruleCreateTaskRuleDef returns [EObject current=null]
        			$current, 
        			"ruleLocation",
         		lv_ruleLocation_8_0, 
-        		"RuleLocation");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.RuleLocation");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -4604,7 +4516,7 @@ ruleCreateTaskRuleDef returns [EObject current=null]
        			$current, 
        			"assignees",
         		lv_assignees_10_0, 
-        		"UserDef");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.UserDef");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -4626,7 +4538,7 @@ ruleCreateTaskRuleDef returns [EObject current=null]
        			$current, 
        			"relatedState",
         		lv_relatedState_12_0, 
-        		"STATE_NAME_REFERENCE");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.STATE_NAME_REFERENCE");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -4649,7 +4561,7 @@ ruleCreateTaskRuleDef returns [EObject current=null]
        			$current, 
        			"taskWorkDef",
         		lv_taskWorkDef_14_0, 
-        		"STRING");
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
@@ -4670,7 +4582,7 @@ ruleCreateTaskRuleDef returns [EObject current=null]
        			$current, 
        			"onEvent",
         		lv_onEvent_16_0, 
-        		"OnEventType");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.OnEventType");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -4692,7 +4604,7 @@ ruleCreateTaskRuleDef returns [EObject current=null]
        			$current, 
        			"attributes",
         		lv_attributes_18_0, 
-        		"AttrDef");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.AttrDef");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -4739,7 +4651,7 @@ ruleCreateDecisionReviewRuleDef returns [EObject current=null]
        			$current, 
        			"name",
         		lv_name_1_0, 
-        		"RULE_NAME_REFERENCE");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.RULE_NAME_REFERENCE");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -4766,7 +4678,7 @@ ruleCreateDecisionReviewRuleDef returns [EObject current=null]
        			$current, 
        			"title",
         		lv_title_4_0, 
-        		"STRING");
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
@@ -4788,7 +4700,7 @@ ruleCreateDecisionReviewRuleDef returns [EObject current=null]
        			$current, 
        			"description",
         		lv_description_6_0, 
-        		"STRING");
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
@@ -4809,7 +4721,7 @@ ruleCreateDecisionReviewRuleDef returns [EObject current=null]
        			$current, 
        			"ruleLocation",
         		lv_ruleLocation_8_0, 
-        		"RuleLocation");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.RuleLocation");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -4831,7 +4743,7 @@ ruleCreateDecisionReviewRuleDef returns [EObject current=null]
        			$current, 
        			"assignees",
         		lv_assignees_10_0, 
-        		"UserDef");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.UserDef");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -4853,7 +4765,7 @@ ruleCreateDecisionReviewRuleDef returns [EObject current=null]
        			$current, 
        			"relatedToState",
         		lv_relatedToState_12_0, 
-        		"STATE_NAME_REFERENCE");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.STATE_NAME_REFERENCE");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -4875,7 +4787,7 @@ ruleCreateDecisionReviewRuleDef returns [EObject current=null]
        			$current, 
        			"blockingType",
         		lv_blockingType_14_0, 
-        		"ReviewBlockingType");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.ReviewBlockingType");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -4897,7 +4809,7 @@ ruleCreateDecisionReviewRuleDef returns [EObject current=null]
        			$current, 
        			"stateEvent",
         		lv_stateEvent_16_0, 
-        		"WorkflowEventType");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.WorkflowEventType");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -4919,7 +4831,7 @@ ruleCreateDecisionReviewRuleDef returns [EObject current=null]
        			$current, 
        			"autoTransitionToDecision",
         		lv_autoTransitionToDecision_18_0, 
-        		"BooleanDef");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.BooleanDef");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -4937,7 +4849,7 @@ ruleCreateDecisionReviewRuleDef returns [EObject current=null]
        			$current, 
        			"options",
         		lv_options_19_0, 
-        		"DecisionReviewOpt");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.DecisionReviewOpt");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -4959,7 +4871,7 @@ ruleCreateDecisionReviewRuleDef returns [EObject current=null]
        			$current, 
        			"attributes",
         		lv_attributes_21_0, 
-        		"AttrDef");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.AttrDef");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -5006,7 +4918,7 @@ ruleCreatePeerReviewRuleDef returns [EObject current=null]
        			$current, 
        			"name",
         		lv_name_1_0, 
-        		"RULE_NAME_REFERENCE");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.RULE_NAME_REFERENCE");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -5033,7 +4945,7 @@ ruleCreatePeerReviewRuleDef returns [EObject current=null]
        			$current, 
        			"title",
         		lv_title_4_0, 
-        		"STRING");
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
@@ -5055,7 +4967,7 @@ ruleCreatePeerReviewRuleDef returns [EObject current=null]
        			$current, 
        			"description",
         		lv_description_6_0, 
-        		"STRING");
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
@@ -5076,7 +4988,7 @@ ruleCreatePeerReviewRuleDef returns [EObject current=null]
        			$current, 
        			"ruleLocation",
         		lv_ruleLocation_8_0, 
-        		"RuleLocation");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.RuleLocation");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -5098,7 +5010,7 @@ ruleCreatePeerReviewRuleDef returns [EObject current=null]
        			$current, 
        			"assignees",
         		lv_assignees_10_0, 
-        		"UserDef");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.UserDef");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -5120,7 +5032,7 @@ ruleCreatePeerReviewRuleDef returns [EObject current=null]
        			$current, 
        			"relatedToState",
         		lv_relatedToState_12_0, 
-        		"STATE_NAME_REFERENCE");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.STATE_NAME_REFERENCE");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -5143,7 +5055,7 @@ ruleCreatePeerReviewRuleDef returns [EObject current=null]
        			$current, 
        			"location",
         		lv_location_14_0, 
-        		"STRING");
+        		"org.eclipse.xtext.common.Terminals.STRING");
 	    }
 
 )
@@ -5164,7 +5076,7 @@ ruleCreatePeerReviewRuleDef returns [EObject current=null]
        			$current, 
        			"blockingType",
         		lv_blockingType_16_0, 
-        		"ReviewBlockingType");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.ReviewBlockingType");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -5186,7 +5098,7 @@ ruleCreatePeerReviewRuleDef returns [EObject current=null]
        			$current, 
        			"stateEvent",
         		lv_stateEvent_18_0, 
-        		"WorkflowEventType");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.WorkflowEventType");
 	        afterParserOrEnumRuleCall();
 	    }
 
@@ -5208,7 +5120,7 @@ ruleCreatePeerReviewRuleDef returns [EObject current=null]
        			$current, 
        			"attributes",
         		lv_attributes_20_0, 
-        		"AttrDef");
+        		"org.eclipse.osee.ats.dsl.AtsDsl.AttrDef");
 	        afterParserOrEnumRuleCall();
 	    }
 

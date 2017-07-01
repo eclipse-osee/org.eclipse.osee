@@ -42,7 +42,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -123,14 +122,9 @@ public class ImportAIsAndTeamDefinitionsToDb {
             newTeam = getOrCreate(dslTeamName, true, parentArtifact);
          }
          if (newTeam == null) {
-            String guid = dslTeamDef.getGuid();
-            if (guid != null && !GUID.isValid(guid)) {
-               throw new OseeArgumentException("Invalid guid [%s] specified for DSL Team Definition [%s]", guid,
-                  dslTeamDef);
-            }
             long uuid = dslTeamDef.getUuid() > 0 ? dslTeamDef.getUuid() : Lib.generateArtifactIdAsInt();
             newTeam = ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamDefinition,
-               AtsClientService.get().getAtsBranch(), dslTeamName, guid, uuid);
+               AtsClientService.get().getAtsBranch(), dslTeamName, null, uuid);
          }
          if (parentArtifact != null && !parentArtifact.equals(newTeam)) {
             parentArtifact.addChild(newTeam);
@@ -203,15 +197,9 @@ public class ImportAIsAndTeamDefinitionsToDb {
       for (VersionDef dslVersionDef : versionDefs) {
          String dslVerName = Strings.unquote(dslVersionDef.getName());
          // System.out.println("   - Importing Version " + dslVerName);
-
-         String guid = dslVersionDef.getGuid();
-         if (guid != null && !GUID.isValid(guid)) {
-            throw new OseeArgumentException("Invalid guid [%s] specified for DSL Version Definition [%s]", guid,
-               dslVersionDef);
-         }
          long uuid = dslVersionDef.getUuid() > 0 ? dslVersionDef.getUuid() : Lib.generateArtifactIdAsInt();
          Artifact newVer = ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version,
-            AtsClientService.get().getAtsBranch(), dslVerName, guid, uuid);
+            AtsClientService.get().getAtsBranch(), dslVerName, null, uuid);
 
          teamDef.addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, newVer);
          nameToVerArt.put(newVer.getName(), newVer);
@@ -253,14 +241,9 @@ public class ImportAIsAndTeamDefinitionsToDb {
             newAi = getOrCreate(dslAIName, false, parentArtifact);
          }
          if (newAi == null) {
-            String guid = dslAIDef.getGuid();
-            if (guid != null && !GUID.isValid(guid)) {
-               throw new OseeArgumentException("Invalid guid [%s] specified for DSL Actionable Item Definition [%s]",
-                  guid, dslAIDef);
-            }
             long uuid = dslAIDef.getUuid() > 0 ? dslAIDef.getUuid() : Lib.generateArtifactIdAsInt();
             newAi = ArtifactTypeManager.addArtifact(AtsArtifactTypes.ActionableItem,
-               AtsClientService.get().getAtsBranch(), dslAIName, guid, uuid);
+               AtsClientService.get().getAtsBranch(), dslAIName, null, uuid);
          }
          if (parentArtifact != null && !parentArtifact.equals(newAi)) {
             parentArtifact.addChild(newAi);
@@ -307,9 +290,8 @@ public class ImportAIsAndTeamDefinitionsToDb {
             programArtifactType = ArtifactTypeManager.getType(artifactTypeName);
          }
          long uuid = dslProgramDef.getUuid() > 0 ? dslProgramDef.getUuid() : Lib.generateArtifactIdAsInt();
-         String guid = Strings.isValid(dslProgramDef.getGuid()) ? dslProgramDef.getGuid() : GUID.create();
          newProgramArt = ArtifactTypeManager.addArtifact(programArtifactType, AtsClientService.get().getAtsBranch(),
-            dslProgramName, guid, uuid);
+            dslProgramName, null, uuid);
          changes.add(newProgramArt);
          newProgramArt.getAttributes(AtsAttributeTypes.Active).iterator().next().setValue(
             BooleanDefUtil.get(dslProgramDef.getActive(), true));

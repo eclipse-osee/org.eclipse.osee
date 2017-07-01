@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IActionableItemFactory {
 
-   IAtsActionableItem createActionableItem(String guid, String name, long uuid, IAtsChangeSet changes, IAtsServices services) throws OseeCoreException;
+   IAtsActionableItem createActionableItem(String name, long uuid, IAtsChangeSet changes, IAtsServices services) throws OseeCoreException;
 
    IAtsActionableItem createActionableItem(String name, IAtsChangeSet changes, IAtsServices services);
 

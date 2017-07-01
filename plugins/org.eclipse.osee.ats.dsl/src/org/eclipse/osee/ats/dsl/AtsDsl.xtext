@@ -35,7 +35,7 @@ AttrValueDef:
    
 AttrFullDef:
 	'{'
-		('uuid' uuid=STRING)?
+		('id' uuid=STRING)?
 		('value' values+=STRING)+
 	'}';
 
@@ -48,8 +48,7 @@ PROGRAM_REFERENCE:
 ProgramDef:
 	name=PROGRAM_REFERENCE (programDefOption+=ProgramDefOption)*
 	'{'
-		('guid' guid=STRING)?
-		('uuid' uuid=INT)?
+		('id' uuid=INT)?
 		('artifactType' artifactTypeName=STRING)?
 		('active' active=BooleanDef)?
 		('namespace' namespace=STRING)*
@@ -63,8 +62,7 @@ TEAM_DEF_REFERENCE:
 TeamDef:
 	name=TEAM_DEF_REFERENCE (teamDefOption+=TeamDefOption)*
 	'{'
-		('guid' guid=STRING)?
-		('uuid' uuid=INT)?
+		('id' uuid=INT)?
 		('active' active=BooleanDef)?
 		('staticId' staticId+=STRING)*
 		('lead' lead+=UserRef)*
@@ -88,8 +86,7 @@ AI_DEF_REFERENCE:
 ActionableItemDef:
 	name=AI_DEF_REFERENCE (aiDefOption+=ActionableItemOption)*
 	('{'
-		('guid' guid=STRING)?
-		('uuid' uuid=INT)?
+		('id' uuid=INT)?
 		('active' active=BooleanDef)?
 		('actionable' actionable=BooleanDef)?
 		('lead' lead+=UserRef)*
@@ -110,8 +107,7 @@ VERSION_DEF_REFERENCE:
 VersionDef:
 	name=VERSION_DEF_REFERENCE
 	'{'
-		('guid' guid=STRING)?
-		('uuid' uuid=INT)?
+		('id' uuid=INT)?
 		('staticId' staticId+=STRING)*
 		('next' next=BooleanDef)?
 		('released' released=BooleanDef)?
