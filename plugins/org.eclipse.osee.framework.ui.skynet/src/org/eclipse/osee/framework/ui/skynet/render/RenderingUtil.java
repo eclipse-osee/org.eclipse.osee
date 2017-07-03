@@ -25,6 +25,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
+import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -174,7 +175,8 @@ public final class RenderingUtil {
             renderFolder.create(true, true, null);
          }
          IFile file = renderFolder.getFile(fileName);
-         renderer.setOption(IRenderer.RESULT_PATH_RETURN, file.getLocation().toOSString());
+         ((DefaultArtifactRenderer) renderer).updateOption(RendererOption.RESULT_PATH_RETURN,
+            file.getLocation().toOSString());
          return file;
       } catch (CoreException ex) {
          throw OseeCoreException.wrap(ex);

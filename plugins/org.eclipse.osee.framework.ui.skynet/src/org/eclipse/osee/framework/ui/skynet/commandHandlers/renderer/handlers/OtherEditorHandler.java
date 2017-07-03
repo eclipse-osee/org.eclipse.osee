@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers;
 
+import java.util.HashMap;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.enums.PresentationType;
+import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -42,7 +44,7 @@ public class OtherEditorHandler extends AbstractEditorHandler {
             new EditorSelectionDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
          dialog.setMessage(String.format("Choose the editor for opening %s", artifacts));
 
-         NativeRenderer renderer = new NativeRenderer();
+         NativeRenderer renderer = new NativeRenderer(new HashMap<RendererOption, Object>());
 
          if (dialog.open() == Window.OK) {
             IEditorDescriptor editor = dialog.getSelectedEditor();

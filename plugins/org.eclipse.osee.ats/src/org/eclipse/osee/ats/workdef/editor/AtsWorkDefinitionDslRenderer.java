@@ -19,7 +19,9 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.AtsImage;
@@ -32,6 +34,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -55,6 +58,14 @@ import org.eclipse.ui.ide.IDE;
  */
 public final class AtsWorkDefinitionDslRenderer extends FileSystemRenderer {
 
+   public AtsWorkDefinitionDslRenderer(Map<RendererOption, Object> rendererOptions) {
+      super(rendererOptions);
+   }
+
+   public AtsWorkDefinitionDslRenderer() {
+      super(new HashMap<RendererOption, Object>());
+   }
+
    @Override
    public String getName() {
       return "ATS Work Definition DSL Editor";
@@ -62,11 +73,16 @@ public final class AtsWorkDefinitionDslRenderer extends FileSystemRenderer {
 
    @Override
    public DefaultArtifactRenderer newInstance() {
-      return new AtsWorkDefinitionDslRenderer();
+      return new AtsWorkDefinitionDslRenderer(new HashMap<RendererOption, Object>());
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Object... objects) throws OseeCoreException {
+   public DefaultArtifactRenderer newInstance(Map<RendererOption, Object> rendererOptions) {
+      return new AtsWorkDefinitionDslRenderer(rendererOptions);
+   }
+
+   @Override
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions) {
       if (artifact.isOfType(
          AtsArtifactTypes.WorkDefinition) && !presentationType.matches(GENERALIZED_EDIT, GENERAL_REQUESTED)) {
          return SUBTYPE_TYPE_MATCH;

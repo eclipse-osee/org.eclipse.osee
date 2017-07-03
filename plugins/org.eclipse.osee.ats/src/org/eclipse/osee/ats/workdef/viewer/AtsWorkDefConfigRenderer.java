@@ -13,14 +13,16 @@ package org.eclipse.osee.ats.workdef.viewer;
 import static org.eclipse.osee.framework.core.enums.PresentationType.GENERALIZED_EDIT;
 import static org.eclipse.osee.framework.core.enums.PresentationType.SPECIALIZED_EDIT;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.enums.PresentationType;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -36,6 +38,14 @@ import org.eclipse.ui.IEditorInput;
  * @author Donald G. Dunne
  */
 public class AtsWorkDefConfigRenderer extends DefaultArtifactRenderer {
+
+   public AtsWorkDefConfigRenderer(Map<RendererOption, Object> rendererOptions) {
+      super(rendererOptions);
+   }
+
+   public AtsWorkDefConfigRenderer() {
+      this(new HashMap<RendererOption, Object>());
+   }
 
    public Image getImage(Artifact artifact) {
       return ImageManager.getImage(AtsImage.WORKFLOW_CONFIG);
@@ -58,7 +68,12 @@ public class AtsWorkDefConfigRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Object... objects) throws OseeCoreException {
+   public AtsWorkDefConfigRenderer newInstance(Map<RendererOption, Object> rendererOptions) {
+      return new AtsWorkDefConfigRenderer(rendererOptions);
+   }
+
+   @Override
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions) {
       if (artifact.isOfType(AtsArtifactTypes.WorkDefinition) && presentationType != GENERALIZED_EDIT) {
          return ARTIFACT_TYPE_MATCH;
       }

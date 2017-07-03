@@ -21,8 +21,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,6 +36,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -63,8 +66,18 @@ public class WholeWordRenderer extends WordRenderer {
    private static final Pattern END_PATTERN = Pattern.compile(FTR_END_TAG);
    private final IComparator comparator;
 
-   public WholeWordRenderer() {
+   public WholeWordRenderer(Map<RendererOption, Object> rendererOptions) {
+      super(rendererOptions);
       this.comparator = new WholeWordCompare(this);
+   }
+
+   public WholeWordRenderer() {
+      this(new HashMap<RendererOption, Object>());
+   }
+
+   @Override
+   public WholeWordRenderer newInstance(Map<RendererOption, Object> rendererOptions) {
+      return new WholeWordRenderer(rendererOptions);
    }
 
    @Override
@@ -80,7 +93,7 @@ public class WholeWordRenderer extends WordRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Object... objects) throws OseeCoreException {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions) {
       if (!presentationType.matches(GENERALIZED_EDIT, GENERAL_REQUESTED,
          PRODUCE_ATTRIBUTE) && artifact.isAttributeTypeValid(WholeWordContent)) {
          return PRESENTATION_SUBTYPE_MATCH;

@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
@@ -25,9 +26,9 @@ import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.render.ArtifactGuis;
-import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
+import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 
 /**
  * @author Paul K. Waldfogel
@@ -52,7 +53,9 @@ public class ViewWordChangeReportHandler extends CommandHandler {
 
          if (ArtifactGuis.checkDeletedOnParent(artifacts)) {
             String pathPrefix = RenderingUtil.getAssociatedArtifactName(localChanges);
-            RendererManager.diffInJob(artifactDeltas, pathPrefix, IRenderer.VIEW_ID, Handlers.getViewId());
+            WordTemplateRenderer preferredRenderer = new WordTemplateRenderer();
+            preferredRenderer.updateOption(RendererOption.VIEW, Handlers.getViewId());
+            RendererManager.diffInJobWithPreferedRenderer(artifactDeltas, pathPrefix, preferredRenderer);
          }
       }
       return null;

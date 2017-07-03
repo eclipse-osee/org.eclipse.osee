@@ -13,13 +13,11 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.PresentationType;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
@@ -40,15 +38,6 @@ public interface IRenderer {
    public static final int GENERAL_MATCH = 10;
    public static final int BASE_MATCH = 5;
    public static final int NO_MATCH = -1;
-
-   public static final String RESULT_PATH_RETURN = "resultPath";
-   public static final String NO_DISPLAY = "noDisplay";
-   public static final String SKIP_ERRORS = "skipErrors";
-   public static final String SKIP_DIALOGS = "skipDialogs";
-   public static final String OPEN_OPTION = "open.option";
-   public static final String EXECUTE_VB_SCRIPT = "execute.vb.script";
-   public static final String OVERRIDE_DATA_RIGHTS_OPTION = "overrideDataRights";
-   public static final String VIEW_ID = "ViewId";
 
    public static enum DataRightsClassification {
       governmentPurposeRights("Government Purpose Rights"),
@@ -111,35 +100,21 @@ public interface IRenderer {
 
    public void addMenuCommandDefinitions(ArrayList<MenuCmdDef> commands, Artifact artifact);
 
-   public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, Producer producer, AttributeElement attributeElement, String footer) throws OseeCoreException;
+   public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, Producer producer, AttributeElement attributeElement, String footer);
 
-   public String renderAttributeAsString(AttributeTypeId attributeType, Artifact artifact, PresentationType presentationType, String defaultValue) throws OseeCoreException;
+   public String renderAttributeAsString(AttributeTypeId attributeType, Artifact artifact, PresentationType presentationType, String defaultValue);
 
-   public int minimumRanking() throws OseeCoreException;
+   public int minimumRanking();
 
-   public void open(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException;
+   public void open(List<Artifact> artifacts, PresentationType presentationType);
 
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Object... objects) throws OseeCoreException;
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions);
 
    public String getName();
 
-   public void setOptions(Object... options) throws OseeArgumentException;
+   public IRenderer newInstance(Map<RendererOption, Object> rendererOptions);
 
-   public void setOption(String optionName, Object value);
-
-   public String getStringOption(String key) throws OseeArgumentException;
-
-   public Object getOption(String key) throws OseeArgumentException;
-
-   public List<Artifact> getArtifactsOption(String key) throws OseeArgumentException;
-
-   public List<IArtifactType> getArtifactTypesOption(String key) throws OseeArgumentException;
-
-   public boolean getBooleanOption(String key) throws OseeArgumentException;
-
-   public BranchId getBranchOption(String key) throws OseeArgumentException;
-
-   public IRenderer newInstance() throws OseeCoreException;
+   public IRenderer newInstance();
 
    public boolean supportsCompare();
 

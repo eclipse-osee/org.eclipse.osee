@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render;
 
+import java.util.HashMap;
+import java.util.Map;
+import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -19,6 +22,14 @@ import org.eclipse.swt.program.Program;
  * @author Ryan D. Brooks
  */
 public abstract class WordRenderer extends FileSystemRenderer {
+
+   public WordRenderer(Map<RendererOption, Object> rendererOptions) {
+      super(rendererOptions);
+   }
+
+   public WordRenderer() {
+      this(new HashMap<RendererOption, Object>());
+   }
 
    // We need MS Word, so look for the program that is for .doc files
    private static final Program wordApp = Program.findProgram("doc");

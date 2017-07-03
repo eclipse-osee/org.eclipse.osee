@@ -1613,7 +1613,7 @@
                optional="false">
             </commandParameter>
             <commandParameter
-               id="template"
+               id="Template"
                name="Template"
                optional="true">
             </commandParameter>

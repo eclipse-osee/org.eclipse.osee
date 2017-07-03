@@ -16,13 +16,16 @@ import static org.eclipse.osee.framework.core.enums.PresentationType.SPECIALIZED
 import java.io.File;
 import java.io.InputStream;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -42,7 +45,16 @@ import org.eclipse.ui.part.FileEditorInput;
  * @author Jeff C. Phillips
  */
 public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
+
    private static final ArtifactFileMonitor monitor = new ArtifactFileMonitor();
+
+   public FileSystemRenderer(Map<RendererOption, Object> rendererOptions) {
+      super(rendererOptions);
+   }
+
+   public FileSystemRenderer() {
+      this(new HashMap<RendererOption, Object>());
+   }
 
    public IFile renderToFile(Artifact artifact, IOseeBranch branch, PresentationType presentationType) throws OseeCoreException {
       List<Artifact> artifacts;

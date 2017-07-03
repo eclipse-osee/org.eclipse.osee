@@ -19,7 +19,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
@@ -31,6 +33,7 @@ import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -38,7 +41,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
-import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.framework.ui.skynet.render.compare.CompareData;
@@ -61,11 +63,14 @@ public final class ViewWordChangeAndDiffTest {
 
    private IFolder renderFolder;
    private BranchId branch;
+   private Map<RendererOption, Object> rendererOptions;
 
    @Before
    public void setUp() throws Exception {
       renderFolder = RenderingUtil.ensureRenderFolderExists(PresentationType.DIFF);
       branch = SAW_Bld_2;
+      rendererOptions = new HashMap<>();
+      rendererOptions.put(RendererOption.NO_DISPLAY, true);
    }
 
    @Test
@@ -88,8 +93,7 @@ public final class ViewWordChangeAndDiffTest {
          }
       };
 
-      RendererManager.diff(collector, new ArtifactDelta(txDelta, baseArtifact, newerArtifact), "", IRenderer.NO_DISPLAY,
-         true);
+      RendererManager.diff(collector, new ArtifactDelta(txDelta, baseArtifact, newerArtifact), "", rendererOptions);
 
       sleep(2000);
 
@@ -119,7 +123,7 @@ public final class ViewWordChangeAndDiffTest {
       checkPermissions(asArtifacts(changes));
 
       Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
-      RendererManager.diff(artifactDeltas, "testDiff", IRenderer.NO_DISPLAY, true);
+      RendererManager.diff(artifactDeltas, "testDiff", rendererOptions);
       verifyRenderFolderExists();
    }
 
@@ -131,7 +135,7 @@ public final class ViewWordChangeAndDiffTest {
       checkPermissions(Collections.singletonList(artifact));
 
       Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
-      RendererManager.diff(artifactDeltas, "", IRenderer.NO_DISPLAY, true);
+      RendererManager.diff(artifactDeltas, "", rendererOptions);
 
       verifyRenderFolderExists();
 

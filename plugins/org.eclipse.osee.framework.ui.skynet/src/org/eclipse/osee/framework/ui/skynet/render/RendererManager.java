@@ -17,9 +17,11 @@ import static org.eclipse.osee.framework.core.enums.PresentationType.PRODUCE_ATT
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -27,6 +29,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -55,8 +58,8 @@ public final class RendererManager {
    /**
     * @return Returns the intersection of renderers applicable for all of the artifacts
     */
-   public static List<IRenderer> getCommonRenderers(Collection<Artifact> artifacts, PresentationType presentationType, Object... data) throws OseeCoreException {
-      List<IRenderer> commonRenders = getApplicableRenderers(presentationType, artifacts.iterator().next(), data);
+   public static List<IRenderer> getCommonRenderers(Collection<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
+      List<IRenderer> commonRenders = getApplicableRenderers(presentationType, artifacts.iterator().next());
 
       for (Artifact artifact : artifacts) {
          List<IRenderer> applicableRenders = getApplicableRenderers(presentationType, artifact);
@@ -99,13 +102,17 @@ public final class RendererManager {
       }
    }
 
-   public static IRenderer getBestRenderer(PresentationType presentationType, Artifact artifact, Object... options) throws OseeCoreException {
-      IRenderer bestRenderer = getBestRendererPrototype(presentationType, artifact, options).newInstance();
-      bestRenderer.setOptions(options);
+   public static IRenderer getBestRenderer(PresentationType presentationType, Artifact artifact) {
+      return getBestRenderer(presentationType, artifact, new HashMap<RendererOption, Object>());
+   }
+
+   public static IRenderer getBestRenderer(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions) {
+      IRenderer bestRenderer =
+         getBestRendererPrototype(presentationType, artifact, rendererOptions).newInstance(rendererOptions);
       return bestRenderer;
    }
 
-   private static IRenderer getBestRendererPrototype(PresentationType presentationType, Artifact artifact, Object... options) throws OseeCoreException {
+   private static IRenderer getBestRendererPrototype(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions) throws OseeCoreException {
       if (presentationType == DEFAULT_OPEN && UserManager.getBooleanSetting(
          UserManager.DOUBLE_CLICK_SETTING_KEY_ART_EDIT)) {
          presentationType = GENERAL_REQUESTED;
@@ -114,8 +121,8 @@ public final class RendererManager {
       int bestRating = IRenderer.NO_MATCH;
       ensurePopulated();
       for (IRenderer renderer : renderers) {
-         renderer.setOptions(options);
-         int rating = renderer.getApplicabilityRating(presentationType, artifact, options);
+         int rating = renderer.getApplicabilityRating(presentationType, artifact, rendererOptions);
+
          if (rating > bestRating) {
             bestRendererPrototype = renderer;
             bestRating = rating;
@@ -128,26 +135,29 @@ public final class RendererManager {
       return bestRendererPrototype;
    }
 
-   public static void renderAttribute(AttributeTypeToken attributeType, PresentationType presentationType, Artifact artifact, Producer producer, AttributeElement attributeElement, String footer, Object... options) throws OseeCoreException {
-      getBestRenderer(PRODUCE_ATTRIBUTE, artifact, options).renderAttribute(attributeType, artifact, presentationType,
-         producer, attributeElement, footer);
+   public static void renderAttribute(AttributeTypeToken attributeType, PresentationType presentationType, Artifact artifact, Producer producer, AttributeElement attributeElement, String footer, Map<RendererOption, Object> rendererOptions) throws OseeCoreException {
+      getBestRenderer(PRODUCE_ATTRIBUTE, artifact, rendererOptions).renderAttribute(attributeType, artifact,
+         presentationType, producer, attributeElement, footer);
    }
 
    public static Collection<AttributeTypeToken> getAttributeTypeOrderList(Artifact artifact) throws OseeCoreException {
-      return getBestRenderer(PresentationType.PRODUCE_ATTRIBUTE, artifact).getOrderedAttributeTypes(artifact,
-         artifact.getAttributeTypes());
+      return getBestRenderer(PresentationType.PRODUCE_ATTRIBUTE, artifact,
+         new HashMap<RendererOption, Object>()).getOrderedAttributeTypes(artifact, artifact.getAttributeTypes());
    }
 
    private static List<IRenderer> getApplicableRenderers(PresentationType presentationType, Artifact artifact, Object... data) throws OseeCoreException {
       ArrayList<IRenderer> applicableRenderers = new ArrayList<>();
-      IRenderer bestRenderer = getBestRenderer(presentationType, artifact, data);
+
+      IRenderer bestRenderer = getBestRenderer(presentationType, artifact, new HashMap<RendererOption, Object>());
+
       int rendererMinimumRanking = bestRenderer.minimumRanking();
       int minimumRank = Math.max(rendererMinimumRanking, IRenderer.BASE_MATCH);
 
       for (IRenderer prototypeRenderer : renderers) {
          // Add Catch Exception Code --
 
-         int rating = prototypeRenderer.getApplicabilityRating(presentationType, artifact);
+         int rating =
+            prototypeRenderer.getApplicabilityRating(presentationType, artifact, new HashMap<RendererOption, Object>());
          if (rating >= minimumRank) {
             IRenderer renderer = prototypeRenderer.newInstance();
             applicableRenderers.add(renderer);
@@ -156,11 +166,11 @@ public final class RendererManager {
       return applicableRenderers;
    }
 
-   public static HashCollection<IRenderer, Artifact> createRenderMap(PresentationType presentationType, Collection<Artifact> artifacts, Object... options) throws OseeCoreException {
+   public static HashCollection<IRenderer, Artifact> createRenderMap(PresentationType presentationType, Collection<Artifact> artifacts, Map<RendererOption, Object> rendererOptions) {
       HashCollection<IRenderer, Artifact> prototypeRendererArtifactMap =
          new HashCollection<IRenderer, Artifact>(false, LinkedList.class);
       for (Artifact artifact : artifacts) {
-         IRenderer renderer = getBestRendererPrototype(presentationType, artifact, options);
+         IRenderer renderer = getBestRendererPrototype(presentationType, artifact, rendererOptions);
          prototypeRendererArtifactMap.put(renderer, artifact);
       }
 
@@ -168,99 +178,116 @@ public final class RendererManager {
       HashCollection<IRenderer, Artifact> rendererArtifactMap =
          new HashCollection<IRenderer, Artifact>(false, LinkedList.class);
       for (IRenderer prototypeRenderer : prototypeRendererArtifactMap.keySet()) {
-         IRenderer renderer = prototypeRenderer.newInstance();
-         renderer.setOptions(options);
+         IRenderer renderer = prototypeRenderer.newInstance(rendererOptions);
          rendererArtifactMap.put(renderer, prototypeRendererArtifactMap.getValues(prototypeRenderer));
       }
       return rendererArtifactMap;
    }
 
    public static void openInJob(Artifact artifact, PresentationType presentationType) {
-      openInJob(Collections.singletonList(artifact), presentationType);
+      openInJob(Collections.singletonList(artifact), presentationType, new HashMap<RendererOption, Object>());
    }
 
-   public static void openInJob(Collection<Artifact> artifacts, PresentationType presentationType, Object... options) {
-      Operations.executeAsJob(new OpenUsingRenderer(artifacts, presentationType, options), true);
+   public static void openInJob(Collection<Artifact> artifacts, PresentationType presentationType) {
+      openInJob(artifacts, presentationType, new HashMap<RendererOption, Object>());
    }
 
-   public static String open(Collection<Artifact> artifacts, PresentationType presentationType, IProgressMonitor monitor, Object... options) throws OseeCoreException {
-      OpenUsingRenderer operation = new OpenUsingRenderer(artifacts, presentationType, options);
+   public static void openInJob(Collection<Artifact> artifacts, PresentationType presentationType, Map<RendererOption, Object> rendererOptions) {
+      Operations.executeAsJob(new OpenUsingRenderer(artifacts, presentationType, rendererOptions), true);
+   }
+
+   public static String open(Collection<Artifact> artifacts, PresentationType presentationType, IProgressMonitor monitor, Map<RendererOption, Object> rendererOptions) throws OseeCoreException {
+      OpenUsingRenderer operation = new OpenUsingRenderer(artifacts, presentationType, rendererOptions);
       Operations.executeWorkAndCheckStatus(operation, monitor);
       return operation.getResultPath();
    }
 
    public static String open(Collection<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
-      return open(artifacts, presentationType, new NullProgressMonitor());
+      return open(artifacts, presentationType, new NullProgressMonitor(), new HashMap<RendererOption, Object>());
    }
 
-   public static String open(Artifact artifact, PresentationType presentationType, Object... options) throws OseeCoreException {
-      return open(Collections.singletonList(artifact), presentationType, new NullProgressMonitor(), options);
+   public static String open(Artifact artifact, PresentationType presentationType, Map<RendererOption, Object> rendererOptions) throws OseeCoreException {
+      return open(Collections.singletonList(artifact), presentationType, new NullProgressMonitor(), rendererOptions);
    }
 
    public static String open(Artifact artifact, PresentationType presentationType, IProgressMonitor monitor) throws OseeCoreException {
-      return open(Collections.singletonList(artifact), presentationType, monitor);
+      return open(Collections.singletonList(artifact), presentationType, monitor, new HashMap<RendererOption, Object>());
    }
 
    public static String open(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
       return open(Collections.singletonList(artifact), presentationType);
    }
 
-   public static void merge(CompareDataCollector collector, Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, String pathPrefix, Object... options) throws OseeCoreException {
-      IRenderer renderer = getBestRenderer(PresentationType.MERGE, baseVersion, options);
+   public static void merge(CompareDataCollector collector, Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, String pathPrefix, Map<RendererOption, Object> rendererOptions) throws OseeCoreException {
+      IRenderer renderer = getBestRenderer(PresentationType.MERGE, baseVersion, rendererOptions);
       IComparator comparator = renderer.getComparator();
       comparator.compare(collector, baseVersion, newerVersion, baseFile, newerFile, PresentationType.MERGE, pathPrefix);
    }
 
-   public static void diffInJob(ArtifactDelta artifactDelta, String pathPrefix, Object... options) {
-      CompareDataCollector collector = new NoOpCompareDataCollector();
-      Operations.executeAsJob(new DiffUsingRenderer(collector, artifactDelta, pathPrefix, options), true);
+   public static void diffInJob(ArtifactDelta artifactDelta, String pathPrefix) {
+      diffInJob(artifactDelta, pathPrefix, new HashMap<RendererOption, Object>());
    }
 
-   public static void diff(CompareDataCollector collector, Collection<ArtifactDelta> artifactDelta, String pathPrefix, Object... options) {
-      IRenderer renderer = new WordTemplateRenderer();
-      renderer.setOptions(options);
-      DiffUsingRenderer operation = new DiffUsingRenderer(collector, artifactDelta, pathPrefix, renderer, options);
+   public static void diffInJob(ArtifactDelta artifactDelta, String pathPrefix, Map<RendererOption, Object> rendererOptions) {
+      CompareDataCollector collector = new NoOpCompareDataCollector();
+      Operations.executeAsJob(new DiffUsingRenderer(collector, artifactDelta, pathPrefix, rendererOptions), true);
+   }
+
+   public static void diff(CompareDataCollector collector, Collection<ArtifactDelta> artifactDelta, String pathPrefix, Map<RendererOption, Object> rendererOptions) {
+      IRenderer renderer = new WordTemplateRenderer(rendererOptions);
+      DiffUsingRenderer operation =
+         new DiffUsingRenderer(collector, artifactDelta, pathPrefix, renderer, rendererOptions);
       Operations.executeWork(operation);
    }
 
-   public static void diff(CompareDataCollector collector, ArtifactDelta artifactDelta, String pathPrefix, Object... options) {
-      DiffUsingRenderer operation = new DiffUsingRenderer(collector, artifactDelta, pathPrefix, options);
+   public static void diff(CompareDataCollector collector, ArtifactDelta artifactDelta, String pathPrefix, Map<RendererOption, Object> rendererOptions) {
+      DiffUsingRenderer operation = new DiffUsingRenderer(collector, artifactDelta, pathPrefix, rendererOptions);
       Operations.executeWork(operation);
    }
 
-   public static void diffInJobWithPreferedRenderer(Collection<ArtifactDelta> artifactDeltas, String pathPrefix, IRenderer preferedRenderer, Object... options) {
+   public static void diffInJobWithPreferedRenderer(Collection<ArtifactDelta> artifactDeltas, String pathPrefix, IRenderer preferedRenderer) {
+      diffInJobWithPreferedRenderer(artifactDeltas, pathPrefix, preferedRenderer, new HashMap<RendererOption, Object>());
+   }
+
+   public static void diffInJobWithPreferedRenderer(Collection<ArtifactDelta> artifactDeltas, String pathPrefix, IRenderer preferedRenderer, Map<RendererOption, Object> rendererOptions) {
       CompareDataCollector collector = new NoOpCompareDataCollector();
-      IOperation operation = new DiffUsingRenderer(collector, artifactDeltas, pathPrefix, preferedRenderer, options);
+      IOperation operation =
+         new DiffUsingRenderer(collector, artifactDeltas, pathPrefix, preferedRenderer, rendererOptions);
       Operations.executeAsJob(operation, true);
    }
 
-   public static void diffInJob(Collection<ArtifactDelta> artifactDeltas, String pathPrefix, Object... options) {
-      diffInJobWithPreferedRenderer(artifactDeltas, pathPrefix, null, options);
+   public static void diffInJob(Collection<ArtifactDelta> artifactDeltas, String pathPrefix) {
+      diffInJob(artifactDeltas, pathPrefix, new HashMap<RendererOption, Object>());
    }
 
-   public static void diff(Collection<ArtifactDelta> artifactDeltas, String pathPrefix, Object... options) {
+   public static void diffInJob(Collection<ArtifactDelta> artifactDeltas, String pathPrefix, Map<RendererOption, Object> rendererOptions) {
+      diffInJobWithPreferedRenderer(artifactDeltas, pathPrefix, null, rendererOptions);
+   }
+
+   public static void diff(Collection<ArtifactDelta> artifactDeltas, String pathPrefix, Map<RendererOption, Object> rendererOptions) {
       CompareDataCollector collector = new NoOpCompareDataCollector();
-      IOperation operation = new DiffUsingRenderer(collector, artifactDeltas, pathPrefix, options);
+      IOperation operation = new DiffUsingRenderer(collector, artifactDeltas, pathPrefix, rendererOptions);
       IProgressMonitor monitor = null;
-      for (int i = 0; i < options.length; i += 2) {
-         if (((String) options[i]).equals("Progress Monitor")) {
-            monitor = (IProgressMonitor) options[i + 1];
-            break;
-         }
+      if (rendererOptions.containsKey(RendererOption.PROGRESS_MONITOR)) {
+         monitor = (IProgressMonitor) rendererOptions.get(RendererOption.PROGRESS_MONITOR);
       }
+
       Operations.executeWork(operation, monitor);
    }
 
-   public static void diffWithRenderer(Collection<ArtifactDelta> artifactDeltas, String pathPrefix, IRenderer preferredRenderer, Object... options) {
+   public static void diffWithRenderer(Collection<ArtifactDelta> artifactDeltas, String pathPrefix, IRenderer preferredRenderer) {
+      diffWithRenderer(artifactDeltas, pathPrefix, preferredRenderer, new HashMap<RendererOption, Object>());
+   }
+
+   public static void diffWithRenderer(Collection<ArtifactDelta> artifactDeltas, String pathPrefix, IRenderer preferredRenderer, Map<RendererOption, Object> rendererOptions) {
       CompareDataCollector collector = new NoOpCompareDataCollector();
-      IOperation operation = new DiffUsingRenderer(collector, artifactDeltas, pathPrefix, preferredRenderer, options);
+      IOperation operation =
+         new DiffUsingRenderer(collector, artifactDeltas, pathPrefix, preferredRenderer, rendererOptions);
       IProgressMonitor monitor = null;
-      for (int i = 0; i < options.length; i += 2) {
-         if (((String) options[i]).equals("Progress Monitor")) {
-            monitor = (IProgressMonitor) options[i + 1];
-            break;
-         }
+      if (rendererOptions.containsKey(RendererOption.PROGRESS_MONITOR)) {
+         monitor = (IProgressMonitor) rendererOptions.get(RendererOption.PROGRESS_MONITOR);
       }
+
       Operations.executeWork(operation, monitor);
    }
 

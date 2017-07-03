@@ -20,15 +20,17 @@ import static org.eclipse.osee.framework.core.enums.PresentationType.SPECIALIZED
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
+import java.util.Map;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.core.util.OptionType;
+import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -44,7 +46,6 @@ import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorInput;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
-import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
@@ -68,7 +69,42 @@ public class DefaultArtifactRenderer implements IRenderer {
    private static final String OPEN_IN_HISTORY = "open.with.resource.history";
    private static final String OPEN_IN_EXPLORER = "open.with.artifact.explorer";
 
-   private final VariableMap options = new VariableMap();
+   private Map<RendererOption, Object> rendererOptions;
+
+   public DefaultArtifactRenderer(Map<RendererOption, Object> rendererOptions) {
+      this.rendererOptions = rendererOptions;
+   }
+
+   public DefaultArtifactRenderer() {
+      this(new HashMap<RendererOption, Object>());
+   }
+
+   public Map<RendererOption, Object> getRendererOptions() {
+      return rendererOptions;
+   }
+
+   public Object getRendererOptionValue(RendererOption key) {
+      if (rendererOptions.containsKey(key)) {
+         return rendererOptions.get(key);
+      } else if (key.getType().equals(OptionType.Boolean)) {
+         return false;
+      } else if (key.getType().equals(OptionType.ArtifactId)) {
+         return ArtifactId.SENTINEL;
+      } else if (key.getType().equals(OptionType.BranchId)) {
+         return BranchId.SENTINEL;
+      }
+
+      return null;
+   }
+
+   // TODO: will remove. Do not like this.
+   public void updateOptions(Map<RendererOption, Object> rendererOptions) {
+      this.rendererOptions = rendererOptions;
+   }
+
+   public void updateOption(RendererOption key, Object value) {
+      rendererOptions.put(key, value);
+   }
 
    @Override
    public String getName() {
@@ -80,31 +116,18 @@ public class DefaultArtifactRenderer implements IRenderer {
       return false;
    }
 
-   @Deprecated
-   public Object[] getValues() {
-      return options.getValues();
-   }
-
-   @Override
-   public String getStringOption(String key) throws OseeArgumentException {
-      return options == null ? null : options.getString(key);
-   }
-
-   @Override
-   public boolean getBooleanOption(String key) throws OseeArgumentException {
-      if (options != null) {
-         return options.getBoolean(key);
-      }
-      return false;
-   }
-
    @Override
    public DefaultArtifactRenderer newInstance() {
       return new DefaultArtifactRenderer();
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Object... options) throws OseeCoreException {
+   public IRenderer newInstance(Map<RendererOption, Object> rendererOptions) {
+      return new DefaultArtifactRenderer(rendererOptions);
+   }
+
+   @Override
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions) {
       if (presentationType.matches(GENERALIZED_EDIT, GENERAL_REQUESTED, PRODUCE_ATTRIBUTE)) {
          return PRESENTATION_TYPE;
       }
@@ -126,7 +149,7 @@ public class DefaultArtifactRenderer implements IRenderer {
    public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, Producer producer, AttributeElement attributeElement, String footer) throws OseeCoreException {
       WordMLProducer wordMl = (WordMLProducer) producer;
       String format = attributeElement.getFormatPre();
-      boolean allAttrs = getBooleanOption("allAttrs");
+      boolean allAttrs = (boolean) rendererOptions.get(RendererOption.ALL_ATTRIBUTES);
 
       wordMl.startParagraph();
 
@@ -217,7 +240,11 @@ public class DefaultArtifactRenderer implements IRenderer {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            String openOption = getStringOption(OPEN_OPTION);
+            String openOption = "";
+            if (rendererOptions.containsKey(RendererOption.OPEN_OPTION)) {
+               openOption = (String) rendererOptions.get(RendererOption.OPEN_OPTION);
+            }
+
             if (OPEN_IN_GRAPH.equals(openOption)) {
                for (Artifact artifact : artifacts) {
                   SkyWalkerView.exploreArtifact(artifact);
@@ -249,57 +276,18 @@ public class DefaultArtifactRenderer implements IRenderer {
       });
    }
 
-   protected boolean isRenderOption(String value) {
-      boolean result = false;
-      try {
-         result = getBooleanOption(value);
-      } catch (OseeArgumentException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-      return result;
-   }
-
-   @Override
-   public Object getOption(String key) {
-      return options.getValue(key);
-   }
-
-   @Override
-   public BranchId getBranchOption(String key) throws OseeArgumentException {
-      return options.getBranch(key);
-   }
-
-   @Override
-   public void setOption(String optionName, Object value) {
-      options.setValue(optionName, value);
-   }
-
-   @Override
-   public void setOptions(Object... options) throws OseeArgumentException {
-      this.options.setValues(options);
-   }
-
-   @Override
-   public List<Artifact> getArtifactsOption(String key) throws OseeArgumentException {
-      return options.getArtifacts(key);
-   }
-
    @Override
    public void addMenuCommandDefinitions(ArrayList<MenuCmdDef> commands, Artifact artifact) {
       commands.add(
          new MenuCmdDef(CommandGroup.SHOW, GENERALIZED_EDIT, "Artifact Editor", FrameworkImage.ARTIFACT_EDITOR));
       commands.add(new MenuCmdDef(CommandGroup.SHOW, GENERALIZED_EDIT, "Mass Editor",
-         FrameworkImage.ARTIFACT_MASS_EDITOR, OPEN_OPTION, OPEN_IN_TABLE_EDITOR));
+         FrameworkImage.ARTIFACT_MASS_EDITOR, RendererOption.OPEN_OPTION.getKey(), OPEN_IN_TABLE_EDITOR));
       commands.add(new MenuCmdDef(CommandGroup.SHOW, GENERALIZED_EDIT, "Artifact Explorer",
-         FrameworkImage.ARTIFACT_EXPLORER, OPEN_OPTION, OPEN_IN_EXPLORER));
+         FrameworkImage.ARTIFACT_EXPLORER, RendererOption.OPEN_OPTION.getKey(), OPEN_IN_EXPLORER));
       commands.add(new MenuCmdDef(CommandGroup.SHOW, GENERALIZED_EDIT, "Resource History", FrameworkImage.DB_ICON_BLUE,
-         OPEN_OPTION, OPEN_IN_HISTORY));
+         RendererOption.OPEN_OPTION.getKey(), OPEN_IN_HISTORY));
       commands.add(new MenuCmdDef(CommandGroup.SHOW, GENERALIZED_EDIT, "Sky Walker", FrameworkImage.SKYWALKER,
-         OPEN_OPTION, OPEN_IN_GRAPH));
+         RendererOption.OPEN_OPTION.getKey(), OPEN_IN_GRAPH));
    }
 
-   @Override
-   public List<IArtifactType> getArtifactTypesOption(String key) throws OseeArgumentException {
-      return options.getArtifactTypes(key);
-   }
 }

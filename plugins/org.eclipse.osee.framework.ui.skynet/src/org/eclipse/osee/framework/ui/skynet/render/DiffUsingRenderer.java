@@ -13,8 +13,10 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import static org.eclipse.osee.framework.core.enums.PresentationType.DIFF;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -23,27 +25,27 @@ import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 
 public final class DiffUsingRenderer extends AbstractOperation {
 
-   private final Object[] options;
+   private final Map<RendererOption, Object> rendererOptions;
    private final Collection<ArtifactDelta> artifactDeltas;
    private final String pathPrefix;
    private final CompareDataCollector collector;
    private final IRenderer preferedRenderer;
 
-   public DiffUsingRenderer(CompareDataCollector collector, Collection<ArtifactDelta> artifactDeltas, String pathPrefix, IRenderer preferedRenderer, Object... options) {
+   public DiffUsingRenderer(CompareDataCollector collector, Collection<ArtifactDelta> artifactDeltas, String pathPrefix, IRenderer preferedRenderer, Map<RendererOption, Object> rendererOptions) {
       super(generateOperationName(artifactDeltas), Activator.PLUGIN_ID);
       this.artifactDeltas = artifactDeltas;
       this.pathPrefix = pathPrefix;
-      this.options = options;
+      this.rendererOptions = rendererOptions;
       this.collector = collector;
       this.preferedRenderer = preferedRenderer;
    }
 
-   public DiffUsingRenderer(CompareDataCollector collector, Collection<ArtifactDelta> artifactDeltas, String pathPrefix, Object... options) {
-      this(collector, artifactDeltas, pathPrefix, null, options);
+   public DiffUsingRenderer(CompareDataCollector collector, Collection<ArtifactDelta> artifactDeltas, String pathPrefix, Map<RendererOption, Object> rendererOptions) {
+      this(collector, artifactDeltas, pathPrefix, null, rendererOptions);
    }
 
-   public DiffUsingRenderer(CompareDataCollector collector, ArtifactDelta artifactDelta, String diffPrefix, Object... options) {
-      this(collector, Collections.singletonList(artifactDelta), diffPrefix, options);
+   public DiffUsingRenderer(CompareDataCollector collector, ArtifactDelta artifactDelta, String diffPrefix, Map<RendererOption, Object> rendererOptions) {
+      this(collector, Collections.singletonList(artifactDelta), diffPrefix, rendererOptions);
    }
 
    private static String generateOperationName(Collection<ArtifactDelta> artifactDeltas) {
@@ -67,7 +69,7 @@ public final class DiffUsingRenderer extends AbstractOperation {
 
       IRenderer renderer = preferedRenderer;
       if (preferedRenderer == null) {
-         renderer = RendererManager.getBestRenderer(DIFF, sampleArtifact, options);
+         renderer = RendererManager.getBestRenderer(DIFF, sampleArtifact, rendererOptions);
       }
 
       IComparator comparator = renderer.getComparator();

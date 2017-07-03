@@ -10,15 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.operation;
 
-import static org.eclipse.osee.framework.ui.skynet.render.IRenderer.NO_DISPLAY;
-import static org.eclipse.osee.framework.ui.skynet.render.IRenderer.OVERRIDE_DATA_RIGHTS_OPTION;
-import static org.eclipse.osee.framework.ui.skynet.render.IRenderer.SKIP_DIALOGS;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -39,6 +37,7 @@ import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
+import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -131,8 +130,12 @@ public final class ExportChangeReportOperation extends AbstractOperation {
                   continue;
                }
 
-               RendererManager.diff(collector, artifactDeltas, prefix, NO_DISPLAY, true, SKIP_DIALOGS, true,
-                  OVERRIDE_DATA_RIGHTS_OPTION, overrideDataRightsClassification);
+               HashMap<RendererOption, Object> rendererOptions = new HashMap<>();
+               rendererOptions.put(RendererOption.NO_DISPLAY, true);
+               rendererOptions.put(RendererOption.SKIP_DIALOGS, true);
+               rendererOptions.put(RendererOption.OVERRIDE_DATA_RIGHTS, overrideDataRightsClassification);
+
+               RendererManager.diff(collector, artifactDeltas, prefix, rendererOptions);
             }
             String artIdsAsString = org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", artIds);
             try {

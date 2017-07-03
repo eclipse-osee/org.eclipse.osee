@@ -20,12 +20,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -47,8 +50,13 @@ public class PlainTextRenderer extends FileSystemRenderer {
 
    private final IComparator comparator;
 
-   public PlainTextRenderer() {
+   public PlainTextRenderer(Map<RendererOption, Object> rendererOptions) {
+      super(rendererOptions);
       this.comparator = new PlainTextDiffRenderer();
+   }
+
+   public PlainTextRenderer() {
+      this(new HashMap<RendererOption, Object>());
    }
 
    @Override
@@ -96,7 +104,7 @@ public class PlainTextRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Object... objects) throws OseeCoreException {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions) {
       if (artifact.isAttributeTypeValid(CoreAttributeTypes.PlainTextContent)) {
          if (presentationType.matches(SPECIALIZED_EDIT, PREVIEW, DEFAULT_OPEN, PRODUCE_ATTRIBUTE, DIFF)) {
             return PRESENTATION_SUBTYPE_MATCH;
@@ -122,7 +130,12 @@ public class PlainTextRenderer extends FileSystemRenderer {
 
    @Override
    public PlainTextRenderer newInstance() {
-      return new PlainTextRenderer();
+      return new PlainTextRenderer(new HashMap<RendererOption, Object>());
+   }
+
+   @Override
+   public PlainTextRenderer newInstance(Map<RendererOption, Object> rendererOptions) {
+      return new PlainTextRenderer(rendererOptions);
    }
 
    @Override

@@ -17,8 +17,11 @@ import static org.eclipse.osee.framework.core.enums.PresentationType.GENERALIZED
 import static org.eclipse.osee.framework.core.enums.PresentationType.GENERAL_REQUESTED;
 import static org.eclipse.osee.framework.core.enums.PresentationType.WEB_PREVIEW;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.framework.core.enums.PresentationType;
+import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -33,6 +36,19 @@ import org.eclipse.swt.program.Program;
  */
 public class UrlRenderer extends DefaultArtifactRenderer {
 
+   public UrlRenderer(Map<RendererOption, Object> rendererOptions) {
+      super(rendererOptions);
+   }
+
+   public UrlRenderer() {
+      this(new HashMap<RendererOption, Object>());
+   }
+
+   @Override
+   public UrlRenderer newInstance(Map<RendererOption, Object> rendererOptions) {
+      return new UrlRenderer(rendererOptions);
+   }
+
    @Override
    public UrlRenderer newInstance() {
       return new UrlRenderer();
@@ -44,7 +60,7 @@ public class UrlRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Object... objects) throws OseeCoreException {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions) {
       if (!presentationType.matches(GENERALIZED_EDIT,
          GENERAL_REQUESTED) && artifact.getAttributeCount(ContentUrl) > 0) {
          if (presentationType.equals(WEB_PREVIEW)) {

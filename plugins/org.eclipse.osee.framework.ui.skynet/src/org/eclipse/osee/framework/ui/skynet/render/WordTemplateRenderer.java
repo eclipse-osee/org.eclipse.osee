@@ -23,8 +23,10 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import javax.xml.stream.XMLOutputFactory;
@@ -38,15 +40,18 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactURL;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.httpRequests.HttpWordUpdateRequest;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
@@ -70,34 +75,39 @@ import org.w3c.dom.Element;
  *
  * @author Jeff C. Phillips
  */
-public class WordTemplateRenderer extends WordRenderer implements ITemplateRenderer {
+public class WordTemplateRenderer extends WordRenderer {
    private static final String EMBEDDED_OBJECT_NO = "w:embeddedObjPresent=\"no\"";
    private static final String EMBEDDED_OBJECT_YES = "w:embeddedObjPresent=\"yes\"";
    private static final String STYLES = "<w:styles>.*?</w:styles>";
    private static final String STYLES_END = "</w:styles>";
    private static final String OLE_START = "<w:docOleData>";
    private static final String OLE_END = "</w:docOleData>";
-   public static final String UPDATE_PARAGRAPH_NUMBER_OPTION = "updateParagraphNumber";
-   public static final String FIRST_TIME = "FirstTime";
-   public static final String SECOND_TIME = "SecondTime";
 
    private final WordTemplateProcessor templateProcessor;
-
    private final IComparator comparator;
 
-   public WordTemplateRenderer() {
+   public WordTemplateRenderer(Map<RendererOption, Object> options) {
+      super(options);
       this.comparator = new WordTemplateCompare(this);
       DataRightProvider provider = new DataRightProviderImpl();
       this.templateProcessor = new WordTemplateProcessor(this, provider);
    }
 
-   @Override
-   public WordTemplateRenderer newInstance() {
-      return new WordTemplateRenderer();
+   public WordTemplateRenderer() {
+      this(new HashMap<RendererOption, Object>());
    }
 
-   public void publish(Artifact masterTemplateArtifact, Artifact slaveTemplateArtifact, List<Artifact> artifacts, Object... options) throws OseeCoreException {
-      setOptions(options);
+   @Override
+   public WordTemplateRenderer newInstance() {
+      return new WordTemplateRenderer(new HashMap<RendererOption, Object>());
+   }
+
+   @Override
+   public WordTemplateRenderer newInstance(Map<RendererOption, Object> rendererOptions) {
+      return new WordTemplateRenderer(rendererOptions);
+   }
+
+   public void publish(Artifact masterTemplateArtifact, Artifact slaveTemplateArtifact, List<Artifact> artifacts) throws OseeCoreException {
       templateProcessor.publishWithNestedTemplates(masterTemplateArtifact, slaveTemplateArtifact, artifacts);
    }
 
@@ -134,7 +144,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Object... objects) throws OseeCoreException {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions) {
       int rating = NO_MATCH;
       if (!presentationType.matches(GENERALIZED_EDIT, GENERAL_REQUESTED)) {
          if (artifact.isAttributeTypeValid(CoreAttributeTypes.WordTemplateContent)) {
@@ -160,7 +170,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
 
       if (attributeType.equals(CoreAttributeTypes.WordTemplateContent)) {
          String data = null;
-         LinkType linkType = (LinkType) getOption("linkType");
+         LinkType linkType = (LinkType) getRendererOptionValue(RendererOption.LINK_TYPE);
 
          if (attributeElement.getLabel().length() > 0) {
             wordMl.addParagraph(attributeElement.getLabel());
@@ -182,7 +192,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          wtcData.setTxId(txId);
          wtcData.setSessionId(ClientSessionManager.getSessionId());
          wtcData.setPresentationType(presentationType);
-         ArtifactId view = (ArtifactId) getOption(IRenderer.VIEW_ID);
+         ArtifactId view = (ArtifactId) getRendererOptionValue(RendererOption.VIEW);
          wtcData.setViewId(view == null ? ArtifactId.SENTINEL : view);
          wtcData.setPermanentLinkUrl(ArtifactURL.getSelectedPermanenrLinkUrl());
 
@@ -293,35 +303,45 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
 
       templateContent = WordUtil.removeGUIDFromTemplate(templateContent);
       return templateProcessor.applyTemplate(artifacts, templateContent, templateOptions, templateStyles, null, null,
-         getStringOption("outlineType"), presentationType);
+         (String) getRendererOptionValue(RendererOption.OUTLINE_TYPE), presentationType);
    }
 
    protected Artifact getTemplate(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
       // if USE_TEMPLATE_ONCE then only the first two artifacts will use the whole template (since they are diff'd with each other)
       // The settings from the template are stored previously and will be used, just not the content of the Word template
-      boolean useTemplateOnce = getBooleanOption(USE_TEMPLATE_ONCE);
-      boolean firstTime = getBooleanOption(FIRST_TIME);
-      boolean secondTime = getBooleanOption(SECOND_TIME);
-      Object option = getOption(TEMPLATE_OPTION);
 
-      if (option instanceof Artifact && (!useTemplateOnce || useTemplateOnce && (firstTime || secondTime))) {
-         Artifact template = (Artifact) option;
+      boolean useTemplateOnce = (boolean) getRendererOptionValue(RendererOption.USE_TEMPLATE_ONCE);
+      boolean firstTime = (boolean) getRendererOptionValue(RendererOption.FIRST_TIME);
+      boolean secondTime = (boolean) getRendererOptionValue(RendererOption.SECOND_TIME);
+      String option = (String) getRendererOptionValue(RendererOption.TEMPLATE_OPTION);
+      ArtifactId templateArt = (ArtifactId) getRendererOptionValue(RendererOption.TEMPLATE_ARTIFACT);
+
+      if (option != null && option.toString().isEmpty()) {
+         option = null;
+      }
+
+      if (templateArt != null && templateArt.isValid() && (!useTemplateOnce || useTemplateOnce && (firstTime || secondTime))) {
          if (useTemplateOnce) {
             if (secondTime) {
-               setOption(SECOND_TIME, false);
+               updateOption(RendererOption.SECOND_TIME, false);
             }
             if (firstTime) {
-               setOption(FIRST_TIME, false);
-               setOption(SECOND_TIME, true);
+               updateOption(RendererOption.FIRST_TIME, false);
+               updateOption(RendererOption.SECOND_TIME, true);
             }
          }
 
-         return template;
-      } else if ((option == null || option instanceof String) || (useTemplateOnce && !firstTime)) {
+         if (templateArt instanceof Artifact) {
+            return (Artifact) templateArt;
+         } else {
+            return ArtifactQuery.getArtifactFromId(templateArt, CoreBranches.COMMON);
+         }
+
+      } else if (option == null || (useTemplateOnce && !firstTime)) {
          if (useTemplateOnce && !firstTime && !secondTime) {
             option = null;
          }
-         Artifact templateArtifact = TemplateManager.getTemplate(this, artifact, presentationType, (String) option);
+         Artifact templateArtifact = TemplateManager.getTemplate(this, artifact, presentationType, option);
          return templateArtifact;
       }
       return null;
@@ -343,7 +363,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       commands.add(new MenuCmdDef(CommandGroup.EDIT, SPECIALIZED_EDIT, "MS Word Edit", imageDescriptor));
       commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "MS Word Preview", imageDescriptor));
       commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "MS Word Preview with children", imageDescriptor,
-         TEMPLATE_OPTION, PREVIEW_WITH_RECURSE_VALUE));
+         RendererOption.TEMPLATE_OPTION.getKey(), RendererOption.PREVIEW_WITH_RECURSE_VALUE.getKey()));
    }
 
 }

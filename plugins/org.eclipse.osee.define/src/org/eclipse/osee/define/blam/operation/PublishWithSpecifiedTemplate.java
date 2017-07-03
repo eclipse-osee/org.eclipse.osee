@@ -11,12 +11,30 @@
 package org.eclipse.osee.define.blam.operation;
 
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
+import static org.eclipse.osee.framework.core.util.RendererOption.BRANCH;
+import static org.eclipse.osee.framework.core.util.RendererOption.COMPARE_BRANCH;
+import static org.eclipse.osee.framework.core.util.RendererOption.EXCLUDE_ARTIFACT_TYPES;
+import static org.eclipse.osee.framework.core.util.RendererOption.EXCLUDE_FOLDERS;
+import static org.eclipse.osee.framework.core.util.RendererOption.FIRST_TIME;
+import static org.eclipse.osee.framework.core.util.RendererOption.INCLUDE_UUIDS;
+import static org.eclipse.osee.framework.core.util.RendererOption.LINK_TYPE;
+import static org.eclipse.osee.framework.core.util.RendererOption.MAINTAIN_ORDER;
+import static org.eclipse.osee.framework.core.util.RendererOption.PROGRESS_MONITOR;
+import static org.eclipse.osee.framework.core.util.RendererOption.PUBLISH_DIFF;
+import static org.eclipse.osee.framework.core.util.RendererOption.RECURSE;
+import static org.eclipse.osee.framework.core.util.RendererOption.SKIP_ERRORS;
+import static org.eclipse.osee.framework.core.util.RendererOption.TRANSACTION_OPTION;
+import static org.eclipse.osee.framework.core.util.RendererOption.UPDATE_PARAGRAPH_NUMBERS;
+import static org.eclipse.osee.framework.core.util.RendererOption.USE_TEMPLATE_ONCE;
+import static org.eclipse.osee.framework.core.util.RendererOption.VIEW;
+import static org.eclipse.osee.framework.core.util.RendererOption.WAS_BRANCH;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -28,6 +46,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -40,8 +59,6 @@ import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.branch.ViewApplicabilityUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
-import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
-import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.templates.TemplateManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
@@ -68,6 +85,11 @@ import org.json.JSONObject;
  * @author Theron Virgin
  */
 public class PublishWithSpecifiedTemplate extends AbstractBlam {
+
+   private static String ARTIFACTS = "Artifacts";
+   private static String MASTER_TEMPLATE = "Master Template";
+   private static String SLAVE_TEMPLATE = "Slave Template";
+
    private List<Artifact> templates;
    private BranchId branch;
    private Map<Long, String> branchViews;
@@ -77,18 +99,6 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
    private XDslEditorWidget orcsQueryWidget;
    private XCombo branchViewWidget;
    private XListDropViewer artifactsWidget;
-   private final String USE_ARTIFACT_NAMES = "Use Artifact Names";
-   private final String USE_PARAGRAPH_NUMBERS = "Use Paragraph Numbers";
-   private final String UPDATE_PARAGRAPH_NUMBERS = "Update Paragraph Numbers (If authorized)";
-   private final String EXCLUDE_ARTIFACT_TYPES = "Exclude Artifact Types";
-   private final String MASTER_TEMPLATE = "Master Template";
-   private final String SLAVE_TEMPLATE = "Slave Template";
-   private final String IS_ARTIFACTS = "IS Artifacts";
-   private final String PUBLISH_AS_DIFF = "Publish As Diff";
-   private final String WAS_BRANCH = "WAS Branch";
-   private final String INCLUDE_ARTIFACT_UUIDS = "Include Artifact UUIDs";
-   private final String ORCS_QUERY = "Orcs Query";
-   private final String VIEW = "Branch View (For IS Artifacts)";
 
    @Override
    public String getName() {
@@ -99,9 +109,8 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       populateTemplateList();
 
-      boolean useArtifactNameInLinks = variableMap.getBoolean(USE_ARTIFACT_NAMES);
-      boolean useParagraphNumbersInLinks = variableMap.getBoolean(USE_PARAGRAPH_NUMBERS);
-      variableMap.getBoolean(INCLUDE_ARTIFACT_UUIDS);
+      boolean useArtifactNameInLinks = variableMap.getBoolean(RendererOption.USE_ARTIFACT_NAMES.getKey());
+      boolean useParagraphNumbersInLinks = variableMap.getBoolean(RendererOption.USE_PARAGRAPH_NUMBERS.getKey());
 
       if (!useParagraphNumbersInLinks && !useArtifactNameInLinks) {
          throw new OseeArgumentException("Please select at least one Document Link Format");
@@ -124,7 +133,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       List<Artifact> artifacts = null;
       try {
          if (orcsQueryWidget.getText().isEmpty()) {
-            artifacts = variableMap.getArtifacts(IS_ARTIFACTS);
+            artifacts = variableMap.getArtifacts(ARTIFACTS);
          } else {
             artifacts = getArtifactsFromOrcsQuery();
          }
@@ -142,7 +151,10 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
          throw new OseeArgumentException("Cannot determine IS branch.");
       }
 
-      Object view = variableMap.getValue(VIEW);
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(branch, "BLAM: Publish with specified template");
+
+      Object view = variableMap.getValue(RendererOption.VIEW.getKey());
       ArtifactId viewId = ArtifactId.SENTINEL;
       if (branchViews != null && !branchViews.isEmpty()) {
          for (Entry<Long, String> entry : branchViews.entrySet()) {
@@ -152,45 +164,28 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
          }
       }
 
-      WordTemplateRenderer renderer = new WordTemplateRenderer();
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(branch, "BLAM: Publish with specified template");
+      HashMap<RendererOption, Object> rendererOptionsMap = new HashMap<>();
+      rendererOptionsMap.put(BRANCH, branch);
+      rendererOptionsMap.put(COMPARE_BRANCH, variableMap.getValue(WAS_BRANCH.getKey()));
+      rendererOptionsMap.put(INCLUDE_UUIDS, variableMap.getValue(INCLUDE_UUIDS.getKey()));
+      rendererOptionsMap.put(LINK_TYPE, linkType);
+      rendererOptionsMap.put(UPDATE_PARAGRAPH_NUMBERS, variableMap.getBoolean(UPDATE_PARAGRAPH_NUMBERS.getKey()));
+      rendererOptionsMap.put(EXCLUDE_ARTIFACT_TYPES, variableMap.getArtifactTypes(EXCLUDE_ARTIFACT_TYPES.getKey()));
+      rendererOptionsMap.put(TRANSACTION_OPTION, transaction);
+      rendererOptionsMap.put(SKIP_ERRORS, true);
+      rendererOptionsMap.put(EXCLUDE_FOLDERS, true);
+      rendererOptionsMap.put(RECURSE, true);
+      rendererOptionsMap.put(MAINTAIN_ORDER, true);
+      rendererOptionsMap.put(PROGRESS_MONITOR, true);
+      rendererOptionsMap.put(USE_TEMPLATE_ONCE, true);
+      rendererOptionsMap.put(FIRST_TIME, true);
+      rendererOptionsMap.put(PUBLISH_DIFF, variableMap.getValue(PUBLISH_DIFF.getKey()));
+      rendererOptionsMap.put(VIEW, viewId);
 
-      Object[] options = new Object[] {
-         "Branch",
-         branch,
-         "compareBranch",
-         variableMap.getBranch(WAS_BRANCH),
-         "Publish As Diff",
-         variableMap.getValue(PUBLISH_AS_DIFF),
-         "INCLUDE UUIDS",
-         variableMap.getValue(INCLUDE_ARTIFACT_UUIDS),
-         "linkType",
-         linkType,
-         WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION,
-         variableMap.getBoolean(UPDATE_PARAGRAPH_NUMBERS),
-         "EXCLUDE ARTIFACT TYPES",
-         variableMap.getArtifactTypes(EXCLUDE_ARTIFACT_TYPES),
-         ITemplateRenderer.TRANSACTION_OPTION,
-         transaction,
-         IRenderer.SKIP_ERRORS,
-         true,
-         "Exclude Folders",
-         true,
-         "Recurse On Load",
-         true,
-         "Maintain Order",
-         true,
-         "Progress Monitor",
-         monitor,
-         ITemplateRenderer.USE_TEMPLATE_ONCE,
-         true,
-         WordTemplateRenderer.FIRST_TIME,
-         true,
-         "ViewId",
-         viewId};
+      WordTemplateRenderer renderer = new WordTemplateRenderer(rendererOptionsMap);
 
-      Boolean isDiff = (Boolean) variableMap.getValue(PUBLISH_AS_DIFF);
+      Boolean isDiff = (Boolean) rendererOptionsMap.get(PUBLISH_DIFF);
+
       int toProcessSize = 0;
       if (isDiff) {
          for (Artifact art : artifacts) {
@@ -220,7 +215,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       });
 
       if (result.get()) {
-         renderer.publish(master, slave, artifacts, options);
+         renderer.publish(master, slave, artifacts);
          transaction.execute();
          monitor.done();
       }
@@ -288,20 +283,20 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       StringBuilder builder = new StringBuilder();
       builder.append(String.format(
          "<xWidgets><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"%s\" />",
-         UPDATE_PARAGRAPH_NUMBERS));
+         RendererOption.UPDATE_PARAGRAPH_NUMBERS.getKey()));
       builder.append(String.format(
          "<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"%s\" />",
-         INCLUDE_ARTIFACT_UUIDS));
+         RendererOption.INCLUDE_UUIDS.getKey()));
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Document Link Format:\"/>");
       builder.append(String.format(
          "<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"%s\" defaultValue=\"true\"/>",
-         USE_ARTIFACT_NAMES));
+         RendererOption.USE_ARTIFACT_NAMES.getKey()));
       builder.append(String.format(
          "<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"%s\" />",
-         USE_PARAGRAPH_NUMBERS));
+         RendererOption.USE_PARAGRAPH_NUMBERS.getKey()));
       builder.append(String.format(
          "<XWidget xwidgetType=\"XArtifactTypeMultiChoiceSelect\" displayName=\"Exclude Artifact Types\" />",
-         EXCLUDE_ARTIFACT_TYPES));
+         RendererOption.EXCLUDE_ARTIFACT_TYPES.getKey()));
 
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\" \" /><XWidget xwidgetType=\"XCombo(");
       for (Artifact art : templates) {
@@ -317,21 +312,24 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
 
       builder.append(String.format(
          ")\" displayName=\"%s\" horizontalLabel=\"true\"/><XWidget xwidgetType=\"XLabel\" displayName=\" \" />",
+
          SLAVE_TEMPLATE));
-      builder.append(String.format("<XWidget xwidgetType=\"XListDropViewer\" displayName=\"%s\" />", IS_ARTIFACTS));
+      builder.append(String.format("<XWidget xwidgetType=\"XListDropViewer\" displayName=\"%s\" />", ARTIFACTS));
 
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\" \" /><XWidget xwidgetType=\"XCombo(");
-      builder.append(String.format(")\" displayName=\"%s\" horizontalLabel=\"true\"/>", VIEW));
+      builder.append(String.format(")\" displayName=\"%s\" horizontalLabel=\"true\"/>", RendererOption.VIEW.getKey()));
 
-      builder.append(
-         String.format("<XWidget xwidgetType=\"XDslEditorWidget\" displayName=\"%s\"  defaultValue=\"", ORCS_QUERY));
+      builder.append(String.format("<XWidget xwidgetType=\"XDslEditorWidget\" displayName=\"%s\"  defaultValue=\"",
+         RendererOption.ORCS_QUERY.getKey()));
+
       builder.append("orcs");
       builder.append("\" fill=\"vertically\"/>");
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Generate Differences:\"/>");
       builder.append(String.format(
          "<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"%s\" />",
-         PUBLISH_AS_DIFF));
-      builder.append(String.format("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"%s\"/>", WAS_BRANCH));
+         RendererOption.PUBLISH_DIFF.getKey()));
+      builder.append(String.format("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"%s\"/>",
+         RendererOption.WAS_BRANCH.getKey()));
       builder.append(
          "<XWidget xwidgetType=\"XLabel\" displayName=\"Note: If a WAS branch is selected, diffs will be between selected IS artifacts and current version on WAS branch\"/>");
       builder.append(
@@ -344,10 +342,10 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
    @Override
    public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
       super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
-      if (xWidget.getLabel().equals(WAS_BRANCH)) {
+      if (xWidget.getLabel().equals(RendererOption.WAS_BRANCH.getKey())) {
          branchWidget = (XBranchSelectWidget) xWidget;
          branchWidget.setEditable(false);
-      } else if (xWidget.getLabel().equals(PUBLISH_AS_DIFF)) {
+      } else if (xWidget.getLabel().equals(RendererOption.PUBLISH_DIFF.getKey())) {
          final XCheckBox checkBox = (XCheckBox) xWidget;
          checkBox.addSelectionListener(new SelectionAdapter() {
 
@@ -389,7 +387,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       } else if (xWidget.getLabel().equals(SLAVE_TEMPLATE)) {
          slaveWidget = (XCombo) xWidget;
          slaveWidget.setEnabled(false);
-      } else if (xWidget.getLabel().equals(IS_ARTIFACTS)) {
+      } else if (xWidget.getLabel().equals(ARTIFACTS)) {
          artifactsWidget = (XListDropViewer) xWidget;
          artifactsWidget.setEditable(true);
 
@@ -415,10 +413,11 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
             }
          });
 
-      } else if (xWidget.getLabel().equals(ORCS_QUERY)) {
+      } else if (xWidget.getLabel().equals(RendererOption.ORCS_QUERY.getKey())) {
+
          orcsQueryWidget = (XDslEditorWidget) xWidget;
          orcsQueryWidget.setEditable(true);
-      } else if (xWidget.getLabel().equals(VIEW)) {
+      } else if (xWidget.getLabel().equals(RendererOption.VIEW.getKey())) {
          branchViewWidget = (XCombo) xWidget;
          branchViewWidget.setEditable(false);
       }

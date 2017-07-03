@@ -12,11 +12,28 @@ package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
+import static org.eclipse.osee.framework.core.util.RendererOption.BRANCH;
+import static org.eclipse.osee.framework.core.util.RendererOption.COMPARE_BRANCH;
+import static org.eclipse.osee.framework.core.util.RendererOption.EXCLUDE_ARTIFACT_TYPES;
+import static org.eclipse.osee.framework.core.util.RendererOption.EXCLUDE_FOLDERS;
+import static org.eclipse.osee.framework.core.util.RendererOption.FIRST_TIME;
+import static org.eclipse.osee.framework.core.util.RendererOption.LINK_TYPE;
+import static org.eclipse.osee.framework.core.util.RendererOption.MAINTAIN_ORDER;
+import static org.eclipse.osee.framework.core.util.RendererOption.NO_DISPLAY;
+import static org.eclipse.osee.framework.core.util.RendererOption.PUBLISH_DIFF;
+import static org.eclipse.osee.framework.core.util.RendererOption.RECURSE_ON_LOAD;
+import static org.eclipse.osee.framework.core.util.RendererOption.RESULT_PATH_RETURN;
+import static org.eclipse.osee.framework.core.util.RendererOption.SKIP_ERRORS;
+import static org.eclipse.osee.framework.core.util.RendererOption.TRANSACTION_OPTION;
+import static org.eclipse.osee.framework.core.util.RendererOption.UPDATE_PARAGRAPH_NUMBERS;
+import static org.eclipse.osee.framework.core.util.RendererOption.USE_TEMPLATE_ONCE;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
@@ -29,6 +46,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -42,8 +60,6 @@ import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage;
-import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
-import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.junit.After;
 import org.junit.Assert;
@@ -115,8 +131,7 @@ public class WordTemplateRendererTest {
    private Artifact masterTemplate_idAndName;
    private Artifact slaveTemplate;
 
-   private final WordTemplateRenderer renderer = new WordTemplateRenderer();
-   private Object[] options;
+   private WordTemplateRenderer renderer;
 
    @BeforeClass
    public static void loadTemplateInfo() throws Exception {
@@ -132,35 +147,23 @@ public class WordTemplateRendererTest {
    @Before
    public void setUp() throws OseeCoreException {
       // Establish default option settings
-      options = new Object[] {
-         "Branch",
-         null,
-         "compareBranch",
-         null,
-         "Publish As Diff",
-         true,
-         "linkType",
-         LinkType.INTERNAL_DOC_REFERENCE_USE_NAME,
-         WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION,
-         false,
-         ITemplateRenderer.TRANSACTION_OPTION,
-         null,
-         IRenderer.SKIP_ERRORS,
-         true,
-         "Exclude Folders",
-         true,
-         "EXCLUDE ARTIFACT TYPES",
-         new ArrayList<IArtifactType>(),
-         "Recurse On Load",
-         true,
-         "Maintain Order",
-         true,
-         ITemplateRenderer.USE_TEMPLATE_ONCE,
-         true,
-         WordTemplateRenderer.FIRST_TIME,
-         true,
-         IRenderer.NO_DISPLAY,
-         true};
+      HashMap<RendererOption, Object> rendererOptionsMap = new HashMap<>();
+      rendererOptionsMap.put(BRANCH, null);
+      rendererOptionsMap.put(COMPARE_BRANCH, null);
+      rendererOptionsMap.put(PUBLISH_DIFF, true);
+      rendererOptionsMap.put(LINK_TYPE, LinkType.INTERNAL_DOC_REFERENCE_USE_NAME);
+      rendererOptionsMap.put(UPDATE_PARAGRAPH_NUMBERS, false);
+      rendererOptionsMap.put(TRANSACTION_OPTION, null);
+      rendererOptionsMap.put(SKIP_ERRORS, true);
+      rendererOptionsMap.put(EXCLUDE_FOLDERS, true);
+      rendererOptionsMap.put(EXCLUDE_ARTIFACT_TYPES, new ArrayList<IArtifactType>());
+      rendererOptionsMap.put(RECURSE_ON_LOAD, true);
+      rendererOptionsMap.put(MAINTAIN_ORDER, true);
+      rendererOptionsMap.put(USE_TEMPLATE_ONCE, true);
+      rendererOptionsMap.put(FIRST_TIME, true);
+      rendererOptionsMap.put(NO_DISPLAY, true);
+
+      renderer = new WordTemplateRenderer(rendererOptionsMap);
 
       String branchName = method.getQualifiedTestName();
       rootBranch = BranchManager.createTopLevelBranch(branchName);
@@ -226,13 +229,13 @@ public class WordTemplateRendererTest {
       BranchId childBr = BranchManager.createWorkingBranch(middleBr, "Child Branch");
       vol4 = ArtifactQuery.getArtifactFromId(vol4.getGuid(), childBr);
 
-      modifyOption("Branch", childBr);
-      modifyOption("Publish As Diff", true);
-      modifyOption("compareBranch", rootBr);
+      modifyOption(BRANCH, childBr);
+      modifyOption(PUBLISH_DIFF, true);
+      modifyOption(COMPARE_BRANCH, rootBr);
 
-      renderer.publish(singleTemplate, null, Collections.singletonList(vol4), options);
+      renderer.publish(singleTemplate, null, Collections.singletonList(vol4));
 
-      String resultPath = renderer.getStringOption(IRenderer.RESULT_PATH_RETURN);
+      String resultPath = (String) renderer.getRendererOptionValue(RESULT_PATH_RETURN);
       Assert.assertNotEquals(String.format("%s Published Doc not found", method.getQualifiedTestName()), resultPath,
          null);
       try {
@@ -256,13 +259,13 @@ public class WordTemplateRendererTest {
 
    @Test
    public void testPublishWithoutDiff() throws OseeCoreException {
-      modifyOption("Branch", updateBranch);
-      modifyOption("Publish As Diff", false);
+      modifyOption(BRANCH, updateBranch);
+      modifyOption(PUBLISH_DIFF, false);
       List<Artifact> artifacts = new ArrayList<>();
       artifacts.add(docFolder);
-      renderer.publish(singleTemplate, null, artifacts, options);
+      renderer.publish(singleTemplate, null, artifacts);
 
-      String resultPath = renderer.getStringOption(IRenderer.RESULT_PATH_RETURN);
+      String resultPath = (String) renderer.getRendererOptionValue(RESULT_PATH_RETURN);
       Assert.assertNotEquals(String.format("%s Published Doc not found", method.getQualifiedTestName()), resultPath,
          null);
       try {
@@ -275,14 +278,14 @@ public class WordTemplateRendererTest {
 
    @Test
    public void testPublishWithDiff() throws OseeCoreException {
-      modifyOption("Branch", updateBranch);
-      modifyOption("Publish As Diff", true);
+      modifyOption(BRANCH, updateBranch);
+      modifyOption(PUBLISH_DIFF, true);
       List<Artifact> artifacts = new ArrayList<>();
       Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder, updateBranch);
       artifacts.add(updateDoc);
-      renderer.publish(singleTemplate, null, artifacts, options);
+      renderer.publish(singleTemplate, null, artifacts);
 
-      String resultPath = renderer.getStringOption(IRenderer.RESULT_PATH_RETURN);
+      String resultPath = (String) renderer.getRendererOptionValue(RESULT_PATH_RETURN);
       Assert.assertNotEquals(String.format("%s Published Doc not found", method.getQualifiedTestName()), resultPath,
          null);
       try {
@@ -295,13 +298,13 @@ public class WordTemplateRendererTest {
 
    @Test
    public void testPublishWithoutDiffRecurseTemplate() throws OseeCoreException {
-      modifyOption("Branch", updateBranch);
-      modifyOption("Publish As Diff", false);
+      modifyOption(BRANCH, updateBranch);
+      modifyOption(PUBLISH_DIFF, false);
       List<Artifact> artifacts = new ArrayList<>();
       artifacts.add(docFolder);
-      renderer.publish(recurseTemplate, null, artifacts, options);
+      renderer.publish(recurseTemplate, null, artifacts);
 
-      String resultPath = renderer.getStringOption(IRenderer.RESULT_PATH_RETURN);
+      String resultPath = (String) renderer.getRendererOptionValue(RESULT_PATH_RETURN);
       Assert.assertNotEquals(String.format("%s Published Doc not found", method.getQualifiedTestName()), resultPath,
          null);
       try {
@@ -314,14 +317,14 @@ public class WordTemplateRendererTest {
 
    @Test
    public void testPublishWithDiffRecurseTemplate() throws OseeCoreException {
-      modifyOption("Branch", updateBranch);
-      modifyOption("Publish As Diff", true);
+      modifyOption(BRANCH, updateBranch);
+      modifyOption(PUBLISH_DIFF, true);
       List<Artifact> artifacts = new ArrayList<>();
       Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder, updateBranch);
       artifacts.add(updateDoc);
-      renderer.publish(recurseTemplate, null, artifacts, options);
+      renderer.publish(recurseTemplate, null, artifacts);
 
-      String resultPath = renderer.getStringOption(IRenderer.RESULT_PATH_RETURN);
+      String resultPath = (String) renderer.getRendererOptionValue(RESULT_PATH_RETURN);
       Assert.assertNotEquals(String.format("%s Published Doc not found", method.getQualifiedTestName()), resultPath,
          null);
       try {
@@ -334,16 +337,16 @@ public class WordTemplateRendererTest {
 
    @Test
    public void testPublishWithDiffMerge() throws OseeCoreException {
-      modifyOption("Branch", updateBranch);
-      modifyOption("Publish As Diff", true);
-      modifyOption("compareBranch", rootBranch);
-      modifyOption("linkType", LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER);
+      modifyOption(BRANCH, updateBranch);
+      modifyOption(PUBLISH_DIFF, true);
+      modifyOption(COMPARE_BRANCH, rootBranch);
+      modifyOption(LINK_TYPE, LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER);
       List<Artifact> artifacts = new ArrayList<>();
       Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder, updateBranch);
       artifacts.add(updateDoc);
-      renderer.publish(singleTemplate, null, artifacts, options);
+      renderer.publish(singleTemplate, null, artifacts);
 
-      String resultPath = renderer.getStringOption(IRenderer.RESULT_PATH_RETURN);
+      String resultPath = (String) renderer.getRendererOptionValue(RESULT_PATH_RETURN);
       Assert.assertNotEquals(String.format("%s Published Doc not found", method.getQualifiedTestName()), resultPath,
          null);
       String contents;
@@ -368,16 +371,16 @@ public class WordTemplateRendererTest {
 
    @Test
    public void testPublishWithDiffLinks() throws OseeCoreException {
-      modifyOption("Branch", updateBranch);
-      modifyOption("Publish As Diff", true);
-      modifyOption("compareBranch", null);
-      modifyOption("linkType", LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER_AND_NAME);
+      modifyOption(BRANCH, updateBranch);
+      modifyOption(PUBLISH_DIFF, true);
+      modifyOption(COMPARE_BRANCH, null);
+      modifyOption(LINK_TYPE, LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER_AND_NAME);
       List<Artifact> artifacts = new ArrayList<>();
       Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder, updateBranch);
       artifacts.add(updateDoc);
-      renderer.publish(singleTemplateAttrib, null, artifacts, options);
+      renderer.publish(singleTemplateAttrib, null, artifacts);
 
-      String resultPath = renderer.getStringOption(IRenderer.RESULT_PATH_RETURN);
+      String resultPath = (String) renderer.getRendererOptionValue(RESULT_PATH_RETURN);
       Assert.assertNotEquals(String.format("%s Published Doc not found", method.getQualifiedTestName()), resultPath,
          null);
       String contents;
@@ -422,17 +425,17 @@ public class WordTemplateRendererTest {
    public void testPublishWithoutDiffUpdateParagraphNumbers() throws OseeCoreException {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(updateBranch, String.format("%s", method.getQualifiedTestName()));
-      modifyOption("Branch", updateBranch);
-      modifyOption(ITemplateRenderer.TRANSACTION_OPTION, transaction);
-      modifyOption("Publish As Diff", false);
-      modifyOption("linkType", LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER_AND_NAME);
-      modifyOption(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION, true);
+      modifyOption(BRANCH, updateBranch);
+      modifyOption(TRANSACTION_OPTION, transaction);
+      modifyOption(PUBLISH_DIFF, false);
+      modifyOption(LINK_TYPE, LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER_AND_NAME);
+      modifyOption(UPDATE_PARAGRAPH_NUMBERS, true);
       List<Artifact> artifacts = new ArrayList<>();
       Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder, updateBranch);
       artifacts.add(updateDoc);
-      renderer.publish(singleTemplateAttrib, null, artifacts, options);
+      renderer.publish(singleTemplateAttrib, null, artifacts);
 
-      String resultPath = renderer.getStringOption(IRenderer.RESULT_PATH_RETURN);
+      String resultPath = (String) renderer.getRendererOptionValue(RESULT_PATH_RETURN);
       Assert.assertNotEquals(String.format("%s Published Doc not found", method.getQualifiedTestName()), resultPath,
          null);
       String contents;
@@ -459,16 +462,16 @@ public class WordTemplateRendererTest {
 
    @Test
    public void testPublishWithDiffDontUseTemplateOnce() throws OseeCoreException {
-      modifyOption("Branch", updateBranch);
-      modifyOption("Publish As Diff", true);
-      modifyOption("linkType", LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER_AND_NAME);
-      modifyOption(ITemplateRenderer.USE_TEMPLATE_ONCE, false);
+      modifyOption(BRANCH, updateBranch);
+      modifyOption(PUBLISH_DIFF, true);
+      modifyOption(LINK_TYPE, LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER_AND_NAME);
+      modifyOption(USE_TEMPLATE_ONCE, false);
       List<Artifact> artifacts = new ArrayList<>();
       Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder, updateBranch);
       artifacts.add(updateDoc);
-      renderer.publish(singleTemplateAttrib, null, artifacts, options);
+      renderer.publish(singleTemplateAttrib, null, artifacts);
 
-      String resultPath = renderer.getStringOption(IRenderer.RESULT_PATH_RETURN);
+      String resultPath = (String) renderer.getRendererOptionValue(RESULT_PATH_RETURN);
       Assert.assertNotEquals(String.format("%s Published Doc not found", method.getQualifiedTestName()), resultPath,
          null);
       String contents;
@@ -489,13 +492,13 @@ public class WordTemplateRendererTest {
 
    @Test
    public void testPublishSoftwareRequirements() throws OseeCoreException {
-      modifyOption("Branch", updateBranch);
-      modifyOption("Publish As Diff", false);
+      modifyOption(BRANCH, updateBranch);
+      modifyOption(PUBLISH_DIFF, false);
       List<Artifact> artifacts = new ArrayList<>();
       artifacts.add(swReqFolder);
-      renderer.publish(masterTemplate, slaveTemplate, artifacts, options);
+      renderer.publish(masterTemplate, slaveTemplate, artifacts);
 
-      String resultPath = renderer.getStringOption(IRenderer.RESULT_PATH_RETURN);
+      String resultPath = (String) renderer.getRendererOptionValue(RESULT_PATH_RETURN);
       Assert.assertNotEquals(String.format("%s Published Doc not found", method.getQualifiedTestName()), resultPath,
          null);
       String contents;
@@ -521,13 +524,13 @@ public class WordTemplateRendererTest {
 
    @Test
    public void testPublishUsingIds() throws OseeCoreException {
-      modifyOption("Branch", updateBranch);
-      modifyOption("Publish As Diff", false);
+      modifyOption(BRANCH, updateBranch);
+      modifyOption(PUBLISH_DIFF, false);
       List<Artifact> artifacts = new ArrayList<>();
       artifacts.add(swReqFolder);
-      renderer.publish(masterTemplate_idOnly, slaveTemplate, artifacts, options);
+      renderer.publish(masterTemplate_idOnly, slaveTemplate, artifacts);
 
-      String resultPath = renderer.getStringOption(IRenderer.RESULT_PATH_RETURN);
+      String resultPath = (String) renderer.getRendererOptionValue(RESULT_PATH_RETURN);
       Assert.assertNotEquals(String.format("%s Published Doc not found", method.getQualifiedTestName()), resultPath,
          null);
       String contents;
@@ -553,13 +556,13 @@ public class WordTemplateRendererTest {
 
    @Test
    public void testPublishUsingIdAndName() throws OseeCoreException {
-      modifyOption("Branch", updateBranch);
-      modifyOption("Publish As Diff", false);
+      modifyOption(BRANCH, updateBranch);
+      modifyOption(PUBLISH_DIFF, false);
       List<Artifact> artifacts = new ArrayList<>();
       artifacts.add(swReqFolder);
-      renderer.publish(masterTemplate_idAndName, slaveTemplate, artifacts, options);
+      renderer.publish(masterTemplate_idAndName, slaveTemplate, artifacts);
 
-      String resultPath = renderer.getStringOption(IRenderer.RESULT_PATH_RETURN);
+      String resultPath = (String) renderer.getRendererOptionValue(RESULT_PATH_RETURN);
       Assert.assertNotEquals(String.format("%s Published Doc not found", method.getQualifiedTestName()), resultPath,
          null);
       String contents;
@@ -585,15 +588,15 @@ public class WordTemplateRendererTest {
 
    @Test
    public void testPublishDiffWithFieldCodes() throws OseeCoreException {
-      modifyOption("Branch", updateBranch);
-      modifyOption("Publish As Diff", true);
+      modifyOption(BRANCH, updateBranch);
+      modifyOption(PUBLISH_DIFF, true);
       List<Artifact> artifacts = new ArrayList<>();
       setupFieldCodeChange();
       Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder, updateBranch);
       artifacts.add(updateDoc);
-      renderer.publish(singleTemplate, null, artifacts, options);
+      renderer.publish(singleTemplate, null, artifacts);
 
-      String resultPath = renderer.getStringOption(IRenderer.RESULT_PATH_RETURN);
+      String resultPath = (String) renderer.getRendererOptionValue(RESULT_PATH_RETURN);
       Assert.assertNotEquals(String.format("%s Published Doc not found", method.getQualifiedTestName()), resultPath,
          null);
       try {
@@ -608,16 +611,16 @@ public class WordTemplateRendererTest {
 
    @Test
    public void testPublishDiffWithOutFieldCodes() throws OseeCoreException {
-      modifyOption("Branch", updateBranch);
-      modifyOption("Publish As Diff", true);
+      modifyOption(BRANCH, updateBranch);
+      modifyOption(PUBLISH_DIFF, true);
       List<Artifact> artifacts = new ArrayList<>();
       setupFieldCodeChange();
       UserManager.setSetting(MsWordPreferencePage.IGNORE_FIELD_CODE_CHANGES, "true");
       Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder, updateBranch);
       artifacts.add(updateDoc);
-      renderer.publish(singleTemplate, null, artifacts, options);
+      renderer.publish(singleTemplate, null, artifacts);
 
-      String resultPath = renderer.getStringOption(IRenderer.RESULT_PATH_RETURN);
+      String resultPath = (String) renderer.getRendererOptionValue(RESULT_PATH_RETURN);
       Assert.assertNotEquals(String.format("%s Published Doc not found", method.getQualifiedTestName()), resultPath,
          null);
       try {
@@ -867,13 +870,11 @@ public class WordTemplateRendererTest {
       return retStr;
    }
 
-   private void modifyOption(String optName, Object optValue) {
-      for (int i = 0; i < options.length; i += 2) {
-         if (optName.equals(options[i])) {
-            options[i + 1] = optValue;
-            break;
-         }
-      }
+   private void modifyOption(RendererOption optName, Object optValue) {
+      Map<RendererOption, Object> rendererOptions = renderer.getRendererOptions();
+      rendererOptions.put(optName, optValue);
+
+      renderer.updateOptions(rendererOptions);
    }
 
    private void basicDocumentCheck(String document, String pubString, boolean merge, boolean fieldcode) {

@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.exception.OperationTimedoutException;
+import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -53,8 +54,6 @@ public abstract class AbstractWordCompare implements IComparator {
    private final ArtifactDeltaToFileConverter converter;
    private final List<AttributeTypeId> wordAttributeType = new ArrayList<>();
    protected boolean skipDialogs;
-   private static final Pattern authorPattern =
-      Pattern.compile("aml:author=\".*?\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 
    public AbstractWordCompare(FileSystemRenderer renderer, AttributeTypeId... wordAttributeType) {
       this.renderer = renderer;
@@ -67,10 +66,11 @@ public abstract class AbstractWordCompare implements IComparator {
    }
 
    protected IVbaDiffGenerator createGenerator(List<Artifact> artifacts, BranchId branch, PresentationType presentationType) throws OseeCoreException {
-      boolean show = !getRenderer().getBooleanOption(IRenderer.NO_DISPLAY);
+      boolean show = !((boolean) renderer.getRendererOptionValue(RendererOption.NO_DISPLAY));
       boolean executeVbScript = System.getProperty("os.name").contains("Windows");
-      boolean skipErrors = !getRenderer().getBooleanOption(IRenderer.SKIP_ERRORS);
-      skipDialogs = getRenderer().getBooleanOption(IRenderer.SKIP_DIALOGS);
+      boolean skipErrors = !((boolean) renderer.getRendererOptionValue(RendererOption.SKIP_ERRORS));
+      skipDialogs = ((boolean) renderer.getRendererOptionValue(RendererOption.SKIP_DIALOGS));
+
       boolean diffFieldCodes = !UserManager.getBooleanSetting(MsWordPreferencePage.IGNORE_FIELD_CODE_CHANGES);
 
       IVbaDiffGenerator diffGenerator = WordUiUtil.createScriptGenerator(presentationType == PresentationType.MERGE,

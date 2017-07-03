@@ -13,17 +13,19 @@ package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
-import static org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer.PREVIEW_WITH_RECURSE_OPTION_PAIR;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
+import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -64,6 +66,8 @@ public class WordTemplateProcessorTest {
    private static String F_WITH_PUBLISH_INLINE;
    private static String F_WITHOUT_PUBLISH_INLINE;
 
+   ArtifactId recurseTemplate;
+
    @BeforeClass
    public static void loadTestFiles() throws Exception {
       C_WITH_PUBLISH_INLINE = getResourceData("wordtemplate_c_with_publish_inline.xml");
@@ -83,6 +87,8 @@ public class WordTemplateProcessorTest {
       branch = IOseeBranch.create(method.getQualifiedTestName());
 
       BranchManager.createWorkingBranch(SAW_Bld_1, branch);
+
+      recurseTemplate = ArtifactId.valueOf(200007L);
       myRootArtifact =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.Requirement, branch, "WordTemplateProcessorTest_Root");
 
@@ -164,8 +170,10 @@ public class WordTemplateProcessorTest {
    }
 
    private void checkPreviewContents(Artifact artifact, String expected, String notExpected) throws OseeCoreException, IOException {
-      String filePath =
-         RendererManager.open(myRootArtifact, PresentationType.PREVIEW, PREVIEW_WITH_RECURSE_OPTION_PAIR);
+      Map<RendererOption, Object> rendererOptions = new HashMap<>();
+
+      rendererOptions.put(RendererOption.TEMPLATE_ARTIFACT, recurseTemplate);
+      String filePath = RendererManager.open(myRootArtifact, PresentationType.PREVIEW, rendererOptions);
 
       String fileContents = Lib.fileToString(new File(filePath));
       Assert.assertTrue(String.format(ERROR_MESSAGE, artifact, true), fileContents.contains(expected));

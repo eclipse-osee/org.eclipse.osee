@@ -12,10 +12,13 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers.change;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
@@ -23,7 +26,6 @@ import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
-import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 
@@ -47,7 +49,10 @@ public class SingleNativeDiffHandler extends CommandHandler {
    public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
       Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
       String pathPrefix = RenderingUtil.getAssociatedArtifactName(changes);
-      RendererManager.diffInJob(artifactDeltas, pathPrefix, IRenderer.VIEW_ID, Handlers.getViewId());
+      Map<RendererOption, Object> rendererOptions = new HashMap<>();
+      rendererOptions.put(RendererOption.VIEW, Handlers.getViewId());
+
+      RendererManager.diffInJob(artifactDeltas, pathPrefix, rendererOptions);
       return null;
    }
 }

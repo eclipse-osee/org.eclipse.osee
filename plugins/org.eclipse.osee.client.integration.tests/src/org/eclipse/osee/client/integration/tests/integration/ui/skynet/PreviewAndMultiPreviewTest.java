@@ -14,7 +14,9 @@ import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -22,11 +24,11 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
-import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.WholeWordRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
@@ -68,7 +70,7 @@ public class PreviewAndMultiPreviewTest {
 
       parentArtifact.persist(getClass().getSimpleName());
 
-      WordTemplateRenderer renderer = new WordTemplateRenderer();
+      WordTemplateRenderer renderer = new WordTemplateRenderer(new HashMap<RendererOption, Object>());
       renderer.open(Arrays.asList(parentArtifact), PresentationType.PREVIEW);
    }
 
@@ -82,7 +84,7 @@ public class PreviewAndMultiPreviewTest {
 
       parentArtifact.persist(getClass().getSimpleName());
 
-      RendererManager.openInJob(Arrays.asList(parentArtifact), PresentationType.PREVIEW);
+      RendererManager.openInJob(parentArtifact, PresentationType.PREVIEW);
    }
 
    /*
@@ -98,8 +100,10 @@ public class PreviewAndMultiPreviewTest {
 
       parentArtifact.persist(getClass().getSimpleName());
 
-      RendererManager.open(parentArtifact, PresentationType.PREVIEW,
-         ITemplateRenderer.PREVIEW_WITH_RECURSE_OPTION_PAIR);
+      Map<RendererOption, Object> rendererOptions = new HashMap<>();
+      rendererOptions.put(RendererOption.TEMPLATE_OPTION, RendererOption.PREVIEW_WITH_RECURSE_VALUE.getKey());
+
+      RendererManager.open(parentArtifact, PresentationType.PREVIEW, rendererOptions);
    }
 
    @Test
@@ -112,7 +116,7 @@ public class PreviewAndMultiPreviewTest {
 
       parentArtifact.persist(getClass().getSimpleName());
 
-      RendererManager.openInJob(Arrays.asList(parentArtifact), PresentationType.PREVIEW);
+      RendererManager.openInJob(parentArtifact, PresentationType.PREVIEW);
    }
 
    /*
@@ -128,7 +132,7 @@ public class PreviewAndMultiPreviewTest {
 
       parentArtifact.persist(getClass().getSimpleName());
 
-      RendererManager.openInJob(Arrays.asList(parentArtifact), PresentationType.PREVIEW);
+      RendererManager.openInJob(parentArtifact, PresentationType.PREVIEW);
    }
 
    /*
@@ -182,7 +186,7 @@ public class PreviewAndMultiPreviewTest {
    public void testWholeWordPreviewUsingRendererManager() throws Exception {
       Artifact art = createArtifact(CoreArtifactTypes.TestProcedureWML, SAW_Bld_1, addPrefix("4h"));
       art.persist(String.format("%s, persist on %s", PreviewAndMultiPreviewTest.class.getSimpleName(), SAW_Bld_1));
-      RendererManager.openInJob(Arrays.asList(art), PresentationType.PREVIEW);
+      RendererManager.openInJob(art, PresentationType.PREVIEW);
    }
 
    private Artifact createArtifact(IArtifactType type, BranchId branch, String name) throws OseeCoreException {

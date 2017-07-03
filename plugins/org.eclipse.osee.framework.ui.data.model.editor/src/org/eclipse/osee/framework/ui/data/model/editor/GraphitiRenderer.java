@@ -17,11 +17,14 @@ import static org.eclipse.osee.framework.core.enums.PresentationType.RENDER_AS_H
 import static org.eclipse.osee.framework.core.enums.PresentationType.SPECIALIZED_EDIT;
 import static org.eclipse.osee.framework.ui.data.model.editor.GraphitiImage.GRAPHITI_DIAGRAM;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.graphiti.ui.editor.DiagramEditorInput;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
+import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -38,6 +41,19 @@ import org.eclipse.ui.IWorkbenchPage;
  */
 public class GraphitiRenderer extends DefaultArtifactRenderer {
 
+   public GraphitiRenderer(Map<RendererOption, Object> rendererOptions) {
+      super(rendererOptions);
+   }
+
+   public GraphitiRenderer() {
+      this(new HashMap<RendererOption, Object>());
+   }
+
+   @Override
+   public GraphitiRenderer newInstance(Map<RendererOption, Object> rendererOptions) {
+      return new GraphitiRenderer(rendererOptions);
+   }
+
    @Override
    public GraphitiRenderer newInstance() {
       return new GraphitiRenderer();
@@ -49,7 +65,7 @@ public class GraphitiRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Object... objects) throws OseeCoreException {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions) {
       int rating = IRenderer.NO_MATCH;
       if (artifact.getArtifactType().inheritsFrom(CoreArtifactTypes.ModelDiagram)) {
          if (presentationType.matches(RENDER_AS_HUMAN_READABLE_TEXT, PREVIEW, DEFAULT_OPEN, SPECIALIZED_EDIT)) {

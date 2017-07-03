@@ -12,21 +12,37 @@ package org.eclipse.osee.framework.ui.skynet.render;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.swt.program.Program;
 
 /**
  * @author Ryan D. Brooks
  */
-public class OpenOfficeWriterRenderer extends FileSystemRenderer implements ITemplateRenderer {
+public class OpenOfficeWriterRenderer extends FileSystemRenderer {
+
+   public OpenOfficeWriterRenderer(Map<RendererOption, Object> rendererOptions) {
+      super(rendererOptions);
+   }
+
+   public OpenOfficeWriterRenderer() {
+      super(new HashMap<RendererOption, Object>());
+   }
 
    @Override
    public OpenOfficeWriterRenderer newInstance() {
       return new OpenOfficeWriterRenderer();
+   }
+
+   @Override
+   public OpenOfficeWriterRenderer newInstance(Map<RendererOption, Object> rendererOptions) {
+      return new OpenOfficeWriterRenderer(rendererOptions);
    }
 
    @Override
@@ -45,7 +61,7 @@ public class OpenOfficeWriterRenderer extends FileSystemRenderer implements ITem
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Object... objects) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions) {
       return NO_MATCH;
    }
 

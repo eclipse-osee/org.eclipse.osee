@@ -17,7 +17,9 @@ import static org.eclipse.osee.framework.core.enums.PresentationType.SPECIALIZED
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -25,6 +27,7 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.dsl.ui.integration.internal.DslUiIntegrationConstants;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -44,6 +47,15 @@ import org.eclipse.ui.part.FileEditorInput;
  * @author Jonathan E. Jensen
  */
 public abstract class AbstractDslRenderer extends FileSystemRenderer {
+
+   public AbstractDslRenderer(Map<RendererOption, Object> rendererOptions) {
+      super(rendererOptions);
+   }
+
+   public AbstractDslRenderer() {
+      this(new HashMap<RendererOption, Object>());
+   }
+
    private static final String DEFAULT_EDITOR_ID = "org.eclipse.osee.framework.core.dsl.OseeDsl";
 
    /**
@@ -57,6 +69,12 @@ public abstract class AbstractDslRenderer extends FileSystemRenderer {
     */
    @Override
    public abstract DefaultArtifactRenderer newInstance();
+
+   /**
+    * Provides an instance of the concrete class.
+    */
+   @Override
+   public abstract DefaultArtifactRenderer newInstance(Map<RendererOption, Object> rendererOptions);
 
    /**
     * Provides a list of the artifact types that the renderer supports.
@@ -104,7 +122,7 @@ public abstract class AbstractDslRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Object... objects) throws OseeCoreException {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions) {
       if (!presentationType.matches(GENERALIZED_EDIT, PRODUCE_ATTRIBUTE) && !artifact.isHistorical()) {
          if (artifact.isOfType(getArtifactTypeMatches())) {
             return ARTIFACT_TYPE_MATCH;

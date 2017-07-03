@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -24,6 +25,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
+import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -50,21 +52,24 @@ public final class WordTemplateFileDiffer {
    }
 
    public void generateFileDifferences(List<Artifact> endArtifacts, String diffPrefix, String nextParagraphNumber, String outlineType, boolean recurseChildren) throws OseeArgumentException, OseeCoreException {
-      renderer.setOption("artifacts", endArtifacts);
-      renderer.setOption("paragraphNumber", nextParagraphNumber);
-      renderer.setOption("outlineType", outlineType);
-      renderer.setOption("Publish With Attributes", true);
-      renderer.setOption("Use Artifact Names", true);
-      renderer.setOption("inPublishMode", true);
+      Map<RendererOption, Object> rendererOptions = renderer.getRendererOptions();
+      rendererOptions.put(RendererOption.PARAGRAPH_NUMBER, nextParagraphNumber);
+      rendererOptions.put(RendererOption.OUTLINE_TYPE, outlineType);
+      rendererOptions.put(RendererOption.ALL_ATTRIBUTES, true);
+      rendererOptions.put(RendererOption.USE_ARTIFACT_NAMES, true);
+      rendererOptions.put(RendererOption.IN_PUBLISH_MODE, true);
       // need to keep original value as well as reseting to false
-      renderer.setOption("Orig Publish As Diff", renderer.getBooleanOption(WordTemplateProcessor.PUBLISH_AS_DIFF));
-      renderer.setOption(WordTemplateProcessor.PUBLISH_AS_DIFF, false);
-      renderer.setOption("RecurseChildren", recurseChildren);
+      rendererOptions.put(RendererOption.ORIG_PUBLISH_AS_DIFF, renderer.getRendererOptionValue(RendererOption.PUBLISH_DIFF));
+      rendererOptions.put(RendererOption.PUBLISH_DIFF, false);
 
-      BranchId endBranch = renderer.getBranchOption("Branch");
-      renderer.setOption("Diff Branch", endBranch);
+      rendererOptions.put(RendererOption.RECURSE, recurseChildren);
+      // can use this as "diff branch?"
+      BranchId endBranch = (BranchId) renderer.getRendererOptionValue(RendererOption.BRANCH);
+      rendererOptions.put(RendererOption.WAS_BRANCH, endBranch);
 
-      BranchId compareBranch = renderer.getBranchOption("compareBranch");
+      BranchId compareBranch = (BranchId) renderer.getRendererOptionValue(RendererOption.COMPARE_BRANCH);
+
+      renderer.updateOptions(rendererOptions);
 
       TransactionToken startTransaction;
 
@@ -78,7 +83,7 @@ public final class WordTemplateFileDiffer {
       TransactionToken endTransaction = TransactionManager.getHeadTransaction(endBranch);
       TransactionDelta txDelta;
 
-      boolean maintainOrder = renderer.getBooleanOption("Maintain Order");
+      boolean maintainOrder = (boolean) renderer.getRendererOptionValue(RendererOption.MAINTAIN_ORDER);
       if (startTransaction.getId() < endTransaction.getId() || maintainOrder) {
          if (compareBranch.equals(endBranch)) {
             txDelta = new TransactionDelta(startTransaction, endTransaction);
@@ -89,11 +94,12 @@ public final class WordTemplateFileDiffer {
          txDelta = new TransactionDelta(startTransaction, endTransaction);
       }
 
-      boolean recurseOnLoad = renderer.getBooleanOption(WordTemplateProcessor.RECURSE_ON_LOAD);
+      boolean recurseOnLoad = (boolean) renderer.getRendererOptionValue(RendererOption.RECURSE_ON_LOAD);
       Collection<Artifact> toProcess = recurseChildren || recurseOnLoad ? getAllArtifacts(endArtifacts) : endArtifacts;
       List<Change> changes = new LinkedList<>();
       ChangeDataLoader changeLoader = new ChangeDataLoader(changes, txDelta);
-      IProgressMonitor monitor = (IProgressMonitor) renderer.getOption("Progress Monitor");
+      IProgressMonitor monitor =
+         (IProgressMonitor) renderer.getRendererOptionValue(RendererOption.PROGRESS_MONITOR);
       if (monitor == null) {
          monitor = new NullProgressMonitor();
       }
@@ -151,7 +157,7 @@ public final class WordTemplateFileDiffer {
       }
 
       if (!artifactDeltas.isEmpty()) {
-         RendererManager.diffWithRenderer(artifactDeltas, diffPrefix, renderer, renderer.getValues());
+         RendererManager.diffWithRenderer(artifactDeltas, diffPrefix, renderer, renderer.getRendererOptions());
       }
    }
 

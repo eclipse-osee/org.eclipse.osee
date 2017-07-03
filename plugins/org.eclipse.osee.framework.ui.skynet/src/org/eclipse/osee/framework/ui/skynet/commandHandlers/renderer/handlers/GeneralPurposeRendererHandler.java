@@ -10,14 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.PresentationType;
+import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
-import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
-import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 
 /**
@@ -29,27 +29,27 @@ import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 public class GeneralPurposeRendererHandler extends AbstractEditorHandler {
    @Override
    public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {
-      ArrayList<Object> options = new ArrayList<>(6);
+
+      Map<RendererOption, Object> rendererOptions = new HashMap<>();
+
       String presentationTypeStr = event.getParameter(PresentationType.class.getSimpleName());
-      String template = event.getParameter(ITemplateRenderer.TEMPLATE_OPTION);
-      String openOption = event.getParameter(IRenderer.OPEN_OPTION);
-      ArtifactId viewId = Handlers.getViewId();
+      String template = event.getParameter(RendererOption.TEMPLATE_OPTION.getKey());
+      String openOption = event.getParameter(RendererOption.OPEN_OPTION.getKey());
+      ArtifactId view = Handlers.getViewId();
+
 
       PresentationType presentationType = PresentationType.valueOf(presentationTypeStr);
       if (template != null) {
-         options.add(ITemplateRenderer.TEMPLATE_OPTION);
-         options.add(template);
+         rendererOptions.put(RendererOption.TEMPLATE_OPTION, template);
       }
       if (openOption != null) {
-         options.add(IRenderer.OPEN_OPTION);
-         options.add(openOption);
+         rendererOptions.put(RendererOption.OPEN_OPTION, openOption);
       }
-      if (!viewId.equals(ArtifactId.SENTINEL)) {
-         options.add(IRenderer.VIEW_ID);
-         options.add(viewId);
+      if (!view.equals(ArtifactId.SENTINEL)) {
+         rendererOptions.put(RendererOption.VIEW, view);
       }
 
-      RendererManager.openInJob(artifacts, presentationType, options.toArray());
+      RendererManager.openInJob(artifacts, presentationType, rendererOptions);
       return null;
    }
 }

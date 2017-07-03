@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -50,8 +51,13 @@ public class HTMLRenderer extends FileSystemRenderer {
 
    private final IComparator comparator;
 
-   public HTMLRenderer() {
+   public HTMLRenderer(Map<RendererOption, Object> rendererOptions) {
+      super(rendererOptions);
       this.comparator = new HTMLDiffRenderer();
+   }
+
+   public HTMLRenderer() {
+      this(new HashMap<RendererOption, Object>());
    }
 
    @Override
@@ -97,7 +103,7 @@ public class HTMLRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Object... objects) throws OseeCoreException {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions) {
       int toReturn = NO_MATCH;
       if (artifact.isAttributeTypeValid(CoreAttributeTypes.HTMLContent)) {
          if (presentationType.matches(PresentationType.PREVIEW, PresentationType.DIFF)) {
@@ -125,6 +131,11 @@ public class HTMLRenderer extends FileSystemRenderer {
    @Override
    public HTMLRenderer newInstance() {
       return new HTMLRenderer();
+   }
+
+   @Override
+   public HTMLRenderer newInstance(Map<RendererOption, Object> rendererOptions) {
+      return new HTMLRenderer(rendererOptions);
    }
 
    @Override

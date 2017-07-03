@@ -10,13 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 
-import static org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer.TEMPLATE_OPTION;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.resources.IFile;
@@ -25,6 +26,7 @@ import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -34,8 +36,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
-import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.UpdateArtifactOperation;
 import org.eclipse.osee.framework.ui.skynet.render.compare.CompareData;
@@ -110,8 +110,11 @@ public class ThreeWayWordMergeOperation extends AbstractOperation {
             RendererManager.openInJob(mergeArtifact, PresentationType.SPECIALIZED_EDIT);
          }
       };
+      Map<RendererOption, Object> rendererOptions = new HashMap<>();
+      rendererOptions.put(RendererOption.NO_DISPLAY, true);
+
       RendererManager.merge(colletor, mergeArtifact, null, sourceChangeFile, destChangeFile, "Source_Dest_Merge",
-         IRenderer.NO_DISPLAY, true);
+         rendererOptions);
    }
 
    private static void createMergeDiffFile(final Collection<IFile> outputFiles, Artifact baseVersion, Artifact newerVersion) throws Exception {
@@ -123,8 +126,11 @@ public class ThreeWayWordMergeOperation extends AbstractOperation {
             outputFiles.add(AIFile.constructIFile(data.getOutputPath()));
          }
       };
-      RendererManager.diff(colletor, artifactDelta, "", IRenderer.NO_DISPLAY, true, TEMPLATE_OPTION,
-         ITemplateRenderer.THREE_WAY_MERGE);
+      Map<RendererOption, Object> rendererOptions = new HashMap<>();
+      rendererOptions.put(RendererOption.NO_DISPLAY, true);
+      rendererOptions.put(RendererOption.TEMPLATE_OPTION, RendererOption.THREE_WAY_MERGE.getKey());
+
+      RendererManager.diff(colletor, artifactDelta, "", rendererOptions);
    }
 
    private static void changeAuthorinWord(String newAuthor, IFile iFile, int revisionNumber, String rsidNumber, String baselineRsid) throws Exception {

@@ -13,9 +13,11 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import static org.eclipse.osee.framework.core.enums.PresentationType.SPECIALIZED_EDIT;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -25,14 +27,14 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
  */
 public final class OpenUsingRenderer extends AbstractOperation {
    private final Collection<Artifact> artifacts;
-   private final Object[] options;
+   private final Map<RendererOption, Object> rendererOptions;
    private final PresentationType presentationType;
    private String resutPath;
 
-   public OpenUsingRenderer(Collection<Artifact> artifacts, PresentationType presentationType, Object... options) {
+   public OpenUsingRenderer(Collection<Artifact> artifacts, PresentationType presentationType, Map<RendererOption, Object> rendererOptions) {
       super(String.format("Open for %s using renderer", presentationType), Activator.PLUGIN_ID);
       this.artifacts = artifacts;
-      this.options = options;
+      this.rendererOptions = rendererOptions;
       this.presentationType = presentationType;
    }
 
@@ -42,11 +44,14 @@ public final class OpenUsingRenderer extends AbstractOperation {
          return;
       }
       HashCollection<IRenderer, Artifact> rendererArtifactMap =
-         RendererManager.createRenderMap(presentationType, artifacts, options);
+         RendererManager.createRenderMap(presentationType, artifacts, rendererOptions);
 
       for (IRenderer renderer : rendererArtifactMap.keySet()) {
          renderer.open((LinkedList<Artifact>) rendererArtifactMap.getValues(renderer), presentationType);
-         resutPath = renderer.getStringOption(IRenderer.RESULT_PATH_RETURN);
+         if (renderer instanceof DefaultArtifactRenderer) {
+            resutPath =
+               (String) ((DefaultArtifactRenderer) renderer).getRendererOptionValue(RendererOption.RESULT_PATH_RETURN);
+         }
       }
    }
 
