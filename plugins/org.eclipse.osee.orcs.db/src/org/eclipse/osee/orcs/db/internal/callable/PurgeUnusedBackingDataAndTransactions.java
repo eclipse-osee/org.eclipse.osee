@@ -38,7 +38,8 @@ public class PurgeUnusedBackingDataAndTransactions {
    private static final String NONEXISTENT_GAMMAS = "SELECT branch_id, gamma_id FROM %s txs WHERE " + //
       "NOT EXISTS (SELECT 1 FROM osee_attribute att WHERE txs.gamma_id = att.gamma_id union all " + //
       "SELECT 1 FROM osee_artifact art WHERE txs.gamma_id = art.gamma_id union all " + //
-      "SELECT 1 FROM osee_relation_link rel WHERE txs.gamma_id = rel.gamma_id)";
+      "SELECT 1 FROM osee_relation_link rel WHERE txs.gamma_id = rel.gamma_id union all " + //
+      "SELECT 1 FROM osee_tuple2 tup WHERE txs.gamma_id = tup.gamma_id)";
 
    private static final String DELETE_GAMMAS = "DELETE FROM %s WHERE gamma_id = ?";
    private static final String DELETE_GAMMAS_BY_BRANCH = "DELETE FROM %s WHERE branch_id = ? and gamma_id = ?";
