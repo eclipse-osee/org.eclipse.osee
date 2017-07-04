@@ -170,9 +170,8 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
                   relChange.getRelationType().getGuid(), relChange.getItemId().getId().intValue(),
                   relChange.getGamma().getId().intValue(), relChange.getChangeArtifact().getBasicGuidArtifact(),
                   relChange.getEndTxBArtifact().getBasicGuidArtifact());
-               EventBasicGuidRelation event =
-                  new EventBasicGuidRelation(relationEventType, relChange.getArtId().getId().intValue(),
-                     relChange.getBArtId().getId().intValue(), defaultBasicGuidRelation);
+               EventBasicGuidRelation event = new EventBasicGuidRelation(relationEventType, relChange.getArtId(),
+                  relChange.getBArtId(), defaultBasicGuidRelation);
                event.setRationale(relChange.getRationale());
                artifactEvent.getRelations().add(event);
                break;

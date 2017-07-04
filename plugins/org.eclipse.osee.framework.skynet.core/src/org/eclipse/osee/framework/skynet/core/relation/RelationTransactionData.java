@@ -48,8 +48,8 @@ public class RelationTransactionData extends BaseTransactionData {
       super.addInsertToBatch(collector);
       if (!relation.isUseBackingData()) {
          internalAddInsertToBatch(collector, 4, INSERT_INTO_RELATION_TABLE, relation.getId(),
-            relation.getRelationType().getId(), relation.getAArtifactId(), relation.getBArtifactId(),
-            relation.getRationale(), getGammaId());
+            relation.getRelationType(), relation.getArtifactA(), relation.getArtifactB(), relation.getRationale(),
+            getGammaId());
       }
    }
 
@@ -84,8 +84,8 @@ public class RelationTransactionData extends BaseTransactionData {
       DefaultBasicUuidRelation defaultBasicGuidRelation = new DefaultBasicUuidRelation(relation.getBranch(),
          relation.getRelationType().getId(), relation.getId(), relation.getGammaId(),
          relation.getArtifactA().getBasicGuidArtifact(), relation.getArtifactB().getBasicGuidArtifact());
-      EventBasicGuidRelation event = new EventBasicGuidRelation(relationEventType, relation.getAArtifactId(),
-         relation.getBArtifactId(), defaultBasicGuidRelation);
+      EventBasicGuidRelation event = new EventBasicGuidRelation(relationEventType, relation.getArtifactA(),
+         relation.getArtifactB(), defaultBasicGuidRelation);
       if (relationEventType == RelationEventType.ModifiedRationale) {
          event.setRationale(relation.getRationale());
       }

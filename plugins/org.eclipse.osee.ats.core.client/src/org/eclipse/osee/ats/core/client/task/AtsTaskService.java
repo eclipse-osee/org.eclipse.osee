@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -101,7 +102,7 @@ public class AtsTaskService extends AbstractAtsTaskService {
                teamWf.getBasicGuidArtifact(), taskArt.getBasicGuidArtifact());
 
             artifactEvent.getRelations().add(new EventBasicGuidRelation(RelationEventType.Added,
-               newTaskData.getTeamWfUuid().intValue(), new Long(task.getUuid()).intValue(), guidRelation));
+               ArtifactId.valueOf(newTaskData.getTeamWfUuid()), ArtifactId.valueOf(task.getUuid()), guidRelation));
          }
       }
 
@@ -112,7 +113,7 @@ public class AtsTaskService extends AbstractAtsTaskService {
 
    private RelationLink getRelation(Artifact teamWf, JaxAtsTask task) {
       for (RelationLink relation : teamWf.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
-         if (relation.getBArtifactId() == task.getUuid().intValue()) {
+         if (relation.getArtifactB().equals(task.getUuid())) {
             return relation;
          }
       }
