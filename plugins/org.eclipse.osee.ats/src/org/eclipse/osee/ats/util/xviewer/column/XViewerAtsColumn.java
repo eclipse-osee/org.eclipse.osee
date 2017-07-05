@@ -21,6 +21,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.util.ColorColumn;
 import org.eclipse.osee.ats.column.CancelledDateColumnUI;
+import org.eclipse.osee.ats.column.CompletedCancelledDateColumnUI;
 import org.eclipse.osee.ats.column.CompletedDateColumnUI;
 import org.eclipse.osee.ats.column.CreatedDateColumnUI;
 import org.eclipse.osee.ats.column.IPersistAltLeftClickProvider;
@@ -127,6 +128,8 @@ public abstract class XViewerAtsColumn extends XViewerColumn {
          xViewerAtsColumn = CompletedDateColumnUI.getInstance();
       } else if (xCol.getId().equals(AtsColumnId.CancelledDate.getId())) {
          xViewerAtsColumn = CancelledDateColumnUI.getInstance();
+      } else if (xCol.getId().equals(AtsColumnId.CompletedCancelledDate.getId())) {
+         xViewerAtsColumn = CompletedCancelledDateColumnUI.getInstance();
       } else {
          return null;
       }
