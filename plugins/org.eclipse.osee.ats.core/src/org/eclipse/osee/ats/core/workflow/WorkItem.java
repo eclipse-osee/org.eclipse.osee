@@ -277,7 +277,6 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    @Override
    public void clearCaches() {
-      stateMgr = null;
       atsLog = null;
    }
 }

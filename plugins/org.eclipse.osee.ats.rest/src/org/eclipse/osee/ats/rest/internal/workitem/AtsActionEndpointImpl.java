@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.rest.internal.workitem;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -49,12 +48,9 @@ import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.QueryOption;
-import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
  * @author Donald G. Dunne
@@ -75,16 +71,6 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String get() throws Exception {
-
-      QueryBuilder query = ((IAtsServer) services).getOrcsApi().getQueryFactory().fromBranch(services.getAtsBranch());
-      query.and(AtsAttributeTypes.TeamDefinition, "At2WHxC2lxLOGB0YiuQA");
-      query.and(AtsAttributeTypes.PriorityType, Arrays.asList("3", "2"));
-      ResultSet<ArtifactReadable> results = query.getResults();
-
-      for (ArtifactReadable art : results) {
-         System.err.println(art.getSoleAttributeValue(AtsAttributeTypes.PriorityType, "def"));
-      }
-
       return RestUtil.simplePageHtml("Action Resource");
    }
 

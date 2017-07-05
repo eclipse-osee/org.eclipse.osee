@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.rest.IAtsServer;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
@@ -126,9 +127,11 @@ public class ActionPage {
    }
 
    public static String getTeamStr(IAtsServer atsServer, ArtifactReadable action) {
-      String results = action.getSoleAttributeAsString(AtsAttributeTypes.TeamDefinition, "");
-      if (Strings.isValid(results)) {
-         results = atsServer.getArtifactByGuid(results).getName();
+      String results = "";
+      ArtifactId artId = atsServer.getAttributeResolver().getSoleArtifactIdReference(action,
+         AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);
+      if (artId.isValid()) {
+         results = atsServer.getArtifact(artId).getName();
       } else {
          ArtifactReadable teamWf = getParentTeamWf(action);
          if (teamWf != null) {

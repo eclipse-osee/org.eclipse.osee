@@ -146,8 +146,6 @@ public interface IAtsServices extends IAtsEarnedValueServiceProvider, IAtsConfig
 
    Log getLogger();
 
-   <T> T getConfigItem(ArtifactId artifactToken);
-
    <T> T getConfigItem(String guid);
 
    <T> T getConfigItem(Long uuid);
@@ -184,4 +182,5 @@ public interface IAtsServices extends IAtsEarnedValueServiceProvider, IAtsConfig
 
    ArtifactToken getArtifactByAtsId(String id);
 
+   <T> T getConfigItem(ArtifactId artId);
 }

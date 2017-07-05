@@ -191,19 +191,19 @@ public class AtsArtifactChecks extends ArtifactCheck {
    }
 
    private IStatus checkTeamDefinitions(boolean isAtsAdmin, Collection<Artifact> artifacts) throws OseeCoreException {
-      List<String> guids = new ArrayList<>();
+      List<String> ids = new ArrayList<>();
       for (Artifact art : artifacts) {
          if (art.isOfType(AtsArtifactTypes.TeamDefinition)) {
-            guids.add(art.getGuid());
+            ids.add(art.getIdString());
          }
       }
-      if (!guids.isEmpty()) {
+      if (!ids.isEmpty()) {
          List<Artifact> artifactListFromIds = ArtifactQuery.getArtifactListFromAttributeValues(
-            AtsAttributeTypes.TeamDefinition, guids, AtsClientService.get().getAtsBranch(), 5);
+            AtsAttributeTypes.TeamDefinitionReference, ids, AtsClientService.get().getAtsBranch(), 5);
          if (artifactListFromIds.size() > 0) {
             return createStatus(String.format(
                "Team Definition (or children Team Definitions) [%s] selected to delete have related Team Workflows; Delete or re-assign Team Workflows first.",
-               guids));
+               ids));
          }
          if (!isAtsAdmin) {
             return createStatus("Deletion of Team Definitions is only permitted by ATS Admin.");

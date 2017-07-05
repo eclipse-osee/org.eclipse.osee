@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
@@ -42,10 +41,10 @@ public class TeamDefinitionService implements IAtsTeamDefinitionService {
    @Override
    public IAtsTeamDefinition getTeamDefinition(IAtsWorkItem workItem) throws OseeCoreException {
       IAtsTeamDefinition teamDef = null;
-      String teamDefGuid =
-         services.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.TeamDefinition, "");
-      if (Strings.isValid(teamDefGuid)) {
-         teamDef = services.getConfigItem(teamDefGuid);
+      ArtifactId teamDefId = services.getAttributeResolver().getSoleArtifactIdReference(workItem,
+         AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);
+      if (teamDefId.isValid()) {
+         teamDef = services.getConfigItem(teamDefId);
       }
       return teamDef;
    }

@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
-import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
+import org.eclipse.osee.ats.core.workflow.AbstractAtsAttributeResolverService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -37,7 +37,7 @@ import org.eclipse.osee.orcs.data.AttributeReadable;
 /**
  * @author Donald G. Dunne
  */
-public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
+public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolverService {
 
    private OrcsApi orcsApi;
    private Log logger;

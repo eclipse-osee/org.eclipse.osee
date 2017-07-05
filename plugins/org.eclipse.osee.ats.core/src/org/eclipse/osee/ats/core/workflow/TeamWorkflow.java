@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -51,10 +50,10 @@ public class TeamWorkflow extends WorkItem implements IAtsTeamWorkflow {
    @Override
    public IAtsTeamDefinition getTeamDefinition() throws OseeCoreException {
       IAtsTeamDefinition teamDef = null;
-      String teamDefGuid =
-         services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.TeamDefinition, "");
-      if (Strings.isValid(teamDefGuid)) {
-         teamDef = services.getConfigItem(teamDefGuid);
+      ArtifactId teamDefId = services.getAttributeResolver().getSoleArtifactIdReference(artifact,
+         AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);
+      if (teamDefId.isValid()) {
+         teamDef = services.getConfigItem(teamDefId);
       }
       return teamDef;
    }

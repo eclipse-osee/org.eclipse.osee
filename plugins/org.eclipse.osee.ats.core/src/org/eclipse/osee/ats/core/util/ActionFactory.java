@@ -203,7 +203,8 @@ public class ActionFactory implements IAtsActionFactory {
       }
 
       // Relate WorkFlow to Team Definition (by guid due to relation loading issues)
-      changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.TeamDefinition, AtsUtilCore.getGuid(teamDef));
+      changes.setSoleAttributeFromString(teamWf, AtsAttributeTypes.TeamDefinitionReference,
+         teamDef.getStoreObject().getIdString());
 
       setAtsId(teamWf, teamWf.getTeamDefinition(), changes);
 

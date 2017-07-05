@@ -136,4 +136,20 @@ public class AtsObjects {
       return active;
    }
 
+   public static List<String> toUuidStrings(Collection<? extends IAtsConfigObject> objects) {
+      List<String> ids = new LinkedList<>();
+      for (IAtsConfigObject obj : objects) {
+         ids.add(obj.getIdString());
+      }
+      return ids;
+   }
+
+   public static List<String> toUuidStringsFromLong(Collection<Long> ids) {
+      List<String> results = new LinkedList<>();
+      for (Long id : ids) {
+         results.add(id.toString());
+      }
+      return results;
+   }
+
 }

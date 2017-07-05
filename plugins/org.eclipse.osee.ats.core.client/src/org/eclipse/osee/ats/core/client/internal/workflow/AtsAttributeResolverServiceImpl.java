@@ -20,9 +20,9 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
-import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
+import org.eclipse.osee.ats.core.workflow.AbstractAtsAttributeResolverService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.skynet.core.utility.AttributeTypeToXWidgetName
 /**
  * @author Donald G. Dunne
  */
-public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
+public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolverService {
 
    @Override
    public boolean isAttributeNamed(String attributeName) throws OseeCoreException {

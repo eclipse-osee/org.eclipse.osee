@@ -60,7 +60,7 @@ public class LegacyPCRActionsWorldSearchItem extends WorldUISearchItem {
 
       List<Artifact> pcrIdArts = new ArrayList<>();
       List<Artifact> teamDefArts = new ArrayList<>();
-      List<String> teamDefGuids = new ArrayList<>();
+      List<Long> teamDefIds = new ArrayList<>();
 
       if (isPcrIdsSet()) {
          LegacyPcrIdQuickSearch srch = new LegacyPcrIdQuickSearch(pcrIds);
@@ -69,7 +69,7 @@ public class LegacyPCRActionsWorldSearchItem extends WorldUISearchItem {
       if (isTeamDefsSet()) {
          TeamDefinitionQuickSearch srch = new TeamDefinitionQuickSearch(teamDefs);
          teamDefArts.addAll(srch.performSearch());
-         teamDefGuids = AtsObjects.toGuids(teamDefs);
+         teamDefIds = AtsObjects.toUuids(teamDefs);
       }
 
       // If both set, return intersection; else return just what was set
@@ -89,7 +89,8 @@ public class LegacyPCRActionsWorldSearchItem extends WorldUISearchItem {
 
       IAtsWorkItemFilter filter =
          AtsClientService.get().getQueryService().createFilter(workItems).withOrValue(AtsAttributeTypes.LegacyPcrId,
-            pcrIds).withOrValue(AtsAttributeTypes.TeamDefinition, teamDefGuids).isOfType(AtsArtifactTypes.TeamWorkflow);
+            pcrIds).withOrValue(AtsAttributeTypes.TeamDefinitionReference, teamDefIds).isOfType(
+               AtsArtifactTypes.TeamWorkflow);
 
       List<Artifact> results = new ArrayList<>();
       if (returnActions) {

@@ -236,8 +236,7 @@ public class AtsProgramService implements IAtsProgramService {
       }
       if (program == null) {
          program = (IAtsProgram) services.getQueryService().createQuery(AtsArtifactTypes.Program).andAttr(
-            AtsAttributeTypes.TeamDefinition,
-            services.getStoreService().getGuid(teamDef)).getConfigObjectResultSet().getOneOrNull();
+            AtsAttributeTypes.TeamDefinitionReference, teamDef.getIdString()).getConfigObjectResultSet().getOneOrNull();
       }
       return program;
    }
@@ -255,10 +254,10 @@ public class AtsProgramService implements IAtsProgramService {
    @Override
    public IAtsTeamDefinition getTeamDefinition(IAtsProgram program) {
       IAtsTeamDefinition teamDefinition = null;
-      String guid =
-         services.getAttributeResolver().getSoleAttributeValue(program, AtsAttributeTypes.TeamDefinition, "");
-      if (Strings.isValid(guid)) {
-         teamDefinition = services.getConfigItem(guid);
+      ArtifactId artId = services.getAttributeResolver().getSoleArtifactIdReference(program,
+         AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);
+      if (artId.isValid()) {
+         teamDefinition = services.getConfigItem(artId);
       }
       return teamDefinition;
    }

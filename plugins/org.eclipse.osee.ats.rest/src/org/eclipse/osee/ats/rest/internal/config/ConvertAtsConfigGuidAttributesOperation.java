@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -35,6 +36,8 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public class ConvertAtsConfigGuidAttributesOperation {
 
    private final IAtsServices services;
+   private final AttributeTypeToken TeamDefinition =
+      AtsAttributeTypes.createType(1152921504606847201L, "Team Definition");
 
    public ConvertAtsConfigGuidAttributesOperation(IAtsServices services) {
       this.services = services;
@@ -114,11 +117,10 @@ public class ConvertAtsConfigGuidAttributesOperation {
    }
 
    private void convertTeamDefinitionIfNeeded(IAtsChangeSet changes, ArtifactToken art) {
-      String teamDefId =
-         services.getAttributeResolver().getSoleAttributeValue(art, AtsAttributeTypes.TeamDefinitionReference, "");
-      if (!Strings.isNumeric(teamDefId)) {
-         String teamDefGuid =
-            services.getAttributeResolver().getSoleAttributeValue(art, AtsAttributeTypes.TeamDefinition, "");
+      ArtifactId teamDefId = services.getAttributeResolver().getSoleArtifactIdReference(art,
+         AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);
+      if (teamDefId.isInvalid()) {
+         String teamDefGuid = services.getAttributeResolver().getSoleAttributeValue(art, TeamDefinition, "");
          if (Strings.isValid(teamDefGuid)) {
             IAtsTeamDefinition teamDef = services.getConfigItem(teamDefGuid);
             changes.setSoleAttributeValue(art, AtsAttributeTypes.TeamDefinitionReference,

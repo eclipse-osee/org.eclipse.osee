@@ -811,8 +811,8 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    private void addTeamDefCriteria() {
       if (isTeamDefSpecified()) {
-         List<String> guids = getGuidsFromUuids(teamDefUuids);
-         queryAnd(AtsAttributeTypes.TeamDefinition, guids);
+         List<String> ids = AtsObjects.toUuidStringsFromLong(teamDefUuids);
+         queryAnd(AtsAttributeTypes.TeamDefinitionReference, ids);
       }
    }
 

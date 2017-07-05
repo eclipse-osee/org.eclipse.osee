@@ -326,16 +326,16 @@ public class ImportAIsAndTeamDefinitionsToDb {
 
    private void importProgramTeamDef(ProgramDef dslProgramDef, Artifact newProgramArt) {
       if (Strings.isValid(dslProgramDef.getTeamDefinition())) {
-         String teamDefGuidOrName = Strings.unquote(dslProgramDef.getTeamDefinition());
-         if (GUID.isValid(teamDefGuidOrName)) {
-            newProgramArt.addAttribute(AtsAttributeTypes.TeamDefinition, teamDefGuidOrName);
+         String teamDefIdOrName = Strings.unquote(dslProgramDef.getTeamDefinition());
+         if (Strings.isNumeric(teamDefIdOrName)) {
+            newProgramArt.addAttribute(AtsAttributeTypes.TeamDefinitionReference, teamDefIdOrName);
          } else {
-            Artifact teamDefArt = teamNameToTeamDefArt.get(teamDefGuidOrName);
+            Artifact teamDefArt = teamNameToTeamDefArt.get(teamDefIdOrName);
             if (teamDefArt == null) {
                throw new OseeStateException("No Team Definition found with name [%s] from program definition [%s]",
-                  teamDefGuidOrName, dslProgramDef.getName());
+                  teamDefIdOrName, dslProgramDef.getName());
             }
-            newProgramArt.addAttribute(AtsAttributeTypes.TeamDefinition, teamDefArt.getGuid());
+            newProgramArt.addAttribute(AtsAttributeTypes.TeamDefinitionReference, teamDefArt);
          }
       }
    }

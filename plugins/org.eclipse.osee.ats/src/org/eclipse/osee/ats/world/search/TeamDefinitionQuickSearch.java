@@ -19,13 +19,13 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * Return all Team Workflows with one of TeamDefs guids as TeamDefinition attribute. Uses quick search for performance.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class TeamDefinitionQuickSearch extends AttributeValueQuickSearch {
 
    public TeamDefinitionQuickSearch(Collection<? extends IAtsTeamDefinition> teamDefs) {
-      super(AtsAttributeTypes.TeamDefinition, AtsObjects.toGuids(teamDefs));
+      super(AtsAttributeTypes.TeamDefinitionReference, AtsObjects.toUuidStrings(teamDefs));
    }
 
    @Override
