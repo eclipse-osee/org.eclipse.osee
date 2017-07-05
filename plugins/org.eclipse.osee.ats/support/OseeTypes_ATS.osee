@@ -66,6 +66,7 @@ artifactType "Country" extends "ats.Ats Config Artifact" {
 artifactType "Program" extends "ats.Ats Config Artifact" {
 	id 52374361342017540
 	attribute "ats.Team Definition"
+	attribute "ats.Team Definition Reference"
 	attribute "ats.Namespace"
 	attribute "ats.Description"
    attribute "ats.closure.Closure State"
@@ -75,6 +76,7 @@ artifactType "Program" extends "ats.Ats Config Artifact" {
 abstract artifactType "ats.Review" extends "ats.State Machine" {
 	id 64
 	attribute "ats.Actionable Item"
+	attribute "ats.Actionable Item Reference"
 	attribute "ats.Related To State"
 	attribute "ats.Review Blocks"
 }
@@ -106,6 +108,7 @@ artifactType "Decision Review" extends "ats.Review" {
 artifactType "Action" extends "ats.Ats Artifact" {
 	id 67
 	attribute "ats.Actionable Item"
+	attribute "ats.Actionable Item Reference"
 	attribute "ats.Change Type"
 	attribute "ats.Need By"
 	attribute "ats.Priority"
@@ -215,6 +218,7 @@ artifactType "Goal" extends "ats.State Machine" {
 artifactType "Team Workflow" extends "ats.State Machine" , "Abstract Access Controlled" {
 	id 73
 	attribute "ats.Actionable Item"
+	attribute "ats.Actionable Item Reference"
 	attribute "ats.Branch Metrics"
 	attribute "ats.Baseline Branch Guid"
 	attribute "ats.Baseline Branch Uuid"
@@ -228,6 +232,7 @@ artifactType "Team Workflow" extends "ats.State Machine" , "Abstract Access Cont
 	attribute "ats.Problem"
 	attribute "ats.Proposed Resolution"
 	attribute "ats.Team Definition"
+	attribute "ats.Team Definition Reference"
 	attribute "ats.Operational Impact"
 	attribute "ats.Operational Impact Description"
 	attribute "ats.Operational Impact Workaround"
@@ -505,6 +510,26 @@ attributeType "ats.Task To Changed Artifact Reference" extends ArtifactReference
 	max 1
 	taggerId DefaultAttributeTaggerProvider
 	description "Task reference to the changed artifact"
+	mediaType "text/plain"
+}
+
+attributeType "ats.Team Definition Reference" extends ArtifactReferenceAttribute {
+	id 4730961339090285773
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	description "Team Workflow to Team Definition"
+	mediaType "text/plain"
+}
+
+attributeType "ats.Actionable Item Reference" extends ArtifactReferenceAttribute {
+	id 6780739363553225476
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
+	taggerId DefaultAttributeTaggerProvider
+	description "Actionable Item to Team Definition"
 	mediaType "text/plain"
 }
 

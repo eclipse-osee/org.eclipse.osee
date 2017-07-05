@@ -102,6 +102,12 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
+   public Collection<ArtifactToken> getArtifacts(IArtifactType artifactType, BranchId branch) {
+      return Collections.castAll(atsServer.getOrcsApi().getQueryFactory().fromBranch(branch).andTypeEquals(
+         artifactType).getResults().getList());
+   }
+
+   @Override
    public IAtsOrcsScriptQuery createOrcsScriptQuery(String query, Object... data) {
       return new AtsOrcsScriptQuery(String.format(query, data), atsServer);
    }

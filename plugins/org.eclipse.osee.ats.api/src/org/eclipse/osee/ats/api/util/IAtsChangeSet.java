@@ -108,6 +108,8 @@ public interface IAtsChangeSet {
 
    void setAttributeValues(IAtsObject atsObject, AttributeTypeId attrType, List<Object> values);
 
+   void setAttributeValues(ArtifactId artifact, AttributeTypeId attrType, List<Object> values);
+
    String getComment();
 
    <T> void setAttribute(ArtifactId artifact, AttributeId attrId, T value);

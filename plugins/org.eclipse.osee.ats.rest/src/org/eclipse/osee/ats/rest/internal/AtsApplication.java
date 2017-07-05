@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.rest.internal.config.ActionableItemResource;
 import org.eclipse.osee.ats.rest.internal.config.AtsConfigEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.config.ConvertCreateUpdateAtsConfig;
 import org.eclipse.osee.ats.rest.internal.config.ConvertResource;
+import org.eclipse.osee.ats.rest.internal.config.ConvertAtsConfigGuidAttributes;
 import org.eclipse.osee.ats.rest.internal.config.CountryEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.config.CountryResource;
 import org.eclipse.osee.ats.rest.internal.config.InsertionActivityEndpointImpl;
@@ -89,8 +90,10 @@ public class AtsApplication extends Application {
       OseeTemplateTokens.register(registry);
 
       // Register conversions
-      ConvertCreateUpdateAtsConfig conversion = new ConvertCreateUpdateAtsConfig(atsServer);
-      atsServer.addAtsDatabaseConversion(conversion);
+      ConvertCreateUpdateAtsConfig atsConfgConversion = new ConvertCreateUpdateAtsConfig(atsServer);
+      atsServer.addAtsDatabaseConversion(atsConfgConversion);
+      ConvertAtsConfigGuidAttributes convertTeamAiAttributes = new ConvertAtsConfigGuidAttributes(atsServer);
+      atsServer.addAtsDatabaseConversion(convertTeamAiAttributes);
 
       // Resources
       singletons.add(new VersionResource(atsServer));
