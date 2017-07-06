@@ -86,10 +86,8 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
       JsonGenerator writer = null;
       try {
          writer = jsonFactory.createJsonGenerator(entityStream);
-         writer.writeStartArray();
          addWorkItem(atsServer, config, annotations, writer, matches(IdentityView.class, annotations),
             getAttributeTypes());
-         writer.writeEndArray();
       } finally {
          if (writer != null) {
             writer.flush();

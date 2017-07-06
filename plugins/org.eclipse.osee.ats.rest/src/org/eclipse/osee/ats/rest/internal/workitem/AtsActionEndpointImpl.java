@@ -74,6 +74,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Path("{ids}")
    @IdentityView
    @GET
+   @Produces({MediaType.APPLICATION_JSON})
    public List<IAtsWorkItem> getAction(@PathParam("ids") String ids) throws Exception {
       List<IAtsWorkItem> workItems = atsServer.getWorkItemListByIds(ids);
       return workItems;
