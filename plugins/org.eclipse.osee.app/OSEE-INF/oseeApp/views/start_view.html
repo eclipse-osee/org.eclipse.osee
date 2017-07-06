@@ -10,13 +10,13 @@
                     </div>
                     
                     <div class="panel-body jsf" style="line-height: 2.0">
-                    		<div>
-                    			<ui>
-                    				<li ng-repeat="item in sc.startData">
-										   <a href="#/osee_app?uuid={{item.uuid}}&name={{item.name}}">{{ item.name }}: {{ item.description }}</a>
-										</li>
-                    			</ui>
-                      	</div>
+                        <div>
+                           <ui>
+                              <li ng-repeat="item in sc.startData">
+                                 <a href="#/osee_list?uuid={{item.uuid}}&name={{item.name}}">{{ item.name }}: {{ item.description }}</a>
+                              </li>
+                           </ui>
+                        </div>
                     </div>
                 </div>
             </div>

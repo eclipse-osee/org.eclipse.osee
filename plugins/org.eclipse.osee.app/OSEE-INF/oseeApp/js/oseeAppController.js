@@ -17,19 +17,17 @@ app.controller('oseeAppController', [ 'OseeAppSchema', '$route', '$scope',
 				vm.oseeAppSchema = data.OseeApp;
 				vm.dataloaded = true;
 
-				vm.dataResource = $resource(data.RestURL);
+				vm.listDataResource = $resource(data.ListRestURL);
+				vm.itemDataResource = $resource(data.ItemRestURL);
 				$scope.schemaKey = data.SchemaKey;
-				console.log(data.RestURL);
-				console.log(data.SchemaKey);
 				if (vm.element === undefined) {
-					vm.dataResource.get({}, function(data) {
+					vm.listDataResource.get({}, function(data) {
 						vm.oseeAppDataArray = data;
-						console.log(data);
 						vm.doList = true;
 					});
 				} else {
-					vm.dataResource.get({
-						issueId : vm.element
+					vm.itemDataResource.get({
+						atsId : vm.element
 					}, function(data) {
 						vm.oseeAppData = data;
 						vm.doItem = true;
