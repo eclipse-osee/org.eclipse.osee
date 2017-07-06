@@ -24,7 +24,6 @@ public final class AtsAttributeTypes {
    public static final Map<String, AttributeTypeToken> nameToTypeMap = new HashMap<>();
    // @formatter:off
    public static final AttributeTypeToken Actionable = createType(1152921504606847160L, "Actionable", "True if item can have Action written against or assigned to.");
-   public static final AttributeTypeToken ActionableItem = createType(1152921504606847200L, "Actionable Item", "Actionable Items that are impacted by this change.");
    public static final AttributeTypeToken ActionableItemReference = createType(6780739363553225476L, "Actionable Item Reference", "Actionable Items that are impacted by this change.");
    public static final AttributeTypeToken ActionDetailsFormat = createType(1152921504606847199L, "Action Details Format", "Format of string when push Action Details Copy button on SMA Workflow Editor.");
    public static final AttributeTypeToken Active = createType(1152921504606847153L, "Active", "Active ATS configuration object.");

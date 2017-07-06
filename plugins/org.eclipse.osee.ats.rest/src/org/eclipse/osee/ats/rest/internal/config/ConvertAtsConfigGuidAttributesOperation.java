@@ -38,6 +38,8 @@ public class ConvertAtsConfigGuidAttributesOperation {
    private final IAtsServices services;
    private final AttributeTypeToken TeamDefinition =
       AtsAttributeTypes.createType(1152921504606847201L, "Team Definition");
+   private final AttributeTypeToken ActionableItem = AtsAttributeTypes.createType(1152921504606847200L,
+      "Actionable Item", "Actionable Items that are impacted by this change.");
 
    public ConvertAtsConfigGuidAttributesOperation(IAtsServices services) {
       this.services = services;
@@ -101,7 +103,7 @@ public class ConvertAtsConfigGuidAttributesOperation {
       }
 
       List<Long> neededAiRefIds = new LinkedList<>();
-      for (IAttribute<?> attr : services.getAttributeResolver().getAttributes(art, AtsAttributeTypes.ActionableItem)) {
+      for (IAttribute<?> attr : services.getAttributeResolver().getAttributes(art, ActionableItem)) {
          String aiArtGuid = (String) attr.getValue();
          IAtsActionableItem ai = services.getConfigItem(aiArtGuid);
          neededAiRefIds.add(ai.getId());

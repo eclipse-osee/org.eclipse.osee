@@ -157,8 +157,9 @@ public class ActionPage {
       StringBuilder sb = new StringBuilder();
       ArtifactReadable teamWf = getParentTeamWf(action);
       if (teamWf != null) {
-         for (AttributeReadable<Object> aiGuid : teamWf.getAttributes(AtsAttributeTypes.ActionableItem)) {
-            sb.append(atsServer.getArtifactByGuid(aiGuid.toString()).getName());
+         Collection<ArtifactId> artifactIds = teamWf.getAttributeValues(AtsAttributeTypes.ActionableItemReference);
+         for (ArtifactId artifactId : artifactIds) {
+            sb.append(atsServer.getArtifact(artifactId));
             sb.append(", ");
          }
       }

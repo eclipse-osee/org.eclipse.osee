@@ -123,7 +123,7 @@ public class PeerToPeerReviewManagerTest extends PeerToPeerReviewManager {
          peerArt.isDirty());
       Assert.assertEquals(PeerToPeerReviewState.Prepare.getName(), peerArt.getCurrentStateName());
       Assert.assertEquals("Joe Smith", peerArt.getStateMgr().getAssigneesStr());
-      Assert.assertEquals(AtsClientService.get().getArtifact(AtsTestUtil.getTestAi()).getGuid(),
-         peerArt.getSoleAttributeValue(AtsAttributeTypes.ActionableItem));
+      Assert.assertEquals(AtsTestUtil.getTestAi(),
+         peerArt.getSoleAttributeValue(AtsAttributeTypes.ActionableItemReference));
    }
 }

@@ -512,6 +512,12 @@ public class ArtifactQuery {
          new AttributeCriteria(attributeType, attributeValue, options));
    }
 
+   public static List<Artifact> getArtifactListFromTypeAndAttribute(ArtifactTypeId artifactType, AttributeTypeId attributeType, Collection<ArtifactId> attributeValues, BranchId branch) {
+      Collection<String> idStrings =
+         org.eclipse.osee.framework.jdk.core.util.Collections.transform(attributeValues, String::valueOf);
+      return getArtifactListFromTypeAndAttribute(artifactType, attributeType, idStrings, branch, 10);
+   }
+
    public static List<Artifact> getArtifactListFromTypeAndAttribute(ArtifactTypeId artifactType, AttributeTypeId attributeType, Collection<String> attributeValues, BranchId branch, int artifactCountEstimate) throws OseeCoreException {
       return new ArtifactQueryBuilder(artifactType, branch, ALL,
          new AttributeCriteria(attributeType, attributeValues)).getArtifacts(artifactCountEstimate, null);

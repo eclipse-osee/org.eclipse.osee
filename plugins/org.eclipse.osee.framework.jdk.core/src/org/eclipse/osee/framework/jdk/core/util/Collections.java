@@ -377,4 +377,16 @@ public class Collections {
       }
       return result;
    }
+
+   public static <F, T> List<T> transform(Collection<F> from, Function<F, T> function) {
+      if (from.isEmpty()) {
+         return java.util.Collections.emptyList();
+      } else {
+         List<T> toReturn = new ArrayList<>(from.size());
+         for (F item : from) {
+            toReturn.add(function.apply(item));
+         }
+         return toReturn;
+      }
+   }
 }

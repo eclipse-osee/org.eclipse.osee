@@ -34,7 +34,7 @@ public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider
       XFLAT_ATTRIBUTE_TYPES.add(CoreAttributeTypes.WorkTransition);
       XFLAT_ATTRIBUTE_TYPES.add(CoreAttributeTypes.WorkData);
       XFLAT_ATTRIBUTE_TYPES.add(AtsAttributeTypes.State);
-      XFLAT_ATTRIBUTE_TYPES.add(AtsAttributeTypes.ActionableItem);
+      XFLAT_ATTRIBUTE_TYPES.add(AtsAttributeTypes.ActionableItemReference);
    }
 
    @Override

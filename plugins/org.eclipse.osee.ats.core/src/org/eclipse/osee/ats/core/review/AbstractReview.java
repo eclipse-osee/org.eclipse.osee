@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.review;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsServices;
@@ -34,10 +35,10 @@ public abstract class AbstractReview extends WorkItem implements IAtsAbstractRev
    @Override
    public Set<IAtsActionableItem> getActionableItems() throws OseeCoreException {
       Set<IAtsActionableItem> ais = new HashSet<>();
-      for (Object aiGuidObj : services.getAttributeResolver().getAttributeValues(artifact,
-         AtsAttributeTypes.ActionableItem)) {
-         String aiGuid = (String) aiGuidObj;
-         ArtifactId aiArt = services.getArtifactByGuid(aiGuid);
+      Collection<ArtifactId> artifactIds =
+         services.getAttributeResolver().getAttributeValues(artifact, AtsAttributeTypes.ActionableItemReference);
+      for (ArtifactId aiId : artifactIds) {
+         ArtifactId aiArt = services.getConfigItem(aiId);
          IAtsActionableItem ai = services.getConfigItemFactory().getActionableItem(aiArt);
          ais.add(ai);
       }

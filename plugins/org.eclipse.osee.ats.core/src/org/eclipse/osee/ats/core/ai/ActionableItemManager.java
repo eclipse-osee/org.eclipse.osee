@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -49,11 +49,11 @@ public class ActionableItemManager implements IAtsActionableItemService {
    public Set<IAtsActionableItem> getActionableItems(IAtsObject atsObject) throws OseeCoreException {
       Set<IAtsActionableItem> ais = new HashSet<>();
       if (!atsStoreService.isDeleted(atsObject)) {
-         for (String guid : getActionableItemGuids(atsObject)) {
-            IAtsActionableItem aia = services.getConfigItem(guid);
+         for (ArtifactId id : getActionableItemIds(atsObject)) {
+            IAtsActionableItem aia = services.getConfigItem(id);
             if (aia == null) {
                OseeLog.logf(ActionableItemManager.class, Level.SEVERE,
-                  "Actionable Item Guid [%s] from [%s] doesn't match item in AtsConfigCache", guid,
+                  "Actionable Item Guid [%s] from [%s] doesn't match item in AtsConfigCache", id,
                   atsObject.toStringWithId());
             } else {
                ais.add(aia);
@@ -69,22 +69,20 @@ public class ActionableItemManager implements IAtsActionableItemService {
    }
 
    @Override
-   public Collection<String> getActionableItemGuids(IAtsObject atsObject) throws OseeCoreException {
-      return attrResolver.getAttributesToStringList(atsObject, AtsAttributeTypes.ActionableItem);
+   public Collection<ArtifactId> getActionableItemIds(IAtsObject atsObject) {
+      return attrResolver.getAttributeValues(atsObject, AtsAttributeTypes.ActionableItemReference);
    }
 
    @Override
    public void addActionableItem(IAtsObject atsObject, IAtsActionableItem aia, IAtsChangeSet changes) throws OseeCoreException {
-      String guid = AtsUtilCore.getGuid(aia);
-      if (!getActionableItemGuids(atsObject).contains(guid)) {
-         changes.addAttribute(atsObject, AtsAttributeTypes.ActionableItem, guid);
+      if (!getActionableItemIds(atsObject).contains(atsObject)) {
+         changes.addAttribute(atsObject, AtsAttributeTypes.ActionableItemReference, aia.getStoreObject());
       }
    }
 
    @Override
    public void removeActionableItem(IAtsObject atsObject, IAtsActionableItem aia, IAtsChangeSet changes) throws OseeCoreException {
-      String guid = AtsUtilCore.getGuid(aia);
-      changes.deleteAttribute(atsObject, AtsAttributeTypes.ActionableItem, guid);
+      changes.deleteAttribute(atsObject, AtsAttributeTypes.ActionableItemReference, aia);
    }
 
    @Override
@@ -110,7 +108,7 @@ public class ActionableItemManager implements IAtsActionableItemService {
 
    @Override
    public boolean hasActionableItems(IAtsObject atsObject) {
-      return attrResolver.getAttributeCount(atsObject, AtsAttributeTypes.ActionableItem) > 0;
+      return attrResolver.getAttributeCount(atsObject, AtsAttributeTypes.ActionableItemReference) > 0;
    }
 
    @Override

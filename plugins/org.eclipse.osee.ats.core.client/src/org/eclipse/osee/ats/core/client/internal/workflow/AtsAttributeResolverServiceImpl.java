@@ -244,7 +244,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public Collection<Object> getAttributeValues(IAtsObject atsObject, AttributeTypeId attributeType) {
+   public <T> Collection<T> getAttributeValues(IAtsObject atsObject, AttributeTypeId attributeType) {
       Assert.isNotNull(atsObject, "ATS Object can not be null");
       Assert.isNotNull(attributeType, "Attribute Type can not be null");
       return getAttributeValues(atsObject.getStoreObject(), attributeType);

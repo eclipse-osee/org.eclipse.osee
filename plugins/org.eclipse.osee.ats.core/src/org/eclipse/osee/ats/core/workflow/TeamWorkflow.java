@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workflow;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsServices;
@@ -34,13 +35,12 @@ public class TeamWorkflow extends WorkItem implements IAtsTeamWorkflow {
    @Override
    public Set<IAtsActionableItem> getActionableItems() throws OseeCoreException {
       Set<IAtsActionableItem> ais = new HashSet<>();
-      for (Object aiGuidObj : services.getAttributeResolver().getAttributeValues(artifact,
-         AtsAttributeTypes.ActionableItem)) {
-         String aiGuid = (String) aiGuidObj;
-         IAtsActionableItem ai = services.getConfigItem(aiGuid);
+      Collection<ArtifactId> artifactIds =
+         services.getAttributeResolver().getAttributeValues(artifact, AtsAttributeTypes.ActionableItemReference);
+      for (ArtifactId aiId : artifactIds) {
+         IAtsActionableItem ai = services.getConfigItem(aiId);
          if (ai == null) {
-            ArtifactId aiArt = services.getArtifactByGuid(aiGuid);
-            ai = services.getConfigItemFactory().getActionableItem(aiArt);
+            ai = services.getConfigItemFactory().getActionableItem(aiId);
          }
          ais.add(ai);
       }

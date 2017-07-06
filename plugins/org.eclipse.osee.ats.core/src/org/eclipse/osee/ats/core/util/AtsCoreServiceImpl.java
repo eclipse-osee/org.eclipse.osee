@@ -74,6 +74,7 @@ import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.jdbc.JdbcService;
@@ -225,12 +226,23 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
 
    @SuppressWarnings("unchecked")
    @Override
-   public <T> T getConfigItem(String guid) {
-      T atsObject = getCache().getAtsObjectByGuid(guid);
-      if (atsObject == null) {
-         ArtifactId artifact = getArtifactByGuid(guid);
-         if (artifact != null && artifact instanceof IAtsConfigObject) {
-            atsObject = (T) getConfigItemFactory().getConfigObject(artifact);
+   public <T> T getConfigItem(String id) {
+      T atsObject = null;
+      if (GUID.isValid(id)) {
+         atsObject = getCache().getAtsObjectByGuid(id);
+         if (atsObject == null) {
+            ArtifactId artifact = getArtifactByGuid(id);
+            if (artifact != null && artifact instanceof IAtsConfigObject) {
+               atsObject = (T) getConfigItemFactory().getConfigObject(artifact);
+            }
+         }
+      } else if (Strings.isNumeric(id)) {
+         atsObject = getCache().getAtsObject(Long.valueOf(id));
+         if (atsObject == null) {
+            ArtifactId artifact = getArtifact(Long.valueOf(id));
+            if (artifact != null && artifact instanceof IAtsConfigObject) {
+               atsObject = (T) getConfigItemFactory().getConfigObject(artifact);
+            }
          }
       }
       return atsObject;

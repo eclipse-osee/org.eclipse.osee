@@ -236,7 +236,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public Collection<Object> getAttributeValues(IAtsObject atsObject, AttributeTypeId attributeType) {
+   public <T> Collection<T> getAttributeValues(IAtsObject atsObject, AttributeTypeId attributeType) {
       return getAttributeValues(atsObject.getStoreObject(), attributeType);
    }
 

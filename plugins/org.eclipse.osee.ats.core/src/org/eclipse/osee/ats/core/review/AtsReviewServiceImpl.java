@@ -245,7 +245,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
 
    @Override
    public boolean isStandAloneReview(IAtsAbstractReview review) {
-      return services.getAttributeResolver().getAttributeCount(review, AtsAttributeTypes.ActionableItem) > 0;
+      return services.getAttributeResolver().getAttributeCount(review, AtsAttributeTypes.ActionableItemReference) > 0;
    }
 
    @Override

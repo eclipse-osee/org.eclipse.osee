@@ -40,7 +40,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -48,7 +47,6 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
@@ -716,31 +714,6 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       return this;
    }
 
-   private List<String> getGuidsFromUuids(Collection<Long> uuids) {
-      new LinkedList<>();
-      List<String> guids = new LinkedList<>();
-      for (Long uuid : uuids) {
-         guids.add(getGuidFromUuid(uuid));
-      }
-      return guids;
-   }
-
-   private String getGuidFromUuid(Long uuid) {
-      String guid = AtsUtilCore.getGuid(uuid);
-      if (!Strings.isValid(guid)) {
-         guid = AtsUtilCore.getGuid(uuid);
-         if (!Strings.isValid(guid)) {
-            ArtifactId artifact = services.getArtifact(uuid);
-            if (artifact != null) {
-               guid = artifact.getGuid();
-            } else {
-               throw new OseeArgumentException("No artifact found with uuid %d", uuid);
-            }
-         }
-      }
-      return guid;
-   }
-
    private void getBaseSearchCriteria(Collection<IArtifactType> artTypes, boolean withUuids, Set<IArtifactType> allArtTypes) {
       createQueryBuilder();
 
@@ -804,8 +777,8 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    private void addAiCriteria() {
       if (isActionableItemSpecified()) {
-         List<String> guids = getGuidsFromUuids(aiUuids);
-         queryAnd(AtsAttributeTypes.ActionableItem, guids);
+         List<String> ids = AtsObjects.toUuidStringsFromLong(aiUuids);
+         queryAnd(AtsAttributeTypes.ActionableItemReference, ids);
       }
    }
 

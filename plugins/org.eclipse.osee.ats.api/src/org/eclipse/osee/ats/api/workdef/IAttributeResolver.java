@@ -84,7 +84,7 @@ public interface IAttributeResolver {
 
    <T> Collection<T> getAttributeValues(ArtifactId artifact, AttributeTypeId attributeType);
 
-   Collection<Object> getAttributeValues(IAtsObject atsObject, AttributeTypeId attributeType);
+   <T> Collection<T> getAttributeValues(IAtsObject atsObject, AttributeTypeId attributeType);
 
    String getSoleAttributeValueAsString(ArtifactId artifact, AttributeTypeId worktype, String defaultReturnValue);
 

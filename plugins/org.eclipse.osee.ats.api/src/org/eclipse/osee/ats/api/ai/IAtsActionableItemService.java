@@ -15,6 +15,7 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -27,7 +28,7 @@ public interface IAtsActionableItemService {
 
    String getActionableItemsStr(IAtsObject atsObject) throws OseeCoreException;
 
-   Collection<String> getActionableItemGuids(IAtsObject atsObject) throws OseeCoreException;
+   Collection<ArtifactId> getActionableItemIds(IAtsObject atsObject);
 
    void addActionableItem(IAtsObject atsObject, IAtsActionableItem aia, IAtsChangeSet changes) throws OseeCoreException;
 
