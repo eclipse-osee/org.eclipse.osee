@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.ui.skynet;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.core.enums.CommandGroup;
 import org.eclipse.osee.framework.core.enums.PresentationType;
-import org.eclipse.osee.framework.ui.skynet.render.IRenderer.CommandGroup;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 

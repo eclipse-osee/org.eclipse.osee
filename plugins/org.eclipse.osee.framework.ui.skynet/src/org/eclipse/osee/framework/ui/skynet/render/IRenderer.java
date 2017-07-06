@@ -39,65 +39,6 @@ public interface IRenderer {
    public static final int BASE_MATCH = 5;
    public static final int NO_MATCH = -1;
 
-   public static enum DataRightsClassification {
-      governmentPurposeRights("Government Purpose Rights"),
-      limitedRights("Limited Rights"),
-      proprietary("Proprietary"),
-      restrictedRights("Restricted Rights"),
-      Unspecified("Unspecified");
-
-      String dataRightsClassification;
-
-      DataRightsClassification(String dataRightsClassification) {
-         this.dataRightsClassification = dataRightsClassification;
-      }
-
-      public String getDataRightsClassification() {
-         return dataRightsClassification;
-      }
-
-      public static boolean isValid(String check) {
-         for (DataRightsClassification classification : DataRightsClassification.values()) {
-            if (classification.getDataRightsClassification().equals(check)) {
-               return true;
-            }
-         }
-         return false;
-      }
-   }
-
-   public static enum CommandGroup {
-      PREVIEW(PresentationType.PREVIEW),
-      EDIT(PresentationType.SPECIALIZED_EDIT),
-      SHOW(PresentationType.SPECIALIZED_EDIT);
-
-      public static CommandGroup[] getReadOnly() {
-         return new CommandGroup[] {PREVIEW, SHOW};
-      }
-
-      PresentationType presentationType;
-
-      CommandGroup(PresentationType type) {
-         this.presentationType = type;
-      }
-
-      public PresentationType getPresentationType() {
-         return presentationType;
-      }
-
-      public boolean isEdit() {
-         return CommandGroup.EDIT == this;
-      }
-
-      public boolean isPreview() {
-         return CommandGroup.PREVIEW == this;
-      }
-
-      public boolean isShowIn() {
-         return CommandGroup.SHOW == this;
-      }
-   }
-
    public void addMenuCommandDefinitions(ArrayList<MenuCmdDef> commands, Artifact artifact);
 
    public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, Producer producer, AttributeElement attributeElement, String footer);

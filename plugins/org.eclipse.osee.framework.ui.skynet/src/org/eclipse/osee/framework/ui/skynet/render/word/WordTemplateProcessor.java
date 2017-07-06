@@ -57,6 +57,7 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.DataRightsClassification;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
@@ -78,7 +79,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.branch.ViewApplicabilityUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.render.DataRightProvider;
-import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
@@ -713,7 +713,7 @@ public class WordTemplateProcessor {
          for (Artifact artifact : allArtifacts) {
 
             String classification = null;
-            if (overrideClassification != null && IRenderer.DataRightsClassification.isValid(overrideClassification)) {
+            if (overrideClassification != null && DataRightsClassification.isValid(overrideClassification)) {
                classification = overrideClassification;
             } else {
                classification = artifact.getSoleAttributeValueAsString(CoreAttributeTypes.DataRightsClassification, "");

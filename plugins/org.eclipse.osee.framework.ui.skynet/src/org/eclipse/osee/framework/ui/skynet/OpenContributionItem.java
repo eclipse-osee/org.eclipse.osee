@@ -27,6 +27,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.core.enums.CommandGroup;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -35,7 +36,6 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
-import org.eclipse.osee.framework.ui.skynet.render.IRenderer.CommandGroup;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
@@ -199,9 +199,9 @@ public class OpenContributionItem extends ContributionItem {
          }
          Artifact testArtifact = artifacts.iterator().next();
          try {
-            CommandGroup[] groups = IRenderer.CommandGroup.values();
+            CommandGroup[] groups = CommandGroup.values();
             if (readOnly) {
-               groups = IRenderer.CommandGroup.getReadOnly();
+               groups = CommandGroup.getReadOnly();
             }
             CommandGroup lastGroup = groups[groups.length - 1];
             for (CommandGroup commandGroup : groups) {
