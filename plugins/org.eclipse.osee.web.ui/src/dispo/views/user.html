@@ -48,7 +48,7 @@
 		             	  <button ng-show="!isCoverage && selectedItem && selectedItem.failureCount > 1 " type="button" class="btn btn-primary" id="openSourceFileButton" ng-click="showAllFailuresModal()">Show All Failures</button>
 		             </div>
 		         </div>
-		      	<div ng-show="annotations.length > 0" id="subGrid" class="subgrid grid" ui-grid="subGridOptions" ui-grid-edit ui-grid-nav ui-grid-resize-columns ui-grid-auto-resize ui-grid-tree-view></div>
+		      	<div ng-show="annotations.length > 0" id="subGrid" class="subgrid grid" ui-grid="subGridOptions" ui-grid-exporter ui-grid-edit ui-grid-nav ui-grid-resize-columns ui-grid-auto-resize ui-grid-tree-view></div>
 		      </div>
       	</div>
       </div>

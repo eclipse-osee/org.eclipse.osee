@@ -112,7 +112,7 @@
 }
 
 #subGrid div.ui-grid-cell-contents.invalid {
-    border: 2px solid red;
+    background-color: #ff8a8a;
 }
 
 #subGrid .ui-grid-viewport.ng-isolate-scope {
@@ -298,5 +298,28 @@ input.cellInput:focus{
 	resize: both:
 }
 
+.method-number {
+    background-color: rgb(157, 164, 171);
+    height: 100%;
+    border-bottom: solid 1px grey;
+}
 
+.placeholder-parent {
+	text-align: center;
+}
 
+.none-complete-parent {
+	background-color: red;'
+}
+
+.almost-complete-parent {
+	background-color: orange;'
+}
+
+.some-complete-parent {
+	background-color: yellow;'
+}
+
+.complete-parent {
+	background-color: #7eff39;'
+}

@@ -1,15 +1,34 @@
 app.factory('ColumnFactory', function() {
 	var ColumnFactory = {};
+	this.selectedItem = { methodNumber: '0'}
 	
 	ColumnFactory.getColumns = function(type, width) {
-		return columnsCoverage;
+		if(type == 'testScript'){
+			return columnsTestScript;
+		} else {
+			return columnsCoverage;
+		}
+	}
+	
+	ColumnFactory.setSelectedItem = function(item) {
+		this.selectedItem = item;
 	}
 	
 	ColumnFactory.setResolutionTypeArray = function(type, array) {
 		if(type == 'testScript') {
-			subGridColumnsTestScript[1].editDropdownOptionsArray = array;
+			for(var i = 0; i < subGridColumnsTestScript.length; i++) {
+				if(subGridColumnsTestScript[i].field == 'resolutionType') {
+					subGridColumnsTestScript[i].editDropdownOptionsArray = array;
+					return;
+				}
+			}
 		} else {
-			subGridColumnsCoverage[1].editDropdownOptionsArray = array;
+			for(var i = 0; i < subGridColumnsCoverage.length; i++) {
+				if(subGridColumnsCoverage[i].field == 'resolutionType') {
+					subGridColumnsCoverage[i].editDropdownOptionsArray = array;
+					return;
+				}
+			}
 		}
 	}
 	
@@ -159,7 +178,6 @@ app.factory('ColumnFactory', function() {
         enableCellEdit: true
     },{
         field: 'lastUpdated',
-        width: '10%',
         displayName: 'Last Ran',
         enableCellEdit: false,
         filter: {
@@ -168,7 +186,6 @@ app.factory('ColumnFactory', function() {
         sortingAlgorithm: dateSorting
     }, {
         field: 'category',
-        width: '10%',
         displayName: 'Category',
         enableCellEdit: true,
         visible: false,
@@ -177,25 +194,14 @@ app.factory('ColumnFactory', function() {
         }
     }, {
         field: 'machine',
-        width: '10%',
         displayName: 'Station',
         enableCellEdit: true,
         visible: false,
         filter: {
             condition: usePureRegex
         }
-    }, {
-        field: 'elapsedTime',
-        width: '10%',
-        displayName: 'Elapsed Time',
-        enableCellEdit: false,
-        visible: false,
-        filter: {
-            condition: usePureRegex
-        }
     },{
         field: 'creationDate',
-        width: '10%',
         displayName: 'Creation Date',
         enableCellEdit: false,
         visible: false,
@@ -204,42 +210,188 @@ app.factory('ColumnFactory', function() {
         },
         sortingAlgorithm: dateSorting
     },{
-        field: 'aborted',
-        width: '10%',
-        displayName: 'Aborted',
-        enableCellEdit: false,
-        visible: false,
-        filter: {
-            condition: usePureRegex
-        }
-    },  {
             field: 'version',
-            width: '10%',
             displayName: 'Version',
             enableCellEdit: false,
             visible: false,
             filter: {
                 condition: usePureRegex
             }
-    }
-    ];
+    }, {
+        field: 'methodNumber',
+        displayName: 'Method Number',
+        enableCellEdit: false,
+        visible: false,
+        filter: {
+            condition: usePureRegex
+        }
+    }, {
+        field: 'fileNumber',
+        displayName: 'File Number',
+        enableCellEdit: false,
+        visible: false,
+        filter: {
+            condition: usePureRegex
+        }
+    } ];
     
-    var origSubCellTmpl = '<div class="ui-grid-cell-contents" title="TOOLTIP">{{ grid.appScope.getText2(row.entity) }}</div>';
+    var columnsTestScript = [{
+        field: 'name',
+        displayName: 'Name',
+        cellTemplate: origCellTmpl,
+        filter: {
+            condition: usePureRegex
+        }
+    }, {
+        field: 'status',
+        displayName: 'Status',
+        width: '6%',
+        filter: {
+            condition: usePureRegex
+        }
+    }, 
+    {
+        field: 'totalPoints',
+        displayName: 'Total',
+        width: '4%',
+        filter: {
+            condition: usePureRegex
+        }
+    }, 
+    {
+        field: 'failureCount',
+        displayName: 'Failure Count',
+        width: '4%',
+        filter: {
+            condition: usePureRegex
+        }
+    }, {
+        field: 'discrepanciesAsRanges',
+        displayName: 'Failed Points',
+        filter: {
+            condition: findPointInRanges
+        }
+    }, {
+        field: 'assignee',
+        displayName: 'Assignee',
+        width: '10%',
+        enableCellEdit: false,
+        cellTemplate: assigneeCellTmpl,
+        filter: {
+            condition: usePureRegex
+        }
+    } ,
+    {
+        field: 'team',
+        displayName: 'Team',
+        width: '5%',
+        enableCellEdit: true,
+        filter: {
+            condition: usePureRegex
+        }
+    }, {
+        field: 'itemNotes',
+        width: '10%',
+        displayName: 'Item Notes',
+        enableCellEdit: true,
+        filter: {
+            condition: usePureRegex
+        }
+    },{
+        field: 'needsRerun',
+        width: '4%',
+        displayName: 'Rerun?',
+        type: 'boolean',
+        filter: {
+        },
+        cellTemplate: chkBoxTemplate,
+        enableCellEdit: true
+    },{
+        field: 'lastUpdated',
+        displayName: 'Last Ran',
+        enableCellEdit: false,
+        filter: {
+            condition: usePureRegex
+        },
+        sortingAlgorithm: dateSorting
+    },{
+        field: 'aborted',
+        width: '4%',
+        displayName: 'Aborted',
+        enableCellEdit: false,
+        filter: {
+            condition: usePureRegex
+        },
+    }, {
+        field: 'category',
+        displayName: 'Category',
+        enableCellEdit: true,
+        visible: false,
+        filter: {
+            condition: usePureRegex
+        }
+    }, {
+        field: 'machine',
+        displayName: 'Station',
+        enableCellEdit: true,
+        visible: false,
+        filter: {
+            condition: usePureRegex
+        }
+    },{
+        field: 'elapsedTime',
+        displayName: 'Elapsed Time',
+        enableCellEdit: false,
+        visible: false,
+        filter: {
+            condition: usePureRegex
+        },
+        sortingAlgorithm: dateSorting
+    },{
+        field: 'creationDate',
+        displayName: 'Creation Date',
+        enableCellEdit: false,
+        visible: false,
+        filter: {
+            condition: usePureRegex
+        },
+        sortingAlgorithm: dateSorting
+    },{
+            field: 'version',
+            displayName: 'Version',
+            enableCellEdit: false,
+            visible: false,
+            filter: {
+                condition: usePureRegex
+            }
+    } ];
+    
+    var resolutionTmpl = '<div class="ui-grid-cell-contents placeholder" ng-class="{\'placeholder-parent\': !row.entity.isLeaf, \'complete-parent\': grid.appScope.isComplete(row.entity), \'none-complete-parent\': grid.appScope.isNoneComplete(row.entity), \'some-complete-parent\': grid.appScope.isSomeComplete(row.entity), \'almost-complete-parent\': grid.appScope.isAlmostComplete(row.entity) }" title="TOOLTIP">{{ grid.appScope.getTextResolution(row.entity) }}</div>';
+    var origSubCellTmpl = '<div class="ui-grid-cell-contents" ng-class="{\'placeholder-parent\': true}" title="TOOLTIP">{{ grid.appScope.getTextResolutionType(row.entity) }}</div>';
     var subGridOrigTmpl = '<div ng-class="{\'ui-grid-cell-contents\': true, annotationInput: true, invalid: grid.appScope.getInvalidLocRefs(row.entity), details: annotation.showDeets}" title="TOOLTIP">{{row.entity.locationRefs}}</div>';
+    var codeTemplate = '<div class="method-number">{{ grid.appScope.selectedItem.methodNumber }}</div>';
     
    var getInvalidRes = function getInvalidRes(annotation) {
         return annotation.resolution != null && annotation.resolution != "" && !annotation.isResolutionValid;
     }
 
     
-    var subGridColumnsCoverage = [{
+    var subGridColumnsCoverage = [
+	{
+	    field: 'blank',
+	    displayName: 'Method',
+        cellTemplate: codeTemplate,
+	    enableCellEdit: false,
+	    width: '4%',
+	},
+    {
         field: 'locationRefs',
         displayName: 'Code Line',
         enableCellEdit: false,
         width: '5%',
     },
     {
-        name: 'resolutionType',
+        field: 'resolutionType',
         displayName: 'Resolution Type',
         editableCellTemplate: '/dispo/views/dropdown.html',
         width: '7%',
@@ -252,6 +404,7 @@ app.factory('ColumnFactory', function() {
         field: 'resolution',
         displayName: 'Resolution',
         width: '15%',
+        cellTemplate: resolutionTmpl,
         cellEditableCondition: function($scope) {
             return $scope.row.entity.isLeaf && !$scope.row.entity.isDefault
         }
@@ -276,7 +429,7 @@ app.factory('ColumnFactory', function() {
         cellTemplate: subGridOrigTmpl
     },
     {
-        name: 'resolutionType',
+        field: 'resolutionType',
         displayName: 'PCR Type',
         editableCellTemplate: '/dispo/views/dropdown.html',
         editDropdownIdLabel: 'text',

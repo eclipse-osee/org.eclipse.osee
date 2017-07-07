@@ -142,7 +142,7 @@ app.controller('userController', [
                     } else if (!bSplit[1].match("RESULT") && aSplit[1].match("RESULT")) {
                         return 1;
                     } else {
-                        return b.locationRefs.localeCompare(a.locationRefs);
+                        return a.locationRefs.localeCompare(b.locationRefs);
                     }
                 } else {
                     return delta;
@@ -286,12 +286,55 @@ app.controller('userController', [
 
         $scope.gridOptions.columnDefs = ColumnFactory.getColumns($scope.type, window.innerWidth);
 
-        $scope.getText2 = function(annotation) {
-            if (annotation.childrenComplete) {
-                return "COMPLETE"
-            } else {
+        $scope.getTextResolutionType = function(annotation) {
+            if (annotation.isLeaf) {
                 return annotation.resolutionType;
+            } else {
+                return "-----------------";
             }
+        }
+        
+        $scope.getTextResolution = function(annotation) {
+            if (annotation.isLeaf) {
+                return annotation.resolution;
+            } else {
+            	if(annotation.isTopLevel) {
+            		var str = [];
+            		var pct = (annotation.childMetadata.runningCompleteCount / annotation.childMetadata.runningTotalCount);
+            		pct = pct.toLocaleString("en", {style: "percent"});
+            		str.push(annotation.childMetadata.runningCompleteCount, "/", annotation.childMetadata.runningTotalCount, " (", pct, ")");
+            		return str.join("");
+            	} else {
+            		return annotation.childMetadata.completeCount + " / " + annotation.childMetadata.totalCount;
+            	}
+            }
+        }
+        
+        $scope.isComplete = function(annotation) {
+        	if(annotation.isTopLevel) {
+    			return annotation.childMetadata.runningCompleteCount == annotation.childMetadata.runningTotalCount;
+        	}
+        }
+        
+        $scope.isNoneComplete = function(annotation) {
+        	if(annotation.isTopLevel) {
+        		var pct = annotation.childMetadata.runningCompleteCount / annotation.childMetadata.runningTotalCount;
+        		return pct <=.33;
+        	}
+        }
+        
+        $scope.isSomeComplete = function(annotation) {
+        	if(annotation.isTopLevel) {
+        		var pct = annotation.childMetadata.runningCompleteCount / annotation.childMetadata.runningTotalCount;
+        		return .33 < pct && pct <=.5;
+        	}
+        }
+        
+        $scope.isAlmostComplete = function(annotation) {
+        	if(annotation.isTopLevel) {
+        		var pct = annotation.childMetadata.runningCompleteCount / annotation.childMetadata.runningTotalCount;
+        		return .5 < pct && pct < 1;
+        	}
         }
 
         $scope.subGridOptions = {
@@ -344,116 +387,10 @@ app.controller('userController', [
         $scope.subGridOptions.data = [];
         $scope.subGridOptions.columnDefs = ColumnFactory.getSubGridColumns($rootScope.type);
 
-
-        $scope.treeAnnotations = function(annotations) {
-            var annotationsStack = annotations.slice();
-            var toReturn = [];
-
-            while (annotationsStack.length > 0) {
-                var annotation = annotationsStack[annotationsStack.length - 1] // peek
-                if (annotation.name.match(/\d+\.\w+\..+/gi)) {
-                    var annotationWithChildren = {};
-                    annotation.id = annotation.guid;
-                    var leadingLocRefs = annotation.locationRefs.split(".")[0];
-                    annotationWithChildren.locationRefs = leadingLocRefs;
-                    annotationWithChildren.id = annotation.guid;
-                    annotationWithChildren.guid = annotation.guid;
-                    annotationWithChildren.parentId = -1;
-
-                    var metaData = {};
-                    metaData.childrenComplete = true;
-
-                    var childrenStack = $scope.getAnnotationsStartsWith(annotationsStack, leadingLocRefs, true);
-                    var childrenAsTree = $scope.createTreeAnnotations(annotationsStack, annotationWithChildren, childrenStack, 1, metaData);
-                    annotationWithChildren.children = childrenAsTree;
-                    annotationWithChildren.$treeLevel = 0;
-                    annotationWithChildren.childrenComplete = metaData.childrenComplete;
-                    toReturn.push(annotationWithChildren);
-                } else {
-                    annotationsStack.pop();
-                    annotation.children = [];
-                    annotation.$$treeLevel = -1;
-                    annotation.isLeaf = true;
-
-                    toReturn.push(annotation);
-                }
-            }
-
-            return toReturn;
-        }
-
-
-        $scope.createTreeAnnotations = function(annotationsStack, parent, childrenStack, level, metaData) {
-            if (level >= 2) {
-                var children = $scope.getAnnotationsStartsWith(childrenStack, parent.locationRefs, true);
-                for (var i = 0; i < children.length; i++) {
-                    children[i].$$treeLevel = level;
-
-                    children[i].children = [];
-                    children[i].parentId = parent.id;
-                    children[i].isLeaf = true;
-                    if (children[i].resolution === "") {
-                        metaData.childrenComplete = false;
-                    }
-                }
-                return children;
-            } else {
-                var toReturn = [];
-                while (childrenStack.length > 0) {
-                    var annotation = childrenStack[0]
-                    var leadingLocRefs = $scope.createLocRef(annotation.locationRefs, level);
-
-                    var workingGen = {};
-                    workingGen.id = $scope.generateId();
-                    workingGen.parentId = parent.id;
-                    workingGen.locationRefs = leadingLocRefs;
-                    workingGen.$$treeLevel = level;
-                    var metaDataCur = {};
-                    metaDataCur.childrenComplete = true;
-                    workingGen.children = $scope.createTreeAnnotations(annotationsStack, workingGen, childrenStack, level + 1, metaDataCur);
-                    metaData.childrenComplete = metaData.childrenComplete && metaDataCur.childrenComplete;
-                    workingGen.childrenComplete = metaData.childrenComplete;
-                    toReturn.push(workingGen);
-                }
-                return toReturn;
-            }
-        }
-
-        $scope.createLocRef = function(fullLocRefs, level) {
-            var workingGenLocationRefs = "";
-            for (var i = 0; i <= level; i++) {
-                if (i > 0) {
-                    workingGenLocationRefs += ".";
-                }
-                workingGenLocationRefs += fullLocRefs.split(".")[i];
-            }
-            return workingGenLocationRefs;
-        }
-
-
-        $scope.getAnnotationsStartsWith = function(annotationsStack, startsWith, isPop) {
-            var startsWithRegex = "^" + startsWith + "($|\\.)";
-            var annotationsStackOrig = annotationsStack.slice();
-            var toReturn = [];
-            var toDelete = [];
-            for (var i = 0; i < annotationsStack.length; i++) {
-                var annotation = annotationsStackOrig[i];
-                if (annotation.locationRefs.match(startsWithRegex)) {
-                    toDelete.push(i);
-                    toReturn.push(annotation);
-                }
-            }
-            if (isPop) {
-                for (var i = toDelete.length - 1; i >= 0; i--) {
-                    annotationsStack.splice(toDelete[i], 1);
-                }
-            }
-            return toReturn;
-        }
-
         $scope.getItemDetails = function(item, row) {
             if (!$scope.isMultiEditView) {
                 $scope.selectedItem = item;
+                ColumnFactory.setSelectedItem(item);
                 Annotation.query({
                     programId: $scope.programSelection,
                     setId: $scope.setSelection,
@@ -474,7 +411,136 @@ app.controller('userController', [
                     $scope.gridApi.selection.selectRow(row.entity, $scope.gridApi.grid);
                 });
             }
+        }
 
+        
+        $scope.treeAnnotations = function(annotations) {
+            var annotationsStack = annotations.slice();
+            var toReturn = [];
+
+            while (annotationsStack.length > 0) {
+                var annotation = annotationsStack[annotationsStack.length - 1] // peek
+                if (annotation.name.match(/\d+\.\w+\..+/gi)) {
+                    var parentAnnotation = {};
+                    annotation.id = annotation.guid;
+                    var leadingLocRefs = annotation.locationRefs.split(".")[0];
+                    parentAnnotation.locationRefs = leadingLocRefs;
+                    parentAnnotation.id = annotation.guid;
+                    parentAnnotation.guid = annotation.guid;
+                    parentAnnotation.parentId = -1;
+
+                    var metadata = {};
+                    metadata.childrenComplete = true;
+                	metadata.totalCount = 0;
+                	metadata.completeCount = 0;
+                	metadata.runningTotalCount = 0;
+                	metadata.runningCompleteCount = 0;
+                	parentAnnotation.isTopLevel = true;
+                    parentAnnotation.childMetadata = metadata;
+
+                    var childrenStack = $scope.getAnnotationsStartsWith(annotationsStack, leadingLocRefs, false, true);
+                    var childrenAsTree = $scope.createTreeAnnotations(annotationsStack, parentAnnotation, childrenStack, 1, metadata);
+                    parentAnnotation.children = childrenAsTree;
+                    parentAnnotation.$treeLevel = 0;
+                    
+                    toReturn.push(parentAnnotation);
+                } else {
+                    annotationsStack.pop();
+                    annotation.children = [];
+                    annotation.$$treeLevel = -1;
+                    annotation.isLeaf = true;
+
+                    toReturn.push(annotation);
+                }
+            }
+
+            return toReturn;
+        }
+
+
+        $scope.createTreeAnnotations = function(annotationsStack, parent, childrenStack, level, metadata) {
+            if (level >= 2) {
+            	metadata.childrenComplete = true;
+            	metadata.totalCount = 0;
+            	metadata.completeCount = 0;
+                var children = $scope.getAnnotationsStartsWith(childrenStack, parent.locationRefs, false, true);
+                for (var i = 0; i < children.length; i++) {
+                	metadata.totalCount++;
+                    children[i].$$treeLevel = level;
+
+                    children[i].children = [];
+                    children[i].parentId = parent.id;
+                    children[i].isLeaf = true;
+                    metadata.text = children[i].customerNotes;
+                    children[i].customerNotes = '';
+                    if ((children[i].resolution === "" || children[i].resolutionType === "") && !children[i].isDefault) {
+                    	metadata.allComplete = false;
+                    } else {
+                    	metadata.completeCount++;
+                    }
+                }
+                return children;
+            } else {
+                var toReturn = [];
+                while (childrenStack.length > 0) {
+                	metadata.totalCount++;
+                    var annotation = childrenStack[0]
+                    var leadingLocRefs = $scope.createLocRef(annotation.locationRefs, level);
+
+                    var self = {};
+                    self.id = $scope.generateId();
+                    self.parentId = parent.id;
+                    self.locationRefs = leadingLocRefs;
+                    self.$$treeLevel = level;
+                    var childMetadata = {};
+                    self.children = $scope.createTreeAnnotations(annotationsStack, self, childrenStack, level + 1, childMetadata);
+                    self.childMetadata = childMetadata
+                    metadata.childrenComplete = metadata.childrenComplete && childMetadata.childMetadata;
+                    if(metadata.childrenComplete) {
+                    	metadata.completeCount++;
+                    }
+                    metadata.runningTotalCount += childMetadata.totalCount;
+                    metadata.runningCompleteCount += childMetadata.completeCount;
+                    
+                    toReturn.push(self);
+                }
+                return toReturn;
+            }
+        }
+
+        $scope.createLocRef = function(fullLocRefs, level) {
+            var workingGenLocationRefs = "";
+            for (var i = 0; i <= level; i++) {
+                if (i > 0) {
+                    workingGenLocationRefs += ".";
+                }
+                workingGenLocationRefs += fullLocRefs.split(".")[i];
+            }
+            return workingGenLocationRefs;
+        }
+
+
+        $scope.getAnnotationsStartsWith = function(annotationsStack, startsWith, isWholeString, isPop) {
+            var searchStr = startsWith; 
+        	if(!isWholeString) {
+            	searchStr = startsWith + ".";
+            }
+            var annotationsStackOrig = annotationsStack.slice();
+            var toReturn = [];
+            var toDelete = [];
+            for (var i = 0; i < annotationsStack.length; i++) {
+                var annotation = annotationsStackOrig[i];
+                if ((!isWholeString && annotation.locationRefs.startsWith(searchStr)) || (isWholeString && annotation.locationRefs == searchStr)) {
+                    toDelete.push(i);
+                    toReturn.push(annotation);
+                }
+            }
+            if (isPop) {
+                for (var i = toDelete.length - 1; i >= 0; i--) {
+                    annotationsStack.splice(toDelete[i], 1);
+                }
+            }
+            return toReturn;
         }
 
         $scope.searchAnnotations = function() {

@@ -7,6 +7,20 @@
   content: " ";
   display: table;
 }
+
+form.ng-pristine.ng-valid {
+    height: 30px;
+}
+input.ng-pristine.ng-untouched.ng-valid.ng-scope {
+    height: 30px;
+}
+
+input.ng-valid.ng-dirty.ng-valid-parse {
+	 height: 30px;
+}
+
+
+
 #ui-grid-twbs #ui-grid-twbs .form-horizontal .form-group:after,
 #ui-grid-twbs #ui-grid-twbs .btn-toolbar:after,
 #ui-grid-twbs #ui-grid-twbs .btn-group-vertical > .btn-group:after {

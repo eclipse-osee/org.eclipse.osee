@@ -577,18 +577,24 @@ public class VCastDataStoreImpl implements VCastDataStore {
             String variable = stmt.getString("mcdc_c.cond_variable");
             String condExpression = stmt.getString("mcdc_c.cond_expr");
             String simpExpression = stmt.getString("temp.simplified_expr");
+            Integer condIndex = stmt.getInt("mcdc_c.cond_index");
+
+            String variableFullName;
             boolean isMCDCPair = false;
             if (variable != null) {
                isMCDCPair = true;
                if (variable.isEmpty()) {
-                  variable = "RESULT";
+                  variableFullName = "RESULT";
                   condExpression = simpExpression;
                } else {
-                  variable = variable.toUpperCase();
+                  variableFullName = String.format("%d (%s)", condIndex, variable.toUpperCase());
                }
+            } else {
+               // Not an MCDC pair so name wont matter
+               variableFullName = null;
             }
             toReturn.add(new VCastStatementCoverage(id, function.getId(), line, hit_count, max_hit_count, isMCDCPair,
-               variable, condExpression));
+               variableFullName, condExpression));
          }
 
       } catch (Exception ex) {
