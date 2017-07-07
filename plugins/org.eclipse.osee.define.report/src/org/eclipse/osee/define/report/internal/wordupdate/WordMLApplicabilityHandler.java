@@ -146,7 +146,7 @@ public class WordMLApplicabilityHandler {
 
       String[] configs = applicExpText.split("&|\\|");
       for (int i = 0; i < configs.length; i++) {
-         configs[i] = configs[i].split("=")[0];
+         configs[i] = configs[i].split("=")[0].trim();
          if (!containsIgnoreCase(validConfigurations, configs[i])) {
             return false;
          }
@@ -552,7 +552,7 @@ public class WordMLApplicabilityHandler {
       if (viewApplicabilitiesMap.containsKey(feature)) {
          Collection<String> validValues = viewApplicabilitiesMap.get(feature);
 
-         value = value.equalsIgnoreCase("Default") ? getDefaultValue(feature) : value;
+         value = value.equalsIgnoreCase("Default") ? getDefaultValue(feature) : value.trim();
 
          if (containsIgnoreCase(validValues, value)) {
             return true;

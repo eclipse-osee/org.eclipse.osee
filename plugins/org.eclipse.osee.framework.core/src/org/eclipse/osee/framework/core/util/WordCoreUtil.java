@@ -174,7 +174,7 @@ public class WordCoreUtil {
 
       String[] configs = applicExpText.split("&|\\|");
       for (int i = 0; i < configs.length; i++) {
-         configs[i] = configs[i].split("=")[0];
+         configs[i] = configs[i].split("=")[0].trim();
          if (!containsIgnoreCase(allValidConfigurations, configs[i])) {
             return false;
          }
@@ -232,6 +232,7 @@ public class WordCoreUtil {
       HashMap<String, List<String>> featureIdValuesMap = parser.getIdValuesMap();
 
       for (String featureId : featureIdValuesMap.keySet()) {
+         featureId = featureId.trim();
          if (validFeatureValues.containsKey(featureId.toUpperCase())) {
             List<String> values = featureIdValuesMap.get(featureId);
             if (values.contains("Default")) {
@@ -239,6 +240,7 @@ public class WordCoreUtil {
             }
             Collection<String> validValues = validFeatureValues.getValues(featureId.toUpperCase());
             for (String val : values) {
+               val = val.trim();
                if (val.equals("(") || val.equals(")") || val.equals("|") || val.equals("&")) {
                   continue;
                }
