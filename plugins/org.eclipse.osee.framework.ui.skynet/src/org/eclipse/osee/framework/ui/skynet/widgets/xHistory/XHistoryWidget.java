@@ -171,10 +171,22 @@ public class XHistoryWidget extends GenericXWidget {
       show25Item.setText(" 25");
       show25Item.setToolTipText("Show last 25 transactions.");
       show25Item.setSelection(true);
+      show25Item.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            numberTransactionsToShow = 25;
+         }
+      });
 
       show50Item = new ToolItem(toolBar, SWT.RADIO | SWT.BORDER);
       show50Item.setText(" 50");
       show50Item.setToolTipText("Show last 50 transactions.");
+      show50Item.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            numberTransactionsToShow = 50;
+         }
+      });
 
       showXItem = new ToolItem(toolBar, SWT.RADIO | SWT.BORDER);
       showXItem.setText(" #");
@@ -184,6 +196,12 @@ public class XHistoryWidget extends GenericXWidget {
       showAllItem = new ToolItem(toolBar, SWT.RADIO | SWT.BORDER);
       showAllItem.setText(" All");
       showAllItem.setToolTipText("Show All transactions.");
+      showAllItem.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            numberTransactionsToShow = Integer.MAX_VALUE;
+         }
+      });
 
       item = new ToolItem(toolBar, SWT.PUSH);
       item.setImage(ImageManager.getImage(FrameworkImage.OPEN));
@@ -294,12 +312,14 @@ public class XHistoryWidget extends GenericXWidget {
 
    public void setInputData(final Artifact artifact, final boolean loadHistory) {
       this.artifact = artifact;
-      extraInfoLabel.setText(String.format("Loading %d Transactions...",
-         (numberTransactionsToShow == Integer.MAX_VALUE ? "All" : numberTransactionsToShow)));
+      String numberTransactionsToShowStr =
+         numberTransactionsToShow == Integer.MAX_VALUE ? "All" : String.valueOf(numberTransactionsToShow);
+      extraInfoLabel.setText(String.format("Loading %s Transactions...", numberTransactionsToShowStr));
       extraInfoLabel.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));
       extraInfoLabel.setFont(FontManager.getCourierNew12Bold());
 
       final int fNumnberTransactionsToShow = numberTransactionsToShow;
+      final String fNumnberTransactionsToShowStr = numberTransactionsToShowStr;
 
       Job job = new Job("History: " + artifact.getName()) {
 
@@ -324,8 +344,8 @@ public class XHistoryWidget extends GenericXWidget {
                         }
                         String infoLabel = NO_HISTORY;
                         if (!changes.isEmpty()) {
-                           infoLabel = String.format("History (%s): %s on branch: %s", artifact.getId(),
-                              artifact.getName(), shortName);
+                           infoLabel = String.format("History (Id: %s Showing: %s): %s on branch: %s", artifact.getId(),
+                              fNumnberTransactionsToShowStr, artifact.getName(), shortName);
                         }
 
                         if (Widgets.isAccessible(extraInfoLabel)) {
