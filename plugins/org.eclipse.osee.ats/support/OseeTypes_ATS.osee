@@ -203,6 +203,7 @@ abstract artifactType "ats.State Machine" extends "ats.Ats Artifact" {
 	attribute "ats.Cancelled Reason"
 	attribute "ats.Workflow Definition"
 	attribute "ats.Work Package Guid"
+	attribute "ats.Work Package Reference"
 	attribute "ats.Id"
 	attribute "ats.Unplanned Work"
 	attribute "ats.Peer Review Id"
@@ -530,6 +531,15 @@ attributeType "ats.Actionable Item Reference" extends ArtifactReferenceAttribute
 	max unlimited
 	taggerId DefaultAttributeTaggerProvider
 	description "Actionable Item to Team Definition"
+	mediaType "text/plain"
+}
+
+attributeType "ats.Work Package Reference" extends ArtifactReferenceAttribute {
+	id 473096133909456789
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 	mediaType "text/plain"
 }
 

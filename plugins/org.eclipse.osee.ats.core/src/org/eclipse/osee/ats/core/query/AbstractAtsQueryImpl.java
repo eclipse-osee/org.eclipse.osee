@@ -43,6 +43,7 @@ import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -1009,5 +1010,23 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       andVersion(version.getId());
       return this;
    }
+
+   @Override
+   public IAtsQuery andNotExists(AttributeTypeId attributeType) {
+      createQueryBuilder();
+      queryAndNotExists(attributeType);
+      return this;
+   }
+
+   protected abstract void queryAndNotExists(AttributeTypeId attributeType);
+
+   @Override
+   public IAtsQuery andExists(AttributeTypeToken attributeType) {
+      createQueryBuilder();
+      queryAndExists(attributeType);
+      return this;
+   }
+
+   protected abstract void queryAndExists(AttributeTypeToken attributeType);
 
 }

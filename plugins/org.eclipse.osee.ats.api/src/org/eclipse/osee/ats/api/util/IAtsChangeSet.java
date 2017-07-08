@@ -117,7 +117,7 @@ public interface IAtsChangeSet {
    /**
     * Will check if anything is to be stored, else return quietly.
     */
-   void executeIfNeeded();
+   boolean executeIfNeeded();
 
    /**
     * User making these changes

@@ -76,13 +76,15 @@ public class ActionableItemManager implements IAtsActionableItemService {
    @Override
    public void addActionableItem(IAtsObject atsObject, IAtsActionableItem aia, IAtsChangeSet changes) throws OseeCoreException {
       if (!getActionableItemIds(atsObject).contains(atsObject)) {
-         changes.addAttribute(atsObject, AtsAttributeTypes.ActionableItemReference, aia.getStoreObject());
+         changes.addAttribute(atsObject, AtsAttributeTypes.ActionableItemReference,
+            services.getArtifact(aia.getStoreObject()));
       }
    }
 
    @Override
    public void removeActionableItem(IAtsObject atsObject, IAtsActionableItem aia, IAtsChangeSet changes) throws OseeCoreException {
-      changes.deleteAttribute(atsObject, AtsAttributeTypes.ActionableItemReference, aia);
+      changes.deleteAttribute(atsObject, AtsAttributeTypes.ActionableItemReference,
+         services.getArtifact(aia.getStoreObject()));
    }
 
    @Override
