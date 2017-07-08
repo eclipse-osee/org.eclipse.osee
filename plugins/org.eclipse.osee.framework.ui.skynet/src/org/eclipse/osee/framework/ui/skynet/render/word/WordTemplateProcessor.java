@@ -59,6 +59,7 @@ import org.eclipse.osee.framework.core.model.datarights.DataRightResult;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.PageOrientation;
 import org.eclipse.osee.framework.core.util.RendererOption;
+import org.eclipse.osee.framework.core.util.RendererUtil;
 import org.eclipse.osee.framework.core.util.ReportConstants;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -240,8 +241,8 @@ public class WordTemplateProcessor {
 
       getExcludeArtifactTypes();
 
-      IFile file =
-         RenderingUtil.getRenderFile(renderer, COMMON, PREVIEW, "/", masterTemplateArtifact.getSafeName(), ".xml");
+      IFile file = RendererUtil.getRenderFile(COMMON, PREVIEW, "/", masterTemplateArtifact.getSafeName(), ".xml");
+      renderer.updateOption(RendererOption.RESULT_PATH_RETURN, file.getLocation().toOSString());
 
       AIFile.writeToFile(file, applyTemplate(artifacts, masterTemplate, masterTemplateOptions, masterTemplateStyles,
          file.getParent(), null, null, PREVIEW));
