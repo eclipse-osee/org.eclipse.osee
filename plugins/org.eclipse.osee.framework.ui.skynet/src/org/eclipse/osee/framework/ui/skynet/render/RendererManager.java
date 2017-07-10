@@ -41,7 +41,6 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.compare.CompareDataCollector;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.framework.ui.skynet.render.compare.NoOpCompareDataCollector;
-import org.eclipse.osee.framework.ui.skynet.render.word.AttributeElement;
 import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
 
 /**
@@ -135,9 +134,9 @@ public final class RendererManager {
       return bestRendererPrototype;
    }
 
-   public static void renderAttribute(AttributeTypeToken attributeType, PresentationType presentationType, Artifact artifact, Producer producer, AttributeElement attributeElement, String footer, Map<RendererOption, Object> rendererOptions) throws OseeCoreException {
+   public static void renderAttribute(AttributeTypeToken attributeType, PresentationType presentationType, Artifact artifact, Producer producer, String format, String label, String footer, Map<RendererOption, Object> rendererOptions) throws OseeCoreException {
       getBestRenderer(PRODUCE_ATTRIBUTE, artifact, rendererOptions).renderAttribute(attributeType, artifact,
-         presentationType, producer, attributeElement, footer);
+         presentationType, producer, format, label, footer);
    }
 
    public static Collection<AttributeTypeToken> getAttributeTypeOrderList(Artifact artifact) throws OseeCoreException {
@@ -211,7 +210,8 @@ public final class RendererManager {
    }
 
    public static String open(Artifact artifact, PresentationType presentationType, IProgressMonitor monitor) throws OseeCoreException {
-      return open(Collections.singletonList(artifact), presentationType, monitor, new HashMap<RendererOption, Object>());
+      return open(Collections.singletonList(artifact), presentationType, monitor,
+         new HashMap<RendererOption, Object>());
    }
 
    public static String open(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
@@ -246,7 +246,8 @@ public final class RendererManager {
    }
 
    public static void diffInJobWithPreferedRenderer(Collection<ArtifactDelta> artifactDeltas, String pathPrefix, IRenderer preferedRenderer) {
-      diffInJobWithPreferedRenderer(artifactDeltas, pathPrefix, preferedRenderer, new HashMap<RendererOption, Object>());
+      diffInJobWithPreferedRenderer(artifactDeltas, pathPrefix, preferedRenderer,
+         new HashMap<RendererOption, Object>());
    }
 
    public static void diffInJobWithPreferedRenderer(Collection<ArtifactDelta> artifactDeltas, String pathPrefix, IRenderer preferedRenderer, Map<RendererOption, Object> rendererOptions) {

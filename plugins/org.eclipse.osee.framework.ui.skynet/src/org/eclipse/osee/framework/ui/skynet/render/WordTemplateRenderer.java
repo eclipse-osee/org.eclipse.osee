@@ -60,7 +60,6 @@ import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.framework.ui.skynet.render.compare.WordTemplateCompare;
-import org.eclipse.osee.framework.ui.skynet.render.word.AttributeElement;
 import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
@@ -164,15 +163,15 @@ public class WordTemplateRenderer extends WordRenderer {
    }
 
    @Override
-   public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, Producer producer, AttributeElement attributeElement, String footer) throws OseeCoreException {
+   public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, Producer producer, String format, String label, String footer) throws OseeCoreException {
       WordMLProducer wordMl = (WordMLProducer) producer;
 
       if (attributeType.equals(CoreAttributeTypes.WordTemplateContent)) {
          String data = null;
          LinkType linkType = (LinkType) getRendererOptionValue(RendererOption.LINK_TYPE);
 
-         if (attributeElement.getLabel().length() > 0) {
-            wordMl.addParagraph(attributeElement.getLabel());
+         if (label.length() > 0) {
+            wordMl.addParagraph(label);
          }
 
          TransactionId txId = null;
@@ -218,7 +217,7 @@ public class WordTemplateRenderer extends WordRenderer {
          }
          wordMl.resetListValue();
       } else {
-         super.renderAttribute(attributeType, artifact, PresentationType.SPECIALIZED_EDIT, wordMl, attributeElement,
+         super.renderAttribute(attributeType, artifact, PresentationType.SPECIALIZED_EDIT, wordMl, format, label,
             footer);
       }
    }
@@ -301,6 +300,7 @@ public class WordTemplateRenderer extends WordRenderer {
       }
 
       templateContent = WordUtil.removeGUIDFromTemplate(templateContent);
+
       return templateProcessor.applyTemplate(artifacts, templateContent, templateOptions, templateStyles, null, null,
          (String) getRendererOptionValue(RendererOption.OUTLINE_TYPE), presentationType);
    }

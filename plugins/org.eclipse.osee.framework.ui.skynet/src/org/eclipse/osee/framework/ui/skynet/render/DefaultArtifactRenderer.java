@@ -52,7 +52,6 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.render.compare.DefaultArtifactCompare;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
-import org.eclipse.osee.framework.ui.skynet.render.word.AttributeElement;
 import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView;
@@ -147,11 +146,9 @@ public class DefaultArtifactRenderer implements IRenderer {
    }
 
    @Override
-   public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, Producer producer, AttributeElement attributeElement, String footer) throws OseeCoreException {
+   public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, Producer producer, String format, String label, String footer) throws OseeCoreException {
       WordMLProducer wordMl = (WordMLProducer) producer;
-      String format = attributeElement.getFormatPre();
       boolean allAttrs = (boolean) rendererOptions.get(RendererOption.ALL_ATTRIBUTES);
-
       wordMl.startParagraph();
 
       if (allAttrs) {
@@ -162,7 +159,7 @@ public class DefaultArtifactRenderer implements IRenderer {
          }
       } else {
          // assumption: the label is of the form <w:r><w:t> text </w:t></w:r>
-         wordMl.addWordMl(attributeElement.getLabel());
+         wordMl.addWordMl(label);
       }
 
       if (attributeType.equals(CoreAttributeTypes.RelationOrder)) {
@@ -171,7 +168,7 @@ public class DefaultArtifactRenderer implements IRenderer {
          wordMl.addWordMl(data);
       } else {
          String valueList = artifact.getAttributesToString(attributeType);
-         if (attributeElement.getFormatPre().contains(">x<")) {
+         if (format.contains(">x<")) {
             wordMl.addWordMl(format.replace(">x<", ">" + Xml.escape(valueList).toString() + "<"));
          } else {
             wordMl.addTextInsideParagraph(valueList);

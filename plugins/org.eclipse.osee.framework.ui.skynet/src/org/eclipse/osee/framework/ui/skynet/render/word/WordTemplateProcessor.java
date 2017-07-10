@@ -793,12 +793,12 @@ public class WordTemplateProcessor {
 
          if (!(publishInLine && artifact.isAttributeTypeValid(WordTemplateContent)) || attributeType.equals(
             WordTemplateContent)) {
-            RendererManager.renderAttribute(attributeType, presentationType, artifact, wordMl, attributeElement, footer,
-               renderer.getRendererOptions());
+            RendererManager.renderAttribute(attributeType, presentationType, artifact, wordMl,
+               attributeElement.getFormat(), attributeElement.getLabel(), footer, renderer.getRendererOptions());
          }
       } else if (attributeType.equals(WordTemplateContent)) {
-         RendererManager.renderAttribute(attributeType, presentationType, artifact, wordMl, attributeElement, footer,
-            renderer.getRendererOptions());
+         RendererManager.renderAttribute(attributeType, presentationType, artifact, wordMl,
+            attributeElement.getFormat(), attributeElement.getLabel(), footer, renderer.getRendererOptions());
       }
    }
 
