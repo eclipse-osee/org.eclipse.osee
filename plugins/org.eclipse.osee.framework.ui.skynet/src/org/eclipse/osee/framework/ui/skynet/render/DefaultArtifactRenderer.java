@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.util.OptionType;
 import org.eclipse.osee.framework.core.util.RendererOption;
+import org.eclipse.osee.framework.core.util.WordMLProducer;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -52,8 +53,6 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.render.compare.DefaultArtifactCompare;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
-import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
-import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView;
 import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -146,9 +145,10 @@ public class DefaultArtifactRenderer implements IRenderer {
    }
 
    @Override
-   public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, Producer producer, String format, String label, String footer) throws OseeCoreException {
-      WordMLProducer wordMl = (WordMLProducer) producer;
+   public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, WordMLProducer producer, String format, String label, String footer) throws OseeCoreException {
+      WordMLProducer wordMl = producer;
       boolean allAttrs = (boolean) rendererOptions.get(RendererOption.ALL_ATTRIBUTES);
+
       wordMl.startParagraph();
 
       if (allAttrs) {

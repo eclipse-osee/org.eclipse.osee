@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.RendererOption;
+import org.eclipse.osee.framework.core.util.WordMLProducer;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -41,7 +42,6 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.compare.CompareDataCollector;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.framework.ui.skynet.render.compare.NoOpCompareDataCollector;
-import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
 
 /**
  * @author Ryan D. Brooks
@@ -134,7 +134,7 @@ public final class RendererManager {
       return bestRendererPrototype;
    }
 
-   public static void renderAttribute(AttributeTypeToken attributeType, PresentationType presentationType, Artifact artifact, Producer producer, String format, String label, String footer, Map<RendererOption, Object> rendererOptions) throws OseeCoreException {
+   public static void renderAttribute(AttributeTypeToken attributeType, PresentationType presentationType, Artifact artifact, WordMLProducer producer, String format, String label, String footer, Map<RendererOption, Object> rendererOptions) throws OseeCoreException {
       getBestRenderer(PRODUCE_ATTRIBUTE, artifact, rendererOptions).renderAttribute(attributeType, artifact,
          presentationType, producer, format, label, footer);
    }

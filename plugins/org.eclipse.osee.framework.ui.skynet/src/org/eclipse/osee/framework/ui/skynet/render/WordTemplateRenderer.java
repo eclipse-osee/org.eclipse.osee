@@ -46,6 +46,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.util.RendererOption;
+import org.eclipse.osee.framework.core.util.WordMLProducer;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
@@ -60,8 +61,6 @@ import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.framework.ui.skynet.render.compare.WordTemplateCompare;
-import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
-import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
 import org.eclipse.osee.framework.ui.skynet.templates.TemplateManager;
 import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
@@ -163,8 +162,8 @@ public class WordTemplateRenderer extends WordRenderer {
    }
 
    @Override
-   public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, Producer producer, String format, String label, String footer) throws OseeCoreException {
-      WordMLProducer wordMl = (WordMLProducer) producer;
+   public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, WordMLProducer producer, String format, String label, String footer) throws OseeCoreException {
+      WordMLProducer wordMl = producer;
 
       if (attributeType.equals(CoreAttributeTypes.WordTemplateContent)) {
          String data = null;

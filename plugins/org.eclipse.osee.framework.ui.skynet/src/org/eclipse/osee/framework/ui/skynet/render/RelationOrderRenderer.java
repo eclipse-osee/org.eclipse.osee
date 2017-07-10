@@ -20,13 +20,12 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.model.type.RelationType;
+import org.eclipse.osee.framework.core.util.WordMLProducer;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
-import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 
 /**
  * @author Roberto E. Escobar
@@ -60,8 +59,8 @@ public class RelationOrderRenderer {
 
    }
 
-   public void toWordML(Producer producer, BranchId branch, RelationOrderData relationOrderData) {
-      WordMLProducer writer = (WordMLProducer) producer;
+   public void toWordML(WordMLProducer producer, BranchId branch, RelationOrderData relationOrderData) {
+      WordMLProducer writer = producer;
       try {
          writer.startTable();
          writer.addWordMl("<w:tblPr><w:tblW w:w=\"8200\" w:type=\"dxa\"/><w:jc w:val=\"center\"/></w:tblPr>");

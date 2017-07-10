@@ -18,10 +18,10 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.util.RendererOption;
+import org.eclipse.osee.framework.core.util.WordMLProducer;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
-import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
 
 /**
  * @author Jeff C. Phillips
@@ -40,7 +40,7 @@ public interface IRenderer {
 
    public void addMenuCommandDefinitions(ArrayList<MenuCmdDef> commands, Artifact artifact);
 
-   public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, Producer producer, String format, String label, String footer);
+   public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, WordMLProducer producer, String format, String label, String footer);
 
    public String renderAttributeAsString(AttributeTypeId attributeType, Artifact artifact, PresentationType presentationType, String defaultValue);
 

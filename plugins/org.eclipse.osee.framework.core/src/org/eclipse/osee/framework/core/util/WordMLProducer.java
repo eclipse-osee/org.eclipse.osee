@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.render.word;
+package org.eclipse.osee.framework.core.util;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -17,18 +17,15 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
 /**
  * @author Ryan D. Brooks
  */
-public class WordMLProducer extends Producer {
+public class WordMLProducer {
    public static final String RGB_RED = "FF0000";
    public static final String RGB_GREEN = "00FF00";
    public static final String RGB_BLUE = "0000FF";
@@ -84,7 +81,7 @@ public class WordMLProducer extends Producer {
       } else {
          flattenedLevelCount++;
          endOutlineSubSection(true);
-         OseeLog.log(Activator.class, Level.WARNING, "Outline level flattened, outline can only go 9 levels deep");
+         OseeLog.log(this.getClass(), Level.WARNING, "Outline level flattened, outline can only go 9 levels deep");
          return startOutlineSubSection(font, headingText, outlineType);
       }
    }
@@ -363,30 +360,13 @@ public class WordMLProducer extends Producer {
     * call should be done after processing each artifact so if a previous artifact was landscaped the following artifact
     * would be set back to portrait.
     */
-   public void setPageLayout(Artifact artifact) throws OseeCoreException {
-      setPageLayout(artifact, null);
-   }
-
-   /**
-    * Sets the page layout to either portrait/landscape depending on the artifacts pageType attribute value. Note: This
-    * call should be done after processing each artifact so if a previous artifact was landscaped the following artifact
-    * would be set back to portrait.
-    */
-   public void setPageLayout(Artifact artifact, String footer) throws OseeCoreException {
-      String pageTypeValue = null;
-      if (artifact.isAttributeTypeValid(CoreAttributeTypes.PageType)) {
-         pageTypeValue = artifact.getSoleAttributeValue(CoreAttributeTypes.PageType, "Portrait");
-      }
-
-      boolean landscape = pageTypeValue != null && pageTypeValue.equals("Landscape");
+   public void setPageLayout(String pageType) {
+      boolean landscape = pageType != null && pageType.equals("Landscape");
 
       if (landscape) {
          append("<w:p>");
          append("<w:pPr>");
          append("<w:sectPr>");
-         if (Strings.isValid(footer)) {
-            append(footer);
-         }
          append("<w:pgSz w:w=\"15840\" w:h=\"12240\" w:orient=\"landscape\" w:code=\"1\" />");
          append("</w:sectPr>");
          append("</w:pPr>");

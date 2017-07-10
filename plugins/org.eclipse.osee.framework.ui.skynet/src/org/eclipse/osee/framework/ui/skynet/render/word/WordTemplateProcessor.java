@@ -61,6 +61,7 @@ import org.eclipse.osee.framework.core.util.PageOrientation;
 import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.core.util.RendererUtil;
 import org.eclipse.osee.framework.core.util.ReportConstants;
+import org.eclipse.osee.framework.core.util.WordMLProducer;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
