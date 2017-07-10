@@ -54,7 +54,9 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
 
    @Override
    public void createQueryBuilder() {
-      query = atsServer.getOrcsApi().getQueryFactory().fromBranch(atsServer.getAtsBranch());
+      if (query == null) {
+         query = atsServer.getOrcsApi().getQueryFactory().fromBranch(atsServer.getAtsBranch());
+      }
    }
 
    @Override

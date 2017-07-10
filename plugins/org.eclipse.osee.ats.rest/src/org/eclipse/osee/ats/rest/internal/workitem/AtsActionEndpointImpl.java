@@ -11,10 +11,13 @@
 package org.eclipse.osee.ats.rest.internal.workitem;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -27,22 +30,31 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
+import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.enums.QueryOption;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
  * @author Donald G. Dunne
@@ -50,12 +62,12 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 @Path("action")
 public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
 
-   private final IAtsServer atsServer;
+   private final IAtsServices services;
    private final OrcsApi orcsApi;
    private static final String ATS_UI_ACTION_PREFIX = "/ui/action/UUID";
 
-   public AtsActionEndpointImpl(IAtsServer atsServer, OrcsApi orcsApi) {
-      this.atsServer = atsServer;
+   public AtsActionEndpointImpl(IAtsServices services, OrcsApi orcsApi) {
+      this.services = services;
       this.orcsApi = orcsApi;
    }
 
@@ -63,6 +75,16 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String get() throws Exception {
+
+      QueryBuilder query = ((IAtsServer) services).getOrcsApi().getQueryFactory().fromBranch(services.getAtsBranch());
+      query.and(AtsAttributeTypes.TeamDefinition, "At2WHxC2lxLOGB0YiuQA");
+      query.and(AtsAttributeTypes.PriorityType, Arrays.asList("3", "2"));
+      ResultSet<ArtifactReadable> results = query.getResults();
+
+      for (ArtifactReadable art : results) {
+         System.err.println(art.getSoleAttributeValue(AtsAttributeTypes.PriorityType, "def"));
+      }
+
       return RestUtil.simplePageHtml("Action Resource");
    }
 
@@ -76,7 +98,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @GET
    @Produces({MediaType.APPLICATION_JSON})
    public List<IAtsWorkItem> getAction(@PathParam("ids") String ids) throws Exception {
-      List<IAtsWorkItem> workItems = atsServer.getWorkItemListByIds(ids);
+      List<IAtsWorkItem> workItems = services.getQueryService().getWorkItemListByIds(ids);
       return workItems;
    }
 
@@ -89,7 +111,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @GET
    @Produces({MediaType.APPLICATION_JSON})
    public List<IAtsWorkItem> getActionDetails(@PathParam("ids") String ids) throws Exception {
-      List<IAtsWorkItem> workItems = atsServer.getWorkItemListByIds(ids);
+      List<IAtsWorkItem> workItems = services.getQueryService().getWorkItemListByIds(ids);
       return workItems;
    }
 
@@ -104,36 +126,80 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    public Set<IAtsWorkItem> query(@Context UriInfo uriInfo) throws Exception {
       MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters(true);
       Set<IAtsWorkItem> workItems = new HashSet<>();
-      for (String key : queryParameters.keySet()) {
-         AttributeTypeId attrType = null;
-         Long attrTypeId = Strings.isNumeric(key) ? Long.valueOf(key) : null;
-         for (AttributeTypeToken type : atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().getAll()) {
-            if (attrTypeId != null && type.equals(attrTypeId)) {
-               attrType = type;
-               break;
-            } else if (type.getName().equals(key)) {
-               attrType = type;
-               break;
-            }
-         }
-         if (attrType != null) {
-            for (String value : queryParameters.get(key)) {
-               Iterator<ArtifactReadable> iterator =
-                  atsServer.getOrcsApi().getQueryFactory().fromBranch(atsServer.getAtsBranch()).and(attrType,
-                     value).getResults().iterator();
-               while (iterator.hasNext()) {
-                  ArtifactReadable artifactReadable = iterator.next();
-                  if (artifactReadable.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
-                     IAtsWorkItem workItem = atsServer.getWorkItemFactory().getWorkItem(artifactReadable);
-                     if (workItem != null) {
-                        workItems.add(workItem);
-                     }
-                  }
+      Set<Entry<String, List<String>>> entrySet = queryParameters.entrySet();
+      IAtsQuery query = services.getQueryService().createQuery(WorkItemType.WorkItem);
+      for (Entry<String, List<String>> entry : entrySet) {
+         if (entry.getKey().equals("Title")) {
+            query.andName(entry.getValue().iterator().next(), QueryOption.CONTAINS_MATCH_OPTIONS);
+         } else if (entry.getKey().equals("Priority")) {
+            query.andAttr(AtsAttributeTypes.PriorityType, entry.getValue());
+         } else if (entry.getKey().equals("ColorTeam")) {
+            query.andColorTeam(entry.getValue().iterator().next());
+         } else if (entry.getKey().equals("Assignee")) {
+            Collection<IAtsUser> assignees = new LinkedList<>();
+            for (String userId : entry.getValue()) {
+               IAtsUser assignee = services.getUserService().getUserById(userId);
+               if (assignee != null) {
+                  assignees.add(assignee);
                }
             }
+            query.andAssignee(assignees.toArray(new IAtsUser[assignees.size()]));
+         } else if (entry.getKey().equals("IPT")) {
+            query.andAttr(AtsAttributeTypes.IPT, entry.getValue().iterator().next());
+         } else if (entry.getKey().equals("Team")) {
+            Collection<IAtsTeamDefinition> teams = new LinkedList<>();
+            for (String teamId : entry.getValue()) {
+               IAtsTeamDefinition team = services.getConfigItem(Long.valueOf(teamId));
+               if (team != null) {
+                  teams.add(team);
+               }
+            }
+            query.andTeam(teams);
+         } else if (entry.getKey().equals("StateType")) {
+            try {
+               List<StateType> stateTypes = new LinkedList<>();
+               for (String type : entry.getValue()) {
+                  StateType stateType2 = StateType.valueOf(type);
+                  if (stateType2 != null) {
+                     stateTypes.add(stateType2);
+                  }
+               }
+               query.andStateType(stateTypes.toArray(new StateType[stateTypes.size()]));
+            } catch (Exception ex) {
+               // do nothing
+            }
+         } else if (entry.getKey().equals("Originator")) {
+            IAtsUser assignee = services.getUserService().getUserById(entry.getValue().iterator().next());
+            query.andOriginator(assignee);
+         } else if (entry.getKey().equals("WorkItemType")) {
+            List<WorkItemType> workItemTypes = new LinkedList<>();
+            for (String type : entry.getValue()) {
+               WorkItemType workItem = WorkItemType.valueOf(type);
+               if (workItem != null) {
+                  workItemTypes.add(workItem);
+               }
+            }
+            query.andWorkItemType(workItemTypes.toArray(new WorkItemType[workItemTypes.size()]));
+         } else if (entry.getKey().equals("Version")) {
+            IAtsVersion version = services.getConfigItem(Long.valueOf(entry.getValue().iterator().next()));
+            query.andVersion(version);
          }
-
+         // else, attempt to resolve as attribute type id or name
+         else {
+            String key = entry.getKey();
+            AttributeTypeId attrType = null;
+            if (Strings.isNumeric(key)) {
+               attrType = services.getStoreService().getAttributeType(Long.valueOf(key));
+            }
+            if (attrType == null) {
+               attrType = services.getStoreService().getAttributeType(key);
+            }
+            if (attrType != null) {
+               query.andAttr(attrType, entry.getValue());
+            }
+         }
       }
+      workItems.addAll(query.getItems());
       return workItems;
    }
 
@@ -166,12 +232,12 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          return RestUtil.returnBadRequest("actionableItems is not valid");
       }
       List<IAtsActionableItem> aias = new ArrayList<>();
-      ArtifactReadable aiArt = atsServer.getQuery().andTypeEquals(AtsArtifactTypes.ActionableItem).andNameEquals(
-         actionableItems).getResults().getOneOrNull();
-      if (aiArt == null) {
+      IAtsActionableItem aia =
+         services.getQueryService().createQuery(AtsArtifactTypes.ActionableItem).andName(actionableItems).getOneOrNull(
+            IAtsActionableItem.class);
+      if (aia == null) {
          return RestUtil.returnBadRequest(String.format("actionableItems [%s] is not valid", actionableItems));
       }
-      IAtsActionableItem aia = atsServer.getCache().getAtsObject(aiArt.getId());
       aias.add(aia);
 
       // validate userId
@@ -179,7 +245,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       if (!Strings.isValid(userId)) {
          return RestUtil.returnBadRequest("userId is not valid");
       }
-      IAtsUser atsUser = atsServer.getUserService().getUserById(userId);
+      IAtsUser atsUser = services.getUserService().getUserById(userId);
       if (atsUser == null) {
          return RestUtil.returnBadRequest(String.format("userId [%s] is not valid", userId));
       }
@@ -189,8 +255,8 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       if (!Strings.isValid(changeTypeStr)) {
          return RestUtil.returnBadRequest("changeType is not valid");
       }
-      IAtsChangeSet changes = atsServer.getStoreService().createAtsChangeSet("Create Action - Server", atsUser);
-      orcsApi.getTransactionFactory().createTransaction(atsServer.getAtsBranch(), atsUser.getStoreObject(),
+      IAtsChangeSet changes = services.getStoreService().createAtsChangeSet("Create Action - Server", atsUser);
+      orcsApi.getTransactionFactory().createTransaction(services.getAtsBranch(), atsUser.getStoreObject(),
          "Create Action - Server");
 
       ChangeType changeType = null;
@@ -209,12 +275,12 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       }
 
       // create action
-      ActionResult action = atsServer.getActionFactory().createAction(atsUser, title, description, changeType, priority,
+      ActionResult action = services.getActionFactory().createAction(atsUser, title, description, changeType, priority,
          false, null, aias, new Date(), atsUser, null, changes);
       changes.execute();
 
       // Redirect to action ui
-      return RestUtil.redirect(action.getTeamWfs(), ATS_UI_ACTION_PREFIX, atsServer);
+      return RestUtil.redirect(action.getTeamWfs(), ATS_UI_ACTION_PREFIX, (IAtsServer) services);
    }
 
 }

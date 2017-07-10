@@ -72,4 +72,6 @@ public interface IAtsStoreService {
    void clearCaches(IAtsWorkItem workItem);
 
    boolean isArtifactTypeInheritsFrom(IArtifactType artifactType, IArtifactType baseArtifactType);
+
+   AttributeTypeId getAttributeType(Long attrTypeId);
 }

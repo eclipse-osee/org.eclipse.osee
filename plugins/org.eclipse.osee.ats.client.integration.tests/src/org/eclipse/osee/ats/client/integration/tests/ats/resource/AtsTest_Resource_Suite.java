@@ -20,7 +20,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
    OrcsWriterEndpointTest.class,
-   ActionResourceTest.class,
+   AtsActionEndpointImplTest.class,
    ActionUiResourceTest.class,
    ConvertResourceTest.class,
    UserResourceTest.class,

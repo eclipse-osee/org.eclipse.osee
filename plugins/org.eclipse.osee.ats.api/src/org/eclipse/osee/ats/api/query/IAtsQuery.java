@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -118,5 +119,11 @@ public interface IAtsQuery {
    IAtsQuery andNotExists(AttributeTypeId attributeType);
 
    IAtsQuery andName(String name);
+
+   IAtsQuery andWorkItemType(WorkItemType... workItemTypes);
+
+   IAtsQuery andVersion(IAtsVersion version);
+
+   IAtsQuery andName(String name, QueryOption... queryOption);
 
 }

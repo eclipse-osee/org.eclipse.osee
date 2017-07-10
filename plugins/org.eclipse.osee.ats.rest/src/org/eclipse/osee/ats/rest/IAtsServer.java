@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.IAtsServices;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
@@ -49,10 +48,6 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
    boolean isProduction();
 
    IAtsServices getServices();
-
-   List<ArtifactReadable> getArtifactListByIds(String id);
-
-   List<IAtsWorkItem> getWorkItemListByIds(String id);
 
    void setEmailEnabled(boolean emailEnabled);
 

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
@@ -53,6 +54,15 @@ public interface IAtsQueryService {
 
    Collection<ArtifactToken> getArtifacts(List<ArtifactId> ids, BranchId branch);
 
+   List<IAtsWorkItem> getWorkItemListByIds(String id);
+
+   List<ArtifactToken> getArtifactListByIdsStr(String id);
+
+   /**
+    * @param id guid, uuid or AtsId
+    */
+   ArtifactToken getArtifactById(String id);
+
    void runUpdate(String query, Object... data);
 
    IAtsOrcsScriptQuery createOrcsScriptQuery(String query, Object... data);
@@ -60,5 +70,7 @@ public interface IAtsQueryService {
    Collection<ArtifactToken> getArtifactsFromQuery(String query, Object... data);
 
    Collection<ArtifactToken> getArtifacts(IArtifactType artifactType, BranchId branch);
+   
+   ArtifactToken getArtifact(IAtsObject atsObject);
 
 }

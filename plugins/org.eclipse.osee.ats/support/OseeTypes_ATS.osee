@@ -1011,6 +1011,7 @@ attributeType "ats.Priority" extends EnumeratedAttribute {
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1
+	taggerId DefaultAttributeTaggerProvider
 	enumType "enum.ats.priority"
 	mediaType "text/plain"
 }

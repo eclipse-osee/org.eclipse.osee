@@ -61,7 +61,7 @@ public final class ActionUiResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public ViewModel getAction(@PathParam("ids") String ids) throws Exception {
-      List<IAtsWorkItem> workItems = atsServer.getWorkItemListByIds(ids);
+      List<IAtsWorkItem> workItems = atsServer.getQueryService().getWorkItemListByIds(ids);
       if (workItems.isEmpty()) {
          return RestUtil.simplePage(String.format("Action with id(s) [%s] can not be found", ids));
       }
@@ -79,7 +79,7 @@ public final class ActionUiResource {
          String url = "/ats/action/" + idStr + "/details";
 
          return new ViewModel("templates/world.html") //
-         .param("PUT_ACTION_JSON_URL_HERE", url);
+            .param("PUT_ACTION_JSON_URL_HERE", url);
       }
    }
 
@@ -113,7 +113,7 @@ public final class ActionUiResource {
       Collections.sort(sortedAis, new IdComparator());
 
       return new ViewModel("newAction.html") //
-      .param("ActionableItemDataList", getAiDataList(sortedAis));
+         .param("ActionableItemDataList", getAiDataList(sortedAis));
    }
 
    private String getAiDataList(List<ArtifactReadable> sortedAis) {

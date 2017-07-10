@@ -312,25 +312,12 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
       return ArtifactQuery.getArtifactFromId(artifact, getAtsBranch());
    }
 
+   /**
+    * @return corresponding Artifact or null if not found
+    */
    @Override
    public Artifact getArtifact(IAtsObject atsObject) throws OseeCoreException {
-      Artifact results = null;
-      if (atsObject.getStoreObject() != null) {
-         if (atsObject.getStoreObject() instanceof Artifact) {
-            results = (Artifact) atsObject.getStoreObject();
-         } else {
-            results = AtsClientService.get().getArtifact(atsObject.getId());
-            if (results != null) {
-               atsObject.setStoreObject(results);
-            }
-         }
-      } else {
-         results = getArtifact(atsObject.getId());
-         if (results != null) {
-            atsObject.setStoreObject(results);
-         }
-      }
-      return results;
+      return (Artifact) queryService.getArtifact(atsObject);
    }
 
    /**

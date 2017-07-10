@@ -70,7 +70,6 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
@@ -190,17 +189,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
 
    @Override
    public ArtifactReadable getArtifact(IAtsObject atsObject) throws OseeCoreException {
-      ArtifactReadable result = null;
-      if (atsObject.getStoreObject() instanceof ArtifactReadable) {
-         result = (ArtifactReadable) atsObject.getStoreObject();
-      } else {
-         result = orcsApi.getQueryFactory().fromBranch(getAtsBranch()).andUuid(
-            atsObject.getId()).getResults().getAtMostOneOrNull();
-         if (result != null) {
-            atsObject.setStoreObject(result);
-         }
-      }
-      return result;
+      return (ArtifactReadable) queryService.getArtifact(atsObject);
    }
 
    @Override
@@ -226,23 +215,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
 
    @Override
    public ArtifactReadable getArtifactById(String id) {
-      ArtifactReadable action = null;
-      if (GUID.isValid(id)) {
-         action = getArtifactByGuid(id);
-      }
-      Long uuid = null;
-      try {
-         uuid = Long.parseLong(id);
-      } catch (NumberFormatException ex) {
-         // do nothing
-      }
-      if (uuid != null) {
-         action = getArtifact(uuid);
-      }
-      if (action == null) {
-         action = getArtifactByAtsId(id);
-      }
-      return action;
+      return (ArtifactReadable) getQueryService().getArtifactById(id);
    }
 
    @Override
@@ -259,20 +232,6 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
          artifacts.add(iterator.next());
       }
       return artifacts;
-   }
-
-   @Override
-   public List<ArtifactReadable> getArtifactListByIds(String ids) {
-      List<ArtifactReadable> actions = new ArrayList<>();
-      for (String id : ids.split(",")) {
-         id = id.replaceAll("^ +", "");
-         id = id.replaceAll(" +$", "");
-         ArtifactReadable action = getArtifactById(id);
-         if (action != null) {
-            actions.add(action);
-         }
-      }
-      return actions;
    }
 
    @Override
@@ -336,18 +295,6 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
 
    public AtsNotifierServiceImpl getNotifyService() {
       return notifyService;
-   }
-
-   @Override
-   public List<IAtsWorkItem> getWorkItemListByIds(String ids) {
-      List<IAtsWorkItem> workItems = new ArrayList<>();
-      for (ArtifactReadable art : getArtifactListByIds(ids)) {
-         IAtsWorkItem workItem = workItemFactory.getWorkItem(art);
-         if (workItem != null) {
-            workItems.add(workItem);
-         }
-      }
-      return workItems;
    }
 
    @Override

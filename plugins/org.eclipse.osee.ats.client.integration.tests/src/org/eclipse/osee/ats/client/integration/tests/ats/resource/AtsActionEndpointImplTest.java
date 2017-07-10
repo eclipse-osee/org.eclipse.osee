@@ -15,7 +15,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collection;
 import javax.ws.rs.client.Entity;
@@ -39,11 +41,53 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Test unit for {@link ActionResource}
+ * Test unit for {@link AtsActionEndpointImpl}
  *
  * @author Donald G. Dunne
  */
-public class ActionResourceTest extends AbstractRestTest {
+public class AtsActionEndpointImplTest extends AbstractRestTest {
+
+   @Test
+   public void testQueryTitle() throws Exception {
+      queryAndConfirmCount("ats/action/query?Title=SAW", 18);
+   }
+
+   @Test
+   public void testQueryPriority() throws Exception {
+      queryAndConfirmCount("ats/action/query?Priority=1&Priority=3", 24);
+   }
+
+   @Test
+   public void testQueryWorking() throws Exception {
+      queryAndConfirmCount("ats/action/query?StateType=Working", 42);
+   }
+
+   @Test
+   public void testQueryAssignee() throws Exception {
+      queryAndConfirmCount("ats/action/query?Assignee=4444&Assignee=3333", 35);
+   }
+
+   @Test
+   public void testQueryOriginator() throws Exception {
+      queryAndConfirmCount("ats/action/query?Originator=3333", 44);
+   }
+
+   @Test
+   public void testQueryTeam() throws Exception {
+      queryAndConfirmCount("ats/action/query?Team=30013695", 3);
+   }
+
+   @Test
+   public void testQueryTeamPriorityAndWorking() throws Exception {
+      queryAndConfirmCount("ats/action/query?Team=30013695&Priority=3&Priority=2&StateType=Working", 2);
+   }
+
+   private void queryAndConfirmCount(String appendedUrl, int count) throws URISyntaxException, MalformedURLException, Exception {
+      String url = String.format("%s/%s", getAppServerAddr(), appendedUrl);
+      URI uri = new URL(url).toURI();
+      JsonArray array = getAndCheckArray(uri);
+      Assert.assertEquals(count, array.size());
+   }
 
    @Test
    public void testQuerySingle() throws Exception {

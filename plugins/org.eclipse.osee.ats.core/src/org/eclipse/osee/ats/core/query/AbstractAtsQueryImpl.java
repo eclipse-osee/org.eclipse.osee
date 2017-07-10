@@ -1015,4 +1015,24 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       return andAttr(CoreAttributeTypes.Name, name);
    }
 
+   @Override
+   public IAtsQuery andName(String name, QueryOption... queryOption) {
+      return andAttr(CoreAttributeTypes.Name, name, queryOption);
+   }
+
+   @Override
+   public IAtsQuery andWorkItemType(WorkItemType... workItemTypes) {
+      this.workItemTypes.clear();
+      for (WorkItemType type : workItemTypes) {
+         this.workItemTypes.add(type);
+      }
+      return this;
+   }
+
+   @Override
+   public IAtsQuery andVersion(IAtsVersion version) {
+      andVersion(version.getId());
+      return this;
+   }
+
 }

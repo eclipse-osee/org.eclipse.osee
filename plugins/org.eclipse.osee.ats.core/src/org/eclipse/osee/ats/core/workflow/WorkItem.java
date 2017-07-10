@@ -92,7 +92,9 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
          } else if (isTask()) {
             teamArt = services.getRelationResolver().getRelatedOrNull(artifact, AtsRelationTypes.TeamWfToTask_TeamWf);
          }
-         parentTeamWf = services.getWorkItemFactory().getTeamWf(teamArt);
+         if (teamArt != null) {
+            parentTeamWf = services.getWorkItemFactory().getTeamWf(teamArt);
+         }
       }
       return parentTeamWf;
    }

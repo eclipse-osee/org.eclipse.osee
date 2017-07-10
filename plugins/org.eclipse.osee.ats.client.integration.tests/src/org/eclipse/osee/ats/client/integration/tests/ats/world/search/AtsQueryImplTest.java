@@ -194,22 +194,22 @@ public class AtsQueryImplTest {
 
       query = queryService.createQuery(WorkItemType.TeamWorkflow, WorkItemType.Task);
       query.andProgram(program.getId());
-      assertEquals(3, query.getResults().size());
+      assertEquals(2, query.getResults().size());
 
       // by insertion
       query = queryService.createQuery(WorkItemType.TeamWorkflow, WorkItemType.Task);
       query.andInsertion(insertion.getId());
-      assertEquals(3, query.getResults().size());
+      assertEquals(2, query.getResults().size());
 
       // by insertion activity
       query = queryService.createQuery(WorkItemType.TeamWorkflow, WorkItemType.Task);
       query.andInsertionActivity(activity.getId());
-      assertEquals(2, query.getResults().size());
+      assertEquals(1, query.getResults().size());
 
       // by work package
       query = queryService.createQuery(WorkItemType.TeamWorkflow, WorkItemType.Task);
       query.andWorkPackage(wp.getId());
-      assertEquals(2, query.getResults().size());
+      assertEquals(1, query.getResults().size());
    }
 
    @Test
