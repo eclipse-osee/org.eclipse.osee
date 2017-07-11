@@ -164,11 +164,14 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
                   String.format("Attribute Type " + getAttributeType() + " is dirty; attribute added"));
             } else if (page instanceof XStackedWidgetAttrPage) {
                XStackedWidgetAttrPage attrPage = (XStackedWidgetAttrPage) page;
-               Object enteredValue = attrPage.getWidget().getData();
-               Object storedValue = attrPage.getValue();
-               if (!enteredValue.equals(storedValue)) {
-                  return new Result(true,
-                     String.format("Attribute Type " + getAttributeType() + " is dirty; attribute modified"));
+               // page not dirty till loaded
+               if (attrPage.isLoaded()) {
+                  Object enteredValue = attrPage.getWidget().getData();
+                  Object storedValue = attrPage.getValue();
+                  if (!enteredValue.equals(storedValue)) {
+                     return new Result(true,
+                        String.format("Attribute Type " + getAttributeType() + " is dirty; attribute modified"));
+                  }
                }
             } else if (artifact.isDirty()) {
                for (Attribute<?> attr : artifact.getAttributes(attributeType)) {
@@ -203,10 +206,9 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
             artifact.addAttribute(attributeType, page.getWidget().getData());
          } else if (page instanceof XStackedWidgetAttrPage || page.getObjectId() instanceof AttributeId) {
             XStackedWidgetAttrPage attrPage = (XStackedWidgetAttrPage) page;
-            attrPage.getAttribute().setFromString(page.getWidget().getData().toString());
-         } else if (artifact.isDirty()) {
-            XStackedWidgetAttrPage attrPage = (XStackedWidgetAttrPage) page;
-            attrPage.getAttribute().delete();
+            if (attrPage.isLoaded()) {
+               attrPage.getAttribute().setFromString(page.getWidget().getData().toString());
+            }
          }
       }
    }
@@ -243,8 +245,10 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
 
    @Override
    protected void onPageChange(XStackedWidgetPage page) throws OseeCoreException {
-      if (page != null) {
-         Attribute<?> attr = ((XStackedWidgetAttrPage) page).getAttribute();
+      if (page != null && page instanceof XStackedWidgetAttrPage) {
+         XStackedWidgetAttrPage attrPage = (XStackedWidgetAttrPage) page;
+         attrPage.setLoaded(true);
+         Attribute<?> attr = attrPage.getAttribute();
          if (attr != null) {
             setWidgetValue(page.getWidget(), attr);
          }

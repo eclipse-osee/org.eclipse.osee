@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 public class XStackedWidgetAttrPage extends XStackedWidgetPage {
 
    private final Attribute<?> attribute;
+   private boolean loaded;
 
    public XStackedWidgetAttrPage() {
       this(null);
@@ -43,4 +44,13 @@ public class XStackedWidgetAttrPage extends XStackedWidgetPage {
    public Id getObjectId() {
       return attribute;
    }
+
+   public boolean isLoaded() {
+      return loaded;
+   }
+
+   public void setLoaded(boolean loaded) {
+      this.loaded = loaded;
+   }
+
 }
