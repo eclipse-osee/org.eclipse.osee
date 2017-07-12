@@ -218,6 +218,14 @@ public class RelationLink implements HasBranch {
       return getArtifact(RelationSide.SIDE_B);
    }
 
+   public ArtifactToken getArtifactIdA() {
+      return artifactA;
+   }
+
+   public ArtifactToken getArtifactIdB() {
+      return artifactB;
+   }
+
    public String getRationale() {
       return rationale;
    }

@@ -339,7 +339,7 @@ public class ConflictDeletionTest {
    public void checkRelation(Artifact artifact, RelationLink relation, int value) throws OseeCoreException {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       assertTrue(
-         "Relation should be deleted between Parent: " + relation.getAArtifactId() + " and child " + relation.getBArtifactId(),
+         "Relation should be deleted between Parent: " + relation.getArtifactIdA() + " and child " + relation.getArtifactIdB(),
          relation.isDeleted());
       try {
          chStmt.runPreparedQuery(CHECK_FOR_ZERO_TX_CURRENT_RELATION, artifact.getBranch(), artifact.getTransaction(),

@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -76,15 +77,15 @@ public class ArtifactPersistenceManager {
    }
 
    private static void bulkLoadRelatives(Collection<Artifact> artifacts) throws OseeCoreException {
-      Collection<Integer> artIds = new HashSet<>();
+      Collection<ArtifactId> relatives = new HashSet<>();
       for (Artifact artifact : artifacts) {
          for (RelationLink link : artifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
-            artIds.add(link.getAArtifactId());
-            artIds.add(link.getBArtifactId());
+            relatives.add(link.getArtifactIdA());
+            relatives.add(link.getArtifactIdB());
          }
       }
       BranchId branch = artifacts.iterator().next().getBranch();
-      ArtifactQuery.getArtifactListFromIds(artIds, branch);
+      ArtifactQuery.getArtifactListFrom(relatives, branch);
    }
 
    private static void deleteTrace(Artifact artifact, SkynetTransaction transaction, boolean reorderRelations) throws OseeCoreException {

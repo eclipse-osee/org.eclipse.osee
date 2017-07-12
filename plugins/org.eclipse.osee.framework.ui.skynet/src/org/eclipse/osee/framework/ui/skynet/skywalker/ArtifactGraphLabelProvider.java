@@ -67,13 +67,13 @@ public class ArtifactGraphLabelProvider implements ILabelProvider {
                for (RelationLink link : links) {
                   RelationType relType = RelationTypeManager.getType(link.getRelationType());
                   if (options.getLinkName() == LinkName.Phrasing_A_to_B) {
-                     if (link.getArtifactA().equals(source)) {
+                     if (link.getArtifactIdA().equals(source)) {
                         linkNames.add(source + " (" + link.getSidePhrasingFor(source) + ") " + dest);
                      } else {
                         linkNames.add(dest + " (" + link.getSidePhrasingFor(dest) + ") " + source);
                      }
                   } else if (options.getLinkName() == LinkName.Phrasing_B_to_A) {
-                     if (link.getArtifactA().equals(source)) {
+                     if (link.getArtifactIdA().equals(source)) {
                         linkNames.add(dest + " (" + link.getSidePhrasingFor(dest) + ") " + source);
                      } else {
                         linkNames.add(source + " (" + link.getSidePhrasingFor(source) + ") " + dest);
@@ -84,7 +84,7 @@ public class ArtifactGraphLabelProvider implements ILabelProvider {
                      linkNames.add(link.getRelationType().toString());
                   } else if (options.getLinkName() == LinkName.Other_Side_Name) {
                      linkNames.add(
-                        link.getArtifactA() + " (" + relType.getSideAName() + ")" + " <--> " + link.getArtifactB() + " (" + relType.getSideBName() + ")");
+                        link.getArtifactIdA() + " (" + relType.getSideAName() + ")" + " <--> " + link.getArtifactIdB() + " (" + relType.getSideBName() + ")");
                   } else {
                      linkNames.add("");
                   }

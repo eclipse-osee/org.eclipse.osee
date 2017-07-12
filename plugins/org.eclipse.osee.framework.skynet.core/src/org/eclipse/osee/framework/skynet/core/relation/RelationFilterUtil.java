@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.relation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 
@@ -30,9 +31,8 @@ public class RelationFilterUtil {
    public static final RelationMatcher EXCLUDE_DELETED = new ExcludeDeletedRelationFilter();
    public static final RelationMatcher INCLUDE_ALL = new DefaultRelationFilter();
 
-   public static RelationMatcher createFindFirstRelatedArtIdMatcher(int aArtifactId, RelationSide side) {
-      return side.isSideA() ? new FirstASideRelatedArtIdMatcher(aArtifactId) : new FirstBSideRelatedArtIdMatcher(
-         aArtifactId);
+   public static RelationMatcher createFindFirstRelatedArtIdMatcher(ArtifactId aArtifactId, RelationSide side) {
+      return new FirstSideRelatedArtIdMatcher(aArtifactId, side.isSideA());
    }
 
    public static RelationMatcher createFindFirstRelationLinkIdMatcher(int relLinkId) {
@@ -92,36 +92,19 @@ public class RelationFilterUtil {
       }
    };
 
-   private static final class FirstASideRelatedArtIdMatcher implements RelationMatcher {
+   private static final class FirstSideRelatedArtIdMatcher implements RelationMatcher {
 
-      private final int artifactId;
+      private final ArtifactId artifactId;
+      private final boolean sideA;
 
-      public FirstASideRelatedArtIdMatcher(int artifactId) {
+      public FirstSideRelatedArtIdMatcher(ArtifactId artifactId, boolean sideA) {
          this.artifactId = artifactId;
+         this.sideA = sideA;
       }
 
       @Override
       public boolean matches(RelationLink relationLink) {
-         return relationLink.getAArtifactId() == artifactId;
-      }
-
-      @Override
-      public boolean isFindNextAllowed() {
-         return false;
-      }
-   };
-
-   private static final class FirstBSideRelatedArtIdMatcher implements RelationMatcher {
-
-      private final int artifactId;
-
-      public FirstBSideRelatedArtIdMatcher(int artifactId) {
-         this.artifactId = artifactId;
-      }
-
-      @Override
-      public boolean matches(RelationLink relationLink) {
-         return relationLink.getBArtifactId() == artifactId;
+         return artifactId.equals(sideA ? relationLink.getArtifactIdA() : relationLink.getArtifactIdB());
       }
 
       @Override

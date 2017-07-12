@@ -17,22 +17,21 @@ import java.util.List;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.TestUtil;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationFilterUtil;
 import org.eclipse.osee.framework.skynet.core.relation.RelationFilterUtil.RelationMatcher;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
 /**
  * Test Case for {@link RelationFilterUtil}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class RelationFilterUtilTest {
@@ -43,20 +42,11 @@ public class RelationFilterUtilTest {
    @Rule
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
-   private Branch branch1;
-   private RelationType relationType;
-
-   @Before
-   public void setUp() {
-      branch1 = TestUtil.createBranch(100, 100);
-      relationType = TestUtil.createRelationType(5);
-   }
-
-   @After
-   public void tearDown() {
-      branch1 = null;
-      relationType = null;
-   }
+   private final BranchId branch1 = BranchId.valueOf(100);
+   private final RelationType relationType = TestUtil.createRelationType(5);
+   private final ArtifactId id55 = ArtifactId.valueOf(55);
+   private final ArtifactId id66 = ArtifactId.valueOf(66);
+   private final ArtifactId id77 = ArtifactId.valueOf(77);
 
    @Test
    public void testFilter() {
@@ -128,13 +118,13 @@ public class RelationFilterUtilTest {
 
    @Test
    public void testFindFirstArtifactIdFilter() {
-      RelationLink link1 = TestUtil.createRelationLink(0, 55, 66, branch1, relationType);
-      RelationLink link2 = TestUtil.createRelationLink(1, 77, 55, branch1, relationType);
+      RelationLink link1 = TestUtil.createRelationLink(0, id55, id66, branch1, relationType);
+      RelationLink link2 = TestUtil.createRelationLink(1, id77, id55, branch1, relationType);
 
       List<RelationLink> sourceLinks = Arrays.asList(link1, link2);
 
       // Test Side A Match
-      RelationMatcher sideAmatcher = RelationFilterUtil.createFindFirstRelatedArtIdMatcher(55, RelationSide.SIDE_A);
+      RelationMatcher sideAmatcher = RelationFilterUtil.createFindFirstRelatedArtIdMatcher(id55, RelationSide.SIDE_A);
 
       List<RelationLink> destination = new ArrayList<>();
       RelationFilterUtil.filter(sourceLinks, destination, sideAmatcher);
@@ -143,7 +133,7 @@ public class RelationFilterUtilTest {
       Assert.assertEquals(link1, destination.iterator().next());
 
       // Test Side B Match
-      RelationMatcher sideBmatcher = RelationFilterUtil.createFindFirstRelatedArtIdMatcher(55, RelationSide.SIDE_B);
+      RelationMatcher sideBmatcher = RelationFilterUtil.createFindFirstRelatedArtIdMatcher(id55, RelationSide.SIDE_B);
       List<RelationLink> destination2 = new ArrayList<>();
       RelationFilterUtil.filter(sourceLinks, destination2, sideBmatcher);
 
@@ -161,7 +151,7 @@ public class RelationFilterUtilTest {
 
       List<RelationLink> sourceLinks = Arrays.asList(link1, link2, link3, link4);
 
-      RelationMatcher sideBmatcher = RelationFilterUtil.createFindFirstRelatedArtIdMatcher(55, RelationSide.SIDE_B);
+      RelationMatcher sideBmatcher = RelationFilterUtil.createFindFirstRelatedArtIdMatcher(id55, RelationSide.SIDE_B);
 
       // Find 3rd link since 2nd link is excluded because it is deleted
       RelationMatcher matcher1 = RelationFilterUtil.createMatcher(DeletionFlag.EXCLUDE_DELETED, sideBmatcher);
@@ -180,5 +170,4 @@ public class RelationFilterUtilTest {
       Assert.assertEquals(1, destination2.size());
       Assert.assertEquals(link2, destination2.iterator().next());
    }
-
 }

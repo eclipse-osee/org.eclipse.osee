@@ -320,9 +320,8 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
          ModificationType modificationType;
          RelationEventType relationEventType; // needed until persist undeleted modtypes and modified == rational only change
 
-         BranchId branch = link.getBranch();
-         Artifact aArtifact = ArtifactQuery.checkArtifactFromId(link.getAArtifactId(), branch, INCLUDE_DELETED);
-         Artifact bArtifact = ArtifactQuery.checkArtifactFromId(link.getBArtifactId(), branch, INCLUDE_DELETED);
+         Artifact aArtifact = ArtifactQuery.getArtifactFromToken(link.getArtifactIdA(), INCLUDE_DELETED);
+         Artifact bArtifact = ArtifactQuery.getArtifactFromToken(link.getArtifactIdB(), INCLUDE_DELETED);
 
          if (link.isInDb()) {
             if (link.isUnDeleted()) {

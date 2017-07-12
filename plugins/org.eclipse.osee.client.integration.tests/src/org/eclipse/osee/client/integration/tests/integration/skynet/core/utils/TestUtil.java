@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.skynet.core.utils;
 
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Artifact;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -28,7 +30,6 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
@@ -90,12 +91,16 @@ public final class TestUtil {
       return new Branch(branchUuid, "branch_" + index, branchType, branchState, isArchived, false);
    }
 
-   public static RelationLink createRelationLink(int relationId, int artA, int artB, Branch branch, RelationType relationType) {
+   public static RelationLink createRelationLink(int relationId, ArtifactId artA, ArtifactId artB, BranchId branch, RelationType relationType) {
+      return createRelationLink(relationId, artA.getId().intValue(), artB.getId().intValue(), branch, relationType);
+   }
+
+   public static RelationLink createRelationLink(int relationId, int artA, int artB, BranchId branch, RelationType relationType) {
       return new RelationLink(ArtifactToken.valueOf(artA, branch), ArtifactToken.valueOf(artB, branch), branch,
          relationType, relationId, 0, "relation: " + relationId, ModificationType.MODIFIED, ApplicabilityId.BASE);
    }
 
-   public static List<RelationLink> createLinks(int total, Branch branch) {
+   public static List<RelationLink> createLinks(int total, BranchId branch) {
       List<RelationLink> links = new ArrayList<>();
       for (int index = 0; index < total; index++) {
          RelationType relationType = createRelationType(index);
@@ -105,7 +110,7 @@ public final class TestUtil {
       return links;
    }
 
-   public static List<RelationLink> createLinks(int total, Branch branch, RelationType relationType) {
+   public static List<RelationLink> createLinks(int total, BranchId branch, RelationType relationType) {
       List<RelationLink> links = new ArrayList<>();
       for (int index = 0; index < total; index++) {
          RelationLink link = createRelationLink(index, index + 1, index + 2, branch, relationType);
@@ -133,20 +138,11 @@ public final class TestUtil {
       Assert.assertEquals("Deleted relation link count did not match", expected, deletedCounts);
    }
 
-   public static RelationType createRelationType(int id) {
-      ArtifactType dummyArtType = createArtifactType(id);
-      return createRelationType(id, dummyArtType, dummyArtType);
-   }
-
-   private static ArtifactType createArtifactType(int index) {
-      return new ArtifactType(randomGenerator.nextLong(), "art_" + index, index % 2 == 0);
-   }
-
-   private static RelationType createRelationType(int index, IArtifactType artTypeA, IArtifactType artTypeB) {
+   public static RelationType createRelationType(int index) {
       RelationTypeMultiplicity multiplicity =
          RelationTypeMultiplicity.values()[Math.abs(index % RelationTypeMultiplicity.values().length)];
       RelationSorter order = RelationSorter.values()[index % RelationTypeMultiplicity.values().length];
       return new RelationType(randomGenerator.nextLong(), "relType_" + index, "sideA_" + index, "sideB_" + index,
-         artTypeA, artTypeB, multiplicity, order);
+         Artifact, Artifact, multiplicity, order);
    }
 }

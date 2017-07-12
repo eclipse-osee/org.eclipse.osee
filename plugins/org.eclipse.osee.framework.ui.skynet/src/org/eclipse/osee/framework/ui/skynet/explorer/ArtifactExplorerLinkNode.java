@@ -26,18 +26,10 @@ public class ArtifactExplorerLinkNode {
    private final RelationType relationType;
    private final boolean parentIsOnSideA;
 
-   private final int artifactId;
-   private final String relationTypeName;
-
    public ArtifactExplorerLinkNode(Artifact artifact, RelationType relationType, boolean parentIsOnSideA) {
-      super();
       this.artifact = artifact;
       this.relationType = relationType;
       this.parentIsOnSideA = parentIsOnSideA;
-
-      // Used for simple equals/hashcode impl
-      this.artifactId = artifact.getArtId();
-      this.relationTypeName = relationType.getName();
    }
 
    public Artifact getArtifact() {
@@ -56,35 +48,25 @@ public class ArtifactExplorerLinkNode {
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + artifactId;
+      result = prime * result + artifact.hashCode();
       result = prime * result + (parentIsOnSideA ? 1231 : 1237);
-      result = prime * result + (relationTypeName == null ? 0 : relationTypeName.hashCode());
+      result = prime * result + relationType.hashCode();
       return result;
    }
 
    @Override
    public boolean equals(Object obj) {
-      if (this == obj) {
-         return true;
-      }
-      if (obj == null) {
-         return false;
-      }
-      if (getClass() != obj.getClass()) {
+      if (!(obj instanceof ArtifactExplorerLinkNode)) {
          return false;
       }
       ArtifactExplorerLinkNode other = (ArtifactExplorerLinkNode) obj;
-      if (artifactId != other.artifactId) {
+      if (artifact.notEqual(other.artifact)) {
          return false;
       }
       if (parentIsOnSideA != other.parentIsOnSideA) {
          return false;
       }
-      if (relationTypeName == null) {
-         if (other.relationTypeName != null) {
-            return false;
-         }
-      } else if (!relationTypeName.equals(other.relationTypeName)) {
+      if (relationType.notEqual(other.relationType)) {
          return false;
       }
       return true;
@@ -96,13 +78,5 @@ public class ArtifactExplorerLinkNode {
          new RelationTypeSide(relationType, parentIsOnSideA ? RelationSide.SIDE_B : RelationSide.SIDE_A);
       oppositeArtifacts.addAll(artifact.getRelatedArtifacts(relationSide, DeletionFlag.EXCLUDE_DELETED));
       return oppositeArtifacts;
-   }
-
-   public int getArtifactId() {
-      return artifactId;
-   }
-
-   public String getRelationTypeName() {
-      return relationTypeName;
    }
 }

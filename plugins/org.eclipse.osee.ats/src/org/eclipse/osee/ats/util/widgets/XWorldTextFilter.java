@@ -34,7 +34,7 @@ public class XWorldTextFilter extends XViewerTextFilter {
             Artifact elem = (Artifact) element;
             for (RelationLink relation : parent.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
                // BArtifact of parentElement
-               if (relation.getBArtifactId() == elem.getArtId()) {
+               if (relation.getArtifactIdB().equals(elem)) {
                   return true;
                }
             }

@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationType;
@@ -186,13 +187,16 @@ public class RelationCache {
    }
 
    public RelationLink getLoadedRelation(IRelationType relationType, int aArtifactId, int bArtifactId, BranchId branch) {
+      ArtifactId artifactA = ArtifactId.valueOf(aArtifactId);
+      ArtifactId artifactB = ArtifactId.valueOf(bArtifactId);
+
       RelationMatcher bArtIdMatcher =
-         RelationFilterUtil.createFindFirstRelatedArtIdMatcher(bArtifactId, RelationSide.SIDE_B);
+         RelationFilterUtil.createFindFirstRelatedArtIdMatcher(artifactB, RelationSide.SIDE_B);
       List<RelationLink> links = new ArrayList<>();
       findRelations(links, aArtifactId, branch, relationType, bArtIdMatcher);
       if (links.isEmpty()) {
          RelationMatcher aArtIdMatcher =
-            RelationFilterUtil.createFindFirstRelatedArtIdMatcher(aArtifactId, RelationSide.SIDE_A);
+            RelationFilterUtil.createFindFirstRelatedArtIdMatcher(artifactA, RelationSide.SIDE_A);
          findRelations(links, bArtifactId, branch, relationType, aArtIdMatcher);
       }
       return links.isEmpty() ? null : links.iterator().next();

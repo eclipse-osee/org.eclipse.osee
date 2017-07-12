@@ -17,7 +17,6 @@ import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -147,9 +146,9 @@ public class InterArtifactDropTest {
    }
 
    @Test
-   public void testDeleteRelationFromArtifactBranch() throws Exception {
+   public void testDeleteRelationFromArtifactBranch() {
       // relation deleted and introduced to existing relation on sourceBranch
-      Artifact deleteTestArtifact = ArtifactQuery.getArtifactFromId(sourceArtifact2.getArtId(), updateTestBranch1);
+      Artifact deleteTestArtifact = ArtifactQuery.getArtifactFromId(sourceArtifact2, updateTestBranch1);
       deleteTestArtifact.deleteRelation(CoreRelationTypes.Default_Hierarchical__Child, sourceChildArtifact1);
       deleteTestArtifact.persist(getClass().getSimpleName());
 
@@ -157,10 +156,10 @@ public class InterArtifactDropTest {
          new InterArtifactExplorerDropHandlerOperation(sourceArtifact2, new Artifact[] {deleteTestArtifact}, false);
       Operations.executeWork(dropHandler);
 
-      Artifact destArtifact =
-         ArtifactQuery.getArtifactFromId(deleteTestArtifact.getArtId(), sourceArtifact2.getBranch());
+      Artifact destArtifact = ArtifactQuery.getArtifactFromId(deleteTestArtifact, sourceArtifact2.getBranch());
       for (RelationLink relLink : destArtifact.getRelationsAll(DeletionFlag.INCLUDE_DELETED)) {
-         if (relLink.getAArtifactId() == sourceArtifact2.getArtId() && relLink.getBArtifactId() == sourceChildArtifact1.getArtId()) {
+         if (relLink.getArtifactIdA().equals(sourceArtifact2.getId()) && relLink.getArtifactIdB().equals(
+            sourceChildArtifact1.getId())) {
             assertTrue(relLink.getModificationType().equals(ModificationType.DELETED));
          }
       }
