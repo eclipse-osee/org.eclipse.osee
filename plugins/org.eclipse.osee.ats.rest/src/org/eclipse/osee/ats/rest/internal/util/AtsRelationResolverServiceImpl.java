@@ -201,13 +201,4 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
       return art.getRelatedCount(relationTypeSide);
    }
 
-   @Override
-   public Collection<Long> getRelatedIds(ArtifactId artifact, RelationTypeSide relationTypeSide) {
-      List<Long> related = new LinkedList<>();
-      ArtifactReadable art = getArtifact(artifact);
-      for (ArtifactReadable rel : art.getRelated(relationTypeSide)) {
-         related.add(rel.getId());
-      }
-      return related;
-   }
 }

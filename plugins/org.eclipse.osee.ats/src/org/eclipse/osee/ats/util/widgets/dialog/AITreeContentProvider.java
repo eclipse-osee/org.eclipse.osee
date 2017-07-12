@@ -20,7 +20,9 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Donald G. Dunne
@@ -65,6 +67,9 @@ public class AITreeContentProvider implements ITreeContentProvider {
 
    @Override
    public boolean hasChildren(Object element) {
+      if (element instanceof Artifact) {
+         return ((Artifact) element).getRelatedArtifactsCount(CoreRelationTypes.Default_Hierarchical__Child) > 0;
+      }
       return getChildren(element).length > 0;
    }
 

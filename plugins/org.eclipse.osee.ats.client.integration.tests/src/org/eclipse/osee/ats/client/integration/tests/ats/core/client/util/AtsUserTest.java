@@ -21,18 +21,18 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsUserTest {
 
-   private static IAtsUser atsUser;
-   private static User user;
+   private IAtsUser atsUser;
+   private User user;
 
-   @BeforeClass
-   public static void setUp() throws OseeCoreException {
+   @Before
+   public void setUp() throws OseeCoreException {
       user = UserManager.getUser();
       atsUser = AtsClientService.get().getUserService().getCurrentUser();
    }
@@ -48,7 +48,7 @@ public class AtsUserTest {
    }
 
    @org.junit.Test
-   public void testGetEmail() throws Exception {
+   public void testGetEmail() throws OseeCoreException {
       Assert.assertEquals(user.getEmail(), atsUser.getEmail());
    }
 

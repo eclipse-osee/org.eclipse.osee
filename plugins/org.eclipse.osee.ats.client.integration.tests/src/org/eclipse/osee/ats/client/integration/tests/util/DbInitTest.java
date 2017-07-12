@@ -66,8 +66,7 @@ public class DbInitTest {
          ClientSessionManager.releaseSession();
          ClientSessionManager.getSession();
          UserManager.releaseUser();
-         AtsClientService.getConfigEndpoint().clearCaches();
-         AtsClientService.get().getUserService().reloadCache();
+         AtsClientService.get().getUserService().releaseUser();
 
          if (UserManager.getUser().getUserId().equals("bootstrap")) {
             throw new OseeStateException("Should not be bootstrap user here");

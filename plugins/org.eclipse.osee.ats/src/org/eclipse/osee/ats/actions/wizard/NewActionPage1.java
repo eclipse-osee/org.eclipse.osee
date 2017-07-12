@@ -14,7 +14,6 @@ package org.eclipse.osee.ats.actions.wizard;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -24,12 +23,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
-import org.eclipse.osee.ats.api.config.JaxActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.core.client.IAtsClient;
-import org.eclipse.osee.ats.core.config.ActionableItem2;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
@@ -153,16 +149,9 @@ public class NewActionPage1 extends WizardPage {
       treeViewer.getViewer().setLabelProvider(new AtsObjectLabelProvider());
       try {
          if (selectableAis == null) {
-            List<IAtsActionableItem> activeActionableItemTree = new LinkedList<>();
-            IAtsClient atsClient = AtsClientService.get();
-            for (Long aiId : atsClient.getConfigurations().getIdToAi().get(
-               atsClient.getConfigurations().getTopActionableItem()).getChildren()) {
-               JaxActionableItem jai = atsClient.getConfigurations().getIdToAi().get(aiId);
-               if (jai.isActive()) {
-                  activeActionableItemTree.add(new ActionableItem2(atsClient.getLogger(), atsClient, jai));
-               }
-            }
-            treeViewer.getViewer().setInput(activeActionableItemTree);
+            List<IAtsActionableItem> topLevelActionableItems =
+               ActionableItems.getTopLevelActionableItems(Active.Active, AtsClientService.get());
+            treeViewer.getViewer().setInput(topLevelActionableItems);
          } else {
             treeViewer.getViewer().setInput(selectableAis);
          }
@@ -229,14 +218,8 @@ public class NewActionPage1 extends WizardPage {
          if (checked.isEmpty()) {
             descriptionLabel.setText("");
          } else {
-            Object obj = checked.iterator().next();
-            if (obj instanceof IAtsActionableItem) {
-               IAtsActionableItem ai = (IAtsActionableItem) obj;
-               descriptionLabel.setText(ai.getDescription());
-            } else if (obj instanceof JaxActionableItem) {
-               JaxActionableItem jai = (JaxActionableItem) obj;
-               descriptionLabel.setText(jai.getDescription());
-            }
+            IAtsActionableItem aia = (IAtsActionableItem) checked.iterator().next();
+            descriptionLabel.setText(aia.getDescription());
          }
       }
    }
@@ -248,12 +231,7 @@ public class NewActionPage1 extends WizardPage {
    public Set<IAtsActionableItem> getSelectedIAtsActionableItems() {
       Set<IAtsActionableItem> selected = new HashSet<>();
       for (Object obj : treeViewer.getChecked()) {
-         if (obj instanceof IAtsActionableItem) {
-            selected.add((IAtsActionableItem) obj);
-         } else if (obj instanceof JaxActionableItem) {
-            JaxActionableItem jai = (JaxActionableItem) obj;
-            selected.add(AtsClientService.get().getConfigItem(jai.getUuid()));
-         }
+         selected.add((IAtsActionableItem) obj);
       }
       return selected;
    }

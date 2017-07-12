@@ -21,11 +21,11 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -39,7 +39,6 @@ import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
-import org.eclipse.osee.orcs.core.internal.relation.Relation;
 import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
 import org.eclipse.osee.orcs.core.internal.relation.RelationNode;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -325,26 +324,6 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    @Override
    public ModificationType getModificationType() {
       return getProxiedObject().getModificationType();
-   }
-
-   @Override
-   public Collection<Long> getChildrentIds() {
-      return getRelatedIds(CoreRelationTypes.Default_Hierarchical__Child);
-   }
-
-   @Override
-   public Collection<Long> getRelatedIds(RelationTypeSide relationTypeSide) {
-      List<Long> childIds = new ArrayList<>();
-      for (Relation relation : getRelationManager().getRelations(getSession(), getProxiedObject(),
-         DeletionFlag.EXCLUDE_DELETED)) {
-         boolean relIsSideA = relationTypeSide.getSide().isSideA();
-         boolean thisOnCorrectSide =
-            (relIsSideA && relation.getArtIdB() == getId().intValue()) || (!relIsSideA && relation.getArtIdA() == getId().intValue());
-         if (thisOnCorrectSide && relation.getRelationType().matches(relationTypeSide)) {
-            childIds.add(Long.valueOf(relation.getArtIdB()));
-         }
-      }
-      return childIds;
    }
 
 }

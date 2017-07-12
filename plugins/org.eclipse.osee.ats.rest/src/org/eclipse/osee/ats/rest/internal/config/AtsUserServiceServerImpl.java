@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.config;
 
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -27,6 +25,8 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 
 /**
  * @author Donald G. Dunne
@@ -54,7 +54,7 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
       return atsAdminArt.areRelated(CoreRelationTypes.User_Grouping__Members, (ArtifactReadable) user.getStoreObject());
    }
 
-   private Supplier<List<IAtsUser>> usersCache =
+   private final Supplier<List<IAtsUser>> usersCache =
       Suppliers.memoizeWithExpiration(getConfigurationsSupplier(), 5, TimeUnit.MINUTES);
 
    private Supplier<List<IAtsUser>> getConfigurationsSupplier() {
@@ -62,7 +62,10 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
          @Override
          public List<IAtsUser> get() {
             List<IAtsUser> users = new ArrayList<>();
-            for (IAtsUser atsUser : getUsersFromDb()) {
+            for (ArtifactId art : orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(
+               CoreArtifactTypes.User).getResults()) {
+               ArtifactReadable userArt = (ArtifactReadable) art;
+               JaxAtsUser atsUser = createFromArtifact(userArt);
                userIdToAtsUser.put(atsUser.getUserId(), atsUser);
                nameToAtsUser.put(atsUser.getName(), atsUser);
                users.add(atsUser);
@@ -76,8 +79,8 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
       JaxAtsUser atsUser = new JaxAtsUser();
       atsUser.setName(userArt.getName());
       atsUser.setStoreObject(userArt);
-      atsUser.setUserId(userArt.getSoleAttributeAsString(CoreAttributeTypes.UserId, ""));
-      atsUser.setEmail(userArt.getSoleAttributeAsString(CoreAttributeTypes.Email, ""));
+      atsUser.setUserId(userArt.getSoleAttributeValue(CoreAttributeTypes.UserId, ""));
+      atsUser.setEmail(userArt.getSoleAttributeValue(CoreAttributeTypes.Email, ""));
       atsUser.setActive(userArt.getSoleAttributeValue(CoreAttributeTypes.Active, true));
       atsUser.setUuid(userArt.getId());
       return atsUser;
@@ -86,24 +89,6 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
    @Override
    public List<IAtsUser> getUsers() {
       return usersCache.get();
-   }
-
-   @Override
-   public List<IAtsUser> getUsersFromDb() {
-      List<IAtsUser> users = new ArrayList<>();
-      for (ArtifactId art : orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(
-         CoreArtifactTypes.User).getResults()) {
-         ArtifactReadable userArt = (ArtifactReadable) art;
-         JaxAtsUser atsUser = createFromArtifact(userArt);
-         users.add(atsUser);
-      }
-      return users;
-   }
-
-   @Override
-   public void reloadCache() {
-      usersCache = Suppliers.memoizeWithExpiration(getConfigurationsSupplier(), 5, TimeUnit.MINUTES);
-      super.reloadCache();
    }
 
    @Override

@@ -10,13 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.config;
 
-import java.util.Collection;
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -29,20 +31,15 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
-import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
 import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.config.AtsConfiguration;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.AtsViews;
 import org.eclipse.osee.ats.api.config.ColumnAlign;
-import org.eclipse.osee.ats.api.config.JaxActionableItem;
-import org.eclipse.osee.ats.api.config.JaxTeamDefinition;
-import org.eclipse.osee.ats.api.config.JaxVersion;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.JaxAtsUser;
 import org.eclipse.osee.ats.api.workdef.JaxAtsWorkDef;
@@ -75,208 +72,80 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
 
    private final OrcsApi orcsApi;
-   private final IAtsServices services;
+   private final IAtsServer atsServer;
    private final Log logger;
-   private AtsConfigurations atsConfigurations;
 
-   public AtsConfigEndpointImpl(IAtsServices services, OrcsApi orcsApi, Log logger) {
-      this.services = services;
+   public AtsConfigEndpointImpl(IAtsServer atsServer, OrcsApi orcsApi, Log logger) {
+      this.atsServer = atsServer;
       this.orcsApi = orcsApi;
       this.logger = logger;
-      startAtsConfigurationsReloader();
    }
 
-   private void startAtsConfigurationsReloader() {
-      Thread thread = new Thread("ATS Configuration Re-Loader") {
+   private final Supplier<AtsConfigurations> configurationsCache =
+      Suppliers.memoizeWithExpiration(getConfigurationsSupplier(), 5, TimeUnit.MINUTES);
+
+   private Supplier<AtsConfigurations> getConfigurationsSupplier() {
+      return new Supplier<AtsConfigurations>() {
          @Override
-         public void run() {
-            AtsConfigurations configs = getAtsConfigurationsFromDb();
-            atsConfigurations = configs;
+         public AtsConfigurations get() {
+            ResultSet<ArtifactReadable> artifacts =
+               orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andTypeEquals(
+                  AtsArtifactTypes.Configuration).getResults();
+            // load ats branch configurations
+            AtsConfigurations configs = new AtsConfigurations();
+            for (ArtifactReadable art : artifacts) {
+               AtsConfiguration config = new AtsConfiguration();
+               configs.getConfigs().add(config);
+               config.setName(art.getName());
+               config.setUuid(art.getId());
+               config.setBranchUuid(
+                  Long.valueOf(art.getSoleAttributeValue(AtsAttributeTypes.AtsConfiguredBranch, "0L")));
+               config.setIsDefault(art.getSoleAttributeValue(AtsAttributeTypes.Default, false));
+            }
+            UpdateAtsConfiguration update = new UpdateAtsConfiguration(atsServer);
+            AtsViews views = update.getConfigViews();
+            // load views
+            configs.setViews(views);
+            // load color column config
+            configs.setColorColumns(update.getColorColumns());
+            // load valid state names
+            configs.setValidStateNames(update.getValidStateNames());
+            // load users
+            for (IAtsUser user : atsServer.getUserService().getUsers()) {
+               configs.getUsers().add((JaxAtsUser) user);
+            }
+            // load admins
+            ArtifactReadable atsAdminArt = orcsApi.getQueryFactory().fromBranch(atsServer.getAtsBranch()).andIds(
+               AtsArtifactToken.AtsAdmin).getResults().getAtMostOneOrNull();
+            if (atsAdminArt != null) {
+               for (ArtifactReadable member : atsAdminArt.getRelated(CoreRelationTypes.Users_User)) {
+                  configs.getAtsAdmins().add(member.getId());
+               }
+            }
+            // load ats config object ids
+            for (ArtifactId configArtId : orcsApi.getQueryFactory().fromBranch(atsServer.getAtsBranch()).andIsOfType(
+               AtsArtifactTypes.TeamDefinition, AtsArtifactTypes.Version,
+               AtsArtifactTypes.ActionableItem).getResultsAsLocalIds()) {
+               configs.getAtsConfigIds().add(configArtId.getId());
+            }
+            // load work definitions
+            for (ArtifactToken workDefArt : orcsApi.getQueryFactory().fromBranch(atsServer.getAtsBranch()).andIsOfType(
+               AtsArtifactTypes.WorkDefinition).getResults()) {
+               String workDefStr = atsServer.getAttributeResolver().getSoleAttributeValueAsString(workDefArt,
+                  AtsAttributeTypes.DslSheet, "");
+               configs.getWorkDefIdToWorkDef().put(workDefArt.getName(), workDefStr);
+            }
+            return configs;
          }
+
       };
-      thread.start();
-   }
-
-   private AtsConfigurations getAtsConfigurationsFromDb() {
-      ResultSet<ArtifactReadable> artifacts = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andTypeEquals(
-         AtsArtifactTypes.Configuration).getResults();
-      // load ats branch configurations
-      AtsConfigurations configs = new AtsConfigurations();
-      for (ArtifactReadable art : artifacts) {
-         AtsConfiguration config = new AtsConfiguration();
-         configs.getConfigs().add(config);
-         config.setName(art.getName());
-         config.setUuid(art.getId());
-         config.setBranchUuid(Long.valueOf(art.getSoleAttributeValue(AtsAttributeTypes.AtsConfiguredBranch, "0L")));
-         config.setIsDefault(art.getSoleAttributeValue(AtsAttributeTypes.Default, false));
-      }
-      UpdateAtsConfiguration update = new UpdateAtsConfiguration((IAtsServer) services);
-      AtsViews views = update.getConfigViews();
-      // load views
-      configs.setViews(views);
-      // load color column config
-      configs.setColorColumns(update.getColorColumns());
-      // load valid state names
-      configs.setValidStateNames(update.getValidStateNames());
-      // load users
-      for (IAtsUser user : services.getUserService().getUsersFromDb()) {
-         configs.getUsers().add((JaxAtsUser) user);
-      }
-      // load admins
-      ArtifactReadable atsAdminArt = orcsApi.getQueryFactory().fromBranch(services.getAtsBranch()).andIds(
-         AtsArtifactToken.AtsAdmin).getResults().getAtMostOneOrNull();
-      if (atsAdminArt != null) {
-         for (ArtifactReadable member : atsAdminArt.getRelated(CoreRelationTypes.Users_User)) {
-            configs.getAtsAdmins().add(member.getId());
-         }
-      }
-
-      Map<Long, ArtifactReadable> idToArtifact = new HashMap<>();
-
-      @SuppressWarnings("unused")
-      List<ArtifactReadable> configArts =
-         orcsApi.getQueryFactory().fromBranch(services.getAtsBranch()).andIsOfType(AtsArtifactTypes.TeamDefinition,
-            AtsArtifactTypes.Version, AtsArtifactTypes.ActionableItem).getResults().getList();
-
-      // load ats config objects
-      for (ArtifactReadable configArtId : orcsApi.getQueryFactory().fromBranch(services.getAtsBranch()).andIsOfType(
-         AtsArtifactTypes.TeamDefinition, AtsArtifactTypes.Version, AtsArtifactTypes.ActionableItem).getResults()) {
-         if (services.getStoreService().isOfType(configArtId, AtsArtifactTypes.TeamDefinition)) {
-            JaxTeamDefinition teamDef = createJaxTeamDefinition(configArtId);
-            configs.getIdToTeamDef().put(teamDef.getUuid(), teamDef);
-         } else if (services.getStoreService().isOfType(configArtId, AtsArtifactTypes.ActionableItem)) {
-            JaxActionableItem ai = createJaxActionableItem(configArtId);
-            configs.getIdToAi().put(ai.getUuid(), ai);
-         } else if (services.getStoreService().isOfType(configArtId, AtsArtifactTypes.Version)) {
-            JaxVersion version = createJaxVersion(configArtId);
-            configs.getIdToVersion().put(version.getUuid(), version);
-         }
-         idToArtifact.put(configArtId.getId(), configArtId);
-      }
-
-      // load team def tree
-      JaxTeamDefinition topJaxTeamDef =
-         addTeamDefinitionChildrenWIthRecurse(AtsArtifactToken.TopTeamDefinition.getId(), idToArtifact, configs);
-      configs.setTopTeamDefinition(topJaxTeamDef.getUuid());
-
-      // load actionable items tree
-      JaxActionableItem topJaxAi =
-         addActionableItemChildrenWIthRecurse(AtsArtifactToken.TopActionableItem.getId(), idToArtifact, configs);
-      configs.setTopActionableItem(topJaxAi.getUuid());
-
-      // load work definitions
-      for (ArtifactToken workDefArt : orcsApi.getQueryFactory().fromBranch(services.getAtsBranch()).andIsOfType(
-         AtsArtifactTypes.WorkDefinition).getResults()) {
-         String workDefStr =
-            services.getAttributeResolver().getSoleAttributeValueAsString(workDefArt, AtsAttributeTypes.DslSheet, "");
-         configs.getWorkDefIdToWorkDef().put(workDefArt.getName(), workDefStr);
-      }
-      return configs;
-   }
-
-   private JaxActionableItem addActionableItemChildrenWIthRecurse(Long aiId, Map<Long, ArtifactReadable> idToArtifact, AtsConfigurations configs) {
-      ArtifactReadable aiArt = idToArtifact.get(aiId);
-      if (aiArt != null && aiArt.isOfType(AtsArtifactTypes.ActionableItem)) {
-         JaxActionableItem jaxAi = configs.getIdToAi().get(aiId);
-         for (Long childId : aiArt.getChildrentIds()) {
-            JaxActionableItem child = addActionableItemChildrenWIthRecurse(childId, idToArtifact, configs);
-            if (child != null) {
-               child.setParentId(aiId);
-               jaxAi.getChildren().add(child.getUuid());
-            }
-         }
-         return jaxAi;
-      }
-      return null;
-   }
-
-   private JaxTeamDefinition addTeamDefinitionChildrenWIthRecurse(Long teamDefId, Map<Long, ArtifactReadable> idToArtifact, AtsConfigurations configs) {
-      ArtifactReadable teamDef = idToArtifact.get(teamDefId);
-      if (teamDef != null && teamDef.isOfType(AtsArtifactTypes.TeamDefinition)) {
-         //         System.err.println(teamDef.toStringWithId());
-         JaxTeamDefinition jaxTeamDef = configs.getIdToTeamDef().get(teamDefId);
-         for (Long childId : teamDef.getChildrentIds()) {
-            JaxTeamDefinition child = addTeamDefinitionChildrenWIthRecurse(childId, idToArtifact, configs);
-            if (child != null) {
-               child.setParentId(teamDefId);
-               jaxTeamDef.getChildren().add(child.getUuid());
-            }
-         }
-         // add team to version ids
-         Collection<Long> relatedVersions =
-            services.getRelationResolver().getRelatedIds(teamDef, AtsRelationTypes.TeamDefinitionToVersion_Version);
-         jaxTeamDef.getVersions().addAll(relatedVersions);
-         for (Long verId : relatedVersions) {
-            JaxVersion version = configs.getIdToVersion().get(verId);
-            version.setTeamDefId(teamDefId);
-         }
-         // add team to ai ids
-         Collection<Long> relatedAis =
-            services.getRelationResolver().getRelatedIds(teamDef, AtsRelationTypes.TeamActionableItem_ActionableItem);
-         jaxTeamDef.getAis().addAll(relatedAis);
-         for (Long aiId : relatedAis) {
-            JaxActionableItem jai = configs.getIdToAi().get(aiId);
-            jai.setTeamDefId(teamDefId);
-         }
-         return jaxTeamDef;
-      }
-      return null;
-   }
-
-   private JaxVersion createJaxVersion(ArtifactReadable verArt) {
-      JaxVersion jaxVersion = new JaxVersion();
-      jaxVersion.setName(verArt.getName());
-      jaxVersion.setUuid(verArt.getId());
-      jaxVersion.setActive(verArt.getSoleAttributeValue(AtsAttributeTypes.Active, true));
-      return jaxVersion;
-   }
-
-   private JaxActionableItem createJaxActionableItem(ArtifactReadable artifact) {
-      JaxActionableItem jaxAi = new JaxActionableItem();
-      jaxAi.setName(artifact.getName());
-      jaxAi.setUuid(artifact.getId());
-      jaxAi.setDescription(artifact.getSoleAttributeValue(AtsAttributeTypes.Description, ""));
-      jaxAi.setActive(artifact.getSoleAttributeValue(AtsAttributeTypes.Active, true));
-      return jaxAi;
-   }
-
-   private JaxTeamDefinition createJaxTeamDefinition(ArtifactReadable child) {
-      JaxTeamDefinition jaxChild = new JaxTeamDefinition();
-      jaxChild.setName(child.getName());
-      jaxChild.setUuid(child.getId());
-      jaxChild.setActive(child.getSoleAttributeValue(AtsAttributeTypes.Active, true));
-      for (ArtifactToken ai : services.getRelationResolver().getRelated(child,
-         AtsRelationTypes.TeamActionableItem_ActionableItem)) {
-         jaxChild.getAis().add(ai.getId());
-      }
-      return jaxChild;
-   }
-
-   @Override
-   @GET
-   @Path("clearcache")
-   @Produces(MediaType.APPLICATION_JSON)
-   public AtsConfigurations clearCaches() {
-      atsConfigurations = null;
-      return get();
    }
 
    @GET
    @Produces(MediaType.APPLICATION_JSON)
    @Override
    public AtsConfigurations get() {
-      if (atsConfigurations == null) {
-         atsConfigurations = getAtsConfigurationsFromDb();
-      }
-      return atsConfigurations;
-   }
-
-   @GET
-   @Path("fromdb")
-   @Produces(MediaType.APPLICATION_JSON)
-   @Override
-   public AtsConfigurations getFromDb() {
-      return getAtsConfigurationsFromDb();
+      return configurationsCache.get();
    }
 
    @GET
@@ -299,7 +168,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       Conditions.checkNotNullOrEmpty(newBranchName, "newBranchName");
       String userId = form.getFirst("userId");
       Conditions.checkNotNullOrEmpty(userId, "UserId");
-      ArtifactId user = services.getUserService().getUserById(userId).getStoreObject();
+      ArtifactId user = atsServer.getUserService().getUserById(userId).getStoreObject();
       if (user == null) {
          logger.error("User by id [%s] does not exist", userId);
       }
@@ -387,7 +256,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       config.setUuid(((ArtifactReadable) configArt).getId());
       tx.createAttribute(configArt, AtsAttributeTypes.AtsConfiguredBranch, String.valueOf(newBranchUuid));
       XResultData rd = new XResultData();
-      UpdateAtsConfiguration update = new UpdateAtsConfiguration((IAtsServer) services);
+      UpdateAtsConfiguration update = new UpdateAtsConfiguration(atsServer);
 
       // Get or create Configs folder
       ArtifactId configsFolderArt = update.getOrCreateConfigsFolder(userArt, rd);
@@ -404,7 +273,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    @Override
    public Response createUpdateConfig() {
       XResultData resultData = new XResultData(false);
-      UpdateAtsConfiguration update = new UpdateAtsConfiguration((IAtsServer) services);
+      UpdateAtsConfiguration update = new UpdateAtsConfiguration(atsServer);
       update.createUpdateConfig(resultData);
       if (resultData.isEmpty()) {
          resultData.log("Nothing to update");
@@ -417,27 +286,25 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    @Override
    public Response storeWorkDef(JaxAtsWorkDef jaxWorkDef) {
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON,
-         services.getArtifact(AtsCoreUsers.SYSTEM_USER), "Store Work Definition " + jaxWorkDef.getName());
-      ArtifactReadable workDefArt = orcsApi.getQueryFactory().fromBranch(services.getAtsBranch()).andIsOfType(
+         atsServer.getArtifact(AtsCoreUsers.SYSTEM_USER), "Store Work Definition " + jaxWorkDef.getName());
+      ArtifactReadable workDefArt = orcsApi.getQueryFactory().fromBranch(atsServer.getAtsBranch()).andIsOfType(
          AtsArtifactTypes.WorkDefinition).andNameEquals(jaxWorkDef.getName()).getResults().getAtMostOneOrNull();
       if (workDefArt == null) {
          workDefArt = (ArtifactReadable) tx.createArtifact(AtsArtifactTypes.WorkDefinition, jaxWorkDef.getName());
       }
       tx.setSoleAttributeValue(workDefArt, AtsAttributeTypes.DslSheet, jaxWorkDef.getWorkDefDsl());
       if (workDefArt.getParent() == null) {
-         ArtifactReadable workDefFolder =
-            (ArtifactReadable) services.getArtifact(AtsArtifactToken.WorkDefinitionsFolder);
+         ArtifactReadable workDefFolder = atsServer.getArtifact(AtsArtifactToken.WorkDefinitionsFolder);
          tx.addChildren(workDefFolder, workDefArt);
       }
       tx.commit();
-      ((IAtsServer) services).getWorkDefAdmin().clearCaches();
+      atsServer.getWorkDefAdmin().clearCaches();
       return Response.ok().build();
    }
 
    @Override
    public List<AtsAttributeValueColumn> generateAttrTypeViews() throws Exception {
       Map<String, AttributeTypeToken> idToToken = new HashMap<>();
-      IAtsServer atsServer = (IAtsServer) services;
       for (AttributeTypeToken attrType : atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().getAll()) {
          idToToken.put(attrType.getName(), attrType);
       }

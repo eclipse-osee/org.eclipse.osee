@@ -135,6 +135,10 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
       return getUserById(userToken.getUserId());
    }
 
+   public void releaseUser(IAtsUser newUser) {
+      currentUser = null;
+   }
+
    @Override
    public abstract String getCurrentUserId();
 
