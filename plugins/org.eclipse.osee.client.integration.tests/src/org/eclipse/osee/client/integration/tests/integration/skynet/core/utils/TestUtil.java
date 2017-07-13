@@ -22,14 +22,11 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.enums.BranchState;
-import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
@@ -82,13 +79,6 @@ public final class TestUtil {
 
    private static int getTableRowCount(String tableName) throws OseeCoreException {
       return ConnectionHandler.getJdbcClient().fetch(0, "SELECT count(1) FROM " + tableName);
-   }
-
-   public static Branch createBranch(int index, long branchUuid) {
-      BranchState branchState = BranchState.values()[Math.abs(index % BranchState.values().length)];
-      BranchType branchType = BranchType.values()[Math.abs(index % BranchType.values().length)];
-      boolean isArchived = index % 2 == 0 ? true : false;
-      return new Branch(branchUuid, "branch_" + index, branchType, branchState, isArchived, false);
    }
 
    public static RelationLink createRelationLink(int relationId, ArtifactId artA, ArtifactId artB, BranchId branch, RelationType relationType) {

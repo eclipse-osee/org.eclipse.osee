@@ -47,8 +47,6 @@ public class RelationLink implements HasBranch {
    private String rationale;
    private final RelationTypeToken relationType;
    private boolean dirty;
-   private final int aArtifactId;
-   private final int bArtifactId;
    private final ArtifactToken artifactA;
    private final ArtifactToken artifactB;
    private final BranchId branch;
@@ -66,9 +64,7 @@ public class RelationLink implements HasBranch {
       this.gammaId = gammaId;
       this.rationale = rationale == null ? "" : rationale;
       this.dirty = false;
-      this.aArtifactId = artifactA.getId().intValue();
       this.artifactA = artifactA;
-      this.bArtifactId = artifactB.getId().intValue();
       this.artifactB = artifactB;
       this.branch = branch;
       this.applicabilityId = applicabilityId;
@@ -81,17 +77,17 @@ public class RelationLink implements HasBranch {
       this.dirty = dirty;
    }
 
-   public RelationSide getSide(Artifact artifact) {
-      if (aArtifactId == artifact.getArtId()) {
+   public RelationSide getSide(ArtifactId artifact) {
+      if (artifactA.equals(artifact)) {
          return RelationSide.SIDE_A;
       }
-      if (bArtifactId == artifact.getArtId()) {
+      if (artifactB.equals(artifact)) {
          return RelationSide.SIDE_B;
       }
       throw new IllegalArgumentException("The artifact " + artifact + " is on neither side of " + this);
    }
 
-   public RelationSide getOppositeSide(Artifact artifact) {
+   public RelationSide getOppositeSide(ArtifactId artifact) {
       return getSide(artifact).oppositeSide();
    }
 
@@ -106,14 +102,6 @@ public class RelationLink implements HasBranch {
    private void internalSetPersistenceData(int gammaId, ModificationType modType) {
       internalSetModType(modType, true, true);
       internalSetGammaId(gammaId);
-   }
-
-   public int getAArtifactId() {
-      return aArtifactId;
-   }
-
-   public int getBArtifactId() {
-      return bArtifactId;
    }
 
    public ArtifactToken getArtifactId(RelationSide relationSide) {
@@ -214,7 +202,7 @@ public class RelationLink implements HasBranch {
       return artifact.equals(artifactB) ? artifactA : artifactB;
    }
 
-   public Artifact getArtifactOnOtherSide(Artifact artifact) throws OseeCoreException {
+   public Artifact getArtifactOnOtherSide(ArtifactId artifact) throws OseeCoreException {
       return getArtifact(getOtherSideArtifact(artifact));
    }
 
@@ -293,9 +281,8 @@ public class RelationLink implements HasBranch {
 
    @Override
    public String toString() {
-      return String.format("type[%s] id[%d] modType[%s] [%s]: a%s <--> b%s", relationType.getName(), relationId,
-         getModificationType(), isDirty() ? "dirty" : "not dirty", artifactA.toStringWithId(),
-         artifactB.toStringWithId());
+      return String.format("type[%s] id[%s] modType[%s] [%s]: aId[%s] <--> bId[%s]", relationType.getName(), relationId,
+         getModificationType(), isDirty() ? "dirty" : "not dirty", artifactA.getIdString(), artifactB.getIdString());
    }
 
    public void setNotDirty() {
@@ -345,16 +332,8 @@ public class RelationLink implements HasBranch {
    public boolean equals(Object obj) {
       if (obj instanceof RelationLink) {
          RelationLink other = (RelationLink) obj;
-         //@formatter:off
-         boolean result = aArtifactId == other.aArtifactId &&
-         branch.equals(other.branch) &&
-         bArtifactId == other.bArtifactId &&
-         other.modificationType == modificationType &&
-         relationType.equals(other.relationType);
-         //@formatter:on
-
          // This should eventually be removed once DB cleanup occurs
-         return result && relationId == other.relationId;
+         return equalsConceptually(other) && relationId == other.relationId;
       }
       return false;
    }
@@ -363,18 +342,9 @@ public class RelationLink implements HasBranch {
     * Same as equals except don't check relationIds. This is what equals should become once database is cleaned
     * (permanently) of duplicate "conceptual" relations. ex same artA, artB and relationType
     */
-   public boolean equalsConceptually(Object obj) {
-      if (obj instanceof RelationLink) {
-         RelationLink other = (RelationLink) obj;
-         //@formatter:off
-         return aArtifactId == other.aArtifactId &&
-         branch.equals(other.branch) &&
-         bArtifactId == other.bArtifactId &&
-         other.modificationType == modificationType &&
-         relationType.equals(other.relationType);
-         //@formatter:on
-      }
-      return false;
+   public boolean equalsConceptually(RelationLink other) {
+      return artifactA.equals(other.artifactA) && artifactB.equals(other.artifactB) && isOnSameBranch(
+         other) && other.modificationType == modificationType && relationType.equals(other.relationType);
    }
 
    @Override
@@ -382,8 +352,8 @@ public class RelationLink implements HasBranch {
       final int prime = 31;
       int result = 1;
       result = prime * result + branch.hashCode();
-      result = prime * result + aArtifactId;
-      result = prime * result + bArtifactId;
+      result = prime * result + artifactA.hashCode();
+      result = prime * result + artifactB.hashCode();
       result = prime * result + relationType.hashCode();
       result = prime * result + modificationType.hashCode();
       return result;
@@ -391,8 +361,8 @@ public class RelationLink implements HasBranch {
 
    public boolean isUserDefined() throws OseeCoreException {
       RelationOrderFactory factory = new RelationOrderFactory();
-      Artifact aArtifact = ArtifactQuery.getArtifactFromId(getAArtifactId(), branch);
-      Artifact bArtifact = ArtifactQuery.getArtifactFromId(getBArtifactId(), branch);
+      Artifact aArtifact = getArtifactA();
+      Artifact bArtifact = getArtifactB();
 
       RelationOrderData leftData = factory.createRelationOrderData(aArtifact);
       RelationOrderData rightData = factory.createRelationOrderData(bArtifact);

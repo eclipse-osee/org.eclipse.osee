@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -111,12 +112,14 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
             artifactEvent.addArtifact(guidArt);
 
             for (RelationLink rel : artifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
+               ArtifactToken artifactA = rel.getArtifactA();
+               ArtifactToken artifactB = rel.getArtifactB();
                DefaultBasicUuidRelation guidRelation =
                   new DefaultBasicUuidRelation(branch, rel.getRelationType().getId(), rel.getId(), rel.getGammaId(),
-                     new DefaultBasicGuidArtifact(branch, rel.getArtifactA().getArtifactTypeId(), rel.getArtifactA()),
-                     new DefaultBasicGuidArtifact(branch, rel.getArtifactB().getArtifactTypeId(), rel.getArtifactB()));
-               artifactEvent.addRelation(new EventBasicGuidRelation(RelationEventType.Purged, rel.getArtifactA(),
-                  rel.getArtifactB(), guidRelation));
+                     new DefaultBasicGuidArtifact(branch, artifactA.getArtifactTypeId(), artifactA),
+                     new DefaultBasicGuidArtifact(branch, artifactB.getArtifactTypeId(), artifactB));
+               artifactEvent.addRelation(
+                  new EventBasicGuidRelation(RelationEventType.Purged, artifactA, artifactB, guidRelation));
                rel.markAsPurged();
             }
             for (Attribute<?> attr : artifact.internalGetAttributes()) {

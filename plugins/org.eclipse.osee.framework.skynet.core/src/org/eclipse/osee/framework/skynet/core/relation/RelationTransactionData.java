@@ -11,8 +11,10 @@
 package org.eclipse.osee.framework.skynet.core.relation;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelation;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -48,7 +50,7 @@ public class RelationTransactionData extends BaseTransactionData {
       super.addInsertToBatch(collector);
       if (!relation.isUseBackingData()) {
          internalAddInsertToBatch(collector, 4, INSERT_INTO_RELATION_TABLE, relation.getId(),
-            relation.getRelationType(), relation.getArtifactA(), relation.getArtifactB(), relation.getRationale(),
+            relation.getRelationType(), relation.getArtifactIdA(), relation.getArtifactIdB(), relation.getRationale(),
             getGammaId());
       }
    }
@@ -81,11 +83,17 @@ public class RelationTransactionData extends BaseTransactionData {
 
    @Override
    protected void internalAddToEvents(ArtifactEvent artifactEvent) throws OseeCoreException {
+      ArtifactToken artifactA = relation.getArtifactA();
+      ArtifactToken artifactB = relation.getArtifactB();
+      DefaultBasicGuidArtifact guidArtA =
+         new DefaultBasicGuidArtifact(artifactA.getBranch(), artifactA.getArtifactTypeId(), artifactA);
+      DefaultBasicGuidArtifact guidArtB =
+         new DefaultBasicGuidArtifact(artifactB.getBranch(), artifactB.getArtifactTypeId(), artifactB);
+
       DefaultBasicUuidRelation defaultBasicGuidRelation = new DefaultBasicUuidRelation(relation.getBranch(),
-         relation.getRelationType().getId(), relation.getId(), relation.getGammaId(),
-         relation.getArtifactA().getBasicGuidArtifact(), relation.getArtifactB().getBasicGuidArtifact());
-      EventBasicGuidRelation event = new EventBasicGuidRelation(relationEventType, relation.getArtifactA(),
-         relation.getArtifactB(), defaultBasicGuidRelation);
+         relation.getRelationType().getId(), relation.getId(), relation.getGammaId(), guidArtA, guidArtB);
+      EventBasicGuidRelation event =
+         new EventBasicGuidRelation(relationEventType, artifactA, artifactB, defaultBasicGuidRelation);
       if (relationEventType == RelationEventType.ModifiedRationale) {
          event.setRationale(relation.getRationale());
       }
