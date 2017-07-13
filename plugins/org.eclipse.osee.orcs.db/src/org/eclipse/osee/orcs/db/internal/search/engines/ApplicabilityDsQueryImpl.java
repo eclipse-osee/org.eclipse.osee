@@ -46,7 +46,7 @@ public class ApplicabilityDsQueryImpl implements ApplicabilityDsQuery {
    @Override
    public ApplicabilityToken getApplicabilityToken(ArtifactId artId, BranchId branch) {
       return jdbcClient.fetch(BASE, stmt -> new ApplicabilityToken(stmt.getLong("key"), stmt.getString("value")),
-         SELECT_APPLIC_FOR_ART, artId, branch, NOT_CURRENT);
+         SELECT_APPLIC_FOR_ART, artId, branch, NOT_CURRENT.getValue());
    }
 
    @Override
