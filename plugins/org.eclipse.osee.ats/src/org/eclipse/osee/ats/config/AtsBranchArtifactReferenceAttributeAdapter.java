@@ -24,11 +24,15 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeAdapter;
 
 /**
+ * Artifact Referenced Attributes that point to current Ats Branch
+ * 
  * @author Donald G. Dunne
  */
-public class ProgramArtifactReferenceAttributeAdapter implements AttributeAdapter<Artifact> {
+public class AtsBranchArtifactReferenceAttributeAdapter implements AttributeAdapter<Artifact> {
 
-   private static final List<AttributeTypeId> PROGRAM_UUID_LIST = Arrays.asList(AtsAttributeTypes.ProgramUuid);
+   private static final List<AttributeTypeId> PROGRAM_UUID_LIST =
+      Arrays.asList(AtsAttributeTypes.ProgramUuid, AtsAttributeTypes.TeamDefinitionReference,
+         AtsAttributeTypes.WorkPackageProgram, AtsAttributeTypes.ActionableItemReference);
 
    @Override
    public Collection<AttributeTypeId> getSupportedTypes() {

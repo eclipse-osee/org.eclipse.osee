@@ -25,6 +25,7 @@ public final class AtsAttributeTypes {
    // @formatter:off
    public static final AttributeTypeToken Actionable = createType(1152921504606847160L, "Actionable", "True if item can have Action written against or assigned to.");
    public static final AttributeTypeToken ActionableItem = createType(1152921504606847200L, "Actionable Item", "Actionable Items that are impacted by this change.");
+   public static final AttributeTypeToken ActionableItemReference = createType(6780739363553225476L, "Actionable Item Reference", "Actionable Items that are impacted by this change.");
    public static final AttributeTypeToken ActionDetailsFormat = createType(1152921504606847199L, "Action Details Format", "Format of string when push Action Details Copy button on SMA Workflow Editor.");
    public static final AttributeTypeToken Active = createType(1152921504606847153L, "Active", "Active ATS configuration object.");
    public static final AttributeTypeToken AllowCommitBranch = createType(1152921504606847162L, "Allow Commit Branch");
@@ -123,6 +124,7 @@ public final class AtsAttributeTypes {
    public static final AttributeTypeToken EndDate = createType(1152921504606847383L, "End Date");
    public static final AttributeTypeToken SwEnhancement = createType(1152921504606847227L, "SW Enhancement");
    public static final AttributeTypeToken TeamDefinition = createType(1152921504606847201L, "Team Definition");
+   public static final AttributeTypeToken TeamDefinitionReference = createType(4730961339090285773L, "Team Definition Reference");
    public static final AttributeTypeToken TestToSourceLocator = AttributeTypeToken.valueOf(130595201919637916L,
       "Test Run to Source Locator");
    public static final AttributeTypeToken Title = createType(CoreAttributeTypes.Name.getId(), CoreAttributeTypes.Name.getName(), "Enter clear and concise title that can be generally understood.");
@@ -134,6 +136,7 @@ public final class AtsAttributeTypes {
    public static final AttributeTypeToken TeamWorkflowArtifactType = createType(1152921504606847148L, "Team Workflow Artifact Type", "Specific Artifact Type to use in creation of Team Workflow");
    public static final AttributeTypeToken RelatedTaskWorkDefinition = createType(1152921504606847152L, "Related Task Workflow Definition", "Specific work flow definition id used by Tasks related to this Workflow");
    public static final AttributeTypeToken WorkPackage = createType(1152921504606847206L, "Work Package", "Designated accounting work package for completing workflow.");
+   public static final AttributeTypeToken WorkPackageReference = createType(473096133909456789L, "Work Package Reference", "Designated accounting work package for completing workflow.");
    public static final AttributeTypeToken RelatedPeerWorkflowDefinition = createType(1152921504606847870L, "Related Peer Workflow Definition", "Specific work flow definition id used by Peer To Peer Reviews for this Team");
 
    public static final AttributeTypeToken WorkPackageId = createType(1152921504606847872L, "Work Package ID");
