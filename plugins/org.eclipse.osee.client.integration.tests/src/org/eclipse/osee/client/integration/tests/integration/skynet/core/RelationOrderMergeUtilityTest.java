@@ -108,8 +108,8 @@ public class RelationOrderMergeUtilityTest {
       destParent.persist(getClass().getSimpleName() + ".testOrderMerge()_1");
 
       IOseeBranch sourceBranch = BranchManager.createWorkingBranch(destBranch, "Source Branch");
-      Artifact srcParent = ArtifactQuery.getArtifactFromId(destParent.getGuid(), sourceBranch);
-      Artifact srcChild = ArtifactQuery.getArtifactFromId(destChildren[4].getGuid(), sourceBranch);
+      Artifact srcParent = ArtifactQuery.getArtifactFromId(destParent, sourceBranch);
+      Artifact srcChild = ArtifactQuery.getArtifactFromId(destChildren[4], sourceBranch);
       setAsChild(srcParent, srcChild, USER_DEFINED);
       srcParent.persist(getClass().getSimpleName() + ".testOrderMerge()_2");
       RelationManager.deleteRelationsAll(destChildren[0], true,
@@ -119,11 +119,11 @@ public class RelationOrderMergeUtilityTest {
       Assert.assertNotNull(mergedOrder);
 
       List<String> orderList = mergedOrder.getOrderList(hierType, hierSide);
-      Assert.assertEquals(orderList.size(), 4);
-      Assert.assertTrue(orderList.get(0).equals(destChildren[1].getGuid()));
-      Assert.assertTrue(orderList.get(1).equals(destChildren[2].getGuid()));
-      Assert.assertTrue(orderList.get(2).equals(destChildren[3].getGuid()));
-      Assert.assertTrue(orderList.get(3).equals(destChildren[4].getGuid()));
+      Assert.assertEquals(4, orderList.size());
+      Assert.assertEquals(destChildren[1].getGuid(), orderList.get(0));
+      Assert.assertEquals(destChildren[2].getGuid(), orderList.get(1));
+      Assert.assertEquals(destChildren[3].getGuid(), orderList.get(2));
+      Assert.assertEquals(destChildren[4].getGuid(), orderList.get(3));
 
       BranchManager.purgeBranch(sourceBranch);
    }

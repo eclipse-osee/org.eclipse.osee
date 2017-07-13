@@ -134,7 +134,7 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
          RelationLink link = (RelationLink) element;
          if (columnIndex == 0) {
             try {
-               return link.getArtifactOnOtherSide(artifact).getName();
+               return link.getOtherSideArtifact(artifact).getName();
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }

@@ -15,6 +15,7 @@ import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
 import static org.eclipse.osee.framework.core.enums.RelationSorter.USER_DEFINED;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasBranch;
@@ -147,7 +148,7 @@ public class RelationLink implements HasBranch {
 
    private void deleteEmptyRelationOrder(SkynetTransaction transaction) {
       try {
-         Artifact aArtifact = ArtifactQuery.getArtifactFromId(aArtifactId, branch, DeletionFlag.INCLUDE_DELETED);
+         Artifact aArtifact = getArtifactA();
 
          if (aArtifact.getAttributeCount(CoreAttributeTypes.RelationOrder) == 1) {
             RelationOrderData relationOrderData = new RelationOrderFactory().createRelationOrderData(aArtifact);
@@ -160,7 +161,6 @@ public class RelationLink implements HasBranch {
                }
             }
          }
-
       } catch (OseeCoreException ex) {
          OseeLog.log(this.getClass(), Level.INFO, ex.toString(), ex);
       }
@@ -202,20 +202,28 @@ public class RelationLink implements HasBranch {
       internalSetModType(ModificationType.DELETED, false, SET_NOT_DIRTY);
    }
 
-   public Artifact getArtifact(RelationSide relationSide) throws OseeCoreException {
-      return ArtifactQuery.getArtifactFromToken(getArtifactId(relationSide), DeletionFlag.INCLUDE_DELETED);
+   public Artifact getArtifact(RelationSide relationSide) {
+      return getArtifact(getArtifactId(relationSide));
+   }
+
+   private Artifact getArtifact(ArtifactToken artifact) {
+      return ArtifactQuery.getArtifactFromToken(artifact, DeletionFlag.INCLUDE_DELETED);
+   }
+
+   public ArtifactToken getOtherSideArtifact(ArtifactId artifact) {
+      return artifact.equals(artifactB) ? artifactA : artifactB;
    }
 
    public Artifact getArtifactOnOtherSide(Artifact artifact) throws OseeCoreException {
-      return getArtifact(getOppositeSide(artifact));
+      return getArtifact(getOtherSideArtifact(artifact));
    }
 
    public Artifact getArtifactA() throws OseeCoreException {
-      return getArtifact(RelationSide.SIDE_A);
+      return getArtifact(artifactA);
    }
 
    public Artifact getArtifactB() throws OseeCoreException {
-      return getArtifact(RelationSide.SIDE_B);
+      return getArtifact(artifactB);
    }
 
    public ArtifactToken getArtifactIdA() {
