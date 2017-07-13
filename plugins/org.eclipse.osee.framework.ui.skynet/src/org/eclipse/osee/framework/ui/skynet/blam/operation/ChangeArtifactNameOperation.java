@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.nebula.widgets.xviewer.Activator;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -46,7 +47,7 @@ public class ChangeArtifactNameOperation extends AbstractOperation {
       HashMap<String, String> pairs = getPairs();
       SkynetTransaction tx = TransactionManager.createTransaction(branch, "Rename Artifact");
       for (Entry<String, String> entry : pairs.entrySet()) {
-         Artifact artifact = ArtifactQuery.getArtifactFromIdOrNull(Integer.valueOf(entry.getKey()), branch,
+         Artifact artifact = ArtifactQuery.getArtifactFromIdOrNull(ArtifactId.valueOf(entry.getKey()), branch,
             DeletionFlag.EXCLUDE_DELETED);
          if (artifact != null) {
             if (!artifact.getName().equals(entry.getValue())) {

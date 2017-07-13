@@ -20,7 +20,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
@@ -45,8 +45,8 @@ public class RelationCache {
 
    // Indexed by ArtifactKey so that map does not hold strong reference to artifact which allows it to be garbage collected
    // the branch is accounted for because artifact key includes the branch uuid
-   private final CompositeKeyHashMap<ArtifactKey, IRelationType, List<RelationLink>> relationsByType =
-      new CompositeKeyHashMap<ArtifactKey, IRelationType, List<RelationLink>>(1024, true);
+   private final CompositeKeyHashMap<ArtifactKey, RelationTypeId, List<RelationLink>> relationsByType =
+      new CompositeKeyHashMap<>(1024, true);
 
    private ArtifactKey getKey(ArtifactToken artifact) {
       ArtifactKey key = THREAD_SHARED_KEY.get();
@@ -87,7 +87,7 @@ public class RelationCache {
    }
 
    public void cache(IArtifact artifact, RelationLink newRelation) {
-      IRelationType relationType = newRelation.getRelationType();
+      RelationTypeId relationType = newRelation.getRelationType();
       List<RelationLink> selectedRelations = getAllByType(artifact, relationType);
       if (selectedRelations == null) {
          selectedRelations = new CopyOnWriteArrayList<>();
@@ -105,7 +105,7 @@ public class RelationCache {
       return getRelations(artifact, DeletionFlag.INCLUDE_DELETED);
    }
 
-   public List<RelationLink> getAllByType(IArtifact artifact, IRelationType relationType) {
+   public List<RelationLink> getAllByType(IArtifact artifact, RelationTypeId relationType) {
       ArtifactKey key = getKey(artifact);
       return relationsByType.get(key, relationType);
    }
@@ -118,7 +118,7 @@ public class RelationCache {
       return linksFound;
    }
 
-   private void findRelations(Collection<RelationLink> linksFound, int artId, BranchId branchUuid, IRelationType relationType, RelationMatcher matcher) {
+   private void findRelations(Collection<RelationLink> linksFound, int artId, BranchId branchUuid, RelationTypeId relationType, RelationMatcher matcher) {
       List<RelationLink> sourceLink = relationsByType.get(getKey(artId, branchUuid), relationType);
       RelationFilterUtil.filter(sourceLink, linksFound, matcher);
    }
@@ -150,7 +150,11 @@ public class RelationCache {
       return links.isEmpty() ? null : links.iterator().next();
    }
 
-   public RelationLink getLoadedRelation(IArtifact artifact, int aArtifactId, int bArtifactId, IRelationType relationType, DeletionFlag deletionFlag) {
+   public RelationLink getLoadedRelation(ArtifactToken artifact, ArtifactId aArtifactId, ArtifactId bArtifactId, RelationTypeId relationType, DeletionFlag deletionFlag) {
+      return getLoadedRelation(artifact, aArtifactId.getId(), bArtifactId.getId(), relationType, deletionFlag);
+   }
+
+   public RelationLink getLoadedRelation(ArtifactToken artifact, long aArtifactId, long bArtifactId, RelationTypeId relationType, DeletionFlag deletionFlag) {
       Set<RelationLink> itemsFound = new HashSet<>();
 
       final int artifactId = artifact.getId().intValue();
@@ -186,7 +190,7 @@ public class RelationCache {
       return size != 0 ? relations.iterator().next() : null;
    }
 
-   public RelationLink getLoadedRelation(IRelationType relationType, int aArtifactId, int bArtifactId, BranchId branch) {
+   public RelationLink getLoadedRelation(RelationTypeId relationType, int aArtifactId, int bArtifactId, BranchId branch) {
       ArtifactId artifactA = ArtifactId.valueOf(aArtifactId);
       ArtifactId artifactB = ArtifactId.valueOf(bArtifactId);
 

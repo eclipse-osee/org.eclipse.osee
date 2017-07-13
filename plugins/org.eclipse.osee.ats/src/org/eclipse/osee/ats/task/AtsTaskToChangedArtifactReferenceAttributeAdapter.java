@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -48,9 +49,9 @@ public class AtsTaskToChangedArtifactReferenceAttributeAdapter implements Attrib
    public Artifact adapt(Attribute<?> attribute, Id identity) throws OseeCoreException {
       Artifact retArt = null;
 
-      int uuid = identity.getId() <= 0 ? 0 : identity.getId().intValue();
-      if (uuid > 0) {
+      if (identity.isValid()) {
          Artifact artifact = attribute.getArtifact();
+         ArtifactId refArtifact = ArtifactId.valueOf(identity.getId());
          if (artifact instanceof TaskArtifact) {
             TaskArtifact taskArt = (TaskArtifact) artifact;
             TeamWorkFlowArtifact parentTeamWf = taskArt.getParentTeamWorkflow();
@@ -60,19 +61,19 @@ public class AtsTaskToChangedArtifactReferenceAttributeAdapter implements Attrib
                // First, attempt to get from Working Branch if still exists
                BranchId workingBranch = AtsClientService.get().getBranchService().getWorkingBranch(derivedTeamWf);
                if (workingBranch != null && branchIsInWork(workingBranch)) {
-                  retArt = ArtifactQuery.getArtifactFromIdOrNull(uuid, workingBranch, DeletionFlag.INCLUDE_DELETED);
+                  retArt =
+                     ArtifactQuery.getArtifactFromIdOrNull(refArtifact, workingBranch, DeletionFlag.INCLUDE_DELETED);
                } else {
                   // Else get from first commit transaction
                   // NOTE: Each workflow has it's own commit in parallel dev
                   TransactionToken earliestTransactionId =
                      AtsClientService.get().getBranchService().getEarliestTransactionId(derivedTeamWf);
                   if (earliestTransactionId != null) {
-                     retArt = ArtifactQuery.getHistoricalArtifactFromIdOrNull(uuid, earliestTransactionId,
-                        DeletionFlag.INCLUDE_DELETED);
+                     retArt = ArtifactQuery.getHistoricalArtifactFromIdOrNull(refArtifact.getId().intValue(),
+                        earliestTransactionId, DeletionFlag.INCLUDE_DELETED);
                   }
                }
             }
-
          }
       }
       return retArt;

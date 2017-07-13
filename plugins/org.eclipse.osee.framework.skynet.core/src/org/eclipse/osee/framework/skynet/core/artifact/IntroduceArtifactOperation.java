@@ -15,6 +15,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -69,7 +71,7 @@ public class IntroduceArtifactOperation {
 
    private void introduceArtifact(Artifact sourceArtifact) throws OseeCoreException {
       Artifact destinationArtifact =
-         ArtifactQuery.checkArtifactFromId(sourceArtifact.getArtId(), destinationBranch, DeletionFlag.INCLUDE_DELETED);
+         ArtifactQuery.getArtifactOrNull(sourceArtifact, destinationBranch, DeletionFlag.INCLUDE_DELETED);
 
       if (destinationArtifact == null) {
          destinationArtifact = sourceArtifact.introduceShallowArtifact(destinationBranch);
@@ -125,7 +127,8 @@ public class IntroduceArtifactOperation {
 
          if (destinationAttribute == null) {
             destinationArtifact.internalInitializeAttribute(sourceAttribute.getAttributeType(), sourceAttribute,
-               sourceAttribute.getGammaId(), sourceAttribute.getModificationType(), sourceAttribute.getApplicabilityId(), true,
+               sourceAttribute.getGammaId(), sourceAttribute.getModificationType(),
+               sourceAttribute.getApplicabilityId(), true,
                sourceAttribute.getAttributeDataProvider().getData()).internalSetModType(
                   sourceAttribute.getModificationType(), true, true);
          } else {
@@ -150,17 +153,19 @@ public class IntroduceArtifactOperation {
          throw new OseeArgumentException("The un-persisted relation [%s] can not be introduced until it is persisted.",
             sourceRelation);
       } else if (sourceRelation.isInDb()) {
-         RelationLink destinationRelation = RelationManager.getLoadedRelationById(sourceRelation.getId(),
-            sourceRelation.getAArtifactId(), sourceRelation.getBArtifactId(), destinationBranch);
+         ArtifactToken srcArtA = sourceRelation.getArtifactIdA();
+         ArtifactToken srcArtB = sourceRelation.getArtifactIdB();
+         RelationLink destinationRelation =
+            RelationManager.getLoadedRelationById(sourceRelation.getId(), srcArtA, srcArtB, destinationBranch);
 
          if (destinationRelation == null) {
-            int aArtifactId = sourceRelation.getAArtifactId();
-            int bArtifactId = sourceRelation.getBArtifactId();
-            if (doesRelatedArtifactExist(destinationArtifact, aArtifactId, bArtifactId)) {
+            if (doesRelatedArtifactExist(destinationArtifact, srcArtA, srcArtB)) {
                ModificationType modType = sourceRelation.getModificationType();
-               destinationRelation = RelationManager.getOrCreate(aArtifactId, bArtifactId, destinationBranch,
-                  sourceRelation.getRelationType(), sourceRelation.getId(), sourceRelation.getGammaId(),
-                  sourceRelation.getRationale(), modType, sourceRelation.getApplicabilityId());
+               ArtifactToken destArtA = ArtifactToken.valueOf(srcArtA, destinationBranch);
+               ArtifactToken destArtB = ArtifactToken.valueOf(srcArtB, destinationBranch);
+               destinationRelation = RelationManager.getOrCreate(destArtA, destArtB, sourceRelation.getRelationType(),
+                  sourceRelation.getId(), sourceRelation.getGammaId(), sourceRelation.getRationale(), modType,
+                  sourceRelation.getApplicabilityId());
                destinationRelation.internalSetModType(modType, true, true);
             }
          } else {
@@ -182,19 +187,15 @@ public class IntroduceArtifactOperation {
       }
    }
 
-   private boolean doesRelatedArtifactExist(Artifact destinationArtifact, int aArtifactId, int bArtifactId) throws OseeCoreException {
-      int checkArtId = destinationArtifact.getArtId() == aArtifactId ? bArtifactId : aArtifactId;
-
-      Artifact otherArtifact =
-         ArtifactQuery.checkArtifactFromId(checkArtId, destinationBranch, DeletionFlag.EXCLUDE_DELETED);
+   private boolean doesRelatedArtifactExist(Artifact destinationArtifact, ArtifactId aArtifactId, ArtifactId bArtifactId) {
+      ArtifactId otherId = destinationArtifact.equals(aArtifactId.getId()) ? bArtifactId : aArtifactId;
+      Artifact otherArtifact = ArtifactQuery.checkArtifactFromId(otherId, destinationBranch);
 
       boolean found = otherArtifact != null;
-
       if (!found) {
          for (Artifact sourceArtifact : sourceArtifacts) {
-            if (sourceArtifact.getArtId() == checkArtId) {
-               found = true;
-               break;
+            if (sourceArtifact.equals(otherId)) {
+               return true;
             }
          }
       }
