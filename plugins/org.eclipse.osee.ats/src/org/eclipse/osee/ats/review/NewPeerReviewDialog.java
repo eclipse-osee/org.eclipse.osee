@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.actions.wizard.NewActionPage1;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.review.ReviewFormalType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.dsl.atsDsl.ReviewBlockingType;
+import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -132,8 +132,7 @@ public class NewPeerReviewDialog extends EntryDialog {
    private void createBlockingTypeCombo(Composite parent) {
       blockingTypeCombo = new XCombo("Blocking Type");
       blockingTypeCombo.setFillHorizontally(true);
-      blockingTypeCombo.setDataStrings(
-         Arrays.asList(ReviewBlockingType.COMMIT.name(), ReviewBlockingType.TRANSITION.name()));
+      blockingTypeCombo.setDataStrings(Arrays.asList(ReviewBlockType.Commit.name(), ReviewBlockType.Transition.name()));
       blockingTypeCombo.createWidgets(parent, 2);
 
       XModifiedListener listener = new XModifiedListener() {
