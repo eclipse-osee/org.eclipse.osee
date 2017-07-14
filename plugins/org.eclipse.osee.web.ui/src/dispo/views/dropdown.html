@@ -1,1 +1,1 @@
-<select ui-grid-edit-dropdown-osee class="form-control" ng-change="grid.appScope.$emit(uiGridEditConstants.events.END_CELL_EDIT)" ng-model="row.entity.resolutionType" ng-options="obj.value as obj.text for obj in editDropdownOptionsArray"></select>
+<select ui-grid-edit-dropdown-osee class="form-control" options-disabled="option.isDefault for option in editDropdownOptionsArray" ng-change="grid.appScope.$emit(uiGridEditConstants.events.END_CELL_EDIT)" ng-model="row.entity.resolutionType" ng-options="obj.value as obj.text for obj in editDropdownOptionsArray"></select>

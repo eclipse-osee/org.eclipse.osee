@@ -1,6 +1,5 @@
 app.factory('ColumnFactory', function() {
 	var ColumnFactory = {};
-	this.selectedItem = { methodNumber: '0'}
 	
 	ColumnFactory.getColumns = function(type, width) {
 		if(type == 'testScript'){
@@ -8,10 +7,6 @@ app.factory('ColumnFactory', function() {
 		} else {
 			return columnsCoverage;
 		}
-	}
-	
-	ColumnFactory.setSelectedItem = function(item) {
-		this.selectedItem = item;
 	}
 	
 	ColumnFactory.setResolutionTypeArray = function(type, array) {
@@ -366,7 +361,8 @@ app.factory('ColumnFactory', function() {
             }
     } ];
     
-    var resolutionTmpl = '<div class="ui-grid-cell-contents placeholder" ng-class="{\'placeholder-parent\': !row.entity.isLeaf, \'complete-parent\': grid.appScope.isComplete(row.entity), \'none-complete-parent\': grid.appScope.isNoneComplete(row.entity), \'some-complete-parent\': grid.appScope.isSomeComplete(row.entity), \'almost-complete-parent\': grid.appScope.isAlmostComplete(row.entity) }" title="TOOLTIP">{{ grid.appScope.getTextResolution(row.entity) }}</div>';
+    var textCoverageTmpl = '<div class="ui-grid-cell-contents" title="TOOLTIP">{{ grid.appScope.getTextCoverage(row.entity) }}</div>';
+    var resolutionTmpl = '<div class="ui-grid-cell-contents placeholder" ng-class="{\'placeholder-parent\': !row.entity.isLeaf, \'complete-parent\': row.entity.isAllComplete, \'none-complete-parent\': row.entity.isNoneComplete, \'some-complete-parent\': row.entity.isSomeComplete, \'almost-complete-parent\': row.entity.isAlmostComplete,  \'coverage-invalid\': grid.appScope.isCausingInvalid(row.entity)}" title="TOOLTIP">{{ grid.appScope.getTextResolution(row.entity) }}</div>';
     var origSubCellTmpl = '<div class="ui-grid-cell-contents" ng-class="{\'placeholder-parent\': true}" title="TOOLTIP">{{ grid.appScope.getTextResolutionType(row.entity) }}</div>';
     var subGridOrigTmpl = '<div ng-class="{\'ui-grid-cell-contents\': true, annotationInput: true, invalid: grid.appScope.getInvalidLocRefs(row.entity), details: annotation.showDeets}" title="TOOLTIP">{{row.entity.locationRefs}}</div>';
     var codeTemplate = '<div class="method-number">{{ grid.appScope.selectedItem.methodNumber }}</div>';
@@ -418,6 +414,7 @@ app.factory('ColumnFactory', function() {
     }, {
         field: 'customerNotes',
         displayName: 'Text',
+        cellTemplate: textCoverageTmpl,
         enableCellEdit: false,
     }
 ];

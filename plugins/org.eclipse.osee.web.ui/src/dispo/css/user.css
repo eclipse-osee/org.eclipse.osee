@@ -313,13 +313,19 @@ input.cellInput:focus{
 }
 
 .almost-complete-parent {
-	background-color: orange;'
+	background-color: yellow;'
 }
 
 .some-complete-parent {
-	background-color: yellow;'
+	background-color: orange;'
 }
 
 .complete-parent {
 	background-color: #7eff39;'
 }
+
+.coverage-invalid {
+	border: 2px dashed #ff8a8a;
+}
+
+
