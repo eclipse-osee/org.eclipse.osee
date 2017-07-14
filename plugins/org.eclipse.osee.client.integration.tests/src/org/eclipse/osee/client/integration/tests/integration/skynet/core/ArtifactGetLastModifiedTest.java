@@ -16,6 +16,7 @@ import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.junit.Assert.assertEquals;
 import java.util.Date;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -30,6 +31,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.MethodRule;
 
 /**
  * @author Donald G. Dunne
@@ -41,6 +43,9 @@ public class ArtifactGetLastModifiedTest {
 
    @Rule
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
+   @Rule
+   public MethodRule oseeHousekeepingRule = new OseeHousekeepingRule();
 
    @Rule
    public TestInfo method = new TestInfo();

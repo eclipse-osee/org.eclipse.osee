@@ -18,6 +18,7 @@ import static org.junit.Assert.fail;
 import java.util.Collection;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -37,6 +38,7 @@ import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.MethodRule;
 
 /**
  * @author Megumi Telles
@@ -48,6 +50,9 @@ public class ConflictIntroduceTest {
 
    @Rule
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
+   @Rule
+   public MethodRule oseeHousekeepingRule = new OseeHousekeepingRule();
 
    private static IOseeBranch sourceBranch;
    private static IOseeBranch destinationBranch;
@@ -78,7 +83,6 @@ public class ConflictIntroduceTest {
 
       // create source branch
       BranchManager.createWorkingBranch(destinationBranch, sourceBranch);
-
    }
 
    @Test

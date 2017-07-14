@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -27,6 +28,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.MethodRule;
 
 /**
  * High-level test to ensure demo artifact types correctly inherit from artifact
@@ -40,6 +42,9 @@ public class ArtifactTypeInheritanceTest {
 
    @Rule
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
+   @Rule
+   public MethodRule oseeHousekeepingRule = new OseeHousekeepingRule();
 
    @Test
    public void testIsOfTypeWithNull() {

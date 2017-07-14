@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.access.AccessControlManager;
@@ -59,6 +60,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.MethodRule;
 
 /**
  * @author Donald G. Dunne
@@ -70,6 +72,9 @@ public class ArtifactQueryTest {
 
    @Rule
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
+   @Rule
+   public MethodRule oseeHousekeepingRule = new OseeHousekeepingRule();
 
    @Rule
    public TestInfo testInfo = new TestInfo();

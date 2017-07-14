@@ -19,6 +19,7 @@ import java.util.Set;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.Asserts;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.TestUtil;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
+import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -29,12 +30,13 @@ import org.eclipse.osee.framework.skynet.core.artifact.PurgeAttributes;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.MethodRule;
 
 /**
  * This test is intended to be run against a demo database. It tests the purge logic by counting the rows of the version
  * and txs tables, creating artifacts, changing them and then purging them. If it works properly, all rows should be
  * equal.
- * 
+ *
  * @author Jeff C. Phillips
  */
 public class AttributePurgeTest {
@@ -44,6 +46,9 @@ public class AttributePurgeTest {
 
    @Rule
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
+
+   @Rule
+   public MethodRule oseeHousekeepingRule = new OseeHousekeepingRule();
 
    private static final String[] TABLES = new String[] {"osee_attribute", "osee_txs"};
 
