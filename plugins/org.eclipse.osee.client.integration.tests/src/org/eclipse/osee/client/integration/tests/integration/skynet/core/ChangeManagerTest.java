@@ -61,16 +61,12 @@ public class ChangeManagerTest {
       modArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, CoreBranches.SYSTEM_ROOT);
       modArtifact.persist(getClass().getSimpleName());
 
-      sleep(5000);
-
       String branchName = "Change Manager Test Branch" + GUID.create();
 
       branch = BranchManager.createWorkingBranch(CoreBranches.SYSTEM_ROOT, branchName);
-      sleep(5000);
 
       newArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch);
       newArtifact.persist(getClass().getSimpleName());
-      sleep(5000);
       BranchManager.refreshBranches();
    }
 
@@ -78,8 +74,6 @@ public class ChangeManagerTest {
    public void testChangeManager() throws Exception {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
-
-      sleep(5000);
 
       modArtifact = ArtifactQuery.getArtifactFromId(modArtifact.getArtId(), branch);
 
@@ -101,7 +95,6 @@ public class ChangeManagerTest {
    public void tearDown() throws Exception {
       modArtifact.persist(getClass().getSimpleName());
       BranchManager.purgeBranch(branch);
-      sleep(5000);
    }
 
    public static boolean checkArtifactModType(Artifact artifact, ModificationType modificationType) throws OseeCoreException {
@@ -117,11 +110,5 @@ public class ChangeManagerTest {
          }
       }
       return pass;
-   }
-
-   public static void sleep(long milliseconds) throws Exception {
-      // OseeLog.log(ChangeManagerTest.class, Level.INFO, "Sleeping " + milliseconds);
-      Thread.sleep(milliseconds);
-      // OseeLog.log(ChangeManagerTest.class, Level.INFO, "Awake");
    }
 }

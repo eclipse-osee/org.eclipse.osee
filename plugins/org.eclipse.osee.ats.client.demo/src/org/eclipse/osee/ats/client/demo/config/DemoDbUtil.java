@@ -60,14 +60,6 @@ public class DemoDbUtil {
       return codeArts;
    }
 
-   public static void sleep(long milliseconds) throws OseeCoreException {
-      try {
-         Thread.sleep(milliseconds);
-      } catch (Exception ex) {
-         OseeCoreException.wrapAndThrow(ex);
-      }
-   }
-
    public static Result isDbPopulatedWithDemoData(boolean DEBUG, Branch branch) throws OseeCoreException {
       if (DemoDbUtil.getSoftwareRequirements(DEBUG, SoftwareRequirementStrs.Robot, branch).size() != 6) {
          return new Result(

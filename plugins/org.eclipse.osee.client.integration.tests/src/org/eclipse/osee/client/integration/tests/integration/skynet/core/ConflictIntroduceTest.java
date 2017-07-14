@@ -14,14 +14,12 @@ import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.util.Collection;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -165,11 +163,8 @@ public class ConflictIntroduceTest {
       }
 
       BranchManager.purgeBranch(mBranch);
-      Thread.sleep(10000);
       BranchManager.purgeBranch(updateBranch);
-      Thread.sleep(10000);
       BranchManager.purgeBranch(sourceBranch);
-      Thread.sleep(10000);
       BranchManager.purgeBranch(destinationBranch);
    }
 

@@ -83,9 +83,6 @@ public class PopulateSawBuild2Actions {
 
       changes.execute();
 
-      // Sleep to wait for the persist of the actions
-      DemoDbUtil.sleep(3000);
-
       // Working Branch off SAW_Bld_2, Make Changes, Commit
       makeCommittedActionChanges(committedAction);
 
@@ -411,7 +408,6 @@ public class PopulateSawBuild2Actions {
          parentArt.persist(PopulateSawBuild2Actions.class.getSimpleName());
       }
 
-      DemoDbUtil.sleep(2000L);
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, "Committing branch");
       }

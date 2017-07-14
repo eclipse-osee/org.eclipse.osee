@@ -176,15 +176,11 @@ public class PopulateDemoActions extends XNavigateItemAction {
          // Import all requirements on SAW_Bld_1 Branch
          demoDbImportReqsTx();
 
-         //DemoDbUtil.sleep(5000);
-
          // Create traceability between System, Subsystem and Software requirements
          SkynetTransaction demoDbTraceability =
             TransactionManager.createTransaction(SAW_Bld_1, "Populate Demo DB - Create Traceability");
          demoDbTraceabilityTx(demoDbTraceability, SAW_Bld_1);
          demoDbTraceability.execute();
-
-         //DemoDbUtil.sleep(5000);
 
          // Create SAW_Bld_2 Child Main Working Branch off SAW_Bld_1
          BranchId sawBld2Branch = createNewBaselineBranch(SAW_Bld_1, SAW_Bld_2);
@@ -268,7 +264,6 @@ public class PopulateDemoActions extends XNavigateItemAction {
          AccessControlManager.setPermission(UserManager.getUser(DemoUsers.Joe_Smith), childBranch,
             PermissionEnum.FULLACCESS);
 
-         DemoDbUtil.sleep(5000);
          // need to update the branch type;
          ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_TYPE, BranchType.BASELINE.getValue(), childBranch);
          BranchManager.refreshBranches();

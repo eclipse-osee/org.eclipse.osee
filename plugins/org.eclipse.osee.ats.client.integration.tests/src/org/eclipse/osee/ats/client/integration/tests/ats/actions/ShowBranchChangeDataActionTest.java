@@ -14,7 +14,6 @@ import org.eclipse.osee.ats.actions.ShowBranchChangeDataAction;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -28,7 +27,6 @@ public class ShowBranchChangeDataActionTest extends AbstractAtsActionRunTest {
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
       Result result = AtsTestUtil.createWorkingBranchFromTeamWf();
       Assert.assertTrue(result.getText(), result.isTrue());
-      TestUtil.sleep(4000);
       Assert.assertNotNull(AtsTestUtil.getTeamWf().getWorkingBranch());
 
       return new ShowBranchChangeDataAction(AtsTestUtil.getTeamWf());

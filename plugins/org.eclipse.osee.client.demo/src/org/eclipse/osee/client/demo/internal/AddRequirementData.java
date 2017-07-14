@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.client.demo.internal;
 
-import static java.lang.Thread.sleep;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
 import java.io.File;
@@ -93,10 +92,8 @@ public class AddRequirementData implements IDbInitializationTask {
          AccessControlManager.setPermission(UserManager.getUser(DemoUsers.Joe_Smith), SAW_Bld_2,
             PermissionEnum.FULLACCESS);
 
-         sleep(5000);
          // need to update the branch type;
-         ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_TYPE,
-            BranchType.BASELINE.getValue(), childBranch);
+         ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_TYPE, BranchType.BASELINE.getValue(), childBranch);
          BranchManager.refreshBranches();
       } catch (Exception ex) {
          OseeCoreException.wrapAndThrow(ex);

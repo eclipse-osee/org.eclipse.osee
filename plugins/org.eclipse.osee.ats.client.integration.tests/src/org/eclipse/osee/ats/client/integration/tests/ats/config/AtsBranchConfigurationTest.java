@@ -123,8 +123,6 @@ public class AtsBranchConfigurationTest {
       // Create SAW_Bld_2 branch off SAW_Bld_1
       BranchId viaTeamDefBranch = BranchManager.createTopLevelBranch(BRANCH_VIA_VERSIONS);
 
-      TestUtil.sleep(2000);
-
       // configure version to use branch and allow create/commit
       if (DEBUG) {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO,
@@ -149,8 +147,6 @@ public class AtsBranchConfigurationTest {
       changes.setSoleAttributeValue(versionToTarget, AtsAttributeTypes.AllowCommitBranch, true);
       changes.setSoleAttributeValue(versionToTarget, AtsAttributeTypes.AllowCreateBranch, true);
       changes.execute();
-
-      TestUtil.sleep(2000);
 
       // create action and target for version
       if (DEBUG) {
@@ -199,8 +195,6 @@ public class AtsBranchConfigurationTest {
       // commit branch
       commitBranch(((TeamWorkFlowArtifact) teamWf.getStoreObject()));
 
-      TestUtil.sleep(2000);
-
       // test change report
       if (DEBUG) {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO, "Test change report results");
@@ -247,8 +241,6 @@ public class AtsBranchConfigurationTest {
       // Create SAW_Bld_2 branch off SAW_Bld_1
       BranchId viaTeamDefBranch = BranchManager.createTopLevelBranch(BRANCH_VIA_TEAM_DEFINITION);
 
-      TestUtil.sleep(2000);
-
       // configure team def to use branch
       if (DEBUG) {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO,
@@ -261,8 +253,6 @@ public class AtsBranchConfigurationTest {
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.AllowCommitBranch, true);
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.AllowCreateBranch, true);
       changes.execute();
-
-      TestUtil.sleep(2000);
 
       // create action,
       if (DEBUG) {
@@ -408,13 +398,11 @@ public class AtsBranchConfigurationTest {
          for (IOseeBranch workingBranch : BranchManager.getBranches(BranchArchivedState.ALL, BranchType.WORKING)) {
             if (workingBranch.getName().contains(branch.getName())) {
                BranchManager.purgeBranch(workingBranch);
-               TestUtil.sleep(2000);
             }
          }
          if (BranchManager.branchExists(branch)) {
             BranchManager.purgeBranch(branch);
          }
-         TestUtil.sleep(2000);
 
       } catch (BranchDoesNotExist ex) {
          // do nothing
@@ -446,7 +434,6 @@ public class AtsBranchConfigurationTest {
       AtsConfigOperation atsConfigManagerOperation =
          new AtsConfigOperation(workDefinitionName, teamDefName, versionNames, actionableItems);
       Operations.executeWorkAndCheckStatus(atsConfigManagerOperation);
-      TestUtil.sleep(2000);
       return atsConfigManagerOperation;
    }
 

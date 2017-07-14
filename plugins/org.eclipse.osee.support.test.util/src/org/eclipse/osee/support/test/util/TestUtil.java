@@ -71,16 +71,6 @@ public class TestUtil {
       OseeInfo.setValue(OseeInfo.DB_TYPE_KEY, set ? DEMO_DB_TYPE : "");
    }
 
-   public static void sleep(long milliseconds) {
-      //      System.out.println("Sleeping " + milliseconds);
-      try {
-         Thread.sleep(milliseconds);
-      } catch (InterruptedException ex) {
-         // do nothing
-      }
-      //      System.out.println("Awake");
-   }
-
    public static SevereLoggingMonitor severeLoggingStart() throws Exception {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
