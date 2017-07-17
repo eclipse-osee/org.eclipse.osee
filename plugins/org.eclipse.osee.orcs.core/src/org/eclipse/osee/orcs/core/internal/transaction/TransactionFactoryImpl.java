@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -187,4 +188,16 @@ public class TransactionFactoryImpl implements TransactionFactory {
    public int[] purgeUnusedBackingDataAndTransactions() {
       return txDataStore.purgeUnusedBackingDataAndTransactions();
    }
+
+   @Override
+   public boolean setTransactionCommitArtifact(TransactionId trans, ArtifactToken commitArt) {
+      TransactionReadable tx = getTx(trans);
+      boolean modified = false;
+      if (Compare.isDifferent(tx.getCommitArt(), commitArt)) {
+         txCallableFactory.setTransactionCommitArtifact(session, trans, commitArt);
+         modified = true;
+      }
+      return modified;
+   }
+
 }

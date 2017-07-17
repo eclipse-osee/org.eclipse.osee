@@ -183,4 +183,5 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    public void setAssociatedArtId(BranchId branch, ArtifactId artifact) {
       BranchManager.setAssociatedArtifactId(branch, artifact);
    }
+
 }

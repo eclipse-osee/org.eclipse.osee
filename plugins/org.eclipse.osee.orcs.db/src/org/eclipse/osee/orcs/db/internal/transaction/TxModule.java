@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.transaction;
 
+import static org.eclipse.osee.framework.jdk.core.util.Conditions.checkNotNull;
 import java.util.Collection;
 import java.util.concurrent.Callable;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
@@ -37,6 +39,8 @@ public class TxModule {
    private final JdbcClient jdbcClient;
    private final SqlJoinFactory sqlJoinFactory;
    private final IdentityManager idManager;
+   private static final String UPDATE_TRANSACTION_COMMIT_ART_ID =
+      "UPDATE osee_tx_details SET commit_art_id = ? WHERE transaction_id = ?";
 
    public TxModule(Log logger, JdbcClient jdbcClient, SqlJoinFactory sqlJoinFactory, IdentityManager identityService) {
       super();
@@ -74,6 +78,15 @@ public class TxModule {
          public int[] purgeUnusedBackingDataAndTransactions() {
             PurgeUnusedBackingDataAndTransactions op = new PurgeUnusedBackingDataAndTransactions(jdbcClient);
             return op.purge();
+         }
+
+         @Override
+         public void setTransactionCommitArtifact(OrcsSession session, TransactionId transaction, ArtifactToken commitArt) {
+            checkNotNull(transaction, "transaction");
+            checkNotNull(commitArt, "commitArt");
+
+            jdbcClient.runPreparedUpdate(UPDATE_TRANSACTION_COMMIT_ART_ID, commitArt.getId().toString(),
+               transaction.getIdString());
          }
       };
    }

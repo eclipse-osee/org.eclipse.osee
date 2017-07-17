@@ -156,7 +156,11 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    @Override
    public void setBranchName(IOseeBranch branch, String name) {
-      orcsApi.getBranchOps().changeBranchName(branch, name);
+      try {
+         orcsApi.getBranchOps().changeBranchName(branch, name).call();
+      } catch (Exception ex) {
+         throw new OseeWrappedException(ex, "Error setting branch name");
+      }
    }
 
    @Override

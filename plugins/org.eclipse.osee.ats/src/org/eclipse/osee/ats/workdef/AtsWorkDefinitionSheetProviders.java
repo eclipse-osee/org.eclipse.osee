@@ -66,8 +66,8 @@ public final class AtsWorkDefinitionSheetProviders {
    }
 
    public static void importWorkDefinitionSheets(XResultData resultData, IAtsChangeSet changes, Artifact folder, Collection<WorkDefinitionSheet> sheets, Set<String> stateNames) throws OseeCoreException {
+      OseeLog.logf(Activator.class, Level.INFO, "Importing ATS Work Definitions");
       for (WorkDefinitionSheet sheet : sheets) {
-         OseeLog.logf(Activator.class, Level.INFO, "Importing ATS Work Definitions [%s]", sheet.getName());
          Artifact artifact =
             AtsWorkDefinitionImporter.get().importWorkDefinitionSheetToDb(sheet, resultData, stateNames, changes);
          if (artifact != null) {
@@ -78,8 +78,8 @@ public final class AtsWorkDefinitionSheetProviders {
    }
 
    public static void importTeamsAndAis(XResultData resultData, IAtsChangeSet changes, Artifact folder, Collection<WorkDefinitionSheet> sheets, String dbType) throws OseeCoreException {
+      OseeLog.logf(Activator.class, Level.INFO, "Importing ATS Teams and AIs");
       for (WorkDefinitionSheet sheet : sheets) {
-         OseeLog.logf(Activator.class, Level.INFO, "Importing ATS Teams and AIs [%s]", sheet.getName());
          importAIsAndTeamsToDb(sheet, changes);
       }
    }
@@ -88,7 +88,7 @@ public final class AtsWorkDefinitionSheetProviders {
 
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("Import ATS AIs and Team Definitions");
       for (WorkDefinitionSheet sheet : getWorkDefinitionSheets(dbType)) {
-         OseeLog.logf(Activator.class, Level.INFO, "Importing ATS AIs and Teams sheet [%s]", sheet.getName());
+         OseeLog.logf(Activator.class, Level.INFO, "Importing ATS AIs and Teams sheet");
          importAIsAndTeamsToDb(sheet, changes);
       }
       changes.execute();

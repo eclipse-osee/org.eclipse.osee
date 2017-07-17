@@ -150,4 +150,5 @@ public interface IAtsBranchService {
    CompareResults getChangeData(TransactionToken transaction);
 
    void setAssociatedArtId(BranchId branch, ArtifactId artifact);
+
 }

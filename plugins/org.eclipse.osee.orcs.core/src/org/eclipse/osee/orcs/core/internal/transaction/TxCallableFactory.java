@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.core.internal.transaction;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.executor.admin.CancellableCallable;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -129,6 +130,10 @@ public class TxCallableFactory {
 
       protected abstract T innerCall() throws Exception;
 
+   }
+
+   public void setTransactionCommitArtifact(OrcsSession session, TransactionId trans, ArtifactToken commitArt) {
+      txDataStore.setTransactionCommitArtifact(session, trans, commitArt);
    }
 
 }
