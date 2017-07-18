@@ -112,7 +112,7 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
       List<ApplicabilityToken> result = getViewApplicabilityTokens(viewId, branch);
 
       for (ApplicabilityToken app : result) {
-         if (!app.getName().equalsIgnoreCase("Base")) {
+         if (!app.getName().equalsIgnoreCase("Base") && !app.getName().contains("|") && !app.getName().contains("&")) {
             String[] values = app.getName().split("=");
 
             // This will not return Excluded Configurations
