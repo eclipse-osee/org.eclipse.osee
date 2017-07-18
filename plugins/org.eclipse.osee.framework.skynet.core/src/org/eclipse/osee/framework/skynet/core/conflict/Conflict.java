@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -137,7 +138,7 @@ public abstract class Conflict implements Adaptable {
 
    public abstract ConflictStatus computeStatus() throws OseeCoreException;
 
-   protected ConflictStatus computeStatus(int objectID, ConflictStatus defaultStatus) throws OseeCoreException {
+   protected ConflictStatus computeStatus(Id objectID, ConflictStatus defaultStatus) throws OseeCoreException {
       ConflictStatus passedStatus = defaultStatus;
       try {
          if (sourceEqualsDestination() && mergeEqualsSource()) {
@@ -228,7 +229,7 @@ public abstract class Conflict implements Adaptable {
 
    public abstract int getMergeGammaId() throws OseeCoreException;
 
-   public abstract int getObjectId() throws OseeCoreException;
+   public abstract Id getObjectId();
 
    public abstract boolean applyPreviousMerge(BranchId mergeBranchId, BranchId destBranchId);
 }

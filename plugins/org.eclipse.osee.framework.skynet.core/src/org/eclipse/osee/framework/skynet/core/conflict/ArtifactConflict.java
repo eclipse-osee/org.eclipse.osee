@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.BranchMergeException;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -57,8 +58,8 @@ public class ArtifactConflict extends Conflict {
    }
 
    @Override
-   public int getObjectId() {
-      return getArtId().getId().intValue();
+   public Id getObjectId() {
+      return getArtId();
    }
 
    @Override

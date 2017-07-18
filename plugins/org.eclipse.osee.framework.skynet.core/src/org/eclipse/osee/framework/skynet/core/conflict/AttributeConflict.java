@@ -18,6 +18,7 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -27,6 +28,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
@@ -53,7 +55,7 @@ public class AttributeConflict extends Conflict {
       "Can not mark as resolved an attribute that has merge markup.  Finish merging the document to be able to resolve the conflict.";
    public final static String DIFF_MERGE_MARKUP =
       "Can not run a diff against an attribute that has merge markup.  Finish merging the document to be able to resolve the conflict.";
-   private final int attrId;
+   private final AttributeId attrId;
    private final long attrTypeId;
    private Object sourceObject;
    private Object destObject;
@@ -64,7 +66,7 @@ public class AttributeConflict extends Conflict {
    private static final boolean DEBUG =
       "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Merge"));
 
-   public AttributeConflict(int sourceGamma, int destGamma, ArtifactId artId, TransactionToken toTransactionId, TransactionToken commitTransaction, String sourceValue, int attrId, long attrTypeId, BranchId mergeBranch, IOseeBranch sourceBranch, IOseeBranch destBranch) throws OseeCoreException {
+   public AttributeConflict(int sourceGamma, int destGamma, ArtifactId artId, TransactionToken toTransactionId, TransactionToken commitTransaction, String sourceValue, AttributeId attrId, long attrTypeId, BranchId mergeBranch, IOseeBranch sourceBranch, IOseeBranch destBranch) throws OseeCoreException {
       super(sourceGamma, destGamma, artId, toTransactionId, commitTransaction, mergeBranch, sourceBranch, destBranch);
       this.attrId = attrId;
       this.attrTypeId = attrTypeId;
@@ -161,7 +163,7 @@ public class AttributeConflict extends Conflict {
       return toReturn;
    }
 
-   public int getAttrId() {
+   public AttributeId getAttrId() {
       return attrId;
    }
 
@@ -220,12 +222,12 @@ public class AttributeConflict extends Conflict {
       if (!getStatus().isOverwriteAllowed()) {
          if (DEBUG) {
             System.out.println(
-               String.format("AttributeConflict: Failed setting the Merge Value for attr_id %d", getAttrId()));
+               String.format("AttributeConflict: Failed setting the Merge Value for attr_id %s", getAttrId()));
          }
          return false;
       }
       if (DEBUG) {
-         System.out.println(String.format("AttributeConflict: Set the Merge Value for attr_id %d", getAttrId()));
+         System.out.println(String.format("AttributeConflict: Set the Merge Value for attr_id %s", getAttrId()));
       }
       getArtifact().setSoleAttributeFromString(getAttributeType(), value);
       getArtifact().persist(getClass().getSimpleName());
@@ -237,12 +239,12 @@ public class AttributeConflict extends Conflict {
       if (!getStatus().isOverwriteAllowed()) {
          if (DEBUG) {
             System.out.println(
-               String.format("AttributeConflict: Failed setting the Merge Value for attr_id %d", getAttrId()));
+               String.format("AttributeConflict: Failed setting the Merge Value for attr_id %s", getAttrId()));
          }
          return false;
       }
       if (DEBUG) {
-         System.out.println(String.format("AttributeConflict: Set the Merge Value for attr_id %d", getAttrId()));
+         System.out.println(String.format("AttributeConflict: Set the Merge Value for attr_id %s", getAttrId()));
       }
       getArtifact().setSoleAttributeValue(getAttributeType(), value);
       getArtifact().persist(getClass().getSimpleName());
@@ -255,13 +257,13 @@ public class AttributeConflict extends Conflict {
       if (!getStatus().isOverwriteAllowed() || getSourceObject() == null) {
          if (DEBUG) {
             System.out.println(String.format(
-               "AttributeConflict: Failed setting the Merge Value to the Source Value for attr_id %d", getAttrId()));
+               "AttributeConflict: Failed setting the Merge Value to the Source Value for attr_id %s", getAttrId()));
          }
          return false;
       }
       if (DEBUG) {
          System.out.println(
-            String.format("AttributeConflict: Set the Merge Value to the Source Value for attr_id %d", getAttrId()));
+            String.format("AttributeConflict: Set the Merge Value to the Source Value for attr_id %s", getAttrId()));
       }
       getArtifact().setSoleAttributeValue(getAttributeType(), getSourceObject());
       getArtifact().persist(getClass().getSimpleName());
@@ -274,13 +276,13 @@ public class AttributeConflict extends Conflict {
       if (!getStatus().isOverwriteAllowed() || getDestObject() == null) {
          if (DEBUG) {
             System.out.println(String.format(
-               "AttributeConflict: Failed setting the Merge Value to the Dest Value for attr_id %d", getAttrId()));
+               "AttributeConflict: Failed setting the Merge Value to the Dest Value for attr_id %s", getAttrId()));
          }
          return false;
       }
       if (DEBUG) {
          System.out.println(
-            String.format("AttributeConflict: Set the Merge Value to the Dest Value for attr_id %d", getAttrId()));
+            String.format("AttributeConflict: Set the Merge Value to the Dest Value for attr_id %s", getAttrId()));
       }
       getArtifact().setSoleAttributeValue(getAttributeType(), getDestObject());
       getArtifact().persist(getClass().getSimpleName());
@@ -293,12 +295,12 @@ public class AttributeConflict extends Conflict {
       if (!getStatus().isOverwriteAllowed()) {
          if (DEBUG) {
             System.out.println(
-               String.format("AttributeConflict: Failed to clear the Merge Value for attr_id %d", getAttrId()));
+               String.format("AttributeConflict: Failed to clear the Merge Value for attr_id %s", getAttrId()));
          }
          return false;
       }
       if (DEBUG) {
-         System.out.println(String.format("AttributeConflict: Cleared the Merge Value for attr_id %d", getAttrId()));
+         System.out.println(String.format("AttributeConflict: Cleared the Merge Value for attr_id %s", getAttrId()));
       }
       setStatus(ConflictStatus.UNTOUCHED);
       if (isWordAttribute()) {
@@ -369,7 +371,7 @@ public class AttributeConflict extends Conflict {
    }
 
    @Override
-   public int getObjectId() {
+   public Id getObjectId() {
       return attrId;
    }
 

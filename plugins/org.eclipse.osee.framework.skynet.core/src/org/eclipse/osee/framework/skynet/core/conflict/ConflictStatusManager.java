@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -47,7 +48,7 @@ public class ConflictStatusManager {
       }
    }
 
-   public static ConflictStatus computeStatus(int sourceGamma, int destGamma, BranchId branch, int objectID, int conflictType, ConflictStatus passedStatus, TransactionId transactionId) throws OseeCoreException {
+   public static ConflictStatus computeStatus(int sourceGamma, int destGamma, BranchId branch, Id objectID, int conflictType, ConflictStatus passedStatus, TransactionId transactionId) throws OseeCoreException {
       //Check for a value in the table, if there is not one in there then
       //add it with an unedited setting and return unedited
       //If gammas are out of date, update the gammas and down grade markedMerged to Edited

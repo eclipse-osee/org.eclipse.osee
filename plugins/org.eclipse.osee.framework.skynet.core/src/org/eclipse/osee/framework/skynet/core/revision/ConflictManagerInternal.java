@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -110,8 +111,8 @@ public class ConflictManagerInternal {
             }
             AttributeConflict attributeConflict = new AttributeConflict(chStmt.getInt("source_gamma_id"),
                chStmt.getInt("dest_gamma_id"), ArtifactId.valueOf(chStmt.getLong("art_id")), null, commitTransaction,
-               chStmt.getString("source_value"), chStmt.getInt("attr_id"), chStmt.getLong("attr_type_id"),
-               BranchId.valueOf(chStmt.getLong("merge_branch_id")), sourceBranch,
+               chStmt.getString("source_value"), AttributeId.valueOf(chStmt.getInt("attr_id")),
+               chStmt.getLong("attr_type_id"), BranchId.valueOf(chStmt.getLong("merge_branch_id")), sourceBranch,
                BranchManager.getBranchToken(chStmt.getLong("dest_branch_id")));
             attributeConflict.setStatus(ConflictStatus.valueOf(chStmt.getInt("status")));
             conflicts.add(attributeConflict);
@@ -288,10 +289,10 @@ public class ConflictManagerInternal {
          chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.CONFLICT_GET_ATTRIBUTES), sourceBranch,
             BranchManager.getBaseTransaction(sourceBranch), destinationBranch, commonTransaction.getBranch(),
             commonTransaction);
-         int attrId = 0;
+         AttributeId attrId = AttributeId.SENTINEL;
 
          while (chStmt.next()) {
-            int nextAttrId = chStmt.getInt("attr_id");
+            AttributeId nextAttrId = AttributeId.valueOf(chStmt.getInt("attr_id"));
             ArtifactId artId = ArtifactId.valueOf(chStmt.getLong("art_id"));
             int sourceGamma = chStmt.getInt("source_gamma");
             int destGamma = chStmt.getInt("dest_gamma");
@@ -299,7 +300,7 @@ public class ConflictManagerInternal {
             String sourceValue = chStmt.getString("source_value") != null ? chStmt.getString(
                "source_value") : chStmt.getString("dest_value");
 
-            if (attrId != nextAttrId && isAttributeConflictValid(destGamma, sourceBranch)) {
+            if (attrId.notEqual(nextAttrId) && isAttributeConflictValid(destGamma, sourceBranch)) {
                attrId = nextAttrId;
                attributeConflictBuilder = new AttributeConflictBuilder(sourceGamma, destGamma, artId,
                   baselineTransaction, sourceBranch, destinationBranch, sourceValue, attrId, attrTypeId);
@@ -354,7 +355,7 @@ public class ConflictManagerInternal {
       if (conflicts != null && conflicts.size() != 0 && branch.isValid()) {
          try (Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery()) {
             for (Conflict conflict : conflicts) {
-               joinQuery.add(branch, ArtifactId.valueOf(conflict.getObjectId()),
+               joinQuery.add(branch, conflict.getObjectId(),
                   TransactionId.valueOf(conflict.getConflictType().getValue()));
             }
             joinQuery.store();

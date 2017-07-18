@@ -14,10 +14,12 @@ package org.eclipse.osee.framework.skynet.core.conflict;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.exception.BranchMergeException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 
 /**
  * @author Theron Virgin
@@ -39,8 +41,8 @@ public class RelationConflict extends Conflict {
    }
 
    @Override
-   public int getObjectId() {
-      return 0;
+   public Id getObjectId() {
+      return RelationId.SENTINEL;
    }
 
    @Override

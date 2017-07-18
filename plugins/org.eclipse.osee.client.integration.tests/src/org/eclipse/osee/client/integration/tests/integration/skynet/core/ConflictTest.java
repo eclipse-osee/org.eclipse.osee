@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.ConflictTestManager;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -29,6 +30,7 @@ import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -224,8 +226,7 @@ public class ConflictTest {
 
       List<Attribute<Object>> attributes = onChild1.getAttributes(CoreAttributeTypes.ParagraphNumber);
       Assert.assertTrue(attributes.size() == 1);
-      Attribute<Object> attr = attributes.iterator().next();
-      int child1AttrId = attr.getId().intValue();
+      AttributeId child1AttrId = attributes.iterator().next();
 
       ConflictManagerExternal mgr = new ConflictManagerExternal(parent, child1);
       BranchManager.commitBranch(new NullProgressMonitor(), mgr, true, false);
@@ -237,10 +238,8 @@ public class ConflictTest {
 
       attributes = onChild2.getAttributes(CoreAttributeTypes.ParagraphNumber);
       Assert.assertTrue(attributes.size() == 1);
-      attr = attributes.iterator().next();
-      int child2AttrId = attr.getId().intValue();
 
-      Assert.assertNotEquals(child1AttrId, child2AttrId);
+      Assert.assertNotEquals(child1AttrId, attributes.iterator().next());
 
       // enable multiplicity conflict checking
       OseeInfo.setValue("osee.disable.multiplicity.conflicts", "false");
@@ -250,8 +249,8 @@ public class ConflictTest {
       List<Conflict> conflicts = mgr.getOriginalConflicts();
       Assert.assertTrue(conflicts.size() == 1);
       Conflict conflict = conflicts.iterator().next();
-      int conflictObjId = conflict.getObjectId();
-      Assert.assertEquals(child1AttrId, conflictObjId);
+      Id conflictObjId = conflict.getObjectId();
+      Assert.assertEquals(conflictObjId, child1AttrId);
 
       BranchManager.purgeBranch(BranchManager.getMergeBranch(child2, parent));
       BranchManager.purgeBranch(child2);

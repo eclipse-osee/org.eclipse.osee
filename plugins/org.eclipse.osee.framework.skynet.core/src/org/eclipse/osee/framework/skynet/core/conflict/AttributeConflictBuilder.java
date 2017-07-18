@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.conflict;
 
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -30,10 +31,10 @@ import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderParser
 public class AttributeConflictBuilder extends ConflictBuilder {
 
    private final String sourceValue;
-   private final int attrId;
+   private final AttributeId attrId;
    private final long attrTypeId;
 
-   public AttributeConflictBuilder(int sourceGamma, int destGamma, ArtifactId artId, TransactionToken toTransactionId, IOseeBranch sourceBranch, IOseeBranch destBranch, String sourceValue, int attrId, long attrTypeId) {
+   public AttributeConflictBuilder(int sourceGamma, int destGamma, ArtifactId artId, TransactionToken toTransactionId, IOseeBranch sourceBranch, IOseeBranch destBranch, String sourceValue, AttributeId attrId, long attrTypeId) {
       super(sourceGamma, destGamma, artId, toTransactionId, sourceBranch, destBranch);
       this.sourceValue = sourceValue;
       this.attrId = attrId;
