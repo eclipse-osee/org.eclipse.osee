@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchViewData;
 import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.grammar.ApplicabilityBlock;
@@ -45,6 +46,7 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.BranchReadable;
 
 public class WordMLApplicabilityHandler {
 
@@ -72,6 +74,11 @@ public class WordMLApplicabilityHandler {
       viewApplicabilitiesMap =
          orcsApi.getQueryFactory().applicabilityQuery().getBranchViewFeatureValues(branchToUse, view);
       configurationToView = viewApplicabilitiesMap.get("config").iterator().next();
+
+      BranchReadable br = orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getOneOrNull();
+      if (br.getBranchType().equals(BranchType.MERGE)) {
+         branch = br.getParentBranch();
+      }
 
       ArtifactReadable featureDefArt = orcsApi.getQueryFactory().fromBranch(branch).andTypeEquals(
          CoreArtifactTypes.FeatureDefinition).getResults().getExactlyOne();

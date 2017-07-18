@@ -139,7 +139,12 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
 
    @Override
    public List<FeatureDefinitionData> getFeatureDefinitionData() {
-      List<ArtifactReadable> featureDefinitionArts = orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(
+      BranchId branchToUse = branch;
+      BranchReadable br = orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getOneOrNull();
+      if (br.getBranchType().equals(BranchType.MERGE)) {
+         branchToUse = br.getParentBranch();
+      }
+      List<ArtifactReadable> featureDefinitionArts = orcsApi.getQueryFactory().fromBranch(branchToUse).andIsOfType(
          CoreArtifactTypes.FeatureDefinition).getResults().getList();
       return orcsApi.getQueryFactory().applicabilityQuery().getFeatureDefinitionData(featureDefinitionArts);
    }
