@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Boeing.
+ * Copyright (c) 2015 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,36 +8,37 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.users;
+package org.eclipse.osee.ats.api.user;
 
-import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.eclipse.osee.ats.api.config.JaxAtsObject;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 /**
  * @author Donald G. Dunne
  */
-public class AtsUser extends NamedIdBase implements IAtsUser {
+public class AtsUser extends JaxAtsObject implements IAtsUser {
 
    private String userId;
-   private final String email;
-   private final boolean isActive;
+   private String email;
+   private ArtifactToken storeObject;
+   private IUserArtLoader userArtLoader;
 
-   public AtsUser(UserToken user) {
-      this(user.getId(), user.getName(), user.getUserId(), user.getEmail(), user.isActive());
+   public AtsUser() {
+      // for jax-rs instantiation
    }
 
-   public AtsUser(Long id, String name, String userId, String email, boolean isActive) {
-      super(id, name);
+   public AtsUser(Long id, String name, String userId, String email, boolean active) {
       this.userId = userId;
       this.email = email;
-      this.isActive = isActive;
-
+      this.active = active;
+      this.uuid = id;
+      this.name = name;
    }
 
    @Override
@@ -52,6 +53,51 @@ public class AtsUser extends NamedIdBase implements IAtsUser {
    @Override
    public String getEmail() {
       return email;
+   }
+
+   public void setEmail(String email) {
+      this.email = email;
+   }
+
+   @Override
+   @JsonIgnore
+   public String toStringWithId() {
+      return String.format("[%s]-[%d]", getName(), getUserId());
+   }
+
+   @Override
+   @JsonIgnore
+   public ArtifactToken getStoreObject() {
+      if (storeObject == null && userArtLoader != null) {
+         storeObject = userArtLoader.loadUser(this);
+      }
+      return storeObject;
+   }
+
+   @Override
+   public void setStoreObject(ArtifactToken artifact) {
+      this.storeObject = artifact;
+   }
+
+   @JsonIgnore
+   public void setUserArtLoader(IUserArtLoader userArtLoader) {
+      this.userArtLoader = userArtLoader;
+   }
+
+   @Override
+   public Long getId() {
+      return getUuid();
+   }
+
+   @Override
+   @JsonIgnore
+   public IArtifactType getArtifactType() {
+      return CoreArtifactTypes.User;
+   }
+
+   @Override
+   public boolean isOfType(ArtifactTypeId... artifactTypes) {
+      return Collections.asHashSet(artifactTypes).contains(getArtifactType());
    }
 
    @Override
@@ -89,21 +135,6 @@ public class AtsUser extends NamedIdBase implements IAtsUser {
          return false;
       }
       return true;
-   }
-
-   @Override
-   public boolean isActive() {
-      return isActive;
-   }
-
-   @Override
-   public IArtifactType getArtifactType() {
-      return CoreArtifactTypes.User;
-   }
-
-   @Override
-   public boolean isOfType(ArtifactTypeId... artifactTypes) {
-      return Collections.asHashSet(artifactTypes).contains(getArtifactType());
    }
 
 }

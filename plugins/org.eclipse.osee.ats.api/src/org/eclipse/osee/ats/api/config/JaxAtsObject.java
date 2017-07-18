@@ -22,11 +22,11 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 @XmlRootElement
 public class JaxAtsObject {
 
-   private String name;
+   protected String name;
    @JsonSerialize(using = ToStringSerializer.class)
-   private Long uuid;
-   private String guid;
-   private boolean active;
+   protected Long uuid;
+   protected String guid;
+   protected boolean active;
    private String description;
 
    public String getName() {

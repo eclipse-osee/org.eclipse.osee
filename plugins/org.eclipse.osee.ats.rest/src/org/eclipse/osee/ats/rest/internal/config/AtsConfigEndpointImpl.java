@@ -43,8 +43,8 @@ import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.api.user.JaxAtsUser;
 import org.eclipse.osee.ats.api.workdef.JaxAtsWorkDef;
 import org.eclipse.osee.ats.api.workdef.WorkDefData;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
@@ -139,7 +139,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       configs.setValidStateNames(update.getValidStateNames());
       // load users
       for (IAtsUser user : services.getUserService().getUsersFromDb()) {
-         configs.getUsers().add((JaxAtsUser) user);
+         configs.getUsers().add((AtsUser) user);
       }
       // load admins
       ArtifactReadable atsAdminArt = orcsApi.getQueryFactory().fromBranch(services.getAtsBranch()).andIds(

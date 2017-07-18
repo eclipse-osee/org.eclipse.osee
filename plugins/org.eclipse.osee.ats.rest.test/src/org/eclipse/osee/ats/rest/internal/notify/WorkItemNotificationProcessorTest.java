@@ -34,13 +34,13 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
-import org.eclipse.osee.ats.core.users.AtsUser;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.UserToken;
@@ -81,7 +81,8 @@ public class WorkItemNotificationProcessorTest {
    // @formatter:on
 
    private IAtsUser setupUser(UserToken userToken) {
-      IAtsUser user = new AtsUser(userToken);
+      IAtsUser user = new AtsUser(userToken.getId(), userToken.getName(), userToken.getUserId(),
+         userToken.getEmail(), userToken.isActive());
       when(userService.getUserById(userToken.getUserId())).thenReturn(user);
       return user;
    }

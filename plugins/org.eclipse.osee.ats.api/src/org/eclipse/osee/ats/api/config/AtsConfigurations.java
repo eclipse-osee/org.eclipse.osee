@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.codehaus.jackson.annotate.JsonIgnore;
-import org.eclipse.osee.ats.api.user.JaxAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.ColorColumns;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionStringProvider;
 import org.eclipse.osee.ats.api.workdef.WorkDefData;
@@ -33,7 +33,7 @@ public class AtsConfigurations implements IAtsWorkDefinitionStringProvider {
    private List<AtsConfiguration> configs = new ArrayList<>();
    private AtsViews views = new AtsViews();
    private ColorColumns colorColumns = new ColorColumns();
-   List<JaxAtsUser> users = new ArrayList<>();
+   List<AtsUser> users = new ArrayList<>();
    List<Long> atsAdmins = new ArrayList<>();
    Long topActionableItem;
    Long topTeamDefinition;
@@ -64,11 +64,11 @@ public class AtsConfigurations implements IAtsWorkDefinitionStringProvider {
       this.colorColumns = colorColumns;
    }
 
-   public List<JaxAtsUser> getUsers() {
+   public List<AtsUser> getUsers() {
       return users;
    }
 
-   public void setUsers(List<JaxAtsUser> users) {
+   public void setUsers(List<AtsUser> users) {
       this.users = users;
    }
 

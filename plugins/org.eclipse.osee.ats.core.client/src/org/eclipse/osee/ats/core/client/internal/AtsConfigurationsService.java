@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationProvider;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IUserArtLoader;
-import org.eclipse.osee.ats.api.user.JaxAtsUser;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -53,7 +53,7 @@ public class AtsConfigurationsService implements IAtsConfigurationProvider {
    private AtsConfigurations loadConfigurations() {
       AtsConfigurations configs = AtsClientService.getConfigEndpoint().get();
       for (IAtsUser user : configs.getUsers()) {
-         JaxAtsUser jUser = (JaxAtsUser) user;
+         AtsUser jUser = (AtsUser) user;
          jUser.setUserArtLoader(userLoader);
       }
       return configs;

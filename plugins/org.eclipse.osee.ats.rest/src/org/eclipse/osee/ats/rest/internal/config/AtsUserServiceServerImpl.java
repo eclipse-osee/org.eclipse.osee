@@ -10,14 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.config;
 
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.api.user.JaxAtsUser;
 import org.eclipse.osee.ats.core.users.AbstractAtsUserService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -27,6 +25,8 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 
 /**
  * @author Donald G. Dunne
@@ -72,8 +72,8 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
       };
    }
 
-   private JaxAtsUser createFromArtifact(ArtifactReadable userArt) {
-      JaxAtsUser atsUser = new JaxAtsUser();
+   private AtsUser createFromArtifact(ArtifactReadable userArt) {
+      AtsUser atsUser = new AtsUser();
       atsUser.setName(userArt.getName());
       atsUser.setStoreObject(userArt);
       atsUser.setUserId(userArt.getSoleAttributeAsString(CoreAttributeTypes.UserId, ""));
@@ -94,7 +94,7 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
       for (ArtifactId art : orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(
          CoreArtifactTypes.User).getResults()) {
          ArtifactReadable userArt = (ArtifactReadable) art;
-         JaxAtsUser atsUser = createFromArtifact(userArt);
+         AtsUser atsUser = createFromArtifact(userArt);
          users.add(atsUser);
       }
       return users;

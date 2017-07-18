@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.users;
 
 import java.util.HashMap;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -27,13 +28,6 @@ import org.junit.Test;
  * @author Donald G. Dunne
  */
 public class CoreAtsUsersTest {
-
-   @Test
-   public void testGetDescription() {
-      Assert.assertEquals(SystemUser.OseeSystem.getName(), AtsCoreUsers.SYSTEM_USER.getDescription());
-      Assert.assertEquals(SystemUser.Anonymous.getName(), AtsCoreUsers.ANONYMOUS_USER.getDescription());
-      Assert.assertEquals(SystemUser.UnAssigned.getName(), AtsCoreUsers.UNASSIGNED_USER.getDescription());
-   }
 
    @Test
    public void testIsActive() {

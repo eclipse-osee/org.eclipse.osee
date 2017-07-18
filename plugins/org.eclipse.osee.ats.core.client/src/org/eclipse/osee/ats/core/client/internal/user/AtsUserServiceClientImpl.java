@@ -18,8 +18,8 @@ import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationProvider;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.api.user.JaxAtsUser;
 import org.eclipse.osee.ats.core.client.IAtsUserServiceClient;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.users.AbstractAtsUserService;
@@ -167,8 +167,8 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
       return null;
    }
 
-   private JaxAtsUser createFromArtifact(Artifact userArt) {
-      JaxAtsUser atsUser = new JaxAtsUser();
+   private AtsUser createFromArtifact(Artifact userArt) {
+      AtsUser atsUser = new AtsUser();
       atsUser.setName(userArt.getName());
       atsUser.setStoreObject(userArt);
       atsUser.setUserId(userArt.getSoleAttributeValue(CoreAttributeTypes.UserId, ""));
@@ -210,7 +210,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
    public List<IAtsUser> getUsersFromDb() {
       List<IAtsUser> users = new ArrayList<>();
       for (ArtifactId userArt : ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.User, CoreBranches.COMMON)) {
-         JaxAtsUser atsUser = createFromArtifact((Artifact) userArt);
+         AtsUser atsUser = createFromArtifact((Artifact) userArt);
          users.add(atsUser);
       }
       return users;
