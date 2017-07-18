@@ -180,21 +180,16 @@ public class WordMLApplicabilityHandler {
 
             int paragraphEndIndex = findParagraphEnd.indexOf(WordCoreUtil.END_PARAGRAPH) + endInsertIndex + 6;
             if (paragraphEndIndex >= 0) {
-               applicabilityBlock.setStartInsertIndex(paragraphStartIndex);
-               applicabilityBlock.setStartTextIndex(paragraphStartIndex);
-               applicabilityBlock.setEndInsertIndex(paragraphEndIndex);
-               applicabilityBlock.setEndTextIndex(paragraphEndIndex);
-            }
+               // check this doesn't contain feature/config tags
+               String endText = fullWordMl.substring(endInsertIndex, paragraphEndIndex);
 
-            // check this doesn't contain feature/config tags
-            String endText = fullWordMl.substring(endInsertIndex, paragraphEndIndex);
-
-            if (paragraphEndIndex >= 0 && !endText.matches(
-               "(?i).*?(" + WordCoreUtil.BEGINFEATURE + "|" + WordCoreUtil.BEGINCONFIG + "|" + WordCoreUtil.ENDCONFIG + "|" + WordCoreUtil.ENDFEATURE + ").*?")) {
-               applicabilityBlock.setStartInsertIndex(paragraphStartIndex);
-               applicabilityBlock.setStartTextIndex(paragraphStartIndex);
-               applicabilityBlock.setEndInsertIndex(paragraphEndIndex);
-               applicabilityBlock.setEndTextIndex(paragraphEndIndex);
+               if (paragraphEndIndex >= 0 && WordCoreUtil.textOnly(endText).isEmpty() && !endText.matches(
+                  "(?i).*?(" + WordCoreUtil.BEGINFEATURE + "|" + WordCoreUtil.BEGINCONFIG + "|" + WordCoreUtil.ENDCONFIG + "|" + WordCoreUtil.ENDFEATURE + ").*?")) {
+                  applicabilityBlock.setStartInsertIndex(paragraphStartIndex);
+                  applicabilityBlock.setStartTextIndex(paragraphStartIndex);
+                  applicabilityBlock.setEndInsertIndex(paragraphEndIndex);
+                  applicabilityBlock.setEndTextIndex(paragraphEndIndex);
+               }
             }
          } else {
             String findParagraphEnd = fullWordMl.substring(startInsertIndex);
