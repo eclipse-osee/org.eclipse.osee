@@ -87,7 +87,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
       try {
          writer = jsonFactory.createJsonGenerator(entityStream);
          addWorkItem(atsServer, config, annotations, writer, matches(IdentityView.class, annotations),
-            getAttributeTypes());
+            getAttributeTypes(), false);
       } finally {
          if (writer != null) {
             writer.flush();
@@ -95,7 +95,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
       }
    }
 
-   protected static void addWorkItem(IAtsServer atsServer, IAtsWorkItem config, Annotation[] annotations, JsonGenerator writer, boolean identityView, AttributeTypes attributeTypes) throws IOException, JsonGenerationException, JsonProcessingException {
+   protected static void addWorkItem(IAtsServer atsServer, IAtsWorkItem config, Annotation[] annotations, JsonGenerator writer, boolean identityView, AttributeTypes attributeTypes, boolean fieldsAsIds) throws IOException, JsonGenerationException, JsonProcessingException {
       ArtifactReadable action = (ArtifactReadable) config.getStoreObject();
       writer.writeStartObject();
       writer.writeNumberField("uuid", ConfigJsonWriter.getUuid(config, atsServer));
@@ -106,7 +106,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
       String actionUrl = AtsUtilCore.getActionUrl(atsId, ATS_UI_ACTION_PREFIX, atsServer);
       writer.writeStringField("actionLocation", actionUrl);
       if (!identityView) {
-         ConfigJsonWriter.addAttributeData(writer, attributeTypes, action);
+         ConfigJsonWriter.addAttributeData(writer, attributeTypes, action, fieldsAsIds);
          writer.writeStringField("TeamName", ActionPage.getTeamStr(atsServer, action));
          IAtsWorkItem workItem = atsServer.getWorkItemFactory().getWorkItem(action);
          writer.writeStringField("Assignees", workItem.getStateMgr().getAssigneesStr());

@@ -124,8 +124,8 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @GET
    @Produces({MediaType.APPLICATION_JSON})
    public Set<IAtsWorkItem> query(@Context UriInfo uriInfo) throws Exception {
-      MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters(true);
       Set<IAtsWorkItem> workItems = new HashSet<>();
+      MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters(true);
       Set<Entry<String, List<String>>> entrySet = queryParameters.entrySet();
       IAtsQuery query = services.getQueryService().createQuery(WorkItemType.WorkItem);
       for (Entry<String, List<String>> entry : entrySet) {

@@ -16,8 +16,10 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 import org.codehaus.jackson.JsonFactory;
@@ -35,8 +37,17 @@ import org.eclipse.osee.orcs.data.AttributeTypes;
 public class WorkItemsJsonWriter implements MessageBodyWriter<Collection<IAtsWorkItem>> {
 
    private JsonFactory jsonFactory;
-
    private IAtsServer atsServer;
+   @Context
+   private UriInfo uriInfo;
+
+   public UriInfo getUriInfo() {
+      return uriInfo;
+   }
+
+   public void setUriInfo(UriInfo uriInfo) {
+      this.uriInfo = uriInfo;
+   }
 
    public void setAtsServer(IAtsServer atsServer) {
       this.atsServer = atsServer;
@@ -79,9 +90,11 @@ public class WorkItemsJsonWriter implements MessageBodyWriter<Collection<IAtsWor
       try {
          writer = jsonFactory.createJsonGenerator(entityStream);
          writer.writeStartArray();
+         MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters(true);
+         boolean FieldsAsIds = queryParameters.containsKey("FieldsAsIds");
          for (IAtsWorkItem workItem : workItems) {
             WorkItemJsonWriter.addWorkItem(atsServer, workItem, annotations, writer,
-               matches(IdentityView.class, annotations), getAttributeTypes());
+               matches(IdentityView.class, annotations), getAttributeTypes(), FieldsAsIds);
          }
          writer.writeEndArray();
       } finally {

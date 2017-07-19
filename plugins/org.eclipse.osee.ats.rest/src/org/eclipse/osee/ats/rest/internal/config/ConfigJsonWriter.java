@@ -217,12 +217,12 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
          writer.writeStringField("Backlog", backlogArt != null ? String.valueOf(backlogArt.getName()) : "");
       }
       if (!identityView) {
-         addAttributeData(writer, attributeTypes, artifact);
+         addAttributeData(writer, attributeTypes, artifact, false);
       }
       writer.writeEndObject();
    }
 
-   public static void addAttributeData(JsonGenerator writer, AttributeTypes attributeTypes, ArtifactReadable artifact) throws IOException, JsonGenerationException, JsonProcessingException {
+   public static void addAttributeData(JsonGenerator writer, AttributeTypes attributeTypes, ArtifactReadable artifact, boolean fieldsAsIds) throws IOException, JsonGenerationException, JsonProcessingException {
       Collection<AttributeTypeToken> attrTypes = attributeTypes.getAll();
       ResultSet<? extends AttributeReadable<Object>> attributes = artifact.getAttributes();
       if (!attributes.isEmpty()) {
@@ -232,7 +232,11 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
                if (!attributeValues.isEmpty()) {
 
                   if (attributeValues.size() > 1) {
-                     writer.writeArrayFieldStart(attrType.getName());
+                     if (fieldsAsIds) {
+                        writer.writeArrayFieldStart(attrType.getIdString());
+                     } else {
+                        writer.writeArrayFieldStart(attrType.getName());
+                     }
                      for (Object value : attributeValues) {
                         writer.writeObject(value);
                      }
