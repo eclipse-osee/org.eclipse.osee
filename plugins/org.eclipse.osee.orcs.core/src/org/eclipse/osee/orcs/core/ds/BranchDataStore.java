@@ -33,6 +33,8 @@ import org.eclipse.osee.orcs.search.ApplicabilityQuery;
  */
 public interface BranchDataStore {
 
+   void addMissingApplicabilityFromParentBranch(BranchId branch);
+
    void createBranch(CreateBranchData branchData);
 
    void createBranchCopyTx(CreateBranchData branchData);

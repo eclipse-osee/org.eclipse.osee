@@ -172,6 +172,11 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
+   public void addMissingApplicabilityFromParentBranch() {
+      orcsApi.getBranchOps().addMissingApplicabilityFromParentBranch(branch);
+   }
+
+   @Override
    public ArtifactId getVersionConfig(ArtifactId version) {
       return applicabilityQuery.getVersionConfig(version, branch);
    }

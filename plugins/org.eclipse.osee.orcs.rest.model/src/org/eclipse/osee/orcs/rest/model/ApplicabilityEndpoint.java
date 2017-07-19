@@ -149,4 +149,10 @@ public interface ApplicabilityEndpoint {
    @POST
    void createDemoApplicability();
 
+   /**
+    * Copy missing tuples of type CoreTupleTypes.ViewApplicability from parent branch onto this branch
+    */
+   @POST
+   @Path("update-from-parent")
+   void addMissingApplicabilityFromParentBranch();
 }

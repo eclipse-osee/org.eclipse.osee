@@ -58,6 +58,9 @@ import org.eclipse.osee.orcs.search.ApplicabilityQuery;
  */
 public class BranchModule {
 
+   private static final String COPY_APPLIC =
+      "INSERT INTO osee_txs (branch_id, gamma_id, transaction_id, tx_current, mod_type, app_id)\n" + "with cte as (select branch_id as chid, baseline_transaction_id as chtx, parent_branch_id as pid from osee_branch where branch_id = ?)\n" + "select chid, txsP.gamma_id, chtx, tx_current, mod_type, app_id from cte, osee_tuple2 t2, osee_txs txsP where tuple_type = 2 and t2.gamma_id = txsP.gamma_id and txsP.branch_id = pid and txsP.tx_current =1 and not exists (select 1 from osee_txs txsC where txsC.branch_id = chid and txsC.gamma_id = txsP.gamma_id)";
+
    private final Log logger;
    private final JdbcClient jdbcClient;
    private final SqlJoinFactory joinFactory;
@@ -80,6 +83,11 @@ public class BranchModule {
    public BranchDataStore createBranchDataStore(final DataLoaderFactory dataLoaderFactory) {
       final MissingChangeItemFactory missingChangeItemFactory = new MissingChangeItemFactoryImpl(dataLoaderFactory);
       return new BranchDataStore() {
+         @Override
+         public void addMissingApplicabilityFromParentBranch(BranchId branch) {
+            jdbcClient.runPreparedUpdate(COPY_APPLIC, branch);
+         }
+
          @Override
          public void createBranch(CreateBranchData branchData) {
             jdbcClient.runTransaction(

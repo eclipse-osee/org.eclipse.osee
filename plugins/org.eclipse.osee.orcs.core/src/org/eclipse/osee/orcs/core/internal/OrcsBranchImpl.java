@@ -178,4 +178,8 @@ public class OrcsBranchImpl implements OrcsBranch {
       return createBranch(branchData);
    }
 
+   @Override
+   public void addMissingApplicabilityFromParentBranch(BranchId branch) {
+      branchStore.addMissingApplicabilityFromParentBranch(branch);
+   }
 }

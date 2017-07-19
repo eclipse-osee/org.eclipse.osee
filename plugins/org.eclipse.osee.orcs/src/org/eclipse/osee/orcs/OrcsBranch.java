@@ -90,4 +90,6 @@ public interface OrcsBranch {
 
    Callable<URI> checkBranchExchangeIntegrity(URI fileToCheck);
 
+   void addMissingApplicabilityFromParentBranch(BranchId branch);
+
 }
