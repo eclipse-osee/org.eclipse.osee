@@ -9,6 +9,18 @@ app.factory('CoverageFactory', function() {
     	}
     }
 	
+	CoverageFactory.getTextResolution = function(annotation) {
+		if (annotation.isLeaf) {
+            return annotation.resolution;
+        } else {
+        	if(annotation.isTopLevel) {
+        		return annotation.percentCompleteStr;
+        	} else {
+        		return annotation.childMetadata.completeCount + " / " + annotation.childMetadata.totalCount;
+        	}
+        }
+	}
+	
 	CoverageFactory.setTextForNonDefaultAnnotations = function(annotations, discrepancies) {
 		for(var i = 0; i < annotations.length; i++) {
 			if(!annotations[i].isDefault) { 

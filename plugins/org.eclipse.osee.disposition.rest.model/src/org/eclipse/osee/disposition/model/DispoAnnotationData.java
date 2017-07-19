@@ -142,8 +142,8 @@ public class DispoAnnotationData implements Identifiable<String> {
    }
 
    public boolean isResolutionTypeValid() {
-      return resolutionType != null && !resolutionType.equalsIgnoreCase("None") && !resolutionType.equalsIgnoreCase(
-         "null");
+      boolean isNonEmpty = !resolutionType.isEmpty() && resolutionType.length() > 0;
+      return isNonEmpty && !resolutionType.equalsIgnoreCase("None") && !resolutionType.equalsIgnoreCase("null");
    }
 
    public void disconnect() {

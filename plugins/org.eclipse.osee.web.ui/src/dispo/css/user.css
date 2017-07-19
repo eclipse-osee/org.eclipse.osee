@@ -324,8 +324,10 @@ input.cellInput:focus{
 	background-color: #7eff39;'
 }
 
-.coverage-invalid {
+.causing-invalid {
 	border: 2px dashed #ff8a8a;
 }
 
-
+.resolution-invalid {
+	border: 2px dashed #ff8a8a;
+}

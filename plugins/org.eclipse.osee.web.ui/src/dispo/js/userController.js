@@ -74,7 +74,11 @@ app.controller('userController', [
             });
 
             if(!$scope.isCoverage) {
-                $scope.validResolutions = [{
+                $scope.validResolutions = [
+                {
+                    text: "",
+                    value: ""
+                },{
                     text: "Code",
                     value: "CODE"
                 }, {
@@ -300,15 +304,11 @@ app.controller('userController', [
         }
         
         $scope.getTextResolution = function(annotation) {
-            if (annotation.isLeaf) {
-                return annotation.resolution;
-            } else {
-            	if(annotation.isTopLevel) {
-            		return annotation.percentCompleteStr;
-            	} else {
-            		return annotation.childMetadata.completeCount + " / " + annotation.childMetadata.totalCount;
-            	}
-            }
+        	if($scope.isCoverage) {
+        		return CoverageFactory.getTextResolution(annotation);
+        	} else {
+        		return annotation.resolution;
+        	}
         }
         
         $scope.getTextCoverage = function(annotation) {
@@ -536,6 +536,7 @@ app.controller('userController', [
                         itemId: $scope.selectedItem.guid,
                         annotationId: annotation.guid
                     }, function(data) {
+                    	// These two fields are updated on the server when editing an Annotation thus we need to update our copy of them
                         annotation.isConnected = data.isConnected;
                         annotation.isResolutionValid = data.isResolutionValid;
                         CoverageFactory.updatePercent(colDef, oldValue, annotation);
@@ -692,7 +693,14 @@ app.controller('userController', [
         }
         
         $scope.isCausingInvalid = function(annotation) {
-        	return annotation.isLeaf && annotation.resolutionType != "" && annotation.resolution == "";
+        	if($scope.isCoverage) {
+        		// Right now an invalid resolution is pretty straight forward and it's the same for coverage and test script dispo
+        		// If Resolution is valid but resolutionType is not then return true
+        		// In future, there might be more complicated reasons for invalid so putting a placeholder condition now
+        		return annotation.isLeaf && annotation.resolutionType != "" && annotation.resolution == "";
+        	} else {
+        		return annotation.resolutionType != "" && annotation.resolution == "";
+        	}
         }
         
         // MODALS -------------------------------------------------------------------------------------------------
