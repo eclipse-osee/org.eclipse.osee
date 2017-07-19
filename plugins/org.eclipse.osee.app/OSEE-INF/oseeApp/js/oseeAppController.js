@@ -26,10 +26,10 @@ app.controller('oseeAppController', [ 'OseeAppSchema', '$route', '$scope',
 						vm.doList = true;
 					});
 				} else {
-					vm.itemDataResource.get({
+					vm.itemDataResource.query({
 						atsId : vm.element
 					}, function(data) {
-						vm.oseeAppData = data;
+						vm.oseeAppData = data[0];
 						vm.doItem = true;
 					});
 				}

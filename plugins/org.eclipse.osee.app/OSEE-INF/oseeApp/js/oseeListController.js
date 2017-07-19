@@ -19,7 +19,7 @@ app.controller('oseeListController', [ 'OseeAppSchema', '$route', '$resource',
 				vm.gridOptions = {
 					columnDefs : result.UIGridColumns
 				};
-				vm.listDataResource = $resource(result.ItemRestURL);
+				vm.listDataResource = $resource(result.ListRestURL);
 				vm.listDataResource.query(function(listData) {
 					vm.gridOptions = {
 						enableColumnResizing : true,
