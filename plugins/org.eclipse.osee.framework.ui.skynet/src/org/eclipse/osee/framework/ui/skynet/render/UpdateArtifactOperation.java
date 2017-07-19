@@ -63,7 +63,7 @@ public class UpdateArtifactOperation extends AbstractOperation {
       List<Long> transferArts = Lists.newLinkedList();
 
       for (Artifact art : artifacts) {
-         transferArts.add((long) art.getArtId());
+         transferArts.add(art.getId());
       }
 
       byte[] data = Lib.fileToBytes(workingFile);
@@ -74,7 +74,7 @@ public class UpdateArtifactOperation extends AbstractOperation {
       wud.setThreeWayMerge(threeWayMerge);
       wud.setComment(getComment());
       wud.setMultiEdit(UserManager.getBooleanSetting(MsWordPreferencePage.MUTI_EDIT_SAVE_ALL_CHANGES));
-      wud.setUserArtId((long) UserManager.getUser().getArtId());
+      wud.setUserArtId(UserManager.getUser().getId());
 
       WordUpdateChange change = HttpWordUpdateRequest.updateWordArtifacts(wud);
       postProcessChange(change);

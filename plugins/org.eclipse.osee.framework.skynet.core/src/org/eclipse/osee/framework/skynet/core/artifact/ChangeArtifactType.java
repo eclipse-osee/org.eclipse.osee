@@ -244,7 +244,7 @@ public class ChangeArtifactType {
       String UPDATE = "UPDATE osee_artifact SET art_type_id = ? WHERE art_id = ?";
 
       for (Artifact artifact : inputArtifacts) {
-         insertData.add(toUpdate(newArtifactType.getId(), artifact.getArtId()));
+         insertData.add(new Object[] {newArtifactType, artifact});
       }
 
       ConnectionHandler.getJdbcClient().runBatchUpdate(UPDATE, insertData);
@@ -253,10 +253,6 @@ public class ChangeArtifactType {
          artifact.setArtifactType(newArtifactType);
          artifact.clearEditState();
       }
-   }
-
-   private Object[] toUpdate(long art_type_id, int art_id) {
-      return new Object[] {art_type_id, art_id};
    }
 
    private IdJoinQuery populateArtIdsInJoinIdTable(Collection<? extends Artifact> inputArtifacts) throws OseeDataStoreException {

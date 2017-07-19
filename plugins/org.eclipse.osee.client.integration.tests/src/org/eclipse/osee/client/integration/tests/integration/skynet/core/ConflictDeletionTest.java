@@ -120,7 +120,7 @@ public class ConflictDeletionTest {
       TransactionId deletionTransaction = TransactionId.SENTINEL;
       for (Artifact artifact : artifactsToCheck) {
          deletionTransaction = artifact.getTransaction();
-         assertTrue("Artifact " + artifact.getArtId() + " should be deleted, but isn't", artifact.isDeleted());
+         assertTrue("Artifact " + artifact + " should be deleted, but isn't", artifact.isDeleted());
          //Now Check Artifact in the DB tx_currents etc
 
          if (DEBUG) {
@@ -128,24 +128,24 @@ public class ConflictDeletionTest {
          } else {
             try {
                chStmt.runPreparedQuery(CHECK_FOR_ZERO_TX_CURRENT, artifact.getBranch(), artifact.getTransaction(),
-                  artifact.getArtId());
+                  artifact);
                if (chStmt.next()) {
                   fail(
-                     "Artifact " + artifact.getArtId() + " old Transaction < " + artifact.getTransaction() + "  is set to " + chStmt.getInt(
+                     "Artifact " + artifact + " old Transaction < " + artifact.getTransaction() + "  is set to " + chStmt.getInt(
                         "tx_current") + " , should be 0 on branch " + artifact.getBranch());
                }
             } finally {
                chStmt.close();
             }
             try {
-               chStmt.runPreparedQuery(CHECK_FOR_DELETED_TX_CURRENT, artifact.getBranch(), artifact.getArtId());
+               chStmt.runPreparedQuery(CHECK_FOR_DELETED_TX_CURRENT, artifact.getBranch(), artifact);
                if (chStmt.next()) {
                   assertTrue(
-                     "Artifact " + artifact.getArtId() + " Transaction: " + artifact.getTransaction() + " should be 3 on branch " + artifact.getBranch(),
+                     "Artifact " + artifact + " Transaction: " + artifact.getTransaction() + " should be 3 on branch " + artifact.getBranch(),
                      artifact.getTransaction().equals(chStmt.getLong("transaction_id")));
                } else {
                   fail(
-                     "Artifact " + artifact.getArtId() + " was not given a tx_current value of 2 when it was deleted on branch " + artifact.getBranch() + " on transaction " + artifact.getTransaction());
+                     "Artifact " + artifact + " was not given a tx_current value of 2 when it was deleted on branch " + artifact.getBranch() + " on transaction " + artifact.getTransaction());
                }
             } finally {
                chStmt.close();
@@ -185,18 +185,17 @@ public class ConflictDeletionTest {
             } else {
                try {
                   chStmt.runPreparedQuery(CHECK_FOR_ZERO_TX_CURRENT, artifact.getBranch(), deletionTransaction,
-                     artifact.getArtId());
+                     artifact);
                   if (chStmt.next()) {
                      if (deletionTransaction.equals(chStmt.getLong("transaction_id"))) {
-                        fail("Artifact " + artifact.getArtId() + " tx_current set on  " + chStmt.getInt(
+                        fail("Artifact " + artifact + " tx_current set on  " + chStmt.getInt(
                            "transaction_id") + " when it should be < " + deletionTransaction + " on branch " + artifact.getBranch());
                      }
                      if (chStmt.next()) {
-                        fail(
-                           "Artifact " + artifact.getArtId() + " has multiple tx_current set on " + artifact.getBranch());
+                        fail("Artifact " + artifact + " has multiple tx_current set on " + artifact.getBranch());
                      }
                   } else {
-                     fail("Artifact " + artifact.getArtId() + " has no tx_current set on " + artifact.getBranch());
+                     fail("Artifact " + artifact + " has no tx_current set on " + artifact.getBranch());
                   }
                } finally {
                   chStmt.close();
@@ -375,7 +374,7 @@ public class ConflictDeletionTest {
       try {
          if (DEBUG) {
             System.out.println("  Artifact Dump : " + artifact.getName());
-            chStmt.runPreparedQuery(GET_ARTIFACT_DEBUG, artifact.getBranch(), artifact.getArtId());
+            chStmt.runPreparedQuery(GET_ARTIFACT_DEBUG, artifact.getBranch(), artifact);
             while (chStmt.next()) {
                System.out.println(String.format(
                   "      Art Id = %d  Branch Uuid = %d TX_Current = %d mod_type = %d Transaction_id = %d Gamma_id = %d",

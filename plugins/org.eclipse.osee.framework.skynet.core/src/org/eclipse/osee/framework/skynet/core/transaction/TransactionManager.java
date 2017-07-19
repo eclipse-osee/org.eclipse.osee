@@ -351,8 +351,7 @@ public final class TransactionManager {
       List<RelationRow> relationChanges = new LinkedList<RelationRow>();
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
-         chStmt.runPreparedQuery(SELECT_RELATIONS_FROM_ART_IN_TRANS_ID, art.getBranch().getId(), art.getArtId(),
-            art.getArtId(), trans.getId());
+         chStmt.runPreparedQuery(SELECT_RELATIONS_FROM_ART_IN_TRANS_ID, art.getBranch(), art, art, trans);
          while (chStmt.next()) {
             relationChanges.add(loadRelationChange(chStmt));
          }
@@ -367,8 +366,7 @@ public final class TransactionManager {
       List<AttributeRow> attributeChanges = new LinkedList<AttributeRow>();
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
-         chStmt.runPreparedQuery(SELECT_ATTRIBUTES_FROM_ART_IN_TRANS_ID, art.getBranch().getId(), art.getArtId(),
-            trans.getId());
+         chStmt.runPreparedQuery(SELECT_ATTRIBUTES_FROM_ART_IN_TRANS_ID, art.getBranch(), art, trans);
          while (chStmt.next()) {
             attributeChanges.add(loadAttributeChange(chStmt));
          }

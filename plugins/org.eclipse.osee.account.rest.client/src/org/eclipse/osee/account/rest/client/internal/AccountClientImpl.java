@@ -41,6 +41,7 @@ import org.eclipse.osee.account.rest.model.AccountSessionData;
 import org.eclipse.osee.account.rest.model.AccountSessionDetailsData;
 import org.eclipse.osee.account.rest.model.AccountWebPreferences;
 import org.eclipse.osee.account.rest.model.SubscriptionData;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
@@ -171,9 +172,9 @@ public class AccountClientImpl implements AccountClient {
    }
 
    @Override
-   public AccountWebPreferences getAccountWebPreferencesByUniqueField(Long accountId) {
+   public AccountWebPreferences getAccountWebPreferencesByUniqueField(ArtifactId accountId) {
       URI uri = UriBuilder.fromUri(baseUri).path(ACCOUNTS).path(ACCOUNT_PREFERENCES).path(ACCOUNT_ID_TEMPLATE).build(
-         accountId);
+         accountId.getId());
       try {
          return newTarget(uri).request(MediaType.APPLICATION_JSON_TYPE).get(AccountWebPreferences.class);
       } catch (Exception ex) {

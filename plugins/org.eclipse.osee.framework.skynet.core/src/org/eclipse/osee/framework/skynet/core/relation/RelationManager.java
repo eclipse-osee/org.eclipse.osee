@@ -441,8 +441,8 @@ public class RelationManager {
       RelationLink relation =
          relationCache.getLoadedRelation(artifactA, artifactA, artifactB, relationType, DeletionFlag.EXCLUDE_DELETED);
       Conditions.checkNotNull(relation, "relationLink",
-         "A relation link of type [%s] does exist in the cache between a artifact %d and b artifact %d", relationType,
-         artifactA.getArtId(), artifactB.getArtId());
+         "A relation link of type [%s] does exist in the cache between a artifact %s and b artifact %s", relationType,
+         artifactA.toStringWithId(), artifactB.toStringWithId());
       ArtifactPersistenceManager.performDeleteRelationChecks(artifactA, relationType);
       relation.delete(true);
 

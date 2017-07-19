@@ -54,7 +54,7 @@ public class AttributeTransactionData extends BaseTransactionData {
       if (!attribute.isUseBackingData()) {
          attribute.getAttributeDataProvider().persist(getGammaId());
          daoToSql.setData(attribute.getAttributeDataProvider().getData());
-         internalAddInsertToBatch(collector, 3, INSERT_ATTRIBUTE, attribute.getArtifact().getArtId(), getItemId(),
+         internalAddInsertToBatch(collector, 3, INSERT_ATTRIBUTE, attribute.getArtifact(), getItemId(),
             attribute.getAttributeType().getId(), daoToSql.getValue(), getGammaId(), daoToSql.getUri());
       }
    }

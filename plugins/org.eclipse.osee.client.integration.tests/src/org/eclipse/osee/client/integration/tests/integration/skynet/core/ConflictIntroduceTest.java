@@ -70,7 +70,7 @@ public class ConflictIntroduceTest {
 
       // Delete artifact and commit to destination branch
       BranchManager.createWorkingBranch(destinationBranch, updateBranch);
-      Artifact art = ArtifactQuery.getArtifactFromId(artifactToDelete.getArtId(), updateBranch);
+      Artifact art = ArtifactQuery.getArtifactFromId(artifactToDelete, updateBranch);
       art.deleteAndPersist();
 
       ConflictManagerExternal conflictManager = new ConflictManagerExternal(destinationBranch, updateBranch);
@@ -88,7 +88,7 @@ public class ConflictIntroduceTest {
          OseeSystemArtifacts.getDefaultHierarchyRootArtifact(sourceBranch), new Artifact[] {artifactToDelete}, false);
       Operations.executeWork(dropHandler);
       // Acquire the introduced artifact
-      Artifact destArtifact = ArtifactQuery.getArtifactFromId(artifactToDelete.getArtId(), sourceBranch);
+      Artifact destArtifact = ArtifactQuery.getArtifactFromId(artifactToDelete, sourceBranch);
       Assert.assertNotNull(destArtifact);
 
       // check for conflicts....there should be no conflict in this case.

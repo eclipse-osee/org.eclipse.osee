@@ -20,6 +20,7 @@ import org.eclipse.osee.account.rest.model.AccountPreferencesData;
 import org.eclipse.osee.account.rest.model.AccountSessionData;
 import org.eclipse.osee.account.rest.model.AccountSessionDetailsData;
 import org.eclipse.osee.account.rest.model.AccountWebPreferences;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 
 /**
@@ -66,7 +67,7 @@ public interface AccountClient {
 
    ResultSet<UnsubscribeInfo> getUnsubscribeUris(Long accountId, Collection<String> groupNames);
 
-   AccountWebPreferences getAccountWebPreferencesByUniqueField(Long accountId);
+   AccountWebPreferences getAccountWebPreferencesByUniqueField(ArtifactId accountId);
 
    boolean isLocalHost();
 

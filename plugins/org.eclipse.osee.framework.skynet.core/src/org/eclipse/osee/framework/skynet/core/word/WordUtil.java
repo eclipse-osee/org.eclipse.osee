@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchViewData;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -113,14 +114,11 @@ public class WordUtil {
     * @throws IllegalArgumentException if branch is null
     * @return returns true if some addressing was removed, otherwise false
     */
-   public static boolean revertNonusefulWordChanges(int artId, BranchId branch, String table) {
-      if (branch == null) {
-         throw new IllegalArgumentException("branch can not be null");
-      }
-
+   public static boolean revertNonusefulWordChanges(ArtifactToken artifact, String table) {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
-         chStmt.runPreparedQuery(SELECT_WORD_VALUES, artId, CoreAttributeTypes.WordTemplateContent, branch);
+         chStmt.runPreparedQuery(SELECT_WORD_VALUES, artifact, CoreAttributeTypes.WordTemplateContent,
+            artifact.getBranch());
 
          List<Pair<String, Integer>> values = new LinkedList<>();
          while (chStmt.next()) {

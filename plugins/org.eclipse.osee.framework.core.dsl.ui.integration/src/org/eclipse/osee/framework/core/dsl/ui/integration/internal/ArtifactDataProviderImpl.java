@@ -142,7 +142,7 @@ public final class ArtifactDataProviderImpl implements ArtifactDataProvider {
 
       @Override
       public Long getId() {
-         return Long.valueOf(self.getArtId());
+         return self.getId();
       }
    }
 }

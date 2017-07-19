@@ -131,15 +131,15 @@ public final class RevisionChangeLoader {
    private void loadTransactions(BranchId branch, Artifact artifact, TransactionId transactionId, Set<TransactionToken> transactionIds) {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
-         chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.LOAD_REVISION_HISTORY_TRANSACTION_ATTR),
-            artifact.getArtId(), branch, transactionId);
+         chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.LOAD_REVISION_HISTORY_TRANSACTION_ATTR), artifact, branch,
+            transactionId);
 
          while (chStmt.next()) {
             transactionIds.add(TransactionToken.valueOf(chStmt.getLong("transaction_id"), branch));
          }
 
-         chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.LOAD_REVISION_HISTORY_TRANSACTION_REL), artifact.getArtId(),
-            artifact.getArtId(), branch, transactionId);
+         chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.LOAD_REVISION_HISTORY_TRANSACTION_REL), artifact, artifact,
+            branch, transactionId);
 
          while (chStmt.next()) {
             transactionIds.add(TransactionToken.valueOf(chStmt.getLong("transaction_id"), branch));

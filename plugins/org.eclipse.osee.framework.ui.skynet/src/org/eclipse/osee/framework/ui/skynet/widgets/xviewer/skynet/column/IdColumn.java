@@ -41,11 +41,10 @@ public class IdColumn extends XViewerValueColumn {
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       if (element instanceof Artifact) {
-         return String.valueOf(((Artifact) element).getArtId());
+         return ((Artifact) element).getIdString();
       } else if (element instanceof Change) {
-         return String.valueOf(((Change) element).getChangeArtifact().getArtId());
+         return ((Change) element).getChangeArtifact().getIdString();
       }
       return "";
    }
-
 }

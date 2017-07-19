@@ -58,8 +58,7 @@ public class EditLinksNavigateItem extends XNavigateItem implements FileChangedL
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
-      AccountWebPreferences webPrefs =
-         LinkUtil.getAccountsPreferencesData(LinkUtil.getStoreArtifact(global).getArtId());
+      AccountWebPreferences webPrefs = LinkUtil.getAccountsPreferencesData(LinkUtil.getStoreArtifact(global));
 
       StringBuilder sb = new StringBuilder(
          "OSEE " + (global ? "Global" : "Personal") + " Links " + UserManager.getUser().toStringWithId() + "\n\n");

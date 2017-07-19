@@ -189,7 +189,7 @@ public class LinksNavigateViewItems implements XNavigateViewItems, IXNavigateCom
                public void widgetSelected(SelectionEvent e) {
                   super.widgetSelected(e);
                   try {
-                     LinkUtil.deleteLink(String.valueOf(UserManager.getUser().getArtId()), link);
+                     LinkUtil.deleteLink(UserManager.getUser(), link);
                   } catch (Exception ex) {
                      OseeLog.log(LinksNavigateViewItems.class, OseeLevel.SEVERE_POPUP, ex);
                   }

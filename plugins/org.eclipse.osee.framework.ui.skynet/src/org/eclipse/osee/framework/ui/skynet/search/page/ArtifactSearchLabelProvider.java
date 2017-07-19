@@ -112,10 +112,10 @@ public class ArtifactSearchLabelProvider extends LabelProvider implements IStyle
       if (decoration != null) {
 
          if (decoration.showArtIds() && decoration.showArtVersion()) {
-            coloredName.append(' ').append("[" + artifact.getArtId() + " rev." + artifact.getGammaId() + "]",
+            coloredName.append(' ').append("[" + artifact.getIdString() + " rev." + artifact.getGammaId() + "]",
                StyledString.DECORATIONS_STYLER);
          } else if (decoration.showArtIds() && !decoration.showArtVersion()) {
-            coloredName.append(' ').append("[id " + artifact.getArtId() + "]", StyledString.DECORATIONS_STYLER);
+            coloredName.append(' ').append("[id " + artifact.getIdString() + "]", StyledString.DECORATIONS_STYLER);
          } else if (!decoration.showArtIds() && decoration.showArtVersion()) {
             coloredName.append(' ').append("[rev." + artifact.getGammaId() + "]", StyledString.DECORATIONS_STYLER);
          }

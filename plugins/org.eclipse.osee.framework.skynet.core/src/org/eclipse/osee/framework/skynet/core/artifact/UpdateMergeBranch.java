@@ -117,7 +117,7 @@ public class UpdateMergeBranch extends AbstractDbTxOperation {
       TransactionId baselineTransaction = BranchManager.getBaseTransaction(mergeBranch);
       for (Artifact artifact : goodMergeBranchArtifacts) {
          numberAttrUpdated += getJdbcClient().runPreparedUpdate(connection, UPDATE_ARTIFACTS, baselineTransaction,
-            mergeBranch, artifact.getArtId(), sourceBranch, TxChange.NOT_CURRENT, mergeBranch, baselineTransaction);
+            mergeBranch, artifact, sourceBranch, TxChange.NOT_CURRENT, mergeBranch, baselineTransaction);
       }
       if (DEBUG) {
          System.out.println(String.format("          Adding %d Attributes to Existing Artifacts took %s",

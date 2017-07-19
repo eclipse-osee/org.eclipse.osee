@@ -288,7 +288,7 @@ public class UserAdminImpl implements UserAdmin {
    private User checkIterableForId(Iterable<User> users, ArtifactId id) {
       User toReturn = null;
       for (User tempUser : users) {
-         if (id.equals(Long.valueOf(tempUser.getArtId()))) {
+         if (id.equals(tempUser)) {
             toReturn = tempUser;
             break;
          }

@@ -62,7 +62,7 @@ public class ArtifactChangeAcquirer extends ChangeAcquirer {
 
             if (getSpecificArtifact() != null) {
                chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.CHANGE_TX_ARTIFACT_FOR_SPECIFIC_ARTIFACT),
-                  toTransactionId.getBranch(), toTransactionId.getId(), getSpecificArtifact().getArtId());
+                  toTransactionId.getBranch(), toTransactionId, getSpecificArtifact());
                fromTransactionId = toTransactionId;
             } else {
                chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.CHANGE_TX_ARTIFACT), toTransactionId.getBranch(),

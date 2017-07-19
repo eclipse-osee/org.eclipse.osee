@@ -63,8 +63,7 @@ public class WordAttribute extends StringAttribute {
                returnValue = WordCoreUtil.removeAnnotations(value);
             } else {
                throw new OseeCoreException(
-                  "Artifact %s [%s], Branch[%s] contains track changes. Please remove them and save again.",
-                  art.getName(), art.getArtId(), branch.getId());
+                  "Artifact [%s], Branch[%s] contains track changes. Please remove them and save again.", art, branch);
             }
          } catch (CoreException ex) {
             OseeCoreException.wrapAndThrow(ex);

@@ -274,15 +274,14 @@ public class ChangeDataLoader extends AbstractOperation {
 
             if (item.isApplicabilityCopy() || ChangeItemUtil.hasApplicabilityOnlyChange(item)) {
                netModType = ModificationType.APPLICABILITY;
-               change = new RelationChange(startTxBranch, itemGammaId, artId, txDelta, netModType,
-                  ArtifactId.valueOf(endTxBArtifact.getArtId()), RelationId.valueOf(itemId),
-                  item.getCurrentVersion().getApplicabilityToken().getName(),
+               change = new RelationChange(startTxBranch, itemGammaId, artId, txDelta, netModType, endTxBArtifact,
+                  RelationId.valueOf(itemId), item.getCurrentVersion().getApplicabilityToken().getName(),
                   item.getDestinationVersion().getApplicabilityToken().getName(), relationType, isHistorical,
                   changeArtifact, artifactDelta, endTxBArtifact);
             } else {
-               change = new RelationChange(startTxBranch, itemGammaId, artId, txDelta, netModType,
-                  ArtifactId.valueOf(endTxBArtifact.getArtId()), RelationId.valueOf(itemId), rationale, "",
-                  relationType, isHistorical, changeArtifact, artifactDelta, endTxBArtifact);
+               change = new RelationChange(startTxBranch, itemGammaId, artId, txDelta, netModType, endTxBArtifact,
+                  RelationId.valueOf(itemId), rationale, "", relationType, isHistorical, changeArtifact, artifactDelta,
+                  endTxBArtifact);
             }
             break;
          case TUPLE_CHANGE:

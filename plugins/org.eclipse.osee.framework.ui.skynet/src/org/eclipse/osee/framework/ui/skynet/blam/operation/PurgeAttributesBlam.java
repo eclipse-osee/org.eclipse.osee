@@ -100,7 +100,7 @@ public class PurgeAttributesBlam extends AbstractBlam {
          for (Attribute<?> attribute : attributesToPurge) {
             strB.append(attribute.getAttributeType());
             strB.append(";");
-            strB.append(attribute.getArtifact().getArtId());
+            strB.append(attribute.getArtifact().getIdString());
             strB.append(";");
             strB.append(attribute.getDisplayableString());
             strB.append("\n");

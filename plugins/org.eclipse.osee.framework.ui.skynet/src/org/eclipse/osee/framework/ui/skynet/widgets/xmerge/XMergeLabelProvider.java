@@ -117,7 +117,7 @@ public class XMergeLabelProvider extends XViewerLabelProvider {
          } else if (aCol.equals(MergeXViewerFactory.Type)) {
             return conflict.getArtifact().getArtifactTypeName();
          } else if (aCol.equals(MergeXViewerFactory.Art_Id)) {
-            return String.valueOf(conflict.getArtifact().getArtId());
+            return conflict.getArtifact().getIdString();
          }
       }
       return "unhandled column";

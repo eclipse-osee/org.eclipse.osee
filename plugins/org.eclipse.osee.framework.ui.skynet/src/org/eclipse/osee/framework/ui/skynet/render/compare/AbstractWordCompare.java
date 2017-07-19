@@ -95,13 +95,13 @@ public abstract class AbstractWordCompare implements IComparator {
       if (paraNumStart != null && paraNumStart.matches(".*[a-zA-Z].*")) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP,
             String.format("Invalid Paragraph Number on Artifact [%s], cannot contain letters",
-               artifactDelta.getEndArtifact().getArtId()));
+               artifactDelta.getEndArtifact().toStringWithId()));
          invalid = true;
       }
       if (paraNumEnd != null && paraNumEnd.matches(".*[a-zA-Z].*")) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP,
             String.format("Invalid Paragraph Number on Artifact [%s], cannot contain letters",
-               artifactDelta.getEndArtifact().getArtId()));
+               artifactDelta.getEndArtifact().toStringWithId()));
          invalid = true;
       }
 

@@ -44,23 +44,23 @@ public class LinkUtil {
    }
 
    public static AccountWebPreferences getAccountsPreferencesData(boolean global) throws Exception {
-      return getAccountsPreferencesData(getStoreArtifact(global).getArtId());
+      return getAccountsPreferencesData(getStoreArtifact(global));
    }
 
-   public static AccountWebPreferences getAccountsPreferencesData(int accountId) throws Exception {
+   public static AccountWebPreferences getAccountsPreferencesData(ArtifactId accountId) throws Exception {
       AccountClient client = ServiceUtil.getAccountClient();
-      return client.getAccountWebPreferencesByUniqueField(Long.valueOf(accountId));
+      return client.getAccountWebPreferencesByUniqueField(accountId);
    }
 
    /**
     * Delete single link from user or global links and store
     */
-   public static void deleteLink(String accountId, Link deleteLink) throws Exception {
+   public static void deleteLink(ArtifactId accountId, Link deleteLink) throws Exception {
       Artifact golbalArtifact = getStoreArtifact(true);
       Conditions.checkNotNull(golbalArtifact, "Guest accountId: " + SystemUser.Anonymous.getUuid());
       deleteLink(deleteLink, true, golbalArtifact);
 
-      Artifact userArt = ArtifactQuery.getArtifactFromId(ArtifactId.valueOf(accountId), CoreBranches.COMMON);
+      Artifact userArt = ArtifactQuery.getArtifactFromId(accountId, CoreBranches.COMMON);
       Conditions.checkNotNull(userArt, "User Artifact accountId: " + accountId);
       deleteLink(deleteLink, false, userArt);
    }
@@ -79,16 +79,13 @@ public class LinkUtil {
    }
 
    public static void addUpdateLink(Link link, boolean global) throws Exception {
-      addUpdateLink(getStoreArtifact(global).getArtId(), link, global);
+      addUpdateLink(getStoreArtifact(global), link, global);
    }
 
    /**
     * Update existing link in shared/global web preferences and store
     */
-   public static void addUpdateLink(int accountId, Link link, boolean global) throws Exception {
-      Artifact useArtifact = getStoreArtifact(global);
-      Conditions.checkNotNull(useArtifact, "Could not find store artifact for accountId: " + accountId);
-
+   public static void addUpdateLink(Artifact useArtifact, Link link, boolean global) throws Exception {
       String webPrefStr = useArtifact.getSoleAttributeValue(CoreAttributeTypes.WebPreferences, null);
       AccountWebPreferences webPrefs = null;
       if (!Strings.isValid(webPrefStr)) {
@@ -182,19 +179,16 @@ public class LinkUtil {
             link.getTags().add(tag);
          }
       }
-      int accountId = 0;
       if (link.getId() == null) {
          link.setId(GUID.create());
       }
       if (global) {
-         accountId = SystemUser.Anonymous.getUuid().intValue();
          link.setTeam("Guest");
       } else {
          User user = UserManager.getUser();
-         accountId = user.getUuid().intValue();
          link.setTeam(user.getName());
       }
-      LinkUtil.addUpdateLink(accountId, link, global);
+      LinkUtil.addUpdateLink(getStoreArtifact(global), link, global);
    }
 
    public static Artifact getPersonalLinksArtifact() {

@@ -214,13 +214,13 @@ public class ConflictTestManager {
       for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
          if (conflictDefs[i].destDelete) {
             if (DEBUG) {
-               System.out.println("Deleting Artifact with ID " + destArtifacts[i].getArtId() + " index " + i);
+               System.out.println("Deleting Artifact with ID " + destArtifacts[i] + " index " + i);
             }
             destArtifacts[i].deleteAndPersist();
          }
          if (conflictDefs[i].sourceDelete) {
             if (DEBUG) {
-               System.out.println("Deleting Artifact with ID " + sourceArtifacts[i].getArtId() + " index " + i);
+               System.out.println("Deleting Artifact with ID " + sourceArtifacts[i] + " index " + i);
             }
             sourceArtifacts[i].deleteAndPersist();
          }
@@ -438,9 +438,8 @@ public class ConflictTestManager {
                      " ")) && !destArtifacts[i].isDeleted()) {
                   System.err.println(
                      "Expected the " + value.attributeType + " attribute to have a value of " + stringToObject(
-                        value.clas,
-                        expected) + " but got " + destArtifacts[i].getSoleAttributeValueAsString(value.attributeType,
-                           " ") + " for Artifact " + destArtifacts[i].getArtId() + " conflict index: " + i);
+                        value.clas, expected) + " but got " + destArtifacts[i].getSoleAttributeValueAsString(
+                           value.attributeType, " ") + " for Artifact " + destArtifacts[i] + " conflict index: " + i);
                   return false;
                }
             }

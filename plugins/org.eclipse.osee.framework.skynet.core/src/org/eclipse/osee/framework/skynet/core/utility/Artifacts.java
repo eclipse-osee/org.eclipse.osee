@@ -175,9 +175,9 @@ public final class Artifacts {
    public static Map<String, String> getDetailsKeyValues(Artifact artifact) {
       Map<String, String> details = new HashMap<>();
       if (artifact != null) {
-         details.put("UUID", String.valueOf(artifact.getArtId()));
+         details.put("Artifact Id", artifact.getIdString());
          details.put("GUID", String.valueOf(Xml.escape(artifact.getGuid())));
-         details.put("Artifact Token", String.format("[%s]-[%d]", artifact.getSafeName(), artifact.getUuid()));
+         details.put("Artifact Token", String.format("[%s]-[%d]", artifact.getSafeName(), artifact.getId()));
          details.put("Branch", String.valueOf(Xml.escape(artifact.getBranchToken().getName())));
          details.put("Branch Uuid", artifact.getBranch().getIdString());
          details.put("Artifact Type Name", String.valueOf(Xml.escape(artifact.getArtifactTypeName())));

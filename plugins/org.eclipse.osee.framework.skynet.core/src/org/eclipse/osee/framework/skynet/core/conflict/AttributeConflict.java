@@ -105,7 +105,7 @@ public class AttributeConflict extends Conflict {
       Attribute<?> attribute = artifact.getAttributeById(attrId, false);
       if (attribute == null) {
          throw new AttributeDoesNotExist("Attribute %s could not be found on artifact %s on branch %s", attrId,
-            artifact.getArtId(), artifact.getBranch());
+            artifact, artifact.getBranch());
       }
       return attribute;
    }

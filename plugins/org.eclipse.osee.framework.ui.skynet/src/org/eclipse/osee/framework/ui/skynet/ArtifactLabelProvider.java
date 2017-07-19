@@ -69,9 +69,9 @@ public class ArtifactLabelProvider extends LabelProvider { //StyledCellLabelProv
          if (decorationProvider != null) {
 
             if (decorationProvider.showArtIds() && decorationProvider.showArtVersion()) {
-               extraInfo.add(String.format("[%s rev.%s]", artifact.getArtId(), artifact.getGammaId()));
+               extraInfo.add(String.format("[%s rev.%s]", artifact.getId(), artifact.getGammaId()));
             } else if (decorationProvider.showArtIds() && !decorationProvider.showArtVersion()) {
-               extraInfo.add(String.format("[id %s]", artifact.getArtId()));
+               extraInfo.add(String.format("[id %s]", artifact.getId()));
             } else if (!decorationProvider.showArtIds() && decorationProvider.showArtVersion()) {
                extraInfo.add(String.format("[rev.%s]", artifact.getGammaId()));
             }
