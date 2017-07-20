@@ -21,6 +21,7 @@ import java.util.Set;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -43,11 +44,15 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
+import org.eclipse.osee.ats.api.workflow.Attribute;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.enums.QueryOption;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -99,6 +104,54 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    public List<IAtsWorkItem> getActionDetails(@PathParam("ids") String ids) throws Exception {
       List<IAtsWorkItem> workItems = services.getQueryService().getWorkItemListByIds(ids);
       return workItems;
+   }
+
+   /**
+    * @param ids (guid, atsId, long) of workItem
+    * @return html representation of the action
+    */
+   @Override
+   @Path("{actionId}/attributeType/{attrTypeId}")
+   @GET
+   @Produces({MediaType.APPLICATION_JSON})
+   public Attribute getActionAttributeByType(@PathParam("actionId") String actionId, @PathParam("attrTypeId") String attrTypeId) {
+      IAtsWorkItem workItem = services.getWorkItemService().getWorkItemByAnyId(actionId);
+      Attribute attribute = getActionAttributeValues(attrTypeId, workItem);
+      return attribute;
+   }
+
+   private Attribute getActionAttributeValues(String attrTypeId, IAtsWorkItem workItem) {
+      Attribute attribute = new Attribute();
+      if (workItem != null) {
+         attribute.setArtId(workItem.getStoreObject());
+         AttributeTypeId attrType = services.getStoreService().getAttributeType(Long.valueOf(attrTypeId));
+         attribute.setAttrTypeId(attrType);
+         for (IAttribute<?> attr : services.getAttributeResolver().getAttributes(workItem, attrType)) {
+            attribute.addAttribute(attr);
+         }
+      }
+      return attribute;
+   }
+
+   /**
+    * @param ids (guid, atsId, long) of workItem
+    * @return html representation of the action
+    */
+   @Override
+   @Path("{actionId}/attributeType/{attrTypeId}")
+   @PUT
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces({MediaType.APPLICATION_JSON})
+   public Attribute setActionAttributeByType(@PathParam("actionId") String actionId, @PathParam("attrTypeId") String attrTypeId, List<String> values) {
+      Conditions.assertNotNullOrEmpty(values, "values can not be null or empty");
+      IAtsWorkItem workItem = services.getWorkItemService().getWorkItemByAnyId(actionId);
+      IAtsChangeSet changes = services.createChangeSet("set attr by type");
+      AttributeTypeId attrType = services.getStoreService().getAttributeType(Long.valueOf(attrTypeId));
+      changes.setAttributeValues(workItem, attrType, Collections.castAll(values));
+      changes.executeIfNeeded();
+      // reload to get latest
+      workItem = services.getWorkItemService().getWorkItemByAnyId(actionId);
+      return getActionAttributeValues(attrTypeId, workItem);
    }
 
    /**

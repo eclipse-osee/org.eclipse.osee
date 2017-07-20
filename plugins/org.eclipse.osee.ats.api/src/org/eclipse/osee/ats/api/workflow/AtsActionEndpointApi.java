@@ -15,7 +15,9 @@ import java.util.Set;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -26,6 +28,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 /**
  * @author Donald G. Dunne
  */
+@Path("action")
 public interface AtsActionEndpointApi {
 
    @GET
@@ -70,5 +73,24 @@ public interface AtsActionEndpointApi {
    @POST
    @Consumes("application/x-www-form-urlencoded")
    public abstract Response createAction(MultivaluedMap<String, String> form) throws Exception;
+
+   /**
+    * @param actionId (guid, atsId, long) of workItem
+    * @return html representation of the changed attribute
+    */
+   @Path("{actionId}/attributeType/{attrTypeId}")
+   @GET
+   @Produces({MediaType.APPLICATION_JSON})
+   public Attribute getActionAttributeByType(@PathParam("actionId") String actionId, @PathParam("attrTypeId") String attrTypeId);
+
+   /**
+    * @param actionId (guid, atsId, long) of workItem
+    * @return html representation of the changed attribute
+    */
+   @Path("{actionId}/attributeType/{attrTypeId}")
+   @PUT
+   @Produces({MediaType.APPLICATION_JSON})
+   @Consumes({MediaType.APPLICATION_JSON})
+   public Attribute setActionAttributeByType(@PathParam("actionId") String actionId, @PathParam("attrTypeId") String attrTypeId, List<String> values);
 
 }

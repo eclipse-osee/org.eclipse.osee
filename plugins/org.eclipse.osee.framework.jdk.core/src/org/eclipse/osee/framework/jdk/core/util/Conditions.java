@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.jdk.core.util;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -188,6 +189,12 @@ public final class Conditions {
 
    public static void assertNotNull(Object obj, String message, Object... data) {
       if (obj == null) {
+         throw new OseeArgumentException(message, data);
+      }
+   }
+
+   public static void assertNotNullOrEmpty(List<String> values, String message, Object... data) {
+      if (values == null || values.isEmpty()) {
          throw new OseeArgumentException(message, data);
       }
    }

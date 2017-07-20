@@ -19,6 +19,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Collection;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Form;
@@ -26,12 +27,18 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
+import org.eclipse.osee.ats.api.workflow.Attribute;
 import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -185,6 +192,64 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       testAction(obj);
       String atsId = obj.get("AtsId").getAsString();
       Assert.assertEquals(atsId, obj.get("ats.Id").getAsString());
+   }
+
+   @Test
+   public void testGetActionAttributeByType() {
+      testAttributeTypeMatchesRestAttributes(AtsAttributeTypes.State);
+   }
+
+   @SuppressWarnings("deprecation")
+   private TeamWorkFlowArtifact testAttributeTypeMatchesRestAttributes(AttributeTypeId attrType) {
+      TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
+      AtsActionEndpointApi actionEp = AtsClientService.getActionEndpoint();
+      Attribute attribute = actionEp.getActionAttributeByType(teamWf.getIdString(), attrType.getIdString());
+      Assert.assertEquals(teamWf.getIdString(), attribute.getArtId().getIdString());
+      Assert.assertEquals(attrType.getIdString(), attribute.getAttrTypeId().getIdString());
+      Assert.assertEquals(teamWf.getAttributeCount(attrType), attribute.getValues().size());
+
+      for (org.eclipse.osee.framework.skynet.core.artifact.Attribute<Object> attr : teamWf.getAttributes(attrType)) {
+         Assert.assertTrue(attribute.getValues().values().contains(attr.getValue()));
+      }
+      return teamWf;
+   }
+
+   @Test
+   public void testSetActionAttributeByType() {
+      AtsActionEndpointApi actionEp = AtsClientService.getActionEndpoint();
+
+      TeamWorkFlowArtifact teamWf = testAttributeTypeMatchesRestAttributes(CoreAttributeTypes.StaticId);
+      Assert.assertEquals(0,
+         AtsClientService.get().getAttributeResolver().getAttributesToStringList((IAtsObject) teamWf,
+            CoreAttributeTypes.StaticId).size());
+
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      changes.addAttribute((IAtsObject) teamWf, CoreAttributeTypes.StaticId, "asdf");
+      changes.addAttribute((IAtsObject) teamWf, CoreAttributeTypes.StaticId, "qwer");
+      changes.addAttribute((IAtsObject) teamWf, CoreAttributeTypes.StaticId, "zxcv");
+      changes.execute();
+
+      teamWf = testAttributeTypeMatchesRestAttributes(CoreAttributeTypes.StaticId);
+      Assert.assertEquals(3,
+         AtsClientService.get().getAttributeResolver().getAttributesToStringList((IAtsObject) teamWf,
+            CoreAttributeTypes.StaticId).size());
+
+      actionEp.setActionAttributeByType(teamWf.getIdString(), CoreAttributeTypes.StaticId.getIdString(),
+         Arrays.asList("asdf", "zxcv"));
+
+      teamWf.reloadAttributesAndRelations();
+      teamWf = testAttributeTypeMatchesRestAttributes(CoreAttributeTypes.StaticId);
+      Assert.assertEquals(2,
+         AtsClientService.get().getAttributeResolver().getAttributesToStringList((IAtsObject) teamWf,
+            CoreAttributeTypes.StaticId).size());
+
+      // test that search by guid or atsId work as well
+      Attribute attribute =
+         actionEp.getActionAttributeByType(teamWf.getGuid(), CoreAttributeTypes.StaticId.getIdString());
+      Assert.assertEquals(2, attribute.getValues().size());
+      attribute = actionEp.getActionAttributeByType(teamWf.getAtsId(), CoreAttributeTypes.StaticId.getIdString());
+      Assert.assertEquals(2, attribute.getValues().size());
+
    }
 
    @Test

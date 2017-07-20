@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.insertion.InsertionEndpointApi;
 import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
 import org.eclipse.osee.ats.api.program.ProgramEndpointApi;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
+import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsRuleEndpointApi;
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.workflow.WorkItemJsonReader;
@@ -48,6 +49,7 @@ public class AtsClientService {
    private static AtsConfigEndpointApi configEp;
    private static AtsWorkPackageEndpointApi workPackageEp;
    private static ClientEndpoint clientEp;
+   private static AtsActionEndpointApi actionEp;
 
    public void setAtsClient(IAtsClient atsClient) {
       AtsClientService.atsClient = atsClient;
@@ -156,6 +158,14 @@ public class AtsClientService {
          clientEp = jaxRsClient.target(orcsUri).newProxy(ClientEndpoint.class);
       }
       return clientEp;
+   }
+
+   public static AtsActionEndpointApi getActionEndpoint() {
+      if (actionEp == null) {
+         actionEp = getAtsTarget().newProxy(AtsActionEndpointApi.class);
+      }
+      return actionEp;
+
    }
 
 }
