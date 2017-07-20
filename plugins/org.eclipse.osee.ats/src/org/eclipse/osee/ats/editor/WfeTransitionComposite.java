@@ -106,6 +106,9 @@ public class WfeTransitionComposite extends Composite {
             if (e.count == 1) {
                transitionButton.setEnabled(false);
                try {
+                  if (editor.isDirty()) {
+                     editor.doSave(null);
+                  }
                   handleTransitionButtonSelection(awa, editor.isPrivilegedEditModeEnabled(), isEditable,
                      (IAtsStateDefinition) transitionToStateCombo.getSelected());
                } finally {
@@ -177,6 +180,7 @@ public class WfeTransitionComposite extends Composite {
    public static void handleTransitionButtonSelection(AbstractWorkflowArtifact awa, final boolean isPriviledgedEditModeEnabled, final boolean isEditable, IAtsStateDefinition toStateDef) {
       final List<IAtsWorkItem> workItems = Arrays.asList((IAtsWorkItem) awa);
       final IAtsStateDefinition fromStateDef = awa.getStateDefinition();
+
       ITransitionHelper helper = new TransitionHelperAdapter(AtsClientService.get().getServices()) {
 
          private IAtsChangeSet changes;
