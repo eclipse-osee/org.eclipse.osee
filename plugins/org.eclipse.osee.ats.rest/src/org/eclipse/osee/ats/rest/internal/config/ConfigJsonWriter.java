@@ -243,7 +243,11 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
                      writer.writeEndArray();
                   } else if (attributeValues.size() == 1) {
                      Object value = attributeValues.iterator().next();
-                     writer.writeObjectField(attrType.getName(), value);
+                     if (fieldsAsIds) {
+                        writer.writeObjectField(attrType.getIdString(), value);
+                     } else {
+                        writer.writeObjectField(attrType.getName(), value);
+                     }
                   }
 
                }
