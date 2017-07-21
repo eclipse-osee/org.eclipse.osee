@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.util.ColorColumns;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionStringProvider;
 import org.eclipse.osee.ats.api.workdef.WorkDefData;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 /**
@@ -35,8 +36,8 @@ public class AtsConfigurations implements IAtsWorkDefinitionStringProvider {
    private ColorColumns colorColumns = new ColorColumns();
    List<AtsUser> users = new ArrayList<>();
    List<ArtifactId> atsAdmins = new ArrayList<>();
-   Long topActionableItem;
-   Long topTeamDefinition;
+   ArtifactId topActionableItem;
+   ArtifactId topTeamDefinition;
    List<JaxVersion> versions = new ArrayList<>();
    private Collection<String> validStateNames = new ArrayList<>();
    private List<WorkDefData> workDefinitions = new ArrayList<>();
@@ -130,19 +131,19 @@ public class AtsConfigurations implements IAtsWorkDefinitionStringProvider {
       this.idToVersion = idToVersion;
    }
 
-   public Long getTopActionableItem() {
+   public ArtifactId getTopActionableItem() {
       return topActionableItem;
    }
 
-   public void setTopActionableItem(Long topActionableItem) {
+   public void setTopActionableItem(ArtifactId topActionableItem) {
       this.topActionableItem = topActionableItem;
    }
 
-   public Long getTopTeamDefinition() {
+   public ArtifactId getTopTeamDefinition() {
       return topTeamDefinition;
    }
 
-   public void setTopTeamDefinition(Long topTeamDefinition) {
+   public void setTopTeamDefinition(ArtifactId topTeamDefinition) {
       this.topTeamDefinition = topTeamDefinition;
    }
 

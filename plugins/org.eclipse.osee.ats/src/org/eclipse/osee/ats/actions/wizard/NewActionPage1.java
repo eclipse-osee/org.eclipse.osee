@@ -156,7 +156,7 @@ public class NewActionPage1 extends WizardPage {
             List<IAtsActionableItem> activeActionableItemTree = new LinkedList<>();
             IAtsClient atsClient = AtsClientService.get();
             for (Long aiId : atsClient.getConfigurations().getIdToAi().get(
-               atsClient.getConfigurations().getTopActionableItem()).getChildren()) {
+               atsClient.getConfigurations().getTopActionableItem().getId()).getChildren()) {
                JaxActionableItem jai = atsClient.getConfigurations().getIdToAi().get(aiId);
                if (jai.isActive()) {
                   activeActionableItemTree.add(new ActionableItem2(atsClient.getLogger(), atsClient, jai));

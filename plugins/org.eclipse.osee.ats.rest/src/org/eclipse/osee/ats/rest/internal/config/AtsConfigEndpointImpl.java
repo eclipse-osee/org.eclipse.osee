@@ -172,14 +172,13 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       }
 
       // load team def tree
-      JaxTeamDefinition topJaxTeamDef =
-         addTeamDefinitionChildrenWIthRecurse(AtsArtifactToken.TopTeamDefinition.getId(), idToArtifact, configs);
-      configs.setTopTeamDefinition(topJaxTeamDef.getUuid());
+
+      addTeamDefinitionChildrenWIthRecurse(AtsArtifactToken.TopTeamDefinition.getId(), idToArtifact, configs);
+      configs.setTopTeamDefinition(AtsArtifactToken.TopTeamDefinition);
 
       // load actionable items tree
-      JaxActionableItem topJaxAi =
-         addActionableItemChildrenWIthRecurse(AtsArtifactToken.TopActionableItem.getId(), idToArtifact, configs);
-      configs.setTopActionableItem(topJaxAi.getUuid());
+      addActionableItemChildrenWIthRecurse(AtsArtifactToken.TopActionableItem.getId(), idToArtifact, configs);
+      configs.setTopActionableItem(AtsArtifactToken.TopActionableItem);
 
       // load work definitions
       for (ArtifactToken workDefArt : orcsApi.getQueryFactory().fromBranch(services.getAtsBranch()).andIsOfType(

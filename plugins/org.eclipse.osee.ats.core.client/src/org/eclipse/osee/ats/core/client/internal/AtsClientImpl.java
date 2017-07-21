@@ -226,9 +226,9 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
                   DeletionFlag.EXCLUDE_DELETED);
 
                cacheActionableItems(configProvider.getConfigurations().getIdToAi().get(
-                  configProvider.getConfigurations().getTopActionableItem()));
+                  configProvider.getConfigurations().getTopActionableItem().getId()));
                cacheTeamDefinitions(configProvider.getConfigurations().getIdToTeamDef().get(
-                  configProvider.getConfigurations().getTopTeamDefinition()));
+                  configProvider.getConfigurations().getTopTeamDefinition().getId()));
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
