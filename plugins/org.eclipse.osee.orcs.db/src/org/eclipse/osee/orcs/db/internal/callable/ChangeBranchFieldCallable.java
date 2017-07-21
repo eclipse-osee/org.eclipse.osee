@@ -44,9 +44,8 @@ public class ChangeBranchFieldCallable extends AbstractDatastoreTxCallable<Void>
    protected Void handleTxWork(JdbcConnection connection) throws OseeCoreException {
       Conditions.checkNotNull(branch, "branch");
       Conditions.checkNotNullOrEmpty(field, "column");
-      Object[] params = new Object[] {value, branch};
       String query = String.format(UPDATE_BRANCH_FIELD, field);
-      getJdbcClient().runPreparedUpdate(connection, query, params);
+      getJdbcClient().runPreparedUpdate(connection, query, value, branch);
       return null;
    }
 
