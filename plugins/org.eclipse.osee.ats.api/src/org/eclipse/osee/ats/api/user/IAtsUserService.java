@@ -39,6 +39,8 @@ public interface IAtsUserService {
 
    Collection<IAtsUser> getUsersByUserIds(Collection<String> userIds) throws OseeCoreException;
 
+   boolean isAtsAdmin();
+
    boolean isAtsAdmin(IAtsUser user);
 
    List<IAtsUser> getUsers(Active active);

@@ -21,8 +21,8 @@ import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.ColorColumns;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionStringProvider;
 import org.eclipse.osee.ats.api.workdef.WorkDefData;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
@@ -34,7 +34,7 @@ public class AtsConfigurations implements IAtsWorkDefinitionStringProvider {
    private AtsViews views = new AtsViews();
    private ColorColumns colorColumns = new ColorColumns();
    List<AtsUser> users = new ArrayList<>();
-   List<Long> atsAdmins = new ArrayList<>();
+   List<ArtifactId> atsAdmins = new ArrayList<>();
    Long topActionableItem;
    Long topTeamDefinition;
    List<JaxVersion> versions = new ArrayList<>();
@@ -89,20 +89,12 @@ public class AtsConfigurations implements IAtsWorkDefinitionStringProvider {
    }
 
    @JsonIgnore
-   public List<Long> getAtsAdmins() {
+   public List<ArtifactId> getAtsAdmins() {
       return atsAdmins;
    }
 
    public void setAtsAdminsStr(String atsAdmins) {
-      parseStringOfLongs(this.atsAdmins, atsAdmins);
-   }
-
-   private void parseStringOfLongs(List<Long> uuids, String strOfLongs) {
-      if (Strings.isValid(strOfLongs)) {
-         for (String uuid : strOfLongs.split(",")) {
-            uuids.add(Long.valueOf(uuid));
-         }
-      }
+      this.atsAdmins = Collections.fromString(atsAdmins, ArtifactId::valueOf);
    }
 
    @Override

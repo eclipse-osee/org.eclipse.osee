@@ -136,13 +136,9 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    }
 
    @Override
-   public abstract String getCurrentUserId();
-
-   @Override
-   public abstract boolean isAtsAdmin(IAtsUser user);
-
-   @Override
-   public abstract List<? extends IAtsUser> getUsers();
+   public boolean isAtsAdmin() {
+      return isAtsAdmin(getCurrentUser());
+   }
 
    @Override
    public List<IAtsUser> getUsers(Active active) {
@@ -170,5 +166,4 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    public void releaseUser() {
       currentUser = null;
    }
-
 }

@@ -146,7 +146,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
          AtsArtifactToken.AtsAdmin).getResults().getAtMostOneOrNull();
       if (atsAdminArt != null) {
          for (ArtifactReadable member : atsAdminArt.getRelated(CoreRelationTypes.Users_User)) {
-            configs.getAtsAdmins().add(member.getId());
+            configs.getAtsAdmins().add(member);
          }
       }
 

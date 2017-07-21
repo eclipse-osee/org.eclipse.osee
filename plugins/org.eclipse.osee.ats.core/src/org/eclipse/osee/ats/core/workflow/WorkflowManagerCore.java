@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public class WorkflowManagerCore {
 
    public static boolean isEditable(IAtsUser user, IAtsWorkItem workItem, IAtsStateDefinition stateDef, boolean privilegedEditEnabled, IAtsUserService userService) throws OseeCoreException {
-      return isEditable(workItem, stateDef, privilegedEditEnabled, user, userService.isAtsAdmin(user));
+      return isEditable(workItem, stateDef, privilegedEditEnabled, user, userService.isAtsAdmin());
    }
 
    public static boolean isEditable(IAtsWorkItem workItem, IAtsStateDefinition stateDef, boolean privilegedEditEnabled, IAtsUser currentUser, boolean isAtsAdmin) throws OseeCoreException {
@@ -41,15 +41,15 @@ public class WorkflowManagerCore {
       // and one of these
       //
       // page is define to allow anyone to edit
-      (workItem.getStateDefinition().hasRule(RuleDefinitionOption.AllowEditToAll.name()) ||
-      // team definition has allowed anyone to edit
-      teamDefHasRule(workItem, RuleDefinitionOption.AllowEditToAll) ||
-      // privileged edit mode is on
-      privilegedEditEnabled ||
-      // current user is assigned
-      workItem.getAssignees().contains(currentUser) ||
-      // current user is ats admin
-      isAtsAdmin);
+         (workItem.getStateDefinition().hasRule(RuleDefinitionOption.AllowEditToAll.name()) ||
+         // team definition has allowed anyone to edit
+            teamDefHasRule(workItem, RuleDefinitionOption.AllowEditToAll) ||
+            // privileged edit mode is on
+            privilegedEditEnabled ||
+            // current user is assigned
+            workItem.getAssignees().contains(currentUser) ||
+            // current user is ats admin
+            isAtsAdmin);
    }
 
    protected boolean teamDefHasRule(IAtsWorkItem workItem, RuleDefinitionOption option) {
