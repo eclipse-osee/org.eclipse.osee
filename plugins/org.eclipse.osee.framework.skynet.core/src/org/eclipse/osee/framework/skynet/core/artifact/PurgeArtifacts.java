@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -173,7 +174,7 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
    }
 
    private void getArtifactViloation(JdbcStatement stmt) {
-      Long artId = stmt.getLong("art_id");
+      ArtifactId artId = ArtifactId.valueOf(stmt.getLong("art_id"));
       Long branchId = stmt.getLong("branch_id");
       if (recurseChildrenBranches) {
          BranchId branch = BranchId.valueOf(branchId);

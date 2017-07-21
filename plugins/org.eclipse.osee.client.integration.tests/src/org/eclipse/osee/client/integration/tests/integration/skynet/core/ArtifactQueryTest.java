@@ -15,17 +15,16 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -90,7 +89,7 @@ public class ArtifactQueryTest {
       newArtifact.deleteAndPersist();
 
       try {
-         Artifact ret = ArtifactQuery.checkArtifactFromId(newArtifact.getUuid(), COMMON);
+         Artifact ret = ArtifactQuery.checkArtifactFromId(newArtifact, COMMON);
          Assert.assertNull(ret);
       } catch (ArtifactDoesNotExist ex) {
          Assert.fail("ArtifactQuery should never throw ArtifactDoesNotExist with QueryType.CHECK");
@@ -212,23 +211,22 @@ public class ArtifactQueryTest {
       Assert.assertEquals(artifact1, artifacts.iterator().next());
    }
 
+   private TransactionToken createArtifactFortestQueryById(List<ArtifactId> newIdsInOrder, BranchId branch) {
+      Artifact created = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch);
+      created.persist(testInfo.getTestName());
+      ArtifactCache.deCache(created);
+      newIdsInOrder.add(created);
+      return TransactionManager.getHeadTransaction(branch);
+   }
+
    @Test
    public void testQueryById() throws OseeCoreException {
       BranchId branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
       AccessControlManager.setPermission(UserManager.getUser(DemoUsers.Joe_Smith), branch, PermissionEnum.FULLACCESS);
 
-      List<Integer> newIdsInOrder = new LinkedList<>();
-      Map<Integer, TransactionToken> idToTxId = new HashMap<>();
-      //create 3 artifacts, decache them
-      for (int i = 0; i < 2; i++) {
-         Artifact created = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch);
-         created.persist(testInfo.getTestName());
-         ArtifactCache.deCache(created);
-         newIdsInOrder.add(created.getArtId());
-         TransactionToken tx = TransactionManager.getHeadTransaction(branch);
-         idToTxId.put(created.getArtId(), tx);
-      }
-
+      List<ArtifactId> newIdsInOrder = new LinkedList<>();
+      createArtifactFortestQueryById(newIdsInOrder, branch);
+      TransactionToken beforeDelete = createArtifactFortestQueryById(newIdsInOrder, branch);
       Assert.assertEquals(2, newIdsInOrder.size());
 
       //create a new tx deleting the first created
@@ -242,7 +240,6 @@ public class ArtifactQueryTest {
       Assert.assertNotNull(toCheck);
       ArtifactCache.deCache(toCheck);
 
-      TransactionToken beforeDelete = idToTxId.get(newIdsInOrder.get(1));
       Assert.assertNotNull(
          ArtifactQuery.checkHistoricalArtifactFromId(firstCreated, beforeDelete, DeletionFlag.EXCLUDE_DELETED));
    }

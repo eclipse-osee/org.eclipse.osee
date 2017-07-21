@@ -14,8 +14,8 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -96,7 +96,7 @@ public class OseeGroup {
    }
 
    private Artifact getOrCreateGroupArtifact(ArtifactToken token) throws OseeCoreException {
-      Artifact groupArtifact = ArtifactQuery.checkArtifactFromId(token.getUuid().intValue(), COMMON, EXCLUDE_DELETED);
+      Artifact groupArtifact = ArtifactQuery.getArtifactOrNull(token, EXCLUDE_DELETED);
       if (groupArtifact == null) {
          Artifact userGroupsFolder = getOrCreateUserGroupsFolder(COMMON);
          groupArtifact = ArtifactTypeManager.addArtifact(token, COMMON);
@@ -106,7 +106,7 @@ public class OseeGroup {
    }
 
    private Artifact getOrCreateUserGroupsFolder(BranchId branch) throws OseeCoreException {
-      Artifact usersGroupFolder = ArtifactQuery.checkArtifactFromId(CoreArtifactTokens.UserGroups.getUuid(), branch);
+      Artifact usersGroupFolder = ArtifactQuery.checkArtifactFromId(CoreArtifactTokens.UserGroups, branch);
       if (usersGroupFolder == null) {
          Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
          if (root.hasChild(CoreArtifactTokens.UserGroups.getName())) {

@@ -23,9 +23,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -66,7 +68,7 @@ public class ChangeArtifactType {
    private final Set<EventBasicGuidArtifact> artifactChanges = new HashSet<>();
    private final List<Artifact> modifiedArtifacts = new ArrayList<>();
    private static final IStatus promptStatus = new Status(IStatus.WARNING, Activator.PLUGIN_ID, 257, "", null);
-   private final Map<Integer, Integer> gammaToArtId = new HashMap<>();
+   private final Map<GammaId, ArtifactId> gammaToArtId = new HashMap<>();
 
    public static void changeArtifactType(Collection<? extends Artifact> inputArtifacts, ArtifactTypeId newArtifactTypeToken, boolean prompt) throws OseeCoreException {
 
@@ -137,9 +139,9 @@ public class ChangeArtifactType {
             gammaJoin.getQueryId(), branchJoin.getQueryId(), TxChange.CURRENT.getValue());
 
          while (chStmt.next()) {
-            int gammaId = chStmt.getInt("gamma_id");
+            GammaId gammaId = GammaId.valueOf(chStmt.getLong("gamma_id"));
             BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
-            int artId = gammaToArtId.get(gammaId);
+            ArtifactId artId = gammaToArtId.get(gammaId);
             Artifact artifact = ArtifactQuery.checkArtifactFromId(artId, branch, DeletionFlag.EXCLUDE_DELETED);
             if (artifact != null) {
                deleteInvalidAttributes(artifact, newArtifactType);
@@ -275,9 +277,9 @@ public class ChangeArtifactType {
       IdJoinQuery gammaJoin = JoinUtility.createIdJoinQuery();
 
       Consumer<JdbcStatement> consumer = stmt -> {
-         Integer artId = stmt.getInt("art_id");
-         Long gammaId = stmt.getLong("gamma_id");
-         gammaToArtId.put(gammaId.intValue(), artId);
+         ArtifactId artId = ArtifactId.valueOf(stmt.getLong("art_id"));
+         GammaId gammaId = GammaId.valueOf(stmt.getLong("gamma_id"));
+         gammaToArtId.put(gammaId, artId);
          gammaJoin.add(gammaId);
       };
       ConnectionHandler.getJdbcClient().runQuery(consumer,
