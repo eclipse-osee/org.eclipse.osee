@@ -120,8 +120,8 @@ public final class ExportChangeReportOperation extends AbstractOperation {
                   if (artifactType.inheritsFrom(DISALLOW_TYPES) || !artifactType.inheritsFrom(ALLOW_TYPES)) {
                      it.remove();
                      artIds.remove(endArtifact.getArtId());
-                     logf(
-                        "skipping: [" + endArtifact.getName() + "] type: [" + endArtifact.getArtifactTypeName() + "] branch: [" + endArtifact.getBranch().getIdString() + "] artId: [" + endArtifact.getArtId() + "]");
+                     logf("skipping: [" + endArtifact.getName().replaceAll("%",
+                        "%%") + "] type: [" + endArtifact.getArtifactTypeName() + "] branch: [" + endArtifact.getBranch().getIdString() + "] artId: [" + endArtifact.getArtId() + "]");
                      skippedTypes.add(endArtifact.getArtifactTypeName());
                   }
                }
