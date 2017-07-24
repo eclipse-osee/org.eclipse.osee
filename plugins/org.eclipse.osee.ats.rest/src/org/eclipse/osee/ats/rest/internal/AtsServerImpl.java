@@ -189,7 +189,17 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
 
    @Override
    public ArtifactReadable getArtifact(IAtsObject atsObject) throws OseeCoreException {
-      return (ArtifactReadable) queryService.getArtifact(atsObject);
+      ArtifactReadable result = null;
+      if (atsObject.getStoreObject() instanceof ArtifactReadable) {
+         result = (ArtifactReadable) atsObject.getStoreObject();
+      } else {
+         result = orcsApi.getQueryFactory().fromBranch(getAtsBranch()).andUuid(
+            atsObject.getId()).getResults().getAtMostOneOrNull();
+         if (result != null) {
+            atsObject.setStoreObject(result);
+         }
+      }
+      return result;
    }
 
    @Override

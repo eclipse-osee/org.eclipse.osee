@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -127,14 +126,4 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
       return services.getArtifactByGuid(guid);
    }
 
-   @Override
-   public ArtifactToken getArtifact(IAtsObject atsObject) {
-      ArtifactToken result = null;
-      if (atsObject.getStoreObject() != null) {
-         result = atsObject.getStoreObject();
-      } else {
-         result = services.getArtifact(atsObject.getId());
-      }
-      return result;
-   }
 }
