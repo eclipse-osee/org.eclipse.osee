@@ -252,7 +252,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    @Override
    public String getConfigValue(String key) {
       String result = null;
-      ArtifactReadable atsConfig = orcsApi.getQueryFactory().fromBranch(COMMON).andIds(
+      ArtifactReadable atsConfig = orcsApi.getQueryFactory().fromBranch(COMMON).andId(
          AtsArtifactToken.AtsConfig).getResults().getAtMostOneOrNull();
       if (atsConfig != null) {
          List<String> attributeValues = atsConfig.getAttributeValues(CoreAttributeTypes.GeneralStringData);

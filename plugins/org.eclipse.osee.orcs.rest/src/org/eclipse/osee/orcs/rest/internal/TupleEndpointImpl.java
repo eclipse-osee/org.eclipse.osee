@@ -156,7 +156,7 @@ public class TupleEndpointImpl implements TupleEndpoint {
    }
 
    private ArtifactReadable getUser() {
-      return getQuery().fromBranch(getAdminBranch()).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
+      return getQuery().fromBranch(getAdminBranch()).andId(SystemUser.OseeSystem).getResults().getExactlyOne();
    }
 
    private QueryFactory getQuery() {

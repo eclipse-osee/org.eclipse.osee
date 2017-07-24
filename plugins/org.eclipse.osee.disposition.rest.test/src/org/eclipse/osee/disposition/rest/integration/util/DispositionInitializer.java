@@ -42,7 +42,7 @@ public class DispositionInitializer {
 
    @SuppressWarnings("unchecked")
    private ArtifactReadable getDispositionUser() throws OseeCoreException {
-      return getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(
+      return getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
          SystemUser.OseeSystem).getResults().getExactlyOne();
    }
 
@@ -80,7 +80,7 @@ public class DispositionInitializer {
 
    @SuppressWarnings("unchecked")
    private ArtifactReadable findUser() {
-      return orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(
+      return orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
          SystemUser.OseeSystem).getResults().getExactlyOne();
    }
 }

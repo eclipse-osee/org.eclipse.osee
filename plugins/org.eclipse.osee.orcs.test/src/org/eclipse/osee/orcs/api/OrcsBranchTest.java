@@ -168,7 +168,7 @@ public class OrcsBranchTest {
       BranchReadable childBranch = callableChildBranch.call();
 
       TransactionBuilder tx2 = txFactory.createTransaction(childBranch, author, "modify and make new arts");
-      ArtifactReadable readableFolder = query.fromBranch(childBranch).andIds(folder).getResults().getExactlyOne();
+      ArtifactReadable readableFolder = query.fromBranch(childBranch).andId(folder).getResults().getExactlyOne();
 
       tx2.setName(readableFolder, "New Folder Name");
       tx2.setSoleAttributeFromString(readableFolder, CoreAttributeTypes.StaticId, "test id");

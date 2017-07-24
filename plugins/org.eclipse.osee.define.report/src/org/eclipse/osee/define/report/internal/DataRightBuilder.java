@@ -133,7 +133,7 @@ public class DataRightBuilder {
       Map<String, DataRight> toReturn = new HashMap<>();
 
       @SuppressWarnings("unchecked")
-      ArtifactReadable footerMappingArt = query.andIds(MAPPING_ARTIFACT).getResults().getOneOrNull();
+      ArtifactReadable footerMappingArt = query.andId(MAPPING_ARTIFACT).getResults().getOneOrNull();
 
       if (footerMappingArt != null) {
          List<String> footers = new ArrayList<>();

@@ -74,7 +74,7 @@ public abstract class AbstractOrcsStorage {
 
    @SuppressWarnings("unchecked")
    protected ArtifactReadable getSystemUser() {
-      return newQuery().andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
+      return newQuery().andId(SystemUser.OseeSystem).getResults().getExactlyOne();
    }
 
    protected TransactionBuilder newTransaction(String comment) {

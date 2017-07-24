@@ -60,8 +60,6 @@ public interface ArtifactQueryBuilder<T> {
 
    T andId(ArtifactId id);
 
-   T andIds(ArtifactId id);
-
    T andIds(Collection<? extends ArtifactId> ids);
 
    T andIds(ArtifactId... ids);

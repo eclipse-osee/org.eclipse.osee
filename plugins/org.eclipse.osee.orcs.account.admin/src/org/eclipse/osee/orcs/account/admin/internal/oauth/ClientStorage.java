@@ -87,7 +87,7 @@ public class ClientStorage {
 
    @SuppressWarnings("unchecked")
    private ArtifactReadable getSystemUser() {
-      return newQuery().andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
+      return newQuery().andId(SystemUser.OseeSystem).getResults().getExactlyOne();
    }
 
    private TransactionBuilder newTransaction(OseePrincipal principal, String comment) {

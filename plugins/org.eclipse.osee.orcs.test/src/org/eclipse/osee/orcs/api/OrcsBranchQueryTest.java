@@ -304,7 +304,7 @@ public class OrcsBranchQueryTest {
 
    @SuppressWarnings("unchecked")
    private ArtifactReadable getSystemUser() throws OseeCoreException {
-      return factory.fromBranch(CoreBranches.COMMON).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
+      return factory.fromBranch(CoreBranches.COMMON).andId(SystemUser.OseeSystem).getResults().getExactlyOne();
    }
 
    private OrcsBranch getBranchOps() {

@@ -153,11 +153,6 @@ public class ArtifactQueryBuilderImpl<T> implements ArtifactQueryBuilder<T> {
    }
 
    @Override
-   public T andIds(ArtifactId id) {
-      return andId(id);
-   }
-
-   @Override
    public T andIds(Collection<? extends ArtifactId> ids) {
       return addAndCheck(queryData, new CriteriaArtifactIds(ids));
    }
@@ -355,7 +350,7 @@ public class ArtifactQueryBuilderImpl<T> implements ArtifactQueryBuilder<T> {
    @SuppressWarnings("unchecked")
    @Override
    public T andIsHeirarchicalRootArtifact() {
-      andIds(CoreArtifactTokens.DefaultHierarchyRoot);
+      andId(CoreArtifactTokens.DefaultHierarchyRoot);
       return (T) this;
    }
 }

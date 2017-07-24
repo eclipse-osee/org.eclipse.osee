@@ -532,7 +532,7 @@ public class OrcsQueryTest {
          .andNameEquals("Robot Interfaces").getResults().getExactlyOne();
 
       ArtifactReadable folderArt = factory.fromBranch(SAW_Bld_2) //
-         .andIds(folder).getResults().getExactlyOne();
+         .andId(folder).getResults().getExactlyOne();
       // robotApi should be related to folder
       Assert.assertTrue(robotApi.areRelated(CoreRelationTypes.Default_Hierarchical__Child, folderArt));
    }

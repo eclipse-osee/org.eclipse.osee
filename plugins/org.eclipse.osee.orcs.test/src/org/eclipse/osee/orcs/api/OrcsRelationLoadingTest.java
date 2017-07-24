@@ -56,10 +56,10 @@ public class OrcsRelationLoadingTest {
          queryFactory.fromBranch(CoreBranches.COMMON).andIsOfType(CoreArtifactTypes.OseeTypeDefinition).andNameEquals(
             "org.eclipse.osee.ats.client.demo.OseeTypes_Demo").getResults().getAtMostOneOrNull();
       assertNotNull(art6);
-      ArtifactReadable art7 = queryFactory.fromBranch(CoreBranches.COMMON).andIds(
+      ArtifactReadable art7 = queryFactory.fromBranch(CoreBranches.COMMON).andId(
          CoreArtifactTokens.UserGroups).getResults().getAtMostOneOrNull();
       assertNotNull(art7);
-      ArtifactReadable art8 = queryFactory.fromBranch(CoreBranches.COMMON).andIds(
+      ArtifactReadable art8 = queryFactory.fromBranch(CoreBranches.COMMON).andId(
          CoreArtifactTokens.Everyone).getResults().getAtMostOneOrNull();
       assertNotNull(art8);
 

@@ -58,7 +58,7 @@ public class OrcsAttributeLoadingTest {
 
    @Test
    public void testAttributeLoading() throws Exception {
-      ArtifactReadable art = query.fromBranch(COMMON).andIds(CoreArtifactTokens.Everyone).getResults().getExactlyOne();
+      ArtifactReadable art = query.fromBranch(COMMON).andId(CoreArtifactTokens.Everyone).getResults().getExactlyOne();
       Assert.assertNotNull(art);
       assertEquals("Everyone", art.getSoleAttributeAsString(CoreAttributeTypes.Name));
 

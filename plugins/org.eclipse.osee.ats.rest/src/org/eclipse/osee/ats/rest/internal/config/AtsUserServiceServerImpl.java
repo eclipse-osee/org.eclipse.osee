@@ -48,7 +48,7 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
    @Override
    public boolean isAtsAdmin(IAtsUser user) {
       if (atsAdminArt == null) {
-         atsAdminArt = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(
+         atsAdminArt = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
             AtsArtifactToken.AtsAdmin).getResults().getAtMostOneOrNull();
       }
       return atsAdminArt.areRelated(CoreRelationTypes.User_Grouping__Members, (ArtifactReadable) user.getStoreObject());

@@ -241,7 +241,7 @@ public class OrcsApiImpl implements OrcsApi {
                @SuppressWarnings("unchecked")
                @Override
                public ArtifactReadable call() throws Exception {
-                  return getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(
+                  return getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
                      SystemUser.OseeSystem).getResults().getExactlyOne();
 
                }

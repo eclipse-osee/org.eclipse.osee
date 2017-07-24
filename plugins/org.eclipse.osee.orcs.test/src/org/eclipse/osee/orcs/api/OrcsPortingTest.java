@@ -189,7 +189,7 @@ public class OrcsPortingTest {
       // get the setup associated artifact - this is for a later test to make sure the branch is not duplicated
       // there should only be one port branch per associated artifact
       ArtifactReadable readableReq =
-         query.fromBranch(CoreBranches.COMMON).andIds(assocaitedArt).getResults().getExactlyOne();
+         query.fromBranch(CoreBranches.COMMON).andId(assocaitedArt).getResults().getExactlyOne();
 
       assertNotNull(readableReq);
       // the new branch will contain two transactions -
