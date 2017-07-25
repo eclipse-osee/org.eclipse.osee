@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader.data;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.orcs.core.ds.RelationData;
@@ -20,8 +21,8 @@ import org.eclipse.osee.orcs.core.ds.VersionData;
  */
 public class RelationDataImpl extends OrcsVersionedObjectImpl implements RelationData {
 
-   private int artIdA = RelationalConstants.ART_ID_SENTINEL;
-   private int artIdB = RelationalConstants.ART_ID_SENTINEL;
+   private ArtifactId artIdA = ArtifactId.SENTINEL;
+   private ArtifactId artIdB = ArtifactId.SENTINEL;
    private String rationale = RelationalConstants.DEFAULT_RATIONALE;
    private boolean useBackingData = false;
 
@@ -34,12 +35,12 @@ public class RelationDataImpl extends OrcsVersionedObjectImpl implements Relatio
    }
 
    @Override
-   public void setArtIdA(int artIdA) {
+   public void setArtIdA(ArtifactId artIdA) {
       this.artIdA = artIdA;
    }
 
    @Override
-   public void setArtIdB(int artIdB) {
+   public void setArtIdB(ArtifactId artIdB) {
       this.artIdB = artIdB;
    }
 
@@ -54,12 +55,12 @@ public class RelationDataImpl extends OrcsVersionedObjectImpl implements Relatio
 
    @Override
    public int getArtIdA() {
-      return artIdA;
+      return artIdA.getId().intValue();
    }
 
    @Override
    public int getArtIdB() {
-      return artIdB;
+      return artIdB.getId().intValue();
    }
 
    @Override
@@ -87,4 +88,18 @@ public class RelationDataImpl extends OrcsVersionedObjectImpl implements Relatio
       this.useBackingData = useBackingData;
    }
 
+   @Override
+   public ArtifactId getArtifactIdA() {
+      return artIdA;
+   }
+
+   @Override
+   public ArtifactId getArtifactIdB() {
+      return artIdB;
+   }
+
+   @Override
+   public Long getId() {
+      return getLocalId().longValue();
+   }
 }

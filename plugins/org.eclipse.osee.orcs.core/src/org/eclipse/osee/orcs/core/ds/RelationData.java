@@ -10,25 +10,30 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 
 /**
  * @author Andrew M. Finkbeiner
  */
-public interface RelationData extends OrcsData {
+public interface RelationData extends OrcsData, RelationId {
+
+   ArtifactId getArtifactIdA();
+
+   ArtifactId getArtifactIdB();
 
    int getArtIdA();
 
-   void setArtIdA(int artIdA);
+   void setArtIdA(ArtifactId artIdA);
 
    int getArtIdB();
 
-   void setArtIdB(int artIdB);
+   void setArtIdB(ArtifactId artIdB);
 
    int getArtIdOn(RelationSide side);
 
    String getRationale();
 
    void setRationale(String rationale);
-
 }

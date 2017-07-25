@@ -133,14 +133,8 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public RelationData createRelationData(VersionData version, Integer localId, long typeId, ModificationType modType, int aArtId, int bArtId, String rationale, ApplicabilityId applicId) throws OseeCoreException {
-      return createRelationData(version, localId, typeId, modType, typeId, modType, aArtId, bArtId, rationale,
-         applicId);
-   }
-
-   @Override
-   public RelationData createRelationData(VersionData version, Integer localId, RelationTypeId type, ModificationType modType, int aArtId, int bArtId, String rationale, ApplicabilityId applicId) {
-      long typeId = type.getId();
+   public RelationData createRelationData(VersionData version, Integer localId, RelationTypeId relationType, ModificationType modType, ArtifactId aArtId, ArtifactId bArtId, String rationale, ApplicabilityId applicId) {
+      long typeId = relationType.getId();
       return createRelationData(version, localId, typeId, modType, typeId, modType, aArtId, bArtId, rationale,
          applicId);
    }
@@ -170,18 +164,18 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       return data;
    }
 
-   private RelationData createRelationData(VersionData version, int localId, long localTypeID, ModificationType modType, long baseLocalTypeID, ModificationType baseModType, int aArtId, int bArtId, String rationale, ApplicabilityId applicId) {
+   private RelationData createRelationData(VersionData version, int localId, long relationType, ModificationType modType, long baseLocalTypeID, ModificationType baseModType, ArtifactId aArtId, ArtifactId bArtId, String rationale, ApplicabilityId applicId) {
       RelationData data = new RelationDataImpl(version);
       data.setLocalId(localId);
-      data.setTypeUuid(localTypeID);
+      data.setTypeUuid(relationType);
       data.setBaseTypeUuid(baseLocalTypeID);
       data.setModType(modType);
       data.setBaseModType(baseModType);
       data.setArtIdA(aArtId);
       data.setArtIdB(bArtId);
       Conditions.assertNotNull(rationale,
-         "rationale can't be null for RelationData localId [%s], localTypeId [%s], aArtId [%s], bArtId", localId,
-         localTypeID, aArtId, bArtId);
+         "rationale can't be null for RelationData id [%s], type [%s], aArtId [%s], bArtId", localId, relationType,
+         aArtId, bArtId);
       data.setRationale(rationale);
       data.setApplicabilityId(applicId);
       return data;
@@ -191,7 +185,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    public RelationData createCopy(RelationData source) {
       VersionData newVersion = createCopy(source.getVersion());
       return createRelationData(newVersion, source.getLocalId(), source.getTypeUuid(), source.getModType(),
-         source.getBaseTypeUuid(), source.getBaseModType(), source.getArtIdA(), source.getArtIdB(),
+         source.getBaseTypeUuid(), source.getBaseModType(), source.getArtifactIdA(), source.getArtifactIdB(),
          source.getRationale(), source.getApplicabilityId());
    }
 

@@ -16,6 +16,7 @@ import static org.junit.Assert.assertNotSame;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasLocalId;
@@ -39,6 +40,7 @@ import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.loader.data.OrcsObjectFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.proxy.AttributeDataProxyFactory;
+import org.eclipse.osee.orcs.db.internal.loader.data.RelationDataImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -68,7 +70,6 @@ public class DataFactoryImplTest {
 
    @Mock private ArtifactData artData;
    @Mock private AttributeData attrData;
-   @Mock private RelationData relData;
    @Mock private VersionData verData;
    @Mock private DataProxy<Integer> dataProxy;
    @Mock private DataProxy<Integer> otherDataProxy;
@@ -80,6 +81,7 @@ public class DataFactoryImplTest {
    private final Integer expectedProxyValue = 45;
    private final String expectedProxyUri = "hello";
    private String guid;
+   private RelationData relData;
 
    @Before
    public void setUp() throws OseeCoreException {
@@ -123,15 +125,15 @@ public class DataFactoryImplTest {
       when(otherDataProxy.getUri()).thenReturn(expectedProxyUri);
 
       // RELATION
-      when(relData.getVersion()).thenReturn(verData);
-      when(relData.getLocalId()).thenReturn(555);
-      when(relData.getModType()).thenReturn(ModificationType.MODIFIED);
-      when(relData.getTypeUuid()).thenReturn(666L);
-      when(relData.getBaseModType()).thenReturn(ModificationType.NEW);
-      when(relData.getBaseTypeUuid()).thenReturn(777L);
-      when(relData.getArtIdA()).thenReturn(88);
-      when(relData.getArtIdB()).thenReturn(99);
-      when(relData.getRationale()).thenReturn("this is the rationale");
+      relData = new RelationDataImpl(verData);
+      relData.setLocalId(555);
+      relData.setModType(ModificationType.MODIFIED);
+      relData.setTypeUuid(666);
+      relData.setBaseModType(ModificationType.NEW);
+      relData.setBaseTypeUuid(777);
+      relData.setArtIdA(ArtifactId.valueOf(88));
+      relData.setArtIdB(ArtifactId.valueOf(99));
+      relData.setRationale("this is the rationale");
    }
 
    @Test

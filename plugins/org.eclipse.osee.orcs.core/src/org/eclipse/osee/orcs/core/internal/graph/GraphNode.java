@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.graph;
 
-import org.eclipse.osee.framework.core.data.HasBranch;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 
@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.jdk.core.type.Identifiable;
  * @author Roberto E. Escobar
  * @author Megumi Telles
  */
-public interface GraphNode extends Identifiable<String>, HasLocalId<Integer>, HasBranch {
+public interface GraphNode extends ArtifactToken, Identifiable<String>, HasLocalId<Integer> {
 
    void setGraph(GraphData graph);
 

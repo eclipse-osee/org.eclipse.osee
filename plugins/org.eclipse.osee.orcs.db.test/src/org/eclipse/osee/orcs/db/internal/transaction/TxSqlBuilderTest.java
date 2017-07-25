@@ -87,8 +87,8 @@ public class TxSqlBuilderTest {
 
    private static final long NEXT_GAMMA_ID = 751382L;
 
-   private static final Integer A_ART_ID = 6737;
-   private static final Integer B_ART_ID = 1231;
+   private static final ArtifactId A_ART_ID = ArtifactId.valueOf(6737);
+   private static final ArtifactId B_ART_ID = ArtifactId.valueOf(1231);
    private static final String RATIONALE = "a rationale";
 
    private static final int ATTR_ARTIFACT_ID = 12341242;
@@ -261,7 +261,7 @@ public class TxSqlBuilderTest {
          verifyEmpty(allExcept(SqlOrderEnum.TXS_DETAIL, SqlOrderEnum.TXS, SqlOrderEnum.RELATIONS));
 
          // @formatter:off
-         verifyRow(SqlOrderEnum.RELATIONS, ITEM_ID, TYPE_UUID, NEXT_GAMMA_ID, A_ART_ID, B_ART_ID, RATIONALE);
+         verifyRow(SqlOrderEnum.RELATIONS, ITEM_ID, TYPE_UUID, NEXT_GAMMA_ID, A_ART_ID.getId().intValue(), B_ART_ID.getId().intValue(), RATIONALE);
          verifyRow(SqlOrderEnum.TXS, EXPECTED_TX, NEXT_GAMMA_ID, modType.getValue(), TxChange.CURRENT.getValue(), COMMON);
          verifyQuery(SqlOrderEnum.RELATIONS);
          // @formatter:on
