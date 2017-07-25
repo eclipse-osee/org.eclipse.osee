@@ -43,8 +43,6 @@ public class DbInitTest {
 
    @org.junit.Test
    public void testDbInit() throws Exception {
-      System.out.println("\nBegin database initialization...");
-
       List<String> protocols = ClientSessionManager.getAuthenticationProtocols();
       Assert.assertTrue("Application Server must be running." + protocols, protocols.contains("demo"));
 
@@ -66,8 +64,7 @@ public class DbInitTest {
          ClientSessionManager.releaseSession();
          ClientSessionManager.getSession();
          UserManager.releaseUser();
-         AtsClientService.getConfigEndpoint().clearCaches();
-         AtsClientService.get().getUserService().reloadCache();
+         AtsClientService.get().clearCaches();
 
          if (UserManager.getUser().getUserId().equals("bootstrap")) {
             throw new OseeStateException("Should not be bootstrap user here");

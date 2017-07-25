@@ -16,6 +16,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
    AtsWorkDefinitionServiceImplTest.class,
+   AtsWorkDefinitionServiceImplRulesTest.class,
    WorkDefinitionSheetTest.class,
    StateEventTypeTest.class,
    StateColorTest.class,

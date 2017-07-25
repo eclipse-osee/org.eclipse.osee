@@ -57,7 +57,7 @@ public class AtsBulkLoad {
       if (pend) {
          AtsClientService.get().reloadAllCaches(pend);
       } else {
-         AtsClientService.get().invalidateAllCaches();
+         AtsClientService.get().clearCaches();
       }
    }
 

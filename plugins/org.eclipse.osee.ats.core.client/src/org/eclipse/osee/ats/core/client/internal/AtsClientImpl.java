@@ -256,9 +256,17 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
-   public void invalidateAllCaches() {
-      super.invalidateAllCaches();
-      invalidateWorkDefinitionCache();
+   public void clearCaches() {
+      super.clearCaches();
+
+      // clear server config cache
+      AtsClientService.getConfigEndpoint().clearCaches();
+
+      // clear client config cache (read from server)
+      clearConfigurationsCaches();
+      getWorkDefinitionService().clearCaches();
+      getUserService().reloadCache();
+
       if (goalMembersCache != null) {
          goalMembersCache.invalidate();
       }
@@ -522,6 +530,11 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    @Override
    public List<WorkDefData> getWorkDefinitionsData() {
       return getConfigurations().getWorkDefinitionsData();
+   }
+
+   @Override
+   public void clearConfigurationsCaches() {
+      configProvider.clearConfigurationsCaches();
    }
 
    @Override

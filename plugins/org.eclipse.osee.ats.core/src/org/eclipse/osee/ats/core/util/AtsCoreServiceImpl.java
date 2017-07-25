@@ -190,12 +190,8 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
    }
 
    @Override
-   public void invalidateAllCaches() {
+   public void clearCaches() {
       atsCache.invalidate();
-   }
-
-   @Override
-   public void invalidateWorkDefinitionCache() {
       workDefinitionService.clearCaches();
    }
 
@@ -365,11 +361,6 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
    @Override
    public AtsConfigurations getConfigurations() {
       return configProvider.getConfigurations();
-   }
-
-   @Override
-   public void clearConfigurationsCaches() {
-      configProvider.clearConfigurationsCaches();
    }
 
    @Override

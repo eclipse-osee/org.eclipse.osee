@@ -49,6 +49,5 @@ public enum RuleDefinitionOption {
       for (int i = 0; i < locations.length; i++) {
          this.ruleLocs.add(locations[i]);
       }
-
    }
 }

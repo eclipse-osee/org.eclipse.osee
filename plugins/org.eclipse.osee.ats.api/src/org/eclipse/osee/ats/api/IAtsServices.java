@@ -162,9 +162,7 @@ public interface IAtsServices extends IAtsEarnedValueServiceProvider, IAtsConfig
 
    List<IAtsSearchDataProvider> getSearchDataProviders();
 
-   void invalidateAllCaches();
-
-   void invalidateWorkDefinitionCache();
+   void clearCaches();
 
    ITeamWorkflowProvidersLazy getTeamWorkflowProviders();
 
@@ -185,4 +183,5 @@ public interface IAtsServices extends IAtsEarnedValueServiceProvider, IAtsConfig
    IAgileService getAgileService();
 
    ArtifactToken getArtifactByAtsId(String id);
+
 }

@@ -102,6 +102,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
    public void clearCaches() {
       workDefIdToWorkDef.invalidateAll();
       workItemToWorkDef.invalidateAll();
+      ruleDefinitionCache.invalidateAll();
    }
 
    @Override
@@ -578,8 +579,8 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       try {
          if (workItem instanceof IAtsTeamWorkflow) {
             teamWf = (IAtsTeamWorkflow) workItem;
-         } else if (this instanceof IAtsAbstractReview) {
-            teamWf = ((IAtsAbstractReview) this).getParentTeamWorkflow();
+         } else if (workItem instanceof IAtsAbstractReview) {
+            teamWf = ((IAtsAbstractReview) workItem).getParentTeamWorkflow();
          }
          if (teamWf != null) {
             hasRule = teamWf.getTeamDefinition().hasRule(option.name());

@@ -38,6 +38,7 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.ats.workdef.provider.AtsWorkDefinitionImporter;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
@@ -45,6 +46,7 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -69,7 +71,7 @@ public class AtsConfigOperation extends AbstractOperation {
    private final String teamDefName;
    private final Collection<String> versionNames;
    private final Collection<String> actionableItemsNames;
-   private IAtsTeamDefinition teamDefinition;
+   private IAtsTeamDefinition teamDef;
    private Collection<IAtsActionableItem> actionableItems;
    private IAtsWorkDefinition workDefinition = null;
    private ArtifactToken teamDefToken = null;
@@ -116,16 +118,21 @@ public class AtsConfigOperation extends AbstractOperation {
       checkWorkItemNamespaceUnique();
       monitor.worked(calculateWork(0.10));
 
+      XResultData resultData = new XResultData();
+      this.workDefinition = createWorkflowDefinition(resultData);
+      if (resultData.isErrors()) {
+         throw new OseeStateException("Error created new Work Definition for Team Def %s", teamDef.toStringWithId());
+      }
+
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("Configure ATS for Default Team");
 
-      teamDefinition = createTeamDefinition(changes, AtsClientService.get());
+      teamDef = createTeamDefinition(changes, AtsClientService.get());
+      // Relate new team def to workflow artifact
+      changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.WorkflowDefinition, workDefinition.getName());
 
-      actionableItems = createActionableItems(changes, teamDefinition, AtsClientService.get());
+      actionableItems = createActionableItems(changes, teamDef, AtsClientService.get());
 
-      createVersions(changes, teamDefinition);
-
-      XResultData resultData = new XResultData();
-      this.workDefinition = createWorkflow(changes, resultData, teamDefinition);
+      createVersions(changes, teamDef);
 
       changes.execute();
       monitor.worked(calculateWork(0.30));
@@ -136,8 +143,8 @@ public class AtsConfigOperation extends AbstractOperation {
       if (teamDefToken == null) {
          teamDef = AtsClientService.get().createTeamDefinition(teamDefName, changes, services);
       } else {
-         teamDef = AtsClientService.get().createTeamDefinition(teamDefToken.getName(), teamDefToken.getId(),
-            changes, services);
+         teamDef = AtsClientService.get().createTeamDefinition(teamDefToken.getName(), teamDefToken.getId(), changes,
+            services);
       }
       changes.relate(TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService()),
          AtsRelationTypes.TeamMember_Member, AtsClientService.get().getUserService().getCurrentUser());
@@ -190,32 +197,34 @@ public class AtsConfigOperation extends AbstractOperation {
       }
    }
 
-   private IAtsWorkDefinition createWorkflow(IAtsChangeSet changes, XResultData resultData, IAtsTeamDefinition teamDef) throws OseeCoreException {
+   private IAtsWorkDefinition createWorkflowDefinition(XResultData resultData) throws OseeCoreException {
       IAtsWorkDefinition workDef = AtsClientService.get().getWorkDefinitionService().getWorkDefinition(name);
       // If can't be found, create a new one
       if (workDef == null) {
-         IAtsChangeSet changes2 = AtsClientService.get().getStoreService().createAtsChangeSet("Create Work Definition",
-            AtsClientService.get().getUserService().getCurrentUser());
-         workDef = generateDefaultWorkflow(name, resultData, changes2, teamDef);
+         IAtsChangeSet changes = AtsClientService.get().getStoreService().createAtsChangeSet(
+            "Create Work Definition - " + name, AtsClientService.get().getUserService().getCurrentUser());
+         workDef = generateDefaultWorkflow(name, resultData, changes);
+         Artifact workDefArt = null;
          try {
             String workDefXml = AtsClientService.get().getWorkDefinitionService().getStorageString(workDef, resultData);
-            Artifact workDefArt = AtsWorkDefinitionImporter.get().importWorkDefinitionToDb(workDefXml,
-               workDef.getName(), name, null, resultData, changes2);
+            workDefArt = AtsWorkDefinitionImporter.get().importWorkDefinitionToDb(workDefXml, workDef.getName(), name,
+               null, resultData, changes);
             Artifact folder = AtsUtilClient.getFromToken(AtsArtifactToken.WorkDefinitionsFolder);
             folder.addChild(workDefArt);
-            changes2.add(folder);
+            changes.add(folder);
          } catch (Exception ex) {
             throw new OseeWrappedException(ex);
          }
-         changes2.executeIfNeeded();
+         TransactionId transactionId = changes.execute();
+         if (transactionId == null || !workDefArt.isInDb()) {
+            throw new OseeStateException("Work Def didn't persist");
+         }
          AtsClientService.get().getWorkDefinitionService().addWorkDefinition(workDef);
       }
-      // Relate new team def to workflow artifact
-      changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.WorkflowDefinition, workDef.getName());
       return workDef;
    }
 
-   private IAtsWorkDefinition generateDefaultWorkflow(String name, XResultData resultData, IAtsChangeSet changes, IAtsTeamDefinition teamDef) throws OseeCoreException {
+   private IAtsWorkDefinition generateDefaultWorkflow(String name, XResultData resultData, IAtsChangeSet changes) throws OseeCoreException {
       IAtsWorkDefinition defaultWorkDef = AtsClientService.get().getWorkDefinitionService().getWorkDefinition(
          AtsWorkDefinitionSheetProviders.WORK_DEF_TEAM_DEFAULT);
 
@@ -253,7 +262,7 @@ public class AtsConfigOperation extends AbstractOperation {
    }
 
    public IAtsTeamDefinition getTeamDefinition() {
-      return teamDefinition;
+      return teamDef;
    }
 
 }

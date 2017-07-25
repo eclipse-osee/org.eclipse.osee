@@ -459,4 +459,12 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    public List<WorkDefData> getWorkDefinitionsData() {
       return workDefinitionStore.getWorkDefinitionsData();
    }
+
+   @Override
+   public void clearCaches() {
+      super.clearCaches();
+
+      // clear client config cache (read from server)
+      clearConfigurationsCaches();
+   }
 }

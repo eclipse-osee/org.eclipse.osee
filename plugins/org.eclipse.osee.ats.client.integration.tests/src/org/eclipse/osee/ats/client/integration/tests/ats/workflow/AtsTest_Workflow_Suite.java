@@ -29,8 +29,7 @@ import org.junit.runners.Suite;
    AtsTaskEndpointImplTest.class,
    WfePromptChangeStatusTest.class,
    TeamWorkflowProvidersTest.class,
-   AtsRelationResolverServiceTest.class,
-   CreateTaskRuleTest.class //
+   AtsRelationResolverServiceTest.class //
 })
 public class AtsTest_Workflow_Suite {
 
