@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -35,13 +36,11 @@ public class TeamWorkflow extends WorkItem implements IAtsTeamWorkflow {
    @Override
    public Set<IAtsActionableItem> getActionableItems() throws OseeCoreException {
       Set<IAtsActionableItem> ais = new HashSet<>();
-      Collection<ArtifactId> artifactIds =
-         services.getAttributeResolver().getAttributeValues(artifact, AtsAttributeTypes.ActionableItemReference);
-      for (ArtifactId aiId : artifactIds) {
-         IAtsActionableItem ai = services.getConfigItem(aiId);
-         if (ai == null) {
-            ai = services.getConfigItemFactory().getActionableItem(aiId);
-         }
+      Collection<ArtifactId> artIds =
+         services.getAttributeResolver().getArtifactIdReferences(artifact, AtsAttributeTypes.ActionableItemReference);
+      for (ArtifactId artId : artIds) {
+         IAtsActionableItem ai = services.getConfigItem(artId);
+         Conditions.assertNotNull(ai, "ai can not be null for artId %s", artId);
          ais.add(ai);
       }
       return ais;

@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.client.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -62,10 +63,10 @@ import org.eclipse.osee.ats.core.client.util.IArtifactMembersCache;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionListeners;
-import org.eclipse.osee.ats.core.config.ActionableItem2;
+import org.eclipse.osee.ats.core.config.ActionableItem;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
-import org.eclipse.osee.ats.core.config.TeamDefinition2;
+import org.eclipse.osee.ats.core.config.TeamDefinition;
 import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.core.util.AtsCoreFactory;
 import org.eclipse.osee.ats.core.util.AtsCoreServiceImpl;
@@ -169,7 +170,18 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
 
    @Override
    public List<Artifact> getConfigArtifacts(Collection<? extends IAtsObject> atsObjects) throws OseeCoreException {
-      return Collections.castAll(AtsObjects.getArtifacts(atsObjects));
+      List<Artifact> results = new LinkedList<>();
+      for (ArtifactId artId : AtsObjects.getArtifacts(atsObjects)) {
+         if (artId instanceof Artifact) {
+            results.add((Artifact) artId);
+         } else {
+            Artifact artifact = AtsClientService.get().getArtifact(artId);
+            if (artifact != null) {
+               results.add(artifact);
+            }
+         }
+      }
+      return results;
    }
 
    @Override
@@ -234,14 +246,14 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
          }
 
          private void cacheTeamDefinitions(JaxTeamDefinition jaxTeamDef) {
-            atsCache.cacheAtsObject(new TeamDefinition2(getLogger(), client, jaxTeamDef));
+            atsCache.cacheAtsObject(new TeamDefinition(getLogger(), client, jaxTeamDef));
             for (Long childId : jaxTeamDef.getChildren()) {
                cacheTeamDefinitions(configProvider.getConfigurations().getIdToTeamDef().get(childId));
             }
          }
 
          private void cacheActionableItems(JaxActionableItem jaxAi) {
-            atsCache.cacheAtsObject(new ActionableItem2(getLogger(), client, jaxAi));
+            atsCache.cacheAtsObject(new ActionableItem(getLogger(), client, jaxAi));
             for (Long child : jaxAi.getChildren()) {
                cacheActionableItems(configProvider.getConfigurations().getIdToAi().get(child));
             }

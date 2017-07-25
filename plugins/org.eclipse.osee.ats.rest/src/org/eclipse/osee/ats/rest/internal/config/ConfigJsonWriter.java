@@ -98,7 +98,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
    }
 
    public static void addProgramObject(IAtsServer atsServer, IAtsObject atsObject, Annotation[] annotations, JsonGenerator writer, boolean identityView, AttributeTypes attributeTypes) throws IOException, JsonGenerationException, JsonProcessingException {
-      ArtifactReadable artifact = (ArtifactReadable) atsObject.getStoreObject();
+      ArtifactReadable artifact = atsServer.getArtifact(atsObject);
       writer.writeStartObject();
       writer.writeNumberField("uuid", getUuid(atsObject, atsServer));
       writer.writeStringField("Name", atsObject.getName());

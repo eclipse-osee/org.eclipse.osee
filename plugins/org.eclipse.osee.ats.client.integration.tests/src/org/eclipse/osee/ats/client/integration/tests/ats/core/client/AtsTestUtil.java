@@ -512,7 +512,9 @@ public class AtsTestUtil {
       for (IAtsConfigObject config : Arrays.asList(teamDef, testAi, testAi2, testAi3, testAi4)) {
          if (config != null) {
             Artifact art = AtsClientService.get().getArtifact(config);
-            art.deleteAndPersist(transaction);
+            if (art != null) {
+               art.deleteAndPersist(transaction);
+            }
          }
       }
 

@@ -31,7 +31,7 @@ import org.eclipse.osee.logger.Log;
  * @author Donald G Dunne
  */
 public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.impl.AtsObject implements IAtsConfigObject {
-   protected final ArtifactToken artifact;
+   protected ArtifactToken artifact;
    protected final Log logger;
    protected final IAtsServices services;
 

@@ -41,13 +41,8 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
    @Override
    public Collection<ArtifactToken> getRelated(ArtifactId artifact, RelationTypeSide relationType) {
       List<ArtifactToken> results = new ArrayList<>();
-      if (artifact instanceof ArtifactReadable) {
-         for (ArtifactReadable art : ((ArtifactReadable) artifact).getRelated(relationType)) {
-            results.add(art);
-         }
-      } else if (artifact instanceof IAtsObject) {
-         IAtsObject iAtsObject = (IAtsObject) artifact;
-         for (ArtifactReadable art : ((ArtifactReadable) iAtsObject.getStoreObject()).getRelated(relationType)) {
+      for (ArtifactReadable art : getArtifact(artifact).getRelated(relationType)) {
+         if (art != null) {
             results.add(art);
          }
       }
@@ -79,7 +74,7 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
    public boolean areRelated(ArtifactId artifact1, RelationTypeSide relationType, ArtifactId artifact2) {
       boolean related = false;
       if (artifact1 instanceof ArtifactReadable && artifact2 instanceof ArtifactReadable) {
-         related = ((ArtifactReadable) artifact1).areRelated(relationType, (ArtifactReadable) artifact2);
+         related = getArtifact(artifact1).areRelated(relationType, getArtifact(artifact2));
       }
       return related;
    }
@@ -88,7 +83,7 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
    public ArtifactToken getRelatedOrNull(ArtifactId artifact, RelationTypeSide relationType) {
       ArtifactToken related = null;
       try {
-         related = ((ArtifactReadable) artifact).getRelated(relationType).getAtMostOneOrNull();
+         related = getArtifact(artifact).getRelated(relationType).getAtMostOneOrNull();
       } catch (ArtifactDoesNotExist ex) {
          // do nothing
       }

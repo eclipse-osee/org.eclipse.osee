@@ -98,7 +98,7 @@ public class AtsWorkDefinitionServiceImplRulesTest {
       TeamDefinition teamDef = new TeamDefinition(logger, services, teamDefArt);
       when(teamWf.getTeamDefinition()).thenReturn(teamDef);
       when(services.getAttributeResolver()).thenReturn(attrResolver);
-      when(attrResolver.getAttributeValues(teamDefArt, AtsAttributeTypes.RuleDefinition)).thenReturn(
+      when(attrResolver.getAttributesToStringList(teamDef, AtsAttributeTypes.RuleDefinition)).thenReturn(
          Arrays.asList(RuleDefinitionOption.AllowPrivilegedEditToTeamMember.name(),
             RuleDefinitionOption.AllowPrivilegedEditToTeamMemberAndOriginator.name()));
 

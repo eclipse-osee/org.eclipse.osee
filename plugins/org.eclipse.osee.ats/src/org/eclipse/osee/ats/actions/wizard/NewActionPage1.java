@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.client.IAtsClient;
-import org.eclipse.osee.ats.core.config.ActionableItem2;
+import org.eclipse.osee.ats.core.config.ActionableItem;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
@@ -159,7 +159,7 @@ public class NewActionPage1 extends WizardPage {
                atsClient.getConfigurations().getTopActionableItem().getId()).getChildren()) {
                JaxActionableItem jai = atsClient.getConfigurations().getIdToAi().get(aiId);
                if (jai.isActive()) {
-                  activeActionableItemTree.add(new ActionableItem2(atsClient.getLogger(), atsClient, jai));
+                  activeActionableItemTree.add(new ActionableItem(atsClient.getLogger(), atsClient, jai));
                }
             }
             treeViewer.getViewer().setInput(activeActionableItemTree);
