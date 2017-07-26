@@ -14,7 +14,6 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
@@ -119,12 +118,12 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
-   public RelationData createRelationData(RelationTypeId relationType, BranchId branch, HasLocalId<Integer> aArt, HasLocalId<Integer> bArt, String rationale) throws OseeCoreException {
+   public RelationData createRelationData(RelationTypeId relationType, BranchId branch, ArtifactId aArtifact, ArtifactId bArtifact, String rationale) throws OseeCoreException {
       VersionData version = objectFactory.createDefaultVersionData();
       version.setBranch(branch);
       ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
-      return objectFactory.createRelationData(version, idFactory.getNextRelationId(), relationType, modType,
-         ArtifactId.valueOf(aArt.getLocalId()), ArtifactId.valueOf(bArt.getLocalId()), rationale, ApplicabilityId.BASE);
+      return objectFactory.createRelationData(version, idFactory.getNextRelationId(), relationType, modType, aArtifact,
+         bArtifact, rationale, ApplicabilityId.BASE);
    }
 
    @Override

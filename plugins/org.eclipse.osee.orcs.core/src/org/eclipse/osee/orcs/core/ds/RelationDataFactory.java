@@ -10,19 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface RelationDataFactory {
 
-   RelationData createRelationData(RelationTypeId relationType, BranchId branch, HasLocalId<Integer> aArt, HasLocalId<Integer> bArt, String rationale) throws OseeCoreException;
+   RelationData createRelationData(RelationTypeId relationType, BranchId branch, ArtifactId aArtifact, ArtifactId bArtifact, String rationale);
 
-   RelationData clone(RelationData source) throws OseeCoreException;
+   RelationData clone(RelationData source);
 
-   RelationData introduce(BranchId branch, RelationData source) throws OseeCoreException;
+   RelationData introduce(BranchId branch, RelationData source);
 }
