@@ -26,7 +26,7 @@ public interface RelationId extends Id {
       return valueOf(Long.valueOf(id));
    }
 
-   public static RelationId valueOf(Long id) {
+   public static RelationId valueOf(long id) {
       final class RelationIdImpl extends BaseId implements RelationId {
          public RelationIdImpl(Long txId) {
             super(txId);

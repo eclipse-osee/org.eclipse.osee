@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -62,24 +63,24 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
    @Override
    public Collection<ChangeItem> createMissingChanges(HasCancellation cancellation, OrcsSession session, List<ChangeItem> changes, TransactionToken sourceTx, TransactionToken destTx, ApplicabilityQuery applicQuery) throws OseeCoreException {
       if (changes != null && !changes.isEmpty()) {
-         Set<Integer> modifiedArtIds = new HashSet<>();
-         Multimap<Integer, Integer> modifiedAttrIds = LinkedListMultimap.create();
-         Multimap<Integer, Integer> modifiedRels = LinkedListMultimap.create();
+         Set<ArtifactId> modifiedArtIds = new HashSet<>();
+         Multimap<ArtifactId, Id> modifiedAttrIds = LinkedListMultimap.create();
+         Multimap<ArtifactId, Id> modifiedRels = LinkedListMultimap.create();
          Multimap<Long, Long> modifiedTuples = LinkedListMultimap.create();
 
          for (ChangeItem change : changes) {
             switch (change.getChangeType()) {
                case ARTIFACT_CHANGE:
                   if (!change.isSynthetic()) {
-                     modifiedArtIds.add(change.getArtId().getId().intValue());
+                     modifiedArtIds.add(change.getArtId());
                   }
                   break;
                case ATTRIBUTE_CHANGE:
-                  modifiedAttrIds.put(change.getArtId().getId().intValue(), change.getItemId().getId().intValue());
+                  modifiedAttrIds.put(change.getArtId(), change.getItemId());
                   break;
                case RELATION_CHANGE:
-                  modifiedRels.put(change.getArtId().getId().intValue(), change.getItemId().getId().intValue());
-                  modifiedRels.put(change.getArtIdB().getId().intValue(), change.getItemId().getId().intValue());
+                  modifiedRels.put(change.getArtId(), change.getItemId());
+                  modifiedRels.put(change.getArtIdB(), change.getItemId());
                   break;
                case TUPLE_CHANGE:
                   modifiedTuples.put(0L, 1L);
@@ -89,11 +90,12 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
             }
          }
 
-         Set<Integer> allArtIds = new HashSet<>(modifiedArtIds);
+         Set<ArtifactId> allArtIds = new HashSet<>(modifiedArtIds);
          allArtIds.addAll(modifiedAttrIds.keySet());
          allArtIds.addAll(modifiedRels.keySet());
 
-         Set<Integer> missingArtIds = determineWhichArtifactsNotOnDestination(cancellation, session, allArtIds, destTx);
+         Set<ArtifactId> missingArtIds =
+            determineWhichArtifactsNotOnDestination(cancellation, session, allArtIds, destTx);
 
          if (!missingArtIds.isEmpty()) {
             applicTokensForMissingArts = applicQuery.getApplicabilityTokens(sourceTx.getBranch(), destTx.getBranch());
@@ -117,9 +119,9 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
       return toReturn;
    }
 
-   private Set<Integer> determineWhichArtifactsNotOnDestination(HasCancellation cancellation, OrcsSession session, Set<Integer> artIds, TransactionToken destTx) throws OseeCoreException {
-      DataLoader loader = dataLoaderFactory.newDataLoaderFromIds(session, destTx.getBranch(), artIds);
-      final Set<Integer> missingArtIds = new LinkedHashSet<>(artIds);
+   private Set<ArtifactId> determineWhichArtifactsNotOnDestination(HasCancellation cancellation, OrcsSession session, Set<ArtifactId> artIds, TransactionToken destTx) throws OseeCoreException {
+      DataLoader loader = dataLoaderFactory.newDataLoader(session, destTx.getBranch(), artIds);
+      final Set<ArtifactId> missingArtIds = new LinkedHashSet<>(artIds);
       loader.includeDeletedArtifacts();
       loader.fromTransaction(destTx);
       loader.fromBranchView(destTx.getBranch().getViewId());
@@ -128,17 +130,17 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
 
          @Override
          public void onData(ArtifactData data) {
-            missingArtIds.remove(data.getLocalId());
+            missingArtIds.remove(data);
          }
       });
       return missingArtIds;
    }
 
-   private Collection<ChangeItem> createMissingChangeItems(HasCancellation cancellation, OrcsSession session, TransactionToken sourceTx, TransactionToken destTx, final Set<Integer> modifiedArtIds, final Multimap<Integer, Integer> modifiedAttrIds, final Multimap<Integer, Integer> modifiedRels, final Set<Integer> missingArtIds, final Set<Integer> allArtIds) throws OseeCoreException {
+   private Collection<ChangeItem> createMissingChangeItems(HasCancellation cancellation, OrcsSession session, TransactionToken sourceTx, TransactionToken destTx, final Set<ArtifactId> modifiedArtIds, final Multimap<ArtifactId, Id> modifiedAttrIds, final Multimap<ArtifactId, Id> modifiedRels, final Set<ArtifactId> missingArtIds, final Set<ArtifactId> allArtIds) throws OseeCoreException {
       final Set<ChangeItem> toReturn = new LinkedHashSet<>();
       final Set<RelationData> relations = new LinkedHashSet<>();
 
-      DataLoader loader = dataLoaderFactory.newDataLoaderFromIds(session, sourceTx.getBranch(), missingArtIds);
+      DataLoader loader = dataLoaderFactory.newDataLoader(session, sourceTx.getBranch(), missingArtIds);
       loader.withLoadLevel(LoadLevel.ALL);
       loader.includeDeletedArtifacts();
       loader.fromTransaction(sourceTx);
@@ -148,23 +150,22 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
 
          @Override
          public void onData(ArtifactData data) throws OseeCoreException {
-            if (!modifiedArtIds.contains(data.getLocalId())) {
+            if (!modifiedArtIds.contains(data)) {
                toReturn.add(createArtifactChangeItem(data));
             }
          }
 
          @Override
          public void onData(RelationData data) {
-            int localId = data.getLocalId();
-            if (!modifiedRels.get(data.getArtIdA()).contains(localId) && !modifiedRels.get(data.getArtIdB()).contains(
-               localId)) {
+            if (!modifiedRels.get(data.getArtifactIdA()).contains(
+               data) && !modifiedRels.get(data.getArtifactIdB()).contains(data)) {
                relations.add(data);
             }
          }
 
          @Override
          public void onData(AttributeData data) throws OseeCoreException {
-            if (!modifiedAttrIds.get(data.getArtifactId()).contains(data.getLocalId())) {
+            if (!modifiedAttrIds.get(ArtifactId.valueOf(data.getArtifactId())).contains(data)) {
                toReturn.add(createAttributeChangeItem(data));
             }
          }
@@ -172,18 +173,18 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
       });
 
       if (!relations.isEmpty()) {
-         Multimap<Integer, RelationData> relationChangesToAdd = LinkedListMultimap.create();
+         Multimap<ArtifactId, RelationData> relationChangesToAdd = LinkedListMultimap.create();
          for (RelationData data : relations) {
-            if (allArtIds.contains(data.getArtIdA())) {
-               if (allArtIds.contains(data.getArtIdB())) {
+            if (allArtIds.contains(data.getArtifactIdA())) {
+               if (allArtIds.contains(data.getArtifactIdB())) {
                   toReturn.add(createRelationChangeItem(data));
                } else {
                   // check if artIdB exists on destination branch, addRelation if it does
-                  relationChangesToAdd.put(data.getArtIdB(), data);
+                  relationChangesToAdd.put(data.getArtifactIdB(), data);
                }
-            } else if (allArtIds.contains(data.getArtIdB())) {
+            } else if (allArtIds.contains(data.getArtifactIdB())) {
                // if artIdA exists on destination, addRelation
-               relationChangesToAdd.put(data.getArtIdA(), data);
+               relationChangesToAdd.put(data.getArtifactIdA(), data);
             }
          }
          if (!relationChangesToAdd.isEmpty()) {
@@ -193,18 +194,17 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
       return toReturn;
    }
 
-   private Set<ChangeItem> createExistingRelations(HasCancellation cancellation, OrcsSession session, TransactionToken destTx, final Multimap<Integer, RelationData> relationChangesToAdd) throws OseeCoreException {
+   private Set<ChangeItem> createExistingRelations(HasCancellation cancellation, OrcsSession session, TransactionToken destTx, final Multimap<ArtifactId, RelationData> relationChangesToAdd) throws OseeCoreException {
       final Set<ChangeItem> toReturn = new LinkedHashSet<>();
 
-      DataLoader loader =
-         dataLoaderFactory.newDataLoaderFromIds(session, destTx.getBranch(), relationChangesToAdd.keySet());
+      DataLoader loader = dataLoaderFactory.newDataLoader(session, destTx.getBranch(), relationChangesToAdd.keySet());
       loader.fromTransaction(destTx);
       loader.fromBranchView(destTx.getBranch().getViewId());
       loader.load(cancellation, new LoadDataHandlerAdapter() {
 
          @Override
          public void onData(ArtifactData data) throws OseeCoreException {
-            for (RelationData relData : relationChangesToAdd.get(data.getLocalId())) {
+            for (RelationData relData : relationChangesToAdd.get(data)) {
                toReturn.add(createRelationChangeItem(relData));
             }
          }
@@ -241,8 +241,8 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
       ApplicabilityId appId = data.getApplicabilityId();
       return ChangeItemUtil.newRelationChange(RelationId.valueOf(Long.valueOf(data.getLocalId())),
          RelationTypeId.valueOf(data.getTypeUuid()), GammaId.valueOf(data.getVersion().getGammaId()),
-         determineModType(data), ArtifactId.valueOf(data.getArtIdA()), ArtifactId.valueOf(data.getArtIdB()),
-         data.getRationale(), getApplicabilityToken(appId));
+         determineModType(data), data.getArtifactIdA(), data.getArtifactIdB(), data.getRationale(),
+         getApplicabilityToken(appId));
    }
 
 }

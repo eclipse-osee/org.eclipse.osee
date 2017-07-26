@@ -145,12 +145,7 @@ public abstract class OrcsVersionedObjectImpl extends OrcsObjectImpl<Integer> im
 
    @Override
    public int hashCode() {
-      final int prime = 31;
-      int result = getLocalId().hashCode();
-      result = prime * result + (baseModType == null ? 0 : baseModType.hashCode());
-      result = prime * result + Long.hashCode(baseTypeUuid);
-      result = prime * result + (version == null ? 0 : version.hashCode());
-      return result;
+      return getLocalId().hashCode();
    }
 
    @Override

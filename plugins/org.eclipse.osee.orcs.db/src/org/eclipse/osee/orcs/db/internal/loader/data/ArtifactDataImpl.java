@@ -44,7 +44,7 @@ public class ArtifactDataImpl extends OrcsVersionedObjectImpl implements Artifac
       if (obj instanceof ArtifactDataImpl) {
          return guid.equals(((ArtifactDataImpl) obj).guid);
       }
-      return false;
+      return true;
    }
 
    @Override

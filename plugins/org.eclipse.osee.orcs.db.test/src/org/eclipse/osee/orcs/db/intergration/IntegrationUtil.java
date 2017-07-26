@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
@@ -43,7 +44,7 @@ public class IntegrationUtil {
 
    public static void verifyData(ArtifactData data, Object... values) {
       int index = 0;
-      assertEquals(values[index++], data.getLocalId());
+      assertEquals(values[index++], data);
       assertEquals(values[index++], data.getGuid());
 
       verifyData(data, index, values);
@@ -51,8 +52,8 @@ public class IntegrationUtil {
 
    public static void verifyData(AttributeData data, Object... values) throws OseeCoreException {
       int index = 0;
-      assertEquals(values[index++], data.getLocalId());
-      assertEquals(values[index++], data.getArtifactId());
+      assertEquals(values[index++], data);
+      assertEquals(values[index++], ArtifactId.valueOf(data.getArtifactId()));
 
       index = verifyData(data, index, values);
 
@@ -64,8 +65,8 @@ public class IntegrationUtil {
       int index = 0;
       assertEquals(values[index++], data.getLocalId());
 
-      assertEquals(values[index++], data.getArtIdA());
-      assertEquals(values[index++], data.getArtIdB());
+      assertEquals(values[index++], data.getArtifactIdA());
+      assertEquals(values[index++], data.getArtifactIdB());
       assertEquals(values[index++], data.getRationale());
 
       verifyData(data, index, values);

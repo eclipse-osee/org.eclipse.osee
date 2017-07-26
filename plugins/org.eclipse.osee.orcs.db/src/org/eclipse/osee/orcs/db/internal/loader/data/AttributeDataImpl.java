@@ -58,7 +58,7 @@ public class AttributeDataImpl<T> extends OrcsVersionedObjectImpl implements Att
          AttributeDataImpl<?> other = (AttributeDataImpl<?>) obj;
          return Integer.valueOf(other.artifactId).equals(artifactId) && proxy.equals(other.proxy);
       }
-      return false;
+      return true;
    }
 
    @Override

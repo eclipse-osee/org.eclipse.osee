@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.executor.admin.HasCancellation;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -102,8 +104,12 @@ public class DataLoaderFactoryImpl implements DataLoaderFactory {
    }
 
    @Override
-   public DataLoader newDataLoaderFromIds(OrcsSession session, BranchId branch, Integer... ids) throws OseeCoreException {
-      return newDataLoaderFromIds(session, branch, Arrays.asList(ids));
+   public DataLoader newDataLoader(OrcsSession session, BranchId branch, Collection<ArtifactId> ids) {
+      ArrayList<Integer> intIds = new ArrayList<>();
+      for (ArtifactId id : ids) {
+         intIds.add(id.getId().intValue());
+      }
+      return newDataLoaderFromIds(session, branch, intIds);
    }
 
    @Override
