@@ -13,6 +13,7 @@ package org.eclipse.osee.disposition.rest.internal.importer.coverage;
 import static org.eclipse.osee.disposition.model.DispoStrings.Exception_Handling_Resolution;
 import static org.eclipse.osee.disposition.model.DispoStrings.Test_Unit_Resolution;
 import static org.eclipse.osee.disposition.model.DispoSummarySeverity.ERROR;
+import static org.eclipse.osee.disposition.model.DispoSummarySeverity.WARNING;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -356,7 +357,7 @@ public class LisFileParser implements DispoImporterApi {
                   Result datFileSyntaxResult = VCastValidateDatFileSyntax.validateDatFileSyntax(resultsLine);
                   if (!datFileSyntaxResult.isTrue()) {
                      report.addEntry("SQL", String.format("This line [%s] is not in proper format. In DAT file [%s]",
-                        resultsFile.getName()), ERROR);
+                        resultsLine, resultsFile.getName()), WARNING);
                   } else {
                      if (!alreadyUsedDatIds.contains(resultsLine)) {
                         alreadyUsedDatIds.add(resultsLine);
@@ -379,6 +380,8 @@ public class LisFileParser implements DispoImporterApi {
                   }
                }
             }
+         } catch (Exception ex) {
+            report.addEntry("EXCEPTION", ex.getMessage(), ERROR);
          } finally {
             Lib.close(br);
          }
