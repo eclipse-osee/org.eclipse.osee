@@ -53,4 +53,6 @@ public interface DispoQuery {
 
    DispoConfig findDispoConfig(BranchId branch);
 
+   Long getDispoItemParentSet(BranchId branch, String itemId);
+
 }

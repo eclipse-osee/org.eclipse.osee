@@ -253,6 +253,9 @@ public final class DispoUtil {
             }
             dispoSet.setNotesList(notesList);
          }
+         if (jsonObject.has("ciSet")) {
+            dispoSet.setCiSet(jsonObject.getString("ciSet"));
+         }
       } catch (JSONException ex) {
          throw new OseeCoreException("Error deserializing a Dispositionable Item.", ex);
       }

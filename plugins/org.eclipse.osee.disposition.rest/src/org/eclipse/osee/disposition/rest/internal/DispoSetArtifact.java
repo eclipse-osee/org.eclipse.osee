@@ -86,4 +86,10 @@ public class DispoSetArtifact extends BaseIdentity<String> implements DispoSet {
    public String getDispoType() {
       return artifact.getSoleAttributeAsString(DispoConstants.DispoType, "");
    }
+
+   @Override
+   public String getCiSet() {
+      return artifact.getSoleAttributeAsString(DispoConstants.DispoCiSet, "");
+   }
+
 }

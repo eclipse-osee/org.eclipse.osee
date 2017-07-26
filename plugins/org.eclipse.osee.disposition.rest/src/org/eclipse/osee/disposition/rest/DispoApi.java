@@ -45,6 +45,8 @@ public interface DispoApi {
 
    DispoConfig getDispoConfig(BranchId branch);
 
+   DispoSet getDispoItemParentSet(BranchId branch, String itemId);
+
    // Writes
    Long createDispoProgram(String name);
 

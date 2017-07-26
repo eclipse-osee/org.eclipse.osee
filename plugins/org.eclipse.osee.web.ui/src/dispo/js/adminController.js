@@ -331,7 +331,28 @@ app.controller('adminController', [
 		            	$scope.isRunningOperation = false;
 		            	$scope.getSetImportDetails(destinationSet);
 		            });
-		        }
+		        };
+		        
+		        
+		        $scope.configureCiSet = function setCiSet(inputs) {
+		        	var localSet =  $scope.getSetById(inputs.ciDispositionSet);
+		        	localSet.ciSet = inputs.ciSet;
+		            Set.update({
+	                programId: $scope.programSelection,
+	                setId: inputs.ciDispositionSet,
+	                }, localSet);
+		        };
+		        
+		        
+		        $scope.massSendDispoItemStatus = function massSendDispoItemStatus (set) {
+		        	var newSet = $scope.getSetById(set.ciDispositionSet);
+		        	newSet.operation = "MassSendDispoItemStatus";
+		        	Set.update({
+		        		programId: $scope.programSelection,
+		        		setId: set.ciDispositionSet
+		        	}, newSet);
+		        };
+		        
 		        
 		        // -------------------- Summary Grids ----------------------\\
 		        var filterBarPlugin = {
@@ -653,7 +674,73 @@ app.controller('adminController', [
 		                $modalInstance.dismiss('cancel');
 		            };
 		        };
+		        
+		        // Configure/Set CI Set
+		        $scope.openConfigureCiSetModal = function() {
+		        	 var modalInstance = $modal.open({
+			                templateUrl: 'configureCiSet.html',
+			                controller: ConfigureCiSetCtrl,
+			                size: 'sm',
+			                windowClass: 'ConfigureCiSetModal',
+			                resolve: {
+			                	sets: function() {
+			                		return $scope.sets;
+			                	}
+			                }
+			            });
 
+			            modalInstance.result.then(function(inputs) {
+			            	$scope.configureCiSet(inputs);
+			            });
+		        }
+		        
+		        var ConfigureCiSetCtrl = function($scope, $modalInstance, sets) {
+		        	$scope.ciSet =  "";
+		        	$scope.ciDispositionSet = "";
+		        	$scope.setsLocal = angular.copy(sets);
+		            $scope.ok = function() {
+		                var inputs = {};
+		                inputs.ciSet = this.ciSet
+		                inputs.ciDispositionSet = this.dispositionSet;
+		                $modalInstance.close(inputs);
+		            };
 
+		            $scope.cancel = function() {
+		                $modalInstance.dismiss('cancel');
+		            };
+		        }
+		        
+		        // Mass Send Disposition Item Status
+		        $scope.openMassSendDispoItemStatusModal = function() {
+		        	 var modalInstance = $modal.open({
+			                templateUrl: 'massSendDispoItemStatus.html',
+			                controller: MassSendDispoItemStatusCtrl,
+			                size: 'sm',
+			                windowClass: 'MassSendDispoItemStatusModal',
+			                resolve: {
+			                	sets: function() {
+			                		return $scope.sets;
+			                	}
+			                }
+			            });
+
+			            modalInstance.result.then(function(inputs) {
+			            	$scope.massSendDispoItemStatus(inputs);
+			            });
+		        }
+		        
+		        var MassSendDispoItemStatusCtrl = function($scope, $modalInstance, sets) {
+		        	$scope.ciDispositionSet = "";
+		        	$scope.setsLocal = angular.copy(sets);
+		            $scope.ok = function() {
+		                var inputs = {};
+		                inputs.ciDispositionSet = this.dispositionSet;
+		                $modalInstance.close(inputs);
+		            };
+
+		            $scope.cancel = function() {
+		                $modalInstance.dismiss('cancel');
+		            };
+		        }
 		    }
 		]);

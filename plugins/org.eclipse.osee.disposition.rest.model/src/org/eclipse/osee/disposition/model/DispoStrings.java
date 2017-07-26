@@ -45,6 +45,7 @@ public class DispoStrings {
    public static final String Item_InComplete = "INCOMPLETE";
 
    public static final String Operation_Import = "Import";
+   public static final String Operation_MassSendStatus = "MassSendDispoItemStatus";
 
    public static final String DeletedDiscrepancy = "Deleted Discrepancy";
 
@@ -52,4 +53,5 @@ public class DispoStrings {
 
    public static final String Test_Unit_Resolution = "Test_Script";
    public static final String Exception_Handling_Resolution = "Exception_Handling";
+
 }

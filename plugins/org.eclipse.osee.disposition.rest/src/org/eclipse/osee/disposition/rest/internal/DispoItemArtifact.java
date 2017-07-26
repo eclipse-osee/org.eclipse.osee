@@ -175,4 +175,5 @@ public class DispoItemArtifact extends BaseIdentity<String> implements DispoItem
    public String getTeam() {
       return artifact.getSoleAttributeAsString(DispoConstants.DispoItemTeam, "");
    }
+
 }

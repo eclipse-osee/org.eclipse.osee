@@ -11,6 +11,7 @@ artifactType "Disposition Set" extends "Artifact" {
    attribute "dispo.Summary Count"
    attribute "dispo.Dispo Config"
    attribute "dispo.Operation Summary"
+   attribute "dispo.CI Set"
 }
 
 artifactType "dispo.Dispositionable Item" extends "Artifact" {
@@ -287,4 +288,13 @@ attributeType "dispo.Last Updated" extends DateAttribute {
    min 0
    max 1
    mediaType "text/calendar"
+}
+
+attributeType "dispo.CI Set" extends StringAttribute {
+	id 5225296359986133054
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	defaultValue ""
+	mediaType "text/plain"
 }

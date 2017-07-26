@@ -49,6 +49,7 @@ public final class DispoConstants {
    public static final AttributeTypeToken DispoItemTeam = AttributeTypeToken.valueOf(3160880792426011047L, "dispo.Team");
    public static final AttributeTypeToken DispoItemFileNumber = AttributeTypeToken.valueOf(3458764513820541715L, "dispo.File Number");
    public static final AttributeTypeToken DispoItemMethodNumber = AttributeTypeToken.valueOf(3458764513820541460L, "dispo.Method Number");
+   public static final AttributeTypeToken DispoCiSet = AttributeTypeToken.valueOf(5225296359986133054L, "dispo.Ci Set");
 
 
    public static final ArtifactToken DISPO_ARTIFACT = ArtifactToken.valueOf(4757831, "DispositionTypes", COMMON, CoreArtifactTypes.OseeTypeDefinition);

@@ -26,6 +26,7 @@ public class DispoSetData extends DispoSetDescriptorData implements DispoSet {
    private List<Note> notesList;
    private String importState;
    private OperationReport operationSummary;
+   private String ciSet;
 
    public DispoSetData() {
 
@@ -73,6 +74,15 @@ public class DispoSetData extends DispoSetDescriptorData implements DispoSet {
    @Override
    public OperationReport getOperationSummary() {
       return operationSummary;
+   }
+
+   public void setCiSet(String ciSet) {
+      this.ciSet = ciSet;
+   }
+
+   @Override
+   public String getCiSet() {
+      return ciSet;
    }
 
 }

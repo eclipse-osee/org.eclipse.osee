@@ -33,3 +33,4 @@ Import-Package:
  org.eclipse.osee.vcast,
  org.eclipse.osee.vcast.model,
  org.json
+Export-Package: org.eclipse.osee.disposition.rest.external

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop">
+   <implementation class="org.eclipse.osee.disposition.rest.external.DispoUpdateBroadcaster"/>
+   <service>
+      <provide interface="org.eclipse.osee.disposition.rest.external.DispoUpdateBroadcaster"/>
+   </service>
+   <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>
+   <reference bind="addDispoListener" cardinality="0..n" interface="org.eclipse.osee.disposition.rest.external.DispoListenerApi" name="DispoListenerApi" policy="dynamic"/>
+</scr:component>
