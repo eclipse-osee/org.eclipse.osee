@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.core.client.util;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.logging.Level;
@@ -23,14 +22,10 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.BranchUuidEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
@@ -80,45 +75,7 @@ public class AtsUtilClient {
       return commonBranchUuidEventFilter;
    }
 
-   /**
-    * TODO Remove duplicate Active flags, need to convert all ats.Active to Active in DB
-    *
-    * @param artifacts to iterate through
-    * @param active state to validate against; Both will return all artifacts matching type
-    * @param clazz type of artifacts to consider; null for all
-    * @return set of Artifacts of type clazz that match the given active state of the "Active" or "ats.Active" attribute
-    * value. If no attribute exists, Active == true;
-    */
-   @SuppressWarnings("unchecked")
-   public static <A extends Artifact> List<A> getActive(Collection<A> artifacts, Active active, Class<? extends Artifact> clazz) throws OseeCoreException {
-      List<A> results = new ArrayList<>();
-      Collection<? extends Artifact> artsOfClass =
-         clazz != null ? Collections.castMatching(clazz, artifacts) : artifacts;
-      for (Artifact art : artsOfClass) {
-         if (active == Active.Both) {
-            results.add((A) art);
-         } else {
-            // assume active unless otherwise specified
-            boolean attributeActive = ((A) art).getSoleAttributeValue(AtsAttributeTypes.Active, false);
-            if (active == Active.Active && attributeActive) {
-               results.add((A) art);
-            } else if (active == Active.InActive && !attributeActive) {
-               results.add((A) art);
-            }
-         }
-      }
-      return results;
-   }
 
-   public static Artifact getFromToken(ArtifactToken token) {
-      Artifact toReturn = null;
-      try {
-         toReturn = ArtifactQuery.getArtifactFromId(token, AtsClientService.get().getAtsBranch());
-      } catch (OseeCoreException ex) {
-         // Do Nothing;
-      }
-      return toReturn;
-   }
 
    public synchronized static List<IEventFilter> getAtsObjectEventFilters() {
       try {
