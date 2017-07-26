@@ -168,11 +168,11 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
 
             public void refreshUserLabel() {
                String str = getWhoAmI();
-               if (AtsUtilClient.isAtsAdmin()) {
+               if (AtsClientService.get().getUserService().isAtsAdmin()) {
                   str += " - [Admin]";
                }
                if (!str.equals("")) {
-                  if (AtsUtilClient.isAtsAdmin()) {
+                  if (AtsClientService.get().getUserService().isAtsAdmin()) {
                      userLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
                   } else {
                      userLabel.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));

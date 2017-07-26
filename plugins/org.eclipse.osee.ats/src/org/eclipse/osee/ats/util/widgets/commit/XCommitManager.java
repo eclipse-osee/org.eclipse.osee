@@ -140,7 +140,7 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
             createTaskActionBar(tableComp);
 
             labelWidget.setText(getLabel() + ": ");// If ATS Admin, allow right-click to auto-complete reviews
-            if (AtsUtilClient.isAtsAdmin() && !AtsUtil.isProductionDb()) {
+            if (AtsClientService.get().getUserService().isAtsAdmin() && !AtsUtil.isProductionDb()) {
                labelWidget.addListener(SWT.MouseUp, new Listener() {
                   @Override
                   public void handleEvent(Event event) {

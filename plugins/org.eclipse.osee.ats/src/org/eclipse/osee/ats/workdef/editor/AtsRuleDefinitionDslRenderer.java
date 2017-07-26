@@ -162,7 +162,7 @@ public final class AtsRuleDefinitionDslRenderer extends FileSystemRenderer {
 
       @Override
       protected void doWork(IProgressMonitor monitor) throws Exception {
-         if (!AtsUtilClient.isAtsAdmin()) {
+         if (!AtsClientService.get().getUserService().isAtsAdmin()) {
             AWorkbench.popup("Must be ATS Admin to make Rule Definition changes.");
             return;
          }

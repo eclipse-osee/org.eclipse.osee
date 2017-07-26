@@ -57,4 +57,6 @@ public interface IAtsUserService {
 
    IAtsUser getUserByAccountId(Long accountId);
 
+   boolean isAtsAdmin(boolean useCache);
+
 }

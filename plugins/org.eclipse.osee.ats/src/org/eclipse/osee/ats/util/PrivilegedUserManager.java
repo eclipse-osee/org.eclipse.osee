@@ -45,7 +45,7 @@ public class PrivilegedUserManager {
       if (parentSma != null) {
          users.addAll(parentSma.getStateMgr().getAssignees());
       }
-      if (AtsUtilClient.isAtsAdmin()) {
+      if (AtsClientService.get().getUserService().isAtsAdmin()) {
          users.add(AtsClientService.get().getUserService().getCurrentUser());
       }
       return users;

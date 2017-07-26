@@ -364,7 +364,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
 
    private void createAttributesTab() {
       try {
-         if (!AtsUtilClient.isAtsAdmin()) {
+         if (!AtsClientService.get().getUserService().isAtsAdmin()) {
             return;
          }
 

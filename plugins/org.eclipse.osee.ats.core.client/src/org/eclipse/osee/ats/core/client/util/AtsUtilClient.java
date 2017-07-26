@@ -52,7 +52,6 @@ public class AtsUtilClient {
    private static List<IEventFilter> atsObjectEventFilter = new ArrayList<>(2);
    private static boolean emailEnabled = true;
    private static BranchUuidEventFilter commonBranchUuidEventFilter;
-   private static Boolean atsAdmin = null;
 
    public static boolean isEmailEnabled() {
       return emailEnabled;
@@ -110,18 +109,6 @@ public class AtsUtilClient {
          }
       }
       return results;
-   }
-
-   public static boolean isAtsAdmin(boolean useCache) {
-      if (!useCache) {
-         atsAdmin = AtsGroup.AtsAdmin.isMember(
-            AtsClientService.get().getUserService().getCurrentUser()) || AtsGroup.AtsAdmin.isCurrentUserTemporaryOverride();
-      }
-      return isAtsAdmin();
-   }
-
-   public static boolean isAtsAdmin() {
-      return AtsClientService.get().getUserService().isAtsAdmin();
    }
 
    public static String getAtsId(Artifact art) throws OseeCoreException {

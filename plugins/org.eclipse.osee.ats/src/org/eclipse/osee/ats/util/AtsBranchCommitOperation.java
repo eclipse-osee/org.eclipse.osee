@@ -84,7 +84,7 @@ public class AtsBranchCommitOperation extends AbstractOperation {
                final Result tempResult = item.committing(teamArt);
                if (tempResult.isFalse()) {
                   // Allow Admin to override state validation
-                  if (AtsUtilClient.isAtsAdmin()) {
+                  if (AtsClientService.get().getUserService().isAtsAdmin()) {
                      Displays.pendInDisplayThread(new Runnable() {
                         @Override
                         public void run() {

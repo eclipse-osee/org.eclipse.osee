@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationProvider;
+import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -28,6 +29,7 @@ import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -147,6 +149,20 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
    @Override
    public boolean isAtsAdmin(IAtsUser user) {
       return configurationProvider.getConfigurations().getAtsAdmins().contains(user.getId());
+   }
+
+   @Override
+   public boolean isAtsAdmin(boolean useCache) {
+      if (!useCache) {
+         Artifact atsAdmin = AtsClientService.get().getArtifact(AtsArtifactToken.AtsAdmin);
+         return atsAdmin.isRelated(CoreRelationTypes.Users_User, getCurrentOseeUser());
+      }
+      return isAtsAdmin();
+   }
+
+   @Override
+   public boolean isAtsAdmin() {
+      return configurationProvider.getConfigurations().getAtsAdmins().contains(getCurrentUser().getId());
    }
 
    @Override

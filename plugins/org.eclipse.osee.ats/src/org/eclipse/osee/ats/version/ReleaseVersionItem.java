@@ -68,7 +68,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
             IAtsVersion version = dialog.getSelectedFirst();
 
             // Validate team lead status
-            if (!AtsUtilClient.isAtsAdmin() && !AtsClientService.get().getVersionService().getTeamDefinition(
+            if (!AtsClientService.get().getUserService().isAtsAdmin() && !AtsClientService.get().getVersionService().getTeamDefinition(
                version).getLeads().contains(AtsClientService.get().getUserService().getCurrentUser())) {
                AWorkbench.popup("ERROR", "Only lead can release version.");
                return;
@@ -85,7 +85,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
             if (errorStr != null) {
                AWorkbench.popup("ERROR", errorStr);
             }
-            if (errorStr != null && !AtsUtilClient.isAtsAdmin()) {
+            if (errorStr != null && !AtsClientService.get().getUserService().isAtsAdmin()) {
                return;
             } else if (errorStr != null && !MessageDialog.openConfirm(Displays.getActiveShell(), "Override",
                "ATS Admin Enabled - Override completed condition and release anyway?")) {

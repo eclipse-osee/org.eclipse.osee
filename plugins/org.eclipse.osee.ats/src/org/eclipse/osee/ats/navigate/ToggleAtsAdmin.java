@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.navigate;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.core.client.util.AtsGroup;
-import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.editor.WorkflowEditor;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -48,7 +47,7 @@ public class ToggleAtsAdmin extends XNavigateItemAction {
             AWorkbench.popup("Current User not configured for Temporary Admin");
             return;
          }
-         boolean isAdmin = AtsUtilClient.isAtsAdmin(false);
+         boolean isAdmin = AtsClientService.get().getUserService().isAtsAdmin(false);
          String message = "Currently " + (isAdmin ? "ADMIN" : "NOT ADMIN") + " - Toggle?";
          if (MessageDialog.openConfirm(Displays.getActiveShell(), "Toggle ATS Admin", message)) {
 
@@ -59,7 +58,7 @@ public class ToggleAtsAdmin extends XNavigateItemAction {
                AtsGroup.AtsAdmin.removeTemporaryOverride();
                SystemGroup.OseeAdmin.addMember(AtsClientService.get().getUserServiceClient().getCurrentOseeUser());
             }
-            AtsUtilClient.isAtsAdmin(false);
+            AtsClientService.get().getUserService().isAtsAdmin(false);
             AtsNavigateViewItems.getInstance().clearCaches();
             for (WorkflowEditor editor : WorkflowEditor.getWorkflowEditors()) {
                editor.refreshPages();

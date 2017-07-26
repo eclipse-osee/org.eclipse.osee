@@ -54,6 +54,16 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
       return atsAdminArt.areRelated(CoreRelationTypes.User_Grouping__Members, (ArtifactReadable) user.getStoreObject());
    }
 
+   @Override
+   public boolean isAtsAdmin(boolean useCache) {
+      throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public boolean isAtsAdmin() {
+      throw new UnsupportedOperationException();
+   }
+
    private Supplier<List<IAtsUser>> usersCache =
       Suppliers.memoizeWithExpiration(getConfigurationsSupplier(), 5, TimeUnit.MINUTES);
 

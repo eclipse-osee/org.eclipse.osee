@@ -123,11 +123,11 @@ public class ReviewNavigateView extends ViewPart implements IXNavigateEventListe
 
                         Label label = new Label(xNavComp, SWT.None);
                         String str = getWhoAmI();
-                        if (AtsUtilClient.isAtsAdmin()) {
+                        if (AtsClientService.get().getUserService().isAtsAdmin()) {
                            str += " - Admin";
                         }
                         if (!str.equals("")) {
-                           if (AtsUtilClient.isAtsAdmin()) {
+                           if (AtsClientService.get().getUserService().isAtsAdmin()) {
                               label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
                            } else {
                               label.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));

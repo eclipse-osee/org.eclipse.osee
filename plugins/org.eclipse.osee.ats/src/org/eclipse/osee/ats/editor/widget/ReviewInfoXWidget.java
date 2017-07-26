@@ -296,7 +296,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
 
    public void addAdminRightClickOption() throws OseeCoreException {
       // If ATS Admin, allow right-click to auto-complete tasks
-      if (AtsUtilClient.isAtsAdmin() && !AtsUtil.isProductionDb()) {
+      if (AtsClientService.get().getUserService().isAtsAdmin() && !AtsUtil.isProductionDb()) {
          labelWidget.addListener(SWT.MouseUp, new Listener() {
             @Override
             public void handleEvent(Event event) {

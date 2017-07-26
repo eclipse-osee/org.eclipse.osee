@@ -54,7 +54,7 @@ public class PrivilegedEditAction extends AbstractAtsAction {
          }
       } else {
          Set<IAtsUser> users = PrivilegedUserManager.getPrivilegedUsers(sma);
-         if (AtsUtilClient.isAtsAdmin()) {
+         if (AtsClientService.get().getUserService().isAtsAdmin()) {
             users.add(AtsClientService.get().getUserService().getCurrentUser());
          }
          StringBuffer stringBuffer = new StringBuffer();

@@ -367,7 +367,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
 
       updateEditMenuActions();
 
-      if (AtsUtilClient.isAtsAdmin()) {
+      if (AtsClientService.get().getUserService().isAtsAdmin()) {
          mm.insertBefore(XViewer.MENU_GROUP_PRE, new Separator());
          mm.insertBefore(XViewer.MENU_GROUP_PRE, deletePurgeAtsObjectAction);
          deletePurgeAtsObjectAction.setEnabled(getSelectedAtsArtifacts().size() > 0);

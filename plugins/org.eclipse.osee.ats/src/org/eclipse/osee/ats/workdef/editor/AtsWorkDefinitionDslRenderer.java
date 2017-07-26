@@ -164,7 +164,7 @@ public final class AtsWorkDefinitionDslRenderer extends FileSystemRenderer {
 
       @Override
       protected void doWork(IProgressMonitor monitor) throws Exception {
-         if (!AtsUtilClient.isAtsAdmin()) {
+         if (!AtsClientService.get().getUserService().isAtsAdmin()) {
             AWorkbench.popup("Must be ATS Admin to make Work Definition changes.");
             return;
          }

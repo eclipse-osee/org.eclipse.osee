@@ -182,7 +182,7 @@ public class WfeOperationsSection extends SectionPart {
    }
 
    private void createAdminSection(Composite parent, FormToolkit toolkit) {
-      if (!AtsUtilClient.isAtsAdmin()) {
+      if (!AtsClientService.get().getUserService().isAtsAdmin()) {
          return;
       }
       Section section = toolkit.createSection(parent, ExpandableComposite.TITLE_BAR);
@@ -228,7 +228,7 @@ public class WfeOperationsSection extends SectionPart {
          if (editor.getAwa().getParentAWA() != null) {
             new XButtonViaAction(new OpenParentAction(editor.getAwa())).createWidgets(sectionBody, 2);
          }
-         if (AtsUtilClient.isAtsAdmin()) {
+         if (AtsClientService.get().getUserService().isAtsAdmin()) {
             new XButtonViaAction(new OpenInArtifactEditorAction(editor)).createWidgets(sectionBody, 2);
          }
          new XButtonViaAction(new ShowWorkDefinitionAction()).createWidgets(sectionBody, 2);

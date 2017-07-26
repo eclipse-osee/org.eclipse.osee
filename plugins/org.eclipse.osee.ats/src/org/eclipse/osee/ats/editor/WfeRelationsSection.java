@@ -15,8 +15,8 @@ import java.util.List;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.RelationsFormSection;
@@ -45,7 +45,7 @@ public class WfeRelationsSection extends RelationsFormSection {
    protected synchronized void createSection(Section section, FormToolkit toolkit) {
       super.createSection(section, toolkit);
       // Don't allow users to see all relations
-      if (!AtsUtilClient.isAtsAdmin()) {
+      if (!AtsClientService.get().getUserService().isAtsAdmin()) {
          getRelationComposite().getTreeViewer().addFilter(userRelationsFilter);
       }
    }

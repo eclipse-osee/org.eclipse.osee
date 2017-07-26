@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.internal;
 
-import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.navigate.NavigateView;
 import org.eclipse.osee.ats.walker.ActionWalkerView;
 import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer;
@@ -64,7 +63,7 @@ public class ATSPerspective implements IPerspectiveFactory {
       bottomLeft.addView(QuickSearchView.VIEW_ID);
       right.addView(ArtifactExplorer.VIEW_ID);
 
-      if (AtsUtilClient.isAtsAdmin()) {
+      if (AtsClientService.get().getUserService().isAtsAdmin()) {
          bottom.addView("org.eclipse.pde.runtime.LogView");
       }
       bottom.addView(BranchView.VIEW_ID);

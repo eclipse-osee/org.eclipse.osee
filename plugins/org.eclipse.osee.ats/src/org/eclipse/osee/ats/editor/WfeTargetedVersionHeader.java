@@ -71,7 +71,7 @@ public class WfeTargetedVersionHeader extends Composite {
                         editor.doSave(null);
                      }
                      if (TargetedVersionColumnUI.promptChangeVersion(sma,
-                        AtsUtilClient.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
+                        AtsClientService.get().getUserService().isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
                         VersionLockedType.UnLocked)) {
                         updateLabel(sma);
                         editor.onDirtied();
