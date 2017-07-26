@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsBranchManager;
@@ -170,7 +169,7 @@ public class ValidationReportOperation extends AbstractOperation {
    }
 
    public static String getRequirementHyperlink(Artifact art) throws OseeCoreException {
-      String atsId = AtsUtilClient.getAtsId(art);
+      String atsId = AtsClientService.get().getAtsId(art);
       String linkName = String.format("%s(%s)", art.getName(), atsId);
       return XResultDataUI.getHyperlink(linkName, atsId, art.getBranch());
    }

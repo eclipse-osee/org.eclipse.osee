@@ -23,7 +23,6 @@ import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.artifact.AbstractAtsArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.WorkflowEditor;
 import org.eclipse.osee.ats.internal.Activator;
@@ -140,7 +139,7 @@ public class AtsDeleteManager {
          allDeleteArts.add(deleteArt);
          final Set<Artifact> relatedArts = new HashSet<>(30);
          delBuilder.append(String.format("\n<b>Selected</b>:[%s][%s][%s]", deleteArt.getArtifactTypeName(),
-            AtsUtilClient.getAtsId(deleteArt), deleteArt.getName()) + "\n");
+            AtsClientService.get().getAtsId(deleteArt), deleteArt.getName()) + "\n");
          if (deleteArt.isOfType(AtsArtifactTypes.Action)) {
             for (IAtsTeamWorkflow art : AtsClientService.get().getWorkItemService().getTeams(deleteArt)) {
                ((AbstractWorkflowArtifact) art).atsDelete(relatedArts, ignoredArts);
@@ -150,8 +149,9 @@ public class AtsDeleteManager {
             ((AbstractWorkflowArtifact) deleteArt).atsDelete(relatedArts, ignoredArts);
             for (Artifact loopArt : relatedArts) {
                if (!loopArt.equals(deleteArt)) {
-                  delBuilder.append(String.format(AHTML.addSpace(4) + "<b>Related</b>:[%s][%s][%s]",
-                     loopArt.getArtifactTypeName(), AtsUtilClient.getAtsId(loopArt), loopArt.getName()) + "\n");
+                  delBuilder.append(
+                     String.format(AHTML.addSpace(4) + "<b>Related</b>:[%s][%s][%s]", loopArt.getArtifactTypeName(),
+                        AtsClientService.get().getAtsId(loopArt), loopArt.getName()) + "\n");
                }
             }
          }
@@ -162,8 +162,9 @@ public class AtsDeleteManager {
                if (actionArt != null && !allDeleteArts.contains(actionArt) && allDeleteArts.containsAll(
                   AtsClientService.get().getWorkItemService().getTeams(actionArt))) {
                   relatedArts.add(actionArt);
-                  delBuilder.append(String.format(AHTML.addSpace(4) + "<b>Related</b>:[%s][%s][%s]",
-                     actionArt.getArtifactTypeName(), AtsUtilClient.getAtsId(actionArt), actionArt.getName()) + "\n");
+                  delBuilder.append(
+                     String.format(AHTML.addSpace(4) + "<b>Related</b>:[%s][%s][%s]", actionArt.getArtifactTypeName(),
+                        AtsClientService.get().getAtsId(actionArt), actionArt.getName()) + "\n");
                }
             }
          }

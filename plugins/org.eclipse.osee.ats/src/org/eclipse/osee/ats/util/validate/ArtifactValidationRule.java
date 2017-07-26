@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
@@ -29,7 +29,7 @@ public class ArtifactValidationRule extends AbstractValidationRule {
    private String getStatusMessage(Artifact itemChecked, IStatus status) throws OseeCoreException {
       String link =
          XResultDataUI.getHyperlink(String.format("%s:[%s]", itemChecked.getArtifactTypeName(), itemChecked.getName()),
-            AtsUtilClient.getAtsId(itemChecked), itemChecked.getBranch());
+            AtsClientService.get().getAtsId(itemChecked), itemChecked.getBranch());
       return String.format("%s: %s", link, status.getMessage());
    }
 

@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.internal.Activator;
@@ -131,8 +130,9 @@ public class WfeRelationsHyperlinkComposite extends Composite {
          editor.getToolkit().createLabel(this,
             prefix + " \"" + thisArt.getArtifactTypeName() + "\" " + action + getCompletedCancelledString(
                art) + " \"" + art.getArtifactTypeName() + "\" ");
-         Hyperlink link = editor.getToolkit().createHyperlink(this, String.format("\"%s\" - %s",
-            art.getName().length() < 60 ? art.getName() : art.getName().substring(0, 60), AtsUtilClient.getAtsId(art)),
+         Hyperlink link = editor.getToolkit().createHyperlink(this,
+            String.format("\"%s\" - %s", art.getName().length() < 60 ? art.getName() : art.getName().substring(0, 60),
+               AtsClientService.get().getAtsId(art)),
             SWT.NONE);
          link.addHyperlinkListener(new IHyperlinkListener() {
 

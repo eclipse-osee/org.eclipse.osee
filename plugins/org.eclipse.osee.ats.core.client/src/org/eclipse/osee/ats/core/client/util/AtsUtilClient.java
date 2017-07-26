@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -109,15 +108,6 @@ public class AtsUtilClient {
          }
       }
       return results;
-   }
-
-   public static String getAtsId(Artifact art) throws OseeCoreException {
-      String toReturn = art.getSoleAttributeValueAsString(AtsAttributeTypes.AtsId, AtsUtilCore.DEFAULT_ATS_ID_VALUE);
-      Conditions.checkNotNull("AtsId", "AtsId");
-      if (AtsUtilCore.DEFAULT_ATS_ID_VALUE.equals(toReturn)) {
-         toReturn = art.getGuid();
-      }
-      return toReturn;
    }
 
    public static Artifact getFromToken(ArtifactToken token) {
