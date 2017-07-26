@@ -291,8 +291,8 @@ public final class ArtifactLoader {
                if (data != loadedItems) {
                   loadedItems.addAll(data);
                }
-               OseeLog.logf(Activator.class, Level.FINE, new Exception("Artifact Load Time"),
-                  "Artifact Load Time [%s] for [%d] artifacts. ", Lib.getElapseString(time), loadedItems.size());
+               OseeLog.logf(Activator.class, Level.FINE, "Artifact Load Time [%s] for [%d] artifacts. ",
+                  Lib.getElapseString(time), loadedItems.size());
             } finally {
                joinQuery.close();
             }
@@ -318,8 +318,8 @@ public final class ArtifactLoader {
       } finally {
          chStmt.close();
       }
-      OseeLog.logf(Activator.class, Level.FINE, new Exception("Artifact Selection Time"),
-         "Artifact Selection Time [%s], [%d] artifacts selected", Lib.getElapseString(time), toLoad.size());
+      OseeLog.logf(Activator.class, Level.FINE, "Artifact Selection Time [%s], [%d] artifacts selected",
+         Lib.getElapseString(time), toLoad.size());
       return toLoad;
       //      processList(queryId, toLoad, artifacts, insertParameters, transactionId, reload, locks);
    }
@@ -343,8 +343,8 @@ public final class ArtifactLoader {
       } finally {
          chStmt.close();
       }
-      OseeLog.logf(Activator.class, Level.FINE, new Exception("Artifact Selection Time"),
-         "Artifact Selection Time [%s], [%d] artifacts selected", Lib.getElapseString(time), toLoad.size());
+      OseeLog.logf(Activator.class, Level.FINE, "Artifact Selection Time [%s], [%d] artifacts selected",
+         Lib.getElapseString(time), toLoad.size());
       return toLoad;
       //      processList(queryId, toLoad, artifacts, insertParameters, transactionId, reload, locks);
    }
