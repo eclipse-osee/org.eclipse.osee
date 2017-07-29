@@ -296,8 +296,7 @@ public class ArtifactQueryBuilder {
          return java.util.Collections.emptyList();
       }
 
-      List<Artifact> artifactsFromServerIds = loadArtifactsFromServerIds(reload);
-      return artifactsFromServerIds;
+      return loadArtifactsFromServerIds(reload);
    }
 
    public List<ArtifactId> selectArtifacts(int artifactCountEstimate) throws OseeCoreException {
@@ -347,7 +346,7 @@ public class ArtifactQueryBuilder {
       }
       if (artifactId.isValid()) {
          message.append(" with id \"");
-         message.append(artifactId);
+         message.append(artifactId.getIdString());
          message.append("\"");
       }
       if (guid != null) {
@@ -361,7 +360,7 @@ public class ArtifactQueryBuilder {
          message.append("\"");
       }
       message.append(" on branch \"");
-      message.append(branch.getIdString());
+      message.append(branch);
       message.append("\"");
       return message.toString();
    }

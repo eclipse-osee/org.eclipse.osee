@@ -14,14 +14,15 @@ import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED
 import static org.eclipse.osee.framework.core.enums.LoadLevel.ARTIFACT_DATA;
 import static org.eclipse.osee.framework.core.enums.LoadLevel.RELATION_DATA;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
@@ -29,6 +30,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -42,7 +44,7 @@ import org.eclipse.osee.jdbc.JdbcStatement;
  */
 public class AttributeLoader {
 
-   static void loadAttributeData(int queryId, CompositeKeyHashMap<Integer, Long, Artifact> tempCache, boolean historical, DeletionFlag allowDeletedArtifacts, LoadLevel loadLevel, boolean isArchived) throws OseeCoreException {
+   static void loadAttributeData(int queryId, CompositeKeyHashMap<ArtifactId, Id, Artifact> tempCache, boolean historical, DeletionFlag allowDeletedArtifacts, LoadLevel loadLevel, boolean isArchived) throws OseeCoreException {
       if (loadLevel == ARTIFACT_DATA || loadLevel == RELATION_DATA) {
          return;
       }
@@ -80,15 +82,15 @@ public class AttributeLoader {
    }
 
    private static final class AttrData {
-      public int artifactId = -1;
-      public long branchUuid = -1;
-      public int attrId = -1;
+      public ArtifactId artifactId = ArtifactId.SENTINEL;
+      public BranchId branch = BranchId.SENTINEL;
+      public AttributeId attrId = AttributeId.SENTINEL;
       public int gammaId = -1;
-      public int modType = -1;
+      public ModificationType modType;
       public Long transactionId = -1L;
       public AttributeTypeId attributeType = AttributeTypeId.SENTINEL;
       public Object value = "";
-      public int stripeId = -1;
+      public TransactionId stripeId = TransactionId.SENTINEL;
       public String uri = "";
       public ApplicabilityId applicabilityId = ApplicabilityId.BASE;
 
@@ -97,11 +99,11 @@ public class AttributeLoader {
       }
 
       public AttrData(JdbcStatement chStmt, boolean historical) throws OseeCoreException {
-         artifactId = chStmt.getInt("art_id");
-         branchUuid = chStmt.getLong("id1");
-         attrId = chStmt.getInt("attr_id");
+         artifactId = ArtifactId.valueOf(chStmt.getLong("art_id"));
+         branch = BranchId.valueOf(chStmt.getLong("id1"));
+         attrId = AttributeId.valueOf(chStmt.getLong("attr_id"));
          gammaId = chStmt.getInt("gamma_id");
-         modType = chStmt.getInt("mod_type");
+         modType = ModificationType.getMod(chStmt.getInt("mod_type"));
 
          transactionId = chStmt.getLong("transaction_id");
          attributeType = AttributeTypeId.valueOf(chStmt.getLong("attr_type_id"));
@@ -130,28 +132,29 @@ public class AttributeLoader {
          }
 
          if (historical) {
-            stripeId = chStmt.getInt("stripe_transaction_id");
+            stripeId = TransactionId.valueOf(chStmt.getLong("stripe_transaction_id"));
          }
          uri = chStmt.getString("uri");
          applicabilityId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));
       }
 
       public static boolean isDifferentArtifact(AttrData previous, AttrData current) {
-         return current.branchUuid != previous.branchUuid || current.artifactId != previous.artifactId;
+         return current.branch.notEqual(previous.branch) || current.artifactId.notEqual(previous.artifactId);
       }
 
       public static boolean multipleVersionsExist(AttrData current, AttrData previous) {
-         return current.attrId == previous.attrId && current.branchUuid == previous.branchUuid && current.artifactId == previous.artifactId;
+         return current.attrId.equals(previous.attrId) && current.branch.equals(
+            previous.branch) && current.artifactId.equals(previous.artifactId);
       }
    }
 
-   private static Artifact getArtifact(AttrData current, boolean historical, CompositeKeyHashMap<Integer, Long, Artifact> tempCache) {
+   private static Artifact getArtifact(AttrData current, boolean historical, CompositeKeyHashMap<ArtifactId, Id, Artifact> tempCache) {
       Artifact artifact = null;
-      long key2 = historical ? current.stripeId : current.branchUuid;
+      Id key2 = historical ? current.stripeId : current.branch;
       artifact = tempCache.get(current.artifactId, key2);
       if (artifact == null) {
-         OseeLog.logf(ArtifactLoader.class, Level.WARNING, "Orphaned attribute id [%d] for artifact id[%d] branch[%d]",
-            current.attrId, current.artifactId, current.branchUuid);
+         OseeLog.logf(ArtifactLoader.class, Level.WARNING, "Orphaned attribute id [%s] for artifact id[%s] branch[%s]",
+            current.attrId, current.artifactId, current.branch);
       }
       return artifact;
    }
@@ -160,7 +163,7 @@ public class AttributeLoader {
       if (artifact == null) {
          return; // If the artifact is null, it means the attributes are orphaned.
       }
-      List<Long> transactionNumbers = new ArrayList<>();
+      Long maxTransaction = Id.SENTINEL;
       AttrData previous = new AttrData();
       synchronized (artifact) {
          if (!artifact.isAttributesLoaded()) {
@@ -169,11 +172,13 @@ public class AttributeLoader {
                   handleMultipleVersions(previous, current, historical);
                } else {
                   loadAttribute(artifact, current, previous);
-                  transactionNumbers.add(current.transactionId);
+                  if (current.transactionId > maxTransaction) {
+                     maxTransaction = current.transactionId;
+                  }
                }
                previous = current;
             }
-            setLastAttributePersistTransaction(artifact, transactionNumbers);
+            artifact.setTransactionId(TransactionToken.valueOf(maxTransaction, artifact.getBranch()));
             artifact.meetMinimumAttributeCounts(false);
          }
       }
@@ -184,21 +189,16 @@ public class AttributeLoader {
       // transaction is used first due to sorting on the query
       if (!historical) {
          OseeLog.logf(ArtifactLoader.class, Level.WARNING,
-
-            "multiple attribute version for attribute id [%d] artifact id[%d] branch[%d] previousGammaId[%s] currentGammaId[%s] previousModType[%s] currentModType[%s]",
-            current.attrId, current.artifactId, current.branchUuid, previous.gammaId, current.gammaId, previous.modType,
+            "multiple attribute version for attribute id [%s] artifact id[%s] branch[%s] previousGammaId[%s] currentGammaId[%s] previousModType[%s] currentModType[%s]",
+            current.attrId, current.artifactId, current.branch, previous.gammaId, current.gammaId, previous.modType,
             current.modType);
       }
    }
 
    private static void loadAttribute(Artifact artifact, AttrData current, AttrData previous) throws OseeCoreException {
       boolean markDirty = false;
-      artifact.internalInitializeAttribute(current.attributeType, current.attrId, current.gammaId,
-         ModificationType.getMod(current.modType), current.applicabilityId, markDirty, current.value, current.uri);
-   }
-
-   private static void setLastAttributePersistTransaction(Artifact artifact, List<Long> transactionNumbers) {
-      artifact.setTransactionId(TransactionToken.valueOf(Collections.max(transactionNumbers), artifact.getBranch()));
+      artifact.internalInitializeAttribute(current.attributeType, current.attrId, current.gammaId, current.modType,
+         current.applicabilityId, markDirty, current.value, current.uri);
    }
 
    private static String getSql(DeletionFlag allowDeletedArtifacts, LoadLevel loadLevel, boolean historical, boolean isArchived) throws OseeCoreException {

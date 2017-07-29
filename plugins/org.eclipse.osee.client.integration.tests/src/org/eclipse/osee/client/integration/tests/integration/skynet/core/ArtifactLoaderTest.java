@@ -22,10 +22,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.SubMonitor;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.TestUtil;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
@@ -35,17 +31,10 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.enums.LoadLevel;
-import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.operation.OperationLogger;
-import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.LoadType;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -175,70 +164,6 @@ public class ArtifactLoaderTest {
       for (Future<String> future : executor.invokeAll(callables, 81, TimeUnit.SECONDS)) {
          Assert.assertEquals(ATTRIBUTE_VALUE, future.get());
       }
-
-   }
-
-   @Test(timeout = 5000)
-   public void testLoadingNonExistingArtifactMultipleTimes() throws InterruptedException {
-      final List<Integer> artIds = new LinkedList<>();
-      artIds.add(Integer.MAX_VALUE);
-      artIds.add(Integer.MIN_VALUE);
-      Job job1 = Operations.executeAsJob(new IOperation() {
-
-         @Override
-         public String getName() {
-            return "Job1";
-         }
-
-         @Override
-         public IStatus run(SubMonitor subMonitor) {
-            List<Artifact> artifacts;
-            try {
-               artifacts = ArtifactLoader.loadArtifactIds(artIds, CoreBranches.COMMON, LoadLevel.ALL,
-                  LoadType.RELOAD_CACHE, DeletionFlag.EXCLUDE_DELETED);
-               Assert.assertTrue(artifacts.isEmpty());
-            } catch (OseeCoreException ex) {
-               // do nothing
-            }
-
-            return Status.OK_STATUS;
-         }
-
-         @Override
-         public OperationLogger getLogger() {
-            return null;
-         }
-      }, true);
-
-      Job job2 = Operations.executeAsJob(new IOperation() {
-
-         @Override
-         public String getName() {
-            return "Job2";
-         }
-
-         @Override
-         public IStatus run(SubMonitor subMonitor) {
-            List<Artifact> artifacts;
-            try {
-               artifacts = ArtifactLoader.loadArtifactIds(artIds, CoreBranches.COMMON, LoadLevel.ALL,
-                  LoadType.RELOAD_CACHE, DeletionFlag.EXCLUDE_DELETED);
-               Assert.assertTrue(artifacts.isEmpty());
-            } catch (OseeCoreException ex) {
-               // do nothing
-            }
-
-            return Status.OK_STATUS;
-         }
-
-         @Override
-         public OperationLogger getLogger() {
-            return null;
-         }
-      }, true);
-
-      job1.join();
-      job2.join();
 
    }
 

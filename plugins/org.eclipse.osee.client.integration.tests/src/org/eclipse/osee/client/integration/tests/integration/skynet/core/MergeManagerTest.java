@@ -92,9 +92,6 @@ public class MergeManagerTest {
 
    @After
    public void tearDown() throws OseeCoreException {
-      Artifact artOnWorking = ArtifactQuery.getArtifactFromId(NewArtifactToken, workingBranch);
-      Operations.executeWorkAndCheckStatus(new PurgeArtifacts(Collections.singleton(artOnWorking)));
-
       BranchManager.purgeBranch(workingBranch);
    }
 
@@ -119,7 +116,7 @@ public class MergeManagerTest {
       // Shouldn't be allowed to commit
       boolean committed =
          CommitHandler.commitBranch(new ConflictManagerExternal(SAW_Bld_2, workingBranch), false, true);
-      assertTrue("Branch Committed while in Rebaseline In Progress", !committed);
+      assertFalse("Branch Committed while in Rebaseline In Progress", committed);
       assertTrue("An additional Merge Branch was created", BranchManager.getMergeBranches(workingBranch).size() == 1);
 
       // Abandon
@@ -215,10 +212,6 @@ public class MergeManagerTest {
       assertTrue("Branch was not committed into new, rebaselined working branch", committed);
 
       // Clean up this test
-      // Purge art from new Updated Branch
-      Artifact artOnSaw2 = ArtifactQuery.getArtifactFromId(NewArtifactToken, SAW_Bld_2);
-      Artifact artOnUpdateBranch = ArtifactQuery.getArtifactFromId(NewArtifactToken, branchForUpdate);
-      Operations.executeWorkAndCheckStatus(new PurgeArtifacts(Arrays.asList(artOnSaw2, artOnUpdateBranch)));
       BranchManager.purgeBranch(branchForUpdate);
    }
 
