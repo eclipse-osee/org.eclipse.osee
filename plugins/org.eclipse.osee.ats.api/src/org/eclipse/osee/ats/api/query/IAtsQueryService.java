@@ -70,4 +70,6 @@ public interface IAtsQueryService {
 
    Collection<ArtifactToken> getArtifacts(IArtifactType artifactType, BranchId branch);
 
+   List<ArtifactId> getArtifactIdsFromQuery(String query, Object... data);
+
 }

@@ -60,6 +60,13 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
    }
 
    @Override
+   public List<ArtifactId> getArtifactIdsFromQuery(String query, Object... data) {
+      List<ArtifactId> ids = new LinkedList<>();
+      jdbcService.getClient().runQuery(stmt -> ids.add(ArtifactId.valueOf(stmt.getLong("art_id"))), query, data);
+      return ids;
+   }
+
+   @Override
    public void runUpdate(String query, Object... data) {
       jdbcService.getClient().runPreparedUpdate(query, data);
    }
