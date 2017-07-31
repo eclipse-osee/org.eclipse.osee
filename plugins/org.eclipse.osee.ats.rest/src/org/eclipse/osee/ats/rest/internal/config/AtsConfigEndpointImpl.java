@@ -62,6 +62,7 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -80,6 +81,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    private AtsConfigurations atsConfigurations;
    private final Collection<Long> teamDefIds = new LinkedList<>();
    private final Collection<Long> aiIds = new LinkedList<>();
+   private final long DEFAULT_CONFIG_LOADING_TIME = 1200000; // 20 minutes
 
    public AtsConfigEndpointImpl(IAtsServices services, OrcsApi orcsApi, Log logger) {
       this.services = services;
@@ -92,8 +94,20 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       Thread thread = new Thread("ATS Configuration Re-Loader") {
          @Override
          public void run() {
-            AtsConfigurations configs = getAtsConfigurationsFromDb();
-            atsConfigurations = configs;
+            while (true) {
+               AtsConfigurations configs = getAtsConfigurationsFromDb();
+               atsConfigurations = configs;
+               try {
+                  long reloadTime = DEFAULT_CONFIG_LOADING_TIME;
+                  String reloadTimeStr = services.getConfigValue("server_config_reload_ms");
+                  if (Strings.isNumeric(reloadTimeStr)) {
+                     reloadTime = Long.valueOf(reloadTimeStr);
+                  }
+                  Thread.sleep(reloadTime);
+               } catch (InterruptedException ex) {
+                  // do nothing
+               }
+            }
          }
       };
       thread.start();
