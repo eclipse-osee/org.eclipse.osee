@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.ats.navigate.SubscribeUtility;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -29,7 +28,7 @@ import org.junit.Test;
 
 /**
  * Test case for {@link SubscribeUtility}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class SubscribeUtilityTest {
@@ -49,8 +48,8 @@ public class SubscribeUtilityTest {
          alexUserArt.getRelatedArtifactsCount(CoreRelationTypes.Users_Artifact));
 
       // Subscribe to 2 team definitions
-      Artifact cisCodeTeam = ArtifactQuery.getArtifactFromId(DemoArtifactToken.CIS_Code, AtsClientService.get().getAtsBranch());
-      Artifact cisSwTeam = ArtifactQuery.getArtifactFromId(DemoArtifactToken.CIS_SW, AtsClientService.get().getAtsBranch());
+      Artifact cisCodeTeam = ArtifactQuery.getArtifactFromToken(DemoArtifactToken.CIS_Code);
+      Artifact cisSwTeam = ArtifactQuery.getArtifactFromToken(DemoArtifactToken.CIS_SW);
 
       SubscribeUtility.setSubcriptionsAndPersist(alexUserArt, CoreRelationTypes.Users_Artifact,
          Arrays.asList(cisCodeTeam, cisSwTeam), AtsArtifactTypes.TeamDefinition, getClass().getSimpleName());
@@ -60,7 +59,7 @@ public class SubscribeUtilityTest {
       Assert.assertFalse("User artifact changes should be persisted", alexUserArt.isDirty());
 
       // Remove one, add another
-      Artifact cisTestTeam = ArtifactQuery.getArtifactFromId(DemoArtifactToken.CIS_Test, AtsClientService.get().getAtsBranch());
+      Artifact cisTestTeam = ArtifactQuery.getArtifactFromToken(DemoArtifactToken.CIS_Test);
 
       SubscribeUtility.setSubcriptionsAndPersist(alexUserArt, CoreRelationTypes.Users_Artifact,
          Arrays.asList(cisCodeTeam, cisTestTeam), AtsArtifactTypes.TeamDefinition, getClass().getSimpleName());
@@ -79,7 +78,7 @@ public class SubscribeUtilityTest {
    }
 
    private static Artifact getAlexUserArtifact() throws OseeCoreException {
-      return ArtifactQuery.getArtifactFromId(DemoUsers.Alex_Kay, AtsClientService.get().getAtsBranch());
+      return ArtifactQuery.getArtifactFromToken(DemoUsers.Alex_Kay);
    }
 
 }

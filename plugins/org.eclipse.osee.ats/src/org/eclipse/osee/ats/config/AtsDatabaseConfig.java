@@ -53,8 +53,7 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
       createAtsFolders();
 
       // load top team into cache
-      Artifact topTeamDefArt =
-         ArtifactQuery.getArtifactFromId(AtsArtifactToken.TopTeamDefinition, AtsClientService.get().getAtsBranch());
+      Artifact topTeamDefArt = ArtifactQuery.getArtifactFromToken(AtsArtifactToken.TopTeamDefinition);
       IAtsTeamDefinition teamDef = AtsClientService.get().getConfigItem(topTeamDefArt);
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("Set Top Team Work Definition");
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.WorkflowDefinition,
@@ -62,8 +61,7 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
       changes.execute();
 
       // load top ai into cache
-      Artifact topAiArt =
-         ArtifactQuery.getArtifactFromId(AtsArtifactToken.TopActionableItem, AtsClientService.get().getAtsBranch());
+      Artifact topAiArt = ArtifactQuery.getArtifactFromToken(AtsArtifactToken.TopActionableItem);
       IAtsActionableItem aia = AtsClientService.get().getConfigItem(topAiArt);
       changes.setSoleAttributeValue(aia, AtsAttributeTypes.Actionable, false);
       changes.execute();

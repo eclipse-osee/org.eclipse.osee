@@ -132,7 +132,15 @@ public class ArtifactQuery {
    }
 
    private static Artifact getOrCheckArtifactFromId(ArtifactId artifactId, BranchId branch, DeletionFlag allowDeleted, QueryType queryType) {
-      Artifact artifact = ArtifactCache.getActive(ArtifactToken.valueOf(artifactId, branch));
+      ArtifactToken artifactToken;
+      if (artifactId instanceof ArtifactToken) {
+         ArtifactToken inputToken = (ArtifactToken) artifactId;
+         artifactToken = ArtifactToken.valueOf(artifactId.getId(), artifactId.getGuid(), inputToken.getName(), branch,
+            inputToken.getArtifactType());
+      } else {
+         artifactToken = ArtifactToken.valueOf(artifactId, branch);
+      }
+      Artifact artifact = ArtifactCache.getActive(artifactToken);
       if (artifact != null) {
          if (artifact.isDeleted() && allowDeleted == EXCLUDE_DELETED) {
             if (queryType == QueryType.CHECK) {

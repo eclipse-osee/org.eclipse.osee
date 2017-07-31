@@ -49,7 +49,7 @@ public class PurgeArtifactsTest {
 
    @Test
    public void test() {
-      Artifact userGroupsArt = ArtifactQuery.getArtifactFromId(CoreArtifactTokens.UserGroups, CoreBranches.COMMON);
+      Artifact userGroupsArt = ArtifactQuery.getArtifactFromToken(CoreArtifactTokens.UserGroups);
 
       SkynetTransaction transaction =
          TransactionManager.createTransaction(CoreBranches.COMMON, getClass().getSimpleName());
@@ -61,7 +61,7 @@ public class PurgeArtifactsTest {
 
       ArtifactCache.deCache(userGroupsArt);
 
-      userGroupsArt = ArtifactQuery.getArtifactFromId(CoreArtifactTokens.UserGroups, CoreBranches.COMMON);
+      userGroupsArt = ArtifactQuery.getArtifactFromToken(CoreArtifactTokens.UserGroups);
       Assert.assertFalse(userGroupsArt.isDirty());
       Assert.assertEquals(userGroupsArt, childFolder.getParent());
       Assert.assertTrue(userGroupsArt.getChildren().contains(childFolder));

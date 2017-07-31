@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -45,7 +44,7 @@ public class AtsConfig2DataExample extends AbstractAtsConfig2Data {
 
    @Override
    public void performPostConfig(IAtsChangeSet changes, AbstractAtsConfig2Data data) {
-      Artifact dtsSoftware = ArtifactQuery.getArtifactFromId(Software_Team, AtsClientService.get().getAtsBranch());
+      Artifact dtsSoftware = ArtifactQuery.getArtifactFromToken(Software_Team);
       dtsSoftware.addAttribute(AtsAttributeTypes.RelatedTaskWorkDefinition, "WorkDef_Task_AtsConfig2Example");
       changes.add(dtsSoftware);
    }

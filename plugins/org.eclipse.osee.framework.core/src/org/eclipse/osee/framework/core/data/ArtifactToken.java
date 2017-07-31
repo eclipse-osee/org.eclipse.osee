@@ -29,7 +29,14 @@ public interface ArtifactToken extends ArtifactId, HasArtifactType, HasBranch, N
    }
 
    public static ArtifactToken valueOf(ArtifactId id, BranchId branch) {
+      if (id instanceof ArtifactToken) {
+         return valueOf((ArtifactToken) id, branch);
+      }
       return valueOf(id.getId(), GUID.create(), null, branch, null);
+   }
+
+   public static ArtifactToken valueOf(ArtifactToken token, BranchId branch) {
+      return valueOf(token.getId(), token.getGuid(), token.getName(), branch, token.getArtifactType());
    }
 
    public static ArtifactToken valueOf(long id, BranchId branch) {

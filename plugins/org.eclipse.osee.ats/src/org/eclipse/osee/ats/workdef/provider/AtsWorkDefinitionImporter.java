@@ -86,7 +86,7 @@ public class AtsWorkDefinitionImporter {
       Artifact artifact = null;
       try {
          if (token != null) {
-            artifact = ArtifactQuery.getArtifactFromId(token, AtsClientService.get().getAtsBranch());
+            artifact = ArtifactQuery.getArtifactFromToken(token);
          } else {
             artifact = ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition, sheetName,
                AtsClientService.get().getAtsBranch());
