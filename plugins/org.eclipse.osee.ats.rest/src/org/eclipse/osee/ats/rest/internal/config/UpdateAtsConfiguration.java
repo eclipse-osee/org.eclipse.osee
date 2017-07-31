@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.ColorColumns;
 import org.eclipse.osee.ats.core.column.ColorTeamColumn;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -72,6 +73,7 @@ public class UpdateAtsConfiguration {
       } catch (Exception ex) {
          rd.errorf("Error in createUpdateValidStateAttributes [%s]", Lib.exceptionToString(ex));
       }
+      atsServer.setConfigValue(AtsUtilCore.SERVER_CONFIG_RELOAD_MS_KEY, AtsUtilCore.SERVER_CONFIG_RELOAD_MS_KEY);
       return rd;
    }
 
@@ -163,9 +165,8 @@ public class UpdateAtsConfiguration {
    }
 
    public ArtifactId getOrCreateConfigFolder(ArtifactId userArt, XResultData rd) {
-      ArtifactReadable configFolderArt =
-         atsServer.getOrcsApi().getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
-            AtsArtifactToken.ConfigFolder).getResults().getAtMostOneOrNull();
+      ArtifactReadable configFolderArt = atsServer.getOrcsApi().getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
+         AtsArtifactToken.ConfigFolder).getResults().getAtMostOneOrNull();
       if (configFolderArt == null) {
          TransactionBuilder tx = atsServer.getOrcsApi().getTransactionFactory().createTransaction(CoreBranches.COMMON,
             userArt, "Create Config Folder");
@@ -204,7 +205,8 @@ public class UpdateAtsConfiguration {
 
    private void createUpdateValidStateAttributes(ArtifactReadable atsConfigArt, ArtifactReadable userArt, XResultData rd) throws Exception {
 
-      Collection<String> validStateNames = atsServer.getWorkDefinitionService().getAllValidStateNames(new XResultData());
+      Collection<String> validStateNames =
+         atsServer.getWorkDefinitionService().getAllValidStateNames(new XResultData());
       atsServer.setConfigValue(VALID_STATE_NAMES_KEY, Collections.toString(",", validStateNames));
    }
 

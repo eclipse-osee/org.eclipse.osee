@@ -48,6 +48,7 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.JaxAtsWorkDef;
 import org.eclipse.osee.ats.api.workdef.WorkDefData;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -99,8 +100,8 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
                AtsConfigurations configs = getAtsConfigurationsFromDb();
                atsConfigurations = configs;
                try {
-                  long reloadTime = DEFAULT_CONFIG_LOADING_TIME;
-                  String reloadTimeStr = services.getConfigValue("server_config_reload_ms");
+                  long reloadTime = AtsUtilCore.SERVER_CONFIG_RELOAD_MS_DEFAULT;
+                  String reloadTimeStr = services.getConfigValue(AtsUtilCore.SERVER_CONFIG_RELOAD_MS_KEY);
                   if (Strings.isNumeric(reloadTimeStr)) {
                      reloadTime = Long.valueOf(reloadTimeStr);
                   }

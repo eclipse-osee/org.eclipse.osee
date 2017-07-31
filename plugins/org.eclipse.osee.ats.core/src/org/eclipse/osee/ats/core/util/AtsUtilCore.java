@@ -31,6 +31,8 @@ public class AtsUtilCore {
    public static final String USER_CREATION_DISABLED = "UserCreationDisabled2";
    public static final String ATS_CONFIG_ACTION_URL_KEY = "ActionUrl";
    public static final String ATS_DEFAULT_ACTION_URL = "/ats/ui/action/UUID";
+   public final static String SERVER_CONFIG_RELOAD_MS_KEY = "server_config_reload_ms";
+   public final static long SERVER_CONFIG_RELOAD_MS_DEFAULT = 180000; // 3 minutes
 
    private static Map<Long, String> uuidToGuidMap = new HashMap<>(50);
 
