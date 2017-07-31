@@ -16,13 +16,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.xml.bind.annotation.XmlRootElement;
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.ColorColumns;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionStringProvider;
 import org.eclipse.osee.ats.api.workdef.WorkDefData;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 /**
@@ -85,11 +83,6 @@ public class AtsConfigurations implements IAtsWorkDefinitionStringProvider {
       this.validStateNames = validStateNames;
    }
 
-   public String getAtsAdminsStr() {
-      return Collections.toString(",", atsAdmins);
-   }
-
-   @JsonIgnore
    public List<ArtifactId> getAtsAdmins() {
       return atsAdmins;
    }

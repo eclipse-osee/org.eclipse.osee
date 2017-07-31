@@ -41,6 +41,7 @@ import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
 import org.eclipse.osee.ats.demo.api.DemoTeam;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -75,6 +76,15 @@ public class PopulateDemoActionsTest {
    @Before
    public void setup() throws OseeCoreException {
       AtsBulkLoad.reloadConfig(true);
+   }
+
+   @org.junit.Test
+   public void testAtsAdmin() throws OseeCoreException {
+      Assert.assertEquals(DemoUsers.Joe_Smith.getUserId(),
+         AtsClientService.get().getUserService().getCurrentUser().getUserId());
+      Assert.assertFalse(AtsClientService.get().getUserService().isAtsAdmin());
+      Assert.assertTrue(AtsClientService.get().getUserService().isAtsAdmin(
+         AtsClientService.get().getUserServiceClient().getUserById(DemoUsers.Jason_Michael.getUserId())));
    }
 
    @org.junit.Test
@@ -288,7 +298,8 @@ public class PopulateDemoActionsTest {
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
 
       testTeamContents(teamArt, title, "1", SAW_Bld_2.getName(), TeamState.Implement.getName(), "Adapter",
-         "Jason Michael", DemoArtifactTypes.DemoReqTeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_HW));
+         DemoUsers.Jason_Michael.getName(), DemoArtifactTypes.DemoReqTeamWorkflow,
+         DemoTestUtil.getTeamDef(DemoTeam.SAW_HW));
    }
 
    @org.junit.Test
@@ -301,7 +312,8 @@ public class PopulateDemoActionsTest {
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
 
       testTeamContents(teamArt, title, "1", SAW_Bld_3.getName(), TeamState.Implement.getName(), "Adapter",
-         "Jason Michael", DemoArtifactTypes.DemoReqTeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_HW));
+         DemoUsers.Jason_Michael.getName(), DemoArtifactTypes.DemoReqTeamWorkflow,
+         DemoTestUtil.getTeamDef(DemoTeam.SAW_HW));
    }
 
    @org.junit.Test
@@ -407,8 +419,9 @@ public class PopulateDemoActionsTest {
       Assert.assertEquals(1, action.getTeams().size());
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
 
-      testTeamContents(teamArt, title, "1", "", TeamState.Implement.getName(), "Adapter", "Jason Michael",
-         DemoArtifactTypes.DemoReqTeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_HW));
+      testTeamContents(teamArt, title, "1", "", TeamState.Implement.getName(), "Adapter",
+         DemoUsers.Jason_Michael.getName(), DemoArtifactTypes.DemoReqTeamWorkflow,
+         DemoTestUtil.getTeamDef(DemoTeam.SAW_HW));
 
    }
 
@@ -435,8 +448,9 @@ public class PopulateDemoActionsTest {
       Assert.assertEquals(1, action.getTeams().size());
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
 
-      testTeamContents(teamArt, title, "1", "", TeamState.Implement.getName(), "Adapter", "Jason Michael",
-         DemoArtifactTypes.DemoReqTeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_HW));
+      testTeamContents(teamArt, title, "1", "", TeamState.Implement.getName(), "Adapter",
+         DemoUsers.Jason_Michael.getName(), DemoArtifactTypes.DemoReqTeamWorkflow,
+         DemoTestUtil.getTeamDef(DemoTeam.SAW_HW));
 
    }
 

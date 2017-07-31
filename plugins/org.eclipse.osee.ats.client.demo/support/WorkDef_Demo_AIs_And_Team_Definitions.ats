@@ -1,7 +1,11 @@
 
 userDefinition "Joe Smith" GetOrCreate
 userDefinition "Kay Jones" GetOrCreate
-userDefinition "Jason Michael" GetOrCreate
+userDefinition "Jason Michael" GetOrCreate {
+	active False userId "Jason Michael"
+	email "Jason Michael"
+	isAdmin True
+}
 userDefinition "Alex Kay" GetOrCreate
 userDefinition "Kay Jason" GetOrCreate
 userDefinition "Steven Kohn" GetOrCreate

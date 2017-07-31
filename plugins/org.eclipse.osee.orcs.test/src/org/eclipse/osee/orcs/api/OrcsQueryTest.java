@@ -20,7 +20,6 @@ import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import com.google.common.collect.Ordering;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -37,6 +36,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
@@ -66,6 +66,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
+import com.google.common.collect.Ordering;
 
 /**
  * @author Roberto E. Escobar
@@ -266,9 +267,9 @@ public class OrcsQueryTest {
 
       for (String name : Arrays.asList("Alex Kay", "Anonymous", "Boot Strap", "Default Hierarchy Root",
          "Document Templates", "Everyone", "Framework Access Model", "Global Preferences", "Inactive Steve",
-         "Jason Michael", "Joe Smith", "Kay Jones", "OSEE System", "OseeAdmin", "PREVIEW_ALL", "PREVIEW_ALL_RECURSE",
-         "Root Artifact", "UnAssigned", "User Groups", "Word Edit Template", "Word Edit Template",
-         "XViewer Global Customization", "org.eclipse.osee.client.demo.OseeTypes_ClientDemo",
+         DemoUsers.Jason_Michael.getName(), "Joe Smith", "Kay Jones", "OSEE System", "OseeAdmin", "PREVIEW_ALL",
+         "PREVIEW_ALL_RECURSE", "Root Artifact", "UnAssigned", "User Groups", "Word Edit Template",
+         "Word Edit Template", "XViewer Global Customization", "org.eclipse.osee.client.demo.OseeTypes_ClientDemo",
          "org.eclipse.osee.framework.skynet.core.OseeTypes_Framework", "org.eclipse.osee.ote.define.OseeTypesOTE")) {
          assertTrue("Missing expected artifact named [" + name + "]", names.contains(name));
       }

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.core.client.util.AtsGroup;
 import org.eclipse.osee.framework.core.data.UserToken;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -48,6 +49,10 @@ public class AtsConfigAddDemoUsers implements IDbInitializationTask {
       SystemGroup.OseeAccessAdmin.getArtifact().persist(transaction1);
       User joeSmith = UserManager.getUser(DemoUsers.Joe_Smith);
       SystemGroup.OseeAccessAdmin.addMember(joeSmith);
+      for (User admin : admins) {
+         AtsGroup.AtsAdmin.getArtifact().addRelation(CoreRelationTypes.Users_User, admin);
+         admin.persist(transaction1);
+      }
       AtsGroup.AtsAdmin.getArtifact().persist(transaction1);
       AtsGroup.AtsTempAdmin.addMember(joeSmith);
       AtsGroup.AtsTempAdmin.getArtifact().persist(transaction1);
