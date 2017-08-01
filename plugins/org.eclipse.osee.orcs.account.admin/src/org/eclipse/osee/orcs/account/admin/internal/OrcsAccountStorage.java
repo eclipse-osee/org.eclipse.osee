@@ -93,10 +93,9 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
    }
 
    @Override
-   public ResultSet<AccountPreferences> getAccountPreferencesById(ArtifactId accountId) {
-      int id = Long.valueOf(accountId.getUuid()).intValue();
-      ResultSet<ArtifactReadable> results = newQuery().andIsOfType(CoreArtifactTypes.User).andUuid(id).getResults();
-      return getFactory().newAccountPreferencesResultSet(results);
+   public AccountPreferences getAccountPreferencesById(ArtifactId accountId) {
+      ArtifactReadable account = newQuery().andId(accountId).getResults().getExactlyOne();
+      return getFactory().newAccountPreferencesResultSet(account);
    }
 
    @Override

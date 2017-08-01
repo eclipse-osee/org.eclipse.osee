@@ -16,7 +16,6 @@ import org.eclipse.osee.account.admin.AccountField;
 import org.eclipse.osee.account.admin.AccountPreferences;
 import org.eclipse.osee.account.admin.internal.validator.Validator;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.framework.jdk.core.type.ResultSetTransform.Function;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
@@ -51,11 +50,6 @@ public class AccountResolver {
 
    public ResultSet<AccountPreferences> resolveAccountPreferences(String uniqueField) {
       ResultSet<Account> result = resolveAccount(uniqueField);
-      return ResultSets.transform(result, new Function<String, Account, AccountPreferences>() {
-         @Override
-         public AccountPreferences apply(Account source) {
-            return source.getPreferences();
-         }
-      });
+      return ResultSets.transform(result, s -> s.getPreferences());
    }
 }

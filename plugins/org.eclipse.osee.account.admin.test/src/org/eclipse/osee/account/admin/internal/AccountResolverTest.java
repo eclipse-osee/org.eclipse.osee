@@ -16,6 +16,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import java.util.Arrays;
 import org.eclipse.osee.account.admin.Account;
 import org.eclipse.osee.account.admin.AccountAdmin;
 import org.eclipse.osee.account.admin.AccountField;
@@ -24,7 +25,7 @@ import org.eclipse.osee.account.admin.internal.validator.Validator;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.framework.jdk.core.type.ResultSets;
+import org.eclipse.osee.framework.jdk.core.type.ResultSetList;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.Before;
 import org.junit.Rule;
@@ -48,11 +49,11 @@ public class AccountResolverTest {
    // @formatter:off
    @Mock private Validator validator;
    @Mock private AccountAdmin accountAdmin;
-   @Mock private ResultSet<Account> accountResult;
    @Mock private Account account;
    @Mock private AccountPreferences prefs;
    // @formatter:on
 
+   private ResultSet<Account> accountResult;
    private AccountResolver resolver;
 
    @Before
@@ -65,8 +66,7 @@ public class AccountResolverTest {
       when(account.getGuid()).thenReturn(uuid);
       when(prefs.getGuid()).thenReturn(uuid);
       when(account.getPreferences()).thenReturn(prefs);
-
-      when(accountResult.getExactlyOne()).thenReturn(account);
+      accountResult = new ResultSetList<>(Arrays.asList(account));
    }
 
    @Test
@@ -114,7 +114,7 @@ public class AccountResolverTest {
       when(validator.guessFormatType(TEST_VALUE)).thenReturn(AccountField.UNKNOWN);
 
       ResultSet<AccountPreferences> actual = resolver.resolveAccountPreferences(TEST_VALUE);
-      assertEquals(ResultSets.emptyResultSet(), actual);
+      assertEquals(0, actual.size());
 
       verify(accountAdmin, times(0)).getAccountByEmail(anyString());
       verify(accountAdmin, times(0)).getAccountById(Matchers.any(ArtifactId.class));

@@ -19,7 +19,6 @@ import org.eclipse.osee.account.rest.model.AccountWebPreferences;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.framework.jdk.core.type.ResultSetTransform.Function;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -28,49 +27,23 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public class AccountFactory {
 
-   private final Function<String, ArtifactReadable, Account> function1 = new ArtifactToAccount();
-   private final Function<String, ArtifactReadable, AccountPreferences> function2 = new ArtifactToAccountPreferences();
-   private final Function<String, ArtifactReadable, SubscriptionGroup> function3 =
-      new ArtifactToAccountSubscriptionGroup();
-
    public ResultSet<Account> newAccountResultSet(ResultSet<ArtifactReadable> results) {
-      return ResultSets.transform(results, function1);
+      return ResultSets.transform(results, this::newAccount);
    }
 
-   public ResultSet<AccountPreferences> newAccountPreferencesResultSet(ResultSet<ArtifactReadable> results) {
-      return ResultSets.transform(results, function2);
+   private Account newAccount(ArtifactReadable account) {
+      AccountPreferences preferences = new AccountPreferencesArtifact(account.getGuid(), account);
+      AccountWebPreferences webPreferences = newAccountWebPreferences(account);
+      return new AccountArtifact(account.getGuid(), account, preferences, webPreferences);
    }
 
-   public Account newAccount(ArtifactReadable artifact) {
-      AccountPreferences preferences = newAccountPreferences(artifact);
-      AccountWebPreferences webPreferences = newAccountWebPreferences(artifact);
-      return new AccountArtifact(artifact.getGuid(), artifact, preferences, webPreferences);
-   }
-
-   public AccountPreferences newAccountPreferences(ArtifactReadable artifact) {
-      String id = artifact.getGuid();
-      return new AccountPreferencesArtifact(id, artifact);
+   public AccountPreferences newAccountPreferencesResultSet(ArtifactReadable account) {
+      return new AccountPreferencesArtifact(account.getGuid(), account);
    }
 
    public AccountWebPreferences newAccountWebPreferences(ArtifactReadable artifact) {
       String webPreferencesJson = artifact.getSoleAttributeAsString(CoreAttributeTypes.WebPreferences, "{}");
       return new AccountWebPreferences(webPreferencesJson, artifact.getName());
-   }
-
-   private class ArtifactToAccount implements Function<String, ArtifactReadable, Account> {
-
-      @Override
-      public Account apply(ArtifactReadable source) {
-         return newAccount(source);
-      }
-   }
-
-   private class ArtifactToAccountPreferences implements Function<String, ArtifactReadable, AccountPreferences> {
-
-      @Override
-      public AccountPreferences apply(ArtifactReadable source) {
-         return newAccountPreferences(source);
-      }
    }
 
    public AccountSession newAccountSession(ArtifactId accountId, String sessionToken, String accessedFrom, String accessDetails) {
@@ -89,20 +62,11 @@ public class AccountFactory {
       return session;
    }
 
-   public SubscriptionGroup newAccountSubscriptionGroup(ArtifactReadable source) {
+   private SubscriptionGroup newAccountSubscriptionGroup(ArtifactReadable source) {
       return new AccountSubscriptionGroupImpl(source);
    }
 
    public ResultSet<SubscriptionGroup> newAccountSubscriptionGroupResultSet(ResultSet<ArtifactReadable> results) {
-      return ResultSets.transform(results, function3);
+      return ResultSets.transform(results, this::newAccountSubscriptionGroup);
    }
-
-   private class ArtifactToAccountSubscriptionGroup implements Function<String, ArtifactReadable, SubscriptionGroup> {
-
-      @Override
-      public SubscriptionGroup apply(ArtifactReadable source) {
-         return newAccountSubscriptionGroup(source);
-      }
-   }
-
 }

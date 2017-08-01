@@ -198,9 +198,7 @@ public class AccountAdminImplTest {
       Map<String, String> newMap = new HashMap<>();
       newMap.put("1", "3");
 
-      ResultSet<AccountPreferences> resultSet = ResultSets.singleton(preferences);
-
-      when(storage.getAccountPreferencesById(newAccountId)).thenReturn(resultSet);
+      when(storage.getAccountPreferencesById(newAccountId)).thenReturn(preferences);
       when(preferences.asMap()).thenReturn(original);
 
       boolean modified = accountAdmin.setAccountPreferences(newAccountId, newMap);
@@ -219,9 +217,7 @@ public class AccountAdminImplTest {
       Map<String, String> newMap = new HashMap<>();
       newMap.put("1", "2");
 
-      ResultSet<AccountPreferences> resultSet = ResultSets.singleton(preferences);
-
-      when(storage.getAccountPreferencesById(newAccountId)).thenReturn(resultSet);
+      when(storage.getAccountPreferencesById(newAccountId)).thenReturn(preferences);
       when(preferences.asMap()).thenReturn(original);
 
       boolean modified = accountAdmin.setAccountPreferences(newAccountId, newMap);
@@ -253,9 +249,7 @@ public class AccountAdminImplTest {
       map.put("b", "2");
       map.put("c", "3");
 
-      ResultSet<AccountPreferences> resultSet = ResultSets.singleton(preferences);
-
-      when(storage.getAccountPreferencesById(newAccountId)).thenReturn(resultSet);
+      when(storage.getAccountPreferencesById(newAccountId)).thenReturn(preferences);
       when(preferences.asMap()).thenReturn(map);
 
       boolean modified = accountAdmin.setAccountPreference(newAccountId, "b", "123412");
@@ -278,9 +272,7 @@ public class AccountAdminImplTest {
       map.put("b", "123412");
       map.put("c", "3");
 
-      ResultSet<AccountPreferences> resultSet = ResultSets.singleton(preferences);
-
-      when(storage.getAccountPreferencesById(newAccountId)).thenReturn(resultSet);
+      when(storage.getAccountPreferencesById(newAccountId)).thenReturn(preferences);
       when(preferences.asMap()).thenReturn(map);
 
       boolean modified = accountAdmin.setAccountPreference(newAccountId, "b", "123412");
@@ -304,9 +296,7 @@ public class AccountAdminImplTest {
       map.put("b", "123412");
       map.put("c", "3");
 
-      ResultSet<AccountPreferences> resultSet = ResultSets.singleton(preferences);
-
-      when(storage.getAccountPreferencesById(newAccountId)).thenReturn(resultSet);
+      when(storage.getAccountPreferencesById(newAccountId)).thenReturn(preferences);
       when(preferences.asMap()).thenReturn(map);
 
       boolean modified = accountAdmin.deleteAccountPreference(newAccountId, "b");
@@ -327,9 +317,7 @@ public class AccountAdminImplTest {
       map.put("a", "1");
       map.put("c", "3");
 
-      ResultSet<AccountPreferences> resultSet = ResultSets.singleton(preferences);
-
-      when(storage.getAccountPreferencesById(newAccountId)).thenReturn(resultSet);
+      when(storage.getAccountPreferencesById(newAccountId)).thenReturn(preferences);
       when(preferences.asMap()).thenReturn(map);
 
       boolean modified = accountAdmin.deleteAccountPreference(newAccountId, "b");
