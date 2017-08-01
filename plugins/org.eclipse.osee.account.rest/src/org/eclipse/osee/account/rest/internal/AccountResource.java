@@ -19,7 +19,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.account.rest.model.AccountContexts;
@@ -50,14 +49,8 @@ public class AccountResource {
    @DELETE
    @RolesAllowed(SystemRoles.ROLES_ADMINISTRATOR)
    public Response deleteAccount() {
-      ResponseBuilder builder;
-      boolean modified = accountOps.deleteAccount(accountId);
-      if (modified) {
-         builder = Response.ok();
-      } else {
-         builder = Response.notModified();
-      }
-      return builder.build();
+      accountOps.deleteAccount(accountId);
+      return Response.ok().build();
    }
 
    /**

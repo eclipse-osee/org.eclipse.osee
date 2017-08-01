@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.account.admin.internal;
 
 import java.io.StringWriter;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.eclipse.osee.account.admin.Account;
@@ -35,7 +36,6 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
  * @author Roberto E. Escobar
  */
 public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountStorage {
-
    private JdbcService jdbcService;
    private AccountSessionStorage sessionStore;
 
@@ -75,16 +75,14 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
    }
 
    @Override
-   public ResultSet<Account> getAllAccounts() {
+   public List<Account> getAllAccounts() {
       ResultSet<ArtifactReadable> results = newQuery().andIsOfType(CoreArtifactTypes.User).getResults();
-      return getFactory().newAccountResultSet(results);
+      return getFactory().newAccountResultSet(results).getList();
    }
 
    @Override
-   public ResultSet<Account> getAccountById(ArtifactId accountId) {
-      ResultSet<ArtifactReadable> results =
-         newQuery().andIsOfType(CoreArtifactTypes.User).andUuid(accountId.getUuid()).getResults();
-      return getFactory().newAccountResultSet(results);
+   public Account getAccountById(ArtifactId accountId) {
+      return getFactory().newAccountResultSet(newQuery().andId(accountId).getResults()).getExactlyOne();
    }
 
    @Override

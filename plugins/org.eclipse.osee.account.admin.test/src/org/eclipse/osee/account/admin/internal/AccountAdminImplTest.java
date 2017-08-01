@@ -155,9 +155,7 @@ public class AccountAdminImplTest {
 
    @Test
    public void testSetActiveModified() {
-      ResultSet<Account> resultSet = ResultSets.singleton(account);
-
-      when(storage.getAccountById(newAccountId)).thenReturn(resultSet);
+      when(storage.getAccountById(newAccountId)).thenReturn(account);
       when(account.isActive()).thenReturn(true);
 
       boolean modified = accountAdmin.setActive(newAccountId, false);
@@ -169,9 +167,7 @@ public class AccountAdminImplTest {
 
    @Test
    public void testSetActiveNotModified() {
-      ResultSet<Account> resultSet = ResultSets.singleton(account);
-
-      when(storage.getAccountById(newAccountId)).thenReturn(resultSet);
+      when(storage.getAccountById(newAccountId)).thenReturn(account);
       when(account.isActive()).thenReturn(true);
 
       boolean modified = accountAdmin.setActive(newAccountId, true);
@@ -182,30 +178,9 @@ public class AccountAdminImplTest {
    }
 
    @Test
-   public void testDeleteAccountIdModified() {
-      ResultSet<Account> resultSet = ResultSets.singleton(account);
-
-      when(storage.getAccountById(newAccountId)).thenReturn(resultSet);
-
-      boolean modified = accountAdmin.deleteAccount(newAccountId);
-      assertTrue(modified);
-
-      verify(storage).getAccountById(newAccountId);
+   public void testDeleteAccountId() {
+      accountAdmin.deleteAccount(newAccountId);
       verify(storage).deleteAccount(newAccountId);
-   }
-
-   @Test
-   public void testDeleteAccountIdNotModified() {
-      @SuppressWarnings("unchecked")
-      ResultSet<Account> resultSet = Mockito.mock(ResultSet.class);
-
-      when(storage.getAccountById(newAccountId)).thenReturn(resultSet);
-      when(resultSet.getOneOrNull()).thenReturn(null);
-
-      boolean modified = accountAdmin.deleteAccount(newAccountId);
-      assertFalse(modified);
-
-      verify(storage, times(0)).deleteAccount(null);
    }
 
    @Test

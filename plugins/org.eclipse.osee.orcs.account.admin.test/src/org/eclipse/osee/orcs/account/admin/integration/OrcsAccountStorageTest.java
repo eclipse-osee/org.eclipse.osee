@@ -14,16 +14,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.account.admin.Account;
 import org.eclipse.osee.account.admin.AccountPreferences;
 import org.eclipse.osee.account.admin.AccountSession;
 import org.eclipse.osee.account.admin.CreateAccountRequest;
+import org.eclipse.osee.account.admin.CreateAccountRequestBuilder;
 import org.eclipse.osee.account.admin.ds.AccountStorage;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.eclipse.osee.orcs.account.admin.internal.OrcsAccountStorage;
@@ -35,7 +35,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
-import org.mockito.Mock;
 
 /**
  * Test Case for {@link OrcsAccountStorage}
@@ -56,11 +55,6 @@ public class OrcsAccountStorageTest {
    @OsgiService
    private AccountStorage storage;
 
-   // @formatter:off
-   @Mock private CreateAccountRequest request;
-   @Mock private AccountPreferences preferences;
-   // @formatter:on
-
    private String name;
    private String email;
    private String username;
@@ -71,14 +65,6 @@ public class OrcsAccountStorageTest {
 
    @Before
    public void testSetup() {
-      initMocks(this);
-
-      try {
-         Thread.sleep(1000);
-      } catch (InterruptedException ex) {
-         ex.printStackTrace();
-      }
-
       String methodName = testName.getMethodName();
 
       name = String.format("displayName-%s", methodName);
@@ -91,30 +77,23 @@ public class OrcsAccountStorageTest {
       prefs.put("b", "2");
       prefs.put("c", "true");
 
-      when(request.getDisplayName()).thenReturn(name);
-      when(request.getEmail()).thenReturn(email);
-      when(request.getUserName()).thenReturn(username);
-      when(request.getPreferences()).thenReturn(prefs);
-      when(request.isActive()).thenReturn(active);
-
+      CreateAccountRequest request =
+         new CreateAccountRequestBuilder.CreateAccountRequestImpl(active, username, email, name, prefs);
       newAccountId = storage.createAccount(request);
    }
 
    @Test
    public void testGetAllAccounts() {
-      ResultSet<Account> result = storage.getAllAccounts();
-      assertEquals(24, result.size());
+      assertEquals(24, storage.getAllAccounts().size());
    }
 
    @Test
    public void testGetById() {
-      ResultSet<Account> result = storage.getAccountById(newAccountId);
-      Account account1 = result.getExactlyOne();
+      Account account1 = storage.getAccountById(newAccountId);
       assertAccount(account1, newAccountId, name, email, username, active, prefs);
 
       ArtifactId artId = ArtifactId.valueOf(account1.getId());
-      ResultSet<Account> result2 = storage.getAccountById(artId);
-      Account account2 = result2.getExactlyOne();
+      Account account2 = storage.getAccountById(artId);
       assertEquals(account1, account2);
       assertAccount(account2, newAccountId, name, email, username, active, prefs);
    }
@@ -128,29 +107,26 @@ public class OrcsAccountStorageTest {
 
    @Test
    public void testSetActive() {
-      Account account = storage.getAccountById(newAccountId).getExactlyOne();
+      Account account = storage.getAccountById(newAccountId);
       assertAccount(account, newAccountId, name, email, username, active, prefs);
 
       storage.setActive(newAccountId, false);
 
-      account = storage.getAccountById(newAccountId).getExactlyOne();
+      account = storage.getAccountById(newAccountId);
       assertFalse(account.isActive());
 
       storage.setActive(newAccountId, true);
 
-      account = storage.getAccountById(newAccountId).getExactlyOne();
+      account = storage.getAccountById(newAccountId);
       assertTrue(account.isActive());
    }
 
    @Test
    public void testDeleteAccount() {
-      ResultSet<Account> result = storage.getAccountById(newAccountId);
-      assertEquals(1, result.size());
-
+      thrown.expect(ItemDoesNotExist.class);
+      assertNotNull(storage.getAccountById(newAccountId));
       storage.deleteAccount(newAccountId);
-
-      result = storage.getAccountById(newAccountId);
-      assertTrue(result.isEmpty());
+      storage.getAccountById(newAccountId);
    }
 
    @Test
@@ -163,7 +139,7 @@ public class OrcsAccountStorageTest {
 
       storage.setAccountPreferences(newAccountId, expected);
 
-      Account account = storage.getAccountById(newAccountId).getExactlyOne();
+      Account account = storage.getAccountById(newAccountId);
       AccountPreferences actual = account.getPreferences();
       assertPrefs(actual, newAccountId, account.getId(), expected);
    }
@@ -174,7 +150,7 @@ public class OrcsAccountStorageTest {
       String address = "myAddress";
       String details = "myDetails";
 
-      Account account = storage.getAccountById(newAccountId).getExactlyOne();
+      Account account = storage.getAccountById(newAccountId);
 
       AccountSession actual = storage.createAccountSession(token, account, address, details);
       assertEquals(details, actual.getAccessDetails());

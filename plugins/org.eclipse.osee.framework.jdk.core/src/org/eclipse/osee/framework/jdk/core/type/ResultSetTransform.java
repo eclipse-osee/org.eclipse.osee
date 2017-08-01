@@ -112,16 +112,18 @@ public class ResultSetTransform<I, F extends Identity<I>, T extends Identity<I>>
    public ResultSet<T> sort(Comparator<T> comparator) {
       List<T> list = getList();
       Collections.sort(list, comparator);
-      data = list;
       return this;
    }
 
    @Override
    public List<T> getList() {
-      List<T> items = new LinkedList<>();
-      for (T obj : data) {
-         items.add(obj);
+      if (data == null) {
+         Iterator<T> iter = iterator();
+         data = new LinkedList<>();
+         while (iter.hasNext()) {
+            data.add(iter.next());
+         }
       }
-      return items;
+      return data;
    }
 }

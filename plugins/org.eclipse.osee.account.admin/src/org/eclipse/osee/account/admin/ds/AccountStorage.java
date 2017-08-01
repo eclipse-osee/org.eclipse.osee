@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.account.admin.ds;
 
+import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.account.admin.Account;
 import org.eclipse.osee.account.admin.AccountPreferences;
@@ -24,9 +25,9 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
  */
 public interface AccountStorage {
 
-   ResultSet<Account> getAllAccounts();
+   List<Account> getAllAccounts();
 
-   ResultSet<Account> getAccountById(ArtifactId accountUuid);
+   Account getAccountById(ArtifactId accountUuid);
 
    ResultSet<Account> getAccountByEmail(String email);
 

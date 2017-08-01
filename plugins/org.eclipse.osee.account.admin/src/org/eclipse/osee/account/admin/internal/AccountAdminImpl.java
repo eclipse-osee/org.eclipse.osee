@@ -11,6 +11,7 @@
 package org.eclipse.osee.account.admin.internal;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.eclipse.osee.account.admin.AccessDetails;
@@ -85,12 +86,12 @@ public class AccountAdminImpl implements AccountAdmin {
    }
 
    @Override
-   public ResultSet<Account> getAllAccounts() {
+   public List<Account> getAllAccounts() {
       return getStorage().getAllAccounts();
    }
 
    @Override
-   public ResultSet<Account> getAccountById(ArtifactId accountId) {
+   public Account getAccountById(ArtifactId accountId) {
       return getStorage().getAccountById(accountId);
    }
 
@@ -114,7 +115,7 @@ public class AccountAdminImpl implements AccountAdmin {
    @Override
    public boolean setActive(ArtifactId accountId, boolean active) {
       boolean modified = false;
-      Account account = getAccountById(accountId).getOneOrNull();
+      Account account = getAccountById(accountId);
       if (account.isActive() != active) {
          getStorage().setActive(accountId, active);
          modified = true;
@@ -123,15 +124,8 @@ public class AccountAdminImpl implements AccountAdmin {
    }
 
    @Override
-   public boolean deleteAccount(ArtifactId accountId) {
-      boolean modified = false;
-      ResultSet<Account> result = getAccountById(accountId);
-      Account account = result.getOneOrNull();
-      if (account != null) {
-         getStorage().deleteAccount(accountId);
-         modified = true;
-      }
-      return modified;
+   public void deleteAccount(ArtifactId accountId) {
+      getStorage().deleteAccount(accountId);
    }
 
    @Override

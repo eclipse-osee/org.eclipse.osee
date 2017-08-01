@@ -58,20 +58,8 @@ public class AccountResourceTest {
 
    @Test
    public void testDeleteAccount() {
-      when(accountOps.deleteAccount(ACCOUNT_ID)).thenReturn(true);
-
       Response actual = resource.deleteAccount();
       assertEquals(Status.OK.getStatusCode(), actual.getStatus());
-
-      verify(accountOps).deleteAccount(ACCOUNT_ID);
-   }
-
-   @Test
-   public void testDeleteAccountNotModified() {
-      when(accountOps.deleteAccount(ACCOUNT_ID)).thenReturn(false);
-
-      Response actual = resource.deleteAccount();
-      assertEquals(Status.NOT_MODIFIED.getStatusCode(), actual.getStatus());
 
       verify(accountOps).deleteAccount(ACCOUNT_ID);
    }
