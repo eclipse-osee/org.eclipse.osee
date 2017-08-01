@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcService;
 
 /**
@@ -107,10 +108,8 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
          action = getArtifactByGuid(id);
       }
       Long uuid = null;
-      try {
+      if (Strings.isNumeric(id)) {
          uuid = Long.parseLong(id);
-      } catch (NumberFormatException ex) {
-         // do nothing
       }
       if (uuid != null) {
          action = getArtifact(uuid);
