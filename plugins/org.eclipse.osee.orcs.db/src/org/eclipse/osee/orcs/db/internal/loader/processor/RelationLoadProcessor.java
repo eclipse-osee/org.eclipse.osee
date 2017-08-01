@@ -76,7 +76,7 @@ public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationO
       } else {
          if (!historical) {
             logger.warn(
-               "multiple relation versions for branch[%s] rel_type [%d] a_artId[%d] b_artId[%s] previousGammaId[%s] currentGammaId[%s]",
+               "multiple relation versions for branch[%s] rel_type [%s] a_artId[%s] b_artId[%s] previousGammaId[%s] currentGammaId[%s]",
                branch, relationType, aArtId, bArtId, condition.previousGammaId, gammaId);
          }
       }
