@@ -217,7 +217,7 @@ public class DispoSetCopier {
       Map<String, Discrepancy> sourceDiscrepancies = sourceItem.getDiscrepanciesList();
       for (String id : idsOfCoveredDiscrepancies) {
          Discrepancy coveredDiscrepancy = sourceDiscrepancies.get(id);
-         if (!destDescrepanciesTextOnly.contains(coveredDiscrepancy.getText())) {
+         if (coveredDiscrepancy == null || !destDescrepanciesTextOnly.contains(coveredDiscrepancy.getText())) {
             return false;
          }
       }
