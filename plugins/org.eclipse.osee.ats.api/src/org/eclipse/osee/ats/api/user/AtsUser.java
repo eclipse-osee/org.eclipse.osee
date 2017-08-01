@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
@@ -118,23 +119,25 @@ public class AtsUser extends JaxAtsObject implements IAtsUser {
       if (this == obj) {
          return true;
       }
-      if (!(obj instanceof IAtsUser)) {
-         return false;
+      if (obj instanceof Id && (((Id) obj).getId().equals(getId()))) {
+         return true;
       }
       try {
-         String thisUserId = getUserId();
-         String objUserId = ((IAtsUser) obj).getUserId();
-         if (thisUserId == null) {
-            if (objUserId != null) {
+         if (obj instanceof IAtsUser) {
+            String thisUserId = getUserId();
+            String objUserId = ((IAtsUser) obj).getUserId();
+            if (thisUserId == null) {
+               if (objUserId != null) {
+                  return false;
+               }
+            } else if (!thisUserId.equals(objUserId)) {
                return false;
             }
-         } else if (!thisUserId.equals(objUserId)) {
-            return false;
          }
       } catch (OseeCoreException ex) {
          return false;
       }
-      return true;
+      return false;
    }
 
 }

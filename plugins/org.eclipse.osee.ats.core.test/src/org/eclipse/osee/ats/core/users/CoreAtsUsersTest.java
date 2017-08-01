@@ -89,18 +89,16 @@ public class CoreAtsUsersTest {
    public void testEqualsObject() {
       TestUser user = new TestUser();
       user.setUserId("99999999");
+      user.setUuid(11L);
       Assert.assertTrue(AtsCoreUsers.SYSTEM_USER.equals(user));
       user.setUserId("234");
+      user.setUuid(95645L);
       Assert.assertFalse(AtsCoreUsers.SYSTEM_USER.equals(user));
       Assert.assertFalse(AtsCoreUsers.SYSTEM_USER.equals("asfd"));
       Assert.assertFalse(AtsCoreUsers.SYSTEM_USER.equals(null));
       Assert.assertTrue(AtsCoreUsers.SYSTEM_USER.equals(AtsCoreUsers.SYSTEM_USER));
       user.setUserId(null);
       Assert.assertFalse(user.equals(AtsCoreUsers.SYSTEM_USER));
-
-      TestUser user2 = new TestUser();
-      user2.setUserId(null);
-      Assert.assertTrue(user.equals(user2));
    }
 
    @org.junit.Test
@@ -108,30 +106,29 @@ public class CoreAtsUsersTest {
       TestUser user = new TestUser();
       user.setUserId("234");
 
-      TestUser user1 = new TestUser();
-      user1.setUserId("234");
+      TestUser user1MapToE = new TestUser();
+      user1MapToE.setUserId("234");
 
-      TestUser user2 = new TestUser();
-      user2.setUserId(SystemUser.OseeSystem.getUserId());
+      TestUser user2MapToPi = new TestUser();
+      user2MapToPi.setUserId(SystemUser.OseeSystem.getUserId());
 
-      IAtsUser mapToPi = AtsCoreUsers.SYSTEM_USER;
-      IAtsUser alsoMapToPi = user2;
-
-      IAtsUser mapToE = user1;
-      IAtsUser alsoMapToE = user1;
+      IAtsUser user3MapToPi = AtsCoreUsers.SYSTEM_USER;
 
       HashMap<IAtsUser, Double> hash = new HashMap<>();
-      hash.put(mapToPi, Math.PI);
-      hash.put(mapToE, Math.E);
+      hash.put(user1MapToE, Math.E);
+      hash.put(user2MapToPi, Math.E);
+      hash.put(user3MapToPi, Math.PI);
 
-      Assert.assertTrue(hash.get(mapToPi).equals(Math.PI));
-      Assert.assertTrue(hash.get(mapToE).equals(Math.E));
-      Assert.assertTrue(hash.get(alsoMapToPi).equals(Math.PI));
-      Assert.assertTrue(hash.get(alsoMapToE).equals(Math.E));
-      Assert.assertFalse(hash.get(mapToPi).equals(Math.E));
-      Assert.assertFalse(hash.get(mapToE).equals(Math.PI));
-      Assert.assertFalse(mapToPi.equals(mapToE));
-      Assert.assertTrue(mapToPi.equals(mapToPi));
+      Assert.assertFalse(hash.get(user1MapToE).equals(Math.PI));
+      Assert.assertFalse(hash.get(user2MapToPi).equals(Math.PI));
+      Assert.assertTrue(hash.get(user3MapToPi).equals(Math.PI));
+
+      Assert.assertTrue(hash.get(user1MapToE).equals(Math.E));
+      Assert.assertTrue(hash.get(user2MapToPi).equals(Math.E));
+      Assert.assertFalse(hash.get(user3MapToPi).equals(Math.E));
+
+      Assert.assertFalse(user3MapToPi.equals(user1MapToE));
+      Assert.assertTrue(user3MapToPi.equals(user3MapToPi));
    }
 
    @Test
