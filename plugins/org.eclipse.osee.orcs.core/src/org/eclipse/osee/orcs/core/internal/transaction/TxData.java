@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.transaction;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasBranch;
@@ -39,7 +39,7 @@ public class TxData implements HasSession, HasBranch {
 
    private final OrcsSession session;
    private final GraphData graph;
-   private final Set<TupleData> tuples = new HashSet<>();
+   private final List<TupleData> tuples = new ArrayList<>();
    private final Map<String, Artifact> writeables = new HashMap<>();
    private final Map<String, ArtifactReadable> readables = new HashMap<>();
 

@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.transaction;
 
+import com.google.common.collect.Sets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
@@ -25,7 +28,6 @@ import org.eclipse.osee.orcs.core.internal.artifact.ArtifactVisitor;
 import org.eclipse.osee.orcs.core.internal.relation.Relation;
 import org.eclipse.osee.orcs.core.internal.relation.RelationVisitor;
 import org.eclipse.osee.orcs.core.internal.tuple.TupleVisitor;
-import com.google.common.collect.Sets;
 
 /**
  * Collect all the dirty OrcsData's into a changeSet;
@@ -76,7 +78,7 @@ public class ChangeSetBuilder implements ArtifactVisitor, RelationVisitor, Tuple
       private final Set<ArtifactData> arts = Sets.newLinkedHashSet();
       private final Set<AttributeData> attrs = Sets.newLinkedHashSet();
       private final Set<RelationData> rels = Sets.newLinkedHashSet();
-      private final Set<TupleData> tuples = Sets.newLinkedHashSet();
+      private final List<TupleData> tuples = new ArrayList<>();
 
       @Override
       public void accept(OrcsVisitor visitor) throws OseeCoreException {
