@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.ui.skynet.render.ArtifactGuis;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
-import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 
 /**
  * @author Paul K. Waldfogel
@@ -53,9 +52,7 @@ public class ViewWordChangeReportHandler extends CommandHandler {
 
          if (ArtifactGuis.checkDeletedOnParent(artifacts)) {
             String pathPrefix = RenderingUtil.getAssociatedArtifactName(localChanges);
-            IRenderer preferredRenderer = new WordTemplateRenderer();
-            preferredRenderer.setOption(IRenderer.VIEW_ID, Handlers.getViewId());
-            RendererManager.diffInJobWithPreferedRenderer(artifactDeltas, pathPrefix, preferredRenderer);
+            RendererManager.diffInJob(artifactDeltas, pathPrefix, IRenderer.VIEW_ID, Handlers.getViewId());
          }
       }
       return null;
