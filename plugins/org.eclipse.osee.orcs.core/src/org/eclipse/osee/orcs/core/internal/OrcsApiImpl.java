@@ -63,9 +63,6 @@ import org.eclipse.osee.orcs.core.internal.transaction.TxDataLoaderImpl;
 import org.eclipse.osee.orcs.core.internal.transaction.TxDataLoaderImpl.TransactionProvider;
 import org.eclipse.osee.orcs.core.internal.transaction.TxDataManager;
 import org.eclipse.osee.orcs.core.internal.transaction.TxDataManager.TxDataLoader;
-import org.eclipse.osee.orcs.core.internal.tuple.TupleFactory;
-import org.eclipse.osee.orcs.core.internal.tuple.TupleManager;
-import org.eclipse.osee.orcs.core.internal.tuple.TupleManagerFactory;
 import org.eclipse.osee.orcs.core.internal.types.BranchHierarchyProvider;
 import org.eclipse.osee.orcs.core.internal.types.OrcsTypesModule;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -173,9 +170,6 @@ public class OrcsApiImpl implements OrcsApi {
       RelationManager relationManager = RelationManagerFactory.createRelationManager(logger,
          orcsTypes.getRelationTypes(), relationFactory, nodeLoader, queryModuleProvider);
 
-      TupleFactory tupleFactory = new TupleFactory(module.getDataFactory());
-      TupleManager tupleManager = TupleManagerFactory.createTupleManager(tupleFactory);
-
       GraphProvider graphProvider = new GraphProvider() {
 
          @Override
@@ -197,7 +191,8 @@ public class OrcsApiImpl implements OrcsApi {
 
       TxDataLoader txDataLoader = new TxDataLoaderImpl(module.getDataLoaderFactory(), graphFactory, graphBuilderFactory,
          graphProvider, txProvider);
-      txDataManager = new TxDataManager(proxyManager, artifactFactory, relationManager, tupleManager, txDataLoader);
+      txDataManager =
+         new TxDataManager(proxyManager, artifactFactory, relationManager, module.getDataFactory(), txDataLoader);
       txCallableFactory = new TxCallableFactory(logger, module.getTxDataStore(), txDataManager);
 
       queryModule = new QueryModule(logger, module.getQueryEngine(), graphBuilderFactory, graphProvider,

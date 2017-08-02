@@ -45,6 +45,7 @@ import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.ds.TupleData;
+import org.eclipse.osee.orcs.core.ds.TupleDataFactory;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
@@ -57,7 +58,6 @@ import org.eclipse.osee.orcs.core.internal.relation.RelationNode;
 import org.eclipse.osee.orcs.core.internal.relation.impl.RelationNodeAdjacencies;
 import org.eclipse.osee.orcs.core.internal.transaction.TxData.TxState;
 import org.eclipse.osee.orcs.core.internal.transaction.TxDataManager.TxDataLoader;
-import org.eclipse.osee.orcs.core.internal.tuple.TupleManager;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.junit.Before;
@@ -90,7 +90,7 @@ public class TxDataManagerTest {
    @Mock private QueryFactory queryFactory;
    @Mock private RelationManager relationManager;
    @Mock private TxDataLoader loader;
-   @Mock private TupleManager tupleManager;
+   @Mock private TupleDataFactory tupleFactory;
 
    @Mock private TxData txData;
 
@@ -119,7 +119,7 @@ public class TxDataManagerTest {
    @Before
    public void init() throws OseeCoreException {
       MockitoAnnotations.initMocks(this);
-      txDataManager = new TxDataManager(proxyManager, artifactFactory, relationManager, tupleManager, loader);
+      txDataManager = new TxDataManager(proxyManager, artifactFactory, relationManager, tupleFactory, loader);
 
       when(artifact1.getExistingAttributeTypes()).thenAnswer(answerValue(types));
 

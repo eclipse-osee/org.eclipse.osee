@@ -231,48 +231,30 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public TupleData createTuple2Data(VersionData version, BranchId branchId, Long tupleType, Long element1, Long element2) throws OseeCoreException {
+   public TupleData createTuple2Data(VersionData version, BranchId branch, Long tupleType, Long e1, Long e2) {
       TupleData data = new TupleDataImpl(version);
       data.setBaseModType(ModificationType.NEW);
       data.setModType(ModificationType.NEW);
       data.setApplicabilityId(ApplicabilityId.BASE);
       data.setTupleType(tupleType);
-      data.setElement1(element1);
-      data.setElement2(element2);
       data.getVersion().setGammaId(Lib.generateUuid());
-      data.getVersion().setBranch(branchId);
+      data.getVersion().setBranch(branch);
+      data.setElement1(e1);
+      data.setElement2(e2);
       return data;
    }
 
    @Override
-   public TupleData createTuple3Data(VersionData version, BranchId branchId, Long tupleType, Long e1, Long e2, Long e3) throws OseeCoreException {
-      TupleData data = new TupleDataImpl(version);
-      data.setBaseModType(ModificationType.NEW);
-      data.setModType(ModificationType.NEW);
-      data.setApplicabilityId(ApplicabilityId.BASE);
-      data.setTupleType(tupleType);
-      data.setElement1(e1);
-      data.setElement2(e2);
+   public TupleData createTuple3Data(VersionData version, BranchId branch, Long tupleType, Long e1, Long e2, Long e3) {
+      TupleData data = createTuple2Data(version, branch, tupleType, e1, e2);
       data.setElement3(e3);
-      data.getVersion().setGammaId(Lib.generateUuid());
-      data.getVersion().setBranch(branchId);
       return data;
    }
 
    @Override
-   public TupleData createTuple4Data(VersionData version, BranchId branchId, Long tupleType, Long e1, Long e2, Long e3, Long e4) throws OseeCoreException {
-      TupleData data = new TupleDataImpl(version);
-      data.setBaseModType(ModificationType.NEW);
-      data.setModType(ModificationType.NEW);
-      data.setApplicabilityId(ApplicabilityId.BASE);
-      data.setTupleType(tupleType);
-      data.setElement1(e1);
-      data.setElement2(e2);
-      data.setElement3(e3);
+   public TupleData createTuple4Data(VersionData version, BranchId branch, Long tupleType, Long e1, Long e2, Long e3, Long e4) {
+      TupleData data = createTuple3Data(version, branch, tupleType, e1, e2, e3);
       data.setElement4(e4);
-      data.getVersion().setGammaId(Lib.generateUuid());
-      data.getVersion().setBranch(branchId);
       return data;
    }
-
 }

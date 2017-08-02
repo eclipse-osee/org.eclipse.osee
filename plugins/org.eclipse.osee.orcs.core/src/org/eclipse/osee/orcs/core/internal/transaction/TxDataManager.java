@@ -35,6 +35,7 @@ import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 import org.eclipse.osee.orcs.core.ds.TupleData;
+import org.eclipse.osee.orcs.core.ds.TupleDataFactory;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
@@ -44,7 +45,6 @@ import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
 import org.eclipse.osee.orcs.core.internal.relation.RelationNode;
 import org.eclipse.osee.orcs.core.internal.relation.impl.RelationNodeAdjacencies;
 import org.eclipse.osee.orcs.core.internal.transaction.TxData.TxState;
-import org.eclipse.osee.orcs.core.internal.tuple.TupleManager;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -66,15 +66,15 @@ public class TxDataManager {
    private final ExternalArtifactManager proxyManager;
    private final ArtifactFactory artifactFactory;
    private final RelationManager relationManager;
-   private final TupleManager tupleManager;
+   private final TupleDataFactory tupleFactory;
    private final TxDataLoader loader;
 
-   public TxDataManager(ExternalArtifactManager proxyManager, ArtifactFactory artifactFactory, RelationManager relationManager, TupleManager tupleManager, TxDataLoader loader) {
+   public TxDataManager(ExternalArtifactManager proxyManager, ArtifactFactory artifactFactory, RelationManager relationManager, TupleDataFactory tupleFactory, TxDataLoader loader) {
       this.proxyManager = proxyManager;
       this.artifactFactory = artifactFactory;
       this.relationManager = relationManager;
       this.loader = loader;
-      this.tupleManager = tupleManager;
+      this.tupleFactory = tupleFactory;
    }
 
    public TxData createTxData(OrcsSession session, BranchId branch) throws OseeCoreException {
@@ -236,16 +236,22 @@ public class TxDataManager {
       txData.setAuthor(author);
    }
 
-   public Long createTuple2(TxData txData, BranchId branch, Long tupleTypeId, Long element1, Long element2) {
-      return tupleManager.addTupple2(txData, branch, tupleTypeId, element1, element2);
+   public Long createTuple2(TxData txData, BranchId branch, Long tupleTypeId, Long e1, Long e2) {
+      TupleData tuple = tupleFactory.createTuple2Data(tupleTypeId, branch, e1, e2);
+      txData.add(tuple);
+      return tuple.getVersion().getGammaId();
    }
 
    public Long createTuple3(TxData txData, BranchId branch, Long tupleTypeId, Long e1, Long e2, Long e3) {
-      return tupleManager.addTupple3(txData, branch, tupleTypeId, e1, e2, e3);
+      TupleData tuple = tupleFactory.createTuple3Data(tupleTypeId, branch, e1, e2, e3);
+      txData.add(tuple);
+      return tuple.getVersion().getGammaId();
    }
 
    public Long createTuple4(TxData txData, BranchId branch, Long tupleTypeId, Long e1, Long e2, Long e3, Long e4) {
-      return tupleManager.addTupple4(txData, branch, tupleTypeId, e1, e2, e3, e4);
+      TupleData tuple = tupleFactory.createTuple4Data(tupleTypeId, branch, e1, e2, e3, e4);
+      txData.add(tuple);
+      return tuple.getVersion().getGammaId();
    }
 
    public ArtifactReadable createArtifact(TxData txData, IArtifactType artifactType, String name, String guid) throws OseeCoreException {
