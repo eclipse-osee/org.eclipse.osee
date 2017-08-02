@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader.data;
 
+import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.TupleData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
@@ -20,7 +21,7 @@ import org.eclipse.osee.orcs.core.internal.tuple.TupleVisitor;
  */
 public class TupleDataImpl extends OrcsVersionedObjectImpl implements TupleData {
 
-   private Long tupleType;
+   private TupleTypeId tupleType;
    private Long element1;
    private Long element2;
    private Long element3;
@@ -36,7 +37,7 @@ public class TupleDataImpl extends OrcsVersionedObjectImpl implements TupleData 
    }
 
    @Override
-   public Long getTupleType() {
+   public TupleTypeId getTupleType() {
       return tupleType;
    }
 
@@ -81,7 +82,7 @@ public class TupleDataImpl extends OrcsVersionedObjectImpl implements TupleData 
    }
 
    @Override
-   public void setTupleType(Long tupleType) {
+   public void setTupleType(TupleTypeId tupleType) {
       this.tupleType = tupleType;
    }
 

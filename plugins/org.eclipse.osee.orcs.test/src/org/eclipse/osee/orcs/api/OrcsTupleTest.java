@@ -10,14 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.api;
 
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.Everyone;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import static org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes.DefaultFamily;
+import static org.eclipse.osee.framework.core.enums.CoreTupleTypes.LruDataTypes;
+import static org.eclipse.osee.framework.core.enums.CoreTupleTypes.ViewApplicability;
 import static org.eclipse.osee.framework.core.enums.SystemUser.OseeSystem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
-import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.TupleTypeId;
+import org.eclipse.osee.framework.core.data.GammaId;
+import org.eclipse.osee.framework.core.data.Tuple4Type;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
@@ -78,43 +82,41 @@ public class OrcsTupleTest {
 
    @Test(expected = JdbcException.class)
    public void testAddTuple2() throws OseeCoreException {
-      TupleTypeId createTuple2Type = TupleTypeId.valueOf(24L);
       TransactionBuilder transaction =
          orcsApi.getTransactionFactory().createTransaction(COMMON, OseeSystem, "Add Tuple2 Test");
-      Long gamma_id = transaction.addTuple(createTuple2Type, 234L, "t");
+      GammaId gamma_id = transaction.addTuple2(ViewApplicability, Everyone, "t");
       transaction.commit();
 
-      Assert.assertTrue(gamma_id > 0L);
+      Assert.assertTrue(gamma_id.isValid());
 
-      gamma_id = transaction.addTuple(createTuple2Type, 234L, "t");
+      transaction.addTuple2(ViewApplicability, Everyone, "t");
       transaction.commit();
    }
 
    @Test(expected = JdbcException.class)
    public void testAddTuple3() throws OseeCoreException {
-      TupleTypeId createTuple3Type = TupleTypeId.valueOf(44L);
       TransactionBuilder transaction =
          orcsApi.getTransactionFactory().createTransaction(COMMON, OseeSystem, "Add Tuple3 Test");
-      Long gamma_id = transaction.addTuple(createTuple3Type, 244L, 12L, "three");
+      GammaId gamma_id = transaction.addTuple3(LruDataTypes, "three", 244L, 12L);
       transaction.commit();
 
-      Assert.assertTrue(gamma_id > 0L);
+      Assert.assertTrue(gamma_id.isValid());
 
-      gamma_id = transaction.addTuple(createTuple3Type, 244L, 12L, "three");
+      transaction.addTuple3(LruDataTypes, "three", 244L, 12L);
       transaction.commit();
    }
 
    @Test(expected = JdbcException.class)
    public void testAddTuple4() throws OseeCoreException {
-      TupleTypeId createTuple4Type = TupleTypeId.valueOf(44L);
+      Tuple4Type<Long, Long, String, String> createTuple4Type = Tuple4Type.valueOf(DefaultFamily, 40L);
       TransactionBuilder transaction =
          orcsApi.getTransactionFactory().createTransaction(COMMON, OseeSystem, "Add Tuple4 Test");
-      Long gamma_id = transaction.addTuple(createTuple4Type, 244L, 12L, "four", "four2");
+      GammaId gamma_id = transaction.addTuple4(createTuple4Type, 244L, 12L, "four", "four2");
       transaction.commit();
 
-      Assert.assertTrue(gamma_id > 0L);
+      Assert.assertTrue(gamma_id.isValid());
 
-      gamma_id = transaction.addTuple(createTuple4Type, 244L, 12L, "four", "four2");
+      transaction.addTuple4(createTuple4Type, 244L, 12L, "four", "four2");
       transaction.commit();
    }
 

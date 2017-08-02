@@ -19,6 +19,9 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.Tuple2Type;
+import org.eclipse.osee.framework.core.data.Tuple3Type;
+import org.eclipse.osee.framework.core.data.Tuple4Type;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -128,23 +131,23 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
-   public TupleData createTuple2Data(Long tupleTypeId, BranchId branch, Long e1, Long e2) {
+   public TupleData createTuple2Data(Tuple2Type<?, ?> tupleType, BranchId branch, Long e1, Long e2) {
       VersionData version = objectFactory.createDefaultVersionData();
-      TupleData tupleData = objectFactory.createTuple2Data(version, branch, tupleTypeId, e1, e2);
+      TupleData tupleData = objectFactory.createTuple2Data(version, branch, tupleType, e1, e2);
       return tupleData;
    }
 
    @Override
-   public TupleData createTuple3Data(Long tupleTypeId, BranchId branch, Long e1, Long e2, Long e3) {
+   public TupleData createTuple3Data(Tuple3Type<?, ?, ?> tupleType, BranchId branch, Long e1, Long e2, Long e3) {
       VersionData version = objectFactory.createDefaultVersionData();
-      TupleData tupleData = objectFactory.createTuple3Data(version, branch, tupleTypeId, e1, e2, e3);
+      TupleData tupleData = objectFactory.createTuple3Data(version, branch, tupleType, e1, e2, e3);
       return tupleData;
    }
 
    @Override
-   public TupleData createTuple4Data(Long tupleTypeId, BranchId branch, Long e1, Long e2, Long e3, Long e4) {
+   public TupleData createTuple4Data(Tuple4Type<?, ?, ?, ?> tupleType, BranchId branch, Long e1, Long e2, Long e3, Long e4) {
       VersionData version = objectFactory.createDefaultVersionData();
-      TupleData tupleData = objectFactory.createTuple4Data(version, branch, tupleTypeId, e1, e2, e3, e4);
+      TupleData tupleData = objectFactory.createTuple4Data(version, branch, tupleType, e1, e2, e3, e4);
       return tupleData;
    }
 

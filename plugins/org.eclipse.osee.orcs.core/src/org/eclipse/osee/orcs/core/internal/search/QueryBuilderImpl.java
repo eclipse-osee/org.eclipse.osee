@@ -62,6 +62,7 @@ public class QueryBuilderImpl extends ArtifactQueryBuilderImpl<QueryBuilder> imp
       }
    }
 
+   @Override
    public boolean exists() {
       return getCount() > 0;
    }

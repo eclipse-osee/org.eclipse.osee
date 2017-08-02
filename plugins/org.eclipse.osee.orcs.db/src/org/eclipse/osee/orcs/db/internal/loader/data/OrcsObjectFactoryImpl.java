@@ -20,6 +20,10 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.Tuple2Type;
+import org.eclipse.osee.framework.core.data.Tuple3Type;
+import org.eclipse.osee.framework.core.data.Tuple4Type;
+import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -231,8 +235,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
          source.getAuthor(), source.getCommitArt(), source.getBuildId());
    }
 
-   @Override
-   public TupleData createTuple2Data(VersionData version, BranchId branch, Long tupleType, Long e1, Long e2) {
+   private TupleData createTuple2Data(VersionData version, BranchId branch, TupleTypeId tupleType, Long e1, Long e2) {
       TupleData data = new TupleDataImpl(version);
       data.setBaseModType(ModificationType.NEW);
       data.setModType(ModificationType.NEW);
@@ -246,15 +249,21 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public TupleData createTuple3Data(VersionData version, BranchId branch, Long tupleType, Long e1, Long e2, Long e3) {
+   public TupleData createTuple2Data(VersionData version, BranchId branch, Tuple2Type<?, ?> tupleType, Long e1, Long e2) {
+      return createTuple2Data(version, branch, (TupleTypeId) tupleType, e1, e2);
+   }
+
+   @Override
+   public TupleData createTuple3Data(VersionData version, BranchId branch, Tuple3Type<?, ?, ?> tupleType, Long e1, Long e2, Long e3) {
       TupleData data = createTuple2Data(version, branch, tupleType, e1, e2);
       data.setElement3(e3);
       return data;
    }
 
    @Override
-   public TupleData createTuple4Data(VersionData version, BranchId branch, Long tupleType, Long e1, Long e2, Long e3, Long e4) {
-      TupleData data = createTuple3Data(version, branch, tupleType, e1, e2, e3);
+   public TupleData createTuple4Data(VersionData version, BranchId branch, Tuple4Type<?, ?, ?, ?> tupleType, Long e1, Long e2, Long e3, Long e4) {
+      TupleData data = createTuple2Data(version, branch, tupleType, e1, e2);
+      data.setElement3(e3);
       data.setElement4(e4);
       return data;
    }

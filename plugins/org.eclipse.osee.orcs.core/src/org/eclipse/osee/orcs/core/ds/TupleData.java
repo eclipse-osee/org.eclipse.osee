@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
+import org.eclipse.osee.framework.core.data.TupleTypeId;
 /**
  * @author Angel Avila
  */
@@ -17,7 +18,7 @@ import org.eclipse.osee.orcs.core.internal.tuple.TupleVisitor;
 
 public interface TupleData extends OrcsData {
 
-   Long getTupleType();
+   TupleTypeId getTupleType();
 
    Long getElement1();
 
@@ -35,7 +36,7 @@ public interface TupleData extends OrcsData {
 
    void setElement4(Long e4);
 
-   void setTupleType(Long tupleType);
+   void setTupleType(TupleTypeId tupleType);
 
    void setRationale(String rationale);
 

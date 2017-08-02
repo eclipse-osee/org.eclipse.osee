@@ -20,14 +20,13 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.Tuple3Type;
 import org.eclipse.osee.framework.core.data.Tuple4Type;
-import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -359,112 +358,27 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public <E1, E2> Long addTuple2(Tuple2Type<E1, E2> tupleType, E1 element1, E2 element2) {
-      return addTuple(tupleType, element1, element2);
+   public <E1, E2> GammaId addTuple2(Tuple2Type<E1, E2> tupleType, E1 e1, E2 e2) {
+      return txManager.createTuple2(txData, tupleType, toLong(e1), toLong(e2));
    }
 
    @Override
-   public <E1, E2, E3> Long addTuple3(Tuple3Type<E1, E2, E3> tupleType, E1 element1, E2 element2, E3 element3) {
-      return addTuple(tupleType, element1, element2, element3);
+   public <E1, E2, E3> GammaId addTuple3(Tuple3Type<E1, E2, E3> tupleType, E1 e1, E2 e2, E3 e3) {
+      return txManager.createTuple3(txData, tupleType, toLong(e1), toLong(e2), toLong(e3));
    }
 
    @Override
-   public <E1, E2, E3, E4> Long addTuple4(Tuple4Type<E1, E2, E3, E4> tupleType, E1 element1, E2 element2, E3 element3, E4 element4) {
-      return addTuple(tupleType, element1, element2, element3, element4);
+   public <E1, E2, E3, E4> GammaId addTuple4(Tuple4Type<E1, E2, E3, E4> tupleType, E1 e1, E2 e2, E3 e3, E4 e4) {
+      return txManager.createTuple4(txData, tupleType, toLong(e1), toLong(e2), toLong(e3), toLong(e4));
    }
 
-   @Override
-   public Long addTuple(TupleTypeId tupleType, Object... elements) {
-      int length = elements.length;
-
-      if (length == 2) {
-         return addTuple2(tupleType, txData.getBranch(), elements[0], elements[1]);
-      } else if (length == 3) {
-         return addTuple3(tupleType, txData.getBranch(), elements[0], elements[1], elements[2]);
-      } else {
-         return addTuple4(tupleType, txData.getBranch(), elements[0], elements[1], elements[2], elements[3]);
+   private Long toLong(Object element) {
+      if (element instanceof String) {
+         return insertValue((String) element);
+      } else if (element instanceof Id) {
+         return ((Id) element).getId();
       }
-   }
-
-   private Long addTuple2(TupleTypeId tupleTypeId, BranchId branch, Object element1, Object element2) {
-      Long e1;
-      Long e2;
-      if (element1 instanceof String) {
-         e1 = insertValue((String) element1);
-      } else {
-         if (element1 instanceof Id) {
-            e1 = ((Id) element1).getId();
-         } else if (element1 instanceof AttributeId) {
-            e1 = Long.valueOf(((AttributeId) element1).getLocalId());
-         } else {
-            e1 = (Long) element1;
-         }
-      }
-      if (element2 instanceof String) {
-         e2 = insertValue((String) element2);
-      } else {
-         if (element1 instanceof ArtifactId) {
-            e2 = ((Id) element2).getId();
-         } else if (element2 instanceof AttributeId) {
-            e2 = Long.valueOf(((AttributeId) element2).getLocalId());
-         } else {
-            e2 = (Long) element2;
-         }
-      }
-
-      return txManager.createTuple2(txData, branch, tupleTypeId.getId(), e1, e2);
-   }
-
-   private Long addTuple3(TupleTypeId tupleTypeId, BranchId branch, Object element1, Object element2, Object element3) {
-      Long e1;
-      Long e2;
-      Long e3;
-      if (element1 instanceof String) {
-         e1 = insertValue((String) element1);
-      } else {
-         e1 = (Long) element1;
-      }
-      if (element2 instanceof String) {
-         e2 = insertValue((String) element2);
-      } else {
-         e2 = (Long) element2;
-      }
-      if (element3 instanceof String) {
-         e3 = insertValue((String) element3);
-      } else {
-         e3 = (Long) element3;
-      }
-
-      return txManager.createTuple3(txData, branch, tupleTypeId.getId(), e1, e2, e3);
-   }
-
-   private Long addTuple4(TupleTypeId tupleTypeId, BranchId branch, Object element1, Object element2, Object element3, Object element4) {
-      Long e1;
-      Long e2;
-      Long e3;
-      Long e4;
-      if (element1 instanceof String) {
-         e1 = insertValue((String) element1);
-      } else {
-         e1 = (Long) element1;
-      }
-      if (element2 instanceof String) {
-         e2 = insertValue((String) element2);
-      } else {
-         e2 = (Long) element2;
-      }
-      if (element3 instanceof String) {
-         e3 = insertValue((String) element3);
-      } else {
-         e3 = (Long) element3;
-      }
-      if (element4 instanceof String) {
-         e4 = insertValue((String) element4);
-      } else {
-         e4 = (Long) element4;
-      }
-
-      return txManager.createTuple4(txData, branch, tupleTypeId.getId(), e1, e2, e3, e4);
+      return (Long) element;
    }
 
    @Override
@@ -486,5 +400,4 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    public <E1, E2, E3, E4> boolean deleteTupple4(Tuple4Type<E1, E2, E3, E4> tupleType, E1 element1, E2 element2, E3 element3, E4 element4) {
       return false;
    }
-
 }

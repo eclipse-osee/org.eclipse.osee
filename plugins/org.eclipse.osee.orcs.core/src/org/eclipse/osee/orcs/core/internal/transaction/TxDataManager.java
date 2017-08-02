@@ -22,8 +22,12 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.Tuple2Type;
+import org.eclipse.osee.framework.core.data.Tuple3Type;
+import org.eclipse.osee.framework.core.data.Tuple4Type;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -236,22 +240,22 @@ public class TxDataManager {
       txData.setAuthor(author);
    }
 
-   public Long createTuple2(TxData txData, BranchId branch, Long tupleTypeId, Long e1, Long e2) {
-      TupleData tuple = tupleFactory.createTuple2Data(tupleTypeId, branch, e1, e2);
+   public GammaId createTuple2(TxData txData, Tuple2Type<?, ?> tupleType, Long e1, Long e2) {
+      TupleData tuple = tupleFactory.createTuple2Data(tupleType, txData.getBranch(), e1, e2);
       txData.add(tuple);
-      return tuple.getVersion().getGammaId().getId();
+      return tuple.getVersion().getGammaId();
    }
 
-   public Long createTuple3(TxData txData, BranchId branch, Long tupleTypeId, Long e1, Long e2, Long e3) {
-      TupleData tuple = tupleFactory.createTuple3Data(tupleTypeId, branch, e1, e2, e3);
+   public GammaId createTuple3(TxData txData, Tuple3Type<?, ?, ?> tupleType, Long e1, Long e2, Long e3) {
+      TupleData tuple = tupleFactory.createTuple3Data(tupleType, txData.getBranch(), e1, e2, e3);
       txData.add(tuple);
-      return tuple.getVersion().getGammaId().getId();
+      return tuple.getVersion().getGammaId();
    }
 
-   public Long createTuple4(TxData txData, BranchId branch, Long tupleTypeId, Long e1, Long e2, Long e3, Long e4) {
-      TupleData tuple = tupleFactory.createTuple4Data(tupleTypeId, branch, e1, e2, e3, e4);
+   public GammaId createTuple4(TxData txData, Tuple4Type<?, ?, ?, ?> tupleType, Long e1, Long e2, Long e3, Long e4) {
+      TupleData tuple = tupleFactory.createTuple4Data(tupleType, txData.getBranch(), e1, e2, e3, e4);
       txData.add(tuple);
-      return tuple.getVersion().getGammaId().getId();
+      return tuple.getVersion().getGammaId();
    }
 
    public ArtifactReadable createArtifact(TxData txData, IArtifactType artifactType, String name, String guid) throws OseeCoreException {

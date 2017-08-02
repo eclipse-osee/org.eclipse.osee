@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.core.data;
 
 import static org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes.DefaultFamily;
-import org.codehaus.jackson.annotate.JsonCreator;
 
 /**
  * @author Ryan D. Brooks
@@ -36,8 +35,11 @@ public interface Tuple2Type<E1, E2> extends TupleTypeId {
       return new Tuple2TypeImpl(family, tupleTypeId);
    }
 
-   @JsonCreator
-   public static <E1, E2> Tuple2Type<E1, E2> valueOf(long tupleTypeId) {
-      return valueOf(DefaultFamily, tupleTypeId);
+   public static <E1, E2> Tuple2Type<E1, E2> valueOf(long tupleType) {
+      return valueOf(DefaultFamily, tupleType);
+   }
+
+   public static <E1, E2> Tuple2Type<E1, E2> valueOf(String tupleType) {
+      return valueOf(DefaultFamily, Long.parseLong(tupleType));
    }
 }

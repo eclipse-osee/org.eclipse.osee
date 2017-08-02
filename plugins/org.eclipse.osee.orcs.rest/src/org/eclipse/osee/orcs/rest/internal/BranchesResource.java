@@ -58,8 +58,8 @@ public class BranchesResource {
    }
 
    @Path("{branch}/tuples")
-   public TupleEndpoint getTuples(@PathParam("branch") BranchId branch) {
-      return new TupleEndpointImpl(OrcsApplication.getOrcsApi(), branch);
+   public TupleEndpoint getTuples(@PathParam("branch") BranchId branch, @HeaderParam("osee.account.id") UserId accountId) {
+      return new TupleEndpointImpl(OrcsApplication.getOrcsApi(), branch, accountId);
    }
 
    @Path("{branch}/applic")
