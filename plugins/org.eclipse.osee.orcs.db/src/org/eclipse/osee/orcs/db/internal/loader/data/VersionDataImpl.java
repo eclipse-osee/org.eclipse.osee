@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader.data;
 
-import static org.eclipse.osee.framework.core.data.RelationalConstants.GAMMA_SENTINEL;
 import static org.eclipse.osee.framework.core.data.RelationalConstants.IS_HISTORICAL_DEFAULT;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 
@@ -23,7 +23,7 @@ public class VersionDataImpl implements VersionData {
 
    private BranchId branch = BranchId.SENTINEL;
    private TransactionId txId = TransactionId.SENTINEL;
-   private long gamma = GAMMA_SENTINEL;
+   private GammaId gamma = GammaId.SENTINEL;
    private boolean historical = IS_HISTORICAL_DEFAULT;
    private TransactionId stripeId = TransactionId.SENTINEL;
 
@@ -32,13 +32,13 @@ public class VersionDataImpl implements VersionData {
    }
 
    @Override
-   public long getGammaId() {
+   public GammaId getGammaId() {
       return gamma;
    }
 
    @Override
    public void setGammaId(long gamma) {
-      this.gamma = gamma;
+      this.gamma = GammaId.valueOf(gamma);
    }
 
    @Override
@@ -91,7 +91,7 @@ public class VersionDataImpl implements VersionData {
       final int prime = 31;
       int result = 1;
       result = prime * result + branch.hashCode();
-      result = prime * result + (int) (gamma ^ gamma >>> 32);
+      result = prime * result + gamma.hashCode();
       result = prime * result + (historical ? 1231 : 1237);
       result = prime * result + stripeId.hashCode();
       result = prime * result + txId.hashCode();
@@ -137,7 +137,7 @@ public class VersionDataImpl implements VersionData {
    public VersionData clone() {
       VersionData copy = new VersionDataImpl();
       copy.setBranch(getBranch());
-      copy.setGammaId(getGammaId());
+      copy.setGammaId(getGammaId().getId());
       copy.setHistorical(isHistorical());
       copy.setStripeId(getStripeId());
       copy.setTransactionId(getTransactionId());

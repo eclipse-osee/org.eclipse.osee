@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -49,7 +50,7 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
       BranchId branch = BranchId.create(chStmt.getLong("branch_id"), OptionsUtil.getFromBranchView(options));
       int artId = chStmt.getInt("id2");
       int attrId = chStmt.getInt("attr_id");
-      long gammaId = chStmt.getInt("gamma_id");
+      GammaId gammaId = GammaId.valueOf(chStmt.getLong("gamma_id"));
       ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
       ApplicabilityId applicId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));
 
@@ -118,14 +119,14 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
       int previousArtId = -1;
       BranchId previousBranchId = BranchId.SENTINEL;
       int previousAttrId = -1;
-      long previousGammaId = -1;
+      GammaId previousGammaId = GammaId.SENTINEL;
       ModificationType previousModType = null;
 
       boolean isSame(BranchId branch, int artifactId, int attrId) {
          return previousBranchId.equals(branch) && previousArtId == artifactId && previousAttrId == attrId;
       }
 
-      void saveConditions(BranchId branch, int artifactId, int attrId, long gammaId, ModificationType modType) {
+      void saveConditions(BranchId branch, int artifactId, int attrId, GammaId gammaId, ModificationType modType) {
          previousBranchId = branch;
          previousArtId = artifactId;
          previousAttrId = attrId;

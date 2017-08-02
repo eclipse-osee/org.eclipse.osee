@@ -326,18 +326,18 @@ public class MissingChangeItemFactoryTest {
 
    private static ChangeItem createExpected(RelationData data) {
       return ChangeItemUtil.newRelationChange(RelationId.valueOf(data.getLocalId()), RelationTypeId.SENTINEL,
-         GammaId.valueOf(data.getVersion().getGammaId()), determineModType(data), ArtifactId.valueOf(data.getArtIdA()),
+         data.getVersion().getGammaId(), determineModType(data), ArtifactId.valueOf(data.getArtIdA()),
          ArtifactId.valueOf(data.getArtIdB()), "", ApplicabilityToken.BASE);
    }
 
    private static ChangeItem createExpected(AttributeData data) {
       return ChangeItemUtil.newAttributeChange(data, AttributeTypeId.SENTINEL, ArtifactId.valueOf(data.getArtifactId()),
-         GammaId.valueOf(data.getVersion().getGammaId()), determineModType(data), "", ApplicabilityToken.BASE);
+         data.getVersion().getGammaId(), determineModType(data), "", ApplicabilityToken.BASE);
    }
 
    private static ChangeItem createExpected(ArtifactData data) {
       return ChangeItemUtil.newArtifactChange(ArtifactId.valueOf(data.getLocalId()), ArtifactTypeId.SENTINEL,
-         GammaId.valueOf(data.getVersion().getGammaId()), determineModType(data), ApplicabilityToken.BASE);
+         data.getVersion().getGammaId(), determineModType(data), ApplicabilityToken.BASE);
    }
 
    private ChangeItem getMatchingChangeItem(ChangeItem item) {

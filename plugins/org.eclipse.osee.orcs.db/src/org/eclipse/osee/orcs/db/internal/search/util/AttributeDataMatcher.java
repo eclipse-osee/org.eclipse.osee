@@ -139,7 +139,7 @@ public class AttributeDataMatcher {
 
       @Override
       public long getGammaId() {
-         return attrData.getVersion().getGammaId();
+         return attrData.getVersion().getGammaId().getId();
       }
 
       @Override

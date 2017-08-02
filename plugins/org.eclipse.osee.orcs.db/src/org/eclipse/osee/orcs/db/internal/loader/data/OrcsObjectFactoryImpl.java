@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
@@ -51,7 +52,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public VersionData createVersion(BranchId branchId, TransactionId txId, long gamma, boolean historical) {
+   public VersionData createVersion(BranchId branchId, TransactionId txId, GammaId gamma, boolean historical) {
       return createVersion(branchId, txId, gamma, historical, TransactionId.SENTINEL);
    }
 
@@ -61,7 +62,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       return createVersion(
          BranchId.SENTINEL,
          TransactionId.SENTINEL,
-         RelationalConstants.GAMMA_SENTINEL,
+         GammaId.SENTINEL,
          RelationalConstants.IS_HISTORICAL_DEFAULT,
          TransactionId.SENTINEL);
       // @formatter:on
@@ -79,11 +80,11 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       // @formatter:on
    }
 
-   private VersionData createVersion(BranchId branchId, TransactionId txId, long gamma, boolean historical, TransactionId stripeId) {
+   private VersionData createVersion(BranchId branchId, TransactionId txId, GammaId gamma, boolean historical, TransactionId stripeId) {
       VersionData version = new VersionDataImpl();
       version.setBranch(branchId);
       version.setTransactionId(txId);
-      version.setGammaId(gamma);
+      version.setGammaId(gamma.getId());
       version.setHistorical(historical);
       version.setStripeId(stripeId);
       return version;

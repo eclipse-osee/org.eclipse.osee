@@ -22,7 +22,6 @@ public final class RelationalConstants {
    }
 
    public static final int JOIN_QUERY_ID_SENTINEL = -1;
-   public static final long GAMMA_SENTINEL = -1;
    public static final boolean IS_HISTORICAL_DEFAULT = false;
    public static final int ART_ID_SENTINEL = -1;
    public static final String DEFAULT_RATIONALE = "";

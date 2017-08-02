@@ -30,8 +30,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
-import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
@@ -85,7 +85,7 @@ public class TxSqlBuilderTest {
    private static final String EXP_GUID = GUID.create();
    private static final long TYPE_UUID = 72132144189L;
 
-   private static final long NEXT_GAMMA_ID = 751382L;
+   private static final GammaId NEXT_GAMMA_ID = GammaId.valueOf(751382);
 
    private static final ArtifactId A_ART_ID = ArtifactId.valueOf(6737);
    private static final ArtifactId B_ART_ID = ArtifactId.valueOf(1231);
@@ -146,7 +146,7 @@ public class TxSqlBuilderTest {
       tx.setDate(EXPECTED_TX_TIME);
       tx.setTxType(EXPECTED_TX_TYPE);
 
-      when(idManager.getNextGammaId()).thenReturn(NEXT_GAMMA_ID);
+      when(idManager.getNextGammaId()).thenReturn(NEXT_GAMMA_ID.getId());
    }
 
    @Test
@@ -214,7 +214,7 @@ public class TxSqlBuilderTest {
          ModificationType expectedType = modType != REPLACED_WITH_VERSION ? modType : MODIFIED;
 
          // @formatter:off
-         verifyRow(SqlOrderEnum.TXS, EXPECTED_TX, -1L, expectedType.getValue(), TxChange.getCurrent(expectedType).getValue(), COMMON);
+         verifyRow(SqlOrderEnum.TXS, EXPECTED_TX, GammaId.SENTINEL, expectedType.getValue(), TxChange.getCurrent(expectedType).getValue(), COMMON);
          verifyQuery(SqlOrderEnum.ARTIFACTS);
          // @formatter:on
 
@@ -284,7 +284,7 @@ public class TxSqlBuilderTest {
          ModificationType expectedType = modType != REPLACED_WITH_VERSION ? modType : MODIFIED;
 
          // @formatter:off
-         verifyRow(SqlOrderEnum.TXS, EXPECTED_TX, -1L, expectedType.getValue(), TxChange.getCurrent(expectedType).getValue(), COMMON);
+         verifyRow(SqlOrderEnum.TXS, EXPECTED_TX, GammaId.SENTINEL, expectedType.getValue(), TxChange.getCurrent(expectedType).getValue(), COMMON);
          verifyQuery(SqlOrderEnum.RELATIONS);
          // @formatter:on
 
@@ -339,7 +339,7 @@ public class TxSqlBuilderTest {
          ModificationType expectedType = modType != REPLACED_WITH_VERSION ? modType : MODIFIED;
 
          // @formatter:off
-         verifyRow(SqlOrderEnum.TXS, EXPECTED_TX, -1L, expectedType.getValue(), TxChange.getCurrent(expectedType).getValue(), COMMON);
+         verifyRow(SqlOrderEnum.TXS, EXPECTED_TX, GammaId.SENTINEL, expectedType.getValue(), TxChange.getCurrent(expectedType).getValue(), COMMON);
          verifyQuery(SqlOrderEnum.ATTRIBUTES);
          // @formatter:on
 
@@ -349,7 +349,7 @@ public class TxSqlBuilderTest {
 
    private void reset(OrcsData data) {
       data.getVersion().setTransactionId(LOADED_TX_ID);
-      data.getVersion().setGammaId(RelationalConstants.GAMMA_SENTINEL);
+      data.getVersion().setGammaId(GammaId.SENTINEL.getId());
    }
 
    private void verifyQuery(SqlOrderEnum key) {

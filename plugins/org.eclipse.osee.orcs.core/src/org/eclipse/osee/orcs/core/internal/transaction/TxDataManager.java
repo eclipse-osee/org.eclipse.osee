@@ -239,19 +239,19 @@ public class TxDataManager {
    public Long createTuple2(TxData txData, BranchId branch, Long tupleTypeId, Long e1, Long e2) {
       TupleData tuple = tupleFactory.createTuple2Data(tupleTypeId, branch, e1, e2);
       txData.add(tuple);
-      return tuple.getVersion().getGammaId();
+      return tuple.getVersion().getGammaId().getId();
    }
 
    public Long createTuple3(TxData txData, BranchId branch, Long tupleTypeId, Long e1, Long e2, Long e3) {
       TupleData tuple = tupleFactory.createTuple3Data(tupleTypeId, branch, e1, e2, e3);
       txData.add(tuple);
-      return tuple.getVersion().getGammaId();
+      return tuple.getVersion().getGammaId().getId();
    }
 
    public Long createTuple4(TxData txData, BranchId branch, Long tupleTypeId, Long e1, Long e2, Long e3, Long e4) {
       TupleData tuple = tupleFactory.createTuple4Data(tupleTypeId, branch, e1, e2, e3, e4);
       txData.add(tuple);
-      return tuple.getVersion().getGammaId();
+      return tuple.getVersion().getGammaId().getId();
    }
 
    public ArtifactReadable createArtifact(TxData txData, IArtifactType artifactType, String name, String guid) throws OseeCoreException {

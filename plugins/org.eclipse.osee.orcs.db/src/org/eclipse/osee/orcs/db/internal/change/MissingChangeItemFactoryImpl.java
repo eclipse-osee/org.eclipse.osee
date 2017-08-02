@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.RelationId;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -223,16 +222,16 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
    private ChangeItem createArtifactChangeItem(ArtifactData data) throws OseeCoreException {
       ApplicabilityId appId = data.getApplicabilityId();
       ChangeItem artChange = ChangeItemUtil.newArtifactChange(ArtifactId.valueOf(data.getLocalId()),
-         ArtifactTypeId.valueOf(data.getTypeUuid()), GammaId.valueOf(data.getVersion().getGammaId()),
-         determineModType(data), getApplicabilityToken(appId));
+         ArtifactTypeId.valueOf(data.getTypeUuid()), data.getVersion().getGammaId(), determineModType(data),
+         getApplicabilityToken(appId));
       return artChange;
    }
 
    private ChangeItem createAttributeChangeItem(AttributeData data) throws OseeCoreException {
       ApplicabilityId appId = data.getApplicabilityId();
       ChangeItem attrChange = ChangeItemUtil.newAttributeChange(data, AttributeTypeId.valueOf(data.getTypeUuid()),
-         ArtifactId.valueOf(data.getArtifactId()), GammaId.valueOf(data.getVersion().getGammaId()),
-         determineModType(data), data.getDataProxy().getDisplayableString(), getApplicabilityToken(appId));
+         ArtifactId.valueOf(data.getArtifactId()), data.getVersion().getGammaId(), determineModType(data),
+         data.getDataProxy().getDisplayableString(), getApplicabilityToken(appId));
       attrChange.getNetChange().copy(attrChange.getCurrentVersion());
       return attrChange;
    }
@@ -240,9 +239,8 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
    private ChangeItem createRelationChangeItem(RelationData data) throws OseeCoreException {
       ApplicabilityId appId = data.getApplicabilityId();
       return ChangeItemUtil.newRelationChange(RelationId.valueOf(Long.valueOf(data.getLocalId())),
-         RelationTypeId.valueOf(data.getTypeUuid()), GammaId.valueOf(data.getVersion().getGammaId()),
-         determineModType(data), data.getArtifactIdA(), data.getArtifactIdB(), data.getRationale(),
-         getApplicabilityToken(appId));
+         RelationTypeId.valueOf(data.getTypeUuid()), data.getVersion().getGammaId(), determineModType(data),
+         data.getArtifactIdA(), data.getArtifactIdB(), data.getRationale(), getApplicabilityToken(appId));
    }
 
 }

@@ -14,6 +14,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
@@ -176,7 +177,7 @@ public class DataFactoryImpl implements DataFactory {
       version.setTransactionId(TransactionId.SENTINEL);
       version.setStripeId(TransactionId.SENTINEL);
       version.setHistorical(false);
-      version.setGammaId(RelationalConstants.GAMMA_SENTINEL);
+      version.setGammaId(GammaId.SENTINEL.getId());
 
       data.setModType(ModificationType.NEW);
    }

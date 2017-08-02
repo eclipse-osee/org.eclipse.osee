@@ -18,8 +18,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
@@ -58,6 +58,7 @@ public class DataFactoryImplTest {
    private static final BranchId BRANCH = BranchId.valueOf(11);
    private static final TransactionId tx333 = TransactionId.valueOf(333);
    private static final TransactionId tx444 = TransactionId.valueOf(444);
+   private static final GammaId gamma222 = GammaId.valueOf(222);
 
    @Rule
    public ExpectedException thrown = ExpectedException.none();
@@ -97,7 +98,7 @@ public class DataFactoryImplTest {
 
       // VERSION
       when(verData.getBranch()).thenReturn(BRANCH);
-      when(verData.getGammaId()).thenReturn(222L);
+      when(verData.getGammaId()).thenReturn(gamma222);
       when(verData.getTransactionId()).thenReturn(tx333);
       when(verData.getStripeId()).thenReturn(tx444);
       when(verData.isHistorical()).thenReturn(true);
@@ -178,7 +179,7 @@ public class DataFactoryImplTest {
       VersionData actualVer = actual.getVersion();
 
       assertEquals(COMMON, actualVer.getBranch());
-      assertEquals(RelationalConstants.GAMMA_SENTINEL, actualVer.getGammaId());
+      assertEquals(GammaId.SENTINEL, actualVer.getGammaId());
       assertEquals(TransactionId.SENTINEL, actualVer.getTransactionId());
       assertEquals(TransactionId.SENTINEL, actualVer.getStripeId());
       assertEquals(false, actualVer.isHistorical());
@@ -206,7 +207,7 @@ public class DataFactoryImplTest {
 
       VersionData actualVer = actual.getVersion();
       assertEquals(COMMON, actualVer.getBranch());
-      assertEquals(RelationalConstants.GAMMA_SENTINEL, actualVer.getGammaId());
+      assertEquals(GammaId.SENTINEL, actualVer.getGammaId());
       assertEquals(TransactionId.SENTINEL, actualVer.getTransactionId());
       assertEquals(TransactionId.SENTINEL, actualVer.getStripeId());
       assertEquals(false, actualVer.isHistorical());
@@ -235,7 +236,7 @@ public class DataFactoryImplTest {
 
       VersionData actualVer = actual.getVersion();
       assertEquals(BRANCH, actualVer.getBranch());
-      assertEquals(RelationalConstants.GAMMA_SENTINEL, actualVer.getGammaId());
+      assertEquals(GammaId.SENTINEL, actualVer.getGammaId());
       assertEquals(TransactionId.SENTINEL, actualVer.getTransactionId());
       assertEquals(TransactionId.SENTINEL, actualVer.getStripeId());
       assertEquals(false, actualVer.isHistorical());
@@ -263,7 +264,7 @@ public class DataFactoryImplTest {
 
       VersionData actualVer = actual.getVersion();
       assertEquals(COMMON, actualVer.getBranch());
-      assertEquals(RelationalConstants.GAMMA_SENTINEL, actualVer.getGammaId());
+      assertEquals(GammaId.SENTINEL, actualVer.getGammaId());
       assertEquals(TransactionId.SENTINEL, actualVer.getTransactionId());
       assertEquals(TransactionId.SENTINEL, actualVer.getStripeId());
       assertEquals(false, actualVer.isHistorical());
@@ -287,7 +288,7 @@ public class DataFactoryImplTest {
       VersionData actualVer = actual.getVersion();
       assertNotSame(verData, actualVer);
       assertEquals(COMMON, actualVer.getBranch());
-      assertEquals(222L, actualVer.getGammaId());
+      assertEquals(gamma222, actualVer.getGammaId());
       assertEquals(TransactionId.SENTINEL, actualVer.getTransactionId());
       assertEquals(artData.getVersion().getStripeId(), actualVer.getStripeId());
       assertEquals(false, actualVer.isHistorical());
@@ -308,7 +309,7 @@ public class DataFactoryImplTest {
       VersionData actualVer = actual.getVersion();
       assertNotSame(verData, actualVer);
       assertEquals(COMMON, actualVer.getBranch());
-      assertEquals(222L, actualVer.getGammaId());
+      assertEquals(gamma222, actualVer.getGammaId());
       assertEquals(TransactionId.SENTINEL, actualVer.getTransactionId());
       assertEquals(attrData.getVersion().getStripeId(), actualVer.getStripeId());
       assertEquals(false, actualVer.isHistorical());
@@ -339,7 +340,7 @@ public class DataFactoryImplTest {
       VersionData actualVer = actual.getVersion();
       assertNotSame(verData, actualVer);
       assertEquals(COMMON, actualVer.getBranch());
-      assertEquals(RelationalConstants.GAMMA_SENTINEL, actualVer.getGammaId());
+      assertEquals(GammaId.SENTINEL, actualVer.getGammaId());
       assertEquals(TransactionId.SENTINEL, actualVer.getTransactionId());
       assertEquals(TransactionId.SENTINEL, actualVer.getStripeId());
       assertEquals(false, actualVer.isHistorical());
@@ -360,7 +361,7 @@ public class DataFactoryImplTest {
       VersionData actualVer = actual.getVersion();
       assertNotSame(verData, actualVer);
       assertEquals(COMMON, actualVer.getBranch());
-      assertEquals(RelationalConstants.GAMMA_SENTINEL, actualVer.getGammaId());
+      assertEquals(GammaId.SENTINEL, actualVer.getGammaId());
       assertEquals(TransactionId.SENTINEL, actualVer.getTransactionId());
       assertEquals(TransactionId.SENTINEL, actualVer.getStripeId());
       assertEquals(false, actualVer.isHistorical());
@@ -388,7 +389,7 @@ public class DataFactoryImplTest {
       assertNotSame(verData, actualVer);
 
       assertEquals(BRANCH, actualVer.getBranch());
-      assertEquals(222L, actualVer.getGammaId());
+      assertEquals(gamma222, actualVer.getGammaId());
       assertEquals(tx333, actualVer.getTransactionId());
       assertEquals(tx444, actualVer.getStripeId());
       assertEquals(true, actualVer.isHistorical());
@@ -413,7 +414,7 @@ public class DataFactoryImplTest {
       assertNotSame(verData, actualVer);
 
       assertEquals(BRANCH, actualVer.getBranch());
-      assertEquals(222L, actualVer.getGammaId());
+      assertEquals(gamma222, actualVer.getGammaId());
       assertEquals(tx333, actualVer.getTransactionId());
       assertEquals(tx444, actualVer.getStripeId());
       assertEquals(true, actualVer.isHistorical());
@@ -441,7 +442,7 @@ public class DataFactoryImplTest {
       assertNotSame(verData, actualVer);
 
       assertEquals(BRANCH, actualVer.getBranch());
-      assertEquals(222L, actualVer.getGammaId());
+      assertEquals(gamma222, actualVer.getGammaId());
       assertEquals(tx333, actualVer.getTransactionId());
       assertEquals(tx444, actualVer.getStripeId());
       assertEquals(true, actualVer.isHistorical());

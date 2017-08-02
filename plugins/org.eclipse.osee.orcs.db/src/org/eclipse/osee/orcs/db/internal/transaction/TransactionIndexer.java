@@ -49,7 +49,7 @@ public class TransactionIndexer implements TransactionProcessor {
             public void visit(AttributeData data) {
                AttributeTypeId type = types.get(data.getTypeUuid());
                if (types.isTaggable(type)) {
-                  datas.add(data.getVersion().getGammaId());
+                  datas.add(data.getVersion().getGammaId().getId());
                }
             }
          });

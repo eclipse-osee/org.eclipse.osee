@@ -177,7 +177,7 @@ public class Relation implements RelationReadable, HasOrcsData<RelationData>, Or
 
    @Override
    public long getGammaId() {
-      return getOrcsData().getVersion().getGammaId();
+      return getOrcsData().getVersion().getGammaId().getId();
    }
 
    @Override

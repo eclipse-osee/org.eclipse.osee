@@ -275,7 +275,7 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
 
    @Override
    public long getGammaId() {
-      return getOrcsData().getVersion().getGammaId();
+      return getOrcsData().getVersion().getGammaId().getId();
    }
 
    public void internalSetGammaId(int gammaId) {

@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.db.internal.loader.processor;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -46,7 +47,7 @@ public class ArtifactLoadProcessor extends LoadProcessor<ArtifactData, ArtifactO
          // assumption: SQL is returning unwanted deleted artifacts only in the historical case
          boolean historical = OptionsUtil.isHistorical(options);
          if (!historical || OptionsUtil.areDeletedArtifactsIncluded(options) || modType != ModificationType.DELETED) {
-            long gamma = chStmt.getInt("gamma_id");
+            GammaId gamma = GammaId.valueOf(chStmt.getLong("gamma_id"));
             TransactionId txId = TransactionId.valueOf(chStmt.getLong("transaction_id"));
 
             VersionData version = factory.createVersion(branch, txId, gamma, historical);

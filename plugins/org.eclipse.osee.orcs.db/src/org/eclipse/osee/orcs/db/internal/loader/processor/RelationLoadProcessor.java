@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.db.internal.loader.processor;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -45,7 +46,7 @@ public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationO
       ArtifactId aArtId = ArtifactId.valueOf(chStmt.getLong("a_art_id"));
       ArtifactId bArtId = ArtifactId.valueOf(chStmt.getLong("b_art_id"));
       RelationTypeId relationType = RelationTypeId.valueOf(chStmt.getLong("rel_link_type_id"));
-      long gammaId = chStmt.getInt("gamma_id");
+      GammaId gammaId = GammaId.valueOf(chStmt.getInt("gamma_id"));
       ApplicabilityId applicId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));
 
       boolean historical = OptionsUtil.isHistorical(options);
@@ -97,14 +98,14 @@ public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationO
       ArtifactId previousArtIdA = ArtifactId.SENTINEL;
       ArtifactId previousArtIdB = ArtifactId.SENTINEL;
       RelationTypeId previousTypeId = RelationTypeId.SENTINEL;
-      long previousGammaId = -1;
+      GammaId previousGammaId = GammaId.SENTINEL;
 
       boolean isSame(BranchId branch, ArtifactId aArtId, ArtifactId bArtId, RelationTypeId typeId) {
          return previousBranchId.equals(branch) && previousArtIdA.equals(aArtId) && previousArtIdB.equals(
             bArtId) && previousTypeId.equals(typeId);
       }
 
-      void saveConditions(BranchId branch, ArtifactId aArtId, ArtifactId bArtId, RelationTypeId typeId, long gammaId) {
+      void saveConditions(BranchId branch, ArtifactId aArtId, ArtifactId bArtId, RelationTypeId typeId, GammaId gammaId) {
          previousBranchId = branch;
          previousArtIdA = aArtId;
          previousArtIdB = bArtId;
