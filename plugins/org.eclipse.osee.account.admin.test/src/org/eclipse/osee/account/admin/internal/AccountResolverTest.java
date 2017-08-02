@@ -63,8 +63,6 @@ public class AccountResolverTest {
       resolver = new AccountResolver(validator, accountAdmin);
 
       String uuid = GUID.create();
-      when(account.getGuid()).thenReturn(uuid);
-      when(prefs.getGuid()).thenReturn(uuid);
       when(account.getPreferences()).thenReturn(prefs);
       accountResult = new ResultSetList<>(Arrays.asList(account));
    }

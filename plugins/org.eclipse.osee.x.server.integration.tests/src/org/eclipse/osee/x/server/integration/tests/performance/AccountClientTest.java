@@ -11,7 +11,6 @@
 package org.eclipse.osee.x.server.integration.tests.performance;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,7 +50,6 @@ public class AccountClientTest {
    private String email;
    private boolean active;
    private Long accountId;
-   private String guid;
    private Map<String, String> prefs;
 
    @After
@@ -90,10 +88,8 @@ public class AccountClientTest {
 
          newAccount = client.createAccount(username, input);
          accountId = newAccount.getAccountId();
-         guid = newAccount.getGuid();
 
          assertTrue(newAccount.getAccountId() > 0L);
-         assertNotNull(newAccount.getGuid());
 
          assertEquals(email, newAccount.getEmail());
          assertEquals(name, newAccount.getName());
@@ -107,7 +103,6 @@ public class AccountClientTest {
       AccountDetailsData actual = client.getAccountDetailsById(accountId);
 
       assertEquals(accountId, actual.getAccountId());
-      assertEquals(guid, actual.getGuid());
       assertEquals(email, actual.getEmail());
       assertEquals(name, actual.getName());
       assertEquals(username, actual.getUserName());

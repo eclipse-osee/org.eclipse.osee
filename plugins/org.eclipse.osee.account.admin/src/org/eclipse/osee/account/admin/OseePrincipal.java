@@ -41,8 +41,6 @@ public interface OseePrincipal extends Principal, Identity<Long> {
 
    Map<String, String> getProperties();
 
-   String getOseeGuid();
-
    public static final OseePrincipal Anonymous = createAnonymous();
 
    public static OseePrincipal createAnonymous() {
@@ -112,11 +110,6 @@ public interface OseePrincipal extends Principal, Identity<Long> {
          @Override
          public Map<String, String> getProperties() {
             return properties;
-         }
-
-         @Override
-         public String getOseeGuid() {
-            return data.getGuid();
          }
       }
       return new OseePrincipalImpl(login, data, authenticated, roles, properties);

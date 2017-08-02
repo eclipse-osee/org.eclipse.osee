@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.osee.account.admin.AccountPreferences;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
+import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -26,7 +26,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 /**
  * @author Roberto E. Escobar
  */
-public class AccountPreferencesArtifact extends BaseIdentity<String>implements AccountPreferences {
+public class AccountPreferencesArtifact extends BaseId implements AccountPreferences {
 
    private final ArtifactReadable artifact;
 
@@ -34,13 +34,8 @@ public class AccountPreferencesArtifact extends BaseIdentity<String>implements A
    private final AtomicBoolean wasLoaded = new AtomicBoolean(false);
 
    public AccountPreferencesArtifact(String uuid, ArtifactReadable artifact) {
-      super(uuid);
+      super(artifact.getId());
       this.artifact = artifact;
-   }
-
-   @Override
-   public Long getId() {
-      return artifact.getUuid();
    }
 
    @Override
@@ -86,5 +81,4 @@ public class AccountPreferencesArtifact extends BaseIdentity<String>implements A
          }
       }
    }
-
 }

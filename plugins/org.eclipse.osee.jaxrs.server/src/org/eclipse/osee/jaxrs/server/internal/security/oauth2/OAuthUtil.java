@@ -113,16 +113,16 @@ public final class OAuthUtil {
             }
 
             URI requestUrlWithServer = UriBuilder.fromPath(server)//
-            .path(requestUrl.getPath())//
-            .replaceQuery(requestUrl.getRawQuery())//
-            .scheme(scheme)//
-            .build();
+               .path(requestUrl.getPath())//
+               .replaceQuery(requestUrl.getRawQuery())//
+               .scheme(scheme)//
+               .build();
             String continueURL = requestUrlWithServer.toASCIIString();
 
             finalRedirectURI = UriBuilder.fromPath(server)//
-            .scheme(scheme)//
-            .path(redirectURI.toString())//
-            .queryParam("continueTo", continueURL).build();
+               .scheme(scheme)//
+               .path(redirectURI.toString())//
+               .queryParam("continueTo", continueURL).build();
          } else {
             finalRedirectURI = redirectURI;
          }
@@ -202,7 +202,6 @@ public final class OAuthUtil {
    private static final String SUBJECT_EMAIL = "email";
    private static final String SUBJECT_IS_ACTIVE = "is.active";
    private static final String SUBJECT_IS_AUTHENTICATED = "is.authenticated";
-   private static final String SUBJECT_OSEE_GUID = "osee.guid";
 
    public static UserSubject newUserSubject(OseePrincipal subject) {
       List<String> roles = new ArrayList<>();
@@ -231,7 +230,6 @@ public final class OAuthUtil {
       properties.put(SUBJECT_EMAIL, subject.getEmailAddress());
       properties.put(SUBJECT_IS_ACTIVE, Boolean.toString(subject.isActive()));
       properties.put(SUBJECT_IS_AUTHENTICATED, Boolean.toString(subject.isAuthenticated()));
-      properties.put(SUBJECT_OSEE_GUID, subject.getOseeGuid());
       data.setProperties(properties);
       return data;
    }
@@ -291,7 +289,7 @@ public final class OAuthUtil {
       }
    }
 
-   private static final class UserSubjectWrapper extends BaseIdentity<Long>implements OseePrincipal {
+   private static final class UserSubjectWrapper extends BaseIdentity<Long> implements OseePrincipal {
 
       private final UserSubject subject;
       private final Set<String> roles;
@@ -350,11 +348,5 @@ public final class OAuthUtil {
       private String get(String key, String defaultValue) {
          return getProperty(getProperties(), key, defaultValue);
       }
-
-      @Override
-      public String getOseeGuid() {
-         return getProperty(getProperties(), SUBJECT_OSEE_GUID, "N/A");
-      }
    }
-
 }

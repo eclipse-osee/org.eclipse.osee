@@ -44,7 +44,6 @@ public class SubscriptionsResourceTest {
       "D_UhOLi6D7q_MbOiUYny75bUWxYdlHI9yCLyosilpDMYxRhasnqYvwCOlNEPgvrk";
    private static final boolean SUBSCRIPTION_IS_ACTIVE = true;
 
-   private static final String ACCOUNT_UUID = "asdksa";
    private static final String ACCOUNT_NAME = "account-1";
    private static final ArtifactId ACCOUNT_ID = ArtifactId.valueOf(3129303);
    private static final String ACCOUNT_USERNAME = "sadfaa";
@@ -84,7 +83,6 @@ public class SubscriptionsResourceTest {
       when(group.getName()).thenReturn(GROUP_NAME);
       when(group.getGroupId()).thenReturn(GROUP_ID);
 
-      when(account.getGuid()).thenReturn(ACCOUNT_UUID);
       when(account.getName()).thenReturn(ACCOUNT_NAME);
       when(account.getId()).thenReturn(ACCOUNT_ID.getUuid());
       when(account.getUserName()).thenReturn(ACCOUNT_USERNAME);
@@ -213,7 +211,7 @@ public class SubscriptionsResourceTest {
 
       assertEquals(1, actual.length);
       AccountInfoData data = actual[0];
-      checkAccount(data, ACCOUNT_UUID, ACCOUNT_NAME, ACCOUNT_ID, ACCOUNT_USERNAME, ACCOUNT_EMAIL, ACCOUNT_IS_ACTIVE);
+      checkAccount(data, ACCOUNT_NAME, ACCOUNT_ID, ACCOUNT_USERNAME, ACCOUNT_EMAIL, ACCOUNT_IS_ACTIVE);
       verify(manager).getSubscriptionMembersOfSubscriptionById(GROUP_ID);
    }
 
@@ -230,8 +228,7 @@ public class SubscriptionsResourceTest {
       assertEquals(groupId, actual.getSubscriptionGroupId());
    }
 
-   private static void checkAccount(AccountInfoData actual, String guid, String name, ArtifactId accountId, String username, String email, boolean active) {
-      assertEquals(guid, actual.getGuid());
+   private static void checkAccount(AccountInfoData actual, String name, ArtifactId accountId, String username, String email, boolean active) {
       assertEquals(name, actual.getName());
       assertEquals(accountId.getUuid(), actual.getAccountId());
       assertEquals(username, actual.getUserName());

@@ -230,7 +230,6 @@ public class SubjectProviderImpl implements SubjectProvider {
       SessionData toReturn = new SessionData(session.getId());
 
       UserSubject subject = new UserSubject();
-      subject.setId(principal.getOseeGuid());
       subject.setLogin(principal.getLogin());
       subject.setProperties(principal.getProperties());
       List<String> roles = new ArrayList<>();

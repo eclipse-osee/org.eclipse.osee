@@ -67,7 +67,6 @@ public final class AccountDataUtil {
 
    private static void fillData(Account account, AccountInfoData data) {
       data.setAccountId(account.getId());
-      data.setGuid(account.getGuid());
       data.setName(account.getName());
       data.setEmail(account.getEmail());
       data.setUserName(account.getUserName());
@@ -84,7 +83,6 @@ public final class AccountDataUtil {
    public static AccountActiveData asAccountActiveData(Account account) {
       AccountActiveData data = new AccountActiveData();
       data.setAccountId(account.getId());
-      data.setGuid(account.getGuid());
       data.setActive(account.isActive());
       return data;
    }
@@ -113,7 +111,6 @@ public final class AccountDataUtil {
       toReturn.setEmail(principal.getEmailAddress());
       toReturn.setName(principal.getName());
       toReturn.setUserName(principal.getUserName());
-      toReturn.setGuid(principal.getOseeGuid());
       toReturn.setRoles(principal.getRoles());
       return toReturn;
    }

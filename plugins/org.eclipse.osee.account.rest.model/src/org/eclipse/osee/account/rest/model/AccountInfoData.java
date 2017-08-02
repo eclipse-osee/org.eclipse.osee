@@ -12,18 +12,16 @@ package org.eclipse.osee.account.rest.model;
 
 import java.util.Set;
 import javax.xml.bind.annotation.XmlRootElement;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
 
 /**
  * @author Roberto E. Escobar
  */
 @XmlRootElement
-public class AccountInfoData implements Identity<String> {
+public class AccountInfoData {
 
    private String name;
    private String userName;
    private String email;
-   private String uuid;
    private Long accountId;
    private boolean isActive;
    private Set<String> roles;
@@ -72,42 +70,12 @@ public class AccountInfoData implements Identity<String> {
       this.isActive = isActive;
    }
 
-   @Override
-   public String getGuid() {
-      return uuid;
-   }
-
-   public void setGuid(String uuid) {
-      this.uuid = uuid;
-   }
-
    public void setRoles(Set<String> roles) {
       this.roles = roles;
    }
 
    @Override
-   public int hashCode() {
-      return getGuid().hashCode();
-   }
-
-   @Override
-   public boolean equals(Object obj) {
-      boolean equal = false;
-      if (obj instanceof Identity) {
-         @SuppressWarnings("unchecked")
-         Identity<String> identity = (Identity<String>) obj;
-         if (getGuid() == identity.getGuid()) {
-            equal = true;
-         } else if (getGuid() != null) {
-            equal = getGuid().equals(identity.getGuid());
-         }
-      }
-      return equal;
-   }
-
-   @Override
    public String toString() {
-      return String.valueOf(getGuid());
+      return String.valueOf(accountId);
    }
-
 }

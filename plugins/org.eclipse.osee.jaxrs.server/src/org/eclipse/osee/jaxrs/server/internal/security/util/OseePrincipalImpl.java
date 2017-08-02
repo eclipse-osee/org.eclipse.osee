@@ -14,12 +14,11 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.account.admin.OseePrincipal;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
  */
-public class OseePrincipalImpl extends BaseIdentity<Long>implements OseePrincipal {
+public class OseePrincipalImpl extends BaseIdentity<Long> implements OseePrincipal {
 
    private final String displayName;
    private final String email;
@@ -87,17 +86,5 @@ public class OseePrincipalImpl extends BaseIdentity<Long>implements OseePrincipa
    @Override
    public Map<String, String> getProperties() {
       return props;
-   }
-
-   @Override
-   public String getOseeGuid() {
-      String toReturn = "N/A";
-      if (props != null) {
-         String value = props.get("osee.guid");
-         if (Strings.isValid(value)) {
-            toReturn = value;
-         }
-      }
-      return toReturn;
    }
 }
