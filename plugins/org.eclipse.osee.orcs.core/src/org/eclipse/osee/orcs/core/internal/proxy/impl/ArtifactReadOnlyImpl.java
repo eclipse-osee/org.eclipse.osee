@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -369,4 +370,8 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
       return getProxiedObject().getOrcsData().getVersion().isHistorical();
    }
 
+   @Override
+   public ApplicabilityId getApplicability() {
+      return getProxiedObject().getOrcsData().getApplicabilityId();
+   }
 }
