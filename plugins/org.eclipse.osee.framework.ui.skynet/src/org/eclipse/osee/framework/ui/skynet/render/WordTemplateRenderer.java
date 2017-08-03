@@ -337,14 +337,11 @@ public class WordTemplateRenderer extends WordRenderer {
             return ArtifactQuery.getArtifactFromId(templateArt, CoreBranches.COMMON);
          }
 
-      } else if (option == null || (useTemplateOnce && !firstTime)) {
-         if (useTemplateOnce && !firstTime && !secondTime) {
-            option = null;
-         }
-         Artifact templateArtifact = TemplateManager.getTemplate(this, artifact, presentationType, option);
-         return templateArtifact;
       }
-      return null;
+      if (useTemplateOnce && !firstTime && !secondTime) {
+         option = null;
+      }
+      return TemplateManager.getTemplate(this, artifact, presentationType, option);
    }
 
    @Override
