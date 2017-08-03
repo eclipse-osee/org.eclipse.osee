@@ -155,6 +155,7 @@ public class OseeLinkBuilder {
       String toReturn;
       if (destLinkType == LinkType.OSEE_SERVER_LINK) {
          toReturn = escapeXml(oseeLink);
+         toReturn = toReturn.replaceAll("INSERTGUID", artifact.getGuid());
       } else {
          toReturn = artifact.getGuid();
       }

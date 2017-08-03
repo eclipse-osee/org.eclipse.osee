@@ -35,7 +35,7 @@ public class ArtifactURL {
       Map<String, String> parameters = new HashMap<>();
       parameters.put("sessionId", ClientSessionManager.getSessionId());
       parameters.put("context", "osee/loopback");
-      parameters.put("guid", artifact.getGuid());
+      parameters.put("guid", "INSERTGUID");
       parameters.put("branchUuid", String.valueOf(artifact.getBranch().getGuid()));
       parameters.put("isDeleted", String.valueOf(artifact.isDeleted()));
 
