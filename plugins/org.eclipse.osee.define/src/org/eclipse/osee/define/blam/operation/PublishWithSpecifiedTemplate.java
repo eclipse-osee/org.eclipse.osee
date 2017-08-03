@@ -144,9 +144,11 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
 
       Object view = variableMap.getValue(VIEW);
       ArtifactId viewId = ArtifactId.SENTINEL;
-      for (Entry<Long, String> entry : branchViews.entrySet()) {
-         if (entry.getValue().equals(view)) {
-            viewId = ArtifactId.valueOf(entry.getKey());
+      if (branchViews != null && !branchViews.isEmpty()) {
+         for (Entry<Long, String> entry : branchViews.entrySet()) {
+            if (entry.getValue().equals(view)) {
+               viewId = ArtifactId.valueOf(entry.getKey());
+            }
          }
       }
 
