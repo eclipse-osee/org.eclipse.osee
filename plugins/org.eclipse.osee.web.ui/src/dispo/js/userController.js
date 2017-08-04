@@ -317,9 +317,9 @@ app.controller('userController', [
         
         $scope.getTextCoverage = function(annotation) {
         	if(annotation.isLeaf) {
-        		return "";
-        	} else {
         		return annotation.customerNotes;
+        	} else {
+        		return "";
         	}
         }
         
