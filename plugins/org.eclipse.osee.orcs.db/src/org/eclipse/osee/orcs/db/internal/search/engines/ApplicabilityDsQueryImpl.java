@@ -13,10 +13,13 @@ package org.eclipse.osee.orcs.db.internal.search.engines;
 import static org.eclipse.osee.framework.core.data.ApplicabilityToken.BASE;
 import static org.eclipse.osee.framework.core.enums.TxChange.NOT_CURRENT;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.core.ds.ApplicabilityDsQuery;
@@ -61,6 +64,16 @@ public class ApplicabilityDsQueryImpl implements ApplicabilityDsQuery {
                ApplicabilityToken.create(stmt.getLong("key"), stmt.getString("value")))),
             SELECT_APPLIC_FOR_ARTS, idJoin.getQueryId(), branch, NOT_CURRENT);
       }
+      return result;
+   }
+
+   @Override
+   public Set<ArtifactId> getExcludedArtifacts(BranchId branch, ArtifactId view) {
+      Set<ArtifactId> result = new HashSet<>();
+
+      jdbcClient.runQuery(stmt -> result.add(ArtifactId.valueOf(stmt.getLong("key"))),
+         OseeSql.LOAD_EXCLUDED_ARTIFACT_IDS.getSql(), branch, view, branch, NOT_CURRENT);
+
       return result;
    }
 }

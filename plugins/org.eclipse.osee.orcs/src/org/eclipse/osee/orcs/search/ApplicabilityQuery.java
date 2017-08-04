@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.search;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -55,4 +56,5 @@ public interface ApplicabilityQuery {
 
    List<BranchId> getAffectedBranches(TransactionId injectionTx, TransactionId removalTx, List<ApplicabilityId> applicabilityIds, BranchId branch);
 
+   Set<ArtifactId> getExcludedArtifacts(BranchId branch, ArtifactId view);
 }

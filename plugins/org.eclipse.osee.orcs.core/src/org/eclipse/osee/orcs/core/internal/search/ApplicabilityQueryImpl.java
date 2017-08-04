@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.BiConsumer;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -323,4 +324,8 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
       return getAffectedBranches(timeInjectionMs, timeRemovalMs, applicabilityIds, branch);
    }
 
+   @Override
+   public Set<ArtifactId> getExcludedArtifacts(BranchId branch, ArtifactId view) {
+      return applicabilityDsQuery.getExcludedArtifacts(branch, view);
+   }
 }
