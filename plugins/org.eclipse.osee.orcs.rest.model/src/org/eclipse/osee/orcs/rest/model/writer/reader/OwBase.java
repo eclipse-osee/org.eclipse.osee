@@ -12,13 +12,12 @@ package org.eclipse.osee.orcs.rest.model.writer.reader;
 
 import org.codehaus.jackson.map.JsonSerializer.None;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.codehaus.jackson.map.ser.std.ToStringSerializer;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
  * Data Transfer object for Orcs Writer
- * 
+ *
  * @author Donald G. Dunne
  */
 @JsonSerialize(using = None.class)
@@ -33,7 +32,6 @@ public class OwBase extends NamedIdBase {
       super(id, name);
    }
 
-   @JsonSerialize(using = ToStringSerializer.class)
    String data = null;
 
    public String getData() {

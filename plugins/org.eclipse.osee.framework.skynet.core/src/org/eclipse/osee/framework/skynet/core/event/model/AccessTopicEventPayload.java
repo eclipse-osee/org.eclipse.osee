@@ -12,9 +12,6 @@ package org.eclipse.osee.framework.skynet.core.event.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.codehaus.jackson.map.ser.std.ToStringSerializer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -24,10 +21,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
  *
  * @author Donald G. Dunne
  */
-@XmlRootElement
 public class AccessTopicEventPayload implements ISerializeableTopicPayload {
-
-   @JsonSerialize(using = ToStringSerializer.class)
    BranchId branch;
    List<String> artifactUuids = new ArrayList<>();
 
@@ -68,5 +62,4 @@ public class AccessTopicEventPayload implements ISerializeableTopicPayload {
       }
       return false;
    }
-
 }
