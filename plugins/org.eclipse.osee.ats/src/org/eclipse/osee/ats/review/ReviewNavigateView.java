@@ -24,8 +24,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.ats.actions.OpenWorkflowByIdAction;
-import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
-import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -87,7 +85,6 @@ public class ReviewNavigateView extends ViewPart implements IXNavigateEventListe
 
    public void refreshData() {
       OperationBuilder builder = Operations.createBuilder("Load Review Navigator");
-      builder.addAll(AtsBulkLoad.getConfigLoadingOperations());
       builder.addOp(new ReviewNavigateViewItemsOperation());
       Operations.executeAsJob(builder.build(), false, Job.LONG, new ReloadJobChangeAdapter(this));
    }

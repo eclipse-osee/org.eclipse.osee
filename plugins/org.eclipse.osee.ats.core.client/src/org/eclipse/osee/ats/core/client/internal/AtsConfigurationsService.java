@@ -15,11 +15,12 @@ import com.google.common.base.Suppliers;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationProvider;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IUserArtLoader;
-import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
@@ -30,7 +31,8 @@ public class AtsConfigurationsService implements IAtsConfigurationProvider {
 
    @Override
    public AtsConfigurations getConfigurations() {
-      return configurationsCache.get();
+      AtsConfigurations configs = configurationsCache.get();
+      return configs;
    }
 
    @Override

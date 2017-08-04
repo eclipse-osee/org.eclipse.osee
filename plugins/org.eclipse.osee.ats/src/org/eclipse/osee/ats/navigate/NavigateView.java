@@ -32,8 +32,6 @@ import org.eclipse.osee.ats.actions.NewGoal;
 import org.eclipse.osee.ats.actions.OpenChangeReportByIdAction;
 import org.eclipse.osee.ats.actions.OpenWorkflowByIdAction;
 import org.eclipse.osee.ats.actions.OpenWorldByIdAction;
-import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
-import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -95,7 +93,6 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
 
    public void refreshData() {
       OperationBuilder builder = Operations.createBuilder("Load ATS Navigator");
-      builder.addAll(AtsBulkLoad.getConfigLoadingOperations());
       builder.addOp(new AtsNavigateViewItemsOperation());
       Operations.executeAsJob(builder.build(), false, Job.LONG, new ReloadJobChangeAdapter(this));
    }
