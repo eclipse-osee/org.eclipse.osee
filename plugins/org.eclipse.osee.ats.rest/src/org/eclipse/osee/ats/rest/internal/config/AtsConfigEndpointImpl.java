@@ -97,8 +97,12 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
          @Override
          public void run() {
             while (true) {
-               AtsConfigurations configs = getAtsConfigurationsFromDb();
-               atsConfigurations = configs;
+               if (orcsApi.getAdminOps().isDataStoreInitialized()) {
+                  AtsConfigurations configs = getAtsConfigurationsFromDb();
+                  atsConfigurations = configs;
+               } else {
+                  atsConfigurations = new AtsConfigurations();
+               }
                try {
                   long reloadTime = AtsUtilCore.SERVER_CONFIG_RELOAD_MS_DEFAULT;
                   String reloadTimeStr = services.getConfigValue(AtsUtilCore.SERVER_CONFIG_RELOAD_MS_KEY);
