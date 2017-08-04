@@ -146,9 +146,9 @@ app.controller('userController', [
 
                 var delta = bSplit[0] - aSplit[0];
                 if (delta == 0) {
-                    if (bSplit[1].match("RESULT") && !aSplit[1].match("RESULT")) {
+                    if (isValidSize(aSplit, bSplit) && bSplit[1].match("RESULT") && !aSplit[1].match("RESULT")) {
                         return -1;
-                    } else if (!bSplit[1].match("RESULT") && aSplit[1].match("RESULT")) {
+                    } else if (isValidSize(aSplit, bSplit) && !bSplit[1].match("RESULT") && aSplit[1].match("RESULT")) {
                         return 1;
                     } else {
                         return a.locationRefs.localeCompare(b.locationRefs);
@@ -157,6 +157,10 @@ app.controller('userController', [
                     return delta;
                 }
             }
+        }
+        
+        var isValidSize = function (a, b) {
+        	return (a.size > 1 && b.size > 1);
         }
 
         $scope.getSourceFlie = function() {
