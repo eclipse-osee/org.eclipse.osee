@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.ui.skynet.render.compare;
+package org.eclipse.osee.framework.core.model.change;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

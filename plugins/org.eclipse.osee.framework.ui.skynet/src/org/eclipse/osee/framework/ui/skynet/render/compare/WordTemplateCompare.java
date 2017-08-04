@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.exception.OperationTimedoutException;
+import org.eclipse.osee.framework.core.model.change.CompareData;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;

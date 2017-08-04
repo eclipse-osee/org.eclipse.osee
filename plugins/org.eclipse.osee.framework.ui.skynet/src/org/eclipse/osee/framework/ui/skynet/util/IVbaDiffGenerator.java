@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet.util;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.model.change.CompareData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.ui.skynet.render.compare.CompareData;
 
 /**
  * @author Theron Virgin

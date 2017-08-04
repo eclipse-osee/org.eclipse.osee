@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render.compare;
 
+import org.eclipse.osee.framework.core.model.change.CompareData;
+
 public final class NoOpCompareDataCollector implements CompareDataCollector {
 
    @Override

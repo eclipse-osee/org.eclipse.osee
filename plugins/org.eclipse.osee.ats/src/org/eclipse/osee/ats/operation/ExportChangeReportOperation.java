@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.model.change.CompareData;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -50,7 +51,6 @@ import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.osee.framework.ui.skynet.render.compare.CompareData;
 import org.eclipse.osee.framework.ui.skynet.render.compare.CompareDataCollector;
 
 /**

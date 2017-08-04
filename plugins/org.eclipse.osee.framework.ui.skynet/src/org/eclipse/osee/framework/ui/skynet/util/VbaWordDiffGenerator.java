@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.osee.framework.core.exception.OperationTimedoutException;
+import org.eclipse.osee.framework.core.model.change.CompareData;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -32,7 +33,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.render.compare.CompareData;
 
 /**
  * @author Theron Virgin

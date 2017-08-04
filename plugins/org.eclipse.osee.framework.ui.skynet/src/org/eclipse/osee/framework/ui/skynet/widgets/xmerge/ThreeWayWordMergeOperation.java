@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.PresentationType;
+import org.eclipse.osee.framework.core.model.change.CompareData;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -38,7 +39,6 @@ import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.UpdateArtifactOperation;
-import org.eclipse.osee.framework.ui.skynet.render.compare.CompareData;
 import org.eclipse.osee.framework.ui.skynet.render.compare.CompareDataCollector;
 
 /**
