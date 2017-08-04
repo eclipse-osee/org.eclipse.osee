@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.activity.internal.jaxrs;
 
+import static org.eclipse.osee.framework.core.data.CoreActivityTypes.JAXRS_METHOD_CALL;
 import javax.annotation.Priority;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -17,7 +18,6 @@ import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.ext.Provider;
 import org.eclipse.osee.activity.ActivityConstants;
-import org.eclipse.osee.activity.api.Activity;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
@@ -59,8 +59,7 @@ public class ActivityLogRequestFilter implements ContainerRequestFilter {
             if (Strings.isNumeric(context.getHeaders().getFirst("osee.account.id"))) {
                accountId = Long.valueOf(context.getHeaders().getFirst("osee.account.id"));
             }
-            Long entryId =
-               activityLog.createActivityThread(Activity.JAXRS_METHOD_CALL, accountId, serverId, clientId, message);
+            Long entryId = activityLog.createActivityThread(JAXRS_METHOD_CALL, accountId, serverId, clientId, message);
 
             context.setProperty(ActivityConstants.HTTP_HEADER__ACTIVITY_ENTRY_ID, entryId);
          } catch (Throwable th) {

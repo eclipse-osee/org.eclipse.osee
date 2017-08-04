@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.ui.plugin.xnavigate;
 
+import static org.eclipse.osee.framework.core.data.CoreActivityTypes.XNAVIGATEITEM;
 import java.util.List;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -20,7 +21,6 @@ import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.osee.activity.api.Activity;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.activity.api.ActivityLogEndpoint;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
@@ -188,11 +188,9 @@ public class XNavigateComposite extends Composite {
          try {
             long uuid = Lib.generateUuid();
             ActivityLogEndpoint activityEp = OsgiUtil.getService(getClass(), OseeClient.class).getActivityLogEndpoint();
-            activityEp.createEntry(Activity.XNAVIGATEITEM.getTypeId(), uuid, ActivityLog.INITIAL_STATUS,
-               item.getName());
+            activityEp.createEntry(XNAVIGATEITEM, uuid, ActivityLog.INITIAL_STATUS, item.getName());
             item.run(tableLoadOptions);
-            activityEp.createEntry(Activity.XNAVIGATEITEM.getTypeId(), uuid, ActivityLog.COMPLETE_STATUS,
-               item.getName());
+            activityEp.createEntry(XNAVIGATEITEM, uuid, ActivityLog.COMPLETE_STATUS, item.getName());
          } catch (Exception ex) {
             OseeLog.log(UiPluginConstants.class, OseeLevel.SEVERE_POPUP, ex);
          }

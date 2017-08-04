@@ -25,8 +25,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
-import org.eclipse.osee.activity.api.Activity;
 import org.eclipse.osee.activity.api.ActivityLog;
+import org.eclipse.osee.framework.core.data.CoreActivityTypes;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
@@ -99,7 +99,7 @@ public class SessionEndpointImpl implements SessionEndpoint {
 
    private void logSessionCreation(OseeCredential credential, OseeSessionGrant oseeSessionGrant) {
       try {
-         activityLog.createEntry(Activity.IDE.getTypeId(), ActivityLog.COMPLETE_STATUS,
+         activityLog.createEntry(CoreActivityTypes.IDE, ActivityLog.COMPLETE_STATUS,
             String.format(
                "IDE Client Session Created " //
                   + "{" //
@@ -124,7 +124,7 @@ public class SessionEndpointImpl implements SessionEndpoint {
          ISession session = sessionManager.getSessionById(sessionId);
          String duration = getDuration(session);
          String userId = session != null ? session.getUserId() : "unknown";
-         activityLog.createEntry(Activity.IDE.getTypeId(), ActivityLog.COMPLETE_STATUS,
+         activityLog.createEntry(CoreActivityTypes.IDE, ActivityLog.COMPLETE_STATUS,
             String.format(
                "IDE Client Session Released " //
                   + "{" //

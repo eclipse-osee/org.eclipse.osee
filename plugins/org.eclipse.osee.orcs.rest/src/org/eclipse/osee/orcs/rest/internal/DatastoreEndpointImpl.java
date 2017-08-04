@@ -78,7 +78,6 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
       OrcsMetaData metaData = adminOps.createDatastore(parameters);
 
       activityLog.setEnabled(true);
-      activityLog.unInitialize();
       UriInfo uriInfo = getUriInfo();
       URI location = getDatastoreLocation(uriInfo);
       return Response.created(location).entity(asDatastoreInfo(metaData)).build();

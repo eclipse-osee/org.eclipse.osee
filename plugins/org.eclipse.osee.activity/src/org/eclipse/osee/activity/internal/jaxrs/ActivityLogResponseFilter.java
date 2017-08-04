@@ -10,6 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.activity.internal.jaxrs;
 
+import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_ACCOUNT_ID;
+import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_CLIENT_ID;
+import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_SERVER_ID;
+import static org.eclipse.osee.activity.ActivityConstants.ERROR_MSG__MISSING_ACTIVITY_HEADER;
+import static org.eclipse.osee.framework.core.data.CoreActivityTypes.JAXRS_METHOD_CALL_FILTER_ERROR;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
@@ -17,7 +22,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.Response.StatusType;
 import javax.ws.rs.ext.Provider;
 import org.eclipse.osee.activity.ActivityConstants;
-import org.eclipse.osee.activity.api.Activity;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.logger.Log;
 
@@ -55,9 +59,8 @@ public class ActivityLogResponseFilter implements ContainerResponseFilter {
                }
             } else {
                // Response was called without a matching request
-               activityLog.createActivityThread(Activity.JAXRS_METHOD_CALL_FILTER_ERROR,
-                  ActivityConstants.DEFAULT_ACCOUNT_ID, ActivityConstants.DEFAULT_SERVER_ID,
-                  ActivityConstants.DEFAULT_CLIENT_ID, ActivityConstants.ERROR_MSG__MISSING_ACTIVITY_HEADER);
+               activityLog.createActivityThread(JAXRS_METHOD_CALL_FILTER_ERROR, DEFAULT_ACCOUNT_ID, DEFAULT_SERVER_ID,
+                  DEFAULT_CLIENT_ID, ERROR_MSG__MISSING_ACTIVITY_HEADER);
             }
          } catch (Throwable th) {
             logger.error(th, "Error during ActivityContainerResponseFilter");

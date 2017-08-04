@@ -22,24 +22,25 @@ import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_ACTIVITY_LOGGE
 import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_ACTIVITY_LOGGER__STACKTRACE_LINE_COUNT;
 import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_ACTIVITY_LOGGER__WRITE_RATE_IN_MILLIS;
 import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_CLIENT_ID;
-import static org.eclipse.osee.activity.api.Activity.THREAD_ACTIVITY;
 import static org.eclipse.osee.activity.internal.ActivityUtil.captureStackTrace;
 import static org.eclipse.osee.activity.internal.ActivityUtil.get;
 import java.net.UnknownHostException;
+import static org.eclipse.osee.framework.core.data.CoreActivityTypes.THREAD_ACTIVITY;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.osee.activity.ActivityConstants;
 import org.eclipse.osee.activity.ActivityStorage;
-import org.eclipse.osee.activity.api.Activity;
+import org.eclipse.osee.activity.api.ActivityEntry;
+import org.eclipse.osee.activity.api.ActivityEntryId;
 import org.eclipse.osee.activity.api.ActivityLog;
-import org.eclipse.osee.activity.api.ActivityType;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
+import org.eclipse.osee.framework.core.data.ActivityTypeId;
+import org.eclipse.osee.framework.core.data.ActivityTypeToken;
+import org.eclipse.osee.framework.core.data.CoreActivityTypes;
 import org.eclipse.osee.framework.core.data.OrcsTypesData;
 import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -71,31 +72,33 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
       STATUS,
       MESSAGE_ARGS;
 
-      public static final Long SENTINAL = -1L;
+      public static final Long SENTINEL = Id.SENTINEL;
 
       Long from(Object[] entry) {
          Object obj = entry[ordinal()];
          if (obj instanceof Long) {
-            return (Long) entry[ordinal()];
+            return (Long) obj;
          }
-         throw new OseeArgumentException("LogEntryIndex.from may only be used with values of type Long");
+         if (obj instanceof Id) {
+            return ((Id) obj).getId();
+         }
+         throw new OseeArgumentException(
+            "LogEntryIndex.from called with agrgument of unsupported type " + obj.getClass());
       }
    };
 
+   private final ConcurrentHashMap<Long, ActivityTypeToken> types = new ConcurrentHashMap<>(30);
    private final static int HALF_HOUR = 30 * 60 * 1000;
    private static final int FIVE_MINUTES = 5 * 60 * 1000;
 
    private final ConcurrentHashMap<Long, Object[]> newEntities = new ConcurrentHashMap<>();
    private final ConcurrentHashMap<Long, Object[]> updatedEntities = new ConcurrentHashMap<>();
    private final ThreadActivity threadActivity = new ThreadActivity();
-   private static final Object[] EMPTY_ARRAY = new Object[0];
-
    private Log logger;
    private ExecutorAdmin executorAdmin;
    private ActivityStorage storage;
    private SystemPreferences preferences;
 
-   private final AtomicBoolean initialized = new AtomicBoolean(false);
    private ActivityMonitorImpl activityMonitor;
    private volatile long freshnessMillis;
    private volatile int exceptionLineCount;
@@ -121,6 +124,9 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
    }
 
    public void start(Map<String, Object> properties) throws Exception {
+      for (ActivityTypeToken type : CoreActivityTypes.getTypes()) {
+         types.put(type.getId(), type);
+      }
       activityMonitor = new ActivityMonitorImpl();
       executorAdmin.schedule(this::continuouslyLogThreadActivity);
       update(properties);
@@ -169,8 +175,8 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
    }
 
    @Override
-   public void queryEntry(Long entryId, ActivityDataHandler handler) {
-      storage.selectEntry(entryId, handler);
+   public ActivityEntry getEntry(ActivityEntryId entryId) {
+      return storage.getEntry(entryId);
    }
 
    public void update(Map<String, Object> properties) {
@@ -234,39 +240,34 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
    }
 
    @Override
-   public Long createEntry(ActivityType type, Object... messageArgs) {
-      return createEntry(type.getTypeId(), COMPLETE_STATUS, messageArgs);
+   public Long createEntry(ActivityTypeToken type, Object... messageArgs) {
+      return createEntry(type, COMPLETE_STATUS, messageArgs);
    }
 
    @Override
-   public Long createUpdateableEntry(ActivityType type, Object... messageArgs) {
-      return createEntry(type.getTypeId(), INITIAL_STATUS, messageArgs);
+   public Long createUpdateableEntry(ActivityTypeToken type, Object... messageArgs) {
+      return createEntry(type, INITIAL_STATUS, messageArgs);
    }
 
    @Override
-   public Long createEntry(ActivityType type, Long parentId, Integer status, Object... messageArgs) {
-      return createEntry(type.getTypeId(), parentId, status, messageArgs);
-   }
-
-   @Override
-   public Long createEntry(Long typeId, Integer status, Object... messageArgs) {
+   public Long createEntry(ActivityTypeToken type, Integer status, Object... messageArgs) {
       if (enabled) {
          Object[] threadRootEntry = activityMonitor.getThreadRootEntry();
-         // Should never have a null rootEntry, but still want to log message with sentinals
-         Long entryId = threadRootEntry == null ? LogEntry.SENTINAL : LogEntry.ENTRY_ID.from(threadRootEntry);
-         return createEntry(typeId, entryId, status, messageArgs);
+         // Should never have a null rootEntry, but still want to log message with sentinel
+         Long entryId = threadRootEntry == null ? LogEntry.SENTINEL : LogEntry.ENTRY_ID.from(threadRootEntry);
+         return createEntry(type, entryId, status, messageArgs);
       }
       return 0L;
    }
 
    @Override
-   public Long createEntry(Long typeId, Long parentId, Integer status, Object... messageArgs) {
+   public Long createEntry(ActivityTypeToken typeId, Long parentId, Integer status, Object... messageArgs) {
       if (enabled) {
          Object[] rootEntry = activityMonitor.getThreadRootEntry();
-         // Should never have a null rootEntry, but still want to log message with sentinals
-         Long accountId = rootEntry == null ? LogEntry.SENTINAL : LogEntry.ACCOUNT_ID.from(rootEntry);
-         Long serverId = rootEntry == null ? LogEntry.SENTINAL : LogEntry.SERVER_ID.from(rootEntry);
-         Long clientId = rootEntry == null ? LogEntry.SENTINAL : LogEntry.CLIENT_ID.from(rootEntry);
+         // Should never have a null rootEntry, but still want to log message with sentinels
+         Long accountId = rootEntry == null ? LogEntry.SENTINEL : LogEntry.ACCOUNT_ID.from(rootEntry);
+         Long serverId = rootEntry == null ? LogEntry.SENTINEL : LogEntry.SERVER_ID.from(rootEntry);
+         Long clientId = rootEntry == null ? LogEntry.SENTINEL : LogEntry.CLIENT_ID.from(rootEntry);
          Object[] entry =
             createEntry(parentId, typeId, accountId, serverId, clientId, computeDuration(), status, messageArgs);
          return LogEntry.ENTRY_ID.from(entry);
@@ -275,7 +276,7 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
    }
 
    @Override
-   public Long createEntry(Long accountId, Long clientId, Long typeId, Long parentId, Integer status, String... messageArgs) {
+   public Long createEntry(Long accountId, Long clientId, ActivityTypeToken typeId, Long parentId, Integer status, String... messageArgs) {
       Object[] rootEntry = activityMonitor.getThreadRootEntry();
       Long serverId = LogEntry.SERVER_ID.from(rootEntry);
       Object[] entry = createEntry(parentId, typeId, accountId, serverId, clientId, computeDuration(), status,
@@ -283,96 +284,63 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
       return LogEntry.ENTRY_ID.from(entry);
    }
 
-   private Object[] createEntry(Long parentId, Long typeId, Long accountId, Long serverId, Long clientId, Long duration, Integer status, Object... messageArgs) {
-      Object[] entry = EMPTY_ARRAY;
-      if (enabled) {
-         try {
-            Long entryId = Lib.generateUuid();
-            Long startTime = System.currentTimeMillis();
-            String fullMsg = null;
+   private Object[] createEntry(Long parentId, ActivityTypeToken type, Long accountId, Long serverId, Long clientId, Long duration, Integer status, Object... messageArgs) {
+      Object[] entry;
+      Long entryId = Lib.generateUuid();
+      Long startTime = System.currentTimeMillis();
 
-            String messageFormat = getTypeMessageFormat(typeId);
-            if (Strings.isValid(messageFormat)) {
-               fullMsg = String.format(messageFormat, messageArgs);
-            } else {
-               fullMsg = Collections.toString("\n", messageArgs);
-            }
+      String msg;
+      String fullMsg = null;
+      try {
+         String messageFormat = type.getMessageFormat();
+         if (Strings.isValid(messageFormat)) {
+            fullMsg = String.format(messageFormat, messageArgs);
+         } else {
+            fullMsg = Collections.toString("\n", messageArgs);
+         }
 
-            String msg = fullMsg.substring(0, Math.min(fullMsg.length(), JdbcConstants.JDBC__MAX_VARCHAR_LENGTH));
-            // this is the parent entry so it must be inserted first (because the entry writing is asynchronous
-            entry = new Object[] {
-               entryId,
-               parentId,
-               typeId,
+         msg = fullMsg.substring(0, Math.min(fullMsg.length(), JdbcConstants.JDBC__MAX_VARCHAR_LENGTH));
+      } catch (Throwable th) {
+         msg = th.toString();
+         logger.error(th, "Error ActivityLog.createEntry");
+      }
+
+      // this is the parent entry so it must be inserted first (because the entry writing is asynchronous
+      entry = new Object[] {entryId, parentId, type, accountId, serverId, clientId, startTime, duration, status, msg};
+      newEntities.put(entryId, entry);
+
+      if (fullMsg != null && fullMsg.length() > JdbcConstants.JDBC__MAX_VARCHAR_LENGTH) {
+         Long parentCursor = entryId;
+         for (int i = JdbcConstants.JDBC__MAX_VARCHAR_LENGTH; i < fullMsg.length(); i +=
+            JdbcConstants.JDBC__MAX_VARCHAR_LENGTH) {
+            Long continueEntryId = Lib.generateUuid();
+            Object[] continueEntry = new Object[] {
+               continueEntryId,
+               parentCursor,
+               CoreActivityTypes.MSG_CONTINUATION,
                accountId,
                serverId,
                clientId,
                startTime,
                duration,
                status,
-               msg};
-            newEntities.put(entryId, entry);
-
-            if (fullMsg.length() > JdbcConstants.JDBC__MAX_VARCHAR_LENGTH) {
-               Long parentCursor = entryId;
-               for (int i = JdbcConstants.JDBC__MAX_VARCHAR_LENGTH; i < fullMsg.length(); i +=
-                  JdbcConstants.JDBC__MAX_VARCHAR_LENGTH) {
-                  Long continueEntryId = Lib.generateUuid();
-                  Object[] continueEntry = new Object[] {
-                     continueEntryId,
-                     parentCursor,
-                     Activity.MSG_CONTINUATION.getTypeId(),
-                     accountId,
-                     serverId,
-                     clientId,
-                     startTime,
-                     duration,
-                     status,
-                     fullMsg.substring(i, Math.min(fullMsg.length(), i + JdbcConstants.JDBC__MAX_VARCHAR_LENGTH))};
-                  newEntities.put(continueEntryId, continueEntry);
-                  parentCursor = continueEntryId;
-               }
-            }
-            flush(false);
-         } catch (Throwable th) {
-            logger.error(th, "Error ActivityLog.createEntry");
+               fullMsg.substring(i, Math.min(fullMsg.length(), i + JdbcConstants.JDBC__MAX_VARCHAR_LENGTH))};
+            newEntities.put(continueEntryId, continueEntry);
+            parentCursor = continueEntryId;
          }
       }
+      flush(false);
+
       return entry;
    }
 
-   private class ActivityTypeMessageRetriever implements ActivityTypeDataHandler {
-
-      private final Long typeId;
-      private String messageFormat = null;
-
-      public ActivityTypeMessageRetriever(Long typeId) {
-         this.typeId = typeId;
-      }
-
-      @Override
-      public void onData(Long typeId, Long logLevel, String module, String messageFormat) {
-         this.messageFormat = messageFormat;
-      }
-
-      public String get() {
-         queryActivityType(typeId, this);
-         return messageFormat;
-      }
-
-   }
-
-   private String getTypeMessageFormat(Long typeId) {
-      return new ActivityTypeMessageRetriever(typeId).get();
-   }
-
    @Override
-   public Long createThrowableEntry(ActivityType type, Throwable throwable) {
+   public Long createThrowableEntry(ActivityTypeToken type, Throwable throwable) {
       Long entryId = -1L;
       if (enabled) {
          try {
             String message = captureStackTrace(throwable, exceptionLineCount);
-            entryId = createEntry(type.getTypeId(), ABNORMALLY_ENDED_STATUS, message);
+            entryId = createEntry(type, ABNORMALLY_ENDED_STATUS, message);
          } catch (Throwable th) {
             logger.error(th, "logging failed in ActivityLogImpl.createThrowableEntry");
          }
@@ -411,7 +379,7 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
    private Long computeDuration() {
       long timeOfUpdate = System.currentTimeMillis();
       Object[] rootEntry = activityMonitor.getThreadRootEntry();
-      return timeOfUpdate = rootEntry == null ? LogEntry.SENTINAL : timeOfUpdate - LogEntry.START_TIME.from(rootEntry);
+      return timeOfUpdate = rootEntry == null ? LogEntry.SENTINEL : timeOfUpdate - LogEntry.START_TIME.from(rootEntry);
    }
 
    /**
@@ -432,9 +400,6 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
    @Override
    public Void call() {
       if (enabled) {
-         if (!initialized.getAndSet(true)) {
-            initialize();
-         }
          if (!newEntities.isEmpty()) {
             try {
                storage.addEntries(new DrainingIterator<Object[]>(newEntities.values().iterator()));
@@ -469,28 +434,6 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
       }
    }
 
-   private void initialize() {
-      try {
-         final Map<Long, ActivityType> types = new HashMap<>(4);
-         for (Activity type : Activity.values()) {
-            types.put(type.getTypeId(), type);
-         }
-         storage.selectTypes(new ActivityTypeDataHandler() {
-
-            @Override
-            public void onData(Long typeId, Long logLevel, String module, String messageFormat) {
-               types.remove(typeId);
-            }
-         });
-         if (!types.isEmpty()) {
-            storage.addActivityTypes(types.values());
-         }
-      } catch (Throwable ex) {
-         this.initialized.set(false);
-         logger.error(ex, "Exception while initializing activity types");
-      }
-   }
-
    @Override
    public void completeEntry(Long entryId) {
       updateEntry(entryId, COMPLETE_STATUS);
@@ -511,35 +454,25 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
    }
 
    @Override
-   public Long createActivityThread(ActivityType type, Long accountId, Long serverId, Long clientId, Object... messageArgs) {
+   public Long createActivityThread(ActivityTypeToken type, Long accountId, Long serverId, Long clientId, Object... messageArgs) {
       return createActivityThread(ActivityConstants.ROOT_ENTRY_ID, type, accountId, serverId, clientId, messageArgs);
    }
 
    @Override
-   public Long createActivityThread(Long parentId, ActivityType type, Long accountId, Long serverId, Long clientId, Object... messageArgs) {
-      Object[] entry = createEntry(parentId, type.getTypeId(), accountId, serverId, clientId, 0L, 0, messageArgs);
+   public Long createActivityThread(Long parentId, ActivityTypeToken type, Long accountId, Long serverId, Long clientId, Object... messageArgs) {
+      Object[] entry = createEntry(parentId, type, accountId, serverId, clientId, 0L, 0, messageArgs);
       activityMonitor.addActivityThread(entry);
       return LogEntry.ENTRY_ID.from(entry);
    }
 
    @Override
-   public void createActivityTypes(ActivityType... types) {
-      storage.addActivityTypes(types);
-   }
-
-   @Override
-   public void queryActivityType(Long typeId, ActivityTypeDataHandler handler) {
-      storage.selectType(typeId, handler);
-   }
-
-   @Override
-   public boolean activityTypeExists(Long typeId) {
-      return storage.typeExists(typeId);
-   }
-
-   @Override
-   public void queryActivityTypes(ActivityTypeDataHandler handler) {
-      storage.selectTypes(handler);
+   public ActivityTypeToken getActivityType(ActivityTypeId typeId) {
+      ActivityTypeToken type = types.get(typeId);
+      if (type == null) {
+         type = storage.getActivityType(typeId);
+         types.put(type.getId(), type);
+      }
+      return type;
    }
 
    @Override
@@ -553,8 +486,13 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
    }
 
    @Override
-   public void unInitialize() {
-      this.initialized.set(false);
+   public ActivityTypeToken createIfAbsent(ActivityTypeToken token) {
+      ActivityTypeToken type = types.get(token);
+      if (type == null) {
+         type = storage.createIfAbsent(token);
+         types.put(type.getId(), type);
+      }
+      return type;
    }
 
    @Override

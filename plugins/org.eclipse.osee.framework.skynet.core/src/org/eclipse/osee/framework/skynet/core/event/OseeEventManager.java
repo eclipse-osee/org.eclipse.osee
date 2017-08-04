@@ -15,10 +15,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.osee.activity.api.Activity;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.CoreActivityTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -136,8 +136,8 @@ public final class OseeEventManager {
          if (accesstopicEvent != AccessTopicEvent.USER_AUTHENTICATED) {
             String message = String.format("USER_AUTHENTICATED [%s] Payload [%s]", UserManager.getUser().getUserId(),
                EventUtil.getEventJacksonMapper().writeValueAsString(payload));
-            ServiceUtil.getOseeClient().getActivityLogEndpoint().createEntry(
-               Activity.ACCESS_CONTROL_MODIFIED.getTypeId(), 0L, ActivityLog.COMPLETE_STATUS, message);
+            ServiceUtil.getOseeClient().getActivityLogEndpoint().createEntry(CoreActivityTypes.ACCESS_CONTROL_MODIFIED,
+               0L, ActivityLog.COMPLETE_STATUS, message);
          }
       } catch (Exception ex) {
          OseeLog.logf(OseeEventManager.class, Level.SEVERE, ex, "Error logging activity event [%s][%s]",

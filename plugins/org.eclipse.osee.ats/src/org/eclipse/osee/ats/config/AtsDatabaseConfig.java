@@ -16,13 +16,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.ws.rs.core.Response;
-import org.eclipse.osee.activity.api.ActivityType;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.util.AtsActivity;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.core.client.util.AtsGroup;
@@ -78,10 +76,6 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
 
       AtsGroup.AtsAdmin.getArtifact().persist(getClass().getSimpleName());
       AtsGroup.AtsTempAdmin.getArtifact().persist(getClass().getSimpleName());
-
-      ActivityType type = AtsActivity.ATSNAVIGATEITEM;
-      AtsClientService.get().getOseeClient().getActivityLogEndpoint().createActivityType(type.getTypeId(),
-         type.getLogLevel(), type.getModule(), type.getMessageFormat());
 
       createUserCreationDisabledConfig();
 

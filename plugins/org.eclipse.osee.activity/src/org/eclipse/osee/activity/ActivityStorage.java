@@ -10,31 +10,35 @@
  *******************************************************************************/
 package org.eclipse.osee.activity;
 
-import org.eclipse.osee.activity.api.ActivityLog.ActivityDataHandler;
-import org.eclipse.osee.activity.api.ActivityLog.ActivityTypeDataHandler;
-import org.eclipse.osee.activity.api.ActivityType;
+import org.eclipse.osee.activity.api.ActivityEntry;
+import org.eclipse.osee.activity.api.ActivityEntryId;
+import org.eclipse.osee.framework.core.data.ActivityTypeId;
+import org.eclipse.osee.framework.core.data.ActivityTypeToken;
 
 /**
  * @author Ryan D. Brooks
  */
 public interface ActivityStorage {
 
-   void selectEntry(Long entryId, ActivityDataHandler handler);
+   ActivityEntry getEntry(ActivityEntryId entryId);
 
    int addEntries(Iterable<Object[]> newEntries);
 
    int updateEntries(Iterable<Object[]> updatedEntries);
 
-   void addActivityTypes(ActivityType... types);
-
-   void addActivityTypes(Iterable<ActivityType> types);
-
-   void selectTypes(ActivityTypeDataHandler handler);
-
-   void selectType(Long typeId, ActivityTypeDataHandler handler);
-
-   boolean typeExists(Long typeId);
+   ActivityTypeToken getActivityType(ActivityTypeId typeId);
 
    void cleanEntries(int daysToKeep);
+
+   /**
+    * Stores the activity type if not already in the data store. If the type token has an invalid id, a new id is
+    * generated and included in the returned token
+    *
+    * @param type
+    * @return
+    */
+   ActivityTypeToken createIfAbsent(ActivityTypeToken type);
+
+   void createIfAbsent(Iterable<ActivityTypeToken> types);
 
 }

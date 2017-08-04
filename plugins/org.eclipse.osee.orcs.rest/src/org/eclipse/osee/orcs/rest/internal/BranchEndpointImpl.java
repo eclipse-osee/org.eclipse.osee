@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal;
 
+import static org.eclipse.osee.framework.core.data.CoreActivityTypes.BRANCH_OPERATION;
 import static org.eclipse.osee.framework.jdk.core.util.Compare.isDifferent;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asBranch;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asBranches;
@@ -29,7 +30,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
-import org.eclipse.osee.activity.api.Activity;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -251,7 +251,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       CompareResults data = new CompareResults();
       data.setChanges(changes);
       try {
-         activityLog.createEntry(Activity.BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
+         activityLog.createEntry(BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
             String.format("Branch Operation Compare Branches {sourceTx: %s, destTx: %s}", sourceTx.toString(),
                destinationTx.toString()));
       } catch (OseeCoreException ex) {
@@ -298,7 +298,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       URI uri = getBranchLocation(uriInfo, result);
 
       try {
-         activityLog.createEntry(Activity.BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
+         activityLog.createEntry(BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
             String.format(
                "Branch Operation Create Branch {branchUUID: %s, branchName: %s accountId: %s serverId: %s clientId: %s}",
                createData.getBranch(), data.getBranchName(), RestUtil.getAccountId(httpHeaders),
@@ -350,7 +350,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       UriInfo uriInfo = getUriInfo();
       URI location = getTxLocation(uriInfo, tx);
       try {
-         activityLog.createEntry(Activity.BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
+         activityLog.createEntry(BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
             String.format(
                "Branch Operation Commit Branch {branchId: %s srcBranch: %s destBranch: %s accountId: %s serverId: %s clientId: %s}",
                branch, srcBranch, destBranch, RestUtil.getAccountId(httpHeaders), RestUtil.getServerId(httpHeaders),
@@ -378,7 +378,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
          executeCallable(op);
          modified = true;
          try {
-            activityLog.createEntry(Activity.BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
+            activityLog.createEntry(BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
                String.format("Branch Operation Archive Branch {branchId: %s accountId: %s serverId: %s clientId: %s}",
                   branchId, RestUtil.getAccountId(httpHeaders), RestUtil.getServerId(httpHeaders),
                   RestUtil.getClientId(httpHeaders)));
@@ -430,7 +430,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
          switch (deleteResult) {
             case IResourceManager.OK:
                try {
-                  activityLog.createEntry(Activity.BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
+                  activityLog.createEntry(BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
                      String.format("Branch Operation Delete Branch Exachange Resource {resource: %s, locator %s}", path,
                         locator.getLocation()));
                } catch (OseeCoreException ex) {
@@ -465,7 +465,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       UriInfo uriInfo = getUriInfo();
       URI location = getExchangeExportUri(uriInfo, exportURI, options.isCompress());
       try {
-         activityLog.createEntry(Activity.BRANCH_OPERATION, ActivityLog.INITIAL_STATUS, String.format(
+         activityLog.createEntry(BRANCH_OPERATION, ActivityLog.INITIAL_STATUS, String.format(
             "Branch Operation Export Branches {branchUUID(s): %s accountId: %s serverId: %s, clientId: %s}", branches,
             RestUtil.getAccountId(httpHeaders), RestUtil.getServerId(httpHeaders), RestUtil.getClientId(httpHeaders)));
       } catch (OseeCoreException ex) {
@@ -508,7 +508,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       }
 
       try {
-         activityLog.createEntry(Activity.BRANCH_OPERATION, ActivityLog.INITIAL_STATUS, String.format(
+         activityLog.createEntry(BRANCH_OPERATION, ActivityLog.INITIAL_STATUS, String.format(
             "Branch Operation Import Branches {branchUUID(s): %s accountId: %s serverId: %s clientId: %s}", branches,
             RestUtil.getAccountId(httpHeaders), RestUtil.getServerId(httpHeaders), RestUtil.getClientId(httpHeaders)));
       } catch (OseeCoreException ex) {
@@ -574,7 +574,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
          executeCallable(op);
          modified = true;
          try {
-            activityLog.createEntry(Activity.BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
+            activityLog.createEntry(BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
                String.format(
                   "Branch Operation Set Branch Name {branchId: %s prevName: %s newName: %s accountId: %s serverId: %s clientId: %s}",
                   branchId, branch.getName(), newName, RestUtil.getAccountId(httpHeaders),
@@ -592,7 +592,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       boolean modified = false;
       if (isDifferent(branch.getBranchType(), newType)) {
          try {
-            activityLog.createEntry(Activity.BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
+            activityLog.createEntry(BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
                String.format(
                   "Branch Operation Set Branch Type {branchUUID: %s prevType: %s newType: %s accountId: %s serverId: %s clientId: %s}",
                   branchId, branch.getBranchType(), newType, RestUtil.getAccountId(httpHeaders),
@@ -617,7 +617,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
          modified = true;
 
          try {
-            activityLog.createEntry(Activity.BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
+            activityLog.createEntry(BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
                String.format(
                   "Branch Operation Branch State Changed {branchId: %s prevState: %s newState: %s accountId: %s serverId: %s clientId: %s}",
                   branchId, branch.getBranchType(), newState, RestUtil.getAccountId(httpHeaders),
@@ -635,7 +635,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       boolean modified = false;
       if (isDifferent(branch.getAssociatedArtifact(), artifact)) {
          try {
-            activityLog.createEntry(Activity.BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
+            activityLog.createEntry(BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
                String.format(
                   "Branch Operation Associate Branch to Artifact {branchId: %s prevArt: %s newArt: %s accountId: %s serverId: %s clientId: %s}",
                   branchId, branch.getAssociatedArtifact(), artifact, RestUtil.getAccountId(httpHeaders),
@@ -656,7 +656,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       boolean modified = false;
       if (Compare.isDifferent(tx.getComment(), comment)) {
          try {
-            activityLog.createEntry(Activity.BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
+            activityLog.createEntry(BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
                String.format(
                   "Branch Operation Set Tx Comment {branchId: %s prevComment: %s newComment: %s accountId: %s serverId: %s clientId: %s}",
                   branch, tx.getComment(), comment, RestUtil.getAccountId(httpHeaders),
@@ -682,7 +682,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       }
 
       try {
-         activityLog.createEntry(Activity.BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
+         activityLog.createEntry(BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
             String.format("Branch Operation Purge Branch {branchId: %s, accountId: %s serverId: %s clientId: %s}",
                branchId, RestUtil.getAccountId(httpHeaders), RestUtil.getServerId(httpHeaders),
                RestUtil.getClientId(httpHeaders)));
@@ -703,7 +703,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
          executeCallable(op);
          modified = true;
          try {
-            activityLog.createEntry(Activity.BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
+            activityLog.createEntry(BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
                String.format("Branch Operation Unarchive Branch {branchId: %s accountId: %s serverId: %s clientId: %s}",
                   branchId, RestUtil.getAccountId(httpHeaders), RestUtil.getServerId(httpHeaders),
                   RestUtil.getClientId(httpHeaders)));
@@ -728,7 +728,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
          executeCallable(op);
          modified = true;
          try {
-            activityLog.createEntry(Activity.BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
+            activityLog.createEntry(BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
                String.format(
                   "Branch Operation Unassociate Branch {branchId: %s, accountId: %s serverId: %s clientId: %s}",
                   branchId, RestUtil.getAccountId(httpHeaders), RestUtil.getServerId(httpHeaders),
@@ -754,7 +754,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
             modified = true;
 
             try {
-               activityLog.createEntry(Activity.BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
+               activityLog.createEntry(BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
                   String.format(
                      "Branch Operation Purge Txs {branchId: %s, txsToDelete: %s accountId: %s serverId: %s clientId: %s}",
                      branch, txIds, RestUtil.getAccountId(httpHeaders), RestUtil.getServerId(httpHeaders),
@@ -834,7 +834,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
          comment += String.format(" accountId: %s serverId: %s clientId: %s", RestUtil.getAccountId(httpHeaders),
             RestUtil.getServerId(httpHeaders), RestUtil.getClientId(httpHeaders));
 
-         activityLog.createEntry(Activity.BRANCH_OPERATION, ActivityLog.INITIAL_STATUS, comment);
+         activityLog.createEntry(BRANCH_OPERATION, ActivityLog.INITIAL_STATUS, comment);
       } catch (OseeCoreException ex) {
          OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
       }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.activity.api;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -19,6 +20,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.eclipse.osee.framework.core.data.ActivityTypeId;
+import org.eclipse.osee.framework.core.data.ActivityTypeToken;
 
 /**
  * @author Ryan D. Brooks
@@ -35,34 +38,12 @@ public interface ActivityLogEndpoint {
    @GET
    @Path("/entry/{entry-id}")
    @Produces({MediaType.APPLICATION_JSON})
-   ActivityEntry getEntry(@PathParam("entry-id") Long entryId);
-
-   /**
-    * Get all activity types
-    *
-    * @param typeId activity typeId id
-    * @return activityType
-    */
-   @GET
-   @Path("/type")
-   @Produces({MediaType.APPLICATION_JSON})
-   DefaultActivityType[] getActivityTypes();
-
-   /**
-    * Get activity type data
-    *
-    * @param typeId activity typeId id
-    * @return activityType
-    */
-   @GET
-   @Path("/type/{type-id}")
-   @Produces({MediaType.APPLICATION_JSON})
-   DefaultActivityType getActivityType(@PathParam("type-id") Long typeId);
+   ActivityEntry getEntry(@PathParam("entry-id") ActivityEntryId entryId);
 
    /**
     * Create a new activity entry
     *
-    * @param typeId activity type id
+    * @param type activity type id
     * @param parentId of the parent activity
     * @param status of the activity
     * @param message to log for the activity
@@ -71,34 +52,17 @@ public interface ActivityLogEndpoint {
    @POST
    @Path("/entry")
    @Produces({MediaType.APPLICATION_JSON})
-   ActivityEntryId createEntry(@QueryParam("typeId") Long typeId, @QueryParam("parentId") Long parentId, @QueryParam("status") Integer status, @QueryParam("message") String message);
+   ActivityEntryId createEntry(@QueryParam("type") ActivityTypeId type, @QueryParam("parentId") Long parentId, @QueryParam("status") Integer status, @QueryParam("message") String message);
 
    /**
-    * Create a new activity type
-    *
-    * @param typeId activity type id to use
-    * @param logLevel of activity type
-    * @param module this activity comes from
-    * @param messageFormat for activity type
-    * @return activityType
-    */
-   @POST
-   @Path("/type/{type-id}")
-   @Produces({MediaType.APPLICATION_JSON})
-   DefaultActivityType createActivityType(@PathParam("type-id") Long typeId, @QueryParam("level") Long logLevel, @QueryParam("module") String module, @QueryParam("messageFormat") String messageFormat);
-
-   /**
-    * Create a new activity type (will generate a new type id)
-    *
-    * @param logLevel of activity type
-    * @param module this activity comes from
-    * @param messageFormat for activity type
-    * @return activityType
+    * Create a new activity type with the given token fields. If id is not valid then a new one will be generated and
+    * used.
     */
    @POST
    @Path("/type")
    @Produces({MediaType.APPLICATION_JSON})
-   DefaultActivityType createActivityType(@QueryParam("level") Long logLevel, @QueryParam("module") String module, @QueryParam("messageFormat") String messageFormat);
+   @Consumes({MediaType.APPLICATION_JSON})
+   ActivityTypeToken createIfAbsent(ActivityTypeToken activityType);
 
    /**
     * Modify an entries status

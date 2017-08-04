@@ -10,36 +10,30 @@
  *******************************************************************************/
 package org.eclipse.osee.activity.api;
 
+import org.eclipse.osee.framework.core.data.ActivityTypeId;
+import org.eclipse.osee.framework.core.data.ActivityTypeToken;
+
 /**
  * @author Ryan D. Brooks
  */
 public interface ActivityLog {
-
-   public static interface ActivityDataHandler {
-      void onData(Long entryId, Long parentId, Long typeId, Long accountId, Long serverId, Long clientId, Long startTime, Long duration, Integer status, String messageArgs);
-   }
-
-   public static interface ActivityTypeDataHandler {
-      void onData(Long typeId, Long logLevel, String module, String messageFormat);
-   }
-
    Integer INITIAL_STATUS = 100;
    Integer COMPLETE_STATUS = 100;
    Integer ABNORMALLY_ENDED_STATUS = 500;
 
-   void queryEntry(Long entryId, ActivityDataHandler handler);
+   ActivityEntry getEntry(ActivityEntryId entryId);
 
-   Long createEntry(Long typeId, Integer status, Object... messageArgs);
+   Long createEntry(ActivityTypeToken type, Integer status, Object... messageArgs);
 
-   Long createEntry(Long typeId, Long parentId, Integer status, Object... messageArgs);
+   Long createUpdateableEntry(ActivityTypeToken type, Object... messageArgs);
 
-   Long createUpdateableEntry(ActivityType type, Object... messageArgs);
+   Long createEntry(ActivityTypeToken type, Object... messageArgs);
 
-   Long createEntry(ActivityType type, Object... messageArgs);
+   Long createEntry(ActivityTypeToken type, Long parentId, Integer status, Object... messageArgs);
 
-   Long createEntry(ActivityType type, Long parentId, Integer status, Object... messageArgs);
+   Long createEntry(Long accountId, Long clientId, ActivityTypeToken typeId, Long parentId, Integer status, String... messageArgs);
 
-   Long createThrowableEntry(ActivityType type, Throwable throwable);
+   Long createThrowableEntry(ActivityTypeToken type, Throwable throwable);
 
    boolean updateEntry(Long entryId, Integer status);
 
@@ -55,28 +49,17 @@ public interface ActivityLog {
 
    void endEntryAbnormally(Long entryId, Integer status);
 
-   Long createActivityThread(ActivityType type, Long accountId, Long serverId, Long clientId, Object... messageArgs);
+   Long createActivityThread(ActivityTypeToken type, Long accountId, Long serverId, Long clientId, Object... messageArgs);
 
-   Long createActivityThread(Long parentId, ActivityType type, Long accountId, Long serverId, Long clientId, Object... messageArgs);
+   Long createActivityThread(Long parentId, ActivityTypeToken type, Long accountId, Long serverId, Long clientId, Object... messageArgs);
 
-   void createActivityTypes(ActivityType... types);
-
-   void queryActivityTypes(ActivityTypeDataHandler handler);
-
-   void queryActivityType(Long typeId, ActivityTypeDataHandler handler);
-
-   boolean activityTypeExists(Long typeId);
-
-   Long createEntry(Long accountId, Long clientId, Long typeId, Long parentId, Integer status, String... messageArgs);
+   ActivityTypeToken getActivityType(ActivityTypeId typeId);
 
    boolean isEnabled();
 
    void setEnabled(boolean enabled);
 
-   /**
-    * Sets the ActivityLog as un-initialized. Next call to create will re-initialize
-    */
-   void unInitialize();
+   ActivityTypeToken createIfAbsent(ActivityTypeToken type);
 
    /**
     * Returns info for up to 15 threads ordered by most cpu time during the sample window </br>

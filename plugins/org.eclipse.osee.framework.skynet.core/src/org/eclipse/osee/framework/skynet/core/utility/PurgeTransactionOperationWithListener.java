@@ -16,8 +16,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import org.eclipse.osee.activity.api.Activity;
 import org.eclipse.osee.activity.api.ActivityLog;
+import org.eclipse.osee.framework.core.data.CoreActivityTypes;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -69,8 +69,8 @@ public class PurgeTransactionOperationWithListener {
             try {
                String message = String.format("Purge Transaction [%s] - Guid to Id Map [%s]",
                   transEventAndIds.getFirst().toString(), transEventAndIds.getSecond().toString());
-               ServiceUtil.getOseeClient().getActivityLogEndpoint().createEntry(Activity.PURGE_TRANSACTION.getTypeId(),
-                  0L, ActivityLog.COMPLETE_STATUS, message);
+               ServiceUtil.getOseeClient().getActivityLogEndpoint().createEntry(CoreActivityTypes.PURGE_TRANSACTION, 0L,
+                  ActivityLog.COMPLETE_STATUS, message);
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, "Error activity logging purge transaction", ex);
             }

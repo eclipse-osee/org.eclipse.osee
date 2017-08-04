@@ -10,13 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.activity.internal;
 
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.function.Consumer;
+import java.util.logging.Level;
 import org.eclipse.osee.activity.ActivityStorage;
-import org.eclipse.osee.activity.api.ActivityLog.ActivityDataHandler;
-import org.eclipse.osee.activity.api.ActivityLog.ActivityTypeDataHandler;
-import org.eclipse.osee.activity.api.ActivityType;
+import org.eclipse.osee.activity.api.ActivityEntry;
+import org.eclipse.osee.activity.api.ActivityEntryId;
+import org.eclipse.osee.framework.core.data.ActivityTypeId;
+import org.eclipse.osee.framework.core.data.ActivityTypeToken;
+import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
+import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -33,120 +37,67 @@ public class DatabaseActivityStorage implements ActivityStorage {
 
    private static final String UPDATE_ENTRIES = "UPDATE osee_activity set status = ?, duration = ? where entry_id = ?";
 
-   private static final String SELECT_ALL_TYPES = "SELECT * FROM osee_activity_type";
-
    private static final String SELECT_TYPE = "SELECT * FROM osee_activity_type WHERE type_id = ?";
 
    private static final String INSERT_TYPE =
-      "INSERT INTO osee_activity_type (type_id, log_level, module, msg_format) VALUES (?,?,?,?)";
-
-   private static final String COUNT_TYPE = "SELECT count(1) FROM osee_activity_type WHERE type_id = ?";
+      "INSERT INTO osee_activity_type (type_id, log_level, module, msg_format) SELECT (?,?,?,?) where NOT EXISTS (SELECT 1 from osee_activity_type where type_id = ?)";
 
    private static final String DELETE_ENTRIES = "DELETE FROM osee_activity WHERE start_time <= ?";
 
-   private static class ActivityEntryProcessor implements Consumer<JdbcStatement> {
-
-      private final ActivityDataHandler handler;
-
-      public ActivityEntryProcessor(ActivityDataHandler handler) {
-         super();
-         this.handler = handler;
-      }
-
-      @Override
-      public void accept(JdbcStatement chStmt) {
-         Long entryId = chStmt.getLong("entry_id");
-         Long parentId = chStmt.getLong("parent_id");
-         Long typeId = chStmt.getLong("type_id");
-         Long accountId = chStmt.getLong("account_id");
-         Long serverId = chStmt.getLong("server_id");
-         Long clientId = chStmt.getLong("client_id");
-         Long startTime = chStmt.getLong("start_time");
-         Long duration = chStmt.getLong("duration");
-         Integer status = chStmt.getInt("status");
-         String messageArgs = chStmt.getString("msg_args");
-         handler.onData(entryId, parentId, typeId, accountId, serverId, clientId, startTime, duration, status,
-            messageArgs);
-      }
-   }
-
-   private static class ActivityTypeProcessor implements Consumer<JdbcStatement> {
-
-      private final ActivityTypeDataHandler handler;
-
-      public ActivityTypeProcessor(ActivityTypeDataHandler handler) {
-         super();
-         this.handler = handler;
-      }
-
-      @Override
-      public void accept(JdbcStatement chStmt) {
-         Long typeId = chStmt.getLong("type_id");
-         Long logLevel = chStmt.getLong("log_level");
-         String module = chStmt.getString("module");
-         String messageFormat = chStmt.getString("msg_format");
-         handler.onData(typeId, logLevel, module, messageFormat);
-      }
-   }
-
-   private JdbcService jdbcService;
+   private JdbcClient jdbcClient;
 
    public void setJdbcService(JdbcService jdbcService) {
-      this.jdbcService = jdbcService;
-   }
-
-   private JdbcClient getJdbcClient() {
-      return jdbcService.getClient();
+      this.jdbcClient = jdbcService.getClient();
    }
 
    @Override
-   public void selectEntry(Long entryId, final ActivityDataHandler handler) {
-      getJdbcClient().runQuery(new ActivityEntryProcessor(handler), SELECT_ENTRY, entryId);
+   public ActivityEntry getEntry(ActivityEntryId entryId) {
+      final ActivityEntry entry = new ActivityEntry(entryId.getId());
+      final MutableBoolean found = new MutableBoolean(false);
+
+      Consumer<JdbcStatement> consumer = stmt -> {
+         entry.setAccountId(stmt.getLong("account_id"));
+         entry.setClientId(stmt.getLong("client_id"));
+         entry.setDuration(stmt.getLong("duration"));
+         entry.setMessageArgs(stmt.getString("msg_args"));
+         entry.setParentId(stmt.getLong("parent_id"));
+         entry.setServerId(stmt.getLong("server_id"));
+         entry.setStartTime(stmt.getLong("start_time"));
+         entry.setStatus(stmt.getInt("status"));
+         entry.setTypeId(stmt.getLong("type_id"));
+         found.setValue(true);
+      };
+
+      jdbcClient.runQuery(consumer, SELECT_ENTRY, entryId);
+      if (!found.getValue()) {
+         throw new OseeNotFoundException("Activity Log entry [%s] not found", entryId.getIdString());
+      }
+      return entry;
    }
 
    @Override
    public int addEntries(Iterable<Object[]> newEntries) {
-      return getJdbcClient().runBatchUpdate(INSERT_ENTRIES, newEntries);
+      return jdbcClient.runBatchUpdate(INSERT_ENTRIES, newEntries);
    }
 
    @Override
    public int updateEntries(Iterable<Object[]> updatedEntries) {
-      return getJdbcClient().runBatchUpdate(UPDATE_ENTRIES, updatedEntries);
-   }
-
-   private void addLogType(ActivityType type) {
-      Long typeId = type.getTypeId();
-      Long logLevel = type.getLogLevel();
-      String module = type.getModule();
-      String messageFormat = type.getMessageFormat();
-      getJdbcClient().runPreparedUpdate(INSERT_TYPE, typeId, logLevel, module, messageFormat);
+      return jdbcClient.runBatchUpdate(UPDATE_ENTRIES, updatedEntries);
    }
 
    @Override
-   public void addActivityTypes(ActivityType... types) {
-      addActivityTypes(Arrays.asList(types));
-   }
+   public ActivityTypeToken getActivityType(ActivityTypeId typeId) {
+      ActivityTypeToken[] token = new ActivityTypeToken[1];
+      Consumer<JdbcStatement> consumer = stmt -> {
+         token[0] = ActivityTypeToken.valueOf(stmt.getLong("type_id"), Level.parse(stmt.getString("log_level")),
+            stmt.getString("module"), stmt.getString("msg_format"));
+      };
 
-   @Override
-   public void addActivityTypes(Iterable<ActivityType> types) {
-      for (ActivityType type : types) {
-         addLogType(type);
+      jdbcClient.runQuery(consumer, SELECT_TYPE, typeId);
+      if (token[0] == null) {
+         throw new OseeNotFoundException("Activity type [%s] not found", typeId.getIdString());
       }
-   }
-
-   @Override
-   public void selectTypes(final ActivityTypeDataHandler handler) {
-      getJdbcClient().runQuery(new ActivityTypeProcessor(handler), SELECT_ALL_TYPES);
-   }
-
-   @Override
-   public void selectType(Long typeId, final ActivityTypeDataHandler handler) {
-      getJdbcClient().runQuery(new ActivityTypeProcessor(handler), SELECT_TYPE, typeId);
-   }
-
-   @Override
-   public boolean typeExists(Long typeId) {
-      return getJdbcClient().fetch(-1L, COUNT_TYPE, typeId) > 0;
+      return token[0];
    }
 
    @Override
@@ -156,7 +107,23 @@ public class DatabaseActivityStorage implements ActivityStorage {
          daysToKeep = -daysToKeep;
       }
       cal.add(Calendar.DATE, daysToKeep);
-      getJdbcClient().runPreparedUpdate(DELETE_ENTRIES, cal.getTimeInMillis());
+      jdbcClient.runPreparedUpdate(DELETE_ENTRIES, cal.getTimeInMillis());
    }
 
+   @Override
+   public ActivityTypeToken createIfAbsent(ActivityTypeToken type) {
+      if (type.isInvalid()) {
+         type = ActivityTypeToken.valueOf(Lib.generateUuid(), type.getLogLevel(), type.getModule(),
+            type.getMessageFormat());
+      }
+      jdbcClient.runPreparedUpdate(INSERT_TYPE, type, type.getLogLevel(), type.getModule(), type.getMessageFormat());
+      return type;
+   }
+
+   @Override
+   public void createIfAbsent(Iterable<ActivityTypeToken> types) {
+      for (ActivityTypeToken type : types) {
+         createIfAbsent(type);
+      }
+   }
 }
