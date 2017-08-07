@@ -14,6 +14,7 @@ package org.eclipse.osee.define.report.api;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.enums.PresentationType;
 
 /**
  * @author Morgan E. Cook
@@ -29,6 +30,8 @@ public class WordTemplateContentData {
    private String sessionId;
    private String oseeLink;
    private ArtifactId viewId;
+   private PresentationType presentationType;
+   private String permanentLinkUrl;
 
    public Long getArtId() {
       return artId;
@@ -100,5 +103,21 @@ public class WordTemplateContentData {
 
    public void setViewId(ArtifactId viewId) {
       this.viewId = viewId;
+   }
+
+   public PresentationType getPresentationType() {
+      return presentationType;
+   }
+
+   public void setPresentationType(PresentationType presentationType) {
+      this.presentationType = presentationType;
+   }
+
+   public String getPermanentLinkUrl() {
+      return permanentLinkUrl;
+   }
+
+   public void setPermanentLinkUrl(String permanentLinkUrl) {
+      this.permanentLinkUrl = permanentLinkUrl;
    }
 }

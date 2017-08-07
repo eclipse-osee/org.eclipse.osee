@@ -77,9 +77,8 @@ public class WordTemplateContentRendererHandler {
             data = WordUtilities.reassignBinDataID(data);
 
             LinkType link = wtcData.getLinkType() != null ? LinkType.valueOf(wtcData.getLinkType()) : null;
-
             data = WordMlLinkHandler.link(orcsApi.getQueryFactory(), link, artifact, data, wtcData.getTxId(),
-               wtcData.getSessionId(), wtcData.getOseeLink(), unknownGuids);
+               wtcData.getSessionId(), unknownGuids, wtcData.getPresentationType(), wtcData.getPermanentLinkUrl());
             data = WordUtilities.reassignBookMarkID(data);
 
             // remove any existing footers and replace with the current one

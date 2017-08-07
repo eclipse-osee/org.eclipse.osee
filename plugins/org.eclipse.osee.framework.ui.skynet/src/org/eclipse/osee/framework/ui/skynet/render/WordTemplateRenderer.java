@@ -173,8 +173,6 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
             txId = TransactionId.SENTINEL;
          }
 
-         String oseeLink = ArtifactURL.getOpenInOseeLink(artifact, presentationType).toString();
-
          WordTemplateContentData wtcData = new WordTemplateContentData();
          wtcData.setArtId(artifact.getUuid());
          wtcData.setBranch(artifact.getBranch());
@@ -183,9 +181,10 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          wtcData.setLinkType(linkType != null ? linkType.toString() : null);
          wtcData.setTxId(txId);
          wtcData.setSessionId(ClientSessionManager.getSessionId());
-         wtcData.setOseeLink(oseeLink);
+         wtcData.setPresentationType(presentationType);
          ArtifactId view = (ArtifactId) getOption(IRenderer.VIEW_ID);
          wtcData.setViewId(view == null ? ArtifactId.SENTINEL : view);
+         wtcData.setPermanentLinkUrl(ArtifactURL.getSelectedPermanenrLinkUrl());
 
          Pair<String, Set<String>> content = null;
          try {

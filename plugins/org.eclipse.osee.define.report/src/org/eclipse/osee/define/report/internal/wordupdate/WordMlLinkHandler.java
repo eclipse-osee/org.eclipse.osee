@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -107,7 +108,7 @@ public class WordMlLinkHandler {
       HashCollection<String, MatchRange> matchMap = parseOseeWordMLLinks(content);
       if (!matchMap.isEmpty()) {
          modified = modifiedContent(queryFactory, linkType, source, content, matchMap, true, TransactionId.SENTINEL,
-            null, null, null);
+            null, null, null, null);
       }
       return modified;
    }
@@ -118,7 +119,7 @@ public class WordMlLinkHandler {
     * @param content input
     * @return processed input
     */
-   public static String link(QueryFactory queryFactory, LinkType destLinkType, ArtifactReadable source, String content, TransactionId txId, String sessionId, String oseeLink, Set<String> unknownGuids) throws OseeCoreException {
+   public static String link(QueryFactory queryFactory, LinkType destLinkType, ArtifactReadable source, String content, TransactionId txId, String sessionId, Set<String> unknownGuids, PresentationType presentationType, String permanentUrl) throws OseeCoreException {
       LinkType linkType = checkLinkType(destLinkType);
       String modified = content;
 
@@ -136,8 +137,8 @@ public class WordMlLinkHandler {
       OSEE_LINK_PATTERN.reset();
 
       if (!matchMap.isEmpty()) {
-         modified = modifiedContent(queryFactory, linkType, source, content, matchMap, false, txId, sessionId, oseeLink,
-            unknownGuids);
+         modified = modifiedContent(queryFactory, linkType, source, content, matchMap, false, txId, sessionId,
+            unknownGuids, presentationType, permanentUrl);
       }
 
       if (linkType != LinkType.OSEE_SERVER_LINK) {
@@ -208,7 +209,7 @@ public class WordMlLinkHandler {
       return Collections.setComplement(guidsFromLinks, artGuids);
    }
 
-   private static String modifiedContent(QueryFactory queryFactory, LinkType destLinkType, ArtifactReadable source, String original, HashCollection<String, MatchRange> matchMap, boolean isUnliking, TransactionId txId, String sessionId, String oseeLink, Set<String> unknown) throws OseeCoreException {
+   private static String modifiedContent(QueryFactory queryFactory, LinkType destLinkType, ArtifactReadable source, String original, HashCollection<String, MatchRange> matchMap, boolean isUnliking, TransactionId txId, String sessionId, Set<String> unknown, PresentationType presentationType, String permanentUrl) throws OseeCoreException {
       BranchId branch = source.getBranch();
       ChangeSet changeSet = new ChangeSet(original);
       List<ArtifactReadable> artifactsFromSearch = null;
@@ -257,7 +258,8 @@ public class WordMlLinkHandler {
             if (isUnliking) {
                replaceWith = linkBuilder.getOseeLinkMarker(artifact.getGuid());
             } else {
-               replaceWith = linkBuilder.getWordMlLink(destLinkType, artifact, txId, sessionId, oseeLink);
+               replaceWith =
+                  linkBuilder.getWordMlLink(destLinkType, artifact, txId, sessionId, presentationType, permanentUrl);
             }
             changeSet.replace(match.start(), match.end(), replaceWith);
          }

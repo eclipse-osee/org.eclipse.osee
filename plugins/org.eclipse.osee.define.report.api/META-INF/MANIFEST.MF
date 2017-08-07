@@ -9,6 +9,7 @@ Export-Package: org.eclipse.osee.define.report.api
 Import-Package: javax.ws.rs,
  javax.ws.rs.core,
  org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.json

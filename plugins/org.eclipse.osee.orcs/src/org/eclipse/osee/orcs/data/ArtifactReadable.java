@@ -106,4 +106,6 @@ public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsRea
 
    Collection<Long> getRelatedIds(RelationTypeSide relationTypeSide);
 
+   boolean isHistorical();
+
 }

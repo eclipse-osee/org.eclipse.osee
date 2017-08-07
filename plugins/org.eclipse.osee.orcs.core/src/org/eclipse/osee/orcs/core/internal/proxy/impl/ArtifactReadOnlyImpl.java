@@ -347,4 +347,9 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
       return childIds;
    }
 
+   @Override
+   public boolean isHistorical() {
+      return getProxiedObject().getOrcsData().getVersion().isHistorical();
+   }
+
 }
