@@ -75,8 +75,7 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
       parameters.put(DataStoreAdmin.SCHEMA_USER_FILE_SPECIFIED_NAMESPACE,
          Boolean.toString(options.isUseFileSpecifiedSchemas()));
 
-      Callable<OrcsMetaData> callable = adminOps.createDatastore(parameters);
-      OrcsMetaData metaData = executeCallable(callable);
+      OrcsMetaData metaData = adminOps.createDatastore(parameters);
 
       activityLog.setEnabled(true);
       activityLog.unInitialize();

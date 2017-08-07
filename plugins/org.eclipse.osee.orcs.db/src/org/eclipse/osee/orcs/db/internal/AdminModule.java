@@ -11,8 +11,16 @@
 package org.eclipse.osee.orcs.db.internal;
 
 import com.google.common.base.Supplier;
+import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -22,11 +30,12 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.DataStoreAdmin;
+import org.eclipse.osee.orcs.core.ds.DataStoreConstants;
 import org.eclipse.osee.orcs.core.ds.DataStoreInfo;
 import org.eclipse.osee.orcs.core.ds.OrcsTypesDataStore;
 import org.eclipse.osee.orcs.db.internal.callable.FetchDatastoreInfoCallable;
-import org.eclipse.osee.orcs.db.internal.callable.InitializeDatastoreCallable;
 import org.eclipse.osee.orcs.db.internal.callable.MigrateDatastoreCallable;
+import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
 import org.eclipse.osee.orcs.db.internal.util.DynamicSchemaResourceProvider;
 
 /**
@@ -52,7 +61,7 @@ public class AdminModule {
    public DataStoreAdmin createDataStoreAdmin() {
       return new DataStoreAdmin() {
          @Override
-         public Callable<DataStoreInfo> createDataStore(OrcsSession session, Map<String, String> parameters) {
+         public DataStoreInfo createDataStore(OrcsSession session, Map<String, String> parameters) {
             getOption(parameters, DataStoreAdmin.SCHEMA_TABLE_DATA_NAMESPACE, "");
             getOption(parameters, DataStoreAdmin.SCHEMA_INDEX_DATA_NAMESPACE, "");
             getOption(parameters, DataStoreAdmin.SCHEMA_USER_FILE_SPECIFIED_NAMESPACE, false);
@@ -60,8 +69,35 @@ public class AdminModule {
             Supplier<Iterable<JdbcMigrationResource>> schemaProvider = new DynamicSchemaResourceProvider(logger);
 
             JdbcMigrationOptions options = new JdbcMigrationOptions(true, true);
-            return new InitializeDatastoreCallable(session, logger, jdbcClient, identityService, preferences,
-               schemaProvider, options);
+            Conditions.checkExpressionFailOnTrue(jdbcClient.getConfig().isProduction(),
+               "Error - attempting to initialize a production datastore.");
+
+            jdbcClient.migrate(options, schemaProvider.get());
+
+            String attributeDataPath = ResourceConstants.getAttributeDataPath(preferences);
+            logger.info("Deleting application server binary data [%s]...", attributeDataPath);
+            Lib.deleteDir(new File(attributeDataPath));
+
+            preferences.putValue(DataStoreConstants.DATASTORE_ID_KEY, GUID.create());
+
+            addDefaultPermissions();
+
+            identityService.invalidateIds();
+
+            try {
+               return new FetchDatastoreInfoCallable(logger, session, jdbcClient, schemaProvider, preferences).call();
+            } catch (Exception ex) {
+               throw OseeCoreException.wrap(ex);
+            }
+         }
+
+         private void addDefaultPermissions() throws OseeCoreException {
+            List<Object[]> data = new LinkedList<>();
+            for (PermissionEnum permission : PermissionEnum.values()) {
+               data.add(new Object[] {permission.getPermId(), permission.getName()});
+            }
+            jdbcClient.runBatchUpdate("INSERT INTO OSEE_PERMISSION (PERMISSION_ID, PERMISSION_NAME) VALUES (?,?)",
+               data);
          }
 
          @Override

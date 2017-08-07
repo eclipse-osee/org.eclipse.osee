@@ -20,7 +20,7 @@ public interface OrcsAdmin {
 
    Callable<OrcsMetaData> createFetchOrcsMetaData();
 
-   Callable<OrcsMetaData> createDatastore(Map<String, String> parameters);
+   OrcsMetaData createDatastore(Map<String, String> parameters);
 
    Callable<OrcsMetaData> migrateDatastore();
 
