@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal;
 
+import com.google.common.base.Supplier;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -27,7 +28,6 @@ import org.eclipse.osee.orcs.db.internal.callable.FetchDatastoreInfoCallable;
 import org.eclipse.osee.orcs.db.internal.callable.InitializeDatastoreCallable;
 import org.eclipse.osee.orcs.db.internal.callable.MigrateDatastoreCallable;
 import org.eclipse.osee.orcs.db.internal.util.DynamicSchemaResourceProvider;
-import com.google.common.base.Supplier;
 
 /**
  * @author Roberto E. Escobar
@@ -53,9 +53,9 @@ public class AdminModule {
       return new DataStoreAdmin() {
          @Override
          public Callable<DataStoreInfo> createDataStore(OrcsSession session, Map<String, String> parameters) {
-            getOption(parameters, DataStoreConfigConstants.SCHEMA_TABLE_DATA_NAMESPACE, "");
-            getOption(parameters, DataStoreConfigConstants.SCHEMA_INDEX_DATA_NAMESPACE, "");
-            getOption(parameters, DataStoreConfigConstants.SCHEMA_USER_FILE_SPECIFIED_NAMESPACE, false);
+            getOption(parameters, DataStoreAdmin.SCHEMA_TABLE_DATA_NAMESPACE, "");
+            getOption(parameters, DataStoreAdmin.SCHEMA_INDEX_DATA_NAMESPACE, "");
+            getOption(parameters, DataStoreAdmin.SCHEMA_USER_FILE_SPECIFIED_NAMESPACE, false);
 
             Supplier<Iterable<JdbcMigrationResource>> schemaProvider = new DynamicSchemaResourceProvider(logger);
 

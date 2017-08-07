@@ -22,6 +22,7 @@ import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.orcs.OrcsAdmin;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsMetaData;
+import org.eclipse.osee.orcs.core.ds.DataStoreAdmin;
 import org.eclipse.osee.orcs.rest.model.DatastoreEndpoint;
 import org.eclipse.osee.orcs.rest.model.DatastoreInfo;
 import org.eclipse.osee.orcs.rest.model.DatastoreInitOptions;
@@ -69,9 +70,10 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
       OrcsAdmin adminOps = getOrcsAdmin();
 
       Map<String, String> parameters = new HashMap<>();
-      parameters.put("schema.table.data.namespace", options.getTableDataSpace());
-      parameters.put("schema.index.data.namespace", options.getIndexDataSpace());
-      parameters.put("schema.user.file.specified.schema.names", Boolean.toString(options.isUseFileSpecifiedSchemas()));
+      parameters.put(DataStoreAdmin.SCHEMA_TABLE_DATA_NAMESPACE, options.getTableDataSpace());
+      parameters.put(DataStoreAdmin.SCHEMA_INDEX_DATA_NAMESPACE, options.getIndexDataSpace());
+      parameters.put(DataStoreAdmin.SCHEMA_USER_FILE_SPECIFIED_NAMESPACE,
+         Boolean.toString(options.isUseFileSpecifiedSchemas()));
 
       Callable<OrcsMetaData> callable = adminOps.createDatastore(parameters);
       OrcsMetaData metaData = executeCallable(callable);

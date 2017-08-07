@@ -19,6 +19,10 @@ import org.eclipse.osee.orcs.OrcsSession;
  */
 public interface DataStoreAdmin {
 
+   public static final String SCHEMA_TABLE_DATA_NAMESPACE = "schema.table.data.namespace";
+   public static final String SCHEMA_INDEX_DATA_NAMESPACE = "schema.index.data.namespace";
+   public static final String SCHEMA_USER_FILE_SPECIFIED_NAMESPACE = "schema.user.file.specified.schema.names";
+
    Callable<DataStoreInfo> createDataStore(OrcsSession session, Map<String, String> parameters);
 
    Callable<DataStoreInfo> getDataStoreInfo(OrcsSession session);
