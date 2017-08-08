@@ -92,8 +92,8 @@ public class XHyperlabelWorkflowApplicabilitySelection extends XHyperlinkLabelCm
             selectedAppls = Collections.castAll(dialog.getSelected());
             HashMap<ArtifactId, List<ApplicabilityId>> artToApplMap = new HashMap<>();
             artToApplMap.put(ArtifactId.valueOf(workItem.getStoreObject().getId()), Collections.castAll(selectedAppls));
-            AtsClientService.getApplicabilityEndpoint(AtsClientService.get().getAtsBranch()).setApplicabilityReference(
-               artToApplMap);
+            AtsClientService.get().getOseeClient().getApplicabilityEndpoint(
+               AtsClientService.get().getAtsBranch()).setApplicabilityReference(artToApplMap);
             return true;
          }
       } catch (Exception ex) {
@@ -118,8 +118,8 @@ public class XHyperlabelWorkflowApplicabilitySelection extends XHyperlinkLabelCm
       List<ApplicabilityToken> selectedApplicabilities = getSelectedApplicabilities();
       if (!selectedApplicabilities.isEmpty()) {
          artToApplMap.put(workItem.getStoreObject(), Collections.castAll(selectedApplicabilities));
-         AtsClientService.getApplicabilityEndpoint(AtsClientService.get().getAtsBranch()).setApplicabilityReference(
-            artToApplMap);
+         AtsClientService.get().getOseeClient().getApplicabilityEndpoint(
+            AtsClientService.get().getAtsBranch()).setApplicabilityReference(artToApplMap);
       }
    }
 
@@ -129,7 +129,7 @@ public class XHyperlabelWorkflowApplicabilitySelection extends XHyperlinkLabelCm
    }
 
    private List<ApplicabilityToken> getStoredApplicabilities() {
-      return AtsClientService.getApplicabilityEndpoint(
+      return AtsClientService.get().getOseeClient().getApplicabilityEndpoint(
          AtsClientService.get().getAtsBranch()).getApplicabilityReferenceTokens(workItem.getStoreObject());
    }
 

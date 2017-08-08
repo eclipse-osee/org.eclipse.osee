@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.PurgeTransactionEventUtil;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.PurgeTransactionOperation.PurgeTransactionListener;
 
@@ -68,7 +69,8 @@ public class PurgeTransactionOperationWithListener {
             try {
                String message = String.format("Purge Transaction [%s] - Guid to Id Map [%s]",
                   transEventAndIds.getFirst().toString(), transEventAndIds.getSecond().toString());
-               ActivityLogJaxRsService.create(Activity.PURGE_TRANSACTION, 0L, ActivityLog.COMPLETE_STATUS, message);
+               ServiceUtil.getOseeClient().getActivityLogEndpoint().createEntry(Activity.PURGE_TRANSACTION.getTypeId(),
+                  0L, ActivityLog.COMPLETE_STATUS, message);
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, "Error activity logging purge transaction", ex);
             }

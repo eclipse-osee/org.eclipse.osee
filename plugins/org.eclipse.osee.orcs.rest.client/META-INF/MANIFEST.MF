@@ -9,6 +9,7 @@ Service-Component: OSGI-INF/*.xml
 Import-Package: javax.ws.rs;version="2.0.0",
  javax.ws.rs.client;version="2.0.0",
  javax.ws.rs.core;version="2.0.0",
+ org.eclipse.osee.activity.api,
  org.eclipse.osee.define.report.api,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,

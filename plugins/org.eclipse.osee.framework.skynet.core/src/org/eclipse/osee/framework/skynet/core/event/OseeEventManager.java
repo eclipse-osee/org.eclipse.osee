@@ -42,7 +42,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.internal.event.EventListenerRegistry;
-import org.eclipse.osee.framework.skynet.core.utility.ActivityLogJaxRsService;
 
 /**
  * Front end to OSEE events. Provides ability to add and remove different event listeners as well as the ability to kick
@@ -137,7 +136,8 @@ public final class OseeEventManager {
          if (accesstopicEvent != AccessTopicEvent.USER_AUTHENTICATED) {
             String message = String.format("USER_AUTHENTICATED [%s] Payload [%s]", UserManager.getUser().getUserId(),
                EventUtil.getEventJacksonMapper().writeValueAsString(payload));
-            ActivityLogJaxRsService.create(Activity.ACCESS_CONTROL_MODIFIED, 0L, ActivityLog.COMPLETE_STATUS, message);
+            ServiceUtil.getOseeClient().getActivityLogEndpoint().createEntry(
+               Activity.ACCESS_CONTROL_MODIFIED.getTypeId(), 0L, ActivityLog.COMPLETE_STATUS, message);
          }
       } catch (Exception ex) {
          OseeLog.logf(OseeEventManager.class, Level.SEVERE, ex, "Error logging activity event [%s][%s]",

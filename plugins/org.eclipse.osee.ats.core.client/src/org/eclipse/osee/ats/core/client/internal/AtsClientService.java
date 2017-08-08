@@ -90,15 +90,4 @@ public class AtsClientService {
       }
       return configEp;
    }
-
-   public static TupleEndpoint getAtsBranchTupleEndpoint() {
-      if (atsBranchTupleEndpoint == null) {
-         String appServer = OseeClientProperties.getOseeApplicationServer();
-         String commonTupleUrl = String.format("%s/orcs/branch/%s/tuple", appServer, atsClient.getAtsBranch().getId());
-         JaxRsClient jaxRsClient = JaxRsClient.newBuilder().createThreadSafeProxyClients(true).build();
-         atsBranchTupleEndpoint = jaxRsClient.target(commonTupleUrl).newProxy(TupleEndpoint.class);
-      }
-      return atsBranchTupleEndpoint;
-   }
-
 }

@@ -61,7 +61,7 @@ public interface ActivityLogEndpoint {
 
    /**
     * Create a new activity entry
-    * 
+    *
     * @param typeId activity type id
     * @param parentId of the parent activity
     * @param status of the activity

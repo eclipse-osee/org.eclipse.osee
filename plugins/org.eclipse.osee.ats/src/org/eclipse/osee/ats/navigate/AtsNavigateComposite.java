@@ -14,10 +14,10 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.activity.api.ActivityEntryId;
 import org.eclipse.osee.activity.api.ActivityLog;
+import org.eclipse.osee.activity.api.ActivityLogEndpoint;
 import org.eclipse.osee.ats.api.util.AtsActivity;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsActivityLogUtil;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -60,10 +60,11 @@ public class AtsNavigateComposite extends XNavigateComposite {
       if (item.getChildren().size() > 0) {
          filteredTree.getViewer().setExpandedState(item, true);
       }
+      ActivityLogEndpoint activityEp = AtsClientService.get().getOseeClient().getActivityLogEndpoint();
       ActivityEntryId activityId = null;
       try {
-         activityId =
-            AtsActivityLogUtil.create(AtsActivity.ATSNAVIGATEITEM, 0L, ActivityLog.INITIAL_STATUS, item.getName());
+         activityId = activityEp.createEntry(AtsActivity.ATSNAVIGATEITEM.getTypeId(), 0L, ActivityLog.INITIAL_STATUS,
+            item.getName());
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Eror creating activity log entry", ex);
       }
@@ -74,7 +75,7 @@ public class AtsNavigateComposite extends XNavigateComposite {
       }
       try {
          if (activityId != null) {
-            AtsActivityLogUtil.update(activityId, ActivityLog.COMPLETE_STATUS);
+            activityEp.updateEntry(activityId.getId(), ActivityLog.COMPLETE_STATUS);
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Eror updating activity log entry", ex);

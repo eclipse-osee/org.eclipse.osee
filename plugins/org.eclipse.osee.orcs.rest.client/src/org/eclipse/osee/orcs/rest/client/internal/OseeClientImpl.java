@@ -21,6 +21,7 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
+import org.eclipse.osee.activity.api.ActivityLogEndpoint;
 import org.eclipse.osee.define.report.api.WordUpdateEndpoint;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -59,8 +60,9 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
 
    private PredicateFactory predicateFactory;
    private volatile JaxRsClient client;
-   private volatile URI baseUri;
+   private volatile URI orcsUri;
    private volatile URI defineUri;
+   private URI baseUri;
 
    public void start(Map<String, Object> properties) {
       predicateFactory = new PredicateFactoryImpl();
@@ -70,7 +72,7 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
 
    public void stop() {
       client = null;
-      baseUri = null;
+      orcsUri = null;
       predicateFactory = null;
       defineUri = null;
    }
@@ -82,13 +84,14 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
          address = System.getProperty(OSEE_APPLICATION_SERVER, "http://localhost:8089");
       }
       if (Strings.isValid(address)) {
-         baseUri = UriBuilder.fromUri(address).path("orcs").build();
+         baseUri = UriBuilder.fromUri(address).build();
+         orcsUri = UriBuilder.fromUri(address).path("orcs").build();
          defineUri = UriBuilder.fromUri(address).path("define").build();
       }
    }
 
    private JaxRsWebTarget newTarget(String path, Object... values) {
-      URI uri = UriBuilder.fromUri(baseUri).path(path).build(values);
+      URI uri = UriBuilder.fromUri(orcsUri).path(path).build(values);
       return client.target(uri);
    }
 
@@ -148,7 +151,7 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
          if (props != null && props.length() > 0) {
             form.param("parameters", props);
          }
-         URI uri = UriBuilder.fromUri(baseUri).path("script").build();
+         URI uri = UriBuilder.fromUri(orcsUri).path("script").build();
          String result = JaxRsClient.newClient().target(uri).request(mediaType).post(Entity.form(form), String.class);
          writer.write(result);
       } catch (Exception ex) {
@@ -158,38 +161,39 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
 
    @Override
    public BranchEndpoint getBranchEndpoint() {
-      return client.targetProxy(baseUri, BranchEndpoint.class);
+      return client.targetProxy(orcsUri, BranchEndpoint.class);
    }
 
    @Override
    public TransactionEndpoint getTransactionEndpoint() {
-      return client.targetProxy(baseUri, TransactionEndpoint.class);
+      return client.targetProxy(orcsUri, TransactionEndpoint.class);
    }
 
    @Override
    public TypesEndpoint getTypesEndpoint() {
-      return client.targetProxy(baseUri, TypesEndpoint.class);
+      return client.targetProxy(orcsUri, TypesEndpoint.class);
    }
 
    @Override
    public IndexerEndpoint getIndexerEndpoint() {
-      return client.targetProxy(baseUri, IndexerEndpoint.class);
+      return client.targetProxy(orcsUri, IndexerEndpoint.class);
    }
 
    @Override
    public ClientEndpoint getClientEndpoint() {
-      return client.targetProxy(baseUri, ClientEndpoint.class);
+      URI uri = UriBuilder.fromUri(baseUri).path("ide").build();
+      return client.targetProxy(uri, ClientEndpoint.class);
    }
 
    @Override
    public ResourcesEndpoint getResourcesEndpoint() {
       JaxRsClient newClient = JaxRsClient.newBuilder(client.getConfig()).followRedirects(false).build();
-      return newClient.targetProxy(baseUri, ResourcesEndpoint.class);
+      return newClient.targetProxy(orcsUri, ResourcesEndpoint.class);
    }
 
    @Override
    public DatastoreEndpoint getDatastoreEndpoint() {
-      return client.targetProxy(baseUri, DatastoreEndpoint.class);
+      return client.targetProxy(orcsUri, DatastoreEndpoint.class);
    }
 
    @Override
@@ -199,23 +203,27 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
 
    @Override
    public OrcsWriterEndpoint getOrcsWriterEndpoint() {
-      return client.targetProxy(baseUri, OrcsWriterEndpoint.class);
+      return client.targetProxy(orcsUri, OrcsWriterEndpoint.class);
    }
 
    @Override
    public ApplicabilityEndpoint getApplicabilityEndpoint(BranchId branch) {
-      URI uri = UriBuilder.fromUri(baseUri).path("branch/{branch}").build(branch.getId());
+      URI uri = UriBuilder.fromUri(orcsUri).path("branch/{branch}").build(branch.getId());
       return client.targetProxy(uri, ApplicabilityEndpoint.class);
    }
 
    @Override
+   public ActivityLogEndpoint getActivityLogEndpoint() {
+      return client.targetProxy(baseUri, ActivityLogEndpoint.class);
+   }
+
+   @Override
    public boolean isLocalHost() {
-      return baseUri.toString().contains("localhost");
+      return orcsUri.toString().contains("localhost");
    }
 
    @Override
    public String getBaseUri() {
-      return baseUri.toString();
+      return orcsUri.toString();
    }
-
 }

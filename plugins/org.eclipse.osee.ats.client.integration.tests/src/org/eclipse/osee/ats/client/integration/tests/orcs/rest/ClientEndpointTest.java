@@ -32,7 +32,7 @@ public class ClientEndpointTest {
 
    @Test
    public void testGetAll() {
-      ClientEndpoint clientEp = AtsClientService.getClientEndpoint();
+      ClientEndpoint clientEp = AtsClientService.get().getOseeClient().getClientEndpoint();
       Response response = clientEp.getAll();
       Assert.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
       Sessions sessions = response.readEntity(Sessions.class);
@@ -41,7 +41,7 @@ public class ClientEndpointTest {
 
    @Test
    public void testGetAllDetails() {
-      ClientEndpoint clientEp = AtsClientService.getClientEndpoint();
+      ClientEndpoint clientEp = AtsClientService.get().getOseeClient().getClientEndpoint();
       Response response = clientEp.getAll();
       Assert.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
       Sessions sessions = response.readEntity(Sessions.class);
@@ -52,7 +52,7 @@ public class ClientEndpointTest {
    @Test
    @Ignore
    public void testGetClientsForUser() {
-      ClientEndpoint clientEp = AtsClientService.getClientEndpoint();
+      ClientEndpoint clientEp = AtsClientService.get().getOseeClient().getClientEndpoint();
       Response response = clientEp.getClientsForUser(DemoUsers.Joe_Smith.getUserId());
       Assert.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
       Sessions sessions = response.readEntity(Sessions.class);
@@ -72,7 +72,7 @@ public class ClientEndpointTest {
 
    @Test
    public void supportedVersions() {
-      ClientEndpoint clientEp = AtsClientService.getClientEndpoint();
+      ClientEndpoint clientEp = AtsClientService.get().getOseeClient().getClientEndpoint();
       IdeVersion versions = clientEp.getSupportedVersions();
       assertNotNull(versions);
       Collection<String> supportedVersions = versions.getVersions();

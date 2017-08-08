@@ -22,15 +22,17 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.activity.api.Activity;
 import org.eclipse.osee.activity.api.ActivityLog;
+import org.eclipse.osee.activity.api.ActivityLogEndpoint;
+import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.internal.UiPluginConstants;
-import org.eclipse.osee.framework.ui.plugin.util.ActivityLogJaxRsService;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
+import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.events.KeyAdapter;
@@ -185,9 +187,12 @@ public class XNavigateComposite extends Composite {
       } else {
          try {
             long uuid = Lib.generateUuid();
-            ActivityLogJaxRsService.create(Activity.XNAVIGATEITEM, uuid, ActivityLog.INITIAL_STATUS, item.getName());
+            ActivityLogEndpoint activityEp = OsgiUtil.getService(getClass(), OseeClient.class).getActivityLogEndpoint();
+            activityEp.createEntry(Activity.XNAVIGATEITEM.getTypeId(), uuid, ActivityLog.INITIAL_STATUS,
+               item.getName());
             item.run(tableLoadOptions);
-            ActivityLogJaxRsService.create(Activity.XNAVIGATEITEM, uuid, ActivityLog.COMPLETE_STATUS, item.getName());
+            activityEp.createEntry(Activity.XNAVIGATEITEM.getTypeId(), uuid, ActivityLog.COMPLETE_STATUS,
+               item.getName());
          } catch (Exception ex) {
             OseeLog.log(UiPluginConstants.class, OseeLevel.SEVERE_POPUP, ex);
          }

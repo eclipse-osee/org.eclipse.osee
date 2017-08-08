@@ -16,12 +16,8 @@ import org.eclipse.osee.ats.api.ev.AtsWorkPackageEndpointApi;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
-import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;
-import org.eclipse.osee.orcs.rest.client.OseeClient;
-import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 
 /**
  * @author Donald G. Dunne
@@ -80,9 +76,4 @@ public class AtsClientService {
       }
       return workPackageEp;
    }
-
-   public static ApplicabilityEndpoint getApplicabilityEndpoint(BranchId branchId) {
-      return OsgiUtil.getService(AtsClientService.class, OseeClient.class).getApplicabilityEndpoint(branchId);
-   }
-
 }

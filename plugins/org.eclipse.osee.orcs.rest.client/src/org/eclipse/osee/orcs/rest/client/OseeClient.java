@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.rest.client;
 import java.io.Writer;
 import java.util.Properties;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.activity.api.ActivityLogEndpoint;
 import org.eclipse.osee.define.report.api.WordUpdateEndpoint;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.server.ide.api.client.ClientEndpoint;
@@ -55,6 +56,8 @@ public interface OseeClient {
    OrcsWriterEndpoint getOrcsWriterEndpoint();
 
    ApplicabilityEndpoint getApplicabilityEndpoint(BranchId branch);
+
+   ActivityLogEndpoint getActivityLogEndpoint();
 
    boolean isLocalHost();
 

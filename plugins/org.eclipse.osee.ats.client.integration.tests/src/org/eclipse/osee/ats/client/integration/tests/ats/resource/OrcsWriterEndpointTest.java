@@ -42,7 +42,7 @@ public class OrcsWriterEndpointTest extends AbstractRestTest {
 
    @Before
    public void setup() {
-      writer = AtsClientService.getOrcsWriter();
+      writer = AtsClientService.get().getOseeClient().getOrcsWriterEndpoint();
    }
 
    @Test

@@ -25,10 +25,8 @@ import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.workflow.WorkItemJsonReader;
 import org.eclipse.osee.ats.core.client.workflow.WorkItemsJsonReader;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
-import org.eclipse.osee.framework.server.ide.api.client.ClientEndpoint;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;
-import org.eclipse.osee.orcs.rest.model.OrcsWriterEndpoint;
 
 /**
  * @author Donald G. Dunne
@@ -38,7 +36,6 @@ public class AtsClientService {
    private static IAtsClient atsClient;
    private static AgileEndpointApi agile;
    private static JaxRsWebTarget target;
-   private static OrcsWriterEndpoint orcsWriter;
    private static CountryEndpointApi countryEp;
    private static ProgramEndpointApi programEp;
    private static InsertionEndpointApi insertionEp;
@@ -48,7 +45,6 @@ public class AtsClientService {
    private static AtsNotifyEndpointApi notifyEp;
    private static AtsConfigEndpointApi configEp;
    private static AtsWorkPackageEndpointApi workPackageEp;
-   private static ClientEndpoint clientEp;
    private static AtsActionEndpointApi actionEp;
 
    public void setAtsClient(IAtsClient atsClient) {
@@ -75,16 +71,6 @@ public class AtsClientService {
          agile = getAtsTarget().newProxy(AgileEndpointApi.class);
       }
       return agile;
-   }
-
-   public static OrcsWriterEndpoint getOrcsWriter() {
-      if (orcsWriter == null) {
-         String appServer = OseeClientProperties.getOseeApplicationServer();
-         String orcsUri = String.format("%s/orcs", appServer);
-         JaxRsClient jaxRsClient = JaxRsClient.newBuilder().build();
-         orcsWriter = jaxRsClient.target(orcsUri).newProxy(OrcsWriterEndpoint.class);
-      }
-      return orcsWriter;
    }
 
    public static CountryEndpointApi getCountryEp() {
@@ -150,22 +136,10 @@ public class AtsClientService {
       return workPackageEp;
    }
 
-   public static ClientEndpoint getClientEndpoint() {
-      if (clientEp == null) {
-         String appServer = OseeClientProperties.getOseeApplicationServer();
-         String orcsUri = String.format("%s/ide", appServer);
-         JaxRsClient jaxRsClient = JaxRsClient.newBuilder().build();
-         clientEp = jaxRsClient.target(orcsUri).newProxy(ClientEndpoint.class);
-      }
-      return clientEp;
-   }
-
    public static AtsActionEndpointApi getActionEndpoint() {
       if (actionEp == null) {
          actionEp = getAtsTarget().newProxy(AtsActionEndpointApi.class);
       }
       return actionEp;
-
    }
-
 }

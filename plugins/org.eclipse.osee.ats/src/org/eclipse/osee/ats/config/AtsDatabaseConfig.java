@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.ws.rs.core.Response;
+import org.eclipse.osee.activity.api.ActivityType;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -45,7 +46,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.ui.plugin.util.ActivityLogJaxRsService;
 
 /**
  * @author Donald G. Dunne
@@ -79,7 +79,9 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
       AtsGroup.AtsAdmin.getArtifact().persist(getClass().getSimpleName());
       AtsGroup.AtsTempAdmin.getArtifact().persist(getClass().getSimpleName());
 
-      ActivityLogJaxRsService.createActivityType(AtsActivity.ATSNAVIGATEITEM);
+      ActivityType type = AtsActivity.ATSNAVIGATEITEM;
+      AtsClientService.get().getOseeClient().getActivityLogEndpoint().createActivityType(type.getTypeId(),
+         type.getLogLevel(), type.getModule(), type.getMessageFormat());
 
       createUserCreationDisabledConfig();
 
