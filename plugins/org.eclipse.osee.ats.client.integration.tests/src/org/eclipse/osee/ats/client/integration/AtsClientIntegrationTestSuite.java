@@ -18,6 +18,10 @@ import org.eclipse.osee.ats.client.integration.tests.framework.ui.skynet.Framewo
 import org.eclipse.osee.ats.client.integration.tests.framework.ui.skynet.dialog.FrameworkUiSkynetTest_Dialog_Suite;
 import org.eclipse.osee.ats.client.integration.tests.orcs.rest.ClientEndpointTest;
 import org.eclipse.osee.ats.client.integration.tests.util.DbInitTest;
+import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
+import org.eclipse.osee.framework.jdk.core.util.ElapsedTime.Units;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -36,4 +40,17 @@ import org.junit.runners.Suite;
    DirtyArtifactCacheTest.class})
 public class AtsClientIntegrationTestSuite {
    // Test Suite
+
+   private static ElapsedTime time;
+
+   @BeforeClass
+   public static void setup() {
+      time = new ElapsedTime("AtsClientIntegrationTestSuite", true);
+   }
+
+   @AfterClass
+   public static void cleanup() {
+      time.end(Units.MIN);
+   }
+
 }
