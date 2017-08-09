@@ -26,6 +26,8 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
+import org.eclipse.osee.framework.jdk.core.util.ElapsedTime.Units;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -63,6 +65,7 @@ public class PurgeTransactionTest {
 
    @Test
    public void testPurgeTransaction() throws Exception {
+      ElapsedTime time = new ElapsedTime("testPurgeTransaction", true);
       Map<String, Integer> initialRowCount = TestUtil.getTableRowCounts(TABLES);
       TransactionId createTxId = createArtifacts();
 
@@ -76,6 +79,8 @@ public class PurgeTransactionTest {
 
       purge(createTxId);
       assertThatEquals(initialRowCount, TestUtil.getTableRowCounts(TABLES));
+      time.end(Units.MIN);
+      time.end(Units.SEC);
    }
 
    private TransactionId createArtifacts() throws Exception {

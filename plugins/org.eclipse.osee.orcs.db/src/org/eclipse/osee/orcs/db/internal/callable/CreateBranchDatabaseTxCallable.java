@@ -140,7 +140,8 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
                         newBranchData.getName());
                   }
                } else {
-                  throw new OseeStateException("Existing branch creation detected for [%s]", newBranchData.getName());
+                  throw new OseeStateException("Existing branch creation detected for [%s]-[%s]",
+                     newBranchData.getBranch().getId(), newBranchData.getName());
                }
             }
          }

@@ -81,10 +81,21 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
       ((BranchCache) cache).setBranchViews(branchViews);
    }
 
+   /**
+    * @return Branch or BranchDoesNotExist exception
+    */
    public static Branch loadBranch(IOseeCache<Branch> cache, BranchId branchId) {
       return ConnectionHandler.getJdbcClient().fetchOrException(
          () -> new BranchDoesNotExist("Branch could not be acquired for id [%s]", branchId.getIdString()),
          stmt -> load(cache, stmt, null), SELECT_BRANCH, branchId);
+   }
+
+   /**
+    * @return Branch if it exists or null
+    */
+   public static Branch loadBranchOrNull(IOseeCache<Branch> cache, BranchId branchId) {
+      return ConnectionHandler.getJdbcClient().fetch((Branch) null, stmt -> load(cache, stmt, null), SELECT_BRANCH,
+         branchId);
    }
 
    private static Branch load(IOseeCache<Branch> cache, JdbcStatement stmt, Map<MergeBranch, Long> mergeIdMap) {
