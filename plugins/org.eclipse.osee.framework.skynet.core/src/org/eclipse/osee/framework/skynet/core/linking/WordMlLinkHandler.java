@@ -125,6 +125,19 @@ public class WordMlLinkHandler {
       LinkType linkType = checkLinkType(destLinkType);
       String modified = content;
 
+      HashCollection<String, MatchRange> matchMap = getLinks(content);
+      if (!matchMap.isEmpty()) {
+         modified = modifiedContent(linkType, source, content, matchMap, false, unknownGuids, presentationType);
+         unknownGuids.addAll(matchMap.keySet());
+      }
+      if (linkType != LinkType.OSEE_SERVER_LINK) {
+         // Add a bookmark to the start of the content so internal links can link later
+         modified = linkBuilder.getWordMlBookmark(source) + modified;
+      }
+      return modified;
+   }
+
+   public static HashCollection<String, MatchRange> getLinks(String content) {
       // Detect legacy links
       HashCollection<String, MatchRange> matchMap = parseOseeWordMLLinks(content);
 
@@ -137,14 +150,7 @@ public class WordMlLinkHandler {
          }
       }
       OSEE_LINK_PATTERN.reset();
-      if (!matchMap.isEmpty()) {
-         modified = modifiedContent(linkType, source, content, matchMap, false, unknownGuids, presentationType);
-      }
-      if (linkType != LinkType.OSEE_SERVER_LINK) {
-         // Add a bookmark to the start of the content so internal links can link later
-         modified = linkBuilder.getWordMlBookmark(source) + modified;
-      }
-      return modified;
+      return matchMap;
    }
 
    /**
