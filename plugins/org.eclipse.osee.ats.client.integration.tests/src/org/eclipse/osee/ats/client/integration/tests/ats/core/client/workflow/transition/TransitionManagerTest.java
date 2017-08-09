@@ -90,6 +90,11 @@ public class TransitionManagerTest {
    }
 
    @BeforeClass
+   public static void before() throws OseeCoreException {
+      AtsClientService.get().clearCaches();
+   }
+
+   @BeforeClass
    @AfterClass
    public static void cleanup() throws OseeCoreException {
       AtsTestUtil.cleanup();
@@ -300,8 +305,8 @@ public class TransitionManagerTest {
       results.clear();
       loadWorkDefForTest(WORK_DEF_WIDGET_REQUIRED_TRANSITION_FILE_NAME);
       transMgr.handleTransitionValidation(results);
-      Assert.assertTrue(results.contains("[Estimated Hours] is required for transition"));
-      Assert.assertTrue(results.contains("[Work Package] is required for transition"));
+      Assert.assertTrue(results.toString(), results.contains("[Estimated Hours] is required for transition"));
+      Assert.assertTrue(results.toString(), results.contains("[Work Package] is required for transition"));
    }
 
    @org.junit.Test
@@ -461,7 +466,7 @@ public class TransitionManagerTest {
          jaxWorkDef.setName(AtsTestUtil.WORK_DEF_NAME);
          jaxWorkDef.setWorkDefDsl(atsDsl);
          AtsTestUtil.importWorkDefinition(jaxWorkDef);
-         AtsClientService.get().getWorkDefinitionService().clearCaches();
+         AtsClientService.get().clearCaches();
       } catch (Exception ex) {
          throw new OseeCoreException(ex, "Error importing " + workDefFilename);
       }

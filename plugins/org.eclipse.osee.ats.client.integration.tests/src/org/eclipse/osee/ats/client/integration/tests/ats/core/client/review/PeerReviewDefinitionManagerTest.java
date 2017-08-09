@@ -60,7 +60,7 @@ public class PeerReviewDefinitionManagerTest extends PeerReviewDefinitionManager
          jaxWorkDef.setName(AtsTestUtil.WORK_DEF_NAME);
          jaxWorkDef.setWorkDefDsl(atsDsl);
          AtsTestUtil.importWorkDefinition(jaxWorkDef);
-         AtsClientService.get().getWorkDefinitionService().clearCaches();
+         AtsClientService.get().clearCaches();
       } catch (Exception ex) {
          throw new OseeCoreException(ex, "Error importing " + WORK_DEF_FILE_NAME);
       }

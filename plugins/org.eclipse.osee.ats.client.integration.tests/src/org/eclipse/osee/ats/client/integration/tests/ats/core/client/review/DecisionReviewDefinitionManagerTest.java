@@ -62,7 +62,7 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewDefinitio
          jaxWorkDef.setName(AtsTestUtil.WORK_DEF_NAME);
          jaxWorkDef.setWorkDefDsl(atsDsl);
          AtsTestUtil.importWorkDefinition(jaxWorkDef);
-         AtsClientService.get().getWorkDefinitionService().clearCaches();
+         AtsClientService.get().clearCaches();
       } catch (Exception ex) {
          throw new OseeCoreException(ex, "Error importing " + WORK_DEF_FILE_NAME);
       }
@@ -108,7 +108,7 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewDefinitio
          jaxWorkDef.setName(AtsTestUtil.WORK_DEF_NAME);
          jaxWorkDef.setWorkDefDsl(atsDsl);
          AtsTestUtil.importWorkDefinition(jaxWorkDef);
-         AtsClientService.get().getWorkDefinitionService().clearCaches();
+         AtsClientService.get().clearCaches();
       } catch (Exception ex) {
          throw new OseeCoreException(ex, "Error importing " + WORK_DEF_FILE_NAME_PREPARE);
       }
@@ -120,7 +120,7 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewDefinitio
       MockTransitionHelper helper = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
          TeamState.Implement.getName(), Arrays.asList(AtsClientService.get().getUserService().getCurrentUser
 
-      ()), null, changes, TransitionOption.None);
+         ()), null, changes, TransitionOption.None);
       IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
       TransitionResults results = transitionMgr.handleAllAndPersist();
 
