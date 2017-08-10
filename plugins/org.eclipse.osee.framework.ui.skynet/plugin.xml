@@ -17,6 +17,7 @@
   <extension-point id="ArtifactImageProvider" name="ArtifactImageProvider" schema="schema/ArtifactImageProvider.exsd"/>
   <extension-point id="UserNavigateItem" name="UserNavigateItem" schema="schema/UserNavigateItem.exsd"/>
   <extension-point id="DslGrammar" name="DslGrammar" schema="schema/DslGrammar.exsd"/>
+  <extension-point id="ArtifactEditorProvider" name="ArtifactEditorProvider" schema="schema/ArtifactEditorProvider.exsd"/>
 
  	<extension point="org.eclipse.ui.importWizards">
 		<wizard category="org.eclipse.osee.define.import.category" class="org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportWizard" icon="images/import.gif" id="org.eclipse.osee.framework.ui.skynet.artifact.Import.ImportWizard" name="OSEE Artifacts">

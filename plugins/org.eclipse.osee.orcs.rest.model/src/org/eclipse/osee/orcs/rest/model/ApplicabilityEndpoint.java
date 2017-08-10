@@ -143,4 +143,10 @@ public interface ApplicabilityEndpoint {
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces(MediaType.APPLICATION_JSON)
    TransactionToken createNewApplicabilityForView(@PathParam("viewId") ArtifactId viewId, String applicability);
+
+   @GET
+   @Path("versionConfig/{version}")
+   @Produces({MediaType.APPLICATION_JSON})
+   ArtifactId getVersionConfig(@PathParam("version") ArtifactId version);
+
 }

@@ -31,6 +31,7 @@ public final class CoreTupleTypes {
    public static final Tuple2Type<ArtifactId, ApplicabilityId> ArtifactReferenceApplicabilityType =
       Tuple2Type.valueOf(CoreTupleFamilyTypes.ProductLineFamily, 13L);
    public static final Tuple2Type<Long, Long> BranchView = Tuple2Type.valueOf(ProductLineFamily, 11L);
+   public static final Tuple2Type<ArtifactId, ArtifactId> VersionConfig = Tuple2Type.valueOf(ProductLineFamily, 12L);
 
    // Data Maintenance
    public static final Tuple3Type<String, Long, Long> FixedMaintenanceData = Tuple3Type.valueOf(DefaultFamily, 5L);

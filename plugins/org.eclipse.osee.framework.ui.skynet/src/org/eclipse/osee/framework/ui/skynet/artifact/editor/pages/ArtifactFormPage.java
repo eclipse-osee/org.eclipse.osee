@@ -42,6 +42,8 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorInput;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditorProviders;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.IArtifactEditorProvider;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.MessageSummaryNote;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributesFormSection;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.DetailsFormSection;
@@ -215,6 +217,11 @@ public class ArtifactFormPage extends FormPage {
       updateArtifactInfoArea(toolkit, form, true);
       applPart = new ArtifactFormPageViewApplicability(getEditor().getArtifactFromEditorInput(), toolkit, form);
       applPart.create();
+
+      for (IArtifactEditorProvider widgetProvider : ArtifactEditorProviders.getXWidgetProviders()) {
+         widgetProvider.contributeToHeader(editor.getArtifactFromEditorInput(), form.getBody());
+      }
+
       addToolBar(toolkit, form, true);
       FormsUtil.addHeadingGradient(toolkit, form, true);
       addMessageDecoration(form);

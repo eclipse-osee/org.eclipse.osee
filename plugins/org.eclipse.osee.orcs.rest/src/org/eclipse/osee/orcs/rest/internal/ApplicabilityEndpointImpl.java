@@ -295,4 +295,9 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       return getAffectedBranches(timeInjectionMs, timeRemovalMs, applicabilityIds);
    }
 
+   @Override
+   public ArtifactId getVersionConfig(ArtifactId version) {
+      return orcsApi.getQueryFactory().applicabilityQuery().getVersionConfig(version, branch);
+   }
+
 }

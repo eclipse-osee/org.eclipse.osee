@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;
+import org.eclipse.osee.orcs.rest.model.TupleEndpoint;
 
 /**
  * @author Donald G. Dunne
@@ -30,6 +31,7 @@ public class AtsClientService {
    private static AtsConfigEndpointApi configEp;
    private static AgileEndpointApi agileEp;
    private static AtsWorkPackageEndpointApi workPackageEp;
+   private static TupleEndpoint atsBranchTupleEndpoint;
 
    public void setAtsClient(IAtsClient atsClient) {
       AtsClientService.atsClient = atsClient;
@@ -75,5 +77,13 @@ public class AtsClientService {
          workPackageEp = getAtsTarget().newProxy(AtsWorkPackageEndpointApi.class);
       }
       return workPackageEp;
+   }
+
+   public static TupleEndpoint getAtsBranchTupleEndpoint() {
+      String appServer = OseeClientProperties.getOseeApplicationServer();
+      String commonTupleUrl = String.format("%s/orcs/branch/%s/tuples", appServer, atsClient.getAtsBranch().getId());
+      JaxRsClient jaxRsClient = JaxRsClient.newBuilder().createThreadSafeProxyClients(true).build();
+      atsBranchTupleEndpoint = jaxRsClient.target(commonTupleUrl).newProxy(TupleEndpoint.class);
+      return atsBranchTupleEndpoint;
    }
 }

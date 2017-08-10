@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchViewData;
 import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -148,5 +149,14 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
          branchViews.add(new BranchViewData(branchId, values));
       }
       return branchViews;
+   }
+
+   @Override
+   public ArtifactId getVersionConfig(ArtifactId art, BranchId branch) {
+      Iterable<Long> tuple2 = tupleQuery.getTuple2Raw(CoreTupleTypes.VersionConfig, branch, art);
+      if (tuple2.iterator().hasNext()) {
+         return ArtifactId.valueOf(tuple2.iterator().next());
+      }
+      return ArtifactId.SENTINEL;
    }
 }

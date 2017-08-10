@@ -462,5 +462,13 @@
             name="ATS">
       </page>
    </extension>
+   <extension
+         id="AtsArtifactEditorProvider"
+         name="AtsArtifactEditorProvider"
+         point="org.eclipse.osee.framework.ui.skynet.ArtifactEditorProvider">
+      <ArtifactEditorProvider
+            classname="org.eclipse.osee.ats.util.widgets.AtsArtifactEditorProvider">
+      </ArtifactEditorProvider>
+   </extension>
    
 </plugin>
