@@ -82,6 +82,9 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
 
    @Override
    public boolean isActive() {
+      if (services.getStoreService().isDeleted(artifact)) {
+         return false;
+      }
       return getAttributeValue(AtsAttributeTypes.Active, false);
    }
 

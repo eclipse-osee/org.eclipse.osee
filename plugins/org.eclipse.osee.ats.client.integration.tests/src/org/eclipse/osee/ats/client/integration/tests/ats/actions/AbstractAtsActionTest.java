@@ -20,7 +20,7 @@ import org.junit.Test;
 
 /**
  * Abstract for Action tests that tests getImageDescriptor and calls cleanup before/after class
- * 
+ *
  * @author Donald G. Dunne
  */
 public abstract class AbstractAtsActionTest {

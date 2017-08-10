@@ -44,6 +44,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.progress.UIJob;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
@@ -94,6 +95,17 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
       if (page != null) {
          page.showBusy(busy);
       }
+   }
+
+   public static void closeAll() {
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            for (IEditorReference editor : AWorkbench.getEditors(EDITOR_ID)) {
+               AWorkbench.getActivePage().closeEditor(editor.getEditor(false), false);
+            }
+         }
+      });
    }
 
    @Override

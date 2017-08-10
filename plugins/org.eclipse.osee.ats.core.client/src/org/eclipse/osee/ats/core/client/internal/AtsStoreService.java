@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.internal.store.AtsChangeSet;
 import org.eclipse.osee.ats.core.workflow.WorkItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -228,6 +229,10 @@ public class AtsStoreService implements IAtsStoreService {
    }
    @Override
    public boolean isDeleted(ArtifactId artifact) {
-      return ((Artifact) services.getArtifact(artifact)).isDeleted();
+      ArtifactToken art = services.getArtifact(artifact);
+      if (art != null) {
+         return ((Artifact) art).isDeleted();
+      }
+      return true;
    }
 }

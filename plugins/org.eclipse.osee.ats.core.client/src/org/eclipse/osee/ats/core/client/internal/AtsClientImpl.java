@@ -328,7 +328,11 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
       if (artifact instanceof Artifact) {
          return (Artifact) artifact;
       }
-      return ArtifactQuery.getArtifactFromId(artifact, getAtsBranch());
+      try {
+         return ArtifactQuery.getArtifactFromId(artifact, getAtsBranch());
+      } catch (ArtifactDoesNotExist ex) {
+         return null;
+      }
    }
 
    /**
