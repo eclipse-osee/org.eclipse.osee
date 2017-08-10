@@ -17,19 +17,25 @@ import org.eclipse.osee.ats.demo.api.DemoTeam;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
  * Unit Test for {@link TeamResource}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class TeamResourceTest extends AbstractConfigurationRestTest {
 
+   @BeforeClass
+   public static void setup() {
+      AtsClientService.get().clearCaches();
+   }
+
    @Test
    public void testAtsTeamsRestCall() throws Exception {
       JsonArray array = getAndCheck("/ats/team");
-      Assert.assertEquals(18, array.size());
+      Assert.assertEquals(array.toString(), 18, array.size());
       JsonObject obj = getObjectNamed("SAW SW", array);
       Assert.assertNotNull(String.format("Did not find value SAW SW in JsonArray [%s]", array), obj);
       Assert.assertFalse(obj.has("version"));
@@ -39,7 +45,7 @@ public class TeamResourceTest extends AbstractConfigurationRestTest {
    @Test
    public void testAtsTeamsDetailsRestCall() throws Exception {
       JsonArray array = getAndCheck("/ats/team/details");
-      Assert.assertEquals(18, array.size());
+      Assert.assertEquals(array.toString(), 18, array.size());
       JsonObject obj = getObjectNamed("SAW SW", array);
       Assert.assertNotNull(String.format("Did not find value SAW SW in JsonArray [%s]", array), obj);
       Assert.assertEquals(3, obj.getAsJsonArray("version").size());

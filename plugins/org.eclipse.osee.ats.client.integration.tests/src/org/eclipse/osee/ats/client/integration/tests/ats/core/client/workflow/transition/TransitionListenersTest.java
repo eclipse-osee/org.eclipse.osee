@@ -27,17 +27,25 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionListeners;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 
 /**
  * @author Donald G. Dunne
  */
 public class TransitionListenersTest {
 
+   @BeforeClass
+   @AfterClass
+   public static void cleanup() throws OseeCoreException {
+      AtsTestUtil.cleanup();
+   }
+
    @org.junit.Test
    public void testHandleTransitionValidation__ExtensionPointCheck() throws OseeCoreException {
 
-      AtsTestUtil.cleanupAndReset("TransitionManagerTest-7");
+      AtsTestUtil.cleanupAndReset("TransitionListenersTest-7");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       MockTransitionHelper helper = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
          AtsTestUtil.getImplementStateDef().getName(),
