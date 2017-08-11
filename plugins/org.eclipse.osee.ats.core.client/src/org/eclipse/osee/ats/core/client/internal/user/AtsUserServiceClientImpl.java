@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import javax.ws.rs.core.HttpHeaders;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationProvider;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
@@ -230,6 +231,11 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
          users.add(atsUser);
       }
       return users;
+   }
+
+   @Override
+   public IAtsUser getUserByAccountId(HttpHeaders httpHeaders) {
+      throw new UnsupportedOperationException();
    }
 
 }

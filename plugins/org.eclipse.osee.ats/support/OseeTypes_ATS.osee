@@ -244,7 +244,9 @@ artifactType "Team Workflow" extends "ats.State Machine" , "Abstract Access Cont
 	attribute "ats.Applicable to Program"
 	attribute "ats.Duplicated PCR Id"
 	attribute "ats.Originating PCR Id"
-	attribute "ats.PCR Tool Id"
+	attribute "ats.PCR Tool Id"   
+	attribute "ats.Color Team"
+	attribute "ats.IPT"
 }
 
 artifactType "Work Package" extends "Artifact" {

@@ -208,6 +208,18 @@ public class AttributeTypesImpl implements AttributeTypes {
    }
 
    @Override
+   public boolean isStringType(AttributeTypeId attributeType) {
+      String baseType = getBaseAttributeTypeId(attributeType);
+      return baseType != null && baseType.toLowerCase().contains("string");
+   }
+
+   @Override
+   public boolean isLongType(AttributeTypeId attributeType) {
+      String baseType = getBaseAttributeTypeId(attributeType);
+      return baseType != null && baseType.toLowerCase().contains("long");
+   }
+
+   @Override
    public boolean isFloatingType(AttributeTypeId attrType) {
       String baseType = getBaseAttributeTypeId(attrType);
       return baseType != null && baseType.toLowerCase().contains("floatingpoint");

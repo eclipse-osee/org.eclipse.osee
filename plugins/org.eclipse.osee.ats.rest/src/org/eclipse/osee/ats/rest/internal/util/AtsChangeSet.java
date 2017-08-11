@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.rest.internal.util;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
@@ -384,6 +385,60 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       ArtifactReadable art = getArtifact(artifact);
       getTransaction().deleteAttributes(art, attributeType);
       add(art);
+   }
+
+   @Override
+   public void setAttributeValuesAsStrings(IAtsObject atsObject, AttributeTypeId attributeType, List<String> values) {
+      List<Object> objValues = new LinkedList<>();
+      for (String value : values) {
+         if (orcsApi.getOrcsTypes().getAttributeTypes().isStringType(attributeType)) {
+            try {
+               objValues.add(value);
+            } catch (Exception ex) {
+               throw new OseeArgumentException(ex, "Invalid date value [%v]; must be long date", value);
+            }
+         } else if (orcsApi.getOrcsTypes().getAttributeTypes().isDateType(attributeType)) {
+            try {
+               Date date = new Date(Long.valueOf(value));
+               objValues.add(date);
+            } catch (Exception ex) {
+               throw new OseeArgumentException(ex, "Invalid date value [%s]; must be long date", value);
+            }
+         } else if (orcsApi.getOrcsTypes().getAttributeTypes().isFloatingType(attributeType)) {
+            try {
+               Double double1 = Double.valueOf(value);
+               objValues.add(double1);
+            } catch (Exception ex) {
+               throw new OseeArgumentException(ex, "Invalid double value [%s]", value);
+            }
+         } else if (orcsApi.getOrcsTypes().getAttributeTypes().isIntegerType(attributeType)) {
+            try {
+               Integer integer = Integer.valueOf(value);
+               objValues.add(integer);
+            } catch (Exception ex) {
+               throw new OseeArgumentException(ex, "Invalid integer value [%s]", value);
+            }
+         } else if (orcsApi.getOrcsTypes().getAttributeTypes().isLongType(attributeType)) {
+            try {
+               Long longVal = Long.valueOf(value);
+               objValues.add(longVal);
+            } catch (Exception ex) {
+               throw new OseeArgumentException(ex, "Invalid long value [%s]", value);
+            }
+         } else if (orcsApi.getOrcsTypes().getAttributeTypes().isBooleanType(attributeType)) {
+            try {
+               Boolean bool = Boolean.valueOf(value);
+               objValues.add(bool);
+            } catch (Exception ex) {
+               throw new OseeArgumentException(ex, "Invalid boolean value [%s]", value);
+            }
+         } else {
+            throw new OseeArgumentException("Unsupported attribute value [%s] for type [%s] and artifact %s", value,
+               attributeType, atsObject.toStringWithId());
+         }
+      }
+      ArtifactReadable art = getArtifact(atsObject);
+      setAttributeValues(art, attributeType, objValues);
    }
 
    @Override

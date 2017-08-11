@@ -57,4 +57,8 @@ public interface AttributeTypes extends IdCollection<AttributeTypeToken> {
 
    AttributeTypeId getByName(String attrTypeName);
 
+   boolean isStringType(AttributeTypeId attrType);
+
+   boolean isLongType(AttributeTypeId attrType);
+
 }

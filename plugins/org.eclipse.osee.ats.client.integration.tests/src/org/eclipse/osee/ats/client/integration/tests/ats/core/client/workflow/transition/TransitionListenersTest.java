@@ -29,21 +29,19 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 
 /**
  * @author Donald G. Dunne
  */
 public class TransitionListenersTest {
 
-   @BeforeClass
    @AfterClass
-   public static void cleanup() throws OseeCoreException {
+   public static void cleanup() {
       AtsTestUtil.cleanup();
    }
 
    @org.junit.Test
-   public void testHandleTransitionValidation__ExtensionPointCheck() throws OseeCoreException {
+   public void testHandleTransitionValidation__ExtensionPointCheck() {
 
       AtsTestUtil.cleanupAndReset("TransitionListenersTest-7");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
@@ -90,7 +88,7 @@ public class TransitionListenersTest {
       ITransitionListener listener4 = new TransitionAdapter() {
 
          @Override
-         public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees) throws OseeCoreException {
+         public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees) {
             throw new OseeCoreException(exceptionStr);
          }
 

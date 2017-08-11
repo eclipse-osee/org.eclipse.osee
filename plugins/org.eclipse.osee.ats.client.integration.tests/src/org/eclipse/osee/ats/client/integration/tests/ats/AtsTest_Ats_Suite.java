@@ -58,7 +58,7 @@ import org.junit.runners.Suite;
    AtsTest_Util_Suite.class,
    AtsTest_Workflow_Suite.class,
    AtsTest_World_Search_Suite.class,
-   AtsTest_Version_Search_Suite.class //
+   AtsTest_Version_Search_Suite.class,
 })
 public class AtsTest_Ats_Suite {
    @BeforeClass

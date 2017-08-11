@@ -51,4 +51,6 @@ public interface IAtsActionFactory {
 
    void setAtsId(IAtsObject atsObject, IAtsTeamDefinition teamDef, IAtsChangeSet changes);
 
+   void setCreatedBy(IAtsWorkItem workItem, IAtsUser user, boolean logChange, Date date, IAtsChangeSet changes);
+
 }

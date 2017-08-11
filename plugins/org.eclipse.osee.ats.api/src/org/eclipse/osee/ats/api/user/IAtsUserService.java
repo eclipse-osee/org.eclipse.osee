@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.api.user;
 
 import java.util.Collection;
 import java.util.List;
+import javax.ws.rs.core.HttpHeaders;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -56,6 +57,11 @@ public interface IAtsUserService {
    List<? extends IAtsUser> getUsersFromDb();
 
    IAtsUser getUserByAccountId(Long accountId);
+
+   /**
+    * @return user specified by osee.account_id or null
+    */
+   IAtsUser getUserByAccountId(HttpHeaders httpHeaders);
 
    boolean isAtsAdmin(boolean useCache);
 

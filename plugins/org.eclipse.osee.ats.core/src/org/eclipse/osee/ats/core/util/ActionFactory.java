@@ -324,6 +324,7 @@ public class ActionFactory implements IAtsActionFactory {
       }
    }
 
+   @Override
    public void setCreatedBy(IAtsWorkItem workItem, IAtsUser user, boolean logChange, Date date, IAtsChangeSet changes) throws OseeCoreException {
       if (logChange) {
          logCreatedByChange(workItem, user, date, changes.getAsUser());

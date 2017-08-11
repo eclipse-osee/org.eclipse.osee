@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.rest.internal.workitem;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -26,6 +27,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
@@ -45,13 +47,20 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.Attribute;
+import org.eclipse.osee.ats.api.workflow.AttributeKey;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.core.users.AtsCoreUsers;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IAttribute;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
@@ -66,6 +75,9 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    private final IAtsServices services;
    private final OrcsApi orcsApi;
    private static final String ATS_UI_ACTION_PREFIX = "/ui/action/UUID";
+
+   @Context
+   private HttpHeaders httpHeaders;
 
    public AtsActionEndpointImpl(IAtsServices services, OrcsApi orcsApi) {
       this.services = services;
@@ -121,37 +133,114 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    }
 
    private Attribute getActionAttributeValues(String attrTypeId, IAtsWorkItem workItem) {
+      AttributeTypeId attrType = services.getStoreService().getAttributeType(Long.valueOf(attrTypeId));
+      return getActionAttributeValues(attrType, workItem);
+   }
+
+   private Attribute getActionAttributeValues(AttributeTypeId attrType, IAtsWorkItem workItem) {
       Attribute attribute = new Attribute();
-      if (workItem != null) {
-         attribute.setArtId(workItem.getStoreObject());
-         AttributeTypeId attrType = services.getStoreService().getAttributeType(Long.valueOf(attrTypeId));
-         attribute.setAttrTypeId(attrType);
-         for (IAttribute<?> attr : services.getAttributeResolver().getAttributes(workItem, attrType)) {
-            attribute.addAttribute(attr);
-         }
+      attribute.setArtId(workItem.getStoreObject());
+      attribute.setAttrTypeId(attrType);
+      for (IAttribute<?> attr : services.getAttributeResolver().getAttributes(workItem, attrType)) {
+         attribute.addAttribute(attr);
       }
       return attribute;
    }
 
    /**
-    * @param ids (guid, atsId, long) of workItem
+    * @param actionId (guid, atsId, long) of workItem
+    * @param attrTypeId can be the id of the attrType or one of (Title, Priority, ColorTeam, Assignee, IPT, Originator,
+    * Version, State). If State is sent in, it will result in the "transition" of the workflow.
     * @return html representation of the action
     */
    @Override
-   @Path("{actionId}/attributeType/{attrTypeId}")
+   @Path("{actionId}/attributeType/{attrTypeIdOrKey}")
    @PUT
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
-   public Attribute setActionAttributeByType(@PathParam("actionId") String actionId, @PathParam("attrTypeId") String attrTypeId, List<String> values) {
+   public Attribute setActionAttributeByType(@PathParam("actionId") String actionId, @PathParam("attrTypeIdOrKey") String attrTypeIdOrKey, List<String> values) {
       Conditions.assertNotNullOrEmpty(values, "values can not be null or empty");
       IAtsWorkItem workItem = services.getWorkItemService().getWorkItemByAnyId(actionId);
-      IAtsChangeSet changes = services.createChangeSet("set attr by type");
-      AttributeTypeId attrType = services.getStoreService().getAttributeType(Long.valueOf(attrTypeId));
-      changes.setAttributeValues(workItem, attrType, Collections.castAll(values));
+      IAtsChangeSet changes = services.createChangeSet("set attr by type or key " + attrTypeIdOrKey);
+      AttributeTypeId attrTypeId = null;
+      if (attrTypeIdOrKey.equals(AttributeKey.Title.name())) {
+         changes.setSoleAttributeValue(workItem, CoreAttributeTypes.Name, values.iterator().next());
+         attrTypeId = CoreAttributeTypes.Name;
+      } else if (attrTypeIdOrKey.equals(AttributeKey.Priority.name())) {
+         changes.setSoleAttributeValue(workItem, AtsAttributeTypes.PriorityType, values.iterator().next());
+         attrTypeId = AtsAttributeTypes.PriorityType;
+      } else if (attrTypeIdOrKey.equals(AttributeKey.ColorTeam.name())) {
+         changes.setSoleAttributeValue(workItem, AtsAttributeTypes.ColorTeam, values.iterator().next());
+         attrTypeId = AtsAttributeTypes.ColorTeam;
+      } else if (attrTypeIdOrKey.equals(AttributeKey.IPT.name())) {
+         changes.setSoleAttributeValue(workItem, AtsAttributeTypes.IPT, values.iterator().next());
+         attrTypeId = AtsAttributeTypes.IPT;
+      } else if (attrTypeIdOrKey.equals(AttributeKey.State.name())) {
+         String state = values.iterator().next();
+         TransitionHelper helper = new TransitionHelper("Transition Workflow", Arrays.asList(workItem), state,
+            new ArrayList<IAtsUser>(), "", changes, services, TransitionOption.OverrideAssigneeCheck);
+         IAtsUser asUser = services.getUserService().getUserByAccountId(httpHeaders);
+         if (asUser == null) {
+            asUser = AtsCoreUsers.SYSTEM_USER;
+         }
+         helper.setTransitionUser(asUser);
+         TransitionManager mgr = new TransitionManager(helper);
+         TransitionResults results = new TransitionResults();
+         mgr.handleTransitionValidation(results);
+         if (!results.isEmpty()) {
+            throw new OseeArgumentException("Exception transitioning " + results.toString());
+         }
+         mgr.handleTransition(results);
+         if (!results.isEmpty()) {
+            throw new OseeArgumentException("Exception transitioning " + results.toString());
+         }
+         attrTypeId = AtsAttributeTypes.CurrentState;
+      } else if (attrTypeIdOrKey.equals(AttributeKey.Version.name())) {
+         if (!workItem.isTeamWorkflow()) {
+            throw new OseeArgumentException("Not valid to set version for [%s]", workItem.getArtifactTypeName());
+         }
+         String version = values.iterator().next();
+         if (Strings.isValid(version)) {
+            IAtsVersion currVersion = services.getVersionService().getTargetedVersion(workItem);
+            if (!currVersion.getName().equals(version)) {
+               IAtsVersion newVer = null;
+               IAtsTeamDefinition teamDef = workItem.getParentTeamWorkflow().getTeamDefinition();
+               for (IAtsVersion teamDefVer : services.getVersionService().getVersions(teamDef)) {
+                  if (teamDefVer.getName().equals(version)) {
+                     newVer = teamDefVer;
+                     break;
+                  }
+               }
+               if (newVer == null) {
+                  throw new OseeArgumentException("Version [%s] not valid for team ", version,
+                     teamDef.toStringWithId());
+               }
+               services.getVersionService().setTargetedVersion(workItem.getParentTeamWorkflow(), newVer, changes);
+            }
+         }
+      } else if (attrTypeIdOrKey.equals(AttributeKey.Originator.name())) {
+         String accountId = values.iterator().next();
+         if (!Strings.isNumeric(accountId)) {
+            IAtsUser originator = services.getUserService().getUserByAccountId(Long.valueOf(accountId));
+            if (originator == null) {
+               throw new OseeArgumentException("No user with account id [%s]", accountId);
+            }
+            services.getActionFactory().setCreatedBy(workItem, originator, true, workItem.getCreatedDate(), changes);
+         }
+      } else {
+         attrTypeId = services.getStoreService().getAttributeType(Long.valueOf(attrTypeIdOrKey));
+         if (attrTypeId != null) {
+            changes.setAttributeValuesAsStrings(workItem, attrTypeId, values);
+         }
+      }
       changes.executeIfNeeded();
+
       // reload to get latest
       workItem = services.getWorkItemService().getWorkItemByAnyId(actionId);
-      return getActionAttributeValues(attrTypeId, workItem);
+      if (attrTypeId != null) {
+         return getActionAttributeValues(attrTypeId, workItem);
+      }
+      return null;
    }
 
    /**
@@ -194,6 +283,8 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
                }
             }
             query.andTeam(teams);
+         } else if (entry.getKey().equals("State")) {
+            query.andState(entry.getValue().iterator().next());
          } else if (entry.getKey().equals("StateType")) {
             try {
                List<StateType> stateTypes = new LinkedList<>();

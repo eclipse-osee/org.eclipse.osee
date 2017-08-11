@@ -14,7 +14,9 @@ import static org.eclipse.osee.framework.core.enums.RelationSorter.PREEXISTING;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsObject;
@@ -45,6 +47,13 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.LongAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
@@ -431,5 +440,57 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       Artifact art = getArtifact(artifact);
       art.deleteAttributes(attributeType);
       add(art);
+   }
+
+   @Override
+   public void setAttributeValuesAsStrings(IAtsObject atsObject, AttributeTypeId attributeType, List<String> values) {
+      List<Object> objValues = new LinkedList<>();
+      for (String value : values) {
+         if (AttributeTypeManager.isBaseTypeCompatible(StringAttribute.class, attributeType)) {
+            try {
+               objValues.add(value);
+            } catch (Exception ex) {
+               throw new OseeArgumentException(ex, "Invalid date value [%v]; must be long date", value);
+            }
+         } else if (AttributeTypeManager.isBaseTypeCompatible(DateAttribute.class, attributeType)) {
+            try {
+               Date date = new Date(Long.valueOf(value));
+               objValues.add(date);
+            } catch (Exception ex) {
+               throw new OseeArgumentException(ex, "Invalid date value [%v]; must be long date", value);
+            }
+         } else if (AttributeTypeManager.isBaseTypeCompatible(FloatingPointAttribute.class, attributeType)) {
+            try {
+               Double double1 = Double.valueOf(value);
+               objValues.add(double1);
+            } catch (Exception ex) {
+               throw new OseeArgumentException(ex, "Invalid double value [%v]", value);
+            }
+         } else if (AttributeTypeManager.isBaseTypeCompatible(IntegerAttribute.class, attributeType)) {
+            try {
+               Integer integer = Integer.valueOf(value);
+               objValues.add(integer);
+            } catch (Exception ex) {
+               throw new OseeArgumentException(ex, "Invalid integer value [%v]", value);
+            }
+         } else if (AttributeTypeManager.isBaseTypeCompatible(LongAttribute.class, attributeType)) {
+            try {
+               Long longVal = Long.valueOf(value);
+               objValues.add(longVal);
+            } catch (Exception ex) {
+               throw new OseeArgumentException(ex, "Invalid long value [%v]", value);
+            }
+         } else if (AttributeTypeManager.isBaseTypeCompatible(BooleanAttribute.class, attributeType)) {
+            try {
+               Boolean bool = Boolean.valueOf(value);
+               objValues.add(bool);
+            } catch (Exception ex) {
+               throw new OseeArgumentException(ex, "Invalid long value [%v]", value);
+            }
+         } else {
+            throw new OseeArgumentException("Unsupported attribute value [%v] for type [%s]", attributeType, value);
+         }
+      }
+      setAttributeValues(getArtifact(atsObject), attributeType, objValues);
    }
 }

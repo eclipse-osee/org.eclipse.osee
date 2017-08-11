@@ -15,6 +15,7 @@ import com.google.common.base.Suppliers;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import javax.ws.rs.core.HttpHeaders;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -27,6 +28,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.utility.RestUtil;
 
 /**
  * @author Donald G. Dunne
@@ -154,6 +156,17 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
       ArtifactReadable userArt =
          orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(id).getResults().getExactlyOne();
       return createFromArtifact(userArt);
+   }
+
+   @Override
+   public IAtsUser getUserByAccountId(HttpHeaders httpHeaders) {
+      IAtsUser user = null;
+      String accountId = RestUtil.getAccountId(httpHeaders);
+      IAtsUser userById = getUserByAccountId(Long.valueOf(accountId));
+      if (userById != null) {
+         user = userById;
+      }
+      return user;
    }
 
 }
