@@ -403,8 +403,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
                      BranchId isArtBranch = art.getBranch();
                      if (isArtBranch != null) {
                         if (ViewApplicabilityUtil.isBranchOfProductLine(isArtBranch)) {
-                           branchViews =
-                              ViewApplicabilityUtil.getBranchViews(ViewApplicabilityUtil.getParentBranch(isArtBranch));
+                           branchViews = ViewApplicabilityUtil.getBranchViews(isArtBranch);
                            branchViewWidget.setDataStrings(branchViews.values());
                         }
                      }

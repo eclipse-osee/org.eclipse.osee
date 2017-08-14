@@ -10,22 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.branch;
 
-import java.util.ArrayList;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.BranchView;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchViewData;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -103,26 +99,11 @@ public class ViewApplicabilityUtil {
       return null;
    }
 
-   public static List<BranchViewData> getBranchViewData(BranchId branch) {
-      ApplicabilityEndpoint applEndpoint = getApplicabilityEndpoint(branch);
-      List<BranchViewData> views = new ArrayList<>();
-      if (applEndpoint != null) {
-         views.addAll(applEndpoint.getViews());
-      }
-      return views;
-   }
-
    public static Map<Long, String> getBranchViews(BranchId branch) {
       Map<Long, String> viewsToBranchData = new HashMap<Long, String>();
-      for (BranchViewData view : ViewApplicabilityUtil.getBranchViewData(branch)) {
-         for (ArtifactId art : view.getBranchViews()) {
-            try {
-               Artifact artifact = ArtifactQuery.getArtifactFromId(art, branch);
-               viewsToBranchData.put(art.getId(), artifact.getName());
-            } catch (ArtifactDoesNotExist e) {
-               // Do Nothing
-            }
-         }
+      List<Artifact> branchViews = ArtifactQuery.getArtifactListFromType(BranchView, branch);
+      for (Artifact art : branchViews) {
+         viewsToBranchData.put(art.getId(), art.getName());
       }
       return viewsToBranchData;
    }

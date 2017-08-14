@@ -89,8 +89,7 @@ public class ChangeReportPageViewApplicability {
    }
 
    private String getArtifactViewApplicabiltyText() {
-      Map<Long, String> branchViews =
-         ViewApplicabilityUtil.getBranchViews(ViewApplicabilityUtil.getParentBranch(getBranch()));
+      Map<Long, String> branchViews = ViewApplicabilityUtil.getBranchViews(getBranch());
       String result = branchViews.get(editor.getViewId());
       return String.format("<form><p><b>Branch View:</b> %s</p></form>", result == null ? "Not Set" : result);
    }
@@ -117,8 +116,7 @@ public class ChangeReportPageViewApplicability {
    }
 
    private boolean changeView() {
-      Map<Long, String> branchViews =
-         ViewApplicabilityUtil.getBranchViews(ViewApplicabilityUtil.getParentBranch(getBranch()));
+      Map<Long, String> branchViews = ViewApplicabilityUtil.getBranchViews(getBranch());
       ViewBranchViewFilterTreeDialog dialog =
          new ViewBranchViewFilterTreeDialog("Select Branch View", "Select Branch View", branchViews);
       Collection<String> values = new ArrayList<>();

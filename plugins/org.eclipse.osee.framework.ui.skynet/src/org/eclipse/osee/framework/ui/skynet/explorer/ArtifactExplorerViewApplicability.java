@@ -103,8 +103,7 @@ public class ArtifactExplorerViewApplicability {
                      button.setEnabled(true);
                      viewId = explorer.getViewId();
                   }
-                  branchViews =
-                     ViewApplicabilityUtil.getBranchViews(ViewApplicabilityUtil.getParentBranch(explorer.getBranch()));
+                  branchViews = ViewApplicabilityUtil.getBranchViews(explorer.getBranch());
                   result = branchViews.get(viewId);
                }
             }
@@ -116,8 +115,7 @@ public class ArtifactExplorerViewApplicability {
    }
 
    private boolean changeView() {
-      Map<Long, String> branchViews =
-         ViewApplicabilityUtil.getBranchViews(ViewApplicabilityUtil.getParentBranch(explorer.getBranch()));
+      Map<Long, String> branchViews = ViewApplicabilityUtil.getBranchViews(explorer.getBranch());
       ViewBranchViewFilterTreeDialog dialog =
          new ViewBranchViewFilterTreeDialog("Select Branch View", "Select Branch View", branchViews);
       Collection<String> values = new ArrayList<>();
