@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.sql.join;
 
-import java.util.HashMap;
-import java.util.function.Consumer;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -24,54 +22,60 @@ import org.eclipse.osee.logger.Log;
  * @author Roberto E. Escobar
  */
 public class JoinCleanerCallable extends CancellableCallable<Void> {
-
    private final static String DELETE_JOIN_CLEANUP = "DELETE FROM osee_join_cleanup WHERE query_id = ?";
-   private final static String SELECT_FROM_JOIN_CLEANUP = "SELECT * from osee_join_cleanup";
+   private final static String SELECT_FROM_JOIN_CLEANUP = "SELECT * from osee_join_cleanup order by table_name";
 
    private final Log logger;
    private final JdbcClient jdbcClient;
+   private String previousTableName = "";
+   private long currentTime;
+   private OseePreparedStatement joinDelete;
+   private OseePreparedStatement cleanupDelete;
 
    public JoinCleanerCallable(Log logger, JdbcClient jdbcClient) {
       this.logger = logger;
       this.jdbcClient = jdbcClient;
    }
 
-   private boolean isExpired(Long issuedAt, Long lifetime) {
-      return lifetime != -1 && issuedAt + lifetime < System.currentTimeMillis() / 1000;
+   private boolean isExpired(long issuedAt, long lifetime, long currentTime) {
+      return lifetime != -1 && issuedAt + lifetime < currentTime;
    }
 
    @Override
    public Void call() throws Exception {
       try {
-         OseePreparedStatement cleanupDelete = jdbcClient.getBatchStatement(DELETE_JOIN_CLEANUP);
-         HashMap<String, OseePreparedStatement> joinDeletes = new HashMap<>();
+         currentTime = System.currentTimeMillis() / 1000;
 
-         Consumer<JdbcStatement> consumer = stmt -> {
-            Long issuedAt = stmt.getLong("issued_at");
-            Long expiresIn = stmt.getLong("expires_in");
-            if (isExpired(issuedAt, expiresIn)) {
-               String tableName = stmt.getString("table_name");
-               Integer queryId = stmt.getInt("query_id");
-
-               OseePreparedStatement joinDelete = joinDeletes.get(tableName);
-               if (joinDelete == null) {
-                  joinDelete = jdbcClient.getBatchStatement("DELETE FROM " + tableName + " WHERE query_id = ?");
-                  joinDeletes.put(tableName, joinDelete);
-               }
-
-               joinDelete.addToBatch(queryId);
-               cleanupDelete.addToBatch(queryId);
-            }
-         };
-         jdbcClient.runQuery(consumer, SELECT_FROM_JOIN_CLEANUP);
-
-         cleanupDelete.execute();
-         for (OseePreparedStatement joinDelete : joinDeletes.values()) {
+         cleanupDelete = jdbcClient.getBatchStatement(DELETE_JOIN_CLEANUP);
+         try {
+            jdbcClient.runQuery(this::processRow, SELECT_FROM_JOIN_CLEANUP);
+         } finally {
             joinDelete.execute();
+            cleanupDelete.execute();
          }
       } catch (Exception ex) {
-         logger.error(ex, "Error cleaning join");
+         logger.error(ex, "Error cleaning join tables");
       }
       return null;
+   }
+
+   private void processRow(JdbcStatement stmt) {
+      long issuedAt = stmt.getLong("issued_at");
+      long expiresIn = stmt.getLong("expires_in");
+
+      if (isExpired(issuedAt, expiresIn, currentTime)) {
+         String tableName = stmt.getString("table_name");
+         if (!tableName.equals(previousTableName)) {
+            if (joinDelete != null) {
+               joinDelete.execute();
+            }
+            joinDelete = jdbcClient.getBatchStatement("DELETE FROM " + tableName + " WHERE query_id = ?");
+            previousTableName = tableName;
+         }
+
+         Integer queryId = stmt.getInt("query_id");
+         joinDelete.addToBatch(queryId);
+         cleanupDelete.addToBatch(queryId);
+      }
    }
 }
