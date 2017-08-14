@@ -487,12 +487,12 @@ public final class JdbcClientImpl implements JdbcClient {
 
    @Override
    public OseePreparedStatement getBatchStatement(String query) {
-      return getBatchStatement(getConnection(), query, JDBC__MAX_TX_ROW_COUNT);
+      return getBatchStatement(query, JDBC__MAX_TX_ROW_COUNT);
    }
 
    @Override
    public OseePreparedStatement getBatchStatement(String query, int batchIncrementSize) {
-      return getBatchStatement(getConnection(), query, batchIncrementSize);
+      return getBatchStatement(null, query, batchIncrementSize);
    }
 
    @Override
