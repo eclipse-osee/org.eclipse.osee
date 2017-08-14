@@ -87,13 +87,6 @@ public class BranchCache extends AbstractOseeLoadingCache<Branch> {
       return views;
    }
 
-   public synchronized List<Branch> getBranchesAndViews(Predicate<Branch> branchFilter) {
-      List<Branch> branches = getBranches(branchFilter);
-      branches.addAll(views);
-
-      return branches;
-   }
-
    public synchronized List<Branch> getBranches(Predicate<Branch> branchFilter) {
       return getRawValues().stream().filter(branchFilter).collect(Collectors.toList());
    }

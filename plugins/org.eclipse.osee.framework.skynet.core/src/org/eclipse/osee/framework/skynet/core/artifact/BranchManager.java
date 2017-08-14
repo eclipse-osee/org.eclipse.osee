@@ -95,10 +95,6 @@ public final class BranchManager {
       return ServiceUtil.getOseeCacheService().getBranchCache();
    }
 
-   public static List<Branch> getBranchesAndViews(Predicate<Branch> branchFilter) {
-      return getCache().getBranchesAndViews(branchFilter);
-   }
-
    public static List<Branch> getBranches(Predicate<Branch> branchFilter) {
       return getCache().getBranches(branchFilter);
    }
@@ -536,10 +532,6 @@ public final class BranchManager {
 
    public static List<? extends IOseeBranch> getBaselineBranches() {
       return getBranches(BranchArchivedState.UNARCHIVED, BranchType.BASELINE);
-   }
-
-   public static List<Branch> getBranchesAndViews(BranchArchivedState archivedState, BranchType... branchTypes) {
-      return getCache().getBranchesAndViews(new BranchFilter(archivedState, branchTypes));
    }
 
    public static List<Branch> getBranches(BranchArchivedState archivedState, BranchType... branchTypes) {

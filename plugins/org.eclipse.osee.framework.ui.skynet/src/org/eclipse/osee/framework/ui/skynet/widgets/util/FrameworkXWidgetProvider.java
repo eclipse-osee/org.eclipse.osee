@@ -150,7 +150,7 @@ public final class FrameworkXWidgetProvider {
             }
             try {
                List<? extends IOseeBranch> branches =
-                  BranchManager.getBranchesAndViews(BranchArchivedState.ALL, BranchType.WORKING, BranchType.BASELINE);
+                  BranchManager.getBranches(BranchArchivedState.ALL, BranchType.WORKING, BranchType.BASELINE);
                Collections.sort(branches);
 
                multiBranchSelect.setSelectableItems(branches);

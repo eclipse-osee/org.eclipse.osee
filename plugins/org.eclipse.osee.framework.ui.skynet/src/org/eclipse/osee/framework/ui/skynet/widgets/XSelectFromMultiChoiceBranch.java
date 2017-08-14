@@ -41,7 +41,7 @@ public class XSelectFromMultiChoiceBranch extends XSelectFromDialog<BranchId> {
    @Override
    public FilteredCheckboxTreeDialog createDialog() {
       List<? extends IOseeBranch> branches =
-         BranchManager.getBranchesAndViews(BranchArchivedState.UNARCHIVED, BranchType.WORKING, BranchType.BASELINE);
+         BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING, BranchType.BASELINE);
       Collections.sort(branches);
       return new FilteredCheckboxBranchDialog(getLabel(), "Select from the items below", branches);
    }
