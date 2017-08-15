@@ -16,6 +16,7 @@ import java.util.ArrayList;
 public class ApplicabilityBlock {
    public enum ApplicabilityType {
       Configuration,
+      NotConfiguration,
       Feature
    };
 

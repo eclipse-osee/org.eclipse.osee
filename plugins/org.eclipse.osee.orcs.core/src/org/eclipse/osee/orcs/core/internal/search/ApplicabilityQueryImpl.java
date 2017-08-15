@@ -107,18 +107,19 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    }
 
    @Override
-   public Map<String, List<String>> getBranchViewFeatureValues(BranchId branch, ArtifactId viewId) {
-      Map<String, List<String>> toReturn = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
-      List<ApplicabilityToken> result = getViewApplicabilityTokens(viewId, branch);
+   public Map<String, List<String>> getNamedViewApplicabilityMap(BranchId branch, ArtifactId viewId) {
+      Map<String, List<String>> toReturn = new TreeMap<>();
+      List<ApplicabilityToken> appTokens = getViewApplicabilityTokens(viewId, branch);
 
-      for (ApplicabilityToken app : result) {
-         if (!app.getName().equalsIgnoreCase("Base") && !app.getName().contains("|") && !app.getName().contains("&")) {
-            String[] values = app.getName().split("=");
+      for (ApplicabilityToken app : appTokens) {
+         // Ignore features with |s and &s, Ignore the configuration name
+         if (!app.getName().equalsIgnoreCase("Base") && !app.getName().contains("|") && !app.getName().contains(
+            "&") && !app.getName().toLowerCase().contains("config")) {
+            String[] split = app.getName().split("=");
 
-            // This will not return Excluded Configurations
-            if (values.length <= 2) {
-               String name = values[0].trim();
-               String value = values[1].trim();
+            if (split.length == 2) {
+               String name = split[0].trim();
+               String value = split[1].trim();
 
                if (toReturn.containsKey(name)) {
                   List<String> list = new ArrayList<>();

@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Stack;
 import java.util.TreeMap;
@@ -72,8 +71,10 @@ public class WordMLApplicabilityHandler {
       validConfigurations = getValidConfigurations(orcsApi, branch);
 
       viewApplicabilitiesMap =
-         orcsApi.getQueryFactory().applicabilityQuery().getBranchViewFeatureValues(branchToUse, view);
-      configurationToView = viewApplicabilitiesMap.get("config").iterator().next();
+         orcsApi.getQueryFactory().applicabilityQuery().getNamedViewApplicabilityMap(branchToUse, view);
+      ArtifactReadable viewArtifact =
+         orcsApi.getQueryFactory().fromBranch(branchToUse).andId(view).getResults().getAtMostOneOrNull();
+      configurationToView = viewArtifact.getName();
 
       BranchReadable br = orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getOneOrNull();
       if (br.getBranchType().equals(BranchType.MERGE)) {
@@ -93,11 +94,11 @@ public class WordMLApplicabilityHandler {
       Matcher matcher = WordCoreUtil.FULL_PATTERN.matcher(toReturn);
 
       while (searchIndex < toReturn.length() && matcher.find(searchIndex)) {
-         String beginFeature = matcher.group(1) != null ? matcher.group(1) : null;
-         String beginConfig = matcher.group(26) != null ? matcher.group(26) : null;
+         String beginFeature = matcher.group(1);
+         String beginConfig = matcher.group(26);
 
          String endFeature = matcher.group(12) != null ? WordCoreUtil.textOnly(matcher.group(12)).toLowerCase() : null;
-         String endConfig = matcher.group(43) != null ? WordCoreUtil.textOnly(matcher.group(43)).toLowerCase() : null;
+         String endConfig = matcher.group(48) != null ? WordCoreUtil.textOnly(matcher.group(48)).toLowerCase() : null;
 
          if (beginFeature != null && WordCoreUtil.textOnly(beginFeature).toLowerCase().contains(
             WordCoreUtil.FEATUREAPP)) {
@@ -109,8 +110,11 @@ public class WordMLApplicabilityHandler {
             WordCoreUtil.CONFIGAPP)) {
             if (isValidConfigurationBracket(beginConfig)) {
                applicBlockCount += 1;
-               searchIndex =
-                  addApplicabilityBlock(ApplicabilityType.Configuration, matcher, beginConfig, searchIndex, toReturn);
+               ApplicabilityType type = ApplicabilityType.Configuration;
+               if (beginConfig.contains("Not")) {
+                  type = ApplicabilityType.NotConfiguration;
+               }
+               searchIndex = addApplicabilityBlock(type, matcher, beginConfig, searchIndex, toReturn);
             } else {
                searchIndex = matcher.end();
             }
@@ -401,11 +405,13 @@ public class WordMLApplicabilityHandler {
 
          parser.start();
 
-         if (applic.getType().equals(ApplicabilityType.Feature)) {
+         ApplicabilityType type = applic.getType();
+
+         if (type.equals(ApplicabilityType.Feature)) {
             toInsert =
                getValidFeatureContent(fullText, applic.isInTable(), parser.getIdValuesMap(), parser.getOperators());
-         } else if (applic.getType().equals(ApplicabilityType.Configuration)) {
-            toInsert = getValidConfigurationContent(fullText, parser.getIdValuesMap());
+         } else if (type.equals(ApplicabilityType.Configuration) || type.equals(ApplicabilityType.NotConfiguration)) {
+            toInsert = getValidConfigurationContent(type, fullText, parser.getIdValuesMap());
          }
 
       } catch (RecognitionException ex) {
@@ -416,7 +422,7 @@ public class WordMLApplicabilityHandler {
       return toInsert;
    }
 
-   public String getValidConfigurationContent(String fullText, HashMap<String, List<String>> id_value_map) {
+   public String getValidConfigurationContent(ApplicabilityType type, String fullText, HashMap<String, List<String>> id_value_map) {
       Matcher match = WordCoreUtil.ELSE_PATTERN.matcher(fullText);
       String beginningText = fullText;
       String elseText = "";
@@ -433,22 +439,19 @@ public class WordMLApplicabilityHandler {
 
       // Note: this assumes only OR's are put in between configurations
       List<String> values = id_value_map.get(configurationToView.toUpperCase());
-      if (values != null) {
-         String value = values.get(0);
-         if (!value.toLowerCase().equals("excluded")) {
+
+      if (type.equals(ApplicabilityType.NotConfiguration)) {
+         if (values != null) {
+            toReturn = elseText;
+         } else {
             toReturn = beginningText;
          }
+      } else if (values == null) {
+         toReturn = elseText;
       } else {
-         boolean isExcluded = false;
-         for (Entry<String, List<String>> entry : id_value_map.entrySet()) {
-            List<String> value = entry.getValue();
-            isExcluded = value.get(0).toLowerCase().equals("excluded") ? true : false;
-            if (!isExcluded) {
-               break;
-            }
-         }
-         toReturn = isExcluded ? beginningText : "";
+         toReturn = beginningText;
       }
+
       return toReturn;
    }
 

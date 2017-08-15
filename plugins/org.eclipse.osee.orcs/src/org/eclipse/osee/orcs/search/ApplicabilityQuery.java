@@ -39,7 +39,7 @@ public interface ApplicabilityQuery {
 
    List<ApplicabilityToken> getViewApplicabilityTokens(ArtifactId artId, BranchId branch);
 
-   Map<String, List<String>> getBranchViewFeatureValues(BranchId branch, ArtifactId viewId);
+   Map<String, List<String>> getNamedViewApplicabilityMap(BranchId branch, ArtifactId viewId);
 
    List<BranchViewData> getViews();
 }

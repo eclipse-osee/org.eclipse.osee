@@ -55,11 +55,12 @@ public class WordTemplateContentRendererHandler {
       }
       ArtifactReadable artifact = null;
       if (txId.equals(TransactionId.SENTINEL)) {
-         artifact = orcsApi.getQueryFactory().fromBranch(wtcData.getBranch()).andUuid(
-            wtcData.getArtId()).includeDeletedArtifacts().includeDeletedAttributes().getResults().getAtMostOneOrNull();
+         artifact = orcsApi.getQueryFactory().fromBranch(wtcData.getBranch()).andId(ArtifactId.valueOf(
+            wtcData.getArtId())).includeDeletedArtifacts().includeDeletedAttributes().getResults().getAtMostOneOrNull();
       } else {
-         artifact = orcsApi.getQueryFactory().fromBranch(wtcData.getBranch()).fromTransaction(txId).andUuid(
-            wtcData.getArtId()).includeDeletedArtifacts().includeDeletedAttributes().getResults().getAtMostOneOrNull();
+         artifact =
+            orcsApi.getQueryFactory().fromBranch(wtcData.getBranch()).fromTransaction(txId).andId(ArtifactId.valueOf(
+               wtcData.getArtId())).includeDeletedArtifacts().includeDeletedAttributes().getResults().getAtMostOneOrNull();
       }
 
       if (artifact != null) {

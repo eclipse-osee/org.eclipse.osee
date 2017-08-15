@@ -8,6 +8,8 @@ output=AST;
 
 // START:members
 @header {
+package org.eclipse.osee.framework.core.grammar;
+
 	import java.util.HashMap;
 	import java.util.Arrays;
 	import java.util.Collections;
@@ -40,7 +42,7 @@ start                  :  applicability EOF! { operators.removeAll(Collections.s
 applicability           : config_applicability { applicabilityType="Config"; } 
 								| feature_applicability { applicabilityType="Feature"; } ;
 									
-config_applicability    : 'CONFIGURATION[' expressions+ ']';
+config_applicability    : ('CONFIGURATION'|'CONFIGURATION NOT')'[' expressions+ ']';
 
 feature_applicability   : 'FEATURE[' expressions+ ']' ;
 
@@ -75,6 +77,7 @@ value				      : temp=operator? ID {
 operator					: AND | OR;
 OR							: '|';
 AND						: '&';
+NOT						: 'NOT';
 ID : ('a'..'z'|'A'..'Z')('a'..'z'|'A'..'Z'|'0'..'9'|'_'|'-'|' ')* ;
 
 WS : (' '|'\r'|'\t'|'\n')+ {$channel=HIDDEN;};

@@ -55,23 +55,16 @@ public class WordCoreUtil {
       "F" + WORD_ML_TAGS + "e" + WORD_ML_TAGS + "a" + WORD_ML_TAGS + "t" + WORD_ML_TAGS + "u" + WORD_ML_TAGS + "r" + WORD_ML_TAGS + "e";
    public static String CONFIG =
       "C" + WORD_ML_TAGS + "o" + WORD_ML_TAGS + "n" + WORD_ML_TAGS + "f" + WORD_ML_TAGS + "i" + WORD_ML_TAGS + "g" + WORD_ML_TAGS + "u" + WORD_ML_TAGS + "r" + WORD_ML_TAGS + "a" + WORD_ML_TAGS + "t" + WORD_ML_TAGS + "i" + WORD_ML_TAGS + "o" + WORD_ML_TAGS + "n";
+   public static String NOT = "N" + WORD_ML_TAGS + "o" + WORD_ML_TAGS + "t";
 
    public static String ENDBRACKETS = WORD_ML_TAGS + " ?(\\[(.*?)\\]) ?";
    public static String OPTIONAL_ENDBRACKETS = " ?(" + WORD_ML_TAGS + "(\\[.*?\\]))?";
    public static String BEGINFEATURE = FEATURE + WORD_ML_TAGS + " ?" + ENDBRACKETS;
    public static String ENDFEATURE = END + WORD_ML_TAGS + FEATURE + OPTIONAL_ENDBRACKETS;
-   public static String BEGINCONFIG = CONFIG + WORD_ML_TAGS + " ?" + ENDBRACKETS;
+   public static String BEGINCONFIG =
+      CONFIG + WORD_ML_TAGS + "( " + WORD_ML_TAGS + NOT + WORD_ML_TAGS + ")? ?" + ENDBRACKETS;
    public static String ENDCONFIG = END + WORD_ML_TAGS + CONFIG + OPTIONAL_ENDBRACKETS;
    public static String ELSE_EXP = "(" + FEATURE + "|" + CONFIG + ")" + " " + ELSE;
-
-   public static String LOGICAL_STRING = WORD_ML_TAGS + " ?(LM|ID).*?";
-
-   public static Pattern LOGICAL_PATTERN =
-      Pattern.compile(LOGICAL_STRING, Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-
-   public static Pattern FEATURE_CONFIG_PATTERN =
-      Pattern.compile("(" + BEGINFEATURE + "(.*?)" + ENDFEATURE + ")|(" + BEGINCONFIG + "(.*?)" + ENDCONFIG + ")",
-         Pattern.DOTALL | Pattern.MULTILINE);
 
    public static Pattern ELSE_PATTERN = Pattern.compile(ELSE_EXP, Pattern.DOTALL | Pattern.MULTILINE);
 
@@ -84,10 +77,6 @@ public class WordCoreUtil {
    public static Pattern FULL_PATTERN =
       Pattern.compile("(" + BEGINFEATURE + ")|(" + ENDFEATURE + ")|(" + BEGINCONFIG + ")|(" + ENDCONFIG + ")",
          Pattern.DOTALL | Pattern.MULTILINE);
-   public static Pattern START_PATTERN =
-      Pattern.compile("(" + BEGINFEATURE + ") | (" + BEGINCONFIG + ")", Pattern.DOTALL | Pattern.MULTILINE);
-   public static Pattern END_PATTERN =
-      Pattern.compile("(" + ENDFEATURE + ") | (" + ENDCONFIG + ")", Pattern.DOTALL | Pattern.MULTILINE);
 
    public static String EMPTY_LIST_REGEX =
       "<w:p wsp:rsidP=\"[^\"]*?\" wsp:rsidR=\"[^\"]*?\" wsp:rsidRDefault=\"[^\"]*?\"><w:pPr><w:pStyle w:val=\"[^\"]*?\"></w:pStyle><w:listPr><wx:t wx:val=\"([^>]*?)\"></wx:t><wx:font wx:val=\"[^\"]*?\"></wx:font></w:listPr></w:pPr><w:r><w:t></w:t></w:r></w:p>";
@@ -126,7 +115,7 @@ public class WordCoreUtil {
          String beginConfiguration = matcher.group(26) != null ? WordCoreUtil.textOnly(matcher.group(26)) : null;
 
          String endFeature = matcher.group(12) != null ? WordCoreUtil.textOnly(matcher.group(12)) : null;
-         String endConfiguration = matcher.group(43) != null ? WordCoreUtil.textOnly(matcher.group(43)) : null;
+         String endConfiguration = matcher.group(48) != null ? WordCoreUtil.textOnly(matcher.group(48)) : null;
 
          if (beginFeature != null && beginFeature.toLowerCase().contains(FEATUREAPP)) {
             applicBlockCount += 1;
