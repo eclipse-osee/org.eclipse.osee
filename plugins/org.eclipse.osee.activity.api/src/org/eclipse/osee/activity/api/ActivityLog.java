@@ -12,6 +12,7 @@ package org.eclipse.osee.activity.api;
 
 import org.eclipse.osee.framework.core.data.ActivityTypeId;
 import org.eclipse.osee.framework.core.data.ActivityTypeToken;
+import org.eclipse.osee.framework.core.data.UserId;
 
 /**
  * @author Ryan D. Brooks
@@ -31,7 +32,7 @@ public interface ActivityLog {
 
    Long createEntry(ActivityTypeToken type, Long parentId, Integer status, Object... messageArgs);
 
-   Long createEntry(Long accountId, Long clientId, ActivityTypeToken typeId, Long parentId, Integer status, String... messageArgs);
+   Long createEntry(UserId accountId, Long clientId, ActivityTypeToken typeId, Long parentId, Integer status, String... messageArgs);
 
    Long createThrowableEntry(ActivityTypeToken type, Throwable throwable);
 
@@ -49,9 +50,9 @@ public interface ActivityLog {
 
    void endEntryAbnormally(Long entryId, Integer status);
 
-   Long createActivityThread(ActivityTypeToken type, Long accountId, Long serverId, Long clientId, Object... messageArgs);
+   Long createActivityThread(ActivityTypeToken type, UserId accountId, Long serverId, Long clientId, Object... messageArgs);
 
-   Long createActivityThread(Long parentId, ActivityTypeToken type, Long accountId, Long serverId, Long clientId, Object... messageArgs);
+   Long createActivityThread(Long parentId, ActivityTypeToken type, UserId accountId, Long serverId, Long clientId, Object... messageArgs);
 
    ActivityTypeToken getActivityType(ActivityTypeId typeId);
 

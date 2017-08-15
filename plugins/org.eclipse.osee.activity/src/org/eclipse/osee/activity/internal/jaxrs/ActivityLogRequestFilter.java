@@ -19,6 +19,7 @@ import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.ext.Provider;
 import org.eclipse.osee.activity.ActivityConstants;
 import org.eclipse.osee.activity.api.ActivityLog;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 
@@ -55,10 +56,7 @@ public class ActivityLogRequestFilter implements ContainerRequestFilter {
                clientId = Long.valueOf(context.getHeaders().getFirst("osee.client.id"));
             }
 
-            Long accountId = ActivityConstants.DEFAULT_ACCOUNT_ID;
-            if (Strings.isNumeric(context.getHeaders().getFirst("osee.account.id"))) {
-               accountId = Long.valueOf(context.getHeaders().getFirst("osee.account.id"));
-            }
+            UserId accountId = UserId.valueOf(context.getHeaderString("osee.account.id"));
             Long entryId = activityLog.createActivityThread(JAXRS_METHOD_CALL, accountId, serverId, clientId, message);
 
             context.setProperty(ActivityConstants.HTTP_HEADER__ACTIVITY_ENTRY_ID, entryId);

@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.core.data.ActivityTypeToken;
 import org.eclipse.osee.framework.core.data.CoreActivityTypes;
 import org.eclipse.osee.framework.core.data.OrcsTypesData;
 import org.eclipse.osee.framework.core.data.OseeClient;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.DrainingIterator;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -74,7 +75,10 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
 
       public static final Long SENTINEL = Id.SENTINEL;
 
-      Long from(Object[] entry) {
+      public Long from(Object[] entry) {
+         if (entry == null) {
+            return SENTINEL;
+         }
          Object obj = entry[ordinal()];
          if (obj instanceof Long) {
             return (Long) obj;
@@ -146,7 +150,7 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
       } catch (UnknownHostException ex) {
          logger.warn(ex, "Error getting host for start of tread activity logging");
       }
-      Long threadActivityParententryId = createActivityThread(THREAD_ACTIVITY, SystemUser.OseeSystem.getId(), port,
+      Long threadActivityParententryId = createActivityThread(THREAD_ACTIVITY, SystemUser.OseeSystem, port,
          DEFAULT_CLIENT_ID, "Start of thread activity logging thread on " + host);
 
       int sampleWindowMs;
@@ -265,9 +269,9 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
       if (enabled) {
          Object[] rootEntry = activityMonitor.getThreadRootEntry();
          // Should never have a null rootEntry, but still want to log message with sentinels
-         Long accountId = rootEntry == null ? LogEntry.SENTINEL : LogEntry.ACCOUNT_ID.from(rootEntry);
-         Long serverId = rootEntry == null ? LogEntry.SENTINEL : LogEntry.SERVER_ID.from(rootEntry);
-         Long clientId = rootEntry == null ? LogEntry.SENTINEL : LogEntry.CLIENT_ID.from(rootEntry);
+         UserId accountId = UserId.valueOf(LogEntry.ACCOUNT_ID.from(rootEntry));
+         Long serverId = LogEntry.SERVER_ID.from(rootEntry);
+         Long clientId = LogEntry.CLIENT_ID.from(rootEntry);
          Object[] entry =
             createEntry(parentId, typeId, accountId, serverId, clientId, computeDuration(), status, messageArgs);
          return LogEntry.ENTRY_ID.from(entry);
@@ -276,7 +280,7 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
    }
 
    @Override
-   public Long createEntry(Long accountId, Long clientId, ActivityTypeToken typeId, Long parentId, Integer status, String... messageArgs) {
+   public Long createEntry(UserId accountId, Long clientId, ActivityTypeToken typeId, Long parentId, Integer status, String... messageArgs) {
       Object[] rootEntry = activityMonitor.getThreadRootEntry();
       Long serverId = LogEntry.SERVER_ID.from(rootEntry);
       Object[] entry = createEntry(parentId, typeId, accountId, serverId, clientId, computeDuration(), status,
@@ -284,7 +288,7 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
       return LogEntry.ENTRY_ID.from(entry);
    }
 
-   private Object[] createEntry(Long parentId, ActivityTypeToken type, Long accountId, Long serverId, Long clientId, Long duration, Integer status, Object... messageArgs) {
+   private Object[] createEntry(Long parentId, ActivityTypeToken type, UserId accountId, Long serverId, Long clientId, Long duration, Integer status, Object... messageArgs) {
       Object[] entry;
       Long entryId = Lib.generateUuid();
       Long startTime = System.currentTimeMillis();
@@ -454,12 +458,12 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
    }
 
    @Override
-   public Long createActivityThread(ActivityTypeToken type, Long accountId, Long serverId, Long clientId, Object... messageArgs) {
+   public Long createActivityThread(ActivityTypeToken type, UserId accountId, Long serverId, Long clientId, Object... messageArgs) {
       return createActivityThread(ActivityConstants.ROOT_ENTRY_ID, type, accountId, serverId, clientId, messageArgs);
    }
 
    @Override
-   public Long createActivityThread(Long parentId, ActivityTypeToken type, Long accountId, Long serverId, Long clientId, Object... messageArgs) {
+   public Long createActivityThread(Long parentId, ActivityTypeToken type, UserId accountId, Long serverId, Long clientId, Object... messageArgs) {
       Object[] entry = createEntry(parentId, type, accountId, serverId, clientId, 0L, 0, messageArgs);
       activityMonitor.addActivityThread(entry);
       return LogEntry.ENTRY_ID.from(entry);

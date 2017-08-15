@@ -44,7 +44,6 @@ public final class ActivityConstants {
    public static final String ERROR_MSG__MISSING_ACTIVITY_HEADER =
       "Error [" + ActivityConstants.HTTP_HEADER__ACTIVITY_ENTRY_ID + "] was missing from request http header";
 
-   public static final Long DEFAULT_ACCOUNT_ID = 1896L; // Guest Account Id
    public static final Long DEFAULT_SERVER_ID = 777L;
    public static final Long DEFAULT_CLIENT_ID = 111L;
    public static final Long ROOT_ENTRY_ID = -1L;
