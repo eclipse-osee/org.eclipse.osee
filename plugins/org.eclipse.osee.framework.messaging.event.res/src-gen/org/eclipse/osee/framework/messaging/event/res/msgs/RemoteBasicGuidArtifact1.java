@@ -116,6 +116,10 @@ public class RemoteBasicGuidArtifact1 extends RemoteEvent {
       return ArtifactTypeId.valueOf(artTypeGuid);
    }
 
+   public void setArtifactType(ArtifactTypeId type) {
+      this.artTypeGuid = type.getId();
+   }
+
    /**
     * Sets the value of the artTypeGuid property.
     */
@@ -172,6 +176,10 @@ public class RemoteBasicGuidArtifact1 extends RemoteEvent {
 
    public ArtifactTypeId getToArtifactType() {
       return ArtifactTypeId.valueOf(toArtTypeGuid);
+   }
+
+   public void setToArtifactType(ArtifactTypeId type) {
+      this.toArtTypeGuid = type.getId();
    }
 
    /**

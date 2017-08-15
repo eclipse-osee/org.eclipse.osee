@@ -348,7 +348,7 @@ public class ArtifactEventTest {
       RemoteBasicGuidArtifact1 remGuidArt = new RemoteBasicGuidArtifact1();
       remGuidArt.setModTypeGuid(EventModType.Modified.getGuid());
       remGuidArt.setBranch(COMMON);
-      remGuidArt.setArtTypeGuid(CoreArtifactTypes.GeneralData.getGuid());
+      remGuidArt.setArtifactType(CoreArtifactTypes.GeneralData);
       remGuidArt.setArtGuid(modifiedArt.getGuid());
 
       remoteEvent.getArtifacts().add(remGuidArt);
@@ -603,7 +603,7 @@ public class ArtifactEventTest {
       RemoteBasicGuidArtifact1 parentRemGuidArt = new RemoteBasicGuidArtifact1();
       parentRemGuidArt.setModTypeGuid(EventModType.Modified.getGuid());
       parentRemGuidArt.setBranch(COMMON);
-      parentRemGuidArt.setArtTypeGuid(CoreArtifactTypes.GeneralData.getGuid());
+      parentRemGuidArt.setArtifactType(CoreArtifactTypes.GeneralData);
       parentRemGuidArt.setArtGuid(GUID.create());
 
       remoteReorder.setParentArt(parentRemGuidArt);

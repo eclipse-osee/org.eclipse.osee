@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
@@ -127,8 +126,8 @@ public final class FrameworkEventUtil {
             EventChangeTypeBasicGuidArtifact changeGuidArt = (EventChangeTypeBasicGuidArtifact) guidArt;
             RemoteBasicGuidArtifact1 remGuidArt =
                getRemoteBasicGuidArtifact(guidArt.getModType().getGuid(), guidArt, null);
-            remGuidArt.setArtTypeGuid(changeGuidArt.getFromArtTypeGuid().getId());
-            remGuidArt.setToArtTypeGuid(changeGuidArt.getArtifactType().getId());
+            remGuidArt.setArtifactType(changeGuidArt.getFromArtTypeGuid());
+            remGuidArt.setToArtifactType(changeGuidArt.getArtifactType());
             event.getArtifacts().add(remGuidArt);
          } else {
             event.getArtifacts().add(getRemoteBasicGuidArtifact(guidArt.getModType().getGuid(), guidArt, null));
@@ -201,7 +200,7 @@ public final class FrameworkEventUtil {
    public static RemoteBasicGuidArtifact1 getRemoteBasicGuidArtifact(DefaultBasicGuidArtifact guidArt) {
       RemoteBasicGuidArtifact1 event = new RemoteBasicGuidArtifact1();
       event.setBranch(guidArt.getBranch());
-      event.setArtTypeGuid(guidArt.getArtifactType().getId());
+      event.setArtifactType(guidArt.getArtifactType());
       event.setArtGuid(guidArt.getGuid());
       return event;
    }
@@ -262,7 +261,7 @@ public final class FrameworkEventUtil {
    }
 
    public static DefaultBasicGuidArtifact getBasicGuidArtifact(RemoteBasicGuidArtifact1 remGuidArt) {
-      return new DefaultBasicGuidArtifact(remGuidArt.getBranch(), ArtifactTypeId.valueOf(remGuidArt.getArtTypeGuid()),
+      return new DefaultBasicGuidArtifact(remGuidArt.getBranch(), remGuidArt.getArtifactType(),
          remGuidArt.getArtGuid());
    }
 
@@ -270,7 +269,7 @@ public final class FrameworkEventUtil {
       RemoteBasicGuidArtifact1 remoteGuidArt = new RemoteBasicGuidArtifact1();
       remoteGuidArt.setArtGuid(guidArt.getGuid());
       remoteGuidArt.setBranch(guidArt.getBranch());
-      remoteGuidArt.setArtTypeGuid(guidArt.getArtifactType().getId());
+      remoteGuidArt.setArtifactType(guidArt.getArtifactType());
       remoteGuidArt.setModTypeGuid(modTypeGuid);
       if (attributeChanges != null) {
          for (AttributeChange attrChg : attributeChanges) {
