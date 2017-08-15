@@ -30,14 +30,12 @@ import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -84,8 +82,7 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
 
    private void createUserCreationDisabledConfig() {
       AtsClientService.get().setConfigValue(AtsUtilCore.USER_CREATION_DISABLED,
-         Collections.toString(";", Arrays.asList(TokenFactory.createArtifactTypeTokenString(AtsArtifactTypes.Action),
-            TokenFactory.createArtifactTypeTokenString(AtsArtifactTypes.TeamWorkflow))));
+         AtsArtifactTypes.Action.toStringWithId() + ";" + AtsArtifactTypes.TeamWorkflow.toStringWithId());
    }
 
    private void createSafetyConfig() {

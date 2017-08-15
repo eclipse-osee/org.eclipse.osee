@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
-import org.eclipse.osee.framework.jdk.core.type.Named;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 
 /**
  * @author Ryan D. Brooks
  */
-public interface IArtifactType extends Named, ArtifactTypeId {
+public interface IArtifactType extends NamedId, ArtifactTypeId {
    Long getGuid();
 }

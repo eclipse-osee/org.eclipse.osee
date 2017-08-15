@@ -78,9 +78,4 @@ public final class TokenFactory {
          return String.format("%s - %s", getName(), getGuid());
       }
    }
-
-   public static String createArtifactTypeTokenString(IArtifactType artifactType) {
-      return String.format("[%s]-[%d]", artifactType.getName(), artifactType.getGuid());
-   }
-
 }
