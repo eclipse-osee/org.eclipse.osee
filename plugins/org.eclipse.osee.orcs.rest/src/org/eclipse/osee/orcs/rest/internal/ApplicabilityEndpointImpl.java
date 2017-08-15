@@ -13,10 +13,13 @@ package org.eclipse.osee.orcs.rest.internal;
 import static org.eclipse.osee.framework.core.data.ApplicabilityToken.BASE;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
@@ -39,6 +42,7 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
+import org.eclipse.osee.orcs.search.ApplicabilityQuery;
 import org.eclipse.osee.orcs.search.TupleQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
@@ -300,4 +304,69 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
       return orcsApi.getQueryFactory().applicabilityQuery().getVersionConfig(version, branch);
    }
 
+   @Override
+   public String getViewTable() {
+      StringBuilder html = new StringBuilder(
+         "<!DOCTYPE html><html><head><style> table { border-spacing: 0px } th,td { padding: 3px; } </style></head><body>");
+      List<BranchViewData> views = this.getViews();
+      ApplicabilityQuery applicabilityQuery = orcsApi.getQueryFactory().applicabilityQuery();
+      for (BranchViewData branchView : views) {
+         if (branchView.getBranch().equals(branch)) {
+            html.append(String.format("<h1>Features for branch [%s]</h1>",
+               orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getExactlyOne().getName()));
+            html.append("<table border=\"1\">");
+            List<ArtifactId> branchViews = branchView.getBranchViews();
+
+            List<ArtifactReadable> featureDefinitionArts = orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(
+               CoreArtifactTypes.FeatureDefinition).getResults().getList();
+
+            List<FeatureDefinitionData> featureDefinitionData =
+               applicabilityQuery.getFeatureDefinitionData(featureDefinitionArts);
+
+            // List<ApplicabilityToken> tokens = getApplicabilityTokens(); // list of all of the applicability views
+            Collections.sort(featureDefinitionData, new Comparator<FeatureDefinitionData>() {
+               @Override
+               public int compare(FeatureDefinitionData obj1, FeatureDefinitionData obj2) {
+                  return obj1.getName().compareTo(obj2.getName());
+               }
+            });
+
+            printColumnHeadings(html, branchViews);
+            Map<ArtifactId, Map<String, List<String>>> branchViewsMap = new HashMap<>();
+
+            for (ArtifactId artId : branchViews) {
+               branchViewsMap.put(artId, applicabilityQuery.getNamedViewApplicabilityMap(branch, artId));
+            }
+            for (FeatureDefinitionData featureDefinition : featureDefinitionData) {
+               html.append("<tr>");
+               html.append(String.format("<td>%s</td>", featureDefinition.getName()));
+               html.append(String.format("<td>%s</td>", featureDefinition.getDescription()));
+               for (ArtifactId view : branchViews) {
+                  List<String> list = branchViewsMap.get(view).get(featureDefinition.getName());
+                  // every view should have a value for each feature, if incorrectly configured returns null
+                  if (list != null) {
+                     html.append(
+                        "<td>" + org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", list) + "</td>");
+                  } else {
+                     html.append("<td> </td>");
+                  }
+               }
+               html.append("</tr>");
+            }
+         }
+      }
+      html.append("</table></body></html>");
+      return html.toString();
+   }
+
+   private void printColumnHeadings(StringBuilder html, List<ArtifactId> branchViews) {
+      html.append("<tr>");
+      html.append("<th>Feature Name</th>");
+      html.append("<th>Feature Description</th>");
+      for (ArtifactId artId : branchViews) {
+         html.append(String.format("<th>%s</th>",
+            orcsApi.getQueryFactory().fromBranch(branch).andId(artId).getResults().getExactlyOne().getName()));
+      }
+      html.append("</tr>");
+   }
 }
