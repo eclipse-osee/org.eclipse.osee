@@ -119,7 +119,7 @@ public class DispoSetCopier {
       List<DispoAnnotationData> newAnnotations = newItem.getAnnotationsList();
       List<DispoAnnotationData> sourceAnnotations = sourceItem.getAnnotationsList();
       Set<String> destDefaultAnntationLocations = getDefaultAnnotations(newItem);
-      Map<String, Integer> placeHolderAnnotationLocations = getPlaceHolderAnnotations(newItem);
+      Map<String, Integer> nonDefaultAnnotationLocations = getNonDefaultAnnotations(newItem);
       List<String> destDiscrepanciesTextOnly = discrepanciesTextOnly(destItem.getDiscrepanciesList());
 
       for (DispoAnnotationData sourceAnnotation : sourceAnnotations) {
@@ -182,8 +182,8 @@ public class DispoSetCopier {
                isChangesMade = true;
                // Both the source and destination are dispositionable so copy the annotation
                int nextIndex;
-               if (placeHolderAnnotationLocations.containsKey(sourceLocation)) {
-                  nextIndex = placeHolderAnnotationLocations.get(sourceLocation);
+               if (nonDefaultAnnotationLocations.containsKey(sourceLocation)) {
+                  nextIndex = nonDefaultAnnotationLocations.get(sourceLocation);
                   newAnnotation.setIndex(nextIndex);
                   newAnnotations.set(nextIndex, newAnnotation);
                } else {
@@ -248,19 +248,19 @@ public class DispoSetCopier {
       return newItem;
    }
 
-   private Map<String, Integer> getPlaceHolderAnnotations(DispoItemData item) {
-      Map<String, Integer> placeHolderAnnotationLocations = new HashMap<>();
+   private Map<String, Integer> getNonDefaultAnnotations(DispoItemData item) {
+      Map<String, Integer> nonDefaultAnnotationLocations = new HashMap<>();
       List<DispoAnnotationData> annotations = item.getAnnotationsList();
       if (annotations == null) {
          annotations = new ArrayList<>();
       }
       for (DispoAnnotationData annotation : annotations) {
-         if (!Strings.isValid(annotation.getResolutionType())) {
-            placeHolderAnnotationLocations.put(annotation.getLocationRefs(), annotation.getIndex());
+         if (!annotation.getIsDefault()) {
+            nonDefaultAnnotationLocations.put(annotation.getLocationRefs(), annotation.getIndex());
          }
       }
 
-      return placeHolderAnnotationLocations;
+      return nonDefaultAnnotationLocations;
    }
 
    private Set<String> getDefaultAnnotations(DispoItemData item) {
