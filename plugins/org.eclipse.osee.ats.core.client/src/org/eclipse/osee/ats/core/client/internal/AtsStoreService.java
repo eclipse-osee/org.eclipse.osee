@@ -196,4 +196,9 @@ public class AtsStoreService implements IAtsStoreService {
       ((WorkItem) workItem).clearCaches();
    }
 
+   @Override
+   public boolean isArtifactTypeInheritsFrom(IArtifactType artifactType, IArtifactType baseArtifactType) {
+      return ArtifactTypeManager.inheritsFrom(artifactType, baseArtifactType);
+   }
+
 }

@@ -188,4 +188,9 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
       ((WorkItem) workItem).clearCaches();
    }
 
+   @Override
+   public boolean isArtifactTypeInheritsFrom(IArtifactType artifactType, IArtifactType baseArtifactType) {
+      return atsServer.getOrcsApi().getOrcsTypes().getArtifactTypes().inheritsFrom(artifactType, baseArtifactType);
+   }
+
 }

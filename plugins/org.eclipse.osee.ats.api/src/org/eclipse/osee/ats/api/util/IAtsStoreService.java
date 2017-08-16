@@ -71,4 +71,5 @@ public interface IAtsStoreService {
 
    void clearCaches(IAtsWorkItem workItem);
 
+   boolean isArtifactTypeInheritsFrom(IArtifactType artifactType, IArtifactType baseArtifactType);
 }
