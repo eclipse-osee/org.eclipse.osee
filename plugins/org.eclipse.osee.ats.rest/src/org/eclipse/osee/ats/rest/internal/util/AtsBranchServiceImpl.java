@@ -29,11 +29,13 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.model.change.CompareResults;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.BranchReadable;
+import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.search.BranchQuery;
 import org.eclipse.osee.orcs.search.TransactionQuery;
 
@@ -178,6 +180,25 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    @Override
    public ArtifactId getAssociatedArtifactId(BranchId branch) {
       throw new UnsupportedOperationException("Not yet supported on server");
+   }
+
+   @Override
+   public CompareResults getChangeData(TransactionToken transaction) {
+      TransactionQuery transQuery = orcsApi.getQueryFactory().transactionQuery();
+      TransactionReadable startTx = transQuery.andIsPriorTx(transaction).getResults().getAtMostOneOrNull();
+      CompareResults results = orcsApi.getTransactionFactory().compareTxs(startTx, transaction);
+      return results;
+   }
+
+   @Override
+   public CompareResults getChangeData(BranchId branch) {
+      TransactionQuery transactionQuery2 = orcsApi.getQueryFactory().transactionQuery();
+      TransactionQuery transactionQuery3 = orcsApi.getQueryFactory().transactionQuery();
+      BranchId parentBranch = services.getBranchService().getParentBranch(branch);
+      TransactionReadable startTx = transactionQuery2.andIsHead(branch).getResults().getExactlyOne();
+      TransactionReadable endTx = transactionQuery3.andIsHead(parentBranch).getResults().getExactlyOne();
+      CompareResults results = orcsApi.getTransactionFactory().compareTxs(startTx, endTx);
+      return results;
    }
 
 }

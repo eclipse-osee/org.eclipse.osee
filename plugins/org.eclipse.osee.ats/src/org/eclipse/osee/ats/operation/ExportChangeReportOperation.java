@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
+import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -65,16 +66,17 @@ public final class ExportChangeReportOperation extends AbstractOperation {
       CoreArtifactTypes.AbstractSoftwareRequirement,
       CoreArtifactTypes.InterfaceRequirement,
       CoreArtifactTypes.HeadingMSWord};
-   private final IArtifactType[] DISALLOW_TYPES = {CoreArtifactTypes.ImplementationDetails};
    private final String overrideDataRightsClassification;
+   private final XResultData results;
 
-   public ExportChangeReportOperation(List<TeamWorkFlowArtifact> workflows, boolean reverse, boolean writeChangeReports, String overrideDataRightsClassification, Appendable resultFolder, OperationLogger logger) {
+   public ExportChangeReportOperation(List<TeamWorkFlowArtifact> workflows, boolean reverse, boolean writeChangeReports, String overrideDataRightsClassification, Appendable resultFolder, OperationLogger logger, XResultData results) {
       super("Exporting Change Report(s)", Activator.PLUGIN_ID, logger);
       this.workflows = workflows;
       this.reverse = reverse;
       this.writeChangeReports = writeChangeReports;
       this.overrideDataRightsClassification = overrideDataRightsClassification;
       this.resultFolder = resultFolder;
+      this.results = results;
    }
 
    @Override
@@ -104,7 +106,11 @@ public final class ExportChangeReportOperation extends AbstractOperation {
          Set<ArtifactId> artIds = new HashSet<>();
          Collection<Change> changes = computeChanges(workflow, monitor, artIds);
          if (!changes.isEmpty() && changes.size() < 4000) {
-            logf("Exporting: %s -- %s", workflow.toString(), workflow.getAtsId());
+            String log = String.format("Exporting: %s -- %s\n", workflow.toString(), workflow.getAtsId());
+            logf(log);
+            if (results != null) {
+               results.log(log);
+            }
             String id = workflow.getSoleAttributeValueAsString(AtsAttributeTypes.LegacyPcrId, workflow.getAtsId());
             String prefix = "/" + id;
             if (writeChangeReports) {
@@ -117,7 +123,7 @@ public final class ExportChangeReportOperation extends AbstractOperation {
                   ArtifactDelta next = it.next();
                   Artifact endArtifact = next.getEndArtifact();
                   ArtifactType artifactType = endArtifact.getArtifactType();
-                  if (artifactType.inheritsFrom(DISALLOW_TYPES) || !artifactType.inheritsFrom(ALLOW_TYPES)) {
+                  if (!artifactType.inheritsFrom(ALLOW_TYPES)) {
                      it.remove();
                      artIds.remove(endArtifact.getArtId());
                      logf("skipping: [" + endArtifact.getName().replaceAll("%",
@@ -127,6 +133,9 @@ public final class ExportChangeReportOperation extends AbstractOperation {
                }
                if (artifactDeltas.isEmpty()) {
                   logf("Nothing exported for RPCR[%s]", id);
+                  if (results != null) {
+                     results.errorf("Nothing exported for RPCR[%s]", id);
+                  }
                   continue;
                }
 
@@ -142,6 +151,10 @@ public final class ExportChangeReportOperation extends AbstractOperation {
                }
                Lib.writeStringToFile(artIdsAsString, new File(resultFolder + prefix + "_ids.txt"));
             } catch (IOException ex) {
+               if (results != null) {
+                  results.errorf("Exception writing _ids.txt file for %s; exception %s", workflow.toStringWithId(),
+                     Lib.exceptionToString(ex));
+               }
                OseeCoreException.wrapAndThrow(ex);
             }
          }
@@ -180,7 +193,8 @@ public final class ExportChangeReportOperation extends AbstractOperation {
          operation = ChangeManager.comparedToPreviousTx(pickTransaction(workflow), changes);
       } else {
          BranchId workingBranch = AtsClientService.get().getBranchService().getWorkingBranch(teamArt);
-         if (workingBranch != null && !BranchManager.getType(workingBranch).isBaselineBranch()) {
+         if (workingBranch != null && workingBranch.isValid() && !BranchManager.getType(
+            workingBranch).isBaselineBranch()) {
             operation = ChangeManager.comparedToParent(workingBranch, changes);
          }
       }

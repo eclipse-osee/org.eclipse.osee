@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.query.AbstractAtsQueryService;
 import org.eclipse.osee.ats.core.query.AtsWorkItemFilter;
 import org.eclipse.osee.ats.rest.IAtsServer;
-import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -96,7 +96,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public Collection<ArtifactId> getArtifacts(List<Integer> ids, BranchId branch) {
+   public Collection<ArtifactToken> getArtifacts(List<Integer> ids, BranchId branch) {
       List<Long> uuids = new LinkedList<>();
       for (Integer id : ids) {
          uuids.add(Long.valueOf(id));

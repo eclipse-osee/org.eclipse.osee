@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * This class is the basic unit of work for OSEE. All operations should be designed such that they can be chained and/or
  * composed into composite operations.
- * 
+ *
  * @author Roberto E. Escobar
  * @author Ryan D. Brooks
  */
@@ -89,7 +89,7 @@ public abstract class AbstractOperation implements IOperation {
    /**
     * All the operations work should be executed directly or indirectly by this method. The operation runs until its
     * doWork() method terminates normally or by throwing an exception (including OperationCanceledException)
-    * 
+    *
     * @param monitor the progress monitor to use for reporting progress to the user. It is the caller's responsibility
     * to call done() on the given monitor. Accepts null, indicating that no progress should be reported and that the
     * operation cannot be cancelled.
@@ -125,7 +125,7 @@ public abstract class AbstractOperation implements IOperation {
     * returns
     */
    public static final void checkForCancelledStatus(IProgressMonitor monitor) throws OperationCanceledException {
-      if (monitor.isCanceled()) {
+      if (monitor != null && monitor.isCanceled()) {
          throw new OperationCanceledException();
       }
    }
@@ -143,19 +143,27 @@ public abstract class AbstractOperation implements IOperation {
    }
 
    protected final void log(String... row) {
-      logger.log(row);
+      if (logger != null) {
+         logger.log(row);
+      }
    }
 
    protected final void log(Throwable th) {
-      logger.log(th);
+      if (logger != null) {
+         logger.log(th);
+      }
    }
 
    protected final void log(IStatus status) {
-      logger.log(status);
+      if (logger != null) {
+         logger.log(status);
+      }
    }
 
    protected final void logf(String format, Object... args) {
-      logger.logf(format, args);
+      if (logger != null) {
+         logger.logf(format, args);
+      }
    }
 
    @Override

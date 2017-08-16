@@ -69,4 +69,6 @@ public interface IAtsStoreService {
 
    boolean isOfType(IAtsObject atsObject, IArtifactType artifactType);
 
+   boolean isArtifactTypeInheritsFrom(IArtifactType artifactType, IArtifactType baseArtifactType);
+
 }

@@ -182,4 +182,9 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
       return isOfType(atsObject.getStoreObject(), artifactType);
    }
 
+   @Override
+   public boolean isArtifactTypeInheritsFrom(IArtifactType artifactType, IArtifactType baseArtifactType) {
+      return atsServer.getOrcsApi().getOrcsTypes().getArtifactTypes().inheritsFrom(artifactType, baseArtifactType);
+   }
+
 }

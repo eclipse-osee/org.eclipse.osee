@@ -68,7 +68,7 @@ public class RenameFilesOperation extends AbstractOperation {
       int renamedFileCount = 0;
 
       for (int i = 0; i < size; i++) {
-         if (monitor.isCanceled()) {
+         if (monitor != null && monitor.isCanceled()) {
             return;
          }
          File file = files.get(i);
