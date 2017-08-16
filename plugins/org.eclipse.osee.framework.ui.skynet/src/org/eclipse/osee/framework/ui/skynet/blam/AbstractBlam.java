@@ -14,7 +14,12 @@ package org.eclipse.osee.framework.ui.skynet.blam;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.xml.parsers.ParserConfigurationException;
@@ -24,6 +29,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -59,13 +65,20 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
    private final static String titleEnd = " BLAM";
    private final Pattern capitalLetter = Pattern.compile("[A-Z]+[a-z]*");
 
+   protected Set<ArtifactId> excludedArtifactIdMap = new HashSet<>();
+   protected Map<Long, String> branchViews;
+   protected ArtifactId viewId = ArtifactId.SENTINEL;
+
    public enum BlamUiSource {
       DEFAULT,
       FILE
    }
 
+   public static final String BRANCH_VIEW = "Branch View";
    public static final String branchXWidgetXml =
       "<xWidgets><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch\" /></xWidgets>";
+   public static final String BRANCH_VIEW_WIDGET =
+      "<XWidget xwidgetType=\"XCombo()\" displayName=\"Branch View\" horizontalLabel=\"true\"/>";
    public static final String emptyXWidgetsXml = "<xWidgets/>";
    private OperationLogger logger;
 
@@ -115,7 +128,12 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
             return getXWidgetsXmlFromUiFile(getClass().getSimpleName(), Activator.PLUGIN_ID);
          case DEFAULT:
          default:
-            return AbstractBlam.branchXWidgetXml;
+            StringBuilder sb = new StringBuilder();
+            sb.append("<xWidgets>");
+            sb.append(branchXWidgetXml);
+            sb.append(BRANCH_VIEW_WIDGET);
+            sb.append("</xWidgets>");
+            return sb.toString();
       }
    }
 
@@ -217,6 +235,25 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
 
    public String getTabTitle() {
       return "BLAM Workflow";
+   }
+
+   public void excludeArtifacts(Iterator<Artifact> iter) {
+      while (iter.hasNext()) {
+         Artifact artifact = iter.next();
+         if (excludedArtifactIdMap.contains(ArtifactId.valueOf(artifact.getId()))) {
+            iter.remove();
+         }
+      }
+   }
+
+   public void setViewId(Object view) {
+      if (branchViews != null) {
+         for (Entry<Long, String> entry : branchViews.entrySet()) {
+            if (entry.getValue().equals(view)) {
+               viewId = ArtifactId.valueOf(entry.getKey());
+            }
+         }
+      }
    }
 
 }

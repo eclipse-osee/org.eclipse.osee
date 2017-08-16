@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map.Entry;
@@ -21,6 +22,7 @@ import java.util.Set;
 import org.apache.commons.lang.WordUtils;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -41,9 +43,17 @@ import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
+import org.eclipse.osee.framework.skynet.core.utility.ViewIdUtility;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.branch.ViewApplicabilityUtil;
+import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
+import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
 import org.eclipse.swt.program.Program;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * @author Ryan D. Brooks
@@ -60,6 +70,10 @@ public class SystemSubsystemReport extends AbstractBlam {
    private final HashMap<String, Set<Artifact>> subsysToSysReqsMap;
    private final LinkedHashSet<Artifact> components;
    private List<Artifact> sysReqs;
+   Set<ArtifactId> findExcludedArtifactsByView;
+
+   private XCombo branchViewWidget;
+   private XBranchSelectWidget viewerWidget;
 
    @Override
    public String getName() {
@@ -80,6 +94,7 @@ public class SystemSubsystemReport extends AbstractBlam {
       subsysToSubsysReqsMap = new HashMap<>();
       subsysToSysReqsMap = new HashMap<>();
       components = new LinkedHashSet<>(250);
+      findExcludedArtifactsByView = new HashSet<>();
    }
 
    private void init() throws IOException {
@@ -91,6 +106,7 @@ public class SystemSubsystemReport extends AbstractBlam {
       subsysToSubsysReqsMap.clear();
       subsysToSysReqsMap.clear();
       components.clear();
+      findExcludedArtifactsByView.clear();
       charBak = new CharBackedInputStream();
       excelWriter = new ExcelXmlWriter(charBak.getWriter());
    }
@@ -101,7 +117,12 @@ public class SystemSubsystemReport extends AbstractBlam {
 
       BranchId branch = variableMap.getBranch("Branch");
 
+      Object view = variableMap.getValue(BRANCH_VIEW);
+      setViewId(view);
+
       init();
+
+      findExcludedArtifactsByView = ViewIdUtility.findExcludedArtifactsByView(viewId, branch);
 
       monitor.subTask("Aquiring System Components"); // bulk load for performance reasons
       ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.Component, branch);
@@ -116,6 +137,10 @@ public class SystemSubsystemReport extends AbstractBlam {
       Artifact subsysTopFolder = root.getChild(Requirements.SUBSYSTEM_REQUIREMENTS);
 
       sysReqs = root.getChild(Requirements.SYSTEM_REQUIREMENTS).getDescendants();
+
+      if (sysReqs != null && !sysReqs.isEmpty()) {
+         ViewIdUtility.removeExcludedArtifacts(sysReqs.iterator(), findExcludedArtifactsByView);
+      }
 
       monitor.subTask("Generating Metrics");
 
@@ -157,14 +182,20 @@ public class SystemSubsystemReport extends AbstractBlam {
 
       CountingMap<Artifact> allocatedSysReqCounter = new CountingMap<>(sysReqs.size());
 
-      for (Artifact subsysFolder : subsysTopFolder.getChildren()) {
+      List<Artifact> children = subsysTopFolder.getChildren();
+      if (children != null && !children.isEmpty()) {
+         ViewIdUtility.removeExcludedArtifacts(children.iterator(), findExcludedArtifactsByView);
+      }
+      for (Artifact subsysFolder : children) {
          resetCounters();
          String subSysName = subsysFolder.getName();
          row[0] = subSysName;
 
          Artifact component = productComponent.getChild(subSysName);
-
          List<Artifact> sysReqByComp = component.getRelatedArtifacts(CoreRelationTypes.Allocation__Requirement);
+         if (sysReqByComp != null && !sysReqByComp.isEmpty()) {
+            ViewIdUtility.removeExcludedArtifacts(sysReqByComp.iterator(), findExcludedArtifactsByView);
+         }
          storeInHierarchyOrderBySubsystem(subSysName, sysReqByComp);
          allocatedSysReqCounter.put(sysReqByComp);
          Set<String> missingAllocationGuids = new LinkedHashSet<>();
@@ -266,7 +297,12 @@ public class SystemSubsystemReport extends AbstractBlam {
          row[1] = artifact.getName();
 
          if (artifact.isOfType(CoreArtifactTypes.SubsystemRequirementMSWord)) {
-            for (Artifact component : artifact.getRelatedArtifacts(CoreRelationTypes.Allocation__Component)) {
+
+            List<Artifact> relatedArtifacts = artifact.getRelatedArtifacts(CoreRelationTypes.Allocation__Component);
+            if (relatedArtifacts != null && !relatedArtifacts.isEmpty()) {
+               ViewIdUtility.removeExcludedArtifacts(relatedArtifacts.iterator(), findExcludedArtifactsByView);
+            }
+            for (Artifact component : relatedArtifacts) {
                components.add(component);
                row[2] = component.getName();
                excelWriter.writeRow(row);
@@ -296,7 +332,12 @@ public class SystemSubsystemReport extends AbstractBlam {
          excelWriter.writeRow();
          excelWriter.writeRow(subSysName + " Subsystem Requirements allocated to the " + component.getName());
          excelWriter.writeRow("PIDS Paragraph #", "PIDS Paragraph Title", "Notes <rationale>");
-         for (Artifact subsysReq : component.getRelatedArtifacts(CoreRelationTypes.Allocation__Requirement)) {
+
+         List<Artifact> relatedArtifacts = component.getRelatedArtifacts(CoreRelationTypes.Allocation__Requirement);
+         if (relatedArtifacts != null && !relatedArtifacts.isEmpty()) {
+            ViewIdUtility.removeExcludedArtifacts(relatedArtifacts.iterator(), findExcludedArtifactsByView);
+         }
+         for (Artifact subsysReq : relatedArtifacts) {
             if (subsysReqs.contains(subsysReq)) {
                row[0] = subsysReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
                row[1] = subsysReq.getName();
@@ -326,7 +367,11 @@ public class SystemSubsystemReport extends AbstractBlam {
    }
 
    private void countDescendants(String subSysName, Set<Artifact> subsysReqs, Artifact artifact, Set<String> missingAllocationGuids) throws OseeCoreException {
-      for (Artifact child : artifact.getChildren()) {
+      List<Artifact> children = artifact.getChildren();
+      if (children != null && !children.isEmpty()) {
+         ViewIdUtility.removeExcludedArtifacts(children.iterator(), findExcludedArtifactsByView);
+      }
+      for (Artifact child : children) {
          if (child.isOfType(CoreArtifactTypes.SubsystemRequirementMSWord)) {
             subsysDescendantCount++;
             String selectedSubSystem = child.getSoleAttributeValue(CoreAttributeTypes.Subsystem, "");
@@ -373,7 +418,11 @@ public class SystemSubsystemReport extends AbstractBlam {
          row[0] = sysReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
          row[1] = sysReq.getName();
 
-         for (Artifact subSysReq : sysReq.getRelatedArtifacts(CoreRelationTypes.Requirement_Trace__Lower_Level)) {
+         List<Artifact> relatedArtifacts = sysReq.getRelatedArtifacts(CoreRelationTypes.Requirement_Trace__Lower_Level);
+         if (relatedArtifacts != null && !relatedArtifacts.isEmpty()) {
+            ViewIdUtility.removeExcludedArtifacts(relatedArtifacts.iterator(), findExcludedArtifactsByView);
+         }
+         for (Artifact subSysReq : relatedArtifacts) {
             if (subsysReqs.contains(subSysReq)) {
                row[2] = subSysReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
                row[3] = subSysReq.getName();
@@ -417,7 +466,12 @@ public class SystemSubsystemReport extends AbstractBlam {
             row[2] = "N/A: " + subsysReq.getArtifactTypeName();
          }
 
-         for (Artifact subSysReq : subsysReq.getRelatedArtifacts(CoreRelationTypes.Requirement_Trace__Higher_Level)) {
+         List<Artifact> relatedArtifacts =
+            subsysReq.getRelatedArtifacts(CoreRelationTypes.Requirement_Trace__Higher_Level);
+         if (relatedArtifacts != null && !relatedArtifacts.isEmpty()) {
+            ViewIdUtility.removeExcludedArtifacts(relatedArtifacts.iterator(), findExcludedArtifactsByView);
+         }
+         for (Artifact subSysReq : relatedArtifacts) {
             row[3] = subSysReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
             row[4] = subSysReq.getName();
             excelWriter.writeRow(row);
@@ -445,6 +499,31 @@ public class SystemSubsystemReport extends AbstractBlam {
    @Override
    public String getDescriptionUsage() {
       return "Generates a spreadsheet of traceability and allocation for sys <-> subsys.";
+   }
+
+   @Override
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
+      super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, xModListener, isEditable);
+      if (xWidget.getLabel().equals("Branch")) {
+         viewerWidget = (XBranchSelectWidget) xWidget;
+         viewerWidget.addXModifiedListener(new XModifiedListener() {
+
+            @Override
+            public void widgetModified(XWidget widget) {
+               if (branchViewWidget != null) {
+                  branchViewWidget.setEditable(true);
+                  BranchId branch = viewerWidget.getSelection();
+                  if (branch != null && branch.isValid()) {
+                     branchViews = ViewApplicabilityUtil.getBranchViews(ViewApplicabilityUtil.getParentBranch(branch));
+                     branchViewWidget.setDataStrings(branchViews.values());
+                  }
+               }
+            }
+         });
+      } else if (xWidget.getLabel().equals(BRANCH_VIEW)) {
+         branchViewWidget = (XCombo) xWidget;
+         branchViewWidget.setEditable(false);
+      }
    }
 
    @Override

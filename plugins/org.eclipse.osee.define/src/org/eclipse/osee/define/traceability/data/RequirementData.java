@@ -16,15 +16,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.traceability.TraceabilityExtractor;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.utility.ViewIdUtility;
 
 /**
  * @author Roberto E. Escobar
@@ -37,17 +41,20 @@ public class RequirementData extends BaseTraceDataCache {
    private final TraceabilityExtractor extractor = TraceabilityExtractor.getInstance();
    private final Collection<? extends IArtifactType> types;
    private final boolean withInheritance;
+   private final ArtifactId viewId;
 
-   public RequirementData(BranchId branch, Collection<? extends IArtifactType> types, boolean withInheritance) {
+   public RequirementData(BranchId branch, Collection<? extends IArtifactType> types, boolean withInheritance, ArtifactId viewId) {
       super("Software Requirements Data", branch);
       this.types = types;
       this.withInheritance = withInheritance;
+      this.viewId = viewId;
    }
 
-   public RequirementData(BranchId branch) {
+   public RequirementData(BranchId branch, ArtifactId viewId) {
       super("Software Requirements Data", branch);
       types = Collections.singleton(CoreArtifactTypes.AbstractSoftwareRequirement);
       withInheritance = true;
+      this.viewId = viewId;
    }
 
    @Override
@@ -59,6 +66,9 @@ public class RequirementData extends BaseTraceDataCache {
 
    @Override
    protected void doBulkLoad(IProgressMonitor monitor) throws Exception {
+      Set<ArtifactId> excludedArtifactIdMap = new HashSet<>();
+      excludedArtifactIdMap = ViewIdUtility.findExcludedArtifactsByView(viewId, getBranch());
+
       List<Artifact> allSwRequirements = new ArrayList<>();
       for (IArtifactType type : types) {
          if (withInheritance) {
@@ -68,6 +78,7 @@ public class RequirementData extends BaseTraceDataCache {
             allSwRequirements.addAll(ArtifactQuery.getArtifactListFromType(type, getBranch(), EXCLUDE_DELETED));
          }
       }
+      ViewIdUtility.removeExcludedArtifacts(allSwRequirements.iterator(), excludedArtifactIdMap);
       populateTraceMap(monitor, allSwRequirements, allRequirementsMap);
 
       for (Artifact requirement : getAllRequirements()) {
@@ -93,7 +104,7 @@ public class RequirementData extends BaseTraceDataCache {
 
    /**
     * Get Requirement Artifact based on traceMark mark
-    * 
+    *
     * @return requirement artifact
     */
    public Artifact getRequirementFromTraceMark(String traceMark) {
@@ -103,7 +114,7 @@ public class RequirementData extends BaseTraceDataCache {
    /**
     * Get Requirement Artifact based on traceMark mark if it fails, check if trace mark is a structured requirement and
     * try again
-    * 
+    *
     * @return requirement artifact
     */
    public Artifact getRequirementFromTraceMarkIncludeStructuredRequirements(String traceMark) {

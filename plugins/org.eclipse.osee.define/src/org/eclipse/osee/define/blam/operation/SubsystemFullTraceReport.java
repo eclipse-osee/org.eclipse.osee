@@ -43,7 +43,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.branch.ViewApplicabilityUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
+import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
+import org.eclipse.osee.framework.ui.skynet.widgets.XListDropViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -59,6 +62,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * @author Ryan D. Brooks
  */
 public class SubsystemFullTraceReport extends AbstractBlam {
+   private static final String SUBSYSTEM_REQUIREMENTS = "Subsystem Requirements";
    private CharBackedInputStream charBak;
    private ISheetWriter writer;
    private HashCollection<Artifact, String> requirementsToCodeUnits;
@@ -74,7 +78,10 @@ public class SubsystemFullTraceReport extends AbstractBlam {
 
    private static final String TRACE_HANDLER_CHECKBOX =
       "<XWidget xwidgetType=\"XCheckBox\" displayName=\"%s\" labelAfter=\"true\" horizontalLabel=\"true\"/>";
+
    private Collection<String> availableTraceHandlers;
+   private XCombo branchViewWidget;
+   private XListDropViewer subSystem;
 
    @Override
    public String getName() {
@@ -88,11 +95,14 @@ public class SubsystemFullTraceReport extends AbstractBlam {
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      List<Artifact> artifacts = variableMap.getArtifacts("Subsystem Requirements");
+      List<Artifact> artifacts = variableMap.getArtifacts(SUBSYSTEM_REQUIREMENTS);
       if (artifacts.isEmpty()) {
          throw new OseeArgumentException("must specify a set of artifacts");
       }
       BranchId branch = artifacts.get(0).getBranch();
+
+      Object view = variableMap.getValue(BRANCH_VIEW);
+      setViewId(view);
 
       init();
       String scriptDir = variableMap.getString(SCRIPT_ROOT_DIR);
@@ -110,8 +120,8 @@ public class SubsystemFullTraceReport extends AbstractBlam {
       if (!checked) {
          File dir = new File(scriptDir);
          if (dir.exists()) {
-            ScriptTraceabilityOperation traceOperation =
-               new ScriptTraceabilityOperation(dir.getParentFile(), branch, false, traceHandlers, isGitCodeStructure);
+            ScriptTraceabilityOperation traceOperation = new ScriptTraceabilityOperation(dir.getParentFile(), branch,
+               false, traceHandlers, isGitCodeStructure, viewId);
             Operations.executeWorkAndCheckStatus(traceOperation, monitor);
             requirementsToCodeUnits = traceOperation.getRequirementToCodeUnitsMap();
          }
@@ -234,6 +244,7 @@ public class SubsystemFullTraceReport extends AbstractBlam {
          availableTraceHandlers.add(handler);
       }
       sb.append("<XWidget xwidgetType=\"XListDropViewer\" displayName=\"Subsystem Requirements\" />");
+      sb.append(BRANCH_VIEW_WIDGET);
       sb.append("</xWidgets>");
       return sb.toString();
    }
@@ -279,5 +290,32 @@ public class SubsystemFullTraceReport extends AbstractBlam {
             }
          });
       }
+      if (widget.getLabel().equals(SUBSYSTEM_REQUIREMENTS)) {
+         subSystem = (XListDropViewer) widget;
+         subSystem.addXModifiedListener(new XModifiedListener() {
+
+            @Override
+            public void widgetModified(XWidget widget) {
+               if (branchViewWidget != null) {
+                  branchViewWidget.setEditable(true);
+                  List<Artifact> arts = subSystem.getArtifacts();
+                  if (arts != null && !arts.isEmpty()) {
+                     BranchId branch = arts.iterator().next().getBranch();
+                     if (branch != null && branch.isValid()) {
+                        branchViews =
+                           ViewApplicabilityUtil.getBranchViews(ViewApplicabilityUtil.getParentBranch(branch));
+                        branchViewWidget.setDataStrings(branchViews.values());
+                     }
+                  }
+               }
+            }
+         });
+      }
+
+      if (widget.getLabel().equals(BRANCH_VIEW)) {
+         branchViewWidget = (XCombo) widget;
+         branchViewWidget.setEditable(false);
+      }
+
    }
 }

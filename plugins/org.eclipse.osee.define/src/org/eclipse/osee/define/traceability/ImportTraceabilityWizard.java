@@ -17,6 +17,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.define.internal.Activator;
 import org.eclipse.osee.define.traceability.TraceUnitExtensionManager.TraceHandler;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -48,7 +49,7 @@ public class ImportTraceabilityWizard extends Wizard implements IImportWizard {
             handlers.add(TraceUnitExtensionManager.getInstance().getTraceUnitHandlerById(handlerId));
          }
          Operations.executeWorkAndCheckStatus(
-            new ScriptTraceabilityOperation(file, branch, true, handlers, isGitBased));
+            new ScriptTraceabilityOperation(file, branch, true, handlers, isGitBased, ArtifactId.SENTINEL));
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Traceability Import Error", ex);
       }

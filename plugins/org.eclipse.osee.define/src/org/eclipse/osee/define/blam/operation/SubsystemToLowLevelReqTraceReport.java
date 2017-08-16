@@ -38,20 +38,32 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
+import org.eclipse.osee.framework.skynet.core.utility.ViewIdUtility;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.branch.ViewApplicabilityUtil;
+import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
+import org.eclipse.osee.framework.ui.skynet.widgets.XListDropViewer;
+import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
 import org.eclipse.swt.program.Program;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * @author Ryan D. Brooks
  */
 public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
+   private static final String LOW_LEVEL_REQUIREMENTS = "Low Level Requirements";
    private CharBackedInputStream charBak;
    private ISheetWriter excelWriter;
    private final HashMap<String, List<Artifact>> subsysToSubsysReqsMap;
    private final List<Artifact> lowLevelReqs;
    private final HashSet<Artifact> components;
    private Collection<ArtifactType> lowerLevelTypes;
+
+   private XCombo branchViewWidget;
+   private XListDropViewer lowerLevel;
 
    @Override
    public String getName() {
@@ -83,6 +95,9 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       initAllocationComponents(variableMap.getArtifacts("Allocation Components"));
 
       BranchId branch = lowLevelReqs.get(0).getBranch();
+
+      Object view = variableMap.getValue(BRANCH_VIEW);
+      setViewId(view);
 
       monitor.subTask("Loading Higher Level Requirements"); // bulk load to improve performance
       monitor.worked(1);
@@ -117,8 +132,12 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
          if (isLowerLevelRequirement(lowLevelReq)) {
             row[2] = lowLevelReq.getAttributesToStringSorted(CoreAttributeTypes.QualificationMethod);
 
-            for (Artifact subSysReq : lowLevelReq.getRelatedArtifacts(
-               CoreRelationTypes.Requirement_Trace__Higher_Level)) {
+            List<Artifact> relatedArtifacts =
+               lowLevelReq.getRelatedArtifacts(CoreRelationTypes.Requirement_Trace__Higher_Level);
+            if (relatedArtifacts != null) {
+               ViewIdUtility.removeExcludedArtifacts(relatedArtifacts.iterator(), excludedArtifactIdMap);
+            }
+            for (Artifact subSysReq : relatedArtifacts) {
                row[3] = getAssociatedSubSystem(subSysReq);
                row[4] = correct(subSysReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
                row[5] = subSysReq.getName();
@@ -173,9 +192,12 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
             if (isAllocated(higherLevelReq)) {
                row[0] = correct(higherLevelReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
                row[1] = higherLevelReq.getName();
-
-               for (Artifact lowerLevelReq : higherLevelReq.getRelatedArtifacts(
-                  CoreRelationTypes.Requirement_Trace__Lower_Level)) {
+               List<Artifact> relatedArtifacts =
+                  higherLevelReq.getRelatedArtifacts(CoreRelationTypes.Requirement_Trace__Lower_Level);
+               if (relatedArtifacts != null) {
+                  ViewIdUtility.removeExcludedArtifacts(relatedArtifacts.iterator(), excludedArtifactIdMap);
+               }
+               for (Artifact lowerLevelReq : relatedArtifacts) {
                   if (lowLevelReqs.contains(lowerLevelReq)) {
                      row[2] = correct(lowerLevelReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
                      row[3] = lowerLevelReq.getName();
@@ -215,6 +237,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
             }
          }
       }
+      ViewIdUtility.removeExcludedArtifacts(lowLevelReqs.iterator(), excludedArtifactIdMap);
    }
 
    private void initAllocationComponents(List<Artifact> artifacts) throws OseeCoreException {
@@ -230,6 +253,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
             }
          }
       }
+      ViewIdUtility.removeExcludedArtifacts(components.iterator(), excludedArtifactIdMap);
    }
 
    private String correct(String value) {
@@ -248,6 +272,10 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
    }
 
    private void orderSubsystemReqs(Artifact subsysTopFolder) throws OseeCoreException {
+      List<Artifact> children = subsysTopFolder.getChildren();
+      if (children != null) {
+         ViewIdUtility.removeExcludedArtifacts(children.iterator(), excludedArtifactIdMap);
+      }
       for (Artifact subsysFolder : subsysTopFolder.getChildren()) {
          String subSysName = subsysFolder.getName();
          List<Artifact> subsysReqs = subsysFolder.getDescendants();
@@ -259,7 +287,38 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"Lower Level Requirements\" />" + //
          "<XWidget xwidgetType=\"XListDropViewer\" displayName=\"Allocation Components\" />" + //
-         "<XWidget xwidgetType=\"XArtifactTypeMultiChoiceSelect\" displayName=\"Low Level Requirement Type(s)\" multiSelect=\"true\" /></xWidgets>";
+         "<XWidget xwidgetType=\"XArtifactTypeMultiChoiceSelect\" displayName=\"Low Level Requirement Type(s)\" multiSelect=\"true\" />" + //
+         "<XWidget xwidgetType=\"XCombo()\" displayName=\"Branch View\" horizontalLabel=\"true\"/>" + //
+         "</xWidgets>";
+   }
+
+   @Override
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
+      super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, xModListener, isEditable);
+      if (xWidget.getLabel().equals(LOW_LEVEL_REQUIREMENTS)) {
+         lowerLevel = (XListDropViewer) xWidget;
+         lowerLevel.addXModifiedListener(new XModifiedListener() {
+
+            @Override
+            public void widgetModified(XWidget widget) {
+               if (branchViewWidget != null) {
+                  branchViewWidget.setEditable(true);
+                  List<Artifact> arts = lowerLevel.getArtifacts();
+                  if (arts != null && !arts.isEmpty()) {
+                     BranchId branch = arts.iterator().next().getBranch();
+                     if (branch != null && branch.isValid()) {
+                        branchViews =
+                           ViewApplicabilityUtil.getBranchViews(ViewApplicabilityUtil.getParentBranch(branch));
+                        branchViewWidget.setDataStrings(branchViews.values());
+                     }
+                  }
+               }
+            }
+         });
+      } else if (xWidget.getLabel().equals(BRANCH_VIEW)) {
+         branchViewWidget = (XCombo) xWidget;
+         branchViewWidget.setEditable(false);
+      }
    }
 
    @Override

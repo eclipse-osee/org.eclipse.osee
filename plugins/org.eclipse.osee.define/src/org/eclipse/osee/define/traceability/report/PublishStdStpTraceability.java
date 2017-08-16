@@ -37,15 +37,24 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.branch.ViewApplicabilityUtil;
+import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
+import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
 import org.eclipse.swt.program.Program;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * @author Roberto E. Escobar
  */
 public class PublishStdStpTraceability extends AbstractBlam {
 
+   private static final String PROGRAM_BRANCH = "Program Branch";
    private static final String scriptDirectory =
       "<XWidget xwidgetType=\"XText\" displayName=\"Script Root Directory\" defaultValue=\"C:/UserData/workspaceScripts\"/>";
    private static final String requirementsBranch =
@@ -58,7 +67,10 @@ public class PublishStdStpTraceability extends AbstractBlam {
       "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Search Git Code Structure\" labelAfter=\"true\" horizontalLabel=\"true\" defaultValue=\"false\" />";
    private static final String TRACE_HANDLER_CHECKBOX =
       "<XWidget xwidgetType=\"XCheckBox\" displayName=\"%s\" labelAfter=\"true\" horizontalLabel=\"true\"/>";
+
    private Collection<String> availableTraceHandlers;
+   private XCombo branchViewWidget;
+   private XBranchSelectWidget branchWidget;
 
    @Override
    public String getName() {
@@ -87,6 +99,7 @@ public class PublishStdStpTraceability extends AbstractBlam {
       }
 
       builder.append(requirementsBranch);
+      builder.append(BRANCH_VIEW_WIDGET);
       builder.append(artifactTypeChooser);
       builder.append(searchInheritedTypes);
 
@@ -119,7 +132,9 @@ public class PublishStdStpTraceability extends AbstractBlam {
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      BranchId requirementsBranch = variableMap.getBranch("Program Branch");
+      BranchId requirementsBranch = variableMap.getBranch(PROGRAM_BRANCH);
+      Object view = variableMap.getValue(BRANCH_VIEW);
+      setViewId(view);
       Collection<? extends IArtifactType> types =
          variableMap.getCollection(ArtifactType.class, "Artifact Type(s) to Trace");
       boolean searchInherited = variableMap.getBoolean("Search Inherited Types");
@@ -142,13 +157,14 @@ public class PublishStdStpTraceability extends AbstractBlam {
          // Load Requirements Data
          TraceabilityProviderOperation provider;
          if (traceHandlers.isEmpty()) {
-            provider = new BranchTraceabilityOperation(requirementsBranch, types, searchInherited);
+            provider = new BranchTraceabilityOperation(requirementsBranch, types, searchInherited, viewId);
          } else {
             boolean isGitBased = variableMap.getBoolean("Search Git Code Structure");
             provider = new ScriptTraceabilityOperation(scriptDir, requirementsBranch, false, types, searchInherited,
-               traceHandlers, isGitBased);
+               traceHandlers, isGitBased, viewId);
          }
-         RequirementTraceabilityData traceabilityData = new RequirementTraceabilityData(requirementsBranch, provider);
+         RequirementTraceabilityData traceabilityData =
+            new RequirementTraceabilityData(requirementsBranch, provider, viewId);
          IStatus status = traceabilityData.initialize(monitor);
          if (status.getSeverity() == IStatus.CANCEL) {
             monitor.setCanceled(true);
@@ -184,6 +200,31 @@ public class PublishStdStpTraceability extends AbstractBlam {
          }
       }
       monitor.subTask("Done");
+   }
+
+   @Override
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
+      super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, xModListener, isEditable);
+      if (xWidget.getLabel().equals(PROGRAM_BRANCH)) {
+         branchWidget = (XBranchSelectWidget) xWidget;
+         branchWidget.addXModifiedListener(new XModifiedListener() {
+
+            @Override
+            public void widgetModified(XWidget widget) {
+               if (branchViewWidget != null) {
+                  branchViewWidget.setEditable(true);
+                  BranchId branch = branchWidget.getSelection();
+                  if (branch != null && branch.isInvalid()) {
+                     branchViews = ViewApplicabilityUtil.getBranchViews(ViewApplicabilityUtil.getParentBranch(branch));
+                     branchViewWidget.setDataStrings(branchViews.values());
+                  }
+               }
+            }
+         });
+      } else if (xWidget.getLabel().equals(BRANCH_VIEW)) {
+         branchViewWidget = (XCombo) xWidget;
+         branchViewWidget.setEditable(false);
+      }
    }
 
    @Override

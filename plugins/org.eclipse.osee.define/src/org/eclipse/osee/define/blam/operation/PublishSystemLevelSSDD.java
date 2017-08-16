@@ -36,19 +36,31 @@ import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
+import org.eclipse.osee.framework.skynet.core.utility.ViewIdUtility;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.branch.ViewApplicabilityUtil;
+import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
+import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
 import org.eclipse.swt.program.Program;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * @author Ryan D. Brooks
  */
 public class PublishSystemLevelSSDD extends AbstractBlam {
+   private static final String BRANCH = "Branch";
    private CharBackedInputStream charBak;
    private ISheetWriter excelWriter;
    private List<Artifact> sysReqs;
    private Artifact[] allSubsystems;
    private final HashCollection<Artifact, Artifact> subsystemToRequirements;
+
+   private XCombo branchViewWidget;
+   private XBranchSelectWidget branchWidget;
 
    @Override
    public String getName() {
@@ -66,12 +78,25 @@ public class PublishSystemLevelSSDD extends AbstractBlam {
    }
 
    @Override
+   public String getXWidgetsXml() throws OseeCoreException {
+      StringBuilder builder = new StringBuilder();
+      builder.append("<xWidgets>");
+      builder.append(branchXWidgetXml);
+      builder.append(BRANCH_VIEW_WIDGET);
+      builder.append("</xWidgets>");
+      return builder.toString();
+   }
+
+   @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       monitor.beginTask("Generating System Level SSDD", 100);
 
-      BranchId branch = variableMap.getBranch("Branch");
+      BranchId branch = variableMap.getBranch(BRANCH);
+      Object view = variableMap.getValue(BRANCH_VIEW);
+      setViewId(view);
 
       init();
+      ViewIdUtility.findExcludedArtifactsByView(viewId, branch);
 
       monitor.subTask("Aquiring System Components"); // bulk load for performance reasons
       ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.Component, branch);
@@ -82,6 +107,7 @@ public class PublishSystemLevelSSDD extends AbstractBlam {
       Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
       sysReqs = root.getChild(Requirements.SYSTEM_REQUIREMENTS).getDescendants();
 
+      excludeArtifacts(sysReqs.iterator());
       getSubsystemList();
 
       monitor.subTask("5.2 System Requirement Allocation To Subsystems");
@@ -98,7 +124,10 @@ public class PublishSystemLevelSSDD extends AbstractBlam {
 
    private void getSubsystemList() throws OseeCoreException {
       for (Artifact systemRequirement : sysReqs) {
-         for (Artifact subsystem : systemRequirement.getRelatedArtifacts(CoreRelationTypes.Allocation__Component)) {
+         List<Artifact> relatedArtifacts =
+            systemRequirement.getRelatedArtifacts(CoreRelationTypes.Allocation__Component);
+         excludeArtifacts(relatedArtifacts.iterator());
+         for (Artifact subsystem : relatedArtifacts) {
             subsystemToRequirements.put(subsystem, systemRequirement);
          }
       }
@@ -132,7 +161,12 @@ public class PublishSystemLevelSSDD extends AbstractBlam {
          CoreArtifactTypes.SystemRequirementMSWord.getName(), "Notes <rationale>");
 
       for (Artifact systemRequirement : subsystemToRequirements.getValues(subsystem)) {
-         for (Artifact component : systemRequirement.getRelatedArtifacts(CoreRelationTypes.Allocation__Component)) {
+         List<Artifact> relatedArtifacts =
+            systemRequirement.getRelatedArtifacts(CoreRelationTypes.Allocation__Component);
+
+         excludeArtifacts(relatedArtifacts.iterator());
+
+         for (Artifact component : relatedArtifacts) {
             if (component.equals(subsystem)) {
                String rationale =
                   systemRequirement.getRelationRationale(component, CoreRelationTypes.Allocation__Component);
@@ -152,13 +186,40 @@ public class PublishSystemLevelSSDD extends AbstractBlam {
       excelWriter.writeCell(systemRequirement.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
       excelWriter.writeCell(systemRequirement.getName());
 
-      List<Artifact> allocatedSubsystems =
-         new ArrayList<Artifact>(systemRequirement.getRelatedArtifacts(CoreRelationTypes.Allocation__Component));
+      List<Artifact> relatedArtifacts = systemRequirement.getRelatedArtifacts(CoreRelationTypes.Allocation__Component);
+      excludeArtifacts(relatedArtifacts.iterator());
+
+      List<Artifact> allocatedSubsystems = new ArrayList<Artifact>(relatedArtifacts);
       Collections.sort(allocatedSubsystems);
       for (Artifact allocatedSubsystem : allocatedSubsystems) {
          excelWriter.writeCell("X", Arrays.binarySearch(allSubsystems, allocatedSubsystem) + 2);
       }
       excelWriter.endRow();
+   }
+
+   @Override
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
+      super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, xModListener, isEditable);
+      if (xWidget.getLabel().equals(BRANCH)) {
+         branchWidget = (XBranchSelectWidget) xWidget;
+         branchWidget.addXModifiedListener(new XModifiedListener() {
+
+            @Override
+            public void widgetModified(XWidget widget) {
+               if (branchViewWidget != null) {
+                  branchViewWidget.setEditable(true);
+                  BranchId branch = branchWidget.getSelection();
+                  if (branch != null && branch.isValid()) {
+                     branchViews = ViewApplicabilityUtil.getBranchViews(ViewApplicabilityUtil.getParentBranch(branch));
+                     branchViewWidget.setDataStrings(branchViews.values());
+                  }
+               }
+            }
+         });
+      } else if (xWidget.getLabel().equals(BRANCH_VIEW)) {
+         branchViewWidget = (XCombo) xWidget;
+         branchViewWidget.setEditable(false);
+      }
    }
 
    @Override

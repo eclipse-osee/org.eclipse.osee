@@ -34,6 +34,7 @@ import org.eclipse.osee.define.traceability.data.RequirementData;
 import org.eclipse.osee.define.traceability.data.TestUnitData;
 import org.eclipse.osee.define.traceability.data.TraceMark;
 import org.eclipse.osee.define.traceability.data.TraceUnit;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
@@ -107,7 +108,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
    public void initialize(IProgressMonitor monitor) {
       transaction = null;
       handler = null;
-      requirementData = new RequirementData(importIntoBranch);
+      requirementData = new RequirementData(importIntoBranch, ArtifactId.SENTINEL);
       if (!monitor.isCanceled()) {
          requirementData.initialize(monitor);
       }

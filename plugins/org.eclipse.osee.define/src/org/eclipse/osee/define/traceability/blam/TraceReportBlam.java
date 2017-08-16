@@ -51,8 +51,10 @@ import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.branch.ViewApplicabilityUtil;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorProvider;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorTab;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
@@ -60,13 +62,22 @@ import org.eclipse.osee.framework.ui.skynet.results.html.ResultsEditorHtmlTab;
 import org.eclipse.osee.framework.ui.skynet.results.table.IResultsXViewerRow;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsEditorTableTab;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
+import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
+import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
 import org.eclipse.swt.program.Program;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
  * @author Roberto E. Escobar
  */
 public class TraceReportBlam extends AbstractBlam {
+   private static final String BRANCH = "Branch";
    private final List<IResultsEditorTab> resultsTabs;
+   private XCombo branchViewWidget;
+   private XBranchSelectWidget branchWidget;
 
    public TraceReportBlam() {
       this.resultsTabs = new ArrayList<>();
@@ -101,6 +112,7 @@ public class TraceReportBlam extends AbstractBlam {
       builder.append("<xWidgets>");
       //      builder.append("<XWidget xwidgetType=\"XFileSelectionDialog\" displayName=\"Select UI List File\" />");
       builder.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Requirements Branch\" />");
+      builder.append(BRANCH_VIEW_WIDGET);
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Select Trace Types:\"/>");
       for (TraceTypeEnum traceType : TraceTypeEnum.values()) {
          builder.append(getOperationsCheckBoxes(traceType.asLabel()));
@@ -113,25 +125,6 @@ public class TraceReportBlam extends AbstractBlam {
       builder.append("</xWidgets>");
       return builder.toString();
    }
-
-   //   private String getUIsFilterFromFile(IProgressMonitor monitor, String filePath) throws Exception {
-   //      String input;
-   //      File file = new File(filePath);
-   //      if (file == null || !file.exists()) {
-   //         throw new OseeArgumentException("UI list file not accessible");
-   //      }
-   //      IFileStore fileStore = EFS.getStore(file.toURI());
-   //      InputStream inputStream = null;
-   //      try {
-   //         inputStream = new BufferedInputStream(fileStore.openInputStream(EFS.NONE, monitor));
-   //         input = Lib.inputStreamToString(inputStream);
-   //      } finally {
-   //         if (inputStream != null) {
-   //            inputStream.close();
-   //         }
-   //      }
-   //      return input;
-   //   }
 
    private List<TraceTypeEnum> getCheckedTraceItems(VariableMap variableMap) throws OseeArgumentException {
       List<TraceTypeEnum> toReturn = new ArrayList<>();
@@ -151,6 +144,9 @@ public class TraceReportBlam extends AbstractBlam {
       if (branch == null) {
          throw new OseeArgumentException("Branch cannot be null");
       }
+      Object view = variableMap.getValue(BRANCH_VIEW);
+      setViewId(view);
+
       List<TraceTypeEnum> traceTypes = getCheckedTraceItems(variableMap);
       if (traceTypes.isEmpty()) {
          throw new OseeArgumentException("Please select a trace type");
@@ -165,7 +161,7 @@ public class TraceReportBlam extends AbstractBlam {
       CharBackedInputStream excelInputStream = null;
       Map<String, AbstractArtifactRelationReport> reports = new LinkedHashMap<>();
       List<BaseTraceDataCache> traceCache = new ArrayList<>();
-      RequirementData reqData = new RequirementData(branch);
+      RequirementData reqData = new RequirementData(branch, viewId);
       CodeUnitData codeUnit = null;
       TestUnitData testUnit = null;
       try {
@@ -226,6 +222,31 @@ public class TraceReportBlam extends AbstractBlam {
          } finally {
             monitor.done();
          }
+      }
+   }
+
+   @Override
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
+      super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, xModListener, isEditable);
+      if (xWidget.getLabel().equals(BRANCH)) {
+         branchWidget = (XBranchSelectWidget) xWidget;
+         branchWidget.addXModifiedListener(new XModifiedListener() {
+
+            @Override
+            public void widgetModified(XWidget widget) {
+               if (branchViewWidget != null) {
+                  branchViewWidget.setEditable(true);
+                  BranchId branch = branchWidget.getSelection();
+                  if (branch != null && branch.isValid()) {
+                     branchViews = ViewApplicabilityUtil.getBranchViews(ViewApplicabilityUtil.getParentBranch(branch));
+                     branchViewWidget.setDataStrings(branchViews.values());
+                  }
+               }
+            }
+         });
+      } else if (xWidget.getLabel().equals(BRANCH_VIEW)) {
+         branchViewWidget = (XCombo) xWidget;
+         branchViewWidget.setEditable(false);
       }
    }
 

@@ -18,6 +18,7 @@ import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -28,6 +29,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.define.internal.Activator;
 import org.eclipse.osee.define.traceability.data.RequirementData;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -37,6 +39,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.utility.ViewIdUtility;
 
 /**
  * @author Roberto E. Escobar
@@ -51,11 +54,14 @@ public class RequirementTraceabilityData {
    private final Set<String> codeUnits = new TreeSet<>();
    private final Map<String, Artifact> testProcedures = new HashMap<>();
    private File testProcedureFilter;
+   private final ArtifactId viewId;
+   private Set<ArtifactId> excludedArtifactIdMap = new HashSet<>();
 
-   public RequirementTraceabilityData(BranchId testProcedureBranch, TraceabilityProviderOperation traceabilityProvider) {
+   public RequirementTraceabilityData(BranchId testProcedureBranch, TraceabilityProviderOperation traceabilityProvider, ArtifactId viewId) {
       this.testProcedureBranch = testProcedureBranch;
       this.traceabilityProvider = traceabilityProvider;
       this.testProcedureFilter = null;
+      this.viewId = viewId;
       reset();
    }
 
@@ -78,6 +84,8 @@ public class RequirementTraceabilityData {
          this.requirementsToCodeUnits = traceabilityProvider.getRequirementToCodeUnitsMap();
          this.codeUnits.addAll(traceabilityProvider.getCodeUnits());
 
+         excludedArtifactIdMap = ViewIdUtility.findExcludedArtifactsByView(viewId, testProcedureBranch);
+
          if (monitor.isCanceled() != true) {
             if (status.getSeverity() == IStatus.OK) {
                getTestProcedureTraceability(testProcedureBranch);
@@ -94,8 +102,12 @@ public class RequirementTraceabilityData {
    private void getTestProcedureTraceability(BranchId testProcedureBranch) throws OseeCoreException {
       // Map Software Requirements from TestProcedure IOseeBranch to Requirements IOseeBranch
       Map<String, Artifact> testProcedureBranchReqsToReqsBranchMap = new HashMap<>();
-      for (Artifact tpRequirement : ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SoftwareRequirement,
-         testProcedureBranch)) {
+      List<Artifact> artifacts =
+         ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SoftwareRequirement, testProcedureBranch);
+      if (artifacts != null) {
+         ViewIdUtility.removeExcludedArtifacts(artifacts.iterator(), excludedArtifactIdMap);
+      }
+      for (Artifact tpRequirement : artifacts) {
          testProcedureBranchReqsToReqsBranchMap.put(tpRequirement.getName(), tpRequirement);
       }
 
@@ -104,6 +116,9 @@ public class RequirementTraceabilityData {
          Artifact requirement = entry.getValue();
          Set<Artifact> foundProcedures =
             new HashSet<Artifact>(requirement.getRelatedArtifacts(CoreRelationTypes.Validation__Validator));
+         if (foundProcedures != null) {
+            ViewIdUtility.removeExcludedArtifacts(foundProcedures.iterator(), excludedArtifactIdMap);
+         }
          Set<Artifact> toAdd = new HashSet<>();
          if (testProceduresFilter.isEmpty() != true) {
             for (Artifact artifact : foundProcedures) {
@@ -132,7 +147,7 @@ public class RequirementTraceabilityData {
    /**
     * Get Requirement Artifact based on traceMark mark if it fails, check if trace mark is a structured requirement and
     * try again
-    * 
+    *
     * @return requirement artifact
     */
    public Artifact getRequirementFromTraceMark(String traceMark) {
@@ -163,7 +178,7 @@ public class RequirementTraceabilityData {
    /**
     * TODO need to use persisted test script NOTE: These artifact should not be persisted since they are temporary items
     * artifacts
-    * 
+    *
     * @param artifact requirement to find
     * @return the test scripts associated with this requirement
     * @throws OseeCoreException

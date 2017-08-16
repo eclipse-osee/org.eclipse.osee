@@ -73,7 +73,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.branch.ViewApplicabilityUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
@@ -86,6 +88,8 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * @author Ryan D. Brooks
  */
 public class DetailedTestStatusOld extends AbstractBlam {
+   private static final String REQUIREMENTS_BRANCH = "Requirements Branch";
+   private static final String PROGRAM = "Program";
    private static final Pattern taskNamePattern = Pattern.compile("(?:\"([^\"]+)\")? for \"([^\"]+)\"");
    private static final SimpleDateFormat dateFormatter = new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy");
    private final Matcher taskNameMatcher = taskNamePattern.matcher("");
@@ -113,6 +117,8 @@ public class DetailedTestStatusOld extends AbstractBlam {
    private static final String TRACE_HANDLER_CHECKBOX =
       "<XWidget xwidgetType=\"XCheckBox\" displayName=\"%s\" labelAfter=\"true\" horizontalLabel=\"true\"/>";
    private Collection<String> availableTraceHandlers;
+   private XCombo branchViewWidget;
+   private XBranchSelectWidget branchWidget;
 
    private BranchId selectedBranch;
    private IAtsProgram selectedProgram;
@@ -224,9 +230,12 @@ public class DetailedTestStatusOld extends AbstractBlam {
          return;
       }
 
-      BranchId requirementsBranch = variableMap.getBranch("Requirements Branch");
+      BranchId requirementsBranch = variableMap.getBranch(REQUIREMENTS_BRANCH);
       BranchId scriptsBranch = variableMap.getBranch("Test Results Branch");
       BranchId procedureBranch = variableMap.getBranch("Test Procedure Branch");
+
+      Object view = variableMap.getValue(BRANCH_VIEW);
+      setViewId(view);
 
       File scriptDir = new File(variableMap.getString("Script Root Directory"));
       versions = new ArrayList<>();
@@ -247,8 +256,8 @@ public class DetailedTestStatusOld extends AbstractBlam {
 
       // Load Requirements Data
       TraceabilityProviderOperation provider =
-         new ScriptTraceabilityOperation(scriptDir, requirementsBranch, false, traceHandlers, false);
-      RequirementTraceabilityData traceabilityData = new RequirementTraceabilityData(procedureBranch, provider);
+         new ScriptTraceabilityOperation(scriptDir, requirementsBranch, false, traceHandlers, false, viewId);
+      RequirementTraceabilityData traceabilityData = new RequirementTraceabilityData(procedureBranch, provider, viewId);
 
       IStatus status = traceabilityData.initialize(monitor);
       switch (status.getSeverity()) {
@@ -517,7 +526,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
 
       if (widgetLabel.equals("Versions")) {
          versionsListViewer = (XVersionList) xWidget;
-      } else if (widgetLabel.equals("Requirements Branch")) {
+      } else if (widgetLabel.equals(REQUIREMENTS_BRANCH)) {
          requirementsBranchWidget = (XBranchSelectWidget) xWidget;
       } else if (widgetLabel.equals("Test Procedure Branch")) {
          testProcedureBranchWidget = (XBranchSelectWidget) xWidget;
@@ -527,10 +536,30 @@ public class DetailedTestStatusOld extends AbstractBlam {
    @Override
    public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
       String widgetName = xWidget.getLabel();
-      if (widgetName.equals("Program")) {
+      if (widgetName.equals(PROGRAM)) {
          XAtsProgramComboWidget programWidget = (XAtsProgramComboWidget) xWidget;
          programWidget.getComboViewer().addSelectionChangedListener(new ProgramSelectionListener());
+      } else if (xWidget.getLabel().equals(REQUIREMENTS_BRANCH)) {
+         branchWidget = (XBranchSelectWidget) xWidget;
+         branchWidget.addXModifiedListener(new XModifiedListener() {
+
+            @Override
+            public void widgetModified(XWidget widget) {
+               if (branchViewWidget != null) {
+                  branchViewWidget.setEditable(true);
+                  BranchId branch = branchWidget.getSelection();
+                  if (branch != null && branch.isInvalid()) {
+                     branchViews = ViewApplicabilityUtil.getBranchViews(ViewApplicabilityUtil.getParentBranch(branch));
+                     branchViewWidget.setDataStrings(branchViews.values());
+                  }
+               }
+            }
+         });
+      } else if (xWidget.getLabel().equals(BRANCH_VIEW)) {
+         branchViewWidget = (XCombo) xWidget;
+         branchViewWidget.setEditable(false);
       }
+
    }
 
    private void loadTasksFromWorkflow(TeamWorkFlowArtifact workflow) throws OseeCoreException {
@@ -595,6 +624,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
          "<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Test Results Branch\" toolTip=\"Select a scripts results branch.\" />");
       sb.append(
          "<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Test Procedure Branch\" toolTip=\"Select a test procedures branch.\" />");
+      sb.append(BRANCH_VIEW_WIDGET);
       sb.append("</xWidgets>");
       return sb.toString();
    }
