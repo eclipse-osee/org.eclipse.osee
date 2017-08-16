@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -375,9 +376,9 @@ public class TxDataManagerTest {
       when(txData.isCommitInProgress()).thenReturn(false);
       when(txData.getTxState()).thenReturn(TxState.NEW_TX);
 
-      txDataManager.setAuthor(txData, readable1);
+      txDataManager.setAuthor(txData, SystemUser.OseeSystem);
 
-      verify(txData).setAuthor(readable1);
+      verify(txData).setAuthor(SystemUser.OseeSystem);
    }
 
    @Test

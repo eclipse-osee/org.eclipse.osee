@@ -17,6 +17,7 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasBranch;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.TupleData;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
@@ -43,7 +44,7 @@ public class TxData implements HasSession, HasBranch {
    private final Map<String, Artifact> writeables = new HashMap<>();
    private final Map<String, ArtifactReadable> readables = new HashMap<>();
 
-   private ArtifactId author;
+   private UserId author;
    private String comment;
 
    private volatile boolean isCommitInProgress;
@@ -75,7 +76,7 @@ public class TxData implements HasSession, HasBranch {
       return graph;
    }
 
-   public ArtifactId getAuthor() {
+   public UserId getAuthor() {
       return author;
    }
 
@@ -91,7 +92,7 @@ public class TxData implements HasSession, HasBranch {
       return isCommitInProgress;
    }
 
-   public void setAuthor(ArtifactId author) {
+   public void setAuthor(UserId author) {
       this.author = author;
    }
 

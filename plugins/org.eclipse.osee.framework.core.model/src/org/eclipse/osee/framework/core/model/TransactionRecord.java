@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.core.model;
 
 import java.util.Date;
 import org.eclipse.osee.framework.core.data.Adaptable;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
@@ -31,11 +30,11 @@ public class TransactionRecord extends BaseId implements TransactionToken, Adapt
    private final BranchId branch;
    private String comment;
    private Date time;
-   private ArtifactId authorArtId;
+   private UserId authorArtId;
    private int commitArtId;
    private Long buildId;
 
-   public TransactionRecord(Long id, BranchId branch, String comment, Date time, ArtifactId authorArtId, int commitArtId, TransactionDetailsType txType, Long buildId) {
+   public TransactionRecord(Long id, BranchId branch, String comment, Date time, UserId authorArtId, int commitArtId, TransactionDetailsType txType, Long buildId) {
       super(id);
       this.branch = branch;
       this.buildId = buildId;
@@ -59,7 +58,7 @@ public class TransactionRecord extends BaseId implements TransactionToken, Adapt
       return time;
    }
 
-   public ArtifactId getAuthor() {
+   public UserId getAuthor() {
       return authorArtId;
    }
 
@@ -79,7 +78,7 @@ public class TransactionRecord extends BaseId implements TransactionToken, Adapt
       this.time = time;
    }
 
-   public void setAuthor(ArtifactId authorArtId) {
+   public void setAuthor(UserId authorArtId) {
       this.authorArtId = authorArtId;
    }
 

@@ -46,6 +46,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -131,8 +132,8 @@ public class TransactionBuilderImplTest {
    }
 
    public void testSetAuthor() throws OseeCoreException {
-      factory.setAuthor(expectedAuthor);
-      verify(txDataManager).setAuthor(txData, expectedAuthor);
+      factory.setAuthor(SystemUser.OseeSystem);
+      verify(txDataManager).setAuthor(txData, SystemUser.OseeSystem);
    }
 
    @Test

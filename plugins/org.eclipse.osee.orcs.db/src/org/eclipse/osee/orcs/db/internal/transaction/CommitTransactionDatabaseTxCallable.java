@@ -14,6 +14,7 @@ import java.util.Date;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -76,7 +77,7 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
       // 1. Make this whole method a critical region on a per branch basis - can only write to a branch on one thread at time
       String comment = transactionData.getComment();
       BranchId branch = transactionData.getBranch();
-      ArtifactId author = transactionData.getAuthor();
+      UserId author = transactionData.getAuthor();
       OrcsChangeSet changeSet = transactionData.getChangeSet();
 
       Conditions.checkNotNull(branch, "branch");
@@ -110,7 +111,7 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
       process(TxWritePhaseEnum.AFTER_TX_WRITE);
    }
 
-   private TransactionReadable createTransactionRecord(BranchId branch, ArtifactId author, String comment, TransactionId transaction) throws OseeCoreException {
+   private TransactionReadable createTransactionRecord(BranchId branch, UserId author, String comment, TransactionId transaction) throws OseeCoreException {
 
       TransactionDetailsType txType = TransactionDetailsType.NonBaselined;
       Date transactionTime = GlobalTime.GreenwichMeanTimestamp();

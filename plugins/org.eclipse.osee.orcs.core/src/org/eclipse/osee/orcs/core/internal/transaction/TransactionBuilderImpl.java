@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.Tuple3Type;
 import org.eclipse.osee.framework.core.data.Tuple4Type;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -90,7 +91,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
       txManager.setComment(txData, comment);
    }
 
-   public void setAuthor(ArtifactId author) throws OseeCoreException {
+   public void setAuthor(UserId author) throws OseeCoreException {
       txManager.setAuthor(txData, author);
    }
 

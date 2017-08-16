@@ -16,6 +16,7 @@ import java.io.StringWriter;
 import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -32,7 +33,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 /**
  * @author Donald G. Dunne
  */
-public class User extends Artifact {
+public class User extends Artifact implements UserId {
    private PropertyStore userSettings;
 
    public User(Long id, String guid, BranchId branch) {

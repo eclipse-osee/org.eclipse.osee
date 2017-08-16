@@ -10,14 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.UserId;
 
 public interface TransactionData extends HasOrcsChangeSet {
 
    BranchId getBranch();
 
-   ArtifactId getAuthor();
+   UserId getAuthor();
 
    String getComment();
 

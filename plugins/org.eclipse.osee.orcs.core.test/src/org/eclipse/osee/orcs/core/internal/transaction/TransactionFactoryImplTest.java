@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -24,7 +25,6 @@ import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.TxDataStore;
 import org.eclipse.osee.orcs.core.internal.search.QueryModule;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.junit.Before;
@@ -54,7 +54,7 @@ public class TransactionFactoryImplTest {
    @Mock private TxDataStore txDataStore;
    @Mock private KeyValueOps keyValueOps;
 
-   @Mock private ArtifactReadable expectedAuthor;
+   @Mock private UserId expectedAuthor;
    @Mock private TxData txData;
    // @formatter:on
 

@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
@@ -76,7 +77,7 @@ public class TxSqlBuilderTest {
    private static final TransactionId EXPECTED_TX = TransactionId.valueOf(10000);
    private static final TransactionId LOADED_TX_ID = TransactionId.valueOf(567);
    private static final ArtifactId EXPECTED_COMMIT_ART = ArtifactId.valueOf(46);
-   private static final ArtifactId EXPECTED_AUTHOR = ArtifactId.valueOf(89);
+   private static final UserId EXPECTED_AUTHOR = UserId.valueOf(89L);
    private static final String EXPECTED_COMMENT = "My comment";
    private static final TransactionDetailsType EXPECTED_TX_TYPE = TransactionDetailsType.Baselined;
    private static final Date EXPECTED_TX_TIME = new Date();

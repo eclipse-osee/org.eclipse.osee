@@ -59,7 +59,6 @@ import org.eclipse.osee.orcs.ImportOptions;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.data.ArchiveOperation;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.data.TransactionReadable;
@@ -392,10 +391,9 @@ public class BranchEndpointImpl implements BranchEndpoint {
    @Override
    public Response writeTx(BranchId branch, NewTransaction data) {
       String comment = data.getComment();
-      ArtifactReadable userArtifact = null;
 
       TransactionFactory txFactory = newTxFactory();
-      TransactionBuilder txBuilder = txFactory.createTransaction(branch, userArtifact, comment);
+      TransactionBuilder txBuilder = txFactory.createTransaction(branch, null, comment);
 
       //TODO: Integrate data with TxBuilder
 

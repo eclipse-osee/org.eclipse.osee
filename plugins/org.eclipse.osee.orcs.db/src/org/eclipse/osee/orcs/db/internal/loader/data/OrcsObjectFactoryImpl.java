@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.Tuple3Type;
 import org.eclipse.osee.framework.core.data.Tuple4Type;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -217,7 +218,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public TxOrcsData createTxData(Long localId, TransactionDetailsType type, Date date, String comment, BranchId branch, ArtifactId author, ArtifactId commitArt, Long buildId) {
+   public TxOrcsData createTxData(Long localId, TransactionDetailsType type, Date date, String comment, BranchId branch, UserId author, ArtifactId commitArt, Long buildId) {
       TxOrcsData data = new TransactionDataImpl(localId);
       data.setTxType(type);
       data.setDate(date);

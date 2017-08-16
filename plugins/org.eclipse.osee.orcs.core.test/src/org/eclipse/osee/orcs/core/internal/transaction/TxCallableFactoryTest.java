@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -60,21 +61,15 @@ public class TxCallableFactoryTest {
    // @formatter:off
    @Mock private OrcsSession session;
    @Mock private Log logger;
-
    @Mock private ExternalArtifactManager proxyManager;
    @Mock private ArtifactFactory artifactFactory;
    @Mock private RelationManager relationManager;
    @Mock private TxDataLoader loader;
    @Mock private TupleDataFactory tupleFactory;
-
    @Mock private GraphData graph;
    @Mock private TxDataStore txDataStore;
-
-   @Mock private ArtifactReadable userArtifact;
    @Mock private ArtifactReadable groupArtifact;
-
    @Captor private ArgumentCaptor<TransactionData> txData;
-
    // @formatter:on
 
    private TxCallableFactory txFactory;
@@ -106,7 +101,7 @@ public class TxCallableFactoryTest {
    public void testCommit() throws Exception {
       final TransactionResult txResult = mock(TransactionResult.class);
 
-      txManager.setAuthor(data, userArtifact);
+      txManager.setAuthor(data, SystemUser.OseeSystem);
       txManager.setComment(data, "My Comment");
 
       when(txDataStore.commitTransaction(eq(session), txData.capture())).thenReturn(new Callable<TransactionResult>() {
@@ -131,7 +126,7 @@ public class TxCallableFactoryTest {
 
       TransactionData data = txData.getValue();
       assertEquals(COMMON, data.getBranch());
-      assertEquals(userArtifact, data.getAuthor());
+      assertEquals(SystemUser.OseeSystem, data.getAuthor());
       assertEquals("My Comment", data.getComment());
    }
 

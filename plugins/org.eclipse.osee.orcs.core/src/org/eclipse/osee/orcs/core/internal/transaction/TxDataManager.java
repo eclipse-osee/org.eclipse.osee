@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.Tuple3Type;
 import org.eclipse.osee.framework.core.data.Tuple4Type;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -235,7 +236,7 @@ public class TxDataManager {
       txData.setComment(comment);
    }
 
-   public void setAuthor(TxData txData, ArtifactId author) throws OseeCoreException {
+   public void setAuthor(TxData txData, UserId author) {
       checkChangesAllowed(txData);
       txData.setAuthor(author);
    }
@@ -453,11 +454,11 @@ public class TxDataManager {
    private static final class TransactionDataImpl implements TransactionData {
 
       private final BranchId branch;
-      private final ArtifactId author;
+      private final UserId author;
       private final String comment;
       private final OrcsChangeSet changeSet;
 
-      public TransactionDataImpl(BranchId branch, ArtifactId author, String comment, OrcsChangeSet changeSet) {
+      public TransactionDataImpl(BranchId branch, UserId author, String comment, OrcsChangeSet changeSet) {
          this.branch = branch;
          this.author = author;
          this.comment = comment;
@@ -470,7 +471,7 @@ public class TxDataManager {
       }
 
       @Override
-      public ArtifactId getAuthor() {
+      public UserId getAuthor() {
          return author;
       }
 

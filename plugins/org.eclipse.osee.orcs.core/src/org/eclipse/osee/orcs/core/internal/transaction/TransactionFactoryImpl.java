@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -81,7 +82,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
       TransactionBuilderImpl orcsTxn =
          new TransactionBuilderImpl(txCallableFactory, txDataManager, txData, query, keyValueOps);
       orcsTxn.setComment(comment);
-      orcsTxn.setAuthor(author);
+      orcsTxn.setAuthor(UserId.valueOf(author.getId()));
       return orcsTxn;
    }
 

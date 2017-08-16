@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.db.internal.loader.processor;
 import java.util.Date;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -38,7 +39,7 @@ public class TransactionLoadProcessor extends LoadProcessor<TxOrcsData, Transact
       TransactionDetailsType type = TransactionDetailsType.toEnum(chStmt.getInt("tx_type"));
       String comment = chStmt.getString("osee_comment");
       Date date = chStmt.getTimestamp("time");
-      ArtifactId authorId = ArtifactId.valueOf(chStmt.getLong("author"));
+      UserId authorId = UserId.valueOf(chStmt.getLong("author"));
       ArtifactId commitId = ArtifactId.valueOf(chStmt.getLong("commit_art_id"));
       return factory.createTxData(localId, type, date, comment, branch, authorId, commitId, buildId);
    }
