@@ -101,6 +101,16 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
       return actions;
    }
 
+   public List<String> getIdsFromStr(String idList) {
+      List<String> ids = new ArrayList<>();
+      for (String id : idList.split(",")) {
+         id = id.replaceAll("^ +", "");
+         id = id.replaceAll(" +$", "");
+         ids.add(id);
+      }
+      return ids;
+   }
+
    @Override
    public ArtifactToken getArtifactById(String id) {
       ArtifactToken action = null;

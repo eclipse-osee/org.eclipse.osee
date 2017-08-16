@@ -56,6 +56,8 @@ import org.junit.Test;
  */
 public class AtsActionEndpointImplTest extends AbstractRestTest {
 
+   private TeamWorkFlowArtifact teamWfArt;
+
    @Test
    public void testQueryTitle() throws Exception {
       queryAndConfirmCount("ats/action/query?Title=SAW", 18);
@@ -96,6 +98,36 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       URI uri = new URL(url).toURI();
       JsonArray array = getAndCheckArray(uri);
       Assert.assertEquals(count, array.size());
+   }
+
+   public TeamWorkFlowArtifact getCodeWorkflow() {
+      if (teamWfArt == null) {
+         teamWfArt = DemoUtil.getSawCodeCommittedWf();
+         teamWfArt.setSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "PCR8125");
+         teamWfArt.persist(getClass().getSimpleName());
+      }
+      return teamWfArt;
+   }
+
+   @Test
+   public void testActionStateById() throws Exception {
+      String results =
+         getAndCheck("ats/action/" + getCodeWorkflow().getIdString() + "/state", MediaType.APPLICATION_JSON_TYPE);
+      Assert.assertTrue(results, results.contains(getCodeWorkflow().getIdString()));
+   }
+
+   @Test
+   public void testActionStateByAtsId() throws Exception {
+      String results =
+         getAndCheck("ats/action/" + getCodeWorkflow().getAtsId() + "/state", MediaType.APPLICATION_JSON_TYPE);
+      Assert.assertTrue(results, results.contains(getCodeWorkflow().getIdString()));
+   }
+
+   @Test
+   public void testActionStateByLegacyId() throws Exception {
+      getCodeWorkflow();
+      String results = getAndCheck("ats/action/PCR8125/legacy/state", MediaType.APPLICATION_JSON_TYPE);
+      Assert.assertTrue(results, results.contains(getCodeWorkflow().getIdString()));
    }
 
    @Test
@@ -145,7 +177,8 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testAtsActionsRestCall() throws Exception {
-      JsonArray array = getAndCheckArray("/ats/action/" + DemoUtil.getSawAtsIds());
+      String url = "/ats/action/" + DemoUtil.getSawAtsIdsStr();
+      JsonArray array = getAndCheckArray(url);
       Assert.assertEquals(3, array.size());
       for (JsonElement elment : array) {
          JsonObject obj = (JsonObject) elment;
@@ -155,7 +188,8 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testAtsActionsDetailsRestCall() throws Exception {
-      JsonArray array = getAndCheckArray("/ats/action/" + DemoUtil.getSawAtsIds() + "/details");
+      String url = "/ats/action/" + DemoUtil.getSawAtsIdsStr() + "/details";
+      JsonArray array = getAndCheckArray(url);
       Assert.assertEquals(3, array.size());
       JsonObject obj = (JsonObject) array.iterator().next();
       testAction(obj);

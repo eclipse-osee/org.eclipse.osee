@@ -53,6 +53,22 @@ public interface AtsActionEndpointApi {
    public abstract List<IAtsWorkItem> getActionDetails(String ids) throws Exception;
 
    /**
+    * @param ids (ats.Legacy PCR Id) of action to display
+    * @return html representation of the stateType;state
+    */
+   @Path("{ids}/legacy/state")
+   @GET
+   public abstract String getActionStateFromLegacyPcrId(String ids) throws Exception;
+
+   /**
+    * @param ids (guid, atsId) of action to display
+    * @return html representation of the stateType;state
+    */
+   @Path("{ids}/state")
+   @GET
+   public abstract String getActionState(String ids) throws Exception;
+
+   /**
     * @query_string <attr type name>=<value>, <attr type id>=<value>
     * @return json representation of the matching workItem(s)
     */

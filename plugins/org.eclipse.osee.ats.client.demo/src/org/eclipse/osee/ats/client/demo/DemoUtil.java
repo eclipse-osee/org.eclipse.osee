@@ -123,7 +123,7 @@ public class DemoUtil {
          DemoUtil.getSawCodeUnCommittedWf(), DemoUtil.getSawSWDesignUnCommittedWf());
    }
 
-   public static String getSawAtsIds() {
+   public static String getSawAtsIdsStr() {
       if (atsIds == null) {
          atsIds = Collections.toString(",", AtsObjects.toAtsIds(getSawCommittedTeamWfs()));
       }

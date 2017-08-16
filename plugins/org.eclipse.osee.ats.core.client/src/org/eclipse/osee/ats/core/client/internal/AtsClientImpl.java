@@ -477,6 +477,11 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
+   public Artifact getArtifactByLegacyPcrId(String id) {
+      return (Artifact) super.getArtifactByLegacyPcrId(id);
+   }
+
+   @Override
    public IArtifactMembersCache<GoalArtifact> getGoalMembersCache() {
       if (goalMembersCache == null) {
          goalMembersCache = new ArtifactCollectorsCache<>(AtsRelationTypes.Goal_Member);

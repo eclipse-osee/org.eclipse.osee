@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
+import org.codehaus.jackson.JsonFactory;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.agile.AgileEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.config.ActionableItemResource;
@@ -89,6 +90,7 @@ public class AtsApplication extends Application {
    public void start() {
       IResourceRegistry registry = new ResourceRegistry();
       OseeTemplateTokens.register(registry);
+      JsonFactory jsonFactory = org.eclipse.osee.ats.rest.util.JsonFactory.create();
 
       // Register conversions
       ConvertCreateUpdateAtsConfig atsConfgConversion = new ConvertCreateUpdateAtsConfig(atsServer);
@@ -106,7 +108,7 @@ public class AtsApplication extends Application {
       singletons.add(new InsertionResource(atsServer));
       singletons.add(new InsertionActivityResource(atsServer));
 
-      singletons.add(new AtsActionEndpointImpl(atsServer, orcsApi));
+      singletons.add(new AtsActionEndpointImpl(atsServer, orcsApi, jsonFactory));
       singletons.add(new AtsRuleEndpointImpl(atsServer));
       singletons.add(new StateResource(atsServer));
       singletons.add(new ConvertResource(atsServer));

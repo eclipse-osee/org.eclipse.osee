@@ -66,7 +66,7 @@ public class ActionUiResourceTest extends AbstractRestTest {
 
    @Test
    public void getActionDetailsError() throws Exception {
-      String html = getAndCheck("/ats/ui/action/" + DemoUtil.getSawAtsIds() + "/details", MediaType.TEXT_HTML_TYPE);
+      String html = getAndCheck("/ats/ui/action/" + DemoUtil.getSawAtsIdsStr() + "/details", MediaType.TEXT_HTML_TYPE);
       Assert.assertTrue(html.contains("can not be found"));
    }
 

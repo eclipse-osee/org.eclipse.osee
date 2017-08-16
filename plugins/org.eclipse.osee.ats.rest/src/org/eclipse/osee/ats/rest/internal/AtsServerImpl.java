@@ -224,6 +224,11 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    }
 
    @Override
+   public ArtifactReadable getArtifactByLegacyPcrId(String id) {
+      return (ArtifactReadable) super.getArtifactByLegacyPcrId(id);
+   }
+
+   @Override
    public ArtifactReadable getArtifactById(String id) {
       return (ArtifactReadable) getQueryService().getArtifactById(id);
    }

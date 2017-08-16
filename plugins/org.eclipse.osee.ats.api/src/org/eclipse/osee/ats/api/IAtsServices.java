@@ -187,4 +187,19 @@ public interface IAtsServices extends IAtsEarnedValueServiceProvider, IAtsConfig
 
    IAtsTeamWorkflow getTeamWf(ArtifactToken artifact);
 
+   ArtifactToken getArtifactByLegacyPcrId(String id);
+
+   Collection<ArtifactToken> getArtifactsByLegacyPcrId(String id);
+
+   Collection<IAtsWorkItem> getWorkItemsByLegacyPcrId(String id);
+
+   /**
+    * @param ids AtsId, legacy id or guid
+    */
+   List<ArtifactToken> getArtifactListByIds(String ids);
+
+   /**
+    * @param ids AtsId, legacy id or guid
+    */
+   List<IAtsWorkItem> getWorkItemListByIds(String ids);
 }

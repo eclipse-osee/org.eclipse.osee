@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.workitem;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -32,6 +34,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.JsonGenerator;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
@@ -56,6 +61,7 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -78,10 +84,12 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
 
    @Context
    private HttpHeaders httpHeaders;
+   private final JsonFactory jsonFactory;
 
-   public AtsActionEndpointImpl(IAtsServices services, OrcsApi orcsApi) {
+   public AtsActionEndpointImpl(IAtsServices services, OrcsApi orcsApi, JsonFactory jsonFactory) {
       this.services = services;
       this.orcsApi = orcsApi;
+      this.jsonFactory = jsonFactory;
    }
 
    @Override
@@ -92,7 +100,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    }
 
    /**
-    * @param ids (guid, atsId) of action to display
+    * @param ids (guid, atsId, legacy pcr id) of action to display
     * @return html representation of the action
     */
    @Override
@@ -241,6 +249,59 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          return getActionAttributeValues(attrTypeId, workItem);
       }
       return null;
+   }
+   
+   /**
+    * @query_string <attr type name>=<value>, <attr type id>=<value>
+    * @return json representation of the matching workItem(s)
+    */
+   @Override
+   @Path("{ids}/legacy/state")
+   @GET
+   @Produces({MediaType.APPLICATION_JSON})
+   public String getActionStateFromLegacyPcrId(@PathParam("ids") String ids) throws Exception {
+      List<IAtsWorkItem> workItems = new ArrayList<>();
+      for (String id : services.getQueryService().getIdsFromStr(ids)) {
+         ArtifactToken action = services.getArtifactByLegacyPcrId(id);
+         if (action != null) {
+            IAtsWorkItem workItem = services.getWorkItemFactory().getWorkItem(action);
+            workItems.add(workItem);
+         }
+      }
+      return getActionStateResultString(workItems);
+   }
+
+   @Override
+   @Path("{ids}/state")
+   @GET
+   @Produces({MediaType.APPLICATION_JSON})
+   public String getActionState(@PathParam("ids") String ids) throws Exception {
+      List<IAtsWorkItem> workItems = services.getWorkItemListByIds(ids);
+      return getActionStateResultString(workItems);
+   }
+
+   private String getActionStateResultString(List<IAtsWorkItem> workItems) throws IOException, JsonGenerationException {
+      JsonGenerator writer = null;
+      StringWriter stringWriter = new StringWriter();
+      writer = jsonFactory.createJsonGenerator(stringWriter);
+      if (workItems.size() > 1) {
+         writer.writeStartArray();
+      }
+      for (IAtsWorkItem workItem : workItems) {
+         writer.writeStartObject();
+         writer.writeStringField("id", workItem.getIdString());
+         writer.writeStringField("atsId", workItem.getAtsId());
+         writer.writeStringField("legacyId",
+            services.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.LegacyPcrId, ""));
+         writer.writeStringField("stateType", workItem.getStateMgr().getStateType().name());
+         writer.writeStringField("state", workItem.getStateMgr().getCurrentStateName());
+         writer.writeEndObject();
+      }
+      if (workItems.size() > 1) {
+         writer.writeEndArray();
+      }
+      writer.close();
+      return stringWriter.toString();
    }
 
    /**
