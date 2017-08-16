@@ -115,7 +115,7 @@ public class AtsBranchServiceImplTest {
       changes.execute();
       //Test TxRecords
       TransactionRecord txRecord = new TransactionRecord(1234L, SAW_Bld_1, "comment", new Date(0),
-         UserManager.getUser().getArtId(), UserManager.getUser().getArtId(), TransactionDetailsType.Baselined, 0L);
+         UserManager.getUser(), UserManager.getUser().getArtId(), TransactionDetailsType.Baselined, 0L);
       Collection<TransactionRecord> commitTxs = new ArrayList<>();
       Collection<ICommitConfigItem> configArtSet = new HashSet<>();
       commitTxs.add(txRecord);

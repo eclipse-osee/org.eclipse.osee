@@ -12,8 +12,10 @@ package org.eclipse.osee.framework.core.model;
 
 import java.util.Date;
 import org.eclipse.osee.framework.core.data.Adaptable;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -23,17 +25,17 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * @author Jeff C. Phillips
  */
 public class TransactionRecord extends BaseId implements TransactionToken, Adaptable {
-   public static TransactionRecord SENTINEL =
-      new TransactionRecord(Id.SENTINEL, BranchId.SENTINEL, null, null, 0, 0, TransactionDetailsType.INVALID, 0L);
+   public static TransactionRecord SENTINEL = new TransactionRecord(Id.SENTINEL, BranchId.SENTINEL, null, null,
+      UserId.SENTINEL, 0, TransactionDetailsType.INVALID, 0L);
    private final TransactionDetailsType txType;
    private final BranchId branch;
    private String comment;
    private Date time;
-   private int authorArtId;
+   private ArtifactId authorArtId;
    private int commitArtId;
    private Long buildId;
 
-   public TransactionRecord(Long id, BranchId branch, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType, Long buildId) {
+   public TransactionRecord(Long id, BranchId branch, String comment, Date time, ArtifactId authorArtId, int commitArtId, TransactionDetailsType txType, Long buildId) {
       super(id);
       this.branch = branch;
       this.buildId = buildId;
@@ -57,7 +59,7 @@ public class TransactionRecord extends BaseId implements TransactionToken, Adapt
       return time;
    }
 
-   public int getAuthor() {
+   public ArtifactId getAuthor() {
       return authorArtId;
    }
 
@@ -77,17 +79,12 @@ public class TransactionRecord extends BaseId implements TransactionToken, Adapt
       this.time = time;
    }
 
-   public void setAuthor(int authorArtId) {
+   public void setAuthor(ArtifactId authorArtId) {
       this.authorArtId = authorArtId;
    }
 
    public void setCommit(int commitArtId) {
       this.commitArtId = commitArtId;
-   }
-
-   @Override
-   public String toString() {
-      return String.valueOf(getId());
    }
 
    public Long getBuildId() {

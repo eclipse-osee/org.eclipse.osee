@@ -127,7 +127,7 @@ public final class UserManager {
       return getUserAdmin().getUserNames();
    }
 
-   public static String getSafeUserNameById(int userArtifactId) {
+   public static String getSafeUserNameById(ArtifactId userArtifactId) {
       UserAdmin userAdmin = null;
       try {
          userAdmin = getUserAdmin();
@@ -136,10 +136,10 @@ public final class UserManager {
       }
 
       String name;
-      if (userAdmin != null) {
-         name = userAdmin.getSafeUserNameById(ArtifactId.valueOf(userArtifactId));
-      } else {
+      if (userAdmin == null) {
          name = String.format("Unable resolve user by artId[%s] since userAdmin was unavailable", userArtifactId);
+      } else {
+         name = userAdmin.getSafeUserNameById(userArtifactId);
       }
       return name;
    }

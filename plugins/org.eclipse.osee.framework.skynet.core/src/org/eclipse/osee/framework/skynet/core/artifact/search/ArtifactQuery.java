@@ -103,24 +103,16 @@ public class ArtifactQuery {
       return getOrCheckArtifactFromId(artId, branch, EXCLUDE_DELETED, QueryType.GET);
    }
 
-   public static Artifact getArtifactFromId(ArtifactId artifactId, BranchId branch, DeletionFlag includeDeleted) {
-      return getArtifactFromId(artifactId.getId(), branch, includeDeleted);
-   }
-
    /**
     * search for exactly one artifact by one its id - otherwise throw an exception
     *
-    * @param artId the id of the desired artifact
+    * @param artifactId the id of the desired artifact
     * @param allowDeleted whether to return the artifact even if it has been deleted
     * @return exactly one artifact by one its id - otherwise throw an exception
     * @throws ArtifactDoesNotExist if no artifacts are found
     */
-   public static Artifact getArtifactFromId(long artId, BranchId branch, DeletionFlag allowDeleted) throws OseeCoreException {
-      return getOrCheckArtifactFromId(ArtifactId.valueOf(artId), branch, allowDeleted, QueryType.GET);
-   }
-
-   public static Artifact getArtifactFromIdOrNull(ArtifactId artifactId, BranchId branch, DeletionFlag allowDeleted) {
-      return getOrCheckArtifactFromId(artifactId, branch, allowDeleted, QueryType.CHECK);
+   public static Artifact getArtifactFromId(ArtifactId artifactId, BranchId branch, DeletionFlag allowDeleted) {
+      return getOrCheckArtifactFromId(artifactId, branch, allowDeleted, QueryType.GET);
    }
 
    public static Artifact getArtifactOrNull(ArtifactId artifactId, BranchId branch, DeletionFlag deletionFlag) {

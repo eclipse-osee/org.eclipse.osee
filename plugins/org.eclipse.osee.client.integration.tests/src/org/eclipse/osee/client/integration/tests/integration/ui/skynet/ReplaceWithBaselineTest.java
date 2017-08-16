@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -226,7 +227,7 @@ public final class ReplaceWithBaselineTest {
       for (TestData testData : this.testDatas) {
 
          if (testData.isBaseline) {
-            testData.setArtifactId(createNewArtifact(baselineBranch, GUID.create()).getArtId());
+            testData.setArtifactId(createNewArtifact(baselineBranch, GUID.create()));
          }
 
          switch (testData.item) {
@@ -279,7 +280,7 @@ public final class ReplaceWithBaselineTest {
                            createNewArtifact(baselineBranch, GUID.create()));
                      }
                      parentArtifact.persist(testName);
-                     testData.setArtifactId(parentArtifact.getArtId());
+                     testData.setArtifactId(parentArtifact);
                      break;
                }
                break;
@@ -308,7 +309,7 @@ public final class ReplaceWithBaselineTest {
             case ARTIFACT:
                switch (testData.changeItem) {
                   case NEW:
-                     testData.setArtifactId(createNewArtifact(workingBranch, GUID.create()).getArtId());
+                     testData.setArtifactId(createNewArtifact(workingBranch, GUID.create()));
                      break;
                   case INTRODUCED:
                      BranchId anotherBranch = BranchManager.createWorkingBranch(workingBranch, "another working branch",
@@ -322,7 +323,7 @@ public final class ReplaceWithBaselineTest {
                            new Artifact[] {artifactToIntroduce}, false);
                      Operations.executeWork(dropHandler);
 
-                     testData.setArtifactId(artifactToIntroduce.getArtId());
+                     testData.setArtifactId(artifactToIntroduce);
                }
                break;
             case RELATION:
@@ -420,7 +421,7 @@ public final class ReplaceWithBaselineTest {
                      newParent.persist(testName);
 
                      //This is to revert the child artifact
-                     testData.setArtifactId(child.getArtId());
+                     testData.setArtifactId(child);
                      child.persist(testName);
                      break;
                   case RELATION_ORDER_ATTR:
@@ -477,7 +478,7 @@ public final class ReplaceWithBaselineTest {
       public final ChangeItem changeItem;
       public final boolean isBaseline;
 
-      private int artifactId;
+      private ArtifactId artifactId;
       private RelationTypeSide relationType;
       private int bArtifactId;
 
@@ -523,11 +524,11 @@ public final class ReplaceWithBaselineTest {
          this.bArtifactId = bArtifactId;
       }
 
-      public int getArtifactId() {
+      public ArtifactId getArtifactId() {
          return artifactId;
       }
 
-      public void setArtifactId(int artId) {
+      public void setArtifactId(ArtifactId artId) {
          artifactId = artId;
       }
 

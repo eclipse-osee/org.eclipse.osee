@@ -123,8 +123,8 @@ public class RenameBranchHandler extends CommandHandler {
       }
       IOseeBranch branch = branches.get(0);
       return AccessControlManager.isOseeAdmin() || BranchManager.getType(
-         branch).isWorkingBranch() || BranchManager.getBaseTransaction(
-            branch).getAuthor() == UserManager.getUser().getArtId();
+         branch).isWorkingBranch() || BranchManager.getBaseTransaction(branch).getAuthor().equals(
+            UserManager.getUser());
    }
 
 }

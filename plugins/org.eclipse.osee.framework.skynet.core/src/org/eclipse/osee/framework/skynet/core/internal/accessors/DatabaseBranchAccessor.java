@@ -11,6 +11,7 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchViewData;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -159,7 +160,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
       Long transactionId = stmt.getLong(base ? "baseline_transaction_id" : "parent_transaction_id");
       String comment = stmt.getString(base ? "b_osee_comment" : "p_osee_comment");
       Date timestamp = stmt.getTimestamp(base ? "b_time" : "p_time");
-      Integer authorArtId = stmt.getInt(base ? "b_author" : "p_author");
+      UserId authorArtId = UserId.valueOf(stmt.getLong(base ? "b_author" : "p_author"));
       Integer commitArtId = stmt.getInt(base ? "b_commit_art_id" : "p_commit_art_id");
       TransactionDetailsType txType = TransactionDetailsType.toEnum(stmt.getInt(base ? "b_tx_type" : "p_tx_type"));
       Long txBuildId = stmt.getLong(base ? "b_tx_build_id" : "p_tx_build_id");

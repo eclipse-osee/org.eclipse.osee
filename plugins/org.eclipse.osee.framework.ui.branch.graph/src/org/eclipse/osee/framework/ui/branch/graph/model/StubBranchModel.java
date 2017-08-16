@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.UserId;
 
 /**
  * @author Roberto E. Escobar
@@ -34,7 +35,7 @@ public class StubBranchModel extends BranchModel {
    public TxModel addTx(Long value) {
       TxModel toReturn = stubs.get(value);
       if (toReturn == null) {
-         toReturn = new TxModel(new TxData(STUB_BRANCH, 0, new Timestamp(new Date().getTime()),
+         toReturn = new TxModel(new TxData(STUB_BRANCH, UserId.SENTINEL, new Timestamp(new Date().getTime()),
             String.format("Transaction: [%s] not found", value), 0, 0, value));
          addTx(toReturn);
       }

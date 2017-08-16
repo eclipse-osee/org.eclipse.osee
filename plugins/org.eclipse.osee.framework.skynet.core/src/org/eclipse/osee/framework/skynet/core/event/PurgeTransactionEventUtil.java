@@ -63,8 +63,8 @@ public final class PurgeTransactionEventUtil {
          if (!changes.isEmpty()) {
             for (Change change : changes) {
                try {
-                  Artifact art = ArtifactQuery.getArtifactFromId(change.getArtId().getId().intValue(),
-                     transId.getBranch(), DeletionFlag.INCLUDE_DELETED);
+                  Artifact art = ArtifactQuery.getArtifactFromId(change.getArtId(), transId.getBranch(),
+                     DeletionFlag.INCLUDE_DELETED);
                   guidToId.put(art.getGuid(), art.getId());
                   DefaultBasicGuidArtifact guidArt = new DefaultBasicGuidArtifact(change.getBranch(),
                      ArtifactTypeId.valueOf(change.getArtifactType().getId()), art.getGuid());

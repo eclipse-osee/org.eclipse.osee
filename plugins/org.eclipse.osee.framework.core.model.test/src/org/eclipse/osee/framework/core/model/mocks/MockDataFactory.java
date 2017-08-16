@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
@@ -77,8 +78,8 @@ public final class MockDataFactory {
          value++;
       }
       IOseeBranch branch = IOseeBranch.create(branchUuid, "fake test branch");
-      return new TransactionRecord(value * 47L, branch, "comment_" + value, new Date(), value * 37, value * 42, type,
-         0L);
+      return new TransactionRecord(value * 47L, branch, "comment_" + value, new Date(), UserId.valueOf(value * 37),
+         value * 42, type, 0L);
    }
 
    public static OseeEnumEntry createEnumEntry(int index) {

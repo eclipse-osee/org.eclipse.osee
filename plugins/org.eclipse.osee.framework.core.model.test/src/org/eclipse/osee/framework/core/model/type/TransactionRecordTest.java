@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Date;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.mocks.MockDataFactory;
@@ -40,20 +41,20 @@ public class TransactionRecordTest {
 
    private final String comment;
    private final Date time;
-   private final int authorArtId;
+   private final UserId author;
    private final int commitArtId;
 
-   public TransactionRecordTest(int transactionNumber, BranchId branch, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType) {
+   public TransactionRecordTest(int transactionNumber, BranchId branch, String comment, Date time, UserId author, int commitArtId, TransactionDetailsType txType) {
       this.transactionNumber = (long) transactionNumber;
       this.branch = branch;
       this.comment = comment;
       this.time = time;
-      this.authorArtId = authorArtId;
+      this.author = author;
       this.commitArtId = commitArtId;
       this.txType = txType;
 
       this.transaction =
-         new TransactionRecord(this.transactionNumber, branch, comment, time, authorArtId, commitArtId, txType, 234L);
+         new TransactionRecord(this.transactionNumber, branch, comment, time, author, commitArtId, txType, 234L);
    }
 
    @Test
@@ -94,12 +95,13 @@ public class TransactionRecordTest {
 
    @Test
    public void testGetSetAuthor() {
-      Assert.assertEquals(authorArtId, transaction.getAuthor());
+      Assert.assertEquals(author, transaction.getAuthor());
 
-      transaction.setAuthor(authorArtId * 101);
-      Assert.assertEquals(authorArtId * 101, transaction.getAuthor());
+      UserId otherAuthor = UserId.valueOf(author.getId() * 101);
+      transaction.setAuthor(otherAuthor);
+      Assert.assertEquals(otherAuthor, transaction.getAuthor());
 
-      transaction.setAuthor(authorArtId);
+      transaction.setAuthor(author);
    }
 
    @Test
@@ -118,7 +120,7 @@ public class TransactionRecordTest {
       TransactionId tx1 = TransactionId.valueOf(tx2.getId());
 
       // Add some variation to tx2 so we are certain that only the txId is used in the equals method;
-      tx2.setAuthor(0);
+      tx2.setAuthor(UserId.SENTINEL);
       tx2.setComment("a");
       tx2.setCommit(1);
       tx2.setTimeStamp(new Date(11111111111L));
@@ -155,7 +157,7 @@ public class TransactionRecordTest {
          BranchId branch = BranchId.valueOf(index * 9L);
          String comment = GUID.create();
          Date time = new Date();
-         int authorArtId = index * 47;
+         UserId authorArtId = UserId.valueOf(index * 47);
          int commitArtId = index * 37;
          TransactionDetailsType txType = TransactionDetailsType.toEnum(index % TransactionDetailsType.values().length);
          data.add(new Object[] {transactionNumber, branch, comment, time, authorArtId, commitArtId, txType});
