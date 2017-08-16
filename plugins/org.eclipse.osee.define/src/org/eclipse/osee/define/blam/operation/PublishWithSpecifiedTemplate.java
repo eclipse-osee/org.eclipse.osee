@@ -240,7 +240,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
             JSONObject id = null;
             for (int i = 0; i < artifactIds.length(); i++) {
                id = artifactIds.getJSONObject(i);
-               Long artifactId = id.getLong("id");
+               ArtifactId artifactId = ArtifactId.valueOf(id.getLong("id"));
                Artifact artifact = ArtifactQuery.getArtifactFromId(artifactId, branch, EXCLUDE_DELETED);
                artifacts.add(artifact);
             }
