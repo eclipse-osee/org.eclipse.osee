@@ -37,6 +37,7 @@ import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.model.DispoSummarySeverity;
 import org.eclipse.osee.disposition.model.Note;
 import org.eclipse.osee.disposition.model.OperationReport;
+import org.eclipse.osee.disposition.model.UpdateSummaryData;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.DispoApiConfiguration;
 import org.eclipse.osee.disposition.rest.DispoImporterApi;
@@ -533,7 +534,7 @@ public class DispoApiImpl implements DispoApi {
             throw new OseeCoreException(ex);
          }
       } else if (operation.equals(DispoStrings.Operation_MassSendStatus)) {
-         MassSendDispoItemStatus(branch, setToEdit);
+         MassSendDispoItemStatus(branch, setToEdit, report);
       }
 
       // Create the Note to document the Operation
@@ -548,17 +549,23 @@ public class DispoApiImpl implements DispoApi {
       getWriter().updateOperationSummary(author, branch, setToEdit.getGuid(), report);
    }
 
-   private void MassSendDispoItemStatus(BranchId branch, DispoSet set) {
+   private void MassSendDispoItemStatus(BranchId branch, DispoSet set, OperationReport report) {
       try {
          HashMap<String, DispoItem> nameToItemMap = getItemsMap(branch, set);
          Collection<String> ids = new ArrayList<>();
          for (DispoItem item : nameToItemMap.values()) {
             ids.add(item.getGuid());
          }
+
          //let ci tool know to delete all the ciset dispo data
          updateBroadcaster.broadcastDeleteSet(set);
+
          // now send all the current data
-         updateBroadcaster.broadcastUpdateItems(ids, nameToItemMap.values(), set);
+         List<UpdateSummaryData> summaryDataList =
+            updateBroadcaster.broadcastUpdateItems(ids, nameToItemMap.values(), set);
+         for (UpdateSummaryData summaryData : summaryDataList) {
+            report.addEntry(set.getCiSet(), summaryData.getMessage(), summaryData.getSeverity());
+         }
       } catch (Exception ex) {
          throw new OseeCoreException(ex);
       }

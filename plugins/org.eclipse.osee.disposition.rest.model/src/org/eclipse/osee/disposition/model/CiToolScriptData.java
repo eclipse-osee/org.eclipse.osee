@@ -8,20 +8,30 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.disposition.rest.external;
-
-import java.util.Collection;
-import java.util.List;
-import org.eclipse.osee.disposition.model.DispoItem;
-import org.eclipse.osee.disposition.model.DispoSet;
-import org.eclipse.osee.disposition.model.UpdateSummaryData;
+package org.eclipse.osee.disposition.model;
 
 /**
- * @author Angel Avila
+ * @author Dominic Guss
  */
-public interface DispoListenerApi {
+public class CiToolScriptData {
 
-   public List<UpdateSummaryData> onUpdateItemStats(Collection<String> ids, Collection<DispoItem> items, DispoSet set);
+   private String script;
+   private String status;
 
-   public void onDeleteDispoSet(DispoSet set);
+   public CiToolScriptData() {
+      // Do nothing
+   }
+
+   public CiToolScriptData(String script, String status) {
+      this.script = script;
+      this.status = status;
+   }
+
+   public String getScript() {
+      return script;
+   }
+
+   public String getStatus() {
+      return status;
+   }
 }

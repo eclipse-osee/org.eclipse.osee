@@ -10,16 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.external;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoSet;
+import org.eclipse.osee.disposition.model.UpdateSummaryData;
 import org.eclipse.osee.logger.Log;
 
 /**
  * @author Angel Avila
  * @author Megumi Telles
+ * @author Dominic Guss
  */
 public class DispoUpdateBroadcaster {
 
@@ -42,10 +46,12 @@ public class DispoUpdateBroadcaster {
       listeners.add(listener);
    }
 
-   public void broadcastUpdateItems(Collection<String> ids, Collection<DispoItem> items, DispoSet set) {
+   public List<UpdateSummaryData> broadcastUpdateItems(Collection<String> ids, Collection<DispoItem> items, DispoSet set) {
+      List<UpdateSummaryData> summaryData = new ArrayList<>();
       for (DispoListenerApi listener : listeners) {
-         listener.onUpdateItemStats(ids, items, set);
+         summaryData = listener.onUpdateItemStats(ids, items, set);
       }
+      return summaryData;
    }
 
    public void broadcastDeleteSet(DispoSet set) {
