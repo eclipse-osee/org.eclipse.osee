@@ -8,27 +8,35 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.define.report.internal;
+package org.eclipse.osee.define.report;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import org.eclipse.osee.define.report.api.DataRightInput;
-import org.eclipse.osee.define.report.api.DataRightResult;
+import java.util.List;
+import org.eclipse.osee.define.report.api.DataRightsEndpoint;
 import org.eclipse.osee.define.report.api.DefineApi;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.model.datarights.DataRightResult;
 
 /**
  * @author Angel Avila
  */
-@Path("/publish/dataRights")
-public class DataRightsResource {
+
+public class DataRightsEndpointImpl implements DataRightsEndpoint {
 
    private final DefineApi defineApi;
 
-   public DataRightsResource(DefineApi defineApi) {
+   public DataRightsEndpointImpl(DefineApi defineApi) {
       this.defineApi = defineApi;
+   }
+
+   @Override
+   public DataRightResult getDataRights(List<ArtifactId> artifacts, BranchId branch, String overrideClassification) {
+      return defineApi.getDataRightsOperations().getDataRights(artifacts, branch, overrideClassification);
+   }
+
+   @Override
+   public DataRightResult getDataRights(List<ArtifactId> artifacts, BranchId branch) {
+      return defineApi.getDataRightsOperations().getDataRights(artifacts, branch);
    }
 
    /**
@@ -38,11 +46,5 @@ public class DataRightsResource {
     * @return mapping Mapping of DataRightArtifacts to Footers
     * @throws JSONException
     */
-   @POST
-   @Consumes(MediaType.APPLICATION_JSON)
-   @Produces(MediaType.APPLICATION_JSON)
-   public DataRightResult findAllDataRights(DataRightInput data) {
-      DataRightResult dataRights = defineApi.getDataRights(data);
-      return dataRights;
-   }
+
 }

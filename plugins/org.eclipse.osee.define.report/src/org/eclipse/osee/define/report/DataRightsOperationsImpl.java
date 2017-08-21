@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Boeing.
+ * Copyright (c) 2017 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.define.report.internal;
+package org.eclipse.osee.define.report;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,42 +18,49 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.define.report.api.DataRight;
-import org.eclipse.osee.define.report.api.DataRightAnchor;
-import org.eclipse.osee.define.report.api.DataRightEntry;
-import org.eclipse.osee.define.report.api.DataRightId;
-import org.eclipse.osee.define.report.api.DataRightInput;
-import org.eclipse.osee.define.report.api.DataRightResult;
-import org.eclipse.osee.define.report.api.PageOrientation;
+import org.eclipse.osee.define.report.api.DataRightsOperations;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.DataRightsClassification;
+import org.eclipse.osee.framework.core.model.datarights.DataRight;
+import org.eclipse.osee.framework.core.model.datarights.DataRightAnchor;
+import org.eclipse.osee.framework.core.model.datarights.DataRightEntry;
+import org.eclipse.osee.framework.core.model.datarights.DataRightId;
+import org.eclipse.osee.framework.core.model.datarights.DataRightInput;
+import org.eclipse.osee.framework.core.model.datarights.DataRightResult;
+import org.eclipse.osee.framework.core.util.PageOrientation;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
-import org.eclipse.osee.orcs.search.QueryFactory;
 
-/**
- * @author Angel Avila
- */
-public class DataRightBuilder {
-
-   private final OrcsApi orcsApi;
+public class DataRightsOperationsImpl implements DataRightsOperations {
 
    private static final ArtifactToken MAPPING_ARTIFACT = TokenFactory.createArtifactToken(5443258,
       "AOkJ_kFNbEXCS7UjmfwA", "DataRightsFooters", CoreArtifactTypes.GeneralData);
 
-   public DataRightBuilder(OrcsApi orcsApi) {
+   private final OrcsApi orcsApi;
+
+   public DataRightsOperationsImpl(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
    }
 
-   public DataRightResult getDataRights(DataRightInput request) {
-      QueryFactory queryFactory = orcsApi.getQueryFactory();
-      QueryBuilder query = queryFactory.fromBranch(CoreBranches.COMMON);
+   @Override
+   public DataRightResult getDataRights(List<ArtifactId> artifacts, BranchId branch) {
+      return getDataRights(artifacts, branch, "");
+   }
+
+   @Override
+   public DataRightResult getDataRights(List<ArtifactId> artifacts, BranchId branch, String overrideClassification) {
+      DataRightInput request = new DataRightInput();
+      populateRequest(artifacts, branch, request, overrideClassification);
+      QueryBuilder query = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON);
 
       DataRightResult mapping = new DataRightResult();
 
@@ -61,20 +68,39 @@ public class DataRightBuilder {
       mapping.getDataRights().addAll(classificationsToDataRights.values());
       List<DataRightEntry> orderedData = getOrderedList(request);
       findMatchForAll(orderedData.iterator(), mapping.getDataRightAnchors(), classificationsToDataRights);
+
       return mapping;
    }
 
-   private List<DataRightEntry> getOrderedList(DataRightInput request) {
-      List<DataRightEntry> orderedData = new ArrayList<>();
-      orderedData.addAll(request.getData());
-      Collections.sort(orderedData, new Comparator<DataRightEntry>() {
+   private void populateRequest(List<ArtifactId> artifacts, BranchId branch, DataRightInput request, String overrideClassification) {
+      int index = 0;
 
-         @Override
-         public int compare(DataRightEntry arg0, DataRightEntry arg1) {
-            return arg0.getIndex() - arg1.getIndex();
+      for (ArtifactId artifact : artifacts) {
+         ArtifactReadable art =
+            orcsApi.getQueryFactory().fromBranch(branch).andId(artifact).getResults().getOneOrNull();
+
+         String classification = null;
+         String orientation = "Portrait";
+         if (overrideClassification != null && !overrideClassification.isEmpty() && !overrideClassification.equals(
+            "invalid") && DataRightsClassification.isValid(overrideClassification)) {
+            classification = overrideClassification;
+         } else if (art != null) {
+            classification = art.getSoleAttributeAsString(CoreAttributeTypes.DataRightsClassification, "");
+            orientation = art.getSoleAttributeValue(CoreAttributeTypes.PageType, "Portrait");
          }
-      });
-      return orderedData;
+
+         request.addData(artifact.getId(), classification, PageOrientation.fromString(orientation), index);
+         index++;
+      }
+   }
+
+   private DataRightAnchor getAnchor(Long id, Collection<DataRightAnchor> anchors) {
+      for (DataRightAnchor anchor : anchors) {
+         if (anchor.getId().equals(id)) {
+            return anchor;
+         }
+      }
+      return null;
    }
 
    private void findMatchForAll(Iterator<DataRightEntry> iterator, Collection<DataRightAnchor> anchors, Map<String, DataRight> classificationsToDataRight) {
@@ -92,7 +118,7 @@ public class DataRightBuilder {
             if (!classification.equals(previousArtClassification)) {
                isSetDataRightFooter = true;
             } else {
-               DataRightAnchor previousArtAnchor = getAnchor(previousArtifact.getGuid(), anchors);
+               DataRightAnchor previousArtAnchor = getAnchor(previousArtifact.getId(), anchors);
                PageOrientation prevOrientation = previousArtifact.getOrientation();
                if (previousArtAnchor != null && orientation.equals(prevOrientation)) {
                   previousArtAnchor.setContinuous(true);
@@ -112,7 +138,7 @@ public class DataRightBuilder {
 
          DataRightAnchor anchor = new DataRightAnchor();
          anchor.setSetDataRightFooter(isSetDataRightFooter);
-         anchor.setId(currentArtifact.getGuid());
+         anchor.setId(currentArtifact.getId());
          anchor.setDataRightId(dataRight.getId());
          anchors.add(anchor);
 
@@ -120,13 +146,17 @@ public class DataRightBuilder {
       }
    }
 
-   private DataRightAnchor getAnchor(String guid, Collection<DataRightAnchor> anchors) {
-      for (DataRightAnchor anchor : anchors) {
-         if (anchor.getId().equals(guid)) {
-            return anchor;
+   private List<DataRightEntry> getOrderedList(DataRightInput request) {
+      List<DataRightEntry> orderedData = new ArrayList<>();
+      orderedData.addAll(request.getData());
+      Collections.sort(orderedData, new Comparator<DataRightEntry>() {
+
+         @Override
+         public int compare(DataRightEntry arg0, DataRightEntry arg1) {
+            return arg0.getIndex() - arg1.getIndex();
          }
-      }
-      return null;
+      });
+      return orderedData;
    }
 
    private Map<String, DataRight> getClassificationToDataRights(QueryBuilder query) {
@@ -157,10 +187,11 @@ public class DataRightBuilder {
 
          DataRight dataRight = new DataRight();
          dataRight.setId(id);
-         dataRight.setContent("NO DATA RIGHTS ARTIFACT FOUND");
+         dataRight.setContent(DataRightResult.UNSPECIFIED);
          toReturn.put("Unspecified", dataRight);
       }
 
       return toReturn;
    }
+
 }

@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
  * @author David W. Miller
  */
 @Path("word")
-public interface WordUpdateEndpoint {
+public interface MSWordEndpoint {
    @POST
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})

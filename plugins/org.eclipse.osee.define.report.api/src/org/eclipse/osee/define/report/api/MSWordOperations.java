@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 Boeing.
+ * Copyright (c) 2017 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,19 +8,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
+package org.eclipse.osee.define.report.api;
 
-package org.eclipse.osee.framework.ui.skynet.render;
+import java.util.Set;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 
-import org.eclipse.osee.define.report.api.DataRightInput;
-import org.eclipse.osee.define.report.api.DataRightResult;
+public interface MSWordOperations {
 
-/**
- * @author Angel Avila
- */
-public interface DataRightProvider {
+   public WordUpdateChange updateWordArtifacts(WordUpdateData data);
 
-   DataRightResult getDataRights(DataRightInput request);
-
-   DataRightInput createRequest();
+   public Pair<String, Set<String>> renderWordTemplateContent(WordTemplateContentData data);
 
 }

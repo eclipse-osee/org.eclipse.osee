@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render.word;
 
-import org.eclipse.osee.define.report.api.PageOrientation;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.util.PageOrientation;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**

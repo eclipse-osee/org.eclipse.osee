@@ -22,7 +22,8 @@ import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.activity.api.ActivityLogEndpoint;
-import org.eclipse.osee.define.report.api.WordUpdateEndpoint;
+import org.eclipse.osee.define.report.api.DataRightsEndpoint;
+import org.eclipse.osee.define.report.api.MSWordEndpoint;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -197,8 +198,13 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
    }
 
    @Override
-   public WordUpdateEndpoint getWordUpdateEndpoint() {
-      return client.targetProxy(defineUri, WordUpdateEndpoint.class);
+   public MSWordEndpoint getWordUpdateEndpoint() {
+      return client.targetProxy(defineUri, MSWordEndpoint.class);
+   }
+
+   @Override
+   public DataRightsEndpoint getDataRightsEndpoint() {
+      return client.targetProxy(defineUri, DataRightsEndpoint.class);
    }
 
    @Override

@@ -8,13 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.define.report.api;
+package org.eclipse.osee.framework.core.model.datarights;
 
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import org.eclipse.osee.framework.core.util.PageOrientation;
 
 /**
  * @author Angel Avila
@@ -44,10 +45,10 @@ public class DataRightInput implements Iterable<DataRightEntry> {
       data = null;
    }
 
-   public void addData(String guid, String classification, PageOrientation orientation, int index) {
+   public void addData(Long id, String classification, PageOrientation orientation, int index) {
       DataRightEntry toAdd = new DataRightEntry();
       toAdd.setClassification(classification);
-      toAdd.setGuid(guid);
+      toAdd.setId(id);
       toAdd.setOrientation(orientation);
       toAdd.setIndex(index);
 

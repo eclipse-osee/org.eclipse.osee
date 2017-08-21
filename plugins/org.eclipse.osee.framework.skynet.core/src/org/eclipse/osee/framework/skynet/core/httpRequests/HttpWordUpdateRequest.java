@@ -15,7 +15,7 @@ import javax.ws.rs.core.Response.Status;
 import org.eclipse.osee.define.report.api.WordTemplateContentData;
 import org.eclipse.osee.define.report.api.WordUpdateChange;
 import org.eclipse.osee.define.report.api.WordUpdateData;
-import org.eclipse.osee.define.report.api.WordUpdateEndpoint;
+import org.eclipse.osee.define.report.api.MSWordEndpoint;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
@@ -26,7 +26,7 @@ import org.eclipse.osee.jaxrs.OseeWebApplicationException;
  */
 public class HttpWordUpdateRequest {
    public static WordUpdateChange updateWordArtifacts(WordUpdateData wud) {
-      WordUpdateEndpoint endpoint = ServiceUtil.getOseeClient().getWordUpdateEndpoint();
+      MSWordEndpoint endpoint = ServiceUtil.getOseeClient().getWordUpdateEndpoint();
       try {
          return endpoint.updateWordArtifacts(wud);
       } catch (Exception ex) {
@@ -35,7 +35,7 @@ public class HttpWordUpdateRequest {
    }
 
    public static Pair<String, Set<String>> renderWordTemplateContent(WordTemplateContentData data) throws OseeCoreException {
-      WordUpdateEndpoint endpoint = ServiceUtil.getOseeClient().getWordUpdateEndpoint();
+      MSWordEndpoint endpoint = ServiceUtil.getOseeClient().getWordUpdateEndpoint();
       return endpoint.renderWordTemplateContent(data);
    }
 

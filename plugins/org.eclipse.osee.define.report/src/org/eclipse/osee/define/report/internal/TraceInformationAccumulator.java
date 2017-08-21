@@ -13,8 +13,6 @@ package org.eclipse.osee.define.report.internal;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.define.report.AlternateTypeOutput;
-import org.eclipse.osee.define.report.TraceReportGenerator;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -133,9 +131,8 @@ public class TraceInformationAccumulator {
 
    public String handleEquivalentName(ArtifactReadable softwareRequirement) {
       String toReturn = softwareRequirement.getName();
-      AlternateTypeOutput alt = traceReport.getAlternateRequirementType();
-      if (alt != null && softwareRequirement.isOfType(alt.getAlternateArtifactType())) {
-         AttributeTypeId attrType = alt.getAlternateAttributeType();
+      if (softwareRequirement.isOfType(traceReport.getAlternateArtifactType())) {
+         AttributeTypeId attrType = traceReport.getAlternateAttributeType();
          if (attrType != null) {
             toReturn = softwareRequirement.getSoleAttributeAsString(attrType, toReturn);
          }

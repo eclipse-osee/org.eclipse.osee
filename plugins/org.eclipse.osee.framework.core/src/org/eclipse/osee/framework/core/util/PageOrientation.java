@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.define.report.api;
+package org.eclipse.osee.framework.core.util;
 
 /**
  * @author Angel Avila

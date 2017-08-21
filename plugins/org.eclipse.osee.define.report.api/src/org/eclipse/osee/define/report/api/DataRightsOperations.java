@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 Boeing.
+ * Copyright (c) 2017 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,18 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.define.report.api;
 
-/**
- * @author Angel Avila
- */
-public interface DefineApi {
+import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.model.datarights.DataRightResult;
 
-   //Traceability
-   TraceabilityOperations getTraceabilityOperations();
+public interface DataRightsOperations {
 
-   //MS Word
-   MSWordOperations getMSWordOperations();
+   DataRightResult getDataRights(List<ArtifactId> artifacts, BranchId branch);
 
-   //Data Rights
-   DataRightsOperations getDataRightsOperations();
+   DataRightResult getDataRights(List<ArtifactId> artifacts, BranchId branch, String overrideClassification);
 
 }

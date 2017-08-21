@@ -8,16 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.define.report;
+package org.eclipse.osee.define.report.internal;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Collection;
-import org.eclipse.osee.define.report.internal.SafetyCriticalityLookup;
-import org.eclipse.osee.define.report.internal.SafetyInformationAccumulator;
-import org.eclipse.osee.define.report.internal.TraceAccumulator;
-import org.eclipse.osee.define.report.internal.TraceMatch;
 import org.eclipse.osee.define.report.internal.util.ComponentUtil;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;

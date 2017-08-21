@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.define.report.api.WordArtifactChange;
 import org.eclipse.osee.define.report.api.WordUpdateChange;
 import org.eclipse.osee.define.report.api.WordUpdateData;
-import org.eclipse.osee.define.report.api.WordUpdateEndpoint;
+import org.eclipse.osee.define.report.api.MSWordEndpoint;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -41,7 +41,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test unit for {@link WordUpdateEndpoint}
+ * Test unit for {@link MSWordEndpoint}
  *
  * @author David W. Miller
  */

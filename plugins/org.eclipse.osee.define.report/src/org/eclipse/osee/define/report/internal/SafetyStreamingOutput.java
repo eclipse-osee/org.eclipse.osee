@@ -15,7 +15,6 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
-import org.eclipse.osee.define.report.SafetyReportGenerator;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;

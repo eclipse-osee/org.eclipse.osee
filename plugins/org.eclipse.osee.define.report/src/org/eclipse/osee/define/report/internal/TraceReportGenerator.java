@@ -8,17 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.define.report;
+package org.eclipse.osee.define.report.internal;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.define.report.internal.TraceAccumulator;
-import org.eclipse.osee.define.report.internal.TraceInformationAccumulator;
-import org.eclipse.osee.define.report.internal.TraceMatch;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.CaseInsensitiveString;
@@ -35,11 +34,12 @@ import org.eclipse.osee.orcs.search.QueryFactory;
 public class TraceReportGenerator {
    private TraceInformationAccumulator accumulator;
    private QueryFactory queryFactory;
-   private final AlternateTypeOutput altRequirementType;
    private final TraceMatch match;
    private final TraceAccumulator traces;
-   private final TraceMatch testMatch;
+   private final TraceMatch traceMatch;
    private final TraceAccumulator testTraces;
+   private final IArtifactType alternateArtifactType;
+   private final AttributeTypeToken alternateAttributeType;
 
    public static int SOFTWARE_SHEETREQ_INDEX = 3;
    public static int SOFTWARE_REQUIREMENT_INDEX = 4;
@@ -77,12 +77,19 @@ public class TraceReportGenerator {
       queryFactory = orcsApi.getQueryFactory();
    }
 
-   public TraceReportGenerator(String reqFileMatch, String reqTraceMatch, String testFileMatch, String testTraceMatch, AlternateTypeOutput altReqType) {
-      this.altRequirementType = altReqType;
-      match = new TraceMatch(reqTraceMatch, null);
-      traces = new TraceAccumulator(reqFileMatch, match);
-      testMatch = new TraceMatch(testTraceMatch, null);
-      testTraces = new TraceAccumulator(testFileMatch, testMatch);
+   public TraceReportGenerator(IArtifactType artifactType, AttributeTypeToken attributeType) {
+      String traceFile = ".*\\.(ada$|cpp$|c$|h$)";
+      String traceMatchReg = "\\^SRS\\s*([^;]+);?";
+      String testFile = ".*\\.(java$)";
+      String testMatch = "addTraceability\\s*\\(\"SRS\\s*([^\"]+)\"\\)";
+
+      alternateArtifactType = artifactType;
+      alternateAttributeType = attributeType;
+
+      match = new TraceMatch(traceMatchReg, null);
+      traces = new TraceAccumulator(traceFile, match);
+      traceMatch = new TraceMatch(testMatch, null);
+      testTraces = new TraceAccumulator(testFile, traceMatch);
    }
 
    public void generate(OrcsApi providedOrcs, BranchId branchId, String codeRoot, String traceRoot, Writer providedWriter) throws IOException {
@@ -109,10 +116,6 @@ public class TraceReportGenerator {
       processTestPlans(systemRequirements, writer);
 
       writer.endWorkbook();
-   }
-
-   public AlternateTypeOutput getAlternateRequirementType() {
-      return altRequirementType;
    }
 
    private void writeTracesSheet(ISheetWriter writer, String name, TraceAccumulator accum) throws IOException {
@@ -195,5 +198,13 @@ public class TraceReportGenerator {
 
    public Collection<String> getRequirementToTraceUnitsValues(ArtifactReadable softwareRequirement) {
       return testTraces.getFiles(accumulator.handleEquivalentName(softwareRequirement));
+   }
+
+   public IArtifactType getAlternateArtifactType() {
+      return alternateArtifactType;
+   }
+
+   public AttributeTypeToken getAlternateAttributeType() {
+      return alternateAttributeType;
    }
 }

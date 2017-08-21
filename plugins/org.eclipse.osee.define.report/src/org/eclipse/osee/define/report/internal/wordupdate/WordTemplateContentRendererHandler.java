@@ -12,12 +12,12 @@ package org.eclipse.osee.define.report.internal.wordupdate;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.define.report.api.ReportConstants;
 import org.eclipse.osee.define.report.api.WordTemplateContentData;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.util.ReportConstants;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.logger.Log;
@@ -98,7 +98,7 @@ public class WordTemplateContentRendererHandler {
                if (lastIndex != -1) {
                   // temp should equal <w:p wsp:rsidR ..</w:p> ...
                   String temp = data.substring(lastIndex);
-                  temp = temp.replaceAll("<w:p wsp:rsidR=\"[^\"]\" wsp:rsidRDefault=\"[^\"]\"></w:p>", "");
+                  temp = temp.replaceAll("<w:p[^>]*>(<w:pPr><w:spacing[^>]*></w:spacing></w:pPr>)?</w:p>", "");
                   data = data.substring(0, lastIndex) + temp;
                }
             }

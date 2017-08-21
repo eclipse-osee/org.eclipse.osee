@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -29,14 +30,14 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.define.report.api.DataRightInput;
-import org.eclipse.osee.define.report.api.DataRightResult;
-import org.eclipse.osee.define.report.api.PageOrientation;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CommandGroup;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
+import org.eclipse.osee.framework.core.model.datarights.DataRightResult;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.util.PageOrientation;
 import org.eclipse.osee.framework.core.util.RendererOption;
 import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
@@ -49,9 +50,9 @@ import org.eclipse.osee.framework.skynet.core.attribute.WordWholeDocumentAttribu
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.framework.ui.skynet.render.compare.WholeWordCompare;
-import org.eclipse.osee.framework.ui.skynet.render.word.DataRightProviderImpl;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordRendererUtil;
 import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -156,12 +157,11 @@ public class WholeWordRenderer extends WordRenderer {
    private String addDataRights(String content, String classification, Artifact artifact) {
       String toReturn = content;
       PageOrientation orientation = WordRendererUtil.getPageOrientation(artifact);
-      DataRightInput request = new DataRightInput();
-      request.addData(artifact.getGuid(), classification, orientation, 0);
 
-      DataRightProvider provider = new DataRightProviderImpl();
-      DataRightResult dataRights = provider.getDataRights(request);
-      String footer = dataRights.getContent(artifact.getGuid(), orientation);
+      DataRightResult dataRights = ServiceUtil.getOseeClient().getDataRightsEndpoint().getDataRights(
+         Collections.singletonList(ArtifactId.valueOf(artifact.getId())), artifact.getBranch(), classification);
+
+      String footer = dataRights.getContent(artifact.getId(), orientation);
 
       Matcher startFtr = START_PATTERN.matcher(footer);
       Matcher endFtr = END_PATTERN.matcher(footer);

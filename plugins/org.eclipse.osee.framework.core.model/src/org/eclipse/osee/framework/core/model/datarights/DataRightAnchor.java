@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.define.report.api;
+package org.eclipse.osee.framework.core.model.datarights;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -18,16 +18,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class DataRightAnchor {
 
-   private String id;
+   private Long id;
    private DataRightId dataRightId;
    private boolean isSetDataRightFooter = false;
    private boolean isContinuous = false;
 
-   public String getId() {
+   public Long getId() {
       return id;
    }
 
-   public void setId(String id) {
+   public void setId(Long id) {
       this.id = id;
    }
 

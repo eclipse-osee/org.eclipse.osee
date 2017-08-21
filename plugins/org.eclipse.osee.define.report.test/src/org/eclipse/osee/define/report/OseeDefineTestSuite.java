@@ -18,7 +18,7 @@ import org.junit.runners.Suite;
  * @author David W. Miller
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({DefineReportInternalTestSuite.class, WordUpdateEndpointImplTest.class})
+@Suite.SuiteClasses({DefineReportInternalTestSuite.class})
 public class OseeDefineTestSuite {
    // Test Suite
 }

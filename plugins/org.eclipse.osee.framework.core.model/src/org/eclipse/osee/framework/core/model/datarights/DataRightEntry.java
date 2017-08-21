@@ -8,9 +8,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.define.report.api;
+package org.eclipse.osee.framework.core.model.datarights;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import org.eclipse.osee.framework.core.util.PageOrientation;
 
 /**
  * @author Angel Avila
@@ -18,17 +19,17 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class DataRightEntry {
-   private String guid;
+   private Long id;
    private String classification;
    private PageOrientation orientation;
    private int index;
 
-   public String getGuid() {
-      return guid;
+   public Long getId() {
+      return id;
    }
 
-   public void setGuid(String guid) {
-      this.guid = guid;
+   public void setId(Long id) {
+      this.id = id;
    }
 
    public String getClassification() {

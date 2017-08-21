@@ -61,7 +61,6 @@ import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
 import org.eclipse.osee.framework.ui.skynet.render.compare.IComparator;
 import org.eclipse.osee.framework.ui.skynet.render.compare.WordTemplateCompare;
 import org.eclipse.osee.framework.ui.skynet.render.word.AttributeElement;
-import org.eclipse.osee.framework.ui.skynet.render.word.DataRightProviderImpl;
 import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordTemplateProcessor;
@@ -90,8 +89,7 @@ public class WordTemplateRenderer extends WordRenderer {
    public WordTemplateRenderer(Map<RendererOption, Object> options) {
       super(options);
       this.comparator = new WordTemplateCompare(this);
-      DataRightProvider provider = new DataRightProviderImpl();
-      this.templateProcessor = new WordTemplateProcessor(this, provider);
+      this.templateProcessor = new WordTemplateProcessor(this);
    }
 
    public WordTemplateRenderer() {

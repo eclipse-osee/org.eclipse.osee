@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.define.report.api;
+package org.eclipse.osee.framework.core.util;
 
 /**
  * @author Megumi Telles
@@ -22,7 +22,8 @@ public class ReportConstants {
    //regex
    public static final String FTR = "<w:ftr[\\s\\S]+?</w:ftr>";
    public static final String PAGE_SZ = "<w:pgSz [^>]*/>";
-   public static final String ENTIRE_FTR_EXTRA_PARA = "<w:p wsp:rsidR=\"[^\"]+\" wsp:rsidRDefault=\"[^\"]+\"><w:pPr><w:spacing w:after=\"[\\d]\"></w:spacing><w:sectPr[^>]*><w:ftr[\\s\\S]+?</w:ftr>[\\s\\S]+?</w:sectPr></w:pPr></w:p>";
+   public static final String ENTIRE_FTR_EXTRA_PARA =
+      "<w:p[^>]*><w:pPr><w:spacing w:after=\"[\\d]*\"[^>]*>(</w:spacing>)*<w:sectPr[^>]*>(<w:r><w:t>)?<w:ftr[^>]*>[\\s\\S]+</w:ftr>[\\s\\S]+</w:sectPr></w:pPr></w:p>";
    public static final String ENTIRE_FTR = "<w:sectPr[^>]*><w:ftr[\\s\\S]+?</w:ftr>[\\s\\S]+?</w:sectPr>";
    public static final String FULL_PARA_END = "</w:pPr></w:p>";
    public static final String NO_DATA_RIGHTS =
@@ -34,7 +35,7 @@ public class ReportConstants {
    public static final String SECTION_TEMPLATE = "<w:sectPr>%s</w:sectPr>";
    public static final String LANDSCAPE_ORIENT = "<w:pgSz w:w=\"15840\" w:h=\"12240\" w:orient=\"landscape\"/>";
    public static final String PORTRAIT_ORIENT = "<w:pgSz w:w=\"12240\" w:h=\"15840\"/>";
-   static final String NEW_PAGE_TEMPLATE =
+   public static final String NEW_PAGE_TEMPLATE =
       "<w:p><w:pPr><w:spacing w:after=\"0\"/>" + SECTION_TEMPLATE + "</w:pPr></w:p>";
    public static final String PAGE_ADDS =
       "%s <w:pgMar w:top=\"1440\" w:right=\"1440\" w:bottom=\"1440\" w:left=\"1440\" w:header=\"432\" w:footer=\"432\" w:gutter=\"0\"/><w:cols w:space=\"720\"/>";
