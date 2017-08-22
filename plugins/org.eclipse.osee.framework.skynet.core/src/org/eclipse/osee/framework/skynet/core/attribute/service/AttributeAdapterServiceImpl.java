@@ -35,11 +35,11 @@ public class AttributeAdapterServiceImpl implements AttributeAdapterService {
    private final List<ServiceReference<AttributeAdapter<?>>> pending;
    private volatile boolean ready = false;
    private Thread thread;
+   private final ArtifactAttributeAdapter defaultAdapter = new ArtifactAttributeAdapter();
 
    public AttributeAdapterServiceImpl() {
       registered = new ConcurrentHashMap<>();
       pending = new CopyOnWriteArrayList<>();
-
       adapterByType = new ConcurrentHashMap<>();
    }
 
@@ -129,7 +129,11 @@ public class AttributeAdapterServiceImpl implements AttributeAdapterService {
 
    @SuppressWarnings("unchecked")
    public <T> AttributeAdapter<T> getAdapter(AttributeTypeId type) {
-      return (AttributeAdapter<T>) adapterByType.get(type);
+      AttributeAdapter<T> adapter = (AttributeAdapter<T>) adapterByType.get(type);
+      if (adapter == null) {
+         adapter = (AttributeAdapter<T>) defaultAdapter;
+      }
+      return adapter;
    }
 
 }

@@ -11,9 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.attribute.service;
 
 import java.util.Collection;
-import java.util.Collections;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -29,17 +27,13 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeAdapter;
 public class ArtifactAttributeAdapter implements AttributeAdapter<Artifact> {
 
    @Override
-   public Artifact adapt(Attribute<?> attribute, Id identity) throws OseeCoreException {
-      Long uuid = identity.getId();
-      if (uuid <= 0L) {
-         return null;
-      }
-      return ArtifactQuery.getArtifactFromId(new Long(uuid).intValue(), CoreBranches.COMMON,
-         DeletionFlag.EXCLUDE_DELETED);
+   public Artifact adapt(Attribute<?> attribute, Id id) throws OseeCoreException {
+      return ArtifactQuery.getArtifactFromId(id.getId(), CoreBranches.COMMON, DeletionFlag.EXCLUDE_DELETED);
    }
 
    @Override
    public Collection<AttributeTypeId> getSupportedTypes() {
-      return Collections.singleton(CoreAttributeTypes.ArtifactReference);
+      throw new UnsupportedOperationException(
+         "Should never be called because the default adpater does not need to be registered.");
    }
 }
