@@ -50,7 +50,7 @@ public class XArtifactSelectWidgetWithSave extends XArtifactSelectWidget impleme
 
    @Override
    public void saveToArtifact() throws OseeCoreException {
-      artifact.setSoleAttributeValue(attributeType, getSelection().getUuid().intValue());
+      artifact.setSoleAttributeValue(attributeType, getSelection());
    }
 
    @Override
