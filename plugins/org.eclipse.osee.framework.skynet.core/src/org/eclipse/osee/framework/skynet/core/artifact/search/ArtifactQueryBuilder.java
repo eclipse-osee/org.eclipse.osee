@@ -311,7 +311,7 @@ public class ArtifactQueryBuilder {
       }
    }
 
-   protected Artifact getOrCheckArtifact(QueryType queryType) throws OseeCoreException {
+   public Artifact getOrCheckArtifact(QueryType queryType) throws OseeCoreException {
       if (emptyCriteria) {
          throw new ArtifactDoesNotExist("received an empty list in the criteria for this search");
       }

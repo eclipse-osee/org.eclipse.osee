@@ -557,4 +557,27 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
       return ArtifactQuery.getArtifactFromId(artifact, branch);
    }
 
+   @SuppressWarnings("unchecked")
+   @Override
+   public <T> T getConfigItem(ArtifactToken configToken) {
+      ArtifactId artifact = getArtifact(configToken.getId());
+      if (artifact != null) {
+         IAtsConfigObject configObject = getConfigItemFactory().getConfigObject(artifact);
+         return (T) configObject;
+      }
+      return null;
+   }
+
+   @Override
+   public <T> Collection<T> getConfigItems(ArtifactToken... configTokens) {
+      List<T> results = new LinkedList<>();
+      for (ArtifactToken art : configTokens) {
+         T configItem = getConfigItem(art);
+         if (configItem != null) {
+            results.add(configItem);
+         }
+      }
+      return results;
+   }
+
 }

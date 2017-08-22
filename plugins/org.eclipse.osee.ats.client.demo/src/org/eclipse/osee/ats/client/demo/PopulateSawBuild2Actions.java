@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.client.demo;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
@@ -24,6 +25,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.client.demo.config.DemoDbUtil;
 import org.eclipse.osee.ats.client.demo.config.DemoDbUtil.SoftwareRequirementStrs;
@@ -35,9 +37,10 @@ import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TeamWorkFlowManager;
 import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.ats.demo.api.DemoCscis;
-import org.eclipse.osee.ats.demo.api.DemoDbAIs;
 import org.eclipse.osee.ats.demo.api.DemoSubsystems;
+import org.eclipse.osee.ats.demo.api.DemoWorkflowTitles;
 import org.eclipse.osee.ats.util.AtsBranchManager;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -67,20 +70,20 @@ public class PopulateSawBuild2Actions {
       Conditions.checkNotNull(version, "SAW_Bld_2");
 
       // Create SAW_Bld_2 Actions
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Populate Demo DB - PopulateSawBuild2Actions");
-
-      // SawBuild2Action1
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Populate Demo DB - PopulateSawBuild2Actions - 1");
       ActionResult committedAction = sawBuild2Action1_createCommittedAction(changes);
+      changes.execute();
 
-      // SawBuild2Action2
+      changes = AtsClientService.get().createChangeSet("Populate Demo DB - PopulateSawBuild2Actions - 2");
       ActionResult unCommittedAction = sawBuild2Action2_createUnCommittedAction(changes);
+      changes.execute();
 
-      // SawBuild2Action3
+      changes = AtsClientService.get().createChangeSet("Populate Demo DB - PopulateSawBuild2Actions - 3");
       sawBuild2Action3_createNoBranchAction(changes);
+      changes.execute();
 
-      // SawBuild2Action4
+      changes = AtsClientService.get().createChangeSet("Populate Demo DB - PopulateSawBuild2Actions - 4");
       ActionResult conflictedAction = sawBuild2Action4_createUnCommittedConflictedAction(changes);
-
       changes.execute();
 
       // Working Branch off SAW_Bld_2, Make Changes, Commit
@@ -95,16 +98,15 @@ public class PopulateSawBuild2Actions {
    }
 
    private static ActionResult sawBuild2Action4_createUnCommittedConflictedAction(IAtsChangeSet changes) throws OseeCoreException {
-      String title = "SAW (uncommitted-conflicted) More Requirement Changes for Diagram View";
-      Collection<IAtsActionableItem> aias =
-         DemoDbUtil.getActionableItems(new String[] {DemoDbAIs.SAW_Requirements.getAIName()});
+      Collection<IAtsActionableItem> aias = DemoDbUtil.getConfigObjects(DemoArtifactToken.SAW_Requirements_AI);
       Date createdDate = new Date();
       IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
       String priority = "3";
 
-      ActionResult actionResult =
-         AtsClientService.get().getActionFactory().createAction(null, title, "Problem with the Diagram View",
-            ChangeType.Problem, priority, false, null, aias, createdDate, createdBy, null, changes);
+      ActionResult actionResult = AtsClientService.get().getActionFactory().createAction(null,
+         DemoArtifactToken.SAW_UnCommitedConflicted_Req_TeamWf.getName(), "Problem with the Diagram View",
+         ChangeType.Problem, priority, false, null, aias, createdDate, createdBy,
+         new SAWUnCommitedConflictedActionListener(), changes);
       for (IAtsTeamWorkflow teamWf : actionResult.getTeams()) {
 
          TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsClientService.get().getServices(),
@@ -128,20 +130,24 @@ public class PopulateSawBuild2Actions {
       return actionResult;
    }
 
+   private static class SAWUnCommitedConflictedActionListener implements INewActionListener {
+      @Override
+      public ArtifactToken getArtifactToken(List<IAtsActionableItem> applicableAis) {
+         return DemoArtifactToken.SAW_UnCommitedConflicted_Req_TeamWf;
+      }
+   }
+
    private static ActionResult sawBuild2Action3_createNoBranchAction(IAtsChangeSet changes) throws OseeCoreException {
-      String title = "SAW (no-branch) Even More Requirement Changes for Diagram View";
-      Collection<IAtsActionableItem> aias = DemoDbUtil.getActionableItems(new String[] {
-         DemoDbAIs.SAW_Code.getAIName(),
-         DemoDbAIs.SAW_SW_Design.getAIName(),
-         DemoDbAIs.SAW_Requirements.getAIName(),
-         DemoDbAIs.SAW_Test.getAIName()});
+      String title = DemoWorkflowTitles.SAW_NO_BRANCH_REQT_CHANGES_FOR_DIAGRAM_VIEW;
+      Collection<IAtsActionableItem> aias = AtsClientService.get().getConfigItems(DemoArtifactToken.SAW_Code_AI,
+         DemoArtifactToken.SAW_SW_Design_AI, DemoArtifactToken.SAW_Requirements_AI, DemoArtifactToken.SAW_Test_AI);
       Date createdDate = new Date();
       IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
       String priority = "3";
 
-      ActionResult actionResult =
-         AtsClientService.get().getActionFactory().createAction(null, title, "Problem with the Diagram View",
-            ChangeType.Problem, priority, false, null, aias, createdDate, createdBy, null, changes);
+      ActionResult actionResult = AtsClientService.get().getActionFactory().createAction(null, title,
+         "Problem with the Diagram View", ChangeType.Problem, priority, false, null, aias, createdDate, createdBy,
+         new SAWNoBranchArtifactTokenActionListener(), changes);
       for (IAtsTeamWorkflow teamWf : actionResult.getTeams()) {
 
          boolean isSwDesign = teamWf.getTeamDefinition().getName().contains("SW Design");
@@ -201,21 +207,33 @@ public class PopulateSawBuild2Actions {
       }
       return actionResult;
    }
+   private static class SAWNoBranchArtifactTokenActionListener implements INewActionListener {
+      @Override
+      public ArtifactToken getArtifactToken(List<IAtsActionableItem> applicableAis) {
+         if (applicableAis.iterator().next().equals(DemoArtifactToken.SAW_Test_AI)) {
+            return DemoArtifactToken.SAW_NoBranch_Test_TeamWf;
+         } else if (applicableAis.iterator().next().equals(DemoArtifactToken.SAW_Code_AI)) {
+            return DemoArtifactToken.SAW_NoBranch_Code_TeamWf;
+         } else if (applicableAis.iterator().next().equals(DemoArtifactToken.SAW_Requirements_AI)) {
+            return DemoArtifactToken.SAW_NoBranch_Req_TeamWf;
+         } else if (applicableAis.iterator().next().equals(DemoArtifactToken.SAW_SW_Design_AI)) {
+            return DemoArtifactToken.SAW_NoBranch_SWDesign_TeamWf;
+         }
+         throw new UnsupportedOperationException();
+      }
+   }
 
    private static ActionResult sawBuild2Action2_createUnCommittedAction(IAtsChangeSet changes) throws OseeCoreException {
-      String title = "SAW (uncommitted) More Reqt Changes for Diagram View";
-      Collection<IAtsActionableItem> aias = DemoDbUtil.getActionableItems(new String[] {
-         DemoDbAIs.SAW_Code.getAIName(),
-         DemoDbAIs.SAW_SW_Design.getAIName(),
-         DemoDbAIs.SAW_Requirements.getAIName(),
-         DemoDbAIs.SAW_Test.getAIName()});
+      String title = DemoWorkflowTitles.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW;
+      Collection<IAtsActionableItem> aias = DemoDbUtil.getConfigObjects(DemoArtifactToken.SAW_Code_AI,
+         DemoArtifactToken.SAW_SW_Design_AI, DemoArtifactToken.SAW_Requirements_AI, DemoArtifactToken.SAW_Test_AI);
       Date createdDate = new Date();
       IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
       String priority = "3";
 
-      ActionResult actionResult =
-         AtsClientService.get().getActionFactory().createAction(null, title, "Problem with the Diagram View",
-            ChangeType.Problem, priority, false, null, aias, createdDate, createdBy, null, changes);
+      ActionResult actionResult = AtsClientService.get().getActionFactory().createAction(null, title,
+         "Problem with the Diagram View", ChangeType.Problem, priority, false, null, aias, createdDate, createdBy,
+         new SAWUnCommittedArtifactTokenActionListener(), changes);
       for (IAtsTeamWorkflow teamWf : actionResult.getTeams()) {
 
          boolean isSwDesign = teamWf.getTeamDefinition().getName().contains("SW Design");
@@ -277,19 +295,33 @@ public class PopulateSawBuild2Actions {
       return actionResult;
    }
 
+   private static class SAWUnCommittedArtifactTokenActionListener implements INewActionListener {
+      @Override
+      public ArtifactToken getArtifactToken(List<IAtsActionableItem> applicableAis) {
+         if (applicableAis.iterator().next().equals(DemoArtifactToken.SAW_Test_AI)) {
+            return DemoArtifactToken.SAW_UnCommited_Test_TeamWf;
+         } else if (applicableAis.iterator().next().equals(DemoArtifactToken.SAW_Code_AI)) {
+            return DemoArtifactToken.SAW_UnCommited_Code_TeamWf;
+         } else if (applicableAis.iterator().next().equals(DemoArtifactToken.SAW_Requirements_AI)) {
+            return DemoArtifactToken.SAW_UnCommited_Req_TeamWf;
+         } else if (applicableAis.iterator().next().equals(DemoArtifactToken.SAW_SW_Design_AI)) {
+            return DemoArtifactToken.SAW_UnCommited_SWDesign_TeamWf;
+         }
+         throw new UnsupportedOperationException();
+      }
+   }
+
    private static ActionResult sawBuild2Action1_createCommittedAction(IAtsChangeSet changes) throws OseeCoreException {
-      String title = "SAW (committed) Reqt Changes for Diagram View";
-      Collection<IAtsActionableItem> aias = DemoDbUtil.getActionableItems(new String[] {
-         DemoDbAIs.SAW_Requirements.getAIName(),
-         DemoDbAIs.SAW_Code.getAIName(),
-         DemoDbAIs.SAW_Test.getAIName()});
+      Collection<IAtsActionableItem> aias = DemoDbUtil.getConfigObjects(DemoArtifactToken.SAW_Requirements_AI,
+         DemoArtifactToken.SAW_Code_AI, DemoArtifactToken.SAW_Test_AI);
       Date createdDate = new Date();
       IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
       String priority = "1";
 
-      ActionResult actionResult =
-         AtsClientService.get().getActionFactory().createAction(null, title, "Problem with the Diagram View",
-            ChangeType.Problem, priority, false, null, aias, createdDate, createdBy, null, changes);
+      ActionResult actionResult = AtsClientService.get().getActionFactory().createAction(null,
+         DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "Problem with the Diagram View",
+         ChangeType.Problem, priority, false, null, aias, createdDate, createdBy,
+         new SAWCommittedArtifactTokenActionListener(), changes);
       for (IAtsTeamWorkflow teamWf : actionResult.getTeams()) {
 
          if (teamWf.getTeamDefinition().getName().contains(
@@ -303,10 +335,6 @@ public class PopulateSawBuild2Actions {
          } else if (teamWf.getTeamDefinition().getName().contains(
             "Test") && !teamWf.getWorkDefinition().getName().equals("WorkDef_Team_Demo_Test")) {
             throw new OseeCoreException("Test workflow expected work def [WorkDef_Team_Demo_Test] actual [%s]",
-               teamWf.getWorkDefinition().getName());
-         } else if (teamWf.getTeamDefinition().getName().contains(
-            "Design") && !teamWf.getWorkDefinition().getName().equals("WorkDef_Team_Demo_SwDesign")) {
-            throw new OseeCoreException("SwDesign workflow expected work def [WorkDef_Team_Demo_SwDesign] actual [%s]",
                teamWf.getWorkDefinition().getName());
          }
 
@@ -329,6 +357,20 @@ public class PopulateSawBuild2Actions {
          AtsClientService.get().getVersionService().setTargetedVersion(teamWf, version, changes);
       }
       return actionResult;
+   }
+
+   private static class SAWCommittedArtifactTokenActionListener implements INewActionListener {
+      @Override
+      public ArtifactToken getArtifactToken(List<IAtsActionableItem> applicableAis) {
+         if (applicableAis.iterator().next().equals(DemoArtifactToken.SAW_Test_AI)) {
+            return DemoArtifactToken.SAW_Commited_Test_TeamWf;
+         } else if (applicableAis.iterator().next().equals(DemoArtifactToken.SAW_Code_AI)) {
+            return DemoArtifactToken.SAW_Commited_Code_TeamWf;
+         } else if (applicableAis.iterator().next().equals(DemoArtifactToken.SAW_Requirements_AI)) {
+            return DemoArtifactToken.SAW_Commited_Req_TeamWf;
+         }
+         throw new UnsupportedOperationException();
+      }
    }
 
    private static void makeCommittedActionChanges(ActionResult actionResult) throws OseeCoreException {

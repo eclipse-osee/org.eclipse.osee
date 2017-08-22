@@ -20,11 +20,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
  */
 public final class DemoArtifactToken {
 
-   public static final ArtifactToken SAW_Test_AI =
-      TokenFactory.createArtifactToken(75881049, "SAW Test", AtsArtifactTypes.ActionableItem);
-   public static final ArtifactToken SAW_Code_AI =
-      TokenFactory.createArtifactToken(733306468, "SAW Code", AtsArtifactTypes.ActionableItem);
-
    public static ArtifactToken Process_Team =
       TokenFactory.createArtifactToken(55170736, "Process_Team", AtsArtifactTypes.TeamDefinition);
    public static ArtifactToken Tools_Team =
@@ -44,8 +39,25 @@ public final class DemoArtifactToken {
       TokenFactory.createArtifactToken(20592, "SAW Requirements", AtsArtifactTypes.TeamDefinition);
    public static ArtifactToken SAW_SW =
       TokenFactory.createArtifactToken(3902389, "SAW SW", AtsArtifactTypes.TeamDefinition);
+
    public static ArtifactToken SAW_CSCI_AI =
       TokenFactory.createArtifactToken(1866, "SAW CSCI", AtsArtifactTypes.ActionableItem);
+   public static ArtifactToken Timesheet_AI =
+      TokenFactory.createArtifactToken(79465444, "Timesheet", AtsArtifactTypes.ActionableItem);
+   public static ArtifactToken Reader_AI =
+      TokenFactory.createArtifactToken(132213123, "Reader", AtsArtifactTypes.ActionableItem);
+   public static ArtifactToken Adapter_AI =
+      TokenFactory.createArtifactToken(456465465, "Adapter", AtsArtifactTypes.ActionableItem);
+   public static final ArtifactToken CIS_Test_AI =
+      TokenFactory.createArtifactToken(441657987, "CIS Test", AtsArtifactTypes.ActionableItem);
+   public static final ArtifactToken SAW_Test_AI =
+      TokenFactory.createArtifactToken(75881049, "SAW Test", AtsArtifactTypes.ActionableItem);
+   public static final ArtifactToken SAW_Code_AI =
+      TokenFactory.createArtifactToken(733306468, "SAW Code", AtsArtifactTypes.ActionableItem);
+   public static final ArtifactToken SAW_Requirements_AI =
+      TokenFactory.createArtifactToken(668954846, "SAW Req", AtsArtifactTypes.ActionableItem);
+   public static final ArtifactToken SAW_SW_Design_AI =
+      TokenFactory.createArtifactToken(98129283, "SAW SW Design", AtsArtifactTypes.ActionableItem);
 
    // SAW_SW Versions
    public static ArtifactToken SAW_Bld_1 =
@@ -84,6 +96,52 @@ public final class DemoArtifactToken {
       TokenFactory.createArtifactToken(281326, "AZp8M1hP81QOm6W9yNgA", "Work Pkg 0B", AtsArtifactTypes.WorkPackage);
    public static ArtifactToken SAW_Test_AI_WorkPackage_0C =
       TokenFactory.createArtifactToken(8141323, "AZp8M1kvEGrRt9tybTwA", "Work Pkg 0C", AtsArtifactTypes.WorkPackage);
+
+   public static ArtifactToken SAW_Commited_Req_TeamWf = TokenFactory.createArtifactToken(68678945,
+      DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, DemoArtifactTypes.DemoReqTeamWorkflow);
+   public static ArtifactToken SAW_Commited_Code_TeamWf = TokenFactory.createArtifactToken(745689465,
+      DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, DemoArtifactTypes.DemoCodeTeamWorkflow);
+   public static ArtifactToken SAW_Commited_Test_TeamWf = TokenFactory.createArtifactToken(4684523,
+      DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, DemoArtifactTypes.DemoTestTeamWorkflow);
+   public static ArtifactToken SAW_Commited_SWDesign_TeamWf = TokenFactory.createArtifactToken(9784654,
+      DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, AtsArtifactTypes.TeamWorkflow);
+
+   public static ArtifactToken SAW_UnCommited_Code_TeamWf = TokenFactory.createArtifactToken(295510263,
+      DemoWorkflowTitles.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, DemoArtifactTypes.DemoCodeTeamWorkflow);
+   public static ArtifactToken SAW_UnCommited_Test_TeamWf = TokenFactory.createArtifactToken(81679355,
+      DemoWorkflowTitles.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, DemoArtifactTypes.DemoTestTeamWorkflow);
+   public static ArtifactToken SAW_UnCommited_Req_TeamWf = TokenFactory.createArtifactToken(55313463,
+      DemoWorkflowTitles.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, DemoArtifactTypes.DemoReqTeamWorkflow);
+   public static ArtifactToken SAW_UnCommited_SWDesign_TeamWf = TokenFactory.createArtifactToken(8879465,
+      DemoWorkflowTitles.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, AtsArtifactTypes.TeamWorkflow);
+
+   public static ArtifactToken SAW_UnCommitedConflicted_Code_TeamWf = TokenFactory.createArtifactToken(114579,
+      DemoWorkflowTitles.SAW_UNCOMMITTED_CONFLICTED_REQT_CHANGES_FOR_DIAGRAM_VIEW,
+      DemoArtifactTypes.DemoCodeTeamWorkflow);
+   public static ArtifactToken SAW_UnCommitedConflicted_Req_TeamWf = TokenFactory.createArtifactToken(9876413,
+      DemoWorkflowTitles.SAW_UNCOMMITTED_CONFLICTED_REQT_CHANGES_FOR_DIAGRAM_VIEW,
+      DemoArtifactTypes.DemoReqTeamWorkflow);
+
+   public static ArtifactToken SAW_NoBranch_Code_TeamWf = TokenFactory.createArtifactToken(8885445,
+      DemoWorkflowTitles.SAW_NO_BRANCH_REQT_CHANGES_FOR_DIAGRAM_VIEW, DemoArtifactTypes.DemoCodeTeamWorkflow);
+   public static ArtifactToken SAW_NoBranch_SWDesign_TeamWf = TokenFactory.createArtifactToken(7784565,
+      DemoWorkflowTitles.SAW_NO_BRANCH_REQT_CHANGES_FOR_DIAGRAM_VIEW, AtsArtifactTypes.TeamWorkflow);
+   public static ArtifactToken SAW_NoBranch_Req_TeamWf = TokenFactory.createArtifactToken(5564873,
+      DemoWorkflowTitles.SAW_NO_BRANCH_REQT_CHANGES_FOR_DIAGRAM_VIEW, DemoArtifactTypes.DemoReqTeamWorkflow);
+   public static ArtifactToken SAW_NoBranch_Test_TeamWf = TokenFactory.createArtifactToken(11548766,
+      DemoWorkflowTitles.SAW_NO_BRANCH_REQT_CHANGES_FOR_DIAGRAM_VIEW, DemoArtifactTypes.DemoTestTeamWorkflow);
+
+   /**
+    * Do NOT use these as ways to load Demo workflows by Name. Use DemoUtil instead.
+    */
+   public static final String SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW =
+      "SAW (committed) Reqt Changes for Diagram View";
+   public static final String SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW =
+      "SAW (uncommitted) More Reqt Changes for Diagram View";
+   public static final String SAW_UNCOMMITTED_CONFLICTED_REQT_CHANGES_FOR_DIAGRAM_VIEW =
+      "SAW (uncommitted-conflicted) More Requirement Changes for Diagram View";
+   public static final String SAW_NO_BRANCH_REQT_CHANGES_FOR_DIAGRAM_VIEW =
+      "SAW (no-branch) Even More Requirement Changes for Diagram View";
 
    private DemoArtifactToken() {
       // Constants

@@ -10,7 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workflow;
 
+import java.util.List;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -36,6 +39,11 @@ public interface INewActionListener {
     * @return workflow id to use instead of default configured id
     */
    public default String getOverrideWorkDefinitionId(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+      // for override
+      return null;
+   }
+
+   public default ArtifactToken getArtifactToken(List<IAtsActionableItem> applicableAis) {
       // for override
       return null;
    }

@@ -44,6 +44,7 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
+import org.eclipse.osee.ats.demo.api.DemoWorkflowTitles;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -252,26 +253,26 @@ public class PopulateDemoAgile {
       datas.add(new SprintItemData("3", "Can't see the Graph View", "8", "Unplanned Work", "Framework", "10/03/2016"));
       datas.add(new SprintItemData("4", "Problem in Diagram Tree", "40", " ", "Framework", "10/03/2016"));
       datas.add(new SprintItemData("5", "Problem with the Graph View", "8", " ", "Communications", "10/03/2016"));
-      datas.add(new SprintItemData("6", "SAW (committed) Reqt Changes for Diagram View", "2", "Unplanned Work",
+      datas.add(new SprintItemData("6", DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "2",
+         "Unplanned Work", "Framework", "10/03/2016"));
+      datas.add(new SprintItemData("7", DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "8", " ",
          "Framework", "10/03/2016"));
-      datas.add(
-         new SprintItemData("7", "SAW (committed) Reqt Changes for Diagram View", "8", " ", "Framework", "10/03/2016"));
-      datas.add(
-         new SprintItemData("8", "SAW (committed) Reqt Changes for Diagram View", "16", " ", "UI", "10/03/2016"));
-      datas.add(new SprintItemData("9", "SAW (no-branch) Even More Requirement Changes for Diagram View", "32", " ",
+      datas.add(new SprintItemData("8", DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "16", " ", "UI",
+         "10/03/2016"));
+      datas.add(new SprintItemData("9", DemoWorkflowTitles.SAW_NO_BRANCH_REQT_CHANGES_FOR_DIAGRAM_VIEW, "32", " ",
          "Communications", "10/03/2016"));
-      datas.add(new SprintItemData("10", "SAW (no-branch) Even More Requirement Changes for Diagram View", "40", " ",
+      datas.add(new SprintItemData("10", DemoWorkflowTitles.SAW_NO_BRANCH_REQT_CHANGES_FOR_DIAGRAM_VIEW, "40", " ",
          "Documentation", "10/03/2016"));
-      datas.add(new SprintItemData("11", "SAW (no-branch) Even More Requirement Changes for Diagram View", "8", " ",
+      datas.add(new SprintItemData("11", DemoWorkflowTitles.SAW_NO_BRANCH_REQT_CHANGES_FOR_DIAGRAM_VIEW, "8", " ",
          "Documentation", "10/03/2016"));
-      datas.add(new SprintItemData("12", "SAW (uncommitted) More Reqt Changes for Diagram View", "1", " ",
+      datas.add(new SprintItemData("12", DemoWorkflowTitles.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "1", " ",
          "Communications", "10/03/2016"));
-      datas.add(new SprintItemData("13", "SAW (uncommitted) More Reqt Changes for Diagram View", "6", " ",
+      datas.add(new SprintItemData("13", DemoWorkflowTitles.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "6", " ",
          "Documentation", "10/03/2016"));
-      datas.add(new SprintItemData("14", "SAW (uncommitted) More Reqt Changes for Diagram View", "32", " ",
+      datas.add(new SprintItemData("14", DemoWorkflowTitles.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "32", " ",
          "Communications", "10/03/2016"));
-      datas.add(new SprintItemData("15", "SAW (uncommitted-conflicted) More Requirement Changes for Diagram View", "1",
-         " ", "Communications", "10/03/2016"));
+      datas.add(new SprintItemData("15", DemoArtifactToken.SAW_UnCommitedConflicted_Req_TeamWf.getName(), "1", " ",
+         "Communications", "10/03/2016"));
       datas.add(new SprintItemData("16", "Workaround for Graph View for SAW_Bld_2", "1", "Unplanned Work",
          "Communications", "10/03/2016"));
       datas.add(new SprintItemData("17", "Workaround for Graph View for SAW_Bld_3", "2", "Unplanned Work",

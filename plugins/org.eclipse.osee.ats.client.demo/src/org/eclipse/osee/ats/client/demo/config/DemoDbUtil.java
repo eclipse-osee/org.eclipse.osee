@@ -10,19 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.demo.config;
 
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.client.demo.internal.Activator;
 import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.config.ActionableItems;
-import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -41,24 +35,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 public class DemoDbUtil {
 
    public static String INTERFACE_INITIALIZATION = "Interface Initialization";
-   private static List<TeamWorkFlowArtifact> codeArts;
-
-   public static List<TeamWorkFlowArtifact> getSampleCodeWorkflows() throws OseeCoreException {
-      if (codeArts == null) {
-         codeArts = new ArrayList<>();
-         for (String actionName : new String[] {
-            "SAW (committed) Reqt Changes for Diagram View",
-            "SAW (uncommitted) More Reqt Changes for Diagram View"}) {
-            for (Artifact art : ArtifactQuery.getArtifactListFromName(actionName, AtsClientService.get().getAtsBranch(),
-               EXCLUDE_DELETED)) {
-               if (art.isOfType(DemoArtifactTypes.DemoCodeTeamWorkflow)) {
-                  codeArts.add((TeamWorkFlowArtifact) art);
-               }
-            }
-         }
-      }
-      return codeArts;
-   }
 
    public static Result isDbPopulatedWithDemoData(boolean DEBUG, Branch branch) throws OseeCoreException {
       if (DemoDbUtil.getSoftwareRequirements(DEBUG, SoftwareRequirementStrs.Robot, branch).size() != 6) {
@@ -103,15 +79,10 @@ public class DemoDbUtil {
          branch);
    }
 
-   public static Collection<IAtsActionableItem> getActionableItems(String[] aiasNames) throws OseeCoreException {
-      Set<IAtsActionableItem> aias = new HashSet<>();
-      for (String str : aiasNames) {
-         for (IAtsActionableItem aia : ActionableItems.getActionableItemsAll(
-            AtsClientService.get().getQueryService())) {
-            if (str.equals(aia.getName())) {
-               aias.add(aia);
-            }
-         }
+   public static <T> Collection<T> getConfigObjects(ArtifactToken... configTokens) throws OseeCoreException {
+      Set<T> aias = new HashSet<>();
+      for (ArtifactToken configObj : configTokens) {
+         aias.add(AtsClientService.get().getConfigItem(configObj));
       }
       return aias;
    }

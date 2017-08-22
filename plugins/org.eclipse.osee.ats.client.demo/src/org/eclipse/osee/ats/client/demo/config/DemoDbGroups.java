@@ -11,11 +11,13 @@
 package org.eclipse.osee.ats.client.demo.config;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.demo.internal.Activator;
 import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -47,7 +49,8 @@ public class DemoDbGroups {
          OseeLog.log(Activator.class, Level.INFO, "Create Groups and add objects");
       }
       Artifact groupArt = UniversalGroup.addGroup(TEST_GROUP_NAME, AtsClientService.get().getAtsBranch(), transaction);
-      for (TeamWorkFlowArtifact codeArt : DemoDbUtil.getSampleCodeWorkflows()) {
+      for (TeamWorkFlowArtifact codeArt : Arrays.asList(DemoUtil.getSawCodeCommittedWf(),
+         DemoUtil.getSawCodeUnCommittedWf())) {
 
          // Add Action to Universal Group
          groupArt.addRelation(CoreRelationTypes.Universal_Grouping__Members, codeArt.getParentActionArtifact());

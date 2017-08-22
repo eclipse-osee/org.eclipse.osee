@@ -45,6 +45,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsActionFactory;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsImplementerService;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemServiceProvider;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
@@ -183,4 +184,7 @@ public interface IAtsServices extends IAtsEarnedValueServiceProvider, IAtsConfig
    ArtifactToken getArtifactByAtsId(String id);
 
    <T> T getConfigItem(ArtifactId artId);
+
+   IAtsTeamWorkflow getTeamWf(ArtifactToken artifact);
+
 }

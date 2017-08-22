@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
+import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.util.AbstractAtsChangeSet;
@@ -74,7 +75,9 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          for (IAtsObject atsObject : new ArrayList<>(atsObjects)) {
             if (atsObject instanceof IAtsWorkItem) {
                IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
-               if (workItem.getStateMgr() != null && workItem.getStateMgr().isDirty()) {
+            IAtsStateManager stateMgr = workItem.getStateMgr();
+            Conditions.assertNotNull(stateMgr, "StateManager");
+            if (stateMgr.isDirty()) {
                   AtsClientService.get().getStateFactory().writeToStore(asUser, workItem, this);
                }
                if (workItem.getLog().isDirty()) {

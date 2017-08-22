@@ -58,8 +58,8 @@ public class AtsBranchAccessManagerTest {
    public void cleanup() throws OseeCoreException {
       TeamWorkFlowArtifact teamArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "testGetContextIdArtifact cleanup");
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(),
+         "testGetContextIdArtifact cleanup");
       Artifact teamDefArt = AtsClientService.get().getConfigArtifact(teamArt.getTeamDefinition());
       teamDefArt.deleteAttributes(CoreAttributeTypes.AccessContextId);
       teamDefArt.persist(transaction);
@@ -85,7 +85,7 @@ public class AtsBranchAccessManagerTest {
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
 
       // confirm that no context id returned
-      Assert.assertEquals(0, mgr.getContextId(teamArt.getWorkingBranch()).size());
+      Assert.assertEquals(0, mgr.getContextId(teamArt.getWorkingBranch(), false).size());
 
       String teamDefContextId1 = "teamDef.context.1";
       String teamDefContextId2 = "teamDef.context.2";
@@ -94,9 +94,7 @@ public class AtsBranchAccessManagerTest {
          Arrays.asList(teamDefContextId1, teamDefContextId2));
       teamDefArt.persist(getClass().getSimpleName());
 
-      mgr.clearCache();
-
-      Assert.assertEquals(2, mgr.getContextId(teamArt.getWorkingBranch()).size());
+      Assert.assertEquals(2, mgr.getContextId(teamArt.getWorkingBranch(), false).size());
 
       String aiContextId = "ai.context.1";
       Artifact aiArt = AtsClientService.get().getConfigArtifact(
@@ -105,9 +103,7 @@ public class AtsBranchAccessManagerTest {
       aiArt.setAttributeValues(CoreAttributeTypes.AccessContextId, Arrays.asList(aiContextId));
       aiArt.persist(getClass().getSimpleName());
 
-      mgr.clearCache();
-
-      Assert.assertEquals(1, mgr.getContextId(teamArt.getWorkingBranch()).size());
+      Assert.assertEquals(1, mgr.getContextId(teamArt.getWorkingBranch(), false).size());
 
       String teamContextId1 = "team.context.1";
       String teamContextId2 = "team.context.2";
@@ -116,14 +112,13 @@ public class AtsBranchAccessManagerTest {
          Arrays.asList(teamContextId1, teamContextId2, teamContextId3));
       teamArt.persist(getClass().getSimpleName());
 
-      mgr.clearCache();
-
-      Assert.assertEquals(3, mgr.getContextId(teamArt.getWorkingBranch()).size());
-
+      Assert.assertEquals(3, mgr.getContextId(teamArt.getWorkingBranch(), false).size());
    }
 
    /**
-    * Test method for {@link org.eclipse.osee.ats.access.AtsBranchAccessManager#convertAccessAttributeToGuid
+    * Test method for {
+    *
+    * @param useCache TODO@link org.eclipse.osee.ats.access.AtsBranchAccessManager#convertAccessAttributeToGuid
     */
    @Test
    public void testConvertAccessAttributeToGuid() throws Exception {

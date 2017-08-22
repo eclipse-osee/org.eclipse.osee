@@ -11,13 +11,13 @@
 package org.eclipse.osee.ats.client.integration.tests.ats.editor;
 
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
 import org.eclipse.osee.ats.editor.WfePrint;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -31,7 +31,7 @@ import org.junit.Test;
  * Demo test that will run the SMAPrint action against Demo populated actions to ensure that nothing has broken.This
  * test simply runs the html generation portion of SMAPrint, ensures the results are of a reasonable length and looks
  * for exceptions at the end.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class WfePrintTest {
@@ -40,16 +40,15 @@ public class WfePrintTest {
    public void testSMAPrint() throws Exception {
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
 
-      TeamWorkFlowArtifact teamArt =
-         (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromTypeAndName(DemoArtifactTypes.DemoCodeTeamWorkflow,
-            "SAW (uncommitted) More Reqt Changes for Diagram View", AtsClientService.get().getAtsBranch());
+      TeamWorkFlowArtifact teamArt = DemoUtil.getSawCodeUnCommittedWf();
       Assert.assertNotNull(teamArt);
 
       WfePrint smaPrint = new WfePrint(teamArt);
       XResultData resultData = smaPrint.getResultData();
       Assert.assertNotNull(resultData);
       // Make sure it's a reasonable length
-      Assert.assertTrue(XResultDataUI.getReport(resultData, "report").getManipulatedHtml().length() > 5800);
+      String html = XResultDataUI.getReport(resultData, "report").getManipulatedHtml();
+      Assert.assertTrue(html.length() > 5600);
 
       PeerToPeerReviewArtifact peerArt = (PeerToPeerReviewArtifact) ReviewManager.getReviews(teamArt).iterator().next();
       smaPrint = new WfePrint(peerArt);

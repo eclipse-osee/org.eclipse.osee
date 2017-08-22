@@ -20,7 +20,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.Collection;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
@@ -35,11 +34,10 @@ import org.eclipse.osee.ats.api.workflow.Attribute;
 import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.util.AtsObjects;
+import org.eclipse.osee.ats.demo.api.DemoWorkflowTitles;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -124,7 +122,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testQueryMulti() throws Exception {
-      String name = DemoUtil.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW.replaceAll(" ", "%20");
+      String name = DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW.replaceAll(" ", "%20");
       URI uri = UriBuilder.fromUri(getAppServerAddr()).path("/ats/action/query").queryParam("Name", name).build();
 
       JsonArray array = getAndCheckArray(uri);
@@ -143,9 +141,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testAtsActionsRestCall() throws Exception {
-      Collection<TeamWorkFlowArtifact> wfs = DemoUtil.getSawCommittedWfs();
-      String atsIds = Collections.toString(",", AtsObjects.toAtsIds(wfs));
-      JsonArray array = getAndCheckArray("/ats/action/" + atsIds);
+      JsonArray array = getAndCheckArray("/ats/action/" + DemoUtil.getSawAtsIds());
       Assert.assertEquals(3, array.size());
       for (JsonElement elment : array) {
          JsonObject obj = (JsonObject) elment;
@@ -155,9 +151,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testAtsActionsDetailsRestCall() throws Exception {
-      Collection<TeamWorkFlowArtifact> wfs = DemoUtil.getSawCommittedWfs();
-      String atsIds = Collections.toString(",", AtsObjects.toAtsIds(wfs));
-      JsonArray array = getAndCheckArray("/ats/action/" + atsIds + "/details");
+      JsonArray array = getAndCheckArray("/ats/action/" + DemoUtil.getSawAtsIds() + "/details");
       Assert.assertEquals(3, array.size());
       JsonObject obj = (JsonObject) array.iterator().next();
       testAction(obj);
@@ -166,7 +160,8 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    }
 
    private void testAction(JsonObject obj) {
-      Assert.assertEquals(DemoUtil.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, obj.get("Name").getAsString());
+      Assert.assertEquals(DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW,
+         obj.get("Name").getAsString());
       Assert.assertNotNull(obj.has("uuid"));
       Assert.assertNotNull(obj.has("AtsId"));
       Assert.assertEquals("/ats/ui/action/" + obj.get("AtsId").getAsString(), obj.get("actionLocation").getAsString());
@@ -174,9 +169,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testAtsActionRestCall() throws Exception {
-      Collection<TeamWorkFlowArtifact> wfs = DemoUtil.getSawCommittedWfs();
-      TeamWorkFlowArtifact teamWf = wfs.iterator().next();
-      JsonArray array = getAndCheckArray("/ats/action/" + teamWf.getAtsId());
+      JsonArray array = getAndCheckArray("/ats/action/" + DemoUtil.getSawCodeCommittedWf().getAtsId());
       Assert.assertEquals(1, array.size());
       JsonObject obj = (JsonObject) array.iterator().next();
       testAction(obj);
@@ -184,9 +177,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testAtsActionDetailsRestCall() throws Exception {
-      Collection<TeamWorkFlowArtifact> wfs = DemoUtil.getSawCommittedWfs();
-      TeamWorkFlowArtifact teamWf = wfs.iterator().next();
-      JsonArray array = getAndCheckArray("/ats/action/" + teamWf.getAtsId() + "/details");
+      JsonArray array = getAndCheckArray("/ats/action/" + DemoUtil.getSawCodeCommittedWf().getAtsId() + "/details");
       Assert.assertEquals(1, array.size());
       JsonObject obj = (JsonObject) array.iterator().next();
       testAction(obj);

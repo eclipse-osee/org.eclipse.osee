@@ -98,7 +98,11 @@ public class AtsBranchAccessManager implements IArtifactEventListener, EventHand
    }
 
    public Collection<IAccessContextId> getContextId(BranchId branch) {
-      if (branchUuidToContextIdCache.containsKey(branch)) {
+      return getContextId(branch, true);
+   }
+
+   public Collection<IAccessContextId> getContextId(BranchId branch, boolean useCache) {
+      if (useCache && branchUuidToContextIdCache.containsKey(branch)) {
          return branchUuidToContextIdCache.get(branch);
       }
       Collection<IAccessContextId> contextIds = new ArrayList<>();

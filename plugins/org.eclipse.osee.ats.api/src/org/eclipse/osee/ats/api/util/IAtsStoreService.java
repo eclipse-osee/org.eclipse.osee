@@ -80,6 +80,10 @@ public interface IAtsStoreService {
 
    AttributeTypeId getAttributeType(Long attrTypeId);
 
-   TransactionId getTransactionId(IAtsWorkItem workItem);
    boolean isDeleted(ArtifactId artifact);
+
+   TransactionId getTransactionId(IAtsWorkItem workItem);
+   default boolean isInDb(IAtsWorkItem workItem) {
+      return getTransactionId(workItem).isValid();
+   }
 }

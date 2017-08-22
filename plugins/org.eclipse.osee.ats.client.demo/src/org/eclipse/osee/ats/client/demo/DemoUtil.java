@@ -10,25 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.demo;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
-import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
-import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.ats.core.util.AtsObjects;
+import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 
 public class DemoUtil {
 
-   public static final String SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW =
-      "SAW (committed) Reqt Changes for Diagram View";
+   private static String atsIds;
 
    private DemoUtil() {
       // Utility class
@@ -66,57 +61,73 @@ public class DemoUtil {
    }
 
    public static TeamWorkFlowArtifact getSawCodeCommittedWf() throws OseeCoreException {
-      return getCodeTeamWorkflowNamed(SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW);
+      return (TeamWorkFlowArtifact) AtsClientService.get().getArtifact(DemoArtifactToken.SAW_Commited_Code_TeamWf);
+   }
+
+   public static TeamWorkFlowArtifact getSawTestCommittedWf() throws OseeCoreException {
+      return (TeamWorkFlowArtifact) AtsClientService.get().getArtifact(DemoArtifactToken.SAW_Commited_Test_TeamWf);
+   }
+
+   public static TeamWorkFlowArtifact getSawReqCommittedWf() throws OseeCoreException {
+      return (TeamWorkFlowArtifact) AtsClientService.get().getArtifact(DemoArtifactToken.SAW_Commited_Req_TeamWf);
+   }
+
+   public static TeamWorkFlowArtifact getSawSWDesignCommittedWf() throws OseeCoreException {
+      return (TeamWorkFlowArtifact) AtsClientService.get().getArtifact(DemoArtifactToken.SAW_Commited_SWDesign_TeamWf);
    }
 
    public static TeamWorkFlowArtifact getSawCodeUnCommittedWf() throws OseeCoreException {
-      return getCodeTeamWorkflowNamed("SAW (uncommitted) More Reqt Changes for Diagram View");
+      return (TeamWorkFlowArtifact) AtsClientService.get().getArtifact(DemoArtifactToken.SAW_UnCommited_Code_TeamWf);
    }
 
-   public static TeamWorkFlowArtifact getSawCodeNoBranchWf() throws OseeCoreException {
-      return getCodeTeamWorkflowNamed("SAW (no-branch) Even More Requirement Changes for Diagram View");
+   public static TeamWorkFlowArtifact getSawTestUnCommittedWf() throws OseeCoreException {
+      return (TeamWorkFlowArtifact) AtsClientService.get().getArtifact(DemoArtifactToken.SAW_UnCommited_Test_TeamWf);
    }
 
-   public static Collection<TeamWorkFlowArtifact> getSawWfs(String name) {
-      List<TeamWorkFlowArtifact> teamWfs = new ArrayList<>();
-      for (Artifact art : ArtifactQuery.getArtifactListFromName(name, AtsClientService.get().getAtsBranch(),
-         DeletionFlag.EXCLUDE_DELETED)) {
-         if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-            teamWfs.add((TeamWorkFlowArtifact) art);
-         }
-      }
-      return teamWfs;
+   public static TeamWorkFlowArtifact getSawReqUnCommittedWf() throws OseeCoreException {
+      return (TeamWorkFlowArtifact) AtsClientService.get().getArtifact(DemoArtifactToken.SAW_UnCommited_Req_TeamWf);
+   }
+
+   public static TeamWorkFlowArtifact getSawSWDesignUnCommittedWf() throws OseeCoreException {
+      return (TeamWorkFlowArtifact) AtsClientService.get().getArtifact(
+         DemoArtifactToken.SAW_UnCommited_SWDesign_TeamWf);
    }
 
    public static TeamWorkFlowArtifact getSwDesignNoBranchWf() throws OseeCoreException {
-      for (Artifact artifact : ArtifactQuery.getArtifactListFromName(
-         "SAW (uncommitted) More Reqt Changes for Diagram View", AtsClientService.get().getAtsBranch(),
-         DeletionFlag.EXCLUDE_DELETED)) {
-         if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-            TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
-            for (IAtsActionableItem ai : teamArt.getActionableItems()) {
-               if (ai.getName().contains("SW Design")) {
-                  return teamArt;
-               }
-            }
-         }
-      }
-      return null;
+      return (TeamWorkFlowArtifact) AtsClientService.get().getArtifact(DemoArtifactToken.SAW_NoBranch_SWDesign_TeamWf);
    }
 
-   public static TeamWorkFlowArtifact getCodeTeamWorkflowNamed(String name) throws OseeCoreException {
-      TeamWorkFlowArtifact result = null;
-      for (Artifact art : getSawWfs(name)) {
-         if (art.isOfType(DemoArtifactTypes.DemoCodeTeamWorkflow)) {
-            result = (TeamWorkFlowArtifact) art;
-            break;
-         }
-      }
-      return result;
+   public static TeamWorkFlowArtifact getSawCodeNoBranchWf() throws OseeCoreException {
+      return (TeamWorkFlowArtifact) AtsClientService.get().getArtifact(DemoArtifactToken.SAW_NoBranch_Code_TeamWf);
    }
 
-   public static Collection<TeamWorkFlowArtifact> getSawCommittedWfs() {
-      return getSawWfs(SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW);
+   public static TeamWorkFlowArtifact getSawTestNoBranchWf() throws OseeCoreException {
+      return (TeamWorkFlowArtifact) AtsClientService.get().getArtifact(DemoArtifactToken.SAW_NoBranch_Test_TeamWf);
+   }
+
+   public static TeamWorkFlowArtifact getSawReqNoBranchWf() throws OseeCoreException {
+      return (TeamWorkFlowArtifact) AtsClientService.get().getArtifact(DemoArtifactToken.SAW_NoBranch_Req_TeamWf);
+   }
+
+   public static TeamWorkFlowArtifact getSawSWDesignNoBranchWf() throws OseeCoreException {
+      return (TeamWorkFlowArtifact) AtsClientService.get().getArtifact(DemoArtifactToken.SAW_NoBranch_SWDesign_TeamWf);
+   }
+
+   public static Collection<TeamWorkFlowArtifact> getSawCommittedTeamWfs() {
+      return Arrays.asList(DemoUtil.getSawTestCommittedWf(), DemoUtil.getSawReqCommittedWf(),
+         DemoUtil.getSawCodeCommittedWf());
+   }
+
+   public static Collection<TeamWorkFlowArtifact> getSawUnCommittedTeamWfs() {
+      return Arrays.asList(DemoUtil.getSawTestUnCommittedWf(), DemoUtil.getSawReqUnCommittedWf(),
+         DemoUtil.getSawCodeUnCommittedWf(), DemoUtil.getSawSWDesignUnCommittedWf());
+   }
+
+   public static String getSawAtsIds() {
+      if (atsIds == null) {
+         atsIds = Collections.toString(",", AtsObjects.toAtsIds(getSawCommittedTeamWfs()));
+      }
+      return atsIds;
    }
 
 }

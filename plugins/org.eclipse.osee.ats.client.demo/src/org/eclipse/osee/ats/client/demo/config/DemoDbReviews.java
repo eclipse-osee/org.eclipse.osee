@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.review.Role;
 import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.demo.internal.Activator;
 import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
@@ -127,8 +128,8 @@ public class DemoDbReviews {
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, "Create Peer To Peer reviews");
       }
-      TeamWorkFlowArtifact firstCodeArt = DemoDbUtil.getSampleCodeWorkflows().get(0);
-      TeamWorkFlowArtifact secondCodeArt = DemoDbUtil.getSampleCodeWorkflows().get(1);
+      TeamWorkFlowArtifact firstCodeArt = DemoUtil.getSawCodeCommittedWf();
+      TeamWorkFlowArtifact secondCodeArt = DemoUtil.getSawCodeUnCommittedWf();
 
       // Create a PeerToPeer review and leave in Prepare state
       PeerToPeerReviewArtifact reviewArt = PeerToPeerReviewManager.createNewPeerToPeerReview(firstCodeArt,

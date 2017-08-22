@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.api.task.IAtsTaskService;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
@@ -69,6 +70,7 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
    private final IAtsWorkDefinitionService workDefService;
    private final IAttributeResolver attrResolver;
    private final Map<IAtsWorkItem, String> workItemFromStateMap;
+   private final IAtsStoreService storeService;
 
    public TransitionManager(ITransitionHelper helper) {
       this.helper = helper;
@@ -78,24 +80,32 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
       this.workDefService = helper.getServices().getWorkDefinitionService();
       this.attrResolver = helper.getServices().getAttributeResolver();
       this.taskService = helper.getServices().getTaskService();
+      this.storeService = helper.getServices().getStoreService();
       this.workItemFromStateMap = new HashMap<>();
    }
 
    @Override
    public TransitionResults handleAll() {
+      IAtsWorkItem workItem = helper.getWorkItems().iterator().next();
+
       TransitionResults results = new TransitionResults();
-      handleWorkflowReload(results);
-      if (results.isCancelled() || !results.isEmpty()) {
-         return results;
+      if (storeService.isInDb(workItem)) {
+         handleWorkflowReload(results);
+         if (results.isCancelled() || !results.isEmpty()) {
+            return results;
+         }
       }
+
       handleTransitionValidation(results);
       if (results.isCancelled() || !results.isEmpty()) {
          return results;
       }
+
       handleTransitionUi(results);
       if (results.isCancelled() || !results.isEmpty()) {
          return results;
       }
+
       handleTransition(results);
       return results;
    }
@@ -284,6 +294,7 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
          helper.getChangeSet().addExecuteListener(this);
          for (IAtsWorkItem workItem : helper.getWorkItems()) {
             try {
+
                IAtsStateDefinition fromState = workItem.getStateDefinition();
                IAtsStateDefinition toState = workItem.getWorkDefinition().getStateByName(helper.getToStateName());
 
@@ -291,12 +302,14 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
                if (!fromState.equals(toState)) {
                   Date transitionDate = getTransitionOnDate();
                   IAtsUser transitionUser = getTransitionAsUser();
+
                   // Log transition
                   if (fromState.getStateType().isCancelledState()) {
                      logWorkflowUnCancelledEvent(workItem, toState, helper.getChangeSet(), attrResolver);
                   } else if (fromState.getStateType().isCompletedState()) {
                      logWorkflowUnCompletedEvent(workItem, toState, helper.getChangeSet(), attrResolver);
                   }
+
                   if (toState.getStateType().isCancelledState()) {
                      logWorkflowCancelledEvent(workItem, fromState, toState, completedCancellationReason,
                         transitionDate, transitionUser, helper.getChangeSet(), attrResolver);
@@ -308,7 +321,6 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
                         completedCancellationReason, transitionDate, transitionUser);
                   }
                   logStateStartedEvent(workItem, toState, transitionDate, transitionUser);
-
                   // Get transition to assignees, do some checking to ensure someone is assigneed and UnAssigned
                   List<? extends IAtsUser> updatedAssigees = getToAssignees(workItem, toState);
 

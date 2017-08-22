@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -171,9 +172,7 @@ public class DemoTestUtil {
    public static Artifact getUncommittedActionWorkflow(DemoWorkType demoWorkType) throws OseeCoreException {
       if (unCommittedWorkflows == null) {
          unCommittedWorkflows = new HashMap<>();
-         for (Artifact art : ArtifactQuery.getArtifactListFromName(
-            "SAW (uncommitted) More Reqt Changes for Diagram View", AtsClientService.get().getAtsBranch(),
-            EXCLUDE_DELETED)) {
+         for (Artifact art : DemoUtil.getSawUnCommittedTeamWfs()) {
             if (art.isOfType(DemoArtifactTypes.DemoCodeTeamWorkflow)) {
                unCommittedWorkflows.put(DemoWorkType.Code, art);
             } else if (art.isOfType(DemoArtifactTypes.DemoTestTeamWorkflow)) {
@@ -191,8 +190,7 @@ public class DemoTestUtil {
    public static Artifact getCommittedActionWorkflow(DemoWorkType demoWorkType) throws OseeCoreException {
       if (committedWorkflows == null) {
          committedWorkflows = new HashMap<>();
-         for (Artifact art : ArtifactQuery.getArtifactListFromName("SAW (committed) Reqt Changes for Diagram View",
-            AtsClientService.get().getAtsBranch(), EXCLUDE_DELETED)) {
+         for (Artifact art : DemoUtil.getSawCommittedTeamWfs()) {
             if (art.isOfType(DemoArtifactTypes.DemoCodeTeamWorkflow)) {
                committedWorkflows.put(DemoWorkType.Code, art);
             } else if (art.isOfType(DemoArtifactTypes.DemoTestTeamWorkflow)) {

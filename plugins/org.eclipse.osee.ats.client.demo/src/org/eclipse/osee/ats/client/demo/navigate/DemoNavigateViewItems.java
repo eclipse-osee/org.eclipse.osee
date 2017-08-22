@@ -18,7 +18,6 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.query.ReleasedOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.client.demo.PopulateDemoActions;
 import org.eclipse.osee.ats.client.demo.internal.Activator;
 import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
 import org.eclipse.osee.ats.config.ValidateAtsConfiguration;
@@ -39,7 +38,6 @@ import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemFolder;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateUrlItem;
@@ -140,9 +138,6 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
       new ValidateAtsDatabase(healthItems);
       new ValidateAtsConfiguration(healthItems);
       new CreateGoalTestDemoArtifacts(healthItems);
-
-      XNavigateItem demoItems = new XNavigateItem(adminItems, "Demo Data", PluginUiImage.ADMIN);
-      new PopulateDemoActions(demoItems);
 
       return items;
    }

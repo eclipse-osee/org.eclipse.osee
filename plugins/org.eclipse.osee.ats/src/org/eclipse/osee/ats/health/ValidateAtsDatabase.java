@@ -50,6 +50,7 @@ import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -222,12 +223,15 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                atsHealthCheck.validateAtsDatabase(artifacts, results);
             }
 
-            // Clear ATS caches
+            /**
+             * Clear ATS caches; Don't run during tests. Not good for tests to have cached copies held and then new
+             * copies loaded. Can result in duplicate non-historical artifacts in JVM.
+             */
             for (Artifact artifact : artifacts) {
                if (artifact instanceof TeamWorkFlowArtifact) {
                   AtsTaskCache.decache((TeamWorkFlowArtifact) artifact);
                }
-               if (!(artifact instanceof User)) {
+               if (!AtsUtil.isInTest() && !(artifact instanceof User)) {
                   ArtifactCache.deCache(artifact);
                }
             }

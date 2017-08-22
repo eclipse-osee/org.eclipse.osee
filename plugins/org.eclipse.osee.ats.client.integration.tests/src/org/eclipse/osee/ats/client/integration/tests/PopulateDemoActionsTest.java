@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.demo.PopulateDemoActions;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
@@ -37,8 +38,10 @@ import org.eclipse.osee.ats.core.client.task.TaskStates;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
+import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
 import org.eclipse.osee.ats.demo.api.DemoTeam;
+import org.eclipse.osee.ats.demo.api.DemoWorkflowTitles;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
@@ -88,114 +91,35 @@ public class PopulateDemoActionsTest {
    }
 
    @org.junit.Test
-   public void testSawBuild2Action1() throws OseeCoreException {
+   public void testSawUnCommittedTeamWfs() throws OseeCoreException {
+      Collection<TeamWorkFlowArtifact> sawUnCommittedTeamWfs = DemoUtil.getSawUnCommittedTeamWfs();
+      Assert.assertEquals(4, sawUnCommittedTeamWfs.size());
 
-      // {@link DemoDbActionData.getReqSawActionsData()} - 1
-      String title = "SAW (committed) Reqt Changes for Diagram View";
-      ActionArtifact action = (ActionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, title,
-         AtsClientService.get().getAtsBranch());
-      Assert.assertNotNull(action);
-
-      // test teams
-      Assert.assertEquals(3, action.getTeams().size());
-      TeamWorkFlowArtifact codeTeamArt = null;
-      int numTested = 0;
-      for (TeamWorkFlowArtifact teamArt : action.getTeams()) {
-         String aiStr =
-            AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItemsStr(teamArt);
-         if (aiStr.contains("Code")) {
-            numTested++;
-            codeTeamArt = teamArt;
-            testTeamContents(teamArt, title, "1", SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Code",
-               "Joe Smith", DemoArtifactTypes.DemoCodeTeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_Code));
-         } else if (aiStr.contains("Test")) {
-            numTested++;
-            testTeamContents(teamArt, title, "1", SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Test",
-               "Kay Jones", DemoArtifactTypes.DemoTestTeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_Test));
-         } else if (aiStr.contains("Req")) {
-            numTested++;
-            testTeamContents(teamArt, title, "1", SAW_Bld_2.getName(), TeamState.Implement.getName(),
-               "SAW Requirements", "Joe Smith", DemoArtifactTypes.DemoReqTeamWorkflow,
-               DemoTestUtil.getTeamDef(DemoTeam.SAW_Requirements));
-         }
-      }
-      Assert.assertEquals(3, numTested);
+      TeamWorkFlowArtifact codeTeamArt = DemoUtil.getSawCodeUnCommittedWf();
       Assert.assertNotNull(codeTeamArt);
+      TeamWorkFlowArtifact testTeamArt = DemoUtil.getSawTestUnCommittedWf();
+      Assert.assertNotNull(testTeamArt);
+      TeamWorkFlowArtifact reqTeamArt = DemoUtil.getSawReqUnCommittedWf();
+      Assert.assertNotNull(reqTeamArt);
+      TeamWorkFlowArtifact designTeamArt = DemoUtil.getSawSWDesignUnCommittedWf();
+      Assert.assertNotNull(designTeamArt);
 
-      // test reviews
-      Assert.assertEquals("Should only be two reviews", 2, ReviewManager.getReviews(codeTeamArt).size());
-      PeerToPeerReviewArtifact rev1 = null;
-      PeerToPeerReviewArtifact rev2 = null;
-      for (AbstractReviewArtifact revArt : ReviewManager.getReviews(codeTeamArt)) {
-         if (revArt.getName().contains("algorithm")) {
-            rev1 = (PeerToPeerReviewArtifact) revArt;
-         } else {
-            rev2 = (PeerToPeerReviewArtifact) revArt;
-         }
-      }
-      Assert.assertNotNull(rev1);
-      Assert.assertNotNull(rev2);
-      testReviewContents(rev1, "Peer Review algorithm used in code", PeerToPeerReviewState.Review.getName(),
-         new String[] {"Joe Smith", "Kay Jones"});
-      testReviewContents(rev2, "Peer Review first set of code changes", PeerToPeerReviewState.Prepare.getName(),
-         "Joe Smith");
+      testTeamContents(codeTeamArt, DemoWorkflowTitles.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "3",
+         SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Code", "Joe Smith",
+         DemoArtifactTypes.DemoCodeTeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_Code));
+      testTeamContents(testTeamArt, DemoWorkflowTitles.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "3",
+         SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Test", "Kay Jones",
+         DemoArtifactTypes.DemoTestTeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_Test));
+      testTeamContents(reqTeamArt, DemoWorkflowTitles.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "3",
+         SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Requirements", "Joe Smith",
+         DemoArtifactTypes.DemoReqTeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_Requirements));
+      testTeamContents(designTeamArt, DemoWorkflowTitles.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, "3",
+         SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW SW Design", "Kay Jones",
+         AtsArtifactTypes.TeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_SW_Design));
 
-      // test tasks
-      List<String> taskNames = new ArrayList<>();
-      taskNames.addAll(DemoTestUtil.getTaskTitles(true));
-      for (TaskArtifact task : codeTeamArt.getTaskArtifacts()) {
-         testTaskContents(task, TaskStates.InWork.getName(), TeamState.Implement.getName());
-         taskNames.remove(task.getName());
-         Assert.assertEquals("Joe Smith; Kay Jones", task.getStateMgr().getAssigneesStr());
-      }
-      Assert.assertEquals(
-         String.format("Not all tasks exist for [%s]; [%s] remain", codeTeamArt.toStringWithId(), taskNames), 0,
-         taskNames.size());
-   }
-
-   @org.junit.Test
-   public void testSawBuild2Action2() throws OseeCoreException {
-      // {@link DemoDbActionData.getReqSawActionsData()} - 2
-      String title = "SAW (uncommitted) More Reqt Changes for Diagram View";
-      ActionArtifact action = (ActionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, title,
-         AtsClientService.get().getAtsBranch());
-      Assert.assertNotNull(action);
-      Assert.assertEquals(4, action.getTeams().size());
-      TeamWorkFlowArtifact codeTeam = null, designTeam = null;
-      int numTested = 0;
-      for (TeamWorkFlowArtifact teamArt : action.getTeams()) {
-         String aiStr =
-            AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItemsStr(teamArt);
-         if (aiStr.contains("Code")) {
-            numTested++;
-
-            codeTeam = teamArt;
-            testTeamContents(teamArt, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Code",
-               "Joe Smith", DemoArtifactTypes.DemoCodeTeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_Code));
-         } else if (aiStr.contains("Test")) {
-            numTested++;
-
-            testTeamContents(teamArt, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Test",
-               "Kay Jones", DemoArtifactTypes.DemoTestTeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_Test));
-         } else if (aiStr.contains("Req")) {
-            numTested++;
-
-            testTeamContents(teamArt, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(),
-               "SAW Requirements", "Joe Smith", DemoArtifactTypes.DemoReqTeamWorkflow,
-               DemoTestUtil.getTeamDef(DemoTeam.SAW_Requirements));
-         } else if (aiStr.contains("Design")) {
-            numTested++;
-
-            designTeam = teamArt;
-            testTeamContents(teamArt, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW SW Design",
-               "Kay Jones", AtsArtifactTypes.TeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_SW_Design));
-         }
-      }
-      Assert.assertEquals(4, numTested);
       // test code team 1 review and 6 tasks
       //  - test review
-      Assert.assertNotNull(codeTeam);
-      Collection<AbstractReviewArtifact> reviews = ReviewManager.getReviews(codeTeam);
+      Collection<AbstractReviewArtifact> reviews = ReviewManager.getReviews(codeTeamArt);
       Assert.assertEquals(1, reviews.size());
       PeerToPeerReviewArtifact revArt = (PeerToPeerReviewArtifact) reviews.iterator().next();
       testReviewContents(revArt, "Review new logic", PeerToPeerReviewState.Completed.getName());
@@ -203,76 +127,57 @@ public class PopulateDemoActionsTest {
       //  - test tasks
       List<String> taskNames = new ArrayList<>();
       taskNames.addAll(DemoTestUtil.getTaskTitles(false));
-      for (TaskArtifact task : codeTeam.getTaskArtifacts()) {
+      for (TaskArtifact task : codeTeamArt.getTaskArtifacts()) {
          testTaskContents(task, TaskStates.InWork.getName(), TeamState.Implement.getName());
          taskNames.remove(task.getName());
          Assert.assertEquals("Joe Smith", task.getStateMgr().getAssigneesStr());
       }
       Assert.assertEquals(
-         String.format("Not all tasks exist for [%s]; [%s] remain", codeTeam.toStringWithId(), taskNames), 0,
+         String.format("Not all tasks exist for [%s]; [%s] remain", codeTeamArt.toStringWithId(), taskNames), 0,
          taskNames.size());
 
       // test sw_design 1 peer and 1 decision review
-      testSwDesign1PeerAnd1DecisionReview(designTeam);
+      testSwDesign1PeerAnd1DecisionReview(designTeamArt);
 
    }
 
    @org.junit.Test
-   public void testSawBuild2Action3() throws OseeCoreException {
+   public void testSawNoBranchCommittedTeamWfs() throws OseeCoreException {
       // {@link DemoDbActionData.getReqSawActionsData()} - 3
-      String title = "SAW (no-branch) Even More Requirement Changes for Diagram View";
-      ActionArtifact action = (ActionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, title,
-         AtsClientService.get().getAtsBranch());
-      Assert.assertNotNull(action);
-      Assert.assertEquals(4, action.getTeams().size());
-      Assert.assertEquals(4, action.getTeams().size());
-      TeamWorkFlowArtifact designTeam = null;
-      int numTested = 0;
-      for (TeamWorkFlowArtifact teamArt : action.getTeams()) {
-         String aiStr =
-            AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItemsStr(teamArt);
-         if (aiStr.contains("Code")) {
-            numTested++;
+      String title = DemoWorkflowTitles.SAW_NO_BRANCH_REQT_CHANGES_FOR_DIAGRAM_VIEW;
 
-            testTeamContents(teamArt, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Code",
-               "Joe Smith", DemoArtifactTypes.DemoCodeTeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_Code));
-         } else if (aiStr.contains("Test")) {
-            numTested++;
+      TeamWorkFlowArtifact codeTeamArt = DemoUtil.getSawCodeNoBranchWf();
+      Assert.assertNotNull(codeTeamArt);
+      TeamWorkFlowArtifact testTeamArt = DemoUtil.getSawTestNoBranchWf();
+      Assert.assertNotNull(testTeamArt);
+      TeamWorkFlowArtifact reqTeamArt = DemoUtil.getSawReqNoBranchWf();
+      Assert.assertNotNull(reqTeamArt);
+      TeamWorkFlowArtifact designTeamArt = DemoUtil.getSawSWDesignNoBranchWf();
+      Assert.assertNotNull(designTeamArt);
 
-            testTeamContents(teamArt, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Test",
-               "Kay Jones", DemoArtifactTypes.DemoTestTeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_Test));
-         } else if (aiStr.contains("Req")) {
-            numTested++;
+      testTeamContents(codeTeamArt, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Code",
+         "Joe Smith", DemoArtifactTypes.DemoCodeTeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_Code));
+      testTeamContents(testTeamArt, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Test",
+         "Kay Jones", DemoArtifactTypes.DemoTestTeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_Test));
+      testTeamContents(reqTeamArt, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Requirements",
+         "Joe Smith", DemoArtifactTypes.DemoReqTeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_Requirements));
+      testTeamContents(designTeamArt, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW SW Design",
+         "Kay Jones", AtsArtifactTypes.TeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_SW_Design));
 
-            testTeamContents(teamArt, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(),
-               "SAW Requirements", "Joe Smith", DemoArtifactTypes.DemoReqTeamWorkflow,
-               DemoTestUtil.getTeamDef(DemoTeam.SAW_Requirements));
-         } else if (aiStr.contains("Design")) {
-            numTested++;
-
-            designTeam = teamArt;
-            testTeamContents(teamArt, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW SW Design",
-               "Kay Jones", AtsArtifactTypes.TeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_SW_Design));
-         }
-      }
-      Assert.assertEquals(4, numTested);
       // test sw_design 1 peer and 1 decision review
-      testSwDesign1PeerAnd1DecisionReview(designTeam);
-
+      testSwDesign1PeerAnd1DecisionReview(designTeamArt);
    }
 
    @org.junit.Test
-   public void testSawBuild2Action4() throws OseeCoreException {
+   public void testSawUnCommittedForDiagramViewTeamWfs() throws OseeCoreException {
       // {@link DemoDbActionData.getReqSawActionsData()} - 4
-      String title = "SAW (uncommitted-conflicted) More Requirement Changes for Diagram View";
-      ActionArtifact action = (ActionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, title,
-         AtsClientService.get().getAtsBranch());
-      Assert.assertNotNull(action);
-      Assert.assertEquals(1, action.getTeams().size());
-      TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
+      String title = DemoWorkflowTitles.SAW_UNCOMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW;
+      IAtsTeamWorkflow teamWf = AtsClientService.get().getTeamWf(DemoArtifactToken.SAW_UnCommitedConflicted_Req_TeamWf);
+      Assert.assertNotNull(teamWf);
 
-      testTeamContents(teamArt, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(), "SAW Requirements",
-         "Joe Smith", DemoArtifactTypes.DemoReqTeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_Requirements));
+      testTeamContents((TeamWorkFlowArtifact) teamWf.getStoreObject(), title, "3", SAW_Bld_2.getName(),
+         TeamState.Implement.getName(), "SAW Requirements", "Joe Smith", DemoArtifactTypes.DemoReqTeamWorkflow,
+         DemoTestUtil.getTeamDef(DemoTeam.SAW_Requirements));
    }
 
    @org.junit.Test

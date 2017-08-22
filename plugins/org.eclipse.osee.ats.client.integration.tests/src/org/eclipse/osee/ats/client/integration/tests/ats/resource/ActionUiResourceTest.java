@@ -24,7 +24,7 @@ import org.junit.Test;
 
 /**
  * Test unit for {@link ActionUiResource}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class ActionUiResourceTest extends AbstractRestTest {
@@ -43,15 +43,15 @@ public class ActionUiResourceTest extends AbstractRestTest {
 
    @Test
    public void getAction() throws Exception {
-      Collection<TeamWorkFlowArtifact> wfs = DemoUtil.getSawCommittedWfs();
-      TeamWorkFlowArtifact teamWf = wfs.iterator().next();
+      TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
       String html = getAndCheck("/ats/ui/action/" + teamWf.getAtsId(), MediaType.TEXT_HTML_TYPE);
       Assert.assertTrue(html.contains("Title: <b>" + teamWf.getName() + "</b>"));
    }
 
    @Test
    public void getActions() throws Exception {
-      Collection<TeamWorkFlowArtifact> wfs = DemoUtil.getSawCommittedWfs();
+      Collection<TeamWorkFlowArtifact> wfs =
+         Arrays.asList(DemoUtil.getSawCodeCommittedWf(), DemoUtil.getSawTestCommittedWf());
       String atsIds = Collections.toString(",", AtsObjects.toAtsIds(wfs));
       String html = getAndCheck("/ats/ui/action/" + atsIds, MediaType.TEXT_HTML_TYPE);
       Assert.assertTrue(html.contains("$url='/ats/action/" + atsIds + "/details';"));
@@ -59,17 +59,14 @@ public class ActionUiResourceTest extends AbstractRestTest {
 
    @Test
    public void getActionDetails() throws Exception {
-      Collection<TeamWorkFlowArtifact> wfs = DemoUtil.getSawCommittedWfs();
-      TeamWorkFlowArtifact teamWf = wfs.iterator().next();
+      TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
       String html = getAndCheck("/ats/ui/action/" + teamWf.getAtsId() + "/details", MediaType.TEXT_HTML_TYPE);
       Assert.assertTrue(html.contains("Artifact Type: <b>" + teamWf.getArtifactTypeName() + "</b>"));
    }
 
    @Test
    public void getActionDetailsError() throws Exception {
-      Collection<TeamWorkFlowArtifact> wfs = DemoUtil.getSawCommittedWfs();
-      String atsIds = Collections.toString(",", AtsObjects.toAtsIds(wfs));
-      String html = getAndCheck("/ats/ui/action/" + atsIds + "/details", MediaType.TEXT_HTML_TYPE);
+      String html = getAndCheck("/ats/ui/action/" + DemoUtil.getSawAtsIds() + "/details", MediaType.TEXT_HTML_TYPE);
       Assert.assertTrue(html.contains("can not be found"));
    }
 
@@ -87,10 +84,10 @@ public class ActionUiResourceTest extends AbstractRestTest {
 
    @Test
    public void getTransition() throws Exception {
-      Collection<TeamWorkFlowArtifact> wfs = DemoUtil.getSawCommittedWfs();
-      TeamWorkFlowArtifact teamWf = wfs.iterator().next();
-      String html = getAndCheck("/ats/ui/action/" + teamWf.getAtsId() + "/Transition", MediaType.TEXT_HTML_TYPE);
-      Assert.assertTrue(html.contains("<input type=\"hidden\" name=\"atsId\" value=\"" + teamWf.getAtsId() + "\">"));
+      String html = getAndCheck("/ats/ui/action/" + DemoUtil.getSawCodeCommittedWf().getAtsId() + "/Transition",
+         MediaType.TEXT_HTML_TYPE);
+      Assert.assertTrue(html.contains(
+         "<input type=\"hidden\" name=\"atsId\" value=\"" + DemoUtil.getSawCodeCommittedWf().getAtsId() + "\">"));
       Matcher m = Pattern.compile(".*form action=\"\\/ats\\/action\\/state\" method=\"post\">").matcher(html);
       Assert.assertTrue(m.find());
       for (String stateName : Arrays.asList("Cancelled", "Completed", "Analyze", "Authorize")) {

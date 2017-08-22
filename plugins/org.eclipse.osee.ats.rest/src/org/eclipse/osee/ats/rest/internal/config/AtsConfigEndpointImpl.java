@@ -236,9 +236,11 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
          // add team to ai ids
          for (Long aiId : services.getRelationResolver().getRelatedIds(teamDef,
             AtsRelationTypes.TeamActionableItem_ActionableItem)) {
-            jaxTeamDef.addAi(aiId);
             JaxActionableItem jai = configs.getIdToAi().get(aiId);
-            jai.setTeamDefId(teamDefId);
+            if (jai != null) {
+               jaxTeamDef.addAi(aiId);
+               jai.setTeamDefId(teamDefId);
+            }
          }
          return jaxTeamDef;
       }

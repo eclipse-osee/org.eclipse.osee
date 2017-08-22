@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.task.NewTaskDataFactory;
 import org.eclipse.osee.ats.api.task.NewTaskDatas;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.demo.internal.Activator;
 import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -41,7 +42,8 @@ public class DemoDbTasks {
       IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
       boolean firstTaskWorkflow = true;
       NewTaskDatas newTaskDatas = new NewTaskDatas();
-      for (TeamWorkFlowArtifact codeArt : DemoDbUtil.getSampleCodeWorkflows()) {
+      for (TeamWorkFlowArtifact codeArt : Arrays.asList(DemoUtil.getSawCodeCommittedWf(),
+         DemoUtil.getSawCodeUnCommittedWf())) {
          NewTaskData newTaskData = NewTaskDataFactory.get("Populate Demo DB - Create Tasks", createdBy, codeArt);
          List<String> assigneeUserIds = new ArrayList<>();
          if (firstTaskWorkflow) {

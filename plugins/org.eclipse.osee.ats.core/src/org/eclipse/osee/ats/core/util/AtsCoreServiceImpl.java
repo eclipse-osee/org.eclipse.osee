@@ -49,6 +49,7 @@ import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsActionFactory;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsImplementerService;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
@@ -542,6 +543,15 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
          // do nothing
       }
       return artifact;
+   }
+
+   @Override
+   public IAtsTeamWorkflow getTeamWf(ArtifactToken artifact) {
+      ArtifactId art = getArtifact(artifact);
+      if (art != null) {
+         return getWorkItemFactory().getTeamWf(art);
+      }
+      return null;
    }
 
 }

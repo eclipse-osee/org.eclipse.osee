@@ -45,6 +45,13 @@ public final class ArtifactCache {
       }
    }
 
+   /**
+    * <p>
+    * This should NOT be called by applications unless extreme care is taken. Grabbing an artifact, then decaching, then
+    * searching/loading the artifact by another operation can cause 2 current versions of the same artifact in the JVM.
+    * This can cause problems changing the artifact and/or processing incoming events.
+    * </p>
+    */
    public static void deCache(Artifact artifact) {
       if (!artifact.isHistorical()) {
          ID_CACHE.deCache(artifact);
@@ -54,7 +61,11 @@ public final class ArtifactCache {
    /**
     * <p>
     * De-caches all artifacts from <code>HISTORICAL_CACHE</code> and <code>ACTIVE_CACHE</code> for a specific branch.
-    * This method is usually called by a purge operation or at the end of a unit test/suite.
+    * This method is usually called by a purge operation or at the end of a unit test/suite.</br>
+    * </br>
+    * This should NOT be called by applications unless extreme care is taken. Grabbing an artifact, then decaching, then
+    * searching/loading the artifact by another operation can cause 2 current versions of the same artifact in the JVM.
+    * This can cause problems changing the artifact and/or processing incoming events.
     * </p>
     *
     * @param branch of which artifacts (all) will be de-cache'ed.

@@ -223,6 +223,7 @@ actionableItem "Actionable Items" GetOrCreate {
 					team "CIS SW Design"
 				}
 				actionableItem "CIS Test" {
+					id 441657987
 					team "CIS Test"
 				}
 			}
@@ -269,13 +270,16 @@ actionableItem "Actionable Items" GetOrCreate {
 				actionableItem "SAW HW" {
 					team "SAW HW"
 					children {
-						actionableItem "Adapter"
+						actionableItem "Adapter" {
+							id 456465465
+						}
 						actionableItem "Case"
 						actionableItem "Manual"
 						actionableItem "Screen"
 					}
 				}
 				actionableItem "SAW Requirements" {
+					id 668954846
 					team "SAW Requirements"
 					children {
 						actionableItem "COMM"
@@ -284,6 +288,7 @@ actionableItem "Actionable Items" GetOrCreate {
 					}
 				}
 				actionableItem "SAW SW Design" {
+					id 98129283
 					team "SAW SW Design"
 				}
 				actionableItem "SAW Test" {
@@ -302,9 +307,13 @@ actionableItem "Actionable Items" GetOrCreate {
 		actionableItem "Tools" {
 			team "Tools Team"
 			children {
-				actionableItem "Reader"
+				actionableItem "Reader" {
+					id 132213123
+				}
 				actionableItem "Results Reporter"
-				actionableItem "Timesheet"
+				actionableItem "Timesheet" {
+					id 79465444
+				}
 				actionableItem "Website" {
 					team "Web Team"
 				}

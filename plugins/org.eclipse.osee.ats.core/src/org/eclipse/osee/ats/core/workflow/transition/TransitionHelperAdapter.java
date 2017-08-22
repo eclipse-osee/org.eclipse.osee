@@ -57,6 +57,7 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
       return false;
    }
 
+   @Override
    public boolean isOverrideWorkingBranchCheck() {
       return false;
    }

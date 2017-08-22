@@ -159,7 +159,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    @Override
    public String getExceptionString() {
       try {
-         return String.format("artifact type[%s] guid[%s] on branch[%s]", getArtifactType(), getGuid(), getBranch());
+         return String.format("artifact type[%s] id[%s] on branch[%s]", getArtifactType(), getId(), getBranch());
       } catch (OseeCoreException ex) {
          return Lib.exceptionToString(ex);
       }

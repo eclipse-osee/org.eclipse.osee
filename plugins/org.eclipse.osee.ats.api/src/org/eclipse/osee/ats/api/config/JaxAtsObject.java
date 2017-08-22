@@ -123,4 +123,8 @@ public class JaxAtsObject {
       this.guid = guid;
    }
 
+   public String toStringWithId() {
+      return String.format("[%s]-[%s]", getName(), getUuid());
+   }
+
 }

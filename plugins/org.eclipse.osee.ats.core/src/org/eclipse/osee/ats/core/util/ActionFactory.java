@@ -138,7 +138,7 @@ public class ActionFactory implements IAtsActionFactory {
 
       // NOTE: The persist of the workflow will auto-email the assignees
       IAtsTeamWorkflow teamWf = createTeamWorkflow(action, teamDef, actionableItems, assignees, createdDate, createdBy,
-         null, teamWorkflowArtifactType, newActionListener, changes, createTeamOption);
+         teamWorkflowArtifactType, newActionListener, changes, createTeamOption);
       return teamWf;
    }
 
@@ -172,7 +172,7 @@ public class ActionFactory implements IAtsActionFactory {
    }
 
    @Override
-   public IAtsTeamWorkflow createTeamWorkflow(IAtsAction action, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String guid, IArtifactType artifactType, INewActionListener newActionListener, IAtsChangeSet changes, CreateTeamOption... createTeamOption) throws OseeCoreException {
+   public IAtsTeamWorkflow createTeamWorkflow(IAtsAction action, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IArtifactType artifactType, INewActionListener newActionListener, IAtsChangeSet changes, CreateTeamOption... createTeamOption) throws OseeCoreException {
 
       if (!Arrays.asList(createTeamOption).contains(CreateTeamOption.Duplicate_If_Exists)) {
          // Make sure team doesn't already exist
@@ -184,22 +184,32 @@ public class ActionFactory implements IAtsActionFactory {
          }
       }
 
+      List<IAtsActionableItem> applicableAis = new LinkedList<>();
+      for (IAtsActionableItem ai : actionableItems) {
+         IAtsTeamDefinition teamDefinitionInherited = ai.getTeamDefinitionInherited();
+         if (teamDefinitionInherited != null && teamDef.getId().equals(teamDefinitionInherited.getId())) {
+            applicableAis.add(ai);
+         }
+      }
+
       IAtsTeamWorkflow teamWf = null;
-      if (guid == null) {
+      ArtifactToken artToken = null;
+      if (newActionListener != null) {
+         artToken = newActionListener.getArtifactToken(applicableAis);
+      }
+      if (artToken == null) {
          teamWf = workItemFactory.getTeamWf(changes.createArtifact(artifactType, ""));
       } else {
-         teamWf = workItemFactory.getTeamWf(changes.createArtifact(artifactType, "", guid));
+         teamWf = workItemFactory.getTeamWf(changes.createArtifact(artToken));
       }
 
       setArtifactIdentifyData(action, teamWf, changes);
 
-      // Relate Workflow to ActionableItems (by guid) if team is responsible
-      // for that AI
-      for (IAtsActionableItem aia : actionableItems) {
-         IAtsTeamDefinition teamDefinitionInherited = aia.getTeamDefinitionInherited();
-         if (teamDefinitionInherited != null && teamDef.getId().equals(teamDefinitionInherited.getId())) {
-            actionableItemManager.addActionableItem(teamWf, aia, changes);
-         }
+      /**
+       * Relate Workflow to ActionableItems (by guid) if team is responsible for that AI
+       */
+      for (IAtsActionableItem aia : applicableAis) {
+         actionableItemManager.addActionableItem(teamWf, aia, changes);
       }
 
       // Relate WorkFlow to Team Definition (by guid due to relation loading issues)
@@ -298,6 +308,7 @@ public class ActionFactory implements IAtsActionFactory {
       }
       StateManager stateMgr = new StateManager(workItem, services.getLogFactory(), services);
       workItem.setStateMgr(stateMgr);
+
       StateManagerUtility.initializeStateMachine(stateMgr, startState, assignees,
          createdBy == null ? changes.getAsUser() : createdBy, changes);
       IAtsUser user = createdBy == null ? changes.getAsUser() : createdBy;

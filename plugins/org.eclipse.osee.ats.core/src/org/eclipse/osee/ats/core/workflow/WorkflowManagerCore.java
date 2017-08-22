@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workflow;
 
-import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -19,7 +18,6 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Donald G. Dunne
@@ -55,17 +53,13 @@ public class WorkflowManagerCore {
    protected boolean teamDefHasRule(IAtsWorkItem workItem, RuleDefinitionOption option) {
       boolean hasRule = false;
       IAtsTeamWorkflow teamWf = null;
-      try {
-         if (workItem instanceof IAtsTeamWorkflow) {
-            teamWf = (IAtsTeamWorkflow) workItem;
-         } else if (workItem instanceof IAtsAbstractReview) {
-            teamWf = ((IAtsAbstractReview) workItem).getParentTeamWorkflow();
-         }
-         if (teamWf != null) {
-            hasRule = teamWf.getTeamDefinition().hasRule(option.name());
-         }
-      } catch (Exception ex) {
-         OseeLog.log(WorkflowManagerCore.class, Level.SEVERE, ex);
+      if (workItem instanceof IAtsTeamWorkflow) {
+         teamWf = (IAtsTeamWorkflow) workItem;
+      } else if (workItem instanceof IAtsAbstractReview) {
+         teamWf = ((IAtsAbstractReview) workItem).getParentTeamWorkflow();
+      }
+      if (teamWf != null && teamWf.getTeamDefinition() != null) {
+         hasRule = teamWf.getTeamDefinition().hasRule(option.name());
       }
       return hasRule;
    }

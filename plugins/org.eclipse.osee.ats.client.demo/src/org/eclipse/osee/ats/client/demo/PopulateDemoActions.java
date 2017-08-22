@@ -14,6 +14,7 @@ import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_3;
 import java.io.File;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -330,11 +332,13 @@ public class PopulateDemoActions extends XNavigateItemAction {
          int x = 0;
          Date createdDate = new Date();
          IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
+         IAtsActionableItem ai = AtsClientService.get().getConfigItem(aData.aiToken);
+         List<IAtsActionableItem> ais = Arrays.asList(ai);
 
          for (String prefixTitle : aData.prefixTitles) {
             ActionResult actionResult = AtsClientService.get().getActionFactory().createAction(null,
                prefixTitle + " " + aData.postFixTitle, TITLE_PREFIX[x] + " " + aData.postFixTitle, CHANGE_TYPE[x],
-               aData.priority, false, null, aData.getActionableItems(), createdDate, createdBy, null, changes);
+               aData.priority, false, null, ais, createdDate, createdBy, null, changes);
             actionArts.add((ActionArtifact) actionResult.getActionArt());
             for (IAtsTeamWorkflow teamWf : AtsClientService.get().getWorkItemService().getTeams(actionResult)) {
                TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsClientService.get().getServices(),

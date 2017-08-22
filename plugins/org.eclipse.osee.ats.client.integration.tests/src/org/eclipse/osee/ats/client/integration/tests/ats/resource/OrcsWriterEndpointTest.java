@@ -102,6 +102,7 @@ public class OrcsWriterEndpointTest extends AbstractRestTest {
       OwArtifact userGroupOwArt = collector.getUpdate().iterator().next();
       Artifact userGroupArt = AtsClientService.get().getArtifact(userGroupOwArt.getId());
       assertNotNull(userGroupArt);
+      userGroupArt.reloadAttributesAndRelations();
       assertEquals("test static id", userGroupArt.getSoleAttributeValue(CoreAttributeTypes.StaticId, null));
       assertEquals("test annotation", userGroupArt.getSoleAttributeValue(CoreAttributeTypes.Annotation, null));
 

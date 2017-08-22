@@ -805,6 +805,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    @Override
    public void setStateMgr(IAtsStateManager stateMgr) {
+      Conditions.assertNotNull(stateMgr, "StateManager");
       AtsClientService.get().getStateFactory().setStateMgr(this, stateMgr);
    }
 
