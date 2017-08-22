@@ -86,8 +86,6 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    protected ActionArtifact parentAction;
    private IAtsLog atsLog;
    private TransactionId atsLogTx;
-   private TransactionId stateMgrTransactionNumber;
-   private IAtsStateManager stateMgr;
 
    public AbstractWorkflowArtifact(Long id, String guid, BranchId branch, ArtifactTypeId artifactType) {
       super(id, guid, branch, artifactType);
@@ -156,7 +154,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       parentAction = null;
       parentAwa = null;
       parentTeamArt = null;
-      stateMgr = null;
+      AtsClientService.get().getStateFactory().clearStateManager(this);
       atsLog = null;
    }
 
@@ -670,15 +668,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    @Override
    public IAtsStateManager getStateMgr() {
-      if (stateMgr == null || (getTransaction().isValid() && getTransaction().notEqual(stateMgrTransactionNumber))) {
-         try {
-            stateMgr = AtsClientService.get().getStateFactory().getStateManager(this);
-            stateMgrTransactionNumber = getTransaction();
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
-      }
-      return stateMgr;
+      return AtsClientService.get().getStateFactory().getStateManager(this);
    }
 
    @Override
@@ -815,7 +805,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    @Override
    public void setStateMgr(IAtsStateManager stateMgr) {
-      this.stateMgr = stateMgr;
+      AtsClientService.get().getStateFactory().setStateMgr(this, stateMgr);
    }
 
 }

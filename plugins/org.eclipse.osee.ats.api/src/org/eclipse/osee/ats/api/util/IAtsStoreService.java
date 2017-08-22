@@ -79,4 +79,6 @@ public interface IAtsStoreService {
    Result setTransactionAssociatedArtifact(TransactionId trans, IAtsTeamWorkflow teamWf);
 
    AttributeTypeId getAttributeType(Long attrTypeId);
+
+   TransactionId getTransactionId(IAtsWorkItem workItem);
 }

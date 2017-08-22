@@ -178,13 +178,13 @@ public class AtsTestUtilTest extends AtsTestUtil {
          AtsTestUtil.transitionTo(AtsTestUtilState.Implement, AtsClientService.get().getUserService().getCurrentUser(),
             changes, TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
       Assert.assertEquals(Result.TrueResult, result);
-      Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Implement.getName());
+      Assert.assertEquals(TeamState.Implement.getName(), teamArt.getCurrentStateName());
 
       result =
          AtsTestUtil.transitionTo(AtsTestUtilState.Completed, AtsClientService.get().getUserService().getCurrentUser(),
             changes, TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
       Assert.assertEquals(Result.TrueResult, result);
-      Assert.assertEquals(teamArt.getCurrentStateName(), TeamState.Completed.getName());
+      Assert.assertEquals(TeamState.Completed.getName(), teamArt.getCurrentStateName());
 
       teamArt.reloadAttributesAndRelations();
 

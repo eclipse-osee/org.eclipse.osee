@@ -42,7 +42,6 @@ import org.eclipse.osee.logger.Log;
 public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    protected final ArtifactToken artifact;
-   private IAtsStateManager stateMgr;
    private IAtsLog atsLog;
    protected final IAtsServices services;
    protected final Log logger;
@@ -128,10 +127,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    @Override
    public IAtsStateManager getStateMgr() {
-      if (stateMgr == null) {
-         stateMgr = services.getStateFactory().getStateManager(this);
-      }
-      return stateMgr;
+      return services.getStateFactory().getStateManager(this);
    }
 
    @Override
@@ -276,7 +272,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    @Override
    public void setStateMgr(IAtsStateManager stateMgr) {
-      this.stateMgr = stateMgr;
+      services.getStateFactory().setStateMgr(this, stateMgr);
    }
 
    @Override
