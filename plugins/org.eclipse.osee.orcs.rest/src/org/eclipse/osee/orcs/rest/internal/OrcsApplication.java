@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.rest.internal;
 
 import java.util.HashSet;
 import java.util.Set;
-import javax.script.ScriptEngine;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import org.eclipse.osee.activity.api.ActivityLog;
@@ -65,11 +64,8 @@ public class OrcsApplication extends Application {
    }
 
    public void start() {
-      ScriptEngine engine = orcsApi.getScriptEngine();
-      resources.add(new OrcsScriptResource(engine));
-
       classes.add(BranchesResource.class);
-
+      resources.add(new OrcsScriptEndpointImpl(orcsApi.getScriptEngine()));
       resources.add(new BranchEndpointImpl(orcsApi, resourceManager, activityLog));
       resources.add(new OrcsWriterEndpointImpl(orcsApi));
       resources.add(new TransactionEndpointImpl(orcsApi));

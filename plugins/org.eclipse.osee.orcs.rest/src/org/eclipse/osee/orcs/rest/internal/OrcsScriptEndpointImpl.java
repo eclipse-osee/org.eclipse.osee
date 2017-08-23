@@ -23,14 +23,7 @@ import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import javax.script.SimpleScriptContext;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -40,37 +33,27 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.orcs.rest.model.OrcsScriptEndpoint;
 
 /**
  * @author Roberto E. Escobar
  */
 @Path("script")
-public class OrcsScriptResource {
+public class OrcsScriptEndpointImpl implements OrcsScriptEndpoint {
 
    private final ScriptEngine engine;
 
-   public OrcsScriptResource(ScriptEngine engine) {
+   public OrcsScriptEndpointImpl(ScriptEngine engine) {
       this.engine = engine;
    }
 
-   @GET
-   @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.TEXT_PLAIN})
-   public Response getScriptResult(@Context HttpHeaders httpHeaders, //
-   @DefaultValue("") @QueryParam("script") String script, //
-   @DefaultValue("") @QueryParam("parameters") String parameters, //
-   @DefaultValue("") @QueryParam("filename") String filename, //
-   @DefaultValue("false") @QueryParam("debug") boolean debug) {
+   @Override
+   public Response getScriptResult(HttpHeaders httpHeaders, String script, String parameters, String filename, boolean debug) {
       return evaluateScript(httpHeaders, script, parameters, filename, debug);
    }
 
-   @POST
-   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-   @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.TEXT_PLAIN})
-   public Response postScript(@Context HttpHeaders httpHeaders, //
-   @DefaultValue("") @FormParam("script") String script, //
-   @DefaultValue("") @FormParam("parameters") String parameters, //
-   @DefaultValue("") @FormParam("filename") String filename, //
-   @DefaultValue("false") @FormParam("debug") boolean debug) {
+   @Override
+   public Response postScript(HttpHeaders httpHeaders, String script, String parameters, String filename, boolean debug) {
       return evaluateScript(httpHeaders, script, parameters, filename, debug);
    }
 
