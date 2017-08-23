@@ -12,6 +12,8 @@ package org.eclipse.osee.orcs.transaction;
 
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -138,8 +140,18 @@ public interface TransactionBuilder {
 
    void setRelationApplicability(ArtifactId artA, IRelationType relType, ArtifactId artB, ApplicabilityId applicId);
 
-   // Applic
+   // Applicability
    void setApplicability(ArtifactId art, ApplicabilityId applicId);
+
+   void setApplicabilityReference(HashMap<ArtifactId, List<ApplicabilityId>> artifacts);
+
+   void setApplicability(ApplicabilityId applicId, List<? extends ArtifactId> artifacts);
+
+   ArtifactId createView(BranchId branch, String viewName);
+
+   void createApplicabilityForView(ArtifactId viewId, String applicability);
+
+   void createDemoApplicability();
 
    // Tuples
    <E1, E2> GammaId addTuple2(Tuple2Type<E1, E2> tupleType, E1 e1, E2 e2);

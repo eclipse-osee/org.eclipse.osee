@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.db.internal.search.engines;
 import static org.eclipse.osee.framework.core.data.ApplicabilityToken.BASE;
 import static org.eclipse.osee.framework.core.enums.TxChange.NOT_CURRENT;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -49,7 +48,7 @@ public class ApplicabilityDsQueryImpl implements ApplicabilityDsQuery {
    }
 
    @Override
-   public List<Pair<ArtifactId, ApplicabilityToken>> getApplicabilityTokens(Collection<? extends ArtifactId> artIds, BranchId branch) {
+   public List<Pair<ArtifactId, ApplicabilityToken>> getApplicabilityTokens(List<? extends ArtifactId> artIds, BranchId branch) {
       List<Pair<ArtifactId, ApplicabilityToken>> result = new ArrayList<>();
       try (IdJoinQuery idJoin = sqlJoinFactory.createIdJoinQuery()) {
          for (ArtifactId artId : artIds) {

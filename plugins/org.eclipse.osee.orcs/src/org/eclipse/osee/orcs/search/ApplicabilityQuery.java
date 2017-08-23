@@ -10,38 +10,49 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.search;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchViewData;
 import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Ryan D. Brooks
  */
 public interface ApplicabilityQuery {
 
+   HashMap<Long, ApplicabilityToken> getApplicabilityTokens(BranchId branch);
+
    ApplicabilityToken getApplicabilityToken(ArtifactId artId, BranchId branch);
 
-   List<Pair<ArtifactId, ApplicabilityToken>> getApplicabilityTokens(Collection<? extends ArtifactId> artIds, BranchId branch);
+   List<ApplicabilityId> getApplicabilitiesReferenced(ArtifactId artifact, BranchId branch);
+
+   List<ApplicabilityToken> getApplicabilityReferenceTokens(ArtifactId artifact, BranchId branch);
+
+   List<Pair<ArtifactId, ApplicabilityToken>> getApplicabilityTokens(List<? extends ArtifactId> artIds, BranchId branch);
+
+   List<ApplicabilityToken> getViewApplicabilityTokens(ArtifactId artId, BranchId branch);
 
    HashMap<Long, ApplicabilityToken> getApplicabilityTokens(BranchId branch1, BranchId branch2);
 
-   HashMap<Long, ApplicabilityToken> getApplicabilityTokens(BranchId branch);
-
-   List<FeatureDefinitionData> getFeatureDefinitionData(List<ArtifactReadable> featureDefinitionArts);
-
-   List<ApplicabilityToken> getViewApplicabilityTokens(ArtifactId artId, BranchId branch);
+   List<FeatureDefinitionData> getFeatureDefinitionData(BranchId branch);
 
    Map<String, List<String>> getNamedViewApplicabilityMap(BranchId branch, ArtifactId viewId);
 
    List<BranchViewData> getViews();
 
+   String getViewTable(BranchId branch);
+
    ArtifactId getVersionConfig(ArtifactId art, BranchId branch);
+
+   List<BranchId> getAffectedBranches(Long injectDateMs, Long removalDateMs, List<ApplicabilityId> applicabilityIds, BranchId branch);
+
+   List<BranchId> getAffectedBranches(TransactionId injectionTx, TransactionId removalTx, List<ApplicabilityId> applicabilityIds, BranchId branch);
+
 }

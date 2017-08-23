@@ -305,7 +305,7 @@ public class WordTemplateProcessor {
             ServiceUtil.getOseeClient().getApplicabilityEndpoint(fullBranch.getParentBranch());
 
          applicabilityTokens = new HashMap<>();
-         Collection<ApplicabilityToken> appTokens = applEndpoint.getApplicabilityTokenMap();
+         Collection<ApplicabilityToken> appTokens = applEndpoint.getApplicabilityTokens();
          for (ApplicabilityToken token : appTokens) {
             applicabilityTokens.put(token, token);
          }

@@ -118,6 +118,6 @@ public class QueryFactoryImpl implements QueryFactory {
 
    @Override
    public ApplicabilityQuery applicabilityQuery() {
-      return new ApplicabilityQueryImpl(tupleQuery, applicabilityDsQuery);
+      return new ApplicabilityQueryImpl(applicabilityDsQuery, this);
    }
 }

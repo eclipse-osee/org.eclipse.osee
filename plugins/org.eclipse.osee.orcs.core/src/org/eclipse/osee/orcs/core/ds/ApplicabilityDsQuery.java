@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
-import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -24,6 +23,6 @@ public interface ApplicabilityDsQuery {
 
    ApplicabilityToken getApplicabilityToken(ArtifactId artId, BranchId branch);
 
-   List<Pair<ArtifactId, ApplicabilityToken>> getApplicabilityTokens(Collection<? extends ArtifactId> artIds, BranchId branch);
+   List<Pair<ArtifactId, ApplicabilityToken>> getApplicabilityTokens(List<? extends ArtifactId> artIds, BranchId branch);
 
 }

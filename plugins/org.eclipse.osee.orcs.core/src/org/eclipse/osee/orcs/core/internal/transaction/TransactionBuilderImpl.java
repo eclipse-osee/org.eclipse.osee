@@ -10,9 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.transaction;
 
+import static org.eclipse.osee.framework.core.data.ApplicabilityToken.BASE;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map.Entry;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -27,7 +31,11 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.Tuple3Type;
 import org.eclipse.osee.framework.core.data.Tuple4Type;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -39,6 +47,7 @@ import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.search.QueryModule;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.TransactionReadable;
+import org.eclipse.osee.orcs.search.TupleQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
@@ -353,6 +362,100 @@ public class TransactionBuilderImpl implements TransactionBuilder {
       txManager.setApplicabilityId(txData, artId, applicId);
    }
 
+   @Override
+   public void setApplicabilityReference(HashMap<ArtifactId, List<ApplicabilityId>> artifacts) {
+      TupleQuery tupleQuery = query.createQueryFactory(txData.getSession()).tupleQuery();
+
+      for (Entry<? extends ArtifactId, List<ApplicabilityId>> entry : artifacts.entrySet()) {
+         for (ApplicabilityId appId : entry.getValue()) {
+            if (!tupleQuery.doesTuple2Exist(CoreTupleTypes.ArtifactReferenceApplicabilityType, entry.getKey(), appId)) {
+               addTuple2(CoreTupleTypes.ArtifactReferenceApplicabilityType, entry.getKey(), appId);
+            }
+         }
+      }
+   }
+
+   @Override
+   public void setApplicability(ApplicabilityId applicId, List<? extends ArtifactId> artifacts) {
+      for (ArtifactId artifact : artifacts) {
+         setApplicability(artifact, applicId);
+      }
+   }
+
+   @Override
+   public ArtifactId createView(BranchId branch, String viewName) {
+      ArtifactId art = createArtifact(CoreArtifactTypes.BranchView, viewName);
+      ArtifactId folder = query.createQueryFactory(txData.getSession()).fromBranch(branch).andTypeEquals(
+         CoreArtifactTypes.Folder).andNameEquals("Product Line").getResults().getOneOrNull();
+      if (folder == null || folder.isInvalid()) {
+         folder = createArtifact(CoreArtifactTypes.Folder, "Product Line");
+         addChildren(CoreArtifactTokens.DefaultHierarchyRoot, folder);
+      }
+
+      addChildren(folder, art);
+      addTuple2(CoreTupleTypes.BranchView, CoreBranches.COMMON.getId(), art.getId());
+
+      return art;
+   }
+
+   @Override
+   public void createApplicabilityForView(ArtifactId viewId, String applicability) {
+      addTuple2(CoreTupleTypes.ViewApplicability, viewId, applicability);
+
+   }
+
+   @Override
+   public void createDemoApplicability() {
+      ArtifactId config1 = createArtifact(CoreArtifactTypes.BranchView, "Config1");
+      ArtifactId config2 = createArtifact(CoreArtifactTypes.BranchView, "Config2");
+      ArtifactId folder = createArtifact(CoreArtifactTypes.Folder, "Product Line");
+      ArtifactId featureDefinition =
+         createArtifact(CoreArtifactTypes.FeatureDefinition, "Feature Definition_SAW_Bld_1");
+
+      keyValueOps.putByKey(BASE.getId(), BASE.getName());
+
+      addChildren(CoreArtifactTokens.DefaultHierarchyRoot, folder);
+      addChildren(folder, config1, config2, featureDefinition);
+
+      addTuple2(CoreTupleTypes.ViewApplicability, config1, "Base");
+      addTuple2(CoreTupleTypes.ViewApplicability, config2, "Base");
+
+      addTuple2(CoreTupleTypes.ViewApplicability, config1, "Config = Config1");
+      addTuple2(CoreTupleTypes.ViewApplicability, config2, "Config = Config2");
+
+      addTuple2(CoreTupleTypes.ViewApplicability, config1, "A = Included");
+      addTuple2(CoreTupleTypes.ViewApplicability, config2, "A = Excluded");
+
+      addTuple2(CoreTupleTypes.ViewApplicability, config1, "B = Choice1");
+      addTuple2(CoreTupleTypes.ViewApplicability, config2, "B = Choice2");
+      addTuple2(CoreTupleTypes.ViewApplicability, config2, "B = Choice3");
+
+      addTuple2(CoreTupleTypes.ViewApplicability, config1, "C = Included");
+      addTuple2(CoreTupleTypes.ViewApplicability, config2, "C = Excluded");
+
+      String featureDefJson = "[{" + "\"name\": \"A\"," + //
+         "\"type\": \"single\"," + //
+         "\"values\": [\"Included\", \"Excluded\"]," + //
+         "\"defaultValue\": \"Included\"," + //
+         "\"description\": \"Test A\"" + //
+         "}, {" + //
+         "\"name\": \"B\"," + //
+         "\"type\": \"multiple\"," + //
+         "\"values\": [\"Choice1\", \"Choice2\", \"Choice3\"]," + //
+         "\"defaultValue\": \"\"," + //
+         "\"description\": \"Test B\"" + //
+         "},{" + //
+         "\"name\": \"C\"," + //
+         "\"type\": \"single\"," + //
+         "\"values\": [\"Included\", \"Excluded\"]," + //
+         "\"defaultValue\": \"Included\"," + //
+         "\"description\": \"Test C\"" + //
+         "}" + //
+         "]";
+
+      createAttribute(featureDefinition, CoreAttributeTypes.GeneralStringData, featureDefJson);
+   }
+
    private Long insertValue(String value) {
       return keyValueOps.putIfAbsent(value);
    }
@@ -400,4 +503,5 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    public <E1, E2, E3, E4> boolean deleteTupple4(Tuple4Type<E1, E2, E3, E4> tupleType, E1 element1, E2 element2, E3 element3, E4 element4) {
       return false;
    }
+
 }

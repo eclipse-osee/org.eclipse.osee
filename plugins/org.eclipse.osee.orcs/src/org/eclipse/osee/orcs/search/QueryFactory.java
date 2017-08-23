@@ -35,4 +35,5 @@ public interface QueryFactory {
    TupleQuery tupleQuery();
 
    ApplicabilityQuery applicabilityQuery();
+
 }

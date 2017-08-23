@@ -10,13 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerPreComputedColumn;
@@ -72,7 +71,7 @@ public class ViewApplicabilityColumn extends XViewerColumn implements IXViewerPr
 
    @Override
    public void populateCachedValues(Collection<?> objects, Map<Long, String> preComputedValueMap) {
-      Set<ArtifactToken> artifacts = new HashSet<>();
+      List<ArtifactToken> artifacts = new ArrayList<>(objects.size());
       for (Object obj : objects) {
          Artifact artifact = getArtifact(obj);
          artifacts.add(artifact);
@@ -81,8 +80,7 @@ public class ViewApplicabilityColumn extends XViewerColumn implements IXViewerPr
       if (!artifacts.isEmpty()) {
          BranchId branch = artifacts.iterator().next().getBranch();
          ApplicabilityEndpoint applEndpoint = ServiceUtil.getOseeClient().getApplicabilityEndpoint(branch);
-         List<Pair<ArtifactId, ApplicabilityToken>> applicabilities =
-            applEndpoint.getApplicabilityTokens(artifacts);
+         List<Pair<ArtifactId, ApplicabilityToken>> applicabilities = applEndpoint.getApplicabilityTokens(artifacts);
          for (Pair<ArtifactId, ApplicabilityToken> pair : applicabilities) {
             preComputedValueMap.put(pair.getFirst().getId(), pair.getSecond().getName());
          }

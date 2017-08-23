@@ -239,16 +239,8 @@ public class WordUpdateArtifact {
    }
 
    private HashCollection<String, String> getValidFeatureValuesForBranch(BranchId branch) {
-      BranchReadable br = orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getOneOrNull();
-      if (br.getBranchType().equals(BranchType.MERGE)) {
-         branch = br.getParentBranch();
-      }
-
-      List<ArtifactReadable> featureDefinitionArts = orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(
-         CoreArtifactTypes.FeatureDefinition).getResults().getList();
-
       List<FeatureDefinitionData> featureDefinitionData =
-         orcsApi.getQueryFactory().applicabilityQuery().getFeatureDefinitionData(featureDefinitionArts);
+         orcsApi.getQueryFactory().applicabilityQuery().getFeatureDefinitionData(branch);
 
       HashCollection<String, String> validFeatureValues = new HashCollection<>();
       for (FeatureDefinitionData feat : featureDefinitionData) {

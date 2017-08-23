@@ -10,18 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal;
 
-import static org.eclipse.osee.framework.core.data.ApplicabilityToken.BASE;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -31,19 +23,14 @@ import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.data.UserId;
-import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 import org.eclipse.osee.orcs.search.ApplicabilityQuery;
-import org.eclipse.osee.orcs.search.TupleQuery;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
@@ -53,90 +40,36 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
 
    private final OrcsApi orcsApi;
    private final BranchId branch;
-   private final TupleQuery tupleQuery;
+   private final ApplicabilityQuery applicabilityQuery;
    private final UserId account;
 
    public ApplicabilityEndpointImpl(OrcsApi orcsApi, BranchId branch, UserId account) {
       this.orcsApi = orcsApi;
       this.branch = branch;
-      this.tupleQuery = orcsApi.getQueryFactory().tupleQuery();
+      this.applicabilityQuery = orcsApi.getQueryFactory().applicabilityQuery();
       this.account = account;
    }
 
    @Override
-   public void createDemoApplicability() {
-      TransactionBuilder tx =
-         orcsApi.getTransactionFactory().createTransaction(branch, account, "Create Demo Applicability");
-
-      ArtifactId config1 = tx.createArtifact(CoreArtifactTypes.BranchView, "Config1");
-      ArtifactId config2 = tx.createArtifact(CoreArtifactTypes.BranchView, "Config2");
-      ArtifactId folder = tx.createArtifact(CoreArtifactTypes.Folder, "Product Line");
-      ArtifactId featureDefinition =
-         tx.createArtifact(CoreArtifactTypes.FeatureDefinition, "Feature Definition_SAW_Bld_1");
-
-      orcsApi.getKeyValueOps().putByKey(BASE.getId(), BASE.getName());
-
-      tx.addChildren(CoreArtifactTokens.DefaultHierarchyRoot, folder);
-      tx.addChildren(folder, config1, config2, featureDefinition);
-
-      tx.addTuple2(CoreTupleTypes.ViewApplicability, config1, "Base");
-      tx.addTuple2(CoreTupleTypes.ViewApplicability, config2, "Base");
-
-      tx.addTuple2(CoreTupleTypes.ViewApplicability, config1, "Config = Config1");
-      tx.addTuple2(CoreTupleTypes.ViewApplicability, config2, "Config = Config2");
-
-      tx.addTuple2(CoreTupleTypes.ViewApplicability, config1, "A = Included");
-      tx.addTuple2(CoreTupleTypes.ViewApplicability, config2, "A = Excluded");
-
-      tx.addTuple2(CoreTupleTypes.ViewApplicability, config1, "B = Choice1");
-      tx.addTuple2(CoreTupleTypes.ViewApplicability, config2, "B = Choice2");
-      tx.addTuple2(CoreTupleTypes.ViewApplicability, config2, "B = Choice3");
-
-      tx.addTuple2(CoreTupleTypes.ViewApplicability, config1, "C = Included");
-      tx.addTuple2(CoreTupleTypes.ViewApplicability, config2, "C = Excluded");
-
-      String featureDefJson = "[{" + "\"name\": \"A\"," + //
-         "\"type\": \"single\"," + //
-         "\"values\": [\"Included\", \"Excluded\"]," + //
-         "\"defaultValue\": \"Included\"," + //
-         "\"description\": \"Test A\"" + //
-         "}, {" + //
-         "\"name\": \"B\"," + //
-         "\"type\": \"multiple\"," + //
-         "\"values\": [\"Choice1\", \"Choice2\", \"Choice3\"]," + //
-         "\"defaultValue\": \"\"," + //
-         "\"description\": \"Test B\"" + //
-         "},{" + //
-         "\"name\": \"C\"," + //
-         "\"type\": \"single\"," + //
-         "\"values\": [\"Included\", \"Excluded\"]," + //
-         "\"defaultValue\": \"Included\"," + //
-         "\"description\": \"Test C\"" + //
-         "}" + //
-         "]";
-
-      tx.createAttribute(featureDefinition, CoreAttributeTypes.GeneralStringData, featureDefJson);
-
-      tx.commit();
-
-      setView(config1);
-      setView(config2);
+   public Collection<ApplicabilityToken> getApplicabilityTokens() {
+      return applicabilityQuery.getApplicabilityTokens(branch).values();
    }
 
    @Override
-   public List<ApplicabilityToken> getApplicabilityTokens() {
-      List<ApplicabilityToken> toReturn = new LinkedList<>();
-      tupleQuery.getTuple2UniqueE2Pair(CoreTupleTypes.ViewApplicability, branch,
-         (id, name) -> toReturn.add(new ApplicabilityToken(id, name)));
-      return toReturn;
+   public List<Pair<ArtifactId, ApplicabilityToken>> getApplicabilityTokens(List<? extends ArtifactId> artIds) {
+      return applicabilityQuery.getApplicabilityTokens(artIds, branch);
    }
 
    @Override
    public ApplicabilityToken getApplicabilityToken(ArtifactId artId) {
-      return orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityToken(artId, branch);
+      return applicabilityQuery.getApplicabilityToken(artId, branch);
    }
 
    @Override
+   public List<ApplicabilityId> getApplicabilitiesReferenced(ArtifactId artifact) {
+      return applicabilityQuery.getApplicabilitiesReferenced(artifact, branch);
+   }
+
    public List<Pair<ArtifactId, ApplicabilityToken>> getApplicabilityTokensForArts(Collection<? extends ArtifactId> artIds) {
       List<Pair<ArtifactId, ApplicabilityToken>> artToApplicToken = new ArrayList<>();
       for (ArtifactId artId : artIds) {
@@ -146,227 +79,106 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public Collection<ApplicabilityToken> getApplicabilityTokenMap() {
-      return orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityTokens(branch).values();
+   public List<ApplicabilityToken> getApplicabilityReferenceTokens(ArtifactId artifact) {
+      return applicabilityQuery.getApplicabilityReferenceTokens(artifact, branch);
+   }
+
+   @Override
+   public List<ApplicabilityToken> getViewApplicabilityTokens(ArtifactId view) {
+      return applicabilityQuery.getViewApplicabilityTokens(view, branch);
+   }
+
+   @Override
+   public List<BranchViewData> getViews() {
+      return applicabilityQuery.getViews();
    }
 
    @Override
    public List<FeatureDefinitionData> getFeatureDefinitionData() {
-      BranchId branchToUse = branch;
-      BranchReadable br = orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getOneOrNull();
-      if (br.getBranchType().equals(BranchType.MERGE)) {
-         branchToUse = br.getParentBranch();
-      }
-      List<ArtifactReadable> featureDefinitionArts = orcsApi.getQueryFactory().fromBranch(branchToUse).andIsOfType(
-         CoreArtifactTypes.FeatureDefinition).getResults().getList();
-      return orcsApi.getQueryFactory().applicabilityQuery().getFeatureDefinitionData(featureDefinitionArts);
+      return applicabilityQuery.getFeatureDefinitionData(branch);
    }
 
    @Override
-   public Response setApplicability(ApplicabilityId applicId, List<? extends ArtifactId> artifacts) {
+   public List<BranchId> getAffectedBranches(Long injectDateMs, Long removalDateMs, List<ApplicabilityId> applicabilityIds) {
+      return applicabilityQuery.getAffectedBranches(injectDateMs, removalDateMs, applicabilityIds, branch);
+   }
+
+   @Override
+   public List<BranchId> getAffectedBranches(TransactionId injectionTx, TransactionId removalTx, List<ApplicabilityId> applicabilityIds) {
+      return applicabilityQuery.getAffectedBranches(injectionTx, removalTx, applicabilityIds, branch);
+   }
+
+   @Override
+   public TransactionToken setApplicability(ApplicabilityId applicId, List<? extends ArtifactId> artifacts) {
       TransactionBuilder tx =
          orcsApi.getTransactionFactory().createTransaction(branch, account, "Set Applicability Ids for Artifacts");
-      for (ArtifactId artId : artifacts) {
-         tx.setApplicability(artId, applicId);
-      }
-      tx.commit();
-      return Response.ok().build();
-   }
-
-   @Override
-   public List<Pair<ArtifactId, ApplicabilityToken>> getApplicabilityTokens(Collection<? extends ArtifactId> artIds) {
-      return orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityTokens(artIds, branch);
-   }
-
-   @Override
-   public List<ApplicabilityId> getApplicabilitiesReferenced(ArtifactId artifact) {
-      List<ApplicabilityId> appIds = new LinkedList<>();
-      for (ApplicabilityId tuple2 : orcsApi.getQueryFactory().tupleQuery().getTuple2(
-         CoreTupleTypes.ArtifactReferenceApplicabilityType, branch, artifact)) {
-         appIds.add(tuple2);
-      }
-      return appIds;
-   }
-
-   @Override
-   public List<ApplicabilityToken> getApplicabilityReferenceTokens(ArtifactId artifact) {
-      List<ApplicabilityToken> tokens = new LinkedList<>();
-      orcsApi.getQueryFactory().tupleQuery().getTuple2NamedId(CoreTupleTypes.ArtifactReferenceApplicabilityType, branch,
-         artifact, (e2, value) -> tokens.add(ApplicabilityToken.create(e2, value)));
-      return tokens;
+      tx.setApplicability(applicId, artifacts);
+      return tx.commit();
    }
 
    /**
     * TBD: Need to delete tuples that are not in the set. Update this when tx.removeTuple2 is implemented.
     */
    @Override
-   public Response setApplicabilityReference(HashMap<ArtifactId, List<ApplicabilityId>> artToApplMap) {
+   public TransactionToken setApplicabilityReference(HashMap<ArtifactId, List<ApplicabilityId>> artToApplMap) {
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, account,
          "Set Reference Applicability Ids for Artifacts");
-      for (Entry<? extends ArtifactId, List<ApplicabilityId>> entry : artToApplMap.entrySet()) {
-         for (ApplicabilityId appId : entry.getValue()) {
-            if (!orcsApi.getQueryFactory().tupleQuery().doesTuple2Exist(
-               CoreTupleTypes.ArtifactReferenceApplicabilityType, entry.getKey(), appId)) {
-               tx.addTuple2(CoreTupleTypes.ArtifactReferenceApplicabilityType, entry.getKey(), appId);
-            }
-         }
-      }
-      tx.commit();
-      return Response.ok().build();
-   }
-
-   @Override
-   public List<ApplicabilityToken> getViewApplicabilityTokens(ArtifactId view) {
-      return orcsApi.getQueryFactory().applicabilityQuery().getViewApplicabilityTokens(view, branch);
-   }
-
-   @Override
-   public List<BranchViewData> getViews() {
-      return orcsApi.getQueryFactory().applicabilityQuery().getViews();
-   }
-
-   @Override
-   public void setView(ArtifactId branchView) {
-      TransactionBuilder tx =
-         orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, account, "Create Branch View");
-      tx.addTuple2(CoreTupleTypes.BranchView, branch.getId(), branchView.getId());
-      tx.commit();
-   }
-
-   @Override
-   public TransactionToken createNewApplicabilityForView(ArtifactId viewId, String applicability) {
-      TransactionBuilder tx =
-         orcsApi.getTransactionFactory().createTransaction(branch, account, "Create new applicability");
-      tx.addTuple2(CoreTupleTypes.ViewApplicability, viewId, applicability);
+      tx.setApplicabilityReference(artToApplMap);
       return tx.commit();
    }
 
    @Override
-   public List<BranchId> getAffectedBranches(Long injectDateMs, Long removalDateMs, List<ApplicabilityId> applicabilityIds) {
-      ArrayList<BranchId> toReturn = new ArrayList<>();
-      Date injection = new Date(injectDateMs);
-      Date removal = new Date(removalDateMs);
+   public TransactionToken createView(String viewName) {
+      TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, account, "Create Branch View");
+      ArtifactId viewArtifact = tx.createView(branch, viewName);
+      tx.commit();
 
-      // Get all Branch Views
-      List<BranchViewData> branchViews = orcsApi.getQueryFactory().applicabilityQuery().getViews();
+      TransactionBuilder tx2 =
+         orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, account, "Create Branch View");
 
-      HashMap<Long, BranchReadable> childBaselineBranchIds = new HashMap<>();
-      for (BranchReadable childBranch : orcsApi.getQueryFactory().branchQuery().andIsChildOf(branch).getResults()) {
-         if (childBranch.getBranchType().equals(BranchType.BASELINE)) {
-            childBaselineBranchIds.put(childBranch.getId(), childBranch);
-         }
-      }
+      tx2.addTuple2(CoreTupleTypes.BranchView, CoreBranches.COMMON.getId(), viewArtifact.getId());
 
-      HashMap<Long, ApplicabilityId> applicabilityIdsMap = new HashMap<>();
-      for (ApplicabilityId applicId : applicabilityIds) {
-         applicabilityIdsMap.put(applicId.getId(), applicId);
-      }
-
-      for (BranchViewData branchView : branchViews) {
-         BranchReadable baseBranch = childBaselineBranchIds.get(branchView.getBranch().getId());
-         if (baseBranch != null) {
-            // Check Dates on baseBranch
-            Date baseDate = orcsApi.getTransactionFactory().getTx(baseBranch.getBaseTransaction()).getDate();
-            if (baseDate.after(injection) && (removalDateMs == -1 || baseDate.before(removal))) {
-               // now determine what views of this branch are applicable
-               for (ArtifactId view : branchView.getBranchViews()) {
-                  // Get all applicability tokens for the view of this branch
-                  List<ApplicabilityToken> viewApplicabilityTokens =
-                     orcsApi.getQueryFactory().applicabilityQuery().getViewApplicabilityTokens(view,
-                        branchView.getBranch());
-                  // Cross check applicabilityTokens with valid ApplicabilityIds sent in
-                  for (ApplicabilityToken applicToken : viewApplicabilityTokens) {
-                     // If applictoken is found, add toReturn list
-                     if (applicabilityIdsMap.containsKey(applicToken.getId())) {
-                        toReturn.add(BranchId.create(branchView.getBranch().getId(), view));
-                        break;
-                     }
-                  }
-               }
-            }
-         }
-      }
-
-      return toReturn;
+      return tx2.commit();
    }
 
    @Override
-   public List<BranchId> getAffectedBranches(TransactionId injectionTx, TransactionId removalTx, List<ApplicabilityId> applicabilityIds) {
-      long timeInjectionMs = orcsApi.getTransactionFactory().getTx(injectionTx).getDate().getTime();
-      long timeRemovalMs =
-         removalTx.isInvalid() ? -1 : orcsApi.getTransactionFactory().getTx(removalTx).getDate().getTime();
+   public TransactionToken createApplicabilityForView(ArtifactId viewId, String applicability) {
+      TransactionBuilder tx =
+         orcsApi.getTransactionFactory().createTransaction(branch, account, "Create new applicability");
+      tx.createApplicabilityForView(viewId, applicability);
+      return tx.commit();
+   }
 
-      return getAffectedBranches(timeInjectionMs, timeRemovalMs, applicabilityIds);
+   @Override
+   public void createDemoApplicability() {
+      TransactionBuilder tx =
+         orcsApi.getTransactionFactory().createTransaction(branch, account, "Create Demo Applicability");
+      tx.createDemoApplicability();
+      tx.commit();
+
+      // set the view on common branch
+      List<ArtifactReadable> branchViewArtifacts = orcsApi.getQueryFactory().fromBranch(branch).andTypeEquals(
+         CoreArtifactTypes.BranchView).getResults().getList();
+
+      TransactionBuilder tx2 =
+         orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, account, "Create Branch View");
+
+      for (ArtifactReadable artifact : branchViewArtifacts) {
+         tx2.addTuple2(CoreTupleTypes.BranchView, branch.getId(), artifact.getId());
+      }
+
+      tx2.commit();
+
    }
 
    @Override
    public ArtifactId getVersionConfig(ArtifactId version) {
-      return orcsApi.getQueryFactory().applicabilityQuery().getVersionConfig(version, branch);
+      return applicabilityQuery.getVersionConfig(version, branch);
    }
 
    @Override
    public String getViewTable() {
-      StringBuilder html = new StringBuilder(
-         "<!DOCTYPE html><html><head><style> table { border-spacing: 0px } th,td { padding: 3px; } </style></head><body>");
-      List<BranchViewData> views = this.getViews();
-      ApplicabilityQuery applicabilityQuery = orcsApi.getQueryFactory().applicabilityQuery();
-      for (BranchViewData branchView : views) {
-         if (branchView.getBranch().equals(branch)) {
-            html.append(String.format("<h1>Features for branch [%s]</h1>",
-               orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getExactlyOne().getName()));
-            html.append("<table border=\"1\">");
-            List<ArtifactId> branchViews = branchView.getBranchViews();
-
-            List<ArtifactReadable> featureDefinitionArts = orcsApi.getQueryFactory().fromBranch(branch).andIsOfType(
-               CoreArtifactTypes.FeatureDefinition).getResults().getList();
-
-            List<FeatureDefinitionData> featureDefinitionData =
-               applicabilityQuery.getFeatureDefinitionData(featureDefinitionArts);
-
-            // List<ApplicabilityToken> tokens = getApplicabilityTokens(); // list of all of the applicability views
-            Collections.sort(featureDefinitionData, new Comparator<FeatureDefinitionData>() {
-               @Override
-               public int compare(FeatureDefinitionData obj1, FeatureDefinitionData obj2) {
-                  return obj1.getName().compareTo(obj2.getName());
-               }
-            });
-
-            printColumnHeadings(html, branchViews);
-            Map<ArtifactId, Map<String, List<String>>> branchViewsMap = new HashMap<>();
-
-            for (ArtifactId artId : branchViews) {
-               branchViewsMap.put(artId, applicabilityQuery.getNamedViewApplicabilityMap(branch, artId));
-            }
-            for (FeatureDefinitionData featureDefinition : featureDefinitionData) {
-               html.append("<tr>");
-               html.append(String.format("<td>%s</td>", featureDefinition.getName()));
-               html.append(String.format("<td>%s</td>", featureDefinition.getDescription()));
-               for (ArtifactId view : branchViews) {
-                  List<String> list = branchViewsMap.get(view).get(featureDefinition.getName());
-                  // every view should have a value for each feature, if incorrectly configured returns null
-                  if (list != null) {
-                     html.append(
-                        "<td>" + org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", list) + "</td>");
-                  } else {
-                     html.append("<td> </td>");
-                  }
-               }
-               html.append("</tr>");
-            }
-         }
-      }
-      html.append("</table></body></html>");
-      return html.toString();
+      return applicabilityQuery.getViewTable(branch);
    }
 
-   private void printColumnHeadings(StringBuilder html, List<ArtifactId> branchViews) {
-      html.append("<tr>");
-      html.append("<th>Feature Name</th>");
-      html.append("<th>Feature Description</th>");
-      for (ArtifactId artId : branchViews) {
-         html.append(String.format("<th>%s</th>",
-            orcsApi.getQueryFactory().fromBranch(branch).andId(artId).getResults().getExactlyOne().getName()));
-      }
-      html.append("</tr>");
-   }
 }
