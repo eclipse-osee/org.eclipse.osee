@@ -70,7 +70,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testQueryWorking() throws Exception {
-      queryAndConfirmCount("ats/action/query?StateType=Working", 42);
+      queryAndConfirmCount("ats/action/query?StateType=Working", 52);
    }
 
    @Test

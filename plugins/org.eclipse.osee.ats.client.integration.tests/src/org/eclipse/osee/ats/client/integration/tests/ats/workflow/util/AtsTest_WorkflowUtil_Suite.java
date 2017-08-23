@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.workflow.util;
 
-import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -29,9 +27,7 @@ public class AtsTest_WorkflowUtil_Suite {
 
    @BeforeClass
    public static void setUp() throws Exception {
-      OseeProperties.setIsInTest(true);
       System.out.println("\n\nBegin " + AtsTest_WorkflowUtil_Suite.class.getSimpleName());
-      DemoTestUtil.setUpTest();
    }
 
    @AfterClass

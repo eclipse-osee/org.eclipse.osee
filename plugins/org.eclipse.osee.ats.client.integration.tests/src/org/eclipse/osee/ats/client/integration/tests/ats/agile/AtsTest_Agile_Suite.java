@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.agile;
 
-import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -21,15 +19,13 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({AgileEndpointTest.class})
 /**
  * This test suite contains test that can be run against any production db
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsTest_Agile_Suite {
    @BeforeClass
    public static void setUp() throws Exception {
-      OseeProperties.setIsInTest(true);
       System.out.println("\n\nBegin " + AtsTest_Agile_Suite.class.getSimpleName());
-      DemoTestUtil.setUpTest();
    }
 
    @AfterClass

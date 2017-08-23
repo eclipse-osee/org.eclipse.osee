@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.client.integration.tests.ats.config.copy;
 
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.config.copy.ConfigData;
 import org.eclipse.osee.ats.config.copy.CopyAtsValidation;
@@ -25,14 +26,14 @@ import org.junit.Test;
 
 /**
  * Test case for {@link CopyAtsValidation}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class CopyAtsValidationTest {
 
    @BeforeClass
    public static void setup() throws Exception {
-      DemoTestUtil.setUpTest();
+      DemoUtil.checkDbInitAndPopulateSuccess();
    }
 
    @Test

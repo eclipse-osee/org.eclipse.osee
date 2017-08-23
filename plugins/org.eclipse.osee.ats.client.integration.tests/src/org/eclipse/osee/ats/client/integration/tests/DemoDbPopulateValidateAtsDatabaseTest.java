@@ -10,14 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests;
 
+import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.integration.tests.ats.health.AtsValidateAtsDatabaseTest;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.junit.BeforeClass;
 
 /**
  * Extension to validate ats database so test will run once after populate and once at end of the tests. Without this,
  * JUnit only runs test once.
- * 
+ *
  * @author Donald G Dunne
  */
 public class DemoDbPopulateValidateAtsDatabaseTest extends AtsValidateAtsDatabaseTest {
-   // do nothing
+
+   @BeforeClass
+   public static void cleanup() throws OseeCoreException {
+      DemoUtil.checkDbInitAndPopulateSuccess();
+   }
 }

@@ -22,7 +22,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
@@ -63,6 +62,7 @@ public class StateManager implements IAtsStateManager {
    private final String instanceGuid;
    private final IAtsLogFactory logFactory;
    private final IAtsServices services;
+   private StateType stateType;
 
    public StateManager(IAtsWorkItem workItem, IAtsLogFactory logFactory, IAtsServices services) {
       this.workItem = workItem;
@@ -70,6 +70,10 @@ public class StateManager implements IAtsStateManager {
       this.services = services;
       this.factory = this;
       this.instanceGuid = GUID.create();
+   }
+
+   public void setStateType(StateType stateType) {
+      this.stateType = stateType;
    }
 
    @Override
@@ -84,9 +88,7 @@ public class StateManager implements IAtsStateManager {
 
    @Override
    public StateType getCurrentStateType() {
-      StateType type = StateType.valueOf(services.getAttributeResolver().getSoleAttributeValue(workItem,
-         AtsAttributeTypes.CurrentStateType, "Working"));
-      return type;
+      return stateType;
    }
 
    @Override
@@ -177,8 +179,7 @@ public class StateManager implements IAtsStateManager {
 
    @Override
    public StateType getStateType() throws OseeCoreException {
-      return StateType.valueOf(services.getAttributeResolver().getSoleAttributeValue(workItem,
-         AtsAttributeTypes.CurrentStateType, StateType.Working.name()));
+      return stateType;
    }
 
    @Override
@@ -285,6 +286,7 @@ public class StateManager implements IAtsStateManager {
       createState(toState);
       setAssignees(toState.getName(), toAssignees);
       setCurrentStateName(toState.getName());
+      stateType = toState.getStateType();
       setDirty(true);
    }
 

@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.rest;
 
 import java.util.Collection;
-import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;

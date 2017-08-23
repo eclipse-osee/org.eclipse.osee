@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.WorkState;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
+import org.eclipse.osee.ats.core.internal.state.StateManager;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -40,6 +41,7 @@ public class StateManagerUtility {
       if (assignees == null) {
          assignees = new LinkedList<>();
       }
+      ((StateManager) stateMgr).setStateType(workPage.getStateType());
       if (workPage.getStateType().isWorkingState()) {
          if (assignees.isEmpty()) {
             if (!currentUser.equals(AtsCoreUsers.SYSTEM_USER)) {

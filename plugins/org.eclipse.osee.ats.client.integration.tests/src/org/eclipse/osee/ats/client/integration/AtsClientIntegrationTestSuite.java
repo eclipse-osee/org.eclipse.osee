@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.client.integration.tests.orcs.rest.ClientEndpointTes
 import org.eclipse.osee.ats.client.integration.tests.util.DbInitTest;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
 import org.eclipse.osee.framework.jdk.core.util.ElapsedTime.Units;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -46,11 +47,13 @@ public class AtsClientIntegrationTestSuite {
    @BeforeClass
    public static void setup() {
       time = new ElapsedTime("AtsClientIntegrationTestSuite", true);
+      OseeProperties.setIsInTest(true);
    }
 
    @AfterClass
    public static void cleanup() {
       time.end(Units.MIN);
+      OseeProperties.setIsInTest(false);
    }
 
 }

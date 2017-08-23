@@ -10,8 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.framework.ui.skynet.dialog;
 
-import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
+import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -30,9 +29,8 @@ public class FrameworkUiSkynetTest_Dialog_Suite {
 
    @BeforeClass
    public static void setUp() throws Exception {
-      OseeProperties.setIsInTest(true);
+      DemoUtil.checkDbInitAndPopulateSuccess();
       System.out.println("\n\nBegin " + FrameworkUiSkynetTest_Dialog_Suite.class.getSimpleName());
-      DemoTestUtil.setUpTest();
    }
 
    @AfterClass

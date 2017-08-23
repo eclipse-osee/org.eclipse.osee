@@ -43,6 +43,7 @@ public class DbInitTest {
 
    @org.junit.Test
    public void testDbInit() throws Exception {
+      OseeProperties.setIsInTest(true);
       List<String> protocols = ClientSessionManager.getAuthenticationProtocols();
       Assert.assertTrue("Application Server must be running." + protocols, protocols.contains("demo"));
 
@@ -74,6 +75,7 @@ public class DbInitTest {
          }
       }
 
+      OseeProperties.setIsInTest(false);
       System.out.println("End database initialization...\n");
    }
 }

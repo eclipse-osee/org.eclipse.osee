@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.editor.stateItem;
 
-import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -26,15 +24,13 @@ import org.junit.runners.Suite;
    AtsPeerToPeerReviewReviewStateItemTest.class})
 /**
  * This test suite contains tests that must be run against demo database
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsTest_Demo_StateItem_Suite {
    @BeforeClass
    public static void setUp() throws Exception {
-      OseeProperties.setIsInTest(true);
       System.out.println("\n\nBegin " + AtsTest_Demo_StateItem_Suite.class.getSimpleName());
-      DemoTestUtil.setUpTest();
    }
 
    @AfterClass

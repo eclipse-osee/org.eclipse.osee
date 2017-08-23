@@ -15,12 +15,15 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -61,12 +64,37 @@ public class UniversalGroup {
       return new ArrayList<Artifact>();
    }
 
+   public static Artifact getGroupOrNull(ArtifactToken groupToken, BranchId branch) {
+      try {
+         return ArtifactQuery.getArtifactFromId(groupToken, branch);
+      } catch (ArtifactDoesNotExist ex) {
+         // do nothing
+      }
+      return null;
+   }
+
    public static Artifact addGroup(String name, BranchId branch, SkynetTransaction transaction) throws OseeCoreException {
       if (!getGroups(name, branch).isEmpty()) {
          throw new OseeArgumentException("Group Already Exists");
       }
 
       Artifact groupArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.UniversalGroup, branch, name);
+      groupArt.persist(transaction);
+
+      Artifact groupRoot = getTopUniversalGroupArtifact(branch);
+      groupRoot.addRelation(CoreRelationTypes.Universal_Grouping__Members, groupArt);
+      groupRoot.persist(transaction);
+
+      return groupArt;
+   }
+
+   public static Artifact addGroup(ArtifactToken groupToken, BranchId branch, SkynetTransaction transaction) throws OseeCoreException {
+      if (getGroupOrNull(groupToken, branch) != null) {
+         throw new OseeArgumentException("Group Already Exists");
+      }
+
+      Artifact groupArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.UniversalGroup, branch,
+         groupToken.getName(), GUID.create(), groupToken.getId());
       groupArt.persist(transaction);
 
       Artifact groupRoot = getTopUniversalGroupArtifact(branch);

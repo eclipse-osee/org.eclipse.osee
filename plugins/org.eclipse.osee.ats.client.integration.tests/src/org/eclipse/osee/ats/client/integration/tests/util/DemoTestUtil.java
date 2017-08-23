@@ -11,10 +11,6 @@
 package org.eclipse.osee.ats.client.integration.tests.util;
 
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
-import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -43,13 +39,8 @@ import org.eclipse.osee.ats.demo.api.DemoActionableItems;
 import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
 import org.eclipse.osee.ats.demo.api.DemoTeam;
 import org.eclipse.osee.ats.demo.api.DemoWorkType;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.UserToken;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.QueryOption;
-import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
-import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -66,33 +57,6 @@ public class DemoTestUtil {
    public static Map<DemoWorkType, Artifact> unCommittedWorkflows;
    public static Map<DemoWorkType, Artifact> committedWorkflows;
    public static TeamWorkFlowArtifact toolsTeamWorkflow;
-
-   public static Result isDbPopulatedWithDemoData() throws Exception {
-      Collection<Artifact> robotArtifacts = ArtifactQuery.getArtifactListFromTypeAndName(
-         CoreArtifactTypes.SoftwareRequirement, "Robot", SAW_Bld_1, QueryOption.CONTAINS_MATCH_OPTIONS);
-      if (robotArtifacts.size() < 6) {
-         return new Result(String.format(
-            "Expected at least 6 Software Requirements with name \"Robot\" but found [%s].  Database is not be populated with demo data.",
-            robotArtifacts.size()));
-      }
-      return Result.TrueResult;
-   }
-
-   public static Collection<String> getTaskTitles(boolean firstTaskWorkflow) {
-      if (firstTaskWorkflow) {
-         firstTaskWorkflow = false;
-         return Arrays.asList("Look into Graph View.", "Redesign how view shows values.",
-            "Discuss new design with Senior Engineer", "Develop prototype", "Show prototype to management",
-            "Create development plan", "Create test plan", "Make changes");
-      } else {
-         return Arrays.asList("Document how Graph View works", "Update help contents", "Review new documentation",
-            "Publish documentation to website", "Remove old viewer", "Deploy release");
-      }
-   }
-
-   public static int getNumTasks() {
-      return getTaskTitles(false).size() + getTaskTitles(true).size();
-   }
 
    public static User getDemoUser(UserToken demoUser) throws OseeCoreException {
       return UserManager.getUserByName(demoUser.getName());
@@ -203,28 +167,6 @@ public class DemoTestUtil {
          }
       }
       return committedWorkflows.get(demoWorkType);
-   }
-
-   public static void setUpTest() throws Exception {
-      try {
-         // This test should only be run on test db
-         assertFalse(AtsUtil.isProductionDb());
-         // Confirm test setup with demo data
-         Result result = isDbPopulatedWithDemoData();
-         assertTrue(result.getText(), result.isTrue());
-         // Confirm user is Joe Smith
-         assertTrue("User \"3333\" does not exist in DB.  Run Demo DBInit prior to this test.",
-            UserManager.getUserByUserId("3333") != null);
-         // Confirm user is Joe Smith
-         assertTrue(
-            "Authenticated user should be \"3333\" and is not.  Check that Demo Application Server is being run.",
-            AtsClientService.get().getUserService().getCurrentUser().getUserId().equals("3333"));
-      } catch (OseeAuthenticationException ex) {
-         OseeLog.log(DemoTestUtil.class, Level.SEVERE, ex);
-         fail(
-            "Can't authenticate, either Demo Application Server is not running or Demo DbInit has not been performed");
-      }
-
    }
 
    public static IAtsTeamDefinition getTeamDef(DemoTeam team) throws OseeCoreException {

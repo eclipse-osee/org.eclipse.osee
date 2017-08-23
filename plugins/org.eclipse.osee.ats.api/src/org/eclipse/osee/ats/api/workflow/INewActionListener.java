@@ -43,6 +43,9 @@ public interface INewActionListener {
       return null;
    }
 
+   /**
+    * @return the artifact token to use for team workflow for applicableAis
+    */
    public default ArtifactToken getArtifactToken(List<IAtsActionableItem> applicableAis) {
       // for override
       return null;

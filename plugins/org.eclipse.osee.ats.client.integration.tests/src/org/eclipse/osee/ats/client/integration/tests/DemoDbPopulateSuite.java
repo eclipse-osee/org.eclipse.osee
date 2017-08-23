@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.client.integration.tests;
 
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.ats.client.demo.DemoUtil;
-import org.eclipse.osee.ats.client.integration.tests.ats.DemoCountryConfigTest;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtilTest;
+import org.eclipse.osee.ats.client.integration.tests.ats.demo.AtsTest_DemoPopulateAndTest_Suite;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
@@ -26,9 +26,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({//
    AtsTestUtilTest.class,
-   PopulateDemoDatabaseTest.class,
-   DemoCountryConfigTest.class,
-   PopulateDemoActionsTest.class,
+   AtsTest_DemoPopulateAndTest_Suite.class,
    DemoDbPopulateValidateAtsDatabaseTest.class //
 })
 /**

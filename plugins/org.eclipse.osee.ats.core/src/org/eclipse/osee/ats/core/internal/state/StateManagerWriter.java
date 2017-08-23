@@ -50,7 +50,7 @@ public class StateManagerWriter {
 
       writeStatesToStore(changes);
 
-      StateType stateType = workItem.getWorkDefinition().getStateByName(currentStateName).getStateType();
+      StateType stateType = stateMgr.getStateType();
       attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateType, stateType.name(), changes);
       Integer percentCompleteValue = stateMgr.getPercentCompleteValue();
       if (percentCompleteValue == null) {

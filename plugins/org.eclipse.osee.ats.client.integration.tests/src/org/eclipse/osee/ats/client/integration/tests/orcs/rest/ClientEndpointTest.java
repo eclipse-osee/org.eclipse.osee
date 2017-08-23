@@ -14,12 +14,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import java.util.Collection;
 import javax.ws.rs.core.Response;
+import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.server.ide.api.client.ClientEndpoint;
 import org.eclipse.osee.framework.server.ide.api.client.model.Sessions;
 import org.eclipse.osee.framework.server.ide.api.model.IdeVersion;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -29,6 +31,12 @@ import org.junit.Test;
  * @author Donald G. Dunne
  */
 public class ClientEndpointTest {
+
+   @BeforeClass
+   public static void setUp() throws Exception {
+      DemoUtil.checkDbInitAndPopulateSuccess();
+      System.out.println("\n\nBegin " + ClientEndpointTest.class.getSimpleName());
+   }
 
    @Test
    public void testGetAll() {

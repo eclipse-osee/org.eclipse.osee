@@ -12,18 +12,25 @@ package org.eclipse.osee.ats.client.integration.tests;
 
 import java.util.Collection;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 
 /**
  * This test should be run as the last test of a suite to make sure that the ArtifactCache has no dirty artifacts.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class DirtyArtifactCacheTest {
+
+   @BeforeClass
+   public static void setUp() throws Exception {
+      DemoUtil.checkDbInitAndPopulateSuccess();
+   }
 
    @org.junit.Test
    public void testArtifactCacheNotDirty() {

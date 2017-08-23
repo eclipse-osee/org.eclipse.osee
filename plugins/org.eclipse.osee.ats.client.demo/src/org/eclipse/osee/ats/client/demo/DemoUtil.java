@@ -10,23 +10,51 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.demo;
 
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.QueryOption;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 
 public class DemoUtil {
 
    private static String atsIds;
+   public static List<String> Saw_Code_Committed_Task_Titles = Arrays.asList("Look into Graph View.",
+      "Redesign how view shows values.", "Discuss new design with Senior Engineer", "Develop prototype",
+      "Show prototype to management", "Create development plan", "Create test plan", "Make changes");
+   public static List<String> Saw_Code_UnCommitted_Task_Titles =
+      Arrays.asList("Document how Graph View works", "Update help contents", "Review new documentation",
+         "Publish documentation to website", "Remove old viewer", "Deploy release");
+
+   public static int getNumTasks() {
+      return Saw_Code_Committed_Task_Titles.size() + Saw_Code_UnCommitted_Task_Titles.size();
+   }
 
    private DemoUtil() {
       // Utility class
+   }
+
+   public static Result isDbPopulatedWithDemoData() throws Exception {
+      Collection<Artifact> robotArtifacts = ArtifactQuery.getArtifactListFromTypeAndName(
+         CoreArtifactTypes.SoftwareRequirement, "Robot", SAW_Bld_1, QueryOption.CONTAINS_MATCH_OPTIONS);
+      if (robotArtifacts.size() < 6) {
+         return new Result(String.format(
+            "Expected at least 6 Software Requirements with name \"Robot\" but found [%s].  Database is not be populated with demo data.",
+            robotArtifacts.size()));
+      }
+      return Result.TrueResult;
    }
 
    public static void checkDbInitSuccess() throws OseeCoreException {
@@ -40,7 +68,7 @@ public class DemoUtil {
          throw new OseeStateException("DbInit must be successful to continue");
       }
       if (!isPopulateDbSuccessful()) {
-         throw new OseeStateException("PopulateDb must be successful to continue");
+         throw new OseeStateException("PopulateDemoDb must be successful to continue");
       }
    }
 
@@ -111,6 +139,19 @@ public class DemoUtil {
 
    public static TeamWorkFlowArtifact getSawSWDesignNoBranchWf() throws OseeCoreException {
       return (TeamWorkFlowArtifact) AtsClientService.get().getArtifact(DemoArtifactToken.SAW_NoBranch_SWDesign_TeamWf);
+   }
+
+   public static TeamWorkFlowArtifact getButtonWDoesntWorkOnSituationPageWf() throws OseeCoreException {
+      return (TeamWorkFlowArtifact) AtsClientService.get().getArtifact(
+         DemoArtifactToken.ButtonWDoesntWorkOnSituationPage_TeamWf);
+   }
+
+   public static TeamWorkFlowArtifact getCantLoadDiagramTreeWf() throws OseeCoreException {
+      return (TeamWorkFlowArtifact) AtsClientService.get().getArtifact(DemoArtifactToken.CantLoadDiagramTree_TeamWf);
+   }
+
+   public static TeamWorkFlowArtifact getProblemInDiagramTree_TeamWfWf() throws OseeCoreException {
+      return (TeamWorkFlowArtifact) AtsClientService.get().getArtifact(DemoArtifactToken.ProblemInDiagramTree_TeamWf);
    }
 
    public static Collection<TeamWorkFlowArtifact> getSawCommittedTeamWfs() {

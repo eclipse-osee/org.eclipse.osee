@@ -8,13 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.client.demo.config;
+package org.eclipse.osee.ats.client.demo.populate;
 
-import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.review.Role;
@@ -22,7 +20,6 @@ import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.client.demo.DemoUtil;
-import org.eclipse.osee.ats.client.demo.internal.Activator;
 import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewManager;
@@ -35,26 +32,19 @@ import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Dispositi
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.InjectionActivity;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
-import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * @author Donald G. Dunne
  */
-public class DemoDbReviews {
+public class Pdd92CreateDemoReviews {
 
-   public static void createReviews(boolean DEBUG) throws Exception {
-      createPeerToPeerReviews(DEBUG);
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Populate Demo DB - Create Decision Reviews");
-      createDecisionReviews(DEBUG, changes);
-      changes.execute();
+   public void run() {
+      createPeerToPeerReviews();
+      createDecisionReviews();
    }
 
    /**
@@ -64,20 +54,15 @@ public class DemoDbReviews {
     * 3) Decision in Complete state w Joe Smith assignee and completed<br>
     * <br>
     */
-   public static void createDecisionReviews(boolean DEBUG, IAtsChangeSet changes) throws Exception {
+   public void createDecisionReviews() {
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
 
       Date createdDate = new Date();
       IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
 
-      if (DEBUG) {
-         OseeLog.log(Activator.class, Level.INFO, "Create Decision reviews");
-      }
-      TeamWorkFlowArtifact firstTestArt = getSampleReviewTestWorkflows().get(0);
-      TeamWorkFlowArtifact secondTestArt = getSampleReviewTestWorkflows().get(1);
-
       // Create a Decision review and transition to ReWork
-      IAtsDecisionReview review = AtsClientService.get().getReviewService().createValidateReview(firstTestArt, true,
-         createdDate, createdBy, changes);
+      IAtsDecisionReview review = AtsClientService.get().getReviewService().createValidateReview(
+         DemoUtil.getButtonWDoesntWorkOnSituationPageWf(), true, createdDate, createdBy, changes);
       Result result = DecisionReviewManager.transitionTo((DecisionReviewArtifact) review.getStoreObject(),
          DecisionReviewState.Followup, createdBy, false, changes);
       if (result.isFalse()) {
@@ -86,8 +71,8 @@ public class DemoDbReviews {
       changes.add(review);
 
       // Create a Decision review and transition to Completed
-      review = AtsClientService.get().getReviewService().createValidateReview(secondTestArt, true, createdDate,
-         createdBy, changes);
+      review = AtsClientService.get().getReviewService().createValidateReview(
+         DemoUtil.getProblemInDiagramTree_TeamWfWf(), true, createdDate, createdBy, changes);
       DecisionReviewManager.transitionTo((DecisionReviewArtifact) review.getStoreObject(),
          DecisionReviewState.Completed, createdBy, false, changes);
       if (result.isFalse()) {
@@ -95,23 +80,7 @@ public class DemoDbReviews {
       }
       changes.add(review);
 
-   }
-
-   private static List<TeamWorkFlowArtifact> reviewTestArts;
-
-   private static List<TeamWorkFlowArtifact> getSampleReviewTestWorkflows() throws Exception {
-      if (reviewTestArts == null) {
-         reviewTestArts = new ArrayList<>();
-         for (String actionName : new String[] {"Button W doesn't work on", "Diagram Tree"}) {
-            for (Artifact art : ArtifactQuery.getArtifactListFromName(actionName, AtsClientService.get().getAtsBranch(),
-               EXCLUDE_DELETED, QueryOption.CONTAINS_MATCH_OPTIONS)) {
-               if (art.isOfType(DemoArtifactTypes.DemoTestTeamWorkflow)) {
-                  reviewTestArts.add((TeamWorkFlowArtifact) art);
-               }
-            }
-         }
-      }
-      return reviewTestArts;
+      changes.execute();
    }
 
    /**
@@ -121,13 +90,10 @@ public class DemoDbReviews {
     * 3) PeerToPeer in Prepare state w Joe Smith assignee and completed<br>
     * <br>
     */
-   public static void createPeerToPeerReviews(boolean DEBUG) throws Exception {
+   public void createPeerToPeerReviews() {
 
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("Populate Demo DB - Create PeerToPeer Reviews 1");
 
-      if (DEBUG) {
-         OseeLog.log(Activator.class, Level.INFO, "Create Peer To Peer reviews");
-      }
       TeamWorkFlowArtifact firstCodeArt = DemoUtil.getSawCodeCommittedWf();
       TeamWorkFlowArtifact secondCodeArt = DemoUtil.getSawCodeUnCommittedWf();
 

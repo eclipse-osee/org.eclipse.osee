@@ -28,8 +28,6 @@ import org.eclipse.osee.ats.client.integration.tests.ats.util.AtsTest_Util_Suite
 import org.eclipse.osee.ats.client.integration.tests.ats.version.AtsTest_Version_Search_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.workflow.AtsTest_Workflow_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.world.search.AtsTest_World_Search_Suite;
-import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -58,14 +56,11 @@ import org.junit.runners.Suite;
    AtsTest_Util_Suite.class,
    AtsTest_Workflow_Suite.class,
    AtsTest_World_Search_Suite.class,
-   AtsTest_Version_Search_Suite.class,
-})
+   AtsTest_Version_Search_Suite.class,})
 public class AtsTest_Ats_Suite {
    @BeforeClass
    public static void setUp() throws Exception {
-      OseeProperties.setIsInTest(true);
       System.out.println("\n\nBegin " + AtsTest_Ats_Suite.class.getSimpleName());
-      DemoTestUtil.setUpTest();
    }
 
    @AfterClass

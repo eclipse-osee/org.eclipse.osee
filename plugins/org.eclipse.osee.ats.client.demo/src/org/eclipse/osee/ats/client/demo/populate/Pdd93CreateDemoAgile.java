@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.client.demo;
+package org.eclipse.osee.ats.client.demo.populate;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
+import org.eclipse.osee.ats.client.demo.SprintItemData;
 import org.eclipse.osee.ats.client.demo.internal.Activator;
 import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
@@ -60,12 +61,9 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.support.test.util.TestUtil;
 
 /**
- * Run from the ATS Navigator after the DB is configured for "OSEE Demo Database", this class will populate the database
- * with sample actions written against XYZ configured teams
- *
  * @author Donald G. Dunne
  */
-public class PopulateDemoAgile {
+public class Pdd93CreateDemoAgile {
 
    private static void validateArtifactCache() throws OseeStateException {
       final Collection<Artifact> list = ArtifactCache.getDirtyArtifacts();

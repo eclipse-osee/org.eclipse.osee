@@ -116,12 +116,12 @@ public class AtsQueryImplTest {
       query = queryService.createQuery(WorkItemType.WorkItem);
       query.isOfType(WorkItemType.PeerReview);
       query.andState("Prepare");
-      assertEquals(1, query.getResults().size());
+      assertEquals(6, query.getResults().size());
 
       // by state type
       query = queryService.createQuery(WorkItemType.WorkItem);
       query.andStateType(StateType.Working);
-      assertEquals(42, query.getResults().size());
+      assertEquals(52, query.getResults().size());
 
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
       query.andStateType(StateType.Working);

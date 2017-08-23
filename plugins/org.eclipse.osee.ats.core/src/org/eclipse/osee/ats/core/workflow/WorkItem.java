@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
-import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
@@ -240,8 +239,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    @Override
    public boolean isCompleted() {
-      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CurrentStateType,
-         "").equals(StateType.Completed.name());
+      return getStateMgr().getStateType().isCompleted();
    }
 
    @Override
@@ -251,8 +249,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    @Override
    public boolean isCancelled() {
-      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CurrentStateType,
-         "").equals(StateType.Cancelled.name());
+      return getStateMgr().getStateType().isCancelled();
    }
 
    @Override

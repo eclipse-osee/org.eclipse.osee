@@ -47,8 +47,8 @@ public class AtsTest_AllAts_Suite {
 
    @BeforeClass
    public static void setUp() throws Exception {
-      DemoUtil.checkDbInitSuccess();
-      System.out.println("\nBegin " + AtsClientIntegrationTestSuite.class.getSimpleName());
+      DemoUtil.checkDbInitAndPopulateSuccess();
+      System.out.println("\nBegin " + AtsTest_AllAts_Suite.class.getSimpleName());
       OseeProperties.setIsInTest(true);
       assertTrue("Demo Application Server must be running.",
          ClientSessionManager.getAuthenticationProtocols().contains("demo"));

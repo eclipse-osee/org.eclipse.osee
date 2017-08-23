@@ -109,6 +109,8 @@ public class StateManagerStoreTest {
       Assert.assertEquals(2, stateMgr.getAssignees().size());
       when(attrResolver.getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentState, "")).thenReturn(
          "Analyze;<Joe><Kay>;;");
+      when(attrResolver.getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateType, null)).thenReturn(
+         StateType.Working.name());
       WorkState currentState = new WorkStateImpl("Analyze", Arrays.asList(Joe, Kay), 0, 0);
       when(workStateFactory.fromStoreStr(eq("Analyze;<Joe><Kay>;;"))).thenReturn(currentState);
 
@@ -127,6 +129,8 @@ public class StateManagerStoreTest {
       Assert.assertEquals(2, stateMgr.getAssignees().size());
       when(attrResolver.getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentState, "")).thenReturn(
          "Analyze;<Joe><Kay>;;");
+      when(attrResolver.getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateType, null)).thenReturn(
+         StateType.Working.name());
       WorkState currentState = new WorkStateImpl("Analyze", Arrays.asList(Joe, Kay), 0, 0);
       when(workStateFactory.fromStoreStr(eq("Analyze;<Joe><Kay>;;"))).thenReturn(currentState);
       when(changes.getNotifications()).thenReturn(notifications);
@@ -153,6 +157,8 @@ public class StateManagerStoreTest {
 
       when(attrResolver.getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentState, "")).thenReturn(
          "Analyze;<Joe><Kay>;;");
+      when(attrResolver.getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateType, null)).thenReturn(
+         StateType.Working.name());
       WorkState currentState = new WorkStateImpl("Analyze", Arrays.asList(Joe, Kay), 0, 0);
       when(workStateFactory.fromStoreStr(eq("Analyze;<Joe><Kay>;;"))).thenReturn(currentState);
       when(changes.getNotifications()).thenReturn(notifications);

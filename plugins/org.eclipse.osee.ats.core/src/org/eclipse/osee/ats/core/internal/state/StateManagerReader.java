@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.core.internal.state;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
+import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkState;
 import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -51,6 +52,8 @@ public class StateManagerReader {
          }
       }
       Integer percentComplete = attrResolver.getSoleAttributeValue(workItem, AtsAttributeTypes.PercentComplete, null);
+      stateMgr.setStateType(
+         StateType.valueOf(attrResolver.getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentStateType, null)));
       stateMgr.setPercentCompleteValue(percentComplete);
       stateMgr.setDirty(false);
       stateMgr.getInitialAssignees().addAll(stateMgr.getAssignees());

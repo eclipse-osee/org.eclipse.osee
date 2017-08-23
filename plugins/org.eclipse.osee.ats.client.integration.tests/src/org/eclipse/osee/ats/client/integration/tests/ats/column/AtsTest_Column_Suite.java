@@ -10,10 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.column;
 
-import static org.junit.Assert.assertTrue;
-import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
-import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -46,13 +42,7 @@ import org.junit.runners.Suite;
 public class AtsTest_Column_Suite {
    @BeforeClass
    public static void setUp() throws Exception {
-      OseeProperties.setIsInTest(true);
-      assertTrue("Demo Application Server must be running.",
-         ClientSessionManager.getAuthenticationProtocols().contains("demo"));
-      assertTrue("Client must authenticate using demo protocol",
-         ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
       System.out.println("\n\nBegin " + AtsTest_Column_Suite.class.getSimpleName());
-      DemoTestUtil.setUpTest();
    }
 
    @AfterClass
