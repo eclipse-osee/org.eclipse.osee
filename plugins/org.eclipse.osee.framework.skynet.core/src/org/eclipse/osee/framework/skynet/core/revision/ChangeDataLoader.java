@@ -179,7 +179,7 @@ public class ChangeDataLoader extends AbstractOperation {
       try {
          ArtifactId artId = item.getArtId();
          ArtifactDelta artifactDelta = null;
-         if (!artId.equals(ArtifactId.valueOf(-1L))) {
+         if (artId.isValid()) {
             Artifact startTxArtifact;
             Artifact endTxArtifact;
             if (txDelta.areOnTheSameBranch()) {

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
-import org.codehaus.jackson.annotate.JsonCreator;
 import org.eclipse.osee.framework.jdk.core.type.FullyNamed;
 import org.eclipse.osee.framework.jdk.core.type.HasDescription;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -27,12 +26,15 @@ public interface AttributeTypeToken extends AttributeTypeId, FullyNamed, HasDesc
       return valueOf(Long.valueOf(id), Named.SENTINEL);
    }
 
-   public static AttributeTypeToken valueOf(long id, String name) {
+   public static AttributeTypeToken valueOf(int id, String name) {
+      return valueOf(Long.valueOf(id), name, "");
+   }
+
+   public static AttributeTypeToken valueOf(Long id, String name) {
       return valueOf(id, name, "");
    }
 
-   @JsonCreator
-   public static AttributeTypeToken valueOf(long id, String name, String description) {
+   public static AttributeTypeToken valueOf(Long id, String name, String description) {
       final class AttributeTypeImpl extends NamedIdBase implements AttributeTypeToken {
          private final String description;
 

@@ -57,7 +57,7 @@ public class OrcsValidationHelperAdapterTest {
    public void testIsBranchExists() {
       Assert.assertTrue(helper.isBranchExists(COMMON));
 
-      Assert.assertFalse(helper.isBranchExists(BranchId.valueOf(34598)));
+      Assert.assertFalse(helper.isBranchExists(BranchId.valueOf(34598L)));
    }
 
    @Test

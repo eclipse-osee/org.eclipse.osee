@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
-import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -24,6 +23,9 @@ public interface AttributeId extends HasLocalId<Integer>, Id {
    AttributeId SENTINEL = valueOf(Id.SENTINEL);
 
    public static AttributeId valueOf(String id) {
+      if (id == null) {
+         return valueOf((Long) null);
+      }
       return valueOf(Long.valueOf(id));
    }
 
@@ -34,8 +36,11 @@ public interface AttributeId extends HasLocalId<Integer>, Id {
       return getId().intValue();
    }
 
-   @JsonCreator
-   public static AttributeId valueOf(long id) {
+   public static AttributeId valueOf(int id) {
+      return valueOf(Long.valueOf(id));
+   }
+
+   public static AttributeId valueOf(Long id) {
       final class AttributeIdImpl extends BaseId implements AttributeId {
          public AttributeIdImpl(Long txId) {
             super(txId);

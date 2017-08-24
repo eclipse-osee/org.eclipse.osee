@@ -16,6 +16,7 @@ import java.util.Date;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.mocks.MockDataFactory;
@@ -157,10 +158,9 @@ public class TransactionRecordTest {
          BranchId branch = BranchId.valueOf(index * 9L);
          String comment = GUID.create();
          Date time = new Date();
-         UserId authorArtId = UserId.valueOf(index * 47);
          int commitArtId = index * 37;
          TransactionDetailsType txType = TransactionDetailsType.toEnum(index % TransactionDetailsType.values().length);
-         data.add(new Object[] {transactionNumber, branch, comment, time, authorArtId, commitArtId, txType});
+         data.add(new Object[] {transactionNumber, branch, comment, time, DemoUsers.Joe_Smith, commitArtId, txType});
       }
       return data;
    }

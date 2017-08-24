@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
-import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -28,11 +27,10 @@ public interface ApplicabilityId extends Id {
    }
 
    public static ApplicabilityId valueOf(String id) {
-      return valueOf(Long.valueOf(id));
+      return Id.valueOf(id, ApplicabilityId::valueOf);
    }
 
-   @JsonCreator
-   public static ApplicabilityId valueOf(long id) {
+   public static ApplicabilityId valueOf(Long id) {
       final class ApplicabilityToken extends BaseId implements ApplicabilityId {
          public ApplicabilityToken(Long txId) {
             super(txId);
@@ -40,5 +38,4 @@ public interface ApplicabilityId extends Id {
       }
       return new ApplicabilityToken(id);
    }
-
 }

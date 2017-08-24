@@ -19,6 +19,10 @@ import org.eclipse.osee.framework.jdk.core.type.Id;
 public interface ActivityTypeId extends Id {
    ActivityTypeId SENTINEL = valueOf(Id.SENTINEL);
 
+   public static ActivityTypeId valueOf(String id) {
+      return Id.valueOf(id, ActivityTypeId::valueOf);
+   }
+
    public static ActivityTypeId valueOf(Long id) {
       final class ActivityTypeIdImpl extends BaseId implements ActivityTypeId {
          public ActivityTypeIdImpl(Long id) {
@@ -26,9 +30,5 @@ public interface ActivityTypeId extends Id {
          }
       }
       return new ActivityTypeIdImpl(id);
-   }
-
-   public static ActivityTypeId valueOf(String id) {
-      return valueOf(Long.valueOf(id));
    }
 }

@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.jdk.core.type.IdSerializer;
 @JsonSerialize(using = IdSerializer.class)
 public interface TupleTypeId extends Id {
 
-   public static TupleTypeId valueOf(long tupleTypeId) {
-      return new TupleTypeImpl(tupleTypeId);
+   public static TupleTypeId valueOf(Long id) {
+      return new TupleTypeImpl(id);
    }
 }

@@ -23,7 +23,7 @@ public interface AttributeTypeId extends Id {
    AttributeTypeId SENTINEL = valueOf(Id.SENTINEL);
 
    public static AttributeTypeId valueOf(String id) {
-      return valueOf(Long.valueOf(id));
+      return Id.valueOf(id, AttributeTypeId::valueOf);
    }
 
    public static AttributeTypeId valueOf(Long id) {

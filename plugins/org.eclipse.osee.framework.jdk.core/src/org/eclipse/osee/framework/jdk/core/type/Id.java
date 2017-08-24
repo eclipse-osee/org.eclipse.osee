@@ -11,7 +11,7 @@
 
 package org.eclipse.osee.framework.jdk.core.type;
 
-import org.codehaus.jackson.annotate.JsonCreator;
+import java.util.function.Function;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
@@ -20,24 +20,35 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 public interface Id {
    public static final Long SENTINEL = -1L;
 
-   public static Id valueOf(String id) {
-      return valueOf(Long.valueOf(id));
+   public static <R> R valueOf(String id, Function<Long, R> function) {
+      if (id == null || id.equals("") || id.equals("null")) {
+         return function.apply(SENTINEL);
+      }
+
+      return function.apply(Long.valueOf(id));
    }
 
-   @JsonCreator
-   public static Id valueOf(long id) {
+   public static Id valueOf(String id) {
+      return valueOf(id, BaseId::new);
+   }
+
+   public static Id valueOf(int id) {
+      return new BaseId(Long.valueOf(id));
+   }
+
+   public static Id valueOf(Long id) {
       return new BaseId(id);
    }
 
    Long getId();
 
    default String getIdString() {
-      return getId().toString();
+      return String.valueOf(getId());
    }
 
-   default boolean matches(Id... identities) {
-      for (Id identity : identities) {
-         if (equals(identity)) {
+   default boolean matches(Id... ids) {
+      for (Id id : ids) {
+         if (equals(id)) {
             return true;
          }
       }
@@ -48,7 +59,7 @@ public interface Id {
       return getId().equals(id);
    }
 
-   default boolean notEqual(long id) {
+   default boolean notEqual(Long id) {
       return !equals(id);
    }
 
@@ -58,7 +69,8 @@ public interface Id {
 
    @JsonIgnore
    default boolean isValid() {
-      return getId().longValue() > 0;
+      Long id = getId();
+      return id != null && id.longValue() > 0;
    }
 
    @JsonIgnore

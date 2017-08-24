@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
-import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -24,11 +23,14 @@ public interface GammaId extends Id {
    GammaId SENTINEL = valueOf(Id.SENTINEL);
 
    public static GammaId valueOf(String id) {
+      return Id.valueOf(id, GammaId::valueOf);
+   }
+
+   public static GammaId valueOf(int id) {
       return valueOf(Long.valueOf(id));
    }
 
-   @JsonCreator
-   public static GammaId valueOf(long id) {
+   public static GammaId valueOf(Long id) {
       final class GammaIdImpl extends BaseId implements GammaId {
          public GammaIdImpl(Long id) {
             super(id);

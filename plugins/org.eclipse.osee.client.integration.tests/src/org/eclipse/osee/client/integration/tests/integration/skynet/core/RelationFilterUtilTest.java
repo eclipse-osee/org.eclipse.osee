@@ -42,7 +42,7 @@ public class RelationFilterUtilTest {
    @Rule
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
-   private final BranchId branch1 = BranchId.valueOf(100);
+   private final BranchId branch1 = BranchId.valueOf(100L);
    private final RelationType relationType = TestUtil.createRelationType(5);
    private final ArtifactId id55 = ArtifactId.valueOf(55);
    private final ArtifactId id66 = ArtifactId.valueOf(66);

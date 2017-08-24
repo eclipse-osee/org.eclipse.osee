@@ -34,7 +34,7 @@ public class ChangeItem implements Comparable<ChangeItem> {
    private boolean synthetic = false;
    private boolean isApplicabilityCopy = false;
 
-   private ArtifactId artIdB = ArtifactId.valueOf(-1L);
+   private ArtifactId artIdB = ArtifactId.SENTINEL;
 
    public ChangeItem() {
       super();

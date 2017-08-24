@@ -23,10 +23,14 @@ public interface RelationId extends Id {
    RelationId SENTINEL = valueOf(Id.SENTINEL);
 
    public static RelationId valueOf(String id) {
-      return valueOf(Long.valueOf(id));
+      return Id.valueOf(id, RelationId::valueOf);
    }
 
    public static RelationId valueOf(long id) {
+      return valueOf(Long.valueOf(id));
+   }
+
+   public static RelationId valueOf(Long id) {
       final class RelationIdImpl extends BaseId implements RelationId {
          public RelationIdImpl(Long txId) {
             super(txId);

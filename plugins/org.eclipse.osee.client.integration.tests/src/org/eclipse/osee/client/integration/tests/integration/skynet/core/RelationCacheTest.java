@@ -49,8 +49,8 @@ public class RelationCacheTest {
    @Rule
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
-   private final BranchId branch1 = BranchId.valueOf(100);
-   private final BranchId branch2 = BranchId.valueOf(200);
+   private final BranchId branch1 = BranchId.valueOf(100L);
+   private final BranchId branch2 = BranchId.valueOf(200L);
 
    private final Artifact artifact1 = new Artifact(branch1);
    private final Artifact artifact2 = new Artifact(branch2);

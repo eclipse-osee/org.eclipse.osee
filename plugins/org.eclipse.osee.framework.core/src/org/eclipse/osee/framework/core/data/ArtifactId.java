@@ -22,10 +22,14 @@ import org.eclipse.osee.framework.jdk.core.type.Identity;
 @JsonSerialize(using = IdSerializer.class)
 public interface ArtifactId extends Identity<String>, Id {
 
-   public static final ArtifactId SENTINEL = ArtifactId.valueOf(Id.SENTINEL);
+   public static final ArtifactId SENTINEL = valueOf(Id.SENTINEL);
 
    default Long getUuid() {
       return getId();
+   }
+
+   public static ArtifactId valueOf(String id) {
+      return Id.valueOf(id, ArtifactId::valueOf);
    }
 
    public static ArtifactId valueOf(Id id) {
@@ -35,11 +39,11 @@ public interface ArtifactId extends Identity<String>, Id {
       return valueOf(id.getId());
    }
 
-   public static ArtifactId valueOf(String id) {
+   public static ArtifactId valueOf(int id) {
       return valueOf(Long.valueOf(id));
    }
 
-   public static ArtifactId valueOf(long id) {
+   public static ArtifactId valueOf(Long id) {
       final class ArtifactIdImpl extends BaseId implements ArtifactId, Comparable<ArtifactId> {
          public ArtifactIdImpl(Long artId) {
             super(artId);

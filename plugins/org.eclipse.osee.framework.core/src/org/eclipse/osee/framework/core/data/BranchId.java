@@ -36,12 +36,12 @@ public interface BranchId extends Identity<Long>, Id {
    };
 
    public static BranchId valueOf(String id) {
-      return valueOf(Long.valueOf(id));
+      return Id.valueOf(id, BranchId::valueOf);
    }
 
-   public static BranchId create(long id, ArtifactId view) {
+   public static BranchId create(Long id, ArtifactId view) {
       final class BranchIdImpl extends BaseId implements BranchId {
-         private ArtifactId viewId;
+         private final ArtifactId viewId;
 
          public BranchIdImpl(Long id, ArtifactId view) {
             super(id);
@@ -65,7 +65,7 @@ public interface BranchId extends Identity<Long>, Id {
       return new BranchIdImpl(id, view);
    }
 
-   public static BranchId valueOf(long id) {
+   public static BranchId valueOf(Long id) {
       return create(id, ArtifactId.SENTINEL);
    }
 

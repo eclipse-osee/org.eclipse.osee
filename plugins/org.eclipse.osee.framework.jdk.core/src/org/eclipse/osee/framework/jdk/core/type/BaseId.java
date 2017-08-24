@@ -22,7 +22,7 @@ public class BaseId implements Id, Cloneable {
    protected Long id;
 
    public BaseId(Long id) {
-      this.id = id;
+      this.id = id == null ? Id.SENTINEL : id;
    }
 
    @Override

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
-import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -24,15 +23,18 @@ public interface TransactionId extends Id {
    TransactionId SENTINEL = valueOf(Id.SENTINEL);
 
    default boolean isOlderThan(TransactionId other) {
-      return getId() < other.getId();
+      return isLessThan(other);
    }
 
    public static TransactionId valueOf(String id) {
+      return Id.valueOf(id, TransactionId::valueOf);
+   }
+
+   public static TransactionId valueOf(int id) {
       return valueOf(Long.valueOf(id));
    }
 
-   @JsonCreator
-   public static TransactionId valueOf(long id) {
+   public static TransactionId valueOf(Long id) {
       final class TransactionToken extends BaseId implements TransactionId {
          public TransactionToken(Long txId) {
             super(txId);

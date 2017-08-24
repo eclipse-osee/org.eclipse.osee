@@ -17,7 +17,7 @@ import static org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes.Default
  */
 public interface Tuple2Type<E1, E2> extends TupleTypeId {
 
-   public static <E1, E2> Tuple2Type<E1, E2> valueOf(TupleFamilyId family, long tupleTypeId) {
+   public static <E1, E2> Tuple2Type<E1, E2> valueOf(TupleFamilyId family, Long tupleTypeId) {
       final class Tuple2TypeImpl extends TupleTypeImpl implements Tuple2Type<E1, E2> {
          public Tuple2TypeImpl(TupleFamilyId family, Long tupleTypeId) {
             super(family, tupleTypeId);
@@ -35,7 +35,7 @@ public interface Tuple2Type<E1, E2> extends TupleTypeId {
       return new Tuple2TypeImpl(family, tupleTypeId);
    }
 
-   public static <E1, E2> Tuple2Type<E1, E2> valueOf(long tupleType) {
+   public static <E1, E2> Tuple2Type<E1, E2> valueOf(Long tupleType) {
       return valueOf(DefaultFamily, tupleType);
    }
 

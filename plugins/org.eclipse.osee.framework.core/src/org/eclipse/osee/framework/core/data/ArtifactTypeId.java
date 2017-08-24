@@ -23,13 +23,13 @@ public interface ArtifactTypeId extends Id {
    ArtifactTypeId SENTINEL = valueOf(Id.SENTINEL);
 
    public static ArtifactTypeId valueOf(String id) {
-      return valueOf(Long.valueOf(id));
+      return Id.valueOf(id, ArtifactTypeId::valueOf);
    }
 
    public static ArtifactTypeId valueOf(Long id) {
       final class ArtifactTypeIdImpl extends BaseId implements ArtifactTypeId {
-         public ArtifactTypeIdImpl(Long txId) {
-            super(txId);
+         public ArtifactTypeIdImpl(Long id) {
+            super(id);
          }
       }
       return new ArtifactTypeIdImpl(id);

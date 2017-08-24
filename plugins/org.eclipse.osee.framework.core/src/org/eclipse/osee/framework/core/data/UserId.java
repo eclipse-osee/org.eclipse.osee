@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
-import org.codehaus.jackson.annotate.JsonCreator;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
@@ -31,8 +30,7 @@ public interface UserId extends ArtifactId {
       return valueOf(Long.valueOf(id));
    }
 
-   @JsonCreator
-   public static UserId valueOf(long id) {
+   public static UserId valueOf(Long id) {
       final class UserIdImpl extends BaseId implements UserId {
          public UserIdImpl(Long id) {
             super(id);

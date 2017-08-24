@@ -64,7 +64,7 @@ public class AddSyntheticArtifactChangeData {
                artifactChange = syntheticArtifactChanges.get(artIdToCheck);
                if (artifactChange == null) {
                   artifactChange = ChangeItemUtil.newArtifactChange(artIdToCheck, ArtifactTypeId.SENTINEL,
-                     GammaId.valueOf(-1), null, null);
+                     GammaId.SENTINEL, null, null);
                   syntheticArtifactChanges.put(artIdToCheck, artifactChange);
                   artifactChange.setSynthetic(true);
                }
