@@ -97,8 +97,9 @@ public class ChangeReportPageViewApplicability {
    private BranchId getBranch() {
       Conditions.assertNotNull(editor, "Change Editor");
       ChangeReportEditorInput editorInput = editor.getEditorInput();
+      BranchId branch = BranchId.SENTINEL;
       if (editorInput != null) {
-         BranchId branch = editorInput.getBranch();
+         branch = editorInput.getBranch();
          if (branch == null) {
             ChangeUiData changeData = editorInput.getChangeData();
             if (changeData != null) {
@@ -110,9 +111,8 @@ public class ChangeReportPageViewApplicability {
          if (branch == null && button != null && !button.isDisposed()) {
             button.setEnabled(false);
          }
-         return branch;
       }
-      return null;
+      return branch;
    }
 
    private boolean changeView() {

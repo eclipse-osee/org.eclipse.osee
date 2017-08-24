@@ -548,7 +548,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
                if (branchViewWidget != null) {
                   branchViewWidget.setEditable(true);
                   BranchId branch = branchWidget.getSelection();
-                  if (branch != null && branch.isInvalid()) {
+                  if (branch != null && branch.isValid()) {
                      branchViews = ViewApplicabilityUtil.getBranchViews(ViewApplicabilityUtil.getParentBranch(branch));
                      branchViewWidget.setDataStrings(branchViews.values());
                   }

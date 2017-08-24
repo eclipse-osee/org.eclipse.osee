@@ -401,7 +401,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
                   if (artifacts != null && !artifacts.isEmpty()) {
                      Artifact art = artifacts.iterator().next();
                      BranchId isArtBranch = art.getBranch();
-                     if (isArtBranch != null) {
+                     if (isArtBranch != null && isArtBranch.isValid()) {
                         if (ViewApplicabilityUtil.isBranchOfProductLine(isArtBranch)) {
                            branchViews = ViewApplicabilityUtil.getBranchViews(isArtBranch);
                            branchViewWidget.setDataStrings(branchViews.values());
