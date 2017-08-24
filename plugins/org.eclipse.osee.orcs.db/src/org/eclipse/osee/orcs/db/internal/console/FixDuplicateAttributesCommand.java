@@ -102,8 +102,7 @@ public class FixDuplicateAttributesCommand extends AbstractDatastoreConsoleComma
       private void selectDuplicates(ExportImportJoinQuery gammaJoin, JdbcConnection connection) throws OseeCoreException {
          JdbcStatement chStmt = getJdbcClient().getStatement(connection);
          try {
-            chStmt.runPreparedQuery(SELECT_DUPLICATES, gammaJoin.getQueryId(), TxChange.CURRENT.getValue(),
-               TxChange.CURRENT.getValue());
+            chStmt.runPreparedQuery(SELECT_DUPLICATES, gammaJoin.getQueryId(), TxChange.CURRENT, TxChange.CURRENT);
             while (chStmt.next()) {
                console.writeln("branch: " + chStmt.getLong("branch_id"), "gamma1: " + chStmt.getLong("gamma1"),
                   "gamma2: " + chStmt.getLong("gamma2"));

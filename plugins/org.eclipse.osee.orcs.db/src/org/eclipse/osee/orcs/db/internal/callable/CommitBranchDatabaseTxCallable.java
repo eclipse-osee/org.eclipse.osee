@@ -156,7 +156,7 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
             destinationBranch,
             change.getNetChange().getGammaId(),
             modType.getValue(),
-            TxChange.getCurrent(modType).getValue(),
+            TxChange.getCurrent(modType),
             appToken});
       }
       getJdbcClient().runBatchUpdate(connection, INSERT_COMMIT_ADDRESSING, insertData);

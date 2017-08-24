@@ -190,6 +190,6 @@ public class DynamicLoadProcessor extends AbstractLoadProcessor<DynamicDataHandl
    }
 
    private TxChange getTxCurrent(JdbcStatement chStmt, String columnName) {
-      return TxChange.getChangeType(chStmt.getInt(columnName));
+      return TxChange.valueOf(chStmt.getInt(columnName));
    }
 }

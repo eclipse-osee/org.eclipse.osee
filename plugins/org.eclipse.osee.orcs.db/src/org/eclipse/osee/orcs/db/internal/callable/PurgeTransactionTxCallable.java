@@ -152,11 +152,8 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
                if (previousItem != currentItem) {
                   ModificationType modType = ModificationType.getMod(stmt.getInt("mod_type"));
                   TxChange txCurrent = TxChange.getCurrent(modType);
-                  updateData.add(new Object[] {
-                     txCurrent.getValue(),
-                     branch,
-                     stmt.getLong("transaction_id"),
-                     stmt.getLong("gamma_id")});
+                  updateData.add(
+                     new Object[] {txCurrent, branch, stmt.getLong("transaction_id"), stmt.getLong("gamma_id")});
                   previousItem = currentItem;
                }
             };

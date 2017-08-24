@@ -126,10 +126,10 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
          sb.append(".tx_current");
          if (allowDeleted) {
             sb.append(" <> ");
-            sb.append(String.valueOf(TxChange.NOT_CURRENT.getValue()));
+            sb.append(String.valueOf(TxChange.NOT_CURRENT));
          } else {
             sb.append(" = ");
-            sb.append(String.valueOf(TxChange.CURRENT.getValue()));
+            sb.append(String.valueOf(TxChange.CURRENT));
          }
       }
    }

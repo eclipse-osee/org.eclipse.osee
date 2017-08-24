@@ -149,7 +149,7 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
          writer.writeStartElement("entry");
          writer.writeAttribute("branch_id", String.valueOf(address.getBranchId()));
          writer.writeAttribute("gamma_id", String.valueOf(address.getGammaId()));
-         writer.writeAttribute("tx_current", String.valueOf(address.getCorrectedTxCurrent().getValue()));
+         writer.writeAttribute("tx_current", String.valueOf(address.getCorrectedTxCurrent()));
          writer.writeAttribute("mod_type", String.valueOf(address.getModType().getValue()));
          writer.writeAttribute("transaction_id", String.valueOf(address.getTransactionId()));
          writer.writeEndElement();

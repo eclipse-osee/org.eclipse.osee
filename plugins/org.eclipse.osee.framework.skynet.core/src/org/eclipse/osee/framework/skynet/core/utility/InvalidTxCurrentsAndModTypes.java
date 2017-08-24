@@ -93,7 +93,7 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
             } else if (address.getCorrectedTxCurrent() != null) {
                logIssue("corrected txCurrent: " + address.getCorrectedTxCurrent(), address);
                currentData.add(new Object[] {
-                  address.getCorrectedTxCurrent().getValue(),
+                  address.getCorrectedTxCurrent(),
                   address.getTransactionId(),
                   address.getGammaId(),
                   address.getBranchId()});
@@ -182,7 +182,7 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
       Consumer<JdbcStatement> consumer = stmt -> {
          checkForCancelledStatus(monitor);
          ModificationType modType = ModificationType.getMod(stmt.getInt("mod_type"));
-         TxChange txCurrent = TxChange.getChangeType(stmt.getInt("tx_current"));
+         TxChange txCurrent = TxChange.valueOf(stmt.getInt("tx_current"));
          TransactionDetailsType type = TransactionDetailsType.toEnum(stmt.getInt("tx_type"));
          ApplicabilityId appId = ApplicabilityId.valueOf(stmt.getLong("app_id"));
          Address address = new Address(type.isBaseline(), stmt.getLong("branch_id"), stmt.getInt(columnName),

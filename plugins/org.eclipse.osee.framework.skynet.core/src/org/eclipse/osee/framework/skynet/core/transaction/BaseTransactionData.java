@@ -68,8 +68,8 @@ public abstract class BaseTransactionData {
       ModificationType modTypeToStore = getAdjustedModificationType();
 
       internalAddInsertToBatch(collector, Integer.MAX_VALUE, INSERT_INTO_TRANSACTION_TABLE, collector.getTransaction(),
-         getGammaId(), modTypeToStore.getValue(), TxChange.getCurrent(modTypeToStore).getValue(),
-         collector.getBranch(), getApplicId());
+         getGammaId(), modTypeToStore.getValue(), TxChange.getCurrent(modTypeToStore), collector.getBranch(),
+         getApplicId());
       //TODO: remove hack defaulting to 1
    }
 

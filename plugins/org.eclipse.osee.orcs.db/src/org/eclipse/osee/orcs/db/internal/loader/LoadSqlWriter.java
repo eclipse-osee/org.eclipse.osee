@@ -151,11 +151,11 @@ public class LoadSqlWriter extends AbstractSqlWriter {
                sb.append(txsAlias);
                sb.append(".tx_current");
                sb.append(" IN (");
-               sb.append(String.valueOf(TxChange.CURRENT.getValue()));
+               sb.append(String.valueOf(TxChange.CURRENT));
                sb.append(", ");
-               sb.append(String.valueOf(TxChange.DELETED.getValue()));
+               sb.append(String.valueOf(TxChange.DELETED));
                sb.append(", ");
-               sb.append(String.valueOf(TxChange.ARTIFACT_DELETED.getValue()));
+               sb.append(String.valueOf(TxChange.ARTIFACT_DELETED));
                sb.append(")");
             } else {
                buildDeletedClause(sb, txsAlias);
@@ -163,7 +163,7 @@ public class LoadSqlWriter extends AbstractSqlWriter {
          } else {
             sb.append(txsAlias);
             sb.append(".tx_current = ");
-            sb.append(String.valueOf(TxChange.CURRENT.getValue()));
+            sb.append(String.valueOf(TxChange.CURRENT));
          }
       }
    }
@@ -251,7 +251,7 @@ public class LoadSqlWriter extends AbstractSqlWriter {
       sb.append(txsAlias);
       if (!OptionsUtil.isHistorical(getOptions())) {
          sb.append(".tx_current = ");
-         sb.append(String.valueOf(TxChange.CURRENT.getValue()));
+         sb.append(String.valueOf(TxChange.CURRENT));
       }
    }
 

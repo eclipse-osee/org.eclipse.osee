@@ -198,7 +198,7 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
          }
       };
       getJdbcClient().runQuery(consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE, SELECT_ALL_SOURCE_ADDRESSING, sourceBranch,
-         TxChange.NOT_CURRENT.getValue(), sourceBaselineTxId, sourceBranch, sourceBaselineTxId);
+         TxChange.NOT_CURRENT, sourceBaselineTxId, sourceBranch, sourceBaselineTxId);
 
       return hashChangeData;
    }
@@ -236,8 +236,8 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
             " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?";
 
       getJdbcClient().runQuery(consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE, query, idJoin.getQueryId(),
-         TxChange.NOT_CURRENT.getValue(), txBranchId, txId, idJoin.getQueryId(), TxChange.NOT_CURRENT.getValue(),
-         txBranchId, txId, idJoin.getQueryId(), TxChange.NOT_CURRENT.getValue(), txBranchId, txId);
+         TxChange.NOT_CURRENT, txBranchId, txId, idJoin.getQueryId(), TxChange.NOT_CURRENT, txBranchId, txId,
+         idJoin.getQueryId(), TxChange.NOT_CURRENT, txBranchId, txId);
 
    }
 
@@ -254,9 +254,9 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
                "osee_relation_link item, osee_txs txs where idj.query_id = ? and idj.id2 = item.rel_link_id and idj.id1 = 3 " + //
                "and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ?) t order by t.id2, t.transaction_id asc";
 
-         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, idJoin.getQueryId(),
-            TxChange.NOT_CURRENT.getValue(), sourceBranch, idJoin.getQueryId(), TxChange.NOT_CURRENT.getValue(),
-            sourceBranch, idJoin.getQueryId(), TxChange.NOT_CURRENT.getValue(), sourceBranch);
+         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, idJoin.getQueryId(), TxChange.NOT_CURRENT,
+            sourceBranch, idJoin.getQueryId(), TxChange.NOT_CURRENT, sourceBranch, idJoin.getQueryId(),
+            TxChange.NOT_CURRENT, sourceBranch);
 
          Long previousItemId = -1L;
          boolean isFirstSet = false;

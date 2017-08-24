@@ -79,7 +79,7 @@ public class InvalidTxCurrentsAndModTypesCallable extends AbstractDatastoreTxCal
                logIssue("corrected txCurrent: " + address.getCorrectedTxCurrent(), address);
 
                currentData.add(new Object[] {
-                  address.getCorrectedTxCurrent().getValue(),
+                  address.getCorrectedTxCurrent(),
                   address.getTransactionId(),
                   address.getGammaId(),
                   address.getBranchId()});
@@ -166,9 +166,9 @@ public class InvalidTxCurrentsAndModTypesCallable extends AbstractDatastoreTxCal
       Consumer<JdbcStatement> consumer = stmt -> {
          checkForCancelled();
          ModificationType modType = ModificationType.getMod(stmt.getInt("mod_type"));
-         TxChange txCurrent = TxChange.getChangeType(stmt.getInt("tx_current"));
+         TxChange txCurrent = TxChange.valueOf(stmt.getInt("tx_current"));
          TransactionDetailsType type = TransactionDetailsType.toEnum(stmt.getInt("tx_type"));
-		 ApplicabilityId appId = ApplicabilityId.valueOf(stmt.getLong("app_id"));
+         ApplicabilityId appId = ApplicabilityId.valueOf(stmt.getLong("app_id"));
          Address address = new Address(type.isBaseline(), stmt.getLong("branch_id"), stmt.getInt(columnName),
             stmt.getLong("transaction_id"), stmt.getLong("gamma_id"), modType, appId, txCurrent);
 

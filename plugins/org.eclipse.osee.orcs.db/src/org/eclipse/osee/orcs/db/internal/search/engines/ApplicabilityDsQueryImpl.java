@@ -18,7 +18,6 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.core.ds.ApplicabilityDsQuery;
@@ -46,7 +45,7 @@ public class ApplicabilityDsQueryImpl implements ApplicabilityDsQuery {
    @Override
    public ApplicabilityToken getApplicabilityToken(ArtifactId artId, BranchId branch) {
       return jdbcClient.fetch(BASE, stmt -> new ApplicabilityToken(stmt.getLong("key"), stmt.getString("value")),
-         SELECT_APPLIC_FOR_ART, artId, branch, NOT_CURRENT.getValue());
+         SELECT_APPLIC_FOR_ART, artId, branch, NOT_CURRENT);
    }
 
    @Override
@@ -61,7 +60,7 @@ public class ApplicabilityDsQueryImpl implements ApplicabilityDsQuery {
          jdbcClient.runQuery(
             stmt -> result.add(new Pair<ArtifactId, ApplicabilityToken>(ArtifactId.valueOf(stmt.getLong("art_id")),
                ApplicabilityToken.create(stmt.getLong("key"), stmt.getString("value")))),
-            SELECT_APPLIC_FOR_ARTS, idJoin.getQueryId(), branch, TxChange.NOT_CURRENT.getValue());
+            SELECT_APPLIC_FOR_ARTS, idJoin.getQueryId(), branch, NOT_CURRENT);
       }
       return result;
    }

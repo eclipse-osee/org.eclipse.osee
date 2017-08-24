@@ -31,7 +31,7 @@ import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 public class TransactionWriter {
 
    protected static final String UPDATE_TXS_NOT_CURRENT =
-      "UPDATE osee_txs SET tx_current = " + TxChange.NOT_CURRENT.getValue() + " WHERE branch_id = ? AND transaction_id = ? AND gamma_id = ?";
+      "UPDATE osee_txs SET tx_current = " + TxChange.NOT_CURRENT + " WHERE branch_id = ? AND transaction_id = ? AND gamma_id = ?";
 
    private static final String INSERT_ARTIFACT =
       "INSERT INTO osee_artifact (art_id, art_type_id, gamma_id, guid) VALUES (?,?,?,?)";
@@ -58,13 +58,13 @@ public class TransactionWriter {
       "INSERT INTO osee_tx_details (transaction_id, osee_comment, time, author, branch_id, tx_type, build_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
    private static final String TX_GET_PREVIOUS_TX_NOT_CURRENT_ARTIFACTS =
-      "SELECT txs.transaction_id, txs.gamma_id, txs.app_id FROM osee_join_id jid, osee_artifact art, osee_txs txs WHERE jid.query_id = ? AND art.art_id = jid.id AND art.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxChange.NOT_CURRENT.getValue();
+      "SELECT txs.transaction_id, txs.gamma_id, txs.app_id FROM osee_join_id jid, osee_artifact art, osee_txs txs WHERE jid.query_id = ? AND art.art_id = jid.id AND art.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxChange.NOT_CURRENT;
 
    private static final String TX_GET_PREVIOUS_TX_NOT_CURRENT_ATTRIBUTES =
-      "SELECT txs.transaction_id, txs.gamma_id, txs.app_id FROM osee_join_id jid, osee_attribute attr, osee_txs txs WHERE jid.query_id = ? AND attr.attr_id = jid.id AND attr.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxChange.NOT_CURRENT.getValue();
+      "SELECT txs.transaction_id, txs.gamma_id, txs.app_id FROM osee_join_id jid, osee_attribute attr, osee_txs txs WHERE jid.query_id = ? AND attr.attr_id = jid.id AND attr.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxChange.NOT_CURRENT;
 
    private static final String TX_GET_PREVIOUS_TX_NOT_CURRENT_RELATIONS =
-      "SELECT txs.transaction_id, txs.gamma_id, txs.app_id FROM osee_join_id jid, osee_relation_link rel, osee_txs txs WHERE jid.query_id = ? AND rel.rel_link_id = jid.id AND rel.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxChange.NOT_CURRENT.getValue();
+      "SELECT txs.transaction_id, txs.gamma_id, txs.app_id FROM osee_join_id jid, osee_relation_link rel, osee_txs txs WHERE jid.query_id = ? AND rel.rel_link_id = jid.id AND rel.gamma_id = txs.gamma_id AND txs.branch_id = ? AND txs.tx_current <> " + TxChange.NOT_CURRENT;
 
    public static enum SqlOrderEnum {
       ARTIFACTS(INSERT_ARTIFACT, TX_GET_PREVIOUS_TX_NOT_CURRENT_ARTIFACTS),

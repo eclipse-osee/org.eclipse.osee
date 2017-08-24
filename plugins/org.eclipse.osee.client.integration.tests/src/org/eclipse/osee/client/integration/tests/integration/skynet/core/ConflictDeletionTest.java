@@ -158,7 +158,7 @@ public class ConflictDeletionTest {
             if (DEBUG) {
                dumpAttribute(attribute);
             } else {
-               checkAttribute(artifact, attribute, TxChange.ARTIFACT_DELETED.getValue());
+               checkAttribute(artifact, attribute, TxChange.ARTIFACT_DELETED);
             }
          }
          //Check that relations are deleted.
@@ -166,7 +166,7 @@ public class ConflictDeletionTest {
             if (DEBUG) {
                dumpRelation(relation, artifact);
             } else {
-               checkRelation(artifact, relation, TxChange.ARTIFACT_DELETED.getValue());
+               checkRelation(artifact, relation, TxChange.ARTIFACT_DELETED);
             }
          }
       }
@@ -286,8 +286,8 @@ public class ConflictDeletionTest {
                assertTrue("Attribute " + attribute.getId() + " should be deleted but isn't", attribute.isDeleted());
                assertTrue("Relation " + relation.getId() + " should be deleted but isn't", relation.isDeleted());
 
-               checkAttribute(artifactForDeletionCheck, attribute, TxChange.DELETED.getValue());
-               checkRelation(artifactForDeletionCheck, relation, TxChange.DELETED.getValue());
+               checkAttribute(artifactForDeletionCheck, attribute, TxChange.DELETED);
+               checkRelation(artifactForDeletionCheck, relation, TxChange.DELETED);
             }
 
          }
@@ -307,7 +307,7 @@ public class ConflictDeletionTest {
       }
    }
 
-   private void checkAttribute(Artifact artifact, Attribute<?> attribute, int value) throws OseeCoreException {
+   private void checkAttribute(Artifact artifact, Attribute<?> attribute, TxChange value) throws OseeCoreException {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(CHECK_FOR_ZERO_TX_CURRENT_ATTRIBUTE, artifact.getBranch(), artifact.getTransaction(),
@@ -336,7 +336,7 @@ public class ConflictDeletionTest {
       }
    }
 
-   public void checkRelation(Artifact artifact, RelationLink relation, int value) throws OseeCoreException {
+   public void checkRelation(Artifact artifact, RelationLink relation, TxChange value) throws OseeCoreException {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       assertTrue(
          "Relation should be deleted between Parent: " + relation.getArtifactIdA() + " and child " + relation.getArtifactIdB(),

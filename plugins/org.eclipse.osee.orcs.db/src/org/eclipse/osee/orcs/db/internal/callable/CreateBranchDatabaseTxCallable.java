@@ -228,9 +228,9 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
          OseePreparedStatement addressing = jdbcClient.getBatchStatement(connection, INSERT_ADDRESSING);
          if (newBranchData.getBranchType().isMergeBranch()) {
             populateAddressingToCopy(connection, addressing, baseTxId, gammas, SELECT_ATTRIBUTE_ADDRESSING_FROM_JOIN,
-               parentBranch, TxChange.NOT_CURRENT.getValue(), newBranchData.getMergeAddressingQueryId());
+               parentBranch, TxChange.NOT_CURRENT, newBranchData.getMergeAddressingQueryId());
             populateAddressingToCopy(connection, addressing, baseTxId, gammas, SELECT_ARTIFACT_ADDRESSING_FROM_JOIN,
-               parentBranch, TxChange.NOT_CURRENT.getValue(), newBranchData.getMergeAddressingQueryId());
+               parentBranch, TxChange.NOT_CURRENT, newBranchData.getMergeAddressingQueryId());
          } else {
             populateAddressingToCopy(connection, addressing, baseTxId, gammas, SELECT_ADDRESSING, parentBranch,
                sourceTxId);
@@ -251,7 +251,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
                ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
                Long appId = chStmt.getLong("app_id");
                TxChange txCurrent = TxChange.getCurrent(modType);
-               addressing.addToBatch(baseTxId, gamma, modType.getValue(), txCurrent.getValue(), branchId, appId);
+               addressing.addToBatch(baseTxId, gamma, modType.getValue(), txCurrent, branchId, appId);
                gammas.add(gamma);
             }
          }

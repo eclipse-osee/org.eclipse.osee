@@ -163,13 +163,13 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
       long transactionId = stmt.getLong("transaction_id");
       long netGammaId = stmt.getLong("net_gamma_id");
       int modType = stmt.getInt("mod_type");
-      TxChange txCurrent = TxChange.getChangeType(stmt.getInt("tx_current"));
+      TxChange txCurrent = TxChange.valueOf(stmt.getInt("tx_current"));
       long branchId = stmt.getLong("branch_id");
 
       if (isNextAddressing(netGammaId, transactionId)) {
          if (updatedAddressing) {
-            updateAddressing.addToBatch(previousNetGammaId, netModType.getValue(), netTxCurrent.getValue(),
-               previousBranchId, previousTransactionId, previousObsoleteGammaId);
+            updateAddressing.addToBatch(previousNetGammaId, netModType.getValue(), netTxCurrent, previousBranchId,
+               previousTransactionId, previousObsoleteGammaId);
          }
          updatedAddressing = obsoleteGammaId != netGammaId;
          previousNetGammaId = netGammaId;
@@ -244,7 +244,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
       strB.append(",");
       strB.append(modType);
       strB.append(",");
-      strB.append(txCurrent.getValue());
+      strB.append(txCurrent);
       strB.append("\n");
       console.writeln(strB.toString());
    }

@@ -52,7 +52,7 @@ import org.eclipse.osee.jdbc.JdbcStatement;
 public final class StoreSkynetTransactionOperation extends AbstractDbTxOperation implements InsertDataCollector {
 
    private static final String UPDATE_TXS_NOT_CURRENT =
-      "UPDATE osee_txs SET tx_current = " + TxChange.NOT_CURRENT.getValue() + " WHERE branch_id = ? AND transaction_id = ? AND gamma_id = ?";
+      "UPDATE osee_txs SET tx_current = " + TxChange.NOT_CURRENT + " WHERE branch_id = ? AND transaction_id = ? AND gamma_id = ?";
 
    private final HashCollection<String, Object[]> dataItemInserts = new HashCollection<>();
    private final Map<Integer, String> dataInsertOrder = new HashMap<>();

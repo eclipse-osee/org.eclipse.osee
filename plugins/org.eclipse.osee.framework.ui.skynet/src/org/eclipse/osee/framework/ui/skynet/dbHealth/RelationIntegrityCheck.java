@@ -53,8 +53,8 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
       "     osee_tx_details txd " +
       " WHERE " +
       "     tx1.branch_id = tx2.branch_id AND " +
-      "     tx1.tx_current = " + TxChange.CURRENT.getValue() + " AND " +
-      "     tx2.tx_current = " + TxChange.DELETED.getValue() + " AND " +
+      "     tx1.tx_current = " + TxChange.CURRENT + " AND " +
+      "     tx2.tx_current = " + TxChange.DELETED + " AND " +
       "     tx1.gamma_id = rel1.gamma_id AND " +
       "     tx2.gamma_id = av1.gamma_id AND " +
       "     av1.art_id = rel1.%s AND " +
@@ -102,10 +102,10 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
    private static final String UPDATE_TXS_PREVIOUS =
       "UPDATE osee_txs SET tx_current = 0 WHERE gamma_id = ? AND transaction_id = ?";
    private static final String UPDATE_TXS_CURRENT =
-      "UPDATE osee_txs SET tx_current = " + TxChange.ARTIFACT_DELETED.getValue() + ", mod_type = " + ModificationType.ARTIFACT_DELETED.getValue() + " WHERE gamma_id = ? AND transaction_id = ?";
+      "UPDATE osee_txs SET tx_current = " + TxChange.ARTIFACT_DELETED + ", mod_type = " + ModificationType.ARTIFACT_DELETED.getValue() + " WHERE gamma_id = ? AND transaction_id = ?";
 
    private static final String INSERT_TXS =
-      "INSERT INTO osee_txs (gamma_id, transaction_id, tx_current, mod_type, branch_id) VALUES (?, ?, " + TxChange.ARTIFACT_DELETED.getValue() + ", " + ModificationType.ARTIFACT_DELETED.getValue() + ", ?)";
+      "INSERT INTO osee_txs (gamma_id, transaction_id, tx_current, mod_type, branch_id) VALUES (?, ?, " + TxChange.ARTIFACT_DELETED + ", " + ModificationType.ARTIFACT_DELETED.getValue() + ", ?)";
 
    private static final String[] COLUMN_HEADERS = {
       "Rel Link ID",

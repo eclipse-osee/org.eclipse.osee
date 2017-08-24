@@ -62,8 +62,8 @@ public class OrcsTypeLoaderCallable extends AbstractDatastoreCallable<IResource>
       getJdbcClient().runQuery(stmt -> {
          String uri = stmt.getString("uri");
          paths.add(uri);
-      }, OrcsTypes.LOAD_OSEE_TYPE_DEF_URIS, CoreTupleTypes.OseeTypeDef, CoreBranches.COMMON,
-         TxChange.CURRENT.getValue(), OrcsTypesData.OSEE_TYPE_VERSION, TxChange.CURRENT.getValue());
+      }, OrcsTypes.LOAD_OSEE_TYPE_DEF_URIS, CoreTupleTypes.OseeTypeDef, CoreBranches.COMMON, TxChange.CURRENT,
+         OrcsTypesData.OSEE_TYPE_VERSION, TxChange.CURRENT);
       return paths;
    }
 

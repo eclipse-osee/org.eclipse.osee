@@ -107,13 +107,7 @@ public final class BranchCopyTxCallable extends JdbcTransaction {
                ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
                Long app_id = chStmt.getLong("app_id");
                TxChange txCurrent = TxChange.getCurrent(modType);
-               data.add(new Object[] {
-                  baseTxId,
-                  gamma,
-                  modType.getValue(),
-                  txCurrent.getValue(),
-                  branchData.getBranch(),
-                  app_id});
+               data.add(new Object[] {baseTxId, gamma, modType.getValue(), txCurrent, branchData.getBranch(), app_id});
                gammas.add(gamma);
             }
          }

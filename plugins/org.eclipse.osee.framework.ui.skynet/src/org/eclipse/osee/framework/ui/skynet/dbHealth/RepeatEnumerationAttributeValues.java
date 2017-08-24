@@ -41,7 +41,7 @@ import org.eclipse.osee.jdbc.JdbcStatement;
 public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
 
    private final static String FIND_REPEAT_ENUMS =
-      "select DISTINCT(art1.guid), att1.art_id, att1.value, att1.attr_type_id from osee_attribute att1, osee_attribute att2, osee_txs txs1, osee_txs txs2, osee_artifact art1 where att1.gamma_id = txs1.gamma_id and txs1.branch_id = ? and att2.gamma_id = txs2.gamma_id and txs2.branch_id = ? and att1.art_id = att2.art_id and att1.attr_id <> att2.attr_id and att1.value = att2.value and txs1.tx_current = " + TxChange.CURRENT.getValue() + " and txs2.tx_current = " + TxChange.CURRENT.getValue() + " and att1.attr_type_id = att2.attr_type_id and art1.art_id = att1.art_id order by att1.art_id, att1.attr_type_id, att1.value";
+      "select DISTINCT(art1.guid), att1.art_id, att1.value, att1.attr_type_id from osee_attribute att1, osee_attribute att2, osee_txs txs1, osee_txs txs2, osee_artifact art1 where att1.gamma_id = txs1.gamma_id and txs1.branch_id = ? and att2.gamma_id = txs2.gamma_id and txs2.branch_id = ? and att1.art_id = att2.art_id and att1.attr_id <> att2.attr_id and att1.value = att2.value and txs1.tx_current = " + TxChange.CURRENT + " and txs2.tx_current = " + TxChange.CURRENT + " and att1.attr_type_id = att2.attr_type_id and art1.art_id = att1.art_id order by att1.art_id, att1.attr_type_id, att1.value";
 
    public RepeatEnumerationAttributeValues() {
       super("Repeat Enumeration Attribute Values");

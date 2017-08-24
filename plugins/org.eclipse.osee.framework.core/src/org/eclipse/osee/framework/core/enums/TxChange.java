@@ -11,46 +11,58 @@
 
 package org.eclipse.osee.framework.core.enums;
 
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.eclipse.osee.framework.jdk.core.type.BaseId;
+import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.type.IdSerializer;
 
 /**
  * @author Ryan D. Brooks
  */
-public enum TxChange {
-   NOT_CURRENT(0),
-   CURRENT(1),
-   DELETED(2),
-   ARTIFACT_DELETED(3);
+@JsonSerialize(using = IdSerializer.class)
+public interface TxChange extends Id {
 
-   private int value;
+   public static final TxChange SENTINEL = internalCreate(Id.SENTINEL);
+   public static final TxChange NOT_CURRENT = internalCreate(0L);
+   public static final TxChange CURRENT = internalCreate(1L);
+   public static final TxChange DELETED = internalCreate(2L);
+   public static final TxChange ARTIFACT_DELETED = internalCreate(3L);
 
-   private TxChange(int value) {
-      this.value = value;
+   public static TxChange valueOf(int id) {
+      switch (id) {
+         case 0:
+            return NOT_CURRENT;
+         case 1:
+            return CURRENT;
+         case 2:
+            return DELETED;
+         case 3:
+            return ARTIFACT_DELETED;
+         default:
+            return SENTINEL;
+      }
    }
 
-   public int getValue() {
-      return value;
-   }
+   /**
+    * This method is only public because all methods in an interface are and it should never be called outside of this
+    * interface
+    */
+   public static TxChange internalCreate(Long id) {
+      final class TxChangeImpl extends BaseId implements TxChange, Comparable<TxChange> {
+         public TxChangeImpl(Long id) {
+            super(id);
+         }
 
-   public boolean isDeleted() {
-      return this == DELETED || this == ARTIFACT_DELETED;
-   }
-
-   public boolean isCurrent() {
-      return this != TxChange.NOT_CURRENT;
-   }
-
-   public static TxChange getChangeType(int value) throws OseeArgumentException {
-      for (TxChange change : values()) {
-         if (change.getValue() == value) {
-            return change;
+         @Override
+         public int compareTo(TxChange o) {
+            return getId().compareTo(o.getId());
          }
       }
-      throw new OseeArgumentException("[%s] does not correspond to any defined ModificationType enumerations", value);
+      return new TxChangeImpl(id);
    }
 
    public static TxChange getCurrent(ModificationType type) {
-      TxChange txChange = null;
+      TxChange txChange;
 
       if (type == ModificationType.DELETED) {
          txChange = TxChange.DELETED;
@@ -60,5 +72,13 @@ public enum TxChange {
          txChange = TxChange.CURRENT;
       }
       return txChange;
+   }
+
+   default boolean isDeleted() {
+      return this == DELETED || this == ARTIFACT_DELETED;
+   }
+
+   default boolean isCurrent() {
+      return this != TxChange.NOT_CURRENT;
    }
 }

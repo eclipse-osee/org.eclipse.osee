@@ -281,8 +281,8 @@ public class TypesEndpointImpl implements TypesEndpoint {
             sheet.setAttrId(stmt2.getInt("attr_id"));
             attrIds.add(new Long(sheet.getAttrId()).intValue());
             typeVersion.getSheets().add(sheet);
-         }, OrcsTypes.LOAD_OSEE_TYPE_DEF_URIS, CoreTupleTypes.OseeTypeDef, CoreBranches.COMMON,
-            TxChange.CURRENT.getValue(), typeVersion.getVersionNum(), TxChange.CURRENT.getValue());
+         }, OrcsTypes.LOAD_OSEE_TYPE_DEF_URIS, CoreTupleTypes.OseeTypeDef, CoreBranches.COMMON, TxChange.CURRENT,
+            typeVersion.getVersionNum(), TxChange.CURRENT);
 
       }, OrcsTypes.LOAD_OSEE_TYPE_VERSIONS, CoreTupleTypes.OseeTypeDef.getId());
 

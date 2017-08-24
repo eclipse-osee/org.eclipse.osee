@@ -40,9 +40,9 @@ import org.eclipse.osee.jdbc.JdbcConnection;
 public class UpdateMergeBranch extends AbstractDbTxOperation {
 
    private static final String TX_CURRENT_SETTINGS = "CASE" + //
-      " WHEN txs1.mod_type = " + ModificationType.DELETED.getValue() + " THEN " + TxChange.DELETED.getValue() + //
-      " WHEN txs1.mod_type = " + ModificationType.ARTIFACT_DELETED.getValue() + " THEN " + TxChange.ARTIFACT_DELETED.getValue() + //
-      " ELSE " + TxChange.CURRENT.getValue() + //
+      " WHEN txs1.mod_type = " + ModificationType.DELETED.getValue() + " THEN " + TxChange.DELETED + //
+      " WHEN txs1.mod_type = " + ModificationType.ARTIFACT_DELETED.getValue() + " THEN " + TxChange.ARTIFACT_DELETED + //
+      " ELSE " + TxChange.CURRENT + //
       " END";
 
    private static final String UPDATE_ARTIFACTS =
@@ -116,9 +116,8 @@ public class UpdateMergeBranch extends AbstractDbTxOperation {
       //Copy over any missing attributes
       TransactionId baselineTransaction = BranchManager.getBaseTransaction(mergeBranch);
       for (Artifact artifact : goodMergeBranchArtifacts) {
-         numberAttrUpdated +=
-            getJdbcClient().runPreparedUpdate(connection, UPDATE_ARTIFACTS, baselineTransaction, mergeBranch,
-               artifact.getArtId(), sourceBranch, TxChange.NOT_CURRENT.getValue(), mergeBranch, baselineTransaction);
+         numberAttrUpdated += getJdbcClient().runPreparedUpdate(connection, UPDATE_ARTIFACTS, baselineTransaction,
+            mergeBranch, artifact.getArtId(), sourceBranch, TxChange.NOT_CURRENT, mergeBranch, baselineTransaction);
       }
       if (DEBUG) {
          System.out.println(String.format("          Adding %d Attributes to Existing Artifacts took %s",
@@ -166,8 +165,7 @@ public class UpdateMergeBranch extends AbstractDbTxOperation {
    }
 
    private void insertGammas(JdbcConnection connection, String sql, TransactionId baseTx, int queryId, BranchId sourceBranch, BranchId mergeBranch) throws OseeCoreException {
-      getJdbcClient().runPreparedUpdate(connection, sql, baseTx, TxChange.CURRENT.getValue(), mergeBranch, sourceBranch,
-         queryId);
+      getJdbcClient().runPreparedUpdate(connection, sql, baseTx, TxChange.CURRENT, mergeBranch, sourceBranch, queryId);
    }
 
    private Collection<ArtifactId> getAllMergeArtifacts(BranchId branch) throws OseeCoreException {

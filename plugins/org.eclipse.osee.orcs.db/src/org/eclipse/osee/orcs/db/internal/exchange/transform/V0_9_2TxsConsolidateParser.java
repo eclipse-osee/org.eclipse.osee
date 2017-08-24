@@ -79,7 +79,7 @@ public class V0_9_2TxsConsolidateParser extends SaxTransformer {
          int modType = Integer.parseInt(attributes.getValue("mod_type"));
          ModificationType modificationType = ModificationType.getMod(modType);
          int transactionId = Integer.parseInt(attributes.getValue("transaction_id"));
-         TxChange txCurrent = TxChange.getChangeType(Integer.parseInt(attributes.getValue("tx_current")));
+         TxChange txCurrent = TxChange.valueOf(Integer.parseInt(attributes.getValue("tx_current")));
 
          return new Address(false, targetBranchId, -1, transactionId, gammaId, modificationType,
             ApplicabilityId.valueOf(1L), txCurrent);
