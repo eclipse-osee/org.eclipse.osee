@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.Adaptable;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
@@ -566,55 +567,39 @@ public class Artifact extends NamedIdBase implements IArtifact, Adaptable, Fully
     * @return attributes All attributes of the specified type name including deleted and artifact deleted
     */
    public final List<Attribute<?>> getAllAttributesIncludingHardDeleted(AttributeTypeId attributeType) throws OseeCoreException {
-      return getAttributesByModificationType(attributeType, ModificationType.getAllModTypes());
+      ensureAttributesLoaded();
+      return getAttributes((List<Attribute<?>>) attributes.getValues(attributeType), true);
    }
 
    /**
     * The use of this method is discouraged since it directly returns Attributes.
     */
-   public final List<Attribute<?>> getAttributes() throws OseeCoreException {
+   public final List<Attribute<?>> getAttributes() {
       return getAttributes(false);
    }
 
-   public final List<Attribute<?>> getAttributes(boolean includeDeleted) throws OseeCoreException {
-      List<Attribute<?>> attributes;
-      if (includeDeleted) {
-         attributes = getAttributesByModificationType(ModificationType.getAllModTypes());
-      } else {
-         attributes = getAttributesByModificationType(ModificationType.getAllNotHardDeletedTypes());
+   public final List<Attribute<?>> getAttributes(boolean includeDeleted) {
+      ensureAttributesLoaded();
+      return getAttributes(attributes.getValues(), includeDeleted);
+   }
+
+   private List<Attribute<?>> getAttributes(List<Attribute<?>> attributes, boolean includeDeleted) {
+      if (attributes == null) {
+         return java.util.Collections.emptyList();
       }
-      return attributes;
+      if (includeDeleted) {
+         return attributes;
+      }
+      return attributes.stream().filter(a -> !a.getModificationType().isHardDeleted()).collect(Collectors.toList());
    }
 
    /**
     * The use of this method is discouraged since it directly returns Attributes.
     */
    @Deprecated
-   public final <T> List<Attribute<T>> getAttributes(AttributeTypeId attributeType) throws OseeCoreException {
-      return Collections.castAll(
-         getAttributesByModificationType(attributeType, ModificationType.getAllNotHardDeletedTypes()));
-   }
-
-   private List<Attribute<?>> getAttributesByModificationType(Set<ModificationType> allowedModTypes) throws OseeCoreException {
+   public final <T> List<Attribute<T>> getAttributes(AttributeTypeId attributeType) {
       ensureAttributesLoaded();
-      return filterByModificationType(attributes.getValues(), allowedModTypes);
-   }
-
-   private List<Attribute<?>> getAttributesByModificationType(AttributeTypeId attributeType, Set<ModificationType> allowedModTypes) throws OseeCoreException {
-      ensureAttributesLoaded();
-      return filterByModificationType(attributes.getValues(attributeType), allowedModTypes);
-   }
-
-   private List<Attribute<?>> filterByModificationType(Collection<Attribute<?>> attributes, Set<ModificationType> allowedModTypes) {
-      List<Attribute<?>> filteredList = new ArrayList<>();
-      if (allowedModTypes != null && !allowedModTypes.isEmpty() && attributes != null && !attributes.isEmpty()) {
-         for (Attribute<?> attribute : attributes) {
-            if (allowedModTypes.contains(attribute.getModificationType())) {
-               filteredList.add(attribute);
-            }
-         }
-      }
-      return filteredList;
+      return Collections.castAll(getAttributes((List<Attribute<?>>) attributes.getValues(attributeType), false));
    }
 
    /**

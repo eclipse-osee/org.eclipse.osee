@@ -58,19 +58,18 @@ public class RelationNodeAdjacenciesTest {
    @Mock HasLocalId localId;
    // @formatter:on
 
-   private RelationNodeAdjacencies collection;
+   private final RelationNodeAdjacencies collection = new RelationNodeAdjacencies();
 
    @Before
    public void init() {
       MockitoAnnotations.initMocks(this);
-      collection = new RelationNodeAdjacencies();
-
       collection.add(TYPE_1, dirty);
       collection.add(TYPE_2, clean);
       collection.add(TYPE_3, deleted);
 
       when(dirty.isDirty()).thenReturn(true);
-
+      when(dirty.getModificationType()).thenReturn(ModificationType.NEW);
+      when(clean.getModificationType()).thenReturn(ModificationType.NEW);
       when(deleted.getModificationType()).thenReturn(ModificationType.ARTIFACT_DELETED);
       when(deleted.isDeleted()).thenReturn(true);
    }

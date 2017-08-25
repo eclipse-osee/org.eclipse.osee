@@ -176,6 +176,7 @@ public class RelationManagerTest {
       when(relation1.getRationale()).thenReturn("rationale on relation1");
       when(relation1.getOrcsData()).thenReturn(data1);
       when(relation1.getOrcsData().getLocalId()).thenReturn(10);
+      when(relation1.getModificationType()).thenReturn(ModificationType.NEW);
 
       when(relation2.getLocalIdForSide(RelationSide.SIDE_A)).thenReturn(11);
       when(relation2.getLocalIdForSide(RelationSide.SIDE_B)).thenReturn(33);
@@ -190,6 +191,7 @@ public class RelationManagerTest {
       when(relation3.getRationale()).thenReturn("rationale on relation3");
       when(relation3.getOrcsData()).thenReturn(data3);
       when(relation3.getOrcsData().getLocalId()).thenReturn(12);
+      when(relation3.getModificationType()).thenReturn(ModificationType.NEW);
 
       when(relation4.getLocalIdForSide(RelationSide.SIDE_A)).thenReturn(11);
       when(relation4.getLocalIdForSide(RelationSide.SIDE_B)).thenReturn(55);
@@ -197,6 +199,7 @@ public class RelationManagerTest {
       when(relation4.getRationale()).thenReturn("rationale on relation4");
       when(relation4.getOrcsData()).thenReturn(data4);
       when(relation4.getOrcsData().getLocalId()).thenReturn(13);
+      when(relation4.getModificationType()).thenReturn(ModificationType.NEW);
 
       setupAdjacencies(node1, relation1, relation2, relation3, relation4);
       setupAdjacencies(node2, relation1);

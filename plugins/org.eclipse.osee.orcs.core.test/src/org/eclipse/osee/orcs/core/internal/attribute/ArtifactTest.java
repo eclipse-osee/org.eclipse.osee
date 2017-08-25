@@ -101,9 +101,12 @@ public class ArtifactTest {
 
       when(deleted.getModificationType()).thenReturn(ModificationType.ARTIFACT_DELETED);
       when(deleted.isDeleted()).thenReturn(true);
+      when(notDeleted.getModificationType()).thenReturn(ModificationType.NEW);
       when(notDeleted.getOrcsData()).thenReturn(attributeData);
+      when(notDeleted.getAttributeType()).thenReturn(attributeType);
       when(deleted.getOrcsData()).thenReturn(attributeData);
       when(differentType.getOrcsData()).thenReturn(attributeData);
+      when(differentType.getModificationType()).thenReturn(ModificationType.NEW);
 
       when(types.get(CoreArtifactTypes.GeneralData.getId())).thenReturn(CoreArtifactTypes.GeneralData);
       when(types.get(CoreArtifactTypes.CodeUnit.getId())).thenReturn(CoreArtifactTypes.CodeUnit);
@@ -408,7 +411,6 @@ public class ArtifactTest {
    @SuppressWarnings("unchecked")
    public void testDeleteSoleAttribute() throws OseeCoreException {
       when(attributeFactory.getMinOccurrenceLimit(attributeType)).thenReturn(0);
-      when(notDeleted.getAttributeType()).thenReturn(attributeType);
       when(notDeleted.getContainer()).thenReturn(artifact);
       artifact.add(attributeType, notDeleted);
       artifact.deleteSoleAttribute(attributeType);
@@ -419,8 +421,6 @@ public class ArtifactTest {
    @SuppressWarnings("unchecked")
    public void testDeleteSoleAttributeException() throws OseeCoreException {
       when(attributeFactory.getMinOccurrenceLimit(attributeType)).thenReturn(1);
-
-      when(notDeleted.getAttributeType()).thenReturn(attributeType);
       artifact.add(attributeType, notDeleted);
 
       thrown.expect(OseeStateException.class);

@@ -11,9 +11,6 @@
 
 package org.eclipse.osee.framework.core.enums;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**
@@ -57,8 +54,6 @@ public enum ModificationType {
    // This should never appear in the database, it is only used by the gui to show applicability changes
    APPLICABILITY("Applicability", 10);
 
-   private final static Set<ModificationType> ALL_NOT_HARD_DELETED = new HashSet<>();
-   private final static Set<ModificationType> ALL_MOD_TYPES = new HashSet<>();
    private int value;
    private String displayName;
 
@@ -121,25 +116,6 @@ public enum ModificationType {
    // Returns false for attributes and relations if artifact was deleted but the attribute or relation was not deleted
    public boolean isHardDeleted() {
       return this == DELETED;
-   }
-
-   public static Set<ModificationType> getAllNotHardDeletedTypes() {
-      if (ALL_NOT_HARD_DELETED.isEmpty()) {
-         synchronized (ALL_NOT_HARD_DELETED) {
-            ALL_NOT_HARD_DELETED.addAll(getAllModTypes());
-            ALL_NOT_HARD_DELETED.remove(ModificationType.DELETED);
-         }
-      }
-      return ALL_NOT_HARD_DELETED;
-   }
-
-   public static Set<ModificationType> getAllModTypes() {
-      if (ALL_MOD_TYPES.isEmpty()) {
-         synchronized (ALL_MOD_TYPES) {
-            ALL_MOD_TYPES.addAll(Arrays.asList(ModificationType.values()));
-         }
-      }
-      return ALL_MOD_TYPES;
    }
 
    public boolean isExistingVersionUsed() {

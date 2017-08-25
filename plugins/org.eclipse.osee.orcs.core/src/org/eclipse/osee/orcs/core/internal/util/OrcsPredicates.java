@@ -15,6 +15,8 @@ import static com.google.common.base.Predicates.contains;
 import static com.google.common.base.Predicates.containsPattern;
 import static com.google.common.base.Predicates.equalTo;
 import static com.google.common.base.Predicates.not;
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -25,8 +27,6 @@ import org.eclipse.osee.orcs.core.ds.Attribute;
 import org.eclipse.osee.orcs.core.internal.relation.Relation;
 import org.eclipse.osee.orcs.data.HasDeleteState;
 import org.eclipse.osee.orcs.data.Modifiable;
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 
 /**
  * @author Roberto E. Escobar
@@ -145,8 +145,7 @@ public final class OrcsPredicates {
 
          if (flag == DeletionFlag.INCLUDE_HARD_DELETED) {
             result = true;
-         } else if (flag == DeletionFlag.INCLUDE_DELETED && ModificationType.getAllNotHardDeletedTypes().contains(
-            modificationType)) {
+         } else if (flag == DeletionFlag.INCLUDE_DELETED && !modificationType.isHardDeleted()) {
             result = true;
          } else {
             result = !data.isDeleted();

@@ -76,7 +76,7 @@ public class DeleteInvalidAttributeTypesFromBranch extends AbstractBlam {
    }
 
    private void delete(Artifact art, AttributeType attrType) throws OseeCoreException {
-      List<Attribute<?>> attrs = art.getAttributes(false);
+      List<Attribute<?>> attrs = art.getAttributes();
       for (Attribute<?> attr : attrs) {
          if (attr.isOfType(attrType)) {
             attr.delete();
