@@ -46,6 +46,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
 
    private final JdbcClient client;
    private boolean isMCDC;
+   private boolean isBranchCoverage;
 
    public VCastDataStoreImpl(JdbcClient client) {
       super();
@@ -411,7 +412,8 @@ public class VCastDataStoreImpl implements VCastDataStore {
             Integer line = stmt.getInt("line");
             Integer hit_count = stmt.getInt("hit_count");
             Integer max_hit_count = stmt.getInt("max_hit_count");
-            toReturn.add(new VCastStatementCoverage(id, function_id, line, hit_count, max_hit_count, false, "", ""));
+            toReturn.add(
+               new VCastStatementCoverage(id, function_id, line, hit_count, max_hit_count, false, "", "", -1));
          }
 
       } finally {
@@ -533,6 +535,8 @@ public class VCastDataStoreImpl implements VCastDataStore {
    public Collection<VCastStatementCoverage> getStatementCoverageLines(VCastFunction function) throws OseeCoreException {
       if (isMCDC) {
          return getStatementCoverageLinesWithMCDC(function);
+      } else if (isBranchCoverage) {
+         return getStatementCoverageLinesWithBranch(function);
       } else {
          Collection<VCastStatementCoverage> toReturn = new ArrayList<>();
 
@@ -545,7 +549,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
                Integer hit_count = stmt.getInt("hit_count");
                Integer max_hit_count = stmt.getInt("max_hit_count");
                toReturn.add(
-                  new VCastStatementCoverage(id, function.getId(), line, hit_count, max_hit_count, false, "", ""));
+                  new VCastStatementCoverage(id, function.getId(), line, hit_count, max_hit_count, false, "", "", -1));
             }
 
          } finally {
@@ -553,6 +557,35 @@ public class VCastDataStoreImpl implements VCastDataStore {
          }
          return toReturn;
       }
+   }
+
+   private Collection<VCastStatementCoverage> getStatementCoverageLinesWithBranch(VCastFunction function) {
+      Collection<VCastStatementCoverage> toReturn = new ArrayList<>();
+      JdbcStatement stmt = getStatement();
+      try {
+      // @formatter:off
+         String query =
+            "SELECT sc.id as sc_id, sc.hit_count, sc.max_hit_count, sc.line, branch.num_conditions" +
+            " FROM statement_coverage sc left outer join branch_coverage branch on (sc.function_id = branch.function_id)" +
+            " where sc.function_id = ?";
+         // @formatter:on
+
+         stmt.runPreparedQuery(query, function.getId());
+         while (stmt.next()) {
+            Integer id = stmt.getInt("sc_id");
+            Integer line = stmt.getInt("line");
+            Integer hit_count = stmt.getInt("hit_count");
+            Integer max_hit_count = stmt.getInt("max_hit_count");
+            Integer num_conditions = stmt.getInt("num_conditions");
+            toReturn.add(new VCastStatementCoverage(id, function.getId(), line, hit_count, max_hit_count, false, "", "",
+               num_conditions));
+         }
+      } catch (Exception ex) {
+         System.out.println(ex);
+      } finally {
+         stmt.close();
+      }
+      return toReturn;
    }
 
    private Collection<VCastStatementCoverage> getStatementCoverageLinesWithMCDC(VCastFunction function) {
@@ -594,7 +627,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
                variableFullName = null;
             }
             toReturn.add(new VCastStatementCoverage(id, function.getId(), line, hit_count, max_hit_count, isMCDCPair,
-               variableFullName, condExpression));
+               variableFullName, condExpression, -1));
          }
 
       } catch (Exception ex) {
@@ -670,6 +703,27 @@ public class VCastDataStoreImpl implements VCastDataStore {
    @Override
    public boolean getIsMCDC() {
       return isMCDC;
+   }
+
+   @Override
+   public void setIsBranch() {
+      JdbcStatement stmt = getStatement();
+      try {
+         stmt.runPreparedQuery("SELECT COUNT(1) FROM branch_coverage");
+         if (stmt.next()) {
+            if (stmt.getInt("count(1)") > 0) {
+               isBranchCoverage = true;
+            }
+         }
+
+      } finally {
+         stmt.close();
+      }
+   }
+
+   @Override
+   public boolean getIsBranchCoverage() {
+      return isBranchCoverage;
    }
 
 }

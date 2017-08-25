@@ -22,6 +22,8 @@ public class VCastValidateDatFileSyntax {
    private final static Pattern threeNumbersPattern = Pattern.compile("\\s*([0-9]+)\\s+([0-9]+)\\s+([0-9]+)");
    private final static Pattern fiveNumbersPattern =
       Pattern.compile("\\s*([0-9]+)\\s+([0-9]+)\\s+([0-9]+)\\s+([0-9]+)\\s+([0-9]+)");
+   private final static Pattern threeNumbersPlusTokenPattern =
+      Pattern.compile("\\s*([0-9]+)\\s+([0-9]+)\\s+([0-9]+)\\s+(T|F)");
 
    /**
     * Verify a line of text from the VCast DAT file which for statement coverage (Level C) should be of the format:<br>
@@ -37,7 +39,7 @@ public class VCastValidateDatFileSyntax {
 
       int count = st.countTokens();
 
-      if (count != 3 && count != 5) {
+      if (count != 3 && count != 4 && count != 5) {
          return new Result(false,
             "VCastVerifyDatFileSyntax.validateDatFileSyntax() - WARNING: DAT file line has to many parameters: [" + line + "]");
       }
@@ -49,6 +51,15 @@ public class VCastValidateDatFileSyntax {
                "VCastVerifyDatFileSyntax.validateDatFileSyntax() - WARNING: DAT file line has 1 or more parameters that are not numeric: [" + line + "]");
          }
       }
+
+      if (count == 4) {
+         Matcher threeNumberPlusTokenMatcher = threeNumbersPlusTokenPattern.matcher(line);
+         if (threeNumberPlusTokenMatcher.groupCount() != 4) {
+            return new Result(false,
+               "VCastVerifyDatFileSyntax.validateDatFileSyntax() - WARNING: DAT file line has 1 or more parameters that are not numeric + token: [" + line + "]");
+         }
+      }
+
       if (count == 5) {
          Matcher threeNumbersMatcher = threeNumbersPattern.matcher(line);
          if (threeNumbersMatcher.groupCount() != 3) {
@@ -56,6 +67,7 @@ public class VCastValidateDatFileSyntax {
                "VCastVerifyDatFileSyntax.validateDatFileSyntax() - WARNING: DAT file line has 1 or more parameters that are not numeric: [" + line + "]");
          }
       }
+
       return Result.TrueResult;
    }
 }

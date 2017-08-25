@@ -63,6 +63,8 @@ public class LisFileParser implements DispoImporterApi {
    private static final Pattern fileMethod5LineNumberPattern =
       Pattern.compile("\\s*([0-9]+)\\s+([0-9]+)\\s+([0-9]+)\\s+([0-9]+)\\s+([0-9]+)");
    private static final Pattern fileMethod3LineNumberPattern = Pattern.compile("\\s*([0-9]+)\\s+([0-9]+)\\s+([0-9]+)");
+   private final static Pattern fileMethod4LineNumberPlusTokenPattern =
+      Pattern.compile("\\s*([0-9]+)\\s+([0-9]+)\\s+([0-9]+)\\s+(T|F)");
    private final Map<String, DispoItemData> datIdToItem = new HashMap<>();
    private final Set<String> datIdsCoveredByException = new HashSet<>();
    private final Set<String> alreadyUsedDatIds = new HashSet<>();
@@ -84,6 +86,7 @@ public class LisFileParser implements DispoImporterApi {
       VCastDataStore dataStore = VCastClient.newDataStore(f.getAbsolutePath());
 
       dataStore.setIsMCDC();
+      dataStore.setIsBranch();
 
       Collection<VCastInstrumentedFile> instrumentedFiles = getInstrumentedFiles(dataStore, report);
 
@@ -305,10 +308,16 @@ public class LisFileParser implements DispoImporterApi {
             }
 
          } else {
-            location = String.valueOf(lineNumber);
             text = lineData.getFirst().trim();
-            addDiscrepancy(discrepancies, location, text);
-            // Is covered by exception handling, pass as parameter from DispoApiImpl does not apply to MCDC
+            if (statementCoverageItem.getNumConditions() == 2) {
+               location = String.format("%s.%s", lineNumber, "T");
+               addDiscrepancy(discrepancies, location, text);
+               location = String.format("%s.%s", lineNumber, "F");
+               addDiscrepancy(discrepancies, location, text);
+            } else {
+               location = String.valueOf(lineNumber);
+               addDiscrepancy(discrepancies, location, text);
+            }
          }
          if (lineData.getSecond()) {
             String datId = generateDatId(fileNum, functionNum, location);
@@ -368,6 +377,11 @@ public class LisFileParser implements DispoImporterApi {
                            if (m.find()) {
                               processSingleResult(resultPath, m);
                            }
+                        } else if (count == 4) {
+                           Matcher m = fileMethod4LineNumberPlusTokenPattern.matcher(resultsLine);
+                           if (m.find()) {
+                              processSingleResultBranch(resultPath, m);
+                           }
                         } else if (count == 5) {
                            Matcher m = fileMethod5LineNumberPattern.matcher(resultsLine);
                            if (m.find()) {
@@ -414,6 +428,21 @@ public class LisFileParser implements DispoImporterApi {
          }
       }
 
+   }
+
+   private void processSingleResultBranch(String resultPath, Matcher m) {
+      DispoItemData item = datIdToItem.get(generateDatId(m.group(1), m.group(2)));
+      if (item != null) {
+         String location = m.group(3) + "." + m.group(4);
+         Discrepancy matchingDiscrepancy = matchDiscrepancy(location, item.getDiscrepanciesList());
+         if (matchingDiscrepancy != null) {
+            String text = matchingDiscrepancy.getText();
+            Map<String, Discrepancy> discrepancies = item.getDiscrepanciesList();
+            discrepancies.remove(matchingDiscrepancy.getId());
+            item.setDiscrepanciesList(discrepancies);
+            addAnnotationForForCoveredLine(item, location, Test_Unit_Resolution, resultPath, text);
+         }
+      }
    }
 
    private void processSingleResultMCDC(String resultPath, Matcher m) {

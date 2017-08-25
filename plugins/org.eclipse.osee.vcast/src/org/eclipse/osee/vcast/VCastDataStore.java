@@ -89,4 +89,8 @@ public interface VCastDataStore {
    void setIsMCDC();
 
    boolean getIsMCDC();
+
+   void setIsBranch();
+
+   boolean getIsBranchCoverage();
 }
