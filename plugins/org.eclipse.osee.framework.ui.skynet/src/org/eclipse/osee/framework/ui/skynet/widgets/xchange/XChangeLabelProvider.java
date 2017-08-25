@@ -75,9 +75,9 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
          } else if (cCol.equals(ChangeXViewerFactory.Change_Type)) {
             ChangeItem changeItem = change.getChangeItem();
             if (changeItem != null && changeItem.getIgnoreType().isDeletedOnDestAndNotResurrected()) {
-               return ModificationType.DELETED_ON_DESTINATION.getDisplayName();
+               return ModificationType.DELETED_ON_DESTINATION.getName();
             } else {
-               return change.getModificationType().getDisplayName();
+               return change.getModificationType().getName();
             }
          } else if (cCol.equals(ChangeXViewerFactory.Item_Kind)) {
             return change.getItemKind();

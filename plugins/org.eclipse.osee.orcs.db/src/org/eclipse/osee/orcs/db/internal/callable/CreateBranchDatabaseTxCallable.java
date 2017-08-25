@@ -248,10 +248,10 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
          while (chStmt.next()) {
             Long gamma = chStmt.getLong("gamma_id");
             if (!gammas.contains(gamma)) {
-               ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
+               ModificationType modType = ModificationType.valueOf(chStmt.getInt("mod_type"));
                Long appId = chStmt.getLong("app_id");
                TxChange txCurrent = TxChange.getCurrent(modType);
-               addressing.addToBatch(baseTxId, gamma, modType.getValue(), txCurrent, branchId, appId);
+               addressing.addToBatch(baseTxId, gamma, modType, txCurrent, branchId, appId);
                gammas.add(gamma);
             }
          }

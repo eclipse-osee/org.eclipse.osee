@@ -119,7 +119,7 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
          } else {
             sb.append(txsAlias);
             sb.append(".mod_type <> ");
-            sb.append(String.valueOf(ModificationType.DELETED.getValue()));
+            sb.append(ModificationType.DELETED.getIdString());
          }
       } else {
          sb.append(txsAlias);

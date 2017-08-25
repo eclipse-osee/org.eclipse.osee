@@ -102,10 +102,10 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
    private static final String UPDATE_TXS_PREVIOUS =
       "UPDATE osee_txs SET tx_current = 0 WHERE gamma_id = ? AND transaction_id = ?";
    private static final String UPDATE_TXS_CURRENT =
-      "UPDATE osee_txs SET tx_current = " + TxChange.ARTIFACT_DELETED + ", mod_type = " + ModificationType.ARTIFACT_DELETED.getValue() + " WHERE gamma_id = ? AND transaction_id = ?";
+      "UPDATE osee_txs SET tx_current = " + TxChange.ARTIFACT_DELETED + ", mod_type = " + ModificationType.ARTIFACT_DELETED.getIdString() + " WHERE gamma_id = ? AND transaction_id = ?";
 
    private static final String INSERT_TXS =
-      "INSERT INTO osee_txs (gamma_id, transaction_id, tx_current, mod_type, branch_id) VALUES (?, ?, " + TxChange.ARTIFACT_DELETED + ", " + ModificationType.ARTIFACT_DELETED.getValue() + ", ?)";
+      "INSERT INTO osee_txs (gamma_id, transaction_id, tx_current, mod_type, branch_id) VALUES (?, ?, " + TxChange.ARTIFACT_DELETED + ", " + ModificationType.ARTIFACT_DELETED.getIdString() + ", ?)";
 
    private static final String[] COLUMN_HEADERS = {
       "Rel Link ID",

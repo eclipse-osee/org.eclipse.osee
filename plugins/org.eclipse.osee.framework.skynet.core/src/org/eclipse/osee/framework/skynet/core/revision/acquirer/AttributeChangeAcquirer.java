@@ -115,7 +115,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
             AttributeTypeToken attributeType = AttributeTypeManager.getTypeByGuid(chStmt.getLong("attr_type_id"));
             ArtifactTypeId artifactType = ArtifactTypeId.valueOf(chStmt.getLong("art_type_id"));
             String isValue = chStmt.getString("is_value");
-            ModificationType modificationType = ModificationType.getMod(chStmt.getInt("mod_type"));
+            ModificationType modificationType = ModificationType.valueOf(chStmt.getInt("mod_type"));
 
             if (artModTypes.containsKey(artId)) {
                artModType = artModTypes.get(artId);

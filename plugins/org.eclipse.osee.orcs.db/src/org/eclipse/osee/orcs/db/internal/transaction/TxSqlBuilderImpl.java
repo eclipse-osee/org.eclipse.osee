@@ -195,8 +195,8 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
       VersionData data = orcsData.getVersion();
       ModificationType modType = orcsData.getModType();
 
-      addRow(SqlOrderEnum.TXS, data.getTransactionId(), data.getGammaId(), modType.getValue(),
-         TxChange.getCurrent(modType), data.getBranch(), orcsData.getApplicabilityId());
+      addRow(SqlOrderEnum.TXS, data.getTransactionId(), data.getGammaId(), modType, TxChange.getCurrent(modType),
+         data.getBranch(), orcsData.getApplicabilityId());
 
       if (key.hasTxNotCurrentQuery()) {
          IdJoinQuery join = txNotCurrentsJoin.get(key);

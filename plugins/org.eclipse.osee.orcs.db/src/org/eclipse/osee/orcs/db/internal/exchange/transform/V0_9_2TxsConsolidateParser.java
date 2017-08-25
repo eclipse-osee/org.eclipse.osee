@@ -77,7 +77,7 @@ public class V0_9_2TxsConsolidateParser extends SaxTransformer {
    private Address createAddress(Attributes attributes, long gammaId) throws XMLStreamException {
       try {
          int modType = Integer.parseInt(attributes.getValue("mod_type"));
-         ModificationType modificationType = ModificationType.getMod(modType);
+         ModificationType modificationType = ModificationType.valueOf(modType);
          int transactionId = Integer.parseInt(attributes.getValue("transaction_id"));
          TxChange txCurrent = TxChange.valueOf(Integer.parseInt(attributes.getValue("tx_current")));
 

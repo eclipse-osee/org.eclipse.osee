@@ -143,7 +143,7 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
       Consumer<JdbcStatement> consumer = stmt -> {
          checkForCancelled();
          GammaId gammaId = GammaId.valueOf(stmt.getLong("gamma_id"));
-         ModificationType modType = ModificationType.getMod(stmt.getInt("mod_type"));
+         ModificationType modType = ModificationType.valueOf(stmt.getInt("mod_type"));
          ApplicabilityId appId = ApplicabilityId.valueOf(stmt.getLong("app_id"));
          int tableType = stmt.getInt("table_type");
          Long itemId = stmt.getLong("item_id");
@@ -218,7 +218,7 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
             change.getNetChange().setModType(ModificationType.MERGED);
             change.getNetChange().setApplicabilityToken(getApplicabilityToken(appId));
          } else {
-            change.getDestinationVersion().setModType(ModificationType.getMod(stmt.getInt("mod_type")));
+            change.getDestinationVersion().setModType(ModificationType.valueOf(stmt.getInt("mod_type")));
             change.getDestinationVersion().setGammaId(gammaId);
             change.getDestinationVersion().setApplicabilityToken(getApplicabilityToken(appId));
          }
@@ -266,7 +266,7 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
             Integer tableType = chStmt.getInt("table_type");
             Long transactionId = chStmt.getLong("transaction_id");
             ApplicabilityId appId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));
-            ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
+            ModificationType modType = ModificationType.valueOf(chStmt.getInt("mod_type"));
             GammaId gammaId = GammaId.valueOf(chStmt.getLong("gamma_id"));
 
             String value = chStmt.getString("value");

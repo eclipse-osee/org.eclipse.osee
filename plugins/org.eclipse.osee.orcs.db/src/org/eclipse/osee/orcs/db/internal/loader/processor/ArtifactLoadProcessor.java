@@ -42,7 +42,7 @@ public class ArtifactLoadProcessor extends LoadProcessor<ArtifactData, ArtifactO
       CreateConditions onCreate = asConditions(conditions);
       if (!onCreate.isSame(branch, artifactId)) {
 
-         ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
+         ModificationType modType = ModificationType.valueOf(chStmt.getInt("mod_type"));
          ApplicabilityId applicId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));
          // assumption: SQL is returning unwanted deleted artifacts only in the historical case
          boolean historical = OptionsUtil.isHistorical(options);

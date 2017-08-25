@@ -165,7 +165,7 @@ public class InvalidTxCurrentsAndModTypesCallable extends AbstractDatastoreTxCal
 
       Consumer<JdbcStatement> consumer = stmt -> {
          checkForCancelled();
-         ModificationType modType = ModificationType.getMod(stmt.getInt("mod_type"));
+         ModificationType modType = ModificationType.valueOf(stmt.getInt("mod_type"));
          TxChange txCurrent = TxChange.valueOf(stmt.getInt("tx_current"));
          TransactionDetailsType type = TransactionDetailsType.toEnum(stmt.getInt("tx_type"));
          ApplicabilityId appId = ApplicabilityId.valueOf(stmt.getLong("app_id"));

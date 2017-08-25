@@ -40,8 +40,8 @@ import org.eclipse.osee.jdbc.JdbcConnection;
 public class UpdateMergeBranch extends AbstractDbTxOperation {
 
    private static final String TX_CURRENT_SETTINGS = "CASE" + //
-      " WHEN txs1.mod_type = " + ModificationType.DELETED.getValue() + " THEN " + TxChange.DELETED + //
-      " WHEN txs1.mod_type = " + ModificationType.ARTIFACT_DELETED.getValue() + " THEN " + TxChange.ARTIFACT_DELETED + //
+      " WHEN txs1.mod_type = " + ModificationType.DELETED.getIdString() + " THEN " + TxChange.DELETED + //
+      " WHEN txs1.mod_type = " + ModificationType.ARTIFACT_DELETED.getIdString() + " THEN " + TxChange.ARTIFACT_DELETED + //
       " ELSE " + TxChange.CURRENT + //
       " END";
 

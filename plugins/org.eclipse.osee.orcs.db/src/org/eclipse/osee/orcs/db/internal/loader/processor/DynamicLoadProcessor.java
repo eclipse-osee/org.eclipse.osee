@@ -186,7 +186,7 @@ public class DynamicLoadProcessor extends AbstractLoadProcessor<DynamicDataHandl
    }
 
    private ModificationType getModType(JdbcStatement chStmt, String columnName) {
-      return ModificationType.getMod(chStmt.getInt(columnName));
+      return ModificationType.valueOf(chStmt.getInt(columnName));
    }
 
    private TxChange getTxCurrent(JdbcStatement chStmt, String columnName) {

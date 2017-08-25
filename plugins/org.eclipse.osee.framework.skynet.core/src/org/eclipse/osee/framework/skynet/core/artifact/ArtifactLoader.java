@@ -217,7 +217,7 @@ public final class ArtifactLoader {
             // assumption: sql is returning rows ordered by branch_id, art_id, transaction_id in descending order
             if (previousArtId.notEqual(artId) || previousBranchId.notEqual(branch) || !previousViewId.equals(viewId)) {
                // assumption: sql is returning unwanted deleted artifacts only in the historical case
-               if (!historical || allowDeleted == DeletionFlag.INCLUDE_DELETED || ModificationType.getMod(
+               if (!historical || allowDeleted == DeletionFlag.INCLUDE_DELETED || ModificationType.valueOf(
                   chStmt.getInt("mod_type")) != ModificationType.DELETED) {
                   Artifact artifact = retrieveShallowArtifact(chStmt, reload, historical, isArchived);
                   loadedItems.add(artifact);
@@ -344,12 +344,12 @@ public final class ArtifactLoader {
 
          artifact =
             factory.loadExisitingArtifact(artifactId, chStmt.getString("guid"), artifactType, chStmt.getInt("gamma_id"),
-               branch, transactionId, ModificationType.getMod(chStmt.getInt("mod_type")), appId, historical);
+               branch, transactionId, ModificationType.valueOf(chStmt.getInt("mod_type")), appId, historical);
       }
 
       if (reload == LoadType.RELOAD_CACHE) {
          artifact.internalSetPersistenceData(chStmt.getInt("gamma_id"), transactionId,
-            ModificationType.getMod(chStmt.getInt("mod_type")), appId, historical, false);
+            ModificationType.valueOf(chStmt.getInt("mod_type")), appId, historical, false);
       }
       return artifact;
    }

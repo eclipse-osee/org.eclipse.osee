@@ -168,7 +168,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
 
       if (isNextAddressing(netGammaId, transactionId)) {
          if (updatedAddressing) {
-            updateAddressing.addToBatch(previousNetGammaId, netModType.getValue(), netTxCurrent, previousBranchId,
+            updateAddressing.addToBatch(previousNetGammaId, netModType, netTxCurrent, previousBranchId,
                previousTransactionId, previousObsoleteGammaId);
          }
          updatedAddressing = obsoleteGammaId != netGammaId;
@@ -176,11 +176,11 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
          previousObsoleteGammaId = obsoleteGammaId;
          previousTransactionId = transactionId;
          previousBranchId = branchId;
-         netModType = ModificationType.getMod(modType);
+         netModType = ModificationType.valueOf(modType);
          netTxCurrent = txCurrent;
       } else {
          deleteAddressing.addToBatch(branchId, transactionId, obsoleteGammaId);
-         computeNetAddressing(ModificationType.getMod(modType), txCurrent);
+         computeNetAddressing(ModificationType.valueOf(modType), txCurrent);
       }
 
       writeAddressingBackup(obsoleteGammaId, transactionId, netGammaId, modType, txCurrent);

@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.attribute;
 
+import static org.eclipse.osee.framework.core.enums.ModificationType.ARTIFACT_DELETED;
+import static org.eclipse.osee.framework.core.enums.ModificationType.DELETED;
+import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -18,6 +21,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -253,7 +257,7 @@ public class ArtifactTest {
 
    @Test
    public void testIsDeleted() {
-      for (ModificationType modType : ModificationType.values()) {
+      for (ModificationType modType : Arrays.asList(ARTIFACT_DELETED, DELETED, NEW)) {
          reset(artifactData);
          when(artifactData.getModType()).thenReturn(modType);
          Assert.assertEquals(modType.isDeleted(), artifact.isDeleted());

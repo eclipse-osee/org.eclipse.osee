@@ -11,13 +11,16 @@
 
 package org.eclipse.osee.framework.core.model.change;
 
+import static org.eclipse.osee.framework.core.enums.ModificationType.ARTIFACT_DELETED;
+import static org.eclipse.osee.framework.core.enums.ModificationType.DELETED;
+import static org.eclipse.osee.framework.core.enums.ModificationType.INTRODUCED;
+import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
@@ -227,7 +230,7 @@ public class ChangeItemUtilTest {
    @Test
    public void testIsNewIntroducedDeleted() {
       ChangeVersion object1 = ChangeTestUtility.createChange(200L, null);
-      for (ModificationType modType : ModificationType.values()) {
+      for (ModificationType modType : Arrays.asList(ARTIFACT_DELETED, DELETED, NEW, INTRODUCED)) {
          object1.setModType(null);
          Assert.assertNull(object1.getModType());
 
@@ -237,10 +240,9 @@ public class ChangeItemUtilTest {
 
          object1.setModType(modType);
          Assert.assertEquals(modType, object1.getModType());
-         Assert.assertEquals(modType == ModificationType.NEW, ChangeItemUtil.isNew(object1));
-         Assert.assertEquals(modType == ModificationType.INTRODUCED, ChangeItemUtil.isIntroduced(object1));
-         Assert.assertEquals(modType == ModificationType.DELETED || modType == ModificationType.ARTIFACT_DELETED,
-            ChangeItemUtil.isDeleted(object1));
+         Assert.assertEquals(modType == NEW, ChangeItemUtil.isNew(object1));
+         Assert.assertEquals(modType == INTRODUCED, ChangeItemUtil.isIntroduced(object1));
+         Assert.assertEquals(modType == DELETED || modType == ARTIFACT_DELETED, ChangeItemUtil.isDeleted(object1));
       }
 
       Assert.assertEquals(false, ChangeItemUtil.isNew(null));
@@ -255,7 +257,7 @@ public class ChangeItemUtilTest {
       Assert.assertNull(object1.getModType());
       Assert.assertEquals(true, ChangeItemUtil.isModType(object1, null));
 
-      for (ModificationType modType : ModificationType.values()) {
+      for (ModificationType modType : Arrays.asList(ARTIFACT_DELETED, DELETED, NEW)) {
          object1.setModType(null);
          Assert.assertNull(object1.getModType());
          object1.setModType(modType);

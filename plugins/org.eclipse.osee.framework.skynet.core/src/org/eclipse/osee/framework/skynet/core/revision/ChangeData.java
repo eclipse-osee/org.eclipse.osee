@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -123,7 +122,6 @@ public class ChangeData {
       }
 
       Collection<ModificationType> modTypes = Arrays.asList(modificationType);
-      Conditions.checkExpressionFailOnTrue(modTypes.isEmpty(), "ModificationType must be specified");
 
       Set<Artifact> artifacts = new HashSet<>();
       if (kindType == KindType.Artifact || kindType == KindType.ArtifactOrRelation || kindType == KindType.Relation) {
@@ -165,17 +163,13 @@ public class ChangeData {
                 * of type Modified while attribute is of type merged. Only check attribute change for this case.
                 */
 
-               if ((kindType == KindType.Artifact || kindType == KindType.ArtifactOrRelation) && isAttributeChangeMergeType(
-                  change)) {
-                  if (modTypes.contains(modType)) {
+               if (modTypes.isEmpty() || modTypes.contains(modType)) {
+                  if ((kindType == KindType.Artifact || kindType == KindType.ArtifactOrRelation) && isAttributeChangeMergeType(
+                     change)) {
                      artifacts.add(artifact);
-                  }
-               } else if ((kindType == KindType.Artifact || kindType == KindType.ArtifactOrRelation) && change instanceof ArtifactChange) {
-                  if (modTypes.contains(modType)) {
+                  } else if ((kindType == KindType.Artifact || kindType == KindType.ArtifactOrRelation) && change instanceof ArtifactChange) {
                      artifacts.add(artifact);
-                  }
-               } else if ((kindType == KindType.Relation || kindType == KindType.ArtifactOrRelation) && change instanceof RelationChange) {
-                  if (modTypes.contains(modType)) {
+                  } else if ((kindType == KindType.Relation || kindType == KindType.ArtifactOrRelation) && change instanceof RelationChange) {
                      artifacts.add(artifact);
                      RelationChange relChange = (RelationChange) change;
                      artifacts.add(relChange.getEndTxBArtifact());
@@ -218,11 +212,8 @@ public class ChangeData {
       try {
          StringBuilder sb = new StringBuilder();
          for (KindType kindType : KindType.values()) {
-            for (ModificationType modificationType : ModificationType.values()) {
-               Collection<Artifact> artifacts = getArtifacts(kindType, modificationType);
-               sb.append(String.format("Kind: %s ModType: %s Num: %s\n", kindType, modificationType.getDisplayName(),
-                  artifacts.size()));
-            }
+            Collection<Artifact> artifacts = getArtifacts(kindType);
+            sb.append(String.format("Kind: %s Num: %s\n", kindType, artifacts.size()));
          }
          return sb.toString();
       } catch (OseeCoreException ex) {

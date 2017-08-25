@@ -55,7 +55,7 @@ class RelationLoader {
 
             int gammaId = chStmt.getInt("gamma_id");
             String rationale = chStmt.getString("rationale");
-            ModificationType modificationType = ModificationType.getMod(chStmt.getInt("mod_type"));
+            ModificationType modificationType = ModificationType.valueOf(chStmt.getInt("mod_type"));
             ApplicabilityId applicabilityId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));
 
             RelationManager.getOrCreate(aArtifactId, bArtifactId, relationType, relationId, gammaId, rationale,

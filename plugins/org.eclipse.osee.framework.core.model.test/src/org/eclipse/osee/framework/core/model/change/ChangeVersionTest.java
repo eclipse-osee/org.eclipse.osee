@@ -97,7 +97,7 @@ public class ChangeVersionTest {
    public void testToString() {
       ChangeVersion actual1 =
          new ChangeVersion("hello", GammaId.valueOf(47L), ModificationType.MERGED, ApplicabilityToken.BASE);
-      Assert.assertEquals("[47,MERGED,Base]", actual1.toString());
+      Assert.assertEquals("[47,Merged,Base]", actual1.toString());
 
       ChangeVersion expected = new ChangeVersion();
       Assert.assertEquals("[null,null,null]", expected.toString());

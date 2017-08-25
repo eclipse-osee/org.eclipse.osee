@@ -64,7 +64,7 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
             } else if (cCol.equals(HistoryXViewerFactory.itemChange)) {
                toReturn = data.getItemKind();
             } else if (cCol.equals(HistoryXViewerFactory.modType)) {
-               toReturn = data.getModificationType().getDisplayName();
+               toReturn = data.getModificationType().getName();
             } else if (cCol.equals(HistoryXViewerFactory.itemId)) {
                toReturn = String.valueOf(data.getItemId());
             } else if (cCol.equals(HistoryXViewerFactory.was)) {

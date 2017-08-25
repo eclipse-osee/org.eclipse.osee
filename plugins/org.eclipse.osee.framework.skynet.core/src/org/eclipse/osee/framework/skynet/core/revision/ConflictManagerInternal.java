@@ -251,8 +251,8 @@ public class ConflictManagerInternal {
             ArtifactId nextArtId = ArtifactId.valueOf(chStmt.getLong("art_id"));
             int sourceGamma = chStmt.getInt("source_gamma");
             int destGamma = chStmt.getInt("dest_gamma");
-            ModificationType sourceModType = ModificationType.getMod(chStmt.getInt("source_mod_type"));
-            ModificationType destModType = ModificationType.getMod(chStmt.getInt("dest_mod_type"));
+            ModificationType sourceModType = ModificationType.valueOf(chStmt.getInt("source_mod_type"));
+            ModificationType destModType = ModificationType.valueOf(chStmt.getInt("dest_mod_type"));
             long artTypeId = chStmt.getLong("art_type_id");
 
             if (artId.notEqual(nextArtId)) {

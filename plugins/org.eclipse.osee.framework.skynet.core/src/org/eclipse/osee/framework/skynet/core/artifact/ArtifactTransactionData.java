@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -70,16 +71,11 @@ public class ArtifactTransactionData extends BaseTransactionData {
 
    @Override
    protected void internalAddToEvents(ArtifactEvent artifactEvent) {
-      switch (getModificationType()) {
-         case MODIFIED:
-            // transactionEvent populated in SkynetTransaction after all attribute changes have been made
-            break;
-         case DELETED:
-            artifactEvent.addArtifact(new EventBasicGuidArtifact(EventModType.Deleted, artifact));
-            break;
-         default:
-            artifactEvent.addArtifact(new EventBasicGuidArtifact(EventModType.Added, artifact));
-            break;
+      // for MODIFIED case transactionEvent populated in SkynetTransaction after all attribute changes have been made
+      if (getModificationType().equals(ModificationType.DELETED)) {
+         artifactEvent.addArtifact(new EventBasicGuidArtifact(EventModType.Deleted, artifact));
+      } else {
+         artifactEvent.addArtifact(new EventBasicGuidArtifact(EventModType.Added, artifact));
       }
    }
 

@@ -57,11 +57,6 @@ public class Relation implements RelationReadable, HasOrcsData<RelationData>, Or
    }
 
    @Override
-   public boolean isDeleted() {
-      return getModificationType().isDeleted();
-   }
-
-   @Override
    public void delete() {
       markAsChanged(ModificationType.DELETED);
    }

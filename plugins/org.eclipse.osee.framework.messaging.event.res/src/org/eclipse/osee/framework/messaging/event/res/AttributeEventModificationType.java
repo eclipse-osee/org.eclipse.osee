@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
  * <br>
  * TODO Should probably replace Modification Type or integrate guids in, but can't do cause ModificationType is
  * serializeable and can't change till 0.9.5
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AttributeEventModificationType {
@@ -77,6 +77,6 @@ public class AttributeEventModificationType {
 
    @Override
    public String toString() {
-      return modificationType.name();
+      return modificationType.getName();
    }
 }

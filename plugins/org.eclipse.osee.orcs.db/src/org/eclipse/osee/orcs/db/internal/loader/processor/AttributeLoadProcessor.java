@@ -51,7 +51,7 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
       int artId = chStmt.getInt("id2");
       int attrId = chStmt.getInt("attr_id");
       GammaId gammaId = GammaId.valueOf(chStmt.getLong("gamma_id"));
-      ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
+      ModificationType modType = ModificationType.valueOf(chStmt.getInt("mod_type"));
       ApplicabilityId applicId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));
 
       boolean historical = OptionsUtil.isHistorical(options);

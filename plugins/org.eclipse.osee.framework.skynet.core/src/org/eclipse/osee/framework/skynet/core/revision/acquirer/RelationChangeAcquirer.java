@@ -78,7 +78,7 @@ public class RelationChangeAcquirer extends ChangeAcquirer {
             int relLinkId = chStmt.getInt("rel_link_id");
 
             if (!getNewAndDeletedArtifactIds().contains(aArtId) && !getNewAndDeletedArtifactIds().contains(bArtId)) {
-               ModificationType modificationType = ModificationType.getMod(chStmt.getInt("mod_type"));
+               ModificationType modificationType = ModificationType.valueOf(chStmt.getInt("mod_type"));
                String rationale = modificationType != ModificationType.DELETED ? chStmt.getString("rationale") : "";
                getArtIds().add(aArtId);
                getArtIds().add(bArtId);

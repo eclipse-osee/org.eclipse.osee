@@ -71,7 +71,7 @@ public class ItemsDeletedWithNoOtherModification extends DatabaseHealthOperation
    private void loadData(String sql, TxChange txChange, ModificationType modificationType) throws OseeCoreException {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
-         chStmt.runPreparedQuery(sql, txChange, modificationType.getValue(), modificationType.getValue());
+         chStmt.runPreparedQuery(sql, txChange, modificationType, modificationType);
          while (chStmt.next()) {
             addressing.add(
                new LocalValues(chStmt.getInt("art_id"), chStmt.getInt("attr_id"), chStmt.getLong("branch_id"),

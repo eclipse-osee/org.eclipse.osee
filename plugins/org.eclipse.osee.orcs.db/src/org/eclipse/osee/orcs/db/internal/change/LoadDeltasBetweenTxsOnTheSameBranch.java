@@ -122,7 +122,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
       Consumer<JdbcStatement> consumer = stmt -> {
          checkForCancelled();
          GammaId gammaId = GammaId.valueOf(stmt.getLong("gamma_id"));
-         ModificationType modType = ModificationType.getMod(stmt.getInt("mod_type"));
+         ModificationType modType = ModificationType.valueOf(stmt.getInt("mod_type"));
          ApplicabilityId appId = ApplicabilityId.valueOf(stmt.getLong("app_id"));
          int tableType = stmt.getInt("table_type");
          Long itemId = stmt.getLong("item_id");
@@ -204,7 +204,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
          Integer tableType = stmt.getInt("table_type");
          GammaId gammaId = GammaId.valueOf(stmt.getLong("gamma_id"));
          ApplicabilityId appId = ApplicabilityId.valueOf(stmt.getLong("app_id"));
-         ModificationType modType = ModificationType.getMod(stmt.getInt("mod_type"));
+         ModificationType modType = ModificationType.valueOf(stmt.getInt("mod_type"));
          ChangeItem change = changesByItemId.get(tableType, itemId);
          change.getDestinationVersion().setModType(modType);
          change.getDestinationVersion().setGammaId(gammaId);

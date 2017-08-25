@@ -103,7 +103,7 @@ public class AttributeLoader {
          branch = BranchId.valueOf(chStmt.getLong("id1"));
          attrId = AttributeId.valueOf(chStmt.getLong("attr_id"));
          gammaId = chStmt.getInt("gamma_id");
-         modType = ModificationType.getMod(chStmt.getInt("mod_type"));
+         modType = ModificationType.valueOf(chStmt.getInt("mod_type"));
 
          transactionId = chStmt.getLong("transaction_id");
          attributeType = AttributeTypeId.valueOf(chStmt.getLong("attr_type_id"));

@@ -140,7 +140,7 @@ public class LoadSqlWriter extends AbstractSqlWriter {
             sb.append(txsAlias);
             sb.append(".mod_type");
             sb.append(" != ");
-            sb.append(String.valueOf(ModificationType.DELETED.getValue()));
+            sb.append(ModificationType.DELETED.getIdString());
          } else if (!areDeletedSame) {
             sb.append(" AND ");
             buildDeletedClause(sb, txsAlias);

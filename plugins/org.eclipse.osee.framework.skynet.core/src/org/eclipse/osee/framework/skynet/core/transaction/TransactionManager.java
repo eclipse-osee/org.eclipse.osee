@@ -396,7 +396,7 @@ public final class TransactionManager {
       BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
       Long gammaId = Long.valueOf(chStmt.getLong("gamma_id"));
       Integer artId = Integer.valueOf(chStmt.getInt("art_id"));
-      ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
+      ModificationType modType = ModificationType.valueOf(chStmt.getInt("mod_type"));
       AttributeId attrId = AttributeId.valueOf(chStmt.getLong("attr_id"));
       String value = chStmt.getString("value");
       return new AttributeRow(branch, gammaId, artId, modType, value, attrId, attributeType);
