@@ -318,7 +318,7 @@ public class WordMLApplicabilityHandler {
       String optionalEndBracket = null;
       boolean isValidBracket = false;
       if (applic.getType().equals(ApplicabilityType.Configuration)) {
-         int endBracketGroup = 60;
+         int endBracketGroup = 65;
          optionalEndBracket = matcher.group(endBracketGroup);
          isValidBracket = optionalEndBracket == null ? false : isValidConfigurationBracket(optionalEndBracket);
       } else {
