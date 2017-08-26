@@ -11,7 +11,7 @@
 package org.eclipse.osee.jaxrs.server.security;
 
 import javax.servlet.http.HttpSession;
-import org.eclipse.osee.framework.jdk.core.type.OseePrincipal;
+import org.eclipse.osee.account.admin.OseePrincipal;
 import org.eclipse.osee.jaxrs.server.session.SessionData;
 
 /**

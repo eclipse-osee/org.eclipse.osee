@@ -13,6 +13,7 @@ package org.eclipse.osee.account.rest.internal;
 import org.eclipse.osee.account.admin.Account;
 import org.eclipse.osee.account.admin.AccountPreferences;
 import org.eclipse.osee.account.admin.AccountSession;
+import org.eclipse.osee.account.admin.OseePrincipal;
 import org.eclipse.osee.account.admin.Subscription;
 import org.eclipse.osee.account.admin.SubscriptionGroup;
 import org.eclipse.osee.account.rest.model.AccountActiveData;
@@ -23,7 +24,6 @@ import org.eclipse.osee.account.rest.model.AccountSessionData;
 import org.eclipse.osee.account.rest.model.AccountSessionDetailsData;
 import org.eclipse.osee.account.rest.model.SubscriptionData;
 import org.eclipse.osee.account.rest.model.SubscriptionGroupData;
-import org.eclipse.osee.framework.jdk.core.type.OseePrincipal;
 
 /**
  * @author Roberto E. Escobar

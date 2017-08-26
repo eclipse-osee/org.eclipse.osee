@@ -20,6 +20,7 @@ import org.eclipse.osee.account.admin.Account;
 import org.eclipse.osee.account.admin.AccountAdmin;
 import org.eclipse.osee.account.admin.CreateAccountRequest;
 import org.eclipse.osee.account.admin.CreateAccountRequestBuilder;
+import org.eclipse.osee.account.admin.OseePrincipal;
 import org.eclipse.osee.authentication.admin.AuthenticatedUser;
 import org.eclipse.osee.authentication.admin.AuthenticationAdmin;
 import org.eclipse.osee.authentication.admin.AuthenticationRequest;
@@ -30,9 +31,7 @@ import org.eclipse.osee.authorization.admin.AuthorizationRequest;
 import org.eclipse.osee.authorization.admin.AuthorizationRequestBuilder;
 import org.eclipse.osee.authorization.admin.AuthorizationUser;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.OseePrincipal;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.SystemRoles;
 import org.eclipse.osee.jaxrs.server.security.JaxRsAuthenticator;
@@ -45,7 +44,6 @@ public class JaxRsAuthenticatorImpl implements JaxRsAuthenticator {
    private AuthenticationAdmin authenticationAdmin;
    private AuthorizationAdmin authorizationAdmin;
    private AccountAdmin accountAdmin;
-
    private volatile boolean automaticAccountCreationAllowed = DEFAULT_JAXRS_AUTH__ALLOW_AUTOMATIC_ACCOUNT_CREATION;
 
    public void setAuthenticationAdmin(AuthenticationAdmin authenticationAdmin) {
@@ -74,29 +72,11 @@ public class JaxRsAuthenticatorImpl implements JaxRsAuthenticator {
    }
 
    @Override
-   public OseePrincipal getAnonymousPrincipal() {
-      ResultSet<Account> result = accountAdmin.getAnonymousAccount();
-
-      OseePrincipal anonymous = null;
-      Account account = result.getOneOrNull();
-      if (account != null) {
-         Set<String> roles = new LinkedHashSet<>();
-         roles.add(SystemRoles.ROLES_ANONYMOUS);
-         // Get additional roles/permissions from authorization service;
-
-         // Preferences or other user specific properties
-         Map<String, String> properties = Collections.emptyMap();
-         anonymous = new OseePrincipalImpl(account.getUserName(), account, true, roles, properties);
-      }
-      return anonymous;
-   }
-
-   @Override
    public OseePrincipal authenticate(String scheme, String username, String password) {
       AuthenticationRequest request = AuthenticationRequestBuilder.newBuilder() //
-      .userName(username)//
-      .password(password)//
-      .build();
+         .userName(username)//
+         .password(password)//
+         .build();
 
       AuthenticatedUser subject = authenticationAdmin.authenticate(request);
       Account account = resolveAccount(username, subject, automaticAccountCreationAllowed);
@@ -112,9 +92,9 @@ public class JaxRsAuthenticatorImpl implements JaxRsAuthenticator {
       }
       // Get additional roles/permissions from authorization service;
       AuthorizationRequest authorizationRequest = AuthorizationRequestBuilder.newBuilder()//
-      .secure(true) //
-      .identifier(account.getId())//
-      .build();
+         .secure(true) //
+         .identifier(account.getId())//
+         .build();
 
       Authorization authorize = authorizationAdmin.authorize(authorizationRequest);
       AuthorizationUser authUser = (AuthorizationUser) authorize.getPrincipal();
@@ -125,7 +105,7 @@ public class JaxRsAuthenticatorImpl implements JaxRsAuthenticator {
 
       // Preferences or other user specific properties
       Map<String, String> properties = Collections.emptyMap();
-      return new OseePrincipalImpl(username, account, subject.isAuthenticated(), roles, properties);
+      return OseePrincipal.Anonymous;
    }
 
    private Account resolveAccount(String login, AuthenticatedUser subject, boolean accountCreationAllowed) {
@@ -134,11 +114,11 @@ public class JaxRsAuthenticatorImpl implements JaxRsAuthenticator {
       if (account == null) {
          if (subject.isAuthenticated() && accountCreationAllowed) {
             CreateAccountRequest request = CreateAccountRequestBuilder.newBuilder()//
-            .active(subject.isActive())//
-            .displayName(subject.getDisplayName())//
-            .email(subject.getEmailAddress())//
-            .userName(subject.getUserName())//
-            .build();
+               .active(subject.isActive())//
+               .displayName(subject.getDisplayName())//
+               .email(subject.getEmailAddress())//
+               .userName(subject.getUserName())//
+               .build();
             ArtifactId accountId = accountAdmin.createAccount(request);
             account = accountAdmin.getAccountById(accountId).getExactlyOne();
          } else {
@@ -160,73 +140,6 @@ public class JaxRsAuthenticatorImpl implements JaxRsAuthenticator {
          }
       }
       return toReturn;
-   }
-
-   private static final class OseePrincipalImpl extends BaseIdentity<Long> implements OseePrincipal {
-      private final String login;
-      private final Account data;
-      private final boolean authenticated;
-      private final Set<String> roles;
-      private final Map<String, String> properties;
-
-      public OseePrincipalImpl(String login, Account data, boolean authenticated, Set<String> roles, Map<String, String> properties) {
-         super(data.getId());
-         this.login = login;
-         this.data = data;
-         this.authenticated = authenticated;
-         this.roles = roles;
-         this.properties = properties;
-      }
-
-      @Override
-      public String getDisplayName() {
-         return data.getName();
-      }
-
-      @Override
-      public String getUserName() {
-         return data.getUserName();
-      }
-
-      @Override
-      public String getEmailAddress() {
-         return data.getEmail();
-      }
-
-      @Override
-      public boolean isActive() {
-         return data.isActive();
-      }
-
-      @Override
-      public Set<String> getRoles() {
-         return roles;
-      }
-
-      @Override
-      public boolean isAuthenticated() {
-         return authenticated;
-      }
-
-      @Override
-      public String getName() {
-         return getDisplayName();
-      }
-
-      @Override
-      public String getLogin() {
-         return login;
-      }
-
-      @Override
-      public Map<String, String> getProperties() {
-         return properties;
-      }
-
-      @Override
-      public String getOseeGuid() {
-         return data.getGuid();
-      }
    }
 
 }

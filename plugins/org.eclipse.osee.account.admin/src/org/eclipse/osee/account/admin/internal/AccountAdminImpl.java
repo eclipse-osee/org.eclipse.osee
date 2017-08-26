@@ -43,7 +43,6 @@ import org.eclipse.osee.logger.Log;
  * @author Roberto E. Escobar
  */
 public class AccountAdminImpl implements AccountAdmin {
-
    private Log logger;
    private AccountStorage storage;
    private AuthenticationAdmin authenticationAdmin;
@@ -228,10 +227,10 @@ public class AccountAdminImpl implements AccountAdmin {
 
    private String authenticate(AccountLoginRequest login) {
       AuthenticationRequest request = AuthenticationRequestBuilder.newBuilder()//
-      .scheme(login.getScheme())//
-      .userName(login.getUserName())//
-      .password(login.getPassword())//
-      .build();
+         .scheme(login.getScheme())//
+         .userName(login.getUserName())//
+         .password(login.getPassword())//
+         .build();
 
       AuthenticatedUser authenticate = authenticationAdmin.authenticate(request);
       return authenticate.getEmailAddress();
@@ -247,11 +246,6 @@ public class AccountAdminImpl implements AccountAdmin {
          modified = true;
       }
       return modified;
-   }
-
-   @Override
-   public ResultSet<Account> getAnonymousAccount() {
-      return storage.getAnonymousAccount();
    }
 
    @Override

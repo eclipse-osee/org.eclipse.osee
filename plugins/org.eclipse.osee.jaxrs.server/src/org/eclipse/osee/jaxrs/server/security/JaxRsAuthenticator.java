@@ -10,15 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs.server.security;
 
-import org.eclipse.osee.framework.jdk.core.type.OseePrincipal;
+import org.eclipse.osee.account.admin.OseePrincipal;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface JaxRsAuthenticator {
-
    OseePrincipal authenticate(String scheme, String username, String password);
-
-   OseePrincipal getAnonymousPrincipal();
-
 }

@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs.server.security;
 
+import org.eclipse.osee.account.admin.OseePrincipal;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.jdk.core.type.OseePrincipal;
 
 /**
  * @author Roberto E. Escobar

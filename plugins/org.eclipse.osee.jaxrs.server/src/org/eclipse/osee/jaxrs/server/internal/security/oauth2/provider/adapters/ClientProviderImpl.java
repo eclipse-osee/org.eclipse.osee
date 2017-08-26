@@ -24,7 +24,7 @@ import org.apache.cxf.io.CachedOutputStream;
 import org.apache.cxf.rs.security.oauth2.common.Client;
 import org.apache.cxf.rs.security.oauth2.common.UserSubject;
 import org.apache.cxf.rs.security.oauth2.utils.OAuthUtils;
-import org.eclipse.osee.framework.jdk.core.type.OseePrincipal;
+import org.eclipse.osee.account.admin.OseePrincipal;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.ClientProvider;

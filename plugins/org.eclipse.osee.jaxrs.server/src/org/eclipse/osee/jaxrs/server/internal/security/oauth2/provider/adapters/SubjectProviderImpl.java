@@ -29,7 +29,7 @@ import org.apache.cxf.rs.security.oauth2.provider.OAuthServiceException;
 import org.apache.cxf.rs.security.oauth2.utils.OAuthConstants;
 import org.apache.cxf.rs.security.oauth2.utils.OAuthUtils;
 import org.apache.cxf.security.SecurityContext;
-import org.eclipse.osee.framework.jdk.core.type.OseePrincipal;
+import org.eclipse.osee.account.admin.OseePrincipal;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.server.internal.security.oauth2.OAuthUtil;
 import org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.SubjectProvider;

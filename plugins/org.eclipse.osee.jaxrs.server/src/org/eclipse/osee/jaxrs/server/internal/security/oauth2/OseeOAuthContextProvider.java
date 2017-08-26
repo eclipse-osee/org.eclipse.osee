@@ -20,10 +20,10 @@ import org.apache.cxf.message.Message;
 import org.apache.cxf.rs.security.oauth2.common.OAuthPermission;
 import org.apache.cxf.rs.security.oauth2.common.UserSubject;
 import org.apache.cxf.security.SecurityContext;
+import org.eclipse.osee.account.admin.OseeOAuthContext;
+import org.eclipse.osee.account.admin.OseePrincipal;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
-import org.eclipse.osee.framework.jdk.core.type.OseeOAuthContext;
 import org.eclipse.osee.framework.jdk.core.type.OseePermission;
-import org.eclipse.osee.framework.jdk.core.type.OseePrincipal;
 
 /**
  * @author Roberto E. Escobar

@@ -22,11 +22,12 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.eclipse.osee.account.admin.OseePrincipal;
+import org.eclipse.osee.account.admin.UserTokenAccount;
 import org.eclipse.osee.account.rest.model.AccountContexts;
 import org.eclipse.osee.account.rest.model.AccountInfoData;
 import org.eclipse.osee.account.rest.model.AccountInput;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.jdk.core.type.OseePrincipal;
 
 /**
  * @author Roberto E. Escobar
@@ -49,7 +50,7 @@ public class AccountsResource {
       if (principal != null) {
          toReturn = AccountDataUtil.asAccountInfoData(principal);
       } else {
-         toReturn = accountOps.getAnonymousAccount();
+         toReturn = AccountDataUtil.asAccountData(UserTokenAccount.Anonymous);
       }
       return toReturn;
    }

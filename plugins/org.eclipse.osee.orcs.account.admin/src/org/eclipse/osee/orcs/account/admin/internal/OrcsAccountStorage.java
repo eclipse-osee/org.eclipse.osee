@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.account.admin.internal;
 
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
 import java.io.StringWriter;
 import java.util.Collections;
 import java.util.Map;
@@ -25,11 +23,9 @@ import org.eclipse.osee.account.rest.model.AccountWebPreferences;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -42,8 +38,6 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
 
    private JdbcService jdbcService;
    private AccountSessionStorage sessionStore;
-   private Account bootstrapAccount;
-   private final Supplier<ResultSet<Account>> anonymousAccountSupplier = Suppliers.memoize(getAnonymousSupplier());
 
    public void setJdbcService(JdbcService jdbcService) {
       this.jdbcService = jdbcService;
@@ -54,7 +48,6 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
       super.start();
       JdbcClient jdbcClient = jdbcService.getClient();
       sessionStore = new AccountSessionDatabaseStore(getLogger(), jdbcClient, getFactory());
-      bootstrapAccount = new BootstrapAccount();
    }
 
    @Override
@@ -200,28 +193,6 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
       } catch (Exception ex) {
          throw OseeCoreException.wrap(ex);
       }
-   }
-
-   @Override
-   public ResultSet<Account> getAnonymousAccount() {
-      ResultSet<Account> toReturn;
-      if (isInitialized()) {
-         toReturn = anonymousAccountSupplier.get();
-      } else {
-         toReturn = ResultSets.singleton(bootstrapAccount);
-      }
-      return toReturn;
-   }
-
-   private Supplier<ResultSet<Account>> getAnonymousSupplier() {
-      return new Supplier<ResultSet<Account>>() {
-         @Override
-         public ResultSet<Account> get() {
-            ResultSet<ArtifactReadable> results =
-               newQuery().andIsOfType(CoreArtifactTypes.User).andUuid(SystemUser.Anonymous.getUuid()).getResults();
-            return getFactory().newAccountResultSet(results);
-         }
-      };
    }
 
    @Override

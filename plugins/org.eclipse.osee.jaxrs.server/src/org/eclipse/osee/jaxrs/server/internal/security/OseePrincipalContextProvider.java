@@ -15,7 +15,7 @@ import javax.ws.rs.ext.Provider;
 import org.apache.cxf.jaxrs.ext.ContextProvider;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.security.SecurityContext;
-import org.eclipse.osee.framework.jdk.core.type.OseePrincipal;
+import org.eclipse.osee.account.admin.OseePrincipal;
 
 /**
  * @author Roberto E. Escobar

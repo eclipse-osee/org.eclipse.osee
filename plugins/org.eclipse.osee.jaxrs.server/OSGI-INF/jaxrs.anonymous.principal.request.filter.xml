@@ -5,5 +5,4 @@
       <provide interface="javax.ws.rs.container.ContainerRequestFilter"/>
       <provide interface="java.lang.Object"/>
    </service>
-   <reference bind="setJaxRsAuthenticator" cardinality="1..1" interface="org.eclipse.osee.jaxrs.server.security.JaxRsAuthenticator" name="JaxRsAuthenticator" policy="static"/>
 </scr:component>

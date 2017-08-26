@@ -13,7 +13,7 @@ package org.eclipse.osee.jaxrs.server.session;
 import java.util.Collections;
 import java.util.UUID;
 import javax.servlet.http.HttpSession;
-import org.eclipse.osee.framework.jdk.core.type.OseePrincipal;
+import org.eclipse.osee.account.admin.OseePrincipal;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.server.security.JaxRsSessionProvider;
 import org.eclipse.osee.jdbc.JdbcClient;

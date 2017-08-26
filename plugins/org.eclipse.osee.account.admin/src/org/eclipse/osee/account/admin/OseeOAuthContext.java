@@ -8,9 +8,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.jdk.core.type;
+package org.eclipse.osee.account.admin;
 
 import java.util.List;
+import org.eclipse.osee.framework.jdk.core.type.OseePermission;
 
 /**
  * @author Roberto E. Escobar

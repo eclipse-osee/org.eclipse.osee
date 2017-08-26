@@ -50,8 +50,6 @@ public interface AccountStorage {
 
    void deleteAccountSessionBySessionToken(String sessionToken);
 
-   ResultSet<Account> getAnonymousAccount();
-
    AccountWebPreferences getAccountWebPreferencesById(ArtifactId accountId);
 
    void setAccountWebPreferences(ArtifactId artifactId, String preferences);

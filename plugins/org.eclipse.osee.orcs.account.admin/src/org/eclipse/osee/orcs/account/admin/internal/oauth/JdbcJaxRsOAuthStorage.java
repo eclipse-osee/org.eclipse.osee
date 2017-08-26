@@ -11,8 +11,8 @@
 package org.eclipse.osee.orcs.account.admin.internal.oauth;
 
 import java.util.List;
+import org.eclipse.osee.account.admin.OseePrincipal;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.jdk.core.type.OseePrincipal;
 import org.eclipse.osee.jaxrs.server.security.JaxRsOAuthStorage;
 import org.eclipse.osee.jaxrs.server.security.OAuthClient;
 import org.eclipse.osee.jaxrs.server.security.OAuthCodeGrant;

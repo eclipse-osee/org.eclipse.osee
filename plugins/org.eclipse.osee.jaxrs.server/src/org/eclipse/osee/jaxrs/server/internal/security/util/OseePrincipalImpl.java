@@ -12,8 +12,8 @@ package org.eclipse.osee.jaxrs.server.internal.security.util;
 
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.osee.account.admin.OseePrincipal;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
-import org.eclipse.osee.framework.jdk.core.type.OseePrincipal;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
