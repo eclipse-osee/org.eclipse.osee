@@ -13,4 +13,7 @@ Import-Package: javax.ws.rs,
  org.eclipse.osee.framework.core.model.datarights,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
+ org.eclipse.osee.framework.logging,
+ org.eclipse.osee.orcs,
+ org.eclipse.osee.orcs.data,
  org.json

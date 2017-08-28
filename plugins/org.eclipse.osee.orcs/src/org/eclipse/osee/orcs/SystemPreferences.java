@@ -17,6 +17,8 @@ import java.util.Set;
  */
 public interface SystemPreferences {
 
+   public static String OSEE_PERMANENT_URL = "osee.permanent.base.url";
+
    public Set<String> getKeys();
 
    public String getSystemUuid();
