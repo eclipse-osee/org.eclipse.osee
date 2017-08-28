@@ -13,8 +13,10 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Robert A. Fisher
@@ -27,11 +29,6 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
    public final DateFormat MMDDYYYYHHMMSSAMPM = new SimpleDateFormat("MMM dd,yyyy hh:mm:ss a");
    public final DateFormat ALLDATETIME = new SimpleDateFormat("E MMM dd HH:mm:ss z yyyy");
 
-   /**
-    * Return current date or null if not set
-    *
-    * @return date or null if not set
-    */
    @Override
    public Date getValue() throws OseeCoreException {
       Object value = getAttributeDataProvider().getValue();
@@ -48,14 +45,15 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
       }
    }
 
-   /**
-    * Sets date
-    *
-    * @param value value or null to clear
-    */
    @Override
    public boolean subClassSetValue(Date value) throws OseeCoreException {
-      return getAttributeDataProvider().setValue(value != null ? value.getTime() : "");
+      if (value == null) {
+         OseeLog.log(this.getClass(), Level.SEVERE,
+            String.format("AttributeType [%s] GammId [%s] - DateAttribute.subClassSetValue had a null value",
+               getAttributeType(), getGammaId()));
+         return false;
+      }
+      return getAttributeDataProvider().setValue(value.getTime());
    }
 
    @Override
@@ -78,8 +76,7 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
     * @return formated date
     */
    public String getAsFormattedString(DateFormat dateFormat) throws OseeCoreException {
-      Date date = getValue();
-      return date != null ? dateFormat.format(date) : "";
+      return dateFormat.format(getValue());
    }
 
 }
