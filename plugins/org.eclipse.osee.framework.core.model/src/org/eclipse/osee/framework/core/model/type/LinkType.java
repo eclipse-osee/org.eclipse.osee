@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.define.report.internal.wordupdate;
+package org.eclipse.osee.framework.core.model.type;
 
 /**
  * @author Roberto E. Escobar
