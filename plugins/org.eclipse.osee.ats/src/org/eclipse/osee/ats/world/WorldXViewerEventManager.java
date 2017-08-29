@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerPreComputedColumn;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -143,7 +142,7 @@ public class WorldXViewerEventManager {
          for (DefaultBasicUuidRelationReorder reorder : artifactEvent.getRelationOrderRecords()) {
             if (reorder.is(AtsRelationTypes.AgileSprintToItem_AtsItem)) {
                Artifact cachedArt = ArtifactCache.getActive(reorder.getParentArt());
-               if (cachedArt != null && cachedArt.isOfType(AtsArtifactTypes.Goal)) {
+               if (cachedArt != null && cachedArt.isOfType(AtsArtifactTypes.AgileSprint)) {
                   sprintMemberReordered.add(cachedArt);
                }
             }
