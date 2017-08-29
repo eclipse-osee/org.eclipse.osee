@@ -27,7 +27,7 @@ public class JoinCleanerCallable extends CancellableCallable<Void> {
 
    private final Log logger;
    private final JdbcClient jdbcClient;
-   private String previousTableName = "";
+   private String previousTableName;
    private long currentTime;
    private OseePreparedStatement joinDelete;
    private OseePreparedStatement cleanupDelete;
@@ -41,17 +41,24 @@ public class JoinCleanerCallable extends CancellableCallable<Void> {
       return lifetime != -1 && issuedAt + lifetime < currentTime;
    }
 
+   private void resetForNextCall() {
+      previousTableName = "";
+      currentTime = System.currentTimeMillis() / 1000;
+      joinDelete = null;
+      cleanupDelete = jdbcClient.getBatchStatement(DELETE_JOIN_CLEANUP);
+   }
+
    @Override
    public Void call() throws Exception {
       try {
-         currentTime = System.currentTimeMillis() / 1000;
-
-         cleanupDelete = jdbcClient.getBatchStatement(DELETE_JOIN_CLEANUP);
+         resetForNextCall();
          try {
             jdbcClient.runQuery(this::processRow, SELECT_FROM_JOIN_CLEANUP);
          } finally {
-            joinDelete.execute();
             cleanupDelete.execute();
+            if (joinDelete != null) {
+               joinDelete.execute();
+            }
          }
       } catch (Exception ex) {
          logger.error(ex, "Error cleaning join tables");
