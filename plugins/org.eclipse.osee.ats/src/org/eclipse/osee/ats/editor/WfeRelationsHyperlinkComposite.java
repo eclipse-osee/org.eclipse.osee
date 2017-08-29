@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.ActionableItems;
@@ -77,6 +78,13 @@ public class WfeRelationsHyperlinkComposite extends Composite {
       editor.getToolkit().adapt(this);
 
       // Create all hyperlinks from this artifact to others of interest
+      if (sma.isTeamWorkflow()) {
+         for (IAtsTeamWorkflow teamWf : sma.getParentAction().getTeamWorkflows()) {
+            if (!teamWf.equals(sma)) {
+               createLink("This", (Artifact) teamWf.getStoreObject(), " has sibling ", sma);
+            }
+         }
+      }
       createArtifactRelationHyperlinks("This", sma, "is reviewed by", AtsRelationTypes.TeamWorkflowToReview_Review);
       createArtifactRelationHyperlinks("This", sma, "reviews", AtsRelationTypes.TeamWorkflowToReview_Team);
       createArtifactRelationHyperlinks("This", sma, "is superceded by", CoreRelationTypes.Supercedes_Superceded);
@@ -121,11 +129,11 @@ public class WfeRelationsHyperlinkComposite extends Composite {
 
    private void createArtifactRelationHyperlinks(String prefix, Artifact thisArt, String action, RelationTypeSide relationEnum) throws OseeCoreException {
       for (final Artifact art : thisArt.getRelatedArtifacts(relationEnum)) {
-         createLink(art, prefix, action, thisArt);
+         createLink(prefix, art, action, thisArt);
       }
    }
 
-   private void createLink(final Artifact art, String prefix, String action, Artifact thisArt) {
+   private void createLink(String prefix, final Artifact art, String action, Artifact thisArt) {
       try {
          editor.getToolkit().createLabel(this,
             prefix + " \"" + thisArt.getArtifactTypeName() + "\" " + action + getCompletedCancelledString(
