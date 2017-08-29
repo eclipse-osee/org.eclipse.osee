@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.define.report.internal.wordupdate;
+package org.eclipse.osee.define.report.api;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -18,8 +18,8 @@ import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.model.type.LinkType;
 import org.eclipse.osee.framework.core.enums.PresentationType;
+import org.eclipse.osee.framework.core.model.type.LinkType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.HttpUrlBuilder;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
@@ -141,7 +141,11 @@ public class OseeLinkBuilder {
       return String.format(OSEE_LINK_MARKER, guid);
    }
 
-   public String getWordMlLink(LinkType destLinkType, ArtifactReadable artifact, TransactionId txId, String sessionId, PresentationType presentationType, String permanentUrl) {
+   public String getWordMlLink(LinkType destLinkType, ArtifactReadable artifact, TransactionId txId, String sessionId, String permanentUrl) {
+      return getWordMlLink(destLinkType, artifact, txId, sessionId, PresentationType.DEFAULT_OPEN, permanentUrl);
+   }
+
+   public String getWordMlLink(LinkType destLinkType, ArtifactReadable artifact, TransactionId txId, String sessionId, PresentationType presentationType, String permanentUrl) throws OseeCoreException {
       String linkFormat = getLinkFormat(destLinkType);
       String linkId = getLinkId(destLinkType, artifact, txId, sessionId, presentationType, permanentUrl);
       String linkText = getLinkText(destLinkType, artifact);
@@ -158,7 +162,7 @@ public class OseeLinkBuilder {
       return toReturn;
    }
 
-   private String getLinkId(LinkType destLinkType, ArtifactReadable artifact, TransactionId tx, String sessionId, PresentationType presentationType, String permanentUrl) {
+   private String getLinkId(LinkType destLinkType, ArtifactReadable artifact, TransactionId tx, String sessionId, PresentationType presentationType, String permanentUrl) throws OseeCoreException {
       String toReturn;
       if (destLinkType == LinkType.OSEE_SERVER_LINK) {
          toReturn = escapeXml(getOseeLink(artifact, presentationType, sessionId, permanentUrl));
