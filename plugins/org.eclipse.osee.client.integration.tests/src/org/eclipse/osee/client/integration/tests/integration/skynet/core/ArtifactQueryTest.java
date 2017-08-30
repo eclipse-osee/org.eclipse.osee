@@ -25,7 +25,6 @@ import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -129,7 +128,7 @@ public class ArtifactQueryTest {
          if (firstId.isInvalid()) {
             firstId = a.getBranch();
          } else {
-            if (!firstId.equals(a.getBranch())) {
+            if (firstId.notEqual(a.getBranch())) {
                pass = true;
                break;
             }

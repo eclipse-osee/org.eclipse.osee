@@ -30,7 +30,7 @@ public class AttributeTypeUtil {
    public static List<AttributeTypeToken> getEmptyTypes(Artifact artifact) throws OseeCoreException {
       List<AttributeTypeToken> items = new ArrayList<>();
       for (AttributeTypeToken type : artifact.getAttributeTypes()) {
-         if (!CoreAttributeTypes.Name.equals(type) && artifact.getAttributes(type).isEmpty()) {
+         if (CoreAttributeTypes.Name.notEqual(type) && artifact.getAttributes(type).isEmpty()) {
             items.add(type);
          }
       }

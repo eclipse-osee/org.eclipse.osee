@@ -137,7 +137,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
             if (branches != null) {
                for (BranchId branch : branches) {
                   Artifact assocArt = BranchManager.getAssociatedArtifact(branch);
-                  if (assocArt != null && !assocArt.equals(AtsCoreUsers.SYSTEM_USER)) {
+                  if (assocArt != null && assocArt.notEqual(AtsCoreUsers.SYSTEM_USER)) {
                      rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
                         assocArt.getArtifactTypeName(),
                         "Working",

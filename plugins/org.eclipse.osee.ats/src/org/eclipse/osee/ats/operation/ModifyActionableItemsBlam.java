@@ -235,7 +235,7 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
 
                   Set<IAtsActionableItem> ais = new HashSet<>();
                   for (TeamWorkFlowArtifact team : teamWf.getParentActionArtifact().getTeams()) {
-                     if (!team.equals(teamWf)) {
+                     if (team.notEqual(teamWf)) {
                         ais.addAll(team.getActionableItems());
                      }
                   }

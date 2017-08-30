@@ -32,6 +32,6 @@ public final class DefaultArtifactFactory extends ArtifactFactory {
 
    @Override
    public boolean isUserCreationEnabled(ArtifactTypeId artifactType) {
-      return !artifactType.equals(CoreArtifactTypes.RootArtifact);
+      return artifactType.notEqual(CoreArtifactTypes.RootArtifact);
    }
 }

@@ -215,7 +215,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          if (element instanceof BranchId) {
             try {
                Artifact associatedArtifact = BranchManager.getAssociatedArtifact((BranchId) element);
-               if (!associatedArtifact.equals(SystemUser.OseeSystem)) {
+               if (associatedArtifact.notEqual(SystemUser.OseeSystem)) {
                   return ArtifactImageManager.getImage(associatedArtifact);
                }
             } catch (OseeCoreException ex) {

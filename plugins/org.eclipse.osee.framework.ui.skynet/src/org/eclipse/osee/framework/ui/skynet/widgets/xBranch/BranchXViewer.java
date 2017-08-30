@@ -58,7 +58,7 @@ public class BranchXViewer extends XViewer {
          for (BranchId branch : branches) {
             boolean hasPermission = AccessControlManager.hasPermission(branch, PermissionEnum.READ);
             if (hasPermission) {
-               if (!branch.equals(CoreBranches.SYSTEM_ROOT)) {
+               if (branch.notEqual(CoreBranches.SYSTEM_ROOT)) {
                   if (!BranchManager.getType(branch).isMergeBranch()) {
                      ArtifactExplorer.exploreBranch(branch);
                      BranchManager.setLastBranch(branch);

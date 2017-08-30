@@ -85,7 +85,7 @@ public class CopyAtsValidation {
          resultData.errorf("Could not get new name from name conversion for ActionableItem [%s]", aiArt.getName());
       }
       for (IAtsActionableItem childAiArt : ActionableItems.getActionableItemsFromItemAndChildren(aiArt)) {
-         if (!aiArt.equals(childAiArt)) {
+         if (aiArt.notEqual(childAiArt)) {
             validateActionableItem(childAiArt);
          }
       }

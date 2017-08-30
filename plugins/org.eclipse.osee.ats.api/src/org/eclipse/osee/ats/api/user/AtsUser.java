@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.api.config.JaxAtsObject;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -32,6 +33,10 @@ public class AtsUser extends JaxAtsObject implements IAtsUser {
 
    public AtsUser() {
       // for jax-rs instantiation
+   }
+
+   public AtsUser(UserToken user) {
+      this(user.getId(), user.getName(), user.getUserId(), user.getEmail(), user.isActive());
    }
 
    public AtsUser(Long id, String name, String userId, String email, boolean active) {

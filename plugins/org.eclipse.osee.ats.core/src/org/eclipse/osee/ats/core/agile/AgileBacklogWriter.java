@@ -69,7 +69,7 @@ public class AgileBacklogWriter {
                AtsRelationTypes.AgileTeamToBacklog_AgileTeam) > 0) {
                ArtifactToken currentTeamArt = services.getRelationResolver().getRelatedOrNull(updateBacklogArt,
                   AtsRelationTypes.AgileTeamToBacklog_AgileTeam);
-               if (!updatedTeamArt.equals(currentTeamArt)) {
+               if (updatedTeamArt.notEqual(currentTeamArt)) {
                   changes.unrelate(currentTeamArt, AtsRelationTypes.AgileTeamToBacklog_Backlog, updateBacklogArt);
                   changes.add(currentTeamArt);
                }

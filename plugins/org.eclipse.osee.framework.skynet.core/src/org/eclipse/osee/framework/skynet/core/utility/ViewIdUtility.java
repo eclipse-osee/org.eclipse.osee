@@ -27,7 +27,7 @@ public class ViewIdUtility {
 
    public static Set<ArtifactId> findExcludedArtifactsByView(ArtifactId viewId, BranchId branch) {
       Set<ArtifactId> excludedArtifactIdMap = new HashSet<>();
-      if (!viewId.equals(ArtifactId.SENTINEL)) {
+      if (viewId.isValid()) {
          Object[] objs = {branch, viewId, branch};
          List<ArtifactId> excludedArtifacts =
             ArtifactLoader.selectArtifactIds(OseeSql.LOAD_EXCLUDED_ARTIFACT_IDS.getSql(), objs, 300);

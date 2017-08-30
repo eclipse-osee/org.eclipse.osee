@@ -422,7 +422,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
    }
 
    public void initializeSelectionBox() {
-      if (branch != null && branchSelect != null && !branch.equals(branchSelect.getData())) {
+      if (branch != null && branchSelect != null && branch.notEqual(branchSelect.getData())) {
          branchSelect.setSelection(branch);
          refreshBranchWarning();
          refreshView();

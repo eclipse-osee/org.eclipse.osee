@@ -78,7 +78,7 @@ public class ActionableItemsColumn extends AbstractServicesColumn {
       // Children work items inherit the actionable items of their parent team workflow
       if (atsObject instanceof IAtsWorkItem) {
          IAtsTeamWorkflow teamWf = ((IAtsWorkItem) atsObject).getParentTeamWorkflow();
-         if (teamWf != null && !teamWf.equals(atsObject)) {
+         if (teamWf != null && teamWf.notEqual(atsObject)) {
             ais.addAll(getActionableItems(teamWf));
          }
       }

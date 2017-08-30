@@ -339,6 +339,7 @@ public class TxDataManagerTest {
    @Test
    public void testGetForWriteDuringWrite() throws OseeCoreException {
       when(txData.add(artifact1)).thenReturn(artifact3);
+      when(artifact3.notEqual(artifact1)).thenReturn(true);
       when(artifactFactory.clone(session, artifact1)).thenReturn(artifact1);
 
       ArtifactData data = Mockito.mock(ArtifactData.class);

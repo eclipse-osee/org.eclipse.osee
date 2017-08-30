@@ -118,7 +118,7 @@ public final class ChangeManager {
             joinQuery.add(branch, artifact, transaction, branch.getViewId());
 
             // for each combination of artifact and its branch hierarchy
-            while (!branch.equals(CoreBranches.SYSTEM_ROOT)) {
+            while (branch.notEqual(CoreBranches.SYSTEM_ROOT)) {
                transaction = BranchManager.getSourceTransaction(branch);
                branch = BranchManager.getParentBranch(branch);
                joinQuery.add(branch, artifact, transaction);

@@ -230,7 +230,7 @@ public class AtsProgramService implements IAtsProgramService {
       }
       if (program == null) {
          IAtsTeamDefinition topTeamDef = teamDef.getTeamDefinitionHoldingVersions();
-         if (topTeamDef != null && !teamDef.equals(topTeamDef)) {
+         if (topTeamDef != null && teamDef.notEqual(topTeamDef)) {
             program = loadProgram(teamDef.getParentTeamDef());
          }
       }

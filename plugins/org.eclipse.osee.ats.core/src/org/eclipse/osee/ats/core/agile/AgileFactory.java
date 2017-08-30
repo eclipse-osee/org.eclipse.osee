@@ -59,7 +59,7 @@ public class AgileFactory {
             changes.createArtifact(AtsArtifactTypes.AgileTeam, newTeam.getName(), GUID.create(), newTeam.getUuid());
          changes.setSoleAttributeValue(agileTeamArt, AtsAttributeTypes.Active, true);
          ArtifactId topAgileFolder = AgileFolders.getOrCreateTopAgileFolder(services, userArt, changes);
-         if (!topAgileFolder.equals(services.getRelationResolver().getParent(agileTeamArt))) {
+         if (topAgileFolder.notEqual(services.getRelationResolver().getParent(agileTeamArt))) {
             changes.unrelateFromAll(CoreRelationTypes.Default_Hierarchical__Parent, agileTeamArt);
             changes.addChild(topAgileFolder, agileTeamArt);
          }
@@ -90,7 +90,7 @@ public class AgileFactory {
       }
       changes.setSoleAttributeValue(agileTeamArt, AtsAttributeTypes.Active, team.isActive());
       ArtifactId topAgileFolder = AgileFolders.getOrCreateTopAgileFolder(services, userArt, changes);
-      if (!topAgileFolder.equals(services.getRelationResolver().getParent(agileTeamArt))) {
+      if (topAgileFolder.notEqual(services.getRelationResolver().getParent(agileTeamArt))) {
          changes.unrelateFromAll(CoreRelationTypes.Default_Hierarchical__Parent, agileTeamArt);
          changes.addChild(topAgileFolder, agileTeamArt);
       }

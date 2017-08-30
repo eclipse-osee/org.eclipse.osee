@@ -336,7 +336,7 @@ public class TxDataManager {
    private void checkAndAdd(TxData txData, Artifact artifact) throws OseeCoreException {
       checkChangesAllowed(txData);
       Artifact oldArtifact = txData.add(artifact);
-      boolean isDifferent = oldArtifact != null && !oldArtifact.equals(artifact);
+      boolean isDifferent = oldArtifact != null && oldArtifact.notEqual(artifact);
       Conditions.checkExpressionFailOnTrue(isDifferent,
          "Another instance of writeable detected - writeable tracking would be inconsistent");
 

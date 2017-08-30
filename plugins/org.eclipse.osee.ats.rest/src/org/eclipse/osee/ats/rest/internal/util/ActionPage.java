@@ -134,7 +134,7 @@ public class ActionPage {
          results = atsServer.getArtifact(artId).getName();
       } else {
          ArtifactReadable teamWf = getParentTeamWf(action);
-         if (teamWf != null && !teamWf.equals(action)) {
+         if (teamWf != null && teamWf.notEqual(action)) {
             results = getTeamStr(atsServer, teamWf);
          }
       }

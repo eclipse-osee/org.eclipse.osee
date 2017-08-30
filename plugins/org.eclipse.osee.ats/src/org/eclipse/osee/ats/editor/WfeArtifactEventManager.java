@@ -180,7 +180,7 @@ public class WfeArtifactEventManager implements IArtifactEventListener {
             for (IAtsTeamWorkflow teamWf : AtsClientService.get().getWorkItemService().getTeams(
                awa.getParentAction())) {
                IAtsAction parentAction = teamWf.getParentAction();
-               if (!awa.equals(teamWf) && artifactEvent.isHasEvent(
+               if (awa.notEqual(teamWf) && artifactEvent.isHasEvent(
                   (Artifact) teamWf.getStoreObject()) && parentAction != null && artifactEvent.isRelAddedChangedDeleted(
                      (Artifact) parentAction.getStoreObject())) {
                   refreshed = true;

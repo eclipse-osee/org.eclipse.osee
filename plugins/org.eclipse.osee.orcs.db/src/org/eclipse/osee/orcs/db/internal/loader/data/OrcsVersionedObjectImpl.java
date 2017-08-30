@@ -104,7 +104,7 @@ public abstract class OrcsVersionedObjectImpl extends OrcsObjectImpl<Integer> im
 
    @Override
    public void setApplicabilityId(ApplicabilityId applicId) {
-      if (this.applicId != null && !this.applicId.equals(applicId)) {
+      if (this.applicId != null && this.applicId.notEqual(applicId)) {
          if (!dirtyState.isDirty()) {
             applicDirty = true;
             dirtyState = DirtyState.APPLICABILITY_ONLY;

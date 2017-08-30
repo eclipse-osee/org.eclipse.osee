@@ -79,6 +79,7 @@ public class ActionableItemsColumnTest {
    public void testGetActionableItems_review_peerToPeerInheritsParent() throws Exception {
       IAtsPeerToPeerReview peer = Mockito.mock(IAtsPeerToPeerReview.class);
       when(peer.getParentTeamWorkflow()).thenReturn(teamWf1);
+      when(teamWf1.notEqual(peer)).thenReturn(true);
 
       Collection<IAtsActionableItem> ais = ActionableItemsColumn.getActionableItems(peer);
 

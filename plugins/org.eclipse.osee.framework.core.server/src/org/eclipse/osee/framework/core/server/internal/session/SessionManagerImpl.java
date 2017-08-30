@@ -18,9 +18,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.cache.admin.Cache;
-import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISession;
@@ -67,7 +67,7 @@ public final class SessionManagerImpl implements ISessionManager {
                   Integer.valueOf(credential.getClientPort()));
 
                // if the user is BootStrap we do not want to insert into database since tables may not exist
-               if (!SystemUser.BootStrap.equals(userToken)) {
+               if (SystemUser.BootStrap.notEqual(userToken)) {
                   storeDataAccessor.create(Collections.singleton(session));
                }
 

@@ -105,7 +105,7 @@ public class WfeActionableItemHeader extends Composite {
          if (AtsClientService.get().getWorkItemService().getTeams(parentAction).size() > 1) {
             sb.append("         Other: ");
             for (IAtsTeamWorkflow workflow : AtsClientService.get().getWorkItemService().getTeams(parentAction)) {
-               if (!workflow.equals(teamWf)) {
+               if (workflow.notEqual(teamWf)) {
                   sb.append(
                      AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItemsStr(
                         workflow));

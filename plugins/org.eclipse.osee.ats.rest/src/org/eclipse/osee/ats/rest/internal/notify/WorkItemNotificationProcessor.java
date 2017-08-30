@@ -88,7 +88,7 @@ public class WorkItemNotificationProcessor {
                if (originator.isActive()) {
                   if (!EmailUtil.isEmailValid(originator.getEmail()) && !AtsCoreUsers.isAtsCoreUser(originator)) {
                      logger.info("Email [%s] invalid for user [%s]", originator.getEmail(), originator.getName());
-                  } else if (!fromUser.equals(originator)) {
+                  } else if (fromUser.notEqual(originator)) {
                      notifications.addNotificationEvent(
                         AtsNotificationEventFactory.getNotificationEvent(getFromUser(event), Arrays.asList(originator),
                            getIdString(workItem), AtsNotifyType.Originator.name(), getUrl(workItem),

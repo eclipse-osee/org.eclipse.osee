@@ -119,7 +119,7 @@ public abstract class CommitHandler extends CommandHandler {
    }
 
    protected boolean useParentBranchValid(IOseeBranch branch) throws OseeCoreException {
-      return !branch.equals(CoreBranches.SYSTEM_ROOT) && useParentBranch && !BranchManager.isChangeManaged(
+      return branch.notEqual(CoreBranches.SYSTEM_ROOT) && useParentBranch && !BranchManager.isChangeManaged(
          branch) && !BranchManager.isArchived(branch);
    }
    protected class CommitJob extends Job {

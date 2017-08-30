@@ -56,7 +56,7 @@ public class SprintItems {
                   noBacklogDetected = true;
                } else if (commonBacklog == null) {
                   commonBacklog = relatedBacklogArt;
-               } else if (!commonBacklog.equals(relatedBacklogArt)) {
+               } else if (commonBacklog.notEqual(relatedBacklogArt)) {
                   multipleBacklogsDetected = true;
                }
             } catch (ArtifactDoesNotExist ex) {

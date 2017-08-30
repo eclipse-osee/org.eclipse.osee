@@ -44,7 +44,7 @@ public class StateManagerUtility {
       ((StateManager) stateMgr).setStateType(workPage.getStateType());
       if (workPage.getStateType().isWorkingState()) {
          if (assignees.isEmpty()) {
-            if (!currentUser.equals(AtsCoreUsers.SYSTEM_USER)) {
+            if (currentUser.notEqual(AtsCoreUsers.SYSTEM_USER)) {
                stateMgr.setAssignees(Arrays.asList(currentUser));
             } else {
                stateMgr.setAssignee(AtsCoreUsers.UNASSIGNED_USER);

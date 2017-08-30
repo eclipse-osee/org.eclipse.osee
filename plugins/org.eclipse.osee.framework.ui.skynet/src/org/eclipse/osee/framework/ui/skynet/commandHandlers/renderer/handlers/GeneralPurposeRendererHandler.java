@@ -37,7 +37,6 @@ public class GeneralPurposeRendererHandler extends AbstractEditorHandler {
       String openOption = event.getParameter(RendererOption.OPEN_OPTION.getKey());
       ArtifactId view = Handlers.getViewId();
 
-
       PresentationType presentationType = PresentationType.valueOf(presentationTypeStr);
       if (template != null) {
          rendererOptions.put(RendererOption.TEMPLATE_OPTION, template);
@@ -45,7 +44,7 @@ public class GeneralPurposeRendererHandler extends AbstractEditorHandler {
       if (openOption != null) {
          rendererOptions.put(RendererOption.OPEN_OPTION, openOption);
       }
-      if (!view.equals(ArtifactId.SENTINEL)) {
+      if (view.isValid()) {
          rendererOptions.put(RendererOption.VIEW, view);
       }
 

@@ -410,7 +410,7 @@ public class ActionFactory implements IAtsActionFactory {
       IAtsAction action = getAction(teamWf);
       for (IAtsTeamWorkflow teamChild : services.getRelationResolver().getRelated(action,
          AtsRelationTypes.ActionToWorkflow_WorkFlow, IAtsTeamWorkflow.class)) {
-         if (!teamChild.equals(teamWf)) {
+         if (teamChild.notEqual(teamWf)) {
             teams.add(teamChild);
          }
       }

@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -31,6 +32,7 @@ import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
 import org.eclipse.osee.ats.core.internal.state.AtsWorkStateFactory;
 import org.eclipse.osee.ats.core.internal.state.StateManager;
 import org.eclipse.osee.ats.core.workflow.TestState;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Assert;
@@ -42,14 +44,13 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Test Case for {@link StateManagerUtility}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class StateManagerUtilityTest {
 
    // @formatter:off
    @Mock IAtsWorkItem workItem;
-   @Mock IAtsUser Joe, Kay;
    @Mock IAtsChangeSet changes;
    @Mock IAtsWorkDefinition workDef;
    @Mock IAtsStateDefinition analyzeState, completedState;
@@ -60,6 +61,8 @@ public class StateManagerUtilityTest {
    @Mock IAtsLogFactory logFactory;
    @Mock IAtsServices services;
    // @formatter:on
+   private static final IAtsUser Joe = new AtsUser(DemoUsers.Joe_Smith);
+   private static final IAtsUser Kay = new AtsUser(DemoUsers.Kay_Jones);
 
    @Before
    public void setup() throws OseeCoreException {

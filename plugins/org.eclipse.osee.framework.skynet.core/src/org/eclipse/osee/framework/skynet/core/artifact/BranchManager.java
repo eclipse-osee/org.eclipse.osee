@@ -589,7 +589,7 @@ public final class BranchManager {
 
    public static boolean isChangeManaged(BranchId branch) {
       ArtifactId associatedArtifactId = getAssociatedArtifactId(branch);
-      return associatedArtifactId.isValid() && !associatedArtifactId.equals(OseeSystem);
+      return associatedArtifactId.isValid() && associatedArtifactId.notEqual(OseeSystem);
    }
 
    public static void setAssociatedArtifactId(BranchId branch, ArtifactId artifactId) {

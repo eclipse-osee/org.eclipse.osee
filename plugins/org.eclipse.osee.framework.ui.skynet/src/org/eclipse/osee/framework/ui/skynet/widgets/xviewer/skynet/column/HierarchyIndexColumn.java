@@ -76,7 +76,7 @@ public class HierarchyIndexColumn extends XViewerColumn implements IXViewerPreCo
                   StringBuilder builder = new StringBuilder(20);
                   String error = Strings.emptyString();
 
-                  while (!artifactCursor.equals(CoreArtifactTokens.DefaultHierarchyRoot)) {
+                  while (artifactCursor.notEqual(CoreArtifactTokens.DefaultHierarchyRoot)) {
                      Artifact parent = null;
                      try {
                         parent = artifactCursor.getParent();

@@ -97,7 +97,7 @@ public class ArtifactExplorerViewApplicability {
                   button.setEnabled(false);
                } else {
                   ArtifactId viewId = branch.getViewId();
-                  if (viewId != null && !viewId.equals(ArtifactId.SENTINEL)) {
+                  if (viewId != null && viewId.isValid()) {
                      button.setEnabled(false);
                   } else {
                      button.setEnabled(true);

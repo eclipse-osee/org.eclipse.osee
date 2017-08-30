@@ -127,7 +127,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
             newTeam = ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamDefinition,
                AtsClientService.get().getAtsBranch(), dslTeamName, null, uuid);
          }
-         if (parentArtifact != null && !parentArtifact.equals(newTeam)) {
+         if (parentArtifact != null && parentArtifact.notEqual(newTeam)) {
             parentArtifact.addChild(newTeam);
          }
          newTeams.put(newTeam.getName(), newTeam);
@@ -246,7 +246,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
             newAi = ArtifactTypeManager.addArtifact(AtsArtifactTypes.ActionableItem,
                AtsClientService.get().getAtsBranch(), dslAIName, null, uuid);
          }
-         if (parentArtifact != null && !parentArtifact.equals(newAi)) {
+         if (parentArtifact != null && parentArtifact.notEqual(newAi)) {
             parentArtifact.addChild(newAi);
          }
          newAIs.put(newAi.getName(), newAi);

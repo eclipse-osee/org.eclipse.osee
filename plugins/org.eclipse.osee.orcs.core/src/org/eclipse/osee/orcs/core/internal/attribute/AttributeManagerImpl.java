@@ -479,7 +479,7 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    //////////////////////////////////////////////////////////////
 
    private void checkTypeValid(AttributeTypeId attributeType) throws OseeCoreException {
-      if (!CoreAttributeTypes.Name.equals(attributeType)) {
+      if (CoreAttributeTypes.Name.notEqual(attributeType)) {
          if (!isAttributeTypeValid(attributeType)) {
             throw new OseeArgumentException("The attribute type [%s] is not valid for artifacts [%s]", attributeType,
                getExceptionString());

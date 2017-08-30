@@ -346,7 +346,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
       BranchId mergeBranch = null;
       try {
          mergeBranch = BranchManager.getMergeBranch(sourceBranch, destBranch);
-         if (mergeBranch == null || !mergeBranch.equals(artifactEvent.getBranch())) {
+         if (mergeBranch == null || mergeBranch.notEqual(artifactEvent.getBranch())) {
             return;
          }
          if (!isApplicableEvent(artifactEvent.getBranch(), mergeBranch)) {

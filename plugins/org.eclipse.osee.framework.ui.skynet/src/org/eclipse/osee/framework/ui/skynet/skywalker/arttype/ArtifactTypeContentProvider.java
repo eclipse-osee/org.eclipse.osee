@@ -56,7 +56,7 @@ public class ArtifactTypeContentProvider implements IGraphEntityContentProvider 
                   }
                }
                return artifactTypes.toArray();
-            } else if (selectedArtType.equals(entity) && !selectedArtType.equals(CoreArtifactTypes.Artifact)) {
+            } else if (selectedArtType.equals(entity) && selectedArtType.notEqual(CoreArtifactTypes.Artifact)) {
                Set<IArtifactType> artifactTypes = new HashSet<>();
                // parents
                for (IArtifactType childType : artifactType.getSuperArtifactTypes()) {

@@ -180,8 +180,8 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    public boolean isBranchesAllCommittedExcept(IAtsTeamWorkflow teamWf, BranchId branchToExclude) {
       Collection<BranchId> committedTo = getBranchesCommittedTo(teamWf);
       for (BranchId destBranch : getBranchesToCommitTo(teamWf)) {
-         if (!destBranch.equals(branchToExclude) && !committedTo.contains(destBranch) && !isNoCommitNeeded(teamWf,
-            destBranch)) {
+         if (destBranch.notEqual(
+            branchToExclude) && !committedTo.contains(destBranch) && !isNoCommitNeeded(teamWf, destBranch)) {
             return false;
          }
       }

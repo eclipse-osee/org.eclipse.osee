@@ -599,7 +599,7 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
             IOseeCmService cmService = ServiceUtil.getOseeCmService();
             if (cmService.isPcrArtifact(associatedArtifact)) {
                cmService.openArtifact(associatedArtifact, OseeCmEditor.CmPcrEditor);
-            } else if (!associatedArtifact.equals(UserManager.getUser(SystemUser.OseeSystem))) {
+            } else if (associatedArtifact.notEqual(SystemUser.OseeSystem)) {
                RendererManager.open(associatedArtifact, PresentationType.SPECIALIZED_EDIT);
             } else {
                AWorkbench.popup("ERROR", "Unknown branch association");

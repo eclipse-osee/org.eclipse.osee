@@ -715,7 +715,7 @@ public class WordTemplateProcessor {
 
          if (((boolean) renderer.getRendererOptionValue(RendererOption.ALL_ATTRIBUTES)) || attributeName.equals("*")) {
             for (AttributeTypeToken attributeType : RendererManager.getAttributeTypeOrderList(artifact)) {
-               if (!outlining || !attributeType.equals(headingAttributeType)) {
+               if (!outlining || attributeType.notEqual(headingAttributeType)) {
                   processAttribute(artifact, wordMl, attributeElement, attributeType, true, presentationType,
                      publishInLine, footer);
                }

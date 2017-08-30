@@ -148,7 +148,7 @@ public class AtsDeleteManager {
             WorkflowEditor.close(java.util.Collections.singleton((AbstractWorkflowArtifact) deleteArt), true);
             ((AbstractWorkflowArtifact) deleteArt).atsDelete(relatedArts, ignoredArts);
             for (Artifact loopArt : relatedArts) {
-               if (!loopArt.equals(deleteArt)) {
+               if (loopArt.notEqual(deleteArt)) {
                   delBuilder.append(
                      String.format(AHTML.addSpace(4) + "<b>Related</b>:[%s][%s][%s]", loopArt.getArtifactTypeName(),
                         AtsClientService.get().getAtsId(loopArt), loopArt.getName()) + "\n");

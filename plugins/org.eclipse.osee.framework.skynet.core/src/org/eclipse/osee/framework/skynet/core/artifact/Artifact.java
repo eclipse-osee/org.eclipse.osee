@@ -1592,7 +1592,7 @@ public class Artifact extends NamedIdBase implements IArtifact, Adaptable, Fully
     * Changes the artifact type.
     */
    public final void setArtifactType(ArtifactTypeId artifactTypeId) {
-      if (!this.artifactTypeId.equals(artifactTypeId)) {
+      if (this.artifactTypeId.notEqual(artifactTypeId)) {
          this.artifactTypeId = artifactTypeId;
          objectEditState = EditState.ARTIFACT_TYPE_MODIFIED;
          if (isInDb()) {

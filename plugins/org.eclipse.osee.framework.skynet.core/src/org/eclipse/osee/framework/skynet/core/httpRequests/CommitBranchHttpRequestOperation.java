@@ -133,7 +133,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
 
       // Update commit artifact cache with new information
       Artifact associatedArtifact = BranchManager.getAssociatedArtifact(sourceBranch);
-      if (!associatedArtifact.equals(SystemUser.OseeSystem)) {
+      if (associatedArtifact.notEqual(SystemUser.OseeSystem)) {
          TransactionManager.cacheCommittedArtifactTransaction(associatedArtifact, newTransaction);
       }
 

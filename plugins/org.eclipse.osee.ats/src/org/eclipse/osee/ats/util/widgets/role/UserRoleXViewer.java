@@ -194,7 +194,7 @@ public class UserRoleXViewer extends XViewer {
       boolean modified = false;
       for (UserRole userRole : userRoles) {
          IAtsUser atsUser = AtsClientService.get().getUserService().getUserById(userRole.getUserId());
-         if (user != null && !atsUser.equals(user)) {
+         if (user != null && atsUser.notEqual(user)) {
             userRole.setUserId(atsUser.getUserId());
             if (!modified) {
                modified = true;

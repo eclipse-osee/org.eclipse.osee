@@ -170,7 +170,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       List<RelationLink> relatives = getRelationsAll(DeletionFlag.EXCLUDE_DELETED);
       for (RelationLink link : relatives) {
          Artifact sideB = link.getArtifactB();
-         if (!sideB.equals(this)) {
+         if (sideB.notEqual(this)) {
             sideBArtifacts.add(sideB);
          }
       }

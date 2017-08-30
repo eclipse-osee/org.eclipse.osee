@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.internal.Activator;
@@ -124,15 +123,15 @@ public class TargetedVersionColumnUI extends XViewerAtsColumnIdColumn implements
             teamArt) || AtsClientService.get().getVersionService().isVersionLocked(teamArt)) {
             String error =
                "Team Workflow\n \"" + teamArt.getName() + "\"\n targeted version is locked or already released.";
-            if (AtsClientService.get().getUserService().isAtsAdmin() && !MessageDialog.openConfirm(Displays.getActiveShell(), "Change Version",
-               error + "\n\nOverride?")) {
+            if (AtsClientService.get().getUserService().isAtsAdmin() && !MessageDialog.openConfirm(
+               Displays.getActiveShell(), "Change Version", error + "\n\nOverride?")) {
                return false;
             } else if (!AtsClientService.get().getUserService().isAtsAdmin()) {
                AWorkbench.popup("ERROR", error);
                continue;
             }
          }
-         if (teamDefHoldingVersions != null && !teamDefHoldingVersions.equals(
+         if (teamDefHoldingVersions != null && teamDefHoldingVersions.notEqual(
             teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions())) {
             AWorkbench.popup("ERROR", "Can't change version on Workflows that have different release version sets.");
             return false;
@@ -161,8 +160,8 @@ public class TargetedVersionColumnUI extends XViewerAtsColumnIdColumn implements
       //now check selected version
       if (newVersion != null && newVersion.isVersionLocked()) {
          String error = "Version \"" + newVersion.getCommitFullDisplayName() + "\" is locked or already released.";
-         if (AtsClientService.get().getUserService().isAtsAdmin() && !MessageDialog.openConfirm(Displays.getActiveShell(), "Change Version",
-            error + "\n\nOverride?")) {
+         if (AtsClientService.get().getUserService().isAtsAdmin() && !MessageDialog.openConfirm(
+            Displays.getActiveShell(), "Change Version", error + "\n\nOverride?")) {
             return false;
          } else if (!AtsClientService.get().getUserService().isAtsAdmin()) {
             AWorkbench.popup("ERROR", error);
@@ -194,7 +193,8 @@ public class TargetedVersionColumnUI extends XViewerAtsColumnIdColumn implements
             }
          }
 
-         promptChangeVersion(awas, AtsClientService.get().getUserService().isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
+         promptChangeVersion(awas,
+            AtsClientService.get().getUserService().isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
             AtsClientService.get().getUserService().isAtsAdmin() ? VersionLockedType.Both : VersionLockedType.UnLocked);
          ((XViewer) getXViewer()).update(awas.toArray(), null);
          return;
