@@ -565,14 +565,17 @@ public class VCastDataStoreImpl implements VCastDataStore {
       try {
       // @formatter:off
          String query =
-            "SELECT sc.id as sc_id, sc.hit_count, sc.max_hit_count, sc.line, branch.num_conditions" +
-            " FROM statement_coverage sc left outer join branch_coverage branch on (sc.function_id = branch.function_id)" +
-            " where sc.function_id = ?";
+            "with temp as (SELECT sc.id, sc.function_id, sc.hit_count, sc.max_hit_count, sc.line, branch.num_conditions" +
+            " FROM statement_coverage sc left outer join branch_coverage branch on sc.function_id = branch.function_id and sc.line=branch.line where branch.function_id = ?)" +
+            " SELECT id, function_id, hit_count, max_hit_count, line, num_conditions from temp union all " +
+            " select sc2.id, sc2.function_id, sc2.hit_count, sc2.max_hit_count, sc2.line, 0 from statement_coverage sc2 where not exists " +
+            " (select 1 from temp where sc2.function_id = temp.function_id and sc2.line=temp.line)" +
+            " and sc2.function_id=?";
          // @formatter:on
 
-         stmt.runPreparedQuery(query, function.getId());
+         stmt.runPreparedQuery(query, function.getId(), function.getId());
          while (stmt.next()) {
-            Integer id = stmt.getInt("sc_id");
+            Integer id = stmt.getInt("id");
             Integer line = stmt.getInt("line");
             Integer hit_count = stmt.getInt("hit_count");
             Integer max_hit_count = stmt.getInt("max_hit_count");

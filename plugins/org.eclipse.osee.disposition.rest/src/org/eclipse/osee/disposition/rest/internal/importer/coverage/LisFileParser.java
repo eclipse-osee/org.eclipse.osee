@@ -58,6 +58,10 @@ import org.eclipse.osee.vcast.model.VCastStatementCoverage;
  * @author Angel Avila
  */
 public class LisFileParser implements DispoImporterApi {
+   private static final String LOG = "\\s*(log).*";
+   private static final String EXIT_WHEN = "\\s*\\( \\)\\s*\\( \\)\\s*(EXIT WHEN).*";
+   private static final String WHEN_FOR = "\\s*\\( \\)\\s*(WHEN|FOR).*";
+
    private final DispoDataFactory dataFactory;
 
    private static final Pattern fileMethod5LineNumberPattern =
@@ -289,7 +293,7 @@ public class LisFileParser implements DispoImporterApi {
       } catch (Exception ex) {
          report.addEntry("SQL", ex.getMessage(), ERROR);
       }
-      String location;
+      String location = "";
       if (lineData != null) {
          boolean isMCDCPair = statementCoverageItem.getIsMCDCPair();
          String text;
@@ -297,8 +301,8 @@ public class LisFileParser implements DispoImporterApi {
             location = String.format("%s.%s.%s", lineNumber, statementCoverageItem.getAbbrevCondition(), "T");
             String location2 = String.format("%s.%s.%s", lineNumber, statementCoverageItem.getAbbrevCondition(), "F");
 
-            if (!lineData.getFirst().matches("\\s*\\( \\)\\s*(WHEN|FOR).*")) {
-               // Only add corresponding 'F' disrepancy if it's not a WHEN condition statment
+            if (!lineData.getFirst().matches(WHEN_FOR)) {
+               // Only add corresponding 'F' discrepancy if it's not a WHEN condition statement
                text = statementCoverageItem.getFullCondition();
                addDiscrepancy(discrepancies, location, text);
                addDiscrepancy(discrepancies, location2, text);
@@ -311,9 +315,17 @@ public class LisFileParser implements DispoImporterApi {
             text = lineData.getFirst().trim();
             if (statementCoverageItem.getNumConditions() == 2) {
                location = String.format("%s.%s", lineNumber, "T");
-               addDiscrepancy(discrepancies, location, text);
-               location = String.format("%s.%s", lineNumber, "F");
-               addDiscrepancy(discrepancies, location, text);
+               String locationF = String.format("%s.%s", lineNumber, "F");
+
+               if (!lineData.getFirst().matches(WHEN_FOR) //
+                  && !lineData.getFirst().matches(EXIT_WHEN) //
+                  && !lineData.getFirst().matches(LOG) //
+               ) {
+                  addDiscrepancy(discrepancies, location, text);
+                  addDiscrepancy(discrepancies, locationF, text);
+               } else {
+                  addDiscrepancy(discrepancies, location, text);
+               }
             } else {
                location = String.valueOf(lineNumber);
                addDiscrepancy(discrepancies, location, text);
