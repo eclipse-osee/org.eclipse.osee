@@ -64,7 +64,7 @@ public class XWorkingBranchLabel extends XWorkingBranchWidgetAbstract {
                   if (labelWidget != null && Widgets.isAccessible(labelWidget) && !getLabel().equals("")) {
                      IOseeBranch workBranch = getWorkingBranch();
                      String labelStr =
-                        getLabel() + ": " + getStatus().getDisplayName() + (workBranch != null ? " - " + workBranch.getShortName() : "");
+                        getLabel() + ": " + getStatus().getDisplayName() + (workBranch != null && workBranch.isValid() ? " - " + workBranch.getShortName() : "");
                      labelWidget.setText(labelStr);
                      if (getToolTip() != null) {
                         labelWidget.setToolTipText(getToolTip());
