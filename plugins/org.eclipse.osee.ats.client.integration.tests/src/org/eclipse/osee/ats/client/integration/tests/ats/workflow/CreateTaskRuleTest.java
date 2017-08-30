@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -75,11 +76,13 @@ public class CreateTaskRuleTest {
    }
 
    @Test
+   @Ignore
    public void testTeamDefConfig() {
       test(DemoArtifactToken.SAW_Code, DemoArtifactToken.SAW_Code_AI, CREATE_TASK_ACTION_FROM_TEAM_DEF_TITLE);
    }
 
    @Test
+   @Ignore
    public void testActionableItemConfig() {
       test(DemoArtifactToken.SAW_Test_AI, DemoArtifactToken.SAW_Test_AI, CREATE_TASK_ACTION_FROM_AI_TITLE);
    }

@@ -105,4 +105,9 @@ public class ActionableItem2 extends AtsConfigObject implements IAtsActionableIt
          true);
    }
 
+   @Override
+   public boolean isActive() {
+      return jaxAI.isActive();
+   }
+
 }

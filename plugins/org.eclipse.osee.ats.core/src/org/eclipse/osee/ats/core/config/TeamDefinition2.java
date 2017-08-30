@@ -344,4 +344,9 @@ public class TeamDefinition2 extends AtsConfigObject implements IAtsTeamDefiniti
       return result;
    }
 
+   @Override
+   public boolean isActive() {
+      return jaxTeamDef.isActive();
+   }
+
 }

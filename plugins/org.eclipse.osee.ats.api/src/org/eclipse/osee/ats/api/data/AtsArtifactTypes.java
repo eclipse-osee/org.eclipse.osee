@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
 public final class AtsArtifactTypes {
 
    // @formatter:off
+   public static final IArtifactType AtsConfigObject = TokenFactory.createArtifactType(801, "ats.Ats Config Artifact");
    public static final IArtifactType Action = TokenFactory.createArtifactType(67, "Action");
    public static final IArtifactType ActionableItem = TokenFactory.createArtifactType(69, "Actionable Item");
    public static final IArtifactType Configuration = TokenFactory.createArtifactType(93802085744703L, "ATS Configuration");

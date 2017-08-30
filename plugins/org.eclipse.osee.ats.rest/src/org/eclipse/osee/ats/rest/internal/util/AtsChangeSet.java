@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
-import org.eclipse.osee.ats.api.workdef.RuleEventType;
 import org.eclipse.osee.ats.api.workflow.IAttribute;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
@@ -103,10 +102,15 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       }
       notifier.sendNotifications(getNotifications());
 
-      if (!workItemsCreated.isEmpty()) {
-         WorkflowRuleRunner runner = new WorkflowRuleRunner(RuleEventType.CreateWorkflow, workItemsCreated, atsServer);
-         runner.run();
-      }
+      /**
+       * Commented out on 0.25.0 due to performance issues; No users are using this feature. Will be re-enabled on
+       * 0.26.0 where analysis can be done and all action creation can be moved to the server. Same change in both
+       * AtsChangeSets. See action TW1864.
+       */
+      //      if (!workItemsCreated.isEmpty()) {
+      //         WorkflowRuleRunner runner = new WorkflowRuleRunner(RuleEventType.CreateWorkflow, workItemsCreated, atsServer);
+      //         runner.run();
+      //      }
       return transactionReadable;
    }
 

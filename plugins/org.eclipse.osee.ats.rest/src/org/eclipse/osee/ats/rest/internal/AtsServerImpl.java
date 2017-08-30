@@ -80,7 +80,6 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    public static String PLUGIN_ID = "org.eclipse.osee.ats.rest";
    private OrcsApi orcsApi;
    private AtsNotifierServiceImpl notifyService;
-   private WorkItemNotificationProcessor workItemNotificationProcessor;
    private AtsNotificationEventProcessor notificationEventProcessor;
    private IAgileService agileService;
 
@@ -312,11 +311,20 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
                loggedNotificationDisabled = true;
             }
          } else {
-            workItemNotificationProcessor =
+            WorkItemNotificationProcessor workItemNotificationProcessor =
                new WorkItemNotificationProcessor(logger, this, workItemFactory, userService, attributeResolverService);
-            notificationEventProcessor = new AtsNotificationEventProcessor(workItemNotificationProcessor, userService,
-               getConfigValue("NoReplyEmail"));
-            notificationEventProcessor.sendNotifications(notifications, notifiers);
+            Thread thread = new Thread("ATS Notification Sender") {
+
+               @Override
+               public void run() {
+                  super.run();
+                  notificationEventProcessor = new AtsNotificationEventProcessor(workItemNotificationProcessor,
+                     userService, getConfigValue("NoReplyEmail"));
+                  notificationEventProcessor.sendNotifications(notifications, notifiers);
+               }
+
+            };
+            thread.start();
          }
       }
    }

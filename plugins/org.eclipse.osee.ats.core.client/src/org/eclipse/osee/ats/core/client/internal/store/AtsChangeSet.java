@@ -15,7 +15,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsObject;
@@ -23,14 +22,10 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
-import org.eclipse.osee.ats.api.workdef.RuleEventType;
-import org.eclipse.osee.ats.api.workdef.RunRuleData;
-import org.eclipse.osee.ats.api.workdef.RunRuleResults;
 import org.eclipse.osee.ats.api.workflow.IAttribute;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.util.AbstractAtsChangeSet;
-import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.AtsRelationChange;
 import org.eclipse.osee.ats.core.util.AtsRelationChange.RelationOperation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -44,12 +39,11 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
@@ -112,23 +106,30 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       }
       AtsClientService.get().sendNotifications(getNotifications());
 
-      if (!workItemsCreated.isEmpty()) {
-         RunRuleData runRuleData = new RunRuleData();
-         runRuleData.setRuleEventType(RuleEventType.CreateWorkflow);
-         runRuleData.getWorkItemUuids().addAll(AtsObjects.toUuids(workItemsCreated));
-         RunRuleResults results = AtsClientService.getRuleEp().runWorkflowRules(runRuleData);
-
-         List<Artifact> changedArts = new LinkedList<>();
-         for (Long changedUuid : results.getChangedWorkitemUuids()) {
-            Artifact artifact = ArtifactCache.getActive(changedUuid, AtsClientService.get().getAtsBranch());
-            if (artifact != null) {
-               changedArts.add(artifact);
-            }
-         }
-         if (!changedArts.isEmpty()) {
-            ArtifactQuery.reloadArtifacts(changedArts);
-         }
-      }
+      /**
+       * Commented out on 0.25.0 due to performance issues; No users are using this feature. Will be re-enabled on
+       * 0.26.0 where analysis can be done and all action creation can be moved to the server. Same change in both
+       * AtsChangeSets. See action TW1864.
+       */
+      //      if (!workItemsCreated.isEmpty()) {
+      //         RunRuleData runRuleData = new RunRuleData();
+      //         runRuleData.setRuleEventType(RuleEventType.CreateWorkflow);
+      //         runRuleData.getWorkItemUuids().addAll(AtsObjects.toUuids(workItemsCreated));
+      //         ElapsedTime time2 = new ElapsedTime("AtsChangeSet.runWorkflowRules");
+      //         RunRuleResults results = AtsClientService.getRuleEp().runWorkflowRules(runRuleData);
+      //         time2.end();
+      //
+      //         List<Artifact> changedArts = new LinkedList<>();
+      //         for (Long changedUuid : results.getChangedWorkitemUuids()) {
+      //            Artifact artifact = ArtifactCache.getActive(changedUuid, AtsClientService.get().getAtsBranch());
+      //            if (artifact != null) {
+      //               changedArts.add(artifact);
+      //            }
+      //         }
+      //         if (!changedArts.isEmpty()) {
+      //            ArtifactQuery.reloadArtifacts(changedArts);
+      //         }
+      //      }
       return transactionRecord;
    }
 

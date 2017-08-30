@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.JaxActionableItem;
 import org.eclipse.osee.ats.api.config.JaxTeamDefinition;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
@@ -224,6 +225,10 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
          @Override
          public void run() {
             try {
+               // load artifacts to ensure they're in ArtifactCache prior to ATS chaching
+               ArtifactQuery.getArtifactListFromTypeWithInheritence(AtsArtifactTypes.AtsConfigObject, getAtsBranch(),
+                  DeletionFlag.EXCLUDE_DELETED);
+
                cacheActionableItems(configProvider.getConfigurations().getIdToAi().get(
                   configProvider.getConfigurations().getTopActionableItem()));
                cacheTeamDefinitions(configProvider.getConfigurations().getIdToTeamDef().get(
