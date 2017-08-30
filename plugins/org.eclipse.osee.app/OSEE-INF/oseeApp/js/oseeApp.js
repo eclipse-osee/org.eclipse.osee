@@ -26,6 +26,3 @@ app.provider('OseeAppSchema', function() {
        return OseeAppSchema;
        } ];
 });
-
-
-

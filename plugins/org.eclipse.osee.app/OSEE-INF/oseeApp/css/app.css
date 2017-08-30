@@ -36,3 +36,9 @@
     width: 500px;
     height: 300px;
 }
+
+section.listview {
+    float: right;
+    width: 659px;
+    border-left: 1px solid #eeeeee;
+}

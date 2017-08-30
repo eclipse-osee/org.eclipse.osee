@@ -1,17 +1,43 @@
 <div class="panel panel-primary">
     <div class="panel-body">
         <div class="row">
-            <div class="col-lg-12">
-                <div class="panel panel-primary">
-                    <div class="panel-heading clearfix">
-                        <h3 class="panel-title" style="line-height:34px;">
-                            <strong>{{ lc.splash }}</strong>
-                        </h3>
+            <div class="col-md-3 hidden-xs">
+                <div class="widget">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading clearfix">
+                            <h3 class="panel-title" style="line-height: 34px;">
+                                <strong>Osee Applications</strong>
+                            </h3>
+                        </div>
+                        <div class="panel-body jsf" style="line-height: 2.0">
+                            <div>
+                                <ui style="list-style: none;">
+                                <li ng-repeat="item in lc.startData"><a
+                                    href="#/osee_list?uuid={{item.uuid}}&name={{item.name}}"
+                                    class="btn btn-info">{{ item.name }}</a><br />
+                                <span>{{ item.description }}</span></li>
+                                </ui>
+                            </div>
+                        </div>
                     </div>
-                    
-                    <div class="panel-body jsf" style="line-height: 2.0" >
-                        <div>
-                           <div id="grid1" ui-grid="lc.gridOptions" class="grid" ui-grid-resize-columns></div>
+                </div>
+            </div>
+            <div class="col-md-9 hidden-xs">
+                <div class="widget">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading clearfix">
+                            <h3 class="panel-title" style="line-height: 34px;">
+                                <strong>{{ lc.splash }}</strong>
+                            </h3>
+                        </div>
+                        <div class="panel-body jsf" style="line-height: 2.0">
+                            <div ng-if="lc.loaded">
+                                <div id="grid1" ui-grid="lc.gridOptions" class="grid"
+                                    ui-grid-auto-resize></div>
+                            </div>
+                            <div ng-if="!lc.loaded">
+                                <strong>Loading</strong>
+                            </div>
                         </div>
                     </div>
                 </div>
