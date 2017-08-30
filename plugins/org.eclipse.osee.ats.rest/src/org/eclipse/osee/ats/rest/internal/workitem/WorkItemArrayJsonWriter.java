@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Collections;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -83,7 +84,7 @@ public class WorkItemArrayJsonWriter implements MessageBodyWriter<WorkItemArray>
          writer.writeArrayFieldStart("workItems");
          for (IAtsWorkItem workItem : workItemArray.getWorkItems()) {
             WorkItemJsonWriter.addWorkItem(atsServer, workItem, annotations, writer,
-               matches(IdentityView.class, annotations), getAttributeTypes(), false);
+               matches(IdentityView.class, annotations), getAttributeTypes(), Collections.emptyList());
          }
          writer.writeEndArray();
          writer.writeEndObject();

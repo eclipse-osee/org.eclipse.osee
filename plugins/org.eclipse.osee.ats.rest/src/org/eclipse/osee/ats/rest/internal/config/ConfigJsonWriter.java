@@ -5,6 +5,8 @@ import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -28,9 +30,11 @@ import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workflow.WorkItemWriterOptions;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
@@ -217,16 +221,19 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
          writer.writeStringField("Backlog", backlogArt != null ? String.valueOf(backlogArt.getName()) : "");
       }
       if (!identityView) {
-         addAttributeData(writer, attributeTypes, artifact, false);
+         addAttributeData(writer, attributeTypes, artifact, Collections.emptyList(), atsServer);
       }
       writer.writeEndObject();
    }
 
-   public static void addAttributeData(JsonGenerator writer, AttributeTypes attributeTypes, ArtifactReadable artifact, boolean fieldsAsIds) throws IOException, JsonGenerationException, JsonProcessingException {
+   public static void addAttributeData(JsonGenerator writer, AttributeTypes attributeTypes, ArtifactReadable artifact, List<WorkItemWriterOptions> options, IAtsServer atsServer) throws IOException, JsonGenerationException, JsonProcessingException {
       Collection<AttributeTypeToken> attrTypes = attributeTypes.getAll();
       ResultSet<? extends AttributeReadable<Object>> attributes = artifact.getAttributes();
+      boolean fieldsAsIds = options.contains(WorkItemWriterOptions.FieldsAsIds);
+      boolean datesAsLong = options.contains(WorkItemWriterOptions.DatesAsLong);
       if (!attributes.isEmpty()) {
          for (AttributeTypeToken attrType : attrTypes) {
+            boolean isDateType = atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().isDateType(attrType);
             if (artifact.isAttributeTypeValid(attrType)) {
                List<Object> attributeValues = artifact.getAttributeValues(attrType);
                if (!attributeValues.isEmpty()) {
@@ -238,21 +245,33 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
                         writer.writeArrayFieldStart(attrType.getName());
                      }
                      for (Object value : attributeValues) {
-                        writer.writeObject(value);
+                        writeObjectValue(writer, datesAsLong, isDateType, value);
                      }
                      writer.writeEndArray();
                   } else if (attributeValues.size() == 1) {
+
+                     String field = fieldsAsIds ? attrType.getIdString() : attrType.getName();
+                     writer.writeFieldName(field);
+
                      Object value = attributeValues.iterator().next();
-                     if (fieldsAsIds) {
-                        writer.writeObjectField(attrType.getIdString(), value);
-                     } else {
-                        writer.writeObjectField(attrType.getName(), value);
-                     }
+                     writeObjectValue(writer, datesAsLong, isDateType, value);
                   }
 
                }
             }
          }
+      }
+   }
+
+   private static void writeObjectValue(JsonGenerator writer, boolean datesAsLong, boolean isDateType, Object value) throws IOException, JsonGenerationException, JsonProcessingException {
+      if (isDateType) {
+         if (datesAsLong) {
+            writer.writeString(String.valueOf(((Date) value).getTime()));
+         } else {
+            writer.writeString(DateUtil.getMMDDYY((Date) value));
+         }
+      } else {
+         writer.writeObject(value);
       }
    }
 

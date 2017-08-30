@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.Attribute;
 import org.eclipse.osee.ats.api.workflow.AttributeKey;
+import org.eclipse.osee.ats.api.workflow.WorkItemWriterOptions;
 import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -43,6 +44,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
@@ -188,13 +190,32 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testAtsActionsDetailsRestCall() throws Exception {
-      String url = "/ats/action/" + DemoUtil.getSawAtsIdsStr() + "/details";
+      String url = "/ats/action/" + DemoUtil.getSawCodeCommittedWf().getIdString() + "/details";
       JsonArray array = getAndCheckArray(url);
-      Assert.assertEquals(3, array.size());
+      Assert.assertEquals(1, array.size());
       JsonObject obj = (JsonObject) array.iterator().next();
       testAction(obj);
       String atsId = obj.get("AtsId").getAsString();
       Assert.assertEquals(atsId, obj.get("ats.Id").getAsString());
+      Assert.assertFalse(Strings.isNumeric(obj.get("ats.Created Date").getAsString()));
+   }
+
+   @Test
+   public void testAtsActionsFieldsAsIdsAndDatesAsLong() throws Exception {
+      String url =
+         "/ats/action/" + DemoUtil.getSawCodeCommittedWf().getIdString() + "/details?" + WorkItemWriterOptions.FieldsAsIds.name() + "=true&" + WorkItemWriterOptions.DatesAsLong.name() + "=true";
+      JsonArray array = getAndCheckArray(url);
+      Assert.assertEquals(1, array.size());
+      JsonObject obj = (JsonObject) array.iterator().next();
+
+      // FieldsAsIds should replace attr type names with id as the field
+      Assert.assertFalse(obj.has(AtsAttributeTypes.CreatedDate.getName()));
+      String teamDefByAttrTypeId = obj.get(AtsAttributeTypes.CreatedDate.getIdString()).getAsString();
+      Assert.assertTrue(Strings.isNumeric(teamDefByAttrTypeId));
+
+      // DatesAsLong should replace date value with long time value
+      String dateValue = obj.get(AtsAttributeTypes.CreatedDate.getIdString()).getAsString();
+      Assert.assertTrue(Strings.isNumeric(dateValue));
    }
 
    private void testAction(JsonObject obj) {

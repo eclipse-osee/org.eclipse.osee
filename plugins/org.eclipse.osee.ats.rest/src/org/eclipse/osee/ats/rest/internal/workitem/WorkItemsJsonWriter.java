@@ -15,6 +15,8 @@ import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -25,6 +27,7 @@ import javax.ws.rs.ext.Provider;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.workflow.WorkItemWriterOptions;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
@@ -91,10 +94,18 @@ public class WorkItemsJsonWriter implements MessageBodyWriter<Collection<IAtsWor
          writer = jsonFactory.createJsonGenerator(entityStream);
          writer.writeStartArray();
          MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters(true);
-         boolean FieldsAsIds = queryParameters.containsKey("FieldsAsIds");
+         List<WorkItemWriterOptions> options = new LinkedList<>();
+         if (queryParameters.containsKey(WorkItemWriterOptions.FieldsAsIds.name()) && queryParameters.getFirst(
+            WorkItemWriterOptions.FieldsAsIds.name()).equals("true")) {
+            options.add(WorkItemWriterOptions.FieldsAsIds);
+         }
+         if (queryParameters.containsKey(WorkItemWriterOptions.DatesAsLong.name()) && queryParameters.getFirst(
+            WorkItemWriterOptions.DatesAsLong.name()).equals("true")) {
+            options.add(WorkItemWriterOptions.DatesAsLong);
+         }
          for (IAtsWorkItem workItem : workItems) {
             WorkItemJsonWriter.addWorkItem(atsServer, workItem, annotations, writer,
-               matches(IdentityView.class, annotations), getAttributeTypes(), FieldsAsIds);
+               matches(IdentityView.class, annotations), getAttributeTypes(), options);
          }
          writer.writeEndArray();
       } finally {
