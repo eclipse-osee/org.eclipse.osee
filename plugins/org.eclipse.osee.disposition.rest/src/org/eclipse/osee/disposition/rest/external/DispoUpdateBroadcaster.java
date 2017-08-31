@@ -47,4 +47,10 @@ public class DispoUpdateBroadcaster {
          listener.onUpdateItemStats(ids, items, set);
       }
    }
+
+   public void broadcastDeleteSet(DispoSet set) {
+      for (DispoListenerApi listener : listeners) {
+         listener.onDeleteDispoSet(set);
+      }
+   }
 }

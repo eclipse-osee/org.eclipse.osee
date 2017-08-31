@@ -476,6 +476,9 @@ public class DispoApiImpl implements DispoApi {
          for (DispoItem item : nameToItemMap.values()) {
             ids.add(item.getGuid());
          }
+         //let ci tool know to delete all the ciset dispo data
+         updateBroadcaster.broadcastDeleteSet(set);
+         // now send all the current data
          updateBroadcaster.broadcastUpdateItems(ids, nameToItemMap.values(), set);
       } catch (Exception ex) {
          throw new OseeCoreException(ex);

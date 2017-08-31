@@ -20,4 +20,6 @@ import org.eclipse.osee.disposition.model.DispoSet;
 public interface DispoListenerApi {
 
    public void onUpdateItemStats(Collection<String> ids, Collection<DispoItem> items, DispoSet set);
+
+   public void onDeleteDispoSet(DispoSet set);
 }
