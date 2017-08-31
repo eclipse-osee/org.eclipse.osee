@@ -179,6 +179,7 @@ public class DispoApiImpl implements DispoApi {
    @Override
    public boolean deleteDispoSet(BranchId branch, String setId) {
       ArtifactReadable author = getQuery().findUser();
+      updateBroadcaster.broadcastDeleteSet(getDispoSetById(branch, setId));
       return getWriter().deleteDispoSet(author, branch, setId);
    }
 
