@@ -196,6 +196,7 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
    public void clearCaches() {
       atsCache.invalidate();
       workDefinitionService.clearCaches();
+      userService.reloadCache();
    }
 
    @Override
@@ -552,6 +553,15 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
    @Override
    public IAtsTeamWorkflow getTeamWf(ArtifactId artifact) {
       ArtifactId art = getArtifact(artifact);
+      if (art != null) {
+         return getWorkItemFactory().getTeamWf(art);
+      }
+      return null;
+   }
+
+   @Override
+   public IAtsTeamWorkflow getTeamWf(Long id) {
+      ArtifactId art = getArtifact(id);
       if (art != null) {
          return getWorkItemFactory().getTeamWf(art);
       }

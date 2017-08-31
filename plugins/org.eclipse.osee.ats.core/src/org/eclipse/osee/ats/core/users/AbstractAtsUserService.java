@@ -156,7 +156,7 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
       userIdToAtsUser.clear();
       nameToAtsUser.clear();
       currentUser = null;
-      for (IAtsUser user : getUsers()) {
+      for (IAtsUser user : getUsersFromDb()) {
          userIdToAtsUser.put(user.getUserId(), user);
          nameToAtsUser.put(user.getName(), user);
       }

@@ -269,15 +269,14 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
 
    @Override
    public void clearCaches() {
-      super.clearCaches();
-
       // clear server config cache
       AtsClientService.getConfigEndpoint().clearCaches();
 
       // clear client config cache (read from server)
       clearConfigurationsCaches();
+
+      super.clearCaches();
       getWorkDefinitionService().clearCaches();
-      getUserService().reloadCache();
 
       if (goalMembersCache != null) {
          goalMembersCache.invalidate();
@@ -592,6 +591,10 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    @Override
    public String getApplicationServerBase() {
       return OseeClientProperties.getOseeApplicationServer();
+   }
+   @Override
+   public Collection<ArtifactId> getArtifacts(IArtifactType artifactType) {
+      return Collections.castAll(ArtifactQuery.getArtifactListFromType(artifactType, getAtsBranch()));
    }
 
 }

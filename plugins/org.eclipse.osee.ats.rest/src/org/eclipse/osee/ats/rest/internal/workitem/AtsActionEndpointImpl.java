@@ -48,11 +48,13 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.Attribute;
 import org.eclipse.osee.ats.api.workflow.AttributeKey;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
@@ -124,6 +126,56 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    public List<IAtsWorkItem> getActionDetails(@PathParam("ids") String ids) throws Exception {
       List<IAtsWorkItem> workItems = services.getQueryService().getWorkItemListByIds(ids);
       return workItems;
+   }
+
+   /**
+    * @return valid unreleased versions to select
+    */
+   @Override
+   @GET
+   @Path("{id}/UnrelasedVersions")
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<String> getUnreleasedVersionNames(@PathParam("id") String id) {
+      List<String> versions = new LinkedList<>();
+      IAtsTeamWorkflow teamWf = services.getTeamWf(services.getArtifactById(id));
+      IAtsTeamDefinition targedVersionsTeamDef = teamWf.getTeamDefinition().getTeamDefinitionHoldingVersions();
+      if (targedVersionsTeamDef != null) {
+         for (IAtsVersion version : services.getVersionService().getVersions(targedVersionsTeamDef)) {
+            if (!version.isReleased()) {
+               versions.add(version.getName());
+            }
+         }
+      }
+      return versions;
+   }
+
+   /**
+    * @return valid transition-to states in order of default state, other states and return states
+    */
+   @Override
+   @GET
+   @Path("{id}/TransitionToStates")
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<String> getTransitionToStateNames(@PathParam("id") String id) {
+      List<String> states = new LinkedList<>();
+      IAtsTeamWorkflow teamWf = services.getTeamWf(services.getArtifactById(id));
+      states.add(teamWf.getStateDefinition().getDefaultToState().getName());
+      for (IAtsStateDefinition state : teamWf.getStateDefinition().getToStates()) {
+         if (!states.contains(state.getName())) {
+            states.add(state.getName());
+         }
+      }
+      for (IAtsStateDefinition state : teamWf.getStateDefinition().getOverrideAttributeValidationStates()) {
+         if (!states.contains(state.getName())) {
+            states.add(state.getName());
+         }
+      }
+      for (IAtsVersion version : services.getVersionService().getVersions(teamWf.getTeamDefinition())) {
+         if (!version.isReleased()) {
+            states.add(version.getName());
+         }
+      }
+      return states;
    }
 
    /**
@@ -250,7 +302,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       }
       return null;
    }
-   
+
    /**
     * @query_string <attr type name>=<value>, <attr type id>=<value>
     * @return json representation of the matching workItem(s)

@@ -190,6 +190,8 @@ public interface IAtsServices extends IAtsEarnedValueServiceProvider, IAtsConfig
 
    IAtsTeamWorkflow getTeamWf(ArtifactId artifact);
 
+   IAtsTeamWorkflow getTeamWf(Long id);
+
    ArtifactToken getArtifactByLegacyPcrId(String id);
 
    Collection<ArtifactToken> getArtifactsByLegacyPcrId(String id);
@@ -219,5 +221,7 @@ public interface IAtsServices extends IAtsEarnedValueServiceProvider, IAtsConfig
    default IAtsWorkItem getTeamWf(long id) {
       return getTeamWf(ArtifactId.valueOf(id));
    }
+
+   Collection<ArtifactId> getArtifacts(IArtifactType artifactType);
 
 }

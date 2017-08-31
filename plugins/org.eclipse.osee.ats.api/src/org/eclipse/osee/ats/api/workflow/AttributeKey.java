@@ -10,16 +10,30 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workflow;
 
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+
 /**
+ * NOTE: Items added to this list should be handled in AtsAttributeEndpointImpl.getValidValues()
+ *
  * @author Donald G. Dunne
  */
 public enum AttributeKey {
-   Title,
-   Priority,
-   ColorTeam,
-   Assignee,
-   IPT,
-   Originator,
-   Version,
-   State,
+   Title("N/A"),
+   Priority("/ats/attr/" + AtsAttributeTypes.PriorityType.getIdString()),
+   ColorTeam("/ats/attr/" + AtsAttributeTypes.ColorTeam.getIdString()),
+   Assignee("/ats/attr/Assignee"),
+   IPT("/ats/attr/" + AtsAttributeTypes.IPT.getIdString()),
+   Originator("/ats/attr/Originator"),
+   Version("/ats/action/{id}/UnrelasedVersions"),
+   State("/ats/action/{id}/TransitionToStates");
+
+   private final String url;
+
+   private AttributeKey(String url) {
+      this.url = url;
+   }
+
+   public String getUrl() {
+      return url;
+   }
 }

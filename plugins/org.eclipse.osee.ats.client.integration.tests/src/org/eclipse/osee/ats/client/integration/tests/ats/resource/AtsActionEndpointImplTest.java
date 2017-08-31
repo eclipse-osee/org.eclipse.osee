@@ -15,9 +15,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Date;
@@ -38,10 +36,13 @@ import org.eclipse.osee.ats.api.workflow.WorkItemWriterOptions;
 import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.workflow.state.TeamState;
+import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.ats.demo.api.DemoWorkflowTitles;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -59,6 +60,20 @@ import org.junit.Test;
 public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    private TeamWorkFlowArtifact teamWfArt;
+
+   @Test
+   public void testUnrelasedVersions() throws Exception {
+      JsonArray json = queryAndConfirmCount(
+         "ats/action/" + DemoArtifactToken.SAW_Commited_Code_TeamWf.getIdString() + "/UnrelasedVersions", 2);
+      Assert.assertEquals(DemoBranches.SAW_Bld_2.getName(), json.iterator().next().getAsString());
+   }
+
+   @Test
+   public void testTransitionToStates() throws Exception {
+      JsonArray json = queryAndConfirmCount(
+         "ats/action/" + DemoArtifactToken.SAW_Commited_Code_TeamWf.getIdString() + "/TransitionToStates", 4);
+      Assert.assertEquals(TeamState.Completed.getName(), json.iterator().next().getAsString());
+   }
 
    @Test
    public void testQueryTitle() throws Exception {
@@ -93,13 +108,6 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    @Test
    public void testQueryTeamPriorityAndWorking() throws Exception {
       queryAndConfirmCount("ats/action/query?Team=30013695&Priority=3&Priority=2&StateType=Working", 2);
-   }
-
-   private void queryAndConfirmCount(String appendedUrl, int count) throws URISyntaxException, MalformedURLException, Exception {
-      String url = String.format("%s/%s", getAppServerAddr(), appendedUrl);
-      URI uri = new URL(url).toURI();
-      JsonArray array = getAndCheckArray(uri);
-      Assert.assertEquals(count, array.size());
    }
 
    public TeamWorkFlowArtifact getCodeWorkflow() {

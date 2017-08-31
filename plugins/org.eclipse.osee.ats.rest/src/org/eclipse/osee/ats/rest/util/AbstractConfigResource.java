@@ -18,7 +18,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.rest.IAtsServer;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -28,12 +30,14 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public abstract class AbstractConfigResource {
 
-   protected final IAtsServer atsServer;
+   protected final IAtsServices services;
    private final IArtifactType artifactType;
+   protected IAtsServer atsServer;
 
-   public AbstractConfigResource(IArtifactType artifactType, IAtsServer atsServer) {
+   public AbstractConfigResource(IArtifactType artifactType, IAtsServices services) {
       this.artifactType = artifactType;
-      this.atsServer = atsServer;
+      this.services = services;
+      this.atsServer = (IAtsServer) services;
    }
 
    @GET
@@ -66,14 +70,14 @@ public abstract class AbstractConfigResource {
    }
 
    private IAtsConfigObject getObject(int uuid) {
-      ArtifactReadable configArt = atsServer.getQuery().andUuid(Integer.valueOf(uuid)).getResults().getExactlyOne();
-      return atsServer.getConfigItemFactory().getConfigObject(configArt);
+      ArtifactReadable configArt = (ArtifactReadable) services.getArtifact(new Long(uuid));
+      return services.getConfigItemFactory().getConfigObject(configArt);
    }
 
    private List<IAtsConfigObject> getObjects() {
       List<IAtsConfigObject> configs = new ArrayList<>();
-      for (ArtifactReadable art : atsServer.getQuery().andIsOfType(artifactType).getResults()) {
-         configs.add(atsServer.getConfigItemFactory().getConfigObject(art));
+      for (ArtifactId art : services.getArtifacts(artifactType)) {
+         configs.add(services.getConfigItemFactory().getConfigObject(art));
       }
       return configs;
    }

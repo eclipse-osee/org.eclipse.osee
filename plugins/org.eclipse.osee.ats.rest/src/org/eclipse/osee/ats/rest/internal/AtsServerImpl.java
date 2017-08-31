@@ -493,5 +493,9 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    public IAtsTeamWorkflow getTeamWf(Long id) {
       return getWorkItemFactory().getTeamWf(services.getArtifact(id));
    }
+   public Collection<ArtifactId> getArtifacts(IArtifactType artifactType) {
+      return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
+         orcsApi.getQueryFactory().fromBranch(getAtsBranch()).andIsOfType(artifactType).getResults().getList());
+   }
 
 }

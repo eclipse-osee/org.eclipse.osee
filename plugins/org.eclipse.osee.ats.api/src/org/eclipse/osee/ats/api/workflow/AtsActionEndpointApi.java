@@ -109,4 +109,20 @@ public interface AtsActionEndpointApi {
    @Consumes({MediaType.APPLICATION_JSON})
    public Attribute setActionAttributeByType(@PathParam("actionId") String actionId, @PathParam("attrTypeId") String attrTypeId, List<String> values);
 
+   /**
+    * @return valid unreleased versions to select
+    */
+   @GET
+   @Path("{id}/UnrelasedVersions")
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<String> getUnreleasedVersionNames(@PathParam("id") String id);
+
+   /**
+    * @return valid transition-to states in order of default state, other states and return states
+    */
+   @GET
+   @Path("{id}/TransitionToStates")
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<String> getTransitionToStateNames(@PathParam("id") String id);
+
 }

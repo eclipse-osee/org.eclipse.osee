@@ -14,7 +14,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
@@ -39,6 +42,32 @@ public abstract class AbstractRestTest {
          }
       }
       return null;
+   }
+
+   protected JsonArray queryAndReturn(String appendedUrl) throws URISyntaxException, MalformedURLException, Exception {
+      String url = String.format("%s/%s", getAppServerAddr(), appendedUrl);
+      URI uri = new URL(url).toURI();
+      JsonArray array = getAndCheckArray(uri);
+      return array;
+   }
+
+   protected JsonArray queryAndConfirmCount(String appendedUrl, int count) throws URISyntaxException, MalformedURLException, Exception {
+      JsonArray array = queryAndReturn(appendedUrl);
+      Assert.assertEquals(count, array.size());
+      return array;
+   }
+
+   protected JsonObject queryAndReturnJsonObject(String appendedUrl) throws URISyntaxException, MalformedURLException, Exception {
+      String url = String.format("%s/%s", getAppServerAddr(), appendedUrl);
+      URI uri = new URL(url).toURI();
+      JsonObject obj = getAndCheckArrayObject(uri);
+      return obj;
+   }
+
+   protected JsonObject queryAndConfirmCountJsonObject(String appendedUrl, int count) throws URISyntaxException, MalformedURLException, Exception {
+      JsonObject array = queryAndReturnJsonObject(appendedUrl);
+      Assert.assertEquals(count, array.entrySet().size());
+      return array;
    }
 
    protected String getAndCheckStr(String url) {
@@ -67,6 +96,11 @@ public abstract class AbstractRestTest {
       return parseJsonArray(json);
    }
 
+   protected JsonObject getAndCheckArrayObject(URI uri) throws Exception {
+      String json = getAndCheck(uri, MediaType.APPLICATION_JSON_TYPE);
+      return parseJsonObject(json);
+   }
+
    protected JsonArray getAndCheckArray(String url) throws Exception {
       String json = getAndCheck(url, MediaType.APPLICATION_JSON_TYPE);
       return parseJsonArray(json);
@@ -76,5 +110,11 @@ public abstract class AbstractRestTest {
       JsonParser jp = new JsonParser();
       JsonElement je = jp.parse(json);
       return (JsonArray) je;
+   }
+
+   protected JsonObject parseJsonObject(String json) {
+      JsonParser jp = new JsonParser();
+      JsonElement je = jp.parse(json);
+      return (JsonObject) je;
    }
 }

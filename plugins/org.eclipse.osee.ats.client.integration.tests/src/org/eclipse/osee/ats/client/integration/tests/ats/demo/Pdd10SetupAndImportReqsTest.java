@@ -10,8 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.demo;
 
+import java.util.List;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.demo.populate.Pdd10SetupAndImportReqs;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
+import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -22,6 +31,15 @@ public class Pdd10SetupAndImportReqsTest implements IPopulateDemoDatabaseTest {
    @Test
    public void setupAndImportRequirements() {
       DemoUtil.setPopulateDbSuccessful(false);
+
+      // Test Demo Users
+      List<Artifact> userArts = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.User, CoreBranches.COMMON);
+      Assert.assertEquals(23, userArts.size());
+
+      List<? extends IAtsUser> users = AtsClientService.get().getUserService().getUsers();
+      Assert.assertEquals(23, users.size());
+      users = AtsClientService.get().getUserService().getUsers(Active.Active);
+      Assert.assertEquals(20, users.size());
 
       Pdd10SetupAndImportReqs create = new Pdd10SetupAndImportReqs();
       create.run();
