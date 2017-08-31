@@ -11,15 +11,12 @@
 package org.eclipse.osee.define.report.internal;
 
 import java.util.Map;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -141,14 +138,10 @@ public final class DataRightsSwReqAndCodeResource {
     * @return Returns a list of the artifacts that do not have a source or destination or data rights
     * @throws Exception
     */
-   @Path("software")
+   @Path("software/{sourceBranch}/{destinationBranch}")
    @POST
-   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-   @Produces(MediaType.TEXT_PLAIN)
-   public Response copySWReqDataRights(@Context HttpHeaders httpHeaders, //
-      @FormParam("sourceBranch") BranchId sourceBranch, //
-      @FormParam("destinationBranch") BranchId destinationBranch) throws Exception {
-
+   @Produces(MediaType.TEXT_HTML)
+   public String copySWReqDataRights(@PathParam("sourceBranch") BranchId sourceBranch, @PathParam("destinationBranch") BranchId destinationBranch) {
       return copyDataRights(sourceBranch, destinationBranch, CoreArtifactTypes.AbstractSoftwareRequirement);
    }
 
@@ -159,17 +152,14 @@ public final class DataRightsSwReqAndCodeResource {
     * @return Returns a list of the artifacts that do not have a source or destination or data rights
     * @throws Exception
     */
-   @Path("ssd")
+   @Path("ssd/{sourceBranch}/{destinationBranch}")
    @POST
-   @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-   @Produces(MediaType.TEXT_PLAIN)
-   public Response copySSDDataRights(@Context HttpHeaders httpHeaders, //
-      @FormParam("sourceBranch") BranchId sourceBranch, //
-      @FormParam("destinationBranch") BranchId destinationBranch) throws Exception {
+   @Produces(MediaType.TEXT_HTML)
+   public String copySSDDataRights(@PathParam("sourceBranch") BranchId sourceBranch, @PathParam("destinationBranch") BranchId destinationBranch) {
       return copyDataRights(sourceBranch, destinationBranch, CoreArtifactTypes.SubsystemDesign);
    }
 
-   private Response copyDataRights(BranchId sourceBranch, BranchId destinationBranch, IArtifactType artifactType) throws Exception {
+   private String copyDataRights(BranchId sourceBranch, BranchId destinationBranch, IArtifactType artifactType) {
       ResultSet<ArtifactReadable> results =
          queryFactory.fromBranch(destinationBranch).andIsOfType(artifactType).getResults();
 
@@ -192,20 +182,16 @@ public final class DataRightsSwReqAndCodeResource {
             String subsystem = dest.getSoleAttributeValue(CoreAttributeTypes.Subsystem, "");
             appendDetails("missing source", strb, dest, subsystem, classification);
          } else {
-            setBestValue(txBuilder, source, dest, CoreAttributeTypes.DataRightsClassification);
-            setBestValue(txBuilder, source, dest, CoreAttributeTypes.SubjectMatterExpert);
-            setBestValue(txBuilder, source, dest, CoreAttributeTypes.DataRightsBasis);
+            setBestValue(txBuilder, source, dest, CoreAttributeTypes.DataRightsClassification, strb);
+            setBestValue(txBuilder, source, dest, CoreAttributeTypes.SubjectMatterExpert, strb);
+            setBestValue(txBuilder, source, dest, CoreAttributeTypes.DataRightsBasis, strb);
             count++;
          }
       }
       txBuilder.commit();
 
       strb.append("done: " + count);
-
-      ResponseBuilder builder = Response.ok(strb.toString());
-      builder.header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN);
-
-      return builder.build();
+      return strb.toString();
    }
 
    private void appendDetails(String msg, StringBuilder strb, ArtifactReadable art, String subsystem, String classification) {
@@ -221,7 +207,7 @@ public final class DataRightsSwReqAndCodeResource {
       return txFactory.createTransaction(branchId, userArtifact, comment);
    }
 
-   private void setBestValue(TransactionBuilder txBuilder, ArtifactReadable source, ArtifactReadable dest, AttributeTypeId attributeType) throws Exception {
+   private void setBestValue(TransactionBuilder txBuilder, ArtifactReadable source, ArtifactReadable dest, AttributeTypeId attributeType, StringBuilder strb) {
       String value = dest.getSoleAttributeValue(attributeType, "");
       String sourceValue = source.getSoleAttributeValue(attributeType, AttributeId.UNSPECIFIED);
       if (sourceValue.equals(AttributeId.UNSPECIFIED)) {
@@ -233,7 +219,8 @@ public final class DataRightsSwReqAndCodeResource {
             txBuilder.setSoleAttributeValue(dest, attributeType, sourceValue);
          } else {
             if (!value.equals(sourceValue)) {
-               logger.warn("%s", dest.getName() + " conflict with " + attributeType);
+               strb.append(
+                  attributeType + " conflict | " + sourceValue + " | " + value + " | " + dest.getName() + "<br />");
             }
          }
       }
