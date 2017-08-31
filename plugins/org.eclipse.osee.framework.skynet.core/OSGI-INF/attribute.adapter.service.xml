@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop" immediate="true" name="org.eclipse.osee.framework.skynet.core.attribute.service.AttributeAdapterServiceImpl">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop" immediate="true">
 <implementation class="org.eclipse.osee.framework.skynet.core.attribute.service.AttributeAdapterServiceImpl"/>
 <service>
    <provide interface="org.eclipse.osee.framework.skynet.core.attribute.service.AttributeAdapterService"/>

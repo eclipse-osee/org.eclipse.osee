@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.core.client.internal.query;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -27,6 +26,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.QueryBuilderArtifact;
@@ -120,13 +120,9 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    }
 
    @Override
-   public List<String> getWorkPackagesForColorTeam(String colorTeam) {
-      List<String> workPackageGuids = new LinkedList<>();
-      for (Artifact workPackageArt : ArtifactQuery.getArtifactListFromTypeAndAttribute(AtsArtifactTypes.WorkPackage,
-         AtsAttributeTypes.ColorTeam, colorTeam, AtsClientService.get().getAtsBranch())) {
-         workPackageGuids.add(workPackageArt.getGuid());
-      }
-      return workPackageGuids;
+   public List<ArtifactId> getWorkPackagesForColorTeam(String colorTeam) {
+      return Collections.castAll(ArtifactQuery.getArtifactListFromTypeAndAttribute(AtsArtifactTypes.WorkPackage,
+         AtsAttributeTypes.ColorTeam, colorTeam, AtsClientService.get().getAtsBranch()));
    }
 
    @Override

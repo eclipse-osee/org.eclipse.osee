@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -50,21 +49,18 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
    }
 
    @Override
-   public String getWorkPackageId(IAtsWorkItem workItem) {
+   public ArtifactId getWorkPackageId(IAtsWorkItem workItem) {
       ArtifactId artifact = services.getArtifact(workItem);
       Conditions.checkNotNull(artifact, "workItem", "Can't Find Work Package matching %s", workItem.toStringWithId());
-      return services.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.WorkPackageGuid, null);
+      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.WorkPackageReference,
+         ArtifactId.SENTINEL);
    }
 
    @Override
    public IAtsWorkPackage getWorkPackage(IAtsWorkItem workItem) throws OseeCoreException {
-      WorkPackage wpa = null;
-      String workPackageGuid = getWorkPackageId(workItem);
-      if (Strings.isValid(workPackageGuid)) {
-         ArtifactToken workPkgArt = services.getArtifactById(workPackageGuid);
-         wpa = new WorkPackage(logger, workPkgArt, services);
-      }
-      return wpa;
+      ArtifactId workPackageId = getWorkPackageId(workItem);
+      ArtifactToken workPkgArt = services.getArtifact(workPackageId);
+      return new WorkPackage(logger, workPkgArt, services);
    }
 
    @Override
@@ -199,7 +195,6 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
 
    @Override
    public void setWorkPackage(IAtsWorkPackage workPackage, IAtsWorkItem workItem, IAtsChangeSet changes) {
-      changes.setSoleAttributeValue(workItem, AtsAttributeTypes.WorkPackageGuid, workPackage.getGuid());
+      changes.setSoleAttributeValue(workItem, AtsAttributeTypes.WorkPackageReference, workPackage);
    }
-
 }

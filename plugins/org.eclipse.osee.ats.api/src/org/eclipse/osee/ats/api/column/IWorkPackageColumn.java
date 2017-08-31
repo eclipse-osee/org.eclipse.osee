@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.api.column;
 
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**
@@ -18,5 +19,5 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
  */
 public interface IWorkPackageColumn {
 
-   public void setIdToWorkPackageCache(Map<String, ArtifactToken> guidToWorkPackage);
+   public void setIdToWorkPackageCache(Map<ArtifactId, ArtifactToken> guidToWorkPackage);
 }

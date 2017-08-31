@@ -143,7 +143,6 @@ public final class AtsAttributeTypes {
    public static final AttributeTypeToken ActivityId = createType(1152921504606847874L, "Activity ID");
    public static final AttributeTypeToken UnPlannedWork = createType(2421093774890249189L, "Unplanned Work");
    public static final AttributeTypeToken ActivityName = createType(1152921504606847875L, "Activity Name");
-   public static final AttributeTypeToken WorkPackageGuid = createType(1152921504606847876L, "Work Package Guid", "Work Package for this Team Workflow, Review, Task or Goal");
 
    public static final AttributeTypeToken ClosureActive = createType(1152921875139002555L, "Closure Active status of Program");
    public static final AttributeTypeToken ClosureState = createType(1152921504606847452L, "Closure Status of Build");

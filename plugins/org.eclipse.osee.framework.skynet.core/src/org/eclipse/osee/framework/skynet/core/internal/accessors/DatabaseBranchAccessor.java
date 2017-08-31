@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeDataAccessor;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.LoadType;
@@ -86,6 +87,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
     * @return Branch or BranchDoesNotExist exception
     */
    public static Branch loadBranch(IOseeCache<Branch> cache, BranchId branchId) {
+      Conditions.assertTrue(branchId.isValid(), "Invalid Branch %s", branchId);
       return ConnectionHandler.getJdbcClient().fetchOrException(
          () -> new BranchDoesNotExist("Branch could not be acquired for id [%s]", branchId.getIdString()),
          stmt -> load(cache, stmt, null), SELECT_BRANCH, branchId);

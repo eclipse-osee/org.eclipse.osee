@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsAbstractEarnedValueImpl;
 import org.eclipse.osee.ats.core.util.AtsObjects;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -39,15 +40,15 @@ public class AtsEarnedValueImpl extends AtsAbstractEarnedValueImpl {
    }
 
    @Override
-   public String getWorkPackageId(IAtsWorkItem workItem) {
-      String guid = null;
+   public ArtifactId getWorkPackageId(IAtsWorkItem workItem) {
+      ArtifactId id = ArtifactId.SENTINEL;
       Artifact artifact = AtsClientService.get().getArtifact(workItem);
       Conditions.checkNotNull(artifact, "workItem", "Can't Find Work Package matching %s", workItem.toStringWithId());
       if (artifact instanceof AbstractWorkflowArtifact) {
          AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
-         guid = awa.getSoleAttributeValue(AtsAttributeTypes.WorkPackageGuid, null);
+         id = awa.getSoleAttributeValue(AtsAttributeTypes.WorkPackageReference, id);
       }
-      return guid;
+      return id;
    }
 
    @Override

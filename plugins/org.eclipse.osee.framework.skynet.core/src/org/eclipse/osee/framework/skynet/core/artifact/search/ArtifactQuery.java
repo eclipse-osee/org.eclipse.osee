@@ -483,6 +483,12 @@ public class ArtifactQuery {
          new AttributeCriteria(attributeType, attributeValues)).getArtifacts(artifactCountEstimate, null);
    }
 
+   public static List<Artifact> getArtifactListFromAttributeValues(AttributeTypeId attributeType, Collection<ArtifactId> attributeValues, BranchId branch) {
+      Collection<String> idStrings =
+         org.eclipse.osee.framework.jdk.core.util.Collections.transform(attributeValues, ArtifactId::getIdString);
+      return getArtifactListFromAttributeValues(attributeType, idStrings, branch, 10);
+   }
+
    /**
     * Searches for artifacts having attributes which contain matching keywords entered in the query string.
     * <p>

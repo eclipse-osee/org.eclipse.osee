@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.config;
 
+import static org.eclipse.osee.ats.core.column.ColorTeamColumnTest.workPackageArt;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
@@ -46,7 +47,6 @@ public class WorkPackageUtilityTest {
    @Mock private IAtsGoal goal;
    @Mock private IAtsTeamWorkflow teamWf;
    @Mock private IAtsTask task;
-   @Mock private ArtifactToken workPackageArt;
 
    @Mock private IAtsServices services;
    @Mock private IAttributeResolver attributeResolver;
@@ -81,32 +81,35 @@ public class WorkPackageUtilityTest {
 
    @org.junit.Test
    public void testGetWorkPackageArtifact() throws Exception {
-      when(attributeResolver.getSoleAttributeValue(teamWf, AtsAttributeTypes.WorkPackageGuid, null)).thenReturn(null);
+      when(attributeResolver.getSoleAttributeValue(teamWf, AtsAttributeTypes.WorkPackageReference,
+         ArtifactId.SENTINEL)).thenReturn(ArtifactId.SENTINEL);
       Pair<ArtifactId, Boolean> result = util.getWorkPackageArtifact(services, teamWf);
       assertResult(result, null, false);
 
-      when(attributeResolver.getSoleAttributeValue(teamWf, AtsAttributeTypes.WorkPackageGuid, null)).thenReturn("guid");
-      when(services.getArtifactByGuid("guid")).thenReturn(null);
       result = util.getWorkPackageArtifact(services, teamWf);
       assertResult(result, null, false);
 
-      when(services.getArtifactByGuid("guid")).thenReturn(workPackageArt);
+      when(attributeResolver.getSoleAttributeValue(teamWf, AtsAttributeTypes.WorkPackageReference,
+         ArtifactId.SENTINEL)).thenReturn(workPackageArt);
       result = util.getWorkPackageArtifact(services, teamWf);
       assertResult(result, workPackageArt, false);
 
-      when(attributeResolver.getSoleAttributeValue(task, AtsAttributeTypes.WorkPackageGuid, null)).thenReturn(null);
+      when(attributeResolver.getSoleAttributeValue(task, AtsAttributeTypes.WorkPackageReference,
+         ArtifactId.SENTINEL)).thenReturn(ArtifactId.SENTINEL);
       result = util.getWorkPackageArtifact(services, task);
       assertResult(result, workPackageArt, true);
    }
 
    @org.junit.Test
    public void testGetInsertionActivity() throws Exception {
-      when(attributeResolver.getSoleAttributeValue(teamWf, AtsAttributeTypes.WorkPackageGuid, null)).thenReturn("guid");
-      when(services.getArtifactByGuid("guid")).thenReturn(null);
+      when(attributeResolver.getSoleAttributeValue(teamWf, AtsAttributeTypes.WorkPackageReference,
+         ArtifactId.SENTINEL)).thenReturn(ArtifactId.SENTINEL);
       Pair<IAtsInsertionActivity, Boolean> result = util.getInsertionActivity(services, teamWf);
       assertResult(result, null, false);
 
-      when(services.getArtifactByGuid("guid")).thenReturn(workPackageArt);
+      when(attributeResolver.getSoleAttributeValue(teamWf, AtsAttributeTypes.WorkPackageReference,
+         ArtifactId.SENTINEL)).thenReturn(workPackageArt);
+
       when(relationResolver.getRelatedOrNull(workPackageArt,
          AtsRelationTypes.InsertionActivityToWorkPackage_InsertionActivity)).thenReturn(null);
       result = util.getInsertionActivity(services, teamWf);
@@ -118,17 +121,18 @@ public class WorkPackageUtilityTest {
       result = util.getInsertionActivity(services, teamWf);
       assertResult(result, activity, false);
 
-      when(attributeResolver.getSoleAttributeValue(task, AtsAttributeTypes.WorkPackageGuid, null)).thenReturn(null);
+      when(attributeResolver.getSoleAttributeValue(task, AtsAttributeTypes.WorkPackageReference,
+         ArtifactId.SENTINEL)).thenReturn(ArtifactId.SENTINEL);
       result = util.getInsertionActivity(services, task);
       assertResult(result, activity, true);
    }
 
    @Test
    public void testGetInsertion() throws Exception {
-      when(attributeResolver.getSoleAttributeValue(teamWf, AtsAttributeTypes.WorkPackageGuid, null)).thenReturn("guid");
+      when(attributeResolver.getSoleAttributeValue(teamWf, AtsAttributeTypes.WorkPackageReference,
+         ArtifactId.SENTINEL)).thenReturn(workPackageArt);
       when(relationResolver.getRelatedOrNull(workPackageArt,
          AtsRelationTypes.InsertionActivityToWorkPackage_InsertionActivity)).thenReturn(activityArt);
-      when(services.getArtifactByGuid("guid")).thenReturn(workPackageArt);
       when(factory.getInsertionActivity(activityArt)).thenReturn(null);
 
       Pair<IAtsInsertion, Boolean> result = util.getInsertion(services, teamWf);
@@ -140,17 +144,18 @@ public class WorkPackageUtilityTest {
       result = util.getInsertion(services, teamWf);
       assertResult(result, insertion, false);
 
-      when(attributeResolver.getSoleAttributeValue(task, AtsAttributeTypes.WorkPackageGuid, null)).thenReturn(null);
+      when(attributeResolver.getSoleAttributeValue(task, AtsAttributeTypes.WorkPackageReference,
+         ArtifactId.SENTINEL)).thenReturn(ArtifactId.SENTINEL);
       result = util.getInsertion(services, task);
       assertResult(result, insertion, true);
    }
 
    @Test
    public void testGetProgram() throws Exception {
-      when(attributeResolver.getSoleAttributeValue(teamWf, AtsAttributeTypes.WorkPackageGuid, null)).thenReturn("guid");
+      when(attributeResolver.getSoleAttributeValue(teamWf, AtsAttributeTypes.WorkPackageReference,
+         ArtifactId.SENTINEL)).thenReturn(workPackageArt);
       when(relationResolver.getRelatedOrNull(workPackageArt,
          AtsRelationTypes.InsertionActivityToWorkPackage_InsertionActivity)).thenReturn(activityArt);
-      when(services.getArtifactByGuid("guid")).thenReturn(workPackageArt);
       when(factory.getInsertionActivity(activityArt)).thenReturn(activity);
       when(relationResolver.getRelatedOrNull(activity, AtsRelationTypes.InsertionToInsertionActivity_Insertion,
          IAtsInsertion.class)).thenReturn(insertion);
@@ -163,17 +168,19 @@ public class WorkPackageUtilityTest {
       result = util.getProgram(services, teamWf);
       assertResult(result, program, false);
 
-      when(attributeResolver.getSoleAttributeValue(task, AtsAttributeTypes.WorkPackageGuid, null)).thenReturn(null);
+      when(attributeResolver.getSoleAttributeValue(task, AtsAttributeTypes.WorkPackageReference,
+         ArtifactId.SENTINEL)).thenReturn(ArtifactId.SENTINEL);
       result = util.getProgram(services, task);
       assertResult(result, program, true);
    }
 
    @Test
    public void testGetCountry() throws Exception {
-      when(attributeResolver.getSoleAttributeValue(teamWf, AtsAttributeTypes.WorkPackageGuid, null)).thenReturn("guid");
+      when(attributeResolver.getSoleAttributeValue(teamWf, AtsAttributeTypes.WorkPackageReference,
+         ArtifactId.SENTINEL)).thenReturn(workPackageArt);
       when(relationResolver.getRelatedOrNull(workPackageArt,
          AtsRelationTypes.InsertionActivityToWorkPackage_InsertionActivity)).thenReturn(activityArt);
-      when(services.getArtifactByGuid("guid")).thenReturn(workPackageArt);
+      when(services.getArtifact(37L)).thenReturn(workPackageArt);
       when(factory.getInsertionActivity(activityArt)).thenReturn(null);
       when(factory.getInsertionActivity(activityArt)).thenReturn(activity);
       when(relationResolver.getRelatedOrNull(activity, AtsRelationTypes.InsertionToInsertionActivity_Insertion,
@@ -189,14 +196,15 @@ public class WorkPackageUtilityTest {
       result = util.getCountry(services, teamWf);
       assertResult(result, country, false);
 
-      when(attributeResolver.getSoleAttributeValue(task, AtsAttributeTypes.WorkPackageGuid, null)).thenReturn(null);
+      when(attributeResolver.getSoleAttributeValue(task, AtsAttributeTypes.WorkPackageReference,
+         ArtifactId.SENTINEL)).thenReturn(ArtifactId.SENTINEL);
       result = util.getCountry(services, task);
       assertResult(result, country, true);
    }
 
-   private void assertResult(Pair<? extends Object, Boolean> result, Object object, boolean inherited) {
+   private void assertResult(Pair<? extends Object, Boolean> result, Object expected, boolean inherited) {
       assertNotNull(result);
-      assertEquals(result.getFirst(), object);
+      assertEquals(expected, result.getFirst());
       assertEquals(inherited, result.getSecond());
    }
 

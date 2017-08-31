@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.column.IAtsColumn;
 import org.eclipse.osee.ats.api.column.IWorkPackageColumn;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -30,7 +31,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public abstract class AbstractRelatedWorkPackageColumn implements IAtsColumn, IWorkPackageColumn {
 
    private final IAtsEarnedValueServiceProvider earnedValueServiceProvider;
-   private Map<String, ArtifactToken> guidToWorkPackage;
+   private Map<ArtifactId, ArtifactToken> guidToWorkPackage;
    protected final IAtsServices services;
 
    public AbstractRelatedWorkPackageColumn(IAtsEarnedValueServiceProvider earnedValueServiceProvider, IAtsServices services) {
@@ -42,7 +43,7 @@ public abstract class AbstractRelatedWorkPackageColumn implements IAtsColumn, IW
     * Set optional map to use as a cache of work item id (Long) or work package guid (String) to Insertion artifact.
     */
    @Override
-   public void setIdToWorkPackageCache(Map<String, ArtifactToken> guidToWorkPackage) {
+   public void setIdToWorkPackageCache(Map<ArtifactId, ArtifactToken> guidToWorkPackage) {
       this.guidToWorkPackage = guidToWorkPackage;
    }
 
@@ -51,19 +52,16 @@ public abstract class AbstractRelatedWorkPackageColumn implements IAtsColumn, IW
       String result = "";
       try {
          if (atsObject instanceof IAtsWorkItem) {
-            String workPackageId =
+            ArtifactId workPackageId =
                earnedValueServiceProvider.getEarnedValueService().getWorkPackageId((IAtsWorkItem) atsObject);
-            if (workPackageId != null) {
+            if (workPackageId.isValid()) {
                if (guidToWorkPackage != null) {
-                  if (Strings.isValid(workPackageId)) {
-                     ArtifactToken wpArt = guidToWorkPackage.get(workPackageId);
-                     result = getColumnValue(wpArt);
-                     if (Strings.isInValid(result)) {
-                        IAtsWorkPackage workPkg =
-                           earnedValueServiceProvider.getEarnedValueService().getWorkPackage(wpArt);
-                        if (workPkg != null) {
-                           result = getColumnValue(workPkg);
-                        }
+                  ArtifactToken wpArt = guidToWorkPackage.get(workPackageId);
+                  result = getColumnValue(wpArt);
+                  if (Strings.isInValid(result)) {
+                     IAtsWorkPackage workPkg = earnedValueServiceProvider.getEarnedValueService().getWorkPackage(wpArt);
+                     if (workPkg != null) {
+                        result = getColumnValue(workPkg);
                      }
                   }
                }

@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeAdapter;
 /**
  * @author Roberto E. Escobar
  */
-public class ArtifactAttributeAdapter implements AttributeAdapter<Artifact> {
+public class ArtifactAttributeAdapter implements AttributeAdapter<ArtifactId> {
 
    @Override
    public Artifact adapt(Attribute<?> attribute, Id id) throws OseeCoreException {

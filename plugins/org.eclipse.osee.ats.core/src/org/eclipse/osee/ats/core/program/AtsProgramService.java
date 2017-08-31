@@ -131,9 +131,10 @@ public class AtsProgramService implements IAtsProgramService {
       IAtsChangeSet changes = services.getStoreService().createAtsChangeSet("Set Work Package", asUser);
       for (IAtsWorkItem workItem : workItems) {
          if (workPackage == null) {
-            changes.deleteSoleAttribute(workItem, AtsAttributeTypes.WorkPackageGuid);
+            changes.deleteSoleAttribute(workItem, AtsAttributeTypes.WorkPackageReference);
          } else {
-            changes.setSoleAttributeValue(workItem, AtsAttributeTypes.WorkPackageGuid, workPackage.getGuid());
+            changes.setSoleAttributeValue(workItem, AtsAttributeTypes.WorkPackageReference,
+               workPackage.getStoreObject());
          }
       }
       if (!changes.isEmpty()) {

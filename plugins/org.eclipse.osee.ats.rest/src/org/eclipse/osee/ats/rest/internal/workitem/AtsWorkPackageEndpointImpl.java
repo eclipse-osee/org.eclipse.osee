@@ -63,8 +63,8 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
       if (workPackageArt == null) {
          throw new OseeArgumentException("Work Package with id [%s] Not Found", workPackageId);
       }
-      return atsServer.getQueryService().createQuery(WorkItemType.WorkItem).andAttr(AtsAttributeTypes.WorkPackageGuid,
-         workPackageArt.getGuid()).getResults().getList();
+      return atsServer.getQueryService().createQuery(WorkItemType.WorkItem).andAttr(
+         AtsAttributeTypes.WorkPackageReference, workPackageArt.getIdString()).getResults().getList();
    }
 
    @PUT
@@ -91,7 +91,7 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
             throw new OseeArgumentException("Work Packages can only be set on Team Workflow or Task, not [%s]",
                workItem.getArtifactTypeName());
          }
-         changes.setSoleAttributeValue(workItem, AtsAttributeTypes.WorkPackageGuid, workPackageArt.getGuid());
+         changes.setSoleAttributeValue(workItem, AtsAttributeTypes.WorkPackageReference, workPackageArt);
          autoAddWorkItemToColorTeamGoals(getColorTeams(), workPackageArt, workPackageId, workItem, changes);
       }
       if (!changes.isEmpty()) {
@@ -162,9 +162,9 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
          if (workItem == null) {
             throw new OseeArgumentException("Work Item with id [%s] Not Found", workItemUuid);
          }
-         if (atsServer.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.WorkPackageGuid,
+         if (atsServer.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.WorkPackageReference,
             null) != null) {
-            changes.deleteAttributes(workItem, AtsAttributeTypes.WorkPackageGuid);
+            changes.deleteAttributes(workItem, AtsAttributeTypes.WorkPackageReference);
          }
       }
       if (!changes.isEmpty()) {

@@ -63,9 +63,9 @@ public class WorkPackageQBDReport extends XNavigateItemAction implements IWorldE
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) {
-      List<ArtifactToken> workItemTokens =
-         ArtifactQuery.getArtifactTokenListFromSoleAttributeInherited(AtsArtifactTypes.AbstractWorkflowArtifact,
-            AtsAttributeTypes.WorkPackageGuid, selectedWorkPackage.getGuid(), AtsClientService.get().getAtsBranch());
+      List<ArtifactToken> workItemTokens = ArtifactQuery.getArtifactTokenListFromSoleAttributeInherited(
+         AtsArtifactTypes.AbstractWorkflowArtifact, AtsAttributeTypes.WorkPackageReference,
+         selectedWorkPackage.getIdString(), AtsClientService.get().getAtsBranch());
       List<Artifact> workItems =
          ArtifactQuery.getArtifactListFrom(workItemTokens, AtsClientService.get().getAtsBranch());
       return workItems;

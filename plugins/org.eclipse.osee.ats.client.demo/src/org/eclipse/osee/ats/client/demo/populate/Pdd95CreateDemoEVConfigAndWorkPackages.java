@@ -56,16 +56,16 @@ public class Pdd95CreateDemoEVConfigAndWorkPackages {
 
       // set work packages
       TeamWorkFlowArtifact commWf = DemoUtil.getSawCodeCommittedWf();
-      changes.setSoleAttributeValue((IAtsTeamWorkflow) commWf, AtsAttributeTypes.WorkPackageGuid,
-         DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getGuid());
+      changes.setSoleAttributeValue((IAtsTeamWorkflow) commWf, AtsAttributeTypes.WorkPackageReference,
+         DemoArtifactToken.SAW_Code_Team_WorkPackage_01);
 
       TeamWorkFlowArtifact unCommWf = DemoUtil.getSawCodeUnCommittedWf();
-      changes.setSoleAttributeValue((IAtsTeamWorkflow) unCommWf, AtsAttributeTypes.WorkPackageGuid,
-         DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getGuid());
+      changes.setSoleAttributeValue((IAtsTeamWorkflow) unCommWf, AtsAttributeTypes.WorkPackageReference,
+         DemoArtifactToken.SAW_Code_Team_WorkPackage_01);
 
       TeamWorkFlowArtifact noBranchWf = DemoUtil.getSawCodeNoBranchWf();
-      changes.setSoleAttributeValue((IAtsTeamWorkflow) noBranchWf, AtsAttributeTypes.WorkPackageGuid,
-         DemoArtifactToken.SAW_Code_Team_WorkPackage_03.getGuid());
+      changes.setSoleAttributeValue((IAtsTeamWorkflow) noBranchWf, AtsAttributeTypes.WorkPackageReference,
+         DemoArtifactToken.SAW_Code_Team_WorkPackage_03);
 
       changes.execute();
    }

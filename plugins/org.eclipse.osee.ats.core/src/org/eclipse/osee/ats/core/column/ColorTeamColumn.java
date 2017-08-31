@@ -31,24 +31,21 @@ public class ColorTeamColumn {
    public static Pair<String, Boolean> getWorkItemColorTeam(IAtsWorkItem workItem, IAtsServices atsServices) {
       Pair<String, Boolean> result = new Pair<>(null, false);
       IAttributeResolver attributeResolver = atsServices.getAttributeResolver();
-      String workPackageGuid =
-         attributeResolver.getSoleAttributeValue(workItem, AtsAttributeTypes.WorkPackageGuid, null);
-      if (workPackageGuid == null) {
-         if (!(workItem instanceof IAtsTeamWorkflow)) {
+      ArtifactId workPackageArt =
+         attributeResolver.getSoleAttributeValue(workItem, AtsAttributeTypes.WorkPackageReference, ArtifactId.SENTINEL);
+      if (workPackageArt.isInvalid()) {
+         if (!workItem.isTeamWorkflow()) {
             IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
             if (teamWf != null) {
-               workPackageGuid =
-                  attributeResolver.getSoleAttributeValue(teamWf, AtsAttributeTypes.WorkPackageGuid, null);
+               workPackageArt = attributeResolver.getSoleAttributeValue(teamWf, AtsAttributeTypes.WorkPackageReference,
+                  ArtifactId.SENTINEL);
                result.setSecond(true);
             }
          }
       }
-      if (workPackageGuid != null) {
-         ArtifactId workPackageArt = atsServices.getArtifactById(workPackageGuid);
-         if (workPackageArt != null) {
-            String colorTeam = attributeResolver.getSoleAttributeValue(workPackageArt, AtsAttributeTypes.ColorTeam, "");
-            result.setFirst(colorTeam);
-         }
+      if (workPackageArt.isValid()) {
+         String colorTeam = attributeResolver.getSoleAttributeValue(workPackageArt, AtsAttributeTypes.ColorTeam, "");
+         result.setFirst(colorTeam);
       }
       if (result.getFirst() == null) {
          result.setFirst("");

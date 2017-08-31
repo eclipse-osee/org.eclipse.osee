@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.api.column.IAtsColumn;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Before;
 import org.mockito.Mock;
@@ -37,7 +38,7 @@ public abstract class AbstractWorkPackageUtilityTest {
    public void setup() throws OseeCoreException {
       MockitoAnnotations.initMocks(this);
       when(earnedValueServiceProvider.getEarnedValueService()).thenReturn(earnedValueService);
-      when(earnedValueService.getWorkPackageId(workItem)).thenReturn("345");
+      when(earnedValueService.getWorkPackageId(workItem)).thenReturn(ArtifactId.valueOf(345));
       when(earnedValueService.getWorkPackage(workItem)).thenReturn(workPkg);
    }
 

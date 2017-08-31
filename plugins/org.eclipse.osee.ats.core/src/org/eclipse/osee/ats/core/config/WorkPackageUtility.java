@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
@@ -96,14 +95,12 @@ public class WorkPackageUtility {
     */
    public Pair<ArtifactId, Boolean> getWorkPackageArtifact(IAtsServices services, IAtsWorkItem workItem) {
       Pair<ArtifactId, Boolean> result = new Pair<>(null, false);
-      String workPackageGuid =
-         services.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.WorkPackageGuid, null);
-      if (Strings.isValid(workPackageGuid)) {
-         ArtifactId workPackageArt = services.getArtifactByGuid(workPackageGuid);
-         if (workPackageArt != null) {
-            result.setFirst(workPackageArt);
-         }
+      ArtifactId workPackageId = services.getAttributeResolver().getSoleAttributeValue(workItem,
+         AtsAttributeTypes.WorkPackageReference, ArtifactId.SENTINEL);
+      if (workPackageId.isValid()) {
+         result.setFirst(workPackageId);
       }
+
       if (result.getFirst() == null && !workItem.isTeamWorkflow()) {
          IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
          Pair<ArtifactId, Boolean> teamResult = getWorkPackageArtifact(services, teamWf);

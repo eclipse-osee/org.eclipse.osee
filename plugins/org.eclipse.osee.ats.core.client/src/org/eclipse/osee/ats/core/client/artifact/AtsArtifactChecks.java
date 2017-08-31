@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.search.UserRelatedToAtsObjectSearch;
-import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -214,19 +213,19 @@ public class AtsArtifactChecks extends ArtifactCheck {
    }
 
    private IStatus checkWorkPackages(boolean isAtsAdmin, Collection<Artifact> artifacts) throws OseeCoreException {
-      List<String> guids = new ArrayList<>();
+      List<ArtifactId> ids = new ArrayList<>();
       for (Artifact art : artifacts) {
          if (art.isOfType(AtsArtifactTypes.WorkPackage)) {
-            guids.add(art.getGuid());
+            ids.add(art);
          }
       }
-      if (!guids.isEmpty()) {
+      if (!ids.isEmpty()) {
          List<Artifact> artifactListFromIds = ArtifactQuery.getArtifactListFromAttributeValues(
-            AtsAttributeTypes.WorkPackageGuid, guids, AtsClientService.get().getAtsBranch(), 5);
+            AtsAttributeTypes.WorkPackageReference, ids, AtsClientService.get().getAtsBranch());
          if (artifactListFromIds.size() > 0) {
             return createStatus(String.format(
                "Work Packages [%s] selected to delete have related Work Items; Delete or re-assign Work Packages first.",
-               guids));
+               ids));
          }
       }
       return Status.OK_STATUS;

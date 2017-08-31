@@ -174,8 +174,9 @@ public final class BranchManager {
    public static Branch getBranch(BranchId branchId, ArtifactId view) {
       if (branchId == null) {
          throw new BranchDoesNotExist("Branch Id is null");
+      } else if (branchId.isInvalid()) {
+         throw new BranchDoesNotExist("Branch id is invalid");
       }
-
       Branch branch = null;
       if (view.notEqual(ArtifactId.SENTINEL)) {
          for (Branch branchView : getCache().getViews()) {

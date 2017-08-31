@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -28,7 +29,7 @@ public interface IAtsEarnedValueService {
 
    public Collection<IAtsWorkPackage> getWorkPackageOptions(IAtsObject object) throws OseeCoreException;
 
-   public String getWorkPackageId(IAtsWorkItem atsObject);
+   public ArtifactId getWorkPackageId(IAtsWorkItem atsObject);
 
    public void setWorkPackage(IAtsWorkPackage workPackage, Collection<IAtsWorkItem> workItems);
 

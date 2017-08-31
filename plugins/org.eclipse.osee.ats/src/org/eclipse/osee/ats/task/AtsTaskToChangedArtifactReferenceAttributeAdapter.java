@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeAdapter;
 /**
  * @author Donald G. Dunne
  */
-public class AtsTaskToChangedArtifactReferenceAttributeAdapter implements AttributeAdapter<Artifact> {
+public class AtsTaskToChangedArtifactReferenceAttributeAdapter implements AttributeAdapter<ArtifactId> {
 
    private static final List<AttributeTypeId> TASK_CHANGED_ARTIFACT_REFERENCE_ATTR =
       Arrays.asList(AtsAttributeTypes.TaskToChangedArtifactReference);

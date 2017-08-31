@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.core.column;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.column.IAtsColumn;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -22,7 +23,7 @@ public interface IWorkPackageUtility extends IAtsColumn {
 
    IAtsWorkPackage getWorkPackage(IAtsObject atsObject) throws OseeCoreException;
 
-   String getWorkPackageId(Object object);
+   ArtifactId getWorkPackageId(Object object);
 
    String getColumnText(IAtsWorkPackage workPackage);
 

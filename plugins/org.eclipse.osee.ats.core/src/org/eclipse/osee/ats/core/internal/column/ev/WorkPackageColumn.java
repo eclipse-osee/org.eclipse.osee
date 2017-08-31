@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.api.column.IWorkPackageColumn;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.core.column.IWorkPackageUtility;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -29,14 +30,14 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public class WorkPackageColumn implements IWorkPackageUtility, IWorkPackageColumn {
 
    private final IAtsEarnedValueServiceProvider earnedValueServiceProvider;
-   private Map<String, ArtifactToken> guidToWorkPackage;
+   private Map<ArtifactId, ArtifactToken> guidToWorkPackage;
 
    public WorkPackageColumn(IAtsEarnedValueServiceProvider earnedValueServiceProvider) {
       this.earnedValueServiceProvider = earnedValueServiceProvider;
    }
 
    @Override
-   public String getWorkPackageId(Object object) {
+   public ArtifactId getWorkPackageId(Object object) {
       return earnedValueServiceProvider.getEarnedValueService().getWorkPackageId((IAtsWorkItem) object);
    }
 
@@ -44,7 +45,7 @@ public class WorkPackageColumn implements IWorkPackageUtility, IWorkPackageColum
     * Set optional map to use as a cache of work item id (Long) or work package guid (String) to Insertion artifact.
     */
    @Override
-   public void setIdToWorkPackageCache(Map<String, ArtifactToken> guidToWorkPackage) {
+   public void setIdToWorkPackageCache(Map<ArtifactId, ArtifactToken> guidToWorkPackage) {
       this.guidToWorkPackage = guidToWorkPackage;
    }
 
@@ -54,10 +55,10 @@ public class WorkPackageColumn implements IWorkPackageUtility, IWorkPackageColum
       try {
          IAtsWorkPackage workPackage = null;
          if (atsObject instanceof IAtsWorkItem) {
-            String workPackageId =
+            ArtifactId workPackageId =
                earnedValueServiceProvider.getEarnedValueService().getWorkPackageId((IAtsWorkItem) atsObject);
             if (guidToWorkPackage != null) {
-               if (Strings.isValid(workPackageId)) {
+               if (workPackageId.isValid()) {
                   ArtifactToken wpArt = guidToWorkPackage.get(workPackageId);
                   workPackage = earnedValueServiceProvider.getEarnedValueService().getWorkPackage(wpArt);
                }
@@ -97,10 +98,10 @@ public class WorkPackageColumn implements IWorkPackageUtility, IWorkPackageColum
    @Override
    public IAtsWorkPackage getWorkPackage(IAtsObject atsObject) throws OseeCoreException {
       IAtsWorkPackage workPackage = null;
-      String workPackageId =
+      ArtifactId workPackageId =
          earnedValueServiceProvider.getEarnedValueService().getWorkPackageId((IAtsWorkItem) atsObject);
       if (guidToWorkPackage != null) {
-         if (Strings.isValid(workPackageId)) {
+         if (workPackageId.isValid()) {
             ArtifactToken wpArt = guidToWorkPackage.get(workPackageId);
             workPackage = earnedValueServiceProvider.getEarnedValueService().getWorkPackage(wpArt);
             if (workPackage != null) {

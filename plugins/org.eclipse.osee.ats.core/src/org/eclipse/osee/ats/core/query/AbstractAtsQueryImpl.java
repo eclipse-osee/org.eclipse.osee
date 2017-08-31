@@ -743,19 +743,19 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    private void addColorTeamCriteria() {
       if (Strings.isValid(
          colorTeam) && !isWorkPackageSpecified() && !isInsertionActivitySpecified() && !isInsertionSpecified() && !isProgramSpecified()) {
-         List<String> workPackageGuids = getWorkPackagesForColorTeam(colorTeam);
-         queryAnd(AtsAttributeTypes.WorkPackageGuid, workPackageGuids);
+         List<String> workPackageIds = org.eclipse.osee.framework.jdk.core.util.Collections.transform(
+            getWorkPackagesForColorTeam(colorTeam), ArtifactId::getIdString);
+         queryAnd(AtsAttributeTypes.WorkPackageReference, workPackageIds);
       }
    }
 
-   public abstract List<String> getWorkPackagesForColorTeam(String colorTeam);
+   public abstract List<ArtifactId> getWorkPackagesForColorTeam(String colorTeam);
 
    private void addWorkPackageCriteria() {
       if (isWorkPackageSpecified()) {
          ArtifactId workPackArt = services.getArtifact(workPackageUuid);
          if (isColorTeamMatch(workPackArt)) {
-            String guid = workPackArt.getGuid();
-            queryAnd(AtsAttributeTypes.WorkPackageGuid, guid);
+            queryAnd(AtsAttributeTypes.WorkPackageReference, workPackArt.getIdString());
          }
       }
    }
@@ -856,7 +856,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       if (!isInsertionSpecified()) {
          if (programUuid != null && programUuid > 0) {
             ArtifactId programArt = services.getArtifact(programUuid);
-            List<String> workPackageGuids = new LinkedList<>();
+            List<String> workPackageIds = new LinkedList<>();
             for (ArtifactId insertionArt : services.getRelationResolver().getRelated(programArt,
                AtsRelationTypes.ProgramToInsertion_Insertion)) {
                for (ArtifactId insertionActivityArt : services.getRelationResolver().getRelated(insertionArt,
@@ -864,13 +864,13 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
                   for (ArtifactId workPackageArt : services.getRelationResolver().getRelated(insertionActivityArt,
                      AtsRelationTypes.InsertionActivityToWorkPackage_WorkPackage)) {
                      if (isColorTeamMatch(workPackageArt)) {
-                        workPackageGuids.add(workPackageArt.getGuid());
+                        workPackageIds.add(workPackageArt.getIdString());
                      }
                   }
                }
             }
-            if (!workPackageGuids.isEmpty()) {
-               queryAnd(AtsAttributeTypes.WorkPackageGuid, workPackageGuids);
+            if (!workPackageIds.isEmpty()) {
+               queryAnd(AtsAttributeTypes.WorkPackageReference, workPackageIds);
             }
          }
       }
@@ -880,18 +880,18 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       if (!isInsertionActivitySpecified()) {
          if (insertionUuid != null && insertionUuid > 0) {
             ArtifactId insertionArt = services.getArtifact(insertionUuid);
-            List<String> workPackageGuids = new LinkedList<>();
+            List<String> workPackageIds = new LinkedList<>();
             for (ArtifactId insertionActivityArt : services.getRelationResolver().getRelated(insertionArt,
                AtsRelationTypes.InsertionToInsertionActivity_InsertionActivity)) {
                for (ArtifactId workPackageArt : services.getRelationResolver().getRelated(insertionActivityArt,
                   AtsRelationTypes.InsertionActivityToWorkPackage_WorkPackage)) {
                   if (isColorTeamMatch(workPackageArt)) {
-                     workPackageGuids.add(workPackageArt.getGuid());
+                     workPackageIds.add(workPackageArt.getIdString());
                   }
                }
             }
-            if (!workPackageGuids.isEmpty()) {
-               queryAnd(AtsAttributeTypes.WorkPackageGuid, workPackageGuids);
+            if (!workPackageIds.isEmpty()) {
+               queryAnd(AtsAttributeTypes.WorkPackageReference, workPackageIds);
             }
          }
       }
@@ -902,26 +902,26 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    public void addInsertionActivityCriteria() {
       if (!isWorkPackageSpecified()) {
          if (insertionActivityUuid != null && insertionActivityUuid > 0) {
-            List<String> workPackageGuids = getWorkPackageGuidsFromActivity();
-            if (!workPackageGuids.isEmpty()) {
-               queryAnd(AtsAttributeTypes.WorkPackageGuid, workPackageGuids);
+            List<String> workPackageIds = getWorkPackageIdsFromActivity();
+            if (!workPackageIds.isEmpty()) {
+               queryAnd(AtsAttributeTypes.WorkPackageReference, workPackageIds);
             }
          }
       }
    }
 
-   private List<String> getWorkPackageGuidsFromActivity() {
-      List<String> guids = new LinkedList<>();
+   private List<String> getWorkPackageIdsFromActivity() {
+      List<String> ids = new LinkedList<>();
       if (insertionActivityUuid != null && insertionActivityUuid > 0) {
          ArtifactId insertionActivityArt = services.getArtifact(insertionActivityUuid);
          for (ArtifactId workPackageArt : services.getRelationResolver().getRelated(insertionActivityArt,
             AtsRelationTypes.InsertionActivityToWorkPackage_WorkPackage)) {
             if (isColorTeamMatch(workPackageArt)) {
-               guids.add(workPackageArt.getGuid());
+               ids.add(workPackageArt.getIdString());
             }
          }
       }
-      return guids;
+      return ids;
    }
 
    private void addStateTypeNameAndAttributeCriteria() {

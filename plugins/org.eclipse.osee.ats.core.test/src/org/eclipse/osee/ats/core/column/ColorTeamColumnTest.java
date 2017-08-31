@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.column;
 
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.Everyone;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import org.eclipse.osee.ats.api.IAtsServices;
@@ -17,9 +19,10 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
-import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.workflow.TeamWorkflow;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -35,18 +38,14 @@ import org.mockito.MockitoAnnotations;
 public class ColorTeamColumnTest {
 
    // @formatter:off
-   @Mock private IAtsAction action;
-
-   @Mock private IAtsTeamWorkflow teamWf1;
    @Mock private IAtsTask childWorkItem;
    @Mock private IAtsPeerToPeerReview peerReview;
-
    @Mock private IAtsServices atsServices;
    @Mock private IAttributeResolver attributeResolver;
-
-   @Mock private ArtifactToken workPackageArt;
-
    // @formatter:on
+
+   public static final ArtifactToken workPackageArt = ArtifactToken.valueOf(5, "Work Package", COMMON);
+   private final IAtsTeamWorkflow teamWf1 = new TeamWorkflow(null, null, Everyone);
 
    @Before
    public void setup() throws OseeCoreException {
@@ -57,19 +56,19 @@ public class ColorTeamColumnTest {
 
    @org.junit.Test
    public void testTeamWorkflow() throws Exception {
-      when(attributeResolver.getSoleAttributeValue(teamWf1, AtsAttributeTypes.WorkPackageGuid, null)).thenReturn(null);
+      when(attributeResolver.getSoleAttributeValue(teamWf1, AtsAttributeTypes.WorkPackageReference,
+         ArtifactId.SENTINEL)).thenReturn(ArtifactId.SENTINEL);
 
       Pair<String, Boolean> result = ColorTeamColumn.getWorkItemColorTeam(teamWf1, atsServices);
       assertEquals("", result.getFirst());
 
-      when(attributeResolver.getSoleAttributeValue(teamWf1, AtsAttributeTypes.WorkPackageGuid, null)).thenReturn(
-         "guid");
-      when(atsServices.getArtifactById("guid")).thenReturn(null);
+      when(attributeResolver.getSoleAttributeValue(teamWf1, AtsAttributeTypes.WorkPackageReference,
+         ArtifactId.SENTINEL)).thenReturn(workPackageArt);
 
       result = ColorTeamColumn.getWorkItemColorTeam(teamWf1, atsServices);
       assertEquals("", result.getFirst());
 
-      when(atsServices.getArtifactById("guid")).thenReturn(workPackageArt);
+      when(atsServices.getArtifactById("id")).thenReturn(workPackageArt);
       when(attributeResolver.getSoleAttributeValue(workPackageArt, AtsAttributeTypes.ColorTeam, "")).thenReturn("");
 
       result = ColorTeamColumn.getWorkItemColorTeam(teamWf1, atsServices);
@@ -92,24 +91,25 @@ public class ColorTeamColumnTest {
    }
 
    private void testChildWorkItem(IAtsWorkItem childWorkItem) {
-      when(attributeResolver.getSoleAttributeValue(childWorkItem, AtsAttributeTypes.WorkPackageGuid, null)).thenReturn(
-         null);
+      when(attributeResolver.getSoleAttributeValue(childWorkItem, AtsAttributeTypes.WorkPackageReference,
+         ArtifactId.SENTINEL)).thenReturn(ArtifactId.SENTINEL);
 
       Pair<String, Boolean> result = ColorTeamColumn.getWorkItemColorTeam(childWorkItem, atsServices);
       assertEquals("", result.getFirst());
 
       when(childWorkItem.getParentTeamWorkflow()).thenReturn(teamWf1);
-      result = ColorTeamColumn.getWorkItemColorTeam(childWorkItem, atsServices);
-      assertEquals("", result.getFirst());
-
-      when(attributeResolver.getSoleAttributeValue(teamWf1, AtsAttributeTypes.WorkPackageGuid, null)).thenReturn(
-         "guid");
-      when(atsServices.getArtifactById("guid")).thenReturn(null);
+      when(attributeResolver.getSoleAttributeValue(teamWf1, AtsAttributeTypes.WorkPackageReference,
+         ArtifactId.SENTINEL)).thenReturn(ArtifactId.SENTINEL);
 
       result = ColorTeamColumn.getWorkItemColorTeam(childWorkItem, atsServices);
       assertEquals("", result.getFirst());
 
-      when(atsServices.getArtifactById("guid")).thenReturn(workPackageArt);
+      when(attributeResolver.getSoleAttributeValue(teamWf1, AtsAttributeTypes.WorkPackageReference,
+         ArtifactId.SENTINEL)).thenReturn(workPackageArt);
+
+      result = ColorTeamColumn.getWorkItemColorTeam(childWorkItem, atsServices);
+      assertEquals("", result.getFirst());
+
       when(attributeResolver.getSoleAttributeValue(workPackageArt, AtsAttributeTypes.ColorTeam, "")).thenReturn("");
 
       result = ColorTeamColumn.getWorkItemColorTeam(childWorkItem, atsServices);
