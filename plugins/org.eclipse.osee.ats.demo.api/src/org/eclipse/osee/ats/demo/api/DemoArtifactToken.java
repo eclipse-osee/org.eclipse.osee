@@ -40,6 +40,15 @@ public final class DemoArtifactToken {
    public static final ArtifactToken SAW_SW =
       TokenFactory.createArtifactToken(3902389, "SAW SW", AtsArtifactTypes.TeamDefinition);
 
+   public static final ArtifactToken SAW_Agile_Team =
+      TokenFactory.createArtifactToken(111, "SAW Agile Team", AtsArtifactTypes.TeamDefinition);
+   public static final ArtifactToken SAW_Sprint_1 =
+      TokenFactory.createArtifactToken(222, "SAW Sprint 1", AtsArtifactTypes.AgileSprint);
+   public static final ArtifactToken SAW_Sprint_2 =
+      TokenFactory.createArtifactToken(333, "SAW Sprint 2", AtsArtifactTypes.AgileSprint);
+   public static final ArtifactToken SAW_Backlog =
+      TokenFactory.createArtifactToken(444, "SAW Backlog", AtsArtifactTypes.AgileBacklog);
+
    public static final ArtifactToken SAW_HW_AI =
       TokenFactory.createArtifactToken(4687946, "SAW HW", AtsArtifactTypes.ActionableItem);
    public static final ArtifactToken SAW_CSCI_AI =

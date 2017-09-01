@@ -60,7 +60,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testQueryTitle() throws Exception {
-      queryAndConfirmCount("ats/action/query?Title=SAW", 18);
+      queryAndConfirmCount("ats/action/query?Title=SAW", 21);
    }
 
    @Test

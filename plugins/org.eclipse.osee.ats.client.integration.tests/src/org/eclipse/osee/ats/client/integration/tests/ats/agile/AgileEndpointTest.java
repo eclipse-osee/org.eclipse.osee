@@ -189,7 +189,7 @@ public class AgileEndpointTest {
       Assert.assertNotNull(agileTeam);
       Artifact sprint2 = null;
       for (Artifact sprint : agileTeam.getRelatedArtifacts(AtsRelationTypes.AgileTeamToSprint_Sprint)) {
-         if (sprint.getName().equals("Sprint 02")) {
+         if (sprint.getName().equals("SAW Sprint 2")) {
             sprint2 = sprint;
             break;
          }
@@ -209,7 +209,7 @@ public class AgileEndpointTest {
       AgileBurndown burndown = response.readEntity(AgileBurndown.class);
       Assert.assertNotNull(burndown);
       Assert.assertEquals("SAW Agile Team", burndown.getAgileTeamName());
-      Assert.assertEquals("Sprint 02", burndown.getSprintName());
+      Assert.assertEquals("SAW Sprint 2", burndown.getSprintName());
       Assert.assertEquals(2, burndown.getHolidays().size());
       Assert.assertEquals("ats.Points", burndown.getPointsAttrTypeName());
       Assert.assertEquals(new Integer(200), burndown.getPlannedPoints());
@@ -227,7 +227,7 @@ public class AgileEndpointTest {
 
       String html = response.readEntity(String.class);
       Assert.assertNotNull(html);
-      Assert.assertTrue(html.contains("Sprint 02"));
+      Assert.assertTrue(html.contains("SAW Sprint 2"));
       Assert.assertTrue(html.contains("200"));
       Assert.assertTrue(html.contains("45"));
       Assert.assertTrue(html.contains("Planned Complete"));

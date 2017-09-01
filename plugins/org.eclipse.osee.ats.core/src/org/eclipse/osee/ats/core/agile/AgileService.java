@@ -234,9 +234,9 @@ public class AgileService implements IAgileService {
    public Collection<IAgileSprint> getAgileSprints(IAgileTeam team) {
       List<IAgileSprint> sprints = new LinkedList<>();
       ArtifactId artifact = team.getStoreObject();
-      for (ArtifactToken groupArt : services.getRelationResolver().getRelated(artifact,
+      for (ArtifactToken sprintArt : services.getRelationResolver().getRelated(artifact,
          AtsRelationTypes.AgileTeamToSprint_Sprint)) {
-         sprints.add(services.getWorkItemFactory().getAgileSprint(groupArt));
+         sprints.add(services.getWorkItemFactory().getAgileSprint(sprintArt));
       }
       return sprints;
    }

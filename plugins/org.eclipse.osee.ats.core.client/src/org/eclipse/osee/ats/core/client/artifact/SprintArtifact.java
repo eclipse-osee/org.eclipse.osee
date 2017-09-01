@@ -17,9 +17,11 @@ import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -54,7 +56,17 @@ public class SprintArtifact extends CollectorArtifact implements IAgileSprint {
 
    @Override
    public long getTeamUuid() {
-      return getArtId();
+      long result = 0;
+      try {
+         ArtifactId agileTeam = AtsClientService.get().getRelationResolver().getRelatedOrNull((ArtifactId) this,
+            AtsRelationTypes.AgileTeamToSprint_AgileTeam);
+         if (agileTeam != null) {
+            result = agileTeam.getId();
+         }
+      } catch (ArtifactDoesNotExist ex) {
+         // do nothing
+      }
+      return result;
    }
 
    @Override

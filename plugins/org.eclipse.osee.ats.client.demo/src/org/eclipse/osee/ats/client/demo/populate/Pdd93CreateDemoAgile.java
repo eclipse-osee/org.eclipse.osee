@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
 import javax.ws.rs.core.Response;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -36,24 +35,20 @@ import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.client.demo.SprintItemData;
-import org.eclipse.osee.ats.client.demo.internal.Activator;
 import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
-import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
 import org.eclipse.osee.ats.demo.api.DemoWorkflowTitles;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
@@ -79,35 +74,20 @@ public class Pdd93CreateDemoAgile {
    }
 
    public void run() throws Exception {
-      AtsUtilClient.setEmailEnabled(false);
-      if (AtsUtil.isProductionDb()) {
-         throw new IllegalStateException("PopulateDemoAgile should not be run on production DB");
-      }
-
-      validateArtifactCache();
-
-      OseeLog.log(Activator.class, Level.INFO, "Populate Demo Agile");
-
       AtsBulkLoad.reloadConfig(true);
 
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
 
       createSampleAgileTeam();
 
-      validateArtifactCache();
       TestUtil.severeLoggingEnd(monitorLog);
-      OseeLog.log(Activator.class, Level.INFO, "Populate Complete");
-
    }
 
    private void createSampleAgileTeam() {
       AgileEndpointApi agile = AtsClientService.getAgile();
 
-      long teamUuid = Lib.generateArtifactIdAsInt();
-      String teamGuid = GUID.create();
-
       // Create Team
-      JaxNewAgileTeam newTeam = newJaxAgileTeam(teamUuid, teamGuid);
+      JaxNewAgileTeam newTeam = getJaxAgileTeam();
       Response response = agile.createTeam(newTeam);
       Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
 
@@ -119,8 +99,8 @@ public class Pdd93CreateDemoAgile {
       agileTeam.persist("Assigne ATS Team to Agile Team");
 
       // Create Backlog
-      JaxNewAgileBacklog backlog = newBacklog(teamUuid);
-      response = agile.createBacklog(teamUuid, backlog);
+      JaxNewAgileBacklog backlog = getBacklog();
+      response = agile.createBacklog(DemoArtifactToken.SAW_Agile_Team.getId(), backlog);
       Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
 
       // Add items to backlog
@@ -140,26 +120,21 @@ public class Pdd93CreateDemoAgile {
       Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
 
       // Create Sprints
-      long firstSprintUuid = 0L;
-      long secondSprintUuid = 0L;
-      for (int x = 1; x < 3; x++) {
-         JaxNewAgileSprint newSprint = newSprint(teamUuid, x);
-         if (x == 1) {
-            firstSprintUuid = newSprint.getUuid();
-         } else {
-            secondSprintUuid = newSprint.getUuid();
-         }
-         response = agile.createSprint(teamUuid, newSprint);
-         Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
-      }
+      JaxNewAgileSprint newSprint = newSprint(DemoArtifactToken.SAW_Sprint_1);
+      response = agile.createSprint(newSprint.getTeamUuid(), newSprint);
+      Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
+
+      newSprint = newSprint(DemoArtifactToken.SAW_Sprint_2);
+      response = agile.createSprint(newSprint.getTeamUuid(), newSprint);
+      Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
 
       // Add items to Sprint
       JaxAgileItem completedItems = new JaxAgileItem();
-      completedItems.setSprintUuid(firstSprintUuid);
+      completedItems.setSprintUuid(DemoArtifactToken.SAW_Sprint_1.getId());
       completedItems.setSetSprint(true);
 
       JaxAgileItem inworkItems = new JaxAgileItem();
-      inworkItems.setSprintUuid(secondSprintUuid);
+      inworkItems.setSprintUuid(DemoArtifactToken.SAW_Sprint_2.getId());
       inworkItems.setSetSprint(true);
 
       for (IAtsWorkItem workItem : items) {
@@ -176,7 +151,7 @@ public class Pdd93CreateDemoAgile {
 
       // Transition First Sprint to completed
       IAtsWorkItem sprint = AtsClientService.get().getQueryService().createQuery(WorkItemType.WorkItem).andUuids(
-         firstSprintUuid).getItems().iterator().next();
+         DemoArtifactToken.SAW_Sprint_1.getId()).getItems().iterator().next();
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("Transition Agile Sprint");
       TransitionHelper helper =
          new TransitionHelper("Transition Agile Stprint", Arrays.asList(sprint), TeamState.Completed.getName(), null,
@@ -191,12 +166,12 @@ public class Pdd93CreateDemoAgile {
 
       // Create Feature Groups
       for (String name : Arrays.asList("Communications", "UI", "Documentation", "Framework")) {
-         JaxNewAgileFeatureGroup group = newFeatureGroup(teamUuid, name);
-         response = agile.createFeatureGroup(teamUuid, group);
+         JaxNewAgileFeatureGroup group = newFeatureGroup(name);
+         response = agile.createFeatureGroup(DemoArtifactToken.SAW_Agile_Team.getId(), group);
          Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
       }
 
-      setupSprint2ForBurndown(secondSprintUuid);
+      setupSprint2ForBurndown(DemoArtifactToken.SAW_Sprint_2.getId());
    }
 
    private void setupSprint2ForBurndown(long secondSprintUuid) {
@@ -308,34 +283,34 @@ public class Pdd93CreateDemoAgile {
       return null;
    }
 
-   private JaxNewAgileBacklog newBacklog(long teamUuid) {
+   private JaxNewAgileBacklog getBacklog() {
       JaxNewAgileBacklog backlog = new JaxNewAgileBacklog();
-      backlog.setName("My Backlog");
-      backlog.setTeamUuid(teamUuid);
-      backlog.setUuid(Lib.generateArtifactIdAsInt());
+      backlog.setName(DemoArtifactToken.SAW_Backlog.getName());
+      backlog.setUuid(DemoArtifactToken.SAW_Backlog.getId());
+      backlog.setTeamUuid(DemoArtifactToken.SAW_Agile_Team.getId());
       return backlog;
    }
 
-   private JaxNewAgileFeatureGroup newFeatureGroup(long teamUuid, String name) {
+   private JaxNewAgileFeatureGroup newFeatureGroup(String name) {
       JaxNewAgileFeatureGroup group = new JaxNewAgileFeatureGroup();
       group.setName(name);
-      group.setTeamUuid(teamUuid);
+      group.setTeamUuid(DemoArtifactToken.SAW_Agile_Team.getId());
       group.setUuid(Lib.generateArtifactIdAsInt());
       return group;
    }
 
-   private JaxNewAgileSprint newSprint(long teamUuid, int x) {
+   private JaxNewAgileSprint newSprint(ArtifactToken token) {
       JaxNewAgileSprint newSprint = new JaxNewAgileSprint();
-      newSprint.setName("Sprint 0" + x);
-      newSprint.setUuid(Lib.generateArtifactIdAsInt());
-      newSprint.setTeamUuid(teamUuid);
+      newSprint.setName(token.getName());
+      newSprint.setUuid(token.getId());
+      newSprint.setTeamUuid(DemoArtifactToken.SAW_Agile_Team.getId());
       return newSprint;
    }
 
-   private JaxNewAgileTeam newJaxAgileTeam(long teamUuid, String teamGuid) {
+   private JaxNewAgileTeam getJaxAgileTeam() {
       JaxNewAgileTeam newTeam = new JaxNewAgileTeam();
-      newTeam.setName("SAW Agile Team");
-      newTeam.setUuid(teamUuid);
+      newTeam.setName(DemoArtifactToken.SAW_Agile_Team.getName());
+      newTeam.setUuid(DemoArtifactToken.SAW_Agile_Team.getId());
       return newTeam;
    }
 
