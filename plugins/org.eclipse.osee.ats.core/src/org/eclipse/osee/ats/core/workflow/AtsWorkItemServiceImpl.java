@@ -157,11 +157,15 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    public String getCombinedPcrId(IAtsWorkItem workItem) throws OseeCoreException {
       String id = "";
       for (ITeamWorkflowProvider provider : TeamWorkflowProviders.getTeamWorkflowProviders()) {
-         if (provider.isResponsibleFor(workItem)) {
-            String computedPcrId = provider.getComputedPcrId(workItem);
-            if (Strings.isValid(computedPcrId)) {
-               id = computedPcrId;
+         try {
+            if (provider.isResponsibleFor(workItem)) {
+               String computedPcrId = provider.getComputedPcrId(workItem);
+               if (Strings.isValid(computedPcrId)) {
+                  id = computedPcrId;
+               }
             }
+         } catch (Exception ex) {
+            services.getLogger().error(ex, "Error with provider %s", provider.toString());
          }
       }
       if (Strings.isInValid(id)) {
