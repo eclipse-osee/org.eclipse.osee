@@ -32,9 +32,9 @@ import org.eclipse.osee.ats.api.notify.AtsWorkItemNotificationEvent;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
+import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
-import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
@@ -81,8 +81,7 @@ public class WorkItemNotificationProcessorTest {
    // @formatter:on
 
    private IAtsUser setupUser(UserToken userToken) {
-      IAtsUser user = new AtsUser(userToken.getId(), userToken.getName(), userToken.getUserId(),
-         userToken.getEmail(), userToken.isActive());
+      IAtsUser user = new AtsUser(userToken);
       when(userService.getUserById(userToken.getUserId())).thenReturn(user);
       return user;
    }

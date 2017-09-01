@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.users;
 
-import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.AtsUser;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 
 /**
@@ -19,12 +19,9 @@ import org.eclipse.osee.framework.core.enums.SystemUser;
  */
 public final class AtsCoreUsers {
 
-   public static final IAtsUser SYSTEM_USER = new AtsUser(SystemUser.OseeSystem.getId(),
-      SystemUser.OseeSystem.getName(), SystemUser.OseeSystem.getUserId(), SystemUser.OseeSystem.getEmail(), true);
-   public static final IAtsUser ANONYMOUS_USER = new AtsUser(SystemUser.Anonymous.getId(),
-      SystemUser.Anonymous.getName(), SystemUser.Anonymous.getUserId(), SystemUser.Anonymous.getEmail(), true);
-   public static final IAtsUser UNASSIGNED_USER = new AtsUser(SystemUser.UnAssigned.getId(),
-      SystemUser.UnAssigned.getName(), SystemUser.UnAssigned.getUserId(), SystemUser.UnAssigned.getEmail(), true);
+   public static final IAtsUser SYSTEM_USER = new AtsUser(SystemUser.OseeSystem);
+   public static final IAtsUser ANONYMOUS_USER = new AtsUser(SystemUser.Anonymous);
+   public static final IAtsUser UNASSIGNED_USER = new AtsUser(SystemUser.UnAssigned);
 
    private AtsCoreUsers() {
       // UtilityClass
@@ -40,10 +37,6 @@ public final class AtsCoreUsers {
 
    public static boolean isUnAssignedUser(IAtsUser user) {
       return UNASSIGNED_USER.equals(user);
-   }
-
-   public static boolean isAtsCoreUserId(String userId) {
-      return getAtsCoreUserByUserId(userId) != null;
    }
 
    public static boolean isAtsCoreUser(IAtsUser user) {

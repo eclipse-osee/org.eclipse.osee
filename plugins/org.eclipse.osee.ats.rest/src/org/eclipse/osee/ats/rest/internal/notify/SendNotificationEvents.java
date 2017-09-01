@@ -19,8 +19,8 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEvent;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
+import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.users.AtsUsersUtility;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -131,8 +131,7 @@ public class SendNotificationEvents {
    }
 
    private void notifyUser(IAtsUser user, List<AtsNotificationEvent> notificationEvents, XResultData resultData) throws OseeCoreException {
-      if (user.getUserId().equals(SystemUser.OseeSystem.getUserId()) || user.getUserId().equals(
-         SystemUser.UnAssigned.getUserId()) || user.getUserId().equals(SystemUser.Anonymous.getUserId())) {
+      if (AtsCoreUsers.isAtsCoreUser(user)) {
          // do nothing
          return;
       }
