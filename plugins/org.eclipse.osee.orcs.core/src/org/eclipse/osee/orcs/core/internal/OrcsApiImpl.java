@@ -13,16 +13,11 @@ package org.eclipse.osee.orcs.core.internal;
 import com.google.common.collect.Sets;
 import java.util.Collections;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.FutureTask;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.jdk.core.type.LazyObject;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
@@ -65,7 +60,6 @@ import org.eclipse.osee.orcs.core.internal.transaction.TxDataManager;
 import org.eclipse.osee.orcs.core.internal.transaction.TxDataManager.TxDataLoader;
 import org.eclipse.osee.orcs.core.internal.types.BranchHierarchyProvider;
 import org.eclipse.osee.orcs.core.internal.types.OrcsTypesModule;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.BranchQuery;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.QueryIndexer;
@@ -228,24 +222,8 @@ public class OrcsApiImpl implements OrcsApi {
    @Override
    public OrcsBranch getBranchOps() {
       OrcsSession session = getSession();
-      LazyObject<ArtifactReadable> systemUser = new LazyObject<ArtifactReadable>() {
-
-         @Override
-         protected final FutureTask<ArtifactReadable> createLoaderTask() {
-            Callable<ArtifactReadable> callable = new Callable<ArtifactReadable>() {
-               @SuppressWarnings("unchecked")
-               @Override
-               public ArtifactReadable call() throws Exception {
-                  return getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
-                     SystemUser.OseeSystem).getResults().getExactlyOne();
-
-               }
-            };
-            return new FutureTask<ArtifactReadable>(callable);
-         }
-      };
       QueryFactory queryFactory = getQueryFactory();
-      return new OrcsBranchImpl(logger, session, module.getBranchDataStore(), queryFactory, systemUser, getOrcsTypes());
+      return new OrcsBranchImpl(logger, session, module.getBranchDataStore(), queryFactory, getOrcsTypes());
    }
 
    @Override

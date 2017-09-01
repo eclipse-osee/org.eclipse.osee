@@ -20,6 +20,7 @@ import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import com.google.common.collect.Ordering;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -32,6 +33,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -66,7 +68,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
-import com.google.common.collect.Ordering;
 
 /**
  * @author Roberto E. Escobar
@@ -84,7 +85,7 @@ public class OrcsQueryTest {
    private OrcsBranch branchApi;
    private TransactionFactory txFactory;
    private QueryFactory factory;
-   private final ArtifactId author = SystemUser.OseeSystem;
+   private final UserId author = SystemUser.OseeSystem;
 
    @Before
    public void setup() {

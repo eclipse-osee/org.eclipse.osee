@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -210,8 +209,7 @@ public class BranchStateTest {
          Asserts.assertOperation(operation, IStatus.OK);
 
          Assert.assertEquals(BranchState.DELETED, BranchManager.getState(workingBranch));
-         Assert.assertEquals(UserManager.getUser(SystemUser.OseeSystem).getArtId(),
-            BranchManager.getAssociatedArtifact(workingBranch).getArtId());
+         Assert.assertEquals(SystemUser.OseeSystem, BranchManager.getAssociatedArtifact(workingBranch));
 
          IOseeBranch newWorkingBranch = operation.getNewBranch();
          assertFalse(workingBranch.equals(newWorkingBranch));

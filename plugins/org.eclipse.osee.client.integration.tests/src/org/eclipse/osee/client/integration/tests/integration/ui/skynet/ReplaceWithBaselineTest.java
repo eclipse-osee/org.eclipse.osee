@@ -40,7 +40,6 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -287,8 +286,7 @@ public final class ReplaceWithBaselineTest {
          }
       }
 
-      workingBranch = BranchManager.createWorkingBranch(baselineBranch, "working branch",
-         UserManager.getUser(SystemUser.OseeSystem));
+      workingBranch = BranchManager.createWorkingBranch(baselineBranch, "working branch", SystemUser.OseeSystem);
 
       SkynetTransaction workingBranchTransaction = TransactionManager.createTransaction(workingBranch, testName);
 
@@ -313,7 +311,7 @@ public final class ReplaceWithBaselineTest {
                      break;
                   case INTRODUCED:
                      BranchId anotherBranch = BranchManager.createWorkingBranch(workingBranch, "another working branch",
-                        UserManager.getUser(SystemUser.OseeSystem));
+                        SystemUser.OseeSystem);
 
                      Artifact artifactToIntroduce = createNewArtifact(anotherBranch, "introduce artifact");
 

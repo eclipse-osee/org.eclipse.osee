@@ -17,6 +17,7 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.CIS_Bld_1;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
+import static org.eclipse.osee.framework.core.enums.SystemUser.OseeSystem;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -29,13 +30,11 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.data.ArchiveOperation;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.db.mock.OrcsIntegrationByClassRule;
 import org.eclipse.osee.orcs.db.mock.OseeClassDatabase;
@@ -91,14 +90,10 @@ public class OrcsBranchQueryTest {
 
       // list, IOseeBranch, BranchType, BranchState, isArchived, parentId, baseTx, sourceTx, assocArtId
       assertBranch(list, SYSTEM_ROOT, BranchType.SYSTEM_ROOT, MODIFIED, false, BranchId.SENTINEL, ArtifactId.SENTINEL);
-      assertBranch(list, SAW_Bld_1, BASELINE, MODIFIED, false, SYSTEM_ROOT,
-         ArtifactId.valueOf(SystemUser.OseeSystem.getId()));
-      assertBranch(list, CIS_Bld_1, BASELINE, MODIFIED, false, SYSTEM_ROOT,
-         ArtifactId.valueOf(SystemUser.OseeSystem.getId()));
-      assertBranch(list, SAW_Bld_2, BASELINE, MODIFIED, false, SAW_Bld_1,
-         ArtifactId.valueOf(SystemUser.OseeSystem.getId()));
-      assertBranch(list, COMMON, BASELINE, MODIFIED, false, SYSTEM_ROOT,
-         ArtifactId.valueOf(SystemUser.OseeSystem.getId()));
+      assertBranch(list, SAW_Bld_1, BASELINE, MODIFIED, false, SYSTEM_ROOT, OseeSystem);
+      assertBranch(list, CIS_Bld_1, BASELINE, MODIFIED, false, SYSTEM_ROOT, OseeSystem);
+      assertBranch(list, SAW_Bld_2, BASELINE, MODIFIED, false, SAW_Bld_1, OseeSystem);
+      assertBranch(list, COMMON, BASELINE, MODIFIED, false, SYSTEM_ROOT, OseeSystem);
    }
 
    @Test
@@ -298,13 +293,7 @@ public class OrcsBranchQueryTest {
    }
 
    private IOseeBranch createBranch(IOseeBranch parent, IOseeBranch uuid) throws Exception {
-      ArtifactReadable author = getSystemUser();
-      return getBranchOps().createWorkingBranch(uuid, author, parent, ArtifactId.SENTINEL).call();
-   }
-
-   @SuppressWarnings("unchecked")
-   private ArtifactReadable getSystemUser() throws OseeCoreException {
-      return factory.fromBranch(CoreBranches.COMMON).andId(SystemUser.OseeSystem).getResults().getExactlyOne();
+      return getBranchOps().createWorkingBranch(uuid, OseeSystem, parent, ArtifactId.SENTINEL).call();
    }
 
    private OrcsBranch getBranchOps() {

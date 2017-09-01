@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.core.enums;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.UserToken;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 
 /**

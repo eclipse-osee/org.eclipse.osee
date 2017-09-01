@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.api;
 
 import static org.eclipse.osee.framework.core.data.ArtifactId.SENTINEL;
+import static org.eclipse.osee.framework.core.enums.SystemUser.OseeSystem;
 import static org.eclipse.osee.orcs.OrcsIntegrationRule.integrationRule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -23,13 +24,13 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
@@ -80,7 +81,7 @@ public class OrcsBranchTest {
       // set up the initial branch
       IOseeBranch branch = IOseeBranch.create("PriorBranch");
 
-      ArtifactId author = SystemUser.OseeSystem;
+      UserId author = OseeSystem;
 
       TransactionId tx = TransactionId.valueOf(SOURCE_TX_ID);
       Callable<BranchReadable> callable = branchOps.createCopyTxBranch(branch, author, tx, ArtifactId.SENTINEL);
@@ -133,10 +134,8 @@ public class OrcsBranchTest {
       // create the branch with the copied transaction
       IOseeBranch branch = IOseeBranch.create("CopiedBranch");
 
-      ArtifactId author = SystemUser.OseeSystem;
-
       Callable<BranchReadable> callableBranch =
-         branchOps.createCopyTxBranch(branch, author, SOURCE_TX_ID, ArtifactId.SENTINEL);
+         branchOps.createCopyTxBranch(branch, OseeSystem, SOURCE_TX_ID, ArtifactId.SENTINEL);
 
       // the new branch will contain two transactions - these should have the same change report as the original branch
       BranchReadable postBranch = callableBranch.call();
@@ -148,7 +147,7 @@ public class OrcsBranchTest {
 
    @Test
    public void testCommitBranchMissingArtifactsOnDestination() throws Exception {
-      ArtifactId author = SystemUser.OseeSystem;
+      UserId author = OseeSystem;
       // set up the initial branch
       IOseeBranch branch = IOseeBranch.create("BaseBranch");
 
@@ -198,7 +197,7 @@ public class OrcsBranchTest {
 
       IOseeBranch branch = IOseeBranch.create(branchName);
 
-      branchOps.createBaselineBranch(branch, SystemUser.OseeSystem, CoreBranches.SYSTEM_ROOT, SENTINEL).call();
+      branchOps.createBaselineBranch(branch, OseeSystem, CoreBranches.SYSTEM_ROOT, SENTINEL).call();
 
       BranchReadable actual = getBranch(branch);
       assertBranch(actual, branchName, BranchState.CREATED, BranchType.BASELINE, SENTINEL);
@@ -221,7 +220,7 @@ public class OrcsBranchTest {
       actual = getBranch(branch);
       assertBranch(actual, branchName, branchState, branchType, SENTINEL);
 
-      ArtifactId assocArtifact = SystemUser.OseeSystem;
+      UserId assocArtifact = OseeSystem;
       branchOps.associateBranchToArtifact(branch, assocArtifact).call();
 
       actual = getBranch(branch);

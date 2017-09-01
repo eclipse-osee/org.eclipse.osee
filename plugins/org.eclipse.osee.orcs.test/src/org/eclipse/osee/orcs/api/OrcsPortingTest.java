@@ -17,9 +17,9 @@ import static org.junit.Assert.fail;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -57,7 +57,7 @@ public class OrcsPortingTest {
    private QueryFactory query;
    private TransactionFactory txFactory;
    private final String branchString = "CopiedTxBranch";
-   private final ArtifactId author = SystemUser.OseeSystem;
+   private final UserId author = SystemUser.OseeSystem;
    private ArtifactId nextReq;
 
    @Before

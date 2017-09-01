@@ -36,8 +36,8 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -56,7 +56,6 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.data.TransactionReadable;
-import org.eclipse.osee.orcs.db.mock.OrcsIntegrationByClassRule;
 import org.eclipse.osee.orcs.db.mock.TestDatabase;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -83,7 +82,7 @@ public class OrcsTransactionTest {
 
    private static TestDatabase db;
    private static TransactionFactory txFactory;
-   private static final ArtifactId userArtifact = OseeSystem;
+   private static final UserId userArtifact = OseeSystem;
    private static OrcsBranch orcsBranch;
    private static QueryFactory query;
 

@@ -162,14 +162,10 @@ public class OrcsTxQueryTest {
       assertEquals(8, query.getCount());
 
       List<TransactionReadable> transactions = results.getList();
-      assertTx(transactions, tx1, Baselined, "System Root Branch Creation", SYSTEM_ROOT,
-         ArtifactId.valueOf(OseeSystem.getId()));
-      assertTx(transactions, tx4, Baselined, "New Branch from System Root Branch (3)", COMMON,
-         ArtifactId.valueOf(OseeSystem.getId()));
-      assertTx(transactions, tx30, Baselined, "New Branch from System Root Branch (3)", SAW_Bld_1,
-         ArtifactId.valueOf(OseeSystem.getId()));
-      assertTx(transactions, tx33, Baselined, "New Branch from System Root Branch (3)", CIS_Bld_1,
-         ArtifactId.valueOf(OseeSystem.getId()));
+      assertTx(transactions, tx1, Baselined, "System Root Branch Creation", SYSTEM_ROOT, OseeSystem);
+      assertTx(transactions, tx4, Baselined, "New Branch from System Root Branch (3)", COMMON, OseeSystem);
+      assertTx(transactions, tx30, Baselined, "New Branch from System Root Branch (3)", SAW_Bld_1, OseeSystem);
+      assertTx(transactions, tx33, Baselined, "New Branch from System Root Branch (3)", CIS_Bld_1, OseeSystem);
       assertTx(transactions, tx73, Baselined, "New Branch from SAW_Bld_1 (72)", SAW_Bld_2, Joe_Smith);
    }
 
@@ -183,8 +179,7 @@ public class OrcsTxQueryTest {
       assertEquals(4, query.getCount());
 
       List<TransactionReadable> transactions = results.getList();
-      assertTx(transactions, tx33, Baselined, "New Branch from System Root Branch (3)", CIS_Bld_1,
-         ArtifactId.valueOf(OseeSystem.getId()));
+      assertTx(transactions, tx33, Baselined, "New Branch from System Root Branch (3)", CIS_Bld_1, OseeSystem);
       assertTx(transactions, tx73, Baselined, "New Branch from SAW_Bld_1 (72)", SAW_Bld_2, Joe_Smith);
    }
 
@@ -199,11 +194,11 @@ public class OrcsTxQueryTest {
 
       List<TransactionReadable> transactions = results.getList();
       //@formatter:off
-      assertTx(transactions, tx30, Baselined,    "New Branch from System Root Branch (3)", SAW_Bld_1, ArtifactId.valueOf(OseeSystem.getId()));
-      assertTx(transactions, tx31, NonBaselined, "DemoDatabaseConfig", SAW_Bld_1, ArtifactId.valueOf(OseeSystem.getId()));
-      assertTx(transactions, tx32, NonBaselined, "Create Demo Applicability", SAW_Bld_1, ArtifactId.valueOf(OseeSystem.getId()));
-      assertTx(transactions, tx33, Baselined,    "New Branch from System Root Branch (3)", CIS_Bld_1, ArtifactId.valueOf(OseeSystem.getId()));
-      assertTx(transactions, tx34, NonBaselined, "DemoDatabaseConfig", CIS_Bld_1,ArtifactId.valueOf(OseeSystem.getId()));
+      assertTx(transactions, tx30, Baselined,    "New Branch from System Root Branch (3)", SAW_Bld_1, OseeSystem);
+      assertTx(transactions, tx31, NonBaselined, "DemoDatabaseConfig", SAW_Bld_1, OseeSystem);
+      assertTx(transactions, tx32, NonBaselined, "Create Demo Applicability", SAW_Bld_1, OseeSystem);
+      assertTx(transactions, tx33, Baselined,    "New Branch from System Root Branch (3)", CIS_Bld_1, OseeSystem);
+      assertTx(transactions, tx34, NonBaselined, "DemoDatabaseConfig", CIS_Bld_1,OseeSystem);
 
       assertTx(transactions, tx69, NonBaselined, "ArtifactImportOperationFactory: Artifact Import Wizard transaction", SAW_Bld_1, Joe_Smith);
       assertTx(transactions, tx70, NonBaselined, "ArtifactImportOperationFactory: Artifact Import Wizard transaction", SAW_Bld_1, Joe_Smith);
@@ -357,7 +352,7 @@ public class OrcsTxQueryTest {
 
       transactions = results.getList();
       //@formatter:off
-      assertTx(transactions, tx33, Baselined, "New Branch from System Root Branch (3)", CIS_Bld_1, ArtifactId.valueOf(OseeSystem.getId()));
+      assertTx(transactions, tx33, Baselined, "New Branch from System Root Branch (3)", CIS_Bld_1, OseeSystem);
       assertTx(transactions, tx69, NonBaselined, "ArtifactImportOperationFactory: Artifact Import Wizard transaction", SAW_Bld_1, Joe_Smith);
       assertTx(transactions, CommonBranchHeadTransaction, NonBaselined, CommonBranchTransComment, COMMON, Joe_Smith);
       //@formatter:on
@@ -373,7 +368,7 @@ public class OrcsTxQueryTest {
 
       transactions = results.getList();
       //@formatter:off
-      assertTx(transactions, tx33, Baselined, "New Branch from System Root Branch (3)", CIS_Bld_1, ArtifactId.valueOf(OseeSystem.getId()));
+      assertTx(transactions, tx33, Baselined, "New Branch from System Root Branch (3)", CIS_Bld_1, OseeSystem);
       assertTx(transactions, tx69, NonBaselined, "ArtifactImportOperationFactory: Artifact Import Wizard transaction", SAW_Bld_1, Joe_Smith);
       assertTx(transactions, CommonBranchHeadTransaction, NonBaselined, CommonBranchTransComment, COMMON, Joe_Smith);
       //@formatter:on

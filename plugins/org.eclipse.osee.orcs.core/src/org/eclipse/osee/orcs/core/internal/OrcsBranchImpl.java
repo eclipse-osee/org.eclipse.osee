@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
-import org.eclipse.osee.framework.jdk.core.type.LazyObject;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -36,7 +35,6 @@ import org.eclipse.osee.orcs.core.internal.branch.CompareBranchCallable;
 import org.eclipse.osee.orcs.core.internal.branch.CreateBranchCallable;
 import org.eclipse.osee.orcs.core.internal.branch.PurgeBranchCallable;
 import org.eclipse.osee.orcs.data.ArchiveOperation;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -54,7 +52,7 @@ public class OrcsBranchImpl implements OrcsBranch {
    private final OrcsTypes orcsTypes;
    private final QueryFactory queryFactory;
 
-   public OrcsBranchImpl(Log logger, OrcsSession session, BranchDataStore branchStore, QueryFactory queryFactory, LazyObject<ArtifactReadable> systemUser, OrcsTypes orcsTypes) {
+   public OrcsBranchImpl(Log logger, OrcsSession session, BranchDataStore branchStore, QueryFactory queryFactory, OrcsTypes orcsTypes) {
       this.logger = logger;
       this.session = session;
       this.branchStore = branchStore;

@@ -29,6 +29,7 @@ import java.util.Map;
 import org.eclipse.osee.account.admin.OseePrincipal;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -74,26 +75,8 @@ public class ClientStorage {
       return queryFactory.fromBranch(getBranch());
    }
 
-   private ArtifactReadable getAuthorById(long authorId) {
-      ArtifactReadable author;
-      if (authorId > -1L) {
-         int artId = idToInt(authorId);
-         author = newQuery().andUuid(artId).getResults().getExactlyOne();
-      } else {
-         author = getSystemUser();
-      }
-      return author;
-   }
-
-   @SuppressWarnings("unchecked")
-   private ArtifactReadable getSystemUser() {
-      return newQuery().andId(SystemUser.OseeSystem).getResults().getExactlyOne();
-   }
-
    private TransactionBuilder newTransaction(OseePrincipal principal, String comment) {
-      long authorId = principal != null ? principal.getGuid() : -1L;
-      ArtifactReadable author = getAuthorById(authorId);
-
+      UserId author = principal == null ? SystemUser.OseeSystem : UserId.valueOf(principal.getGuid());
       TransactionFactory transactionFactory = orcsApi.getTransactionFactory();
       return transactionFactory.createTransaction(getBranch(), author, comment);
    }
