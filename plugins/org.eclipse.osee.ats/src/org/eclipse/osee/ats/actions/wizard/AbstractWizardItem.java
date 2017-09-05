@@ -67,6 +67,8 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
       new DoubleKeyHashMap<>();
    private final IAtsServices services;
    private final WizardFields[] fields;
+   private XComboViewer versionCombo;
+   private XCheckBox createBranchCheck;
 
    public AbstractWizardItem(IAtsServices services, WizardFields... fields) {
       this.services = services;
@@ -190,7 +192,7 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
             comp.setLayout(ALayout.getZeroMarginLayout(2, false));
             comp.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
 
-            XComboViewer versionCombo = new XComboViewer("Targeted Version", SWT.NONE);
+            versionCombo = new XComboViewer("Targeted Version", SWT.NONE);
             Collection<Object> objects = new LinkedList<>();
             objects.addAll(versions);
             versionCombo.setInput(objects);
@@ -202,7 +204,7 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
             comp2.setLayout(ALayout.getZeroMarginLayout(2, false));
             comp2.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
 
-            final XCheckBox createBranchCheck = new XCheckBox("Create Branch Automatically");
+            createBranchCheck = new XCheckBox("Create Branch Automatically");
             createBranchCheck.setToolTip(
                "Branch will be completed after Action Creation (Valid Targeted Version must be selected)");
             createBranchCheck.setEditable(false);
@@ -323,7 +325,9 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
          wizardCompletedFeatureGroup(teamWf, teamDef, changes);
          wizardCompletedUnPlanned(teamWf, teamDef, changes);
 
-         changes.addExecuteListener(new CreateBranch(teamDef));
+         if (versionCombo.getSelected() != null && createBranchCheck.isChecked()) {
+            changes.addExecuteListener(new CreateBranch(teamDef));
+         }
       }
    }
 
