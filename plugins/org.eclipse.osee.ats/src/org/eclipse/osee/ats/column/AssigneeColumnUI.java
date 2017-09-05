@@ -134,6 +134,7 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
       }
       UserCheckTreeDialog uld =
          new UserCheckTreeDialog("Select Assignees", "Select to assign.\nDeSelect to un-assign.", oseeUsers);
+      uld.setIncludeAutoSelectButtons(true);
       if (teamMembers != null) {
          uld.setTeamMembers(teamMembers);
       }

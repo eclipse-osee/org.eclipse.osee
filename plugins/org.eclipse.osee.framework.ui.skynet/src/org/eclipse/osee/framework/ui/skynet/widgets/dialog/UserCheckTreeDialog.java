@@ -11,20 +11,32 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.FullyNamed;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
@@ -35,6 +47,7 @@ import org.eclipse.swt.widgets.Control;
 public class UserCheckTreeDialog extends FilteredCheckboxTreeArtifactDialog {
 
    private Collection<User> teamMembers;
+   private boolean includeAutoSelectButtons = false;
 
    public UserCheckTreeDialog(Collection<? extends User> users) {
       this("Select Users", "Select Users", users);
@@ -61,8 +74,57 @@ public class UserCheckTreeDialog extends FilteredCheckboxTreeArtifactDialog {
    }
 
    @Override
+   protected void createPreCustomArea(Composite parent) {
+      UserCheckTreeDialog fUld = this;
+      if (includeAutoSelectButtons) {
+
+         Composite comp = new Composite(parent, SWT.NONE);
+         Button setUnAssigned = new Button(comp, SWT.PUSH);
+         setUnAssigned.setText("Set as Un-Assigned and Close");
+         setUnAssigned.setToolTipText("Set as Un-Assigned and close Dialog");
+         setUnAssigned.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               super.widgetSelected(e);
+               getCheckboxTreeViewer().setSelection(new StructuredSelection(java.util.Collections.emptyList()));
+               fUld.setInitialSelections(Arrays.asList(SystemUser.UnAssigned));
+               okPressed();
+            }
+         });
+         Button setAsMe = new Button(comp, SWT.PUSH);
+         setAsMe.setText("Set as Me and Close");
+         setAsMe.setToolTipText("Set as current user and close Dialog");
+         setAsMe.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               super.widgetSelected(e);
+               getCheckboxTreeViewer().setSelection(new StructuredSelection(java.util.Collections.emptyList()));
+               fUld.setInitialSelections(Arrays.asList(UserManager.getUser()));
+               okPressed();
+            }
+         });
+         Button addMe = new Button(comp, SWT.PUSH);
+         addMe.setText("Add Me and Close");
+         addMe.setToolTipText("Add Me to checked assignees and close Dialog");
+         addMe.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               super.widgetSelected(e);
+               List<ArtifactId> users = new LinkedList<>(fUld.getChecked());
+               users.add(UserManager.getUser());
+               fUld.setInitialSelections(users);
+               okPressed();
+            }
+         });
+         comp.setLayout(ALayout.getZeroMarginLayout(3, false));
+         comp.setLayoutData(new GridData());
+      }
+   }
+
+   @Override
    protected Control createDialogArea(Composite container) {
       Control c = super.createDialogArea(container);
+
       if (teamMembers != null) {
          ((UserCheckTreeLabelProvider) getTreeViewer().getViewer().getLabelProvider()).setTeamMembers(teamMembers);
       }
@@ -165,6 +227,10 @@ public class UserCheckTreeDialog extends FilteredCheckboxTreeArtifactDialog {
          this.teamMembers = teamMembers;
       }
 
+   }
+
+   public void setIncludeAutoSelectButtons(boolean includeAutoSelectButtons) {
+      this.includeAutoSelectButtons = includeAutoSelectButtons;
    }
 
 }
