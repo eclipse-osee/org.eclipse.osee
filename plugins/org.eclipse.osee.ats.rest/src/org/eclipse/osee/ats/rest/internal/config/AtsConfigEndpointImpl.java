@@ -296,9 +296,18 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    @GET
    @Path("clearcache")
    @Produces(MediaType.APPLICATION_JSON)
-   public AtsConfigurations clearCaches() {
+   public String clearCaches() {
       atsConfigurations = null;
-      return get();
+      Thread thread = new Thread() {
+
+         @Override
+         public void run() {
+            super.run();
+            get();
+         }
+      };
+      thread.start();
+      return "Complete";
    }
 
    @GET

@@ -51,7 +51,7 @@ public interface AtsConfigEndpointApi {
    @GET
    @Path("clearcache")
    @Produces(MediaType.APPLICATION_JSON)
-   public AtsConfigurations clearCaches();
+   public String clearCaches();
 
    /**
     * @return html5 action entry page
