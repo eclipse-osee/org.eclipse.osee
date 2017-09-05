@@ -131,8 +131,7 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
       }
       Collection<IAtsUser> users = AtsClientService.get().getUserServiceClient().getAtsUsers(uld.getUsersSelected());
       if (users.isEmpty()) {
-         AWorkbench.popup("ERROR", "Must have at least one assignee");
-         return false;
+         users.add(AtsCoreUsers.UNASSIGNED_USER);
       }
       // As a convenience, remove the UnAssigned user if another user is selected
       if (users.size() > 1) {

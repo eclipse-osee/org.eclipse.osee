@@ -31,6 +31,7 @@ import org.eclipse.swt.widgets.Control;
 /**
  * @author Donald G. Dunne
  */
+@SuppressWarnings("deprecation")
 public class UserCheckTreeDialog extends FilteredCheckboxTreeArtifactDialog {
 
    private Collection<User> teamMembers;
