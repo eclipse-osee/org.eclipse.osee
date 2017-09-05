@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.util.IResultDataListener;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.IHealthStatus;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 
@@ -215,6 +216,24 @@ public class XResultData {
 
    public List<String> getResults() {
       return results;
+   }
+
+   public void validateNotNull(Object obj, String message, Object... data) {
+      if (obj == null) {
+         errorf(message + " can not be null", data);
+      }
+   }
+
+   public void validateNotNullOrEmpty(String value, String message, Object... data) {
+      if (!Strings.isValid(value)) {
+         errorf(message + " can not be null or emtpy", data);
+      }
+   }
+
+   public void validateTrue(boolean value, String message, Object... data) {
+      if (!value) {
+         errorf(message, data);
+      }
    }
 
 }

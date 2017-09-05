@@ -1,5 +1,4 @@
 /*******************************************************************************
- * Copyright (c) 2013 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -80,6 +79,7 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
 
    public static String PLUGIN_ID = "org.eclipse.osee.ats.rest";
+   private static IAtsServices services;
    private OrcsApi orcsApi;
    private AtsNotifierServiceImpl notifyService;
    private AtsNotificationEventProcessor notificationEventProcessor;
@@ -94,6 +94,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
 
    public AtsServerImpl() {
       super();
+      services = this;
    }
 
    public void setOrcsApi(OrcsApi orcsApi) {
@@ -472,4 +473,14 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
       // clear client config cache (read from server)
       clearConfigurationsCaches();
    }
+
+   @Override
+   public String getApplicationServerBase() {
+      return System.getProperty("OseeApplicationServer");
+   }
+
+   public static IAtsServices get() {
+      return services;
+   }
+
 }

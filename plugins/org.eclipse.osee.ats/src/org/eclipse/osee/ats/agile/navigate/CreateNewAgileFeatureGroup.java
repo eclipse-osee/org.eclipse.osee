@@ -8,15 +8,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.navigate;
+package org.eclipse.osee.ats.agile.navigate;
 
 import java.util.LinkedList;
 import java.util.List;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
-import org.eclipse.osee.ats.api.agile.JaxAgileSprint;
-import org.eclipse.osee.ats.api.agile.JaxNewAgileSprint;
+import org.eclipse.osee.ats.api.agile.JaxAgileFeatureGroup;
+import org.eclipse.osee.ats.api.agile.JaxNewAgileFeatureGroup;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.internal.Activator;
@@ -41,10 +41,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeArtifactD
 /**
  * @author Donald G. Dunne
  */
-public class CreateNewAgileSprint extends XNavigateItemAction {
+public class CreateNewAgileFeatureGroup extends XNavigateItemAction {
 
-   public CreateNewAgileSprint(XNavigateItem parent) {
-      super(parent, "Create new Agile Sprint", AtsImage.AGILE_SPRINT);
+   public CreateNewAgileFeatureGroup(XNavigateItem parent) {
+      super(parent, "Create new Agile Feature Group", AtsImage.AGILE_FEATURE_GROUP);
    }
 
    @Override
@@ -61,33 +61,32 @@ public class CreateNewAgileSprint extends XNavigateItemAction {
          new ArtifactTreeContentProvider(), new ArtifactLabelProvider());
       if (dialog.open() == 0) {
 
-         EntryDialog ed = new EntryDialog(getName(), "Enter new Agile Sprint name(s) (comma delimited)");
+         EntryDialog ed = new EntryDialog(getName(), "Enter new Agile Feature Group name(s) (comma delimited)");
          if (ed.open() == 0) {
             if (Strings.isValid(ed.getEntry())) {
                try {
-                  AgileEndpointApi ageilEp = AtsClientService.getAgileEndpoint();
-                  JaxNewAgileSprint newSprint = new JaxNewAgileSprint();
-                  Artifact firstArtifact = (Artifact) dialog.getSelectedFirst();
-
-                  if (firstArtifact == null) {
-                     throw new OseeCoreException("Must make a selection");
-                  }
-                  int teamUuid = (firstArtifact).getArtId();
-
+                  AgileEndpointApi teamApi = AtsClientService.getAgileEndpoint();
+                  JaxNewAgileFeatureGroup newGroup = new JaxNewAgileFeatureGroup();
                   for (String name : ed.getEntry().split(",")) {
-                     newSprint.setName(name);
-                     newSprint.setTeamUuid(teamUuid);
-                     Response response = ageilEp.createSprint(new Long(teamUuid), newSprint);
-                     JaxAgileSprint sprint = null;
-                     if (response != null) {
-                        sprint = response.readEntity(JaxAgileSprint.class);
+                     newGroup.setName(name);
+                     Artifact firstArtifact = (Artifact) dialog.getSelectedFirst();
+                     if (firstArtifact == null) {
+                        throw new OseeCoreException("Must make a selection");
                      }
-                     if (sprint != null) {
-                        long uuid = sprint.getUuid();
-                        Artifact sprintArt =
-                           ArtifactQuery.getArtifactFromId(uuid, AtsClientService.get().getAtsBranch());
-                        sprintArt.getParent().reloadAttributesAndRelations();
-                        AtsUtil.openArtifact(sprintArt.getGuid(), OseeCmEditor.CmPcrEditor);
+                     int teamUuid = firstArtifact.getArtId();
+
+                     newGroup.setTeamUuid(teamUuid);
+                     Response response = teamApi.createFeatureGroup(new Long(teamUuid), newGroup);
+                     Object entity = null;
+                     if (response != null) {
+                        entity = response.readEntity(JaxAgileFeatureGroup.class);
+                     }
+                     if (entity != null) {
+                        JaxAgileFeatureGroup group = (JaxAgileFeatureGroup) entity;
+                        Artifact groupArt =
+                           ArtifactQuery.getArtifactFromId(group.getUuid(), AtsClientService.get().getAtsBranch());
+                        groupArt.getParent().reloadAttributesAndRelations();
+                        AtsUtil.openArtifact(group.getUuid(), OseeCmEditor.CmPcrEditor);
                      } else {
                         AWorkbench.popup("Error creating Agile Team [%s]", response != null ? response.toString() : "");
                         return;

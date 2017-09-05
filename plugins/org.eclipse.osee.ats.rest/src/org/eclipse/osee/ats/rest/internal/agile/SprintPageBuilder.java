@@ -17,9 +17,11 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResourceToken;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.template.engine.PageCreator;
@@ -38,14 +40,18 @@ public class SprintPageBuilder {
    private int numActionsStarted = 0;
    private int numActionsBacklog = 0;
    TreeMap<String, FeatureGroupSum> featureSums = new TreeMap<>();
+   private final ArtifactReadable team;
 
-   public SprintPageBuilder(ArtifactReadable sprint) {
+   public SprintPageBuilder(ArtifactReadable team, ArtifactReadable sprint) {
+      this.team = team;
       this.sprint = sprint;
    }
 
    public String generatePage(PageCreator page, ResourceToken token) {
       calculateData();
       page.addKeyValuePairs("sprintName", sprint.getName());
+      page.addKeyValuePairs("teamName", team.getName());
+      page.addKeyValuePairs("summaryDate", DateUtil.getDateNow(DateUtil.MMDDYYHHMM));
       page.addKeyValuePairs("beginDate", getStartDate());
       page.addKeyValuePairs("endDate", getEndDate());
       page.addKeyValuePairs("workCompleted", getWorkCompleted());
@@ -54,7 +60,9 @@ public class SprintPageBuilder {
       page.addKeyValuePairs("numActionsStarted", getNumActionsStarted());
       page.addKeyValuePairs("numActionsBacklog", getNumActionsBacklog());
       page.addKeyValuePairs("tableContent", getTable());
-      return page.realizePage(token);
+      String html = page.realizePage(token);
+      html = RestUtil.resolveAjaxToBaseApplicationServer(html);
+      return html;
    }
 
    private void calculateData() {

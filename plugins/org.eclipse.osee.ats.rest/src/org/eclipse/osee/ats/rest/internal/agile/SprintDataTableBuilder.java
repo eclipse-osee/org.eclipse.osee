@@ -13,20 +13,20 @@ package org.eclipse.osee.ats.rest.internal.agile;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.api.agile.AgileBurndown;
-import org.eclipse.osee.ats.api.agile.AgileBurndownDate;
+import org.eclipse.osee.ats.api.agile.AgileSprintData;
+import org.eclipse.osee.ats.api.agile.AgileSprintDateData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 
 /**
  * @author Donald G. Dunne
  */
-public class SprintBurndownPageBuilder {
+public class SprintDataTableBuilder {
 
    private static final String N_A = "0";
-   private final AgileBurndown burn;
+   private final AgileSprintData burn;
 
-   public SprintBurndownPageBuilder(AgileBurndown burn) {
+   public SprintDataTableBuilder(AgileSprintData burn) {
       this.burn = burn;
    }
 
@@ -38,13 +38,13 @@ public class SprintBurndownPageBuilder {
       sb.append(AHTML.beginMultiColumnTable(95, 1));
 
       // Add Sprint row
-      sb.append(AHTML.addRowMultiColumnTable("Sprint", burn.getSprintName()));
+      sb.append(AHTML.addRowMultiColumnTable("Team", burn.getAgileTeamName(), "Sprint", burn.getSprintName(),
+         "Report Date", DateUtil.getMMDDYYHHMM()));
 
       // Add Start row
       sb.append(AHTML.addRowMultiColumnTable("Start", DateUtil.get(burn.getStartDate(), DateUtil.MMDDYY), "End",
          DateUtil.get(burn.getEndDate(), DateUtil.MMDDYY), "", "Days", String.valueOf(burn.getDates().size()),
-         "Planned", String.valueOf(burn.getPlannedPoints().toString()), "Un-Planned",
-         String.valueOf(burn.getUnPlannedPoints().toString())));
+         "Planned", getPlannedPoints(), "Un-Planned", getUnPlannedPoints()));
 
       // Add Holidays
       List<String> holidays = new LinkedList<>();
@@ -65,7 +65,7 @@ public class SprintBurndownPageBuilder {
       // Add dates row
       strs = new LinkedList<>();
       strs.add("");
-      for (AgileBurndownDate date : burn.getDates()) {
+      for (AgileSprintDateData date : burn.getDates()) {
          strs.add(DateUtil.get(date.getDate(), DateUtil.MMDDYY));
       }
       sb.append(AHTML.addRowMultiColumnTable(strs.toArray(new String[strs.size()])));
@@ -81,7 +81,7 @@ public class SprintBurndownPageBuilder {
       // Add Goal
       strs = new LinkedList<>();
       strs.add("Goal");
-      for (AgileBurndownDate date : burn.getDates()) {
+      for (AgileSprintDateData date : burn.getDates()) {
          strs.add(String.valueOf(date.getGoalPoints()));
       }
       sb.append(AHTML.addRowMultiColumnTable(strs.toArray(new String[strs.size()])));
@@ -89,7 +89,7 @@ public class SprintBurndownPageBuilder {
       // Add Planned Complete
       strs = new LinkedList<>();
       strs.add("Planned Complete");
-      for (AgileBurndownDate date : burn.getDates()) {
+      for (AgileSprintDateData date : burn.getDates()) {
          if (date.getDate().after(today)) {
             strs.add(N_A);
          } else {
@@ -101,7 +101,7 @@ public class SprintBurndownPageBuilder {
       // Add Planned Remaining
       strs = new LinkedList<>();
       strs.add("Planned Remaining");
-      for (AgileBurndownDate date : burn.getDates()) {
+      for (AgileSprintDateData date : burn.getDates()) {
          if (date.getCompletedPlannedPoints() == null) {
             strs.add(N_A);
          } else {
@@ -113,7 +113,7 @@ public class SprintBurndownPageBuilder {
       // Add UnPlanned Complete
       strs = new LinkedList<>();
       strs.add("UnPlanned Complete");
-      for (AgileBurndownDate date : burn.getDates()) {
+      for (AgileSprintDateData date : burn.getDates()) {
          if (date.getCompletedUnPlannedPoints() == null) {
             strs.add(N_A);
          } else {
@@ -125,7 +125,7 @@ public class SprintBurndownPageBuilder {
       // Add UnPlanned Incomplete
       strs = new LinkedList<>();
       strs.add("UnPlanned Incomplete");
-      for (AgileBurndownDate date : burn.getDates()) {
+      for (AgileSprintDateData date : burn.getDates()) {
          if (date.getCompletedUnPlannedPoints() == null) {
             strs.add(N_A);
          } else {
@@ -134,22 +134,10 @@ public class SprintBurndownPageBuilder {
       }
       sb.append(AHTML.addRowMultiColumnTable(strs.toArray(new String[strs.size()])));
 
-      // Add UnPlanned Unrealized
-      strs = new LinkedList<>();
-      strs.add("UnPlanned Unrealized");
-      for (AgileBurndownDate date : burn.getDates()) {
-         if (date.getCompletedUnPlannedPoints() == null) {
-            strs.add(N_A);
-         } else {
-            strs.add(String.valueOf(date.getUnRealizedWalkup())); // TBD
-         }
-      }
-      sb.append(AHTML.addRowMultiColumnTable(strs.toArray(new String[strs.size()])));
-
       // Add Total Completed
       strs = new LinkedList<>();
       strs.add("Total Completed");
-      for (AgileBurndownDate date : burn.getDates()) {
+      for (AgileSprintDateData date : burn.getDates()) {
          if (date.getCompletedPoints() == null) {
             strs.add(N_A);
          } else {
@@ -161,18 +149,30 @@ public class SprintBurndownPageBuilder {
       // Add Total Remaining
       strs = new LinkedList<>();
       strs.add("Total Remaining");
-      for (AgileBurndownDate date : burn.getDates()) {
-         if (date.getDate().after(today)) {
-            strs.add(N_A);
-         } else {
-            strs.add(String.valueOf(
-               ((burn.getPlannedPoints() - date.getCompletedPlannedPoints()) + date.getUnRealizedWalkup() + date.getInCompletedUnPlannedPoints())));
-         }
+      for (AgileSprintDateData date : burn.getDates()) {
+         double remaining =
+            burn.getPlannedPoints() - date.getCompletedPlannedPoints() - date.getInCompletedUnPlannedPoints();
+         strs.add(String.valueOf(remaining));
       }
       sb.append(AHTML.addRowMultiColumnTable(strs.toArray(new String[strs.size()])));
 
       sb.append(AHTML.endMultiColumnTable());
-      return AHTML.simplePage(sb.toString());
+      return AHTML.titledPage(burn.getAgileTeamName() + " - " + burn.getSprintName() + " - Data Table",
+         AHTML.simplePage(sb.toString()));
+   }
+
+   private String getPlannedPoints() {
+      if (burn.getPlannedPoints() != null) {
+         return String.valueOf(burn.getPlannedPoints().toString());
+      }
+      return "0";
+   }
+
+   private String getUnPlannedPoints() {
+      if (burn.getUnPlannedPoints() != null) {
+         return String.valueOf(burn.getUnPlannedPoints().toString());
+      }
+      return "0";
    }
 
 }

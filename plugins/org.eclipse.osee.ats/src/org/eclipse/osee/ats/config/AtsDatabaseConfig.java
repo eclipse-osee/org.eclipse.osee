@@ -76,6 +76,7 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
       createUserCreationDisabledConfig();
 
       createSafetyConfig();
+
    }
 
    private void createUserCreationDisabledConfig() {

@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.program.Program;
@@ -36,6 +37,7 @@ public class XHyperlinkLabel extends GenericXWidget {
    private String url;
    private boolean openExternal;
    private Hyperlink hyperLinkLabel;
+   private boolean addDefaultListener = true;
 
    public XHyperlinkLabel(String url) {
       this(url, url, false);
@@ -66,12 +68,14 @@ public class XHyperlinkLabel extends GenericXWidget {
       hyperLinkLabel.setText(getLabel());
       hyperLinkLabel.setToolTipText(Strings.isValid(getToolTip()) ? getToolTip() : getUrl());
       hyperLinkLabel.setLayoutData(gd);
-      hyperLinkLabel.addListener(SWT.MouseUp, new Listener() {
-         @Override
-         public void handleEvent(Event event) {
-            handleSelection();
-         }
-      });
+      if (isAddDefaultListener()) {
+         hyperLinkLabel.addListener(SWT.MouseUp, new Listener() {
+            @Override
+            public void handleEvent(Event event) {
+               handleSelection();
+            }
+         });
+      }
 
       refresh();
    }
@@ -119,6 +123,18 @@ public class XHyperlinkLabel extends GenericXWidget {
 
    public void setOpenExternal(boolean openExternal) {
       this.openExternal = openExternal;
+   }
+
+   public void setForgroundBlue() {
+      hyperLinkLabel.setForeground(Displays.getSystemColor(SWT.COLOR_BLUE));
+   }
+
+   public boolean isAddDefaultListener() {
+      return addDefaultListener;
+   }
+
+   public void setAddDefaultListener(boolean addDefaultListener) {
+      this.addDefaultListener = addDefaultListener;
    }
 
 }

@@ -198,4 +198,16 @@ public final class Conditions {
          throw new OseeArgumentException(message, data);
       }
    }
+
+   public static void assertNotNullOrEmpty(String title, String message, Object... data) {
+      if (!Strings.isValid(title)) {
+         throw new OseeArgumentException(message, data);
+      }
+   }
+
+   public static void assertValid(Long teamId, String message, Object... data) {
+      if (teamId == null || teamId <= 0) {
+         throw new OseeArgumentException(message, data);
+      }
+   }
 }

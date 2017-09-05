@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 Boeing.
+ * Copyright (c) 2017 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,41 +10,41 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.agile;
 
-import java.util.Date;
-import javax.ws.rs.core.Response;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.framework.core.data.OseeClient;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.util.Result;
+import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
+import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XButton;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
  * @author Donald G. Dunne
  */
-public class XRunSprintSummaryButton extends XButton implements IArtifactWidget {
+public class XStoreSprintReportsButton extends XButton implements IArtifactWidget {
 
-   private IAgileSprint sprint;
+   protected IAgileSprint sprint;
    private final boolean editable = false;
-   public static final String WIDGET_ID = XRunSprintSummaryButton.class.getSimpleName();
+   public static final String WIDGET_ID = XStoreSprintReportsButton.class.getSimpleName();
 
-   public XRunSprintSummaryButton() {
-      super("Run Sprint Summary");
+   public XStoreSprintReportsButton() {
+      super("Store Snapshot of Sprint Reports");
       setImage(ImageManager.getImage(AtsImage.REPORT));
-      setToolTip("Click to run Sprint Report");
+      setToolTip("Click to Store and Open Snapshot of Sprint Reports");
       addXModifiedListener(listener);
    }
 
@@ -57,29 +57,43 @@ public class XRunSprintSummaryButton extends XButton implements IArtifactWidget 
       @Override
       public void widgetModified(org.eclipse.osee.framework.ui.skynet.widgets.XWidget widget) {
          try {
-            runReport();
+            storeAndOpen();
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
-      };
+      }
+
    };
 
-   private void runReport() {
-      Date startDate = ((Artifact) sprint.getStoreObject()).getSoleAttributeValue(AtsAttributeTypes.StartDate, null);
-      Date endDate = ((Artifact) sprint.getStoreObject()).getSoleAttributeValue(AtsAttributeTypes.EndDate, null);
+   private void storeAndOpen() {
+      if (MessageDialog.openConfirm(Displays.getActiveShell(), getLabel(),
+         "This will generate all reports and store them in database.\n\nThis is important if Sprint contents change after " //
+            + "Sprint is closed\nsuch as moving un-completed work to the next Sprint.\nSnapshot reports will retain the " //
+            + "metrics at the point of storage.\n\nAre you sure?")) {
+         try {
+            ArtifactToken teamArt = AtsClientService.get().getRelationResolver().getRelatedOrNull(sprint,
+               AtsRelationTypes.AgileTeamToSprint_AgileTeam);
+            XResultData results =
+               AtsClientService.getAgileEndpoint().storeSprintReports(teamArt.getId(), this.sprint.getId());
+            if (results.isErrors()) {
+               AWorkbench.popup(getLabel() + " errors " + results.toString());
+               return;
+            }
 
-      if (startDate == null || endDate == null) {
-         AWorkbench.popup("Sprint must have start and end dates specified.");
-         return;
-      }
+            ((Artifact) sprint.getStoreObject()).reloadAttributesAndRelations();
 
-      Response response = AtsClientService.getAgileEndpoint().getSprintSummary(sprint.getTeamUuid(), sprint.getId());
-      String reportHtml = response.readEntity(String.class);
-      String appServer = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER);
-      if (Strings.isValid(appServer)) {
-         reportHtml = reportHtml.replaceFirst("\\/ajax", appServer + "/ajax");
+            XOpenStoredSprintReportsButton stored = new XOpenStoredSprintReportsButton();
+            stored.setArtifact((Artifact) sprint.getStoreObject());
+            stored.openExternally();
+
+            ArtifactExplorer.revealArtifact((Artifact) sprint.getStoreObject(), true);
+
+            AWorkbench.popup("Reports opened in browser");
+
+         } catch (Exception ex) {
+            OseeLog.log(XStoreSprintReportsButton.class, OseeLevel.SEVERE_POPUP, ex);
+         }
       }
-      ResultsEditor.open("Report", "Sprint Summary Report", reportHtml);
    }
 
    @Override

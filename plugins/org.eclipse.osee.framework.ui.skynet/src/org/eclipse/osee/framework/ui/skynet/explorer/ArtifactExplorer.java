@@ -445,6 +445,14 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
     * Reveal an artifact in the viewer and select it.
     */
    public static void revealArtifact(Artifact artifact) {
+      revealArtifact(artifact, false);
+   }
+
+   /**
+    * Reveal an artifact in the viewer and select it.
+    */
+   public static void revealArtifact(Artifact artifact, final boolean expand) {
+
       final ArtifactData data = new ArtifactData(artifact);
       IOperation operation = new CheckArtifactBeforeReveal(data);
       Operations.executeAsJob(operation, true, Job.SHORT, new JobChangeAdapter() {
@@ -461,6 +469,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
                      IWorkbenchPage page = AWorkbench.getActivePage();
                      ArtifactExplorer artifactExplorer = ArtifactExplorerUtil.findView(artifact.getBranch(), page);
                      artifactExplorer.treeViewer.setSelection(new StructuredSelection(artifact), true);
+                     artifactExplorer.treeViewer.expandToLevel(artifact, 1);
                      return Status.OK_STATUS;
                   }
                };

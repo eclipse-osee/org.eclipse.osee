@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.config.AtsConfigKey;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -102,6 +103,17 @@ public class AtsUtilCore {
          actionUrl = defaultUrl;
       }
       return actionUrl;
+   }
+
+   public static String resolveAjaxToBaseApplicationServer(String html, IAtsServices services) {
+      String basePath = services.getConfigValue(AtsConfigKey.AJaxBasePath);
+      if (!Strings.isValid(basePath)) {
+         basePath = services.getApplicationServerBase();
+      }
+      if (Strings.isValid(basePath)) {
+         return html.replaceFirst("\\/ajax", basePath + "/ajax");
+      }
+      return html;
    }
 
 }

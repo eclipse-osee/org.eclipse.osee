@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"></meta>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+<meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+
+<title>PUT_TITLE_HERE</title>
+
+<script src="/ajax/libs/chartjs/2.0.0/Chart.js"></script>
+</head>
+
+<body>
+	<div style="width: 75%;">
+		<canvas id="canvas"></canvas>
+	</div>
+	<script>
+		var data = {
+			labels : [ PUT_LABELS_HERE ],
+			datasets : [ PUT_DATASETS_HERE ]
+		}
+
+		load = function(data) {
+			var canvas = document.getElementById('canvas');
+			var ctx = canvas.getContext('2d');
+			var myChart = new Chart(ctx, {
+				type : 'line',
+				animation : true,
+				responsive : true,
+				data : data,
+				options : {
+					responsive : true,
+					title : {
+						display : true,
+						text : 'PUT_TITLE_HERE - PUT_REPORT_DATE_HERE'
+					},
+					tooltips : {
+						mode : 'index',
+						intersect : false,
+					},
+					hover : {
+						mode : 'nearest',
+						intersect : true
+					},
+					scales : {
+						xAxes : [ {
+							display : true,
+							scaleLabel : {
+								display : true,
+								labelString : 'PUT_XAXIS_LABEL_HERE'
+							}
+						} ],
+						yAxes : [ {
+							display : true,
+							scaleLabel : {
+								display : true,
+								labelString : 'PUT_YAXIS_LABEL_HERE'
+							}
+						} ]
+					}
+				}
+
+			});
+		}
+
+		load(data);
+	</script>
+</body>
+</html>

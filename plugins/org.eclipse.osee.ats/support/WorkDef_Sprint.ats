@@ -8,6 +8,12 @@ workDefinition "WorkDef_Sprint" {
 		option REQUIRED_FOR_TRANSITION
 	}
 
+   widgetDefinition "Holiday" {
+      attributeName "ats.Holiday"
+      description "Holidays during Agile Sprint"
+      xWidgetName "XDateDam"
+   }
+
 	widgetDefinition "Un-Planned Points" {
 		attributeName "ats.Un-Planned Points"
 		xWidgetName "XIntegerDam"
@@ -36,12 +42,28 @@ workDefinition "WorkDef_Sprint" {
 		option HORIZONTAL_LABEL
 	}
 
-	widgetDefinition "Run Sprint Summary" {
-		xWidgetName "XRunSprintSummaryButton"
+	widgetDefinition "Open Sprint Summary" {
+		xWidgetName "XOpenSprintSummaryButton"
+	}
+	
+	widgetDefinition "Open Sprint Data Table" {
+		xWidgetName "XOpenSprintDataTableButton"
 	}
 
-	widgetDefinition "Open Sprint Burndown" {
+	widgetDefinition "Open Sprint Burn-Down" {
 		xWidgetName "XOpenSprintBurndownButton"
+	}
+	
+	widgetDefinition "Open Sprint Burn-Up" {
+		xWidgetName "XOpenSprintBurnupButton"
+	}
+
+	widgetDefinition "Store Snapshot of Sprint Reports" {
+		xWidgetName "XStoreSprintReportsButton"
+	}
+
+	widgetDefinition "Open Stored Sprint Reports" {
+		xWidgetName "XOpenStoredSprintReportsButton"
 	}
 
 	state "Cancelled" {
@@ -56,20 +78,34 @@ workDefinition "WorkDef_Sprint" {
 		to "Cancelled"
 		to "Completed" AsDefault
 		layout {
-			composite {
-				numColumns 6
-				widget "Start Date"
-				widget "End Date"
-				widget "Run Sprint Summary"
-			}
-			composite {
-				numColumns 6
-				widget "Planned Points"
-				widget "Un-Planned Points"
-			   widget "Open Sprint Burndown"
-			}
 			widget "Title"
 			widget "Description"
+			composite {
+				numColumns 4
+				widget "Start Date"
+				widget "End Date"
+		   }
+		   widget "Holiday"
+			composite {
+				numColumns 4
+				widget "Planned Points"
+				widget "Un-Planned Points"
+			}
+			composite {
+				numColumns 4
+				widget "Open Sprint Summary"
+				widget "Open Sprint Data Table"
+			}
+			composite {
+				numColumns 4
+				widget "Open Sprint Burn-Down"
+				widget "Open Sprint Burn-Up"
+			}
+         composite {
+				numColumns 4
+				widget "Store Snapshot of Sprint Reports"
+				widget "Open Stored Sprint Reports"
+			}
 		}
 	}
 

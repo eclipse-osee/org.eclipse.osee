@@ -30,13 +30,20 @@ import org.eclipse.osee.ats.actions.OpenArtifactEditorById;
 import org.eclipse.osee.ats.actions.OpenOrphanedTasks;
 import org.eclipse.osee.ats.actions.RevertDuplicateTransitionByIdAction;
 import org.eclipse.osee.ats.actions.RevertDuplicateTransitionsAction;
+import org.eclipse.osee.ats.agile.navigate.CreateNewAgileBacklog;
+import org.eclipse.osee.ats.agile.navigate.CreateNewAgileFeatureGroup;
+import org.eclipse.osee.ats.agile.navigate.CreateNewAgileSprint;
+import org.eclipse.osee.ats.agile.navigate.CreateNewAgileTeam;
+import org.eclipse.osee.ats.agile.navigate.OpenAgileBacklog;
+import org.eclipse.osee.ats.agile.navigate.OpenAgileSprint;
+import org.eclipse.osee.ats.agile.navigate.OpenAgileSprintReports;
+import org.eclipse.osee.ats.agile.navigate.OpenAgileStoredSprintReports;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.config.AtsConfig2ExampleNavigateItem;
 import org.eclipse.osee.ats.config.ValidateAtsConfiguration;
 import org.eclipse.osee.ats.config.editor.AtsConfigResultsEditorNavigateItem;
-import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.ev.EvNavigateItems;
 import org.eclipse.osee.ats.export.AtsExportAction;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
@@ -316,10 +323,19 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
    private void createAgileSection(XNavigateItem parent, List<XNavigateItem> items) {
       try {
          XNavigateItem agileItems = new XNavigateItem(parent, "Agile", FrameworkImage.VERSION);
-         new CreateNewAgileTeam(agileItems);
-         new CreateNewAgileFeatureGroup(agileItems);
-         new CreateNewAgileSprint(agileItems);
-         new CreateNewAgileBacklog(agileItems);
+         new OpenAgileBacklog(agileItems);
+         new OpenAgileSprint(agileItems);
+
+         XNavigateItem agileReports = new XNavigateItem(agileItems, "Reports", AtsImage.REPORT);
+         new OpenAgileSprintReports(agileReports);
+         new OpenAgileStoredSprintReports(agileReports);
+
+         XNavigateItem agileConfigs = new XNavigateItem(agileItems, "Configuration", FrameworkImage.GEAR);
+         new CreateNewAgileTeam(agileConfigs);
+         new CreateNewAgileFeatureGroup(agileConfigs);
+         new CreateNewAgileSprint(agileConfigs);
+         new CreateNewAgileBacklog(agileConfigs);
+
          XNavigateItem conversionItems = new XNavigateItem(agileItems, "Conversions", FrameworkImage.VERSION);
          new ConvertVersionToAgileSprint(conversionItems);
 

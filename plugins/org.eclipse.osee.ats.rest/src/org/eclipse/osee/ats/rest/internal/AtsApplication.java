@@ -17,11 +17,13 @@ import javax.ws.rs.core.Application;
 import org.codehaus.jackson.JsonFactory;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.agile.AgileEndpointImpl;
+import org.eclipse.osee.ats.rest.internal.agile.operations.SprintDataUiOperation;
+import org.eclipse.osee.ats.rest.internal.agile.operations.SprintSummaryOperation;
 import org.eclipse.osee.ats.rest.internal.config.ActionableItemResource;
 import org.eclipse.osee.ats.rest.internal.config.AtsConfigEndpointImpl;
+import org.eclipse.osee.ats.rest.internal.config.ConvertAtsConfigGuidAttributes;
 import org.eclipse.osee.ats.rest.internal.config.ConvertCreateUpdateAtsConfig;
 import org.eclipse.osee.ats.rest.internal.config.ConvertResource;
-import org.eclipse.osee.ats.rest.internal.config.ConvertAtsConfigGuidAttributes;
 import org.eclipse.osee.ats.rest.internal.config.CountryEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.config.CountryResource;
 import org.eclipse.osee.ats.rest.internal.config.InsertionActivityEndpointImpl;
@@ -98,6 +100,10 @@ public class AtsApplication extends Application {
       ConvertAtsConfigGuidAttributes convertTeamAiAttributes = new ConvertAtsConfigGuidAttributes(atsServer);
       atsServer.addAtsDatabaseConversion(convertTeamAiAttributes);
 
+      // Register agile html report operations
+      atsServer.getAgileSprintHtmlReportOperations().add(new SprintSummaryOperation(atsServer, registry));
+      atsServer.getAgileSprintHtmlReportOperations().add(new SprintDataUiOperation(atsServer, registry));
+
       // Resources
       singletons.add(new VersionResource(atsServer));
       singletons.add(new TeamResource(atsServer));
@@ -118,7 +124,7 @@ public class AtsApplication extends Application {
       singletons.add(new HealthResource(atsServer, jdbcService));
 
       // Endpoints
-      singletons.add(new AgileEndpointImpl(atsServer, registry, jdbcService));
+      singletons.add(new AgileEndpointImpl(atsServer, registry));
       singletons.add(new CountryEndpointImpl(atsServer));
       singletons.add(new ProgramEndpointImpl(atsServer));
       singletons.add(new InsertionEndpointImpl(atsServer));

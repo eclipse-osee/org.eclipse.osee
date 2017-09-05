@@ -1,0 +1,13 @@
+{
+	"label": "PUT_LABEL_HERE",
+	"_comment": "remove both tension lines for curved lines",
+   "lineTension": 0,
+   "tension": 0, 
+   "fill": false,
+   "backgroundColor": "rgba(PUT_RGB_HERE, 1)",
+   "borderColor": "rgba(PUT_RGB_HERE, 1)",
+   "borderWidth": 1,
+	"data": [
+		PUT_DATA_HERE
+	]
+}

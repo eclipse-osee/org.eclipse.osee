@@ -12,23 +12,36 @@ package org.eclipse.osee.ats.api.agile;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.framework.core.util.result.XResultData;
 
 /**
  * @author Donald G. Dunne
  */
-public class AgileBurndown {
+public class AgileSprintData {
 
    private String agileTeamName;
    private String sprintName;
    private Date startDate;
    private Date endDate;
-   private List<Date> holidays;
+   private List<Date> holidays = new LinkedList<>();
    private String pointsAttrTypeName;
-   private Integer plannedPoints;
-   private Integer unPlannedPoints;
-   private List<AgileBurndownDate> dates = new ArrayList<AgileBurndownDate>();
+   private Integer plannedPoints = 0;
+   private Integer unPlannedPoints = 0;
+   private List<AgileSprintDateData> dates = new ArrayList<AgileSprintDateData>();
    private String error;
+
+   public XResultData validate() {
+      XResultData results = new XResultData();
+      results.validateNotNull(startDate, "Start Date");
+      results.validateNotNull(endDate, "End Date");
+      results.validateNotNullOrEmpty(pointsAttrTypeName, "Points Attribute Type");
+      results.validateNotNull(plannedPoints, "Planned Points");
+      results.validateTrue(unPlannedPoints == null || unPlannedPoints > 0,
+         "Un-Planned Points must either be specified or 0");
+      return results;
+   }
 
    public String getAgileTeamName() {
       return agileTeamName;
@@ -94,11 +107,11 @@ public class AgileBurndown {
       this.unPlannedPoints = unPlannedPoints;
    }
 
-   public List<AgileBurndownDate> getDates() {
+   public List<AgileSprintDateData> getDates() {
       return dates;
    }
 
-   public void setDates(List<AgileBurndownDate> dates) {
+   public void setDates(List<AgileSprintDateData> dates) {
       this.dates = dates;
    }
 

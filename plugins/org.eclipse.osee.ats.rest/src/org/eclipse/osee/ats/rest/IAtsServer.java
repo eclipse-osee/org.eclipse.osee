@@ -17,6 +17,8 @@ import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactoryProvider;
+import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchServiceProvider;
 import org.eclipse.osee.ats.core.config.IAtsCacheProvider;
@@ -65,5 +67,8 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
    Collection<CustomizeData> getCustomizationsGlobal(String namespace);
 
    AtsConfigEndpointApi getConfigurationEndpoint();
+
+   @Override
+   IAtsChangeSet createChangeSet(String string, IAtsUser systemUser);
 
 }

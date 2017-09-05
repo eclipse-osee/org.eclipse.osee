@@ -5,11 +5,12 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" type="text/css" href="/ajax/libs/bootstrap/3.3.2/css/bootstrap.min.css"></link>
+        <title> <?teamName?> - <?sprintName?> - Summary </title>
     </head>
     <body>
         <div class="container">
             
-            <h1> <?sprintName?> Summary </h1>
+            <h3> <?teamName?> - <?sprintName?> - Summary - <?summaryDate?></h3>
             <h4> Sprint Time Frame: <strong><?beginDate?></strong> to <strong><?endDate?></strong></h4>
             <br>
             <table class="table table-striped custab">
@@ -29,10 +30,10 @@
                     <td>Current Open Actions in Backlog</td> <td><?numActionsBacklog?> actions</td>
                 </tr>
             </tbody></table>
-            <h4> Work completed in <?sprintName?> by theme: </h4>
+            <h4> Work completed in <?sprintName?> by Feature Group: </h4>
             <table class="table table-striped custab">
                 <tbody><tr>
-                    <th align="Left" width="70">Theme (grouping)</th>
+                    <th align="Left" width="70">Feature Group</th>
                     <th align="Left" width="240">Description</th>
                     <th align="Left" width="40">Points Completed</th>
                 </tr>

@@ -6,20 +6,20 @@ var app = angular.module('AgileApp', [ 'ngRoute', 'ngResource', 'ui.bootstrap',
 
 app.config([ '$routeProvider', function($routeProvider) {
 	$routeProvider.when('/', {
-		redirectTo : "/team",
+		redirectTo : "/teams",
 	}).when('/home', {
-		redirectTo : "/team",
+		redirectTo : "/teams",
 	}).when('/backlog', {
 		templateUrl : 'backlog.html',
 		controller : 'BacklogCtrl'
-	}).when('/team', {
-		templateUrl : 'team.html',
-		controller : 'TeamCtrl'
+	}).when('/teams', {
+		templateUrl : 'teams.html',
+		controller : 'TeamsCtrl'
 	}).when('/config', {
 		templateUrl : 'config.html',
 		controller : 'ConfigCtrl'
 	}).otherwise({
-		redirectTo : "/team"
+		redirectTo : "/teams"
 	});
 } ]);
 

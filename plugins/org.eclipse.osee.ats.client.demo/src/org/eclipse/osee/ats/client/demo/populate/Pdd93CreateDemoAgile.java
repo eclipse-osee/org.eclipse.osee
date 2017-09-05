@@ -161,7 +161,7 @@ public class Pdd93CreateDemoAgile {
       if (results.isEmpty()) {
          changes.execute();
       } else {
-         throw new OseeStateException("Can't transition sprint to completed");
+         throw new OseeStateException("Can't transition sprint to completed [%s]", results.toString());
       }
 
       // Create Feature Groups

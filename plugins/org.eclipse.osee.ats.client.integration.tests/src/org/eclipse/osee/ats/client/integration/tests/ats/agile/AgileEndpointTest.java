@@ -12,23 +12,19 @@ package org.eclipse.osee.ats.client.integration.tests.ats.agile;
 
 import java.util.List;
 import javax.ws.rs.core.Response;
-import org.eclipse.osee.ats.api.agile.AgileBurndown;
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
+import org.eclipse.osee.ats.api.agile.AgileSprintData;
 import org.eclipse.osee.ats.api.agile.JaxAgileBacklog;
 import org.eclipse.osee.ats.api.agile.JaxAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.JaxAgileSprint;
 import org.eclipse.osee.ats.api.agile.JaxAgileTeam;
-import org.eclipse.osee.ats.api.agile.JaxBurndownExcel;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileBacklog;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileSprint;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileTeam;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.junit.After;
@@ -182,50 +178,25 @@ public class AgileEndpointTest {
       Assert.assertEquals(uuid.longValue(), newBacklog.getUuid().longValue());
    }
 
-   private Pair<Artifact, Artifact> getTeamSprint() {
-      Artifact sawCodeArt = AtsClientService.get().getArtifact(DemoArtifactToken.SAW_Code);
-      Assert.assertNotNull(sawCodeArt);
-      Artifact agileTeam = sawCodeArt.getRelatedArtifact(AtsRelationTypes.AgileTeamToAtsTeam_AgileTeam);
-      Assert.assertNotNull(agileTeam);
-      Artifact sprint2 = null;
-      for (Artifact sprint : agileTeam.getRelatedArtifacts(AtsRelationTypes.AgileTeamToSprint_Sprint)) {
-         if (sprint.getName().equals("SAW Sprint 2")) {
-            sprint2 = sprint;
-            break;
-         }
-      }
-      Assert.assertNotNull(sprint2);
-      return new Pair<>(agileTeam, sprint2);
+   @Test
+   public void testGetSprintData() {
+      AgileSprintData data =
+         agile.getSprintData(DemoArtifactToken.SAW_Agile_Team.getId(), DemoArtifactToken.SAW_Sprint_2.getId());
+
+      Assert.assertNotNull(data);
+      Assert.assertEquals("SAW Agile Team", data.getAgileTeamName());
+      Assert.assertEquals("SAW Sprint 2", data.getSprintName());
+      Assert.assertEquals(2, data.getHolidays().size());
+      Assert.assertEquals("ats.Points", data.getPointsAttrTypeName());
+      Assert.assertEquals(new Integer(200), data.getPlannedPoints());
+      Assert.assertEquals(new Integer(45), data.getUnPlannedPoints());
+      Assert.assertEquals(20, data.getDates().size());
    }
 
    @Test
-   public void testGetSprintBurndown() {
-      Pair<Artifact, Artifact> teamSprint = getTeamSprint();
-      Artifact agileTeam = teamSprint.getFirst();
-      Artifact sprint2 = teamSprint.getSecond();
-      Response response = agile.getSprintBurndown(agileTeam.getUuid(), sprint2.getUuid());
-      Assert.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-
-      AgileBurndown burndown = response.readEntity(AgileBurndown.class);
-      Assert.assertNotNull(burndown);
-      Assert.assertEquals("SAW Agile Team", burndown.getAgileTeamName());
-      Assert.assertEquals("SAW Sprint 2", burndown.getSprintName());
-      Assert.assertEquals(2, burndown.getHolidays().size());
-      Assert.assertEquals("ats.Points", burndown.getPointsAttrTypeName());
-      Assert.assertEquals(new Integer(200), burndown.getPlannedPoints());
-      Assert.assertEquals(new Integer(45), burndown.getUnPlannedPoints());
-      // TBD Assert.assertEquals(20, burndown.getDates().size());
-   }
-
-   @Test
-   public void testGetSprintBurndownUi() {
-      Pair<Artifact, Artifact> teamSprint = getTeamSprint();
-      Artifact agileTeam = teamSprint.getFirst();
-      Artifact sprint2 = teamSprint.getSecond();
-      Response response = agile.getSprintBurndownUi(agileTeam.getUuid(), sprint2.getUuid());
-      Assert.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-
-      String html = response.readEntity(String.class);
+   public void testGetSprintDataTable() {
+      String html =
+         agile.getSprintDataTable(DemoArtifactToken.SAW_Agile_Team.getId(), DemoArtifactToken.SAW_Sprint_2.getId());
       Assert.assertNotNull(html);
       Assert.assertTrue(html.contains("SAW Sprint 2"));
       Assert.assertTrue(html.contains("200"));
@@ -235,48 +206,34 @@ public class AgileEndpointTest {
    }
 
    @Test
-   public void testGetSprintBurndownExcel() {
-      Pair<Artifact, Artifact> teamSprint = getTeamSprint();
-      Artifact agileTeam = teamSprint.getFirst();
-      Artifact sprint2 = teamSprint.getSecond();
-      Assert.assertEquals(0, sprint2.getChildren().size());
-      Response response = agile.getSprintBurndownExcel(agileTeam.getUuid(), sprint2.getUuid());
-      Assert.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+   public void testGetSprintBurnDownChartUi() {
+      String html = agile.getSprintBurndownChartUi(DemoArtifactToken.SAW_Agile_Team.getId(),
+         DemoArtifactToken.SAW_Sprint_2.getId());
+      Assert.assertTrue(html.contains("SAW Sprint 2 - Burndown"));
+   }
 
-      JaxBurndownExcel report = response.readEntity(JaxBurndownExcel.class);
-      Assert.assertNotNull(report);
+   @Test
+   public void testGetSprintBurnUpChartUi() {
+      String html =
+         agile.getSprintBurnupChartUi(DemoArtifactToken.SAW_Agile_Team.getId(), DemoArtifactToken.SAW_Sprint_2.getId());
+      Assert.assertTrue(html.contains("SAW Sprint 2"));
+   }
 
-      sprint2.reloadAttributesAndRelations();
-      Assert.assertEquals(2, sprint2.getChildren().size());
+   @Test
+   public void testGetSprintSummary() {
+      String html =
+         agile.getSprintSummary(DemoArtifactToken.SAW_Agile_Team.getId(), DemoArtifactToken.SAW_Sprint_2.getId());
+      Assert.assertTrue(html.contains("SAW Sprint 2 - Summary"));
+   }
 
-      Long excelSheetUuid = report.getExcelSheetUuid();
-      Assert.assertNotNull(excelSheetUuid);
-      Artifact excelArt = AtsClientService.get().getArtifact(excelSheetUuid);
-      Assert.assertNotNull(excelSheetUuid);
-      Assert.assertEquals("xls", excelArt.getSoleAttributeValue(CoreAttributeTypes.Extension, null));
-      Assert.assertNotNull(excelArt.getSoleAttributeValue(CoreAttributeTypes.NativeContent, null));
-      Assert.assertEquals(CoreArtifactTypes.GeneralDocument, excelArt.getArtifactType());
-
-      Long excelQueryUuid = report.getExcelQueryUuid();
-      Assert.assertNotNull(excelQueryUuid);
-      Artifact excelQueryArt = AtsClientService.get().getArtifact(excelQueryUuid);
-      Assert.assertNotNull(excelQueryUuid);
-      Assert.assertEquals("iqy", excelQueryArt.getSoleAttributeValue(CoreAttributeTypes.Extension, null));
-      Assert.assertNotNull(excelQueryArt.getSoleAttributeValue(CoreAttributeTypes.NativeContent, null));
-      Assert.assertEquals(CoreArtifactTypes.GeneralDocument, excelQueryArt.getArtifactType());
-
-      // Ensure that successive calls return same uuids and do not create new artifacts
-      response = agile.getSprintBurndownExcel(agileTeam.getUuid(), sprint2.getUuid());
-      Assert.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-
-      JaxBurndownExcel report2 = response.readEntity(JaxBurndownExcel.class);
-      Assert.assertNotNull(report2);
-
-      sprint2.reloadAttributesAndRelations();
-      Assert.assertEquals(2, sprint2.getChildren().size());
-      Assert.assertEquals(report.getExcelQueryUuid(), report2.getExcelQueryUuid());
-      Assert.assertEquals(report.getExcelSheetUuid(), report2.getExcelSheetUuid());
-
+   @Test
+   public void testGetSprintReportStore() {
+      XResultData results =
+         agile.storeSprintReports(DemoArtifactToken.SAW_Agile_Team.getId(), DemoArtifactToken.SAW_Sprint_2.getId());
+      Assert.assertFalse(results.toString(), results.isErrors());
+      AtsClientService.get().getArtifact(DemoArtifactToken.SAW_Sprint_2).reloadAttributesAndRelations();
+      Assert.assertEquals(4,
+         AtsClientService.get().getRelationResolver().getChildren(DemoArtifactToken.SAW_Sprint_2).size());
    }
 
 }

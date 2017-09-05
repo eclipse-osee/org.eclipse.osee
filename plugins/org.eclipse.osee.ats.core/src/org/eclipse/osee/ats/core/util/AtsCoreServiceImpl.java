@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.agile.IAgileSprintHtmlOperation;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.column.IAtsColumnService;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
@@ -127,6 +128,7 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
    protected IAtsTeamDefinitionService teamDefinitionService;
    protected IAtsQueryService queryService;
    protected IAtsStoreService storeService;
+   Collection<IAgileSprintHtmlOperation> agileSprintHtmlReportOperations = new LinkedList<>();
 
    private EventAdmin eventAdmin;
 
@@ -615,6 +617,16 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
          }
       }
       return actions;
+   }
+
+   @Override
+   public JdbcService getJdbcService() {
+      return jdbcService;
+   }
+
+   @Override
+   public Collection<IAgileSprintHtmlOperation> getAgileSprintHtmlReportOperations() {
+      return agileSprintHtmlReportOperations;
    }
 
 }

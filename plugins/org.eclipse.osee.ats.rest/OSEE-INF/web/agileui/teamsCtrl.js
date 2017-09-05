@@ -4,7 +4,7 @@
 angular
 		.module('AgileApp')
 		.controller(
-				'TeamCtrl',
+				'TeamsCtrl',
 				[
 						'$scope',
 						'AgileFactory',
@@ -24,6 +24,7 @@ angular
 							// ////////////////////////////////////
 							$scope.selectedTeams = [];
 
+							var openTeamTmpl = '<button class="btn btn-default btn-sm" ng-click="openTeam(row.entity)">Open</button>';
 							var configTeamTmpl = '<button class="btn btn-default btn-sm" ng-click="configTeam(row.entity)">Config</button>';
 							var openBacklogImpl = '<button class="btn btn-default btn-sm" ng-click="openBacklog(row.entity)">Backlog</button>';
 
@@ -45,6 +46,11 @@ angular
 									field : 'name',
 									displayName : 'Name',
 									width : 290
+								}, {
+									field : "open",
+									displayName : 'Open',
+									width : 48,
+									cellTemplate : openTeamTmpl
 								}, {
 									field : "backlog",
 									displayName : 'Backlog',
@@ -70,6 +76,11 @@ angular
 													.resizeElementHeight("teamTable");
 											LayoutService.refresh();
 										});
+							}
+
+							$scope.openTeam = function(team) {
+								window.location.assign("main#/team?team="
+										.concat(team.uuid))
 							}
 
 							$scope.configTeam = function(team) {

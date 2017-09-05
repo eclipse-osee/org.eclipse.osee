@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.navigate;
+package org.eclipse.osee.ats.agile.navigate;
 
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.AtsImage;

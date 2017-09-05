@@ -73,6 +73,7 @@ import org.eclipse.osee.ats.core.util.AtsCoreServiceImpl;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionServiceImpl;
 import org.eclipse.osee.ats.core.workflow.WorkItemFactory;
+import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -586,6 +587,11 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
          }
       }
       return results;
+   }
+
+   @Override
+   public String getApplicationServerBase() {
+      return OseeClientProperties.getOseeApplicationServer();
    }
 
 }

@@ -60,4 +60,13 @@ public interface IRelationResolver {
 
    Collection<Long> getRelatedIds(ArtifactId artifact, RelationTypeSide relationTypeSide);
 
+   default ArtifactToken getChildNamedOrNull(IAtsObject atsObject, String name) {
+      for (ArtifactToken child : getChildren(atsObject.getStoreObject())) {
+         if (child.getName().equals(name)) {
+            return child;
+         }
+      }
+      return null;
+   }
+
 }

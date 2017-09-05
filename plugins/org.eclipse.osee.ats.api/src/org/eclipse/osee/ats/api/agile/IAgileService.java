@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.util.result.XResultData;
 
 /**
  * @author Donald G. Dunne
@@ -95,6 +96,8 @@ public interface IAgileService {
    boolean isSprint(ArtifactId artifact);
 
    Collection<ArtifactToken> getRelatedSprints(ArtifactId artifact);
+
+   XResultData storeSprintReports(long teamId, long sprintId);
 
    /**
     * Display Points as either "ats.Points" or "ats.Points Numeric" as configured on Agile Team artifact

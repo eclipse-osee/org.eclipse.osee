@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.agile;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -33,9 +31,9 @@ import javax.ws.rs.core.UriInfo;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.agile.AgileBurndown;
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
 import org.eclipse.osee.ats.api.agile.AgileItem;
+import org.eclipse.osee.ats.api.agile.AgileSprintData;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileItem;
@@ -47,7 +45,6 @@ import org.eclipse.osee.ats.api.agile.JaxAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.JaxAgileItem;
 import org.eclipse.osee.ats.api.agile.JaxAgileSprint;
 import org.eclipse.osee.ats.api.agile.JaxAgileTeam;
-import org.eclipse.osee.ats.api.agile.JaxBurndownExcel;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileBacklog;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileSprint;
@@ -56,27 +53,27 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.util.ILineChart;
 import org.eclipse.osee.ats.api.workflow.JaxAtsObjects;
+import org.eclipse.osee.ats.core.agile.SprintUtil;
+import org.eclipse.osee.ats.core.agile.operations.SprintBurndownOperations;
+import org.eclipse.osee.ats.core.agile.operations.SprintBurnupOperations;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
+import org.eclipse.osee.ats.core.util.chart.LineChart;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.ats.rest.internal.world.WorldResource;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.ClassBasedResourceToken;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
-import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.template.engine.PageCreator;
 import org.eclipse.osee.template.engine.PageFactory;
@@ -91,12 +88,10 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    private final IAtsServer atsServer;
    private final IResourceRegistry resourceRegistry;
    private static ObjectMapper mapper;
-   private final JdbcService jdbcService;
 
-   public AgileEndpointImpl(IAtsServer atsServer, IResourceRegistry resourceRegistry, JdbcService jdbcService) {
+   public AgileEndpointImpl(IAtsServer atsServer, IResourceRegistry resourceRegistry) {
       this.atsServer = atsServer;
       this.resourceRegistry = resourceRegistry;
-      this.jdbcService = jdbcService;
    }
 
    public void setUriInfo(UriInfo uriInfo) {
@@ -300,70 +295,84 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    }
 
    @Override
-   public Response getSprintSummary(long teamUuid, long sprintUuid) {
-
+   @GET
+   @Path("team/{teamUuid}/sprintcurrent")
+   @Produces(MediaType.APPLICATION_JSON)
+   public JaxAgileSprint getSprintCurrent(@PathParam("teamUuid") long teamUuid) {
       if (teamUuid <= 0) {
          throw new OseeWebApplicationException(Status.NOT_FOUND, "teamUuid is not valid");
       }
-      if (sprintUuid <= 0) {
-         throw new OseeWebApplicationException(Status.NOT_FOUND, "sprintUuid is not valid");
+      for (IAgileSprint sprint : atsServer.getAgileService().getSprintsForTeam(teamUuid)) {
+         if (sprint.isActive()) {
+            return toJaxSprint(sprint);
+         }
       }
+      return null;
+   }
 
-      ArtifactReadable sprint = getSprint(sprintUuid);
-      SprintPageBuilder page = new SprintPageBuilder(sprint);
+   @Override
+   public String getSprintSummary(long teamId, long sprintId) {
+      ArtifactReadable sprint = atsServer.getArtifact(sprintId);
+      ArtifactReadable team = atsServer.getArtifact(teamId);
+      SprintPageBuilder page = new SprintPageBuilder(team, sprint);
       PageCreator appPage = PageFactory.newPageCreator(resourceRegistry);
       String result =
          page.generatePage(appPage, new ClassBasedResourceToken("sprintTemplate.html", SprintPageBuilder.class));
+      return result;
+   }
 
-      return Response.ok().entity(result).build();
+   // Sprint Data and Table
+   @Override
+   public AgileSprintData getSprintData(long teamUuid, long sprintUuid) {
+      AgileSprintData data = SprintUtil.getAgileSprintData(atsServer, teamUuid, sprintUuid);
+      data.validate();
+      return data;
    }
 
    @Override
-   public Response getSprintBurndown(long teamUuid, long sprintUuid) {
-      if (teamUuid <= 0) {
-         throw new OseeWebApplicationException(Status.NOT_FOUND, "teamUuid is not valid");
+   public String getSprintDataTable(long teamId, long sprintId) {
+      AgileSprintData burndown = SprintUtil.getAgileSprintData(atsServer, teamId, sprintId);
+      XResultData results = burndown.validate();
+      if (results.isErrors()) {
+         throw new OseeArgumentException(results.toString());
       }
-      if (sprintUuid <= 0) {
-         throw new OseeWebApplicationException(Status.NOT_FOUND, "sprintUuid is not valid");
-      }
-      ArtifactReadable sprintArt = getSprint(sprintUuid);
-      IAgileTeam agileTeam = atsServer.getAgileService().getAgileTeam(teamUuid);
-      IAgileSprint sprint = atsServer.getAgileService().getAgileSprint(sprintArt);
-
-      SprintBurndownDataBuilder builder = new SprintBurndownDataBuilder(agileTeam, sprint, atsServer, jdbcService);
-      AgileBurndown burndown = builder.get();
-
-      return Response.ok().entity(burndown).build();
-   }
-
-   @Override
-   public Response getSprintBurndownUi(long teamUuid, long sprintUuid) {
-      if (teamUuid <= 0) {
-         throw new OseeWebApplicationException(Status.NOT_FOUND, "teamUuid is not valid");
-      }
-      if (sprintUuid <= 0) {
-         throw new OseeWebApplicationException(Status.NOT_FOUND, "sprintUuid is not valid");
-      }
-      ArtifactReadable sprintArt = getSprint(sprintUuid);
-      IAgileTeam agileTeam = atsServer.getAgileService().getAgileTeam(teamUuid);
-      IAgileSprint sprint = atsServer.getAgileService().getAgileSprint(sprintArt);
-
-      SprintBurndownDataBuilder builder = new SprintBurndownDataBuilder(agileTeam, sprint, atsServer, jdbcService);
-      AgileBurndown burndown = builder.get();
-
-      SprintBurndownPageBuilder pageBuilder = new SprintBurndownPageBuilder(burndown);
+      SprintDataTableBuilder pageBuilder = new SprintDataTableBuilder(burndown);
       String html = pageBuilder.getHtml();
 
-      return Response.ok().entity(html).build();
+      return html;
    }
 
-   private ArtifactReadable getSprint(long sprintUuid) {
-      ArtifactReadable sprint = atsServer.getOrcsApi().getQueryFactory().fromBranch(CoreBranches.COMMON).andUuid(
-         new Long(sprintUuid).intValue()).getResults().getAtMostOneOrNull();
-      if (sprint == null) {
-         throw new OseeCoreException("Sprint for id:%d not found", sprintUuid);
-      }
-      return sprint;
+   // Sprint Burndown Data and UI
+   @Override
+   public ILineChart getSprintBurndownChartData(long teamUuid, long sprintUuid) {
+      SprintBurndownOperations op = new SprintBurndownOperations(atsServer);
+      return op.getChartData(teamUuid, sprintUuid);
+   }
+
+   @Override
+   public String getSprintBurndownChartUi(long teamUuid, long sprintUuid) {
+      SprintBurndownOperations op = new SprintBurndownOperations(atsServer);
+      return op.getReportHtml(teamUuid, sprintUuid);
+   }
+
+   /**
+    * Create/update sprint charts and store as artifact as sprint children
+    */
+   @Override
+   public XResultData storeSprintReports(long teamId, long sprintId) {
+      return atsServer.getAgileService().storeSprintReports(teamId, sprintId);
+   }
+
+   @Override
+   public String getSprintBurnupChartUi(long teamUuid, long sprintUuid) {
+      SprintBurnupOperations op = new SprintBurnupOperations(atsServer);
+      return op.getReportHtml(teamUuid, sprintUuid);
+   }
+
+   @Override
+   public LineChart getSprintBurnupChartData(long teamUuid, long sprintUuid) {
+      SprintBurnupOperations op = new SprintBurnupOperations(atsServer);
+      return op.getChartData(teamUuid, sprintUuid);
    }
 
    @Override
@@ -625,88 +634,4 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       changes.execute();
       return Response.ok().build();
    }
-
-   @Override
-   @GET
-   @Path("team/{teamUuid}/sprint/{sprintUuid}/burndownExcel")
-   @Produces(MediaType.APPLICATION_JSON)
-   public Response getSprintBurndownExcel(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid) {
-      JaxBurndownExcel report = new JaxBurndownExcel();
-      ArtifactReadable sprintArt = atsServer.getArtifact(sprintUuid);
-      IAgileSprint sprint = atsServer.getWorkItemFactory().getAgileSprint(sprintArt);
-      Conditions.assertNotNull(sprintArt, "Sprint not found with id %s", sprintUuid);
-      ArtifactReadable burndownExcel = null, burndownQuery = null;
-      for (ArtifactReadable art : sprintArt.getChildren()) {
-         if (art.getName().equals(
-            "OSEE_Sprint_Burndown") && art.getSoleAttributeValue(CoreAttributeTypes.Extension, "").equals("xls")) {
-            burndownExcel = art;
-         } else if (art.getName().equals(
-            "OSEE_Sprint_Burndown") && art.getSoleAttributeValue(CoreAttributeTypes.Extension, "").equals("iqy")) {
-            burndownQuery = art;
-         }
-      }
-      if ((burndownExcel != null && burndownQuery == null) || (burndownExcel == null && burndownQuery != null)) {
-         report.setError(
-            "Either OSEE_Sprint_Burndown.xls or OSEE_Sprint_Burndown.iqy was found.  Both need to be found or none.  Names must match exactly.");
-         return Response.ok(report).build();
-      }
-      try {
-         // If not found, create and save artifacts related to this burndown
-         if (burndownExcel == null) {
-            IAtsChangeSet changes = atsServer.createChangeSet("Create Burndown Artifacts", AtsCoreUsers.SYSTEM_USER);
-
-            // Store xls file to OSEE databasePlugin
-            File burndownXls = RestUtil.getResourceAsFile("support/OSEE_Sprint_Burndown.xls");
-            FileInputStream burndownFileInputStream = new FileInputStream(burndownXls);
-
-            ArtifactId burndownExcelArt =
-               changes.createArtifact(CoreArtifactTypes.GeneralDocument, "OSEE_Sprint_Burndown");
-            changes.setSoleAttributeValue(burndownExcelArt, CoreAttributeTypes.Extension, "xls");
-            changes.setSoleAttributeFromStream(burndownExcelArt, CoreAttributeTypes.NativeContent,
-               burndownFileInputStream);
-            changes.relate(sprint, CoreRelationTypes.Default_Hierarchical__Child, burndownExcelArt);
-            report.setExcelSheetUuid(burndownExcelArt.getUuid());
-
-            // Store query file to OSEE database
-            String burndownqry = RestUtil.getResource("support/OSEE_Sprint_Burndown.iqy");
-            burndownqry = burndownqry.replace("BASE_URI", uriInfo.getBaseUri().toString());
-            IAgileTeam team =
-               atsServer.getConfigItemFactory().getAgileTeam(atsServer.getArtifact(sprint.getTeamUuid()));
-            burndownqry = burndownqry.replace("TEAM_ID", team.getIdString());
-            burndownqry = burndownqry.replace("SPRINT_ID", sprintArt.getIdString());
-            ArtifactId burndownQryArt =
-               changes.createArtifact(CoreArtifactTypes.GeneralDocument, "OSEE_Sprint_Burndown");
-            changes.setSoleAttributeValue(burndownQryArt, CoreAttributeTypes.Extension, "iqy");
-            changes.setSoleAttributeFromStream(burndownQryArt, CoreAttributeTypes.NativeContent,
-               Lib.stringToInputStream(burndownqry));
-            changes.relate(sprint, CoreRelationTypes.Default_Hierarchical__Child, burndownQryArt);
-            report.setExcelQueryUuid(burndownQryArt.getUuid());
-
-            changes.execute();
-         }
-         // Else if found
-         else {
-            ArtifactReadable excelArt = null, queryArt = null;
-            for (ArtifactReadable child : sprintArt.getChildren()) {
-               if (child.getSoleAttributeValue(CoreAttributeTypes.Extension, "").equals("xls")) {
-                  excelArt = child;
-                  report.setExcelSheetUuid(excelArt.getUuid());
-               } else if (child.getSoleAttributeValue(CoreAttributeTypes.Extension, "").equals("iqy")) {
-                  queryArt = child;
-                  report.setExcelQueryUuid(queryArt.getUuid());
-               }
-            }
-            if (excelArt == null) {
-               report.setError("Could not access Excel burndown artifact.");
-            }
-            if (queryArt == null) {
-               report.setError(report.getError() + "\nCould not access Excel Query burndown artifact.");
-            }
-         }
-      } catch (Exception ex) {
-         throw new OseeWebApplicationException(ex, Status.INTERNAL_SERVER_ERROR);
-      }
-      return Response.ok(report).build();
-   }
-
 }

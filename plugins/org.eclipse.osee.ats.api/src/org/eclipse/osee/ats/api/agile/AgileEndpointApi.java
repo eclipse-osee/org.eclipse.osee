@@ -21,7 +21,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.eclipse.osee.ats.api.util.ILineChart;
 import org.eclipse.osee.ats.api.workflow.JaxAtsObjects;
+import org.eclipse.osee.framework.core.util.result.XResultData;
 
 /**
  * @author Donald G. Dunne
@@ -68,19 +70,55 @@ public interface AgileEndpointApi {
    public List<JaxAgileSprint> getSprints(@PathParam("teamUuid") long teamUuid);
 
    @GET
+   @Path("team/{teamUuid}/sprintcurrent")
+   @Produces(MediaType.APPLICATION_JSON)
+   public JaxAgileSprint getSprintCurrent(@PathParam("teamUuid") long teamUuid);
+
+   /**
+    * @return html sprint summary
+    */
+   @GET
    @Path("team/{teamUuid}/sprint/{sprintUuid}/summary")
    @Produces(MediaType.TEXT_HTML)
-   public Response getSprintSummary(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
+   public String getSprintSummary(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
 
    @GET
-   @Path("team/{teamUuid}/sprint/{sprintUuid}/burndown")
+   @Path("team/{teamUuid}/sprint/{sprintUuid}/data")
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getSprintBurndown(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
+   public AgileSprintData getSprintData(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
+
+   /**
+    * @return html representation of weekly sprint metrics. Same metrics used in charts.
+    */
+   @GET
+   @Path("team/{teamUuid}/sprint/{sprintUuid}/data/table")
+   @Produces(MediaType.TEXT_HTML)
+   public String getSprintDataTable(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
 
    @GET
-   @Path("team/{teamUuid}/sprint/{sprintUuid}/burndown/ui")
+   @Path("team/{teamUuid}/sprint/{sprintUuid}/burndown/chart/ui")
    @Produces(MediaType.TEXT_HTML)
-   public Response getSprintBurndownUi(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
+   public String getSprintBurndownChartUi(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
+
+   @GET
+   @Path("team/{teamUuid}/sprint/{sprintUuid}/burndown/chart/data")
+   @Produces(MediaType.APPLICATION_JSON)
+   public ILineChart getSprintBurndownChartData(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
+
+   @GET
+   @Path("team/{teamUuid}/sprint/{sprintUuid}/storereports")
+   @Produces(MediaType.APPLICATION_JSON)
+   public XResultData storeSprintReports(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
+
+   @GET
+   @Path("team/{teamUuid}/sprint/{sprintUuid}/burnup/chart/ui")
+   @Produces(MediaType.TEXT_HTML)
+   public String getSprintBurnupChartUi(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
+
+   @GET
+   @Path("team/{teamUuid}/sprint/{sprintUuid}/burnup/chart/data")
+   @Produces(MediaType.APPLICATION_JSON)
+   public ILineChart getSprintBurnupChartData(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
 
    @GET
    @Path("team/{teamUuid}/sprint/{sprintUuid}/world")
@@ -171,14 +209,5 @@ public interface AgileEndpointApi {
    @PUT
    @Path("item/{itemId}/points")
    public Response setPoints(@PathParam("itemId") long itemId, String points);
-
-   /**
-    * If missing, creates artifacts OSEE_Sprint_Burndown.iqy and OSEE_Sprint_Burndown.xls as children of sprint or
-    * returns existing if already exist
-    */
-   @GET
-   @Path("team/{teamUuid}/sprint/{sprintUuid}/burndownExcel")
-   @Produces(MediaType.APPLICATION_JSON)
-   public Response getSprintBurndownExcel(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
 
 }

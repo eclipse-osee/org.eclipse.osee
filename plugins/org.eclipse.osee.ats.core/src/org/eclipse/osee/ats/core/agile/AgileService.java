@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.agile;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -25,6 +26,7 @@ import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileItem;
 import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
+import org.eclipse.osee.ats.api.agile.IAgileSprintHtmlOperation;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.agile.JaxAgileBacklog;
 import org.eclipse.osee.ats.api.agile.JaxAgileFeatureGroup;
@@ -37,14 +39,20 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.agile.operations.SprintBurndownOperations;
+import org.eclipse.osee.ats.core.agile.operations.SprintBurnupOperations;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 
@@ -491,4 +499,35 @@ public class AgileService implements IAgileService {
       return agileTeam;
    }
 
+   @Override
+   public XResultData storeSprintReports(long teamId, long sprintId) {
+      XResultData results = new XResultData();
+      results.setTitle("Store Sprint Reports");
+      IAtsChangeSet changes = services.createChangeSet("Store Agile Sprint Reports");
+      IAgileSprint sprint = getAgileSprint(services.getArtifact(sprintId));
+      createUpdateBurnChart(new SprintBurndownOperations(services), teamId, sprintId, services, changes, sprint);
+      createUpdateBurnChart(new SprintBurnupOperations(services), teamId, sprintId, services, changes, sprint);
+      for (IAgileSprintHtmlOperation operation : services.getAgileSprintHtmlReportOperations()) {
+         createUpdateBurnChart(operation, teamId, sprintId, services, changes, sprint);
+      }
+      changes.executeIfNeeded();
+      return results;
+   }
+
+   public static void createUpdateBurnChart(IAgileSprintHtmlOperation operation, long teamId, long sprintId, IAtsServices services, IAtsChangeSet changes, IAgileSprint sprint) {
+      String html = operation.getReportHtml(teamId, sprintId);
+
+      ArtifactId burndownArt =
+         services.getRelationResolver().getChildNamedOrNull(sprint, operation.getReportType().name());
+      if (burndownArt == null) {
+         burndownArt = changes.createArtifact(CoreArtifactTypes.GeneralDocument, operation.getReportType().name());
+         changes.setSoleAttributeValue(burndownArt, CoreAttributeTypes.Extension, "html");
+         changes.addChild(sprint.getStoreObject(), burndownArt);
+      }
+      try {
+         changes.setSoleAttributeValue(burndownArt, CoreAttributeTypes.NativeContent, Lib.stringToInputStream(html));
+      } catch (UnsupportedEncodingException ex) {
+         throw new OseeArgumentException(ex, "Error trying to store Agile " + operation.getReportType());
+      }
+   }
 }

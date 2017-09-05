@@ -15,7 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.agile.XOpenSprintBurndownButton;
-import org.eclipse.osee.ats.agile.XRunSprintSummaryButton;
+import org.eclipse.osee.ats.agile.XOpenSprintBurnupButton;
+import org.eclipse.osee.ats.agile.XOpenSprintDataTableButton;
+import org.eclipse.osee.ats.agile.XOpenSprintSummaryButton;
+import org.eclipse.osee.ats.agile.XOpenStoredSprintReportsButton;
+import org.eclipse.osee.ats.agile.XStoreSprintReportsButton;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.column.OperationalImpactWithWorkaroundXWidget;
 import org.eclipse.osee.ats.column.OperationalImpactXWidget;
@@ -142,10 +146,18 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          return new ClosureStateMultiChoiceSelect();
       } else if (widgetName.equals(XProgramSelectionWidget.WIDGET_ID)) {
          return new XProgramSelectionWidget();
-      } else if (widgetName.equals(XRunSprintSummaryButton.WIDGET_ID)) {
-         return new XRunSprintSummaryButton();
+      } else if (widgetName.equals(XOpenSprintSummaryButton.WIDGET_ID)) {
+         return new XOpenSprintSummaryButton();
+      } else if (widgetName.equals(XOpenSprintDataTableButton.WIDGET_ID)) {
+         return new XOpenSprintDataTableButton();
       } else if (widgetName.equals(XOpenSprintBurndownButton.WIDGET_ID)) {
          return new XOpenSprintBurndownButton();
+      } else if (widgetName.equals(XOpenSprintBurnupButton.WIDGET_ID)) {
+         return new XOpenSprintBurnupButton();
+      } else if (widgetName.equals(XOpenStoredSprintReportsButton.WIDGET_ID)) {
+         return new XOpenStoredSprintReportsButton();
+      } else if (widgetName.equals(XStoreSprintReportsButton.WIDGET_ID)) {
+         return new XStoreSprintReportsButton();
       } else if (widgetName.equals(XWorkPackageWidget.WIDGET_ID)) {
          return new XWorkPackageWidget();
       } else if (widgetName.equals(XHyperlabelWorkflowApplicabilitySelection.WIDGET_ID)) {

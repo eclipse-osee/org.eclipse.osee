@@ -15,7 +15,7 @@ import java.util.Date;
 /**
  * @author Donald G. Dunne
  */
-public class AgileBurndownDate {
+public class AgileSprintDateData {
 
    private Date date;
    private Double completedPoints = new Double(0);
@@ -23,7 +23,8 @@ public class AgileBurndownDate {
    private Double completedUnPlannedPoints = new Double(0);
    private Double inCompletedUnPlannedPoints = new Double(0);
    private Double goalPoints = new Double(0);
-   private Double unRealizedWalkup = new Double(0);
+   // Planned points plus current walkup
+   private Double totalRealizedPoints = new Double(0);
 
    public Date getDate() {
       return date;
@@ -38,7 +39,11 @@ public class AgileBurndownDate {
    }
 
    public void setCompletedPoints(Double completedPoints) {
-      this.completedPoints = completedPoints;
+      if (completedPoints == null) {
+         this.completedPoints = new Double(0);
+      } else {
+         this.completedPoints = completedPoints;
+      }
    }
 
    public Double getCompletedPlannedPoints() {
@@ -46,7 +51,11 @@ public class AgileBurndownDate {
    }
 
    public void setCompletedPlannedPoints(Double completedPlannedPoints) {
-      this.completedPlannedPoints = completedPlannedPoints;
+      if (completedPlannedPoints == null) {
+         this.completedPlannedPoints = new Double(0);
+      } else {
+         this.completedPlannedPoints = completedPlannedPoints;
+      }
    }
 
    public Double getCompletedUnPlannedPoints() {
@@ -54,7 +63,11 @@ public class AgileBurndownDate {
    }
 
    public void setCompletedUnPlannedPoints(Double completedUnPlannedPoints) {
-      this.completedUnPlannedPoints = completedUnPlannedPoints;
+      if (completedUnPlannedPoints == null) {
+         this.completedUnPlannedPoints = new Double(0);
+      } else {
+         this.completedUnPlannedPoints = completedUnPlannedPoints;
+      }
    }
 
    public Double getGoalPoints() {
@@ -62,15 +75,11 @@ public class AgileBurndownDate {
    }
 
    public void setGoalPoints(Double goalPoints) {
-      this.goalPoints = goalPoints;
-   }
-
-   public Double getUnRealizedWalkup() {
-      return unRealizedWalkup;
-   }
-
-   public void setUnRealizedWalkup(Double unRealizedWalkup) {
-      this.unRealizedWalkup = unRealizedWalkup;
+      if (goalPoints == null) {
+         this.goalPoints = new Double(0);
+      } else {
+         this.goalPoints = goalPoints;
+      }
    }
 
    public Double getInCompletedUnPlannedPoints() {
@@ -79,6 +88,18 @@ public class AgileBurndownDate {
 
    public void setInCompletedUnPlannedPoints(Double inCompletedUnPlannedPoints) {
       this.inCompletedUnPlannedPoints = inCompletedUnPlannedPoints;
+   }
+
+   /**
+    * @return Total Planned and added unplanned work as it comes in. This is the real total work by date, regardless of
+    * planned or planned-unplanned.
+    */
+   public Double getTotalRealizedPoints() {
+      return totalRealizedPoints;
+   }
+
+   public void setTotalRealizedPoints(Double totalRealizedPoints) {
+      this.totalRealizedPoints = totalRealizedPoints;
    }
 
 }

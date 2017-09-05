@@ -11,6 +11,7 @@ angular.module('AgileApp').factory('AgileFactory',
 			var featuresResource = $resource('/ats/agile/team/:uuid/feature');
 			var featureSingleResource = $resource('/ats/agile/team/:teamUuid/feature/:uuid');
 			var sprintResource = $resource('/ats/agile/team/:uuid/sprint');
+			var sprintCurrentResource = $resource('/ats/agile/team/:uuid/sprintcurrent');
 			var sprintSingleResource = $resource('/ats/agile/team/:teamUuid/sprint/:uuid');
 			var backlogResource = $resource('/ats/agile/team/:uuid/backlog');
 			var backlogItemsResource = $resource('/ats/agile/team/:uuid/backlog/item');
@@ -64,6 +65,12 @@ angular.module('AgileApp').factory('AgileFactory',
 			// ////////////////////////////////////
 			factory.getSprints = function(team) {
 				return sprintResource.query(team);
+			}
+			
+			factory.getSprintCurrent = function(team) {
+				var param = {};
+				param.uuid = team.uuid;
+				return sprintCurrentResource.get(param);
 			}
 			
 			factory.deleteSprint = function(team) {

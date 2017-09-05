@@ -13,7 +13,9 @@ package org.eclipse.osee.ats.api;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.agile.IAgileService;
+import org.eclipse.osee.ats.api.agile.IAgileSprintHtmlOperation;
 import org.eclipse.osee.ats.api.column.IAtsColumnService;
+import org.eclipse.osee.ats.api.config.AtsConfigKey;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.IAtsCache;
 import org.eclipse.osee.ats.api.config.IAtsConfigurationProvider;
@@ -57,6 +59,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -202,4 +205,15 @@ public interface IAtsServices extends IAtsEarnedValueServiceProvider, IAtsConfig
     * @param ids AtsId, legacy id or guid
     */
    List<IAtsWorkItem> getWorkItemListByIds(String ids);
+
+   JdbcService getJdbcService();
+
+   String getApplicationServerBase();
+
+   Collection<IAgileSprintHtmlOperation> getAgileSprintHtmlReportOperations();
+
+   public default String getConfigValue(AtsConfigKey configKey) {
+      return getConfigValue(configKey.name());
+   }
+
 }
