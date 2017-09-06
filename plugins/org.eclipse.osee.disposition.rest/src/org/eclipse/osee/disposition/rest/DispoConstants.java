@@ -54,6 +54,14 @@ public final class DispoConstants {
 
    public static final ArtifactToken DISPO_ARTIFACT = ArtifactToken.valueOf(4757831, "DispositionTypes", COMMON, CoreArtifactTypes.OseeTypeDefinition);
 
+   // For dispo config
+   public static final String NAMESPACE = "dispo.api";
+   private static String qualify(String value) {
+      return String.format("%s.%s", NAMESPACE, value);
+   }
+
+   public static final String FILE_EXT_REGEX = qualify("file.ext.regex");
+
    // @formatter:on
 
    private DispoConstants() {

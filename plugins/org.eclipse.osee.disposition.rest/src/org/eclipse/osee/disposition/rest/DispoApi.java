@@ -83,4 +83,5 @@ public interface DispoApi {
 
    Collection<DispoItem> getDispoItemByAnnotationText(BranchId branch, String setId, String keyword, boolean isDetailed);
 
+   DispoApiConfiguration getConfig();
 }

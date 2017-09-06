@@ -91,6 +91,8 @@ public class DispoApiTest {
    @Mock
    private Map<String, Discrepancy> mockDiscrepancies;
    @Mock
+   private Map<String, Object> mockConfigProperties;
+   @Mock
    private Discrepancy mockDiscrepancy;
    @Mock
    private List<DispoAnnotationData> mockAnnotations;
@@ -132,7 +134,7 @@ public class DispoApiTest {
       dispoApi.setResolutionValidator(validator);
       dispoApi.setLogger(logger);
 
-      dispoApi.start();
+      dispoApi.start(mockConfigProperties);
    }
 
    private <T> Answer<T> newAnswer(final T object) {

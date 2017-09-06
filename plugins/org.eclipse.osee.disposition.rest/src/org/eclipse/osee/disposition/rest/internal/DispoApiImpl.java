@@ -35,6 +35,7 @@ import org.eclipse.osee.disposition.model.DispoSummarySeverity;
 import org.eclipse.osee.disposition.model.Note;
 import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.disposition.rest.DispoApi;
+import org.eclipse.osee.disposition.rest.DispoApiConfiguration;
 import org.eclipse.osee.disposition.rest.DispoImporterApi;
 import org.eclipse.osee.disposition.rest.external.DispoUpdateBroadcaster;
 import org.eclipse.osee.disposition.rest.internal.importer.DispoImporterFactory;
@@ -64,6 +65,16 @@ public class DispoApiImpl implements DispoApi {
    private DispoResolutionValidator resolutionValidator;
    private DispoImporterFactory importerFactory;
    private DispoUpdateBroadcaster updateBroadcaster;
+   private volatile DispoApiConfiguration config;
+
+   @Override
+   public DispoApiConfiguration getConfig() {
+      return config;
+   }
+
+   public void setConfig(DispoApiConfiguration config) {
+      this.config = config;
+   }
 
    public void setExecutor(ExecutorAdmin executor) {
       this.executor = executor;
@@ -93,9 +104,15 @@ public class DispoApiImpl implements DispoApi {
       this.updateBroadcaster = updateBroadcater;
    }
 
-   public void start() {
+   public void start(Map<String, Object> props) {
       logger.trace("Starting DispoApiImpl...");
       importerFactory = new DispoImporterFactory(dataFactory, executor, logger);
+      update(props);
+   }
+
+   public void update(Map<String, Object> props) {
+      logger.trace("Configuring [%s]...", getClass().getSimpleName());
+      setConfig(DispoApiConfiguration.newConfig(props));
    }
 
    public void stop() {
