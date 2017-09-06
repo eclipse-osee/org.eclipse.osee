@@ -4,5 +4,20 @@ Bundle-Name: OSEE X Server Application
 Bundle-SymbolicName: org.eclipse.osee.x.server.application
 Bundle-Version: 0.25.4.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
+Service-Component: OSGI-INF/*.xml
+Osee-Data: OSEE-INF/*
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.eclipse.equinox.app
+Import-Package: javax.ws.rs,
+ javax.ws.rs.core,
+ javax.ws.rs.ext,
+ org.codehaus.jackson,
+ org.codehaus.jackson.annotate;version="1.9.13",
+ org.codehaus.jackson.map;version="1.9.13",
+ org.eclipse.core.runtime.jobs,
+ org.eclipse.equinox.app,
+ org.eclipse.osee.framework.core.server,
+ org.eclipse.osee.framework.core.util,
+ org.eclipse.osee.framework.jdk.core.util,
+ org.eclipse.osee.jdbc,
+ org.eclipse.osee.logger,
+ org.eclipse.osee.orcs.data

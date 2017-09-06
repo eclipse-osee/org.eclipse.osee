@@ -48,6 +48,7 @@
 			<module>../../features/org.eclipse.osee.x.server.external.feature</module>
 
 			<module>../../plugins/org.eclipse.osee.x.server.p2</module>
+			<module>../../plugins/org.eclipse.osee.x.server.application</module>
 			<!-- <module>../../plugins/org.eclipse.osee.x.server.integration.tests</module> -->
 		</modules>
 	</profile>

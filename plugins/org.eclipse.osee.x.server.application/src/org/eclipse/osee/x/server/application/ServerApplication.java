@@ -10,28 +10,56 @@
  *******************************************************************************/
 package org.eclipse.osee.x.server.application;
 
-import org.eclipse.equinox.app.IApplication;
-import org.eclipse.equinox.app.IApplicationContext;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
+import org.eclipse.osee.framework.core.server.IApplicationServerManager;
+import org.eclipse.osee.framework.core.server.IAuthenticationManager;
+import org.eclipse.osee.jdbc.JdbcService;
+import org.eclipse.osee.x.server.application.internal.ServerHealthEndpointImpl;
 
 /**
  * @author Roberto E. Escobar
+ * @author Donald G. Dunne
  */
-public class ServerApplication implements IApplication {
+@ApplicationPath("server")
+public class ServerApplication extends Application {
 
-   private IApplicationContext context;
+   private final Set<Object> singletons = new HashSet<Object>();
+   private IApplicationServerManager applicationServerManager;
+   private final Map<String, JdbcService> jdbcServices = new ConcurrentHashMap<>();
+   private IAuthenticationManager authManager;
 
-   @Override
-   public Object start(IApplicationContext context) throws Exception {
-      this.context = context;
-      //      context.applicationRunning();
-      return IApplicationContext.EXIT_ASYNC_RESULT;
+   public void setAuthenticationManager(IAuthenticationManager authManager) {
+      this.authManager = authManager;
+   }
+
+   public void setApplicationServerManager(IApplicationServerManager applicationServerManager) {
+      this.applicationServerManager = applicationServerManager;
+   }
+
+   public void addJdbcService(JdbcService jdbcService) {
+      jdbcServices.put(jdbcService.getId(), jdbcService);
+   }
+
+   public void removeJdbcService(JdbcService jdbcService) {
+      jdbcServices.remove(jdbcService.getId());
    }
 
    @Override
+   public Set<Object> getSingletons() {
+      return singletons;
+   }
+
+   public void start(Map<String, Object> properties) {
+      singletons.add(new ServerHealthEndpointImpl(applicationServerManager, jdbcServices, authManager));
+   }
+
    public void stop() {
-      if (context != null) {
-         context.setResult(IApplication.EXIT_OK, this);
-      }
+      singletons.clear();
    }
 
 }

@@ -271,7 +271,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="org.eclipse.equinox.console.ssh"
          download-size="0"
@@ -320,7 +320,7 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
+
    <plugin
          id="com.lowagie.text"
          download-size="0"
@@ -546,6 +546,13 @@
 
    <plugin
          id="org.eclipse.xtext.generator"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.x.server.application"
          download-size="0"
          install-size="0"
          version="0.0.0"

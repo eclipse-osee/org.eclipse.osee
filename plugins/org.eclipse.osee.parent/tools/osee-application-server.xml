@@ -155,7 +155,8 @@
                         "orcs.jdbc.service",
                         "account.jdbc.service",
                         "oauth.jdbc.service",
-				            "app.server.jdbc.service"
+				            "app.server.jdbc.service",
+            				"server.jdbc.service"
                     ]
                 }
             ]

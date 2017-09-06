@@ -1,27 +1,30 @@
 {
-    "config": [
-        {
-            "service.pid": "org.eclipse.osee.jdbc.internal.osgi.JdbcComponentFactory",
-            "jdbc.service": [
-                {
-                    "service.id": "1001",
-                    "jdbc.server.host": "127.0.0.1",
-                    "jdbc.server.port": "8088",
-                    "jdbc.server.db.data.path": "file:~/hsql/osee.hsql.db",
-                    "jdbc.client.db.username": "public",
-                    "jdbc.client.connection.pool.enabled": "true",
-                    "jdbc.client.connection.pool.max.active.connections": "100",
-                    "jdbc.client.connection.pool.max.idle.connections": "100",
-                    "osgi.binding": [
-                        "client.jdbc.service",
-                        "activity.jdbc.service",
-                        "orcs.jdbc.service",
-                        "account.jdbc.service",
-                        "oauth.jdbc.service",
-                        "app.server.jdbc.service"
-                    ]
-                }
-            ]
-        }
-    ]
+	"config": [
+		{
+			"service.pid": "org.eclipse.osee.jdbc.internal.osgi.JdbcComponentFactory",
+			"jdbc.service": [
+				{
+					"service.id": "1001",
+					"jdbc.server.host": "127.0.0.1",
+					"jdbc.server.port": "8088",
+					"jdbc.server.db.data.path": "file:~/hsql/osee.hsql.db",
+					"jdbc.client.db.username": "public",
+					"jdbc.client.connection.pool.enabled": "true",
+					"jdbc.client.connection.pool.max.active.connections": "100",
+					"jdbc.client.connection.pool.max.idle.connections": "100",
+					"osgi.binding": [
+						"client.jdbc.service",
+						"activity.jdbc.service",
+						"orcs.jdbc.service",
+						"account.jdbc.service",
+						"oauth.jdbc.service",
+						"app.server.jdbc.service"
+					],
+					"application.servers": [
+						"localhost:8089"
+					]
+				}
+			]
+		}
+	]
 }
