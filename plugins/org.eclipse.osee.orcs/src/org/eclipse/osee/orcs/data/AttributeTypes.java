@@ -61,4 +61,6 @@ public interface AttributeTypes extends IdCollection<AttributeTypeToken> {
 
    boolean isLongType(AttributeTypeId attrType);
 
+   boolean isArtifactReferencedAttribute(AttributeTypeId attrType);
+
 }

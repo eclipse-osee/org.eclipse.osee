@@ -13,13 +13,13 @@ package org.eclipse.osee.framework.core.util.result;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.util.IResultDataListener;
-import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -46,7 +46,10 @@ public class XResultData {
    public List<IResultDataListener> listeners;
    public String title;
    private List<String> results = new LinkedList<>();
-   private CountingMap<Type> count;
+   // Use primitives for serialization
+   private int errorCount;
+   private int warningCount;
+   private int infoCount;
    @JsonIgnore
    private boolean enableOseeLog;
 
@@ -71,7 +74,9 @@ public class XResultData {
 
    public void clear() {
       results.clear();
-      count = new CountingMap<>();
+      errorCount = 0;
+      warningCount = 0;
+      infoCount = 0;
    }
 
    public void addRaw(String str) {
@@ -132,7 +137,13 @@ public class XResultData {
    }
 
    public void bumpCount(Type type, int byAmt) {
-      count.put(type, byAmt);
+      if (type == Type.Severe) {
+         errorCount++;
+      } else if (type == Type.Warning) {
+         warningCount++;
+      } else {
+         infoCount++;
+      }
    }
 
    public void logStr(Type type, final String str) {
@@ -163,7 +174,13 @@ public class XResultData {
    }
 
    private int getCount(Type type) {
-      return count.get(type);
+      if (type == Type.Severe) {
+         return errorCount;
+      } else if (type == Type.Warning) {
+         return warningCount;
+      } else {
+         return infoCount;
+      }
    }
 
    public int getNumErrors() {
@@ -218,10 +235,28 @@ public class XResultData {
       return results;
    }
 
-   public void validateNotNull(Object obj, String message, Object... data) {
-      if (obj == null) {
-         errorf(message + " can not be null", data);
-      }
+   public int getErrorCount() {
+      return errorCount;
+   }
+
+   public void setErrorCount(int errorCount) {
+      this.errorCount = errorCount;
+   }
+
+   public int getWarningCount() {
+      return warningCount;
+   }
+
+   public void setWarningCount(int warningCount) {
+      this.warningCount = warningCount;
+   }
+
+   public int getInfoCount() {
+      return infoCount;
+   }
+
+   public void setInfoCount(int infoCount) {
+      this.infoCount = infoCount;
    }
 
    public void validateNotNullOrEmpty(String value, String message, Object... data) {
@@ -232,6 +267,18 @@ public class XResultData {
 
    public void validateTrue(boolean value, String message, Object... data) {
       if (!value) {
+         errorf(message, data);
+      }
+   }
+
+   public void validateNotNull(Date date, String message, Object... data) {
+      if (date == null) {
+         errorf(message, data);
+      }
+   }
+
+   public void validateNotNull(Integer value, String message, Object... data) {
+      if (value == null) {
          errorf(message, data);
       }
    }

@@ -187,10 +187,9 @@ public interface IAtsServices extends IAtsEarnedValueServiceProvider, IAtsConfig
    ArtifactToken getArtifactByAtsId(String id);
 
    <T> T getConfigItem(ArtifactId artId);
+   IAtsTeamWorkflow getTeamWf(Long id);
 
    IAtsTeamWorkflow getTeamWf(ArtifactId artifact);
-
-   IAtsTeamWorkflow getTeamWf(Long id);
 
    ArtifactToken getArtifactByLegacyPcrId(String id);
 

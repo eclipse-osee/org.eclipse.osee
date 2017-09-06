@@ -55,24 +55,29 @@ import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.Attribute;
 import org.eclipse.osee.ats.api.workflow.AttributeKey;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
+import org.eclipse.osee.ats.api.workflow.NewActionResult;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
+import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IAttribute;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
-import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * @author Donald G. Dunne
@@ -81,16 +86,14 @@ import org.eclipse.osee.orcs.OrcsApi;
 public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
 
    private final IAtsServices services;
-   private final OrcsApi orcsApi;
    private static final String ATS_UI_ACTION_PREFIX = "/ui/action/UUID";
 
    @Context
    private HttpHeaders httpHeaders;
    private final JsonFactory jsonFactory;
 
-   public AtsActionEndpointImpl(IAtsServices services, OrcsApi orcsApi, JsonFactory jsonFactory) {
+   public AtsActionEndpointImpl(IAtsServices services, JsonFactory jsonFactory) {
       this.services = services;
-      this.orcsApi = orcsApi;
       this.jsonFactory = jsonFactory;
    }
 
@@ -446,6 +449,37 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       return workItems;
    }
 
+   @Override
+   @POST
+   @Consumes(MediaType.APPLICATION_JSON)
+   public NewActionResult createAction(NewActionData newActionData) {
+      NewActionResult result = new NewActionResult();
+      try {
+         IAtsUser asUser = services.getUserService().getUserById(newActionData.getAsUserId());
+         if (asUser == null) {
+            result.getResults().errorf("asUser [%s] not valid", newActionData.getAsUserId());
+            return result;
+         }
+         IAtsChangeSet changes = services.getStoreService().createAtsChangeSet("Create Action - Server", asUser);
+
+         ActionFactory factory = new ActionFactory(services);
+         ActionResult actionResult = factory.createAction(newActionData, changes);
+
+         TransactionId transaction = changes.executeIfNeeded();
+         if (transaction != null && transaction.isInvalid()) {
+            result.getResults().errorf("TransactionId came back as inValid.  Action not created.");
+            return result;
+         }
+         result.setAction(ArtifactId.valueOf(actionResult.getActionArt()));
+         for (ArtifactId teamWf : actionResult.getTeamWfArts()) {
+            result.addTeamWf(teamWf);
+         }
+      } catch (Exception ex) {
+         result.getResults().errorf("Exception creating action [%s]", Lib.exceptionToString(ex));
+      }
+      return result;
+   }
+
    /**
     * @param form containing information to create a new action
     * @param form.ats_title - (required) title of new action
@@ -499,8 +533,6 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          return RestUtil.returnBadRequest("changeType is not valid");
       }
       IAtsChangeSet changes = services.getStoreService().createAtsChangeSet("Create Action - Server", atsUser);
-      orcsApi.getTransactionFactory().createTransaction(services.getAtsBranch(), atsUser.getStoreObject(),
-         "Create Action - Server");
 
       ChangeType changeType = null;
       try {

@@ -76,6 +76,11 @@ public interface AtsActionEndpointApi {
    @GET
    public abstract Set<IAtsWorkItem> query(UriInfo uriInfo) throws Exception;
 
+   @POST
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public NewActionResult createAction(NewActionData newActionData);
+
    /**
     * @param form containing information to create a new action
     * @param form.ats_title - (required) title of new action

@@ -159,10 +159,9 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    }
 
    @Override
-   public boolean executeIfNeeded() {
+   public TransactionId executeIfNeeded() {
       execptionIfEmpty = false;
-      TransactionId trans = execute();
-      return trans != null && trans.isValid();
+      return execute();
    }
 
    @Override

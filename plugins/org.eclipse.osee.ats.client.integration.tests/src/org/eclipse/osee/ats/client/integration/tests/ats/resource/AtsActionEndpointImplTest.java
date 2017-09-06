@@ -26,12 +26,17 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.Attribute;
 import org.eclipse.osee.ats.api.workflow.AttributeKey;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
+import org.eclipse.osee.ats.api.workflow.NewActionResult;
 import org.eclipse.osee.ats.api.workflow.WorkItemWriterOptions;
 import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
@@ -39,7 +44,10 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.ats.demo.api.DemoWorkflowTitles;
+import org.eclipse.osee.ats.util.AtsDeleteManager;
+import org.eclipse.osee.ats.util.AtsDeleteManager.DeleteOption;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
@@ -477,6 +485,51 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       teamWf.reloadAttributesAndRelations();
       Assert.assertEquals(newValue, AtsClientService.get().getAttributeResolver().getSoleAttributeValue(
          (IAtsObject) teamWf, attrType, defaultAttrValue));
+   }
+
+   @Test
+   public void testCreateActionFromActionData() throws Exception {
+      NewActionData data = new NewActionData();
+      data.setAsUserId(AtsClientService.get().getUserService().getCurrentUserId());
+      data.setTitle("My Action");
+      Date createDate = new Date();
+      data.setCreatedDateLong(String.valueOf(createDate.getTime()));
+      data.setCreatedByUserId(DemoUsers.Alex_Kay.getUserId());
+      data.setChangeType(ChangeType.Improvement);
+      data.setDescription("desc");
+      Date needBy = new Date();
+      data.setNeedByDateLong(String.valueOf(needBy.getTime()));
+      data.setPriority("3");
+      IAtsActionableItem ai = AtsClientService.get().getConfigItem(DemoArtifactToken.SAW_Code_AI);
+      data.setAiIds(Arrays.asList(ai.getIdString()));
+      data.addAttrValue(AtsAttributeTypes.ColorTeam, "Blue Team");
+      data.addAttrValue(AtsAttributeTypes.IPT, "My IPT");
+      NewActionResult result = AtsClientService.getActionEndpoint().createAction(data);
+      Assert.assertFalse(result.getResults().toString(), result.getResults().isErrors());
+      Assert.assertNotNull(result.getAction());
+      Assert.assertEquals(1, result.getTeamWfs().size());
+      ArtifactId teamWfArt = result.getTeamWfs().iterator().next();
+      IAtsTeamWorkflow teamWf = AtsClientService.get().getTeamWf(teamWfArt);
+      Assert.assertNotNull(teamWf);
+      Assert.assertEquals("My Action", teamWf.getName());
+      Assert.assertEquals("desc", teamWf.getDescription());
+      Assert.assertEquals(createDate, teamWf.getCreatedDate());
+      Assert.assertEquals(DemoUsers.Alex_Kay, teamWf.getCreatedBy().getStoreObject());
+      Assert.assertEquals(DemoUsers.Joe_Smith, ((Artifact) teamWf.getStoreObject()).getLastModifiedBy());
+      Assert.assertEquals(ChangeType.Improvement.name(),
+         AtsClientService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.ChangeType, ""));
+      Assert.assertEquals("3", AtsClientService.get().getAttributeResolver().getSoleAttributeValue(teamWf,
+         AtsAttributeTypes.PriorityType, ""));
+      Assert.assertEquals(ai, teamWf.getActionableItems().iterator().next());
+      Assert.assertEquals(needBy,
+         AtsClientService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.NeedBy, ""));
+      Assert.assertEquals("Blue Team",
+         AtsClientService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.ColorTeam, ""));
+      Assert.assertEquals("My IPT",
+         AtsClientService.get().getAttributeResolver().getSoleAttributeValue(teamWf, AtsAttributeTypes.IPT, ""));
+
+      AtsDeleteManager.handleDeletePurgeAtsObject(Arrays.asList((Artifact) teamWf.getStoreObject()), true,
+         DeleteOption.Delete);
    }
 
    @Test

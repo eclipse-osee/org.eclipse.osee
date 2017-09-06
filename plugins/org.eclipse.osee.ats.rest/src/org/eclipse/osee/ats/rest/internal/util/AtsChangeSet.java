@@ -167,7 +167,15 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    @Override
    public void addAttribute(IAtsObject atsObject, AttributeTypeId attributeType, Object value) throws OseeCoreException {
       ArtifactReadable artifact = getArtifact(atsObject);
-      getTransaction().createAttribute(artifact, attributeType, value);
+      if (atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().isArtifactReferencedAttribute(attributeType)) {
+         Conditions.assertTrue(value instanceof ArtifactId, "value must be of type ArtifactId");
+         getTransaction().createAttributeFromString(artifact, attributeType, ((ArtifactId) value).getIdString());
+      } else if (atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().isDateType(attributeType)) {
+         Conditions.assertTrue(value instanceof Date, "value must be of type Date");
+         getTransaction().createAttributeFromString(artifact, attributeType, String.valueOf(((Date) value).getTime()));
+      } else {
+         getTransaction().createAttributeFromString(artifact, attributeType, String.valueOf(value));
+      }
       add(atsObject);
    }
 

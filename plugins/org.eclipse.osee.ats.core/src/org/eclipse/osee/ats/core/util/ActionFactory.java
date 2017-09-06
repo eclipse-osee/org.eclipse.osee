@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -44,8 +45,10 @@ import org.eclipse.osee.ats.api.workflow.IAtsActionFactory;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
+import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
+import org.eclipse.osee.ats.core.ai.ActionableItemManager;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.internal.state.StateManager;
 import org.eclipse.osee.ats.core.internal.util.AtsIdProvider;
@@ -53,10 +56,10 @@ import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.workflow.state.StateManagerUtility;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -72,6 +75,14 @@ public class ActionFactory implements IAtsActionFactory {
    private final IAtsServices services;
    private IAtsTeamDefinition topTeamDefinition;
 
+   public ActionFactory(IAtsServices services) {
+      this.workItemFactory = services.getWorkItemFactory();
+      this.actionableItemManager =
+         new ActionableItemManager(services.getAttributeResolver(), services.getStoreService(), services);
+      this.attrResolver = services.getAttributeResolver();
+      this.services = services;
+   }
+
    public ActionFactory(IAtsWorkItemFactory workItemFactory, ISequenceProvider sequenceProvider, IAtsActionableItemService actionableItemManager, IAttributeResolver attrResolver, IAtsStateFactory stateFactory, IAtsServices atsServices) {
       this.workItemFactory = workItemFactory;
       this.actionableItemManager = actionableItemManager;
@@ -80,8 +91,51 @@ public class ActionFactory implements IAtsActionFactory {
    }
 
    @Override
-   public ActionResult createAction(IAtsUser user, String title, String desc, ChangeType changeType, String priority, boolean validationRequired, Date needByDate, Collection<IAtsActionableItem> actionableItems, Date createdDate, IAtsUser createdBy, INewActionListener newActionListener, IAtsChangeSet changes) throws OseeCoreException {
+   public ActionResult createAction(NewActionData data, IAtsChangeSet changes) {
+      IAtsUser asUser = services.getUserService().getUserById(data.getAsUserId());
+      Conditions.assertNotNull(asUser, "asUser");
+      IAtsUser createdBy = services.getUserService().getUserById(data.getCreatedByUserId());
+      Conditions.assertNotNull(createdBy, "createdBy");
+      List<IAtsActionableItem> ais = new LinkedList<>();
+      for (String aiId : data.getAiIds()) {
+         IAtsActionableItem ai = services.getConfigItem(Long.valueOf(aiId));
+         Conditions.assertNotNull(ai, "as");
+         ais.add(ai);
+      }
+      Date needByDate = null;
+      if (Strings.isNumeric(data.getNeedByDateLong())) {
+         needByDate = new Date(Long.valueOf(data.getNeedByDateLong()));
+      }
+      Date createdDate = null;
+      if (Strings.isNumeric(data.getCreatedDateLong())) {
+         createdDate = new Date(Long.valueOf(data.getCreatedDateLong()));
+      } else {
+         createdDate = new Date();
+      }
+      ActionResult createAction = createAction(asUser, data.getTitle(), data.getDescription(), data.getChangeType(),
+         data.getPriority(), data.isValidationRequired(), needByDate, ais, createdDate, createdBy, null, changes);
+
+      // set any additional values
+      for (Entry<String, String> attr : data.getAttrValues().entrySet()) {
+         if (!Strings.isNumeric(attr.getKey())) {
+            throw new OseeArgumentException("Invalid attribute type id %s", attr.getKey());
+         }
+         AttributeTypeId attributeType = services.getStoreService().getAttributeType(Long.valueOf(attr.getKey()));
+         if (attributeType == null) {
+            throw new OseeArgumentException("Invalid attribute type id %s", attr.getKey());
+         }
+         for (IAtsTeamWorkflow teamWf : createAction.getTeamWfs()) {
+            changes.setSoleAttributeValue(teamWf, attributeType, attr.getValue());
+         }
+      }
+      return createAction;
+   }
+
+   @Override
+   public ActionResult createAction(IAtsUser user, String title, String desc, ChangeType changeType, String priority, boolean validationRequired, Date needByDate, Collection<IAtsActionableItem> actionableItems, Date createdDate, IAtsUser createdBy, INewActionListener newActionListener, IAtsChangeSet changes) {
       Conditions.checkNotNullOrEmptyOrContainNull(actionableItems, "actionableItems");
+      Conditions.assertNotNullOrEmpty(title, "Title must be specified");
+      Conditions.assertNotNull(changeType, "Change Type must be specified");
       // if "tt" is title, this is an action created for development. To
       // make it easier, all fields are automatically filled in for ATS developer
 
@@ -133,7 +187,7 @@ public class ActionFactory implements IAtsActionFactory {
    }
 
    @Override
-   public IAtsTeamWorkflow createTeamWorkflow(IAtsAction action, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<IAtsUser> assignees, IAtsChangeSet changes, Date createdDate, IAtsUser createdBy, INewActionListener newActionListener, CreateTeamOption... createTeamOption) throws OseeCoreException {
+   public IAtsTeamWorkflow createTeamWorkflow(IAtsAction action, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<IAtsUser> assignees, IAtsChangeSet changes, Date createdDate, IAtsUser createdBy, INewActionListener newActionListener, CreateTeamOption... createTeamOption) {
       IArtifactType teamWorkflowArtifactType = getTeamWorkflowArtifactType(teamDef);
 
       // NOTE: The persist of the workflow will auto-email the assignees
@@ -142,11 +196,11 @@ public class ActionFactory implements IAtsActionFactory {
       return teamWf;
    }
 
-   public IArtifactType getTeamWorkflowArtifactType(IAtsTeamDefinition teamDef) throws OseeCoreException {
+   public IArtifactType getTeamWorkflowArtifactType(IAtsTeamDefinition teamDef) {
       return getTeamWorkflowArtifactType(teamDef, services);
    }
 
-   public static IArtifactType getTeamWorkflowArtifactType(IAtsTeamDefinition teamDef, IAtsServices services) throws OseeCoreException {
+   public static IArtifactType getTeamWorkflowArtifactType(IAtsTeamDefinition teamDef, IAtsServices services) {
       Conditions.checkNotNull(teamDef, "teamDef");
       IArtifactType teamWorkflowArtifactType = AtsArtifactTypes.TeamWorkflow;
       if (teamDef.getStoreObject() != null) {
@@ -172,7 +226,7 @@ public class ActionFactory implements IAtsActionFactory {
    }
 
    @Override
-   public IAtsTeamWorkflow createTeamWorkflow(IAtsAction action, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IArtifactType artifactType, INewActionListener newActionListener, IAtsChangeSet changes, CreateTeamOption... createTeamOption) throws OseeCoreException {
+   public IAtsTeamWorkflow createTeamWorkflow(IAtsAction action, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IArtifactType artifactType, INewActionListener newActionListener, IAtsChangeSet changes, CreateTeamOption... createTeamOption) {
 
       if (!Arrays.asList(createTeamOption).contains(CreateTeamOption.Duplicate_If_Exists)) {
          // Make sure team doesn't already exist
@@ -275,7 +329,7 @@ public class ActionFactory implements IAtsActionFactory {
       return teamWf;
    }
 
-   public String getWorkDefinitionName(IAtsTeamDefinition teamDef) throws OseeCoreException {
+   public String getWorkDefinitionName(IAtsTeamDefinition teamDef) {
       String workDefName =
          attrResolver.getSoleAttributeValueAsString(teamDef, AtsAttributeTypes.WorkflowDefinition, null);
       if (Strings.isValid(workDefName)) {
@@ -290,7 +344,7 @@ public class ActionFactory implements IAtsActionFactory {
    }
 
    @Override
-   public void initializeNewStateMachine(IAtsWorkItem workItem, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException {
+   public void initializeNewStateMachine(IAtsWorkItem workItem, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) {
       initializeNewStateMachine(workItem, assignees, createdDate, createdBy, null, changes);
    }
 
@@ -316,7 +370,7 @@ public class ActionFactory implements IAtsActionFactory {
       TransitionManager.logStateStartedEvent(workItem, startState, createdDate, user);
    }
 
-   private void logCreatedByChange(IAtsWorkItem workItem, IAtsUser user, Date date, IAtsUser asUser) throws OseeCoreException {
+   private void logCreatedByChange(IAtsWorkItem workItem, IAtsUser user, Date date, IAtsUser asUser) {
       if (attrResolver.getSoleAttributeValue(workItem, AtsAttributeTypes.CreatedBy, null) == null) {
          workItem.getLog().addLog(LogType.Originated, "", "", date, user.getUserId());
       } else {
@@ -325,7 +379,7 @@ public class ActionFactory implements IAtsActionFactory {
    }
 
    @Override
-   public void setCreatedBy(IAtsWorkItem workItem, IAtsUser user, boolean logChange, Date date, IAtsChangeSet changes) throws OseeCoreException {
+   public void setCreatedBy(IAtsWorkItem workItem, IAtsUser user, boolean logChange, Date date, IAtsChangeSet changes) {
       if (logChange) {
          logCreatedByChange(workItem, user, date, changes.getAsUser());
       }
@@ -344,7 +398,7 @@ public class ActionFactory implements IAtsActionFactory {
     * Auto-add actions to a goal configured with relations to the given ActionableItem or Team Definition
     */
    @Override
-   public void addActionToConfiguredGoal(IAtsTeamDefinition teamDef, IAtsTeamWorkflow teamWf, Collection<IAtsActionableItem> actionableItems, IAtsChangeSet changes) throws OseeCoreException {
+   public void addActionToConfiguredGoal(IAtsTeamDefinition teamDef, IAtsTeamWorkflow teamWf, Collection<IAtsActionableItem> actionableItems, IAtsChangeSet changes) {
       // Auto-add this team artifact to configured goals
       IRelationResolver relationResolver = services.getRelationResolver();
       for (IAtsGoal goal : relationResolver.getRelated(teamDef, AtsRelationTypes.AutoAddActionToGoal_Goal,
@@ -370,7 +424,7 @@ public class ActionFactory implements IAtsActionFactory {
    /**
     * Set Team Workflow attributes off given action artifact
     */
-   public void setArtifactIdentifyData(IAtsAction fromAction, IAtsTeamWorkflow toTeam, IAtsChangeSet changes) throws OseeCoreException {
+   public void setArtifactIdentifyData(IAtsAction fromAction, IAtsTeamWorkflow toTeam, IAtsChangeSet changes) {
       Conditions.checkNotNull(fromAction, "fromAction");
       Conditions.checkNotNull(toTeam, "toTeam");
       Conditions.checkNotNull(changes, "changes");
@@ -385,7 +439,7 @@ public class ActionFactory implements IAtsActionFactory {
    /**
     * Since there is no shared attribute yet, action and workflow arts are all populate with identify data
     */
-   public void setArtifactIdentifyData(IAtsObject atsObject, String title, String desc, ChangeType changeType, String priority, Boolean validationRequired, Date needByDate, IAtsChangeSet changes) throws OseeCoreException {
+   public void setArtifactIdentifyData(IAtsObject atsObject, String title, String desc, ChangeType changeType, String priority, Boolean validationRequired, Date needByDate, IAtsChangeSet changes) {
       changes.setSoleAttributeValue(atsObject, CoreAttributeTypes.Name, title);
       if (Strings.isValid(desc)) {
          changes.addAttribute(atsObject, AtsAttributeTypes.Description, desc);
