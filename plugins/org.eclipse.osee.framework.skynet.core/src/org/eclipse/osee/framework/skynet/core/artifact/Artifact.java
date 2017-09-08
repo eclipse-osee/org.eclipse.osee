@@ -450,9 +450,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       try {
          attribute = attributeClass.newInstance();
          attributes.put(attributeType, attribute);
-      } catch (InstantiationException ex) {
-         OseeCoreException.wrapAndThrow(ex);
-      } catch (IllegalAccessException ex) {
+      } catch (InstantiationException | IllegalAccessException ex) {
          OseeCoreException.wrapAndThrow(ex);
       }
       return attribute;

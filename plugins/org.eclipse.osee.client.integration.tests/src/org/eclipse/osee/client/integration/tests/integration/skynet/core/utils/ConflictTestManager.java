@@ -18,9 +18,9 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.ConflictDeletionTest;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -630,7 +630,7 @@ public class ConflictTestManager {
    public static Object stringToObject(Class clas, String value) {
 
       if (clas.equals(BooleanAttribute.class)) {
-         return Boolean.valueOf(value.equals(BooleanAttribute.booleanChoices[0]));
+         return Boolean.valueOf(value);
       }
       if (clas.equals(IntegerAttribute.class)) {
          if (value.equals("")) {

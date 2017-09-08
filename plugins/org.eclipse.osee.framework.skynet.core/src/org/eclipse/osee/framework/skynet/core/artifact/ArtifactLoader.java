@@ -169,7 +169,7 @@ public final class ArtifactLoader {
                lock = new ReentrantLock();
                lock.lock();
                loadingActiveMap.put(artId, branchUuid, lock);
-            } else {
+            } else if (!lock.isHeldByCurrentThread()) {
                // another thread is loading the artifact, do not load it
                locks.put(artId, branchUuid, lock);
                doNotLoad = true;
