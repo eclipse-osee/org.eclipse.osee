@@ -28,8 +28,7 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
 
    @Override
    public Date getValue() throws OseeCoreException {
-      Object value = getAttributeDataProvider().getValue();
-      return new Date((Long) value);
+      return (Date) getAttributeDataProvider().getValue();
    }
 
    @Override
@@ -40,11 +39,6 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
       } else {
          setFromStringNoDirty(defaultValue);
       }
-   }
-
-   @Override
-   protected boolean subClassSetValue(Date value) {
-      return getAttributeDataProvider().setValue(value.getTime());
    }
 
    @Override
@@ -65,5 +59,10 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
     */
    public String getAsFormattedString(DateFormat dateFormat) throws OseeCoreException {
       return dateFormat.format(getValue());
+   }
+
+   @Override
+   public String convertToStorageString(Date rawValue) {
+      return String.valueOf(rawValue.getTime());
    }
 }

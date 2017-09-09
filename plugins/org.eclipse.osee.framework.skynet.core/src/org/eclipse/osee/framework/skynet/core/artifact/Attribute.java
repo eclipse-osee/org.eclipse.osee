@@ -150,6 +150,10 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Attribut
     */
    public abstract T convertStringToValue(String value);
 
+   public String convertToStorageString(T rawValue) {
+      return rawValue == null ? null : rawValue.toString();
+   }
+
    public final void resetToDefaultValue() throws OseeCoreException {
       setToDefaultValue();
    }

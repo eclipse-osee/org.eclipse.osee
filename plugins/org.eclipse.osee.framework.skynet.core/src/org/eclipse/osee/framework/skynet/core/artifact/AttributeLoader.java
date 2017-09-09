@@ -15,10 +15,13 @@ import static org.eclipse.osee.framework.core.enums.LoadLevel.ARTIFACT_DATA;
 import static org.eclipse.osee.framework.core.enums.LoadLevel.RELATION_DATA;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
@@ -113,8 +116,12 @@ public class AttributeLoader {
             value = chStmt.getInt("value");
          } else if (baseAttributeType.contains("LongAttribute")) {
             value = chStmt.getLong("value");
+         } else if (baseAttributeType.contains("ArtifactReferenceAttribute")) {
+            value = ArtifactId.valueOf(chStmt.getString("value"));
+         } else if (baseAttributeType.contains("BranchReferenceAttribute")) {
+            value = BranchId.valueOf(chStmt.getString("value"));
          } else if (baseAttributeType.contains("DateAttribute")) {
-            value = chStmt.getLong("value");
+            value = new Date(chStmt.getLong("value"));
          } else {
             value = chStmt.getString("value");
             if (baseAttributeType.contains("EnumeratedAttribute")) {

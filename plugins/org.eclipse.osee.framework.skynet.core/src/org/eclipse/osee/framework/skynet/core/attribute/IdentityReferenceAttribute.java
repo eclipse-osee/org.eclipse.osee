@@ -10,25 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 
-public abstract class IdentityReferenceAttribute<T extends Id> extends CharacterBackedAttribute<T> {
-
+public abstract class IdentityReferenceAttribute extends CharacterBackedAttribute<Id> {
    @Override
-   public T getValue() throws OseeCoreException {
-      return convertStringToValue(getAttributeDataProvider().getValueAsString());
+   public Id getValue() throws OseeCoreException {
+      return ServiceUtil.getAttributeAdapterService().adapt(this, (Id) getAttributeDataProvider().getValue());
    }
 
    @Override
-   public T convertStringToValue(String value) {
-      return ServiceUtil.getAttributeAdapterService().adapt(this, new BaseId(Long.valueOf(value)));
-   }
-
-   @Override
-   protected boolean subClassSetValue(Id value) {
-      return getAttributeDataProvider().setValue(value.getIdString());
+   public String convertToStorageString(Id rawValue) {
+      return rawValue.getIdString();
    }
 }

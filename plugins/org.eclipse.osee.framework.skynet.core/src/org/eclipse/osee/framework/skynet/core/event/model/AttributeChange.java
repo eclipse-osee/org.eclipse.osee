@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
  * Java class for AttributeChange complex type.
  * <p>
  * The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="AttributeChange">
  *   &lt;complexContent>
@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "AttributeChange", propOrder = {"attrTypeGuid", "modTypeGuid", "attributeId", "gammaId", "data"})
 public class AttributeChange implements FrameworkEvent {
+   private static final Object[] emptyArray = new Object[0];
 
    @XmlElement(required = true)
    protected Long attrTypeGuid;
@@ -55,80 +56,42 @@ public class AttributeChange implements FrameworkEvent {
    @XmlElement(required = true)
    protected ApplicabilityId applicabilityId;
 
-   /**
-    * Gets the value of the attrTypeGuid property.
-    * 
-    * @return possible object is {@link Long }
-    */
    public Long getAttrTypeGuid() {
       return attrTypeGuid;
    }
 
-   /**
-    * Sets the value of the attrTypeGuid property.
-    * 
-    * @param value allowed object is {@link Long }
-    */
    public void setAttrTypeGuid(Long value) {
       this.attrTypeGuid = value;
    }
 
-   /**
-    * Gets the value of the modTypeGuid property.
-    * 
-    * @return possible object is {@link String }
-    */
    public String getModTypeGuid() {
       return modTypeGuid;
    }
 
-   /**
-    * Sets the value of the modTypeGuid property.
-    * 
-    * @param value allowed object is {@link String }
-    */
    public void setModTypeGuid(String value) {
       this.modTypeGuid = value;
    }
 
-   /**
-    * Gets the value of the attributeId property.
-    */
    public int getAttributeId() {
       return attributeId;
    }
 
-   /**
-    * Sets the value of the attributeId property.
-    */
    public void setAttributeId(int value) {
       this.attributeId = value;
    }
 
-   /**
-    * Gets the value of the gammaId property.
-    */
    public int getGammaId() {
       return gammaId;
    }
 
-   /**
-    * Sets the value of the applicabilityId property.
-    */
    public void setApplicabilityId(ApplicabilityId applicabilityId) {
       this.applicabilityId = applicabilityId;
    }
 
-   /**
-    * Gets the value of the applicabilityId property.
-    */
    public ApplicabilityId getApplicabilityId() {
       return applicabilityId;
    }
 
-   /**
-    * Sets the value of the gammaId property.
-    */
    public void setGammaId(int value) {
       this.gammaId = value;
    }
@@ -141,7 +104,7 @@ public class AttributeChange implements FrameworkEvent {
     * the data property.
     * <p>
     * For example, to add a new item, do as follows:
-    * 
+    *
     * <pre>
     * getData().add(newItem);
     * </pre>
@@ -153,6 +116,13 @@ public class AttributeChange implements FrameworkEvent {
          data = new ArrayList<>();
       }
       return this.data;
+   }
+
+   public Object[] getDataArray() {
+      if (data == null) {
+         return emptyArray;
+      }
+      return data.toArray();
    }
 
    @Override

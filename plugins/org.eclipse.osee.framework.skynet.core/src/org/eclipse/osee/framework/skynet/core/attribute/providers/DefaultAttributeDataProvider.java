@@ -100,13 +100,16 @@ public class DefaultAttributeDataProvider<T> extends AbstractAttributeDataProvid
 
    @Override
    public Object[] getData() {
-      return new Object[] {rawValue, dataStore.getLocator()};
+      return new Object[] {getAttribute().convertToStorageString(rawValue), dataStore.getLocator()};
    }
 
    @Override
    public void loadData(Object... objects) throws OseeCoreException {
       if (objects != null && objects.length > 1) {
-         storeValue((T) objects[0]);
+         if (objects[0] instanceof String) {
+            objects[0] = getAttribute().convertStringToValue((String) objects[0]);
+         }
+         storeValue((T)objects[0]);
          dataStore.setLocator((String) objects[1]);
       }
    }

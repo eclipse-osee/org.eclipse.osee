@@ -10,10 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 
 /**
  * @author Roberto E. Escobar
  */
-public class ArtifactReferenceAttribute extends IdentityReferenceAttribute<Artifact> {
+public class ArtifactReferenceAttribute extends IdentityReferenceAttribute {
+   @Override
+   public ArtifactId convertStringToValue(String value) {
+      return ArtifactId.valueOf(value);
+   }
 }

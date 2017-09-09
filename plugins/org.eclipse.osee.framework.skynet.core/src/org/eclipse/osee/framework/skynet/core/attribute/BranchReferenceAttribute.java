@@ -10,7 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 
-public class BranchReferenceAttribute extends IdentityReferenceAttribute<IOseeBranch> {
+public class BranchReferenceAttribute extends IdentityReferenceAttribute {
+   @Override
+   public BranchId convertStringToValue(String value) {
+      return BranchId.valueOf(value);
+   }
 }
