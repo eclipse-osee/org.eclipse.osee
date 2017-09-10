@@ -24,13 +24,7 @@ public class BooleanAttribute extends CharacterBackedAttribute<Boolean> {
    }
 
    @Override
-   public boolean subClassSetValue(Boolean value) throws OseeCoreException {
-      return getAttributeDataProvider().setValue(value);
-   }
-
-   @Override
    public Boolean convertStringToValue(String value) {
       return Boolean.valueOf(value);
    }
-
 }

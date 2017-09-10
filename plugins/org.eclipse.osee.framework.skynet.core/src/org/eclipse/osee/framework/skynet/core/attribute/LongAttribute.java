@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -24,14 +23,6 @@ public class LongAttribute extends CharacterBackedAttribute<Long> {
    @Override
    public Long getValue() throws OseeCoreException {
       return (Long) getAttributeDataProvider().getValue();
-   }
-
-   @Override
-   public boolean subClassSetValue(Long value) throws OseeCoreException {
-      if (value == null) {
-         throw new OseeArgumentException("Attribute value was null");
-      }
-      return getAttributeDataProvider().setValue(value);
    }
 
    @Override

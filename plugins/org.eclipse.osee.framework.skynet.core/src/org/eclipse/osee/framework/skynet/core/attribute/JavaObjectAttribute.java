@@ -60,7 +60,7 @@ public final class JavaObjectAttribute extends BinaryAttribute<Object> {
    }
 
    @Override
-   public boolean subClassSetValue(Object value) {
+   protected boolean subClassSetValue(Object value) {
       try {
          ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
          ObjectOutputStream objectStream = new ObjectOutputStream(byteStream);
@@ -68,7 +68,7 @@ public final class JavaObjectAttribute extends BinaryAttribute<Object> {
          objectStream.flush();
          objectStream.close();
          getAttributeDataProvider().setValue(ByteBuffer.wrap(byteStream.toByteArray()));
-         getAttributeDataProvider().setDisplayableString(value != null ? value.getClass().getName() : "null");
+         getAttributeDataProvider().setDisplayableString(value.getClass().getName());
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -77,9 +77,6 @@ public final class JavaObjectAttribute extends BinaryAttribute<Object> {
 
    @Override
    public Object convertStringToValue(String value) {
-      if (value == null) {
-         return null;
-      }
       return getObjectFromBytes(ByteBuffer.wrap(value.getBytes()));
    }
 }

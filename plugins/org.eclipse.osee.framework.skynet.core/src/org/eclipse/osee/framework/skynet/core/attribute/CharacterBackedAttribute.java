@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider;
 
@@ -22,5 +24,22 @@ public abstract class CharacterBackedAttribute<T> extends Attribute<T> {
       // this cast is always safe since the the data provider passed in the constructor to
       // the super class is of type  ICharacterAttributeDataProvider
       return (ICharacterAttributeDataProvider) super.getAttributeDataProvider();
+   }
+
+   @Override
+   protected boolean subClassSetValue(T value) {
+      Class<?> clazz = getClass();
+      String superclassName = clazz.getSuperclass().getSimpleName();
+      while (!superclassName.equals("CharacterBackedAttribute") && !superclassName.equals("BinaryBackedAttribute")) {
+         clazz = clazz.getSuperclass();
+         superclassName = clazz.getSuperclass().getSimpleName();
+      }
+      Type persistentClass = ((ParameterizedType) clazz.getGenericSuperclass()).getActualTypeArguments()[0];
+      if (!persistentClass.getTypeName().equals(value.getClass().getName())) {
+         throw new ClassCastException(
+            persistentClass + " attribute subClassSetValue called with type " + value.getClass());
+      }
+
+      return getAttributeDataProvider().setValue(value);
    }
 }

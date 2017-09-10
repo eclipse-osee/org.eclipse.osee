@@ -10,21 +10,5 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-
-public class OutlineNumberAttribute extends CharacterBackedAttribute<String> {
-   @Override
-   public String getValue() throws OseeCoreException {
-      return getAttributeDataProvider().getValueAsString();
-   }
-
-   @Override
-   public boolean subClassSetValue(String value) throws OseeCoreException {
-      return getAttributeDataProvider().setValue(value);
-   }
-
-   @Override
-   public String convertStringToValue(String value) {
-      return value;
-   }
+public class OutlineNumberAttribute extends StringAttribute {
 }

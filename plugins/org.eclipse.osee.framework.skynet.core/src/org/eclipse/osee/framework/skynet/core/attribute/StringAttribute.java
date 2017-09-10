@@ -22,11 +22,6 @@ public class StringAttribute extends CharacterBackedAttribute<String> {
    }
 
    @Override
-   public boolean subClassSetValue(String value) throws OseeCoreException {
-      return getAttributeDataProvider().setValue(value);
-   }
-
-   @Override
    public String convertStringToValue(String value) {
       return value;
    }

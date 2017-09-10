@@ -24,7 +24,7 @@ public final class CompressedContentAttribute extends BinaryAttribute<InputStrea
    }
 
    @Override
-   public boolean subClassSetValue(InputStream value) throws OseeCoreException {
+   protected boolean subClassSetValue(InputStream value) {
       return setValueFromInputStream(value);
    }
 
@@ -32,12 +32,8 @@ public final class CompressedContentAttribute extends BinaryAttribute<InputStrea
    public boolean setValueFromInputStream(InputStream value) throws OseeCoreException {
       boolean response = false;
       try {
-         if (value == null) {
-            response = getAttributeDataProvider().setValue(null);
-         } else {
-            byte[] data = Lib.inputStreamToBytes(value);
-            response = getAttributeDataProvider().setValue(ByteBuffer.wrap(data));
-         }
+         byte[] data = Lib.inputStreamToBytes(value);
+         response = getAttributeDataProvider().setValue(ByteBuffer.wrap(data));
       } catch (IOException ex) {
          OseeCoreException.wrapAndThrow(ex);
       }

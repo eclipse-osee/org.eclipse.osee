@@ -19,8 +19,5 @@ public interface ICharacterAttributeDataProvider extends IAttributeDataProvider 
 
    public String getValueAsString() throws OseeCoreException;
 
-   public Object getValue();
-
    public boolean setValue(Object value) throws OseeCoreException;
-
 }

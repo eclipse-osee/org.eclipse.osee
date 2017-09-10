@@ -37,7 +37,7 @@ public class WordAttribute extends StringAttribute {
    private static final IStatus promptStatus = new Status(IStatus.WARNING, Activator.PLUGIN_ID, 256, "", null);
 
    @Override
-   public boolean subClassSetValue(String value) throws OseeCoreException {
+   protected boolean subClassSetValue(String value) {
       value = checkForTrackedChanges(value);
       value = WordUtil.removeWordMarkupSmartTags(value);
       return super.subClassSetValue(value);

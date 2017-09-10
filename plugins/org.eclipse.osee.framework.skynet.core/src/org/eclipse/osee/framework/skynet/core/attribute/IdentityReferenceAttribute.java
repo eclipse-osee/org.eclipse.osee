@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.attribute.service.AttributeAdapterService;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 
 public abstract class IdentityReferenceAttribute<T extends Id> extends CharacterBackedAttribute<T> {
@@ -25,13 +24,11 @@ public abstract class IdentityReferenceAttribute<T extends Id> extends Character
 
    @Override
    public T convertStringToValue(String value) {
-      AttributeAdapterService service = getAttributeAdapter();
-      T identity = service.adapt(this, new BaseId(Long.valueOf(value)));
-      return identity;
+      return ServiceUtil.getAttributeAdapterService().adapt(this, new BaseId(Long.valueOf(value)));
    }
 
-   private AttributeAdapterService getAttributeAdapter() throws OseeCoreException {
-      return ServiceUtil.getAttributeAdapterService();
+   @Override
+   protected boolean subClassSetValue(Id value) {
+      return getAttributeDataProvider().setValue(value.getIdString());
    }
-
 }

@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.AttributeEventModificationType;
@@ -113,6 +114,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Attribut
    }
 
    public boolean setValue(T value) {
+      Conditions.checkNotNull(value, "Attribute value", "attribute id [%s]", getId());
       checkIsRenameable(value);
       boolean response = subClassSetValue(value);
       if (response) {
@@ -122,10 +124,12 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Attribut
    }
 
    protected boolean setFromStringNoDirty(String value) {
+      Conditions.checkNotNull(value, "Attribute value", "attribute id [%s]", getId());
       return subClassSetValue(convertStringToValue(value));
    }
 
    public boolean setFromString(String value) throws OseeCoreException {
+      Conditions.checkNotNull(value, "Attribute value", "attribute id [%s]", getId());
       return setValue(convertStringToValue(value));
    }
 
@@ -141,6 +145,9 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Attribut
       }
    }
 
+   /**
+    * @param value will be non-null
+    */
    public abstract T convertStringToValue(String value);
 
    public final void resetToDefaultValue() throws OseeCoreException {
@@ -168,7 +175,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, Attribut
 
    /**
     * Subclasses must provide an implementation of this method and in general should not override the other set value
-    * methods
+    * methods. The value parameter will be non-null
     */
    protected abstract boolean subClassSetValue(T value) throws OseeCoreException;
 

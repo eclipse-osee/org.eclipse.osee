@@ -13,10 +13,7 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Robert A. Fisher
@@ -38,21 +35,15 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
    @Override
    protected void setToDefaultValue() throws OseeCoreException {
       String defaultValue = getAttributeType().getDefaultValue();
-      if (Strings.isValid(defaultValue)) {
-         setFromStringNoDirty(defaultValue);
-      } else {
+      if (defaultValue == null) {
          subClassSetValue(new Date());
+      } else {
+         setFromStringNoDirty(defaultValue);
       }
    }
 
    @Override
-   public boolean subClassSetValue(Date value) throws OseeCoreException {
-      if (value == null) {
-         OseeLog.log(this.getClass(), Level.SEVERE,
-            String.format("AttributeType [%s] GammId [%s] - DateAttribute.subClassSetValue had a null value",
-               getAttributeType(), getGammaId()));
-         return false;
-      }
+   protected boolean subClassSetValue(Date value) {
       return getAttributeDataProvider().setValue(value.getTime());
    }
 
@@ -63,9 +54,6 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
 
    @Override
    public Date convertStringToValue(String value) {
-      if (!Strings.isValid(value)) {
-         return null;
-      }
       return new Date(Long.parseLong(value));
    }
 
@@ -78,5 +66,4 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
    public String getAsFormattedString(DateFormat dateFormat) throws OseeCoreException {
       return dateFormat.format(getValue());
    }
-
 }

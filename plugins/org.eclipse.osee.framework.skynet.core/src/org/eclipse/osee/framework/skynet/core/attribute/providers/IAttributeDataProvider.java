@@ -24,6 +24,8 @@ public interface IAttributeDataProvider {
 
    public void loadData(Object... objects) throws OseeCoreException;
 
+   public Object getValue();
+
    public Object[] getData() throws OseeDataStoreException;
 
    public void persist(int storageId) throws OseeCoreException;
