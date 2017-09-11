@@ -15,10 +15,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AbstractAttributeDataProvider implements IAttributeDataProvider {
-   private final Attribute<?> attribute;
+public abstract class AbstractAttributeDataProvider<T> implements IAttributeDataProvider {
+   private final Attribute<T> attribute;
 
-   public AbstractAttributeDataProvider(Attribute<?> attribute) {
+   public AbstractAttributeDataProvider(Attribute<T> attribute) {
       super();
       this.attribute = attribute;
    }
@@ -26,7 +26,7 @@ public abstract class AbstractAttributeDataProvider implements IAttributeDataPro
    /**
     * @return the attribute
     */
-   protected Attribute<?> getAttribute() {
+   protected Attribute<T> getAttribute() {
       return attribute;
    }
 }

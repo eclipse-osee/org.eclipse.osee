@@ -23,15 +23,14 @@ import org.eclipse.osee.jdbc.JdbcConstants;
 /**
  * @author Roberto E. Escobar
  */
-public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider implements ICharacterAttributeDataProvider {
-   private Object rawValue;
+public class DefaultAttributeDataProvider<T> extends AbstractAttributeDataProvider<T> implements ICharacterAttributeDataProvider<T> {
+   private T rawValue;
 
    private final DataStore dataStore;
 
-   public DefaultAttributeDataProvider(Attribute<?> attribute) {
+   public DefaultAttributeDataProvider(Attribute<T> attribute) {
       super(attribute);
       this.dataStore = new DataStore(new AttributeResourceProcessor(attribute));
-      this.rawValue = "";
    }
 
    @Override
@@ -67,7 +66,7 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
    }
 
    @Override
-   public boolean setValue(Object value) throws OseeCoreException {
+   public boolean setValue(T value) {
       Conditions.checkNotNull(value, "attribute value");
       boolean response = false;
       if (value.toString().equals(getValueAsString())) {
@@ -83,13 +82,13 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
       return BinaryContentUtils.generateFileName(getAttribute());
    }
 
-   private void storeValue(Object value) throws OseeCoreException {
+   private void storeValue(T value) {
       if (value != null && value instanceof String && ((String) value).length() > JdbcConstants.JDBC__MAX_VARCHAR_LENGTH) {
          try {
             byte[] compressed =
                Lib.compressStream(new ByteArrayInputStream(((String) value).getBytes("UTF-8")), getInternalFileName());
             dataStore.setContent(compressed, "zip", "application/zip", "ISO-8859-1");
-            this.rawValue = "";
+            this.rawValue = null;
          } catch (IOException ex) {
             OseeCoreException.wrapAndThrow(ex);
          }
@@ -107,7 +106,7 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
    @Override
    public void loadData(Object... objects) throws OseeCoreException {
       if (objects != null && objects.length > 1) {
-         storeValue(objects[0]);
+         storeValue((T) objects[0]);
          dataStore.setLocator((String) objects[1]);
       }
    }
