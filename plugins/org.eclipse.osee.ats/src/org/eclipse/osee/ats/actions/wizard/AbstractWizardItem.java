@@ -325,7 +325,7 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
          wizardCompletedFeatureGroup(teamWf, teamDef, changes);
          wizardCompletedUnPlanned(teamWf, teamDef, changes);
 
-         if (versionCombo.getSelected() != null && createBranchCheck.isChecked()) {
+         if (versionCombo != null && versionCombo.getSelected() != null && createBranchCheck != null && createBranchCheck.isChecked()) {
             changes.addExecuteListener(new CreateBranch(teamDef));
          }
       }
