@@ -544,6 +544,9 @@ app.controller('userController', [
                         annotation.isConnected = data.isConnected;
                         annotation.isResolutionValid = data.isResolutionValid;
                         CoverageFactory.updatePercent(colDef, oldValue, annotation);
+                        if ($scope.getInvalidRes(annotation)) {
+                        	alert("Your resolution is not valid. \nPlease make sure your PCR # is correct.");
+                        }
                     }, function(data) {
                     	alert
                     });

@@ -13,6 +13,8 @@ Import-Package:
  javax.ws.rs,
  javax.ws.rs.core,
  javax.ws.rs.ext,
+ org.eclipse.osee.ats.api.workflow,
+ org.eclipse.osee.ats.rest,
  org.eclipse.osee.disposition.model,
  org.eclipse.osee.executor.admin,
  org.eclipse.osee.framework.core.data,

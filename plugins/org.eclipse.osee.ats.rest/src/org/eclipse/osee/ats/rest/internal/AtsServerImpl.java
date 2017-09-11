@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.api.workdef.WorkDefData;
+import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
@@ -58,10 +59,12 @@ import org.eclipse.osee.ats.rest.internal.util.AtsBranchServiceImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsEarnedValueImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsRelationResolverServiceImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsStoreServiceImpl;
+import org.eclipse.osee.ats.rest.internal.workitem.AtsActionEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsTaskService;
 import org.eclipse.osee.ats.rest.internal.workitem.ConfigItemFactory;
 import org.eclipse.osee.ats.rest.util.ChangeTypeUtil;
 import org.eclipse.osee.ats.rest.util.IAtsNotifierServer;
+import org.eclipse.osee.ats.rest.util.JsonFactory;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -93,6 +96,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    private final Map<String, IAtsDatabaseConversion> externalConversions =
       new ConcurrentHashMap<String, IAtsDatabaseConversion>();
    private AtsConfigEndpointImpl configurationEndpoint;
+   private AtsActionEndpointApi actionEndpoint;
 
    public AtsServerImpl() {
       super();
@@ -474,6 +478,14 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
 
       // clear client config cache (read from server)
       clearConfigurationsCaches();
+   }
+
+   @Override
+   public AtsActionEndpointApi getActionEndpoint() {
+      if (actionEndpoint == null) {
+         actionEndpoint = new AtsActionEndpointImpl(this, JsonFactory.create());
+      }
+      return actionEndpoint;
    }
 
    @Override
