@@ -166,9 +166,6 @@
 	<extension id="word" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
 		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer"/>
 	</extension>
-		<extension id="tis" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
-		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.TisRenderer"/>
-	</extension>
 	<extension id="url" point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
 		<Renderer classname="org.eclipse.osee.framework.ui.skynet.render.UrlRenderer"/>
 	</extension>

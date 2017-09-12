@@ -19,7 +19,6 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GeneralDoc
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SoftwareRequirement;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SoftwareRequirementPlainText;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.TestCase;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.TestInformationSheet;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.TestProcedureWML;
 import static org.eclipse.osee.framework.core.enums.PresentationType.DEFAULT_OPEN;
 import static org.eclipse.osee.framework.core.enums.PresentationType.DIFF;
@@ -45,7 +44,6 @@ import org.eclipse.osee.framework.ui.skynet.render.JavaRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.NativeRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PlainTextRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.osee.framework.ui.skynet.render.TisRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.WholeWordRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.junit.Assert;
@@ -56,7 +54,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Test Case for {@link RendererManager}
- * 
+ *
  * @author Ryan D. Brooks
  */
 @RunWith(Parameterized.class)
@@ -165,15 +163,6 @@ public class RendererManagerTest {
       addTest(data, GeneralDocument, DEFAULT_OPEN, NativeRenderer.class, Off);
       addTest(data, GeneralDocument, DEFAULT_OPEN, DefaultArtifactRenderer.class, On);
       addTest(data, GeneralDocument, PRODUCE_ATTRIBUTE, DefaultArtifactRenderer.class, Both);
-
-      addTest(data, TestInformationSheet, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both);
-      addTest(data, TestInformationSheet, SPECIALIZED_EDIT, WordTemplateRenderer.class, Both);
-      addTest(data, TestInformationSheet, DIFF, WordTemplateRenderer.class, Both);
-      addTest(data, TestInformationSheet, PREVIEW, TisRenderer.class, Both);
-      addTest(data, TestInformationSheet, MERGE, WordTemplateRenderer.class, Both);
-      addTest(data, TestInformationSheet, DEFAULT_OPEN, TisRenderer.class, Off);
-      addTest(data, TestInformationSheet, DEFAULT_OPEN, DefaultArtifactRenderer.class, On);
-      addTest(data, TestInformationSheet, PRODUCE_ATTRIBUTE, WordTemplateRenderer.class, Both);
 
       addTest(data, TestCase, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both);
       addTest(data, TestCase, SPECIALIZED_EDIT, JavaRenderer.class, Both);
