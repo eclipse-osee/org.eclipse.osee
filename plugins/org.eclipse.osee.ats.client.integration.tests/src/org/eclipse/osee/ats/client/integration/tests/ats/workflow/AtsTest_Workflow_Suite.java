@@ -21,6 +21,7 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   TeamWorkflowTest.class,
    AtsTest_WorkflowUtil_Suite.class,
    TaskRelatedToChangedArtifactTest.class,
    StoreWorkDefinitionTest.class,
