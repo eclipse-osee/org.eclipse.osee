@@ -52,3 +52,11 @@ section.listview {
     width: 659px;
     border-left: 1px solid #eeeeee;
 }
+
+#submit_button {
+	float: right;
+}
+
+#panel_name {
+	float: left;
+} 

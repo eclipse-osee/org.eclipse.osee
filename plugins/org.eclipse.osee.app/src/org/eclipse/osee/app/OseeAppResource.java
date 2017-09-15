@@ -17,6 +17,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -44,7 +45,7 @@ public final class OseeAppResource {
     */
    @GET
    @Produces(MediaType.APPLICATION_JSON)
-   public Collection<OseeAppTransfer> getOseeAppListJson() {
+   public Collection<OseeAppTransfer> getOseeAppListJson(@QueryParam("filter") String filterText) {
       List<OseeAppTransfer> results = new LinkedList<OseeAppTransfer>();
       BranchId branchId =
          orcsApi.getQueryFactory().branchQuery().andNameEquals("Common").getResultsAsId().getExactlyOne();
@@ -53,7 +54,11 @@ public final class OseeAppResource {
       for (ArtifactReadable art : apps) {
          String description = art.getSoleAttributeAsString(CoreAttributeTypes.Description, "Not Available");
          String uuid = String.format("%d", art.getUuid());
-         results.add(createTransfer(art.getName(), description, uuid));
+         if (filterText == null) {
+            results.add(createTransfer(art.getName(), description, uuid));
+         } else if (description.matches(filterText)) {
+            results.add(createTransfer(art.getName(), description, uuid));
+         }
       }
       return results;
    }

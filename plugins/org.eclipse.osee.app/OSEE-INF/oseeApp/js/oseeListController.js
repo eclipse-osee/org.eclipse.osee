@@ -14,17 +14,11 @@
             };
             vm.gridOptions = vm.allGridSettings;
 
-            vm.startdataloaded = false;
 
-            OseeAppSchema.query(function (data) {
-                vm.startData = data;
-                vm.datadataloaded = true;
-            });
 
             OseeAppSchema.get({
                 appId: vm.appId
-            }, function (result) {
-                vm.oseeAppSchema = result.OseeApp;
+                }, function (result) {                OseeAppSchema.query({filter:result.QueryFilter}, function (data) {                    vm.startData = data;                });
                 vm.allGridSettings.columnDefs = result.UIGridColumns;
                 vm.gridOptions = vm.allGridSettings;
                 vm.listDataResource = $resource(result.ListRestURL);
