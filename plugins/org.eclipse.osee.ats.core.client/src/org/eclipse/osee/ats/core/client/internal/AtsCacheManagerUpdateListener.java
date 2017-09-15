@@ -61,7 +61,7 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
    @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
       if (!DbUtil.isDbInit()) {
-         boolean handledConfigReload = processArtifacts(artifactEvent);
+         boolean handledConfigReload = processArtifacts(artifactEvent, sender);
          processRelations(artifactEvent, handledConfigReload);
       }
    }
@@ -104,7 +104,7 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
       }
    }
 
-   private boolean processArtifacts(ArtifactEvent artifactEvent) {
+   private boolean processArtifacts(ArtifactEvent artifactEvent, Sender sender) {
       boolean reload = false;
       for (EventBasicGuidArtifact guidArt : artifactEvent.getArtifacts()) {
          if (guidArt.getArtifactType().matches(Version, TeamDefinition, ActionableItem)) {
@@ -127,7 +127,9 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
                handleCachesForDeletedPurged(guidArt);
             }
             if (guidArt.is(EventModType.Added, EventModType.Modified)) {
-               handleCachesForAddedModified(guidArt);
+               if (sender.isRemote()) {
+                  handleCachesForAddedModified(guidArt);
+               }
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
