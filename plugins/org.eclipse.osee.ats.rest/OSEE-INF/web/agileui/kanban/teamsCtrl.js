@@ -28,10 +28,7 @@ angular
 							var configTeamTmpl = '<button class="btn btn-default btn-sm" ng-click="configTeam(row.entity)">Config</button>';
 							var openBacklogImpl = '<button class="btn btn-default btn-sm" ng-click="openBacklog(row.entity)">Backlog</button>';
 							var openKanbanImpl = '<button class="btn btn-default btn-sm" ng-click="openKanban(row.entity)">Kanban</button>';
-							var openBurndownImpl = '<button class="btn btn-default btn-sm" ng-click="openBurndown(row.entity)">Burn-Down</button>';
-							var openBurnupImpl = '<button class="btn btn-default btn-sm" ng-click="openBurnup(row.entity)">Burn-Up</button>';
-							var openSummaryImpl = '<button class="btn btn-default btn-sm" ng-click="openSummary(row.entity)">Summary</button>';
-							var openDataImpl = '<button class="btn btn-default btn-sm" ng-click="openData(row.entity)">Data</button>';
+							var openReportsImpl = '<button class="btn btn-default btn-sm" ng-click="openReports(row.entity)">Reports</button>';
 							
 							$scope.teamGridOptions = {
 								data : 'teams',
@@ -50,7 +47,7 @@ angular
 								}, {
 									field : 'name',
 									displayName : 'Name',
-									width : 150
+									width : 290
 								}, {
 									field : "open",
 									displayName : 'Open',
@@ -67,25 +64,10 @@ angular
 									width : 66,
 									cellTemplate : openKanbanImpl
 								}, {
-									field : "burndown",
-									displayName : 'Burn-Down',
-									width : 80,
-									cellTemplate : openBurndownImpl
-								}, {
-									field : "burnup",
-									displayName : 'Burn-Up',
-									width : 74,
-									cellTemplate : openBurnupImpl
-								}, {
-									field : "summary",
-									displayName : 'Summary',
-									width : 79,
-									cellTemplate : openSummaryImpl
-								}, {
-									field : "data",
-									displayName : 'Data',
-									width : 60,
-									cellTemplate : openDataImpl
+									field : "reports",
+									displayName : 'Reports',
+									width : 70,
+									cellTemplate : openReportsImpl
 								}, {
 									field : "config",
 									displayName : 'Config',
@@ -123,28 +105,13 @@ angular
 										.concat(team.uuid))
 							}
 
-							$scope.openBurndown = function(team) {
-								window.location.assign("main#/burndown?team="
-										.concat(team.uuid))
-							}
-
-							$scope.openBurnup = function(team) {
-								window.location.assign("main#/burnup?team="
-										.concat(team.uuid))
+							$scope.openReports = function(team) {
+								window.location.assign("/ats/agile/team/"
+										.concat(team.uuid).concat("/reports"))
 							}
 
 							$scope.openBacklog = function(team) {
-								window.location.assign("main#/backlog?team="
-										.concat(team.uuid))
-							}
-
-							$scope.openSummary = function(team) {
-								window.location.assign("main#/summary?team="
-										.concat(team.uuid))
-							}
-
-							$scope.openData = function(team) {
-								window.location.assign("main#/data?team="
+								window.location.assign("main#/reports?team="
 										.concat(team.uuid))
 							}
 

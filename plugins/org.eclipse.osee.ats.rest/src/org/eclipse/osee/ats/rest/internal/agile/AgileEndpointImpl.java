@@ -24,6 +24,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
@@ -33,6 +34,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
 import org.eclipse.osee.ats.api.agile.AgileItem;
+import org.eclipse.osee.ats.api.agile.AgileReportType;
 import org.eclipse.osee.ats.api.agile.AgileSprintData;
 import org.eclipse.osee.ats.api.agile.AgileWriterResult;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
@@ -66,11 +68,14 @@ import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.agile.operations.KanbanOperations;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.ats.rest.internal.world.WorldResource;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.ClassBasedResourceToken;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -162,7 +167,8 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       created.setUuid(updatedTeam.getId());
       created.setActive(updatedTeam.isActive());
       created.getAtsTeamUuids().addAll(updatedTeam.getAtsTeamUuids());
-      created.setBacklogUuid(updatedTeam.getBacklogUuid());
+      created.setBacklogId(updatedTeam.getBacklogId());
+      created.setSprintId(updatedTeam.getSprintId());
       created.setDescription(updatedTeam.getDescription());
       return created;
    }
@@ -315,13 +321,42 @@ public class AgileEndpointImpl implements AgileEndpointApi {
 
    @Override
    public String getSprintSummary(long teamId, long sprintId) {
-      ArtifactReadable sprint = atsServer.getArtifact(sprintId);
+      String report = getBestOrStored(sprintId, AgileReportType.Summary, uriInfo);
+      if (Strings.isValid(report)) {
+         return report;
+      }
       ArtifactReadable team = atsServer.getArtifact(teamId);
-      SprintPageBuilder page = new SprintPageBuilder(team, sprint);
+      IAgileSprint sprint = atsServer.getAgileService().getAgileSprint(sprintId);
+      SprintPageBuilder page = new SprintPageBuilder(team, (ArtifactReadable) sprint.getStoreObject());
       PageCreator appPage = PageFactory.newPageCreator(resourceRegistry);
       String result =
          page.generatePage(appPage, new ClassBasedResourceToken("sprintTemplate.html", SprintPageBuilder.class));
       return result;
+   }
+
+   private String getBestOrStored(long sprintId, AgileReportType agileReportType, UriInfo uriInfo) {
+      boolean best = false, stored = false;
+      if (uriInfo != null) {
+         MultivaluedMap<String, String> qp = uriInfo.getQueryParameters(true);
+         List<String> values = qp.get("type");
+         if (values != null && !values.isEmpty()) {
+            best = values.iterator().next().equals("best");
+            stored = values.iterator().next().equals("stored");
+         }
+      }
+      IAgileSprint sprint = atsServer.getAgileService().getAgileSprint(sprintId);
+      Conditions.assertNotNull(sprint, "Invalid Sprint %s", sprintId);
+      if ((best && sprint.isCompletedOrCancelled()) || stored) {
+         ArtifactToken rptArt = atsServer.getRelationResolver().getChildNamedOrNull(sprint, agileReportType.name());
+         if (rptArt != null) {
+            return atsServer.getAttributeResolver().getSoleAttributeValue(rptArt, CoreAttributeTypes.NativeContent,
+               null);
+         }
+         if (stored) {
+            return AHTML.simplePage("Stored Summary Not Found");
+         }
+      }
+      return null;
    }
 
    // Sprint Data and Table
@@ -334,6 +369,10 @@ public class AgileEndpointImpl implements AgileEndpointApi {
 
    @Override
    public String getSprintDataTable(long teamId, long sprintId) {
+      String report = getBestOrStored(sprintId, AgileReportType.Data_Table, uriInfo);
+      if (Strings.isValid(report)) {
+         return report;
+      }
       AgileSprintData burndown = SprintUtil.getAgileSprintData(atsServer, teamId, sprintId);
       XResultData results = burndown.validate();
       if (results.isErrors()) {
@@ -353,9 +392,13 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    }
 
    @Override
-   public String getSprintBurndownChartUi(long teamUuid, long sprintUuid) {
+   public String getSprintBurndownChartUi(long teamUuid, long sprintId) {
+      String report = getBestOrStored(sprintId, AgileReportType.Burn_Down, uriInfo);
+      if (Strings.isValid(report)) {
+         return report;
+      }
       SprintBurndownOperations op = new SprintBurndownOperations(atsServer);
-      return op.getReportHtml(teamUuid, sprintUuid);
+      return op.getReportHtml(teamUuid, sprintId);
    }
 
    /**
@@ -367,9 +410,13 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    }
 
    @Override
-   public String getSprintBurnupChartUi(long teamUuid, long sprintUuid) {
+   public String getSprintBurnupChartUi(long teamUuid, long sprintId) {
+      String report = getBestOrStored(sprintId, AgileReportType.Burn_Up, uriInfo);
+      if (Strings.isValid(report)) {
+         return report;
+      }
       SprintBurnupOperations op = new SprintBurnupOperations(atsServer);
-      return op.getReportHtml(teamUuid, sprintUuid);
+      return op.getReportHtml(teamUuid, sprintId);
    }
 
    @Override
@@ -637,5 +684,31 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       changes.setSoleAttributeValue(item, agileTeamPointsAttributeType, points);
       changes.execute();
       return Response.ok().build();
+   }
+
+   @Override
+   public String getBurndownBest(long teamUuid) {
+      try {
+         IAgileSprint sprint = getSingleOrFirstSprint(teamUuid);
+         if (sprint != null) {
+            return getSprintBurndownChartUi(teamUuid, sprint.getId());
+         }
+      } catch (Exception ex) {
+         return Lib.exceptionToString(ex);
+      }
+      return AHTML.simplePage("No In-Work Sprint found for team " + teamUuid);
+   }
+
+   private IAgileSprint getSingleOrFirstSprint(long teamUuid) {
+      ArtifactReadable artifact = atsServer.getArtifact(teamUuid);
+      if (artifact != null) {
+         for (ArtifactReadable sprintArt : artifact.getRelated(AtsRelationTypes.AgileTeamToSprint_Sprint)) {
+            IAgileSprint sprint = atsServer.getWorkItemFactory().getAgileSprint(sprintArt);
+            if (sprint.isInWork()) {
+               return sprint;
+            }
+         }
+      }
+      return null;
    }
 }

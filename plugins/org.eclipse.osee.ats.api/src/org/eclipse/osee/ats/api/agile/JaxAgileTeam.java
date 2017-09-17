@@ -12,17 +12,17 @@ package org.eclipse.osee.ats.api.agile;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.ats.api.config.JaxAtsObject;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 
 /**
  * @author Donald G. Dunne
  */
-@XmlRootElement
 public class JaxAgileTeam extends JaxAtsObject {
 
    private List<Long> atsTeamUuids = new ArrayList<>();
-   private long backlogUuid = 0;
+   private ArtifactId backlogId = ArtifactId.SENTINEL;
+   private ArtifactId sprintId = ArtifactId.SENTINEL;
    private String description = "";
 
    public List<Long> getAtsTeamUuids() {
@@ -33,14 +33,6 @@ public class JaxAgileTeam extends JaxAtsObject {
       this.atsTeamUuids = atsTeamUuids;
    }
 
-   public long getBacklogUuid() {
-      return backlogUuid;
-   }
-
-   public void setBacklogUuid(long backlogUuid) {
-      this.backlogUuid = backlogUuid;
-   }
-
    @Override
    public String getDescription() {
       return description;
@@ -49,6 +41,22 @@ public class JaxAgileTeam extends JaxAtsObject {
    @Override
    public void setDescription(String description) {
       this.description = description;
+   }
+
+   public ArtifactId getBacklogId() {
+      return backlogId;
+   }
+
+   public void setBacklogId(ArtifactId backlogId) {
+      this.backlogId = backlogId;
+   }
+
+   public ArtifactId getSprintId() {
+      return sprintId;
+   }
+
+   public void setSprintId(ArtifactId sprintId) {
+      this.sprintId = sprintId;
    }
 
 }

@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.api.agile;
 
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 
 /**
  * @author Donald G. Dunne
@@ -20,6 +21,11 @@ public interface IAgileTeam extends IAtsConfigObject, IAgileObject {
 
    public List<Long> getAtsTeamUuids();
 
-   public long getBacklogUuid();
+   public ArtifactId getBacklogId();
+
+   /**
+    * @return should be only in-work sprint, otherwise first in-work sprint
+    */
+   public ArtifactId getSprintId();
 
 }

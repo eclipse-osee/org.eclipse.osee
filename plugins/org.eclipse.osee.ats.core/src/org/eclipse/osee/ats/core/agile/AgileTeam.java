@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.core.agile;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -51,18 +52,30 @@ public class AgileTeam extends AtsConfigObject implements IAgileTeam {
    }
 
    @Override
-   public long getBacklogUuid() {
-      long backlogUuid = -1;
+   public ArtifactId getBacklogId() {
+      ArtifactId backlogId = ArtifactId.SENTINEL;
       try {
-         ArtifactId backlogArt =
+         backlogId =
             services.getRelationResolver().getRelatedOrNull(artifact, AtsRelationTypes.AgileTeamToBacklog_Backlog);
-         if (backlogArt != null) {
-            backlogUuid = backlogArt.getId();
+      } catch (Exception ex) {
+         // do nothing
+      }
+      return backlogId;
+   }
+
+   @Override
+   public ArtifactId getSprintId() {
+      ArtifactId sprintId = ArtifactId.SENTINEL;
+      try {
+         for (IAgileSprint sprint : services.getAgileService().getSprintsForTeam(artifact.getId())) {
+            if (sprint.isInWork()) {
+               sprintId = sprint.getStoreObject();
+            }
          }
       } catch (Exception ex) {
          // do nothing
       }
-      return backlogUuid;
+      return sprintId;
    }
 
 }
