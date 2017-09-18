@@ -75,6 +75,36 @@
 								<id>org.eclipse.equinox.registry</id>
 								<versionRange>0.0.0</versionRange>
 							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>                        
+								<id>org.apache.httpcomponents.httpclient</id>   
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>                        
+								<id>org.apache.httpcomponents.httpcore</id>   
+								<versionRange>0.0.0</versionRange>
+							</requirement>							
+							<requirement>
+								<type>eclipse-plugin</type>                        
+								<id>org.apache.commons.lang</id>   
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>                        
+								<id>org.apache.commons.logging</id>   
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>                        
+								<id>org.hamcrest.core</id>   
+								<versionRange>0.0.0</versionRange>
+							</requirement>
+							<requirement>
+								<type>eclipse-plugin</type>                        
+								<id>rest.assured</id>   
+								<versionRange>0.0.0</versionRange>
+							</requirement>																
 						</extraRequirements>
 					</dependency-resolution>
 				</configuration>

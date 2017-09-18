@@ -20,6 +20,9 @@ import org.eclipse.osee.orcs.rest.client.OseeClientStandaloneSetup;
 
 public final class IntegrationUtil {
 
+   private static final int PORT = 8089;
+   private static final String DEFAULT_URL = "http://localhost:" + String.valueOf(PORT);
+
    private IntegrationUtil() {
       // Utility class
    }
@@ -30,7 +33,7 @@ public final class IntegrationUtil {
    }
 
    private static String getOseeApplicationServer() {
-      return System.getProperty(OSEE_APPLICATION_SERVER, "http://localhost:8089");
+      return System.getProperty(OSEE_APPLICATION_SERVER, DEFAULT_URL);
    }
 
    private static Map<String, Object> createClientConfig() {
@@ -42,6 +45,11 @@ public final class IntegrationUtil {
    public static AccountClient createAccountClient() {
       Map<String, Object> config = createClientConfig();
       return AccountClientStandaloneSetup.createClient(config);
+   }
+
+   public static int getPort() {
+      String[] splitForPort = getOseeApplicationServer().split(":");
+      return (splitForPort.length == 3) ? Integer.valueOf(splitForPort[2]) : PORT;
    }
 
 }

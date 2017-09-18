@@ -61,7 +61,7 @@
 								<type>eclipse-plugin</type>
 								<id>org.eclipse.equinox.registry</id>
 								<versionRange>0.0.0</versionRange>
-							</requirement>
+							</requirement>							
 						</extraRequirements>
 					</dependency-resolution>
 				</configuration>
