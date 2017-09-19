@@ -91,7 +91,8 @@ public class ChangeData {
    }
 
    private boolean isImplDetails(Change change) {
-      return ArtifactTypeManager.inheritsFrom(change.getArtifactType(), CoreArtifactTypes.ImplementationDetails);
+      return ArtifactTypeManager.inheritsFrom(change.getArtifactType(),
+         CoreArtifactTypes.AbstractImplementationDetails);
    }
 
    private boolean isDeleted(Change change) {

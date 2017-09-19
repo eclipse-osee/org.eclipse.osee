@@ -417,7 +417,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
       Collection<String> scripts = requirementToCodeUnitsMap.getValues(requirement);
       if (scripts == null) {
          if (requirement.isOfType(CoreArtifactTypes.IndirectSoftwareRequirement) || requirement.isOfType(
-            CoreArtifactTypes.ImplementationDetails)) {
+            CoreArtifactTypes.AbstractImplementationDetails)) {
             statusLine[Index.TEST_SCRIPT.ordinal()] = requirement.getArtifactTypeName();
             sumFormula.insert(0, "=sum(0");
             statusLine[Index.HOURS_REMAINING.ordinal()] = sumFormula.toString();
@@ -484,7 +484,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
 
       statusLine[Index.Category.ordinal()] = requirement.getSoleAttributeValue(CoreAttributeTypes.Category, "");
       if (requirement.isOfType(CoreArtifactTypes.IndirectSoftwareRequirement) || requirement.isOfType(
-         CoreArtifactTypes.ImplementationDetails)) {
+         CoreArtifactTypes.AbstractImplementationDetails)) {
          statusLine[Index.Category.ordinal()] = "I";
       }
 

@@ -230,11 +230,11 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       RelationManager.getRelatedArtifacts(artifacts, 999, INCLUDE_DELETED,
          CoreRelationTypes.Default_Hierarchical__Child);
       for (Artifact artifact : artifacts) {
-         if (!artifact.isOfType(CoreArtifactTypes.Folder, CoreArtifactTypes.ImplementationDetails)) {
+         if (!artifact.isOfType(CoreArtifactTypes.Folder, CoreArtifactTypes.AbstractImplementationDetails)) {
             lowLevelReqs.add(artifact);
          }
          for (Artifact descendant : artifact.getDescendants()) {
-            if (!descendant.isOfType(CoreArtifactTypes.Folder, CoreArtifactTypes.ImplementationDetails)) {
+            if (!descendant.isOfType(CoreArtifactTypes.Folder, CoreArtifactTypes.AbstractImplementationDetails)) {
                lowLevelReqs.add(descendant);
             }
          }
@@ -246,11 +246,11 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       RelationManager.getRelatedArtifacts(artifacts, 999, INCLUDE_DELETED,
          CoreRelationTypes.Default_Hierarchical__Child);
       for (Artifact artifact : artifacts) {
-         if (!artifact.isOfType(CoreArtifactTypes.Folder, CoreArtifactTypes.ImplementationDetails)) {
+         if (!artifact.isOfType(CoreArtifactTypes.Folder, CoreArtifactTypes.AbstractImplementationDetails)) {
             components.add(artifact);
          }
          for (Artifact descendant : artifact.getDescendants()) {
-            if (!descendant.isOfType(CoreArtifactTypes.Folder, CoreArtifactTypes.ImplementationDetails)) {
+            if (!descendant.isOfType(CoreArtifactTypes.Folder, CoreArtifactTypes.AbstractImplementationDetails)) {
                components.add(descendant);
             }
          }

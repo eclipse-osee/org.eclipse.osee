@@ -43,6 +43,7 @@ public final class CoreArtifactTypes {
    public static final IArtifactType ImageArtifact = TokenFactory.createArtifactType(800, "Image Artifact");
    public static final IArtifactType IndirectSoftwareRequirement = TokenFactory.createArtifactType(25, "Indirect Software Requirement");
    public static final IArtifactType InterfaceRequirement = TokenFactory.createArtifactType(32, "Interface Requirement");
+   public static final IArtifactType AbstractImplementationDetails = TokenFactory.createArtifactType(921211884, "Abstract Implementation Details");
    public static final IArtifactType ImplementationDetails = TokenFactory.createArtifactType(26, "Implementation Details");
    public static final IArtifactType ImplementationDetailsProcedure = TokenFactory.createArtifactType(69914, "Implementation Details Procedure");
    public static final IArtifactType ImplementationDetailsFunction = TokenFactory.createArtifactType(139802, "Implementation Details Function");
