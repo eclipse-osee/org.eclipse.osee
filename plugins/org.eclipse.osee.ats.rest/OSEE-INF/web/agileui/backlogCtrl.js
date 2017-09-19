@@ -16,10 +16,12 @@ angular
 						'LayoutService',
 						'PopupService',
 						function($scope, AgileFactory, $resource, $window,
-								$modal, $filter, $routeParams, LayoutService, PopupService) {
+								$modal, $filter, $routeParams, LayoutService,
+								PopupService) {
 
 							$scope.team = {};
 							$scope.team.uuid = $routeParams.team;
+							$scope.default = $routeParams.default;
 							$scope.count = "--";
 
 							// ////////////////////////////////////
@@ -30,8 +32,8 @@ angular
 									+ '  <a href="/ats/ui/action/{{row.getProperty(col.field)}}">{{row.getProperty(col.field)}}</a>'
 									+ '</div>';
 
-							$scope.backlogGridOptions = {
-								data : 'items',
+							$scope.tasksGridOptions = {
+								data : 'tasks',
 								enableHighlighting : true,
 								enableColumnResize : true,
 								multiSelect : false,
@@ -53,6 +55,10 @@ angular
 									displayName : 'Name',
 									width : 310
 								}, {
+									field : 'changeType',
+									displayName : 'Change Type',
+									width : 50
+								}, {
 									field : 'assignees',
 									displayName : 'Assignees',
 									width : 160
@@ -65,36 +71,121 @@ angular
 									displayName : 'Sprint',
 									width : 60,
 								}, {
+									field : "unPlannedWork",
+									displayName : 'UnPlanned',
+									width : 20,
+								}, {
+									field : "backlog",
+									displayName : 'Backlog',
+									width : 60,
+								}, {
+									field : "version",
+									displayName : 'Version',
+									width : 60,
+								}, {
 									field : "atsId",
 									displayName : 'ATS Id',
 									width : 90,
 									cellTemplate : atsIdCellTemplate
+								}, {
+									field : "createDate",
+									displayName : 'Created Date',
+									width : 90,
+								}, {
+									field : "compCancelDate",
+									displayName : 'Comp/Cancel Date',
+									width : 90,
+								}, {
+									field : "notes",
+									displayName : 'Notes',
+									width : 90,
 								} ]
 							};
 
-							$scope.updateItems = function() {
-								var loadingModal = PopupService.showLoadingModal();
-								AgileFactory.getBacklogItems($scope.team).$promise
-										.then(function(data) {
-											$scope.items = data;
-											$scope.count = $scope.items.length;
-											LayoutService.resizeElementHeight("backlogTable");
-											LayoutService.refresh();
-											loadingModal.close();
-										});
+							var getTasks = function() {
+								var selected = $scope.selectedItem;
+
+								if (selected) {
+									if (selected.isBacklog) {
+										AgileFactory.getBacklogItems(selected).$promise
+												.then(function(data) {
+													$scope.tasks = data;
+													$scope.count = $scope.tasks.length;
+													LayoutService.resizeElementHeight("taskTable");
+													LayoutService.refresh();
+												});
+									} else {
+										AgileFactory.getSprintItems(selected).$promise
+												.then(function(data) {
+													$scope.tasks = data;
+													$scope.count = $scope.tasks.length;
+													LayoutService.resizeElementHeight("taskTable");
+													LayoutService.refresh();
+												});
+									}
+								}
+							}
+
+							// populate model with items
+							$scope.$watch("selectedItem", function() {
+								if ($scope.selectedItem) {
+									getTasks();
+								}
+							});
+
+							// add backlog and sprints to pulldown and set default if specified as query parameter
+							$scope.setupItemsPulldown = function() {
+								var loadingModal = PopupService
+										.showLoadingModal();
 								AgileFactory.getTeamSingle($scope.team).$promise
 										.then(function(data) {
 											$scope.selectedTeam = data;
-											AgileFactory.getBacklog($scope.selectedTeam).$promise
-											.then(function(data) {
-												if (data && data.name) {
-													$scope.selectedTeam.backlog = data.name;
-													$scope.selectedTeam.backlogUuid = data.uuid;
-												}
-											});
+											var activeItems = [];
+											AgileFactory
+													.getBacklog($scope.selectedTeam).$promise
+													.then(function(data) {
+														if (data && data.name) {
+															$scope.selectedTeam.backlog = data.name;
+															$scope.selectedTeam.backlogUuid = data.uuid;
+															data.isBacklog = true;
+															// add backlog first
+															var defaultBacklogItem = data;
+															activeItems
+																	.push(data);
+
+															AgileFactory
+																	.getSprints($scope.team).$promise
+																	.then(function(
+																			data) {
+																		var defaultSprintItem = null;
+																		for ( var index in data) {
+																			var sprint = data[index];
+																			if (sprint.active) {
+																				if (!(defaultSprintItem)) {
+																					defaultSprintItem = sprint;
+																				}
+																				sprint.isBacklog = false;
+																				activeItems
+																						.push(sprint);
+																			}
+																		}
+																		$scope.activeItems = activeItems;
+
+																		if ($scope.default == "sprint") {
+																			$scope.selectedItem = defaultSprintItem;
+																		}else if ($scope.default = "backlog") {
+																			$scope.selectedItem = defaultBacklogItem;
+																		}
+																		loadingModal
+																				.close();
+																	});
+
+														}
+													});
 										});
 							}
 
-							$scope.updateItems();
-							
+
+							$scope.setupItemsPulldown();
+
 						} ]);

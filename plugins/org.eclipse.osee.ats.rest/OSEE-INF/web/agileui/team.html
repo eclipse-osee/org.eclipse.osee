@@ -3,6 +3,10 @@
 <body>
 	<div class="container-fluid">
 
+		<h3>Team: {{selectedTeam.name}}</h3>
+		<h5>Backlog: {{selectedTeam.backlog}}</h5>
+		<h5>Sprint: {{selectedTeam.sprint}}</h5>
+
 		<div class="row col-lg-12"">
 			<div class="panel panel-primary" id="backlogContainer">
 				<div class="panel-heading" id="backlogHeader">
@@ -10,7 +14,7 @@
 						Team: <strong>{{selectedTeam.name}}</strong>
 					</div>
 					<div class="col-xs-4">
-						Backlog: <strong>{{selectedTeam.backlog}}</strong>
+						Sprint: <strong>{{selectedTeam.sprint}}</strong>
 					</div>
 					<div class="col-xs-4">
 						Items: <strong>{{count}}</strong>
@@ -22,8 +26,8 @@
 						</button>
 					</span>
 				</div>
-				<div ng-show="items" id="backlogTable" class="gridStyle"
-					ng-grid="backlogGridOptions"></div>
+				<div ng-show="items" id="sprintTable" class="gridStyle"
+					ng-grid="sprintGridOptions"></div>
 			</div>
 		</div>
 

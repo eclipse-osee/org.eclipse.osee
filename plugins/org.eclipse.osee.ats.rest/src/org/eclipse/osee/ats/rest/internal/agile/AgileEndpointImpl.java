@@ -76,7 +76,6 @@ import org.eclipse.osee.framework.jdk.core.type.ClassBasedResourceToken;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -432,6 +431,27 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    }
 
    @Override
+   public List<AgileItem> getSprintItems(long teamId, long sprintId) {
+      List<AgileItem> items = new LinkedList<>();
+      IAgileSprint sprint = atsServer.getAgileService().getAgileSprint(sprintId);
+      IAgileTeam team = atsServer.getAgileService().getAgileTeam(teamId);
+      IAgileBacklog backlog = atsServer.getAgileService().getAgileBacklog(team);
+      if (sprint != null) {
+         int x = 1;
+         for (IAgileItem aItem : atsServer.getAgileService().getItems(sprint)) {
+            AgileItem item = SprintUtil.getAgileItem(aItem, atsServer);
+            item.setOrder(x++);
+            item.setSprint(sprint.getName());
+            if (backlog != null) {
+               item.setBacklog(backlog.getName());
+            }
+            items.add(item);
+         }
+      }
+      return items;
+   }
+
+   @Override
    public JaxKbSprint getSprintItemsForKb(long teamUuid, long sprintUuid) {
       return KanbanOperations.getSprintItemsForKb(atsServer, teamUuid, sprintUuid);
    }
@@ -504,13 +524,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       if (backlog != null) {
          int x = 1;
          for (IAgileItem aItem : atsServer.getAgileService().getItems(backlog)) {
-            AgileItem item = new AgileItem();
-            item.setName(aItem.getName());
-            item.setFeatureGroups(Collections.toString("; ", atsServer.getAgileService().getFeatureGroups(aItem)));
-            item.setUuid(aItem.getId());
-            item.setAssignees(Collections.toString("; ", aItem.getStateMgr().getAssigneesStr()));
-            item.setAtsId(aItem.getAtsId());
-            item.setState(aItem.getStateMgr().getCurrentStateName());
+            AgileItem item = SprintUtil.getAgileItem(aItem, atsServer);
             item.setOrder(x++);
             IAgileSprint sprint = atsServer.getAgileService().getSprint(aItem);
             if (sprint != null) {
@@ -576,7 +590,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       return objs;
    }
 
-   public Collection<IAtsWorkItem> getSprintItems(long teamUuid, long sprintUuid) {
+   public Collection<IAtsWorkItem> getSprintWorkItems(long teamUuid, long sprintUuid) {
       ArtifactReadable sprintArt = atsServer.getArtifact(sprintUuid);
       return atsServer.getWorkItemFactory().getWorkItems(
          sprintArt.getRelated(AtsRelationTypes.AgileSprintToItem_AtsItem).getList());
@@ -586,7 +600,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    public Response getSprintItemsUI(long teamUuid, long sprintUuid) {
       ArtifactReadable sprintArt = atsServer.getArtifact(sprintUuid);
       Conditions.assertNotNull(sprintArt, "Sprint not found with id %s", sprintUuid);
-      Collection<IAtsWorkItem> myWorldItems = getSprintItems(teamUuid, sprintUuid);
+      Collection<IAtsWorkItem> myWorldItems = getSprintWorkItems(teamUuid, sprintUuid);
       CustomizeData custData = getDefaultAgileCustData();
       Conditions.assertNotNull(custData, "Can't retrieve default customization");
       String table =
@@ -611,7 +625,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    public Response getSprintItemsUICustomized(long teamUuid, long sprintUuid, String customizeGuid) {
       ArtifactReadable sprintArt = atsServer.getArtifact(sprintUuid);
       Conditions.assertNotNull(sprintArt, "Sprint not found with id %s", sprintUuid);
-      Collection<IAtsWorkItem> myWorldItems = getSprintItems(teamUuid, sprintUuid);
+      Collection<IAtsWorkItem> myWorldItems = getSprintWorkItems(teamUuid, sprintUuid);
       CustomizeData custData = atsServer.getCustomizationByGuid(customizeGuid);
       Conditions.assertNotNull(custData, "Can't retrieve customization with id %s", customizeGuid);
       String table =

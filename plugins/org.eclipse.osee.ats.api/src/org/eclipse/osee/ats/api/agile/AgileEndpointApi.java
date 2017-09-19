@@ -66,6 +66,11 @@ public interface AgileEndpointApi {
    List<AgileItem> getBacklogItems(@PathParam("teamUuid") long teamUuid);
 
    @GET
+   @Path("team/{teamUuid}/sprint/{sprintUuid}/item")
+   @Produces(MediaType.APPLICATION_JSON)
+   List<AgileItem> getSprintItems(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
+
+   @GET
    @Path("team/{teamUuid}/sprint")
    @Produces(MediaType.APPLICATION_JSON)
    public List<JaxAgileSprint> getSprints(@PathParam("teamUuid") long teamUuid);

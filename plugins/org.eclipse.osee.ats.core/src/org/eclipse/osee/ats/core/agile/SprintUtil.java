@@ -11,11 +11,18 @@
 package org.eclipse.osee.ats.core.agile;
 
 import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.agile.AgileItem;
 import org.eclipse.osee.ats.api.agile.AgileSprintData;
+import org.eclipse.osee.ats.api.agile.IAgileItem;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.core.column.CompletedCancelledDateColumn;
+import org.eclipse.osee.ats.core.column.CreatedDateColumn;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 /**
  * @author Donald G. Dunne
@@ -56,4 +63,25 @@ public class SprintUtil {
       return burndown;
    }
 
+   public static AgileItem getAgileItem(IAgileItem aItem, IAtsServices services) {
+      AgileItem item = new AgileItem();
+      item.setName(aItem.getName());
+      item.setFeatureGroups(Collections.toString("; ", services.getAgileService().getFeatureGroups(aItem)));
+      item.setUuid(aItem.getId());
+      item.setAssignees(Collections.toString("; ", aItem.getStateMgr().getAssigneesStr()));
+      item.setAtsId(aItem.getAtsId());
+      item.setState(aItem.getStateMgr().getCurrentStateName());
+      item.setChangeType(
+         services.getAttributeResolver().getSoleAttributeValue(aItem, AtsAttributeTypes.ChangeType, ""));
+      IAtsVersion ver = services.getVersionService().getTargetedVersion(aItem);
+      item.setVersion(ver == null ? "" : ver.getName());
+      Boolean unplanned =
+         services.getAttributeResolver().getSoleAttributeValue(aItem, AtsAttributeTypes.UnPlannedWork, false);
+      item.setUnPlannedWork((unplanned ? "U" : ""));
+      item.setNotes(services.getAttributeResolver().getSoleAttributeValue(aItem, AtsAttributeTypes.SmaNote, ""));
+      item.setCreateDate(CreatedDateColumn.getDateStr(item));
+      item.setCompCancelDate(CompletedCancelledDateColumn.getCompletedCancelledDateStr(item));
+      item.setLink("/ats/ui/action/" + item.getAtsId());
+      return item;
+   }
 }

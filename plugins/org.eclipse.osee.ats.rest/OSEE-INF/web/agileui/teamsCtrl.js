@@ -27,6 +27,7 @@ angular
 							var openTeamTmpl = '<button class="btn btn-default btn-sm" ng-click="openTeam(row.entity)">Open</button>';
 							var configTeamTmpl = '<button class="btn btn-default btn-sm" ng-click="configTeam(row.entity)">Config</button>';
 							var openBacklogImpl = '<button class="btn btn-default btn-sm" ng-click="openBacklog(row.entity)">Backlog</button>';
+							var openSprintImpl = '<button class="btn btn-default btn-sm" ng-click="openSprint(row.entity)">Sprint</button>';
 							var openKanbanImpl = '<button class="btn btn-default btn-sm" ng-click="openKanban(row.entity)">Kanban</button>';
 							var openBurndownImpl = '<button class="btn btn-default btn-sm" ng-click="openBurndown(row.entity)">Burn-Down</button>';
 							var openBurnupImpl = '<button class="btn btn-default btn-sm" ng-click="openBurnup(row.entity)">Burn-Up</button>';
@@ -55,42 +56,57 @@ angular
 									field : "open",
 									displayName : 'Open',
 									width : 54,
-									cellTemplate : openTeamTmpl
+									cellTemplate : openTeamTmpl,
+									cellClass: 'grid-align'
 								}, {
 									field : "backlog",
 									displayName : 'Backlog',
 									width : 70,
-									cellTemplate : openBacklogImpl
+									cellTemplate : openBacklogImpl,
+									cellClass: 'grid-align'
+								}, {
+									field : "sprint",
+									displayName : 'Sprint',
+									width : 60,
+									cellTemplate : openSprintImpl,
+									cellClass: 'grid-align'
 								}, {
 									field : "kanban",
 									displayName : 'Kanban',
 									width : 66,
-									cellTemplate : openKanbanImpl
+									cellTemplate : openKanbanImpl,
+									cellClass: 'grid-align'
 								}, {
 									field : "burndown",
 									displayName : 'Burn-Down',
 									width : 80,
-									cellTemplate : openBurndownImpl
+									
+									cellTemplate : openBurndownImpl,
+									cellClass: 'grid-align'
 								}, {
 									field : "burnup",
 									displayName : 'Burn-Up',
 									width : 74,
-									cellTemplate : openBurnupImpl
+									cellTemplate : openBurnupImpl,
+									cellClass: 'grid-align'
 								}, {
 									field : "summary",
 									displayName : 'Summary',
 									width : 79,
-									cellTemplate : openSummaryImpl
+									cellTemplate : openSummaryImpl,
+									cellClass: 'grid-align'
 								}, {
 									field : "data",
 									displayName : 'Data',
 									width : 60,
-									cellTemplate : openDataImpl
+									cellTemplate : openDataImpl,
+									cellClass: 'grid-align'
 								}, {
 									field : "config",
 									displayName : 'Config',
 									width : 60,
-									cellTemplate : configTeamTmpl
+									cellTemplate : configTeamTmpl,
+									cellClass: 'grid-align'
 								} ]
 							};
 
@@ -135,7 +151,12 @@ angular
 
 							$scope.openBacklog = function(team) {
 								window.location.assign("main#/backlog?team="
-										.concat(team.uuid))
+										.concat(team.uuid).concat("&default=backlog"))
+							}
+
+							$scope.openSprint = function(team) {
+								window.location.assign("main#/sprint?team="
+										.concat(team.uuid).concat("&default=sprint"))
 							}
 
 							$scope.openSummary = function(team) {
