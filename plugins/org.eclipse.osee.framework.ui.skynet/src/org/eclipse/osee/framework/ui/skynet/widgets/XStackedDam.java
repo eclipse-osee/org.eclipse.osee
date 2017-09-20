@@ -113,7 +113,7 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
          }
          setNotificationsAllowed(true);
          loadPageValues = true;
-         onPageChange(getCurrentPage());
+         onPageChange(stackedControl.getPages().iterator().next());
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }

@@ -326,6 +326,7 @@ public abstract class XStackedWidget<T> extends XLabel {
       @Override
       public void run() {
          stackedControl.previous();
+         onPageChange(getCurrentPage());
       }
    }
 
