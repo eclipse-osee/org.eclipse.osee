@@ -8,31 +8,30 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.loader;
+package org.eclipse.osee.orcs.db.internal.proxy;
 
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.framework.resource.management.IResourceManager;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
-import org.eclipse.osee.orcs.core.ds.DataProxyFactory;
 import org.eclipse.osee.orcs.data.AttributeTypes;
+import org.eclipse.osee.orcs.db.internal.loader.ProxyDataFactory;
 
 /**
  * @author Roberto E. Escobar
  */
 public class AttributeDataProxyFactory implements ProxyDataFactory {
-
-   private final DataProxyFactoryProvider proxyProvider;
    private final AttributeTypes attributeTypeCache;
-   private final JdbcClient jdbcClient;
+   private final IResourceManager resourceManager;
+   private final Log logger;
 
-   public AttributeDataProxyFactory(DataProxyFactoryProvider proxyProvider, JdbcClient jdbcClient, AttributeTypes attributeTypes) {
-      super();
-      this.proxyProvider = proxyProvider;
+   public AttributeDataProxyFactory(AttributeTypes attributeTypes, IResourceManager resourceManager, Log logger) {
       this.attributeTypeCache = attributeTypes;
-      this.jdbcClient = jdbcClient;
+      this.resourceManager = resourceManager;
+      this.logger = logger;
    }
 
    @Override
@@ -41,16 +40,20 @@ public class AttributeDataProxyFactory implements ProxyDataFactory {
 
       Conditions.checkNotNull(attributeType, "AttributeType", "Unable to find attributeType for [%s]", typeUuid);
 
-      String dataProxyFactoryId = attributeTypeCache.getAttributeProviderId(attributeType);
-
-      DataProxyFactory factory = proxyProvider.getFactory(dataProxyFactoryId);
-      Conditions.checkNotNull(factory, "DataProxyFactory", "Unable to find data proxy factory for [%s]",
-         dataProxyFactoryId);
+      String attributeProviderId = attributeTypeCache.getAttributeProviderId(attributeType);
 
       Object checkedValue = intern(attributeType, value);
-      DataProxy proxy = factory.createInstance(dataProxyFactoryId);
-      proxy.setData(checkedValue, uri);
-      return proxy;
+      AbstractDataProxy dataProxy;
+      if (attributeProviderId.equals("UriAttributeDataProvider") || attributeProviderId.equals(
+         "MappedAttributeDataProvider")) {
+         dataProxy = new UriDataProxy();
+      } else {
+         dataProxy = new VarCharDataProxy();
+      }
+      dataProxy.setLogger(logger);
+      dataProxy.setStorage(new Storage(new ResourceHandler(resourceManager)));
+      dataProxy.setData(checkedValue, uri);
+      return dataProxy;
    }
 
    private Object intern(AttributeTypeId attributeType, Object original) throws OseeCoreException {

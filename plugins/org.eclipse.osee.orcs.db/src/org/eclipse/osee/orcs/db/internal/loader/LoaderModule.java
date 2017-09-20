@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader;
 
+import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsTypes;
@@ -22,6 +23,7 @@ import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.loader.data.OrcsObjectFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.loader.handlers.LoaderSqlHandlerFactoryUtil;
 import org.eclipse.osee.orcs.db.internal.loader.processor.DynamicLoadProcessor;
+import org.eclipse.osee.orcs.db.internal.proxy.AttributeDataProxyFactory;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactory;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
@@ -29,24 +31,22 @@ import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
  * @author Roberto E. Escobar
  */
 public class LoaderModule {
-
    private final Log logger;
    private final JdbcClient jdbcClient;
    private final IdentityManager idFactory;
-   private final DataProxyFactoryProvider proxyProvider;
    private final SqlJoinFactory joinFactory;
+   private final IResourceManager resourceManager;
 
-   public LoaderModule(Log logger, JdbcClient jdbcClient, IdentityManager idFactory, DataProxyFactoryProvider proxyProvider, SqlJoinFactory joinFactory) {
-      super();
+   public LoaderModule(Log logger, JdbcClient jdbcClient, IdentityManager idFactory, SqlJoinFactory joinFactory, IResourceManager resourceManager) {
       this.logger = logger;
       this.jdbcClient = jdbcClient;
       this.idFactory = idFactory;
-      this.proxyProvider = proxyProvider;
       this.joinFactory = joinFactory;
+      this.resourceManager = resourceManager;
    }
 
    public ProxyDataFactory createProxyDataFactory(AttributeTypes attributeTypes) {
-      return new AttributeDataProxyFactory(proxyProvider, jdbcClient, attributeTypes);
+      return new AttributeDataProxyFactory(attributeTypes, resourceManager, logger);
    }
 
    public OrcsObjectFactory createOrcsObjectFactory(ProxyDataFactory proxyFactory) {

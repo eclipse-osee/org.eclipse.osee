@@ -9,6 +9,5 @@
    <reference bind="setExecutorAdmin" cardinality="1..1" interface="org.eclipse.osee.executor.admin.ExecutorAdmin" name="ExecutorAdmin" policy="static"/>
    <reference bind="setResourceManager" cardinality="1..1" interface="org.eclipse.osee.framework.resource.management.IResourceManager" name="IResourceManager" policy="static"/>
    <reference bind="setSystemPreferences" cardinality="1..1" interface="org.eclipse.osee.orcs.SystemPreferences" name="SystemPreferences" policy="static"/>
-   <reference bind="setDataProxyFactoryProvider" cardinality="1..1" interface="org.eclipse.osee.orcs.db.internal.loader.DataProxyFactoryProvider" name="DataProxyFactoryProvider" policy="static"/>
    <reference bind="setSqlJoinFactory" cardinality="1..1" interface="org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory" name="SqlJoinFactory" policy="static"/>
 </scr:component>

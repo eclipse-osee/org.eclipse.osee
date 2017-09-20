@@ -23,7 +23,6 @@ import org.eclipse.osee.orcs.core.ds.OrcsTypesDataStore;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.db.internal.branch.BranchModule;
 import org.eclipse.osee.orcs.db.internal.branch.KeyValueModule;
-import org.eclipse.osee.orcs.db.internal.loader.DataProxyFactoryProvider;
 import org.eclipse.osee.orcs.db.internal.loader.LoaderModule;
 import org.eclipse.osee.orcs.db.internal.search.QueryModule;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
@@ -42,7 +41,6 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
    private SystemPreferences preferences;
    private ExecutorAdmin executorAdmin;
    private IResourceManager resourceManager;
-   private DataProxyFactoryProvider proxyProvider;
 
    private OrcsTypesDataStore typesDataStore;
    private DataModuleFactory dataModuleFactory;
@@ -70,10 +68,6 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
       this.preferences = preferences;
    }
 
-   public void setDataProxyFactoryProvider(DataProxyFactoryProvider proxyProvider) {
-      this.proxyProvider = proxyProvider;
-   }
-
    public void setSqlJoinFactory(SqlJoinFactory joinFactory) {
       this.joinFactory = joinFactory;
    }
@@ -86,7 +80,7 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
       TypesModule typesModule = new TypesModule(logger, jdbcClient, joinFactory, resourceManager);
       typesDataStore = typesModule.createTypesDataStore();
 
-      LoaderModule loaderModule = new LoaderModule(logger, jdbcClient, idManager, proxyProvider, joinFactory);
+      LoaderModule loaderModule = new LoaderModule(logger, jdbcClient, idManager, joinFactory, resourceManager);
 
       queryModule = new QueryModule(logger, executorAdmin, jdbcClient, joinFactory, idManager);
       queryModule.startIndexer(resourceManager);
