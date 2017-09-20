@@ -22,6 +22,8 @@ import org.eclipse.osee.orcs.core.annotations.OseeAttribute;
  */
 @OseeAttribute("StringAttribute")
 public class StringAttribute extends CharacterBackedAttribute<String> {
+   public static final String NAME = StringAttribute.class.getSimpleName();
+
    @Override
    public String getValue() throws OseeCoreException {
       return getDataProxy().getValueAsString();

@@ -14,7 +14,6 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -24,6 +23,14 @@ import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.AttributeDataFactory;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.ResourceNameResolver;
+import org.eclipse.osee.orcs.core.internal.attribute.primitives.BooleanAttribute;
+import org.eclipse.osee.orcs.core.internal.attribute.primitives.CompressedContentAttribute;
+import org.eclipse.osee.orcs.core.internal.attribute.primitives.DateAttribute;
+import org.eclipse.osee.orcs.core.internal.attribute.primitives.EnumeratedAttribute;
+import org.eclipse.osee.orcs.core.internal.attribute.primitives.FloatingPointAttribute;
+import org.eclipse.osee.orcs.core.internal.attribute.primitives.IntegerAttribute;
+import org.eclipse.osee.orcs.core.internal.attribute.primitives.JavaObjectAttribute;
+import org.eclipse.osee.orcs.core.internal.attribute.primitives.StringAttribute;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 
 /**
@@ -31,12 +38,10 @@ import org.eclipse.osee.orcs.data.AttributeTypes;
  */
 public class AttributeFactory {
 
-   private final AttributeClassResolver classResolver;
    private final AttributeDataFactory dataFactory;
    private final AttributeTypes cache;
 
-   public AttributeFactory(AttributeClassResolver classResolver, AttributeDataFactory dataFactory, AttributeTypes cache) {
-      this.classResolver = classResolver;
+   public AttributeFactory(AttributeDataFactory dataFactory, AttributeTypes cache) {
       this.dataFactory = dataFactory;
       this.cache = cache;
    }
@@ -54,7 +59,7 @@ public class AttributeFactory {
       AttributeTypeId type = cache.get(data.getTypeUuid());
       Conditions.checkNotNull(type, "attributeType", "Cannot find attribute type with uuid[%s]", data.getTypeUuid());
 
-      Attribute<T> attribute = classResolver.createAttribute(type);
+      Attribute<T> attribute = createAttribute(type);
 
       DataProxy proxy = data.getDataProxy();
       ResourceNameResolver resolver = createResolver(attribute);
@@ -66,6 +71,34 @@ public class AttributeFactory {
       container.add(type, attribute);
 
       return attribute;
+   }
+
+   private <T> Attribute<T> createAttribute(AttributeTypeId attributeType) {
+      String baseAttributeType = cache.getBaseAttributeTypeId(attributeType);
+
+      Attribute<?> attribute;
+
+      // Note: these comparisons are in order of likelihood of matching for the ever so slight advantage of fewer String comparisons
+      if (baseAttributeType.equals(StringAttribute.NAME)) {
+         attribute = new StringAttribute();
+      } else if (baseAttributeType.equals(BooleanAttribute.NAME)) {
+         attribute = new BooleanAttribute();
+      } else if (baseAttributeType.equals(EnumeratedAttribute.NAME)) {
+         attribute = new EnumeratedAttribute();
+      } else if (baseAttributeType.equals(DateAttribute.NAME)) {
+         attribute = new DateAttribute();
+      } else if (baseAttributeType.equals(IntegerAttribute.NAME)) {
+         attribute = new IntegerAttribute();
+      } else if (baseAttributeType.equals(FloatingPointAttribute.NAME)) {
+         attribute = new FloatingPointAttribute();
+      } else if (baseAttributeType.equals(JavaObjectAttribute.NAME)) {
+         attribute = new JavaObjectAttribute();
+      } else if (baseAttributeType.equals(CompressedContentAttribute.NAME)) {
+         attribute = new CompressedContentAttribute();
+      } else {
+         attribute = new StringAttribute();
+      }
+      return (Attribute<T>) attribute;
    }
 
    public <T> Attribute<T> copyAttribute(AttributeData source, BranchId ontoBranch, AttributeContainer destinationContainer) throws OseeCoreException {

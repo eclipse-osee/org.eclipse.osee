@@ -23,6 +23,7 @@ import org.eclipse.osee.orcs.core.annotations.OseeAttribute;
  */
 @OseeAttribute("DateAttribute")
 public class DateAttribute extends CharacterBackedAttribute<Date> {
+   public static final String NAME = DateAttribute.class.getSimpleName();
    private static final DateFormat MMDDYYHHMM = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
 
    /**

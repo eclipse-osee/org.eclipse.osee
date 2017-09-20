@@ -20,6 +20,7 @@ import org.eclipse.osee.orcs.core.annotations.OseeAttribute;
 
 @OseeAttribute("CompressedContentAttribute")
 public final class CompressedContentAttribute extends BinaryAttribute<InputStream> {
+   public static final String NAME = CompressedContentAttribute.class.getSimpleName();
 
    @Override
    public InputStream getValue() throws OseeCoreException {

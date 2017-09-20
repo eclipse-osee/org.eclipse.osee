@@ -18,7 +18,6 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-   AttributeClassResolverTest.class,
    AttributeCollectionTest.class,
    AttributeFactoryTest.class,
    AttributeResultSetTest.class,

@@ -14,8 +14,6 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -52,14 +50,12 @@ public class AttributeFactoryTest {
    public ExpectedException thrown = ExpectedException.none();
 
    // @formatter:off
-   @Mock private AttributeClassResolver classResolver;
    @Mock private AttributeTypes cache;
    @Mock private AttributeDataFactory dataFactory;
 
    @Mock private AttributeData attributeData;
    @Mock private VersionData attrVersionData;
 
-   @Mock private AttributeTypeToken attributeType;
    @Mock private Attribute<Object> attribute;
    @Mock private Attribute<Object> destinationAttribute;
 
@@ -68,47 +64,35 @@ public class AttributeFactoryTest {
    // @formatter:on
 
    private AttributeFactory factory;
-   private AttributeTypeId expectedGuid;
+   private final AttributeTypeToken attributeType = CoreAttributeTypes.Name;
 
    @Before
    public void init() throws OseeCoreException {
       MockitoAnnotations.initMocks(this);
 
-      factory = new AttributeFactory(classResolver, dataFactory, cache);
+      factory = new AttributeFactory(dataFactory, cache);
 
-      expectedGuid = CoreAttributeTypes.Name;
-
-      when(attributeData.getTypeUuid()).thenReturn(expectedGuid.getId());
-      when(cache.get(expectedGuid.getId())).thenReturn(attributeType);
-      when(classResolver.createAttribute(attributeType)).thenReturn(attribute);
+      when(attributeData.getTypeUuid()).thenReturn(attributeType.getId());
+      when(cache.get(attributeType.getId())).thenReturn(attributeType);
+      when(cache.getBaseAttributeTypeId(attributeType)).thenReturn("StringAttribute");
       when(attributeData.getDataProxy()).thenReturn(proxy);
    }
 
    @Test
    public void testCreateAttributeNullType() throws OseeCoreException {
-      when(cache.get(expectedGuid.getId())).thenReturn(null);
+      when(cache.get(attributeType.getId())).thenReturn(null);
 
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage(
-         "attributeType cannot be null - Cannot find attribute type with uuid[" + expectedGuid.getId() + "]");
+         "attributeType cannot be null - Cannot find attribute type with uuid[" + attributeType.getId() + "]");
       factory.createAttribute(container, attributeData);
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
    @Test
    public void testCreateAttribute() throws OseeCoreException {
-      ArgumentCaptor<ResourceNameResolver> resolverCapture = ArgumentCaptor.forClass(ResourceNameResolver.class);
-      ArgumentCaptor<WeakReference> refCapture = ArgumentCaptor.forClass(WeakReference.class);
-
       Attribute<Object> actual = factory.createAttribute(container, attributeData);
-
-      assertTrue(attribute == actual);
-
-      verify(proxy).setResolver(resolverCapture.capture());
-      verify(attribute).internalInitialize(eq(cache), refCapture.capture(), eq(attributeData), eq(false), eq(false));
-      verify(container).add(attributeType, attribute);
-      assertEquals(container, refCapture.getValue().get());
-
+      assertEquals(attribute.getId(), actual.getId());
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
@@ -127,13 +111,7 @@ public class AttributeFactoryTest {
       Attribute<Object> actual = factory.createAttributeWithDefaults(container, artifactData, attributeType);
 
       verify(dataFactory).create(artifactData, attributeType);
-      assertTrue(attribute == actual);
-
-      verify(proxy).setResolver(resolverCapture.capture());
-      verify(attribute).internalInitialize(eq(cache), refCapture.capture(), eq(attributeData), eq(true), eq(true));
-      verify(container).add(attributeType, attribute);
-      assertEquals(container, refCapture.getValue().get());
-
+      assertEquals(attribute.getId(), actual.getId());
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
@@ -142,23 +120,14 @@ public class AttributeFactoryTest {
       AttributeData copiedAttributeData = mock(AttributeData.class);
 
       when(dataFactory.copy(COMMON, attributeData)).thenReturn(copiedAttributeData);
-      when(copiedAttributeData.getTypeUuid()).thenReturn(expectedGuid.getId());
+      when(copiedAttributeData.getTypeUuid()).thenReturn(attributeType.getId());
       when(copiedAttributeData.getDataProxy()).thenReturn(proxy);
-
-      ArgumentCaptor<ResourceNameResolver> resolverCapture = ArgumentCaptor.forClass(ResourceNameResolver.class);
-      ArgumentCaptor<WeakReference> refCapture = ArgumentCaptor.forClass(WeakReference.class);
 
       Attribute<Object> actual = factory.copyAttribute(attributeData, COMMON, container);
 
-      assertTrue(attribute == actual);
+      assertEquals(attribute.getId(), actual.getId());
 
       verify(dataFactory).copy(COMMON, attributeData);
-
-      verify(proxy).setResolver(resolverCapture.capture());
-      verify(attribute).internalInitialize(eq(cache), refCapture.capture(), eq(copiedAttributeData), eq(true),
-         eq(false));
-      verify(container).add(attributeType, attribute);
-      assertEquals(container, refCapture.getValue().get());
    }
 
    @Test
@@ -179,7 +148,7 @@ public class AttributeFactoryTest {
       when(attributeData.getLocalId()).thenReturn(12345);
 
       when(dataFactory.introduce(COMMON, attributeData)).thenReturn(introducedAttributeData);
-      when(introducedAttributeData.getTypeUuid()).thenReturn(expectedGuid.getId());
+      when(introducedAttributeData.getTypeUuid()).thenReturn(attributeType.getId());
       when(introducedAttributeData.getDataProxy()).thenReturn(proxy);
 
       when(container.getAttributeById(attributeData.getLocalId(), DeletionFlag.INCLUDE_DELETED)).thenReturn(

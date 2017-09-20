@@ -37,8 +37,6 @@ import org.eclipse.osee.orcs.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.DataModule;
 import org.eclipse.osee.orcs.core.ds.OrcsDataStore;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
-import org.eclipse.osee.orcs.core.internal.attribute.AttributeClassRegistry;
-import org.eclipse.osee.orcs.core.internal.attribute.AttributeClassResolver;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.core.internal.graph.GraphBuilderFactory;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
@@ -83,7 +81,6 @@ public class OrcsApiImpl implements OrcsApi {
 
    private Log logger;
    private OrcsDataStore dataStore;
-   private AttributeClassRegistry registry;
    private ExecutorAdmin executorAdmin;
    private SystemPreferences preferences;
 
@@ -105,10 +102,6 @@ public class OrcsApiImpl implements OrcsApi {
 
    public void setOrcsDataStore(OrcsDataStore dataStore) {
       this.dataStore = dataStore;
-   }
-
-   public void setAttributeClassRegistry(AttributeClassRegistry registry) {
-      this.registry = registry;
    }
 
    public void setExecutorAdmin(ExecutorAdmin executorAdmin) {
@@ -156,9 +149,7 @@ public class OrcsApiImpl implements OrcsApi {
 
       module = dataStore.createDataModule(orcsTypes);
 
-      AttributeClassResolver resolver = new AttributeClassResolver(registry, orcsTypes.getAttributeTypes());
-      AttributeFactory attributeFactory =
-         new AttributeFactory(resolver, module.getDataFactory(), orcsTypes.getAttributeTypes());
+      AttributeFactory attributeFactory = new AttributeFactory(module.getDataFactory(), orcsTypes.getAttributeTypes());
 
       ArtifactFactory artifactFactory =
          new ArtifactFactory(module.getDataFactory(), attributeFactory, orcsTypes.getArtifactTypes());

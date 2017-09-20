@@ -35,7 +35,6 @@ public class AttributeTypesImpl implements AttributeTypes {
    }
 
    private static final String ATTRIBUTE_OCCURRENCE_UNLIMITED = "unlimited";
-   private static final String BASE_TYPE_NAMESPACE = "org.eclipse.osee.framework.skynet.core.";
 
    private final AttributeTypeIndexProvider provider;
    private final EnumTypeIndexProvider enumTypeIndexProvider;
@@ -64,23 +63,14 @@ public class AttributeTypesImpl implements AttributeTypes {
       return provider.getAttributeTypeIndex().get(id);
    }
 
-   private String getQualifiedTypeName(String id) {
-      String value = !Strings.isValid(id) ? Strings.emptyString() : id;
-      if (!value.contains(".")) {
-         value = BASE_TYPE_NAMESPACE + id;
-      }
-      return value;
-   }
-
    @Override
    public String getBaseAttributeTypeId(AttributeTypeId attributeType) throws OseeCoreException {
-      return getQualifiedTypeName(getType(attributeType).getBaseAttributeType());
+      return getType(attributeType).getBaseAttributeType();
    }
 
    @Override
    public String getAttributeProviderId(AttributeTypeId attrType) throws OseeCoreException {
-      XAttributeType type = getType(attrType);
-      return getQualifiedTypeName(type.getDataProvider());
+      return getType(attrType).getDataProvider();
    }
 
    @Override

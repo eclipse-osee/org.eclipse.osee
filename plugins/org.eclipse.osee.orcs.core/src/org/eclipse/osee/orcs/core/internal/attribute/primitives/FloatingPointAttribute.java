@@ -20,7 +20,7 @@ import org.eclipse.osee.orcs.core.annotations.OseeAttribute;
  */
 @OseeAttribute("FloatingPointAttribute")
 public class FloatingPointAttribute extends CharacterBackedAttribute<Double> {
-
+   public static final String NAME = FloatingPointAttribute.class.getSimpleName();
    private static final Double DEFAULT_DOUBLE = Double.MIN_VALUE;
 
    @Override

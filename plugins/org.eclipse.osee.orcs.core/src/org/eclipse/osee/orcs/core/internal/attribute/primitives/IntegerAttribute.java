@@ -20,7 +20,7 @@ import org.eclipse.osee.orcs.core.annotations.OseeAttribute;
  */
 @OseeAttribute("IntegerAttribute")
 public class IntegerAttribute extends CharacterBackedAttribute<Integer> {
-
+   public static final String NAME = IntegerAttribute.class.getSimpleName();
    private static final Integer DEFAULT_INTEGER = Integer.MIN_VALUE;
 
    @Override

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop" name="org.eclipse.osee.orcs.core.internal.attribute.AttributeClassRegistry">
-   <implementation class="org.eclipse.osee.orcs.core.internal.attribute.AttributeClassRegistry"/>
-   <service>
-      <provide interface="org.eclipse.osee.orcs.core.internal.attribute.AttributeClassRegistry"/>
-   </service>
-   <reference interface="org.eclipse.osee.logger.Log" name="Log" cardinality="1..1" policy="static" bind="setLogger" />
-   <reference bind="addProvider" cardinality="1..n" interface="org.eclipse.osee.orcs.core.AttributeClassProvider" name="AttributeClassProvider" policy="dynamic" unbind="removeProvider"/>
-</scr:component>

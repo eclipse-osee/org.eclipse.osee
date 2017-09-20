@@ -488,14 +488,11 @@ public class OrcsTypesTest {
    @Test
    public void testGetAttributeProviderId() throws OseeCoreException {
       AttributeTypes attrTypes = orcsTypes.getAttributeTypes();
-
-      //@formatter:off
-      assertEquals("org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider", attrTypes.getAttributeProviderId(NAME));
-      assertEquals("org.eclipse.osee.framework.skynet.core.UriAttributeDataProvider", attrTypes.getAttributeProviderId(ANNOTATION));
-      assertEquals("org.eclipse.osee.framework.skynet.core.UriAttributeDataProvider", attrTypes.getAttributeProviderId(WORDML));
-      assertEquals("org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider", attrTypes.getAttributeProviderId(FIELD_1));
-      assertEquals("org.eclipse.osee.framework.skynet.core.UriAttributeDataProvider", attrTypes.getAttributeProviderId(FIELD_2));
-      //@formatter:on
+      assertEquals("DefaultAttributeDataProvider", attrTypes.getAttributeProviderId(NAME));
+      assertEquals("UriAttributeDataProvider", attrTypes.getAttributeProviderId(ANNOTATION));
+      assertEquals("UriAttributeDataProvider", attrTypes.getAttributeProviderId(WORDML));
+      assertEquals("DefaultAttributeDataProvider", attrTypes.getAttributeProviderId(FIELD_1));
+      assertEquals("UriAttributeDataProvider", attrTypes.getAttributeProviderId(FIELD_2));
    }
 
    @Test
@@ -503,11 +500,11 @@ public class OrcsTypesTest {
       AttributeTypes attrTypes = orcsTypes.getAttributeTypes();
 
       //@formatter:off
-      assertEquals("org.eclipse.osee.framework.skynet.core.StringAttribute", attrTypes.getBaseAttributeTypeId(NAME));
-      assertEquals("org.eclipse.osee.framework.skynet.core.CompressedContentAttribute", attrTypes.getBaseAttributeTypeId(ANNOTATION));
-      assertEquals("org.eclipse.osee.framework.skynet.core.WordAttribute", attrTypes.getBaseAttributeTypeId(WORDML));
-      assertEquals("org.eclipse.osee.framework.skynet.core.EnumeratedAttribute", attrTypes.getBaseAttributeTypeId(FIELD_1));
-      assertEquals("org.eclipse.osee.framework.skynet.core.DateAttribute", attrTypes.getBaseAttributeTypeId(FIELD_2));
+      assertEquals("StringAttribute", attrTypes.getBaseAttributeTypeId(NAME));
+      assertEquals("CompressedContentAttribute", attrTypes.getBaseAttributeTypeId(ANNOTATION));
+      assertEquals("WordAttribute", attrTypes.getBaseAttributeTypeId(WORDML));
+      assertEquals("EnumeratedAttribute", attrTypes.getBaseAttributeTypeId(FIELD_1));
+      assertEquals("DateAttribute", attrTypes.getBaseAttributeTypeId(FIELD_2));
       //@formatter:on
    }
 
@@ -722,11 +719,10 @@ public class OrcsTypesTest {
 
       AttributeTypeToken attrType = attrTypes.get(1152921504606847106L);
 
-      //@formatter:off
       assertEquals("Field 3", attrType.getName());
       assertEquals(attrType, 1152921504606847106L);
-      assertEquals("org.eclipse.osee.framework.skynet.core.DefaultAttributeDataProvider", attrTypes.getAttributeProviderId(attrType));
-      assertEquals("org.eclipse.osee.framework.skynet.core.DateAttribute", attrTypes.getBaseAttributeTypeId(attrType));
+      assertEquals("DefaultAttributeDataProvider", attrTypes.getAttributeProviderId(attrType));
+      assertEquals("DateAttribute", attrTypes.getBaseAttributeTypeId(attrType));
       assertEquals(null, attrTypes.getDefaultValue(attrType));
       assertEquals("Added dynamically", attrTypes.getDescription(attrType));
       assertEquals("", attrTypes.getFileTypeExtension(attrType));
@@ -736,9 +732,7 @@ public class OrcsTypesTest {
       assertEquals(null, attrTypes.getEnumType(attrType));
       assertEquals(false, attrTypes.isEnumerated(attrType));
       assertEquals(true, attrTypes.isTaggable(attrType));
-
       assertEquals(true, attrTypes.exists(attrType));
-      //@formatter:on
    }
 
    @Test

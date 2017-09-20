@@ -22,6 +22,8 @@ import org.eclipse.osee.orcs.core.annotations.OseeAttribute;
 
 @OseeAttribute("JavaObjectAttribute")
 public final class JavaObjectAttribute extends BinaryAttribute<Object> {
+   public static final String NAME = JavaObjectAttribute.class.getSimpleName();
+
    @Override
    public Object getValue() throws OseeCoreException {
       return getObjectFromBytes(getDataProxy().getValueAsBytes());

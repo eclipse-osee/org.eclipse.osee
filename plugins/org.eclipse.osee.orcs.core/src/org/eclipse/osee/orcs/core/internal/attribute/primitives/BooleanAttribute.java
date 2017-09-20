@@ -18,6 +18,7 @@ import org.eclipse.osee.orcs.core.annotations.OseeAttribute;
  */
 @OseeAttribute("BooleanAttribute")
 public class BooleanAttribute extends CharacterBackedAttribute<Boolean> {
+   public static final String NAME = BooleanAttribute.class.getSimpleName();
 
    @Override
    public Boolean getValue() throws OseeCoreException {
