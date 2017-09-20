@@ -10,9 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-
 /**
  * @author Roberto E. Escobar
  */
@@ -22,17 +19,25 @@ public interface DataProxy {
 
    public ResourceNameResolver getResolver();
 
-   public String getDisplayableString() throws OseeCoreException;
+   public String getDisplayableString();
 
-   public void setDisplayableString(String toDisplay) throws OseeDataStoreException;
+   public void setDisplayableString(String toDisplay);
 
-   public void setData(Object... objects) throws OseeCoreException;
+   public void setData(Object value, String uri);
 
-   public Object[] getData() throws OseeCoreException;
+   public Object getRawValue();
 
-   public void persist(long storageId) throws OseeCoreException;
+   public String getUri();
 
-   public void purge() throws OseeCoreException;
+   public void persist();
+
+   public void purge();
 
    boolean isInMemory();
+
+   void setGamma(long gammaId, boolean isNewGammaId);
+
+   long getGammaId();
+
+   void rollBack();
 }

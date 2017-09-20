@@ -139,25 +139,13 @@ public class VarCharDataProxy extends AbstractDataProxy implements CharacterData
    }
 
    @Override
-   public Object[] getData() {
-      return new Object[] {rawValue, getStorage().getLocator()};
+   public Object getRawValue() {
+      return rawValue;
    }
 
    @Override
-   public void setData(Object... objects) throws OseeCoreException {
-      if (objects != null && objects.length > 1) {
-         storeValue(objects[0]);
-         getStorage().setLocator((String) objects[1]);
-      }
-   }
-
-   @Override
-   public void persist(long storageId) throws OseeCoreException {
-      getStorage().persist(storageId);
-   }
-
-   @Override
-   public void purge() throws OseeCoreException {
-      getStorage().purge();
+   public void setData(Object value, String uri) {
+      storeValue(value);
+      getStorage().setLocator(uri);
    }
 }

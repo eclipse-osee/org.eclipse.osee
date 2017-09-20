@@ -15,6 +15,7 @@ import java.io.ByteArrayOutputStream;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jdbc.JdbcConstants;
+import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.db.mocks.MockDataHandler;
 import org.eclipse.osee.orcs.db.mocks.MockLog;
 import org.eclipse.osee.orcs.db.mocks.MockResourceNameResolver;
@@ -24,7 +25,7 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link VarCharDataProxy}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class VarCharDataProxyTest {
@@ -69,7 +70,7 @@ public class VarCharDataProxyTest {
 
       Storage storage = new Storage(handler);
       Assert.assertFalse(storage.isLocatorValid());
-      Assert.assertNull(storage.getLocator());
+      Assert.assertEquals("", storage.getLocator());
 
       VarCharDataProxy proxy = new VarCharDataProxy();
       proxy.setLogger(new MockLog());
@@ -83,7 +84,7 @@ public class VarCharDataProxyTest {
       String actual = proxy.getValueAsString();
       Assert.assertEquals(shortStringData, actual);
 
-      checkData(proxy.getData(), shortStringData, "");
+      checkData(proxy, shortStringData, "");
 
       // Long String data
       proxy.setData(shortStringData, "valid");
@@ -93,7 +94,7 @@ public class VarCharDataProxyTest {
       String actual1 = proxy.getValueAsString();
       Assert.assertEquals(longData, actual1);
 
-      checkData(proxy.getData(), shortStringData, "valid");
+      checkData(proxy, shortStringData, "valid");
    }
 
    @Test
@@ -106,7 +107,7 @@ public class VarCharDataProxyTest {
 
       Storage storage = new Storage(handler);
       Assert.assertFalse(storage.isLocatorValid());
-      Assert.assertNull(storage.getLocator());
+      Assert.assertEquals("", storage.getLocator());
 
       VarCharDataProxy proxy = new VarCharDataProxy();
       proxy.setLogger(new MockLog());
@@ -119,10 +120,9 @@ public class VarCharDataProxyTest {
       Assert.assertFalse(proxy.setValue("hello"));
    }
 
-   private static void checkData(Object[] data, String dbValue, String locator) {
-      Assert.assertEquals(2, data.length);
-      Assert.assertEquals(dbValue, data[0]);
-      Assert.assertEquals(locator, data[1]);
+   private static void checkData(DataProxy proxy, String dbValue, String locator) {
+      Assert.assertEquals(dbValue, proxy.getRawValue());
+      Assert.assertEquals(locator, proxy.getUri());
    }
 
    @Test
@@ -138,7 +138,7 @@ public class VarCharDataProxyTest {
       Storage storage = new Storage(handler);
 
       Assert.assertFalse(storage.isLocatorValid());
-      Assert.assertNull(storage.getLocator());
+      Assert.assertEquals("", storage.getLocator());
 
       VarCharDataProxy proxy = new VarCharDataProxy();
       proxy.setLogger(new MockLog());
@@ -146,7 +146,7 @@ public class VarCharDataProxyTest {
 
       // No call to save if data is not valid
       Assert.assertFalse(storage.isDataValid());
-      proxy.persist(49);
+      proxy.persist();
       Assert.assertFalse(handler.isSave());
       Assert.assertEquals(-1, handler.getStorageId());
 
@@ -154,7 +154,7 @@ public class VarCharDataProxyTest {
       proxy.setValue(shortData);
       Assert.assertEquals(shortData, proxy.getValueAsString());
       Assert.assertFalse(storage.isDataValid());
-      proxy.persist(50);
+      proxy.persist();
       Assert.assertFalse(handler.isSave());
       Assert.assertEquals(-1, handler.getStorageId());
 
@@ -172,7 +172,8 @@ public class VarCharDataProxyTest {
       Assert.assertEquals(resolver.getInternalFileName(), fileName);
       Assert.assertEquals(longData, outputStream.toString("UTF-8"));
 
-      proxy.persist(51);
+      proxy.setGamma(51, true);
+      proxy.persist();
       Assert.assertTrue(handler.isSave());
       Assert.assertEquals(51, handler.getStorageId());
       Assert.assertEquals(longData, proxy.getValueAsString());
@@ -189,7 +190,7 @@ public class VarCharDataProxyTest {
       Storage storage = new Storage(handler);
 
       Assert.assertFalse(storage.isLocatorValid());
-      Assert.assertNull(storage.getLocator());
+      Assert.assertEquals("", storage.getLocator());
 
       VarCharDataProxy proxy = new VarCharDataProxy();
       proxy.setLogger(new MockLog());
@@ -199,7 +200,7 @@ public class VarCharDataProxyTest {
       proxy.setValue(longData);
       Assert.assertEquals(longData, proxy.getValueAsString());
       Assert.assertTrue(storage.isDataValid());
-      proxy.persist(51);
+      proxy.persist();
    }
 
    @Test
@@ -213,7 +214,7 @@ public class VarCharDataProxyTest {
       Storage storage = new Storage(handler);
 
       Assert.assertFalse(storage.isLocatorValid());
-      Assert.assertNull(storage.getLocator());
+      Assert.assertEquals("", storage.getLocator());
 
       VarCharDataProxy proxy = new VarCharDataProxy();
       proxy.setLogger(new MockLog());

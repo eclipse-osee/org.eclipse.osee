@@ -56,9 +56,8 @@ public class IntegrationUtil {
 
       index = verifyData(data, index, values);
 
-      Object[] proxied = data.getDataProxy().getData();
-      assertEquals(values[index++], proxied[0]); // value
-      assertEquals(values[index++], proxied[1]); // uri
+      assertEquals(values[index++], data.getDataProxy().getRawValue());
+      assertEquals(values[index++], data.getDataProxy().getUri());
    }
 
    public static void verifyData(RelationData data, Object... values) {

@@ -115,25 +115,8 @@ public class UriDataProxy extends AbstractDataProxy implements CharacterDataProx
    }
 
    @Override
-   public Object[] getData() {
-      return new Object[] {"", getStorage().getLocator()};
-   }
-
-   @Override
-   public void setData(Object... objects) {
-      if (objects != null && objects.length > 1) {
-         getStorage().setLocator((String) objects[1]);
-      }
-   }
-
-   @Override
-   public void persist(long storageId) throws OseeCoreException {
-      getStorage().persist(storageId);
-   }
-
-   @Override
-   public void purge() throws OseeCoreException {
-      getStorage().purge();
+   public void setData(Object value, String uri) {
+      getStorage().setLocator(uri);
    }
 
    @Override

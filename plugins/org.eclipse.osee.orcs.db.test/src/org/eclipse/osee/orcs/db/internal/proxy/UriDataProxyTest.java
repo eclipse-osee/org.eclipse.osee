@@ -25,7 +25,7 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link UriDataProxy}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class UriDataProxyTest {
@@ -54,10 +54,8 @@ public class UriDataProxyTest {
       Assert.assertTrue(storage.isLocatorValid());
       Assert.assertEquals("locator", storage.getLocator());
 
-      Object[] data = proxy.getData();
-      Assert.assertEquals(2, data.length);
-      Assert.assertEquals("", data[0]);
-      Assert.assertEquals("locator", data[1]);
+      Assert.assertEquals("", proxy.getRawValue());
+      Assert.assertEquals("locator", proxy.getUri());
    }
 
    @Test
@@ -70,7 +68,7 @@ public class UriDataProxyTest {
 
       Storage storage = new Storage(handler);
       Assert.assertFalse(storage.isLocatorValid());
-      Assert.assertNull(storage.getLocator());
+      Assert.assertEquals("", storage.getLocator());
 
       UriDataProxy proxy = new UriDataProxy();
       proxy.setLogger(new MockLog());
@@ -171,7 +169,7 @@ public class UriDataProxyTest {
 
       Storage storage = new Storage(handler);
       Assert.assertFalse(storage.isLocatorValid());
-      Assert.assertNull(storage.getLocator());
+      Assert.assertEquals("", storage.getLocator());
 
       UriDataProxy proxy = new UriDataProxy();
       proxy.setLogger(new MockLog());
@@ -190,7 +188,7 @@ public class UriDataProxyTest {
 
       Storage storage = new Storage(handler);
       Assert.assertFalse(storage.isLocatorValid());
-      Assert.assertNull(storage.getLocator());
+      Assert.assertEquals("", storage.getLocator());
 
       UriDataProxy proxy = new UriDataProxy();
       proxy.setLogger(new MockLog());
@@ -198,7 +196,7 @@ public class UriDataProxyTest {
 
       // No call to save if data is not valid
       Assert.assertFalse(storage.isDataValid());
-      proxy.persist(49);
+      proxy.persist();
       Assert.assertFalse(handler.isSave());
       Assert.assertEquals(-1, handler.getStorageId());
 
@@ -216,7 +214,8 @@ public class UriDataProxyTest {
       Assert.assertEquals(resolver.getInternalFileName(), fileName);
       Assert.assertEquals(data, outputStream.toString("UTF-8"));
 
-      proxy.persist(51);
+      proxy.setGamma(51, true);
+      proxy.persist();
       Assert.assertTrue(handler.isSave());
       Assert.assertEquals(51, handler.getStorageId());
       Assert.assertEquals(data, proxy.getValueAsString());
@@ -233,7 +232,7 @@ public class UriDataProxyTest {
       Storage storage = new Storage(handler);
 
       Assert.assertFalse(storage.isLocatorValid());
-      Assert.assertNull(storage.getLocator());
+      Assert.assertEquals("", storage.getLocator());
 
       UriDataProxy proxy = new UriDataProxy();
       proxy.setLogger(new MockLog());

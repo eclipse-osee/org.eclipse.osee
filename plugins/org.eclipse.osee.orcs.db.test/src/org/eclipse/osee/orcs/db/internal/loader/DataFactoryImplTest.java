@@ -77,7 +77,8 @@ public class DataFactoryImplTest {
    //@formatter:on
 
    private DataFactory dataFactory;
-   private Object[] expectedProxyData;
+   private final Object expectedProxyValue = 45;
+   private final String expectedProxyUri = "hello";
    private String guid;
 
    @Before
@@ -115,10 +116,11 @@ public class DataFactoryImplTest {
       when(attrData.getArtifactId()).thenReturn(88);
       when(attrData.getDataProxy()).thenReturn(dataProxy);
 
-      expectedProxyData = new Object[] {45, "hello", "hello"};
-      when(dataProxy.getData()).thenReturn(expectedProxyData);
-      when(proxyFactory.createProxy(666L, expectedProxyData)).thenReturn(otherDataProxy);
-      when(otherDataProxy.getData()).thenReturn(new Object[] {45, "hello", "hello"});
+      when(dataProxy.getRawValue()).thenReturn(expectedProxyValue);
+      when(dataProxy.getUri()).thenReturn(expectedProxyUri);
+      when(proxyFactory.createProxy(666L, expectedProxyValue, expectedProxyUri)).thenReturn(otherDataProxy);
+      when(otherDataProxy.getRawValue()).thenReturn(expectedProxyValue);
+      when(otherDataProxy.getUri()).thenReturn(expectedProxyUri);
 
       // RELATION
       when(relData.getVersion()).thenReturn(verData);
@@ -219,7 +221,9 @@ public class DataFactoryImplTest {
 
       when(attributeType.getId()).thenReturn(2389L);
       when(proxyFactory.createProxy(2389L, "", "")).thenReturn(otherDataProxy);
-      when(otherDataProxy.getData()).thenReturn(new Object[] {2389L, "", ""});
+      when(otherDataProxy.getRawValue()).thenReturn(2389L);
+      when(otherDataProxy.getUri()).thenReturn("");
+
       when(idFactory.getNextAttributeId()).thenReturn(1);
 
       AttributeData actual = dataFactory.create(artData, attributeType);
@@ -241,10 +245,8 @@ public class DataFactoryImplTest {
       assertEquals(555, actual.getArtifactId());
       assertNotSame(dataProxy, actual.getDataProxy());
 
-      Object[] objData = actual.getDataProxy().getData();
-      assertEquals(2389L, objData[0]);
-      assertEquals("", objData[1]);
-      assertEquals("", objData[2]);
+      assertEquals(2389L, actual.getDataProxy().getRawValue());
+      assertEquals("", actual.getDataProxy().getUri());
    }
 
    @SuppressWarnings("unchecked")
@@ -323,11 +325,8 @@ public class DataFactoryImplTest {
       assertEquals(88, actual.getArtifactId());
       assertNotSame(dataProxy, actual.getDataProxy());
 
-      Object[] objData = actual.getDataProxy().getData();
-      assertNotSame(expectedProxyData, objData);
-      assertEquals(expectedProxyData[0], objData[0]);
-      assertEquals(expectedProxyData[1], objData[1]);
-      assertEquals(expectedProxyData[2], objData[2]);
+      assertEquals(expectedProxyValue, actual.getDataProxy().getRawValue());
+      assertEquals(expectedProxyUri, actual.getDataProxy().getUri());
    }
 
    @Test
@@ -378,11 +377,8 @@ public class DataFactoryImplTest {
       assertEquals(88, actual.getArtifactId());
       assertNotSame(dataProxy, actual.getDataProxy());
 
-      Object[] objData = actual.getDataProxy().getData();
-      assertNotSame(expectedProxyData, objData);
-      assertEquals(expectedProxyData[0], objData[0]);
-      assertEquals(expectedProxyData[1], objData[1]);
-      assertEquals(expectedProxyData[2], objData[2]);
+      assertEquals(expectedProxyValue, actual.getDataProxy().getRawValue());
+      assertEquals(expectedProxyUri, actual.getDataProxy().getUri());
    }
 
    @Test
@@ -411,7 +407,7 @@ public class DataFactoryImplTest {
    @Test
    public void testCloneAttributeData() throws OseeCoreException {
       AttributeData actual = dataFactory.clone(attrData);
-      verify(proxyFactory).createProxy(666L, expectedProxyData);
+      verify(proxyFactory).createProxy(666L, expectedProxyValue, expectedProxyUri);
 
       VersionData actualVer = actual.getVersion();
 
@@ -434,11 +430,8 @@ public class DataFactoryImplTest {
       assertEquals(88, actual.getArtifactId());
       assertNotSame(dataProxy, actual.getDataProxy());
 
-      Object[] objData = actual.getDataProxy().getData();
-      assertNotSame(expectedProxyData, objData);
-      assertEquals(expectedProxyData[0], objData[0]);
-      assertEquals(expectedProxyData[1], objData[1]);
-      assertEquals(expectedProxyData[2], objData[2]);
+      assertEquals(expectedProxyValue, actual.getDataProxy().getRawValue());
+      assertEquals(expectedProxyUri, actual.getDataProxy().getUri());
    }
 
    @Test

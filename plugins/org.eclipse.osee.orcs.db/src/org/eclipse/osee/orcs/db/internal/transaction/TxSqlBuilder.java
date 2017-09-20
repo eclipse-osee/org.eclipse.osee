@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
@@ -32,7 +33,7 @@ public interface TxSqlBuilder {
 
    List<Object[]> getInsertData(SqlOrderEnum key);
 
-   List<DaoToSql> getBinaryStores();
+   List<DataProxy> getBinaryStores();
 
    void updateAfterBinaryStorePersist() throws OseeCoreException;
 

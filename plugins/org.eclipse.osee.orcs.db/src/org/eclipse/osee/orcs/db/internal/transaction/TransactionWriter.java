@@ -20,6 +20,7 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
@@ -105,7 +106,7 @@ public class TransactionWriter {
    private final JdbcClient jdbcClient;
    private final TxSqlBuilder sqlBuilder;
 
-   private List<DaoToSql> binaryStores;
+   private List<DataProxy> binaryStores;
 
    public TransactionWriter(Log logger, JdbcClient jdbcClient, TxSqlBuilder sqlBuilder) {
       super();
@@ -114,16 +115,16 @@ public class TransactionWriter {
       this.sqlBuilder = sqlBuilder;
    }
 
-   protected List<DaoToSql> getBinaryStores() {
+   protected List<DataProxy> getBinaryStores() {
       return binaryStores;
    }
 
    public void rollback() {
-      for (DaoToSql tx : getBinaryStores()) {
+      for (DataProxy proxy : getBinaryStores()) {
          try {
-            tx.rollBack();
+            proxy.rollBack();
          } catch (OseeCoreException ex1) {
-            logger.error(ex1, "Error during binary rollback [%s]", tx);
+            logger.error(ex1, "Error during binary rollback [%s]", proxy);
          }
       }
    }
@@ -132,8 +133,8 @@ public class TransactionWriter {
       sqlBuilder.accept(tx, txData);
       try {
          binaryStores = sqlBuilder.getBinaryStores();
-         for (DaoToSql dao : getBinaryStores()) {
-            dao.persist();
+         for (DataProxy proxy : binaryStores) {
+            proxy.persist();
          }
          sqlBuilder.updateAfterBinaryStorePersist();
 

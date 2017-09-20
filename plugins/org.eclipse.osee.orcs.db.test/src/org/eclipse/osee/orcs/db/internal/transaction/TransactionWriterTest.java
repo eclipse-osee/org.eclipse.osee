@@ -28,6 +28,7 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
@@ -68,8 +69,8 @@ public class TransactionWriterTest {
    @Mock private TxSqlBuilder builder;
    @Mock private JdbcConnection connection;
    @Mock private TransactionReadable tx;
-   @Mock private DaoToSql dao1;
-   @Mock private DaoToSql dao2;
+   @Mock private DataProxy proxy1;
+   @Mock private DataProxy proxy2;
 
    @Mock private IdJoinQuery join1;
    @Mock private IdJoinQuery join2;
@@ -80,7 +81,7 @@ public class TransactionWriterTest {
    //@formatter:on
 
    private TransactionWriter writer;
-   private List<DaoToSql> stores;
+   private List<DataProxy> stores;
 
    @Before
    public void setUp() throws OseeCoreException {
@@ -88,7 +89,7 @@ public class TransactionWriterTest {
 
       writer = new TransactionWriter(logger, jdbcClient, builder);
 
-      stores = Arrays.asList(dao1, dao2);
+      stores = Arrays.asList(proxy1, proxy2);
 
       final Map<SqlOrderEnum, IdJoinQuery> joins = new LinkedHashMap<>();
       joins.put(SqlOrderEnum.ARTIFACTS, join1);
@@ -121,26 +122,26 @@ public class TransactionWriterTest {
       OseeCoreException expected = new OseeCoreException("Testing");
 
       when(spy.getBinaryStores()).thenReturn(stores);
-      doThrow(expected).when(dao1).rollBack();
+      doThrow(expected).when(proxy1).rollBack();
 
       spy.rollback();
 
-      verify(dao1).rollBack();
-      verify(dao2).rollBack();
+      verify(proxy1).rollBack();
+      verify(proxy2).rollBack();
 
-      verify(logger).error(expected, "Error during binary rollback [%s]", dao1);
+      verify(logger).error(expected, "Error during binary rollback [%s]", proxy1);
    }
 
    @Test
    public void testWrite() throws OseeCoreException {
-      InOrder inOrder = inOrder(builder, tx, join1, join2, dao1, dao2, jdbcClient, chStmt);
+      InOrder inOrder = inOrder(builder, tx, join1, join2, proxy1, proxy2, jdbcClient, chStmt);
 
       writer.write(connection, tx, changeSet);
 
       inOrder.verify(builder).accept(tx, changeSet);
       inOrder.verify(builder).getBinaryStores();
-      inOrder.verify(dao1).persist();
-      inOrder.verify(dao2).persist();
+      inOrder.verify(proxy1).persist();
+      inOrder.verify(proxy2).persist();
 
       inOrder.verify(builder).getTxNotCurrents();
 

@@ -97,6 +97,6 @@ public class Storage extends DataResource {
 
    public void clear() {
       setContent(null, "txt", "txt/plain", "UTF-8");
-      setLocator(null);
+      setLocator("");
    }
 }

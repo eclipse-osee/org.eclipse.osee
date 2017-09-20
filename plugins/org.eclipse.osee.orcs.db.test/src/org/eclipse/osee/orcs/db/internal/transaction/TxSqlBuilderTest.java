@@ -132,9 +132,6 @@ public class TxSqlBuilderTest {
       attrData.setArtifactId(ATTR_ARTIFACT_ID);
       attrData.setDataProxy(dataProxy);
 
-      Object[] proxyData = new Object[] {ATTR_VALUE, ATTR_URI};
-      when(dataProxy.getData()).thenReturn(proxyData);
-
       relData = new RelationDataImpl(versionData);
       relData.setLocalId(ITEM_ID);
       relData.setTypeUuid(TYPE_UUID);
@@ -298,7 +295,8 @@ public class TxSqlBuilderTest {
    @Test
    public void testAcceptAttributeData() throws OseeCoreException {
       for (ModificationType modType : MODS_ITEMS_ROW) {
-         when(dataProxy.getData()).thenReturn(new Object[] {ATTR_VALUE, ATTR_URI});
+         when(dataProxy.getRawValue()).thenReturn(ATTR_VALUE);
+         when(dataProxy.getUri()).thenReturn(ATTR_URI);
 
          builder.accept(tx, txData);
          attrData.setModType(modType);
@@ -314,13 +312,13 @@ public class TxSqlBuilderTest {
          // @formatter:on
 
          assertEquals(1, builder.getBinaryStores().size());
-         DaoToSql dao = builder.getBinaryStores().get(0);
+         DataProxy proxy = builder.getBinaryStores().get(0);
 
-         assertEquals(NEXT_GAMMA_ID, dao.getGammaId());
-         assertEquals(ATTR_URI, dao.getUri());
-         assertEquals(ATTR_VALUE, dao.getValue());
+         assertEquals(ATTR_URI, proxy.getUri());
+         assertEquals(ATTR_VALUE, proxy.getRawValue());
 
-         when(dataProxy.getData()).thenReturn(new Object[] {"aValue", "aURI"});
+         when(dataProxy.getRawValue()).thenReturn("aValue");
+         when(dataProxy.getUri()).thenReturn("aURI");
 
          builder.updateAfterBinaryStorePersist();
          verifyRow(SqlOrderEnum.ATTRIBUTES, ITEM_ID, TYPE_UUID, NEXT_GAMMA_ID, ATTR_ARTIFACT_ID, "aValue", "aURI");

@@ -61,14 +61,4 @@ public class AttributeDataProxyFactory {
       }
       return value;
    }
-
-   public DataProxy createProxy(long typeUuid, Object... data) throws OseeCoreException {
-      Conditions.checkNotNull(data, "data");
-      Conditions.checkExpressionFailOnTrue(data.length < 2, "Data must have at least [2] elements - size was [%s]",
-         data.length);
-
-      Object value = data[0];
-      String uri = (String) data[1];
-      return createProxy(typeUuid, value, uri);
-   }
 }

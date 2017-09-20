@@ -22,7 +22,7 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link Storage}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class StorageTest extends DataResourceTest {
@@ -205,7 +205,7 @@ public class StorageTest extends DataResourceTest {
       Assert.assertEquals("txt/plain", store.getContentType());
       Assert.assertEquals("UTF-8", store.getEncoding());
 
-      Assert.assertNull(store.getLocator());
+      Assert.assertEquals("", store.getLocator());
    }
 
    @Test

@@ -20,9 +20,42 @@ import org.eclipse.osee.orcs.core.ds.ResourceNameResolver;
 public abstract class AbstractDataProxy implements DataProxy {
    private Storage storage;
    private Log logger;
+   private long gammaId;
+   private boolean isNewGammaId;
 
-   public AbstractDataProxy() {
-      super();
+   @Override
+   public Object getRawValue() {
+      return "";
+   }
+
+   @Override
+   public String getUri() {
+      return getStorage().getLocator();
+   }
+
+   @Override
+   public void setGamma(long gammaId, boolean isNewGammaId) {
+      this.gammaId = gammaId;
+      this.isNewGammaId = isNewGammaId;
+   }
+
+   @Override
+   public long getGammaId() {
+      return gammaId;
+   }
+
+   @Override
+   public void persist() {
+      if (isNewGammaId) {
+         storage.persist(gammaId);
+      }
+   }
+
+   @Override
+   public void rollBack() {
+      if (isNewGammaId) {
+         purge();
+      }
    }
 
    protected Storage getStorage() {
@@ -61,4 +94,8 @@ public abstract class AbstractDataProxy implements DataProxy {
       return String.format("%s [value:[%s]]", getClass().getSimpleName(), getDisplayableString());
    }
 
+   @Override
+   public void purge() {
+      storage.purge();
+   }
 }

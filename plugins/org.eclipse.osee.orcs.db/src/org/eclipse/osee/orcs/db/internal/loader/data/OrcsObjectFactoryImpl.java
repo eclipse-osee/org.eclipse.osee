@@ -119,7 +119,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       VersionData newVersion = createCopy(source.getVersion());
       long typeId = source.getTypeUuid();
       DataProxy sourceProxy = source.getDataProxy();
-      DataProxy newProxy = proxyFactory.createProxy(typeId, sourceProxy.getData());
+      DataProxy newProxy = proxyFactory.createProxy(typeId, sourceProxy.getRawValue(), sourceProxy.getUri());
       return createAttributeFromRow(newVersion, source.getLocalId(), typeId, source.getModType(),
          source.getBaseTypeUuid(), source.getBaseModType(), source.getArtifactId(), newProxy,
          source.getApplicabilityId());
