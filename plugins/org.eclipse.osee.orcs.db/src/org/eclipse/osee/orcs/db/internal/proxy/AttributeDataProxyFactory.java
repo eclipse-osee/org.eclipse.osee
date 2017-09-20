@@ -18,12 +18,11 @@ import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.data.AttributeTypes;
-import org.eclipse.osee.orcs.db.internal.loader.ProxyDataFactory;
 
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeDataProxyFactory implements ProxyDataFactory {
+public class AttributeDataProxyFactory {
    private final AttributeTypes attributeTypeCache;
    private final IResourceManager resourceManager;
    private final Log logger;
@@ -34,7 +33,6 @@ public class AttributeDataProxyFactory implements ProxyDataFactory {
       this.logger = logger;
    }
 
-   @Override
    public DataProxy createProxy(long typeUuid, Object value, String uri) throws OseeCoreException {
       AttributeTypeId attributeType = attributeTypeCache.get(typeUuid);
 
@@ -64,7 +62,6 @@ public class AttributeDataProxyFactory implements ProxyDataFactory {
       return value;
    }
 
-   @Override
    public DataProxy createProxy(long typeUuid, Object... data) throws OseeCoreException {
       Conditions.checkNotNull(data, "data");
       Conditions.checkExpressionFailOnTrue(data.length < 2, "Data must have at least [2] elements - size was [%s]",

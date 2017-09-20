@@ -45,11 +45,11 @@ public class LoaderModule {
       this.resourceManager = resourceManager;
    }
 
-   public ProxyDataFactory createProxyDataFactory(AttributeTypes attributeTypes) {
+   public AttributeDataProxyFactory createProxyDataFactory(AttributeTypes attributeTypes) {
       return new AttributeDataProxyFactory(attributeTypes, resourceManager, logger);
    }
 
-   public OrcsObjectFactory createOrcsObjectFactory(ProxyDataFactory proxyFactory) {
+   public OrcsObjectFactory createOrcsObjectFactory(AttributeDataProxyFactory proxyFactory) {
       return new OrcsObjectFactoryImpl(proxyFactory);
    }
 
@@ -62,7 +62,7 @@ public class LoaderModule {
       return createDataLoaderFactory(sqlObjectLoader);
    }
 
-   public DynamicLoadProcessor createDynamicLoadProcessor(OrcsTypes orcsTypes, ProxyDataFactory proxyFactory) {
+   public DynamicLoadProcessor createDynamicLoadProcessor(OrcsTypes orcsTypes, AttributeDataProxyFactory proxyFactory) {
       return new DynamicLoadProcessor(logger, orcsTypes, proxyFactory);
    }
 

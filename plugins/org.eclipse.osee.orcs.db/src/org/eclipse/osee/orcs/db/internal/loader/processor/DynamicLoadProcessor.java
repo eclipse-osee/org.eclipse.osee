@@ -27,7 +27,7 @@ import org.eclipse.osee.orcs.core.ds.DynamicData;
 import org.eclipse.osee.orcs.core.ds.DynamicDataHandler;
 import org.eclipse.osee.orcs.core.ds.DynamicObject;
 import org.eclipse.osee.orcs.core.ds.Options;
-import org.eclipse.osee.orcs.db.internal.loader.ProxyDataFactory;
+import org.eclipse.osee.orcs.db.internal.proxy.AttributeDataProxyFactory;
 import org.eclipse.osee.orcs.db.internal.sql.ObjectField;
 import org.eclipse.osee.orcs.db.internal.sql.SqlFieldResolver;
 
@@ -38,10 +38,9 @@ public class DynamicLoadProcessor extends AbstractLoadProcessor<DynamicDataHandl
 
    private final Log logger;
    private final OrcsTypes orcsTypes;
-   private final ProxyDataFactory proxyFactory;
+   private final AttributeDataProxyFactory proxyFactory;
 
-   public DynamicLoadProcessor(Log logger, OrcsTypes orcsTypes, ProxyDataFactory proxyFactory) {
-      super();
+   public DynamicLoadProcessor(Log logger, OrcsTypes orcsTypes, AttributeDataProxyFactory proxyFactory) {
       this.logger = logger;
       this.orcsTypes = orcsTypes;
       this.proxyFactory = proxyFactory;

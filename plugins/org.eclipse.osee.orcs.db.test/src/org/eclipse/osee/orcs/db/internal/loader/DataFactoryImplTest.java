@@ -38,6 +38,7 @@ import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.loader.data.OrcsObjectFactoryImpl;
+import org.eclipse.osee.orcs.db.internal.proxy.AttributeDataProxyFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -61,7 +62,7 @@ public class DataFactoryImplTest {
 
    //@formatter:off
    @Mock private IdentityManager idFactory;
-   @Mock private ProxyDataFactory proxyFactory;
+   @Mock private AttributeDataProxyFactory proxyFactory;
    @Mock private IdentityLocator identityService;
    @Mock private ArtifactTypes artifactCache;
 
