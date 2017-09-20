@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.rest;
 import java.util.Collection;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
@@ -72,6 +73,10 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
    @Override
    IAtsChangeSet createChangeSet(String string, IAtsUser systemUser);
 
+   @Override
    IAtsTeamWorkflow getTeamWf(Long id);
+
+   @Override
+   IAtsActionableItemService getActionableItemService();
 
 }

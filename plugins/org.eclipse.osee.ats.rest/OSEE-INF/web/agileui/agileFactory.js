@@ -8,6 +8,7 @@ angular.module('AgileApp').factory('AgileFactory',
 
 			var teamResource = $resource('/ats/agile/team');
 			var teamSingleResource = $resource('/ats/agile/team/:uuid');
+			var teamAisResource = $resource('/ats/agile/team/:uuid/ai');
 			var featuresResource = $resource('/ats/agile/team/:uuid/feature');
 			var featureSingleResource = $resource('/ats/agile/team/:teamUuid/feature/:uuid');
 			var sprintResource = $resource('/ats/agile/team/:uuid/sprint');
@@ -17,6 +18,7 @@ angular.module('AgileApp').factory('AgileFactory',
 			var sprintItemsResource = $resource('/ats/agile/team/:teamId/sprint/:sprintId/item');
 			var backlogResource = $resource('/ats/agile/team/:uuid/backlog');
 			var backlogItemsResource = $resource('/ats/agile/team/:teamId/backlog/item');
+			var actionResource = $resource('/ats/action');
 			var itemResource = $resource('/ats/agile/items/:uuid', 
 					{}, { 'update': { method:'PUT' } });
 
@@ -26,6 +28,10 @@ angular.module('AgileApp').factory('AgileFactory',
 
 			factory.updateStatus = function(data) {
 				return itemResource.update(data);
+			}
+			
+			factory.createItem = function(data) {
+				return actionResource.save(data);
 			}
 
 			// ////////////////////////////////////
@@ -39,6 +45,10 @@ angular.module('AgileApp').factory('AgileFactory',
 				return teamSingleResource.get(team)
 			}
 
+			factory.getTeamAis = function(team) {
+				return teamAisResource.query(team)
+			}
+
 			factory.deleteTeam = function(team) {
 				return teamSingleResource.delete(team);
 			}
@@ -48,7 +58,6 @@ angular.module('AgileApp').factory('AgileFactory',
 				toPost.name = teamName;
 				toPost.active = true;
 				return teamResource.save(toPost);
-
 			}
 
 			// ////////////////////////////////////

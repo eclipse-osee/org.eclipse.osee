@@ -27,19 +27,19 @@
 										</select></td>
 									</tr>
 								</table>
-							<td width="20%"></strong>
+							</td>
+							<td align="right">
+								<button type="button" class="btn btn-default btn-xs"
+									ng-click="openNewActionForTeam()">
+									<span class="glyphicon glyphicon-plus"></span>
+								</button>
 								<button type="button" class="btn btn-default btn-xs"
 									ng-click="updateItems()">
 									<span class="glyphicon glyphicon-refresh"></span>
-								</button></td>
+								</button>
+							</td>
 						</tr>
 					</table>
-					<span class="pull-right">
-						<button type="button" class="btn btn-default btn-xs"
-							ng-click="updateItems()">
-							<span class="glyphicon glyphicon-refresh"></span>
-						</button>
-					</span>
 				</div>
 				<div ng-show="tasks" id="taskTable" class="gridStyle"
 					ng-grid="tasksGridOptions"></div>

@@ -163,6 +163,17 @@ public class AgileService implements IAgileService {
       return type;
    }
 
+   @Override
+   public IAgileTeam getAgileTeam(IAtsTeamDefinition teamDef) {
+      IAgileTeam aTeam = null;
+      ArtifactId aTeamArt =
+         services.getRelationResolver().getRelatedOrNull(teamDef, AtsRelationTypes.AgileTeamToAtsTeam_AgileTeam);
+      if (aTeamArt != null) {
+         aTeam = services.getAgileService().getAgileTeam(aTeamArt);
+      }
+      return aTeam;
+   }
+
    /********************************
     ** Agile Feature Group
     ***********************************/
@@ -535,5 +546,15 @@ public class AgileService implements IAgileService {
       } catch (UnsupportedEncodingException ex) {
          throw new OseeArgumentException(ex, "Error trying to store Agile " + operation.getReportType());
       }
+   }
+
+   @Override
+   public Collection<IAtsTeamDefinition> getAtsTeams(IAgileTeam aTeam) {
+      List<IAtsTeamDefinition> teamDefs = new LinkedList<>();
+      for (ArtifactId teamArt : services.getRelationResolver().getRelated(aTeam.getStoreObject(),
+         AtsRelationTypes.AgileTeamToAtsTeam_AtsTeam)) {
+         teamDefs.add(services.getConfigItem(teamArt));
+      }
+      return teamDefs;
    }
 }

@@ -12,6 +12,8 @@ package org.eclipse.osee.ats.core.ai;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsObject;
@@ -19,6 +21,7 @@ import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
@@ -43,6 +46,26 @@ public class ActionableItemManager implements IAtsActionableItemService {
       this.attrResolver = attrResolver;
       this.atsStoreService = atsStoreService;
       this.services = services;
+   }
+
+   @Override
+   public List<IAtsActionableItem> getActiveActionableItemsAndChildren(IAtsTeamDefinition teamDef) {
+      List<IAtsActionableItem> ais = new LinkedList<>();
+      getActiveActionableItemsAndChildrenRecurse(teamDef, ais);
+      return ais;
+   }
+
+   private void getActiveActionableItemsAndChildrenRecurse(IAtsTeamDefinition teamDef, List<IAtsActionableItem> ais) {
+      for (ArtifactId aiArt : services.getRelationResolver().getRelated(teamDef,
+         AtsRelationTypes.TeamActionableItem_ActionableItem)) {
+         IAtsActionableItem ai = services.getConfigItem(aiArt);
+         if (ai.isActionable()) {
+            ais.add(ai);
+         }
+      }
+      for (IAtsTeamDefinition childTeamDef : teamDef.getChildrenTeamDefinitions()) {
+         getActiveActionableItemsAndChildrenRecurse(childTeamDef, ais);
+      }
    }
 
    @Override

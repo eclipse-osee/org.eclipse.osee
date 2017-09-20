@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<body onload="zoom()">
+	<div class="container-fluid">
+		<div class="row col-lg-12"">
+			<div class="panel panel-primary" id="backlogContainer">
+				<div class="panel-heading" id="backlogHeader">
+					<table>
+						<tr>
+							<td width="15%">Team: <strong>{{teamName}}</strong>
+							</td>
+							<td width="30%" align="right"><strong>New Action</strong></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<div id="newActionForm">
+				<form novalidate class="simple-form">
+
+					<!-- Title-->
+					<label>Title: <input type="text" ng-model="action.title"
+						width="100%" /></label><br />
+
+					<!-- Actionable Items-->
+					<label for="textarea">Actionable Item: </label>
+					<select ng-model="actionableItem"
+						ng-options="item.uuid as item.Name for item in validAis">
+					</select>
+
+					<!-- Description-->
+					<label for="textarea">Description: <textarea id="textarea"
+							rows name="Description" cols="40" ng-model="action.description"
+							rows="5"></textarea> <!-- Change Type--> <!-- Change Type-->
+					</label><br /> <label>Change Type:</label>&nbsp; <select id="changeType"
+						ng-model="action.changeType">
+						<option selected="selected" value="Improvement">Improvement</option>
+						<option value="Problem">Problem</option>
+						<option value="Refinement">Refinement</option>
+						<option value="Support">Support</option>
+						<br />
+
+						<!-- Priority-->
+					</select> <label>Priority:</label>&nbsp; <select id="priority"
+						ng-model="action.priority">
+						<option value="1">1 (High)</option>
+						<option value="2">2</option>
+						<option selected="selected" value="3">3 (Med)</option>
+						<option value="4">4</option>
+						<option value="5 (Low)">5</option>
+
+						<!-- Need-By Date-->
+					</select> <label>Need-By Date:</label> <input type="date" name="deadline"
+						ng-model="action.needByDate"><br />
+
+					<div id="newActionButtonContainer">
+						<br /> <input type="button" ng-click="reset()" value="Reset" />
+						<input type="submit" ng-click="createItem(action)" value="Create" />
+					</div>
+
+				</form>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

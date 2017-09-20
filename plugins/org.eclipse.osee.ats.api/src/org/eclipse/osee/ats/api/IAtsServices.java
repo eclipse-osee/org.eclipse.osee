@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.agile.IAgileSprintHtmlOperation;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.column.IAtsColumnService;
 import org.eclipse.osee.ats.api.config.AtsConfigKey;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
@@ -187,6 +188,7 @@ public interface IAtsServices extends IAtsEarnedValueServiceProvider, IAtsConfig
    ArtifactToken getArtifactByAtsId(String id);
 
    <T> T getConfigItem(ArtifactId artId);
+
    IAtsTeamWorkflow getTeamWf(Long id);
 
    IAtsTeamWorkflow getTeamWf(ArtifactId artifact);
@@ -222,5 +224,7 @@ public interface IAtsServices extends IAtsEarnedValueServiceProvider, IAtsConfig
    }
 
    Collection<ArtifactId> getArtifacts(IArtifactType artifactType);
+
+   IAtsActionableItemService getActionableItemService();
 
 }

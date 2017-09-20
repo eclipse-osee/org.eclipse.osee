@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.api.ai;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -39,5 +40,7 @@ public interface IAtsActionableItemService {
    boolean hasActionableItems(IAtsObject atsObject);
 
    Collection<IAtsTeamDefinition> getCorrespondingTeamDefinitions(IAtsObject atsObject);
+
+   List<IAtsActionableItem> getActiveActionableItemsAndChildren(IAtsTeamDefinition teamDef);
 
 }

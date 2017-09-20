@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileService;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
@@ -493,9 +494,16 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    public IAtsTeamWorkflow getTeamWf(Long id) {
       return getWorkItemFactory().getTeamWf(services.getArtifact(id));
    }
+
+   @Override
    public Collection<ArtifactId> getArtifacts(IArtifactType artifactType) {
       return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
          orcsApi.getQueryFactory().fromBranch(getAtsBranch()).andIsOfType(artifactType).getResults().getList());
+   }
+
+   @Override
+   public IAtsActionableItemService getActionableItemService() {
+      return actionableItemManager;
    }
 
 }

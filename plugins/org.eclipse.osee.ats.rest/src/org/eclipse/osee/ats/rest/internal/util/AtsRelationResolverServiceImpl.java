@@ -143,6 +143,8 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
          IAtsObject atsObject = (IAtsObject) object;
          if (atsObject.getStoreObject() instanceof ArtifactReadable) {
             useArt = (ArtifactReadable) atsObject.getStoreObject();
+         } else {
+            useArt = atsServer.getArtifact(atsObject.getId());
          }
       } else if (object instanceof ArtifactId) {
          useArt = atsServer.getArtifact(((ArtifactId) object).getId());

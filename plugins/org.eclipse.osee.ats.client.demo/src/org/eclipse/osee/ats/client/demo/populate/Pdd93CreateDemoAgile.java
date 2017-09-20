@@ -92,6 +92,12 @@ public class Pdd93CreateDemoAgile {
       Response response = agile.createTeam(newTeam);
       Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
 
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Config Agile Team with points attr type");
+      Artifact sawAgileTeam = AtsClientService.get().getArtifact(DemoArtifactToken.SAW_Agile_Team);
+      changes.setSoleAttributeValue(sawAgileTeam, AtsAttributeTypes.PointsAttributeType,
+         AtsAttributeTypes.Points.getName());
+      changes.execute();
+
       // Assigne ATS Team to Agile Team
       Artifact sawCodeArt = AtsClientService.get().getArtifact(DemoArtifactToken.SAW_Code);
       Conditions.assertNotNull(sawCodeArt, "sawCodeArt");
@@ -153,7 +159,7 @@ public class Pdd93CreateDemoAgile {
       // Transition First Sprint to completed
       IAtsWorkItem sprint = AtsClientService.get().getQueryService().createQuery(WorkItemType.WorkItem).andUuids(
          DemoArtifactToken.SAW_Sprint_1.getId()).getItems().iterator().next();
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Transition Agile Sprint");
+      changes.reset("Transition Agile Sprint");
       TransitionHelper helper =
          new TransitionHelper("Transition Agile Stprint", Arrays.asList(sprint), TeamState.Completed.getName(), null,
             null, changes, AtsClientService.get().getServices(), TransitionOption.OverrideAssigneeCheck);

@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.config.JaxActionableItem;
 import org.eclipse.osee.ats.api.config.JaxTeamDefinition;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
@@ -592,9 +593,15 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    public String getApplicationServerBase() {
       return OseeClientProperties.getOseeApplicationServer();
    }
+
    @Override
    public Collection<ArtifactId> getArtifacts(IArtifactType artifactType) {
       return Collections.castAll(ArtifactQuery.getArtifactListFromType(artifactType, getAtsBranch()));
+   }
+
+   @Override
+   public IAtsActionableItemService getActionableItemService() {
+      return actionableItemManager;
    }
 
 }

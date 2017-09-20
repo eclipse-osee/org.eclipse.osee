@@ -111,7 +111,12 @@ public class AgileFactory {
    }
 
    public static IAgileTeam getAgileTeam(Log logger, IAtsServices services, Object artifact) {
-      return new AgileTeam(logger, services, (ArtifactToken) artifact);
+      IAgileTeam team = null;
+      if (artifact instanceof ArtifactId) {
+         ArtifactToken art = services.getArtifact((ArtifactId) artifact);
+         team = new AgileTeam(logger, services, art);
+      }
+      return team;
    }
 
    public static IAgileFeatureGroup createAgileFeatureGroup(Log logger, IAtsServices services, long teamUuid, String name, String guid, Long uuid) {
@@ -143,8 +148,8 @@ public class AgileFactory {
       return getAgileFeatureGroup(logger, services, featureGroupArt);
    }
 
-   public static IAgileFeatureGroup getAgileFeatureGroup(Log logger, IAtsServices services, Object artifact) {
-      return new AgileFeatureGroup(logger, services, (ArtifactToken) artifact);
+   public static IAgileFeatureGroup getAgileFeatureGroup(Log logger, IAtsServices services, ArtifactId artifact) {
+      return new AgileFeatureGroup(logger, services, services.getArtifact(artifact));
    }
 
    public static IAgileSprint createAgileSprint(Log logger, IAtsServices services, long teamUuid, String name, String guid, Long uuid) {
@@ -183,7 +188,7 @@ public class AgileFactory {
       IAtsChangeSet changes =
          services.getStoreService().createAtsChangeSet("Create new Agile Backlog", AtsCoreUsers.SYSTEM_USER);
 
-      ArtifactToken backlogArt = changes.createArtifact(AtsArtifactTypes.Goal, name, guid, uuid);
+      ArtifactToken backlogArt = changes.createArtifact(AtsArtifactTypes.AgileBacklog, name, guid, uuid);
       IAgileBacklog sprint = services.getWorkItemFactory().getAgileBacklog(backlogArt);
 
       services.getActionFactory().setAtsId(sprint, TeamDefinitions.getTopTeamDefinition(services.getQueryService()),

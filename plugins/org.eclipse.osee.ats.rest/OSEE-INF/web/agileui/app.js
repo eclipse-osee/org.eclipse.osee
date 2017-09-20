@@ -24,18 +24,13 @@ app.config([ '$routeProvider', function($routeProvider) {
 	}).when('/config', {
 		templateUrl : 'config.html',
 		controller : 'ConfigCtrl'
-	}).when('/burndown', {
+	}).when('/report', {
 		templateUrl : 'report.html',
-		controller : 'BurndownCtrl'
-	}).when('/summary', {
-		templateUrl : 'report.html', 
-		controller : 'SummaryCtrl'
-	}).when('/data', {
-		templateUrl : 'report.html',
-		controller : 'DataCtrl'
-	}).when('/burnup', {
-		templateUrl : 'report.html',
-		controller : 'BurnupCtrl'
+		controller : 'ReportCtrl'
+	}).when('/newAction', {
+		templateUrl : 'newAction.html',
+		controller : 'NewActionCtrl',
+		caseInsensitiveMatch : true
 	}).otherwise({
 		redirectTo : "/teams"
 	});

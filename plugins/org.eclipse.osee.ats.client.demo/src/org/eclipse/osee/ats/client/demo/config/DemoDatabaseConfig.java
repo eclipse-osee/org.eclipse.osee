@@ -77,6 +77,7 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
          PermissionEnum.FULLACCESS);
 
       AtsDatabaseConfig.organizePrograms(AtsArtifactTypes.Program, DemoArtifactToken.DemoPrograms);
+
    }
 
    /**

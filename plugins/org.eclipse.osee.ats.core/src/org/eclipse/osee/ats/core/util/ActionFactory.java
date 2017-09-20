@@ -20,6 +20,9 @@ import java.util.Map.Entry;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
+import org.eclipse.osee.ats.api.agile.IAgileSprint;
+import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -55,8 +58,10 @@ import org.eclipse.osee.ats.core.internal.util.AtsIdProvider;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.workflow.state.StateManagerUtility;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -93,15 +98,24 @@ public class ActionFactory implements IAtsActionFactory {
    @Override
    public ActionResult createAction(NewActionData data, IAtsChangeSet changes) {
       IAtsUser asUser = services.getUserService().getUserById(data.getAsUserId());
-      Conditions.assertNotNull(asUser, "asUser");
-      IAtsUser createdBy = services.getUserService().getUserById(data.getCreatedByUserId());
-      Conditions.assertNotNull(createdBy, "createdBy");
+      Conditions.assertNotNull(asUser, "As-User must be specified.");
+      IAtsUser createdBy = null;
+      if (Strings.isValid(data.getCreatedByUserId())) {
+         createdBy = services.getUserService().getUserById(data.getCreatedByUserId());
+      }
+      if (createdBy == null && Strings.isValid(data.getCreatedDateLong())) {
+         createdBy = services.getUserService().getUserByAccountId(Long.valueOf(data.getCreatedDateLong()));
+      }
+      Conditions.assertNotNull(createdBy, "Created-By must be specified.");
+      Conditions.assertNotNullOrEmpty(data.getAiIds(), "Actionable Items must be specified");
       List<IAtsActionableItem> ais = new LinkedList<>();
       for (String aiId : data.getAiIds()) {
          IAtsActionableItem ai = services.getConfigItem(Long.valueOf(aiId));
-         Conditions.assertNotNull(ai, "as");
+         Conditions.assertNotNull(ai, "Actionable Item must be specified.");
          ais.add(ai);
       }
+      Conditions.assertNotNull(data.getDescription(), "Description must be specified.");
+
       Date needByDate = null;
       if (Strings.isNumeric(data.getNeedByDateLong())) {
          needByDate = new Date(Long.valueOf(data.getNeedByDateLong()));
@@ -114,6 +128,74 @@ public class ActionFactory implements IAtsActionFactory {
       }
       ActionResult createAction = createAction(asUser, data.getTitle(), data.getDescription(), data.getChangeType(),
          data.getPriority(), data.isValidationRequired(), needByDate, ais, createdDate, createdBy, null, changes);
+
+      if (Strings.isValid(data.getPoints())) {
+         for (IAtsTeamWorkflow teamWf : createAction.getTeamWfs()) {
+            IAtsTeamDefinition teamDef = teamWf.getTeamDefinition();
+            IAgileTeam agileTeam = services.getAgileService().getAgileTeam(teamDef);
+            String pointsAttrType = services.getAttributeResolver().getSoleAttributeValue(agileTeam,
+               AtsAttributeTypes.PointsAttributeType, null);
+            if (!Strings.isValid(pointsAttrType)) {
+               throw new OseeArgumentException(
+                  "Points Attribute Type must be specified on Team Definition %s to set Points",
+                  teamDef.toStringWithId());
+            }
+            AttributeTypeToken attributeType = services.getAttributeResolver().getAttributeType(pointsAttrType);
+            if (attributeType == null) {
+               throw new OseeArgumentException("Invalid Points Attribute Type [%s] on Team Definition %s",
+                  pointsAttrType, teamDef.toStringWithId());
+            }
+            changes.setSoleAttributeValue(teamWf, attributeType, data.getPoints());
+         }
+      }
+
+      if (data.isUnplanned()) {
+         for (IAtsTeamWorkflow teamWf : createAction.getTeamWfs()) {
+            changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.UnPlannedWork, true);
+         }
+      }
+
+      String featureGroup = data.getFeatureGroup();
+      if (Strings.isValid(featureGroup)) {
+         IAgileFeatureGroup group = null;
+         for (IAtsTeamWorkflow teamWf : createAction.getTeamWfs()) {
+            if (Strings.isNumeric(featureGroup)) {
+               group = services.getAgileService().getAgileFeatureGroup(ArtifactId.valueOf(featureGroup));
+            } else {
+               IAgileTeam aTeam = services.getAgileService().getAgileTeam(teamWf.getTeamDefinition());
+               for (IAgileFeatureGroup grp : services.getAgileService().getAgileFeatureGroups(aTeam)) {
+                  if (grp.getName().equals(featureGroup)) {
+                     group = grp;
+                     break;
+                  }
+               }
+            }
+            if (group != null) {
+               changes.relate(teamWf, AtsRelationTypes.AgileFeatureToItem_FeatureGroup, group);
+            }
+         }
+      }
+
+      String sprintStr = data.getSprint();
+      if (Strings.isValid(sprintStr)) {
+         for (IAtsTeamWorkflow teamWf : createAction.getTeamWfs()) {
+            IAgileSprint sprint = null;
+            if (Strings.isNumeric(sprintStr)) {
+               sprint = services.getAgileService().getAgileSprint(Long.valueOf(sprintStr));
+            } else {
+               IAgileTeam aTeam = services.getAgileService().getAgileTeam(teamWf.getTeamDefinition());
+               for (IAgileSprint aSprint : services.getAgileService().getAgileSprints(aTeam)) {
+                  if (aSprint.getName().equals(sprintStr)) {
+                     sprint = aSprint;
+                     break;
+                  }
+               }
+            }
+            if (sprint != null) {
+               changes.relate(sprint, AtsRelationTypes.AgileSprintToItem_AtsItem, teamWf);
+            }
+         }
+      }
 
       // set any additional values
       for (Entry<String, String> attr : data.getAttrValues().entrySet()) {

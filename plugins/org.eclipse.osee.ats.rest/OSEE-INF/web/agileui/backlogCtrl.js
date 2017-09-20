@@ -133,7 +133,13 @@ angular
 								}
 							});
 
-							// add backlog and sprints to pulldown and set default if specified as query parameter
+							$scope.openNewActionForTeam = function() {
+								window.location.assign("main#/newAction?team="
+										.concat($scope.team.uuid))
+							}
+							
+							// add backlog and sprints to pulldown and set
+							// default if specified as query parameter
 							$scope.setupItemsPulldown = function() {
 								var loadingModal = PopupService
 										.showLoadingModal();

@@ -33,10 +33,16 @@ public class NewActionData {
    String createdByUserId;
    String transactionComment;
    String needByDateLong;
+   String needByDate;
    Map<String, String> attrValues = new HashMap<String, String>();
+   String points;
+   boolean unplanned;
+   String sprint;
+   String featureGroup;
+   String workPackage;
 
    public NewActionData() {
-      // jas-rs
+      // jax-rs
    }
 
    public NewActionData(String asUserUserId, String title, String desc, ChangeType changeType, String priority, boolean validationRequired, Date needByDate, Collection<String> aiIds, Date createdDate, String createdByUserId) {
@@ -150,5 +156,53 @@ public class NewActionData {
 
    public void addAttrValue(AttributeTypeId type, String value) {
       attrValues.put(type.getIdString(), value);
+   }
+
+   public String getNeedByDate() {
+      return needByDate;
+   }
+
+   public void setNeedByDate(String needByDate) {
+      this.needByDate = needByDate;
+   }
+
+   public String getPoints() {
+      return points;
+   }
+
+   public void setPoints(String points) {
+      this.points = points;
+   }
+
+   public boolean isUnplanned() {
+      return unplanned;
+   }
+
+   public void setUnplanned(boolean unplanned) {
+      this.unplanned = unplanned;
+   }
+
+   public String getSprint() {
+      return sprint;
+   }
+
+   public void setSprint(String sprint) {
+      this.sprint = sprint;
+   }
+
+   public String getFeatureGroup() {
+      return featureGroup;
+   }
+
+   public void setFeatureGroup(String featureGroup) {
+      this.featureGroup = featureGroup;
+   }
+
+   public String getWorkPackage() {
+      return workPackage;
+   }
+
+   public void setWorkPackage(String workPackage) {
+      this.workPackage = workPackage;
    }
 }

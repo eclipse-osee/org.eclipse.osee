@@ -22,8 +22,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.api.agile.kanban.JaxKbSprint;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.util.ILineChart;
 import org.eclipse.osee.ats.api.workflow.JaxAtsObjects;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 
 /**
@@ -49,6 +52,16 @@ public interface AgileEndpointApi {
    @Path("team/{teamUuid}/feature")
    @Produces(MediaType.APPLICATION_JSON)
    public List<JaxAgileFeatureGroup> getFeatureGroups(@PathParam("teamUuid") long teamUuid);
+
+   @GET
+   @Path("team/{teamId}/ai")
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<IAtsActionableItem> getActionableAis(@PathParam("teamId") ArtifactId teamId);
+
+   @Path("team/{teamId}/workpackage")
+   @GET
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<IAtsWorkPackage> getWorkPackages(@PathParam("teamId") ArtifactId teamId);
 
    @GET
    @Path("team/{teamUuid}/feature/{featureUuid}")

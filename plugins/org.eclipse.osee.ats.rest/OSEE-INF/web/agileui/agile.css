@@ -19,6 +19,16 @@
 	height: 55px;
 }
 
+#newActionForm {
+	width: 100% !important;
+	forground: black;
+	margin: 10px;
+}
+
+#newActionButtonContainer {
+	margin: 0px;
+}
+
 #backlogTable {
 	width: 100% !important;
 }
@@ -66,5 +76,5 @@
 }
 
 .grid-align {
-    text-align: center;
+	text-align: center;
 }

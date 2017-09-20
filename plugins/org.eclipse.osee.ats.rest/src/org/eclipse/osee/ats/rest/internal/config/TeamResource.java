@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.config;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import javax.ws.rs.GET;
@@ -18,10 +19,14 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.rest.util.AbstractConfigResource;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.jdk.core.util.NamedComparator;
+import org.eclipse.osee.framework.jdk.core.util.SortOrder;
 
 /**
  * Donald G. Dunne
@@ -43,6 +48,20 @@ public class TeamResource extends AbstractConfigResource {
          versions.add(version.getName());
       }
       return versions;
+   }
+
+   @Path("{id}/ai")
+   @GET
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<IAtsActionableItem> getActionableAis(@PathParam("id") ArtifactId teamId) {
+      IAtsTeamDefinition teamDef = services.getConfigItem(teamId);
+      if (teamDef != null) {
+         List<IAtsActionableItem> ais =
+            services.getActionableItemService().getActiveActionableItemsAndChildren(teamDef);
+         Collections.sort(ais, new NamedComparator(SortOrder.ASCENDING));
+         return ais;
+      }
+      return Collections.emptyList();
    }
 
 }

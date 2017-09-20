@@ -452,6 +452,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Override
    @POST
    @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
    public NewActionResult createAction(NewActionData newActionData) {
       NewActionResult result = new NewActionResult();
       try {
