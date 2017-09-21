@@ -49,7 +49,7 @@ public class AttributeDataProxyFactory {
          dataProxy = new VarCharDataProxy();
       }
       dataProxy.setLogger(logger);
-      dataProxy.setStorage(new Storage(new ResourceHandler(resourceManager)));
+      dataProxy.setStorage(new Storage(resourceManager, dataProxy));
       dataProxy.setData(checkedValue, uri);
       return dataProxy;
    }

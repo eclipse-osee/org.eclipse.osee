@@ -14,9 +14,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.orcs.core.ds.ResourceNameResolver;
+import org.eclipse.osee.framework.resource.management.DataResource;
 import org.eclipse.osee.orcs.db.mocks.MockDataHandler;
-import org.eclipse.osee.orcs.db.mocks.MockResourceNameResolver;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -30,7 +29,6 @@ public class StorageTest extends DataResourceTest {
    private static final byte[] DATA_SET_1 = new byte[] {1, 2, 3, 4, 5, 6};
    private static final byte[] DATA_SET_2 = new byte[] {7, 8, 9, 10, 12, 13};
 
-   private MockDataHandler handler;
    private final byte[] rawContent = DATA_SET_1;
 
    public StorageTest(String contentType, String encoding, String extension, String locator) {
@@ -39,7 +37,6 @@ public class StorageTest extends DataResourceTest {
 
    @Override
    protected DataResource createResource() {
-      handler = new MockDataHandler();
       Storage storage = new Storage(handler);
       storage.setContent(rawContent, extension, contentType, encoding);
       storage.setLocator(locator);
@@ -49,20 +46,6 @@ public class StorageTest extends DataResourceTest {
    @Override
    protected Storage getResource() {
       return (Storage) super.getResource();
-   }
-
-   @Test
-   public void testGetSetResolver() {
-      Storage storage = getResource();
-
-      ResourceNameResolver actual = storage.getResolver();
-      Assert.assertNull(actual);
-
-      MockResourceNameResolver resolver = new MockResourceNameResolver("storageName", "internalFileName");
-      storage.setResolver(resolver);
-
-      actual = storage.getResolver();
-      Assert.assertEquals(resolver, actual);
    }
 
    @Test

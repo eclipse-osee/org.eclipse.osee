@@ -8,17 +8,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.proxy;
+package org.eclipse.osee.framework.resource.management;
 
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.orcs.core.ds.ResourceNameResolver;
 
 /**
  * @author Roberto E. Escobar
  */
 public class DataResource {
 
-   private ResourceNameResolver resolver;
    private String contentType;
    private String encoding;
    private String extension;
@@ -33,14 +31,6 @@ public class DataResource {
       this.encoding = encoding;
       this.extension = extension;
       this.locator = locator;
-   }
-
-   public void setResolver(ResourceNameResolver resolver) {
-      this.resolver = resolver;
-   }
-
-   public ResourceNameResolver getResolver() {
-      return resolver;
    }
 
    public String getContentType() {
@@ -81,6 +71,6 @@ public class DataResource {
 
    @Override
    public String toString() {
-      return "DataResource [resolver=" + resolver + ", contentType=" + contentType + ", encoding=" + encoding + ", extension=" + extension + ", locator=" + locator + "]";
+      return "DataResource [contentType=" + contentType + ", encoding=" + encoding + ", extension=" + extension + ", locator=" + locator + "]";
    }
 }

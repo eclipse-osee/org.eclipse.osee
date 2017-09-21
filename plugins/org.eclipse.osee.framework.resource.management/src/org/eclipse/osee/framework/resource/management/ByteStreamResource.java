@@ -8,13 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.util;
+package org.eclipse.osee.framework.resource.management;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URI;
-import org.eclipse.osee.framework.resource.management.IResource;
-import org.eclipse.osee.framework.resource.management.IResourceLocator;
 
 /**
  * @author Roberto E. Escobar

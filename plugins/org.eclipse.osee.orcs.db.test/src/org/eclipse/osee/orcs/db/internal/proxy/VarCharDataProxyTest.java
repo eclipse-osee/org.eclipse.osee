@@ -14,10 +14,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
-import org.eclipse.osee.orcs.db.mocks.MockDataHandler;
 import org.eclipse.osee.orcs.db.mocks.MockLog;
+import org.eclipse.osee.orcs.db.mocks.MockResourceManager;
 import org.eclipse.osee.orcs.db.mocks.MockResourceNameResolver;
 import org.eclipse.osee.orcs.db.mocks.Utility;
 import org.junit.Assert;
@@ -29,6 +30,7 @@ import org.junit.Test;
  * @author Roberto E. Escobar
  */
 public class VarCharDataProxyTest {
+   private final IResourceManager resourceManager = new MockResourceManager();
 
    @Test(expected = UnsupportedOperationException.class)
    public void testSetDisplayable() throws Exception {
@@ -36,21 +38,22 @@ public class VarCharDataProxyTest {
       proxy.setDisplayableString("hello");
    }
 
+   private VarCharDataProxy createProxy(byte[] zippedData) {
+      VarCharDataProxy proxy = new VarCharDataProxy();
+      Storage storage = new Storage(resourceManager, proxy);
+      storage.setLocator("validPath");
+      storage.setContent(zippedData, null, null, null);
+      proxy.setLogger(new MockLog());
+      proxy.setStorage(storage);
+      return proxy;
+   }
+
    @Test
    public void testGetBigStringValue() throws Exception {
       String rawData = Utility.generateData(4001);
       byte[] zippedData = Utility.asZipped(rawData, "testData.txt");
 
-      MockDataHandler handler = new MockDataHandler();
-      handler.setContent(zippedData);
-
-      Storage storage = new Storage(handler);
-      storage.setLocator("validPath");
-
-      VarCharDataProxy proxy = new VarCharDataProxy();
-      proxy.setLogger(new MockLog());
-      proxy.setStorage(storage);
-
+      VarCharDataProxy proxy = createProxy(zippedData);
       String value = proxy.getValueAsString();
       Assert.assertEquals(rawData, value);
 
@@ -65,16 +68,8 @@ public class VarCharDataProxyTest {
 
       String shortStringData = Utility.generateData(JdbcConstants.JDBC__MAX_VARCHAR_LENGTH);
 
-      MockDataHandler handler = new MockDataHandler();
-      handler.setContent(zippedData);
-
-      Storage storage = new Storage(handler);
-      Assert.assertFalse(storage.isLocatorValid());
-      Assert.assertEquals("", storage.getLocator());
-
-      VarCharDataProxy proxy = new VarCharDataProxy();
-      proxy.setLogger(new MockLog());
-      proxy.setStorage(storage);
+      VarCharDataProxy proxy = createProxy(zippedData);
+      Storage storage = proxy.getStorage();
 
       // Short String data
       proxy.setData(shortStringData, "");
@@ -102,16 +97,11 @@ public class VarCharDataProxyTest {
       String longData = Utility.generateData(JdbcConstants.JDBC__MAX_VARCHAR_LENGTH + 1);
       byte[] zippedData = Utility.asZipped(longData, "myTest.txt");
 
-      MockDataHandler handler = new MockDataHandler();
-      handler.setContent(zippedData);
+      VarCharDataProxy proxy = createProxy(zippedData);
+      Storage storage = proxy.getStorage();
 
-      Storage storage = new Storage(handler);
       Assert.assertFalse(storage.isLocatorValid());
       Assert.assertEquals("", storage.getLocator());
-
-      VarCharDataProxy proxy = new VarCharDataProxy();
-      proxy.setLogger(new MockLog());
-      proxy.setStorage(storage);
 
       Assert.assertTrue(proxy.setValue(null));
       Assert.assertTrue(proxy.setValue(null));
@@ -131,32 +121,21 @@ public class VarCharDataProxyTest {
       byte[] zippedData = Utility.asZipped(longData, "myTest.txt");
 
       String shortData = Utility.generateData(JdbcConstants.JDBC__MAX_VARCHAR_LENGTH);
-
-      MockDataHandler handler = new MockDataHandler();
-      handler.setContent(zippedData);
-
-      Storage storage = new Storage(handler);
+      VarCharDataProxy proxy = createProxy(zippedData);
+      Storage storage = proxy.getStorage();
 
       Assert.assertFalse(storage.isLocatorValid());
       Assert.assertEquals("", storage.getLocator());
 
-      VarCharDataProxy proxy = new VarCharDataProxy();
-      proxy.setLogger(new MockLog());
-      proxy.setStorage(storage);
-
       // No call to save if data is not valid
       Assert.assertFalse(storage.isDataValid());
       proxy.persist();
-      Assert.assertFalse(handler.isSave());
-      Assert.assertEquals(-1, handler.getStorageId());
 
       // No call to save if short Data
       proxy.setValue(shortData);
       Assert.assertEquals(shortData, proxy.getValueAsString());
       Assert.assertFalse(storage.isDataValid());
       proxy.persist();
-      Assert.assertFalse(handler.isSave());
-      Assert.assertEquals(-1, handler.getStorageId());
 
       // Save long data
       MockResourceNameResolver resolver = new MockResourceNameResolver("remoteStorageName", "internalFileName");
@@ -174,8 +153,6 @@ public class VarCharDataProxyTest {
 
       proxy.setGamma(51, true);
       proxy.persist();
-      Assert.assertTrue(handler.isSave());
-      Assert.assertEquals(51, handler.getStorageId());
       Assert.assertEquals(longData, proxy.getValueAsString());
    }
 
@@ -184,17 +161,11 @@ public class VarCharDataProxyTest {
       String longData = Utility.generateData(JdbcConstants.JDBC__MAX_VARCHAR_LENGTH + 1);
       byte[] zippedData = Utility.asZipped(longData, "myTest.txt");
 
-      MockDataHandler handler = new MockDataHandler();
-      handler.setContent(zippedData);
-
-      Storage storage = new Storage(handler);
+      VarCharDataProxy proxy = createProxy(zippedData);
+      Storage storage = proxy.getStorage();
 
       Assert.assertFalse(storage.isLocatorValid());
       Assert.assertEquals("", storage.getLocator());
-
-      VarCharDataProxy proxy = new VarCharDataProxy();
-      proxy.setLogger(new MockLog());
-      proxy.setStorage(storage);
 
       // Save long data
       proxy.setValue(longData);
@@ -208,26 +179,16 @@ public class VarCharDataProxyTest {
       String longData = Utility.generateData(JdbcConstants.JDBC__MAX_VARCHAR_LENGTH + 1);
       byte[] zippedData = Utility.asZipped(longData, "myTest.txt");
 
-      MockDataHandler handler = new MockDataHandler();
-      handler.setContent(zippedData);
-
-      Storage storage = new Storage(handler);
-
+      VarCharDataProxy proxy = createProxy(zippedData);
+      Storage storage = proxy.getStorage();
       Assert.assertFalse(storage.isLocatorValid());
       Assert.assertEquals("", storage.getLocator());
 
-      VarCharDataProxy proxy = new VarCharDataProxy();
-      proxy.setLogger(new MockLog());
-      proxy.setStorage(storage);
-
       Assert.assertFalse(storage.isLocatorValid());
       proxy.purge();
-      Assert.assertFalse(handler.isDelete());
 
       storage.setLocator("hello");
       Assert.assertTrue(storage.isLocatorValid());
       proxy.purge();
-      Assert.assertTrue(handler.isDelete());
    }
-
 }

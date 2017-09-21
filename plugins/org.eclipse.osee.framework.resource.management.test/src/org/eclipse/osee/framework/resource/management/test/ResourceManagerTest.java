@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorProvider;
 import org.eclipse.osee.framework.resource.management.IResourceProvider;
-import org.eclipse.osee.framework.resource.management.internal.ResourceManager;
+import org.eclipse.osee.framework.resource.management.ResourceManager;
 import org.eclipse.osee.framework.resource.management.test.mocks.MockLocatorProvider;
 import org.eclipse.osee.framework.resource.management.test.mocks.MockResourceLocator;
 import org.eclipse.osee.framework.resource.management.test.mocks.ResourceProviderAdaptor;

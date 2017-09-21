@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.eclipse.osee.framework.resource.management.internal.ResourceManager">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.eclipse.osee.framework.resource.management.ResourceManager">
 	<implementation
-		class="org.eclipse.osee.framework.resource.management.internal.ResourceManager" />
+		class="org.eclipse.osee.framework.resource.management.ResourceManager" />
 	<service>
 		<provide
 			interface="org.eclipse.osee.framework.resource.management.IResourceManager" />

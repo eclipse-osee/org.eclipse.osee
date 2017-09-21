@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.db.mocks;
 import java.util.Collection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
+import org.eclipse.osee.framework.resource.management.DataResource;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
@@ -57,4 +58,16 @@ public class MockResourceManager implements IResourceManager {
       return null;
    }
 
+   @Override
+   public byte[] acquire(DataResource dataResource) {
+      return null;
+   }
+
+   @Override
+   public void save(long storageId, String storageName, DataResource dataResource, byte[] rawContent) {
+   }
+
+   @Override
+   public void purge(DataResource dataResource) {
+   }
 }

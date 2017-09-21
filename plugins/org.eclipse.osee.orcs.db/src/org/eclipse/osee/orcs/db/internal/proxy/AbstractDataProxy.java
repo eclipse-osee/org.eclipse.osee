@@ -22,6 +22,7 @@ public abstract class AbstractDataProxy implements DataProxy {
    private Log logger;
    private long gammaId;
    private boolean isNewGammaId;
+   private ResourceNameResolver resolver;
 
    @Override
    public Object getRawValue() {
@@ -76,12 +77,11 @@ public abstract class AbstractDataProxy implements DataProxy {
 
    @Override
    public void setResolver(ResourceNameResolver resolver) {
-      storage.setResolver(resolver);
+      this.resolver = resolver;
    }
 
-   @Override
-   public ResourceNameResolver getResolver() {
-      return storage.getResolver();
+   protected ResourceNameResolver getResolver() {
+      return resolver;
    }
 
    @Override

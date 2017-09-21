@@ -14,19 +14,22 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Arrays;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.resource.management.DataResource;
+import org.eclipse.osee.framework.resource.management.IResourceManager;
 
 /**
  * @author Roberto E. Escobar
  */
 public class Storage extends DataResource {
 
-   private final DataHandler handler;
+   private final IResourceManager resourceManager;
+   private final AbstractDataProxy dataProxy;
    private byte[] rawContent;
    private volatile boolean initialized;
 
-   public Storage(DataHandler handler) {
-      super();
-      this.handler = handler;
+   public Storage(IResourceManager resourceManager, AbstractDataProxy dataProxy) {
+      this.resourceManager = resourceManager;
+      this.dataProxy = dataProxy;
       clear();
       setInitialized(false);
    }
@@ -59,7 +62,7 @@ public class Storage extends DataResource {
 
    public byte[] getContent() throws OseeCoreException {
       if (isLoadingAllowed()) {
-         rawContent = handler.acquire(this);
+         rawContent = resourceManager.acquire(this);
          setInitialized(true);
       }
       return this.rawContent;
@@ -67,13 +70,13 @@ public class Storage extends DataResource {
 
    public void persist(long storageId) throws OseeCoreException {
       if (isDataValid()) {
-         handler.save(storageId, this, rawContent);
+         resourceManager.save(storageId, dataProxy.getResolver().getStorageName(), this, rawContent);
       }
    }
 
    public void purge() throws OseeCoreException {
       if (isLocatorValid()) {
-         handler.delete(this);
+         resourceManager.purge(this);
       }
    }
 

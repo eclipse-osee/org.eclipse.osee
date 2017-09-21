@@ -12,9 +12,7 @@ package org.eclipse.osee.orcs.db.internal.proxy;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.orcs.core.ds.ResourceNameResolver;
-import org.eclipse.osee.orcs.db.mocks.MockResourceNameResolver;
+import org.eclipse.osee.framework.resource.management.DataResource;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,7 +21,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Test Case for {@link DataResource}
- * 
+ *
  * @author Roberto E. Escobar
  */
 @RunWith(Parameterized.class)
@@ -102,28 +100,6 @@ public class DataResourceTest {
       Assert.assertFalse(resource.isLocatorValid());
 
       resource.setLocator(original);
-   }
-
-   @Test
-   public void testGetAndSetResolver() {
-      Assert.assertNull(resource.getResolver());
-
-      ResourceNameResolver resolver = new MockResourceNameResolver("hello", "goodbye");
-      resource.setResolver(resolver);
-
-      ResourceNameResolver actual = resource.getResolver();
-      Assert.assertEquals(resolver, actual);
-   }
-
-   @Test
-   public void testGetStorageName() throws OseeCoreException {
-      resource.setResolver(null);
-      Assert.assertNull(resource.getResolver());
-
-      ResourceNameResolver resolver = new MockResourceNameResolver("hello", "goodbye");
-      resource.setResolver(resolver);
-
-      Assert.assertEquals("hello", resolver.getStorageName());
    }
 
    @Parameters

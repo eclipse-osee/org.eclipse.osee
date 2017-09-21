@@ -25,7 +25,7 @@ public interface IResourceManager {
 
    /**
     * Acquire resource specified by resource locator
-    * 
+    *
     * @param locator location of the resource needed
     * @param options operation options
     * @return the resource
@@ -34,14 +34,14 @@ public interface IResourceManager {
 
    /**
     * Determines if a resource exists for the given locator.
-    * 
+    *
     * @param locator location of the data to check
     */
    boolean exists(IResourceLocator locator) throws OseeCoreException;
 
    /**
     * Save input to location specified by resource locator
-    * 
+    *
     * @param locator location where to store the data
     * @param resource to store
     * @param options operation options
@@ -50,29 +50,35 @@ public interface IResourceManager {
 
    /**
     * Delete resource specified by resource locator
-    * 
+    *
     * @param locator location of the resource to delete
     */
    int delete(IResourceLocator locator) throws OseeCoreException;
 
    /**
     * Generate a resource locator based on protocol, seed and name
-    * 
+    *
     * @return a resource locator
     */
    IResourceLocator generateResourceLocator(String protocol, String seed, String name) throws OseeCoreException;
 
    /**
     * Get resource locator based on protocol and path
-    * 
+    *
     * @return a resource locator
     */
    IResourceLocator getResourceLocator(String path) throws OseeCoreException;
 
    /**
     * Supported Protocols
-    * 
+    *
     * @return supported protocols
     */
    Collection<String> getProtocols();
+
+   byte[] acquire(DataResource dataResource);
+
+   void save(long storageId, String storageName, DataResource dataResource, byte[] rawContent);
+
+   void purge(DataResource dataResource);
 }

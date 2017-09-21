@@ -16,8 +16,10 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.orcs.db.mocks.MockDataHandler;
 import org.eclipse.osee.orcs.db.mocks.MockLog;
+import org.eclipse.osee.orcs.db.mocks.MockResourceManager;
 import org.eclipse.osee.orcs.db.mocks.MockResourceNameResolver;
 import org.eclipse.osee.orcs.db.mocks.Utility;
 import org.junit.Assert;
@@ -29,6 +31,7 @@ import org.junit.Test;
  * @author Roberto E. Escobar
  */
 public class UriDataProxyTest {
+   private final IResourceManager resourceManager = new MockResourceManager();
 
    @Test
    public void testSetDisplayable() throws Exception {
@@ -38,15 +41,21 @@ public class UriDataProxyTest {
       Assert.assertEquals("hello", proxy.getDisplayableString());
    }
 
-   @Test
-   public void testGetSetData() {
-      MockDataHandler handler = new MockDataHandler();
-
-      Storage storage = new Storage(handler);
-
-      UriDataProxy proxy = new UriDataProxy();
+   private VarCharDataProxy createProxy(byte[] zippedData) {
+      VarCharDataProxy proxy = new VarCharDataProxy();
+      Storage storage = new Storage(resourceManager, proxy);
+      storage.setLocator("validPath");
+      storage.setContent(zippedData, null, null, null);
       proxy.setLogger(new MockLog());
       proxy.setStorage(storage);
+      return proxy;
+   }
+
+   @Test
+   public void testGetSetData() {
+
+      VarCharDataProxy proxy = createProxy(null);
+      Storage storage = proxy.getStorage();
 
       Assert.assertFalse(storage.isLocatorValid());
 

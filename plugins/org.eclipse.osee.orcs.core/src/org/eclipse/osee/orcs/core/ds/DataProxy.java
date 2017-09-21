@@ -17,8 +17,6 @@ public interface DataProxy {
 
    public void setResolver(ResourceNameResolver resolver);
 
-   public ResourceNameResolver getResolver();
-
    public String getDisplayableString();
 
    public void setDisplayableString(String toDisplay);
