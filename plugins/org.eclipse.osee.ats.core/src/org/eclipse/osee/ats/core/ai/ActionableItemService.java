@@ -36,13 +36,13 @@ import org.eclipse.osee.framework.logging.OseeLog;
 /**
  * @author Donald G. Dunne
  */
-public class ActionableItemManager implements IAtsActionableItemService {
+public class ActionableItemService implements IAtsActionableItemService {
 
    private final IAttributeResolver attrResolver;
    private final IAtsStoreService atsStoreService;
    private final IAtsServices services;
 
-   public ActionableItemManager(IAttributeResolver attrResolver, IAtsStoreService atsStoreService, IAtsServices services) {
+   public ActionableItemService(IAttributeResolver attrResolver, IAtsStoreService atsStoreService, IAtsServices services) {
       this.attrResolver = attrResolver;
       this.atsStoreService = atsStoreService;
       this.services = services;
@@ -75,7 +75,7 @@ public class ActionableItemManager implements IAtsActionableItemService {
          for (ArtifactId id : getActionableItemIds(atsObject)) {
             IAtsActionableItem aia = services.getConfigItem(id);
             if (aia == null) {
-               OseeLog.logf(ActionableItemManager.class, Level.SEVERE,
+               OseeLog.logf(ActionableItemService.class, Level.SEVERE,
                   "Actionable Item Guid [%s] from [%s] doesn't match item in AtsConfigCache", id,
                   atsObject.toStringWithId());
             } else {

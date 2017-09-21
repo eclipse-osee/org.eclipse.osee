@@ -38,7 +38,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.core.agile.AgileService;
-import org.eclipse.osee.ats.core.ai.ActionableItemManager;
+import org.eclipse.osee.ats.core.ai.ActionableItemService;
 import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.core.util.AtsCoreFactory;
 import org.eclipse.osee.ats.core.util.AtsCoreServiceImpl;
@@ -147,7 +147,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
          new AtsStoreServiceImpl(attributeResolverService, this, stateFactory, logFactory, this, jdbcService);
 
       queryService = new AtsQueryServiceImpl(this, jdbcService);
-      actionableItemManager = new ActionableItemManager(attributeResolverService, storeService, this);
+      actionableItemManager = new ActionableItemService(attributeResolverService, storeService, this);
       actionFactory = new ActionFactory(workItemFactory, sequenceProvider, actionableItemManager,
          attributeResolverService, stateFactory, getServices());
 

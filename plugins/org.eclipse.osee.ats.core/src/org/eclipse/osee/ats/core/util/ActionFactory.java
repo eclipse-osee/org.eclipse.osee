@@ -51,7 +51,6 @@ import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
-import org.eclipse.osee.ats.core.ai.ActionableItemManager;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.internal.state.StateManager;
 import org.eclipse.osee.ats.core.internal.util.AtsIdProvider;
@@ -75,22 +74,18 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public class ActionFactory implements IAtsActionFactory {
 
    private final IAtsWorkItemFactory workItemFactory;
-   private final IAtsActionableItemService actionableItemManager;
    private final IAttributeResolver attrResolver;
    private final IAtsServices services;
    private IAtsTeamDefinition topTeamDefinition;
 
    public ActionFactory(IAtsServices services) {
       this.workItemFactory = services.getWorkItemFactory();
-      this.actionableItemManager =
-         new ActionableItemManager(services.getAttributeResolver(), services.getStoreService(), services);
       this.attrResolver = services.getAttributeResolver();
       this.services = services;
    }
 
    public ActionFactory(IAtsWorkItemFactory workItemFactory, ISequenceProvider sequenceProvider, IAtsActionableItemService actionableItemManager, IAttributeResolver attrResolver, IAtsStateFactory stateFactory, IAtsServices atsServices) {
       this.workItemFactory = workItemFactory;
-      this.actionableItemManager = actionableItemManager;
       this.attrResolver = attrResolver;
       this.services = atsServices;
    }
@@ -345,7 +340,7 @@ public class ActionFactory implements IAtsActionFactory {
        * Relate Workflow to ActionableItems (by guid) if team is responsible for that AI
        */
       for (IAtsActionableItem aia : applicableAis) {
-         actionableItemManager.addActionableItem(teamWf, aia, changes);
+         services.getActionableItemService().addActionableItem(teamWf, aia, changes);
       }
 
       // Relate WorkFlow to Team Definition (by guid due to relation loading issues)

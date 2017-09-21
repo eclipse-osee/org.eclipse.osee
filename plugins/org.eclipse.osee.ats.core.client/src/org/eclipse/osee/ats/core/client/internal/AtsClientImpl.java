@@ -44,7 +44,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.core.agile.AgileService;
-import org.eclipse.osee.ats.core.ai.ActionableItemManager;
+import org.eclipse.osee.ats.core.ai.ActionableItemService;
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.IAtsUserServiceClient;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
@@ -141,7 +141,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
       storeService = new AtsStoreService(this, workItemFactory, getUserServiceClient(), jdbcService);
 
       queryService = new AtsQueryServiceImpl(this, jdbcService);
-      actionableItemManager = new ActionableItemManager(attributeResolverService, storeService, this);
+      actionableItemManager = new ActionableItemService(attributeResolverService, storeService, this);
 
       actionFactory = new ActionFactory(workItemFactory, sequenceProvider, actionableItemManager,
          attributeResolverService, stateFactory, getServices());

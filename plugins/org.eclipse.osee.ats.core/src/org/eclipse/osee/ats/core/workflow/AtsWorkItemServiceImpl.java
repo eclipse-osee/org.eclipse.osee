@@ -31,7 +31,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.api.workflow.note.IAtsWorkItemNotes;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
-import org.eclipse.osee.ats.core.ai.ActionableItemManager;
+import org.eclipse.osee.ats.core.ai.ActionableItemService;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.validator.AtsXWidgetValidateManager;
 import org.eclipse.osee.ats.core.workflow.note.ArtifactNote;
@@ -148,7 +148,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    public IAtsActionableItemService getActionableItemService() {
       if (actionableItemService == null) {
          actionableItemService =
-            new ActionableItemManager(services.getAttributeResolver(), services.getStoreService(), services);
+            new ActionableItemService(services.getAttributeResolver(), services.getStoreService(), services);
       }
       return actionableItemService;
    }
