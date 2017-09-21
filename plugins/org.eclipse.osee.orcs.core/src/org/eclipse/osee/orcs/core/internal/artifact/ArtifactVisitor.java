@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.core.internal.artifact;
 
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
+import org.eclipse.osee.orcs.core.ds.Attribute;
 
 /**
  * @author Roberto E. Escobar

@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.core.internal.attribute;
 
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.orcs.core.ds.Attribute;
 
 /**
  * @author Roberto E. Escobar

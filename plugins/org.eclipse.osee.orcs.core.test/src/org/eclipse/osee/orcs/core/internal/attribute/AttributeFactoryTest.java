@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
+import org.eclipse.osee.orcs.core.ds.Attribute;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.AttributeDataFactory;
 import org.eclipse.osee.orcs.core.ds.DataProxy;

@@ -8,15 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.internal.attribute;
+package org.eclipse.osee.orcs.core.ds;
 
 import java.io.InputStream;
 import java.lang.ref.Reference;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.orcs.core.ds.AttributeData;
-import org.eclipse.osee.orcs.core.ds.HasOrcsData;
+import org.eclipse.osee.orcs.core.internal.attribute.AttributeContainer;
 import org.eclipse.osee.orcs.core.internal.util.OrcsWriteable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.AttributeTypes;
