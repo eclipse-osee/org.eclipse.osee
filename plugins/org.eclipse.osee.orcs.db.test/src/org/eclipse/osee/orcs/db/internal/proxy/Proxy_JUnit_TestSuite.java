@@ -17,7 +17,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({VarCharDataProxyTest.class, DataResourceTest.class, StorageTest.class, UriDataProxyTest.class})
+@Suite.SuiteClasses({DataResourceTest.class})
 public class Proxy_JUnit_TestSuite {
    // Test Suite
 }
