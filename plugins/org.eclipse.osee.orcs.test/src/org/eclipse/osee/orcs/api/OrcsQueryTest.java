@@ -46,6 +46,8 @@ import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.NamedComparator;
+import org.eclipse.osee.framework.jdk.core.util.SortOrder;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsBranch;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -60,8 +62,6 @@ import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
 import org.eclipse.osee.orcs.utility.MatchComparator;
-import org.eclipse.osee.orcs.utility.NameComparator;
-import org.eclipse.osee.orcs.utility.SortOrder;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -598,7 +598,7 @@ public class OrcsQueryTest {
 
    @SuppressWarnings("unchecked")
    private static <T extends Named> Iterator<T> sort(Iterable<T> iterable) {
-      Ordering<T> from = (Ordering<T>) Ordering.from(new NameComparator(SortOrder.ASCENDING));
+      Ordering<T> from = (Ordering<T>) Ordering.from(new NamedComparator(SortOrder.ASCENDING));
       return from.sortedCopy(iterable).iterator();
    }
 }

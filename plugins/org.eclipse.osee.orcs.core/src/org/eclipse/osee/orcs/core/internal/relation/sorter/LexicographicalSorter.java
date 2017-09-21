@@ -16,8 +16,8 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
-import org.eclipse.osee.orcs.utility.NameComparator;
-import org.eclipse.osee.orcs.utility.SortOrder;
+import org.eclipse.osee.framework.jdk.core.util.NamedComparator;
+import org.eclipse.osee.framework.jdk.core.util.SortOrder;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -25,11 +25,11 @@ import org.eclipse.osee.orcs.utility.SortOrder;
  */
 public class LexicographicalSorter implements Sorter {
 
-   private final NameComparator comparator;
+   private final NamedComparator comparator;
    private final RelationSorter id;
 
    public LexicographicalSorter(SortOrder sortOrder) {
-      this.comparator = new NameComparator(sortOrder);
+      this.comparator = new NamedComparator(sortOrder);
       if (sortOrder.isAscending()) {
          id = LEXICOGRAPHICAL_ASC;
       } else {

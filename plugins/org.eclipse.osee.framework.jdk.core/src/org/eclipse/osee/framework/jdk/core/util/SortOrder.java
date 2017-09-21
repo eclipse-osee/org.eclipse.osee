@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.utility;
+package org.eclipse.osee.framework.jdk.core.util;
 
 /**
  * @author Roberto E. Escobar

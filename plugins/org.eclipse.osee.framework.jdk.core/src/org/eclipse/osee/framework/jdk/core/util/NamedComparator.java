@@ -8,21 +8,21 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.utility;
+package org.eclipse.osee.framework.jdk.core.util;
 
 import java.util.Comparator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 
-public class NameComparator implements Comparator<Named> {
+public class NamedComparator implements Comparator<Named> {
    private static final int NUMBER_STRING_LIMIT = 19;
    private static final Pattern numberPattern = Pattern.compile("[+-]?\\d+");
 
    private final Matcher numberMatcher = numberPattern.matcher("");
    private final SortOrder orderType;
 
-   public NameComparator(SortOrder orderType) {
+   public NamedComparator(SortOrder orderType) {
       this.orderType = orderType;
    }
 
