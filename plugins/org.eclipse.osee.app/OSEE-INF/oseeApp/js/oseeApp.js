@@ -1,4 +1,4 @@
-var app = angular.module('oseeApp', [ 'ngRoute', 'ngStorage', 'ngCookies',
+var app = angular.module('oseeApp', [ 'ngRoute', 'ngStorage', 'ngCookies', 'angularjs-dropdown-multiselect', 
         'jsonforms', 'jsonforms-bootstrap', 'ui.bootstrap', 'ngResource', 'ui.grid', 'ui.grid.resizeColumns' ]);
 
 app.config([ '$routeProvider', function($routeProvider) {
@@ -24,5 +24,15 @@ app.provider('OseeAppSchema', function() {
        var OseeAppSchema = $resource(
             '/apps/api/:appId', {}, {});
        return OseeAppSchema;
-       } ];
+       } ];   
 });
+
+app.factory('OseeControlValues', function($resource) {    
+    return $resource('/:url/:controlId', {}, {
+        query : {
+          method: 'GET',
+          params: {},
+          isArray: true
+        }
+    });
+})

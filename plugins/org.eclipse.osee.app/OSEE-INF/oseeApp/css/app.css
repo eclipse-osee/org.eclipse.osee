@@ -12,6 +12,7 @@
 }
 
 .osee-textarea {
+    resize: none;
     height: 100px;
     background-color: cyan;
     max-width: 100%;
@@ -25,8 +26,17 @@
     min-width: 100%;
 }
 
+.osee-multiselect-dropdown {
+    width: 100%;
+    text-align: left !important;
+}
+
+.multiselect-parent{
+    width: 100%;
+}
+
 #searchLabelDiv {
-    display: inline-block
+    display: inline-block;
 }
 #searchInputDiv {
     display: inline-block
