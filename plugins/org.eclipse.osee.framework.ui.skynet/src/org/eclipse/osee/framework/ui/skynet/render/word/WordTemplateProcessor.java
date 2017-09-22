@@ -578,8 +578,9 @@ public class WordTemplateProcessor {
          // If the artifact has not been processed
          if (!processedArtifacts.contains(artifact)) {
 
-            boolean ignoreArtifact = excludeFolders && artifact.isOfType(
-               CoreArtifactTypes.Folder) && !artifactsToExclude.containsKey(artifact.getId());
+            boolean ignoreArtifact =
+               (excludeFolders && artifact.isOfType(CoreArtifactTypes.Folder)) || artifactsToExclude.containsKey(
+                  ArtifactId.valueOf(artifact.getId()));
 
             boolean ignoreArtType = excludeArtifactTypes != null && artifact.isOfType(excludeArtifactTypes);
             boolean publishInline = artifact.getSoleAttributeValue(CoreAttributeTypes.PublishInline, false);
