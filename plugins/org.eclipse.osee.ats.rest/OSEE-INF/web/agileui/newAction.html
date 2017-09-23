@@ -9,25 +9,26 @@
 						<tr>
 							<td width="15%">Team: <strong>{{teamName}}</strong>
 							</td>
-							<td width="30%" align="right"><strong>New Action</strong></td>
+							<td width="30%" align="right"><strong>Configuration</strong></td>
 						</tr>
 					</table>
 				</div>
+				<div menu></div>
 			</div>
 			<div id="newActionForm">
 				<form novalidate class="simple-form">
 
-					<!-- Title-->
+					<!-- TITLE -->
 					<label>Title: <input type="text" ng-model="action.title"
 						width="100%" /></label><br />
 
-					<!-- Actionable Items-->
-					<label for="textarea">Actionable Item: </label>
-					<select ng-model="actionableItem"
+					<!-- ACTIONABLE ITEMS -->
+					<label for="textarea">Actionable Item: </label> <select
+						ng-model="actionableItem"
 						ng-options="item.uuid as item.Name for item in validAis">
 					</select>
 
-					<!-- Description-->
+					<!-- DESCRIPTION -->
 					<label for="textarea">Description: <textarea id="textarea"
 							rows name="Description" cols="40" ng-model="action.description"
 							rows="5"></textarea> <!-- Change Type--> <!-- Change Type-->
@@ -39,7 +40,7 @@
 						<option value="Support">Support</option>
 						<br />
 
-						<!-- Priority-->
+						<!-- PRIORITY -->
 					</select> <label>Priority:</label>&nbsp; <select id="priority"
 						ng-model="action.priority">
 						<option value="1">1 (High)</option>
@@ -48,13 +49,40 @@
 						<option value="4">4</option>
 						<option value="5 (Low)">5</option>
 
-						<!-- Need-By Date-->
+						<!-- NEED-BY DATE -->
 					</select> <label>Need-By Date:</label> <input type="date" name="deadline"
 						ng-model="action.needByDate"><br />
 
+						<!-- POINTS -->
+					</select> <label>Points:</label> <input type="text" name="points"
+						ng-model="action.points"><br />
+
+						<!-- UN-PLANNED -->
+					</select> <label>Un-Planned Work:</label> <input type="checkbox" name="unplanned"
+						ng-model="action.unplanned">
+
+					<!-- SPRINT -->
+					<label for="textarea">Sprint: </label> <select
+						ng-model="action.sprint"
+						ng-options="item.uuid as item.name for item in validSprints">
+					</select>
+
+					<!-- FEATURE GROUP -->
+					<label for="textarea">Feature Group: </label> <select
+						ng-model="action.featureGroup"
+						ng-options="item.uuid as item.name for item in validFeatureGroups">
+					</select><br />
+
+					<!-- WORK PACKAGE -->
+					<label for="textarea">Work Package: </label> <select
+						ng-model="action.workPackage"
+						ng-options="item.uuid as item.Name for item in validWorkPackages">
+					</select>
+
 					<div id="newActionButtonContainer">
-						<br /> <input type="button" ng-click="reset()" value="Reset" />
+						<br /> 
 						<input type="submit" ng-click="createItem(action)" value="Create" />
+						<input type="button" id="reset" ng-click="reset()" value="Reset" />
 					</div>
 
 				</form>

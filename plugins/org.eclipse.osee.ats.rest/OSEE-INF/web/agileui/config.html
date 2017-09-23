@@ -5,17 +5,22 @@
 <body>
 	<div class="container-fluid">
 
-		<div class="row col-lg-12 h4" ng-show="selectedTeam">
-			<b>Agile Team</b>
+		<div class="panel panel-primary" id="backlogContainer">
+			<div class="panel-heading" id="backlogHeader">
+				<table>
+					<tr>
+						<td width="15%">Team: <strong>{{teamName}}</strong>
+						</td>
+						<td width="30%" align="right"><strong>New Action</strong></td>
+					</tr>
+				</table>
+			</div>
+			<div menu></div>
+		</div>
+		<div class="row col-lg-12 h4" ng-show="isLoaded && selectedTeam.description"> Description: <b>{{selectedTeam.description}}</b>
 		</div>
 		<div class="row col-lg-12 h4">
-			Name: <b>{{selectedTeam.name}}</b>
-		</div>
-		<div class="row col-lg-12 h4">
-			Description: <b>{{selectedTeam.description}}</b>
-		</div>
-		<div class="row col-lg-12 h4">
-			Active: <b>{{selectedTeam.active}}</b>
+			Active: <b>{{selectedTeam.active}} 
 		</div>
 		<div class="row col-lg-12 h4"
 			ng-show="isLoaded && selectedTeam.backlog">

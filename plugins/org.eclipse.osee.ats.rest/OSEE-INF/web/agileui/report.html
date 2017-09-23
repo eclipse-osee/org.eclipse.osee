@@ -2,8 +2,21 @@
 <html>
 <body onload="zoom()">
 	<div class="container-fluid">
-		<h4>OSEE Agile {{reportname}} - Team: {{selectedTeam}}</h4>
-		<div id="b1" class="b1"></div>
+		<div class="row col-lg-12"">
+			<div class="panel panel-primary" id="backlogContainer">
+				<div class="panel-heading" id="backlogHeader">
+					<table>
+						<tr>
+							<td width="15%">Team: <strong>{{teamName}}</strong>
+							</td>
+							<td width="30%"><strong>{{reportname}}</strong></td>
+						</tr>
+					</table>
+				</div>
+				<div menu></div>
+			</div>
+			<div id="b1" class="b1"></div>
+		</div>
 	</div>
 	<script>
 		document.getElementById("b1").style.zoom = "400%"

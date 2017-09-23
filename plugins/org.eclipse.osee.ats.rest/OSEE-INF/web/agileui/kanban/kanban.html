@@ -20,23 +20,23 @@
 									<td align="center" width="30%">Sprint</td>
 									<td align="center" width="30%">Assignees</td>
 								</tr>
-									<td width="30%"><select style="min-width: 100%;"
-										ng-model="sprint"
-										ng-options="sprint.name for (key,sprint) in activeSprints">
-									</select></td>
+								<td width="30%"><select style="min-width: 100%;"
+									ng-model="sprint"
+									ng-options="sprint.name for (key,sprint) in activeSprints">
+								</select></td>
 
-									<td width="30%"><select style="min-width: 100%;"
-										ng-model="_assignee"
-										ng-options="_assignee for _assignee in assignees">
-											<option value="">Show All</option>
-									</select></td>
+								<td width="30%"><select style="min-width: 100%;"
+									ng-model="_assignee"
+									ng-options="_assignee for _assignee in assignees">
+										<option value="">Show All</option>
+								</select></td>
 								</tr>
 							</table>
 						</td>
 					</tr>
 				</table>
 			</div>
-
+			<div menu></div>
 		</div>
 
 		<div id="board" ng-show="availableStates" ng-model="allTasks">

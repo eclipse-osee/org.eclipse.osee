@@ -74,6 +74,12 @@ app.factory("PopupService", function($modal) {
 	}
 });
 
+app.directive('menu', function() {
+	return {
+		templateUrl : 'menu.html'
+	};
+});
+
 app.directive('focusMe', function($timeout) {
 	return function(scope, element, attrs) {
 		scope.$watch(attrs.focusMe, function() {

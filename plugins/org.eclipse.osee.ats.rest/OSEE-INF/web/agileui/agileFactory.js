@@ -10,6 +10,7 @@ angular.module('AgileApp').factory('AgileFactory',
 			var teamSingleResource = $resource('/ats/agile/team/:uuid');
 			var teamAisResource = $resource('/ats/agile/team/:uuid/ai');
 			var featuresResource = $resource('/ats/agile/team/:uuid/feature');
+			var workPackageResource = $resource('/ats/agile/team/:uuid/workpackage');
 			var featureSingleResource = $resource('/ats/agile/team/:teamUuid/feature/:uuid');
 			var sprintResource = $resource('/ats/agile/team/:uuid/sprint');
 			var sprintCurrentResource = $resource('/ats/agile/team/:uuid/sprintcurrent');
@@ -58,6 +59,10 @@ angular.module('AgileApp').factory('AgileFactory',
 				toPost.name = teamName;
 				toPost.active = true;
 				return teamResource.save(toPost);
+			}
+
+			factory.getWorkPackages = function(team) {
+				return workPackageResource.query(team);
 			}
 
 			// ////////////////////////////////////

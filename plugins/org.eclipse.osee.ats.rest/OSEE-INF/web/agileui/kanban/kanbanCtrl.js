@@ -45,16 +45,18 @@ angular
 							/*
 							 * State transition
 							 */
-							$scope.onDropComplete = function(data, evt, toState, toAssignees) {
+							$scope.onDropComplete = function(data, evt,
+									toState, toAssignees) {
 								var fromState = data.taskState;
 								var fromAssigneeId = getUserId(data.assignee);
 								var toAssigneeId = getUserId(toAssignees);
-								if (fromState !== toState || fromAssigneeId !== toAssigneeId) {
+								if (fromState !== toState
+										|| fromAssigneeId !== toAssigneeId) {
 
 									var _data = {};
 									_data.uuid = data.guid;
-									_data.uuids = [data.guid];
-									_data.toStateUsers = [toAssigneeId];
+									_data.uuids = [ data.guid ];
+									_data.toStateUsers = [ toAssigneeId ];
 									_data.toState = toState;
 
 									update(_data, evt, data.guid, fromState,
@@ -89,19 +91,23 @@ angular
 													count += entry.taskUuids.length;
 												}
 
-												// Add implementers as assignees even though completed
+												// Add implementers as assignees
+												// even though completed
 												for (var i = 0; i < data.implementersToTaskUuids.length; i++) {
 													var entry = data.implementersToTaskUuids[i];
 													var name = data.userIdToName[entry.assigneeId];
 													var assigneeEntry = assigneeNameToTasksUuids[name];
 													if (assigneeEntry) {
-														entry.taskUuids = entry.taskUuids.concat(assigneeEntry);
-													 }
+														entry.taskUuids = entry.taskUuids
+																.concat(assigneeEntry);
+													}
 													assigneeNameToTasksUuids[name] = entry.taskUuids;
 													count += entry.taskUuids.length;
 												}
 
-												var temp = _.keys(assigneeNameToTasksUuids)
+												var temp = _
+														.keys(
+																assigneeNameToTasksUuids)
 														.sort();
 
 												$scope.assignees = _
@@ -129,8 +135,8 @@ angular
 							 */
 							var update = function(data, evt, taskId, fromState,
 									toState) {
-								var idDropedToTd = getUserName(data.toStateUsers[0]) + '-'
-										+ toState;
+								var idDropedToTd = getUserName(data.toStateUsers[0])
+										+ '-' + toState;
 								var idDraggedCard = taskId;
 
 								/*
@@ -138,47 +144,118 @@ angular
 								 * the server.
 								 */
 								AgileFactory.updateStatus(data).$promise
-										.then(function(data) {
-											updateTask(taskId, fromState,
-													toState);
-											var toTd = document
-													.getElementById(idDropedToTd);
-											var card = document
-													.getElementById(idDraggedCard);
-											card.setAttribute("class", "card "
-													+ toState)
-											var attribute = card
-													.getAttribute("ng-drag-data");
-											var newAttr = attribute.replace(
-													fromState, toState);
-											card.setAttribute("ng-drag-data",
-													newAttr);
-											toTd.appendChild(card);
-										}, function(reason) {
-										    alert("Error updating status "+reason);
-										});
+										.then(
+												function(data) {
+													updateTask(taskId,
+															fromState, toState);
+													var toTd = document
+															.getElementById(idDropedToTd);
+													var card = document
+															.getElementById(idDraggedCard);
+													card.setAttribute("class",
+															"card " + toState)
+													var attribute = card
+															.getAttribute("ng-drag-data");
+													var newAttr = attribute
+															.replace(fromState,
+																	toState);
+													card.setAttribute(
+															"ng-drag-data",
+															newAttr);
+													toTd.appendChild(card);
+												},
+												function(reason) {
+													alert("Error updating status "
+															+ reason);
+												});
 							}
 
 							// populate model with teams
-							$scope.$watch("team", function() {
-								AgileFactory.getSprints($scope.team).$promise
-										.then(function(data) {
-											$scope.sprints = data;
-											var activeSprints = [];
-											for (var index in $scope.sprints) {
-											   var sprint = $scope.sprints[index];
-											   if (sprint.active) {
-											      activeSprints.push(sprint);
-											   }
-											}
-											$scope.activeSprints = activeSprints;
-										});
-							});
+							$scope
+									.$watch(
+											"team",
+											function() {
+												AgileFactory
+														.getSprints($scope.team).$promise
+														.then(function(data) {
+															$scope.sprints = data;
+															var activeSprints = [];
+															for ( var index in $scope.sprints) {
+																var sprint = $scope.sprints[index];
+																if (sprint.active) {
+																	activeSprints
+																			.push(sprint);
+																}
+															}
+															$scope.activeSprints = activeSprints;
+														});
+											});
 
 							// populate model with tasks
 							$scope.$watch("sprint", function() {
 								getTasks();
 							});
+
+							// COMMON MENU COPIED TO ALL JS
+							$scope.openConfigForTeam = function(team) {
+								window.location.assign("main#/config?team="
+										.concat($scope.team.uuid))
+							}
+
+							$scope.openKanbanForTeam = function(team) {
+								window.location.assign("main#/kanban?team="
+										.concat($scope.team.uuid))
+							}
+
+							$scope.openBurndownForTeam = function(team) {
+								window.location
+										.assign("main#/report?team="
+												.concat($scope.team.uuid)
+												.concat(
+														"&reporttype=burndown&reportname=Burn-Down"))
+							}
+
+							$scope.openBurnupForTeam = function(team) {
+								window.location
+										.assign("main#/report?team="
+												.concat($scope.team.uuid)
+												.concat(
+														"&reporttype=burnup&reportname=Burn-Up"))
+							}
+
+							$scope.openBacklogForTeam = function(team) {
+								window.location.assign("main#/backlog?team="
+										.concat($scope.team.uuid).concat(
+												"&default=backlog"))
+							}
+
+							$scope.openNewActionForTeam = function(team) {
+								window.location.assign("main#/newAction?team="
+										.concat($scope.team.uuid))
+							}
+
+							$scope.openSprintForTeam = function(team) {
+								window.location.assign("main#/sprint?team="
+										.concat($scope.team.uuid).concat(
+												"&default=sprint"))
+							}
+
+							$scope.openSummaryForTeam = function(team) {
+								window.location
+										.assign("main#/report?team="
+												.concat($scope.team.uuid)
+												.concat(
+														"&reporttype=summary&reportname=Summary"))
+							}
+
+							$scope.openDataForTeam = function(team) {
+								window.location
+										.assign("main#/report?team="
+												.concat($scope.team.uuid)
+												.concat(
+														"&reporttype=data&reportname=Data"))
+							}
+							// COMMON MENU COPIED TO ALL JS
 
 						} ]);
 
@@ -237,13 +314,13 @@ var getUserName = function(userId) {
 }
 
 var getUserId = function(userName) {
-   var resultUserId = "";
-	for (var userId in _tasks.userIdToName) {
+	var resultUserId = "";
+	for ( var userId in _tasks.userIdToName) {
 		var name = _tasks.userIdToName[userId];
 		if (name === userName) {
-		   resultUserId = userId;
-		   break;
+			resultUserId = userId;
+			break;
 		}
-   }
+	}
 	return resultUserId;
 }

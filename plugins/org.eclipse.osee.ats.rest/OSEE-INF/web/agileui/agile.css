@@ -1,3 +1,9 @@
+#menu {
+	color: #333;
+	background-color: #f5f5f5;
+	border-color: #ddd;
+}
+
 #loadingModal {
 	margin-bottom: 0px;
 }
@@ -35,11 +41,10 @@
 
 #configDiv {
 	width: 100% !important;
-	overflow: hidden;
 }
 
 #sprintDiv {
-	width: 500px;
+	width: 50% !important;
 	float: left;
 }
 
@@ -52,7 +57,12 @@
 }
 
 #featureDiv {
-	margin-left: 520px;
+	width: 50% !important;
+	float: right;
+}
+
+#reset {
+	float: right;
 }
 
 #featureHeading {

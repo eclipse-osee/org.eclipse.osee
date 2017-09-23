@@ -25,16 +25,16 @@ angular
 							$scope.selectedTeams = [];
 
 							var openTeamTmpl = '<button class="btn btn-default btn-sm" ng-click="openTeam(row.entity)">Open</button>';
-							var configTeamTmpl = '<button class="btn btn-default btn-sm" ng-click="configTeam(row.entity)">Config</button>';
-							var openBacklogImpl = '<button class="btn btn-default btn-sm" ng-click="openBacklog(row.entity)">Backlog</button>';
-							var openSprintImpl = '<button class="btn btn-default btn-sm" ng-click="openSprint(row.entity)">Sprint</button>';
-							var openKanbanImpl = '<button class="btn btn-default btn-sm" ng-click="openKanban(row.entity)">Kanban</button>';
-							var openBurndownImpl = '<button class="btn btn-default btn-sm" ng-click="openBurndown(row.entity)">Burn-Down</button>';
-							var openBurnupImpl = '<button class="btn btn-default btn-sm" ng-click="openBurnup(row.entity)">Burn-Up</button>';
-							var openSummaryImpl = '<button class="btn btn-default btn-sm" ng-click="openSummary(row.entity)">Summary</button>';
-							var openDataImpl = '<button class="btn btn-default btn-sm" ng-click="openData(row.entity)">Data</button>';
-							var openNewActionImpl = '<button class="btn btn-default btn-sm" ng-click="openNewAction(row.entity)">New Action</button>';
-							
+							var configTeamTmpl = '<button class="btn btn-default btn-sm" ng-click="openConfigForTeam(row.entity)">Config</button>';
+							var openBacklogImpl = '<button class="btn btn-default btn-sm" ng-click="openBacklogForTeam(row.entity)">Backlog</button>';
+							var openSprintImpl = '<button class="btn btn-default btn-sm" ng-click="openSprintForTeam(row.entity)">Sprint</button>';
+							var openKanbanImpl = '<button class="btn btn-default btn-sm" ng-click="openKanbanForTeam(row.entity)">Kanban</button>';
+							var openBurndownImpl = '<button class="btn btn-default btn-sm" ng-click="openBurndownForTeam(row.entity)">Burn-Down</button>';
+							var openBurnupImpl = '<button class="btn btn-default btn-sm" ng-click="openBurnupForTeam(row.entity)">Burn-Up</button>';
+							var openSummaryImpl = '<button class="btn btn-default btn-sm" ng-click="openSummaryForTeam(row.entity)">Summary</button>';
+							var openDataImpl = '<button class="btn btn-default btn-sm" ng-click="openDataForTeam(row.entity)">Data</button>';
+							var openNewActionImpl = '<button class="btn btn-default btn-sm" ng-click="openNewActionForTeam(row.entity)">New Action</button>';
+
 							$scope.teamGridOptions = {
 								data : 'teams',
 								enableHighlighting : true,
@@ -54,11 +54,23 @@ angular
 									displayName : 'Name',
 									width : 150
 								}, {
-									field : "open",
-									displayName : 'Open',
-									width : 54,
-									cellTemplate : openTeamTmpl,
-									cellClass: 'grid-align'
+									field : "backlog",
+									displayName : 'Backlog',
+									width : 70,
+									cellTemplate : openBacklogImpl,
+									cellClass : 'grid-align'
+								}, {
+									field : "sprint",
+									displayName : 'Sprint',
+									width : 60,
+									cellTemplate : openSprintImpl,
+									cellClass : 'grid-align'
+								}, {
+									field : "kanban",
+									displayName : 'Kanban',
+									width : 66,
+									cellTemplate : openKanbanImpl,
+									cellClass : 'grid-align'
 								}, {
 									field : "newAction",
 									displayName : 'New Action',
@@ -66,54 +78,36 @@ angular
 									cellTemplate : openNewActionImpl,
 									cellClass: 'grid-align'
 								}, {
-									field : "backlog",
-									displayName : 'Backlog',
-									width : 70,
-									cellTemplate : openBacklogImpl,
-									cellClass: 'grid-align'
-								}, {
-									field : "sprint",
-									displayName : 'Sprint',
-									width : 60,
-									cellTemplate : openSprintImpl,
-									cellClass: 'grid-align'
-								}, {
-									field : "kanban",
-									displayName : 'Kanban',
-									width : 66,
-									cellTemplate : openKanbanImpl,
-									cellClass: 'grid-align'
-								}, {
 									field : "burndown",
 									displayName : 'Burn-Down',
 									width : 80,
-									
+
 									cellTemplate : openBurndownImpl,
-									cellClass: 'grid-align'
+									cellClass : 'grid-align'
 								}, {
 									field : "burnup",
 									displayName : 'Burn-Up',
 									width : 74,
 									cellTemplate : openBurnupImpl,
-									cellClass: 'grid-align'
+									cellClass : 'grid-align'
 								}, {
 									field : "summary",
 									displayName : 'Summary',
 									width : 79,
 									cellTemplate : openSummaryImpl,
-									cellClass: 'grid-align'
+									cellClass : 'grid-align'
 								}, {
 									field : "data",
 									displayName : 'Data',
 									width : 60,
 									cellTemplate : openDataImpl,
-									cellClass: 'grid-align'
+									cellClass : 'grid-align'
 								}, {
 									field : "config",
 									displayName : 'Config',
 									width : 60,
 									cellTemplate : configTeamTmpl,
-									cellClass: 'grid-align'
+									cellClass : 'grid-align'
 								} ]
 							};
 
@@ -133,51 +127,6 @@ angular
 
 							$scope.openTeam = function(team) {
 								window.location.assign("main#/team?team="
-										.concat(team.uuid))
-							}
-
-							$scope.configTeam = function(team) {
-								window.location.assign("main#/config?team="
-										.concat(team.uuid))
-							}
-
-							$scope.openKanban = function(team) {
-								window.location.assign("main#/kanban?team="
-										.concat(team.uuid))
-							}
-
-							$scope.openBurndown = function(team) {
-								window.location.assign("main#/burndown?team="
-										.concat(team.uuid))
-							}
-
-							$scope.openBurnup = function(team) {
-								window.location.assign("main#/burnup?team="
-										.concat(team.uuid))
-							}
-
-							$scope.openBacklog = function(team) {
-								window.location.assign("main#/backlog?team="
-										.concat(team.uuid).concat("&default=backlog"))
-							}
-
-							$scope.openNewAction = function(team) {
-								window.location.assign("main#/newAction?team="
-										.concat(team.uuid))
-							}
-
-							$scope.openSprint = function(team) {
-								window.location.assign("main#/sprint?team="
-										.concat(team.uuid).concat("&default=sprint"))
-							}
-
-							$scope.openSummary = function(team) {
-								window.location.assign("main#/summary?team="
-										.concat(team.uuid))
-							}
-
-							$scope.openData = function(team) {
-								window.location.assign("main#/data?team="
 										.concat(team.uuid))
 							}
 
@@ -214,7 +163,53 @@ angular
 							$scope.refresh = function() {
 								$scope.updateTeams();
 							}
-
+							
 							$scope.refresh();
+
+							// NOT COMMON MENU, MUST REFERENCE team and not $scope
+							$scope.openConfigForTeam = function(team) {
+								window.location.assign("main#/config?team="
+										.concat(team.uuid))
+							}
+
+							$scope.openKanbanForTeam = function(team) {
+								window.location.assign("main#/kanban?team="
+										.concat(team.uuid))
+							}
+
+							$scope.openBurndownForTeam = function(team) {
+								window.location.assign("main#/report?team="
+										.concat(team.uuid).concat("&reporttype=burndown&reportname=Burn-Down"))
+							}
+
+							$scope.openBurnupForTeam = function(team) {
+								window.location.assign("main#/report?team="
+										.concat(team.uuid).concat("&reporttype=burnup&reportname=Burn-Up"))
+							}
+
+							$scope.openBacklogForTeam = function(team) {
+								window.location.assign("main#/backlog?team="
+										.concat(team.uuid).concat("&default=backlog"))
+							}
+
+							$scope.openNewActionForTeam = function(team) {
+								window.location.assign("main#/newAction?team="
+										.concat(team.uuid))
+							}
+
+							$scope.openSprintForTeam = function(team) {
+								window.location.assign("main#/sprint?team="
+										.concat(team.uuid).concat("&default=sprint"))
+							}
+
+							$scope.openSummaryForTeam = function(team) {
+								window.location.assign("main#/report?team="
+										.concat(team.uuid).concat("&reporttype=summary&reportname=Summary"))
+							}
+
+							$scope.openDataForTeam = function(team) {
+								window.location.assign("main#/report?team="
+										.concat(team.uuid).concat("&reporttype=data&reportname=Data"))
+							}
 
 						} ]);
