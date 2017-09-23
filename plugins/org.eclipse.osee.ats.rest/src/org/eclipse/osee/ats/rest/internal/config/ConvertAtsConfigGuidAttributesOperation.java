@@ -123,8 +123,7 @@ public class ConvertAtsConfigGuidAttributesOperation {
          String teamDefGuid = services.getAttributeResolver().getSoleAttributeValue(art, TeamDefinition, "");
          if (Strings.isValid(teamDefGuid)) {
             IAtsTeamDefinition teamDef = services.getConfigItem(teamDefGuid);
-            changes.setSoleAttributeValue(art, AtsAttributeTypes.TeamDefinitionReference,
-               teamDef.getStoreObject().getId().toString());
+            changes.setSoleAttributeValue(art, AtsAttributeTypes.TeamDefinitionReference, teamDef.getStoreObject());
          }
       }
    }

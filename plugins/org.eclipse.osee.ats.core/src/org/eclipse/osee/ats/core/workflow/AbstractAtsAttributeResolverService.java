@@ -34,12 +34,6 @@ public abstract class AbstractAtsAttributeResolverService implements IAttributeR
 
    @Override
    public ArtifactId getSoleArtifactIdReference(ArtifactToken art, AttributeTypeToken artifactReferencedAttributeType, ArtifactId defaultValue) {
-      ArtifactId result = defaultValue;
-      String id = getSoleAttributeValueAsString(art, artifactReferencedAttributeType, "");
-      if (Strings.isNumeric(id)) {
-         result = ArtifactId.valueOf(id);
-      }
-      return result;
+      return getSoleAttributeValue(art, artifactReferencedAttributeType, defaultValue);
    }
-
 }

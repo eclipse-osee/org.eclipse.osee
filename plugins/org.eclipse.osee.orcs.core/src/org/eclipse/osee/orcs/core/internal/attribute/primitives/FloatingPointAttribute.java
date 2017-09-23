@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.attribute.primitives;
 
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.core.annotations.OseeAttribute;
@@ -24,20 +23,7 @@ public class FloatingPointAttribute extends CharacterBackedAttribute<Double> {
    private static final Double DEFAULT_DOUBLE = Double.MIN_VALUE;
 
    @Override
-   public Double getValue() throws OseeCoreException {
-      return (Double) getDataProxy().getValue();
-   }
-
-   @Override
-   public boolean subClassSetValue(Double value) throws OseeCoreException {
-      if (value == null) {
-         throw new OseeArgumentException("Attribute value was null");
-      }
-      return getDataProxy().setValue(value);
-   }
-
-   @Override
-   protected Double convertStringToValue(String value) throws OseeCoreException {
+   public Double convertStringToValue(String value) {
       Double toReturn = null;
       if (isValidDouble(value)) {
          toReturn = Double.valueOf(value);

@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
@@ -46,20 +47,18 @@ public class AttributeValueQuickSearch {
       List<Artifact> results = new ArrayList<>();
       if (values != null && values.size() > 0) {
          for (String value : values) {
-            List<Artifact> searchResult = ArtifactQuery.getArtifactListFromAttributeKeywords(AtsClientService.get().getAtsBranch(),
-               value, false, EXCLUDE_DELETED, false, attributeType);
+            List<Artifact> searchResult = ArtifactQuery.getArtifactListFromAttributeKeywords(
+               AtsClientService.get().getAtsBranch(), value, false, EXCLUDE_DELETED, false, attributeType);
             // Since quick search is tokenized, re-validate if exactMatch is desired
             if (exactMatch) {
                for (Artifact artifact : searchResult) {
-                  boolean found = false;
                   for (String value2 : values) {
-                     if (artifact.getAttributesToStringList(attributeType).contains(value2)) {
-                        found = true;
-                        break;
+                     for (Attribute<Object> attribute : artifact.getAttributes(attributeType)) {
+                        if (attribute.convertToStorageString(attribute.getValue()).equals(value2)) {
+                           results.add(artifact);
+                           break;
+                        }
                      }
-                  }
-                  if (found) {
-                     results.add(artifact);
                   }
                }
             } else {

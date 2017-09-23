@@ -106,7 +106,7 @@ public class TransactionWriter {
    private final JdbcClient jdbcClient;
    private final TxSqlBuilder sqlBuilder;
 
-   private List<DataProxy> binaryStores;
+   private List<DataProxy<?>> binaryStores;
 
    public TransactionWriter(Log logger, JdbcClient jdbcClient, TxSqlBuilder sqlBuilder) {
       super();
@@ -115,12 +115,12 @@ public class TransactionWriter {
       this.sqlBuilder = sqlBuilder;
    }
 
-   protected List<DataProxy> getBinaryStores() {
+   protected List<DataProxy<?>> getBinaryStores() {
       return binaryStores;
    }
 
    public void rollback() {
-      for (DataProxy proxy : getBinaryStores()) {
+      for (DataProxy<?> proxy : getBinaryStores()) {
          try {
             proxy.rollBack();
          } catch (OseeCoreException ex1) {
@@ -133,7 +133,7 @@ public class TransactionWriter {
       sqlBuilder.accept(tx, txData);
       try {
          binaryStores = sqlBuilder.getBinaryStores();
-         for (DataProxy proxy : binaryStores) {
+         for (DataProxy<?> proxy : binaryStores) {
             proxy.persist();
          }
          sqlBuilder.updateAfterBinaryStorePersist();

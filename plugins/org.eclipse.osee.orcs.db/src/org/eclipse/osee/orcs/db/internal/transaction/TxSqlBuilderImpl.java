@@ -48,7 +48,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
    private final IdentityManager idManager;
 
    private TransactionId txId;
-   private List<DataProxy> binaryStores;
+   private List<DataProxy<?>> binaryStores;
    private HashCollection<SqlOrderEnum, Object[]> dataItemInserts;
    private Map<SqlOrderEnum, IdJoinQuery> txNotCurrentsJoin;
 
@@ -74,7 +74,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
    }
 
    @Override
-   public List<DataProxy> getBinaryStores() {
+   public List<DataProxy<?>> getBinaryStores() {
       return binaryStores != null ? binaryStores : Collections.emptyList();
    }
 
@@ -126,7 +126,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
          if (createNewGamma && !data.getDirtyState().isApplicOnly()) {
             updateGamma(data);
 
-            DataProxy dataProxy = data.getDataProxy();
+            DataProxy<?> dataProxy = data.getDataProxy();
             dataProxy.setGamma(data.getVersion().getGammaId(), createNewGamma);
             binaryStores.add(dataProxy);
 
@@ -135,7 +135,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
                data.setLocalId(localId);
             }
             addRow(SqlOrderEnum.ATTRIBUTES, data.getLocalId(), data.getTypeUuid(), data.getVersion().getGammaId(),
-               data.getArtifactId(), dataProxy.getRawValue(), dataProxy.getUri());
+               data.getArtifactId(), dataProxy.getStorageString(), dataProxy.getUri());
          }
          addTxs(SqlOrderEnum.ATTRIBUTES, data);
       }
@@ -165,10 +165,10 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
    public void updateAfterBinaryStorePersist() throws OseeCoreException {
       List<Object[]> insertData = getInsertData(SqlOrderEnum.ATTRIBUTES);
       for (int index = 0; index < binaryStores.size() && index < insertData.size(); index++) {
-         DataProxy proxy = binaryStores.get(index);
+         DataProxy<?> proxy = binaryStores.get(index);
          Object[] rowData = insertData.get(index);
          int end = rowData.length;
-         rowData[end - 2] = proxy.getRawValue();
+         rowData[end - 2] = proxy.getStorageString();
          rowData[end - 1] = proxy.getUri();
       }
    }

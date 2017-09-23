@@ -33,6 +33,11 @@ public class UriDataProxy extends AbstractDataProxy implements CharacterDataProx
    }
 
    @Override
+   public Object getRawValue() {
+      return "";
+   }
+
+   @Override
    public String getDisplayableString() {
       return displayable;
    }
@@ -122,5 +127,10 @@ public class UriDataProxy extends AbstractDataProxy implements CharacterDataProx
    @Override
    public Object getValue() {
       return getValueAsString();
+   }
+
+   @Override
+   public String getStorageString() {
+      return "";
    }
 }

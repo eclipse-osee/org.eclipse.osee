@@ -52,7 +52,7 @@ public final class CompressedContentAttribute extends BinaryAttribute<InputStrea
    }
 
    @Override
-   protected InputStream convertStringToValue(String value) throws OseeCoreException {
+   public InputStream convertStringToValue(String value) {
       try {
          return Lib.stringToInputStream(value);
       } catch (Exception ex) {

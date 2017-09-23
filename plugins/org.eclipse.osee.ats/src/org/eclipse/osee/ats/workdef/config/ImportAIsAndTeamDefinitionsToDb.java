@@ -36,6 +36,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.UserDef;
 import org.eclipse.osee.ats.dsl.atsDsl.UserRef;
 import org.eclipse.osee.ats.dsl.atsDsl.VersionDef;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -328,7 +329,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
       if (Strings.isValid(dslProgramDef.getTeamDefinition())) {
          String teamDefIdOrName = Strings.unquote(dslProgramDef.getTeamDefinition());
          if (Strings.isNumeric(teamDefIdOrName)) {
-            newProgramArt.addAttribute(AtsAttributeTypes.TeamDefinitionReference, teamDefIdOrName);
+            newProgramArt.addAttribute(AtsAttributeTypes.TeamDefinitionReference, ArtifactId.valueOf(teamDefIdOrName));
          } else {
             Artifact teamDefArt = teamNameToTeamDefArt.get(teamDefIdOrName);
             if (teamDefArt == null) {

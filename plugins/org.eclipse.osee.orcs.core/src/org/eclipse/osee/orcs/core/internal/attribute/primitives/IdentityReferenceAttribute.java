@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2012 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,21 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.core.ds;
+package org.eclipse.osee.orcs.core.internal.attribute.primitives;
 
-import org.eclipse.osee.framework.core.data.AttributeId;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 
-/**
- * @author Roberto E. Escobar
- */
-public interface AttributeData<T> extends OrcsData, AttributeId {
+public abstract class IdentityReferenceAttribute extends CharacterBackedAttribute<Id> {
 
-   int getArtifactId();
-
-   void setArtifactId(int artifactId);
-
-   DataProxy<T> getDataProxy();
-
-   void setDataProxy(DataProxy<T> proxy);
-
+   @Override
+   public String convertToStorageString(Id rawValue) {
+      return rawValue.getIdString();
+   }
 }

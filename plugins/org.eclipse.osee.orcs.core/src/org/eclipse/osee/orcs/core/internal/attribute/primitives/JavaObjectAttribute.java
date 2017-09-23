@@ -73,7 +73,7 @@ public final class JavaObjectAttribute extends BinaryAttribute<Object> {
    }
 
    @Override
-   protected Object convertStringToValue(String value) {
+   public Object convertStringToValue(String value) {
       if (value == null) {
          return null;
       }

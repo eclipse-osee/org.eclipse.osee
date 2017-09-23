@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.core.ds;
 /**
  * @author Roberto E. Escobar
  */
-public interface DataProxy {
+public interface DataProxy<T> {
 
    public void setResolver(ResourceNameResolver resolver);
 
@@ -21,9 +21,9 @@ public interface DataProxy {
 
    public void setDisplayableString(String toDisplay);
 
-   public void setData(Object value, String uri);
+   public void setData(T value, String uri);
 
-   public Object getRawValue();
+   public T getRawValue();
 
    public String getUri();
 
@@ -38,4 +38,8 @@ public interface DataProxy {
    long getGammaId();
 
    void rollBack();
+
+   public void setAttribute(Attribute<T> attribute);
+
+   public String getStorageString();
 }

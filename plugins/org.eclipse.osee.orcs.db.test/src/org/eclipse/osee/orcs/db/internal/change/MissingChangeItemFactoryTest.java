@@ -365,7 +365,7 @@ public class MissingChangeItemFactoryTest {
    private static AttributeData createAttributeData(int artId, int attrId, long gamma, ModificationType modType) {
       AttributeData data = mock(AttributeData.class);
       VersionData version = mock(VersionData.class);
-      DataProxy proxy = mock(DataProxy.class);
+      DataProxy<?> proxy = mock(DataProxy.class);
       when(data.getModType()).thenReturn(modType);
       when(data.getVersion()).thenReturn(version);
       when(data.getArtifactId()).thenReturn(artId);

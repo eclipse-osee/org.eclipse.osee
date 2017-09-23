@@ -165,7 +165,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    @Override
    public void addAttribute(IAtsObject atsObject, AttributeTypeId attributeType, Object value) throws OseeCoreException {
       ArtifactReadable artifact = getArtifact(atsObject);
-      getTransaction().createAttributeFromString(artifact, attributeType, String.valueOf(value));
+      getTransaction().createAttribute(artifact, attributeType, value);
       add(atsObject);
    }
 

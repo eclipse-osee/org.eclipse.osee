@@ -49,7 +49,6 @@ import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchUtil;
-import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewState;
@@ -290,7 +289,6 @@ public class AtsTestUtil {
          throw new OseeStateException("AtsTestUtil should not be run on production.");
       }
 
-      AtsBulkLoad.reloadConfig(true);
       AtsTestUtil.postFixName = postFixName;
 
       importWorkDefinition();

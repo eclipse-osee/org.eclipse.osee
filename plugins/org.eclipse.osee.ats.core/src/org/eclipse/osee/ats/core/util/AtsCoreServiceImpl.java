@@ -257,10 +257,10 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
       if (atsConfig != null) {
          String keyValue = String.format("%s=%s", key, value);
          boolean found = false;
-         Collection<IAttribute<Object>> attributes =
+         Collection<IAttribute<String>> attributes =
             getAttributeResolver().getAttributes(atsConfig, CoreAttributeTypes.GeneralStringData);
-         for (IAttribute<Object> attr : attributes) {
-            String str = (String) attr.getValue();
+         for (IAttribute<String> attr : attributes) {
+            String str = attr.getValue();
             if (str.startsWith(key)) {
                changes.setAttribute(atsConfig, attr, keyValue);
                found = true;

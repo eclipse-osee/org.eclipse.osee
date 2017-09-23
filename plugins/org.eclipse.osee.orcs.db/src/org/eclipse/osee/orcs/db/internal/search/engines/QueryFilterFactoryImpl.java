@@ -291,13 +291,13 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
          LoadDataHandler handler = getHandler();
          if (handler != null) {
             ArtifactData art = buffer.removeArtifactByArtId(artifactId);
-            Iterable<AttributeData> attrs = buffer.removeAttributesByArtId(artifactId);
+            Iterable<AttributeData<?>> attrs = buffer.removeAttributesByArtId(artifactId);
             Iterable<RelationData> rels = buffer.removeRelationsByArtId(artifactId);
             if (art != null) {
                handler.onData(art);
             }
             if (attrs != null) {
-               for (AttributeData attr : attrs) {
+               for (AttributeData<?> attr : attrs) {
                   handler.onData(attr);
                }
             }

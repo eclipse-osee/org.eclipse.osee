@@ -26,9 +26,4 @@ public class EnumeratedAttribute extends StringAttribute {
       String toDisplay = getDataProxy().getDisplayableString();
       return Strings.isValid(toDisplay) ? toDisplay : "<Select>";
    }
-
-   @Override
-   public boolean subClassSetValue(String value) throws OseeCoreException {
-      return super.subClassSetValue(value);
-   }
 }

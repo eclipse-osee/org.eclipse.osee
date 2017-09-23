@@ -127,7 +127,7 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
    }
 
    public void setTeamDefinition(IAtsTeamDefinition teamDef) throws OseeCoreException {
-      setSoleAttributeValue(AtsAttributeTypes.TeamDefinitionReference, teamDef.getIdString());
+      setSoleAttributeValue(AtsAttributeTypes.TeamDefinitionReference, teamDef);
    }
 
    @Override

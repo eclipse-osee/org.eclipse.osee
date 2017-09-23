@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -34,7 +33,6 @@ import org.eclipse.osee.orcs.core.ds.Attribute;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
-import org.eclipse.osee.orcs.core.internal.attribute.AttributeManager;
 import org.eclipse.osee.orcs.core.internal.relation.RelationFactory;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.BranchReadable;
@@ -70,7 +68,7 @@ public class ArtifactFactoryTest {
    @Mock private ArtifactTypes artifactTypeCache;
 
    @Mock private Attribute<Object> attribute;
-   @Mock private AttributeData attributeData;
+   @Mock private AttributeData<?> attributeData;
    @Mock private Artifact source;
    @Mock private Artifact destination;
    @Mock private OrcsSession session;
@@ -102,8 +100,7 @@ public class ArtifactFactoryTest {
       when(artifactVersion.getBranch()).thenReturn(COMMON);
       when(source.getOrcsData()).thenReturn(artifactData);
 
-      when(attributeFactory.copyAttribute(any(AttributeData.class), any(BranchId.class),
-         any(AttributeManager.class))).thenReturn(attribute);
+      when(attributeFactory.copyAttribute(any(), any(), any())).thenReturn(attribute);
 
       when(otherArtifactData.getLocalId()).thenReturn(45);
       when(otherArtifactData.getGuid()).thenReturn(guid);
@@ -153,8 +150,8 @@ public class ArtifactFactoryTest {
       when(source.getAttributes(CoreAttributeTypes.Annotation)).thenAnswer(new ReturnAttribute(attribute));
       when(attribute.getOrcsData()).thenReturn(attributeData);
 
-      when(artifactTypeCache.isValidAttributeType(eq(Artifact), any(BranchId.class),
-         eq(CoreAttributeTypes.Annotation))).thenReturn(true);
+      when(artifactTypeCache.isValidAttributeType(eq(Artifact), any(), eq(CoreAttributeTypes.Annotation))).thenReturn(
+         true);
 
       ArgumentCaptor<Artifact> implCapture = ArgumentCaptor.forClass(Artifact.class);
 
@@ -193,8 +190,8 @@ public class ArtifactFactoryTest {
       when(source.getExistingAttributeTypes()).thenAnswer(new ReturnExistingTypes(types));
       when(source.getAttributes(CoreAttributeTypes.Annotation)).thenAnswer(new ReturnAttribute(attribute));
       when(attribute.getOrcsData()).thenReturn(attributeData);
-      when(artifactTypeCache.isValidAttributeType(eq(Artifact), any(BranchId.class),
-         eq(CoreAttributeTypes.Annotation))).thenReturn(true);
+      when(artifactTypeCache.isValidAttributeType(eq(Artifact), any(), eq(CoreAttributeTypes.Annotation))).thenReturn(
+         true);
 
       ArgumentCaptor<Artifact> implCapture = ArgumentCaptor.forClass(Artifact.class);
 

@@ -18,12 +18,12 @@ import org.eclipse.osee.orcs.core.ds.VersionData;
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeDataImpl extends OrcsVersionedObjectImpl implements AttributeData {
+public class AttributeDataImpl<T> extends OrcsVersionedObjectImpl implements AttributeData<T> {
 
    private int artifactId = RelationalConstants.ART_ID_SENTINEL;
    private boolean useBackingData = false;
 
-   private DataProxy proxy;
+   private DataProxy<T> proxy;
 
    public AttributeDataImpl(VersionData version) {
       super(version);
@@ -35,7 +35,7 @@ public class AttributeDataImpl extends OrcsVersionedObjectImpl implements Attrib
    }
 
    @Override
-   public DataProxy getDataProxy() {
+   public DataProxy<T> getDataProxy() {
       return proxy;
    }
 
@@ -45,7 +45,7 @@ public class AttributeDataImpl extends OrcsVersionedObjectImpl implements Attrib
    }
 
    @Override
-   public void setDataProxy(DataProxy proxy) {
+   public void setDataProxy(DataProxy<T> proxy) {
       this.proxy = proxy;
    }
 
@@ -55,7 +55,7 @@ public class AttributeDataImpl extends OrcsVersionedObjectImpl implements Attrib
          return false;
       }
       if (obj instanceof AttributeDataImpl) {
-         AttributeDataImpl other = (AttributeDataImpl) obj;
+         AttributeDataImpl<?> other = (AttributeDataImpl<?>) obj;
          return Integer.valueOf(other.artifactId).equals(artifactId) && proxy.equals(other.proxy);
       }
       return false;

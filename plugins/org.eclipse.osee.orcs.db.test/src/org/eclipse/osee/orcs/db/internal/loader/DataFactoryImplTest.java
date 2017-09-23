@@ -70,14 +70,14 @@ public class DataFactoryImplTest {
    @Mock private AttributeData attrData;
    @Mock private RelationData relData;
    @Mock private VersionData verData;
-   @Mock private DataProxy dataProxy;
-   @Mock private DataProxy otherDataProxy;
+   @Mock private DataProxy<Integer> dataProxy;
+   @Mock private DataProxy<Integer> otherDataProxy;
 
    @Mock private IArtifactType artifactTypeToken;
    //@formatter:on
 
    private DataFactory dataFactory;
-   private final Object expectedProxyValue = 45;
+   private final Integer expectedProxyValue = 45;
    private final String expectedProxyUri = "hello";
    private String guid;
 
@@ -220,8 +220,8 @@ public class DataFactoryImplTest {
       AttributeTypeId attributeType = mock(AttributeTypeId.class);
 
       when(attributeType.getId()).thenReturn(2389L);
-      when(proxyFactory.createProxy(2389L, "", "")).thenReturn(otherDataProxy);
-      when(otherDataProxy.getRawValue()).thenReturn(2389L);
+      when(proxyFactory.createProxy(2389L, 2389, "")).thenReturn(otherDataProxy);
+      when(otherDataProxy.getRawValue()).thenReturn(2389);
       when(otherDataProxy.getUri()).thenReturn("");
 
       when(idFactory.getNextAttributeId()).thenReturn(1);
@@ -244,9 +244,6 @@ public class DataFactoryImplTest {
 
       assertEquals(555, actual.getArtifactId());
       assertNotSame(dataProxy, actual.getDataProxy());
-
-      assertEquals(2389L, actual.getDataProxy().getRawValue());
-      assertEquals("", actual.getDataProxy().getUri());
    }
 
    @SuppressWarnings("unchecked")

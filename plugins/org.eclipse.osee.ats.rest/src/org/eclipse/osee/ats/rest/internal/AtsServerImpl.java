@@ -255,8 +255,8 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
       ArtifactReadable atsConfig = orcsApi.getQueryFactory().fromBranch(COMMON).andIds(
          AtsArtifactToken.AtsConfig).getResults().getAtMostOneOrNull();
       if (atsConfig != null) {
-         for (Object obj : atsConfig.getAttributeValues(CoreAttributeTypes.GeneralStringData)) {
-            String str = (String) obj;
+         List<String> attributeValues = atsConfig.getAttributeValues(CoreAttributeTypes.GeneralStringData);
+         for (String str : attributeValues) {
             if (str.startsWith(key)) {
                result = str.replaceFirst(key + "=", "");
                break;

@@ -33,7 +33,7 @@ public interface TxSqlBuilder {
 
    List<Object[]> getInsertData(SqlOrderEnum key);
 
-   List<DataProxy> getBinaryStores();
+   List<DataProxy<?>> getBinaryStores();
 
    void updateAfterBinaryStorePersist() throws OseeCoreException;
 

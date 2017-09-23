@@ -24,7 +24,9 @@ import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.AttributeDataFactory;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.ResourceNameResolver;
+import org.eclipse.osee.orcs.core.internal.attribute.primitives.ArtifactReferenceAttribute;
 import org.eclipse.osee.orcs.core.internal.attribute.primitives.BooleanAttribute;
+import org.eclipse.osee.orcs.core.internal.attribute.primitives.BranchReferenceAttribute;
 import org.eclipse.osee.orcs.core.internal.attribute.primitives.CompressedContentAttribute;
 import org.eclipse.osee.orcs.core.internal.attribute.primitives.DateAttribute;
 import org.eclipse.osee.orcs.core.internal.attribute.primitives.EnumeratedAttribute;
@@ -48,23 +50,24 @@ public class AttributeFactory {
    }
 
    public <T> Attribute<T> createAttributeWithDefaults(AttributeContainer container, ArtifactData artifactData, AttributeTypeId attributeType) throws OseeCoreException {
-      AttributeData data = dataFactory.create(artifactData, attributeType);
+      AttributeData<T> data = dataFactory.create(artifactData, attributeType);
       return createAttribute(container, data, true, true);
    }
 
-   public <T> Attribute<T> createAttribute(AttributeContainer container, AttributeData data) throws OseeCoreException {
+   public <T> Attribute<T> createAttribute(AttributeContainer container, AttributeData<T> data) throws OseeCoreException {
       return createAttribute(container, data, false, false);
    }
 
-   private <T> Attribute<T> createAttribute(AttributeContainer container, AttributeData data, boolean isDirty, boolean createWithDefaults) throws OseeCoreException {
+   private <T> Attribute<T> createAttribute(AttributeContainer container, AttributeData<T> data, boolean isDirty, boolean createWithDefaults) throws OseeCoreException {
       AttributeTypeId type = cache.get(data.getTypeUuid());
       Conditions.checkNotNull(type, "attributeType", "Cannot find attribute type with uuid[%s]", data.getTypeUuid());
 
       Attribute<T> attribute = createAttribute(type);
 
-      DataProxy proxy = data.getDataProxy();
+      DataProxy<T> proxy = data.getDataProxy();
       ResourceNameResolver resolver = createResolver(attribute);
       proxy.setResolver(resolver);
+      proxy.setAttribute(attribute);
 
       Reference<AttributeContainer> artifactRef = new WeakReference<>(container);
 
@@ -92,6 +95,10 @@ public class AttributeFactory {
          attribute = new IntegerAttribute();
       } else if (baseAttributeType.equals(FloatingPointAttribute.NAME)) {
          attribute = new FloatingPointAttribute();
+      } else if (baseAttributeType.equals(ArtifactReferenceAttribute.NAME)) {
+         attribute = new ArtifactReferenceAttribute();
+      } else if (baseAttributeType.equals(BranchReferenceAttribute.NAME)) {
+         attribute = new BranchReferenceAttribute();
       } else if (baseAttributeType.equals(JavaObjectAttribute.NAME)) {
          attribute = new JavaObjectAttribute();
       } else if (baseAttributeType.equals(CompressedContentAttribute.NAME)) {
@@ -102,21 +109,21 @@ public class AttributeFactory {
       return (Attribute<T>) attribute;
    }
 
-   public <T> Attribute<T> copyAttribute(AttributeData source, BranchId ontoBranch, AttributeContainer destinationContainer) throws OseeCoreException {
-      AttributeData attributeData = dataFactory.copy(ontoBranch, source);
+   public <T> Attribute<T> copyAttribute(AttributeData<T> source, BranchId ontoBranch, AttributeContainer destinationContainer) throws OseeCoreException {
+      AttributeData<T> attributeData = dataFactory.copy(ontoBranch, source);
       return createAttribute(destinationContainer, attributeData, true, false);
    }
 
-   public <T> Attribute<T> cloneAttribute(AttributeData source, AttributeContainer destinationContainer) throws OseeCoreException {
-      AttributeData attributeData = dataFactory.clone(source);
+   public <T> Attribute<T> cloneAttribute(AttributeData<T> source, AttributeContainer destinationContainer) throws OseeCoreException {
+      AttributeData<T> attributeData = dataFactory.clone(source);
       Attribute<T> destinationAttribute = createAttribute(destinationContainer, attributeData, false, false);
       return destinationAttribute;
    }
 
-   public <T> Attribute<Object> introduceAttribute(AttributeData source, BranchId ontoBranch, AttributeManager destination) throws OseeCoreException {
-      AttributeData attributeData = dataFactory.introduce(ontoBranch, source);
+   public <T> Attribute<T> introduceAttribute(AttributeData<T> source, BranchId ontoBranch, AttributeManager destination) throws OseeCoreException {
+      AttributeData<T> attributeData = dataFactory.introduce(ontoBranch, source);
       // In order to reflect attributes they must exist in the data store
-      Attribute<Object> destinationAttribute = null;
+      Attribute<T> destinationAttribute = null;
       if (source.getVersion().isInStorage()) {
          try {
             destinationAttribute = destination.getAttributeById(source.getLocalId(), DeletionFlag.INCLUDE_DELETED);

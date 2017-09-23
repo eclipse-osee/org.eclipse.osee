@@ -44,4 +44,10 @@ public interface Attribute<T> extends OrcsWriteable, AttributeReadable<T>, HasOr
 
    Identifiable<String> getContainer() throws OseeStateException;
 
+   String convertToStorageString(T rawValue);
+
+   /**
+    * @param value will be non-null
+    */
+   T convertStringToValue(String value);
 }

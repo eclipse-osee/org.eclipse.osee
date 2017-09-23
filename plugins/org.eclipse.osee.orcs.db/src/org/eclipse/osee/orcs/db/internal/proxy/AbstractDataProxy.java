@@ -11,22 +11,28 @@
 package org.eclipse.osee.orcs.db.internal.proxy;
 
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.core.ds.Attribute;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.ResourceNameResolver;
 
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AbstractDataProxy implements DataProxy {
+public abstract class AbstractDataProxy<T> implements DataProxy<T> {
    private Storage storage;
    private Log logger;
    private long gammaId;
    private boolean isNewGammaId;
    private ResourceNameResolver resolver;
+   private Attribute<T> attribute;
 
    @Override
-   public Object getRawValue() {
-      return "";
+   public void setAttribute(Attribute<T> attribute) {
+      this.attribute = attribute;
+   }
+
+   protected Attribute<T> getAttribute() {
+      return attribute;
    }
 
    @Override

@@ -25,17 +25,7 @@ public class StringAttribute extends CharacterBackedAttribute<String> {
    public static final String NAME = StringAttribute.class.getSimpleName();
 
    @Override
-   public String getValue() throws OseeCoreException {
-      return getDataProxy().getValueAsString();
-   }
-
-   @Override
-   public boolean subClassSetValue(String value) throws OseeCoreException {
-      return getDataProxy().setValue(value);
-   }
-
-   @Override
-   protected String convertStringToValue(String value) {
+   public String convertStringToValue(String value) {
       return value;
    }
 

@@ -57,7 +57,7 @@ public class AttributeDataMatcher {
       return toReturn;
    }
 
-   public List<MatchLocation> process(HasCancellation cancellation, AttributeData data, Collection<String> valuesToMatch, Collection<AttributeTypeId> typesFilter, QueryOption... options) throws Exception {
+   public List<MatchLocation> process(HasCancellation cancellation, AttributeData<?> data, Collection<String> valuesToMatch, Collection<AttributeTypeId> typesFilter, QueryOption... options) throws Exception {
       logger.debug("Attribute Data match for attr[%s] - [%s]", data.getLocalId(), valuesToMatch);
       if (Conditions.hasValues(options)) {
          return matchTokenizedValue(cancellation, data, valuesToMatch, typesFilter, options);
@@ -72,7 +72,7 @@ public class AttributeDataMatcher {
       }
    }
 
-   private List<MatchLocation> matchValuesExactly(HasCancellation cancellation, AttributeData data, Iterable<String> valuesToMatch) throws Exception {
+   private List<MatchLocation> matchValuesExactly(HasCancellation cancellation, AttributeData<?> data, Iterable<String> valuesToMatch) throws Exception {
       String value = getValue(data);
       List<MatchLocation> matched = Lists.newLinkedList();
       for (String toMatch : valuesToMatch) {
@@ -85,7 +85,7 @@ public class AttributeDataMatcher {
       return matched;
    }
 
-   private List<MatchLocation> matchTokenizedValue(HasCancellation cancellation, AttributeData data, Iterable<String> valuesToMatch, Collection<AttributeTypeId> typesFilter, QueryOption... options) {
+   private List<MatchLocation> matchTokenizedValue(HasCancellation cancellation, AttributeData<?> data, Iterable<String> valuesToMatch, Collection<AttributeTypeId> typesFilter, QueryOption... options) {
       AttributeIndexedResource source = adapt(data);
       AttributeTypeId attrType = AttributeTypeId.valueOf(source.getTypeUuid());
       if (typesFilter.contains(attrType)) {
@@ -109,11 +109,11 @@ public class AttributeDataMatcher {
       return null;
    }
 
-   private AttributeIndexedResource adapt(AttributeData data) {
+   private AttributeIndexedResource adapt(AttributeData<?> data) {
       return new AttributeIndexedResource(data);
    }
 
-   private String getValue(AttributeData data) throws OseeCoreException {
+   private String getValue(AttributeData<?> data) throws OseeCoreException {
       String value = "";
       DataProxy dataProxy = data.getDataProxy();
       if (dataProxy instanceof CharacterDataProxy) {
@@ -125,9 +125,9 @@ public class AttributeDataMatcher {
    }
 
    private final class AttributeIndexedResource implements IndexedResource {
-      private final AttributeData attrData;
+      private final AttributeData<?> attrData;
 
-      public AttributeIndexedResource(AttributeData attrData) {
+      public AttributeIndexedResource(AttributeData<?> attrData) {
          super();
          this.attrData = attrData;
       }
@@ -145,7 +145,7 @@ public class AttributeDataMatcher {
       @Override
       public InputStream getInput() throws IOException {
          InputStream stream = null;
-         DataProxy dataProxy = attrData.getDataProxy();
+         DataProxy<?> dataProxy = attrData.getDataProxy();
          if (dataProxy instanceof BinaryDataProxy) {
             ByteBuffer valueAsBytes;
             try {
@@ -158,7 +158,7 @@ public class AttributeDataMatcher {
             String value = null;
             if (dataProxy instanceof CharacterDataProxy) {
                try {
-                  value = ((CharacterDataProxy) dataProxy).getValueAsString();
+                  value = ((CharacterDataProxy<?>) dataProxy).getValueAsString();
                } catch (OseeCoreException ex) {
                   throw new IOException(ex);
                }

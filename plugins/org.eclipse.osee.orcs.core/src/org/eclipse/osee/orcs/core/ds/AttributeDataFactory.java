@@ -17,14 +17,14 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 /**
  * @author Roberto E. Escobar
  */
-public interface AttributeDataFactory {
+public interface AttributeDataFactory<T> {
 
-   AttributeData create(ArtifactData parent, AttributeTypeId attributeType) throws OseeCoreException;
+   AttributeData<T> create(ArtifactData parent, AttributeTypeId attributeType) throws OseeCoreException;
 
-   AttributeData copy(BranchId destination, AttributeData orcsData) throws OseeCoreException;
+   AttributeData<T> copy(BranchId destination, AttributeData<T> orcsData) throws OseeCoreException;
 
-   AttributeData clone(AttributeData source) throws OseeCoreException;
+   AttributeData<T> clone(AttributeData<T> source) throws OseeCoreException;
 
-   AttributeData introduce(BranchId destination, AttributeData source) throws OseeCoreException;
+   AttributeData<T> introduce(BranchId destination, AttributeData<T> source) throws OseeCoreException;
 
 }

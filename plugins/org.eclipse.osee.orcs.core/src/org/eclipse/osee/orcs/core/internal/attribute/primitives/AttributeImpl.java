@@ -88,14 +88,13 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
 
    @Override
    public boolean setFromString(String value) throws OseeCoreException {
+      Conditions.checkNotNull(value, "Attribute value", "attribute id [%s]", getId());
       boolean response = subClassSetValue(convertStringToValue(value));
       if (response) {
          markAsNewOrChanged();
       }
       return response;
    }
-
-   protected abstract T convertStringToValue(String value) throws OseeCoreException;
 
    @Override
    public final void resetToDefaultValue() throws OseeCoreException {
@@ -321,4 +320,8 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
       return getOrcsData().getId();
    }
 
+   @Override
+   public String convertToStorageString(T rawValue) {
+      return rawValue == null ? "" : rawValue.toString();
+   }
 }

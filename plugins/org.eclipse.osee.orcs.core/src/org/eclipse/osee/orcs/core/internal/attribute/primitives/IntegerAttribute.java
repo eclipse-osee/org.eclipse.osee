@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.attribute.primitives;
 
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.core.annotations.OseeAttribute;
@@ -24,20 +23,7 @@ public class IntegerAttribute extends CharacterBackedAttribute<Integer> {
    private static final Integer DEFAULT_INTEGER = Integer.MIN_VALUE;
 
    @Override
-   public Integer getValue() throws OseeCoreException {
-      return (Integer) getDataProxy().getValue();
-   }
-
-   @Override
-   public boolean subClassSetValue(Integer value) throws OseeCoreException {
-      if (value == null) {
-         throw new OseeArgumentException("Attribute value was null");
-      }
-      return getDataProxy().setValue(value);
-   }
-
-   @Override
-   protected Integer convertStringToValue(String value) throws OseeCoreException {
+   public Integer convertStringToValue(String value) {
       Integer toReturn = null;
       if (isValidInteger(value)) {
          toReturn = Integer.valueOf(value);

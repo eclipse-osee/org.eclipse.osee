@@ -69,8 +69,8 @@ public class TransactionWriterTest {
    @Mock private TxSqlBuilder builder;
    @Mock private JdbcConnection connection;
    @Mock private TransactionReadable tx;
-   @Mock private DataProxy proxy1;
-   @Mock private DataProxy proxy2;
+   @Mock private DataProxy<?> proxy1;
+   @Mock private DataProxy<?> proxy2;
 
    @Mock private IdJoinQuery join1;
    @Mock private IdJoinQuery join2;
@@ -81,7 +81,7 @@ public class TransactionWriterTest {
    //@formatter:on
 
    private TransactionWriter writer;
-   private List<DataProxy> stores;
+   private List<DataProxy<?>> stores;
 
    @Before
    public void setUp() throws OseeCoreException {

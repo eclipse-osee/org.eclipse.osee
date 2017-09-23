@@ -79,7 +79,7 @@ public interface AttributeManager extends AttributeContainer {
 
    <T> List<Attribute<T>> getAttributes(AttributeTypeId attributeType, DeletionFlag deletionFlag) throws OseeCoreException;
 
-   Attribute<Object> getAttributeById(Integer attributeId) throws OseeCoreException;
+   <T> Attribute<T> getAttributeById(Integer attributeId) throws OseeCoreException;
 
-   Attribute<Object> getAttributeById(Integer attributeId, DeletionFlag includeDeleted) throws OseeCoreException;
+   <T> Attribute<T> getAttributeById(Integer attributeId, DeletionFlag includeDeleted) throws OseeCoreException;
 }

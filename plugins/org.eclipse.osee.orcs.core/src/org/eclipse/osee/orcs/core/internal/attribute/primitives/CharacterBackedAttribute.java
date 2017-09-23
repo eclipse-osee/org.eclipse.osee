@@ -17,9 +17,19 @@ import org.eclipse.osee.orcs.core.ds.CharacterDataProxy;
  */
 public abstract class CharacterBackedAttribute<T> extends AttributeImpl<T> {
    @Override
-   public CharacterDataProxy getDataProxy() {
+   public CharacterDataProxy<T> getDataProxy() {
       // this cast is always safe since the the data provider passed in the constructor to
       // the super class is of type  ICharacterAttributeDataProvider
       return (CharacterDataProxy) super.getDataProxy();
+   }
+
+   @Override
+   public T getValue() {
+      return getDataProxy().getValue();
+   }
+
+   @Override
+   public boolean subClassSetValue(T value) {
+      return getDataProxy().setValue(value);
    }
 }

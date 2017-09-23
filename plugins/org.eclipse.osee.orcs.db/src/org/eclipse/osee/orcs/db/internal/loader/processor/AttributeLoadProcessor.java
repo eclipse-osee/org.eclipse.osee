@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader.processor;
 
+import java.util.Date;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -76,8 +78,12 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
             value = chStmt.getInt("value");
          } else if (baseAttributeType.contains("LongAttribute")) {
             value = chStmt.getLong("value");
+         } else if (baseAttributeType.contains("ArtifactReferenceAttribute")) {
+            value = ArtifactId.valueOf(chStmt.getString("value"));
+         } else if (baseAttributeType.contains("BranchReferenceAttribute")) {
+            value = BranchId.valueOf(chStmt.getString("value"));
          } else if (baseAttributeType.contains("DateAttribute")) {
-            value = chStmt.getLong("value");
+            value = new Date(chStmt.getLong("value"));
          } else {
             value = chStmt.getString("value");
             if (baseAttributeType.contains("EnumeratedAttribute")) {

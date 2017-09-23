@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.attribute.primitives;
 
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.annotations.OseeAttribute;
 
 /**
@@ -21,18 +20,7 @@ public class BooleanAttribute extends CharacterBackedAttribute<Boolean> {
    public static final String NAME = BooleanAttribute.class.getSimpleName();
 
    @Override
-   public Boolean getValue() throws OseeCoreException {
-      return (Boolean) getDataProxy().getValue();
-   }
-
-   @Override
-   public boolean subClassSetValue(Boolean value) throws OseeCoreException {
-      return getDataProxy().setValue(value);
-   }
-
-   @Override
-   protected Boolean convertStringToValue(String value) {
+   public Boolean convertStringToValue(String value) {
       return Boolean.valueOf(value);
    }
-
 }

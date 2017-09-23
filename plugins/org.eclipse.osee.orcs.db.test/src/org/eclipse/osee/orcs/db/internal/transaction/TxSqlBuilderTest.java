@@ -100,7 +100,7 @@ public class TxSqlBuilderTest {
    @OsgiService public SqlJoinFactory joinFactory;
    @Mock private IdentityManager idManager;
    @Mock private OrcsChangeSet txData;
-   @Mock private DataProxy dataProxy;
+   @Mock private DataProxy<String> dataProxy;
    // @formatter:on
 
    private VersionData versionData;
@@ -295,7 +295,7 @@ public class TxSqlBuilderTest {
    @Test
    public void testAcceptAttributeData() throws OseeCoreException {
       for (ModificationType modType : MODS_ITEMS_ROW) {
-         when(dataProxy.getRawValue()).thenReturn(ATTR_VALUE);
+         when(dataProxy.getStorageString()).thenReturn(ATTR_VALUE);
          when(dataProxy.getUri()).thenReturn(ATTR_URI);
 
          builder.accept(tx, txData);
@@ -312,12 +312,10 @@ public class TxSqlBuilderTest {
          // @formatter:on
 
          assertEquals(1, builder.getBinaryStores().size());
-         DataProxy proxy = builder.getBinaryStores().get(0);
+         DataProxy<?> proxy = builder.getBinaryStores().get(0);
+         assertEquals(dataProxy, proxy);
 
-         assertEquals(ATTR_URI, proxy.getUri());
-         assertEquals(ATTR_VALUE, proxy.getRawValue());
-
-         when(dataProxy.getRawValue()).thenReturn("aValue");
+         when(dataProxy.getStorageString()).thenReturn("aValue");
          when(dataProxy.getUri()).thenReturn("aURI");
 
          builder.updateAfterBinaryStorePersist();
