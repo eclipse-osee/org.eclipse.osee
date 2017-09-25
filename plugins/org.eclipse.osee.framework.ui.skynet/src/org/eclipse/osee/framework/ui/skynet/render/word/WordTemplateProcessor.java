@@ -563,9 +563,11 @@ public class WordTemplateProcessor {
          BranchId branch = artifacts.get(0).getBranch();
          Object[] objs = {branch, view, branch};
 
-         List<ArtifactId> excludedArtifacts = ArtifactLoader.selectArtifactIds(LOAD_EXCLUDED_ARTIFACTIDS, objs, 300);
-         for (ArtifactId artId : excludedArtifacts) {
-            toReturn.put(artId, artId);
+         if (!view.equals(ArtifactId.SENTINEL)) {
+            List<ArtifactId> excludedArtifacts = ArtifactLoader.selectArtifactIds(LOAD_EXCLUDED_ARTIFACTIDS, objs, 300);
+            for (ArtifactId artId : excludedArtifacts) {
+               toReturn.put(artId, artId);
+            }
          }
       }
 
