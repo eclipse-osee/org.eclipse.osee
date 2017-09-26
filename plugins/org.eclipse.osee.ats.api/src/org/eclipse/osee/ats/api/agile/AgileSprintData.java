@@ -14,7 +14,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.eclipse.osee.framework.core.util.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 
 /**
  * @author Donald G. Dunne
@@ -23,8 +25,10 @@ public class AgileSprintData {
 
    private String agileTeamName;
    private String sprintName;
-   private Date startDate;
-   private Date endDate;
+   private String startDate;
+   private Date sDate;
+   private String endDate;
+   private Date eDate;
    private List<Date> holidays = new LinkedList<>();
    private String pointsAttrTypeName;
    private Integer plannedPoints = 0;
@@ -33,8 +37,8 @@ public class AgileSprintData {
    private XResultData results = new XResultData();
 
    public XResultData validate() {
-      results.validateNotNull(startDate, "Start Date");
-      results.validateNotNull(endDate, "End Date");
+      results.validateNotNull(getStartDateAsDate(), "Start Date");
+      results.validateNotNull(getEndDateAsDate(), "End Date");
       results.validateNotNullOrEmpty(pointsAttrTypeName, "Points Attribute Type");
       results.validateNotNull(plannedPoints, "Planned Points");
       results.validateTrue(unPlannedPoints == null || unPlannedPoints > 0,
@@ -56,22 +60,6 @@ public class AgileSprintData {
 
    public void setSprintName(String sprintName) {
       this.sprintName = sprintName;
-   }
-
-   public Date getStartDate() {
-      return startDate;
-   }
-
-   public void setStartDate(Date startDate) {
-      this.startDate = startDate;
-   }
-
-   public Date getEndDate() {
-      return endDate;
-   }
-
-   public void setEndDate(Date endDate) {
-      this.endDate = endDate;
    }
 
    public List<Date> getHolidays() {
@@ -120,6 +108,62 @@ public class AgileSprintData {
 
    public void setResults(XResultData results) {
       this.results = results;
+   }
+
+   @JsonIgnore
+   public Date getStartDateAsDate() {
+      if (sDate == null) {
+         if (org.eclipse.osee.framework.jdk.core.util.Strings.isNumeric(startDate)) {
+            sDate = new Date(Long.valueOf(startDate));
+         } else {
+            try {
+               sDate = DateUtil.getDate(DateUtil.YYYYMMDD, startDate);
+            } catch (Exception ex) {
+               // do nothing
+            }
+         }
+      }
+      return sDate;
+   }
+
+   public void setStartDateAsDate(Date startDate) {
+      this.sDate = startDate;
+   }
+
+   public void setEndDateAsDate(Date endDate) {
+      this.eDate = endDate;
+   }
+
+   @JsonIgnore
+   public Date getEndDateAsDate() {
+      if (eDate == null) {
+         if (org.eclipse.osee.framework.jdk.core.util.Strings.isNumeric(endDate)) {
+            eDate = new Date(Long.valueOf(endDate));
+         } else {
+            try {
+               eDate = DateUtil.getDate(DateUtil.YYYYMMDD, endDate);
+            } catch (Exception ex) {
+               // do nothing
+            }
+         }
+      }
+      return eDate;
+   }
+
+   public void setStartDate(String startDate) {
+      this.startDate = startDate;
+   }
+
+   public String getStartDate() {
+      return startDate;
+   }
+
+   public void setEndDate(String endDate) {
+      this.endDate = endDate;
+   }
+
+   public String getEndDate() {
+      return endDate;
    }
 
 }

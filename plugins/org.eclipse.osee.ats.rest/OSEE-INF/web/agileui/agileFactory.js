@@ -139,6 +139,12 @@ angular.module('AgileApp').factory('AgileFactory',
 				return sprintItemsResource.query(param)
 			}
 
+			factory.updateSprint = function(team, sprint) {
+				sprint.teamUuid = team.uuid;
+				sprint.uuid = sprint.sprintId;
+				return sprintSingleResource.save({teamUuid:team.uuid, uuid:sprint.sprintId}, sprint)
+			}
+
 			// ////////////////////////////////////
 			// Agile Backlog
 			// ////////////////////////////////////

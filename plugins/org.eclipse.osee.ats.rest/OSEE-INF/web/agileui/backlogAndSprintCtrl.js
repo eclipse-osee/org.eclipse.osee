@@ -4,7 +4,7 @@
 angular
 		.module('AgileApp')
 		.controller(
-				'BacklogCtrl',
+				'BacklogAndSprintCtrl',
 				[
 						'$scope',
 						'AgileFactory',
@@ -135,6 +135,30 @@ angular
 								}
 							});
 
+							// Only available and called when sprint is selected
+							$scope.updateSprint = function() {
+								var loadingModal = null;
+								try {
+								 loadingModal = PopupService.showLoadingModal(); 
+								 $scope.sprint.sprintId = $scope.selectedItem.uuid;
+								 AgileFactory.updateSprint($scope.team, $scope.sprint).$promise
+										.then(function(data) {
+											// open new tab to new action
+											if (data.results.numErrors > 0) {
+												alert(data.results.results);
+											} 
+											loadingModal.close();
+										}).catch((err) => {
+											loadingModal.close();
+											alert(err);
+										});
+								} finally {
+									if(loadingModal) {
+										loadingModal.close();
+									}
+								}
+							};
+							
 							// add backlog and sprints to pulldown and set
 							// default if specified as query parameter
 							$scope.setupItemsPulldown = function() {

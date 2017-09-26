@@ -20,7 +20,9 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -459,6 +461,17 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       XResultData results = new XResultData();
       AgileSprintData data = SprintUtil.getAgileSprintData(atsServer, teamUuid, sprintUuid, results);
       data.validate();
+      return data;
+   }
+
+   @Override
+   @POST
+   @Path("team/{teamId}/sprint/{sprintId}")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public AgileSprintData updateSprint(@PathParam("teamId") long teamId, @PathParam("sprintId") long sprintId, AgileSprintData sprintData) {
+      XResultData results = new XResultData();
+      AgileSprintData data = SprintUtil.updateAgileSprintData(atsServer, teamId, sprintId, sprintData, results);
       return data;
    }
 

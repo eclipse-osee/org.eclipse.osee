@@ -59,7 +59,7 @@ public class SprintDataBuilder {
             return sprintData;
          }
          startDate = clearTimeComponent(startDate);
-         sprintData.setStartDate(startDate);
+         sprintData.setStartDateAsDate(startDate);
          Date endDate =
             services.getAttributeResolver().getSoleAttributeValue(sprintArt, AtsAttributeTypes.EndDate, null);
          if (endDate == null) {
@@ -67,7 +67,7 @@ public class SprintDataBuilder {
             return sprintData;
          }
          endDate = clearTimeComponent(endDate);
-         sprintData.setEndDate(endDate);
+         sprintData.setEndDateAsDate(endDate);
          List<Date> holidays = new LinkedList<>();
          holidays.addAll(services.getAttributeResolver().getAttributeValues(sprintArt, AtsAttributeTypes.Holiday));
          sprintData.setHolidays(holidays);

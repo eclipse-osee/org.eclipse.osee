@@ -13,11 +13,11 @@ app.config([ '$routeProvider', function($routeProvider) {
 		templateUrl : 'kanban/kanban.html',
 		controller : 'KanbanCtrl'
 	}).when('/backlog', {
-		templateUrl : 'backlogAndSprint.html',
-		controller : 'BacklogCtrl'
+		templateUrl : 'backlog.html',
+		controller : 'BacklogAndSprintCtrl'
 	}).when('/sprint', {
-		templateUrl : 'backlogAndSprint.html',
-		controller : 'BacklogCtrl'
+		templateUrl : 'sprint.html',
+		controller : 'BacklogAndSprintCtrl'
 	}).when('/teams', {
 		templateUrl : 'teams.html',
 		controller : 'TeamsCtrl'
@@ -72,6 +72,12 @@ app.factory("PopupService", function($modal) {
 			return modalInstance;
 		}
 	}
+});
+
+app.directive('sprintconfig', function() {
+	return {
+		templateUrl : 'sprintConfig.html'
+	};
 });
 
 app.directive('menu', function() {

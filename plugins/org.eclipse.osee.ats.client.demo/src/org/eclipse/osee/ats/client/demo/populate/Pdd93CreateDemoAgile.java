@@ -76,7 +76,7 @@ public class Pdd93CreateDemoAgile {
 
    public void run() throws Exception {
       AtsBulkLoad.reloadConfig(true);
-
+      validateArtifactCache();
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
 
       createSampleAgileTeam();

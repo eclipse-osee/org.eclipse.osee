@@ -42,8 +42,8 @@ public class SprintDataTableBuilder {
          "Report Date", DateUtil.getMMDDYYHHMM()));
 
       // Add Start row
-      sb.append(AHTML.addRowMultiColumnTable("Start", DateUtil.get(burn.getStartDate(), DateUtil.MMDDYY), "End",
-         DateUtil.get(burn.getEndDate(), DateUtil.MMDDYY), "", "Days", String.valueOf(burn.getDates().size()),
+      sb.append(AHTML.addRowMultiColumnTable("Start", DateUtil.get(burn.getStartDateAsDate(), DateUtil.MMDDYY), "End",
+         DateUtil.get(burn.getStartDateAsDate(), DateUtil.MMDDYY), "", "Days", String.valueOf(burn.getDates().size()),
          "Planned", getPlannedPoints(), "Un-Planned", getUnPlannedPoints()));
 
       // Add Holidays

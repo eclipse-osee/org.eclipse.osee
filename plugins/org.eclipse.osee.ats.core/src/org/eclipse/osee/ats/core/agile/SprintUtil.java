@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.agile;
 
+import java.util.Date;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.agile.AgileItem;
 import org.eclipse.osee.ats.api.agile.AgileSprintData;
@@ -17,6 +18,7 @@ import org.eclipse.osee.ats.api.agile.IAgileItem;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.column.CompletedCancelledDateColumn;
 import org.eclipse.osee.ats.core.column.CreatedDateColumn;
@@ -45,6 +47,45 @@ public class SprintUtil {
 
    private SprintUtil() {
       // utility class
+   }
+
+   public static AgileSprintData updateAgileSprintData(IAtsServices services, long teamId, long sprintId, AgileSprintData sprintData, XResultData results) {
+      IAgileSprint sprint = services.getAgileService().getAgileSprint(sprintId);
+      if (sprint == null) {
+         sprintData.getResults().errorf("Sprint can not be found with id %s", sprintId);
+         return sprintData;
+      }
+      IAtsChangeSet changes = services.createChangeSet("Update Agile Sprint Data");
+      if (sprintData.getStartDate() != null) {
+         Date startDate = null;
+         try {
+            startDate = sprintData.getStartDateAsDate();
+            if (startDate != null) {
+               changes.setSoleAttributeValue(sprint, AtsAttributeTypes.StartDate, startDate);
+            }
+         } catch (Exception ex) {
+            // do nothing
+         }
+      }
+      if (sprintData.getEndDate() != null) {
+         Date endDate = null;
+         try {
+            endDate = sprintData.getEndDateAsDate();
+            if (endDate != null) {
+               changes.setSoleAttributeValue(sprint, AtsAttributeTypes.EndDate, endDate);
+            }
+         } catch (Exception ex) {
+            // do nothing
+         }
+      }
+      if (sprintData.getUnPlannedPoints() != null) {
+         changes.setSoleAttributeValue(sprint, AtsAttributeTypes.UnPlannedPoints, sprintData.getUnPlannedPoints());
+      }
+      if (sprintData.getPlannedPoints() != null) {
+         changes.setSoleAttributeValue(sprint, AtsAttributeTypes.PlannedPoints, sprintData.getPlannedPoints());
+      }
+      changes.executeIfNeeded();
+      return SprintUtil.getAgileSprintData(services, teamId, sprintId, results);
    }
 
    public static AgileSprintData getAgileSprintData(IAtsServices services, long teamId, long sprintId, XResultData results) {

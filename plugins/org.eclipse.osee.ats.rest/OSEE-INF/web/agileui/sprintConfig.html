@@ -1,0 +1,35 @@
+
+<style>
+input[type="text"] {width 15px;
+	font-size: 14px;
+}
+
+input[type="date"] {width 15px;
+	font-size: 14px;
+}
+</style>
+<div id="sprintConfigForm">
+	<form novalidate class="simple-form">
+
+		<!-- START-DATE -->
+		<label>Start:</label> <input type="date" name="startDate"
+			ng-model="sprint.startDate" size="11">
+
+		<!-- END-DATE -->
+		<label>End:</label> <input type="date" name="endDate"
+			ng-model="sprint.endDate" size="11">
+
+		<!-- PLANNED-POINTS -->
+		<label>Planned Points:</label> <input type="text" name="plannedPoints"
+			ng-model="sprint.plannedPoints" size="3">
+
+		<!-- UN-PLANNED-POINTS -->
+		<label>UnPlanned Points:</label> <input type="text"
+			id="unPlannedPoints" name="unPlannedPoints"
+			ng-model="sprint.unPlannedPoints" size="3">
+
+		<!-- SUBMIT BUTTON -->
+		<input type="submit" ng-click="updateSprint()" value="Submit" />
+
+	</form>
+</div>

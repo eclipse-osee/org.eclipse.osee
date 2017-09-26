@@ -277,6 +277,12 @@ public class XResultData {
       }
    }
 
+   public void validateNotNull(String str, String message, Object... data) {
+      if (str == null) {
+         errorf(message, data);
+      }
+   }
+
    public void validateNotNull(Integer value, String message, Object... data) {
       if (value == null) {
          errorf(message, data);
