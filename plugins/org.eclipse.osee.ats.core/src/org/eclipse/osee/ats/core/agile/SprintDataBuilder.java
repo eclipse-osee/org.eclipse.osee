@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -35,45 +36,48 @@ public class SprintDataBuilder {
    private final IAtsServices services;
    private final IAgileSprint sprint;
    private final IAgileTeam agileTeam;
+   private final XResultData results;
 
-   public SprintDataBuilder(IAgileTeam agileTeam, IAgileSprint sprint, IAtsServices services) {
+   public SprintDataBuilder(IAgileTeam agileTeam, IAgileSprint sprint, IAtsServices services, XResultData results) {
       this.agileTeam = agileTeam;
       this.sprint = sprint;
       this.services = services;
+      this.results = results;
    }
 
    public AgileSprintData get() {
-      AgileSprintData burn = new AgileSprintData();
+      AgileSprintData sprintData = new AgileSprintData();
+      sprintData.setResults(results);
       try {
          ArtifactToken sprintArt = sprint.getStoreObject();
-         burn.setSprintName(sprintArt.getName());
-         burn.setAgileTeamName(agileTeam.getName());
+         sprintData.setSprintName(sprintArt.getName());
+         sprintData.setAgileTeamName(agileTeam.getName());
          Date startDate =
             services.getAttributeResolver().getSoleAttributeValue(sprintArt, AtsAttributeTypes.StartDate, null);
          if (startDate == null) {
-            burn.setError("Start Date must be set on Sprint");
-            return burn;
+            sprintData.getResults().error("Start Date must be set on Sprint");
+            return sprintData;
          }
          startDate = clearTimeComponent(startDate);
-         burn.setStartDate(startDate);
+         sprintData.setStartDate(startDate);
          Date endDate =
             services.getAttributeResolver().getSoleAttributeValue(sprintArt, AtsAttributeTypes.EndDate, null);
          if (endDate == null) {
-            burn.setError("End Date must be set on Sprint");
-            return burn;
+            sprintData.getResults().error("End Date must be set on Sprint");
+            return sprintData;
          }
          endDate = clearTimeComponent(endDate);
-         burn.setEndDate(endDate);
+         sprintData.setEndDate(endDate);
          List<Date> holidays = new LinkedList<>();
          holidays.addAll(services.getAttributeResolver().getAttributeValues(sprintArt, AtsAttributeTypes.Holiday));
-         burn.setHolidays(holidays);
+         sprintData.setHolidays(holidays);
          Integer unPlannedPoints =
             services.getAttributeResolver().getSoleAttributeValue(sprintArt, AtsAttributeTypes.UnPlannedPoints, 0);
-         burn.setUnPlannedPoints(unPlannedPoints);
+         sprintData.setUnPlannedPoints(unPlannedPoints);
          Integer plannedPoints =
             services.getAttributeResolver().getSoleAttributeValue(sprintArt, AtsAttributeTypes.PlannedPoints, 0);
-         burn.setPlannedPoints(plannedPoints);
-         burn.setPointsAttrTypeName(services.getAttributeResolver().getSoleAttributeValue(agileTeam,
+         sprintData.setPlannedPoints(plannedPoints);
+         sprintData.setPointsAttrTypeName(services.getAttributeResolver().getSoleAttributeValue(agileTeam,
             AtsAttributeTypes.PointsAttributeType, AtsAttributeTypes.Points.getName()));
 
          int totalPoints = unPlannedPoints + plannedPoints;
@@ -85,16 +89,16 @@ public class SprintDataBuilder {
                Calendar c = Calendar.getInstance();
                c.setTime(date);
                if (c.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || c.get(
-                  Calendar.DAY_OF_WEEK) == Calendar.SUNDAY || isHoliday(date, burn.getHolidays())) {
+                  Calendar.DAY_OF_WEEK) == Calendar.SUNDAY || isHoliday(date, sprintData.getHolidays())) {
                   continue;
                }
                AgileSprintDateData bdDate = new AgileSprintDateData();
                bdDate.setDate(date);
-               burn.getDates().add(bdDate);
+               sprintData.getDates().add(bdDate);
             }
          }
          Collection<IAgileItem> items = services.getAgileService().getItems(sprint);
-         computeGoal(burn, totalPoints);
+         computeGoal(sprintData, totalPoints);
 
          // compute total, unplanned and planned points
          for (IAgileItem item : items) {
@@ -103,8 +107,8 @@ public class SprintDataBuilder {
                services.getAttributeResolver().getSoleAttributeValue(item, AtsAttributeTypes.UnPlannedWork, false);
             Date completedCancelledDate = item.isCompleted() ? item.getCompletedDate() : item.getCancelledDate();
             // loop through all dates and add points for dates after item was completed/cancelled
-            for (AgileSprintDateData dateBucket : burn.getDates()) {
-               double points = getPoints(burn, item);
+            for (AgileSprintDateData dateBucket : sprintData.getDates()) {
+               double points = getPoints(sprintData, item);
                if (completed) {
                   // only get credit if completed before date bucket
                   if (completed && completedCancelledDate.before(dateBucket.getDate())) {
@@ -130,12 +134,12 @@ public class SprintDataBuilder {
                }
             }
          }
-         computeUnPlannedIncomplete(burn);
-         computeCompleted(burn);
+         computeUnPlannedIncomplete(sprintData);
+         computeCompleted(sprintData);
       } catch (Exception ex) {
-         burn.setError("Error generating burndown data: \n\n" + Lib.exceptionToString(ex));
+         sprintData.getResults().error("Error generating burndown data: \n\n" + Lib.exceptionToString(ex));
       }
-      return burn;
+      return sprintData;
    }
 
    // Incomplete should just be total unplanned minus total unplanned-completed

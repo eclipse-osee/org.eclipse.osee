@@ -223,7 +223,7 @@ public interface IAtsServices extends IAtsEarnedValueServiceProvider, IAtsConfig
       return getTeamWf(ArtifactId.valueOf(id));
    }
 
-   Collection<ArtifactId> getArtifacts(IArtifactType artifactType);
+   Collection<ArtifactToken> getArtifacts(IArtifactType artifactType);
 
    IAtsActionableItemService getActionableItemService();
 

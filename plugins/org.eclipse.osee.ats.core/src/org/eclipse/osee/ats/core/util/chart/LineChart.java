@@ -20,11 +20,11 @@ import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.util.ILineChart;
 import org.eclipse.osee.ats.core.internal.util.OseeResource;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
@@ -39,6 +39,7 @@ public class LineChart implements ILineChart {
    private List<String> xAxisLabels = new LinkedList<>();
    private String urlToGet;
    private final IAtsServices services;
+   private final XResultData results = new XResultData();
 
    public LineChart(IAtsServices services) {
       this.services = services;
@@ -46,11 +47,17 @@ public class LineChart implements ILineChart {
 
    @JsonIgnore
    public String getChart() {
-      Conditions.assertNotNullOrEmpty(title, "Title");
-      Conditions.assertNotNullOrEmpty(xAxisLabel, "xAxisLabel");
-      Conditions.assertNotNullOrEmpty(yAxisLabel, "yAxisLabel");
+      if (!Strings.isValid(title)) {
+         results.error("Title must be specified");
+      }
+      if (!Strings.isValid(xAxisLabel)) {
+         results.error("XAxisLabel must be specified");
+      }
+      if (!Strings.isValid(yAxisLabel)) {
+         results.error("YAxisLabel must be specified");
+      }
       if (datasets.isEmpty()) {
-         throw new OseeArgumentException("datasets can not be empty");
+         results.error("DataSets can not be empty.");
       }
 
       try {
@@ -82,8 +89,9 @@ public class LineChart implements ILineChart {
          htmlChart = AtsUtilCore.resolveAjaxToBaseApplicationServer(htmlChart, services);
          return htmlChart;
       } catch (Exception ex) {
-         throw new OseeWrappedException(ex);
+         results.errorf("Exception generating LineChart [%s]", Lib.exceptionToString(ex));
       }
+      return null;
    }
 
    public void addLine(String label, List<Double> values, int red, int green, int blue) {
@@ -138,6 +146,10 @@ public class LineChart implements ILineChart {
 
    public void setUrlToGet(String urlToGet) {
       this.urlToGet = urlToGet;
+   }
+
+   public XResultData getResults() {
+      return results;
    }
 
 }

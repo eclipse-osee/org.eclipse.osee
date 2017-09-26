@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.column.CompletedCancelledDateColumn;
 import org.eclipse.osee.ats.core.column.CreatedDateColumn;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 /**
@@ -47,20 +47,29 @@ public class SprintUtil {
       // utility class
    }
 
-   public static AgileSprintData getAgileSprintData(IAtsServices services, long teamUuid, long sprintUuid) {
-      if (teamUuid <= 0) {
-         throw new OseeArgumentException("teamUuid %s is not valid", teamUuid);
+   public static AgileSprintData getAgileSprintData(IAtsServices services, long teamId, long sprintId, XResultData results) {
+      if (teamId <= 0) {
+         results.errorf("teamId %s is not valid", teamId);
       }
-      if (sprintUuid <= 0) {
-         throw new OseeArgumentException("sprintUuid %s is not valid", sprintUuid);
+      if (sprintId <= 0) {
+         results.errorf("sprintId %s is not valid", sprintId);
       }
-      ArtifactToken sprintArt = services.getArtifact(sprintUuid);
-      IAgileTeam agileTeam = services.getAgileService().getAgileTeam(teamUuid);
+      ArtifactToken sprintArt = services.getArtifact(sprintId);
+      if (sprintArt == null) {
+         results.errorf("Sprint can not be found with id %s", sprintId);
+      }
+      IAgileTeam agileTeam = services.getAgileService().getAgileTeam(teamId);
+      if (agileTeam == null) {
+         results.errorf("AgileTeam can not be found with id %s", teamId);
+      }
+      if (results.isErrors()) {
+         return null;
+      }
       IAgileSprint sprint = services.getAgileService().getAgileSprint(sprintArt);
 
-      SprintDataBuilder builder = new SprintDataBuilder(agileTeam, sprint, services);
-      AgileSprintData burndown = builder.get();
-      return burndown;
+      SprintDataBuilder builder = new SprintDataBuilder(agileTeam, sprint, services, results);
+      AgileSprintData sprintData = builder.get();
+      return sprintData;
    }
 
    public static AgileItem getAgileItem(IAgileItem aItem, IAtsServices services) {

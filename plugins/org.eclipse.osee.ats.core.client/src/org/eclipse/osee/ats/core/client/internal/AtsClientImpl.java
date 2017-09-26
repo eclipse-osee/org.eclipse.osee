@@ -595,7 +595,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
-   public Collection<ArtifactId> getArtifacts(IArtifactType artifactType) {
+   public Collection<ArtifactToken> getArtifacts(IArtifactType artifactType) {
       return Collections.castAll(ArtifactQuery.getArtifactListFromType(artifactType, getAtsBranch()));
    }
 

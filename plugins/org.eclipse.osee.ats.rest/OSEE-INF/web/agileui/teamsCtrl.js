@@ -46,13 +46,9 @@ angular
 									directions : [ 'asc' ]
 								},
 								columnDefs : [ {
-									field : 'uuid',
-									displayName : 'Id',
-									width : 50
-								}, {
 									field : 'name',
 									displayName : 'Name',
-									width : 150
+									width : 200
 								}, {
 									field : "backlog",
 									displayName : 'Backlog',
@@ -115,7 +111,7 @@ angular
 								$scope.sheets = null;
 								var loadingModal = PopupService
 										.showLoadingModal();
-								AgileFactory.getTeams().$promise.then(function(
+								AgileFactory.getTeamsTokens().$promise.then(function(
 										data) {
 									$scope.teams = data;
 									loadingModal.close();

@@ -22,10 +22,9 @@ import org.eclipse.osee.ats.api.agile.IAgileSprintHtmlOperation;
 import org.eclipse.osee.ats.core.agile.SprintUtil;
 import org.eclipse.osee.ats.core.util.chart.LineChart;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.util.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
@@ -42,21 +41,24 @@ public class SprintBurndownOperations implements IAgileSprintHtmlOperation {
 
    @Override
    public String getReportHtml(long teamUuid, long sprintUuid) {
-      LineChart chart = getChartData(teamUuid, sprintUuid);
       try {
+         LineChart chart = getChartData(teamUuid, sprintUuid);
+         if (chart.getResults().isErrors()) {
+            return AHTML.simplePage(chart.getResults().toString().replaceAll("\n", "<br/>"));
+         }
          return chart.getChart();
       } catch (Exception ex) {
-         throw new OseeWrappedException(Lib.exceptionToString(ex));
+         return AHTML.simplePage(Lib.exceptionToString(ex).replaceAll("\n", "<br/>"));
       }
    }
 
    public LineChart getChartData(long teamUuid, long sprintUuid) {
       LineChart chart = new LineChart(services);
       ArtifactToken team = services.getArtifact(teamUuid);
-      AgileSprintData data = SprintUtil.getAgileSprintData(services, teamUuid, sprintUuid);
+      AgileSprintData data = SprintUtil.getAgileSprintData(services, teamUuid, sprintUuid, chart.getResults());
       XResultData results = data.validate();
       if (results.isErrors()) {
-         throw new OseeArgumentException(results.toString());
+         return chart;
       }
 
       try {

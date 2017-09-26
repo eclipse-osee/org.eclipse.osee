@@ -7,6 +7,7 @@ angular.module('AgileApp').factory('AgileFactory',
 			var factory = {};
 
 			var teamResource = $resource('/ats/agile/team');
+			var teamTokenResource = $resource('/ats/agile/team/token');
 			var teamSingleResource = $resource('/ats/agile/team/:uuid');
 			var teamAisResource = $resource('/ats/agile/team/:uuid/ai');
 			var featuresResource = $resource('/ats/agile/team/:uuid/feature');
@@ -40,6 +41,10 @@ angular.module('AgileApp').factory('AgileFactory',
 			// ////////////////////////////////////
 			factory.getTeams = function() {
 				return teamResource.query();
+			}
+
+			factory.getTeamsTokens = function() {
+				return teamTokenResource.query();
 			}
 
 			factory.getTeamSingle = function(team) {

@@ -28,18 +28,17 @@ public class AgileSprintData {
    private List<Date> holidays = new LinkedList<>();
    private String pointsAttrTypeName;
    private Integer plannedPoints = 0;
-   private Integer unPlannedPoints = 0;
+   private Integer unPlannedPoints = null;
    private List<AgileSprintDateData> dates = new ArrayList<AgileSprintDateData>();
-   private String error;
+   private XResultData results = new XResultData();
 
    public XResultData validate() {
-      XResultData results = new XResultData();
       results.validateNotNull(startDate, "Start Date");
       results.validateNotNull(endDate, "End Date");
       results.validateNotNullOrEmpty(pointsAttrTypeName, "Points Attribute Type");
       results.validateNotNull(plannedPoints, "Planned Points");
       results.validateTrue(unPlannedPoints == null || unPlannedPoints > 0,
-         "Un-Planned Points must either be specified or 0");
+         "Un-Planned Points must either be specified or > 0");
       return results;
    }
 
@@ -115,12 +114,12 @@ public class AgileSprintData {
       this.dates = dates;
    }
 
-   public String getError() {
-      return error;
+   public XResultData getResults() {
+      return results;
    }
 
-   public void setError(String error) {
-      this.error = error;
+   public void setResults(XResultData results) {
+      this.results = results;
    }
 
 }

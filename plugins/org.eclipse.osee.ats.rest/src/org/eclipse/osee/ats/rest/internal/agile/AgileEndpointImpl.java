@@ -57,6 +57,7 @@ import org.eclipse.osee.ats.api.agile.JaxNewAgileSprint;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileTeam;
 import org.eclipse.osee.ats.api.agile.kanban.JaxKbSprint;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.config.JaxAtsObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -120,6 +121,22 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @Override
    public String get() {
       return "Agile Resource";
+   }
+
+   @Override
+   @Path("team/token")
+   @GET
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<JaxAtsObject> getTeamTokens() throws Exception {
+      List<JaxAtsObject> teams = new ArrayList<>();
+      for (ArtifactToken art : atsServer.getArtifacts(AtsArtifactTypes.AgileTeam)) {
+         JaxAgileTeam created = new JaxAgileTeam();
+         created.setName(art.getName());
+         created.setUuid(art.getId());
+         created.setActive(atsServer.getAttributeResolver().getSoleAttributeValue(art, AtsAttributeTypes.Active, true));
+         teams.add(created);
+      }
+      return teams;
    }
 
    @Override
@@ -378,17 +395,21 @@ public class AgileEndpointImpl implements AgileEndpointApi {
 
    @Override
    public String getSprintSummary(long teamId, long sprintId) {
-      String report = getBestOrStored(sprintId, AgileReportType.Summary, uriInfo);
-      if (Strings.isValid(report)) {
-         return report;
+      try {
+         String report = getBestOrStored(sprintId, AgileReportType.Summary, uriInfo);
+         if (Strings.isValid(report)) {
+            return report;
+         }
+         ArtifactReadable team = atsServer.getArtifact(teamId);
+         IAgileSprint sprint = atsServer.getAgileService().getAgileSprint(sprintId);
+         SprintPageBuilder page = new SprintPageBuilder(team, (ArtifactReadable) sprint.getStoreObject());
+         PageCreator appPage = PageFactory.newPageCreator(resourceRegistry);
+         String result =
+            page.generatePage(appPage, new ClassBasedResourceToken("sprintTemplate.html", SprintPageBuilder.class));
+         return result;
+      } catch (Exception ex) {
+         return AHTML.simplePage(Lib.exceptionToString(ex).replaceAll("\n", "<br/>"));
       }
-      ArtifactReadable team = atsServer.getArtifact(teamId);
-      IAgileSprint sprint = atsServer.getAgileService().getAgileSprint(sprintId);
-      SprintPageBuilder page = new SprintPageBuilder(team, (ArtifactReadable) sprint.getStoreObject());
-      PageCreator appPage = PageFactory.newPageCreator(resourceRegistry);
-      String result =
-         page.generatePage(appPage, new ClassBasedResourceToken("sprintTemplate.html", SprintPageBuilder.class));
-      return result;
    }
 
    private String getBestOrStored(long sprintId, AgileReportType agileReportType, UriInfo uriInfo) {
@@ -419,26 +440,30 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    // Sprint Data and Table
    @Override
    public AgileSprintData getSprintData(long teamUuid, long sprintUuid) {
-      AgileSprintData data = SprintUtil.getAgileSprintData(atsServer, teamUuid, sprintUuid);
+      XResultData results = new XResultData();
+      AgileSprintData data = SprintUtil.getAgileSprintData(atsServer, teamUuid, sprintUuid, results);
       data.validate();
       return data;
    }
 
    @Override
    public String getSprintDataTable(long teamId, long sprintId) {
-      String report = getBestOrStored(sprintId, AgileReportType.Data_Table, uriInfo);
-      if (Strings.isValid(report)) {
-         return report;
+      try {
+         String report = getBestOrStored(sprintId, AgileReportType.Data_Table, uriInfo);
+         if (Strings.isValid(report)) {
+            return report;
+         }
+         AgileSprintData sprintData = SprintUtil.getAgileSprintData(atsServer, teamId, sprintId, new XResultData());
+         XResultData results = sprintData.validate();
+         if (results.isErrors()) {
+            throw new OseeArgumentException(results.toString());
+         }
+         SprintDataTableBuilder pageBuilder = new SprintDataTableBuilder(sprintData);
+         String html = pageBuilder.getHtml();
+         return html;
+      } catch (Exception ex) {
+         return AHTML.simplePage(Lib.exceptionToString(ex).replaceAll("\n", "<br/>"));
       }
-      AgileSprintData burndown = SprintUtil.getAgileSprintData(atsServer, teamId, sprintId);
-      XResultData results = burndown.validate();
-      if (results.isErrors()) {
-         throw new OseeArgumentException(results.toString());
-      }
-      SprintDataTableBuilder pageBuilder = new SprintDataTableBuilder(burndown);
-      String html = pageBuilder.getHtml();
-
-      return html;
    }
 
    // Sprint Burndown Data and UI
