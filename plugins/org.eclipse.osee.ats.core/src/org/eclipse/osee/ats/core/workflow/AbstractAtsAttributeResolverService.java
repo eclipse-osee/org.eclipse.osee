@@ -11,14 +11,11 @@
 package org.eclipse.osee.ats.core.workflow;
 
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
@@ -27,12 +24,7 @@ public abstract class AbstractAtsAttributeResolverService implements IAttributeR
 
    @Override
    public ArtifactId getSoleArtifactIdReference(IAtsObject atsObject, AttributeTypeToken artifactReferencedAttributeType, ArtifactId defaultValue) {
-      ArtifactId result = defaultValue;
-      String id = getSoleAttributeValueAsString(atsObject, artifactReferencedAttributeType, "");
-      if (Strings.isNumeric(id)) {
-         result = ArtifactId.valueOf(id);
-      }
-      return result;
+      return getSoleAttributeValue(atsObject, artifactReferencedAttributeType, ArtifactId.SENTINEL);
    }
 
    @Override
@@ -42,12 +34,6 @@ public abstract class AbstractAtsAttributeResolverService implements IAttributeR
 
    @Override
    public Collection<ArtifactId> getArtifactIdReferences(ArtifactToken artifact, AttributeTypeToken artifactReferencedAttributeType) {
-      List<ArtifactId> results = new LinkedList<>();
-      for (String id : getAttributesToStringList(artifact, artifactReferencedAttributeType)) {
-         if (Strings.isNumeric(id)) {
-            results.add(ArtifactId.valueOf(id));
-         }
-      }
-      return results;
+      return getAttributeValues(artifact, artifactReferencedAttributeType);
    }
 }
