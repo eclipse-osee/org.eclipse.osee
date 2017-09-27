@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.rest.IAtsServer;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
@@ -200,7 +201,7 @@ public class KanbanOperations {
                // skip
             } else if (attrType.equals(AtsAttributeTypes.ActionableItemReference)) {
                for (Object id : artifact.getAttributeValues(attrType)) {
-                  ais.add(((IAtsObject) atsServer.getConfigItem(Long.valueOf((String) id))).getName());
+                  ais.add(((IAtsObject) atsServer.getConfigItem((ArtifactId) id)).getName());
                }
             }
          }

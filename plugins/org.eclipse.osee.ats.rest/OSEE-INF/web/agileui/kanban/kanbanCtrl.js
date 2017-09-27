@@ -17,7 +17,9 @@ angular
 						'$scope',
 						'AgileFactory',
 						'$routeParams',
-						function($scope, AgileFactory, $routeParams) {
+						'PopupService',
+						function($scope, AgileFactory, $routeParams,
+								PopupService) {
 							"use strict"
 							$scope.team = {};
 							$scope.nameFilter = null;
@@ -29,17 +31,16 @@ angular
 								return getUserName(userID);
 							}
 
-							AgileFactory.getTeams().$promise
-									.then(function(data) {
-										$scope.teams = data;
-									});
-
 							if ($routeParams.team) {
+								var loadingModal = PopupService
+										.showLoadingModal();
+
 								$scope.team.uuid = $routeParams.team;
 								AgileFactory.getTeamSingle($scope.team).$promise
 										.then(function(data) {
 											$scope.team = data;
 										});
+
 							}
 
 							/*
@@ -76,7 +77,8 @@ angular
 
 								if (!_.isNull(selectedSprint)
 										&& !_.isEmpty(selectedSprint)) {
-									AgileFactory.getSprintForKb(selectedSprint).$promise
+									AgileFactory.getSprintForKb($scope.team,
+											selectedSprint).$promise
 											.then(function(data) {
 												_tasks = data;
 												$scope.availableStates = data["availableStates"];
@@ -170,7 +172,7 @@ angular
 												});
 							}
 
-							// populate model with teams
+							// populate model with sprints
 							$scope
 									.$watch(
 											"team",
@@ -188,6 +190,27 @@ angular
 																}
 															}
 															$scope.activeSprints = activeSprints;
+
+															/*
+															 * set sprint as
+															 * first active
+															 */
+															var defaultSprintItem = null;
+															for ( var index in $scope.activeSprints) {
+																var sprint = $scope.activeSprints[index];
+																if (sprint.active) {
+																	if (!(defaultSprintItem)) {
+																		defaultSprintItem = sprint;
+																		break;
+																	}
+																}
+															}
+															if (defaultSprintItem) {
+																$scope.sprint = defaultSprintItem;
+															}
+															loadingModal
+																	.close();
+
 														});
 											});
 
