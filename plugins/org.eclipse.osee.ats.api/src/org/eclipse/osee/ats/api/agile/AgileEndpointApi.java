@@ -95,6 +95,11 @@ public interface AgileEndpointApi {
    public List<JaxAgileSprint> getSprints(@PathParam("teamUuid") long teamUuid);
 
    @GET
+   @Path("team/{teamUuid}/sprint/{sprintUuid}")
+   @Produces(MediaType.APPLICATION_JSON)
+   public JaxAgileSprint getSprint(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
+
+   @GET
    @Path("team/{teamUuid}/sprint/{sprintUuid}/kb")
    @Produces(MediaType.APPLICATION_JSON)
    public JaxKbSprint getSprintItemsForKb(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);

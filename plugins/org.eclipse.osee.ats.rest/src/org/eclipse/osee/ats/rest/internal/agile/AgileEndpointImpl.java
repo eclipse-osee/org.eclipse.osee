@@ -378,6 +378,22 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    }
 
    @Override
+   public JaxAgileSprint getSprint(long teamId, long sprintId) {
+      if (teamId <= 0) {
+         throw new OseeWebApplicationException(Status.NOT_FOUND, "teamUuid is not valid");
+      }
+      if (sprintId <= 0) {
+         throw new OseeWebApplicationException(Status.NOT_FOUND, "sprintId is not valid");
+      }
+      for (IAgileSprint sprint : atsServer.getAgileService().getSprintsForTeam(teamId)) {
+         if (sprint.getId().equals(sprintId)) {
+            return toJaxSprint(sprint);
+         }
+      }
+      return null;
+   }
+
+   @Override
    @GET
    @Path("team/{teamUuid}/sprintcurrent")
    @Produces(MediaType.APPLICATION_JSON)
