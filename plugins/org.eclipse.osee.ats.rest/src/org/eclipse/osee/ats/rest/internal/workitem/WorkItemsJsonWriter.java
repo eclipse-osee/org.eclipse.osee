@@ -29,6 +29,7 @@ import org.codehaus.jackson.JsonGenerator;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workflow.WorkItemWriterOptions;
 import org.eclipse.osee.ats.rest.IAtsServer;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
 import org.eclipse.osee.orcs.data.AttributeTypes;
@@ -57,7 +58,7 @@ public class WorkItemsJsonWriter implements MessageBodyWriter<Collection<IAtsWor
    }
 
    public void start() {
-      jsonFactory = org.eclipse.osee.ats.rest.util.JsonFactory.create();
+      jsonFactory = JsonUtil.getFactory();
    }
 
    public void stop() {

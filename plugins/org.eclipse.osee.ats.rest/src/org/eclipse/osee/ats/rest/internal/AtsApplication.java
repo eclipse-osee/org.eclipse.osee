@@ -49,6 +49,7 @@ import org.eclipse.osee.ats.rest.internal.workitem.AtsTeamWfEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsWorkPackageEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.StateResource;
 import org.eclipse.osee.ats.rest.internal.world.WorldResource;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResourceRegistry;
 import org.eclipse.osee.jdbc.JdbcService;
@@ -93,7 +94,7 @@ public class AtsApplication extends Application {
    public void start() {
       IResourceRegistry registry = new ResourceRegistry();
       OseeTemplateTokens.register(registry);
-      JsonFactory jsonFactory = org.eclipse.osee.ats.rest.util.JsonFactory.create();
+      JsonFactory jsonFactory = JsonUtil.getFactory();
 
       // Register conversions
       ConvertCreateUpdateAtsConfig atsConfgConversion = new ConvertCreateUpdateAtsConfig(atsServer);

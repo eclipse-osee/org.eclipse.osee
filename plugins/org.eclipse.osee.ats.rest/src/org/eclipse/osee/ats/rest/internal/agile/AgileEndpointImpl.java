@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.rest.internal.agile;
 
 import java.net.URI;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -34,7 +33,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
@@ -83,6 +81,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.ClassBasedResourceToken;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
@@ -109,7 +108,6 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    private UriInfo uriInfo;
    private final IAtsServer atsServer;
    private final IResourceRegistry resourceRegistry;
-   private static ObjectMapper mapper;
    private final JdbcService jdbcService;
 
    public AgileEndpointImpl(IAtsServer atsServer, IResourceRegistry resourceRegistry, JdbcService jdbcService) {
@@ -774,7 +772,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       try {
          String custDataStr = RestUtil.getResource("support/DefaultAgileCustomization.json");
          if (Strings.isValid(custDataStr)) {
-            result = getMapper().readValue(custDataStr, CustomizeData.class);
+            result = JsonUtil.getMapper().readValue(custDataStr, CustomizeData.class);
          }
       } catch (Exception ex) {
          ex.printStackTrace();
@@ -792,14 +790,6 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       String table =
          WorldResource.getCustomizedTable(atsServer, "Sprint - " + sprintArt.getName(), custData, myWorldItems);
       return Response.ok().entity(table).build();
-   }
-
-   public static ObjectMapper getMapper() {
-      if (mapper == null) {
-         mapper = new ObjectMapper();
-         mapper.setDateFormat(new SimpleDateFormat("MMM d, yyyy h:mm:ss aa"));
-      }
-      return mapper;
    }
 
    @Override

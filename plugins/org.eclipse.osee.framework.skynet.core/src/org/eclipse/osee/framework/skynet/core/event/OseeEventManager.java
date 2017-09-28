@@ -19,6 +19,7 @@ import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.CoreActivityTypes;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
@@ -134,7 +135,7 @@ public final class OseeEventManager {
       try {
          if (accesstopicEvent != AccessTopicEvent.USER_AUTHENTICATED) {
             String message = String.format("USER_AUTHENTICATED [%s] Payload [%s]", UserManager.getUser().getUserId(),
-               EventUtil.getEventJacksonMapper().writeValueAsString(payload));
+               JsonUtil.getMapper().writeValueAsString(payload));
             ServiceUtil.getOseeClient().getActivityLogEndpoint().createEntry(CoreActivityTypes.ACCESS_CONTROL_MODIFIED,
                0L, ActivityLog.COMPLETE_STATUS, message);
          }

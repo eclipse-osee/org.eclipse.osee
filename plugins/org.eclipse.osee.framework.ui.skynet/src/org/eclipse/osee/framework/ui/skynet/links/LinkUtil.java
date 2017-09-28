@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.links;
 
 import java.util.Map;
 import java.util.Map.Entry;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.eclipse.osee.account.rest.client.AccountClient;
 import org.eclipse.osee.account.rest.model.AccountWebPreferences;
 import org.eclipse.osee.account.rest.model.Link;
@@ -21,6 +20,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.event.EventType;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -147,8 +147,7 @@ public class LinkUtil {
    }
 
    private static void saveWebPrefsToArtifactAndKickEvent(boolean global, Artifact useArtifact, AccountWebPreferences webPrefs) throws Exception {
-      ObjectMapper mapper = new ObjectMapper();
-      String json = mapper.writeValueAsString(webPrefs);
+      String json = JsonUtil.getMapper().writeValueAsString(webPrefs);
       useArtifact.setSoleAttributeValue(CoreAttributeTypes.WebPreferences, json);
       useArtifact.persist("Add web preferences links to " + useArtifact.toStringWithId());
 

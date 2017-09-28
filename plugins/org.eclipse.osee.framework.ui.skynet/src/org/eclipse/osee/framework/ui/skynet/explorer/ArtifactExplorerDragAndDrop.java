@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import org.apache.commons.io.FilenameUtils;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -31,6 +30,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -333,12 +333,11 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
    }
 
    private void transferJsonArtifacts(Artifact parentArtifact, String fromJson) {
-      ObjectMapper mapper = new ObjectMapper();
       SkynetTransaction transaction =
          TransactionManager.createTransaction(parentArtifact.getBranch(), "Artifact explorer drag & drop");
       try {
          List<JsonArtifactRepresentation> reqts =
-            mapper.readValue(fromJson, new TypeReference<List<JsonArtifactRepresentation>>() { //
+            JsonUtil.getMapper().readValue(fromJson, new TypeReference<List<JsonArtifactRepresentation>>() { //
             });
          for (JsonArtifactRepresentation item : reqts) {
             Artifact art = ArtifactTypeManager.addArtifact(ArtifactTypeManager.getTypeByGuid(item.getArtifactTypeId()),

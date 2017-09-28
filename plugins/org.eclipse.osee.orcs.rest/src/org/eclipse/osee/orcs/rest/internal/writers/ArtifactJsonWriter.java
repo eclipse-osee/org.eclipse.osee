@@ -14,8 +14,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.List;
 import javax.ws.rs.WebApplicationException;
@@ -25,8 +23,8 @@ import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.Provider;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -48,10 +46,7 @@ public class ArtifactJsonWriter implements MessageBodyWriter<Object> {
    }
 
    public void start() {
-      ObjectMapper mapper = new ObjectMapper();
-      DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm a z");
-      mapper.setDateFormat(df);
-      jsonFactory = mapper.getJsonFactory();
+      jsonFactory = JsonUtil.getMapper().getJsonFactory();
    }
 
    public void stop() {

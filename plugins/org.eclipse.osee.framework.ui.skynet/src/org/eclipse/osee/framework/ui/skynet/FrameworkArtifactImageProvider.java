@@ -18,11 +18,11 @@ import java.util.logging.Level;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -114,10 +114,8 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
          }
          if (Strings.isValid(imagesJson)) {
 
-            ObjectMapper mapper = new ObjectMapper();
-
             // read images.xml
-            DynamicImages images = mapper.readValue(imagesJson, DynamicImages.class);
+            DynamicImages images = JsonUtil.readValue(imagesJson, DynamicImages.class);
 
             // for each image
             for (DynamicImage dynamicImage : images.getImages()) {

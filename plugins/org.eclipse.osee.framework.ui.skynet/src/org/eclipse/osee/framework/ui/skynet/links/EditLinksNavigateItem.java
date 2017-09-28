@@ -22,13 +22,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.account.rest.model.AccountWebPreferences;
 import org.eclipse.osee.account.rest.model.Link;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -66,9 +66,8 @@ public class EditLinksNavigateItem extends XNavigateItem implements FileChangedL
       sb.append("// Move items up and down to change order.\n// Change names, urls and tags without changing id.\n// " //
          + "Delete line to remove.\n// Copy existing link and clear id for new link.\n// Save to Update\n" //
          + "// Example: {\"name\":\"Google\",\"url\":\"http://www.google.com\",\"id\":\"AOd9poc8Kz02K3K7xfwA\",\"team\":\"Joe Smith\",\"tags\":[]}\n\n");
-      ObjectMapper mapper = new ObjectMapper();
       for (Link link : webPrefs.getLinks().values()) {
-         sb.append(mapper.writeValueAsString(link) + "\n");
+         sb.append(JsonUtil.getMapper().writeValueAsString(link) + "\n");
       }
       File outFile = getLinksFile();
       Lib.writeStringToFile(sb.toString(), outFile);
@@ -155,11 +154,10 @@ public class EditLinksNavigateItem extends XNavigateItem implements FileChangedL
       try {
          File outFile = getLinksFile();
          String fileToString = Lib.fileToString(outFile);
-         ObjectMapper mapper = new ObjectMapper();
          AccountWebPreferences newWebPrefs = new AccountWebPreferences();
          for (String line : fileToString.split("\n")) {
             if (line.startsWith("{")) {
-               Link link = mapper.readValue(line, Link.class);
+               Link link = JsonUtil.readValue(line, Link.class);
                newWebPrefs.getLinks().put(link.getId(), link);
             }
          }

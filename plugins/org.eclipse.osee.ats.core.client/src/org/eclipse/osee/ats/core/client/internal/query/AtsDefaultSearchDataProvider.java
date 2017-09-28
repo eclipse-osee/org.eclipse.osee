@@ -14,7 +14,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.AtsSearchUtil;
 import org.eclipse.osee.ats.api.query.IAtsSearchDataProvider;
-import org.eclipse.osee.ats.core.util.AtsJsonFactory;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**
@@ -25,7 +25,7 @@ public class AtsDefaultSearchDataProvider implements IAtsSearchDataProvider {
    @Override
    public AtsSearchData fromJson(String namespace, String jsonValue) {
       try {
-         return AtsJsonFactory.getMapper().readValue(jsonValue, AtsSearchData.class);
+         return JsonUtil.getMapper().readValue(jsonValue, AtsSearchData.class);
       } catch (Exception ex) {
          throw new OseeArgumentException(ex, "Unable to read AtsSearchData for [%s]", jsonValue);
       }

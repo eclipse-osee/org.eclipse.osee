@@ -31,7 +31,6 @@ import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.query.AbstractAtsQueryService;
 import org.eclipse.osee.ats.core.query.AtsWorkItemFilter;
-import org.eclipse.osee.ats.core.util.AtsJsonFactory;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
@@ -39,6 +38,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -179,7 +179,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    private String getStoreString(AtsSearchData data) throws Exception {
-      return AtsJsonFactory.getMapper().writeValueAsString(data);
+      return JsonUtil.getMapper().writeValueAsString(data);
    }
 
    private AtsSearchData fromJson(String jsonValue) {

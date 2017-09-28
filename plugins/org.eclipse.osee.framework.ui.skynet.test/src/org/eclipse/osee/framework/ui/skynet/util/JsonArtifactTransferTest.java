@@ -13,12 +13,12 @@ package org.eclipse.osee.framework.ui.skynet.util;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.skynet.core.utility.JsonArtifactRepresentation;
 import org.junit.Assert;
 import org.junit.Test;
@@ -100,9 +100,8 @@ public class JsonArtifactTransferTest {
          rep.setAttrs(attrs);
          outputItems.add(rep);
       }
-      ObjectMapper mapper = new ObjectMapper();
       try {
-         output = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(outputItems);
+         output = JsonUtil.getMapper().writerWithDefaultPrettyPrinter().writeValueAsString(outputItems);
          System.out.println(output);
       } catch (IOException ex) {
          //
@@ -111,12 +110,8 @@ public class JsonArtifactTransferTest {
    }
 
    private void parseJsonOutput(String output) throws IOException {
-      ObjectMapper mapper = new ObjectMapper();
-
-      List<JsonArtRep> reqts = mapper.readValue(output, new TypeReference<List<JsonArtRep>>() { //
+      List<JsonArtRep> reqts = JsonUtil.getMapper().readValue(output, new TypeReference<List<JsonArtRep>>() { //
       });
       Assert.assertTrue(reqts.size() == 5);
-
    }
-
 }

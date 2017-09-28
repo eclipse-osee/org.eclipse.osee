@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.config.ConfigJsonWriter;
 import org.eclipse.osee.ats.rest.internal.util.ActionPage;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -53,7 +54,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
    }
 
    public void start() {
-      jsonFactory = org.eclipse.osee.ats.rest.util.JsonFactory.create();
+      jsonFactory = JsonUtil.getFactory();
    }
 
    public void stop() {

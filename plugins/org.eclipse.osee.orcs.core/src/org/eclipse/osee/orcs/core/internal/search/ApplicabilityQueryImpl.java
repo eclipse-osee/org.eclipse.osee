@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.BiConsumer;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -37,8 +36,8 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.orcs.core.ds.ApplicabilityDsQuery;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -138,15 +137,8 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
 
       for (ArtifactReadable art : featureDefinitionArts) {
          String json = art.getSoleAttributeAsString(CoreAttributeTypes.GeneralStringData);
-
-         ObjectMapper mapper = new ObjectMapper();
-         try {
-            FeatureDefinitionData[] readValue = mapper.readValue(json, FeatureDefinitionData[].class);
-            featureDefinition.addAll(Arrays.asList(readValue));
-         } catch (Exception e) {
-            throw new OseeCoreException(e,
-               String.format("Invalid JSON in general string data attribute on artifactId [%s]", art.getId()));
-         }
+         FeatureDefinitionData[] readValue = JsonUtil.readValue(json, FeatureDefinitionData[].class);
+         featureDefinition.addAll(Arrays.asList(readValue));
       }
       return featureDefinition;
    }

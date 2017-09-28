@@ -13,10 +13,10 @@ package org.eclipse.osee.doors.connector.ui.viewer;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.eclipse.osee.doors.connector.core.Requirement;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.skynet.core.utility.JsonArtifactRepresentation;
 import org.eclipse.osee.framework.skynet.core.utility.JsonAttributeRepresentation;
 import org.eclipse.swt.dnd.DND;
@@ -77,9 +77,8 @@ public class RdfExplorerDragAndDrop {
          reqsOut.add(makeJsonArtifactRepresentation(reqt));
       }
 
-      ObjectMapper mapper = new ObjectMapper();
       try {
-         event.data = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(reqsOut);
+         event.data = JsonUtil.getMapper().writerWithDefaultPrettyPrinter().writeValueAsString(reqsOut);
       } catch (IOException ex) {
          //
       }

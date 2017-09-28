@@ -64,7 +64,6 @@ import org.eclipse.osee.ats.rest.internal.workitem.AtsTaskService;
 import org.eclipse.osee.ats.rest.internal.workitem.ConfigItemFactory;
 import org.eclipse.osee.ats.rest.util.ChangeTypeUtil;
 import org.eclipse.osee.ats.rest.util.IAtsNotifierServer;
-import org.eclipse.osee.ats.rest.util.JsonFactory;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -72,6 +71,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.QueryOption;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -482,7 +482,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    @Override
    public AtsActionEndpointApi getActionEndpoint() {
       if (actionEndpoint == null) {
-         actionEndpoint = new AtsActionEndpointImpl(this, JsonFactory.create());
+         actionEndpoint = new AtsActionEndpointImpl(this, JsonUtil.getFactory());
       }
       return actionEndpoint;
    }

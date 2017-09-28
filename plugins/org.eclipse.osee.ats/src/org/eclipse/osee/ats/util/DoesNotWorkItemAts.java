@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -59,10 +59,9 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
             valueColumn.setNamespace("org.eclipse.osee.ats.WorldXViewer");
             valueColumn.setName(column.getName());
 
-            ObjectMapper mapper = new ObjectMapper();
             String jsonInString = "";
             try {
-               jsonInString = mapper.writeValueAsString(valueColumn);
+               jsonInString = JsonUtil.getMapper().writeValueAsString(valueColumn);
             } catch (Exception ex) {
                ex.printStackTrace();
             }

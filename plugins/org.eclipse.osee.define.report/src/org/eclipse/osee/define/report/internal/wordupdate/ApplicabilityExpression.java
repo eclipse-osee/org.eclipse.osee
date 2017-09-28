@@ -20,9 +20,9 @@ import java.util.regex.Matcher;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -36,8 +36,8 @@ public class ApplicabilityExpression {
    private String content;
    private String elseContent;
 
-   private String configuration;
-   private HashCollection<String, String> featureValuesAllowed;
+   private final String configuration;
+   private final HashCollection<String, String> featureValuesAllowed;
 
    private static ScriptEngineManager sem = new ScriptEngineManager();
    private static ScriptEngine se = sem.getEngineByName("JavaScript");
@@ -189,22 +189,16 @@ public class ApplicabilityExpression {
 
    private String getDefaultValue(String feature, ArtifactReadable featureDefArt) {
       String toReturn = null;
-      try {
-         String json = featureDefArt.getSoleAttributeAsString(CoreAttributeTypes.GeneralStringData);
+      String json = featureDefArt.getSoleAttributeAsString(CoreAttributeTypes.GeneralStringData);
 
-         ObjectMapper mapper = new ObjectMapper();
-         FeatureDefinitionData[] featDataList = mapper.readValue(json, FeatureDefinitionData[].class);
+      FeatureDefinitionData[] featDataList = JsonUtil.readValue(json, FeatureDefinitionData[].class);
 
-         for (FeatureDefinitionData featData : featDataList) {
-            if (featData.getName().equalsIgnoreCase(feature)) {
-               toReturn = featData.getDefaultValue();
-               break;
-            }
+      for (FeatureDefinitionData featData : featDataList) {
+         if (featData.getName().equalsIgnoreCase(feature)) {
+            toReturn = featData.getDefaultValue();
+            break;
          }
-      } catch (Exception e) {
-         throw new OseeCoreException("Error getting default value for feature: " + feature);
       }
-
       return toReturn;
    }
 }
