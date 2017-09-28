@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcService;
@@ -68,6 +69,14 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
    }
 
    @Override
+   public List<ArtifactToken> getArtifactTokensFromQuery(String query, Object... data) {
+      List<ArtifactToken> ids = new LinkedList<>();
+      jdbcService.getClient().runQuery(stmt -> ids.add(ArtifactToken.valueOf(stmt.getLong("art_id"),
+         stmt.getString("name"), BranchId.valueOf(stmt.getLong("branch_id")))), query, data);
+      return ids;
+   }
+
+   @Override
    public void runUpdate(String query, Object... data) {
       jdbcService.getClient().runPreparedUpdate(query, data);
    }
@@ -101,6 +110,7 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
       return actions;
    }
 
+   @Override
    public List<String> getIdsFromStr(String idList) {
       List<String> ids = new ArrayList<>();
       for (String id : idList.split(",")) {

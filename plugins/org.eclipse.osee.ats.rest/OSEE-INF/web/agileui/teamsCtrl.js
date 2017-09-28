@@ -123,7 +123,7 @@ angular
 
 							$scope.openTeam = function(team) {
 								window.location.assign("main#/team?team="
-										.concat(team.uuid))
+										.concat(team.id))
 							}
 
 							$scope.addNewTeam = function() {
@@ -165,47 +165,47 @@ angular
 							// NOT COMMON MENU, MUST REFERENCE team and not $scope
 							$scope.openConfigForTeam = function(team) {
 								window.location.assign("main#/config?team="
-										.concat(team.uuid))
+										.concat(team.id))
 							}
 
 							$scope.openKanbanForTeam = function(team) {
 								window.location.assign("main#/kanban?team="
-										.concat(team.uuid))
+										.concat(team.id))
 							}
 
 							$scope.openBurndownForTeam = function(team) {
 								window.location.assign("main#/report?team="
-										.concat(team.uuid).concat("&reporttype=burndown&reportname=Burn-Down"))
+										.concat(team.id).concat("&reporttype=burndown&reportname=Burn-Down"))
 							}
 
 							$scope.openBurnupForTeam = function(team) {
 								window.location.assign("main#/report?team="
-										.concat(team.uuid).concat("&reporttype=burnup&reportname=Burn-Up"))
+										.concat(team.id).concat("&reporttype=burnup&reportname=Burn-Up"))
 							}
 
 							$scope.openBacklogForTeam = function(team) {
 								window.location.assign("main#/backlog?team="
-										.concat(team.uuid).concat("&default=backlog"))
+										.concat(team.id).concat("&default=backlog"))
 							}
 
 							$scope.openNewActionForTeam = function(team) {
 								window.location.assign("main#/newAction?team="
-										.concat(team.uuid))
+										.concat(team.id))
 							}
 
 							$scope.openSprintForTeam = function(team) {
 								window.location.assign("main#/sprint?team="
-										.concat(team.uuid).concat("&default=sprint"))
+										.concat(team.id).concat("&default=sprint"))
 							}
 
 							$scope.openSummaryForTeam = function(team) {
 								window.location.assign("main#/report?team="
-										.concat(team.uuid).concat("&reporttype=summary&reportname=Summary"))
+										.concat(team.id).concat("&reporttype=summary&reportname=Summary"))
 							}
 
 							$scope.openDataForTeam = function(team) {
 								window.location.assign("main#/report?team="
-										.concat(team.uuid).concat("&reporttype=data&reportname=Data"))
+										.concat(team.id).concat("&reporttype=data&reportname=Data"))
 							}
 
 						} ]);

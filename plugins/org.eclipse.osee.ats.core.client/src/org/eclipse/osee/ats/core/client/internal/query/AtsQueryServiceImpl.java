@@ -34,9 +34,12 @@ import org.eclipse.osee.ats.core.query.AtsWorkItemFilter;
 import org.eclipse.osee.ats.core.util.AtsJsonFactory;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttribute;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -242,6 +245,22 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    @Override
    public IAtsOrcsScriptQuery createOrcsScriptQuery(String query, Object... data) {
       return new AtsOrcsScriptQuery(String.format(query, data), atsClient);
+   }
+
+   @Override
+   public ArtifactToken getArtifactToken(long id) {
+      return ArtifactQuery.getArtifactTokenFromId(atsClient.getAtsBranch(), id);
+   }
+
+   @Override
+   public Collection<ArtifactToken> getRelatedToTokens(BranchId branch, ArtifactId artifact, RelationTypeSide relationType, ArtifactTypeId artifactType) {
+      HashCollection<ArtifactId, ArtifactToken> tokenMap = ArtifactQuery.getArtifactTokenListFromRelated(
+         atsClient.getAtsBranch(), java.util.Collections.singleton(artifact), artifactType, relationType);
+      Collection<ArtifactToken> result = tokenMap.getValues(artifact);
+      if (result != null) {
+         return result;
+      }
+      return java.util.Collections.emptyList();
    }
 
 }

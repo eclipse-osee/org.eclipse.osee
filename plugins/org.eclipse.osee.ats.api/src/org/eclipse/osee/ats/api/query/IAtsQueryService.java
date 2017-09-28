@@ -19,8 +19,10 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 
 /**
  * @author Donald G. Dunne
@@ -73,5 +75,11 @@ public interface IAtsQueryService {
    List<String> getIdsFromStr(String idList);
 
    List<ArtifactId> getArtifactIdsFromQuery(String query, Object... data);
+
+   ArtifactToken getArtifactToken(long id);
+
+   List<ArtifactToken> getArtifactTokensFromQuery(String query, Object... data);
+
+   Collection<ArtifactToken> getRelatedToTokens(BranchId branch, ArtifactId artifact, RelationTypeSide relationType, ArtifactTypeId artifactType);
 
 }

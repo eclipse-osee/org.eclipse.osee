@@ -65,6 +65,10 @@
 	background: #E9F7B2;
 }
 
+.Planning {
+	background: #E9F7B2;
+}
+
 .Analyze {
 	background: #EBEB00;
 }
@@ -74,6 +78,14 @@
 }
 
 .Implement {
+	background: #77D7DD;
+}
+
+.Ready_For_Acceptance {
+	background: #CAC7D6;
+}
+
+.In_Work {
 	background: #77D7DD;
 }
 

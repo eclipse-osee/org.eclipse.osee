@@ -7,21 +7,24 @@ angular.module('AgileApp').factory('AgileFactory',
 			var factory = {};
 
 			var teamResource = $resource('/ats/agile/team');
-			var teamTokenResource = $resource('/ats/agile/team/token');
-			var teamSingleResource = $resource('/ats/agile/team/:uuid');
-			var teamAisResource = $resource('/ats/agile/team/:uuid/ai');
-			var featuresResource = $resource('/ats/agile/team/:uuid/feature');
-			var workPackageResource = $resource('/ats/agile/team/:uuid/workpackage');
-			var featureSingleResource = $resource('/ats/agile/team/:teamUuid/feature/:uuid');
-			var sprintResource = $resource('/ats/agile/team/:uuid/sprint');
-			var sprintCurrentResource = $resource('/ats/agile/team/:uuid/sprintcurrent');
-			var sprintSingleResource = $resource('/ats/agile/team/:teamUuid/sprint/:uuid');
-			var sprintForKbResource = $resource('/ats/agile/team/:teamUuid/sprint/:uuid/kb');
-			var sprintItemsResource = $resource('/ats/agile/team/:teamId/sprint/:sprintId/item');
-			var backlogResource = $resource('/ats/agile/team/:uuid/backlog');
-			var backlogItemsResource = $resource('/ats/agile/team/:teamId/backlog/item');
+			var teamsTokenResource = $resource('/ats/agile/team/token');
+			var teamTokenResource = $resource('/ats/agile/team/:teamid/token');
+			var teamSingleResource = $resource('/ats/agile/team/:teamid');
+			var teamAisResource = $resource('/ats/agile/team/:teamid/ai');
+			var featuresResource = $resource('/ats/agile/team/:teamid/feature');
+			var workPackageResource = $resource('/ats/agile/team/:teamid/workpackage');
+			var featureSingleResource = $resource('/ats/agile/team/:teamid/feature/:featureid');
+			var sprintResource = $resource('/ats/agile/team/:teamid/sprint');
+			var sprintTokenResource = $resource('/ats/agile/team/:teamid/sprint/token');
+			var sprintCurrentResource = $resource('/ats/agile/team/:teamid/sprintcurrent');
+			var sprintSingleResource = $resource('/ats/agile/team/:teamid/sprint/:sprintid');
+			var sprintForKbResource = $resource('/ats/agile/team/:teamid/sprint/:sprintid/kb');
+			var sprintItemsResource = $resource('/ats/agile/team/:teamid/sprint/:sprintid/item');
+			var backlogTokenResource = $resource('/ats/agile/team/:teamid/backlog/token');
+			var backlogResource = $resource('/ats/agile/team/:teamid/backlog');
+			var backlogItemsResource = $resource('/ats/agile/team/:teamid/backlog/item');
 			var actionResource = $resource('/ats/action');
-			var itemResource = $resource('/ats/agile/items/:uuid', 
+			var itemResource = $resource('/ats/agile/items/:itemid', 
 					{}, { 'update': { method:'PUT' } });
 
 			// ////////////////////////////////////
@@ -44,15 +47,19 @@ angular.module('AgileApp').factory('AgileFactory',
 			}
 
 			factory.getTeamsTokens = function() {
-				return teamTokenResource.query();
+				return teamsTokenResource.query();
+			}
+
+			factory.getTeamToken = function(team) {
+				return teamTokenResource.get({teamid: team.id});
 			}
 
 			factory.getTeamSingle = function(team) {
-				return teamSingleResource.get(team)
+				return teamSingleResource.get({teamid: team.id})
 			}
 
 			factory.getTeamAis = function(team) {
-				return teamAisResource.query(team)
+				return teamAisResource.query({teamid: team.id})
 			}
 
 			factory.deleteTeam = function(team) {
@@ -67,14 +74,14 @@ angular.module('AgileApp').factory('AgileFactory',
 			}
 
 			factory.getWorkPackages = function(team) {
-				return workPackageResource.query(team);
+				return workPackageResource.query({teamid: team.id});
 			}
 
 			// ////////////////////////////////////
 			// Agile Feature Groups
 			// ////////////////////////////////////
 			factory.getFeatureGroups = function(team) {
-				return featuresResource.query(team);
+				return featuresResource.query({teamid: team.id});
 			}
 			
 			factory.deleteFeatureGroup = function(team) {
@@ -95,7 +102,11 @@ angular.module('AgileApp').factory('AgileFactory',
 			// Agile Sprint
 			// ////////////////////////////////////
 			factory.getSprints = function(team) {
-				return sprintResource.query(team);
+				return sprintResource.query({teamid: team.id});
+			}
+			
+			factory.getSprintsTokens = function(team) {
+				return sprintTokenResource.query({teamid: team.id});
 			}
 			
 			factory.getSprintCurrent = function(team) {
@@ -105,17 +116,11 @@ angular.module('AgileApp').factory('AgileFactory',
 			}
 			
 			factory.getSprintForKb = function(team, sprint) {
-				var param = {};
-				param.teamUuid = team.uuid;
-				param.uuid = sprint.uuid; 
-				return sprintForKbResource.get(param);
+				return sprintForKbResource.get({teamid: team.id, sprintid:sprint.id});
 			}
 			
 			factory.getSprint = function(teamId, sprintId) {
-				var param = {};
-				param.teamUuid = teamId;
-				param.uuid = sprintId;
-				return sprintSingleResource.get(param);
+				return sprintSingleResource.get({teamid: teamId, sprintid:sprintId});
 			}
 			
 			factory.deleteSprint = function(team) {
@@ -132,17 +137,12 @@ angular.module('AgileApp').factory('AgileFactory',
 				return sprintResource.save(param, newSprint);
 			}
 
-			factory.getSprintItems = function(team) {
-				var param = {};
-				param.teamId = team.teamUuid;
-				param.sprintId  = team.uuid;
-				return sprintItemsResource.query(param)
+			factory.getSprintItems = function(team, sprint) {
+				return sprintItemsResource.query({teamid: team.id, sprintid:sprint.id})
 			}
 
 			factory.updateSprint = function(team, sprint) {
-				sprint.teamUuid = team.uuid;
-				sprint.uuid = sprint.sprintId;
-				return sprintSingleResource.save({teamUuid:team.uuid, uuid:sprint.sprintId}, sprint)
+				return sprintSingleResource.save({teamid:team.id, sprintid:sprint.id}, sprint)
 			}
 
 			// ////////////////////////////////////
@@ -165,16 +165,15 @@ angular.module('AgileApp').factory('AgileFactory',
 			}
 			
 			factory.getBacklog = function(team) {
-				var param = {};
-				param.uuid = team.uuid;
-				return backlogResource.get(param);
+				return backlogResource.get({teamid: team.id});
+			}
+
+			factory.getBacklogToken = function(team) {
+				return backlogTokenResource.get({teamid: team.id});
 			}
 
 			factory.getBacklogItems = function(team) {
-				var param = {};
-				param.teamId = team.teamUuid;
-				param.sprintId  = team.uuid;
-				return backlogItemsResource.query(param);
+				return backlogItemsResource.query({teamid: team.id});
 			}
 
 			return factory;

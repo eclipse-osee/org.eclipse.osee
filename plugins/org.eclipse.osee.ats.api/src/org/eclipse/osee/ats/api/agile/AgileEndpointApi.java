@@ -23,9 +23,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.api.agile.kanban.JaxKbSprint;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
-import org.eclipse.osee.ats.api.config.JaxAtsObject;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.util.ILineChart;
+import org.eclipse.osee.ats.api.util.JaxAtsObjectToken;
 import org.eclipse.osee.ats.api.workflow.JaxAtsObjects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.util.result.XResultData;
@@ -42,7 +42,7 @@ public interface AgileEndpointApi {
    @GET
    @Path("team/token")
    @Produces(MediaType.APPLICATION_JSON)
-   public List<JaxAtsObject> getTeamTokens() throws Exception;
+   public List<JaxAtsObjectToken> getTeamTokens() throws Exception;
 
    @GET
    @Path("team")
@@ -50,14 +50,19 @@ public interface AgileEndpointApi {
    public List<JaxAgileTeam> team() throws Exception;
 
    @GET
-   @Path("team/{teamUuid}")
+   @Path("team/{teamId}")
    @Produces(MediaType.APPLICATION_JSON)
-   public JaxAgileTeam getTeam(@PathParam("teamUuid") long teamUuid);
+   public JaxAgileTeam getTeam(@PathParam("teamId") long teamId);
 
    @GET
-   @Path("team/{teamUuid}/feature")
+   @Path("team/{teamId}/token")
    @Produces(MediaType.APPLICATION_JSON)
-   public List<JaxAgileFeatureGroup> getFeatureGroups(@PathParam("teamUuid") long teamUuid);
+   public JaxAtsObjectToken getTeamToken(@PathParam("teamId") long teamId);
+
+   @GET
+   @Path("team/{teamId}/feature")
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<JaxAgileFeatureGroup> getFeatureGroups(@PathParam("teamId") long teamId);
 
    @GET
    @Path("team/{teamId}/ai")
@@ -70,29 +75,42 @@ public interface AgileEndpointApi {
    public List<IAtsWorkPackage> getWorkPackages(@PathParam("teamId") ArtifactId teamId);
 
    @GET
-   @Path("team/{teamUuid}/feature/{featureUuid}")
+   @Path("team/{teamId}/feature/{featureUuid}")
    @Produces(MediaType.APPLICATION_JSON)
-   public JaxAgileFeatureGroup getFeatureGroup(long teamUuid, long featureUuid);
+   public JaxAgileFeatureGroup getFeatureGroup(long teamId, long featureUuid);
 
    @GET
-   @Path("team/{teamUuid}/backlog")
+   @Path("team/{teamId}/backlog")
    @Produces(MediaType.APPLICATION_JSON)
-   public JaxAgileBacklog getBacklog(@PathParam("teamUuid") long teamUuid);
+   public JaxAgileBacklog getBacklog(@PathParam("teamId") long teamId);
 
    @GET
-   @Path("team/{teamUuid}/backlog/item")
+   @Path("team/{teamId}/backlog/token")
    @Produces(MediaType.APPLICATION_JSON)
-   List<AgileItem> getBacklogItems(@PathParam("teamUuid") long teamUuid);
+   public JaxAtsObjectToken getBacklogToken(@PathParam("teamId") long teamId);
 
    @GET
-   @Path("team/{teamUuid}/sprint/{sprintUuid}/item")
+   @Path("team/{teamId}/backlog/item")
    @Produces(MediaType.APPLICATION_JSON)
-   List<AgileItem> getSprintItems(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
+   List<AgileItem> getBacklogItems(@PathParam("teamId") long teamId);
 
    @GET
-   @Path("team/{teamUuid}/sprint")
+   @Path("team/{teamId}/sprint/{sprintId}/item")
    @Produces(MediaType.APPLICATION_JSON)
-   public List<JaxAgileSprint> getSprints(@PathParam("teamUuid") long teamUuid);
+   List<AgileItem> getSprintItems(@PathParam("teamId") long teamId, @PathParam("sprintId") long sprintId);
+
+   @GET
+   @Path("team/{teamId}/sprint")
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<JaxAgileSprint> getSprints(@PathParam("teamId") long teamId);
+
+   /**
+    * @return list of in-work sprint tokens
+    */
+   @GET
+   @Path("team/{teamId}/sprint/token")
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<JaxAtsObjectToken> getSprintsTokens(@PathParam("teamId") long teamId);
 
    @GET
    @Path("team/{teamId}/sprint/{sprintId}")
@@ -106,14 +124,14 @@ public interface AgileEndpointApi {
    public AgileSprintData updateSprint(@PathParam("teamId") long teamId, @PathParam("sprintId") long sprintId, AgileSprintData sprintData);
 
    @GET
-   @Path("team/{teamUuid}/sprint/{sprintUuid}/kb")
+   @Path("team/{teamId}/sprint/{sprintId}/kb")
    @Produces(MediaType.APPLICATION_JSON)
-   public JaxKbSprint getSprintItemsForKb(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
+   public JaxKbSprint getSprintItemsForKb(@PathParam("teamId") long teamId, @PathParam("sprintId") long sprintId);
 
    @GET
-   @Path("team/{teamUuid}/sprintcurrent")
+   @Path("team/{teamId}/sprintcurrent")
    @Produces(MediaType.APPLICATION_JSON)
-   public JaxAgileSprint getSprintCurrent(@PathParam("teamUuid") long teamUuid);
+   public JaxAgileSprint getSprintCurrent(@PathParam("teamId") long teamId);
 
    /**
     * @param query param </br>
@@ -123,14 +141,14 @@ public interface AgileEndpointApi {
     * @return html sprint summary
     */
    @GET
-   @Path("team/{teamUuid}/sprint/{sprintUuid}/summary")
+   @Path("team/{teamId}/sprint/{sprintId}/summary")
    @Produces(MediaType.TEXT_HTML)
-   public String getSprintSummary(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
+   public String getSprintSummary(@PathParam("teamId") long teamId, @PathParam("sprintId") long sprintId);
 
    @GET
-   @Path("team/{teamUuid}/sprint/{sprintUuid}/data")
+   @Path("team/{teamId}/sprint/{sprintId}/data")
    @Produces(MediaType.APPLICATION_JSON)
-   public AgileSprintData getSprintData(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
+   public AgileSprintData getSprintData(@PathParam("teamId") long teamId, @PathParam("sprintId") long sprintId);
 
    /**
     * @param query param </br>
@@ -140,18 +158,18 @@ public interface AgileEndpointApi {
     * @return html representation of weekly sprint metrics. Same metrics used in charts.
     */
    @GET
-   @Path("team/{teamUuid}/sprint/{sprintUuid}/data/table")
+   @Path("team/{teamId}/sprint/{sprintId}/data/table")
    @Produces(MediaType.TEXT_HTML)
-   public String getSprintDataTable(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
+   public String getSprintDataTable(@PathParam("teamId") long teamId, @PathParam("sprintId") long sprintId);
 
    /**
     * @return Find only or first sprint and open best burndown available. If in-work, open live version, else stored (if
     * available), else live.
     */
    @GET
-   @Path("team/{teamUuid}/burndown?type=best")
+   @Path("team/{teamId}/burndown?type=best")
    @Produces(MediaType.TEXT_HTML)
-   public String getBurndownBest(@PathParam("teamUuid") long teamUuid);
+   public String getBurndownBest(@PathParam("teamId") long teamId);
 
    /**
     * @param query param </br>
@@ -161,19 +179,19 @@ public interface AgileEndpointApi {
     * @return html sprint burndown
     */
    @GET
-   @Path("team/{teamUuid}/sprint/{sprintUuid}/burndown/chart/ui")
+   @Path("team/{teamId}/sprint/{sprintId}/burndown/chart/ui")
    @Produces(MediaType.TEXT_HTML)
-   public String getSprintBurndownChartUi(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
+   public String getSprintBurndownChartUi(@PathParam("teamId") long teamId, @PathParam("sprintId") long sprintId);
 
    @GET
-   @Path("team/{teamUuid}/sprint/{sprintUuid}/burndown/chart/data")
+   @Path("team/{teamId}/sprint/{sprintId}/burndown/chart/data")
    @Produces(MediaType.APPLICATION_JSON)
-   public ILineChart getSprintBurndownChartData(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
+   public ILineChart getSprintBurndownChartData(@PathParam("teamId") long teamId, @PathParam("sprintId") long sprintId);
 
    @GET
-   @Path("team/{teamUuid}/sprint/{sprintUuid}/storereports")
+   @Path("team/{teamId}/sprint/{sprintId}/storereports")
    @Produces(MediaType.APPLICATION_JSON)
-   public XResultData storeSprintReports(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
+   public XResultData storeSprintReports(@PathParam("teamId") long teamId, @PathParam("sprintId") long sprintId);
 
    /**
     * @param query param </br>
@@ -183,29 +201,29 @@ public interface AgileEndpointApi {
     * @return html sprint burnup
     */
    @GET
-   @Path("team/{teamUuid}/sprint/{sprintUuid}/burnup/chart/ui")
+   @Path("team/{teamId}/sprint/{sprintId}/burnup/chart/ui")
    @Produces(MediaType.TEXT_HTML)
-   public String getSprintBurnupChartUi(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
+   public String getSprintBurnupChartUi(@PathParam("teamId") long teamId, @PathParam("sprintId") long sprintId);
 
    @GET
-   @Path("team/{teamUuid}/sprint/{sprintUuid}/burnup/chart/data")
+   @Path("team/{teamId}/sprint/{sprintId}/burnup/chart/data")
    @Produces(MediaType.APPLICATION_JSON)
-   public ILineChart getSprintBurnupChartData(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
+   public ILineChart getSprintBurnupChartData(@PathParam("teamId") long teamId, @PathParam("sprintId") long sprintId);
 
    @GET
-   @Path("team/{teamUuid}/sprint/{sprintUuid}/world")
+   @Path("team/{teamId}/sprint/{sprintId}/world")
    @Produces(MediaType.APPLICATION_JSON)
-   public JaxAtsObjects getSprintItemsAsJax(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
+   public JaxAtsObjects getSprintItemsAsJax(@PathParam("teamId") long teamId, @PathParam("sprintId") long sprintId);
 
    @GET
-   @Path("team/{teamUuid}/sprint/{sprintUuid}/world/ui")
+   @Path("team/{teamId}/sprint/{sprintId}/world/ui")
    @Produces(MediaType.TEXT_HTML)
-   public Response getSprintItemsUI(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
+   public Response getSprintItemsUI(@PathParam("teamId") long teamId, @PathParam("sprintId") long sprintId);
 
    @GET
-   @Path("team/{teamUuid}/sprint/{sprintUuid}/world/ui/{customizeGuid}")
+   @Path("team/{teamId}/sprint/{sprintId}/world/ui/{customizeGuid}")
    @Produces(MediaType.TEXT_HTML)
-   public Response getSprintItemsUICustomized(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid, @PathParam("customizeGuid") String customizeGuid);
+   public Response getSprintItemsUICustomized(@PathParam("teamId") long teamId, @PathParam("sprintId") long sprintId, @PathParam("customizeGuid") String customizeGuid);
 
    @POST
    @Path("team")
@@ -220,28 +238,28 @@ public interface AgileEndpointApi {
    public Response updateTeam(JaxAgileTeam team);
 
    @POST
-   @Path("team/{teamUuid}/feature")
+   @Path("team/{teamId}/feature")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response createFeatureGroup(@PathParam("teamUuid") long teamUuid, JaxNewAgileFeatureGroup newFeatureGroup);
+   public Response createFeatureGroup(@PathParam("teamId") long teamId, JaxNewAgileFeatureGroup newFeatureGroup);
 
    @POST
-   @Path("team/{teamUuid}/sprint")
+   @Path("team/{teamId}/sprint")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response createSprint(@PathParam("teamUuid") long teamUuid, JaxNewAgileSprint newSprint);
+   public Response createSprint(@PathParam("teamId") long teamId, JaxNewAgileSprint newSprint);
 
    @POST
-   @Path("team/{teamUuid}/backlog")
+   @Path("team/{teamId}/backlog")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response createBacklog(@PathParam("teamUuid") long teamUuid, JaxNewAgileBacklog newBacklog);
+   public Response createBacklog(@PathParam("teamId") long teamId, JaxNewAgileBacklog newBacklog);
 
    @PUT
-   @Path("team/{teamUuid}/backlog")
+   @Path("team/{teamId}/backlog")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   Response updateBacklog(long teamUuid, JaxAgileBacklog newBacklog);
+   Response updateBacklog(long teamId, JaxAgileBacklog newBacklog);
 
    @PUT
    @Path("item/{itemId}")
@@ -256,16 +274,16 @@ public interface AgileEndpointApi {
    public AgileWriterResult updateItems(JaxAgileItem newItem);
 
    @DELETE
-   @Path("team/{teamUuid}/feature/{featureUuid}")
-   public Response deleteFeatureGroup(@PathParam("teamUuid") long teamUuid, @PathParam("featureUuid") long featureUuid);
+   @Path("team/{teamId}/feature/{featureUuid}")
+   public Response deleteFeatureGroup(@PathParam("teamId") long teamId, @PathParam("featureUuid") long featureUuid);
 
    @DELETE
-   @Path("team/{teamUuid}/sprint/{sprintUuid}")
-   public Response deleteSprint(@PathParam("teamUuid") long teamUuid, @PathParam("sprintUuid") long sprintUuid);
+   @Path("team/{teamId}/sprint/{sprintId}")
+   public Response deleteSprint(@PathParam("teamId") long teamId, @PathParam("sprintId") long sprintId);
 
    @DELETE
-   @Path("team/{teamUuid}")
-   public Response deleteTeam(@PathParam("teamUuid") long teamUuid);
+   @Path("team/{teamId}")
+   public Response deleteTeam(@PathParam("teamId") long teamId);
 
    @PUT
    @Path("item/{itemId}/feature")

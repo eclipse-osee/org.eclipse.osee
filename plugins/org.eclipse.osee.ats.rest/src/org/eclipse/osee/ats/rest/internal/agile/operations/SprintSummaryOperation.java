@@ -32,7 +32,7 @@ public class SprintSummaryOperation implements IAgileSprintHtmlOperation {
 
    @Override
    public String getReportHtml(long teamId, long sprintId) {
-      AgileEndpointImpl agileEp = new AgileEndpointImpl((IAtsServer) services, registry);
+      AgileEndpointImpl agileEp = new AgileEndpointImpl((IAtsServer) services, registry, null);
       return agileEp.getSprintSummary(teamId, sprintId);
    }
 

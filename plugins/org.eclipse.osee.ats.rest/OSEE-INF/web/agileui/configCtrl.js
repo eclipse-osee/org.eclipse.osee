@@ -317,47 +317,47 @@ angular
 							// COMMON MENU COPIED TO ALL JS
 							$scope.openConfigForTeam = function(team) {
 								window.location.assign("main#/config?team="
-										.concat($scope.team.uuid))
+										.concat($scope.team.id))
 							}
 
 							$scope.openKanbanForTeam = function(team) {
 								window.location.assign("main#/kanban?team="
-										.concat($scope.team.uuid))
+										.concat($scope.team.id))
 							}
 
 							$scope.openBurndownForTeam = function(team) {
 								window.location.assign("main#/report?team="
-										.concat($scope.team.uuid).concat("&reporttype=burndown&reportname=Burn-Down"))
+										.concat($scope.team.id).concat("&reporttype=burndown&reportname=Burn-Down"))
 							}
 
 							$scope.openBurnupForTeam = function(team) {
 								window.location.assign("main#/report?team="
-										.concat($scope.team.uuid).concat("&reporttype=burnup&reportname=Burn-Up"))
+										.concat($scope.team.id).concat("&reporttype=burnup&reportname=Burn-Up"))
 							}
 
 							$scope.openBacklogForTeam = function(team) {
 								window.location.assign("main#/backlog?team="
-										.concat($scope.team.uuid).concat("&default=backlog"))
+										.concat($scope.team.id).concat("&default=backlog"))
 							}
 
 							$scope.openNewActionForTeam = function(team) {
 								window.location.assign("main#/newAction?team="
-										.concat($scope.team.uuid))
+										.concat($scope.team.id))
 							}
 
 							$scope.openSprintForTeam = function(team) {
 								window.location.assign("main#/sprint?team="
-										.concat($scope.team.uuid).concat("&default=sprint"))
+										.concat($scope.team.id).concat("&default=sprint"))
 							}
 
 							$scope.openSummaryForTeam = function(team) {
 								window.location.assign("main#/report?team="
-										.concat($scope.team.uuid).concat("&reporttype=summary&reportname=Summary"))
+										.concat($scope.team.id).concat("&reporttype=summary&reportname=Summary"))
 							}
 
 							$scope.openDataForTeam = function(team) {
 								window.location.assign("main#/report?team="
-										.concat($scope.team.uuid).concat("&reporttype=data&reportname=Data"))
+										.concat($scope.team.id).concat("&reporttype=data&reportname=Data"))
 							}
 							// COMMON MENU COPIED TO ALL JS
 

@@ -22,26 +22,22 @@ angular
 								PopupService) {
 							"use strict"
 							$scope.team = {};
+							$scope.team.id = $routeParams.team;
 							$scope.nameFilter = null;
 							$scope.tasks = {};
 							/*
 							 * Fetches userName for a userID
 							 */
-							$scope.userName = function(userID) {
-								return getUserName(userID);
+							$scope.userName = function(userId) {
+								return getUserName(userId);
 							}
 
-							if ($routeParams.team) {
-								var loadingModal = PopupService
-										.showLoadingModal();
+							var loadingModal = PopupService.showLoadingModal();
 
-								$scope.team.uuid = $routeParams.team;
-								AgileFactory.getTeamSingle($scope.team).$promise
-										.then(function(data) {
-											$scope.team = data;
-										});
-
-							}
+							AgileFactory.getTeamToken($scope.team).$promise
+									.then(function(data) {
+										$scope.team.name = data.name;
+									});
 
 							/*
 							 * State transition
@@ -68,17 +64,11 @@ angular
 								}
 							}
 
-							/*
-							 * Fetches tasks for selected combination of team
-							 * and sprint
-							 */
+							// Get tasks for selected spring
 							var getTasks = function() {
-								var selectedSprint = $scope.sprint;
-
-								if (!_.isNull(selectedSprint)
-										&& !_.isEmpty(selectedSprint)) {
+								if ($scope.selectedSprint) {
 									AgileFactory.getSprintForKb($scope.team,
-											selectedSprint).$promise
+											$scope.selectedSprint).$promise
 											.then(function(data) {
 												_tasks = data;
 												$scope.availableStates = data["availableStates"];
@@ -178,36 +168,10 @@ angular
 											"team",
 											function() {
 												AgileFactory
-														.getSprints($scope.team).$promise
+														.getSprintsTokens($scope.team).$promise
 														.then(function(data) {
 															$scope.sprints = data;
-															var activeSprints = [];
-															for ( var index in $scope.sprints) {
-																var sprint = $scope.sprints[index];
-																if (sprint.active) {
-																	activeSprints
-																			.push(sprint);
-																}
-															}
-															$scope.activeSprints = activeSprints;
-
-															/*
-															 * set sprint as
-															 * first active
-															 */
-															var defaultSprintItem = null;
-															for ( var index in $scope.activeSprints) {
-																var sprint = $scope.activeSprints[index];
-																if (sprint.active) {
-																	if (!(defaultSprintItem)) {
-																		defaultSprintItem = sprint;
-																		break;
-																	}
-																}
-															}
-															if (defaultSprintItem) {
-																$scope.sprint = defaultSprintItem;
-															}
+															$scope.selectedSprint = $scope.sprints[0];
 															loadingModal
 																	.close();
 
@@ -215,25 +179,25 @@ angular
 											});
 
 							// populate model with tasks
-							$scope.$watch("sprint", function() {
+							$scope.$watch("selectedSprint", function() {
 								getTasks();
 							});
 
 							// COMMON MENU COPIED TO ALL JS
 							$scope.openConfigForTeam = function(team) {
 								window.location.assign("main#/config?team="
-										.concat($scope.team.uuid))
+										.concat($scope.team.id))
 							}
 
 							$scope.openKanbanForTeam = function(team) {
 								window.location.assign("main#/kanban?team="
-										.concat($scope.team.uuid))
+										.concat($scope.team.id))
 							}
 
 							$scope.openBurndownForTeam = function(team) {
 								window.location
 										.assign("main#/report?team="
-												.concat($scope.team.uuid)
+												.concat($scope.team.id)
 												.concat(
 														"&reporttype=burndown&reportname=Burn-Down"))
 							}
@@ -241,32 +205,32 @@ angular
 							$scope.openBurnupForTeam = function(team) {
 								window.location
 										.assign("main#/report?team="
-												.concat($scope.team.uuid)
+												.concat($scope.team.id)
 												.concat(
 														"&reporttype=burnup&reportname=Burn-Up"))
 							}
 
 							$scope.openBacklogForTeam = function(team) {
 								window.location.assign("main#/backlog?team="
-										.concat($scope.team.uuid).concat(
+										.concat($scope.team.id).concat(
 												"&default=backlog"))
 							}
 
 							$scope.openNewActionForTeam = function(team) {
 								window.location.assign("main#/newAction?team="
-										.concat($scope.team.uuid))
+										.concat($scope.team.id))
 							}
 
 							$scope.openSprintForTeam = function(team) {
 								window.location.assign("main#/sprint?team="
-										.concat($scope.team.uuid).concat(
+										.concat($scope.team.id).concat(
 												"&default=sprint"))
 							}
 
 							$scope.openSummaryForTeam = function(team) {
 								window.location
 										.assign("main#/report?team="
-												.concat($scope.team.uuid)
+												.concat($scope.team.id)
 												.concat(
 														"&reporttype=summary&reportname=Summary"))
 							}
@@ -274,7 +238,7 @@ angular
 							$scope.openDataForTeam = function(team) {
 								window.location
 										.assign("main#/report?team="
-												.concat($scope.team.uuid)
+												.concat($scope.team.id)
 												.concat(
 														"&reporttype=data&reportname=Data"))
 							}

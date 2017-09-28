@@ -71,7 +71,11 @@ public enum OseeSql {
    CHANGE_TX_MODIFYING("SELECT arj.id2, arj.id1, txs.transaction_id, arj.id4 from osee_join_id4 arj, osee_artifact art, osee_txs txs, osee_branch br where arj.query_id = ? AND arj.id2 = art.art_id AND art.gamma_id = txs.gamma_id AND txs.branch_id = arj.id1 AND txs.transaction_id <= arj.id3 AND txs.branch_id = br.branch_id AND txs.transaction_id <> br.baseline_transaction_id", Strings.HintsOrdered),
    CHANGE_BRANCH_MODIFYING("SELECT count(txs.transaction_id) as tx_count, arj.id1, arj.id2, arj.id4 FROM osee_join_id4 arj, osee_artifact art, osee_txs txs, osee_branch br where arj.query_id = ? AND arj.id2 = art.art_id AND art.gamma_id = txs.gamma_id AND txs.branch_id = arj.id1 and txs.branch_id = br.branch_id AND txs.transaction_id <> br.baseline_transaction_id group by arj.id2, arj.id1", Strings.HintsOrdered),
 
-   IS_ARTIFACT_ON_BRANCH("SELECT%s count(1) from osee_artifact av1, osee_txs txs1 where av1.art_id = ? and av1.gamma_id = txs1.gamma_id and txs1.branch_id = ?", Strings.HintsOrdered);
+   IS_ARTIFACT_ON_BRANCH("SELECT%s count(1) from osee_artifact av1, osee_txs txs1 where av1.art_id = ? and av1.gamma_id = txs1.gamma_id and txs1.branch_id = ?", Strings.HintsOrdered),
+
+   ARTIFACT_TO_RELATED_B_ARTIFACT_ID("with links as (select GAMMA_ID, a_art_id, b_art_id from OSEE_RELATION_LINK where REL_SIDE_HERE in (ART_IDS_HERE) and REL_LINK_TYPE_ID = REL_TYPE_LINKE_ID_HERE) select links.a_art_id, links.b_art_id from links, osee_txs txs where txs.BRANCH_ID = BRANCH_ID_HERE and txs.TX_CURRENT = 1 and txs.MOD_TYPE not in (3,5,9,10) and txs.GAMMA_ID = links.gamma_id"),
+   ARTIFACT_TOKENS_RELATED_TO_ARTIFACT_QUERY("select * from osee_attribute attr, OSEE_ARTIFACT art where attr.attr_type_id = 1152921504606847088 and art.ART_ID=attr.ART_ID and attr.ART_ID in (with links as (select GAMMA_ID, a_art_id, b_art_id from OSEE_RELATION_LINK where REL_SIDE_HERE in (ART_IDS_HERE) and REL_LINK_TYPE_ID = REL_TYPE_LINKE_ID_HERE) select links.OPPOSITE_REL_SIDE_HERE from links, osee_txs txs where txs.BRANCH_ID = BRANCH_ID_HERE and txs.TX_CURRENT = 1 and txs.MOD_TYPE not in (3,5,9,10) and txs.GAMMA_ID = links.gamma_id)");
+
    private final String sql;
    private final String hints;
 

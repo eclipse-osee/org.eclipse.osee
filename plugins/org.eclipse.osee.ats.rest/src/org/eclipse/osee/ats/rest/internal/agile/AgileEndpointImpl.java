@@ -59,7 +59,6 @@ import org.eclipse.osee.ats.api.agile.JaxNewAgileSprint;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileTeam;
 import org.eclipse.osee.ats.api.agile.kanban.JaxKbSprint;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
-import org.eclipse.osee.ats.api.config.JaxAtsObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -67,6 +66,8 @@ import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.ILineChart;
+import org.eclipse.osee.ats.api.util.JaxAtsObjectToken;
+import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.JaxAtsObjects;
 import org.eclipse.osee.ats.core.agile.SprintUtil;
 import org.eclipse.osee.ats.core.agile.operations.SprintBurndownOperations;
@@ -75,6 +76,7 @@ import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.util.chart.LineChart;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.agile.operations.KanbanOperations;
+import org.eclipse.osee.ats.rest.internal.query.TokenSearchOperations;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.ats.rest.internal.world.WorldResource;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -93,6 +95,7 @@ import org.eclipse.osee.framework.jdk.core.util.NamedComparator;
 import org.eclipse.osee.framework.jdk.core.util.SortOrder;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
+import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.template.engine.PageCreator;
 import org.eclipse.osee.template.engine.PageFactory;
@@ -107,10 +110,12 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    private final IAtsServer atsServer;
    private final IResourceRegistry resourceRegistry;
    private static ObjectMapper mapper;
+   private final JdbcService jdbcService;
 
-   public AgileEndpointImpl(IAtsServer atsServer, IResourceRegistry resourceRegistry) {
+   public AgileEndpointImpl(IAtsServer atsServer, IResourceRegistry resourceRegistry, JdbcService jdbcService) {
       this.atsServer = atsServer;
       this.resourceRegistry = resourceRegistry;
+      this.jdbcService = jdbcService;
    }
 
    public void setUriInfo(UriInfo uriInfo) {
@@ -129,14 +134,13 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @Path("team/token")
    @GET
    @Produces(MediaType.APPLICATION_JSON)
-   public List<JaxAtsObject> getTeamTokens() throws Exception {
-      List<JaxAtsObject> teams = new ArrayList<>();
+   public List<JaxAtsObjectToken> getTeamTokens() throws Exception {
+      List<JaxAtsObjectToken> teams = new ArrayList<>();
       for (ArtifactToken art : atsServer.getArtifacts(AtsArtifactTypes.AgileTeam)) {
-         JaxAgileTeam created = new JaxAgileTeam();
-         created.setName(art.getName());
-         created.setUuid(art.getId());
-         created.setActive(atsServer.getAttributeResolver().getSoleAttributeValue(art, AtsAttributeTypes.Active, true));
-         teams.add(created);
+         JaxAtsObjectToken team = new JaxAtsObjectToken();
+         team.setName(art.getName());
+         team.setId(art);
+         teams.add(team);
       }
       return teams;
    }
@@ -151,9 +155,25 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    }
 
    @Override
-   public JaxAgileTeam getTeam(long teamUuid) {
-      IAgileTeam team = atsServer.getAgileService().getAgileTeamById(teamUuid);
+   public JaxAgileTeam getTeam(long teamId) {
+      IAgileTeam team = atsServer.getAgileService().getAgileTeamById(teamId);
       return toJaxTeam(team);
+   }
+
+   @Override
+   @GET
+   @Path("team/{teamId}/token")
+   @Produces(MediaType.APPLICATION_JSON)
+   public JaxAtsObjectToken getTeamToken(@PathParam("teamId") long teamId) {
+      ArtifactToken token = atsServer.getQueryService().getArtifactToken(teamId);
+      return toAtsObjToken(token);
+   }
+
+   private JaxAtsObjectToken toAtsObjToken(ArtifactToken token) {
+      JaxAtsObjectToken result = new JaxAtsObjectToken();
+      result.setName(token.getName());
+      result.setId(token);
+      return result;
    }
 
    @Override
@@ -212,8 +232,8 @@ public class AgileEndpointImpl implements AgileEndpointApi {
          throw new OseeWebApplicationException(Status.BAD_REQUEST, "name is not valid");
       }
 
-      Long uuid = newTeam.getUuid();
-      if (uuid == null || uuid <= 0) {
+      Long id = newTeam.getUuid();
+      if (id == null || id <= 0) {
          newTeam.setUuid(Lib.generateArtifactIdAsInt());
       }
 
@@ -250,8 +270,8 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    }
 
    @Override
-   public Response deleteTeam(long teamUuid) {
-      atsServer.getAgileService().deleteAgileTeam(teamUuid);
+   public Response deleteTeam(long teamId) {
+      atsServer.getAgileService().deleteAgileTeam(teamId);
       return Response.ok().build();
    }
 
@@ -260,9 +280,9 @@ public class AgileEndpointImpl implements AgileEndpointApi {
     ***********************************/
 
    @Override
-   public List<JaxAgileFeatureGroup> getFeatureGroups(long teamUuid) {
+   public List<JaxAgileFeatureGroup> getFeatureGroups(long teamId) {
       List<JaxAgileFeatureGroup> groups = new LinkedList<>();
-      ArtifactReadable agileTeamArt = atsServer.getArtifact(teamUuid);
+      ArtifactReadable agileTeamArt = atsServer.getArtifact(teamId);
       for (ArtifactReadable child : agileTeamArt.getChildren()) {
          if (child.getName().equals(IAgileService.FEATURE_GROUP_FOLDER_NAME)) {
             for (ArtifactReadable subChild : child.getChildren()) {
@@ -282,13 +302,13 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    }
 
    @Override
-   public Response createFeatureGroup(long teamUuid, JaxNewAgileFeatureGroup newFeatureGroup) {
+   public Response createFeatureGroup(long teamId, JaxNewAgileFeatureGroup newFeatureGroup) {
       // validate title
       if (!Strings.isValid(newFeatureGroup.getName())) {
          throw new OseeWebApplicationException(Status.BAD_REQUEST, "name is not valid");
       }
       if (newFeatureGroup.getTeamUuid() <= 0) {
-         throw new OseeWebApplicationException(Status.BAD_REQUEST, "teamUuid is not valid");
+         throw new OseeWebApplicationException(Status.BAD_REQUEST, "teamId is not valid");
       }
 
       String guid = GUID.create();
@@ -312,7 +332,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    }
 
    @Override
-   public JaxAgileFeatureGroup getFeatureGroup(long teamUuid, long featureUuid) {
+   public JaxAgileFeatureGroup getFeatureGroup(long teamId, long featureUuid) {
       IAgileFeatureGroup feature =
          atsServer.getAgileService().getAgileFeatureGroups(Arrays.asList(featureUuid)).iterator().next();
       JaxAgileFeatureGroup created = new JaxAgileFeatureGroup();
@@ -324,7 +344,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    }
 
    @Override
-   public Response deleteFeatureGroup(long teamUuid, long featureUuid) {
+   public Response deleteFeatureGroup(long teamId, long featureUuid) {
       atsServer.getAgileService().deleteAgileFeatureGroup(featureUuid);
       return Response.ok().build();
    }
@@ -333,13 +353,13 @@ public class AgileEndpointImpl implements AgileEndpointApi {
     ** Agile Sprint
     ***********************************/
    @Override
-   public Response createSprint(long teamUuid, JaxNewAgileSprint newSprint) {
+   public Response createSprint(long teamId, JaxNewAgileSprint newSprint) {
       // validate title
       if (!Strings.isValid(newSprint.getName())) {
          throw new OseeWebApplicationException(Status.BAD_REQUEST, "name is not valid");
       }
       if (newSprint.getTeamUuid() <= 0) {
-         throw new OseeWebApplicationException(Status.BAD_REQUEST, "teamUuid is not valid");
+         throw new OseeWebApplicationException(Status.BAD_REQUEST, "teamId is not valid");
       }
 
       String guid = GUID.create();
@@ -368,13 +388,33 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    }
 
    @Override
-   public List<JaxAgileSprint> getSprints(long teamUuid) {
-      if (teamUuid <= 0) {
-         throw new OseeWebApplicationException(Status.NOT_FOUND, "teamUuid is not valid");
+   public List<JaxAgileSprint> getSprints(long teamId) {
+      if (teamId <= 0) {
+         throw new OseeWebApplicationException(Status.NOT_FOUND, "teamId is not valid");
       }
       List<JaxAgileSprint> sprints = new ArrayList<>();
-      for (IAgileSprint sprint : atsServer.getAgileService().getSprintsForTeam(teamUuid)) {
+      for (IAgileSprint sprint : atsServer.getAgileService().getSprintsForTeam(teamId)) {
          sprints.add(toJaxSprint(sprint));
+      }
+      return sprints;
+   }
+
+   @Override
+   public List<JaxAtsObjectToken> getSprintsTokens(long teamId) {
+      if (teamId <= 0) {
+         throw new OseeWebApplicationException(Status.NOT_FOUND, "teamId is not valid");
+      }
+      Collection<ArtifactToken> relatedSprints =
+         atsServer.getQueryService().getRelatedToTokens(atsServer.getAtsBranch(), ArtifactId.valueOf(teamId),
+            AtsRelationTypes.AgileTeamToSprint_Sprint, AtsArtifactTypes.AgileSprint);
+
+      Collection<ArtifactToken> inWorkSprints =
+         TokenSearchOperations.getArtifactTokensMatchingAttrValue(atsServer.getAtsBranch(), relatedSprints,
+            AtsAttributeTypes.CurrentStateType, StateType.Working.name(), atsServer.getOrcsApi(), jdbcService);
+
+      List<JaxAtsObjectToken> sprints = new ArrayList<>();
+      for (ArtifactToken sprintArt : inWorkSprints) {
+         sprints.add(toAtsObjToken(sprintArt));
       }
       return sprints;
    }
@@ -382,7 +422,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @Override
    public JaxAgileSprint getSprint(long teamId, long sprintId) {
       if (teamId <= 0) {
-         throw new OseeWebApplicationException(Status.NOT_FOUND, "teamUuid is not valid");
+         throw new OseeWebApplicationException(Status.NOT_FOUND, "teamId is not valid");
       }
       if (sprintId <= 0) {
          throw new OseeWebApplicationException(Status.NOT_FOUND, "sprintId is not valid");
@@ -397,13 +437,13 @@ public class AgileEndpointImpl implements AgileEndpointApi {
 
    @Override
    @GET
-   @Path("team/{teamUuid}/sprintcurrent")
+   @Path("team/{teamId}/sprintcurrent")
    @Produces(MediaType.APPLICATION_JSON)
-   public JaxAgileSprint getSprintCurrent(@PathParam("teamUuid") long teamUuid) {
-      if (teamUuid <= 0) {
-         throw new OseeWebApplicationException(Status.NOT_FOUND, "teamUuid is not valid");
+   public JaxAgileSprint getSprintCurrent(@PathParam("teamId") long teamId) {
+      if (teamId <= 0) {
+         throw new OseeWebApplicationException(Status.NOT_FOUND, "teamId is not valid");
       }
-      for (IAgileSprint sprint : atsServer.getAgileService().getSprintsForTeam(teamUuid)) {
+      for (IAgileSprint sprint : atsServer.getAgileService().getSprintsForTeam(teamId)) {
          if (sprint.isActive()) {
             return toJaxSprint(sprint);
          }
@@ -457,9 +497,9 @@ public class AgileEndpointImpl implements AgileEndpointApi {
 
    // Sprint Data and Table
    @Override
-   public AgileSprintData getSprintData(long teamUuid, long sprintUuid) {
+   public AgileSprintData getSprintData(long teamId, long sprintId) {
       XResultData results = new XResultData();
-      AgileSprintData data = SprintUtil.getAgileSprintData(atsServer, teamUuid, sprintUuid, results);
+      AgileSprintData data = SprintUtil.getAgileSprintData(atsServer, teamId, sprintId, results);
       data.validate();
       return data;
    }
@@ -497,19 +537,19 @@ public class AgileEndpointImpl implements AgileEndpointApi {
 
    // Sprint Burndown Data and UI
    @Override
-   public ILineChart getSprintBurndownChartData(long teamUuid, long sprintUuid) {
+   public ILineChart getSprintBurndownChartData(long teamId, long sprintId) {
       SprintBurndownOperations op = new SprintBurndownOperations(atsServer);
-      return op.getChartData(teamUuid, sprintUuid);
+      return op.getChartData(teamId, sprintId);
    }
 
    @Override
-   public String getSprintBurndownChartUi(long teamUuid, long sprintId) {
+   public String getSprintBurndownChartUi(long teamId, long sprintId) {
       String report = getBestOrStored(sprintId, AgileReportType.Burn_Down, uriInfo);
       if (Strings.isValid(report)) {
          return report;
       }
       SprintBurndownOperations op = new SprintBurndownOperations(atsServer);
-      return op.getReportHtml(teamUuid, sprintId);
+      return op.getReportHtml(teamId, sprintId);
    }
 
    /**
@@ -521,24 +561,24 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    }
 
    @Override
-   public String getSprintBurnupChartUi(long teamUuid, long sprintId) {
+   public String getSprintBurnupChartUi(long teamId, long sprintId) {
       String report = getBestOrStored(sprintId, AgileReportType.Burn_Up, uriInfo);
       if (Strings.isValid(report)) {
          return report;
       }
       SprintBurnupOperations op = new SprintBurnupOperations(atsServer);
-      return op.getReportHtml(teamUuid, sprintId);
+      return op.getReportHtml(teamId, sprintId);
    }
 
    @Override
-   public LineChart getSprintBurnupChartData(long teamUuid, long sprintUuid) {
+   public LineChart getSprintBurnupChartData(long teamId, long sprintId) {
       SprintBurnupOperations op = new SprintBurnupOperations(atsServer);
-      return op.getChartData(teamUuid, sprintUuid);
+      return op.getChartData(teamId, sprintId);
    }
 
    @Override
-   public Response deleteSprint(long teamUuid, long sprintUuid) {
-      atsServer.getAgileService().deleteSprint(sprintUuid);
+   public Response deleteSprint(long teamId, long sprintId) {
+      atsServer.getAgileService().deleteSprint(sprintId);
       return Response.ok().build();
    }
 
@@ -564,21 +604,21 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    }
 
    @Override
-   public JaxKbSprint getSprintItemsForKb(long teamUuid, long sprintUuid) {
-      return KanbanOperations.getSprintItemsForKb(atsServer, teamUuid, sprintUuid);
+   public JaxKbSprint getSprintItemsForKb(long teamId, long sprintId) {
+      return KanbanOperations.getSprintItemsForKb(atsServer, teamId, sprintId);
    }
 
    /********************************
     ** Agile Backlog
     ***********************************/
    @Override
-   public Response createBacklog(long teamUuid, JaxNewAgileBacklog newBacklog) {
+   public Response createBacklog(long teamId, JaxNewAgileBacklog newBacklog) {
       // validate title
       if (!Strings.isValid(newBacklog.getName())) {
          throw new OseeWebApplicationException(Status.BAD_REQUEST, "name is not valid");
       }
       if (newBacklog.getTeamUuid() <= 0) {
-         throw new OseeWebApplicationException(Status.BAD_REQUEST, "teamUuid is not valid");
+         throw new OseeWebApplicationException(Status.BAD_REQUEST, "teamId is not valid");
       }
 
       // create new backlog
@@ -607,7 +647,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    }
 
    @Override
-   public Response updateBacklog(long teamUuid, JaxAgileBacklog newBacklog) {
+   public Response updateBacklog(long teamId, JaxAgileBacklog newBacklog) {
       IAgileBacklog backlog = atsServer.getAgileService().updateAgileBacklog(newBacklog);
 
       JaxAgileBacklog created = toJaxBacklog(backlog);
@@ -617,11 +657,11 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    }
 
    @Override
-   public JaxAgileBacklog getBacklog(long teamUuid) {
-      if (teamUuid <= 0) {
-         throw new OseeWebApplicationException(Status.NOT_FOUND, "teamUuid is not valid");
+   public JaxAgileBacklog getBacklog(long teamId) {
+      if (teamId <= 0) {
+         throw new OseeWebApplicationException(Status.NOT_FOUND, "teamId is not valid");
       }
-      IAgileBacklog backlog = atsServer.getAgileService().getBacklogForTeam(teamUuid);
+      IAgileBacklog backlog = atsServer.getAgileService().getBacklogForTeam(teamId);
       if (backlog != null) {
          return toJaxBacklog(backlog);
       }
@@ -629,9 +669,18 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    }
 
    @Override
-   public List<AgileItem> getBacklogItems(long teamUuid) {
+   public JaxAtsObjectToken getBacklogToken(long teamId) {
+      if (teamId <= 0) {
+         throw new OseeWebApplicationException(Status.NOT_FOUND, "teamId is not valid");
+      }
+      ArtifactToken token = atsServer.getQueryService().getArtifactToken(teamId);
+      return toAtsObjToken(token);
+   }
+
+   @Override
+   public List<AgileItem> getBacklogItems(long teamId) {
       List<AgileItem> items = new LinkedList<>();
-      IAgileTeam team = atsServer.getAgileService().getAgileTeam(teamUuid);
+      IAgileTeam team = atsServer.getAgileService().getAgileTeam(teamId);
       IAgileBacklog backlog = atsServer.getAgileService().getAgileBacklog(team);
       if (backlog != null) {
          int x = 1;
@@ -662,7 +711,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
     ** Agile Item
     ***********************************/
    @Override
-   public AgileWriterResult updateAgileItem(long itemUuid, JaxAgileItem newItem) {
+   public AgileWriterResult updateAgileItem(long itemId, JaxAgileItem newItem) {
       // validate uuid
       if (newItem.getUuids().isEmpty()) {
          throw new OseeWebApplicationException(Status.NOT_FOUND, "itemUuid is not valid");
@@ -692,8 +741,8 @@ public class AgileEndpointImpl implements AgileEndpointApi {
     ** Sprint Reporting
     ***********************************/
    @Override
-   public JaxAtsObjects getSprintItemsAsJax(long teamUuid, long sprintUuid) {
-      ArtifactReadable sprintArt = atsServer.getArtifact(sprintUuid);
+   public JaxAtsObjects getSprintItemsAsJax(long teamId, long sprintId) {
+      ArtifactReadable sprintArt = atsServer.getArtifact(sprintId);
       JaxAtsObjects objs = new JaxAtsObjects();
       for (IAtsWorkItem workItem : atsServer.getWorkItemFactory().getWorkItems(
          sprintArt.getRelated(AtsRelationTypes.AgileSprintToItem_AtsItem).getList())) {
@@ -702,17 +751,17 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       return objs;
    }
 
-   public Collection<IAtsWorkItem> getSprintWorkItems(long teamUuid, long sprintUuid) {
-      ArtifactReadable sprintArt = atsServer.getArtifact(sprintUuid);
+   public Collection<IAtsWorkItem> getSprintWorkItems(long teamId, long sprintId) {
+      ArtifactReadable sprintArt = atsServer.getArtifact(sprintId);
       return atsServer.getWorkItemFactory().getWorkItems(
          sprintArt.getRelated(AtsRelationTypes.AgileSprintToItem_AtsItem).getList());
    }
 
    @Override
-   public Response getSprintItemsUI(long teamUuid, long sprintUuid) {
-      ArtifactReadable sprintArt = atsServer.getArtifact(sprintUuid);
-      Conditions.assertNotNull(sprintArt, "Sprint not found with id %s", sprintUuid);
-      Collection<IAtsWorkItem> myWorldItems = getSprintWorkItems(teamUuid, sprintUuid);
+   public Response getSprintItemsUI(long teamId, long sprintId) {
+      ArtifactReadable sprintArt = atsServer.getArtifact(sprintId);
+      Conditions.assertNotNull(sprintArt, "Sprint not found with id %s", sprintId);
+      Collection<IAtsWorkItem> myWorldItems = getSprintWorkItems(teamId, sprintId);
       CustomizeData custData = getDefaultAgileCustData();
       Conditions.assertNotNull(custData, "Can't retrieve default customization");
       String table =
@@ -734,10 +783,10 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    }
 
    @Override
-   public Response getSprintItemsUICustomized(long teamUuid, long sprintUuid, String customizeGuid) {
-      ArtifactReadable sprintArt = atsServer.getArtifact(sprintUuid);
-      Conditions.assertNotNull(sprintArt, "Sprint not found with id %s", sprintUuid);
-      Collection<IAtsWorkItem> myWorldItems = getSprintWorkItems(teamUuid, sprintUuid);
+   public Response getSprintItemsUICustomized(long teamId, long sprintId, String customizeGuid) {
+      ArtifactReadable sprintArt = atsServer.getArtifact(sprintId);
+      Conditions.assertNotNull(sprintArt, "Sprint not found with id %s", sprintId);
+      Collection<IAtsWorkItem> myWorldItems = getSprintWorkItems(teamId, sprintId);
       CustomizeData custData = atsServer.getCustomizationByGuid(customizeGuid);
       Conditions.assertNotNull(custData, "Can't retrieve customization with id %s", customizeGuid);
       String table =
@@ -813,20 +862,20 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    }
 
    @Override
-   public String getBurndownBest(long teamUuid) {
+   public String getBurndownBest(long teamId) {
       try {
-         IAgileSprint sprint = getSingleOrFirstSprint(teamUuid);
+         IAgileSprint sprint = getSingleOrFirstSprint(teamId);
          if (sprint != null) {
-            return getSprintBurndownChartUi(teamUuid, sprint.getId());
+            return getSprintBurndownChartUi(teamId, sprint.getId());
          }
       } catch (Exception ex) {
          return Lib.exceptionToString(ex);
       }
-      return AHTML.simplePage("No In-Work Sprint found for team " + teamUuid);
+      return AHTML.simplePage("No In-Work Sprint found for team " + teamId);
    }
 
-   private IAgileSprint getSingleOrFirstSprint(long teamUuid) {
-      ArtifactReadable artifact = atsServer.getArtifact(teamUuid);
+   private IAgileSprint getSingleOrFirstSprint(long teamId) {
+      ArtifactReadable artifact = atsServer.getArtifact(teamId);
       if (artifact != null) {
          for (ArtifactReadable sprintArt : artifact.getRelated(AtsRelationTypes.AgileTeamToSprint_Sprint)) {
             IAgileSprint sprint = atsServer.getWorkItemFactory().getAgileSprint(sprintArt);

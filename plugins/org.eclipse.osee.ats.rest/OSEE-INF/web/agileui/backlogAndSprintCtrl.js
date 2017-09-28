@@ -20,8 +20,10 @@ angular
 								PopupService) {
 
 							$scope.team = {};
-							$scope.team.uuid = $routeParams.team;
-							$scope.default = $routeParams.default;
+							$scope.backlog = {};
+							$scope.sprint = {};
+							$scope.team.id = $routeParams.team;
+							$scope.defaultItem = $routeParams.default;
 							$scope.count = "--";
 
 							
@@ -109,7 +111,7 @@ angular
 
 								if (selected) {
 									if (selected.isBacklog) {
-										AgileFactory.getBacklogItems(selected).$promise
+										AgileFactory.getBacklogItems($scope.team).$promise
 												.then(function(data) {
 													$scope.tasks = data;
 													$scope.count = $scope.tasks.length;
@@ -117,7 +119,7 @@ angular
 													LayoutService.refresh();
 												});
 									} else {
-										AgileFactory.getSprintItems(selected).$promise
+										AgileFactory.getSprintItems($scope.team, selected).$promise
 												.then(function(data) {
 													$scope.tasks = data;
 													$scope.count = $scope.tasks.length;
@@ -140,7 +142,7 @@ angular
 								var loadingModal = null;
 								try {
 								 loadingModal = PopupService.showLoadingModal(); 
-								 $scope.sprint.sprintId = $scope.selectedItem.uuid;
+								 $scope.sprint.id = $scope.selectedItem.id;
 								 AgileFactory.updateSprint($scope.team, $scope.sprint).$promise
 										.then(function(data) {
 											// open new tab to new action
@@ -164,51 +166,47 @@ angular
 							$scope.setupItemsPulldown = function() {
 								var loadingModal = PopupService
 										.showLoadingModal();
-								AgileFactory.getTeamSingle($scope.team).$promise
+								AgileFactory
+										.getBacklogToken($scope.team).$promise
 										.then(function(data) {
-											$scope.selectedTeam = data;
-											var activeItems = [];
-											AgileFactory
-													.getBacklog($scope.selectedTeam).$promise
-													.then(function(data) {
-														if (data && data.name) {
-															$scope.selectedTeam.backlog = data.name;
-															$scope.selectedTeam.backlogUuid = data.uuid;
-															data.isBacklog = true;
-															// add backlog first
-															var defaultBacklogItem = data;
-															activeItems
-																	.push(data);
+											if (data && data.name) {
+												$scope.backlog.name = data.name;
+												$scope.backlog.id = data.id;
+												var item = $scope.backlog;
+												item.isBacklog = true;
+												// add backlog first
+												var defaultBacklogItem = item;
+												var activeItems = [];
+												activeItems
+														.push(item);
 
-															AgileFactory
-																	.getSprints($scope.team).$promise
-																	.then(function(
-																			data) {
-																		var defaultSprintItem = null;
-																		for ( var index in data) {
-																			var sprint = data[index];
-																			if (sprint.active) {
-																				if (!(defaultSprintItem)) {
-																					defaultSprintItem = sprint;
-																				}
-																				sprint.isBacklog = false;
-																				activeItems
-																						.push(sprint);
-																			}
-																		}
-																		$scope.activeItems = activeItems;
+												// get active sprints
+												AgileFactory
+														.getSprintsTokens($scope.team).$promise
+														.then(function(
+																data) {
+															var defaultSprintItem = null;
+															for (i = 0; i < data.length; i++) { 
+																var sprint = data[i];
+																if (!defaultSprintItem) {
+																	defaultSprintItem = sprint;
+																}
+																sprint.isBacklog = false;
+																activeItems
+																		.push(sprint);
+															}
+															$scope.activeItems = activeItems;
 
-																		if ($scope.default == "sprint") {
-																			$scope.selectedItem = defaultSprintItem;
-																		}else if ($scope.default = "backlog") {
-																			$scope.selectedItem = defaultBacklogItem;
-																		}
-																		loadingModal
-																				.close();
-																	});
+															if ($scope.defaultItem == "sprint") {
+																$scope.selectedItem = defaultSprintItem;
+															}else if ($scope.defaultItem = "backlog") {
+																$scope.selectedItem = defaultBacklogItem;
+															}
+															loadingModal
+																	.close();
+														});
 
-														}
-													});
+											}
 										});
 							}
 
@@ -218,47 +216,47 @@ angular
 							// COMMON MENU COPIED TO ALL JS
 							$scope.openConfigForTeam = function(team) {
 								window.location.assign("main#/config?team="
-										.concat($scope.team.uuid))
+										.concat($scope.team.id))
 							}
 
 							$scope.openKanbanForTeam = function(team) {
 								window.location.assign("main#/kanban?team="
-										.concat($scope.team.uuid))
+										.concat($scope.team.id))
 							}
 
 							$scope.openBurndownForTeam = function(team) {
 								window.location.assign("main#/report?team="
-										.concat($scope.team.uuid).concat("&reporttype=burndown&reportname=Burn-Down"))
+										.concat($scope.team.id).concat("&reporttype=burndown&reportname=Burn-Down"))
 							}
 
 							$scope.openBurnupForTeam = function(team) {
 								window.location.assign("main#/report?team="
-										.concat($scope.team.uuid).concat("&reporttype=burnup&reportname=Burn-Up"))
+										.concat($scope.team.id).concat("&reporttype=burnup&reportname=Burn-Up"))
 							}
 
 							$scope.openBacklogForTeam = function(team) {
 								window.location.assign("main#/backlog?team="
-										.concat($scope.team.uuid).concat("&default=backlog"))
+										.concat($scope.team.id).concat("&default=backlog"))
 							}
 
 							$scope.openNewActionForTeam = function(team) {
 								window.location.assign("main#/newAction?team="
-										.concat($scope.team.uuid))
+										.concat($scope.team.id))
 							}
 
 							$scope.openSprintForTeam = function(team) {
 								window.location.assign("main#/sprint?team="
-										.concat($scope.team.uuid).concat("&default=sprint"))
+										.concat($scope.team.id).concat("&default=sprint"))
 							}
 
 							$scope.openSummaryForTeam = function(team) {
 								window.location.assign("main#/report?team="
-										.concat($scope.team.uuid).concat("&reporttype=summary&reportname=Summary"))
+										.concat($scope.team.id).concat("&reporttype=summary&reportname=Summary"))
 							}
 
 							$scope.openDataForTeam = function(team) {
 								window.location.assign("main#/report?team="
-										.concat($scope.team.uuid).concat("&reporttype=data&reportname=Data"))
+										.concat($scope.team.id).concat("&reporttype=data&reportname=Data"))
 							}
 							// COMMON MENU COPIED TO ALL JS
 

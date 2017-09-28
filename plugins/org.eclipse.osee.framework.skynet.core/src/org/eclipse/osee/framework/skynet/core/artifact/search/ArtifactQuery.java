@@ -49,6 +49,7 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
+import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
@@ -849,18 +850,6 @@ public class ArtifactQuery {
       }
    }
 
-   private static String artifactTokensRelatedToArtifactQuery =
-      "select * from osee_attribute attr, OSEE_ARTIFACT art where attr.attr_type_id = " + CoreAttributeTypes.Name.getId() + " and " + //
-         "art.ART_ID = attr.ART_ID and attr.ART_ID in (" + //
-         "with links as (select GAMMA_ID, a_art_id, b_art_id from OSEE_RELATION_LINK where REL_SIDE_HERE in (ART_IDS_HERE) and REL_LINK_TYPE_ID = REL_TYPE_LINKE_ID_HERE) " + //
-         "select links.OPPOSITE_REL_SIDE_HERE from links, osee_txs txs where txs.BRANCH_ID = BRANCH_ID_HERE and txs.TX_CURRENT = 1 and txs.MOD_TYPE " + //
-         "not in (3,5,9.10) and txs.GAMMA_ID = links.gamma_id)";
-
-   private static String aArtifactIdToRelatedBArtifactId =
-      "with links as (select GAMMA_ID, a_art_id, b_art_id from OSEE_RELATION_LINK where REL_SIDE_HERE in (ART_IDS_HERE) and REL_LINK_TYPE_ID = REL_TYPE_LINKE_ID_HERE) " + //
-         "select links.a_art_id, links.b_art_id from links, osee_txs txs where txs.BRANCH_ID = BRANCH_ID_HERE and txs.TX_CURRENT = 1 and txs.MOD_TYPE not in (3,5,9.10) " + //
-         "and txs.GAMMA_ID = links.gamma_id";
-
    public static HashCollection<ArtifactId, ArtifactToken> getArtifactTokenListFromRelated(BranchId branch, Collection<ArtifactId> artifacts, ArtifactTypeId artifactType, RelationTypeSide relationType) {
       List<Long> artIds = new LinkedList<>();
       String ids = "";
@@ -875,7 +864,7 @@ public class ArtifactQuery {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       boolean isSideA = relationType.getSide().isSideA();
       try {
-         String query = aArtifactIdToRelatedBArtifactId.replaceFirst("ART_IDS_HERE", ids);
+         String query = OseeSql.ARTIFACT_TO_RELATED_B_ARTIFACT_ID.getSql().replaceFirst("ART_IDS_HERE", ids);
          query = query.replaceAll("REL_SIDE_HERE", isSideA ? "b_art_id" : "a_art_id");
          query = query.replaceAll("REL_TYPE_LINKE_ID_HERE", relationType.getGuid().toString());
          query = query.replaceAll("BRANCH_ID_HERE", branch.getId().toString());
@@ -893,7 +882,7 @@ public class ArtifactQuery {
       chStmt = ConnectionHandler.getStatement();
       HashCollection<ArtifactId, ArtifactToken> artToRelatedTokens = new HashCollection<>();
       try {
-         String query = artifactTokensRelatedToArtifactQuery.replaceFirst("ART_IDS_HERE", ids);
+         String query = OseeSql.ARTIFACT_TOKENS_RELATED_TO_ARTIFACT_QUERY.getSql().replaceFirst("ART_IDS_HERE", ids);
          query = query.replaceAll("OPPOSITE_REL_SIDE_HERE", isSideA ? "a_art_id" : "b_art_id");
          query = query.replaceAll("REL_SIDE_HERE", isSideA ? "b_art_id" : "a_art_id");
          query = query.replaceAll("REL_TYPE_LINKE_ID_HERE", relationType.getGuid().toString());
@@ -939,7 +928,15 @@ public class ArtifactQuery {
       return guidToToken;
    }
 
-   public static Map<String, ArtifactToken> getArtifactTokensFromIds(BranchId branchId, List<String> artIds) {
+   public static ArtifactToken getArtifactTokenFromId(BranchId branch, Long id) {
+      Map<String, ArtifactToken> tokens = getArtifactTokensFromIds(branch, Collections.singleton(id.toString()));
+      if (tokens.size() == 1) {
+         return tokens.values().iterator().next();
+      }
+      return null;
+   }
+
+   public static Map<String, ArtifactToken> getArtifactTokensFromIds(BranchId branchId, Collection<String> artIds) {
       Map<String, ArtifactToken> guidToToken = new HashMap<>();
       if (!artIds.isEmpty()) {
          JdbcStatement chStmt = ConnectionHandler.getStatement();
@@ -1007,4 +1004,5 @@ public class ArtifactQuery {
       long transactionId = jdbcClient.fetch(-1L, query, artifact, artifact.getBranch(), artifact, artifact.getBranch());
       return !artifact.getTransaction().getId().equals(transactionId);
    }
+
 }

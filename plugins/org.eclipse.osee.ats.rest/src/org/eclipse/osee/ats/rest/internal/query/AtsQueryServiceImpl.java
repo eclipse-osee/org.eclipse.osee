@@ -26,8 +26,11 @@ import org.eclipse.osee.ats.core.query.AtsWorkItemFilter;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.jdbc.JdbcService;
 
@@ -110,5 +113,30 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    @Override
    public IAtsOrcsScriptQuery createOrcsScriptQuery(String query, Object... data) {
       return new AtsOrcsScriptQuery(String.format(query, data), atsServer);
+   }
+
+   private static String QUERY_ART_TOKEN_FROM_ART =
+      "SELECT branch_id, attr.art_id, attr.VALUE AS name FROM OSEE_ATTRIBUTE attr, OSEE_TXS txs WHERE attr.ART_ID = ? " //
+         + "AND txs.BRANCH_ID = ? AND txs.GAMMA_ID = attr.GAMMA_ID AND txs.TX_CURRENT = 1 AND attr.ATTR_TYPE_ID = 1152921504606847088";
+
+   @Override
+   public ArtifactToken getArtifactToken(long id) {
+      List<ArtifactToken> tokens =
+         getArtifactTokensFromQuery(QUERY_ART_TOKEN_FROM_ART, id, atsServer.getAtsBranch().getIdString());
+      if (tokens.size() == 1) {
+         return tokens.iterator().next();
+      }
+      return null;
+   }
+
+   @Override
+   public Collection<ArtifactToken> getRelatedToTokens(BranchId branch, ArtifactId artifact, RelationTypeSide relationType, ArtifactTypeId artifactType) {
+      HashCollection<ArtifactId, ArtifactToken> tokenMap = TokenSearchOperations.getArtifactTokenListFromRelated(branch,
+         java.util.Collections.singleton(artifact), artifactType, relationType, atsServer.getOrcsApi(), jdbcService);
+      Collection<ArtifactToken> result = tokenMap.getValues(artifact);
+      if (result != null) {
+         return result;
+      }
+      return java.util.Collections.emptyList();
    }
 }

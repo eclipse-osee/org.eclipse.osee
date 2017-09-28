@@ -17,35 +17,27 @@ angular.module('AgileApp').controller(
 						$filter, $routeParams, LayoutService, PopupService) {
 
 					$scope.team = {};
-					$scope.team.uuid = $routeParams.team;
-					$scope.selectedTeam = {};
-					$scope.selectedTeam.name = "";
-					$scope.selectedTeam.backlog = "";
-					$scope.selectedTeam.sprint = "";
-					$scope.isLoaded = "";
+					$scope.team.id = $routeParams.team;
+					$scope.team.backlog = "";
+					$scope.team.sprint = "";
 					$scope.action = {};
  
-					$scope.refresh = function() {
-						$scope.isLoaded = "";
-						var loadingModal = PopupService.showLoadingModal();
-						AgileFactory.getTeamSingle($scope.team).$promise
-								.then(function(data) {
-									$scope.selectedTeam = data;
-									$scope.teamName = data.name;
-									loadingModal.close();
-									$scope.isLoaded = "true";
-								});
-						AgileFactory.getTeamAis($scope.team).$promise
-								.then(function(data) {
-									$scope.validAis = data;
-									$scope.actionableItem = "";
-								});
-						AgileFactory.getSprints($scope.team).$promise
-							.then(function(data) {
-								$scope.validSprints = data;
-								$scope.sprint = "";
-						});
-						AgileFactory.getFeatureGroups($scope.team).$promise
+					AgileFactory.getTeamToken($scope.team).$promise
+						.then(function(data) {
+							$scope.team.name = data.name;
+					});
+
+					AgileFactory.getTeamAis($scope.team).$promise
+						.then(function(data) {
+							$scope.validAis = data;
+							$scope.actionableItem = "";
+					});
+					AgileFactory.getSprintsTokens($scope.team).$promise
+						.then(function(data) {
+							$scope.validSprints = data;
+							$scope.sprint = "";
+					});
+					AgileFactory.getFeatureGroups($scope.team).$promise
 						.then(function(data) {
 							$scope.validFeatureGroups = data;
 							$scope.featureGroup = "";
@@ -55,21 +47,6 @@ angular.module('AgileApp').controller(
 							$scope.validWorkPackages = data;
 							$scope.workPackage = "";
 					});
-					}
-
-					$scope.reset = function() {
-						$scope.action.title = "";
-						$scope.action.actionableItems = "";
-						$scope.action.description = "";
-						$scope.action.changeType = "";
-						$scope.action.priority = "";
-						$scope.action.needByDate = "";
-						$scope.action.points = "";
-						$scope.action.unplanned = "";
-						$scope.action.sprint = "";
-						$scope.featureGroup = "";
-						$scope.workPackage = "";
-					}
 
 					$scope.createItem = function() {
 						var loadingModal = null;
@@ -95,7 +72,7 @@ angular.module('AgileApp').controller(
 											win.focus();
 										} else {
 											// Browser has blocked it
-											alert('Action Created; Please allow popups for this site.');
+											alert('Action Created');
 										}
 									}
 									loadingModal.close();
@@ -110,52 +87,50 @@ angular.module('AgileApp').controller(
 						}
 					};
 					
-					$scope.refresh();
-
 					// COMMON MENU COPIED TO ALL JS
 					$scope.openConfigForTeam = function(team) {
 						window.location.assign("main#/config?team="
-								.concat($scope.team.uuid))
+								.concat($scope.team.id))
 					}
 
 					$scope.openKanbanForTeam = function(team) {
 						window.location.assign("main#/kanban?team="
-								.concat($scope.team.uuid))
+								.concat($scope.team.id))
 					}
 
 					$scope.openBurndownForTeam = function(team) {
 						window.location.assign("main#/report?team="
-								.concat($scope.team.uuid).concat("&reporttype=burndown&reportname=Burn-Down"))
+								.concat($scope.team.id).concat("&reporttype=burndown&reportname=Burn-Down"))
 					}
 
 					$scope.openBurnupForTeam = function(team) {
 						window.location.assign("main#/report?team="
-								.concat($scope.team.uuid).concat("&reporttype=burnup&reportname=Burn-Up"))
+								.concat($scope.team.id).concat("&reporttype=burnup&reportname=Burn-Up"))
 					}
 
 					$scope.openBacklogForTeam = function(team) {
 						window.location.assign("main#/backlog?team="
-								.concat($scope.team.uuid).concat("&default=backlog"))
+								.concat($scope.team.id).concat("&default=backlog"))
 					}
 
 					$scope.openNewActionForTeam = function(team) {
 						window.location.assign("main#/newAction?team="
-								.concat($scope.team.uuid))
+								.concat($scope.team.id))
 					}
 
 					$scope.openSprintForTeam = function(team) {
 						window.location.assign("main#/sprint?team="
-								.concat($scope.team.uuid).concat("&default=sprint"))
+								.concat($scope.team.id).concat("&default=sprint"))
 					}
 
 					$scope.openSummaryForTeam = function(team) {
 						window.location.assign("main#/report?team="
-								.concat($scope.team.uuid).concat("&reporttype=summary&reportname=Summary"))
+								.concat($scope.team.id).concat("&reporttype=summary&reportname=Summary"))
 					}
 
 					$scope.openDataForTeam = function(team) {
 						window.location.assign("main#/report?team="
-								.concat($scope.team.uuid).concat("&reporttype=data&reportname=Data"))
+								.concat($scope.team.id).concat("&reporttype=data&reportname=Data"))
 					}
 					// COMMON MENU COPIED TO ALL JS
 

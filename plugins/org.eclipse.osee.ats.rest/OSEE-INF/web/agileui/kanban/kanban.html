@@ -21,8 +21,8 @@
 									<td align="center" width="30%">Assignees</td>
 								</tr>
 								<td width="30%"><select style="min-width: 100%;"
-									ng-model="sprint"
-									ng-options="sprint.name for (key,sprint) in activeSprints">
+									ng-model="selectedSprint"
+									ng-options="sprint.name for (key,sprint) in sprints">
 								</select></td>
 
 								<td width="30%"><select style="min-width: 100%;"
