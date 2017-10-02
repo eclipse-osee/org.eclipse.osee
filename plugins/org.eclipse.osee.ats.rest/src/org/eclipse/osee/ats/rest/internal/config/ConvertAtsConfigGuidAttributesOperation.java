@@ -163,26 +163,22 @@ public class ConvertAtsConfigGuidAttributesOperation {
 
    private void convertActionableItemsIfNeeded(IAtsChangeSet changes, ArtifactToken art) {
       // convert guids to id
-      Collection<IAttribute<Object>> aiRefAttrs =
-         services.getAttributeResolver().getAttributes(art, AtsAttributeTypes.ActionableItemReference);
-      List<Long> currentAiRefIds = new LinkedList<>();
-      for (IAttribute<Object> aiRefAttr : aiRefAttrs) {
-         currentAiRefIds.add(Long.valueOf(aiRefAttr.getValue().toString()));
-      }
+      Collection<ArtifactId> currentAiRefIds =
+         services.getAttributeResolver().getAttributeValues(art, AtsAttributeTypes.ActionableItemReference);
 
-      List<Long> neededAiRefIds = new LinkedList<>();
+      List<ArtifactId> neededAiRefIds = new LinkedList<>();
       for (IAttribute<?> attr : services.getAttributeResolver().getAttributes(art, ActionableItem)) {
          String aiArtGuid = (String) attr.getValue();
          IAtsActionableItem ai = services.getConfigItem(aiArtGuid);
          if (ai == null) {
             services.getLogger().error("AI not found for aiArtGuid " + aiArtGuid + " for art " + art.toStringWithId());
          } else if (!currentAiRefIds.contains(ai.getId())) {
-            neededAiRefIds.add(ai.getId());
+            neededAiRefIds.add(ai.getStoreObject());
          }
       }
 
-      for (Long need : neededAiRefIds) {
-         changes.addAttribute(art, AtsAttributeTypes.ActionableItemReference, need.toString());
+      for (ArtifactId need : neededAiRefIds) {
+         changes.addAttribute(art, AtsAttributeTypes.ActionableItemReference, need);
       }
 
       // convert id to guid
@@ -193,9 +189,10 @@ public class ConvertAtsConfigGuidAttributesOperation {
       }
 
       List<String> neededAiGuidIds = new LinkedList<>();
-      for (String id : services.getAttributeResolver().getAttributesToStringList(art,
-         AtsAttributeTypes.ActionableItemReference)) {
-         IAtsActionableItem ai = services.getConfigItem(Long.valueOf(id));
+      Collection<ArtifactId> aiArts =
+         services.getAttributeResolver().getAttributeValues(art, AtsAttributeTypes.ActionableItemReference);
+      for (ArtifactId id : aiArts) {
+         IAtsActionableItem ai = services.getConfigItem(id);
          if (ai == null) {
             services.getLogger().error("AI not found for id " + id + " for art " + art.toStringWithId());
          } else if (!currentAiGuidIds.contains(ai.getStoreObject().getGuid())) {
@@ -234,7 +231,7 @@ public class ConvertAtsConfigGuidAttributesOperation {
                return;
             } else {
                changes.setSoleAttributeValue(workItemArt, AtsAttributeTypes.WorkPackageReference,
-                  workPackage.getStoreObject().getId().toString());
+                  workPackage.getStoreObject());
             }
          }
       }
