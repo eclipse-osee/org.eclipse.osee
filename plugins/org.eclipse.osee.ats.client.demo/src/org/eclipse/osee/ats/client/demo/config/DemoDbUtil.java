@@ -36,7 +36,7 @@ public class DemoDbUtil {
 
    public static String INTERFACE_INITIALIZATION = "Interface Initialization";
 
-   public static Result isDbPopulatedWithDemoData(boolean DEBUG, Branch branch) throws OseeCoreException {
+   public static Result isDbPopulatedWithDemoData(boolean DEBUG, Branch branch)  {
       if (DemoDbUtil.getSoftwareRequirements(DEBUG, SoftwareRequirementStrs.Robot, branch).size() != 6) {
          return new Result(
             "Expected at least 6 Software Requirements with word \"Robot\".  Database is not be populated with demo data.");
@@ -44,11 +44,11 @@ public class DemoDbUtil {
       return Result.TrueResult;
    }
 
-   public static Collection<Artifact> getSoftwareRequirements(boolean DEBUG, SoftwareRequirementStrs str, IOseeBranch branch) throws OseeCoreException {
+   public static Collection<Artifact> getSoftwareRequirements(boolean DEBUG, SoftwareRequirementStrs str, IOseeBranch branch)  {
       return getArtTypeRequirements(DEBUG, CoreArtifactTypes.SoftwareRequirement, str.name(), branch);
    }
 
-   public static Collection<Artifact> getArtTypeRequirements(boolean DEBUG, IArtifactType artifactType, String artifactNameStr, BranchId branch) throws OseeCoreException {
+   public static Collection<Artifact> getArtTypeRequirements(boolean DEBUG, IArtifactType artifactType, String artifactNameStr, BranchId branch)  {
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO,
             "Getting \"" + artifactNameStr + "\" requirement(s) from Branch " + branch.getId());
@@ -71,7 +71,7 @@ public class DemoDbUtil {
    };
    public static String HAPTIC_CONSTRAINTS_REQ = "Haptic Constraints";
 
-   public static Artifact getInterfaceInitializationSoftwareRequirement(boolean DEBUG, BranchId branch) throws OseeCoreException {
+   public static Artifact getInterfaceInitializationSoftwareRequirement(boolean DEBUG, BranchId branch)  {
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, "Getting \"" + INTERFACE_INITIALIZATION + "\" requirement.");
       }
@@ -79,7 +79,7 @@ public class DemoDbUtil {
          branch);
    }
 
-   public static <T> Collection<T> getConfigObjects(ArtifactToken... configTokens) throws OseeCoreException {
+   public static <T> Collection<T> getConfigObjects(ArtifactToken... configTokens)  {
       Set<T> aias = new HashSet<>();
       for (ArtifactToken configObj : configTokens) {
          aias.add(AtsClientService.get().getConfigItem(configObj));

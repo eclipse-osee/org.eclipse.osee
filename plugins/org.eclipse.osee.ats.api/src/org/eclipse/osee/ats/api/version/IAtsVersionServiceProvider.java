@@ -17,6 +17,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
  */
 public interface IAtsVersionServiceProvider {
 
-   IAtsVersionService getVersionService() throws OseeStateException;
+   IAtsVersionService getVersionService() ;
 
 }

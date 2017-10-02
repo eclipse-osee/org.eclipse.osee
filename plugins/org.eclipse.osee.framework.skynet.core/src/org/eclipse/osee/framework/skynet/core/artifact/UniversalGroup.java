@@ -73,7 +73,7 @@ public class UniversalGroup {
       return null;
    }
 
-   public static Artifact addGroup(String name, BranchId branch, SkynetTransaction transaction) throws OseeCoreException {
+   public static Artifact addGroup(String name, BranchId branch, SkynetTransaction transaction)  {
       if (!getGroups(name, branch).isEmpty()) {
          throw new OseeArgumentException("Group Already Exists");
       }
@@ -88,7 +88,7 @@ public class UniversalGroup {
       return groupArt;
    }
 
-   public static Artifact addGroup(ArtifactToken groupToken, BranchId branch, SkynetTransaction transaction) throws OseeCoreException {
+   public static Artifact addGroup(ArtifactToken groupToken, BranchId branch, SkynetTransaction transaction)  {
       if (getGroupOrNull(groupToken, branch) != null) {
          throw new OseeArgumentException("Group Already Exists");
       }
@@ -104,7 +104,7 @@ public class UniversalGroup {
       return groupArt;
    }
 
-   public static Artifact getTopUniversalGroupArtifact(BranchId branch) throws OseeCoreException {
+   public static Artifact getTopUniversalGroupArtifact(BranchId branch)  {
       return ArtifactQuery.getArtifactFromId(CoreArtifactTokens.UniversalGroupRoot, branch);
    }
 }

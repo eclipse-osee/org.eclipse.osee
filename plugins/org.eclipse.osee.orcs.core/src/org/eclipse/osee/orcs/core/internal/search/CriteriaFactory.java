@@ -49,7 +49,7 @@ public class CriteriaFactory {
       this.attributeTypeCache = attributeTypeCache;
    }
 
-   private Collection<AttributeTypeId> checkForAnyType(Collection<AttributeTypeId> attributeTypes) throws OseeCoreException {
+   private Collection<AttributeTypeId> checkForAnyType(Collection<AttributeTypeId> attributeTypes)  {
       Collection<AttributeTypeId> toReturn;
       if (attributeTypes.contains(ArtifactQueryBuilder.ANY_ATTRIBUTE_TYPE)) {
          Collection<AttributeTypeId> temp = new LinkedList<>();
@@ -61,24 +61,24 @@ public class CriteriaFactory {
       return toReturn;
    }
 
-   public Criteria createExistsCriteria(Collection<AttributeTypeId> attributeTypes) throws OseeCoreException {
+   public Criteria createExistsCriteria(Collection<AttributeTypeId> attributeTypes)  {
       return new CriteriaAttributeTypeExists(attributeTypes);
    }
 
-   public Criteria createNotExistsCriteria(AttributeTypeId attributeType) throws OseeCoreException {
+   public Criteria createNotExistsCriteria(AttributeTypeId attributeType)  {
       List<AttributeTypeId> list = java.util.Arrays.asList(attributeType);
       return new CriteriaAttributeTypeNotExists(list);
    }
 
-   public Criteria createNotExistsCriteria(Collection<AttributeTypeId> attributeTypes) throws OseeCoreException {
+   public Criteria createNotExistsCriteria(Collection<AttributeTypeId> attributeTypes)  {
       return new CriteriaAttributeTypeNotExists(attributeTypes);
    }
 
-   public Criteria createExistsCriteria(IRelationType relationType) throws OseeCoreException {
+   public Criteria createExistsCriteria(IRelationType relationType)  {
       return new CriteriaRelationTypeExists(relationType);
    }
 
-   public Criteria createExistsCriteria(RelationTypeSide relationTypeSide) throws OseeCoreException {
+   public Criteria createExistsCriteria(RelationTypeSide relationTypeSide)  {
       return new CriteriaRelationTypeSideExists(relationTypeSide);
    }
 
@@ -90,7 +90,7 @@ public class CriteriaFactory {
       return new CriteriaRelationTypeSideNotExists(relationTypeSide);
    }
 
-   public Criteria createAttributeCriteria(Collection<AttributeTypeId> attributeTypes, Collection<String> values, QueryOption... options) throws OseeCoreException {
+   public Criteria createAttributeCriteria(Collection<AttributeTypeId> attributeTypes, Collection<String> values, QueryOption... options)  {
       Collection<AttributeTypeId> types = checkForAnyType(attributeTypes);
       boolean isIncludeAllTypes = attributeTypes.contains(ArtifactQueryBuilder.ANY_ATTRIBUTE_TYPE);
       return new CriteriaAttributeKeywords(isIncludeAllTypes, types, attributeTypeCache, values, options);
@@ -100,11 +100,11 @@ public class CriteriaFactory {
       return new CriteriaArtifactType(artifactTypeCache, artifactTypes, false);
    }
 
-   public Criteria createArtifactTypeCriteriaWithInheritance(Collection<? extends ArtifactTypeId> artifactTypes) throws OseeCoreException {
+   public Criteria createArtifactTypeCriteriaWithInheritance(Collection<? extends ArtifactTypeId> artifactTypes)  {
       return new CriteriaArtifactType(artifactTypeCache, artifactTypes, true);
    }
 
-   public Criteria createArtifactGuidCriteria(Set<String> guids) throws OseeCoreException {
+   public Criteria createArtifactGuidCriteria(Set<String> guids)  {
       return new CriteriaArtifactGuids(guids);
    }
 

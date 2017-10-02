@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 public class ReloadActionTest extends AbstractAtsActionRunTest {
 
    @Override
-   public ReloadAction createAction() throws OseeCoreException {
+   public ReloadAction createAction()  {
       return new ReloadAction(AtsTestUtil.getTeamWf());
    }
 

@@ -47,7 +47,7 @@ public class OperationalImpactWithWorkaroundXWidget extends XComboWithTextAndCom
    }
 
    @Override
-   public void saveToArtifact() throws OseeCoreException {
+   public void saveToArtifact()  {
       String impact = get();
       if (impact == null || impact.equals("")) {
          teamArt.deleteSoleAttribute(AtsAttributeTypes.OperationalImpact);
@@ -95,7 +95,7 @@ public class OperationalImpactWithWorkaroundXWidget extends XComboWithTextAndCom
    }
 
    @Override
-   public Result isDirty() throws OseeCoreException {
+   public Result isDirty()  {
       if (!get().equals(teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpact, ""))) {
          return new Result(true, AtsAttributeTypes.OperationalImpact.toString());
       }

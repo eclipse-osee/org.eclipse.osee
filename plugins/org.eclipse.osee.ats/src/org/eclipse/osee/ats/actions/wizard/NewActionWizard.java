@@ -94,11 +94,11 @@ public class NewActionWizard extends Wizard implements INewWizard {
       }
    }
 
-   public boolean isTTAction() throws OseeCoreException {
+   public boolean isTTAction()  {
       return getTitle().equals("tt");
    }
 
-   public String getTitle() throws OseeCoreException {
+   public String getTitle()  {
       return ((XText) page1.getXWidget(NewActionPage1.TITLE)).get();
    }
 
@@ -106,25 +106,25 @@ public class NewActionWizard extends Wizard implements INewWizard {
       return page1.getSelectedIAtsActionableItems();
    }
 
-   public String getDescription() throws OseeCoreException {
+   public String getDescription()  {
       return ((XText) page2.getXWidget(NewActionPage2.DESCRIPTION)).get();
    }
 
-   public String getPriority() throws OseeCoreException {
+   public String getPriority()  {
       // Must use skynet attribute name cause this widget uses the OPTIONS_FROM_ATTRIBUTE_VALIDITY
       return ((XCombo) page2.getXWidget(NewActionPage2.PRIORITY)).get();
    }
 
-   public ChangeType getChangeType() throws OseeCoreException {
+   public ChangeType getChangeType()  {
       // Must use skynet attribute name cause this widget uses the OPTIONS_FROM_ATTRIBUTE_VALIDITY
       return ChangeType.getChangeType(((XCombo) page2.getXWidget(NewActionPage2.CHANGE_TYPE)).get());
    }
 
-   public boolean getValidation() throws OseeCoreException {
+   public boolean getValidation()  {
       return ((XCheckBox) page2.getXWidget(NewActionPage2.VALIDATION_REQUIRED)).isChecked();
    }
 
-   public Date getNeedBy() throws OseeCoreException {
+   public Date getNeedBy()  {
       return ((XDate) page2.getXWidget(NewActionPage2.DEADLINE)).getDate();
    }
 
@@ -134,7 +134,7 @@ public class NewActionWizard extends Wizard implements INewWizard {
       }
    }
 
-   public XWidget getExtendedXWidget(String attrName) throws OseeCoreException {
+   public XWidget getExtendedXWidget(String attrName)  {
       if (page3 == null) {
          return null;
       }

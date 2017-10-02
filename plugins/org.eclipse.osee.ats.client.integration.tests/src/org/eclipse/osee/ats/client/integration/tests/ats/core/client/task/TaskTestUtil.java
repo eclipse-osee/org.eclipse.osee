@@ -56,7 +56,7 @@ public class TaskTestUtil {
       return new Result("Transition Error %s", results.toString());
    }
 
-   public static Result transitionToInWork(TaskArtifact taskArt, IAtsUser toUser, int percentComplete, double additionalHours, IAtsChangeSet changes) throws OseeCoreException {
+   public static Result transitionToInWork(TaskArtifact taskArt, IAtsUser toUser, int percentComplete, double additionalHours, IAtsChangeSet changes)  {
       if (taskArt.isInState(TaskStates.InWork)) {
          return Result.TrueResult;
       }

@@ -27,7 +27,7 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 public class TypeEqualsPredicateHandler implements PredicateHandler {
 
    @Override
-   public QueryBuilder handle(QueryBuilder builder, Predicate predicate) throws OseeCoreException {
+   public QueryBuilder handle(QueryBuilder builder, Predicate predicate)  {
       if (predicate.getType() != SearchMethod.TYPE_EQUALS) {
          throw new OseeArgumentException("This predicate handler only supports [%s]", SearchMethod.TYPE_EQUALS);
       }

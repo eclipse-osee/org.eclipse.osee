@@ -46,7 +46,7 @@ public class RequirementReorderOperation extends AbstractBlam {
       transaction.execute();
    }
 
-   public void reorderChildren(Artifact parent) throws OseeCoreException {
+   public void reorderChildren(Artifact parent)  {
       List<Artifact> oldChildren = parent.getChildren();
       List<Artifact> children = parent.getChildren();
       Collections.sort(children, new ParagraphComparator());

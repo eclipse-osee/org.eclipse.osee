@@ -97,7 +97,7 @@ public class SearchWorkPackageOperationTest {
    }
 
    @Test
-   public void testSearchResults() throws OseeCoreException {
+   public void testSearchResults()  {
       List<IAtsTeamDefinition> teamDefs = new ArrayList<>();
       for (Long teamDefUuid : teamDefUuids) {
          IAtsTeamDefinition teamDef =

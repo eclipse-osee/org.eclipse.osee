@@ -64,7 +64,7 @@ public abstract class BaseTransactionData {
       return itemId.hashCode();
    }
 
-   protected void addInsertToBatch(InsertDataCollector collector) throws OseeCoreException {
+   protected void addInsertToBatch(InsertDataCollector collector)  {
       ModificationType modTypeToStore = getAdjustedModificationType();
 
       internalAddInsertToBatch(collector, Integer.MAX_VALUE, INSERT_INTO_TRANSACTION_TABLE, collector.getTransaction(),
@@ -96,7 +96,7 @@ public abstract class BaseTransactionData {
       return applicabilityId;
    }
 
-   protected final int getGammaId() throws OseeCoreException {
+   protected final int getGammaId()  {
       if (gammaId == null) {
          gammaId = createGammaId();
       }
@@ -119,7 +119,7 @@ public abstract class BaseTransactionData {
    /**
     * Should not be called by application. This should only be called once after the transaction has been committed.
     */
-   protected abstract void internalUpdate(TransactionRecord transactionId) throws OseeCoreException;
+   protected abstract void internalUpdate(TransactionRecord transactionId) ;
 
    /**
     * Should not be called by application. This should only be called once after the transaction has been committed.
@@ -130,12 +130,12 @@ public abstract class BaseTransactionData {
     * Should not be called by application. This should only be called once if there was an error committing the
     * transaction.
     */
-   protected abstract void internalOnRollBack() throws OseeCoreException;
+   protected abstract void internalOnRollBack() ;
 
    /**
     * Should not be called by application. This method will be called by the base class when required;
     */
-   protected abstract int createGammaId() throws OseeCoreException;
+   protected abstract int createGammaId() ;
 
    /**
     * Should not be called by application. This method will be called by the base class when required;
@@ -147,7 +147,7 @@ public abstract class BaseTransactionData {
     *
     * @param artifactEvent TODO
     */
-   protected abstract void internalAddToEvents(ArtifactEvent artifactEvent) throws OseeCoreException;
+   protected abstract void internalAddToEvents(ArtifactEvent artifactEvent) ;
 
    protected int getNextGammaIdFromSequence() {
       return (int) ConnectionHandler.getNextSequence(GAMMA_ID_SEQ, true);

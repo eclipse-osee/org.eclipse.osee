@@ -56,7 +56,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    }
 
    @Override
-   public IAtsConfigObject getConfigObject(ArtifactId art) throws OseeCoreException {
+   public IAtsConfigObject getConfigObject(ArtifactId art)  {
       IAtsConfigObject configObject = null;
       if (art instanceof IAtsConfigObject) {
          configObject = (IAtsConfigObject) art;
@@ -115,7 +115,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    }
 
    @Override
-   public IAtsTeamDefinition getTeamDef(ArtifactId artifact) throws OseeCoreException {
+   public IAtsTeamDefinition getTeamDef(ArtifactId artifact)  {
       IAtsTeamDefinition teamDef = null;
       if (artifact instanceof Artifact) {
          Artifact art = (Artifact) artifact;
@@ -127,7 +127,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    }
 
    @Override
-   public IAtsActionableItem getActionableItem(ArtifactId artifact) throws OseeCoreException {
+   public IAtsActionableItem getActionableItem(ArtifactId artifact)  {
       IAtsActionableItem ai = null;
       if (artifact instanceof Artifact) {
          Artifact art = (Artifact) artifact;

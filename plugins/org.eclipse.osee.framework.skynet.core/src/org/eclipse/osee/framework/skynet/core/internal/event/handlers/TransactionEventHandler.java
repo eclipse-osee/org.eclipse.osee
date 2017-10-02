@@ -29,7 +29,7 @@ public class TransactionEventHandler implements EventHandlerLocal<ITransactionEv
    }
 
    @Override
-   public void send(Transport transport, Sender sender, TransactionEvent event) throws OseeCoreException {
+   public void send(Transport transport, Sender sender, TransactionEvent event)  {
       if (transport.isDispatchToLocalAllowed(sender)) {
          transport.sendLocal(sender, event);
       }

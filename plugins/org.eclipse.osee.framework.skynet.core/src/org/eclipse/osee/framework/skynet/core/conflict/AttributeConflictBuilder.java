@@ -43,7 +43,7 @@ public class AttributeConflictBuilder extends ConflictBuilder {
    }
 
    @Override
-   public Conflict getConflict(BranchId mergeBranch, Set<ArtifactId> artIdSet) throws OseeCoreException {
+   public Conflict getConflict(BranchId mergeBranch, Set<ArtifactId> artIdSet)  {
       for (ArtifactId artifact : artIdSet) {
          if (artId.equals(artifact)) {
             return null;

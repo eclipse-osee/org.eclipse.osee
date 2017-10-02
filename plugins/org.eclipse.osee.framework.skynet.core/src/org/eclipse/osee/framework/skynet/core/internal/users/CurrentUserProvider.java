@@ -129,7 +129,7 @@ public class CurrentUserProvider extends LazyObject<User> {
          return currentUser;
       }
 
-      private User getUser(UserToken token) throws OseeCoreException {
+      private User getUser(UserToken token)  {
          User user = null;
          try {
             user = cacheProvider.get().get(token.getUserId());

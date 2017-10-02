@@ -18,19 +18,19 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IOseeDataTypeProcessor {
 
-   public void onArtifactTypeInheritance(String ancestor, Collection<String> descendants) throws OseeCoreException;
+   public void onArtifactTypeInheritance(String ancestor, Collection<String> descendants) ;
 
-   public void onAttributeType(String attributeBaseType, String attributeProviderTypeName, String fileTypeExtension, String attributeName, String defaultValue, String validityXml, int minOccurrences, int maxOccurrences, String tipText, String taggerId) throws OseeCoreException;
+   public void onAttributeType(String attributeBaseType, String attributeProviderTypeName, String fileTypeExtension, String attributeName, String defaultValue, String validityXml, int minOccurrences, int maxOccurrences, String tipText, String taggerId) ;
 
-   public void onArtifactType(boolean isAbstract, String artifactTypeName) throws OseeCoreException;
+   public void onArtifactType(boolean isAbstract, String artifactTypeName) ;
 
-   public void onRelationType(String relationTypeName, String sideAName, String sideBName, String artifactTypeSideA, String artifactTypeSideB, String multiplicity, String ordered, String defaultOrderTypeGuid) throws OseeCoreException;
+   public void onRelationType(String relationTypeName, String sideAName, String sideBName, String artifactTypeSideA, String artifactTypeSideB, String multiplicity, String ordered, String defaultOrderTypeGuid) ;
 
-   public void onAttributeValidity(String attributeName, String artifactSuperTypeName, Collection<String> concreteTypes) throws OseeCoreException;
+   public void onAttributeValidity(String attributeName, String artifactSuperTypeName, Collection<String> concreteTypes) ;
 
-   public void onRelationValidity(String artifactTypeName, String relationTypeName, int sideAMax, int sideBMax) throws OseeCoreException;
+   public void onRelationValidity(String artifactTypeName, String relationTypeName, int sideAMax, int sideBMax) ;
 
-   public boolean doesArtifactSuperTypeExist(String artifactSuperTypeName) throws OseeCoreException;
+   public boolean doesArtifactSuperTypeExist(String artifactSuperTypeName) ;
 
-   public void onFinish() throws OseeCoreException;
+   public void onFinish() ;
 }

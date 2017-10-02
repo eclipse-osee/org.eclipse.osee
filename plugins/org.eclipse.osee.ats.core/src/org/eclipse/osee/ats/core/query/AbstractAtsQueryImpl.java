@@ -94,14 +94,14 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    @Override
-   public Collection<ArtifactId> getItemIds() throws OseeCoreException {
+   public Collection<ArtifactId> getItemIds()  {
       onlyIds = new LinkedList<>();
       getItems();
       return onlyIds;
    }
 
    @Override
-   public <T extends IAtsWorkItem> Collection<T> getItems() throws OseeCoreException {
+   public <T extends IAtsWorkItem> Collection<T> getItems()  {
       Set<IArtifactType> allArtTypes = getAllArtTypes();
 
       List<IArtifactType> teamWorkflowArtTypes = getTeamWorkflowArtTypes(allArtTypes);
@@ -505,13 +505,13 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    @Override
-   public IAtsQuery andTeam(IAtsTeamDefinition teamDef) throws OseeCoreException {
+   public IAtsQuery andTeam(IAtsTeamDefinition teamDef)  {
       teamDefUuids.add(teamDef.getId());
       return this;
    }
 
    @Override
-   public IAtsQuery andStateType(StateType... stateType) throws OseeCoreException {
+   public IAtsQuery andStateType(StateType... stateType)  {
       this.stateTypes = Arrays.asList(stateType);
       return this;
    }
@@ -522,7 +522,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    @Override
-   public IAtsQuery andAttr(AttributeTypeId attributeType, Collection<String> values, QueryOption... queryOptions) throws OseeCoreException {
+   public IAtsQuery andAttr(AttributeTypeId attributeType, Collection<String> values, QueryOption... queryOptions)  {
       andAttr.add(new AtsAttributeQuery(attributeType, values, queryOptions));
       return this;
    }
@@ -557,7 +557,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    @Override
-   public IAtsWorkItemFilter andFilter() throws OseeCoreException {
+   public IAtsWorkItemFilter andFilter()  {
       return new AtsWorkItemFilter(getItems(), services);
    }
 

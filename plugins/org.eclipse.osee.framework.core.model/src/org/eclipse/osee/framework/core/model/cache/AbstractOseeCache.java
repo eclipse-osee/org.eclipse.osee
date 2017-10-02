@@ -53,13 +53,13 @@ public abstract class AbstractOseeCache<T extends NamedIdBase> implements IOseeC
       return idToTypeMap.size();
    }
 
-   public boolean existsByGuid(Long id) throws OseeCoreException {
+   public boolean existsByGuid(Long id)  {
       ensurePopulated();
       return idToTypeMap.containsKey(id);
    }
 
    @Override
-   public void decache(T... types) throws OseeCoreException {
+   public void decache(T... types)  {
       Conditions.checkNotNull(types, "types to de-cache");
       for (T type : types) {
          decache(type);
@@ -67,7 +67,7 @@ public abstract class AbstractOseeCache<T extends NamedIdBase> implements IOseeC
    }
 
    @Override
-   public void decache(T type) throws OseeCoreException {
+   public void decache(T type)  {
       Conditions.checkNotNull(type, "type to de-cache");
       ensurePopulated();
       decacheByName(type);
@@ -81,7 +81,7 @@ public abstract class AbstractOseeCache<T extends NamedIdBase> implements IOseeC
     * this method is intended for use by subclasses only. The calling method must synchronize the use of this view of
     * the views because it is not a copy. This method exists to improve performance for subclasses
     */
-   protected synchronized Collection<T> getRawValues() throws OseeCoreException {
+   protected synchronized Collection<T> getRawValues()  {
       ensurePopulated();
       return idToTypeMap.values();
    }
@@ -102,7 +102,7 @@ public abstract class AbstractOseeCache<T extends NamedIdBase> implements IOseeC
    }
 
    @Override
-   public void cache(T... types) throws OseeCoreException {
+   public void cache(T... types)  {
       Conditions.checkNotNull(types, "types to cache");
       for (T type : types) {
          cache(type);
@@ -110,7 +110,7 @@ public abstract class AbstractOseeCache<T extends NamedIdBase> implements IOseeC
    }
 
    @Override
-   public void cache(T type) throws OseeCoreException {
+   public void cache(T type)  {
       Conditions.checkNotNull(type, "type to cache");
       ensurePopulated();
       nameToTypeMap.put(type.getName(), type);
@@ -118,18 +118,18 @@ public abstract class AbstractOseeCache<T extends NamedIdBase> implements IOseeC
    }
 
    @Override
-   public Collection<T> getAll() throws OseeCoreException {
+   public Collection<T> getAll()  {
       ensurePopulated();
       return new ArrayList<T>(idToTypeMap.values());
    }
 
    @Override
-   public T getById(Number typeId) throws OseeCoreException {
+   public T getById(Number typeId)  {
       ensurePopulated();
       return idToTypeMap.get(typeId.longValue());
    }
 
-   public T getUniqueByName(String typeName) throws OseeCoreException {
+   public T getUniqueByName(String typeName)  {
       ensurePopulated();
       Collection<T> values = getByName(typeName);
       if (values.size() > 1) {
@@ -138,7 +138,7 @@ public abstract class AbstractOseeCache<T extends NamedIdBase> implements IOseeC
       return values.isEmpty() ? null : values.iterator().next();
    }
 
-   public Collection<T> getByName(String typeName) throws OseeCoreException {
+   public Collection<T> getByName(String typeName)  {
       ensurePopulated();
       Collection<T> types = new ArrayList<>();
       Collection<T> values = nameToTypeMap.getValues(typeName);
@@ -148,7 +148,7 @@ public abstract class AbstractOseeCache<T extends NamedIdBase> implements IOseeC
       return types;
    }
 
-   public T getBySoleName(String typeName) throws OseeCoreException {
+   public T getBySoleName(String typeName)  {
       ensurePopulated();
       Collection<T> types = getByName(typeName);
       if (types.size() != 1) {
@@ -159,23 +159,23 @@ public abstract class AbstractOseeCache<T extends NamedIdBase> implements IOseeC
    }
 
    @Override
-   public T getByGuid(Long id) throws OseeCoreException {
+   public T getByGuid(Long id)  {
       ensurePopulated();
       return idToTypeMap.get(id);
    }
 
-   public T get(Id token) throws OseeCoreException {
+   public T get(Id token)  {
       ensurePopulated();
       return getByGuid(token.getId());
    }
 
-   public void cacheFrom(AbstractOseeCache<T> source) throws OseeCoreException {
+   public void cacheFrom(AbstractOseeCache<T> source)  {
       for (T type : source.getAll()) {
          cache(type);
       }
    }
 
-   protected void ensurePopulated() throws OseeCoreException {
+   protected void ensurePopulated()  {
       // Do nothing
    }
 }

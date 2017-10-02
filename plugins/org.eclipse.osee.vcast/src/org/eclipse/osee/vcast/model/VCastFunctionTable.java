@@ -38,7 +38,7 @@ public class VCastFunctionTable implements VCastTableData<VCastFunction> {
    }
 
    @Override
-   public Collection<VCastFunction> getRows(VCastDataStore dataStore) throws OseeCoreException {
+   public Collection<VCastFunction> getRows(VCastDataStore dataStore)  {
       return dataStore.getAllFunctions();
    }
 

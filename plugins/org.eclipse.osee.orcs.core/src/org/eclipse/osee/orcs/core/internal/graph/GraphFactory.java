@@ -21,6 +21,6 @@ import org.eclipse.osee.orcs.OrcsSession;
  */
 public interface GraphFactory {
 
-   GraphData createGraph(OrcsSession session, BranchId branch, TransactionId transactionId) throws OseeCoreException;
+   GraphData createGraph(OrcsSession session, BranchId branch, TransactionId transactionId) ;
 
 }

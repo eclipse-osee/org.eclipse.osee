@@ -96,7 +96,7 @@ public class VersionMetrics {
       return relDate;
    }
 
-   public Collection<TeamWorkFlowArtifact> getTeamWorkFlows(ChangeType... changeType) throws OseeCoreException {
+   public Collection<TeamWorkFlowArtifact> getTeamWorkFlows(ChangeType... changeType)  {
       List<ChangeType> changeTypes = Arrays.asList(changeType);
       Set<TeamWorkFlowArtifact> teams = new HashSet<>();
       for (IAtsTeamWorkflow team : AtsClientService.get().getVersionService().getTargetedForTeamWorkflows(verArt)) {

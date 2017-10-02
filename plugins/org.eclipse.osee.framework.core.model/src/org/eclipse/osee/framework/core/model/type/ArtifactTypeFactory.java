@@ -20,12 +20,12 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
  */
 public final class ArtifactTypeFactory implements IOseeTypeFactory {
 
-   public ArtifactType create(Long guid, boolean isAbstract, String name) throws OseeCoreException {
+   public ArtifactType create(Long guid, boolean isAbstract, String name)  {
       Conditions.checkNotNullOrEmpty(name, "artifact type name");
       return new ArtifactType(guid, name, isAbstract);
    }
 
-   public ArtifactType createOrUpdate(ArtifactTypeCache cache, Long guid, boolean isAbstract, String name) throws OseeCoreException {
+   public ArtifactType createOrUpdate(ArtifactTypeCache cache, Long guid, boolean isAbstract, String name)  {
       Conditions.checkNotNull(cache, "ArtifactTypeCache");
       ArtifactType artifactType = cache.getByGuid(guid);
       if (artifactType == null) {

@@ -58,7 +58,7 @@ public class SearchWorkPackageOperation extends AbstractOperation {
    }
 
    @Override
-   protected void doWork(IProgressMonitor monitor) throws OseeCoreException {
+   protected void doWork(IProgressMonitor monitor)  {
       if (teamDefs.isEmpty() && ais.isEmpty()) {
          throw new OseeArgumentException("ERROR", "Must provide Team Definitions or Actionable Items");
       }

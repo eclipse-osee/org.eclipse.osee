@@ -32,7 +32,7 @@ public class MySubscribedSearchItem extends UserSearchItem {
    }
 
    @Override
-   protected Collection<Artifact> searchIt(IAtsUser user) throws OseeCoreException {
+   protected Collection<Artifact> searchIt(IAtsUser user)  {
       return AtsClientService.get().getUserServiceClient().getOseeUser(user).getRelatedArtifacts(
          AtsRelationTypes.SubscribedUser_Artifact);
    }

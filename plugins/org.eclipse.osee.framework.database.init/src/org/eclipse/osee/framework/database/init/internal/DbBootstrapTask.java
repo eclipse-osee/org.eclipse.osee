@@ -42,7 +42,7 @@ public class DbBootstrapTask implements IDbInitializationTask {
    }
 
    @Override
-   public void run() throws OseeCoreException {
+   public void run()  {
       Conditions.checkNotNull(configuration, "DbInitConfiguration Info");
 
       OseeClientProperties.setInDbInit(true);
@@ -87,7 +87,7 @@ public class DbBootstrapTask implements IDbInitializationTask {
       service.reloadTypes();
    }
 
-   private void createOseeDatastore() throws OseeCoreException {
+   private void createOseeDatastore()  {
       //    OseeClientProperties.isOseeImportAllowed();
       String tableDataSpace = OseeClientProperties.getOseeTableDataSpaceForDbInit();
       String indexDataSpace = OseeClientProperties.getOseeIndexDataSpaceForDbInit();

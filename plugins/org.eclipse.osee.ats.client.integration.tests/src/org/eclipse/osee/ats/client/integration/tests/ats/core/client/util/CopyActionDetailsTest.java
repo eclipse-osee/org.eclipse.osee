@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.CopyActionDetails;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
@@ -39,12 +38,12 @@ public class CopyActionDetailsTest {
 
    @BeforeClass
    @AfterClass
-   public static void cleanup() throws OseeCoreException {
+   public static void cleanup() {
       AtsTestUtil.cleanup();
    }
 
    @Test
-   public void test01GetDetailsStringForTeamWf() throws OseeCoreException {
+   public void test01GetDetailsStringForTeamWf() {
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
       String str = new CopyActionDetails(AtsTestUtil.getTeamWf()).getDetailsString();
       assertEquals(
@@ -53,7 +52,7 @@ public class CopyActionDetailsTest {
    }
 
    @Test
-   public void test02GetDetailsStringForTask() throws OseeCoreException {
+   public void test02GetDetailsStringForTask() {
       String str = new CopyActionDetails(AtsTestUtil.getOrCreateTaskOffTeamWf1()).getDetailsString();
       assertEquals(
          "\"Task\" - " + AtsTestUtil.getOrCreateTaskOffTeamWf1().getAtsId() + " - \"AtsTestUtil - Task [CopyActionDetailsTest]\"",
@@ -61,7 +60,7 @@ public class CopyActionDetailsTest {
    }
 
    @Test
-   public void test03GetDetailsStringForDecisionReview() throws OseeCoreException {
+   public void test03GetDetailsStringForDecisionReview() {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       DecisionReviewArtifact review =
          AtsTestUtil.getOrCreateDecisionReview(ReviewBlockType.Commit, AtsTestUtilState.Analyze, changes);
@@ -71,7 +70,7 @@ public class CopyActionDetailsTest {
    }
 
    @Test
-   public void test04GetDetailsStringForPeerReview() throws OseeCoreException {
+   public void test04GetDetailsStringForPeerReview() {
       PeerToPeerReviewArtifact review = AtsTestUtil.getOrCreatePeerReview(ReviewBlockType.None,
          AtsTestUtilState.Analyze, AtsClientService.get().createChangeSet("test04GetDetailsStringForPeerReview"));
       String str = new CopyActionDetails(review).getDetailsString();
@@ -80,7 +79,7 @@ public class CopyActionDetailsTest {
    }
 
    @Test
-   public void test05GetDetailsStringForTeamWfWithTeamDefConfig() throws OseeCoreException {
+   public void test05GetDetailsStringForTeamWfWithTeamDefConfig() {
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
 
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());

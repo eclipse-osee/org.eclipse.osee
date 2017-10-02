@@ -25,20 +25,20 @@ public class BranchTest {
    }
 
    //   @Test
-   //   public void testSystemRootBranch() throws OseeCoreException {
+   //   public void testSystemRootBranch()  {
    //      Branch systemRootBranch = cache.getSystemRootBranch();
    //      Assert.assertNotNull(systemRootBranch);
    //   }
    //
    //   @Test
-   //   public void testBranchHierarchy() throws OseeCoreException {
+   //   public void testBranchHierarchy()  {
    //      OseeTypesUtil.checkHierarchy(cache, "AAA", "BBB", "CCC");
    //      OseeTypesUtil.checkHierarchy(cache, "BBB", "DDD", "EEE");
    //      OseeTypesUtil.checkHierarchy(cache, "CCC", "FFF", "GGG", "HHH");
    //   }
    //
    //   @Test
-   //   public void testMergeBranches() throws OseeCoreException {
+   //   public void testMergeBranches()  {
    //      OseeTypesUtil.checkMergeBranch(cache, null, "HHH", "AAA");
    //      OseeTypesUtil.checkMergeBranch(cache, "III", "DDD", "BBB");
    //      OseeTypesUtil.checkMergeBranch(cache, "JJJ", "GGG", "CCC");
@@ -46,7 +46,7 @@ public class BranchTest {
    //   }
    //
    //   @Test
-   //   public void testBranchAliases() throws OseeCoreException {
+   //   public void testBranchAliases()  {
    //      OseeTypesUtil.checkAliases(cache, "AAA", "root", "system", "main");
    //      OseeTypesUtil.checkAliases(cache, "BBB", "base 1", "build 1", "common");
    //      OseeTypesUtil.checkAliases(cache, "CCC", "base 2", "build 2");
@@ -60,7 +60,7 @@ public class BranchTest {
    //   }
    //
    //   @Test
-   //   public void testSameAliasForMultipleBranches() throws OseeCoreException {
+   //   public void testSameAliasForMultipleBranches()  {
    //      OseeTypesUtil.checkAliases(cache, "JJJ", "a merge branch");
    //      OseeTypesUtil.checkAliases(cache, "KKK", "a merge branch");
    //
@@ -73,7 +73,7 @@ public class BranchTest {
    //   }
    //
    //   @Test
-   //   public void testSetAliasForBranch() throws OseeCoreException {
+   //   public void testSetAliasForBranch()  {
    //      Branch branch = cache.getByGuid("JJJ");
    //      Assert.assertNotNull(branch);
    //
@@ -91,7 +91,7 @@ public class BranchTest {
    //   }
    //
    //   @Test
-   //   public void testBaseTransaction() throws OseeCoreException {
+   //   public void testBaseTransaction()  {
    //      Branch branch = cache.getByGuid("BBB");
    //      Assert.assertNotNull(branch);
    //
@@ -106,7 +106,7 @@ public class BranchTest {
    //   }
    //
    //   @Test
-   //   public void testInvalidBaseTransactionCaching() throws OseeCoreException {
+   //   public void testInvalidBaseTransactionCaching()  {
    //      Branch branch = cache.getByGuid("BBB");
    //      Assert.assertNotNull(branch);
    //      TransactionRecord expectedTx =
@@ -135,7 +135,7 @@ public class BranchTest {
    //   }
    //
    //   @Test
-   //   public void testSourceTransaction() throws OseeCoreException {
+   //   public void testSourceTransaction()  {
    //      Branch branch = cache.getByGuid("BBB");
    //      Assert.assertNotNull(branch);
    //
@@ -150,7 +150,7 @@ public class BranchTest {
    //   }
    //
    //   @Test
-   //   public void testInvalidSourceTransaction() throws OseeCoreException {
+   //   public void testInvalidSourceTransaction()  {
    //      Branch branch = cache.getByGuid("BBB");
    //      Assert.assertNotNull(branch);
    //      TransactionRecord expectedTx =
@@ -173,7 +173,7 @@ public class BranchTest {
    //   }
    //
    //   @Test
-   //   public void testAssociatedArtifact() throws OseeCoreException {
+   //   public void testAssociatedArtifact()  {
    //      Assert.assertEquals(defaultAssociatedArtifact, cache.getDefaultAssociatedArtifact());
    //
    //      Branch branch = cache.getByGuid("BBB");
@@ -192,7 +192,7 @@ public class BranchTest {
    //   }
    //
    //   @Override
-   //   public void testDirty() throws OseeCoreException {
+   //   public void testDirty()  {
    //      // TODO test Rename
    //
    //      //      AttributeType attributeType = OseeTypesUtil.createAttributeType(attrCache, factory, "GUID", "AttributeDirtyTest");
@@ -236,7 +236,7 @@ public class BranchTest {
    //      }
    //
    //      @Override
-   //      public IBasicArtifact<Object> getFullArtifact() throws OseeCoreException {
+   //      public IBasicArtifact<Object> getFullArtifact()  {
    //         return null;
    //      }
    //
@@ -266,7 +266,7 @@ public class BranchTest {
    //      }
    //
    //      @Override
-   //      public void load(AbstractOseeCache<Branch> cache) throws OseeCoreException {
+   //      public void load(AbstractOseeCache<Branch> cache)  {
    //         super.load(cache);
    //         data.add(OseeTypesUtil.createBranch(cache, factory, "AAA", "Root", BranchType.SYSTEM_ROOT,
    //               BranchState.CREATED, false));
@@ -307,19 +307,19 @@ public class BranchTest {
    //         loadBranchAliases(branchCache);
    //      }
    //
-   //      private void loadBranchHierarchy(BranchCache cache) throws OseeCoreException {
+   //      private void loadBranchHierarchy(BranchCache cache)  {
    //         OseeTypesUtil.createBranchHierarchy(cache, "AAA", "BBB", "CCC");
    //         OseeTypesUtil.createBranchHierarchy(cache, "BBB", "DDD", "EEE");
    //         OseeTypesUtil.createBranchHierarchy(cache, "CCC", "FFF", "GGG", "HHH");
    //      }
    //
-   //      private void loadMergeBranches(BranchCache branchCache) throws OseeCoreException {
+   //      private void loadMergeBranches(BranchCache branchCache)  {
    //         OseeTypesUtil.createMergeBranch(cache, "III", "DDD", "BBB");
    //         OseeTypesUtil.createMergeBranch(cache, "JJJ", "GGG", "CCC");
    //         OseeTypesUtil.createMergeBranch(cache, "KKK", "HHH", "CCC");
    //      }
    //
-   //      private void loadBranchAliases(BranchCache branchCache) throws OseeCoreException {
+   //      private void loadBranchAliases(BranchCache branchCache)  {
    //         OseeTypesUtil.createAlias(cache, "AAA", "Root", "System", "Main");
    //         OseeTypesUtil.createAlias(cache, "BBB", "Base 1", "Build 1", "common");
    //         OseeTypesUtil.createAlias(cache, "CCC", "Base 2", "Build 2");

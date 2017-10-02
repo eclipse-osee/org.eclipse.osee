@@ -31,14 +31,14 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IAtsBranchService {
 
-   boolean isBranchInCommit(IAtsTeamWorkflow teamWf) throws OseeCoreException;
+   boolean isBranchInCommit(IAtsTeamWorkflow teamWf) ;
 
    /**
     * @return whether there is a working branch that is not committed
     */
-   boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf) throws OseeCoreException;
+   boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf) ;
 
-   IOseeBranch getBranch(IAtsTeamWorkflow teamWf) throws OseeCoreException;
+   IOseeBranch getBranch(IAtsTeamWorkflow teamWf) ;
 
    BranchId getBranch(IAtsConfigObject configObject);
 
@@ -111,9 +111,9 @@ public interface IAtsBranchService {
 
    boolean isMergeBranchExists(IAtsTeamWorkflow teamWf, BranchId workingBranch, BranchId destinationBranch);
 
-   Result isCommitBranchAllowed(IAtsTeamWorkflow teamWf) throws OseeCoreException;
+   Result isCommitBranchAllowed(IAtsTeamWorkflow teamWf) ;
 
-   Result isCreateBranchAllowed(IAtsTeamWorkflow teamWf) throws OseeCoreException;
+   Result isCreateBranchAllowed(IAtsTeamWorkflow teamWf) ;
 
    boolean branchExists(BranchId branch);
 
@@ -121,11 +121,11 @@ public interface IAtsBranchService {
 
    TransactionRecord getCommitTransactionRecord(IAtsTeamWorkflow teamWf, BranchId branch);
 
-   Collection<BranchId> getBranchesToCommitTo(IAtsTeamWorkflow teamWf) throws OseeCoreException;
+   Collection<BranchId> getBranchesToCommitTo(IAtsTeamWorkflow teamWf) ;
 
    Collection<BranchId> getBranchesInCommit();
 
-   boolean workingBranchCommittedToDestinationBranchParentPriorToDestinationBranchCreation(IAtsTeamWorkflow teamWf, BranchId destinationBranch, Collection<? extends TransactionToken> commitTransactionIds) throws OseeCoreException;
+   boolean workingBranchCommittedToDestinationBranchParentPriorToDestinationBranchCreation(IAtsTeamWorkflow teamWf, BranchId destinationBranch, Collection<? extends TransactionToken> commitTransactionIds) ;
 
    BranchId getParentBranch(BranchId branch);
 

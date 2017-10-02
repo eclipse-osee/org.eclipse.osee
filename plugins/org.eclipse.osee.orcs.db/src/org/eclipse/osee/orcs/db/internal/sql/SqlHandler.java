@@ -56,15 +56,15 @@ public abstract class SqlHandler<T extends Criteria> implements HasPriority {
       // do nothing
    }
 
-   public abstract void addTables(AbstractSqlWriter writer) throws OseeCoreException;
+   public abstract void addTables(AbstractSqlWriter writer) ;
 
-   public abstract boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException;
+   public abstract boolean addPredicates(AbstractSqlWriter writer) ;
 
-   public void addWithTables(AbstractSqlWriter writer) throws OseeCoreException {
+   public void addWithTables(AbstractSqlWriter writer)  {
       // Do Nothing
    }
 
-   public void addSelect(AbstractSqlWriter sqlWriter) throws OseeCoreException {
+   public void addSelect(AbstractSqlWriter sqlWriter)  {
       // Do Nothing
    }
 

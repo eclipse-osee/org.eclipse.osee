@@ -18,5 +18,5 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  * @author Robert A. Fisher
  */
 public interface IDefaultInitialBranchesProvider {
-   public Collection<BranchId> getDefaultInitialBranches() throws OseeCoreException;
+   public Collection<BranchId> getDefaultInitialBranches() ;
 }

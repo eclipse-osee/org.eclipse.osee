@@ -39,7 +39,7 @@ public class TransitionStatusDataTest {
    TransitionStatusData data;
 
    @Before
-   public void setup() throws OseeCoreException {
+   public void setup()  {
       MockitoAnnotations.initMocks(this);
 
       List<IAtsWorkItem> workItems = new ArrayList<>();

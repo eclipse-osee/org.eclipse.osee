@@ -27,14 +27,14 @@ public class OrderAccessorImpl implements OrderAccessor {
    }
 
    @Override
-   public void load(HasOrderData data) throws OseeCoreException {
+   public void load(HasOrderData data)  {
       data.clear();
       String value = storage.getOrderData();
       parser.loadFromXml(data, value);
    }
 
    @Override
-   public void store(HasOrderData data, OrderChange changeType) throws OseeCoreException {
+   public void store(HasOrderData data, OrderChange changeType)  {
       if (changeType != OrderChange.NoChange) {
          if (storage.isAccessible()) {
             String value = "";

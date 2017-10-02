@@ -24,7 +24,7 @@ import org.junit.BeforeClass;
 public class DemoDbPopulateValidateAtsDatabaseTest extends AtsValidateAtsDatabaseTest {
 
    @BeforeClass
-   public static void cleanup() throws OseeCoreException {
+   public static void cleanup()  {
       DemoUtil.checkDbInitAndPopulateSuccess();
    }
 }

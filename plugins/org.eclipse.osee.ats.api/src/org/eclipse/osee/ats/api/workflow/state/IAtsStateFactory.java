@@ -21,9 +21,9 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IAtsStateFactory {
 
-   IAtsStateManager getStateManager(IAtsWorkItem workItem) throws OseeCoreException;
+   IAtsStateManager getStateManager(IAtsWorkItem workItem) ;
 
-   void writeToStore(IAtsUser atsUser, IAtsWorkItem workItem, IAtsChangeSet changes) throws OseeCoreException;
+   void writeToStore(IAtsUser atsUser, IAtsWorkItem workItem, IAtsChangeSet changes) ;
 
    void load(IAtsWorkItem workItem, IAtsStateManager stateMgr);
 

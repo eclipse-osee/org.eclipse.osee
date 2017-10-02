@@ -40,7 +40,7 @@ public class ArtifactChangeAcquirer extends ChangeAcquirer {
    }
 
    @Override
-   public ArrayList<ChangeBuilder> acquireChanges() throws OseeCoreException {
+   public ArrayList<ChangeBuilder> acquireChanges()  {
       Map<Integer, ArtifactChangeBuilder> artifactChangeBuilders = new HashMap<>();
       boolean hasBranch = getSourceBranch() != null;
       TransactionToken fromTransactionId;

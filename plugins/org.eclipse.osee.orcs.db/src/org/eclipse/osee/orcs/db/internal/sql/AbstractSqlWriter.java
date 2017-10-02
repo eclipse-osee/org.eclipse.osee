@@ -56,11 +56,11 @@ public abstract class AbstractSqlWriter implements HasOptions {
       this.queryType = queryType;
    }
 
-   public void build(SqlHandler<?>... handlers) throws OseeCoreException {
+   public void build(SqlHandler<?>... handlers)  {
       build(Arrays.asList(handlers));
    }
 
-   public void build(List<SqlHandler<?>> handlers) throws OseeCoreException {
+   public void build(List<SqlHandler<?>> handlers)  {
       Conditions.checkNotNullOrEmpty(handlers, "SqlHandlers");
       reset();
 
@@ -88,7 +88,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
       return QueryType.COUNT == queryType;
    }
 
-   protected void write(Iterable<SqlHandler<?>> handlers) throws OseeCoreException {
+   protected void write(Iterable<SqlHandler<?>> handlers)  {
       computeTables(handlers);
       computeWithClause(handlers);
 
@@ -105,7 +105,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
       writeGroupAndOrder();
    }
 
-   protected void writeWithClause() throws OseeCoreException {
+   protected void writeWithClause()  {
       if (Conditions.hasValues(withClauses)) {
          write("WITH");
          int size = withClauses.size();
@@ -135,7 +135,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
       withClauses.add(clause);
    }
 
-   protected void computeWithClause(Iterable<SqlHandler<?>> handlers) throws OseeCoreException {
+   protected void computeWithClause(Iterable<SqlHandler<?>> handlers)  {
       for (SqlHandler<?> handler : handlers) {
          setHandlerLevel(handler);
          handler.addWithTables(this);
@@ -146,17 +146,17 @@ public abstract class AbstractSqlWriter implements HasOptions {
       return context;
    }
 
-   protected abstract void writeSelect(Iterable<SqlHandler<?>> handlers) throws OseeCoreException;
+   protected abstract void writeSelect(Iterable<SqlHandler<?>> handlers) ;
 
-   public abstract String getWithClauseTxBranchFilter(String txsAlias, boolean deletedPredicate) throws OseeCoreException;
+   public abstract String getWithClauseTxBranchFilter(String txsAlias, boolean deletedPredicate) ;
 
-   public abstract String getTxBranchFilter(String txsAlias) throws OseeCoreException;
+   public abstract String getTxBranchFilter(String txsAlias) ;
 
-   public abstract String getTxBranchFilter(String txsAlias, boolean allowDeleted) throws OseeCoreException;
+   public abstract String getTxBranchFilter(String txsAlias, boolean allowDeleted) ;
 
-   protected abstract void writeGroupAndOrder() throws OseeCoreException;
+   protected abstract void writeGroupAndOrder() ;
 
-   protected void writeTables() throws OseeCoreException {
+   protected void writeTables()  {
       int size = tableEntries.size();
       for (int i = 0; i < size; i++) {
          write(tableEntries.get(i));
@@ -166,7 +166,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
       }
    }
 
-   protected void computeTables(Iterable<SqlHandler<?>> handlers) throws OseeCoreException {
+   protected void computeTables(Iterable<SqlHandler<?>> handlers)  {
       for (SqlHandler<?> handler : handlers) {
          setHandlerLevel(handler);
          handler.addTables(this);
@@ -177,7 +177,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
       level = handler.getLevel();
    }
 
-   protected void writePredicates(Iterable<SqlHandler<?>> handlers) throws OseeCoreException {
+   protected void writePredicates(Iterable<SqlHandler<?>> handlers)  {
       Iterator<SqlHandler<?>> iterator = handlers.iterator();
       while (iterator.hasNext()) {
          SqlHandler<?> handler = iterator.next();
@@ -190,7 +190,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
       removeDanglingSeparator(AND_WITH_NEWLINES);
    }
 
-   public void writeAndLn() throws OseeCoreException {
+   public void writeAndLn()  {
       write(AND_WITH_NEWLINES);
    }
 
@@ -308,7 +308,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
       return alias;
    }
 
-   public void write(String data, Object... params) throws OseeCoreException {
+   public void write(String data, Object... params)  {
       if (params != null && params.length > 0) {
          output.append(String.format(data, params));
       } else {
@@ -354,7 +354,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
       return getContext().getOptions();
    }
 
-   protected String getSqlHint() throws OseeCoreException {
+   protected String getSqlHint()  {
       String hint = Strings.EMPTY_STRING;
       if (!Conditions.hasValues(withClauses) && jdbcClient != null && jdbcClient.getConfig() != null) {
          hint = OseeSql.Strings.getHintsOrdered(jdbcClient.getConfig().getDbProps());
@@ -367,7 +367,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
       return output.toString();
    }
 
-   public void writePatternMatch(String field, String expression) throws OseeCoreException {
+   public void writePatternMatch(String field, String expression)  {
       String pattern = jdbcClient.getDbType().getRegularExpMatchSql();
       write(pattern, field, expression);
    }

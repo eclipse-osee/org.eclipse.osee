@@ -56,7 +56,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
    }
 
    @Override
-   public IAtsUser getUserFromOseeUser(User user) throws OseeCoreException {
+   public IAtsUser getUserFromOseeUser(User user)  {
       IAtsUser atsUser = userIdToAtsUser.get(user.getUserId());
       if (atsUser == null) {
          atsUser = createFromArtifact(user);
@@ -66,7 +66,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
    }
 
    @Override
-   public User getOseeUser(IAtsUser atsUser) throws OseeCoreException {
+   public User getOseeUser(IAtsUser atsUser)  {
       User oseeUser = null;
       if (atsUser.getStoreObject() instanceof User) {
          oseeUser = (User) atsUser.getStoreObject();
@@ -77,13 +77,13 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
    }
 
    @Override
-   public User getCurrentOseeUser() throws OseeCoreException {
+   public User getCurrentOseeUser()  {
       IAtsUser user = getCurrentUser();
       return getOseeUser(user);
    }
 
    @Override
-   public Collection<? extends User> toOseeUsers(Collection<? extends IAtsUser> users) throws OseeCoreException {
+   public Collection<? extends User> toOseeUsers(Collection<? extends IAtsUser> users)  {
       List<User> results = new LinkedList<>();
       for (IAtsUser user : users) {
          results.add(getOseeUser(user));
@@ -92,7 +92,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
    }
 
    @Override
-   public Collection<IAtsUser> getAtsUsers(Collection<? extends Artifact> artifacts) throws OseeCoreException {
+   public Collection<IAtsUser> getAtsUsers(Collection<? extends Artifact> artifacts)  {
       List<IAtsUser> users = new LinkedList<>();
       for (Artifact artifact : artifacts) {
          if (artifact instanceof User) {
@@ -105,7 +105,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
    }
 
    @Override
-   public Collection<User> getOseeUsers(Collection<? extends IAtsUser> users) throws OseeCoreException {
+   public Collection<User> getOseeUsers(Collection<? extends IAtsUser> users)  {
       List<User> results = new LinkedList<>();
       for (IAtsUser user : users) {
          results.add(getOseeUser(user));
@@ -114,7 +114,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
    }
 
    @Override
-   public User getOseeUserById(String userId) throws OseeCoreException {
+   public User getOseeUserById(String userId)  {
       return getOseeUser(getUserById(userId));
    }
 
@@ -128,7 +128,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
    }
 
    @Override
-   public List<IAtsUser> getSubscribed(IAtsWorkItem workItem) throws OseeCoreException {
+   public List<IAtsUser> getSubscribed(IAtsWorkItem workItem)  {
       ArrayList<IAtsUser> arts = new ArrayList<>();
       for (Artifact art : ((Artifact) workItem.getStoreObject()).getRelatedArtifacts(
          AtsRelationTypes.SubscribedUser_User)) {

@@ -60,7 +60,7 @@ public class ArtifactsResource {
 
    @GET
    @Produces(MediaType.TEXT_HTML)
-   public String getAsHtml() throws OseeCoreException {
+   public String getAsHtml()  {
       ArtifactReadable rootArtifact =
          orcsApi.getQueryFactory().fromBranch(branchId).andIsHeirarchicalRootArtifact().getResults().getExactlyOne();
 

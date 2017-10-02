@@ -78,7 +78,7 @@ public class PurgeRelationTypeCommand implements ConsoleCommand {
             return null;
          }
 
-         private Set<IRelationType> getTypes(String[] typesToPurge) throws OseeCoreException {
+         private Set<IRelationType> getTypes(String[] typesToPurge)  {
             RelationTypes relationTypes = orcsTypes.getRelationTypes();
             Set<IRelationType> toReturn = new HashSet<>();
             for (String uuid : typesToPurge) {

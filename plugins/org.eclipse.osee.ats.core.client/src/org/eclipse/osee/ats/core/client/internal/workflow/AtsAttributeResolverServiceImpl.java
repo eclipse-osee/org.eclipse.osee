@@ -41,7 +41,7 @@ import org.eclipse.osee.framework.skynet.core.utility.AttributeTypeToXWidgetName
 public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolverService {
 
    @Override
-   public boolean isAttributeNamed(String attributeName) throws OseeCoreException {
+   public boolean isAttributeNamed(String attributeName)  {
       return AttributeTypeManager.typeExists(attributeName);
    }
 
@@ -77,13 +77,13 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public <T> T getSoleAttributeValue(IAtsObject atsObject, AttributeTypeId attributeType, T defaultReturnValue) throws OseeCoreException {
+   public <T> T getSoleAttributeValue(IAtsObject atsObject, AttributeTypeId attributeType, T defaultReturnValue)  {
       return AtsClientService.get().getArtifact(atsObject).getSoleAttributeValue(attributeType, defaultReturnValue);
 
    }
 
    @Override
-   public Collection<String> getAttributesToStringList(IAtsObject atsObject, AttributeTypeId attributeType) throws OseeCoreException {
+   public Collection<String> getAttributesToStringList(IAtsObject atsObject, AttributeTypeId attributeType)  {
       return AtsClientService.get().getArtifact(atsObject).getAttributesToStringList(attributeType);
    }
 
@@ -93,12 +93,12 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public boolean isAttributeTypeValid(IAtsWorkItem workItem, AttributeTypeId attributeType) throws OseeCoreException {
+   public boolean isAttributeTypeValid(IAtsWorkItem workItem, AttributeTypeId attributeType)  {
       return AtsClientService.get().getArtifact(workItem).isAttributeTypeValid(attributeType);
    }
 
    @Override
-   public String getSoleAttributeValueAsString(IAtsObject atsObject, AttributeTypeId attributeType, String defaultValue) throws OseeCoreException {
+   public String getSoleAttributeValueAsString(IAtsObject atsObject, AttributeTypeId attributeType, String defaultValue)  {
       String result = defaultValue;
       Artifact artifact = AtsClientService.get().getArtifact(atsObject);
       if (artifact != null) {
@@ -118,33 +118,33 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeId attributeType, Object value) throws OseeCoreException {
+   public void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeId attributeType, Object value)  {
       AtsClientService.get().getArtifact(atsObject).setSoleAttributeValue(attributeType, value);
    }
 
    @Override
-   public int getAttributeCount(IAtsWorkItem workItem, AttributeTypeId attributeType) throws OseeCoreException {
+   public int getAttributeCount(IAtsWorkItem workItem, AttributeTypeId attributeType)  {
       return AtsClientService.get().getArtifact(workItem).getAttributeCount(attributeType);
    }
 
    @Override
-   public int getAttributeCount(IAtsObject atsObject, AttributeTypeId attributeType) throws OseeCoreException {
+   public int getAttributeCount(IAtsObject atsObject, AttributeTypeId attributeType)  {
       return AtsClientService.get().getArtifact(atsObject).getAttributeCount(attributeType);
    }
 
    @Override
-   public int getAttributeCount(ArtifactId artifact, AttributeTypeId attributeType) throws OseeCoreException {
+   public int getAttributeCount(ArtifactId artifact, AttributeTypeId attributeType)  {
       return AtsClientService.get().getArtifact(artifact).getAttributeCount(attributeType);
    }
 
    @Override
-   public void addAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType, Object value) throws OseeCoreException {
+   public void addAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType, Object value)  {
       AtsClientService.get().getArtifact(workItem).addAttribute(attributeType, value);
    }
 
    @SuppressWarnings({"unchecked", "deprecation"})
    @Override
-   public <T> Collection<IAttribute<T>> getAttributes(IAtsWorkItem workItem, AttributeTypeId attributeType) throws OseeCoreException {
+   public <T> Collection<IAttribute<T>> getAttributes(IAtsWorkItem workItem, AttributeTypeId attributeType)  {
       List<IAttribute<T>> attrs = new ArrayList<>();
       for (Attribute<Object> attr : AtsClientService.get().getArtifact(workItem).getAttributes(attributeType)) {
          attrs.add((IAttribute<T>) attr);
@@ -153,19 +153,19 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType) throws OseeCoreException {
+   public void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType)  {
       AtsClientService.get().getArtifact(workItem).deleteSoleAttribute(attributeType);
    }
 
    @Override
-   public <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, AttributeTypeId attributeType, T value) throws OseeCoreException {
+   public <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, AttributeTypeId attributeType, T value)  {
       @SuppressWarnings("unchecked")
       Attribute<T> attribute = (Attribute<T>) attr;
       attribute.setValue(value);
    }
 
    @Override
-   public <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr) throws OseeCoreException {
+   public <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr)  {
       Artifact artifact = AtsClientService.get().getArtifact(workItem);
       Attribute<?> attribute = (Attribute<?>) attr;
       Attribute<?> attributeById = artifact.getAttributeById(attribute.getId(), false);
@@ -173,7 +173,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType, IAtsChangeSet changes) throws OseeCoreException {
+   public void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType, IAtsChangeSet changes)  {
       if (changes != null) {
          changes.deleteSoleAttribute(workItem, attributeType);
       } else {
@@ -182,7 +182,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeId attributeType, Object value, IAtsChangeSet changes) throws OseeCoreException {
+   public void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeId attributeType, Object value, IAtsChangeSet changes)  {
       if (changes != null) {
          changes.setSoleAttributeValue(atsObject, attributeType, value);
       } else {
@@ -191,7 +191,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public void addAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType, Object value, IAtsChangeSet changes) throws OseeCoreException {
+   public void addAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType, Object value, IAtsChangeSet changes)  {
       if (changes != null) {
          changes.addAttribute(workItem, attributeType, value);
       } else {
@@ -200,7 +200,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType, Object value, IAtsChangeSet changes) throws OseeCoreException {
+   public void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType, Object value, IAtsChangeSet changes)  {
       if (changes != null) {
          changes.deleteAttribute(workItem, attributeType, value);
       } else {
@@ -209,7 +209,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, AttributeTypeId attributeType, T value, IAtsChangeSet changes) throws OseeCoreException {
+   public <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, AttributeTypeId attributeType, T value, IAtsChangeSet changes)  {
       if (changes != null) {
          changes.setValue(workItem, attr, attributeType, value);
       } else {
@@ -220,7 +220,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr, IAtsChangeSet changes) throws OseeCoreException {
+   public <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr, IAtsChangeSet changes)  {
       if (changes != null) {
          changes.deleteAttribute(workItem, attr);
       } else {
@@ -252,7 +252,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
 
    @SuppressWarnings({"unchecked", "deprecation"})
    @Override
-   public <T> Collection<IAttribute<T>> getAttributes(ArtifactId artifact, AttributeTypeId attributeType) throws OseeCoreException {
+   public <T> Collection<IAttribute<T>> getAttributes(ArtifactId artifact, AttributeTypeId attributeType)  {
       Assert.isNotNull(artifact, "Artifact can not be null");
       Assert.isNotNull(attributeType, "Attribute Type can not be null");
       List<IAttribute<T>> attributes = new LinkedList<>();
@@ -273,7 +273,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public <T> Collection<IAttribute<T>> getAttributes(IAtsWorkItem workItem) throws OseeCoreException {
+   public <T> Collection<IAttribute<T>> getAttributes(IAtsWorkItem workItem)  {
       return getAttributes(workItem.getStoreObject());
    }
 

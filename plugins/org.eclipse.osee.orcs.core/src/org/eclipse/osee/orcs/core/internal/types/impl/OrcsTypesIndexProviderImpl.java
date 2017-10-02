@@ -31,27 +31,27 @@ public class OrcsTypesIndexProviderImpl extends LazyObject<OrcsTypesIndex>implem
    }
 
    @Override
-   public ArtifactTypeIndex getArtifactTypeIndex() throws OseeCoreException {
+   public ArtifactTypeIndex getArtifactTypeIndex()  {
       return get().getArtifactTypeIndex();
    }
 
    @Override
-   public AttributeTypeIndex getAttributeTypeIndex() throws OseeCoreException {
+   public AttributeTypeIndex getAttributeTypeIndex()  {
       return get().getAttributeTypeIndex();
    }
 
    @Override
-   public EnumTypeIndex getEnumTypeIndex() throws OseeCoreException {
+   public EnumTypeIndex getEnumTypeIndex()  {
       return get().getEnumTypeIndex();
    }
 
    @Override
-   public RelationTypeIndex getRelationTypeIndex() throws OseeCoreException {
+   public RelationTypeIndex getRelationTypeIndex()  {
       return get().getRelationTypeIndex();
    }
 
    @Override
-   public IResource getOrcsTypesResource() throws OseeCoreException {
+   public IResource getOrcsTypesResource()  {
       try {
          return get().getOrcsTypesResource();
       } catch (Exception ex) {

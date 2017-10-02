@@ -39,7 +39,7 @@ public abstract class AbstractOseeCacheTest<T extends NamedIdBase> {
    }
 
    @org.junit.Test
-   public void testAllItems() throws OseeCoreException {
+   public void testAllItems()  {
       List<T> actualTypes = new ArrayList<>(cache.getAll());
       java.util.Collections.sort(actualTypes, comparator);
 
@@ -52,7 +52,7 @@ public abstract class AbstractOseeCacheTest<T extends NamedIdBase> {
    }
 
    @org.junit.Test
-   public void testExistByGuid() throws OseeCoreException {
+   public void testExistByGuid()  {
       for (T expected : data) {
          Assert.assertTrue(cache.existsByGuid(expected.getId()));
       }
@@ -60,7 +60,7 @@ public abstract class AbstractOseeCacheTest<T extends NamedIdBase> {
    }
 
    @org.junit.Test
-   public void testCacheByGuid() throws OseeCoreException {
+   public void testCacheByGuid()  {
       for (T expected : data) {
          T actual = cache.getByGuid(expected.getId());
          Assert.assertNotNull(actual);
@@ -69,7 +69,7 @@ public abstract class AbstractOseeCacheTest<T extends NamedIdBase> {
    }
 
    @org.junit.Test
-   public void testCacheById() throws OseeCoreException {
+   public void testCacheById()  {
       for (T expected : data) {
          T actual = cache.getById(expected.getId());
          Assert.assertNotNull(actual);
@@ -78,7 +78,7 @@ public abstract class AbstractOseeCacheTest<T extends NamedIdBase> {
    }
 
    @org.junit.Test
-   public void testCacheByName() throws OseeCoreException {
+   public void testCacheByName()  {
       for (T expected : data) {
          T actual = cache.getUniqueByName(expected.getName());
          Assert.assertNotNull(actual);
@@ -88,7 +88,7 @@ public abstract class AbstractOseeCacheTest<T extends NamedIdBase> {
 
    @SuppressWarnings("unchecked")
    @org.junit.Test
-   public void testDecache() throws OseeCoreException {
+   public void testDecache()  {
       T item1 = data.get(0);
       checkCached(item1, true);
 
@@ -110,7 +110,7 @@ public abstract class AbstractOseeCacheTest<T extends NamedIdBase> {
       checkCached(item2, true);
    }
 
-   private void checkCached(T item, boolean isInCacheExpected) throws OseeCoreException {
+   private void checkCached(T item, boolean isInCacheExpected)  {
       if (isInCacheExpected) {
          Assert.assertEquals(item, cache.getByGuid(item.getId()));
          Assert.assertEquals(item, cache.getById(item.getId()));
@@ -125,7 +125,7 @@ public abstract class AbstractOseeCacheTest<T extends NamedIdBase> {
    }
 
    @org.junit.Test
-   public void testGetByName() throws OseeCoreException {
+   public void testGetByName()  {
       for (T expected : data) {
          Collection<T> actual = cache.getByName(expected.getName());
          Assert.assertNotNull(actual);
@@ -135,7 +135,7 @@ public abstract class AbstractOseeCacheTest<T extends NamedIdBase> {
    }
 
    @org.junit.Test
-   public void testMultipleGetByName() throws OseeCoreException {
+   public void testMultipleGetByName()  {
       T item1 = data.get(0);
       T item2 = data.get(1);
       Assert.assertNotNull(item1);
@@ -171,7 +171,7 @@ public abstract class AbstractOseeCacheTest<T extends NamedIdBase> {
    }
 
    @Test
-   public void testReload() throws OseeCoreException {
+   public void testReload()  {
       if (cache instanceof IOseeLoadingCache) {
          int fullCacheSize = cache.size();
          Assert.assertTrue(fullCacheSize > 0);
@@ -190,7 +190,7 @@ public abstract class AbstractOseeCacheTest<T extends NamedIdBase> {
    protected abstract Long createKey();
 
    //OseeCoreException is thrown by inheriting class.
-   protected void checkEquals(T expected, T actual) throws OseeCoreException {
+   protected void checkEquals(T expected, T actual)  {
       Assert.assertEquals(expected, actual);
    }
 

@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IAtsImplementerService {
 
-   String getImplementersStr(IAtsObject atsObject) throws OseeCoreException;
+   String getImplementersStr(IAtsObject atsObject) ;
 
    List<IAtsUser> getImplementers(IAtsObject atsObject);
 

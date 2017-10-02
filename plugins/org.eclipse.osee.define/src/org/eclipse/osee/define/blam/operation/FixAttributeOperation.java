@@ -60,7 +60,7 @@ public class FixAttributeOperation extends AbstractOperation {
       this.display = display;
    }
 
-   private void checkPreConditions() throws OseeCoreException {
+   private void checkPreConditions()  {
       Conditions.checkNotNull(branch, "branch");
       // only allow working branches
       Conditions.checkExpressionFailOnTrue(!BranchManager.getType(branch).isWorkingBranch(),
@@ -126,7 +126,7 @@ public class FixAttributeOperation extends AbstractOperation {
       }
    }
 
-   private HashCollection<Artifact, AttributeTypeToken> getArtifactsWithDuplicates(IProgressMonitor monitor) throws OseeCoreException {
+   private HashCollection<Artifact, AttributeTypeToken> getArtifactsWithDuplicates(IProgressMonitor monitor)  {
       HashCollection<Artifact, AttributeTypeToken> artifactAttributeMap = new HashCollection<>(false, HashSet.class);
 
       List<Artifact> artifacts =

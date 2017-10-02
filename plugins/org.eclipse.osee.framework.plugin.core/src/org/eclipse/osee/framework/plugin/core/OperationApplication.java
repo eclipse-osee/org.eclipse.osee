@@ -16,7 +16,6 @@ import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.osgi.framework.Bundle;
 
 public class OperationApplication implements IApplication {
@@ -38,7 +37,7 @@ public class OperationApplication implements IApplication {
    }
 
    @SuppressWarnings("unchecked")
-   private IOperation loadOperation(String bundleName, String className) throws OseeCoreException, IllegalAccessException, ClassNotFoundException {
+   private IOperation loadOperation(String bundleName, String className) throws IllegalAccessException, ClassNotFoundException {
       try {
          Bundle bundle = Platform.getBundle(bundleName);
          if (bundle == null) {

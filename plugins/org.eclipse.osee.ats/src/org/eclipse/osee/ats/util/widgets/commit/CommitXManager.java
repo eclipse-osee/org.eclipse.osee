@@ -131,7 +131,7 @@ public class CommitXManager extends XViewer {
       }
    }
 
-   private void handleCommittedWithMerge(BranchId branch) throws OseeCoreException {
+   private void handleCommittedWithMerge(BranchId branch)  {
       MessageDialog dialog = new MessageDialog(Displays.getActiveShell(), "Select Report", null,
          "Both Change Report and Merge Manager exist.\n\nSelect to open.", MessageDialog.QUESTION,
          new String[] {"Show Change Report", "Show Merge Manager", "Cancel"}, 0);

@@ -140,12 +140,12 @@ public class DefaultArtifactRenderer implements IRenderer {
    }
 
    @Override
-   public int minimumRanking() throws OseeCoreException {
+   public int minimumRanking()  {
       return NO_MATCH;
    }
 
    @Override
-   public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, WordMLProducer producer, String format, String label, String footer) throws OseeCoreException {
+   public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, WordMLProducer producer, String format, String label, String footer)  {
       WordMLProducer wordMl = producer;
       boolean allAttrs = (boolean) rendererOptions.get(RendererOption.ALL_ATTRIBUTES);
 
@@ -178,7 +178,7 @@ public class DefaultArtifactRenderer implements IRenderer {
    }
 
    @Override
-   public String renderAttributeAsString(AttributeTypeId attributeType, Artifact artifact, PresentationType presentationType, final String defaultValue) throws OseeCoreException {
+   public String renderAttributeAsString(AttributeTypeId attributeType, Artifact artifact, PresentationType presentationType, final String defaultValue)  {
       String returnValue = defaultValue;
       if (presentationType.matches(RENDER_AS_HUMAN_READABLE_TEXT)) {
          if (artifact == null) {
@@ -195,7 +195,7 @@ public class DefaultArtifactRenderer implements IRenderer {
       return returnValue;
    }
 
-   private String renderRelationOrder(Artifact artifact) throws OseeCoreException {
+   private String renderRelationOrder(Artifact artifact)  {
       StringBuilder builder = new StringBuilder();
       ArtifactGuidToWordML guidResolver = new ArtifactGuidToWordML(new OseeLinkBuilder());
       RelationOrderRenderer renderer =
@@ -234,7 +234,7 @@ public class DefaultArtifactRenderer implements IRenderer {
    }
 
    @Override
-   public void open(final List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
+   public void open(final List<Artifact> artifacts, PresentationType presentationType)  {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {

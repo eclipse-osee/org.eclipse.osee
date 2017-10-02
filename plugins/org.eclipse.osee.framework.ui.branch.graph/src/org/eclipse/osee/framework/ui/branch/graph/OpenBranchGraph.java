@@ -36,7 +36,7 @@ public class OpenBranchGraph extends CommandHandler {
    }
 
    @Override
-   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
+   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection)  {
       try {
          List<IOseeBranch> branches = Handlers.getBranchesFromStructuredSelection(selection);
          if (!branches.isEmpty()) {

@@ -72,7 +72,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    }
 
    @Override
-   public Collection<BranchId> getBranchesToCommitTo(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+   public Collection<BranchId> getBranchesToCommitTo(IAtsTeamWorkflow teamWf)  {
       Set<BranchId> branches = new HashSet<>();
       for (ICommitConfigItem obj : getConfigArtifactsConfiguredToCommitTo(teamWf)) {
          if (isBranchValid(obj)) {
@@ -215,7 +215,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    }
 
    @Override
-   public boolean isBranchInCommit(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+   public boolean isBranchInCommit(IAtsTeamWorkflow teamWf)  {
       if (!isWorkingBranchInWork(teamWf)) {
          return false;
       }
@@ -251,7 +251,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
       return transactionIds;
    }
 
-   public boolean isNoCommitNeeded(IAtsTeamWorkflow teamWf, BranchId destinationBranch) throws OseeCoreException {
+   public boolean isNoCommitNeeded(IAtsTeamWorkflow teamWf, BranchId destinationBranch)  {
       return getCommitStatus(teamWf, destinationBranch) == CommitStatus.No_Commit_Needed;
    }
 
@@ -274,7 +274,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
     * with the cache being updated by local and remote events.
     */
    @Override
-   public IOseeBranch getWorkingBranch(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+   public IOseeBranch getWorkingBranch(IAtsTeamWorkflow teamWf)  {
       return getWorkingBranch(teamWf, false);
    }
 
@@ -309,7 +309,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    }
 
    @Override
-   public boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+   public boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf)  {
       BranchId branch = getWorkingBranch(teamWf);
       return branch.isValid() && !getBranchState(branch).isCommitted();
    }
@@ -341,7 +341,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
     * with the cache being updated by local and remote events.
     */
    @Override
-   public IOseeBranch getBranch(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+   public IOseeBranch getBranch(IAtsTeamWorkflow teamWf)  {
       return getWorkingBranch(teamWf, false);
    }
 
@@ -363,7 +363,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
     * This method was refactored from above so it could be tested independently
     */
    @Override
-   public Collection<Object> combineCommitTransactionsAndConfigItems(Collection<ICommitConfigItem> configArtSet, Collection<TransactionRecord> commitTxs) throws OseeCoreException {
+   public Collection<Object> combineCommitTransactionsAndConfigItems(Collection<ICommitConfigItem> configArtSet, Collection<TransactionRecord> commitTxs)  {
       // commitMgrInputObjs will hold a union of all commits from configArtSet and commitTxs.
       // - first, we addAll configArtSet
       // - next, we loop through commitTxs and for any tx that has the same branch as ANY pre-existing commit
@@ -397,7 +397,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
     * from getConfigArtifactsConfiguredToCommitTo()
     */
    @Override
-   public Collection<Object> getCommitTransactionsAndConfigItemsForTeamWf(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+   public Collection<Object> getCommitTransactionsAndConfigItemsForTeamWf(IAtsTeamWorkflow teamWf)  {
       Collection<ICommitConfigItem> configArtSet = getConfigArtifactsConfiguredToCommitTo(teamWf);
       Collection<TransactionRecord> commitTxs = getCommitTransactionsToUnarchivedBaselineBranchs(teamWf);
       Collection<Object> commitMgrInputObjs = combineCommitTransactionsAndConfigItems(configArtSet, commitTxs);
@@ -405,7 +405,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    }
 
    @Override
-   public Result isCommitBranchAllowed(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+   public Result isCommitBranchAllowed(IAtsTeamWorkflow teamWf)  {
       if (!teamWf.isTeamWorkflow()) {
          return Result.FalseResult;
       }
@@ -440,7 +440,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    }
 
    @Override
-   public Result isCreateBranchAllowed(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+   public Result isCreateBranchAllowed(IAtsTeamWorkflow teamWf)  {
       if (!teamWf.isTeamWorkflow()) {
          return Result.FalseResult;
       }
@@ -557,7 +557,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
     * Return true if merge branch exists in DB (whether archived or not)
     */
    @Override
-   public boolean isMergeBranchExists(IAtsTeamWorkflow teamWf, BranchId destinationBranch) throws OseeCoreException {
+   public boolean isMergeBranchExists(IAtsTeamWorkflow teamWf, BranchId destinationBranch)  {
       return isMergeBranchExists(teamWf, getWorkingBranch(teamWf), destinationBranch);
    }
 
@@ -567,7 +567,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    }
 
    @Override
-   public boolean workingBranchCommittedToDestinationBranchParentPriorToDestinationBranchCreation(IAtsTeamWorkflow teamWf, BranchId destinationBranch, Collection<? extends TransactionToken> commitTransactionIds) throws OseeCoreException {
+   public boolean workingBranchCommittedToDestinationBranchParentPriorToDestinationBranchCreation(IAtsTeamWorkflow teamWf, BranchId destinationBranch, Collection<? extends TransactionToken> commitTransactionIds)  {
       BranchId destinationBranchParent = getParentBranch(destinationBranch);
       if (getBranchType(destinationBranchParent) == BranchType.SYSTEM_ROOT) {
          return false;

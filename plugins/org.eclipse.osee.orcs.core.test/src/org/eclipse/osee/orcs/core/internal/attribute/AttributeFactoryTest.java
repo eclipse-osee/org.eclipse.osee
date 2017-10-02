@@ -68,7 +68,7 @@ public class AttributeFactoryTest {
    private final AttributeTypeToken attributeType = CoreAttributeTypes.Name;
 
    @Before
-   public void init() throws OseeCoreException {
+   public void init()  {
       MockitoAnnotations.initMocks(this);
 
       factory = new AttributeFactory(dataFactory, cache);
@@ -80,7 +80,7 @@ public class AttributeFactoryTest {
    }
 
    @Test
-   public void testCreateAttributeNullType() throws OseeCoreException {
+   public void testCreateAttributeNullType()  {
       when(cache.get(attributeType.getId())).thenReturn(null);
 
       thrown.expect(OseeArgumentException.class);
@@ -91,14 +91,14 @@ public class AttributeFactoryTest {
 
    @SuppressWarnings({"unchecked", "rawtypes"})
    @Test
-   public void testCreateAttribute() throws OseeCoreException {
+   public void testCreateAttribute()  {
       Attribute<Object> actual = factory.createAttribute(container, attributeData);
       assertEquals(attribute.getId(), actual.getId());
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
    @Test
-   public void testCreateAttributeFromArtifactDataAndType() throws OseeCoreException {
+   public void testCreateAttributeFromArtifactDataAndType()  {
       ArtifactData artifactData = mock(ArtifactData.class);
       VersionData artVersionData = mock(VersionData.class);
 
@@ -117,7 +117,7 @@ public class AttributeFactoryTest {
 
    @SuppressWarnings({"unchecked", "rawtypes"})
    @Test
-   public void testCopyAttribute() throws OseeCoreException {
+   public void testCopyAttribute()  {
       AttributeData copiedAttributeData = mock(AttributeData.class);
 
       when(dataFactory.copy(COMMON, attributeData)).thenReturn(copiedAttributeData);
@@ -132,7 +132,7 @@ public class AttributeFactoryTest {
    }
 
    @Test
-   public void testIntroduceAttributeNotInStorage() throws OseeCoreException {
+   public void testIntroduceAttributeNotInStorage()  {
       when(attributeData.getVersion()).thenReturn(attrVersionData);
       when(attrVersionData.isInStorage()).thenReturn(false);
 
@@ -141,7 +141,7 @@ public class AttributeFactoryTest {
    }
 
    @Test
-   public void testIntroduceAttribute() throws OseeCoreException {
+   public void testIntroduceAttribute()  {
       AttributeData introducedAttributeData = mock(AttributeData.class);
 
       when(attributeData.getVersion()).thenReturn(attrVersionData);
@@ -163,7 +163,7 @@ public class AttributeFactoryTest {
    }
 
    @Test
-   public void testGetMaxOccurrenceLimit() throws OseeCoreException {
+   public void testGetMaxOccurrenceLimit()  {
       AttributeTypeId token = mock(AttributeTypeId.class);
 
       when(cache.getMaxOccurrences(token)).thenReturn(56);
@@ -176,7 +176,7 @@ public class AttributeFactoryTest {
    }
 
    @Test
-   public void testGetMinOccurrenceLimit() throws OseeCoreException {
+   public void testGetMinOccurrenceLimit()  {
       AttributeTypeId token = mock(AttributeTypeId.class);
 
       when(cache.getMinOccurrences(token)).thenReturn(99);

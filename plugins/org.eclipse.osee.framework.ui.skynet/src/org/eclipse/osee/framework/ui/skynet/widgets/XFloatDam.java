@@ -44,7 +44,7 @@ public class XFloatDam extends XFloat implements IAttributeWidget {
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, AttributeTypeToken attrName) throws OseeCoreException {
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attrName)  {
       this.artifact = artifact;
       this.attributeType = attrName;
       Double value = artifact.getSoleAttributeValue(getAttributeType(), null);
@@ -68,7 +68,7 @@ public class XFloatDam extends XFloat implements IAttributeWidget {
    }
 
    @Override
-   public Result isDirty() throws OseeCoreException {
+   public Result isDirty()  {
       if (isEditable()) {
          try {
             Double enteredValue = getFloat();
@@ -88,7 +88,7 @@ public class XFloatDam extends XFloat implements IAttributeWidget {
    }
 
    @Override
-   public void revert() throws OseeCoreException {
+   public void revert()  {
       setAttributeType(getArtifact(), getAttributeType());
    }
 }

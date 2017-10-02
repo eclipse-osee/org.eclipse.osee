@@ -48,7 +48,7 @@ public class ArtifactQueryContextLoadExecutor extends AbstractLoadExecutor {
    }
 
    @Override
-   public void load(HasCancellation cancellation, LoadDataHandler handler, CriteriaOrcsLoad criteria, Options options) throws OseeCoreException {
+   public void load(HasCancellation cancellation, LoadDataHandler handler, CriteriaOrcsLoad criteria, Options options)  {
       int fetchSize = computeFetchSize(queryContext);
 
       Id4JoinQuery join = createId4Join(getJdbcClient(), cancellation, fetchSize);
@@ -66,7 +66,7 @@ public class ArtifactQueryContextLoadExecutor extends AbstractLoadExecutor {
       return LoadUtil.computeFetchSize(fetchSize);
    }
 
-   private Id4JoinQuery createId4Join(JdbcClient jdbcClient, HasCancellation cancellation, int fetchSize) throws OseeCoreException {
+   private Id4JoinQuery createId4Join(JdbcClient jdbcClient, HasCancellation cancellation, int fetchSize)  {
       Id4JoinQuery artifactJoin = joinFactory.createId4JoinQuery();
       try {
          for (AbstractJoinQuery join : queryContext.getJoins()) {

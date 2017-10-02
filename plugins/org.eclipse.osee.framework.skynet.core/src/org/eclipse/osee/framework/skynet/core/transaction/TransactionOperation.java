@@ -63,7 +63,7 @@ public abstract class TransactionOperation<K> extends AbstractOperation implemen
       return state;
    }
 
-   protected void ensureCanBeAdded(Object object) throws OseeCoreException {
+   protected void ensureCanBeAdded(Object object)  {
       txMonitor.checkForComodification(getKey(), this, object);
    }
 
@@ -71,7 +71,7 @@ public abstract class TransactionOperation<K> extends AbstractOperation implemen
    public abstract boolean containsItem(Object object);
 
    @Override
-   public void rollback() throws OseeCoreException {
+   public void rollback()  {
       // Do Nothing
    }
 

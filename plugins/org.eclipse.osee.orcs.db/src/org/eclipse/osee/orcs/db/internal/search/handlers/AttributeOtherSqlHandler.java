@@ -96,7 +96,7 @@ public class AttributeOtherSqlHandler extends SqlHandler<CriteriaAttributeOther>
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
+   public boolean addPredicates(AbstractSqlWriter writer)  {
       Collection<AttributeTypeId> attributeTypes = criteria.getAttributeTypes();
 
       if (attributeTypes.size() == 1) {

@@ -38,7 +38,7 @@ public class OrcsWriterSheetProcessorForSettings implements RowProcessor {
    }
 
    @Override
-   public void foundStartOfWorksheet(String sheetName) throws OseeCoreException {
+   public void foundStartOfWorksheet(String sheetName)  {
       // do nothing
    }
 
@@ -58,7 +58,7 @@ public class OrcsWriterSheetProcessorForSettings implements RowProcessor {
    }
 
    @Override
-   public void processRow(String[] row) throws OseeCoreException {
+   public void processRow(String[] row)  {
       rowCount++;
       for (int colCount = 0; colCount < row.length; colCount++) {
          if (colCount == 0) {

@@ -75,7 +75,7 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
       return String.format("Group Search - %s", getGroupSearchName());
    }
 
-   public void getProduct() throws OseeCoreException {
+   public void getProduct()  {
       if (groupName == null) {
          return;
       }
@@ -88,7 +88,7 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
+   public Collection<Artifact> performSearch(SearchType searchType)  {
       getProduct();
       if (getSearchGroups() == null) {
          return EMPTY_SET;
@@ -114,7 +114,7 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
    }
 
    @Override
-   public void performUI(SearchType searchType) throws OseeCoreException {
+   public void performUI(SearchType searchType)  {
       super.performUI(searchType);
       if (groupName != null) {
          return;

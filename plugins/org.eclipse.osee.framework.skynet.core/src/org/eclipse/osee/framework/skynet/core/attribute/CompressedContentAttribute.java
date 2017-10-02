@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 public final class CompressedContentAttribute extends BinaryAttribute<InputStream> {
 
    @Override
-   public InputStream getValue() throws OseeCoreException {
+   public InputStream getValue()  {
       return Lib.byteBufferToInputStream(getAttributeDataProvider().getValueAsBytes());
    }
 
@@ -29,7 +29,7 @@ public final class CompressedContentAttribute extends BinaryAttribute<InputStrea
    }
 
    @Override
-   public boolean setValueFromInputStream(InputStream value) throws OseeCoreException {
+   public boolean setValueFromInputStream(InputStream value)  {
       boolean response = false;
       try {
          byte[] data = Lib.inputStreamToBytes(value);
@@ -53,7 +53,7 @@ public final class CompressedContentAttribute extends BinaryAttribute<InputStrea
    }
 
    @Override
-   protected void uponInitialize() throws OseeCoreException {
+   protected void uponInitialize()  {
       getAttributeDataProvider().setDisplayableString(getAttributeType().getName());
    }
 }

@@ -34,15 +34,15 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
  */
 public interface IAtsQuery {
 
-   IAtsQuery andTeam(IAtsTeamDefinition teamDef) throws OseeCoreException;
+   IAtsQuery andTeam(IAtsTeamDefinition teamDef) ;
 
-   IAtsQuery andStateType(StateType... stateType) throws OseeCoreException;
+   IAtsQuery andStateType(StateType... stateType) ;
 
-   <T extends IAtsWorkItem> Collection<T> getItems() throws OseeCoreException;
+   <T extends IAtsWorkItem> Collection<T> getItems() ;
 
    <T extends IAtsWorkItem> Collection<T> getItems(Class<T> clazz);
 
-   IAtsQuery andAttr(AttributeTypeId attributeType, Collection<String> values, QueryOption... queryOption) throws OseeCoreException;
+   IAtsQuery andAttr(AttributeTypeId attributeType, Collection<String> values, QueryOption... queryOption) ;
 
    IAtsQuery andAtsIds(Collection<String> atsIds);
 
@@ -50,7 +50,7 @@ public interface IAtsQuery {
 
    IAtsQuery andLegacyIds(Collection<String> legacyIds);
 
-   IAtsWorkItemFilter andFilter() throws OseeCoreException;
+   IAtsWorkItemFilter andFilter() ;
 
    IAtsQuery isOfType(IArtifactType... artifactType);
 
@@ -94,7 +94,7 @@ public interface IAtsQuery {
 
    IAtsQuery andActionableItem(IAtsActionableItem actionableItem);
 
-   Collection<ArtifactId> getItemIds() throws OseeCoreException;
+   Collection<ArtifactId> getItemIds() ;
 
    IAtsQuery andAssigneeWas(IAtsUser... assignees);
 

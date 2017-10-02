@@ -73,7 +73,7 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
    }
 
    @Override
-   public void getSmaArtifactsOneLevel(AbstractWorkflowArtifact smaArtifact, Set<Artifact> artifacts) throws OseeCoreException {
+   public void getSmaArtifactsOneLevel(AbstractWorkflowArtifact smaArtifact, Set<Artifact> artifacts)  {
       super.getSmaArtifactsOneLevel(smaArtifact, artifacts);
       try {
          artifacts.addAll(ReviewManager.getReviews(this));
@@ -114,7 +114,7 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
    }
 
    @Override
-   public String getEditorTitle() throws OseeCoreException {
+   public String getEditorTitle()  {
       try {
          if (getTeamDefinition().isTeamUsesVersions()) {
             IAtsVersion version = AtsClientService.get().getVersionService().getTargetedVersion(this);
@@ -126,12 +126,12 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
       return super.getEditorTitle();
    }
 
-   public void setTeamDefinition(IAtsTeamDefinition teamDef) throws OseeCoreException {
+   public void setTeamDefinition(IAtsTeamDefinition teamDef)  {
       setSoleAttributeValue(AtsAttributeTypes.TeamDefinitionReference, teamDef);
    }
 
    @Override
-   public IAtsTeamDefinition getTeamDefinition() throws OseeCoreException {
+   public IAtsTeamDefinition getTeamDefinition()  {
       ArtifactId artId = AtsClientService.get().getAttributeResolver().getSoleArtifactIdReference((IAtsObject) this,
          AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);
       if (artId.isInvalid()) {
@@ -160,7 +160,7 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
    }
 
    @Override
-   public void atsDelete(Set<Artifact> deleteArts, Map<Artifact, Object> allRelated) throws OseeCoreException {
+   public void atsDelete(Set<Artifact> deleteArts, Map<Artifact, Object> allRelated)  {
       super.atsDelete(deleteArts, allRelated);
       for (AbstractReviewArtifact reviewArt : ReviewManager.getReviews(this)) {
          reviewArt.atsDelete(deleteArts, allRelated);
@@ -177,12 +177,12 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
    }
 
    @Override
-   public Artifact getParentAtsArtifact() throws OseeCoreException {
+   public Artifact getParentAtsArtifact()  {
       return getParentActionArtifact();
    }
 
    @Override
-   public ActionArtifact getParentActionArtifact() throws OseeCoreException {
+   public ActionArtifact getParentActionArtifact()  {
       if (parentAction != null) {
          return parentAction;
       }
@@ -211,7 +211,7 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
    }
 
    @Override
-   public double getManHrsPerDayPreference() throws OseeCoreException {
+   public double getManHrsPerDayPreference()  {
       try {
          return getHoursPerWorkDayFromItemAndChildren(getTeamDefinition());
       } catch (Exception ex) {
@@ -238,7 +238,7 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
    }
 
    @Override
-   public double getWorldViewWeeklyBenefit() throws OseeCoreException {
+   public double getWorldViewWeeklyBenefit()  {
       if (isAttributeTypeValid(AtsAttributeTypes.WeeklyBenefit)) {
          return 0;
       }
@@ -249,11 +249,11 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
       return new Float(value).doubleValue();
    }
 
-   public IOseeBranch getWorkingBranchForceCacheUpdate() throws OseeCoreException {
+   public IOseeBranch getWorkingBranchForceCacheUpdate()  {
       return AtsClientService.get().getBranchService().getWorkingBranch(this, true);
    }
 
-   public IOseeBranch getWorkingBranch() throws OseeCoreException {
+   public IOseeBranch getWorkingBranch()  {
       return AtsClientService.get().getBranchService().getWorkingBranch(this);
    }
 
@@ -274,15 +274,15 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
    }
 
    @Override
-   public Set<IAtsActionableItem> getActionableItems() throws OseeCoreException {
+   public Set<IAtsActionableItem> getActionableItems()  {
       return AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(this);
    }
 
-   public Collection<TaskArtifact> getTaskArtifacts() throws OseeCoreException {
+   public Collection<TaskArtifact> getTaskArtifacts()  {
       return AtsTaskCache.getTaskArtifacts(this);
    }
 
-   public Collection<TaskArtifact> getTaskArtifacts(IStateToken state) throws OseeCoreException {
+   public Collection<TaskArtifact> getTaskArtifacts(IStateToken state)  {
       List<TaskArtifact> arts = new ArrayList<>();
       for (TaskArtifact taskArt : getTaskArtifacts()) {
          if (taskArt.getSoleAttributeValue(AtsAttributeTypes.RelatedToState, "").equals(state.getName())) {

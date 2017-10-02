@@ -173,7 +173,7 @@ public class WordTemplateProcessor {
     * Parse through template to find xml defining artifact sets and replace it with the result of publishing those
     * artifacts Only used by Publish SRS
     */
-   public void publishWithNestedTemplates(Artifact masterTemplateArtifact, Artifact slaveTemplateArtifact, List<Artifact> artifacts) throws OseeCoreException {
+   public void publishWithNestedTemplates(Artifact masterTemplateArtifact, Artifact slaveTemplateArtifact, List<Artifact> artifacts)  {
       nestedCount = 0;
       String masterTemplate = masterTemplateArtifact.getSoleAttributeValue(CoreAttributeTypes.WholeWordContent, "");
       String masterTemplateOptions =
@@ -284,7 +284,7 @@ public class WordTemplateProcessor {
     * @param folder = null when not using an extension template
     * @param outlineNumber if null will find based on first artifact
     */
-   public InputStream applyTemplate(List<Artifact> artifacts, String templateContent, String templateOptions, String templateStyles, IContainer folder, String outlineNumber, String outlineType, PresentationType presentationType) throws OseeCoreException {
+   public InputStream applyTemplate(List<Artifact> artifacts, String templateContent, String templateOptions, String templateStyles, IContainer folder, String outlineNumber, String outlineType, PresentationType presentationType)  {
 
       overrideClassification = (String) renderer.getRendererOptionValue(RendererOption.OVERRIDE_DATA_RIGHTS);
       if (overrideClassification == null) {
@@ -532,7 +532,7 @@ public class WordTemplateProcessor {
       return endOfTemplate;
    }
 
-   protected String peekAtFirstArtifactToGetParagraphNumber(String template, String nextParagraphNumber, List<Artifact> artifacts) throws OseeCoreException {
+   protected String peekAtFirstArtifactToGetParagraphNumber(String template, String nextParagraphNumber, List<Artifact> artifacts)  {
       String startParagraphNumber = "1";
       if (artifacts != null) {
          Matcher matcher = headElementsPattern.matcher(template);
@@ -554,7 +554,7 @@ public class WordTemplateProcessor {
       return startParagraphNumber;
    }
 
-   private void processArtifactSet(String templateOptions, List<Artifact> artifacts, WordMLProducer wordMl, String outlineType, PresentationType presentationType, ArtifactId viewId) throws OseeCoreException {
+   private void processArtifactSet(String templateOptions, List<Artifact> artifacts, WordMLProducer wordMl, String outlineType, PresentationType presentationType, ArtifactId viewId)  {
       nonTemplateArtifacts.clear();
       renderer.updateOption(RendererOption.VIEW, viewId == null ? ArtifactId.SENTINEL : viewId);
 
@@ -620,7 +620,7 @@ public class WordTemplateProcessor {
       return toReturn;
    }
 
-   private void processObjectArtifact(Artifact artifact, WordMLProducer wordMl, String outlineType, PresentationType presentationType, DataRightResult data) throws OseeCoreException {
+   private void processObjectArtifact(Artifact artifact, WordMLProducer wordMl, String outlineType, PresentationType presentationType, DataRightResult data)  {
       if (!artifact.isAttributeTypeValid(CoreAttributeTypes.WholeWordContent) && !artifact.isAttributeTypeValid(
          CoreAttributeTypes.NativeContent)) {
          // If the artifact has not been processed
@@ -709,7 +709,7 @@ public class WordTemplateProcessor {
       }
    }
 
-   private void processAttributes(Artifact artifact, WordMLProducer wordMl, PresentationType presentationType, boolean publishInLine, String footer) throws OseeCoreException {
+   private void processAttributes(Artifact artifact, WordMLProducer wordMl, PresentationType presentationType, boolean publishInLine, String footer)  {
       for (AttributeElement attributeElement : attributeElements) {
          String attributeName = attributeElement.getAttributeName();
 
@@ -757,7 +757,7 @@ public class WordTemplateProcessor {
       wordMl.endParagraph();
    }
 
-   private void processAttribute(Artifact artifact, WordMLProducer wordMl, AttributeElement attributeElement, AttributeTypeToken attributeType, boolean allAttrs, PresentationType presentationType, boolean publishInLine, String footer) throws OseeCoreException {
+   private void processAttribute(Artifact artifact, WordMLProducer wordMl, AttributeElement attributeElement, AttributeTypeToken attributeType, boolean allAttrs, PresentationType presentationType, boolean publishInLine, String footer)  {
       renderer.updateOption(RendererOption.ALL_ATTRIBUTES, allAttrs);
       // This is for SRS Publishing. Do not publish unspecified attributes
       if (!allAttrs && attributeType.matches(Partition, SeverityCategory)) {

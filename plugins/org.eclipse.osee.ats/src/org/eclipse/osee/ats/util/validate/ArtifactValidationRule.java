@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
  */
 public class ArtifactValidationRule extends AbstractValidationRule {
 
-   private String getStatusMessage(Artifact itemChecked, IStatus status) throws OseeCoreException {
+   private String getStatusMessage(Artifact itemChecked, IStatus status)  {
       String link =
          XResultDataUI.getHyperlink(String.format("%s:[%s]", itemChecked.getArtifactTypeName(), itemChecked.getName()),
             AtsClientService.get().getAtsId(itemChecked), itemChecked.getBranch());
@@ -34,7 +34,7 @@ public class ArtifactValidationRule extends AbstractValidationRule {
    }
 
    @Override
-   protected ValidationResult validate(Artifact artToValidate, IProgressMonitor monitor) throws OseeCoreException {
+   protected ValidationResult validate(Artifact artToValidate, IProgressMonitor monitor)  {
       Collection<String> errorMessages = new ArrayList<>();
       boolean validationPassed = true;
       IStatus status = OseeValidator.getInstance().validate(IOseeValidator.LONG, artToValidate);

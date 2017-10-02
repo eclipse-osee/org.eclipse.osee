@@ -55,7 +55,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
       super();
    }
 
-   private static IAtsTeamDefinition getTeamDef(DemoTeam team) throws OseeCoreException {
+   private static IAtsTeamDefinition getTeamDef(DemoTeam team)  {
       IAtsTeamDefinition results = null;
       // Add check to keep exception from occurring for OSEE developers running against production
       if (!ClientSessionManager.isProductionDataStore()) {
@@ -69,7 +69,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
    }
 
    @Override
-   public List<XNavigateItem> getNavigateItems(XNavigateItem parentItem) throws OseeCoreException {
+   public List<XNavigateItem> getNavigateItems(XNavigateItem parentItem)  {
       List<XNavigateItem> items = new ArrayList<>();
 
       if (DbConnectionUtility.areOSEEServicesAvailable().isFalse()) {

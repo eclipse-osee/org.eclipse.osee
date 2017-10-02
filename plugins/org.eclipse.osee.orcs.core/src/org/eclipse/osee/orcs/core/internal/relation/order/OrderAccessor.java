@@ -17,8 +17,8 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface OrderAccessor {
 
-   void load(HasOrderData data) throws OseeCoreException;
+   void load(HasOrderData data) ;
 
-   void store(HasOrderData data, OrderChange changeType) throws OseeCoreException;
+   void store(HasOrderData data, OrderChange changeType) ;
 
 }

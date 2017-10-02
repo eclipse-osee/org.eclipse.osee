@@ -145,7 +145,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
    }
 
    @Override
-   public void process(IProgressMonitor monitor, TraceUnit traceUnit) throws OseeCoreException {
+   public void process(IProgressMonitor monitor, TraceUnit traceUnit)  {
       if (transaction == null) {
          transaction = TransactionManager.createTransaction(importIntoBranch, "Importing Trace Unit(s)");
          handler = new HierarchyHandler(transaction);
@@ -290,7 +290,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
    }
 
    @Override
-   public void onComplete(IProgressMonitor monitor) throws OseeCoreException {
+   public void onComplete(IProgressMonitor monitor)  {
       try {
          if (!monitor.isCanceled()) {
             if (transaction != null) {

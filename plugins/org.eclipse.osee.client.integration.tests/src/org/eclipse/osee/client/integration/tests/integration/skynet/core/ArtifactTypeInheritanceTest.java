@@ -43,13 +43,13 @@ public class ArtifactTypeInheritanceTest {
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
    @Test
-   public void testIsOfTypeWithNull() throws OseeCoreException {
+   public void testIsOfTypeWithNull()  {
       ArtifactType baseArtifactType = ArtifactTypeManager.getType(CoreArtifactTypes.Artifact);
       Assert.assertFalse(baseArtifactType.inheritsFrom((ArtifactType) null));
    }
 
    @Test
-   public void testAllArtifactTypesInheritFromArtifactWithIsOfType() throws OseeCoreException {
+   public void testAllArtifactTypesInheritFromArtifactWithIsOfType()  {
       for (ArtifactType artifactType : ArtifactTypeManager.getAllTypes()) {
          Assert.assertTrue(String.format("[%s] was not of type [%s]", artifactType, CoreArtifactTypes.Artifact),
             artifactType.inheritsFrom(CoreArtifactTypes.Artifact));
@@ -57,7 +57,7 @@ public class ArtifactTypeInheritanceTest {
    }
 
    @Test
-   public void testAttributeTypesOfDescendants() throws OseeCoreException {
+   public void testAttributeTypesOfDescendants()  {
       ArtifactType baseArtifactType = ArtifactTypeManager.getType(CoreArtifactTypes.Artifact);
       Set<ArtifactType> allTypes = new HashSet<>(ArtifactTypeManager.getAllTypes());
       allTypes.remove(baseArtifactType);

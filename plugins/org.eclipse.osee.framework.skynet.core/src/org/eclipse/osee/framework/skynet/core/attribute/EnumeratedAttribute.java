@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public class EnumeratedAttribute extends StringAttribute {
 
    @Override
-   public String getDisplayableString() throws OseeCoreException {
+   public String getDisplayableString()  {
       String toDisplay = getAttributeDataProvider().getDisplayableString();
       return Strings.isValid(toDisplay) ? toDisplay : "<Select>";
    }

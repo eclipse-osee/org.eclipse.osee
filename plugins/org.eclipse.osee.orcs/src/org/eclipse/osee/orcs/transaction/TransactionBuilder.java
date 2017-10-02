@@ -41,102 +41,102 @@ public interface TransactionBuilder {
 
    String getComment();
 
-   void setComment(String comment) throws OseeCoreException;
+   void setComment(String comment) ;
 
    /**
     * @return TransactionRecord or null of no changes made
     */
-   TransactionReadable commit() throws OseeCoreException;
+   TransactionReadable commit() ;
 
    boolean isCommitInProgress();
 
    // ARTIFACT
 
-   ArtifactToken createArtifact(IArtifactType artifactType, String name) throws OseeCoreException;
+   ArtifactToken createArtifact(IArtifactType artifactType, String name) ;
 
-   ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid) throws OseeCoreException;
+   ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid) ;
 
-   ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid, long uuid) throws OseeCoreException;
+   ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid, long uuid) ;
 
    ArtifactToken createArtifact(ArtifactToken configsFolder);
 
-   void deleteArtifact(ArtifactId sourceArtifact) throws OseeCoreException;
+   void deleteArtifact(ArtifactId sourceArtifact) ;
 
-   ArtifactToken copyArtifact(ArtifactReadable sourceArtifact) throws OseeCoreException;
+   ArtifactToken copyArtifact(ArtifactReadable sourceArtifact) ;
 
-   ArtifactToken copyArtifact(ArtifactReadable sourceArtifact, Collection<AttributeTypeId> attributesToDuplicate) throws OseeCoreException;
+   ArtifactToken copyArtifact(ArtifactReadable sourceArtifact, Collection<AttributeTypeId> attributesToDuplicate) ;
 
-   ArtifactToken copyArtifact(BranchId fromBranch, ArtifactId sourceArtifact) throws OseeCoreException;
+   ArtifactToken copyArtifact(BranchId fromBranch, ArtifactId sourceArtifact) ;
 
-   ArtifactToken copyArtifact(BranchId fromBranch, ArtifactId sourceArtifact, Collection<AttributeTypeId> attributesToDuplicate) throws OseeCoreException;
+   ArtifactToken copyArtifact(BranchId fromBranch, ArtifactId sourceArtifact, Collection<AttributeTypeId> attributesToDuplicate) ;
 
-   ArtifactToken introduceArtifact(BranchId fromBranch, ArtifactId sourceArtifact) throws OseeCoreException;
+   ArtifactToken introduceArtifact(BranchId fromBranch, ArtifactId sourceArtifact) ;
 
-   ArtifactToken replaceWithVersion(ArtifactReadable sourceArtifact, ArtifactReadable destination) throws OseeCoreException;
+   ArtifactToken replaceWithVersion(ArtifactReadable sourceArtifact, ArtifactReadable destination) ;
 
    // ATTRIBUTE
 
-   void setName(ArtifactId art, String value) throws OseeCoreException;
+   void setName(ArtifactId art, String value) ;
 
-   AttributeId createAttribute(ArtifactId art, AttributeTypeId attributeType) throws OseeCoreException;
+   AttributeId createAttribute(ArtifactId art, AttributeTypeId attributeType) ;
 
-   <T> AttributeId createAttribute(ArtifactId art, AttributeTypeId attributeType, T value) throws OseeCoreException;
+   <T> AttributeId createAttribute(ArtifactId art, AttributeTypeId attributeType, T value) ;
 
-   AttributeId createAttributeFromString(ArtifactId art, AttributeTypeId attributeType, String value) throws OseeCoreException;
+   AttributeId createAttributeFromString(ArtifactId art, AttributeTypeId attributeType, String value) ;
 
-   <T> void setSoleAttributeValue(ArtifactId art, AttributeTypeId attributeType, T value) throws OseeCoreException;
+   <T> void setSoleAttributeValue(ArtifactId art, AttributeTypeId attributeType, T value) ;
 
-   void setSoleAttributeFromStream(ArtifactId art, AttributeTypeId attributeType, InputStream stream) throws OseeCoreException;
+   void setSoleAttributeFromStream(ArtifactId art, AttributeTypeId attributeType, InputStream stream) ;
 
-   void setSoleAttributeFromString(ArtifactId art, AttributeTypeId attributeType, String value) throws OseeCoreException;
+   void setSoleAttributeFromString(ArtifactId art, AttributeTypeId attributeType, String value) ;
 
-   <T> void setAttributesFromValues(ArtifactId art, AttributeTypeId attributeType, T... values) throws OseeCoreException;
+   <T> void setAttributesFromValues(ArtifactId art, AttributeTypeId attributeType, T... values) ;
 
-   <T> void setAttributesFromValues(ArtifactId art, AttributeTypeId attributeType, Collection<T> values) throws OseeCoreException;
+   <T> void setAttributesFromValues(ArtifactId art, AttributeTypeId attributeType, Collection<T> values) ;
 
-   void setAttributesFromStrings(ArtifactId art, AttributeTypeId attributeType, String... values) throws OseeCoreException;
+   void setAttributesFromStrings(ArtifactId art, AttributeTypeId attributeType, String... values) ;
 
-   void setAttributesFromStrings(ArtifactId art, AttributeTypeId attributeType, Collection<String> values) throws OseeCoreException;
+   void setAttributesFromStrings(ArtifactId art, AttributeTypeId attributeType, Collection<String> values) ;
 
-   <T> void setAttributeById(ArtifactId art, AttributeId attrId, T value) throws OseeCoreException;
+   <T> void setAttributeById(ArtifactId art, AttributeId attrId, T value) ;
 
-   void setAttributeById(ArtifactId art, AttributeId attrId, String value) throws OseeCoreException;
+   void setAttributeById(ArtifactId art, AttributeId attrId, String value) ;
 
-   void setAttributeById(ArtifactId art, AttributeId attrId, InputStream stream) throws OseeCoreException;
+   void setAttributeById(ArtifactId art, AttributeId attrId, InputStream stream) ;
 
    void setAttributeApplicability(ArtifactId art, AttributeId attrId, ApplicabilityId applicId);
 
-   void deleteByAttributeId(ArtifactId art, AttributeId attrId) throws OseeCoreException;
+   void deleteByAttributeId(ArtifactId art, AttributeId attrId) ;
 
-   void deleteSoleAttribute(ArtifactId art, AttributeTypeId attributeType) throws OseeCoreException;
+   void deleteSoleAttribute(ArtifactId art, AttributeTypeId attributeType) ;
 
-   void deleteAttributes(ArtifactId art, AttributeTypeId attributeType) throws OseeCoreException;
+   void deleteAttributes(ArtifactId art, AttributeTypeId attributeType) ;
 
-   void deleteAttributesWithValue(ArtifactId art, AttributeTypeId attributeType, Object value) throws OseeCoreException;
+   void deleteAttributesWithValue(ArtifactId art, AttributeTypeId attributeType, Object value) ;
 
    /// TX
 
-   void addChildren(ArtifactId artA, Iterable<? extends ArtifactId> children) throws OseeCoreException;
+   void addChildren(ArtifactId artA, Iterable<? extends ArtifactId> children) ;
 
-   void addChildren(ArtifactId artA, ArtifactId... children) throws OseeCoreException;
+   void addChildren(ArtifactId artA, ArtifactId... children) ;
 
-   void relate(ArtifactId artA, IRelationType relType, ArtifactId artB) throws OseeCoreException;
+   void relate(ArtifactId artA, IRelationType relType, ArtifactId artB) ;
 
-   void relate(ArtifactId artA, IRelationType relType, ArtifactId artB, String rationale) throws OseeCoreException;
+   void relate(ArtifactId artA, IRelationType relType, ArtifactId artB, String rationale) ;
 
-   void relate(ArtifactId artA, IRelationType relType, ArtifactId artB, RelationSorter sortType) throws OseeCoreException;
+   void relate(ArtifactId artA, IRelationType relType, ArtifactId artB, RelationSorter sortType) ;
 
-   void relate(ArtifactId artA, IRelationType relType, ArtifactId artB, String rationale, RelationSorter sortType) throws OseeCoreException;
+   void relate(ArtifactId artA, IRelationType relType, ArtifactId artB, String rationale, RelationSorter sortType) ;
 
-   void setRelations(ArtifactId artA, IRelationType relType, Iterable<? extends ArtifactId> artBs) throws OseeCoreException;
+   void setRelations(ArtifactId artA, IRelationType relType, Iterable<? extends ArtifactId> artBs) ;
 
-   void setRationale(ArtifactId artA, IRelationType relType, ArtifactId artB, String rationale) throws OseeCoreException;
+   void setRationale(ArtifactId artA, IRelationType relType, ArtifactId artB, String rationale) ;
 
-   void unrelate(ArtifactId artA, IRelationType relType, ArtifactId artB) throws OseeCoreException;
+   void unrelate(ArtifactId artA, IRelationType relType, ArtifactId artB) ;
 
-   void unrelateFromAll(ArtifactId art) throws OseeCoreException;
+   void unrelateFromAll(ArtifactId art) ;
 
-   void unrelateFromAll(RelationTypeSide typeSide, ArtifactId art) throws OseeCoreException;
+   void unrelateFromAll(RelationTypeSide typeSide, ArtifactId art) ;
 
    void setRelationApplicability(ArtifactId artA, IRelationType relType, ArtifactId artB, ApplicabilityId applicId);
 

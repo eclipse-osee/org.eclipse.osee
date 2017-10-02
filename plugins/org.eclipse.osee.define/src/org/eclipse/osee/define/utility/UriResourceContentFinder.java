@@ -64,7 +64,7 @@ public class UriResourceContentFinder {
       }
    }
 
-   public void execute(IProgressMonitor monitor) throws OseeCoreException {
+   public void execute(IProgressMonitor monitor)  {
       try {
          for (URI source : sources) {
             if (monitor.isCanceled()) {
@@ -189,7 +189,7 @@ public class UriResourceContentFinder {
       return toReturn;
    }
 
-   private void notifyListeners(final IResourceLocator locator, final URI uriPath, final String fileName, final CharBuffer fileBuffer) throws OseeCoreException {
+   private void notifyListeners(final IResourceLocator locator, final URI uriPath, final String fileName, final CharBuffer fileBuffer)  {
       for (IResourceHandler handler : locatorMap.getValues(locator)) {
          handler.onResourceFound(uriPath, fileName, fileBuffer);
       }

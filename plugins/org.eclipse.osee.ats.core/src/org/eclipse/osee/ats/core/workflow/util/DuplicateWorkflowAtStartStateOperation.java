@@ -38,7 +38,7 @@ public class DuplicateWorkflowAtStartStateOperation extends AbstractDuplicateWor
    }
 
    @Override
-   public XResultData run() throws OseeCoreException {
+   public XResultData run()  {
       XResultData results = validate();
       if (results.isErrors()) {
          return results;

@@ -36,7 +36,7 @@ public class CopyAtsValidation {
       this.resultData = resultData;
    }
 
-   public void validate() throws OseeCoreException {
+   public void validate()  {
       configData.validateData(resultData);
       if (resultData.isErrors()) {
          return;
@@ -51,7 +51,7 @@ public class CopyAtsValidation {
       validateActionableItem(configData.getActionableItem());
    }
 
-   private void performValidateAtsDatabaseChecks() throws OseeCoreException {
+   private void performValidateAtsDatabaseChecks()  {
       ValidateResults results = new ValidateResults();
 
       // Validate AIs to TeamDefs
@@ -67,7 +67,7 @@ public class CopyAtsValidation {
       results.addResultsMapToResultData(resultData);
    }
 
-   private void validateTeamDefinition(IAtsTeamDefinition teamDef) throws OseeCoreException {
+   private void validateTeamDefinition(IAtsTeamDefinition teamDef)  {
       String newName = CopyAtsUtil.getConvertedName(configData, teamDef.getName());
       if (newName.equals(teamDef.getName())) {
          resultData.errorf("Could not get new name from name conversion for Team Definition [%s]", teamDef.getName());
@@ -79,7 +79,7 @@ public class CopyAtsValidation {
       }
    }
 
-   private void validateActionableItem(IAtsActionableItem aiArt) throws OseeCoreException {
+   private void validateActionableItem(IAtsActionableItem aiArt)  {
       String newName = CopyAtsUtil.getConvertedName(configData, aiArt.getName());
       if (newName.equals(aiArt.getName())) {
          resultData.errorf("Could not get new name from name conversion for ActionableItem [%s]", aiArt.getName());

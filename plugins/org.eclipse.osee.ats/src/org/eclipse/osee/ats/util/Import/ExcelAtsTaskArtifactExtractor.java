@@ -55,7 +55,7 @@ public class ExcelAtsTaskArtifactExtractor {
       this.sma = artifact;
    }
 
-   public void process(URI source) throws OseeCoreException {
+   public void process(URI source)  {
       try {
          XMLReader xmlReader = XMLReaderFactory.createXMLReader();
          IProgressMonitor monitor = getMonitor();
@@ -94,7 +94,7 @@ public class ExcelAtsTaskArtifactExtractor {
       private final IAtsUser createdBy;
       private final NewTaskData newTaskData;
 
-      protected InternalRowProcessor(IProgressMonitor monitor, NewTaskData newTaskData, AbstractWorkflowArtifact sma) throws OseeCoreException {
+      protected InternalRowProcessor(IProgressMonitor monitor, NewTaskData newTaskData, AbstractWorkflowArtifact sma)  {
          this.monitor = monitor;
          this.newTaskData = newTaskData;
          this.sma = sma;
@@ -133,7 +133,7 @@ public class ExcelAtsTaskArtifactExtractor {
       }
 
       @Override
-      public void processRow(String[] row) throws OseeCoreException {
+      public void processRow(String[] row)  {
          rowNum++;
          monitor.setTaskName("Processing Row " + rowNum);
          JaxAtsTask task = JaxAtsTaskFactory.get(newTaskData, "", createdBy, createdDate);
@@ -205,7 +205,7 @@ public class ExcelAtsTaskArtifactExtractor {
          return fullRow;
       }
 
-      private void processTitle(String[] row, JaxAtsTask taskArt, int i) throws OseeCoreException {
+      private void processTitle(String[] row, JaxAtsTask taskArt, int i)  {
          String str = row[i];
          if (Strings.isValid(str)) {
             monitor.subTask(String.format("Title \"%s\"", str));
@@ -213,35 +213,35 @@ public class ExcelAtsTaskArtifactExtractor {
          }
       }
 
-      private void processNotes(String[] row, JaxAtsTask taskArt, int i) throws OseeCoreException {
+      private void processNotes(String[] row, JaxAtsTask taskArt, int i)  {
          String str = row[i];
          if (Strings.isValid(str)) {
             taskArt.addAttribute(AtsAttributeTypes.SmaNote, str);
          }
       }
 
-      private void processRelatedToState(String[] row, JaxAtsTask taskArt, int i) throws OseeCoreException {
+      private void processRelatedToState(String[] row, JaxAtsTask taskArt, int i)  {
          String str = row[i];
          if (Strings.isValid(str)) {
             taskArt.addAttribute(AtsAttributeTypes.RelatedToState, str);
          }
       }
 
-      private void processDescription(String[] row, JaxAtsTask taskArt, int i) throws OseeCoreException {
+      private void processDescription(String[] row, JaxAtsTask taskArt, int i)  {
          String str = row[i];
          if (Strings.isValid(str)) {
             taskArt.addAttribute(AtsAttributeTypes.Description, str);
          }
       }
 
-      private void processResolution(String[] row, JaxAtsTask taskArt, int i) throws OseeCoreException {
+      private void processResolution(String[] row, JaxAtsTask taskArt, int i)  {
          String str = row[i];
          if (Strings.isValid(str)) {
             taskArt.addAttribute(AtsAttributeTypes.Resolution, str);
          }
       }
 
-      private void processCreatedBy(String[] row, JaxAtsTask taskArt, int i) throws OseeCoreException {
+      private void processCreatedBy(String[] row, JaxAtsTask taskArt, int i)  {
          String str = row[i];
          if (Strings.isValid(str)) {
             IAtsUser user = null;
@@ -266,7 +266,7 @@ public class ExcelAtsTaskArtifactExtractor {
          }
       }
 
-      private void processEstimatedHours(String[] row, JaxAtsTask taskArt, int i) throws OseeArgumentException, OseeCoreException {
+      private void processEstimatedHours(String[] row, JaxAtsTask taskArt, int i)  {
          String str = row[i];
          double hours = 0;
          if (Strings.isValid(str)) {
@@ -279,7 +279,7 @@ public class ExcelAtsTaskArtifactExtractor {
          }
       }
 
-      private void processHoursSpent(String[] row, int i) throws OseeArgumentException, OseeCoreException {
+      private void processHoursSpent(String[] row, int i)  {
          String str = row[i];
          double hours = 0;
          if (Strings.isValid(str)) {
@@ -294,7 +294,7 @@ public class ExcelAtsTaskArtifactExtractor {
          }
       }
 
-      private void processPercentComplete(String[] row, int i) throws OseeArgumentException, OseeCoreException {
+      private void processPercentComplete(String[] row, int i)  {
          String str = row[i];
          Double percent;
          if (Strings.isValid(str)) {
@@ -312,7 +312,7 @@ public class ExcelAtsTaskArtifactExtractor {
          }
       }
 
-      private void processAssignees(String[] row, JaxAtsTask taskArt, int i) throws OseeCoreException {
+      private void processAssignees(String[] row, JaxAtsTask taskArt, int i)  {
          for (String userName : row[i].split(";")) {
             userName = userName.replaceAll("^\\s+", "");
             userName = userName.replaceAll("\\+$", "");

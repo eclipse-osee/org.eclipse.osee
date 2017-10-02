@@ -91,7 +91,7 @@ public class AdminModule {
             }
          }
 
-         private void addDefaultPermissions() throws OseeCoreException {
+         private void addDefaultPermissions()  {
             List<Object[]> data = new LinkedList<>();
             for (PermissionEnum permission : PermissionEnum.values()) {
                data.add(new Object[] {permission.getPermId(), permission.getName()});

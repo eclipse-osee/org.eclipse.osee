@@ -65,7 +65,7 @@ public class StateManagerUtilityTest {
    private static final IAtsUser Kay = new AtsUser(DemoUsers.Kay_Jones);
 
    @Before
-   public void setup() throws OseeCoreException {
+   public void setup()  {
       MockitoAnnotations.initMocks(this);
       when(workItem.getWorkDefinition()).thenReturn(workDef);
       when(workItem.getStateMgr()).thenReturn(stateMgr);

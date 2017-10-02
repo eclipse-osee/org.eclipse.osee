@@ -41,7 +41,7 @@ public class CreateNewAgileTeam extends XNavigateItemAction {
    }
 
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
+   public void run(TableLoadOption... tableLoadOptions)  {
       EntryDialog ed = new EntryDialog(getName(), "Enter new Agile Team name");
       if (ed.open() == 0) {
          if (Strings.isValid(ed.getEntry())) {

@@ -77,7 +77,7 @@ public class MockWorkItem implements IAtsWorkItem {
    }
 
    @Override
-   public List<IAtsUser> getAssignees() throws OseeCoreException {
+   public List<IAtsUser> getAssignees()  {
       return stateMgr.getAssignees();
    }
 

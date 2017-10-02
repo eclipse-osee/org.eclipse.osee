@@ -110,37 +110,37 @@ public class BranchQueryBuilderImpl<T> implements BranchQueryBuilder<T> {
    }
 
    @Override
-   public T andIsOfType(BranchType... branchType) throws OseeCoreException {
+   public T andIsOfType(BranchType... branchType)  {
       Criteria criteria = criteriaFactory.createBranchTypeCriteria(Arrays.asList(branchType));
       return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
-   public T andStateIs(BranchState... branchState) throws OseeCoreException {
+   public T andStateIs(BranchState... branchState)  {
       Criteria criteria = criteriaFactory.createBranchStateCriteria(Arrays.asList(branchState));
       return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
-   public T andNameEquals(String value) throws OseeCoreException {
+   public T andNameEquals(String value)  {
       Criteria criteria = criteriaFactory.createBranchNameCriteria(value, false);
       return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
-   public T andNamePattern(String pattern) throws OseeCoreException {
+   public T andNamePattern(String pattern)  {
       Criteria criteria = criteriaFactory.createBranchNameCriteria(pattern, true);
       return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
-   public T andIsChildOf(BranchId parent) throws OseeCoreException {
+   public T andIsChildOf(BranchId parent)  {
       Criteria criteria = criteriaFactory.createBranchChildOfCriteria(parent);
       return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
-   public T andIsAncestorOf(BranchId child) throws OseeCoreException {
+   public T andIsAncestorOf(BranchId child)  {
       Criteria criteria = criteriaFactory.createBranchAncestorOfCriteria(child);
       return addAndCheck(getQueryData(), criteria);
    }
@@ -158,7 +158,7 @@ public class BranchQueryBuilderImpl<T> implements BranchQueryBuilder<T> {
    }
 
    @SuppressWarnings("unchecked")
-   private T addAndCheck(QueryData queryData, Criteria criteria) throws OseeCoreException {
+   private T addAndCheck(QueryData queryData, Criteria criteria)  {
       criteria.checkValid(getOptions());
       queryData.addCriteria(criteria);
       return (T) this;

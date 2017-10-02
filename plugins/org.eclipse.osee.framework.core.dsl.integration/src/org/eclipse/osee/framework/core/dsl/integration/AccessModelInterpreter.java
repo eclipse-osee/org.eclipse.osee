@@ -21,8 +21,8 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface AccessModelInterpreter {
 
-   AccessContext getContext(Collection<AccessContext> contexts, IAccessContextId contextId) throws OseeCoreException;
+   AccessContext getContext(Collection<AccessContext> contexts, IAccessContextId contextId) ;
 
-   void computeAccessDetails(AccessDetailCollector collector, AccessContext context, Object objectToCheck) throws OseeCoreException;
+   void computeAccessDetails(AccessDetailCollector collector, AccessContext context, Object objectToCheck) ;
 
 }

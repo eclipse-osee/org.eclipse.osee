@@ -19,5 +19,5 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface AccessModel {
 
-   void computeAccess(IAccessContextId contextId, Collection<Object> objectsToCheck, AccessData accessData) throws OseeCoreException;
+   void computeAccess(IAccessContextId contextId, Collection<Object> objectsToCheck, AccessData accessData) ;
 }

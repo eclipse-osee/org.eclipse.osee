@@ -30,7 +30,7 @@ public class GraphCache {
    private final Map<BranchId, BranchModel> branchToBranchModelMap;
    private final Map<Long, TxModel> txNumberToTxModelMap;
 
-   public GraphCache(BranchId rootBranch) throws OseeCoreException {
+   public GraphCache(BranchId rootBranch)  {
       this.branchToBranchModelMap = new HashMap<>();
       this.txNumberToTxModelMap = new HashMap<>();
       this.rootModel = this.getOrCreateBranchModel(rootBranch);
@@ -97,7 +97,7 @@ public class GraphCache {
       return toReturn;
    }
 
-   protected BranchModel getOrCreateBranchModel(BranchId branch) throws OseeCoreException {
+   protected BranchModel getOrCreateBranchModel(BranchId branch)  {
       BranchModel toReturn = null;
       if (branch.equals(StubBranchModel.STUB_BRANCH)) {
          toReturn = getStubBranchModel();
@@ -119,7 +119,7 @@ public class GraphCache {
       return toReturn;
    }
 
-   private void addTxsToBranchModel(BranchModel branchModel, TransactionRecord toAdd) throws OseeCoreException {
+   private void addTxsToBranchModel(BranchModel branchModel, TransactionRecord toAdd)  {
       TxModel txModel = getOrCreateTxModel(TxData.createTxData(toAdd));
       branchModel.addTx(txModel);
    }

@@ -18,8 +18,8 @@ import org.eclipse.osee.orcs.core.ds.Attribute;
  */
 public interface ArtifactVisitor {
 
-   void visit(Artifact artifact) throws OseeCoreException;
+   void visit(Artifact artifact) ;
 
-   void visit(Attribute<?> attribute) throws OseeCoreException;
+   void visit(Attribute<?> attribute) ;
 
 }

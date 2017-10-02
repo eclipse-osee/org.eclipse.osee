@@ -25,7 +25,7 @@ import org.junit.Test;
 public class ShowChangeReportActionTest extends AbstractAtsActionRunTest {
 
    @Override
-   public ShowChangeReportAction createAction() throws OseeCoreException {
+   public ShowChangeReportAction createAction()  {
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
       Result result = AtsTestUtil.createWorkingBranchFromTeamWf();
       Assert.assertTrue(result.getText(), result.isTrue());

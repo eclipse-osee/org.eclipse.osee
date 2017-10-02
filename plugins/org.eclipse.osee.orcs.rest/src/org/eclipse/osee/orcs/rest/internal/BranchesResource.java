@@ -49,7 +49,7 @@ public class BranchesResource {
 
    @GET
    @Produces(MediaType.TEXT_HTML)
-   public String getAsHtml() throws OseeCoreException {
+   public String getAsHtml()  {
       BranchQuery query = OrcsApplication.getOrcsApi().getQueryFactory().branchQuery();
       ResultSet<BranchReadable> results = query.andIsOfType(BranchType.BASELINE, BranchType.WORKING).getResults();
 

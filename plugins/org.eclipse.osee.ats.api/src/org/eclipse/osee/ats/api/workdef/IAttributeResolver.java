@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IAttributeResolver {
 
-   boolean isAttributeNamed(String attributeName) throws OseeCoreException;
+   boolean isAttributeNamed(String attributeName) ;
 
    String getUnqualifiedName(String attributeName);
 
@@ -36,49 +36,49 @@ public interface IAttributeResolver {
 
    String getDescription(String attributeName);
 
-   <T> T getSoleAttributeValue(IAtsObject atsObject, AttributeTypeId attributeType, T defaultReturnValue) throws OseeCoreException;
+   <T> T getSoleAttributeValue(IAtsObject atsObject, AttributeTypeId attributeType, T defaultReturnValue) ;
 
-   Collection<String> getAttributesToStringList(IAtsObject atsObject, AttributeTypeId attributeType) throws OseeCoreException;
+   Collection<String> getAttributesToStringList(IAtsObject atsObject, AttributeTypeId attributeType) ;
 
-   boolean isAttributeTypeValid(IAtsWorkItem workItem, AttributeTypeId attributeType) throws OseeCoreException;
+   boolean isAttributeTypeValid(IAtsWorkItem workItem, AttributeTypeId attributeType) ;
 
-   String getSoleAttributeValueAsString(IAtsObject atsObject, AttributeTypeId attributeType, String defaultReturnValue) throws OseeCoreException;
+   String getSoleAttributeValueAsString(IAtsObject atsObject, AttributeTypeId attributeType, String defaultReturnValue) ;
 
-   int getAttributeCount(IAtsObject atsObject, AttributeTypeId attributeType) throws OseeCoreException;
+   int getAttributeCount(IAtsObject atsObject, AttributeTypeId attributeType) ;
 
-   int getAttributeCount(ArtifactId artifact, AttributeTypeId attributeType) throws OseeCoreException;
+   int getAttributeCount(ArtifactId artifact, AttributeTypeId attributeType) ;
 
-   void addAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType, Object value) throws OseeCoreException;
+   void addAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType, Object value) ;
 
    <T> Collection<IAttribute<T>> getAttributes(ArtifactId artifact);
 
-   <T> Collection<IAttribute<T>> getAttributes(IAtsWorkItem workItem) throws OseeCoreException;
+   <T> Collection<IAttribute<T>> getAttributes(IAtsWorkItem workItem) ;
 
-   <T> Collection<IAttribute<T>> getAttributes(IAtsWorkItem workItem, AttributeTypeId attributeType) throws OseeCoreException;
+   <T> Collection<IAttribute<T>> getAttributes(IAtsWorkItem workItem, AttributeTypeId attributeType) ;
 
-   <T> Collection<IAttribute<T>> getAttributes(ArtifactId artifact, AttributeTypeId attributeType) throws OseeCoreException;
+   <T> Collection<IAttribute<T>> getAttributes(ArtifactId artifact, AttributeTypeId attributeType) ;
 
-   void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType) throws OseeCoreException;
+   void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType) ;
 
-   <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr) throws OseeCoreException;
+   <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr) ;
 
-   <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, AttributeTypeId attributeType, T value) throws OseeCoreException;
+   <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, AttributeTypeId attributeType, T value) ;
 
-   void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType, IAtsChangeSet changes) throws OseeCoreException;
+   void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType, IAtsChangeSet changes) ;
 
-   void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeId attributeType, Object value, IAtsChangeSet changes) throws OseeCoreException;
+   void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeId attributeType, Object value, IAtsChangeSet changes) ;
 
-   void addAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType, Object value, IAtsChangeSet changes) throws OseeCoreException;
+   void addAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType, Object value, IAtsChangeSet changes) ;
 
-   void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType, Object value, IAtsChangeSet changes) throws OseeCoreException;
+   void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType, Object value, IAtsChangeSet changes) ;
 
-   <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, AttributeTypeId attributeType, T value, IAtsChangeSet changes) throws OseeCoreException;
+   <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, AttributeTypeId attributeType, T value, IAtsChangeSet changes) ;
 
-   <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr, IAtsChangeSet changes) throws OseeCoreException;
+   <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr, IAtsChangeSet changes) ;
 
    AttributeTypeToken getAttributeType(String atrributeName);
 
-   void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeId attributeType, Object value) throws OseeCoreException;
+   void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeId attributeType, Object value) ;
 
    <T> T getSoleAttributeValue(ArtifactId artifact, AttributeTypeId attributeType, T defaultValue);
 

@@ -58,9 +58,9 @@ public abstract class WorldSearchItem {
       this(worldSearchItem.name, worldSearchItem.loadView, worldSearchItem.cancelled, oseeImage);
    }
 
-   public abstract WorldSearchItem copy() throws OseeArgumentException, OseeCoreException;
+   public abstract WorldSearchItem copy() ;
 
-   public String getName() throws OseeCoreException {
+   public String getName()  {
       return name;
    }
 
@@ -68,7 +68,7 @@ public abstract class WorldSearchItem {
     * Method called to display the current search in the view. Override to provide more information about selected
     * values (eg MyWorld)
     */
-   public String getSelectedName(SearchType searchType) throws OseeCoreException {
+   public String getSelectedName(SearchType searchType)  {
       return getName();
    }
 

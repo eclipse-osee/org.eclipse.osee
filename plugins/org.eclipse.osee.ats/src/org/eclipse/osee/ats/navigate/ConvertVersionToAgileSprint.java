@@ -54,7 +54,7 @@ public class ConvertVersionToAgileSprint extends XNavigateItemAction {
    }
 
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
+   public void run(TableLoadOption... tableLoadOptions)  {
 
       List<IAgileTeam> activeAgileTeams = new LinkedList<>();
       IAtsClient client = AtsClientService.get();

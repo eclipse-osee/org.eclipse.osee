@@ -67,26 +67,26 @@ public final class UserManager {
       // Utility class
    }
 
-   private static UserAdmin getUserAdmin() throws OseeCoreException {
+   private static UserAdmin getUserAdmin()  {
       return provider.get();
    }
 
    /**
     * Returns the currently authenticated user
     */
-   public static User getUser() throws OseeCoreException {
+   public static User getUser()  {
       return getUserAdmin().getCurrentUser();
    }
 
-   public static void releaseUser() throws OseeCoreException {
+   public static void releaseUser()  {
       getUserAdmin().releaseCurrentUser();
    }
 
-   public static void clearCache() throws OseeCoreException {
+   public static void clearCache()  {
       getUserAdmin().reset();
    }
 
-   public static List<User> getUsersByUserId(Collection<String> userIds) throws OseeCoreException {
+   public static List<User> getUsersByUserId(Collection<String> userIds)  {
       List<User> users = new ArrayList<>();
       for (String userId : userIds) {
          try {
@@ -104,26 +104,26 @@ public final class UserManager {
    /**
     * @return shallow copy of ArrayList of all active users in the datastore sorted by user name
     */
-   public static List<User> getUsers() throws OseeCoreException {
+   public static List<User> getUsers()  {
       return getUserAdmin().getActiveUsers();
    }
 
-   public static List<User> getUsersAll() throws OseeCoreException {
+   public static List<User> getUsersAll()  {
       return getUserAdmin().getUsersAll();
    }
 
-   public static List<User> getUsersSortedByName() throws OseeCoreException {
+   public static List<User> getUsersSortedByName()  {
       return getUserAdmin().getActiveUsersSortedByName();
    }
 
-   public static List<User> getUsersAllSortedByName() throws OseeCoreException {
+   public static List<User> getUsersAllSortedByName()  {
       return getUserAdmin().getUsersAllSortedByName();
    }
 
    /**
     * Return sorted list of active User.getName() in database
     */
-   public static String[] getUserNames() throws OseeCoreException {
+   public static String[] getUserNames()  {
       return getUserAdmin().getUserNames();
    }
 
@@ -144,11 +144,11 @@ public final class UserManager {
       return name;
    }
 
-   public static User getUserByArtId(ArtifactId userArtifactId) throws OseeCoreException {
+   public static User getUserByArtId(ArtifactId userArtifactId)  {
       return getUserAdmin().getUserByArtId(userArtifactId);
    }
 
-   public static User getUserByArtId(long userArtifactId) throws OseeCoreException {
+   public static User getUserByArtId(long userArtifactId)  {
       return getUserAdmin().getUserByArtId(ArtifactId.valueOf(userArtifactId));
    }
 
@@ -157,47 +157,47 @@ public final class UserManager {
     *
     * @return the first user found with the given name
     */
-   public static User getUserByName(String name) throws OseeCoreException {
+   public static User getUserByName(String name)  {
       return getUserAdmin().getUserByName(name);
    }
 
-   public static User getUser(UserToken user) throws OseeCoreException {
+   public static User getUser(UserToken user)  {
       return getUserAdmin().getUser(user);
    }
 
-   public static User getUserByUserId(String userId) throws OseeCoreException {
+   public static User getUserByUserId(String userId)  {
       return getUserAdmin().getUserByUserId(userId);
    }
 
    /**
     * @return whether the Authentication manager is in the middle of creating a user
-    * @throws OseeCoreException
+    * 
     */
-   public static boolean duringMainUserCreation() throws OseeCoreException {
+   public static boolean duringMainUserCreation()  {
       return getUserAdmin().isDuringCurrentUserCreation();
    }
 
-   public static User createUser(UserToken userToken, SkynetTransaction transaction) throws OseeCoreException {
+   public static User createUser(UserToken userToken, SkynetTransaction transaction)  {
       return getUserAdmin().createUser(userToken, transaction);
    }
 
-   public static String getSetting(String key) throws OseeCoreException {
+   public static String getSetting(String key)  {
       return getUser().getSetting(key);
    }
 
-   public static String getSetting(Long key) throws OseeCoreException {
+   public static String getSetting(Long key)  {
       return getUser().getSetting(String.valueOf(key));
    }
 
-   public static boolean getBooleanSetting(String key) throws OseeCoreException {
+   public static boolean getBooleanSetting(String key)  {
       return getUser().getBooleanSetting(key);
    }
 
-   public static void setSetting(String key, String value) throws OseeCoreException {
+   public static void setSetting(String key, String value)  {
       getUser().setSetting(key, value);
    }
 
-   public static void setSetting(String key, Long value) throws OseeCoreException {
+   public static void setSetting(String key, Long value)  {
       getUser().setSetting(key, String.valueOf(value));
    }
 

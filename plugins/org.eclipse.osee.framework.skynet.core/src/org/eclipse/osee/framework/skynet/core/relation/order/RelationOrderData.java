@@ -55,7 +55,7 @@ public class RelationOrderData {
       lists.clear();
    }
 
-   public void load() throws OseeCoreException {
+   public void load()  {
       clear();
       accessor.load(artifact, this);
    }
@@ -71,17 +71,17 @@ public class RelationOrderData {
       return entries;
    }
 
-   public List<String> getOrderList(RelationTypeToken type, RelationSide side) throws OseeCoreException {
+   public List<String> getOrderList(RelationTypeToken type, RelationSide side)  {
       Pair<RelationSorter, List<String>> currentOrder = getTypeSideEntry(type, side);
       return currentOrder != null ? currentOrder.getSecond() : new ArrayList<String>();
    }
 
-   public RelationSorter getCurrentSorterGuid(RelationType type, RelationSide side) throws OseeCoreException {
+   public RelationSorter getCurrentSorterGuid(RelationType type, RelationSide side)  {
       Pair<RelationSorter, List<String>> currentOrder = getTypeSideEntry(type, side);
       return currentOrder != null ? currentOrder.getFirst() : type.getDefaultOrderTypeGuid();
    }
 
-   private Pair<RelationSorter, List<String>> getTypeSideEntry(RelationTypeToken type, RelationSide side) throws OseeCoreException {
+   private Pair<RelationSorter, List<String>> getTypeSideEntry(RelationTypeToken type, RelationSide side)  {
       return lists.get(type, side);
    }
 
@@ -89,7 +89,7 @@ public class RelationOrderData {
       lists.put(relationType, relationSide, new Pair<RelationSorter, List<String>>(sorterId, guidList));
    }
 
-   public void removeOrderList(RelationTypeToken type, RelationSide side) throws OseeCoreException {
+   public void removeOrderList(RelationTypeToken type, RelationSide side)  {
       Conditions.checkNotNull(type, "relationType");
       Conditions.checkNotNull(side, "relationSide");
       lists.removeAndGet(type, side);
@@ -107,7 +107,7 @@ public class RelationOrderData {
       storeFromGuids(type, side, requestedSorterId, Artifacts.toGuids(relativeSequence));
    }
 
-   public void storeFromGuids(RelationType type, RelationSide side, RelationSorter requestedSorterId, List<String> relativeSequence) throws OseeCoreException {
+   public void storeFromGuids(RelationType type, RelationSide side, RelationSorter requestedSorterId, List<String> relativeSequence)  {
       boolean isDifferentSorterId = isDifferentSorterId(type, side, requestedSorterId);
       boolean changingRelatives = isRelativeOrderChange(type, side, requestedSorterId, relativeSequence);
       if (isDifferentSorterId || changingRelatives) {
@@ -127,15 +127,15 @@ public class RelationOrderData {
       }
    }
 
-   protected boolean isRevertingToDefaultTypeOrder(RelationType type, RelationSide side, RelationSorter sorterId) throws OseeCoreException {
+   protected boolean isRevertingToDefaultTypeOrder(RelationType type, RelationSide side, RelationSorter sorterId)  {
       return sorterId.equals(type.getDefaultOrderTypeGuid()) && isDifferentSorterId(type, side, sorterId);
    }
 
-   protected boolean isRelativeOrderChange(RelationTypeToken type, RelationSide side, RelationSorter sorterId, List<String> relativeSequence) throws OseeCoreException {
+   protected boolean isRelativeOrderChange(RelationTypeToken type, RelationSide side, RelationSorter sorterId, List<String> relativeSequence)  {
       return sorterId.equals(USER_DEFINED) && !relativeSequence.equals(getOrderList(type, side));
    }
 
-   protected boolean isDifferentSorterId(RelationType type, RelationSide side, RelationSorter sorterId) throws OseeCoreException {
+   protected boolean isDifferentSorterId(RelationType type, RelationSide side, RelationSorter sorterId)  {
       RelationSorter currentSorterGuid = getCurrentSorterGuid(type, side);
       return !sorterId.equals(currentSorterGuid);
    }

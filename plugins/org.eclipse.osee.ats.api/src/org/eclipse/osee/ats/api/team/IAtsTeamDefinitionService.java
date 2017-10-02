@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 public interface IAtsTeamDefinitionService {
 
-   IAtsTeamDefinition getTeamDefinition(IAtsWorkItem workItem) throws OseeCoreException;
+   IAtsTeamDefinition getTeamDefinition(IAtsWorkItem workItem) ;
 
    Collection<IAtsVersion> getVersions(IAtsTeamDefinition teamDef);
 

@@ -46,7 +46,7 @@ public class WorkflowPortingBlam extends AbstractBlam {
    private List<TeamWorkFlowArtifact> sourceWorkflows;
 
    @Override
-   public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException {
+   public void runOperation(final VariableMap variableMap, IProgressMonitor monitor)  {
       sourceWorkflows = Collections.castAll(variableMap.getArtifacts(SOURCE_WORKFLOWS));
       Conditions.checkNotNullOrEmpty(sourceWorkflows, SOURCE_WORKFLOWS);
       List<IAtsActionableItem> actionableItems =
@@ -61,7 +61,7 @@ public class WorkflowPortingBlam extends AbstractBlam {
       renderer.open(destinationWorkflows, PresentationType.SPECIALIZED_EDIT);
    }
 
-   private List<Artifact> createDestinationWorkflows(IAtsChangeSet changes, List<IAtsActionableItem> actionableItems) throws OseeCoreException {
+   private List<Artifact> createDestinationWorkflows(IAtsChangeSet changes, List<IAtsActionableItem> actionableItems)  {
       IAtsTeamDefinition teamDefinition = actionableItems.get(0).getTeamDefinition();
       List<Artifact> destinationWorkflows = new ArrayList<>();
       IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
@@ -91,7 +91,7 @@ public class WorkflowPortingBlam extends AbstractBlam {
       return destinationWorkflows;
    }
 
-   private List<IAtsActionableItem> getActionableItems(IAtsActionableItem actionableItem) throws OseeCoreException {
+   private List<IAtsActionableItem> getActionableItems(IAtsActionableItem actionableItem)  {
       List<IAtsActionableItem> actionableItems;
       if (actionableItem == null) {
          actionableItems = new ArrayList<IAtsActionableItem>(

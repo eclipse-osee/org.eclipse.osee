@@ -17,7 +17,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
@@ -154,7 +153,7 @@ public class ArtifactTransfer extends ByteArrayTransfer {
    /**
     * Reads a resource from the given stream.
     */
-   private Artifact readArtifact(DataInputStream dataIn) throws OseeCoreException, IOException {
+   private Artifact readArtifact(DataInputStream dataIn) throws IOException {
       int artID = dataIn.readInt();
       long branchUuid = dataIn.readLong();
       return ArtifactQuery.getArtifactFromId(artID, BranchId.valueOf(branchUuid));
@@ -162,10 +161,8 @@ public class ArtifactTransfer extends ByteArrayTransfer {
 
    /**
     * Writes the given resource to the given stream.
-    *
-    * @throws OseeCoreException
     */
-   private void writeArtifact(DataOutputStream dataOut, Artifact artifact) throws IOException, OseeCoreException {
+   private void writeArtifact(DataOutputStream dataOut, Artifact artifact) throws IOException {
       dataOut.writeInt(artifact.getArtId());
       dataOut.writeLong(artifact.getBranch().getId());
    }

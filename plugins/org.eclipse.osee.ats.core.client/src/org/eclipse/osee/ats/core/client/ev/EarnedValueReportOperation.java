@@ -62,7 +62,7 @@ public class EarnedValueReportOperation extends AbstractOperation {
    }
 
    @Override
-   protected void doWork(IProgressMonitor monitor) throws OseeCoreException {
+   protected void doWork(IProgressMonitor monitor)  {
       if (workPackages.isEmpty()) {
          throw new OseeArgumentException("ERROR", "Must provide Work Packages");
       }
@@ -91,7 +91,7 @@ public class EarnedValueReportOperation extends AbstractOperation {
 
    }
 
-   private String getActionId(Artifact art) throws OseeCoreException {
+   private String getActionId(Artifact art)  {
       String pcrId = art.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, null);
       if (pcrId == null && art instanceof IAtsWorkItem) {
          pcrId = ((IAtsWorkItem) art).getAtsId();

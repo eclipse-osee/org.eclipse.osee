@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.Id;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSetList;
@@ -94,37 +93,37 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public IArtifactType getArtifactType() throws OseeCoreException {
+   public IArtifactType getArtifactType() {
       return getProxiedObject().getArtifactType();
    }
 
    @Override
-   public boolean isOfType(ArtifactTypeId... otherTypes) throws OseeCoreException {
+   public boolean isOfType(ArtifactTypeId... otherTypes) {
       return getProxiedObject().isOfType(otherTypes);
    }
 
    @Override
-   public int getAttributeCount(AttributeTypeId type) throws OseeCoreException {
+   public int getAttributeCount(AttributeTypeId type) {
       return getProxiedObject().getAttributeCount(type);
    }
 
    @Override
-   public int getAttributeCount(AttributeTypeId type, DeletionFlag deletionFlag) throws OseeCoreException {
+   public int getAttributeCount(AttributeTypeId type, DeletionFlag deletionFlag) {
       return getProxiedObject().getAttributeCount(type, deletionFlag);
    }
 
    @Override
-   public boolean isAttributeTypeValid(AttributeTypeId attributeType) throws OseeCoreException {
+   public boolean isAttributeTypeValid(AttributeTypeId attributeType) {
       return getProxiedObject().isAttributeTypeValid(attributeType);
    }
 
    @Override
-   public Collection<AttributeTypeToken> getValidAttributeTypes() throws OseeCoreException {
+   public Collection<AttributeTypeToken> getValidAttributeTypes() {
       return getProxiedObject().getValidAttributeTypes();
    }
 
    @Override
-   public Collection<AttributeTypeToken> getExistingAttributeTypes() throws OseeCoreException {
+   public Collection<AttributeTypeToken> getExistingAttributeTypes() {
       return getProxiedObject().getExistingAttributeTypes();
    }
 
@@ -139,17 +138,17 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public <T> T getSoleAttributeValue(AttributeTypeId attributeType, T defaultValue) throws OseeCoreException {
+   public <T> T getSoleAttributeValue(AttributeTypeId attributeType, T defaultValue) {
       return getProxiedObject().getSoleAttributeValue(attributeType, defaultValue);
    }
 
    @Override
-   public String getSoleAttributeAsString(AttributeTypeId attributeType) throws OseeCoreException {
+   public String getSoleAttributeAsString(AttributeTypeId attributeType) {
       return getProxiedObject().getSoleAttributeAsString(attributeType);
    }
 
    @Override
-   public String getSoleAttributeAsString(AttributeTypeId attributeType, String defaultValue) throws OseeCoreException {
+   public String getSoleAttributeAsString(AttributeTypeId attributeType, String defaultValue) {
       return getProxiedObject().getSoleAttributeAsString(attributeType, defaultValue);
    }
 
@@ -159,7 +158,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public <T> List<T> getAttributeValues(AttributeTypeId attributeType) throws OseeCoreException {
+   public <T> List<T> getAttributeValues(AttributeTypeId attributeType) {
       return getProxiedObject().getAttributeValues(attributeType);
    }
 
@@ -170,73 +169,73 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public ResultSet<? extends AttributeReadable<Object>> getAttributes() throws OseeCoreException {
+   public ResultSet<? extends AttributeReadable<Object>> getAttributes() {
       List<Attribute<Object>> attributes = getProxiedObject().getAttributes();
       return getProxyManager().asExternalAttributes(getSession(), attributes);
    }
 
    @Override
-   public <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeId attributeType) throws OseeCoreException {
+   public <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeId attributeType) {
       List<Attribute<T>> attributes = getProxiedObject().getAttributes(attributeType);
       return getProxyManager().asExternalAttributes(getSession(), attributes);
    }
 
    @Override
-   public ResultSet<? extends AttributeReadable<Object>> getAttributes(DeletionFlag deletionFlag) throws OseeCoreException {
+   public ResultSet<? extends AttributeReadable<Object>> getAttributes(DeletionFlag deletionFlag) {
       List<Attribute<Object>> attributes = getProxiedObject().getAttributes(deletionFlag);
       return getProxyManager().asExternalAttributes(getSession(), attributes);
    }
 
    @Override
-   public <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeId attributeType, DeletionFlag deletionFlag) throws OseeCoreException {
+   public <T> ResultSet<? extends AttributeReadable<T>> getAttributes(AttributeTypeId attributeType, DeletionFlag deletionFlag) {
       List<Attribute<T>> attributes = getProxiedObject().getAttributes(attributeType, deletionFlag);
       return getProxyManager().asExternalAttributes(getSession(), attributes);
    }
 
    @Override
-   public AttributeReadable<Object> getAttributeById(AttributeId attributeId) throws OseeCoreException {
+   public AttributeReadable<Object> getAttributeById(AttributeId attributeId) {
       Attribute<Object> attribute = getProxiedObject().getAttributeById(attributeId);
       return getProxyManager().asExternalAttribute(getSession(), attribute);
    }
 
    @Override
-   public int getMaximumRelationAllowed(RelationTypeSide typeAndSide) throws OseeCoreException {
+   public int getMaximumRelationAllowed(RelationTypeSide typeAndSide) {
       IRelationType type = typeAndSide.getRelationType();
       RelationSide side = whichSideAmIOn(typeAndSide);
       return getRelationManager().getMaximumRelationAllowed(getSession(), type, getProxiedObject(), side);
    }
 
    @Override
-   public Collection<RelationTypeId> getValidRelationTypes() throws OseeCoreException {
+   public Collection<RelationTypeId> getValidRelationTypes() {
       return getRelationManager().getValidRelationTypes(getSession(), getProxiedObject());
    }
 
    @Override
-   public Collection<RelationTypeId> getExistingRelationTypes() throws OseeCoreException {
+   public Collection<RelationTypeId> getExistingRelationTypes() {
       return getRelationManager().getExistingRelationTypes(getSession(), getProxiedObject());
    }
 
    @Override
-   public ArtifactReadable getParent() throws OseeCoreException {
+   public ArtifactReadable getParent() {
       Artifact parent = getRelationManager().getParent(getSession(), getProxiedObject());
       return getProxyManager().asExternalArtifact(getSession(), parent);
    }
 
    @Override
-   public ResultSet<ArtifactReadable> getChildren() throws OseeCoreException {
+   public ResultSet<ArtifactReadable> getChildren() {
       ResultSet<Artifact> children = getRelationManager().getChildren(getSession(), getProxiedObject());
       return getProxyManager().asExternalArtifacts(getSession(), children);
    }
 
    @Override
-   public List<ArtifactReadable> getDescendants() throws OseeCoreException {
+   public List<ArtifactReadable> getDescendants() {
       List<ArtifactReadable> descendants = new LinkedList<>();
       getDescendants(descendants);
       return descendants;
    }
 
    @Override
-   public void getDescendants(List<ArtifactReadable> descendants) throws OseeCoreException {
+   public void getDescendants(List<ArtifactReadable> descendants) {
       for (ArtifactReadable child : getChildren()) {
          descendants.add(child);
          child.getDescendants(descendants);
@@ -244,7 +243,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public List<ArtifactReadable> getAncestors() throws OseeCoreException {
+   public List<ArtifactReadable> getAncestors() {
       List<ArtifactReadable> ancestors = new ArrayList<>();
       for (ArtifactReadable parent = getParent(); parent != null; parent = parent.getParent()) {
          ancestors.add(parent);
@@ -253,7 +252,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public ResultSet<ArtifactReadable> getRelated(RelationTypeSide typeAndSide) throws OseeCoreException {
+   public ResultSet<ArtifactReadable> getRelated(RelationTypeSide typeAndSide) {
       return getRelated(typeAndSide, EXCLUDE_DELETED);
    }
 
@@ -275,7 +274,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public ResultSet<ArtifactReadable> getRelated(RelationTypeSide typeAndSide, DeletionFlag deletionFlag) throws OseeCoreException {
+   public ResultSet<ArtifactReadable> getRelated(RelationTypeSide typeAndSide, DeletionFlag deletionFlag) {
       IRelationType type = typeAndSide.getRelationType();
       RelationSide side = whichSideAmIOn(typeAndSide);
       ResultSet<Artifact> related =
@@ -284,27 +283,27 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public int getRelatedCount(RelationTypeSide typeAndSide) throws OseeCoreException {
+   public int getRelatedCount(RelationTypeSide typeAndSide) {
       IRelationType type = typeAndSide.getRelationType();
       RelationSide side = whichSideAmIOn(typeAndSide);
       return getRelationManager().getRelatedCount(getSession(), type, getProxiedObject(), side);
    }
 
    @Override
-   public boolean areRelated(RelationTypeSide typeAndSide, ArtifactReadable readable) throws OseeCoreException {
+   public boolean areRelated(RelationTypeSide typeAndSide, ArtifactReadable readable) {
       IRelationType type = typeAndSide.getRelationType();
       Pair<RelationNode, RelationNode> nodes = asABNodes(typeAndSide.getSide(), readable);
       return getRelationManager().areRelated(getSession(), nodes.getFirst(), type, nodes.getSecond());
    }
 
    @Override
-   public String getRationale(RelationTypeSide typeAndSide, ArtifactReadable readable) throws OseeCoreException {
+   public String getRationale(RelationTypeSide typeAndSide, ArtifactReadable readable) {
       IRelationType type = typeAndSide.getRelationType();
       Pair<RelationNode, RelationNode> nodes = asABNodes(typeAndSide.getSide(), readable);
       return getRelationManager().getRationale(getSession(), nodes.getFirst(), type, nodes.getSecond());
    }
 
-   private Pair<RelationNode, RelationNode> asABNodes(RelationSide side, ArtifactReadable readable) throws OseeCoreException {
+   private Pair<RelationNode, RelationNode> asABNodes(RelationSide side, ArtifactReadable readable) {
       Artifact thisArtifact = getProxiedObject();
       Artifact otherArtifact = getProxyManager().asInternalArtifact(readable);
 

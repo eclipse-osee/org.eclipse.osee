@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.skynet.core.internal.event.Transport;
 public class TopicRemoteEventHandler implements EventHandlerRemote<RemoteTopicEvent1> {
 
    @Override
-   public void handle(Transport transport, Sender sender, RemoteTopicEvent1 remoteEvent) throws OseeCoreException {
+   public void handle(Transport transport, Sender sender, RemoteTopicEvent1 remoteEvent)  {
       TopicEvent event = FrameworkEventUtil.getTopicEvent(remoteEvent);
       transport.send(sender, event);
    }

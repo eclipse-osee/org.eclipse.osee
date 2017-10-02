@@ -84,7 +84,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
     * have
     */
    @Override
-   public boolean isMergeBranchExists(IAtsTeamWorkflow teamWf, BranchId workingBranch, BranchId destinationBranch) throws OseeCoreException {
+   public boolean isMergeBranchExists(IAtsTeamWorkflow teamWf, BranchId workingBranch, BranchId destinationBranch)  {
       if (workingBranch.isInvalid()) {
          return false;
       }

@@ -120,7 +120,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
       }
    }
 
-   private void loadAction(Action action, String key) throws OseeCoreException {
+   private void loadAction(Action action, String key)  {
       if (action != null) {
          String setting = getSetting(key);
          if (Strings.isValid(setting)) {
@@ -130,16 +130,16 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
       }
    }
 
-   private void saveAction(Action action, String key) throws OseeCoreException {
+   private void saveAction(Action action, String key)  {
       boolean isChecked = action != null && action.isChecked();
       saveSetting(key, String.valueOf(isChecked));
    }
 
-   private void saveSetting(String key, String value) throws OseeCoreException {
+   private void saveSetting(String key, String value)  {
       UserManager.setSetting(asKey(storageKey, key), value);
    }
 
-   private String getSetting(String key) throws OseeCoreException {
+   private String getSetting(String key)  {
       return UserManager.getSetting(asKey(storageKey, key));
    }
 
@@ -214,7 +214,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
    }
 
    @Override
-   public String getSelectedAttributeData(Artifact artifact) throws OseeCoreException {
+   public String getSelectedAttributeData(Artifact artifact)  {
       String toReturn = null;
       if (attributesAction != null) {
          Conditions.checkNotNull(artifact, "artifact");
@@ -393,7 +393,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
          return selectedTypes;
       }
 
-      public void setSelected(Collection<String> selected) throws OseeCoreException {
+      public void setSelected(Collection<String> selected)  {
          selectedTypes.clear();
          for (String name : selected) {
             selectedTypes.add(AttributeTypeManager.getType(name));

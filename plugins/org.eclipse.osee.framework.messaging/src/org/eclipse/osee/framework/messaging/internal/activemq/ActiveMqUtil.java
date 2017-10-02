@@ -30,7 +30,7 @@ class ActiveMqUtil {
 
    }
 
-   Object translateMessage(Message message, Class<?> clazz) throws OseeCoreException, JMSException {
+   Object translateMessage(Message message, Class<?> clazz) throws JMSException {
       Object messageBody = message;
       if (message instanceof TextMessage) {
          String text = ((TextMessage) message).getText();
@@ -55,7 +55,7 @@ class ActiveMqUtil {
       return messageBody;
    }
 
-   Message createMessage(Session session, Class<?> clazz, Object body) throws OseeCoreException, JMSException {
+   Message createMessage(Session session, Class<?> clazz, Object body) throws JMSException {
       body = tryToGetSerialized(clazz, body);
       if (body instanceof String) {
          return session.createTextMessage((String) body);
@@ -70,7 +70,7 @@ class ActiveMqUtil {
       }
    }
 
-   private Object tryToGetSerialized(Class<?> clazz, Object body) throws OseeCoreException {
+   private Object tryToGetSerialized(Class<?> clazz, Object body) {
       if (clazz != null) {
          try {
             return JAXBUtil.marshal(body);

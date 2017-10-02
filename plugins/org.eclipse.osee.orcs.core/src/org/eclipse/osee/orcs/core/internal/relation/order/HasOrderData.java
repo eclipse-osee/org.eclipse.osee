@@ -19,9 +19,9 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface HasOrderData extends Iterable<Entry<RelationTypeSide, OrderData>> {
 
-   void add(RelationTypeSide typeAndSide, OrderData data) throws OseeCoreException;
+   void add(RelationTypeSide typeAndSide, OrderData data) ;
 
-   void remove(RelationTypeSide typeAndSide) throws OseeCoreException;
+   void remove(RelationTypeSide typeAndSide) ;
 
    void clear();
 

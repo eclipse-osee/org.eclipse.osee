@@ -15,16 +15,15 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.access.AccessDataQuery;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 public interface IAccessControlService {
 
    /**
     * @param object Artifact, Branch or collection of either
     */
-   boolean hasPermission(Object object, PermissionEnum permission) throws OseeCoreException;
+   boolean hasPermission(Object object, PermissionEnum permission);
 
-   void removePermissions(BranchId branch) throws OseeCoreException;
+   void removePermissions(BranchId branch);
 
-   AccessDataQuery getAccessData(ArtifactToken userArtifact, Collection<?> itemsToCheck) throws OseeCoreException;
+   AccessDataQuery getAccessData(ArtifactToken userArtifact, Collection<?> itemsToCheck);
 }

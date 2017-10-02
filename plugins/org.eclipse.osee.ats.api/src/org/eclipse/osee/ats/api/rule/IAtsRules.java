@@ -18,8 +18,8 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IAtsRules {
 
-   public Collection<String> getRules() throws OseeCoreException;
+   public Collection<String> getRules() ;
 
-   public boolean hasRule(String rule) throws OseeCoreException;
+   public boolean hasRule(String rule) ;
 
 }

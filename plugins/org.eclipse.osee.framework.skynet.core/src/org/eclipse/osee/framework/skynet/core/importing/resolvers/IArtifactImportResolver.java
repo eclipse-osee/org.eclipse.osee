@@ -22,5 +22,5 @@ import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
  */
 public interface IArtifactImportResolver {
 
-   public Artifact resolve(RoughArtifact roughArtifact, BranchId branch, Artifact realParent, Artifact root) throws OseeCoreException;
+   public Artifact resolve(RoughArtifact roughArtifact, BranchId branch, Artifact realParent, Artifact root) ;
 }

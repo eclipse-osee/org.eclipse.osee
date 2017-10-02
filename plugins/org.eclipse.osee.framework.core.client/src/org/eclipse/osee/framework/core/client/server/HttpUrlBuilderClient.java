@@ -48,7 +48,7 @@ public final class HttpUrlBuilderClient {
       return isUseConnectedServerUrl;
    }
 
-   public String getUrlForLocalSkynetHttpServer(String context, Map<String, String> parameters) throws OseeStateException {
+   public String getUrlForLocalSkynetHttpServer(String context, Map<String, String> parameters)  {
       try {
          return HttpUrlBuilder.createURL(getHttpLocalServerPrefix(), context, parameters);
       } catch (UnsupportedEncodingException ex) {
@@ -57,7 +57,7 @@ public final class HttpUrlBuilderClient {
       return null;
    }
 
-   public String getHttpLocalServerPrefix() throws OseeStateException {
+   public String getHttpLocalServerPrefix()  {
       int port = HttpServer.getDefaultServicePort();
       if (port == -1) {
          throw new OseeStateException("Http Server was not launched by this workbench - Ensure port was set correctly");
@@ -65,7 +65,7 @@ public final class HttpUrlBuilderClient {
       return String.format(urlPrefixFormat, HttpServer.getLocalServerAddress(), port);
    }
 
-   public String getApplicationServerPrefix() throws OseeCoreException {
+   public String getApplicationServerPrefix()  {
       String address = OseeClientProperties.getOseeApplicationServer();
       return normalize(address);
    }
@@ -78,7 +78,7 @@ public final class HttpUrlBuilderClient {
       return toReturn;
    }
 
-   public String getOsgiServletServiceUrl(String context, Map<String, String> parameters) throws OseeCoreException {
+   public String getOsgiServletServiceUrl(String context, Map<String, String> parameters)  {
       String url = null;
       try {
          String applicationServerPrefix = getApplicationServerPrefix();

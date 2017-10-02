@@ -59,7 +59,7 @@ public class AtsWorkDefinitionImporter {
    /**
     * If sheet has WorkDef defined, create artifact and import string. Return artifact, else return null.
     */
-   public Artifact importWorkDefinitionSheetToDb(WorkDefinitionSheet sheet, XResultData resultData, Set<String> stateNames, IAtsChangeSet changes) throws OseeCoreException {
+   public Artifact importWorkDefinitionSheetToDb(WorkDefinitionSheet sheet, XResultData resultData, Set<String> stateNames, IAtsChangeSet changes)  {
       String modelName = sheet.getFile().getName();
       // Prove that can convert to atsDsl
       AtsDsl atsDsl = AtsDslUtil.getFromSheet(modelName, sheet);
@@ -82,7 +82,7 @@ public class AtsWorkDefinitionImporter {
       return null;
    }
 
-   public Artifact importWorkDefinitionToDb(String workDefXml, String workDefName, String sheetName, ArtifactToken token, XResultData resultData, IAtsChangeSet changes) throws OseeCoreException {
+   public Artifact importWorkDefinitionToDb(String workDefXml, String workDefName, String sheetName, ArtifactToken token, XResultData resultData, IAtsChangeSet changes)  {
       Artifact artifact = null;
       try {
          if (token != null) {
@@ -114,7 +114,7 @@ public class AtsWorkDefinitionImporter {
       return artifact;
    }
 
-   public void convertAndOpenAtsDsl(Artifact workDefArt, XResultData resultData) throws OseeCoreException {
+   public void convertAndOpenAtsDsl(Artifact workDefArt, XResultData resultData)  {
       String dslText = workDefArt.getSoleAttributeValue(AtsAttributeTypes.DslSheet, "");
       String filename = workDefArt.getName() + ".ats";
       File file = OseeData.getFile(filename);
@@ -134,7 +134,7 @@ public class AtsWorkDefinitionImporter {
       }
    }
 
-   public void convertAndOpenAtsDsl(IAtsWorkDefinition workDef, XResultData resultData, String filename) throws OseeCoreException {
+   public void convertAndOpenAtsDsl(IAtsWorkDefinition workDef, XResultData resultData, String filename)  {
       try {
          String storageStr = AtsClientService.get().getWorkDefinitionService().getStorageString(workDef, resultData);
          IFile iFile = OseeData.getIFile(filename);

@@ -165,7 +165,7 @@ public class NewActionPage3 extends WizardPage {
       return true;
    }
 
-   public XWidget getXWidget(String attrName) throws OseeCoreException {
+   public XWidget getXWidget(String attrName)  {
       Conditions.checkNotNull(page, "WorkPage");
       return page.getLayoutData(attrName).getXWidget();
    }

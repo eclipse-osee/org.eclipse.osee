@@ -23,12 +23,12 @@ import org.junit.Test;
 public class OpenInAtsWorldActionTest1 extends AbstractAtsActionRunTest {
 
    @Override
-   public OpenInAtsWorldAction createAction() throws OseeCoreException {
+   public OpenInAtsWorldAction createAction()  {
       return new OpenInAtsWorldAction(AtsTestUtil.getTeamWf());
    }
 
    @Test(expected = OseeStateException.class)
-   public void testNoParentAction() throws OseeCoreException {
+   public void testNoParentAction()  {
       AtsTestUtil.getTeamWf().deleteRelations(AtsRelationTypes.ActionToWorkflow_Action);
       AtsTestUtil.getTeamWf().persist(getClass().getSimpleName());
 

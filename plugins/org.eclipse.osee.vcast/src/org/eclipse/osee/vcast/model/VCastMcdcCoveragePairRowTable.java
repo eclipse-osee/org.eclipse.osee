@@ -30,7 +30,7 @@ public class VCastMcdcCoveragePairRowTable implements VCastTableData<VCastMcdcCo
    }
 
    @Override
-   public Collection<VCastMcdcCoveragePairRow> getRows(VCastDataStore dataStore) throws OseeCoreException {
+   public Collection<VCastMcdcCoveragePairRow> getRows(VCastDataStore dataStore)  {
       return dataStore.getAllMcdcCoveragePairRows();
    }
 

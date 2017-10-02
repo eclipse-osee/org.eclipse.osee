@@ -31,7 +31,7 @@ public class AttributeLocatorProvider implements IResourceLocatorProvider {
    }
 
    @Override
-   public IResourceLocator generateResourceLocator(String seed, String name) throws OseeCoreException {
+   public IResourceLocator generateResourceLocator(String seed, String name)  {
       URI uri = null;
       try {
          uri = new URI(generatePath(seed, name));
@@ -42,7 +42,7 @@ public class AttributeLocatorProvider implements IResourceLocatorProvider {
    }
 
    @Override
-   public IResourceLocator getResourceLocator(String path) throws OseeCoreException {
+   public IResourceLocator getResourceLocator(String path)  {
       URI uri = null;
       if (isPathValid(path) != false) {
          try {
@@ -65,7 +65,7 @@ public class AttributeLocatorProvider implements IResourceLocatorProvider {
       return Strings.isValid(value) && value.startsWith(getSupportedProtocol() + "://");
    }
 
-   private String generatePath(String seed, String name) throws OseeCoreException {
+   private String generatePath(String seed, String name)  {
       StringBuilder builder = new StringBuilder();
       builder.append(getSupportedProtocol());
       builder.append("://");

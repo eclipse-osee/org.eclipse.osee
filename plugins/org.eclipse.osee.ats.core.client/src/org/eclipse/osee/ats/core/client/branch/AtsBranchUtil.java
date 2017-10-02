@@ -53,7 +53,7 @@ public class AtsBranchUtil {
    /**
     * @return true if one or more reviews were created
     */
-   public static boolean createNecessaryBranchEventReviews(StateEventType stateEventType, TeamWorkFlowArtifact teamArt, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException {
+   public static boolean createNecessaryBranchEventReviews(StateEventType stateEventType, TeamWorkFlowArtifact teamArt, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes)  {
       Conditions.checkNotNull(teamArt, "Team Workflow");
       boolean created = false;
       if (stateEventType != StateEventType.CommitBranch && stateEventType != StateEventType.CreateBranch) {
@@ -115,7 +115,7 @@ public class AtsBranchUtil {
     * Create a working branch associated with this Team Workflow. Call createWorkingBranch_Validate first to validate
     * that branch can be created.
     */
-   public static Job createWorkingBranch_Create(final TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+   public static Job createWorkingBranch_Create(final TeamWorkFlowArtifact teamArt)  {
       return createWorkingBranch_Create(teamArt, false);
    }
 
@@ -123,23 +123,23 @@ public class AtsBranchUtil {
     * Create a working branch associated with this state machine artifact. This should NOT be called by applications
     * except in test cases or automated tools. Use createWorkingBranchWithPopups
     */
-   public static Job createWorkingBranch_Create(final TeamWorkFlowArtifact teamArt, boolean pend) throws OseeCoreException {
+   public static Job createWorkingBranch_Create(final TeamWorkFlowArtifact teamArt, boolean pend)  {
       final BranchId parentBranch = AtsClientService.get().getBranchService().getConfiguredBranchForWorkflow(teamArt);
       return createWorkingBranch_Create(teamArt, parentBranch, pend);
    }
 
-   public static Job createWorkingBranch_Create(final TeamWorkFlowArtifact teamArt, final BranchId parentBranch) throws OseeCoreException {
+   public static Job createWorkingBranch_Create(final TeamWorkFlowArtifact teamArt, final BranchId parentBranch)  {
       return createWorkingBranch_Create(teamArt, parentBranch, false);
    }
 
-   public static Job createWorkingBranch_Create(final TeamWorkFlowArtifact teamArt, final BranchId parentBranch, boolean pend) throws OseeCoreException {
+   public static Job createWorkingBranch_Create(final TeamWorkFlowArtifact teamArt, final BranchId parentBranch, boolean pend)  {
       Conditions.checkNotNull(teamArt, "Parent Team Workflow");
       Conditions.checkNotNull(parentBranch, "Parent Branch");
       TransactionToken parentTransactionId = TransactionManager.getHeadTransaction(parentBranch);
       return createWorkingBranch(teamArt, parentTransactionId, pend);
    }
 
-   public static Job createWorkingBranch(final TeamWorkFlowArtifact teamArt, final TransactionToken parentTransactionId, boolean pend) throws OseeCoreException {
+   public static Job createWorkingBranch(final TeamWorkFlowArtifact teamArt, final TransactionToken parentTransactionId, boolean pend)  {
       final String branchName = AtsClientService.get().getBranchService().getBranchName(teamArt);
       Conditions.checkNotNull(teamArt, "Parent Team Workflow");
       Conditions.checkNotNull(parentTransactionId, "Parent Branch");
@@ -147,7 +147,7 @@ public class AtsBranchUtil {
       IExceptionableRunnable runnable = new IExceptionableRunnable() {
 
          @Override
-         public IStatus run(IProgressMonitor monitor) throws OseeCoreException {
+         public IStatus run(IProgressMonitor monitor)  {
             teamArt.setWorkingBranchCreationInProgress(true);
             BranchManager.createWorkingBranch(parentTransactionId, branchName, teamArt);
             teamArt.setWorkingBranchCreationInProgress(false);
@@ -170,7 +170,7 @@ public class AtsBranchUtil {
       return job;
    }
 
-   private static void performPostBranchCreationTasks(final TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+   private static void performPostBranchCreationTasks(final TeamWorkFlowArtifact teamArt)  {
       // Create reviews as necessary
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("Create Reviews upon Transition");
       boolean created = createNecessaryBranchEventReviews(StateEventType.CreateBranch, teamArt, new Date(),
@@ -185,7 +185,7 @@ public class AtsBranchUtil {
       }
    }
 
-   public static Result deleteWorkingBranch(TeamWorkFlowArtifact teamArt, boolean pend) throws OseeCoreException {
+   public static Result deleteWorkingBranch(TeamWorkFlowArtifact teamArt, boolean pend)  {
       BranchId branch = AtsClientService.get().getBranchService().getWorkingBranch(teamArt);
       if (branch != null) {
          IStatus status = null;

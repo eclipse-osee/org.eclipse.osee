@@ -25,7 +25,7 @@ public final class JavaObjectAttribute extends BinaryAttribute<Object> {
    public static final String NAME = JavaObjectAttribute.class.getSimpleName();
 
    @Override
-   public Object getValue() throws OseeCoreException {
+   public Object getValue()  {
       return getObjectFromBytes(getDataProxy().getValueAsBytes());
    }
 

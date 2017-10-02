@@ -24,32 +24,32 @@ import org.eclipse.osee.framework.resource.management.IResourceManager;
 public class MockResourceManager implements IResourceManager {
 
    @Override
-   public IResource acquire(IResourceLocator locator, PropertyStore options) throws OseeCoreException {
+   public IResource acquire(IResourceLocator locator, PropertyStore options)  {
       return null;
    }
 
    @Override
-   public boolean exists(IResourceLocator locator) throws OseeCoreException {
+   public boolean exists(IResourceLocator locator)  {
       return false;
    }
 
    @Override
-   public IResourceLocator save(IResourceLocator locatorHint, IResource resource, PropertyStore options) throws OseeCoreException {
+   public IResourceLocator save(IResourceLocator locatorHint, IResource resource, PropertyStore options)  {
       return null;
    }
 
    @Override
-   public int delete(IResourceLocator locator) throws OseeCoreException {
+   public int delete(IResourceLocator locator)  {
       return 0;
    }
 
    @Override
-   public IResourceLocator generateResourceLocator(String protocol, String seed, String name) throws OseeCoreException {
+   public IResourceLocator generateResourceLocator(String protocol, String seed, String name)  {
       return null;
    }
 
    @Override
-   public IResourceLocator getResourceLocator(String path) throws OseeCoreException {
+   public IResourceLocator getResourceLocator(String path)  {
       return null;
    }
 

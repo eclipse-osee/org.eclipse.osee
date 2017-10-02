@@ -48,7 +48,7 @@ public class TxBranchIdsSqlHandler extends SqlHandler<CriteriaTxBranchIds> {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
+   public boolean addPredicates(AbstractSqlWriter writer)  {
       Collection<Long> ids = criteria.getIds();
       if (ids.size() > 1) {
          AbstractJoinQuery joinQuery = writer.writeIdJoin(ids);

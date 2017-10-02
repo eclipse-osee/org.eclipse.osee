@@ -20,8 +20,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public interface HasMembers {
 
-   List<Artifact> getMembers() throws OseeCoreException;
+   List<Artifact> getMembers() ;
 
-   void addMember(ArtifactId artifact) throws OseeCoreException;
+   void addMember(ArtifactId artifact) ;
 
 }

@@ -23,7 +23,7 @@ public class RelationTypeTest {
 
    }
    //   @org.junit.Test
-   //   public void testRelationTypeSides() throws OseeCoreException {
+   //   public void testRelationTypeSides()  {
    //      OseeTypesUtil.checkRelationTypeInheritance(cache, artCache, "1A", RelationSide.SIDE_A, 1, "111");
    //      OseeTypesUtil.checkRelationTypeInheritance(cache, artCache, "1A", RelationSide.SIDE_B, 1, "444", "555");
    //
@@ -41,7 +41,7 @@ public class RelationTypeTest {
    //   }
    //
    //   @Override
-   //   public void testDirty() throws OseeCoreException {
+   //   public void testDirty()  {
    //   }
    //
    //   private final static class ArtifactDataAccessor extends MockOseeDataAccessor<ArtifactType> {
@@ -53,7 +53,7 @@ public class RelationTypeTest {
    //      }
    //
    //      @Override
-   //      public void load(AbstractOseeCache<ArtifactType> cache) throws OseeCoreException {
+   //      public void load(AbstractOseeCache<ArtifactType> cache)  {
    //         super.load(cache);
    //         artifactTypes.add(factory.createArtifactType(cache, "000", true, "BaseArtifactType"));
    //         artifactTypes.add(factory.createArtifactType(cache, "111", true, "ArtifactType1"));
@@ -71,7 +71,7 @@ public class RelationTypeTest {
    //         setUpArtifactTypeInheritance(artCache);
    //      }
    //
-   //      private void setUpArtifactTypeInheritance(ArtifactTypeCache cache) throws OseeCoreException {
+   //      private void setUpArtifactTypeInheritance(ArtifactTypeCache cache)  {
    //         ArtifactType baseType = cache.getUniqueByName("BaseArtifactType");
    //
    //         Set<ArtifactType> baseSuperType = new HashSet<>();
@@ -103,7 +103,7 @@ public class RelationTypeTest {
    //      }
    //
    //      @Override
-   //      public void load(AbstractOseeCache<RelationType> cache) throws OseeCoreException {
+   //      public void load(AbstractOseeCache<RelationType> cache)  {
    //         artCache.ensurePopulated();
    //         super.load(cache);
    //         relationTypes.add(OseeTypesUtil.createRelationType(cache, artCache, factory, "1A", "REL_1", "111", "444",

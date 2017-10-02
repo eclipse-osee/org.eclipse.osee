@@ -28,13 +28,13 @@ public class ArtifactRelationOrderAccessor implements IRelationOrderAccessor {
    }
 
    @Override
-   public void load(Artifact artifact, RelationOrderData orderData) throws OseeCoreException {
+   public void load(Artifact artifact, RelationOrderData orderData)  {
       String value = artifact.getSoleAttributeValueAsString(CoreAttributeTypes.RelationOrder, Strings.emptyString());
       parser.loadFromXml(orderData, value);
    }
 
    @Override
-   public void store(Artifact artifact, RelationOrderData orderData, DefaultBasicUuidRelationReorder relationOrderRecord) throws OseeCoreException {
+   public void store(Artifact artifact, RelationOrderData orderData, DefaultBasicUuidRelationReorder relationOrderRecord)  {
       artifact.getRelationOrderRecords().add(relationOrderRecord);
       if (orderData.hasEntries() && !artifact.isDeleted()) {
          artifact.setSoleAttributeFromString(CoreAttributeTypes.RelationOrder, parser.toXml(orderData));

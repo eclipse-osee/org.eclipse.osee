@@ -97,7 +97,7 @@ public final class UserManagerTest {
       Assert.assertTrue("Members not subscribed to right groups.", verifiedNames.size() == TEST_DEFAULT_GROUPS.length);
    }
 
-   private User createUser(SkynetTransaction transaction, int index) throws OseeCoreException {
+   private User createUser(SkynetTransaction transaction, int index)  {
       UserToken token = UserToken.create(Lib.generateArtifactIdAsInt(), GUID.create(),
          NEW_USER_NAMES[index], "this" + index + "@that.com", "9999999" + index, true, index % 2 == 0, true);
       User user = UserManager.createUser(token, transaction);
@@ -105,7 +105,7 @@ public final class UserManagerTest {
       return user;
    }
 
-   private void createSampleDefaultGroups(BranchId branch, String... names) throws OseeCoreException {
+   private void createSampleDefaultGroups(BranchId branch, String... names)  {
       for (String name : names) {
          //Create artifact
          Artifact groupArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.UserGroup, branch, name);
@@ -121,7 +121,7 @@ public final class UserManagerTest {
       }
    }
 
-   private void deleteSampleDefaultGroups(BranchId branch, String... artifactNames) throws OseeCoreException {
+   private void deleteSampleDefaultGroups(BranchId branch, String... artifactNames)  {
       Collection<Artifact> list = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.UserGroup, branch);
       for (Artifact artifact : list) {
          for (String artifactName : artifactNames) {

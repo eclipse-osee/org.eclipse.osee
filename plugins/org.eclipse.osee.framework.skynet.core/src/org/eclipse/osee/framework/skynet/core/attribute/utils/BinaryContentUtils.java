@@ -43,7 +43,7 @@ public class BinaryContentUtils {
       return contentType;
    }
 
-   public static String generateFileName(Attribute<?> attribute) throws OseeCoreException {
+   public static String generateFileName(Attribute<?> attribute)  {
       StringBuilder builder = new StringBuilder();
       try {
          String name = attribute.getArtifact().getName();
@@ -66,7 +66,7 @@ public class BinaryContentUtils {
       return builder.toString();
    }
 
-   private static String getExtension(Attribute<?> attribute) throws OseeCoreException {
+   private static String getExtension(Attribute<?> attribute)  {
       String fileTypeExtension = attribute.getAttributeType().getFileTypeExtension();
       if (attribute.isOfType(CoreAttributeTypes.NativeContent)) {
          fileTypeExtension = attribute.getArtifact().getSoleAttributeValue(CoreAttributeTypes.Extension, "");
@@ -74,7 +74,7 @@ public class BinaryContentUtils {
       return fileTypeExtension;
    }
 
-   public static String getStorageName(Attribute<?> attribute) throws OseeCoreException {
+   public static String getStorageName(Attribute<?> attribute)  {
       String guid = attribute.getArtifact().getGuid();
       Conditions.checkExpressionFailOnTrue(!GUID.isValid(guid), "Artifact has an invalid guid [%s]", guid);
       return guid;

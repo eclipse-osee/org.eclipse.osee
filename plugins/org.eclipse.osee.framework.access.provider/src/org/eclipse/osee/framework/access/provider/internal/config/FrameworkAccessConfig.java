@@ -34,11 +34,11 @@ import org.osgi.framework.FrameworkUtil;
 public class FrameworkAccessConfig implements IDbInitializationTask {
 
    @Override
-   public void run() throws OseeCoreException {
+   public void run()  {
       importFrameworkAccessModel();
    }
 
-   private static void importFrameworkAccessModel() throws OseeCoreException {
+   private static void importFrameworkAccessModel()  {
       Bundle bundle = FrameworkUtil.getBundle(FrameworkAccessConfig.class);
       URL url = bundle.getEntry("support/OseeAccess_FrameworkAccess.osee");
 

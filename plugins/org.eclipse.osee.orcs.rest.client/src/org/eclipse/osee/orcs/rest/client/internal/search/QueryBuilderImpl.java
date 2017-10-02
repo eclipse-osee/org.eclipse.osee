@@ -177,19 +177,19 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public QueryBuilder andExists(RelationTypeSide relationTypeSide) throws OseeCoreException {
+   public QueryBuilder andExists(RelationTypeSide relationTypeSide)  {
       predicates.add(predicateFactory.createRelationTypeSideExistsSearch(relationTypeSide));
       return this;
    }
 
    @Override
-   public QueryBuilder andNotExists(RelationTypeSide relationTypeSide) throws OseeCoreException {
+   public QueryBuilder andNotExists(RelationTypeSide relationTypeSide)  {
       predicates.add(predicateFactory.createRelationTypeSideNotExistsSearch(relationTypeSide));
       return this;
    }
 
    @Override
-   public QueryBuilder andNotExists(IRelationType relationType) throws OseeCoreException {
+   public QueryBuilder andNotExists(IRelationType relationType)  {
       predicates.add(predicateFactory.createRelationNotExistsSearch(Collections.singleton(relationType)));
       return this;
    }
@@ -228,13 +228,13 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public SearchResult getSearchResult(RequestType request) throws OseeCoreException {
+   public SearchResult getSearchResult(RequestType request)  {
       QueryOptions qOptions = options.clone();
       return executor.getResults(request, branch, predicates, qOptions);
    }
 
    @Override
-   public int getCount() throws OseeCoreException {
+   public int getCount()  {
       QueryOptions qOptions = options.clone();
       return executor.getCount(branch, predicates, qOptions);
    }

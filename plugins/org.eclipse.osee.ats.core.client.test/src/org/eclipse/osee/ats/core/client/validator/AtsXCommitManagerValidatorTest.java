@@ -42,7 +42,7 @@ public class AtsXCommitManagerValidatorTest extends AtsMockitoTest {
 
    @Override
    @Before
-   public void setup() throws OseeCoreException {
+   public void setup()  {
       super.setup();
 
       when(widgetDef.getXWidgetName()).thenReturn("XCommitManager");

@@ -34,5 +34,5 @@ public interface MSWordEndpoint {
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
    @Path("render")
-   Pair<String, Set<String>> renderWordTemplateContent(WordTemplateContentData data) throws OseeCoreException;
+   Pair<String, Set<String>> renderWordTemplateContent(WordTemplateContentData data) ;
 }

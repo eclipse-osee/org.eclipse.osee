@@ -61,7 +61,7 @@ public class XViewerReviewRoleColumn extends XViewerValueColumn {
       }
    }
 
-   private static String getRolesStr(AbstractReviewArtifact reviewArt, IAtsUser user) throws OseeCoreException {
+   private static String getRolesStr(AbstractReviewArtifact reviewArt, IAtsUser user)  {
       StringBuilder builder = new StringBuilder();
       IAtsPeerReviewRoleManager roleMgr = ((PeerToPeerReviewArtifact) reviewArt).getRoleManager();
       for (UserRole role : roleMgr.getUserRoles()) {

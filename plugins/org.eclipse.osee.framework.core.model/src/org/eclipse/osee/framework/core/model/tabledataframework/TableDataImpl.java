@@ -157,9 +157,9 @@ public class TableDataImpl implements TableData {
     * @param rowData - The row of data that was just generated.
     * @return Return TRUE if rowData is valid and should be included in the report. Return FALSE if rowData is invalid
     * (for any reason) and should not be included in the report.
-    * @throws OseeCoreException
+    * 
     */
-   protected boolean validateRow(Collection<Object> rowData) throws OseeCoreException {
+   protected boolean validateRow(Collection<Object> rowData)  {
       //Override with subclass if needed
       return true;
    }
@@ -170,9 +170,9 @@ public class TableDataImpl implements TableData {
     * use the key column objects to determine if this row should be rejected or validated.
     *
     * @return Return symantics is the same as validateRow()
-    * @throws OseeCoreException
+    * 
     */
-   protected boolean validateRowUseOnlyKeyColums() throws OseeCoreException {
+   protected boolean validateRowUseOnlyKeyColums()  {
       //Override with subclass if needed
       return true;
    }

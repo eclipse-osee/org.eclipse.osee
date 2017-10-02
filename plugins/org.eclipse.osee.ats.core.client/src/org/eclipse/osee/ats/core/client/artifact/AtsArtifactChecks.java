@@ -51,7 +51,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
    private static boolean deletionChecksEnabled = !AtsUtilCore.isInTest();
 
    @Override
-   public IStatus isDeleteableRelation(Artifact artifact, IRelationType relationType) throws OseeCoreException {
+   public IStatus isDeleteableRelation(Artifact artifact, IRelationType relationType)  {
       if (deletionChecksEnabled) {
          boolean isAtsAdmin = AtsClientService.get().getUserService().isAtsAdmin();
          if (!isAtsAdmin && Admin_Only_Relation_Type_Ids.contains(relationType.getId())) {
@@ -64,7 +64,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
    }
 
    @Override
-   public IStatus isDeleteable(Collection<Artifact> artifacts) throws OseeCoreException {
+   public IStatus isDeleteable(Collection<Artifact> artifacts)  {
       boolean isAtsAdmin = AtsClientService.get().getUserService().isAtsAdmin();
 
       IStatus result = Status.OK_STATUS;
@@ -156,7 +156,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
       return new Status(IStatus.ERROR, Activator.PLUGIN_ID, message);
    }
 
-   private IStatus checkActionableItems(boolean isAtsAdmin, Collection<Artifact> artifacts) throws OseeCoreException {
+   private IStatus checkActionableItems(boolean isAtsAdmin, Collection<Artifact> artifacts)  {
       Set<ArtifactId> aiIds = getActionableItemIdsWithRecurse(new HashSet<>(), artifacts);
       if (!aiIds.isEmpty()) {
          List<Artifact> teamWfsRelatedToAis =
@@ -190,7 +190,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
       return aiIds;
    }
 
-   private IStatus checkTeamDefinitions(boolean isAtsAdmin, Collection<Artifact> artifacts) throws OseeCoreException {
+   private IStatus checkTeamDefinitions(boolean isAtsAdmin, Collection<Artifact> artifacts)  {
       List<String> ids = new ArrayList<>();
       for (Artifact art : artifacts) {
          if (art.isOfType(AtsArtifactTypes.TeamDefinition)) {
@@ -212,7 +212,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
       return Status.OK_STATUS;
    }
 
-   private IStatus checkWorkPackages(boolean isAtsAdmin, Collection<Artifact> artifacts) throws OseeCoreException {
+   private IStatus checkWorkPackages(boolean isAtsAdmin, Collection<Artifact> artifacts)  {
       List<ArtifactId> ids = new ArrayList<>();
       for (Artifact art : artifacts) {
          if (art.isOfType(AtsArtifactTypes.WorkPackage)) {
@@ -231,7 +231,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
       return Status.OK_STATUS;
    }
 
-   private IStatus checkAtsWorkDefinitions(boolean isAtsAdmin, Collection<Artifact> artifacts) throws OseeCoreException {
+   private IStatus checkAtsWorkDefinitions(boolean isAtsAdmin, Collection<Artifact> artifacts)  {
       for (Artifact art : artifacts) {
          if (art.isOfType(AtsArtifactTypes.WorkDefinition)) {
             List<Artifact> artifactListFromTypeAndAttribute =
@@ -250,7 +250,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
       return Status.OK_STATUS;
    }
 
-   private IStatus checkUsers(Collection<Artifact> artifacts) throws OseeCoreException {
+   private IStatus checkUsers(Collection<Artifact> artifacts)  {
       Set<User> users = new HashSet<>();
       for (Artifact art : artifacts) {
          if (art instanceof User) {

@@ -89,7 +89,7 @@ public final class StoreSkynetTransactionOperation extends AbstractDbTxOperation
    }
 
    @Override
-   protected void doTxWork(IProgressMonitor monitor, JdbcConnection connection) throws OseeCoreException {
+   protected void doTxWork(IProgressMonitor monitor, JdbcConnection connection)  {
       executedWithException = false;
       TransactionManager.internalPersist(connection, transactionRecord);
       if (!txDatas.isEmpty()) {
@@ -113,14 +113,14 @@ public final class StoreSkynetTransactionOperation extends AbstractDbTxOperation
    }
 
    @Override
-   public void handleTxFinally(IProgressMonitor monitor) throws OseeCoreException {
+   public void handleTxFinally(IProgressMonitor monitor)  {
       if (!executedWithException) {
          updateModifiedCachedObject();
          tagGammas();
       }
    }
 
-   private void tagGammas() throws OseeCoreException {
+   private void tagGammas()  {
       Set<Long> gammasToTag = new LinkedHashSet<>();
       for (BaseTransactionData transactionData : txDatas) {
          if (!transactionData.getModificationType().isExistingVersionUsed() && transactionData instanceof AttributeTransactionData) {
@@ -139,7 +139,7 @@ public final class StoreSkynetTransactionOperation extends AbstractDbTxOperation
       }
    }
 
-   private void executeTransactionDataItems(JdbcConnection connection) throws OseeCoreException {
+   private void executeTransactionDataItems(JdbcConnection connection)  {
       List<Object[]> txNotCurrentData = new ArrayList<>();
       for (BaseTransactionData transactionData : txDatas) {
          // Collect inserts for attribute, relation, artifact, and artifact version tables
@@ -161,7 +161,7 @@ public final class StoreSkynetTransactionOperation extends AbstractDbTxOperation
       getJdbcClient().runBatchUpdate(connection, UPDATE_TXS_NOT_CURRENT, txNotCurrentData);
    }
 
-   private void fetchTxNotCurrent(JdbcConnection connection, Long branchId, BaseTransactionData transactionData, List<Object[]> results) throws OseeCoreException {
+   private void fetchTxNotCurrent(JdbcConnection connection, Long branchId, BaseTransactionData transactionData, List<Object[]> results)  {
       JdbcStatement chStmt = getJdbcClient().getStatement(connection);
       try {
          String query = ServiceUtil.getSql(transactionData.getSelectTxNotCurrentSql());
@@ -175,7 +175,7 @@ public final class StoreSkynetTransactionOperation extends AbstractDbTxOperation
       }
    }
 
-   private void updateModifiedCachedObject() throws OseeCoreException {
+   private void updateModifiedCachedObject()  {
       ArtifactEvent artifactEvent = new ArtifactEvent(transactionRecord);
 
       // Update all transaction items before collecting events

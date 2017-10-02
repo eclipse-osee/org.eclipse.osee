@@ -51,11 +51,11 @@ public class AtsConfigWizardPage1 extends WizardPage {
       }
    };
 
-   public String getTeamDefName() throws OseeCoreException {
+   public String getTeamDefName()  {
       return (String) getXWidget(TEAMDEF_NAME).getData();
    }
 
-   public List<String> getActionableItems() throws OseeCoreException {
+   public List<String> getActionableItems()  {
       List<String> aias = new ArrayList<>();
       for (String aia : ((String) getXWidget(ACTIONABLE_ITEMS).getData()).split(",")) {
          aia = aia.replaceAll("^ *", "");
@@ -67,7 +67,7 @@ public class AtsConfigWizardPage1 extends WizardPage {
       return aias;
    }
 
-   public List<String> getVersions() throws OseeCoreException {
+   public List<String> getVersions()  {
       List<String> versions = new ArrayList<>();
       for (String version : ((String) getXWidget(VERSIONS).getData()).split(",")) {
          version = version.replaceAll("^ *", "");
@@ -79,7 +79,7 @@ public class AtsConfigWizardPage1 extends WizardPage {
       return versions;
    }
 
-   public String getWorkDefinitionName() throws OseeCoreException {
+   public String getWorkDefinitionName()  {
       return (String) getXWidget(WORKFLOW_ID).getData();
    }
 
@@ -135,7 +135,7 @@ public class AtsConfigWizardPage1 extends WizardPage {
       }
    }
 
-   public XWidget getXWidget(String attrName) throws OseeCoreException {
+   public XWidget getXWidget(String attrName)  {
       if (page == null) {
          throw new OseeArgumentException("WorkPage == null");
       }

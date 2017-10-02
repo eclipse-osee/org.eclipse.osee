@@ -69,11 +69,11 @@ public class AttributeCriteria implements ArtifactSearchCriteria {
     * conducted exactly as if the single value constructor was called. This search does not support the wildcard for
     * multiple values.
     */
-   public AttributeCriteria(AttributeTypeId attributeType, Collection<String> values) throws OseeCoreException {
+   public AttributeCriteria(AttributeTypeId attributeType, Collection<String> values)  {
       this(attributeType, null, validate(values), false);
    }
 
-   private static Collection<String> validate(Collection<String> values) throws OseeArgumentException {
+   private static Collection<String> validate(Collection<String> values)  {
       if (values == null || values.isEmpty()) {
          throw new OseeArgumentException("values provided to AttributeCriteria must not be null or empty");
       }
@@ -113,7 +113,7 @@ public class AttributeCriteria implements ArtifactSearchCriteria {
    }
 
    @Override
-   public void addToQueryBuilder(QueryBuilder builder) throws OseeCoreException {
+   public void addToQueryBuilder(QueryBuilder builder)  {
       if (existsSearch) {
          builder.andExists(getAttributeType());
       } else if (getValues() != null) {

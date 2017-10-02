@@ -19,6 +19,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface ISelectedTeamDefinitionArtifacts {
 
-   Collection<IAtsTeamDefinition> getSelectedTeamDefinitions() throws OseeCoreException;
+   Collection<IAtsTeamDefinition> getSelectedTeamDefinitions() ;
 
 }

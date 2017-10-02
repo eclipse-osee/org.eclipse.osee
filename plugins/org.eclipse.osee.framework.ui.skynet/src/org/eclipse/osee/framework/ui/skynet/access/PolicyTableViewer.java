@@ -60,7 +60,7 @@ public class PolicyTableViewer {
       ((PolicyTableCellModifier) tableXViewer.getCellModifier()).setDeleteEnabled(allow);
    }
 
-   public void addOrModifyItem(Artifact subject, Object object, PermissionEnum permission) throws OseeCoreException {
+   public void addOrModifyItem(Artifact subject, Object object, PermissionEnum permission)  {
       AccessObject accessObject = AccessControlManager.getAccessObject(object);
       AccessControlData data = accessControlList.get(subject.getGuid());
       if (data == null) {

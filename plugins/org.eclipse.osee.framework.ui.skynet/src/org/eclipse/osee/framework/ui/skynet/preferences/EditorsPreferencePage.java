@@ -56,19 +56,19 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
    private Button showTokenForChangeName;
    private Text compareEditorTextBox;
 
-   public static boolean isCloseChangeReportEditorsOnShutdown() throws OseeCoreException {
+   public static boolean isCloseChangeReportEditorsOnShutdown()  {
       return UserManager.getBooleanSetting(CHANGE_REPORT_CLOSE_CHANGE_REPORT_EDITORS_ON_SHUTDOWN);
    }
 
-   public static boolean isIncludeAttributeTabOnArtifactEditor() throws OseeCoreException {
+   public static boolean isIncludeAttributeTabOnArtifactEditor()  {
       return UserManager.getBooleanSetting(ADMIN_INCLUDE_ATTRIBUTE_TAB_ON_ARTIFACT_EDITOR);
    }
 
-   public static boolean isUseExternalCompareEditorForText() throws OseeCoreException {
+   public static boolean isUseExternalCompareEditorForText()  {
       return UserManager.getBooleanSetting(USE_EXTERNAL_COMPARE_EDITOR_FOR_TEXT);
    }
 
-   public static String getExternalCompareEditorForText() throws OseeCoreException {
+   public static String getExternalCompareEditorForText()  {
       return UserManager.getSetting(EXTERNAL_COMPARE_EDITOR_FOR_TEXT);
    }
 

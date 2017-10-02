@@ -31,101 +31,101 @@ public interface IAtsStateManager extends WorkStateFactory {
 
    StateType getCurrentStateType();
 
-   void updateMetrics(IStateToken state, double additionalHours, int percentComplete, boolean logMetrics, IAtsUser user) throws OseeCoreException;
+   void updateMetrics(IStateToken state, double additionalHours, int percentComplete, boolean logMetrics, IAtsUser user) ;
 
-   void setMetrics(double hours, int percentComplete, boolean logMetrics, IAtsUser user, Date date) throws OseeCoreException;
+   void setMetrics(double hours, int percentComplete, boolean logMetrics, IAtsUser user, Date date) ;
 
    /**
     * Set metrics and log if changed
     *
     * @param changes JavaTip
     */
-   void setMetrics(IStateToken state, double hours, int percentComplete, boolean logMetrics, IAtsUser user, Date date) throws OseeCoreException;
+   void setMetrics(IStateToken state, double hours, int percentComplete, boolean logMetrics, IAtsUser user, Date date) ;
 
-   StateType getStateType() throws OseeCoreException;
+   StateType getStateType() ;
 
-   void addAssignees(String stateName, Collection<? extends IAtsUser> assignees) throws OseeCoreException;
+   void addAssignees(String stateName, Collection<? extends IAtsUser> assignees) ;
 
-   String getHoursSpentStr(String stateName) throws OseeCoreException;
+   String getHoursSpentStr(String stateName) ;
 
-   void setAssignee(IAtsUser assignee) throws OseeCoreException;
+   void setAssignee(IAtsUser assignee) ;
 
-   void setAssignees(Collection<? extends IAtsUser> assignees) throws OseeCoreException;
+   void setAssignees(Collection<? extends IAtsUser> assignees) ;
 
    /**
     * Sets the assignees as attributes and relations AND writes to store. Does not persist.
     */
-   void setAssignees(String stateName, List<? extends IAtsUser> assignees) throws OseeCoreException;
+   void setAssignees(String stateName, List<? extends IAtsUser> assignees) ;
 
-   void transitionHelper(List<? extends IAtsUser> toAssignees, IStateToken fromStateName, IStateToken toStateName, String cancelReason) throws OseeCoreException;
+   void transitionHelper(List<? extends IAtsUser> toAssignees, IStateToken fromStateName, IStateToken toStateName, String cancelReason) ;
 
-   long getTimeInState() throws OseeCoreException;
+   long getTimeInState() ;
 
-   long getTimeInState(IStateToken state) throws OseeCoreException;
+   long getTimeInState(IStateToken state) ;
 
-   void addAssignee(String stateName, IAtsUser assignee) throws OseeCoreException;
+   void addAssignee(String stateName, IAtsUser assignee) ;
 
-   void addState(String stateName, List<? extends IAtsUser> assignees, double hoursSpent, int percentComplete) throws OseeCoreException;
+   void addState(String stateName, List<? extends IAtsUser> assignees, double hoursSpent, int percentComplete) ;
 
-   boolean isDirty() throws OseeCoreException;
+   boolean isDirty() ;
 
-   List<IAtsUser> getAssignees(String stateName) throws OseeCoreException;
+   List<IAtsUser> getAssignees(String stateName) ;
 
-   List<IAtsUser> getAssigneesForState(String fromStateName) throws OseeCoreException;
+   List<IAtsUser> getAssigneesForState(String fromStateName) ;
 
-   List<IAtsUser> getAssignees() throws OseeCoreException;
+   List<IAtsUser> getAssignees() ;
 
-   void setCurrentStateName(String currentStateName) throws OseeCoreException;
+   void setCurrentStateName(String currentStateName) ;
 
-   void addAssignee(IAtsUser assignee) throws OseeCoreException;
+   void addAssignee(IAtsUser assignee) ;
 
-   void addState(String stateName, List<? extends IAtsUser> assignees) throws OseeCoreException;
+   void addState(String stateName, List<? extends IAtsUser> assignees) ;
 
-   void setAssignees(List<? extends IAtsUser> assignees) throws OseeCoreException;
+   void setAssignees(List<? extends IAtsUser> assignees) ;
 
-   void createState(String stateName) throws OseeCoreException;
+   void createState(String stateName) ;
 
-   void setPercentComplete(String stateName, int percentComplete) throws OseeCoreException;
+   void setPercentComplete(String stateName, int percentComplete) ;
 
-   void setHoursSpent(String stateName, double hoursSpent) throws OseeCoreException;
+   void setHoursSpent(String stateName, double hoursSpent) ;
 
-   double getHoursSpent(String stateName) throws OseeCoreException;
+   double getHoursSpent(String stateName) ;
 
-   int getPercentComplete(String stateName) throws OseeCoreException;
+   int getPercentComplete(String stateName) ;
 
-   List<String> getVisitedStateNames() throws OseeCoreException;
+   List<String> getVisitedStateNames() ;
 
-   void removeAssignee(String stateName, IAtsUser assignee) throws OseeCoreException;
+   void removeAssignee(String stateName, IAtsUser assignee) ;
 
-   void setAssignee(IStateToken state, IAtsUser assignee) throws OseeCoreException;
+   void setAssignee(IStateToken state, IAtsUser assignee) ;
 
-   void createState(IStateToken state) throws OseeCoreException;
+   void createState(IStateToken state) ;
 
-   boolean isUnAssignedSolely() throws OseeCoreException;
+   boolean isUnAssignedSolely() ;
 
-   String getAssigneesStr() throws OseeCoreException;
+   String getAssigneesStr() ;
 
-   void removeAssignee(IAtsUser assignee) throws OseeCoreException;
+   void removeAssignee(IAtsUser assignee) ;
 
-   boolean isUnAssigned() throws OseeCoreException;
+   boolean isUnAssigned() ;
 
-   void clearAssignees() throws OseeCoreException;
+   void clearAssignees() ;
 
-   Collection<IAtsUser> getAssignees(IStateToken state) throws OseeCoreException;
+   Collection<IAtsUser> getAssignees(IStateToken state) ;
 
-   boolean isStateVisited(IStateToken state) throws OseeCoreException;
+   boolean isStateVisited(IStateToken state) ;
 
-   String getAssigneesStr(int length) throws OseeCoreException;
+   String getAssigneesStr(int length) ;
 
-   String getAssigneesStr(String stateName, int length) throws OseeCoreException;
+   String getAssigneesStr(String stateName, int length) ;
 
-   String getAssigneesStr(String stateName) throws OseeCoreException;
+   String getAssigneesStr(String stateName) ;
 
-   void addAssignees(Collection<? extends IAtsUser> assignees) throws OseeCoreException;
+   void addAssignees(Collection<? extends IAtsUser> assignees) ;
 
-   void setAssignee(String stateName, IAtsUser assignee) throws OseeCoreException;
+   void setAssignee(String stateName, IAtsUser assignee) ;
 
-   boolean isStateVisited(String stateName) throws OseeCoreException;
+   boolean isStateVisited(String stateName) ;
 
    @Override
    WorkState createStateData(String name, List<? extends IAtsUser> assignees);
@@ -136,18 +136,18 @@ public interface IAtsStateManager extends WorkStateFactory {
    @Override
    WorkState createStateData(String name, List<? extends IAtsUser> assignees, double hoursSpent, int percentComplete);
 
-   void addState(WorkState workState) throws OseeCoreException;
+   void addState(WorkState workState) ;
 
-   void validateNoBootstrapUser() throws OseeCoreException;
+   void validateNoBootstrapUser() ;
 
    @Override
    String getId();
 
-   IAtsLogItem getStateStartedData(IStateToken state) throws OseeCoreException;
+   IAtsLogItem getStateStartedData(IStateToken state) ;
 
-   IAtsLogItem getStateStartedData(String stateName) throws OseeCoreException;
+   IAtsLogItem getStateStartedData(String stateName) ;
 
-   Collection<? extends IAtsUser> getAssigneesAdded() throws OseeCoreException;
+   Collection<? extends IAtsUser> getAssigneesAdded() ;
 
    Integer getPercentCompleteValue();
 

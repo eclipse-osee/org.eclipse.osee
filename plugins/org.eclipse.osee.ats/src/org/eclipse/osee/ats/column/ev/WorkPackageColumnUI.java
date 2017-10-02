@@ -111,11 +111,11 @@ public class WorkPackageColumnUI extends XViewerAtsColumn implements IMultiColum
       return modified;
    }
 
-   public static boolean promptChangeActivityId(AbstractWorkflowArtifact teamWf, boolean persist) throws OseeCoreException {
+   public static boolean promptChangeActivityId(AbstractWorkflowArtifact teamWf, boolean persist)  {
       return promptChangeActivityIds(Arrays.asList(teamWf));
    }
 
-   private static boolean promptChangeActivityIds(final Collection<? extends AbstractWorkflowArtifact> awas) throws OseeCoreException {
+   private static boolean promptChangeActivityIds(final Collection<? extends AbstractWorkflowArtifact> awas)  {
       boolean modified = false;
       Set<IAtsWorkPackage> commonWorkPackageOptions = new HashSet<>();
       Set<IAtsWorkPackage> uniqueWorkPackageOptions = new HashSet<>();
@@ -151,7 +151,7 @@ public class WorkPackageColumnUI extends XViewerAtsColumn implements IMultiColum
       return message;
    }
 
-   private static Result getConfiguredWorkPackageOptions(final Collection<? extends AbstractWorkflowArtifact> awas, Set<IAtsWorkPackage> workPackageOptions, Set<IAtsWorkPackage> uniqueWorkPackageOptions) throws OseeCoreException {
+   private static Result getConfiguredWorkPackageOptions(final Collection<? extends AbstractWorkflowArtifact> awas, Set<IAtsWorkPackage> workPackageOptions, Set<IAtsWorkPackage> uniqueWorkPackageOptions)  {
       Result result = null;
       for (AbstractWorkflowArtifact teamWf : awas) {
          Collection<IAtsWorkPackage> options =

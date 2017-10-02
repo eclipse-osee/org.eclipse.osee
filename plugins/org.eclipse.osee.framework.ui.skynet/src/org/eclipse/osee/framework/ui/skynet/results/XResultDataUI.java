@@ -69,18 +69,18 @@ public class XResultDataUI {
    /*
     * Creates hyperlink using guid as name. Default editor will open.
     */
-   public static String getHyperlink(Artifact art) throws OseeCoreException {
+   public static String getHyperlink(Artifact art)  {
       return getHyperlink(art.getGuid(), art.getGuid(), art.getBranch());
    }
 
-   public static String getHyperlinkWithName(Artifact art) throws OseeCoreException {
+   public static String getHyperlinkWithName(Artifact art)  {
       return getHyperlink(art.toStringWithId(), art.getGuid(), art.getBranch());
    }
 
    /*
     * Creates hyperlink using name. Default editor will open.
     */
-   public static String getHyperlink(String name, Artifact art) throws OseeCoreException {
+   public static String getHyperlink(String name, Artifact art)  {
       return getHyperlink(name, art.getGuid(), art.getBranch());
    }
 

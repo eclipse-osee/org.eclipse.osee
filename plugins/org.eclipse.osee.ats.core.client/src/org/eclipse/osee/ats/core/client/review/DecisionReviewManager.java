@@ -43,7 +43,7 @@ public class DecisionReviewManager {
     *
     * @param user User to transition to OR null if should use user of current state
     */
-   public static Result transitionTo(DecisionReviewArtifact reviewArt, DecisionReviewState toState, IAtsUser user, boolean popup, IAtsChangeSet changes) throws OseeCoreException {
+   public static Result transitionTo(DecisionReviewArtifact reviewArt, DecisionReviewState toState, IAtsUser user, boolean popup, IAtsChangeSet changes)  {
       Result result = Result.TrueResult;
       // If in Prepare state, set data and transition to Decision
       if (reviewArt.isInState(DecisionReviewState.Prepare)) {
@@ -76,7 +76,7 @@ public class DecisionReviewManager {
       return Result.TrueResult;
    }
 
-   public static Result setPrepareStateData(boolean popup, DecisionReviewArtifact reviewArt, int statePercentComplete, double estimateHours, double stateHoursSpent) throws OseeCoreException {
+   public static Result setPrepareStateData(boolean popup, DecisionReviewArtifact reviewArt, int statePercentComplete, double estimateHours, double stateHoursSpent)  {
       if (!reviewArt.isInState(DecisionReviewState.Prepare)) {
          Result result = new Result("Action not in Prepare state");
          if (result.isFalse() && popup) {
@@ -89,7 +89,7 @@ public class DecisionReviewManager {
       return Result.TrueResult;
    }
 
-   public static Result transitionToState(StateType StateType, boolean popup, IStateToken toState, DecisionReviewArtifact reviewArt, IAtsUser user, IAtsChangeSet changes) throws OseeCoreException {
+   public static Result transitionToState(StateType StateType, boolean popup, IStateToken toState, DecisionReviewArtifact reviewArt, IAtsUser user, IAtsChangeSet changes)  {
       TransitionHelper helper =
          new TransitionHelper("Transition to " + toState.getName(), Arrays.asList(reviewArt), toState.getName(),
             Arrays.asList(user == null ? reviewArt.getStateMgr().getAssignees().iterator().next() : user), null,
@@ -102,7 +102,7 @@ public class DecisionReviewManager {
       return new Result("Transition Error %s", results.toString());
    }
 
-   public static Result setDecisionStateData(boolean popup, DecisionReviewArtifact reviewArt, boolean decision, int statePercentComplete, double stateHoursSpent) throws OseeCoreException {
+   public static Result setDecisionStateData(boolean popup, DecisionReviewArtifact reviewArt, boolean decision, int statePercentComplete, double stateHoursSpent)  {
       if (!reviewArt.isInState(DecisionReviewState.Decision)) {
          Result result = new Result("Action not in Decision state");
          if (result.isFalse() && popup) {

@@ -34,7 +34,7 @@ public class CategoryColumnTest {
 
    @BeforeClass
    @AfterClass
-   public static void cleanup() throws OseeCoreException {
+   public static void cleanup()  {
       TeamWorkFlowArtifact codeArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
       TeamWorkFlowArtifact reqArt =

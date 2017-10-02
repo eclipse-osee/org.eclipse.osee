@@ -41,31 +41,31 @@ public class CmAccessControlProviderTest {
    }
 
    @Test
-   public void testNoCms() throws OseeCoreException {
+   public void testNoCms()  {
       assertCMProvider(user, objectToCheck, null);
    }
 
    @Test
-   public void testCmButNotApplicable() throws OseeCoreException {
+   public void testCmButNotApplicable()  {
       MockConfigurationManagement cm1 = new MockConfigurationManagement(user, objectToCheck, false, null);
       assertCMProvider(user, objectToCheck, null, cm1);
    }
 
    @Test
-   public void testExtraCmApplicable() throws OseeCoreException {
+   public void testExtraCmApplicable()  {
       MockConfigurationManagement cm1 = new MockConfigurationManagement(user, objectToCheck, false, null);
       MockConfigurationManagement cm2 = new MockConfigurationManagement(user, objectToCheck, true, null);
       assertCMProvider(user, objectToCheck, cm2, cm1, cm2);
    }
 
    @Test(expected = OseeStateException.class)
-   public void testMoreThanOneCMApplies() throws OseeCoreException {
+   public void testMoreThanOneCMApplies()  {
       MockConfigurationManagement cm1 = new MockConfigurationManagement(user, objectToCheck, true, null);
       MockConfigurationManagement cm2 = new MockConfigurationManagement(user, objectToCheck, true, null);
       assertCMProvider(user, objectToCheck, null, cm1, cm2);
    }
 
-   private static void assertCMProvider(ArtifactToken user, Object objectToCheck, MockConfigurationManagement expectedCM, MockConfigurationManagement... extraCms) throws OseeCoreException {
+   private static void assertCMProvider(ArtifactToken user, Object objectToCheck, MockConfigurationManagement expectedCM, MockConfigurationManagement... extraCms)  {
       Collection<CmAccessControl> cmServices = new HashSet<>();
       for (CmAccessControl extraCm : extraCms) {
          cmServices.add(extraCm);

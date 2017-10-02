@@ -19,7 +19,7 @@ import org.eclipse.osee.orcs.core.ds.Options;
  */
 public abstract class AbstractLoadProcessor<H> {
 
-   public final int processResultSet(H handler, JdbcStatement chStmt, Options options) throws OseeCoreException {
+   public final int processResultSet(H handler, JdbcStatement chStmt, Options options)  {
       int rowCount = 0;
       Object conditions = createPreConditions(options);
       while (chStmt.next()) {

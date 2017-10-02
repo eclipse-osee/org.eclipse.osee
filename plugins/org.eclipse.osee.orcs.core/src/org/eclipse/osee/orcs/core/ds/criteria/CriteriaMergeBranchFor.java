@@ -39,7 +39,7 @@ public class CriteriaMergeBranchFor extends Criteria implements BranchCriteria {
    }
 
    @Override
-   public void checkValid(Options options) throws OseeCoreException {
+   public void checkValid(Options options)  {
       Conditions.checkExpressionFailOnTrue(source == null, "Source Uuid cannot be null");
       Conditions.checkExpressionFailOnTrue(destination == null, "Destination Uuid cannot be null");
    }

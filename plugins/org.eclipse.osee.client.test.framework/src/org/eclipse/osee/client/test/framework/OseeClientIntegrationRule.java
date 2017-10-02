@@ -102,16 +102,16 @@ public final class OseeClientIntegrationRule extends AbstractTestRule {
       //      RenderingUtil.setPopupsAllowed(popUps);
    }
 
-   private static void checkAuthenticatedSession(String authenticationType) throws OseeCoreException {
+   private static void checkAuthenticatedSession(String authenticationType)  {
       String message = String.format("Client must authenticate using [%s] protocol", authenticationType);
       assertTrue(message, ClientSessionManager.getSession().getAuthenticationProtocol().equals(authenticationType));
    }
 
-   private static void checkNotProductionDataStore() throws OseeCoreException {
+   private static void checkNotProductionDataStore()  {
       assertFalse("Not to be run on a production database.", isProductionDataStore());
    }
 
-   private static boolean isProductionDataStore() throws OseeCoreException {
+   private static boolean isProductionDataStore()  {
       return ClientSessionManager.isProductionDataStore();
    }
 }

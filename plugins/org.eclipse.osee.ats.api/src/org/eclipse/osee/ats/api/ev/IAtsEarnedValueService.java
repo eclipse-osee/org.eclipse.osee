@@ -25,9 +25,9 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IAtsEarnedValueService {
 
-   public IAtsWorkPackage getWorkPackage(IAtsWorkItem workItem) throws OseeCoreException;
+   public IAtsWorkPackage getWorkPackage(IAtsWorkItem workItem) ;
 
-   public Collection<IAtsWorkPackage> getWorkPackageOptions(IAtsObject object) throws OseeCoreException;
+   public Collection<IAtsWorkPackage> getWorkPackageOptions(IAtsObject object) ;
 
    public ArtifactId getWorkPackageId(IAtsWorkItem atsObject);
 
@@ -47,13 +47,13 @@ public interface IAtsEarnedValueService {
 
    double getEstimatedHoursFromTasks(IAtsWorkItem workItem);
 
-   double getEstimatedHoursFromReviews(IAtsWorkItem workItem) throws OseeCoreException;
+   double getEstimatedHoursFromReviews(IAtsWorkItem workItem) ;
 
-   double getEstimatedHoursFromReviews(IAtsWorkItem workItem, IStateToken relatedToState) throws OseeCoreException;
+   double getEstimatedHoursFromReviews(IAtsWorkItem workItem, IStateToken relatedToState) ;
 
-   double getEstimatedHoursTotal(IAtsWorkItem workItem, IStateToken relatedToState) throws OseeCoreException;
+   double getEstimatedHoursTotal(IAtsWorkItem workItem, IStateToken relatedToState) ;
 
-   double getEstimatedHoursTotal(IAtsWorkItem workItem) throws OseeCoreException;
+   double getEstimatedHoursTotal(IAtsWorkItem workItem) ;
 
    void setWorkPackage(IAtsWorkPackage workPackage, IAtsWorkItem workItem, IAtsChangeSet changes);
 

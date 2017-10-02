@@ -50,7 +50,7 @@ public class AtsXComboBooleanValidatorTest {
    }
 
    @Test
-   public void testValidateTransition() throws OseeCoreException {
+   public void testValidateTransition()  {
       MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
       widgetDef.setXWidgetName("xLabel");
 

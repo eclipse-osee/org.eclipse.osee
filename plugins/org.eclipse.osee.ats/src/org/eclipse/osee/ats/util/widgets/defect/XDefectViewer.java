@@ -40,22 +40,22 @@ public class XDefectViewer extends XLabelValue implements IArtifactWidget, IOsee
    }
 
    @Override
-   public void saveToArtifact() throws OseeCoreException {
+   public void saveToArtifact()  {
       // do nothing
    }
 
    @Override
-   public void revert() throws OseeCoreException {
+   public void revert()  {
       // do nothing
    }
 
    @Override
-   public Result isDirty() throws OseeCoreException {
+   public Result isDirty()  {
       return Result.FalseResult;
    }
 
    @Override
-   public void setArtifact(Artifact artifact) throws OseeCoreException {
+   public void setArtifact(Artifact artifact)  {
       reviewArt = (PeerToPeerReviewArtifact) artifact;
       refreshLabel();
    }

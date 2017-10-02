@@ -23,6 +23,6 @@ public interface ImportHandler {
    int getRank();
 
    //returns whether or not processing was successful
-   boolean process(Collection<URI> resources, Object destination, boolean persistChanges) throws OseeCoreException;
+   boolean process(Collection<URI> resources, Object destination, boolean persistChanges) ;
 
 }

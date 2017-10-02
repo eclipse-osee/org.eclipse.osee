@@ -58,14 +58,14 @@ public class DemoTestUtil {
    public static Map<DemoWorkType, Artifact> committedWorkflows;
    public static TeamWorkFlowArtifact toolsTeamWorkflow;
 
-   public static User getDemoUser(UserToken demoUser) throws OseeCoreException {
+   public static User getDemoUser(UserToken demoUser)  {
       return UserManager.getUserByName(demoUser.getName());
    }
 
    /**
     * Creates an action with the name title and demo code workflow
     */
-   public static IAtsTeamWorkflow createSimpleAction(String title, IAtsChangeSet changes) throws OseeCoreException {
+   public static IAtsTeamWorkflow createSimpleAction(String title, IAtsChangeSet changes)  {
       ActionResult result = AtsClientService.get().getActionFactory().createAction(null, title, "Description",
          ChangeType.Improvement, "2", false, null,
          ActionableItems.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName()),
@@ -81,15 +81,15 @@ public class DemoTestUtil {
       return teamWf;
    }
 
-   public static Set<IAtsActionableItem> getActionableItems(DemoActionableItems demoActionableItems) throws OseeCoreException {
+   public static Set<IAtsActionableItem> getActionableItems(DemoActionableItems demoActionableItems)  {
       return ActionableItems.getActionableItems(Arrays.asList(demoActionableItems.getName()), AtsClientService.get());
    }
 
-   public static IAtsActionableItem getActionableItem(DemoActionableItems demoActionableItems) throws OseeCoreException {
+   public static IAtsActionableItem getActionableItem(DemoActionableItems demoActionableItems)  {
       return getActionableItems(demoActionableItems).iterator().next();
    }
 
-   public static IAtsTeamWorkflow addTeamWorkflow(IAtsAction action, String title, IAtsChangeSet changes) throws OseeCoreException {
+   public static IAtsTeamWorkflow addTeamWorkflow(IAtsAction action, String title, IAtsChangeSet changes)  {
       Set<IAtsActionableItem> actionableItems = getActionableItems(DemoActionableItems.SAW_Test);
       Collection<IAtsTeamDefinition> teamDefs = TeamDefinitions.getImpactedTeamDefs(actionableItems);
 
@@ -121,7 +121,7 @@ public class DemoTestUtil {
       return Collections.castAll(createTasks);
    }
 
-   public static TeamWorkFlowArtifact getToolsTeamWorkflow() throws OseeCoreException {
+   public static TeamWorkFlowArtifact getToolsTeamWorkflow()  {
       if (toolsTeamWorkflow == null) {
          for (Artifact art : ArtifactQuery.getArtifactListFromName("Button S doesn't work on help",
             AtsClientService.get().getAtsBranch(), EXCLUDE_DELETED)) {
@@ -133,7 +133,7 @@ public class DemoTestUtil {
       return toolsTeamWorkflow;
    }
 
-   public static Artifact getUncommittedActionWorkflow(DemoWorkType demoWorkType) throws OseeCoreException {
+   public static Artifact getUncommittedActionWorkflow(DemoWorkType demoWorkType)  {
       if (unCommittedWorkflows == null) {
          unCommittedWorkflows = new HashMap<>();
          for (Artifact art : DemoUtil.getSawUnCommittedTeamWfs()) {
@@ -151,7 +151,7 @@ public class DemoTestUtil {
       return unCommittedWorkflows.get(demoWorkType);
    }
 
-   public static Artifact getCommittedActionWorkflow(DemoWorkType demoWorkType) throws OseeCoreException {
+   public static Artifact getCommittedActionWorkflow(DemoWorkType demoWorkType)  {
       if (committedWorkflows == null) {
          committedWorkflows = new HashMap<>();
          for (Artifact art : DemoUtil.getSawCommittedTeamWfs()) {
@@ -169,7 +169,7 @@ public class DemoTestUtil {
       return committedWorkflows.get(demoWorkType);
    }
 
-   public static IAtsTeamDefinition getTeamDef(DemoTeam team) throws OseeCoreException {
+   public static IAtsTeamDefinition getTeamDef(DemoTeam team)  {
       IAtsTeamDefinition results = null;
       // Add check to keep exception from occurring for OSEE developers running against production
       if (!ClientSessionManager.isProductionDataStore()) {

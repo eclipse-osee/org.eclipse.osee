@@ -17,11 +17,11 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IWorkbenchUser {
 
-   String getEmail() throws OseeCoreException;
+   String getEmail() ;
 
-   String getName() throws OseeCoreException;
+   String getName() ;
 
-   String getUserID() throws OseeCoreException;
+   String getUserID() ;
 
-   boolean isActive() throws OseeCoreException;
+   boolean isActive() ;
 }

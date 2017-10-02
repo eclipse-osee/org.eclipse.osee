@@ -29,7 +29,7 @@ public class CriteriaBranch extends Criteria implements HasBranch, BranchCriteri
    }
 
    @Override
-   public void checkValid(Options options) throws OseeCoreException {
+   public void checkValid(Options options)  {
       Conditions.checkNotNull(branchId, "branch");
    }
 

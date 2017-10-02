@@ -24,7 +24,7 @@ import org.junit.Assert;
 public class AtsConfigEndpointImplClientIntegrationTest {
 
    @org.junit.Test
-   public void testAlive() throws OseeCoreException {
+   public void testAlive()  {
       AtsConfigEndpointApi configEp = AtsClientService.getConfigEndpoint();
       XResultData resultData = configEp.alive();
       Assert.assertEquals("Alive", resultData.getResults().iterator().next());

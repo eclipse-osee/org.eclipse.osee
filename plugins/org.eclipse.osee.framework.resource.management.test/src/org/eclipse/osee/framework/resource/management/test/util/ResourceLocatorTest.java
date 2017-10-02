@@ -27,7 +27,7 @@ import org.junit.Test;
 public class ResourceLocatorTest {
 
    @Test
-   public void testGetRawPath() throws OseeCoreException {
+   public void testGetRawPath()  {
       IResourceLocator locator = createLocator("http://blah/www.myuri.com");
       Assert.assertEquals("blah/www.myuri.com", locator.getRawPath());
 
@@ -36,7 +36,7 @@ public class ResourceLocatorTest {
    }
 
    @Test
-   public void testGetProtocol() throws OseeCoreException {
+   public void testGetProtocol()  {
       IResourceLocator locator = createLocator("http://blah/www.myuri.com");
       Assert.assertEquals("http", locator.getProtocol());
 
@@ -48,7 +48,7 @@ public class ResourceLocatorTest {
    }
 
    @Test
-   public void testGetLocation() throws OseeCoreException {
+   public void testGetLocation()  {
       IResourceLocator locator = createLocator("http://blah/www.myuri.com");
       Assert.assertEquals("http://blah/www.myuri.com", locator.getLocation().toASCIIString());
 
@@ -68,7 +68,7 @@ public class ResourceLocatorTest {
       }
    }
 
-   private IResourceLocator createLocator(String path) throws OseeCoreException {
+   private IResourceLocator createLocator(String path)  {
       IResourceLocator locator = null;
       try {
          URI uri = new URI(path);

@@ -43,7 +43,7 @@ public class TxDateRangeSqlHandler extends SqlHandler<CriteriaDateRange> {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
+   public boolean addPredicates(AbstractSqlWriter writer)  {
       Timestamp from = criteria.getFrom();
       Timestamp to = criteria.getTo();
       writer.write(txAlias);

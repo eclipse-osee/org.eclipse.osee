@@ -31,7 +31,7 @@ public interface IAtsConfigQuery {
 
    <T extends IAtsConfigObject> ResultSet<T> getConfigObjectResultSet();
 
-   Collection<ArtifactId> getIds() throws OseeCoreException;
+   Collection<ArtifactId> getIds() ;
 
    <T extends IAtsConfigObject> Collection<T> getConfigObjects();
 
@@ -39,7 +39,7 @@ public interface IAtsConfigQuery {
 
    IAtsConfigQuery isOfType(IArtifactType... artifactType);
 
-   IAtsConfigQuery andAttr(AttributeTypeId attributeType, Collection<String> values, QueryOption... queryOptions) throws OseeCoreException;
+   IAtsConfigQuery andAttr(AttributeTypeId attributeType, Collection<String> values, QueryOption... queryOptions) ;
 
    IAtsConfigQuery andId(ArtifactId id);
 

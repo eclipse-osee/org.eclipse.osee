@@ -25,17 +25,17 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IAtsActionableItemService {
 
-   Set<IAtsActionableItem> getActionableItems(IAtsObject atsObject) throws OseeCoreException;
+   Set<IAtsActionableItem> getActionableItems(IAtsObject atsObject) ;
 
-   String getActionableItemsStr(IAtsObject atsObject) throws OseeCoreException;
+   String getActionableItemsStr(IAtsObject atsObject) ;
 
    Collection<ArtifactId> getActionableItemIds(IAtsObject atsObject);
 
-   void addActionableItem(IAtsObject atsObject, IAtsActionableItem aia, IAtsChangeSet changes) throws OseeCoreException;
+   void addActionableItem(IAtsObject atsObject, IAtsActionableItem aia, IAtsChangeSet changes) ;
 
-   void removeActionableItem(IAtsObject atsObject, IAtsActionableItem aia, IAtsChangeSet changes) throws OseeCoreException;
+   void removeActionableItem(IAtsObject atsObject, IAtsActionableItem aia, IAtsChangeSet changes) ;
 
-   Result setActionableItems(IAtsObject atsObject, Collection<IAtsActionableItem> newItems, IAtsChangeSet changes) throws OseeCoreException;
+   Result setActionableItems(IAtsObject atsObject, Collection<IAtsActionableItem> newItems, IAtsChangeSet changes) ;
 
    boolean hasActionableItems(IAtsObject atsObject);
 

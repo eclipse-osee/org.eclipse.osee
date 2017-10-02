@@ -28,27 +28,27 @@ public interface QueryBuilder extends ArtifactQueryBuilder<QueryBuilder>, Query 
     *
     * @return artifact search results
     */
-   ResultSet<ArtifactReadable> getResults() throws OseeCoreException;
+   ResultSet<ArtifactReadable> getResults() ;
 
    /**
     * Executes query
     *
     * @return artifact search results with match locations
     */
-   ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> getMatches() throws OseeCoreException;
+   ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> getMatches() ;
 
    /**
     * Executes query
     *
     * @return localIds search results
     */
-   ResultSet<? extends ArtifactId> getResultsAsLocalIds() throws OseeCoreException;
+   ResultSet<? extends ArtifactId> getResultsAsLocalIds() ;
 
    /**
     * Count search results
     */
    @Override
-   int getCount() throws OseeCoreException;
+   int getCount() ;
 
    boolean exists();
 
@@ -56,27 +56,27 @@ public interface QueryBuilder extends ArtifactQueryBuilder<QueryBuilder>, Query 
     * Schedule a count search results
     */
    @Override
-   CancellableCallable<Integer> createCount() throws OseeCoreException;
+   CancellableCallable<Integer> createCount() ;
 
    /**
     * Schedule query
     *
     * @return artifact search results
     */
-   CancellableCallable<ResultSet<ArtifactReadable>> createSearch() throws OseeCoreException;
+   CancellableCallable<ResultSet<ArtifactReadable>> createSearch() ;
 
    /**
     * Schedule query and find matching locations
     *
     * @return artifact search results with match locations
     */
-   CancellableCallable<ResultSet<Match<ArtifactReadable, AttributeReadable<?>>>> createSearchWithMatches() throws OseeCoreException;
+   CancellableCallable<ResultSet<Match<ArtifactReadable, AttributeReadable<?>>>> createSearchWithMatches() ;
 
    /**
     * Schedule query and find matching locations
     *
     * @return localIds search results
     */
-   CancellableCallable<ResultSet<? extends ArtifactId>> createSearchResultsAsLocalIds() throws OseeCoreException;
+   CancellableCallable<ResultSet<? extends ArtifactId>> createSearchResultsAsLocalIds() ;
 
 }

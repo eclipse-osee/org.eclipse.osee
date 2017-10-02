@@ -218,11 +218,11 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
       }
    }
 
-   private void updatePartName() throws OseeCoreException {
+   private void updatePartName()  {
       setPartName(getTitleStr());
    }
 
-   public String getTitleStr() throws OseeCoreException {
+   public String getTitleStr()  {
       return getWfeInput().getName();
    }
 
@@ -451,7 +451,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
       }
    }
 
-   public static void editArtifact(Artifact artifact) throws OseeCoreException {
+   public static void editArtifact(Artifact artifact)  {
       if (artifact == null) {
          return;
       }
@@ -604,7 +604,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
       }
    }
 
-   public boolean isAccessControlWrite() throws OseeCoreException {
+   public boolean isAccessControlWrite()  {
       return AccessControlManager.hasPermission(awa, PermissionEnum.WRITE);
    }
 
@@ -617,12 +617,12 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
    }
 
    @Override
-   public IAtsVersion getMetricsVersion() throws OseeCoreException {
+   public IAtsVersion getMetricsVersion()  {
       return AtsClientService.get().getVersionService().getTargetedVersion(awa);
    }
 
    @Override
-   public double getManHoursPerDayPreference() throws OseeCoreException {
+   public double getManHoursPerDayPreference()  {
       return awa.getManHrsPerDayPreference();
    }
 

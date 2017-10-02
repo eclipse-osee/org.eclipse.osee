@@ -60,7 +60,7 @@ public class UpdatePreviousTxCurrent {
       gammaUpdate.execute();
    }
 
-   public void updateTxNotCurrentsFromTx(TransactionId transaction_id) throws OseeCoreException {
+   public void updateTxNotCurrentsFromTx(TransactionId transaction_id)  {
       OseePreparedStatement update = jdbcClient.getBatchStatement(connection, UPDATE_TXS_NOT_CURRENT);
       jdbcClient.runQuery(stmt -> update.addToBatch(branch, stmt.getLong("gamma_id"), stmt.getLong("transaction_id")),
          JdbcConstants.JDBC__MAX_FETCH_SIZE, SELECT_TXS_AND_GAMMAS_FROM_TXS, branch, transaction_id, branch,

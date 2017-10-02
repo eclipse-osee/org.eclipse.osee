@@ -119,7 +119,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       Program.launch(iFile.getLocation().toOSString());
    }
 
-   private void generateLowLevelToSubsystemTrace() throws IOException, OseeCoreException {
+   private void generateLowLevelToSubsystemTrace() throws IOException {
       excelWriter.startSheet("5.2", 11);
 
       excelWriter.writeRow("5.2  Lower Level Requirements Traceability to Subsystem Requirements");
@@ -172,7 +172,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       return false;
    }
 
-   private void generateSubsystemToLowLevelReqTrace() throws IOException, OseeCoreException {
+   private void generateSubsystemToLowLevelReqTrace() throws IOException {
       excelWriter.startSheet("5.3", 7);
 
       excelWriter.writeRow("5.3 Subsystem Requirements Allocation Traceability to Lower Level Requirements");
@@ -233,7 +233,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       }
    }
 
-   private void initLowLevelRequirements(List<Artifact> artifacts) throws OseeCoreException {
+   private void initLowLevelRequirements(List<Artifact> artifacts)  {
       RelationManager.getRelatedArtifacts(artifacts, 999, INCLUDE_DELETED,
          CoreRelationTypes.Default_Hierarchical__Child);
       for (Artifact artifact : artifacts) {
@@ -249,7 +249,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       ViewIdUtility.removeExcludedArtifacts(lowLevelReqs.iterator(), excludedArtifactIdMap);
    }
 
-   private void initAllocationComponents(List<Artifact> artifacts) throws OseeCoreException {
+   private void initAllocationComponents(List<Artifact> artifacts)  {
       RelationManager.getRelatedArtifacts(artifacts, 999, INCLUDE_DELETED,
          CoreRelationTypes.Default_Hierarchical__Child);
       for (Artifact artifact : artifacts) {
@@ -276,7 +276,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       return "N/A";
    }
 
-   private void orderSubsystemReqs(Artifact subsysTopFolder) throws OseeCoreException {
+   private void orderSubsystemReqs(Artifact subsysTopFolder)  {
       for (Artifact subsysFolder : subsysTopFolder.getChildren()) {
          List<Artifact> subsysReqs = subsysFolder.getDescendants();
          ViewIdUtility.removeExcludedArtifacts(subsysReqs.iterator(), excludedArtifactIdMap);

@@ -157,7 +157,7 @@ public class BranchView extends GenericViewPart implements IBranchWidgetMenuList
       mm.insertBefore(XViewer.MENU_GROUP_PRE, new SetAsFavoriteAction(xBranchWidget));
    }
 
-   public static void revealBranch(BranchId branch) throws OseeCoreException {
+   public static void revealBranch(BranchId branch)  {
       try {
          BranchView branchView = (BranchView) AWorkbench.getActivePage().showView(VIEW_ID);
          branchView.reveal(branch);

@@ -26,17 +26,17 @@ public class SelectedAtsArtifactsAdapter implements ISelectedAtsArtifacts {
    }
 
    @Override
-   public Set<Artifact> getSelectedWorkflowArtifacts() throws OseeCoreException {
+   public Set<Artifact> getSelectedWorkflowArtifacts()  {
       return Collections.emptySet();
    }
 
    @Override
-   public List<Artifact> getSelectedAtsArtifacts() throws OseeCoreException {
+   public List<Artifact> getSelectedAtsArtifacts()  {
       return Collections.emptyList();
    }
 
    @Override
-   public List<TaskArtifact> getSelectedTaskArtifacts() throws OseeCoreException {
+   public List<TaskArtifact> getSelectedTaskArtifacts()  {
       return Collections.emptyList();
    }
 

@@ -18,15 +18,15 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface SystemPreferences {
 
-   public Set<String> getKeys() throws OseeCoreException;
+   public Set<String> getKeys() ;
 
-   public String getSystemUuid() throws OseeCoreException;
+   public String getSystemUuid() ;
 
-   public String getValue(String key) throws OseeCoreException;
+   public String getValue(String key) ;
 
-   public String getCachedValue(String key) throws OseeCoreException;
+   public String getCachedValue(String key) ;
 
-   public String getCachedValue(String key, long maxStaleness) throws OseeCoreException;
+   public String getCachedValue(String key, long maxStaleness) ;
 
    /**
     * Return true if key is set and value = "true". Return false if key is either not set OR value != "true".<br>
@@ -34,18 +34,18 @@ public interface SystemPreferences {
     * Note: This call will hit the datastore every time, so shouldn't be used for often repeated calls. use
     * isCacheEnabled that will cache the value
     */
-   public boolean isEnabled(String key) throws OseeCoreException;
+   public boolean isEnabled(String key) ;
 
    /**
     * Return true if key is set and value = "true". Return false if key is either not set OR value != "true".<br>
     * <br>
     * Return cached value (value only loaded once per session. Restart will reset value if changed
     */
-   public boolean isCacheEnabled(String key) throws OseeCoreException;
+   public boolean isCacheEnabled(String key) ;
 
-   public void setEnabled(String key, boolean enabled) throws OseeCoreException;
+   public void setEnabled(String key, boolean enabled) ;
 
-   public void setBoolean(String key, boolean value) throws OseeCoreException;
+   public void setBoolean(String key, boolean value) ;
 
    /**
     * Return true if key is set in osee_info table and value = "true". Return false if key is either not in osee_info
@@ -54,9 +54,9 @@ public interface SystemPreferences {
     * Note: This call will hit the database every time, so shouldn't be used for often repeated calls. use
     * isCacheEnabled that will cache the value
     */
-   public boolean isBoolean(String key) throws OseeCoreException;
+   public boolean isBoolean(String key) ;
 
-   public boolean isBooleanUsingCache(String key) throws OseeCoreException;
+   public boolean isBooleanUsingCache(String key) ;
 
-   public void putValue(String key, String value) throws OseeCoreException;
+   public void putValue(String key, String value) ;
 }

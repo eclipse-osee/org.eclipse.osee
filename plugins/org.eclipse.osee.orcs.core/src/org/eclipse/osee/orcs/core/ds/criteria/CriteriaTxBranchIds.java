@@ -33,7 +33,7 @@ public class CriteriaTxBranchIds extends Criteria implements TxCriteria {
    }
 
    @Override
-   public void checkValid(Options options) throws OseeCoreException {
+   public void checkValid(Options options)  {
       Conditions.checkExpressionFailOnTrue(getIds().isEmpty(), "Branch Uuids cannot be empty");
    }
 

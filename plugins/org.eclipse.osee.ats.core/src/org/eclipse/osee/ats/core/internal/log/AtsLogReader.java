@@ -31,7 +31,7 @@ public class AtsLogReader {
       this.storeProvider = storeProvider;
    }
 
-   public void load() throws OseeCoreException {
+   public void load()  {
       atsLog.clearLog();
       atsLog.setLogId(storeProvider.getLogId());
       String xml = storeProvider.getLogXml();

@@ -98,7 +98,7 @@ public class WorkDaysNeededColumn extends XViewerAtsColumn implements IXViewerVa
       return false;
    }
 
-   public static Result isWorldViewManDaysNeededValid(Object object) throws OseeCoreException {
+   public static Result isWorldViewManDaysNeededValid(Object object)  {
       if (object instanceof AbstractWorkflowArtifact) {
          AbstractWorkflowArtifact aba = (AbstractWorkflowArtifact) object;
          Result result = RemainingHoursColumn.isRemainingHoursValid(aba);
@@ -120,7 +120,7 @@ public class WorkDaysNeededColumn extends XViewerAtsColumn implements IXViewerVa
       return Result.FalseResult;
    }
 
-   public static double getWorldViewManDaysNeeded(Object object) throws OseeCoreException {
+   public static double getWorldViewManDaysNeeded(Object object)  {
       if (object instanceof AbstractWorkflowArtifact) {
          double hrsRemain = RemainingHoursColumn.getRemainingHours(object);
          double manDaysNeeded = 0;

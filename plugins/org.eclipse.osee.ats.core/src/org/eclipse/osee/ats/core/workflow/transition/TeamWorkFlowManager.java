@@ -55,7 +55,7 @@ public class TeamWorkFlowManager {
     *
     * @param user Users to be assigned after transition and that did the current state work
     */
-   public Result transitionTo(TeamState toState, IAtsUser user, boolean popup, IAtsChangeSet changes) throws OseeCoreException {
+   public Result transitionTo(TeamState toState, IAtsUser user, boolean popup, IAtsChangeSet changes)  {
       return transitionTo(toState, user, Arrays.asList(user), popup, changes);
    }
 
@@ -66,7 +66,7 @@ public class TeamWorkFlowManager {
     * @param transitionToAssignees Users to be assigned after transition
     * @param currentStateUser User that did work on current state
     */
-   public Result transitionTo(TeamState toState, IAtsUser currentStateUser, Collection<IAtsUser> transitionToAssignees, boolean popup, IAtsChangeSet changes) throws OseeCoreException {
+   public Result transitionTo(TeamState toState, IAtsUser currentStateUser, Collection<IAtsUser> transitionToAssignees, boolean popup, IAtsChangeSet changes)  {
       Conditions.checkNotNull(currentStateUser, "currentStateUser");
       Conditions.checkNotNullOrEmpty(transitionToAssignees, "transitionToAssignees");
       Date date = new Date();
@@ -120,7 +120,7 @@ public class TeamWorkFlowManager {
 
    }
 
-   private Result processAuthorizeState(boolean popup, IAtsTeamWorkflow teamWf, IAtsUser currentStateUser, Collection<IAtsUser> transitionToAssignees, Date date, IAtsChangeSet changes) throws OseeCoreException {
+   private Result processAuthorizeState(boolean popup, IAtsTeamWorkflow teamWf, IAtsUser currentStateUser, Collection<IAtsUser> transitionToAssignees, Date date, IAtsChangeSet changes)  {
       Result result = setAuthorizeData(popup, 100, .2, currentStateUser, date);
       if (result.isFalse()) {
          return result;
@@ -132,7 +132,7 @@ public class TeamWorkFlowManager {
       return Result.TrueResult;
    }
 
-   private Result processAnalyzeState(boolean popup, IAtsTeamWorkflow teamWf, IAtsUser currentStateUser, Collection<IAtsUser> transitionToAssignees, Date date, IAtsChangeSet changes) throws OseeCoreException {
+   private Result processAnalyzeState(boolean popup, IAtsTeamWorkflow teamWf, IAtsUser currentStateUser, Collection<IAtsUser> transitionToAssignees, Date date, IAtsChangeSet changes)  {
       Result result = setAnalyzeData(popup, null, null, 100, .2, currentStateUser, date);
       if (result.isFalse()) {
          return result;
@@ -144,7 +144,7 @@ public class TeamWorkFlowManager {
       return Result.TrueResult;
    }
 
-   private Result processEndorseState(boolean popup, IAtsTeamWorkflow teamWf, IAtsUser currentStateUser, Collection<IAtsUser> transitionToAssignees, Date date, IAtsChangeSet changes) throws OseeCoreException {
+   private Result processEndorseState(boolean popup, IAtsTeamWorkflow teamWf, IAtsUser currentStateUser, Collection<IAtsUser> transitionToAssignees, Date date, IAtsChangeSet changes)  {
       Result result = setEndorseData(popup, null, 100, .2, currentStateUser, date);
       if (result.isFalse()) {
          return result;
@@ -167,7 +167,7 @@ public class TeamWorkFlowManager {
       return new Result("Transition Error %s", results.toString());
    }
 
-   public Result setEndorseData(boolean popup, String propRes, int statePercentComplete, double stateHoursSpent, IAtsUser user, Date date) throws OseeCoreException {
+   public Result setEndorseData(boolean popup, String propRes, int statePercentComplete, double stateHoursSpent, IAtsUser user, Date date)  {
       if (!teamWf.getStateMgr().isInState(TeamState.Endorse)) {
          Result result = new Result("Action not in Endorse state");
          if (result.isFalse() && popup) {
@@ -178,7 +178,7 @@ public class TeamWorkFlowManager {
       return Result.TrueResult;
    }
 
-   public Result setAnalyzeData(boolean popup, String problem, String propRes, int statePercentComplete, double stateHoursSpent, IAtsUser user, Date date) throws OseeCoreException {
+   public Result setAnalyzeData(boolean popup, String problem, String propRes, int statePercentComplete, double stateHoursSpent, IAtsUser user, Date date)  {
       if (!teamWf.getStateMgr().isInState(TeamState.Analyze)) {
          Result result = new Result("Action not in Analyze state");
          if (result.isFalse() && popup) {
@@ -189,7 +189,7 @@ public class TeamWorkFlowManager {
       return Result.TrueResult;
    }
 
-   public Result setAuthorizeData(boolean popup, int statePercentComplete, double stateHoursSpent, IAtsUser user, Date date) throws OseeCoreException {
+   public Result setAuthorizeData(boolean popup, int statePercentComplete, double stateHoursSpent, IAtsUser user, Date date)  {
       if (!teamWf.getStateMgr().isInState(TeamState.Authorize)) {
          Result result = new Result("Action not in Authorize state");
          if (result.isFalse() && popup) {
@@ -200,7 +200,7 @@ public class TeamWorkFlowManager {
       return Result.TrueResult;
    }
 
-   public Result setImplementData(boolean popup, String resolution, int statePercentComplete, double stateHoursSpent, IAtsUser user, Date date) throws OseeCoreException {
+   public Result setImplementData(boolean popup, String resolution, int statePercentComplete, double stateHoursSpent, IAtsUser user, Date date)  {
       if (!teamWf.getStateMgr().isInState(TeamState.Implement)) {
          Result result = new Result("Action not in Implement state");
          if (result.isFalse() && popup) {

@@ -58,7 +58,7 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
    }
 
    @Override
-   public Collection<ArtifactId> getIds() throws OseeCoreException {
+   public Collection<ArtifactId> getIds()  {
       onlyIds = new LinkedList<>();
       getArtifacts();
       return onlyIds;
@@ -160,7 +160,7 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
    }
 
    @Override
-   public IAtsConfigQuery andAttr(AttributeTypeId attributeType, Collection<String> values, QueryOption... queryOptions) throws OseeCoreException {
+   public IAtsConfigQuery andAttr(AttributeTypeId attributeType, Collection<String> values, QueryOption... queryOptions)  {
       andAttr.add(new AtsAttributeQuery(attributeType, values, queryOptions));
       return this;
    }

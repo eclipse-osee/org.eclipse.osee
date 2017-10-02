@@ -118,7 +118,7 @@ public final class TestPlanComplianceReportTest {
          new NullProgressMonitor(), resultBuffer, false);
    }
 
-   private VariableMap loadArtifacts(int amountOfTestProcedures, TestStatusEnum testProcedureStatus, int testResultsAmount) throws OseeCoreException {
+   private VariableMap loadArtifacts(int amountOfTestProcedures, TestStatusEnum testProcedureStatus, int testResultsAmount)  {
       Artifact testPlan =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestPlanElement, SAW_Bld_1, "Sample_Test_Plan");
       testPlan.persist(getClass().getSimpleName());

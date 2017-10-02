@@ -100,7 +100,7 @@ public class TransitionHelper extends TransitionHelperAdapter {
    }
 
    @Override
-   public Collection<? extends IAtsUser> getToAssignees(IAtsWorkItem workItem) throws OseeCoreException {
+   public Collection<? extends IAtsUser> getToAssignees(IAtsWorkItem workItem)  {
       return toAssignees;
    }
 

@@ -43,7 +43,7 @@ public class WordAttribute extends StringAttribute {
       return super.subClassSetValue(value);
    }
 
-   private String checkForTrackedChanges(String value) throws OseeCoreException {
+   private String checkForTrackedChanges(String value)  {
       String returnValue = value;
 
       Artifact art = getArtifact();
@@ -75,7 +75,7 @@ public class WordAttribute extends StringAttribute {
       return returnValue;
    }
 
-   public boolean containsWordAnnotations() throws OseeCoreException {
+   public boolean containsWordAnnotations()  {
       String temp = getValue();
       return WordCoreUtil.containsWordAnnotations(temp);
    }
@@ -85,7 +85,7 @@ public class WordAttribute extends StringAttribute {
    }
 
    @Override
-   public String getDisplayableString() throws OseeCoreException {
+   public String getDisplayableString()  {
       String toReturn = null;
       InputStream inputStream = null;
       try {

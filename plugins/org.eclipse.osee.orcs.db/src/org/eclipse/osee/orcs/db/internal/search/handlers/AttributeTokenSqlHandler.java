@@ -63,7 +63,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
    }
 
    @Override
-   public void addWithTables(AbstractSqlWriter writer) throws OseeCoreException {
+   public void addWithTables(AbstractSqlWriter writer)  {
       String gammaAlias = writer.getNextAlias(GAMMA_WITH);
       StringBuilder gammaSb = new StringBuilder();
       Collection<AttributeTypeId> types = criteria.getTypes();
@@ -184,7 +184,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
+   public boolean addPredicates(AbstractSqlWriter writer)  {
       boolean artTableAdded = false;
       boolean txsTableAdded = false;
 

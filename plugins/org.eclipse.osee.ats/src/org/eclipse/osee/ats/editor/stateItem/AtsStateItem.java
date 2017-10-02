@@ -41,12 +41,12 @@ public abstract class AtsStateItem implements IAtsStateItem {
    }
 
    @Override
-   public Result committing(AbstractWorkflowArtifact sma) throws OseeCoreException {
+   public Result committing(AbstractWorkflowArtifact sma)  {
       return Result.TrueResult;
    }
 
    @Override
-   public String getBranchShortName(AbstractWorkflowArtifact sma) throws OseeCoreException {
+   public String getBranchShortName(AbstractWorkflowArtifact sma)  {
       return null;
    }
 
@@ -56,42 +56,42 @@ public abstract class AtsStateItem implements IAtsStateItem {
    }
 
    @Override
-   public Collection<IAtsUser> getOverrideTransitionToAssignees(AbstractWorkflowArtifact awa, String decision) throws OseeCoreException {
+   public Collection<IAtsUser> getOverrideTransitionToAssignees(AbstractWorkflowArtifact awa, String decision)  {
       return null;
    }
 
    @Override
-   public String getOverrideTransitionToStateName(WfeWorkflowSection section) throws OseeCoreException {
+   public String getOverrideTransitionToStateName(WfeWorkflowSection section)  {
       return null;
    }
 
    @Override
-   public List<XWidget> getDynamicXWidgetsPostBody(AbstractWorkflowArtifact sma, String stateName) throws OseeCoreException {
+   public List<XWidget> getDynamicXWidgetsPostBody(AbstractWorkflowArtifact sma, String stateName)  {
       return Collections.emptyList();
    }
 
    @Override
-   public List<XWidget> getDynamicXWidgetsPreBody(AbstractWorkflowArtifact sma, String stateName) throws OseeCoreException {
+   public List<XWidget> getDynamicXWidgetsPreBody(AbstractWorkflowArtifact sma, String stateName)  {
       return Collections.emptyList();
    }
 
    @Override
-   public void xWidgetCreated(XWidget xWidget, FormToolkit toolkit, IAtsStateDefinition stateDefinition, Artifact art, boolean isEditable) throws OseeCoreException {
+   public void xWidgetCreated(XWidget xWidget, FormToolkit toolkit, IAtsStateDefinition stateDefinition, Artifact art, boolean isEditable)  {
       // provided for subclass implementation
    }
 
    @Override
-   public void widgetModified(XWidget xWidget, FormToolkit toolkit, IAtsStateDefinition stateDefinition, Artifact art, boolean isEditable) throws OseeCoreException {
+   public void widgetModified(XWidget xWidget, FormToolkit toolkit, IAtsStateDefinition stateDefinition, Artifact art, boolean isEditable)  {
       // provided for subclass implementation
    }
 
    @Override
-   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, IAtsStateDefinition stateDefinition, Artifact art, boolean isEditable) throws OseeCoreException {
+   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, IAtsStateDefinition stateDefinition, Artifact art, boolean isEditable)  {
       return Result.TrueResult;
    }
 
    @Override
-   public boolean isAccessControlViaAssigneesEnabledForBranching() throws OseeCoreException {
+   public boolean isAccessControlViaAssigneesEnabledForBranching()  {
       return false;
    }
 
@@ -108,7 +108,7 @@ public abstract class AtsStateItem implements IAtsStateItem {
    /**
     * Allows subclass to add changes to transition before commit.
     */
-   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes) throws OseeCoreException {
+   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes)  {
       // provided for subclass implementation
    }
 
@@ -119,7 +119,7 @@ public abstract class AtsStateItem implements IAtsStateItem {
       // provided for subclass implementation
    }
 
-   public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees) throws OseeCoreException {
+   public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees)  {
       // provided for subclass implementation
    }
 

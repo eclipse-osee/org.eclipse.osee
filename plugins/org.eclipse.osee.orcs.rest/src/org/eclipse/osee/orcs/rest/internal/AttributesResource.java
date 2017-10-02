@@ -86,7 +86,7 @@ public class AttributesResource {
 
    @GET
    @Produces(MediaType.TEXT_HTML)
-   public String getAllAttributes() throws OseeCoreException {
+   public String getAllAttributes()  {
       QueryFactory factory = OrcsApplication.getOrcsApi().getQueryFactory();
       ArtifactReadable artifact = factory.fromBranch(branchId).andUuid(artifactUuid).getResults().getExactlyOne();
 

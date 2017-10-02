@@ -32,7 +32,7 @@ public class RebaselineInProgressHandler {
       "This working branch is already being updated from parent, conflicts were detected.\n\nWhat would you like to do?";
    private final static String[] CHOICES = new String[] {"Finish Update", "Abort Update", "Cancel"};
 
-   public static void handleRebaselineInProgress(BranchId branch) throws OseeCoreException {
+   public static void handleRebaselineInProgress(BranchId branch)  {
       MessageDialog dialog = new MessageDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), TITLE,
          null, DIALOG, MessageDialog.QUESTION, CHOICES, 0);
       int result = dialog.open();
@@ -45,12 +45,12 @@ public class RebaselineInProgressHandler {
       }
    }
 
-   private static void openMergeViewForCurrentUpdate(BranchId branch) throws OseeCoreException {
+   private static void openMergeViewForCurrentUpdate(BranchId branch)  {
       MergeBranch mergeBranch = BranchManager.getFirstMergeBranch(branch);
       MergeView.openView(branch, mergeBranch.getDestinationBranch(), BranchManager.getBaseTransaction(branch));
    }
 
-   public static void cancelCurrentUpdate(BranchId branch, boolean isSkipPrompt) throws OseeCoreException {
+   public static void cancelCurrentUpdate(BranchId branch, boolean isSkipPrompt)  {
       if (isSkipPrompt || promptUser(branch)) {
          MergeBranch mergeBranch = BranchManager.getFirstMergeBranch(branch);
          if (BranchManager.getState(branch).isRebaselineInProgress()) {

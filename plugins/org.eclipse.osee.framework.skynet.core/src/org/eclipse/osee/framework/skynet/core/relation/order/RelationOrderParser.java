@@ -50,7 +50,7 @@ public class RelationOrderParser {
 
    };
 
-   public synchronized void loadFromXml(RelationOrderData data, String value) throws OseeCoreException {
+   public synchronized void loadFromXml(RelationOrderData data, String value)  {
       if (data == null) {
          throw new OseeArgumentException("RelationOrderData object cannot be null");
       }
@@ -68,7 +68,7 @@ public class RelationOrderParser {
       }
    }
 
-   public String toXml(RelationOrderData data) throws OseeArgumentException {
+   public String toXml(RelationOrderData data)  {
       if (data == null) {
          throw new OseeArgumentException("RelationOrderData object cannot be null");
       }

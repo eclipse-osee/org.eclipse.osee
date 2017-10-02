@@ -122,7 +122,7 @@ public class HierarchyIndexColumn extends XViewerColumn implements IXViewerPreCo
       return cachedValue;
    }
 
-   private int getPosition(Artifact artifact) throws OseeCoreException {
+   private int getPosition(Artifact artifact)  {
       Artifact parent = artifact.getParent();
       List<Artifact> children = parentToChildrenCache.get(parent.getId());
       if (children == null) {

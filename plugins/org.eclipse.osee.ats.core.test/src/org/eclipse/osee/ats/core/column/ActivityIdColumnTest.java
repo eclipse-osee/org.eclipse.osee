@@ -53,7 +53,7 @@ public class ActivityIdColumnTest {
    // @formatter:on
 
    @Before
-   public void setup() throws OseeCoreException {
+   public void setup()  {
       MockitoAnnotations.initMocks(this);
 
       when(action.getTeamWorkflows()).thenReturn(Arrays.asList(teamWf1, teamWf2));
@@ -73,7 +73,7 @@ public class ActivityIdColumnTest {
    }
 
    @Test
-   public void testGetWorkPackages_teamWf1() throws OseeCoreException {
+   public void testGetWorkPackages_teamWf1()  {
       WorkPackageColumn col = new WorkPackageColumn(earnedValueServiceProvider);
 
       Set<IAtsWorkPackage> workPackages = new HashSet<>();
@@ -84,7 +84,7 @@ public class ActivityIdColumnTest {
    }
 
    @Test
-   public void testGetWorkPackages_task() throws OseeCoreException {
+   public void testGetWorkPackages_task()  {
       WorkPackageColumn col = new WorkPackageColumn(earnedValueServiceProvider);
 
       Set<IAtsWorkPackage> workPackages = new HashSet<>();

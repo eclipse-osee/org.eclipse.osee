@@ -32,11 +32,11 @@ public class CountryColumn {
       return util;
    }
 
-   public static String getCountryStr(IAtsObject atsObject, IAtsServices services) throws OseeCoreException {
+   public static String getCountryStr(IAtsObject atsObject, IAtsServices services)  {
       return getCountryStr(atsObject, services, getUtil());
    }
 
-   public static String getCountryStr(IAtsObject atsObject, IAtsServices services, WorkPackageUtility util) throws OseeCoreException {
+   public static String getCountryStr(IAtsObject atsObject, IAtsServices services, WorkPackageUtility util)  {
       String result = "";
       if (atsObject instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;

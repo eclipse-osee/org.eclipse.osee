@@ -34,7 +34,7 @@ public abstract class CountingLoadDataHandler extends LoadDataHandlerDecorator {
    }
 
    @Override
-   public void onLoadStart() throws OseeCoreException {
+   public void onLoadStart()  {
       getCounter().set(0);
       super.onLoadStart();
    }

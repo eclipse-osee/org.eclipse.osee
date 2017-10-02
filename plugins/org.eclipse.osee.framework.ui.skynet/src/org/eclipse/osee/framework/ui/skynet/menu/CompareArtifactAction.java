@@ -98,7 +98,7 @@ public final class CompareArtifactAction extends Action {
       }
    }
 
-   private ArtifactDelta asArtifactDelta(Object selectionA, Object selectionB) throws OseeCoreException {
+   private ArtifactDelta asArtifactDelta(Object selectionA, Object selectionB)  {
       ArtifactDelta toReturn = null;
       if (selectionA instanceof Change && selectionB instanceof Change) {
          Change changeA = (Change) selectionA;
@@ -119,7 +119,7 @@ public final class CompareArtifactAction extends Action {
       return toReturn;
    }
 
-   private TransactionDelta asTxDelta(Change first, Change second) throws OseeCoreException {
+   private TransactionDelta asTxDelta(Change first, Change second)  {
       TransactionToken startTx = first.getChangeArtifact().getTransaction();
       TransactionToken endTx = second.getChangeArtifact().getTransaction();
       if (endTx.isOlderThan(startTx)) {

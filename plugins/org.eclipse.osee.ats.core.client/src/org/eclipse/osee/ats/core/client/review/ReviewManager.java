@@ -42,7 +42,7 @@ public class ReviewManager {
    /**
     * Return Remain Hours for all reviews
     */
-   public static double getRemainHours(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+   public static double getRemainHours(TeamWorkFlowArtifact teamArt)  {
       double hours = 0;
       for (AbstractReviewArtifact reviewArt : getReviews(teamArt)) {
          hours += reviewArt.getRemainHoursFromArtifact();
@@ -56,7 +56,7 @@ public class ReviewManager {
     *
     * @param relatedToState state name of parent workflow's state
     */
-   public static double getEstimatedHours(TeamWorkFlowArtifact teamArt, IStateToken relatedToState) throws OseeCoreException {
+   public static double getEstimatedHours(TeamWorkFlowArtifact teamArt, IStateToken relatedToState)  {
       double hours = 0;
       for (AbstractReviewArtifact revArt : getReviews(teamArt, relatedToState)) {
          hours += revArt.getEstimatedHoursTotal();
@@ -67,7 +67,7 @@ public class ReviewManager {
    /**
     * Return Estimated Hours for all reviews
     */
-   public static double getEstimatedHours(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+   public static double getEstimatedHours(TeamWorkFlowArtifact teamArt)  {
       double hours = 0;
       for (AbstractReviewArtifact revArt : getReviews(teamArt)) {
          hours += revArt.getEstimatedHoursTotal();
@@ -76,16 +76,16 @@ public class ReviewManager {
 
    }
 
-   public static Collection<AbstractReviewArtifact> getReviews(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+   public static Collection<AbstractReviewArtifact> getReviews(IAtsTeamWorkflow teamWf)  {
       return ((TeamWorkFlowArtifact) teamWf.getStoreObject()).getRelatedArtifacts(
          AtsRelationTypes.TeamWorkflowToReview_Review, AbstractReviewArtifact.class);
    }
 
-   public static Collection<IAtsAbstractReview> getReviewsFromCurrentState(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+   public static Collection<IAtsAbstractReview> getReviewsFromCurrentState(TeamWorkFlowArtifact teamArt)  {
       return Collections.castAll(getReviews(teamArt, teamArt.getStateMgr().getCurrentState()));
    }
 
-   public static Collection<AbstractReviewArtifact> getReviews(TeamWorkFlowArtifact teamArt, IStateToken state) throws OseeCoreException {
+   public static Collection<AbstractReviewArtifact> getReviews(TeamWorkFlowArtifact teamArt, IStateToken state)  {
       Set<AbstractReviewArtifact> arts = new HashSet<>();
       for (AbstractReviewArtifact revArt : getReviews(teamArt)) {
          if (revArt.getSoleAttributeValue(AtsAttributeTypes.RelatedToState, "").equals(state.getName())) {
@@ -95,7 +95,7 @@ public class ReviewManager {
       return arts;
    }
 
-   public static boolean hasReviews(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+   public static boolean hasReviews(TeamWorkFlowArtifact teamArt)  {
       return teamArt.getRelatedArtifactsCount(AtsRelationTypes.TeamWorkflowToReview_Review) > 0;
    }
 
@@ -121,7 +121,7 @@ public class ReviewManager {
     *
     * @param relatedToState state name of parent workflow's state
     */
-   public static double getHoursSpent(TeamWorkFlowArtifact teamArt, IStateToken relatedToState) throws OseeCoreException {
+   public static double getHoursSpent(TeamWorkFlowArtifact teamArt, IStateToken relatedToState)  {
       double spent = 0;
       for (AbstractReviewArtifact reviewArt : getReviews(teamArt, relatedToState)) {
          spent += HoursSpentUtil.getHoursSpentTotal(reviewArt, AtsClientService.get().getServices());
@@ -134,7 +134,7 @@ public class ReviewManager {
     *
     * @param relatedToState state name of parent workflow's state
     */
-   public static int getPercentComplete(TeamWorkFlowArtifact teamArt, IStateToken relatedToState) throws OseeCoreException {
+   public static int getPercentComplete(TeamWorkFlowArtifact teamArt, IStateToken relatedToState)  {
       int spent = 0;
       Collection<AbstractReviewArtifact> reviewArts = getReviews(teamArt, relatedToState);
       for (AbstractReviewArtifact reviewArt : reviewArts) {

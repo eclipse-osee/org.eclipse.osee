@@ -18,15 +18,15 @@ import org.eclipse.osee.framework.skynet.core.transaction.TxMonitorImpl.Monitore
  */
 public interface TxMonitor<K> {
 
-   void checkForComodification(K key, MonitoredTx tx, Object object) throws OseeCoreException;
+   void checkForComodification(K key, MonitoredTx tx, Object object) ;
 
-   void createTx(K key, MonitoredTx tx) throws OseeCoreException;
+   void createTx(K key, MonitoredTx tx) ;
 
-   void beginTx(K key, MonitoredTx tx) throws OseeCoreException;
+   void beginTx(K key, MonitoredTx tx) ;
 
-   void endTx(K key, MonitoredTx tx) throws OseeCoreException;
+   void endTx(K key, MonitoredTx tx) ;
 
-   void rollbackTx(K key, MonitoredTx tx) throws OseeCoreException;
+   void rollbackTx(K key, MonitoredTx tx) ;
 
    void cancel(K key, MonitoredTx tx);
 

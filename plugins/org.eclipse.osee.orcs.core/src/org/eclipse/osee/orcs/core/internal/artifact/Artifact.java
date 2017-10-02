@@ -28,11 +28,11 @@ public interface Artifact extends ArtifactId, AttributeManager, HasTransaction, 
 
    TransactionId getLastModifiedTransaction();
 
-   void setArtifactType(IArtifactType artifactType) throws OseeCoreException;
+   void setArtifactType(IArtifactType artifactType) ;
 
-   void setName(String name) throws OseeCoreException;
+   void setName(String name) ;
 
-   boolean isOfType(ArtifactTypeId... otherTypes) throws OseeCoreException;
+   boolean isOfType(ArtifactTypeId... otherTypes) ;
 
    void setNotDirty();
 

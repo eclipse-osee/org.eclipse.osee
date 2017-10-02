@@ -32,7 +32,7 @@ public class DeletePurgeAtsArtifactsActionTest extends AbstractAtsActionTest {
    }
 
    @Override
-   public DeletePurgeAtsArtifactsAction createAction() throws OseeCoreException {
+   public DeletePurgeAtsArtifactsAction createAction()  {
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
       return new DeletePurgeAtsArtifactsAction(AtsTestUtil.getSelectedAtsArtifactsForTeamWf(), true);
    }

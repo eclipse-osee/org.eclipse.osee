@@ -31,14 +31,14 @@ public class ActionArtifactRollup {
 
    private final ActionArtifact action;
 
-   public ActionArtifactRollup(ActionArtifact action) throws OseeArgumentException {
+   public ActionArtifactRollup(ActionArtifact action)  {
       this.action = action;
       if (!action.isOfType(AtsArtifactTypes.Action)) {
          throw new OseeArgumentException("Artifact must be an Action instead of [%s]", action.getArtifactTypeName());
       }
    }
 
-   public void resetAttributesOffChildren() throws OseeCoreException {
+   public void resetAttributesOffChildren()  {
       resetChangeTypeOffChildren(action);
       resetPriorityOffChildren();
       resetTitleOffChildren();
@@ -46,7 +46,7 @@ public class ActionArtifactRollup {
       resetDescriptionOffChildren();
    }
 
-   public static void resetChangeTypeOffChildren(IAtsAction action) throws OseeCoreException {
+   public static void resetChangeTypeOffChildren(IAtsAction action)  {
       Artifact actionArt = AtsClientService.get().getArtifact(action);
       if (!actionArt.isOfType(AtsArtifactTypes.Action)) {
          throw new OseeArgumentException("Artifact must be an Action instead of [%s]", actionArt.getArtifactTypeName());
@@ -74,7 +74,7 @@ public class ActionArtifactRollup {
    /**
     * Reset Action title only if all children are titled the same
     */
-   private void resetTitleOffChildren() throws OseeCoreException {
+   private void resetTitleOffChildren()  {
       String title = "";
       for (TeamWorkFlowArtifact team : action.getTeams()) {
          if (title.isEmpty()) {
@@ -89,7 +89,7 @@ public class ActionArtifactRollup {
    }
 
    // Set validation to true if any require validation
-   private void resetValidationOffChildren() throws OseeCoreException {
+   private void resetValidationOffChildren()  {
       boolean validationRequired = false;
       for (TeamWorkFlowArtifact team : action.getTeams()) {
          if (team.getSoleAttributeValue(AtsAttributeTypes.ValidationRequired, false)) {
@@ -104,7 +104,7 @@ public class ActionArtifactRollup {
    /**
     * Reset Action title only if all children are titled the same
     */
-   private void resetDescriptionOffChildren() throws OseeCoreException {
+   private void resetDescriptionOffChildren()  {
       String desc = "";
       for (TeamWorkFlowArtifact team : action.getTeams()) {
          if (desc.isEmpty()) {
@@ -121,7 +121,7 @@ public class ActionArtifactRollup {
       }
    }
 
-   private void resetPriorityOffChildren() throws OseeCoreException {
+   private void resetPriorityOffChildren()  {
       String priorityType = null;
       Collection<TeamWorkFlowArtifact> teamArts = action.getTeams();
       if (teamArts.size() == 1) {

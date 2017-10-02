@@ -27,19 +27,19 @@ public final class MergeBranch extends Branch {
       super(branchId, name, branchType, branchState, isArchived, inheritAccessControl);
    }
 
-   public IOseeBranch getSourceBranch() throws OseeCoreException {
+   public IOseeBranch getSourceBranch()  {
       return source;
    }
 
-   public IOseeBranch getDestinationBranch() throws OseeCoreException {
+   public IOseeBranch getDestinationBranch()  {
       return destination;
    }
 
-   public void setSourceBranch(IOseeBranch branch) throws OseeCoreException {
+   public void setSourceBranch(IOseeBranch branch)  {
       this.source = branch;
    }
 
-   public void setDestinationBranch(IOseeBranch branch) throws OseeCoreException {
+   public void setDestinationBranch(IOseeBranch branch)  {
       this.destination = branch;
    }
 }

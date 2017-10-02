@@ -64,7 +64,7 @@ public class AddRequirementData implements IDbInitializationTask {
    private static final String UPDATE_BRANCH_TYPE = "update osee_branch set branch_type = ? where branch_id = ?";
 
    @Override
-   public void run() throws OseeCoreException {
+   public void run()  {
       try {
          // Import all requirements on SAW_Bld_1 Branch
          BranchId branch = SAW_Bld_1;
@@ -134,7 +134,7 @@ public class AddRequirementData implements IDbInitializationTask {
       return file;
    }
 
-   private void relate(RelationTypeSide relationSide, Artifact artifact, Collection<Artifact> artifacts) throws OseeCoreException {
+   private void relate(RelationTypeSide relationSide, Artifact artifact, Collection<Artifact> artifacts)  {
       for (Artifact otherArtifact : artifacts) {
          artifact.addRelation(relationSide, otherArtifact);
       }
@@ -250,7 +250,7 @@ public class AddRequirementData implements IDbInitializationTask {
 
    }
 
-   private Collection<Artifact> getArtTypeRequirements(boolean DEBUG, IArtifactType artifactType, String artifactNameStr, BranchId branch) throws OseeCoreException {
+   private Collection<Artifact> getArtTypeRequirements(boolean DEBUG, IArtifactType artifactType, String artifactNameStr, BranchId branch)  {
       if (DEBUG) {
          OseeLog.logf(AddRequirementData.class, Level.INFO, "Getting [%s] requirement(s) from Branch [%s]",
             artifactNameStr, branch.getId());

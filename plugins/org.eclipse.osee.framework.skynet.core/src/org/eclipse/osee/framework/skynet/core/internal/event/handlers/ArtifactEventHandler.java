@@ -61,7 +61,7 @@ public class ArtifactEventHandler implements EventHandlerLocal<IArtifactEventLis
    }
 
    @Override
-   public void send(Transport transport, Sender sender, ArtifactEvent event) throws OseeCoreException {
+   public void send(Transport transport, Sender sender, ArtifactEvent event)  {
       if (transport.isDispatchToLocalAllowed(sender)) {
          transport.sendLocal(sender, event);
       }

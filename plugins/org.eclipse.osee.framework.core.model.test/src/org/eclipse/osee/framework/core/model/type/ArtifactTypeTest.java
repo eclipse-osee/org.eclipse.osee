@@ -36,7 +36,7 @@ public class ArtifactTypeTest extends AbstractOseeTypeTest<Long, ArtifactType> {
    }
 
    @Test
-   public void testSetGetIsAbstract() throws OseeCoreException {
+   public void testSetGetIsAbstract()  {
       Assert.assertEquals(isAbstract, getType().isAbstract());
       getType().clearDirty();
       Assert.assertFalse(getType().isDirty());
@@ -97,7 +97,7 @@ public class ArtifactTypeTest extends AbstractOseeTypeTest<Long, ArtifactType> {
    //   @Override
    //   @Ignore
    //   @Test
-   //   public void testPersist() throws OseeCoreException {
+   //   public void testPersist()  {
    //
    //      //      T item1 = data.get(0);
    //      //      T item2 = data.get(1);
@@ -106,15 +106,15 @@ public class ArtifactTypeTest extends AbstractOseeTypeTest<Long, ArtifactType> {
    //      //      cache.storeItem(item);
    //      //      cache.storeItems(toStore);
    //      //      cache.storeItems(items);
-   //      //      public void storeItem(AbstractOseeType item) throws OseeCoreException {
+   //      //      public void storeItem(AbstractOseeType item)  {
    //
-   //      //      public void storeItems(T... items) throws OseeCoreException {
+   //      //      public void storeItems(T... items)  {
    //
-   //      //      public void storeItems(Collection<T> toStore) throws OseeCoreException {
+   //      //      public void storeItems(Collection<T> toStore)  {
    //   }
 
    //   @org.junit.Test
-   //   public void testArtifactInheritanceCycleDetect() throws OseeCoreException {
+   //   public void testArtifactInheritanceCycleDetect()  {
    //      ArtifactType baseType = artCache.getUniqueByName("BaseArtifactType");
    //      Assert.assertNotNull(baseType);
    //
@@ -132,7 +132,7 @@ public class ArtifactTypeTest extends AbstractOseeTypeTest<Long, ArtifactType> {
    //   }
    //
    //   @org.junit.Test
-   //   public void testArtifactInheritance() throws OseeCoreException {
+   //   public void testArtifactInheritance()  {
    //      OseeTypesUtil.checkInheritance(artCache, "000", "000");// inherits from returns true if comparing against itself
    //      OseeTypesUtil.checkInheritance(artCache, "111", "000");
    //      OseeTypesUtil.checkInheritance(artCache, "222", "000");
@@ -143,7 +143,7 @@ public class ArtifactTypeTest extends AbstractOseeTypeTest<Long, ArtifactType> {
    //   }
    //
    //   @org.junit.Test
-   //   public void testArtifactInheritanceDescendants() throws OseeCoreException {
+   //   public void testArtifactInheritanceDescendants()  {
    //      OseeTypesUtil.checkDescendants(artCache, "000", false, "111", "222");
    //      OseeTypesUtil.checkDescendants(artCache, "000", true, "111", "222", "333", "444", "555", "666");
    //
@@ -161,19 +161,19 @@ public class ArtifactTypeTest extends AbstractOseeTypeTest<Long, ArtifactType> {
    //   }
    //
    //   @org.junit.Test
-   //   public void testNullArtifactInheritanceCheck() throws OseeCoreException {
+   //   public void testNullArtifactInheritanceCheck()  {
    //      ArtifactType baseType = artCache.getUniqueByName("BaseArtifactType");
    //      // Check for null inheritance
    //      Assert.assertFalse(baseType.inheritsFrom((ArtifactType) null));
    //   }
    //
    //   @org.junit.Test
-   //   public void testArtifactInheritanceByName() throws OseeCoreException {
+   //   public void testArtifactInheritanceByName()  {
    //      Assert.assertTrue(artCache.getByGuid("666").inheritsFrom("ArtifactType3")); // check inherits from using artifact name
    //   }
    //
    //   @org.junit.Test
-   //   public void testAddArtifactSuperTypeMethod() throws OseeCoreException {
+   //   public void testAddArtifactSuperTypeMethod()  {
    //      ArtifactType artifactType = factory.createArtifactType(artCache, "myGUID", false, "TestMethodCreated");
    //      artCache.cache(artifactType);
    //
@@ -188,7 +188,7 @@ public class ArtifactTypeTest extends AbstractOseeTypeTest<Long, ArtifactType> {
    //   }
    //
    //   @org.junit.Test
-   //   public void testInheritedAttributeTypes() throws OseeCoreException {
+   //   public void testInheritedAttributeTypes()  {
    //      Branch branch1 = branchCache.getByGuid("ROOT");
    //      Branch branch2 = branchCache.getByGuid("TEST");
    //      Assert.assertNotNull(branch1);
@@ -211,13 +211,13 @@ public class ArtifactTypeTest extends AbstractOseeTypeTest<Long, ArtifactType> {
    //   }
    //
    //   @Override
-   //   public void testDirty() throws OseeCoreException {
+   //   public void testDirty()  {
    //   }
    //
    //   private final static class BranchDataAccessor extends MockOseeDataAccessor<Branch> {
    //
    //      @Override
-   //      public void load(AbstractOseeCache<Branch> cache) throws OseeCoreException {
+   //      public void load(AbstractOseeCache<Branch> cache)  {
    //         super.load(cache);
    //         Branch branch1 =
    //               OseeTypesUtil.createBranch(cache, factory, "ROOT", "Root Branch", BranchType.SYSTEM_ROOT,
@@ -245,13 +245,13 @@ public class ArtifactTypeTest extends AbstractOseeTypeTest<Long, ArtifactType> {
    //         this.attributeTypes = attributeTypes;
    //      }
    //
-   //      private AttributeType createAttributeTypeHelper(AbstractOseeCache<AttributeType> cache, IOseeTypeFactory factory, String guid, String name) throws OseeCoreException {
+   //      private AttributeType createAttributeTypeHelper(AbstractOseeCache<AttributeType> cache, IOseeTypeFactory factory, String guid, String name)  {
    //         return factory.createAttributeType(cache, guid, name, "DummyBase", "DummyProvider", "none", "none", null, 1,
    //               1, "test data", null);
    //      }
    //
    //      @Override
-   //      public void load(AbstractOseeCache<AttributeType> cache) throws OseeCoreException {
+   //      public void load(AbstractOseeCache<AttributeType> cache)  {
    //         super.load(cache);
    //         attributeTypes.add(createAttributeTypeHelper(cache, factory, "AAA", "Attribute1"));
    //         attributeTypes.add(createAttributeTypeHelper(cache, factory, "BBB", "Attribute2"));
@@ -270,7 +270,7 @@ public class ArtifactTypeTest extends AbstractOseeTypeTest<Long, ArtifactType> {
    //   }
    //
 
-   //      private void setUpArtifactTypeInheritance(ArtifactTypeCache cache) throws OseeCoreException {
+   //      private void setUpArtifactTypeInheritance(ArtifactTypeCache cache)  {
    //         ArtifactType baseType = cache.getUniqueByName("BaseArtifactType");
    //
    //         Set<ArtifactType> baseSuperType = new HashSet<>();
@@ -289,7 +289,7 @@ public class ArtifactTypeTest extends AbstractOseeTypeTest<Long, ArtifactType> {
    //         cache.cacheArtifactSuperType(cache.getByGuid("666"), Arrays.asList(cache.getByGuid("333")));
    //      }
    //
-   //      private void setUpTypeValidity(ArtifactTypeCache cache) throws OseeCoreException {
+   //      private void setUpTypeValidity(ArtifactTypeCache cache)  {
    //         Branch branch1 = branchCache.getByGuid("ROOT");
    //         Branch branch2 = branchCache.getByGuid("TEST");
    //         Assert.assertNotNull(branch1);

@@ -138,7 +138,7 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
       }
    }
 
-   private void handleDirectory(File directory, Collection<TraceHandler> traceHandlers) throws IOException, OseeCoreException {
+   private void handleDirectory(File directory, Collection<TraceHandler> traceHandlers) throws IOException {
       if (directory == null || directory.getParentFile() == null) {
          throw new OseeArgumentException("The path [%s] is invalid.", directory);
       }
@@ -176,7 +176,7 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
       excelWriter.endSheet();
    }
 
-   private void writeTraceCountsSheet() throws IOException, OseeCoreException {
+   private void writeTraceCountsSheet() throws IOException {
       excelWriter.startSheet("trace counts", 4);
       excelWriter.writeRow("SRS Requirement from Database", "Trace Count", "Partitions", "Artifact Type");
       excelWriter.writeRow("% requirement coverage", null, "=1-COUNTIF(C2,&quot;0&quot;)/COUNTA(C2)", null);
@@ -241,7 +241,7 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
       return subSystem;
    }
 
-   private void handelReqTrace(String path, TraceMark traceMark, File sourceFile) throws OseeCoreException, IOException {
+   private void handelReqTrace(String path, TraceMark traceMark, File sourceFile) throws IOException {
       Artifact reqArtifact = null;
       String foundStr;
       String subSystem = null;

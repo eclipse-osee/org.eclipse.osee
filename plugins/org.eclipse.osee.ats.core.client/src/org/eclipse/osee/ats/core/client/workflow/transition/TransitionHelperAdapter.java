@@ -42,28 +42,28 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
    }
 
    @Override
-   public boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+   public boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf)  {
       return AtsClientService.get().getBranchService().isWorkingBranchInWork(teamWf);
    }
 
    @Override
-   public boolean isBranchInCommit(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+   public boolean isBranchInCommit(IAtsTeamWorkflow teamWf)  {
       return AtsClientService.get().getBranchService().isBranchInCommit(teamWf);
    }
 
    @Override
-   public boolean isSystemUser() throws OseeCoreException {
+   public boolean isSystemUser()  {
       return AtsCoreUsers.isAtsCoreUser(getTransitionUser());
    }
 
    @Override
-   public boolean isSystemUserAssingee(IAtsWorkItem workItem) throws OseeCoreException {
+   public boolean isSystemUserAssingee(IAtsWorkItem workItem)  {
       return workItem.getStateMgr().getAssignees().contains(
          AtsCoreUsers.ANONYMOUS_USER) || workItem.getStateMgr().getAssignees().contains(AtsCoreUsers.SYSTEM_USER);
    }
 
    @Override
-   public IAtsUser getTransitionUser() throws OseeStateException, OseeCoreException {
+   public IAtsUser getTransitionUser()  {
       IAtsUser user = transitionUser;
       if (user == null) {
          user = AtsClientService.get().getUserService().getCurrentUser();
@@ -72,7 +72,7 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
    }
 
    @Override
-   public void setTransitionUser(IAtsUser user) throws OseeCoreException {
+   public void setTransitionUser(IAtsUser user)  {
       transitionUser = user;
    }
 

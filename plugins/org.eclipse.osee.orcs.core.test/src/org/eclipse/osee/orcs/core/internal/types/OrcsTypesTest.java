@@ -164,7 +164,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testGetAllArtifactTypes() throws OseeCoreException {
+   public void testGetAllArtifactTypes()  {
       ArtifactTypes artTypes = orcsTypes.getArtifactTypes();
 
       assertEquals(7, artTypes.size());
@@ -176,7 +176,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testGetArtifactTypesByUuid() throws OseeCoreException {
+   public void testGetArtifactTypesByUuid()  {
       ArtifactTypes artTypes = orcsTypes.getArtifactTypes();
 
       assertEquals(ARTIFACT, artTypes.get(ARTIFACT));
@@ -189,7 +189,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testExistsArtifactType() throws OseeCoreException {
+   public void testExistsArtifactType()  {
       ArtifactTypes artTypes = orcsTypes.getArtifactTypes();
 
       assertEquals(true, artTypes.exists(ARTIFACT));
@@ -202,7 +202,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testIsAbstract() throws OseeCoreException {
+   public void testIsAbstract()  {
       ArtifactTypes artTypes = orcsTypes.getArtifactTypes();
 
       assertEquals(false, artTypes.isAbstract(ARTIFACT));
@@ -215,7 +215,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testHasSuperArtifactTypes() throws OseeCoreException {
+   public void testHasSuperArtifactTypes()  {
       ArtifactTypes artTypes = orcsTypes.getArtifactTypes();
 
       assertEquals(false, artTypes.hasSuperArtifactTypes(ARTIFACT));
@@ -228,7 +228,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testGetSuperTypes() throws OseeCoreException {
+   public void testGetSuperTypes()  {
       ArtifactTypes artTypes = orcsTypes.getArtifactTypes();
 
       assertEquals(true, artTypes.getSuperArtifactTypes(ARTIFACT).isEmpty());
@@ -242,7 +242,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testInheritsFrom() throws OseeCoreException {
+   public void testInheritsFrom()  {
       ArtifactTypes artTypes = orcsTypes.getArtifactTypes();
 
       assertEquals(false, artTypes.inheritsFrom(ARTIFACT, REQUIREMENT));
@@ -280,7 +280,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testGetAllDescendants() throws OseeCoreException {
+   public void testGetAllDescendants()  {
       ArtifactTypes artTypes = orcsTypes.getArtifactTypes();
 
       //@formatter:off
@@ -296,7 +296,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testIsValidAttributeType() throws OseeCoreException {
+   public void testIsValidAttributeType()  {
       // Field 1 will only be visible on branch A and Branch D
       // Field 2 will only be visible on branch B and Branch E
 
@@ -345,7 +345,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testGetAttributeTypes() throws OseeCoreException {
+   public void testGetAttributeTypes()  {
       ArtifactTypes artTypes = orcsTypes.getArtifactTypes();
 
       assertContains(artTypes.getAttributeTypes(OTHER_ARTIFACT, CoreBranches.SYSTEM_ROOT), NAME, ANNOTATION);
@@ -369,7 +369,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testReloadAddArtifactType() throws OseeCoreException {
+   public void testReloadAddArtifactType()  {
       String addTypeDef = "artifactType \"Added Artifact Type\" extends \"Other Artifact\" {\n" + //
          "id 35 \n" + //
          "}";
@@ -397,7 +397,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testArtifactTypeOverride() throws OseeCoreException {
+   public void testArtifactTypeOverride()  {
       ArtifactTypes artTypes = orcsTypes.getArtifactTypes();
 
       assertEquals(7, artTypes.size());
@@ -452,7 +452,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testGetAllAttributeTypes() throws OseeCoreException {
+   public void testGetAllAttributeTypes()  {
       AttributeTypes attrTypes = orcsTypes.getAttributeTypes();
 
       assertEquals(5, attrTypes.size());
@@ -464,7 +464,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testGetAttributeTypesByUuid() throws OseeCoreException {
+   public void testGetAttributeTypesByUuid()  {
       AttributeTypes attrTypes = orcsTypes.getAttributeTypes();
 
       assertEquals(NAME, attrTypes.get(NAME));
@@ -475,7 +475,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testExistsAttributeTypes() throws OseeCoreException {
+   public void testExistsAttributeTypes()  {
       AttributeTypes attrTypes = orcsTypes.getAttributeTypes();
 
       assertEquals(true, attrTypes.exists(NAME));
@@ -486,7 +486,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testGetAttributeProviderId() throws OseeCoreException {
+   public void testGetAttributeProviderId()  {
       AttributeTypes attrTypes = orcsTypes.getAttributeTypes();
       assertEquals("DefaultAttributeDataProvider", attrTypes.getAttributeProviderId(NAME));
       assertEquals("UriAttributeDataProvider", attrTypes.getAttributeProviderId(ANNOTATION));
@@ -496,7 +496,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testGetBaseAttributeTypeId() throws OseeCoreException {
+   public void testGetBaseAttributeTypeId()  {
       AttributeTypes attrTypes = orcsTypes.getAttributeTypes();
 
       //@formatter:off
@@ -509,7 +509,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testGetDefaultValue() throws OseeCoreException {
+   public void testGetDefaultValue()  {
       AttributeTypes attrTypes = orcsTypes.getAttributeTypes();
 
       //@formatter:off
@@ -522,7 +522,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testGetDescription() throws OseeCoreException {
+   public void testGetDescription()  {
       AttributeTypes attrTypes = orcsTypes.getAttributeTypes();
 
       //@formatter:off
@@ -535,7 +535,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testGetFileExtension() throws OseeCoreException {
+   public void testGetFileExtension()  {
       AttributeTypes attrTypes = orcsTypes.getAttributeTypes();
 
       //@formatter:off
@@ -548,7 +548,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testGetMinOccurrence() throws OseeCoreException {
+   public void testGetMinOccurrence()  {
       AttributeTypes attrTypes = orcsTypes.getAttributeTypes();
 
       //@formatter:off
@@ -561,7 +561,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testGetMaxOccurrences() throws OseeCoreException {
+   public void testGetMaxOccurrences()  {
       AttributeTypes attrTypes = orcsTypes.getAttributeTypes();
 
       //@formatter:off
@@ -574,7 +574,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testGetTaggerId() throws OseeCoreException {
+   public void testGetTaggerId()  {
       AttributeTypes attrTypes = orcsTypes.getAttributeTypes();
 
       //@formatter:off
@@ -587,7 +587,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testGetMediaType() throws OseeCoreException {
+   public void testGetMediaType()  {
       AttributeTypes attrTypes = orcsTypes.getAttributeTypes();
 
       //@formatter:off
@@ -600,13 +600,13 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testGetAllTaggable() throws OseeCoreException {
+   public void testGetAllTaggable()  {
       AttributeTypes attrTypes = orcsTypes.getAttributeTypes();
       assertContains(attrTypes.getAllTaggable(), NAME, ANNOTATION, WORDML, FIELD_2);
    }
 
    @Test
-   public void testGetOseeEnum() throws OseeCoreException {
+   public void testGetOseeEnum()  {
       AttributeTypes attrTypes = orcsTypes.getAttributeTypes();
 
       EnumType enumType = attrTypes.getEnumType(FIELD_1);
@@ -655,7 +655,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testEnumOverride() throws OseeCoreException {
+   public void testEnumOverride()  {
       //@formatter:off
       String enumOverride = "overrides enum \"enum.test.proc.status\" { \n" +
          "inheritAll \n" +
@@ -695,7 +695,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testReloadAddAttributeType() throws OseeCoreException {
+   public void testReloadAddAttributeType()  {
       AttributeTypes attrTypes = orcsTypes.getAttributeTypes();
 
       assertEquals(5, attrTypes.size());
@@ -736,7 +736,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testGetAllRelationTypes() throws OseeCoreException {
+   public void testGetAllRelationTypes()  {
       RelationTypes relTypes = orcsTypes.getRelationTypes();
 
       assertEquals(2, relTypes.size());
@@ -748,7 +748,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testGetRelationTypesByUuid() throws OseeCoreException {
+   public void testGetRelationTypesByUuid()  {
       RelationTypes relTypes = orcsTypes.getRelationTypes();
 
       assertEquals(REQUIREMENT_REL, relTypes.get(REQUIREMENT_REL));
@@ -756,7 +756,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testExistsRelationTypes() throws OseeCoreException {
+   public void testExistsRelationTypes()  {
       RelationTypes relTypes = orcsTypes.getRelationTypes();
 
       assertTrue(relTypes.exists(REQUIREMENT_REL));
@@ -764,7 +764,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testGetArtifactType() throws OseeCoreException {
+   public void testGetArtifactType()  {
       RelationTypes relTypes = orcsTypes.getRelationTypes();
 
       assertEquals(REQUIREMENT, relTypes.getArtifactType(REQUIREMENT_REL, SIDE_A));
@@ -775,7 +775,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testGetArtifactTypeSideA() throws OseeCoreException {
+   public void testGetArtifactTypeSideA()  {
       RelationTypes relTypes = orcsTypes.getRelationTypes();
 
       assertEquals(REQUIREMENT, relTypes.getArtifactTypeSideA(REQUIREMENT_REL));
@@ -783,7 +783,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testGetArtifactTypeSideB() throws OseeCoreException {
+   public void testGetArtifactTypeSideB()  {
       RelationTypes relTypes = orcsTypes.getRelationTypes();
 
       assertEquals(SUBSYSTEM_REQUIREMENT, relTypes.getArtifactTypeSideB(REQUIREMENT_REL));
@@ -791,7 +791,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testGetDefaultOrderTypeGuid() throws OseeCoreException {
+   public void testGetDefaultOrderTypeGuid()  {
       RelationTypes relTypes = orcsTypes.getRelationTypes();
 
       //@formatter:off
@@ -801,7 +801,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testGetMultiplicity() throws OseeCoreException {
+   public void testGetMultiplicity()  {
       RelationTypes relTypes = orcsTypes.getRelationTypes();
 
       assertEquals(RelationTypeMultiplicity.ONE_TO_MANY, relTypes.getMultiplicity(REQUIREMENT_REL));
@@ -809,7 +809,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testGetSideNameA() throws OseeCoreException {
+   public void testGetSideNameA()  {
       RelationTypes relTypes = orcsTypes.getRelationTypes();
 
       assertEquals("requirement-sideA", relTypes.getSideAName(REQUIREMENT_REL));
@@ -817,7 +817,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testGetSideNameB() throws OseeCoreException {
+   public void testGetSideNameB()  {
       RelationTypes relTypes = orcsTypes.getRelationTypes();
 
       assertEquals("subsystem-sideB", relTypes.getSideBName(REQUIREMENT_REL));
@@ -825,7 +825,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testGetSideName() throws OseeCoreException {
+   public void testGetSideName()  {
       RelationTypes relTypes = orcsTypes.getRelationTypes();
 
       assertEquals("requirement-sideA", relTypes.getSideName(REQUIREMENT_REL, SIDE_A));
@@ -836,7 +836,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testIsSideName() throws OseeCoreException {
+   public void testIsSideName()  {
       RelationTypes relTypes = orcsTypes.getRelationTypes();
 
       assertEquals(true, relTypes.isSideAName(REQUIREMENT_REL, "requirement-sideA"));
@@ -847,7 +847,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testIsOrdered() throws OseeCoreException {
+   public void testIsOrdered()  {
       RelationTypes relTypes = orcsTypes.getRelationTypes();
 
       assertEquals(true, relTypes.isOrdered(REQUIREMENT_REL));
@@ -855,7 +855,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testIsArtifactTypeAllowed() throws OseeCoreException {
+   public void testIsArtifactTypeAllowed()  {
       RelationTypes relTypes = orcsTypes.getRelationTypes();
 
       assertEquals(false, relTypes.isArtifactTypeAllowed(REQUIREMENT_REL, SIDE_A, ARTIFACT));
@@ -892,7 +892,7 @@ public class OrcsTypesTest {
    }
 
    @Test
-   public void testReloadAddRelationType() throws OseeCoreException {
+   public void testReloadAddRelationType()  {
       RelationTypes relTypes = orcsTypes.getRelationTypes();
 
       assertEquals(2, relTypes.size());
@@ -973,7 +973,7 @@ public class OrcsTypesTest {
       }
 
       @Override
-      public InputStream getContent() throws OseeCoreException {
+      public InputStream getContent()  {
          try {
             return ByteStreams.join(suppliers).getInput();
          } catch (IOException ex) {

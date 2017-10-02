@@ -59,7 +59,7 @@ public class ModifyActionableItems {
       this.teamDefUtil = teamDefUtil;
    }
 
-   public void performModification() throws OseeCoreException {
+   public void performModification()  {
       Conditions.checkNotNull(results, "results");
       Conditions.checkNotNull(teamWf, "teamWf");
       Conditions.checkNotNull(modifiedBy, "modifiedBy");
@@ -69,7 +69,7 @@ public class ModifyActionableItems {
       processAisAddedForNewWorkflows();
    }
 
-   private void processAisAddedForNewWorkflows() throws OseeCoreException {
+   private void processAisAddedForNewWorkflows()  {
       Set<IAtsActionableItem> allAIsForNewWorkflow = new HashSet<>();
       Set<IAtsActionableItem> duplicatedAIs = new HashSet<>();
       // determine AIs that already have a team workflow associated
@@ -114,7 +114,7 @@ public class ModifyActionableItems {
    /**
     * Return single Team Definition associated with this Actionable Item
     */
-   private IAtsTeamDefinition getImpactedTeamDef(IAtsActionableItem ai) throws OseeCoreException {
+   private IAtsTeamDefinition getImpactedTeamDef(IAtsActionableItem ai)  {
       IAtsTeamDefinition teamDef = null;
       Collection<IAtsTeamDefinition> impactedTeamDefs = teamDefUtil.getImpactedTeamDefs(Arrays.asList(ai));
       if (impactedTeamDefs.size() > 0) {
@@ -123,7 +123,7 @@ public class ModifyActionableItems {
       return teamDef;
    }
 
-   private void processAisAddedRemovedFromSelectedTeamWf() throws OseeCoreException {
+   private void processAisAddedRemovedFromSelectedTeamWf()  {
       Set<IAtsActionableItem> currAIs = teamWf.getActionableItems();
       if (currWorkflowDesiredAIs.isEmpty()) {
          results.error("All AIs can not be removed from a Team Workflow; Cancel workflow instead");

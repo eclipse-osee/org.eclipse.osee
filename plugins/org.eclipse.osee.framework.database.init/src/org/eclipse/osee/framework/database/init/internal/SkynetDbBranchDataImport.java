@@ -52,7 +52,7 @@ public class SkynetDbBranchDataImport implements IDbInitializationTask {
    private static final String BRANCHES_TO_IMPORT = "BranchesToImport";
 
    @Override
-   public void run() throws OseeCoreException {
+   public void run()  {
       if (OseeClientProperties.isOseeImportAllowed()) {
          // Clean up and delete all branches except Common
          for (BranchId branch : BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING,
@@ -78,7 +78,7 @@ public class SkynetDbBranchDataImport implements IDbInitializationTask {
       }
    }
 
-   private Collection<ImportData> loadDataFromExtensions() throws OseeCoreException {
+   private Collection<ImportData> loadDataFromExtensions()  {
       List<ImportData> toReturn = new ArrayList<>();
       Map<String, String> selectedBranches = new HashMap<>();
       List<IConfigurationElement> elements = ExtensionPoints.getExtensionElements(EXTENSION_POINT, ELEMENT_NAME);
@@ -117,7 +117,7 @@ public class SkynetDbBranchDataImport implements IDbInitializationTask {
       return toReturn;
    }
 
-   private File getExchangeFile(String bundleName, String exchangeFile) throws OseeCoreException {
+   private File getExchangeFile(String bundleName, String exchangeFile)  {
       if (exchangeFile.endsWith("zip") != true) {
          throw new OseeArgumentException(String.format("Branch data file is invalid [%s] ", exchangeFile));
       }

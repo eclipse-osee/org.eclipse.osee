@@ -61,7 +61,7 @@ public enum BranchType {
       return false;
    }
 
-   public static BranchType valueOf(int value) throws OseeArgumentException {
+   public static BranchType valueOf(int value)  {
       for (BranchType type : values()) {
          if (type.getValue() == value) {
             return type;

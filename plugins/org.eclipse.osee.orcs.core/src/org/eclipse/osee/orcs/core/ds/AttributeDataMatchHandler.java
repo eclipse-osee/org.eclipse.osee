@@ -18,6 +18,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface AttributeDataMatchHandler {
 
-   void onData(AttributeData data, MatchLocation match) throws OseeCoreException;
+   void onData(AttributeData data, MatchLocation match) ;
 
 }

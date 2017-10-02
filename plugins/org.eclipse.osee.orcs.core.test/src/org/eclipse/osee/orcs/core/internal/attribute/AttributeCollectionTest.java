@@ -66,7 +66,7 @@ public class AttributeCollectionTest {
    }
 
    @Test
-   public void testGetAttributesDirty() throws OseeCoreException {
+   public void testGetAttributesDirty()  {
       assertEquals(1, attributeCollection.getDirties().size());
       assertEquals(dirtyAttr, attributeCollection.getDirties().iterator().next());
    }
@@ -93,7 +93,7 @@ public class AttributeCollectionTest {
    }
 
    @Test
-   public void testGetExistingTypes() throws OseeCoreException {
+   public void testGetExistingTypes()  {
       AttributeType typeA = mock(AttributeType.class);
       AttributeType typeB = mock(AttributeType.class);
       AttributeType typeC = mock(AttributeType.class);
@@ -124,7 +124,7 @@ public class AttributeCollectionTest {
    }
 
    @Test
-   public void testGetListDeletionFlag() throws OseeCoreException {
+   public void testGetListDeletionFlag()  {
       List<Attribute<?>> list1 = attributeCollection.getList(DeletionFlag.INCLUDE_DELETED);
 
       assertEquals(3, list1.size());
@@ -141,7 +141,7 @@ public class AttributeCollectionTest {
    }
 
    @Test
-   public void testGetSetDeletionFlag() throws OseeCoreException {
+   public void testGetSetDeletionFlag()  {
       ResultSet<Attribute<?>> set1 = attributeCollection.getResultSet(DeletionFlag.INCLUDE_DELETED);
 
       assertEquals(3, set1.size());
@@ -158,7 +158,7 @@ public class AttributeCollectionTest {
    }
 
    @Test
-   public void testGetListTypeAndDelete() throws OseeCoreException {
+   public void testGetListTypeAndDelete()  {
       List<Attribute<Object>> list1 =
          attributeCollection.getList(CoreAttributeTypes.Annotation, DeletionFlag.INCLUDE_DELETED);
       assertEquals(1, list1.size());
@@ -170,7 +170,7 @@ public class AttributeCollectionTest {
    }
 
    @Test
-   public void testGetSetTypeAndDelete() throws OseeCoreException {
+   public void testGetSetTypeAndDelete()  {
       ResultSet<Attribute<Object>> set1 =
          attributeCollection.getResultSet(CoreAttributeTypes.Annotation, DeletionFlag.INCLUDE_DELETED);
 
@@ -183,7 +183,7 @@ public class AttributeCollectionTest {
    }
 
    @Test
-   public void testGetAttributeSetFromString() throws OseeCoreException {
+   public void testGetAttributeSetFromString()  {
       when(cleanAttr.getValue()).thenReturn(true);
 
       ResultSet<Attribute<Object>> set =
@@ -192,7 +192,7 @@ public class AttributeCollectionTest {
    }
 
    @Test
-   public void testGetAttributeSetFromValue() throws OseeCoreException {
+   public void testGetAttributeSetFromValue()  {
       when(cleanAttr.getValue()).thenReturn(true);
 
       ResultSet<Attribute<Boolean>> set =

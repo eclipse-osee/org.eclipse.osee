@@ -85,7 +85,7 @@ public class RoughArtifact {
       return roughParent;
    }
 
-   public void addAttribute(AttributeTypeToken attrType, String value) throws OseeCoreException {
+   public void addAttribute(AttributeTypeToken attrType, String value)  {
       addAttribute(attrType.getName(), value);
    }
 
@@ -96,7 +96,7 @@ public class RoughArtifact {
       attributes.setAttribute(typeName, value);
    }
 
-   public void addAttribute(String typeName, String value) throws OseeCoreException {
+   public void addAttribute(String typeName, String value)  {
       if (isEnumeration(typeName)) {
          if (isMultipleEnum(typeName, value)) {
             attributes.addAttribute(typeName, getEnumValues(value));
@@ -128,7 +128,7 @@ public class RoughArtifact {
       return data;
    }
 
-   private boolean isEnumeration(String typeName) throws OseeCoreException {
+   private boolean isEnumeration(String typeName)  {
       boolean result = false;
       AttributeType type = AttributeTypeManager.getType(typeName);
       result = type.isEnumerated();

@@ -106,14 +106,14 @@ public class SqlObjectLoader {
       return level != LoadLevel.ARTIFACT_DATA && level != LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
    }
 
-   private void writeSql(Criteria criteria, LoadSqlContext context) throws OseeCoreException {
+   private void writeSql(Criteria criteria, LoadSqlContext context)  {
       context.clear();
       SqlHandler<?> handler = handlerFactory.createHandler(criteria);
       AbstractSqlWriter writer = new LoadSqlWriter(logger, joinFactory, jdbcClient, context);
       writer.build(handler);
    }
 
-   public void loadArtifacts(HasCancellation cancellation, LoadDataHandler handler, Id4JoinQuery join, CriteriaOrcsLoad criteria, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {
+   public void loadArtifacts(HasCancellation cancellation, LoadDataHandler handler, Id4JoinQuery join, CriteriaOrcsLoad criteria, LoadSqlContext loadContext, int fetchSize)  {
       logger.trace("Sql Artifact Load - artifactJoinQuery[%s] loadSqlContext[%s]", join, loadContext);
       try {
          if (!join.isEmpty()) {
@@ -131,7 +131,7 @@ public class SqlObjectLoader {
       }
    }
 
-   public void loadBranches(HasCancellation cancellation, LoadDataHandler handler, QuerySqlContext context, int fetchSize) throws OseeCoreException {
+   public void loadBranches(HasCancellation cancellation, LoadDataHandler handler, QuerySqlContext context, int fetchSize)  {
       logger.trace("Sql Branch Load - loadContext[%s] fetchSize[%s]", context, fetchSize);
       checkCancelled(cancellation);
 
@@ -142,7 +142,7 @@ public class SqlObjectLoader {
       load(branchProcessor, branchHandler, context, fetchSize);
    }
 
-   public void loadTransactions(HasCancellation cancellation, LoadDataHandler handler, QuerySqlContext context, int fetchSize) throws OseeCoreException {
+   public void loadTransactions(HasCancellation cancellation, LoadDataHandler handler, QuerySqlContext context, int fetchSize)  {
       logger.trace("Sql Transaction Load - loadContext[%s] fetchSize[%s]", context, fetchSize);
       checkCancelled(cancellation);
 
@@ -153,7 +153,7 @@ public class SqlObjectLoader {
       load(txProcessor, txHandler, context, fetchSize);
    }
 
-   public void loadDynamicObjects(HasCancellation cancellation, LoadDataHandler handler, QuerySqlContext context, int fetchSize) throws OseeCoreException {
+   public void loadDynamicObjects(HasCancellation cancellation, LoadDataHandler handler, QuerySqlContext context, int fetchSize)  {
       logger.trace("Sql Transaction Load - loadContext[%s] fetchSize[%s]", context, fetchSize);
       checkCancelled(cancellation);
 
@@ -169,7 +169,7 @@ public class SqlObjectLoader {
       options.remove("result.descriptor");
    }
 
-   private void loadArtifacts(HasCancellation cancellation, LoadDataHandler handler, CriteriaOrcsLoad criteria, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {
+   private void loadArtifacts(HasCancellation cancellation, LoadDataHandler handler, CriteriaOrcsLoad criteria, LoadSqlContext loadContext, int fetchSize)  {
       checkCancelled(cancellation);
       loadDescription(handler, loadContext);
 
@@ -183,7 +183,7 @@ public class SqlObjectLoader {
       loadRelations(handler, criteria.getRelationCriteria(), loadContext, fetchSize);
    }
 
-   protected void loadDescription(LoadDataHandler builder, final LoadSqlContext loadContext) throws OseeCoreException {
+   protected void loadDescription(LoadDataHandler builder, final LoadSqlContext loadContext)  {
       OrcsSession session = loadContext.getSession();
       Options options = loadContext.getOptions();
       BranchId branch = loadContext.getBranch();
@@ -199,13 +199,13 @@ public class SqlObjectLoader {
       builder.onLoadDescription(description);
    }
 
-   protected void loadArtifacts(LoadDataHandler handler, Criteria criteria, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {
+   protected void loadArtifacts(LoadDataHandler handler, Criteria criteria, LoadSqlContext loadContext, int fetchSize)  {
       OrcsDataHandler<ArtifactData> artHandler = asArtifactHandler(handler);
       writeSql(criteria, loadContext);
       load(artifactProcessor, artHandler, loadContext, fetchSize);
    }
 
-   protected void loadAttributes(LoadDataHandler handler, Criteria criteria, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {
+   protected void loadAttributes(LoadDataHandler handler, Criteria criteria, LoadSqlContext loadContext, int fetchSize)  {
       LoadLevel loadLevel = OptionsUtil.getLoadLevel(loadContext.getOptions());
       if (isAttributeLoadingAllowed(loadLevel)) {
          OrcsDataHandler<AttributeData> attrHandler = asAttributeHandler(handler);
@@ -214,7 +214,7 @@ public class SqlObjectLoader {
       }
    }
 
-   protected void loadRelations(LoadDataHandler handler, Criteria criteria, LoadSqlContext loadContext, int fetchSize) throws OseeCoreException {
+   protected void loadRelations(LoadDataHandler handler, Criteria criteria, LoadSqlContext loadContext, int fetchSize)  {
       LoadLevel loadLevel = OptionsUtil.getLoadLevel(loadContext.getOptions());
       if (isRelationLoadingAllowed(loadLevel)) {
          OrcsDataHandler<RelationData> relHandler = asRelationHandler(handler);
@@ -223,12 +223,12 @@ public class SqlObjectLoader {
       }
    }
 
-   protected TransactionId loadHeadTransactionId(BranchId branch) throws OseeCoreException {
+   protected TransactionId loadHeadTransactionId(BranchId branch)  {
       String sql = "SELECT max(transaction_id) FROM osee_tx_details WHERE branch_id = ?";
       return getJdbcClient().fetch(TransactionId.SENTINEL, sql, branch);
    }
 
-   protected <H> void load(AbstractLoadProcessor<H> processor, H handler, SqlContext loadContext, int fetchSize) throws OseeCoreException {
+   protected <H> void load(AbstractLoadProcessor<H> processor, H handler, SqlContext loadContext, int fetchSize)  {
       try {
          for (AbstractJoinQuery join : loadContext.getJoins()) {
             join.store();
@@ -315,7 +315,7 @@ public class SqlObjectLoader {
       return new OrcsDataHandler<ArtifactData>() {
 
          @Override
-         public void onData(ArtifactData data) throws OseeCoreException {
+         public void onData(ArtifactData data)  {
             handler.onData(data);
          }
       };
@@ -325,7 +325,7 @@ public class SqlObjectLoader {
       return new OrcsDataHandler<AttributeData>() {
 
          @Override
-         public void onData(AttributeData data) throws OseeCoreException {
+         public void onData(AttributeData data)  {
             handler.onData(data);
          }
       };
@@ -335,7 +335,7 @@ public class SqlObjectLoader {
       return new OrcsDataHandler<RelationData>() {
 
          @Override
-         public void onData(RelationData data) throws OseeCoreException {
+         public void onData(RelationData data)  {
             handler.onData(data);
          }
       };
@@ -345,7 +345,7 @@ public class SqlObjectLoader {
       return new OrcsDataHandler<BranchData>() {
 
          @Override
-         public void onData(BranchData data) throws OseeCoreException {
+         public void onData(BranchData data)  {
             handler.onData(data);
          }
       };
@@ -355,7 +355,7 @@ public class SqlObjectLoader {
       return new OrcsDataHandler<TxOrcsData>() {
 
          @Override
-         public void onData(TxOrcsData data) throws OseeCoreException {
+         public void onData(TxOrcsData data)  {
             handler.onData(data);
          }
       };

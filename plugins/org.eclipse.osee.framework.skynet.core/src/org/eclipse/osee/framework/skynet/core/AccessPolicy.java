@@ -26,16 +26,16 @@ public interface AccessPolicy {
 
    boolean isReadOnly(Artifact artifact);
 
-   void removePermissions(BranchId branch) throws OseeCoreException;
+   void removePermissions(BranchId branch) ;
 
-   PermissionStatus hasBranchPermission(BranchId branch, PermissionEnum permission, Level level) throws OseeCoreException;
+   PermissionStatus hasBranchPermission(BranchId branch, PermissionEnum permission, Level level) ;
 
-   PermissionStatus hasAttributeTypePermission(Collection<? extends ArtifactToken> artifacts, AttributeTypeId attributeType, PermissionEnum permission, Level level) throws OseeCoreException;
+   PermissionStatus hasAttributeTypePermission(Collection<? extends ArtifactToken> artifacts, AttributeTypeId attributeType, PermissionEnum permission, Level level) ;
 
-   PermissionStatus hasArtifactTypePermission(BranchId branch, Collection<? extends ArtifactTypeId> artifactTypes, PermissionEnum permission, Level level) throws OseeCoreException;
+   PermissionStatus hasArtifactTypePermission(BranchId branch, Collection<? extends ArtifactTypeId> artifactTypes, PermissionEnum permission, Level level) ;
 
-   PermissionStatus hasArtifactPermission(Collection<Artifact> artifacts, PermissionEnum permission, Level level) throws OseeCoreException;
+   PermissionStatus hasArtifactPermission(Collection<Artifact> artifacts, PermissionEnum permission, Level level) ;
 
-   PermissionStatus canRelationBeModified(Artifact subject, Collection<Artifact> toBeRelated, RelationTypeSide relationTypeSide, Level level) throws OseeCoreException;
+   PermissionStatus canRelationBeModified(Artifact subject, Collection<Artifact> toBeRelated, RelationTypeSide relationTypeSide, Level level) ;
 
 }

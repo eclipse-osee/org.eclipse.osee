@@ -33,14 +33,14 @@ public interface IResourceProvider {
     * @param options operation options
     * @return the resource
     */
-   public IResource acquire(IResourceLocator locator, PropertyStore options) throws OseeCoreException;
+   public IResource acquire(IResourceLocator locator, PropertyStore options) ;
 
    /**
     * Determines if a resource exists for the given locator.
     * 
     * @param locator location of the data to check
     */
-   public boolean exists(IResourceLocator locator) throws OseeCoreException;
+   public boolean exists(IResourceLocator locator) ;
 
    /**
     * Save input to location specified by resource locator
@@ -49,14 +49,14 @@ public interface IResourceProvider {
     * @param options operation options
     * @param resource the resource to save
     */
-   public IResourceLocator save(IResourceLocator locator, IResource resource, PropertyStore options) throws OseeCoreException;
+   public IResourceLocator save(IResourceLocator locator, IResource resource, PropertyStore options) ;
 
    /**
     * Delete resource specified by resource locator
     * 
     * @param locator location of the resource to delete
     */
-   public int delete(IResourceLocator locator) throws OseeCoreException;
+   public int delete(IResourceLocator locator) ;
 
    /**
     * Get provider supported protocols

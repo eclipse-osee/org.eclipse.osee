@@ -23,35 +23,35 @@ public interface UserAdmin {
 
    void reset();
 
-   User getCurrentUser() throws OseeCoreException;
+   User getCurrentUser() ;
 
    void releaseCurrentUser();
 
-   User getUserByUserId(String userId) throws OseeCoreException;
+   User getUserByUserId(String userId) ;
 
-   List<User> getActiveUsers() throws OseeCoreException;
+   List<User> getActiveUsers() ;
 
-   List<User> getUsersAll() throws OseeCoreException;
+   List<User> getUsersAll() ;
 
-   List<User> getActiveUsersSortedByName() throws OseeCoreException;
+   List<User> getActiveUsersSortedByName() ;
 
-   List<User> getUsersAllSortedByName() throws OseeCoreException;
+   List<User> getUsersAllSortedByName() ;
 
-   String[] getUserNames() throws OseeCoreException;
+   String[] getUserNames() ;
 
-   User getUserByName(String name) throws OseeCoreException;
+   User getUserByName(String name) ;
 
-   User getUser(UserToken user) throws OseeCoreException;
+   User getUser(UserToken user) ;
 
    String getSafeUserNameById(ArtifactId userArtifactId);
 
-   String getUserNameById(ArtifactId userArtifactId) throws OseeCoreException;
+   String getUserNameById(ArtifactId userArtifactId) ;
 
-   User getUserByArtId(ArtifactId userArtifactId) throws OseeCoreException;
+   User getUserByArtId(ArtifactId userArtifactId) ;
 
-   User createUser(UserToken userToken, String comment) throws OseeCoreException;
+   User createUser(UserToken userToken, String comment) ;
 
-   User createUser(UserToken userToken, SkynetTransaction transaction) throws OseeCoreException;
+   User createUser(UserToken userToken, SkynetTransaction transaction) ;
 
    boolean isDuringCurrentUserCreation();
 

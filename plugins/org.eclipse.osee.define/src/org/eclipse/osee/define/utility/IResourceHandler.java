@@ -19,6 +19,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IResourceHandler {
 
-   void onResourceFound(URI uriPath, String name, CharBuffer fileBuffer) throws OseeCoreException;
+   void onResourceFound(URI uriPath, String name, CharBuffer fileBuffer) ;
 
 }

@@ -415,7 +415,7 @@ public class ReportsDialog extends TitleAreaDialog {
       });
    }
 
-   private void generatePreview(final OutputFormat outputFormat, final String reportId, final ITestRunReport report) throws URISyntaxException, OseeCoreException {
+   private void generatePreview(final OutputFormat outputFormat, final String reportId, final ITestRunReport report) throws URISyntaxException {
       String urlRequest = HttpReportRequest.getUrl(reportId, outputFormat.name(), "local", getPreviewSize());
       String fileName = OutputFactory.getOutputFilename(outputFormat, reportId);
       switch (outputFormat) {

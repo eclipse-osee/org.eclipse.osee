@@ -22,7 +22,6 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassXViewerFactory;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -70,7 +69,7 @@ public class XViewerDataManager {
       }
    }
 
-   public void addArtifacts(IProgressMonitor monitor, final List<Artifact> artifacts) throws OseeCoreException, AttributeDoesNotExist {
+   public void addArtifacts(IProgressMonitor monitor, final List<Artifact> artifacts)  {
       if (branchMap.isEmpty()) {
          if (xViewer.getXViewerFactory() instanceof MassXViewerFactory) {
             ((MassXViewerFactory) xViewer.getXViewerFactory()).registerAllAttributeColumnsForArtifacts(artifacts, true);
@@ -117,7 +116,7 @@ public class XViewerDataManager {
       });
    }
 
-   private DataItem getScriptItem(DataItem branchItem, Artifact artifact) throws OseeCoreException {
+   private DataItem getScriptItem(DataItem branchItem, Artifact artifact) {
       ArtifactTestRunOperator testRunArtifact = new ArtifactTestRunOperator(artifact);
       DataItem tempItem = new ScriptItem(testRunArtifact.getScriptUrl(), testRunArtifact.getScriptRevision(), null);
       DataItem scriptItem = branchItem.getChild(tempItem.getKey());

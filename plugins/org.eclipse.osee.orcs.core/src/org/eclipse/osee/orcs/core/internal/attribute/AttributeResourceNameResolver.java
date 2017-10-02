@@ -40,7 +40,7 @@ public class AttributeResourceNameResolver implements ResourceNameResolver {
    }
 
    @Override
-   public String getStorageName() throws OseeCoreException {
+   public String getStorageName()  {
       Identity<String> identity = attribute.getContainer();
       String guid = identity.getGuid();
       Conditions.checkExpressionFailOnTrue(!GUID.isValid(guid), "Artifact has an invalid guid [%s]", guid);
@@ -48,7 +48,7 @@ public class AttributeResourceNameResolver implements ResourceNameResolver {
    }
 
    @Override
-   public String getInternalFileName() throws OseeCoreException {
+   public String getInternalFileName()  {
       Named identity = attribute.getContainer();
 
       StringBuilder builder = new StringBuilder();
@@ -79,7 +79,7 @@ public class AttributeResourceNameResolver implements ResourceNameResolver {
       return builder.toString();
    }
 
-   private String getExtension(Attribute<?> attribute) throws OseeCoreException {
+   private String getExtension(Attribute<?> attribute)  {
       AttributeTypeId attributeType = attribute.getAttributeType();
       String fileTypeExtension = null;
       if (attribute.isOfType(CoreAttributeTypes.NativeContent)) {

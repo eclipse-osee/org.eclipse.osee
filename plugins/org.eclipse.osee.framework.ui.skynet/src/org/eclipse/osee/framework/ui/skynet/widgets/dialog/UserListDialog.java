@@ -28,11 +28,11 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class UserListDialog extends FilteredTreeArtifactDialog {
 
-   public UserListDialog(Shell parent, Active active) throws OseeCoreException {
+   public UserListDialog(Shell parent, Active active)  {
       this(parent, "Select User", active);
    }
 
-   public UserListDialog(Shell parent, String title, Active active) throws OseeCoreException {
+   public UserListDialog(Shell parent, String title, Active active)  {
       this(parent, title, getDefaultUsers(active));
 
    }
@@ -54,7 +54,7 @@ public class UserListDialog extends FilteredTreeArtifactDialog {
       return users;
    }
 
-   public UserListDialog(Shell parent, String title, Collection<? extends Artifact> users) throws OseeCoreException {
+   public UserListDialog(Shell parent, String title, Collection<? extends Artifact> users)  {
       super(title, title, users, new ArtifactContentProvider(null), new UserArtifactLabelProvider());
       setShellStyle(getShellStyle() | SWT.RESIZE);
    }

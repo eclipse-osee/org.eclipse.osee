@@ -65,7 +65,7 @@ public class FixAttributeOperationTest {
    private List<String[]> data;
 
    @Before
-   public void setUp() throws OseeCoreException {
+   public void setUp()  {
       branchWorking = BranchManager.createWorkingBranch(SAW_Bld_1, WORKING_BRANCH_NAME);
       BranchId branch1 = editBranch(branchWorking, "branch1");
       BranchId branch2 = editBranch(branchWorking, "branch2");
@@ -75,7 +75,7 @@ public class FixAttributeOperationTest {
    }
 
    @After
-   public void tearDown() throws OseeCoreException {
+   public void tearDown()  {
       boolean isPending = OseeEventManager.getPreferences().isPendRunning();
       try {
          OseeEventManager.getPreferences().setPendRunning(true);
@@ -102,7 +102,7 @@ public class FixAttributeOperationTest {
    }
 
    @Test
-   public void testDetectDuplicatesButDontFix() throws OseeCoreException {
+   public void testDetectDuplicatesButDontFix()  {
       // test multiple runs without committing fixes
       for (int i = 0; i < 2; i++) {
          executeOp(branchWorking, false);
@@ -122,7 +122,7 @@ public class FixAttributeOperationTest {
    }
 
    @Test
-   public void testTestFix() throws OseeCoreException {
+   public void testTestFix()  {
       executeOp(branchWorking, true);
       assertRow(data, 0, branchWorking.getName(), itemId, "Robot API", CoreAttributeTypes.Partition.getName(),
          "Unspecified, Navigation, Navigation", "Unspecified, Navigation");
@@ -154,13 +154,13 @@ public class FixAttributeOperationTest {
       }
    }
 
-   private void executeOp(IOseeBranch branch, boolean commitChangesBool) throws OseeCoreException {
+   private void executeOp(IOseeBranch branch, boolean commitChangesBool)  {
       IOperation operation = new FixAttributeOperation(NullOperationLogger.getSingleton(),
          (String reportName, List<String[]> values) -> data = values, branch, commitChangesBool);
       Operations.executeWorkAndCheckStatus(operation);
    }
 
-   private BranchId editBranch(BranchId parentBranch, String workingBranchName) throws OseeCoreException {
+   private BranchId editBranch(BranchId parentBranch, String workingBranchName)  {
       String branchName = String.format("%s_%s", FixAttributeOperationTest.class.getSimpleName(), workingBranchName);
       BranchId branch = BranchManager.createWorkingBranch(parentBranch, branchName);
 
@@ -176,7 +176,7 @@ public class FixAttributeOperationTest {
       return branch;
    }
 
-   private void commit(BranchId source, BranchId destination) throws OseeCoreException {
+   private void commit(BranchId source, BranchId destination)  {
       boolean archiveSourceBranch = false;
       boolean overwriteUnresolvedConflicts = true;
       ConflictManagerExternal conflictManager = new ConflictManagerExternal(destination, source);

@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class StateManagerStore {
 
-   public static void writeToStore(IAtsUser asUser, IAtsWorkItem workItem, StateManager stateMgr, IAttributeResolver attrResolver, IAtsChangeSet changes, IAtsWorkStateFactory workStateFactory) throws OseeCoreException {
+   public static void writeToStore(IAtsUser asUser, IAtsWorkItem workItem, StateManager stateMgr, IAttributeResolver attrResolver, IAtsChangeSet changes, IAtsWorkStateFactory workStateFactory)  {
       StateManagerWriter writer = new StateManagerWriter(workItem, stateMgr, attrResolver, changes, workStateFactory);
       List<IAtsUser> assigneesAdded = stateMgr.getAssigneesAdded();
       writer.writeToStore();
@@ -38,7 +38,7 @@ public class StateManagerStore {
          attrResolver, workStateFactory, changes));
    }
 
-   protected static void postPersistNotifyReset(IAtsUser asUser, IAtsWorkItem workItem, IAtsStateManager stateMgr, List<IAtsUser> assigneesAdded, IAttributeResolver attrResolver, IAtsWorkStateFactory workStateFactory, IAtsChangeSet changes) throws OseeCoreException {
+   protected static void postPersistNotifyReset(IAtsUser asUser, IAtsWorkItem workItem, IAtsStateManager stateMgr, List<IAtsUser> assigneesAdded, IAttributeResolver attrResolver, IAtsWorkStateFactory workStateFactory, IAtsChangeSet changes)  {
       try {
          if (!assigneesAdded.isEmpty()) {
             changes.addWorkItemNotificationEvent(AtsNotificationEventFactory.getWorkItemNotificationEvent(asUser,
@@ -65,7 +65,7 @@ public class StateManagerStore {
       };
    }
 
-   public static void load(IAtsWorkItem workItem, IAtsStateManager stateMgr, IAttributeResolver attrResolver, IAtsWorkStateFactory workStateFactory) throws OseeCoreException {
+   public static void load(IAtsWorkItem workItem, IAtsStateManager stateMgr, IAttributeResolver attrResolver, IAtsWorkStateFactory workStateFactory)  {
       StateManager stateManager = (StateManager) stateMgr;
       stateManager.clear();
       StateManagerReader reader = new StateManagerReader(workItem, stateManager, attrResolver, workStateFactory);

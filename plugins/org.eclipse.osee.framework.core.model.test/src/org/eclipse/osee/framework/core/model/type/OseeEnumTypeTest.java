@@ -21,19 +21,19 @@ import org.junit.Test;
 public class OseeEnumTypeTest {
 
    @Test(expected = OseeArgumentException.class)
-   public void enumNamesWithSpaces() throws OseeCoreException {
+   public void enumNamesWithSpaces()  {
       OseeEnumType oseeEnum = new OseeEnumType(0x00L, "Test");
       oseeEnum.valueOf(new String(" apple "));
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void enumNamesWithGarbageData() throws OseeCoreException {
+   public void enumNamesWithGarbageData()  {
       OseeEnumType oseeEnum = new OseeEnumType(0x00L, "Test");
       oseeEnum.valueOf(new String("#@Gbotkob!11233%20"));
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void enumNamesWithNull() throws OseeCoreException {
+   public void enumNamesWithNull()  {
       OseeEnumType oseeEnum = new OseeEnumType(0x00L, "Test");
       oseeEnum.valueOf(null);
    }
@@ -44,11 +44,11 @@ public class OseeEnumTypeTest {
 
    }
    //   @Override
-   //   public void testDirty() throws OseeCoreException {
+   //   public void testDirty()  {
    //   }
    //
    //   @org.junit.Test
-   //   public void testAddOseeEnumEntry() throws OseeCoreException {
+   //   public void testAddOseeEnumEntry()  {
    //      OseeEnumType enum1 =
    //            OseeTypesUtil.createEnumType(cache, factory, "Test 1", "Test 1", "OneEntry", 0, "TwoEntry", 1);
    //      OseeTypesUtil.checkOseeEnumEntries(enum1.values(), "OneEntry", 0, "TwoEntry", 1);

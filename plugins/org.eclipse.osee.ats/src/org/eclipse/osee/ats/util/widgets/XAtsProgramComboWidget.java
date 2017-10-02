@@ -38,15 +38,15 @@ public class XAtsProgramComboWidget extends XComboViewer {
       setComparator(new StringNameComparator());
    }
 
-   public XAtsProgramComboWidget(Collection<? extends IAtsProgram> atsPrograms) throws OseeCoreException {
+   public XAtsProgramComboWidget(Collection<? extends IAtsProgram> atsPrograms)  {
       this("ATS Program", atsPrograms);
    }
 
-   public XAtsProgramComboWidget() throws OseeCoreException {
+   public XAtsProgramComboWidget()  {
       this("ATS Program", getAllPrograms());
    }
 
-   private static Collection<? extends IAtsProgram> getAllPrograms() throws OseeCoreException {
+   private static Collection<? extends IAtsProgram> getAllPrograms()  {
       List<IAtsProgram> programs = new ArrayList<>();
       for (IAtsProgramManager manager : ProgramManagers.getAtsProgramManagers()) {
          programs.addAll(manager.getPrograms());

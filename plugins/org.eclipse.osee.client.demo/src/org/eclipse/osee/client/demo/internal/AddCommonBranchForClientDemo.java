@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 public class AddCommonBranchForClientDemo extends AddCommonBranch {
 
    @Override
-   public void run() throws OseeCoreException {
+   public void run()  {
       super.run();
       // Customized here;
    }

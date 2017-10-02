@@ -62,7 +62,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    }
 
    @Test
-   public void testProcessDataRelationTypeNoMatch() throws OseeCoreException {
+   public void testProcessDataRelationTypeNoMatch()  {
       XRelationType relationTypeRef = MockModel.createXRelationType(relationType);
 
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
@@ -76,7 +76,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    }
 
    @Test
-   public void testProcessDataRelationTypeMatchSideANoMatch() throws OseeCoreException {
+   public void testProcessDataRelationTypeMatchSideANoMatch()  {
       XRelationType relationTypeRef = MockModel.createXRelationType(relationType);
 
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
@@ -99,7 +99,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    }
 
    @Test
-   public void testProcessDataRelationTypeMatchSideAMatch() throws OseeCoreException {
+   public void testProcessDataRelationTypeMatchSideAMatch()  {
       XRelationType relationTypeRef = MockModel.createXRelationType(relationType);
 
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
@@ -126,7 +126,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    }
 
    @Test
-   public void testProcessDataRelationTypeMatchSideBNoMatch() throws OseeCoreException {
+   public void testProcessDataRelationTypeMatchSideBNoMatch()  {
       XRelationType relationTypeRef = MockModel.createXRelationType(relationType);
 
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
@@ -150,7 +150,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    }
 
    @Test
-   public void testProcessDataRelationTypeMatchSideBMatch() throws OseeCoreException {
+   public void testProcessDataRelationTypeMatchSideBMatch()  {
       XRelationType relationTypeRef = MockModel.createXRelationType(relationType);
 
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
@@ -177,7 +177,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    }
 
    @Test
-   public void testProcessDataRelationTypeMatchBothMatch() throws OseeCoreException {
+   public void testProcessDataRelationTypeMatchBothMatch()  {
       XRelationType relationTypeRef = MockModel.createXRelationType(relationType);
 
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
@@ -223,7 +223,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    }
 
    @Test
-   public void testProcessRelationWithRelationTypeAll() throws OseeCoreException {
+   public void testProcessRelationWithRelationTypeAll()  {
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
       restriction.setRelationTypeMatch(true);
@@ -267,7 +267,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    }
 
    @Test
-   public void testProcessDataArtifactTypeMatch() throws OseeCoreException {
+   public void testProcessDataArtifactTypeMatch()  {
 
       IArtifactType artifactType = CoreArtifactTypes.AbstractSoftwareRequirement;
       XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getGuid(), artifactType.getName());
@@ -304,7 +304,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
          expectedScope);
    }
 
-   private void testProcessRelationWithArtifactHelper(String artifactName, String matcherArtifactName, Scope expectedScope) throws OseeCoreException {
+   private void testProcessRelationWithArtifactHelper(String artifactName, String matcherArtifactName, Scope expectedScope)  {
       XRelationType relationTypeRef = MockModel.createXRelationType(relationType);
 
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
@@ -338,13 +338,13 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    }
 
    @Test
-   public void testProcessRelationWithArtifactMatch() throws OseeCoreException {
+   public void testProcessRelationWithArtifactMatch()  {
       testProcessRelationWithArtifactHelper("artifactToMatch", "artifactToMatch",
          new Scope().addSubPath("artifactToMatch"));
    }
 
    @Test
-   public void testProcessRelationWithArtifactNoMatch() throws OseeCoreException {
+   public void testProcessRelationWithArtifactNoMatch()  {
       testProcessRelationWithArtifactHelper("artifactToMatch", "differentArtifactToMatch", new Scope());
    }
 

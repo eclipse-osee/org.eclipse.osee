@@ -72,7 +72,7 @@ public final class SpecificTxsHandler implements IChangeReportUiHandler {
    }
 
    @Override
-   public String getScenarioDescriptionHtml(ChangeUiData changeUiData) throws OseeCoreException {
+   public String getScenarioDescriptionHtml(ChangeUiData changeUiData)  {
       TransactionDelta txDelta = changeUiData.getTxDelta();
       NumberFormat formatter = NumberFormat.getInstance();
       return String.format("Shows changes made to [<b>%s</b>] between transactions [<b>%s</b>] and [<b>%s</b>].",

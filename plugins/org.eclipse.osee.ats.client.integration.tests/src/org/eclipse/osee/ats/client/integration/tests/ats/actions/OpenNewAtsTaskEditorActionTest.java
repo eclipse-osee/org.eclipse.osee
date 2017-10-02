@@ -57,17 +57,17 @@ public class OpenNewAtsTaskEditorActionTest extends AbstractAtsActionRunTest {
                }
 
                @Override
-               public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend) throws OseeCoreException {
+               public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend)  {
                   // do nothing
                }
 
                @Override
-               public String getSelectedName(SearchType searchType) throws OseeCoreException {
+               public String getSelectedName(SearchType searchType)  {
                   return null;
                }
 
                @Override
-               public IAtsVersion getTargetedVersionArtifact() throws OseeCoreException {
+               public IAtsVersion getTargetedVersionArtifact()  {
                   return null;
                }
 

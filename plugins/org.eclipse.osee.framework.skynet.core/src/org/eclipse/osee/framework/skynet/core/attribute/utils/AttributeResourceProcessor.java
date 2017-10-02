@@ -36,7 +36,7 @@ public class AttributeResourceProcessor {
       this.attribute = attribute;
    }
 
-   public String createStorageName() throws OseeCoreException {
+   public String createStorageName()  {
       return BinaryContentUtils.getStorageName(attribute);
    }
 
@@ -45,7 +45,7 @@ public class AttributeResourceProcessor {
       return client.getResourcesEndpoint();
    }
 
-   public void saveResource(int gammaId, String name, DataStore dataStore) throws OseeCoreException {
+   public void saveResource(int gammaId, String name, DataStore dataStore)  {
       ResourcesEndpoint endpoint = getResourcesEndpoint();
 
       InputStream inputStream = null;
@@ -78,7 +78,7 @@ public class AttributeResourceProcessor {
       }
    }
 
-   public void acquire(DataStore dataStore) throws OseeCoreException {
+   public void acquire(DataStore dataStore)  {
       ResourcesEndpoint endpoint = getResourcesEndpoint();
       String path = BinaryContentUtils.asResourcePath(dataStore.getLocator());
       try {
@@ -122,7 +122,7 @@ public class AttributeResourceProcessor {
       }
    }
 
-   public void purge(DataStore dataStore) throws OseeCoreException {
+   public void purge(DataStore dataStore)  {
       ResourcesEndpoint endpoint = getResourcesEndpoint();
       String path = BinaryContentUtils.asResourcePath(dataStore.getLocator());
       try {

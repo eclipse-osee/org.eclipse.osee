@@ -73,7 +73,7 @@ public class PlainTextRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException {
+   public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts)  {
       InputStream stream = null;
       try {
          if (artifacts.isEmpty()) {
@@ -96,7 +96,7 @@ public class PlainTextRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public Program getAssociatedProgram(Artifact artifact) throws OseeCoreException {
+   public Program getAssociatedProgram(Artifact artifact)  {
       Program program = Program.findProgram("txt");
       if (program == null) {
          throw new OseeArgumentException("No program associated with the extension *.txt found on your local machine.");
@@ -145,7 +145,7 @@ public class PlainTextRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public void open(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
+   public void open(List<Artifact> artifacts, PresentationType presentationType)  {
       for (Artifact artifact : artifacts) {
          super.open(Arrays.asList(artifact), presentationType);
       }

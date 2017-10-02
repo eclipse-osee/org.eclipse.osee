@@ -70,7 +70,7 @@ public class RelationResolverTest {
    private List<Relation> links;
 
    @Before
-   public void init() throws OseeCoreException {
+   public void init()  {
       MockitoAnnotations.initMocks(this);
 
       resolver = new RelationResolverImpl(loader);
@@ -104,7 +104,7 @@ public class RelationResolverTest {
    }
 
    @Test
-   public void testLoadAll() throws OseeCoreException {
+   public void testLoadAll()  {
       List<RelationNode> loaded = Arrays.asList(node1, node2, node3, node4, node5, node6);
 
       when(resultSet.iterator()).thenReturn(loaded.iterator());
@@ -117,7 +117,7 @@ public class RelationResolverTest {
    }
 
    @Test
-   public void testLoadSideAOnly() throws OseeCoreException {
+   public void testLoadSideAOnly()  {
       List<RelationNode> loaded = Arrays.asList(node1, node3, node5);
 
       when(resultSet.iterator()).thenReturn(loaded.iterator());
@@ -131,7 +131,7 @@ public class RelationResolverTest {
    }
 
    @Test
-   public void testLoadSideBOnly() throws OseeCoreException {
+   public void testLoadSideBOnly()  {
       List<RelationNode> loaded = Arrays.asList(node2, node4, node6);
 
       when(resultSet.iterator()).thenReturn(loaded.iterator());
@@ -145,7 +145,7 @@ public class RelationResolverTest {
    }
 
    @Test
-   public void testLoadSideAFromCacheAndSideBFromLoader() throws OseeCoreException {
+   public void testLoadSideAFromCacheAndSideBFromLoader()  {
       List<RelationNode> loaded = Arrays.asList(node2, node4, node6);
 
       when(graphData.getNode(11)).thenReturn(node1);

@@ -28,7 +28,7 @@ public class AttributeTypeCacheTest extends AbstractOseeTypeCacheTest<AttributeT
    private static AttributeTypeCache attrCache;
 
    @BeforeClass
-   public static void prepareTestData() throws OseeCoreException {
+   public static void prepareTestData()  {
       attributeTypes = new ArrayList<>();
 
       attrCache = new AttributeTypeCache();

@@ -90,7 +90,7 @@ public class WfeEstimatedHoursHeader extends Composite {
 
    }
 
-   private String getEstHoursStr() throws OseeCoreException {
+   private String getEstHoursStr()  {
       double totalEst = 0;
       double awaEst = awa.getSoleAttributeValue(AtsAttributeTypes.EstimatedHours, 0.0);
       if (awaEst < 0) {
@@ -108,11 +108,11 @@ public class WfeEstimatedHoursHeader extends Composite {
       }
    }
 
-   public void refresh() throws OseeCoreException {
+   public void refresh()  {
       updateLabel(awa);
    }
 
-   private void updateLabel(AbstractWorkflowArtifact sma) throws OseeCoreException {
+   private void updateLabel(AbstractWorkflowArtifact sma)  {
       valueLabel.setText(getEstHoursStr());
       valueLabel.getParent().layout();
    }

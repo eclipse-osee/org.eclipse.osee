@@ -36,34 +36,34 @@ public final class ServiceUtil {
       // Utility class
    }
 
-   private static <T> T getService(Class<T> clazz) throws OseeCoreException {
+   private static <T> T getService(Class<T> clazz)  {
       return OsgiUtil.getService(ServiceUtil.class, clazz);
    }
 
-   public static CacheAdmin getCacheAdmin() throws OseeCoreException {
+   public static CacheAdmin getCacheAdmin()  {
       return getService(CacheAdmin.class);
    }
 
-   public static OseeEventService getEventService() throws OseeCoreException {
+   public static OseeEventService getEventService()  {
       return getService(OseeEventService.class);
    }
 
-   public static IOseeCachingService getOseeCacheService() throws OseeCoreException {
+   public static IOseeCachingService getOseeCacheService()  {
       if (cacheService == null) {
          cacheService = getService(IOseeCachingService.class);
       }
       return cacheService;
    }
 
-   public static AttributeAdapterService getAttributeAdapterService() throws OseeCoreException {
+   public static AttributeAdapterService getAttributeAdapterService()  {
       return getService(AttributeAdapterService.class);
    }
 
-   public static OseeClient getOseeClient() throws OseeCoreException {
+   public static OseeClient getOseeClient()  {
       return getService(OseeClient.class);
    }
 
-   public static AccessPolicy getAccessPolicy() throws OseeCoreException {
+   public static AccessPolicy getAccessPolicy()  {
       try {
          Bundle bundle = Platform.getBundle("org.eclipse.osee.framework.access");
          if (bundle.getState() != Bundle.ACTIVE) {
@@ -79,7 +79,7 @@ public final class ServiceUtil {
       return ClientSessionManager.useOracleHints();
    }
 
-   public static String getSql(OseeSql sqlEnum) throws OseeCoreException {
+   public static String getSql(OseeSql sqlEnum)  {
       Properties properties = ClientSessionManager.getSqlProperties();
       String sql = properties.getProperty(sqlEnum.toString());
       if (sql != null) {

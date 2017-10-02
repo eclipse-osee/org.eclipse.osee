@@ -95,22 +95,22 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
       this.comment = comment;
    }
 
-   private AttributeId getNewAttributeId(Artifact artifact, Attribute<?> attribute) throws OseeCoreException {
+   private AttributeId getNewAttributeId(Artifact artifact, Attribute<?> attribute)  {
       return AttributeId.valueOf(ConnectionHandler.getNextSequence(ATTR_ID_SEQ, true));
    }
 
-   private int getNewRelationId() throws OseeCoreException {
+   private int getNewRelationId()  {
       return (int) ConnectionHandler.getNextSequence(REL_LINK_ID_SEQ, true);
    }
 
-   private User getAuthor() throws OseeCoreException {
+   private User getAuthor()  {
       if (user == null) {
          user = UserManager.getUser();
       }
       return user;
    }
 
-   private void checkAccess(Artifact artifact) throws OseeCoreException {
+   private void checkAccess(Artifact artifact)  {
       if (UserManager.duringMainUserCreation()) {
          return;
       }
@@ -126,28 +126,28 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
       getAccess().hasArtifactPermission(Collections.singleton(artifact), PermissionEnum.WRITE, Level.FINE);
    }
 
-   private void checkBranch(ArtifactToken artifact) throws OseeCoreException {
+   private void checkBranch(ArtifactToken artifact)  {
       if (!isBranchWritable(artifact.getBranch())) {
          throw new OseeStateException("The artifact [%s] is on a non-editable branch [%s] ", artifact,
             artifact.getBranch());
       }
    }
 
-   private void checkBranch(RelationLink link) throws OseeCoreException {
+   private void checkBranch(RelationLink link)  {
       if (!isBranchWritable(link.getBranch())) {
          throw new OseeStateException("The relation link [%s] is on a non-editable branch [%s] ", link,
             link.getBranch());
       }
    }
 
-   private void checkNotHistorical(Artifact artifact) throws OseeCoreException {
+   private void checkNotHistorical(Artifact artifact)  {
       if (artifact.isHistorical()) {
          throw new OseeStateException("The artifact [%s] must be at the head of the branch to be edited.",
             artifact.getGuid());
       }
    }
 
-   private boolean isBranchWritable(BranchId branch) throws OseeCoreException {
+   private boolean isBranchWritable(BranchId branch)  {
       boolean toReturn = true;
       if (!UserManager.duringMainUserCreation()) {
          toReturn = getAccess().hasBranchPermission(branch, PermissionEnum.WRITE,
@@ -156,7 +156,7 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
       return toReturn;
    }
 
-   private void checkAccess(Artifact artifact, RelationLink link) throws OseeCoreException {
+   private void checkAccess(Artifact artifact, RelationLink link)  {
       if (UserManager.duringMainUserCreation()) {
          return;
       }
@@ -179,7 +179,7 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
       }
    }
 
-   private AccessPolicy getAccess() throws OseeCoreException {
+   private AccessPolicy getAccess()  {
       if (access == null) {
          access = ServiceUtil.getAccessPolicy();
       }
@@ -208,13 +208,13 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
       return getKey();
    }
 
-   public void addArtifact(Artifact artifact) throws OseeCoreException {
+   public void addArtifact(Artifact artifact)  {
       synchronized (getTxMonitor()) {
          addArtifact(artifact, true);
       }
    }
 
-   private void addArtifact(Artifact artifact, boolean force) throws OseeCoreException {
+   private void addArtifact(Artifact artifact, boolean force)  {
       if (artifact != null) {
          ensureCanBeAdded(artifact);
          boolean wasAdded = alreadyProcessedArtifacts.add(artifact);
@@ -225,7 +225,7 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
       }
    }
 
-   private void addArtifactAndAttributes(Artifact artifact) throws OseeCoreException {
+   private void addArtifactAndAttributes(Artifact artifact)  {
       if (artifact.hasDirtyAttributes() || artifact.hasDirtyArtifactType() || artifact.getModType() == REPLACED_WITH_VERSION || artifact.isUseBackingdata()) {
          if (artifact.isDeleted() && !artifact.isInDb()) {
             for (Attribute<?> attribute : artifact.internalGetAttributes()) {
@@ -281,7 +281,7 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
       }
    }
 
-   private void addAttribute(Artifact artifact, Attribute<?> attribute) throws OseeCoreException {
+   private void addAttribute(Artifact artifact, Attribute<?> attribute)  {
       if (attribute.isDeleted() && !attribute.isInDb()) {
          return;
       }
@@ -301,7 +301,7 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
       }
    }
 
-   private void addRelations(Artifact artifact) throws OseeCoreException {
+   private void addRelations(Artifact artifact)  {
       List<RelationLink> links = artifact.getRelationsAll(INCLUDE_DELETED);
 
       for (RelationLink relation : links) {
@@ -311,7 +311,7 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
       }
    }
 
-   private void addRelation(Artifact artifact, RelationLink link) throws OseeCoreException {
+   private void addRelation(Artifact artifact, RelationLink link)  {
       synchronized (getTxMonitor()) {
          checkAccess(artifact, link);
          setTxState(TxState.MODIFIED);
@@ -387,13 +387,13 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
       }
    }
 
-   private IOperation createStorageOp() throws OseeCoreException {
+   private IOperation createStorageOp()  {
       transaction = internalCreateTransaction(getBranch(), getAuthor(), comment);
       return new StoreSkynetTransactionOperation(getName(), getBranch(), transaction, getTransactionData(),
          getArtifactReferences());
    }
 
-   public static synchronized TransactionRecord internalCreateTransaction(BranchId branch, User userToBlame, String comment) throws OseeCoreException {
+   public static synchronized TransactionRecord internalCreateTransaction(BranchId branch, User userToBlame, String comment)  {
       if (comment == null) {
          comment = "";
       }
@@ -425,7 +425,7 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
    }
 
    //TODO this method needs to be removed
-   public TransactionId execute() throws OseeCoreException {
+   public TransactionId execute()  {
       Operations.executeWorkAndCheckStatus(this);
       return transaction;
    }

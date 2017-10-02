@@ -77,7 +77,7 @@ public class BaseBrokerTesting {
       }
    }
 
-   protected ConnectionNode getConnectionNode() throws OseeCoreException {
+   protected ConnectionNode getConnectionNode()  {
       return getMessaging().get(DefaultNodeInfos.OSEE_JMS_NODE_INFO);
    }
 

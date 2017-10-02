@@ -286,7 +286,7 @@ public class ArtifactExplorerMenu {
             }
          }
 
-         private Artifact getParent() throws OseeCoreException {
+         private Artifact getParent()  {
             IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
 
             if (selection.size() > 1) {
@@ -340,7 +340,7 @@ public class ArtifactExplorerMenu {
       return null;
    }
 
-   private static FilteredTreeArtifactTypeEntryDialog getDialog(Collection<? extends IArtifactType> validArtifactTypes) throws OseeCoreException {
+   private static FilteredTreeArtifactTypeEntryDialog getDialog(Collection<? extends IArtifactType> validArtifactTypes)  {
       List<IArtifactType> artifactTypes = new ArrayList<>();
       for (IArtifactType artifactType : validArtifactTypes) {
          if (!((ArtifactType) artifactType).isAbstract() && ArtifactTypeManager.isUserCreationAllowed(artifactType)) {
@@ -644,7 +644,7 @@ public class ArtifactExplorerMenu {
       });
    }
 
-   private void performCopy() throws OseeCoreException {
+   private void performCopy()  {
       IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
       List<Artifact> artifactTransferData = new ArrayList<>();
       Artifact artifact;

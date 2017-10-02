@@ -22,21 +22,21 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public class AccessControlCacheHandler {
 
-   public void updateAccessListForBranchObject(AccessControlService service, BranchId branch) throws OseeCoreException {
+   public void updateAccessListForBranchObject(AccessControlService service, BranchId branch)  {
       BranchAccessObject branchAccessObject = BranchAccessObject.getBranchAccessObject(branch);
       if (branchAccessObject != null) {
          updateAccessList(service, branchAccessObject);
       }
    }
 
-   public void updateAccessList(AccessControlService service, AccessObject accessObject) throws OseeCoreException {
+   public void updateAccessList(AccessControlService service, AccessObject accessObject)  {
       List<AccessControlData> acl = service.generateAccessControlList(accessObject);
       for (AccessControlData accessControlData : acl) {
          service.removeAccessControlDataIf(false, accessControlData);
       }
    }
 
-   public void reloadCache(AccessControlService service) throws OseeCoreException {
+   public void reloadCache(AccessControlService service)  {
       service.reloadCache();
    }
 }

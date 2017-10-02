@@ -47,7 +47,7 @@ public class WordExtractorData {
       return parent;
    }
 
-   public Artifact getArtifact(BranchId branch) throws OseeCoreException {
+   public Artifact getArtifact(BranchId branch)  {
       if (artifact == null && Strings.isValid(getGuid())) {
          artifact = ArtifactQuery.getArtifactFromId(getGuid(), branch, DeletionFlag.INCLUDE_DELETED);
       }

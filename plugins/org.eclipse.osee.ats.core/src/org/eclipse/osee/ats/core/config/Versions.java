@@ -37,7 +37,7 @@ public class Versions {
       return names;
    }
 
-   public static String getTargetedVersionStr(IAtsWorkItem workItem, IAtsVersionService versionService) throws OseeCoreException {
+   public static String getTargetedVersionStr(IAtsWorkItem workItem, IAtsVersionService versionService)  {
       IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
       if (teamWf != null) {
          IAtsVersion version = versionService.getTargetedVersion(workItem);

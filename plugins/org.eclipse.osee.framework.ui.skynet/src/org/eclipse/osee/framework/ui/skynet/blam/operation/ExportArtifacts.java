@@ -100,7 +100,7 @@ public class ExportArtifacts extends AbstractBlam {
       Program.launch(iFile.getLocation().toOSString());
    }
 
-   private void mapAttributeTypeToColumn(List<Artifact> artifacts) throws OseeCoreException {
+   private void mapAttributeTypeToColumn(List<Artifact> artifacts)  {
       HashSet<AttributeTypeId> attributeTypes = new HashSet<>();
 
       for (Artifact artifact : artifacts) {
@@ -114,7 +114,7 @@ public class ExportArtifacts extends AbstractBlam {
       Arrays.sort(attributeColumns);
    }
 
-   private void init() throws IOException, OseeCoreException {
+   private void init() throws IOException {
       charBak = new CharBackedInputStream();
       excelWriter = new ExcelXmlWriter(charBak.getWriter());
    }

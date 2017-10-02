@@ -32,7 +32,7 @@ import org.junit.Test;
 public class LifecycleOperationTest {
 
    @Test
-   public void testOperation() throws OseeCoreException {
+   public void testOperation()  {
       ILifecycleService service = new LifecycleServiceImpl();
 
       service.addHandler(StrictMockLifecycePoint.TYPE, new MockHandler());

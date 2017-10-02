@@ -91,7 +91,7 @@ public class ArtifactOperations {
       return artifact.getName();
    }
 
-   public String getParagraphNumber() throws OseeCoreException {
+   public String getParagraphNumber()  {
       return artifact.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
    }
 

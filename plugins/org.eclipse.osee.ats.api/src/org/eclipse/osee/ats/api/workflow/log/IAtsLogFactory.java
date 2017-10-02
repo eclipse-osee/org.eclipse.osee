@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IAtsLogFactory {
 
-   IAtsLogItem newLogItem(LogType type, Date date, IAtsUser user, String state, String msg) throws OseeCoreException;
+   IAtsLogItem newLogItem(LogType type, Date date, IAtsUser user, String state, String msg) ;
 
    IAtsLog getLogLoaded(IAtsWorkItem workItem, IAttributeResolver attrResolver);
 

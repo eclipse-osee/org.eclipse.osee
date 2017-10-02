@@ -20,7 +20,7 @@ import org.eclipse.osee.support.test.util.TestUtil;
 public class AddCommonBranchForAtsDemo extends AddCommonBranch {
 
    @Override
-   public void run() throws OseeCoreException {
+   public void run()  {
       TestUtil.setDemoDb(true);
       super.run();
    }

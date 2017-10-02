@@ -37,7 +37,7 @@ public class AtsXDateValidatorTest {
    // @formatter:on
 
    @org.junit.Test
-   public void testValidateTransition() throws OseeCoreException {
+   public void testValidateTransition()  {
       AtsXDateValidator validator = new AtsXDateValidator();
 
       MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
@@ -68,7 +68,7 @@ public class AtsXDateValidatorTest {
    }
 
    @org.junit.Test
-   public void testValidateTransition_validDate() throws OseeCoreException {
+   public void testValidateTransition_validDate()  {
       AtsXDateValidator validator = new AtsXDateValidator();
 
       MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
@@ -88,7 +88,7 @@ public class AtsXDateValidatorTest {
    }
 
    @org.junit.Test
-   public void testValidateTransition_validRange() throws OseeCoreException {
+   public void testValidateTransition_validRange()  {
       AtsXDateValidator validator = new AtsXDateValidator();
 
       MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");

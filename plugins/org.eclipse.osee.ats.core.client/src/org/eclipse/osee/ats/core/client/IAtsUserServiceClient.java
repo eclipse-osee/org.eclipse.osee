@@ -26,25 +26,25 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public interface IAtsUserServiceClient extends IAtsUserService {
 
-   User getOseeUser(IAtsUser user) throws OseeCoreException;
+   User getOseeUser(IAtsUser user) ;
 
-   User getOseeUserById(String userId) throws OseeCoreException;
+   User getOseeUserById(String userId) ;
 
-   IAtsUser getUserFromOseeUser(User user) throws OseeCoreException;
+   IAtsUser getUserFromOseeUser(User user) ;
 
-   User getCurrentOseeUser() throws OseeCoreException;
+   User getCurrentOseeUser() ;
 
-   Collection<? extends User> toOseeUsers(Collection<? extends IAtsUser> users) throws OseeCoreException;
+   Collection<? extends User> toOseeUsers(Collection<? extends IAtsUser> users) ;
 
-   Collection<IAtsUser> getAtsUsers(Collection<? extends Artifact> artifacts) throws OseeCoreException;
+   Collection<IAtsUser> getAtsUsers(Collection<? extends Artifact> artifacts) ;
 
-   Collection<User> getOseeUsers(Collection<? extends IAtsUser> users) throws OseeCoreException;
+   Collection<User> getOseeUsers(Collection<? extends IAtsUser> users) ;
 
    IAtsUser getUserFromToken(UserToken userToken);
 
    List<User> getOseeUsersSorted(Active active);
 
-   List<IAtsUser> getSubscribed(IAtsWorkItem workItem) throws OseeCoreException;
+   List<IAtsUser> getSubscribed(IAtsWorkItem workItem) ;
 
    IAtsUser getUserById(long accountId);
 

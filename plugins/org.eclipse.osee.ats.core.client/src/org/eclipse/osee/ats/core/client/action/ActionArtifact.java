@@ -43,7 +43,7 @@ public class ActionArtifact extends Artifact implements IAtsAction {
       super(id, branch, AtsArtifactTypes.Action);
    }
 
-   public Set<IAtsActionableItem> getActionableItems() throws OseeCoreException {
+   public Set<IAtsActionableItem> getActionableItems()  {
       Set<IAtsActionableItem> aias = new HashSet<>();
       for (TeamWorkFlowArtifact team : getTeams()) {
          aias.addAll(AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(team));
@@ -51,11 +51,11 @@ public class ActionArtifact extends Artifact implements IAtsAction {
       return aias;
    }
 
-   public Collection<TeamWorkFlowArtifact> getTeams() throws OseeCoreException {
+   public Collection<TeamWorkFlowArtifact> getTeams()  {
       return getRelatedArtifactsUnSorted(AtsRelationTypes.ActionToWorkflow_WorkFlow, TeamWorkFlowArtifact.class);
    }
 
-   public TeamWorkFlowArtifact getFirstTeam() throws OseeCoreException {
+   public TeamWorkFlowArtifact getFirstTeam()  {
       if (getRelatedArtifactsCount(AtsRelationTypes.ActionToWorkflow_WorkFlow) > 0) {
          return getTeams().iterator().next();
       }
@@ -63,7 +63,7 @@ public class ActionArtifact extends Artifact implements IAtsAction {
    }
 
    @Override
-   public Collection<IAtsTeamWorkflow> getTeamWorkflows() throws OseeCoreException {
+   public Collection<IAtsTeamWorkflow> getTeamWorkflows()  {
       return Collections.castAll(getTeams());
    }
 
@@ -79,7 +79,7 @@ public class ActionArtifact extends Artifact implements IAtsAction {
    }
 
    @Override
-   public void setAtsId(String atsId) throws OseeCoreException {
+   public void setAtsId(String atsId)  {
       setSoleAttributeFromString(AtsAttributeTypes.AtsId, atsId);
    }
 

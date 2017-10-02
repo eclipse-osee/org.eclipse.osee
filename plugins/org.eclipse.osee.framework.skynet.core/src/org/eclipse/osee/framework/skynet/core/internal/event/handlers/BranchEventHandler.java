@@ -51,7 +51,7 @@ public class BranchEventHandler implements EventHandlerLocal<IBranchEventListene
    }
 
    @Override
-   public void send(Transport transport, Sender sender, BranchEvent event) throws OseeCoreException {
+   public void send(Transport transport, Sender sender, BranchEvent event)  {
       if (transport.isDispatchToLocalAllowed(sender)) {
          transport.sendLocal(sender, event);
       }

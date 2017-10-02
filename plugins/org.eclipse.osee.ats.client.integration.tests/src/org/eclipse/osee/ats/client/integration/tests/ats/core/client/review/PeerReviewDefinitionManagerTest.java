@@ -51,7 +51,7 @@ public class PeerReviewDefinitionManagerTest extends PeerReviewDefinitionManager
    }
 
    @org.junit.Test
-   public void testCreatePeerReviewDuringTransition() throws OseeCoreException {
+   public void testCreatePeerReviewDuringTransition()  {
       AtsTestUtil.cleanupAndReset("PeerReviewDefinitionManagerTest");
 
       try {

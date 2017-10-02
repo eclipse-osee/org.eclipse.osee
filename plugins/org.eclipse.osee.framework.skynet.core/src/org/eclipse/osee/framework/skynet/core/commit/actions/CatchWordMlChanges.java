@@ -43,7 +43,7 @@ public class CatchWordMlChanges implements CommitAction {
     */
 
    @Override
-   public void runCommitAction(BranchId sourceBranch, BranchId destinationBranch) throws OseeCoreException {
+   public void runCommitAction(BranchId sourceBranch, BranchId destinationBranch)  {
       Set<Artifact> changedArtifacts = new HashSet<>();
       Collection<Change> changes = new ArrayList<>();
       IOperation operation = ChangeManager.compareTwoBranchesHead(sourceBranch, destinationBranch, changes);

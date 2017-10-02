@@ -51,52 +51,52 @@ public class TxQueryBuilderImpl<T> implements TxQueryBuilder<T> {
    }
 
    @Override
-   public T andTxIds(Collection<TransactionId> ids) throws OseeCoreException {
+   public T andTxIds(Collection<TransactionId> ids)  {
       return addAndCheck(queryData, new CriteriaTxIds(ids));
    }
 
    @Override
-   public T andTxId(Operator op, int id) throws OseeCoreException {
+   public T andTxId(Operator op, int id)  {
       Criteria criteria = criteriaFactory.newByIdWithOperator(op, id);
       return addAndCheck(queryData, criteria);
    }
 
    @Override
-   public T andTxId(Operator op1, int id1, Operator op2, int id2) throws OseeCoreException {
+   public T andTxId(Operator op1, int id1, Operator op2, int id2)  {
       Criteria criteria = criteriaFactory.newByIdWithTwoOperators(op1, id1, op2, id2);
       return addAndCheck(queryData, criteria);
    }
 
    @Override
-   public T andCommentEquals(String value) throws OseeCoreException {
+   public T andCommentEquals(String value)  {
       Criteria criteria = criteriaFactory.newCommentCriteria(value, false);
       return addAndCheck(queryData, criteria);
    }
 
    @Override
-   public T andCommentPattern(String pattern) throws OseeCoreException {
+   public T andCommentPattern(String pattern)  {
       Criteria criteria = criteriaFactory.newCommentCriteria(pattern, true);
       return addAndCheck(queryData, criteria);
    }
 
    @Override
-   public T andIs(TransactionDetailsType... types) throws OseeCoreException {
+   public T andIs(TransactionDetailsType... types)  {
       return andIs(Arrays.asList(types));
    }
 
    @Override
-   public T andIs(Collection<TransactionDetailsType> types) throws OseeCoreException {
+   public T andIs(Collection<TransactionDetailsType> types)  {
       Criteria criteria = criteriaFactory.newTxTypeCriteria(types);
       return addAndCheck(queryData, criteria);
    }
 
    @Override
-   public T andBranch(BranchId... ids) throws OseeCoreException {
+   public T andBranch(BranchId... ids)  {
       return andBranch(Arrays.asList(ids));
    }
 
    @Override
-   public T andBranch(Collection<? extends BranchId> ids) throws OseeCoreException {
+   public T andBranch(Collection<? extends BranchId> ids)  {
       Set<Long> values = new LinkedHashSet<>();
       for (BranchId value : ids) {
          values.add(value.getUuid());
@@ -106,7 +106,7 @@ public class TxQueryBuilderImpl<T> implements TxQueryBuilder<T> {
    }
 
    @Override
-   public T andBranchIds(long... ids) throws OseeCoreException {
+   public T andBranchIds(long... ids)  {
       Set<Long> values = new LinkedHashSet<>();
       for (long value : ids) {
          values.add(value);
@@ -115,35 +115,35 @@ public class TxQueryBuilderImpl<T> implements TxQueryBuilder<T> {
    }
 
    @Override
-   public T andBranchIds(Collection<Long> ids) throws OseeCoreException {
+   public T andBranchIds(Collection<Long> ids)  {
       Criteria criteria = criteriaFactory.newTxBranchIdCriteria(ids);
       return addAndCheck(queryData, criteria);
    }
 
    @Override
-   public T andDate(Operator op, Timestamp date) throws OseeCoreException {
+   public T andDate(Operator op, Timestamp date)  {
       Criteria criteria = criteriaFactory.newByDateWithOperator(op, date);
       return addAndCheck(queryData, criteria);
    }
 
    @Override
-   public T andDate(Timestamp from, Timestamp to) throws OseeCoreException {
+   public T andDate(Timestamp from, Timestamp to)  {
       Criteria criteria = criteriaFactory.newByDateRange(from, to);
       return addAndCheck(queryData, criteria);
    }
 
    @Override
-   public T andAuthorLocalIds(ArtifactId... id) throws OseeCoreException {
+   public T andAuthorLocalIds(ArtifactId... id)  {
       return andAuthorLocalIds(Arrays.asList(id));
    }
 
    @Override
-   public T andAuthorLocalIds(Collection<ArtifactId> ids) throws OseeCoreException {
+   public T andAuthorLocalIds(Collection<ArtifactId> ids)  {
       return addAndCheck(queryData, new CriteriaTxArtifactIds(ids));
    }
 
    @Override
-   public T andAuthorIds(int... id) throws OseeCoreException {
+   public T andAuthorIds(int... id)  {
       ArrayList<Integer> theList = new ArrayList<>();
       for (int i = 0; i < id.length; i++) {
          theList.add(new Integer(id[i]));
@@ -152,25 +152,25 @@ public class TxQueryBuilderImpl<T> implements TxQueryBuilder<T> {
    }
 
    @Override
-   public T andAuthorIds(Collection<Integer> ids) throws OseeCoreException {
+   public T andAuthorIds(Collection<Integer> ids)  {
       Criteria criteria = criteriaFactory.newByAuthorId(ids);
       return addAndCheck(queryData, criteria);
    }
 
    @Override
-   public T andCommitIds(Integer... id) throws OseeCoreException {
+   public T andCommitIds(Integer... id)  {
       return andCommitIds(Arrays.asList(id));
    }
 
    @Override
-   public T andNullCommitId() throws OseeCoreException {
+   public T andNullCommitId()  {
       Collection<Integer> aNull = new ArrayList<>();
       aNull.add(null);
       return andCommitIds(aNull);
    }
 
    @Override
-   public T andCommitIds(Collection<Integer> ids) throws OseeCoreException {
+   public T andCommitIds(Collection<Integer> ids)  {
       Criteria criteria = criteriaFactory.newByCommitId(ids);
       return addAndCheck(queryData, criteria);
    }
@@ -182,13 +182,13 @@ public class TxQueryBuilderImpl<T> implements TxQueryBuilder<T> {
    }
 
    @Override
-   public T andIsPriorTx(TransactionId txId) throws OseeCoreException {
+   public T andIsPriorTx(TransactionId txId)  {
       Criteria criteria = criteriaFactory.newGetPriorTx(txId);
       return addAndCheck(queryData, criteria);
    }
 
    @SuppressWarnings("unchecked")
-   private T addAndCheck(QueryData queryData, Criteria criteria) throws OseeCoreException {
+   private T addAndCheck(QueryData queryData, Criteria criteria)  {
       criteria.checkValid(getOptions());
       queryData.addCriteria(criteria);
       return (T) this;

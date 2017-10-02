@@ -38,7 +38,7 @@ public class MergeEditArtifactElementExtractor implements IElementExtractor {
    }
 
    @Override
-   public Collection<WordExtractorData> extractElements() throws DOMException, OseeCoreException {
+   public Collection<WordExtractorData> extractElements() throws DOMException {
       final Collection<WordExtractorData> artifactElements = new LinkedList<>();
       Collection<Element> sectList = new LinkedList<>();
       Element rootElement = document.getDocumentElement();
@@ -71,7 +71,7 @@ public class MergeEditArtifactElementExtractor implements IElementExtractor {
       return artifactElements;
    }
 
-   private void handleMultiSectTags(Collection<Element> sectList) throws OseeCoreException {
+   private void handleMultiSectTags(Collection<Element> sectList)  {
       boolean containTag = false;
       // need to check all wx:sect for the listnum tag
       for (Element sectElem : sectList) {
@@ -83,7 +83,7 @@ public class MergeEditArtifactElementExtractor implements IElementExtractor {
    }
 
    //To handle the case of sub-sections
-   private boolean cleanUpParagraph(Node rootNode) throws OseeCoreException {
+   private boolean cleanUpParagraph(Node rootNode)  {
       boolean worked = false;
       boolean delete = false;
       Node node = rootNode.getFirstChild();

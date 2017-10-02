@@ -99,11 +99,11 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
       return false;
    }
 
-   public static boolean promptChangeSprint(Artifact awa, boolean persist) throws OseeCoreException {
+   public static boolean promptChangeSprint(Artifact awa, boolean persist)  {
       return promptChangeSprint(Arrays.asList(awa), persist);
    }
 
-   public static boolean promptChangeSprint(final Collection<? extends Artifact> awas, boolean persist) throws OseeCoreException {
+   public static boolean promptChangeSprint(final Collection<? extends Artifact> awas, boolean persist)  {
       // verify that all awas belong to the same backlog
       SprintItems items = new SprintItems(awas);
 

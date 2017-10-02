@@ -48,7 +48,7 @@ public class IdsPredicateHandlerTest {
    }
 
    @Test
-   public void testHandleLocalId() throws OseeCoreException {
+   public void testHandleLocalId()  {
       IdsPredicateHandler handler = new IdsPredicateHandler();
       //no type params, op, or flags for ids - any passed are ignored
 
@@ -63,7 +63,7 @@ public class IdsPredicateHandlerTest {
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testHandleNonId() throws OseeCoreException {
+   public void testHandleNonId()  {
       IdsPredicateHandler handler = new IdsPredicateHandler();
       //no type params, op, or flags for ids - any passed are ignored
 
@@ -75,14 +75,14 @@ public class IdsPredicateHandlerTest {
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testHandleBadValues() throws OseeCoreException {
+   public void testHandleBadValues()  {
       IdsPredicateHandler handler = new IdsPredicateHandler();
       Predicate testPredicate = new Predicate(SearchMethod.IDS, null, null);
       handler.handle(builder, testPredicate);
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testBadSearchMethod() throws OseeCoreException {
+   public void testBadSearchMethod()  {
       IdsPredicateHandler handler = new IdsPredicateHandler();
       String id1 = "12345";
       List<String> values = Collections.singletonList(id1);

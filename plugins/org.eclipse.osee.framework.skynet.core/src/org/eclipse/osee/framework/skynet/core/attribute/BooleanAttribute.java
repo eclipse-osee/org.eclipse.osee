@@ -19,7 +19,7 @@ public class BooleanAttribute extends CharacterBackedAttribute<Boolean> {
    public static final String[] booleanChoices = {"true", "false"};
 
    @Override
-   public Boolean getValue() throws OseeCoreException {
+   public Boolean getValue()  {
       return (Boolean) getAttributeDataProvider().getValue();
    }
 

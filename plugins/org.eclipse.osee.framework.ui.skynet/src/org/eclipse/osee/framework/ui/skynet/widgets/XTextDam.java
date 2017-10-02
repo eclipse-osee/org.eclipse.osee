@@ -43,7 +43,7 @@ public class XTextDam extends XText implements IAttributeWidget {
    }
 
    @Override
-   public Artifact getArtifact() throws OseeCoreException {
+   public Artifact getArtifact()  {
       Artifact toReturn = null;
       if (isWeakReference) {
          if (artifactRef.get() == null) {
@@ -70,18 +70,18 @@ public class XTextDam extends XText implements IAttributeWidget {
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) throws OseeCoreException {
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType)  {
       this.attributeType = attributeType;
       setArtifact(artifact);
       onAttributeTypeSet();
    }
 
-   public void onAttributeTypeSet() throws OseeCoreException {
+   public void onAttributeTypeSet()  {
       super.set(getArtifact().getSoleAttributeValue(getAttributeType(), ""));
    }
 
    @Override
-   public void saveToArtifact() throws OseeCoreException {
+   public void saveToArtifact()  {
       String value = get();
       if (!Strings.isValid(value)) {
          getArtifact().deleteSoleAttribute(getAttributeType());
@@ -91,7 +91,7 @@ public class XTextDam extends XText implements IAttributeWidget {
    }
 
    @Override
-   public Result isDirty() throws OseeCoreException {
+   public Result isDirty()  {
       if (isEditable()) {
          String enteredValue = get();
          String storedValue = getArtifact().getSoleAttributeValue(getAttributeType(), "");
@@ -119,7 +119,7 @@ public class XTextDam extends XText implements IAttributeWidget {
    }
 
    @Override
-   public void revert() throws OseeCoreException {
+   public void revert()  {
       setAttributeType(getArtifact(), getAttributeType());
    }
 }

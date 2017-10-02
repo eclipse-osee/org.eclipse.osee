@@ -18,22 +18,22 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 public class OrcsVisitorAdapter implements OrcsVisitor {
 
    @Override
-   public void visit(ArtifactData data) throws OseeCoreException {
+   public void visit(ArtifactData data)  {
       //
    }
 
    @Override
-   public void visit(AttributeData data) throws OseeCoreException {
+   public void visit(AttributeData data)  {
       //
    }
 
    @Override
-   public void visit(RelationData data) throws OseeCoreException {
+   public void visit(RelationData data)  {
       //
    }
 
    @Override
-   public void visit(TupleData data) throws OseeCoreException {
+   public void visit(TupleData data)  {
       //
    }
 

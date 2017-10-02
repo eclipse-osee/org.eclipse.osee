@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.skynet.core.importing.IOseeTypesHandler;
 public class XtextOseeTypesHandler implements IOseeTypesHandler {
 
    @Override
-   public void execute(IProgressMonitor monitor, URI uri) throws OseeCoreException {
+   public void execute(IProgressMonitor monitor, URI uri)  {
       IOperation operation = ArtifactTypeManager.newImportTypesOp(uri);
       Operations.executeWorkAndCheckStatus(operation, monitor);
    }

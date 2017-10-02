@@ -135,19 +135,19 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
       return importedURI;
    }
 
-   private void checkPreconditions() throws OseeCoreException {
+   private void checkPreconditions()  {
       if (getJdbcClient().getConfig().isProduction()) {
          throw new OseeStateException("DO NOT IMPORT ON PRODUCTION");
       }
 
    }
 
-   private IResourceLocator findResourceToCheck(URI fileToCheck) throws OseeCoreException {
+   private IResourceLocator findResourceToCheck(URI fileToCheck)  {
       IResourceLocator locator = resourceManager.getResourceLocator(fileToCheck.toASCIIString());
       return locator;
    }
 
-   private IOseeExchangeDataProvider createExportDataProvider(IResourceLocator exportDataLocator) throws OseeCoreException {
+   private IOseeExchangeDataProvider createExportDataProvider(IResourceLocator exportDataLocator)  {
       String exchangeBasePath = ResourceConstants.getExchangeDataPath(preferences);
       Pair<Boolean, File> result =
          ExchangeUtil.getTempExchangeFile(exchangeBasePath, getLogger(), exportDataLocator, resourceManager);
@@ -207,7 +207,7 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
       }
    }
 
-   private void process(BaseDbSaxHandler handler, IExportItem exportItem) throws OseeCoreException {
+   private void process(BaseDbSaxHandler handler, IExportItem exportItem)  {
       MetaData metadata = checkMetadata(exportItem);
       handler.setMetaData(metadata);
       handler.setOptions(options);
@@ -226,7 +226,7 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
       }
    }
 
-   private MetaData checkMetadata(IExportItem importFile) throws OseeArgumentException {
+   private MetaData checkMetadata(IExportItem importFile)  {
       MetaData metadata = metadataHandler.getMetadata(importFile.getSource());
       if (metadata == null) {
          throw new OseeArgumentException("Invalid metadata for [%s]", importFile.getSource());
@@ -256,7 +256,7 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
       IResource typesResource = new IResource() {
 
          @Override
-         public InputStream getContent() throws OseeCoreException {
+         public InputStream getContent()  {
             try {
                URL url = modelUri.toURL();
                return new BufferedInputStream(url.openStream());
@@ -301,7 +301,7 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
       }
 
       @Override
-      protected Boolean handleTxWork(JdbcConnection connection) throws OseeCoreException {
+      protected Boolean handleTxWork(JdbcConnection connection)  {
          if (manifestHandler != null && translator != null) {
             int importIdIndex = (int) getJdbcClient().getNextSequence(IMPORT_ID_SEQ, true);
             String sourceDatabaseId = manifestHandler.getSourceDatabaseId();
@@ -335,7 +335,7 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
          branchesStored = Collections.emptySet();
       }
 
-      public void updateBaselineAndParentTransactionId() throws OseeCoreException {
+      public void updateBaselineAndParentTransactionId()  {
          savePointManager.setCurrentSetPointId("update_branch_baseline_parent_tx_ids");
          if (!savePointManager.isCurrentInProcessed()) {
             branchHandler.updateBaselineAndParentTransactionId(branchesStored);
@@ -346,7 +346,7 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
       }
 
       @Override
-      protected Object handleTxWork(JdbcConnection connection) throws OseeCoreException {
+      protected Object handleTxWork(JdbcConnection connection)  {
          // Import Branches
          savePointManager.setCurrentSetPointId(branchExportItem.getSource());
          branchHandler.setConnection(connection);
@@ -365,7 +365,7 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
       }
 
       @Override
-      protected void handleTxFinally() throws OseeCoreException {
+      protected void handleTxFinally()  {
          super.handleTxFinally();
          branchHandler.setConnection(null);
       }

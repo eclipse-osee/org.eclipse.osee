@@ -42,26 +42,26 @@ public class ArtifactTestRunOperator implements TestRunOperator {
 
    private final Artifact artifact;
 
-   public ArtifactTestRunOperator(Artifact artifact) throws OseeArgumentException {
+   public ArtifactTestRunOperator(Artifact artifact) {
       checkForNull(artifact);
       checkForType(artifact);
       this.artifact = artifact;
    }
 
-   private void checkForNull(Artifact artifact) throws OseeArgumentException {
+   private void checkForNull(Artifact artifact) {
       if (artifact == null) {
          throw new OseeArgumentException("Artifact was null.");
       }
    }
 
-   private void checkForType(Artifact artifact) throws OseeArgumentException {
+   private void checkForType(Artifact artifact) {
       if (!artifact.isOfType(CoreArtifactTypes.TestRun)) {
          throw new OseeArgumentException("Unable to operate on type [%s]. Only [%s] allowed.",
             artifact.getArtifactTypeName(), CoreArtifactTypes.TestRun);
       }
    }
 
-   public static ArtifactTestRunOperator getNewArtifactWithOperator(BranchId branch) throws OseeCoreException {
+   public static ArtifactTestRunOperator getNewArtifactWithOperator(BranchId branch) {
       return new ArtifactTestRunOperator(TEST_RUN_ARTIFACT_FETCHER.getNewArtifact(branch));
    }
 
@@ -82,45 +82,45 @@ public class ArtifactTestRunOperator implements TestRunOperator {
    }
 
    @Override
-   public String getScriptRevision() throws OseeCoreException {
+   public String getScriptRevision() {
       return artifact.getSoleAttributeValue(OteAttributeTypes.REVISION, "");
    }
 
-   public String getScriptUrl() throws OseeCoreException {
+   public String getScriptUrl() {
       return artifact.getSoleAttributeValue(OteAttributeTypes.TEST_SCRIPT_URL, "");
    }
 
-   public void setLastDateUploaded(Date value) throws OseeCoreException {
+   public void setLastDateUploaded(Date value) {
       artifact.setSoleAttributeValue(OteAttributeTypes.LAST_DATE_UPLOADED, value);
    }
 
    @Override
-   public Date getLastDateUploaded() throws OseeCoreException {
+   public Date getLastDateUploaded() {
       return artifact.getSoleAttributeValue(OteAttributeTypes.LAST_DATE_UPLOADED, null);
    }
 
-   public void setChecksum(String value) throws OseeCoreException {
+   public void setChecksum(String value) {
       artifact.setSoleAttributeValue(OteAttributeTypes.CHECKSUM, value);
    }
 
    @Override
-   public String getChecksum() throws OseeCoreException {
+   public String getChecksum() {
       return artifact.getSoleAttributeValue(OteAttributeTypes.CHECKSUM, "");
    }
 
-   public String getOutfileExtension() throws OseeCoreException {
+   public String getOutfileExtension() {
       return artifact.getSoleAttributeValue(OteAttributeTypes.EXTENSION, "");
    }
 
-   public void setOutfileExtension(String outfile) throws OseeCoreException {
+   public void setOutfileExtension(String outfile) {
       artifact.setSoleAttributeValue(OteAttributeTypes.EXTENSION, outfile);
    }
 
-   public boolean isFromLocalWorkspace() throws OseeCoreException, AttributeDoesNotExist {
+   public boolean isFromLocalWorkspace()  {
       return getLastDateUploaded() == null;
    }
 
-   public void setLocalOutfileURI(String uri) throws OseeCoreException, AttributeDoesNotExist {
+   public void setLocalOutfileURI(String uri)  {
       IAttributeDataProvider provider = getOutfileAttribute().getAttributeDataProvider();
       if (provider instanceof MappedAttributeDataProvider) {
          ((MappedAttributeDataProvider) provider).setLocalUri(uri);
@@ -128,11 +128,11 @@ public class ArtifactTestRunOperator implements TestRunOperator {
    }
 
    @Override
-   public String getOutfileUrl() throws OseeCoreException {
+   public String getOutfileUrl() {
       return artifact.getSoleAttributeValue(OteAttributeTypes.OUTFILE_URL);
    }
 
-   public String getOutfileContents() throws OseeCoreException {
+   public String getOutfileContents() {
       try {
          return Lib.inputStreamToString(new URI(getOutfileUrl()).toURL().openStream());
       } catch (Exception ex) {
@@ -140,7 +140,7 @@ public class ArtifactTestRunOperator implements TestRunOperator {
       }
    }
 
-   public Attribute<InputStream> getOutfileAttribute() throws AttributeDoesNotExist, OseeCoreException {
+   public Attribute<InputStream> getOutfileAttribute()  {
       List<Attribute<InputStream>> attributes = artifact.getAttributes(OteAttributeTypes.OUTFILE_URL);
       return attributes != null && attributes.size() > 0 ? attributes.get(0) : null;
    }
@@ -178,7 +178,7 @@ public class ArtifactTestRunOperator implements TestRunOperator {
       return artifact != null && artifact.isDeleted() != true;
    }
 
-   public void createTestScriptSoftLink() throws OseeCoreException {
+   public void createTestScriptSoftLink() {
       Artifact testScript = getTestScriptFetcher().searchForUniqueArtifactMatching(CoreAttributeTypes.Name,
          artifact.getName(), artifact.getBranch());
       if (testScript != null) {
@@ -207,36 +207,36 @@ public class ArtifactTestRunOperator implements TestRunOperator {
    }
 
    @Override
-   public int getTestPointsPassed() throws OseeCoreException {
+   public int getTestPointsPassed() {
       return artifact.getSoleAttributeValue(OteAttributeTypes.PASSED);
    }
 
    @Override
-   public int getTestPointsFailed() throws OseeCoreException {
+   public int getTestPointsFailed() {
       return artifact.getSoleAttributeValue(OteAttributeTypes.FAILED);
    }
 
    @Override
-   public int getTotalTestPoints() throws OseeCoreException {
+   public int getTotalTestPoints() {
       return artifact.getSoleAttributeValue(OteAttributeTypes.TOTAL_TEST_POINTS);
    }
 
    @Override
-   public Date getEndDate() throws OseeCoreException {
+   public Date getEndDate() {
       return processDateAttribute(OteAttributeTypes.END_DATE);
    }
 
    @Override
-   public Date getLastModifiedDate() throws OseeCoreException {
+   public Date getLastModifiedDate() {
       return processDateAttribute(OteAttributeTypes.LAST_MODIFIED_DATE);
    }
 
    @Override
-   public Date getTestStartDate() throws OseeCoreException {
+   public Date getTestStartDate() {
       return processDateAttribute(OteAttributeTypes.START_DATE);
    }
 
-   private Date processDateAttribute(AttributeTypeId attributeType) throws OseeCoreException {
+   private Date processDateAttribute(AttributeTypeId attributeType) {
       Date date = artifact.getSoleAttributeValue(attributeType, null);
       if (date == null) {
          date = new Date(0);
@@ -255,7 +255,7 @@ public class ArtifactTestRunOperator implements TestRunOperator {
    }
 
    @Override
-   public String getTestResultStatus() throws OseeCoreException {
+   public String getTestResultStatus() {
       String result = "FAILED";
       if (wasAborted() != true) {
          int total = getTotalTestPoints();
@@ -282,47 +282,47 @@ public class ArtifactTestRunOperator implements TestRunOperator {
    }
 
    @Override
-   public String getOseeVersion() throws OseeCoreException {
+   public String getOseeVersion() {
       return artifact.getSoleAttributeValue(OteAttributeTypes.OSEE_VERSION, "").trim();
    }
 
    @Override
-   public String getOseeServerTitle() throws OseeCoreException {
+   public String getOseeServerTitle() {
       return artifact.getSoleAttributeValue(OteAttributeTypes.OSEE_SERVER_TITLE, "").trim();
    }
 
    @Override
-   public String getOseeServerVersion() throws OseeCoreException {
+   public String getOseeServerVersion() {
       return artifact.getSoleAttributeValue(OteAttributeTypes.OSEE_SERVER_JAR_VERSION, "").trim();
    }
 
    @Override
-   public String getProcessorId() throws OseeCoreException {
+   public String getProcessorId() {
       return artifact.getSoleAttributeValue(OteAttributeTypes.PROCESSOR_ID, "");
    }
 
    @Override
-   public String getRunDuration() throws OseeCoreException {
+   public String getRunDuration() {
       return artifact.getSoleAttributeValue(OteAttributeTypes.ELAPSED_DATE, "");
    }
 
    @Override
-   public String getQualificationLevel() throws OseeCoreException {
+   public String getQualificationLevel() {
       return artifact.getSoleAttributeValue(OteAttributeTypes.QUALIFICATION_LEVEL, "");
    }
 
    @Override
-   public String getBuildId() throws OseeCoreException {
+   public String getBuildId() {
       return artifact.getSoleAttributeValue(OteAttributeTypes.BUILD_ID, "");
    }
 
    @Override
-   public String getRanOnOperatingSystem() throws OseeCoreException {
+   public String getRanOnOperatingSystem() {
       return artifact.getSoleAttributeValue(OteAttributeTypes.OS_NAME, "");
    }
 
    @Override
-   public String getLastAuthor() throws OseeCoreException {
+   public String getLastAuthor() {
       return artifact.getSoleAttributeValue(OteAttributeTypes.LAST_AUTHOR, null);
    }
 

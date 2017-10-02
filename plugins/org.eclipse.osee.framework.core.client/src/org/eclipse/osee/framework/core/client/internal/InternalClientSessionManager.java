@@ -89,7 +89,7 @@ public class InternalClientSessionManager {
       throw new OseeAuthenticationRequiredException("Session is invalid - authentication is required");
    }
 
-   public void authenticateAsGuest() throws OseeCoreException {
+   public void authenticateAsGuest()  {
       authenticate(new GuestCredentialProvider());
    }
 
@@ -105,7 +105,7 @@ public class InternalClientSessionManager {
       return session;
    }
 
-   public synchronized void authenticate(ICredentialProvider credentialProvider) throws OseeCoreException {
+   public synchronized void authenticate(ICredentialProvider credentialProvider)  {
       if (!isSessionValid()) {
          try {
             OseeCredential credential = credentialProvider.getCredential();
@@ -163,13 +163,13 @@ public class InternalClientSessionManager {
       }
    }
 
-   public void releaseSession() throws OseeCoreException {
+   public void releaseSession()  {
       if (isSessionValid()) {
          internalReleaseSession(getOseeSessionGrant().getSessionId());
       }
    }
 
-   private void internalReleaseSession(String sessionId) throws OseeCoreException {
+   private void internalReleaseSession(String sessionId)  {
       try {
          SessionEndpoint sessionEp = getSessionEp();
          Response response = sessionEp.releaseIdeClientSession(sessionId);
@@ -201,7 +201,7 @@ public class InternalClientSessionManager {
       this.oseeSessionGrant = null;
    }
 
-   private OseeSessionGrant internalAcquireSession(OseeCredential credential) throws OseeCoreException {
+   private OseeSessionGrant internalAcquireSession(OseeCredential credential)  {
       SessionEndpoint sessionEp = getSessionEp();
       Response response = sessionEp.createIdeClientSession(credential);
       OseeSessionGrant sessionGrant = response.readEntity(OseeSessionGrant.class);

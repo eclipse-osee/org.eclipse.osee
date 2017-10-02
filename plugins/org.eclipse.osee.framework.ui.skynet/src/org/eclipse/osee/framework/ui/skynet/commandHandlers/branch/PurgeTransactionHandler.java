@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 public class PurgeTransactionHandler extends CommandHandler {
 
    @Override
-   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
+   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection)  {
       List<TransactionToken> transactions = Handlers.getTransactionsFromStructuredSelection(selection);
 
       PurgeTransactionAction action = new PurgeTransactionAction(transactions);
@@ -36,7 +36,7 @@ public class PurgeTransactionHandler extends CommandHandler {
    }
 
    @Override
-   public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
+   public boolean isEnabledWithException(IStructuredSelection structuredSelection)  {
       List<TransactionToken> transactions = Handlers.getTransactionsFromStructuredSelection(structuredSelection);
       return transactions.size() > 0 && AccessControlManager.isOseeAdmin();
    }

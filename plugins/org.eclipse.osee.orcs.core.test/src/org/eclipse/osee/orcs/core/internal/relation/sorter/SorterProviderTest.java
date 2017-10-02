@@ -51,7 +51,7 @@ public class SorterProviderTest {
    }
 
    @Test
-   public void testGetDefaultSorterId() throws OseeCoreException {
+   public void testGetDefaultSorterId()  {
       when(relationTypeCache.getDefaultOrderTypeGuid(CoreRelationTypes.Default_Hierarchical__Child)).thenReturn(
          USER_DEFINED);
 
@@ -65,7 +65,7 @@ public class SorterProviderTest {
    }
 
    @Test
-   public void testGetDefaultSorterIdNull() throws OseeCoreException {
+   public void testGetDefaultSorterIdNull()  {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("type cannot be null");
 

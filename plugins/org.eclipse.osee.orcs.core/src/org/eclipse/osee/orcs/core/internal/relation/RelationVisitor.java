@@ -17,6 +17,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface RelationVisitor {
 
-   void visit(Relation relation) throws OseeCoreException;
+   void visit(Relation relation) ;
 
 }

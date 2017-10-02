@@ -22,6 +22,6 @@ public interface IOverrideHandler {
 
    public String getToolTipText();
 
-   public Set<Object> getOverridableFromUnselectable(Set<Object> unselectable) throws OseeCoreException;
+   public Set<Object> getOverridableFromUnselectable(Set<Object> unselectable) ;
 
 }

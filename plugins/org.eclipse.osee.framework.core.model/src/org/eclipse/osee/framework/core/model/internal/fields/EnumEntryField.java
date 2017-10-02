@@ -30,7 +30,7 @@ public class EnumEntryField extends CollectionField<OseeEnumEntry> {
    }
 
    @Override
-   protected Collection<OseeEnumEntry> checkInput(Collection<OseeEnumEntry> input) throws OseeCoreException {
+   protected Collection<OseeEnumEntry> checkInput(Collection<OseeEnumEntry> input)  {
       checkEnumEntryIntegrity(input);
       Set<OseeEnumEntry> toReturn = new HashSet<>();
 
@@ -61,7 +61,7 @@ public class EnumEntryField extends CollectionField<OseeEnumEntry> {
       return toReturn;
    }
 
-   private void checkEnumEntryIntegrity(Collection<OseeEnumEntry> oseeEnumEntries) throws OseeCoreException {
+   private void checkEnumEntryIntegrity(Collection<OseeEnumEntry> oseeEnumEntries)  {
       // Use maps to speed up validation
       Map<String, OseeEnumEntry> nameToEnum = new HashMap<>();
       Map<Integer, OseeEnumEntry> ordinalToEnum = new HashMap<>();

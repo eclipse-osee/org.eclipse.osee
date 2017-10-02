@@ -72,7 +72,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
       this.keyValueOps = keyValueOps;
    }
 
-   private Artifact getForWrite(ArtifactId artifactId) throws OseeCoreException {
+   private Artifact getForWrite(ArtifactId artifactId)  {
       return txManager.getForWrite(txData, artifactId);
    }
 
@@ -87,58 +87,58 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public void setComment(String comment) throws OseeCoreException {
+   public void setComment(String comment)  {
       txManager.setComment(txData, comment);
    }
 
-   public void setAuthor(UserId author) throws OseeCoreException {
+   public void setAuthor(UserId author)  {
       txManager.setAuthor(txData, author);
    }
 
    @Override
-   public ArtifactToken createArtifact(IArtifactType artifactType, String name) throws OseeCoreException {
+   public ArtifactToken createArtifact(IArtifactType artifactType, String name)  {
       return createArtifact(artifactType, name, null);
    }
 
    @Override
-   public ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid) throws OseeCoreException {
+   public ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid)  {
       return txManager.createArtifact(txData, artifactType, name, guid);
    }
 
    @Override
-   public ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid, long uuid) throws OseeCoreException {
+   public ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid, long uuid)  {
       Conditions.checkExpressionFailOnTrue(uuid <= 0L, "Invalid Uuid %d. Must be > 0", uuid);
       return txManager.createArtifact(txData, artifactType, name, guid, uuid);
    }
 
    @Override
-   public ArtifactToken createArtifact(ArtifactToken token) throws OseeCoreException {
+   public ArtifactToken createArtifact(ArtifactToken token)  {
       Conditions.checkExpressionFailOnTrue(token.isInvalid(), "Invalid Id %d. Must be > 0", token.getId());
       return txManager.createArtifact(txData, token.getArtifactType(), token.getName(), token.getGuid(), token.getId());
    }
 
    @Override
-   public ArtifactToken copyArtifact(ArtifactReadable sourceArtifact) throws OseeCoreException {
+   public ArtifactToken copyArtifact(ArtifactReadable sourceArtifact)  {
       return copyArtifact(sourceArtifact.getBranch(), sourceArtifact);
    }
 
    @Override
-   public ArtifactToken copyArtifact(BranchId fromBranch, ArtifactId artifactId) throws OseeCoreException {
+   public ArtifactToken copyArtifact(BranchId fromBranch, ArtifactId artifactId)  {
       return txManager.copyArtifact(txData, fromBranch, artifactId);
    }
 
    @Override
-   public ArtifactToken copyArtifact(ArtifactReadable sourceArtifact, Collection<AttributeTypeId> attributesToDuplicate) throws OseeCoreException {
+   public ArtifactToken copyArtifact(ArtifactReadable sourceArtifact, Collection<AttributeTypeId> attributesToDuplicate)  {
       return copyArtifact(sourceArtifact.getBranch(), sourceArtifact, attributesToDuplicate);
    }
 
    @Override
-   public ArtifactToken copyArtifact(BranchId fromBranch, ArtifactId artifactId, Collection<AttributeTypeId> attributesToDuplicate) throws OseeCoreException {
+   public ArtifactToken copyArtifact(BranchId fromBranch, ArtifactId artifactId, Collection<AttributeTypeId> attributesToDuplicate)  {
       return txManager.copyArtifact(txData, fromBranch, artifactId, attributesToDuplicate);
    }
 
    @Override
-   public ArtifactToken introduceArtifact(BranchId fromBranch, ArtifactId sourceArtifact) throws OseeCoreException {
+   public ArtifactToken introduceArtifact(BranchId fromBranch, ArtifactId sourceArtifact)  {
       checkAreOnDifferentBranches(txData, fromBranch);
       ArtifactReadable source = getArtifactReadable(txData.getSession(), query, fromBranch, sourceArtifact);
       Conditions.checkNotNull(source, "Source Artifact");
@@ -148,89 +148,89 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public ArtifactToken replaceWithVersion(ArtifactReadable sourceArtifact, ArtifactReadable destination) throws OseeCoreException {
+   public ArtifactToken replaceWithVersion(ArtifactReadable sourceArtifact, ArtifactReadable destination)  {
       return txManager.replaceWithVersion(txData, sourceArtifact.getBranch(), sourceArtifact, destination);
    }
 
    @Override
-   public AttributeId createAttribute(ArtifactId sourceArtifact, AttributeTypeId attributeType) throws OseeCoreException {
+   public AttributeId createAttribute(ArtifactId sourceArtifact, AttributeTypeId attributeType)  {
       Artifact asArtifact = getForWrite(sourceArtifact);
       return asArtifact.createAttribute(attributeType);
    }
 
    @Override
-   public <T> AttributeId createAttribute(ArtifactId sourceArtifact, AttributeTypeId attributeType, T value) throws OseeCoreException {
+   public <T> AttributeId createAttribute(ArtifactId sourceArtifact, AttributeTypeId attributeType, T value)  {
       Artifact asArtifact = getForWrite(sourceArtifact);
       return asArtifact.createAttribute(attributeType, value);
    }
 
    @Override
-   public AttributeId createAttributeFromString(ArtifactId sourceArtifact, AttributeTypeId attributeType, String value) throws OseeCoreException {
+   public AttributeId createAttributeFromString(ArtifactId sourceArtifact, AttributeTypeId attributeType, String value)  {
       Artifact asArtifact = getForWrite(sourceArtifact);
       return asArtifact.createAttributeFromString(attributeType, value);
    }
 
    @Override
-   public <T> void setSoleAttributeValue(ArtifactId sourceArtifact, AttributeTypeId attributeType, T value) throws OseeCoreException {
+   public <T> void setSoleAttributeValue(ArtifactId sourceArtifact, AttributeTypeId attributeType, T value)  {
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.setSoleAttributeValue(attributeType, value);
    }
 
    @Override
-   public void setSoleAttributeFromStream(ArtifactId sourceArtifact, AttributeTypeId attributeType, InputStream stream) throws OseeCoreException {
+   public void setSoleAttributeFromStream(ArtifactId sourceArtifact, AttributeTypeId attributeType, InputStream stream)  {
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.setSoleAttributeFromStream(attributeType, stream);
    }
 
    @Override
-   public void setSoleAttributeFromString(ArtifactId sourceArtifact, AttributeTypeId attributeType, String value) throws OseeCoreException {
+   public void setSoleAttributeFromString(ArtifactId sourceArtifact, AttributeTypeId attributeType, String value)  {
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.setSoleAttributeFromString(attributeType, value);
    }
 
    @Override
-   public void setName(ArtifactId sourceArtifact, String value) throws OseeCoreException {
+   public void setName(ArtifactId sourceArtifact, String value)  {
       setSoleAttributeFromString(sourceArtifact, CoreAttributeTypes.Name, value);
    }
 
    @Override
-   public <T> void setAttributesFromValues(ArtifactId sourceArtifact, AttributeTypeId attributeType, T... values) throws OseeCoreException {
+   public <T> void setAttributesFromValues(ArtifactId sourceArtifact, AttributeTypeId attributeType, T... values)  {
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.setAttributesFromValues(attributeType, values);
    }
 
    @Override
-   public <T> void setAttributesFromValues(ArtifactId sourceArtifact, AttributeTypeId attributeType, Collection<T> values) throws OseeCoreException {
+   public <T> void setAttributesFromValues(ArtifactId sourceArtifact, AttributeTypeId attributeType, Collection<T> values)  {
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.setAttributesFromValues(attributeType, values);
    }
 
    @Override
-   public void setAttributesFromStrings(ArtifactId sourceArtifact, AttributeTypeId attributeType, String... values) throws OseeCoreException {
+   public void setAttributesFromStrings(ArtifactId sourceArtifact, AttributeTypeId attributeType, String... values)  {
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.setAttributesFromStrings(attributeType, values);
    }
 
    @Override
-   public void setAttributesFromStrings(ArtifactId sourceArtifact, AttributeTypeId attributeType, Collection<String> values) throws OseeCoreException {
+   public void setAttributesFromStrings(ArtifactId sourceArtifact, AttributeTypeId attributeType, Collection<String> values)  {
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.setAttributesFromStrings(attributeType, values);
    }
 
    @Override
-   public <T> void setAttributeById(ArtifactId sourceArtifact, AttributeId attrId, T value) throws OseeCoreException {
+   public <T> void setAttributeById(ArtifactId sourceArtifact, AttributeId attrId, T value)  {
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.getAttributeById(attrId).setValue(value);
    }
 
    @Override
-   public void setAttributeById(ArtifactId sourceArtifact, AttributeId attrId, String value) throws OseeCoreException {
+   public void setAttributeById(ArtifactId sourceArtifact, AttributeId attrId, String value)  {
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.getAttributeById(attrId).setFromString(value);
    }
 
    @Override
-   public void setAttributeById(ArtifactId sourceArtifact, AttributeId attrId, InputStream stream) throws OseeCoreException {
+   public void setAttributeById(ArtifactId sourceArtifact, AttributeId attrId, InputStream stream)  {
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.getAttributeById(attrId).setValueFromInputStream(stream);
    }
@@ -243,82 +243,82 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public void deleteByAttributeId(ArtifactId sourceArtifact, AttributeId attrId) throws OseeCoreException {
+   public void deleteByAttributeId(ArtifactId sourceArtifact, AttributeId attrId)  {
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.getAttributeById(attrId).delete();
    }
 
    @Override
-   public void deleteSoleAttribute(ArtifactId sourceArtifact, AttributeTypeId attributeType) throws OseeCoreException {
+   public void deleteSoleAttribute(ArtifactId sourceArtifact, AttributeTypeId attributeType)  {
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.deleteSoleAttribute(attributeType);
    }
 
    @Override
-   public void deleteAttributes(ArtifactId sourceArtifact, AttributeTypeId attributeType) throws OseeCoreException {
+   public void deleteAttributes(ArtifactId sourceArtifact, AttributeTypeId attributeType)  {
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.deleteAttributes(attributeType);
    }
 
    @Override
-   public void deleteAttributesWithValue(ArtifactId sourceArtifact, AttributeTypeId attributeType, Object value) throws OseeCoreException {
+   public void deleteAttributesWithValue(ArtifactId sourceArtifact, AttributeTypeId attributeType, Object value)  {
       Artifact asArtifact = getForWrite(sourceArtifact);
       asArtifact.deleteAttributesWithValue(attributeType, value);
    }
 
    @Override
-   public void addChildren(ArtifactId artA, ArtifactId... children) throws OseeCoreException {
+   public void addChildren(ArtifactId artA, ArtifactId... children)  {
       addChildren(artA, Arrays.asList(children));
    }
 
    @Override
-   public void addChildren(ArtifactId artA, Iterable<? extends ArtifactId> children) throws OseeCoreException {
+   public void addChildren(ArtifactId artA, Iterable<? extends ArtifactId> children)  {
       txManager.addChildren(txData, artA, children);
    }
 
    @Override
-   public void relate(ArtifactId artA, IRelationType relType, ArtifactId artB) throws OseeCoreException {
+   public void relate(ArtifactId artA, IRelationType relType, ArtifactId artB)  {
       txManager.relate(txData, artA, relType, artB);
    }
 
    @Override
-   public void relate(ArtifactId artA, IRelationType relType, ArtifactId artB, String rationale) throws OseeCoreException {
+   public void relate(ArtifactId artA, IRelationType relType, ArtifactId artB, String rationale)  {
       txManager.relate(txData, artA, relType, artB, rationale);
    }
 
    @Override
-   public void relate(ArtifactId artA, IRelationType relType, ArtifactId artB, RelationSorter sortType) throws OseeCoreException {
+   public void relate(ArtifactId artA, IRelationType relType, ArtifactId artB, RelationSorter sortType)  {
       txManager.relate(txData, artA, relType, artB, sortType);
    }
 
    @Override
-   public void relate(ArtifactId artA, IRelationType relType, ArtifactId artB, String rationale, RelationSorter sortType) throws OseeCoreException {
+   public void relate(ArtifactId artA, IRelationType relType, ArtifactId artB, String rationale, RelationSorter sortType)  {
       txManager.relate(txData, artA, relType, artB, rationale, sortType);
    }
 
    @Override
-   public void setRelations(ArtifactId artA, IRelationType relType, Iterable<? extends ArtifactId> artBs) throws OseeCoreException {
+   public void setRelations(ArtifactId artA, IRelationType relType, Iterable<? extends ArtifactId> artBs)  {
       txManager.setRelations(txData, artA, relType, artBs);
    }
 
    @Override
-   public void setRationale(ArtifactId artA, IRelationType relType, ArtifactId artB, String rationale) throws OseeCoreException {
+   public void setRationale(ArtifactId artA, IRelationType relType, ArtifactId artB, String rationale)  {
       txManager.setRationale(txData, artA, relType, artB, rationale);
    }
 
    @Override
-   public void unrelate(ArtifactId artA, IRelationType relType, ArtifactId artB) throws OseeCoreException {
+   public void unrelate(ArtifactId artA, IRelationType relType, ArtifactId artB)  {
       txManager.unrelate(txData, artA, relType, artB);
    }
 
    @Override
-   public void unrelateFromAll(RelationTypeSide typeAndSide, ArtifactId art) throws OseeCoreException {
+   public void unrelateFromAll(RelationTypeSide typeAndSide, ArtifactId art)  {
       IRelationType type = typeAndSide.getRelationType();
       txManager.unrelateFromAll(txData, type, art, typeAndSide.getSide());
    }
 
    @Override
-   public void unrelateFromAll(ArtifactId artA) throws OseeCoreException {
+   public void unrelateFromAll(ArtifactId artA)  {
       txManager.unrelateFromAll(txData, artA);
    }
 
@@ -328,7 +328,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public void deleteArtifact(ArtifactId sourceArtifact) throws OseeCoreException {
+   public void deleteArtifact(ArtifactId sourceArtifact)  {
       txManager.deleteArtifact(txData, sourceArtifact);
    }
 
@@ -338,7 +338,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public TransactionReadable commit() throws OseeCoreException {
+   public TransactionReadable commit()  {
       try {
          CancellableCallable<TransactionReadable> callable = txFactory.createTx(txData);
          return callable.call();
@@ -347,7 +347,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
       }
    }
 
-   private void checkAreOnDifferentBranches(TxData txData, BranchId sourceBranch) throws OseeCoreException {
+   private void checkAreOnDifferentBranches(TxData txData, BranchId sourceBranch)  {
       boolean isOnSameBranch = txData.isOnBranch(sourceBranch);
       Conditions.checkExpressionFailOnTrue(isOnSameBranch, "Source branch is same branch as transaction branch[%s]",
          txData.getBranch());

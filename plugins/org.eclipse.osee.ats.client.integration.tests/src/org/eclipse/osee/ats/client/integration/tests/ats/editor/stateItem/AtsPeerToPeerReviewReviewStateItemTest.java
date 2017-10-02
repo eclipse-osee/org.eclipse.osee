@@ -62,7 +62,7 @@ public class AtsPeerToPeerReviewReviewStateItemTest {
    }
 
    @Test
-   public void testTransitioned() throws OseeCoreException {
+   public void testTransitioned()  {
       Assert.assertNotNull(peerRevArt);
 
       // assignee should be user creating review

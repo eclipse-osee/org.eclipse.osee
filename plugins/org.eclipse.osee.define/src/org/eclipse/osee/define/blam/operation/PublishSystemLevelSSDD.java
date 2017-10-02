@@ -78,7 +78,7 @@ public class PublishSystemLevelSSDD extends AbstractBlam {
    }
 
    @Override
-   public String getXWidgetsXml() throws OseeCoreException {
+   public String getXWidgetsXml()  {
       StringBuilder builder = new StringBuilder();
       builder.append("<xWidgets>");
       builder.append(branchXWidgetXml);
@@ -122,7 +122,7 @@ public class PublishSystemLevelSSDD extends AbstractBlam {
       Program.launch(iFile.getLocation().toOSString());
    }
 
-   private void getSubsystemList() throws OseeCoreException {
+   private void getSubsystemList()  {
       for (Artifact systemRequirement : sysReqs) {
          List<Artifact> relatedArtifacts =
             systemRequirement.getRelatedArtifacts(CoreRelationTypes.Allocation__Component);
@@ -137,7 +137,7 @@ public class PublishSystemLevelSSDD extends AbstractBlam {
       Arrays.sort(allSubsystems);
    }
 
-   private void writeSystemRequirementAllocationToSubsystems() throws IOException, OseeCoreException {
+   private void writeSystemRequirementAllocationToSubsystems() throws IOException {
       excelWriter.startSheet("5.2", 200);
 
       excelWriter.writeCell(CoreAttributeTypes.ParagraphNumber.getName());
@@ -154,7 +154,7 @@ public class PublishSystemLevelSSDD extends AbstractBlam {
       excelWriter.endSheet();
    }
 
-   private void writeSystemRequirementAllocationBySubsystem(Artifact subsystem) throws IOException, OseeCoreException {
+   private void writeSystemRequirementAllocationBySubsystem(Artifact subsystem) throws IOException {
       excelWriter.startSheet(subsystem.getName(), 200);
       excelWriter.writeRow("System Requirements Allocated to the " + subsystem.getName());
       excelWriter.writeRow(CoreAttributeTypes.ParagraphNumber.getName(),
@@ -182,7 +182,7 @@ public class PublishSystemLevelSSDD extends AbstractBlam {
       excelWriter.endSheet();
    }
 
-   private void writeSystemRequirementAllocation(Artifact systemRequirement) throws IOException, OseeCoreException {
+   private void writeSystemRequirementAllocation(Artifact systemRequirement) throws IOException {
       excelWriter.writeCell(systemRequirement.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
       excelWriter.writeCell(systemRequirement.getName());
 

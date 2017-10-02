@@ -53,7 +53,7 @@ public class TupleChange extends Change {
    }
 
    @Override
-   public String getItemTypeName() throws OseeCoreException {
+   public String getItemTypeName()  {
       return itemTypeId.getIdString();
    }
 

@@ -26,13 +26,13 @@ import org.eclipse.osee.orcs.data.AttributeTypes;
  */
 public interface Attribute<T> extends OrcsWriteable, AttributeReadable<T>, HasOrcsData<AttributeData> {
 
-   void setValue(T value) throws OseeCoreException;
+   void setValue(T value) ;
 
-   boolean setFromString(String value) throws OseeCoreException;
+   boolean setFromString(String value) ;
 
-   boolean setValueFromInputStream(InputStream value) throws OseeCoreException;
+   boolean setValueFromInputStream(InputStream value) ;
 
-   void resetToDefaultValue() throws OseeCoreException;
+   void resetToDefaultValue() ;
 
    void clearDirty();
 
@@ -40,9 +40,9 @@ public interface Attribute<T> extends OrcsWriteable, AttributeReadable<T>, HasOr
 
    /////////
 
-   void internalInitialize(AttributeTypes attributeTypeCache, Reference<AttributeContainer> containerReference, AttributeData attributeData, boolean isDirty, boolean setDefaultValue) throws OseeCoreException;
+   void internalInitialize(AttributeTypes attributeTypeCache, Reference<AttributeContainer> containerReference, AttributeData attributeData, boolean isDirty, boolean setDefaultValue) ;
 
-   Identifiable<String> getContainer() throws OseeStateException;
+   Identifiable<String> getContainer() ;
 
    String convertToStorageString(T rawValue);
 

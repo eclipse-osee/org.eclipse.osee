@@ -21,14 +21,12 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.util.result.Manipulations;
 import org.eclipse.osee.framework.core.util.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
-
 
 public class RequirementsTestReport extends AbstractBlam {
    private static final String MISSING = "?";
@@ -51,7 +49,7 @@ public class RequirementsTestReport extends AbstractBlam {
       report();
    }
 
-   private void processArtifacts(Artifact node) throws OseeCoreException, IOException {
+   private void processArtifacts(Artifact node) throws IOException {
       Collection<Artifact> children = node.getChildren();
 
       if (isRequirement(node)) {
@@ -64,7 +62,7 @@ public class RequirementsTestReport extends AbstractBlam {
       }
    }
 
-   private void processRequirement(Artifact req) throws OseeCoreException {
+   private void processRequirement(Artifact req) {
       Collection<Artifact> testProcs = req.getRelatedArtifacts(CoreRelationTypes.Verification__Verifier);
       if (testProcs.isEmpty()) {
          reportLine(getReqCellOutput(req), MISSING, MISSING, MISSING);
@@ -75,7 +73,7 @@ public class RequirementsTestReport extends AbstractBlam {
       }
    }
 
-   private void processTestProcedure(Artifact req, Artifact testProc) throws OseeCoreException {
+   private void processTestProcedure(Artifact req, Artifact testProc) {
       String testStatus;
       if (testProc.isAttributeTypeValid(CoreAttributeTypes.TestProcedureStatus)) {
          testStatus = testProc.getSoleAttributeValue(CoreAttributeTypes.TestProcedureStatus, MISSING);
@@ -93,7 +91,7 @@ public class RequirementsTestReport extends AbstractBlam {
       }
    }
 
-   private String getReqCellOutput(Artifact req) throws OseeCoreException {
+   private String getReqCellOutput(Artifact req) {
       String paragraphNumber = req.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
       String reqName = req.getName();
       String returnValue = paragraphNumber + SPACE + reqName;
@@ -133,7 +131,7 @@ public class RequirementsTestReport extends AbstractBlam {
       XResultDataUI.report(rd, "Requirements Test Report", Manipulations.RAW_HTML);
    }
 
-   private void init(VariableMap variableMap) throws OseeCoreException {
+   private void init(VariableMap variableMap) {
       inputArtifacts = variableMap.getArtifacts("artifacts");
       initReport();
       load();
@@ -144,7 +142,7 @@ public class RequirementsTestReport extends AbstractBlam {
       report.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
    }
 
-   private void load() throws OseeCoreException {
+   private void load() {
       requirementsBulkLoad = new ArrayList<>();
       for (Artifact input : inputArtifacts) {
          requirementsBulkLoad.addAll(input.getDescendants());

@@ -24,7 +24,7 @@ public interface Match<T, K> {
 
    public T getItem();
 
-   public Collection<K> getElements() throws OseeCoreException;
+   public Collection<K> getElements() ;
 
-   public List<MatchLocation> getLocation(K element) throws OseeCoreException;
+   public List<MatchLocation> getLocation(K element) ;
 }

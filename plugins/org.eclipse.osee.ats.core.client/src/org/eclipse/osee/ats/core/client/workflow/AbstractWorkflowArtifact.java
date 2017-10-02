@@ -91,7 +91,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       super(id, guid, branch, artifactType);
    }
 
-   public void initializeNewStateMachine(List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException {
+   public void initializeNewStateMachine(List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes)  {
       Conditions.checkNotNull(createdDate, "createdDate");
       Conditions.checkNotNull(createdBy, "createdBy");
       Conditions.checkNotNull(changes, "changes");
@@ -103,7 +103,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       TransitionManager.logStateStartedEvent(this, startState, createdDate, user);
    }
 
-   public boolean isTargetedVersionable() throws OseeCoreException {
+   public boolean isTargetedVersionable()  {
       if (!isTeamWorkflow()) {
          return false;
       }
@@ -115,24 +115,24 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    @Override
-   public List<IAtsUser> getImplementers() throws OseeCoreException {
+   public List<IAtsUser> getImplementers()  {
       return AtsClientService.get().getImplementerService().getImplementers(this);
    }
 
-   public double getWorldViewWeeklyBenefit() throws OseeCoreException {
+   public double getWorldViewWeeklyBenefit()  {
       return 0;
    }
 
-   public AbstractWorkflowArtifact getParentAWA() throws OseeCoreException {
+   public AbstractWorkflowArtifact getParentAWA()  {
       return parentAwa;
    }
 
-   public ActionArtifact getParentActionArtifact() throws OseeCoreException {
+   public ActionArtifact getParentActionArtifact()  {
       return parentAction;
    }
 
    @Override
-   public TeamWorkFlowArtifact getParentTeamWorkflow() throws OseeCoreException {
+   public TeamWorkFlowArtifact getParentTeamWorkflow()  {
       return parentTeamArt;
    }
 
@@ -145,7 +145,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return null;
    }
 
-   public String getEditorTitle() throws OseeCoreException {
+   public String getEditorTitle()  {
       return getType() + ": " + getName();
    }
 
@@ -158,14 +158,14 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       atsLog = null;
    }
 
-   public void atsDelete(Set<Artifact> deleteArts, Map<Artifact, Object> allRelated) throws OseeCoreException {
+   public void atsDelete(Set<Artifact> deleteArts, Map<Artifact, Object> allRelated)  {
       deleteArts.add(this);
       for (Artifact relative : getBSideArtifacts()) {
          allRelated.put(relative, this);
       }
    }
 
-   private List<Artifact> getBSideArtifacts() throws OseeCoreException {
+   private List<Artifact> getBSideArtifacts()  {
       List<Artifact> sideBArtifacts = new ArrayList<>();
       List<RelationLink> relatives = getRelationsAll(DeletionFlag.EXCLUDE_DELETED);
       for (RelationLink link : relatives) {
@@ -192,14 +192,14 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    public String implementersStr = null;
 
-   public double getEstimatedHoursFromArtifact() throws OseeCoreException {
+   public double getEstimatedHoursFromArtifact()  {
       if (isAttributeTypeValid(AtsAttributeTypes.EstimatedHours)) {
          return getSoleAttributeValue(AtsAttributeTypes.EstimatedHours, 0.0);
       }
       return 0;
    }
 
-   public double getEstimatedHoursFromTasks(IStateToken relatedToState) throws OseeCoreException {
+   public double getEstimatedHoursFromTasks(IStateToken relatedToState)  {
       if (!(this instanceof TeamWorkFlowArtifact)) {
          return 0;
       }
@@ -209,7 +209,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    /**
     * Return Estimated Hours for all tasks
     */
-   public double getEstimatedHoursFromTasks() throws OseeCoreException {
+   public double getEstimatedHoursFromTasks()  {
       if (!(this instanceof TeamWorkFlowArtifact)) {
          return 0;
       }
@@ -220,30 +220,30 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return hours;
    }
 
-   public double getEstimatedHoursFromReviews() throws OseeCoreException {
+   public double getEstimatedHoursFromReviews()  {
       if (isTeamWorkflow()) {
          return ReviewManager.getEstimatedHours((TeamWorkFlowArtifact) this);
       }
       return 0;
    }
 
-   public double getEstimatedHoursFromReviews(IStateToken relatedToState) throws OseeCoreException {
+   public double getEstimatedHoursFromReviews(IStateToken relatedToState)  {
       if (isTeamWorkflow()) {
          return ReviewManager.getEstimatedHours((TeamWorkFlowArtifact) this, relatedToState);
       }
       return 0;
    }
 
-   public double getEstimatedHoursTotal(IStateToken relatedToState) throws OseeCoreException {
+   public double getEstimatedHoursTotal(IStateToken relatedToState)  {
       return getEstimatedHoursFromArtifact() + getEstimatedHoursFromTasks(
          relatedToState) + getEstimatedHoursFromReviews(relatedToState);
    }
 
-   public double getEstimatedHoursTotal() throws OseeCoreException {
+   public double getEstimatedHoursTotal()  {
       return getEstimatedHoursFromArtifact() + getEstimatedHoursFromTasks() + getEstimatedHoursFromReviews();
    }
 
-   public double getRemainHoursFromArtifact() throws OseeCoreException {
+   public double getRemainHoursFromArtifact()  {
       if (isCompleted() || isCancelled()) {
          return 0;
       }
@@ -255,14 +255,14 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
          AtsClientService.get().getServices()) / 100.0;
    }
 
-   public double getRemainHoursTotal() throws OseeCoreException {
+   public double getRemainHoursTotal()  {
       return getRemainHoursFromArtifact() + getRemainFromTasks() + getRemainFromReviews();
    }
 
    /**
     * Return Remain Hours for all tasks
     */
-   public double getRemainFromTasks() throws OseeCoreException {
+   public double getRemainFromTasks()  {
       if (!(this instanceof TeamWorkFlowArtifact)) {
          return 0;
       }
@@ -273,14 +273,14 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return hours;
    }
 
-   public double getRemainFromReviews() throws OseeCoreException {
+   public double getRemainFromReviews()  {
       if (isTeamWorkflow()) {
          return ReviewManager.getRemainHours((TeamWorkFlowArtifact) this);
       }
       return 0;
    }
 
-   public double getManHrsPerDayPreference() throws OseeCoreException {
+   public double getManHrsPerDayPreference()  {
       return AtsUtilCore.DEFAULT_HOURS_PER_WORK_DAY;
    }
 
@@ -357,7 +357,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       }
    }
 
-   public void getSmaArtifactsOneLevel(AbstractWorkflowArtifact smaArtifact, Set<Artifact> artifacts) throws OseeCoreException {
+   public void getSmaArtifactsOneLevel(AbstractWorkflowArtifact smaArtifact, Set<Artifact> artifacts)  {
       artifacts.add(smaArtifact);
    }
 
@@ -365,30 +365,30 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
     * Called at the end of a transition just before transaction manager persist. SMAs can override to perform tasks due
     * to transition.
     */
-   public void transitioned(IAtsStateDefinition fromState, IAtsStateDefinition toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes) throws OseeCoreException {
+   public void transitioned(IAtsStateDefinition fromState, IAtsStateDefinition toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes)  {
       // provided for subclass implementation
    }
 
    @Override
-   public Artifact getParentAtsArtifact() throws OseeCoreException {
+   public Artifact getParentAtsArtifact()  {
       return getParentAWA();
    }
 
    /**
     * Return Percent Complete ONLY on tasks related to stateName. Total Percent / # Tasks
     */
-   public int getPercentCompleteSMAStateTasks(IStateToken state) throws OseeCoreException {
+   public int getPercentCompleteSMAStateTasks(IStateToken state)  {
       if (!(this instanceof TeamWorkFlowArtifact)) {
          return 0;
       }
       return ((TeamWorkFlowArtifact) this).getPercentCompleteFromTasks(state);
    }
 
-   public String getWorldViewLastUpdated() throws OseeCoreException {
+   public String getWorldViewLastUpdated()  {
       return DateUtil.getMMDDYYHHMM(getLastModified());
    }
 
-   public String getWorldViewSWEnhancement() throws OseeCoreException {
+   public String getWorldViewSWEnhancement()  {
       return "";
    }
 
@@ -441,14 +441,14 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return getStateDefinition().getToStates();
    }
 
-   public boolean isAccessControlWrite() throws OseeCoreException {
+   public boolean isAccessControlWrite()  {
       return AccessControlManager.hasPermission(this, PermissionEnum.WRITE);
    }
 
    /**
     * Return true if awa is TeamWorkflowArtifact or review of a team workflow and it's IAtsTeamDefinition has rule set
     */
-   public boolean teamDefHasRule(RuleDefinitionOption option) throws OseeCoreException {
+   public boolean teamDefHasRule(RuleDefinitionOption option)  {
       TeamWorkFlowArtifact teamArt = null;
       if (isTeamWorkflow()) {
          teamArt = (TeamWorkFlowArtifact) this;
@@ -468,7 +468,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    }
 
-   public void setCreatedBy(IAtsUser user, boolean logChange, Date date, IAtsChangeSet changes) throws OseeCoreException {
+   public void setCreatedBy(IAtsUser user, boolean logChange, Date date, IAtsChangeSet changes)  {
       if (logChange) {
          logCreatedByChange(user);
       }
@@ -496,7 +496,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    }
 
-   private void logCreatedByChange(IAtsUser user) throws OseeCoreException {
+   private void logCreatedByChange(IAtsUser user)  {
       if (getSoleAttributeValue(AtsAttributeTypes.CreatedBy, null) == null) {
          getLog().addLog(LogType.Originated, "", "", new Date(), user.getUserId());
       } else {
@@ -506,13 +506,13 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       }
    }
 
-   public void internalSetCreatedBy(IAtsUser user, IAtsChangeSet changes) throws OseeCoreException {
+   public void internalSetCreatedBy(IAtsUser user, IAtsChangeSet changes)  {
       if (changes.isAttributeTypeValid(this, AtsAttributeTypes.CreatedBy)) {
          changes.setSoleAttributeValue((IAtsWorkItem) this, AtsAttributeTypes.CreatedBy, user.getUserId());
       }
    }
 
-   public void internalSetCreatedDate(Date date, IAtsChangeSet changes) throws OseeCoreException {
+   public void internalSetCreatedDate(Date date, IAtsChangeSet changes)  {
       getLog().internalResetCreatedDate(date);
       if (changes.isAttributeTypeValid(this, AtsAttributeTypes.CreatedDate)) {
          changes.setSoleAttributeValue((ArtifactId) this, AtsAttributeTypes.CreatedDate, date);
@@ -520,17 +520,17 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    @Override
-   public Date getCreatedDate() throws OseeCoreException {
+   public Date getCreatedDate()  {
       return getSoleAttributeValue(AtsAttributeTypes.CreatedDate, null);
    }
 
    @Override
-   public Date getCancelledDate() throws OseeCoreException {
+   public Date getCancelledDate()  {
       return getSoleAttributeValue(AtsAttributeTypes.CancelledDate, null);
    }
 
    @Override
-   public IAtsUser getCreatedBy() throws OseeCoreException {
+   public IAtsUser getCreatedBy()  {
       String userId = getSoleAttributeValue(AtsAttributeTypes.CreatedBy, null);
       if (Strings.isValid(userId)) {
          return AtsClientService.get().getUserService().getUserById(userId);
@@ -538,12 +538,12 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return null;
    }
 
-   public Date internalGetCancelledDate() throws OseeCoreException {
+   public Date internalGetCancelledDate()  {
       return getSoleAttributeValue(AtsAttributeTypes.CancelledDate, null);
    }
 
    @Override
-   public IAtsUser getCancelledBy() throws OseeCoreException {
+   public IAtsUser getCancelledBy()  {
       String userId = getSoleAttributeValue(AtsAttributeTypes.CancelledBy, null);
       if (Strings.isValid(userId)) {
          return AtsClientService.get().getUserService().getUserById(userId);
@@ -552,7 +552,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    @Override
-   public String getCancelledReason() throws OseeCoreException {
+   public String getCancelledReason()  {
       String reason = getSoleAttributeValue(AtsAttributeTypes.CancelledReason, null);
       if (!Strings.isValid(reason)) {
          reason = getLog().internalGetCancelledReason();
@@ -560,7 +560,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return reason;
    }
 
-   public void setCancellationReason(String reason, IAtsChangeSet changes) throws OseeCoreException {
+   public void setCancellationReason(String reason, IAtsChangeSet changes)  {
       if (changes == null) {
          setSoleAttributeValue(AtsAttributeTypes.CancelledReason, reason);
       } else {
@@ -569,17 +569,17 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    @Override
-   public String getCancelledFromState() throws OseeCoreException {
+   public String getCancelledFromState()  {
       return getSoleAttributeValue(AtsAttributeTypes.CancelledFromState, null);
    }
 
    @Override
-   public Date getCompletedDate() throws OseeCoreException {
+   public Date getCompletedDate()  {
       return getSoleAttributeValue(AtsAttributeTypes.CompletedDate, null);
    }
 
    @Override
-   public IAtsUser getCompletedBy() throws OseeCoreException {
+   public IAtsUser getCompletedBy()  {
       String userId = getSoleAttributeValue(AtsAttributeTypes.CompletedBy, null);
       if (Strings.isValid(userId)) {
          return AtsClientService.get().getUserService().getUserById(userId);
@@ -587,24 +587,24 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return null;
    }
 
-   public IAtsLogItem getStateCompletedData(IStateToken state) throws OseeCoreException {
+   public IAtsLogItem getStateCompletedData(IStateToken state)  {
       return getStateCompletedData(state.getName());
    }
 
-   public IAtsLogItem getStateCompletedData(String stateName) throws OseeCoreException {
+   public IAtsLogItem getStateCompletedData(String stateName)  {
       return getLog().getStateEvent(LogType.StateComplete, stateName);
    }
 
-   public IAtsLogItem getStateCancelledData(IStateToken state) throws OseeCoreException {
+   public IAtsLogItem getStateCancelledData(IStateToken state)  {
       return getStateCancelledData(state.getName());
    }
 
-   public IAtsLogItem getStateCancelledData(String stateName) throws OseeCoreException {
+   public IAtsLogItem getStateCancelledData(String stateName)  {
       return getLog().getStateEvent(LogType.StateCancelled, stateName);
    }
 
    @Override
-   public String getCompletedFromState() throws OseeCoreException {
+   public String getCompletedFromState()  {
       String fromState = getSoleAttributeValue(AtsAttributeTypes.CompletedFromState, null);
       if (!Strings.isValid(fromState)) {
          return getLog().internalGetCompletedFromState();
@@ -632,7 +632,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return isCompleted() || isCancelled();
    }
 
-   public void setTransitionAssignees(Collection<IAtsUser> assignees) throws OseeCoreException {
+   public void setTransitionAssignees(Collection<IAtsUser> assignees)  {
       if (assignees.contains(AtsCoreUsers.SYSTEM_USER) || assignees.contains(AtsCoreUsers.ANONYMOUS_USER)) {
          throw new OseeArgumentException("Can not assign workflow to OseeSystem or Guest");
       }
@@ -642,7 +642,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       transitionAssignees = assignees;
    }
 
-   public boolean isAssigneeMe() throws OseeCoreException {
+   public boolean isAssigneeMe()  {
       return getStateMgr().getAssignees().contains(AtsClientService.get().getUserService().getCurrentUser());
    }
 
@@ -650,7 +650,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
     * getTransitionAssignees() is a method that is ONLY to be used in the WETransitionComposition class. Eventually this
     * method needs to be incorporated into WETransitionComposition.
     */
-   public Collection<? extends IAtsUser> getTransitionAssignees() throws OseeCoreException {
+   public Collection<? extends IAtsUser> getTransitionAssignees()  {
       if (transitionAssignees != null) {
          if (!transitionAssignees.isEmpty() && transitionAssignees.contains(AtsCoreUsers.UNASSIGNED_USER)) {
             transitionAssignees.remove(AtsCoreUsers.UNASSIGNED_USER);
@@ -662,7 +662,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return getStateMgr().getAssignees();
    }
 
-   public String getTransitionAssigneesStr() throws OseeCoreException {
+   public String getTransitionAssigneesStr()  {
       return AtsObjects.toString(";", getTransitionAssignees());
    }
 
@@ -701,7 +701,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return this instanceof IAtsGoal;
    }
 
-   protected void addPrivilegedUsersUpTeamDefinitionTree(IAtsTeamDefinition tda, Set<IAtsUser> users) throws OseeCoreException {
+   protected void addPrivilegedUsersUpTeamDefinitionTree(IAtsTeamDefinition tda, Set<IAtsUser> users)  {
       users.addAll(tda.getLeads());
       users.addAll(tda.getPrivilegedMembers());
 
@@ -716,7 +716,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return OsgiUtil.getService(getClass(), CmAccessControl.class);
    }
 
-   public List<IAtsStateDefinition> getToStatesWithCompleteCancelReturnStates() throws OseeCoreException {
+   public List<IAtsStateDefinition> getToStatesWithCompleteCancelReturnStates()  {
       List<IAtsStateDefinition> allPages = new ArrayList<>();
       IAtsStateDefinition currState = getStateDefinition();
       allPages.addAll(currState.getToStates());
@@ -740,7 +740,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    @Override
-   public List<IAtsUser> getAssignees() throws OseeCoreException {
+   public List<IAtsUser> getAssignees()  {
       return getStateMgr().getAssignees();
    }
 
@@ -761,7 +761,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
     * @param relatedToState state name of parent workflow's state
     * @return Returns the Estimated Hours
     */
-   public double getEstimatedHoursFromTasks(TeamWorkFlowArtifact teamWf, IStateToken relatedToState) throws OseeCoreException {
+   public double getEstimatedHoursFromTasks(TeamWorkFlowArtifact teamWf, IStateToken relatedToState)  {
       double hours = 0;
       for (TaskArtifact taskArt : teamWf.getTaskArtifacts(relatedToState)) {
          hours += taskArt.getEstimatedHoursTotal();
@@ -775,7 +775,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
     * @param relatedToState state name of parent workflow's state
     * @return Returns the Percent Complete.
     */
-   public int getPercentCompleteFromTasks(IStateToken relatedToState) throws OseeCoreException {
+   public int getPercentCompleteFromTasks(IStateToken relatedToState)  {
       int spent = 0, result = 0;
       if (this instanceof TeamWorkFlowArtifact) {
          Collection<TaskArtifact> taskArts = ((TeamWorkFlowArtifact) this).getTaskArtifacts(relatedToState);

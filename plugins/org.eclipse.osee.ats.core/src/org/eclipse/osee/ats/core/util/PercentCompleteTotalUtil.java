@@ -33,7 +33,7 @@ public class PercentCompleteTotalUtil {
     * <br>
     * percent = all state's percents / number of states (minus completed/canceled)
     */
-   public static int getPercentCompleteTotal(IAtsObject atsObject, IAtsServices services) throws OseeCoreException {
+   public static int getPercentCompleteTotal(IAtsObject atsObject, IAtsServices services)  {
       int percent = 0;
       if (atsObject instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
@@ -77,7 +77,7 @@ public class PercentCompleteTotalUtil {
       return percent;
    }
 
-   private static boolean isAnyStateHavePercentEntered(IAtsWorkItem workItem) throws OseeCoreException {
+   private static boolean isAnyStateHavePercentEntered(IAtsWorkItem workItem)  {
       for (String stateName : workItem.getStateMgr().getVisitedStateNames()) {
          if (workItem.getStateMgr().getPercentComplete(stateName) != 0) {
             return true;
@@ -89,7 +89,7 @@ public class PercentCompleteTotalUtil {
    /**
     * Add percent represented by percent attribute, percent for reviews and tasks divided by number of objects.
     */
-   private static int getPercentCompleteSMASinglePercent(IAtsObject atsObject, IAtsServices services) throws OseeCoreException {
+   private static int getPercentCompleteSMASinglePercent(IAtsObject atsObject, IAtsServices services)  {
       int percent = 0;
       if (atsObject instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
@@ -123,11 +123,11 @@ public class PercentCompleteTotalUtil {
     *
     * @param services JavaTip
     */
-   public static int getPercentCompleteSMAStateTotal(IAtsObject atsObject, IStateToken state, IAtsServices services) throws OseeCoreException {
+   public static int getPercentCompleteSMAStateTotal(IAtsObject atsObject, IStateToken state, IAtsServices services)  {
       return getStateMetricsData(atsObject, state, services).getResultingPercent();
    }
 
-   private static StateMetricsData getStateMetricsData(IAtsObject atsObject, IStateToken teamState, IAtsServices services) throws OseeCoreException {
+   private static StateMetricsData getStateMetricsData(IAtsObject atsObject, IStateToken teamState, IAtsServices services)  {
       if (!(atsObject instanceof IAtsWorkItem)) {
          return null;
       }
@@ -179,7 +179,7 @@ public class PercentCompleteTotalUtil {
    /**
     * Return Percent Complete working ONLY the current state (not children SMAs)
     */
-   public static int getPercentCompleteSMAState(IAtsObject atsObject, IAtsServices services) throws OseeCoreException {
+   public static int getPercentCompleteSMAState(IAtsObject atsObject, IAtsServices services)  {
       int percent = 0;
       if (atsObject instanceof IAtsAction) {
          IAtsAction action = (IAtsAction) atsObject;
@@ -208,7 +208,7 @@ public class PercentCompleteTotalUtil {
    /**
     * Return Percent Complete working ONLY the SMA stateName (not children SMAs)
     */
-   public static int getPercentCompleteSMAState(IAtsObject atsObject, IStateToken state) throws OseeCoreException {
+   public static int getPercentCompleteSMAState(IAtsObject atsObject, IStateToken state)  {
       if (atsObject instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
          return workItem.getStateMgr().getPercentComplete(state.getName());

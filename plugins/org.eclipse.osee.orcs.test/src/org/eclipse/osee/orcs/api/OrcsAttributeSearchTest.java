@@ -55,7 +55,7 @@ public class OrcsAttributeSearchTest {
    }
 
    @Test
-   public void testNameAttributeEqualSearch() throws OseeCoreException {
+   public void testNameAttributeEqualSearch()  {
       QueryBuilder builder = queryFactory.fromBranch(COMMON).and(CoreAttributeTypes.Name, "User Groups");
 
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
@@ -70,7 +70,7 @@ public class OrcsAttributeSearchTest {
    }
 
    @Test
-   public void testWTCAttributeEqualSearch() throws OseeCoreException {
+   public void testWTCAttributeEqualSearch()  {
       QueryBuilder builder = queryFactory.fromBranch(SAW_Bld_1).and(CoreAttributeTypes.WordTemplateContent, "commands",
          QueryOption.TOKEN_DELIMITER__ANY, QueryOption.TOKEN_MATCH_ORDER__MATCH, QueryOption.CASE__IGNORE,
          QueryOption.TOKEN_COUNT__IGNORE);
@@ -84,7 +84,7 @@ public class OrcsAttributeSearchTest {
    }
 
    @Test
-   public void testBooleanAttributeSearch() throws OseeCoreException {
+   public void testBooleanAttributeSearch()  {
       QueryBuilder builder = queryFactory.fromBranch(COMMON).and(CoreAttributeTypes.DefaultGroup, "true");
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
 

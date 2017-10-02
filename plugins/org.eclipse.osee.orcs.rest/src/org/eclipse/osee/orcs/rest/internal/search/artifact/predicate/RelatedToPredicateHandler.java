@@ -30,7 +30,7 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 public class RelatedToPredicateHandler implements PredicateHandler {
 
    @Override
-   public QueryBuilder handle(QueryBuilder builder, Predicate predicate) throws OseeCoreException {
+   public QueryBuilder handle(QueryBuilder builder, Predicate predicate)  {
       if (predicate.getType() != SearchMethod.RELATED_TO) {
          throw new OseeArgumentException("This predicate handler only supports [%s]", SearchMethod.EXISTS_TYPE);
       }

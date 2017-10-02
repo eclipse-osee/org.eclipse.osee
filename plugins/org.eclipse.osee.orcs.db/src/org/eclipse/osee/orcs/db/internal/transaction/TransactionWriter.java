@@ -129,7 +129,7 @@ public class TransactionWriter {
       }
    }
 
-   public void write(JdbcConnection connection, TransactionReadable tx, OrcsChangeSet txData) throws OseeCoreException {
+   public void write(JdbcConnection connection, TransactionReadable tx, OrcsChangeSet txData)  {
       sqlBuilder.accept(tx, txData);
       try {
          binaryStores = sqlBuilder.getBinaryStores();
@@ -157,7 +157,7 @@ public class TransactionWriter {
       }
    }
 
-   private void fetchTxNotCurrent(JdbcConnection connection, BranchId branch, List<Object[]> results, String query, AbstractJoinQuery join) throws OseeCoreException {
+   private void fetchTxNotCurrent(JdbcConnection connection, BranchId branch, List<Object[]> results, String query, AbstractJoinQuery join)  {
       try {
          join.store();
          JdbcStatement chStmt = jdbcClient.getStatement(connection);

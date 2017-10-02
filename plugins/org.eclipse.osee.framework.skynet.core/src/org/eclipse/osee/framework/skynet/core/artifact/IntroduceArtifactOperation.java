@@ -41,7 +41,7 @@ public class IntroduceArtifactOperation {
    private Collection<Artifact> sourceArtifacts;
    private List<Artifact> destinationArtifacts;
 
-   public IntroduceArtifactOperation(BranchId destinationBranch) throws OseeCoreException {
+   public IntroduceArtifactOperation(BranchId destinationBranch)  {
       this(OseeSystemArtifacts.getDefaultHierarchyRootArtifact(destinationBranch));
    }
 
@@ -52,14 +52,14 @@ public class IntroduceArtifactOperation {
 
    /**
     * @return the introduced artifact on the destination branch
-    * @throws OseeCoreException
+    * 
     */
-   public Artifact introduce(Artifact sourceArtifact) throws OseeCoreException {
+   public Artifact introduce(Artifact sourceArtifact)  {
       introduce(Arrays.asList(sourceArtifact));
       return destinationArtifacts.get(0);
    }
 
-   public List<Artifact> introduce(Collection<Artifact> sourceArtifacts) throws OseeCoreException {
+   public List<Artifact> introduce(Collection<Artifact> sourceArtifacts)  {
       this.sourceArtifacts = sourceArtifacts;
       destinationArtifacts = new ArrayList<>(sourceArtifacts.size());
 
@@ -69,7 +69,7 @@ public class IntroduceArtifactOperation {
       return destinationArtifacts;
    }
 
-   private void introduceArtifact(Artifact sourceArtifact) throws OseeCoreException {
+   private void introduceArtifact(Artifact sourceArtifact)  {
       Artifact destinationArtifact =
          ArtifactQuery.getArtifactOrNull(sourceArtifact, destinationBranch, DeletionFlag.INCLUDE_DELETED);
 
@@ -84,7 +84,7 @@ public class IntroduceArtifactOperation {
       destinationArtifacts.add(destinationArtifact);
    }
 
-   private void processArtifact(Artifact sourceArtifact, Artifact destinationArtifact) throws OseeCoreException {
+   private void processArtifact(Artifact sourceArtifact, Artifact destinationArtifact)  {
       introduceAttributes(sourceArtifact, destinationArtifact);
 
       if (!sourceArtifact.isHistorical()) {
@@ -103,7 +103,7 @@ public class IntroduceArtifactOperation {
       }
    }
 
-   private void introduceAttributes(Artifact sourceArtifact, Artifact destinationArtifact) throws OseeDataStoreException, OseeCoreException {
+   private void introduceAttributes(Artifact sourceArtifact, Artifact destinationArtifact) throws OseeDataStoreException {
       List<Attribute<?>> sourceAttributes = sourceArtifact.getAttributes(true);
 
       removeNewAttributesFromDestination(sourceArtifact, destinationArtifact);
@@ -117,7 +117,7 @@ public class IntroduceArtifactOperation {
       }
    }
 
-   private void introduceAttribute(Attribute<?> sourceAttribute, Artifact destinationArtifact) throws OseeDataStoreException, OseeCoreException {
+   private void introduceAttribute(Attribute<?> sourceAttribute, Artifact destinationArtifact) throws OseeDataStoreException {
       if (sourceAttribute.isDirty()) {
          throw new OseeArgumentException("The un-persisted attribute [%s] can not be introduced until it is persisted.",
             sourceAttribute);
@@ -137,7 +137,7 @@ public class IntroduceArtifactOperation {
       }
    }
 
-   private void introduceRelations(Artifact sourceArtifact, Artifact destinationArtifact) throws OseeCoreException {
+   private void introduceRelations(Artifact sourceArtifact, Artifact destinationArtifact)  {
       List<RelationLink> sourceRelations = sourceArtifact.getRelationsAll(DeletionFlag.INCLUDE_DELETED);
 
       for (RelationLink sourceRelation : sourceRelations) {
@@ -148,7 +148,7 @@ public class IntroduceArtifactOperation {
       }
    }
 
-   private void introduceRelation(RelationLink sourceRelation, Artifact destinationArtifact) throws OseeDataStoreException, OseeCoreException {
+   private void introduceRelation(RelationLink sourceRelation, Artifact destinationArtifact) throws OseeDataStoreException {
       if (sourceRelation.isDirty()) {
          throw new OseeArgumentException("The un-persisted relation [%s] can not be introduced until it is persisted.",
             sourceRelation);
@@ -174,7 +174,7 @@ public class IntroduceArtifactOperation {
       }
    }
 
-   private void removeNewAttributesFromDestination(Artifact sourceArtifact, Artifact destinationArtifact) throws OseeCoreException {
+   private void removeNewAttributesFromDestination(Artifact sourceArtifact, Artifact destinationArtifact)  {
       List<Attribute<?>> destAttributes = destinationArtifact.getAttributes(true);
 
       // since introduce is 'replacing' the destination artifact with the source artifact,

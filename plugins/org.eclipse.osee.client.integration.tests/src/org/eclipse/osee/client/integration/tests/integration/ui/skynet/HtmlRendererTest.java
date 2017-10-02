@@ -76,7 +76,7 @@ public class HtmlRendererTest {
    }
 
    @Before
-   public void setUp() throws OseeCoreException {
+   public void setUp()  {
       Artifact Folder;
       Artifact htmlArtifact;
       renderer = new HTMLRenderer(new HashMap<RendererOption, Object>());

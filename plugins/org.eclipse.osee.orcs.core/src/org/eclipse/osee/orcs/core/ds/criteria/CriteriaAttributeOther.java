@@ -58,7 +58,7 @@ public class CriteriaAttributeOther extends Criteria {
    }
 
    @Override
-   public void checkValid(Options options) throws OseeCoreException {
+   public void checkValid(Options options)  {
       Conditions.checkNotNullOrEmptyOrContainNull(getAttributeTypes(), "attributeType");
       Conditions.checkExpressionFailOnTrue(getAttributeTypes().equals(ArtifactQueryBuilder.ANY_ATTRIBUTE_TYPE),
          "Any attribute type is not allowed");

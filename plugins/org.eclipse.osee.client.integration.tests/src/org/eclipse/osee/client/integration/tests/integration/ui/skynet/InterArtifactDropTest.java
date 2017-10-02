@@ -81,7 +81,7 @@ public class InterArtifactDropTest {
    }
 
    @AfterClass
-   public static void tearDown() throws OseeCoreException {
+   public static void tearDown()  {
       if (wasInitialized) {
          purgeBranches();
       }
@@ -223,7 +223,7 @@ public class InterArtifactDropTest {
       assertTrue(testArtifact.getModType() == destArtifact.getModType());
    }
 
-   private void addArtifactsToBranches() throws OseeCoreException {
+   private void addArtifactsToBranches()  {
       BranchManager.createWorkingBranch(CoreBranches.SYSTEM_ROOT, sourceBranch);
       BranchManager.createWorkingBranch(CoreBranches.SYSTEM_ROOT, destinationBranch);
 
@@ -268,7 +268,7 @@ public class InterArtifactDropTest {
       updateTestBranch3 = createBranchToken("updateTestBranch");
    }
 
-   private static void purgeBranches() throws OseeCoreException {
+   private static void purgeBranches()  {
       BranchManager.purgeBranch(destinationBranch);
       BranchManager.purgeBranch(updateTestBranch1);
       BranchManager.purgeBranch(updateTestBranch2);

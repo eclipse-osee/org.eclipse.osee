@@ -33,7 +33,7 @@ public class OpenVersionArtifactAction extends AbstractAtsAction {
    }
 
    @Override
-   public void runWithException() throws OseeCoreException {
+   public void runWithException()  {
       if (AtsClientService.get().getVersionService().hasTargetedVersion(sma)) {
          RendererManager.open(AtsClientService.get().getConfigArtifact(
             AtsClientService.get().getVersionService().getTargetedVersion(sma)), PresentationType.DEFAULT_OPEN);

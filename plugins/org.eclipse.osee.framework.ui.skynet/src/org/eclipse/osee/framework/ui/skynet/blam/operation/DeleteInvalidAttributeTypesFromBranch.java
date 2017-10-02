@@ -46,7 +46,7 @@ public class DeleteInvalidAttributeTypesFromBranch extends AbstractBlam {
    }
 
    @Override
-   public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException {
+   public void runOperation(VariableMap variableMap, IProgressMonitor monitor)  {
       BranchId branch = variableMap.getBranch("Branch");
       List<AttributeType> attributeTypes = variableMap.getAttributeTypes("Attribute Type");
       String input = variableMap.getString(ARTIFACT_IDS_WIDGET_NAME);
@@ -64,7 +64,7 @@ public class DeleteInvalidAttributeTypesFromBranch extends AbstractBlam {
 
    }
 
-   private void deleteInvalidAttributeType(List<Artifact> artifacts, AttributeType attrType, SkynetTransaction transaction) throws OseeCoreException {
+   private void deleteInvalidAttributeType(List<Artifact> artifacts, AttributeType attrType, SkynetTransaction transaction)  {
       for (Artifact art : artifacts) {
          if (!art.isAttributeTypeValid(attrType)) {
             delete(art, attrType);
@@ -75,7 +75,7 @@ public class DeleteInvalidAttributeTypesFromBranch extends AbstractBlam {
       }
    }
 
-   private void delete(Artifact art, AttributeType attrType) throws OseeCoreException {
+   private void delete(Artifact art, AttributeType attrType)  {
       List<Attribute<?>> attrs = art.getAttributes();
       for (Attribute<?> attr : attrs) {
          if (attr.isOfType(attrType)) {
@@ -86,7 +86,7 @@ public class DeleteInvalidAttributeTypesFromBranch extends AbstractBlam {
    }
 
    @Override
-   public String getXWidgetsXml() throws OseeCoreException {
+   public String getXWidgetsXml()  {
       return getXWidgetsXmlFromUiFile(getClass().getSimpleName(), Activator.PLUGIN_ID);
    }
 

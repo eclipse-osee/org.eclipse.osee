@@ -35,7 +35,7 @@ public final class ServiceBinderFactoryImpl implements ServiceBinderFactory {
    }
 
    @Override
-   public ServiceTracker<?, ?> createTracker(ServiceBindType bindType, Class<?> clazz) throws OseeStateException {
+   public ServiceTracker<?, ?> createTracker(ServiceBindType bindType, Class<?> clazz)  {
       AbstractServiceBinder binder = null;
       if (ServiceBindType.SINGLETON == bindType) {
          binder = singleBinder;

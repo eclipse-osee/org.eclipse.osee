@@ -111,16 +111,16 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
       monitor.done();
    }
 
-   private boolean isAccessAllowed(BranchId sourceBranch, BranchId destinationBranch) throws OseeCoreException {
+   private boolean isAccessAllowed(BranchId sourceBranch, BranchId destinationBranch)  {
       return AccessControlManager.hasPermission(destinationBranch,
          PermissionEnum.WRITE) && AccessControlManager.hasPermission(sourceBranch, PermissionEnum.READ);
    }
 
-   private boolean isUpdateFromParent(BranchId sourceBranch, BranchId destinationBranch) throws OseeCoreException {
+   private boolean isUpdateFromParent(BranchId sourceBranch, BranchId destinationBranch)  {
       return sourceBranch.equals(BranchManager.getParentBranch(destinationBranch));
    }
 
-   private Collection<Artifact> getRecurseChildren() throws OseeCoreException {
+   private Collection<Artifact> getRecurseChildren()  {
       Collection<Artifact> allArtifacts = new ArrayList<>();
       for (Artifact art : sourceArtifacts) {
          allArtifacts.addAll(art.getDescendants(DeletionFlag.INCLUDE_DELETED));

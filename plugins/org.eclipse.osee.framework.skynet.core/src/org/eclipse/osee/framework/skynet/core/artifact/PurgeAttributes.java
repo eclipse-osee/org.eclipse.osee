@@ -45,13 +45,13 @@ public class PurgeAttributes extends AbstractDbTxOperation {
    private final Collection<Attribute<?>> attributesToPurge;
    private boolean success;
 
-   public PurgeAttributes(Collection<Attribute<?>> attributesToPurge) throws OseeCoreException {
+   public PurgeAttributes(Collection<Attribute<?>> attributesToPurge)  {
       super(ConnectionHandler.getJdbcClient(), "Purge Attributes", Activator.PLUGIN_ID);
       this.attributesToPurge = attributesToPurge;
    }
 
    @Override
-   protected void doTxWork(IProgressMonitor monitor, JdbcConnection connection) throws OseeCoreException {
+   protected void doTxWork(IProgressMonitor monitor, JdbcConnection connection)  {
       try (IdJoinQuery idJoin = populateIdJoin(connection)) {
          getJdbcClient().runPreparedUpdate(connection, DELETE_TXS, idJoin.getQueryId());
          getJdbcClient().runPreparedUpdate(connection, DELETE_ATTR, idJoin.getQueryId());
@@ -60,7 +60,7 @@ public class PurgeAttributes extends AbstractDbTxOperation {
       }
    }
 
-   private IdJoinQuery populateIdJoin(JdbcConnection connection) throws OseeDataStoreException, OseeCoreException {
+   private IdJoinQuery populateIdJoin(JdbcConnection connection) throws OseeDataStoreException {
       IdJoinQuery idJoin = JoinUtility.createIdJoinQuery(getJdbcClient(), connection);
 
       try (IdJoinQuery attributeJoin = JoinUtility.createIdJoinQuery(getJdbcClient(), connection)) {
@@ -73,7 +73,7 @@ public class PurgeAttributes extends AbstractDbTxOperation {
    }
 
    @Override
-   protected void handleTxFinally(IProgressMonitor monitor) throws OseeCoreException {
+   protected void handleTxFinally(IProgressMonitor monitor)  {
       super.handleTxFinally(monitor);
       if (success) {
          Set<EventBasicGuidArtifact> artifactChanges = new HashSet<>();

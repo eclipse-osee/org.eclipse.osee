@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 public class OpenWorkflowByIdActionTest extends AbstractAtsActionRunTest {
 
    @Override
-   public Action createAction() throws OseeCoreException {
+   public Action createAction()  {
       OpenWorkflowByIdAction action = new OpenWorkflowByIdAction();
       action.setPend(true);
       action.setOverrideId(AtsTestUtil.getTeamWf().getAtsId());

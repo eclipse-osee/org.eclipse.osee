@@ -170,7 +170,7 @@ public class XNavigateComposite extends Composite {
       tableListener.disposeTooltip();
    }
 
-   protected void handleDoubleClick() throws OseeCoreException {
+   protected void handleDoubleClick()  {
       IStructuredSelection sel = (IStructuredSelection) filteredTree.getViewer().getSelection();
       if (!sel.iterator().hasNext()) {
          return;
@@ -179,7 +179,7 @@ public class XNavigateComposite extends Composite {
       handleDoubleClick(item);
    }
 
-   protected void handleDoubleClick(XNavigateItem item, TableLoadOption... tableLoadOptions) throws OseeCoreException {
+   protected void handleDoubleClick(XNavigateItem item, TableLoadOption... tableLoadOptions)  {
       disposeTooltip();
 
       if (item.getChildren().size() > 0) {

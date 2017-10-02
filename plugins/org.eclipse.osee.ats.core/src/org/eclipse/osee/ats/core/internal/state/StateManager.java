@@ -92,7 +92,7 @@ public class StateManager implements IAtsStateManager {
    }
 
    @Override
-   public void updateMetrics(IStateToken state, double additionalHours, int percentComplete, boolean logMetrics, IAtsUser user) throws OseeCoreException {
+   public void updateMetrics(IStateToken state, double additionalHours, int percentComplete, boolean logMetrics, IAtsUser user)  {
 
       // get hours in current state, if additional hours + current hours < 0, walk other states subtracting difference
       double hoursInCurrentState = getHoursSpent(state.getName());
@@ -124,13 +124,13 @@ public class StateManager implements IAtsStateManager {
       setDirty(true);
    }
 
-   protected void logMetrics(IStateToken state, IAtsUser user, Date date) throws OseeCoreException {
+   protected void logMetrics(IStateToken state, IAtsUser user, Date date)  {
       String hoursSpent = AtsUtilCore.doubleToI18nString(HoursSpentUtil.getHoursSpentTotal(workItem, services));
       logMetrics(services, logFactory, workItem,
          PercentCompleteTotalUtil.getPercentCompleteTotal(workItem, services) + "", hoursSpent, state, user, date);
    }
 
-   public static void logMetrics(IAtsServices services, IAtsLogFactory logFactory, IAtsWorkItem workItem, String percent, String hours, IStateToken state, IAtsUser user, Date date) throws OseeCoreException {
+   public static void logMetrics(IAtsServices services, IAtsLogFactory logFactory, IAtsWorkItem workItem, String percent, String hours, IStateToken state, IAtsUser user, Date date)  {
       IAtsLogItem logItem =
          logFactory.newLogItem(LogType.Metrics, date, user, state.getName(), String.format("Percent %s Hours %s",
             PercentCompleteTotalUtil.getPercentCompleteTotal(workItem, services), Double.parseDouble(hours)));
@@ -138,7 +138,7 @@ public class StateManager implements IAtsStateManager {
    }
 
    @Override
-   public void setMetrics(double hours, int percentComplete, boolean logMetrics, IAtsUser user, Date date) throws OseeCoreException {
+   public void setMetrics(double hours, int percentComplete, boolean logMetrics, IAtsUser user, Date date)  {
       setMetrics(getCurrentState(), hours, percentComplete, logMetrics, user, date);
    }
 
@@ -154,7 +154,7 @@ public class StateManager implements IAtsStateManager {
     */
 
    @Override
-   public void setMetrics(IStateToken state, double hours, int percentComplete, boolean logMetrics, IAtsUser user, Date date) throws OseeCoreException {
+   public void setMetrics(IStateToken state, double hours, int percentComplete, boolean logMetrics, IAtsUser user, Date date)  {
       boolean changed = setMetricsIfChanged(state, hours, percentComplete);
       if (changed) {
          if (logMetrics) {
@@ -164,7 +164,7 @@ public class StateManager implements IAtsStateManager {
       }
    }
 
-   protected boolean setMetricsIfChanged(IStateToken state, double hours, int percentComplete) throws OseeCoreException {
+   protected boolean setMetricsIfChanged(IStateToken state, double hours, int percentComplete)  {
       boolean changed = false;
       if (!isHoursEqual(getHoursSpent(state.getName()), hours)) {
          setHoursSpent(state.getName(), hours);
@@ -178,12 +178,12 @@ public class StateManager implements IAtsStateManager {
    }
 
    @Override
-   public StateType getStateType() throws OseeCoreException {
+   public StateType getStateType()  {
       return stateType;
    }
 
    @Override
-   public void addAssignees(String stateName, Collection<? extends IAtsUser> assignees) throws OseeCoreException {
+   public void addAssignees(String stateName, Collection<? extends IAtsUser> assignees)  {
       if (assignees == null || assignees.isEmpty()) {
          return;
       }
@@ -218,14 +218,14 @@ public class StateManager implements IAtsStateManager {
    }
 
    @Override
-   public void setAssignee(IAtsUser assignee) throws OseeCoreException {
+   public void setAssignee(IAtsUser assignee)  {
       if (assignee != null) {
          setAssignees(Arrays.asList(assignee));
       }
    }
 
    @Override
-   public void setAssignees(Collection<? extends IAtsUser> assignees) throws OseeCoreException {
+   public void setAssignees(Collection<? extends IAtsUser> assignees)  {
       setAssignees(getCurrentStateName(), new LinkedList<IAtsUser>(assignees));
    }
 
@@ -234,7 +234,7 @@ public class StateManager implements IAtsStateManager {
     */
 
    @Override
-   public void setAssignees(String stateName, List<? extends IAtsUser> assignees) throws OseeCoreException {
+   public void setAssignees(String stateName, List<? extends IAtsUser> assignees)  {
       if (assignees == null) {
          return;
       }
@@ -282,7 +282,7 @@ public class StateManager implements IAtsStateManager {
    }
 
    @Override
-   public void transitionHelper(List<? extends IAtsUser> toAssignees, IStateToken fromState, IStateToken toState, String cancelReason) throws OseeCoreException {
+   public void transitionHelper(List<? extends IAtsUser> toAssignees, IStateToken fromState, IStateToken toState, String cancelReason)  {
       createState(toState);
       setAssignees(toState.getName(), toAssignees);
       setCurrentStateName(toState.getName());
@@ -291,12 +291,12 @@ public class StateManager implements IAtsStateManager {
    }
 
    @Override
-   public long getTimeInState() throws OseeCoreException {
+   public long getTimeInState()  {
       return getTimeInState(getCurrentState());
    }
 
    @Override
-   public long getTimeInState(IStateToken state) throws OseeCoreException {
+   public long getTimeInState(IStateToken state)  {
       if (state == null) {
          return 0;
       }
@@ -308,17 +308,17 @@ public class StateManager implements IAtsStateManager {
    }
 
    @Override
-   public IAtsLogItem getStateStartedData(IStateToken state) throws OseeCoreException {
+   public IAtsLogItem getStateStartedData(IStateToken state)  {
       return getStateStartedData(state.getName());
    }
 
    @Override
-   public IAtsLogItem getStateStartedData(String stateName) throws OseeCoreException {
+   public IAtsLogItem getStateStartedData(String stateName)  {
       return workItem.getLog().getStateEvent(LogType.StateEntered, stateName);
    }
 
    @Override
-   public void addAssignee(String stateName, IAtsUser assignee) throws OseeCoreException {
+   public void addAssignee(String stateName, IAtsUser assignee)  {
       addAssignees(stateName, Arrays.asList(assignee));
    }
 
@@ -388,7 +388,7 @@ public class StateManager implements IAtsStateManager {
    }
 
    @Override
-   public void addAssignee(IAtsUser assignee) throws OseeCoreException {
+   public void addAssignee(IAtsUser assignee)  {
       addAssignee(getCurrentStateName(), assignee);
    }
 
@@ -398,7 +398,7 @@ public class StateManager implements IAtsStateManager {
    }
 
    @Override
-   public void setAssignees(List<? extends IAtsUser> assignees) throws OseeCoreException {
+   public void setAssignees(List<? extends IAtsUser> assignees)  {
       setAssignees(getCurrentStateName(), assignees);
    }
 
@@ -461,7 +461,7 @@ public class StateManager implements IAtsStateManager {
    }
 
    @Override
-   public void removeAssignee(String stateName, IAtsUser assignee) throws OseeCoreException {
+   public void removeAssignee(String stateName, IAtsUser assignee)  {
       WorkState state = getState(stateName);
       if (state != null) {
          state.removeAssignee(assignee);
@@ -472,7 +472,7 @@ public class StateManager implements IAtsStateManager {
    }
 
    @Override
-   public void setAssignee(IStateToken state, IAtsUser assignee) throws OseeCoreException {
+   public void setAssignee(IStateToken state, IAtsUser assignee)  {
       setAssignee(state.getName(), assignee);
    }
 
@@ -482,7 +482,7 @@ public class StateManager implements IAtsStateManager {
    }
 
    @Override
-   public boolean isUnAssignedSolely() throws OseeCoreException {
+   public boolean isUnAssignedSolely()  {
       return getAssignees().size() == 1 && isUnAssigned();
    }
 
@@ -492,17 +492,17 @@ public class StateManager implements IAtsStateManager {
    }
 
    @Override
-   public void removeAssignee(IAtsUser assignee) throws OseeCoreException {
+   public void removeAssignee(IAtsUser assignee)  {
       removeAssignee(getCurrentStateName(), assignee);
    }
 
    @Override
-   public boolean isUnAssigned() throws OseeCoreException {
+   public boolean isUnAssigned()  {
       return getAssignees().contains(AtsCoreUsers.UNASSIGNED_USER);
    }
 
    @Override
-   public void clearAssignees() throws OseeCoreException {
+   public void clearAssignees()  {
       setAssignees(getCurrentStateName(), new LinkedList<IAtsUser>());
    }
 
@@ -536,12 +536,12 @@ public class StateManager implements IAtsStateManager {
    }
 
    @Override
-   public void addAssignees(Collection<? extends IAtsUser> assignees) throws OseeCoreException {
+   public void addAssignees(Collection<? extends IAtsUser> assignees)  {
       addAssignees(getCurrentStateName(), assignees);
    }
 
    @Override
-   public void setAssignee(String stateName, IAtsUser assignee) throws OseeCoreException {
+   public void setAssignee(String stateName, IAtsUser assignee)  {
       if (assignee != null) {
          setAssignees(stateName, Arrays.asList(assignee));
       }
@@ -588,7 +588,7 @@ public class StateManager implements IAtsStateManager {
    }
 
    @Override
-   public void validateNoBootstrapUser() throws OseeCoreException {
+   public void validateNoBootstrapUser()  {
       for (IAtsUser user : getAssignees()) {
          if (SystemUser.BootStrap.getUserId().equals(user.getUserId())) {
             throw new OseeStateException("Assignee can't be bootstrap user for %s", workItem.toStringWithId());
@@ -621,7 +621,7 @@ public class StateManager implements IAtsStateManager {
    }
 
    @Override
-   public List<IAtsUser> getAssigneesAdded() throws OseeCoreException {
+   public List<IAtsUser> getAssigneesAdded()  {
       List<IAtsUser> added = new ArrayList<>();
       List<IAtsUser> current = getAssignees();
       for (IAtsUser user : current) {

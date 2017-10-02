@@ -260,7 +260,7 @@ public class ConflictTest {
 
    @Ignore
    @org.junit.Test
-   public void test06CommitFiltering() throws OseeCoreException {
+   public void test06CommitFiltering()  {
       checkNoTxCurrent("art_id", "osee_artifact");
       checkNoTxCurrent("attr_id", "osee_attribute");
       checkNoTxCurrent("rel_link_id", "osee_relation_link");
@@ -285,7 +285,7 @@ public class ConflictTest {
          "GROUP BY resulttable.branch_id, resulttable.%s HAVING(COUNT(resulttable.branch_id) > 1) order by branch_id";
    //@formatter:on
 
-   private static void checkNoTxCurrent(String dataId, String dataTable) throws OseeCoreException {
+   private static void checkNoTxCurrent(String dataId, String dataTable)  {
       JdbcClient jdbcClient = ConnectionHandler.getJdbcClient();
       String complementSql = jdbcClient.getDbType().getComplementSql();
 
@@ -295,7 +295,7 @@ public class ConflictTest {
       }
    }
 
-   private static void checkMultipleTxCurrent(String dataId, String dataTable) throws OseeCoreException {
+   private static void checkMultipleTxCurrent(String dataId, String dataTable)  {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          String query = String.format(MULTIPLE_TX_CURRENT_SET, dataId, dataId, dataTable, dataId);

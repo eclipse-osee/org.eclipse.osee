@@ -37,7 +37,7 @@ public class EditAssigneeAction extends AbstractAtsAction {
    }
 
    @Override
-   public void runWithException() throws OseeCoreException {
+   public void runWithException()  {
       Collection<AbstractWorkflowArtifact> smaArts =
          Collections.castMatching(AbstractWorkflowArtifact.class, selectedAtsArtifacts.getSelectedWorkflowArtifacts());
       if (AssigneeColumnUI.promptChangeAssignees(smaArts, true)) {

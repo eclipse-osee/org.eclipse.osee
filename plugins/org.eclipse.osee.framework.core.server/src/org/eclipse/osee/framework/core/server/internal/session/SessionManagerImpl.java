@@ -48,7 +48,7 @@ public final class SessionManagerImpl implements ISessionManager {
    }
 
    @Override
-   public OseeSessionGrant createSession(final OseeCredential credential) throws OseeCoreException {
+   public OseeSessionGrant createSession(final OseeCredential credential)  {
       Conditions.checkNotNull(credential, "credential");
       OseeSessionGrant sessionGrant = null;
       final String newSessionId = GUID.create();
@@ -87,12 +87,12 @@ public final class SessionManagerImpl implements ISessionManager {
    }
 
    @Override
-   public void releaseSession(String sessionId) throws OseeCoreException {
+   public void releaseSession(String sessionId)  {
       releaseSessionImmediate(sessionId);
    }
 
    @Override
-   public Session getSessionById(String sessionId) throws OseeCoreException {
+   public Session getSessionById(String sessionId)  {
       Conditions.checkNotNull(sessionId, "sessionId");
       Session session = null;
       try {
@@ -104,7 +104,7 @@ public final class SessionManagerImpl implements ISessionManager {
    }
 
    @Override
-   public Collection<ISession> getSessionByClientAddress(String clientAddress) throws OseeCoreException {
+   public Collection<ISession> getSessionByClientAddress(String clientAddress)  {
       Conditions.checkNotNull(clientAddress, "clientAddress");
       Set<ISession> sessions = new HashSet<>();
       Iterable<Session> all = null;
@@ -124,7 +124,7 @@ public final class SessionManagerImpl implements ISessionManager {
    }
 
    @Override
-   public Collection<ISession> getSessionsByUserId(String userId) throws OseeCoreException {
+   public Collection<ISession> getSessionsByUserId(String userId)  {
       Conditions.checkNotNull(userId, "userId");
       Collection<ISession> toReturn = new HashSet<>();
       for (ISession session : getAllSessions()) {
@@ -136,7 +136,7 @@ public final class SessionManagerImpl implements ISessionManager {
    }
 
    @Override
-   public Collection<ISession> getAllSessions() throws OseeCoreException {
+   public Collection<ISession> getAllSessions()  {
       Collection<ISession> toReturn = new HashSet<>();
       try {
          Iterable<Session> all = sessionCache.getAll();
@@ -150,7 +150,7 @@ public final class SessionManagerImpl implements ISessionManager {
    }
 
    @Override
-   public void releaseSessionImmediate(String... sessionIds) throws OseeCoreException {
+   public void releaseSessionImmediate(String... sessionIds)  {
       Conditions.checkNotNull(sessionIds, "sessionIds");
 
       Set<Session> sessions = new HashSet<>();

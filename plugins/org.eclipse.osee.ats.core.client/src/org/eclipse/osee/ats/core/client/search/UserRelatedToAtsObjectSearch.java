@@ -38,7 +38,7 @@ public class UserRelatedToAtsObjectSearch {
       this.activeObjectsOnly = activeObjectsOnly;
    }
 
-   public Collection<Artifact> getResults() throws OseeCoreException {
+   public Collection<Artifact> getResults()  {
       List<Artifact> arts = new ArrayList<>();
 
       if (activeObjectsOnly) {

@@ -131,7 +131,7 @@ public class XOpenSprintReportsButton extends XButton implements IArtifactWidget
    }
 
    @Override
-   public void setArtifact(Artifact artifact) throws OseeCoreException {
+   public void setArtifact(Artifact artifact)  {
       if (artifact.isOfType(AtsArtifactTypes.AgileSprint)) {
          this.sprint = (IAgileSprint) artifact;
       }

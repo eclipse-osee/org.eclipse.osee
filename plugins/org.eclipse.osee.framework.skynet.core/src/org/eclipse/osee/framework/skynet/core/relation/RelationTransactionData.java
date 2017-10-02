@@ -46,7 +46,7 @@ public class RelationTransactionData extends BaseTransactionData {
    }
 
    @Override
-   protected void addInsertToBatch(InsertDataCollector collector) throws OseeCoreException {
+   protected void addInsertToBatch(InsertDataCollector collector)  {
       super.addInsertToBatch(collector);
       if (!relation.isUseBackingData()) {
          internalAddInsertToBatch(collector, 4, INSERT_INTO_RELATION_TABLE, relation.getId(),
@@ -56,7 +56,7 @@ public class RelationTransactionData extends BaseTransactionData {
    }
 
    @Override
-   protected void internalUpdate(TransactionRecord transactionId) throws OseeCoreException {
+   protected void internalUpdate(TransactionRecord transactionId)  {
       relation.internalSetGammaId(getGammaId());
    }
 
@@ -71,7 +71,7 @@ public class RelationTransactionData extends BaseTransactionData {
    }
 
    @Override
-   protected int createGammaId() throws OseeCoreException {
+   protected int createGammaId()  {
       int newGammaId = 0;
       if (relation.isUseBackingData()) {
          newGammaId = relation.getGammaId();
@@ -82,7 +82,7 @@ public class RelationTransactionData extends BaseTransactionData {
    }
 
    @Override
-   protected void internalAddToEvents(ArtifactEvent artifactEvent) throws OseeCoreException {
+   protected void internalAddToEvents(ArtifactEvent artifactEvent)  {
       ArtifactToken artifactA = relation.getArtifactA();
       ArtifactToken artifactB = relation.getArtifactB();
       DefaultBasicGuidArtifact guidArtA =
@@ -101,7 +101,7 @@ public class RelationTransactionData extends BaseTransactionData {
    }
 
    @Override
-   protected ApplicabilityId getApplicabilityId() throws OseeCoreException {
+   protected ApplicabilityId getApplicabilityId()  {
       return relation.getApplicabilityId();
    }
 

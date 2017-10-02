@@ -38,7 +38,7 @@ import org.junit.Test;
 public class AtsBranchAccessManagerTest {
 
    @Test
-   public void testIsApplicable() throws OseeCoreException {
+   public void testIsApplicable()  {
       AtsBranchAccessManager mgr = new AtsBranchAccessManager();
       Assert.assertFalse(mgr.isApplicable(AtsClientService.get().getAtsBranch()));
       Assert.assertFalse(mgr.isApplicable(SAW_Bld_1));
@@ -55,7 +55,7 @@ public class AtsBranchAccessManagerTest {
 
    @Before
    @After
-   public void cleanup() throws OseeCoreException {
+   public void cleanup()  {
       TeamWorkFlowArtifact teamArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
       SkynetTransaction transaction = TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(),

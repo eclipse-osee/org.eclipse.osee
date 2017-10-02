@@ -49,22 +49,22 @@ public class AttributeReadOnlyImpl<T> extends AbstractProxied<Attribute<T>> impl
    }
 
    @Override
-   public AttributeTypeToken getAttributeType() throws OseeCoreException {
+   public AttributeTypeToken getAttributeType()  {
       return getProxiedObject().getAttributeType();
    }
 
    @Override
-   public boolean isOfType(AttributeTypeId otherAttributeType) throws OseeCoreException {
+   public boolean isOfType(AttributeTypeId otherAttributeType)  {
       return getProxiedObject().isOfType(otherAttributeType);
    }
 
    @Override
-   public T getValue() throws OseeCoreException {
+   public T getValue()  {
       return getProxiedObject().getValue();
    }
 
    @Override
-   public String getDisplayableString() throws OseeCoreException {
+   public String getDisplayableString()  {
       return getProxiedObject().getDisplayableString();
    }
 

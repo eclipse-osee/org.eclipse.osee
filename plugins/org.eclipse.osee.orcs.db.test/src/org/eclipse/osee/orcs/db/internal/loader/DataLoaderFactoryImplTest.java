@@ -98,7 +98,7 @@ public class DataLoaderFactoryImplTest {
    private SqlObjectLoader spyLoader;
 
    @Before
-   public void setUp() throws OseeCoreException {
+   public void setUp()  {
       MockitoAnnotations.initMocks(this);
 
       String sessionId = GUID.create();
@@ -116,7 +116,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadFull() throws OseeCoreException {
+   public void testLoadFull()  {
       LoadLevel expectedLoadLevel = LoadLevel.ALL;
 
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
@@ -136,7 +136,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadArtifactIds() throws OseeCoreException {
+   public void testLoadArtifactIds()  {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_DATA;
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
          " jart1.id2, jart1.id4, art1.art_type_id, art1.guid\n" + //
@@ -159,7 +159,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadArtifactIncludeDeleted() throws OseeCoreException {
+   public void testLoadArtifactIncludeDeleted()  {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_DATA;
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
          " jart1.id2, jart1.id4, art1.art_type_id, art1.guid\n" + //
@@ -183,7 +183,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadArtifactHistorical() throws OseeCoreException {
+   public void testLoadArtifactHistorical()  {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_DATA;
       String expected =
          "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id, txs1.transaction_id as stripe_transaction_id,\n" + //
@@ -207,7 +207,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadArtifactHistoricalIncludeDeleted() throws OseeCoreException {
+   public void testLoadArtifactHistoricalIncludeDeleted()  {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_DATA;
       String expected =
          "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id, txs1.transaction_id as stripe_transaction_id,\n" + //
@@ -233,7 +233,7 @@ public class DataLoaderFactoryImplTest {
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    @Test
-   public void testLoadAttributes() throws OseeCoreException {
+   public void testLoadAttributes()  {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
 
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
@@ -257,7 +257,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadAttributesWithType() throws OseeCoreException {
+   public void testLoadAttributesWithType()  {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
 
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
@@ -282,7 +282,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadAttributesWithTypes() throws OseeCoreException {
+   public void testLoadAttributesWithTypes()  {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
 
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
@@ -308,7 +308,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadAttributesWithId() throws OseeCoreException {
+   public void testLoadAttributesWithId()  {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
 
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
@@ -333,7 +333,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadAttributesWithIds() throws OseeCoreException {
+   public void testLoadAttributesWithIds()  {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
 
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
@@ -358,7 +358,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadAttributesWithIdsAndTypes() throws OseeCoreException {
+   public void testLoadAttributesWithIdsAndTypes()  {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
 
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
@@ -385,7 +385,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadAttributesWithIdAndType() throws OseeCoreException {
+   public void testLoadAttributesWithIdAndType()  {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
 
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
@@ -411,7 +411,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadAttributesIncludeDeleted() throws OseeCoreException {
+   public void testLoadAttributesIncludeDeleted()  {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
 
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
@@ -436,7 +436,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadAttributesHistorical() throws OseeCoreException {
+   public void testLoadAttributesHistorical()  {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
 
       String expected =
@@ -461,7 +461,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadAttributesHistoricalIncludeDeleted() throws OseeCoreException {
+   public void testLoadAttributesHistoricalIncludeDeleted()  {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
 
       String expected =
@@ -489,7 +489,7 @@ public class DataLoaderFactoryImplTest {
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
    @Test
-   public void testLoadRelations() throws OseeCoreException {
+   public void testLoadRelations()  {
       LoadLevel expectedLoadLevel = LoadLevel.RELATION_DATA;
 
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
@@ -513,7 +513,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadRelationsIncludeDeleted() throws OseeCoreException {
+   public void testLoadRelationsIncludeDeleted()  {
       LoadLevel expectedLoadLevel = LoadLevel.RELATION_DATA;
 
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
@@ -538,7 +538,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadRelationsWithType() throws OseeCoreException {
+   public void testLoadRelationsWithType()  {
       LoadLevel expectedLoadLevel = LoadLevel.RELATION_DATA;
 
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
@@ -564,7 +564,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadRelationsWithTypes() throws OseeCoreException {
+   public void testLoadRelationsWithTypes()  {
       LoadLevel expectedLoadLevel = LoadLevel.RELATION_DATA;
 
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
@@ -592,7 +592,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadRelationsWithId() throws OseeCoreException {
+   public void testLoadRelationsWithId()  {
       LoadLevel expectedLoadLevel = LoadLevel.RELATION_DATA;
 
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
@@ -617,7 +617,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadRelationsWithIds() throws OseeCoreException {
+   public void testLoadRelationsWithIds()  {
       LoadLevel expectedLoadLevel = LoadLevel.RELATION_DATA;
 
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
@@ -642,7 +642,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadRelationsWithIdsAndTypes() throws OseeCoreException {
+   public void testLoadRelationsWithIdsAndTypes()  {
       LoadLevel expectedLoadLevel = LoadLevel.RELATION_DATA;
 
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
@@ -670,7 +670,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadRelationsWithIdAndType() throws OseeCoreException {
+   public void testLoadRelationsWithIdAndType()  {
       LoadLevel expectedLoadLevel = LoadLevel.RELATION_DATA;
 
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
@@ -697,7 +697,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadRelationsHistorical() throws OseeCoreException {
+   public void testLoadRelationsHistorical()  {
       LoadLevel expectedLoadLevel = LoadLevel.RELATION_DATA;
 
       String expected =
@@ -722,7 +722,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadArtifactIncludeDeletedAttributes() throws OseeCoreException {
+   public void testLoadArtifactIncludeDeletedAttributes()  {
       LoadLevel expectedLoadLevel = LoadLevel.ALL;
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
          " jart1.id2, jart1.id4, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
@@ -748,7 +748,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadArtifactIncludeDeletedRelations() throws OseeCoreException {
+   public void testLoadArtifactIncludeDeletedRelations()  {
       LoadLevel expectedLoadLevel = LoadLevel.ALL;
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
          " jart1.id2, jart1.id4, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
@@ -785,11 +785,11 @@ public class DataLoaderFactoryImplTest {
       return data;
    }
 
-   private void verifyCommon(TransactionId txId, LoadLevel level, DeletionFlag includeDeleted, String expectedSQL, Object... params) throws OseeCoreException {
+   private void verifyCommon(TransactionId txId, LoadLevel level, DeletionFlag includeDeleted, String expectedSQL, Object... params)  {
       verifyCommon(txId, level, includeDeleted, expectedSQL, params, list());
    }
 
-   private void verifyCommon(TransactionId txId, LoadLevel level, DeletionFlag includeDeleted, String expectedSQL, Object[] params, List<Object[]> joinDatas) throws OseeCoreException {
+   private void verifyCommon(TransactionId txId, LoadLevel level, DeletionFlag includeDeleted, String expectedSQL, Object[] params, List<Object[]> joinDatas)  {
       verify(spyLoader).loadArtifacts(eq(cancellation), eq(builder), joinCaptor.capture(), criteriaCaptor.capture(),
          contextCaptor.capture(), eq(200));
 

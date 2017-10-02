@@ -91,7 +91,7 @@ public class MergeManagerTest {
    }
 
    @After
-   public void tearDown() throws OseeCoreException {
+   public void tearDown()  {
       BranchManager.purgeBranch(workingBranch);
    }
 

@@ -48,13 +48,13 @@ public abstract class AbstractDatastoreTxCallable<T> extends AbstractDatastoreCa
       //
    }
 
-   protected abstract T handleTxWork(JdbcConnection connection) throws OseeCoreException;
+   protected abstract T handleTxWork(JdbcConnection connection) ;
 
    protected void handleTxException(Exception ex) {
       // Do nothing
    }
 
-   protected void handleTxFinally() throws OseeCoreException {
+   protected void handleTxFinally()  {
       // Do nothing
    }
 
@@ -66,7 +66,7 @@ public abstract class AbstractDatastoreTxCallable<T> extends AbstractDatastoreCa
       }
 
       @Override
-      public void handleTxWork(JdbcConnection connection) throws OseeCoreException {
+      public void handleTxWork(JdbcConnection connection)  {
          result = AbstractDatastoreTxCallable.this.handleTxWork(connection);
       }
 
@@ -76,7 +76,7 @@ public abstract class AbstractDatastoreTxCallable<T> extends AbstractDatastoreCa
       }
 
       @Override
-      public void handleTxFinally() throws OseeCoreException {
+      public void handleTxFinally()  {
          AbstractDatastoreTxCallable.this.handleTxFinally();
       }
    };

@@ -32,7 +32,7 @@ public class CriteriaAssociatedArtId extends Criteria implements BranchCriteria 
    }
 
    @Override
-   public void checkValid(Options options) throws OseeCoreException {
+   public void checkValid(Options options)  {
       Conditions.checkExpressionFailOnTrue(associatedArtId.isInvalid(), "Associated artifact id cannot be null");
    }
 

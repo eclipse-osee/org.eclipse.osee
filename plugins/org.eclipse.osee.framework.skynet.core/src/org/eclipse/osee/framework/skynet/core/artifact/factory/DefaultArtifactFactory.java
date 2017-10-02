@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 public final class DefaultArtifactFactory extends ArtifactFactory {
 
    @Override
-   public Artifact getArtifactInstance(Long id, String guid, BranchId branch, ArtifactTypeId artifactType, boolean inDataStore) throws OseeCoreException {
+   public Artifact getArtifactInstance(Long id, String guid, BranchId branch, ArtifactTypeId artifactType, boolean inDataStore)  {
       return new Artifact(id, guid, branch, artifactType);
    }
 

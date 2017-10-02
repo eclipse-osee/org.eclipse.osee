@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 public class OpenAssociatedArtifactHandler extends CommandHandler {
 
    @Override
-   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
+   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection)  {
       BranchId selectedBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
 
       Artifact associatedArtifact = BranchManager.getAssociatedArtifact(selectedBranch);

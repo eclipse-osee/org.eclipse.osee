@@ -57,13 +57,13 @@ public class DemoUtil {
       return Result.TrueResult;
    }
 
-   public static void checkDbInitSuccess() throws OseeCoreException {
+   public static void checkDbInitSuccess()  {
       if (!isDbInitSuccessful()) {
          throw new OseeStateException("DbInit must be successful to continue");
       }
    }
 
-   public static void checkDbInitAndPopulateSuccess() throws OseeCoreException {
+   public static void checkDbInitAndPopulateSuccess()  {
       if (!isDbInitSuccessful()) {
          throw new OseeStateException("DbInit must be successful to continue");
       }
@@ -72,85 +72,85 @@ public class DemoUtil {
       }
    }
 
-   public static boolean isDbInitSuccessful() throws OseeCoreException {
+   public static boolean isDbInitSuccessful()  {
       return OseeInfo.getValue("DbInitSuccess").equals("true");
    }
 
-   public static void setDbInitSuccessful(boolean success) throws OseeCoreException {
+   public static void setDbInitSuccessful(boolean success)  {
       OseeInfo.setValue("DbInitSuccess", String.valueOf(success));
    }
 
-   public static boolean isPopulateDbSuccessful() throws OseeCoreException {
+   public static boolean isPopulateDbSuccessful()  {
       return OseeInfo.getValue("PopulateSuccessful").equals("true");
    }
 
-   public static void setPopulateDbSuccessful(boolean success) throws OseeCoreException {
+   public static void setPopulateDbSuccessful(boolean success)  {
       OseeInfo.setValue("PopulateSuccessful", String.valueOf(success));
    }
 
-   public static TeamWorkFlowArtifact getSawCodeCommittedWf() throws OseeCoreException {
+   public static TeamWorkFlowArtifact getSawCodeCommittedWf()  {
       return (TeamWorkFlowArtifact) AtsClientService.get().getArtifact(DemoArtifactToken.SAW_Commited_Code_TeamWf);
    }
 
-   public static TeamWorkFlowArtifact getSawTestCommittedWf() throws OseeCoreException {
+   public static TeamWorkFlowArtifact getSawTestCommittedWf()  {
       return (TeamWorkFlowArtifact) AtsClientService.get().getArtifact(DemoArtifactToken.SAW_Commited_Test_TeamWf);
    }
 
-   public static TeamWorkFlowArtifact getSawReqCommittedWf() throws OseeCoreException {
+   public static TeamWorkFlowArtifact getSawReqCommittedWf()  {
       return (TeamWorkFlowArtifact) AtsClientService.get().getArtifact(DemoArtifactToken.SAW_Commited_Req_TeamWf);
    }
 
-   public static TeamWorkFlowArtifact getSawSWDesignCommittedWf() throws OseeCoreException {
+   public static TeamWorkFlowArtifact getSawSWDesignCommittedWf()  {
       return (TeamWorkFlowArtifact) AtsClientService.get().getArtifact(DemoArtifactToken.SAW_Commited_SWDesign_TeamWf);
    }
 
-   public static TeamWorkFlowArtifact getSawCodeUnCommittedWf() throws OseeCoreException {
+   public static TeamWorkFlowArtifact getSawCodeUnCommittedWf()  {
       return (TeamWorkFlowArtifact) AtsClientService.get().getArtifact(DemoArtifactToken.SAW_UnCommited_Code_TeamWf);
    }
 
-   public static TeamWorkFlowArtifact getSawTestUnCommittedWf() throws OseeCoreException {
+   public static TeamWorkFlowArtifact getSawTestUnCommittedWf()  {
       return (TeamWorkFlowArtifact) AtsClientService.get().getArtifact(DemoArtifactToken.SAW_UnCommited_Test_TeamWf);
    }
 
-   public static TeamWorkFlowArtifact getSawReqUnCommittedWf() throws OseeCoreException {
+   public static TeamWorkFlowArtifact getSawReqUnCommittedWf()  {
       return (TeamWorkFlowArtifact) AtsClientService.get().getArtifact(DemoArtifactToken.SAW_UnCommited_Req_TeamWf);
    }
 
-   public static TeamWorkFlowArtifact getSawSWDesignUnCommittedWf() throws OseeCoreException {
+   public static TeamWorkFlowArtifact getSawSWDesignUnCommittedWf()  {
       return (TeamWorkFlowArtifact) AtsClientService.get().getArtifact(
          DemoArtifactToken.SAW_UnCommited_SWDesign_TeamWf);
    }
 
-   public static TeamWorkFlowArtifact getSwDesignNoBranchWf() throws OseeCoreException {
+   public static TeamWorkFlowArtifact getSwDesignNoBranchWf()  {
       return (TeamWorkFlowArtifact) AtsClientService.get().getArtifact(DemoArtifactToken.SAW_NoBranch_SWDesign_TeamWf);
    }
 
-   public static TeamWorkFlowArtifact getSawCodeNoBranchWf() throws OseeCoreException {
+   public static TeamWorkFlowArtifact getSawCodeNoBranchWf()  {
       return (TeamWorkFlowArtifact) AtsClientService.get().getArtifact(DemoArtifactToken.SAW_NoBranch_Code_TeamWf);
    }
 
-   public static TeamWorkFlowArtifact getSawTestNoBranchWf() throws OseeCoreException {
+   public static TeamWorkFlowArtifact getSawTestNoBranchWf()  {
       return (TeamWorkFlowArtifact) AtsClientService.get().getArtifact(DemoArtifactToken.SAW_NoBranch_Test_TeamWf);
    }
 
-   public static TeamWorkFlowArtifact getSawReqNoBranchWf() throws OseeCoreException {
+   public static TeamWorkFlowArtifact getSawReqNoBranchWf()  {
       return (TeamWorkFlowArtifact) AtsClientService.get().getArtifact(DemoArtifactToken.SAW_NoBranch_Req_TeamWf);
    }
 
-   public static TeamWorkFlowArtifact getSawSWDesignNoBranchWf() throws OseeCoreException {
+   public static TeamWorkFlowArtifact getSawSWDesignNoBranchWf()  {
       return (TeamWorkFlowArtifact) AtsClientService.get().getArtifact(DemoArtifactToken.SAW_NoBranch_SWDesign_TeamWf);
    }
 
-   public static TeamWorkFlowArtifact getButtonWDoesntWorkOnSituationPageWf() throws OseeCoreException {
+   public static TeamWorkFlowArtifact getButtonWDoesntWorkOnSituationPageWf()  {
       return (TeamWorkFlowArtifact) AtsClientService.get().getArtifact(
          DemoArtifactToken.ButtonWDoesntWorkOnSituationPage_TeamWf);
    }
 
-   public static TeamWorkFlowArtifact getCantLoadDiagramTreeWf() throws OseeCoreException {
+   public static TeamWorkFlowArtifact getCantLoadDiagramTreeWf()  {
       return (TeamWorkFlowArtifact) AtsClientService.get().getArtifact(DemoArtifactToken.CantLoadDiagramTree_TeamWf);
    }
 
-   public static TeamWorkFlowArtifact getProblemInDiagramTree_TeamWfWf() throws OseeCoreException {
+   public static TeamWorkFlowArtifact getProblemInDiagramTree_TeamWfWf()  {
       return (TeamWorkFlowArtifact) AtsClientService.get().getArtifact(DemoArtifactToken.ProblemInDiagramTree_TeamWf);
    }
 

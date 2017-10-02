@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.skynet.core.utility.PurgeTransactionOperation.
 
 public class PurgeTransactionOperationWithListener {
 
-   public static IOperation getPurgeTransactionOperation(List<? extends TransactionId> transactions) throws OseeCoreException {
+   public static IOperation getPurgeTransactionOperation(List<? extends TransactionId> transactions)  {
       List<Long> txIdsToDelete = new ArrayList<>();
       for (TransactionId record : transactions) {
          txIdsToDelete.add(record.getId());
@@ -42,11 +42,11 @@ public class PurgeTransactionOperationWithListener {
       return getPurgeTransactionOperationById(txIdsToDelete);
    }
 
-   public static IOperation getPurgeTransactionOperation(TransactionId txIdsToDelete) throws OseeCoreException {
+   public static IOperation getPurgeTransactionOperation(TransactionId txIdsToDelete)  {
       return getPurgeTransactionOperation(Arrays.asList(txIdsToDelete));
    }
 
-   public static IOperation getPurgeTransactionOperationById(List<Long> txIdsToDelete) throws OseeCoreException {
+   public static IOperation getPurgeTransactionOperationById(List<Long> txIdsToDelete)  {
 
       Collection<TransactionRecord> changedTransactions = new ArrayList<>();
       for (Long txId : txIdsToDelete) {

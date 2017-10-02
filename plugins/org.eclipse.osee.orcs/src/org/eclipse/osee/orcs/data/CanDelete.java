@@ -19,7 +19,7 @@ public interface CanDelete extends HasDeleteState {
 
    boolean isDeleteAllowed();
 
-   void delete() throws OseeCoreException;
+   void delete() ;
 
-   void unDelete() throws OseeCoreException;
+   void unDelete() ;
 }

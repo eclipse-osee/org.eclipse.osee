@@ -27,7 +27,7 @@ public interface TxSqlBuilder {
 
    void clear();
 
-   void accept(TransactionReadable tx, OrcsChangeSet txData) throws OseeCoreException;
+   void accept(TransactionReadable tx, OrcsChangeSet txData) ;
 
    Set<Entry<SqlOrderEnum, IdJoinQuery>> getTxNotCurrents();
 
@@ -35,6 +35,6 @@ public interface TxSqlBuilder {
 
    List<DataProxy<?>> getBinaryStores();
 
-   void updateAfterBinaryStorePersist() throws OseeCoreException;
+   void updateAfterBinaryStorePersist() ;
 
 }

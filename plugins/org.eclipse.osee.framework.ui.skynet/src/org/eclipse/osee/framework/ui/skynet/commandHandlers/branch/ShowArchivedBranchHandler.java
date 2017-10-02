@@ -48,7 +48,7 @@ public class ShowArchivedBranchHandler extends CommandHandler implements IElemen
    }
 
    @Override
-   protected Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
+   protected Object executeWithException(ExecutionEvent event, IStructuredSelection selection)  {
       try {
          IWorkbenchPart part = HandlerUtil.getActivePartChecked(event);
          if (part instanceof BranchView) {

@@ -18,6 +18,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
  */
 public interface IAtsCacheProvider {
 
-   IAtsCache getCache() throws OseeStateException;
+   IAtsCache getCache() ;
 
 }

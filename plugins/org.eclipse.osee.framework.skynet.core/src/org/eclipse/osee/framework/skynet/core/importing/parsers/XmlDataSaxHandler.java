@@ -34,7 +34,7 @@ public class XmlDataSaxHandler extends AbstractSaxHandler {
    }
 
    @Override
-   public void endElementFound(String uri, String localName, String name) throws OseeCoreException {
+   public void endElementFound(String uri, String localName, String name)  {
       if (level == 3) {
          roughArtifact.addAttribute(localName, getContents());
       }

@@ -29,7 +29,7 @@ public final class GraphUtil {
       return new GraphProvider() {
 
          @Override
-         public GraphData getGraph(OrcsSession session, BranchId branch, TransactionId transactionId) throws OseeCoreException {
+         public GraphData getGraph(OrcsSession session, BranchId branch, TransactionId transactionId)  {
             Conditions.assertTrue(graph.getBranch().equals(branch),
                "Invalid branch - Graph's branch[%s] does not equals requested branch[%s]", graph.getBranch(), branch);
             Conditions.assertTrue(graph.getTransaction().equals(transactionId),

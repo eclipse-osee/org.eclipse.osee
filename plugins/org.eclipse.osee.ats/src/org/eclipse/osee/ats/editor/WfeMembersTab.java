@@ -159,7 +159,7 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
       }
    }
 
-   private void updateTitleBar() throws OseeCoreException {
+   private void updateTitleBar()  {
       if (Widgets.isAccessible(scrolledForm)) {
          String titleString = editor.getTitleStr();
          String displayableTitle = Strings.escapeAmpersands(titleString);
@@ -486,45 +486,45 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
          return null;
       }
 
-      private CustomizeData getCustomizeData() throws OseeCoreException {
+      private CustomizeData getCustomizeData()  {
          CustomizeData customizeData = worldComposite.getCustomizeDataCopy();
          Conditions.checkNotNull(customizeData, "Customized Data");
          return customizeData;
       }
 
-      private FilterData getFilterData() throws OseeCoreException {
+      private FilterData getFilterData()  {
          FilterData filterData = getCustomizeData().getFilterData();
          Conditions.checkNotNull(filterData, "Filter Data");
          return filterData;
       }
 
-      private SortingData getSortingData() throws OseeCoreException {
+      private SortingData getSortingData()  {
          SortingData sortingData = getCustomizeData().getSortingData();
          Conditions.checkNotNull(sortingData, "Sort Data");
          return sortingData;
       }
 
-      private String getFilterText() throws OseeCoreException {
+      private String getFilterText()  {
          String filterText = getFilterData().getFilterText();
          Conditions.checkNotNull(filterText, "Filter Text");
          return filterText;
       }
 
-      private List<String> getSortingIds() throws OseeCoreException {
+      private List<String> getSortingIds()  {
          return getSortingData().getSortingIds();
       }
 
-      private boolean isSortedByCollectorsOrder() throws OseeCoreException {
+      private boolean isSortedByCollectorsOrder()  {
          List<String> sortingIds = getSortingIds();
          return sortingIds.size() == 1 && sortingIds.contains(provider.getColumnName());
       }
 
-      private boolean isFiltered() throws OseeCoreException {
+      private boolean isFiltered()  {
          String filterText = getFilterText();
          return Strings.isValid(filterText);
       }
 
-      private boolean isDropValid() throws OseeCoreException {
+      private boolean isDropValid()  {
          return !isFiltered() && isSortedByCollectorsOrder();
       }
 
@@ -667,7 +667,7 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
    }
 
    @Override
-   public void reSearch() throws OseeCoreException {
+   public void reSearch()  {
       JobChangeAdapter listener = new JobChangeAdapter() {
 
          @Override
@@ -681,7 +681,7 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
    }
 
    @Override
-   public IWorldEditorProvider getWorldEditorProvider() throws OseeCoreException {
+   public IWorldEditorProvider getWorldEditorProvider()  {
       return null;
    }
 

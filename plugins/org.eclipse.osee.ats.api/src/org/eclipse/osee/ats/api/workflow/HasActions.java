@@ -18,8 +18,8 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  * @author Donald G. Dunne
  */
 public interface HasActions {
-   public Collection<IAtsWorkItem> getActions() throws OseeCoreException;
+   public Collection<IAtsWorkItem> getActions() ;
 
-   public IAtsWorkItem getFirstAction() throws OseeCoreException;
+   public IAtsWorkItem getFirstAction() ;
 
 }

@@ -22,7 +22,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public class ChangeTypeUtil {
 
-   public static String getChangeTypeStr(ArtifactReadable artifact) throws OseeCoreException {
+   public static String getChangeTypeStr(ArtifactReadable artifact)  {
       ChangeType changeType = getChangeType(artifact);
       if (changeType == ChangeType.None) {
          return "";
@@ -30,15 +30,15 @@ public class ChangeTypeUtil {
       return changeType.name();
    }
 
-   public static ChangeType getChangeType(ArtifactReadable artifact) throws OseeCoreException {
+   public static ChangeType getChangeType(ArtifactReadable artifact)  {
       return ChangeType.getChangeType(artifact.getSoleAttributeValue(AtsAttributeTypes.ChangeType, ""));
    }
 
-   public static ChangeType getChangeType(IAtsObject atsObject) throws OseeCoreException {
+   public static ChangeType getChangeType(IAtsObject atsObject)  {
       return getChangeType((ArtifactReadable) atsObject.getStoreObject());
    }
 
-   public static void setChangeType(IAtsObject artifact, ChangeType changeType, IAtsChangeSet changes) throws OseeCoreException {
+   public static void setChangeType(IAtsObject artifact, ChangeType changeType, IAtsChangeSet changes)  {
       if (changeType == ChangeType.None) {
          changes.deleteAttributes(artifact, AtsAttributeTypes.ChangeType);
       } else {

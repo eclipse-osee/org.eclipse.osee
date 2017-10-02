@@ -42,7 +42,7 @@ public class OpenAgileStoredSprintReports extends XNavigateItemAction {
    }
 
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
+   public void run(TableLoadOption... tableLoadOptions)  {
 
       List<Artifact> activeTeams = new LinkedList<>();
       for (Artifact agTeam : ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.AgileTeam,

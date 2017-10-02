@@ -58,7 +58,7 @@ public class SubscribedAction extends AbstractAtsAction {
       setToolTipText(title);
    }
 
-   public Collection<AbstractWorkflowArtifact> getSelectedSubscribableArts() throws OseeCoreException {
+   public Collection<AbstractWorkflowArtifact> getSelectedSubscribableArts()  {
       List<AbstractWorkflowArtifact> favoritableArts = new ArrayList<>();
       for (Artifact art : selectedAtsArtifacts.getSelectedWorkflowArtifacts()) {
          if (art instanceof AbstractWorkflowArtifact) {
@@ -69,7 +69,7 @@ public class SubscribedAction extends AbstractAtsAction {
    }
 
    @Override
-   public void runWithException() throws OseeCoreException {
+   public void runWithException()  {
       new SubscribeManagerUI(getSelectedSubscribableArts()).toggleSubscribe(prompt);
    }
 

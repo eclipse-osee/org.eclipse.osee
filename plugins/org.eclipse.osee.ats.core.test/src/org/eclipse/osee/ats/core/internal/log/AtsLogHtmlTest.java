@@ -48,7 +48,7 @@ public class AtsLogHtmlTest {
    private AtsLog log;
 
    @Before
-   public void setup() throws OseeCoreException {
+   public void setup()  {
       MockitoAnnotations.initMocks(this);
       log = new AtsLog();
 

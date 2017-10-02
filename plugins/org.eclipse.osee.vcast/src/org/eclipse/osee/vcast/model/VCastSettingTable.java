@@ -30,7 +30,7 @@ public class VCastSettingTable implements VCastTableData<VCastSetting> {
    }
 
    @Override
-   public Collection<VCastSetting> getRows(VCastDataStore dataStore) throws OseeCoreException {
+   public Collection<VCastSetting> getRows(VCastDataStore dataStore)  {
       return dataStore.getAllSettings();
    }
 

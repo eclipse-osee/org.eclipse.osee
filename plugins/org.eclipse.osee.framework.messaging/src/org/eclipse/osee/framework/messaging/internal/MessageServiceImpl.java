@@ -65,7 +65,7 @@ public class MessageServiceImpl implements MessageService {
    }
 
    @Override
-   public ConnectionNode getDefault() throws OseeCoreException {
+   public ConnectionNode getDefault()  {
       return get(defaultNode);
    }
 
@@ -85,7 +85,7 @@ public class MessageServiceImpl implements MessageService {
    }
 
    @Override
-   public ConnectionNode get(NodeInfo nodeInfo) throws OseeCoreException {
+   public ConnectionNode get(NodeInfo nodeInfo)  {
       ConnectionNode node = connectionNodes.get(nodeInfo);
       if (node == null) {
          OseeLog.logf(Activator.class, Level.FINEST, "going to create a new Connection Node for [%s]",

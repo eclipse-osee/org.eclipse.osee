@@ -51,7 +51,7 @@ public class UuidsLoadExecutor extends AbstractLoadExecutor {
    }
 
    @Override
-   public void load(HasCancellation cancellation, LoadDataHandler handler, CriteriaOrcsLoad criteria, Options options) throws OseeCoreException {
+   public void load(HasCancellation cancellation, LoadDataHandler handler, CriteriaOrcsLoad criteria, Options options)  {
       checkCancelled(cancellation);
       if (!artifactIds.isEmpty()) {
          Id4JoinQuery join = createIdJoin(getJdbcClient(), options);
@@ -61,7 +61,7 @@ public class UuidsLoadExecutor extends AbstractLoadExecutor {
       }
    }
 
-   private Id4JoinQuery createIdJoin(JdbcClient jdbcClient, Options options) throws OseeCoreException {
+   private Id4JoinQuery createIdJoin(JdbcClient jdbcClient, Options options)  {
       Id4JoinQuery toReturn = joinFactory.createId4JoinQuery();
 
       try (CharJoinQuery guidJoin = joinFactory.createCharJoinQuery()) {

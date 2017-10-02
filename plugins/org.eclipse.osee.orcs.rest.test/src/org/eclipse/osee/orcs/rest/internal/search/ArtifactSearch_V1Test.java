@@ -59,7 +59,7 @@ public class ArtifactSearch_V1Test {
    }
 
    @Test
-   public void testSearchRequestNull() throws OseeCoreException {
+   public void testSearchRequestNull()  {
       when(orcsApi.getQueryFactory()).thenReturn(queryFactory);
       when(queryFactory.fromBranch(COMMON)).thenReturn(builder);
 

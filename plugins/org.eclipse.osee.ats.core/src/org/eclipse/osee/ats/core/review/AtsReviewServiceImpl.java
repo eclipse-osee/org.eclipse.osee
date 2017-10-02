@@ -61,7 +61,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    }
 
    @Override
-   public boolean isValidationReviewRequired(IAtsWorkItem workItem) throws OseeCoreException {
+   public boolean isValidationReviewRequired(IAtsWorkItem workItem)  {
       boolean required = false;
       if (workItem.isTeamWorkflow()) {
          required = services.getAttributeResolver().getSoleAttributeValue(workItem,
@@ -71,7 +71,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    }
 
    @Override
-   public IAtsDecisionReview createValidateReview(IAtsTeamWorkflow teamWf, boolean force, Date transitionDate, IAtsUser transitionUser, IAtsChangeSet changes) throws OseeCoreException {
+   public IAtsDecisionReview createValidateReview(IAtsTeamWorkflow teamWf, boolean force, Date transitionDate, IAtsUser transitionUser, IAtsChangeSet changes)  {
       // If not validate page, don't do anything
       if (!force && !isValidatePage(teamWf.getStateDefinition())) {
          return null;
@@ -126,7 +126,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       return stateDefinition.hasRule(RuleDefinitionOption.AddDecisionValidateBlockingReview.name());
    }
 
-   public Collection<IAtsUser> getValidateReviewFollowupUsers(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+   public Collection<IAtsUser> getValidateReviewFollowupUsers(IAtsTeamWorkflow teamWf)  {
       Collection<IAtsUser> users = new HashSet<>();
       users.addAll(teamWf.getStateMgr().getAssignees(TeamState.Implement));
       if (users.size() > 0) {
@@ -139,7 +139,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    }
 
    @Override
-   public IAtsDecisionReview createNewDecisionReviewAndTransitionToDecision(IAtsTeamWorkflow teamWf, String reviewTitle, String description, String againstState, ReviewBlockType reviewBlockType, Collection<IAtsDecisionReviewOption> options, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException {
+   public IAtsDecisionReview createNewDecisionReviewAndTransitionToDecision(IAtsTeamWorkflow teamWf, String reviewTitle, String description, String againstState, ReviewBlockType reviewBlockType, Collection<IAtsDecisionReviewOption> options, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes)  {
       IAtsDecisionReview decRev = createNewDecisionReview(teamWf, reviewBlockType, reviewTitle, againstState,
          description, options, assignees, createdDate, createdBy, changes);
       changes.add(decRev);
@@ -162,7 +162,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    }
 
    @Override
-   public IAtsDecisionReview createNewDecisionReview(IAtsTeamWorkflow teamWf, ReviewBlockType reviewBlockType, boolean againstCurrentState, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException {
+   public IAtsDecisionReview createNewDecisionReview(IAtsTeamWorkflow teamWf, ReviewBlockType reviewBlockType, boolean againstCurrentState, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes)  {
       return createNewDecisionReview(teamWf, reviewBlockType,
          "Should we do this?  Yes will require followup, No will not",
          againstCurrentState ? teamWf.getStateMgr().getCurrentStateName() : null,
@@ -171,7 +171,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    }
 
    @Override
-   public IAtsDecisionReview createNewDecisionReview(IAtsTeamWorkflow teamWf, ReviewBlockType reviewBlockType, String title, String relatedToState, String description, Collection<IAtsDecisionReviewOption> options, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException {
+   public IAtsDecisionReview createNewDecisionReview(IAtsTeamWorkflow teamWf, ReviewBlockType reviewBlockType, String title, String relatedToState, String description, Collection<IAtsDecisionReviewOption> options, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes)  {
       ArtifactToken decRevArt = changes.createArtifact(AtsArtifactTypes.DecisionReview, title);
       IAtsDecisionReview decRev = (IAtsDecisionReview) services.getWorkItemFactory().getReview(decRevArt);
 
@@ -232,12 +232,12 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    }
 
    @Override
-   public Collection<IAtsAbstractReview> getReviewsFromCurrentState(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+   public Collection<IAtsAbstractReview> getReviewsFromCurrentState(IAtsTeamWorkflow teamWf)  {
       return services.getWorkItemService().getReviews(teamWf, teamWf.getStateMgr().getCurrentState());
    }
 
    @Override
-   public ReviewBlockType getReviewBlockType(IAtsAbstractReview review) throws OseeCoreException {
+   public ReviewBlockType getReviewBlockType(IAtsAbstractReview review)  {
       String blockStr = services.getAttributeResolver().getSoleAttributeValueAsString(review,
          AtsAttributeTypes.ReviewBlocks, ReviewBlockType.None.name());
       return ReviewBlockType.valueOf(blockStr);

@@ -31,7 +31,7 @@ public class VCastWritableTable implements VCastTableData<VCastWritable> {
    }
 
    @Override
-   public Collection<VCastWritable> getRows(VCastDataStore dataStore) throws OseeCoreException {
+   public Collection<VCastWritable> getRows(VCastDataStore dataStore)  {
       return Collections.singleton(dataStore.getWritable());
    }
 

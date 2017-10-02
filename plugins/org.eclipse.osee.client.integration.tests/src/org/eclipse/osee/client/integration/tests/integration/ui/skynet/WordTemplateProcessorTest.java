@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.util.RendererOption;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -169,7 +168,7 @@ public class WordTemplateProcessorTest {
       checkPreviewContents(artifact_F, F_WITH_PUBLISH_INLINE, F_WITHOUT_PUBLISH_INLINE);
    }
 
-   private void checkPreviewContents(Artifact artifact, String expected, String notExpected) throws OseeCoreException, IOException {
+   private void checkPreviewContents(Artifact artifact, String expected, String notExpected) throws IOException {
       Map<RendererOption, Object> rendererOptions = new HashMap<>();
 
       rendererOptions.put(RendererOption.TEMPLATE_ARTIFACT, recurseTemplate);

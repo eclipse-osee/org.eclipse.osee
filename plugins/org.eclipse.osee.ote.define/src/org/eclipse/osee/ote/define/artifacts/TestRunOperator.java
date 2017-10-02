@@ -18,51 +18,51 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface TestRunOperator {
 
-   public abstract String getScriptRevision() throws OseeCoreException;
+   public abstract String getScriptRevision() ;
 
-   public abstract Date getLastDateUploaded() throws OseeCoreException;
+   public abstract Date getLastDateUploaded() ;
 
-   public abstract String getChecksum() throws OseeCoreException;
+   public abstract String getChecksum() ;
 
-   public abstract String getOutfileUrl() throws OseeCoreException;
+   public abstract String getOutfileUrl() ;
 
    public abstract String getPartition();
 
    public abstract String getSubsystem();
 
-   public abstract int getTestPointsPassed() throws OseeCoreException;
+   public abstract int getTestPointsPassed() ;
 
-   public abstract int getTestPointsFailed() throws OseeCoreException;
+   public abstract int getTestPointsFailed() ;
 
-   public abstract int getTotalTestPoints() throws OseeCoreException;
+   public abstract int getTotalTestPoints() ;
 
-   public abstract Date getEndDate() throws OseeCoreException;
+   public abstract Date getEndDate() ;
 
-   public abstract Date getLastModifiedDate() throws OseeCoreException;
+   public abstract Date getLastModifiedDate() ;
 
-   public abstract Date getTestStartDate() throws OseeCoreException;
+   public abstract Date getTestStartDate() ;
 
-   public abstract String getTestResultStatus() throws OseeCoreException;
+   public abstract String getTestResultStatus() ;
 
    public abstract boolean isBatchModeAllowed();
 
-   public abstract String getOseeVersion() throws OseeCoreException;
+   public abstract String getOseeVersion() ;
 
-   public abstract String getOseeServerTitle() throws OseeCoreException;
+   public abstract String getOseeServerTitle() ;
 
-   public abstract String getOseeServerVersion() throws OseeCoreException;
+   public abstract String getOseeServerVersion() ;
 
-   public abstract String getProcessorId() throws OseeCoreException;
+   public abstract String getProcessorId() ;
 
-   public abstract String getRunDuration() throws OseeCoreException;
+   public abstract String getRunDuration() ;
 
-   public abstract String getQualificationLevel() throws OseeCoreException;
+   public abstract String getQualificationLevel() ;
 
-   public abstract String getBuildId() throws OseeCoreException;
+   public abstract String getBuildId() ;
 
-   public abstract String getRanOnOperatingSystem() throws OseeCoreException;
+   public abstract String getRanOnOperatingSystem() ;
 
-   public abstract String getLastAuthor() throws OseeCoreException;
+   public abstract String getLastAuthor() ;
 
    public abstract String getScriptSimpleName();
 

@@ -34,7 +34,7 @@ public class AtsXListValidatorTest {
    // @formatter:on
 
    @org.junit.Test
-   public void testValidateTransition() throws OseeCoreException {
+   public void testValidateTransition()  {
       AtsXListValidator validator = new AtsXListValidator();
 
       MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
@@ -65,7 +65,7 @@ public class AtsXListValidatorTest {
    }
 
    @org.junit.Test
-   public void testValidateTransition_MinMaxConstraint() throws OseeCoreException {
+   public void testValidateTransition_MinMaxConstraint()  {
       AtsXListValidator validator = new AtsXListValidator();
 
       MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");

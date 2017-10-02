@@ -24,7 +24,7 @@ public class WholeWordCompare extends AbstractWordCompare {
    }
 
    @Override
-   public void compareArtifacts(IProgressMonitor monitor, CompareDataCollector collector, PresentationType presentationType, Collection<ArtifactDelta> artifactDeltas, String diffPrefix) throws OseeCoreException {
+   public void compareArtifacts(IProgressMonitor monitor, CompareDataCollector collector, PresentationType presentationType, Collection<ArtifactDelta> artifactDeltas, String diffPrefix)  {
       for (ArtifactDelta entry : artifactDeltas) {
          compare(monitor, collector, presentationType, entry, diffPrefix);
       }

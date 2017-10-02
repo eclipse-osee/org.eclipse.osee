@@ -27,7 +27,7 @@ import org.junit.Test;
 public class MultiBranchProviderTest {
 
    @Test
-   public void testGetBranchesRecursive() throws OseeCoreException {
+   public void testGetBranchesRecursive()  {
       BranchFilter filter = new BranchFilter();
       filter.setNegatedBranchTypes(BranchType.BASELINE);
       Set<Branch> branchRoots = new HashSet<>();
@@ -45,7 +45,7 @@ public class MultiBranchProviderTest {
    }
 
    @Test
-   public void testGetBranchesNonRecursive() throws OseeCoreException {
+   public void testGetBranchesNonRecursive()  {
       BranchFilter filter = new BranchFilter();
       filter.setNegatedBranchTypes(BranchType.BASELINE);
 
@@ -63,7 +63,7 @@ public class MultiBranchProviderTest {
    }
 
    @Test(expected = OseeCoreException.class)
-   public void testGetBranchesException() throws OseeCoreException {
+   public void testGetBranchesException()  {
       MultiBranchProvider provider = new MultiBranchProvider(true, null, null);
       provider.getBranches().size();
    }

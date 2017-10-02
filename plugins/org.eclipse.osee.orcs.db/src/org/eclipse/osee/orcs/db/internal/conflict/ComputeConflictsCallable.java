@@ -119,7 +119,7 @@ public class ComputeConflictsCallable extends CancellableCallable<Object> {
    //      return netModType;
    //   }
    //
-   //   private void checkForInvalidStates(ChangeItem change) throws OseeCoreException {
+   //   private void checkForInvalidStates(ChangeItem change)  {
    //      // check for case where destination branch is missing an artifact that was modified (not new) on the source branch
    //      if (!change.getDestinationVersion().isValid() && change.getBaselineVersion().isValid()) {
    //         throw new OseeStateException(

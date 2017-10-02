@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public class ChangeTypeUtil {
 
-   public static String getChangeTypeStr(IAtsObject atsObject) throws OseeCoreException {
+   public static String getChangeTypeStr(IAtsObject atsObject)  {
       ChangeType changeType = getChangeType(atsObject);
       if (changeType == ChangeType.None) {
          return "";
@@ -29,12 +29,12 @@ public class ChangeTypeUtil {
       return changeType.name();
    }
 
-   public static ChangeType getChangeType(IAtsObject atsObject) throws OseeCoreException {
+   public static ChangeType getChangeType(IAtsObject atsObject)  {
       return ChangeType.getChangeType(
          AtsClientService.get().getArtifact(atsObject).getSoleAttributeValue(AtsAttributeTypes.ChangeType, ""));
    }
 
-   public static void setChangeType(IAtsObject atsObject, ChangeType changeType) throws OseeCoreException {
+   public static void setChangeType(IAtsObject atsObject, ChangeType changeType)  {
       if (changeType == ChangeType.None) {
          AtsClientService.get().getArtifact(atsObject).deleteSoleAttribute(AtsAttributeTypes.ChangeType);
       } else {

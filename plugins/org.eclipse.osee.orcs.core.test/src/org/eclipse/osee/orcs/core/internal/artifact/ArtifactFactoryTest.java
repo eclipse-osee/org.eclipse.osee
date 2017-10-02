@@ -81,7 +81,7 @@ public class ArtifactFactoryTest {
    private List<AttributeTypeId> types;
 
    @Before
-   public void init() throws OseeCoreException {
+   public void init()  {
       MockitoAnnotations.initMocks(this);
 
       artifactFactory = new ArtifactFactory(dataFactory, attributeFactory, artifactTypeCache);
@@ -113,7 +113,7 @@ public class ArtifactFactoryTest {
    }
 
    @Test
-   public void testCreateArtifactFromBranchTypeAndGuid() throws OseeCoreException {
+   public void testCreateArtifactFromBranchTypeAndGuid()  {
       when(dataFactory.create(COMMON, Artifact, guid)).thenReturn(artifactData);
 
       Artifact artifact = artifactFactory.createArtifact(session, COMMON, Artifact, guid);
@@ -124,7 +124,7 @@ public class ArtifactFactoryTest {
    }
 
    @Test
-   public void testCreateArtifactFromBranchTypeAndGuidAndUuid() throws OseeCoreException {
+   public void testCreateArtifactFromBranchTypeAndGuidAndUuid()  {
       long uuid = 93456L;
       when(dataFactory.create(COMMON, Artifact, guid, uuid)).thenReturn(artifactData);
 
@@ -136,7 +136,7 @@ public class ArtifactFactoryTest {
    }
 
    @Test
-   public void testCreateArtifactFromArtifactData() throws OseeCoreException {
+   public void testCreateArtifactFromArtifactData()  {
       Artifact artifact = artifactFactory.createArtifact(session, artifactData);
 
       assertEquals(Artifact, artifact.getArtifactType());
@@ -144,7 +144,7 @@ public class ArtifactFactoryTest {
    }
 
    @Test
-   public void testCopyArtifact() throws OseeCoreException {
+   public void testCopyArtifact()  {
       when(dataFactory.copy(COMMON, artifactData)).thenReturn(otherArtifactData);
 
       when(source.getAttributes(CoreAttributeTypes.Annotation)).thenAnswer(new ReturnAttribute(attribute));
@@ -167,7 +167,7 @@ public class ArtifactFactoryTest {
    }
 
    @Test
-   public void testIntroduceArtifact() throws OseeCoreException {
+   public void testIntroduceArtifact()  {
       when(dataFactory.introduce(COMMON, artifactData)).thenReturn(otherArtifactData);
 
       when(source.getExistingAttributeTypes()).thenAnswer(new ReturnExistingTypes(types));
@@ -184,7 +184,7 @@ public class ArtifactFactoryTest {
    }
 
    @Test
-   public void testClone() throws OseeCoreException {
+   public void testClone()  {
       when(dataFactory.copy(COMMON, artifactData)).thenReturn(otherArtifactData);
 
       when(source.getExistingAttributeTypes()).thenAnswer(new ReturnExistingTypes(types));

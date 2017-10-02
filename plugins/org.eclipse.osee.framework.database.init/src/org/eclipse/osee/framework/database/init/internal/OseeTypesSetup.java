@@ -59,7 +59,7 @@ public class OseeTypesSetup {
          OSEE_TYPES_HANDLER, "classname");
    }
 
-   public void execute(Collection<String> uniqueIdsToImport) throws OseeCoreException {
+   public void execute(Collection<String> uniqueIdsToImport)  {
       File combinedFile = null;
       try {
          List<OrcsTypeSheet> itemsToProcess = getOseeTypeExtensionsById(uniqueIdsToImport);
@@ -129,7 +129,7 @@ public class OseeTypesSetup {
       return items;
    }
 
-   public void processOseeTypeData(URI uri) throws OseeCoreException {
+   public void processOseeTypeData(URI uri)  {
       IOseeTypesHandler handler = getHandler(uri);
       if (handler != null) {
          handler.execute(new NullProgressMonitor(), uri);

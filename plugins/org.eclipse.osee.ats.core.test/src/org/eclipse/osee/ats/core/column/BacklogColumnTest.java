@@ -45,7 +45,7 @@ public class BacklogColumnTest extends ProgramColumn {
    // @formatter:on
 
    @Before
-   public void setup() throws OseeCoreException {
+   public void setup()  {
       MockitoAnnotations.initMocks(this);
 
       when(services.getRelationResolver()).thenReturn(relResolver);

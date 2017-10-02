@@ -163,7 +163,7 @@ public class JavaRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public Program getAssociatedProgram(Artifact artifact) throws OseeCoreException {
+   public Program getAssociatedProgram(Artifact artifact)  {
       Program program = Program.findProgram("java");
       if (program == null) {
          throw new OseeArgumentException("No program associated with the extension [%s] found on your local machine.",
@@ -173,7 +173,7 @@ public class JavaRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException {
+   public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts)  {
       final List<IResource> matches = new LinkedList<>();
       final List<Artifact> notMatched = new LinkedList<>();
 
@@ -204,7 +204,7 @@ public class JavaRenderer extends FileSystemRenderer {
    }
 
    @Override
-   protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, BranchId branch, PresentationType presentationType) throws OseeCoreException {
+   protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, BranchId branch, PresentationType presentationType)  {
       throw new UnsupportedOperationException();
    }
 

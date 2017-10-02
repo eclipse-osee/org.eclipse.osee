@@ -25,25 +25,25 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface RelationTypes extends IdCollection<RelationTypeToken> {
 
-   RelationTypeMultiplicity getMultiplicity(RelationTypeId relation) throws OseeCoreException;
+   RelationTypeMultiplicity getMultiplicity(RelationTypeId relation) ;
 
-   IArtifactType getArtifactTypeSideA(IRelationType relation) throws OseeCoreException;
+   IArtifactType getArtifactTypeSideA(IRelationType relation) ;
 
-   IArtifactType getArtifactTypeSideB(IRelationType relation) throws OseeCoreException;
+   IArtifactType getArtifactTypeSideB(IRelationType relation) ;
 
-   IArtifactType getArtifactType(RelationTypeId relation, RelationSide relationSide) throws OseeCoreException;
+   IArtifactType getArtifactType(RelationTypeId relation, RelationSide relationSide) ;
 
-   String getSideName(IRelationType relation, RelationSide relationSide) throws OseeCoreException;
+   String getSideName(IRelationType relation, RelationSide relationSide) ;
 
-   boolean isArtifactTypeAllowed(RelationTypeId relation, RelationSide relationSide, IArtifactType artifactType) throws OseeCoreException;
+   boolean isArtifactTypeAllowed(RelationTypeId relation, RelationSide relationSide, IArtifactType artifactType) ;
 
-   String getSideAName(IRelationType relation) throws OseeCoreException;
+   String getSideAName(IRelationType relation) ;
 
-   String getSideBName(IRelationType relation) throws OseeCoreException;
+   String getSideBName(IRelationType relation) ;
 
-   boolean isSideAName(IRelationType relation, String sideName) throws OseeArgumentException, OseeCoreException;
+   boolean isSideAName(IRelationType relation, String sideName) ;
 
-   boolean isOrdered(IRelationType relation) throws OseeCoreException;
+   boolean isOrdered(IRelationType relation) ;
 
    RelationSorter getDefaultOrderTypeGuid(IRelationType relation);
 }

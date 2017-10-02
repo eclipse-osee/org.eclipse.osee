@@ -17,6 +17,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface MessageServiceProvider {
 
-   MessageService getMessageService() throws OseeCoreException;
+   MessageService getMessageService() ;
 
 }

@@ -61,19 +61,19 @@ public class ArtifactQuerySqlContextFactoryImpl implements QuerySqlContextFactor
       return context;
    }
 
-   private QuerySqlContext createContext(OrcsSession session, QueryData queryData) throws OseeCoreException {
+   private QuerySqlContext createContext(OrcsSession session, QueryData queryData)  {
       BranchId branch = getBranchToSearch(queryData);
       Conditions.checkNotNull(branch, "branch");
       return new ArtifactQuerySqlContext(session, branch, queryData.getOptions());
    }
 
-   private AbstractSqlWriter createQueryWriter(SqlContext context, QueryData queryData, QueryType queryType) throws OseeCoreException {
+   private AbstractSqlWriter createQueryWriter(SqlContext context, QueryData queryData, QueryType queryType)  {
       BranchId branch = getBranchToSearch(queryData);
       Conditions.checkNotNull(branch, "branch");
       return new ArtifactQuerySqlWriter(logger, joinFactory, jdbcClient, context, queryType, branch);
    }
 
-   private BranchId getBranchToSearch(QueryData queryData) throws OseeCoreException {
+   private BranchId getBranchToSearch(QueryData queryData)  {
       BranchId branch = BranchId.SENTINEL;
 
       Iterable<? extends Criteria> criterias = queryData.getAllCriteria();

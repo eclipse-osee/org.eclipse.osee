@@ -84,7 +84,7 @@ public final class Engines {
          protected LoadDataHandler createCountingHandler(final AtomicInteger counter, LoadDataHandler handler) {
             return new LoadDataHandlerDecorator(handler) {
                @Override
-               public void onData(BranchData data) throws OseeCoreException {
+               public void onData(BranchData data)  {
                   counter.getAndIncrement();
                   super.onData(data);
                }
@@ -100,7 +100,7 @@ public final class Engines {
          protected LoadDataHandler createCountingHandler(final AtomicInteger counter, LoadDataHandler handler) {
             return new LoadDataHandlerDecorator(handler) {
                @Override
-               public void onData(TxOrcsData data) throws OseeCoreException {
+               public void onData(TxOrcsData data)  {
                   counter.getAndIncrement();
                   super.onData(data);
                }

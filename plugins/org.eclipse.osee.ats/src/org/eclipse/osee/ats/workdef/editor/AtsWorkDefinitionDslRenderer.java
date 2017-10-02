@@ -103,7 +103,7 @@ public final class AtsWorkDefinitionDslRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public void open(final List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
+   public void open(final List<Artifact> artifacts, PresentationType presentationType)  {
       final PresentationType resultantpresentationType =
          presentationType == DEFAULT_OPEN ? SPECIALIZED_EDIT : presentationType;
 
@@ -127,12 +127,12 @@ public final class AtsWorkDefinitionDslRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public String getAssociatedExtension(Artifact artifact) throws OseeCoreException {
+   public String getAssociatedExtension(Artifact artifact)  {
       return "ats";
    }
 
    @Override
-   public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException {
+   public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts)  {
       Artifact artifact = artifacts.iterator().next();
 
       String data;
@@ -153,7 +153,7 @@ public final class AtsWorkDefinitionDslRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public Program getAssociatedProgram(Artifact artifact) throws OseeCoreException {
+   public Program getAssociatedProgram(Artifact artifact)  {
       throw new OseeCoreException("should not be called");
    }
 

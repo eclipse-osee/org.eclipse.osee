@@ -88,7 +88,7 @@ public abstract class AbstractAtsTaskService implements IAtsTaskService {
    }
 
    @Override
-   public Collection<IAtsTask> getTasks(IAtsTeamWorkflow teamWf, IStateToken relatedToState) throws OseeCoreException {
+   public Collection<IAtsTask> getTasks(IAtsTeamWorkflow teamWf, IStateToken relatedToState)  {
       ArtifactId artifact = services.getArtifactResolver().get(teamWf);
       Conditions.checkNotNull(artifact, "teamWf", "Can't Find Artifact matching [%s]", teamWf.toString());
       List<IAtsTask> tasks = new LinkedList<>();
@@ -113,14 +113,14 @@ public abstract class AbstractAtsTaskService implements IAtsTaskService {
    }
 
    @Override
-   public Collection<IAtsTask> getTasks(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+   public Collection<IAtsTask> getTasks(IAtsTeamWorkflow teamWf)  {
       ArtifactId artifact = services.getArtifactResolver().get(teamWf);
       Conditions.checkNotNull(artifact, "teamWf", "Can't Find Artifact matching [%s]", teamWf.toString());
       return services.getRelationResolver().getRelated(teamWf, AtsRelationTypes.TeamWfToTask_Task, IAtsTask.class);
    }
 
    @Override
-   public Collection<IAtsTask> getTask(IAtsWorkItem workItem) throws OseeCoreException {
+   public Collection<IAtsTask> getTask(IAtsWorkItem workItem)  {
       if (workItem.isTeamWorkflow()) {
          return getTasks((IAtsTeamWorkflow) workItem);
       }

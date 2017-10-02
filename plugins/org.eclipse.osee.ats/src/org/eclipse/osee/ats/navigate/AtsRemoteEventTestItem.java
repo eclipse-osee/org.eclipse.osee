@@ -74,7 +74,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
    }
 
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
+   public void run(TableLoadOption... tableLoadOptions)  {
       if (AtsUtil.isProductionDb()) {
          AWorkbench.popup("ERROR", "This should not to be run on production DB");
          return;
@@ -108,7 +108,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       return aias;
    }
 
-   private void runClientTest() throws OseeCoreException {
+   private void runClientTest()  {
       String title = getName() + " - Destination Client Test";
       resultData.log("Running " + title);
       NewActionJob job = null;
@@ -180,7 +180,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       }
    }
 
-   private void makeChanges7(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+   private void makeChanges7(IAtsTeamWorkflow teamWf)  {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("Remote Event Test");
       TransitionHelper helper = new TransitionHelper("Remote Event Test", Arrays.asList(teamWf),
          TeamState.Analyze.getName(), Collections.singleton(AtsClientService.get().getUserService().getCurrentUser()),
@@ -193,7 +193,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       changes.execute();
    }
 
-   private void makeChanges6(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+   private void makeChanges6(IAtsTeamWorkflow teamWf)  {
       // Make changes and transition
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName() + " Changes6");
       AtsClientService.get().getVersionService().setTargetedVersion(teamWf, getSawBld2(), changes);
@@ -201,14 +201,14 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       changes.execute();
    }
 
-   private void makeChanges5(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+   private void makeChanges5(IAtsTeamWorkflow teamWf)  {
       // Make changes and persist
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName() + " Changes5");
       changes.setSoleAttributeFromString(teamWf, AtsAttributeTypes.ValidationRequired, "true");
       changes.execute();
    }
 
-   private void makeChanges4(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+   private void makeChanges4(IAtsTeamWorkflow teamWf)  {
       // Make changes and persist
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName() + " Changes4");
       changes.deleteAttributes(teamWf, AtsAttributeTypes.ValidationRequired);
@@ -220,7 +220,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       changes.execute();
    }
 
-   private void makeChanges3(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+   private void makeChanges3(IAtsTeamWorkflow teamWf)  {
       // Make changes and persist
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName() + " Changes3");
       AtsClientService.get().getVersionService().setTargetedVersion(teamWf, getSawBld2(), changes);
@@ -228,7 +228,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       changes.execute();
    }
 
-   private void makeChanges2(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+   private void makeChanges2(IAtsTeamWorkflow teamWf)  {
       // Make changes and persist
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName() + " Changes2");
       changes.setSoleAttributeFromString(teamWf, AtsAttributeTypes.Description, "description 3");
@@ -236,7 +236,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       changes.execute();
    }
 
-   private void makeChanges1(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+   private void makeChanges1(IAtsTeamWorkflow teamWf)  {
       // Make changes and persist
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName() + " Changes1");
       changes.setSoleAttributeFromString(teamWf, AtsAttributeTypes.Description, "description 2");
@@ -247,19 +247,19 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       changes.execute();
    }
 
-   private IAtsVersion getSawBld1() throws OseeCoreException {
+   private IAtsVersion getSawBld1()  {
       return AtsClientService.get().getVersionService().getById(SAW_Bld_1);
    }
 
-   private IAtsVersion getSawBld2() throws OseeCoreException {
+   private IAtsVersion getSawBld2()  {
       return AtsClientService.get().getVersionService().getById(SAW_Bld_2);
    }
 
-   private IAtsVersion getSawBld3() throws OseeCoreException {
+   private IAtsVersion getSawBld3()  {
       return AtsClientService.get().getVersionService().getById(SAW_Bld_3);
    }
 
-   private void validateActionAtStart(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+   private void validateActionAtStart(IAtsTeamWorkflow teamWf)  {
       resultData.log("\nValidating Start...");
       // Ensure event service is connected
       if (!OseeEventManager.isEventManagerConnected()) {
@@ -276,7 +276,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
          AtsAttributeTypes.PriorityType, null));
    }
 
-   private void validateActionAtEnd(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+   private void validateActionAtEnd(IAtsTeamWorkflow teamWf)  {
       resultData.log("\nValidating End...");
       // Ensure event service is connected
       if (!OseeEventManager.isEventManagerConnected()) {
@@ -313,7 +313,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       }
    }
 
-   private void runDestinationTestStart(String ttNum) throws OseeCoreException {
+   private void runDestinationTestStart(String ttNum)  {
       String title = getName() + " - Destination Client Test - Start";
       String actionTitle = "tt " + ttNum;
       resultData.log("Running " + title);
@@ -328,7 +328,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       XResultDataUI.report(resultData, title);
    }
 
-   private void runDestinationTestEnd(String ttNum) throws OseeCoreException {
+   private void runDestinationTestEnd(String ttNum)  {
       String title = getName() + " - Destination Client Test - End";
       String actionTitle = "tt " + ttNum;
       resultData.log("Running " + title);

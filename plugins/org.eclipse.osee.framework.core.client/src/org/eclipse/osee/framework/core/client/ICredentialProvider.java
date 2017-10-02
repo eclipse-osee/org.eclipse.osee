@@ -18,6 +18,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface ICredentialProvider {
 
-   OseeCredential getCredential() throws OseeCoreException;
+   OseeCredential getCredential() ;
 
 }

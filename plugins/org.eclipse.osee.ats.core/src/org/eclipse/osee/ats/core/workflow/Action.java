@@ -34,7 +34,7 @@ public class Action extends AtsObject implements IAtsAction {
    }
 
    @Override
-   public Collection<IAtsTeamWorkflow> getTeamWorkflows() throws OseeCoreException {
+   public Collection<IAtsTeamWorkflow> getTeamWorkflows()  {
       return services.getRelationResolver().getRelated(this, AtsRelationTypes.ActionToWorkflow_WorkFlow,
          IAtsTeamWorkflow.class);
    }
@@ -50,7 +50,7 @@ public class Action extends AtsObject implements IAtsAction {
    }
 
    @Override
-   public void setAtsId(String atsId) throws OseeCoreException {
+   public void setAtsId(String atsId)  {
       throw new OseeStateException("Not implemented");
    }
 

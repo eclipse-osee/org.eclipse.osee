@@ -29,7 +29,7 @@ public class TeamDefinitionQuickSearch extends AttributeValueQuickSearch {
    }
 
    @Override
-   public Collection<Artifact> performSearch() throws OseeCoreException {
+   public Collection<Artifact> performSearch()  {
       return performSearch(true);
    }
 

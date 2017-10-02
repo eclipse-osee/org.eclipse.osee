@@ -47,7 +47,7 @@ public interface ITransitionHelper {
     */
    public Result handleExtraHoursSpent(IAtsChangeSet changes);
 
-   public Collection<? extends IAtsUser> getToAssignees(IAtsWorkItem workItem) throws OseeCoreException;
+   public Collection<? extends IAtsUser> getToAssignees(IAtsWorkItem workItem) ;
 
    public String getToStateName();
 
@@ -55,13 +55,13 @@ public interface ITransitionHelper {
 
    boolean isOverrideWorkingBranchCheck();
 
-   boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf) throws OseeCoreException;
+   boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf) ;
 
-   boolean isBranchInCommit(IAtsTeamWorkflow teamWf) throws OseeCoreException;
+   boolean isBranchInCommit(IAtsTeamWorkflow teamWf) ;
 
-   public boolean isSystemUser() throws OseeCoreException;
+   public boolean isSystemUser() ;
 
-   public boolean isSystemUserAssingee(IAtsWorkItem workItem) throws OseeCoreException;
+   public boolean isSystemUserAssingee(IAtsWorkItem workItem) ;
 
    public IAtsChangeSet getChangeSet();
 
@@ -69,9 +69,9 @@ public interface ITransitionHelper {
 
    public Collection<ITransitionListener> getTransitionListeners();
 
-   public IAtsUser getTransitionUser() throws OseeCoreException;
+   public IAtsUser getTransitionUser() ;
 
-   public void setTransitionUser(IAtsUser user) throws OseeCoreException;
+   public void setTransitionUser(IAtsUser user) ;
 
    public IAtsServices getServices();
 

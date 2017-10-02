@@ -38,7 +38,7 @@ public class VCastBranchCoverageTable implements VCastTableData<VCastBranchCover
    }
 
    @Override
-   public Collection<VCastBranchCoverage> getRows(VCastDataStore dataStore) throws OseeCoreException {
+   public Collection<VCastBranchCoverage> getRows(VCastDataStore dataStore)  {
       return dataStore.getAllBranchCoverages();
    }
 

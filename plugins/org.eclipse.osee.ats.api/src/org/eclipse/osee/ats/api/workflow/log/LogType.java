@@ -24,7 +24,7 @@ public enum LogType {
    Note,
    Metrics;
 
-   public static LogType getType(String type) throws OseeArgumentException {
+   public static LogType getType(String type)  {
       for (Enum<LogType> e : LogType.values()) {
          if (e.name().equals(type)) {
             return (LogType) e;

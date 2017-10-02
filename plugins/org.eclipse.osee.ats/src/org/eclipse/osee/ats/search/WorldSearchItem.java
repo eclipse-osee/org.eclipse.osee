@@ -47,12 +47,12 @@ public class WorldSearchItem extends WorldUISearchItem {
    }
 
    @Override
-   public String getSelectedName(SearchType searchType) throws OseeCoreException {
+   public String getSelectedName(SearchType searchType)  {
       return super.getSelectedName(searchType);
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
+   public Collection<Artifact> performSearch(SearchType searchType)  {
 
       boolean assigneesWithCompletedOrCancelled = false;
       List<StateType> stateTypes = data.getStateTypes();

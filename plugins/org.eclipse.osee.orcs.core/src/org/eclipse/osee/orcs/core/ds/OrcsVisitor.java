@@ -17,11 +17,11 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface OrcsVisitor {
 
-   void visit(ArtifactData data) throws OseeCoreException;
+   void visit(ArtifactData data) ;
 
-   void visit(AttributeData data) throws OseeCoreException;
+   void visit(AttributeData data) ;
 
-   void visit(RelationData data) throws OseeCoreException;
+   void visit(RelationData data) ;
 
    void visit(TupleData data);
 

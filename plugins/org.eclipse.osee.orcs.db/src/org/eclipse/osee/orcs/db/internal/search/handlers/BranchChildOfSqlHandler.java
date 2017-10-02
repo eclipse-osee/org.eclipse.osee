@@ -62,7 +62,7 @@ public class BranchChildOfSqlHandler extends SqlHandler<CriteriaBranchChildOf> {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
+   public boolean addPredicates(AbstractSqlWriter writer)  {
       writer.write("%s.branch_id = %s.child_id", brAlias, withAlias);
       return true;
    }

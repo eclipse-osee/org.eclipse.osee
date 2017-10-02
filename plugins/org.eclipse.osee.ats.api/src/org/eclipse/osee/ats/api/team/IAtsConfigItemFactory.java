@@ -32,13 +32,13 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IAtsConfigItemFactory {
 
-   IAtsTeamDefinition getTeamDef(ArtifactId artifact) throws OseeCoreException;
+   IAtsTeamDefinition getTeamDef(ArtifactId artifact) ;
 
-   IAtsActionableItem getActionableItem(ArtifactId artifact) throws OseeCoreException;
+   IAtsActionableItem getActionableItem(ArtifactId artifact) ;
 
-   IAtsConfigObject getConfigObject(ArtifactId artifact) throws OseeCoreException;
+   IAtsConfigObject getConfigObject(ArtifactId artifact) ;
 
-   IAtsVersion getVersion(ArtifactId artifact) throws OseeCoreException;
+   IAtsVersion getVersion(ArtifactId artifact) ;
 
    IAtsProgram getProgram(ArtifactId artifact);
 

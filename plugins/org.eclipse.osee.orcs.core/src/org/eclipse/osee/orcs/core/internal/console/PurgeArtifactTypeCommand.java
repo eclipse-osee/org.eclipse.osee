@@ -77,7 +77,7 @@ public class PurgeArtifactTypeCommand implements ConsoleCommand {
             return null;
          }
 
-         private Set<IArtifactType> getTypes(String[] typesToPurge) throws OseeCoreException {
+         private Set<IArtifactType> getTypes(String[] typesToPurge)  {
             ArtifactTypes artifactTypes = orcsTypes.getArtifactTypes();
             Set<IArtifactType> toReturn = new HashSet<>();
             for (String uuid : typesToPurge) {

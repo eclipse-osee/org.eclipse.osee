@@ -36,7 +36,7 @@ public class ArtifactMatch {
       return artifact;
    }
 
-   public HashCollection<AttributeId, MatchLocation> getMatchData() throws OseeCoreException {
+   public HashCollection<AttributeId, MatchLocation> getMatchData()  {
       return matchData;
    }
 

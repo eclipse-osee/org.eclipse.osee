@@ -53,11 +53,11 @@ public class DataStore {
       return this.rawContent != null && this.rawContent.length > 0;
    }
 
-   public InputStream getInputStream() throws OseeCoreException {
+   public InputStream getInputStream()  {
       return new ByteArrayInputStream(getContent());
    }
 
-   public byte[] getContent() throws OseeCoreException {
+   public byte[] getContent()  {
       if (needToReadFromRemote && isLocatorValid()) {
          resourceProcessor.acquire(this);
          needToReadFromRemote = false;
@@ -78,13 +78,13 @@ public class DataStore {
       other.encoding = Strings.intern(this.encoding);
    }
 
-   public void persist(int storageId) throws OseeCoreException {
+   public void persist(int storageId)  {
       if (this.rawContent != null && this.rawContent.length > 0) {
          resourceProcessor.saveResource(storageId, resourceProcessor.createStorageName(), this);
       }
    }
 
-   public void purge() throws OseeCoreException {
+   public void purge()  {
       if (isLocatorValid()) {
          resourceProcessor.purge(this);
       }

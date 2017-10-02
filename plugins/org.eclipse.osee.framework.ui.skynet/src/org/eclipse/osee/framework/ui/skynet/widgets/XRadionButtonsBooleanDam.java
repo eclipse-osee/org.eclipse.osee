@@ -64,7 +64,7 @@ public class XRadionButtonsBooleanDam extends XRadionButtonsDam {
    }
 
    @Override
-   public void saveToArtifact() throws OseeCoreException {
+   public void saveToArtifact()  {
       if (isDirty().isTrue()) {
          Boolean selected = getSelected();
          if (selected == null) {
@@ -86,13 +86,13 @@ public class XRadionButtonsBooleanDam extends XRadionButtonsDam {
    }
 
    @Override
-   public void revert() throws OseeCoreException {
+   public void revert()  {
       Boolean stored = getStored();
       artifact.setSoleAttributeValue(attributeType, stored);
    }
 
    @Override
-   public Result isDirty() throws OseeCoreException {
+   public Result isDirty()  {
       Boolean stored = getStored();
       Boolean selected = getSelected();
       if ((stored != null && !stored.equals(selected)) || //

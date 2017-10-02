@@ -204,7 +204,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
          scriptPath.length() - ".java".length());
    }
 
-   private void loadTestRunArtifacts(BranchId scriptsBranch) throws OseeCoreException {
+   private void loadTestRunArtifacts(BranchId scriptsBranch) {
       Collection<Artifact> testRuns =
          ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.TestRun, scriptsBranch, DeletionFlag.EXCLUDE_DELETED);
 
@@ -306,7 +306,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
       return ready;
    }
 
-   private void writeTestScriptSheet(Set<String> scripts) throws IOException, OseeCoreException {
+   private void writeTestScriptSheet(Set<String> scripts) throws IOException {
       excelWriter.startSheet("Scripts", 8);
       excelWriter.writeRow("Category", CoreArtifactTypes.TestCase.getName(), "Run Date", "Total Test Points",
          "Failed Test Points", "Duration", "Aborted", "Last Author");
@@ -342,7 +342,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
       excelWriter.endSheet();
    }
 
-   private void writeStatusSheet(Collection<Artifact> requirements) throws IOException, OseeCoreException {
+   private void writeStatusSheet(Collection<Artifact> requirements) throws IOException {
       excelWriter.startSheet("SW Req Status", 256);
       excelWriter.writeRow(null, null, null, null, "Hours per UI per RPCR", "=4");
       excelWriter.writeRow(null, null, null, null, "Hours to integrate all scripts for a UI", "=11");
@@ -413,7 +413,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
       sumFormula.setCharAt(sumFormula.length() - 1, ')');
    }
 
-   private void processTestScriptsAndProcedures(Artifact requirement, String[] statusLine) throws OseeCoreException {
+   private void processTestScriptsAndProcedures(Artifact requirement, String[] statusLine) {
       Collection<String> scripts = requirementToCodeUnitsMap.getValues(requirement);
       if (scripts == null) {
          if (requirement.isOfType(CoreArtifactTypes.IndirectSoftwareRequirement) || requirement.isOfType(
@@ -473,7 +473,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
 
    }
 
-   private void writeRequirementStatusLines(Artifact requirement) throws OseeCoreException, IOException {
+   private void writeRequirementStatusLines(Artifact requirement) throws IOException {
       statusLines.clear();
       testPocs.clear();
       requirementPocs.clear();
@@ -562,7 +562,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
 
    }
 
-   private void loadTasksFromWorkflow(TeamWorkFlowArtifact workflow) throws OseeCoreException {
+   private void loadTasksFromWorkflow(TeamWorkFlowArtifact workflow) {
       Collection<TaskArtifact> tasks = workflow.getTaskArtifacts();
       String legacyId = workflow.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "");
 
@@ -602,7 +602,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
    }
 
    @Override
-   public String getXWidgetsXml() throws OseeCoreException {
+   public String getXWidgetsXml() {
       StringBuilder sb = new StringBuilder();
       sb.append("<xWidgets>");
       sb.append("<XWidget xwidgetType=\"XAtsProgramComboWidget\" horizontalLabel=\"true\" displayName=\"Program\" />");

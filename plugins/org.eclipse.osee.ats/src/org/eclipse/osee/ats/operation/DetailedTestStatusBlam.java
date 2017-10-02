@@ -184,7 +184,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
          scriptName.length() - ".java".length());
    }
 
-   private void loadTestRunArtifacts(BranchId scriptsBranch, IProgressMonitor monitor) throws OseeCoreException {
+   private void loadTestRunArtifacts(BranchId scriptsBranch, IProgressMonitor monitor) {
       monitor.subTask("Loading Test Run Artifacts");
       Collection<Artifact> testRuns =
          ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.TestRun, scriptsBranch, DeletionFlag.EXCLUDE_DELETED);
@@ -300,7 +300,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
       return ready;
    }
 
-   private void writeTestScriptSheet(List<Artifact> testCases, IProgressMonitor monitor) throws IOException, OseeCoreException {
+   private void writeTestScriptSheet(List<Artifact> testCases, IProgressMonitor monitor) throws IOException {
       monitor.subTask("Writing test script sheet");
       excelWriter.startSheet("Scripts", 8);
       excelWriter.writeRow("Category", CoreArtifactTypes.TestCase.getName(), "Run Date", "Total Test Points",
@@ -346,7 +346,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
       excelWriter.endSheet();
    }
 
-   private void writeStatusSheet(Collection<Artifact> requirements, IProgressMonitor monitor) throws IOException, OseeCoreException {
+   private void writeStatusSheet(Collection<Artifact> requirements, IProgressMonitor monitor) throws IOException {
       monitor.subTask("Writing status sheet");
       excelWriter.startSheet("SW Req Status", 256);
       excelWriter.writeRow(null, null, null, null, "Hours per UI per RPCR", "=4");
@@ -426,7 +426,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
       sumFormula.setCharAt(sumFormula.length() - 1, ')');
    }
 
-   private void processTestScriptsAndProcedures(Artifact requirement, String[] statusLine) throws OseeCoreException {
+   private void processTestScriptsAndProcedures(Artifact requirement, String[] statusLine) {
       Collection<Artifact> scripts = requirement.getRelatedArtifacts(CoreRelationTypes.Verification__Verifier);
       if (scripts.isEmpty()) {
          if (requirement.isOfType(CoreArtifactTypes.IndirectSoftwareRequirement) || requirement.isOfType(
@@ -487,7 +487,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
       addTestProcedureNames(requirement.getName());
    }
 
-   private void writeRequirementStatusLines(Artifact requirement) throws OseeCoreException, IOException {
+   private void writeRequirementStatusLines(Artifact requirement) throws IOException {
       statusLines.clear();
       testPocs.clear();
       requirementPocs.clear();
@@ -521,7 +521,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
       }
    }
 
-   private HashCollection<String, Artifact> getTestProcedureTraceability(BranchId testProcedureBranch, IProgressMonitor monitor) throws OseeCoreException {
+   private HashCollection<String, Artifact> getTestProcedureTraceability(BranchId testProcedureBranch, IProgressMonitor monitor) {
       monitor.subTask("Gathering test procedures");
       HashCollection<String, Artifact> requirementNameToTestProcedures = new HashCollection<>();
       // Map Software Requirements from TestProcedure IOseeBranch to Requirements IOseeBranch
@@ -612,7 +612,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
       }
    }
 
-   private void loadTasksFromWorkflow(TeamWorkFlowArtifact workflow) throws OseeCoreException {
+   private void loadTasksFromWorkflow(TeamWorkFlowArtifact workflow) {
       Collection<TaskArtifact> tasks = workflow.getTaskArtifacts();
       AtsTaskCache.decache(workflow);
 

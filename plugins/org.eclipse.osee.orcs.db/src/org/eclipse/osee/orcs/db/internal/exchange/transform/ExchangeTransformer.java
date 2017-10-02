@@ -61,7 +61,7 @@ public class ExchangeTransformer {
       transformers = null;
    }
 
-   public Version getExchangeManifestVersion() throws OseeCoreException {
+   public Version getExchangeManifestVersion()  {
       ManifestVersionRule versionRule = new ManifestVersionRule();
       versionRule.setReplaceVersion(false);
       processor.transform(ExportItem.EXPORT_MANIFEST, versionRule);

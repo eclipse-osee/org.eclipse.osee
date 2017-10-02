@@ -45,7 +45,7 @@ public class AtsTaskCache {
       }
    }
 
-   public static Collection<TaskArtifact> getTaskArtifacts(TeamWorkFlowArtifact sma) throws OseeCoreException {
+   public static Collection<TaskArtifact> getTaskArtifacts(TeamWorkFlowArtifact sma)  {
       Collection<TaskArtifact> tasks = teamTasksCache.get(sma);
       if (tasks == null || containsDeleted(tasks)) {
          //         System.out.println("caching tasks for " + sma.toStringWithId());

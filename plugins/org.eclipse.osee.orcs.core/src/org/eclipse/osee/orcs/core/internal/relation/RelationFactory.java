@@ -40,18 +40,18 @@ public class RelationFactory {
       return new Relation(relationTypes, data);
    }
 
-   public Relation createRelation(RelationNode aNode, RelationTypeId type, RelationNode bNode) throws OseeCoreException {
+   public Relation createRelation(RelationNode aNode, RelationTypeId type, RelationNode bNode)  {
       return createRelation(aNode, type, bNode, "");
    }
 
-   public Relation createRelation(RelationNode aNode, RelationTypeId type, RelationNode bNode, String rationale) throws OseeCoreException {
+   public Relation createRelation(RelationNode aNode, RelationTypeId type, RelationNode bNode, String rationale)  {
       OrcsConditions.checkBranch(aNode, bNode);
       OrcsConditions.checkRelateSelf(aNode, bNode);
       RelationData data = relationDataFactory.createRelationData(type, aNode.getBranch(), aNode, bNode, rationale);
       return createRelation(data);
    }
 
-   public Relation clone(Relation src) throws OseeCoreException {
+   public Relation clone(Relation src)  {
       RelationData data = relationDataFactory.clone(src.getOrcsData());
       return createRelation(data);
    }

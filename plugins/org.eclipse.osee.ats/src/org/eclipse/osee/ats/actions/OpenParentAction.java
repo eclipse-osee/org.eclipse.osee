@@ -33,7 +33,7 @@ public class OpenParentAction extends AbstractAtsAction {
    }
 
    @Override
-   public void runWithException() throws OseeCoreException {
+   public void runWithException()  {
       AtsUtil.openATSAction(sma.getParentAWA(), AtsOpenOption.OpenOneOrPopupSelect);
    }
 

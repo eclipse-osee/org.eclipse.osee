@@ -96,7 +96,7 @@ public class MergeCompoundContributionItem extends CompoundContributionProvider 
       return contributionItems.toArray(new IContributionItem[0]);
    }
 
-   private CommandContributionItem createCommand(Long branchUuid, String commandId) throws OseeCoreException {
+   private CommandContributionItem createCommand(Long branchUuid, String commandId)  {
       Map<String, String> parameters = new HashMap<>();
       parameters.put(BranchView.BRANCH_ID, Long.toString(branchUuid));
       CommandContributionItem contributionItem;

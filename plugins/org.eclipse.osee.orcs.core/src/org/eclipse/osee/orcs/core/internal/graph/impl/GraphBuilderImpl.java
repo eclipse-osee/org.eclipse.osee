@@ -61,19 +61,19 @@ public class GraphBuilderImpl extends LoadDataHandlerAdapter implements GraphBui
       graph = null;
    }
 
-   private GraphData getGraph() throws OseeCoreException {
+   private GraphData getGraph()  {
       Conditions.checkNotNull(graph, "graph");
       return graph;
    }
 
    @Override
-   public void onLoadDescription(LoadDescription data) throws OseeCoreException {
+   public void onLoadDescription(LoadDescription data)  {
       graph = graphProvider.getGraph(data.getSession(), data.getBranch(), data.getTransaction());
       Conditions.checkNotNull(graph, "graph");
    };
 
    @Override
-   public void onData(ArtifactData data) throws OseeCoreException {
+   public void onData(ArtifactData data)  {
       GraphData graph = getGraph();
       Artifact artifact = graph.getNode(data);
       if (artifact == null) {
@@ -87,7 +87,7 @@ public class GraphBuilderImpl extends LoadDataHandlerAdapter implements GraphBui
    }
 
    @Override
-   public void onData(AttributeData data) throws OseeCoreException {
+   public void onData(AttributeData data)  {
       GraphData graph = getGraph();
       AttributeManager container = graph.getNode(data.getArtifactId());
       if (container == null) {
@@ -98,7 +98,7 @@ public class GraphBuilderImpl extends LoadDataHandlerAdapter implements GraphBui
    }
 
    @Override
-   public void onData(RelationData data) throws OseeCoreException {
+   public void onData(RelationData data)  {
       GraphData graph = getGraph();
 
       RelationNodeAdjacencies aAdjacencies = getAdjacencies(graph, data.getArtIdA());
@@ -115,7 +115,7 @@ public class GraphBuilderImpl extends LoadDataHandlerAdapter implements GraphBui
       bAdjacencies.add(relationType, relation);
    }
 
-   private Relation findRelation(RelationNodeAdjacencies adjacencies, RelationData data) throws OseeCoreException {
+   private Relation findRelation(RelationNodeAdjacencies adjacencies, RelationData data)  {
       RelationTypeId relationType = RelationTypeId.valueOf(data.getTypeUuid());
       return adjacencies.getRelation(data.getArtIdA(), relationType, data.getArtIdB());
    }

@@ -27,14 +27,14 @@ public class WordmlPicture {
    private static final boolean DEBUG =
       "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Word"));
 
-   public WordmlPicture(int pictureStartIndex, String pictureDefinition, String document, Attribute<?> attribute) throws OseeCoreException {
+   public WordmlPicture(int pictureStartIndex, String pictureDefinition, String document, Attribute<?> attribute)  {
       this.pictureStartIndex = pictureStartIndex;
       this.pictureDefinition = pictureDefinition;
       this.attribute = attribute;
       findBinaryData(document);
    }
 
-   private String getArtifactGuid() throws OseeStateException {
+   private String getArtifactGuid()  {
       String id = "";
 
       if (attribute != null) {
@@ -43,7 +43,7 @@ public class WordmlPicture {
       return id;
    }
 
-   private void findBinaryData(String document) throws OseeCoreException {
+   private void findBinaryData(String document)  {
       if (pictureDefinition.contains("<v:textbox ") || pictureDefinition.contains(
          "<v:rect ") || pictureDefinition.contains("<v:line ")) {
          //ignore this case

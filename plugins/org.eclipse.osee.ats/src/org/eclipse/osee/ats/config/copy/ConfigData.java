@@ -91,7 +91,7 @@ public class ConfigData {
       this.persistChanges = persistChanges;
    }
 
-   public IAtsTeamDefinition getParentTeamDef() throws OseeCoreException {
+   public IAtsTeamDefinition getParentTeamDef()  {
       IAtsTeamDefinition parentTeamDef = null;
       if (teamDef.getParentTeamDef() != null) {
          parentTeamDef = teamDef.getParentTeamDef();
@@ -101,7 +101,7 @@ public class ConfigData {
       return parentTeamDef;
    }
 
-   public IAtsActionableItem getParentActionableItem() throws OseeCoreException {
+   public IAtsActionableItem getParentActionableItem()  {
       IAtsActionableItem parentActionableItem = null;
       // Determine parent actionable item if possible, otherwise use top actionable item
       Collection<IAtsActionableItem> fromAias = teamDef.getActionableItems();

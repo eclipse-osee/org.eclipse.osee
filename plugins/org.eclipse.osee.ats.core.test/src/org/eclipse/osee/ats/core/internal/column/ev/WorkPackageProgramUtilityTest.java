@@ -28,13 +28,13 @@ public class WorkPackageProgramUtilityTest extends AbstractWorkPackageUtilityTes
 
    @Override
    @Before
-   public void setup() throws OseeCoreException {
+   public void setup()  {
       super.setup();
       util = new WorkPackageProgramColumn(earnedValueServiceProvider, null);
    }
 
    @Test
-   public void testGetColumnText() throws OseeCoreException {
+   public void testGetColumnText()  {
       when(workPkg.getWorkPackageProgram()).thenReturn("");
       Assert.assertEquals("", util.getColumnText(workItem));
 

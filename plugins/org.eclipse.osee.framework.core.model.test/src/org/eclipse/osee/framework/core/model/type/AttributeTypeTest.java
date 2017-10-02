@@ -24,7 +24,7 @@ public class AttributeTypeTest {
    }
    //
    //   @Override
-   //   public void testDirty() throws OseeCoreException {
+   //   public void testDirty()  {
    //      AttributeType attributeType = OseeTypesUtil.createAttributeType(attrCache, factory, "GUID", "AttributeDirtyTest");
    //      Assert.assertTrue(attributeType.isDirty());
    //      attributeType.clearDirty();

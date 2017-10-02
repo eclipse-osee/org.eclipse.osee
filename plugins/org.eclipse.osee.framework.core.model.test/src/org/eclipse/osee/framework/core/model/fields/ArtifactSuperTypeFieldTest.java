@@ -47,7 +47,7 @@ public class ArtifactSuperTypeFieldTest {
    }
 
    @Test
-   public void testSetGet() throws OseeCoreException {
+   public void testSetGet()  {
       List<ArtifactType> input = new ArrayList<>();
       ArtifactSuperTypeField field = new ArtifactSuperTypeField(containingArt, input);
       Assert.assertEquals(false, field.isDirty());
@@ -71,7 +71,7 @@ public class ArtifactSuperTypeFieldTest {
    }
 
    @Test(expected = OseeInvalidInheritanceException.class)
-   public void testBaseCircularity() throws OseeCoreException {
+   public void testBaseCircularity()  {
       List<ArtifactType> input = new ArrayList<>();
       ArtifactSuperTypeField field = new ArtifactSuperTypeField(containingArt, input);
       Assert.assertEquals(false, field.isDirty());
@@ -80,7 +80,7 @@ public class ArtifactSuperTypeFieldTest {
    }
 
    @Test(expected = OseeInvalidInheritanceException.class)
-   public void testBaseArtifact() throws OseeCoreException {
+   public void testBaseArtifact()  {
       List<ArtifactType> input = new ArrayList<>();
       ArtifactSuperTypeField field = new ArtifactSuperTypeField(containingArt, input);
       Assert.assertEquals(false, field.isDirty());
@@ -89,7 +89,7 @@ public class ArtifactSuperTypeFieldTest {
    }
 
    @Test
-   public void testBaseArtifactNoSuperTypeRequired() throws OseeCoreException {
+   public void testBaseArtifactNoSuperTypeRequired()  {
       List<ArtifactType> input = new ArrayList<>();
       ArtifactSuperTypeField field = new ArtifactSuperTypeField(base, input);
       Assert.assertEquals(false, field.isDirty());

@@ -307,7 +307,7 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
       }
    }
 
-   private void removeUserRoleHelper(List<UserRole> items, IAtsChangeSet changes) throws OseeCoreException {
+   private void removeUserRoleHelper(List<UserRole> items, IAtsChangeSet changes)  {
       for (UserRole userRole : items) {
          roleMgr.removeUserRole(userRole);
          roleMgr.saveToArtifact(changes);

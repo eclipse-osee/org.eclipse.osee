@@ -69,7 +69,7 @@ public class CacheUpdateCommand implements ConsoleCommand {
       }
 
       @Override
-      public Boolean call() throws OseeCoreException {
+      public Boolean call()  {
          OrcsTypes orcsTypes = getOrcTypes();
          orcsTypes.invalidateAll();
          console.writeln("Type caches invalidated.");

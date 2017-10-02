@@ -217,7 +217,7 @@ public class DefectXViewerMenu {
       return defectXViewer.isEditable();
    }
 
-   public boolean promptChangeData(XViewerColumn xCol, Collection<ReviewDefectItem> defectItems, boolean columnMultiEdit) throws OseeCoreException {
+   public boolean promptChangeData(XViewerColumn xCol, Collection<ReviewDefectItem> defectItems, boolean columnMultiEdit)  {
       boolean modified = false;
       if (defectItems != null && !defectItems.isEmpty()) {
          ReviewDefectItem defectItem = (ReviewDefectItem) defectItems.toArray()[0];
@@ -256,7 +256,7 @@ public class DefectXViewerMenu {
       return modified;
    }
 
-   private boolean handleUserCol(Collection<ReviewDefectItem> defectItems, boolean modified) throws OseeCoreException {
+   private boolean handleUserCol(Collection<ReviewDefectItem> defectItems, boolean modified)  {
       UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select New User",
          AtsClientService.get().getUserServiceClient().getOseeUsersSorted(Active.Active));
       int result = ld.open();
@@ -323,7 +323,7 @@ public class DefectXViewerMenu {
       return modified;
    }
 
-   public boolean executeTransaction(Collection<ReviewDefectItem> defectItems) throws OseeCoreException {
+   public boolean executeTransaction(Collection<ReviewDefectItem> defectItems)  {
       Artifact revewArt = (Artifact) review.getStoreObject();
       SkynetTransaction transaction =
          TransactionManager.createTransaction(revewArt.getBranch(), "Modify Review Defects");
@@ -354,7 +354,7 @@ public class DefectXViewerMenu {
       return modified;
    }
 
-   private boolean setUser(Collection<ReviewDefectItem> defectItems, User user) throws OseeCoreException {
+   private boolean setUser(Collection<ReviewDefectItem> defectItems, User user)  {
       boolean modified = false;
       for (ReviewDefectItem defectItem : defectItems) {
          if (!defectItem.getUser().equals(user)) {

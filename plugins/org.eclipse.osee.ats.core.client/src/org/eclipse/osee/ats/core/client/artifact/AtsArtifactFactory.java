@@ -81,7 +81,7 @@ public class AtsArtifactFactory extends ArtifactFactory {
    }
 
    @Override
-   public Artifact getArtifactInstance(Long id, String guid, BranchId branch, ArtifactTypeId artifactType, boolean inDataStore) throws OseeCoreException {
+   public Artifact getArtifactInstance(Long id, String guid, BranchId branch, ArtifactTypeId artifactType, boolean inDataStore)  {
       Artifact toReturn;
       if (artifactType.equals(Task)) {
          toReturn = new TaskArtifact(id, guid, branch, artifactType);

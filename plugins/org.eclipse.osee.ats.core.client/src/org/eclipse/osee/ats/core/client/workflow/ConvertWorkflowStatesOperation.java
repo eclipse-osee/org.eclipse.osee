@@ -117,7 +117,7 @@ public class ConvertWorkflowStatesOperation extends AbstractOperation {
       return true;
    }
 
-   private void convertLogStates(AbstractWorkflowArtifact awa) throws OseeCoreException {
+   private void convertLogStates(AbstractWorkflowArtifact awa)  {
       String logStr = awa.getSoleAttributeValue(AtsAttributeTypes.Log, "");
       String resultLogStr = logStr;
       for (Entry<String, String> fromToState : fromStateToStateMap.entrySet()) {
@@ -132,7 +132,7 @@ public class ConvertWorkflowStatesOperation extends AbstractOperation {
    }
 
    @SuppressWarnings("deprecation")
-   private void convertStateAttributes(AbstractWorkflowArtifact awa, AttributeTypeToken attrType) throws OseeCoreException {
+   private void convertStateAttributes(AbstractWorkflowArtifact awa, AttributeTypeToken attrType)  {
       for (Attribute<Object> attribute : awa.getAttributes(attrType)) {
          for (Entry<String, String> fromToState : fromStateToStateMap.entrySet()) {
             if (((String) attribute.getValue()).startsWith(fromToState.getKey() + ";")) {
@@ -145,23 +145,23 @@ public class ConvertWorkflowStatesOperation extends AbstractOperation {
       }
    }
 
-   private void convertCurrentState(AbstractWorkflowArtifact awa) throws OseeCoreException {
+   private void convertCurrentState(AbstractWorkflowArtifact awa)  {
       convertStateAttributes(awa, AtsAttributeTypes.CurrentState);
    }
 
-   private void convertStates(AbstractWorkflowArtifact awa) throws OseeCoreException {
+   private void convertStates(AbstractWorkflowArtifact awa)  {
       convertStateAttributes(awa, AtsAttributeTypes.State);
    }
 
-   private void convertCompletedFromState(AbstractWorkflowArtifact awa) throws OseeCoreException {
+   private void convertCompletedFromState(AbstractWorkflowArtifact awa)  {
       convertExactMatchAttributeValue(awa, AtsAttributeTypes.CompletedFromState);
    }
 
-   private void convertCancelledFromState(AbstractWorkflowArtifact awa) throws OseeCoreException {
+   private void convertCancelledFromState(AbstractWorkflowArtifact awa)  {
       convertExactMatchAttributeValue(awa, AtsAttributeTypes.CancelledFromState);
    }
 
-   private void convertExactMatchAttributeValue(AbstractWorkflowArtifact awa, AttributeTypeToken attrType) throws OseeCoreException {
+   private void convertExactMatchAttributeValue(AbstractWorkflowArtifact awa, AttributeTypeToken attrType)  {
       @SuppressWarnings("deprecation")
       List<Attribute<Object>> attributes = awa.getAttributes(attrType);
       if (attributes != null && !attributes.isEmpty()) {

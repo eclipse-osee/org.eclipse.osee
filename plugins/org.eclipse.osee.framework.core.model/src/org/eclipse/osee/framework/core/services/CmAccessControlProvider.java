@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface CmAccessControlProvider {
 
-   CmAccessControl getService(ArtifactToken user, Object object) throws OseeCoreException;
+   CmAccessControl getService(ArtifactToken user, Object object) ;
 
    void setDefaultAccessControl(CmAccessControl defaultAccessControl);
 }

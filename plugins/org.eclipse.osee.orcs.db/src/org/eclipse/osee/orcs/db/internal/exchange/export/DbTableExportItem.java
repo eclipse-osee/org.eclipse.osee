@@ -62,7 +62,7 @@ public class DbTableExportItem extends AbstractXmlExportItem {
       return jdbcClient;
    }
 
-   protected String exportBinaryDataTo(File tempFolder, String uriTarget) throws OseeCoreException, IOException {
+   protected String exportBinaryDataTo(File tempFolder, String uriTarget) throws IOException {
       tempFolder = new File(tempFolder + File.separator + ExportImportXml.RESOURCE_FOLDER_NAME);
       if (tempFolder.exists() != true) {
          tempFolder.mkdirs();
@@ -190,7 +190,7 @@ public class DbTableExportItem extends AbstractXmlExportItem {
       return toReturn;
    }
 
-   private void handleBinaryContent(Appendable appendable, Object value) throws OseeCoreException, IOException {
+   private void handleBinaryContent(Appendable appendable, Object value) throws IOException {
       String uriData = (String) value;
       if (Strings.isValid(uriData)) {
          uriData = exportBinaryDataTo(getWriteLocation(), uriData);
@@ -200,7 +200,7 @@ public class DbTableExportItem extends AbstractXmlExportItem {
       }
    }
 
-   private void handleTypeId(Appendable appendable, Object value) throws IOException, OseeCoreException {
+   private void handleTypeId(Appendable appendable, Object value) throws IOException {
       long typeId = -1;
       if (value instanceof Short) {
          Short xShort = (Short) value;

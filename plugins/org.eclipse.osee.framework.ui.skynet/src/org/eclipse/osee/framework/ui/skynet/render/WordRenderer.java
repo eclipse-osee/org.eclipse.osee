@@ -45,7 +45,7 @@ public abstract class WordRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public Program getAssociatedProgram(Artifact artifact) throws OseeCoreException {
+   public Program getAssociatedProgram(Artifact artifact)  {
       if (wordApp == null) {
          throw new OseeStateException("No program associated with the extension .doc");
       }

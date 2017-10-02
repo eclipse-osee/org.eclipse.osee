@@ -17,5 +17,5 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  * @author Wilik Karol
  */
 public interface IChangeWorker {
-   public void revert() throws OseeCoreException;
+   public void revert() ;
 }

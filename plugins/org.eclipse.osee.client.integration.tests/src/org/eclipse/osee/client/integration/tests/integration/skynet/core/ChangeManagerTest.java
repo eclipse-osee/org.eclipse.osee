@@ -94,7 +94,7 @@ public class ChangeManagerTest {
       BranchManager.purgeBranch(branch);
    }
 
-   public static boolean checkArtifactModType(Artifact artifact, ModificationType modificationType) throws OseeCoreException {
+   public static boolean checkArtifactModType(Artifact artifact, ModificationType modificationType)  {
       boolean pass = false;
       Collection<Change> changes = new ArrayList<>();
       IOperation operation = ChangeManager.comparedToParent(artifact.getBranch(), changes);

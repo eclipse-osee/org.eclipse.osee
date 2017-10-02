@@ -37,7 +37,7 @@ public class ArtifactTypeSearchItem extends WorldUISearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
+   public Collection<Artifact> performSearch(SearchType searchType)  {
       Conditions.checkNotNull(artifactType, getName());
       return ArtifactQuery.getArtifactListFromType(artifactType, AtsClientService.get().getAtsBranch());
    }

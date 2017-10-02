@@ -34,12 +34,12 @@ public interface IResourceLocatorProvider {
     * 
     * @return a resource locator
     */
-   IResourceLocator generateResourceLocator(String seed, String name) throws OseeCoreException;
+   IResourceLocator generateResourceLocator(String seed, String name) ;
 
    /**
     * Get resource locator
     * 
     * @return a resource locator
     */
-   IResourceLocator getResourceLocator(String path) throws OseeCoreException;
+   IResourceLocator getResourceLocator(String path) ;
 }

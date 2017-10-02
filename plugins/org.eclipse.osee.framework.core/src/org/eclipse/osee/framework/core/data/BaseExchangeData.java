@@ -36,7 +36,7 @@ public class BaseExchangeData implements Serializable {
     * 
     * @param xml inputStream
     */
-   protected void loadfromXml(InputStream inputStream) throws OseeCoreException {
+   protected void loadfromXml(InputStream inputStream)  {
       try {
          PropertyStoreWriter writer = new PropertyStoreWriter();
          writer.load(backingData, inputStream);
@@ -48,7 +48,7 @@ public class BaseExchangeData implements Serializable {
    /**
     * Write to output stream
     */
-   public void write(OutputStream outputStream) throws OseeCoreException {
+   public void write(OutputStream outputStream)  {
       try {
          PropertyStoreWriter writer = new PropertyStoreWriter();
          writer.save(backingData, outputStream);

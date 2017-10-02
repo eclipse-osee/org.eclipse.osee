@@ -23,7 +23,7 @@ import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 public class RelationTypeNotExistsSqlHandler extends AbstractRelationSqlHandler<CriteriaRelationTypeNotExists> {
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
+   public boolean addPredicates(AbstractSqlWriter writer)  {
       super.addPredicates(writer);
 
       IRelationType type = criteria.getType();

@@ -82,7 +82,7 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    }
 
    @Override
-   public void setLoaded(boolean value) throws OseeCoreException {
+   public void setLoaded(boolean value)  {
       this.isLoaded = value;
       if (value == true) {
          onLoaded();
@@ -113,7 +113,7 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    }
 
    @Override
-   public int getMaximumAttributeTypeAllowed(AttributeTypeId attributeType) throws OseeCoreException {
+   public int getMaximumAttributeTypeAllowed(AttributeTypeId attributeType)  {
       int result = -1;
       if (isAttributeTypeValid(attributeType)) {
          result = attributeFactory.getMaxOccurrenceLimit(attributeType);
@@ -122,7 +122,7 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    }
 
    @Override
-   public int getMinimumAttributeTypeAllowed(AttributeTypeId attributeType) throws OseeCoreException {
+   public int getMinimumAttributeTypeAllowed(AttributeTypeId attributeType)  {
       int result = -1;
       if (isAttributeTypeValid(attributeType)) {
          result = attributeFactory.getMinOccurrenceLimit(attributeType);
@@ -131,23 +131,23 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    }
 
    @Override
-   public Collection<AttributeTypeToken> getExistingAttributeTypes() throws OseeCoreException {
+   public Collection<AttributeTypeToken> getExistingAttributeTypes()  {
       ensureAttributesLoaded();
       return attributes.getExistingTypes(DeletionFlag.EXCLUDE_DELETED);
    }
 
    @Override
-   public int getAttributeCount(AttributeTypeId attributeType) throws OseeCoreException {
+   public int getAttributeCount(AttributeTypeId attributeType)  {
       return getAttributesExcludeDeleted(attributeType).size();
    }
 
    @Override
-   public Attribute<Object> getAttributeById(AttributeId attributeId) throws OseeCoreException {
+   public Attribute<Object> getAttributeById(AttributeId attributeId)  {
       return getAttributeById(attributeId, DeletionFlag.EXCLUDE_DELETED);
    }
 
    @Override
-   public Attribute<Object> getAttributeById(AttributeId attributeId, DeletionFlag includeDeleted) throws OseeCoreException {
+   public Attribute<Object> getAttributeById(AttributeId attributeId, DeletionFlag includeDeleted)  {
       Attribute<Object> attribute = null;
       Optional<Attribute<Object>> tryFind =
          Iterables.tryFind(getAttributes(includeDeleted), OrcsPredicates.attributeId(attributeId));
@@ -160,17 +160,17 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    }
 
    @Override
-   public List<Attribute<Object>> getAttributes() throws OseeCoreException {
+   public List<Attribute<Object>> getAttributes()  {
       return getAttributesExcludeDeleted();
    }
 
    @Override
-   public <T> List<Attribute<T>> getAttributes(AttributeTypeId attributeType) throws OseeCoreException {
+   public <T> List<Attribute<T>> getAttributes(AttributeTypeId attributeType)  {
       return getAttributesExcludeDeleted(attributeType);
    }
 
    @Override
-   public <T> List<T> getAttributeValues(AttributeTypeId attributeType) throws OseeCoreException {
+   public <T> List<T> getAttributeValues(AttributeTypeId attributeType)  {
       List<Attribute<T>> attributes = getAttributesExcludeDeleted(attributeType);
 
       List<T> values = new LinkedList<>();
@@ -184,22 +184,22 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    }
 
    @Override
-   public int getAttributeCount(AttributeTypeId attributeType, DeletionFlag includeDeleted) throws OseeCoreException {
+   public int getAttributeCount(AttributeTypeId attributeType, DeletionFlag includeDeleted)  {
       return getAttributesHelper(attributeType, includeDeleted).size();
    }
 
    @Override
-   public List<Attribute<Object>> getAttributes(DeletionFlag includeDeleted) throws OseeCoreException {
+   public List<Attribute<Object>> getAttributes(DeletionFlag includeDeleted)  {
       return getAttributesHelper(includeDeleted);
    }
 
    @Override
-   public <T> List<Attribute<T>> getAttributes(AttributeTypeId attributeType, DeletionFlag includeDeleted) throws OseeCoreException {
+   public <T> List<Attribute<T>> getAttributes(AttributeTypeId attributeType, DeletionFlag includeDeleted)  {
       return getAttributesHelper(attributeType, includeDeleted);
    }
 
    @Override
-   public String getSoleAttributeAsString(AttributeTypeId attributeType, String defaultValue) throws OseeCoreException {
+   public String getSoleAttributeAsString(AttributeTypeId attributeType, String defaultValue)  {
       String toReturn = defaultValue;
       List<Attribute<Object>> items = getAttributesExcludeDeleted(attributeType);
       if (!items.isEmpty()) {
@@ -210,7 +210,7 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    }
 
    @Override
-   public String getSoleAttributeAsString(AttributeTypeId attributeType) throws OseeCoreException {
+   public String getSoleAttributeAsString(AttributeTypeId attributeType)  {
       String toReturn = null;
       Object value = getSoleAttributeValue(attributeType);
       if (value instanceof InputStream) {
@@ -255,7 +255,7 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    }
 
    @Override
-   public <T> T getSoleAttributeValue(AttributeTypeId attributeType, T defaultValue) throws OseeCoreException {
+   public <T> T getSoleAttributeValue(AttributeTypeId attributeType, T defaultValue)  {
       T value = defaultValue;
       Attribute<T> attribute = null;
       try {
@@ -269,52 +269,52 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    }
 
    @Override
-   public <T> void setSoleAttributeValue(AttributeTypeId attributeType, T value) throws OseeCoreException {
+   public <T> void setSoleAttributeValue(AttributeTypeId attributeType, T value)  {
       Attribute<T> attribute = getOrCreateSoleAttribute(attributeType);
       attribute.setValue(value);
    }
 
    @Override
-   public void setSoleAttributeFromString(AttributeTypeId attributeType, String value) throws OseeCoreException {
+   public void setSoleAttributeFromString(AttributeTypeId attributeType, String value)  {
       getOrCreateSoleAttribute(attributeType).setFromString(value);
    }
 
    @Override
-   public void setSoleAttributeFromStream(AttributeTypeId attributeType, InputStream inputStream) throws OseeCoreException {
+   public void setSoleAttributeFromStream(AttributeTypeId attributeType, InputStream inputStream)  {
       getOrCreateSoleAttribute(attributeType).setValueFromInputStream(inputStream);
    }
 
    @Override
-   public void setAttributesFromStrings(AttributeTypeId attributeType, String... values) throws OseeCoreException {
+   public void setAttributesFromStrings(AttributeTypeId attributeType, String... values)  {
       setAttributesFromStrings(attributeType, Arrays.asList(values));
    }
 
    @Override
-   public void setAttributesFromStrings(AttributeTypeId attributeType, Collection<String> values) throws OseeCoreException {
+   public void setAttributesFromStrings(AttributeTypeId attributeType, Collection<String> values)  {
       AttributeSetHelper<Object, String> attributeStringSetter = new FromStringAttributeSetHelper(attributes, this);
       setAttributesFromValuesHelper(attributeStringSetter, attributeType, values);
    }
 
    @Override
-   public <T> void setAttributesFromValues(AttributeTypeId attributeType, T... values) throws OseeCoreException {
+   public <T> void setAttributesFromValues(AttributeTypeId attributeType, T... values)  {
       setAttributesFromValues(attributeType, Arrays.asList(values));
    }
 
    @Override
-   public <T> void setAttributesFromValues(AttributeTypeId attributeType, Collection<T> values) throws OseeCoreException {
+   public <T> void setAttributesFromValues(AttributeTypeId attributeType, Collection<T> values)  {
       AttributeSetHelper<T, T> setter = new TypedValueAttributeSetHelper<>(attributes, this);
       setAttributesFromValuesHelper(setter, attributeType, values);
    }
 
    @Override
-   public void deleteAttributesByArtifact() throws OseeCoreException {
+   public void deleteAttributesByArtifact()  {
       for (Attribute<?> attribute : getAttributesIncludeDeleted()) {
          attribute.setArtifactDeleted();
       }
    }
 
    @Override
-   public void unDeleteAttributesByArtifact() throws OseeCoreException {
+   public void unDeleteAttributesByArtifact()  {
       for (Attribute<?> attribute : getAttributesIncludeDeleted()) {
          if (ModificationType.ARTIFACT_DELETED == attribute.getModificationType()) {
             attribute.unDelete();
@@ -323,7 +323,7 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    }
 
    @Override
-   public void deleteSoleAttribute(AttributeTypeId attributeType) throws OseeCoreException {
+   public void deleteSoleAttribute(AttributeTypeId attributeType)  {
       Attribute<?> attribute = getSoleAttribute(attributeType);
       if (attribute != null) {
          deleteAttribute(attribute);
@@ -331,14 +331,14 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
    }
 
    @Override
-   public void deleteAttributes(AttributeTypeId attributeType) throws OseeCoreException {
+   public void deleteAttributes(AttributeTypeId attributeType)  {
       for (Attribute<?> attribute : getAttributesIncludeDeleted(attributeType)) {
          attribute.delete();
       }
    }
 
    @Override
-   public void deleteAttributesWithValue(AttributeTypeId attributeType, Object value) throws OseeCoreException {
+   public void deleteAttributesWithValue(AttributeTypeId attributeType, Object value)  {
       for (Attribute<Object> attribute : getAttributesIncludeDeleted(attributeType)) {
          if (attribute.getValue().equals(value)) {
             deleteAttribute(attribute);
@@ -347,32 +347,32 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
       }
    }
 
-   private void deleteAttribute(Attribute<?> attribute) throws OseeCoreException {
+   private void deleteAttribute(Attribute<?> attribute)  {
       checkMultiplicityCanDelete(attribute.getAttributeType());
       attribute.delete();
    }
 
    @Override
-   public <T> Attribute<T> createAttribute(AttributeTypeId attributeType) throws OseeCoreException {
+   public <T> Attribute<T> createAttribute(AttributeTypeId attributeType)  {
       return internalCreateAttributeHelper(attributeType);
    }
 
    @Override
-   public <T> Attribute<T> createAttribute(AttributeTypeId attributeType, T value) throws OseeCoreException {
+   public <T> Attribute<T> createAttribute(AttributeTypeId attributeType, T value)  {
       Attribute<T> attribute = internalCreateAttributeHelper(attributeType);
       attribute.setValue(value);
       return attribute;
    }
 
    @Override
-   public <T> Attribute<T> createAttributeFromString(AttributeTypeId attributeType, String value) throws OseeCoreException {
+   public <T> Attribute<T> createAttributeFromString(AttributeTypeId attributeType, String value)  {
       Attribute<T> attribute = internalCreateAttributeHelper(attributeType);
       attribute.setFromString(value);
       return attribute;
    }
 
    //////////////////////////////////////////////////////////////
-   private <T> Attribute<T> internalCreateAttributeHelper(AttributeTypeId attributeType) throws OseeCoreException {
+   private <T> Attribute<T> internalCreateAttributeHelper(AttributeTypeId attributeType)  {
       checkTypeValid(attributeType);
       checkMultiplicityCanAdd(attributeType);
       Attribute<T> attr = attributeFactory.createAttributeWithDefaults(this, getOrcsData(), attributeType);
@@ -380,7 +380,7 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
       return attr;
    }
 
-   private <T> Attribute<T> getOrCreateSoleAttribute(AttributeTypeId attributeType) throws OseeCoreException {
+   private <T> Attribute<T> getOrCreateSoleAttribute(AttributeTypeId attributeType)  {
       ResultSet<Attribute<T>> result = attributes.getResultSet(attributeType, DeletionFlag.EXCLUDE_DELETED);
       Attribute<T> attribute = result.getAtMostOneOrNull();
       if (attribute == null) {
@@ -410,35 +410,35 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
 
    //////////////////////////////////////////////////////////////
 
-   private List<Attribute<Object>> getAttributesExcludeDeleted() throws OseeCoreException {
+   private List<Attribute<Object>> getAttributesExcludeDeleted()  {
       return getAttributesHelper(DeletionFlag.EXCLUDE_DELETED);
    }
 
-   private List<Attribute<Object>> getAttributesIncludeDeleted() throws OseeCoreException {
+   private List<Attribute<Object>> getAttributesIncludeDeleted()  {
       return getAttributesHelper(DeletionFlag.INCLUDE_DELETED);
    }
 
-   private <T> List<Attribute<T>> getAttributesExcludeDeleted(AttributeTypeId attributeType) throws OseeCoreException {
+   private <T> List<Attribute<T>> getAttributesExcludeDeleted(AttributeTypeId attributeType)  {
       return getAttributesHelper(attributeType, DeletionFlag.EXCLUDE_DELETED);
    }
 
-   private <T> List<Attribute<T>> getAttributesIncludeDeleted(AttributeTypeId attributeType) throws OseeCoreException {
+   private <T> List<Attribute<T>> getAttributesIncludeDeleted(AttributeTypeId attributeType)  {
       return getAttributesHelper(attributeType, DeletionFlag.INCLUDE_DELETED);
    }
 
-   private List<Attribute<Object>> getAttributesHelper(DeletionFlag includeDeleted) throws OseeCoreException {
+   private List<Attribute<Object>> getAttributesHelper(DeletionFlag includeDeleted)  {
       ensureAttributesLoaded();
       return Collections.castAll(attributes.getList(includeDeleted));
    }
 
-   private <T> List<Attribute<T>> getAttributesHelper(AttributeTypeId attributeType, DeletionFlag includeDeleted) throws OseeCoreException {
+   private <T> List<Attribute<T>> getAttributesHelper(AttributeTypeId attributeType, DeletionFlag includeDeleted)  {
       ensureAttributesLoaded();
       return attributes.getList(attributeType, includeDeleted);
    }
 
    //////////////////////////////////////////////////////////////
 
-   private <A, T> void setAttributesFromValuesHelper(AttributeSetHelper<A, T> helper, AttributeTypeId attributeType, Collection<T> values) throws OseeCoreException {
+   private <A, T> void setAttributesFromValuesHelper(AttributeSetHelper<A, T> helper, AttributeTypeId attributeType, Collection<T> values)  {
       ensureAttributesLoaded();
 
       Set<T> uniqueItems = new LinkedHashSet<>(values);
@@ -479,7 +479,7 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
 
    //////////////////////////////////////////////////////////////
 
-   private void checkTypeValid(AttributeTypeId attributeType) throws OseeCoreException {
+   private void checkTypeValid(AttributeTypeId attributeType)  {
       if (CoreAttributeTypes.Name.notEqual(attributeType)) {
          if (!isAttributeTypeValid(attributeType)) {
             throw new OseeArgumentException("The attribute type [%s] is not valid for artifacts [%s]", attributeType,
@@ -488,15 +488,15 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
       }
    }
 
-   private void checkMultiplicityCanAdd(AttributeTypeId attributeType) throws OseeCoreException {
+   private void checkMultiplicityCanAdd(AttributeTypeId attributeType)  {
       checkMultiplicity(attributeType, getAttributeCount(attributeType) + 1);
    }
 
-   private void checkMultiplicityCanDelete(AttributeTypeId attributeType) throws OseeCoreException {
+   private void checkMultiplicityCanDelete(AttributeTypeId attributeType)  {
       checkMultiplicity(attributeType, getAttributeCount(attributeType) - 1);
    }
 
-   private void checkMultiplicity(AttributeTypeId attributeType, int count) throws OseeCoreException {
+   private void checkMultiplicity(AttributeTypeId attributeType, int count)  {
       MultiplicityState state = getAttributeMuliplicityState(attributeType, count);
       switch (state) {
          case MAX_VIOLATION:
@@ -510,7 +510,7 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
       }
    }
 
-   private MultiplicityState getAttributeMuliplicityState(AttributeTypeId attributeType, int count) throws OseeCoreException {
+   private MultiplicityState getAttributeMuliplicityState(AttributeTypeId attributeType, int count)  {
       MultiplicityState state = MultiplicityState.IS_VALID;
       if (count > attributeFactory.getMaxOccurrenceLimit(attributeType)) {
          state = MultiplicityState.MAX_VIOLATION;
@@ -522,7 +522,7 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
 
    //////////////////////////////////////////////////////////////
 
-   private void onLoaded() throws OseeCoreException {
+   private void onLoaded()  {
       //      computeLastDateModified();
       meetMinimumAttributes();
    }
@@ -533,7 +533,7 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
       //      }
    }
 
-   private void meetMinimumAttributes() throws OseeCoreException {
+   private void meetMinimumAttributes()  {
       for (AttributeTypeId attributeType : getValidAttributeTypes()) {
          int missingCount = getRemainingAttributeCount(attributeType);
          for (int i = 0; i < missingCount; i++) {
@@ -544,7 +544,7 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
       }
    }
 
-   private final int getRemainingAttributeCount(AttributeTypeId attributeType) throws OseeCoreException {
+   private final int getRemainingAttributeCount(AttributeTypeId attributeType)  {
       int minLimit = attributeFactory.getMinOccurrenceLimit(attributeType);
       return minLimit - getAttributeCount(attributeType);
    }

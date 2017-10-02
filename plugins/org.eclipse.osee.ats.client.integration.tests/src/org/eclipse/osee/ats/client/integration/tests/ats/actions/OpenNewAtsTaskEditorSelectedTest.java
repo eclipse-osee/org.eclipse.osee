@@ -29,7 +29,7 @@ public class OpenNewAtsTaskEditorSelectedTest extends AbstractAtsActionRunTest {
       return new OpenNewAtsTaskEditorSelected(new IOpenNewAtsTaskEditorSelectedHandler() {
 
          @Override
-         public List<Artifact> getSelectedArtifacts() throws OseeCoreException {
+         public List<Artifact> getSelectedArtifacts()  {
             return Arrays.asList(AtsTestUtil.getTeamWf());
          }
 

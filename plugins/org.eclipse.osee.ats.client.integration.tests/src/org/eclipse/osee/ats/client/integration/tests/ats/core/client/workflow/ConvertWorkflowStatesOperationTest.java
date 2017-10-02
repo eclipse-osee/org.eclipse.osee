@@ -43,7 +43,7 @@ public class ConvertWorkflowStatesOperationTest {
 
    @BeforeClass
    @AfterClass
-   public static void cleanup() throws OseeCoreException {
+   public static void cleanup()  {
       SkynetTransaction transaction = TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(),
          "ConvertWorkflowStatesOperationTest.cleanup");
       for (Artifact art : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.TeamWorkflow,

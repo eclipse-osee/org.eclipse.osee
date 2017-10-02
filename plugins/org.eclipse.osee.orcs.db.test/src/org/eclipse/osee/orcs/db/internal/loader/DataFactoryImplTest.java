@@ -89,7 +89,7 @@ public class DataFactoryImplTest {
    private RelationData relData;
 
    @Before
-   public void setUp() throws OseeCoreException {
+   public void setUp()  {
       MockitoAnnotations.initMocks(this);
 
       guid = GUID.create();
@@ -142,7 +142,7 @@ public class DataFactoryImplTest {
    }
 
    @Test
-   public void testCreateArtifactDataUsingAbstratArtifactType() throws OseeCoreException {
+   public void testCreateArtifactDataUsingAbstratArtifactType()  {
       when(artifactTypeToken.toString()).thenReturn("artifactTypeToken");
       when(artifactCache.get(artifactTypeToken)).thenReturn(artifactTypeToken);
       when(artifactCache.isAbstract(artifactTypeToken)).thenReturn(true);
@@ -153,7 +153,7 @@ public class DataFactoryImplTest {
    }
 
    @Test
-   public void testCreateArtifactDataInvalidGuid() throws OseeCoreException {
+   public void testCreateArtifactDataInvalidGuid()  {
       when(artifactCache.get(artifactTypeToken)).thenReturn(artifactTypeToken);
       when(artifactCache.isAbstract(artifactTypeToken)).thenReturn(false);
       when(artifactTypeToken.toString()).thenReturn("artifactTypeToken");
@@ -167,7 +167,7 @@ public class DataFactoryImplTest {
    }
 
    @Test
-   public void testCreateArtifactData() throws OseeCoreException {
+   public void testCreateArtifactData()  {
       when(artifactCache.isAbstract(artifactTypeToken)).thenReturn(false);
       when(artifactTypeToken.getGuid()).thenReturn(4536L);
       when(idFactory.getUniqueGuid(guid)).thenReturn(guid);
@@ -195,7 +195,7 @@ public class DataFactoryImplTest {
    }
 
    @Test
-   public void testCreateArtifactDataGenerateGuid() throws OseeCoreException {
+   public void testCreateArtifactDataGenerateGuid()  {
       when(artifactCache.get(artifactTypeToken)).thenReturn(artifactTypeToken);
       when(artifactTypeToken.getGuid()).thenReturn(4536L);
       when(artifactCache.isAbstract(artifactTypeToken)).thenReturn(false);
@@ -223,7 +223,7 @@ public class DataFactoryImplTest {
    }
 
    @Test
-   public void testCreateAttributeData() throws OseeCoreException {
+   public void testCreateAttributeData()  {
       AttributeTypeId attributeType = mock(AttributeTypeId.class);
 
       when(attributeType.getId()).thenReturn(2389L);
@@ -254,7 +254,7 @@ public class DataFactoryImplTest {
    }
 
    @Test
-   public void testCreateRelationData() throws OseeCoreException {
+   public void testCreateRelationData()  {
       RelationTypeId relationType = RelationTypeId.valueOf(2389);
 
       ArtifactId aArt = ArtifactId.valueOf(4562);
@@ -283,7 +283,7 @@ public class DataFactoryImplTest {
    }
 
    @Test
-   public void testIntroduceArtifactData() throws OseeCoreException {
+   public void testIntroduceArtifactData()  {
       ArtifactData actual = dataFactory.introduce(COMMON, artData);
 
       VersionData actualVer = actual.getVersion();
@@ -304,7 +304,7 @@ public class DataFactoryImplTest {
    }
 
    @Test
-   public void testIntroduceAttributeData() throws OseeCoreException {
+   public void testIntroduceAttributeData()  {
       AttributeData actual = dataFactory.introduce(COMMON, attrData);
 
       VersionData actualVer = actual.getVersion();
@@ -330,7 +330,7 @@ public class DataFactoryImplTest {
    }
 
    @Test
-   public void testCopyArtifactData() throws OseeCoreException {
+   public void testCopyArtifactData()  {
       String newGuid = GUID.create();
       when(idFactory.getNextArtifactId()).thenReturn(987);
       when(idFactory.getUniqueGuid(null)).thenReturn(newGuid);
@@ -356,7 +356,7 @@ public class DataFactoryImplTest {
    }
 
    @Test
-   public void testCopyAttributeData() throws OseeCoreException {
+   public void testCopyAttributeData()  {
       AttributeData actual = dataFactory.copy(COMMON, attrData);
 
       VersionData actualVer = actual.getVersion();
@@ -382,7 +382,7 @@ public class DataFactoryImplTest {
    }
 
    @Test
-   public void testCloneArtifactData() throws OseeCoreException {
+   public void testCloneArtifactData()  {
       ArtifactData actual = dataFactory.clone(artData);
       VersionData actualVer = actual.getVersion();
 
@@ -405,7 +405,7 @@ public class DataFactoryImplTest {
    }
 
    @Test
-   public void testCloneAttributeData() throws OseeCoreException {
+   public void testCloneAttributeData()  {
       AttributeData actual = dataFactory.clone(attrData);
       verify(proxyFactory).createProxy(666L, expectedProxyValue, expectedProxyUri);
 
@@ -435,7 +435,7 @@ public class DataFactoryImplTest {
    }
 
    @Test
-   public void testCloneRelationData() throws OseeCoreException {
+   public void testCloneRelationData()  {
       RelationData actual = dataFactory.clone(relData);
       VersionData actualVer = actual.getVersion();
 

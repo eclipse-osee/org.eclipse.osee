@@ -50,7 +50,7 @@ public class AtsNoteTest {
    }
 
    @Test
-   public void testToAndFromStore() throws OseeCoreException {
+   public void testToAndFromStore()  {
       Date date = new Date();
       SimpleNoteStore store = new SimpleNoteStore();
       IAtsWorkItemNotes log = new AtsWorkItemNotes(store, services);

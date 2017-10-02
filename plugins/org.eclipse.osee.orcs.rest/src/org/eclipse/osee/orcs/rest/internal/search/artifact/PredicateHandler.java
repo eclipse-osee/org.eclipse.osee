@@ -19,5 +19,5 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
  * @author Roberto E. Escobar
  */
 public interface PredicateHandler {
-   QueryBuilder handle(QueryBuilder builder, Predicate predicate) throws OseeCoreException;
+   QueryBuilder handle(QueryBuilder builder, Predicate predicate) ;
 }

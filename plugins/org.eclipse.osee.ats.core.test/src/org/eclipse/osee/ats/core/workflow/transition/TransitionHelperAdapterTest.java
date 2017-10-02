@@ -51,7 +51,7 @@ public class TransitionHelperAdapterTest {
    TestTransitionHelper helper = null;
 
    @Before
-   public void setup() throws OseeCoreException {
+   public void setup()  {
       MockitoAnnotations.initMocks(this);
 
       helper = new TestTransitionHelper();
@@ -123,7 +123,7 @@ public class TransitionHelperAdapterTest {
       }
 
       @Override
-      public Collection<? extends IAtsUser> getToAssignees(IAtsWorkItem workItem) throws OseeCoreException {
+      public Collection<? extends IAtsUser> getToAssignees(IAtsWorkItem workItem)  {
          return null;
       }
 

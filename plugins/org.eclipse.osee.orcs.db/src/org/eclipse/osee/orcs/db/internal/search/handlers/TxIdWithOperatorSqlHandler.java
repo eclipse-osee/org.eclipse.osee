@@ -43,7 +43,7 @@ public class TxIdWithOperatorSqlHandler extends SqlHandler<CriteriaTxIdWithOpera
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
+   public boolean addPredicates(AbstractSqlWriter writer)  {
       Operator op = criteria.getOperator();
       int id = criteria.getId();
       writer.write(txAlias);

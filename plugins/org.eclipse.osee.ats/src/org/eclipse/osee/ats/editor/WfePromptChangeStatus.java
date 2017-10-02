@@ -41,7 +41,7 @@ public class WfePromptChangeStatus {
       this.awas = awas;
    }
 
-   public static boolean promptChangeStatus(Collection<? extends AbstractWorkflowArtifact> awas, boolean persist) throws OseeCoreException {
+   public static boolean promptChangeStatus(Collection<? extends AbstractWorkflowArtifact> awas, boolean persist)  {
       WfePromptChangeStatus promptChangeStatus = new WfePromptChangeStatus(awas);
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("Prompt Change Status");
       boolean result = promptChangeStatus.promptChangeStatus(changes).isTrue();
@@ -51,7 +51,7 @@ public class WfePromptChangeStatus {
       return result;
    }
 
-   public static Result isValidToChangeStatus(Collection<? extends AbstractWorkflowArtifact> awas) throws OseeCoreException {
+   public static Result isValidToChangeStatus(Collection<? extends AbstractWorkflowArtifact> awas)  {
       // Don't allow statusing for any canceled tasks
       for (AbstractWorkflowArtifact awa : awas) {
          if (awa.isCancelled()) {
@@ -79,7 +79,7 @@ public class WfePromptChangeStatus {
       return Result.TrueResult;
    }
 
-   public Result promptChangeStatus(IAtsChangeSet changes) throws OseeCoreException {
+   public Result promptChangeStatus(IAtsChangeSet changes)  {
       Result result = isValidToChangeStatus(awas);
       if (result.isFalse()) {
          AWorkbench.popup(result);
@@ -97,13 +97,13 @@ public class WfePromptChangeStatus {
       return Result.FalseResult;
    }
 
-   public static void performChangeStatusAndPersist(Collection<? extends IAtsWorkItem> workItems, String selectedOption, double hours, int percent, boolean splitHours) throws OseeCoreException {
+   public static void performChangeStatusAndPersist(Collection<? extends IAtsWorkItem> workItems, String selectedOption, double hours, int percent, boolean splitHours)  {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("ATS Prompt Change Status");
       performChangeStatus(workItems, selectedOption, hours, percent, splitHours, changes);
       changes.execute();
    }
 
-   public static void performChangeStatus(Collection<? extends IAtsWorkItem> workItems, String selectedOption, double hours, int percent, boolean splitHours, IAtsChangeSet changes) throws OseeCoreException {
+   public static void performChangeStatus(Collection<? extends IAtsWorkItem> workItems, String selectedOption, double hours, int percent, boolean splitHours, IAtsChangeSet changes)  {
       if (splitHours) {
          hours = hours / workItems.size();
       }

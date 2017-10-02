@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 public class AtsConfigAddDemoUsers implements IDbInitializationTask {
 
    @Override
-   public void run() throws OseeCoreException {
+   public void run()  {
       List<User> admins = new ArrayList<>();
 
       SkynetTransaction transaction = TransactionManager.createTransaction(COMMON, "Add Dev Users");

@@ -48,7 +48,7 @@ public class OrderAccessorTest {
    }
 
    @Test
-   public void testLoad() throws OseeCoreException {
+   public void testLoad()  {
       String storedData = "data";
       when(storage.getOrderData()).thenReturn(storedData);
 
@@ -59,7 +59,7 @@ public class OrderAccessorTest {
    }
 
    @Test
-   public void testStoreNotAccessible() throws OseeCoreException {
+   public void testStoreNotAccessible()  {
       String storedData = "data";
 
       when(storage.isAccessible()).thenReturn(false);
@@ -74,7 +74,7 @@ public class OrderAccessorTest {
    }
 
    @Test
-   public void testStoreEmptyData() throws OseeCoreException {
+   public void testStoreEmptyData()  {
       String storedData = "data";
 
       when(storage.isAccessible()).thenReturn(true);
@@ -89,7 +89,7 @@ public class OrderAccessorTest {
    }
 
    @Test
-   public void testStore() throws OseeCoreException {
+   public void testStore()  {
       String storedData = "data";
 
       when(storage.isAccessible()).thenReturn(true);

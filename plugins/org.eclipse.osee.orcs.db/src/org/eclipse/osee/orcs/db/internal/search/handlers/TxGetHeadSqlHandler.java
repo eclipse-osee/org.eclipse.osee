@@ -42,7 +42,7 @@ public class TxGetHeadSqlHandler extends SqlHandler<CriteriaTxGetHead> {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
+   public boolean addPredicates(AbstractSqlWriter writer)  {
       writer.write(txdAlias);
       writer.write(".transaction_id = ");
 

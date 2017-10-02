@@ -44,7 +44,7 @@ public class Storage extends DataResource {
       return this.rawContent != null && this.rawContent.length > 0;
    }
 
-   public InputStream getInputStream() throws OseeCoreException {
+   public InputStream getInputStream()  {
       return new ByteArrayInputStream(getContent());
    }
 
@@ -60,7 +60,7 @@ public class Storage extends DataResource {
       return !isInitialized() && isLocatorValid();
    }
 
-   public byte[] getContent() throws OseeCoreException {
+   public byte[] getContent()  {
       if (isLoadingAllowed()) {
          rawContent = resourceManager.acquire(this);
          setInitialized(true);
@@ -68,13 +68,13 @@ public class Storage extends DataResource {
       return this.rawContent;
    }
 
-   public void persist(long storageId) throws OseeCoreException {
+   public void persist(long storageId)  {
       if (isDataValid()) {
          resourceManager.save(storageId, dataProxy.getResolver().getStorageName(), this, rawContent);
       }
    }
 
-   public void purge() throws OseeCoreException {
+   public void purge()  {
       if (isLocatorValid()) {
          resourceManager.purge(this);
       }

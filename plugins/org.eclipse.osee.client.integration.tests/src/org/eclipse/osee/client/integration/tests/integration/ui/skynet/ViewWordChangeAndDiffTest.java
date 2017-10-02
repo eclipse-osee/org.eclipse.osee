@@ -153,7 +153,7 @@ public final class ViewWordChangeAndDiffTest {
       time.end(Units.SEC);
    }
 
-   private static Collection<Change> getChanges(BranchId testBranch) throws OseeCoreException {
+   private static Collection<Change> getChanges(BranchId testBranch)  {
       Collection<Change> changes = new ArrayList<>();
       IOperation operation = ChangeManager.comparedToParent(testBranch, changes);
       Operations.executeWorkAndCheckStatus(operation);
@@ -165,11 +165,11 @@ public final class ViewWordChangeAndDiffTest {
       Assert.assertTrue(renderFolder.exists());
    }
 
-   private static Artifact loadHistorical(Artifact artifact) throws OseeCoreException {
+   private static Artifact loadHistorical(Artifact artifact)  {
       return ArtifactQuery.getHistoricalArtifactFromId(artifact, artifact.getTransaction(), INCLUDE_DELETED);
    }
 
-   private static void checkPermissions(List<Artifact> artifacts) throws OseeCoreException {
+   private static void checkPermissions(List<Artifact> artifacts)  {
       boolean isReadable = AccessControlManager.hasPermission(artifacts, PermissionEnum.READ);
       assertTrue("Valid object permissions", isReadable);
    }

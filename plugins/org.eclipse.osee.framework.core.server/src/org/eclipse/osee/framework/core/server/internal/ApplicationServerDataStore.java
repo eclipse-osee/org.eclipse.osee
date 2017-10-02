@@ -32,19 +32,19 @@ public class ApplicationServerDataStore {
       this.jdbcClient = jdbcClient;
    }
 
-   public void create(OseeServerInfo info) throws OseeCoreException {
+   public void create(OseeServerInfo info)  {
       executeTx(TxType.CREATE, info);
    }
 
-   public void update(OseeServerInfo info) throws OseeCoreException {
+   public void update(OseeServerInfo info)  {
       executeTx(TxType.UPDATE, info);
    }
 
-   public void delete(OseeServerInfo info) throws OseeCoreException {
+   public void delete(OseeServerInfo info)  {
       executeTx(TxType.DELETE, info);
    }
 
-   private void executeTx(TxType op, OseeServerInfo info) throws OseeCoreException {
+   private void executeTx(TxType op, OseeServerInfo info)  {
       jdbcClient.runTransaction(new ServerLookupTx(jdbcClient, op, info));
    }
 
@@ -76,7 +76,7 @@ public class ApplicationServerDataStore {
       }
 
       @Override
-      public void handleTxWork(JdbcConnection connection) throws OseeCoreException {
+      public void handleTxWork(JdbcConnection connection)  {
          switch (txType) {
             case CREATE:
                create(connection);
@@ -92,7 +92,7 @@ public class ApplicationServerDataStore {
          }
       }
 
-      private void create(JdbcConnection connection) throws OseeCoreException {
+      private void create(JdbcConnection connection)  {
          List<Object[]> insertData = new ArrayList<>();
          String serverId = data.getServerId();
          URI serverUri = data.getUri();
@@ -108,12 +108,12 @@ public class ApplicationServerDataStore {
          }
       }
 
-      private void update(JdbcConnection connection) throws OseeCoreException {
+      private void update(JdbcConnection connection)  {
          delete(connection);
          create(connection);
       }
 
-      private void delete(JdbcConnection connection) throws OseeCoreException {
+      private void delete(JdbcConnection connection)  {
          List<Object[]> deleteData = new ArrayList<>();
          deleteData.add(new Object[] {data.getServerId()});
          if (!deleteData.isEmpty()) {

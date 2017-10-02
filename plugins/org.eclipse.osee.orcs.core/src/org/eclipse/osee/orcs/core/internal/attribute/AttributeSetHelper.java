@@ -19,9 +19,9 @@ import org.eclipse.osee.orcs.core.ds.Attribute;
  */
 public interface AttributeSetHelper<A, V> {
 
-   boolean matches(Attribute<A> attribute, V value) throws OseeCoreException;
+   boolean matches(Attribute<A> attribute, V value) ;
 
-   void setAttributeValue(Attribute<A> attribute, V value) throws OseeCoreException;
+   void setAttributeValue(Attribute<A> attribute, V value) ;
 
-   void createAttribute(AttributeTypeId attributeType, V value) throws OseeCoreException;
+   void createAttribute(AttributeTypeId attributeType, V value) ;
 }

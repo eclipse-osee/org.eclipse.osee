@@ -44,7 +44,7 @@ public class ArtifactClipboard {
       this.viewId = viewId;
    }
 
-   private List<Artifact> getArtifactsWithPermission(AccessPolicy accessService, PermissionEnum permission, List<Artifact> artifacts) throws OseeCoreException {
+   private List<Artifact> getArtifactsWithPermission(AccessPolicy accessService, PermissionEnum permission, List<Artifact> artifacts)  {
       ArrayList<Artifact> toReturn = new ArrayList<>(artifacts);
       Iterator<Artifact> artIterator = toReturn.iterator();
 
@@ -65,7 +65,7 @@ public class ArtifactClipboard {
       }
    }
 
-   public void setArtifactsToClipboard(AccessPolicy policyHandlerService, List<Artifact> artifactTransferData) throws OseeCoreException {
+   public void setArtifactsToClipboard(AccessPolicy policyHandlerService, List<Artifact> artifactTransferData)  {
       if (artifactTransferData == null) {
          throw new IllegalArgumentException("Artifacts can not be null for artifact copy.");
       }

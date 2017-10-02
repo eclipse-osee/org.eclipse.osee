@@ -111,7 +111,7 @@ public class XWidgetRendererItem implements Cloneable {
    }
 
    // TODO This method will need to be removed
-   public XWidget getXWidget() throws OseeCoreException {
+   public XWidget getXWidget()  {
       if (xWidget == null) {
          xWidget = xWidgetFactory.createXWidget(this);
       }

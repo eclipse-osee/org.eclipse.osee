@@ -25,21 +25,21 @@ import org.eclipse.swt.graphics.Image;
  */
 public interface IAtsWorldEditorItem {
 
-   public List<XViewerColumn> getXViewerColumns() throws OseeCoreException;
+   public List<XViewerColumn> getXViewerColumns() ;
 
-   public boolean isXColumnProvider(XViewerColumn xCol) throws OseeCoreException;
+   public boolean isXColumnProvider(XViewerColumn xCol) ;
 
-   public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException;
+   public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) ;
 
-   public Color getForeground(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException;
+   public Color getForeground(Object element, XViewerColumn xCol, int columnIndex) ;
 
-   public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException;
+   public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) ;
 
    /**
     * Return menu item objects to add to the World Editor pull-down menu only if applicable for the given
     * worldSearchItem
     */
-   public List<? extends Action> getWorldEditorMenuActions(IWorldEditorProvider worldEditorProvider, WorldEditor worldEditor) throws OseeCoreException;
+   public List<? extends Action> getWorldEditorMenuActions(IWorldEditorProvider worldEditorProvider, WorldEditor worldEditor) ;
 
    public void updateTaskEditMenuActions(TaskXViewer taskXViewer);
 

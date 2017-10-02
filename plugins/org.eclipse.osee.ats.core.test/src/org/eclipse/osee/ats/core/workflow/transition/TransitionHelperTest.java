@@ -56,7 +56,7 @@ public class TransitionHelperTest {
    TransitionHelper helper = null;
 
    @Before
-   public void setup() throws OseeCoreException {
+   public void setup()  {
       MockitoAnnotations.initMocks(this);
 
       when(services.getAttributeResolver()).thenReturn(attrResolver);

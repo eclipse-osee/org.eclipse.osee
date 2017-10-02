@@ -46,7 +46,7 @@ public class AtsLogFactoryTest {
    // @formatter:on
 
    @Before
-   public void setup() throws OseeCoreException {
+   public void setup()  {
       MockitoAnnotations.initMocks(this);
 
       List<IAtsLogItem> items = new ArrayList<>();

@@ -39,13 +39,13 @@ public class RendererUtil {
    private static final DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
    private static final int FILENAME_LIMIT = 215;
 
-   public static String toFileName(IOseeBranch branch) throws OseeCoreException {
+   public static String toFileName(IOseeBranch branch)  {
       // replace invalid filename characters \/:"*?<>| and . and ' with _
       String shortName = Strings.saferReplace(branch.getShortName(), "[\\.\\/:\"*?<>|'\\\\]+", "_");
       return encode(shortName);
    }
 
-   private static String encode(String name) throws OseeCoreException {
+   private static String encode(String name)  {
       String toReturn = null;
       try {
          toReturn = URLEncoder.encode(name, "UTF-8");
@@ -87,7 +87,7 @@ public class RendererUtil {
       return getRenderFile(subFolder, fileName, presentationType);
    }
 
-   private static IFile getRenderFile(String subFolder, String fileName, PresentationType presentationType) throws OseeCoreException {
+   private static IFile getRenderFile(String subFolder, String fileName, PresentationType presentationType)  {
       try {
          IFolder baseFolder = ensureRenderFolderExists(presentationType);
          IFolder renderFolder = baseFolder.getFolder(subFolder);
@@ -102,7 +102,7 @@ public class RendererUtil {
       }
    }
 
-   public static IFolder ensureRenderFolderExists(PresentationType presentationType) throws OseeCoreException {
+   public static IFolder ensureRenderFolderExists(PresentationType presentationType)  {
       IFolder toReturn = null;
       switch (presentationType) {
          case MERGE:
@@ -124,7 +124,7 @@ public class RendererUtil {
       return toReturn;
    }
 
-   private static IFolder getOrCreateFolder(IFolder folder, String name) throws OseeCoreException {
+   private static IFolder getOrCreateFolder(IFolder folder, String name)  {
       IFolder toCheck = folder;
       if (toCheck == null || !toCheck.exists()) {
          toCheck = OseeData.getFolder(name);

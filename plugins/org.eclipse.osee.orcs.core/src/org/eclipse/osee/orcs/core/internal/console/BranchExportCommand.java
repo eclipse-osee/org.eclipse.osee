@@ -106,7 +106,7 @@ public final class BranchExportCommand implements ConsoleCommand {
          this.orcsApi = orcsApi;
       }
 
-      private List<BranchId> getBranchesToExport() throws OseeCoreException {
+      private List<BranchId> getBranchesToExport()  {
          List<BranchId> branches = new LinkedList<>();
          BranchQuery branchQuery = orcsApi.getQueryFactory().branchQuery();
          if (includeBranchIds.isEmpty()) {

@@ -30,7 +30,7 @@ public class RenameFilesOperationTest {
    public final TemporaryFolder tempFolder = new TemporaryFolder();
 
    @Test
-   public void testDelayedParameterValues() throws IOException, OseeCoreException {
+   public void testDelayedParameterValues() throws IOException {
       tempFolder.newFile("abcde1");
 
       StringBuilder parentFolder = new StringBuilder();
@@ -46,7 +46,7 @@ public class RenameFilesOperationTest {
    }
 
    @Test
-   public void testMultipleFileMatches() throws IOException, OseeCoreException {
+   public void testMultipleFileMatches() throws IOException {
       tempFolder.newFile("abcde12");
       tempFolder.newFile("abcde13");
       tempFolder.newFile("abcde21");

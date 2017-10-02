@@ -24,21 +24,21 @@ public interface INewActionListener {
    /**
     * Called after Action and team workflows are created and before persist of Action
     */
-   public default void actionCreated(IAtsAction action) throws OseeCoreException {
+   public default void actionCreated(IAtsAction action)  {
       // for override
    }
 
    /**
     * Called after team workflow and initialized and before persist of Action
     */
-   public default void teamCreated(IAtsAction action, IAtsTeamWorkflow teamWf, IAtsChangeSet changes) throws OseeCoreException {
+   public default void teamCreated(IAtsAction action, IAtsTeamWorkflow teamWf, IAtsChangeSet changes)  {
       // for override
    }
 
    /**
     * @return workflow id to use instead of default configured id
     */
-   public default String getOverrideWorkDefinitionId(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+   public default String getOverrideWorkDefinitionId(IAtsTeamWorkflow teamWf)  {
       // for override
       return null;
    }

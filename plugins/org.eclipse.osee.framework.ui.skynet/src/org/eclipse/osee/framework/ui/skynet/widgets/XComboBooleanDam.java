@@ -46,7 +46,7 @@ public class XComboBooleanDam extends XCombo implements IAttributeWidget {
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) throws OseeCoreException {
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType)  {
       this.artifact = artifact;
       this.attributeType = attributeType;
       Boolean result = artifact.getSoleAttributeValue(this.attributeType, null);
@@ -72,7 +72,7 @@ public class XComboBooleanDam extends XCombo implements IAttributeWidget {
    }
 
    @Override
-   public Result isDirty() throws OseeCoreException {
+   public Result isDirty()  {
       if (isEditable()) {
          try {
             String enteredValue = get();
@@ -91,7 +91,7 @@ public class XComboBooleanDam extends XCombo implements IAttributeWidget {
    }
 
    @Override
-   public void revert() throws OseeCoreException {
+   public void revert()  {
       setAttributeType(artifact, attributeType);
    }
 

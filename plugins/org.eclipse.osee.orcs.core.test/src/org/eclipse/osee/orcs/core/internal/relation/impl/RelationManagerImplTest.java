@@ -184,7 +184,7 @@ public class RelationManagerImplTest {
    }
 
    @Test
-   public void testGetValidRelationTypes() throws OseeCoreException {
+   public void testGetValidRelationTypes()  {
       final List<IRelationType> expected = new ArrayList<>();
       when(node1.getArtifactType()).thenReturn(artifactType1);
       when(node2.getArtifactType()).thenReturn(artifactType2);
@@ -200,7 +200,7 @@ public class RelationManagerImplTest {
    }
 
    @Test
-   public void testGetMaximumRelationAllowed() throws OseeCoreException {
+   public void testGetMaximumRelationAllowed()  {
       when(node1.getArtifactType()).thenReturn(artifactType1);
       when(node2.getArtifactType()).thenReturn(artifactType2);
       when(validity.getMaximumRelationsAllowed(TYPE_1, artifactType1, SIDE_A)).thenReturn(11);
@@ -212,7 +212,7 @@ public class RelationManagerImplTest {
    }
 
    @Test
-   public void testAccept() throws OseeCoreException {
+   public void testAccept()  {
       RelationVisitor visitor = mock(RelationVisitor.class);
 
       manager.accept(session, graph, node1, visitor);
@@ -221,7 +221,7 @@ public class RelationManagerImplTest {
    }
 
    @Test
-   public void testHasDirtyRelations() throws OseeCoreException {
+   public void testHasDirtyRelations()  {
       when(graph.getAdjacencies(node1)).thenReturn(null);
       assertFalse(manager.hasDirtyRelations(session, node1));
 
@@ -234,14 +234,14 @@ public class RelationManagerImplTest {
    }
 
    @Test
-   public void testGetExistingRelationTypeNullNode() throws OseeCoreException {
+   public void testGetExistingRelationTypeNullNode()  {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("node cannot be null");
       manager.getExistingRelationTypes(session, null);
    }
 
    @Test
-   public void testGetExistingRelationType() throws OseeCoreException {
+   public void testGetExistingRelationType()  {
       when(graph.getAdjacencies(node1)).thenReturn(null);
       Collection<RelationTypeId> actuals = manager.getExistingRelationTypes(session, node1);
       assertEquals(Collections.emptyList(), actuals);
@@ -265,14 +265,14 @@ public class RelationManagerImplTest {
    }
 
    @Test
-   public void testGetParentNullNode() throws OseeCoreException {
+   public void testGetParentNullNode()  {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("node cannot be null");
       manager.getParent(session, null);
    }
 
    @Test
-   public void testGetParent() throws OseeCoreException {
+   public void testGetParent()  {
       List<Relation> relations = Arrays.asList(relation1);
       List<RelationNode> nodes = Arrays.asList(node1);
 
@@ -286,7 +286,7 @@ public class RelationManagerImplTest {
    }
 
    @Test
-   public void testGetParentMoreThanOne() throws OseeCoreException {
+   public void testGetParentMoreThanOne()  {
       List<Relation> relations = Arrays.asList(relation1, relation4);
       List<RelationNode> arts = Arrays.asList(node1, node3);
 
@@ -302,14 +302,14 @@ public class RelationManagerImplTest {
    }
 
    @Test
-   public void testGetChildrenNullNode() throws OseeCoreException {
+   public void testGetChildrenNullNode()  {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("node cannot be null");
       manager.getChildren(session, null);
    }
 
    @Test
-   public void testGetChildren() throws OseeCoreException {
+   public void testGetChildren()  {
       List<Relation> relations = Arrays.asList(relation1, relation4);
       List<RelationNode> nodes = Arrays.asList(node2, node6);
 
@@ -328,28 +328,28 @@ public class RelationManagerImplTest {
    }
 
    @Test
-   public void testGetRelatedNullNode() throws OseeCoreException {
+   public void testGetRelatedNullNode()  {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("node cannot be null");
       manager.getRelated(session, TYPE_1, null, SIDE_A);
    }
 
    @Test
-   public void testGetRelatedNullType() throws OseeCoreException {
+   public void testGetRelatedNullType()  {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("relationType cannot be null");
       manager.getRelated(session, null, node1, SIDE_A);
    }
 
    @Test
-   public void testGetRelatedNullSide() throws OseeCoreException {
+   public void testGetRelatedNullSide()  {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("relationSide cannot be null");
       manager.getRelated(session, TYPE_1, node1, null);
    }
 
    @Test
-   public void testGetRelated() throws OseeCoreException {
+   public void testGetRelated()  {
       List<Relation> relations = Arrays.asList(relation1, relation2, relation3);
       List<RelationNode> nodes = Arrays.asList(node2, node3, node5);
 
@@ -372,7 +372,7 @@ public class RelationManagerImplTest {
    }
 
    @Test
-   public void testAreRelated() throws OseeCoreException {
+   public void testAreRelated()  {
       when(container1.getRelation(node1, TYPE_1, node2, EXCLUDE_DELETED)).thenReturn(relation1);
 
       boolean value = manager.areRelated(session, node1, TYPE_1, node2);
@@ -386,7 +386,7 @@ public class RelationManagerImplTest {
    }
 
    @Test
-   public void testGetRationale() throws OseeCoreException {
+   public void testGetRationale()  {
       when(container1.getRelation(node1, TYPE_1, node2, EXCLUDE_DELETED)).thenReturn(relation1);
       when(relation1.getRationale()).thenReturn("Hello rationale");
 
@@ -398,7 +398,7 @@ public class RelationManagerImplTest {
    }
 
    @Test
-   public void testGetRelatedCount() throws OseeCoreException {
+   public void testGetRelatedCount()  {
       List<Relation> list = Arrays.asList(relation1, relation2, relation3);
 
       when(container1.getList(TYPE_1, EXCLUDE_DELETED, node1, SIDE_B)).thenReturn(list);
@@ -410,7 +410,7 @@ public class RelationManagerImplTest {
    }
 
    @Test
-   public void testGetRelatedCountIncludeDeleted() throws OseeCoreException {
+   public void testGetRelatedCountIncludeDeleted()  {
       List<Relation> list = Arrays.asList(relation1, relation2);
 
       when(container1.getList(TYPE_1, INCLUDE_DELETED, node1, SIDE_A)).thenReturn(list);
@@ -422,28 +422,28 @@ public class RelationManagerImplTest {
    }
 
    @Test
-   public void testRelateErrorOnDifferentBranches() throws OseeCoreException {
+   public void testRelateErrorOnDifferentBranches()  {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("Cross branch linking is not yet supported.");
       manager.relate(session, node2, typeAndSide1, node3);
    }
 
    @Test
-   public void testRelateErrorCycle() throws OseeCoreException {
+   public void testRelateErrorCycle()  {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage(String.format("Not valid to relate [%s] to itself", node1));
       manager.relate(session, node1, typeAndSide1, node1);
    }
 
    @Test
-   public void testRelateErrorMultiplicityInvalid() throws OseeCoreException {
+   public void testRelateErrorMultiplicityInvalid()  {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage(String.format("Not valid to relate [%s] to itself", node1));
       manager.relate(session, node1, typeAndSide1, node1);
    }
 
    @Test
-   public void testRelateErrorTypeInvalidNode1() throws OseeCoreException {
+   public void testRelateErrorTypeInvalidNode1()  {
       OseeCoreException myException = new OseeCoreException("Test Type Exception");
 
       doThrow(myException).when(validity).checkRelationTypeValid(TYPE_1, node1, SIDE_A);
@@ -457,7 +457,7 @@ public class RelationManagerImplTest {
    }
 
    @Test
-   public void testRelateErrorTypeInvalidNode2() throws OseeCoreException {
+   public void testRelateErrorTypeInvalidNode2()  {
       when(relationFactory.createRelation(node1, TYPE_1, node2)).thenReturn(relation1);
       when(container1.getResultSet(TYPE_1, INCLUDE_DELETED, node1, SIDE_A)).thenReturn(rSet1);
       when(rSet1.getOneOrNull()).thenReturn(relation1);
@@ -475,7 +475,7 @@ public class RelationManagerImplTest {
    }
 
    @Test
-   public void testRelateErrorMultiplicityNode1() throws OseeCoreException {
+   public void testRelateErrorMultiplicityNode1()  {
       thrown.expect(OseeStateException.class);
 
       when(node1.getArtifactType()).thenReturn(artifactType1);
@@ -490,7 +490,7 @@ public class RelationManagerImplTest {
    }
 
    @Test
-   public void testRelateErrorMultiplicityNode2() throws OseeCoreException {
+   public void testRelateErrorMultiplicityNode2()  {
       when(relationFactory.createRelation(node1, TYPE_1, node2)).thenReturn(relation1);
       when(container1.getResultSet(TYPE_1, INCLUDE_DELETED, node1, SIDE_A)).thenReturn(rSet1);
       when(rSet1.getOneOrNull()).thenReturn(relation1);
@@ -505,7 +505,7 @@ public class RelationManagerImplTest {
    }
 
    @Test
-   public void testSetRationale() throws OseeCoreException {
+   public void testSetRationale()  {
       String rationale = "New Rationale";
 
       when(container2.getRelation(node1, TYPE_1, node2, EXCLUDE_DELETED)).thenReturn(relation1);
@@ -518,7 +518,7 @@ public class RelationManagerImplTest {
    }
 
    @Test
-   public void testRelateWithSorting() throws OseeCoreException {
+   public void testRelateWithSorting()  {
       when(container1.getRelation(node1, TYPE_1, node2, INCLUDE_DELETED)).thenReturn(null);
       when(container2.getRelation(node1, TYPE_1, node2, INCLUDE_DELETED)).thenReturn(null);
 
@@ -543,7 +543,7 @@ public class RelationManagerImplTest {
    }
 
    @Test
-   public void testRelateNoSorting() throws OseeCoreException {
+   public void testRelateNoSorting()  {
       when(container1.getRelation(node1, TYPE_1, node2, INCLUDE_DELETED)).thenReturn(null);
       when(container2.getRelation(node1, TYPE_1, node2, INCLUDE_DELETED)).thenReturn(null);
 
@@ -571,7 +571,7 @@ public class RelationManagerImplTest {
    }
 
    @Test
-   public void testRelateWithSortingUserDefined() throws OseeCoreException {
+   public void testRelateWithSortingUserDefined()  {
       when(container1.getRelation(node1, TYPE_1, node2, INCLUDE_DELETED)).thenReturn(null);
       when(container2.getRelation(node1, TYPE_1, node2, INCLUDE_DELETED)).thenReturn(null);
 
@@ -612,7 +612,7 @@ public class RelationManagerImplTest {
    }
 
    @Test
-   public void testAddChild() throws OseeCoreException {
+   public void testAddChild()  {
       when(container1.getRelation(node1, DEFAULT_HIERARCHY, node2, INCLUDE_DELETED)).thenReturn(null);
       when(container2.getRelation(node1, DEFAULT_HIERARCHY, node2, INCLUDE_DELETED)).thenReturn(null);
 
@@ -640,7 +640,7 @@ public class RelationManagerImplTest {
    }
 
    @Test
-   public void testAddChildren() throws OseeCoreException {
+   public void testAddChildren()  {
       when(container1.getRelation(node1, TYPE_1, node2, INCLUDE_DELETED)).thenReturn(null);
       when(container2.getRelation(node1, TYPE_1, node2, INCLUDE_DELETED)).thenReturn(null);
 
@@ -668,7 +668,7 @@ public class RelationManagerImplTest {
    }
 
    @Test
-   public void testAddPreviouslyDeletedChild() throws OseeCoreException {
+   public void testAddPreviouslyDeletedChild()  {
       when(container1.getRelation(node1, DEFAULT_HIERARCHY, node2, INCLUDE_DELETED)).thenReturn(null);
       when(container2.getRelation(node1, DEFAULT_HIERARCHY, node2, INCLUDE_DELETED)).thenReturn(relation1);
 
@@ -693,7 +693,7 @@ public class RelationManagerImplTest {
    }
 
    @Test
-   public void testUnrelate() throws OseeCoreException {
+   public void testUnrelate()  {
       when(container1.getRelation(node1, DEFAULT_HIERARCHY, node2, EXCLUDE_DELETED)).thenReturn(relation1);
 
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
@@ -725,7 +725,7 @@ public class RelationManagerImplTest {
    }
 
    @Test
-   public void testUnrelateFromAllByType() throws OseeCoreException {
+   public void testUnrelateFromAllByType()  {
       List<Relation> relations1 = Arrays.asList(relation1);
 
       when(container1.getList(DEFAULT_HIERARCHY, EXCLUDE_DELETED, node1, IS_PARENT)).thenReturn(relations1);
@@ -747,7 +747,7 @@ public class RelationManagerImplTest {
    }
 
    @Test
-   public void testUnrelateFromAll() throws OseeCoreException {
+   public void testUnrelateFromAll()  {
       List<Relation> allRelations = Arrays.asList(relation1);
       List<Relation> asAParent = Collections.emptyList();
       List<Relation> asAChild = Arrays.asList(relation2);

@@ -175,7 +175,7 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
       newRelationOnDeletedArtifact.clear();
    }
 
-   private void loadBrokenRelations() throws OseeCoreException {
+   private void loadBrokenRelations()  {
       if (isLoadingBrokenRelationsNecessary()) {
          deleteMap = new DoubleKeyHashMap<>();
          updateMap = new DoubleKeyHashMap<>();
@@ -220,7 +220,7 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
 
    }
 
-   private void fix() throws OseeCoreException {
+   private void fix()  {
 
       //fix for NO_ADDRESSING_ARTIFACTS_A or NO_ADDRESSING_ARTIFACTS_B
       deleteInvalidRelationAddressing();
@@ -234,7 +234,7 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
 
    }
 
-   private void deleteInvalidRelationAddressing() throws OseeCoreException {
+   private void deleteInvalidRelationAddressing()  {
       List<Object[]> rowsToDelete = new LinkedList<>();
       for (LocalRelationLink relLink : deleteMap.allValues()) {
          rowsToDelete.add(new Object[] {relLink.gammaId, relLink.relTransId, relLink.branchUuid});
@@ -260,7 +260,7 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
       checkForCancelledStatus(monitor);
    }
 
-   private void runInsert(List<Object[]> insertParameters, String sql, String taskName) throws OseeCoreException {
+   private void runInsert(List<Object[]> insertParameters, String sql, String taskName)  {
       monitor.subTask(taskName);
       if (insertParameters.size() != 0) {
          ConnectionHandler.runBatchUpdate(sql, insertParameters);
@@ -302,7 +302,7 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
       builder.append(DESCRIPTION[x]);
    }
 
-   private void loadData(String description, String sql, boolean forDelete) throws OseeCoreException {
+   private void loadData(String description, String sql, boolean forDelete)  {
       monitor.subTask(description);
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       DoubleKeyHashMap<Long, Long, LocalRelationLink> map = forDelete ? deleteMap : updateMap;

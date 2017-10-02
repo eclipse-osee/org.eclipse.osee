@@ -56,7 +56,7 @@ public class AttributeProviderTest {
    }
 
    @Test
-   public void testIsValid() throws OseeCoreException, URISyntaxException {
+   public void testIsValid() throws URISyntaxException {
       IResourceProvider provider = new AttributeProvider();
       Assert.assertFalse(provider.isValid(null));
       Assert.assertFalse(provider.isValid(new ResourceLocator(new URI("http://hello"))));

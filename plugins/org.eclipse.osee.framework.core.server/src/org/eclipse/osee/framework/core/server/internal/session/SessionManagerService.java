@@ -51,7 +51,7 @@ public final class SessionManagerService implements ISessionManager {
       this.cacheAdmin = cacheAdmin;
    }
 
-   public void start() throws OseeCoreException {
+   public void start()  {
       final JdbcClient jdbcClient = jdbcService.getClient();
 
       SessionFactory sessionFactory = new SessionFactory(logger, jdbcService);
@@ -74,37 +74,37 @@ public final class SessionManagerService implements ISessionManager {
    }
 
    @Override
-   public OseeSessionGrant createSession(OseeCredential credential) throws OseeCoreException {
+   public OseeSessionGrant createSession(OseeCredential credential)  {
       return proxiedSessionManager.createSession(credential);
    }
 
    @Override
-   public void releaseSession(String sessionId) throws OseeCoreException {
+   public void releaseSession(String sessionId)  {
       proxiedSessionManager.releaseSession(sessionId);
    }
 
    @Override
-   public ISession getSessionById(String sessionId) throws OseeCoreException {
+   public ISession getSessionById(String sessionId)  {
       return proxiedSessionManager.getSessionById(sessionId);
    }
 
    @Override
-   public Collection<ISession> getSessionByClientAddress(String clientAddress) throws OseeCoreException {
+   public Collection<ISession> getSessionByClientAddress(String clientAddress)  {
       return proxiedSessionManager.getSessionByClientAddress(clientAddress);
    }
 
    @Override
-   public Collection<ISession> getSessionsByUserId(String userId) throws OseeCoreException {
+   public Collection<ISession> getSessionsByUserId(String userId)  {
       return proxiedSessionManager.getSessionsByUserId(userId);
    }
 
    @Override
-   public Collection<ISession> getAllSessions() throws OseeCoreException {
+   public Collection<ISession> getAllSessions()  {
       return proxiedSessionManager.getAllSessions();
    }
 
    @Override
-   public void releaseSessionImmediate(String... sessionId) throws OseeCoreException {
+   public void releaseSessionImmediate(String... sessionId)  {
       proxiedSessionManager.releaseSessionImmediate(sessionId);
    }
 

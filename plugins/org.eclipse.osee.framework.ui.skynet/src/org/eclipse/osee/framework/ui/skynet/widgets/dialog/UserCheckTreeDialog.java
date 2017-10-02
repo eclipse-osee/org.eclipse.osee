@@ -53,7 +53,7 @@ public class UserCheckTreeDialog extends FilteredCheckboxTreeArtifactDialog {
       this("Select Users", "Select Users", users);
    }
 
-   public UserCheckTreeDialog() throws OseeCoreException {
+   public UserCheckTreeDialog()  {
       this("Select Users", "Select to assign.\nDeSelect to un-assign.", UserManager.getUsers());
    }
 

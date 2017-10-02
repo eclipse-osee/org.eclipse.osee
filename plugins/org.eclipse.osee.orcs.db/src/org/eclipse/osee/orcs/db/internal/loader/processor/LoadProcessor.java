@@ -35,6 +35,6 @@ public abstract class LoadProcessor<D, F extends OrcsDataFactory> extends Abstra
       }
    }
 
-   protected abstract D createData(Object conditions, F factory, JdbcStatement chStmt, Options options) throws OseeCoreException;
+   protected abstract D createData(Object conditions, F factory, JdbcStatement chStmt, Options options) ;
 
 }

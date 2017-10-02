@@ -48,7 +48,7 @@ public abstract class CommandHandler extends AbstractHandler {
       return result;
    }
 
-   protected abstract boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException;
+   protected abstract boolean isEnabledWithException(IStructuredSelection structuredSelection) ;
 
    @Override
    public final Object execute(ExecutionEvent event) throws ExecutionException {
@@ -64,7 +64,7 @@ public abstract class CommandHandler extends AbstractHandler {
       }
    }
 
-   protected abstract Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException;
+   protected abstract Object executeWithException(ExecutionEvent event, IStructuredSelection selection) ;
 
    protected ISelectionProvider getSelectionProvider() {
       ISelectionProvider selectionProvider = null;

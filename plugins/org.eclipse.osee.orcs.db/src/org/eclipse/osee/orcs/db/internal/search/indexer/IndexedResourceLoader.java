@@ -19,6 +19,6 @@ import org.eclipse.osee.orcs.core.ds.OrcsDataHandler;
  */
 public interface IndexedResourceLoader {
 
-   void loadSource(OrcsDataHandler<IndexedResource> handler, int tagQueueQueryId) throws OseeCoreException;
+   void loadSource(OrcsDataHandler<IndexedResource> handler, int tagQueueQueryId) ;
 
 }

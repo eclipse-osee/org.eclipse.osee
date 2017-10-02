@@ -48,7 +48,7 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
    }
 
    @Override
-   public IWorldEditorProvider copyProvider() throws OseeCoreException {
+   public IWorldEditorProvider copyProvider()  {
       return new WorldEditorParameterSearchItemProvider(
          (WorldEditorParameterSearchItem) worldParameterSearchItem.copy(), customizeData, tableLoadOptions);
    }
@@ -58,12 +58,12 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
    }
 
    @Override
-   public String getName() throws OseeCoreException {
+   public String getName()  {
       return worldParameterSearchItem.getName();
    }
 
    @Override
-   public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend) throws OseeCoreException {
+   public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend)  {
       WorldSearchItem searchItem = getWorldSearchItem();
       if (searchItem instanceof AtsSearchWorkflowSearchItem) {
          AtsSearchWorkflowSearchItem workflowSearchItem = (AtsSearchWorkflowSearchItem) searchItem;
@@ -102,12 +102,12 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
    }
 
    @Override
-   public String getSelectedName(SearchType searchType) throws OseeCoreException {
+   public String getSelectedName(SearchType searchType)  {
       return Strings.truncate(worldParameterSearchItem.getSelectedName(searchType), WorldEditor.TITLE_MAX_LENGTH, true);
    }
 
    @Override
-   public String getParameterXWidgetXml() throws OseeCoreException {
+   public String getParameterXWidgetXml()  {
       return worldParameterSearchItem.getParameterXWidgetXml();
    }
 

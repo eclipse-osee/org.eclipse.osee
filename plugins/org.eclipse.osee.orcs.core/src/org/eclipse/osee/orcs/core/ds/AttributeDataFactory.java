@@ -19,12 +19,12 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface AttributeDataFactory<T> {
 
-   AttributeData<T> create(ArtifactData parent, AttributeTypeId attributeType) throws OseeCoreException;
+   AttributeData<T> create(ArtifactData parent, AttributeTypeId attributeType) ;
 
-   AttributeData<T> copy(BranchId destination, AttributeData<T> orcsData) throws OseeCoreException;
+   AttributeData<T> copy(BranchId destination, AttributeData<T> orcsData) ;
 
-   AttributeData<T> clone(AttributeData<T> source) throws OseeCoreException;
+   AttributeData<T> clone(AttributeData<T> source) ;
 
-   AttributeData<T> introduce(BranchId destination, AttributeData<T> source) throws OseeCoreException;
+   AttributeData<T> introduce(BranchId destination, AttributeData<T> source) ;
 
 }

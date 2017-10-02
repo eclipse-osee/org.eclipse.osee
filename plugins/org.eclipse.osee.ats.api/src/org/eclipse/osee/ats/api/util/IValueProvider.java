@@ -21,10 +21,10 @@ public interface IValueProvider {
 
    public String getName();
 
-   public boolean isEmpty() throws OseeCoreException;
+   public boolean isEmpty() ;
 
-   public Collection<String> getValues() throws OseeCoreException;
+   public Collection<String> getValues() ;
 
-   public Collection<Date> getDateValues() throws OseeCoreException;
+   public Collection<Date> getDateValues() ;
 
 }

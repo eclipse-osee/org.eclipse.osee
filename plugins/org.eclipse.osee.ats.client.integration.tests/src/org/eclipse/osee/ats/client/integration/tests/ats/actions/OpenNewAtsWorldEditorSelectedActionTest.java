@@ -29,7 +29,7 @@ public class OpenNewAtsWorldEditorSelectedActionTest extends AbstractAtsActionRu
       return new OpenNewAtsWorldEditorSelectedAction(new IOpenNewAtsWorldEditorSelectedHandler() {
 
          @Override
-         public List<Artifact> getSelectedArtifacts() throws OseeCoreException {
+         public List<Artifact> getSelectedArtifacts()  {
             return Arrays.asList((Artifact) AtsTestUtil.getTeamWf());
          }
 

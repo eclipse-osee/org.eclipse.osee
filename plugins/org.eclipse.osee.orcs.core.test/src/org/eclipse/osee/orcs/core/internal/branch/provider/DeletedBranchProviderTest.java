@@ -35,7 +35,7 @@ public final class DeletedBranchProviderTest {
    }
 
    @Test
-   public void testGetBranches() throws OseeCoreException {
+   public void testGetBranches()  {
       BranchCache mockCache = new BranchCache(new MockOseeDataAccessor<Branch>());
 
       Collection<Branch> branches = MockBranchProvider.createTestBranches();
@@ -47,7 +47,7 @@ public final class DeletedBranchProviderTest {
    }
 
    @Test(expected = OseeCoreException.class)
-   public void testGetBranchesException() throws OseeCoreException {
+   public void testGetBranchesException()  {
       DeletedBranchProvider provider = new DeletedBranchProvider(null);
       provider.getBranches().size();
    }

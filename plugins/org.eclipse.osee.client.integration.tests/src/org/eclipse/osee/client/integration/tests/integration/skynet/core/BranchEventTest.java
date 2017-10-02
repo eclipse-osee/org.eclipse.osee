@@ -73,7 +73,7 @@ public class BranchEventTest {
    }
 
    @After
-   public void tearDown() throws OseeCoreException {
+   public void tearDown()  {
       if (topLevel != null) {
          boolean pending = OseeEventManager.getPreferences().isPendRunning();
          try {

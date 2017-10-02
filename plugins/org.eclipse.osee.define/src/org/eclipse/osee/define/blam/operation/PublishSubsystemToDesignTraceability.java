@@ -103,7 +103,7 @@ public class PublishSubsystemToDesignTraceability extends AbstractBlam {
       Program.launch(iFile.getLocation().toOSString());
    }
 
-   private void writeSubsystemDesignTraceability(Artifact subsystem) throws IOException, OseeCoreException {
+   private void writeSubsystemDesignTraceability(Artifact subsystem) throws IOException {
       excelWriter.startSheet(subsystem.getName(), 200);
       excelWriter.writeRow(subsystem.getName() + " Subsystem To Design Traceability");
 

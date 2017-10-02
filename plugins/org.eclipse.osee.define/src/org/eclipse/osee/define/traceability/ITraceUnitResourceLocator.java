@@ -22,6 +22,6 @@ public interface ITraceUnitResourceLocator extends IResourceLocator {
 
    public String UNIT_TYPE_UNKNOWN = "Unknown";
 
-   public IArtifactType getTraceUnitType(String name, CharBuffer fileBuffer) throws OseeCoreException;
+   public IArtifactType getTraceUnitType(String name, CharBuffer fileBuffer) ;
 
 }

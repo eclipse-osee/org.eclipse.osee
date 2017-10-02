@@ -68,7 +68,7 @@ public class WfePrint extends Action {
 
    }
 
-   public XResultData getResultData() throws OseeCoreException {
+   public XResultData getResultData()  {
       XResultData resultData = new XResultData();
       resultData.addRaw(AHTML.beginMultiColumnTable(100));
       resultData.addRaw(AHTML.addRowMultiColumnTable(
@@ -154,7 +154,7 @@ public class WfePrint extends Action {
       }
    }
 
-   private void getWorkFlowHtml(XResultData rd) throws OseeCoreException {
+   private void getWorkFlowHtml(XResultData rd)  {
       // Only display current or past states
       for (StateXWidgetPage statePage : WorkflowManager.getStatePagesOrderedByOrdinal(sma)) {
          if (sma.isInState(statePage) || sma.getStateMgr().isStateVisited(statePage)) {
@@ -182,14 +182,14 @@ public class WfePrint extends Action {
       }
    }
 
-   private String getReviewData(AbstractWorkflowArtifact sma, StateXWidgetPage page) throws OseeCoreException {
+   private String getReviewData(AbstractWorkflowArtifact sma, StateXWidgetPage page)  {
       if (sma.isOfType(AtsArtifactTypes.TeamWorkflow)) {
          return ReviewInfoXWidget.toHTML((TeamWorkFlowArtifact) sma, page);
       }
       return "";
    }
 
-   private String getStateHoursSpentHtml(StateXWidgetPage statePage) throws OseeCoreException {
+   private String getStateHoursSpentHtml(StateXWidgetPage statePage)  {
       return AHTML.getLabelValueStr("State Hours Spent",
          AtsUtilCore.doubleToI18nString(sma.getStateMgr().getHoursSpent(statePage.getName())) + "<br>");
    }

@@ -40,7 +40,7 @@ public class AtsWorkStateFactoryTest {
    // @formatter:on
 
    @Before
-   public void setup() throws OseeCoreException {
+   public void setup()  {
       MockitoAnnotations.initMocks(this);
    }
 

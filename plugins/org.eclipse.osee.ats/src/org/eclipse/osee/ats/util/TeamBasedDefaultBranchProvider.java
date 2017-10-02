@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.IDefaultInitialBranchesPr
 public class TeamBasedDefaultBranchProvider implements IDefaultInitialBranchesProvider {
 
    @Override
-   public Collection<BranchId> getDefaultInitialBranches() throws OseeCoreException {
+   public Collection<BranchId> getDefaultInitialBranches()  {
       IAtsUser user = AtsClientService.get().getUserService().getCurrentUser();
       try {
          Collection<IAtsTeamDefinition> teams = new ArrayList<>();

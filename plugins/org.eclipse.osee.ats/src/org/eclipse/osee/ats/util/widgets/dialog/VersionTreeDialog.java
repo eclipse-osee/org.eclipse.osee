@@ -35,7 +35,7 @@ public class VersionTreeDialog extends FilteredCheckboxTreeDialog {
 
    protected Composite dialogComp;
 
-   public VersionTreeDialog(Active active) throws OseeCoreException {
+   public VersionTreeDialog(Active active)  {
       this(active, Collections.emptyList());
    }
 
@@ -48,7 +48,7 @@ public class VersionTreeDialog extends FilteredCheckboxTreeDialog {
    /**
     * @return selected team defs and children if recurseChildren was checked
     */
-   public Collection<Version> getResultVersions() throws OseeCoreException {
+   public Collection<Version> getResultVersions()  {
       Set<Version> versions = new HashSet<>(10);
       for (Object obj : getResult()) {
          versions.add((Version) obj);

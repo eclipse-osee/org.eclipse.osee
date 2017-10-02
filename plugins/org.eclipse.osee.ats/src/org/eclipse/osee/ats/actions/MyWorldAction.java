@@ -31,7 +31,7 @@ public class MyWorldAction extends AbstractAtsAction {
    }
 
    @Override
-   public void runWithException() throws OseeCoreException {
+   public void runWithException()  {
       WorldEditor.open(new WorldEditorUISearchItemProvider(
          new MyWorldSearchItem("My World", AtsClientService.get().getUserService().getCurrentUser()), null,
          TableLoadOption.None));

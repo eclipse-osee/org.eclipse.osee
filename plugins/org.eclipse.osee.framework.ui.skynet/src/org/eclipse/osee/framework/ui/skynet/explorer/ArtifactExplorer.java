@@ -284,7 +284,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
       }
    }
 
-   public void explore(Artifact artifact) throws OseeCoreException {
+   public void explore(Artifact artifact)  {
       if (artifact == null) {
          throw new IllegalArgumentException("Can not explore a null artifact.");
       }

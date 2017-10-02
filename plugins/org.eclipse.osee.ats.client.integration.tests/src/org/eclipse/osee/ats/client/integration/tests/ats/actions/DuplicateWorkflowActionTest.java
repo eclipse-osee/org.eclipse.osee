@@ -44,7 +44,7 @@ public class DuplicateWorkflowActionTest extends AbstractAtsActionRunTest {
    private IAtsTeamWorkflow dupTeamWf;
 
    @Override
-   public DuplicateWorkflowAction createAction() throws OseeCoreException {
+   public DuplicateWorkflowAction createAction()  {
       return new DuplicateWorkflowAction(Collections.singleton(AtsTestUtil.getTeamWf()));
    }
 

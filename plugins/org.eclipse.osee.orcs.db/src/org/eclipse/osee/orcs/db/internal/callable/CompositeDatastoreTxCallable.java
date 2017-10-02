@@ -28,7 +28,7 @@ public class CompositeDatastoreTxCallable extends AbstractDatastoreTxCallable<Vo
    }
 
    @Override
-   protected Void handleTxWork(JdbcConnection connection) throws OseeCoreException {
+   protected Void handleTxWork(JdbcConnection connection)  {
       for (AbstractDatastoreTxCallable<?> callable : callables) {
          callable.handleTxWork(connection);
       }

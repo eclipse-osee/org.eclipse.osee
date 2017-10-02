@@ -31,7 +31,7 @@ public enum ConflictType {
       return value;
    }
 
-   public static ConflictType valueOf(int value) throws OseeCoreException {
+   public static ConflictType valueOf(int value)  {
       for (ConflictType type : values()) {
          if (type.value == value) {
             return type;

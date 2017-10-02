@@ -99,7 +99,7 @@ public class RequirementTraceabilityData {
       return status;
    }
 
-   private void getTestProcedureTraceability(BranchId testProcedureBranch) throws OseeCoreException {
+   private void getTestProcedureTraceability(BranchId testProcedureBranch)  {
       // Map Software Requirements from TestProcedure IOseeBranch to Requirements IOseeBranch
       Map<String, Artifact> testProcedureBranchReqsToReqsBranchMap = new HashMap<>();
       List<Artifact> artifacts =
@@ -185,9 +185,9 @@ public class RequirementTraceabilityData {
     *
     * @param artifact requirement to find
     * @return the test scripts associated with this requirement
-    * @throws OseeCoreException
+    * 
     */
-   public Collection<Artifact> getTestScriptsForRequirement(Artifact artifact) throws OseeCoreException {
+   public Collection<Artifact> getTestScriptsForRequirement(Artifact artifact)  {
       return traceabilityProvider.getTestUnitArtifacts(artifact);
    }
 

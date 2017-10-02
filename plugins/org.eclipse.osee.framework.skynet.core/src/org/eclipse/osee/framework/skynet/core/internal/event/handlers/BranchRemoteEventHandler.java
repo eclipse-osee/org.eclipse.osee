@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 public class BranchRemoteEventHandler implements EventHandlerRemote<RemoteBranchEvent1> {
 
    @Override
-   public void handle(Transport transport, Sender sender, RemoteBranchEvent1 remoteEvent) throws OseeCoreException {
+   public void handle(Transport transport, Sender sender, RemoteBranchEvent1 remoteEvent)  {
       BranchEvent branchEvent = FrameworkEventUtil.getBranchEvent(remoteEvent);
       updateBranches(sender, branchEvent);
       transport.send(sender, branchEvent);
@@ -68,7 +68,7 @@ public class BranchRemoteEventHandler implements EventHandlerRemote<RemoteBranch
       }
    }
 
-   private void updateBranchState(BranchState state, Branch branch) throws OseeCoreException {
+   private void updateBranchState(BranchState state, Branch branch)  {
       if (state.matches(BranchState.PURGED, BranchState.DELETED)) {
          branch.setArchived(true);
          BranchManager.decache(branch);

@@ -168,7 +168,7 @@ public final class ArtifactTest {
    }
 
    @Test
-   public void testEquals() throws OseeCoreException {
+   public void testEquals()  {
       Artifact art = ArtifactTypeManager.addArtifact(GeneralData, COMMON, ArtifactTest.class.getSimpleName());
       art.persist("test");
 

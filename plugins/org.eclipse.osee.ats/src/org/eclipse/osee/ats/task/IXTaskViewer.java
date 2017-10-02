@@ -18,9 +18,9 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IXTaskViewer {
 
-   public String getTabName() throws OseeCoreException;
+   public String getTabName() ;
 
-   public IAtsTeamWorkflow getTeamWf() throws OseeCoreException;
+   public IAtsTeamWorkflow getTeamWf() ;
 
    public boolean isTasksEditable();
 

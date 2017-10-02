@@ -62,7 +62,7 @@ public final class MockDataFactory {
       return target;
    }
 
-   public static AttributeType createAttributeType() throws OseeCoreException {
+   public static AttributeType createAttributeType()  {
       OseeEnumTypeFactory oseeEnumTypeFactory = new OseeEnumTypeFactory();
       AttributeType attributeType = new AttributeType(random.nextLong(), "name", "baseType", "providerName", ".xml", "",
          1, 1, "description", "tagger", "mediaType");
@@ -90,11 +90,11 @@ public final class MockDataFactory {
       return new OseeEnumType(id, "enum_" + index);
    }
 
-   public static AttributeType createAttributeType(int index, OseeEnumType oseeEnumType) throws OseeCoreException {
+   public static AttributeType createAttributeType(int index, OseeEnumType oseeEnumType)  {
       return createAttributeType(index, oseeEnumType, random.nextLong());
    }
 
-   public static AttributeType createAttributeType(int index, OseeEnumType oseeEnumType, Long id) throws OseeCoreException {
+   public static AttributeType createAttributeType(int index, OseeEnumType oseeEnumType, Long id)  {
       AttributeType type =
          new AttributeType(id, "attrType_" + index, "baseClass_" + index, "providerId_" + index, "ext_" + index,
             "default_" + index, index * 2, index * 7, "description_" + index, "tag_" + index, "mediaType_" + index);

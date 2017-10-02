@@ -44,14 +44,14 @@ public class ArtifactMatchInterpreterTest {
    private final ArtifactMatchInterpreter interpreter = new ArtifactMatchInterpreter();
 
    @Test
-   public void testMatchNoConditions() throws OseeCoreException {
+   public void testMatchNoConditions()  {
       XArtifactMatcher matcher = MockModel.createXArtifactMatcherRef("TestArtifact");
       boolean actual = interpreter.matches(matcher, (ArtifactProxy) null);
       Assert.assertEquals(false, actual);
    }
 
    @Test
-   public void testArtifactNameEq() throws OseeCoreException {
+   public void testArtifactNameEq()  {
       XArtifactMatcher matcher =
          MockModel.createMatcher("artifactMatcher \"Test\" where artifactName EQ \"Test Artifact\";");
 
@@ -68,7 +68,7 @@ public class ArtifactMatchInterpreterTest {
    }
 
    @Test
-   public void testArtifactNameLike() throws OseeCoreException {
+   public void testArtifactNameLike()  {
       XArtifactMatcher matcher =
          MockModel.createMatcher("artifactMatcher \"Test\" where artifactName LIKE \".*arti.*\";");
 
@@ -81,7 +81,7 @@ public class ArtifactMatchInterpreterTest {
    }
 
    @Test
-   public void testartifactIdEq() throws OseeCoreException {
+   public void testartifactIdEq()  {
       String guid = GUID.create();
       XArtifactMatcher matcher =
          MockModel.createMatcher("artifactMatcher \"Test\" where artifactId EQ \"" + guid + "\";");
@@ -94,7 +94,7 @@ public class ArtifactMatchInterpreterTest {
    }
 
    @Test
-   public void testartifactIdLike() throws OseeCoreException {
+   public void testartifactIdLike()  {
       XArtifactMatcher matcher = MockModel.createMatcher("artifactMatcher \"Test\" where artifactId LIKE \"\\w+\";");
 
       DslAsserts.assertEquals(matcher.getConditions().iterator().next(), MatchField.ARTIFACT_ID, CompareOp.LIKE,
@@ -106,7 +106,7 @@ public class ArtifactMatchInterpreterTest {
    }
 
    @Test
-   public void testArtifactBranchNameEq() throws OseeCoreException {
+   public void testArtifactBranchNameEq()  {
       XArtifactMatcher matcher = MockModel.createMatcher("artifactMatcher \"Test\" where branchName EQ \"branch1\";");
 
       DslAsserts.assertEquals(matcher.getConditions().iterator().next(), MatchField.BRANCH_NAME, CompareOp.EQ,
@@ -122,7 +122,7 @@ public class ArtifactMatchInterpreterTest {
    }
 
    @Test
-   public void testArtifactBranchNameLike() throws OseeCoreException {
+   public void testArtifactBranchNameLike()  {
       XArtifactMatcher matcher =
          MockModel.createMatcher("artifactMatcher \"Test\" where branchName LIKE \".*hello.*\";");
 
@@ -135,7 +135,7 @@ public class ArtifactMatchInterpreterTest {
    }
 
    @Test
-   public void testArtifactBranchUuidEq() throws OseeCoreException {
+   public void testArtifactBranchUuidEq()  {
       long uuid = Lib.generateUuid();
       XArtifactMatcher matcher =
          MockModel.createMatcher("artifactMatcher \"Test\" where branchUuid EQ \"" + uuid + "\";");
@@ -149,7 +149,7 @@ public class ArtifactMatchInterpreterTest {
    }
 
    @Test
-   public void testArtifactBranchUuidLike() throws OseeCoreException {
+   public void testArtifactBranchUuidLike()  {
       XArtifactMatcher matcher = MockModel.createMatcher("artifactMatcher \"Test\" where branchUuid LIKE \"\\w+\";");
 
       DslAsserts.assertEquals(matcher.getConditions().iterator().next(), MatchField.BRANCH_UUID, CompareOp.LIKE,
@@ -161,7 +161,7 @@ public class ArtifactMatchInterpreterTest {
    }
 
    @Test
-   public void testCompoundCondition1() throws OseeCoreException {
+   public void testCompoundCondition1()  {
       XArtifactMatcher andMatcher = MockModel.createMatcher(
          "artifactMatcher \"Test\" where artifactId EQ \"ABCDEFGHIJK123456789\" AND artifactName EQ \"myArtifact\";");
 
@@ -199,7 +199,7 @@ public class ArtifactMatchInterpreterTest {
    }
 
    @Test
-   public void testCompoundCondition2() throws OseeCoreException {
+   public void testCompoundCondition2()  {
       XArtifactMatcher matcher = MockModel.createMatcher(
          "artifactMatcher \"Test\" where artifactId EQ \"ABCDEFGHIJK123456789\" AND (branchName EQ \"myArtifact\" OR branchUuid EQ \"3456789101112131415\");");
 

@@ -84,12 +84,12 @@ public class XAssigneesListWorkItemWidget extends AbstractXAssigneesListWidget i
    }
 
    @Override
-   public Artifact getArtifact() throws OseeCoreException {
+   public Artifact getArtifact()  {
       return awa;
    }
 
    @Override
-   public void setArtifact(Artifact artifact) throws OseeCoreException {
+   public void setArtifact(Artifact artifact)  {
       this.awa = (AbstractWorkflowArtifact) artifact;
    }
 

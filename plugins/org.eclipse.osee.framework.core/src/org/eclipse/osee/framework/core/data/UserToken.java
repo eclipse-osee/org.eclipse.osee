@@ -20,13 +20,13 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface UserToken extends ArtifactToken, UserId {
 
-   public String getUserId() throws OseeCoreException;
+   public String getUserId() ;
 
-   public boolean isActive() throws OseeCoreException;
+   public boolean isActive() ;
 
-   public boolean isAdmin() throws OseeCoreException;
+   public boolean isAdmin() ;
 
-   public String getEmail() throws OseeCoreException;
+   public String getEmail() ;
 
    public boolean isCreationRequired();
 

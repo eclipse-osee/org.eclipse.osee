@@ -58,7 +58,7 @@ public abstract class AbstractArtifactExtractor implements IArtifactExtractor {
       return delegate instanceof NullDelegate ? false : true;
    }
 
-   private void checkDelegate() throws OseeCoreException {
+   private void checkDelegate()  {
       if (isDelegateRequired() && !hasDelegate()) {
          throw new OseeStateException("Delegate is required but is null delegate");
       }

@@ -73,7 +73,7 @@ public class OrderManagerTest {
    private List<Identifiable<String>> items;
 
    @Before
-   public void setUp() throws OseeCoreException {
+   public void setUp()  {
       MockitoAnnotations.initMocks(this);
 
       orderManager = new OrderManager(new SorterProvider(relationTypeCache), accessor);
@@ -97,19 +97,19 @@ public class OrderManagerTest {
    }
 
    @Test
-   public void testLoad() throws OseeCoreException {
+   public void testLoad()  {
       orderManager.load();
       verify(accessor).load(orderManager);
    }
 
    @Test
-   public void testStore() throws OseeCoreException {
+   public void testStore()  {
       orderManager.store();
       verify(accessor).store(orderManager, OrderChange.Forced);
    }
 
    @Test
-   public void testAddNull1() throws OseeCoreException {
+   public void testAddNull1()  {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("type and side key cannot be null");
       orderManager.remove(null);
@@ -117,21 +117,21 @@ public class OrderManagerTest {
    }
 
    @Test
-   public void testAddNull2() throws OseeCoreException {
+   public void testAddNull2()  {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("orderData cannot be null");
       orderManager.add(typeSide1, null);
    }
 
    @Test
-   public void testRemoveNull() throws OseeCoreException {
+   public void testRemoveNull()  {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("type and side key cannot be null");
       orderManager.remove(null);
    }
 
    @Test
-   public void testAddRemove() throws OseeCoreException {
+   public void testAddRemove()  {
       orderManager.add(typeSide1, orderData1);
       orderManager.add(typeSide2, orderData2);
       orderManager.add(typeSide3, orderData3);
@@ -170,7 +170,7 @@ public class OrderManagerTest {
    }
 
    @Test
-   public void testGetSorterIdNull() throws OseeCoreException {
+   public void testGetSorterIdNull()  {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("type and side key cannot be null");
 
@@ -178,7 +178,7 @@ public class OrderManagerTest {
    }
 
    @Test
-   public void testGetSorterId() throws OseeCoreException {
+   public void testGetSorterId()  {
       when(orderData1.getSorterId()).thenReturn(USER_DEFINED);
       when(orderData2.getSorterId()).thenReturn(LEXICOGRAPHICAL_ASC);
 
@@ -194,7 +194,7 @@ public class OrderManagerTest {
    }
 
    @Test
-   public void testGetOrderIdsNull() throws OseeCoreException {
+   public void testGetOrderIdsNull()  {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("type and side key cannot be null");
 
@@ -202,7 +202,7 @@ public class OrderManagerTest {
    }
 
    @Test
-   public void testGetOrderIds() throws OseeCoreException {
+   public void testGetOrderIds()  {
       List<String> relatives1 = Arrays.asList("A", "B", "C");
       List<String> relatives2 = Arrays.asList("1", "2", "3");
 
@@ -220,7 +220,7 @@ public class OrderManagerTest {
    }
 
    @Test
-   public void testIterator() throws OseeCoreException {
+   public void testIterator()  {
       List<String> relatives1 = Arrays.asList("Z", "A", "X");
       List<String> relatives2 = Arrays.asList("3", "2", "1");
       List<String> relatives3 = Arrays.asList("c", "b", "a");
@@ -263,7 +263,7 @@ public class OrderManagerTest {
    }
 
    @Test
-   public void testSort() throws OseeCoreException {
+   public void testSort()  {
       List<String> relatives1 = Arrays.asList("2", "1", "3");
 
       when(orderData1.getOrderIds()).thenReturn(relatives1);
@@ -298,7 +298,7 @@ public class OrderManagerTest {
    }
 
    @Test
-   public void testSetOrder() throws OseeCoreException {
+   public void testSetOrder()  {
       List<String> relatives1 = Arrays.asList("2", "1", "3");
 
       when(mock1.getGuid()).thenReturn("2");

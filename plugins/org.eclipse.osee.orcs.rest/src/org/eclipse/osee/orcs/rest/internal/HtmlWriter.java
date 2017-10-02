@@ -37,7 +37,7 @@ public class HtmlWriter {
       this.uriInfo = uriInfo;
    }
 
-   public String toHtml(Iterable<? extends Object> objects) throws OseeCoreException {
+   public String toHtml(Iterable<? extends Object> objects)  {
       StringBuilder builder = new StringBuilder();
       builder.append("<html><body>");
       for (Object object : objects) {
@@ -65,7 +65,7 @@ public class HtmlWriter {
       return builder.toString();
    }
 
-   private Map<String, Object> toData(AttributeReadable<?> attribute) throws OseeCoreException {
+   private Map<String, Object> toData(AttributeReadable<?> attribute)  {
       Map<String, Object> data = new LinkedHashMap<>();
       data.put("Name", attribute.getAttributeType().getName());
 
@@ -75,7 +75,7 @@ public class HtmlWriter {
       return data;
    }
 
-   private Map<String, Object> toData(ArtifactReadable artifact) throws OseeCoreException {
+   private Map<String, Object> toData(ArtifactReadable artifact)  {
       Map<String, Object> data = new LinkedHashMap<>();
       data.put("Name", artifact.getName());
       data.put("Artifact Id", artifact.getId());
@@ -121,7 +121,7 @@ public class HtmlWriter {
       return data;
    }
 
-   private Map<String, Object> toData(BranchReadable branch) throws OseeCoreException {
+   private Map<String, Object> toData(BranchReadable branch)  {
       Map<String, Object> data = new LinkedHashMap<>();
       data.put("Name", branch.getName());
       data.put("Branch Id", branch.getId());
@@ -160,7 +160,7 @@ public class HtmlWriter {
          branch).getResultsAsId().getExactlyOne();
    }
 
-   public Map<String, Object> toData(TransactionReadable txRecord) throws OseeCoreException {
+   public Map<String, Object> toData(TransactionReadable txRecord)  {
       Map<String, Object> data = new LinkedHashMap<>();
       data.put("TxId", txRecord);
       data.put("TxType", txRecord.getTxType());

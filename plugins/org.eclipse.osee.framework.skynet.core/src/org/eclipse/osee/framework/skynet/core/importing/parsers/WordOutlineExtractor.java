@@ -22,7 +22,6 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Readers;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
@@ -100,12 +99,12 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
       };
    }
 
-   private void handleFormatError(URI source, String message) throws OseeCoreException {
+   private void handleFormatError(URI source, String message) {
       throw new OseeStateException("File format error: %s in file [%s]", message, source.getPath());
    }
 
    @Override
-   protected void extractFromSource(OperationLogger logger, URI source, RoughArtifactCollector collector) throws OseeCoreException, IOException {
+   protected void extractFromSource(OperationLogger logger, URI source, RoughArtifactCollector collector) throws IOException {
       Reader reader = null;
       try {
          reader = new BufferedReader(new InputStreamReader(source.toURL().openStream(), "UTF-8"));

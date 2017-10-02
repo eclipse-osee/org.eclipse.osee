@@ -54,7 +54,7 @@ public class DataLoaderFactoryImpl implements DataLoaderFactory {
    }
 
    @Override
-   public int getCount(HasCancellation cancellation, QueryContext queryContext) throws OseeCoreException {
+   public int getCount(HasCancellation cancellation, QueryContext queryContext)  {
       QuerySqlContext context = adapt(QuerySqlContext.class, queryContext);
 
       int count = -1;
@@ -90,7 +90,7 @@ public class DataLoaderFactoryImpl implements DataLoaderFactory {
    }
 
    @Override
-   public DataLoader newDataLoader(QueryContext queryContext) throws OseeCoreException {
+   public DataLoader newDataLoader(QueryContext queryContext)  {
       AbstractLoadExecutor executor;
       if (queryContext instanceof ArtifactQuerySqlContext) {
          ArtifactQuerySqlContext sqlQueryContext = adapt(ArtifactQuerySqlContext.class, queryContext);
@@ -113,26 +113,26 @@ public class DataLoaderFactoryImpl implements DataLoaderFactory {
    }
 
    @Override
-   public DataLoader newDataLoaderFromIds(OrcsSession session, BranchId branch, Collection<Integer> ids) throws OseeCoreException {
+   public DataLoader newDataLoaderFromIds(OrcsSession session, BranchId branch, Collection<Integer> ids)  {
       Conditions.checkNotNull(branch, "branch");
       Options options = OptionsUtil.createOptions();
       return new DataLoaderImpl(logger, ids, options, session, branch, loader, joinFactory);
    }
 
    @Override
-   public DataLoader newDataLoaderFromGuids(OrcsSession session, BranchId branch, String... guids) throws OseeCoreException {
+   public DataLoader newDataLoaderFromGuids(OrcsSession session, BranchId branch, String... guids)  {
       return newDataLoaderFromGuids(session, branch, Arrays.asList(guids));
    }
 
    @Override
-   public DataLoader newDataLoaderFromGuids(OrcsSession session, BranchId branch, Collection<String> guids) throws OseeCoreException {
+   public DataLoader newDataLoaderFromGuids(OrcsSession session, BranchId branch, Collection<String> guids)  {
       Conditions.checkNotNull(branch, "branch");
       Options options = OptionsUtil.createOptions();
       return new DataLoaderImpl(logger, options, session, branch, loader, guids, joinFactory);
    }
 
    @SuppressWarnings("unchecked")
-   private <T> T adapt(Class<T> clazz, QueryContext queryContext) throws OseeCoreException {
+   private <T> T adapt(Class<T> clazz, QueryContext queryContext)  {
       T toReturn = null;
       if (clazz.isAssignableFrom(queryContext.getClass())) {
          toReturn = (T) queryContext;

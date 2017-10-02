@@ -28,9 +28,9 @@ public interface ArtifactDataProvider {
       @Override
       ArtifactType getArtifactType();
 
-      boolean isAttributeTypeValid(AttributeTypeId attributeType) throws OseeCoreException;
+      boolean isAttributeTypeValid(AttributeTypeId attributeType) ;
 
-      Collection<RelationType> getValidRelationTypes() throws OseeCoreException;
+      Collection<RelationType> getValidRelationTypes() ;
 
       Collection<ArtifactProxy> getHierarchy();
 
@@ -41,5 +41,5 @@ public interface ArtifactDataProvider {
 
    boolean isApplicable(Object object);
 
-   ArtifactProxy asCastedObject(Object object) throws OseeCoreException;
+   ArtifactProxy asCastedObject(Object object) ;
 }

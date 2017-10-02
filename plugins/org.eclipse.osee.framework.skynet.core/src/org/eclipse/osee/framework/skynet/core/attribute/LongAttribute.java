@@ -21,7 +21,7 @@ public class LongAttribute extends CharacterBackedAttribute<Long> {
    private static final Long DEFAULT_LONG = Long.MIN_VALUE;
 
    @Override
-   public Long getValue() throws OseeCoreException {
+   public Long getValue()  {
       return (Long) getAttributeDataProvider().getValue();
    }
 

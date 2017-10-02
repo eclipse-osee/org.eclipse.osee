@@ -40,7 +40,7 @@ public class AttributeTypeRestrictionHandler implements RestrictionHandler<Attri
    }
 
    @Override
-   public void process(ObjectRestriction objectRestriction, ArtifactProxy artifactProxy, AccessDetailCollector collector, Scope scopeLevel) throws OseeCoreException {
+   public void process(ObjectRestriction objectRestriction, ArtifactProxy artifactProxy, AccessDetailCollector collector, Scope scopeLevel)  {
       AttributeTypeRestriction restriction = asCastedObject(objectRestriction);
       if (restriction != null) {
          XAttributeType attributeTypeRef = restriction.getAttributeTypeRef();

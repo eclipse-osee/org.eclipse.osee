@@ -93,23 +93,23 @@ public class ArtifactQueryBuilder {
       emptyCriteria = guids.isEmpty();
    }
 
-   public ArtifactQueryBuilder(List<String> guids, TransactionToken transactionId, DeletionFlag allowDeleted, LoadLevel loadLevel) throws OseeCoreException {
+   public ArtifactQueryBuilder(List<String> guids, TransactionToken transactionId, DeletionFlag allowDeleted, LoadLevel loadLevel)  {
       this(null, ArtifactId.SENTINEL, guids, null, null, transactionId.getBranch(), transactionId, allowDeleted,
          loadLevel);
       emptyCriteria = guids.isEmpty();
    }
 
-   public ArtifactQueryBuilder(Collection<ArtifactId> artifactIds, TransactionToken transactionId, DeletionFlag allowDeleted, LoadLevel loadLevel) throws OseeCoreException {
+   public ArtifactQueryBuilder(Collection<ArtifactId> artifactIds, TransactionToken transactionId, DeletionFlag allowDeleted, LoadLevel loadLevel)  {
       this(artifactIds, ArtifactId.SENTINEL, null, null, null, transactionId.getBranch(), transactionId, allowDeleted,
          loadLevel);
       emptyCriteria = artifactIds.isEmpty();
    }
 
-   public ArtifactQueryBuilder(ArtifactId artifactId, TransactionToken transactionId, DeletionFlag allowDeleted, LoadLevel loadLevel) throws OseeCoreException {
+   public ArtifactQueryBuilder(ArtifactId artifactId, TransactionToken transactionId, DeletionFlag allowDeleted, LoadLevel loadLevel)  {
       this(null, artifactId, null, null, null, transactionId.getBranch(), transactionId, allowDeleted, loadLevel);
    }
 
-   public ArtifactQueryBuilder(String guid, BranchId branch, DeletionFlag allowDeleted, LoadLevel loadLevel) throws OseeCoreException {
+   public ArtifactQueryBuilder(String guid, BranchId branch, DeletionFlag allowDeleted, LoadLevel loadLevel)  {
       this(null, ArtifactId.SENTINEL, null, ensureValid(guid), null, branch, TransactionToken.SENTINEL, allowDeleted,
          loadLevel);
    }
@@ -189,7 +189,7 @@ public class ArtifactQueryBuilder {
       return criteria.toArray(new ArtifactSearchCriteria[criteria.size()]);
    }
 
-   private static String ensureValid(String id) throws OseeCoreException {
+   private static String ensureValid(String id)  {
       boolean guidCheck = GUID.isValid(id);
       if (!guidCheck) {
          throw new OseeArgumentException("Invalid guid detected [%s]", id);
@@ -202,7 +202,7 @@ public class ArtifactQueryBuilder {
          guids) || criteria.length > 0 || artifactId.isInvalid() && !Conditions.hasValues(artifactIds);
    }
 
-   private QueryBuilder getQueryBuilder() throws OseeCoreException {
+   private QueryBuilder getQueryBuilder()  {
       QueryBuilder toReturn;
       if (useServerSearch()) {
          OseeClient client = ServiceUtil.getOseeClient();
@@ -216,7 +216,7 @@ public class ArtifactQueryBuilder {
       return toReturn;
    }
 
-   private QueryBuilder createOrcsQuery() throws OseeCoreException {
+   private QueryBuilder createOrcsQuery()  {
 
       QueryBuilder builder = getQueryBuilder();
 
@@ -257,15 +257,15 @@ public class ArtifactQueryBuilder {
       return builder;
    }
 
-   public List<Artifact> getArtifacts(int artifactCountEstimate, ISearchConfirmer confirmer) throws OseeCoreException {
+   public List<Artifact> getArtifacts(int artifactCountEstimate, ISearchConfirmer confirmer)  {
       return internalGetArtifacts(artifactCountEstimate, confirmer, INCLUDE_CACHE);
    }
 
-   public List<Artifact> reloadArtifacts(int artifactCountEstimate) throws OseeCoreException {
+   public List<Artifact> reloadArtifacts(int artifactCountEstimate)  {
       return internalGetArtifacts(artifactCountEstimate, null, RELOAD_CACHE);
    }
 
-   public Artifact reloadArtifact() throws OseeCoreException {
+   public Artifact reloadArtifact()  {
       if (emptyCriteria) {
          throw new ArtifactDoesNotExist("received an empty list in the criteria for this search");
       }
@@ -280,7 +280,7 @@ public class ArtifactQueryBuilder {
       return artifacts.iterator().next();
    }
 
-   private List<Artifact> loadArtifactsFromServerIds(LoadType reload) throws OseeCoreException {
+   private List<Artifact> loadArtifactsFromServerIds(LoadType reload)  {
       List<ArtifactId> ids = createOrcsQuery().getIds();
       List<Artifact> artifacts;
       if (ids != null && !ids.isEmpty()) {
@@ -291,7 +291,7 @@ public class ArtifactQueryBuilder {
       return artifacts;
    }
 
-   private List<Artifact> internalGetArtifacts(int artifactCountEstimate, ISearchConfirmer confirmer, LoadType reload) throws OseeCoreException {
+   private List<Artifact> internalGetArtifacts(int artifactCountEstimate, ISearchConfirmer confirmer, LoadType reload)  {
       if (emptyCriteria) {
          return java.util.Collections.emptyList();
       }
@@ -299,11 +299,11 @@ public class ArtifactQueryBuilder {
       return loadArtifactsFromServerIds(reload);
    }
 
-   public List<ArtifactId> selectArtifacts(int artifactCountEstimate) throws OseeCoreException {
+   public List<ArtifactId> selectArtifacts(int artifactCountEstimate)  {
       return createOrcsQuery().getIds();
    }
 
-   public int countArtifacts() throws OseeCoreException {
+   public int countArtifacts()  {
       if (emptyCriteria) {
          return 0;
       } else {
@@ -311,7 +311,7 @@ public class ArtifactQueryBuilder {
       }
    }
 
-   public Artifact getOrCheckArtifact(QueryType queryType) throws OseeCoreException {
+   public Artifact getOrCheckArtifact(QueryType queryType)  {
       if (emptyCriteria) {
          throw new ArtifactDoesNotExist("received an empty list in the criteria for this search");
       }
@@ -422,7 +422,7 @@ public class ArtifactQueryBuilder {
       }
 
       @SuppressWarnings("unused")
-      public SearchResult getSearchResult() throws OseeCoreException {
+      public SearchResult getSearchResult()  {
          SearchResponse response = new SearchResponse();
          List<ArtifactId> ids = new LinkedList<>(localIds);
          response.setIds(ids);
@@ -430,7 +430,7 @@ public class ArtifactQueryBuilder {
       }
 
       @SuppressWarnings("unused")
-      public int getCount() throws OseeCoreException {
+      public int getCount()  {
          if (txId.isInvalid()) {
             txId = TransactionManager.getHeadTransaction(branch);
          }

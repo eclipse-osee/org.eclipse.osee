@@ -37,7 +37,7 @@ public class GoalArtifact extends CollectorArtifact implements IAtsGoal {
    }
 
    @Override
-   public AbstractWorkflowArtifact getParentAWA() throws OseeCoreException {
+   public AbstractWorkflowArtifact getParentAWA()  {
       return null;
    }
 
@@ -47,7 +47,7 @@ public class GoalArtifact extends CollectorArtifact implements IAtsGoal {
    }
 
    @Override
-   public List<Artifact> getMembers() throws OseeCoreException {
+   public List<Artifact> getMembers()  {
       return AtsClientService.get().getGoalMembersCache().getMembers(this);
    }
 

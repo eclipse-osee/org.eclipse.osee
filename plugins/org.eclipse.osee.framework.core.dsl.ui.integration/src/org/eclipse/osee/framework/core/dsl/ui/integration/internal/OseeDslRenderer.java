@@ -65,12 +65,12 @@ public final class OseeDslRenderer extends AbstractDslRenderer {
    }
 
    @Override
-   public String getAssociatedExtension(Artifact artifact) throws OseeCoreException {
+   public String getAssociatedExtension(Artifact artifact)  {
       return "osee";
    }
 
    @Override
-   public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException {
+   public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts)  {
       Artifact artifact = artifacts.iterator().next();
 
       String data;

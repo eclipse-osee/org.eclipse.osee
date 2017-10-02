@@ -33,7 +33,7 @@ public class TaggingEngine {
       return tagProcessor;
    }
 
-   public Tagger getDefaultTagger() throws OseeCoreException {
+   public Tagger getDefaultTagger()  {
       return getTagger("DefaultAttributeTaggerProvider");
    }
 
@@ -51,7 +51,7 @@ public class TaggingEngine {
       return tagger != null;
    }
 
-   public Tagger getTagger(String taggerId) throws OseeCoreException {
+   public Tagger getTagger(String taggerId)  {
       String key = normalize(taggerId);
       Tagger tagger = taggers.get(key);
       Conditions.checkNotNull(tagger, "tagger", "Unable to find tagger for [%s]", taggerId);

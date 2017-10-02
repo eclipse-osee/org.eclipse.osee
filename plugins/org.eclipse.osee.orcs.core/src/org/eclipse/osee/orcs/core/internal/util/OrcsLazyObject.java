@@ -51,6 +51,6 @@ public abstract class OrcsLazyObject<T, D extends OrcsData> extends LazyObject<T
       return new FutureTask<T>(callable);
    }
 
-   protected abstract T instance() throws OseeCoreException;
+   protected abstract T instance() ;
 
 }

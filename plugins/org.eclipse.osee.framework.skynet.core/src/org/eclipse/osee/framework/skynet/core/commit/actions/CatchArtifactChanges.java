@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 public class CatchArtifactChanges implements CommitAction {
 
    @Override
-   public void runCommitAction(BranchId sourceBranch, BranchId destinationBranch) throws OseeCoreException {
+   public void runCommitAction(BranchId sourceBranch, BranchId destinationBranch) {
 
       Collection<Change> changes = new ArrayList<>();
       IOperation operation = ChangeManager.compareTwoBranchesHead(sourceBranch, destinationBranch, changes);

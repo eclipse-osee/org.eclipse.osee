@@ -89,7 +89,7 @@ public class UpdateBookmarkIds {
     * maintaining the strange order of the start and end tags that Word seems to produce. Not doing so, or resequencing
     * this order can and will produce strange results in the behavior of the document's references.
     */
-   public String fixTags(String content) throws OseeCoreException {
+   public String fixTags(String content)  {
       String toReturn = content;
       boolean changesMade = false;
       try {

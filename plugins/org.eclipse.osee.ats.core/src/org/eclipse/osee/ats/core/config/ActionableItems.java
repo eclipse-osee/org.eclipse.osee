@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
  */
 public class ActionableItems {
 
-   public static Set<IAtsActionableItem> getAIsFromItemAndChildren(IAtsActionableItem ai) throws OseeCoreException {
+   public static Set<IAtsActionableItem> getAIsFromItemAndChildren(IAtsActionableItem ai)  {
       Set<IAtsActionableItem> ais = new HashSet<>();
       ais.add(ai);
       for (IAtsActionableItem art : ai.getChildrenActionableItems()) {
@@ -42,13 +42,13 @@ public class ActionableItems {
       return ais;
    }
 
-   public static Set<IAtsActionableItem> getActionableItemsFromItemAndChildren(IAtsActionableItem ai) throws OseeCoreException {
+   public static Set<IAtsActionableItem> getActionableItemsFromItemAndChildren(IAtsActionableItem ai)  {
       Set<IAtsActionableItem> ais = new HashSet<>();
       getActionableItemsFromItemAndChildren(ai, ais);
       return ais;
    }
 
-   public static void getActionableItemsFromItemAndChildren(IAtsActionableItem ai, Set<IAtsActionableItem> aiTeams) throws OseeCoreException {
+   public static void getActionableItemsFromItemAndChildren(IAtsActionableItem ai, Set<IAtsActionableItem> aiTeams)  {
       for (IAtsActionableItem art : ai.getChildrenActionableItems()) {
          aiTeams.add(art);
          for (IAtsActionableItem childArt : ai.getChildrenActionableItems()) {
@@ -57,7 +57,7 @@ public class ActionableItems {
       }
    }
 
-   public static Set<IAtsActionableItem> getActionableItems(Collection<String> actionableItemNames, IAtsServices services) throws OseeCoreException {
+   public static Set<IAtsActionableItem> getActionableItems(Collection<String> actionableItemNames, IAtsServices services)  {
       Set<IAtsActionableItem> ais = new HashSet<>();
       for (String actionableItemName : actionableItemNames) {
          for (IAtsActionableItem ai : services.getQueryService().createQuery(AtsArtifactTypes.ActionableItem).getItems(
@@ -70,11 +70,11 @@ public class ActionableItems {
       return ais;
    }
 
-   public static Collection<IAtsTeamDefinition> getImpactedTeamDefs(Collection<IAtsActionableItem> ais) throws OseeCoreException {
+   public static Collection<IAtsTeamDefinition> getImpactedTeamDefs(Collection<IAtsActionableItem> ais)  {
       return TeamDefinitions.getImpactedTeamDefs(ais);
    }
 
-   public static List<IAtsActionableItem> getActionableItems(Active active, IAtsQueryService queryService) throws OseeCoreException {
+   public static List<IAtsActionableItem> getActionableItems(Active active, IAtsQueryService queryService)  {
       return Collections.castAll(
          getActive(queryService.createQuery(AtsArtifactTypes.ActionableItem).getConfigObjects(), active));
    }
@@ -83,16 +83,16 @@ public class ActionableItems {
       return "Action can not be written against " + configObject.getName() + " \"" + configObject + "\" (" + configObject.getId() + ").\n\nChoose another item.";
    }
 
-   public static IAtsActionableItem getTopActionableItem(IAtsServices services) throws OseeCoreException {
+   public static IAtsActionableItem getTopActionableItem(IAtsServices services)  {
       ArtifactToken artifact = services.getArtifact(AtsArtifactToken.TopActionableItem.getId());
       return services.getConfigItem(artifact);
    }
 
-   public static List<IAtsActionableItem> getActionableItemsAll(IAtsQueryService queryService) throws OseeCoreException {
+   public static List<IAtsActionableItem> getActionableItemsAll(IAtsQueryService queryService)  {
       return getActionableItems(Active.Both, queryService);
    }
 
-   public static List<IAtsActionableItem> getTopLevelActionableItems(Active active, IAtsServices services) throws OseeCoreException {
+   public static List<IAtsActionableItem> getTopLevelActionableItems(Active active, IAtsServices services)  {
       IAtsActionableItem topAi = getTopActionableItem(services);
       if (topAi == null) {
          return java.util.Collections.emptyList();
@@ -118,7 +118,7 @@ public class ActionableItems {
       return results;
    }
 
-   public static Set<IAtsActionableItem> getChildren(IAtsActionableItem topActionableItem, boolean recurse) throws OseeCoreException {
+   public static Set<IAtsActionableItem> getChildren(IAtsActionableItem topActionableItem, boolean recurse)  {
       Set<IAtsActionableItem> children = new HashSet<>();
       for (IAtsActionableItem child : topActionableItem.getChildrenActionableItems()) {
          children.add(child);

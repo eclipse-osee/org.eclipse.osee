@@ -38,7 +38,7 @@ public abstract class AbstractArtifactSearchQuery implements ISearchQuery {
    @Override
    public abstract IStatus run(final IProgressMonitor pm);
 
-   public String getResultLabel() throws OseeCoreException {
+   public String getResultLabel()  {
       StringBuilder builder = new StringBuilder();
       builder.append(getCriteriaLabel());
       builder.append(" - ");

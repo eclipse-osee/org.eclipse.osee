@@ -32,7 +32,7 @@ public class BranchCacheTest extends AbstractOseeCacheTest<Branch> {
    private static BranchCache cache;
 
    @BeforeClass
-   public static void prepareTestData() throws OseeCoreException {
+   public static void prepareTestData()  {
       branchData = new ArrayList<>();
 
       BranchDataAccessor branchAccessor = new BranchDataAccessor(branchData);
@@ -57,7 +57,7 @@ public class BranchCacheTest extends AbstractOseeCacheTest<Branch> {
       }
 
       @Override
-      public void load(IOseeCache<Branch> cache) throws OseeCoreException {
+      public void load(IOseeCache<Branch> cache)  {
          super.load(cache);
          int typeId = 100;
          for (int index = 0; index < 10; index++) {

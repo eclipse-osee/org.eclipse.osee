@@ -18,6 +18,6 @@ import org.eclipse.osee.framework.lifecycle.LifecycleHandler;
 
 public interface IAccessProvider extends LifecycleHandler {
 
-   void computeAccess(ArtifactToken userArtifact, Collection<?> objToCheck, AccessData accessData) throws OseeCoreException;
+   void computeAccess(ArtifactToken userArtifact, Collection<?> objToCheck, AccessData accessData) ;
 
 }

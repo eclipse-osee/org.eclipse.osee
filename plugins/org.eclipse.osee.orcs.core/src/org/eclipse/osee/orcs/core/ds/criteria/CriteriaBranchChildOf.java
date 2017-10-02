@@ -33,7 +33,7 @@ public class CriteriaBranchChildOf extends Criteria implements BranchCriteria {
    }
 
    @Override
-   public void checkValid(Options options) throws OseeCoreException {
+   public void checkValid(Options options)  {
       Conditions.checkNotNull(getParent(), "Parent branch");
    }
 

@@ -34,17 +34,17 @@ public class TestUtil {
       return Boolean.valueOf(System.getProperty("osee.isInTest"));
    }
 
-   public static void checkDbInitSuccess() throws OseeCoreException {
+   public static void checkDbInitSuccess()  {
       if (!isDbInitSuccessful()) {
          throw new OseeStateException("DbInit must be successful to continue");
       }
    }
 
-   public static boolean isDbInitSuccessful() throws OseeCoreException {
+   public static boolean isDbInitSuccessful()  {
       return OseeInfo.getValue("DbInitSuccess").equals("true");
    }
 
-   public static void setDbInitSuccessful(boolean success) throws OseeCoreException {
+   public static void setDbInitSuccessful(boolean success)  {
       OseeInfo.setValue("DbInitSuccess", String.valueOf(success));
    }
 
@@ -55,19 +55,19 @@ public class TestUtil {
       System.setProperty("osee.isInTest", String.valueOf(isInTest));
    }
 
-   public static boolean isProductionDb() throws OseeCoreException {
+   public static boolean isProductionDb()  {
       return ClientSessionManager.isProductionDataStore();
    }
 
-   public static boolean isTestDb() throws OseeCoreException {
+   public static boolean isTestDb()  {
       return !isProductionDb(); // && !isDemoDb();
    }
 
-   public static boolean isDemoDb() throws OseeCoreException {
+   public static boolean isDemoDb()  {
       return DEMO_DB_TYPE.equals(OseeInfo.getValue(OseeInfo.DB_TYPE_KEY));
    }
 
-   public static void setDemoDb(boolean set) throws OseeCoreException {
+   public static void setDemoDb(boolean set)  {
       OseeInfo.setValue(OseeInfo.DB_TYPE_KEY, set ? DEMO_DB_TYPE : "");
    }
 

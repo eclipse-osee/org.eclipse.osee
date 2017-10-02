@@ -53,7 +53,7 @@ public class OrcsWriterSheetProcessorForCreateUpdate implements RowProcessor {
    }
 
    @Override
-   public void foundStartOfWorksheet(String sheetName) throws OseeCoreException {
+   public void foundStartOfWorksheet(String sheetName)  {
       // do nothing
    }
 
@@ -125,7 +125,7 @@ public class OrcsWriterSheetProcessorForCreateUpdate implements RowProcessor {
    }
 
    @Override
-   public void processRow(String[] row) throws OseeCoreException {
+   public void processRow(String[] row)  {
       rowCount++;
       OwArtifact artifact = new OwArtifact();
       artifact.setData(OrcsWriterUtil.getData(getSheetName(), rowCount, 0, ""));

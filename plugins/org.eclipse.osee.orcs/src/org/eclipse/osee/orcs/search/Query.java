@@ -19,8 +19,8 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface Query {
 
-   int getCount() throws OseeCoreException;
+   int getCount() ;
 
-   CancellableCallable<Integer> createCount() throws OseeCoreException;
+   CancellableCallable<Integer> createCount() ;
 
 }

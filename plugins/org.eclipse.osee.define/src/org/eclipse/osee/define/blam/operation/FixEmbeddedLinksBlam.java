@@ -37,7 +37,7 @@ public class FixEmbeddedLinksBlam extends AbstractBlam {
    private static final String BRANCH = "Branch Input";
 
    @Override
-   public String getXWidgetsXml() throws OseeCoreException {
+   public String getXWidgetsXml()  {
       return String.format("<xWidgets><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"%s\"/></xWidgets>",
          BRANCH);
    }

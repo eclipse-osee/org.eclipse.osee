@@ -35,7 +35,7 @@ public class AddNoteActionTest extends AbstractAtsActionTest {
    }
 
    @Override
-   public Action createAction() throws OseeCoreException {
+   public Action createAction()  {
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
       return new AddNoteAction(AtsTestUtil.getTeamWf(), new IDirtiableEditor() {
 

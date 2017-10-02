@@ -27,7 +27,7 @@ public class VCastClient {
       // Static Factory
    }
 
-   public static VCastDataStore newDataStore(String dbPath) throws OseeCoreException {
+   public static VCastDataStore newDataStore(String dbPath)  {
       JdbcClient jdbcClient = JdbcClientBuilder.newBuilder()//
       .dbDriver(JDBC_SQLITE_DRIVER)//
       .dbUri(JDBC_SQLITE__CONNECTION_TEMPLATE, dbPath)//

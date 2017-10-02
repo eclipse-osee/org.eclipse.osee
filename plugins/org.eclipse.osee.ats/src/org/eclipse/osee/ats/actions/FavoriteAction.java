@@ -57,7 +57,7 @@ public class FavoriteAction extends AbstractAtsAction {
       setToolTipText(title);
    }
 
-   public Collection<AbstractWorkflowArtifact> getSelectedFavoritableArts() throws OseeCoreException {
+   public Collection<AbstractWorkflowArtifact> getSelectedFavoritableArts()  {
       List<AbstractWorkflowArtifact> favoritableArts = new ArrayList<>();
       for (Artifact art : selectedAtsArtifacts.getSelectedWorkflowArtifacts()) {
          if (art instanceof AbstractWorkflowArtifact) {
@@ -68,7 +68,7 @@ public class FavoriteAction extends AbstractAtsAction {
    }
 
    @Override
-   public void runWithException() throws OseeCoreException {
+   public void runWithException()  {
       new FavoritesManager(getSelectedFavoritableArts()).toggleFavorite(prompt);
    }
 

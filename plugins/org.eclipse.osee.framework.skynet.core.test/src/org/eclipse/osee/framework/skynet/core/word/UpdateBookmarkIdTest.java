@@ -22,7 +22,7 @@ import org.junit.Test;
 public class UpdateBookmarkIdTest {
 
    @Test
-   public void testBookMarkIdFix() throws OseeCoreException {
+   public void testBookMarkIdFix()  {
       UpdateBookmarkIds bookMarkIds = new UpdateBookmarkIds(1000);
       String bookmark =
          "<aml:annotation aml:id=\"133334\" w:type=\"Word.Bookmark.Start\"/><aml:annotation aml:id=\"133334\" w:type=\"Word.Bookmark.End\"/>";

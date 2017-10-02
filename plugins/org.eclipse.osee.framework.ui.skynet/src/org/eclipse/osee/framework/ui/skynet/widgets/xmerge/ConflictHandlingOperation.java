@@ -43,7 +43,7 @@ public final class ConflictHandlingOperation extends AbstractOperation {
    }
 
    @Override
-   protected void doWork(IProgressMonitor monitor) throws OseeCoreException {
+   protected void doWork(IProgressMonitor monitor)  {
       Conditions.checkNotNullOrEmpty(conflicts, "conflicts");
       for (Conflict conflict : conflicts) {
          ConflictStatus status = conflict.getStatus();

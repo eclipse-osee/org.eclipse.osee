@@ -108,14 +108,14 @@ public class RelationIntegrityCheckTest {
       Assert.assertTrue(checkIfAllFixed());
    }
 
-   private boolean checkIfAllFixed() throws OseeCoreException {
+   private boolean checkIfAllFixed()  {
       map.clear();
       runQuery(RelationIntegrityCheck.DELETED_A_ARTIFACTS);
       runQuery(RelationIntegrityCheck.DELETED_B_ARTIFACTS);
       return map.isEmpty();
    }
 
-   private void applyFix() throws OseeCoreException {
+   private void applyFix()  {
       List<Object[]> rowsToDelete = new LinkedList<>();
       for (LocalRelationLink relLink : map.allValues()) {
          rowsToDelete.add(new Object[] {relLink.gammaId, relLink.relTransId, relLink.branchUuid});
@@ -126,7 +126,7 @@ public class RelationIntegrityCheckTest {
       }
    }
 
-   private void runQuery(String sqlQuery) throws OseeDataStoreException, OseeCoreException {
+   private void runQuery(String sqlQuery) throws OseeDataStoreException {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(sqlQuery);

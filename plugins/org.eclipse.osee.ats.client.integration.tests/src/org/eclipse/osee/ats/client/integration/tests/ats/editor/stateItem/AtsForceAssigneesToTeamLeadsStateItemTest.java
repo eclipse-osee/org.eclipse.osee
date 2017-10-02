@@ -68,7 +68,7 @@ public class AtsForceAssigneesToTeamLeadsStateItemTest {
    }
 
    @Test
-   public void testTransitioned() throws OseeCoreException {
+   public void testTransitioned()  {
       Assert.assertNotNull(teamArt);
 
       // assignee should be Joe Smith

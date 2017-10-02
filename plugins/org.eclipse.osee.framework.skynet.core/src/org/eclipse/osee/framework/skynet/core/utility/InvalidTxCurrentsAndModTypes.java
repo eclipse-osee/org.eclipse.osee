@@ -64,7 +64,7 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
       return jdbcClient;
    }
 
-   private void fixIssues(IProgressMonitor monitor) throws OseeCoreException {
+   private void fixIssues(IProgressMonitor monitor)  {
       if (isFixOperationEnabled) {
          checkForCancelledStatus(monitor);
          getJdbcClient().runBatchUpdate(String.format(DELETE_ADDRESS, txsTableName), purgeData);

@@ -55,13 +55,13 @@ public class OutfileParserExtensionManager {
       return instance;
    }
 
-   public String[] getSupportedExtensions() throws OseeCoreException {
+   public String[] getSupportedExtensions()  {
       checkObjectsLoaded();
       Set<String> set = extensionsToParsers.keySet();
       return set.toArray(new String[set.size()]);
    }
 
-   public BaseOutfileParser getOutfileParserFor(URL fileToImport) throws OseeCoreException {
+   public BaseOutfileParser getOutfileParserFor(URL fileToImport)  {
       checkObjectsLoaded();
       BaseOutfileParser toReturn = null;
       for (BaseOutfileParser parser : getOutfileParsers()) {
@@ -76,17 +76,17 @@ public class OutfileParserExtensionManager {
       return toReturn;
    }
 
-   public BaseOutfileParser getOutfileParserById(String id) throws OseeCoreException {
+   public BaseOutfileParser getOutfileParserById(String id)  {
       checkObjectsLoaded();
       return contributions.get(id);
    }
 
-   public Collection<BaseOutfileParser> getOutfileParsers() throws OseeCoreException {
+   public Collection<BaseOutfileParser> getOutfileParsers()  {
       checkObjectsLoaded();
       return contributions.values();
    }
 
-   private void checkObjectsLoaded() throws OseeCoreException {
+   private void checkObjectsLoaded()  {
       if (contributions.isEmpty()) {
          List<IConfigurationElement> elements =
             ExtensionPoints.getExtensionElements(OteDefinePlugin.PLUGIN_ID + "." + OUTFILE_PARSER, OUTFILE_PARSER);
@@ -119,7 +119,7 @@ public class OutfileParserExtensionManager {
       return toReturn;
    }
 
-   private Object loadClass(String bundleName, String className) throws OseeCoreException {
+   private Object loadClass(String bundleName, String className)  {
       Object object = null;
       if (Strings.isValid(bundleName) && Strings.isValid(className)) {
          try {

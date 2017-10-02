@@ -66,7 +66,7 @@ public class AtsDecisionReviewDecisionStateItemTest {
    }
 
    @Test
-   public void testXWidgetCreating() throws OseeCoreException {
+   public void testXWidgetCreating()  {
       Assert.assertNotNull(decRevArt);
 
       // setup fake combo that will hold values
@@ -87,7 +87,7 @@ public class AtsDecisionReviewDecisionStateItemTest {
    }
 
    @Test
-   public void testGetOverrideTransitionToAssignees() throws OseeCoreException {
+   public void testGetOverrideTransitionToAssignees()  {
       Assert.assertNotNull(decRevArt);
 
       // setup fake combo that will hold values
@@ -111,7 +111,7 @@ public class AtsDecisionReviewDecisionStateItemTest {
    }
 
    @Test
-   public void testGetOverrideTransitionToStateName() throws OseeCoreException {
+   public void testGetOverrideTransitionToStateName()  {
       Assert.assertNotNull(decRevArt);
 
       // setup fake combo that will hold values

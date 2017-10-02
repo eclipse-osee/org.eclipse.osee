@@ -113,7 +113,7 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
       }
    }
 
-   private void openChangeReport(Set<Artifact> artifacts, final String enteredIds) throws OseeCoreException {
+   private void openChangeReport(Set<Artifact> artifacts, final String enteredIds)  {
       final Set<Artifact> addedArts = new HashSet<>();
       for (Artifact artifact : artifacts) {
          if (artifact.isOfType(AtsArtifactTypes.Action)) {
@@ -210,7 +210,7 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
       });
    }
 
-   private void searchAndSplitResults() throws OseeCoreException {
+   private void searchAndSplitResults()  {
 
       Collection<TeamWorkFlowArtifact> teamArts =
          AtsClientService.get().getQueryService().createQuery(WorkItemType.TeamWorkflow).andAttr(

@@ -68,7 +68,7 @@ public final class RevisionChangeLoader {
    /**
     * @return Returns artifact, relation and attribute changes from a specific artifact
     */
-   public Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {
+   public Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor)  {
       return getChangesPerArtifact(artifact, monitor, LoadChangeType.artifact, LoadChangeType.attribute,
          LoadChangeType.relation);
    }
@@ -76,7 +76,7 @@ public final class RevisionChangeLoader {
    /**
     * @return Returns artifact, relation and attribute changes from a specific artifact
     */
-   public Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor, LoadChangeType... loadChangeTypes) throws OseeCoreException {
+   public Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor, LoadChangeType... loadChangeTypes)  {
       BranchId branch = artifact.getBranch();
       Set<TransactionToken> transactionIds = new LinkedHashSet<>();
       boolean recurseThroughBranchHierarchy = true;
@@ -116,7 +116,7 @@ public final class RevisionChangeLoader {
       return changes;
    }
 
-   private void loadBranchTransactions(BranchId branch, Artifact artifact, Set<TransactionToken> transactionIds, TransactionId transactionId, boolean recurseThroughBranchHierarchy) throws OseeCoreException {
+   private void loadBranchTransactions(BranchId branch, Artifact artifact, Set<TransactionToken> transactionIds, TransactionId transactionId, boolean recurseThroughBranchHierarchy)  {
       loadTransactions(branch, artifact, transactionId, transactionIds);
 
       if (recurseThroughBranchHierarchy) {
@@ -129,7 +129,7 @@ public final class RevisionChangeLoader {
       }
    }
 
-   private void loadTransactions(BranchId branch, Artifact artifact, TransactionId transactionId, Set<TransactionToken> transactionIds) throws OseeCoreException {
+   private void loadTransactions(BranchId branch, Artifact artifact, TransactionId transactionId, Set<TransactionToken> transactionIds)  {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.LOAD_REVISION_HISTORY_TRANSACTION_ATTR),
@@ -154,7 +154,7 @@ public final class RevisionChangeLoader {
     * Not Part of Change Report Acquires artifact, relation and attribute changes from a source branch since its
     * creation.
     */
-   private void loadChanges(BranchId sourceBranch, TransactionToken transactionId, IProgressMonitor monitor, Artifact specificArtifact, Collection<Change> changes, LoadChangeType... loadChangeTypes) throws OseeCoreException {
+   private void loadChanges(BranchId sourceBranch, TransactionToken transactionId, IProgressMonitor monitor, Artifact specificArtifact, Collection<Change> changes, LoadChangeType... loadChangeTypes)  {
       if (monitor == null) {
          monitor = new NullProgressMonitor();
       }
@@ -197,7 +197,7 @@ public final class RevisionChangeLoader {
       monitor.done();
    }
 
-   private CompositeKeyHashMap<TransactionToken, ArtifactId, Artifact> getBulkLoadedArtifacts(BranchId branch, boolean isHistorical, List<ChangeBuilder> changeBuilders) throws OseeCoreException {
+   private CompositeKeyHashMap<TransactionToken, ArtifactId, Artifact> getBulkLoadedArtifacts(BranchId branch, boolean isHistorical, List<ChangeBuilder> changeBuilders)  {
       HashCollection<TransactionToken, ArtifactId> loadMap = new HashCollection<>(false, HashSet.class);
       for (ChangeBuilder builder : changeBuilders) {
          TransactionToken endTx = builder.getTxDelta().getEndTx();
@@ -225,7 +225,7 @@ public final class RevisionChangeLoader {
       return loadedMap;
    }
 
-   private Collection<Change> getChanges(BranchId branch, boolean isHistorical, List<ChangeBuilder> changeBuilders) throws OseeCoreException {
+   private Collection<Change> getChanges(BranchId branch, boolean isHistorical, List<ChangeBuilder> changeBuilders)  {
       CompositeKeyHashMap<TransactionToken, ArtifactId, Artifact> loadedMap =
          getBulkLoadedArtifacts(branch, isHistorical, changeBuilders);
 

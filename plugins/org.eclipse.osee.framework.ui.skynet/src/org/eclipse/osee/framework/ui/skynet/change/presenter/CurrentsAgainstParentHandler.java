@@ -64,7 +64,7 @@ public final class CurrentsAgainstParentHandler implements IChangeReportUiHandle
    }
 
    @Override
-   public String getScenarioDescriptionHtml(ChangeUiData changeUiData) throws OseeCoreException {
+   public String getScenarioDescriptionHtml(ChangeUiData changeUiData)  {
       TransactionDelta txDelta = changeUiData.getTxDelta();
       String data;
       if (changeUiData.isMergeBranchValid()) {

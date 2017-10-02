@@ -56,7 +56,7 @@ public class LegacyPCRActionsWorldSearchItem extends WorldUISearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
+   public Collection<Artifact> performSearch(SearchType searchType)  {
 
       List<Artifact> pcrIdArts = new ArrayList<>();
       List<Artifact> teamDefArts = new ArrayList<>();

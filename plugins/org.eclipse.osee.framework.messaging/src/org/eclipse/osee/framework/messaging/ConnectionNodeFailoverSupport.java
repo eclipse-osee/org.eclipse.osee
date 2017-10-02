@@ -18,5 +18,5 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 public interface ConnectionNodeFailoverSupport extends ConnectionNode {
    boolean isConnected();
 
-   public void start() throws OseeCoreException;
+   public void start() ;
 }

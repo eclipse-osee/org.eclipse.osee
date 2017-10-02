@@ -78,7 +78,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
       this.console = console;
    }
 
-   private void init() throws OseeCoreException {
+   private void init()  {
       previousRelationTypeId = -1;
       previousArtifactAId = -1;
       previousArtiafctBId = -1;
@@ -100,7 +100,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
    }
 
    @Override
-   protected Object handleTxWork(JdbcConnection connection) throws OseeCoreException {
+   protected Object handleTxWork(JdbcConnection connection)  {
       this.connection = connection;
       console.writeln("Consolidating relations:");
       init();
@@ -149,7 +149,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
       }
    }
 
-   private void determineAffectedAddressing() throws OseeCoreException {
+   private void determineAffectedAddressing()  {
       gammaJoin.store();
 
       console.writeln("counter: [%s]", counter);
@@ -190,7 +190,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
       return previousNetGammaId != netGammaId || previousTransactionId != transactionId;
    }
 
-   private void computeNetAddressing(ModificationType modificationType, TxChange txCurrent) throws OseeStateException {
+   private void computeNetAddressing(ModificationType modificationType, TxChange txCurrent)  {
       if (netTxCurrentNeedsUpdate(txCurrent)) {
          netTxCurrent = txCurrent;
          updatedAddressing = true;
@@ -227,7 +227,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
       return ignore || netModType == ModificationType.ARTIFACT_DELETED && modificationType == ModificationType.DELETED;
    }
 
-   private void updateGammas() throws OseeCoreException {
+   private void updateGammas()  {
       console.writeln("Number of txs rows deleted: [%s]", deleteAddressing.execute());
       console.writeln("Number of relation rows deleted: [%s]", deleteRelations.execute());
       console.writeln("Number of txs rows updated: [%s]", updateAddressing.execute());
@@ -253,13 +253,13 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
       return previousRelationTypeId != relationTypeId || previousArtifactAId != artifactAId || previousArtiafctBId != artiafctBId;
    }
 
-   private void relationMateriallyDiffers(String currentRationale) throws OseeCoreException {
+   private void relationMateriallyDiffers(String currentRationale)  {
       if (!materiallyDifferent) {
          materiallyDifferent |= Strings.isValid(currentRationale) && !currentRationale.equals(netRationale);
       }
    }
 
-   private void initNextConceptualRelation(long relationTypeId, int artifactAId, int artiafctBId, long gammaId, String rationale) throws OseeCoreException {
+   private void initNextConceptualRelation(long relationTypeId, int artifactAId, int artiafctBId, long gammaId, String rationale)  {
       obsoleteGammas.clear();
       previousRelationTypeId = relationTypeId;
       previousArtifactAId = artifactAId;

@@ -55,7 +55,7 @@ public class UpdateChangeUiData extends AbstractOperation {
       changeData.setAreBranchesValid(areBranchesValid);
    }
 
-   private boolean hasBeenRebaselined(TransactionToken tx) throws OseeCoreException {
+   private boolean hasBeenRebaselined(TransactionToken tx)  {
       return BranchManager.getState(tx.getBranch()).isRebaselined();
    }
 }

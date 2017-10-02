@@ -18,11 +18,11 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IAtsUser extends IAtsObject {
 
-   public String getUserId() throws OseeCoreException;
+   public String getUserId() ;
 
-   public String getEmail() throws OseeCoreException;
+   public String getEmail() ;
 
-   public boolean isActive() throws OseeCoreException;
+   public boolean isActive() ;
 
    @Override
    default String getDescription() {

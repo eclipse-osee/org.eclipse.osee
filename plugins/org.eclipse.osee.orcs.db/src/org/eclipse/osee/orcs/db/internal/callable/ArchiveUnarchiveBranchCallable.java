@@ -39,7 +39,7 @@ public class ArchiveUnarchiveBranchCallable extends AbstractDatastoreTxCallable<
    }
 
    @Override
-   protected Void handleTxWork(JdbcConnection connection) throws OseeCoreException {
+   protected Void handleTxWork(JdbcConnection connection)  {
       boolean archive = op == ArchiveOperation.ARCHIVE;
       JdbcClient jdbcClient = getJdbcClient();
       String sourceTableName = archive ? "osee_txs" : "osee_txs_archived";

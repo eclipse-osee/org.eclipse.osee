@@ -39,7 +39,7 @@ public class NewAction extends AbstractAtsAction {
    }
 
    @Override
-   public void runWithException() throws OseeCoreException {
+   public void runWithException()  {
       NewActionWizard wizard = new NewActionWizard();
       if (actionableItem != null) {
          wizard.setInitialAias(

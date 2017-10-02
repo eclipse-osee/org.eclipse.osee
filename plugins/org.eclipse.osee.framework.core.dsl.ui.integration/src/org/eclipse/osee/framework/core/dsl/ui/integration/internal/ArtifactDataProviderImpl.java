@@ -41,7 +41,7 @@ public final class ArtifactDataProviderImpl implements ArtifactDataProvider {
    }
 
    @Override
-   public ArtifactProxy asCastedObject(Object object) throws OseeCoreException {
+   public ArtifactProxy asCastedObject(Object object)  {
       XArtifactProxy proxy = null;
       if (object instanceof Artifact) {
          final Artifact artifact = (Artifact) object;
@@ -72,12 +72,12 @@ public final class ArtifactDataProviderImpl implements ArtifactDataProvider {
       }
 
       @Override
-      public boolean isAttributeTypeValid(AttributeTypeId attributeType) throws OseeCoreException {
+      public boolean isAttributeTypeValid(AttributeTypeId attributeType)  {
          return self.isAttributeTypeValid(attributeType);
       }
 
       @Override
-      public Collection<RelationType> getValidRelationTypes() throws OseeCoreException {
+      public Collection<RelationType> getValidRelationTypes()  {
          return self.getValidRelationTypes();
       }
 

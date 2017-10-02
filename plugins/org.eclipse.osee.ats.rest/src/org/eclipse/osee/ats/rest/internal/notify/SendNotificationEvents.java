@@ -130,7 +130,7 @@ public class SendNotificationEvents {
          "More Info") : "";
    }
 
-   private void notifyUser(IAtsUser user, List<AtsNotificationEvent> notificationEvents, XResultData resultData) throws OseeCoreException {
+   private void notifyUser(IAtsUser user, List<AtsNotificationEvent> notificationEvents, XResultData resultData)  {
       if (AtsCoreUsers.isAtsCoreUser(user)) {
          // do nothing
          return;

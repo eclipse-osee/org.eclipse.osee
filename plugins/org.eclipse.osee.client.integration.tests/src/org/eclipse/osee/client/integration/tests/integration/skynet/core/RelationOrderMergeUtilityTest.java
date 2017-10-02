@@ -67,7 +67,7 @@ public class RelationOrderMergeUtilityTest {
    private IOseeBranch destBranch;
 
    @Before
-   public void createBranch() throws OseeCoreException {
+   public void createBranch()  {
       destBranch =
          BranchManager.createWorkingBranch(CoreBranches.SYSTEM_ROOT, "RelationOrderMergeUtilityTest.createBranch");
       hierType = RelationTypeManager.getType(defaultHierarchy);
@@ -75,12 +75,12 @@ public class RelationOrderMergeUtilityTest {
    }
 
    @After
-   public void destroyBranch() throws OseeCoreException {
+   public void destroyBranch()  {
       BranchManager.purgeBranch(destBranch);
    }
 
    @Test
-   public void testTrivialMerge() throws OseeCoreException {
+   public void testTrivialMerge()  {
       Artifact parent = TestUtil.createSimpleArtifact(Artifact, "Parent", destBranch);
       Artifact[] children =
          TestUtil.createSimpleArtifacts(Artifact, 5, "Relative", destBranch).toArray(new Artifact[5]);
@@ -97,7 +97,7 @@ public class RelationOrderMergeUtilityTest {
    }
 
    @Test
-   public void testOrderMerge() throws OseeCoreException {
+   public void testOrderMerge()  {
       Artifact destParent = TestUtil.createSimpleArtifact(Artifact, "Parent", destBranch);
       Artifact[] destChildren =
          TestUtil.createSimpleArtifacts(Artifact, 5, "Relative", destBranch).toArray(new Artifact[5]);
@@ -129,7 +129,7 @@ public class RelationOrderMergeUtilityTest {
    }
 
    @Test
-   public void testStrategyMerge() throws OseeCoreException {
+   public void testStrategyMerge()  {
 
       Artifact ascParent = TestUtil.createSimpleArtifact(Artifact, "Parent", destBranch);
       Artifact[] ascRelatives =
@@ -157,7 +157,7 @@ public class RelationOrderMergeUtilityTest {
       Assert.assertNull(mergedOrder);
    }
 
-   private void setAsChild(Artifact parent, Artifact child, RelationSorter sorter) throws OseeCoreException {
+   private void setAsChild(Artifact parent, Artifact child, RelationSorter sorter)  {
       child.deleteRelations(CoreRelationTypes.Default_Hierarchical__Parent);
       parent.addRelation(sorter, CoreRelationTypes.Default_Hierarchical__Child, child);
    }

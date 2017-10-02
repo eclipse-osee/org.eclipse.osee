@@ -40,6 +40,6 @@ public abstract class ConflictBuilder {
       this.destBranch = destBranch;
    }
 
-   public abstract Conflict getConflict(BranchId mergeBranch, Set<ArtifactId> artIdSet) throws OseeCoreException;
+   public abstract Conflict getConflict(BranchId mergeBranch, Set<ArtifactId> artIdSet) ;
 
 }

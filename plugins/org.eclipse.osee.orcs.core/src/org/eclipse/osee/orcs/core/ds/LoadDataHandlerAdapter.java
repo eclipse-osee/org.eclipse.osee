@@ -20,52 +20,52 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 public class LoadDataHandlerAdapter implements LoadDataHandler {
 
    @Override
-   public void onLoadStart() throws OseeCoreException {
+   public void onLoadStart()  {
       //
    }
 
    @Override
-   public void onLoadDescription(LoadDescription data) throws OseeCoreException {
+   public void onLoadDescription(LoadDescription data)  {
       //
    }
 
    @Override
-   public void onData(BranchData data) throws OseeCoreException {
+   public void onData(BranchData data)  {
       //
    }
 
    @Override
-   public void onData(TxOrcsData data) throws OseeCoreException {
+   public void onData(TxOrcsData data)  {
       //
    }
 
    @Override
-   public void onData(ArtifactData data) throws OseeCoreException {
+   public void onData(ArtifactData data)  {
       //
    }
 
    @Override
-   public void onData(AttributeData data) throws OseeCoreException {
+   public void onData(AttributeData data)  {
       //
    }
 
    @Override
-   public void onData(RelationData data) throws OseeCoreException {
+   public void onData(RelationData data)  {
       //
    }
 
    @Override
-   public void onData(AttributeData data, MatchLocation match) throws OseeCoreException {
+   public void onData(AttributeData data, MatchLocation match)  {
       //
    }
 
    @Override
-   public void onDynamicData(Map<String, Object> data) throws OseeCoreException {
+   public void onDynamicData(Map<String, Object> data)  {
       //
    }
 
    @Override
-   public void onLoadEnd() throws OseeCoreException {
+   public void onLoadEnd()  {
       //
    }
 }

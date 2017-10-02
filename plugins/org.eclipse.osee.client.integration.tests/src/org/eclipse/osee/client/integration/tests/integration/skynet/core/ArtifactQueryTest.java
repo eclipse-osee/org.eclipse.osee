@@ -75,7 +75,7 @@ public class ArtifactQueryTest {
    public TestInfo testInfo = new TestInfo();
 
    @Test
-   public void testGetArtifactFromGUIDDeleted() throws OseeCoreException {
+   public void testGetArtifactFromGUIDDeleted()  {
       Artifact newArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, COMMON);
       newArtifact.persist(getClass().getSimpleName());
 
@@ -111,7 +111,7 @@ public class ArtifactQueryTest {
    }
 
    @Test
-   public void testGetArtifactListFromType() throws OseeCoreException {
+   public void testGetArtifactListFromType()  {
       // Should exist
       Set<Artifact> searchedArtifacts = new LinkedHashSet<>();
       for (BranchId branch : BranchManager.getBranches(new BranchFilter(BranchType.BASELINE))) {
@@ -221,7 +221,7 @@ public class ArtifactQueryTest {
    }
 
    @Test
-   public void testQueryById() throws OseeCoreException {
+   public void testQueryById()  {
       BranchId branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
       AccessControlManager.setPermission(UserManager.getUser(DemoUsers.Joe_Smith), branch, PermissionEnum.FULLACCESS);
 
@@ -299,7 +299,7 @@ public class ArtifactQueryTest {
    }
 
    @Test
-   public void testIsArtifactChangedViaEntries() throws OseeCoreException {
+   public void testIsArtifactChangedViaEntries()  {
       Artifact folder = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, COMMON, "ArtifactQueryTest");
       folder.persist(getClass().getName());
       Assert.assertFalse(ArtifactQuery.isArtifactChangedViaEntries(folder));

@@ -557,7 +557,7 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
 
       }
 
-      private void handleNonAtsCommit(final BranchId sourceBranch, final BranchId destBranch) throws OseeCoreException {
+      private void handleNonAtsCommit(final BranchId sourceBranch, final BranchId destBranch)  {
          final MutableBoolean archiveSourceBranch = new MutableBoolean();
 
          if (BranchManager.isParent(sourceBranch, destBranch)) {

@@ -50,7 +50,7 @@ public class ArtifactResource {
 
    @GET
    @Produces(MediaType.TEXT_HTML)
-   public String getAsHtml() throws OseeCoreException {
+   public String getAsHtml()  {
       QueryFactory factory = OrcsApplication.getOrcsApi().getQueryFactory();
       ResultSet<ArtifactReadable> arts = factory.fromBranch(branchId).andUuid(artifactUuid).getResults();
       HtmlWriter writer = new HtmlWriter(uriInfo);

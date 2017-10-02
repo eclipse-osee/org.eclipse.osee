@@ -25,17 +25,17 @@ public interface IOseeCache<TYPE> {
 
    void decacheAll();
 
-   void decache(TYPE... types) throws OseeCoreException;
+   void decache(TYPE... types) ;
 
-   void decache(TYPE type) throws OseeCoreException;
+   void decache(TYPE type) ;
 
-   void cache(TYPE... types) throws OseeCoreException;
+   void cache(TYPE... types) ;
 
-   void cache(TYPE type) throws OseeCoreException;
+   void cache(TYPE type) ;
 
-   Collection<TYPE> getAll() throws OseeCoreException;
+   Collection<TYPE> getAll() ;
 
-   TYPE getById(Number typeId) throws OseeCoreException;
+   TYPE getById(Number typeId) ;
 
-   TYPE getByGuid(Long guid) throws OseeCoreException;
+   TYPE getByGuid(Long guid) ;
 }

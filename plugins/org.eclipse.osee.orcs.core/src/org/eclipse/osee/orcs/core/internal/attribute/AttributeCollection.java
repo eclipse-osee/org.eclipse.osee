@@ -56,17 +56,17 @@ public class AttributeCollection extends AbstractTypeCollection<AttributeTypeTok
    }
 
    @Override
-   protected AttributeTypeToken getType(Attribute<?> data) throws OseeCoreException {
+   protected AttributeTypeToken getType(Attribute<?> data)  {
       return data.getAttributeType();
    }
 
-   public <T> ResultSet<Attribute<T>> getResultSet(AttributeTypeId attributeType, DeletionFlag includeDeleted) throws OseeCoreException {
+   public <T> ResultSet<Attribute<T>> getResultSet(AttributeTypeId attributeType, DeletionFlag includeDeleted)  {
       List<Attribute<T>> result = getList(attributeType, includeDeleted);
       return createResultSet(attributeType, result);
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
-   public <T> ResultSet<Attribute<T>> getAttributeSetFromString(AttributeTypeId attributeType, DeletionFlag includeDeleted, String value) throws OseeCoreException {
+   public <T> ResultSet<Attribute<T>> getAttributeSetFromString(AttributeTypeId attributeType, DeletionFlag includeDeleted, String value)  {
       Predicate deleteStateMatch = deletionFlagEquals(includeDeleted);
       Predicate stringEqualsMatch = attributeStringEquals(value);
       Predicate filter = and(deleteStateMatch, stringEqualsMatch);
@@ -74,7 +74,7 @@ public class AttributeCollection extends AbstractTypeCollection<AttributeTypeTok
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
-   public <T> ResultSet<Attribute<T>> getAttributeSetFromValue(AttributeTypeId attributeType, DeletionFlag includeDeleted, T value) throws OseeCoreException {
+   public <T> ResultSet<Attribute<T>> getAttributeSetFromValue(AttributeTypeId attributeType, DeletionFlag includeDeleted, T value)  {
       Predicate deleteStateMatch = deletionFlagEquals(includeDeleted);
       Predicate attributeValueEquals = attributeValueEquals(value);
       Predicate filter = and(attributeValueEquals, deleteStateMatch);
@@ -82,7 +82,7 @@ public class AttributeCollection extends AbstractTypeCollection<AttributeTypeTok
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
-   public <T> List<Attribute<T>> getList(AttributeTypeId attributeType, DeletionFlag includeDeleted) throws OseeCoreException {
+   public <T> List<Attribute<T>> getList(AttributeTypeId attributeType, DeletionFlag includeDeleted)  {
       Predicate attributeDeletionFlagEquals = deletionFlagEquals(includeDeleted);
       return getListByFilter(attributeType, attributeDeletionFlagEquals);
    }

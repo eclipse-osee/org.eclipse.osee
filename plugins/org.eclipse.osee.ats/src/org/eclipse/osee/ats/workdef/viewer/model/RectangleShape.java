@@ -31,7 +31,7 @@ public class RectangleShape extends Shape {
    }
 
    @Override
-   public org.eclipse.osee.framework.core.util.Result validForSave() throws OseeCoreException {
+   public org.eclipse.osee.framework.core.util.Result validForSave()  {
       return Result.TrueResult;
    }
 
@@ -51,7 +51,7 @@ public class RectangleShape extends Shape {
    }
 
    @Override
-   public Result doSave(SkynetTransaction transaction) throws OseeCoreException {
+   public Result doSave(SkynetTransaction transaction)  {
       return Result.TrueResult;
    }
 

@@ -46,7 +46,7 @@ public class AtsTaskToChangedArtifactReferenceAttributeAdapter implements Attrib
    }
 
    @Override
-   public Artifact adapt(Attribute<?> attribute, Id identity) throws OseeCoreException {
+   public Artifact adapt(Attribute<?> attribute, Id identity)  {
       Artifact retArt = null;
 
       if (identity.isValid()) {

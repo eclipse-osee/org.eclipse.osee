@@ -17,20 +17,20 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface LoadDataHandler extends AttributeDataMatchHandler, DynamicDataHandler {
 
-   void onLoadStart() throws OseeCoreException;
+   void onLoadStart() ;
 
-   void onLoadDescription(LoadDescription data) throws OseeCoreException;
+   void onLoadDescription(LoadDescription data) ;
 
-   void onData(BranchData data) throws OseeCoreException;
+   void onData(BranchData data) ;
 
-   void onData(TxOrcsData data) throws OseeCoreException;
+   void onData(TxOrcsData data) ;
 
-   void onData(ArtifactData data) throws OseeCoreException;
+   void onData(ArtifactData data) ;
 
-   void onData(AttributeData data) throws OseeCoreException;
+   void onData(AttributeData data) ;
 
-   void onData(RelationData data) throws OseeCoreException;
+   void onData(RelationData data) ;
 
-   void onLoadEnd() throws OseeCoreException;
+   void onLoadEnd() ;
 
 }

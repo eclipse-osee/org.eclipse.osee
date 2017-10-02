@@ -32,7 +32,7 @@ public abstract class CollectorArtifact extends AbstractWorkflowArtifact impleme
    }
 
    @Override
-   public void addMember(ArtifactId artifact) throws OseeCoreException {
+   public void addMember(ArtifactId artifact)  {
       if (!getMembers().contains(artifact)) {
          addRelation(USER_DEFINED, membersRelationType, (Artifact) artifact);
       }

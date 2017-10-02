@@ -36,7 +36,7 @@ public class LogItemTest {
    // @formatter:on
 
    @Before
-   public void setup() throws OseeCoreException {
+   public void setup()  {
       MockitoAnnotations.initMocks(this);
 
       when(user.getName()).thenReturn("joe");
@@ -45,14 +45,14 @@ public class LogItemTest {
    }
 
    @Test
-   public void testLogItemLogTypeDateUserStringStringString() throws OseeCoreException {
+   public void testLogItemLogTypeDateUserStringStringString()  {
       Date date = new Date();
       IAtsLogItem item = getTestLogItem(date, user);
 
       validateItem(user, item, date);
    }
 
-   public static void validateItem(IAtsUser user, IAtsLogItem item, Date date) throws OseeCoreException {
+   public static void validateItem(IAtsUser user, IAtsLogItem item, Date date)  {
       Assert.assertEquals(LogType.Error, item.getType());
       Assert.assertEquals(date, item.getDate());
       Assert.assertEquals(user.getUserId(), item.getUserId());
@@ -61,7 +61,7 @@ public class LogItemTest {
    }
 
    @Test
-   public void testLogItemLogTypeStringStringStringStringString() throws OseeCoreException {
+   public void testLogItemLogTypeStringStringStringStringString()  {
       Date date = new Date();
       IAtsLogItem item =
          new LogItem(LogType.Error, String.valueOf(date.getTime()), user.getUserId(), "Analyze", "my msg");
@@ -70,7 +70,7 @@ public class LogItemTest {
    }
 
    @Test
-   public void testLogItemStringStringStringStringStringString() throws OseeCoreException {
+   public void testLogItemStringStringStringStringStringString()  {
       Date date = new Date();
       IAtsLogItem item =
          new LogItem(LogType.Error.name(), String.valueOf(date.getTime()), user.getUserId(), "Analyze", "my msg");
@@ -78,12 +78,12 @@ public class LogItemTest {
       validateItem(user, item, date);
    }
 
-   public static IAtsLogItem getTestLogItem(Date date, IAtsUser user) throws OseeCoreException {
+   public static IAtsLogItem getTestLogItem(Date date, IAtsUser user)  {
       return new LogItem(LogType.Error, date, user.getUserId(), "Analyze", "my msg");
    }
 
    @Test
-   public void testToString() throws OseeCoreException {
+   public void testToString()  {
       Date date = new Date();
       IAtsLogItem item = getTestLogItem(date, user);
 
@@ -92,7 +92,7 @@ public class LogItemTest {
    }
 
    @Test
-   public void testSetsAndGets() throws OseeCoreException {
+   public void testSetsAndGets()  {
       Date date = new Date();
       IAtsLogItem item = getTestLogItem(date, user);
       item.setMsg("new msg");

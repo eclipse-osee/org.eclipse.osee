@@ -24,18 +24,18 @@ public interface IAtsProgramManager {
 
    public boolean isApplicable(TeamWorkFlowArtifact teamArt);
 
-   public IOperation createValidateReqChangesOp(TeamWorkFlowArtifact teamArt) throws OseeCoreException;
+   public IOperation createValidateReqChangesOp(TeamWorkFlowArtifact teamArt) ;
 
    public String getName();
 
-   public Collection<IAtsProgram> getPrograms() throws OseeCoreException;
+   public Collection<IAtsProgram> getPrograms() ;
 
    public String getXProgramComboWidgetName();
 
-   public IAtsProgram getProgram(TeamWorkFlowArtifact teamArt) throws OseeCoreException;
+   public IAtsProgram getProgram(TeamWorkFlowArtifact teamArt) ;
 
-   public ArtifactToken getReviewAssigneeUserGroup(TeamWorkFlowArtifact teamArt) throws OseeCoreException;
+   public ArtifactToken getReviewAssigneeUserGroup(TeamWorkFlowArtifact teamArt) ;
 
-   public ArtifactToken getPidsReviewAssigneeUserGroup() throws OseeCoreException;
+   public ArtifactToken getPidsReviewAssigneeUserGroup() ;
 
 }

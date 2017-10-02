@@ -46,7 +46,7 @@ public class XDslEditorWidgetDam extends XDslEditorWidget implements IAttributeW
    }
 
    @Override
-   public void saveToArtifact() throws OseeCoreException {
+   public void saveToArtifact()  {
       String value = get();
       if (!Strings.isValid(value)) {
          getArtifact().deleteSoleAttribute(getAttributeType());
@@ -56,7 +56,7 @@ public class XDslEditorWidgetDam extends XDslEditorWidget implements IAttributeW
    }
 
    @Override
-   public Result isDirty() throws OseeCoreException {
+   public Result isDirty()  {
       Result toReturn = Result.FalseResult;
       if (isEditable()) {
          String enteredValue = get();
@@ -75,7 +75,7 @@ public class XDslEditorWidgetDam extends XDslEditorWidget implements IAttributeW
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) throws OseeCoreException {
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType)  {
       this.artifact = artifact;
       this.attributeType = attributeType;
       DslGrammar grammar = DslGrammarManager.getGrammar(attributeType);
@@ -90,7 +90,7 @@ public class XDslEditorWidgetDam extends XDslEditorWidget implements IAttributeW
       updateTextWidget();
    }
 
-   private URI createURI(Artifact artifact, String extension) throws OseeCoreException {
+   private URI createURI(Artifact artifact, String extension)  {
       String encodedName = "";
       try {
          encodedName = URLEncoder.encode(artifact.getSafeName(), "UTF-8");
@@ -161,7 +161,7 @@ public class XDslEditorWidgetDam extends XDslEditorWidget implements IAttributeW
    }
 
    @Override
-   public void revert() throws OseeCoreException {
+   public void revert()  {
       setAttributeType(getArtifact(), getAttributeType());
    }
 

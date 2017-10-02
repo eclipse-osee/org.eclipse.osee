@@ -88,7 +88,7 @@ public class ReferentialIntegrityConstraint {
       return collector.getUnreferencedPrimaryKeys();
    }
 
-   public void checkConstraint(Log logger, JdbcClient jdbcClient, ExchangeDataProcessor processor) throws OseeCoreException {
+   public void checkConstraint(Log logger, JdbcClient jdbcClient, ExchangeDataProcessor processor)  {
       collector = new PrimaryKeyCollector(logger, jdbcClient);
 
       for (IExportItem primaryTable : getPrimaryItems()) {

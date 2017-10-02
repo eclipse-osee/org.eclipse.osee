@@ -100,7 +100,7 @@ public final class ImportTraceUnitsOperationTest {
    }
 
    @After
-   public void tearDown() throws OseeCoreException {
+   public void tearDown()  {
       if (importToBranch != null) {
          BranchManager.purgeBranch(importToBranch);
       }
@@ -171,7 +171,7 @@ public final class ImportTraceUnitsOperationTest {
       }
    }
 
-   private void runOperation(Iterable<URI> files) throws OseeCoreException {
+   private void runOperation(Iterable<URI> files)  {
       boolean isRecursive = false;
       boolean isPersistChanges = true;
       boolean fileWithMultiPaths = true;

@@ -35,13 +35,13 @@ public class OpenNewAtsTaskEditorSelected extends AbstractAtsAction {
    }
 
    public interface IOpenNewAtsTaskEditorSelectedHandler {
-      CustomizeData getCustomizeDataCopy() throws OseeCoreException;
+      CustomizeData getCustomizeDataCopy() ;
 
-      List<Artifact> getSelectedArtifacts() throws OseeCoreException;
+      List<Artifact> getSelectedArtifacts() ;
    }
 
    @Override
-   public void runWithException() throws OseeCoreException {
+   public void runWithException()  {
       if (openNewAtsTaskEditorSelectedHandler.getSelectedArtifacts().isEmpty()) {
          AWorkbench.popup("ERROR", "Select items to open");
          return;

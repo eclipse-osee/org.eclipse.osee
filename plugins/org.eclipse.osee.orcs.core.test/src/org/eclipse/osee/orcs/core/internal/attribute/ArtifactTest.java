@@ -86,7 +86,7 @@ public class ArtifactTest {
 
    @SuppressWarnings("unchecked")
    @Before
-   public void init() throws OseeCoreException {
+   public void init()  {
       MockitoAnnotations.initMocks(this);
       artifact = new ArtifactImpl(types, artifactData, attributeFactory);
       artifact.setGraph(graph);
@@ -118,7 +118,7 @@ public class ArtifactTest {
 
    @Test
    @SuppressWarnings("unchecked")
-   public void testAddAndGet() throws OseeCoreException {
+   public void testAddAndGet()  {
       Attribute<Object> attribute = mock(Attribute.class);
       when(attribute.getOrcsData()).thenReturn(attributeData);
       Assert.assertEquals(0, artifact.getAttributes().size());
@@ -129,7 +129,7 @@ public class ArtifactTest {
 
    @Test
    @SuppressWarnings({"rawtypes", "unchecked"})
-   public void testAddException() throws OseeCoreException {
+   public void testAddException()  {
       Attribute one = mock(Attribute.class);
       Attribute two = mock(Attribute.class);
       when(one.getOrcsData()).thenReturn(attributeData);
@@ -153,7 +153,7 @@ public class ArtifactTest {
    }
 
    @Test
-   public void testCreateAttribute() throws OseeCoreException {
+   public void testCreateAttribute()  {
       artifact.createAttribute(CoreAttributeTypes.City);
       verify(attributeFactory).createAttributeWithDefaults(artifact, artifactData, CoreAttributeTypes.City);
    }
@@ -187,14 +187,14 @@ public class ArtifactTest {
    }
 
    @Test
-   public void testArtifactType() throws OseeCoreException {
+   public void testArtifactType()  {
       artifact.getArtifactType();
       verify(types).get(artifactData.getTypeUuid());
    }
 
    @Test
    @SuppressWarnings({"rawtypes", "unchecked"})
-   public void testSetName() throws OseeCoreException {
+   public void testSetName()  {
       Attribute attr = mock(Attribute.class);
       when(attr.getOrcsData()).thenReturn(attributeData);
       when(attributeFactory.createAttributeWithDefaults(any(), any(), eq(CoreAttributeTypes.Name))).thenReturn(attr);
@@ -203,7 +203,7 @@ public class ArtifactTest {
    }
 
    @Test
-   public void testSetArtifactType() throws OseeCoreException {
+   public void testSetArtifactType()  {
       when(version.isInStorage()).thenReturn(true);
 
       artifact.setArtifactType(CoreArtifactTypes.CodeUnit);
@@ -224,7 +224,7 @@ public class ArtifactTest {
    }
 
    @Test
-   public void testIsOfType() throws OseeCoreException {
+   public void testIsOfType()  {
       artifact.isOfType(CoreArtifactTypes.CodeUnit);
 
       verify(types).inheritsFrom(CoreArtifactTypes.GeneralData, CoreArtifactTypes.CodeUnit);
@@ -232,7 +232,7 @@ public class ArtifactTest {
 
    @Test
    @SuppressWarnings({"rawtypes", "unchecked"})
-   public void testIsDirty() throws OseeCoreException {
+   public void testIsDirty()  {
       Assert.assertFalse(artifact.isDirty());
 
       // add dirty attribute
@@ -265,13 +265,13 @@ public class ArtifactTest {
    }
 
    @Test
-   public void testIsAttributeTypeValid() throws OseeCoreException {
+   public void testIsAttributeTypeValid()  {
       artifact.isAttributeTypeValid(CoreAttributeTypes.Afha);
       verify(types).isValidAttributeType(eq(artifactType), any(), eq(CoreAttributeTypes.Afha));
    }
 
    @Test
-   public void testGetValidAttributeTypes() throws OseeCoreException {
+   public void testGetValidAttributeTypes()  {
       artifact.getValidAttributeTypes();
       verify(types).getAttributeTypes(eq(artifactType), any());
    }
@@ -292,7 +292,7 @@ public class ArtifactTest {
 
    @Test
    @SuppressWarnings({"rawtypes", "unchecked"})
-   public void testGetName() throws OseeCoreException {
+   public void testGetName()  {
       String name = artifact.getName();
       Assert.assertTrue(name.contains("AttributeDoesNotExist"));
 
@@ -307,7 +307,7 @@ public class ArtifactTest {
    }
 
    @Test
-   public void testGetMaximumAttributeTypeAllowed() throws OseeCoreException {
+   public void testGetMaximumAttributeTypeAllowed()  {
       int expected = 5;
 
       when(attributeFactory.getMaxOccurrenceLimit(CoreAttributeTypes.AccessContextId)).thenReturn(expected);
@@ -321,7 +321,7 @@ public class ArtifactTest {
    }
 
    @Test
-   public void testGetMinimumAttributeTypeAllowed() throws OseeCoreException {
+   public void testGetMinimumAttributeTypeAllowed()  {
       int expected = 5;
 
       when(attributeFactory.getMinOccurrenceLimit(CoreAttributeTypes.AccessContextId)).thenReturn(expected);
@@ -336,7 +336,7 @@ public class ArtifactTest {
 
    @Test
    @SuppressWarnings("unchecked")
-   public void testGetAttributeCount() throws OseeCoreException {
+   public void testGetAttributeCount()  {
       artifact.add(CoreAttributeTypes.AccessContextId, notDeleted);
       artifact.add(CoreAttributeTypes.AccessContextId, deleted);
       artifact.add(CoreAttributeTypes.Name, differentType);
@@ -348,7 +348,7 @@ public class ArtifactTest {
 
    @Test
    @SuppressWarnings("unchecked")
-   public void testGetAttributes() throws OseeCoreException {
+   public void testGetAttributes()  {
       artifact.add(CoreAttributeTypes.AccessContextId, notDeleted);
       artifact.add(CoreAttributeTypes.AccessContextId, deleted);
       artifact.add(CoreAttributeTypes.Name, differentType);
@@ -364,7 +364,7 @@ public class ArtifactTest {
 
    @Test
    @SuppressWarnings("unchecked")
-   public void testGetAttributeValues() throws OseeCoreException {
+   public void testGetAttributeValues()  {
       artifact.add(CoreAttributeTypes.AccessContextId, notDeleted);
       artifact.add(CoreAttributeTypes.AccessContextId, deleted);
       when(notDeleted.getValue()).thenReturn("notDeleted");
@@ -376,7 +376,7 @@ public class ArtifactTest {
 
    @Test
    @SuppressWarnings("unchecked")
-   public void testGetSoleAttributeAsString() throws OseeCoreException {
+   public void testGetSoleAttributeAsString()  {
       when(notDeleted.getValue()).thenReturn(new Integer(5));
       artifact.add(CoreAttributeTypes.AccessContextId, notDeleted);
       String attribute = artifact.getSoleAttributeAsString(CoreAttributeTypes.AccessContextId);
@@ -388,7 +388,7 @@ public class ArtifactTest {
 
    @Test
    @SuppressWarnings({"rawtypes", "unchecked"})
-   public void testGetSoleAttributeAsStringException() throws OseeCoreException {
+   public void testGetSoleAttributeAsStringException()  {
       Attribute one = mock(Attribute.class);
       Attribute two = mock(Attribute.class);
       when(one.getOrcsData()).thenReturn(attributeData);
@@ -401,7 +401,7 @@ public class ArtifactTest {
 
    @Test
    @SuppressWarnings("unchecked")
-   public void testDeleteAttributesByArtifact() throws OseeCoreException {
+   public void testDeleteAttributesByArtifact()  {
       artifact.add(CoreAttributeTypes.AccessContextId, notDeleted);
       artifact.add(CoreAttributeTypes.AccessContextId, deleted);
       artifact.add(CoreAttributeTypes.Active, differentType);
@@ -413,7 +413,7 @@ public class ArtifactTest {
 
    @Test
    @SuppressWarnings("unchecked")
-   public void testDeleteSoleAttribute() throws OseeCoreException {
+   public void testDeleteSoleAttribute()  {
       when(attributeFactory.getMinOccurrenceLimit(attributeType)).thenReturn(0);
       when(notDeleted.getContainer()).thenReturn(artifact);
       artifact.add(attributeType, notDeleted);
@@ -423,7 +423,7 @@ public class ArtifactTest {
 
    @Test
    @SuppressWarnings("unchecked")
-   public void testDeleteSoleAttributeException() throws OseeCoreException {
+   public void testDeleteSoleAttributeException()  {
       when(attributeFactory.getMinOccurrenceLimit(attributeType)).thenReturn(1);
       artifact.add(attributeType, notDeleted);
 
@@ -433,7 +433,7 @@ public class ArtifactTest {
 
    @Test
    @SuppressWarnings({"rawtypes", "unchecked"})
-   public void testSetAttributesFromStringsCreateAll() throws OseeCoreException {
+   public void testSetAttributesFromStringsCreateAll()  {
       Attribute one = mock(Attribute.class);
       Attribute two = mock(Attribute.class);
       Attribute three = mock(Attribute.class);
@@ -453,7 +453,7 @@ public class ArtifactTest {
 
    @Test
    @SuppressWarnings({"rawtypes", "unchecked"})
-   public void testSetAttributesFromStringsCreateOne() throws OseeCoreException {
+   public void testSetAttributesFromStringsCreateOne()  {
       Attribute one = mock(Attribute.class);
       Attribute two = mock(Attribute.class);
       when(one.getOrcsData()).thenReturn(attributeData);

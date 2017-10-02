@@ -20,13 +20,13 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface ICommitConfigItem extends Named {
 
-   public BranchId getBaselineBranchId() throws OseeCoreException;
+   public BranchId getBaselineBranchId() ;
 
-   public Result isAllowCommitBranchInherited() throws OseeCoreException;
+   public Result isAllowCommitBranchInherited() ;
 
-   public Result isAllowCreateBranchInherited() throws OseeCoreException;
+   public Result isAllowCreateBranchInherited() ;
 
-   public String getCommitFullDisplayName() throws OseeCoreException;
+   public String getCommitFullDisplayName() ;
 
    public String getTypeName();
 

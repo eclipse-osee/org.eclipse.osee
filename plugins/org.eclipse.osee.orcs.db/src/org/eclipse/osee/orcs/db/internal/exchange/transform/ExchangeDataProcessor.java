@@ -40,15 +40,15 @@ public final class ExchangeDataProcessor {
       this.dataProvider = exportDataProvider;
    }
 
-   public void transform(String fileName, SaxTransformer transformer) throws OseeCoreException {
+   public void transform(String fileName, SaxTransformer transformer) {
       transform(dataProvider.getFile(fileName), transformer);
    }
 
-   public void transform(ExportItem exportItem, SaxTransformer transformer) throws OseeCoreException {
+   public void transform(ExportItem exportItem, SaxTransformer transformer) {
       transform(dataProvider.getFile(exportItem), transformer);
    }
 
-   private void transform(File targetFile, SaxTransformer transformer) throws OseeCoreException {
+   private void transform(File targetFile, SaxTransformer transformer) {
       File tempFile = new File(Lib.changeExtension(targetFile.getPath(), "temp"));
       Writer fileWriter = null;
       try {
@@ -69,7 +69,7 @@ public final class ExchangeDataProcessor {
       }
    }
 
-   public Writer startTransform(File targetFile, File tempFile, SaxTransformer transformer) throws OseeCoreException, XMLStreamException, IOException {
+   public Writer startTransform(File targetFile, File tempFile, SaxTransformer transformer) throws XMLStreamException, IOException {
       renameExportItem(targetFile, tempFile);
 
       Writer fileWriter = new BufferedWriter(new FileWriter(targetFile));
@@ -83,18 +83,18 @@ public final class ExchangeDataProcessor {
       dataProvider.getFile(fileName).delete();
    }
 
-   public void renameExportItem(String originalFileName, String newFileName) throws OseeCoreException {
+   public void renameExportItem(String originalFileName, String newFileName) {
       renameExportItem(dataProvider.getFile(originalFileName), dataProvider.getFile(newFileName));
    }
 
-   private void renameExportItem(File original, File destination) throws OseeCoreException {
+   private void renameExportItem(File original, File destination) {
       boolean wasSuccessful = original.renameTo(destination);
       if (!wasSuccessful) {
          throw new OseeStateException("Error renaming [%s] to [%s]", original, destination);
       }
    }
 
-   public void copyExportItem(String sourceFileName, String destinationFileName) throws OseeCoreException {
+   public void copyExportItem(String sourceFileName, String destinationFileName) {
       File source = dataProvider.getFile(sourceFileName);
       File destination = dataProvider.getFile(destinationFileName);
       try {
@@ -104,11 +104,11 @@ public final class ExchangeDataProcessor {
       }
    }
 
-   public void parse(String fileName, ContentHandler handler) throws OseeCoreException {
+   public void parse(String fileName, ContentHandler handler) {
       ExchangeUtil.readExchange(dataProvider.getFile(fileName), handler);
    }
 
-   public void parse(IExportItem exportItem, ContentHandler handler) throws OseeCoreException {
+   public void parse(IExportItem exportItem, ContentHandler handler) {
       try {
          ExchangeUtil.readExchange(dataProvider.getFile(exportItem), handler);
       } catch (Exception ex) {
@@ -116,7 +116,7 @@ public final class ExchangeDataProcessor {
       }
    }
 
-   public void transform(ExportItem exportItem, Rule rule) throws OseeCoreException {
+   public void transform(ExportItem exportItem, Rule rule) {
       try {
          rule.process(dataProvider.getFile(exportItem));
       } catch (IOException ex) {

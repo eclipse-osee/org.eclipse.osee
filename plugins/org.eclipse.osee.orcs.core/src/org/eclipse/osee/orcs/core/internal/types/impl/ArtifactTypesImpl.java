@@ -31,7 +31,7 @@ import org.eclipse.osee.orcs.data.ArtifactTypes;
 public class ArtifactTypesImpl implements ArtifactTypes {
 
    public static interface ArtifactTypeIndexProvider {
-      ArtifactTypeIndex getArtifactTypeIndex() throws OseeCoreException;
+      ArtifactTypeIndex getArtifactTypeIndex() ;
    }
 
    private final ArtifactTypeIndexProvider provider;
@@ -40,17 +40,17 @@ public class ArtifactTypesImpl implements ArtifactTypes {
       this.provider = provider;
    }
 
-   private ArtifactTypeIndex getArtifactTypesIndex() throws OseeCoreException {
+   private ArtifactTypeIndex getArtifactTypesIndex()  {
       return provider.getArtifactTypeIndex();
    }
 
-   private XArtifactType getType(IArtifactType artType) throws OseeCoreException {
+   private XArtifactType getType(IArtifactType artType)  {
       Conditions.checkNotNull(artType, "artifactType");
       return getArtifactTypesIndex().getDslTypeByToken(artType);
    }
 
    @Override
-   public Collection<IArtifactType> getAll() throws OseeCoreException {
+   public Collection<IArtifactType> getAll()  {
       return getArtifactTypesIndex().getAllTokens();
    }
 
@@ -65,24 +65,24 @@ public class ArtifactTypesImpl implements ArtifactTypes {
    }
 
    @Override
-   public boolean isAbstract(IArtifactType artType) throws OseeCoreException {
+   public boolean isAbstract(IArtifactType artType)  {
       XArtifactType type = getType(artType);
       return type.isAbstract();
    }
 
    @Override
-   public boolean hasSuperArtifactTypes(IArtifactType artType) throws OseeCoreException {
+   public boolean hasSuperArtifactTypes(IArtifactType artType)  {
       return !getSuperArtifactTypes(artType).isEmpty();
    }
 
    @Override
-   public Collection<? extends IArtifactType> getSuperArtifactTypes(IArtifactType artType) throws OseeCoreException {
+   public Collection<? extends IArtifactType> getSuperArtifactTypes(IArtifactType artType)  {
       Conditions.checkNotNull(artType, "artifactType");
       return getArtifactTypesIndex().getSuperTypes(artType);
    }
 
    @Override
-   public boolean inheritsFrom(ArtifactTypeId thisType, ArtifactTypeId... otherTypes) throws OseeCoreException {
+   public boolean inheritsFrom(ArtifactTypeId thisType, ArtifactTypeId... otherTypes)  {
       Conditions.checkNotNull(thisType, "thisArtifactType");
       Conditions.checkNotNull(otherTypes, "otherArtifactTypes");
       return getArtifactTypesIndex().inheritsFrom(thisType, otherTypes);
@@ -107,35 +107,35 @@ public class ArtifactTypesImpl implements ArtifactTypes {
    }
 
    @Override
-   public boolean isValidAttributeType(IArtifactType artType, BranchId branch, AttributeTypeId attributeType) throws OseeCoreException {
+   public boolean isValidAttributeType(IArtifactType artType, BranchId branch, AttributeTypeId attributeType)  {
       Collection<AttributeTypeToken> attributes = getAttributeTypes(artType, branch);
       return attributes.contains(attributeType);
    }
 
    @Override
-   public Collection<AttributeTypeToken> getAttributeTypes(IArtifactType artType, BranchId branch) throws OseeCoreException {
+   public Collection<AttributeTypeToken> getAttributeTypes(IArtifactType artType, BranchId branch)  {
       Conditions.checkNotNull(artType, "artifactType");
       Conditions.checkNotNull(branch, "branch");
       return getArtifactTypesIndex().getAttributeTypes(artType, branch);
    }
 
    @Override
-   public boolean isEmpty() throws OseeCoreException {
+   public boolean isEmpty()  {
       return getArtifactTypesIndex().isEmpty();
    }
 
    @Override
-   public int size() throws OseeCoreException {
+   public int size()  {
       return getArtifactTypesIndex().size();
    }
 
    @Override
-   public boolean exists(Id id) throws OseeCoreException {
+   public boolean exists(Id id)  {
       return getArtifactTypesIndex().exists(id);
    }
 
    @Override
-   public Map<BranchId, Collection<AttributeTypeToken>> getAllAttributeTypes(IArtifactType artType) throws OseeCoreException {
+   public Map<BranchId, Collection<AttributeTypeToken>> getAllAttributeTypes(IArtifactType artType)  {
       return getArtifactTypesIndex().getAllAttributeTypes(artType);
    }
 

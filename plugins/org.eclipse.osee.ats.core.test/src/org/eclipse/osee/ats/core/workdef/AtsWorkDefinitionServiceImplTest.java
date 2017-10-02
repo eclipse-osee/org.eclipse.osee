@@ -108,7 +108,7 @@ public class AtsWorkDefinitionServiceImplTest {
    }
 
    @Test
-   public void testGetDefaultPeerToPeerWorkflowDefinitionMatch() throws OseeCoreException {
+   public void testGetDefaultPeerToPeerWorkflowDefinitionMatch()  {
       assertEquals(defaultPeerToPeerWorkDef, workDefService.getDefaultPeerToPeerWorkflowDefinition());
    }
 

@@ -187,22 +187,22 @@ public class XWorkPackageWidget extends GenericXWidget implements IArtifactWidge
    }
 
    @Override
-   public Artifact getArtifact() throws OseeCoreException {
+   public Artifact getArtifact()  {
       return workflow;
    }
 
    @Override
-   public void saveToArtifact() throws OseeCoreException {
+   public void saveToArtifact()  {
       // do nothing
    }
 
    @Override
-   public void revert() throws OseeCoreException {
+   public void revert()  {
       // do nothing
    }
 
    @Override
-   public Result isDirty() throws OseeCoreException {
+   public Result isDirty()  {
       return Result.FalseResult;
    }
 

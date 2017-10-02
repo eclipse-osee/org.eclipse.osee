@@ -35,7 +35,7 @@ public class AtsLogTest {
    // @formatter:on
 
    @Before
-   public void setup() throws OseeCoreException {
+   public void setup()  {
       MockitoAnnotations.initMocks(this);
       when(Joe.getName()).thenReturn("joe");
       when(Joe.getUserId()).thenReturn("joe");
@@ -43,11 +43,11 @@ public class AtsLogTest {
       when(Kay.getUserId()).thenReturn("kay");
    }
 
-   public static IAtsLogItem getAnalyzeTestLogItem(Date date, IAtsUser user) throws OseeCoreException {
+   public static IAtsLogItem getAnalyzeTestLogItem(Date date, IAtsUser user)  {
       return new LogItem(LogType.Error, date, user.getUserId(), "Analyze", "my msg");
    }
 
-   public static IAtsLogItem getImplementTestLogItem(Date date, IAtsUser user) throws OseeCoreException {
+   public static IAtsLogItem getImplementTestLogItem(Date date, IAtsUser user)  {
       return new LogItem(LogType.Error, date, user.getUserId(), "Implement", "my msg2");
    }
 

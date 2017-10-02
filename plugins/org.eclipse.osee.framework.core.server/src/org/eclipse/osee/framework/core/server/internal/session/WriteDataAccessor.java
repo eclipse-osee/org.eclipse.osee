@@ -18,8 +18,8 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface WriteDataAccessor<D> {
 
-   void create(Iterable<D> sessions) throws OseeCoreException;
+   void create(Iterable<D> sessions) ;
 
-   void delete(Iterable<D> sessions) throws OseeCoreException;
+   void delete(Iterable<D> sessions) ;
 
 }

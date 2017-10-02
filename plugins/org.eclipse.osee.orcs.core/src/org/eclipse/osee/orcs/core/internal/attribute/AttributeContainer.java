@@ -29,7 +29,7 @@ public interface AttributeContainer extends Identifiable<String> {
 
    boolean isLoaded();
 
-   void setLoaded(boolean value) throws OseeCoreException;
+   void setLoaded(boolean value) ;
 
    String getExceptionString();
 
@@ -40,19 +40,19 @@ public interface AttributeContainer extends Identifiable<String> {
 
    boolean areAttributesDirty();
 
-   int getMaximumAttributeTypeAllowed(AttributeTypeId attributeType) throws OseeCoreException;
+   int getMaximumAttributeTypeAllowed(AttributeTypeId attributeType) ;
 
-   int getMinimumAttributeTypeAllowed(AttributeTypeId attributeType) throws OseeCoreException;
+   int getMinimumAttributeTypeAllowed(AttributeTypeId attributeType) ;
 
    /////////////////////////////////////////////////////////////////
 
-   int getAttributeCount(AttributeTypeId type) throws OseeCoreException;
+   int getAttributeCount(AttributeTypeId type) ;
 
-   int getAttributeCount(AttributeTypeId type, DeletionFlag deletionFlag) throws OseeCoreException;
+   int getAttributeCount(AttributeTypeId type, DeletionFlag deletionFlag) ;
 
-   boolean isAttributeTypeValid(AttributeTypeId attributeType) throws OseeCoreException;
+   boolean isAttributeTypeValid(AttributeTypeId attributeType) ;
 
-   Collection<AttributeTypeToken> getValidAttributeTypes() throws OseeCoreException;
+   Collection<AttributeTypeToken> getValidAttributeTypes() ;
 
-   Collection<AttributeTypeToken> getExistingAttributeTypes() throws OseeCoreException;
+   Collection<AttributeTypeToken> getExistingAttributeTypes() ;
 }

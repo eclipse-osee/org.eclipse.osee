@@ -50,12 +50,12 @@ public class MessageServiceProxy implements MessageService {
    }
 
    @Override
-   public ConnectionNode getDefault() throws OseeCoreException {
+   public ConnectionNode getDefault()  {
       return getProxiedService().getDefault();
    }
 
    @Override
-   public ConnectionNode get(NodeInfo nodeInfo) throws OseeCoreException {
+   public ConnectionNode get(NodeInfo nodeInfo)  {
       return getProxiedService().get(nodeInfo);
    }
 

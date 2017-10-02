@@ -24,20 +24,20 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface ArtifactTypes extends IdCollection<IArtifactType> {
 
-   boolean hasSuperArtifactTypes(IArtifactType artType) throws OseeCoreException;
+   boolean hasSuperArtifactTypes(IArtifactType artType) ;
 
-   Collection<? extends IArtifactType> getSuperArtifactTypes(IArtifactType artType) throws OseeCoreException;
+   Collection<? extends IArtifactType> getSuperArtifactTypes(IArtifactType artType) ;
 
-   Collection<? extends IArtifactType> getAllDescendantTypes(ArtifactTypeId artType) throws OseeCoreException;
+   Collection<? extends IArtifactType> getAllDescendantTypes(ArtifactTypeId artType) ;
 
-   boolean isValidAttributeType(IArtifactType artType, BranchId branch, AttributeTypeId attributeType) throws OseeCoreException;
+   boolean isValidAttributeType(IArtifactType artType, BranchId branch, AttributeTypeId attributeType) ;
 
-   Collection<AttributeTypeToken> getAttributeTypes(IArtifactType artType, BranchId branch) throws OseeCoreException;
+   Collection<AttributeTypeToken> getAttributeTypes(IArtifactType artType, BranchId branch) ;
 
-   boolean isAbstract(IArtifactType artType) throws OseeCoreException;
+   boolean isAbstract(IArtifactType artType) ;
 
-   boolean inheritsFrom(ArtifactTypeId artType, ArtifactTypeId... otherTypes) throws OseeCoreException;
+   boolean inheritsFrom(ArtifactTypeId artType, ArtifactTypeId... otherTypes) ;
 
-   Map<BranchId, Collection<AttributeTypeToken>> getAllAttributeTypes(IArtifactType artType) throws OseeCoreException;
+   Map<BranchId, Collection<AttributeTypeToken>> getAllAttributeTypes(IArtifactType artType) ;
 
 }

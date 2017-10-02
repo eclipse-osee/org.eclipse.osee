@@ -30,19 +30,19 @@ public enum SystemGroup {
       group = new OseeGroup(token);
    }
 
-   public Artifact getArtifact() throws OseeCoreException {
+   public Artifact getArtifact()  {
       return group.getGroupArtifact();
    }
 
-   public void addMember(User user) throws OseeCoreException {
+   public void addMember(User user)  {
       group.addMember(user);
    }
 
-   public boolean isMember(User user) throws OseeCoreException {
+   public boolean isMember(User user)  {
       return group.isMember(user);
    }
 
-   public boolean isCurrentUserMember() throws OseeCoreException {
+   public boolean isCurrentUserMember()  {
       return group.isCurrentUserMember();
    }
 

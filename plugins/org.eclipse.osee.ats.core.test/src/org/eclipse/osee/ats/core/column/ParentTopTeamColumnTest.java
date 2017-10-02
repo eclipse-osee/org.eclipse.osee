@@ -45,7 +45,7 @@ public class ParentTopTeamColumnTest {
    // @formatter:on
 
    @Before
-   public void setup() throws OseeCoreException {
+   public void setup()  {
       MockitoAnnotations.initMocks(this);
       when(teamWf1.getParentTeamWorkflow()).thenReturn(teamWf1);
       when(teamWf1.getTeamDefinition()).thenReturn(teamDef_child);

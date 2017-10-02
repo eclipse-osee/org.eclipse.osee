@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.access.internal.AccessControlService;
 import org.eclipse.osee.framework.access.internal.data.ArtifactAccessObject;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.model.access.AccessDataQuery;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -54,32 +53,32 @@ public final class AccessControlManager {
       getService().clearCache();
    }
 
-   public static void lockObjects(Collection<Artifact> objects, Artifact subject) throws OseeCoreException {
+   public static void lockObjects(Collection<Artifact> objects, Artifact subject) {
       getService().lockObjects(objects, subject);
    }
 
-   public static void unLockObjects(Collection<Artifact> objects, Artifact subject) throws OseeCoreException, OseeAuthenticationRequiredException {
+   public static void unLockObjects(Collection<Artifact> objects, Artifact subject) {
       getService().unLockObjects(objects, subject);
    }
 
-   public static boolean hasLock(Artifact object) throws OseeCoreException {
+   public static boolean hasLock(Artifact object) {
       return getService().hasLock(object);
    }
 
-   public static boolean canUnlockObject(Artifact object, Artifact subject) throws OseeCoreException {
+   public static boolean canUnlockObject(Artifact object, Artifact subject) {
       return getService().canUnlockObject(object, subject);
    }
 
-   public static Artifact getSubjectFromLockedObject(Object object) throws OseeCoreException {
+   public static Artifact getSubjectFromLockedObject(Object object) {
       return getService().getSubjectFromLockedObject(object);
    }
 
-   public static boolean hasLockAccess(Artifact object) throws OseeCoreException {
+   public static boolean hasLockAccess(Artifact object) {
       return getService().hasLockAccess(object);
    }
 
    @SuppressWarnings("deprecation")
-   public static boolean isOseeAdmin() throws OseeCoreException {
+   public static boolean isOseeAdmin() {
       AccessControlService service = null;
       try {
          service = AccessControlHelper.getAccessControlService();
@@ -109,7 +108,7 @@ public final class AccessControlManager {
 
    }
 
-   public static AccessObject getAccessObject(Object object) throws OseeCoreException {
+   public static AccessObject getAccessObject(Object object) {
       return getService().getAccessObject(object);
    }
 
@@ -117,15 +116,15 @@ public final class AccessControlManager {
       getService().persistPermission(data, isRecursionAllowed);
    }
 
-   public static void removeAccessControlDataIf(boolean removeFromDb, AccessControlData data) throws OseeCoreException {
+   public static void removeAccessControlDataIf(boolean removeFromDb, AccessControlData data) {
       getService().removeAccessControlDataIf(removeFromDb, data);
    }
 
-   public static boolean hasPermission(Object object, PermissionEnum permission) throws OseeCoreException {
+   public static boolean hasPermission(Object object, PermissionEnum permission) {
       return getService().hasPermission(object, permission);
    }
 
-   public static void setPermission(Artifact subject, Object object, PermissionEnum permission) throws OseeCoreException {
+   public static void setPermission(Artifact subject, Object object, PermissionEnum permission) {
       getService().setPermission(subject, object, permission);
    }
 
@@ -143,7 +142,7 @@ public final class AccessControlManager {
       }
    }
 
-   public static AccessDataQuery getAccessData(Collection<?> objectsToCheck) throws OseeCoreException {
+   public static AccessDataQuery getAccessData(Collection<?> objectsToCheck) {
       return getService().getAccessData(UserManager.getUser(), objectsToCheck);
    }
 

@@ -24,6 +24,6 @@ import org.eclipse.osee.orcs.search.ApplicabilityQuery;
  */
 public interface MissingChangeItemFactory {
 
-   Collection<ChangeItem> createMissingChanges(HasCancellation cancellation, OrcsSession session, List<ChangeItem> changes, TransactionToken sourceTx, TransactionToken destTx, ApplicabilityQuery applicQuery) throws OseeCoreException;
+   Collection<ChangeItem> createMissingChanges(HasCancellation cancellation, OrcsSession session, List<ChangeItem> changes, TransactionToken sourceTx, TransactionToken destTx, ApplicabilityQuery applicQuery) ;
 
 }

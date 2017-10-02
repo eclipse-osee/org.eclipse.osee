@@ -79,7 +79,7 @@ public class CreateWorkingBranchFromTxBlam extends AbstractBlam {
    }
 
    @Override
-   public String getXWidgetsXml() throws OseeCoreException {
+   public String getXWidgetsXml()  {
       return getXWidgetsXmlFromUiFile(getClass().getSimpleName(), Activator.PLUGIN_ID);
    }
 

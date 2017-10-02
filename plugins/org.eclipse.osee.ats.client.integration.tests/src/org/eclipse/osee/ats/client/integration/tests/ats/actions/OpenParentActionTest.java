@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 public class OpenParentActionTest extends AbstractAtsActionRunTest {
 
    @Override
-   public OpenParentAction createAction() throws OseeCoreException {
+   public OpenParentAction createAction()  {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       OpenParentAction action = new OpenParentAction(AtsTestUtil.getOrCreateTaskOffTeamWf1());
       if (!changes.isEmpty()) {

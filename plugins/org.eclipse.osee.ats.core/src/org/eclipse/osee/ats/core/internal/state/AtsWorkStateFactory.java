@@ -41,7 +41,7 @@ public class AtsWorkStateFactory implements IAtsWorkStateFactory {
    }
 
    @Override
-   public String toStoreStr(IAtsStateManager stateMgr, String stateName) throws OseeCoreException {
+   public String toStoreStr(IAtsStateManager stateMgr, String stateName)  {
       StringBuffer sb = new StringBuffer(stateName);
       sb.append(";");
       sb.append(getStorageString(stateMgr.getAssignees(stateName)));
@@ -59,7 +59,7 @@ public class AtsWorkStateFactory implements IAtsWorkStateFactory {
    }
 
    @Override
-   public WorkStateImpl fromStoreStr(String storeStr) throws OseeCoreException {
+   public WorkStateImpl fromStoreStr(String storeStr)  {
       WorkStateImpl state = new WorkStateImpl("Unknown");
       if (Strings.isValid(storeStr)) {
          Matcher m = storagePattern.matcher(storeStr);
@@ -82,7 +82,7 @@ public class AtsWorkStateFactory implements IAtsWorkStateFactory {
    }
 
    @Override
-   public String getStorageString(Collection<IAtsUser> users) throws OseeCoreException {
+   public String getStorageString(Collection<IAtsUser> users)  {
       StringBuffer sb = new StringBuffer();
       for (IAtsUser u : users) {
          sb.append("<" + u.getUserId() + ">");

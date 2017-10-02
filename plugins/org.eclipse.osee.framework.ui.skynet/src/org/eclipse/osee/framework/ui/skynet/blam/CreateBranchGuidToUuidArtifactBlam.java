@@ -30,7 +30,7 @@ public class CreateBranchGuidToUuidArtifactBlam extends AbstractBlam {
    private static final String MAPPING_ART = "ABKY9QDQLSaHQBiRC7wA";
 
    @Override
-   public String getXWidgetsXml() throws OseeCoreException {
+   public String getXWidgetsXml()  {
       return "<xWidgets></xWidgets>";
    }
 

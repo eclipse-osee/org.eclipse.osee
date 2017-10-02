@@ -100,7 +100,7 @@ public class WfeWorkPackage extends Composite {
 
    }
 
-   private void updateLabel(AbstractWorkflowArtifact sma) throws OseeCoreException {
+   private void updateLabel(AbstractWorkflowArtifact sma)  {
       if (Widgets.isAccessible(valueLabel)) {
          String value = "Not Set";
          IAtsWorkPackage workPackage =

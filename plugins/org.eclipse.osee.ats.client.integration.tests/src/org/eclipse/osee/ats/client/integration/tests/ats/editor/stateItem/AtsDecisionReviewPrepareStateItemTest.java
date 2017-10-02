@@ -60,7 +60,7 @@ public class AtsDecisionReviewPrepareStateItemTest {
    }
 
    @Test
-   public void testTransitioning() throws OseeCoreException {
+   public void testTransitioning()  {
       Assert.assertNotNull(decRevArt);
 
       // set valid options

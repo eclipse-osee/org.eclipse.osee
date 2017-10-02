@@ -39,7 +39,7 @@ public class RelationTypeValidity {
       this.relationTypes = relationTypes;
    }
 
-   public void checkRelationTypeMultiplicity(RelationTypeToken type, RelationNode node, RelationSide side, int count) throws OseeCoreException {
+   public void checkRelationTypeMultiplicity(RelationTypeToken type, RelationNode node, RelationSide side, int count)  {
       MultiplicityState state = getRelationMultiplicityState(type, side, count);
       switch (state) {
          case MAX_VIOLATION:
@@ -53,7 +53,7 @@ public class RelationTypeValidity {
       }
    }
 
-   public void checkRelationTypeValid(RelationTypeId type, RelationNode node, RelationSide side) throws OseeCoreException {
+   public void checkRelationTypeValid(RelationTypeId type, RelationNode node, RelationSide side)  {
       Conditions.checkNotNull(type, "type");
       Conditions.checkNotNull(node, "node");
       Conditions.checkNotNull(side, "relationSide");
@@ -67,7 +67,7 @@ public class RelationTypeValidity {
       }
    }
 
-   public int getMaximumRelationsAllowed(RelationTypeId type, IArtifactType artifactType, RelationSide side) throws OseeCoreException {
+   public int getMaximumRelationsAllowed(RelationTypeId type, IArtifactType artifactType, RelationSide side)  {
       Conditions.checkNotNull(type, "relationType");
       Conditions.checkNotNull(artifactType, "artifactType");
       Conditions.checkNotNull(side, "relationSide");
@@ -80,7 +80,7 @@ public class RelationTypeValidity {
       return toReturn;
    }
 
-   public MultiplicityState getRelationMultiplicityState(RelationTypeToken type, RelationSide side, int count) throws OseeCoreException {
+   public MultiplicityState getRelationMultiplicityState(RelationTypeToken type, RelationSide side, int count)  {
       Conditions.checkNotNull(type, "type");
       Conditions.checkNotNull(side, "relationSide");
       checkTypeExists(type);
@@ -95,14 +95,14 @@ public class RelationTypeValidity {
       return toReturn;
    }
 
-   public boolean isRelationTypeValid(RelationTypeId relationType, IArtifactType artifactType, RelationSide relationSide) throws OseeCoreException {
+   public boolean isRelationTypeValid(RelationTypeId relationType, IArtifactType artifactType, RelationSide relationSide)  {
       checkTypeExists(relationType);
       Conditions.checkNotNull(artifactType, "artifactType");
       Conditions.checkNotNull(relationSide, "relationSide");
       return getRelationSideMax(relationType, artifactType, relationSide) > 0;
    }
 
-   public List<RelationTypeId> getValidRelationTypes(IArtifactType artifactType) throws OseeCoreException {
+   public List<RelationTypeId> getValidRelationTypes(IArtifactType artifactType)  {
       Conditions.checkNotNull(artifactType, "artifactType");
       Collection<? extends IRelationType> types = relationTypes.getAll();
       List<RelationTypeId> toReturn = new ArrayList<>();
@@ -114,7 +114,7 @@ public class RelationTypeValidity {
       return toReturn;
    }
 
-   private boolean isTypeAllowed(IArtifactType artifactType, IRelationType relationType) throws OseeCoreException {
+   private boolean isTypeAllowed(IArtifactType artifactType, IRelationType relationType)  {
       boolean result = false;
       for (RelationSide side : RelationSide.values()) {
          int sideMax = getRelationSideMax(relationType, artifactType, side);
@@ -126,12 +126,12 @@ public class RelationTypeValidity {
       return result;
    }
 
-   private void checkTypeExists(RelationTypeId type) throws OseeCoreException {
+   private void checkTypeExists(RelationTypeId type)  {
       boolean exists = relationTypes.exists(type);
       Conditions.checkExpressionFailOnTrue(!exists, "relationType [%s] does not exist", type);
    }
 
-   private int getRelationSideMax(RelationTypeId relationType, IArtifactType artifactType, RelationSide relationSide) throws OseeCoreException {
+   private int getRelationSideMax(RelationTypeId relationType, IArtifactType artifactType, RelationSide relationSide)  {
       int toReturn = 0;
       if (relationTypes.isArtifactTypeAllowed(relationType, relationSide, artifactType)) {
          toReturn = relationTypes.getMultiplicity(relationType).getLimit(relationSide);

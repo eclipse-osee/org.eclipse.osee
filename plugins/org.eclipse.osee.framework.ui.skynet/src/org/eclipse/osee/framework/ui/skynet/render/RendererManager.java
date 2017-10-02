@@ -57,7 +57,7 @@ public final class RendererManager {
    /**
     * @return Returns the intersection of renderers applicable for all of the artifacts
     */
-   public static List<IRenderer> getCommonRenderers(Collection<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
+   public static List<IRenderer> getCommonRenderers(Collection<Artifact> artifacts, PresentationType presentationType)  {
       List<IRenderer> commonRenders = getApplicableRenderers(presentationType, artifacts.iterator().next());
 
       for (Artifact artifact : artifacts) {
@@ -111,7 +111,7 @@ public final class RendererManager {
       return bestRenderer;
    }
 
-   private static IRenderer getBestRendererPrototype(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions) throws OseeCoreException {
+   private static IRenderer getBestRendererPrototype(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions)  {
       if (presentationType == DEFAULT_OPEN && UserManager.getBooleanSetting(
          UserManager.DOUBLE_CLICK_SETTING_KEY_ART_EDIT)) {
          presentationType = GENERAL_REQUESTED;
@@ -134,17 +134,17 @@ public final class RendererManager {
       return bestRendererPrototype;
    }
 
-   public static void renderAttribute(AttributeTypeToken attributeType, PresentationType presentationType, Artifact artifact, WordMLProducer producer, String format, String label, String footer, Map<RendererOption, Object> rendererOptions) throws OseeCoreException {
+   public static void renderAttribute(AttributeTypeToken attributeType, PresentationType presentationType, Artifact artifact, WordMLProducer producer, String format, String label, String footer, Map<RendererOption, Object> rendererOptions)  {
       getBestRenderer(PRODUCE_ATTRIBUTE, artifact, rendererOptions).renderAttribute(attributeType, artifact,
          presentationType, producer, format, label, footer);
    }
 
-   public static Collection<AttributeTypeToken> getAttributeTypeOrderList(Artifact artifact) throws OseeCoreException {
+   public static Collection<AttributeTypeToken> getAttributeTypeOrderList(Artifact artifact)  {
       return getBestRenderer(PresentationType.PRODUCE_ATTRIBUTE, artifact,
          new HashMap<RendererOption, Object>()).getOrderedAttributeTypes(artifact, artifact.getAttributeTypes());
    }
 
-   private static List<IRenderer> getApplicableRenderers(PresentationType presentationType, Artifact artifact, Object... data) throws OseeCoreException {
+   private static List<IRenderer> getApplicableRenderers(PresentationType presentationType, Artifact artifact, Object... data)  {
       ArrayList<IRenderer> applicableRenderers = new ArrayList<>();
 
       IRenderer bestRenderer = getBestRenderer(presentationType, artifact, new HashMap<RendererOption, Object>());
@@ -195,30 +195,30 @@ public final class RendererManager {
       Operations.executeAsJob(new OpenUsingRenderer(artifacts, presentationType, rendererOptions), true);
    }
 
-   public static String open(Collection<Artifact> artifacts, PresentationType presentationType, IProgressMonitor monitor, Map<RendererOption, Object> rendererOptions) throws OseeCoreException {
+   public static String open(Collection<Artifact> artifacts, PresentationType presentationType, IProgressMonitor monitor, Map<RendererOption, Object> rendererOptions)  {
       OpenUsingRenderer operation = new OpenUsingRenderer(artifacts, presentationType, rendererOptions);
       Operations.executeWorkAndCheckStatus(operation, monitor);
       return operation.getResultPath();
    }
 
-   public static String open(Collection<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
+   public static String open(Collection<Artifact> artifacts, PresentationType presentationType)  {
       return open(artifacts, presentationType, new NullProgressMonitor(), new HashMap<RendererOption, Object>());
    }
 
-   public static String open(Artifact artifact, PresentationType presentationType, Map<RendererOption, Object> rendererOptions) throws OseeCoreException {
+   public static String open(Artifact artifact, PresentationType presentationType, Map<RendererOption, Object> rendererOptions)  {
       return open(Collections.singletonList(artifact), presentationType, new NullProgressMonitor(), rendererOptions);
    }
 
-   public static String open(Artifact artifact, PresentationType presentationType, IProgressMonitor monitor) throws OseeCoreException {
+   public static String open(Artifact artifact, PresentationType presentationType, IProgressMonitor monitor)  {
       return open(Collections.singletonList(artifact), presentationType, monitor,
          new HashMap<RendererOption, Object>());
    }
 
-   public static String open(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
+   public static String open(Artifact artifact, PresentationType presentationType)  {
       return open(Collections.singletonList(artifact), presentationType);
    }
 
-   public static void merge(CompareDataCollector collector, Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, String pathPrefix, Map<RendererOption, Object> rendererOptions) throws OseeCoreException {
+   public static void merge(CompareDataCollector collector, Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, String pathPrefix, Map<RendererOption, Object> rendererOptions)  {
       IRenderer renderer = getBestRenderer(PresentationType.MERGE, baseVersion, rendererOptions);
       IComparator comparator = renderer.getComparator();
       comparator.compare(collector, baseVersion, newerVersion, baseFile, newerFile, PresentationType.MERGE, pathPrefix);

@@ -69,7 +69,7 @@ public class OseeCoreModelEventServiceImpl implements OseeMessagingStatusCallbac
    }
 
    @Override
-   public void sendRemoteEvent(RemoteEvent remoteEvent) throws OseeCoreException {
+   public void sendRemoteEvent(RemoteEvent remoteEvent)  {
       ResMessages resMessage = getResMessageType(remoteEvent);
       if (resMessage == null) {
          OseeLog.logf(OseeCoreModelEventServiceImpl.class, Level.INFO, "ResEventManager: Unhandled remote event [%s]",

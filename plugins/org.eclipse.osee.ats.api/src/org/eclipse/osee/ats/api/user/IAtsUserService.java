@@ -24,21 +24,21 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IAtsUserService {
 
-   IAtsUser getCurrentUser() throws OseeCoreException;
+   IAtsUser getCurrentUser() ;
 
-   String getCurrentUserId() throws OseeCoreException;
+   String getCurrentUserId() ;
 
-   IAtsUser getUserById(String userId) throws OseeCoreException;
+   IAtsUser getUserById(String userId) ;
 
    IAtsUser getUserByArtifactId(ArtifactId id);
 
-   boolean isUserIdValid(String userId) throws OseeCoreException;
+   boolean isUserIdValid(String userId) ;
 
-   boolean isUserNameValid(String name) throws OseeCoreException;
+   boolean isUserNameValid(String name) ;
 
-   IAtsUser getUserByName(String name) throws OseeCoreException;
+   IAtsUser getUserByName(String name) ;
 
-   Collection<IAtsUser> getUsersByUserIds(Collection<String> userIds) throws OseeCoreException;
+   Collection<IAtsUser> getUsersByUserIds(Collection<String> userIds) ;
 
    boolean isAtsAdmin();
 

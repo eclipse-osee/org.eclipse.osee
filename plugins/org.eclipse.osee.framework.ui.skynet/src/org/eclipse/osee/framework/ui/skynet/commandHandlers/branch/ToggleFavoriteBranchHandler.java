@@ -31,7 +31,7 @@ public class ToggleFavoriteBranchHandler extends CommandHandler {
       "org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.ToggleFavoriteBranchHandler";
 
    @Override
-   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
+   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection)  {
       BranchId selectedBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
 
       User user = UserManager.getUser();

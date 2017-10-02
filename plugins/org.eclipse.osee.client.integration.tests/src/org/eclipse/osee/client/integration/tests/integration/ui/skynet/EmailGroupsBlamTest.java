@@ -78,7 +78,7 @@ public class EmailGroupsBlamTest {
    }
 
    @Test
-   public void testEmailGroupsData() throws OseeCoreException {
+   public void testEmailGroupsData()  {
       Assert.assertNotNull(newGroup);
 
       EmailGroupsData data = new EmailGroupsData();

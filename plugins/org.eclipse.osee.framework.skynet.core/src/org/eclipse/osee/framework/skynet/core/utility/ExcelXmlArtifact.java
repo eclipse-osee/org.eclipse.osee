@@ -18,7 +18,6 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -48,7 +47,7 @@ public class ExcelXmlArtifact implements RowProcessor {
       this.branch = branch;
    }
 
-   private void startParsing() throws OseeCoreException, IOException, SAXException {
+   private void startParsing() throws IOException, SAXException {
       Artifact artifact = ArtifactQuery.getArtifactFromTypeAndAttribute(CoreArtifactTypes.GeneralDocument,
          CoreAttributeTypes.StaticId, staticId, branch);
       if (artifact != null) {
@@ -59,7 +58,7 @@ public class ExcelXmlArtifact implements RowProcessor {
       initialized = true;
    }
 
-   public List<Worksheet> getWorkbook() throws OseeCoreException, IOException, SAXException {
+   public List<Worksheet> getWorkbook() throws IOException, SAXException {
       if (!initialized) {
          startParsing();
       }

@@ -60,7 +60,7 @@ public class XStateCombo extends XComboDam {
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) throws OseeCoreException {
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType)  {
       super.setAttributeType(artifact, AtsAttributeTypes.RelatedToState);
       setDataStrings(getStateNames());
    }

@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 public class OpenWorldByIdActionTest extends AbstractAtsActionRunTest {
 
    @Override
-   public OpenWorldByIdAction createAction() throws OseeCoreException {
+   public OpenWorldByIdAction createAction()  {
       OpenWorldByIdAction action = new OpenWorldByIdAction();
       action.setOverrideIdString(AtsTestUtil.getTeamWf().getAtsId());
       action.setPend(true);

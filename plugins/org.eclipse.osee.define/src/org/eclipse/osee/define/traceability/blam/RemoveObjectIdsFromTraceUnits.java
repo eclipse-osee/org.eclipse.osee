@@ -66,7 +66,7 @@ public class RemoveObjectIdsFromTraceUnits extends AbstractBlam {
       return builder.toString();
    }
 
-   private void checkPath(String filePath, String type) throws OseeArgumentException {
+   private void checkPath(String filePath, String type)  {
       if (!Strings.isValid(filePath)) {
          throw new OseeArgumentException("Please enter a valid %s path", type);
       }
@@ -76,7 +76,7 @@ public class RemoveObjectIdsFromTraceUnits extends AbstractBlam {
       }
    }
 
-   private URI getSourceURI(VariableMap variableMap) throws OseeArgumentException {
+   private URI getSourceURI(VariableMap variableMap)  {
       String filePath = variableMap.getString("Select File");
       String folderPath = variableMap.getString("Select Folder");
 
@@ -137,7 +137,7 @@ public class RemoveObjectIdsFromTraceUnits extends AbstractBlam {
       private final TestUnitTagger tagger = TestUnitTagger.getInstance();
 
       @Override
-      public void onResourceFound(URI uriPath, String name, CharBuffer fileBuffer) throws OseeCoreException {
+      public void onResourceFound(URI uriPath, String name, CharBuffer fileBuffer)  {
          try {
             tagger.removeSourceTag(uriPath);
          } catch (IOException ex) {

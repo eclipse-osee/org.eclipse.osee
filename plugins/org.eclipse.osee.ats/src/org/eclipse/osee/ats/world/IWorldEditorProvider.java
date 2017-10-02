@@ -27,15 +27,15 @@ public interface IWorldEditorProvider {
    /**
     * Called to start the process of search and load.
     */
-   public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend) throws OseeCoreException;
+   public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend) ;
 
-   public String getSelectedName(SearchType searchType) throws OseeCoreException;
+   public String getSelectedName(SearchType searchType) ;
 
-   public String getName() throws OseeCoreException;
+   public String getName() ;
 
-   public IAtsVersion getTargetedVersionArtifact() throws OseeCoreException;
+   public IAtsVersion getTargetedVersionArtifact() ;
 
-   public IWorldEditorProvider copyProvider() throws OseeArgumentException, OseeCoreException;
+   public IWorldEditorProvider copyProvider() ;
 
    public void setCustomizeData(CustomizeData customizeData);
 

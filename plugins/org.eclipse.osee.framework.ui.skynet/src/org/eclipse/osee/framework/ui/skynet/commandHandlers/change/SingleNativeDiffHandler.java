@@ -36,7 +36,7 @@ public class SingleNativeDiffHandler extends CommandHandler {
    private ArrayList<Change> changes;
 
    @Override
-   public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
+   public boolean isEnabledWithException(IStructuredSelection structuredSelection)  {
       changes = new ArrayList<>(Handlers.getArtifactChangesFromStructuredSelection(structuredSelection));
       if (changes.size() == 1) {
          Artifact sampleArtifact = changes.iterator().next().getChangeArtifact();
@@ -46,7 +46,7 @@ public class SingleNativeDiffHandler extends CommandHandler {
    }
 
    @Override
-   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
+   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection)  {
       Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
       String pathPrefix = RenderingUtil.getAssociatedArtifactName(changes);
       Map<RendererOption, Object> rendererOptions = new HashMap<>();

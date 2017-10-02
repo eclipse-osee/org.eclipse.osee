@@ -102,13 +102,13 @@ public class ArtifactTypeIndex extends TokenTypeIndex<IArtifactType, XArtifactTy
       return result;
    }
 
-   public Collection<AttributeTypeToken> getAttributeTypes(IArtifactType artType, BranchId branch) throws OseeCoreException {
+   public Collection<AttributeTypeToken> getAttributeTypes(IArtifactType artType, BranchId branch)  {
       Set<AttributeTypeToken> attributeTypes = Sets.newLinkedHashSet();
       getAttributeTypes(attributeTypes, artType, branch);
       return attributeTypes;
    }
 
-   private void getAttributeTypes(Set<AttributeTypeToken> attributeTypes, IArtifactType artifactType, BranchId branch) throws OseeCoreException {
+   private void getAttributeTypes(Set<AttributeTypeToken> attributeTypes, IArtifactType artifactType, BranchId branch)  {
       ArtifactTypeMetaData metaData = tokenToTypeData.get(artifactType);
       if (metaData != null) {
          Map<BranchId, Collection<AttributeTypeToken>> validityMap = metaData.getAttributeTypes();

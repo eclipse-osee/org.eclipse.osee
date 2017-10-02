@@ -29,7 +29,7 @@ public interface EnumType extends Id, FullyNamed {
 
    Set<String> valuesAsOrderedStringSet();
 
-   EnumEntry valueOf(int ordinal) throws OseeCoreException;
+   EnumEntry valueOf(int ordinal) ;
 
-   EnumEntry valueOf(String entryName) throws OseeCoreException;
+   EnumEntry valueOf(String entryName) ;
 }

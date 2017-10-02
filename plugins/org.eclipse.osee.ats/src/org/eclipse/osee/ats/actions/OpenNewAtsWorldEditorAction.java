@@ -33,13 +33,13 @@ public class OpenNewAtsWorldEditorAction extends AbstractAtsAction {
    }
 
    public interface IOpenNewAtsWorldEditorHandler {
-      IWorldEditorProvider getWorldEditorProviderCopy() throws OseeCoreException;
+      IWorldEditorProvider getWorldEditorProviderCopy() ;
 
-      CustomizeData getCustomizeDataCopy() throws OseeCoreException;
+      CustomizeData getCustomizeDataCopy() ;
    }
 
    @Override
-   public void runWithException() throws OseeCoreException {
+   public void runWithException()  {
       IWorldEditorProvider provider = openNewAtsWorldEditorHandler.getWorldEditorProviderCopy();
       provider.setCustomizeData(openNewAtsWorldEditorHandler.getCustomizeDataCopy());
       provider.setTableLoadOptions(TableLoadOption.NoUI);

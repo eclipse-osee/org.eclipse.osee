@@ -44,12 +44,12 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
       this.displayable = toDisplay;
    }
 
-   private String getInternalFileName() throws OseeCoreException {
+   private String getInternalFileName()  {
       return BinaryContentUtils.generateFileName(getAttribute());
    }
 
    @Override
-   public boolean setValue(ByteBuffer data) throws OseeCoreException {
+   public boolean setValue(ByteBuffer data)  {
       boolean response = false;
       try {
          if (!Arrays.equals(dataStore.getContent(), data != null ? data.array() : null)) {
@@ -71,7 +71,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
    }
 
    @Override
-   public ByteBuffer getValueAsBytes() throws OseeCoreException {
+   public ByteBuffer getValueAsBytes()  {
       ByteBuffer decompressed = null;
       byte[] rawData = dataStore.getContent();
       if (rawData != null) {
@@ -86,7 +86,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
    }
 
    @Override
-   public String getValueAsString() throws OseeCoreException {
+   public String getValueAsString()  {
       String toReturn = null;
       ByteBuffer data = getValueAsBytes();
       if (data != null) {
@@ -102,7 +102,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
    }
 
    @Override
-   public boolean setValue(Object value) throws OseeCoreException {
+   public boolean setValue(Object value)  {
       ByteBuffer toSet = null;
       if (value != null && value instanceof String) {
          try {
@@ -128,12 +128,12 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
    }
 
    @Override
-   public void persist(int storageId) throws OseeCoreException {
+   public void persist(int storageId)  {
       dataStore.persist(storageId);
    }
 
    @Override
-   public void purge() throws OseeCoreException {
+   public void purge()  {
       dataStore.purge();
    }
 

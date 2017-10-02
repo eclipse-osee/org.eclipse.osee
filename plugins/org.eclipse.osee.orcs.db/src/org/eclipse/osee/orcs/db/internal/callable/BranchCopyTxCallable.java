@@ -86,7 +86,7 @@ public final class BranchCopyTxCallable extends JdbcTransaction {
       updater.updateTxNotCurrentsFromTx(nextTransactionId);
    }
 
-   private void populateTransaction(double workAmount, JdbcConnection connection, TransactionId intoTx, BranchId parentBranch, TransactionId copyTxId) throws OseeCoreException {
+   private void populateTransaction(double workAmount, JdbcConnection connection, TransactionId intoTx, BranchId parentBranch, TransactionId copyTxId)  {
       List<Object[]> data = new ArrayList<>();
       HashSet<Long> gammas = new HashSet<>(100000);
 
@@ -97,7 +97,7 @@ public final class BranchCopyTxCallable extends JdbcTransaction {
       }
    }
 
-   private void populateAddressingToCopy(JdbcConnection connection, List<Object[]> data, TransactionId baseTxId, HashSet<Long> gammas, String query, Object... parameters) throws OseeCoreException {
+   private void populateAddressingToCopy(JdbcConnection connection, List<Object[]> data, TransactionId baseTxId, HashSet<Long> gammas, String query, Object... parameters)  {
       JdbcStatement chStmt = jdbcClient.getStatement(connection);
       try {
          chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, parameters);

@@ -34,7 +34,7 @@ public class Resources {
       return path;
    }
 
-   public static IResource compressResource(IResource resource) throws OseeCoreException {
+   public static IResource compressResource(IResource resource)  {
       InputStream inputStream = null;
       byte[] buffer = new byte[0];
       try {
@@ -48,7 +48,7 @@ public class Resources {
       return createResourceFromBytes(buffer, resource.getLocation() + ".zip", true);
    }
 
-   public static IResource decompressResource(IResource resource) throws OseeCoreException {
+   public static IResource decompressResource(IResource resource)  {
       String path = resource.getLocation().toASCIIString();
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       String fileName = null;
@@ -72,7 +72,7 @@ public class Resources {
       return createResourceFromBytes(outputStream.toByteArray(), path, false);
    }
 
-   public static IResource createResourceFromBytes(byte[] bytes, String path, boolean isCompressed) throws OseeCoreException {
+   public static IResource createResourceFromBytes(byte[] bytes, String path, boolean isCompressed)  {
       try {
          return new CompressedResourceBridge(bytes, new URI(path), isCompressed);
       } catch (URISyntaxException ex) {

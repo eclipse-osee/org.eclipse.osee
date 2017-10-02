@@ -29,11 +29,11 @@ public final class OsgiUtil {
       // Utility class
    }
 
-   public static <T> T getService(Class<T> clazz) throws OseeCoreException {
+   public static <T> T getService(Class<T> clazz)  {
       return org.eclipse.osee.framework.core.util.OsgiUtil.getService(OsgiUtil.class, clazz);
    }
 
-   public static <T> T getService(Class<T> clazz, String filter, long waitTimeMillis) throws OseeCoreException {
+   public static <T> T getService(Class<T> clazz, String filter, long waitTimeMillis)  {
       Bundle bundle = FrameworkUtil.getBundle(OsgiUtil.class);
       checkStarted(bundle);
 

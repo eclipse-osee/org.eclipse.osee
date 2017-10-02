@@ -32,7 +32,7 @@ class AtsWorkDefConfigEditorContextMenuProvider extends ContextMenuProvider {
     * 
     * @param viewer the editor's graphical viewer
     * @param registry the editor's action registry
-    * @throws OseeArgumentException if registry is <tt>null</tt>.
+    *  if registry is <tt>null</tt>.
     */
    public AtsWorkDefConfigEditorContextMenuProvider(EditPartViewer viewer, ActionRegistry registry) {
       super(viewer);

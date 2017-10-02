@@ -74,22 +74,22 @@ public class ResourceManagerTest {
    @Test
    public void testExists() {
 
-      //      public boolean exists(IResourceLocator locator) throws OseeCoreException;
+      //      public boolean exists(IResourceLocator locator) ;
    }
 
    @Test
    public void testAcquire() {
-      //   public IResource acquire(IResourceLocator locator, Options options) throws OseeCoreException;
+      //   public IResource acquire(IResourceLocator locator, Options options) ;
    }
 
    @Test
    public void testSave() {
-      //   public IResourceLocator save(final IResourceLocator locatorHint, final IResource resource, final Options options) throws OseeCoreException;
+      //   public IResourceLocator save(final IResourceLocator locatorHint, final IResource resource, final Options options) ;
    }
 
    @Test
    public void testDelete() {
-      //   public int delete(IResourceLocator locator) throws OseeCoreException;
+      //   public int delete(IResourceLocator locator) ;
    }
 
    @Test
@@ -145,7 +145,7 @@ public class ResourceManagerTest {
    }
 
    @Test
-   public void testGenerateLocator() throws OseeCoreException {
+   public void testGenerateLocator()  {
       // Test Protocol not found
       try {
          manager.generateResourceLocator("dummyProcotol", "", "");
@@ -163,7 +163,7 @@ public class ResourceManagerTest {
    }
 
    @Test
-   public void testGetLocator() throws OseeCoreException {
+   public void testGetLocator()  {
       // Test Protocol not found
       try {
          manager.getResourceLocator("dummyProcotol://hello");

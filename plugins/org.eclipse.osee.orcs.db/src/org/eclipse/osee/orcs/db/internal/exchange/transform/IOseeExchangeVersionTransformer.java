@@ -21,9 +21,9 @@ import org.osgi.framework.Version;
  */
 public interface IOseeExchangeVersionTransformer {
 
-   public abstract Version applyTransform(ExchangeDataProcessor processor, Log logger) throws OseeCoreException;
+   public abstract Version applyTransform(ExchangeDataProcessor processor, Log logger) ;
 
    public abstract Version getMaxVersion();
 
-   public abstract void finalizeTransform(Log logger, OrcsSession session, JdbcClient jdbcClient, ExchangeDataProcessor processor) throws OseeCoreException;
+   public abstract void finalizeTransform(Log logger, OrcsSession session, JdbcClient jdbcClient, ExchangeDataProcessor processor) ;
 }

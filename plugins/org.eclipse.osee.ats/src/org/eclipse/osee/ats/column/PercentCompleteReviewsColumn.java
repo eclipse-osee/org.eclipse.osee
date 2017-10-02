@@ -73,7 +73,7 @@ public class PercentCompleteReviewsColumn extends XViewerAtsColumn implements IX
    /**
     * Return Percent Complete ONLY on reviews. Total Percent / # Reviews
     */
-   public static int getPercentCompleteReview(Artifact artifact) throws OseeCoreException {
+   public static int getPercentCompleteReview(Artifact artifact)  {
       if (artifact.isOfType(AtsArtifactTypes.Action)) {
          double percent = 0;
          for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(artifact)) {

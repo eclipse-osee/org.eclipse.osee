@@ -16,8 +16,8 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  * @author Jeff C. Phillips
  */
 public interface IHandlePromptChange {
-   boolean promptOk() throws OseeCoreException;
+   boolean promptOk() ;
 
-   boolean store() throws OseeCoreException;
+   boolean store() ;
 
 }

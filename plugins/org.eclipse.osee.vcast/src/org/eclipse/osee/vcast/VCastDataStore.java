@@ -38,53 +38,53 @@ import org.eclipse.osee.vcast.model.VCastWritable;
  */
 public interface VCastDataStore {
 
-   Collection<VCastBranchCoverage> getAllBranchCoverages() throws OseeCoreException;
+   Collection<VCastBranchCoverage> getAllBranchCoverages() ;
 
-   Collection<VCastBranchData> getAllBranchData() throws OseeCoreException;
+   Collection<VCastBranchData> getAllBranchData() ;
 
-   Collection<VCastFunction> getAllFunctions() throws OseeCoreException;
+   Collection<VCastFunction> getAllFunctions() ;
 
-   Collection<VCastInstrumentedFile> getAllInstrumentedFiles() throws OseeCoreException;
+   Collection<VCastInstrumentedFile> getAllInstrumentedFiles() ;
 
-   Collection<VCastMcdcCoverage> getAllMcdcCoverages() throws OseeCoreException;
+   Collection<VCastMcdcCoverage> getAllMcdcCoverages() ;
 
-   Collection<VCastMcdcCoverageCondition> getAllMcdcCoverageConditions() throws OseeCoreException;
+   Collection<VCastMcdcCoverageCondition> getAllMcdcCoverageConditions() ;
 
-   Collection<VCastMcdcCoveragePairRow> getAllMcdcCoveragePairRows() throws OseeCoreException;
+   Collection<VCastMcdcCoveragePairRow> getAllMcdcCoveragePairRows() ;
 
-   Collection<VCastMcdcCoveragePair> getAllMcdcCoveragePairs() throws OseeCoreException;
+   Collection<VCastMcdcCoveragePair> getAllMcdcCoveragePairs() ;
 
-   Collection<VCastMcdcData> getAllMcdcData() throws OseeCoreException;
+   Collection<VCastMcdcData> getAllMcdcData() ;
 
-   Collection<VCastMcdcDataCondition> getAllMcdcDataConditions() throws OseeCoreException;
+   Collection<VCastMcdcDataCondition> getAllMcdcDataConditions() ;
 
-   Collection<VCastProjectFile> getAllProjectFiles() throws OseeCoreException;
+   Collection<VCastProjectFile> getAllProjectFiles() ;
 
-   Collection<VCastProject> getAllProjects() throws OseeCoreException;
+   Collection<VCastProject> getAllProjects() ;
 
-   Collection<VCastResult> getAllResults() throws OseeCoreException;
+   Collection<VCastResult> getAllResults() ;
 
-   Collection<VCastSetting> getAllSettings() throws OseeCoreException;
+   Collection<VCastSetting> getAllSettings() ;
 
-   Collection<VCastSourceFile> getAllSourceFiles() throws OseeCoreException;
+   Collection<VCastSourceFile> getAllSourceFiles() ;
 
-   Collection<VCastStatementCoverage> getAllStatementCoverages() throws OseeCoreException;
+   Collection<VCastStatementCoverage> getAllStatementCoverages() ;
 
-   Collection<VCastStatementData> getAllStatementData() throws OseeCoreException;
+   Collection<VCastStatementData> getAllStatementData() ;
 
-   VCastVersion getVersion() throws OseeCoreException;
+   VCastVersion getVersion() ;
 
-   VCastWritable getWritable() throws OseeCoreException;
+   VCastWritable getWritable() ;
 
-   VCastSourceFileJoin getSourceFileJoin(VCastInstrumentedFile instrumentedFile) throws OseeCoreException;
+   VCastSourceFileJoin getSourceFileJoin(VCastInstrumentedFile instrumentedFile) ;
 
-   Collection<VCastFunction> getFunctions(VCastInstrumentedFile instrumentedFile) throws OseeCoreException;
+   Collection<VCastFunction> getFunctions(VCastInstrumentedFile instrumentedFile) ;
 
-   Collection<VCastStatementCoverage> getStatementCoverageLines(VCastFunction function) throws OseeCoreException;
+   Collection<VCastStatementCoverage> getStatementCoverageLines(VCastFunction function) ;
 
-   Collection<VCastStatementData> getStatementData(VCastStatementCoverage statementCoverage) throws OseeCoreException;
+   Collection<VCastStatementData> getStatementData(VCastStatementCoverage statementCoverage) ;
 
-   Collection<VCastResult> getResults(VCastStatementData statementDataItem) throws OseeCoreException;
+   Collection<VCastResult> getResults(VCastStatementData statementDataItem) ;
 
    void setIsMCDC();
 

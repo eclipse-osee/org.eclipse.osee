@@ -59,7 +59,7 @@ public class AccessControlActionTest extends AbstractAtsActionTest {
    }
 
    @Override
-   public Action createAction() throws OseeCoreException {
+   public Action createAction()  {
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
       return new AccessControlAction(AtsTestUtil.getTeamWf());
    }

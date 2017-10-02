@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IWorkPackageUtility extends IAtsColumn {
 
-   IAtsWorkPackage getWorkPackage(IAtsObject atsObject) throws OseeCoreException;
+   IAtsWorkPackage getWorkPackage(IAtsObject atsObject) ;
 
    ArtifactId getWorkPackageId(Object object);
 

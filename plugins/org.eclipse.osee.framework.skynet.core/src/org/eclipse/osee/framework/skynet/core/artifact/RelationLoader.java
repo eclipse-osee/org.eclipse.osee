@@ -33,7 +33,7 @@ import org.eclipse.osee.jdbc.JdbcStatement;
  */
 class RelationLoader {
 
-   public static void loadRelationData(int joinQueryId, Collection<Artifact> artifacts, boolean historical, LoadLevel loadLevel) throws OseeCoreException {
+   public static void loadRelationData(int joinQueryId, Collection<Artifact> artifacts, boolean historical, LoadLevel loadLevel)  {
       if (loadLevel == ARTIFACT_DATA || loadLevel == ARTIFACT_AND_ATTRIBUTE_DATA) {
          return;
       }

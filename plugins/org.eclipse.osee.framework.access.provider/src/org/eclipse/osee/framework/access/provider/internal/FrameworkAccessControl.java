@@ -52,7 +52,7 @@ public class FrameworkAccessControl implements CmAccessControl {
       return roleContextProvider.getContextId(user);
    }
 
-   private boolean isAssocitedArtifactValid(Object object) throws OseeCoreException {
+   private boolean isAssocitedArtifactValid(Object object)  {
       BranchId branch = null;
       if (object instanceof Artifact) {
          branch = ((Artifact) object).getBranch();

@@ -25,7 +25,7 @@ public class ArtifactsWithoutRelations extends AbstractArtifactRelationReport {
    }
 
    @Override
-   public void process(IProgressMonitor monitor) throws OseeCoreException {
+   public void process(IProgressMonitor monitor)  {
       notifyOnTableHeader("Item Name", "Type");
       RelationTypeSide[] relations = getRelationsToCheck();
       for (Artifact artifact : getArtifactsToCheck()) {

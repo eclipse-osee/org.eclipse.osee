@@ -19,6 +19,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IAtsStateItemCore {
 
-   public Result workingBranchCreated(AbstractWorkflowArtifact awa) throws OseeCoreException;
+   public Result workingBranchCreated(AbstractWorkflowArtifact awa) ;
 
 }

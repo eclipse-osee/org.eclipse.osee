@@ -18,6 +18,6 @@ public interface IOseeTypesHandler {
 
    boolean isApplicable(String resource);
 
-   void execute(IProgressMonitor monitor, URI uri) throws OseeCoreException;
+   void execute(IProgressMonitor monitor, URI uri) ;
 
 }

@@ -35,7 +35,7 @@ public class XListDropViewWithSave extends XListDropViewer implements IAttribute
       singleItemMode = true;
    }
 
-   public List<Artifact> getStored() throws OseeCoreException {
+   public List<Artifact> getStored()  {
       return artifact.getAttributeValues(attributeType);
    }
 
@@ -45,7 +45,7 @@ public class XListDropViewWithSave extends XListDropViewer implements IAttribute
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeTypeName) throws OseeCoreException {
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeTypeName)  {
       this.artifact = artifact;
       this.attributeType = attributeTypeName;
       List<Artifact> storedArtifacts = getStored();
@@ -56,7 +56,7 @@ public class XListDropViewWithSave extends XListDropViewer implements IAttribute
    }
 
    @Override
-   public void saveToArtifact() throws OseeCoreException {
+   public void saveToArtifact()  {
       List<Artifact> artifacts = getArtifacts();
       Collection<Artifact> saveItems = null;
       if (!artifacts.isEmpty()) {
@@ -68,7 +68,7 @@ public class XListDropViewWithSave extends XListDropViewer implements IAttribute
    }
 
    @Override
-   public void revert() throws OseeCoreException {
+   public void revert()  {
       setAttributeType(getArtifact(), getAttributeType());
    }
 

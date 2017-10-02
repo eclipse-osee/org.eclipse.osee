@@ -17,5 +17,5 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IGroupExplorerProvider {
 
-   public String getGroupExplorerName() throws OseeCoreException;
+   public String getGroupExplorerName() ;
 }

@@ -87,7 +87,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
    }
 
    @Override
-   public void accept(TransactionReadable tx, OrcsChangeSet changeSet) throws OseeCoreException {
+   public void accept(TransactionReadable tx, OrcsChangeSet changeSet)  {
       txId = tx;
       binaryStores = new ArrayList<>();
       dataItemInserts = new HashCollection<>();
@@ -99,7 +99,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
    }
 
    @Override
-   public void visit(ArtifactData data) throws OseeCoreException {
+   public void visit(ArtifactData data)  {
       boolean isOtherChange =
          !data.getVersion().isInStorage() || data.hasTypeUuidChange() || data.hasModTypeChange() || data.isExistingVersionUsed();
       boolean isApplicOnly = data.getDirtyState().isApplicOnly();
@@ -119,7 +119,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
    }
 
    @Override
-   public void visit(AttributeData data) throws OseeCoreException {
+   public void visit(AttributeData data)  {
       if (!isNewAndDeleted(data)) {
          boolean createNewGamma = !reuseGamma(data);
          updateTxValues(data);
@@ -162,7 +162,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
    }
 
    @Override
-   public void updateAfterBinaryStorePersist() throws OseeCoreException {
+   public void updateAfterBinaryStorePersist()  {
       List<Object[]> insertData = getInsertData(SqlOrderEnum.ATTRIBUTES);
       for (int index = 0; index < binaryStores.size() && index < insertData.size(); index++) {
          DataProxy<?> proxy = binaryStores.get(index);
@@ -174,7 +174,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
    }
 
    @Override
-   public void visit(RelationData data) throws OseeCoreException {
+   public void visit(RelationData data)  {
       if (!isNewAndDeleted(data)) {
          boolean reuseGamma = reuseGamma(data);
          updateTxValues(data);
@@ -217,7 +217,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
       orcsData.getVersion().setTransactionId(txId);
    }
 
-   private void updateGamma(OrcsData data) throws OseeCoreException {
+   private void updateGamma(OrcsData data)  {
       VersionData version = data.getVersion();
       long newGamma = idManager.getNextGammaId();
       version.setGammaId(newGamma);

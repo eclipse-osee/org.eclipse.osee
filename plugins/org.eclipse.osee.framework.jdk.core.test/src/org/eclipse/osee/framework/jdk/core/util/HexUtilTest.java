@@ -37,13 +37,13 @@ public class HexUtilTest {
    }
 
    @Test
-   public void testToLong() throws OseeCoreException {
+   public void testToLong()  {
       long actualLong = HexUtil.toLong(expectedString);
       Assert.assertEquals(expectedLong, actualLong);
    }
 
    @Test
-   public void testToString() throws OseeCoreException {
+   public void testToString()  {
       String actualString = HexUtil.toString(expectedLong);
       Assert.assertEquals(expectedString, actualString);
    }

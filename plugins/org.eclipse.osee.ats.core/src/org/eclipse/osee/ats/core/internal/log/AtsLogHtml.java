@@ -39,7 +39,7 @@ public class AtsLogHtml {
       this.atsLog = atsLog;
    }
 
-   public String get() throws OseeCoreException {
+   public String get()  {
       if (atsLog.getLogItems().isEmpty()) {
          return "";
       }
@@ -51,7 +51,7 @@ public class AtsLogHtml {
       return sb.toString();
    }
 
-   public String getTable() throws OseeCoreException {
+   public String getTable()  {
       StringBuilder builder = new StringBuilder();
       List<IAtsLogItem> logItems = atsLog.getLogItems();
       builder.append(AHTML.beginMultiColumnTable(100, 1));

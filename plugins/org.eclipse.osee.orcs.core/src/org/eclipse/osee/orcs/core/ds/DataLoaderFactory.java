@@ -22,16 +22,16 @@ import org.eclipse.osee.orcs.OrcsSession;
  */
 public interface DataLoaderFactory {
 
-   int getCount(HasCancellation cancellation, QueryContext queryContext) throws OseeCoreException;
+   int getCount(HasCancellation cancellation, QueryContext queryContext) ;
 
-   DataLoader newDataLoader(QueryContext queryContext) throws OseeCoreException;
+   DataLoader newDataLoader(QueryContext queryContext) ;
 
    DataLoader newDataLoader(OrcsSession session, BranchId branch, Collection<ArtifactId> artifactIds);
 
-   DataLoader newDataLoaderFromIds(OrcsSession session, BranchId branch, Collection<Integer> artifactIds) throws OseeCoreException;
+   DataLoader newDataLoaderFromIds(OrcsSession session, BranchId branch, Collection<Integer> artifactIds) ;
 
-   DataLoader newDataLoaderFromGuids(OrcsSession session, BranchId branch, String... artifactGuids) throws OseeCoreException;
+   DataLoader newDataLoaderFromGuids(OrcsSession session, BranchId branch, String... artifactGuids) ;
 
-   DataLoader newDataLoaderFromGuids(OrcsSession session, BranchId branch, Collection<String> artifactGuids) throws OseeCoreException;
+   DataLoader newDataLoaderFromGuids(OrcsSession session, BranchId branch, Collection<String> artifactGuids) ;
 
 }

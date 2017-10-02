@@ -23,7 +23,7 @@ public final class AccessControlHelper {
    }
 
    @Deprecated
-   public static AccessControlService getAccessControlService() throws OseeCoreException {
+   public static AccessControlService getAccessControlService()  {
       IAccessControlService service = OsgiUtil.getService(AccessControlHelper.class, IAccessControlService.class);
       AccessControlService toReturn = null;
       if (service instanceof AccessControlServiceProxy) {

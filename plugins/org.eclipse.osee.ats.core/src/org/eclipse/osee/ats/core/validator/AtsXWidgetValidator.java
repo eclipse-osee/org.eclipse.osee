@@ -41,11 +41,11 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
       return widgetDef.getOptions().contains(WidgetOption.REQUIRED_FOR_COMPLETION);
    }
 
-   public boolean isEmptyValue(IValueProvider provider) throws OseeCoreException {
+   public boolean isEmptyValue(IValueProvider provider)  {
       return provider.isEmpty();
    }
 
-   public WidgetResult validateWidgetIsRequired(IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef) throws OseeCoreException {
+   public WidgetResult validateWidgetIsRequired(IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef)  {
       if (isRequiredForTransition(widgetDef) && isEmptyValue(provider)) {
          return new WidgetResult(WidgetStatus.Invalid_Incompleted, widgetDef, "[%s] is required for transition",
             widgetDef.getName());
@@ -57,9 +57,9 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
    }
 
    @Override
-   public abstract WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider valueProvider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, IAtsServices services) throws OseeCoreException;
+   public abstract WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider valueProvider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, IAtsServices services) ;
 
-   public WidgetResult isValidDate(IValueProvider valueProvider, IAtsWidgetDefinition widgetDef) throws OseeCoreException {
+   public WidgetResult isValidDate(IValueProvider valueProvider, IAtsWidgetDefinition widgetDef)  {
       for (Date date : valueProvider.getDateValues()) {
          if (widgetDef.is(WidgetOption.FUTURE_DATE_REQUIRED)) {
             if (date.before(new Date())) {
@@ -102,7 +102,7 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
       return WidgetResult.Valid;
    }
 
-   public WidgetResult isValidList(IValueProvider valueProvider, IAtsWidgetDefinition widgetDef) throws OseeCoreException {
+   public WidgetResult isValidList(IValueProvider valueProvider, IAtsWidgetDefinition widgetDef)  {
       return checkValid(widgetDef, valueProvider.getValues().size(), valueProvider.getName());
    }
 

@@ -75,5 +75,5 @@ public abstract class ChangeAcquirer {
       return newAndDeletedArtifactIds;
    }
 
-   public abstract ArrayList<ChangeBuilder> acquireChanges() throws OseeCoreException;
+   public abstract ArrayList<ChangeBuilder> acquireChanges() ;
 }

@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class AttributeTypeFactory implements IOseeTypeFactory {
 
-   public AttributeType create(long guid, String name, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, int minOccurrences, int maxOccurrences, String tipText, String taggerId, String mediaType) throws OseeCoreException {
+   public AttributeType create(long guid, String name, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, int minOccurrences, int maxOccurrences, String tipText, String taggerId, String mediaType)  {
       Conditions.checkNotNullOrEmpty(name, "attribute type name");
       //      checkNameUnique(cache, name);
       Conditions.checkNotNullOrEmpty(baseAttributeTypeId, "attribute base type id");
@@ -39,7 +39,7 @@ public class AttributeTypeFactory implements IOseeTypeFactory {
 
    }
 
-   public AttributeType createOrUpdate(AttributeTypeCache cache, long guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId, String mediaType) throws OseeCoreException {
+   public AttributeType createOrUpdate(AttributeTypeCache cache, long guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId, String mediaType)  {
       Conditions.checkNotNull(cache, "AttributeTypeCache");
       AttributeType attributeType = cache.getByGuid(guid);
 

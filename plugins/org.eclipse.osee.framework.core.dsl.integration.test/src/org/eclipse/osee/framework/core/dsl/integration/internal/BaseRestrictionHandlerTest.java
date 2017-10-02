@@ -55,13 +55,13 @@ public abstract class BaseRestrictionHandlerTest<T extends ObjectRestriction> {
    }
 
    @Test
-   public void testProcessNullObjectRestriction() throws OseeCoreException {
+   public void testProcessNullObjectRestriction()  {
       Scope expectedScope = new Scope().add("fail");
       DslAsserts.assertNullAccessDetail(restrictionHandler, null, null, expectedScope);
    }
 
    @Test
-   public void testProcessInvalidObjectRestriction() throws OseeCoreException {
+   public void testProcessInvalidObjectRestriction()  {
       Scope expectedScope = new Scope().add("fail");
       DslAsserts.assertNullAccessDetail(restrictionHandler, invalidRestriction, null, expectedScope);
    }

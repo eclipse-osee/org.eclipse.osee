@@ -174,7 +174,7 @@ public class AccessControlService implements IAccessControlService {
       return jdbcClient;
    }
 
-   public void reloadCache() throws OseeCoreException {
+   public void reloadCache() {
       ensurePopulated.set(false);
    }
 
@@ -200,12 +200,12 @@ public class AccessControlService implements IAccessControlService {
       subjectToPermissionCache.clear();
    }
 
-   private void populateAccessControlLists() throws OseeCoreException {
+   private void populateAccessControlLists() {
       populateArtifactAccessControlList();
       populateBranchAccessControlList();
    }
 
-   private void populateBranchAccessControlList() throws OseeCoreException {
+   private void populateBranchAccessControlList() {
       ensurePopulated();
       Consumer<JdbcStatement> consumer = stmt -> {
          ArtifactId subjectId = ArtifactId.valueOf(stmt.getLong("privilege_entity_id"));
@@ -225,7 +225,7 @@ public class AccessControlService implements IAccessControlService {
       getJdbcClient().runQuery(consumer, GET_ALL_BRANCH_ACCESS_CONTROL_LIST);
    }
 
-   private void populateArtifactAccessControlList() throws OseeCoreException {
+   private void populateArtifactAccessControlList() {
       ensurePopulated();
 
       Consumer<JdbcStatement> consumer = stmt -> {
@@ -253,7 +253,7 @@ public class AccessControlService implements IAccessControlService {
       getJdbcClient().runQuery(consumer, GET_ALL_ARTIFACT_ACCESS_CONTROL_LIST);
    }
 
-   private void populateGroupMembers(ArtifactId groupId) throws OseeCoreException {
+   private void populateGroupMembers(ArtifactId groupId) {
       ensurePopulated();
       if (!groupToSubjectsCache.containsKey(groupId.getId())) {
          getJdbcClient().runQuery(stmt -> {
@@ -278,7 +278,7 @@ public class AccessControlService implements IAccessControlService {
       return isValid;
    }
 
-   public boolean hasPermission(Collection<?> objectList, PermissionEnum permission) throws OseeCoreException {
+   public boolean hasPermission(Collection<?> objectList, PermissionEnum permission) {
       boolean isValid = true;
 
       if (objectList.isEmpty()) {
@@ -292,7 +292,7 @@ public class AccessControlService implements IAccessControlService {
    }
 
    @Override
-   public boolean hasPermission(Object object, PermissionEnum permission) throws OseeCoreException {
+   public boolean hasPermission(Object object, PermissionEnum permission) {
       boolean result = true;
       Collection<?> objectsToCheck = null;
       if (object instanceof Collection<?>) {
@@ -308,7 +308,7 @@ public class AccessControlService implements IAccessControlService {
       return result;
    }
 
-   private void addLockAccessControl(ArtifactToken userArtifact, Collection<?> objectsToCheck, AccessData accessData) throws OseeCoreException {
+   private void addLockAccessControl(ArtifactToken userArtifact, Collection<?> objectsToCheck, AccessData accessData) {
       for (Object obj : objectsToCheck) {
          Artifact subject = getSubjectFromLockedObject(obj);
          if (subject != null && subject.notEqual(userArtifact)) {
@@ -319,7 +319,7 @@ public class AccessControlService implements IAccessControlService {
    }
 
    @Override
-   public AccessDataQuery getAccessData(ArtifactToken userArtifact, final Collection<?> objectsToCheck) throws OseeCoreException {
+   public AccessDataQuery getAccessData(ArtifactToken userArtifact, final Collection<?> objectsToCheck) {
       ensurePopulated();
       List<String> key = new LinkedList<>();
       for (Object o : objectsToCheck) {
@@ -364,7 +364,7 @@ public class AccessControlService implements IAccessControlService {
       return new AccessDataQuery(accessData);
    }
 
-   private ILifecycleService getLifecycleService() throws OseeCoreException {
+   private ILifecycleService getLifecycleService() {
       Bundle bundle = FrameworkUtil.getBundle(getClass());
       Conditions.checkNotNull(bundle, "bundle");
       BundleContext bundleContext = bundle.getBundleContext();
@@ -375,7 +375,7 @@ public class AccessControlService implements IAccessControlService {
       return service;
    }
 
-   public PermissionEnum getBranchPermission(ArtifactToken subject, BranchId branch) throws OseeCoreException {
+   public PermissionEnum getBranchPermission(ArtifactToken subject, BranchId branch) {
       PermissionEnum userPermission = null;
       AccessObject accessObject = BranchAccessObject.getBranchAccessObjectFromCache(branch);
 
@@ -390,7 +390,7 @@ public class AccessControlService implements IAccessControlService {
       return userPermission;
    }
 
-   public PermissionEnum getArtifactPermission(ArtifactToken subject, Artifact artifact) throws OseeCoreException {
+   public PermissionEnum getArtifactPermission(ArtifactToken subject, Artifact artifact) {
       ensurePopulated();
       PermissionEnum userPermission = PermissionEnum.FULLACCESS;
       AccessObject accessObject = null;
@@ -456,7 +456,7 @@ public class AccessControlService implements IAccessControlService {
       persistPermission(data, false);
    }
 
-   public void setPermission(Artifact subject, Object object, PermissionEnum permission) throws OseeCoreException {
+   public void setPermission(Artifact subject, Object object, PermissionEnum permission) {
       ensurePopulated();
       AccessObject accessObject = getAccessObject(object);
 
@@ -565,7 +565,7 @@ public class AccessControlService implements IAccessControlService {
       }
    }
 
-   private void cacheAccessControlData(AccessControlData data) throws OseeCoreException {
+   private void cacheAccessControlData(AccessControlData data) {
       ensurePopulated();
       AccessObject accessObject = data.getObject();
       PermissionEnum permission = data.getPermission();
@@ -598,7 +598,7 @@ public class AccessControlService implements IAccessControlService {
       return datas;
    }
 
-   public List<AccessControlData> generateAccessControlList(AccessObject accessObject) throws OseeCoreException {
+   public List<AccessControlData> generateAccessControlList(AccessObject accessObject) {
       ensurePopulated();
       List<AccessControlData> datas = new LinkedList<>();
 
@@ -624,11 +624,11 @@ public class AccessControlService implements IAccessControlService {
       return datas;
    }
 
-   private PermissionEnum getBranchPermission(ArtifactToken subject, Object object) throws OseeCoreException {
+   private PermissionEnum getBranchPermission(ArtifactToken subject, Object object) {
       return getBranchPermission(subject, ((AccessObject) object).getBranch());
    }
 
-   public void removeAccessControlDataIf(boolean removeFromDb, AccessControlData data) throws OseeCoreException {
+   public void removeAccessControlDataIf(boolean removeFromDb, AccessControlData data) {
 
       int subjectId = data.getSubject().getArtId();
       AccessObject accessControlledObject = data.getObject();
@@ -675,7 +675,7 @@ public class AccessControlService implements IAccessControlService {
       }
    }
 
-   public AccessObject getAccessObject(Object object) throws OseeCoreException {
+   public AccessObject getAccessObject(Object object) {
       return AccessObject.getAccessObject(object);
    }
 
@@ -684,7 +684,7 @@ public class AccessControlService implements IAccessControlService {
       objectToSubjectCache.put(accessObject, subjectId);
    }
 
-   public void lockObjects(Collection<Artifact> objects, Artifact subject) throws OseeCoreException {
+   public void lockObjects(Collection<Artifact> objects, Artifact subject) {
       Conditions.checkNotNull(subject, "subject");
       Conditions.checkNotNullOrEmpty(objects, "objects");
       ensurePopulated();
@@ -712,7 +712,7 @@ public class AccessControlService implements IAccessControlService {
       }
    }
 
-   public void unLockObjects(Collection<Artifact> objects, Artifact subject) throws OseeCoreException, OseeAuthenticationRequiredException {
+   public void unLockObjects(Collection<Artifact> objects, Artifact subject) throws OseeAuthenticationRequiredException {
       ensurePopulated();
       AccessArtifactLockTopicEvent event = new AccessArtifactLockTopicEvent();
       event.setBranch(objects.iterator().next().getBranch());
@@ -738,7 +738,7 @@ public class AccessControlService implements IAccessControlService {
    }
 
    @Override
-   public void removePermissions(BranchId branch) throws OseeCoreException {
+   public void removePermissions(BranchId branch) {
       getJdbcClient().runPreparedUpdate(DELETE_ARTIFACT_ACL_FROM_BRANCH, branch);
       getJdbcClient().runPreparedUpdate(DELETE_BRANCH_ACL_FROM_BRANCH, branch);
 
@@ -751,7 +751,7 @@ public class AccessControlService implements IAccessControlService {
       }
    }
 
-   public boolean hasLock(Artifact object) throws OseeCoreException {
+   public boolean hasLock(Artifact object) {
       ensurePopulated();
       if (!object.isInDb()) {
          return false;
@@ -760,13 +760,13 @@ public class AccessControlService implements IAccessControlService {
       return artifactLockCache.containsKey(object.getBranch(), object.getId());
    }
 
-   public boolean canUnlockObject(Artifact object, Artifact subject) throws OseeCoreException {
+   public boolean canUnlockObject(Artifact object, Artifact subject) {
       ensurePopulated();
       ArtifactId subjectId = artifactLockCache.get(object.getBranch(), object.getId());
       return subject.equals(subjectId);
    }
 
-   public Artifact getSubjectFromLockedObject(Object object) throws OseeCoreException {
+   public Artifact getSubjectFromLockedObject(Object object) {
       ensurePopulated();
       Artifact subject = null;
 
@@ -781,7 +781,7 @@ public class AccessControlService implements IAccessControlService {
       return subject;
    }
 
-   public boolean hasLockAccess(Artifact object) throws OseeCoreException {
+   public boolean hasLockAccess(Artifact object) {
       ensurePopulated();
       boolean hasAccess = false;
 
@@ -797,7 +797,7 @@ public class AccessControlService implements IAccessControlService {
 
    private static Boolean isOseeAdmin = null;
 
-   public boolean isOseeAdmin() throws OseeCoreException {
+   public boolean isOseeAdmin() {
       if (isOseeAdmin == null) {
          isOseeAdmin = SystemGroup.OseeAdmin.isCurrentUserMember();
       }

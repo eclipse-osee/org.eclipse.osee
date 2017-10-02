@@ -101,7 +101,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    }
 
    @Override
-   public String getParameterXWidgetXml() throws OseeCoreException {
+   public String getParameterXWidgetXml()  {
       String xml = xmlSb.toString() + "</xWidgets>";
       return xml;
    }
@@ -250,7 +250,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    }
 
    @Override
-   public void widgetCreating(XWidget widget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
+   public void widgetCreating(XWidget widget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable)  {
       if (widget.getLabel().equals(VersionSearchWidget.VERSION)) {
          widget.setLabelProvider(new VersionLabelProvider());
       } else if (widget.getLabel().equals(StateNameSearchWidget.STATE_NAME)) {

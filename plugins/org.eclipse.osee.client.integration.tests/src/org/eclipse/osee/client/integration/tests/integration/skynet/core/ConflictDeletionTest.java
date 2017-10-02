@@ -83,7 +83,7 @@ public class ConflictDeletionTest {
     * {@link org.eclipse.osee.framework.skynet.core.artifact.BranchManager#getMergeBranch(BranchId, BranchId)} .
     */
    @Test
-   public void deleteAndCheckTXCurrents() throws OseeCoreException {
+   public void deleteAndCheckTXCurrents()  {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       Collection<Artifact> artifacts = ConflictTestManager.getArtifacts(true, ConflictTestManager.DELETION_TEST_QUERY);
@@ -307,7 +307,7 @@ public class ConflictDeletionTest {
       }
    }
 
-   private void checkAttribute(Artifact artifact, Attribute<?> attribute, TxChange value) throws OseeCoreException {
+   private void checkAttribute(Artifact artifact, Attribute<?> attribute, TxChange value)  {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(CHECK_FOR_ZERO_TX_CURRENT_ATTRIBUTE, artifact.getBranch(), artifact.getTransaction(),
@@ -336,7 +336,7 @@ public class ConflictDeletionTest {
       }
    }
 
-   public void checkRelation(Artifact artifact, RelationLink relation, TxChange value) throws OseeCoreException {
+   public void checkRelation(Artifact artifact, RelationLink relation, TxChange value)  {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       assertTrue(
          "Relation should be deleted between Parent: " + relation.getArtifactIdA() + " and child " + relation.getArtifactIdB(),
@@ -371,7 +371,7 @@ public class ConflictDeletionTest {
       }
    }
 
-   public static void dumpArtifact(Artifact artifact) throws OseeCoreException {
+   public static void dumpArtifact(Artifact artifact)  {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          if (DEBUG) {
@@ -389,7 +389,7 @@ public class ConflictDeletionTest {
       }
    }
 
-   public static void dumpAttribute(Attribute<?> attribute) throws OseeDataStoreException, OseeCoreException {
+   public static void dumpAttribute(Attribute<?> attribute) throws OseeDataStoreException {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          if (DEBUG) {
@@ -408,7 +408,7 @@ public class ConflictDeletionTest {
       }
    }
 
-   public static void dumpRelation(RelationLink relation, Artifact artifact) throws OseeCoreException {
+   public static void dumpRelation(RelationLink relation, Artifact artifact)  {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          if (DEBUG) {

@@ -51,7 +51,7 @@ public class DatabaseConflictAccessor {
       return jdbcClient;
    }
 
-   public void load(Collection<Conflict> conflicts, MergeBranch mergeBranch) throws OseeCoreException {
+   public void load(Collection<Conflict> conflicts, MergeBranch mergeBranch)  {
       Consumer<JdbcStatement> consumer = stmt -> {
          Id uniqueId = ArtifactId.valueOf(stmt.getLong("conflict_id"));
          GammaId sourceGammaId = GammaId.valueOf(stmt.getLong("source_gamma_id"));
@@ -64,7 +64,7 @@ public class DatabaseConflictAccessor {
       getJdbcClient().runQuery(consumer, SELECT_CONFLICTS, mergeBranch);
    }
 
-   public void store(Collection<Conflict> conflicts) throws OseeCoreException {
+   public void store(Collection<Conflict> conflicts)  {
       List<Object[]> insertData = new ArrayList<>();
       List<Object[]> updateData = new ArrayList<>();
       List<Object[]> deleteData = new ArrayList<>();

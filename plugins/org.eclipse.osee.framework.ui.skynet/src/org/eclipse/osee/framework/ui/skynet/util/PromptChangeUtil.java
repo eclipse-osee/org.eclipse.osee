@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class PromptChangeUtil {
 
-   public static boolean promptChangeBranchType(final Collection<TreeItem> branches) throws OseeCoreException {
+   public static boolean promptChangeBranchType(final Collection<TreeItem> branches)  {
       ChangeBranchTypeDialog ld = new ChangeBranchTypeDialog(Displays.getActiveShell());
       int result = ld.open();
       if (result == 0) {
@@ -42,7 +42,7 @@ public class PromptChangeUtil {
       return false;
    }
 
-   public static boolean promptChangeBranchState(final Collection<TreeItem> branches) throws OseeCoreException {
+   public static boolean promptChangeBranchState(final Collection<TreeItem> branches)  {
       ChangeBranchStateDialog ld = new ChangeBranchStateDialog(Displays.getActiveShell());
       int result = ld.open();
       if (result == 0) {
@@ -55,7 +55,7 @@ public class PromptChangeUtil {
       return false;
    }
 
-   public static boolean promptChangeBranchArchivedState(final Collection<TreeItem> branches) throws OseeCoreException {
+   public static boolean promptChangeBranchArchivedState(final Collection<TreeItem> branches)  {
       ChangeBranchArchivedStateDialog ld = new ChangeBranchArchivedStateDialog(Displays.getActiveShell());
       int result = ld.open();
       if (result == 0) {

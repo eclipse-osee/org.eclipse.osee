@@ -56,17 +56,17 @@ public class ArtifactAccessObject extends AccessObject implements ArtifactId {
    }
 
    @Override
-   public void removeFromDatabase(int subjectId) throws OseeCoreException {
+   public void removeFromDatabase(int subjectId)  {
       final String DELETE_ARTIFACT_ACL =
          "DELETE FROM OSEE_ARTIFACT_ACL WHERE privilege_entity_id = ? AND art_id =? AND branch_id =?";
       ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_ACL, subjectId, artId, branch);
    }
 
-   public static ArtifactAccessObject getArtifactAccessObject(Artifact artifact) throws OseeCoreException {
+   public static ArtifactAccessObject getArtifactAccessObject(Artifact artifact)  {
       return getArtifactAccessObject(artifact, artifact.getBranch());
    }
 
-   public static ArtifactAccessObject getArtifactAccessObject(ArtifactId artifact, BranchId branch) throws OseeCoreException {
+   public static ArtifactAccessObject getArtifactAccessObject(ArtifactId artifact, BranchId branch)  {
       ArtifactAccessObject accessObject = cache.get(artifact.getId(), branch);
 
       if (accessObject == null) {
@@ -76,7 +76,7 @@ public class ArtifactAccessObject extends AccessObject implements ArtifactId {
       return accessObject;
    }
 
-   public static AccessObject getArtifactAccessObjectFromCache(Artifact artifact) throws OseeCoreException {
+   public static AccessObject getArtifactAccessObjectFromCache(Artifact artifact)  {
       return cache.get(artifact.getId(), artifact.getBranch());
    }
 

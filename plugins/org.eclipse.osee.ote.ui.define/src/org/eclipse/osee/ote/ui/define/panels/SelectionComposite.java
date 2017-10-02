@@ -74,7 +74,7 @@ public class SelectionComposite extends Composite {
    private IOverrideHandler overrideHandler;
    private boolean areOverridesAllowed;
 
-   public SelectionComposite(Composite parent, int style, String[] columnNames, ITableLabelProvider tableLabelProvider, Object[] resources, boolean isSelectAllByDefault, IOverrideHandler overrideHandler) throws OseeCoreException {
+   public SelectionComposite(Composite parent, int style, String[] columnNames, ITableLabelProvider tableLabelProvider, Object[] resources, boolean isSelectAllByDefault, IOverrideHandler overrideHandler)  {
       this(parent, style, columnNames, tableLabelProvider, resources, isSelectAllByDefault, null, null, overrideHandler);
    }
 

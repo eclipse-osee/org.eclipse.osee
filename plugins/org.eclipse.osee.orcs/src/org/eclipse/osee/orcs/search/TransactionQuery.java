@@ -22,20 +22,20 @@ import org.eclipse.osee.orcs.data.TransactionReadable;
  */
 public interface TransactionQuery extends TxQueryBuilder<TransactionQuery>, Query {
 
-   ResultSet<TransactionReadable> getResults() throws OseeCoreException;
+   ResultSet<TransactionReadable> getResults() ;
 
-   ResultSet<TransactionToken> getTokens() throws OseeCoreException;
+   ResultSet<TransactionToken> getTokens() ;
 
-   ResultSet<Long> getResultsAsIds() throws OseeCoreException;
-
-   @Override
-   int getCount() throws OseeCoreException;
+   ResultSet<Long> getResultsAsIds() ;
 
    @Override
-   CancellableCallable<Integer> createCount() throws OseeCoreException;
+   int getCount() ;
 
-   CancellableCallable<ResultSet<TransactionReadable>> createSearch() throws OseeCoreException;
+   @Override
+   CancellableCallable<Integer> createCount() ;
 
-   CancellableCallable<ResultSet<Long>> createSearchResultsAsIds() throws OseeCoreException;
+   CancellableCallable<ResultSet<TransactionReadable>> createSearch() ;
+
+   CancellableCallable<ResultSet<Long>> createSearchResultsAsIds() ;
 
 }

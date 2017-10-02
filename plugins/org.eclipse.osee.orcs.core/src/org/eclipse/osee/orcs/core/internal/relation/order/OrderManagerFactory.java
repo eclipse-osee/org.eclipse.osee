@@ -27,7 +27,7 @@ public class OrderManagerFactory {
       this.sorterProvider = sorterProvider;
    }
 
-   public OrderManager createOrderManager(OrderStore store) throws OseeCoreException {
+   public OrderManager createOrderManager(OrderStore store)  {
       OrderAccessor accessor = new OrderAccessorImpl(parser, store);
       OrderManager manager = new OrderManager(sorterProvider, accessor);
       manager.load();

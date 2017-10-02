@@ -22,7 +22,7 @@ public class ResourceLocator implements IResourceLocator {
 
    private final URI uri;
 
-   public ResourceLocator(URI uri) throws OseeCoreException {
+   public ResourceLocator(URI uri)  {
       if (uri == null) {
          throw new OseeArgumentException("URI was null.");
       }

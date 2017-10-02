@@ -50,7 +50,7 @@ public class FindErroneousEmbeddedLinksBlam extends AbstractBlam {
    private static final String ARTIFACT_TYPES = "Artifact Types";
 
    @Override
-   public String getXWidgetsXml() throws OseeCoreException {
+   public String getXWidgetsXml()  {
       StringBuilder builder = new StringBuilder();
       builder.append(
          String.format("<xWidgets><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"%s\"/>", BRANCH));

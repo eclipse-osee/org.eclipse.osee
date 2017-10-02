@@ -16,5 +16,5 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  * @author Roberto E. Escobar
  */
 public interface AccessDetailCollector {
-   void collect(AccessDetail<?> accessDetail) throws OseeCoreException;
+   void collect(AccessDetail<?> accessDetail) ;
 }

@@ -37,7 +37,7 @@ public class CmAccessProvider implements IAccessProvider {
    }
 
    @Override
-   public void computeAccess(ArtifactToken userArtifact, Collection<?> objToChecks, AccessData accessData) throws OseeCoreException {
+   public void computeAccess(ArtifactToken userArtifact, Collection<?> objToChecks, AccessData accessData)  {
       DoubleKeyHashMap<CmAccessControl, IAccessContextId, Collection<Object>> cmToCheckObjects =
          new DoubleKeyHashMap<CmAccessControl, IAccessContextId, Collection<Object>>();
 

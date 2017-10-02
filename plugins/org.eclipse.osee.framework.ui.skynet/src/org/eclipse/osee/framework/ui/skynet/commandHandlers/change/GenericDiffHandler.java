@@ -39,7 +39,7 @@ public class GenericDiffHandler extends CommandHandler {
    }
 
    @Override
-   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
+   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection)  {
       List<Change> localChanges = Handlers.getArtifactChangesFromStructuredSelection(selection);
       if (!localChanges.isEmpty()) {
          Collection<Change> changes = new ArrayList<>(localChanges.size());

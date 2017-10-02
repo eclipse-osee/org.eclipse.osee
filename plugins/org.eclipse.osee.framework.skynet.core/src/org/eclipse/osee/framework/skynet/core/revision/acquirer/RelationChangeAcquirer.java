@@ -40,7 +40,7 @@ public class RelationChangeAcquirer extends ChangeAcquirer {
    }
 
    @Override
-   public ArrayList<ChangeBuilder> acquireChanges() throws OseeCoreException {
+   public ArrayList<ChangeBuilder> acquireChanges()  {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       TransactionToken fromTransactionId;
       TransactionToken toTransactionId;

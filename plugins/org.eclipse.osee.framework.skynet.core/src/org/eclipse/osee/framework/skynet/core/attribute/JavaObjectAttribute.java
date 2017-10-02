@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 public final class JavaObjectAttribute extends BinaryAttribute<Object> {
    @Override
-   public Object getValue() throws OseeCoreException {
+   public Object getValue()  {
       return getObjectFromBytes(getAttributeDataProvider().getValueAsBytes());
    }
 

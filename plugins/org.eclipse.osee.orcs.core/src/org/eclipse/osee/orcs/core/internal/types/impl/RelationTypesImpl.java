@@ -31,7 +31,7 @@ import org.eclipse.osee.orcs.data.RelationTypes;
 public class RelationTypesImpl implements RelationTypes {
 
    public static interface RelationTypeIndexProvider {
-      RelationTypeIndex getRelationTypeIndex() throws OseeCoreException;
+      RelationTypeIndex getRelationTypeIndex() ;
    }
 
    private final RelationTypeIndexProvider provider;
@@ -40,13 +40,13 @@ public class RelationTypesImpl implements RelationTypes {
       this.provider = provider;
    }
 
-   private XRelationType getType(RelationTypeId type) throws OseeCoreException {
+   private XRelationType getType(RelationTypeId type)  {
       Conditions.checkNotNull(type, "relationType");
       return provider.getRelationTypeIndex().getDslTypeByToken(type);
    }
 
    @Override
-   public Collection<RelationTypeToken> getAll() throws OseeCoreException {
+   public Collection<RelationTypeToken> getAll()  {
       return provider.getRelationTypeIndex().getAllTokens();
    }
 
@@ -64,7 +64,7 @@ public class RelationTypesImpl implements RelationTypes {
    }
 
    @Override
-   public RelationTypeMultiplicity getMultiplicity(RelationTypeId relation) throws OseeCoreException {
+   public RelationTypeMultiplicity getMultiplicity(RelationTypeId relation)  {
       XRelationType type = getType(relation);
       String multiplicityId = type.getMultiplicity().getName();
       RelationTypeMultiplicity multiplicity = RelationTypeMultiplicity.getFromString(multiplicityId);
@@ -72,25 +72,25 @@ public class RelationTypesImpl implements RelationTypes {
    }
 
    @Override
-   public String getSideName(IRelationType relation, RelationSide relationSide) throws OseeCoreException {
+   public String getSideName(IRelationType relation, RelationSide relationSide)  {
       Conditions.checkNotNull(relationSide, "relationSide");
       return relationSide == RelationSide.SIDE_A ? getSideAName(relation) : getSideBName(relation);
    }
 
    @Override
-   public String getSideAName(IRelationType relation) throws OseeCoreException {
+   public String getSideAName(IRelationType relation)  {
       XRelationType type = getType(relation);
       return type.getSideAName();
    }
 
    @Override
-   public String getSideBName(IRelationType relation) throws OseeCoreException {
+   public String getSideBName(IRelationType relation)  {
       XRelationType type = getType(relation);
       return type.getSideBName();
    }
 
    @Override
-   public boolean isSideAName(IRelationType relation, String sideName) throws OseeCoreException {
+   public boolean isSideAName(IRelationType relation, String sideName)  {
       XRelationType type = getType(relation);
       boolean isSideA = type.getSideAName().equals(sideName);
       if (!isSideA && !type.getSideBName().equals(sideName)) {
@@ -105,30 +105,30 @@ public class RelationTypesImpl implements RelationTypes {
    }
 
    @Override
-   public RelationSorter getDefaultOrderTypeGuid(IRelationType relation) throws OseeCoreException {
+   public RelationSorter getDefaultOrderTypeGuid(IRelationType relation)  {
       XRelationType type = getType(relation);
       return RelationSorter.valueOfName(type.getDefaultOrderType());
    }
 
    @Override
-   public IArtifactType getArtifactTypeSideA(IRelationType relation) throws OseeCoreException {
+   public IArtifactType getArtifactTypeSideA(IRelationType relation)  {
       return getArtifactType(relation, RelationSide.SIDE_A);
    }
 
    @Override
-   public IArtifactType getArtifactTypeSideB(IRelationType relation) throws OseeCoreException {
+   public IArtifactType getArtifactTypeSideB(IRelationType relation)  {
       return getArtifactType(relation, RelationSide.SIDE_B);
    }
 
    @Override
-   public IArtifactType getArtifactType(RelationTypeId relation, RelationSide relationSide) throws OseeCoreException {
+   public IArtifactType getArtifactType(RelationTypeId relation, RelationSide relationSide)  {
       Conditions.checkNotNull(relation, "relationType");
       Conditions.checkNotNull(relationSide, "relationSide");
       return provider.getRelationTypeIndex().getArtifactType(relation, relationSide);
    }
 
    @Override
-   public boolean isArtifactTypeAllowed(RelationTypeId relation, RelationSide relationSide, IArtifactType artifactType) throws OseeCoreException {
+   public boolean isArtifactTypeAllowed(RelationTypeId relation, RelationSide relationSide, IArtifactType artifactType)  {
       Conditions.checkNotNull(relation, "relationType");
       Conditions.checkNotNull(relationSide, "relationSide");
       Conditions.checkNotNull(artifactType, "artifactType");
@@ -136,17 +136,17 @@ public class RelationTypesImpl implements RelationTypes {
    }
 
    @Override
-   public boolean isEmpty() throws OseeCoreException {
+   public boolean isEmpty()  {
       return provider.getRelationTypeIndex().isEmpty();
    }
 
    @Override
-   public int size() throws OseeCoreException {
+   public int size()  {
       return provider.getRelationTypeIndex().size();
    }
 
    @Override
-   public boolean exists(Id id) throws OseeCoreException {
+   public boolean exists(Id id)  {
       return provider.getRelationTypeIndex().exists(id);
    }
 }

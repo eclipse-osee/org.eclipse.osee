@@ -51,19 +51,19 @@ public class RelationNodeAdjacencies extends AbstractTypeCollection<RelationType
    }
 
    @Override
-   protected RelationTypeId getType(Relation data) throws OseeCoreException {
+   protected RelationTypeId getType(Relation data)  {
       return data.getRelationType();
    }
 
    //////////////////////////////////////////////////////////////
    @SuppressWarnings({"unchecked", "rawtypes"})
-   public List<Relation> getList(IRelationType type, DeletionFlag includeDeleted) throws OseeCoreException {
+   public List<Relation> getList(IRelationType type, DeletionFlag includeDeleted)  {
       Predicate deletionFlagEquals = deletionFlagEquals(includeDeleted);
       return getListByFilter(type, deletionFlagEquals);
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
-   public List<Relation> getList(RelationTypeId relationType, DeletionFlag includeDeleted, HasLocalId<Integer> localId, RelationSide side) throws OseeCoreException {
+   public List<Relation> getList(RelationTypeId relationType, DeletionFlag includeDeleted, HasLocalId<Integer> localId, RelationSide side)  {
       Predicate deletionFlagEquals = deletionFlagEquals(includeDeleted);
       Predicate relIdOnSide = nodeIdOnSideEquals(localId, side);
       Predicate matcher = and(deletionFlagEquals, relIdOnSide);
@@ -71,13 +71,13 @@ public class RelationNodeAdjacencies extends AbstractTypeCollection<RelationType
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
-   public ResultSet<Relation> getResultSet(IRelationType type, DeletionFlag includeDeleted) throws OseeCoreException {
+   public ResultSet<Relation> getResultSet(IRelationType type, DeletionFlag includeDeleted)  {
       Predicate deletionFlagEquals = deletionFlagEquals(includeDeleted);
       return getSetByFilter(type, deletionFlagEquals);
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
-   public ResultSet<Relation> getResultSet(IRelationType type, DeletionFlag includeDeleted, HasLocalId<Integer> localId, RelationSide side) throws OseeCoreException {
+   public ResultSet<Relation> getResultSet(IRelationType type, DeletionFlag includeDeleted, HasLocalId<Integer> localId, RelationSide side)  {
       Predicate deletionFlagEquals = deletionFlagEquals(includeDeleted);
       Predicate relIdOnSide = nodeIdOnSideEquals(localId, side);
       Predicate matcher = and(deletionFlagEquals, relIdOnSide);
@@ -85,7 +85,7 @@ public class RelationNodeAdjacencies extends AbstractTypeCollection<RelationType
    }
 
    @SuppressWarnings({"rawtypes", "unchecked"})
-   public Relation getRelation(RelationNode aNode, RelationTypeId type, RelationNode bNode, DeletionFlag excludeDeleted) throws OseeCoreException {
+   public Relation getRelation(RelationNode aNode, RelationTypeId type, RelationNode bNode, DeletionFlag excludeDeleted)  {
       Predicate<Relation> nodeMatcher = OrcsPredicates.nodeIdsEquals(aNode, bNode);
       Predicate deletionFlagEquals = deletionFlagEquals(excludeDeleted);
       Predicate matcher = and(deletionFlagEquals, nodeMatcher);
@@ -93,13 +93,13 @@ public class RelationNodeAdjacencies extends AbstractTypeCollection<RelationType
       return listByFilter.isEmpty() ? null : listByFilter.get(0);
    }
 
-   public Relation getRelation(int artIdA, RelationTypeId relationType, int artIdB) throws OseeCoreException {
+   public Relation getRelation(int artIdA, RelationTypeId relationType, int artIdB)  {
       Predicate<Relation> nodeMatcher = OrcsPredicates.nodeIdsEquals(artIdA, artIdB);
       List<Relation> listByFilter = getListByFilter(relationType, nodeMatcher);
       return listByFilter.isEmpty() ? null : listByFilter.get(0);
    }
 
-   public void accept(RelationVisitor visitor) throws OseeCoreException {
+   public void accept(RelationVisitor visitor)  {
       for (Relation relation : getAll()) {
          visitor.visit(relation);
       }

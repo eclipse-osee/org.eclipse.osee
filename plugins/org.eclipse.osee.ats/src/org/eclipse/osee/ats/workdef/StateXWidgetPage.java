@@ -105,12 +105,12 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable)  {
       widgetCreated(xWidget, toolkit, art, stateDefinition, xModListener, isEditable);
    }
 
    @Override
-   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
+   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable)  {
       widgetCreating(xWidget, toolkit, art, stateDefinition, xModListener, isEditable);
    }
 
@@ -132,12 +132,12 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
       return false;
    }
 
-   public SwtXWidgetRenderer createBody(IManagedForm managedForm, Composite parent, Artifact artifact, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
+   public SwtXWidgetRenderer createBody(IManagedForm managedForm, Composite parent, Artifact artifact, XModifiedListener xModListener, boolean isEditable)  {
       dynamicXWidgetLayout.createBody(managedForm, parent, artifact, xModListener, isEditable);
       return dynamicXWidgetLayout;
    }
 
-   public String getHtml(String backgroundColor, String preHtml, String postHtml) throws OseeCoreException {
+   public String getHtml(String backgroundColor, String preHtml, String postHtml)  {
       StringBuffer sb = new StringBuffer();
       sb.append(AHTML.startBorderTable(100, backgroundColor, getName()));
       if (preHtml != null) {
@@ -185,7 +185,7 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
       return dynamicXWidgetLayout.getLayoutData(layoutName);
    }
 
-   protected void processXmlLayoutDatas(String xWidgetXml) throws OseeCoreException {
+   protected void processXmlLayoutDatas(String xWidgetXml)  {
       dynamicXWidgetLayout.processlayoutDatas(xWidgetXml);
    }
 
@@ -236,7 +236,7 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
       return isCurrentState(sma) && !getStateType().isCompletedOrCancelledState();
    }
 
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, IAtsStateDefinition stateDef, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, IAtsStateDefinition stateDef, XModifiedListener xModListener, boolean isEditable)  {
       // Check extension points for page creation
       if (sma != null) {
          for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
@@ -270,7 +270,7 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
 
    }
 
-   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, IAtsStateDefinition stateDefinition, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
+   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, IAtsStateDefinition stateDefinition, XModifiedListener xModListener, boolean isEditable)  {
       // Check extension points for page creation
       if (sma != null) {
          for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {

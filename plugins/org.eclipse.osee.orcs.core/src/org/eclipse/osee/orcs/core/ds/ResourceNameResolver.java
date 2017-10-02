@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface ResourceNameResolver {
 
-   String getStorageName() throws OseeCoreException;
+   String getStorageName() ;
 
-   String getInternalFileName() throws OseeCoreException;
+   String getInternalFileName() ;
 }

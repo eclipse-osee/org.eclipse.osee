@@ -122,7 +122,7 @@ public class OrcsQueryTest {
    }
 
    @Test
-   public void testQueryByIds() throws OseeCoreException {
+   public void testQueryByIds()  {
       QueryBuilder builder = factory.fromBranch(COMMON).andId(CoreArtifactTokens.UserGroups);
       assertEquals(1, builder.getCount());
 
@@ -131,7 +131,7 @@ public class OrcsQueryTest {
    }
 
    @Test
-   public void testQueryArtifactType() throws OseeCoreException {
+   public void testQueryArtifactType()  {
       QueryBuilder builder = factory.fromBranch(COMMON).andIsOfType(CoreArtifactTypes.Folder);
 
       assertTrue(builder.getCount() >= 6);
@@ -156,7 +156,7 @@ public class OrcsQueryTest {
    }
 
    @Test
-   public void testQueryArtifactTypeInheritance() throws OseeCoreException {
+   public void testQueryArtifactTypeInheritance()  {
       QueryBuilder builder = factory.fromBranch(SAW_Bld_1).andTypeEquals(CoreArtifactTypes.AbstractSoftwareRequirement);
 
       assertEquals(0, builder.getCount());
@@ -175,7 +175,7 @@ public class OrcsQueryTest {
    }
 
    @Test
-   public void testQueryArtifactTypesMatch() throws OseeCoreException {
+   public void testQueryArtifactTypesMatch()  {
       QueryBuilder builder = factory.fromBranch(COMMON);
       builder.andTypeEquals(CoreArtifactTypes.OseeTypeDefinition, CoreArtifactTypes.Folder);
 
@@ -202,7 +202,7 @@ public class OrcsQueryTest {
    }
 
    @Test
-   public void testQueryAttributeValue() throws OseeCoreException {
+   public void testQueryAttributeValue()  {
       QueryBuilder builder = factory.fromBranch(COMMON);
       builder.and(CoreAttributeTypes.Name, "User Groups");
 
@@ -230,7 +230,7 @@ public class OrcsQueryTest {
    }
 
    @Test
-   public void testQueryMultipleArtifactType() throws OseeCoreException {
+   public void testQueryMultipleArtifactType()  {
       QueryBuilder builder = factory.fromBranch(COMMON);
       builder.andIsOfType(CoreArtifactTypes.AccessControlModel, CoreArtifactTypes.GlobalPreferences);
 
@@ -246,7 +246,7 @@ public class OrcsQueryTest {
    }
 
    @Test
-   public void testQueryMultipleAttributeExistsType() throws OseeCoreException {
+   public void testQueryMultipleAttributeExistsType()  {
       QueryBuilder builder = factory.fromBranch(COMMON);
       builder.andExists(Arrays.asList(AccessContextId, Dictionary));
 
@@ -256,7 +256,7 @@ public class OrcsQueryTest {
    }
 
    @Test
-   public void testQueryMultipleAttributeNotExistsType() throws OseeCoreException {
+   public void testQueryMultipleAttributeNotExistsType()  {
       QueryBuilder builder = factory.fromBranch(COMMON);
       builder.andNotExists(Arrays.asList(ContentUrl, Name));
 
@@ -277,7 +277,7 @@ public class OrcsQueryTest {
    }
 
    @Test
-   public void testQueryArtifactTypeAndNameValue() throws OseeCoreException {
+   public void testQueryArtifactTypeAndNameValue()  {
       QueryBuilder builder = factory.fromBranch(SAW_Bld_1);
       builder.and(CoreAttributeTypes.Name, "Requirements", QueryOption.TOKEN_COUNT__IGNORE);
 
@@ -326,7 +326,7 @@ public class OrcsQueryTest {
    }
 
    @Test
-   public void testQueryRequirementsAsLocalIds() throws OseeCoreException {
+   public void testQueryRequirementsAsLocalIds()  {
       QueryBuilder builder = factory.fromBranch(SAW_Bld_1);
       builder.and(CoreAttributeTypes.Name, "REQUIREMENTS", QueryOption.CASE__IGNORE,
          QueryOption.TOKEN_MATCH_ORDER__MATCH, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.TOKEN_COUNT__IGNORE);
@@ -337,7 +337,7 @@ public class OrcsQueryTest {
    }
 
    @Test
-   public void testQueryAttributeKeyword() throws OseeCoreException {
+   public void testQueryAttributeKeyword()  {
       QueryBuilder builder = factory.fromBranch(SAW_Bld_1);
       builder.and(CoreAttributeTypes.Name, "REQUIREMENTS", QueryOption.CONTAINS_MATCH_OPTIONS);
 
@@ -375,7 +375,7 @@ public class OrcsQueryTest {
    }
 
    @Test
-   public void testRelatedToTest() throws OseeCoreException {
+   public void testRelatedToTest()  {
       QueryBuilder builder1 = factory.fromBranch(SAW_Bld_1);
       builder1.and(CoreAttributeTypes.Name, "Frame Synchronization");
       assertEquals("Frame Synchronization", builder1.getResults().getExactlyOne().getName());
@@ -557,7 +557,7 @@ public class OrcsQueryTest {
       return branch;
    }
 
-   private static void checkContainsTypes(Iterable<ArtifactReadable> arts, IArtifactType... types) throws OseeCoreException {
+   private static void checkContainsTypes(Iterable<ArtifactReadable> arts, IArtifactType... types)  {
       List<IArtifactType> expected = Arrays.asList(types);
       for (ArtifactReadable art : arts) {
          assertTrue(String.format("artifact type [%s] not found", art.getArtifactType()),
@@ -565,7 +565,7 @@ public class OrcsQueryTest {
       }
    }
 
-   private static void checkMatchSingleAttribute(Match<ArtifactReadable, AttributeReadable<?>> match, String artName, AttributeTypeId types, String matched) throws OseeCoreException {
+   private static void checkMatchSingleAttribute(Match<ArtifactReadable, AttributeReadable<?>> match, String artName, AttributeTypeId types, String matched)  {
       assertEquals(artName, match.getItem().getName());
 
       AttributeReadable<?> attribute = match.getElements().iterator().next();
@@ -578,7 +578,7 @@ public class OrcsQueryTest {
       assertEquals(matched, value.substring(location.getStartPosition() - 1, location.getEndPosition()));
    }
 
-   private static void checkMatch(Match<ArtifactReadable, AttributeReadable<?>> match, String artName, AttributeTypeId... types) throws OseeCoreException {
+   private static void checkMatch(Match<ArtifactReadable, AttributeReadable<?>> match, String artName, AttributeTypeId... types)  {
       assertEquals(artName, match.getItem().getName());
       if (types.length > 0) {
          assertEquals(types.length, match.getElements().size());

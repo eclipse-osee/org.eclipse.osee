@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
@@ -41,7 +40,7 @@ import org.eclipse.swt.program.Program;
 
 /**
  * Test: @link: TestPlanComplianceReportTest
- * 
+ *
  * @author: Karol M. Wilk
  */
 public final class TestPlanComplianceReport extends AbstractBlam {
@@ -90,7 +89,7 @@ public final class TestPlanComplianceReport extends AbstractBlam {
       report();
    }
 
-   private void processArtifacts(Artifact node) throws OseeCoreException, IOException {
+   private void processArtifacts(Artifact node) throws IOException {
       Collection<Artifact> children = node.getChildren();
 
       if (isTestPlan(node)) {
@@ -206,7 +205,7 @@ public final class TestPlanComplianceReport extends AbstractBlam {
       return src.getArtifactType().inheritsFrom(CoreArtifactTypes.TestPlanElement);
    }
 
-   private List<String> getRequirementsCellOutput(Artifact art, RelationTypeSide rts) throws OseeCoreException {
+   private List<String> getRequirementsCellOutput(Artifact art, RelationTypeSide rts) {
       List<String> result = null;
       if (art.getArtifactType().inheritsFrom(CoreArtifactTypes.TestPlanElement)) {
          result = getRequirementsAsString(art, rts);
@@ -214,7 +213,7 @@ public final class TestPlanComplianceReport extends AbstractBlam {
       return result;
    }
 
-   private List<String> getRequirementsAsString(Artifact testPlan, RelationTypeSide rts) throws OseeCoreException {
+   private List<String> getRequirementsAsString(Artifact testPlan, RelationTypeSide rts) {
       Collection<Artifact> requirementArtifacts = testPlan.getRelatedArtifacts(rts);
       List<String> requirementNames = new ArrayList<>();
       for (Artifact req : requirementArtifacts) {
@@ -229,7 +228,7 @@ public final class TestPlanComplianceReport extends AbstractBlam {
       return art.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "") + BLANK_SPACE + art.getName();
    }
 
-   private void report() throws OseeCoreException, IOException {
+   private void report() throws IOException {
       excelWriter.endSheet();
       excelWriter.endWorkbook();
       if (performFileWrite) {
@@ -239,7 +238,7 @@ public final class TestPlanComplianceReport extends AbstractBlam {
       }
    }
 
-   private void init(VariableMap variableMap) throws OseeCoreException, IOException {
+   private void init(VariableMap variableMap) throws IOException {
       inputArtifacts = variableMap.getArtifacts(TEST_PLANS);
       String max = variableMap.getString(MAX_ENTRIES_PER_CELL);
       if (!Strings.isNumeric(max)) {
@@ -279,7 +278,7 @@ public final class TestPlanComplianceReport extends AbstractBlam {
       excelWriter.startSheet(getName(), columns);
    }
 
-   private void load() throws OseeCoreException {
+   private void load() {
       testPlans = new ArrayList<>();
       for (Artifact input : inputArtifacts) {
          testPlans.addAll(input.getDescendants());

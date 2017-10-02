@@ -17,9 +17,9 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IOseeField<T> {
 
-   void set(T value) throws OseeCoreException;
+   void set(T value) ;
 
-   T get() throws OseeCoreException;
+   T get() ;
 
    void clearDirty();
 

@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 public interface IArtifactMembersCache<T extends CollectorArtifact> {
 
-   List<Artifact> getMembers(T artifact) throws OseeCoreException;
+   List<Artifact> getMembers(T artifact) ;
 
    void decache(T artifact);
 

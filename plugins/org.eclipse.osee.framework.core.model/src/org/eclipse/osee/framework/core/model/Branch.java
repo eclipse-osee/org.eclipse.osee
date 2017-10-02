@@ -67,7 +67,7 @@ public class Branch extends NamedIdBase implements IOseeBranch, Adaptable {
       return viewBranch;
    }
 
-   public Branch getParentBranch() throws OseeCoreException {
+   public Branch getParentBranch()  {
       return parent;
    }
 
@@ -91,11 +91,11 @@ public class Branch extends NamedIdBase implements IOseeBranch, Adaptable {
       this.associatedArtifact = artifact;
    }
 
-   public TransactionRecord getBaseTransaction() throws OseeCoreException {
+   public TransactionRecord getBaseTransaction()  {
       return baselineTx;
    }
 
-   public TransactionRecord getSourceTransaction() throws OseeCoreException {
+   public TransactionRecord getSourceTransaction()  {
       return parentTx;
    }
 
@@ -111,7 +111,7 @@ public class Branch extends NamedIdBase implements IOseeBranch, Adaptable {
       this.branchType = branchType;
    }
 
-   public void setParentBranch(Branch parentBranch) throws OseeCoreException {
+   public void setParentBranch(Branch parentBranch)  {
       if (parent != null) {
          parent.childBranches.remove(this);
       }
@@ -119,11 +119,11 @@ public class Branch extends NamedIdBase implements IOseeBranch, Adaptable {
       parentBranch.childBranches.add(this);
    }
 
-   public void setBaseTransaction(TransactionRecord baselineTx) throws OseeCoreException {
+   public void setBaseTransaction(TransactionRecord baselineTx)  {
       this.baselineTx = baselineTx;
    }
 
-   public void setSourceTransaction(TransactionRecord parentTx) throws OseeCoreException {
+   public void setSourceTransaction(TransactionRecord parentTx)  {
       this.parentTx = parentTx;
    }
 
@@ -135,7 +135,7 @@ public class Branch extends NamedIdBase implements IOseeBranch, Adaptable {
       this.inheritsAccessControl = inheritsAccessControl;
    }
 
-   public Set<Branch> getChildren() throws OseeCoreException {
+   public Set<Branch> getChildren()  {
       return childBranches;
    }
 
@@ -150,9 +150,9 @@ public class Branch extends NamedIdBase implements IOseeBranch, Adaptable {
    /**
     * @return all child branches. It is equivalent to calling getChildBranches with new BranchFilter() (.i.e no child
     * branches are excluded)
-    * @throws OseeCoreException
+    * 
     */
-   public Collection<Branch> getAllChildBranches(boolean recurse) throws OseeCoreException {
+   public Collection<Branch> getAllChildBranches(boolean recurse)  {
       Set<Branch> children = new HashSet<>();
       getChildBranches(children, recurse, b -> true);
       return children;
@@ -169,7 +169,7 @@ public class Branch extends NamedIdBase implements IOseeBranch, Adaptable {
       }
    }
 
-   public Collection<BranchId> getAncestors() throws OseeCoreException {
+   public Collection<BranchId> getAncestors()  {
       List<BranchId> ancestors = new ArrayList<>();
       Branch branchCursor = this;
       ancestors.add(branchCursor);
@@ -179,7 +179,7 @@ public class Branch extends NamedIdBase implements IOseeBranch, Adaptable {
       return ancestors;
    }
 
-   public boolean isAncestorOf(BranchId branch) throws OseeCoreException {
+   public boolean isAncestorOf(BranchId branch)  {
       return getAllChildBranches(true).contains(branch);
    }
 

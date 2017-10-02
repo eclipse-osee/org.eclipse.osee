@@ -24,11 +24,11 @@ public interface OseeEventService {
 
    boolean isConnected();
 
-   <E extends FrameworkEvent> void send(Object object, E event) throws OseeCoreException;
+   <E extends FrameworkEvent> void send(Object object, E event) ;
 
-   <E extends RemoteEvent> void receive(E event) throws OseeCoreException;
+   <E extends RemoteEvent> void receive(E event) ;
 
-   <E extends FrameworkEvent> void receive(Sender sender, E event) throws OseeCoreException;
+   <E extends FrameworkEvent> void receive(Sender sender, E event) ;
 
    void addListener(EventQosType qos, IEventListener listener);
 

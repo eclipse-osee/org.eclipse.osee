@@ -18,6 +18,6 @@ import org.eclipse.osee.orcs.rest.client.QueryBuilder;
  */
 public interface ArtifactSearchCriteria {
 
-   void addToQueryBuilder(QueryBuilder builder) throws OseeCoreException;
+   void addToQueryBuilder(QueryBuilder builder) ;
 
 }

@@ -36,12 +36,12 @@ public class PresentationTypeTest {
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testEmptyMatches() throws OseeCoreException {
+   public void testEmptyMatches()  {
       target.matches();
    }
 
    @Test
-   public void testNoMatch() throws OseeCoreException {
+   public void testNoMatch()  {
       Collection<PresentationType> toMatch = new ArrayList<>();
       for (PresentationType item : PresentationType.values()) {
          if (item != target) {
@@ -60,7 +60,7 @@ public class PresentationTypeTest {
    }
 
    @Test
-   public void testMatch() throws OseeCoreException {
+   public void testMatch()  {
       Collection<PresentationType> toMatch = new ArrayList<>();
       for (PresentationType item : PresentationType.values()) {
          toMatch.add(item);

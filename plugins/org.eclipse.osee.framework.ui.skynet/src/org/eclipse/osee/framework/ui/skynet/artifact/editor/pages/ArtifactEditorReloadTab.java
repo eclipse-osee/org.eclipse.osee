@@ -107,7 +107,7 @@ public class ArtifactEditorReloadTab extends FormPage {
       bodyComp.layout();
    }
 
-   private void updateTitleBar() throws OseeCoreException {
+   private void updateTitleBar()  {
       String displayableTitle = Strings.escapeAmpersands(title);
       if (managedForm != null && Widgets.isAccessible(managedForm.getForm())) {
          managedForm.getForm().setText(displayableTitle);

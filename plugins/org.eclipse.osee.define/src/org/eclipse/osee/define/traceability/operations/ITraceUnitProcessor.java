@@ -21,9 +21,9 @@ public interface ITraceUnitProcessor {
 
    public void initialize(IProgressMonitor monitor);
 
-   public void onComplete(IProgressMonitor monitor) throws OseeCoreException;
+   public void onComplete(IProgressMonitor monitor) ;
 
    public void clear();
 
-   public void process(IProgressMonitor monitor, TraceUnit testUnit) throws OseeCoreException;
+   public void process(IProgressMonitor monitor, TraceUnit testUnit) ;
 }

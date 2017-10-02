@@ -17,6 +17,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface OrcsVisitable {
 
-   void accept(OrcsVisitor visitor) throws OseeCoreException;
+   void accept(OrcsVisitor visitor) ;
 
 }

@@ -29,7 +29,7 @@ public class EnumTypesImpl implements EnumTypes {
    }
 
    @Override
-   public Collection<EnumType> getAll() throws OseeCoreException {
+   public Collection<EnumType> getAll()  {
       return getIndex().getAllTokens();
    }
 
@@ -44,21 +44,21 @@ public class EnumTypesImpl implements EnumTypes {
    }
 
    @Override
-   public boolean exists(Id id) throws OseeCoreException {
+   public boolean exists(Id id)  {
       return getIndex().exists(id);
    }
 
    @Override
-   public boolean isEmpty() throws OseeCoreException {
+   public boolean isEmpty()  {
       return getAll().isEmpty();
    }
 
    @Override
-   public int size() throws OseeCoreException {
+   public int size()  {
       return getAll().size();
    }
 
-   private EnumTypeIndex getIndex() throws OseeCoreException {
+   private EnumTypeIndex getIndex()  {
       return indexProvider.getEnumTypeIndex();
    }
 

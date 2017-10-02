@@ -59,7 +59,7 @@ public class IdTranslator {
       return this.aliases;
    }
 
-   public Object getId(Object original) throws OseeCoreException {
+   public Object getId(Object original)  {
       Long originalLong = null;
       if (original instanceof Double) {
          originalLong = ((Double) original).longValue();
@@ -93,7 +93,7 @@ public class IdTranslator {
       return toReturn;
    }
 
-   private Long transalateId(Long original) throws OseeCoreException {
+   private Long transalateId(Long original)  {
       Long newVersion = null;
       if (original <= 0L) {
          newVersion = original;
@@ -126,7 +126,7 @@ public class IdTranslator {
       return newVersion;
    }
 
-   public void load(String sourceDatabaseId) throws OseeCoreException {
+   public void load(String sourceDatabaseId)  {
       originalToMapped.clear();
       jdbcClient.runQuery(stmt -> originalToMapped.put(stmt.getLong("original_id"), stmt.getLong("mapped_id")),
          SELECT_IDS_BY_DB_SOURCE_AND_SEQ_NAME, sourceDatabaseId, getSequenceName());
@@ -136,7 +136,7 @@ public class IdTranslator {
       return !newIds.isEmpty();
    }
 
-   public void store(JdbcConnection connection, int sequenceId) throws OseeCoreException {
+   public void store(JdbcConnection connection, int sequenceId)  {
       if (hasItemsToStore()) {
          List<Object[]> data = new ArrayList<>();
          for (Long original : newIds) {

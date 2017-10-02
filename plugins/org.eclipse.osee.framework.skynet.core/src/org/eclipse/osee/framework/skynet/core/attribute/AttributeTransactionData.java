@@ -49,7 +49,7 @@ public class AttributeTransactionData extends BaseTransactionData {
    }
 
    @Override
-   protected void addInsertToBatch(InsertDataCollector collector) throws OseeCoreException {
+   protected void addInsertToBatch(InsertDataCollector collector)  {
       super.addInsertToBatch(collector);
       if (!attribute.isUseBackingData()) {
          attribute.getAttributeDataProvider().persist(getGammaId());
@@ -60,7 +60,7 @@ public class AttributeTransactionData extends BaseTransactionData {
    }
 
    @Override
-   protected void internalUpdate(TransactionRecord transactionId) throws OseeCoreException {
+   protected void internalUpdate(TransactionRecord transactionId)  {
       attribute.internalSetGammaId(getGammaId());
       attribute.getArtifact().setTransactionId(transactionId);
    }
@@ -71,7 +71,7 @@ public class AttributeTransactionData extends BaseTransactionData {
    }
 
    @Override
-   protected void internalOnRollBack() throws OseeCoreException {
+   protected void internalOnRollBack()  {
       if (!attribute.isUseBackingData() && Strings.isValid(daoToSql.getUri())) {
          try {
             OseeClient client = ServiceUtil.getOseeClient();
@@ -92,7 +92,7 @@ public class AttributeTransactionData extends BaseTransactionData {
    }
 
    @Override
-   protected int createGammaId() throws OseeCoreException {
+   protected int createGammaId()  {
       return attribute.isUseBackingData() ? attribute.getGammaId() : getNextGammaIdFromSequence();
    }
 
@@ -140,7 +140,7 @@ public class AttributeTransactionData extends BaseTransactionData {
    }
 
    @Override
-   protected ApplicabilityId getApplicabilityId() throws OseeCoreException {
+   protected ApplicabilityId getApplicabilityId()  {
       return attribute.getApplicabilityId();
    }
 

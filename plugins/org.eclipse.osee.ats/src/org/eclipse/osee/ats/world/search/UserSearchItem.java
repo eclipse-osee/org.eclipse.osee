@@ -53,7 +53,7 @@ public abstract class UserSearchItem extends WorldUISearchItem {
    }
 
    @Override
-   public String getSelectedName(SearchType searchType) throws OseeCoreException {
+   public String getSelectedName(SearchType searchType)  {
       return String.format("%s - %s", super.getSelectedName(searchType), getUserSearchName());
    }
 
@@ -67,7 +67,7 @@ public abstract class UserSearchItem extends WorldUISearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
+   public Collection<Artifact> performSearch(SearchType searchType)  {
       if (isCancelled()) {
          return EMPTY_SET;
       }
@@ -78,11 +78,11 @@ public abstract class UserSearchItem extends WorldUISearchItem {
       }
    }
 
-   protected Collection<Artifact> searchIt(IAtsUser user) throws OseeCoreException {
+   protected Collection<Artifact> searchIt(IAtsUser user)  {
       return EMPTY_SET;
    }
 
-   private Collection<Artifact> searchIt() throws OseeCoreException {
+   private Collection<Artifact> searchIt()  {
       if (isCancelled()) {
          return EMPTY_SET;
       }
@@ -93,7 +93,7 @@ public abstract class UserSearchItem extends WorldUISearchItem {
    }
 
    @Override
-   public void performUI(SearchType searchType) throws OseeCoreException {
+   public void performUI(SearchType searchType)  {
       super.performUI(searchType);
       if (user != null) {
          return;

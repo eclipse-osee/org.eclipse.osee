@@ -72,15 +72,15 @@ public class WfeUndefinedStateSection extends SectionPart {
       });
    }
 
-   public static boolean hasUndefinedStates(AbstractWorkflowArtifact awa) throws OseeCoreException {
+   public static boolean hasUndefinedStates(AbstractWorkflowArtifact awa)  {
       return !getUndefinedStateNames(awa).isEmpty();
    }
 
-   public List<String> getUndefinedStateNames() throws OseeCoreException {
+   public List<String> getUndefinedStateNames()  {
       return getUndefinedStateNames(editor.getAwa());
    }
 
-   public static List<String> getUndefinedStateNames(AbstractWorkflowArtifact awa) throws OseeCoreException {
+   public static List<String> getUndefinedStateNames(AbstractWorkflowArtifact awa)  {
       // Display pages that are in data store, but not in Work Definition
       Collection<String> stateNamesDefined =
          AtsClientService.get().getWorkDefinitionService().getStateNames(awa.getWorkDefinition());

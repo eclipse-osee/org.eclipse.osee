@@ -24,7 +24,7 @@ import org.eclipse.osee.orcs.core.ds.BranchData;
  */
 public interface BranchObjectFactory extends OrcsDataFactory {
 
-   BranchData createBranchData(BranchId branch, BranchType branchType, String name, BranchId parentBranch, TransactionId baseTransaction, TransactionId sourceTransaction, BranchArchivedState archiveState, BranchState branchState, ArtifactId associatedArtifact, boolean inheritAccessControl) throws OseeCoreException;
+   BranchData createBranchData(BranchId branch, BranchType branchType, String name, BranchId parentBranch, TransactionId baseTransaction, TransactionId sourceTransaction, BranchArchivedState archiveState, BranchState branchState, ArtifactId associatedArtifact, boolean inheritAccessControl) ;
 
-   BranchData createCopy(BranchData source) throws OseeCoreException;
+   BranchData createCopy(BranchData source) ;
 }

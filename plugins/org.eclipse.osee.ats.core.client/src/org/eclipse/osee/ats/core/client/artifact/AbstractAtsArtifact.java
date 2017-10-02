@@ -26,7 +26,7 @@ public abstract class AbstractAtsArtifact extends Artifact implements IAtsObject
       super(id, guid, branch, artifactType);
    }
 
-   public Artifact getParentAtsArtifact() throws OseeCoreException {
+   public Artifact getParentAtsArtifact()  {
       return null;
    }
 

@@ -39,7 +39,7 @@ public class PercentCompleteTasksColumn extends AbstractServicesColumn {
    /**
     * Return Percent Complete ONLY on tasks. Total Percent / # Tasks
     */
-   public static int getPercentCompleteFromTasks(IAtsObject atsObject, IAtsServices services) throws OseeCoreException {
+   public static int getPercentCompleteFromTasks(IAtsObject atsObject, IAtsServices services)  {
       if (IAtsAction.isOfType(atsObject)) {
          IAtsAction action = (IAtsAction) atsObject;
          double percent = 0;

@@ -63,7 +63,7 @@ public class EmailGroupsData {
       return groups;
    }
 
-   public HashCollection<Artifact, Artifact> getUserToGroupMap() throws OseeCoreException {
+   public HashCollection<Artifact, Artifact> getUserToGroupMap()  {
       HashCollection<Artifact, Artifact> userToGroupMap = new HashCollection<>();
       for (Artifact group : groups) {
          for (Artifact user : group.getRelatedArtifacts(CoreRelationTypes.Users_User)) {
@@ -76,7 +76,7 @@ public class EmailGroupsData {
       return userToGroupMap;
    }
 
-   public Result isValid() throws OseeCoreException {
+   public Result isValid()  {
       String replyToAddress = getReplyToAddress();
       if (fromAddress == null || !EmailUtil.isEmailValid(fromAddress)) {
          return new Result("Must enter valid from address");
@@ -101,7 +101,7 @@ public class EmailGroupsData {
       return Result.TrueResult;
    }
 
-   public String getHtmlResult(User user) throws OseeCoreException {
+   public String getHtmlResult(User user)  {
       StringBuilder html = new StringBuilder();
       String customizedBody = getCustomizedBody(body, user);
 

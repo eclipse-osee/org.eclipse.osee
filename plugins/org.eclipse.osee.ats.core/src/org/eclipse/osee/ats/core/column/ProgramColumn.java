@@ -23,11 +23,11 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
  */
 public class ProgramColumn {
 
-   public static String getProgramStr(IAtsObject atsObject, IAtsServices services) throws OseeCoreException {
+   public static String getProgramStr(IAtsObject atsObject, IAtsServices services)  {
       return getProgramStr(atsObject, services, CountryColumn.getUtil());
    }
 
-   public static String getProgramStr(IAtsObject atsObject, IAtsServices services, WorkPackageUtility util) throws OseeCoreException {
+   public static String getProgramStr(IAtsObject atsObject, IAtsServices services, WorkPackageUtility util)  {
       String result = "";
       if (atsObject instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;

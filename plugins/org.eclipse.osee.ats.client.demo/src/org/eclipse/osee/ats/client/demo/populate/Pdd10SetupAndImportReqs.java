@@ -98,7 +98,7 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
       BranchId sawBld3Branch = createNewBaselineBranch(SAW_Bld_2, SAW_Bld_3);
    }
 
-   private static void validateArtifactCache() throws OseeStateException {
+   private static void validateArtifactCache()  {
       final Collection<Artifact> list = ArtifactCache.getDirtyArtifacts();
       if (!list.isEmpty()) {
          for (Artifact artifact : list) {
@@ -244,7 +244,7 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
       }
    }
 
-   private void relate(RelationTypeSide relationSide, Artifact artifact, Collection<Artifact> artifacts) throws OseeCoreException {
+   private void relate(RelationTypeSide relationSide, Artifact artifact, Collection<Artifact> artifacts)  {
       for (Artifact otherArtifact : artifacts) {
          artifact.addRelation(relationSide, otherArtifact);
       }

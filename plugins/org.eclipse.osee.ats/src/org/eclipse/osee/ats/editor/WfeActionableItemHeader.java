@@ -87,7 +87,7 @@ public class WfeActionableItemHeader extends Composite {
       }
    }
 
-   private void refresh() throws OseeCoreException {
+   private void refresh()  {
       if (label.isDisposed()) {
          return;
       }

@@ -38,7 +38,7 @@ public class ReloadAction extends AbstractAtsAction {
    }
 
    @Override
-   public void runWithException() throws OseeCoreException {
+   public void runWithException()  {
       Set<Artifact> relatedArts = new HashSet<>();
       relatedArts.add(sma);
       if (sma.isTeamWorkflow()) {

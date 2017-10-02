@@ -37,7 +37,7 @@ public class LinkTestRunToTestScriptOperation {
       this.linked = new ArrayList<>();
    }
 
-   public void execute(final IProgressMonitor monitor) throws OseeCoreException {
+   public void execute(final IProgressMonitor monitor)  {
       monitor.setTaskName(OPERATION_NAME);
       final AtomicInteger count = new AtomicInteger(0);
 

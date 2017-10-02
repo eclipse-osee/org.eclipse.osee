@@ -107,13 +107,13 @@ public class AtsStoreService implements IAtsStoreService {
     * Uses artifact type inheritance to retrieve all TeamWorkflow artifact types
     */
    @Override
-   public Set<IArtifactType> getTeamWorkflowArtifactTypes() throws OseeCoreException {
+   public Set<IArtifactType> getTeamWorkflowArtifactTypes()  {
       Set<IArtifactType> artifactTypes = new HashSet<>();
       getTeamWorkflowArtifactTypesRecursive(ArtifactTypeManager.getType(AtsArtifactTypes.TeamWorkflow), artifactTypes);
       return artifactTypes;
    }
 
-   private static void getTeamWorkflowArtifactTypesRecursive(ArtifactType artifactType, Set<IArtifactType> allArtifactTypes) throws OseeCoreException {
+   private static void getTeamWorkflowArtifactTypesRecursive(ArtifactType artifactType, Set<IArtifactType> allArtifactTypes)  {
       allArtifactTypes.add(artifactType);
       for (IArtifactType child : artifactType.getFirstLevelDescendantTypes()) {
          getTeamWorkflowArtifactTypesRecursive(ArtifactTypeManager.getType(child), allArtifactTypes);

@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 public class SetAssociatedBranchArtifactHandler extends CommandHandler {
 
    @Override
-   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
+   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection)  {
       IOseeBranch selectedBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
       ArtifactId artId = BranchManager.getAssociatedArtifactId(selectedBranch);
       EntryDialog ed = new EntryDialog("Set Associated Artifact",
@@ -53,7 +53,7 @@ public class SetAssociatedBranchArtifactHandler extends CommandHandler {
    }
 
    @Override
-   public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
+   public boolean isEnabledWithException(IStructuredSelection structuredSelection)  {
       List<? extends BranchId> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
       return branches.size() == 1 && AccessControlManager.isOseeAdmin();
    }

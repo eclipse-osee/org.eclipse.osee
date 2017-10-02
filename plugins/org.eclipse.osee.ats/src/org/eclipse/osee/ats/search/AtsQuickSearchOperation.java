@@ -46,7 +46,7 @@ class AtsQuickSearchOperation extends AbstractOperation implements WorldEditorOp
    }
 
    @Override
-   protected void doWork(IProgressMonitor monitor) throws OseeCoreException {
+   protected void doWork(IProgressMonitor monitor)  {
       if (!Strings.isValid(data.getSearchStr())) {
          AWorkbench.popup("Must Enter Search String");
          return;

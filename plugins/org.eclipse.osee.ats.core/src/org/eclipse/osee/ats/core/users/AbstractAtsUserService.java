@@ -36,7 +36,7 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    protected IAtsUser currentUser = null;
 
    @Override
-   public IAtsUser getCurrentUser() throws OseeCoreException {
+   public IAtsUser getCurrentUser()  {
       if (currentUser == null) {
          currentUser = userIdToAtsUser.get(getCurrentUserId());
          if (currentUser == null) {
@@ -55,7 +55,7 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    }
 
    @Override
-   public Collection<IAtsUser> getUsersByUserIds(Collection<String> userIds) throws OseeCoreException {
+   public Collection<IAtsUser> getUsersByUserIds(Collection<String> userIds)  {
       List<IAtsUser> users = new LinkedList<>();
       for (String userId : userIds) {
          IAtsUser user = getUserById(userId);
@@ -67,7 +67,7 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    }
 
    @Override
-   public IAtsUser getUserById(String userId) throws OseeCoreException {
+   public IAtsUser getUserById(String userId)  {
       IAtsUser atsUser = null;
       if (Strings.isValid(userId)) {
          atsUser = userIdToAtsUser.get(userId);
@@ -85,7 +85,7 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    }
 
    @Override
-   public IAtsUser getUserByAccountId(Long accountId) throws OseeCoreException {
+   public IAtsUser getUserByAccountId(Long accountId)  {
       IAtsUser atsUser = accountIdToAtsUser.get(accountId);
       if (atsUser == null) {
          atsUser = loadUserByAccountId(accountId);
@@ -101,7 +101,7 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    protected abstract IAtsUser loadUserFromDbByUserId(String userId);
 
    @Override
-   public IAtsUser getUserByName(String name) throws OseeCoreException {
+   public IAtsUser getUserByName(String name)  {
       IAtsUser atsUser = nameToAtsUser.get(name);
       if (atsUser == null && Strings.isValid(name)) {
          atsUser = loadUserFromDbByUserName(name);
@@ -115,12 +115,12 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    protected abstract IAtsUser loadUserFromDbByUserName(String name);
 
    @Override
-   public boolean isUserIdValid(String userId) throws OseeCoreException {
+   public boolean isUserIdValid(String userId)  {
       return getUserById(userId) != null;
    }
 
    @Override
-   public boolean isUserNameValid(String name) throws OseeCoreException {
+   public boolean isUserNameValid(String name)  {
       return getUserByName(name) != null;
    }
 

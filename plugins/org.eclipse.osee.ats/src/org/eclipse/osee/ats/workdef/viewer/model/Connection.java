@@ -75,7 +75,7 @@ public class Connection extends ModelElement {
    }
 
    @Override
-   public Result validForSave() throws OseeCoreException {
+   public Result validForSave()  {
       System.err.println("Add Connection validations.");
       return Result.TrueResult;
    }
@@ -157,7 +157,7 @@ public class Connection extends ModelElement {
    }
 
    @Override
-   public Result doSave(SkynetTransaction transaction) throws OseeCoreException {
+   public Result doSave(SkynetTransaction transaction)  {
       return Result.TrueResult;
    }
 

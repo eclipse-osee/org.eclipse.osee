@@ -109,7 +109,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
       });
    }
 
-   private void handleCreateNewWorkflow(Collection<TeamWorkFlowArtifact> teamArts, String title) throws OseeCoreException {
+   private void handleCreateNewWorkflow(Collection<TeamWorkFlowArtifact> teamArts, String title)  {
       IAtsUser user = AtsClientService.get().getUserService().getCurrentUser();
 
       List<IAtsTeamWorkflow> teamWfs = new LinkedList<>();
@@ -145,7 +145,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
       return results;
    }
 
-   private void handleCreateDuplicate(Collection<TeamWorkFlowArtifact> teamArts, boolean duplicateTasks, String title) throws OseeCoreException {
+   private void handleCreateDuplicate(Collection<TeamWorkFlowArtifact> teamArts, boolean duplicateTasks, String title)  {
       IAtsUser user = AtsClientService.get().getUserService().getCurrentUser();
 
       List<IAtsTeamWorkflow> teamWfs = new LinkedList<>();
@@ -166,7 +166,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable)  {
       super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
       if (xWidget.getLabel().equals(TEAM_WORKFLOW) && defaultTeamWorkflows != null) {
          XListDropViewer viewer = (XListDropViewer) xWidget;

@@ -18,5 +18,5 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  * @author John R. Misinco
  */
 public interface BranchProvider {
-   Collection<Branch> getBranches() throws OseeCoreException;
+   Collection<Branch> getBranches() ;
 }

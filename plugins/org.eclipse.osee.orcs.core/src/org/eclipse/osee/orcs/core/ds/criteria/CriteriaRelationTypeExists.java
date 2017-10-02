@@ -32,7 +32,7 @@ public class CriteriaRelationTypeExists extends Criteria {
    }
 
    @Override
-   public void checkValid(Options options) throws OseeCoreException {
+   public void checkValid(Options options)  {
       Conditions.checkNotNull(getType(), "relation type");
    }
 

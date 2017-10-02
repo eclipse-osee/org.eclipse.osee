@@ -21,8 +21,8 @@ import org.eclipse.osee.orcs.core.internal.graph.GraphData;
  */
 public interface RelationResolver {
 
-   <T extends RelationNode> List<T> resolve(OrcsSession session, GraphData graph, List<Relation> links, RelationSide... sides) throws OseeCoreException;
+   <T extends RelationNode> List<T> resolve(OrcsSession session, GraphData graph, List<Relation> links, RelationSide... sides) ;
 
-   void resolve(OrcsSession session, GraphData graph, RelationNode node) throws OseeCoreException;
+   void resolve(OrcsSession session, GraphData graph, RelationNode node) ;
 
 }

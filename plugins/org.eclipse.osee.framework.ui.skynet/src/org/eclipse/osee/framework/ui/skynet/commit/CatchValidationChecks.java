@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
@@ -42,7 +41,7 @@ public class CatchValidationChecks implements CommitAction {
    private static final String ATS_ADMIN = "AtsAdmin";
 
    @Override
-   public void runCommitAction(BranchId sourceBranch, BranchId destinationBranch) throws OseeCoreException {
+   public void runCommitAction(BranchId sourceBranch, BranchId destinationBranch) {
       Set<Artifact> changedArtifacts = new HashSet<>();
       Collection<Change> changes = new ArrayList<>();
       IOperation operation = ChangeManager.compareTwoBranchesHead(sourceBranch, destinationBranch, changes);
@@ -83,7 +82,7 @@ public class CatchValidationChecks implements CommitAction {
                @Override
                public void run() {
                   if (MessageDialog.openConfirm(Displays.getActiveShell(), "Override State Validation",
-                     status.getMessage() + " [" + artifactChanged.getName() + "(" + artifactChanged.getArtId() + ")]" // 
+                     status.getMessage() + " [" + artifactChanged.getName() + "(" + artifactChanged.getArtId() + ")]" //
                         + "\n\nYou are set as Admin, OVERRIDE this?")) {
                      adminOverride.setValue(true);
                   } else {

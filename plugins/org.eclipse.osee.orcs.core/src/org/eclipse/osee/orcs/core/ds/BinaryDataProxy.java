@@ -18,8 +18,8 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface BinaryDataProxy extends DataProxy {
 
-   public ByteBuffer getValueAsBytes() throws OseeCoreException;
+   public ByteBuffer getValueAsBytes() ;
 
-   public boolean setValue(ByteBuffer data) throws OseeCoreException;
+   public boolean setValue(ByteBuffer data) ;
 
 }

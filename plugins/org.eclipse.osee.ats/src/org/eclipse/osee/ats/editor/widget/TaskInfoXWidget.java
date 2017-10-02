@@ -117,7 +117,7 @@ public class TaskInfoXWidget extends XLabelValueBase {
       return Result.TrueResult;
    }
 
-   private String getStatus(TeamWorkFlowArtifact teamWf, IStateToken state) throws OseeCoreException {
+   private String getStatus(TeamWorkFlowArtifact teamWf, IStateToken state)  {
       int completed = 0, cancelled = 0, inWork = 0;
       for (TaskArtifact taskArt : teamWf.getTaskArtifacts(state)) {
          if (taskArt.isCompleted()) {

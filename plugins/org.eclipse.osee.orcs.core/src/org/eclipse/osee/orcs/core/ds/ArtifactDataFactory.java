@@ -19,14 +19,14 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface ArtifactDataFactory {
 
-   ArtifactData create(BranchId branch, IArtifactType artifactType, String guid) throws OseeCoreException;
+   ArtifactData create(BranchId branch, IArtifactType artifactType, String guid) ;
 
-   ArtifactData create(BranchId branch, IArtifactType artifactType, String guid, long artifactId) throws OseeCoreException;
+   ArtifactData create(BranchId branch, IArtifactType artifactType, String guid, long artifactId) ;
 
-   ArtifactData copy(BranchId destination, ArtifactData source) throws OseeCoreException;
+   ArtifactData copy(BranchId destination, ArtifactData source) ;
 
-   ArtifactData clone(ArtifactData source) throws OseeCoreException;
+   ArtifactData clone(ArtifactData source) ;
 
-   ArtifactData introduce(BranchId destination, ArtifactData source) throws OseeCoreException;
+   ArtifactData introduce(BranchId destination, ArtifactData source) ;
 
 }

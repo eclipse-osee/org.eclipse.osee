@@ -44,17 +44,17 @@ public abstract class AbstractOseeType extends NamedIdBase implements IOseeStora
    }
 
    @SuppressWarnings("unchecked")
-   protected <T> IOseeField<T> getField(String key) throws OseeCoreException {
+   protected <T> IOseeField<T> getField(String key)  {
       IOseeField<T> field = (AbstractOseeField<T>) fieldMap.get(key);
       Conditions.checkNotNull(field, key);
       return field;
    }
 
-   public boolean isFieldDirty(String key) throws OseeCoreException {
+   public boolean isFieldDirty(String key)  {
       return getField(key).isDirty();
    }
 
-   public boolean areFieldsDirty(String... keys) throws OseeCoreException {
+   public boolean areFieldsDirty(String... keys)  {
       boolean result = false;
       for (String key : keys) {
          result |= isFieldDirty(key);
@@ -62,7 +62,7 @@ public abstract class AbstractOseeType extends NamedIdBase implements IOseeStora
       return result;
    }
 
-   protected <T> T getFieldValue(String key) throws OseeCoreException {
+   protected <T> T getFieldValue(String key)  {
       IOseeField<T> field = getField(key);
       return field.get();
    }
@@ -77,7 +77,7 @@ public abstract class AbstractOseeType extends NamedIdBase implements IOseeStora
       return value;
    }
 
-   protected <T> void setField(String key, T value) throws OseeCoreException {
+   protected <T> void setField(String key, T value)  {
       IOseeField<T> field = getField(key);
       field.set(value);
       if (field.isDirty()) {

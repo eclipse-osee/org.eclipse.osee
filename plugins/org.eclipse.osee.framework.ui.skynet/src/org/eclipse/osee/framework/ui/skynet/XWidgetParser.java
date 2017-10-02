@@ -38,7 +38,7 @@ public class XWidgetParser {
    public static final String EMPTY_WIDGETS =
       "<xWidgets><XWidget xwidgetType=\"XLabel\" displayName=\" \" /></xWidgets>";
 
-   public static List<XWidgetRendererItem> extractWorkAttributes(SwtXWidgetRenderer dynamicXWidgetLayout, String xml) throws OseeCoreException {
+   public static List<XWidgetRendererItem> extractWorkAttributes(SwtXWidgetRenderer dynamicXWidgetLayout, String xml)  {
       List<XWidgetRendererItem> data = Collections.emptyList();
       try {
          Document document = Jaxp.readXmlDocument(xml);
@@ -50,7 +50,7 @@ public class XWidgetParser {
       return data;
    }
 
-   public static XWidgetRendererItem extractlayoutData(SwtXWidgetRenderer dynamicXWidgetLayout, String xml) throws OseeCoreException {
+   public static XWidgetRendererItem extractlayoutData(SwtXWidgetRenderer dynamicXWidgetLayout, String xml)  {
       XWidgetRendererItem data = null;
       try {
          Document document = Jaxp.readXmlDocument(xml);
@@ -72,7 +72,7 @@ public class XWidgetParser {
       return layoutDatas;
    }
 
-   public static String toXml(XWidgetRendererItem data) throws OseeCoreException {
+   public static String toXml(XWidgetRendererItem data)  {
       String xmlData = null;
       try {
          Document doc = Jaxp.newDocumentNamespaceAware();

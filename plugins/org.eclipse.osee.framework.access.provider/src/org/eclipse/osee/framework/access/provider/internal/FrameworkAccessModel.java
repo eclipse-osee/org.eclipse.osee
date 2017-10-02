@@ -35,7 +35,7 @@ public class FrameworkAccessModel extends OseeDslAccessModel {
    }
 
    @Override
-   public void computeAccess(IAccessContextId contextId, Collection<Object> objectsToCheck, AccessData accessData) throws OseeCoreException {
+   public void computeAccess(IAccessContextId contextId, Collection<Object> objectsToCheck, AccessData accessData)  {
       if (contextId.equals(DefaultFrameworkAccessConstants.INVALID_ASSOC_ART_ID)) {
          for (Object obj : objectsToCheck) {
             AccessDetail<Object> data = new AccessDetail<Object>(obj, PermissionEnum.READ, Scope.createLegacyScope(),
@@ -48,7 +48,7 @@ public class FrameworkAccessModel extends OseeDslAccessModel {
       }
    }
 
-   private void addRelationAccess(Object object, AccessData accessData) throws OseeCoreException {
+   private void addRelationAccess(Object object, AccessData accessData)  {
       if (object instanceof Artifact) {
          for (RelationType relationType : ((Artifact) object).getValidRelationTypes()) {
             for (RelationSide relationSide : RelationSide.values()) {

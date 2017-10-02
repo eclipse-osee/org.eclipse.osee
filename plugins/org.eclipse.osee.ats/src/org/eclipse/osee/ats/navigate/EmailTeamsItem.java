@@ -56,7 +56,7 @@ public class EmailTeamsItem extends XNavigateItemAction {
    }
 
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
+   public void run(TableLoadOption... tableLoadOptions)  {
       Collection<IAtsTeamDefinition> teamDefs = getTeamDefinitions();
       if (teamDefs.isEmpty()) {
          return;
@@ -86,7 +86,7 @@ public class EmailTeamsItem extends XNavigateItemAction {
       AWorkbench.popup("Complete", "Configured emails openened in local email client.");
    }
 
-   public Collection<IAtsTeamDefinition> getTeamDefinitions() throws OseeCoreException {
+   public Collection<IAtsTeamDefinition> getTeamDefinitions()  {
       if (teamDef != null) {
          Set<IAtsTeamDefinition> teamDefs = new HashSet<>();
          teamDefs.add(teamDef);

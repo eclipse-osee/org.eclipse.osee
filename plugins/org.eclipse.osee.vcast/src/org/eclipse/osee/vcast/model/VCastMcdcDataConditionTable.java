@@ -30,7 +30,7 @@ public class VCastMcdcDataConditionTable implements VCastTableData<VCastMcdcData
    }
 
    @Override
-   public Collection<VCastMcdcDataCondition> getRows(VCastDataStore dataStore) throws OseeCoreException {
+   public Collection<VCastMcdcDataCondition> getRows(VCastDataStore dataStore)  {
       return dataStore.getAllMcdcDataConditions();
    }
 

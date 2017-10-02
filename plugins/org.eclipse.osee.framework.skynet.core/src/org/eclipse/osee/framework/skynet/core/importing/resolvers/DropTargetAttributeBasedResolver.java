@@ -16,7 +16,6 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 
@@ -35,7 +34,7 @@ public class DropTargetAttributeBasedResolver extends AttributeBasedArtifactReso
    }
 
    @Override
-   public Artifact resolve(RoughArtifact roughArtifact, BranchId branch, Artifact realParent, Artifact root) throws OseeCoreException {
+   public Artifact resolve(RoughArtifact roughArtifact, BranchId branch, Artifact realParent, Artifact root) {
 
       oseeFileMatcher.reset(roughArtifact.getName());
       if (oseeFileMatcher.find()) {

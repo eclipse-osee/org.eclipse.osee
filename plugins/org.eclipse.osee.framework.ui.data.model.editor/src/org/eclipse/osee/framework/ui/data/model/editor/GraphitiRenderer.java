@@ -82,7 +82,7 @@ public class GraphitiRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public void open(final List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
+   public void open(final List<Artifact> artifacts, PresentationType presentationType)  {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {

@@ -126,7 +126,7 @@ public class OrcsTypesIndexer {
       return OseeDslResourceUtil.upConvertTo17(inputStream);
    }
 
-   private void indexSuperTypes(ArtifactTypeIndex artifactTypeIndex, IArtifactType token, XArtifactType dslType) throws OseeCoreException {
+   private void indexSuperTypes(ArtifactTypeIndex artifactTypeIndex, IArtifactType token, XArtifactType dslType)  {
       Set<IArtifactType> tokenSuperTypes = Sets.newLinkedHashSet();
       for (XArtifactType superTypes : dslType.getSuperArtifactTypes()) {
          IArtifactType superToken = getOrCreateToken(artifactTypeIndex, superTypes);
@@ -137,7 +137,7 @@ public class OrcsTypesIndexer {
       }
    }
 
-   private void indexAttributes(ArtifactTypeIndex artifactTypeIndex, AttributeTypeIndex attributeTypeIndex, XArtifactType dslType) throws OseeCoreException {
+   private void indexAttributes(ArtifactTypeIndex artifactTypeIndex, AttributeTypeIndex attributeTypeIndex, XArtifactType dslType)  {
       Map<BranchId, Collection<AttributeTypeToken>> validAttributes = new HashMap<>();
       for (XAttributeTypeRef xAttributeTypeRef : dslType.getValidAttributeTypes()) {
          XAttributeType xAttributeType = xAttributeTypeRef.getValidAttributeType();
@@ -159,7 +159,7 @@ public class OrcsTypesIndexer {
       artifactTypeIndex.put(token, validAttributes);
    }
 
-   private IArtifactType getOrCreateToken(ArtifactTypeIndex index, XArtifactType dslType) throws OseeCoreException {
+   private IArtifactType getOrCreateToken(ArtifactTypeIndex index, XArtifactType dslType)  {
       IArtifactType token = index.getTokenByDslType(dslType);
       if (token == null) {
          long id = Long.valueOf(dslType.getId());
@@ -169,7 +169,7 @@ public class OrcsTypesIndexer {
       return token;
    }
 
-   private AttributeTypeId getOrCreateToken(AttributeTypeIndex index, XAttributeType dslType) throws OseeCoreException {
+   private AttributeTypeId getOrCreateToken(AttributeTypeIndex index, XAttributeType dslType)  {
       AttributeTypeToken token = index.getTokenByDslType(dslType);
       if (token == null) {
          long id = Long.valueOf(dslType.getId());
@@ -179,7 +179,7 @@ public class OrcsTypesIndexer {
       return token;
    }
 
-   private IRelationType getOrCreateToken(RelationTypeIndex index, XRelationType dslType) throws OseeCoreException {
+   private IRelationType getOrCreateToken(RelationTypeIndex index, XRelationType dslType)  {
       RelationTypeToken token = index.getTokenByDslType(dslType);
       if (token == null) {
          long id = Long.valueOf(dslType.getId());
@@ -189,7 +189,7 @@ public class OrcsTypesIndexer {
       return token;
    }
 
-   private EnumType getOrCreateEnumType(EnumTypeIndex index, XOseeEnumType dslType) throws OseeCoreException {
+   private EnumType getOrCreateEnumType(EnumTypeIndex index, XOseeEnumType dslType)  {
       EnumType item = index.getTokenByDslType(dslType);
       if (item == null) {
          item = createEnumType(dslType);
@@ -198,7 +198,7 @@ public class OrcsTypesIndexer {
       return item;
    }
 
-   private EnumType createEnumType(XOseeEnumType dslType) throws OseeCoreException {
+   private EnumType createEnumType(XOseeEnumType dslType)  {
       int lastOrdinal = 0;
       List<EnumEntry> entries = new LinkedList<>();
       for (XOseeEnumEntry entry : dslType.getEnumEntries()) {

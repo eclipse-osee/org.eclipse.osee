@@ -49,7 +49,7 @@ public class ModifyActionableItemsTest {
    }
 
    @Test
-   public void test_addAi() throws OseeCoreException {
+   public void test_addAi()  {
       when(teamWf.getActionableItems()).thenReturn(org.eclipse.osee.framework.jdk.core.util.Collections.hashSet(ai1));
       XResultData results = new XResultData(false);
       List<IAtsActionableItem> currAIsForAllWfs = Arrays.asList(ai1);
@@ -66,7 +66,7 @@ public class ModifyActionableItemsTest {
    }
 
    @Test
-   public void test_removeAi() throws OseeCoreException {
+   public void test_removeAi()  {
       when(teamWf.getActionableItems()).thenReturn(
          org.eclipse.osee.framework.jdk.core.util.Collections.hashSet(ai1, ai2));
       XResultData results = new XResultData(false);
@@ -84,7 +84,7 @@ public class ModifyActionableItemsTest {
    }
 
    @Test
-   public void test_removeAllAi() throws OseeCoreException {
+   public void test_removeAllAi()  {
       when(teamWf.getActionableItems()).thenReturn(
          org.eclipse.osee.framework.jdk.core.util.Collections.hashSet(ai1, ai2));
       XResultData results = new XResultData(false);
@@ -103,7 +103,7 @@ public class ModifyActionableItemsTest {
    }
 
    @Test
-   public void test_newAi() throws OseeCoreException {
+   public void test_newAi()  {
       when(teamWf.getActionableItems()).thenReturn(
          org.eclipse.osee.framework.jdk.core.util.Collections.hashSet(ai1, ai2));
       when(ai3.isActionable()).thenReturn(true);
@@ -132,7 +132,7 @@ public class ModifyActionableItemsTest {
    }
 
    @Test
-   public void test_duplicateAi() throws OseeCoreException {
+   public void test_duplicateAi()  {
       when(teamWf.getActionableItems()).thenReturn(
          org.eclipse.osee.framework.jdk.core.util.Collections.hashSet(ai1, ai2));
       when(ai2.isActionable()).thenReturn(true);

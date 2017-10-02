@@ -18,8 +18,8 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IResultsEditorProvider {
 
-   public String getEditorName() throws OseeCoreException;
+   public String getEditorName() ;
 
-   public List<IResultsEditorTab> getResultsEditorTabs() throws OseeCoreException;
+   public List<IResultsEditorTab> getResultsEditorTabs() ;
 
 }

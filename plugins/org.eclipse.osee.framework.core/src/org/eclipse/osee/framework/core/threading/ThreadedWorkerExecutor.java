@@ -37,7 +37,7 @@ public class ThreadedWorkerExecutor<T> {
       this.numberOfWorkers = numberOfWorkers;
    }
 
-   public List<T> executeWorkersBlocking() throws OseeCoreException {
+   public List<T> executeWorkersBlocking()  {
       ExecutorService executor = Executors.newFixedThreadPool(numberOfWorkers);
       List<T> toReturn = new LinkedList<>();
       Collection<Callable<T>> workers = createWorkers();

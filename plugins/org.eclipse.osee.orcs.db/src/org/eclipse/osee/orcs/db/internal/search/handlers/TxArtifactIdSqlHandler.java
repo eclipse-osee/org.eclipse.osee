@@ -57,7 +57,7 @@ public class TxArtifactIdSqlHandler extends SqlHandler<CriteriaTxArtifactIds> {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
+   public boolean addPredicates(AbstractSqlWriter writer)  {
       Collection<ArtifactId> ids = criteria.getIds();
       if (criteria.hasMultiple()) {
          joinQuery = writer.writeJoin(ids);

@@ -22,6 +22,6 @@ public interface EventHandlerLocal<L extends IEventListener, E extends Framework
 
    void handle(L listener, Sender sender, E event);
 
-   void send(Transport transport, Sender sender, E event) throws OseeCoreException;
+   void send(Transport transport, Sender sender, E event) ;
 
 }

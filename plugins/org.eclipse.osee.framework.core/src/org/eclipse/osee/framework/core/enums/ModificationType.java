@@ -84,7 +84,7 @@ public interface ModificationType extends NamedId {
     * @param value The value of the ModificationType to get.
     * @return The ModificationType that has the value passed.
     */
-   public static ModificationType valueOf(long id) throws OseeArgumentException {
+   public static ModificationType valueOf(long id)  {
       switch ((int) id) {
          case 1:
             return NEW;

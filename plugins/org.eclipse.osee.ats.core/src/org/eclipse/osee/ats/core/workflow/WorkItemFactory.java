@@ -35,7 +35,7 @@ public class WorkItemFactory extends AbstractWorkItemFactory {
    }
 
    @Override
-   public IAtsTeamWorkflow getTeamWf(ArtifactToken artifact) throws OseeCoreException {
+   public IAtsTeamWorkflow getTeamWf(ArtifactToken artifact)  {
       IAtsTeamWorkflow team = null;
       if (artifact instanceof IAtsTeamWorkflow) {
          team = (IAtsTeamWorkflow) artifact;
@@ -46,7 +46,7 @@ public class WorkItemFactory extends AbstractWorkItemFactory {
    }
 
    @Override
-   public IAtsGoal getGoal(ArtifactToken artifact) throws OseeCoreException {
+   public IAtsGoal getGoal(ArtifactToken artifact)  {
       IAtsGoal goal = null;
       if (artifact instanceof IAtsGoal) {
          goal = (IAtsGoal) artifact;
@@ -57,7 +57,7 @@ public class WorkItemFactory extends AbstractWorkItemFactory {
    }
 
    @Override
-   public IAtsTask getTask(ArtifactToken artifact) throws OseeCoreException {
+   public IAtsTask getTask(ArtifactToken artifact)  {
       IAtsTask task = null;
       if (artifact instanceof IAtsTask) {
          task = (IAtsTask) artifact;
@@ -68,7 +68,7 @@ public class WorkItemFactory extends AbstractWorkItemFactory {
    }
 
    @Override
-   public IAtsAbstractReview getReview(ArtifactToken artifact) throws OseeCoreException {
+   public IAtsAbstractReview getReview(ArtifactToken artifact)  {
       IAtsAbstractReview review = null;
       if (artifact instanceof IAtsAbstractReview) {
          review = (IAtsAbstractReview) artifact;

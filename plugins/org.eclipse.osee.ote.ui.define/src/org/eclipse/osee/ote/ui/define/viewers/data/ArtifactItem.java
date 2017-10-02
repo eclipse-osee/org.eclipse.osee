@@ -59,7 +59,7 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IArtifactEve
    private ArtifactTestRunOperator operator;
    private String key;
 
-   public ArtifactItem(XViewer xViewer, Artifact artifact, DataItem parent) throws OseeArgumentException {
+   public ArtifactItem(XViewer xViewer, Artifact artifact, DataItem parent)  {
       super(parent);
       this.xViewer = xViewer;
       setArtifact(artifact);
@@ -77,7 +77,7 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IArtifactEve
       super.dispose();
    }
 
-   private void setArtifact(Artifact artifact) throws OseeArgumentException {
+   private void setArtifact(Artifact artifact)  {
       this.artifact = artifact;
       this.operator = new ArtifactTestRunOperator(artifact);
       try {
@@ -168,7 +168,7 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IArtifactEve
       return toReturn;
    }
 
-   private String getArtifactName(String rawName) throws OseeCoreException {
+   private String getArtifactName(String rawName)  {
       String name = rawName;
       if (isFullDescriptionModeEnabled() != true) {
          String[] qualifiers = rawName.split("\\.");

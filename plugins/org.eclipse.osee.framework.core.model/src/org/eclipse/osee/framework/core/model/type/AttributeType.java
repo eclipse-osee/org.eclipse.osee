@@ -104,7 +104,7 @@ public class AttributeType extends AbstractOseeIdType implements AttributeTypeTo
       return getFieldValueLogException(null, ATTRIBUTE_ENUM_TYPE_ID_FIELD_KEY);
    }
 
-   public void setOseeEnumType(OseeEnumType enumType) throws OseeCoreException {
+   public void setOseeEnumType(OseeEnumType enumType)  {
       setField(ATTRIBUTE_ENUM_TYPE_ID_FIELD_KEY, enumType);
    }
 

@@ -21,6 +21,6 @@ import org.eclipse.osee.orcs.OrcsSession;
  */
 public interface GraphProvider {
 
-   GraphData getGraph(OrcsSession session, BranchId branch, TransactionId transactionId) throws OseeCoreException;
+   GraphData getGraph(OrcsSession session, BranchId branch, TransactionId transactionId) ;
 
 }

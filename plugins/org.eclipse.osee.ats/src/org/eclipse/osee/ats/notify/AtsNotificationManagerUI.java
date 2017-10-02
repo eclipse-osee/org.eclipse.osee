@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public class AtsNotificationManagerUI {
 
-   public static String getPreviewHtml(AbstractWorkflowArtifact workflow, PreviewStyle... styles) throws OseeCoreException {
+   public static String getPreviewHtml(AbstractWorkflowArtifact workflow, PreviewStyle... styles)  {
       Overview o = new Overview();
       o.addHeader(workflow, styles);
       o.addFooter(workflow, styles);

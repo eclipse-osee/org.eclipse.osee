@@ -73,14 +73,14 @@ public class AtsXWidgetValidatorTest {
    }
 
    @org.junit.Test
-   public void testIsEmptyValue() throws OseeCoreException {
+   public void testIsEmptyValue()  {
       Assert.assertTrue(validator.isEmptyValue(ValidatorTestUtil.emptyValueProvider));
 
       Assert.assertFalse(validator.isEmptyValue(new MockValueProvider(Arrays.asList("hello"))));
    }
 
    @org.junit.Test
-   public void testValidateWidgetIsRequired() throws OseeCoreException {
+   public void testValidateWidgetIsRequired()  {
       MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
       widgetDef.getOptions().add(WidgetOption.REQUIRED_FOR_TRANSITION);
 
@@ -130,7 +130,7 @@ public class AtsXWidgetValidatorTest {
    }
 
    @org.junit.Test
-   public void testIsValidDate() throws OseeCoreException {
+   public void testIsValidDate()  {
       MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
 
       WidgetResult result = validator.isValidDate(new MockDateValueProvider(Arrays.asList(new Date())), widgetDef);

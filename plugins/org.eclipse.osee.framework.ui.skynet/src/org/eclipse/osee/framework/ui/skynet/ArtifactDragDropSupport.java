@@ -46,11 +46,11 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class ArtifactDragDropSupport {
 
-   public static void performDragDrop(DropTargetEvent e, RelationExplorerWindow window, Shell shell) throws OseeCoreException {
+   public static void performDragDrop(DropTargetEvent e, RelationExplorerWindow window, Shell shell)  {
       performDragDrop(e, null, window, shell);
    }
 
-   private static void performDragDrop(DropTargetEvent e, Artifact[] artifacts, RelationExplorerWindow window, Shell shell) throws OseeCoreException {
+   private static void performDragDrop(DropTargetEvent e, Artifact[] artifacts, RelationExplorerWindow window, Shell shell)  {
 
       if (ArtifactTransfer.getInstance().isSupportedType(e.currentDataType)) {
 
@@ -68,7 +68,7 @@ public class ArtifactDragDropSupport {
       }
    }
 
-   private static void ensureLinkValidity(RelationTypeSideSorter group, Artifact artifact) throws OseeCoreException {
+   private static void ensureLinkValidity(RelationTypeSideSorter group, Artifact artifact)  {
       IRelationType relationType = group.getRelationType();
       Artifact otherArtifact = group.getArtifact();
 
@@ -77,7 +77,7 @@ public class ArtifactDragDropSupport {
       RelationManager.ensureRelationCanBeAdded(relationType, artifactA, artifactB);
    }
 
-   private static void addArtifacts(Artifact[] artifacts, RelationExplorerWindow window) throws OseeCoreException {
+   private static void addArtifacts(Artifact[] artifacts, RelationExplorerWindow window)  {
       RelationTypeSideSorter group = window.getRelationGroup();
       RelationSide relationSide = group.getSide();
       IRelationType relationType = group.getRelationType();
@@ -178,7 +178,7 @@ public class ArtifactDragDropSupport {
       }
    }
 
-   public static Artifact getArtifactFromWorkspaceFile(IResource resource, Shell shell) throws OseeCoreException {
+   public static Artifact getArtifactFromWorkspaceFile(IResource resource, Shell shell)  {
       String path = getURL(resource);
       return getArtifactFromWorkspaceFile(path, shell);
    }
@@ -188,7 +188,7 @@ public class ArtifactDragDropSupport {
       return "ws:/" + resource.getFullPath().toString();
    }
 
-   public static Artifact getArtifactFromWorkspaceFile(String location, Shell shell) throws OseeCoreException {
+   public static Artifact getArtifactFromWorkspaceFile(String location, Shell shell)  {
       Artifact artifact = null;
       BranchId branch = BranchSelectionDialog.getBranchFromUser();
       if (branch != null) {

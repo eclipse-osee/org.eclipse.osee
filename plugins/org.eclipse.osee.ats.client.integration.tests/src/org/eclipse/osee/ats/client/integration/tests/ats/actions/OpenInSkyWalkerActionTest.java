@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 public class OpenInSkyWalkerActionTest extends AbstractAtsActionRunTest {
 
    @Override
-   public OpenInSkyWalkerAction createAction() throws OseeCoreException {
+   public OpenInSkyWalkerAction createAction()  {
       return new OpenInSkyWalkerAction(AtsTestUtil.getTeamWf());
    }
 

@@ -47,12 +47,12 @@ public class TaskEditorSimpleProvider extends TaskEditorProvider {
    }
 
    @Override
-   public String getSelectedName(SearchType searchType) throws OseeCoreException {
+   public String getSelectedName(SearchType searchType)  {
       return name;
    }
 
    @Override
-   public IAtsVersion getTargetedVersionArtifact() throws OseeCoreException {
+   public IAtsVersion getTargetedVersionArtifact()  {
       return null;
    }
 

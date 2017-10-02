@@ -33,7 +33,7 @@ public class OseeInfo {
       return getValue(jdbcClient, DB_ID_KEY);
    }
 
-   public static String getCachedValue(JdbcClient jdbcClient, String key) throws OseeCoreException {
+   public static String getCachedValue(JdbcClient jdbcClient, String key)  {
       String cacheValue = cache.get(key);
       if (cacheValue == null) {
          cacheValue = getValue(jdbcClient, key);

@@ -49,7 +49,7 @@ public class AttributeProvider implements IResourceProvider {
       this.preferences = preferences;
    }
 
-   public void start() throws OseeCoreException {
+   public void start()  {
       binaryDataPath = ResourceConstants.getBinaryDataPath(preferences);
       attributeDataPath = ResourceConstants.getAttributeDataPath(preferences);
       isInitialized = true;
@@ -61,24 +61,24 @@ public class AttributeProvider implements IResourceProvider {
       isInitialized = false;
    }
 
-   private synchronized void ensureInitialized() throws OseeCoreException {
+   private synchronized void ensureInitialized()  {
       Conditions.checkExpressionFailOnTrue(!isInitialized,
          "Osee Data Store - not initialized - ensure start() was called");
       Conditions.checkNotNull(binaryDataPath, "binary data path");
       Conditions.checkNotNull(attributeDataPath, "attribute data path");
    }
 
-   public String getAttributeDataPath() throws OseeCoreException {
+   public String getAttributeDataPath()  {
       ensureInitialized();
       return attributeDataPath;
    }
 
-   public String getBinaryDataPath() throws OseeCoreException {
+   public String getBinaryDataPath()  {
       ensureInitialized();
       return binaryDataPath;
    }
 
-   private URI resolve(IResourceLocator locator) throws OseeCoreException {
+   private URI resolve(IResourceLocator locator)  {
       StringBuilder builder = new StringBuilder(getAttributeDataPath());
       builder.append(locator.getRawPath());
       File file = new File(builder.toString());
@@ -91,7 +91,7 @@ public class AttributeProvider implements IResourceProvider {
    }
 
    @Override
-   public int delete(IResourceLocator locator) throws OseeCoreException {
+   public int delete(IResourceLocator locator)  {
       int toReturn = IResourceManager.FAIL;
       File file = new File(resolve(locator));
       if (!file.exists()) {
@@ -106,13 +106,13 @@ public class AttributeProvider implements IResourceProvider {
    }
 
    @Override
-   public IResource acquire(IResourceLocator locator, PropertyStore options) throws OseeCoreException {
+   public IResource acquire(IResourceLocator locator, PropertyStore options)  {
       OptionsProcessor optionsProcessor = new OptionsProcessor(resolve(locator), locator, null, options);
       return optionsProcessor.getResourceToServer();
    }
 
    @Override
-   public IResourceLocator save(IResourceLocator locator, IResource resource, PropertyStore options) throws OseeCoreException {
+   public IResourceLocator save(IResourceLocator locator, IResource resource, PropertyStore options)  {
       IResourceLocator toReturn = null;
       OptionsProcessor optionsProcessor = new OptionsProcessor(resolve(locator), locator, resource, options);
       OutputStream outputStream = null;
@@ -138,7 +138,7 @@ public class AttributeProvider implements IResourceProvider {
    }
 
    @Override
-   public boolean exists(IResourceLocator locator) throws OseeCoreException {
+   public boolean exists(IResourceLocator locator)  {
       URI uri = resolve(locator);
       File testFile = new File(uri);
       return testFile.exists();

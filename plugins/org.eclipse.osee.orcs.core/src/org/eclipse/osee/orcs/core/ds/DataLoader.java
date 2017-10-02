@@ -61,22 +61,22 @@ public interface DataLoader extends Loader {
 
    //////////// IDS
 
-   DataLoader withAttributeIds(int... attributeIds) throws OseeCoreException;
+   DataLoader withAttributeIds(int... attributeIds) ;
 
-   DataLoader withAttributeIds(Collection<Integer> attributeIds) throws OseeCoreException;
+   DataLoader withAttributeIds(Collection<Integer> attributeIds) ;
 
-   DataLoader withRelationIds(int... relationIds) throws OseeCoreException;
+   DataLoader withRelationIds(int... relationIds) ;
 
-   DataLoader withRelationIds(Collection<Integer> relationIds) throws OseeCoreException;
+   DataLoader withRelationIds(Collection<Integer> relationIds) ;
 
    ///////// TYPES
 
-   DataLoader withAttributeTypes(AttributeTypeId... attributeType) throws OseeCoreException;
+   DataLoader withAttributeTypes(AttributeTypeId... attributeType) ;
 
-   DataLoader withAttributeTypes(Collection<? extends AttributeTypeId> attributeTypes) throws OseeCoreException;
+   DataLoader withAttributeTypes(Collection<? extends AttributeTypeId> attributeTypes) ;
 
-   DataLoader withRelationTypes(IRelationType... relationType) throws OseeCoreException;
+   DataLoader withRelationTypes(IRelationType... relationType) ;
 
-   DataLoader withRelationTypes(Collection<? extends IRelationType> relationType) throws OseeCoreException;
+   DataLoader withRelationTypes(Collection<? extends IRelationType> relationType) ;
 
 }

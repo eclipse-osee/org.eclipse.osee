@@ -18,5 +18,5 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 public interface ReplyConnection {
    public boolean isReplyRequested();
 
-   public void send(Object body, Class<?> clazz, final OseeMessagingStatusCallback statusCallback) throws OseeCoreException;
+   public void send(Object body, Class<?> clazz, final OseeMessagingStatusCallback statusCallback) ;
 }

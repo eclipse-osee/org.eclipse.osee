@@ -43,7 +43,7 @@ public class ResultsEditorConverter {
       converters.add(new MultiTypeEditorTabConverter("HTML"));
    }
 
-   private IEditorTabConverter getConverter(String type) throws OseeArgumentException {
+   private IEditorTabConverter getConverter(String type)  {
       IEditorTabConverter toReturn = null;
       for (IEditorTabConverter converter : converters) {
          if (converter.getType().equalsIgnoreCase(type)) {
@@ -57,13 +57,13 @@ public class ResultsEditorConverter {
       return toReturn;
    }
 
-   private void checkForNull(String param, Object object) throws OseeArgumentException {
+   private void checkForNull(String param, Object object)  {
       if (object == null) {
          throw new OseeArgumentException("[%s] cannot be null", param);
       }
    }
 
-   public void convert(String type, Writer writer, IResultsEditorProvider provider) throws OseeCoreException {
+   public void convert(String type, Writer writer, IResultsEditorProvider provider)  {
       checkForNull("Type", type);
       checkForNull("Writer", writer);
       checkForNull("IResultsEditorProvider", provider);
@@ -82,15 +82,15 @@ public class ResultsEditorConverter {
 
       public String getType();
 
-      public void canConvert(IResultsEditorTab tab) throws OseeCoreException;
+      public void canConvert(IResultsEditorTab tab) ;
 
-      public void convert(Writer writer, Collection<IResultsEditorTab> tabs) throws OseeCoreException;
+      public void convert(Writer writer, Collection<IResultsEditorTab> tabs) ;
 
    }
 
    private static abstract class AbstractEditorTabConverter implements IEditorTabConverter {
       @Override
-      public void canConvert(IResultsEditorTab tab) throws OseeCoreException {
+      public void canConvert(IResultsEditorTab tab)  {
          if (!(tab instanceof IResultsEditorTableTab) && !(tab instanceof IResultsEditorHtmlTab)) {
             throw new OseeArgumentException(
                String.format("%s to type [%s] is not supported", tab.getClass(), getType()));
@@ -124,7 +124,7 @@ public class ResultsEditorConverter {
       private final static String END_HTML = "\n</body>\n</html>\n";
 
       @Override
-      public void convert(Writer writer, Collection<IResultsEditorTab> tabs) throws OseeCoreException {
+      public void convert(Writer writer, Collection<IResultsEditorTab> tabs)  {
          try {
             writer.write(HTML_HEADER);
             writer.write(String.format(PAGE_TITLE, "Report"));
@@ -174,14 +174,14 @@ public class ResultsEditorConverter {
    private final static class ExcelEditorTabConverter extends AbstractEditorTabConverter {
 
       @Override
-      public void canConvert(IResultsEditorTab tab) throws OseeCoreException {
+      public void canConvert(IResultsEditorTab tab)  {
          if (!(tab instanceof IResultsEditorTableTab)) {
             throw new OseeArgumentException("%s to type %s is not supported", tab.getClass(), getType().toUpperCase());
          }
       }
 
       @Override
-      public void convert(Writer writer, Collection<IResultsEditorTab> tabs) throws OseeCoreException {
+      public void convert(Writer writer, Collection<IResultsEditorTab> tabs)  {
          try {
             ISheetWriter sheetWriter = new ExcelXmlWriter(writer);
             for (IResultsEditorTab rawTab : tabs) {
@@ -220,14 +220,14 @@ public class ResultsEditorConverter {
       }
 
       @Override
-      public void canConvert(IResultsEditorTab tab) throws OseeCoreException {
+      public void canConvert(IResultsEditorTab tab)  {
          if (!(tab instanceof IResultsEditorTableTab)) {
             throw new OseeArgumentException("%s to type %s is not supported", tab.getClass(), getType().toUpperCase());
          }
       }
 
       @Override
-      public void convert(Writer writer, Collection<IResultsEditorTab> tabs) throws OseeCoreException {
+      public void convert(Writer writer, Collection<IResultsEditorTab> tabs)  {
          try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             TableWriterAdaptor writerAdaptor = new TableWriterAdaptor(type.toLowerCase(), outputStream);

@@ -31,29 +31,29 @@ public interface IAtsStateItem {
 
    public String getFullName();
 
-   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, IAtsStateDefinition stateDefinition, Artifact art, boolean isEditable) throws OseeCoreException;
+   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, IAtsStateDefinition stateDefinition, Artifact art, boolean isEditable) ;
 
-   public void xWidgetCreated(XWidget xWidget, FormToolkit toolkit, IAtsStateDefinition stateDefinition, Artifact art, boolean isEditable) throws OseeCoreException;
+   public void xWidgetCreated(XWidget xWidget, FormToolkit toolkit, IAtsStateDefinition stateDefinition, Artifact art, boolean isEditable) ;
 
-   public void widgetModified(XWidget xWidget, FormToolkit toolkit, IAtsStateDefinition stateDefinition, Artifact art, boolean isEditable) throws OseeCoreException;
+   public void widgetModified(XWidget xWidget, FormToolkit toolkit, IAtsStateDefinition stateDefinition, Artifact art, boolean isEditable) ;
 
-   public String getOverrideTransitionToStateName(WfeWorkflowSection section) throws OseeCoreException;
+   public String getOverrideTransitionToStateName(WfeWorkflowSection section) ;
 
-   public Collection<IAtsUser> getOverrideTransitionToAssignees(AbstractWorkflowArtifact awa, String decision) throws OseeCoreException;
+   public Collection<IAtsUser> getOverrideTransitionToAssignees(AbstractWorkflowArtifact awa, String decision) ;
 
    public String getDescription();
 
-   public String getBranchShortName(AbstractWorkflowArtifact sma) throws OseeCoreException;
+   public String getBranchShortName(AbstractWorkflowArtifact sma) ;
 
-   public boolean isAccessControlViaAssigneesEnabledForBranching() throws OseeCoreException;
+   public boolean isAccessControlViaAssigneesEnabledForBranching() ;
 
    /**
     * @return Result of operation. If Result.isFalse(), commit will not continue and Result.popup will occur.
     */
-   public Result committing(AbstractWorkflowArtifact sma) throws OseeCoreException;
+   public Result committing(AbstractWorkflowArtifact sma) ;
 
-   public List<XWidget> getDynamicXWidgetsPostBody(AbstractWorkflowArtifact sma, String stateName) throws OseeCoreException;
+   public List<XWidget> getDynamicXWidgetsPostBody(AbstractWorkflowArtifact sma, String stateName) ;
 
-   public List<XWidget> getDynamicXWidgetsPreBody(AbstractWorkflowArtifact sma, String stateName) throws OseeCoreException;
+   public List<XWidget> getDynamicXWidgetsPreBody(AbstractWorkflowArtifact sma, String stateName) ;
 
 }

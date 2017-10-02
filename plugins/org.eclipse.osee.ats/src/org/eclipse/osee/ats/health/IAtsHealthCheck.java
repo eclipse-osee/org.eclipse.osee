@@ -29,8 +29,8 @@ public interface IAtsHealthCheck {
     *
     * @param results JavaTip
     */
-   public void validateAtsDatabase(Collection<Artifact> artifacts, ValidateResults results) throws OseeCoreException;
+   public void validateAtsDatabase(Collection<Artifact> artifacts, ValidateResults results) ;
 
-   public Result validateChangeReports(ChangeData currentChangeData, TeamWorkFlowArtifact teamArt, XResultData resultData) throws OseeCoreException;
+   public Result validateChangeReports(ChangeData currentChangeData, TeamWorkFlowArtifact teamArt, XResultData resultData) ;
 
 }

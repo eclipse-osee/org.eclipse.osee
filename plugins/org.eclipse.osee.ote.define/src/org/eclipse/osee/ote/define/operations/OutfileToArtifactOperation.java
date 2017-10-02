@@ -72,7 +72,7 @@ public class OutfileToArtifactOperation {
       executor.executeWorkersBlocking();
    }
 
-   private Artifact getParentArtifact() throws OseeCoreException {
+   private Artifact getParentArtifact()  {
       Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
       Artifact testFolder = OseeSystemArtifacts.getOrCreateArtifact(CoreArtifactTypes.Folder, "Test", branch);
       if (!root.isRelated(CoreRelationTypes.Default_Hierarchical__Child, testFolder)) {

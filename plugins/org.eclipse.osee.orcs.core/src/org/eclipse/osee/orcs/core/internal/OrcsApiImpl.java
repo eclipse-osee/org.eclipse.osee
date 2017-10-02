@@ -112,7 +112,7 @@ public class OrcsApiImpl implements OrcsApi {
             new ThreadLocal<Iterable<? extends BranchId>>();
 
          @Override
-         public Iterable<? extends BranchId> getParentHierarchy(BranchId branch) throws OseeCoreException {
+         public Iterable<? extends BranchId> getParentHierarchy(BranchId branch)  {
             Iterable<? extends BranchId> toReturn = cache.get();
             if (toReturn == null) {
                Set<BranchId> branches = Sets.newLinkedHashSet();
@@ -167,7 +167,7 @@ public class OrcsApiImpl implements OrcsApi {
       GraphProvider graphProvider = new GraphProvider() {
 
          @Override
-         public GraphData getGraph(OrcsSession session, BranchId branch, TransactionId transactionId) throws OseeCoreException {
+         public GraphData getGraph(OrcsSession session, BranchId branch, TransactionId transactionId)  {
             return graphFactory.createGraph(session, branch, transactionId);
          }
       };

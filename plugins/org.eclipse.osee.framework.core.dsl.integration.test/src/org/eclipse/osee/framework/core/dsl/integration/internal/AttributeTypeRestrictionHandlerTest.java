@@ -47,7 +47,7 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
    }
 
    @Test
-   public void testProcessDataAttributeTypeNotApplicable() throws OseeCoreException {
+   public void testProcessDataAttributeTypeNotApplicable()  {
       AttributeTypeRestriction restriction = MockModel.createAttributeTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
       restriction.setAttributeTypeRef(attributeTypeRef);
@@ -60,7 +60,7 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
    }
 
    @Test
-   public void testProcessDataAttributeTypeIsApplicable() throws OseeCoreException {
+   public void testProcessDataAttributeTypeIsApplicable()  {
       AttributeTypeRestriction restriction = MockModel.createAttributeTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
       restriction.setAttributeTypeRef(attributeTypeRef);
@@ -74,7 +74,7 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
    }
 
    @Test
-   public void testProcessDataAttributeTypeIsApplicableArtifactTypeBoundedNoMatch() throws OseeCoreException {
+   public void testProcessDataAttributeTypeIsApplicableArtifactTypeBoundedNoMatch()  {
       AttributeTypeRestriction restriction = MockModel.createAttributeTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
       restriction.setAttributeTypeRef(attributeTypeRef);
@@ -94,7 +94,7 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
    }
 
    @Test
-   public void testProcessDataAttributeTypeIsApplicableArtifactTypeMatch() throws OseeCoreException {
+   public void testProcessDataAttributeTypeIsApplicableArtifactTypeMatch()  {
 
       AttributeTypeRestriction restriction = MockModel.createAttributeTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
@@ -115,7 +115,7 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
    }
 
    @Test
-   public void testProcessDataAttributeTypeIsApplicableArtifactTypeMatchWithInheritance() throws OseeCoreException {
+   public void testProcessDataAttributeTypeIsApplicableArtifactTypeMatchWithInheritance()  {
       AttributeTypeRestriction restriction = MockModel.createAttributeTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
       restriction.setAttributeTypeRef(attributeTypeRef);

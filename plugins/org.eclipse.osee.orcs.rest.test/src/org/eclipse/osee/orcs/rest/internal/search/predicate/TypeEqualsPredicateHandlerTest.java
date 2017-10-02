@@ -54,7 +54,7 @@ public class TypeEqualsPredicateHandlerTest {
    }
 
    @Test
-   public void testHandleSingle() throws OseeCoreException {
+   public void testHandleSingle()  {
       //no type params, op, or flags for ids - any passed are ignored
 
       String id1 = "12345";
@@ -69,7 +69,7 @@ public class TypeEqualsPredicateHandlerTest {
    }
 
    @Test
-   public void testHandleMultiple() throws OseeCoreException {
+   public void testHandleMultiple()  {
       String id1 = "12345";
       String id2 = "45678";
       List<String> values = Arrays.asList(id1, id2);
@@ -87,13 +87,13 @@ public class TypeEqualsPredicateHandlerTest {
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testHandleBadValues() throws OseeCoreException {
+   public void testHandleBadValues()  {
       Predicate testPredicate = new Predicate(SearchMethod.TYPE_EQUALS, null, null);
       handler.handle(builder, testPredicate);
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testBadSearchMethod() throws OseeCoreException {
+   public void testBadSearchMethod()  {
       String id1 = "12345";
       List<String> values = Collections.singletonList(id1);
       Predicate testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, null, values);

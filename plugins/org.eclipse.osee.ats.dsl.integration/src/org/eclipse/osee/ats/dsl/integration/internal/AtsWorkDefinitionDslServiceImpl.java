@@ -52,7 +52,7 @@ public class AtsWorkDefinitionDslServiceImpl implements IAtsWorkDefinitionDslSer
       this.userService = userService;
    }
 
-   public void start() throws OseeCoreException {
+   public void start()  {
       logger.info("AtsWorkDefinitionServiceImpl started");
    }
 

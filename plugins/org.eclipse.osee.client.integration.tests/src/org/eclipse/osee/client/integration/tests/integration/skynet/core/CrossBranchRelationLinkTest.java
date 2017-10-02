@@ -40,7 +40,7 @@ public class CrossBranchRelationLinkTest {
    private Artifact left, right;
 
    @Before
-   public void setUp() throws OseeCoreException {
+   public void setUp()  {
       left = TestUtil.createSimpleArtifact(CoreArtifactTypes.Requirement, "Left", SAW_Bld_1);
       right = TestUtil.createSimpleArtifact(CoreArtifactTypes.Requirement, "Right", SAW_Bld_2);
       left.persist(getClass().getSimpleName());
@@ -48,13 +48,13 @@ public class CrossBranchRelationLinkTest {
    }
 
    @After
-   public void tearDown() throws OseeCoreException {
+   public void tearDown()  {
       left.purgeFromBranch();
       right.purgeFromBranch();
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void attemptCrossBranchLinkCreationTest() throws OseeCoreException {
+   public void attemptCrossBranchLinkCreationTest()  {
       left.addRelation(CoreRelationTypes.Default_Hierarchical__Child, right);
    }
 

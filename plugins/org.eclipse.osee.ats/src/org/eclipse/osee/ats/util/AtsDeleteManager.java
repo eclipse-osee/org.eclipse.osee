@@ -51,7 +51,7 @@ public class AtsDeleteManager {
       Purge
    };
 
-   public static void handleDeletePurgeAtsObject(Collection<Artifact> selectedArts, boolean forcePend, DeleteOption... deleteOption) throws OseeCoreException {
+   public static void handleDeletePurgeAtsObject(Collection<Artifact> selectedArts, boolean forcePend, DeleteOption... deleteOption)  {
       final Collection<DeleteOption> deleteOptions = new ArrayList<DeleteOption>(Arrays.asList(deleteOption));
       boolean purgeOption = deleteOptions.contains(DeleteOption.Purge);
       List<Artifact> delArts = new ArrayList<>();
@@ -134,7 +134,7 @@ public class AtsDeleteManager {
 
    }
 
-   private static void getDeleteArtifacts(List<Artifact> delArts, StringBuilder delBuilder, final Set<Artifact> allDeleteArts, Map<Artifact, Object> ignoredArts) throws OseeCoreException {
+   private static void getDeleteArtifacts(List<Artifact> delArts, StringBuilder delBuilder, final Set<Artifact> allDeleteArts, Map<Artifact, Object> ignoredArts)  {
       for (Artifact deleteArt : delArts) {
          allDeleteArts.add(deleteArt);
          final Set<Artifact> relatedArts = new HashSet<>(30);

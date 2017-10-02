@@ -60,7 +60,7 @@ public class OseeEmail extends MimeMessage {
       Text
    };
 
-   public OseeEmail() throws OseeCoreException {
+   public OseeEmail()  {
       super(getSession());
       mainMessage = new MimeMultipart();
    }
@@ -74,7 +74,7 @@ public class OseeEmail extends MimeMessage {
     * @param subject - the subject of the message
     * @param textBody - the plain text of the body
     */
-   public OseeEmail(Collection<String> toAddresses, String fromAddress, String replyToAddress, String subject, String body, BodyType bodyType) throws OseeCoreException {
+   public OseeEmail(Collection<String> toAddresses, String fromAddress, String replyToAddress, String subject, String body, BodyType bodyType)  {
       this();
       try {
          setRecipients(toAddresses.toArray(new String[toAddresses.size()]));
@@ -102,7 +102,7 @@ public class OseeEmail extends MimeMessage {
     * @param body - the text/html of the body
     * @param bodyType - Html or Text
     */
-   public OseeEmail(String toAddress, String subject, String body, BodyType bodyType) throws OseeCoreException {
+   public OseeEmail(String toAddress, String subject, String body, BodyType bodyType)  {
       this(Arrays.asList(toAddress), UserManager.getUser().getEmail(), UserManager.getUser().getEmail(), subject, body,
          bodyType);
    }
@@ -286,7 +286,7 @@ public class OseeEmail extends MimeMessage {
       }
    }
 
-   public void sendLocalThread() throws MessagingException, OseeCoreException {
+   public void sendLocalThread() throws MessagingException {
       MimeBodyPart messageBodyPart = new MimeBodyPart();
       ClassLoader original = Thread.currentThread().getContextClassLoader();
       try {
@@ -321,7 +321,7 @@ public class OseeEmail extends MimeMessage {
     * 
     * @return the Current SMTP Session
     */
-   private static Session getSession() throws OseeCoreException {
+   private static Session getSession()  {
       Properties props = System.getProperties();
       props.put(emailType,
          OseeSystemArtifacts.getGlobalPreferenceArtifact().getSoleAttributeValue(CoreAttributeTypes.DefaultMailServer));
@@ -347,7 +347,7 @@ public class OseeEmail extends MimeMessage {
       addAttachment(new StringDataSource(contents, attachmentName), attachmentName);
    }
 
-   public static void emailHtml(Collection<String> emails, String subject, String htmlBody) throws OseeCoreException {
+   public static void emailHtml(Collection<String> emails, String subject, String htmlBody)  {
       OseeEmail emailMessage = new OseeEmail(emails, UserManager.getUser().getEmail(), UserManager.getUser().getEmail(),
          subject, htmlBody, BodyType.Html);
       emailMessage.send();

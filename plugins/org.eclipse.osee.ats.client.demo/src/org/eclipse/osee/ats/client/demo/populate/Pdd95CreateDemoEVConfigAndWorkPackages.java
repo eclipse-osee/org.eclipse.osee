@@ -70,7 +70,7 @@ public class Pdd95CreateDemoEVConfigAndWorkPackages {
       changes.execute();
    }
 
-   private void createAndSetWorkPackages() throws OseeCoreException {
+   private void createAndSetWorkPackages()  {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Create Work Packages");
 
@@ -118,7 +118,7 @@ public class Pdd95CreateDemoEVConfigAndWorkPackages {
       insertionActivityArt.addRelation(AtsRelationTypes.InsertionActivityToWorkPackage_WorkPackage, workPackageArt);
    }
 
-   private Artifact createWorkPackage(ArtifactToken workPackageToken, String activityId) throws OseeCoreException {
+   private Artifact createWorkPackage(ArtifactToken workPackageToken, String activityId)  {
       Artifact workPkg1 = ArtifactTypeManager.addArtifact(workPackageToken, AtsClientService.get().getAtsBranch());
       char charAt = workPackageToken.getName().charAt(workPackageToken.getName().length() - 1);
       workPkg1.addAttributeFromString(AtsAttributeTypes.WorkPackageId, "WP_0" + charAt);

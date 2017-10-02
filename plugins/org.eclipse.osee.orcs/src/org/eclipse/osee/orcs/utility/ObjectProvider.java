@@ -17,6 +17,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface ObjectProvider<T> {
 
-   T get() throws OseeCoreException;
+   T get() ;
 
 }

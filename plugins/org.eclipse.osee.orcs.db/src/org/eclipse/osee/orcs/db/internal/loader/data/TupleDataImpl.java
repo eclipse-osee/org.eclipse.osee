@@ -32,7 +32,7 @@ public class TupleDataImpl extends OrcsVersionedObjectImpl implements TupleData 
    }
 
    @Override
-   public void accept(TupleVisitor visitor) throws OseeCoreException {
+   public void accept(TupleVisitor visitor)  {
       visitor.visit(this);
    }
 

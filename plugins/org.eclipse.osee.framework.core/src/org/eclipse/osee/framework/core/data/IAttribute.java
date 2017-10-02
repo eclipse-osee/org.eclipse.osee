@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IAttribute<T> extends AttributeId {
 
-   public T getValue() throws OseeCoreException;
+   public T getValue() ;
 
    public AttributeTypeId getAttributeType();
 }

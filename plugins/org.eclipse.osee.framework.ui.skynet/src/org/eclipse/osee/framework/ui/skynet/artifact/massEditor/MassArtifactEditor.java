@@ -305,7 +305,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor {
       }
    }
 
-   public IOseeBranch getBranch() throws OseeCoreException {
+   public IOseeBranch getBranch()  {
       if (((MassArtifactEditorInput) getEditorInput()).getArtifacts().isEmpty()) {
          return null;
       }

@@ -37,7 +37,7 @@ public class NoteItem {
       this.type = type;
    }
 
-   public NoteItem(String type, String state, String date, IAtsUser user, String msg) throws OseeCoreException {
+   public NoteItem(String type, String state, String date, IAtsUser user, String msg)  {
       this(NoteType.getType(type), state, date, user, msg);
    }
 

@@ -17,5 +17,5 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IAtsBranchServiceProvider {
 
-   IAtsBranchService getBranchService() throws OseeCoreException;
+   IAtsBranchService getBranchService() ;
 }

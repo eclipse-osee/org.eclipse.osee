@@ -51,7 +51,7 @@ public class RelationCriteria implements ArtifactSearchCriteria {
    }
 
    @Override
-   public void addToQueryBuilder(QueryBuilder builder) throws OseeCoreException {
+   public void addToQueryBuilder(QueryBuilder builder)  {
       if (artifactId.isValid()) {
          RelationTypeSide rts =
             RelationTypeSide.create(relationSide, relationType.getId(), Strings.EMPTY_STRING);

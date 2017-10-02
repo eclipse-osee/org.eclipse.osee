@@ -113,7 +113,7 @@ public class OrcsTxQueryTest {
    }
 
    @Test
-   public void testGetByTxId() throws OseeCoreException {
+   public void testGetByTxId()  {
       TransactionQuery query = factory.transactionQuery();
       query.andTxIds(Arrays.asList(TransactionId.valueOf(3), TransactionId.valueOf(23)));
 
@@ -130,7 +130,7 @@ public class OrcsTxQueryTest {
    }
 
    @Test
-   public void testGetByCommentEquals() throws OseeCoreException {
+   public void testGetByCommentEquals()  {
       TransactionQuery query = factory.transactionQuery();
       query.andCommentEquals("New Branch from System Root Branch (3)");
 
@@ -141,7 +141,7 @@ public class OrcsTxQueryTest {
    }
 
    @Test
-   public void testGetByCommentPatternEquals() throws OseeCoreException {
+   public void testGetByCommentPatternEquals()  {
       TransactionQuery query = factory.transactionQuery();
       query.andCommentPattern("New Branch from.*");
 
@@ -152,7 +152,7 @@ public class OrcsTxQueryTest {
    }
 
    @Test
-   public void testGetByType() throws OseeCoreException {
+   public void testGetByType()  {
       TransactionQuery query = factory.transactionQuery();
 
       query.andIs(Baselined);
@@ -170,7 +170,7 @@ public class OrcsTxQueryTest {
    }
 
    @Test
-   public void testGetByBranchIds() throws OseeCoreException {
+   public void testGetByBranchIds()  {
       TransactionQuery query = factory.transactionQuery();
       query.andBranchIds(5, 4);
 
@@ -184,7 +184,7 @@ public class OrcsTxQueryTest {
    }
 
    @Test
-   public void testGetByBranchUuids() throws OseeCoreException {
+   public void testGetByBranchUuids()  {
       TransactionQuery query = factory.transactionQuery();
       query.andBranch(SAW_Bld_1, CIS_Bld_1);
 
@@ -209,7 +209,7 @@ public class OrcsTxQueryTest {
    }
 
    @Test
-   public void testGetLTIdOperators() throws OseeCoreException {
+   public void testGetLTIdOperators()  {
       TransactionQuery query = factory.transactionQuery();
       query.andTxId(Operator.LESS_THAN_EQ, 2);
       ResultSet<TransactionReadable> results = query.getResults();
@@ -231,7 +231,7 @@ public class OrcsTxQueryTest {
    }
 
    @Test
-   public void testGetGTIdOperators() throws OseeCoreException {
+   public void testGetGTIdOperators()  {
       TransactionQuery query = factory.transactionQuery();
       query.andTxId(Operator.GREATER_THAN_EQ, 21);
       ResultSet<TransactionReadable> results = query.getResults();
@@ -256,7 +256,7 @@ public class OrcsTxQueryTest {
    }
 
    @Test
-   public void testGetEQIdOperators() throws OseeCoreException {
+   public void testGetEQIdOperators()  {
       TransactionQuery query = factory.transactionQuery();
       query.andTxId(Operator.EQUAL, 21);
       query.andBranch(COMMON);
@@ -276,7 +276,7 @@ public class OrcsTxQueryTest {
    }
 
    @Test
-   public void testGetTwoIdOperators() throws OseeCoreException {
+   public void testGetTwoIdOperators()  {
       TransactionQuery query = factory.transactionQuery();
       query.andTxId(Operator.GREATER_THAN, 21, Operator.LESS_THAN, 23);
       ResultSet<TransactionReadable> results = query.getResults();
@@ -405,7 +405,7 @@ public class OrcsTxQueryTest {
       assertEquals(0, query.getCount());
 
       /************************************************************
-       * null not allowed in multiple argument case -- throws OseeArgumentException
+       * null not allowed in multiple argument case -- 
        */
       query = factory.transactionQuery();
       query.andCommitIds(null, OseeSystem.getId().intValue(), 1);
@@ -478,7 +478,7 @@ public class OrcsTxQueryTest {
    }
 
    @Test
-   public void testGetPriorTx() throws OseeCoreException {
+   public void testGetPriorTx()  {
       TransactionQuery query = factory.transactionQuery();
       query.andIsPriorTx(CommonBranchHeadTransaction);
 

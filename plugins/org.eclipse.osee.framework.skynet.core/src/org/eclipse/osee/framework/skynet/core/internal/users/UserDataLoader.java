@@ -38,7 +38,7 @@ public class UserDataLoader implements CacheDataLoader<String, User> {
    }
 
    @Override
-   public Map<String, User> load(Iterable<? extends String> keys) throws OseeCoreException {
+   public Map<String, User> load(Iterable<? extends String> keys)  {
       List<Artifact> artifacts = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.User, CoreBranches.COMMON);
       Map<String, User> result = new HashMap<>();
       for (Artifact artifact : artifacts) {
@@ -49,7 +49,7 @@ public class UserDataLoader implements CacheDataLoader<String, User> {
    }
 
    @Override
-   public User load(String userId) throws OseeCoreException {
+   public User load(String userId)  {
       User user = null;
       try {
          Artifact artifact = ArtifactQuery.getArtifactFromTypeAndAttribute(CoreArtifactTypes.User,
@@ -65,7 +65,7 @@ public class UserDataLoader implements CacheDataLoader<String, User> {
    }
 
    @Override
-   public User reload(String key, User oldValue) throws OseeCoreException {
+   public User reload(String key, User oldValue)  {
       Collection<? extends Artifact> reloadArtifacts = ArtifactQuery.reloadArtifacts(Collections.singleton(oldValue));
       ArtifactToken artifact = reloadArtifacts.isEmpty() ? null : reloadArtifacts.iterator().next();
       return (User) artifact;

@@ -99,7 +99,7 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
    }
 
    @Override
-   public void generate(IProgressMonitor monitor, CompareData compareData) throws OseeCoreException {
+   public void generate(IProgressMonitor monitor, CompareData compareData)  {
       Writer writer = null;
       try {
          writer = new BufferedWriter(new FileWriter(compareData.getGeneratorScriptPath()));
@@ -216,7 +216,7 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
       }
    }
 
-   private void executeScript(File vbDiffScript) throws OseeCoreException {
+   private void executeScript(File vbDiffScript)  {
       Process process = null;
       try {
          String target = vbDiffScript.getName();

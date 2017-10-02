@@ -59,7 +59,7 @@ public class ArtifactRendererTest {
    private static TransactionRecord endTx2;
 
    @Before
-   public void setUp() throws OseeCoreException {
+   public void setUp()  {
 
       startTx = TransactionManager.getHeadTransaction(COMMON);
       artifact1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Artifact, COMMON, NAME1);

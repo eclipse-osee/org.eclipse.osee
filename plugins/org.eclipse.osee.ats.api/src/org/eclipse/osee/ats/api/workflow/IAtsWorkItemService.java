@@ -27,21 +27,21 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
  */
 public interface IAtsWorkItemService {
 
-   IStateToken getCurrentState(IAtsWorkItem workItem) throws OseeCoreException;
+   IStateToken getCurrentState(IAtsWorkItem workItem) ;
 
-   Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow teamWf) throws OseeCoreException;
+   Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow teamWf) ;
 
-   Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow teamWf, IStateToken state) throws OseeCoreException;
+   Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow teamWf, IStateToken state) ;
 
-   IAtsTeamWorkflow getFirstTeam(Object object) throws OseeCoreException;
+   IAtsTeamWorkflow getFirstTeam(Object object) ;
 
    void clearImplementersCache(IAtsWorkItem workItem);
 
-   Collection<WidgetResult> validateWidgetTransition(IAtsWorkItem workItem, IAtsStateDefinition toStateDef) throws OseeStateException;
+   Collection<WidgetResult> validateWidgetTransition(IAtsWorkItem workItem, IAtsStateDefinition toStateDef) ;
 
    Collection<ITransitionListener> getTransitionListeners();
 
-   String getTargetedVersionStr(IAtsTeamWorkflow teamWf) throws OseeCoreException;
+   String getTargetedVersionStr(IAtsTeamWorkflow teamWf) ;
 
    String getArtifactTypeShortName(IAtsTeamWorkflow teamWf);
 
@@ -52,7 +52,7 @@ public interface IAtsWorkItemService {
    /**
     * Assigned or Combined Id that will show at the top of the editor. Default is "<ATS Id> / <Legacy PCR Id (if set)>"
     */
-   String getCombinedPcrId(IAtsWorkItem workItem) throws OseeCoreException;
+   String getCombinedPcrId(IAtsWorkItem workItem) ;
 
    IAtsWorkItemNotes getNotes(IAtsWorkItem workItem);
 

@@ -27,7 +27,7 @@ public class VCastBranchDataTable implements VCastTableData<VCastBranchData> {
    }
 
    @Override
-   public Collection<VCastBranchData> getRows(VCastDataStore dataStore) throws OseeCoreException {
+   public Collection<VCastBranchData> getRows(VCastDataStore dataStore)  {
       return dataStore.getAllBranchData();
    }
 

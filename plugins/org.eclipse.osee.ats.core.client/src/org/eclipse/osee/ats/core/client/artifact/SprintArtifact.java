@@ -40,7 +40,7 @@ public class SprintArtifact extends CollectorArtifact implements IAgileSprint {
    }
 
    @Override
-   public AbstractWorkflowArtifact getParentAWA() throws OseeCoreException {
+   public AbstractWorkflowArtifact getParentAWA()  {
       return null;
    }
 
@@ -70,7 +70,7 @@ public class SprintArtifact extends CollectorArtifact implements IAgileSprint {
    }
 
    @Override
-   public List<Artifact> getMembers() throws OseeCoreException {
+   public List<Artifact> getMembers()  {
       return AtsClientService.get().getSprintItemsCache().getMembers(this);
    }
 

@@ -41,7 +41,7 @@ public class AssociatedArtIdSqlHandler extends SqlHandler<CriteriaAssociatedArtI
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
+   public boolean addPredicates(AbstractSqlWriter writer)  {
       writer.write("%s.associated_art_id = ?", brAlias);
       writer.addParameter(criteria.getAssociatedArtId());
       return true;

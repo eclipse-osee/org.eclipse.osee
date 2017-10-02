@@ -137,7 +137,7 @@ public abstract class AbstractItemSelectPanel<T> {
       return lastSelectedItem;
    }
 
-   private final void createDialog() throws OseeCoreException {
+   private final void createDialog()  {
 
       T lastSelected = getSelected();
       if (lastSelected == null) {
@@ -159,5 +159,5 @@ public abstract class AbstractItemSelectPanel<T> {
 
    protected abstract boolean updateFromDialogResult(Dialog dialog);
 
-   protected abstract Dialog createSelectDialog(Shell shell, T lastSelected) throws OseeCoreException;
+   protected abstract Dialog createSelectDialog(Shell shell, T lastSelected) ;
 }

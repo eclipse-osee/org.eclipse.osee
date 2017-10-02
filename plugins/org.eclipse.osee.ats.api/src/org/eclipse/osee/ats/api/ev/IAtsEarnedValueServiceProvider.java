@@ -17,5 +17,5 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
  */
 public interface IAtsEarnedValueServiceProvider {
 
-   public IAtsEarnedValueService getEarnedValueService() throws OseeStateException;
+   public IAtsEarnedValueService getEarnedValueService() ;
 }

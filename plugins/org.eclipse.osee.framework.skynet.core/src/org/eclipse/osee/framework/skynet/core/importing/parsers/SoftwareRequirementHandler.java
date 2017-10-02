@@ -31,7 +31,7 @@ public abstract class SoftwareRequirementHandler extends WordOutlineExtractorDel
    }
 
    @Override
-   public void processHeadingText(RoughArtifact roughArtifact, String headingText) throws OseeCoreException {
+   public void processHeadingText(RoughArtifact roughArtifact, String headingText)  {
       StringBuilder text = new StringBuilder(headingText);
       Matcher matcher = partitionPattern.matcher(text);
       boolean isRequirement = false;

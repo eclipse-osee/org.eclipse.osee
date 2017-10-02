@@ -100,7 +100,7 @@ public class GraphBuilderImplTest {
    }
 
    @Test
-   public void testGraphNull() throws OseeCoreException {
+   public void testGraphNull()  {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("graph cannot be null");
 
@@ -112,7 +112,7 @@ public class GraphBuilderImplTest {
    }
 
    @Test
-   public void testOnLoadDescription() throws OseeCoreException {
+   public void testOnLoadDescription()  {
       builder.onLoadStart();
       builder.onLoadDescription(description);
       builder.onLoadEnd();
@@ -122,7 +122,7 @@ public class GraphBuilderImplTest {
    }
 
    @Test
-   public void testGetNodeOrAdjanciesNull() throws OseeCoreException {
+   public void testGetNodeOrAdjanciesNull()  {
       when(graphData.getNode(artifactData)).thenReturn(null);
       when(artifactFactory.createArtifact(session, artifactData)).thenReturn(artifact);
       when(artifact.getOrcsData()).thenReturn(artifactData);
@@ -155,7 +155,7 @@ public class GraphBuilderImplTest {
    }
 
    @Test
-   public void testOnData() throws OseeCoreException {
+   public void testOnData()  {
       when(graphData.getNode(artifactData)).thenReturn(artifact);
       when(graphData.getNode(60)).thenReturn(container);
       when(graphData.getAdjacencies(59)).thenReturn(adjacencies);

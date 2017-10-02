@@ -27,12 +27,12 @@ public class TaskEditor extends WorldEditor implements IXTaskViewer {
    boolean loading = false;
 
    @Override
-   public String getTabName() throws OseeCoreException {
+   public String getTabName()  {
       return "Tasks";
    }
 
    @Override
-   public IAtsTeamWorkflow getTeamWf() throws OseeCoreException {
+   public IAtsTeamWorkflow getTeamWf()  {
       return null;
    }
 

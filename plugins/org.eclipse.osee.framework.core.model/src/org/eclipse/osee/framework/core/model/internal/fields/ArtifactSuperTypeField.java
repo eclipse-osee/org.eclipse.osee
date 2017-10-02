@@ -31,7 +31,7 @@ public final class ArtifactSuperTypeField extends CollectionField<ArtifactType> 
    }
 
    @Override
-   protected Collection<ArtifactType> checkInput(Collection<ArtifactType> input) throws OseeCoreException {
+   protected Collection<ArtifactType> checkInput(Collection<ArtifactType> input)  {
       Collection<ArtifactType> toReturn = Collections.emptyList();
       if (input == null || input.isEmpty()) {
          if (!baseType.equals(CoreArtifactTypes.Artifact)) {

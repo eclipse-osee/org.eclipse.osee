@@ -200,7 +200,7 @@ public class CreateRelatedMenuItem implements SelectionListener {
       artifactExplorer.getTreeViewer().refresh(false);
    }
 
-   private FilteredTreeArtifactTypeEntryDialog getDialog(List<IArtifactType> artifactTypes) throws OseeCoreException {
+   private FilteredTreeArtifactTypeEntryDialog getDialog(List<IArtifactType> artifactTypes)  {
       FilteredTreeArtifactTypeEntryDialog dialog = new FilteredTreeArtifactTypeEntryDialog("New Related",
          "Enter name and select Artifact type to create", "Artifact Name", artifactTypes);
       return dialog;
@@ -263,7 +263,7 @@ public class CreateRelatedMenuItem implements SelectionListener {
       }
    }
 
-   private Collection<ArtifactType> getArtifactTypesFromRelationType(IRelationType relationType, BranchId branchToken) throws OseeCoreException {
+   private Collection<ArtifactType> getArtifactTypesFromRelationType(IRelationType relationType, BranchId branchToken)  {
       RelationType relType = RelationTypeManager.getType(relationType);
       List<ArtifactType> artifactTypes = new ArrayList<>();
       IArtifactType artifactTypeSideB = relType.getArtifactTypeSideB();

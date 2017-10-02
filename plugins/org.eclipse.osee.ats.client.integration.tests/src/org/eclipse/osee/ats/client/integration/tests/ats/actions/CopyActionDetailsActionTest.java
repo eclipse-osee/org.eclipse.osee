@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 public class CopyActionDetailsActionTest extends AbstractAtsActionRunTest {
 
    @Override
-   public CopyActionDetailsAction createAction() throws OseeCoreException {
+   public CopyActionDetailsAction createAction()  {
       return new CopyActionDetailsAction(AtsTestUtil.getTeamWf());
    }
 

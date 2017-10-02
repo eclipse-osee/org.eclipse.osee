@@ -71,7 +71,7 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
    }
 
    @Override
-   public String getColumnText(Object element, XViewerColumn aCol, int columnIndex) throws OseeCoreException {
+   public String getColumnText(Object element, XViewerColumn aCol, int columnIndex)  {
 
       UserRole userRole = (UserRole) element;
       IAtsUser user = UserRoleManager.getUser(userRole, AtsClientService.get());

@@ -27,7 +27,7 @@ public abstract class XRadionButtonsDam extends XRadioButtons implements IAttrib
    }
 
    @Override
-   public Artifact getArtifact() throws OseeCoreException {
+   public Artifact getArtifact()  {
       return artifact;
    }
 

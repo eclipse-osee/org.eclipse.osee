@@ -39,7 +39,7 @@ public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationO
    }
 
    @Override
-   protected RelationData createData(Object conditions, RelationObjectFactory factory, JdbcStatement chStmt, Options options) throws OseeCoreException {
+   protected RelationData createData(Object conditions, RelationObjectFactory factory, JdbcStatement chStmt, Options options)  {
       RelationData toReturn = null;
 
       BranchId branch = BranchId.create(chStmt.getLong("branch_id"), OptionsUtil.getFromBranchView(options));

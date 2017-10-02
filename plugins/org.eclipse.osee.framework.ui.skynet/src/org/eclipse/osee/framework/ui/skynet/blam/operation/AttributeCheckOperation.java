@@ -50,7 +50,7 @@ public class AttributeCheckOperation extends AbstractOperation {
    }
 
    @Override
-   protected void doWork(IProgressMonitor monitor) throws OseeCoreException {
+   protected void doWork(IProgressMonitor monitor)  {
       for (Artifact folder : folders) {
          if (!monitor.isCanceled()) {
             logf("\n\n**************CHECKING IN [%s]***************", folder);
@@ -61,7 +61,7 @@ public class AttributeCheckOperation extends AbstractOperation {
       }
    }
 
-   private String findMostPopularAttributeValue(List<Artifact> allDescendants, IProgressMonitor monitor) throws OseeCoreException {
+   private String findMostPopularAttributeValue(List<Artifact> allDescendants, IProgressMonitor monitor)  {
       CountingMap<String> countingMap = new CountingMap<>();
 
       for (Artifact child : allDescendants) {
@@ -95,7 +95,7 @@ public class AttributeCheckOperation extends AbstractOperation {
       return mostPopular;
    }
 
-   private void compareAllChildrenWithPopularValue(List<Artifact> allDescendants, String popularValue, Artifact folder, IProgressMonitor monitor) throws OseeCoreException {
+   private void compareAllChildrenWithPopularValue(List<Artifact> allDescendants, String popularValue, Artifact folder, IProgressMonitor monitor)  {
       if (!allDescendants.isEmpty()) {
          BranchId branch = allDescendants.get(0).getBranch();
          SkynetTransaction transaction = TransactionManager.createTransaction(branch, "Attribute Check Blam");

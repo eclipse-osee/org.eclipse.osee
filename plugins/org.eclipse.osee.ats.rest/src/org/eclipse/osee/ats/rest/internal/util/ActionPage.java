@@ -172,7 +172,7 @@ public class ActionPage {
       return results;
    }
 
-   public void addTransitionStates(ViewModel page) throws OseeCoreException {
+   public void addTransitionStates(ViewModel page)  {
       try {
          IAtsWorkItem workItem = getWorkItem();
          String html = RestUtil.getResource("templates/transition.html");

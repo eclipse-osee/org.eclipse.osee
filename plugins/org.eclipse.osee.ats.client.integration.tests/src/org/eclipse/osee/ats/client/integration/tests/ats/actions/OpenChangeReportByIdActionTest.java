@@ -25,7 +25,7 @@ import org.junit.Test;
 public class OpenChangeReportByIdActionTest extends AbstractAtsActionRunTest {
 
    @Override
-   public OpenChangeReportByIdAction createAction() throws OseeCoreException {
+   public OpenChangeReportByIdAction createAction()  {
 
       Result result = AtsTestUtil.createWorkingBranchFromTeamWf();
       Assert.assertTrue(result.getText(), result.isTrue());

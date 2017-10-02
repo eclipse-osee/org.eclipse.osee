@@ -50,7 +50,7 @@ public class TemplateArtifactValidatorTest {
    private IOseeBranch testBranch;
 
    @Before
-   public void setup() throws OseeCoreException {
+   public void setup()  {
       testBranch = BranchManager.createWorkingBranch(CoreBranches.COMMON, testInfo.getQualifiedTestName());
    }
 
@@ -60,7 +60,7 @@ public class TemplateArtifactValidatorTest {
    }
 
    @Test
-   public void testIsApplicable() throws OseeCoreException {
+   public void testIsApplicable()  {
       Artifact newTemplate = ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplate, testBranch);
       newTemplate.persist(testInfo.getQualifiedTestName());
       Artifact newNonTemplate = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Design, testBranch);
@@ -78,7 +78,7 @@ public class TemplateArtifactValidatorTest {
    }
 
    @Test
-   public void testValidateOkStatus() throws OseeCoreException {
+   public void testValidateOkStatus()  {
       Artifact newTemplate = ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplate, testBranch);
       newTemplate.persist(testInfo.getQualifiedTestName());
       TemplateArtifactValidator validator = new TemplateArtifactValidator();
@@ -97,7 +97,7 @@ public class TemplateArtifactValidatorTest {
    }
 
    @Test
-   public void testDuplicateCriteriaOnSeparateBranches() throws OseeCoreException {
+   public void testDuplicateCriteriaOnSeparateBranches()  {
       Artifact newTemplate = ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplate, testBranch);
       newTemplate.persist(testInfo.getQualifiedTestName());
       TemplateArtifactValidator validator = new TemplateArtifactValidator();
@@ -119,7 +119,7 @@ public class TemplateArtifactValidatorTest {
    }
 
    @Test
-   public void testValidateErrorStatus() throws OseeCoreException {
+   public void testValidateErrorStatus()  {
       TemplateArtifactValidator validator = new TemplateArtifactValidator();
       String templateId = GUID.create();
 

@@ -55,7 +55,7 @@ public final class OseeEventManager {
       // Utility Class
    }
 
-   private static OseeEventService getEventService() throws OseeCoreException {
+   private static OseeEventService getEventService()  {
       return ServiceUtil.getEventService();
    }
 
@@ -115,7 +115,7 @@ public final class OseeEventManager {
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
    // Kick LOCAL and REMOTE topic event
-   public static void kickTopicEvent(Object source, TopicEvent topicEvent) throws OseeCoreException {
+   public static void kickTopicEvent(Object source, TopicEvent topicEvent)  {
       Assert.isNotNull(source);
       Assert.isNotNull(topicEvent);
       Assert.isNotNull(topicEvent.getEventType(), "TopicEvent.eventType can not be null");
@@ -150,27 +150,27 @@ public final class OseeEventManager {
    /////////////////////////////////////////////T//////////////////////////////////////////////////////////////////////
 
    // Kick LOCAL remote-event event
-   public static void kickLocalRemEvent(Object source, RemoteEventServiceEventType remoteEventServiceEventType) throws OseeCoreException {
+   public static void kickLocalRemEvent(Object source, RemoteEventServiceEventType remoteEventServiceEventType)  {
       getEventService().send(source, remoteEventServiceEventType);
    }
 
    //Kick LOCAL and REMOTE branch events
-   public static void kickBranchEvent(Object source, BranchEvent branchEvent) throws OseeCoreException {
+   public static void kickBranchEvent(Object source, BranchEvent branchEvent)  {
       getEventService().send(source, branchEvent);
    }
 
    // Kick LOCAL and REMOTE transaction deleted event
-   public static void kickTransactionEvent(Object source, final TransactionEvent transactionEvent) throws OseeCoreException {
+   public static void kickTransactionEvent(Object source, final TransactionEvent transactionEvent)  {
       getEventService().send(source, transactionEvent);
    }
 
    // Kick LOCAL and REMOTE transaction event
-   public static void kickPersistEvent(Object source, ArtifactEvent artifactEvent) throws OseeCoreException {
+   public static void kickPersistEvent(Object source, ArtifactEvent artifactEvent)  {
       getEventService().send(source, artifactEvent);
    }
 
    // Kick LOCAL transaction event
-   public static void kickLocalArtifactReloadEvent(Object source, Collection<? extends ArtifactToken> artifacts) throws OseeCoreException {
+   public static void kickLocalArtifactReloadEvent(Object source, Collection<? extends ArtifactToken> artifacts)  {
       if (isDisableEvents()) {
          return;
       }
@@ -215,17 +215,17 @@ public final class OseeEventManager {
 
    /////////////////////////////////// LEGACY TEST API ////////////////////////////////////////////
    // Only Used for Testing purposes
-   public static void internalTestSendRemoteEvent(final RemoteEvent remoteEvent) throws OseeCoreException {
+   public static void internalTestSendRemoteEvent(final RemoteEvent remoteEvent)  {
       getEventService().receive(remoteEvent);
    }
 
    // Only Used for Testing purposes
-   public static void internalTestProcessBranchEvent(Sender sender, BranchEvent branchEvent) throws OseeCoreException {
+   public static void internalTestProcessBranchEvent(Sender sender, BranchEvent branchEvent)  {
       getEventService().receive(sender, branchEvent);
    }
 
    // Only Used for Testing purposes
-   public static void internalTestProcessEventArtifactsAndRelations(Sender sender, ArtifactEvent artifactEvent) throws OseeCoreException {
+   public static void internalTestProcessEventArtifactsAndRelations(Sender sender, ArtifactEvent artifactEvent)  {
       getEventService().receive(sender, artifactEvent);
    }
 

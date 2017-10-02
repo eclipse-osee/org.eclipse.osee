@@ -103,7 +103,7 @@ public class AccessDetailTest {
    }
 
    @Parameters
-   public static Collection<Object[]> getData() throws OseeCoreException {
+   public static Collection<Object[]> getData()  {
       Collection<Object[]> data = new ArrayList<>();
       addTest(data, "Hello", PermissionEnum.DENY, "A reason", new Scope().add("hello_scope"));
       addTest(data, 456, PermissionEnum.WRITE, null, new Scope().add("456_scope"));

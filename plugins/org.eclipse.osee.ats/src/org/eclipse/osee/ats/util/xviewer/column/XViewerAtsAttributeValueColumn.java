@@ -93,7 +93,7 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
    /**
     * Returns parent team workflow, if AbstractWorkflowArtifact or Artifact, if artifact
     */
-   protected Artifact getParentTeamWorkflowOrArtifact(Object element) throws OseeCoreException {
+   protected Artifact getParentTeamWorkflowOrArtifact(Object element)  {
       Artifact useArt = null;
       if (element instanceof Artifact) {
          if (element instanceof AbstractWorkflowArtifact) {

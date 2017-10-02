@@ -20,8 +20,8 @@ public interface OrderStore {
 
    boolean isAccessible();
 
-   String getOrderData() throws OseeCoreException;
+   String getOrderData() ;
 
-   void storeOrderData(OrderChange changeType, String data) throws OseeCoreException;
+   void storeOrderData(OrderChange changeType, String data) ;
 
 }

@@ -89,11 +89,11 @@ public class ConflictTestManager {
       protected boolean sourceDeleted;
       protected boolean destinationDeleted;
 
-      protected AttributeValue(String attributeName, String sourceValue, String destValue, String mergeValue, Class<?> clas) throws OseeCoreException {
+      protected AttributeValue(String attributeName, String sourceValue, String destValue, String mergeValue, Class<?> clas)  {
          this(attributeName, sourceValue, destValue, mergeValue, clas, false, false);
       }
 
-      protected AttributeValue(String attributeName, String sourceValue, String destValue, String mergeValue, Class<?> clas, boolean sourceDeleted, boolean destinationDeleted) throws OseeCoreException {
+      protected AttributeValue(String attributeName, String sourceValue, String destValue, String mergeValue, Class<?> clas, boolean sourceDeleted, boolean destinationDeleted)  {
          this.attributeType = AttributeTypeManager.getType(attributeName);
          this.sourceValue = sourceValue;
          this.destValue = destValue;
@@ -103,7 +103,7 @@ public class ConflictTestManager {
          this.destinationDeleted = destinationDeleted;
       }
 
-      protected AttributeValue(String attributeName, String sourceValue, Class<?> clas) throws OseeCoreException {
+      protected AttributeValue(String attributeName, String sourceValue, Class<?> clas)  {
          this(attributeName, sourceValue, null, null, clas);
       }
    }
@@ -120,7 +120,7 @@ public class ConflictTestManager {
       protected int rootArtifact;
       protected IArtifactType type;
 
-      protected ArtifactModification(Type itemToChange, Modification modificationToPerform, int rootArtifact, BranchId branch, IArtifactType type, String name) throws OseeCoreException {
+      protected ArtifactModification(Type itemToChange, Modification modificationToPerform, int rootArtifact, BranchId branch, IArtifactType type, String name)  {
          if (!itemToChange.equals(Type.ARTIFACT)) {
             throw new OseeCoreException("This is the Artifact Constructor");
          }
@@ -132,7 +132,7 @@ public class ConflictTestManager {
          this.name = name;
       }
 
-      protected ArtifactModification(Type itemToChange, Modification modificationToPerform, Object object, String name, Class<?> clas, String value) throws OseeCoreException {
+      protected ArtifactModification(Type itemToChange, Modification modificationToPerform, Object object, String name, Class<?> clas, String value)  {
          if (!itemToChange.equals(Type.ATTRIBUTE)) {
             throw new OseeCoreException("This is the Attribute Constructor");
          }
@@ -144,7 +144,7 @@ public class ConflictTestManager {
          this.name = name;
       }
 
-      protected ArtifactModification(Type itemToChange, Modification modificationToPerform, Object object, Object object2) throws OseeCoreException {
+      protected ArtifactModification(Type itemToChange, Modification modificationToPerform, Object object, Object object2)  {
          if (!itemToChange.equals(Type.RELATION)) {
             throw new OseeCoreException("This is the Relation Constructor");
          }
@@ -240,7 +240,7 @@ public class ConflictTestManager {
       performModifications();
    }
 
-   private static void performModifications() throws OseeCoreException {
+   private static void performModifications()  {
       createModifications();
       for (ArtifactModification modification : modifications) {
          switch (modification.modificationToPerform) {
@@ -293,7 +293,7 @@ public class ConflictTestManager {
       }
    }
 
-   protected static Artifact createArtifact(int rootArtifactId, BranchId branch, IArtifactType type, String name) throws OseeCoreException {
+   protected static Artifact createArtifact(int rootArtifactId, BranchId branch, IArtifactType type, String name)  {
       Artifact rootArtifact = ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.Name, FOLDER, branch);
       if (rootArtifactId > 0 && rootArtifactId < NUMBER_OF_ARTIFACTS) {
          if (branch.equals(destArtifacts[0].getBranch())) {
@@ -309,13 +309,13 @@ public class ConflictTestManager {
       return child;
    }
 
-   protected static Attribute<?> createAttribute(Artifact artifact, AttributeTypeId attributeType, Class<?> clas, String value) throws OseeCoreException {
+   protected static Attribute<?> createAttribute(Artifact artifact, AttributeTypeId attributeType, Class<?> clas, String value)  {
       artifact.addAttribute(attributeType, stringToObject(clas, value));
       artifact.persist(ConflictTestManager.class.getSimpleName());
       return artifact.getSoleAttribute(attributeType);
    }
 
-   protected static RelationLink createRelation(Artifact artifact, Artifact artifactB) throws OseeCoreException {
+   protected static RelationLink createRelation(Artifact artifact, Artifact artifactB)  {
       artifact.addRelation(CoreRelationTypes.Dependency__Dependency, artifactB);
       artifact.persist(ConflictTestManager.class.getSimpleName());
       return artifact.getRelations(CoreRelationTypes.Dependency__Dependency).get(0);
@@ -454,7 +454,7 @@ public class ConflictTestManager {
       return true;
    }
 
-   public static void createModifications() throws OseeCoreException {
+   public static void createModifications()  {
       modifications.clear();
       modifications.add(new ArtifactModification(Type.ARTIFACT, Modification.CREATE_AND_DELETE, 0,
          sourceArtifacts[0].getBranch(), CoreArtifactTypes.SoftwareRequirement, "Test create an Delete"));
@@ -464,7 +464,7 @@ public class ConflictTestManager {
          sourceArtifacts[7]));
    }
 
-   public static void createConflictDefinitions() throws OseeCoreException {
+   public static void createConflictDefinitions()  {
       for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
          conflictDefs[i] = new ConflictDefinition();
       }

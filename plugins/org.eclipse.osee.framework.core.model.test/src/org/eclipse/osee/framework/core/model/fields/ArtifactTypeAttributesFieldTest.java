@@ -41,7 +41,7 @@ public class ArtifactTypeAttributesFieldTest {
    private static BranchId br2;
 
    @BeforeClass
-   public static void prepareTest() throws OseeCoreException {
+   public static void prepareTest()  {
       attr1 = MockDataFactory.createAttributeType(1, null);
       attr2 = MockDataFactory.createAttributeType(2, null);
       attr3 = MockDataFactory.createAttributeType(3, null);
@@ -52,7 +52,7 @@ public class ArtifactTypeAttributesFieldTest {
    }
 
    @Test
-   public void testGetSet() throws OseeCoreException {
+   public void testGetSet()  {
       Map<BranchId, Collection<AttributeType>> input = new LinkedHashMap<>();
       ArtifactTypeAttributesField field = new ArtifactTypeAttributesField(input);
 
@@ -95,7 +95,7 @@ public class ArtifactTypeAttributesFieldTest {
       return map;
    }
 
-   private static void assertSetGet(ArtifactTypeAttributesField field, Map<BranchId, Collection<AttributeType>> setValues, Map<BranchId, Collection<AttributeType>> expected, boolean expectedDirty) throws OseeCoreException {
+   private static void assertSetGet(ArtifactTypeAttributesField field, Map<BranchId, Collection<AttributeType>> setValues, Map<BranchId, Collection<AttributeType>> expected, boolean expectedDirty)  {
       field.set(setValues);
       Assert.assertEquals(expectedDirty, field.isDirty());
 

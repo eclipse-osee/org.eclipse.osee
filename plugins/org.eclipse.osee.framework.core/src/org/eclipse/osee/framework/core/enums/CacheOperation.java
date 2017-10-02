@@ -22,7 +22,7 @@ public enum CacheOperation {
    UPDATE,
    STORE;
 
-   public static CacheOperation fromString(String value) throws OseeCoreException {
+   public static CacheOperation fromString(String value)  {
       Conditions.checkNotNullOrEmpty(value, "enum string");
       for (CacheOperation op : CacheOperation.values()) {
          if (op.name().equalsIgnoreCase(value)) {

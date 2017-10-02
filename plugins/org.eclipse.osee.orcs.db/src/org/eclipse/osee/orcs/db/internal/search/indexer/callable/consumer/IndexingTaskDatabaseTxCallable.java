@@ -86,7 +86,7 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
    }
 
    @Override
-   protected Long handleTxWork(JdbcConnection connection) throws OseeCoreException {
+   protected Long handleTxWork(JdbcConnection connection)  {
       getLogger().debug("Tagging: [%s]", getTagQueueQueryId());
       long totalTags = -1;
       try {
@@ -111,12 +111,12 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
       return totalTags;
    }
 
-   private String getTaggerIdByTypeUuid(long typeUuid) throws OseeCoreException {
+   private String getTaggerIdByTypeUuid(long typeUuid)  {
       AttributeTypeId type = attributeTypes.get(typeUuid);
       return attributeTypes.getTaggerId(type);
    }
 
-   private long createTags(JdbcConnection connection, Collection<IndexedResource> sources) throws OseeCoreException {
+   private long createTags(JdbcConnection connection, Collection<IndexedResource> sources)  {
       SearchTagCollector tagCollector = new SearchTagCollector();
 
       Set<Long> processed = new HashSet<>();
@@ -183,7 +183,7 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
       }
    }
 
-   private void removeIndexingTaskFromQueue(JdbcConnection connection) throws OseeCoreException {
+   private void removeIndexingTaskFromQueue(JdbcConnection connection)  {
       getJdbcClient().runPreparedUpdate(connection, JoinItem.TAG_GAMMA_QUEUE.getDeleteSql(), getTagQueueQueryId());
    }
 
@@ -200,7 +200,7 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
       return needsStorage;
    }
 
-   public int deleteTags(JdbcConnection connection, Collection<IndexedResource> sources) throws OseeCoreException {
+   public int deleteTags(JdbcConnection connection, Collection<IndexedResource> sources)  {
       int numberDeleted = 0;
       if (!sources.isEmpty()) {
          List<Object[]> datas = new ArrayList<>();
@@ -212,7 +212,7 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
       return numberDeleted;
    }
 
-   private int storeTags(JdbcConnection connection, Map<Long, Collection<Long>> toStore) throws OseeCoreException {
+   private int storeTags(JdbcConnection connection, Map<Long, Collection<Long>> toStore)  {
       int updated = 0;
       if (!toStore.isEmpty()) {
          List<Object[]> data = new ArrayList<>();

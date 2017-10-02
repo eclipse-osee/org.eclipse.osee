@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.ui.swt.OverlayImage.Location;
 public class AtsArtifactImageProvider extends ArtifactImageProvider {
 
    @Override
-   public void init() throws OseeCoreException {
+   public void init()  {
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.DecisionReview, AtsImage.DECISION_REVIEW, this);
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Action, AtsImage.ACTION, this);
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Version, FrameworkImage.VERSION, this);
@@ -64,7 +64,7 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
    }
 
    @Override
-   public String setupImage(Artifact artifact) throws OseeCoreException {
+   public String setupImage(Artifact artifact)  {
       if (artifact.isOfType(AtsArtifactTypes.Version)) {
          if (artifact.getSoleAttributeValue(AtsAttributeTypes.NextVersion, false)) {
             return ArtifactImageManager.setupImage(artifact, AtsImage.NEXT, Location.BOT_RIGHT);

@@ -16,6 +16,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 
 public interface AttributeAdapterService {
 
-   <T> T adapt(Attribute<?> attribute, Id identity) throws OseeCoreException;
+   <T> T adapt(Attribute<?> attribute, Id identity) ;
 
 }

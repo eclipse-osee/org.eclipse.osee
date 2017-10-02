@@ -71,7 +71,7 @@ public class PercentCompleteTasksReviewsColumn extends XViewerAtsColumn implemen
    /**
     * Return Percent Complete ONLY on tasks. Total Percent / # Tasks
     */
-   public static int getPercentCompleteFromTasksAndReviews(Artifact artifact) throws OseeCoreException {
+   public static int getPercentCompleteFromTasksAndReviews(Artifact artifact)  {
       if (IAtsAction.isOfType(artifact)) {
          double percent = 0;
          for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(artifact)) {

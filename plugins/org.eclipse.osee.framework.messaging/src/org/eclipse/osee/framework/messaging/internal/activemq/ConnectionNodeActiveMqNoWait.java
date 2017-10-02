@@ -88,7 +88,7 @@ class ConnectionNodeActiveMqNoWait implements ConnectionNodeFailoverSupport, Mes
    }
 
    @Override
-   public synchronized void start() throws OseeCoreException {
+   public synchronized void start()  {
       execute.submit(new Start());
    }
 
@@ -121,19 +121,19 @@ class ConnectionNodeActiveMqNoWait implements ConnectionNodeFailoverSupport, Mes
    }
 
    @Override
-   public void send(MessageID topic, Object body) throws OseeCoreException {
+   public void send(MessageID topic, Object body)  {
       String errorMessage = String.format("Error sending message(%s)", topic.getId());
       OseeMessagingStatusImpl defaultErrorHandler = new OseeMessagingStatusImpl(errorMessage, getClass());
       this.send(topic, body, defaultErrorHandler);
    }
 
    @Override
-   public synchronized void send(MessageID messageId, Object message, OseeMessagingStatusCallback statusCallback) throws OseeCoreException {
+   public synchronized void send(MessageID messageId, Object message, OseeMessagingStatusCallback statusCallback)  {
       send(messageId, message, null, statusCallback);
    }
 
    @Override
-   public synchronized void send(MessageID messageId, Object message, Properties properties, OseeMessagingStatusCallback statusCallback) throws OseeCoreException {
+   public synchronized void send(MessageID messageId, Object message, Properties properties, OseeMessagingStatusCallback statusCallback)  {
       execute.submit(new Send(messageId, message, properties, statusCallback));
    }
 
@@ -168,7 +168,7 @@ class ConnectionNodeActiveMqNoWait implements ConnectionNodeFailoverSupport, Mes
          }
       }
 
-      private synchronized void sendInternal(MessageID messageId, Object message, Properties properties, OseeMessagingStatusCallback statusCallback) throws JMSException, OseeCoreException {
+      private synchronized void sendInternal(MessageID messageId, Object message, Properties properties, OseeMessagingStatusCallback statusCallback) throws JMSException {
          Topic destination = getOrCreateTopic(messageId);
          MessageProducer producer = getOrCreateProducer(destination);
          Message msg = activeMqUtil.createMessage(session, messageId.getSerializationClass(), message);

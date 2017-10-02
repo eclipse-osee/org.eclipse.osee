@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public class Criteria {
 
-   public void checkValid(Options options) throws OseeCoreException {
+   public void checkValid(Options options)  {
       // For subclasses to implement
    }
 

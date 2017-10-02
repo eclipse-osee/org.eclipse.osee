@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface CharacterDataProxy<T> extends DataProxy<T> {
 
-   public String getValueAsString() throws OseeCoreException;
+   public String getValueAsString() ;
 
    public T getValue();
 

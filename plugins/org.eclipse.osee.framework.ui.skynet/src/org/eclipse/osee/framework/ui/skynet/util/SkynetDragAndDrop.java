@@ -124,7 +124,7 @@ public abstract class SkynetDragAndDrop {
       });
    }
 
-   public void performDragOver(DropTargetEvent event) throws OseeCoreException {
+   public void performDragOver(DropTargetEvent event)  {
       // provided for subclass implementation
    }
 

@@ -197,7 +197,7 @@ public class HttpProcessor {
       return new URI(locator);
    }
 
-   public static String put(URL url, InputStream inputStream, String contentType, String encoding) throws OseeCoreException {
+   public static String put(URL url, InputStream inputStream, String contentType, String encoding)  {
       int statusCode = -1;
       String response = null;
       PutMethod method = new PutMethod(url.toString());
@@ -231,7 +231,7 @@ public class HttpProcessor {
       return response;
    }
 
-   public static AcquireResult delete(URL url, String xml, String contentType, String encoding, OutputStream outputStream) throws OseeCoreException {
+   public static AcquireResult delete(URL url, String xml, String contentType, String encoding, OutputStream outputStream)  {
       AcquireResult result = new AcquireResult();
       int statusCode = -1;
 
@@ -264,7 +264,7 @@ public class HttpProcessor {
       return result;
    }
 
-   public static AcquireResult post(URL url, InputStream inputStream, String contentType, String encoding, OutputStream outputStream) throws OseeCoreException {
+   public static AcquireResult post(URL url, InputStream inputStream, String contentType, String encoding, OutputStream outputStream)  {
       AcquireResult result = new AcquireResult();
       int statusCode = -1;
 

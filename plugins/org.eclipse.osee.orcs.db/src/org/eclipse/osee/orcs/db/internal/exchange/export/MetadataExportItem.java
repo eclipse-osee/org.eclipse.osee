@@ -138,7 +138,7 @@ public class MetadataExportItem extends AbstractXmlExportItem {
       }
    }
 
-   private void processColumnMetaData(Appendable appendable, DatabaseMetaData metaData, String schema, String tableName) throws SQLException, IOException, OseeCoreException {
+   private void processColumnMetaData(Appendable appendable, DatabaseMetaData metaData, String schema, String tableName) throws SQLException, IOException {
       ResultSet resultSet = null;
       try {
          try {

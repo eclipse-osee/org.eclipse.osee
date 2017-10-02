@@ -58,7 +58,7 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
       return identityManager.getNextTransactionId();
    }
 
-   private void process(TxWritePhaseEnum phase) throws OseeCoreException {
+   private void process(TxWritePhaseEnum phase)  {
       Iterable<TransactionProcessor> processors = provider.getProcessor(phase);
       for (TransactionProcessor processor : processors) {
          processor.process(this, getSession(), transactionData);
@@ -71,7 +71,7 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
     * @return TransactionResult or null if no data was modified
     */
    @Override
-   protected TransactionResult handleTxWork(JdbcConnection connection) throws OseeCoreException {
+   protected TransactionResult handleTxWork(JdbcConnection connection)  {
       /////
       // TODO:
       // 1. Make this whole method a critical region on a per branch basis - can only write to a branch on one thread at time
@@ -106,12 +106,12 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
    }
 
    @Override
-   protected void handleTxFinally() throws OseeCoreException {
+   protected void handleTxFinally()  {
       super.handleTxFinally();
       process(TxWritePhaseEnum.AFTER_TX_WRITE);
    }
 
-   private TransactionReadable createTransactionRecord(BranchId branch, UserId author, String comment, TransactionId transaction) throws OseeCoreException {
+   private TransactionReadable createTransactionRecord(BranchId branch, UserId author, String comment, TransactionId transaction)  {
 
       TransactionDetailsType txType = TransactionDetailsType.NonBaselined;
       Date transactionTime = GlobalTime.GreenwichMeanTimestamp();
@@ -151,7 +151,7 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
    }
 
    //////////// EVENT STUFF //////////////////////////
-   //   private void updateModifiedCachedObject() throws OseeCoreException {
+   //   private void updateModifiedCachedObject()  {
    //      ArtifactEvent artifactEvent = new ArtifactEvent(transactionRecord.getBranch());
    //      artifactEvent.setTransactionId(getTransactionNumber());
    //
@@ -195,7 +195,7 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
    //      }
    //   }
    //
-   //   protected static int getNewAttributeId(Artifact artifact, Attribute<?> attribute) throws OseeCoreException {
+   //   protected static int getNewAttributeId(Artifact artifact, Attribute<?> attribute)  {
    //      return ConnectionHandler.getSequence().getNextAttributeId();
    //   }
 

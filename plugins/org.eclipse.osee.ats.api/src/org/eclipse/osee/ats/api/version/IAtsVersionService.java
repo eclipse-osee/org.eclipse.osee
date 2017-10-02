@@ -25,27 +25,27 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IAtsVersionService {
 
-   boolean hasTargetedVersion(IAtsWorkItem workItem) throws OseeCoreException;
+   boolean hasTargetedVersion(IAtsWorkItem workItem) ;
 
-   IAtsVersion getTargetedVersion(IAtsWorkItem workItem) throws OseeCoreException;
+   IAtsVersion getTargetedVersion(IAtsWorkItem workItem) ;
 
-   Collection<IAtsTeamWorkflow> getTargetedForTeamWorkflows(IAtsVersion version) throws OseeCoreException;
+   Collection<IAtsTeamWorkflow> getTargetedForTeamWorkflows(IAtsVersion version) ;
 
-   IAtsTeamDefinition getTeamDefinition(IAtsVersion version) throws OseeCoreException;
+   IAtsTeamDefinition getTeamDefinition(IAtsVersion version) ;
 
-   void setTeamDefinition(IAtsVersion version, IAtsTeamDefinition teamDef, IAtsChangeSet changes) throws OseeCoreException;
+   void setTeamDefinition(IAtsVersion version, IAtsTeamDefinition teamDef, IAtsChangeSet changes) ;
 
-   boolean isReleased(IAtsTeamWorkflow teamWf) throws OseeCoreException;
+   boolean isReleased(IAtsTeamWorkflow teamWf) ;
 
-   boolean isVersionLocked(IAtsTeamWorkflow teamWf) throws OseeCoreException;
+   boolean isVersionLocked(IAtsTeamWorkflow teamWf) ;
 
-   void removeTargetedVersion(IAtsTeamWorkflow teamWf, IAtsChangeSet changes) throws OseeCoreException;
+   void removeTargetedVersion(IAtsTeamWorkflow teamWf, IAtsChangeSet changes) ;
 
-   IAtsVersion getById(Identity<String> id) throws OseeCoreException;
+   IAtsVersion getById(Identity<String> id) ;
 
    BranchId getBranch(IAtsVersion version);
 
-   IAtsVersion getTargetedVersionByTeamWf(IAtsTeamWorkflow team) throws OseeCoreException;
+   IAtsVersion getTargetedVersionByTeamWf(IAtsTeamWorkflow team) ;
 
    IAtsVersion setTargetedVersion(IAtsTeamWorkflow teamWf, IAtsVersion version, IAtsChangeSet changes);
 

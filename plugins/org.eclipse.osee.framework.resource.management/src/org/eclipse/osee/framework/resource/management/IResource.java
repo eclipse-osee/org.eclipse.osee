@@ -23,9 +23,9 @@ public interface IResource {
     * Returns an open input stream of the contents of this resource.
     * 
     * @return an input stream containing the contents of this resource
-    * @throws OseeCoreException if this method fails.
+    *  if this method fails.
     */
-   public InputStream getContent() throws OseeCoreException;
+   public InputStream getContent() ;
 
    /**
     * Returns the absolute URI of this resource, or <code>null</code> if no URI can be determined.

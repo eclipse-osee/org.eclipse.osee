@@ -68,7 +68,7 @@ public class PercentCompleteStateTasksColumn extends XViewerAtsColumn implements
    /**
     * Return Percent Complete ONLY on tasks related to stateName. Total Percent / # Tasks
     */
-   public static int getPercentCompleteFromStateTasks(Artifact artifact) throws OseeCoreException {
+   public static int getPercentCompleteFromStateTasks(Artifact artifact)  {
       if (artifact.isOfType(AtsArtifactTypes.Action)) {
          double percent = 0;
          for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(artifact)) {
@@ -92,7 +92,7 @@ public class PercentCompleteStateTasksColumn extends XViewerAtsColumn implements
    /**
     * Return Percent Complete ONLY on tasks related to stateName. Total Percent / # Tasks
     */
-   public static int getPercentCompleteFromStateTasks(Artifact artifact, IStateToken relatedToState) throws OseeCoreException {
+   public static int getPercentCompleteFromStateTasks(Artifact artifact, IStateToken relatedToState)  {
       if (!(artifact instanceof TeamWorkFlowArtifact)) {
          return 0;
       }

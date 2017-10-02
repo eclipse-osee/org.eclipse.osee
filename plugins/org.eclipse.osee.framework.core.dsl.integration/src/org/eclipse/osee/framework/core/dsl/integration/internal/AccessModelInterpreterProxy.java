@@ -59,18 +59,18 @@ public class AccessModelInterpreterProxy implements AccessModelInterpreter {
       return proxiedService;
    }
 
-   private void checkInitialized() throws OseeCoreException {
+   private void checkInitialized()  {
       Conditions.checkNotNull(getProxiedService(), "AccessModelInterpreter");
    }
 
    @Override
-   public AccessContext getContext(Collection<AccessContext> contexts, IAccessContextId contextId) throws OseeCoreException {
+   public AccessContext getContext(Collection<AccessContext> contexts, IAccessContextId contextId)  {
       checkInitialized();
       return getProxiedService().getContext(contexts, contextId);
    }
 
    @Override
-   public void computeAccessDetails(AccessDetailCollector collector, AccessContext context, Object objectToCheck) throws OseeCoreException {
+   public void computeAccessDetails(AccessDetailCollector collector, AccessContext context, Object objectToCheck)  {
       checkInitialized();
       getProxiedService().computeAccessDetails(collector, context, objectToCheck);
    }

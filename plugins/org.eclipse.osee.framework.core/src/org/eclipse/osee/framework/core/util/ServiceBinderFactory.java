@@ -17,5 +17,5 @@ import org.osgi.util.tracker.ServiceTracker;
  * @author Roberto E. Escobar
  */
 public interface ServiceBinderFactory {
-   ServiceTracker createTracker(ServiceBindType bindType, Class<?> clazz) throws OseeCoreException;
+   ServiceTracker createTracker(ServiceBindType bindType, Class<?> clazz) ;
 }

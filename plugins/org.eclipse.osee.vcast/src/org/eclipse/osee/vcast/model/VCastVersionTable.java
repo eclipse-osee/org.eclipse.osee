@@ -31,7 +31,7 @@ public class VCastVersionTable implements VCastTableData<VCastVersion> {
    }
 
    @Override
-   public Collection<VCastVersion> getRows(VCastDataStore dataStore) throws OseeCoreException {
+   public Collection<VCastVersion> getRows(VCastDataStore dataStore)  {
       return Collections.singleton(dataStore.getVersion());
    }
 

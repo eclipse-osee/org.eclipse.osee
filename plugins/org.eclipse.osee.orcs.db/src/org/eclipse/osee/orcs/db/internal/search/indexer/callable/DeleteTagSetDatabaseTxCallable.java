@@ -38,7 +38,7 @@ public final class DeleteTagSetDatabaseTxCallable extends AbstractDatastoreTxCal
    }
 
    @Override
-   protected Integer handleTxWork(JdbcConnection connection) throws OseeCoreException {
+   protected Integer handleTxWork(JdbcConnection connection)  {
       int numberDeleted = 0;
       JdbcStatement chStmt = getJdbcClient().getStatement(connection);
       try {

@@ -19,22 +19,22 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IAtsWorkPackage extends IAtsConfigObject {
 
-   public String getActivityId() throws OseeCoreException;
+   public String getActivityId() ;
 
-   public String getActivityName() throws OseeCoreException;
+   public String getActivityName() ;
 
    public String getGuid();
 
-   public String getWorkPackageId() throws OseeCoreException;
+   public String getWorkPackageId() ;
 
-   public String getWorkPackageProgram() throws OseeCoreException;
+   public String getWorkPackageProgram() ;
 
-   public AtsWorkPackageType getWorkPackageType() throws OseeCoreException;
+   public AtsWorkPackageType getWorkPackageType() ;
 
-   public int getWorkPackagePercent() throws OseeCoreException;
+   public int getWorkPackagePercent() ;
 
-   public Date getStartDate() throws OseeCoreException;
+   public Date getStartDate() ;
 
-   public Date getEndDate() throws OseeCoreException;
+   public Date getEndDate() ;
 
 }

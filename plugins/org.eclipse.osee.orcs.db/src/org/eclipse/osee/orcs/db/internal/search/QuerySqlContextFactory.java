@@ -19,5 +19,5 @@ import org.eclipse.osee.orcs.db.internal.sql.QueryType;
  * @author Roberto E. Escobar
  */
 public interface QuerySqlContextFactory {
-   QuerySqlContext createQueryContext(OrcsSession session, QueryData queryData, QueryType queryType) throws OseeCoreException;
+   QuerySqlContext createQueryContext(OrcsSession session, QueryData queryData, QueryType queryType) ;
 }

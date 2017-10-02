@@ -34,12 +34,12 @@ public class WfePromptChangeHoursSpent {
       this.awas = awas;
    }
 
-   public static boolean promptChangeStatus(Collection<? extends AbstractWorkflowArtifact> awas, boolean persist) throws OseeCoreException {
+   public static boolean promptChangeStatus(Collection<? extends AbstractWorkflowArtifact> awas, boolean persist)  {
       WfePromptChangeHoursSpent promptChangeStatus = new WfePromptChangeHoursSpent(awas);
       return promptChangeStatus.promptChangeStatus(persist).isTrue();
    }
 
-   public Result promptChangeStatus(boolean persist) throws OseeCoreException {
+   public Result promptChangeStatus(boolean persist)  {
       Result result = WfePromptChangeStatus.isValidToChangeStatus(awas);
       if (result.isFalse()) {
          AWorkbench.popup(result);

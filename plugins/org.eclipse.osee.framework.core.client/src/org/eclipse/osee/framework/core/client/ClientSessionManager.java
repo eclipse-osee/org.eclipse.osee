@@ -98,15 +98,15 @@ public class ClientSessionManager {
       return InternalClientSessionManager.getInstance().getAuthenticationProtocols();
    }
 
-   public static void authenticateAsGuest() throws OseeCoreException {
+   public static void authenticateAsGuest()  {
       InternalClientSessionManager.getInstance().authenticateAsGuest();
    }
 
-   public static void authenticate(ICredentialProvider credentialProvider) throws OseeCoreException {
+   public static void authenticate(ICredentialProvider credentialProvider)  {
       InternalClientSessionManager.getInstance().authenticate(credentialProvider);
    }
 
-   public static void releaseSession() throws OseeCoreException {
+   public static void releaseSession()  {
       InternalClientSessionManager.getInstance().releaseSession();
    }
 

@@ -123,7 +123,7 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
       return "Deletes the repeat attribute values using a transaction directly on the branch";
    }
 
-   private Set<AttrData> getRepeatEnumeratedAttrs(IProgressMonitor monitor, BranchId branch) throws OseeCoreException {
+   private Set<AttrData> getRepeatEnumeratedAttrs(IProgressMonitor monitor, BranchId branch)  {
       Set<AttrData> attrData = new HashSet<>();
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {

@@ -24,15 +24,15 @@ import org.eclipse.osee.framework.jdk.core.util.DateUtil;
  */
 public class AtsLogUtility {
 
-   public static String getHtml(IAtsLog atsLog, ILogStorageProvider storageProvider, IAtsUserService userService) throws OseeCoreException {
+   public static String getHtml(IAtsLog atsLog, ILogStorageProvider storageProvider, IAtsUserService userService)  {
       return getHtml(atsLog, storageProvider, true, userService);
    }
 
-   public static String getHtml(IAtsLog atsLog, ILogStorageProvider storageProvider, boolean showLogTitle, IAtsUserService userService) throws OseeCoreException {
+   public static String getHtml(IAtsLog atsLog, ILogStorageProvider storageProvider, boolean showLogTitle, IAtsUserService userService)  {
       return new AtsLogHtml(atsLog, storageProvider, userService, showLogTitle).get();
    }
 
-   public static String getTable(IAtsLog atsLog, ILogStorageProvider storageProvider, IAtsUserService userService) throws OseeCoreException {
+   public static String getTable(IAtsLog atsLog, ILogStorageProvider storageProvider, IAtsUserService userService)  {
       return new AtsLogHtml(atsLog, storageProvider, userService, true).getTable();
    }
 

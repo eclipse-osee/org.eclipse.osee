@@ -50,7 +50,7 @@ public class IntegrationUtil {
       verifyData(data, index, values);
    }
 
-   public static void verifyData(AttributeData data, Object... values) throws OseeCoreException {
+   public static void verifyData(AttributeData data, Object... values)  {
       int index = 0;
       assertEquals(values[index++], data);
       assertEquals(values[index++], ArtifactId.valueOf(data.getArtifactId()));

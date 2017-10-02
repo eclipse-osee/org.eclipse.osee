@@ -37,7 +37,7 @@ public class VCastMcdcCoverageTable implements VCastTableData<VCastMcdcCoverage>
    }
 
    @Override
-   public Collection<VCastMcdcCoverage> getRows(VCastDataStore dataStore) throws OseeCoreException {
+   public Collection<VCastMcdcCoverage> getRows(VCastDataStore dataStore)  {
       return dataStore.getAllMcdcCoverages();
    }
 

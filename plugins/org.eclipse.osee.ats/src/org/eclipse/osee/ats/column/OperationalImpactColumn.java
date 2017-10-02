@@ -71,7 +71,7 @@ public class OperationalImpactColumn extends XViewerValueColumn {
       return "";
    }
 
-   private String getOperationalImpact(Artifact art) throws OseeCoreException {
+   private String getOperationalImpact(Artifact art)  {
       if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
          return ((TeamWorkFlowArtifact) art).getSoleAttributeValue(AtsAttributeTypes.OperationalImpact, "");
       }

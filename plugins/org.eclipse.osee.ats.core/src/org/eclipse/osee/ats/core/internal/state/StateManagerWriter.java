@@ -40,7 +40,7 @@ public class StateManagerWriter {
       this.workStateFactory = workStateFactory;
    }
 
-   public void writeToStore() throws OseeCoreException {
+   public void writeToStore()  {
 
       String currentStateName = stateMgr.getCurrentStateName();
       attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.CurrentState,
@@ -59,7 +59,7 @@ public class StateManagerWriter {
       attrResolver.setSoleAttributeValue(workItem, AtsAttributeTypes.PercentComplete, percentCompleteValue, changes);
    }
 
-   private void writeStatesToStore(IAtsChangeSet changes) throws OseeCoreException {
+   private void writeStatesToStore(IAtsChangeSet changes)  {
       for (String stateName : stateMgr.getVisitedStateNames()) {
          if (!stateName.equals(stateMgr.getCurrentStateName())) {
             boolean updated = updateStateAttributeIfExsists(stateName, changes);
@@ -72,7 +72,7 @@ public class StateManagerWriter {
       }
    }
 
-   private void removeCurrentStateAttributeIfExists(String stateName, IAtsChangeSet changes) throws OseeCoreException {
+   private void removeCurrentStateAttributeIfExists(String stateName, IAtsChangeSet changes)  {
       Collection<IAttribute<String>> attrs = attrResolver.getAttributes(workItem, AtsAttributeTypes.State);
       for (IAttribute<String> attr : attrs) {
          WorkState storedState = workStateFactory.fromStoreStr(attr.getValue());
@@ -82,7 +82,7 @@ public class StateManagerWriter {
       }
    }
 
-   private boolean updateStateAttributeIfExsists(String stateName, IAtsChangeSet changes) throws OseeCoreException {
+   private boolean updateStateAttributeIfExsists(String stateName, IAtsChangeSet changes)  {
       // Update attribute if it already exists
       Collection<IAttribute<String>> attrs = attrResolver.getAttributes(workItem, AtsAttributeTypes.State);
       for (IAttribute<String> attr : attrs) {

@@ -73,7 +73,7 @@ public class RelationTypeSideSorterTest {
    }
 
    @Test
-   public void test02GetIArtifact() throws OseeCoreException {
+   public void test02GetIArtifact()  {
       Assert.assertNotNull(orderData.getArtifact());
       Assert.assertEquals(orderData.getArtifact(), sorter.getArtifact());
    }
@@ -89,7 +89,7 @@ public class RelationTypeSideSorterTest {
    }
 
    @Test
-   public void test05GetSorterId() throws OseeCoreException {
+   public void test05GetSorterId()  {
       RelationSorter sorterId = orderData.getCurrentSorterGuid(relationType, relationSide);
       RelationSorter expected = sorterProvider.getRelationOrder(sorterId).getSorterId();
       Assert.assertNotNull(sorterId);
@@ -99,7 +99,7 @@ public class RelationTypeSideSorterTest {
    }
 
    @Test
-   public void test07SetOrder() throws OseeCoreException {
+   public void test07SetOrder()  {
       Artifact art3 = new MockArtifact("c");
       Artifact art4 = new MockArtifact("d");
 
@@ -119,7 +119,7 @@ public class RelationTypeSideSorterTest {
    }
 
    @Test
-   public void test10AddItem() throws OseeCoreException {
+   public void test10AddItem()  {
       Artifact itemToAdd = new MockArtifact("Item to Add");
 
       List<Artifact> startingArtifacts = new ArrayList<>();
@@ -155,7 +155,7 @@ public class RelationTypeSideSorterTest {
    }
 
    @Test
-   public void test11ToString() throws OseeCoreException {
+   public void test11ToString()  {
       RelationSorter sorterGuid = orderData.getCurrentSorterGuid(relationType, relationSide);
       RelationSorter expectedId = sorterProvider.getRelationOrder(sorterGuid).getSorterId();
       String expectedToString =
@@ -165,7 +165,7 @@ public class RelationTypeSideSorterTest {
    }
 
    @Parameters
-   public static Collection<Object[]> data() throws OseeCoreException {
+   public static Collection<Object[]> data()  {
       RelationSorterProvider provider = new RelationSorterProvider();
       IRelationOrderAccessor accessor = new DoNothingAccessor();
 
@@ -216,12 +216,12 @@ public class RelationTypeSideSorterTest {
       }
    }
 
-   private static RelationType createRelationType(String name, RelationSorter defaultRelationSorter) throws OseeCoreException {
+   private static RelationType createRelationType(String name, RelationSorter defaultRelationSorter)  {
       return new RelationType(0x03L, name, name + "_A", name + "_B", Artifact, Artifact, MANY_TO_MANY,
          defaultRelationSorter);
    }
 
-   private static void addData(RelationType relationType1, RelationType relationType2, RelationOrderData data, List<Object[]> expected) throws OseeCoreException {
+   private static void addData(RelationType relationType1, RelationType relationType2, RelationOrderData data, List<Object[]> expected)  {
       addData(data, expected, relationType1, RelationSide.SIDE_A, //
          LEXICOGRAPHICAL_ASC, "1", "2", "3");
       addData(data, expected, relationType2, RelationSide.SIDE_B, //

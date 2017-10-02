@@ -40,7 +40,7 @@ public class MockTransitionHelper extends TransitionHelper {
    }
 
    @Override
-   public boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+   public boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf)  {
       if (workingBranchInWork != null) {
          return workingBranchInWork;
       }
@@ -48,7 +48,7 @@ public class MockTransitionHelper extends TransitionHelper {
    }
 
    @Override
-   public boolean isBranchInCommit(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+   public boolean isBranchInCommit(IAtsTeamWorkflow teamWf)  {
       if (branchInCommit != null) {
          return branchInCommit;
       }
@@ -72,7 +72,7 @@ public class MockTransitionHelper extends TransitionHelper {
    }
 
    @Override
-   public boolean isSystemUser() throws OseeCoreException {
+   public boolean isSystemUser()  {
       if (systemUser != null) {
          return systemUser;
       }
@@ -84,7 +84,7 @@ public class MockTransitionHelper extends TransitionHelper {
    }
 
    @Override
-   public boolean isSystemUserAssingee(IAtsWorkItem workItem) throws OseeCoreException {
+   public boolean isSystemUserAssingee(IAtsWorkItem workItem)  {
       if (systemUserAssigned != null) {
          return systemUserAssigned;
       }

@@ -33,7 +33,7 @@ public class DirtyReportAction extends AbstractAtsAction {
    }
 
    @Override
-   public void runWithException() throws OseeCoreException {
+   public void runWithException()  {
       Result result = reportable.isDirtyResult();
       if (AtsUtil.isInTest()) {
          throw new OseeStateException("Dirty Report", result.isFalse() ? "Not Dirty" : "Dirty -> " + result.getText());

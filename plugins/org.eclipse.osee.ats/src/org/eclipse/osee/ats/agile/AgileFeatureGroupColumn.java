@@ -107,7 +107,7 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
       return false;
    }
 
-   public static boolean promptChangeFeatureGroup(final Collection<? extends AbstractWorkflowArtifact> awas) throws OseeCoreException {
+   public static boolean promptChangeFeatureGroup(final Collection<? extends AbstractWorkflowArtifact> awas)  {
       SprintItems items = new SprintItems(awas);
 
       if (items.isNoBacklogDetected()) {

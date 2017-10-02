@@ -37,7 +37,7 @@ public class LoadSqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public void writeSelect(Iterable<SqlHandler<?>> handlers) throws OseeCoreException {
+   public void writeSelect(Iterable<SqlHandler<?>> handlers)  {
       String txAlias = getLastAlias(TableEnum.TXS_TABLE);
       String artJoinAlias = getLastAlias(TableEnum.JOIN_ID4_TABLE);
 
@@ -56,7 +56,7 @@ public class LoadSqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public void writeGroupAndOrder() throws OseeCoreException {
+   public void writeGroupAndOrder()  {
       String artAlias = getLastAlias(TableEnum.JOIN_ID4_TABLE);
       String txAlias = getLastAlias(TableEnum.TXS_TABLE);
 
@@ -256,7 +256,7 @@ public class LoadSqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public String getWithClauseTxBranchFilter(String txsAlias, boolean deletedPredicate) throws OseeCoreException {
+   public String getWithClauseTxBranchFilter(String txsAlias, boolean deletedPredicate)  {
       return Strings.emptyString();
    }
 

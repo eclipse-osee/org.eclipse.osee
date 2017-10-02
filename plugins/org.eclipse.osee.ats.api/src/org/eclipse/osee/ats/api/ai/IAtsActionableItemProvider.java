@@ -18,6 +18,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IAtsActionableItemProvider {
 
-   public Set<IAtsActionableItem> getActionableItems() throws OseeCoreException;
+   public Set<IAtsActionableItem> getActionableItems() ;
 
 }

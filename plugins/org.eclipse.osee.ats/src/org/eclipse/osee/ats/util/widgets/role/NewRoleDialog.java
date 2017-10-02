@@ -88,7 +88,7 @@ public class NewRoleDialog extends MessageDialog {
       return role;
    }
 
-   public Collection<IAtsUser> getUsers() throws OseeCoreException {
+   public Collection<IAtsUser> getUsers()  {
       return AtsClientService.get().getUserServiceClient().getAtsUsers(users.getSelectedUsers());
    }
 

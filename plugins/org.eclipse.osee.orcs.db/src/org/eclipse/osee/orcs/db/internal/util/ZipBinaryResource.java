@@ -30,7 +30,7 @@ public final class ZipBinaryResource implements IResource {
    private final IResourceLocator locator;
    private final File entry;
 
-   public ZipBinaryResource(File entry, IResourceLocator locator) throws OseeCoreException {
+   public ZipBinaryResource(File entry, IResourceLocator locator)  {
       Conditions.checkNotNull(entry, "FileEntry");
       Conditions.checkNotNull(locator, "IResourceLocator");
       this.entry = entry;
@@ -38,7 +38,7 @@ public final class ZipBinaryResource implements IResource {
    }
 
    @Override
-   public InputStream getContent() throws OseeCoreException {
+   public InputStream getContent()  {
       try {
          return new BufferedInputStream(new FileInputStream(entry));
       } catch (IOException ex) {

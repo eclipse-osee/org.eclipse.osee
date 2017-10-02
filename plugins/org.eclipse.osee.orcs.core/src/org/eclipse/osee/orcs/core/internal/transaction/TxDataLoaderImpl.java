@@ -57,7 +57,7 @@ public class TxDataLoaderImpl implements TxDataLoader {
       this.txProvider = txProvider;
    }
 
-   private DataLoader createLoader(OrcsSession session, BranchId branch, Collection<ArtifactId> artifactIds) throws OseeCoreException {
+   private DataLoader createLoader(OrcsSession session, BranchId branch, Collection<ArtifactId> artifactIds)  {
       Set<Integer> ids = new LinkedHashSet<>();
       for (ArtifactId artifactId : artifactIds) {
          ids.add(artifactId.getUuid().intValue());
@@ -70,7 +70,7 @@ public class TxDataLoaderImpl implements TxDataLoader {
    }
 
    @Override
-   public ResultSet<Artifact> loadArtifacts(OrcsSession session, BranchId branch, Collection<ArtifactId> artifactIds) throws OseeCoreException {
+   public ResultSet<Artifact> loadArtifacts(OrcsSession session, BranchId branch, Collection<ArtifactId> artifactIds)  {
       DataLoader loader = createLoader(session, branch, artifactIds);
       GraphBuilder handler = graphBuilderFactory.createGraphBuilder(graphProvider);
       loader.load(null, handler);
@@ -78,7 +78,7 @@ public class TxDataLoaderImpl implements TxDataLoader {
    }
 
    @Override
-   public ResultSet<Artifact> loadArtifacts(OrcsSession session, GraphData graph, Collection<ArtifactId> artifactIds) throws OseeCoreException {
+   public ResultSet<Artifact> loadArtifacts(OrcsSession session, GraphData graph, Collection<ArtifactId> artifactIds)  {
       DataLoader loader = createLoader(session, graph.getBranch(), artifactIds);
       loader.fromTransaction(graph.getTransaction());
       loader.fromBranchView(graph.getBranch().getViewId());
@@ -88,7 +88,7 @@ public class TxDataLoaderImpl implements TxDataLoader {
    }
 
    @Override
-   public GraphData createGraph(OrcsSession session, BranchId branch) throws OseeCoreException {
+   public GraphData createGraph(OrcsSession session, BranchId branch)  {
       TransactionId headTransaction = txProvider.getHeadTransaction(session, branch);
       return graphFactory.createGraph(session, branch, headTransaction);
    }

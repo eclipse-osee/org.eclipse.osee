@@ -53,11 +53,11 @@ public class ReviewDefectItem {
 
    };
 
-   public ReviewDefectItem() throws OseeCoreException {
+   public ReviewDefectItem()  {
       userId = AtsClientService.get().getUserService().getCurrentUser().getUserId();
    }
 
-   public ReviewDefectItem(IAtsUser user, Severity severity, Disposition disposition, InjectionActivity injectionActivity, String description, String resolution, String location, Date date) throws OseeCoreException {
+   public ReviewDefectItem(IAtsUser user, Severity severity, Disposition disposition, InjectionActivity injectionActivity, String description, String resolution, String location, Date date)  {
       this(user.getUserId(), severity, disposition, injectionActivity, description, resolution, location, date);
    }
 
@@ -187,7 +187,7 @@ public class ReviewDefectItem {
          date) + "\n";
    }
 
-   public IAtsUser getUser() throws OseeCoreException {
+   public IAtsUser getUser()  {
       return AtsClientService.get().getUserService().getUserById(userId);
    }
 
@@ -195,7 +195,7 @@ public class ReviewDefectItem {
       return userId;
    }
 
-   public String toHTML(String labelFont) throws OseeCoreException {
+   public String toHTML(String labelFont)  {
       return "DEFECT (" + severity + "): " + description + " (" + getUser().getName() + ")";
    }
 
@@ -270,7 +270,7 @@ public class ReviewDefectItem {
       this.guid = guid;
    }
 
-   public void setUser(User user) throws OseeCoreException {
+   public void setUser(User user)  {
       this.userId = user.getUserId();
    }
 

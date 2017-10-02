@@ -38,7 +38,7 @@ import org.eclipse.ui.part.FileEditorInput;
 public class OtherEditorHandler extends AbstractEditorHandler {
 
    @Override
-   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
+   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection)  {
       if (!artifacts.isEmpty()) {
          EditorSelectionDialog dialog =
             new EditorSelectionDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());

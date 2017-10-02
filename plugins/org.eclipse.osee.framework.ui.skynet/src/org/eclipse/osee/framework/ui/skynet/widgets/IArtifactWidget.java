@@ -23,6 +23,6 @@ public interface IArtifactWidget extends IArtifactStoredWidget {
    /**
     * Set artifact used as storage for this widget
     */
-   public void setArtifact(Artifact artifact) throws OseeCoreException;
+   public void setArtifact(Artifact artifact) ;
 
 }

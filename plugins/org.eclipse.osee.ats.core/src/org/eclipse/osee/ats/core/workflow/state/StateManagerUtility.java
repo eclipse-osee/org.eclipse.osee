@@ -35,7 +35,7 @@ public class StateManagerUtility {
    /**
     * Initializes state machine and sets the current state to stateName
     */
-   public static void initializeStateMachine(IAtsStateManager stateMgr, IStateToken workPage, List<? extends IAtsUser> assignees, IAtsUser currentUser, IAtsChangeSet changes) throws OseeCoreException {
+   public static void initializeStateMachine(IAtsStateManager stateMgr, IStateToken workPage, List<? extends IAtsUser> assignees, IAtsUser currentUser, IAtsChangeSet changes)  {
       stateMgr.createState(workPage.getName());
       stateMgr.setCurrentStateName(workPage.getName());
       if (assignees == null) {
@@ -55,7 +55,7 @@ public class StateManagerUtility {
       }
    }
 
-   public static Result isDirtyResult(IAtsWorkItem workItem, IAtsStateManager stateMgr, IAttributeResolver attrResolver, IAtsWorkStateFactory workStateFactory) throws OseeCoreException {
+   public static Result isDirtyResult(IAtsWorkItem workItem, IAtsStateManager stateMgr, IAttributeResolver attrResolver, IAtsWorkStateFactory workStateFactory)  {
       if (attrResolver.getAttributeCount(workItem, AtsAttributeTypes.CurrentState) == 0) {
          return new Result(true, "StateManager: Current State new");
       }

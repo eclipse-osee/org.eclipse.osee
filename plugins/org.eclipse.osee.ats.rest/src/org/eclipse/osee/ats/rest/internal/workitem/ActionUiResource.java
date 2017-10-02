@@ -136,7 +136,7 @@ public final class ActionUiResource {
       }
    };
 
-   private ResultSet<ArtifactReadable> getAis() throws OseeCoreException {
+   private ResultSet<ArtifactReadable> getAis()  {
       return atsServer.getQuery().andIsOfType(AtsArtifactTypes.ActionableItem).getResults();
    }
 

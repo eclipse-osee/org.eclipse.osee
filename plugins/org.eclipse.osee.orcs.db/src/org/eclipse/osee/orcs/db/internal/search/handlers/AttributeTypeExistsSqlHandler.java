@@ -97,7 +97,7 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
+   public boolean addPredicates(AbstractSqlWriter writer)  {
       if (artAlias != null && artTxsAlias != null) {
          writer.writeEquals(artAlias, artTxsAlias, "gamma_id");
          writer.write(" AND ");

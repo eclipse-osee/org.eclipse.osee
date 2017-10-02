@@ -57,7 +57,7 @@ public class SearchDslTest {
    }
 
    @Test
-   public void testBuildValidSearchType() throws OseeCoreException {
+   public void testBuildValidSearchType()  {
       when(queryFactory.fromBranch(COMMON)).thenReturn(builder);
 
       Predicate predicate =

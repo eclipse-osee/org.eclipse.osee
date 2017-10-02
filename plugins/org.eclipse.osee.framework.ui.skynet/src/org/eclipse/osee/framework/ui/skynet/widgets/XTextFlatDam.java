@@ -150,12 +150,12 @@ public class XTextFlatDam extends XFlatWidget<String> implements IAttributeWidge
       return data;
    }
 
-   public Collection<String> getStored() throws OseeCoreException {
+   public Collection<String> getStored()  {
       return artifact.getAttributesToStringList(getAttributeType());
    }
 
    @Override
-   public Result isDirty() throws OseeCoreException {
+   public Result isDirty()  {
       if (isEditable()) {
          try {
             Collection<String> enteredValues = new ArrayList<>();//getSelected();
@@ -171,12 +171,12 @@ public class XTextFlatDam extends XFlatWidget<String> implements IAttributeWidge
    }
 
    @Override
-   public void revert() throws OseeCoreException {
+   public void revert()  {
       setAttributeType(artifact, getAttributeType());
    }
 
    @Override
-   public void saveToArtifact() throws OseeCoreException {
+   public void saveToArtifact()  {
       artifact.setAttributeValues(getAttributeType(), getInput());
    }
 
@@ -231,7 +231,7 @@ public class XTextFlatDam extends XFlatWidget<String> implements IAttributeWidge
       return new Date();
    }
 
-   private XWidget getWidget(AttributeTypeId attributeType, Composite parent, String initialInput) throws OseeCoreException {
+   private XWidget getWidget(AttributeTypeId attributeType, Composite parent, String initialInput)  {
       XWidget xWidget = null;
 
       if (AttributeTypeManager.isBaseTypeCompatible(IntegerAttribute.class, attributeType)) {

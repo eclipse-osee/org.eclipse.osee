@@ -83,7 +83,7 @@ public class OseeServerInfo extends BaseExchangeData {
     * 
     * @param OseeServerInfo the new instance
     */
-   public static OseeServerInfo fromXml(InputStream inputStream) throws OseeCoreException {
+   public static OseeServerInfo fromXml(InputStream inputStream)  {
       OseeServerInfo serverInfo = new OseeServerInfo();
       serverInfo.loadfromXml(inputStream);
       return serverInfo;

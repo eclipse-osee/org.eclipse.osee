@@ -87,41 +87,41 @@ public final class Conditions {
       return true;
    }
 
-   public static void checkNotNull(Object object, String objectName) throws OseeCoreException {
+   public static void checkNotNull(Object object, String objectName)  {
       if (object == null) {
          throw new OseeArgumentException("%s cannot be null", objectName);
       }
    }
 
-   public static void checkNotNull(Object object, String objectName, String details, Object... data) throws OseeCoreException {
+   public static void checkNotNull(Object object, String objectName, String details, Object... data)  {
       if (object == null) {
          String message = String.format(details, data);
          throw new OseeArgumentException("%s cannot be null - %s", objectName, message);
       }
    }
 
-   public static void checkNotNullOrEmpty(String object, String objectName) throws OseeCoreException {
+   public static void checkNotNullOrEmpty(String object, String objectName)  {
       checkNotNull(object, objectName);
       if (object.length() == 0) {
          throw new OseeArgumentException("%s cannot be empty", objectName);
       }
    }
 
-   public static void checkNotNullOrEmpty(Object[] array, String objectName) throws OseeCoreException {
+   public static void checkNotNullOrEmpty(Object[] array, String objectName)  {
       checkNotNull(array, objectName);
       if (array.length <= 0) {
          throw new OseeArgumentException("%s cannot be empty", objectName);
       }
    }
 
-   public static void checkNotNullOrEmpty(Collection<? extends Object> collection, String objectName) throws OseeCoreException {
+   public static void checkNotNullOrEmpty(Collection<? extends Object> collection, String objectName)  {
       checkNotNull(collection, objectName);
       if (collection.isEmpty()) {
          throw new OseeArgumentException("%s cannot be empty", objectName);
       }
    }
 
-   public static void checkNotNullOrEmpty(String object, String objectName, String details, Object... data) throws OseeCoreException {
+   public static void checkNotNullOrEmpty(String object, String objectName, String details, Object... data)  {
       checkNotNull(object, objectName, details, data);
       if (object.length() == 0) {
          String message = String.format(details, data);
@@ -129,13 +129,13 @@ public final class Conditions {
       }
    }
 
-   public static void checkExpressionFailOnTrue(boolean result, String message, Object... data) throws OseeCoreException {
+   public static void checkExpressionFailOnTrue(boolean result, String message, Object... data)  {
       if (result) {
          throw new OseeArgumentException(message, data);
       }
    }
 
-   public static void checkDoesNotContainNulls(Object object, String message, Object... data) throws OseeCoreException {
+   public static void checkDoesNotContainNulls(Object object, String message, Object... data)  {
       checkNotNull(object, message);
       Collection<?> toCheck = null;
       if (object instanceof Collection<?>) {
@@ -154,14 +154,14 @@ public final class Conditions {
       }
    }
 
-   public static void checkNotNullOrEmptyOrContainNull(Collection<? extends Object> collection, String objectName) throws OseeCoreException {
+   public static void checkNotNullOrEmptyOrContainNull(Collection<? extends Object> collection, String objectName)  {
       checkNotNullOrEmpty(collection, objectName);
       for (Object object : collection) {
          checkNotNull(object, objectName);
       }
    }
 
-   public static void checkNotNullOrContainNull(Collection<? extends Object> collection, String objectName) throws OseeCoreException {
+   public static void checkNotNullOrContainNull(Collection<? extends Object> collection, String objectName)  {
       checkNotNull(collection, objectName);
       for (Object object : collection) {
          checkNotNull(object, objectName);

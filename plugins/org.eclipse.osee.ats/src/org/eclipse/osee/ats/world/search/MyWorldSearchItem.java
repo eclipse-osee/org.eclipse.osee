@@ -40,7 +40,7 @@ public class MyWorldSearchItem extends UserSearchItem {
    }
 
    @Override
-   public Collection<Artifact> searchIt(IAtsUser user) throws OseeCoreException {
+   public Collection<Artifact> searchIt(IAtsUser user)  {
       Set<Artifact> assigned = AtsUtil.getAssigned(user);
 
       Set<Artifact> results = new HashSet<>(assigned.size());

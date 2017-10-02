@@ -54,7 +54,7 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
    }
 
    @Override
-   public Artifact resolve(final RoughArtifact roughArtifact, final BranchId branch, Artifact realParent, Artifact root) throws OseeCoreException {
+   public Artifact resolve(final RoughArtifact roughArtifact, final BranchId branch, Artifact realParent, Artifact root)  {
       ArtifactTypeId artifactType = getArtifactType(roughArtifact);
 
       OseeLog.logf(NewArtifactImportResolver.class, Level.INFO, "New artifact: [%s]. Attributes: [%s]", roughArtifact,
@@ -65,7 +65,7 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
       return realArtifact;
    }
 
-   private ArtifactTypeId getArtifactType(RoughArtifact art) throws OseeCoreException {
+   private ArtifactTypeId getArtifactType(RoughArtifact art) {
       ArtifactTypeId type = art.getType();
       if (!type.equals(ArtifactTypeId.SENTINEL)) {
          return type;

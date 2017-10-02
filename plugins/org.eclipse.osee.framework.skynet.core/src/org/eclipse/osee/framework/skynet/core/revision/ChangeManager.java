@@ -61,11 +61,11 @@ public final class ChangeManager {
    /**
     * Acquires changes for a particular artifact
     */
-   public static Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {
+   public static Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor)  {
       return revsionChangeLoader.getChangesPerArtifact(artifact, monitor);
    }
 
-   public static Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor, LoadChangeType... loadChangeTypes) throws OseeCoreException {
+   public static Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor, LoadChangeType... loadChangeTypes)  {
       return revsionChangeLoader.getChangesPerArtifact(artifact, monitor, loadChangeTypes);
    }
 
@@ -76,7 +76,7 @@ public final class ChangeManager {
    /**
     * Acquires artifact, relation and attribute changes from a source branch since its creation.
     */
-   public static IOperation comparedToPreviousTx(TransactionToken transactionId, Collection<Change> changes) throws OseeCoreException {
+   public static IOperation comparedToPreviousTx(TransactionToken transactionId, Collection<Change> changes)  {
       TransactionToken startTx = TransactionManager.getPriorTransaction(transactionId);
       TransactionToken endTx = transactionId;
 
@@ -87,7 +87,7 @@ public final class ChangeManager {
    /**
     * Acquires artifact, relation and attribute changes from a source branch since its creation.
     */
-   public static IOperation comparedToParent(BranchId branch, Collection<Change> changes) throws OseeCoreException {
+   public static IOperation comparedToParent(BranchId branch, Collection<Change> changes)  {
       TransactionToken startTx = TransactionManager.getHeadTransaction(branch);
       TransactionToken endTx = TransactionManager.getHeadTransaction(BranchManager.getParentBranch(branch));
 
@@ -95,7 +95,7 @@ public final class ChangeManager {
       return new ChangeDataLoader(changes, txDelta);
    }
 
-   public static IOperation compareTwoBranchesHead(BranchId sourceBranch, BranchId destinationBranch, Collection<Change> changes) throws OseeCoreException {
+   public static IOperation compareTwoBranchesHead(BranchId sourceBranch, BranchId destinationBranch, Collection<Change> changes)  {
       TransactionToken startTx = TransactionManager.getHeadTransaction(sourceBranch);
       TransactionToken endTx = TransactionManager.getHeadTransaction(destinationBranch);
       return new ChangeDataLoader(changes, new TransactionDelta(startTx, endTx));
@@ -107,7 +107,7 @@ public final class ChangeManager {
     *
     * @return a map of artifact to collection of TransactionIds which affected the given artifact
     */
-   public static HashCollection<Artifact, TransactionId> getModifingTransactions(Collection<Artifact> artifacts) throws OseeCoreException {
+   public static HashCollection<Artifact, TransactionId> getModifingTransactions(Collection<Artifact> artifacts)  {
       HashCollection<Artifact, TransactionId> transactionMap = new HashCollection<>();
       try (Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery()) {
          CompositeKeyHashMap<Integer, BranchId, Artifact> artifactMap = new CompositeKeyHashMap<>();
@@ -148,7 +148,7 @@ public final class ChangeManager {
     *
     * @return a map of artifact to collection of branches which affected the given artifact
     */
-   public static HashCollection<Artifact, BranchId> getModifingBranches(Collection<Artifact> artifacts) throws OseeCoreException {
+   public static HashCollection<Artifact, BranchId> getModifingBranches(Collection<Artifact> artifacts)  {
       HashCollection<Artifact, BranchId> branchMap = new HashCollection<>();
       try (Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery()) {
          CompositeKeyHashMap<Integer, BranchId, Artifact> artifactMap =

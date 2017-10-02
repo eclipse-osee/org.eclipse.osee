@@ -21,7 +21,7 @@ public class IntegerAttribute extends CharacterBackedAttribute<Integer> {
    private static final Integer DEFAULT_INTEGER = Integer.MIN_VALUE;
 
    @Override
-   public Integer getValue() throws OseeCoreException {
+   public Integer getValue()  {
       return (Integer) getAttributeDataProvider().getValue();
    }
 

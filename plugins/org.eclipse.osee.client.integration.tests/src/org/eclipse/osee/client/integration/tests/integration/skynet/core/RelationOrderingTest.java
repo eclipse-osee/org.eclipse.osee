@@ -153,7 +153,7 @@ public class RelationOrderingTest {
 
    }
 
-   private void checkAsc() throws OseeCoreException {
+   private void checkAsc()  {
       parent.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child, LEXICOGRAPHICAL_ASC);
       List<Artifact> children = parent.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child);
       Assert.assertEquals(3, children.size());
@@ -162,7 +162,7 @@ public class RelationOrderingTest {
       Assert.assertEquals(children.get(2).getName(), "c_child");
    }
 
-   private void checkDesc() throws OseeCoreException {
+   private void checkDesc()  {
       parent.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child, LEXICOGRAPHICAL_DESC);
       List<Artifact> children = parent.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child);
       Assert.assertEquals(3, children.size());
@@ -171,7 +171,7 @@ public class RelationOrderingTest {
       Assert.assertEquals(children.get(2).getName(), "a_child");
    }
 
-   private void checkUserDefined() throws OseeCoreException {
+   private void checkUserDefined()  {
       List<Artifact> children = new ArrayList<>();
       children.add(child2);
       children.add(child3);
@@ -185,7 +185,7 @@ public class RelationOrderingTest {
    }
 
    @Test
-   public void testUserDefinedOrderUpdatesListWhenRelationDeleted() throws OseeCoreException {
+   public void testUserDefinedOrderUpdatesListWhenRelationDeleted()  {
       checkUserDefined();
 
       String artifactGuid = child3.getGuid();
@@ -208,7 +208,7 @@ public class RelationOrderingTest {
     * the new relation, but does not persist the relation order attribute stored on the parent.<br>
     */
    @Test
-   public void testOrderPersist() throws OseeCoreException {
+   public void testOrderPersist()  {
       String guid = GUID.create();
       SkynetTransaction transaction = TransactionManager.createTransaction(branch, method.getQualifiedTestName());
       Artifact mainFolder = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch, "Main Folder - " + guid);
@@ -242,7 +242,7 @@ public class RelationOrderingTest {
       Assert.assertFalse("Artifact should not be dirty.", mainFolder.isDirty());
    }
 
-   private void addToCleanup(Artifact artifact) throws OseeCoreException {
+   private void addToCleanup(Artifact artifact)  {
       artifact.setSingletonAttributeValue(CoreAttributeTypes.StaticId, method.getQualifiedTestName());
       itemsToDelete.add(artifact);
    }

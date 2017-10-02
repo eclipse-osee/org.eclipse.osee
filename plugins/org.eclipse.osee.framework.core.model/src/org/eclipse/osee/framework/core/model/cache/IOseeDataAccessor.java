@@ -16,5 +16,5 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  * @author Roberto E. Escobar
  */
 public interface IOseeDataAccessor<T> {
-   public void load(IOseeCache<T> cache) throws OseeCoreException;
+   public void load(IOseeCache<T> cache) ;
 }

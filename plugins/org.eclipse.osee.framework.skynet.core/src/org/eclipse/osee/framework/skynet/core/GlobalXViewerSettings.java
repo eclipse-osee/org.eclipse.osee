@@ -16,7 +16,6 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import java.util.concurrent.TimeUnit;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -44,11 +43,11 @@ public final class GlobalXViewerSettings {
       return ArtifactQuery.getArtifactFromToken(XViewerGlobalCustomization);
    }
 
-   public static Artifact getCustomArtifact() throws OseeCoreException {
+   public static Artifact getCustomArtifact() {
       return configurationsCache.get();
    }
 
-   public static Artifact createCustomArtifact() throws OseeCoreException {
+   public static Artifact createCustomArtifact() {
       return ArtifactTypeManager.addArtifact(XViewerGlobalCustomization, COMMON);
    }
 }

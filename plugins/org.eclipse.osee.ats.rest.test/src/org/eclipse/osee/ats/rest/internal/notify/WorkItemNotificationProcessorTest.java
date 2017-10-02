@@ -120,7 +120,7 @@ public class WorkItemNotificationProcessorTest {
    }
 
    @org.junit.Test
-   public void testNotifyOriginator() throws OseeCoreException {
+   public void testNotifyOriginator()  {
 
       WorkItemNotificationProcessor processor =
          new WorkItemNotificationProcessor(logger, atsServer, workItemFactory, userService, attrResolver);
@@ -149,7 +149,7 @@ public class WorkItemNotificationProcessorTest {
    }
 
    @org.junit.Test
-   public void testNotifyAssignee() throws OseeCoreException {
+   public void testNotifyAssignee()  {
 
       WorkItemNotificationProcessor processor =
          new WorkItemNotificationProcessor(logger, atsServer, workItemFactory, userService, attrResolver);
@@ -203,7 +203,7 @@ public class WorkItemNotificationProcessorTest {
    }
 
    @org.junit.Test
-   public void testNotifySubscribe() throws OseeCoreException {
+   public void testNotifySubscribe()  {
       when(teamWf.getStoreObject()).thenReturn(teamWfArt);
       when(atsServer.getRelationResolver()).thenReturn(relResolver);
       when(atsServer.getAttributeResolver()).thenReturn(attrResolver);
@@ -235,7 +235,7 @@ public class WorkItemNotificationProcessorTest {
    }
 
    @org.junit.Test
-   public void testNotifyCompleted() throws OseeCoreException {
+   public void testNotifyCompleted()  {
 
       AtsWorkItemNotificationEvent event = new AtsWorkItemNotificationEvent();
       event.setFromUserId(joeSmith_CurrentUser.getUserId());
@@ -270,7 +270,7 @@ public class WorkItemNotificationProcessorTest {
    }
 
    @org.junit.Test
-   public void testNotifyCancelled() throws OseeCoreException {
+   public void testNotifyCancelled()  {
 
       AtsWorkItemNotificationEvent event = new AtsWorkItemNotificationEvent();
       event.setFromUserId(joeSmith_CurrentUser.getUserId());
@@ -308,7 +308,7 @@ public class WorkItemNotificationProcessorTest {
    }
 
    @org.junit.Test
-   public void testNotifySubscribedTeamOrAi() throws OseeCoreException {
+   public void testNotifySubscribedTeamOrAi()  {
 
       AtsWorkItemNotificationEvent event = new AtsWorkItemNotificationEvent();
       event.setFromUserId(joeSmith_CurrentUser.getUserId());

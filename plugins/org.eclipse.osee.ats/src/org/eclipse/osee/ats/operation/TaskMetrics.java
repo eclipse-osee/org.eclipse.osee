@@ -75,7 +75,7 @@ public class TaskMetrics extends AbstractBlam {
    }
 
    @Override
-   public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException {
+   public void runOperation(VariableMap variableMap, IProgressMonitor monitor)  {
       try {
          monitor.beginTask("TaskMetrics", 100);
          metrics.clear();
@@ -120,7 +120,7 @@ public class TaskMetrics extends AbstractBlam {
       }
    }
 
-   private void tallyState(TaskArtifact task) throws OseeCoreException {
+   private void tallyState(TaskArtifact task)  {
 
       List<IAtsUser> assignees = task.getStateMgr().getAssignees();
       if (assignees.isEmpty()) {
@@ -170,7 +170,7 @@ public class TaskMetrics extends AbstractBlam {
    }
 
    @Override
-   public String getXWidgetsXml() throws OseeCoreException {
+   public String getXWidgetsXml()  {
       return getXWidgetsXmlFromUiFile(getClass().getSimpleName(), Activator.PLUGIN_ID);
    }
 

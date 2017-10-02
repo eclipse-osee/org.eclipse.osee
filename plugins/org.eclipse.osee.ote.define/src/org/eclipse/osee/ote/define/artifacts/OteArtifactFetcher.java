@@ -42,7 +42,7 @@ public class OteArtifactFetcher<T extends Artifact> {
     * Creates a new Artifact in the specified branch
     */
    @SuppressWarnings("unchecked")
-   public T getNewArtifact(BranchId branch) throws OseeCoreException {
+   public T getNewArtifact(BranchId branch)  {
       checkForNull(branch);
       return (T) ArtifactTypeManager.addArtifact(oteArtifactType, branch);
    }
@@ -56,7 +56,7 @@ public class OteArtifactFetcher<T extends Artifact> {
     * @return the unique artifact
     */
    @SuppressWarnings("unchecked")
-   public T searchForUniqueArtifactMatching(AttributeTypeId attributeType, String attributeValue, BranchId branch) throws OseeCoreException {
+   public T searchForUniqueArtifactMatching(AttributeTypeId attributeType, String attributeValue, BranchId branch)  {
       Conditions.checkNotNull(attributeType, "attributeType");
       Conditions.checkNotNull(attributeValue, "attributeValue");
       Conditions.checkNotNull(branch, "branch");
@@ -70,7 +70,7 @@ public class OteArtifactFetcher<T extends Artifact> {
     * @return artifact instances
     */
    @SuppressWarnings("unchecked")
-   public Set<T> getAllArtifacts(BranchId branch) throws OseeArgumentException {
+   public Set<T> getAllArtifacts(BranchId branch)  {
       checkForNull(branch);
       Set<T> toReturn = new HashSet<>();
       try {
@@ -101,7 +101,7 @@ public class OteArtifactFetcher<T extends Artifact> {
       return toReturn;
    }
 
-   private void checkForNull(Object object) throws OseeArgumentException {
+   private void checkForNull(Object object)  {
       if (object == null) {
          throw new OseeArgumentException("Object was null");
       }

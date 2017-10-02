@@ -30,7 +30,7 @@ public class StringAttribute extends CharacterBackedAttribute<String> {
    }
 
    @Override
-   public String getDisplayableString() throws OseeCoreException {
+   public String getDisplayableString()  {
       String toReturn = null;
       InputStream inputStream = null;
       try {

@@ -47,7 +47,7 @@ public class UserRoleValidator {
       return UserRoleError.None;
    }
 
-   public static UserRoleError isValid(IAtsPeerReviewRoleManager roleMgr, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef) throws OseeCoreException {
+   public static UserRoleError isValid(IAtsPeerReviewRoleManager roleMgr, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef)  {
       if (roleMgr.getUserRoles().isEmpty()) {
          return UserRoleError.OneRoleEntryRequired;
       }

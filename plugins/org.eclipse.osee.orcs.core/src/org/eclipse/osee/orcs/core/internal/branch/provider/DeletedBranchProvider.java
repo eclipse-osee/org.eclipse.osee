@@ -33,7 +33,7 @@ public final class DeletedBranchProvider implements BranchProvider {
    }
 
    @Override
-   public Collection<Branch> getBranches() throws OseeCoreException {
+   public Collection<Branch> getBranches()  {
       Conditions.checkNotNull(branchCache, "branchCache");
       BranchFilter branchFilter = new BranchFilter(BranchArchivedState.ARCHIVED);
       branchFilter.setBranchStates(BranchState.DELETED);

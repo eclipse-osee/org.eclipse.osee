@@ -25,7 +25,7 @@ public final class MockBranchProvider implements BranchProvider {
 
    private final static String ROOT_BRANCH_NAME = "ROOT";
 
-   public static Collection<Branch> createTestBranches() throws OseeCoreException {
+   public static Collection<Branch> createTestBranches()  {
       Collection<Branch> branches = new ArrayList<>();
       //create a root branch
       Branch root =
@@ -90,7 +90,7 @@ public final class MockBranchProvider implements BranchProvider {
    }
 
    @Override
-   public Collection<Branch> getBranches() throws OseeCoreException {
+   public Collection<Branch> getBranches()  {
       return MockBranchProvider.createTestBranches();
    }
 }

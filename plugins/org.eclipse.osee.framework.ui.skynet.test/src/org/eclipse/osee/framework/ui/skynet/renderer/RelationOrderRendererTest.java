@@ -61,7 +61,7 @@ public class RelationOrderRendererTest {
    }
 
    @Test
-   public void testRenderingAllValid() throws OseeCoreException {
+   public void testRenderingAllValid()  {
       RelationOrderData orderData = new RelationOrderData(null, null);
       List<Object[]> expectedData = new ArrayList<>();
 
@@ -73,7 +73,7 @@ public class RelationOrderRendererTest {
    }
 
    @Test
-   public void testRenderingEmptyGuids() throws OseeCoreException {
+   public void testRenderingEmptyGuids()  {
       RelationOrderData orderData = new RelationOrderData(null, null);
       List<Object[]> expectedData = new ArrayList<>();
       addData(orderData, expectedData, relType1, "Relation 1_A", RelationSide.SIDE_A, USER_DEFINED);
@@ -87,7 +87,7 @@ public class RelationOrderRendererTest {
       checkRelationOrderRenderer(getExpected(expectedData), orderData);
    }
 
-   private void addData(RelationOrderData orderData, List<Object[]> expectedData, RelationTypeToken relationType, String relationSideName, RelationSide side, RelationSorter expectedSorterId, String... guids) throws OseeCoreException {
+   private void addData(RelationOrderData orderData, List<Object[]> expectedData, RelationTypeToken relationType, String relationSideName, RelationSide side, RelationSorter expectedSorterId, String... guids)  {
       List<String> guidList = Arrays.asList(guids);
       orderData.addOrderList(relationType, side, expectedSorterId, guidList);
       expectedData.add(new Object[] {
@@ -164,7 +164,7 @@ public class RelationOrderRendererTest {
       Assert.assertEquals(expected, builder.toString());
    }
 
-   private final static RelationType createRelationType(long id, AbstractOseeCache<RelationType> cache, String name, IArtifactType artifactType1, IArtifactType artifactType2) throws OseeCoreException {
+   private final static RelationType createRelationType(long id, AbstractOseeCache<RelationType> cache, String name, IArtifactType artifactType1, IArtifactType artifactType2)  {
       RelationType type = new RelationType(id, name, name + "_A", name + "_B", artifactType1, artifactType2,
          RelationTypeMultiplicity.MANY_TO_MANY, null);
       cache.cache(type);

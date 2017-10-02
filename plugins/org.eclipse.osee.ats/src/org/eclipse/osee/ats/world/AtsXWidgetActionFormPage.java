@@ -64,9 +64,9 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
       this.toolkit = new XFormToolkit();
    }
 
-   public abstract Result isResearchSearchValid() throws OseeCoreException;
+   public abstract Result isResearchSearchValid() ;
 
-   public abstract String getXWidgetsXml() throws OseeCoreException;
+   public abstract String getXWidgetsXml() ;
 
    @Override
    protected void createFormContent(IManagedForm managedForm) {
@@ -115,7 +115,7 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
       });
    }
 
-   private Section createParametersSection(IManagedForm managedForm, Composite body) throws OseeCoreException {
+   private Section createParametersSection(IManagedForm managedForm, Composite body)  {
       parameterSection = toolkit.createSection(body, ExpandableComposite.TWISTIE);
       parameterSection.setText("Parameters");
       parameterSection.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -134,7 +134,7 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
       return parameterSection;
    }
 
-   public void createSearchParametersOnRight(IManagedForm managedForm, Composite mainComp) throws OseeCoreException {
+   public void createSearchParametersOnRight(IManagedForm managedForm, Composite mainComp)  {
       Composite paramComp = new Composite(mainComp, SWT.NONE);
       paramComp.setLayout(ALayout.getZeroMarginLayout(1, false));
       paramComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -173,7 +173,7 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
       buttonComp.layout();
    }
 
-   public IDynamicWidgetLayoutListener getDynamicWidgetLayoutListener() throws OseeCoreException {
+   public IDynamicWidgetLayoutListener getDynamicWidgetLayoutListener()  {
       return null;
    }
 
@@ -202,7 +202,7 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
       });
    }
 
-   public abstract Section createResultsSection(Composite body) throws OseeCoreException;
+   public abstract Section createResultsSection(Composite body) ;
 
    public String getCurrentTitleLabel() {
       String useTitle = "World Editor";

@@ -16,5 +16,5 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  * @author Jeff C. Phillips
  */
 public interface ILifecycleServiceProvider {
-   public ILifecycleService getLifecycleServices() throws OseeCoreException;
+   public ILifecycleService getLifecycleServices() ;
 }

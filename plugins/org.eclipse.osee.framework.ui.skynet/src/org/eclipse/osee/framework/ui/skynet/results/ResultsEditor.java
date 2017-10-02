@@ -77,7 +77,7 @@ public class ResultsEditor extends AbstractArtifactEditor {
       };
    }
 
-   List<IResultsEditorTab> getTabs() throws OseeCoreException {
+   List<IResultsEditorTab> getTabs()  {
       if (tabs == null) {
          tabs = getResultsEditorProvider().getResultsEditorTabs();
          if (tabs == null || tabs.isEmpty()) {
@@ -159,7 +159,7 @@ public class ResultsEditor extends AbstractArtifactEditor {
       }
    }
 
-   public void addResultsTab(IResultsEditorTab tab) throws OseeCoreException {
+   public void addResultsTab(IResultsEditorTab tab)  {
       Composite comp = tab.createTab(getContainer(), this);
       int pageIndex = addPage(comp);
       if (startPage == null) {

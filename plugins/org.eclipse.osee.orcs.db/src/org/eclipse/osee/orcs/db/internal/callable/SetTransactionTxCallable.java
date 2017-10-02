@@ -38,7 +38,7 @@ public class SetTransactionTxCallable extends AbstractDatastoreTxCallable<Void> 
    }
 
    @Override
-   protected Void handleTxWork(JdbcConnection connection) throws OseeCoreException {
+   protected Void handleTxWork(JdbcConnection connection)  {
       checkNotNull(txs, "transaction");
       checkNotNullOrEmpty(comment, "comment");
 

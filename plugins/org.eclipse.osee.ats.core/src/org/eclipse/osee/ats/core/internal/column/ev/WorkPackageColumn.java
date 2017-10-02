@@ -96,7 +96,7 @@ public class WorkPackageColumn implements IWorkPackageUtility, IWorkPackageColum
    }
 
    @Override
-   public IAtsWorkPackage getWorkPackage(IAtsObject atsObject) throws OseeCoreException {
+   public IAtsWorkPackage getWorkPackage(IAtsObject atsObject)  {
       IAtsWorkPackage workPackage = null;
       ArtifactId workPackageId =
          earnedValueServiceProvider.getEarnedValueService().getWorkPackageId((IAtsWorkItem) atsObject);

@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 public class TeamDefinitionUtility implements ITeamDefinitionUtility {
 
    @Override
-   public Collection<IAtsTeamDefinition> getImpactedTeamDefs(Collection<IAtsActionableItem> aias) throws OseeCoreException {
+   public Collection<IAtsTeamDefinition> getImpactedTeamDefs(Collection<IAtsActionableItem> aias)  {
       return TeamDefinitions.getImpactedTeamDefs(aias);
    }
 

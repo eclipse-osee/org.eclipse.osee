@@ -173,7 +173,7 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
    }
 
    @Override
-   public IWorldEditorProvider getWorldEditorProvider() throws OseeArgumentException {
+   public IWorldEditorProvider getWorldEditorProvider()  {
       WorldEditorInput worldEditorInput = getWorldEditorInput();
       worldEditorInput.setEditor(this);
       return worldEditorInput.getIWorldEditorProvider();
@@ -188,7 +188,7 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
    }
 
    @Override
-   public void reSearch() throws OseeCoreException {
+   public void reSearch()  {
       worldXWidgetActionPage.reSearch();
    }
 
@@ -225,7 +225,7 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
    }
 
    @Override
-   public IAtsVersion getMetricsVersion() throws OseeCoreException {
+   public IAtsVersion getMetricsVersion()  {
       IAtsVersion verArt = getWorldEditorProvider().getTargetedVersionArtifact();
       if (verArt != null) {
          return verArt;
@@ -241,7 +241,7 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
    }
 
    @Override
-   public double getManHoursPerDayPreference() throws OseeCoreException {
+   public double getManHoursPerDayPreference()  {
       return WorldComposite.getManHoursPerDayPreference(getLoadedArtifacts());
    }
 

@@ -37,7 +37,7 @@ public class TeamDefinitions {
       return names;
    }
 
-   public static List<IAtsTeamDefinition> getTopLevelTeamDefinitions(Active active, IAtsQueryService queryService) throws OseeCoreException {
+   public static List<IAtsTeamDefinition> getTopLevelTeamDefinitions(Active active, IAtsQueryService queryService)  {
       IAtsTeamDefinition topTeamDef = getTopTeamDefinition(queryService);
       if (topTeamDef == null) {
          return java.util.Collections.emptyList();
@@ -63,7 +63,7 @@ public class TeamDefinitions {
       return results;
    }
 
-   public static Set<IAtsTeamDefinition> getChildren(IAtsTeamDefinition topTeamDef, boolean recurse) throws OseeCoreException {
+   public static Set<IAtsTeamDefinition> getChildren(IAtsTeamDefinition topTeamDef, boolean recurse)  {
       Set<IAtsTeamDefinition> children = new HashSet<>();
       for (IAtsTeamDefinition child : topTeamDef.getChildrenTeamDefinitions()) {
          children.add(child);
@@ -74,12 +74,12 @@ public class TeamDefinitions {
       return children;
    }
 
-   public static List<IAtsTeamDefinition> getTeamDefinitions(Active active, IAtsQueryService queryService) throws OseeCoreException {
+   public static List<IAtsTeamDefinition> getTeamDefinitions(Active active, IAtsQueryService queryService)  {
       return Collections.castAll(
          getActive(queryService.createQuery(AtsArtifactTypes.TeamDefinition).getConfigObjects(), active));
    }
 
-   public static List<IAtsTeamDefinition> getTeamTopLevelDefinitions(Active active, IAtsQueryService queryService) throws OseeCoreException {
+   public static List<IAtsTeamDefinition> getTeamTopLevelDefinitions(Active active, IAtsQueryService queryService)  {
       IAtsTeamDefinition topTeamDef = getTopTeamDefinition(queryService);
       if (topTeamDef == null) {
          return java.util.Collections.emptyList();
@@ -87,12 +87,12 @@ public class TeamDefinitions {
       return Collections.castAll(getActive(getChildren(topTeamDef, false), active));
    }
 
-   public static IAtsTeamDefinition getTopTeamDefinition(IAtsQueryService queryService) throws OseeCoreException {
+   public static IAtsTeamDefinition getTopTeamDefinition(IAtsQueryService queryService)  {
       return queryService.createQuery(AtsArtifactTypes.TeamDefinition).andId(
          AtsArtifactToken.TopTeamDefinition).getOneOrNull(IAtsTeamDefinition.class);
    }
 
-   public static Set<IAtsTeamDefinition> getTeamReleaseableDefinitions(Active active, IAtsQueryService queryService) throws OseeCoreException {
+   public static Set<IAtsTeamDefinition> getTeamReleaseableDefinitions(Active active, IAtsQueryService queryService)  {
       Set<IAtsTeamDefinition> teamDefs = new HashSet<>();
       for (IAtsTeamDefinition teamDef : getTeamDefinitions(active, queryService)) {
          if (teamDef.getVersions().size() > 0) {
@@ -102,13 +102,13 @@ public class TeamDefinitions {
       return teamDefs;
    }
 
-   public static Set<IAtsTeamDefinition> getTeamsFromItemAndChildren(IAtsActionableItem ai) throws OseeCoreException {
+   public static Set<IAtsTeamDefinition> getTeamsFromItemAndChildren(IAtsActionableItem ai)  {
       Set<IAtsTeamDefinition> aiTeams = new HashSet<>();
       getTeamFromItemAndChildren(ai, aiTeams);
       return aiTeams;
    }
 
-   public static Set<IAtsTeamDefinition> getTeamsFromItemAndChildren(IAtsTeamDefinition teamDef) throws OseeCoreException {
+   public static Set<IAtsTeamDefinition> getTeamsFromItemAndChildren(IAtsTeamDefinition teamDef)  {
       Set<IAtsTeamDefinition> teamDefs = new HashSet<>();
       teamDefs.add(teamDef);
       for (IAtsTeamDefinition child : teamDef.getChildrenTeamDefinitions()) {
@@ -117,7 +117,7 @@ public class TeamDefinitions {
       return teamDefs;
    }
 
-   private static void getTeamFromItemAndChildren(IAtsActionableItem ai, Set<IAtsTeamDefinition> aiTeams) throws OseeCoreException {
+   private static void getTeamFromItemAndChildren(IAtsActionableItem ai, Set<IAtsTeamDefinition> aiTeams)  {
       aiTeams.add(ai.getTeamDefinition());
 
       for (IAtsActionableItem childArt : ai.getChildrenActionableItems()) {
@@ -125,7 +125,7 @@ public class TeamDefinitions {
       }
    }
 
-   public static Set<IAtsTeamDefinition> getTeamDefinitions(Collection<String> teamDefNames, IAtsQueryService queryService) throws OseeCoreException {
+   public static Set<IAtsTeamDefinition> getTeamDefinitions(Collection<String> teamDefNames, IAtsQueryService queryService)  {
       Set<IAtsTeamDefinition> teamDefs = new HashSet<>();
       for (IAtsTeamDefinition teamDef : getTeamDefinitions(Active.Both, queryService)) {
          if (teamDefNames.contains(teamDef.getName())) {
@@ -135,7 +135,7 @@ public class TeamDefinitions {
       return teamDefs;
    }
 
-   public static Set<IAtsTeamDefinition> getTeamDefinitionsNameStartsWith(String prefix, IAtsQueryService queryService) throws OseeCoreException {
+   public static Set<IAtsTeamDefinition> getTeamDefinitionsNameStartsWith(String prefix, IAtsQueryService queryService)  {
       Set<IAtsTeamDefinition> teamDefs = new HashSet<>();
       for (IAtsTeamDefinition teamDef : getTeamDefinitions(Active.Both, queryService)) {
          if (teamDef.getName().startsWith(prefix)) {
@@ -145,7 +145,7 @@ public class TeamDefinitions {
       return teamDefs;
    }
 
-   public static Collection<IAtsTeamDefinition> getImpactedTeamDefs(Collection<IAtsActionableItem> ais) throws OseeCoreException {
+   public static Collection<IAtsTeamDefinition> getImpactedTeamDefs(Collection<IAtsActionableItem> ais)  {
       Set<IAtsTeamDefinition> resultTeams = new HashSet<>();
       for (IAtsActionableItem ai : ais) {
          resultTeams.addAll(getImpactedTeamDefInherited(ai));
@@ -163,7 +163,7 @@ public class TeamDefinitions {
       return null;
    }
 
-   private static Collection<IAtsTeamDefinition> getImpactedTeamDefInherited(IAtsActionableItem ai) throws OseeCoreException {
+   private static Collection<IAtsTeamDefinition> getImpactedTeamDefInherited(IAtsActionableItem ai)  {
       if (ai == null) {
          return java.util.Collections.emptyList();
       }

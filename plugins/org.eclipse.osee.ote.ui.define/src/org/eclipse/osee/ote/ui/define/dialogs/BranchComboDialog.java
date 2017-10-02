@@ -144,7 +144,7 @@ public class BranchComboDialog extends TitleAreaDialog implements Listener {
       }
    }
 
-   public static BranchId getBranchFromUser() throws OseeCoreException {
+   public static BranchId getBranchFromUser()  {
       BranchId toReturn = BranchId.SENTINEL;
       BranchComboDialog branchSelection = new BranchComboDialog(AWorkbench.getActiveShell());
       int result = branchSelection.open();

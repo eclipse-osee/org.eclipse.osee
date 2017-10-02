@@ -248,7 +248,7 @@ public class AtsProgramService implements IAtsProgramService {
    }
 
    @Override
-   public IAtsTeamDefinition getTeamDefHoldingVersions(IAtsProgram program) throws OseeCoreException {
+   public IAtsTeamDefinition getTeamDefHoldingVersions(IAtsProgram program)  {
       return getTeamDefinition(program);
    }
 
@@ -291,12 +291,12 @@ public class AtsProgramService implements IAtsProgramService {
    }
 
    @Override
-   public Collection<IAtsActionableItem> getAis(IAtsProgram program, WorkType workType) throws OseeCoreException {
+   public Collection<IAtsActionableItem> getAis(IAtsProgram program, WorkType workType)  {
       return getAis(program, java.util.Collections.singleton(workType));
    }
 
    @Override
-   public Collection<IAtsActionableItem> getAis(IAtsProgram program, Collection<WorkType> workTypes) throws OseeCoreException {
+   public Collection<IAtsActionableItem> getAis(IAtsProgram program, Collection<WorkType> workTypes)  {
       IAtsConfigQuery query = services.getQueryService() //
          .createQuery(AtsArtifactTypes.ActionableItem) //
          .andAttr(AtsAttributeTypes.ProgramUuid, String.valueOf(program.getId()));
@@ -309,7 +309,7 @@ public class AtsProgramService implements IAtsProgramService {
    }
 
    @Override
-   public Collection<IAtsTeamDefinition> getTeamDefs(IAtsProgram program, Collection<WorkType> workTypes) throws OseeCoreException {
+   public Collection<IAtsTeamDefinition> getTeamDefs(IAtsProgram program, Collection<WorkType> workTypes)  {
       IAtsConfigQuery query = services.getQueryService() //
          .createQuery(AtsArtifactTypes.TeamDefinition) //
          .andAttr(AtsAttributeTypes.ProgramUuid, String.valueOf(program.getId()));
@@ -363,19 +363,19 @@ public class AtsProgramService implements IAtsProgramService {
    }
 
    @Override
-   public Collection<IAtsTeamWorkflow> getWorkflows(IAtsProgram program, WorkType workType, IAtsWorkItem workItem) throws OseeCoreException {
+   public Collection<IAtsTeamWorkflow> getWorkflows(IAtsProgram program, WorkType workType, IAtsWorkItem workItem)  {
       return getWorkflows(program, java.util.Collections.singleton(workType), workItem);
    }
 
    @Override
-   public Collection<IAtsTeamWorkflow> getWorkflows(IAtsProgram program) throws OseeCoreException {
+   public Collection<IAtsTeamWorkflow> getWorkflows(IAtsProgram program)  {
       Collection<IAtsTeamDefinition> workTypeTeamDefs = getTeamDefs(program);
       return services.getQueryService().createQuery(WorkItemType.TeamWorkflow).andTeam(workTypeTeamDefs).getItems(
          IAtsTeamWorkflow.class);
    }
 
    @Override
-   public Collection<IAtsTeamWorkflow> getWorkflows(IAtsProgram program, Collection<WorkType> workTypes, IAtsWorkItem workItem) throws OseeCoreException {
+   public Collection<IAtsTeamWorkflow> getWorkflows(IAtsProgram program, Collection<WorkType> workTypes, IAtsWorkItem workItem)  {
       if (workTypes.contains(WorkType.All)) {
          throw new OseeArgumentException("Invalid option ALL for getWorkflow");
       }

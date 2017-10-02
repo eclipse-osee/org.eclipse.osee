@@ -86,7 +86,7 @@ public class OseeData {
       return new File(workspaceRoot.getFile(new Path(path)).getLocation().toString());
    }
 
-   public static IFolder getFolder(String name) throws OseeCoreException {
+   public static IFolder getFolder(String name)  {
       try {
          IFolder folder = getProject().getFolder(name);
          if (!folder.exists()) {

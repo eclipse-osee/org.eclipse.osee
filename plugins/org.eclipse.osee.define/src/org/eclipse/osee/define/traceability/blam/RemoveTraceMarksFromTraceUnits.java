@@ -97,7 +97,7 @@ public class RemoveTraceMarksFromTraceUnits extends AbstractBlam {
       return builder.toString();
    }
 
-   private TraceHandler getCheckedTraceHandler(VariableMap variableMap) throws OseeArgumentException {
+   private TraceHandler getCheckedTraceHandler(VariableMap variableMap)  {
       List<TraceHandler> toReturn = new ArrayList<>();
       for (TraceHandler handler : getTraceHandlers()) {
          if (variableMap.getBoolean(handler.getName())) {
@@ -112,7 +112,7 @@ public class RemoveTraceMarksFromTraceUnits extends AbstractBlam {
       return toReturn.get(0);
    }
 
-   private void checkPath(String filePath, String type) throws OseeArgumentException {
+   private void checkPath(String filePath, String type)  {
       if (!Strings.isValid(filePath)) {
          throw new OseeArgumentException("Please enter a valid %s path", type);
       }
@@ -122,7 +122,7 @@ public class RemoveTraceMarksFromTraceUnits extends AbstractBlam {
       }
    }
 
-   private URI getSourceURI(VariableMap variableMap) throws OseeArgumentException {
+   private URI getSourceURI(VariableMap variableMap)  {
       String filePath = variableMap.getString("Select File");
       String folderPath = variableMap.getString("Select Folder");
 
@@ -220,7 +220,7 @@ public class RemoveTraceMarksFromTraceUnits extends AbstractBlam {
       }
 
       @Override
-      public void onResourceFound(URI uriPath, String name, CharBuffer fileBuffer) throws OseeCoreException {
+      public void onResourceFound(URI uriPath, String name, CharBuffer fileBuffer)  {
          IArtifactType traceUnitType = traceUnitLocator.getTraceUnitType(name, fileBuffer);
          if (!traceUnitType.equals(ITraceUnitResourceLocator.UNIT_TYPE_UNKNOWN)) {
             if (traceParser.isTraceRemovalAllowed()) {

@@ -44,12 +44,12 @@ public class SqlHandlerFactoryImpl implements SqlHandlerFactory {
    }
 
    @Override
-   public List<SqlHandler<?>> createHandlers(CriteriaSet... criteriaSet) throws OseeCoreException {
+   public List<SqlHandler<?>> createHandlers(CriteriaSet... criteriaSet)  {
       return createHandlers(Arrays.asList(criteriaSet));
    }
 
    @Override
-   public List<SqlHandler<?>> createHandlers(Iterable<CriteriaSet> criteriaSets) throws OseeCoreException {
+   public List<SqlHandler<?>> createHandlers(Iterable<CriteriaSet> criteriaSets)  {
       List<SqlHandler<?>> handlers = new ArrayList<>();
       int level = 0;
       for (CriteriaSet criteriaSet : criteriaSets) {
@@ -72,7 +72,7 @@ public class SqlHandlerFactoryImpl implements SqlHandlerFactory {
 
    @Override
    @SuppressWarnings({"unchecked", "rawtypes"})
-   public SqlHandler<?> createHandler(Criteria criteria) throws OseeCoreException {
+   public SqlHandler<?> createHandler(Criteria criteria)  {
       Class<? extends Criteria> key = criteria.getClass();
       Class<? extends SqlHandler> item = handleMap.get(key);
       SqlHandler<?> toReturn = null;
@@ -82,7 +82,7 @@ public class SqlHandlerFactoryImpl implements SqlHandlerFactory {
       return toReturn;
    }
 
-   private <C extends Criteria, H extends SqlHandler<C>> SqlHandler<C> createHandler(C criteria, Class<H> item) throws OseeCoreException {
+   private <C extends Criteria, H extends SqlHandler<C>> SqlHandler<C> createHandler(C criteria, Class<H> item)  {
       SqlHandler<C> handler = null;
       try {
          handler = item.newInstance();

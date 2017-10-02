@@ -31,7 +31,7 @@ public class MatchingApplicabilityTagsRule extends AbstractValidationRule {
    private HashSet<String> validConfigurations;
 
    @Override
-   protected ValidationResult validate(Artifact artToValidate, IProgressMonitor monitor) throws OseeCoreException {
+   protected ValidationResult validate(Artifact artToValidate, IProgressMonitor monitor)  {
       Collection<String> errorMessages = new ArrayList<>();
       String wordml = artToValidate.getSoleAttributeValue(CoreAttributeTypes.WordTemplateContent, "");
 

@@ -300,7 +300,7 @@ public class AtsWorkDefConfigEditor extends GraphicalEditorWithFlyoutPalette {
        * Create a new outline page for the shapes editor.
        * 
        * @param viewer a viewer (TreeViewer instance) used for this outline page
-       * @throws OseeArgumentException if editor is null
+       *  if editor is null
        */
       public ShapesOutlinePage(EditPartViewer viewer) {
          super(viewer);

@@ -40,7 +40,7 @@ public class ActionableItemTreeWithChildrenDialog extends FilteredCheckboxTreeDi
    boolean recurseChildren = false;
    protected Composite dialogComp;
 
-   public ActionableItemTreeWithChildrenDialog(Active active) throws OseeCoreException {
+   public ActionableItemTreeWithChildrenDialog(Active active)  {
       this(active, ActionableItems.getTopLevelActionableItems(active, AtsClientService.get()));
    }
 
@@ -53,7 +53,7 @@ public class ActionableItemTreeWithChildrenDialog extends FilteredCheckboxTreeDi
    /**
     * @return selected AIs and children if recurseChildren was checked
     */
-   public Collection<IAtsActionableItem> getResultAndRecursedAIs() throws OseeCoreException {
+   public Collection<IAtsActionableItem> getResultAndRecursedAIs()  {
       Set<IAtsActionableItem> aias = new HashSet<>(10);
       for (Object obj : getResult()) {
          IAtsActionableItem ai = (IAtsActionableItem) obj;

@@ -33,7 +33,7 @@ public class ChangeTypeColumnTest {
 
    @BeforeClass
    @AfterClass
-   public static void cleanup() throws OseeCoreException {
+   public static void cleanup()  {
       TeamWorkFlowArtifact reqArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
       reqArt.setSoleAttributeValue(AtsAttributeTypes.ChangeType, ChangeType.Problem.name());

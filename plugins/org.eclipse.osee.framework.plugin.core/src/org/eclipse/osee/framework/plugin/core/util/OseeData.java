@@ -84,11 +84,11 @@ public final class OseeData {
       return getProject().getFile(fileName);
    }
 
-   public static IFile getIFile(String fileName, InputStream in) throws OseeCoreException {
+   public static IFile getIFile(String fileName, InputStream in)  {
       return getIFile(fileName, in, false);
    }
 
-   public static IFile getIFile(String fileName, InputStream in, boolean overwrite) throws OseeCoreException {
+   public static IFile getIFile(String fileName, InputStream in, boolean overwrite)  {
       IFile iFile = getProject().getFile(fileName);
       if (!iFile.exists() || overwrite) {
          AIFile.writeToFile(iFile, in);
@@ -101,7 +101,7 @@ public final class OseeData {
       return new File(workspaceRoot.getFile(new Path(path)).getLocation().toString());
    }
 
-   public static IFolder getFolder(String name) throws OseeCoreException {
+   public static IFolder getFolder(String name)  {
       try {
          IFolder folder = getProject().getFolder(name);
          if (!folder.exists()) {

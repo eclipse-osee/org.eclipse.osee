@@ -49,7 +49,7 @@ public class AddNoteAction extends AbstractAtsAction {
    }
 
    @Override
-   public void runWithException() throws OseeCoreException {
+   public void runWithException()  {
       ArrayList<String> artifactNames = new ArrayList<>();
       Map<String, String> selectedToStateName = new HashMap<>();
       artifactNames.add("Whole \"" + sma.getArtifactTypeName() + "\"");
@@ -87,7 +87,7 @@ public class AddNoteAction extends AbstractAtsAction {
       return true;
    }
 
-   private boolean performUi(ArrayList<String> artifactNames) throws OseeArgumentException {
+   private boolean performUi(ArrayList<String> artifactNames)  {
       NewNoteWizard noteWizard = new NewNoteWizard(artifactNames);
       WizardDialog dialog =
          new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), noteWizard);

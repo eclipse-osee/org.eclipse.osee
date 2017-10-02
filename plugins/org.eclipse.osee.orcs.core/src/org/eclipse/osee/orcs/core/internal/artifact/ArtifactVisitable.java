@@ -17,6 +17,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface ArtifactVisitable {
 
-   void accept(ArtifactVisitor visitor) throws OseeCoreException;
+   void accept(ArtifactVisitor visitor) ;
 
 }

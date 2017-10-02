@@ -60,7 +60,7 @@ public class ObjectQueryCallableFactory implements QueryCallableFactory {
             return count;
          }
 
-         protected int getCount() throws OseeCoreException {
+         protected int getCount()  {
             QuerySqlContext queryContext =
                queryContextFactory.createQueryContext(getSession(), getQueryData(), QueryType.COUNT);
             checkForCancelled();

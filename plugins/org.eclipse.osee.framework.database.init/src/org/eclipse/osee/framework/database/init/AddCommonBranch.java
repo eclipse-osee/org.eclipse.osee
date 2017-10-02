@@ -68,7 +68,7 @@ public abstract class AddCommonBranch implements IDbInitializationTask {
    }
 
    @Override
-   public void run() throws OseeCoreException {
+   public void run()  {
 
       if (initializeRootArtifacts) {
          ArtifactTypeManager.addArtifact(CoreArtifactTokens.DefaultHierarchyRoot, CoreBranches.SYSTEM_ROOT).persist(

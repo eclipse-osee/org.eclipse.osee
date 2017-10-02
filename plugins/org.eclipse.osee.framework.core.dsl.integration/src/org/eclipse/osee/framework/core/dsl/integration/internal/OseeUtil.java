@@ -37,25 +37,25 @@ public final class OseeUtil {
       // Utility Class
    }
 
-   private static long checkAndGetUuid(OseeType type) throws OseeCoreException {
+   private static long checkAndGetUuid(OseeType type)  {
       String uuid = type.getId();
       Conditions.checkNotNull(uuid, "uuid", "for type [%s]", type.getName());
       return Long.valueOf(uuid);
    }
 
-   public static IArtifactType toToken(XArtifactType model) throws OseeCoreException {
+   public static IArtifactType toToken(XArtifactType model)  {
       return TokenFactory.createArtifactType(checkAndGetUuid(model), Strings.unquote(model.getName()));
    }
 
-   public static AttributeTypeId toToken(XAttributeType model) throws OseeCoreException {
+   public static AttributeTypeId toToken(XAttributeType model)  {
       return AttributeTypeToken.valueOf(checkAndGetUuid(model), Strings.unquote(model.getName()));
    }
 
-   public static IRelationType toToken(XRelationType model) throws OseeCoreException {
+   public static IRelationType toToken(XRelationType model)  {
       return TokenFactory.createRelationType(checkAndGetUuid(model), Strings.unquote(model.getName()));
    }
 
-   public static boolean isRestrictedSide(XRelationSideEnum relationSideEnum, RelationSide relationSide) throws OseeCoreException {
+   public static boolean isRestrictedSide(XRelationSideEnum relationSideEnum, RelationSide relationSide)  {
       Conditions.checkNotNull(relationSideEnum, "relation side restriction");
       Conditions.checkNotNull(relationSide, "relation side");
 
@@ -76,7 +76,7 @@ public final class OseeUtil {
       return toReturn;
    }
 
-   public static PermissionEnum getPermission(ObjectRestriction restriction) throws OseeCoreException {
+   public static PermissionEnum getPermission(ObjectRestriction restriction)  {
       Conditions.checkNotNull(restriction, "restriction");
       AccessPermissionEnum modelPermission = restriction.getPermission();
       Conditions.checkNotNull(modelPermission, "restriction permission");

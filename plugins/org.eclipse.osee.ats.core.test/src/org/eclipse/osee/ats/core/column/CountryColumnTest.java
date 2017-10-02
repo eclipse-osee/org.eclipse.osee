@@ -40,7 +40,7 @@ public class CountryColumnTest extends CountryColumn {
    // @formatter:on
 
    @Before
-   public void setup() throws OseeCoreException {
+   public void setup()  {
       MockitoAnnotations.initMocks(this);
    }
 

@@ -20,8 +20,8 @@ public interface Loader {
 
    Loader setOptions(Options sourceOptions);
 
-   void load(HasCancellation cancellation, LoadDataHandler handler) throws OseeCoreException;
+   void load(HasCancellation cancellation, LoadDataHandler handler) ;
 
-   void load(LoadDataHandler handler) throws OseeCoreException;
+   void load(LoadDataHandler handler) ;
 
 }

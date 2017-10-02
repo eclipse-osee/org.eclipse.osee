@@ -18,6 +18,6 @@ import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorTab;
  */
 public interface IResultsEditorHtmlTab extends IResultsEditorTab {
 
-   public String getReportHtml() throws OseeCoreException;
+   public String getReportHtml() ;
 
 }

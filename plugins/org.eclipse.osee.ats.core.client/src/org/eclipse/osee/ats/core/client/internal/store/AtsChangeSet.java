@@ -71,7 +71,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public TransactionId execute() throws OseeCoreException {
+   public TransactionId execute()  {
       Conditions.checkNotNull(comment, "comment");
       if (isEmpty() && execptionIfEmpty) {
          throw new OseeArgumentException("objects/deleteObjects cannot be empty");
@@ -193,7 +193,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       return art;
    }
 
-   public static TransactionId execute(String comment, Object object, Object... objects) throws OseeCoreException {
+   public static TransactionId execute(String comment, Object object, Object... objects)  {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(comment);
       changes.add(object);
       for (Object obj : objects) {
@@ -203,42 +203,42 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType) throws OseeCoreException {
+   public void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType)  {
       Artifact artifact = AtsClientService.get().getArtifact(workItem);
       artifact.deleteSoleAttribute(attributeType);
       add(artifact);
    }
 
    @Override
-   public void setSoleAttributeValue(IAtsWorkItem workItem, AttributeTypeId attributeType, String value) throws OseeCoreException {
+   public void setSoleAttributeValue(IAtsWorkItem workItem, AttributeTypeId attributeType, String value)  {
       Artifact artifact = AtsClientService.get().getArtifact(workItem);
       artifact.setSoleAttributeValue(attributeType, value);
       add(artifact);
    }
 
    @Override
-   public void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeId attributeType, Object value) throws OseeCoreException {
+   public void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeId attributeType, Object value)  {
       Artifact artifact = AtsClientService.get().getArtifact(atsObject);
       artifact.setSoleAttributeValue(attributeType, value);
       add(artifact);
    }
 
    @Override
-   public void addAttribute(IAtsObject atsObject, AttributeTypeId attributeType, Object value) throws OseeCoreException {
+   public void addAttribute(IAtsObject atsObject, AttributeTypeId attributeType, Object value)  {
       Artifact artifact = AtsClientService.get().getArtifact(atsObject);
       artifact.addAttribute(attributeType, value);
       add(artifact);
    }
 
    @Override
-   public void deleteAttribute(IAtsObject atsObject, AttributeTypeId attributeType, Object value) throws OseeCoreException {
+   public void deleteAttribute(IAtsObject atsObject, AttributeTypeId attributeType, Object value)  {
       Artifact artifact = AtsClientService.get().getArtifact(atsObject);
       artifact.deleteAttribute(attributeType, value);
       add(artifact);
    }
 
    @Override
-   public <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, AttributeTypeId attributeType, T value) throws OseeCoreException {
+   public <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, AttributeTypeId attributeType, T value)  {
       Artifact artifact = AtsClientService.get().getArtifact(workItem);
       @SuppressWarnings("unchecked")
       Attribute<T> attribute = (Attribute<T>) attr;
@@ -247,7 +247,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr) throws OseeCoreException {
+   public <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr)  {
       Artifact artifact = AtsClientService.get().getArtifact(workItem);
       Attribute<?> attribute = (Attribute<?>) attr;
       attribute.delete();

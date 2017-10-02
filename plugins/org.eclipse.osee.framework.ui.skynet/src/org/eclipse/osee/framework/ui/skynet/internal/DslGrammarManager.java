@@ -41,12 +41,12 @@ public final class DslGrammarManager {
       registryProvider.invalidate();
    }
 
-   public static DslGrammar getDslByExtension(final String extension) throws OseeCoreException {
+   public static DslGrammar getDslByExtension(final String extension)  {
       Conditions.checkNotNull(extension, "extension");
       return registryProvider.get().getGrammarByExtension(extension);
    }
 
-   public static DslGrammar getDslByGrammarId(final String grammarId) throws OseeCoreException {
+   public static DslGrammar getDslByGrammarId(final String grammarId)  {
       Conditions.checkNotNull(grammarId, "grammarId");
       return registryProvider.get().getGrammarById(grammarId);
    }
@@ -83,7 +83,7 @@ public final class DslGrammarManager {
       return result;
    }
 
-   public static DslGrammar getGrammar(AttributeTypeId attributeType) throws OseeCoreException {
+   public static DslGrammar getGrammar(AttributeTypeId attributeType)  {
       Conditions.checkNotNull(attributeType, "attributeType");
 
       DslGrammar toReturn = null;

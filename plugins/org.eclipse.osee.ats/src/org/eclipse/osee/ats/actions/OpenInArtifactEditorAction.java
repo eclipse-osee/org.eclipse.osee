@@ -34,7 +34,7 @@ public class OpenInArtifactEditorAction extends AbstractAtsAction {
    }
 
    @Override
-   public void runWithException() throws OseeCoreException {
+   public void runWithException()  {
       for (Artifact art : selectedAtsArtifacts.getSelectedWorkflowArtifacts()) {
          RendererManager.open(art, PresentationType.GENERALIZED_EDIT);
       }

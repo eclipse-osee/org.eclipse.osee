@@ -18,9 +18,9 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface OseeDslProvider {
 
-   void loadDsl() throws OseeCoreException;
+   void loadDsl() ;
 
-   OseeDsl getDsl() throws OseeCoreException;
+   OseeDsl getDsl() ;
 
-   void storeDsl(OseeDsl dsl) throws OseeCoreException;
+   void storeDsl(OseeDsl dsl) ;
 }

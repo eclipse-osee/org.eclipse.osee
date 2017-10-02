@@ -44,7 +44,7 @@ public class AttributeLoadProcessor extends LoadProcessor<AttributeData, Attribu
    }
 
    @Override
-   protected AttributeData createData(Object conditions, AttributeObjectFactory factory, JdbcStatement chStmt, Options options) throws OseeCoreException {
+   protected AttributeData createData(Object conditions, AttributeObjectFactory factory, JdbcStatement chStmt, Options options)  {
       AttributeData toReturn = null;
 
       BranchId branch = BranchId.create(chStmt.getLong("branch_id"), OptionsUtil.getFromBranchView(options));

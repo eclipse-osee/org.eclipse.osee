@@ -179,7 +179,7 @@ public class BranchVisualizationView extends ViewPart {
       parent.layout();
    }
 
-   public GanttEvent createEvents(GanttEvent parentEvent, IOseeBranch branch, boolean recurse) throws OseeCoreException {
+   public GanttEvent createEvents(GanttEvent parentEvent, IOseeBranch branch, boolean recurse)  {
       GanttEvent gantEvent = createGantEvent(parentEvent, branch);
 
       // Create connections
@@ -196,7 +196,7 @@ public class BranchVisualizationView extends ViewPart {
       return gantEvent;
    }
 
-   private GanttEvent createGantEvent(GanttEvent parentEvent, IOseeBranch branch) throws OseeCoreException {
+   private GanttEvent createGantEvent(GanttEvent parentEvent, IOseeBranch branch)  {
       Calendar creationDateCal = Calendar.getInstance();
       Date createDate = BranchManager.getBaseTransaction(branch).getTimeStamp();
       creationDateCal.setTime(createDate);

@@ -144,7 +144,7 @@ public final class CmAccessProviderProxy implements IAccessProvider {
       return accessProvider;
    }
 
-   private void checkInitialized() throws OseeCoreException {
+   private void checkInitialized()  {
       Conditions.checkNotNull(getAccessProvider(), "object access provider",
          "Object Access Provider not properly initialized");
       if (requiresReload) {
@@ -154,7 +154,7 @@ public final class CmAccessProviderProxy implements IAccessProvider {
    }
 
    @Override
-   public void computeAccess(ArtifactToken userArtifact, Collection<?> objToCheck, AccessData accessData) throws OseeCoreException {
+   public void computeAccess(ArtifactToken userArtifact, Collection<?> objToCheck, AccessData accessData)  {
       checkInitialized();
       getAccessProvider().computeAccess(userArtifact, objToCheck, accessData);
    }

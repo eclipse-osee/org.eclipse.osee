@@ -42,7 +42,7 @@ public final class HierarchyHandler {
       this.branch = transaction.getBranch();
    }
 
-   public void addArtifact(Artifact testUnit) throws OseeCoreException {
+   public void addArtifact(Artifact testUnit)  {
       Conditions.checkExpressionFailOnTrue(!testUnit.isOnBranch(branch), "Artifact [%s] must be on branch [%s]",
          testUnit.toString(), branch.getId());
       Artifact folder = null;
@@ -60,15 +60,15 @@ public final class HierarchyHandler {
       addChildIfNotRelated(folder, testUnit);
    }
 
-   private Artifact getOrCreateUnknownTestUnitFolder() throws OseeCoreException {
+   private Artifact getOrCreateUnknownTestUnitFolder()  {
       return getOrCreateTestUnitsFolder("Unknown Test Unit Type", true);
    }
 
-   private Artifact getOrCreateTestSupportFolder() throws OseeCoreException {
+   private Artifact getOrCreateTestSupportFolder()  {
       return getOrCreateTestUnitsFolder(Requirements.TEST_SUPPORT_UNITS, true);
    }
 
-   private Artifact getOrCreateTestCaseFolder() throws OseeCoreException {
+   private Artifact getOrCreateTestCaseFolder()  {
       return getOrCreateTestUnitsFolder("Test Cases", true);
    }
 
@@ -79,7 +79,7 @@ public final class HierarchyHandler {
       return root;
    }
 
-   private Artifact getOrCreateCodeUnitFolder(String codeUnitName) throws OseeCoreException {
+   private Artifact getOrCreateCodeUnitFolder(String codeUnitName)  {
       Artifact root = getRoot();
       Artifact toReturn = getOrCreateFolder("Code Units", root);
 
@@ -94,7 +94,7 @@ public final class HierarchyHandler {
       return toReturn;
    }
 
-   private Artifact getOrCreateTestUnitsFolder(String subfolderName, boolean includesSubfolder) throws OseeCoreException {
+   private Artifact getOrCreateTestUnitsFolder(String subfolderName, boolean includesSubfolder)  {
       Artifact root = getRoot();
       Artifact testFolder = getOrCreateFolder("Test", root);
       Artifact testUnitFolder = getOrCreateFolder("Test Units", testFolder);
@@ -106,7 +106,7 @@ public final class HierarchyHandler {
       return testUnitFolder;
    }
 
-   private void persistHelper(Artifact toPersist) throws OseeCoreException {
+   private void persistHelper(Artifact toPersist)  {
       if (transaction != null) {
          toPersist.persist(transaction);
       }
@@ -120,7 +120,7 @@ public final class HierarchyHandler {
       }
    }
 
-   private Artifact getOrCreateFolder(String folderName, Artifact parentFolder) throws OseeCoreException {
+   private Artifact getOrCreateFolder(String folderName, Artifact parentFolder)  {
       Artifact toReturn = folderNameToArtifact.get(folderName);
       if (toReturn == null) {
          List<Artifact> relatedFolders =

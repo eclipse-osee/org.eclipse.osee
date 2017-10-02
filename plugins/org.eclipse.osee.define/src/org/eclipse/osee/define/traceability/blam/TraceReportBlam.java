@@ -126,7 +126,7 @@ public class TraceReportBlam extends AbstractBlam {
       return builder.toString();
    }
 
-   private List<TraceTypeEnum> getCheckedTraceItems(VariableMap variableMap) throws OseeArgumentException {
+   private List<TraceTypeEnum> getCheckedTraceItems(VariableMap variableMap)  {
       List<TraceTypeEnum> toReturn = new ArrayList<>();
       for (TraceTypeEnum traceType : TraceTypeEnum.values()) {
          if (variableMap.getBoolean(traceType.asLabel())) {
@@ -250,7 +250,7 @@ public class TraceReportBlam extends AbstractBlam {
       }
    }
 
-   private void executeReports(IProgressMonitor monitor, Map<String, AbstractArtifactRelationReport> reports) throws OseeCoreException {
+   private void executeReports(IProgressMonitor monitor, Map<String, AbstractArtifactRelationReport> reports)  {
       try {
          monitor.beginTask("Create Reports", reports.size());
          for (String key : reports.keySet()) {
@@ -268,7 +268,7 @@ public class TraceReportBlam extends AbstractBlam {
       }
    }
 
-   private void displayReports(IProgressMonitor monitor, ISheetWriter excelWriter, CharBackedInputStream excelInputStream, OutputType outputType) throws IOException, OseeCoreException {
+   private void displayReports(IProgressMonitor monitor, ISheetWriter excelWriter, CharBackedInputStream excelInputStream, OutputType outputType) throws IOException {
       try {
          boolean wasEmpty = resultsTabs == null || resultsTabs.isEmpty();
          monitor.beginTask("Open Reports", 2);
@@ -313,7 +313,7 @@ public class TraceReportBlam extends AbstractBlam {
       reports.put(title, report);
    }
 
-   private void openExcel(final InputStream inputStream) throws OseeCoreException {
+   private void openExcel(final InputStream inputStream)  {
       IFile iFile = OseeData.getIFile("Trace_Report_" + Lib.getDateTimeString() + ".xml");
       AIFile.writeToFile(iFile, inputStream);
       if (inputStream != null) {

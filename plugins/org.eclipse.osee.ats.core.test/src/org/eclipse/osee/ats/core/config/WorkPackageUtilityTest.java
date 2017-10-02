@@ -65,7 +65,7 @@ public class WorkPackageUtilityTest {
    private WorkPackageUtility util;
 
    @Before
-   public void setup() throws OseeCoreException {
+   public void setup()  {
       MockitoAnnotations.initMocks(this);
       when(teamWf.isTeamWorkflow()).thenReturn(true);
 

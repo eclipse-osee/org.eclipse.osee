@@ -79,7 +79,7 @@ public class AtsTaskEditorRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public void open(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
+   public void open(List<Artifact> artifacts, PresentationType presentationType)  {
       AtsUtil.openInAtsTaskEditor("Tasks", artifacts);
    }
 }

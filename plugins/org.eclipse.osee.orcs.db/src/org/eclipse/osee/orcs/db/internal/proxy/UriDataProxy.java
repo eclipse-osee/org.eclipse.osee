@@ -48,7 +48,7 @@ public class UriDataProxy extends AbstractDataProxy implements CharacterDataProx
    }
 
    @Override
-   public boolean setValue(ByteBuffer data) throws OseeCoreException {
+   public boolean setValue(ByteBuffer data)  {
       boolean response = false;
       try {
          ByteBuffer original = getValueAsBytes();
@@ -73,7 +73,7 @@ public class UriDataProxy extends AbstractDataProxy implements CharacterDataProx
    }
 
    @Override
-   public ByteBuffer getValueAsBytes() throws OseeCoreException {
+   public ByteBuffer getValueAsBytes()  {
       ByteBuffer decompressed = null;
       byte[] rawData = getStorage().getContent();
       if (rawData != null) {
@@ -88,7 +88,7 @@ public class UriDataProxy extends AbstractDataProxy implements CharacterDataProx
    }
 
    @Override
-   public String getValueAsString() throws OseeCoreException {
+   public String getValueAsString()  {
       String toReturn = null;
       ByteBuffer data = getValueAsBytes();
       if (data != null) {
@@ -104,7 +104,7 @@ public class UriDataProxy extends AbstractDataProxy implements CharacterDataProx
    }
 
    @Override
-   public boolean setValue(Object value) throws OseeCoreException {
+   public boolean setValue(Object value)  {
       ByteBuffer toSet = null;
       if (value != null && value instanceof String) {
          try {

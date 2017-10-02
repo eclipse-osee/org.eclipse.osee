@@ -48,7 +48,7 @@ public class RemainingPointsNumericWorkflowColumn extends AbstractNumericTotalCo
    }
 
    @Override
-   protected int getPercentComplete(IAtsWorkItem workItem) throws OseeCoreException {
+   protected int getPercentComplete(IAtsWorkItem workItem)  {
       return ((Artifact) workItem.getStoreObject()).getSoleAttributeValue(AtsAttributeTypes.PercentComplete, 0);
    }
 

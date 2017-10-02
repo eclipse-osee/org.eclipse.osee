@@ -161,7 +161,7 @@ public class JsonOutputHandler extends OrcsScriptOutputHandler {
    }
 
    @Override
-   public void onLoadStart() throws OseeCoreException {
+   public void onLoadStart()  {
       super.onLoadStart();
       try {
          writer.writeArrayFieldStart("results");
@@ -174,7 +174,7 @@ public class JsonOutputHandler extends OrcsScriptOutputHandler {
    private boolean wasStarted;
 
    @Override
-   public void onLoadDescription(LoadDescription data) throws OseeCoreException {
+   public void onLoadDescription(LoadDescription data)  {
       super.onLoadDescription(data);
       first = Iterables.getFirst(data.getObjectDescription().getDynamicData(), null);
       wasStarted = false;
@@ -184,7 +184,7 @@ public class JsonOutputHandler extends OrcsScriptOutputHandler {
    }
 
    @Override
-   public void onDynamicData(Map<String, Object> data) throws OseeCoreException {
+   public void onDynamicData(Map<String, Object> data)  {
       super.onDynamicData(data);
       try {
          if (!wasStarted && first != null) {
@@ -202,7 +202,7 @@ public class JsonOutputHandler extends OrcsScriptOutputHandler {
    }
 
    @Override
-   public void onLoadEnd() throws OseeCoreException {
+   public void onLoadEnd()  {
       super.onLoadEnd();
       try {
          if (wasStarted) {

@@ -44,14 +44,14 @@ public abstract class AbstractDbTxOperation extends AbstractOperation {
       getJdbcClient().runTransaction(new Transaction(monitor));
    }
 
-   protected abstract void doTxWork(IProgressMonitor monitor, JdbcConnection connection) throws OseeCoreException;
+   protected abstract void doTxWork(IProgressMonitor monitor, JdbcConnection connection) ;
 
    protected void handleTxException(IProgressMonitor monitor, Exception ex) {
       // default implementation
    }
 
    //OseeCoreException is thrown by inheriting class
-   protected void handleTxFinally(IProgressMonitor monitor) throws OseeCoreException {
+   protected void handleTxFinally(IProgressMonitor monitor)  {
       // default implementation
    }
 

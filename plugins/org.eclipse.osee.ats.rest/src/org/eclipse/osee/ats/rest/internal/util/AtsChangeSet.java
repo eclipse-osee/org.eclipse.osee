@@ -64,7 +64,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       this.notifier = notifier;
    }
 
-   public TransactionBuilder getTransaction() throws OseeCoreException {
+   public TransactionBuilder getTransaction()  {
       if (transaction == null) {
          transaction =
             orcsApi.getTransactionFactory().createTransaction(atsServer.getAtsBranch(), getUser(asUser), comment);
@@ -81,7 +81,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public TransactionId execute() throws OseeCoreException {
+   public TransactionId execute()  {
       Conditions.checkNotNull(comment, "comment");
       if (isEmpty() && execptionIfEmpty) {
          throw new OseeArgumentException("objects/deleteObjects cannot be empty");
@@ -122,38 +122,38 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType) throws OseeCoreException {
+   public void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType)  {
       getTransaction().deleteSoleAttribute(getArtifact(workItem), attributeType);
       add(workItem);
    }
 
    @Override
-   public void setSoleAttributeValue(IAtsWorkItem workItem, AttributeTypeId attributeType, String value) throws OseeCoreException {
+   public void setSoleAttributeValue(IAtsWorkItem workItem, AttributeTypeId attributeType, String value)  {
       ArtifactReadable artifact = getArtifact(workItem);
       setSoleAttributeValue(artifact, attributeType, value);
    }
 
    @Override
-   public void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeId attributeType, Object value) throws OseeCoreException {
+   public void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeId attributeType, Object value)  {
       getTransaction().setSoleAttributeValue(getArtifact(atsObject), attributeType, value);
       add(atsObject);
    }
 
    @Override
-   public void deleteAttribute(IAtsObject atsObject, AttributeTypeId attributeType, Object value) throws OseeCoreException {
+   public void deleteAttribute(IAtsObject atsObject, AttributeTypeId attributeType, Object value)  {
       getTransaction().deleteAttributesWithValue(getArtifact(atsObject), attributeType, value);
       add(atsObject);
    }
 
    @Override
-   public <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, AttributeTypeId attributeType, T value) throws OseeCoreException {
+   public <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, AttributeTypeId attributeType, T value)  {
       ArtifactId artifactId = getArtifact(workItem);
       getTransaction().setAttributeById(artifactId, attr, value);
       add(workItem);
    }
 
    @Override
-   public <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr) throws OseeCoreException {
+   public <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr)  {
       getTransaction().deleteByAttributeId(getArtifact(workItem), attr);
       add(workItem);
    }
@@ -165,7 +165,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void addAttribute(IAtsObject atsObject, AttributeTypeId attributeType, Object value) throws OseeCoreException {
+   public void addAttribute(IAtsObject atsObject, AttributeTypeId attributeType, Object value)  {
       ArtifactReadable artifact = getArtifact(atsObject);
       if (atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().isArtifactReferencedAttribute(attributeType)) {
          Conditions.assertTrue(value instanceof ArtifactId, "value must be of type ArtifactId");

@@ -19,8 +19,8 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface HasAssignees {
 
-   public List<IAtsUser> getAssignees() throws OseeCoreException;
+   public List<IAtsUser> getAssignees() ;
 
-   public List<IAtsUser> getImplementers() throws OseeCoreException;
+   public List<IAtsUser> getImplementers() ;
 
 }

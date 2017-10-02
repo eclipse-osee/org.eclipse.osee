@@ -20,8 +20,8 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface ITeamDefinitionFactory {
 
-   IAtsTeamDefinition createTeamDefinition(String name, long uuid, IAtsChangeSet changes, IAtsServices services) throws OseeCoreException;
+   IAtsTeamDefinition createTeamDefinition(String name, long uuid, IAtsChangeSet changes, IAtsServices services) ;
 
-   IAtsTeamDefinition createTeamDefinition(String name, IAtsChangeSet changes, IAtsServices services) throws OseeCoreException;
+   IAtsTeamDefinition createTeamDefinition(String name, IAtsChangeSet changes, IAtsServices services) ;
 
 }

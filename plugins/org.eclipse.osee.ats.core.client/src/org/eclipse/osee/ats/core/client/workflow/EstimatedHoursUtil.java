@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
  */
 public class EstimatedHoursUtil {
 
-   public static double getEstimatedHours(Object object) throws OseeCoreException {
+   public static double getEstimatedHours(Object object)  {
       if (object instanceof AbstractWorkflowArtifact) {
          return ((AbstractWorkflowArtifact) object).getEstimatedHoursTotal();
       } else if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {

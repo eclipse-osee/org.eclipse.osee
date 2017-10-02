@@ -93,7 +93,7 @@ public abstract class XWorkingBranchWidgetAbstract extends GenericXWidget implem
    }
 
    @Override
-   public void setArtifact(Artifact artifact) throws OseeCoreException {
+   public void setArtifact(Artifact artifact)  {
       if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
          this.teamArt = (TeamWorkFlowArtifact) artifact;
          updateBranchState();
@@ -132,7 +132,7 @@ public abstract class XWorkingBranchWidgetAbstract extends GenericXWidget implem
       thread.start();
    }
 
-   private void updateBranchState() throws OseeCoreException {
+   private void updateBranchState()  {
       workingBranch = AtsClientService.get().getBranchService().getWorkingBranch(teamArt, true);
       workingBranchCreationInProgress = teamArt.isWorkingBranchCreationInProgress();
       workingBranchInWork = AtsClientService.get().getBranchService().isWorkingBranchInWork(teamArt);

@@ -33,13 +33,13 @@ public class OpenNewAtsTaskEditorAction extends AbstractAtsAction {
    }
 
    public interface IOpenNewAtsTaskEditorHandler {
-      ITaskEditorProvider getTaskEditorProviderCopy() throws OseeCoreException;
+      ITaskEditorProvider getTaskEditorProviderCopy() ;
 
-      CustomizeData getCustomizeDataCopy() throws OseeCoreException;
+      CustomizeData getCustomizeDataCopy() ;
    }
 
    @Override
-   public void runWithException() throws OseeCoreException {
+   public void runWithException()  {
       ITaskEditorProvider provider = openNewAtsTaskEditorHandler.getTaskEditorProviderCopy();
       provider.setCustomizeData(openNewAtsTaskEditorHandler.getCustomizeDataCopy());
       provider.setTableLoadOptions(TableLoadOption.NoUI);

@@ -60,14 +60,14 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    }
 
    @Override
-   public IStateToken getCurrentState(IAtsWorkItem workItem) throws OseeCoreException {
+   public IStateToken getCurrentState(IAtsWorkItem workItem)  {
       ArtifactId artifact = services.getArtifactResolver().get(workItem);
       Conditions.checkNotNull(artifact, "workItem", "Can't Find Artifact matching [%s]", workItem.toString());
       return workItem.getStateDefinition();
    }
 
    @Override
-   public Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+   public Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow teamWf)  {
       ArtifactId artifact = services.getArtifactResolver().get(teamWf);
       Conditions.checkNotNull(artifact, "teamWf", "Can't Find Artifact matching [%s]", teamWf.toString());
       return services.getRelationResolver().getRelated(teamWf, AtsRelationTypes.TeamWorkflowToReview_Review,
@@ -75,7 +75,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    }
 
    @Override
-   public Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow teamWf, IStateToken state) throws OseeCoreException {
+   public Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow teamWf, IStateToken state)  {
       ArtifactId artifact = services.getArtifactResolver().get(teamWf);
       Conditions.checkNotNull(artifact, "teamWf", "Can't Find Artifact matching [%s]", teamWf.toString());
       List<IAtsAbstractReview> reviews = new LinkedList<>();
@@ -90,7 +90,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    }
 
    @Override
-   public IAtsTeamWorkflow getFirstTeam(Object object) throws OseeCoreException {
+   public IAtsTeamWorkflow getFirstTeam(Object object)  {
       Collection<IAtsTeamWorkflow> related = getTeams(object);
       return related.isEmpty() ? null : related.iterator().next();
    }
@@ -115,7 +115,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    }
 
    @Override
-   public Collection<WidgetResult> validateWidgetTransition(IAtsWorkItem workItem, IAtsStateDefinition toStateDef) throws OseeStateException {
+   public Collection<WidgetResult> validateWidgetTransition(IAtsWorkItem workItem, IAtsStateDefinition toStateDef)  {
       return AtsXWidgetValidateManager.validateTransition(workItem, toStateDef, services);
    }
 
@@ -125,7 +125,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    }
 
    @Override
-   public String getTargetedVersionStr(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+   public String getTargetedVersionStr(IAtsTeamWorkflow teamWf)  {
       IAtsVersion targetedVersion = services.getVersionService().getTargetedVersionByTeamWf(teamWf);
       if (targetedVersion != null) {
          return targetedVersion.getName();
@@ -154,7 +154,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    }
 
    @Override
-   public String getCombinedPcrId(IAtsWorkItem workItem) throws OseeCoreException {
+   public String getCombinedPcrId(IAtsWorkItem workItem)  {
       String id = "";
       for (ITeamWorkflowProvider provider : TeamWorkflowProviders.getTeamWorkflowProviders()) {
          try {

@@ -31,7 +31,7 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 public class ExistenceTypePredicateHandler implements PredicateHandler {
 
    @Override
-   public QueryBuilder handle(QueryBuilder builder, Predicate predicate) throws OseeCoreException {
+   public QueryBuilder handle(QueryBuilder builder, Predicate predicate)  {
       if (!predicate.getType().isOfType(SearchMethod.EXISTS_TYPE, SearchMethod.NOT_EXISTS_TYPE)) {
          throw new OseeArgumentException("This predicate handler only supports [%s] and [%s]", SearchMethod.EXISTS_TYPE,
             SearchMethod.NOT_EXISTS_TYPE);

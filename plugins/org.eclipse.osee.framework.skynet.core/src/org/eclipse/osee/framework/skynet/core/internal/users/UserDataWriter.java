@@ -45,14 +45,14 @@ public class UserDataWriter {
       this.cacheProvider = cacheProvider;
    }
 
-   public User createUser(UserToken userToken, String comment) throws OseeCoreException {
+   public User createUser(UserToken userToken, String comment)  {
       SkynetTransaction transaction = TransactionManager.createTransaction(CoreBranches.COMMON, comment);
       User user = createUser(userToken, transaction);
       Operations.executeWorkAndCheckStatus(transaction);
       return user;
    }
 
-   public User createUser(UserToken userToken, SkynetTransaction transaction) throws OseeCoreException {
+   public User createUser(UserToken userToken, SkynetTransaction transaction)  {
       // Determine if user with id has already been created; boot strap issue with dbInit
       User user = cacheProvider.get().getIfPresent(userToken.getUserId());
       if (user != null) {
@@ -86,7 +86,7 @@ public class UserDataWriter {
       return user;
    }
 
-   private void cacheUser(final User newUser) throws OseeCoreException {
+   private void cacheUser(final User newUser)  {
       Cache<String, User> cache = cacheProvider.get();
       try {
          cache.get(newUser.getUserId(), new Callable<User>() {
@@ -100,7 +100,7 @@ public class UserDataWriter {
       }
    }
 
-   private void addUserToUserGroups(Artifact user) throws OseeCoreException {
+   private void addUserToUserGroups(Artifact user)  {
       Collection<Artifact> defaultGroups =
          ArtifactQuery.getArtifactListFromAttribute(CoreAttributeTypes.DefaultGroup, "true", CoreBranches.COMMON);
 

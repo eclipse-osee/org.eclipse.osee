@@ -25,17 +25,17 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IAtsWorkItemFilter {
 
-   public abstract IAtsWorkItemFilter isOfType(IArtifactType... artifactType) throws OseeCoreException;
+   public abstract IAtsWorkItemFilter isOfType(IArtifactType... artifactType) ;
 
-   public abstract IAtsWorkItemFilter union(IAtsWorkItemFilter... atsQuery) throws OseeCoreException;
+   public abstract IAtsWorkItemFilter union(IAtsWorkItemFilter... atsQuery) ;
 
-   public abstract IAtsWorkItemFilter fromTeam(IAtsTeamDefinition teamDef) throws OseeCoreException;
+   public abstract IAtsWorkItemFilter fromTeam(IAtsTeamDefinition teamDef) ;
 
-   public abstract IAtsWorkItemFilter isStateType(StateType... stateType) throws OseeCoreException;
+   public abstract IAtsWorkItemFilter isStateType(StateType... stateType) ;
 
-   public <T extends IAtsWorkItem> Collection<T> getItems() throws OseeCoreException;
+   public <T extends IAtsWorkItem> Collection<T> getItems() ;
 
-   public abstract IAtsWorkItemFilter withOrValue(AttributeTypeId attributeType, Collection<? extends Object> values) throws OseeCoreException;
+   public abstract IAtsWorkItemFilter withOrValue(AttributeTypeId attributeType, Collection<? extends Object> values) ;
 
    public abstract Collection<IAtsAction> getActions();
 

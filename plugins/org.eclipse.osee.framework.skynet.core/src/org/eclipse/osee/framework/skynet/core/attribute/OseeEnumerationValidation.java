@@ -31,12 +31,12 @@ public class OseeEnumerationValidation implements IOseeValidator {
    }
 
    @Override
-   public boolean isApplicable(Artifact artifact, AttributeTypeId attributeType) throws OseeCoreException {
+   public boolean isApplicable(Artifact artifact, AttributeTypeId attributeType)  {
       return AttributeTypeManager.getType(attributeType).isEnumerated();
    }
 
    @Override
-   public IStatus validate(Artifact artifact, AttributeTypeToken attributeType, Object proposedObject) throws OseeCoreException {
+   public IStatus validate(Artifact artifact, AttributeTypeToken attributeType, Object proposedObject)  {
       String text = (String) proposedObject;
       AttributeType type = AttributeTypeManager.getType(attributeType);
       OseeEnumType enumType = type.getOseeEnumType();

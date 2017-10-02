@@ -54,13 +54,13 @@ public class AttributeResourceTest {
    private final String testString = "This is the test string";
 
    @Before
-   public void setup() throws OseeCoreException {
+   public void setup()  {
       workingBranch = IOseeBranch.create(testInfo.getQualifiedTestName());
       BranchManager.createWorkingBranch(SAW_Bld_2, workingBranch);
    }
 
    @Test
-   public void testGetArtifactFromGUIDDeleted() throws OseeCoreException {
+   public void testGetArtifactFromGUIDDeleted()  {
       Artifact newArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, workingBranch);
       newArtifact.setSoleAttributeFromString(CoreAttributeTypes.WordTemplateContent,
          String.format(

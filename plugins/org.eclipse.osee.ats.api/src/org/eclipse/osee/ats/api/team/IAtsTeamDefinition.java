@@ -42,11 +42,11 @@ public interface IAtsTeamDefinition extends IAtsConfigObject, IAtsRules, ICommit
 
    Collection<IAtsUser> getLeads();
 
-   Collection<IAtsUser> getLeads(Collection<IAtsActionableItem> actionableItems) throws OseeCoreException;
+   Collection<IAtsUser> getLeads(Collection<IAtsActionableItem> actionableItems) ;
 
-   Collection<IAtsUser> getMembers() throws OseeCoreException;
+   Collection<IAtsUser> getMembers() ;
 
-   Collection<IAtsUser> getMembersAndLeads() throws OseeCoreException;
+   Collection<IAtsUser> getMembersAndLeads() ;
 
    Collection<IAtsUser> getSubscribed();
 
@@ -75,19 +75,19 @@ public interface IAtsTeamDefinition extends IAtsConfigObject, IAtsRules, ICommit
     * Versions
     ******************************/
 
-   boolean isTeamUsesVersions() throws OseeCoreException;
+   boolean isTeamUsesVersions() ;
 
    IAtsVersion getNextReleaseVersion();
 
-   IAtsTeamDefinition getTeamDefinitionHoldingVersions() throws OseeCoreException;
+   IAtsTeamDefinition getTeamDefinitionHoldingVersions() ;
 
-   IAtsVersion getVersion(String name) throws OseeCoreException;
+   IAtsVersion getVersion(String name) ;
 
    Collection<IAtsVersion> getVersions();
 
-   Collection<IAtsVersion> getVersions(VersionReleaseType releaseType, VersionLockedType lockedType) throws OseeCoreException;
+   Collection<IAtsVersion> getVersions(VersionReleaseType releaseType, VersionLockedType lockedType) ;
 
-   Collection<IAtsVersion> getVersionsFromTeamDefHoldingVersions(VersionReleaseType releaseType, VersionLockedType lockedType) throws OseeCoreException;
+   Collection<IAtsVersion> getVersionsFromTeamDefHoldingVersions(VersionReleaseType releaseType, VersionLockedType lockedType) ;
 
    Collection<IAtsVersion> getVersionsLocked(VersionLockedType lockType);
 

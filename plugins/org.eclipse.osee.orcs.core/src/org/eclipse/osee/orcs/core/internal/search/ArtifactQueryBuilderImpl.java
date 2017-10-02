@@ -158,12 +158,12 @@ public class ArtifactQueryBuilderImpl<T> implements ArtifactQueryBuilder<T> {
    }
 
    @Override
-   public T andUuids(Collection<Long> artifactIds) throws OseeCoreException {
+   public T andUuids(Collection<Long> artifactIds)  {
       return andIds(artifactIds.stream().map(id -> ArtifactId.valueOf(id)).collect(Collectors.toList()));
    }
 
    @Override
-   public T andGuid(String id) throws OseeCoreException {
+   public T andGuid(String id)  {
       return andGuids(Collections.singleton(id));
    }
 

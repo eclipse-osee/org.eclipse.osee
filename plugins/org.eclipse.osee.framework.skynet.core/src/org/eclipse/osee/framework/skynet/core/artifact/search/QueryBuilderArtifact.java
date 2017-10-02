@@ -20,8 +20,8 @@ import org.eclipse.osee.orcs.rest.client.QueryBuilder;
  */
 public interface QueryBuilderArtifact extends QueryBuilder {
 
-   ResultSet<Artifact> getResults() throws OseeCoreException;
+   ResultSet<Artifact> getResults() ;
 
-   ResultSet<ArtifactMatch> getMatches() throws OseeCoreException;
+   ResultSet<ArtifactMatch> getMatches() ;
 
 }

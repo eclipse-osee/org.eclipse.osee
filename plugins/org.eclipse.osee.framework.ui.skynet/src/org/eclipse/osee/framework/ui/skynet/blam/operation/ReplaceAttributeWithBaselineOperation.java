@@ -15,8 +15,6 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -73,7 +71,7 @@ public class ReplaceAttributeWithBaselineOperation extends AbstractOperation {
       }
    }
 
-   private void revertAttribute(Artifact artifact, Change change) throws OseeStateException, OseeCoreException, SecurityException, IllegalArgumentException {
+   private void revertAttribute(Artifact artifact, Change change) throws SecurityException, IllegalArgumentException {
       Attribute<?> attribute = artifact.getAttributeById(change.getItemId().getId(), true);
       if (attribute != null && change.getItemId().getId().intValue() == attribute.getId()) {
          IChangeWorker worker = new AttributeChangeWorker(change, artifact);

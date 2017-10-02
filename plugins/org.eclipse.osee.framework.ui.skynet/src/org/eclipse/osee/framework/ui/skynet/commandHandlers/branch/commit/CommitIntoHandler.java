@@ -41,7 +41,7 @@ public class CommitIntoHandler extends CommitHandler {
    }
 
    @Override
-   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
+   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection)  {
       BranchId sourceBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
 
       BranchType[] allowedTypes;

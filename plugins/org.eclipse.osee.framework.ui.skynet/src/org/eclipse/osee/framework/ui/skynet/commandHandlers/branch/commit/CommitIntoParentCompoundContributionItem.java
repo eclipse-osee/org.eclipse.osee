@@ -86,7 +86,7 @@ public class CommitIntoParentCompoundContributionItem extends CompoundContributi
       return contributionItems.toArray(new IContributionItem[0]);
    }
 
-   private CommandContributionItem createCommand(IOseeBranch branch, String commandId) throws OseeCoreException {
+   private CommandContributionItem createCommand(IOseeBranch branch, String commandId)  {
 
       Map<String, String> parameters = new HashMap<>();
       parameters.put(BranchView.BRANCH_ID, branch.getIdString());

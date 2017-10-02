@@ -19,39 +19,39 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IAtsLog {
 
-   public abstract List<IAtsLogItem> getLogItems() throws OseeCoreException;
+   public abstract List<IAtsLogItem> getLogItems() ;
 
-   public abstract Date getLastStatusDate() throws OseeCoreException;
+   public abstract Date getLastStatusDate() ;
 
-   public abstract List<IAtsLogItem> getLogItemsReversed() throws OseeCoreException;
+   public abstract List<IAtsLogItem> getLogItemsReversed() ;
 
-   public abstract IAtsLogItem getLogItemWithTypeAsOfDate(LogType logType, Date date) throws OseeCoreException;
+   public abstract IAtsLogItem getLogItemWithTypeAsOfDate(LogType logType, Date date) ;
 
    /**
     * Used to reset the original originated user. Only for internal use. Kept for backward compatibility.
     */
-   public abstract void internalResetCreatedDate(Date date) throws OseeCoreException;
+   public abstract void internalResetCreatedDate(Date date) ;
 
-   public abstract String internalGetCancelledReason() throws OseeCoreException;
+   public abstract String internalGetCancelledReason() ;
 
    /**
     * This method is replaced by workItem.getCompletedFromState. Kept for backward compatibility.
     */
-   public abstract String internalGetCompletedFromState() throws OseeCoreException;
+   public abstract String internalGetCompletedFromState() ;
 
-   public abstract IAtsLogItem addLog(LogType type, String state, String msg, String userId) throws OseeCoreException;
+   public abstract IAtsLogItem addLog(LogType type, String state, String msg, String userId) ;
 
-   public abstract IAtsLogItem addLogItem(IAtsLogItem item) throws OseeCoreException;
+   public abstract IAtsLogItem addLogItem(IAtsLogItem item) ;
 
-   public abstract IAtsLogItem addLog(LogType type, String state, String msg, Date date, String userId) throws OseeCoreException;
+   public abstract IAtsLogItem addLog(LogType type, String state, String msg, Date date, String userId) ;
 
    public abstract void clearLog();
 
-   public abstract IAtsLogItem getLastEvent(LogType type) throws OseeCoreException;
+   public abstract IAtsLogItem getLastEvent(LogType type) ;
 
-   public abstract IAtsLogItem getStateEvent(LogType type, String stateName) throws OseeCoreException;
+   public abstract IAtsLogItem getStateEvent(LogType type, String stateName) ;
 
-   public abstract IAtsLogItem getStateEvent(LogType type) throws OseeCoreException;
+   public abstract IAtsLogItem getStateEvent(LogType type) ;
 
    public abstract void setLogId(String logId);
 

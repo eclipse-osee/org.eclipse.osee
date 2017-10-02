@@ -28,45 +28,45 @@ public interface TxQueryBuilder<T> {
 
    T andTxIds(Collection<TransactionId> ids);
 
-   T andTxId(Operator op, int id) throws OseeCoreException;
+   T andTxId(Operator op, int id) ;
 
-   T andTxId(Operator op1, int id1, Operator op2, int id2) throws OseeCoreException;
+   T andTxId(Operator op1, int id1, Operator op2, int id2) ;
 
-   T andCommentEquals(String value) throws OseeCoreException;
+   T andCommentEquals(String value) ;
 
-   T andCommentPattern(String pattern) throws OseeCoreException;
+   T andCommentPattern(String pattern) ;
 
-   T andIs(TransactionDetailsType... types) throws OseeCoreException;
+   T andIs(TransactionDetailsType... types) ;
 
-   T andIs(Collection<TransactionDetailsType> types) throws OseeCoreException;
+   T andIs(Collection<TransactionDetailsType> types) ;
 
-   T andBranch(BranchId... ids) throws OseeCoreException;
+   T andBranch(BranchId... ids) ;
 
-   T andBranch(Collection<? extends BranchId> ids) throws OseeCoreException;
+   T andBranch(Collection<? extends BranchId> ids) ;
 
-   T andBranchIds(long... id) throws OseeCoreException;
+   T andBranchIds(long... id) ;
 
-   T andBranchIds(Collection<Long> ids) throws OseeCoreException;
+   T andBranchIds(Collection<Long> ids) ;
 
-   T andDate(Operator op, Timestamp date) throws OseeCoreException;
+   T andDate(Operator op, Timestamp date) ;
 
-   T andDate(Timestamp from, Timestamp to) throws OseeCoreException;
+   T andDate(Timestamp from, Timestamp to) ;
 
-   T andAuthorLocalIds(ArtifactId... id) throws OseeCoreException;
+   T andAuthorLocalIds(ArtifactId... id) ;
 
-   T andAuthorLocalIds(Collection<ArtifactId> ids) throws OseeCoreException;
+   T andAuthorLocalIds(Collection<ArtifactId> ids) ;
 
-   T andAuthorIds(int... id) throws OseeCoreException;
+   T andAuthorIds(int... id) ;
 
-   T andAuthorIds(Collection<Integer> ids) throws OseeCoreException;
+   T andAuthorIds(Collection<Integer> ids) ;
 
-   T andCommitIds(Integer... id) throws OseeCoreException;
+   T andCommitIds(Integer... id) ;
 
-   T andCommitIds(Collection<Integer> ids) throws OseeCoreException;
+   T andCommitIds(Collection<Integer> ids) ;
 
-   T andNullCommitId() throws OseeCoreException;
+   T andNullCommitId() ;
 
-   T andIsHead(BranchId branch) throws OseeCoreException;
+   T andIsHead(BranchId branch) ;
 
-   T andIsPriorTx(TransactionId txId) throws OseeCoreException;
+   T andIsPriorTx(TransactionId txId) ;
 }

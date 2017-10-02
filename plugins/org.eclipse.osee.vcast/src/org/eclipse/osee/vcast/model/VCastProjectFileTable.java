@@ -30,7 +30,7 @@ public class VCastProjectFileTable implements VCastTableData<VCastProjectFile> {
    }
 
    @Override
-   public Collection<VCastProjectFile> getRows(VCastDataStore dataStore) throws OseeCoreException {
+   public Collection<VCastProjectFile> getRows(VCastDataStore dataStore)  {
       return dataStore.getAllProjectFiles();
    }
 

@@ -31,17 +31,17 @@ public class TypedValueAttributeSetHelper<T> implements AttributeSetHelper<T, T>
    }
 
    @Override
-   public boolean matches(Attribute<T> attribute, T value) throws OseeCoreException {
+   public boolean matches(Attribute<T> attribute, T value)  {
       return value.equals(attribute.getValue());
    }
 
    @Override
-   public void setAttributeValue(Attribute<T> attribute, T value) throws OseeCoreException {
+   public void setAttributeValue(Attribute<T> attribute, T value)  {
       attribute.setValue(value);
    }
 
    @Override
-   public void createAttribute(AttributeTypeId attributeType, T value) throws OseeCoreException {
+   public void createAttribute(AttributeTypeId attributeType, T value)  {
       ResultSet<Attribute<T>> result =
          attributes.getAttributeSetFromValue(attributeType, DeletionFlag.EXCLUDE_DELETED, value);
       if (result.getOneOrNull() == null) {

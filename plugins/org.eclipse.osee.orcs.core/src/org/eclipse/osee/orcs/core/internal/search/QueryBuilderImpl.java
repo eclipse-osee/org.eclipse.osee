@@ -36,7 +36,7 @@ public class QueryBuilderImpl extends ArtifactQueryBuilderImpl<QueryBuilder> imp
    }
 
    @Override
-   public ResultSet<ArtifactReadable> getResults() throws OseeCoreException {
+   public ResultSet<ArtifactReadable> getResults()  {
       try {
          return createSearch().call();
       } catch (Exception ex) {
@@ -45,7 +45,7 @@ public class QueryBuilderImpl extends ArtifactQueryBuilderImpl<QueryBuilder> imp
    }
 
    @Override
-   public ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> getMatches() throws OseeCoreException {
+   public ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> getMatches()  {
       try {
          return createSearchWithMatches().call();
       } catch (Exception ex) {
@@ -54,7 +54,7 @@ public class QueryBuilderImpl extends ArtifactQueryBuilderImpl<QueryBuilder> imp
    }
 
    @Override
-   public int getCount() throws OseeCoreException {
+   public int getCount()  {
       try {
          return createCount().call();
       } catch (Exception ex) {
@@ -68,7 +68,7 @@ public class QueryBuilderImpl extends ArtifactQueryBuilderImpl<QueryBuilder> imp
    }
 
    @Override
-   public ResultSet<? extends ArtifactId> getResultsAsLocalIds() throws OseeCoreException {
+   public ResultSet<? extends ArtifactId> getResultsAsLocalIds()  {
       try {
          return createSearchResultsAsLocalIds().call();
       } catch (Exception ex) {
@@ -77,22 +77,22 @@ public class QueryBuilderImpl extends ArtifactQueryBuilderImpl<QueryBuilder> imp
    }
 
    @Override
-   public CancellableCallable<ResultSet<ArtifactReadable>> createSearch() throws OseeCoreException {
+   public CancellableCallable<ResultSet<ArtifactReadable>> createSearch()  {
       return queryFactory.createSearch(session, buildAndCopy());
    }
 
    @Override
-   public CancellableCallable<ResultSet<Match<ArtifactReadable, AttributeReadable<?>>>> createSearchWithMatches() throws OseeCoreException {
+   public CancellableCallable<ResultSet<Match<ArtifactReadable, AttributeReadable<?>>>> createSearchWithMatches()  {
       return queryFactory.createSearchWithMatches(session, buildAndCopy());
    }
 
    @Override
-   public CancellableCallable<ResultSet<? extends ArtifactId>> createSearchResultsAsLocalIds() throws OseeCoreException {
+   public CancellableCallable<ResultSet<? extends ArtifactId>> createSearchResultsAsLocalIds()  {
       return queryFactory.createLocalIdSearch(session, buildAndCopy());
    }
 
    @Override
-   public CancellableCallable<Integer> createCount() throws OseeCoreException {
+   public CancellableCallable<Integer> createCount()  {
       return queryFactory.createCount(session, buildAndCopy());
    }
 

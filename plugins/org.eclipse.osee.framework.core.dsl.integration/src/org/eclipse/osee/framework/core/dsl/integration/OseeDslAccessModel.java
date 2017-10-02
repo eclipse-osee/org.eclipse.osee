@@ -36,7 +36,7 @@ public class OseeDslAccessModel implements AccessModel {
    }
 
    @Override
-   public void computeAccess(IAccessContextId contextId, Collection<Object> objectsToCheck, AccessData accessData) throws OseeCoreException {
+   public void computeAccess(IAccessContextId contextId, Collection<Object> objectsToCheck, AccessData accessData)  {
       Conditions.checkNotNull(contextId, "contextId");
       Conditions.checkNotNull(objectsToCheck, "objectsToCheck");
       Conditions.checkNotNull(accessData, "accessData");

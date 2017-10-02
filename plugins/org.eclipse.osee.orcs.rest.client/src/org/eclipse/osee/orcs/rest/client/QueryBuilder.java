@@ -62,32 +62,32 @@ public interface QueryBuilder {
    /**
     * Search criteria that finds a given artifact with guids
     */
-   QueryBuilder andGuids(String... ids) throws OseeCoreException;
+   QueryBuilder andGuids(String... ids) ;
 
    /**
     * Search criteria that finds a given artifact with guids
     */
-   QueryBuilder andGuids(List<String> ids) throws OseeCoreException;
+   QueryBuilder andGuids(List<String> ids) ;
 
    /**
     * Artifacts matching token id(s)
     */
-   QueryBuilder andIds(ArtifactToken... artifactToken) throws OseeCoreException;
+   QueryBuilder andIds(ArtifactToken... artifactToken) ;
 
    /**
     * Artifacts matching token id(s)
     */
-   QueryBuilder andIds(Collection<? extends ArtifactToken> artifactTokens) throws OseeCoreException;
+   QueryBuilder andIds(Collection<? extends ArtifactToken> artifactTokens) ;
 
    /**
     * Search criteria that finds a given artifact type using type inheritance
     */
-   QueryBuilder andIsOfType(ArtifactTypeId... artifactType) throws OseeCoreException;
+   QueryBuilder andIsOfType(ArtifactTypeId... artifactType) ;
 
    /**
     * Search criteria that finds a given artifact types using type inheritance
     */
-   QueryBuilder andIsOfType(Collection<? extends ArtifactTypeId> artifactType) throws OseeCoreException;
+   QueryBuilder andIsOfType(Collection<? extends ArtifactTypeId> artifactType) ;
 
    /**
     * Search criteria that finds a given artifact type by matching type exactly
@@ -102,101 +102,101 @@ public interface QueryBuilder {
    /**
     * Search criteria that checks for the existence of an attribute type(s).
     */
-   QueryBuilder andExists(AttributeTypeId... attributeType) throws OseeCoreException;
+   QueryBuilder andExists(AttributeTypeId... attributeType) ;
 
    /**
     * Search criteria that checks for the existence of an attribute types.
     */
-   QueryBuilder andExists(Collection<? extends AttributeTypeId> attributeTypes) throws OseeCoreException;
+   QueryBuilder andExists(Collection<? extends AttributeTypeId> attributeTypes) ;
 
    /**
     * Search criteria that checks for the non-existence of an attribute type(s).
     */
-   QueryBuilder andNotExists(AttributeTypeId attributeType) throws OseeCoreException;
+   QueryBuilder andNotExists(AttributeTypeId attributeType) ;
 
    /**
     * Search criteria that checks for the non-existence of an attribute type(s).
     */
-   QueryBuilder andNotExists(Collection<? extends AttributeTypeId> attributeTypes) throws OseeCoreException;
+   QueryBuilder andNotExists(Collection<? extends AttributeTypeId> attributeTypes) ;
 
    /**
     * Search criteria that follows the relation link ending on the given side
     *
     * @param relationType the type to start following the link from
     */
-   QueryBuilder andExists(IRelationType relationType) throws OseeCoreException;
+   QueryBuilder andExists(IRelationType relationType) ;
 
    /**
     * Search criteria that follows the relation link ending on the given side
     *
     * @param relationTypeSide the type to start following the link from
     */
-   QueryBuilder andExists(RelationTypeSide relationTypeSide) throws OseeCoreException;
+   QueryBuilder andExists(RelationTypeSide relationTypeSide) ;
 
    /**
     * Search criteria that checks for non-existence of a relation type
     *
     * @param relationType the type to check for non-existence
     */
-   QueryBuilder andNotExists(IRelationType relationType) throws OseeCoreException;
+   QueryBuilder andNotExists(IRelationType relationType) ;
 
    /**
     * Search criteria that checks for non-existence of a relation type
     *
     * @param relationTypeSide the type to check for non-existence
     */
-   QueryBuilder andNotExists(RelationTypeSide relationTypeSide) throws OseeCoreException;
+   QueryBuilder andNotExists(RelationTypeSide relationTypeSide) ;
 
    /**
     * Artifact name equals value
     */
-   QueryBuilder andNameEquals(String artifactName) throws OseeCoreException;
+   QueryBuilder andNameEquals(String artifactName) ;
 
    /**
     * Search criteria that finds an attribute of the given type with its current value exactly equal (or not equal) to
     * any one of the given literal values. If the list only contains one value, then the search is conducted exactly as
     * if the single value constructor was called. This search does not support the (* wildcard) for multiple values.
     */
-   QueryBuilder and(AttributeTypeId attributeType, Collection<String> values, QueryOption... options) throws OseeCoreException;
+   QueryBuilder and(AttributeTypeId attributeType, Collection<String> values, QueryOption... options) ;
 
    /**
     * Search criteria that finds an attribute of the given type with its current value relative to the given value based
     * on the operator provided.
     */
-   QueryBuilder and(AttributeTypeId attributeType, String value, QueryOption... options) throws OseeCoreException;
+   QueryBuilder and(AttributeTypeId attributeType, String value, QueryOption... options) ;
 
    /**
     * Search criteria that finds an attribute of the given type with its current value exactly equal (or not equal) to
     * any one of the given literal values. If the list only contains one value, then the search is conducted exactly as
     * if the single value constructor was called. This search does not support the (* wildcard) for multiple values.
     */
-   QueryBuilder and(Collection<? extends AttributeTypeId> attributeTypes, String value, QueryOption... options) throws OseeCoreException;
+   QueryBuilder and(Collection<? extends AttributeTypeId> attributeTypes, String value, QueryOption... options) ;
 
    /**
     * Search for related artifacts
     *
     * @param relationTypeSide the type-side to search on
     */
-   QueryBuilder andRelatedTo(RelationTypeSide relationTypeSide, ArtifactId... artifacts) throws OseeCoreException;
+   QueryBuilder andRelatedTo(RelationTypeSide relationTypeSide, ArtifactId... artifacts) ;
 
    /**
     * Search for related artifacts
     *
     * @param relationTypeSide the type-side to search on
     */
-   QueryBuilder andRelatedTo(RelationTypeSide relationTypeSide, Collection<ArtifactId> artifactIds) throws OseeCoreException;
+   QueryBuilder andRelatedTo(RelationTypeSide relationTypeSide, Collection<ArtifactId> artifactIds) ;
 
    /**
     * Executes query
     *
     * @return artifact search results
     */
-   SearchResult getSearchResult(RequestType request) throws OseeCoreException;
+   SearchResult getSearchResult(RequestType request) ;
 
    /**
     * Count search results
     */
-   int getCount() throws OseeCoreException;
+   int getCount() ;
 
    /**
     * Convenience method for getting art ids of results

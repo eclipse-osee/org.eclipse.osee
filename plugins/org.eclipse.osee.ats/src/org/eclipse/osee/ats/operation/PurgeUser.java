@@ -104,37 +104,37 @@ public class PurgeUser extends AbstractBlam {
       });
    }
 
-   private void confirmDeletionOfArtifact(final User fromUser) throws OseeCoreException {
+   private void confirmDeletionOfArtifact(final User fromUser)  {
       if (MessageDialog.openConfirm(Displays.getActiveShell(), "Persist Confirmation",
          "Do you wish to delete the User artifact: " + fromUser.getName() + "?")) {
          deleteArtifact(fromUser);
       }
    }
 
-   private void findAndUpdateAuthoredTransactions(JdbcConnection connection, final User fromUser, final User toUser) throws OseeCoreException {
+   private void findAndUpdateAuthoredTransactions(JdbcConnection connection, final User fromUser, final User toUser)  {
       numOfAuthoredTransactions = jdbcClient.fetch(-1, GET_AUTHORED_TRANSACTIONS, fromUser.getArtId());
       numOfUpdatedAuthoredTransactions =
          jdbcClient.runPreparedUpdate(connection, UPDATE_AUTHORED_TRANSACTIONS, toUser.getArtId(), fromUser.getArtId());
    }
 
-   private void findAndUpdateRelations(JdbcConnection connection, final User fromUser, final User toUser) throws OseeCoreException {
+   private void findAndUpdateRelations(JdbcConnection connection, final User fromUser, final User toUser)  {
       updateRelationA(connection, fromUser, toUser);
       updateRelationB(connection, fromUser, toUser);
    }
 
-   private void updateRelationA(JdbcConnection connection, final User fromUser, final User toUser) throws OseeCoreException {
+   private void updateRelationA(JdbcConnection connection, final User fromUser, final User toUser)  {
       numOfASideRelations = jdbcClient.fetch(defaultUpdateValue, GET_RELATIONS_ASIDE, fromUser.getArtId());
       numOfUpdatedASideRelations =
          jdbcClient.runPreparedUpdate(connection, UPDATE_RELATIONS_ASIDE, toUser.getArtId(), fromUser.getArtId());
    }
 
-   private void updateRelationB(JdbcConnection connection, final User fromUser, final User toUser) throws OseeCoreException {
+   private void updateRelationB(JdbcConnection connection, final User fromUser, final User toUser)  {
       numOfBSideRelations = jdbcClient.fetch(defaultUpdateValue, GET_RELATIONS_BSIDE, fromUser.getArtId());
       numOfUpdatedBSideRelations =
          jdbcClient.runPreparedUpdate(connection, UPDATE_RELATIONS_BSIDE, toUser.getArtId(), fromUser.getArtId());
    }
 
-   private void deleteArtifact(final User fromUser) throws OseeCoreException {
+   private void deleteArtifact(final User fromUser)  {
       Artifact art = ArtifactQuery.getArtifactFromToken(fromUser);
       art.purgeFromBranch();
    }

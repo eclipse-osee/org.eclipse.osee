@@ -69,7 +69,7 @@ public class WorkflowMetrics {
       new HashCollection<>(true, HashSet.class, 100);
    private final double manHoursPerDay;
 
-   public WorkflowMetrics(Collection<? extends Artifact> artifacts, IAtsVersion version, double manHoursPerDay, Date estimatedReleaseDate) throws OseeCoreException {
+   public WorkflowMetrics(Collection<? extends Artifact> artifacts, IAtsVersion version, double manHoursPerDay, Date estimatedReleaseDate)  {
       this.manHoursPerDay = manHoursPerDay;
       this.version = version;
       this.estimatedReleaseDate = estimatedReleaseDate;
@@ -186,7 +186,7 @@ public class WorkflowMetrics {
       return awas;
    }
 
-   public Collection<TeamWorkFlowArtifact> getCompletedTeamWorkflows() throws OseeCoreException {
+   public Collection<TeamWorkFlowArtifact> getCompletedTeamWorkflows()  {
       Set<TeamWorkFlowArtifact> teams = new HashSet<>();
       for (TeamWorkFlowArtifact team : getTeamArts()) {
          if (team.isCompletedOrCancelled()) {
@@ -196,7 +196,7 @@ public class WorkflowMetrics {
       return teams;
    }
 
-   public Collection<AbstractWorkflowArtifact> getCompletedWorkflows() throws OseeCoreException {
+   public Collection<AbstractWorkflowArtifact> getCompletedWorkflows()  {
       Set<AbstractWorkflowArtifact> completed = new HashSet<>();
       for (AbstractWorkflowArtifact awa : awas) {
          if (awa.isCompletedOrCancelled()) {
@@ -206,7 +206,7 @@ public class WorkflowMetrics {
       return completed;
    }
 
-   public double getPercentCompleteByWorkflow() throws OseeCoreException {
+   public double getPercentCompleteByWorkflow()  {
       if (awas.isEmpty()) {
          return 0;
       }
@@ -217,7 +217,7 @@ public class WorkflowMetrics {
       return completed / awas.size() * 100;
    }
 
-   public Collection<TaskArtifact> getCompletedTaskWorkflows() throws OseeCoreException {
+   public Collection<TaskArtifact> getCompletedTaskWorkflows()  {
       Set<TaskArtifact> tasks = new HashSet<>();
       for (TaskArtifact team : getTaskArts()) {
          if (team.isCompletedOrCancelled()) {
@@ -232,7 +232,7 @@ public class WorkflowMetrics {
       return str;
    }
 
-   public static String getEstRemainMetrics(Collection<? extends Artifact> awas, IAtsVersion versionArtifact, double manHoursPerDay, Date estimatedrelDate) throws OseeCoreException {
+   public static String getEstRemainMetrics(Collection<? extends Artifact> awas, IAtsVersion versionArtifact, double manHoursPerDay, Date estimatedrelDate)  {
       return new WorkflowMetrics(awas, versionArtifact, manHoursPerDay, estimatedrelDate).str;
    }
 
@@ -275,7 +275,7 @@ public class WorkflowMetrics {
       return awas.size();
    }
 
-   public int getNumNotEstimated() throws OseeCoreException {
+   public int getNumNotEstimated()  {
       int count = 0;
       for (AbstractWorkflowArtifact awa : awas) {
          if (EstimatedHoursUtil.getEstimatedHours(awa) == 0) {

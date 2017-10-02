@@ -23,12 +23,12 @@ public interface IChangeReportUiHandler {
 
    public KeyedImage getScenarioImage(ChangeUiData changeUiData);
 
-   public String getScenarioDescriptionHtml(ChangeUiData changeUiData) throws OseeCoreException;
+   public String getScenarioDescriptionHtml(ChangeUiData changeUiData) ;
 
    public String getActionDescription();
 
    public String getName(TransactionDelta txDelta);
 
-   public void appendTransactionInfoHtml(StringBuilder sb, ChangeUiData changeUiData) throws OseeCoreException;
+   public void appendTransactionInfoHtml(StringBuilder sb, ChangeUiData changeUiData) ;
 
 }

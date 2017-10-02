@@ -47,7 +47,7 @@ public class LoadDataHandlerDecoratorTest {
    }
 
    @Test
-   public void testOnData() throws OseeCoreException {
+   public void testOnData()  {
       decorated.onLoadStart();
       verify(handler).onLoadStart();
 

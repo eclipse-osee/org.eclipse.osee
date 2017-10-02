@@ -45,7 +45,7 @@ public class RelationSorterProviderTest {
    }
 
    @Test
-   public void testGetRelationOrder() throws OseeCoreException {
+   public void testGetRelationOrder()  {
       RelationSorterProvider provider = new RelationSorterProvider();
 
       testSorter(provider, RelationSorter.LEXICOGRAPHICAL_ASC, LexicographicalRelationSorter.class);

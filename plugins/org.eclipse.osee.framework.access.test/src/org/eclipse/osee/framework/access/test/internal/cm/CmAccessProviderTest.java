@@ -47,7 +47,7 @@ public class CmAccessProviderTest {
    }
 
    @Test
-   public void testCmProviderReturnsNull() throws OseeCoreException {
+   public void testCmProviderReturnsNull()  {
       Collection<Object> objects = new ArrayList<>();
       objects.add(expectedObject);
       MockConfigurationManagementProvider cmProvider =
@@ -60,7 +60,7 @@ public class CmAccessProviderTest {
    }
 
    @Test
-   public void testCmProvider() throws OseeCoreException {
+   public void testCmProvider()  {
       MockAccessModel accessModel = new MockAccessModel();
       MockCMWithAccessModel cm =
          new MockCMWithAccessModel(accessModel, expectedUser, expectedObject, false, Collections.singleton(contextId1));

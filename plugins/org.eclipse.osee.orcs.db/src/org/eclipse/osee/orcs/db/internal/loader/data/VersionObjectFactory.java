@@ -23,8 +23,8 @@ public interface VersionObjectFactory extends OrcsDataFactory {
 
    VersionData createDefaultVersionData();
 
-   VersionData createVersion(BranchId branch, TransactionId txId, GammaId gamma, boolean historical) throws OseeCoreException;
+   VersionData createVersion(BranchId branch, TransactionId txId, GammaId gamma, boolean historical) ;
 
-   VersionData createCopy(VersionData other) throws OseeCoreException;
+   VersionData createCopy(VersionData other) ;
 
 }

@@ -74,7 +74,7 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
       }
    }
 
-   public void checkAndLoadTargetDbMetadata() throws OseeCoreException, SQLException {
+   public void checkAndLoadTargetDbMetadata() throws SQLException {
       Map<String, MetaData> targetTables = getTargetDbMetadata();
 
       StringBuffer errorMessage = new StringBuffer();
@@ -96,7 +96,7 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
       this.targetMetadataMap.putAll(targetTables);
    }
 
-   private Map<String, MetaData> getTargetDbMetadata() throws SQLException, OseeCoreException {
+   private Map<String, MetaData> getTargetDbMetadata() throws SQLException {
       Map<String, MetaData> targetDbMetadata = new HashMap<>();
       try (JdbcConnection connection = service.getConnection()) {
          DatabaseMetaData dbMetaData = connection.getMetaData();
@@ -107,7 +107,7 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
       return targetDbMetadata;
    }
 
-   private void processMetaData(Map<String, MetaData> targetDbMetadata, DatabaseMetaData dbMetaData, String targetTable) throws SQLException, OseeCoreException {
+   private void processMetaData(Map<String, MetaData> targetDbMetadata, DatabaseMetaData dbMetaData, String targetTable) throws SQLException {
       try (ResultSet resultSet = dbMetaData.getTables(null, null, null, new String[] {"TABLE"})) {
          if (resultSet != null) {
             while (resultSet.next()) {
@@ -124,7 +124,7 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
       }
    }
 
-   private void processColumnMetaData(MetaData currentMetadata, DatabaseMetaData dbMetaData, String schema, String tableName) throws SQLException, OseeCoreException {
+   private void processColumnMetaData(MetaData currentMetadata, DatabaseMetaData dbMetaData, String schema, String tableName) throws SQLException {
       ResultSet resultSet = null;
 
       try {

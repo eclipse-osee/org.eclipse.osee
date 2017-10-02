@@ -111,7 +111,7 @@ public class Overview {
       }
    }
 
-   public void addHeader(AbstractWorkflowArtifact awa, PreviewStyle... styles) throws OseeCoreException {
+   public void addHeader(AbstractWorkflowArtifact awa, PreviewStyle... styles)  {
       startBorderTable(100, false, "");
       addTable(getLabelValue("Title", awa.getName()));
       this.html.append(AHTML.multiColumnTable(new String[] {
@@ -244,7 +244,7 @@ public class Overview {
          name);
    }
 
-   public void addLog(AbstractWorkflowArtifact artifact) throws OseeCoreException {
+   public void addLog(AbstractWorkflowArtifact artifact)  {
       IAtsLog artifactLog = artifact.getLog();
       if (artifactLog != null && artifactLog.getLogItems().size() > 0) {
          AtsLogUtility.getTable(artifactLog, AtsClientService.get().getLogFactory().getLogProvider(artifact,

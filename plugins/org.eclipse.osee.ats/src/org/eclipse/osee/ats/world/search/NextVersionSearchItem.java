@@ -55,7 +55,7 @@ public class NextVersionSearchItem extends WorldUISearchItem {
    }
 
    @Override
-   public String getSelectedName(SearchType searchType) throws OseeCoreException {
+   public String getSelectedName(SearchType searchType)  {
       String name = super.getName();
       IAtsTeamDefinition teamDef = getTeamDefinition();
       try {
@@ -79,7 +79,7 @@ public class NextVersionSearchItem extends WorldUISearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
+   public Collection<Artifact> performSearch(SearchType searchType)  {
       if (isCancelled()) {
          return EMPTY_SET;
       }
@@ -99,7 +99,7 @@ public class NextVersionSearchItem extends WorldUISearchItem {
    }
 
    @Override
-   public void performUI(SearchType searchType) throws OseeCoreException {
+   public void performUI(SearchType searchType)  {
       super.performUI(searchType);
       if (teamDefHoldingVersions != null) {
          return;

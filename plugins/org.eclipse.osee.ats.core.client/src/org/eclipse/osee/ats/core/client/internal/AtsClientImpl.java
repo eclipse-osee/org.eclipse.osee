@@ -114,7 +114,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
-   public void start() throws OseeCoreException {
+   public void start()  {
       attributeResolverService = new AtsAttributeResolverServiceImpl();
 
       super.start();
@@ -166,12 +166,12 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
-   public Artifact getConfigArtifact(IAtsConfigObject atsConfigObject) throws OseeCoreException {
+   public Artifact getConfigArtifact(IAtsConfigObject atsConfigObject)  {
       return AtsClientService.get().getArtifact(atsConfigObject);
    }
 
    @Override
-   public List<Artifact> getConfigArtifacts(Collection<? extends IAtsObject> atsObjects) throws OseeCoreException {
+   public List<Artifact> getConfigArtifacts(Collection<? extends IAtsObject> atsObjects)  {
       List<Artifact> results = new LinkedList<>();
       for (ArtifactId artId : AtsObjects.getArtifacts(atsObjects)) {
          if (artId instanceof Artifact) {
@@ -187,7 +187,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
-   public void reloadWorkDefinitionCache(boolean pend) throws OseeCoreException {
+   public void reloadWorkDefinitionCache(boolean pend)  {
       Runnable reload = new Runnable() {
 
          @Override
@@ -203,7 +203,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
-   public void reloadUserCache(boolean pend) throws OseeCoreException {
+   public void reloadUserCache(boolean pend)  {
       Runnable reload = new Runnable() {
 
          @Override
@@ -220,7 +220,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
-   public void reloadAllCaches(boolean pend) throws OseeCoreException {
+   public void reloadAllCaches(boolean pend)  {
       reloadUserCache(pend);
       reloadWorkDefinitionCache(pend);
       reloadConfigCache(pend);
@@ -288,36 +288,36 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
-   public IAtsTeamDefinition createTeamDefinition(String name, IAtsChangeSet changes, IAtsServices services) throws OseeCoreException {
+   public IAtsTeamDefinition createTeamDefinition(String name, IAtsChangeSet changes, IAtsServices services)  {
       return createTeamDefinition(name, AtsUtilClient.createConfigObjectUuid(), changes, services);
    }
 
    @Override
-   public IAtsTeamDefinition createTeamDefinition(String name, long uuid, IAtsChangeSet changes, IAtsServices services) throws OseeCoreException {
+   public IAtsTeamDefinition createTeamDefinition(String name, long uuid, IAtsChangeSet changes, IAtsServices services)  {
       IAtsTeamDefinition item = teamDefFactory.createTeamDefinition(name, uuid, changes, services);
       atsCache.cacheAtsObject(item);
       return item;
    }
 
    @Override
-   public IAtsActionableItem createActionableItem(String name, IAtsChangeSet changes, IAtsServices services) throws OseeCoreException {
+   public IAtsActionableItem createActionableItem(String name, IAtsChangeSet changes, IAtsServices services)  {
       return createActionableItem(name, AtsUtilClient.createConfigObjectUuid(), changes, services);
    }
 
    @Override
-   public IAtsActionableItem createActionableItem(String name, long uuid, IAtsChangeSet changes, IAtsServices services) throws OseeCoreException {
+   public IAtsActionableItem createActionableItem(String name, long uuid, IAtsChangeSet changes, IAtsServices services)  {
       IAtsActionableItem item = actionableItemFactory.createActionableItem(name, uuid, changes, services);
       atsCache.cacheAtsObject(item);
       return item;
    }
 
    @Override
-   public IAtsVersionService getVersionService() throws OseeStateException {
+   public IAtsVersionService getVersionService()  {
       return versionService;
    }
 
    @Override
-   public IAtsUserServiceClient getUserServiceClient() throws OseeStateException {
+   public IAtsUserServiceClient getUserServiceClient()  {
       return (IAtsUserServiceClient) userService;
    }
 
@@ -325,7 +325,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
     * @return corresponding Artifact or null if not found
     */
    @Override
-   public Artifact getArtifact(ArtifactId artifact) throws OseeCoreException {
+   public Artifact getArtifact(ArtifactId artifact)  {
       if (artifact instanceof Artifact) {
          return (Artifact) artifact;
       }
@@ -340,7 +340,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
     * @return corresponding Artifact or null if not found
     */
    @Override
-   public Artifact getArtifact(IAtsObject atsObject) throws OseeCoreException {
+   public Artifact getArtifact(IAtsObject atsObject)  {
       Artifact results = null;
       if (atsObject.getStoreObject() != null) {
          if (atsObject.getStoreObject() instanceof Artifact) {
@@ -364,7 +364,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
     * @return corresponding Artifact or null if not found
     */
    @Override
-   public Artifact getArtifact(Long uuid) throws OseeCoreException {
+   public Artifact getArtifact(Long uuid)  {
       Conditions.checkExpressionFailOnTrue(uuid <= 0, "Uuid must be > 0; is %d", uuid);
       Artifact result = null;
       try {
@@ -376,12 +376,12 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
-   public IAtsWorkItemService getWorkItemService() throws OseeStateException {
+   public IAtsWorkItemService getWorkItemService()  {
       return workItemService;
    }
 
    @Override
-   public AbstractWorkflowArtifact getWorkflowArtifact(IAtsObject atsObject) throws OseeCoreException {
+   public AbstractWorkflowArtifact getWorkflowArtifact(IAtsObject atsObject)  {
       return (AbstractWorkflowArtifact) getArtifact(atsObject);
    }
 
@@ -473,7 +473,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
-   public Artifact getArtifactByGuid(String guid) throws OseeCoreException {
+   public Artifact getArtifactByGuid(String guid)  {
       return ArtifactQuery.getArtifactFromId(guid, getAtsBranch());
    }
 
@@ -499,7 +499,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
-   public <A extends IAtsConfigObject> A getSoleByUuid(long uuid, Class<A> clazz) throws OseeCoreException {
+   public <A extends IAtsConfigObject> A getSoleByUuid(long uuid, Class<A> clazz)  {
       return getCache().getAtsObject(uuid);
    }
 

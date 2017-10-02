@@ -106,7 +106,7 @@ public abstract class BaseGoalsColumn extends XViewerAtsColumn implements IXView
       return false;
    }
 
-   public boolean promptChangeGoals(final Collection<? extends Artifact> awas, boolean persist) throws OseeCoreException {
+   public boolean promptChangeGoals(final Collection<? extends Artifact> awas, boolean persist)  {
       Set<Artifact> selected = new HashSet<>();
       for (Artifact awa : awas) {
          selected.addAll(awa.getRelatedArtifacts(AtsRelationTypes.Goal_Goal));

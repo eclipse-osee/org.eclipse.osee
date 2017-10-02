@@ -40,7 +40,7 @@ public class RoughArtifactTest {
    }
 
    @Test(expected = OseeTypeDoesNotExist.class)
-   public void testNonExistingEnumeration() throws OseeCoreException {
+   public void testNonExistingEnumeration()  {
       ra.addAttribute("Apple", "Orange");
    }
 }

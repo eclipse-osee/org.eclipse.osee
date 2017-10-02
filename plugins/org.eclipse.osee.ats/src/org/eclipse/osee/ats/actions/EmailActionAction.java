@@ -41,7 +41,7 @@ public class EmailActionAction extends AbstractAtsAction {
       setToolTipText(getText());
    }
 
-   private void performEmail() throws OseeCoreException {
+   private void performEmail()  {
       ArtifactEmailWizard wizard = new ArtifactEmailWizard(
          (AbstractWorkflowArtifact) selectedAtsArtifacts.getSelectedWorkflowArtifacts().iterator().next());
       WizardDialog dialog = new WizardDialog(Displays.getActiveShell(), wizard);
@@ -50,7 +50,7 @@ public class EmailActionAction extends AbstractAtsAction {
    }
 
    @Override
-   public void runWithException() throws OseeCoreException {
+   public void runWithException()  {
       performEmail();
    }
 
@@ -59,7 +59,7 @@ public class EmailActionAction extends AbstractAtsAction {
       return ImageManager.getImageDescriptor(FrameworkImage.EMAIL);
    }
 
-   private void updateName() throws OseeCoreException {
+   private void updateName()  {
       setText(
          "Email " + (selectedAtsArtifacts.getSelectedWorkflowArtifacts().size() == 1 ? selectedAtsArtifacts.getSelectedWorkflowArtifacts().iterator().next().getArtifactTypeName() : ""));
    }

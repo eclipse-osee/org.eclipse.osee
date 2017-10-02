@@ -78,7 +78,7 @@ public class ConvertFavoriteBranchGuidToUuid extends AbstractConvertGuidToUuid {
       }
    }
 
-   private void convertAttributeToUuid(XResultData data, boolean reportOnly, TransactionBuilder tx, ArtifactReadable art, ResultSet<? extends AttributeReadable<Object>> favBranchAttrValues) throws OseeCoreException {
+   private void convertAttributeToUuid(XResultData data, boolean reportOnly, TransactionBuilder tx, ArtifactReadable art, ResultSet<? extends AttributeReadable<Object>> favBranchAttrValues)  {
       for (AttributeReadable<Object> attr : favBranchAttrValues) {
          String value = attr.toString();
          if (GUID.isValid(value)) {
@@ -91,7 +91,7 @@ public class ConvertFavoriteBranchGuidToUuid extends AbstractConvertGuidToUuid {
       }
    }
 
-   private void convert(XResultData data, boolean reportOnly, TransactionBuilder tx, ArtifactReadable art, AttributeReadable<Object> attr, String value) throws OseeCoreException {
+   private void convert(XResultData data, boolean reportOnly, TransactionBuilder tx, ArtifactReadable art, AttributeReadable<Object> attr, String value)  {
       BranchReadable branch = null;
       try {
          branch = getBranch(value);
@@ -105,7 +105,7 @@ public class ConvertFavoriteBranchGuidToUuid extends AbstractConvertGuidToUuid {
       }
    }
 
-   private void addUuid(XResultData data, boolean reportOnly, TransactionBuilder tx, ArtifactReadable art, AttributeReadable<Object> attr, BranchReadable branch) throws OseeCoreException {
+   private void addUuid(XResultData data, boolean reportOnly, TransactionBuilder tx, ArtifactReadable art, AttributeReadable<Object> attr, BranchReadable branch)  {
       numChanges++;
       data.logf("Adding uuid attribute of value %s to artifact type [%s] name [%s] id [%s]\n", branch,
          art.getArtifactType(), art.getName(), art.getGuid());
@@ -120,7 +120,7 @@ public class ConvertFavoriteBranchGuidToUuid extends AbstractConvertGuidToUuid {
       }
    }
 
-   private void removeAttrForNonExistentBranch(XResultData data, boolean reportOnly, TransactionBuilder tx, ArtifactReadable art, AttributeReadable<Object> attr, String value) throws OseeCoreException {
+   private void removeAttrForNonExistentBranch(XResultData data, boolean reportOnly, TransactionBuilder tx, ArtifactReadable art, AttributeReadable<Object> attr, String value)  {
       try {
          data.logf("No Branch found with value [%s]. Recommend removing attribute.\n", value);
          if (!reportOnly) {
@@ -131,7 +131,7 @@ public class ConvertFavoriteBranchGuidToUuid extends AbstractConvertGuidToUuid {
       }
    }
 
-   private ResultSet<ArtifactReadable> getUsersFavoriteBranch(QueryFactory queryFactory) throws OseeCoreException {
+   private ResultSet<ArtifactReadable> getUsersFavoriteBranch(QueryFactory queryFactory)  {
       return queryFactory.fromBranch(atsServer.getAtsBranch()).andTypeEquals(CoreArtifactTypes.User).andExists(
          CoreAttributeTypes.FavoriteBranch).getResults();
    }

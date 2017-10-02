@@ -36,7 +36,7 @@ public class StateManagerReader {
       this.workStateFactory = workStateFactory;
    }
 
-   public synchronized void load() throws OseeCoreException {
+   public synchronized void load()  {
       String currentStateXml = attrResolver.getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentState, "");
       if (Strings.isValid(currentStateXml)) {
          WorkState currentState = workStateFactory.fromStoreStr(currentStateXml);

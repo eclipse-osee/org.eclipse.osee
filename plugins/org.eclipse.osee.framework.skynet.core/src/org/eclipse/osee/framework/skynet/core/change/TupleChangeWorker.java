@@ -24,7 +24,7 @@ public class TupleChangeWorker implements IChangeWorker {
    }
 
    @Override
-   public void revert() throws OseeCoreException {
+   public void revert()  {
       // Currenlty no ability to revert Tuple changes
    }
 }

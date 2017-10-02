@@ -33,7 +33,7 @@ public class ArtifactLoadProcessor extends LoadProcessor<ArtifactData, ArtifactO
    }
 
    @Override
-   protected ArtifactData createData(Object conditions, ArtifactObjectFactory factory, JdbcStatement chStmt, Options options) throws OseeCoreException {
+   protected ArtifactData createData(Object conditions, ArtifactObjectFactory factory, JdbcStatement chStmt, Options options)  {
       ArtifactData toReturn = null;
 
       int artifactId = chStmt.getInt("id2");

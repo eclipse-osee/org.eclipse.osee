@@ -17,6 +17,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
  */
 public interface IAtsWorkItemServiceProvider {
 
-   IAtsWorkItemService getWorkItemService() throws OseeStateException;
+   IAtsWorkItemService getWorkItemService() ;
 
 }

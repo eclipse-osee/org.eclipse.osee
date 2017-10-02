@@ -18,10 +18,10 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface KeyValueDataAccessor {
 
-   Set<String> getKeys() throws OseeCoreException;
+   Set<String> getKeys() ;
 
-   String getValue(String key) throws OseeCoreException;
+   String getValue(String key) ;
 
-   boolean putValue(String key, String value) throws OseeCoreException;
+   boolean putValue(String key, String value) ;
 
 }

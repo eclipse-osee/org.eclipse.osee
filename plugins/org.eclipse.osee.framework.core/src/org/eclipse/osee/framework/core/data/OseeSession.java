@@ -102,7 +102,7 @@ public class OseeSession extends OseeClientInfo {
     * 
     * @return OseeSession the new instance
     */
-   public static OseeSession fromXml(InputStream inputStream) throws OseeCoreException {
+   public static OseeSession fromXml(InputStream inputStream)  {
       OseeSession session = new OseeSession();
       session.loadfromXml(inputStream);
       return session;

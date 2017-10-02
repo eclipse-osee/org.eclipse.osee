@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Display;
 public class PlainTextDiffRenderer implements IComparator {
 
    @Override
-   public void compare(IProgressMonitor monitor, CompareDataCollector collector, PresentationType presentationType, ArtifactDelta artifactDelta, String pathPrefix) throws MultipleAttributesExist, OseeCoreException {
+   public void compare(IProgressMonitor monitor, CompareDataCollector collector, PresentationType presentationType, ArtifactDelta artifactDelta, String pathPrefix) throws MultipleAttributesExist {
       Artifact startArtifact = artifactDelta.getStartArtifact();
       Artifact endArtifact = artifactDelta.getEndArtifact();
 
@@ -59,12 +59,12 @@ public class PlainTextDiffRenderer implements IComparator {
    }
 
    @Override
-   public void compare(CompareDataCollector collector, Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType, String pathPrefix) throws OseeCoreException {
+   public void compare(CompareDataCollector collector, Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType, String pathPrefix)  {
       throw new OseeCoreException("The Plain Text renderer does not support the compare operation");
    }
 
    @Override
-   public void compareArtifacts(IProgressMonitor monitor, CompareDataCollector collector, PresentationType presentationType, Collection<ArtifactDelta> artifactDeltas, String pathPrefix) throws OseeCoreException {
+   public void compareArtifacts(IProgressMonitor monitor, CompareDataCollector collector, PresentationType presentationType, Collection<ArtifactDelta> artifactDeltas, String pathPrefix)  {
       for (ArtifactDelta artifactDelta : artifactDeltas) {
          compare(monitor, collector, presentationType, artifactDelta, pathPrefix);
       }

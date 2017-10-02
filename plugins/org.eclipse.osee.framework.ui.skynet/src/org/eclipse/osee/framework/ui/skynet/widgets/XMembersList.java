@@ -24,18 +24,18 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
  */
 public class XMembersList extends XListViewer {
 
-   public XMembersList() throws OseeCoreException {
+   public XMembersList()  {
       this("MList");
    }
 
-   public XMembersList(String displayLabel) throws OseeCoreException {
+   public XMembersList(String displayLabel)  {
       super(displayLabel);
       setLabelProvider(new ArtifactLabelProvider());
       setContentProvider(new ArrayContentProvider());
       setInputArtifacts(UserManager.getUsersSortedByName());
    }
 
-   public String[] getEmails() throws OseeCoreException {
+   public String[] getEmails()  {
       ArrayList<String> v = new ArrayList<>();
       for (Object obj : this.getSelected()) {
          User u = (User) obj;

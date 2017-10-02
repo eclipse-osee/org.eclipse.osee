@@ -31,7 +31,7 @@ public class ArtifactGuidToWordML {
       this.linkBuilder = linkBuilder;
    }
 
-   public List<String> resolveAsOseeLinks(BranchId branch, List<String> artifactGuids) throws OseeCoreException {
+   public List<String> resolveAsOseeLinks(BranchId branch, List<String> artifactGuids)  {
       List<String> mlLinks = new ArrayList<>();
       for (String guid : artifactGuids) {
          Artifact artifact = ArtifactQuery.checkArtifactFromId(guid, branch, DeletionFlag.EXCLUDE_DELETED);

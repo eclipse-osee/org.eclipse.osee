@@ -29,12 +29,12 @@ public class XCheckBoxThreeStateDam extends XCheckBoxThreeState implements IAttr
    }
 
    @Override
-   public Artifact getArtifact() throws OseeCoreException {
+   public Artifact getArtifact()  {
       return artifact;
    }
 
    @Override
-   public void saveToArtifact() throws OseeCoreException {
+   public void saveToArtifact()  {
       CheckState state = getCheckState();
       if (state == CheckState.UnSet) {
          artifact.deleteAttributes(attributeType);
@@ -48,12 +48,12 @@ public class XCheckBoxThreeStateDam extends XCheckBoxThreeState implements IAttr
    }
 
    @Override
-   public void revert() throws OseeCoreException {
+   public void revert()  {
       setAttributeType(artifact, attributeType);
    }
 
    @Override
-   public Result isDirty() throws OseeCoreException {
+   public Result isDirty()  {
       if (isEditable()) {
          CheckState storedCheckState = getStoredCheckState();
          CheckState checkState = getCheckState();
@@ -65,7 +65,7 @@ public class XCheckBoxThreeStateDam extends XCheckBoxThreeState implements IAttr
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) throws OseeCoreException {
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType)  {
       this.artifact = artifact;
       this.attributeType = attributeType;
       checkState = getStoredCheckState();

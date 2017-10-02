@@ -34,7 +34,7 @@ public class HttpWordUpdateRequest {
       }
    }
 
-   public static Pair<String, Set<String>> renderWordTemplateContent(WordTemplateContentData data) throws OseeCoreException {
+   public static Pair<String, Set<String>> renderWordTemplateContent(WordTemplateContentData data)  {
       MSWordEndpoint endpoint = ServiceUtil.getOseeClient().getWordUpdateEndpoint();
       return endpoint.renderWordTemplateContent(data);
    }

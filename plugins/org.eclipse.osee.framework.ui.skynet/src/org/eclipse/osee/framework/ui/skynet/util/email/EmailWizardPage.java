@@ -312,19 +312,19 @@ public class EmailWizardPage extends WizardPage {
       return previewMenu;
    }
 
-   public String[] getToAddresses() throws OseeCoreException {
+   public String[] getToAddresses()  {
       return getEmails(toList);
    }
 
-   public String[] getCcAddresses() throws OseeCoreException {
+   public String[] getCcAddresses()  {
       return getEmails(ccList);
    }
 
-   public String[] getBccAddresses() throws OseeCoreException {
+   public String[] getBccAddresses()  {
       return getEmails(bccList);
    }
 
-   public String[] getEmails(ListViewer list) throws OseeCoreException {
+   public String[] getEmails(ListViewer list)  {
 
       ArrayList<String> emails = new ArrayList<>();
       for (int x = 0; x < list.getList().getItemCount(); x++) {

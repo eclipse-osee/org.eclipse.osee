@@ -88,7 +88,7 @@ public class TxQuerySqlContextFactoryImplTest {
    private QueryData queryData;
 
    @Before
-   public void setUp() throws OseeCoreException {
+   public void setUp()  {
       MockitoAnnotations.initMocks(this);
 
       String sessionId = GUID.create();

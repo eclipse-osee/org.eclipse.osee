@@ -27,7 +27,7 @@ import org.eclipse.ui.dialogs.ListDialog;
  */
 public class AtsConfigurationDialog extends ListDialog {
 
-   public AtsConfigurationDialog(List<AtsConfiguration> configs) throws OseeCoreException {
+   public AtsConfigurationDialog(List<AtsConfiguration> configs)  {
       super(Displays.getActiveShell());
       setTitle("Select ATS Configuration");
       setMessage("Select ATS Configuration");

@@ -36,40 +36,40 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IAtsChangeSet {
 
-   void add(Object obj) throws OseeCoreException;
+   void add(Object obj) ;
 
    /**
     * Store changed items.
     *
-    * @throws OseeCoreException if no items exist to store. Use executeIfNeeded to execute quietly.
+    *  if no items exist to store. Use executeIfNeeded to execute quietly.
     */
-   TransactionId execute() throws OseeCoreException;
+   TransactionId execute() ;
 
    void clear();
 
    void addExecuteListener(IExecuteListener listener);
 
-   void addToDelete(Object obj) throws OseeCoreException;
+   void addToDelete(Object obj) ;
 
-   void addAll(Object... objects) throws OseeCoreException;
+   void addAll(Object... objects) ;
 
    boolean isEmpty();
 
-   void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType) throws OseeCoreException;
+   void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType) ;
 
-   void setSoleAttributeValue(IAtsWorkItem workItem, AttributeTypeId attributeType, String value) throws OseeCoreException;
+   void setSoleAttributeValue(IAtsWorkItem workItem, AttributeTypeId attributeType, String value) ;
 
-   void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeId attributeType, Object value) throws OseeCoreException;
+   void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeId attributeType, Object value) ;
 
    void setSoleAttributeValue(ArtifactId artifact, AttributeTypeId attributeType, Object value);
 
-   void addAttribute(IAtsObject atsObject, AttributeTypeId attributeType, Object value) throws OseeCoreException;
+   void addAttribute(IAtsObject atsObject, AttributeTypeId attributeType, Object value) ;
 
-   <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, AttributeTypeId attributeType, T value) throws OseeCoreException;
+   <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, AttributeTypeId attributeType, T value) ;
 
-   <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr) throws OseeCoreException;
+   <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr) ;
 
-   void deleteAttribute(IAtsObject atsObject, AttributeTypeId attributeType, Object value) throws OseeCoreException;
+   void deleteAttribute(IAtsObject atsObject, AttributeTypeId attributeType, Object value) ;
 
    boolean isAttributeTypeValid(IAtsWorkItem workItem, AttributeTypeId attributeType);
 

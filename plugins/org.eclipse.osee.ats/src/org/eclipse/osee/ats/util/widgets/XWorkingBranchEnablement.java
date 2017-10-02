@@ -35,7 +35,7 @@ public class XWorkingBranchEnablement {
       dataProvider = new BranchEnablementLazyObject(teamArt);
    }
 
-   private BranchEnablementData getEnablementData() throws OseeCoreException {
+   private BranchEnablementData getEnablementData()  {
       return dataProvider.get();
    }
 
@@ -101,15 +101,15 @@ public class XWorkingBranchEnablement {
       }
    }
 
-   public BranchStatus getStatus() throws OseeCoreException {
+   public BranchStatus getStatus()  {
       return getEnablementData().getBranchStatus();
    }
 
-   public IOseeBranch getWorkingBranch() throws OseeCoreException {
+   public IOseeBranch getWorkingBranch()  {
       return getEnablementData().getWorkingBranch();
    }
 
-   public void disableAll() throws OseeCoreException {
+   public void disableAll()  {
       getEnablementData().setDisableAll(true);
    }
 

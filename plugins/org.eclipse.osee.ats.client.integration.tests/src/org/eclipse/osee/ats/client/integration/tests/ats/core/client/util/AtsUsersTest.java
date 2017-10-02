@@ -26,7 +26,7 @@ import org.junit.Test;
 public class AtsUsersTest {
 
    @Test
-   public void testGetUser() throws OseeCoreException {
+   public void testGetUser()  {
       Assert.assertEquals(AtsCoreUsers.SYSTEM_USER,
          AtsClientService.get().getUserService().getUserById(SystemUser.OseeSystem.getUserId()));
       Assert.assertEquals(AtsCoreUsers.ANONYMOUS_USER,
@@ -36,17 +36,17 @@ public class AtsUsersTest {
    }
 
    @Test
-   public void testGetUserException() throws OseeCoreException {
+   public void testGetUserException()  {
       Assert.assertNull(AtsClientService.get().getUserService().getUserById("2345"));
    }
 
    @Test
-   public void testGetUserWithNull() throws OseeCoreException {
+   public void testGetUserWithNull()  {
       Assert.assertNull(AtsClientService.get().getUserService().getUserById(null));
    }
 
    @Test
-   public void testGetCurrentUser() throws OseeCoreException {
+   public void testGetCurrentUser()  {
       User currentUser = UserManager.getUser();
 
       Assert.assertEquals(currentUser, AtsClientService.get().getUserServiceClient().getCurrentOseeUser());

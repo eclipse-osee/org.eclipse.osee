@@ -21,62 +21,62 @@ import org.eclipse.osee.orcs.SystemPreferences;
 public class MockSystemPreferences implements SystemPreferences {
 
    @Override
-   public String getSystemUuid() throws OseeCoreException {
+   public String getSystemUuid()  {
       return null;
    }
 
    @Override
-   public String getValue(String key) throws OseeCoreException {
+   public String getValue(String key)  {
       return null;
    }
 
    @Override
-   public String getCachedValue(String key) throws OseeCoreException {
+   public String getCachedValue(String key)  {
       return null;
    }
 
    @Override
-   public boolean isEnabled(String key) throws OseeCoreException {
+   public boolean isEnabled(String key)  {
       return false;
    }
 
    @Override
-   public boolean isCacheEnabled(String key) throws OseeCoreException {
+   public boolean isCacheEnabled(String key)  {
       return false;
    }
 
    @Override
-   public void setEnabled(String key, boolean enabled) throws OseeCoreException {
+   public void setEnabled(String key, boolean enabled)  {
       //
    }
 
    @Override
-   public void setBoolean(String key, boolean value) throws OseeCoreException {
+   public void setBoolean(String key, boolean value)  {
       //
    }
 
    @Override
-   public boolean isBoolean(String key) throws OseeCoreException {
+   public boolean isBoolean(String key)  {
       return false;
    }
 
    @Override
-   public void putValue(String key, String value) throws OseeCoreException {
+   public void putValue(String key, String value)  {
       //
    }
 
    @Override
-   public Set<String> getKeys() throws OseeCoreException {
+   public Set<String> getKeys()  {
       return null;
    }
 
    @Override
-   public boolean isBooleanUsingCache(String key) throws OseeCoreException {
+   public boolean isBooleanUsingCache(String key)  {
       return false;
    }
 
    @Override
-   public String getCachedValue(String key, long maxStaleness) throws OseeCoreException {
+   public String getCachedValue(String key, long maxStaleness)  {
       return Strings.emptyString();
    }
 

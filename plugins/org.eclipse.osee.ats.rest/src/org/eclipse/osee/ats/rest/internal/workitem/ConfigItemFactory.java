@@ -61,7 +61,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    }
 
    @Override
-   public IAtsConfigObject getConfigObject(ArtifactId artifact) throws OseeCoreException {
+   public IAtsConfigObject getConfigObject(ArtifactId artifact)  {
       IAtsConfigObject configObject = null;
       try {
          if (artifact instanceof ArtifactReadable) {
@@ -119,7 +119,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    }
 
    @Override
-   public IAtsTeamDefinition getTeamDef(ArtifactId artifact) throws OseeCoreException {
+   public IAtsTeamDefinition getTeamDef(ArtifactId artifact)  {
       IAtsTeamDefinition teamDef = null;
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
@@ -131,7 +131,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    }
 
    @Override
-   public IAtsActionableItem getActionableItem(ArtifactId artifact) throws OseeCoreException {
+   public IAtsActionableItem getActionableItem(ArtifactId artifact)  {
       IAtsActionableItem ai = null;
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;

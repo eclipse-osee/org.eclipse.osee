@@ -105,7 +105,7 @@ public class WfePercentCompleteHeader extends Composite {
 
    }
 
-   public String getPercentCompleteStr() throws OseeCoreException {
+   public String getPercentCompleteStr()  {
       int awaPercent = awa.getSoleAttributeValue(AtsAttributeTypes.PercentComplete, 0);
       int totalPecent = PercentCompleteTotalUtil.getPercentCompleteTotal(awa, AtsClientService.get().getServices());
       if (awaPercent != totalPecent) {
@@ -115,11 +115,11 @@ public class WfePercentCompleteHeader extends Composite {
       }
    }
 
-   public void refresh() throws OseeCoreException {
+   public void refresh()  {
       updateLabel(awa);
    }
 
-   private void updateLabel(AbstractWorkflowArtifact sma) throws OseeCoreException {
+   private void updateLabel(AbstractWorkflowArtifact sma)  {
       valueLabel.setText(getPercentCompleteStr());
       valueLabel.getParent().layout();
    }

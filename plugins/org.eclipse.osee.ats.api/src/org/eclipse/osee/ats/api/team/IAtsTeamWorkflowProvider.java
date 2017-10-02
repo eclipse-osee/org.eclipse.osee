@@ -19,6 +19,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IAtsTeamWorkflowProvider {
 
-   Collection<IAtsTeamWorkflow> getTeamWorkflows() throws OseeCoreException;
+   Collection<IAtsTeamWorkflow> getTeamWorkflows() ;
 
 }

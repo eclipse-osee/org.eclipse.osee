@@ -74,39 +74,39 @@ public class ExternalArtifactManagerTest {
    }
 
    @Test
-   public void testNullArtifactReadable() throws OseeCoreException {
+   public void testNullArtifactReadable()  {
       Artifact actual = proxyManager.asInternalArtifact(null);
       assertNull(actual);
    }
 
    @Test
-   public void testNullArtifact() throws OseeCoreException {
+   public void testNullArtifact()  {
       ArtifactReadable actual = proxyManager.asExternalArtifact(session, null);
       assertNull(actual);
    }
 
    @Test
-   public void testNullAttribute() throws OseeCoreException {
+   public void testNullAttribute()  {
       AttributeReadable<?> actual = proxyManager.asExternalAttribute(session, null);
       assertNull(actual);
    }
 
    @Test
-   public void testAsArtifactReadable() throws OseeCoreException {
+   public void testAsArtifactReadable()  {
       ArtifactReadable actual = proxyManager.asExternalArtifact(session, artifact1);
 
       checkProxied(artifact1, actual);
    }
 
    @Test
-   public void testAsAttributeReadable() throws OseeCoreException {
+   public void testAsAttributeReadable()  {
       AttributeReadable<Integer> actual = proxyManager.asExternalAttribute(session, attribute1);
 
       checkProxied(attribute1, actual);
    }
 
    @Test
-   public void testAsArtifacts() throws OseeCoreException {
+   public void testAsArtifacts()  {
       when(readable1.getProxiedObject()).thenReturn(artifact1);
       when(readable2.getProxiedObject()).thenReturn(artifact2);
       when(readable3.getProxiedObject()).thenReturn(artifact3);
@@ -133,7 +133,7 @@ public class ExternalArtifactManagerTest {
    }
 
    @Test
-   public void testAsArtifactReadables() throws OseeCoreException {
+   public void testAsArtifactReadables()  {
       List<? extends Artifact> expected = Arrays.asList(artifact1, artifact2, artifact3);
       ResultSet<ArtifactReadable> actuals = proxyManager.asExternalArtifacts(session, expected);
       assertFalse(actuals.isEmpty());
@@ -156,7 +156,7 @@ public class ExternalArtifactManagerTest {
 
    @SuppressWarnings("unchecked")
    @Test
-   public void testAsAttributeReadables() throws OseeCoreException {
+   public void testAsAttributeReadables()  {
       List<? extends Attribute<Integer>> expected = Arrays.asList(attribute1, attribute2, attribute3);
       ResultSet<AttributeReadable<Integer>> actuals = proxyManager.asExternalAttributes(session, expected);
       assertFalse(actuals.isEmpty());

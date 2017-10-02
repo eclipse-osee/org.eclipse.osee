@@ -21,8 +21,8 @@ import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorTab;
  */
 public interface IResultsEditorTableTab extends IResultsEditorTab {
 
-   public List<XViewerColumn> getTableColumns() throws OseeCoreException;
+   public List<XViewerColumn> getTableColumns() ;
 
-   public Collection<IResultsXViewerRow> getTableRows() throws OseeCoreException;
+   public Collection<IResultsXViewerRow> getTableRows() ;
 
 }

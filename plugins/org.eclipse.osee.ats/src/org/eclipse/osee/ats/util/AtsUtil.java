@@ -99,7 +99,7 @@ public final class AtsUtil {
       super();
    }
 
-   public static boolean isProductionDb() throws OseeCoreException {
+   public static boolean isProductionDb()  {
       return ClientSessionManager.isProductionDataStore();
    }
 
@@ -278,7 +278,7 @@ public final class AtsUtil {
       }
    }
 
-   public static TeamWorkFlowArtifact promptSelectTeamWorkflow(Artifact actArt) throws OseeCoreException {
+   public static TeamWorkFlowArtifact promptSelectTeamWorkflow(Artifact actArt)  {
       ListDialog ld = new ListDialog(Displays.getActiveShell());
       ld.setContentProvider(new ArrayContentProvider());
       ld.setLabelProvider(new TeamWorkflowLabelProvider());
@@ -334,7 +334,7 @@ public final class AtsUtil {
       openInAtsWorldEditor(name, AtsObjects.getArtifacts(newTeamWfs));
    }
 
-   public static void openInAtsTaskEditor(String name, Collection<Artifact> artifacts) throws OseeCoreException {
+   public static void openInAtsTaskEditor(String name, Collection<Artifact> artifacts)  {
       TaskEditor.open(new TaskEditorSimpleProvider(name, artifacts));
    }
 
@@ -374,7 +374,7 @@ public final class AtsUtil {
    /**
     * return currently assigned state machine artifacts
     */
-   public static Set<Artifact> getAssigned(IAtsUser user) throws OseeCoreException {
+   public static Set<Artifact> getAssigned(IAtsUser user)  {
       return getAssigned(user, null);
    }
 
@@ -383,7 +383,7 @@ public final class AtsUtil {
     *
     * @param clazz to match or all if null
     */
-   public static Set<Artifact> getAssigned(IAtsUser user, Class<?> clazz) throws OseeCoreException {
+   public static Set<Artifact> getAssigned(IAtsUser user, Class<?> clazz)  {
       return getAssigned(user.getUserId(), clazz);
    }
 
@@ -392,7 +392,7 @@ public final class AtsUtil {
     *
     * @param clazz to match or all if null
     */
-   public static Set<Artifact> getAssigned(String userId, Class<?> clazz) throws OseeCoreException {
+   public static Set<Artifact> getAssigned(String userId, Class<?> clazz)  {
       Set<Artifact> assigned = new HashSet<>();
       for (Artifact artifact : ArtifactQuery.getArtifactListFromAttribute(AtsAttributeTypes.CurrentState,
          "<" + userId + ">", AtsClientService.get().getAtsBranch(), QueryOption.CONTAINS_MATCH_OPTIONS)) {

@@ -35,14 +35,14 @@ public class SubscribeUtilityTest {
 
    @BeforeClass
    @AfterClass
-   public static void cleanup() throws OseeCoreException {
+   public static void cleanup()  {
       Artifact userArt = getAlexUserArtifact();
       userArt.deleteRelations(CoreRelationTypes.Users_Artifact);
       userArt.persist(SubscribeUtilityTest.class.getSimpleName() + " - cleanup");
    }
 
    @Test
-   public void test() throws OseeCoreException {
+   public void test()  {
       Artifact alexUserArt = getAlexUserArtifact();
       Assert.assertEquals("Should be nothing subscribed by alex", 0,
          alexUserArt.getRelatedArtifactsCount(CoreRelationTypes.Users_Artifact));
@@ -77,7 +77,7 @@ public class SubscribeUtilityTest {
       Assert.assertFalse("User artifact changes should be persisted", alexUserArt.isDirty());
    }
 
-   private static Artifact getAlexUserArtifact() throws OseeCoreException {
+   private static Artifact getAlexUserArtifact()  {
       return ArtifactQuery.getArtifactFromToken(DemoUsers.Alex_Kay);
    }
 

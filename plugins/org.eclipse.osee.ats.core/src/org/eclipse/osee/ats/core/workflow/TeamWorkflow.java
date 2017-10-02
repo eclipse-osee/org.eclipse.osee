@@ -34,7 +34,7 @@ public class TeamWorkflow extends WorkItem implements IAtsTeamWorkflow {
    }
 
    @Override
-   public Set<IAtsActionableItem> getActionableItems() throws OseeCoreException {
+   public Set<IAtsActionableItem> getActionableItems()  {
       Set<IAtsActionableItem> ais = new HashSet<>();
       Collection<ArtifactId> artIds =
          services.getAttributeResolver().getArtifactIdReferences(artifact, AtsAttributeTypes.ActionableItemReference);
@@ -47,7 +47,7 @@ public class TeamWorkflow extends WorkItem implements IAtsTeamWorkflow {
    }
 
    @Override
-   public IAtsTeamDefinition getTeamDefinition() throws OseeCoreException {
+   public IAtsTeamDefinition getTeamDefinition()  {
       IAtsTeamDefinition teamDef = null;
       ArtifactId teamDefId = services.getAttributeResolver().getSoleArtifactIdReference(artifact,
          AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);

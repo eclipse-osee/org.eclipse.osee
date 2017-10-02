@@ -89,7 +89,7 @@ public class UserAdminImpl implements UserAdmin {
       cacheProvider.invalidate();
    }
 
-   private Cache<String, User> getCache() throws OseeCoreException {
+   private Cache<String, User> getCache()  {
       return cacheProvider.get();
    }
 
@@ -99,7 +99,7 @@ public class UserAdminImpl implements UserAdmin {
    }
 
    @Override
-   public User getCurrentUser() throws OseeCoreException {
+   public User getCurrentUser()  {
       User currentUser;
       if (isDuringCurrentUserCreation()) {
          currentUser = getUserByUserId(ClientSessionManager.getCurrentUserToken().getUserId());
@@ -119,7 +119,7 @@ public class UserAdminImpl implements UserAdmin {
    }
 
    @Override
-   public User getUserByUserId(String userId) throws OseeCoreException {
+   public User getUserByUserId(String userId)  {
       Conditions.checkNotNullOrEmpty(userId, "userId");
       Cache<String, User> cache = getCache();
       User user = null;
@@ -148,7 +148,7 @@ public class UserAdminImpl implements UserAdmin {
    }
 
    @Override
-   public List<User> getActiveUsers() throws OseeCoreException {
+   public List<User> getActiveUsers()  {
       Cache<String, User> cache = getCache();
       List<User> activeUsers = new ArrayList<>();
       Iterable<User> all = null;
@@ -168,7 +168,7 @@ public class UserAdminImpl implements UserAdmin {
    }
 
    @Override
-   public List<User> getUsersAll() throws OseeCoreException {
+   public List<User> getUsersAll()  {
       Cache<String, User> cache = getCache();
       List<User> users = new ArrayList<>();
       Iterable<User> all = null;
@@ -186,21 +186,21 @@ public class UserAdminImpl implements UserAdmin {
    }
 
    @Override
-   public List<User> getActiveUsersSortedByName() throws OseeCoreException {
+   public List<User> getActiveUsersSortedByName()  {
       List<User> users = getActiveUsers();
       Collections.sort(users);
       return users;
    }
 
    @Override
-   public List<User> getUsersAllSortedByName() throws OseeCoreException {
+   public List<User> getUsersAllSortedByName()  {
       List<User> users = getUsersAll();
       Collections.sort(users);
       return users;
    }
 
    @Override
-   public String[] getUserNames() throws OseeCoreException {
+   public String[] getUserNames()  {
       List<User> allUsers = getUsersAll();
       String[] userNames = new String[allUsers.size()];
       int index = 0;
@@ -216,7 +216,7 @@ public class UserAdminImpl implements UserAdmin {
     * @return the first user found with the given name
     */
    @Override
-   public User getUserByName(String name) throws OseeCoreException {
+   public User getUserByName(String name)  {
       Conditions.checkNotNullOrEmpty(name, "user name");
 
       // check cached users first
@@ -244,13 +244,13 @@ public class UserAdminImpl implements UserAdmin {
    }
 
    @Override
-   public User getUser(UserToken user) throws OseeCoreException {
+   public User getUser(UserToken user)  {
       Conditions.checkNotNull(user, "user data");
       return getUserByUserId(user.getUserId());
    }
 
    @Override
-   public String getUserNameById(ArtifactId userArtifactId) throws OseeCoreException {
+   public String getUserNameById(ArtifactId userArtifactId)  {
       User user = getUserByArtId(userArtifactId);
       if (user == null) {
          throw new UserNotInDatabase("Unable to find user with artId[%s]", userArtifactId);
@@ -271,7 +271,7 @@ public class UserAdminImpl implements UserAdmin {
    }
 
    @Override
-   public User getUserByArtId(ArtifactId userArtifactId) throws OseeCoreException {
+   public User getUserByArtId(ArtifactId userArtifactId)  {
       User toReturn = null;
       if (userArtifactId.isInvalid()) {
          toReturn = getUser(SystemUser.OseeSystem);
@@ -297,12 +297,12 @@ public class UserAdminImpl implements UserAdmin {
    }
 
    @Override
-   public User createUser(UserToken userToken, String comment) throws OseeCoreException {
+   public User createUser(UserToken userToken, String comment)  {
       return userWriteAccessor.createUser(userToken, comment);
    }
 
    @Override
-   public User createUser(UserToken userToken, SkynetTransaction transaction) throws OseeCoreException {
+   public User createUser(UserToken userToken, SkynetTransaction transaction)  {
       return userWriteAccessor.createUser(userToken, transaction);
    }
 

@@ -35,7 +35,7 @@ public abstract class AbstractWorkPackageUtilityTest {
    // @formatter:on
 
    @Before
-   public void setup() throws OseeCoreException {
+   public void setup()  {
       MockitoAnnotations.initMocks(this);
       when(earnedValueServiceProvider.getEarnedValueService()).thenReturn(earnedValueService);
       when(earnedValueService.getWorkPackageId(workItem)).thenReturn(ArtifactId.valueOf(345));

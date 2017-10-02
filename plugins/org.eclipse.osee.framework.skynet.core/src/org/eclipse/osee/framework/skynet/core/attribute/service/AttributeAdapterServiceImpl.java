@@ -72,7 +72,7 @@ public class AttributeAdapterServiceImpl implements AttributeAdapterService {
       return ready;
    }
 
-   public void addAdapter(ServiceReference<AttributeAdapter<?>> reference) throws OseeCoreException {
+   public void addAdapter(ServiceReference<AttributeAdapter<?>> reference)  {
       if (isReady()) {
          register(reference);
       } else {
@@ -100,7 +100,7 @@ public class AttributeAdapterServiceImpl implements AttributeAdapterService {
       }
    }
 
-   private void register(ServiceReference<AttributeAdapter<?>> reference) throws OseeCoreException {
+   private void register(ServiceReference<AttributeAdapter<?>> reference)  {
       Bundle bundle = reference.getBundle();
       AttributeAdapter<?> adapter = bundle.getBundleContext().getService(reference);
       Conditions.checkNotNull(adapter, "AttributeAdapter");
@@ -120,7 +120,7 @@ public class AttributeAdapterServiceImpl implements AttributeAdapterService {
    }
 
    @Override
-   public <T> T adapt(Attribute<?> attribute, Id identity) throws OseeCoreException {
+   public <T> T adapt(Attribute<?> attribute, Id identity)  {
       AttributeTypeId type = attribute.getAttributeType();
       AttributeAdapter<T> adapter = getAdapter(type);
       Conditions.checkNotNull(adapter, "adapter");

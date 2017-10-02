@@ -51,7 +51,7 @@ public class BlamContributionManager implements IXNavigateCommonItem {
       return getBlamMap().values();
    }
 
-   private static void createCategories(String[] categoryElements, int index, XNavigateItem parentItem, Map<String, XNavigateItem> nameToParent) throws OseeCoreException {
+   private static void createCategories(String[] categoryElements, int index, XNavigateItem parentItem, Map<String, XNavigateItem> nameToParent)  {
       String firstElement = categoryElements[index];
       XNavigateItem thisCategoryItem = null;
       for (XNavigateItem childItem : parentItem.getChildren()) {

@@ -64,7 +64,7 @@ public class ChangeSetBuilder implements ArtifactVisitor, RelationVisitor, Tuple
    }
 
    @Override
-   public void visit(TupleData tuple) throws OseeCoreException {
+   public void visit(TupleData tuple)  {
       changeSet.tuples.add(tuple);
    }
 
@@ -81,7 +81,7 @@ public class ChangeSetBuilder implements ArtifactVisitor, RelationVisitor, Tuple
       private final List<TupleData> tuples = new ArrayList<>();
 
       @Override
-      public void accept(OrcsVisitor visitor) throws OseeCoreException {
+      public void accept(OrcsVisitor visitor)  {
          for (ArtifactData data : getArtifactData()) {
             visitor.visit(data);
          }

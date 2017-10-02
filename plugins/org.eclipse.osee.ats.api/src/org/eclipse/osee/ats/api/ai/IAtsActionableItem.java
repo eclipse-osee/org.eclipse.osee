@@ -25,7 +25,7 @@ public interface IAtsActionableItem extends IAtsConfigObject, IAtsRules {
    /*****************************
     * Name, Full Name, Description
     ******************************/
-   void setName(String name) throws OseeCoreException;
+   void setName(String name) ;
 
    void setDescription(String description);
 
@@ -45,14 +45,14 @@ public interface IAtsActionableItem extends IAtsConfigObject, IAtsRules {
     ******************************/
    Collection<String> getStaticIds();
 
-   public boolean isActionable() throws OseeCoreException;
+   public boolean isActionable() ;
 
    /*****************************************************
     * Team Leads, Members
     ******************************************************/
-   Collection<IAtsUser> getLeads() throws OseeCoreException;
+   Collection<IAtsUser> getLeads() ;
 
-   Collection<IAtsUser> getSubscribed() throws OseeCoreException;
+   Collection<IAtsUser> getSubscribed() ;
 
    boolean isAllowUserActionCreation();
 

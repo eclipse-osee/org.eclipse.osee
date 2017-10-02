@@ -88,7 +88,7 @@ public final class ArtifactImageManager {
       }
    }
 
-   public static Image getConflictImage(Conflict conflict) throws OseeCoreException {
+   public static Image getConflictImage(Conflict conflict)  {
       if (conflict instanceof AttributeConflict) {
          return ImageManager.getImage(FrameworkImage.ATTRIBUTE_MOLECULE);
       }
@@ -237,7 +237,7 @@ public final class ArtifactImageManager {
       providersOverrideImageMap.put(artifactType, imageProvider);
    }
 
-   public synchronized static void registerBaseImage(IArtifactType artifactType, KeyedImage oseeImage, ArtifactImageProvider provider) throws OseeCoreException {
+   public synchronized static void registerBaseImage(IArtifactType artifactType, KeyedImage oseeImage, ArtifactImageProvider provider)  {
       boolean alreadyProvided = artifactTypeImageMap.containsKey(artifactType);
 
       String providerId = artifactTypeImageProviderMap.get(artifactType);

@@ -45,7 +45,7 @@ public class ArtifactTypeSqlHandler extends SqlHandler<CriteriaArtifactType> {
    }
 
    @Override
-   public void addTables(AbstractSqlWriter writer) throws OseeCoreException {
+   public void addTables(AbstractSqlWriter writer)  {
       Collection<? extends ArtifactTypeId> types = criteria.getTypes();
       if (types.size() > 1) {
          jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
@@ -67,7 +67,7 @@ public class ArtifactTypeSqlHandler extends SqlHandler<CriteriaArtifactType> {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
+   public boolean addPredicates(AbstractSqlWriter writer)  {
       Collection<? extends ArtifactTypeId> types = criteria.getTypes();
       if (types.size() > 1) {
          joinQuery = writer.writeJoin(types);

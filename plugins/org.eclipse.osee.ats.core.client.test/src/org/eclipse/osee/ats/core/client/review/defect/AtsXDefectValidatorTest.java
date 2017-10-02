@@ -40,7 +40,7 @@ public class AtsXDefectValidatorTest {
    // @formatter:on
 
    @org.junit.Test
-   public void testValidateTransition() throws OseeCoreException {
+   public void testValidateTransition()  {
       AtsXDefectValidator validator = new AtsXDefectValidator();
 
       MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
@@ -71,7 +71,7 @@ public class AtsXDefectValidatorTest {
    }
 
    @org.junit.Test
-   public void testValidateTransition__Defect() throws OseeCoreException {
+   public void testValidateTransition__Defect()  {
       AtsXDefectValidator validator = new AtsXDefectValidator();
 
       MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");

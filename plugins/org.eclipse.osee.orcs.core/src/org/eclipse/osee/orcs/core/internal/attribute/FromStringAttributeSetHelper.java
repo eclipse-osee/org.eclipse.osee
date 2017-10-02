@@ -35,18 +35,18 @@ public class FromStringAttributeSetHelper implements AttributeSetHelper<Object, 
    }
 
    @Override
-   public boolean matches(Attribute<Object> attribute, String value) throws OseeCoreException {
+   public boolean matches(Attribute<Object> attribute, String value)  {
       Object attrValue = attribute.getValue();
       return value.equals(asString(attrValue));
    }
 
    @Override
-   public void setAttributeValue(Attribute<Object> attribute, java.lang.String value) throws OseeCoreException {
+   public void setAttributeValue(Attribute<Object> attribute, java.lang.String value)  {
       attribute.setFromString(value);
    }
 
    @Override
-   public void createAttribute(AttributeTypeId attributeType, String value) throws OseeCoreException {
+   public void createAttribute(AttributeTypeId attributeType, String value)  {
       ResultSet<Attribute<Object>> result =
          attributes.getAttributeSetFromString(attributeType, DeletionFlag.EXCLUDE_DELETED, value);
       if (result.getOneOrNull() == null) {

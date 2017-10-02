@@ -30,7 +30,7 @@ public class VCastInstrumentedFileTable implements VCastTableData<VCastInstrumen
    }
 
    @Override
-   public Collection<VCastInstrumentedFile> getRows(VCastDataStore dataStore) throws OseeCoreException {
+   public Collection<VCastInstrumentedFile> getRows(VCastDataStore dataStore)  {
       return dataStore.getAllInstrumentedFiles();
    }
 

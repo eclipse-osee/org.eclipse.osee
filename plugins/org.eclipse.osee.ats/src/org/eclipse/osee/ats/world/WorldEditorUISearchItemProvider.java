@@ -36,23 +36,23 @@ public class WorldEditorUISearchItemProvider extends WorldEditorProvider {
    }
 
    @Override
-   public IWorldEditorProvider copyProvider() throws OseeCoreException {
+   public IWorldEditorProvider copyProvider()  {
       return new WorldEditorUISearchItemProvider((WorldUISearchItem) worldUISearchItem.copy(), customizeData,
          tableLoadOptions);
    }
 
    @Override
-   public String getName() throws OseeCoreException {
+   public String getName()  {
       return worldUISearchItem.getName();
    }
 
    @Override
-   public String getSelectedName(SearchType searchType) throws OseeCoreException {
+   public String getSelectedName(SearchType searchType)  {
       return Strings.truncate(worldUISearchItem.getSelectedName(searchType), WorldEditor.TITLE_MAX_LENGTH, true);
    }
 
    @Override
-   public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend) throws OseeCoreException {
+   public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend)  {
 
       Collection<TableLoadOption> options = Arrays.asList(tableLoadOptions);
       if (!options.contains(TableLoadOption.NoUI) && searchType == SearchType.Search) {

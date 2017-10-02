@@ -81,7 +81,7 @@ public class ArtifactIdsSqlHandler extends SqlHandler<CriteriaArtifactIds> {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
+   public boolean addPredicates(AbstractSqlWriter writer)  {
 
       if (OptionsUtil.isHistorical(writer.getOptions())) {
          writer.write(withClauseName);

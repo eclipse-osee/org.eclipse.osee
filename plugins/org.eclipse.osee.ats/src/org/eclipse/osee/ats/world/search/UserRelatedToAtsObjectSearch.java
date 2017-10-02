@@ -47,7 +47,7 @@ public class UserRelatedToAtsObjectSearch extends UserSearchItem {
    }
 
    @Override
-   protected Collection<Artifact> searchIt(IAtsUser atsUser) throws OseeCoreException {
+   protected Collection<Artifact> searchIt(IAtsUser atsUser)  {
       // SMA having user as portion of current state attribute (Team WorkFlow and Task)
 
       if (isCancelled()) {

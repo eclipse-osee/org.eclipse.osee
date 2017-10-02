@@ -15,7 +15,7 @@ import org.eclipse.osee.orcs.data.EnumEntry;
  */
 public class AttributeTypeToXWidgetName {
 
-   public static String getXWidgetName(OrcsApi orcsApi, AttributeTypeId attributeType) throws OseeCoreException {
+   public static String getXWidgetName(OrcsApi orcsApi, AttributeTypeId attributeType)  {
       int minOccurrence = orcsApi.getOrcsTypes().getAttributeTypes().getMinOccurrences(attributeType);
       int maxOccurrence = orcsApi.getOrcsTypes().getAttributeTypes().getMaxOccurrences(attributeType);
       String xWidgetName = "";

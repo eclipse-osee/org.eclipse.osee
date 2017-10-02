@@ -51,7 +51,7 @@ public class ResultsEditorConverterTest {
    }
 
    @Test
-   public void testCreateCollapsingHTMLTabsCase() throws OseeCoreException {
+   public void testCreateCollapsingHTMLTabsCase()  {
       StringWriter writer = new StringWriter();
       MockResultsProvider provider = new MockResultsProvider("Test Provider");
       executeConversion("collapsing_html", writer, provider);
@@ -59,7 +59,7 @@ public class ResultsEditorConverterTest {
    }
 
    @Test
-   public void testCreateHTMLTabsCase() throws OseeCoreException {
+   public void testCreateHTMLTabsCase()  {
       StringWriter writer = new StringWriter();
       MockResultsProvider provider = new MockResultsProvider("Test Provider");
       executeConversion("html", writer, provider);
@@ -67,7 +67,7 @@ public class ResultsEditorConverterTest {
    }
 
    @Test
-   public void testCreateExcelTabsCase() throws OseeCoreException {
+   public void testCreateExcelTabsCase()  {
       StringWriter writer = new StringWriter();
       MockResultsProvider provider = new MockResultsProvider("Test Provider");
       executeConversion("excel", writer, provider);
@@ -112,7 +112,7 @@ public class ResultsEditorConverterTest {
       Assert.assertEquals(expected.length, actual.length);
    }
 
-   private void executeConversion(String type, StringWriter writer, MockResultsProvider provider) throws OseeCoreException {
+   private void executeConversion(String type, StringWriter writer, MockResultsProvider provider)  {
       ResultsEditorConverter converter = new ResultsEditorConverter();
       provider.tabs.add(createTab("tab 1"));
       provider.tabs.add(createTab("tab 2"));

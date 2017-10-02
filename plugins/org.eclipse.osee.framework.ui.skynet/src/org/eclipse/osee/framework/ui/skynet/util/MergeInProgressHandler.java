@@ -42,7 +42,7 @@ public class MergeInProgressHandler {
    private static final int CANCEL = 3;
    private static final int FORCE_COMMIT = 4;
 
-   public static boolean handleMergeInProgress(final ConflictManagerExternal conflictManager, boolean archive, boolean isSkipPrompts) throws OseeCoreException {
+   public static boolean handleMergeInProgress(final ConflictManagerExternal conflictManager, boolean archive, boolean isSkipPrompts)  {
       archiveBranch = archive;
       int userOption;
       if (!isSkipPrompts) {
@@ -54,7 +54,7 @@ public class MergeInProgressHandler {
       return handleCommitInProgressPostPrompt(conflictManager, userOption, isSkipPrompts);
    }
 
-   public static boolean handleCommitInProgressPostPrompt(final ConflictManagerExternal conflictManager, int userOption, boolean skipPrompts) throws OseeCoreException {
+   public static boolean handleCommitInProgressPostPrompt(final ConflictManagerExternal conflictManager, int userOption, boolean skipPrompts)  {
       boolean toReturn = false;
       BranchId sourceBranch = conflictManager.getSourceBranch();
       BranchId destinationBranch = conflictManager.getDestinationBranch();
@@ -75,7 +75,7 @@ public class MergeInProgressHandler {
       return toReturn;
    }
 
-   public static void deleteMultipleMergeBranches(BranchId sourceBranch, List<BranchId> destBranches, boolean skipPrompts) throws OseeCoreException {
+   public static void deleteMultipleMergeBranches(BranchId sourceBranch, List<BranchId> destBranches, boolean skipPrompts)  {
       if (skipPrompts || promptUser(sourceBranch, destBranches)) {
          for (BranchId branch : destBranches) {
             doDelete(sourceBranch, branch);
@@ -83,19 +83,19 @@ public class MergeInProgressHandler {
       }
    }
 
-   public static void deleteSingleMergeBranches(BranchId sourceBranch, BranchId destBranch, boolean skipPrompts) throws OseeCoreException {
+   public static void deleteSingleMergeBranches(BranchId sourceBranch, BranchId destBranch, boolean skipPrompts)  {
       if (skipPrompts || promptUser(sourceBranch, Arrays.asList(destBranch))) {
          doDelete(sourceBranch, destBranch);
       }
    }
 
-   private static void doDelete(BranchId sourceBranch, BranchId destBranch) throws OseeCoreException {
+   private static void doDelete(BranchId sourceBranch, BranchId destBranch)  {
       if (BranchManager.hasMergeBranches(sourceBranch)) {
          BranchManager.purgeBranch(BranchManager.getMergeBranch(sourceBranch, destBranch));
       }
    }
 
-   private static boolean promptUser(BranchId sourceBranch, List<BranchId> destinationBranches) throws OseeCoreException {
+   private static boolean promptUser(BranchId sourceBranch, List<BranchId> destinationBranches)  {
       final MutableBoolean isUserSure = new MutableBoolean(false);
       final String message = constructConfirmMessage(sourceBranch, destinationBranches);
 
@@ -110,7 +110,7 @@ public class MergeInProgressHandler {
       return isUserSure.booleanValue();
    }
 
-   private static int promptUserMutlipleChoices(ConflictManagerExternal conflictManager) throws OseeCoreException {
+   private static int promptUserMutlipleChoices(ConflictManagerExternal conflictManager)  {
       boolean isAllConflictsResolved = !conflictManager.remainingConflictsExist();
       Messages = constructMessage(conflictManager, isAllConflictsResolved);
       Choices = constructChoices(conflictManager, isAllConflictsResolved);
@@ -132,7 +132,7 @@ public class MergeInProgressHandler {
       return result.getValue();
    }
 
-   private static String constructMessage(final ConflictManagerExternal conflictManager, boolean allConflictsResolved) throws OseeCoreException {
+   private static String constructMessage(final ConflictManagerExternal conflictManager, boolean allConflictsResolved)  {
       StringBuilder message = new StringBuilder();
       BranchId sourceBranch = conflictManager.getSourceBranch();
       BranchId destinationBranch = conflictManager.getDestinationBranch();
@@ -181,7 +181,7 @@ public class MergeInProgressHandler {
       return choices;
    }
 
-   private static String constructConfirmMessage(BranchId sourceBranch, List<BranchId> branches) throws OseeCoreException {
+   private static String constructConfirmMessage(BranchId sourceBranch, List<BranchId> branches)  {
       StringBuilder sb = new StringBuilder();
       String ending = "";
       String beginning = "";

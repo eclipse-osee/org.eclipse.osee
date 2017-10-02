@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 public class OpenInAtsWorldActionTest2 extends AbstractAtsActionRunTest {
 
    @Override
-   public OpenInAtsWorldAction createAction() throws OseeCoreException {
+   public OpenInAtsWorldAction createAction()  {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       OpenInAtsWorldAction action = new OpenInAtsWorldAction(AtsTestUtil.getOrCreateTaskOffTeamWf1());
       if (!changes.isEmpty()) {

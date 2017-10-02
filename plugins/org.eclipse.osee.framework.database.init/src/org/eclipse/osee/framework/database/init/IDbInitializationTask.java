@@ -14,6 +14,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 public interface IDbInitializationTask {
 
-   void run() throws OseeCoreException;
+   void run() ;
 
 }

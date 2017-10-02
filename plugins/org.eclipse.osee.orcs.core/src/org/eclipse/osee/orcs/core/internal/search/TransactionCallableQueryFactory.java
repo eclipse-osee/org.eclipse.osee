@@ -107,20 +107,20 @@ public class TransactionCallableQueryFactory {
       private LinkedList<T> results;
 
       @Override
-      public void onLoadStart() throws OseeCoreException {
+      public void onLoadStart()  {
          super.onLoadStart();
          dataMap = new LinkedHashMap<>();
       }
 
       @Override
-      public void onLoadEnd() throws OseeCoreException {
+      public void onLoadEnd()  {
          super.onLoadEnd();
          results = Lists.newLinkedList(dataMap.values());
          dataMap.clear();
       }
 
       @Override
-      public void onData(TxOrcsData data) throws OseeCoreException {
+      public void onData(TxOrcsData data)  {
          Long key = data.getId();
          T branch = dataMap.get(key);
          if (branch == null) {
@@ -133,7 +133,7 @@ public class TransactionCallableQueryFactory {
          return ResultSets.newResultSet(results);
       }
 
-      public abstract T create(TxOrcsData data) throws OseeCoreException;
+      public abstract T create(TxOrcsData data) ;
 
    }
 

@@ -50,12 +50,12 @@ public abstract class WorldEditorProvider implements IWorldEditorProvider {
    }
 
    @Override
-   public String getSelectedName(SearchType searchType) throws OseeCoreException {
+   public String getSelectedName(SearchType searchType)  {
       return getName();
    }
 
    @Override
-   public IAtsVersion getTargetedVersionArtifact() throws OseeCoreException {
+   public IAtsVersion getTargetedVersionArtifact()  {
       return null;
    }
 
@@ -70,7 +70,7 @@ public abstract class WorldEditorProvider implements IWorldEditorProvider {
    }
 
    @Override
-   public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend) throws OseeCoreException {
+   public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend)  {
       this.worldEditor = worldEditor;
 
       boolean pend = Arrays.asList(tableLoadOptions).contains(TableLoadOption.ForcePend) || forcePend;
@@ -110,7 +110,7 @@ public abstract class WorldEditorProvider implements IWorldEditorProvider {
       private final boolean forcePend;
       private final WorldEditorProvider worldEditorProvider;
 
-      public LoadTableJob(WorldEditor worldEditor, WorldEditorProvider worldEditorProvider, SearchType searchType, TableLoadOption[] tableLoadOptions, boolean forcePend) throws OseeCoreException {
+      public LoadTableJob(WorldEditor worldEditor, WorldEditorProvider worldEditorProvider, SearchType searchType, TableLoadOption[] tableLoadOptions, boolean forcePend)  {
          super("Loading \"" + worldEditorProvider.getSelectedName(searchType) + "\"...");
          this.worldEditor = worldEditor;
          this.worldEditorProvider = worldEditorProvider;

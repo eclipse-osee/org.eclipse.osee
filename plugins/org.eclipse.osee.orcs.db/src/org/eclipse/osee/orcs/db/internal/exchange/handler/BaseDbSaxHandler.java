@@ -88,18 +88,18 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
       this.data.add(objects);
    }
 
-   public void store() throws OseeCoreException {
+   public void store()  {
       store(null);
    }
 
-   public void store(JdbcConnection connection) throws OseeCoreException {
+   public void store(JdbcConnection connection)  {
       if (!data.isEmpty()) {
          getDatabaseService().runBatchUpdate(connection, getMetaData().getQuery(), data);
          data.clear();
       }
    }
 
-   public void clearDataTable() throws OseeCoreException {
+   public void clearDataTable()  {
       service.clearTable(getMetaData().getTableName());
    }
 

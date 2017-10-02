@@ -25,7 +25,7 @@ public class FieldTestUtil {
    private FieldTestUtil() {
    }
 
-   public static <T> void assertSetGet(CollectionField<T> field, List<T> setValues, List<T> expected, boolean expectedDirty) throws OseeCoreException {
+   public static <T> void assertSetGet(CollectionField<T> field, List<T> setValues, List<T> expected, boolean expectedDirty)  {
       field.set(setValues);
       Assert.assertEquals(expectedDirty, field.isDirty());
 

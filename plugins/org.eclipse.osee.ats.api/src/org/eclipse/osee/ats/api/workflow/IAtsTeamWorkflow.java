@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IAtsTeamWorkflow extends IAtsWorkItem, IAtsActionableItemProvider {
 
-   IAtsTeamDefinition getTeamDefinition() throws OseeCoreException;
+   IAtsTeamDefinition getTeamDefinition() ;
 
    public static boolean isOfType(Object object) {
       return object instanceof IAtsTeamWorkflow;

@@ -17,6 +17,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface OrcsDataHandler<T> {
 
-   void onData(T data) throws OseeCoreException;
+   void onData(T data) ;
 
 }

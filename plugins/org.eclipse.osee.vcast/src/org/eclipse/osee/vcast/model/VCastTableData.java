@@ -23,7 +23,7 @@ public interface VCastTableData<T> {
 
    String[] getColumns();
 
-   Collection<T> getRows(VCastDataStore dataStore) throws OseeCoreException;
+   Collection<T> getRows(VCastDataStore dataStore) ;
 
    Object[] toRow(T data);
 

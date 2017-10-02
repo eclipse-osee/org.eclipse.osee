@@ -36,7 +36,7 @@ public class AccessControlHandler extends CommandHandler {
    }
 
    @Override
-   public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
+   public boolean isEnabledWithException(IStructuredSelection structuredSelection)  {
       List<? extends BranchId> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
       List<Artifact> artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
 

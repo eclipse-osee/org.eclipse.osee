@@ -48,7 +48,7 @@ public class CreateBranchOperationTest {
    public TestInfo method = new TestInfo();
 
    @Test
-   public void test_checkPreconditions_AllowWorkingBranchCreationIfDeleted() throws OseeCoreException {
+   public void test_checkPreconditions_AllowWorkingBranchCreationIfDeleted()  {
       Artifact folder = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, CoreBranches.COMMON);
       folder.persist("");
 
@@ -65,7 +65,7 @@ public class CreateBranchOperationTest {
    }
 
    @Test
-   public void test_checkPreconditions_AllowWorkingBranchCreationIfRebaselined() throws OseeCoreException {
+   public void test_checkPreconditions_AllowWorkingBranchCreationIfRebaselined()  {
       Artifact folder = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, CoreBranches.COMMON);
       folder.persist("");
 
@@ -85,7 +85,7 @@ public class CreateBranchOperationTest {
     * expecting really an OseeStateException from CreateBranchOperation
     */
    @Test
-   public void test_checkPreconditions_DisallowWorkingBranchCreation() throws OseeCoreException {
+   public void test_checkPreconditions_DisallowWorkingBranchCreation()  {
       Set<BranchState> subset = new HashSet<>(Arrays.asList(BranchState.values()));
 
       Collection<BranchState> allowedStates = Arrays.asList(BranchState.DELETED, BranchState.REBASELINED);

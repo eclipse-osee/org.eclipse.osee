@@ -111,7 +111,7 @@ public final class ChangeItemUtil {
       return item;
    }
 
-   public static ChangeVersion getStartingVersion(ChangeItem item) throws OseeCoreException {
+   public static ChangeVersion getStartingVersion(ChangeItem item)  {
       if (item == null) {
          throw new OseeArgumentException("ChangeItem cannot be null");
       }
@@ -128,7 +128,7 @@ public final class ChangeItemUtil {
       return toReturn;
    }
 
-   public static void copy(ChangeVersion source, ChangeVersion dest) throws OseeCoreException {
+   public static void copy(ChangeVersion source, ChangeVersion dest)  {
       Conditions.checkNotNull(source, "Source ChangeVersion");
       Conditions.checkNotNull(dest, "Destination ChangeVersion");
       dest.copy(source);

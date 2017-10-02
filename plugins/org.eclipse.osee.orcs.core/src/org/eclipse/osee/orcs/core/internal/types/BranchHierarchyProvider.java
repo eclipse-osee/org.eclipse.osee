@@ -18,6 +18,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface BranchHierarchyProvider {
 
-   Iterable<? extends BranchId> getParentHierarchy(BranchId branch) throws OseeCoreException;
+   Iterable<? extends BranchId> getParentHierarchy(BranchId branch) ;
 
 }

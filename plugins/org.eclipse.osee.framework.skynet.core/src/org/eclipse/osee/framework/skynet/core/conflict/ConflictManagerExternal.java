@@ -32,12 +32,12 @@ public class ConflictManagerExternal {
    private final IOseeBranch sourceBranch;
    private List<Conflict> originalConflicts;
 
-   public ConflictManagerExternal(BranchId destinationBranch, BranchId sourceBranch) throws OseeCoreException {
+   public ConflictManagerExternal(BranchId destinationBranch, BranchId sourceBranch)  {
       this.destinationBranch = BranchManager.getBranchToken(destinationBranch);
       this.sourceBranch = BranchManager.getBranchToken(sourceBranch);
    }
 
-   public List<Conflict> getOriginalConflicts() throws OseeCoreException {
+   public List<Conflict> getOriginalConflicts()  {
       if (originalConflicts == null) {
          originalConflicts = ConflictManagerInternal.getConflictsPerBranch(sourceBranch, destinationBranch,
             BranchManager.getBaseTransaction(sourceBranch), monitor);
@@ -45,11 +45,11 @@ public class ConflictManagerExternal {
       return originalConflicts;
    }
 
-   public boolean originalConflictsExist() throws OseeCoreException {
+   public boolean originalConflictsExist()  {
       return !getOriginalConflicts().isEmpty();
    }
 
-   public List<Conflict> getRemainingConflicts() throws OseeCoreException {
+   public List<Conflict> getRemainingConflicts()  {
       List<Conflict> remainingConflicts = new ArrayList<>();
       for (Conflict conflict : getOriginalConflicts()) {
          ConflictStatus status = conflict.getStatus();
@@ -60,7 +60,7 @@ public class ConflictManagerExternal {
       return remainingConflicts;
    }
 
-   public boolean remainingConflictsExist() throws OseeCoreException {
+   public boolean remainingConflictsExist()  {
       return !getRemainingConflicts().isEmpty();
    }
 

@@ -61,7 +61,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    }
 
    @Override
-   public List<IAtsUser> getAssignees() throws OseeCoreException {
+   public List<IAtsUser> getAssignees()  {
       return getStateMgr().getAssignees();
    }
 
@@ -76,7 +76,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    }
 
    @Override
-   public IAtsTeamWorkflow getParentTeamWorkflow() throws OseeCoreException {
+   public IAtsTeamWorkflow getParentTeamWorkflow()  {
       if (this.isTeamWorkflow()) {
          return (IAtsTeamWorkflow) this;
       }
@@ -253,7 +253,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    }
 
    @Override
-   public List<IAtsUser> getImplementers() throws OseeCoreException {
+   public List<IAtsUser> getImplementers()  {
       return services.getImplementerService().getImplementers(this);
    }
 

@@ -36,7 +36,7 @@ public class CriteriaTxArtifactIds extends Criteria implements TxCriteria {
    }
 
    @Override
-   public void checkValid(Options options) throws OseeCoreException {
+   public void checkValid(Options options)  {
       Conditions.checkNotNullOrEmpty(artifactIds, "artifact ids");
    }
 

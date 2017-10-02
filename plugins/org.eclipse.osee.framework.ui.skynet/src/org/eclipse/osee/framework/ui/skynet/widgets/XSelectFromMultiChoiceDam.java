@@ -50,7 +50,7 @@ public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String> impleme
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) throws OseeCoreException {
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType)  {
       this.artifact = artifact;
       this.attributeType = attributeType;
       int minOccurrence = AttributeTypeManager.getMinOccurrences(attributeType);
@@ -68,12 +68,12 @@ public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String> impleme
       return dialog;
    }
 
-   public Collection<String> getStored() throws OseeCoreException {
+   public Collection<String> getStored()  {
       return getArtifact().getAttributesToStringList(getAttributeType());
    }
 
    @Override
-   public Result isDirty() throws OseeCoreException {
+   public Result isDirty()  {
       if (isEditable()) {
          try {
             Collection<String> enteredValues = getSelected();
@@ -89,12 +89,12 @@ public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String> impleme
    }
 
    @Override
-   public void revert() throws OseeCoreException {
+   public void revert()  {
       setAttributeType(getArtifact(), getAttributeType());
    }
 
    @Override
-   public void saveToArtifact() throws OseeCoreException {
+   public void saveToArtifact()  {
       getArtifact().setAttributeValues(getAttributeType(), getSelected());
    }
 

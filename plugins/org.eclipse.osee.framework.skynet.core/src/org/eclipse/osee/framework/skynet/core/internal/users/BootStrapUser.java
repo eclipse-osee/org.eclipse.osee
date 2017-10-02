@@ -23,11 +23,11 @@ public class BootStrapUser extends User {
 
    public static BootStrapUser instance;
 
-   private BootStrapUser() throws OseeCoreException {
+   private BootStrapUser()  {
       super(CoreBranches.COMMON);
    }
 
-   public static BootStrapUser getInstance() throws OseeCoreException {
+   public static BootStrapUser getInstance()  {
       if (instance == null) {
          instance = new BootStrapUser();
       }
@@ -38,7 +38,7 @@ public class BootStrapUser extends User {
    private static final long serialVersionUID = 1L;
 
    @Override
-   public String getEmail() throws OseeCoreException {
+   public String getEmail()  {
       return SystemUser.BootStrap.getEmail();
    }
 
@@ -48,12 +48,12 @@ public class BootStrapUser extends User {
    }
 
    @Override
-   public String getUserId() throws OseeCoreException {
+   public String getUserId()  {
       return SystemUser.BootStrap.getUserId();
    }
 
    @Override
-   public boolean isActive() throws OseeCoreException {
+   public boolean isActive()  {
       return SystemUser.BootStrap.isActive();
    }
 

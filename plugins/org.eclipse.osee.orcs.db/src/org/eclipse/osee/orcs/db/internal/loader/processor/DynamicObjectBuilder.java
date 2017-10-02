@@ -85,14 +85,14 @@ public class DynamicObjectBuilder {
       return !stack.isEmpty() ? stack.peek() : null;
    }
 
-   public void onDynamicObjectStart(DynamicObject data) throws OseeCoreException {
+   public void onDynamicObjectStart(DynamicObject data)  {
       logger.trace("DynamicObject - start - [%s]", data);
       ObjectMap object = new ObjectMap();
       object.setData(data);
       stack.push(object);
    }
 
-   public void onDynamicField(DynamicData data, String fieldName, Object value) throws OseeCoreException {
+   public void onDynamicField(DynamicData data, String fieldName, Object value)  {
       logger.trace("DynamicObject - field - [%s] - field:[%s] value:[%s]", data, fieldName, value);
       ObjectMap current = stack.peek();
       if (data.isPrimaryKey()) {
@@ -111,7 +111,7 @@ public class DynamicObjectBuilder {
       return objectField != null ? objectField.isMetaTypeField() : false;
    }
 
-   public void onDynamicObjectEnd(DynamicObject data) throws OseeCoreException {
+   public void onDynamicObjectEnd(DynamicObject data)  {
       logger.trace("DynamicObject - end - [%s]", data);
       ObjectMap current = pop();
       if (current != null) {

@@ -52,7 +52,7 @@ public class OseeFieldTestData<T> {
       return testDatas;
    }
 
-   public void doSetValue(FieldGetSetTestData<T> testData) throws OseeCoreException {
+   public void doSetValue(FieldGetSetTestData<T> testData)  {
       getField().set(testData.getSetValue());
    }
 }

@@ -71,7 +71,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testSetNotificationListener() throws OseeCoreException {
+   public void testSetNotificationListener()  {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
       stateMgr.addAssignee(steve);
@@ -85,7 +85,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testAddAssignee() throws OseeCoreException {
+   public void testAddAssignee()  {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
 
@@ -107,7 +107,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testAddAssignee_exception() throws OseeCoreException {
+   public void testAddAssignee_exception()  {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
 
@@ -115,7 +115,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testSetAssignee() throws OseeCoreException {
+   public void testSetAssignee()  {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
 
@@ -141,7 +141,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testSetAssignee_removeUnassigned() throws OseeCoreException {
+   public void testSetAssignee_removeUnassigned()  {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
 
@@ -155,7 +155,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testSetAssignees_nextStateNotification() throws OseeCoreException {
+   public void testSetAssignees_nextStateNotification()  {
       // create state with two assignees
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
@@ -173,7 +173,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testSetAssignees_sameStateNotification() throws OseeCoreException {
+   public void testSetAssignees_sameStateNotification()  {
       // create state with two assignees
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
@@ -203,7 +203,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testSetAssignee_exception() throws OseeCoreException {
+   public void testSetAssignee_exception()  {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
 
@@ -211,7 +211,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testIsUnAssigned() throws OseeCoreException {
+   public void testIsUnAssigned()  {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
       Assert.assertFalse(stateMgr.isUnAssigned());
@@ -220,7 +220,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testIsUnAssignedSolely() throws OseeCoreException {
+   public void testIsUnAssignedSolely()  {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
       Assert.assertFalse(stateMgr.isUnAssignedSolely());
@@ -233,7 +233,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testGetAssigneesStrString() throws OseeCoreException {
+   public void testGetAssigneesStrString()  {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
       stateMgr.addAssignee(steve);
@@ -246,7 +246,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testAddAssignees() throws OseeCoreException {
+   public void testAddAssignees()  {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
       stateMgr.addAssignees(Arrays.asList(joe, alice));
@@ -254,7 +254,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testAddAssignees_state() throws OseeCoreException {
+   public void testAddAssignees_state()  {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
       stateMgr.addAssignees("endorse", Arrays.asList(joe, alice));
@@ -262,7 +262,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testSetAssigneesIAtsUser() throws OseeCoreException {
+   public void testSetAssigneesIAtsUser()  {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
       stateMgr.setAssignee(joe);
@@ -272,7 +272,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testSetAssigneeStringIAtsUser() throws OseeCoreException {
+   public void testSetAssigneeStringIAtsUser()  {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
       stateMgr.setAssignee("endorse", joe);
@@ -282,7 +282,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testSetAssigneesListOfQextendsIAtsUser() throws OseeCoreException {
+   public void testSetAssigneesListOfQextendsIAtsUser()  {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
       stateMgr.addAssignees(Arrays.asList(joe, alice));
@@ -292,7 +292,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testSetAssigneesStringListOfQextendsIAtsUser() throws OseeCoreException {
+   public void testSetAssigneesStringListOfQextendsIAtsUser()  {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
       stateMgr.setAssignee("endorse", joe);
@@ -302,7 +302,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testRemoveAssigneeIAtsUser() throws OseeCoreException {
+   public void testRemoveAssigneeIAtsUser()  {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
       stateMgr.setAssignees("endorse", Arrays.asList(joe, alice));
@@ -312,7 +312,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testClearAssignees() throws OseeCoreException {
+   public void testClearAssignees()  {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
       stateMgr.setAssignees("endorse", Arrays.asList(joe, alice));
@@ -351,7 +351,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test(expected = OseeStateException.class)
-   public void testGetAssigneesForState() throws OseeStateException {
+   public void testGetAssigneesForState()  {
       stateMgr.getAssignees();
    }
 
@@ -371,12 +371,12 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test(expected = OseeStateException.class)
-   public void setPercentComplete_exception() throws OseeStateException {
+   public void setPercentComplete_exception()  {
       stateMgr.setPercentComplete("endorse", 34);
    }
 
    @Test
-   public void setPercentComplete() throws OseeCoreException {
+   public void setPercentComplete()  {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
       stateMgr.setPercentComplete("endorse", 34);
@@ -390,12 +390,12 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test(expected = OseeStateException.class)
-   public void setHoursSpent_exception() throws OseeStateException {
+   public void setHoursSpent_exception()  {
       stateMgr.setHoursSpent("endorse", 8.0);
    }
 
    @Test
-   public void setHoursSpent() throws OseeCoreException {
+   public void setHoursSpent()  {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
       stateMgr.setHoursSpent("endorse", 8.0);
@@ -404,7 +404,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test(expected = OseeStateException.class)
-   public void removeAssignee_exception() throws OseeCoreException {
+   public void removeAssignee_exception()  {
       stateMgr.removeAssignee(joe);
    }
 
@@ -425,7 +425,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testSetMetrics() throws OseeCoreException {
+   public void testSetMetrics()  {
       IAtsWorkItem awa = mock(IAtsWorkItem.class);
       StateManager mgr = new StateManager(awa, logFactory, services);
 

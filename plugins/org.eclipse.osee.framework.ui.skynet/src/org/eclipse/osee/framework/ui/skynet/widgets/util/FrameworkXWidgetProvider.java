@@ -107,7 +107,7 @@ public final class FrameworkXWidgetProvider {
       return reference;
    }
 
-   private String getXWidgetNameBasedOnAttribute(String attributeTypeName) throws OseeCoreException {
+   private String getXWidgetNameBasedOnAttribute(String attributeTypeName)  {
       AttributeTypeToken attributeType = AttributeTypeManager.getType(attributeTypeName);
       if (attributeType != null) {
          IAttributeXWidgetProvider xWidgetProvider = AttributeXWidgetManager.getAttributeXWidgetProvider(attributeType);
@@ -117,7 +117,7 @@ public final class FrameworkXWidgetProvider {
       return null;
    }
 
-   public XWidget createXWidget(XWidgetRendererItem xWidgetLayoutData) throws OseeCoreException {
+   public XWidget createXWidget(XWidgetRendererItem xWidgetLayoutData)  {
       String xWidgetName = xWidgetLayoutData.getXWidgetName();
       String name = xWidgetLayoutData.getName();
       XWidget xWidget = null;

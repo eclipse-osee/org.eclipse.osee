@@ -24,11 +24,11 @@ public interface ITraceabilityProvider {
 
    public RequirementData getRequirementData();
 
-   public HashCollection<Artifact, String> getRequirementToCodeUnitsMap() throws OseeCoreException;
+   public HashCollection<Artifact, String> getRequirementToCodeUnitsMap() ;
 
    public Set<String> getCodeUnits();
 
-   public Collection<Artifact> getTestUnitArtifacts(Artifact requirement) throws OseeCoreException;
+   public Collection<Artifact> getTestUnitArtifacts(Artifact requirement) ;
 
    public Artifact getTestUnitByName(String name);
 }

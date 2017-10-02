@@ -40,7 +40,7 @@ public class MockOseeDataAccessor<T> implements IOseeDataAccessor<T> {
    }
 
    @Override
-   public void load(IOseeCache<T> cache) throws OseeCoreException {
+   public void load(IOseeCache<T> cache)  {
       Assert.assertNotNull(cache);
       setLoadCalled(true);
    }

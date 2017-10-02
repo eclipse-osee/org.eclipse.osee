@@ -65,7 +65,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
    }
 
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
+   public void run(TableLoadOption... tableLoadOptions)  {
       IAtsUser useUser = null;
       if (selectedUser != null) {
          useUser = selectedUser;

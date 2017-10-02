@@ -102,7 +102,7 @@ public class WordMlLinkHandler {
     * @param content input
     * @return processed input
     */
-   public static String unlink(QueryFactory queryFactory, LinkType sourceLinkType, ArtifactReadable source, String content) throws OseeCoreException {
+   public static String unlink(QueryFactory queryFactory, LinkType sourceLinkType, ArtifactReadable source, String content)  {
       LinkType linkType = checkLinkType(sourceLinkType);
       String modified = content;
       HashCollection<String, MatchRange> matchMap = parseOseeWordMLLinks(content);
@@ -119,7 +119,7 @@ public class WordMlLinkHandler {
     * @param content input
     * @return processed input
     */
-   public static String link(QueryFactory queryFactory, LinkType destLinkType, ArtifactReadable source, String content, TransactionId txId, String sessionId, Set<String> unknownGuids, PresentationType presentationType, String permanentUrl) throws OseeCoreException {
+   public static String link(QueryFactory queryFactory, LinkType destLinkType, ArtifactReadable source, String content, TransactionId txId, String sessionId, Set<String> unknownGuids, PresentationType presentationType, String permanentUrl)  {
       LinkType linkType = checkLinkType(destLinkType);
       String modified = content;
 
@@ -154,7 +154,7 @@ public class WordMlLinkHandler {
     *
     * @return locations where WordMlLinks were found grouped by GUID
     */
-   public static HashCollection<String, MatchRange> parseOseeWordMLLinks(String content) throws OseeCoreException {
+   public static HashCollection<String, MatchRange> parseOseeWordMLLinks(String content)  {
       HashCollection<String, MatchRange> matchMap = new HashCollection<>();
 
       OseeLinkParser linkParser = new OseeLinkParser();
@@ -187,7 +187,7 @@ public class WordMlLinkHandler {
       return matchMap;
    }
 
-   private static List<ArtifactReadable> findArtifacts(QueryFactory queryFactory, BranchId branch, List<String> guidsFromLinks, TransactionId txId) throws OseeCoreException {
+   private static List<ArtifactReadable> findArtifacts(QueryFactory queryFactory, BranchId branch, List<String> guidsFromLinks, TransactionId txId)  {
       List<ArtifactReadable> arts = Lists.newLinkedList();
 
       if (txId.isValid()) {
@@ -209,7 +209,7 @@ public class WordMlLinkHandler {
       return Collections.setComplement(guidsFromLinks, artGuids);
    }
 
-   private static String modifiedContent(QueryFactory queryFactory, LinkType destLinkType, ArtifactReadable source, String original, HashCollection<String, MatchRange> matchMap, boolean isUnliking, TransactionId txId, String sessionId, Set<String> unknown, PresentationType presentationType, String permanentUrl) throws OseeCoreException {
+   private static String modifiedContent(QueryFactory queryFactory, LinkType destLinkType, ArtifactReadable source, String original, HashCollection<String, MatchRange> matchMap, boolean isUnliking, TransactionId txId, String sessionId, Set<String> unknown, PresentationType presentationType, String permanentUrl)  {
       BranchId branch = source.getBranch();
       ChangeSet changeSet = new ChangeSet(original);
       List<ArtifactReadable> artifactsFromSearch = null;

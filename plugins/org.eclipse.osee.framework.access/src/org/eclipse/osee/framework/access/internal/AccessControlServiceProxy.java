@@ -169,24 +169,24 @@ public final class AccessControlServiceProxy implements IAccessControlService {
       }
    }
 
-   private void checkInitialized() throws OseeCoreException {
+   private void checkInitialized()  {
       Conditions.checkNotNull(getProxiedObject(), "accessService", "Access Service not properly initialized");
    }
 
    @Override
-   public boolean hasPermission(Object object, PermissionEnum permission) throws OseeCoreException {
+   public boolean hasPermission(Object object, PermissionEnum permission)  {
       checkInitialized();
       return getProxiedObject().hasPermission(object, permission);
    }
 
    @Override
-   public void removePermissions(BranchId branch) throws OseeCoreException {
+   public void removePermissions(BranchId branch)  {
       checkInitialized();
       getProxiedObject().removePermissions(branch);
    }
 
    @Override
-   public AccessDataQuery getAccessData(ArtifactToken userArtifact, Collection<?> itemsToCheck) throws OseeCoreException {
+   public AccessDataQuery getAccessData(ArtifactToken userArtifact, Collection<?> itemsToCheck)  {
       checkInitialized();
       return getProxiedObject().getAccessData(userArtifact, itemsToCheck);
    }

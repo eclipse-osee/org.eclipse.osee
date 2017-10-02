@@ -38,7 +38,7 @@ public class StateManagerTest {
    }
 
    @Test
-   public void testUpdateMetrics() throws OseeCoreException {
+   public void testUpdateMetrics()  {
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
 
       TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();

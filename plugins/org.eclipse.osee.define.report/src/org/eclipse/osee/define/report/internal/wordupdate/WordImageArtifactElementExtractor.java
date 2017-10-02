@@ -72,7 +72,7 @@ public class WordImageArtifactElementExtractor implements IElementExtractor {
    }
 
    @Override
-   public List<WordExtractorData> extractElements() throws DOMException, OseeCoreException {
+   public List<WordExtractorData> extractElements() throws DOMException {
       OseeLinkBuilder linkBuilder = new OseeLinkBuilder();
       return extractElements(linkBuilder);
    }
@@ -85,7 +85,7 @@ public class WordImageArtifactElementExtractor implements IElementExtractor {
       guid = null;
    }
 
-   public List<WordExtractorData> extractElements(OseeLinkBuilder linkBuilder) throws DOMException, OseeCoreException {
+   public List<WordExtractorData> extractElements(OseeLinkBuilder linkBuilder) throws DOMException {
       final List<WordExtractorData> artifactElements = new LinkedList<>();
       Element rootElement = document.getDocumentElement();
       resetClassFields();
@@ -327,7 +327,7 @@ public class WordImageArtifactElementExtractor implements IElementExtractor {
       return checksum;
    }
 
-   private void validateEditTags() throws OseeCoreException {
+   private void validateEditTags()  {
       if (numberOfStartTags == 0 || numberOfEndTags != numberOfStartTags) {
          throw new OseeCoreException(
             "This document is missing start/end edit tags, therefore the document will not be saved. You can re-edit the artifact and the edit tags should reappear.");

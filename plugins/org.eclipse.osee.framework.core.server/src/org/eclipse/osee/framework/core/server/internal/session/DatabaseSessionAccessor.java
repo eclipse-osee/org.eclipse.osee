@@ -58,22 +58,22 @@ public final class DatabaseSessionAccessor implements CacheDataLoader<String, Se
       return sessionQuery;
    }
 
-   private void executeTx(SessionTxType op, Iterable<Session> sessions) throws OseeCoreException {
+   private void executeTx(SessionTxType op, Iterable<Session> sessions)  {
       jdbcClient.runTransaction(new SessionTx(getJdbcClient(), op, sessions));
    }
 
    @Override
-   public void create(Iterable<Session> sessions) throws OseeCoreException {
+   public void create(Iterable<Session> sessions)  {
       executeTx(SessionTxType.CREATE, sessions);
    }
 
    @Override
-   public void delete(Iterable<Session> sessions) throws OseeCoreException {
+   public void delete(Iterable<Session> sessions)  {
       executeTx(SessionTxType.DELETE, sessions);
    }
 
    @Override
-   public Map<String, Session> load(Iterable<? extends String> sessionIds) throws OseeCoreException {
+   public Map<String, Session> load(Iterable<? extends String> sessionIds)  {
       final Map<String, Session> sessions = new LinkedHashMap<>();
       ISessionCollector collector = new ISessionCollector() {
 
@@ -90,7 +90,7 @@ public final class DatabaseSessionAccessor implements CacheDataLoader<String, Se
    }
 
    @Override
-   public Session load(String sessionId) throws OseeCoreException {
+   public Session load(String sessionId)  {
       Map<String, Session> loaded = load(Collections.singleton(sessionId));
       Session toReturn = null;
       if (!loaded.values().isEmpty()) {
@@ -100,12 +100,12 @@ public final class DatabaseSessionAccessor implements CacheDataLoader<String, Se
    }
 
    @Override
-   public Session reload(String key, Session oldValue) throws OseeCoreException {
+   public Session reload(String key, Session oldValue)  {
       return load(key);
    };
 
    @Override
-   public Iterable<? extends String> getAllKeys() throws OseeCoreException {
+   public Iterable<? extends String> getAllKeys()  {
       final Set<String> ids = new LinkedHashSet<>();
       ISessionCollector idCollector = new ISessionCollector() {
 
@@ -136,7 +136,7 @@ public final class DatabaseSessionAccessor implements CacheDataLoader<String, Se
       }
 
       @Override
-      public void handleTxWork(JdbcConnection connection) throws OseeCoreException {
+      public void handleTxWork(JdbcConnection connection)  {
          switch (txType) {
             case CREATE:
                create(connection);
@@ -149,7 +149,7 @@ public final class DatabaseSessionAccessor implements CacheDataLoader<String, Se
          }
       }
 
-      private void create(JdbcConnection connection) throws OseeCoreException {
+      private void create(JdbcConnection connection)  {
          List<Object[]> insertData = new ArrayList<>();
          for (Session session : sessions) {
             insertData.add(toInsert(session));
@@ -159,7 +159,7 @@ public final class DatabaseSessionAccessor implements CacheDataLoader<String, Se
          }
       }
 
-      private void delete(JdbcConnection connection) throws OseeCoreException {
+      private void delete(JdbcConnection connection)  {
          List<Object[]> deleteData = new ArrayList<>();
          for (Session session : sessions) {
             deleteData.add(toDelete(session));

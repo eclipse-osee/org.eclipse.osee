@@ -24,10 +24,10 @@ public abstract class AbstractOseeField<T> implements IOseeField<T> {
    }
 
    @Override
-   public abstract void set(T value) throws OseeCoreException;
+   public abstract void set(T value) ;
 
    @Override
-   public abstract T get() throws OseeCoreException;
+   public abstract T get() ;
 
    @Override
    public void clearDirty() {

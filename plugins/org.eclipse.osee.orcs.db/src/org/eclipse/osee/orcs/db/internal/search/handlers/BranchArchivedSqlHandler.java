@@ -51,7 +51,7 @@ public class BranchArchivedSqlHandler extends SqlHandler<CriteriaBranchArchived>
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
+   public boolean addPredicates(AbstractSqlWriter writer)  {
       Collection<BranchArchivedState> states = criteria.getStates();
       if (states.size() > 1) {
          Set<Integer> ids = new HashSet<>();

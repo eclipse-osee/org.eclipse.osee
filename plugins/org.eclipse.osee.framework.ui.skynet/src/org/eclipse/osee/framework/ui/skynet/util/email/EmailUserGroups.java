@@ -50,7 +50,7 @@ public class EmailUserGroups extends XNavigateItemAction {
       super(parent, "Email User Groups", FrameworkImage.EMAIL);
    }
 
-   public static Set<Artifact> getEmailGroupsAndUserGroups(User user) throws OseeCoreException {
+   public static Set<Artifact> getEmailGroupsAndUserGroups(User user)  {
       Set<Artifact> artifacts = new HashSet<>();
       for (Artifact art : ArtifactQuery.getArtifactListFromTypeWithInheritence(CoreArtifactTypes.UserGroup, COMMON,
          DeletionFlag.EXCLUDE_DELETED)) {

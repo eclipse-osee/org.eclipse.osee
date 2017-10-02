@@ -27,7 +27,7 @@ public class WorkPackageIdColumn extends AbstractRelatedWorkPackageColumn {
    }
 
    @Override
-   protected String getColumnValue(IAtsWorkPackage workPkg) throws OseeCoreException {
+   protected String getColumnValue(IAtsWorkPackage workPkg)  {
       return workPkg.getWorkPackageId();
    }
 

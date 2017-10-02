@@ -47,7 +47,7 @@ public class PurgeBranchDatabaseCallable extends AbstractDatastoreTxCallable<Voi
    }
 
    @Override
-   protected Void handleTxWork(JdbcConnection connection) throws OseeCoreException {
+   protected Void handleTxWork(JdbcConnection connection)  {
       List<Pair<BranchId, Boolean>> branches = findMergeBranches(connection);
       branches.add(new Pair<BranchId, Boolean>(toDelete, toDelete.getArchiveState().isArchived()));
       for (Pair<BranchId, Boolean> toPurge : branches) {
@@ -82,7 +82,7 @@ public class PurgeBranchDatabaseCallable extends AbstractDatastoreTxCallable<Voi
       return toReturn;
    }
 
-   private void purgeFromTable(JdbcConnection connection, String sql, double percentage, Object... data) throws OseeCoreException {
+   private void purgeFromTable(JdbcConnection connection, String sql, double percentage, Object... data)  {
       checkForCancelled();
       getJdbcClient().runPreparedUpdate(connection, sql, data);
    }

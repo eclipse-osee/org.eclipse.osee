@@ -135,7 +135,7 @@ public class SubsystemFullTraceReport extends AbstractBlam {
       Program.launch(iFile.getLocation().toOSString());
    }
 
-   private List<Artifact> prepareSubsystemRequirements(List<Artifact> artifacts) throws OseeCoreException {
+   private List<Artifact> prepareSubsystemRequirements(List<Artifact> artifacts)  {
       List<Artifact> subsystemRequirements = new ArrayList<>(400);
       for (Artifact artifact : artifacts) {
          if (artifact.isOfType(CoreArtifactTypes.Folder)) {
@@ -147,7 +147,7 @@ public class SubsystemFullTraceReport extends AbstractBlam {
       return subsystemRequirements;
    }
 
-   private void writeMainSheet(List<Artifact> artifacts) throws IOException, OseeCoreException {
+   private void writeMainSheet(List<Artifact> artifacts) throws IOException {
       writer.startSheet("report", 18);
       writer.writeRow(CoreArtifactTypes.SystemRequirementMSWord.getName(), null, null,
          CoreArtifactTypes.SubsystemRequirementMSWord.getName(), null, null, null, null, null,
@@ -163,7 +163,7 @@ public class SubsystemFullTraceReport extends AbstractBlam {
       writer.endSheet();
    }
 
-   private void processSubSystemRequirement(Artifact subSystemRequirement) throws IOException, OseeCoreException {
+   private void processSubSystemRequirement(Artifact subSystemRequirement) throws IOException {
       boolean topRowForSubsystemReq = true;
       for (Artifact systemRequirement : subSystemRequirement.getRelatedArtifacts(
          CoreRelationTypes.Requirement_Trace__Higher_Level)) {
@@ -190,13 +190,13 @@ public class SubsystemFullTraceReport extends AbstractBlam {
       }
    }
 
-   private String getRequirementText(Artifact req) throws OseeCoreException {
+   private String getRequirementText(Artifact req)  {
       Attribute<?> templateContent = req.getSoleAttribute(CoreAttributeTypes.WordTemplateContent);
       String ret = templateContent.getDisplayableString();
       return StringUtils.trim(ret);
    }
 
-   private void processSoftwareRequirement(Artifact softwareRequirement) throws IOException, OseeCoreException {
+   private void processSoftwareRequirement(Artifact softwareRequirement) throws IOException {
       writer.writeCell(softwareRequirement.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""),
          SOFTWARE_REQUIREMENT_INDEX);
       writer.writeCell(softwareRequirement.getName());
@@ -226,7 +226,7 @@ public class SubsystemFullTraceReport extends AbstractBlam {
    }
 
    @Override
-   public String getXWidgetsXml() throws OseeCoreException {
+   public String getXWidgetsXml()  {
       StringBuilder sb = new StringBuilder();
       sb.append("<xWidgets>");
       sb.append(
@@ -260,7 +260,7 @@ public class SubsystemFullTraceReport extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreated(XWidget widget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
+   public void widgetCreated(XWidget widget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable)  {
       super.widgetCreated(widget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
 
       if (widget.getLabel().equals(SCRIPT_ROOT_DIR)) {

@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public class StringAttribute extends CharacterBackedAttribute<String> {
    @Override
-   public String getValue() throws OseeCoreException {
+   public String getValue()  {
       return getAttributeDataProvider().getValueAsString();
    }
 
@@ -27,7 +27,7 @@ public class StringAttribute extends CharacterBackedAttribute<String> {
    }
 
    @Override
-   public String getDisplayableString() throws OseeCoreException {
+   public String getDisplayableString()  {
       return getValue();
    }
 }

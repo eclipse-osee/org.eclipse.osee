@@ -59,18 +59,18 @@ public class QueryStatisticsTest {
    }
 
    @Test(expected = UnsupportedOperationException.class)
-   public void testEmptyStatsAdd() throws OseeCoreException {
+   public void testEmptyStatsAdd()  {
       QueryStatisticsImpl.EMPTY_STATS.addEntry(null, -1, -1);
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testAddNullSearchRequest() throws OseeCoreException {
+   public void testAddNullSearchRequest()  {
       QueryStatisticsImpl actual = new QueryStatisticsImpl();
       actual.addEntry(null, 0, 0);
    }
 
    @Test
-   public void testStatistics() throws OseeCoreException {
+   public void testStatistics()  {
       QueryStatisticsImpl actual = new QueryStatisticsImpl();
       checkStat(actual, 0, 0, 0, "");
 
@@ -90,7 +90,7 @@ public class QueryStatisticsTest {
    }
 
    @Test
-   public void testClear() throws OseeCoreException {
+   public void testClear()  {
       QueryStatisticsImpl actual = new QueryStatisticsImpl();
       checkStat(actual, 0, 0, 0, "");
       actual.addEntry(searchRequest1, 7, 111111);
@@ -101,7 +101,7 @@ public class QueryStatisticsTest {
    }
 
    @Test
-   public void testClone() throws OseeCoreException {
+   public void testClone()  {
       QueryStatisticsImpl actual = new QueryStatisticsImpl();
       checkStat(actual, 0, 0, 0, "");
       actual.addEntry(searchRequest1, 7, 111111);

@@ -19,6 +19,6 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
  */
 public interface IAtsNavigateItem {
 
-   public List<XNavigateItem> getNavigateItems(XNavigateItem parentItem) throws OseeCoreException;
+   public List<XNavigateItem> getNavigateItems(XNavigateItem parentItem) ;
 
 }

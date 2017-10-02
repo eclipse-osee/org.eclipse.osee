@@ -98,7 +98,7 @@ public class HighLevelSummary implements ITestRunReport {
       return "High Level Test Run Summary";
    }
 
-   private void processData(CollectedData data, TestRunOperator operator) throws OseeCoreException {
+   private void processData(CollectedData data, TestRunOperator operator)  {
       data.incrementScriptCount();
 
       int failed = operator.getTestPointsFailed();

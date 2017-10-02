@@ -54,7 +54,7 @@ final class ArtifactFileMonitor implements IFileWatcherListener {
       fileMap.put(file, updateOperation);
    }
 
-   public void markAsReadOnly(IFile file) throws OseeCoreException {
+   public void markAsReadOnly(IFile file)  {
       try {
          file.setResourceAttributes(readonlyfileAttributes);
       } catch (CoreException ex) {

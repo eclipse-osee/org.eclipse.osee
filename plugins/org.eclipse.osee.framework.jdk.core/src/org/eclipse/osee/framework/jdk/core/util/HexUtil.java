@@ -25,7 +25,7 @@ public final class HexUtil {
       return hexString.startsWith("0x");
    }
 
-   public static long toLong(String hexString) throws OseeCoreException {
+   public static long toLong(String hexString)  {
       Long toReturn = -1L;
       try {
          String hex = hexString;
@@ -40,7 +40,7 @@ public final class HexUtil {
 
    }
 
-   public static String toString(long value) throws OseeCoreException {
+   public static String toString(long value)  {
       try {
          return String.format("0x%016X", value);
       } catch (Exception ex) {

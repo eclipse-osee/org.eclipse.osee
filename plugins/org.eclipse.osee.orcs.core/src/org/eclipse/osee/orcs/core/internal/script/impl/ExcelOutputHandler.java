@@ -143,14 +143,14 @@ public class ExcelOutputHandler extends OrcsScriptOutputHandler {
    }
 
    @Override
-   public void onLoadStart() throws OseeCoreException {
+   public void onLoadStart() {
       super.onLoadStart();
       providedData.clear();
       headers.clear();
    }
 
    @Override
-   public void onLoadDescription(LoadDescription data) throws OseeCoreException {
+   public void onLoadDescription(LoadDescription data) {
       super.onLoadDescription(data);
       if (debugInfo != null) {
          debugInfo.addDescription(data);
@@ -158,14 +158,14 @@ public class ExcelOutputHandler extends OrcsScriptOutputHandler {
    }
 
    @Override
-   public void onDynamicData(Map<String, Object> data) throws OseeCoreException {
+   public void onDynamicData(Map<String, Object> data) {
       super.onDynamicData(data);
       headers.process(data);
       providedData.add(data);
    }
 
    @Override
-   public void onLoadEnd() throws OseeCoreException {
+   public void onLoadEnd() {
       super.onLoadEnd();
       try {
          try {
@@ -292,7 +292,7 @@ public class ExcelOutputHandler extends OrcsScriptOutputHandler {
       }
    }
 
-   private void writeSetEntry(Iterable<Map<String, Object>> data, int column) throws OseeCoreException, IOException {
+   private void writeSetEntry(Iterable<Map<String, Object>> data, int column) throws IOException {
       // multiple values in a single attribute - combine as one string
       // assume Set of Maps - concatenate the data
       StringBuilder combined = new StringBuilder();

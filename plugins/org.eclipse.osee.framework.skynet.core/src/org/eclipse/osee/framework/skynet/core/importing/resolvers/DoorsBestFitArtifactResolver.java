@@ -35,7 +35,7 @@ public class DoorsBestFitArtifactResolver extends NewArtifactImportResolver {
    }
 
    @Override
-   public Artifact resolve(RoughArtifact roughArtifact, BranchId branch, Artifact realParent, Artifact root) throws OseeCoreException {
+   public Artifact resolve(RoughArtifact roughArtifact, BranchId branch, Artifact realParent, Artifact root)  {
       Artifact realArtifact = null;
 
       if (roughArtifact.getGuid() != null) {

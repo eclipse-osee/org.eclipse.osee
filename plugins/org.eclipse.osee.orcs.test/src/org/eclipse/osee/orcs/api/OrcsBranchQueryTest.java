@@ -79,7 +79,7 @@ public class OrcsBranchQueryTest {
    }
 
    @Test
-   public void testGetAll() throws OseeCoreException {
+   public void testGetAll()  {
       BranchQuery query = factory.branchQuery();
 
       ResultSet<BranchReadable> results = query.getResults();
@@ -97,7 +97,7 @@ public class OrcsBranchQueryTest {
    }
 
    @Test
-   public void testGetByType() throws OseeCoreException {
+   public void testGetByType()  {
       BranchQuery query = factory.branchQuery();
       query.andIsOfType(BranchType.SYSTEM_ROOT);
 
@@ -124,7 +124,7 @@ public class OrcsBranchQueryTest {
    }
 
    @Test
-   public void testGetById() throws OseeCoreException {
+   public void testGetById()  {
       BranchQuery query = factory.branchQuery();
       query.andIds(Arrays.asList(SAW_Bld_2, SAW_Bld_1));
 
@@ -141,7 +141,7 @@ public class OrcsBranchQueryTest {
    }
 
    @Test
-   public void testGetByNameEquals() throws OseeCoreException {
+   public void testGetByNameEquals()  {
       BranchQuery query = factory.branchQuery();
       query.andNameEquals("CIS_Bld_1");
 
@@ -150,7 +150,7 @@ public class OrcsBranchQueryTest {
    }
 
    @Test
-   public void testGetByNamePatternEquals() throws OseeCoreException {
+   public void testGetByNamePatternEquals()  {
       BranchQuery query = factory.branchQuery();
       query.andNamePattern("SAW.*?_Bld.*");
 
@@ -167,7 +167,7 @@ public class OrcsBranchQueryTest {
    }
 
    @Test
-   public void testGetByState() throws OseeCoreException {
+   public void testGetByState()  {
       BranchQuery query = factory.branchQuery();
       query.andStateIs(MODIFIED);
 
@@ -175,7 +175,7 @@ public class OrcsBranchQueryTest {
    }
 
    @Test
-   public void testGetByChildOf() throws OseeCoreException {
+   public void testGetByChildOf()  {
       BranchQuery query = factory.branchQuery();
       query.andIsChildOf(SAW_Bld_1);
 
@@ -198,7 +198,7 @@ public class OrcsBranchQueryTest {
    }
 
    @Test
-   public void testGetByAncestorOf() throws OseeCoreException {
+   public void testGetByAncestorOf()  {
       BranchQuery query = factory.branchQuery();
       query.andIsAncestorOf(SAW_Bld_2);
 

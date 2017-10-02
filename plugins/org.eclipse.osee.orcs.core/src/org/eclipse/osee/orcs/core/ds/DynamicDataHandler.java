@@ -18,6 +18,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface DynamicDataHandler {
 
-   void onDynamicData(Map<String, Object> data) throws OseeCoreException;
+   void onDynamicData(Map<String, Object> data) ;
 
 }

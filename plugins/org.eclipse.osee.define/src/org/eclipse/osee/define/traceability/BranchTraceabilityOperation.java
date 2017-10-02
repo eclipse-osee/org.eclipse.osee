@@ -136,7 +136,7 @@ public class BranchTraceabilityOperation extends TraceabilityProviderOperation {
    }
 
    @Override
-   public Collection<Artifact> getTestUnitArtifacts(Artifact requirement) throws OseeCoreException {
+   public Collection<Artifact> getTestUnitArtifacts(Artifact requirement)  {
       Collection<Artifact> toReturn = Collections.emptyList();
       if (!requirement.isHistorical()) {
          toReturn = requirement.getRelatedArtifacts(CoreRelationTypes.Verification__Verifier);

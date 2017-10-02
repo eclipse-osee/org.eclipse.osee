@@ -28,7 +28,7 @@ public class RemoteServiceEventHandler implements EventHandlerLocal<IRemoteEvent
    }
 
    @Override
-   public void send(Transport transport, Sender sender, RemoteEventServiceEventType event) throws OseeCoreException {
+   public void send(Transport transport, Sender sender, RemoteEventServiceEventType event)  {
       if (sender.isLocal() && event.isLocalEventType()) {
          transport.sendLocal(sender, event);
       }

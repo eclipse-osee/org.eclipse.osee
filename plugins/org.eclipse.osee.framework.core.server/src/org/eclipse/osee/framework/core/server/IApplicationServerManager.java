@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IApplicationServerManager {
 
-   void shutdown() throws OseeCoreException;
+   void shutdown() ;
 
    ThreadFactory createNewThreadFactory(String name, int priority);
 
@@ -42,7 +42,7 @@ public interface IApplicationServerManager {
 
    String[] getVersions();
 
-   void register(String context, OseeHttpServlet servlets) throws OseeCoreException;
+   void register(String context, OseeHttpServlet servlets) ;
 
    void unregister(String key);
 

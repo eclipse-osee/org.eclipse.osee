@@ -36,7 +36,7 @@ public class CompressWordAttributesHandler extends CommandHandler {
    private List<Artifact> artifacts;
 
    @Override
-   public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
+   public boolean isEnabledWithException(IStructuredSelection structuredSelection)  {
       boolean enabled = false;
       artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
 

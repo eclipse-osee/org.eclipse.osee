@@ -27,7 +27,7 @@ public final class ConflictUtil {
       // Utility Class
    }
 
-   public static Conflict createConflict(MergeBranch mergeBranch, ChangeItem changeItem, ConflictStatus conflictStatus) throws OseeCoreException {
+   public static Conflict createConflict(MergeBranch mergeBranch, ChangeItem changeItem, ConflictStatus conflictStatus)  {
       ConflictType conflictType = ConflictUtil.toConflictType(changeItem);
       return new Conflict(StorageState.CREATED, changeItem.getItemId(), conflictType, mergeBranch, conflictStatus,
          changeItem.getCurrentVersion().getGammaId(), changeItem.getDestinationVersion().getGammaId());
@@ -67,7 +67,7 @@ public final class ConflictUtil {
       return netStatus;
    }
 
-   public static ConflictType toConflictType(ChangeItem item) throws OseeCoreException {
+   public static ConflictType toConflictType(ChangeItem item)  {
       ConflictType type = null;
       switch (item.getChangeType()) {
          case ARTIFACT_CHANGE:

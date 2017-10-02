@@ -22,9 +22,9 @@ public interface IWorldEditor {
 
    public void setTableTitle(final String title, final boolean warning);
 
-   public void reSearch() throws OseeCoreException;
+   public void reSearch() ;
 
-   public IWorldEditorProvider getWorldEditorProvider() throws OseeCoreException;
+   public IWorldEditorProvider getWorldEditorProvider() ;
 
    public void createToolBarPulldown(Menu menu);
 

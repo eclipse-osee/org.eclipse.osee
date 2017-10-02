@@ -42,19 +42,19 @@ import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
  */
 public class AttributeTypeManager {
 
-   private static IOseeCachingService getCacheService() throws OseeCoreException {
+   private static IOseeCachingService getCacheService()  {
       return ServiceUtil.getOseeCacheService();
    }
 
-   public static AbstractOseeCache<AttributeType> getCache() throws OseeCoreException {
+   public static AbstractOseeCache<AttributeType> getCache()  {
       return getCacheService().getAttributeTypeCache();
    }
 
-   public static BranchCache getBranchCache() throws OseeCoreException {
+   public static BranchCache getBranchCache()  {
       return getCacheService().getBranchCache();
    }
 
-   public static Collection<AttributeTypeToken> getValidAttributeTypes(BranchId branch) throws OseeCoreException {
+   public static Collection<AttributeTypeToken> getValidAttributeTypes(BranchId branch)  {
       Set<AttributeTypeToken> attributeTypes = new HashSet<>(100);
       for (ArtifactType artifactType : ArtifactTypeManager.getAllTypes()) {
          attributeTypes.addAll(artifactType.getAttributeTypes(BranchManager.getBranch(branch)));
@@ -62,11 +62,11 @@ public class AttributeTypeManager {
       return attributeTypes;
    }
 
-   public static Collection<AttributeType> getAllTypes() throws OseeCoreException {
+   public static Collection<AttributeType> getAllTypes()  {
       return getCache().getAll();
    }
 
-   public static Collection<AttributeTypeId> getTaggableTypes() throws OseeCoreException {
+   public static Collection<AttributeTypeId> getTaggableTypes()  {
       Collection<AttributeTypeId> taggableTypes = new ArrayList<>();
       for (AttributeType type : getAllTypes()) {
          if (type.isTaggable()) {
@@ -76,7 +76,7 @@ public class AttributeTypeManager {
       return taggableTypes;
    }
 
-   public static Collection<AttributeTypeId> getSingleMultiplicityTypes() throws OseeCoreException {
+   public static Collection<AttributeTypeId> getSingleMultiplicityTypes()  {
       Collection<AttributeTypeId> types = new ArrayList<>();
       for (AttributeType type : getAllTypes()) {
          if (type.getMaxOccurrences() == 1) {
@@ -86,7 +86,7 @@ public class AttributeTypeManager {
       return types;
    }
 
-   public static boolean typeExists(String name) throws OseeCoreException {
+   public static boolean typeExists(String name)  {
       return !getCache().getByName(name).isEmpty();
    }
 
@@ -94,7 +94,7 @@ public class AttributeTypeManager {
     * @return Returns the attribute type matching the guid
     * @param guid attribute type guid to match
     */
-   public static AttributeType getTypeByGuid(Long guid) throws OseeCoreException {
+   public static AttributeType getTypeByGuid(Long guid)  {
       if (guid == null) {
          throw new OseeArgumentException("[%s] is not a valid guid", guid);
       }
@@ -109,14 +109,14 @@ public class AttributeTypeManager {
       return attributeType;
    }
 
-   public static AttributeType getType(AttributeTypeId type) throws OseeCoreException {
+   public static AttributeType getType(AttributeTypeId type)  {
       return getTypeByGuid(type.getId());
    }
 
    /**
     * @return the attribute type with the given name or throws an OseeTypeDoesNotExist if it does not exist.
     */
-   public static AttributeType getType(String name) throws OseeCoreException {
+   public static AttributeType getType(String name)  {
       AttributeType attributeType = getCache().getUniqueByName(name);
       if (attributeType == null) {
          throw new OseeTypeDoesNotExist("Attribute Type with name [%s] does not exist.", name);
@@ -124,18 +124,18 @@ public class AttributeTypeManager {
       return attributeType;
    }
 
-   private static Set<String> getEnumerationValues(AttributeType attributeType) throws OseeCoreException {
+   private static Set<String> getEnumerationValues(AttributeType attributeType)  {
       if (attributeType.getOseeEnumType() != null) {
          return attributeType.getOseeEnumType().valuesAsOrderedStringSet();
       }
       return Collections.emptySet();
    }
 
-   public static Set<String> getEnumerationValues(AttributeTypeId attributeType) throws OseeCoreException {
+   public static Set<String> getEnumerationValues(AttributeTypeId attributeType)  {
       return getEnumerationValues(getType(attributeType));
    }
 
-   public static Map<String, String> getEnumerationValueDescriptions(AttributeTypeId attributeType) throws OseeCoreException {
+   public static Map<String, String> getEnumerationValueDescriptions(AttributeTypeId attributeType)  {
       Map<String, String> values = new HashMap<>();
       for (OseeEnumEntry entry : AttributeTypeManager.getType(attributeType).getOseeEnumType().values()) {
          values.put(entry.getName(), entry.getDescription());
@@ -143,30 +143,30 @@ public class AttributeTypeManager {
       return values;
    }
 
-   public static int getMinOccurrences(AttributeTypeId attributeType) throws OseeCoreException {
+   public static int getMinOccurrences(AttributeTypeId attributeType)  {
       return getType(attributeType).getMinOccurrences();
    }
 
-   public static int getMaxOccurrences(AttributeTypeId attributeType) throws OseeCoreException {
+   public static int getMaxOccurrences(AttributeTypeId attributeType)  {
       return getType(attributeType).getMaxOccurrences();
    }
 
-   public static Set<String> getEnumerationValues(String attributeName) throws OseeCoreException {
+   public static Set<String> getEnumerationValues(String attributeName)  {
       AttributeType type = getType(attributeName);
       Conditions.checkNotNull(type, "Attribute Type");
       return getEnumerationValues(type);
    }
 
    @SuppressWarnings("rawtypes")
-   public static boolean isBaseTypeCompatible(Class<? extends Attribute> baseType, AttributeTypeId attributeType) throws OseeCoreException {
+   public static boolean isBaseTypeCompatible(Class<? extends Attribute> baseType, AttributeTypeId attributeType)  {
       return baseType.isAssignableFrom(getAttributeBaseClass(attributeType));
    }
 
-   public static Class<? extends Attribute<?>> getAttributeBaseClass(AttributeTypeId attributeType) throws OseeCoreException {
+   public static Class<? extends Attribute<?>> getAttributeBaseClass(AttributeTypeId attributeType)  {
       return AttributeExtensionManager.getAttributeClassFor(getType(attributeType).getBaseAttributeTypeId());
    }
 
-   public static Class<? extends IAttributeDataProvider> getAttributeProviderClass(AttributeType attributeType) throws OseeCoreException {
+   public static Class<? extends IAttributeDataProvider> getAttributeProviderClass(AttributeType attributeType)  {
       return AttributeExtensionManager.getAttributeProviderClassFor(attributeType.getAttributeProviderId());
    }
 

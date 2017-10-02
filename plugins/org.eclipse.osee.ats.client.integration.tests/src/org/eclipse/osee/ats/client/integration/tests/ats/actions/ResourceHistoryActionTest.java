@@ -37,7 +37,7 @@ public class ResourceHistoryActionTest extends AbstractAtsActionTest {
    }
 
    @Override
-   public ResourceHistoryAction createAction() throws OseeCoreException {
+   public ResourceHistoryAction createAction()  {
       return new ResourceHistoryAction(AtsTestUtil.getTeamWf());
    }
 

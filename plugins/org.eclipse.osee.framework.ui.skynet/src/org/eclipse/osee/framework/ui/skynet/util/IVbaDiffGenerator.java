@@ -19,5 +19,5 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IVbaDiffGenerator {
 
-   public void generate(IProgressMonitor monitor, CompareData compareData) throws OseeCoreException;
+   public void generate(IProgressMonitor monitor, CompareData compareData) ;
 }

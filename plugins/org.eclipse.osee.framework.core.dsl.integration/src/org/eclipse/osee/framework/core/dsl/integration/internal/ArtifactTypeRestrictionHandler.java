@@ -38,7 +38,7 @@ public class ArtifactTypeRestrictionHandler implements RestrictionHandler<Artifa
    }
 
    @Override
-   public void process(ObjectRestriction objectRestriction, ArtifactProxy artifactProxy, AccessDetailCollector collector, Scope scope) throws OseeCoreException {
+   public void process(ObjectRestriction objectRestriction, ArtifactProxy artifactProxy, AccessDetailCollector collector, Scope scope)  {
       ArtifactTypeRestriction restriction = asCastedObject(objectRestriction);
       if (restriction != null) {
          XArtifactType artifactTypeRef = restriction.getArtifactTypeRef();

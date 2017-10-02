@@ -63,7 +63,7 @@ public final class EnumTypeImpl extends NamedIdBase implements EnumType {
    }
 
    @Override
-   public EnumEntry valueOf(int ordinal) throws OseeCoreException {
+   public EnumEntry valueOf(int ordinal)  {
       EnumEntry toReturn = null;
       for (EnumEntry entry : values()) {
          if (entry.ordinal() == ordinal) {
@@ -75,7 +75,7 @@ public final class EnumTypeImpl extends NamedIdBase implements EnumType {
    }
 
    @Override
-   public EnumEntry valueOf(String entryName) throws OseeCoreException {
+   public EnumEntry valueOf(String entryName)  {
       EnumEntry toReturn = null;
       for (EnumEntry entry : values()) {
          if (entry.getName().equals(entryName)) {

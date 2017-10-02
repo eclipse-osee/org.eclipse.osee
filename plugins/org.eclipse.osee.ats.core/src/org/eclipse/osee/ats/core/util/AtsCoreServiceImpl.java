@@ -168,7 +168,7 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
       this.workDefinitionDslService = workDefinitionDslService;
    }
 
-   public void start() throws OseeCoreException {
+   public void start()  {
       Conditions.checkNotNull(workDefinitionDslService, "IAtsWorkDefinitionService");
 
       atsCache = new AtsCache(this);
@@ -359,7 +359,7 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
    }
 
    @Override
-   public IAtsUserService getUserService() throws OseeStateException {
+   public IAtsUserService getUserService()  {
       return userService;
    }
 
@@ -426,7 +426,7 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
    }
 
    @Override
-   public IAtsReviewService getReviewService() throws OseeCoreException {
+   public IAtsReviewService getReviewService()  {
       return reviewService;
    }
 
@@ -475,7 +475,7 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
    }
 
    @Override
-   public IAtsBranchService getBranchService() throws OseeCoreException {
+   public IAtsBranchService getBranchService()  {
       return branchService;
    }
 

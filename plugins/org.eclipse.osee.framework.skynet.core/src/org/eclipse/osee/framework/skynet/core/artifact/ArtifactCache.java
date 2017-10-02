@@ -119,22 +119,22 @@ public final class ArtifactCache {
       return artifacts;
    }
 
-   public static Artifact getActive(DefaultBasicGuidArtifact guidArt) throws OseeCoreException {
+   public static Artifact getActive(DefaultBasicGuidArtifact guidArt)  {
       return getActive(guidArt.getGuid(), guidArt.getBranch());
    }
 
-   private static Artifact getActiveA(IBasicGuidRelation guidRel) throws OseeCoreException {
+   private static Artifact getActiveA(IBasicGuidRelation guidRel)  {
       return getActive(guidRel.getArtA().getGuid(), guidRel.getArtA().getBranch());
    }
 
-   private static Artifact getActiveB(IBasicGuidRelation guidRel) throws OseeCoreException {
+   private static Artifact getActiveB(IBasicGuidRelation guidRel)  {
       return getActive(guidRel.getArtB().getGuid(), guidRel.getArtB().getBranch());
    }
 
    /**
     * Returns loaded artifacts from either side of the relation
     */
-   public static Collection<Artifact> getActive(IBasicGuidRelation guidRel) throws OseeCoreException {
+   public static Collection<Artifact> getActive(IBasicGuidRelation guidRel)  {
       return getActive(guidRel, null);
    }
 
@@ -142,7 +142,7 @@ public final class ArtifactCache {
     * Returns loaded artifacts from either side of the relation of type clazz
     */
    @SuppressWarnings("unchecked")
-   public static <A extends Artifact> Collection<A> getActive(IBasicGuidRelation guidRel, Class<A> clazz) throws OseeCoreException {
+   public static <A extends Artifact> Collection<A> getActive(IBasicGuidRelation guidRel, Class<A> clazz)  {
       List<A> arts = new ArrayList<>();
       Artifact artA = getActiveA(guidRel);
       if (artA != null) {
@@ -167,7 +167,7 @@ public final class ArtifactCache {
       return ID_CACHE.getById(artifact);
    }
 
-   public static Artifact getActive(String artGuid, BranchId branch) throws OseeCoreException {
+   public static Artifact getActive(String artGuid, BranchId branch)  {
       return ID_CACHE.getByGuid(artGuid, branch);
    }
 

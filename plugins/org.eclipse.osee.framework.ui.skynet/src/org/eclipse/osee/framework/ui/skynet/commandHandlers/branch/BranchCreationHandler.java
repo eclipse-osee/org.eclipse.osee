@@ -43,7 +43,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 public class BranchCreationHandler extends CommandHandler {
 
    @Override
-   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
+   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection)  {
       Object backingData = selection.getFirstElement();
 
       final TransactionToken parentTransactionId;
@@ -89,7 +89,7 @@ public class BranchCreationHandler extends CommandHandler {
    }
 
    @Override
-   public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
+   public boolean isEnabledWithException(IStructuredSelection structuredSelection)  {
       boolean enabled;
       if (structuredSelection.size() != 1) {
          return false;

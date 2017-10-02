@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class RelationOrderFactory {
 
-   public RelationOrderData createRelationOrderData(Artifact artifact) throws OseeCoreException {
+   public RelationOrderData createRelationOrderData(Artifact artifact)  {
       ArtifactRelationOrderAccessor accessor = new ArtifactRelationOrderAccessor(new RelationOrderParser());
       RelationOrderData data = new RelationOrderData(accessor, artifact);
       data.load();

@@ -33,7 +33,7 @@ public class FloatingPointAttribute extends CharacterBackedAttribute<Double> {
       return toReturn;
    }
 
-   public Double getDefaultValue() throws OseeCoreException {
+   public Double getDefaultValue()  {
       Double toReturn = DEFAULT_DOUBLE;
       String defaultValue = getDefaultValueFromMetaData();
       if (isValidDouble(defaultValue)) {

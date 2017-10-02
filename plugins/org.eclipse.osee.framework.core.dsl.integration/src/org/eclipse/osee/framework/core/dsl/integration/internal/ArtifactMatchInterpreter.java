@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class ArtifactMatchInterpreter {
 
-   public boolean matches(XArtifactMatcher matcher, Collection<ArtifactProxy> proxies) throws OseeCoreException {
+   public boolean matches(XArtifactMatcher matcher, Collection<ArtifactProxy> proxies)  {
       boolean matched = false;
       Iterator<ArtifactProxy> iterator = proxies.iterator();
       while (iterator.hasNext() && !matched) {
@@ -49,13 +49,13 @@ public class ArtifactMatchInterpreter {
       return matched;
    }
 
-   public boolean matches(XArtifactMatcher matcher, ArtifactProxy proxy) throws OseeCoreException {
+   public boolean matches(XArtifactMatcher matcher, ArtifactProxy proxy)  {
       List<Condition> conditions = matcher.getConditions();
       List<XLogicOperator> operators = matcher.getOperators();
       return evaluate(conditions, operators, proxy);
    }
 
-   boolean evaluate(List<? extends Condition> conditions, List<? extends XLogicOperator> operators, ArtifactProxy proxy) throws OseeCoreException {
+   boolean evaluate(List<? extends Condition> conditions, List<? extends XLogicOperator> operators, ArtifactProxy proxy)  {
       boolean result = false;
       Iterator<? extends Condition> iteratorConds = conditions.iterator();
       Iterator<? extends XLogicOperator> iteratorOps = operators.iterator();
@@ -74,7 +74,7 @@ public class ArtifactMatchInterpreter {
       return result;
    }
 
-   boolean evaluate(XLogicOperator op, Condition conditionA, Condition conditionB, ArtifactProxy proxy) throws OseeCoreException {
+   boolean evaluate(XLogicOperator op, Condition conditionA, Condition conditionB, ArtifactProxy proxy)  {
       boolean result = evaluate(conditionA, proxy);
       if (op == XLogicOperator.AND) {
          return result && evaluate(conditionB, proxy);
@@ -84,7 +84,7 @@ public class ArtifactMatchInterpreter {
       throw new OseeArgumentException("Invalid op defined: %s", op);
    }
 
-   boolean evaluate(Condition condition, ArtifactProxy proxy) throws OseeCoreException {
+   boolean evaluate(Condition condition, ArtifactProxy proxy)  {
       if (condition instanceof SimpleCondition) {
          return evaluate((SimpleCondition) condition, proxy);
       } else if (condition instanceof CompoundCondition) {
@@ -94,7 +94,7 @@ public class ArtifactMatchInterpreter {
       throw new OseeArgumentException("Invalid Condition defined: %s", condition);
    }
 
-   boolean evaluate(SimpleCondition condition, ArtifactProxy proxy) throws OseeCoreException {
+   boolean evaluate(SimpleCondition condition, ArtifactProxy proxy)  {
       String expression = Strings.unquote(condition.getExpression());
       Conditions.checkNotNullOrEmpty(expression, "expression");
 

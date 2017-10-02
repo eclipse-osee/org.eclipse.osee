@@ -92,7 +92,7 @@ public final class ArtifactGuis {
       return wasModified;
    }
 
-   public static boolean checkOtherEdit(Collection<Artifact> artifacts) throws OseeCoreException {
+   public static boolean checkOtherEdit(Collection<Artifact> artifacts)  {
       Conditions.checkNotNull(artifacts, "artifacts to check");
       Conditions.checkExpressionFailOnTrue(artifacts.isEmpty(), "Must have at least one artifact for checking");
 
@@ -131,7 +131,7 @@ public final class ArtifactGuis {
    /**
     * Returns non-archived sibling branches that this artifact's attributes have been edited on
     */
-   private static boolean addBranchesWhereArtifactHasBeenModified(Artifact artifact, Set<String> otherBranches) throws OseeCoreException {
+   private static boolean addBranchesWhereArtifactHasBeenModified(Artifact artifact, Set<String> otherBranches)  {
       boolean wasModified = false;
       // Can only be on other branches if it has already been saved
       if (artifact.isInDb()) {

@@ -242,7 +242,7 @@ public class ClientEndpointImpl implements ClientEndpoint {
          "select * from osee_session where session_id = ?", sessionId);
    }
 
-   private boolean alive(IdeClientSession session) throws OseeCoreException {
+   private boolean alive(IdeClientSession session)  {
       boolean alive = isHostAlive(session);
       if (!alive) {
          return false;
@@ -278,7 +278,7 @@ public class ClientEndpointImpl implements ClientEndpoint {
       return reachable;
    }
 
-   private String getInfoStr(IdeClientSession session, boolean withLog) throws OseeCoreException {
+   private String getInfoStr(IdeClientSession session, boolean withLog)  {
       try {
          boolean alive = isHostAlive(session);
          if (!alive) {

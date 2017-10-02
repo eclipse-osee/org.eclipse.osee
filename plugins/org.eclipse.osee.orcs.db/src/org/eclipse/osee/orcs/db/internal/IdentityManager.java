@@ -30,6 +30,6 @@ public interface IdentityManager extends IdentityLocator {
 
    void invalidateIds();
 
-   String getUniqueGuid(String guid) throws OseeCoreException;
+   String getUniqueGuid(String guid) ;
 
 }

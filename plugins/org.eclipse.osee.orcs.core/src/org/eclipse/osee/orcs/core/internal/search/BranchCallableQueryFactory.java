@@ -109,20 +109,20 @@ public class BranchCallableQueryFactory {
       private List<T> results;
 
       @Override
-      public void onLoadStart() throws OseeCoreException {
+      public void onLoadStart()  {
          super.onLoadStart();
          branchMap = new LinkedHashMap<>();
       }
 
       @Override
-      public void onLoadEnd() throws OseeCoreException {
+      public void onLoadEnd()  {
          super.onLoadEnd();
          results = new LinkedList<>(branchMap.values());
          branchMap.clear();
       }
 
       @Override
-      public void onData(BranchData data) throws OseeCoreException {
+      public void onData(BranchData data)  {
          Long key = data.getId();
          T branch = branchMap.get(key);
          if (branch == null) {
@@ -135,7 +135,7 @@ public class BranchCallableQueryFactory {
          return results;
       }
 
-      public abstract T createBranch(BranchData data) throws OseeCoreException;
+      public abstract T createBranch(BranchData data) ;
 
    }
 

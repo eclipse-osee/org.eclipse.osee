@@ -30,7 +30,7 @@ public class CriteriaDateRange extends Criteria implements TxCriteria {
    }
 
    @Override
-   public void checkValid(Options options) throws OseeCoreException {
+   public void checkValid(Options options)  {
       if (from.after(to)) {
          throw new OseeArgumentException("from date must be less than to date");
       }

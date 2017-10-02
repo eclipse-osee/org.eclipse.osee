@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
@@ -76,7 +75,7 @@ public class RelationOrderRepairBlam extends AbstractBlam {
       transaction.execute();
    }
 
-   private BranchId getBranch(List<Artifact> arts) throws OseeArgumentException {
+   private BranchId getBranch(List<Artifact> arts) {
       Artifact firstArt = arts.get(0);
       for (Artifact art : arts) {
          if (!firstArt.isOnSameBranch(art)) {
@@ -87,7 +86,7 @@ public class RelationOrderRepairBlam extends AbstractBlam {
       return firstArt.getBranch();
    }
 
-   private void resetRelationOrder(Artifact art) throws OseeCoreException, IOException {
+   private void resetRelationOrder(Artifact art) throws IOException {
       RelationOrderData currentData = new RelationOrderFactory().createRelationOrderData(art);
       for (Pair<RelationTypeToken, RelationSide> typeSide : currentData.getAvailableTypeSides()) {
          RelationType type;

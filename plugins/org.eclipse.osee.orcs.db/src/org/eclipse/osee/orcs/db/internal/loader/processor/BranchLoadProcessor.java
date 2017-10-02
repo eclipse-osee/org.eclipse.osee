@@ -33,7 +33,7 @@ public class BranchLoadProcessor extends LoadProcessor<BranchData, BranchObjectF
    }
 
    @Override
-   protected BranchData createData(Object conditions, BranchObjectFactory factory, JdbcStatement chStmt, Options options) throws OseeCoreException {
+   protected BranchData createData(Object conditions, BranchObjectFactory factory, JdbcStatement chStmt, Options options)  {
       BranchId branch = BranchId.create(chStmt.getLong("branch_id"), OptionsUtil.getFromBranchView(options));
 
       String branchName = chStmt.getString("branch_name");

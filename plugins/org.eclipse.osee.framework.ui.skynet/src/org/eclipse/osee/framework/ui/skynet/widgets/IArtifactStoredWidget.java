@@ -24,21 +24,21 @@ public interface IArtifactStoredWidget {
    /**
     * @return the artifact
     */
-   Artifact getArtifact() throws OseeCoreException;
+   Artifact getArtifact() ;
 
    /**
     * Save data changes to artifact
     */
-   public void saveToArtifact() throws OseeCoreException;
+   public void saveToArtifact() ;
 
    /**
     * Revert changes to widget data back to what was in artifact
     */
-   public void revert() throws OseeCoreException;
+   public void revert() ;
 
    /**
     * Return true if storage data different than widget data
     */
-   public Result isDirty() throws OseeCoreException;
+   public Result isDirty() ;
 
 }

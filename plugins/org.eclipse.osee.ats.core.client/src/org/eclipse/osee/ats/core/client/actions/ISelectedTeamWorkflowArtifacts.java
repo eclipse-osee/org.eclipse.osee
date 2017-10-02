@@ -19,6 +19,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface ISelectedTeamWorkflowArtifacts {
 
-   Set<? extends TeamWorkFlowArtifact> getSelectedTeamWorkflowArtifacts() throws OseeCoreException;
+   Set<? extends TeamWorkFlowArtifact> getSelectedTeamWorkflowArtifacts() ;
 
 }

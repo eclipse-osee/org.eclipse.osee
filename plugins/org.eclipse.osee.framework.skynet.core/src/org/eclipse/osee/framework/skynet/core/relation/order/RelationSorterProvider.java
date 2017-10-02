@@ -46,14 +46,14 @@ public class RelationSorterProvider {
       orderMap.put(order.getSorterId(), order);
    }
 
-   public boolean exists(String orderGuid) throws OseeCoreException {
+   public boolean exists(String orderGuid)  {
       if (!GUID.isValid(orderGuid)) {
          throw new OseeArgumentException("Error invalid guid argument");
       }
       return orderMap.get(orderGuid) != null;
    }
 
-   public IRelationSorter getRelationOrder(RelationSorter sorterId) throws OseeCoreException {
+   public IRelationSorter getRelationOrder(RelationSorter sorterId)  {
       if (sorterId.equals(RelationSorter.PREEXISTING)) {
          throw new OseeArgumentException("No sorted is defined for preexisting (nor should there be).");
       }

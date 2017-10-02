@@ -104,18 +104,18 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
    }
 
    @Override
-   public int getCount(BranchId branch, List<Predicate> predicates, QueryOptions options) throws OseeCoreException {
+   public int getCount(BranchId branch, List<Predicate> predicates, QueryOptions options)  {
       SearchResponse result = performSearch(RequestType.COUNT, branch, predicates, options);
       return result.getTotal();
    }
 
    @Override
-   public SearchResult getResults(RequestType request, BranchId branch, List<Predicate> predicates, QueryOptions options) throws OseeCoreException {
+   public SearchResult getResults(RequestType request, BranchId branch, List<Predicate> predicates, QueryOptions options)  {
       SearchResponse result = performSearch(request, branch, predicates, options);
       return result;
    }
 
-   private SearchResponse performSearch(RequestType requestType, BranchId branch, List<Predicate> predicates, QueryOptions options) throws OseeCoreException {
+   private SearchResponse performSearch(RequestType requestType, BranchId branch, List<Predicate> predicates, QueryOptions options)  {
       Conditions.checkNotNull(requestType, "RequestType");
       int fromTx = 0;
       if (options.isHistorical()) {

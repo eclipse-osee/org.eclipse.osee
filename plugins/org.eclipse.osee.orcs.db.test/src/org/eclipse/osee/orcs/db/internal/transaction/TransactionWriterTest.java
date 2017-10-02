@@ -84,7 +84,7 @@ public class TransactionWriterTest {
    private List<DataProxy<?>> stores;
 
    @Before
-   public void setUp() throws OseeCoreException {
+   public void setUp()  {
       MockitoAnnotations.initMocks(this);
 
       writer = new TransactionWriter(logger, jdbcClient, builder);
@@ -116,7 +116,7 @@ public class TransactionWriterTest {
    }
 
    @Test
-   public void testRollback() throws OseeCoreException {
+   public void testRollback()  {
       TransactionWriter spy = Mockito.spy(writer);
 
       OseeCoreException expected = new OseeCoreException("Testing");
@@ -133,7 +133,7 @@ public class TransactionWriterTest {
    }
 
    @Test
-   public void testWrite() throws OseeCoreException {
+   public void testWrite()  {
       InOrder inOrder = inOrder(builder, tx, join1, join2, proxy1, proxy2, jdbcClient, chStmt);
 
       writer.write(connection, tx, changeSet);

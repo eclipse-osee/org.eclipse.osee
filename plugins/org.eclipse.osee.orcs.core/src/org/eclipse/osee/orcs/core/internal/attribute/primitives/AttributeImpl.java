@@ -39,7 +39,7 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
    private AttributeData attributeData;
 
    @Override
-   public void internalInitialize(AttributeTypes attributeTypeCache, Reference<AttributeContainer> containerReference, AttributeData attributeData, boolean isDirty, boolean setDefaultValue) throws OseeCoreException {
+   public void internalInitialize(AttributeTypes attributeTypeCache, Reference<AttributeContainer> containerReference, AttributeData attributeData, boolean isDirty, boolean setDefaultValue)  {
       this.attributeTypeCache = attributeTypeCache;
       this.containerReference = containerReference;
       this.attributeData = attributeData;
@@ -68,7 +68,7 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
    /**
     * Base implementation does nothing. Subclasses may override to do setup that depends on the attribute state data.
     */
-   protected void uponInitialize() throws OseeCoreException {
+   protected void uponInitialize()  {
       // provided for subclass implementation
    }
 
@@ -81,14 +81,14 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
    }
 
    @Override
-   public void setValue(T value) throws OseeCoreException {
+   public void setValue(T value)  {
       if (subClassSetValue(value)) {
          markAsNewOrChanged();
       }
    }
 
    @Override
-   public boolean setFromString(String value) throws OseeCoreException {
+   public boolean setFromString(String value)  {
       Conditions.checkNotNull(value, "Attribute value", "attribute id [%s]", getId());
       boolean response = subClassSetValue(convertStringToValue(value));
       if (response) {
@@ -98,19 +98,19 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
    }
 
    @Override
-   public final void resetToDefaultValue() throws OseeCoreException {
+   public final void resetToDefaultValue()  {
       getOrcsData().setModType(ModificationType.MODIFIED);
       setToDefaultValue();
    }
 
-   protected void setToDefaultValue() throws OseeCoreException {
+   protected void setToDefaultValue()  {
       if (defaultValue != null) {
          subClassSetValue(convertStringToValue(defaultValue));
       }
    }
 
    @Override
-   public boolean setValueFromInputStream(InputStream value) throws OseeCoreException {
+   public boolean setValueFromInputStream(InputStream value)  {
       boolean success = false;
       try {
          success = setFromString(Lib.inputStreamToString(value));
@@ -127,13 +127,13 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
     * Subclasses must provide an implementation of this method and in general should not override the other set value
     * methods
     */
-   protected abstract boolean subClassSetValue(T value) throws OseeCoreException;
+   protected abstract boolean subClassSetValue(T value) ;
 
    @Override
-   public abstract T getValue() throws OseeCoreException;
+   public abstract T getValue() ;
 
    @Override
-   public String getDisplayableString() throws OseeCoreException {
+   public String getDisplayableString()  {
       return getDataProxy().getDisplayableString();
    }
 
@@ -173,23 +173,23 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
    }
 
    @Override
-   public AttributeContainer getContainer() throws OseeStateException {
+   public AttributeContainer getContainer()  {
       if (containerReference.get() == null) {
          throw new OseeStateException("Attribute parent has been garbage collected");
       }
       return containerReference.get();
    }
 
-   protected String getDefaultValueFromMetaData() throws OseeCoreException {
+   protected String getDefaultValueFromMetaData()  {
       return attributeTypeCache.getDefaultValue(getAttributeType());
    }
 
    /**
     * @return attributeType Attribute Type Information
-    * @throws OseeCoreException
+    * 
     */
    @Override
-   public AttributeTypeToken getAttributeType() throws OseeCoreException {
+   public AttributeTypeToken getAttributeType()  {
       return attributeTypeCache.get(getOrcsData().getTypeUuid());
    }
 
@@ -197,10 +197,10 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
     * Currently this method provides support for quasi attribute type inheritance
     *
     * @return whether this attribute's type or any of its super-types are the specified type
-    * @throws OseeCoreException
+    * 
     */
    @Override
-   public boolean isOfType(AttributeTypeId otherAttributeType) throws OseeCoreException {
+   public boolean isOfType(AttributeTypeId otherAttributeType)  {
       return getAttributeType().equals(otherAttributeType);
    }
 
@@ -220,10 +220,10 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
    /**
     * Deletes the attribute
     *
-    * @throws OseeStateException
+    * 
     */
    @Override
-   public final void delete() throws OseeCoreException {
+   public final void delete()  {
       if (isInDb()) {
          markAsChanged(ModificationType.DELETED);
       } else {
@@ -249,7 +249,7 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
    /**
     * Purges the attribute from the database.
     */
-   public void purge() throws OseeCoreException {
+   public void purge()  {
       getDataProxy().purge();
    }
 
@@ -282,9 +282,9 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
     * artifact.persist(); artifact.reloadAttributesAndRelations(); Will need to be called afterwards to see replaced
     * data in memory
     *
-    * @throws OseeCoreException
+    * 
     */
-   public void replaceWithVersion(int gammaId) throws OseeCoreException {
+   public void replaceWithVersion(int gammaId)  {
       internalSetModificationType(ModificationType.REPLACED_WITH_VERSION);
       getOrcsData().getVersion().setGammaId(gammaId);
       setDirtyFlag(true);
@@ -292,14 +292,14 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
 
    /**
     * @param modificationType the modificationType to set
-    * @throws OseeCoreException
+    * 
     */
-   public void internalSetModificationType(ModificationType modificationType) throws OseeCoreException {
+   public void internalSetModificationType(ModificationType modificationType)  {
       Conditions.checkNotNull(modificationType, "modification type");
       getOrcsData().setModType(modificationType);
    }
 
-   public void internalSetDeletedFromRemoteEvent() throws OseeCoreException {
+   public void internalSetDeletedFromRemoteEvent()  {
       internalSetModificationType(ModificationType.DELETED);
    }
 

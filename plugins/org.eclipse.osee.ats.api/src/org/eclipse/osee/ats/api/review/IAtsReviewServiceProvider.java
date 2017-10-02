@@ -17,5 +17,5 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IAtsReviewServiceProvider {
 
-   public IAtsReviewService getReviewService() throws OseeCoreException;
+   public IAtsReviewService getReviewService() ;
 }

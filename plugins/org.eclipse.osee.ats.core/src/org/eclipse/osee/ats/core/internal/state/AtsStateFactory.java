@@ -56,7 +56,7 @@ public class AtsStateFactory implements IAtsStateFactory {
    }
 
    @Override
-   public void writeToStore(IAtsUser asUser, IAtsWorkItem workItem, IAtsChangeSet changes) throws OseeCoreException {
+   public void writeToStore(IAtsUser asUser, IAtsWorkItem workItem, IAtsChangeSet changes)  {
       StateManagerStore.writeToStore(asUser, workItem, (StateManager) workItem.getStateMgr(),
          services.getAttributeResolver(), changes, workStateFactory);
    }

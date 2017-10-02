@@ -26,7 +26,7 @@ public class RenderingUtilTest {
    private static IOseeBranch branch;
 
    @BeforeClass
-   public static void setUpOnce() throws OseeCoreException {
+   public static void setUpOnce()  {
       branch = IOseeBranch.create("Test 1");
    }
 
@@ -37,7 +37,7 @@ public class RenderingUtilTest {
    }
 
    @Test
-   public void test_branchToFileName_notAllowedCharsInName() throws OseeCoreException {
+   public void test_branchToFileName_notAllowedCharsInName()  {
       String branchShortName = "";
 
       branch = IOseeBranch.create("0123455789012345578901234557890123.5");

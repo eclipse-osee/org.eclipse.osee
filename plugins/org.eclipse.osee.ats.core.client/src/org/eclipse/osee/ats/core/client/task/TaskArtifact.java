@@ -35,12 +35,12 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IAtsTask, 
       super(id, guid, branch, artifactType);
    }
 
-   public boolean isRelatedToParentWorkflowCurrentState() throws OseeCoreException {
+   public boolean isRelatedToParentWorkflowCurrentState()  {
       return getSoleAttributeValueAsString(AtsAttributeTypes.RelatedToState, "").equals(
          getParentAWA().getStateMgr().getCurrentStateName());
    }
 
-   public boolean isRelatedToUsed() throws OseeCoreException {
+   public boolean isRelatedToUsed()  {
       return Strings.isValid(getSoleAttributeValueAsString(AtsAttributeTypes.RelatedToState, ""));
    }
 
@@ -54,12 +54,12 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IAtsTask, 
    }
 
    @Override
-   public double getManHrsPerDayPreference() throws OseeCoreException {
+   public double getManHrsPerDayPreference()  {
       return getParentAWA().getManHrsPerDayPreference();
    }
 
    @Override
-   public AbstractWorkflowArtifact getParentAWA() throws OseeCoreException {
+   public AbstractWorkflowArtifact getParentAWA()  {
       if (parentAwa != null) {
          return parentAwa;
       }
@@ -73,7 +73,7 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IAtsTask, 
    }
 
    @Override
-   public ActionArtifact getParentActionArtifact() throws OseeCoreException {
+   public ActionArtifact getParentActionArtifact()  {
       if (parentAction != null) {
          return parentAction;
       }
@@ -82,7 +82,7 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IAtsTask, 
    }
 
    @Override
-   public TeamWorkFlowArtifact getParentTeamWorkflow() throws OseeCoreException {
+   public TeamWorkFlowArtifact getParentTeamWorkflow()  {
       if (parentTeamArt != null) {
          return parentTeamArt;
       }
@@ -99,7 +99,7 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IAtsTask, 
    }
 
    @Override
-   public String getWorldViewSWEnhancement() throws OseeCoreException {
+   public String getWorldViewSWEnhancement()  {
       AbstractWorkflowArtifact awa = getParentAWA();
       if (awa != null) {
          return awa.getWorldViewSWEnhancement();

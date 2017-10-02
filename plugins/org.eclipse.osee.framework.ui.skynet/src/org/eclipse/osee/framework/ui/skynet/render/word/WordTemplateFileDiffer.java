@@ -51,7 +51,7 @@ public final class WordTemplateFileDiffer {
       this.renderer = renderer;
    }
 
-   public void generateFileDifferences(List<Artifact> endArtifacts, String diffPrefix, String nextParagraphNumber, String outlineType, boolean recurseChildren) throws OseeArgumentException, OseeCoreException {
+   public void generateFileDifferences(List<Artifact> endArtifacts, String diffPrefix, String nextParagraphNumber, String outlineType, boolean recurseChildren)  {
       Map<RendererOption, Object> rendererOptions = renderer.getRendererOptions();
       rendererOptions.put(RendererOption.PARAGRAPH_NUMBER, nextParagraphNumber);
       rendererOptions.put(RendererOption.OUTLINE_TYPE, outlineType);
@@ -113,7 +113,7 @@ public final class WordTemplateFileDiffer {
       }
    }
 
-   private Collection<Artifact> getAllArtifacts(List<Artifact> endArtifacts) throws OseeCoreException {
+   private Collection<Artifact> getAllArtifacts(List<Artifact> endArtifacts)  {
       Set<Artifact> toReturn = new LinkedHashSet<>();
       for (Artifact art : endArtifacts) {
          toReturn.add(art);
@@ -122,7 +122,7 @@ public final class WordTemplateFileDiffer {
       return toReturn;
    }
 
-   private void diff(List<Change> changes, Collection<Artifact> endArtifacts, String diffPrefix, TransactionDelta txDelta) throws OseeCoreException {
+   private void diff(List<Change> changes, Collection<Artifact> endArtifacts, String diffPrefix, TransactionDelta txDelta)  {
 
       Collection<ArtifactDelta> artifactDeltas = new ArrayList<>();
       Set<Integer> addedIds = new HashSet<>();

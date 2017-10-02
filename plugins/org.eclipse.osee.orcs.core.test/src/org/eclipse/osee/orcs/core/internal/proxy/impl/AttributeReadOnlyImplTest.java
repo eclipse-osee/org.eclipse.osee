@@ -56,7 +56,7 @@ public class AttributeReadOnlyImplTest {
    }
 
    @Test
-   public void testGetAttributeType() throws OseeCoreException {
+   public void testGetAttributeType()  {
       AttributeTypeToken expected = Name;
       when(proxiedObject.getAttributeType()).thenReturn(expected);
 
@@ -65,7 +65,7 @@ public class AttributeReadOnlyImplTest {
    }
 
    @Test
-   public void testGetDisplayableString() throws OseeCoreException {
+   public void testGetDisplayableString()  {
       String expected = "Hello";
       when(proxiedObject.getDisplayableString()).thenReturn(expected);
 
@@ -98,7 +98,7 @@ public class AttributeReadOnlyImplTest {
    }
 
    @Test
-   public void testGetValue() throws OseeCoreException {
+   public void testGetValue()  {
       Date expected = new Date();
       when(proxiedObject.getValue()).thenReturn(expected);
 
@@ -120,7 +120,7 @@ public class AttributeReadOnlyImplTest {
    }
 
    @Test
-   public void testIsOfType() throws OseeCoreException {
+   public void testIsOfType()  {
       boolean expected = true;
       when(proxiedObject.isOfType(Name)).thenReturn(expected);
 

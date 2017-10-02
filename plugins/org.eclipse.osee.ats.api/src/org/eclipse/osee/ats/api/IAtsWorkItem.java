@@ -28,15 +28,15 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
 
    String getAtsId();
 
-   IAtsTeamWorkflow getParentTeamWorkflow() throws OseeCoreException;
+   IAtsTeamWorkflow getParentTeamWorkflow() ;
 
    IAtsStateManager getStateMgr();
 
    IAtsLog getLog();
 
-   IAtsWorkDefinition getWorkDefinition() throws OseeCoreException;
+   IAtsWorkDefinition getWorkDefinition() ;
 
-   IAtsStateDefinition getStateDefinition() throws OseeCoreException;
+   IAtsStateDefinition getStateDefinition() ;
 
    boolean isTask();
 

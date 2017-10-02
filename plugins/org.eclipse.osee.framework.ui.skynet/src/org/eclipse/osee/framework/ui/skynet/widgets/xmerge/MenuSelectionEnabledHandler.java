@@ -33,7 +33,7 @@ abstract class MenuSelectionEnabledHandler extends AbstractSelectionEnabledHandl
    }
 
    @Override
-   protected Object executeWithException(ExecutionEvent event, IStructuredSelection structuredSelection) throws OseeCoreException {
+   protected Object executeWithException(ExecutionEvent event, IStructuredSelection structuredSelection)  {
       AttributeConflict attributeConflict = getConflictFromSelection(structuredSelection);
       if (attributeConflict != null) {
          executeWithException(attributeConflict);
@@ -46,9 +46,9 @@ abstract class MenuSelectionEnabledHandler extends AbstractSelectionEnabledHandl
     * 
     * @param conflict
     * @return
-    * @throws OseeCoreException
+    * 
     */
-   abstract void executeWithException(AttributeConflict attributeConflict) throws OseeCoreException;
+   abstract void executeWithException(AttributeConflict attributeConflict) ;
 
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) {

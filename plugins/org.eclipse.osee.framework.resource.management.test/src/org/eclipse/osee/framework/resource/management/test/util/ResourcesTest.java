@@ -29,7 +29,7 @@ import org.junit.Test;
 public class ResourcesTest {
 
    @Test
-   public void testResourceFromBytes() throws OseeCoreException {
+   public void testResourceFromBytes()  {
       checkResourceFromBytes("file://myfile.txt", "myfile.txt", false, new byte[] {0, 1, 2, 3});
       checkResourceFromBytes("http://a/b/c/d/e/file.zip", "file.zip", true, new byte[] {4, 5, 6, 7, 8, 9});
    }
@@ -49,7 +49,7 @@ public class ResourcesTest {
       //      Resources.compressResource(resource)
    }
 
-   private void checkResourceFromBytes(String path, String name, boolean isCompressed, byte[] data) throws OseeCoreException {
+   private void checkResourceFromBytes(String path, String name, boolean isCompressed, byte[] data)  {
       IResource resource = Resources.createResourceFromBytes(data, path, isCompressed);
       Assert.assertEquals(isCompressed, resource.isCompressed());
       Assert.assertEquals(path, resource.getLocation().toASCIIString());

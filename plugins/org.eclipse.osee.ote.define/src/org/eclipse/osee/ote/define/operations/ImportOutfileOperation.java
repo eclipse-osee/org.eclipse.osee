@@ -39,7 +39,7 @@ public class ImportOutfileOperation {
    private final URI[] fileSystemObjects;
    private final BranchId selectedBranch;
 
-   public ImportOutfileOperation(BranchId selectedBranch, URI... fileSystemObjects) throws OseeCoreException {
+   public ImportOutfileOperation(BranchId selectedBranch, URI... fileSystemObjects)  {
       checkForNull(selectedBranch);
       checkForNull(fileSystemObjects);
       checkForEmpty(fileSystemObjects);
@@ -48,19 +48,19 @@ public class ImportOutfileOperation {
       this.selectedBranch = selectedBranch;
    }
 
-   private void checkSuccessful(IStatus status) throws OseeStateException {
+   private void checkSuccessful(IStatus status)  {
       if (status.equals(Status.OK_STATUS) != true && status.equals(IStatus.OK) != true) {
          throw new OseeStateException("Error detected: %s", status.getMessage());
       }
    }
 
-   private void checkForEmpty(Object[] items) throws OseeArgumentException {
+   private void checkForEmpty(Object[] items)  {
       if (items.length <= 0) {
          throw new OseeArgumentException("No items to process. Size was 0.");
       }
    }
 
-   private void checkForNull(Object object) throws OseeArgumentException {
+   private void checkForNull(Object object)  {
       if (object == null) {
          throw new OseeArgumentException("Object cannot be null");
       }
@@ -131,7 +131,7 @@ public class ImportOutfileOperation {
       return branchMap;
    }
 
-   public static void commitTestRunTx(IProgressMonitor monitor, String commitComment, BranchId branch, Artifact... artifacts) throws OseeCoreException {
+   public static void commitTestRunTx(IProgressMonitor monitor, String commitComment, BranchId branch, Artifact... artifacts)  {
       monitor.setTaskName("Persist Test Runs");
       Date uploadDate = new Date();
       for (Artifact artifact : artifacts) {

@@ -52,7 +52,7 @@ public class SavePointManager {
       return jdbcClient;
    }
 
-   public void storeSavePoints(JdbcConnection connection, int importIdIndex) throws OseeCoreException {
+   public void storeSavePoints(JdbcConnection connection, int importIdIndex)  {
       List<Object[]> data = new ArrayList<>();
       for (SavePoint savePoint : savePoints.values()) {
          int status = 1;
@@ -75,7 +75,7 @@ public class SavePointManager {
 
    }
 
-   public void loadSavePoints(String sourceDatabaseId, Date sourceExportDate) throws OseeCoreException {
+   public void loadSavePoints(String sourceDatabaseId, Date sourceExportDate)  {
       setCurrentSetPointId(LOAD_SAVE_POINT_ID);
       getJdbcClient().runQuery(stmt -> {
          String key = stmt.getString("save_point_name");

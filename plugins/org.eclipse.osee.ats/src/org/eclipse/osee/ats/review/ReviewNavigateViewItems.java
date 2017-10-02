@@ -68,7 +68,7 @@ public class ReviewNavigateViewItems implements XNavigateViewItems, IXNavigateCo
       }
    }
 
-   public void addOseePeerSectionChildren(XNavigateItem item) throws OseeCoreException {
+   public void addOseePeerSectionChildren(XNavigateItem item)  {
       items.add(new SearchNavigateItem(item, new MyReviewSearchItem()));
       items.add(new SearchNavigateItem(item, new AtsSearchReviewSearchItem()));
       items.add(new XNavigateItemAction(item, new OpenWorkflowByIdAction("Open Review by ID"), AtsImage.REVIEW));

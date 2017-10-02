@@ -126,7 +126,7 @@ public class FrameworkEventToRemoteEventListenerTest {
       return remoteEvent;
    }
 
-   private static Artifact createArtifact(BranchId branch, String artifactName) throws OseeCoreException {
+   private static Artifact createArtifact(BranchId branch, String artifactName)  {
       Assert.assertNotNull(branch);
       Assert.assertNotNull(artifactName);
       Artifact artifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch, artifactName);

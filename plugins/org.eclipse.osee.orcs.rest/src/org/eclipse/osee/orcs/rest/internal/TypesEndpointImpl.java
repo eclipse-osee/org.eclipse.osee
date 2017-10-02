@@ -136,7 +136,7 @@ public class TypesEndpointImpl implements TypesEndpoint {
       }
 
       @Override
-      public InputStream getContent() throws OseeCoreException {
+      public InputStream getContent()  {
          return new ByteArrayInputStream(bytes);
       }
 

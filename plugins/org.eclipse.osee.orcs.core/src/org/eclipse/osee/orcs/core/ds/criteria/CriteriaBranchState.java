@@ -34,7 +34,7 @@ public class CriteriaBranchState extends Criteria implements BranchCriteria {
    }
 
    @Override
-   public void checkValid(Options options) throws OseeCoreException {
+   public void checkValid(Options options)  {
       Conditions.checkExpressionFailOnTrue(getStates().isEmpty(), "Branch States cannot be empty");
    }
 

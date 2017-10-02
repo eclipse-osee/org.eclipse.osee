@@ -36,14 +36,14 @@ public class AttributeValueQuickSearch {
    /**
     * Will match any quick-search token of given value
     */
-   public Collection<Artifact> performSearch() throws OseeCoreException {
+   public Collection<Artifact> performSearch()  {
       return performSearch(false);
    }
 
    /**
     * Must match full value of given value
     */
-   public Collection<Artifact> performSearch(boolean exactMatch) throws OseeCoreException {
+   public Collection<Artifact> performSearch(boolean exactMatch)  {
       List<Artifact> results = new ArrayList<>();
       if (values != null && values.size() > 0) {
          for (String value : values) {

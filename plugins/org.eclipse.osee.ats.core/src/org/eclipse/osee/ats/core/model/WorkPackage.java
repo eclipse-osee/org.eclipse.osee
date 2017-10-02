@@ -41,12 +41,12 @@ public class WorkPackage extends AtsConfigObject implements IAtsWorkPackage {
    }
 
    @Override
-   public String getActivityId() throws OseeCoreException {
+   public String getActivityId()  {
       return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.ActivityId, "");
    }
 
    @Override
-   public String getActivityName() throws OseeCoreException {
+   public String getActivityName()  {
       return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.ActivityName, "");
    }
 
@@ -61,17 +61,17 @@ public class WorkPackage extends AtsConfigObject implements IAtsWorkPackage {
    }
 
    @Override
-   public String getWorkPackageId() throws OseeCoreException {
+   public String getWorkPackageId()  {
       return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.WorkPackageId, "");
    }
 
    @Override
-   public String getWorkPackageProgram() throws OseeCoreException {
+   public String getWorkPackageProgram()  {
       return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.WorkPackageProgram, "");
    }
 
    @Override
-   public AtsWorkPackageType getWorkPackageType() throws OseeCoreException {
+   public AtsWorkPackageType getWorkPackageType()  {
       String value =
          services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.WorkPackageType, "");
       AtsWorkPackageType type = AtsWorkPackageType.None;
@@ -87,22 +87,22 @@ public class WorkPackage extends AtsConfigObject implements IAtsWorkPackage {
    }
 
    @Override
-   public boolean isActive() throws OseeCoreException {
+   public boolean isActive()  {
       return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.Active, true);
    }
 
    @Override
-   public Date getStartDate() throws OseeCoreException {
+   public Date getStartDate()  {
       return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.StartDate, null);
    }
 
    @Override
-   public Date getEndDate() throws OseeCoreException {
+   public Date getEndDate()  {
       return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.EndDate, null);
    }
 
    @Override
-   public int getWorkPackagePercent() throws OseeCoreException {
+   public int getWorkPackagePercent()  {
       return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.PercentComplete, 0);
    }
 

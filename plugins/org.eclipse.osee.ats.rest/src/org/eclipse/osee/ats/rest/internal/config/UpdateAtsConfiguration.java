@@ -106,7 +106,7 @@ public class UpdateAtsConfiguration {
       return viewsJson;
    }
 
-   private void createUpdateConfigAttributes(ArtifactReadable configArt, ArtifactReadable userArt, XResultData rd) throws OseeCoreException {
+   private void createUpdateConfigAttributes(ArtifactReadable configArt, ArtifactReadable userArt, XResultData rd)  {
       try {
          AtsViews databaseViews = getConfigViews();
          for (String viewsJson : getViewsJsonStrings()) {

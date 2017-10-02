@@ -62,11 +62,11 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
 
    private ArtifactEvent artifactEvent;
 
-   public PurgeArtifacts(Collection<? extends Artifact> artifactsToPurge) throws OseeCoreException {
+   public PurgeArtifacts(Collection<? extends Artifact> artifactsToPurge)  {
       this(artifactsToPurge, false);
    }
 
-   public PurgeArtifacts(Collection<? extends Artifact> artifactsToPurge, boolean recurseChildrenBranches) throws OseeCoreException {
+   public PurgeArtifacts(Collection<? extends Artifact> artifactsToPurge, boolean recurseChildrenBranches)  {
       super(ConnectionHandler.getJdbcClient(), "Purge Artifact", Activator.PLUGIN_ID);
       this.artifactsToPurge = new HashSet<>(artifactsToPurge);
       this.success = false;
@@ -74,7 +74,7 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
    }
 
    @Override
-   protected void doTxWork(IProgressMonitor monitor, JdbcConnection connection) throws OseeCoreException {
+   protected void doTxWork(IProgressMonitor monitor, JdbcConnection connection)  {
       if (artifactsToPurge == null || artifactsToPurge.isEmpty()) {
          return;
       }
@@ -135,14 +135,14 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
    }
 
    @Override
-   protected void handleTxFinally(IProgressMonitor monitor) throws OseeCoreException {
+   protected void handleTxFinally(IProgressMonitor monitor)  {
       if (success) {
          // Kick Local and Remote Events
          OseeEventManager.kickPersistEvent(PurgeArtifacts.class, artifactEvent);
       }
    }
 
-   public void insertSelectItems(Id4JoinQuery txJoin, JdbcConnection connection, String tableName, String artifactJoinSql, int queryId) throws OseeCoreException {
+   public void insertSelectItems(Id4JoinQuery txJoin, JdbcConnection connection, String tableName, String artifactJoinSql, int queryId)  {
       String query = String.format(SELECT_ITEM_GAMMAS, ServiceUtil.useOracleHints() ? " /*+ ordered */ " : "",
          tableName, artifactJoinSql);
       try (JdbcStatement chStmt = getJdbcClient().getStatement(connection)) {

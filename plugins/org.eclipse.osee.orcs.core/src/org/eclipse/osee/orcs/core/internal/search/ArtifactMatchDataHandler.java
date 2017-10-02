@@ -57,14 +57,14 @@ public class ArtifactMatchDataHandler extends LoadDataHandlerDecorator {
    }
 
    @Override
-   public void onLoadStart() throws OseeCoreException {
+   public void onLoadStart()  {
       super.onLoadStart();
       matches = new HashMap<>();
       results = null;
    }
 
    @Override
-   public void onData(AttributeData data, MatchLocation match) throws OseeCoreException {
+   public void onData(AttributeData data, MatchLocation match)  {
       super.onData(data, match);
       Integer artId = data.getArtifactId();
       synchronized (matches) {
@@ -78,12 +78,12 @@ public class ArtifactMatchDataHandler extends LoadDataHandlerDecorator {
    }
 
    @Override
-   public void onLoadEnd() throws OseeCoreException {
+   public void onLoadEnd()  {
       super.onLoadEnd();
       buildResults();
    }
 
-   private void buildResults() throws OseeCoreException {
+   private void buildResults()  {
       Iterable<Artifact> loaded = getHandler().getArtifacts();
 
       for (Artifact item : loaded) {
@@ -142,7 +142,7 @@ public class ArtifactMatchDataHandler extends LoadDataHandlerDecorator {
       }
 
       @Override
-      public Collection<AttributeReadable<?>> getElements() throws OseeCoreException {
+      public Collection<AttributeReadable<?>> getElements()  {
          Collection<AttributeReadable<?>> filtered = Lists.newLinkedList();
          // look at all attributes since search already filters on deletion flag
          for (AttributeReadable<?> attribute : item.getAttributes(DeletionFlag.INCLUDE_DELETED)) {

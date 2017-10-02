@@ -70,7 +70,7 @@ public class ChangeArtifactType {
    private static final IStatus promptStatus = new Status(IStatus.WARNING, Activator.PLUGIN_ID, 257, "", null);
    private final Map<GammaId, ArtifactId> gammaToArtId = new HashMap<>();
 
-   public static void changeArtifactType(Collection<? extends Artifact> inputArtifacts, ArtifactTypeId newArtifactTypeToken, boolean prompt) throws OseeCoreException {
+   public static void changeArtifactType(Collection<? extends Artifact> inputArtifacts, ArtifactTypeId newArtifactTypeToken, boolean prompt)  {
 
       ChangeArtifactType app = new ChangeArtifactType();
       if (inputArtifacts.isEmpty()) {
@@ -98,7 +98,7 @@ public class ChangeArtifactType {
     * memory/database changes in such a manner that they stay in sync therefore, if any part of this blam fails, then
     * the type should not be changed
     */
-   private void internalChangeArtifactType(Collection<? extends Artifact> inputArtifacts, ArtifactType newArtifactType, boolean prompt) throws OseeDataStoreException, OseeCoreException {
+   private void internalChangeArtifactType(Collection<? extends Artifact> inputArtifacts, ArtifactType newArtifactType, boolean prompt) throws OseeDataStoreException {
 
       createAttributeRelationTransactions(inputArtifacts, newArtifactType);
       boolean changeOk = !prompt;
@@ -120,7 +120,7 @@ public class ChangeArtifactType {
       sendLocalAndRemoteEvents(modifiedArtifacts);
    }
 
-   private void sendLocalAndRemoteEvents(Collection<? extends Artifact> artifacts) throws OseeCoreException {
+   private void sendLocalAndRemoteEvents(Collection<? extends Artifact> artifacts)  {
       ArtifactEvent artifactEvent = new ArtifactEvent(artifacts.iterator().next().getBranch());
       for (EventBasicGuidArtifact guidArt : artifactChanges) {
          artifactEvent.addArtifact(guidArt);
@@ -129,7 +129,7 @@ public class ChangeArtifactType {
       OseeEventManager.kickPersistEvent(ChangeArtifactType.class, artifactEvent);
    }
 
-   private void createAttributeRelationTransactions(Collection<? extends Artifact> inputArtifacts, ArtifactType newArtifactType) throws OseeDataStoreException, OseeCoreException {
+   private void createAttributeRelationTransactions(Collection<? extends Artifact> inputArtifacts, ArtifactType newArtifactType) throws OseeDataStoreException {
       IdJoinQuery artifactJoin = populateArtIdsInJoinIdTable(inputArtifacts);
       IdJoinQuery branchJoin = populateBranchIdsJoinIdTable();
       IdJoinQuery gammaJoin = populateGammaIdsJoinIdTable(artifactJoin);
@@ -158,7 +158,7 @@ public class ChangeArtifactType {
       }
    }
 
-   private void addTransaction(Artifact artifact, HashMap<BranchId, SkynetTransaction> txMap) throws OseeCoreException {
+   private void addTransaction(Artifact artifact, HashMap<BranchId, SkynetTransaction> txMap)  {
       BranchId branch = artifact.getBranch();
       SkynetTransaction transaction = txMap.get(branch);
       if (transaction == null) {
@@ -192,7 +192,7 @@ public class ChangeArtifactType {
       message.append("Relation Types:\n" + relationTypes + "\n");
    }
 
-   private void deleteInvalidAttributes(Artifact artifact, ArtifactTypeId artifactType) throws OseeCoreException {
+   private void deleteInvalidAttributes(Artifact artifact, ArtifactTypeId artifactType)  {
 
       for (AttributeTypeId attributeType : artifact.getAttributeTypes()) {
          ArtifactType aType = ArtifactTypeManager.getType(artifactType);
@@ -203,7 +203,7 @@ public class ChangeArtifactType {
       }
    }
 
-   private void deleteInvalidRelations(Artifact artifact, ArtifactTypeId artifactType) throws OseeCoreException {
+   private void deleteInvalidRelations(Artifact artifact, ArtifactTypeId artifactType)  {
 
       for (RelationLink link : artifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
          if (RelationTypeManager.getRelationSideMax(link.getRelationType(), artifactType,
@@ -218,7 +218,7 @@ public class ChangeArtifactType {
     * @return true if the user accepts the deletion of the attributes and relations that are not compatible for the new
     * artifact type else false.
     */
-   private boolean doesUserAcceptArtifactChange(IArtifactType artifactType) throws OseeCoreException {
+   private boolean doesUserAcceptArtifactChange(IArtifactType artifactType)  {
       if (!relationTypes.isEmpty() || !attributeTypes.isEmpty()) {
 
          StringBuilder sb = new StringBuilder(1024);
@@ -238,7 +238,7 @@ public class ChangeArtifactType {
       }
    }
 
-   private void changeArtifactTypeOutsideofHistory(Collection<? extends Artifact> inputArtifacts, ArtifactType newArtifactType) throws OseeCoreException {
+   private void changeArtifactTypeOutsideofHistory(Collection<? extends Artifact> inputArtifacts, ArtifactType newArtifactType)  {
       List<Object[]> insertData = new ArrayList<>();
 
       String UPDATE = "UPDATE osee_artifact SET art_type_id = ? WHERE art_id = ?";
@@ -259,13 +259,13 @@ public class ChangeArtifactType {
       return new Object[] {art_type_id, art_id};
    }
 
-   private IdJoinQuery populateArtIdsInJoinIdTable(Collection<? extends Artifact> inputArtifacts) throws OseeDataStoreException, OseeCoreException {
+   private IdJoinQuery populateArtIdsInJoinIdTable(Collection<? extends Artifact> inputArtifacts) throws OseeDataStoreException {
       IdJoinQuery artifactJoin = JoinUtility.createIdJoinQuery();
       artifactJoin.addAndStore(inputArtifacts);
       return artifactJoin;
    }
 
-   private IdJoinQuery populateBranchIdsJoinIdTable() throws OseeDataStoreException, OseeCoreException {
+   private IdJoinQuery populateBranchIdsJoinIdTable() throws OseeDataStoreException {
       IdJoinQuery branchJoin = JoinUtility.createIdJoinQuery();
       BranchFilter branchFilter = new BranchFilter(BranchArchivedState.UNARCHIVED);
       branchFilter.setNegatedBranchStates(BranchState.PURGED, BranchState.DELETED);
@@ -273,7 +273,7 @@ public class ChangeArtifactType {
       return branchJoin;
    }
 
-   private IdJoinQuery populateGammaIdsJoinIdTable(IdJoinQuery artIds) throws OseeDataStoreException, OseeCoreException {
+   private IdJoinQuery populateGammaIdsJoinIdTable(IdJoinQuery artIds) throws OseeDataStoreException {
       IdJoinQuery gammaJoin = JoinUtility.createIdJoinQuery();
 
       Consumer<JdbcStatement> consumer = stmt -> {

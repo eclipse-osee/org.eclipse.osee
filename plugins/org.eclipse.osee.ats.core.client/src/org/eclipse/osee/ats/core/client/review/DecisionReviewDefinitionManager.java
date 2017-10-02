@@ -41,7 +41,7 @@ public class DecisionReviewDefinitionManager extends TransitionAdapter {
    /**
     * Creates decision review if one of same name doesn't already exist
     */
-   public static DecisionReviewArtifact createNewDecisionReview(IAtsDecisionReviewDefinition revDef, IAtsChangeSet changes, TeamWorkFlowArtifact teamArt, Date createdDate, IAtsUser createdBy) throws OseeCoreException {
+   public static DecisionReviewArtifact createNewDecisionReview(IAtsDecisionReviewDefinition revDef, IAtsChangeSet changes, TeamWorkFlowArtifact teamArt, Date createdDate, IAtsUser createdBy)  {
       if (Artifacts.getNames(ReviewManager.getReviews(teamArt)).contains(revDef.getReviewTitle())) {
          // Already created this review
          return null;
@@ -77,7 +77,7 @@ public class DecisionReviewDefinitionManager extends TransitionAdapter {
    }
 
    @Override
-   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes) throws OseeCoreException {
+   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes)  {
       // Create any decision or peerToPeer reviews for transitionTo and transitionFrom
       if (!(workItem instanceof IAtsTeamWorkflow)) {
          return;

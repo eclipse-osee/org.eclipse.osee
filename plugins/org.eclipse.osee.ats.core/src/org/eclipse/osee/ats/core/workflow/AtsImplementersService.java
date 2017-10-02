@@ -47,13 +47,13 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public class AtsImplementersService implements IAtsImplementerService {
 
    @Override
-   public String getImplementersStr(IAtsObject atsObject) throws OseeCoreException {
+   public String getImplementersStr(IAtsObject atsObject)  {
       List<IAtsUser> implementers = getImplementers(atsObject);
       return implementers.isEmpty() ? "" : AtsObjects.toString("; ", implementers);
    }
 
    @Override
-   public List<IAtsUser> getImplementers(IAtsObject atsObject) throws OseeCoreException {
+   public List<IAtsUser> getImplementers(IAtsObject atsObject)  {
       List<IAtsUser> implementers = new LinkedList<>();
       if (atsObject instanceof IActionGroup) {
          implementers.addAll(getActionGroupImplementers((IActionGroup) atsObject));
@@ -65,7 +65,7 @@ public class AtsImplementersService implements IAtsImplementerService {
       return implementers;
    }
 
-   public List<IAtsUser> getWorkItemImplementers(IAtsWorkItem workItem) throws OseeCoreException {
+   public List<IAtsUser> getWorkItemImplementers(IAtsWorkItem workItem)  {
       List<IAtsUser> implementers = new ArrayList<>();
       if (workItem.isReview()) {
          getImplementers_fromReviews(workItem, implementers);
@@ -75,7 +75,7 @@ public class AtsImplementersService implements IAtsImplementerService {
       return implementers;
    }
 
-   public void getImplementers_fromCompletedCancelledFrom(IAtsWorkItem workItem, List<IAtsUser> implementers) throws OseeCoreException {
+   public void getImplementers_fromCompletedCancelledFrom(IAtsWorkItem workItem, List<IAtsUser> implementers)  {
       String fromStateName = null;
       if (workItem.getStateMgr().getStateType().isCompleted()) {
          fromStateName = workItem.getCompletedFromState();
@@ -91,7 +91,7 @@ public class AtsImplementersService implements IAtsImplementerService {
       }
    }
 
-   public void getImplementers_fromCompletedCancelledBy(IAtsWorkItem workItem, List<IAtsUser> implementers) throws OseeCoreException {
+   public void getImplementers_fromCompletedCancelledBy(IAtsWorkItem workItem, List<IAtsUser> implementers)  {
       if (workItem.getStateMgr().getStateType().isCompletedOrCancelled()) {
          if (workItem.getStateMgr().getStateType().isCompleted()) {
             IAtsUser completedBy = workItem.getCompletedBy();
@@ -113,7 +113,7 @@ public class AtsImplementersService implements IAtsImplementerService {
     * 1. If Peer Review, add review role assignees</br>
     * 2. If Decision Review, add assignees for Decision state
     */
-   public void getImplementers_fromReviews(IAtsWorkItem workItem, List<IAtsUser> implementers) throws OseeCoreException {
+   public void getImplementers_fromReviews(IAtsWorkItem workItem, List<IAtsUser> implementers)  {
       // add review implementers
       if (workItem.isDecisionReview()) {
          implementers.addAll(getImplementersByState(workItem, DecisionReviewState.Decision));
@@ -127,7 +127,7 @@ public class AtsImplementersService implements IAtsImplementerService {
       }
    }
 
-   public List<IAtsUser> getActionGroupImplementers(IActionGroup actionGroup) throws OseeCoreException {
+   public List<IAtsUser> getActionGroupImplementers(IActionGroup actionGroup)  {
       List<IAtsUser> implementers = new LinkedList<>();
       for (IAtsWorkItem action : actionGroup.getActions()) {
          if (action.getStateMgr().getStateType().isCompletedOrCancelled()) {
@@ -141,7 +141,7 @@ public class AtsImplementersService implements IAtsImplementerService {
       return implementers;
    }
 
-   public List<IAtsUser> getImplementersByState(IAtsWorkItem workflow, IStateToken state) throws OseeCoreException {
+   public List<IAtsUser> getImplementersByState(IAtsWorkItem workflow, IStateToken state)  {
       List<IAtsUser> users = new ArrayList<>();
       if (workflow.isCancelled()) {
          users.add(workflow.getCancelledBy());

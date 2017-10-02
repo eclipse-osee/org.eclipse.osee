@@ -55,7 +55,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
    }
 
    @Override
-   public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
+   public void run(TableLoadOption... tableLoadOptions)  {
       IAtsTeamDefinition teamDefHoldingVersions = getReleaseableTeamDefinition();
       if (teamDefHoldingVersions == null) {
          return;
@@ -122,7 +122,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
       }
    }
 
-   public IAtsTeamDefinition getReleaseableTeamDefinition() throws OseeCoreException {
+   public IAtsTeamDefinition getReleaseableTeamDefinition()  {
       if (teamDefHoldingVersions != null) {
          return teamDefHoldingVersions;
       }

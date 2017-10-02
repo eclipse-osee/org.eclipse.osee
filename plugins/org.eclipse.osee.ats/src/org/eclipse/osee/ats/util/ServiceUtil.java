@@ -33,7 +33,7 @@ public class ServiceUtil {
       return (T) getContext().getService(serviceReference);
    }
 
-   public static OseeClient getOseeClient() throws OseeCoreException {
+   public static OseeClient getOseeClient()  {
       return getService(OseeClient.class);
    }
 
