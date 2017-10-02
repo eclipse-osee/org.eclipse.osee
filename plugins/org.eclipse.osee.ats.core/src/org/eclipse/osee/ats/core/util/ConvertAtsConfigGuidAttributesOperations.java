@@ -51,7 +51,7 @@ public class ConvertAtsConfigGuidAttributesOperations {
       }
 
       for (ArtifactId need : neededAiRefIds) {
-         changes.addArtifactReferencedAttribute(art, AtsAttributeTypes.ActionableItemReference, need);
+         changes.addAttribute(art, AtsAttributeTypes.ActionableItemReference, need);
       }
 
       // convert id to guid
@@ -62,17 +62,12 @@ public class ConvertAtsConfigGuidAttributesOperations {
       }
 
       List<String> neededAiGuidIds = new LinkedList<>();
-      Collection<Object> aiArts =
+      Collection<ArtifactId> aiArts =
          services.getAttributeResolver().getAttributeValues(art, AtsAttributeTypes.ActionableItemReference);
-      for (Object obj : aiArts) {
-         IAtsActionableItem ai = null;
-         if (obj instanceof ArtifactId) {
-            ai = services.getConfigItem((ArtifactId) obj);
-         } else {
-            ai = services.getConfigItem(Long.valueOf((String) obj));
-         }
+      for (ArtifactId id : aiArts) {
+         IAtsActionableItem ai = services.getConfigItem(id);
          if (ai == null) {
-            services.getLogger().error("AI not found for id " + obj + " for art " + art.toStringWithId());
+            services.getLogger().error("AI not found for id " + id + " for art " + art.toStringWithId());
          } else if (!currentAiGuidIds.contains(ai.getStoreObject().getGuid())) {
             neededAiGuidIds.add(ai.getStoreObject().getGuid());
          }
@@ -85,26 +80,23 @@ public class ConvertAtsConfigGuidAttributesOperations {
 
    public static void convertTeamDefinitionIfNeeded(IAtsChangeSet changes, ArtifactToken art, IAtsServices services) {
       // convert guid to id
-      String teamDefId = services.getAttributeResolver().getSoleAttributeValueAsString(art,
-         AtsAttributeTypes.TeamDefinitionReference, null);
-      if (!Strings.isNumeric(teamDefId)) {
+      ArtifactId teamDefId = services.getAttributeResolver().getSoleArtifactIdReference(art,
+         AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);
+      if (teamDefId.isInvalid()) {
          String teamDefGuid = services.getAttributeResolver().getSoleAttributeValue(art, TeamDefinition, "");
          if (Strings.isValid(teamDefGuid)) {
             IAtsTeamDefinition teamDef = services.getConfigItem(teamDefGuid);
-            changes.addArtifactReferencedAttribute(art, AtsAttributeTypes.TeamDefinitionReference,
-               teamDef.getStoreObject());
+            changes.setSoleAttributeValue(art, AtsAttributeTypes.TeamDefinitionReference, teamDef.getStoreObject());
          }
       }
       // convert id to guid
       String teamDefGuid = services.getAttributeResolver().getSoleAttributeValue(art, TeamDefinition, "");
       if (!Strings.isValid(teamDefGuid)) {
-         teamDefId = services.getAttributeResolver().getSoleAttributeValueAsString(art,
-            AtsAttributeTypes.TeamDefinitionReference, null);
-         if (Strings.isNumeric(teamDefId)) {
-            ArtifactId artifact = services.getArtifact(Long.valueOf(teamDefId));
-            if (artifact != null) {
-               changes.setSoleAttributeValue(art, TeamDefinition, artifact.getGuid());
-            }
+         ArtifactId teamDefArt = services.getAttributeResolver().getSoleArtifactIdReference(art,
+            AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);
+         ArtifactId artifact = services.getArtifact(teamDefArt);
+         if (artifact != null) {
+            changes.setSoleAttributeValue(art, TeamDefinition, artifact.getGuid());
          }
       }
    }
