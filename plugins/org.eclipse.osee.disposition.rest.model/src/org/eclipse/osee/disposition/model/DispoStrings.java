@@ -42,6 +42,7 @@ public class DispoStrings {
 
    public static final String Item_Pass = "PASS";
    public static final String Item_Complete = "COMPLETE";
+   public static final String Item_Complete_Analyzed = "COMPLETE-ANALYZED";
    public static final String Item_InComplete = "INCOMPLETE";
    public static final String Item_Analyzed = "COMPLETE-ANALYZED";
 

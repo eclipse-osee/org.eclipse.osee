@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 @XmlRootElement(name = "DispoAnnotationData")
 public class DispoAnnotationData implements Identifiable<String> {
 
+   private static final String MODIFY_ = "Modify_";
    private String id;
    private int index;
    private String developerNotes;
@@ -153,6 +154,10 @@ public class DispoAnnotationData implements Identifiable<String> {
    public boolean isResolutionTypeValid() {
       return resolutionType != null && !resolutionType.isEmpty() && !resolutionType.equalsIgnoreCase(
          "None") && !resolutionType.equalsIgnoreCase("null");
+   }
+
+   public boolean isResolutionMethodType() {
+      return resolutionType.startsWith(MODIFY_);
    }
 
    public void disconnect() {

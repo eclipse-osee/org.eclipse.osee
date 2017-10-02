@@ -66,7 +66,6 @@ public class DispoConnector {
       String toReturn;
       List<DispoAnnotationData> annotations = item.getAnnotationsList();
       List<String> allUncoveredDiscprepancies = getAllUncoveredDiscprepancies(item);
-
       if (item.getDiscrepanciesList().size() == 0) {
          toReturn = DispoStrings.Item_Pass;
       } else {
@@ -78,6 +77,9 @@ public class DispoConnector {
          if (invalidAnotations.isEmpty() && allUncoveredDiscprepancies.isEmpty()) {
             if (analyzeAnnotations.isEmpty()) {
                toReturn = DispoStrings.Item_Complete;
+         if (anyAnnotationsModifyType(annotations)) {
+            toReturn = DispoStrings.Item_Complete_Analyzed;
+         }
             } else {
                toReturn = DispoStrings.Item_Analyzed;
             }
@@ -102,6 +104,15 @@ public class DispoConnector {
             }
          }
       }
+   }
+
+   private boolean anyAnnotationsModifyType(List<DispoAnnotationData> annotations) {
+      for (DispoAnnotationData annotation : annotations) {
+         if (annotation.isResolutionMethodType()) {
+            return true;
+         }
+      }
+      return false;
    }
 
    private ArrayList<String> createDiscrepanciesList(Map<String, Discrepancy> discrepancies) {
