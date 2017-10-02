@@ -10,9 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workdef;
 
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-
 /**
  * @author Donald G Dunne
  */

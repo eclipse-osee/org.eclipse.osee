@@ -12,7 +12,6 @@ package org.eclipse.osee.vcast.model;
 
 import java.util.Collection;
 import java.util.Collections;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.vcast.VCastDataStore;
 
 /**

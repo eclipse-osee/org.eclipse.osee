@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.rest.internal.search.artifact.predicate;
 import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.PredicateHandler;
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;

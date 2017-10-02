@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;

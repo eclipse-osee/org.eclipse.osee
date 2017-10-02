@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.db.internal.transaction;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
 import org.eclipse.osee.orcs.data.TransactionReadable;

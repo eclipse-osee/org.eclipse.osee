@@ -22,7 +22,6 @@ import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;

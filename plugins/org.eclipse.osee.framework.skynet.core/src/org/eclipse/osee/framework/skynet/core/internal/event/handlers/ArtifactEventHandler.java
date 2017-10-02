@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.internal.event.handlers;
 
 import java.util.List;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.event.EventUtil;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkEventUtil;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;

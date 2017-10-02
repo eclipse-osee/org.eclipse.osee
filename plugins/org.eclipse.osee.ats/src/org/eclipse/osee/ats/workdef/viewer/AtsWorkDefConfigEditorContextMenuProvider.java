@@ -15,7 +15,6 @@ import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.GEFActionConstants;
 import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
 /**
  * Provides context menu actions for the ShapesEditor.

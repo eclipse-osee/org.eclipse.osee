@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.db.internal.search.tagger;
 
 import java.util.Map;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;

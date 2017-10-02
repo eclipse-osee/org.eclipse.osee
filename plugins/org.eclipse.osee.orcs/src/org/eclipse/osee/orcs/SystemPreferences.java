@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs;
 
 import java.util.Set;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar

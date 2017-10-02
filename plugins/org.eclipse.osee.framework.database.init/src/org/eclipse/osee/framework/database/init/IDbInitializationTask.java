@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database.init;
 
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-
 public interface IDbInitializationTask {
 
    void run() ;

@@ -35,7 +35,6 @@ import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
 import org.eclipse.osee.ats.core.model.impl.WorkStateImpl;
 import org.eclipse.osee.ats.core.workflow.TestState;
 import org.eclipse.osee.ats.core.workflow.state.StateManagerUtility;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server.internal.authentication;
 
-import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.data.OseeCredential;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.server.AbstractAuthenticationProvider;
 import org.eclipse.osee.framework.jdk.core.util.Strings;

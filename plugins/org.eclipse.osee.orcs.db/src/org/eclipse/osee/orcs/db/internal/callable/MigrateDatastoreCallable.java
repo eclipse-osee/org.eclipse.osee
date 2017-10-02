@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.orcs.db.internal.callable;
 
+import com.google.common.base.Supplier;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcMigrationOptions;
@@ -13,7 +14,6 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.SystemPreferences;
 import org.eclipse.osee.orcs.core.ds.DataStoreInfo;
-import com.google.common.base.Supplier;
 
 public class MigrateDatastoreCallable extends AbstractDatastoreCallable<DataStoreInfo> {
 

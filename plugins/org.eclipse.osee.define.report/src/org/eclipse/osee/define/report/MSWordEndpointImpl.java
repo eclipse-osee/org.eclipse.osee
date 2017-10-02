@@ -12,10 +12,10 @@ package org.eclipse.osee.define.report;
 
 import java.util.Set;
 import org.eclipse.osee.define.report.api.DefineApi;
+import org.eclipse.osee.define.report.api.MSWordEndpoint;
 import org.eclipse.osee.define.report.api.WordTemplateContentData;
 import org.eclipse.osee.define.report.api.WordUpdateChange;
 import org.eclipse.osee.define.report.api.WordUpdateData;
-import org.eclipse.osee.define.report.api.MSWordEndpoint;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 
 /**

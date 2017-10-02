@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.core.internal.types.impl;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.jdk.core.type.Id;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.internal.types.OrcsTypesIndexProvider;
 import org.eclipse.osee.orcs.data.EnumType;
 import org.eclipse.osee.orcs.data.EnumTypes;

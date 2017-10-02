@@ -11,7 +11,6 @@
 package org.eclipse.osee.ote.define.AUTOGEN;
 
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 
 public final class OteAttributeTypes {
 

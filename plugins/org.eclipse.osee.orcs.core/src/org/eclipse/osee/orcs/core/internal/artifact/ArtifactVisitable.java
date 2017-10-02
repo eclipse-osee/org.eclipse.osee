@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.artifact;
 
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-
 /**
  * @author Roberto E. Escobar
  */

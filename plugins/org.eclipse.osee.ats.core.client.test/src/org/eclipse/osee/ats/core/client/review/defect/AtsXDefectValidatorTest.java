@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Injection
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.mocks.MockStateDefinition;
 import org.eclipse.osee.ats.mocks.MockWidgetDefinition;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Assert;
 import org.mockito.Mock;
 

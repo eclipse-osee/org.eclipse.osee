@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.plugin.util;
 import java.text.Collator;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
-import org.eclipse.jface.viewers.ViewerSorter;
 
 /**
  * @author Donald G. Dunne

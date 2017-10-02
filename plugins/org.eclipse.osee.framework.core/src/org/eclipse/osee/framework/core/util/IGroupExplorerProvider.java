@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.util;
 
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-
 /**
  * @author Donald G. Dunne
  */

@@ -12,7 +12,6 @@ package org.eclipse.osee.ote.ui.define.dialogs;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.ote.define.artifacts.ArtifactTestRunOperator;
 import org.eclipse.osee.ote.ui.define.panels.IOverrideHandler;

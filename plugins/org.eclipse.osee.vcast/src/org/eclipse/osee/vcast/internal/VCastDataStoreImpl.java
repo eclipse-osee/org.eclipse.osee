@@ -12,7 +12,6 @@ package org.eclipse.osee.vcast.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.JdbcStatement;

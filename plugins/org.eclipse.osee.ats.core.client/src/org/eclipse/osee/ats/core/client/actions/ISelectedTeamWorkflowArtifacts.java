@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.core.client.actions;
 
 import java.util.Set;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Donald G. Dunne

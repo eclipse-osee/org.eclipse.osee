@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.core.internal.types;
 
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar

@@ -34,7 +34,6 @@ import org.eclipse.osee.ats.core.internal.state.StateManager;
 import org.eclipse.osee.ats.core.workflow.TestState;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

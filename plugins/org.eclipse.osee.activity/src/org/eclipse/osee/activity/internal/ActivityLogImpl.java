@@ -24,8 +24,8 @@ import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_ACTIVITY_LOGGE
 import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_CLIENT_ID;
 import static org.eclipse.osee.activity.internal.ActivityUtil.captureStackTrace;
 import static org.eclipse.osee.activity.internal.ActivityUtil.get;
-import java.net.UnknownHostException;
 import static org.eclipse.osee.framework.core.data.CoreActivityTypes.THREAD_ACTIVITY;
+import java.net.UnknownHostException;
 import java.util.Calendar;
 import java.util.Map;
 import java.util.Random;

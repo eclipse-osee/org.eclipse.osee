@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.core.server.internal.session;
 
 import java.util.Date;
 import java.util.function.Consumer;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
 

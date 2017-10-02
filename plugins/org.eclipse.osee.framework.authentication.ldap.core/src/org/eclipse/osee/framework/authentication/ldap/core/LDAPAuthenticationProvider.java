@@ -11,8 +11,8 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.authentication.ldap.core.internal.LDAPConnector;
 import org.eclipse.osee.framework.authentication.ldap.core.service.ILDAPService;
-import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.data.OseeCredential;
+import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.server.AbstractAuthenticationProvider;
 import org.osgi.framework.Bundle;
 

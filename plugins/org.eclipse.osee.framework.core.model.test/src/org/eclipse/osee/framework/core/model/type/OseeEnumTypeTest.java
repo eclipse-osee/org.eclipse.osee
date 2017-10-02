@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.core.model.type;
 
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Ignore;
 import org.junit.Test;
 

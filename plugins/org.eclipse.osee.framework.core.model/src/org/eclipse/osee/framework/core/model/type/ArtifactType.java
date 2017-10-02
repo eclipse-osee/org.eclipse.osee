@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.core.model.IOseeField;
 import org.eclipse.osee.framework.core.model.OseeField;
 import org.eclipse.osee.framework.core.model.internal.fields.ArtifactSuperTypeField;
 import org.eclipse.osee.framework.core.model.internal.fields.ArtifactTypeAttributesField;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Robert A. Fisher

@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import java.util.Collection;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Donald G. Dunne

@@ -12,11 +12,10 @@ package org.eclipse.osee.framework.skynet.core.httpRequests;
 
 import java.util.Set;
 import javax.ws.rs.core.Response.Status;
+import org.eclipse.osee.define.report.api.MSWordEndpoint;
 import org.eclipse.osee.define.report.api.WordTemplateContentData;
 import org.eclipse.osee.define.report.api.WordUpdateChange;
 import org.eclipse.osee.define.report.api.WordUpdateData;
-import org.eclipse.osee.define.report.api.MSWordEndpoint;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;

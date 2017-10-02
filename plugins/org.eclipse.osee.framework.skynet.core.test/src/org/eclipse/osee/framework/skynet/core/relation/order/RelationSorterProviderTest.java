@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.relation.sorters.LexicographicalRelationSorter;
 import org.eclipse.osee.framework.skynet.core.relation.sorters.UnorderedRelationSorter;

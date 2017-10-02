@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workflow;
 
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-
 /**
  * @author Donald G. Dunne
  */

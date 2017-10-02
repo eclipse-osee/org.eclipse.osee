@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;

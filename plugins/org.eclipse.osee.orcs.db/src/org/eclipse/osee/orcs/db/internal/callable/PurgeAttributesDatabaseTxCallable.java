@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.db.internal.callable;
 import java.util.Collection;
 import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.framework.core.data.AttributeId;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.OseePreparedStatement;

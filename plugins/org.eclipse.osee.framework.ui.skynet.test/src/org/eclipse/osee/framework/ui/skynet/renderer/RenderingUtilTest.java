@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.renderer;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.junit.Assert;
 import org.junit.BeforeClass;

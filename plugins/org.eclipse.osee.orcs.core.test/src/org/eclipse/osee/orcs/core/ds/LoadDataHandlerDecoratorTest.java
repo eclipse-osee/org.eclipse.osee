@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.core.ds;
 
 import static org.mockito.Mockito.verify;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.db.internal.callable;
 
 import com.google.common.collect.Lists;
 import java.util.List;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.logger.Log;

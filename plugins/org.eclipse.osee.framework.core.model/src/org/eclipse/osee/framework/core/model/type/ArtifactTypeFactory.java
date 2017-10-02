@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.core.model.type;
 
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeTypeFactory;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**

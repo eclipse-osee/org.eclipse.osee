@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.vcast;
 
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcClientBuilder;
 import org.eclipse.osee.vcast.internal.VCastDataStoreImpl;

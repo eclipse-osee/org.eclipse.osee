@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.messaging.internal;
 import java.util.Collection;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.messaging.ConnectionNode;
 import org.eclipse.osee.framework.messaging.ConnectionNodeFactory;
 import org.eclipse.osee.framework.messaging.MessageService;

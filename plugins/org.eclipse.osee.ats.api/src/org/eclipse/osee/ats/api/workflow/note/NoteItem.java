@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.api.workflow.note;
 
 import java.util.Date;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 

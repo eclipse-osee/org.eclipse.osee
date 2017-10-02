@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.core.model.type;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.model.AbstractOseeIdType;
 import org.eclipse.osee.framework.core.model.OseeField;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**

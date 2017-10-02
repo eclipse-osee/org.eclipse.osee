@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.core.internal.relation.order;
 
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar

@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import org.eclipse.osee.executor.admin.HasCancellation;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Andrew M. Finkbeiner

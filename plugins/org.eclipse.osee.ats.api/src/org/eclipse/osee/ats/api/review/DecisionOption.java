@@ -18,7 +18,6 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Donald G. Dunne

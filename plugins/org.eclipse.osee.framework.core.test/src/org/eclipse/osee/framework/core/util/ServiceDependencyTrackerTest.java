@@ -17,7 +17,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.core.mocks.MockBundleContext;
 import org.eclipse.osee.framework.core.mocks.MockTrackingHandler;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;

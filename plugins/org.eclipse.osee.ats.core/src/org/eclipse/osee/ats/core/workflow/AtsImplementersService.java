@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.core.review.DecisionReviewState;
 import org.eclipse.osee.ats.core.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**

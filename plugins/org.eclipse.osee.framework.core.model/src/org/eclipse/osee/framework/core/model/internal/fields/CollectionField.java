@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.core.model.internal.fields;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.model.AbstractOseeField;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
 
 /**

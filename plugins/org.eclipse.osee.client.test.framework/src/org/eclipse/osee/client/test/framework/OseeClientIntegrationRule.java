@@ -16,7 +16,6 @@ import org.eclipse.osee.client.test.framework.internal.AbstractTestRule;
 import org.eclipse.osee.client.test.framework.internal.DatabaseInitializer;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.database.init.IDbInitChoiceEnum;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.junit.Assert;

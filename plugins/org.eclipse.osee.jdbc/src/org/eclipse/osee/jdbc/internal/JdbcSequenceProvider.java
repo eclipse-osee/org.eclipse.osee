@@ -12,7 +12,6 @@ package org.eclipse.osee.jdbc.internal;
 
 import java.util.HashMap;
 import org.eclipse.osee.framework.core.data.OseeData;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 
 /**

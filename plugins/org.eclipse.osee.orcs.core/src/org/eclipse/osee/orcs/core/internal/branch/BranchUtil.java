@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.core.internal.branch;
 import com.google.common.collect.Lists;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.BranchReadable;
 
 public final class BranchUtil {

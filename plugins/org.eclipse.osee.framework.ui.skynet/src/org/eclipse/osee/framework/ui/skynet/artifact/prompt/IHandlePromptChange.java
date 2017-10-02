@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact.prompt;
 
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-
 /**
  * @author Jeff C. Phillips
  */

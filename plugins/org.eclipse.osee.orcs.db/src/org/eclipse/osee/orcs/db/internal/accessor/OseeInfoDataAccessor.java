@@ -14,7 +14,6 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.OseeClient;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;

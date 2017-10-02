@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.define.report.internal;
 
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 
 /**
  * @author David W. Miller

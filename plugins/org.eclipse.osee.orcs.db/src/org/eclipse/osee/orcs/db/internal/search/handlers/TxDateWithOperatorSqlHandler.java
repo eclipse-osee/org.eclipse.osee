@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import java.sql.Timestamp;
 import java.util.List;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaDateWithOperator;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;

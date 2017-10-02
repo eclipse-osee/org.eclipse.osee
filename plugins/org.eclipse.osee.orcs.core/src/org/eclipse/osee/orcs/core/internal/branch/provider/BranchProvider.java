@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.core.internal.branch.provider;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author John R. Misinco

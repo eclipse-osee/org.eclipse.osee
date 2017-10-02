@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.config;
 import java.util.List;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.ats.api.config.AtsConfiguration;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.util.StringNameComparator;

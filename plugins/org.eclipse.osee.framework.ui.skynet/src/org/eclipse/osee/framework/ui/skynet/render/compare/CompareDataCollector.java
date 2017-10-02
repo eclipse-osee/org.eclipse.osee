@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet.render.compare;
 
 import org.eclipse.osee.framework.core.model.change.CompareData;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 public interface CompareDataCollector {
    void onCompare(CompareData data) ;

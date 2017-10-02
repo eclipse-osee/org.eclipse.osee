@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

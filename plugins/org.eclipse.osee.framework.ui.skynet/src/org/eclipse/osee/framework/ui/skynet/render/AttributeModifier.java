@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.render;
 
 import java.io.File;
 import java.io.InputStream;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 public interface AttributeModifier {

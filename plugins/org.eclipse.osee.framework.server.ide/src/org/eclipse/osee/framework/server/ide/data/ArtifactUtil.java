@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.server.ide.data;
 
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.data.BranchReadable;
 

@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.core.ds.criteria;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.Options;

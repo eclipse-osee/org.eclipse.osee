@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.core.internal.relation;
 
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.internal.graph.GraphNode;
 import org.eclipse.osee.orcs.core.internal.relation.order.OrderStore;
 import org.eclipse.osee.orcs.core.internal.util.OrcsWriteable;

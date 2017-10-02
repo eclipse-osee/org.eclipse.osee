@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.core.model.type;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world;
 
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.swt.widgets.Menu;
 
 /**

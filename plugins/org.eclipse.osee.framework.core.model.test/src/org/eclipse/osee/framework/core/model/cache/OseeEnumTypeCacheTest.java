@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.mocks.MockDataFactory;
 import org.eclipse.osee.framework.core.model.mocks.ModelAsserts;
 import org.eclipse.osee.framework.core.model.type.OseeEnumType;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.BeforeClass;
 
 /**

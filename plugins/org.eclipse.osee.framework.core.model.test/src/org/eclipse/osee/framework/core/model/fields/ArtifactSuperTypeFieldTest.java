@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.exception.OseeInvalidInheritanceException
 import org.eclipse.osee.framework.core.model.internal.fields.ArtifactSuperTypeField;
 import org.eclipse.osee.framework.core.model.mocks.MockDataFactory;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;

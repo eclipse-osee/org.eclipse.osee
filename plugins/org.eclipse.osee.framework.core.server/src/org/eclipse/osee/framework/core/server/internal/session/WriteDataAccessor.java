@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server.internal.session;
 
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-
 /**
  * @author John Misinco
  * @author Roberto E. Escobar

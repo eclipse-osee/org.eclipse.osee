@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

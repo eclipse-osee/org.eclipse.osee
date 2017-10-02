@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.db.intergration;
 
 import org.eclipse.osee.framework.core.data.OseeClient;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.orcs.core.ds.DataStoreConstants;
 import org.eclipse.osee.orcs.db.internal.accessor.OseeInfoDataAccessor;

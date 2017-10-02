@@ -18,7 +18,6 @@ import java.util.List;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.ArtifactSearch_V1;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.PredicateHandler;

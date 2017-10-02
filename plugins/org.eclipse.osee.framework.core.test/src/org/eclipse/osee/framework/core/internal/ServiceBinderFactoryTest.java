@@ -15,7 +15,6 @@ import org.eclipse.osee.framework.core.mocks.MockServiceReference;
 import org.eclipse.osee.framework.core.mocks.MockTrackingHandler;
 import org.eclipse.osee.framework.core.util.ServiceBindType;
 import org.eclipse.osee.framework.core.util.ServiceBinderFactory;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.junit.Assert;
 import org.junit.BeforeClass;

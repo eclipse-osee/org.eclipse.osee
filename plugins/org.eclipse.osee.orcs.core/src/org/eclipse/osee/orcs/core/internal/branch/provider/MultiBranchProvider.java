@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**

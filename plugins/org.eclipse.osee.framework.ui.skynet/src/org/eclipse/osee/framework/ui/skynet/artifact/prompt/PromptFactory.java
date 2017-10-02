@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.artifact.prompt;
 import java.text.NumberFormat;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;

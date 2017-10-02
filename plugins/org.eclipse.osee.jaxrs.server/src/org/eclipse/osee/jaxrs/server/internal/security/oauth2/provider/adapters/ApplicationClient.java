@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.adapters;
 
+import com.google.common.io.InputSupplier;
 import java.io.InputStream;
 import org.apache.cxf.rs.security.oauth2.common.Client;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.jaxrs.server.security.OAuthClient;
-import com.google.common.io.InputSupplier;
 
 /**
  * @author Roberto E. Escobar

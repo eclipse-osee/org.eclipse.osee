@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.core.internal.attribute.primitives;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.annotations.OseeAttribute;
 
 /**

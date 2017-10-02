@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar

@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.search;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.search.ui.ISearchQuery;
 import org.eclipse.search.ui.ISearchResult;
 

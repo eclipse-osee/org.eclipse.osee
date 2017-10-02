@@ -17,7 +17,6 @@ import org.eclipse.osee.ats.core.client.artifact.AtsArtifactChecks;
 import org.eclipse.osee.ats.core.client.operation.MoveTeamWorkflowsOperation;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;

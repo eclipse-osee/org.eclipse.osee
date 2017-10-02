@@ -6,7 +6,6 @@
 package org.eclipse.osee.doors.connector.core.oauth;
 
 import java.util.Map;
-
 import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.URIException;
 import org.scribe.model.ParameterList;

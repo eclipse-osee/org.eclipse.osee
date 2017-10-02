@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.client.integration.tests;
 
 import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.integration.tests.ats.health.AtsValidateAtsDatabaseTest;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.BeforeClass;
 
 /**

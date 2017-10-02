@@ -13,7 +13,6 @@ package org.eclipse.osee.define.traceability;
 import java.nio.CharBuffer;
 import org.eclipse.osee.define.utility.IResourceLocator;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar

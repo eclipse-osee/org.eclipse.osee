@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.db.internal.exchange.transform;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;

@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.core.model.fields;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.model.OseeField;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.junit.Assert;
 import org.junit.FixMethodOrder;

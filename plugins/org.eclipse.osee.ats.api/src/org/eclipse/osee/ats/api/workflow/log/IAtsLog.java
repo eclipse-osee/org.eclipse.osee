@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.api.workflow.log;
 
 import java.util.Date;
 import java.util.List;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Donald G. Dunne

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;

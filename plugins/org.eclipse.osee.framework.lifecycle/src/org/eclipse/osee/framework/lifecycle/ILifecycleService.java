@@ -17,7 +17,6 @@ package org.eclipse.osee.framework.lifecycle;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 public interface ILifecycleService {
 

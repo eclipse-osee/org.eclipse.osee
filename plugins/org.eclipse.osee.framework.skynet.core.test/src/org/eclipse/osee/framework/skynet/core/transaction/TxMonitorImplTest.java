@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.skynet.core.transaction;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.transaction.TxMonitorImpl.MonitoredTx;

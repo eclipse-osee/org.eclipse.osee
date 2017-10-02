@@ -11,7 +11,6 @@
 package org.eclipse.osee.client.demo.internal;
 
 import org.eclipse.osee.framework.database.init.AddCommonBranch;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar

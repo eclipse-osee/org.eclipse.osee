@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.skynet.core.artifact.checks;
 
 import java.util.Collection;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCheck;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;

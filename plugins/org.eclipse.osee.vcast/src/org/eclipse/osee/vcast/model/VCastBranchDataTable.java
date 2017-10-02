@@ -11,7 +11,6 @@
 package org.eclipse.osee.vcast.model;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.vcast.VCastDataStore;
 
 public class VCastBranchDataTable implements VCastTableData<VCastBranchData> {

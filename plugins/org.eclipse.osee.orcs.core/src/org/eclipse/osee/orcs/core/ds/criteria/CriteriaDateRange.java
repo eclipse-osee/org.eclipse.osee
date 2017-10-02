@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.core.ds.criteria;
 
 import java.sql.Timestamp;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.Options;
 

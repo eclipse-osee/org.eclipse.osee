@@ -25,7 +25,6 @@ import org.eclipse.osee.activity.api.ActivityLogEndpoint;
 import org.eclipse.osee.define.report.api.DataRightsEndpoint;
 import org.eclipse.osee.define.report.api.MSWordEndpoint;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.server.ide.api.client.ClientEndpoint;

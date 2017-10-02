@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.cache.admin.CacheDataLoader;
 import org.eclipse.osee.cache.admin.CacheKeysLoader;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.JdbcTransaction;

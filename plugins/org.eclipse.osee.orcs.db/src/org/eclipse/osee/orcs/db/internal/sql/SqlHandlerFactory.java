@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.db.internal.sql;
 
 import java.util.List;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 

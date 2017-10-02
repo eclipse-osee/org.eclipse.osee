@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.db.internal.exchange.handler;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.eclipse.osee.orcs.db.internal.exchange.ExportImportXml;

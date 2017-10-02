@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.api.user;
 
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Donald G. Dunne

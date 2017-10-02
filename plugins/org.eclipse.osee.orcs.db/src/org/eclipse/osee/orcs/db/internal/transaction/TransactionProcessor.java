@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.db.internal.transaction;
 
 import org.eclipse.osee.executor.admin.HasCancellation;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.TransactionData;
 

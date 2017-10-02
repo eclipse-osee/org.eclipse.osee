@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.core.ds.criteria;
 
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.Options;

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.messaging.event.res;
 
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.messaging.ConnectionListener;
 
 /**

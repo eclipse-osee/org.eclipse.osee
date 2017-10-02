@@ -25,7 +25,6 @@ import org.eclipse.osee.ats.core.AbstractUserTest;
 import org.eclipse.osee.ats.core.model.impl.AtsActionGroup;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.workflow.AtsImplementersService;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.mockito.Mock;

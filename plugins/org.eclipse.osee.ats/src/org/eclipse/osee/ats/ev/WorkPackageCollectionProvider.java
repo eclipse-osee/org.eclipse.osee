@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.column.WorkPackageFilterTreeDialog.IWorkPackageProvider;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * Provides work packages from give collection

@@ -12,7 +12,6 @@ package org.eclipse.osee.define.utility;
 
 import java.net.URI;
 import java.nio.CharBuffer;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar

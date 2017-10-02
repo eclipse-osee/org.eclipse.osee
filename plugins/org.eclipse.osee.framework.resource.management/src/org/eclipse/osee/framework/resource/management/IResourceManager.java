@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.resource.management;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 
 /**

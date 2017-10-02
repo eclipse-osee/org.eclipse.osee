@@ -16,7 +16,6 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.search.AtsSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.task.TaskXViewer;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 

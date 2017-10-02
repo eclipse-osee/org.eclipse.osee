@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.core.config;
 
 import org.eclipse.osee.ats.api.config.IAtsCache;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 
 /**
  * @author Donald G. Dunne

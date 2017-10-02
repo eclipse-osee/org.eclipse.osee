@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.core.client.workflow.stateitem;
 
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Megumi Telles

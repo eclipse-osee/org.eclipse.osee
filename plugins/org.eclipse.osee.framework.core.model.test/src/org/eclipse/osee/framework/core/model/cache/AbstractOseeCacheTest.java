@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.Test;

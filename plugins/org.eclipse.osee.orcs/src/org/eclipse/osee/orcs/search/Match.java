@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.search;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar

@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.core.model.cache;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar

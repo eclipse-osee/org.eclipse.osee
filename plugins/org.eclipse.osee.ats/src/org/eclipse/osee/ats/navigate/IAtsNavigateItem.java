@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.navigate;
 
 import java.util.List;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 
 /**

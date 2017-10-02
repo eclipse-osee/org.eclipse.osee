@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.data.Tuple4Type;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.jdbc.JdbcException;
 import org.eclipse.osee.orcs.KeyValueOps;

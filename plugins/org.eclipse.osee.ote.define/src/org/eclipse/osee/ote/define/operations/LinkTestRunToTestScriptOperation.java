@@ -18,7 +18,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.threading.ThreadedWorkerExecutor;
 import org.eclipse.osee.framework.core.threading.ThreadedWorkerFactory;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.ote.define.artifacts.ArtifactTestRunOperator;
 

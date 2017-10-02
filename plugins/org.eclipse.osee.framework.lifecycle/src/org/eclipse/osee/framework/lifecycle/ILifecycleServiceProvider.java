@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.lifecycle;
 
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-
 /**
  * @author Jeff C. Phillips
  */

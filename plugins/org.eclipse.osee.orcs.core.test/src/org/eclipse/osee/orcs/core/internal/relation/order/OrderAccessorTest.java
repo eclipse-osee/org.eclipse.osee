@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.core.internal.relation.order;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

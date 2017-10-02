@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workflow;
 
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-
 /**
  * @author Donald G. Dunne
  */

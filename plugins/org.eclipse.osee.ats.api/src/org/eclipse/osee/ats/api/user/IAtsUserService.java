@@ -15,7 +15,6 @@ import java.util.List;
 import javax.ws.rs.core.HttpHeaders;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.Active;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * Non-artifact based user service

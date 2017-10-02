@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.mocks.MockDataFactory;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.junit.Assert;
 import org.junit.Test;

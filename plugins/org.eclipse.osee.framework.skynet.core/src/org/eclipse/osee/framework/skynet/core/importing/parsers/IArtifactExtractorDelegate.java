@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
 import org.eclipse.osee.framework.core.operation.OperationLogger;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 
 /**

@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.core.data;
 import java.io.InputStream;
 import java.net.URI;
 import java.sql.Timestamp;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar

@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.lifecycle.test.internal;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.lifecycle.AbstractLifecycleVisitor;
 import org.eclipse.osee.framework.lifecycle.ILifecycleService;
 import org.eclipse.osee.framework.lifecycle.LifecycleServiceImpl;

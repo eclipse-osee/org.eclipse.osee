@@ -14,7 +14,6 @@ package org.eclipse.osee.orcs.db.internal.callable;
 import static org.eclipse.osee.framework.jdk.core.util.Conditions.checkNotNull;
 import static org.eclipse.osee.framework.jdk.core.util.Conditions.checkNotNullOrEmpty;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.logger.Log;

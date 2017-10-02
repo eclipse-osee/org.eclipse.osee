@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.db.internal.resource;
 
 import java.net.URI;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorProvider;

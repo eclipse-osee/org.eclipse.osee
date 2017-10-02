@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.core.config;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Donald G Dunne

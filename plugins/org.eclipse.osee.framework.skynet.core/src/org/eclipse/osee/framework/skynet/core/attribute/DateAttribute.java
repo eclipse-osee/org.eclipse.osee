@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Robert A. Fisher

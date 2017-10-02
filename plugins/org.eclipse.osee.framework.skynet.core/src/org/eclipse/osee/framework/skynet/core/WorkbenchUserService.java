@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core;
 
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.plugin.core.IWorkbenchUser;
 import org.eclipse.osee.framework.plugin.core.IWorkbenchUserService;
 

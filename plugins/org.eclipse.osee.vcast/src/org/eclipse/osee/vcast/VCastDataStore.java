@@ -11,7 +11,6 @@
 package org.eclipse.osee.vcast;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.vcast.model.VCastBranchCoverage;
 import org.eclipse.osee.vcast.model.VCastBranchData;
 import org.eclipse.osee.vcast.model.VCastFunction;

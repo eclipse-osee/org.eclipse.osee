@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.jdk.core.util;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar

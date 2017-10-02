@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.model.mocks.MockDataFactory;
 import org.eclipse.osee.framework.core.model.type.RelationType;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.BeforeClass;
 
 /**

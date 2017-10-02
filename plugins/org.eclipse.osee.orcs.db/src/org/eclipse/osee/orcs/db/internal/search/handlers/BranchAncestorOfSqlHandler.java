@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import static org.eclipse.osee.orcs.db.internal.sql.SqlUtil.newRecursiveWithClause;
 import java.util.List;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranchAncestorOf;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.AliasEntry;
