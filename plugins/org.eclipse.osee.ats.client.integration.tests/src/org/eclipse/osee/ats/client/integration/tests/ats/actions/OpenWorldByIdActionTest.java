@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil
 public class OpenWorldByIdActionTest extends AbstractAtsActionRunTest {
 
    @Override
-   public OpenWorldByIdAction createAction()  {
+   public OpenWorldByIdAction createAction() {
       OpenWorldByIdAction action = new OpenWorldByIdAction();
       action.setOverrideIdString(AtsTestUtil.getTeamWf().getAtsId());
       action.setPend(true);

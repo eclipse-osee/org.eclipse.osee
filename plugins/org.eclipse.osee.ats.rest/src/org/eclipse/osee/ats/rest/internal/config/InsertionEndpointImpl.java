@@ -34,7 +34,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 /**
  * Donald G. Dunne
  */
-public class InsertionEndpointImpl extends BaseConfigEndpointImpl<JaxInsertion>implements InsertionEndpointApi {
+public class InsertionEndpointImpl extends BaseConfigEndpointImpl<JaxInsertion> implements InsertionEndpointApi {
 
    private final long programUuid;
 

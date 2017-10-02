@@ -51,7 +51,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePersistEvent1> {
 
    @Override
-   public void handle(Transport transport, Sender sender, RemotePersistEvent1 remoteEvent)  {
+   public void handle(Transport transport, Sender sender, RemotePersistEvent1 remoteEvent) {
       RemotePersistEvent1 event1 = remoteEvent;
       ArtifactEvent transEvent = FrameworkEventUtil.getPersistEvent(event1);
       updateArtifacts(sender, transEvent.getArtifacts(), remoteEvent.getTransaction());
@@ -59,7 +59,7 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
       transport.send(sender, transEvent);
    }
 
-   private void updateArtifacts(Sender sender, Collection<EventBasicGuidArtifact> artifacts, TransactionToken transactionId)  {
+   private void updateArtifacts(Sender sender, Collection<EventBasicGuidArtifact> artifacts, TransactionToken transactionId) {
       // Don't crash on any one artifact update problem (no update method throughs exceptions)
       for (EventBasicGuidArtifact guidArt : artifacts) {
          EventUtil.eventLog(String.format("REM: updateArtifact -> [%s]", guidArt));

@@ -123,7 +123,7 @@ public abstract class SkynetDragAndDrop {
       });
    }
 
-   public void performDragOver(DropTargetEvent event)  {
+   public void performDragOver(DropTargetEvent event) {
       // provided for subclass implementation
    }
 

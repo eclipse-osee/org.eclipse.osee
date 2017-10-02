@@ -88,7 +88,7 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType)  {
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
       this.artifact = artifact;
       this.attributeType = attributeType;
       int minOccurrence = AttributeTypeManager.getMinOccurrences(attributeType);
@@ -145,7 +145,7 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
    }
 
    @SuppressWarnings("deprecation")
-   public Attribute<?> getStored(int attrId)  {
+   public Attribute<?> getStored(int attrId) {
       for (Attribute<?> attribute : artifact.getAttributes(getAttributeType())) {
          if (attribute.getId() == attrId) {
             return attribute;
@@ -156,7 +156,7 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
 
    @SuppressWarnings("deprecation")
    @Override
-   public Result isDirty()  {
+   public Result isDirty() {
       if (isEditable()) {
          for (XStackedWidgetPage page : stackedControl.getPages()) {
             if (page.getObjectId() == null) {
@@ -195,12 +195,12 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
    }
 
    @Override
-   public void revert()  {
+   public void revert() {
       setAttributeType(getArtifact(), getAttributeType());
    }
 
    @Override
-   public void saveToArtifact()  {
+   public void saveToArtifact() {
       for (XStackedWidgetPage page : stackedControl.getPages()) {
          if (page.getObjectId() == null) {
             artifact.addAttribute(attributeType, page.getWidget().getData());
@@ -244,7 +244,7 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
    }
 
    @Override
-   protected void onPageChange(XStackedWidgetPage page)  {
+   protected void onPageChange(XStackedWidgetPage page) {
       if (page != null && page instanceof XStackedWidgetAttrPage) {
          XStackedWidgetAttrPage attrPage = (XStackedWidgetAttrPage) page;
          attrPage.setLoaded(true);
@@ -256,7 +256,7 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
    }
 
    @Override
-   protected void onRemovePage(XStackedWidgetPage page)  {
+   protected void onRemovePage(XStackedWidgetPage page) {
       getArtifact().deleteAttribute((AttributeId) page.getObjectId());
    }
 
@@ -323,7 +323,7 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
       return value;
    }
 
-   private XWidget getWidget(AttributeTypeId attributeType, Composite parent, String initialInput)  {
+   private XWidget getWidget(AttributeTypeId attributeType, Composite parent, String initialInput) {
       XWidget xWidget = null;
       if (AttributeTypeManager.isBaseTypeCompatible(IntegerAttribute.class, attributeType)) {
          XInteger xInteger = new XInteger("");

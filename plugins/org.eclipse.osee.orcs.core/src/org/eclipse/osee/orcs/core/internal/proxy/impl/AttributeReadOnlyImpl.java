@@ -48,22 +48,22 @@ public class AttributeReadOnlyImpl<T> extends AbstractProxied<Attribute<T>> impl
    }
 
    @Override
-   public AttributeTypeToken getAttributeType()  {
+   public AttributeTypeToken getAttributeType() {
       return getProxiedObject().getAttributeType();
    }
 
    @Override
-   public boolean isOfType(AttributeTypeId otherAttributeType)  {
+   public boolean isOfType(AttributeTypeId otherAttributeType) {
       return getProxiedObject().isOfType(otherAttributeType);
    }
 
    @Override
-   public T getValue()  {
+   public T getValue() {
       return getProxiedObject().getValue();
    }
 
    @Override
-   public String getDisplayableString()  {
+   public String getDisplayableString() {
       return getProxiedObject().getDisplayableString();
    }
 

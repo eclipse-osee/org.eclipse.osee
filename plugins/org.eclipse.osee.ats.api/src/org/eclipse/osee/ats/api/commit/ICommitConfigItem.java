@@ -19,13 +19,13 @@ import org.eclipse.osee.framework.jdk.core.type.Named;
  */
 public interface ICommitConfigItem extends Named {
 
-   public BranchId getBaselineBranchId() ;
+   public BranchId getBaselineBranchId();
 
-   public Result isAllowCommitBranchInherited() ;
+   public Result isAllowCommitBranchInherited();
 
-   public Result isAllowCreateBranchInherited() ;
+   public Result isAllowCreateBranchInherited();
 
-   public String getCommitFullDisplayName() ;
+   public String getCommitFullDisplayName();
 
    public String getTypeName();
 

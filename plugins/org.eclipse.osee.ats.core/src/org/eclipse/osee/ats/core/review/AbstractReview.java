@@ -32,7 +32,7 @@ public abstract class AbstractReview extends WorkItem implements IAtsAbstractRev
    }
 
    @Override
-   public Set<IAtsActionableItem> getActionableItems()  {
+   public Set<IAtsActionableItem> getActionableItems() {
       Set<IAtsActionableItem> ais = new HashSet<>();
       Collection<ArtifactId> artifactIds =
          services.getAttributeResolver().getAttributeValues(artifact, AtsAttributeTypes.ActionableItemReference);

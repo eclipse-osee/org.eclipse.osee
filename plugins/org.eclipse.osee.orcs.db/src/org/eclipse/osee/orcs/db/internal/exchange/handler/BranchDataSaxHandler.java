@@ -52,7 +52,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
    }
 
    @Override
-   protected void processData(Map<String, String> dataMap)  {
+   protected void processData(Map<String, String> dataMap) {
       BranchData branchData = new BranchData();
       for (String columnName : getMetaData().getColumnNames()) {
          String value = dataMap.get(columnName);
@@ -61,7 +61,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       this.idToImportFileBranchData.put(BranchId.valueOf(branchData.getId()), branchData);
    }
 
-   private Object toObject(String key, String value)  {
+   private Object toObject(String key, String value) {
       Object toReturn = null;
       if (Strings.isValid(value)) {
          Class<?> clazz = getMetaData().toClass(key);
@@ -107,7 +107,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       }
    }
 
-   public Set<BranchId> store(JdbcConnection connection, boolean writeToDb, List<? extends BranchId> branchesToImport)  {
+   public Set<BranchId> store(JdbcConnection connection, boolean writeToDb, List<? extends BranchId> branchesToImport) {
       checkSelectedBranches(branchesToImport);
       Collection<BranchData> branchesToStore = getSelectedBranchesToImport(branchesToImport);
 
@@ -140,7 +140,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       return toReturn;
    }
 
-   public void updateBaselineAndParentTransactionId(Set<BranchId> branchesStored)  {
+   public void updateBaselineAndParentTransactionId(Set<BranchId> branchesStored) {
       List<BranchData> branches = getSelectedBranchesToImport(branchesStored);
       List<Object[]> data = new ArrayList<>();
       for (BranchData branchData : branches) {
@@ -168,19 +168,19 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       }
    }
 
-   private long translateLongId(String id, long originalValue)  {
+   private long translateLongId(String id, long originalValue) {
       Long original = new Long(originalValue);
       Long newValue = (Long) getTranslator().translate(id, original);
       return newValue.intValue();
    }
 
-   private int translateIntId(String id, int originalValue)  {
+   private int translateIntId(String id, int originalValue) {
       Long original = new Long(originalValue);
       Long newValue = (Long) getTranslator().translate(id, original);
       return newValue.intValue();
    }
 
-   private Collection<BranchData> checkTargetDbBranches(JdbcConnection connection, Collection<BranchData> selectedBranches)  {
+   private Collection<BranchData> checkTargetDbBranches(JdbcConnection connection, Collection<BranchData> selectedBranches) {
       Map<Long, BranchData> idToBranchData = new HashMap<>();
       for (BranchData data : selectedBranches) {
          idToBranchData.put(data.getId(), data);
@@ -205,7 +205,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
    }
 
    @Override
-   public void clearDataTable()  {
+   public void clearDataTable() {
       getDatabaseService().runPreparedUpdate(getConnection(), String.format(
          "DELETE FROM %s where NOT branch_type = " + BranchType.SYSTEM_ROOT.getValue(), getMetaData().getTableName()));
    }
@@ -225,7 +225,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
    }
 
    @Override
-   public void store()  {
+   public void store() {
       super.store(getConnection());
    }
 

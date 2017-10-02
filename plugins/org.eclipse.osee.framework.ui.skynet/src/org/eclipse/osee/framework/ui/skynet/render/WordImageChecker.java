@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.ui.skynet.render.imageDetection.WordImageCompa
  */
 public class WordImageChecker {
 
-   public static void restoreOriginalValue(Attribute<String> attr, Pair<String, Boolean> originalValue)  {
+   public static void restoreOriginalValue(Attribute<String> attr, Pair<String, Boolean> originalValue) {
       if (attr != null && originalValue != null) {
          attr.setValue(originalValue.getFirst());
          if (!originalValue.getSecond()) {
@@ -36,7 +36,7 @@ public class WordImageChecker {
       }
    }
 
-   public static Pair<String, Boolean> checkForImageDiffs(Attribute<String> oldAttr, Attribute<String> newAttr)  {
+   public static Pair<String, Boolean> checkForImageDiffs(Attribute<String> oldAttr, Attribute<String> newAttr) {
       String downArrow = "";
       try {
          downArrow = new String(new byte[] {(byte) 0xE2, (byte) 0x86, (byte) 0x93}, "UTF-8");

@@ -41,12 +41,12 @@ public class WorkPackage extends AtsConfigObject implements IAtsWorkPackage {
    }
 
    @Override
-   public String getActivityId()  {
+   public String getActivityId() {
       return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.ActivityId, "");
    }
 
    @Override
-   public String getActivityName()  {
+   public String getActivityName() {
       return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.ActivityName, "");
    }
 
@@ -61,17 +61,17 @@ public class WorkPackage extends AtsConfigObject implements IAtsWorkPackage {
    }
 
    @Override
-   public String getWorkPackageId()  {
+   public String getWorkPackageId() {
       return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.WorkPackageId, "");
    }
 
    @Override
-   public String getWorkPackageProgram()  {
+   public String getWorkPackageProgram() {
       return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.WorkPackageProgram, "");
    }
 
    @Override
-   public AtsWorkPackageType getWorkPackageType()  {
+   public AtsWorkPackageType getWorkPackageType() {
       String value =
          services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.WorkPackageType, "");
       AtsWorkPackageType type = AtsWorkPackageType.None;
@@ -87,22 +87,22 @@ public class WorkPackage extends AtsConfigObject implements IAtsWorkPackage {
    }
 
    @Override
-   public boolean isActive()  {
+   public boolean isActive() {
       return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.Active, true);
    }
 
    @Override
-   public Date getStartDate()  {
+   public Date getStartDate() {
       return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.StartDate, null);
    }
 
    @Override
-   public Date getEndDate()  {
+   public Date getEndDate() {
       return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.EndDate, null);
    }
 
    @Override
-   public int getWorkPackagePercent()  {
+   public int getWorkPackagePercent() {
       return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.PercentComplete, 0);
    }
 

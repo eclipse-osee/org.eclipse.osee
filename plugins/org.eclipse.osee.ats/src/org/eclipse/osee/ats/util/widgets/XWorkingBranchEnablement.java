@@ -35,7 +35,7 @@ public class XWorkingBranchEnablement {
       dataProvider = new BranchEnablementLazyObject(teamArt);
    }
 
-   private BranchEnablementData getEnablementData()  {
+   private BranchEnablementData getEnablementData() {
       return dataProvider.get();
    }
 
@@ -101,15 +101,15 @@ public class XWorkingBranchEnablement {
       }
    }
 
-   public BranchStatus getStatus()  {
+   public BranchStatus getStatus() {
       return getEnablementData().getBranchStatus();
    }
 
-   public IOseeBranch getWorkingBranch()  {
+   public IOseeBranch getWorkingBranch() {
       return getEnablementData().getWorkingBranch();
    }
 
-   public void disableAll()  {
+   public void disableAll() {
       getEnablementData().setDisableAll(true);
    }
 

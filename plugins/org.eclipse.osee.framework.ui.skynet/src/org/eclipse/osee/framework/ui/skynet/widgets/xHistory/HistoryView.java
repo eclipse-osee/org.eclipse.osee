@@ -420,12 +420,12 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
       return xHistoryWidget != null && artifact != null;
    }
 
-   public static void open(Artifact artifact)  {
+   public static void open(Artifact artifact) {
       Conditions.checkNotNull(artifact, "artifact");
       HistoryView.openViewUpon(artifact, true);
    }
 
-   private static void openViewUpon(final Artifact artifact, final boolean loadHistory)  {
+   private static void openViewUpon(final Artifact artifact, final boolean loadHistory) {
       Conditions.checkNotNull(artifact, "artifact");
       Job job = new UIJob("Open History: " + artifact.getName()) {
 

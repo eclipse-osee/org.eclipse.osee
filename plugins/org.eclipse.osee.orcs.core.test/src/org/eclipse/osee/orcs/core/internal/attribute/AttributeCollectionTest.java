@@ -65,7 +65,7 @@ public class AttributeCollectionTest {
    }
 
    @Test
-   public void testGetAttributesDirty()  {
+   public void testGetAttributesDirty() {
       assertEquals(1, attributeCollection.getDirties().size());
       assertEquals(dirtyAttr, attributeCollection.getDirties().iterator().next());
    }
@@ -92,7 +92,7 @@ public class AttributeCollectionTest {
    }
 
    @Test
-   public void testGetExistingTypes()  {
+   public void testGetExistingTypes() {
       AttributeType typeA = mock(AttributeType.class);
       AttributeType typeB = mock(AttributeType.class);
       AttributeType typeC = mock(AttributeType.class);
@@ -123,7 +123,7 @@ public class AttributeCollectionTest {
    }
 
    @Test
-   public void testGetListDeletionFlag()  {
+   public void testGetListDeletionFlag() {
       List<Attribute<?>> list1 = attributeCollection.getList(DeletionFlag.INCLUDE_DELETED);
 
       assertEquals(3, list1.size());
@@ -140,7 +140,7 @@ public class AttributeCollectionTest {
    }
 
    @Test
-   public void testGetSetDeletionFlag()  {
+   public void testGetSetDeletionFlag() {
       ResultSet<Attribute<?>> set1 = attributeCollection.getResultSet(DeletionFlag.INCLUDE_DELETED);
 
       assertEquals(3, set1.size());
@@ -157,7 +157,7 @@ public class AttributeCollectionTest {
    }
 
    @Test
-   public void testGetListTypeAndDelete()  {
+   public void testGetListTypeAndDelete() {
       List<Attribute<Object>> list1 =
          attributeCollection.getList(CoreAttributeTypes.Annotation, DeletionFlag.INCLUDE_DELETED);
       assertEquals(1, list1.size());
@@ -169,7 +169,7 @@ public class AttributeCollectionTest {
    }
 
    @Test
-   public void testGetSetTypeAndDelete()  {
+   public void testGetSetTypeAndDelete() {
       ResultSet<Attribute<Object>> set1 =
          attributeCollection.getResultSet(CoreAttributeTypes.Annotation, DeletionFlag.INCLUDE_DELETED);
 
@@ -182,7 +182,7 @@ public class AttributeCollectionTest {
    }
 
    @Test
-   public void testGetAttributeSetFromString()  {
+   public void testGetAttributeSetFromString() {
       when(cleanAttr.getValue()).thenReturn(true);
 
       ResultSet<Attribute<Object>> set =
@@ -191,7 +191,7 @@ public class AttributeCollectionTest {
    }
 
    @Test
-   public void testGetAttributeSetFromValue()  {
+   public void testGetAttributeSetFromValue() {
       when(cleanAttr.getValue()).thenReturn(true);
 
       ResultSet<Attribute<Boolean>> set =

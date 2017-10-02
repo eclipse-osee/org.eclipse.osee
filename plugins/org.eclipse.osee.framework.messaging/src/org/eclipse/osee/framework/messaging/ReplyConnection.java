@@ -16,5 +16,5 @@ package org.eclipse.osee.framework.messaging;
 public interface ReplyConnection {
    public boolean isReplyRequested();
 
-   public void send(Object body, Class<?> clazz, final OseeMessagingStatusCallback statusCallback) ;
+   public void send(Object body, Class<?> clazz, final OseeMessagingStatusCallback statusCallback);
 }

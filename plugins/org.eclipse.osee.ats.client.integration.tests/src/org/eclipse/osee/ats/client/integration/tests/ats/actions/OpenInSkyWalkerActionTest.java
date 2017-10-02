@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil
 public class OpenInSkyWalkerActionTest extends AbstractAtsActionRunTest {
 
    @Override
-   public OpenInSkyWalkerAction createAction()  {
+   public OpenInSkyWalkerAction createAction() {
       return new OpenInSkyWalkerAction(AtsTestUtil.getTeamWf());
    }
 

@@ -34,7 +34,7 @@ public class ServletResourceBridge implements IResource {
    }
 
    @Override
-   public InputStream getContent()  {
+   public InputStream getContent() {
       try {
          return request.getInputStream();
       } catch (IOException ex) {

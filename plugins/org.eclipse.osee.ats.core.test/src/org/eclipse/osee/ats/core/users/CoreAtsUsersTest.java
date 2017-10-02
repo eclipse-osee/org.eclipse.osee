@@ -150,7 +150,7 @@ public class CoreAtsUsersTest {
       }
 
       @Override
-      public String getUserId()  {
+      public String getUserId() {
          throw new OseeStateException("this is the exception under test");
       }
    };

@@ -17,6 +17,6 @@ import java.util.Set;
  */
 public interface IAtsActionableItemProvider {
 
-   public Set<IAtsActionableItem> getActionableItems() ;
+   public Set<IAtsActionableItem> getActionableItems();
 
 }

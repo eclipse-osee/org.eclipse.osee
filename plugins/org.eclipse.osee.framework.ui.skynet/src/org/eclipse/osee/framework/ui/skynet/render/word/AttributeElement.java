@@ -19,18 +19,16 @@ public class AttributeElement {
    private String format;
    private String formatPre;
    private String formatPost;
-   
-   public AttributeElement()
-   {
+
+   public AttributeElement() {
       this.label = "";
       this.attributeType = "";
       this.formatPre = "";
       this.formatPost = "";
       this.format = "";
    }
-   
-   public void setElements(String attributeType, String label, String formatPre, String formatPost)
-   {
+
+   public void setElements(String attributeType, String label, String formatPre, String formatPost) {
       this.label = label;
       this.attributeType = attributeType;
       this.format = formatPre;
@@ -45,11 +43,11 @@ public class AttributeElement {
    public String getFormat() {
       return format;
    }
-   
+
    public String getFormatPre() {
       return formatPre;
    }
-   
+
    public String getFormatPost() {
       return formatPost;
    }

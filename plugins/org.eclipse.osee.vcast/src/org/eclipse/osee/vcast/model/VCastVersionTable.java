@@ -30,7 +30,7 @@ public class VCastVersionTable implements VCastTableData<VCastVersion> {
    }
 
    @Override
-   public Collection<VCastVersion> getRows(VCastDataStore dataStore)  {
+   public Collection<VCastVersion> getRows(VCastDataStore dataStore) {
       return Collections.singleton(dataStore.getVersion());
    }
 

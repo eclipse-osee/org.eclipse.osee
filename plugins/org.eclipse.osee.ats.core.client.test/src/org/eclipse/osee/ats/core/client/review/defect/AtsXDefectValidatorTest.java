@@ -39,7 +39,7 @@ public class AtsXDefectValidatorTest {
    // @formatter:on
 
    @org.junit.Test
-   public void testValidateTransition()  {
+   public void testValidateTransition() {
       AtsXDefectValidator validator = new AtsXDefectValidator();
 
       MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
@@ -70,7 +70,7 @@ public class AtsXDefectValidatorTest {
    }
 
    @org.junit.Test
-   public void testValidateTransition__Defect()  {
+   public void testValidateTransition__Defect() {
       AtsXDefectValidator validator = new AtsXDefectValidator();
 
       MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");

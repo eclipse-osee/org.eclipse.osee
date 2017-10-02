@@ -32,7 +32,7 @@ public abstract class AbstractLoadExecutor {
       this.jdbcClient = jdbcClient;
    }
 
-   public abstract void load(HasCancellation cancellation, LoadDataHandler handler, CriteriaOrcsLoad criteria, Options options) ;
+   public abstract void load(HasCancellation cancellation, LoadDataHandler handler, CriteriaOrcsLoad criteria, Options options);
 
    protected JdbcClient getJdbcClient() {
       return jdbcClient;

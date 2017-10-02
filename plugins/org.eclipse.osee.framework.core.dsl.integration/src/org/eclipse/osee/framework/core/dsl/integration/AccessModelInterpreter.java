@@ -20,8 +20,8 @@ import org.eclipse.osee.framework.core.model.access.AccessDetailCollector;
  */
 public interface AccessModelInterpreter {
 
-   AccessContext getContext(Collection<AccessContext> contexts, IAccessContextId contextId) ;
+   AccessContext getContext(Collection<AccessContext> contexts, IAccessContextId contextId);
 
-   void computeAccessDetails(AccessDetailCollector collector, AccessContext context, Object objectToCheck) ;
+   void computeAccessDetails(AccessDetailCollector collector, AccessContext context, Object objectToCheck);
 
 }

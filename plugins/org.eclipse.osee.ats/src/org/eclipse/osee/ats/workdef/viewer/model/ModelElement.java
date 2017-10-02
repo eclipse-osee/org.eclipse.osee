@@ -49,9 +49,9 @@ public abstract class ModelElement implements IPropertySource {
       }
    }
 
-   public abstract Result doSave(SkynetTransaction transaction) ;
+   public abstract Result doSave(SkynetTransaction transaction);
 
-   public abstract Result validForSave() ;
+   public abstract Result validForSave();
 
    /**
     * Attach a non-null PropertyChangeListener to this object.

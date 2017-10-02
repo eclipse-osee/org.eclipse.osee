@@ -64,7 +64,7 @@ public class AttributeExtensionManager {
       return newType;
    }
 
-   public static Class<? extends Attribute<?>> getAttributeClassFor(String name)  {
+   public static Class<? extends Attribute<?>> getAttributeClassFor(String name) {
       if (instance.attributeTypeClasses == null) {
          instance.attributeTypeClasses = instance.loadExtensions(ATTRIBUTE_TYPE, attributeBaseTypes, CLASS_ID);
       }
@@ -77,7 +77,7 @@ public class AttributeExtensionManager {
       return instance.loadClass(entry.getFirst(), entry.getSecond());
    }
 
-   public static Class<? extends AbstractAttributeDataProvider> getAttributeProviderClassFor(String name)  {
+   public static Class<? extends AbstractAttributeDataProvider> getAttributeProviderClassFor(String name) {
       if (instance.attributeDataProviderClasses == null) {
          instance.attributeDataProviderClasses =
             instance.loadExtensions(ATTRIBUTE_DATA_PROVIDER_TYPE, attributeProviderBaseTypes, CLASS_ID);
@@ -91,7 +91,7 @@ public class AttributeExtensionManager {
    }
 
    @SuppressWarnings("unchecked")
-   private <T> Class<T> loadClass(String bundleName, String className)  {
+   private <T> Class<T> loadClass(String bundleName, String className) {
       Class<T> toReturn = null;
       try {
          Bundle bundle = Platform.getBundle(bundleName);
@@ -102,7 +102,7 @@ public class AttributeExtensionManager {
       return toReturn;
    }
 
-   private Map<String, Pair<String, String>> loadExtensions(String extensionPointId, String[] elementNames, String classNameAttribute)  {
+   private Map<String, Pair<String, String>> loadExtensions(String extensionPointId, String[] elementNames, String classNameAttribute) {
       Map<String, Pair<String, String>> toReturn = new HashMap<>();
       for (String elementName : elementNames) {
          List<IConfigurationElement> elements = ExtensionPoints.getExtensionElements(extensionPointId, elementName);
@@ -129,7 +129,7 @@ public class AttributeExtensionManager {
       return super.toString();
    }
 
-   public static Set<String> getAttributeProviders()  {
+   public static Set<String> getAttributeProviders() {
       if (instance.attributeDataProviderClasses == null) {
          instance.attributeDataProviderClasses =
             instance.loadExtensions(ATTRIBUTE_DATA_PROVIDER_TYPE, attributeProviderBaseTypes, CLASS_ID);
@@ -137,7 +137,7 @@ public class AttributeExtensionManager {
       return instance.attributeDataProviderClasses.keySet();
    }
 
-   public static Set<String> getAttributeClasses()  {
+   public static Set<String> getAttributeClasses() {
       if (instance.attributeTypeClasses == null) {
          instance.attributeTypeClasses = instance.loadExtensions(ATTRIBUTE_TYPE, attributeBaseTypes, CLASS_ID);
       }

@@ -26,7 +26,7 @@ import org.junit.Test;
 public class BranchAliasesFieldTest {
 
    @Test
-   public void testSetGet()  {
+   public void testSetGet() {
       Collection<String> aliases = new ArrayList<>();
       BranchAliasesField field = new BranchAliasesField(aliases);
       Assert.assertEquals(false, field.isDirty());

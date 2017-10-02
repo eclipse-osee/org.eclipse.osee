@@ -39,7 +39,7 @@ public class MockTransitionHelper extends TransitionHelper {
    }
 
    @Override
-   public boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf)  {
+   public boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf) {
       if (workingBranchInWork != null) {
          return workingBranchInWork;
       }
@@ -47,7 +47,7 @@ public class MockTransitionHelper extends TransitionHelper {
    }
 
    @Override
-   public boolean isBranchInCommit(IAtsTeamWorkflow teamWf)  {
+   public boolean isBranchInCommit(IAtsTeamWorkflow teamWf) {
       if (branchInCommit != null) {
          return branchInCommit;
       }
@@ -71,7 +71,7 @@ public class MockTransitionHelper extends TransitionHelper {
    }
 
    @Override
-   public boolean isSystemUser()  {
+   public boolean isSystemUser() {
       if (systemUser != null) {
          return systemUser;
       }
@@ -83,7 +83,7 @@ public class MockTransitionHelper extends TransitionHelper {
    }
 
    @Override
-   public boolean isSystemUserAssingee(IAtsWorkItem workItem)  {
+   public boolean isSystemUserAssingee(IAtsWorkItem workItem) {
       if (systemUserAssigned != null) {
          return systemUserAssigned;
       }

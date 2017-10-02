@@ -31,7 +31,7 @@ public class AtsXComboBooleanValidator extends AtsXWidgetValidator {
    }
 
    @Override
-   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, IAtsServices atsServices)  {
+   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, IAtsServices atsServices) {
       WidgetResult result = WidgetResult.Valid;
       if ("XComboBooleanDam".equals(widgetDef.getXWidgetName())) {
          result = validateWidgetIsRequired(provider, widgetDef, fromStateDef, fromStateDef);

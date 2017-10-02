@@ -56,7 +56,7 @@ public class RelationTypeRestrictionHandler implements RestrictionHandler<Relati
    }
 
    @Override
-   public void process(ObjectRestriction objectRestriction, ArtifactProxy artifactProxy, AccessDetailCollector collector, Scope scope)  {
+   public void process(ObjectRestriction objectRestriction, ArtifactProxy artifactProxy, AccessDetailCollector collector, Scope scope) {
       RelationTypeRestriction restriction = asCastedObject(objectRestriction);
       if (restriction != null) {
          XRelationSideEnum restrictedSide = restriction.getRestrictedToSide();
@@ -100,7 +100,7 @@ public class RelationTypeRestrictionHandler implements RestrictionHandler<Relati
       }
    }
 
-   private Collection<RelationType> getRelationTypes(ArtifactProxy artifactProxy, RelationTypeRestriction restriction)  {
+   private Collection<RelationType> getRelationTypes(ArtifactProxy artifactProxy, RelationTypeRestriction restriction) {
       Collection<RelationType> types;
       if (restriction.isRelationTypeMatch()) {
          types = artifactProxy.getValidRelationTypes();
@@ -117,7 +117,7 @@ public class RelationTypeRestrictionHandler implements RestrictionHandler<Relati
       return types;
    }
 
-   private RelationType getRelationType(IRelationType typeToMatch, ArtifactProxy artifactProxy)  {
+   private RelationType getRelationType(IRelationType typeToMatch, ArtifactProxy artifactProxy) {
       RelationType toReturn = null;
       Collection<RelationType> relationTypes = artifactProxy.getValidRelationTypes();
       for (RelationType relationType : relationTypes) {

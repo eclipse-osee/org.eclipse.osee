@@ -79,7 +79,7 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
    }
 
    @Override
-   protected TransactionId handleTxWork(JdbcConnection connection)  {
+   protected TransactionId handleTxWork(JdbcConnection connection) {
       BranchState storedBranchState;
       if (changes.isEmpty()) {
          throw new OseeStateException("A branch can not be committed without any changes made.");
@@ -107,7 +107,7 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
       return newTx;
    }
 
-   public synchronized void checkPreconditions()  {
+   public synchronized void checkPreconditions() {
       int count =
          getJdbcClient().fetch(0, SELECT_SOURCE_BRANCH_STATE, sourceBranch, BranchState.COMMIT_IN_PROGRESS.getValue());
       if (sourceBranch.getBranchState().isCommitInProgress() || sourceBranch.getArchiveState().isArchived() || count > 0) {
@@ -119,11 +119,11 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
       }
    }
 
-   public void updateBranchState(BranchState state, BranchId branchId)  {
+   public void updateBranchState(BranchState state, BranchId branchId) {
       getJdbcClient().runPreparedUpdate(UPDATE_SOURCE_BRANCH_STATE, state.getValue(), branchId);
    }
 
-   private void updatePreviousCurrentsOnDestinationBranch(JdbcConnection connection)  {
+   private void updatePreviousCurrentsOnDestinationBranch(JdbcConnection connection) {
       UpdatePreviousTxCurrent updater = new UpdatePreviousTxCurrent(getJdbcClient(), connection, destinationBranch);
       for (ChangeItem change : changes) {
          ChangeVersion destVersion = change.getDestinationVersion();
@@ -134,7 +134,7 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
       updater.updateTxNotCurrents();
    }
 
-   private TransactionId addCommitTransactionToDatabase(ArtifactId committer, JdbcConnection connection)  {
+   private TransactionId addCommitTransactionToDatabase(ArtifactId committer, JdbcConnection connection) {
       TransactionId newTransactionNumber = idManager.getNextTransactionId();
 
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
@@ -146,7 +146,7 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
       return newTransactionNumber;
    }
 
-   private void insertCommitAddressing(TransactionId newTx, JdbcConnection connection)  {
+   private void insertCommitAddressing(TransactionId newTx, JdbcConnection connection) {
       List<Object[]> insertData = new ArrayList<>();
       for (ChangeItem change : changes) {
          ModificationType modType = change.getNetChange().getModType();
@@ -162,7 +162,7 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
       getJdbcClient().runBatchUpdate(connection, INSERT_COMMIT_ADDRESSING, insertData);
    }
 
-   private void manageBranchStates()  {
+   private void manageBranchStates() {
       updateBranchState(BranchState.MODIFIED, destinationBranch);
 
       BranchState sourceBranchState = sourceBranch.getBranchState();

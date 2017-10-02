@@ -30,7 +30,7 @@ public class Resource implements IResource {
    }
 
    @Override
-   public InputStream getContent()  {
+   public InputStream getContent() {
       try {
          return new BufferedInputStream(uri.toURL().openStream());
       } catch (IOException ex) {

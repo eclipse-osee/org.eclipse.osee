@@ -57,15 +57,15 @@ public class ArtifactTypeManager {
 
    private final static ArtifactFactoryManager factoryManager = new ArtifactFactoryManager();
 
-   private static ArtifactTypeCache getCache()  {
+   private static ArtifactTypeCache getCache() {
       return getCacheService().getArtifactTypeCache();
    }
 
-   private static IOseeCachingService getCacheService()  {
+   private static IOseeCachingService getCacheService() {
       return ServiceUtil.getOseeCacheService();
    }
 
-   public static Collection<ArtifactType> getArtifactTypesFromAttributeType(AttributeTypeId attributeType, BranchId branchToken)  {
+   public static Collection<ArtifactType> getArtifactTypesFromAttributeType(AttributeTypeId attributeType, BranchId branchToken) {
       Branch branch = getCacheService().getBranchCache().get(branchToken);
       List<ArtifactType> artifactTypes = new ArrayList<>();
       for (ArtifactType artifactType : getAllTypes()) {
@@ -76,12 +76,12 @@ public class ArtifactTypeManager {
       return artifactTypes;
    }
 
-   public static Collection<ArtifactType> getValidArtifactTypes(BranchId branch)  {
+   public static Collection<ArtifactType> getValidArtifactTypes(BranchId branch) {
       // TODO Filter artifact types by branch
       return getAllTypes();
    }
 
-   public static Collection<ArtifactType> getConcreteArtifactTypes(BranchId branch)  {
+   public static Collection<ArtifactType> getConcreteArtifactTypes(BranchId branch) {
       Collection<ArtifactType> types = getAllTypes();
       Iterator<ArtifactType> iterator = types.iterator();
       while (iterator.hasNext()) {
@@ -96,7 +96,7 @@ public class ArtifactTypeManager {
    /**
     * @return Returns all of the descriptors.
     */
-   public static Collection<ArtifactType> getAllTypes()  {
+   public static Collection<ArtifactType> getAllTypes() {
       return getCache().getAll();
    }
 
@@ -104,7 +104,7 @@ public class ArtifactTypeManager {
     * @return Returns the artifact type matching the guid
     * @param guid artifact type guid to match
     */
-   public static ArtifactType getTypeByGuid(Long guid)  {
+   public static ArtifactType getTypeByGuid(Long guid) {
       if (guid == null) {
          throw new OseeArgumentException("[%s] is not a valid guid", guid);
       }
@@ -123,7 +123,7 @@ public class ArtifactTypeManager {
     * @return Returns the artifact type matching the name
     * @param name artifact type name to match
     */
-   public static ArtifactType getType(String name)  {
+   public static ArtifactType getType(String name) {
       ArtifactType artifactType = getCache().getUniqueByName(name);
       if (artifactType == null) {
          throw new OseeTypeDoesNotExist("Artifact type [%s] is not available.", name);
@@ -131,7 +131,7 @@ public class ArtifactTypeManager {
       return artifactType;
    }
 
-   public static ArtifactType getType(ArtifactTypeId artifactType)  {
+   public static ArtifactType getType(ArtifactTypeId artifactType) {
       if (artifactType instanceof ArtifactType) {
          return (ArtifactType) artifactType;
       }
@@ -145,18 +145,18 @@ public class ArtifactTypeManager {
    /**
     * Get a new instance of type artifactTypeName
     */
-   public static Artifact addArtifact(ArtifactTypeId artifactType, BranchId branch)  {
+   public static Artifact addArtifact(ArtifactTypeId artifactType, BranchId branch) {
       return addArtifact(artifactType, branch, null, null);
    }
 
    /**
     * Get a new instance of type artifactTypeName and set it's name.
     */
-   public static Artifact addArtifact(ArtifactTypeId artifactType, BranchId branch, String name)  {
+   public static Artifact addArtifact(ArtifactTypeId artifactType, BranchId branch, String name) {
       return addArtifact(artifactType, branch, name, null);
    }
 
-   public static Artifact addArtifact(ArtifactTypeId artifactType, BranchId branch, String name, String guid)  {
+   public static Artifact addArtifact(ArtifactTypeId artifactType, BranchId branch, String name, String guid) {
       return getFactory(artifactType).makeNewArtifact(branch, artifactType, name, guid);
    }
 
@@ -165,7 +165,7 @@ public class ArtifactTypeManager {
       return getFactory(artifactType).makeNewArtifact(branch, artifactType, name, guid, uuid);
    }
 
-   public static Artifact addArtifact(ArtifactToken artifactToken, BranchId branch)  {
+   public static Artifact addArtifact(ArtifactToken artifactToken, BranchId branch) {
       return addArtifact(artifactToken.getArtifactType(), branch, artifactToken.getName(), artifactToken.getGuid(),
          artifactToken.getUuid());
    }
@@ -173,7 +173,7 @@ public class ArtifactTypeManager {
    private static final String COUNT_ARTIFACT_OCCURRENCE =
       "select count(1) from (select DISTINCT(art_id) FROM osee_artifact where art_type_id = ?) t1";
 
-   public static void purgeArtifactType(ArtifactTypeId artifactType)  {
+   public static void purgeArtifactType(ArtifactTypeId artifactType) {
       int artifactCount = ConnectionHandler.getJdbcClient().fetch(0, COUNT_ARTIFACT_OCCURRENCE, artifactType);
 
       if (artifactCount != 0) {
@@ -190,7 +190,7 @@ public class ArtifactTypeManager {
     * @param purgeArtifactTypes types to be converted and purged
     * @param newArtifactType new type to convert any existing artifacts of the old type
     */
-   public static void purgeArtifactTypesWithCheck(Collection<? extends ArtifactTypeId> purgeArtifactTypes, ArtifactTypeId newArtifactType)  {
+   public static void purgeArtifactTypesWithCheck(Collection<? extends ArtifactTypeId> purgeArtifactTypes, ArtifactTypeId newArtifactType) {
       for (ArtifactTypeId purgeArtifactType : purgeArtifactTypes) {
          // find all artifact of this type on all branches and make a unique list for type change (since it is not by branch)
          Set<Artifact> artifacts = new LinkedHashSet<>();
@@ -221,7 +221,7 @@ public class ArtifactTypeManager {
    /**
     * @return Returns the ArtifactType factory.
     */
-   public static ArtifactFactory getFactory(ArtifactTypeId artifactType)  {
+   public static ArtifactFactory getFactory(ArtifactTypeId artifactType) {
       if (artifactType == null) {
          throw new OseeArgumentException("Artifact Type cannot be null");
       }

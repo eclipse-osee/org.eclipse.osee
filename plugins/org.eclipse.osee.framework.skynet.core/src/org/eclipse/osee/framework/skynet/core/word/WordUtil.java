@@ -73,7 +73,7 @@ public class WordUtil {
     * ensure all versions of MS Word will function correctly.
     */
 
-   public static String reassignBookMarkID(String content)  {
+   public static String reassignBookMarkID(String content) {
       return updateBookmarkIds.fixTags(content);
    }
 
@@ -113,7 +113,7 @@ public class WordUtil {
     * @throws IllegalArgumentException if branch is null
     * @return returns true if some addressing was removed, otherwise false
     */
-   public static boolean revertNonusefulWordChanges(int artId, BranchId branch, String table)  {
+   public static boolean revertNonusefulWordChanges(int artId, BranchId branch, String table) {
       if (branch == null) {
          throw new IllegalArgumentException("branch can not be null");
       }

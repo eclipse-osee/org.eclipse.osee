@@ -74,7 +74,7 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
       return String.format("Group Search - %s", getGroupSearchName());
    }
 
-   public void getProduct()  {
+   public void getProduct() {
       if (groupName == null) {
          return;
       }
@@ -87,7 +87,7 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType)  {
+   public Collection<Artifact> performSearch(SearchType searchType) {
       getProduct();
       if (getSearchGroups() == null) {
          return EMPTY_SET;
@@ -113,7 +113,7 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
    }
 
    @Override
-   public void performUI(SearchType searchType)  {
+   public void performUI(SearchType searchType) {
       super.performUI(searchType);
       if (groupName != null) {
          return;

@@ -27,17 +27,17 @@ public abstract class ArtifactImageProvider {
     * call. Alternatively, providers that wish to defer to the basic implementation should call return
     * super.setupImage()
     */
-   public String setupImage(Artifact artifact)  {
+   public String setupImage(Artifact artifact) {
       return ArtifactImageManager.setupImageNoProviders(artifact);
    }
 
-   public String setupImage(IArtifactType artifactType)  {
+   public String setupImage(IArtifactType artifactType) {
       return ArtifactImageManager.setupImage(BaseImage.getBaseImageEnum(artifactType));
    }
 
    /**
     * Provide image artifact type registration by ImageManager.register.* calls
     */
-   public abstract void init() ;
+   public abstract void init();
 
 }

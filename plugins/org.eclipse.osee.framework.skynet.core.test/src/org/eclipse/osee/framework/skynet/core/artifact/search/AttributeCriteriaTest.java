@@ -26,7 +26,7 @@ import org.junit.Test;
 public class AttributeCriteriaTest {
 
    @Test
-   public void testAddToQueryBuilder()  {
+   public void testAddToQueryBuilder() {
       AttributeCriteria criteria = new AttributeCriteria(CoreAttributeTypes.Active);
       QueryBuilder builder = mock(QueryBuilder.class);
       criteria.addToQueryBuilder(builder);

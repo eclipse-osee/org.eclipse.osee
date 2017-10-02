@@ -31,7 +31,7 @@ public class TransactionLoadProcessor extends LoadProcessor<TxOrcsData, Transact
    }
 
    @Override
-   protected TxOrcsData createData(Object conditions, TransactionObjectFactory factory, JdbcStatement chStmt, Options options)  {
+   protected TxOrcsData createData(Object conditions, TransactionObjectFactory factory, JdbcStatement chStmt, Options options) {
       BranchId branch = BranchId.create(chStmt.getLong("branch_id"), OptionsUtil.getFromBranchView(options));
       Long localId = chStmt.getLong("transaction_id");
       Long buildId = chStmt.getLong("build_id");

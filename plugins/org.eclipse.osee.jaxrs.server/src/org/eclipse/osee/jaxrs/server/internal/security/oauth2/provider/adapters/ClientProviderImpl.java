@@ -222,8 +222,8 @@ public class ClientProviderImpl implements ClientProvider {
 
    private static <K, V> LoadingCache<K, V> newCache(CacheLoader<K, V> loader, int cacheMaxSize, long cacheEvictTimeoutMillis) {
       return CacheBuilder.newBuilder()//
-      .maximumSize(cacheMaxSize)//
-      .expireAfterWrite(cacheEvictTimeoutMillis, TimeUnit.MILLISECONDS)//
-      .build(loader);
+         .maximumSize(cacheMaxSize)//
+         .expireAfterWrite(cacheEvictTimeoutMillis, TimeUnit.MILLISECONDS)//
+         .build(loader);
    }
 }

@@ -101,9 +101,9 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
 
       void onLoadStart();
 
-      void onData(final AttributeData data, final LoadDataHandler handler) ;
+      void onData(final AttributeData data, final LoadDataHandler handler);
 
-      void onLoadEnd() ;
+      void onLoadEnd();
 
    }
 
@@ -136,7 +136,7 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
       }
 
       @Override
-      public void onData(AttributeData data, LoadDataHandler handler)  {
+      public void onData(AttributeData data, LoadDataHandler handler) {
          try {
             addToQueue(data, handler);
          } catch (Exception ex) {
@@ -216,7 +216,7 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
       }
 
       @Override
-      public void onLoadEnd()  {
+      public void onLoadEnd() {
          dataToProcess.offer(END_OF_QUEUE);
          try {
             waitForResults();
@@ -267,26 +267,26 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
       }
 
       @Override
-      public void onLoadStart()  {
+      public void onLoadStart() {
          reset();
          consumer.onLoadStart();
          super.onLoadStart();
       }
 
       @Override
-      public void onData(AttributeData data)  {
+      public void onData(AttributeData data) {
          super.onData(data);
          consumer.onData(data, this);
       }
 
       @Override
-      public void onData(AttributeData data, MatchLocation match)  {
+      public void onData(AttributeData data, MatchLocation match) {
          acceptedArtIds.add(data.getArtifactId());
          forwardArtifacts(data.getArtifactId());
          super.onData(data, match);
       }
 
-      private void forwardArtifacts(int artifactId)  {
+      private void forwardArtifacts(int artifactId) {
          LoadDataBuffer buffer = getBuffer();
          LoadDataHandler handler = getHandler();
          if (handler != null) {
@@ -309,7 +309,7 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
          }
       }
 
-      private void forwardArtifacts()  {
+      private void forwardArtifacts() {
          // Ensure all data required by the artifact is forwarded to the handler
          // This needs to be done in order to avoid missing relation data
          // coming in after the artifact data has been forwarded.
@@ -319,7 +319,7 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
       }
 
       @Override
-      public void onLoadEnd()  {
+      public void onLoadEnd() {
          try {
             consumer.onLoadEnd();
             forwardArtifacts();
@@ -373,13 +373,13 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
       }
 
       @Override
-      public void onData(ArtifactData data)  {
+      public void onData(ArtifactData data) {
          incrementCount();
          super.onData(data);
       }
 
       @Override
-      public void onDynamicData(Map<String, Object> data)  {
+      public void onDynamicData(Map<String, Object> data) {
          incrementCount();
          super.onDynamicData(data);
       }
@@ -400,17 +400,17 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
       }
 
       @Override
-      public void onData(ArtifactData data)  {
+      public void onData(ArtifactData data) {
          buffer.addData(data);
       }
 
       @Override
-      public void onData(AttributeData data)  {
+      public void onData(AttributeData data) {
          buffer.addData(data);
       }
 
       @Override
-      public void onData(RelationData data)  {
+      public void onData(RelationData data) {
          buffer.addData(data);
       }
 

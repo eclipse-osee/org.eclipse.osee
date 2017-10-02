@@ -64,7 +64,7 @@ public class WorkPackageUtilityTest {
    private WorkPackageUtility util;
 
    @Before
-   public void setup()  {
+   public void setup() {
       MockitoAnnotations.initMocks(this);
       when(teamWf.isTeamWorkflow()).thenReturn(true);
 

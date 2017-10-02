@@ -35,7 +35,7 @@ public class QueryContextLoadExecutor extends AbstractLoadExecutor {
    }
 
    @Override
-   public void load(HasCancellation cancellation, LoadDataHandler handler, CriteriaOrcsLoad criteria, Options options)  {
+   public void load(HasCancellation cancellation, LoadDataHandler handler, CriteriaOrcsLoad criteria, Options options) {
       int fetchSize = LoadUtil.computeFetchSize(MIN_FETCH_SIZE);
       ObjectQueryType typeToLoad = queryContext.getOrcsObjectType();
       switch (typeToLoad) {

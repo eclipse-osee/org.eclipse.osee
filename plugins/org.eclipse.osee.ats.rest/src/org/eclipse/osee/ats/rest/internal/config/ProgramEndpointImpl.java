@@ -34,7 +34,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 /**
  * Donald G. Dunne
  */
-public class ProgramEndpointImpl extends BaseConfigEndpointImpl<JaxProgram>implements ProgramEndpointApi {
+public class ProgramEndpointImpl extends BaseConfigEndpointImpl<JaxProgram> implements ProgramEndpointApi {
 
    private final long countryUuid;
 

@@ -70,7 +70,7 @@ public class ChangeArtifactType {
    private static final IStatus promptStatus = new Status(IStatus.WARNING, Activator.PLUGIN_ID, 257, "", null);
    private final Map<GammaId, ArtifactId> gammaToArtId = new HashMap<>();
 
-   public static void changeArtifactType(Collection<? extends Artifact> inputArtifacts, ArtifactTypeId newArtifactTypeToken, boolean prompt)  {
+   public static void changeArtifactType(Collection<? extends Artifact> inputArtifacts, ArtifactTypeId newArtifactTypeToken, boolean prompt) {
 
       ChangeArtifactType app = new ChangeArtifactType();
       if (inputArtifacts.isEmpty()) {
@@ -120,7 +120,7 @@ public class ChangeArtifactType {
       sendLocalAndRemoteEvents(modifiedArtifacts);
    }
 
-   private void sendLocalAndRemoteEvents(Collection<? extends Artifact> artifacts)  {
+   private void sendLocalAndRemoteEvents(Collection<? extends Artifact> artifacts) {
       ArtifactEvent artifactEvent = new ArtifactEvent(artifacts.iterator().next().getBranch());
       for (EventBasicGuidArtifact guidArt : artifactChanges) {
          artifactEvent.addArtifact(guidArt);
@@ -158,7 +158,7 @@ public class ChangeArtifactType {
       }
    }
 
-   private void addTransaction(Artifact artifact, HashMap<BranchId, SkynetTransaction> txMap)  {
+   private void addTransaction(Artifact artifact, HashMap<BranchId, SkynetTransaction> txMap) {
       BranchId branch = artifact.getBranch();
       SkynetTransaction transaction = txMap.get(branch);
       if (transaction == null) {
@@ -192,7 +192,7 @@ public class ChangeArtifactType {
       message.append("Relation Types:\n" + relationTypes + "\n");
    }
 
-   private void deleteInvalidAttributes(Artifact artifact, ArtifactTypeId artifactType)  {
+   private void deleteInvalidAttributes(Artifact artifact, ArtifactTypeId artifactType) {
 
       for (AttributeTypeId attributeType : artifact.getAttributeTypes()) {
          ArtifactType aType = ArtifactTypeManager.getType(artifactType);
@@ -203,7 +203,7 @@ public class ChangeArtifactType {
       }
    }
 
-   private void deleteInvalidRelations(Artifact artifact, ArtifactTypeId artifactType)  {
+   private void deleteInvalidRelations(Artifact artifact, ArtifactTypeId artifactType) {
 
       for (RelationLink link : artifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
          if (RelationTypeManager.getRelationSideMax(link.getRelationType(), artifactType,
@@ -218,7 +218,7 @@ public class ChangeArtifactType {
     * @return true if the user accepts the deletion of the attributes and relations that are not compatible for the new
     * artifact type else false.
     */
-   private boolean doesUserAcceptArtifactChange(IArtifactType artifactType)  {
+   private boolean doesUserAcceptArtifactChange(IArtifactType artifactType) {
       if (!relationTypes.isEmpty() || !attributeTypes.isEmpty()) {
 
          StringBuilder sb = new StringBuilder(1024);
@@ -238,7 +238,7 @@ public class ChangeArtifactType {
       }
    }
 
-   private void changeArtifactTypeOutsideofHistory(Collection<? extends Artifact> inputArtifacts, ArtifactType newArtifactType)  {
+   private void changeArtifactTypeOutsideofHistory(Collection<? extends Artifact> inputArtifacts, ArtifactType newArtifactType) {
       List<Object[]> insertData = new ArrayList<>();
 
       String UPDATE = "UPDATE osee_artifact SET art_type_id = ? WHERE art_id = ?";

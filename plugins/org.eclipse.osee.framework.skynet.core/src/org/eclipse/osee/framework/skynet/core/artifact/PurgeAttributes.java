@@ -44,13 +44,13 @@ public class PurgeAttributes extends AbstractDbTxOperation {
    private final Collection<Attribute<?>> attributesToPurge;
    private boolean success;
 
-   public PurgeAttributes(Collection<Attribute<?>> attributesToPurge)  {
+   public PurgeAttributes(Collection<Attribute<?>> attributesToPurge) {
       super(ConnectionHandler.getJdbcClient(), "Purge Attributes", Activator.PLUGIN_ID);
       this.attributesToPurge = attributesToPurge;
    }
 
    @Override
-   protected void doTxWork(IProgressMonitor monitor, JdbcConnection connection)  {
+   protected void doTxWork(IProgressMonitor monitor, JdbcConnection connection) {
       try (IdJoinQuery idJoin = populateIdJoin(connection)) {
          getJdbcClient().runPreparedUpdate(connection, DELETE_TXS, idJoin.getQueryId());
          getJdbcClient().runPreparedUpdate(connection, DELETE_ATTR, idJoin.getQueryId());
@@ -72,7 +72,7 @@ public class PurgeAttributes extends AbstractDbTxOperation {
    }
 
    @Override
-   protected void handleTxFinally(IProgressMonitor monitor)  {
+   protected void handleTxFinally(IProgressMonitor monitor) {
       super.handleTxFinally(monitor);
       if (success) {
          Set<EventBasicGuidArtifact> artifactChanges = new HashSet<>();

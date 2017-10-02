@@ -90,7 +90,7 @@ public class WorldReloadTab extends FormPage {
       bodyComp.layout();
    }
 
-   private void updateTitleBar()  {
+   private void updateTitleBar() {
       String displayableTitle = Strings.escapeAmpersands(provider.getName());
       if (managedForm != null && Widgets.isAccessible(managedForm.getForm())) {
          managedForm.getForm().setText(displayableTitle);

@@ -53,7 +53,7 @@ public class GraphUtilTest {
    }
 
    @Test
-   public void testAsProviderBranchNotSame()  {
+   public void testAsProviderBranchNotSame() {
       assertNotNull(provider);
 
       thrown.expect(OseeArgumentException.class);
@@ -63,7 +63,7 @@ public class GraphUtilTest {
    }
 
    @Test
-   public void testAsProviderTxIdNotSame()  {
+   public void testAsProviderTxIdNotSame() {
       assertNotNull(provider);
 
       TransactionId txId = TransactionId.valueOf(123456789);
@@ -75,7 +75,7 @@ public class GraphUtilTest {
    }
 
    @Test
-   public void testAsProviderGetName()  {
+   public void testAsProviderGetName() {
       assertNotNull(provider);
       assertEquals(graph, provider.getGraph(session, COMMON, TRANSACTION_ID));
    }

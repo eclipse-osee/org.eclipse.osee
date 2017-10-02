@@ -54,7 +54,7 @@ public class BranchResource {
     */
    @GET
    @Produces(MediaType.TEXT_HTML)
-   public String getAsHtml()  {
+   public String getAsHtml() {
       BranchQuery query = orcsApi.getQueryFactory().branchQuery();
       ResultSet<BranchReadable> results = query.andId(branchId).getResults();
       HtmlWriter writer = new HtmlWriter(uriInfo);

@@ -109,12 +109,12 @@ public class MailMessageFactory {
       String html = String.format("<html><body><big>%s</big><p>%s</p></body></html>", subjectWithCounter, text);
 
       MailMessage message = MailMessage.newBuilder() //
-      .from(adminEmail) //
-      .recipient(adminEmail) //
-      .replyTo(adminEmail) //
-      .subject(subjectWithCounter) //
-      .addHtml(html) //
-      .build();
+         .from(adminEmail) //
+         .recipient(adminEmail) //
+         .replyTo(adminEmail) //
+         .subject(subjectWithCounter) //
+         .addHtml(html) //
+         .build();
       return message;
    }
 

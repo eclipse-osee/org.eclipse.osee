@@ -39,7 +39,7 @@ public class SprintArtifact extends CollectorArtifact implements IAgileSprint {
    }
 
    @Override
-   public AbstractWorkflowArtifact getParentAWA()  {
+   public AbstractWorkflowArtifact getParentAWA() {
       return null;
    }
 
@@ -69,7 +69,7 @@ public class SprintArtifact extends CollectorArtifact implements IAgileSprint {
    }
 
    @Override
-   public List<Artifact> getMembers()  {
+   public List<Artifact> getMembers() {
       return AtsClientService.get().getSprintItemsCache().getMembers(this);
    }
 

@@ -33,7 +33,7 @@ public class XArtifactSelectWidgetWithSave extends XArtifactSelectWidget impleme
       addXModifiedListener(new DirtyListener());
    }
 
-   public Artifact getStored()  {
+   public Artifact getStored() {
       Object obj = artifact.getSoleAttributeValue(attributeType, null);
       if (obj instanceof Integer) {
          return ArtifactQuery.getArtifactFromId((Integer) obj, artifact.getBranch());
@@ -49,12 +49,12 @@ public class XArtifactSelectWidgetWithSave extends XArtifactSelectWidget impleme
    }
 
    @Override
-   public void saveToArtifact()  {
+   public void saveToArtifact() {
       artifact.setSoleAttributeValue(attributeType, getSelection());
    }
 
    @Override
-   public void revert()  {
+   public void revert() {
       setAttributeType(getArtifact(), getAttributeType());
    }
 
@@ -84,7 +84,7 @@ public class XArtifactSelectWidgetWithSave extends XArtifactSelectWidget impleme
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeTypeName)  {
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeTypeName) {
       this.artifact = artifact;
       this.attributeType = attributeTypeName;
       Artifact storedArt = getStored();

@@ -39,7 +39,7 @@ public class RelationOrderRenderer {
       this.guidResolver = guidResolver;
    }
 
-   private void writeTableRow(WordMLProducer writer, RelationType relationType, RelationSide side, String sorterName, List<String> orderedData)  {
+   private void writeTableRow(WordMLProducer writer, RelationType relationType, RelationSide side, String sorterName, List<String> orderedData) {
       writer.startTableRow();
       String relationName = relationType.getName();
       String relationSideName = relationType.getSideName(side);

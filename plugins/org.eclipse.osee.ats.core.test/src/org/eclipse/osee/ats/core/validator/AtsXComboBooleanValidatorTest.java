@@ -49,7 +49,7 @@ public class AtsXComboBooleanValidatorTest {
    }
 
    @Test
-   public void testValidateTransition()  {
+   public void testValidateTransition() {
       MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
       widgetDef.setXWidgetName("xLabel");
 

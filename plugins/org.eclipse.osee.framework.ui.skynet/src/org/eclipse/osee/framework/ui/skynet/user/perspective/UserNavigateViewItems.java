@@ -69,7 +69,7 @@ public class UserNavigateViewItems implements XNavigateViewItems, IXNavigateComm
       }
    }
 
-   public void addOseePeerSectionChildren(XNavigateItem parentItem)  {
+   public void addOseePeerSectionChildren(XNavigateItem parentItem) {
       try {
          items.add(new XNavigateItemAction(parentItem, new OpenUsersInMassEditor("Open Active Users", Active.Active),
             FrameworkImage.USER));

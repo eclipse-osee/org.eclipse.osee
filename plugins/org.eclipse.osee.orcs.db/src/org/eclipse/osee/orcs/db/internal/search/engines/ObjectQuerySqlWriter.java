@@ -66,13 +66,13 @@ public class ObjectQuerySqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public void build(List<SqlHandler<?>> handlers)  {
+   public void build(List<SqlHandler<?>> handlers) {
       super.build(handlers);
       getContext().setObjectDescription(fieldResolver.getResult());
    }
 
    @Override
-   protected void write(Iterable<SqlHandler<?>> handlers)  {
+   protected void write(Iterable<SqlHandler<?>> handlers) {
       withTxFilterClause = null;
       fieldResolver.reset();
       reset();
@@ -109,7 +109,7 @@ public class ObjectQuerySqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public void writeSelect(Iterable<SqlHandler<?>> handlers)  {
+   public void writeSelect(Iterable<SqlHandler<?>> handlers) {
       if (isCountQueryType()) {
          throw new UnsupportedOperationException("Count dynamic query not supported");
       } else {
@@ -150,7 +150,7 @@ public class ObjectQuerySqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public void writeGroupAndOrder()  {
+   public void writeGroupAndOrder() {
       if (OptionsUtil.isHistorical(getOptions())) {
          throw new UnsupportedOperationException("Historical dynamic query not supported");
       }
@@ -173,7 +173,7 @@ public class ObjectQuerySqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public String getWithClauseTxBranchFilter(String txsAlias, boolean deletedPredicate)  {
+   public String getWithClauseTxBranchFilter(String txsAlias, boolean deletedPredicate) {
       StringBuilder sb = new StringBuilder();
 
       if (deletedPredicate) {

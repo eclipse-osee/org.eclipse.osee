@@ -34,11 +34,11 @@ public class OseeInfo {
       return getValue(ConnectionHandler.getJdbcClient(), key, defaultValue, (long) Integer.MAX_VALUE);
    }
 
-   public static String getValue(String key)  {
+   public static String getValue(String key) {
       return getValue(key, (long) Integer.MAX_VALUE);
    }
 
-   public static String getValue(String key, Long maxStaleness)  {
+   public static String getValue(String key, Long maxStaleness) {
       return getValue(ConnectionHandler.getJdbcClient(), key, "", maxStaleness);
    }
 
@@ -59,13 +59,13 @@ public class OseeInfo {
       return value;
    }
 
-   public static void setValue(String key, String value)  {
+   public static void setValue(String key, String value) {
       ConnectionHandler.runPreparedUpdate(DELETE_KEY_SQL, key);
       ConnectionHandler.runPreparedUpdate(INSERT_KEY_VALUE_SQL, key, value);
       cacheValue(key, value);
    }
 
-   public static String getDatabaseGuid()  {
+   public static String getDatabaseGuid() {
       return getValue(DB_ID_KEY);
    }
 

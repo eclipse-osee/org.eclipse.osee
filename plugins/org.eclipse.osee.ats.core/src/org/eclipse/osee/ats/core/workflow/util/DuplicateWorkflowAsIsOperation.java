@@ -44,7 +44,7 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
    }
 
    @Override
-   public XResultData run()  {
+   public XResultData run() {
       XResultData results = validate();
       if (results.isErrors()) {
          return results;

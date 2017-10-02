@@ -445,11 +445,11 @@ public final class ReplaceWithBaselineTest {
       return artifact;
    }
 
-   private void revertArtifacts(Collection<Change> changes, Collection<Artifact> artifactsToRevert)  {
+   private void revertArtifacts(Collection<Change> changes, Collection<Artifact> artifactsToRevert) {
       Operations.executeWorkAndCheckStatus(new ReplaceArtifactWithBaselineOperation(changes, artifactsToRevert));
    }
 
-   private void revertAttributes(Collection<Change> changes, Attribute<?> attributeToRevert)  {
+   private void revertAttributes(Collection<Change> changes, Attribute<?> attributeToRevert) {
       List<Change> attrChanges = new ArrayList<>(1);
 
       for (Change change : changes) {
@@ -460,13 +460,13 @@ public final class ReplaceWithBaselineTest {
       Operations.executeWorkAndCheckStatus(new ReplaceAttributeWithBaselineOperation(attrChanges));
    }
 
-   private List<Change> getBranchChanges(BranchId branch)  {
+   private List<Change> getBranchChanges(BranchId branch) {
       List<Change> changes = new ArrayList<>();
       Operations.executeWorkAndCheckStatus(ChangeManager.comparedToParent(branch, changes), MONITOR);
       return changes;
    }
 
-   void createArtifact(String name)  {
+   void createArtifact(String name) {
       ArtifactTypeManager.addArtifact(DOC, workingBranch, name);
    }
 

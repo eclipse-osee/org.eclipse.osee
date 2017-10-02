@@ -93,14 +93,14 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    @Override
-   public Collection<ArtifactId> getItemIds()  {
+   public Collection<ArtifactId> getItemIds() {
       onlyIds = new LinkedList<>();
       getItems();
       return onlyIds;
    }
 
    @Override
-   public <T extends IAtsWorkItem> Collection<T> getItems()  {
+   public <T extends IAtsWorkItem> Collection<T> getItems() {
       Set<IArtifactType> allArtTypes = getAllArtTypes();
 
       List<IArtifactType> teamWorkflowArtTypes = getTeamWorkflowArtTypes(allArtTypes);
@@ -504,13 +504,13 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    @Override
-   public IAtsQuery andTeam(IAtsTeamDefinition teamDef)  {
+   public IAtsQuery andTeam(IAtsTeamDefinition teamDef) {
       teamDefUuids.add(teamDef.getId());
       return this;
    }
 
    @Override
-   public IAtsQuery andStateType(StateType... stateType)  {
+   public IAtsQuery andStateType(StateType... stateType) {
       this.stateTypes = Arrays.asList(stateType);
       return this;
    }
@@ -521,7 +521,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    @Override
-   public IAtsQuery andAttr(AttributeTypeId attributeType, Collection<String> values, QueryOption... queryOptions)  {
+   public IAtsQuery andAttr(AttributeTypeId attributeType, Collection<String> values, QueryOption... queryOptions) {
       andAttr.add(new AtsAttributeQuery(attributeType, values, queryOptions));
       return this;
    }
@@ -556,7 +556,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    @Override
-   public IAtsWorkItemFilter andFilter()  {
+   public IAtsWorkItemFilter andFilter() {
       return new AtsWorkItemFilter(getItems(), services);
    }
 

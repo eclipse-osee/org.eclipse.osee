@@ -105,7 +105,7 @@ public class SwtXWidgetRenderer {
       return outComp;
    }
 
-   protected XWidget setupXWidget(XWidgetRendererItem xWidgetLayoutData, boolean isEditable)  {
+   protected XWidget setupXWidget(XWidgetRendererItem xWidgetLayoutData, boolean isEditable) {
       XWidget xWidget = xWidgetLayoutData.getXWidget();
       xWidgets.add(xWidget);
 
@@ -127,7 +127,7 @@ public class SwtXWidgetRenderer {
       }
    }
 
-   public void createBody(IManagedForm managedForm, Composite parent, Artifact artifact, XModifiedListener xModListener, boolean isEditable)  {
+   public void createBody(IManagedForm managedForm, Composite parent, Artifact artifact, XModifiedListener xModListener, boolean isEditable) {
       final FormToolkit toolkit = managedForm != null ? managedForm.getToolkit() : null;
 
       Composite topLevelComp = createComposite(parent, toolkit);
@@ -296,7 +296,7 @@ public class SwtXWidgetRenderer {
     * successfully. When a page is made up of two or more widgets that need to work together, these required flags need
     * to be set/unset whenever a widget from the group gets modified.
     */
-   private void refreshOrAndXOrRequiredFlags()  {
+   private void refreshOrAndXOrRequiredFlags() {
       // Handle orRequired
       for (Collection<String> orReq : orRequired) {
          // If group is complete, change all to black, else all red
@@ -400,7 +400,7 @@ public class SwtXWidgetRenderer {
    /**
     * @return true if ANY item in group is entered
     */
-   public boolean isOrGroupFromAttrNameComplete(String name)  {
+   public boolean isOrGroupFromAttrNameComplete(String name) {
       for (String aName : getOrRequiredGroup(name)) {
          XWidgetRendererItem layoutData = getLayoutData(aName);
          if (layoutData.getXWidget() != null && layoutData.getXWidget().isValid().isOK()) {
@@ -413,7 +413,7 @@ public class SwtXWidgetRenderer {
    /**
     * @return true if only ONE item in group is entered
     */
-   public boolean isXOrGroupFromAttrNameComplete(String attrName)  {
+   public boolean isXOrGroupFromAttrNameComplete(String attrName) {
       boolean oneFound = false;
       for (String aName : getXOrRequiredGroup(attrName)) {
          XWidgetRendererItem layoutData = getLayoutData(aName);
@@ -449,7 +449,7 @@ public class SwtXWidgetRenderer {
       xorRequired.add(names);
    }
 
-   public void processlayoutDatas(String xWidgetXml)  {
+   public void processlayoutDatas(String xWidgetXml) {
       try {
          Document document = Jaxp.readXmlDocument(xWidgetXml);
          Element rootElement = document.getDocumentElement();

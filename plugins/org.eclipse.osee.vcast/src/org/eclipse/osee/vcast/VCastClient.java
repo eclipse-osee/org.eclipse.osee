@@ -26,11 +26,11 @@ public class VCastClient {
       // Static Factory
    }
 
-   public static VCastDataStore newDataStore(String dbPath)  {
+   public static VCastDataStore newDataStore(String dbPath) {
       JdbcClient jdbcClient = JdbcClientBuilder.newBuilder()//
-      .dbDriver(JDBC_SQLITE_DRIVER)//
-      .dbUri(JDBC_SQLITE__CONNECTION_TEMPLATE, dbPath)//
-      .build();
+         .dbDriver(JDBC_SQLITE_DRIVER)//
+         .dbUri(JDBC_SQLITE__CONNECTION_TEMPLATE, dbPath)//
+         .build();
       return new VCastDataStoreImpl(jdbcClient);
    }
 }

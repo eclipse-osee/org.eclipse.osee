@@ -155,7 +155,7 @@ public class XOpenStoredSprintReportsButton extends XButton implements IArtifact
    }
 
    @Override
-   public void setArtifact(Artifact artifact)  {
+   public void setArtifact(Artifact artifact) {
       if (artifact.isOfType(AtsArtifactTypes.AgileSprint)) {
          this.sprint = (IAgileSprint) artifact;
       }

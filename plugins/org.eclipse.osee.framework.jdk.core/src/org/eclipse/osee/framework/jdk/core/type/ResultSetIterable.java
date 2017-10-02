@@ -40,7 +40,7 @@ public class ResultSetIterable<T> implements ResultSet<T> {
    }
 
    @Override
-   public T getAtMostOneOrNull()  {
+   public T getAtMostOneOrNull() {
       T result = null;
       int size = size();
       if (size > 1) {
@@ -52,7 +52,7 @@ public class ResultSetIterable<T> implements ResultSet<T> {
    }
 
    @Override
-   public T getExactlyOne()  {
+   public T getExactlyOne() {
       T result = getAtMostOneOrNull();
       if (result == null) {
          throw createDoesNotExistException();

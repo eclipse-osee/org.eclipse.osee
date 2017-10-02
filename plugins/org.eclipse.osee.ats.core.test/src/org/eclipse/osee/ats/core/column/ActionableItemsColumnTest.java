@@ -43,7 +43,7 @@ public class ActionableItemsColumnTest {
    // @formatter:on
 
    @Before
-   public void setup()  {
+   public void setup() {
       MockitoAnnotations.initMocks(this);
 
       when(action.getTeamWorkflows()).thenReturn(Arrays.asList(teamWf1, teamWf2));

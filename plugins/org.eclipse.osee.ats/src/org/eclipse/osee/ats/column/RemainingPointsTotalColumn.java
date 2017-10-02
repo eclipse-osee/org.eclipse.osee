@@ -47,7 +47,7 @@ public class RemainingPointsTotalColumn extends AbstractNumericTotalColumn {
    }
 
    @Override
-   protected int getPercentComplete(IAtsWorkItem workItem)  {
+   protected int getPercentComplete(IAtsWorkItem workItem) {
       return PercentCompleteTotalUtil.getPercentCompleteTotal(workItem, AtsClientService.get());
    }
 

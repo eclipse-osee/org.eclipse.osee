@@ -53,8 +53,8 @@ public class AuthenticationAdminImpl implements AuthenticationAdmin {
       logger.trace("Updating AuthenticationAdmin Config...");
 
       config = AuthenticationConfigurationBuilder.newBuilder()//
-      .properties(properties)//
-      .build();
+         .properties(properties)//
+         .build();
    }
 
    public void addAuthenticationProvider(AuthenticationProvider authenticationProvider) {

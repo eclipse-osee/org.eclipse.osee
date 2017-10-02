@@ -35,7 +35,7 @@ public class CriteriaArtifactType extends Criteria {
    }
 
    @Override
-   public void checkValid(Options options)  {
+   public void checkValid(Options options) {
       Conditions.checkNotNullOrEmpty(artifactTypes, "artifact types");
    }
 
@@ -43,7 +43,7 @@ public class CriteriaArtifactType extends Criteria {
       return artifactTypes;
    }
 
-   public Collection<? extends ArtifactTypeId> getTypes()  {
+   public Collection<? extends ArtifactTypeId> getTypes() {
       Collection<? extends ArtifactTypeId> toReturn;
       if (includeTypeInheritance) {
          Collection<ArtifactTypeId> typesToUse = new LinkedHashSet<>();

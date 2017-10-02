@@ -43,7 +43,7 @@ public class CopyAtsConfigurationOperationTest {
    }
 
    @Test
-   public void testDoWork()  {
+   public void testDoWork() {
       ConfigData data = CopyAtsValidationTest.getConfigData();
 
       XResultData rd = new XResultData(false);
@@ -64,7 +64,7 @@ public class CopyAtsConfigurationOperationTest {
       Assert.assertEquals(0, results.getTestNameToResultsMap().size());
    }
 
-   public static Set<IAtsActionableItem> getActionableItemsNameStartsWith(String prefix)  {
+   public static Set<IAtsActionableItem> getActionableItemsNameStartsWith(String prefix) {
       Set<IAtsActionableItem> artifacts = new HashSet<>();
       for (IAtsActionableItem aia : AtsClientService.get().getQueryService().createQuery(
          AtsArtifactTypes.ActionableItem).getItems(IAtsActionableItem.class)) {

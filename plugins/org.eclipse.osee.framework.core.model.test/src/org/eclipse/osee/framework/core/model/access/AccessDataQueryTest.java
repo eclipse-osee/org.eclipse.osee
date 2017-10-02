@@ -34,7 +34,7 @@ import org.junit.Test;
 public class AccessDataQueryTest {
 
    @Test
-   public void testBranch()  {
+   public void testBranch() {
       BranchId branchToCheck = CoreBranches.SYSTEM_ROOT;
 
       TestObject testObject = getTestData();
@@ -51,7 +51,7 @@ public class AccessDataQueryTest {
    }
 
    @Test
-   public void testArtifactType()  {
+   public void testArtifactType() {
       TestObject testObject = getTestData();
       AccessData data = testObject.getAccessData();
       ArtifactToken artifactToCheck = testObject.getArtifact();
@@ -67,7 +67,7 @@ public class AccessDataQueryTest {
    }
 
    @Test
-   public void testArtifact()  {
+   public void testArtifact() {
       TestObject testObject = getTestData();
       AccessData data = testObject.getAccessData();
       ArtifactToken artifactToCheck = testObject.getArtifact();
@@ -80,7 +80,7 @@ public class AccessDataQueryTest {
    }
 
    @Test
-   public void testAttributeType()  {
+   public void testAttributeType() {
       TestObject testObject = getTestData();
       AccessData data = testObject.getAccessData();
       ArtifactToken artifactToCheck = testObject.getArtifact();
@@ -111,7 +111,7 @@ public class AccessDataQueryTest {
    }
 
    @Test
-   public void testArtifactMatchesAll()  {
+   public void testArtifactMatchesAll() {
       AccessData data = new AccessData();
       IOseeBranch branch = CoreBranches.COMMON;
       IArtifactType artifactType = CoreArtifactTypes.AbstractSoftwareRequirement;
@@ -128,7 +128,7 @@ public class AccessDataQueryTest {
    }
 
    @Test
-   public void testBranchMatchesAll()  {
+   public void testBranchMatchesAll() {
       AccessData data = new AccessData();
       BranchId common = CoreBranches.COMMON;
       BranchId branch = CoreBranches.SYSTEM_ROOT;
@@ -143,7 +143,7 @@ public class AccessDataQueryTest {
    }
 
    @Test
-   public void testArtifactMatches()  {
+   public void testArtifactMatches() {
       IOseeBranch branch = CoreBranches.COMMON;
       ArtifactToken accessArtifact = new MockArtifact(GUID.create(), "test1", branch, CoreArtifactTypes.Folder, 45);
       ArtifactToken typeAccessArtifact = new MockArtifact(GUID.create(), "test2", branch, CoreArtifactTypes.Folder, 46);
@@ -177,7 +177,7 @@ public class AccessDataQueryTest {
       Assert.assertTrue(ps.matched());
    }
 
-   private TestObject getTestData()  {
+   private TestObject getTestData() {
       IOseeBranch branchToCheck = CoreBranches.SYSTEM_ROOT;
       IArtifactType artifactType = CoreArtifactTypes.AbstractSoftwareRequirement;
       ArtifactToken artifactToCheck = new MockArtifact(GUID.create(), "Hello", branchToCheck, artifactType, 12);

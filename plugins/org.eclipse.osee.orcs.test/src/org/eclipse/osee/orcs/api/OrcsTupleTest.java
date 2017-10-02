@@ -69,7 +69,7 @@ public class OrcsTupleTest {
    }
 
    @Test
-   public void testPutIfAbsent()  {
+   public void testPutIfAbsent() {
       String newValue = "hello";
       Long key = keyValueOps.putIfAbsent(newValue);
 
@@ -80,7 +80,7 @@ public class OrcsTupleTest {
    }
 
    @Test(expected = JdbcException.class)
-   public void testAddTuple2()  {
+   public void testAddTuple2() {
       TransactionBuilder transaction =
          orcsApi.getTransactionFactory().createTransaction(COMMON, OseeSystem, "Add Tuple2 Test");
       GammaId gamma_id = transaction.addTuple2(ViewApplicability, Everyone, "t");
@@ -93,7 +93,7 @@ public class OrcsTupleTest {
    }
 
    @Test(expected = JdbcException.class)
-   public void testAddTuple3()  {
+   public void testAddTuple3() {
       TransactionBuilder transaction =
          orcsApi.getTransactionFactory().createTransaction(COMMON, OseeSystem, "Add Tuple3 Test");
       GammaId gamma_id = transaction.addTuple3(LruDataTypes, "three", 244L, 12L);
@@ -106,7 +106,7 @@ public class OrcsTupleTest {
    }
 
    @Test(expected = JdbcException.class)
-   public void testAddTuple4()  {
+   public void testAddTuple4() {
       Tuple4Type<Long, Long, String, String> createTuple4Type = Tuple4Type.valueOf(DefaultFamily, 40L);
       TransactionBuilder transaction =
          orcsApi.getTransactionFactory().createTransaction(COMMON, OseeSystem, "Add Tuple4 Test");
@@ -120,7 +120,7 @@ public class OrcsTupleTest {
    }
 
    @Test
-   public void testGetTupleType2()  {
+   public void testGetTupleType2() {
       ResultSet<ArtifactReadable> branchViewArts =
          orcsApi.getQueryFactory().fromBranch(DemoBranches.SAW_Bld_1).andTypeEquals(
             CoreArtifactTypes.BranchView).getResults();

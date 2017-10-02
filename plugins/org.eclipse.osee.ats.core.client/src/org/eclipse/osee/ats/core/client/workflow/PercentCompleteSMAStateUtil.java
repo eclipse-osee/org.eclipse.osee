@@ -25,7 +25,7 @@ public class PercentCompleteSMAStateUtil {
    /**
     * Return Percent Complete working ONLY the current state (not children SMAs)
     */
-   public static int getPercentCompleteSMAState(Artifact artifact)  {
+   public static int getPercentCompleteSMAState(Artifact artifact) {
       if (artifact.isOfType(AtsArtifactTypes.Action)) {
          if (AtsClientService.get().getWorkItemService().getTeams(artifact).size() == 1) {
             return getPercentCompleteSMAState(
@@ -55,7 +55,7 @@ public class PercentCompleteSMAStateUtil {
    /**
     * Return Percent Complete working ONLY the SMA stateName (not children SMAs)
     */
-   public static int getPercentCompleteSMAState(Artifact artifact, IStateToken state)  {
+   public static int getPercentCompleteSMAState(Artifact artifact, IStateToken state) {
       if (artifact.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
          return getStateManager(artifact).getPercentComplete(state.getName());
       }

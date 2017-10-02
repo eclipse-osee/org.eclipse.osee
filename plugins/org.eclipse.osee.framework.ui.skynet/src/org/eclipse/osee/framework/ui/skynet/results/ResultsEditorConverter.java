@@ -43,7 +43,7 @@ public class ResultsEditorConverter {
       converters.add(new MultiTypeEditorTabConverter("HTML"));
    }
 
-   private IEditorTabConverter getConverter(String type)  {
+   private IEditorTabConverter getConverter(String type) {
       IEditorTabConverter toReturn = null;
       for (IEditorTabConverter converter : converters) {
          if (converter.getType().equalsIgnoreCase(type)) {
@@ -57,13 +57,13 @@ public class ResultsEditorConverter {
       return toReturn;
    }
 
-   private void checkForNull(String param, Object object)  {
+   private void checkForNull(String param, Object object) {
       if (object == null) {
          throw new OseeArgumentException("[%s] cannot be null", param);
       }
    }
 
-   public void convert(String type, Writer writer, IResultsEditorProvider provider)  {
+   public void convert(String type, Writer writer, IResultsEditorProvider provider) {
       checkForNull("Type", type);
       checkForNull("Writer", writer);
       checkForNull("IResultsEditorProvider", provider);
@@ -82,15 +82,15 @@ public class ResultsEditorConverter {
 
       public String getType();
 
-      public void canConvert(IResultsEditorTab tab) ;
+      public void canConvert(IResultsEditorTab tab);
 
-      public void convert(Writer writer, Collection<IResultsEditorTab> tabs) ;
+      public void convert(Writer writer, Collection<IResultsEditorTab> tabs);
 
    }
 
    private static abstract class AbstractEditorTabConverter implements IEditorTabConverter {
       @Override
-      public void canConvert(IResultsEditorTab tab)  {
+      public void canConvert(IResultsEditorTab tab) {
          if (!(tab instanceof IResultsEditorTableTab) && !(tab instanceof IResultsEditorHtmlTab)) {
             throw new OseeArgumentException(
                String.format("%s to type [%s] is not supported", tab.getClass(), getType()));
@@ -112,19 +112,19 @@ public class ResultsEditorConverter {
          "<!DOCTYPE html PUBLIC \"-//W3C//DTD html 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\"><html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\">\n";
       private final static String PAGE_TITLE = "<title>%s</title>\n";
       private final static String STYLE_CSS = "<style type=\"text/css\">\n" + //
-      " .blueBox { color: black; background-color:#999999; display: block; padding: 6px; margin-top: 8px; width:95%; cursor:pointer; border: solid;  border-color:black; border-width: thin; text-align: left; vertical-align: middle; }\n" + //
-      " .results { color: black; background-color:whitesmoke; display: block; padding: 6px; width:95%; cursor:pointer; border: solid; border-width: thin; text-align: left; vertical-align: middle; }\n" + //
-      "</style>\n";
+         " .blueBox { color: black; background-color:#999999; display: block; padding: 6px; margin-top: 8px; width:95%; cursor:pointer; border: solid;  border-color:black; border-width: thin; text-align: left; vertical-align: middle; }\n" + //
+         " .results { color: black; background-color:whitesmoke; display: block; padding: 6px; width:95%; cursor:pointer; border: solid; border-width: thin; text-align: left; vertical-align: middle; }\n" + //
+         "</style>\n";
       private final static String JAVASCRIPT = "<script type=\"text/javascript\">\n" + //
-      "function opendiv(id){\n" + //
-      "var divStyle = document.getElementById(id).style;\n" + //
-      "divStyle.display = (divStyle.display=='none') ? 'block':'none';\n" + //
-      "}\n";
+         "function opendiv(id){\n" + //
+         "var divStyle = document.getElementById(id).style;\n" + //
+         "divStyle.display = (divStyle.display=='none') ? 'block':'none';\n" + //
+         "}\n";
       private final static String START_HTML = "</script>\n</head>\n<body>\n";
       private final static String END_HTML = "\n</body>\n</html>\n";
 
       @Override
-      public void convert(Writer writer, Collection<IResultsEditorTab> tabs)  {
+      public void convert(Writer writer, Collection<IResultsEditorTab> tabs) {
          try {
             writer.write(HTML_HEADER);
             writer.write(String.format(PAGE_TITLE, "Report"));
@@ -174,14 +174,14 @@ public class ResultsEditorConverter {
    private final static class ExcelEditorTabConverter extends AbstractEditorTabConverter {
 
       @Override
-      public void canConvert(IResultsEditorTab tab)  {
+      public void canConvert(IResultsEditorTab tab) {
          if (!(tab instanceof IResultsEditorTableTab)) {
             throw new OseeArgumentException("%s to type %s is not supported", tab.getClass(), getType().toUpperCase());
          }
       }
 
       @Override
-      public void convert(Writer writer, Collection<IResultsEditorTab> tabs)  {
+      public void convert(Writer writer, Collection<IResultsEditorTab> tabs) {
          try {
             ISheetWriter sheetWriter = new ExcelXmlWriter(writer);
             for (IResultsEditorTab rawTab : tabs) {
@@ -220,14 +220,14 @@ public class ResultsEditorConverter {
       }
 
       @Override
-      public void canConvert(IResultsEditorTab tab)  {
+      public void canConvert(IResultsEditorTab tab) {
          if (!(tab instanceof IResultsEditorTableTab)) {
             throw new OseeArgumentException("%s to type %s is not supported", tab.getClass(), getType().toUpperCase());
          }
       }
 
       @Override
-      public void convert(Writer writer, Collection<IResultsEditorTab> tabs)  {
+      public void convert(Writer writer, Collection<IResultsEditorTab> tabs) {
          try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             TableWriterAdaptor writerAdaptor = new TableWriterAdaptor(type.toLowerCase(), outputStream);

@@ -81,7 +81,7 @@ public class AttributeResultSetTest {
    }
 
    @Test
-   public void testExactlyOne()  {
+   public void testExactlyOne() {
       thrown.expect(ItemDoesNotExist.class);
       rSetNoType.getExactlyOne();
 
@@ -112,7 +112,7 @@ public class AttributeResultSetTest {
    }
 
    @Test
-   public void testGetAtMostOneOrNull()  {
+   public void testGetAtMostOneOrNull() {
       assertNull(rSetNoType.getAtMostOneOrNull());
 
       list.add(attribute1);

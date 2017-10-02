@@ -26,19 +26,19 @@ public final class MergeBranch extends Branch {
       super(branchId, name, branchType, branchState, isArchived, inheritAccessControl);
    }
 
-   public IOseeBranch getSourceBranch()  {
+   public IOseeBranch getSourceBranch() {
       return source;
    }
 
-   public IOseeBranch getDestinationBranch()  {
+   public IOseeBranch getDestinationBranch() {
       return destination;
    }
 
-   public void setSourceBranch(IOseeBranch branch)  {
+   public void setSourceBranch(IOseeBranch branch) {
       this.source = branch;
    }
 
-   public void setDestinationBranch(IOseeBranch branch)  {
+   public void setDestinationBranch(IOseeBranch branch) {
       this.destination = branch;
    }
 }

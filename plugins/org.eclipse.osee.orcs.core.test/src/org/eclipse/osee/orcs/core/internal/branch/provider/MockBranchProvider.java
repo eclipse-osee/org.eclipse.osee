@@ -24,7 +24,7 @@ public final class MockBranchProvider implements BranchProvider {
 
    private final static String ROOT_BRANCH_NAME = "ROOT";
 
-   public static Collection<Branch> createTestBranches()  {
+   public static Collection<Branch> createTestBranches() {
       Collection<Branch> branches = new ArrayList<>();
       //create a root branch
       Branch root =
@@ -89,7 +89,7 @@ public final class MockBranchProvider implements BranchProvider {
    }
 
    @Override
-   public Collection<Branch> getBranches()  {
+   public Collection<Branch> getBranches() {
       return MockBranchProvider.createTestBranches();
    }
 }

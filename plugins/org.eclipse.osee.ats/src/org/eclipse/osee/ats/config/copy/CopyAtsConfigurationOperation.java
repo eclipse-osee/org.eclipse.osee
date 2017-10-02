@@ -107,7 +107,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
    /**
     * Has potential of returning null if this fromAi has already been processed.
     */
-   protected IAtsActionableItem createActionableItems(IAtsChangeSet changes, IAtsActionableItem fromAi, IAtsActionableItem parentAi)  {
+   protected IAtsActionableItem createActionableItems(IAtsChangeSet changes, IAtsActionableItem fromAi, IAtsActionableItem parentAi) {
       Artifact fromAiArt = AtsClientService.get().getConfigArtifact(fromAi);
 
       if (processedFromAis.contains(fromAiArt)) {
@@ -152,7 +152,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       return newAi;
    }
 
-   protected IAtsTeamDefinition createTeamDefinitions(IAtsChangeSet changes, IAtsTeamDefinition fromTeamDef, IAtsTeamDefinition parentTeamDef)  {
+   protected IAtsTeamDefinition createTeamDefinitions(IAtsChangeSet changes, IAtsTeamDefinition fromTeamDef, IAtsTeamDefinition parentTeamDef) {
       // Get or create new team definition
       Artifact parentTeamDefArt = AtsClientService.get().getConfigArtifact(parentTeamDef);
       Artifact fromTeamDefArt = AtsClientService.get().getConfigArtifact(fromTeamDef);
@@ -180,7 +180,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       return newTeamDef;
    }
 
-   private void duplicateTeamLeadsAndMembers(IAtsChangeSet changes, IAtsTeamDefinition fromTeamDef, IAtsTeamDefinition newTeamDef)  {
+   private void duplicateTeamLeadsAndMembers(IAtsChangeSet changes, IAtsTeamDefinition fromTeamDef, IAtsTeamDefinition newTeamDef) {
       Artifact fromTeamDefArt = AtsClientService.get().getConfigArtifact(fromTeamDef);
       Artifact newTeamDefArt = AtsClientService.get().getConfigArtifact(newTeamDef);
 
@@ -212,7 +212,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       }
    }
 
-   private void persistOrUndoChanges(IAtsChangeSet changes)  {
+   private void persistOrUndoChanges(IAtsChangeSet changes) {
       if (data.isPersistChanges()) {
          changes.execute();
          AtsClientService.get().clearCaches();
@@ -237,7 +237,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       }
    }
 
-   private Artifact duplicateTeamDefinitionOrActionableItem(IAtsChangeSet changes, Artifact fromArtifact)  {
+   private Artifact duplicateTeamDefinitionOrActionableItem(IAtsChangeSet changes, Artifact fromArtifact) {
       String newName = CopyAtsUtil.getConvertedName(data, fromArtifact.getName());
       if (newName.equals(fromArtifact.getName())) {
          throw new OseeArgumentException("Could not get new name from name conversion.");

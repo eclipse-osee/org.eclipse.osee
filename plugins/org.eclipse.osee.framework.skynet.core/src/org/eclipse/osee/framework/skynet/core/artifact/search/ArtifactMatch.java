@@ -35,7 +35,7 @@ public class ArtifactMatch {
       return artifact;
    }
 
-   public HashCollection<AttributeId, MatchLocation> getMatchData()  {
+   public HashCollection<AttributeId, MatchLocation> getMatchData() {
       return matchData;
    }
 

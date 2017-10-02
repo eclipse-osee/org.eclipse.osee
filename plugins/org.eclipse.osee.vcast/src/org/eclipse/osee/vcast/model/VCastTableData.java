@@ -22,7 +22,7 @@ public interface VCastTableData<T> {
 
    String[] getColumns();
 
-   Collection<T> getRows(VCastDataStore dataStore) ;
+   Collection<T> getRows(VCastDataStore dataStore);
 
    Object[] toRow(T data);
 

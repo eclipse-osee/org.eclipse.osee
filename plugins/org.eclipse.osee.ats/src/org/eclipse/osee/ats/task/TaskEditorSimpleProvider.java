@@ -46,12 +46,12 @@ public class TaskEditorSimpleProvider extends TaskEditorProvider {
    }
 
    @Override
-   public String getSelectedName(SearchType searchType)  {
+   public String getSelectedName(SearchType searchType) {
       return name;
    }
 
    @Override
-   public IAtsVersion getTargetedVersionArtifact()  {
+   public IAtsVersion getTargetedVersionArtifact() {
       return null;
    }
 

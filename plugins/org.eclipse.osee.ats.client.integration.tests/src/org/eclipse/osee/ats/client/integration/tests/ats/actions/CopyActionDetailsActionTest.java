@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil
 public class CopyActionDetailsActionTest extends AbstractAtsActionRunTest {
 
    @Override
-   public CopyActionDetailsAction createAction()  {
+   public CopyActionDetailsAction createAction() {
       return new CopyActionDetailsAction(AtsTestUtil.getTeamWf());
    }
 

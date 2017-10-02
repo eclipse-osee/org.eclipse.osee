@@ -30,11 +30,11 @@ public class LogItem implements IAtsLogItem {
    private String userId;
    private LogType type = LogType.None;
 
-   public LogItem(LogType type, Date date, String userId, String state, String msg)  {
+   public LogItem(LogType type, Date date, String userId, String state, String msg) {
       this(type.name(), String.valueOf(date.getTime()), userId, state, msg);
    }
 
-   public LogItem(LogType type, String date, String userId, String state, String msg)  {
+   public LogItem(LogType type, String date, String userId, String state, String msg) {
       Long dateLong = Long.valueOf(date);
       this.date = new Date(dateLong.longValue());
       this.msg = msg;
@@ -43,7 +43,7 @@ public class LogItem implements IAtsLogItem {
       this.type = type;
    }
 
-   public LogItem(String type, String date, String userId, String state, String msg)  {
+   public LogItem(String type, String date, String userId, String state, String msg) {
       this(LogType.getType(type), date, userId, state, msg);
    }
 

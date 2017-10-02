@@ -84,7 +84,7 @@ public class WfeTransitionComposite extends Composite {
    private final WorkflowEditor editor;
    private final Button transitionButton;
 
-   public WfeTransitionComposite(Composite parent, WfeWorkflowSection workflowSection, final WorkflowEditor editor, final boolean isEditable)  {
+   public WfeTransitionComposite(Composite parent, WfeWorkflowSection workflowSection, final WorkflowEditor editor, final boolean isEditable) {
       super(parent, SWT.NONE);
       this.workflowSection = workflowSection;
       this.editor = editor;
@@ -200,7 +200,7 @@ public class WfeTransitionComposite extends Composite {
          }
 
          @Override
-         public Collection<? extends IAtsUser> getToAssignees(IAtsWorkItem workItem)  {
+         public Collection<? extends IAtsUser> getToAssignees(IAtsWorkItem workItem) {
             AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) AtsClientService.get().getArtifact(workItem);
             return awa.getTransitionAssignees();
          }
@@ -244,8 +244,8 @@ public class WfeTransitionComposite extends Composite {
                public void run() {
                   IAtsStateDefinition toStateDef;
                   try {
-                     toStateDef =
-                        AtsClientService.get().getWorkDefinitionService().getStateDefinitionByName(awa, getToStateName());
+                     toStateDef = AtsClientService.get().getWorkDefinitionService().getStateDefinitionByName(awa,
+                        getToStateName());
                      if (toStateDef.getStateType().isCancelledState()) {
                         EntryDialog cancelDialog = new EntryDialog("Cancellation Reason", "Enter cancellation reason.");
                         if (cancelDialog.open() != 0) {
@@ -307,7 +307,7 @@ public class WfeTransitionComposite extends Composite {
       });
    }
 
-   private static boolean handlePopulateStateMetrics(AbstractWorkflowArtifact awa, IAtsStateDefinition fromStateDefinition, IAtsStateDefinition toStateDefinition, IAtsChangeSet changes)  {
+   private static boolean handlePopulateStateMetrics(AbstractWorkflowArtifact awa, IAtsStateDefinition fromStateDefinition, IAtsStateDefinition toStateDefinition, IAtsChangeSet changes) {
       int percent = 0;
       // If state weighting, always 100 cause state is completed
       if (AtsClientService.get().getWorkDefinitionService().isStateWeightingEnabled(awa.getWorkDefinition())) {
@@ -347,7 +347,7 @@ public class WfeTransitionComposite extends Composite {
       return stateDefinition.hasRule(RuleDefinitionOption.RequireStateHourSpentPrompt.name());
    }
 
-   public void updateTransitionToAssignees()  {
+   public void updateTransitionToAssignees() {
       Collection<IAtsUser> assignees = null;
       // Determine if the is an override set of assigness
       for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
@@ -373,7 +373,7 @@ public class WfeTransitionComposite extends Composite {
       refresh();
    }
 
-   public void updateTransitionToState()  {
+   public void updateTransitionToState() {
       // Determine if there is a transitionToStateOverride for this page
       String transitionStateOverride = null;
       for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
@@ -400,7 +400,7 @@ public class WfeTransitionComposite extends Composite {
       }
    }
 
-   public void refresh()  {
+   public void refresh() {
       if (Widgets.isAccessible(transitionAssigneesLabel)) {
          IAtsStateDefinition toWorkPage = (IAtsStateDefinition) transitionToStateCombo.getSelected();
          if (toWorkPage == null) {
@@ -412,7 +412,7 @@ public class WfeTransitionComposite extends Composite {
       }
    }
 
-   private void handleChangeTransitionAssignees(AbstractWorkflowArtifact aba)  {
+   private void handleChangeTransitionAssignees(AbstractWorkflowArtifact aba) {
       IAtsStateDefinition toWorkPage = (IAtsStateDefinition) transitionToStateCombo.getSelected();
       if (toWorkPage == null) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "No Transition State Selected");

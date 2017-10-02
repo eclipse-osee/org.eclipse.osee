@@ -75,7 +75,7 @@ public final class ExportChangeReportOperation extends AbstractOperation {
    }
 
    @Override
-   protected void doWork(IProgressMonitor monitor)  {
+   protected void doWork(IProgressMonitor monitor) {
       logf("Starting %s, processing %d workflows.", getClass().getSimpleName(), workflows.size());
 
       sortWorkflows();
@@ -84,7 +84,7 @@ public final class ExportChangeReportOperation extends AbstractOperation {
       CompareDataCollector collector = new CompareDataCollector() {
 
          @Override
-         public void onCompare(CompareData data)  {
+         public void onCompare(CompareData data) {
             String filePath = data.getOutputPath();
             String modifiedPath = filePath.substring(0, filePath.lastIndexOf(File.separator));
             try {
@@ -175,7 +175,7 @@ public final class ExportChangeReportOperation extends AbstractOperation {
       });
    }
 
-   private Collection<Change> computeChanges(Artifact workflow, IProgressMonitor monitor, Set<ArtifactId> artIds)  {
+   private Collection<Change> computeChanges(Artifact workflow, IProgressMonitor monitor, Set<ArtifactId> artIds) {
       TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) workflow;
 
       List<Change> changes = new ArrayList<>();
@@ -206,7 +206,7 @@ public final class ExportChangeReportOperation extends AbstractOperation {
       return changes;
    }
 
-   private TransactionToken pickTransaction(ArtifactId workflow)  {
+   private TransactionToken pickTransaction(ArtifactId workflow) {
       TransactionToken minTransactionId = TransactionToken.SENTINEL;
       for (TransactionToken transaction : TransactionManager.getCommittedArtifactTransactionIds(workflow)) {
          if (minTransactionId.isOlderThan(transaction) && !BranchManager.isArchived(transaction.getBranch())) {

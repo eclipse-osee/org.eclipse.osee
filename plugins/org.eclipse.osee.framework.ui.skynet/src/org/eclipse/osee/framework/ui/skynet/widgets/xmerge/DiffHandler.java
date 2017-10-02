@@ -40,7 +40,7 @@ class DiffHandler extends AbstractSelectionEnabledHandler {
    }
 
    @Override
-   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection)  {
+   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {
       if (attributeConflict != null) {
          switch (diffToShow) {
             case 1:
@@ -84,7 +84,7 @@ class DiffHandler extends AbstractSelectionEnabledHandler {
    }
 
    @Override
-   public boolean isEnabledWithException(IStructuredSelection structuredSelection)  {
+   public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
 
       List<Conflict> conflicts = Handlers.getConflictsFromStructuredSelection(structuredSelection);
       if (conflicts.size() != 1) {

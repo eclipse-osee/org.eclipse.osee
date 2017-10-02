@@ -51,7 +51,7 @@ public class OseeFieldTestData<T> {
       return testDatas;
    }
 
-   public void doSetValue(FieldGetSetTestData<T> testData)  {
+   public void doSetValue(FieldGetSetTestData<T> testData) {
       getField().set(testData.getSetValue());
    }
 }

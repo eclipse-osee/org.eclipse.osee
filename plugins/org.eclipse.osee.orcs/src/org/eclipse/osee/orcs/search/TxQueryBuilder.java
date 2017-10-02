@@ -27,45 +27,45 @@ public interface TxQueryBuilder<T> {
 
    T andTxIds(Collection<TransactionId> ids);
 
-   T andTxId(Operator op, int id) ;
+   T andTxId(Operator op, int id);
 
-   T andTxId(Operator op1, int id1, Operator op2, int id2) ;
+   T andTxId(Operator op1, int id1, Operator op2, int id2);
 
-   T andCommentEquals(String value) ;
+   T andCommentEquals(String value);
 
-   T andCommentPattern(String pattern) ;
+   T andCommentPattern(String pattern);
 
-   T andIs(TransactionDetailsType... types) ;
+   T andIs(TransactionDetailsType... types);
 
-   T andIs(Collection<TransactionDetailsType> types) ;
+   T andIs(Collection<TransactionDetailsType> types);
 
-   T andBranch(BranchId... ids) ;
+   T andBranch(BranchId... ids);
 
-   T andBranch(Collection<? extends BranchId> ids) ;
+   T andBranch(Collection<? extends BranchId> ids);
 
-   T andBranchIds(long... id) ;
+   T andBranchIds(long... id);
 
-   T andBranchIds(Collection<Long> ids) ;
+   T andBranchIds(Collection<Long> ids);
 
-   T andDate(Operator op, Timestamp date) ;
+   T andDate(Operator op, Timestamp date);
 
-   T andDate(Timestamp from, Timestamp to) ;
+   T andDate(Timestamp from, Timestamp to);
 
-   T andAuthorLocalIds(ArtifactId... id) ;
+   T andAuthorLocalIds(ArtifactId... id);
 
-   T andAuthorLocalIds(Collection<ArtifactId> ids) ;
+   T andAuthorLocalIds(Collection<ArtifactId> ids);
 
-   T andAuthorIds(int... id) ;
+   T andAuthorIds(int... id);
 
-   T andAuthorIds(Collection<Integer> ids) ;
+   T andAuthorIds(Collection<Integer> ids);
 
-   T andCommitIds(Integer... id) ;
+   T andCommitIds(Integer... id);
 
-   T andCommitIds(Collection<Integer> ids) ;
+   T andCommitIds(Collection<Integer> ids);
 
-   T andNullCommitId() ;
+   T andNullCommitId();
 
-   T andIsHead(BranchId branch) ;
+   T andIsHead(BranchId branch);
 
-   T andIsPriorTx(TransactionId txId) ;
+   T andIsPriorTx(TransactionId txId);
 }

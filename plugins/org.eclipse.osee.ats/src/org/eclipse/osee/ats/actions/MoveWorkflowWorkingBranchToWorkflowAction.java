@@ -49,7 +49,7 @@ public class MoveWorkflowWorkingBranchToWorkflowAction extends AbstractAtsAction
    }
 
    @Override
-   public void runWithException()  {
+   public void runWithException() {
       List<Long> associatedWfIds = new LinkedList<>();
       for (BranchId branch : services.getBranchService().getBranches(BranchArchivedState.UNARCHIVED,
          BranchType.WORKING)) {

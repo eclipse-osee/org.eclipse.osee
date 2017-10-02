@@ -232,7 +232,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       }
    }
 
-   private void initLowLevelRequirements(List<Artifact> artifacts)  {
+   private void initLowLevelRequirements(List<Artifact> artifacts) {
       RelationManager.getRelatedArtifacts(artifacts, 999, INCLUDE_DELETED,
          CoreRelationTypes.Default_Hierarchical__Child);
       for (Artifact artifact : artifacts) {
@@ -248,7 +248,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       ViewIdUtility.removeExcludedArtifacts(lowLevelReqs.iterator(), excludedArtifactIdMap);
    }
 
-   private void initAllocationComponents(List<Artifact> artifacts)  {
+   private void initAllocationComponents(List<Artifact> artifacts) {
       RelationManager.getRelatedArtifacts(artifacts, 999, INCLUDE_DELETED,
          CoreRelationTypes.Default_Hierarchical__Child);
       for (Artifact artifact : artifacts) {
@@ -275,7 +275,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       return "N/A";
    }
 
-   private void orderSubsystemReqs(Artifact subsysTopFolder)  {
+   private void orderSubsystemReqs(Artifact subsysTopFolder) {
       for (Artifact subsysFolder : subsysTopFolder.getChildren()) {
          List<Artifact> subsysReqs = subsysFolder.getDescendants();
          ViewIdUtility.removeExcludedArtifacts(subsysReqs.iterator(), excludedArtifactIdMap);

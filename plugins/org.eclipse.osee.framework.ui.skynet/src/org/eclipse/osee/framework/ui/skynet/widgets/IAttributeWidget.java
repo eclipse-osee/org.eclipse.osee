@@ -23,7 +23,7 @@ public interface IAttributeWidget extends IArtifactStoredWidget {
    /**
     * Set attributeType used as storage for this widget
     */
-   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeTypeToken) ;
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeTypeToken);
 
    /**
     * Get attributeType used as storage for this widget

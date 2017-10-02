@@ -20,7 +20,7 @@ import org.eclipse.ui.forms.IManagedForm;
  */
 public interface IWorldEditorParameterProvider extends IWorldEditorProvider {
 
-   public String getParameterXWidgetXml() ;
+   public String getParameterXWidgetXml();
 
    public IDynamicWidgetLayoutListener getDynamicWidgetLayoutListener();
 

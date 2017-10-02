@@ -19,8 +19,8 @@ import org.eclipse.osee.orcs.rest.client.QueryBuilder;
  */
 public interface QueryBuilderArtifact extends QueryBuilder {
 
-   ResultSet<Artifact> getResults() ;
+   ResultSet<Artifact> getResults();
 
-   ResultSet<ArtifactMatch> getMatches() ;
+   ResultSet<ArtifactMatch> getMatches();
 
 }

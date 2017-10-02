@@ -23,7 +23,7 @@ public enum NoteType {
    Error,
    Other;
 
-   public static NoteType getType(String type)  {
+   public static NoteType getType(String type) {
       for (NoteType e : NoteType.values()) {
          if (e.name().equals(type)) {
             return e;

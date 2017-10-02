@@ -212,9 +212,9 @@ public class OAuth2Flows {
    private static void assertTokenEquals(ClientAccessToken expected, AccessTokenValidation actual) {
       if (!(//
       equals(expected.getTokenKey(), actual.getTokenKey()) //
-      && equals(expected.getTokenType(), actual.getTokenType()) //
-      && equals(expected.getExpiresIn(), actual.getTokenLifetime()) //
-      && equals(expected.getIssuedAt(), actual.getTokenIssuedAt()) //
+         && equals(expected.getTokenType(), actual.getTokenType()) //
+         && equals(expected.getExpiresIn(), actual.getTokenLifetime()) //
+         && equals(expected.getIssuedAt(), actual.getTokenIssuedAt()) //
       )) {
          throw newException("Token validation failed");
       }

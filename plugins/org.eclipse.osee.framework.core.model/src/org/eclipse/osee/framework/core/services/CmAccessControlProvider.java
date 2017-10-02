@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
  */
 public interface CmAccessControlProvider {
 
-   CmAccessControl getService(ArtifactToken user, Object object) ;
+   CmAccessControl getService(ArtifactToken user, Object object);
 
    void setDefaultAccessControl(CmAccessControl defaultAccessControl);
 }

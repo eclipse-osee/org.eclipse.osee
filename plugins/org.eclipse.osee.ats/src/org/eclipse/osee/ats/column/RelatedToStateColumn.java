@@ -127,9 +127,10 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
       }
    }
 
-   public static List<String> getValidInWorkStates(TeamWorkFlowArtifact teamArt)  {
+   public static List<String> getValidInWorkStates(TeamWorkFlowArtifact teamArt) {
       List<String> names = new ArrayList<>();
-      for (String state : AtsClientService.get().getWorkDefinitionService().getStateNames(teamArt.getWorkDefinition())) {
+      for (String state : AtsClientService.get().getWorkDefinitionService().getStateNames(
+         teamArt.getWorkDefinition())) {
          if (teamArt.getStateDefinitionByName(state).getStateType().isWorkingState()) {
             names.add(state);
          }

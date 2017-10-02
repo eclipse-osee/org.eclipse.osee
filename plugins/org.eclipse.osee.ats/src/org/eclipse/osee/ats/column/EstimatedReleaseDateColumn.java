@@ -41,11 +41,11 @@ public class EstimatedReleaseDateColumn extends AbstractWorkflowVersionDateColum
       return newXCol;
    }
 
-   public static Date getDateFromWorkflow(Object object)  {
+   public static Date getDateFromWorkflow(Object object) {
       return AbstractWorkflowVersionDateColumn.getDateFromWorkflow(AtsAttributeTypes.EstimatedReleaseDate, object);
    }
 
-   public static Date getDateFromTargetedVersion(Object object)  {
+   public static Date getDateFromTargetedVersion(Object object) {
       return AbstractWorkflowVersionDateColumn.getDateFromTargetedVersion(AtsAttributeTypes.EstimatedReleaseDate,
          object);
    }

@@ -57,21 +57,21 @@ public abstract class FilterableCollection<MATCH_DATA, KEY, DATA> {
       return map.get(type);
    }
 
-   protected List<DATA> getListByFilter(Predicate<MATCH_DATA> matcher)  {
+   protected List<DATA> getListByFilter(Predicate<MATCH_DATA> matcher) {
       return getListByFilter(getAll(), matcher);
    }
 
-   protected ResultSet<DATA> getResultSetByFilter(Predicate<MATCH_DATA> matcher)  {
+   protected ResultSet<DATA> getResultSetByFilter(Predicate<MATCH_DATA> matcher) {
       return getResultSetByFilter(getAll(), matcher);
    }
 
-   protected <T extends DATA> ResultSet<T> getSetByFilter(KEY type, Predicate<MATCH_DATA> matcher)  {
+   protected <T extends DATA> ResultSet<T> getSetByFilter(KEY type, Predicate<MATCH_DATA> matcher) {
       List<T> result = getListByFilter(type, matcher);
       ResultSet<T> resultSet = createResultSet(type, result);
       return resultSet;
    }
 
-   protected <T extends DATA> List<T> getListByFilter(KEY type, Predicate<MATCH_DATA> matcher)  {
+   protected <T extends DATA> List<T> getListByFilter(KEY type, Predicate<MATCH_DATA> matcher) {
       return getListByFilter(getAllByType(type), matcher);
    }
 
@@ -83,13 +83,13 @@ public abstract class FilterableCollection<MATCH_DATA, KEY, DATA> {
       return hasItemMatchingFilter(getAllByType(type), matcher);
    }
 
-   private ResultSet<DATA> getResultSetByFilter(Collection<DATA> source, Predicate<MATCH_DATA> matcher)  {
+   private ResultSet<DATA> getResultSetByFilter(Collection<DATA> source, Predicate<MATCH_DATA> matcher) {
       List<DATA> values = getListByFilter(source, matcher);
       return createResultSet(values);
    }
 
    @SuppressWarnings({"unchecked"})
-   private <T extends DATA> List<T> getListByFilter(Collection<DATA> source, Predicate<MATCH_DATA> matcher)  {
+   private <T extends DATA> List<T> getListByFilter(Collection<DATA> source, Predicate<MATCH_DATA> matcher) {
       List<T> toReturn;
       if (source != null && !source.isEmpty()) {
          toReturn = new LinkedList<>();

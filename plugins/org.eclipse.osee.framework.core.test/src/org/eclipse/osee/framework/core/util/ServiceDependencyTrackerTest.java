@@ -58,7 +58,7 @@ public class ServiceDependencyTrackerTest {
    }
 
    @Test
-   public void testOpen()  {
+   public void testOpen() {
       MockServiceBinderFactory factory = new MockServiceBinderFactory();
       ServiceDependencyTracker depTracker = new ServiceDependencyTracker(factory, context, handler);
 
@@ -86,7 +86,7 @@ public class ServiceDependencyTrackerTest {
    }
 
    @Test
-   public void testClose()  {
+   public void testClose() {
       MockServiceBinderFactory factory = new MockServiceBinderFactory();
       ServiceDependencyTracker depTracker = new ServiceDependencyTracker(factory, context, handler);
 

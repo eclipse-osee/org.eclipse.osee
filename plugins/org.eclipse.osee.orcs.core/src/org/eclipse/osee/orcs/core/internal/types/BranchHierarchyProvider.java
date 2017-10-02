@@ -17,6 +17,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
  */
 public interface BranchHierarchyProvider {
 
-   Iterable<? extends BranchId> getParentHierarchy(BranchId branch) ;
+   Iterable<? extends BranchId> getParentHierarchy(BranchId branch);
 
 }

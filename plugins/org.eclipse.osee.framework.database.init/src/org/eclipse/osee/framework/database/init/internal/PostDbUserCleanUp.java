@@ -31,7 +31,7 @@ public class PostDbUserCleanUp implements IDbInitializationTask {
    private static final String UPDATE_BOOTSTRAP_USER_ID = "UPDATE osee_tx_details SET author = ? where author <= 0";
 
    @Override
-   public void run()  {
+   public void run() {
       OseeLog.log(DatabaseInitActivator.class, Level.INFO, "Post Initialization User Clean-up");
 
       boolean isUserAuthenticationAllowed = false;

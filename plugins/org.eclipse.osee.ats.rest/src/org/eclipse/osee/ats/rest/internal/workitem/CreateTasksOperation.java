@@ -274,8 +274,8 @@ public class CreateTasksOperation {
             IAtsWorkDefinition workDefinition = null;
             if (Strings.isValid(jaxTask.getTaskWorkDef())) {
                try {
-                  workDefinition =
-                     atsServer.getWorkDefinitionService().getWorkDefinition(jaxTask.getTaskWorkDef(), new XResultData());
+                  workDefinition = atsServer.getWorkDefinitionService().getWorkDefinition(jaxTask.getTaskWorkDef(),
+                     new XResultData());
                } catch (Exception ex) {
                   throw new OseeArgumentException("Exception finding Task Work Def [%s]", jaxTask.getTaskWorkDef(), ex);
                }

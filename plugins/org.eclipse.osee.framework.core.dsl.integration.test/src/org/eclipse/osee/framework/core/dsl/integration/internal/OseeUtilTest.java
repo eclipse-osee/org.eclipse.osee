@@ -39,24 +39,24 @@ import org.junit.Test;
 public class OseeUtilTest {
 
    @Test
-   public void testIsSideRestricted()  {
+   public void testIsSideRestricted() {
       checkIsRestricted(XRelationSideEnum.BOTH, true, true);
       checkIsRestricted(XRelationSideEnum.SIDE_A, true, false);
       checkIsRestricted(XRelationSideEnum.SIDE_B, false, true);
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testIsSideRestrictionXRelationSideEnumNullCheck()  {
+   public void testIsSideRestrictionXRelationSideEnumNullCheck() {
       OseeUtil.isRestrictedSide(null, RelationSide.SIDE_A);
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testIsSideRestrictionRelationSideNullCheck()  {
+   public void testIsSideRestrictionRelationSideNullCheck() {
       OseeUtil.isRestrictedSide(XRelationSideEnum.BOTH, null);
    }
 
    @Test
-   public void testGetPermission()  {
+   public void testGetPermission() {
       ObjectRestriction restriction = OseeDslFactory.eINSTANCE.createObjectRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
       Assert.assertEquals(AccessPermissionEnum.ALLOW, restriction.getPermission());
@@ -73,7 +73,7 @@ public class OseeUtilTest {
    }
 
    @Test
-   public void testToTokenArtifactType()  {
+   public void testToTokenArtifactType() {
       XArtifactType type = OseeDslFactory.eINSTANCE.createXArtifactType();
       IArtifactType expected = CoreArtifactTypes.GlobalPreferences;
 
@@ -88,7 +88,7 @@ public class OseeUtilTest {
    }
 
    @Test
-   public void testToTokenAttributeType()  {
+   public void testToTokenAttributeType() {
       XAttributeType type = OseeDslFactory.eINSTANCE.createXAttributeType();
       AttributeTypeId expected = CoreAttributeTypes.Description;
 
@@ -103,7 +103,7 @@ public class OseeUtilTest {
    }
 
    @Test
-   public void testToTokenRelationType()  {
+   public void testToTokenRelationType() {
       XRelationType type = OseeDslFactory.eINSTANCE.createXRelationType();
       IRelationType expected = CoreRelationTypes.Allocation__Component;
 
@@ -117,7 +117,7 @@ public class OseeUtilTest {
       Assert.assertFalse(expected.equals(actual));
    }
 
-   private static void setupToToken(OseeType typeToCheck, Id expected)  {
+   private static void setupToToken(OseeType typeToCheck, Id expected) {
       String name = "bogus name"; // This should not affect equality
       typeToCheck.setName(name);
       String uuid = String.valueOf(expected.getId());
@@ -128,7 +128,7 @@ public class OseeUtilTest {
       Assert.assertEquals(uuid, typeToCheck.getId());
    }
 
-   private static void checkIsRestricted(XRelationSideEnum side, boolean expectedSideA, boolean expectedSideB)  {
+   private static void checkIsRestricted(XRelationSideEnum side, boolean expectedSideA, boolean expectedSideB) {
       boolean actual = OseeUtil.isRestrictedSide(side, RelationSide.SIDE_A);
       String message = String.format("[%s] - Side A error - expected[%s] actual[%s]", side, expectedSideA, actual);
       Assert.assertEquals(message, expectedSideA, actual);

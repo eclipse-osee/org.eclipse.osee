@@ -51,7 +51,7 @@ public class ExchangeProvider implements IResourceProvider {
       this.preferences = preferences;
    }
 
-   public void start()  {
+   public void start() {
       binaryDataPath = ResourceConstants.getBinaryDataPath(preferences);
       exchangeDataPath = ResourceConstants.getExchangeDataPath(preferences);
       isInitialized = true;
@@ -63,24 +63,24 @@ public class ExchangeProvider implements IResourceProvider {
       isInitialized = false;
    }
 
-   private synchronized void ensureInitialized()  {
+   private synchronized void ensureInitialized() {
       Conditions.checkExpressionFailOnTrue(!isInitialized,
          "Exchange Data Path - not initialized - ensure start() was called");
       Conditions.checkNotNull(binaryDataPath, "binary data path");
       Conditions.checkNotNull(exchangeDataPath, "exchange data path");
    }
 
-   public String getExchangeDataPath()  {
+   public String getExchangeDataPath() {
       ensureInitialized();
       return exchangeDataPath;
    }
 
-   public String getBinaryDataPath()  {
+   public String getBinaryDataPath() {
       ensureInitialized();
       return binaryDataPath;
    }
 
-   private URI resolve(IResourceLocator locator)  {
+   private URI resolve(IResourceLocator locator) {
       URI toReturn = null;
       StringBuilder builder = new StringBuilder();
       String rawPath = locator.getRawPath();
@@ -101,7 +101,7 @@ public class ExchangeProvider implements IResourceProvider {
    }
 
    @Override
-   public IResource acquire(IResourceLocator locator, PropertyStore options)  {
+   public IResource acquire(IResourceLocator locator, PropertyStore options) {
       IResource toReturn = null;
       OptionsProcessor optionsProcessor = new OptionsProcessor(resolve(locator), locator, null, options);
       toReturn = optionsProcessor.getResourceToServer();
@@ -109,7 +109,7 @@ public class ExchangeProvider implements IResourceProvider {
    }
 
    @Override
-   public int delete(IResourceLocator locator)  {
+   public int delete(IResourceLocator locator) {
       int toReturn = IResourceManager.FAIL;
       File file = new File(resolve(locator));
       if (file.exists() != true) {
@@ -129,7 +129,7 @@ public class ExchangeProvider implements IResourceProvider {
    }
 
    @Override
-   public IResourceLocator save(IResourceLocator locator, IResource resource, PropertyStore options)  {
+   public IResourceLocator save(IResourceLocator locator, IResource resource, PropertyStore options) {
       IResourceLocator toReturn = null;
       OptionsProcessor optionsProcessor = new OptionsProcessor(resolve(locator), locator, resource, options);
       OutputStream outputStream = null;
@@ -160,7 +160,7 @@ public class ExchangeProvider implements IResourceProvider {
    }
 
    @Override
-   public boolean exists(IResourceLocator locator)  {
+   public boolean exists(IResourceLocator locator) {
       URI uri = resolve(locator);
       File testFile = new File(uri);
       return testFile.exists();

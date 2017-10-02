@@ -129,7 +129,7 @@ public class SendNotificationEvents {
          "More Info") : "";
    }
 
-   private void notifyUser(IAtsUser user, List<AtsNotificationEvent> notificationEvents, XResultData resultData)  {
+   private void notifyUser(IAtsUser user, List<AtsNotificationEvent> notificationEvents, XResultData resultData) {
       if (AtsCoreUsers.isAtsCoreUser(user)) {
          // do nothing
          return;

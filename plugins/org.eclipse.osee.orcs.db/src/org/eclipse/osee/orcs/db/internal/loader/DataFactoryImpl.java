@@ -53,12 +53,12 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
-   public ArtifactData create(BranchId branch, IArtifactType token, String guid)  {
+   public ArtifactData create(BranchId branch, IArtifactType token, String guid) {
       return this.create(branch, token, guid, idFactory.getNextArtifactId());
    }
 
    @Override
-   public ArtifactData create(BranchId branchId, IArtifactType token, String guid, long artifactId)  {
+   public ArtifactData create(BranchId branchId, IArtifactType token, String guid, long artifactId) {
       Conditions.checkNotNull(branchId, "branch");
 
       Conditions.checkExpressionFailOnTrue(artifactCache.isAbstract(token),
@@ -79,7 +79,7 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
-   public ArtifactData copy(BranchId destination, ArtifactData source)  {
+   public ArtifactData copy(BranchId destination, ArtifactData source) {
       ArtifactData copy = objectFactory.createCopy(source);
       updateDataForCopy(destination, copy);
       copy.setGuid(idFactory.getUniqueGuid(null));
@@ -88,7 +88,7 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
-   public AttributeData introduce(BranchId destination, AttributeData source)  {
+   public AttributeData introduce(BranchId destination, AttributeData source) {
       AttributeData newVersion = objectFactory.createCopy(source);
       newVersion.setUseBackingData(true);
       updateDataForIntroduce(destination, newVersion);
@@ -96,7 +96,7 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
-   public AttributeData create(ArtifactData parent, AttributeTypeId attributeType)  {
+   public AttributeData create(ArtifactData parent, AttributeTypeId attributeType) {
       VersionData version = objectFactory.createDefaultVersionData();
       version.setBranch(parent.getVersion().getBranch());
       ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
@@ -105,7 +105,7 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
-   public AttributeData copy(BranchId destination, AttributeData orcsData)  {
+   public AttributeData copy(BranchId destination, AttributeData orcsData) {
       AttributeData copy = objectFactory.createCopy(orcsData);
       updateDataForCopy(destination, copy);
       copy.setLocalId(RelationalConstants.DEFAULT_ITEM_ID);
@@ -113,7 +113,7 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
-   public ArtifactData introduce(BranchId destination, ArtifactData source)  {
+   public ArtifactData introduce(BranchId destination, ArtifactData source) {
       ArtifactData newVersion = objectFactory.createCopy(source);
       newVersion.setUseBackingData(true);
       updateDataForIntroduce(destination, newVersion);
@@ -121,7 +121,7 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
-   public RelationData createRelationData(RelationTypeId relationType, BranchId branch, ArtifactId aArtifact, ArtifactId bArtifact, String rationale)  {
+   public RelationData createRelationData(RelationTypeId relationType, BranchId branch, ArtifactId aArtifact, ArtifactId bArtifact, String rationale) {
       VersionData version = objectFactory.createDefaultVersionData();
       version.setBranch(branch);
       ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
@@ -164,16 +164,16 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
-   public AttributeData clone(AttributeData source)  {
+   public AttributeData clone(AttributeData source) {
       return objectFactory.createCopy(source);
    }
 
    @Override
-   public RelationData clone(RelationData source)  {
+   public RelationData clone(RelationData source) {
       return objectFactory.createCopy(source);
    }
 
-   private void updateDataForCopy(BranchId destination, OrcsData data)  {
+   private void updateDataForCopy(BranchId destination, OrcsData data) {
       VersionData version = data.getVersion();
       version.setBranch(destination);
       version.setTransactionId(TransactionId.SENTINEL);
@@ -184,7 +184,7 @@ public class DataFactoryImpl implements DataFactory {
       data.setModType(ModificationType.NEW);
    }
 
-   private void updateDataForIntroduce(BranchId destination, OrcsData data)  {
+   private void updateDataForIntroduce(BranchId destination, OrcsData data) {
       VersionData version = data.getVersion();
       version.setBranch(destination);
       version.setHistorical(false);

@@ -94,7 +94,7 @@ public class SkynetXViewerFactory extends XViewerFactory {
       }
    }
 
-   public static List<XViewerColumn> getAllAttributeColumns()  {
+   public static List<XViewerColumn> getAllAttributeColumns() {
       if (attrColumns == null) {
          attrColumns = new LinkedList<XViewerColumn>();
          for (AttributeType attributeType : AttributeTypeManager.getAllTypes()) {
@@ -104,7 +104,7 @@ public class SkynetXViewerFactory extends XViewerFactory {
       return attrColumns;
    }
 
-   public static XViewerColumn getAttributeColumn(AttributeTypeToken attributeType)  {
+   public static XViewerColumn getAttributeColumn(AttributeTypeToken attributeType) {
       return new AttributeColumn("attribute." + attributeType.getName(), attributeType.getName(), attributeType, 75,
          XViewerAlign.Left, false, XViewerAttributeSortDataType.get(attributeType), false, null);
    }
@@ -112,7 +112,7 @@ public class SkynetXViewerFactory extends XViewerFactory {
    /**
     * @return columns for attributes valid for at least on of the given artifacts; those with content first
     */
-   public static List<XViewerColumn> getAllAttributeColumnsForArtifacts(Collection<? extends Artifact> artifacts)  {
+   public static List<XViewerColumn> getAllAttributeColumnsForArtifacts(Collection<? extends Artifact> artifacts) {
       List<XViewerColumn> columns = new ArrayList<>();
       Set<AttributeTypeToken> attrTypesUsed = new HashSet<>();
       Set<AttributeTypeToken> attributeTypes = new HashSet<>();

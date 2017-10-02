@@ -15,7 +15,7 @@ import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
- * Default sorter for artifacts. Sorts on descript	ive name
+ * Default sorter for artifacts. Sorts on descript ive name
  */
 public class ArtifactNameSorter extends ViewerComparator {
 

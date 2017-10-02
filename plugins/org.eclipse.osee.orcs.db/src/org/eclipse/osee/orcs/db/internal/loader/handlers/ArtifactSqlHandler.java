@@ -36,7 +36,7 @@ public class ArtifactSqlHandler extends SqlHandler<CriteriaArtifact> {
    }
 
    @Override
-   public void addSelect(AbstractSqlWriter writer)  {
+   public void addSelect(AbstractSqlWriter writer) {
       writer.write("%s.art_type_id, %s.guid", artAlias, artAlias);
    }
 
@@ -48,7 +48,7 @@ public class ArtifactSqlHandler extends SqlHandler<CriteriaArtifact> {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer)  {
+   public boolean addPredicates(AbstractSqlWriter writer) {
       writer.write(artAlias);
       writer.write(".art_id = ");
       writer.write(jArtAlias);

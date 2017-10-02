@@ -128,8 +128,8 @@ public class WorldXViewerEventManager {
          }
          Collection<Artifact> goalMemberReordered =
             artifactEvent.getRelationOrderArtifacts(AtsRelationTypes.Goal_Member, AtsArtifactTypes.Goal);
-         Collection<Artifact> sprintMemberReordered =
-            artifactEvent.getRelationOrderArtifacts(AtsRelationTypes.AgileSprintToItem_AtsItem, AtsArtifactTypes.AgileSprint);
+         Collection<Artifact> sprintMemberReordered = artifactEvent.getRelationOrderArtifacts(
+            AtsRelationTypes.AgileSprintToItem_AtsItem, AtsArtifactTypes.AgileSprint);
 
          return new DisplayRunnable(modifiedArts, allModAndParents, relModifiedArts, deletedPurgedArts,
             goalMemberReordered, sprintMemberReordered, handlers);

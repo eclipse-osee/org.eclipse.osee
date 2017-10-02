@@ -79,12 +79,12 @@ public class QueryFactoryImpl implements QueryFactory {
    }
 
    @Override
-   public QueryBuilder fromBranch(BranchId branch)  {
+   public QueryBuilder fromBranch(BranchId branch) {
       return createBuilder(branch);
    }
 
    @Override
-   public QueryBuilder fromArtifacts(Collection<? extends ArtifactReadable> artifacts)  {
+   public QueryBuilder fromArtifacts(Collection<? extends ArtifactReadable> artifacts) {
       Conditions.checkNotNullOrEmpty(artifacts, "artifacts");
       ArtifactReadable artifact = artifacts.iterator().next();
       Set<String> guids = new HashSet<>();
@@ -95,7 +95,7 @@ public class QueryFactoryImpl implements QueryFactory {
    }
 
    @Override
-   public QueryBuilder fromArtifactTypeAllBranches(IArtifactType artifactType)  {
+   public QueryBuilder fromArtifactTypeAllBranches(IArtifactType artifactType) {
       QueryBuilder builder = createBuilder(null);
       builder.andIsOfType(artifactType);
       return builder;

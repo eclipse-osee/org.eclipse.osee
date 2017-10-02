@@ -28,13 +28,13 @@ public class WorkPackageTypeUtilityTest extends AbstractWorkPackageUtilityTest {
 
    @Override
    @Before
-   public void setup()  {
+   public void setup() {
       super.setup();
       util = new WorkPackageTypeColumn(earnedValueServiceProvider, null);
    }
 
    @Test
-   public void testGetColumnText()  {
+   public void testGetColumnText() {
       when(workPkg.getWorkPackageType()).thenReturn(AtsWorkPackageType.LOE);
       Assert.assertEquals(AtsWorkPackageType.LOE.name(), util.getColumnText(workItem));
 

@@ -17,11 +17,11 @@ import org.eclipse.osee.ats.api.IAtsObject;
  */
 public interface IAtsUser extends IAtsObject {
 
-   public String getUserId() ;
+   public String getUserId();
 
-   public String getEmail() ;
+   public String getEmail();
 
-   public boolean isActive() ;
+   public boolean isActive();
 
    @Override
    default String getDescription() {

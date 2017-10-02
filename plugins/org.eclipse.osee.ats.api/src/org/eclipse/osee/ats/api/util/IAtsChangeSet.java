@@ -35,40 +35,38 @@ import org.eclipse.osee.framework.core.data.TransactionId;
  */
 public interface IAtsChangeSet {
 
-   void add(Object obj) ;
+   void add(Object obj);
 
    /**
-    * Store changed items.
-    *
-    *  if no items exist to store. Use executeIfNeeded to execute quietly.
+    * Store changed items. if no items exist to store. Use executeIfNeeded to execute quietly.
     */
-   TransactionId execute() ;
+   TransactionId execute();
 
    void clear();
 
    void addExecuteListener(IExecuteListener listener);
 
-   void addToDelete(Object obj) ;
+   void addToDelete(Object obj);
 
-   void addAll(Object... objects) ;
+   void addAll(Object... objects);
 
    boolean isEmpty();
 
-   void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType) ;
+   void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType);
 
-   void setSoleAttributeValue(IAtsWorkItem workItem, AttributeTypeId attributeType, String value) ;
+   void setSoleAttributeValue(IAtsWorkItem workItem, AttributeTypeId attributeType, String value);
 
-   void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeId attributeType, Object value) ;
+   void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeId attributeType, Object value);
 
    void setSoleAttributeValue(ArtifactId artifact, AttributeTypeId attributeType, Object value);
 
-   void addAttribute(IAtsObject atsObject, AttributeTypeId attributeType, Object value) ;
+   void addAttribute(IAtsObject atsObject, AttributeTypeId attributeType, Object value);
 
-   <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, AttributeTypeId attributeType, T value) ;
+   <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, AttributeTypeId attributeType, T value);
 
-   <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr) ;
+   <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr);
 
-   void deleteAttribute(IAtsObject atsObject, AttributeTypeId attributeType, Object value) ;
+   void deleteAttribute(IAtsObject atsObject, AttributeTypeId attributeType, Object value);
 
    boolean isAttributeTypeValid(IAtsWorkItem workItem, AttributeTypeId attributeType);
 

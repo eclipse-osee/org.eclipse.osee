@@ -19,52 +19,52 @@ import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 public class LoadDataHandlerAdapter implements LoadDataHandler {
 
    @Override
-   public void onLoadStart()  {
+   public void onLoadStart() {
       //
    }
 
    @Override
-   public void onLoadDescription(LoadDescription data)  {
+   public void onLoadDescription(LoadDescription data) {
       //
    }
 
    @Override
-   public void onData(BranchData data)  {
+   public void onData(BranchData data) {
       //
    }
 
    @Override
-   public void onData(TxOrcsData data)  {
+   public void onData(TxOrcsData data) {
       //
    }
 
    @Override
-   public void onData(ArtifactData data)  {
+   public void onData(ArtifactData data) {
       //
    }
 
    @Override
-   public void onData(AttributeData data)  {
+   public void onData(AttributeData data) {
       //
    }
 
    @Override
-   public void onData(RelationData data)  {
+   public void onData(RelationData data) {
       //
    }
 
    @Override
-   public void onData(AttributeData data, MatchLocation match)  {
+   public void onData(AttributeData data, MatchLocation match) {
       //
    }
 
    @Override
-   public void onDynamicData(Map<String, Object> data)  {
+   public void onDynamicData(Map<String, Object> data) {
       //
    }
 
    @Override
-   public void onLoadEnd()  {
+   public void onLoadEnd() {
       //
    }
 }

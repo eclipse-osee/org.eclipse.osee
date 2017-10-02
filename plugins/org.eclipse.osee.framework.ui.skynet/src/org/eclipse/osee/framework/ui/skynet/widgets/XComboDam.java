@@ -47,7 +47,7 @@ public class XComboDam extends XCombo implements IAttributeWidget {
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType)  {
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
       this.artifact = artifact;
       this.attributeType = attributeType;
       try {
@@ -73,7 +73,7 @@ public class XComboDam extends XCombo implements IAttributeWidget {
    }
 
    @Override
-   public Result isDirty()  {
+   public Result isDirty() {
       Result dirty = Result.FalseResult;
       if (isEditable()) {
          try {
@@ -108,7 +108,7 @@ public class XComboDam extends XCombo implements IAttributeWidget {
    }
 
    @Override
-   public void revert()  {
+   public void revert() {
       setAttributeType(artifact, attributeType);
    }
 

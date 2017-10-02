@@ -49,32 +49,32 @@ public class NoteItemTest {
    }
 
    @Test
-   public void testNoteItemNoteTypeStringStringUserString()  {
+   public void testNoteItemNoteTypeStringStringUserString() {
       Date date = new Date();
       NoteItem item = new NoteItem(NoteType.Comment, "Implement", String.valueOf(date.getTime()), Joe, "my msg");
       validate(item, date, Joe);
    }
 
-   public static void validate(NoteItem item, Date date, IAtsUser Joe)  {
+   public static void validate(NoteItem item, Date date, IAtsUser Joe) {
       Assert.assertEquals(NoteType.Comment, item.getType());
       Assert.assertEquals("Implement", item.getState());
       Assert.assertEquals(Joe, item.getUser());
       Assert.assertEquals("my msg", item.getMsg());
    }
 
-   public static NoteItem getTestNoteItem(Date date, IAtsUser user)  {
+   public static NoteItem getTestNoteItem(Date date, IAtsUser user) {
       return new NoteItem(NoteType.Comment, "Implement", String.valueOf(date.getTime()), user, "my msg");
    }
 
    @Test
-   public void testNoteItemStringStringStringUserString()  {
+   public void testNoteItemStringStringStringUserString() {
       Date date = new Date();
       NoteItem item = new NoteItem(NoteType.Comment.name(), "Implement", String.valueOf(date.getTime()), Joe, "my msg");
       validate(item, date, Joe);
    }
 
    @Test
-   public void testToString()  {
+   public void testToString() {
       Date date = new Date();
       NoteItem item = getTestNoteItem(date, Joe);
 
@@ -84,7 +84,7 @@ public class NoteItemTest {
    }
 
    @Test
-   public void testToXmlFromXml()  {
+   public void testToXmlFromXml() {
       Date date = new Date();
       NoteItem item = getTestNoteItem(date, Joe);
       NoteItem item2 =
@@ -107,7 +107,7 @@ public class NoteItemTest {
    }
 
    @Test
-   public void testToHTML()  {
+   public void testToHTML() {
       Date date = new Date();
       NoteItem item = getTestNoteItem(date, Joe);
 

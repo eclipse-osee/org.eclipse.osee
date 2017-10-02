@@ -107,7 +107,7 @@ public class AtsWorkDefinitionServiceImplTest {
    }
 
    @Test
-   public void testGetDefaultPeerToPeerWorkflowDefinitionMatch()  {
+   public void testGetDefaultPeerToPeerWorkflowDefinitionMatch() {
       assertEquals(defaultPeerToPeerWorkDef, workDefService.getDefaultPeerToPeerWorkflowDefinition());
    }
 

@@ -36,7 +36,7 @@ public class ArtifactDeltaToFileConverter {
       return renderer;
    }
 
-   public Pair<IFile, IFile> convertToFile(PresentationType presentationType, ArtifactDelta artifactDelta)  {
+   public Pair<IFile, IFile> convertToFile(PresentationType presentationType, ArtifactDelta artifactDelta) {
       Artifact baseArtifact = artifactDelta.getStartArtifact();
       Artifact newerArtifact = artifactDelta.getEndArtifact();
       if (newerArtifact.getModType().isDeleted()) {
@@ -49,7 +49,7 @@ public class ArtifactDeltaToFileConverter {
       return new Pair<IFile, IFile>(baseFile, newerFile);
    }
 
-   public void convertToFileForMerge(final Collection<IFile> outputFiles, Artifact baseVersion, Artifact newerVersion)  {
+   public void convertToFileForMerge(final Collection<IFile> outputFiles, Artifact baseVersion, Artifact newerVersion) {
       ArtifactDelta artifactDelta = new ArtifactDelta(baseVersion, newerVersion);
 
       CompareDataCollector colletor = new CompareDataCollector() {

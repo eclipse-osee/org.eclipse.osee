@@ -50,7 +50,7 @@ public abstract class XSelectFromDialog<T> extends XText {
       setToolTip("Click the button on the left to change the current selection.");
    }
 
-   public void setRequiredSelection(int minSelectionRequired, int maxSelectionRequired)  {
+   public void setRequiredSelection(int minSelectionRequired, int maxSelectionRequired) {
       if (minSelectionRequired < 0) {
          throw new OseeArgumentException("Min Number of Selection must be greater than or equal to 0");
       }

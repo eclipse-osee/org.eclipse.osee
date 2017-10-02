@@ -80,7 +80,7 @@ public class ResourceToTraceUnit {
       System.gc();
    }
 
-   public void execute(IProgressMonitor monitor)  {
+   public void execute(IProgressMonitor monitor) {
       List<TraceUnitCollector> collectors = new ArrayList<>();
       try {
          for (ITraceUnitResourceLocator locator : traceUnitHandlers.keySet()) {
@@ -128,7 +128,7 @@ public class ResourceToTraceUnit {
       }
    }
 
-   private void processCollector(IProgressMonitor monitor, TraceUnitCollector testUnitCollector)  {
+   private void processCollector(IProgressMonitor monitor, TraceUnitCollector testUnitCollector) {
       for (IArtifactType testUnitType : testUnitCollector.getTraceUnitTypes()) {
          if (monitor.isCanceled()) {
             break;
@@ -149,7 +149,7 @@ public class ResourceToTraceUnit {
       }
    }
 
-   private void notifyOnProcess(IProgressMonitor monitor, TraceUnit testUnit)  {
+   private void notifyOnProcess(IProgressMonitor monitor, TraceUnit testUnit) {
       for (ITraceUnitProcessor traceProcessor : traceProcessors) {
          traceProcessor.process(monitor, testUnit);
       }
@@ -164,7 +164,7 @@ public class ResourceToTraceUnit {
       }
    }
 
-   private void notifyOnComplete(IProgressMonitor monitor)  {
+   private void notifyOnComplete(IProgressMonitor monitor) {
       monitor.beginTask("On Completion", traceProcessors.size());
       for (ITraceUnitProcessor traceProcessor : traceProcessors) {
          monitor.subTask(String.format("Completing [%s]", traceProcessor.getClass().getSimpleName()));
@@ -188,7 +188,7 @@ public class ResourceToTraceUnit {
       }
 
       @Override
-      public void onResourceFound(URI uriPath, String name, CharBuffer fileBuffer)  {
+      public void onResourceFound(URI uriPath, String name, CharBuffer fileBuffer) {
          traceParser.setupTraceMatcher(includeImpd);
          IArtifactType traceUnitType = traceUnitLocator.getTraceUnitType(name, fileBuffer);
          if (!traceUnitType.equals(ITraceUnitResourceLocator.UNIT_TYPE_UNKNOWN)) {

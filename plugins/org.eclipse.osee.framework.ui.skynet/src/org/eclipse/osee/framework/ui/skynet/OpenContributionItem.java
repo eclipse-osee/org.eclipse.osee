@@ -222,7 +222,7 @@ public class OpenContributionItem extends ContributionItem {
       return openWithItems;
    }
 
-   private Collection<IContributionItem> getCommonContributionItems(CommandGroup commandGroup, Artifact testArtifact, Collection<IRenderer> commonRenders)  {
+   private Collection<IContributionItem> getCommonContributionItems(CommandGroup commandGroup, Artifact testArtifact, Collection<IRenderer> commonRenders) {
       ArrayList<IContributionItem> items = new ArrayList<>();
       ArrayList<MenuCmdDef> commands = new ArrayList<>();
       for (IRenderer renderer : commonRenders) {

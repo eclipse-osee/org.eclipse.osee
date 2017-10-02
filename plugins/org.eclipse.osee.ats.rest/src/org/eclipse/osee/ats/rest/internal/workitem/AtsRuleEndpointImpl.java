@@ -94,8 +94,7 @@ public class AtsRuleEndpointImpl implements AtsRuleEndpointApi {
          changes.addAttribute(atsServer.getConfigItemFactory().getConfigObject(artifact),
             AtsAttributeTypes.RuleDefinition, setRuleData.getRuleName());
          changes.execute();
-         IAtsConfigObject atsObject =
-            atsServer.getCache().getAtsObject(setRuleData.getConfigItemUuid());
+         IAtsConfigObject atsObject = atsServer.getCache().getAtsObject(setRuleData.getConfigItemUuid());
          atsServer.getCache().deCacheAtsObject(atsObject);
       }
 

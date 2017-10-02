@@ -74,8 +74,9 @@ public class SelectionComposite extends Composite {
    private IOverrideHandler overrideHandler;
    private boolean areOverridesAllowed;
 
-   public SelectionComposite(Composite parent, int style, String[] columnNames, ITableLabelProvider tableLabelProvider, Object[] resources, boolean isSelectAllByDefault, IOverrideHandler overrideHandler)  {
-      this(parent, style, columnNames, tableLabelProvider, resources, isSelectAllByDefault, null, null, overrideHandler);
+   public SelectionComposite(Composite parent, int style, String[] columnNames, ITableLabelProvider tableLabelProvider, Object[] resources, boolean isSelectAllByDefault, IOverrideHandler overrideHandler) {
+      this(parent, style, columnNames, tableLabelProvider, resources, isSelectAllByDefault, null, null,
+         overrideHandler);
    }
 
    public SelectionComposite(Composite parent, int style, String[] columnNames, ITableLabelProvider tableLabelProvider, Object[] resources, boolean isSelectAllByDefault, Object[] userSelectedResources, Object[] unSelectableResources, IOverrideHandler overrideHandler) {
@@ -324,9 +325,8 @@ public class SelectionComposite extends Composite {
          Image toReturn = isChecked != false ? CHECKED_IMAGE : UNCHECKED_IMAGE;
          if (isOverriden != false) {
             if (CHECK_OVERRIDEN_IMAGE == null || UNCHECKED_OVERRIDEN_IMAGE == null) {
-               DecorationOverlayIcon overlay =
-                  new DecorationOverlayIcon(toReturn, ImageManager.getImageDescriptor(OteDefineImage.SWITCHED),
-                     IDecoration.BOTTOM_RIGHT);
+               DecorationOverlayIcon overlay = new DecorationOverlayIcon(toReturn,
+                  ImageManager.getImageDescriptor(OteDefineImage.SWITCHED), IDecoration.BOTTOM_RIGHT);
 
                Image overlayedImage = overlay.createImage();
                if (isChecked != false) {

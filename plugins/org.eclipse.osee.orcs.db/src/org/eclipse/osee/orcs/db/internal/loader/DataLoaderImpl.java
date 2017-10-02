@@ -197,45 +197,45 @@ public class DataLoaderImpl implements DataLoader {
    }
 
    @Override
-   public DataLoader withAttributeTypes(AttributeTypeId... attributeType)  {
+   public DataLoader withAttributeTypes(AttributeTypeId... attributeType) {
       return withAttributeTypes(Arrays.asList(attributeType));
    }
 
    @Override
-   public DataLoader withAttributeTypes(Collection<? extends AttributeTypeId> attributeTypes)  {
+   public DataLoader withAttributeTypes(Collection<? extends AttributeTypeId> attributeTypes) {
       this.attributeTypes.addAll(attributeTypes);
       return this;
    }
 
    @Override
-   public DataLoader withRelationTypes(IRelationType... relationType)  {
+   public DataLoader withRelationTypes(IRelationType... relationType) {
       return withRelationTypes(Arrays.asList(relationType));
    }
 
    @Override
-   public DataLoader withRelationTypes(Collection<? extends IRelationType> relationTypes)  {
+   public DataLoader withRelationTypes(Collection<? extends IRelationType> relationTypes) {
       this.relationTypes.addAll(relationTypes);
       return this;
    }
 
    @Override
-   public DataLoader withAttributeIds(int... attributeIds)  {
+   public DataLoader withAttributeIds(int... attributeIds) {
       return withAttributeIds(toCollection(attributeIds));
    }
 
    @Override
-   public DataLoader withAttributeIds(Collection<Integer> attributeIds)  {
+   public DataLoader withAttributeIds(Collection<Integer> attributeIds) {
       this.attributeIds.addAll(attributeIds);
       return this;
    }
 
    @Override
-   public DataLoader withRelationIds(int... relationIds)  {
+   public DataLoader withRelationIds(int... relationIds) {
       return withRelationIds(toCollection(relationIds));
    }
 
    @Override
-   public DataLoader withRelationIds(Collection<Integer> relationIds)  {
+   public DataLoader withRelationIds(Collection<Integer> relationIds) {
       this.relationIds.addAll(relationIds);
       return this;
    }
@@ -258,12 +258,12 @@ public class DataLoaderImpl implements DataLoader {
 
    ////////////////////// EXECUTE METHODS
    @Override
-   public void load(LoadDataHandler handler)  {
+   public void load(LoadDataHandler handler) {
       load(null, handler);
    }
 
    @Override
-   public void load(HasCancellation cancellation, LoadDataHandler handler)  {
+   public void load(HasCancellation cancellation, LoadDataHandler handler) {
       long startTime = 0;
 
       final Options options = getOptions().clone();
@@ -305,7 +305,7 @@ public class DataLoaderImpl implements DataLoader {
       return new CriteriaOrcsLoad(artifactCriteria, attributeCriteria, relationCriteria);
    }
 
-   private void determineLoadExecutor()  {
+   private void determineLoadExecutor() {
       if (loadExecutor == null) {
          throw new OseeArgumentException("Either artifacts ID or Query Context must be specified");
       }

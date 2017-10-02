@@ -23,17 +23,17 @@ public class ArtifactCheck implements IArtifactCheck {
    public static final IStatus OK_STATUS = new Status(IStatus.OK, Activator.PLUGIN_ID, null);
 
    @Override
-   public IStatus isDeleteable(Collection<Artifact> artifacts)  {
+   public IStatus isDeleteable(Collection<Artifact> artifacts) {
       return OK_STATUS;
    }
 
    @Override
-   public IStatus isRenamable(Collection<Artifact> artifacts)  {
+   public IStatus isRenamable(Collection<Artifact> artifacts) {
       return OK_STATUS;
    }
 
    @Override
-   public IStatus isDeleteableRelation(Artifact artifact, IRelationType relationType)  {
+   public IStatus isDeleteableRelation(Artifact artifact, IRelationType relationType) {
       return OK_STATUS;
    }
 }

@@ -47,7 +47,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
    }
 
    @Override
-   public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex)  {
+   public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) {
       BranchId branch = null;
       if (element instanceof ICommitConfigItem) {
          ICommitConfigItem configArt = (ICommitConfigItem) element;
@@ -102,7 +102,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
    }
 
    @Override
-   public String getColumnText(Object element, XViewerColumn xCol, int columnIndex)  {
+   public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) {
       BranchId branch;
       if (element instanceof ICommitConfigItem) {
          ICommitConfigItem configArt = (ICommitConfigItem) element;
@@ -141,7 +141,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       return "unhandled column";
    }
 
-   private String handleVersionColumn(Object element)  {
+   private String handleVersionColumn(Object element) {
       if (element instanceof ICommitConfigItem) {
          return ((ICommitConfigItem) element).getName();
       } else {
@@ -157,7 +157,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       }
    }
 
-   private String handleCommitDateColumn(BranchId branch)  {
+   private String handleCommitDateColumn(BranchId branch) {
       TransactionRecord transactionRecord = getTransactionRecord(branch);
       if (transactionRecord.isValid()) {
          new DateUtil();
@@ -166,7 +166,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       return "Not Committed";
    }
 
-   private String handleCommitCommentColumn(BranchId branch)  {
+   private String handleCommitCommentColumn(BranchId branch) {
       TransactionRecord transactionRecord = getTransactionRecord(branch);
       if (transactionRecord.isValid()) {
          return transactionRecord.getComment();
@@ -192,7 +192,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       return "";
    }
 
-   private String handleDestBranchCreationDateColumn(Object element, BranchId branch)  {
+   private String handleDestBranchCreationDateColumn(Object element, BranchId branch) {
       if (element instanceof IAtsVersion) {
          return getColumnText("Version", element, branch);
       } else if (element instanceof IAtsTeamDefinition) {
@@ -211,7 +211,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       }
    }
 
-   private String handleActionColumn(BranchId branch)  {
+   private String handleActionColumn(BranchId branch) {
       CommitStatus commitStatus = AtsClientService.get().getBranchService().getCommitStatus(
          commitXManager.getXCommitViewer().getTeamArt(), branch);
       if (commitStatus == CommitStatus.Rebaseline_In_Progress) {

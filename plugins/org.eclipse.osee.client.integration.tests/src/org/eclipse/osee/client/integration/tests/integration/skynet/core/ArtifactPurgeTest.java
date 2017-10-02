@@ -59,7 +59,7 @@ public class ArtifactPurgeTest {
    private IOseeBranch workingBranch;
 
    @Before
-   public void setup()  {
+   public void setup() {
       workingBranch = IOseeBranch.create(method.getQualifiedTestName());
       BranchManager.createWorkingBranch(SAW_Bld_2, workingBranch);
    }

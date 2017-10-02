@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.database.init.AddCommonBranch;
 public class AddCommonBranchForClientDemo extends AddCommonBranch {
 
    @Override
-   public void run()  {
+   public void run() {
       super.run();
       // Customized here;
    }

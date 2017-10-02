@@ -15,6 +15,6 @@ package org.eclipse.osee.framework.plugin.core;
  */
 public interface IWorkbenchUserService {
 
-   IWorkbenchUser getUser() ;
+   IWorkbenchUser getUser();
 
 }

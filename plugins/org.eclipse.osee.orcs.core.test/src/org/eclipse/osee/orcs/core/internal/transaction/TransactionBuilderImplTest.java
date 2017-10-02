@@ -109,7 +109,7 @@ public class TransactionBuilderImplTest {
 
    @SuppressWarnings("unchecked")
    @Before
-   public void init()  {
+   public void init() {
       initMocks(this);
       guid = GUID.create();
       factory = new TransactionBuilderImpl(txCallableFactory, txDataManager, txData, query, keyValueOps);
@@ -130,33 +130,33 @@ public class TransactionBuilderImplTest {
       verify(txData).getComment();
    }
 
-   public void testSetAuthor()  {
+   public void testSetAuthor() {
       factory.setAuthor(SystemUser.OseeSystem);
       verify(txDataManager).setAuthor(txData, SystemUser.OseeSystem);
    }
 
    @Test
-   public void testCreateArtifact()  {
+   public void testCreateArtifact() {
       factory.createArtifact(SoftwareRequirement, "Software Requirement");
 
       verify(txDataManager).createArtifact(txData, SoftwareRequirement, "Software Requirement", null);
    }
 
    @Test
-   public void testCreateArtifactWithGuid()  {
+   public void testCreateArtifactWithGuid() {
       factory.createArtifact(HardwareRequirement, "Hardware Requirement", guid);
 
       verify(txDataManager).createArtifact(txData, HardwareRequirement, "Hardware Requirement", guid);
    }
 
    @Test
-   public void testCopyArtifact()  {
+   public void testCopyArtifact() {
       factory.copyArtifact(expectedAuthor);
       verify(txDataManager).copyArtifact(txData, COMMON, expectedAuthor);
    }
 
    @Test
-   public void testCopyArtifactWithList()  {
+   public void testCopyArtifactWithList() {
       Collection<AttributeTypeId> attributesToDuplicate = Arrays.asList(Name, Annotation);
 
       factory.copyArtifact(expectedAuthor, attributesToDuplicate);
@@ -165,7 +165,7 @@ public class TransactionBuilderImplTest {
    }
 
    @Test
-   public void testIntroduceArtifactBranchException()  {
+   public void testIntroduceArtifactBranchException() {
       when(txData.isOnBranch(COMMON)).thenReturn(true);
 
       thrown.expect(OseeArgumentException.class);
@@ -174,7 +174,7 @@ public class TransactionBuilderImplTest {
    }
 
    @Test
-   public void testIntroduceArtifact()  {
+   public void testIntroduceArtifact() {
       when(query.createQueryFactory(any())).thenReturn(queryFactory);
       when(queryFactory.fromBranch(COMMON)).thenReturn(builder);
       when(builder.includeDeletedArtifacts()).thenReturn(builder);
@@ -189,14 +189,14 @@ public class TransactionBuilderImplTest {
    }
 
    @Test
-   public void testCreateAttribute()  {
+   public void testCreateAttribute() {
       factory.createAttribute(expectedAuthor, QualificationMethod);
 
       verify(artifact).createAttribute(QualificationMethod);
    }
 
    @Test
-   public void testCreateAttributeWithValue()  {
+   public void testCreateAttributeWithValue() {
       factory.createAttribute(expectedAuthor, QualificationMethod, "Demonstration");
 
       verify(txDataManager).getForWrite(txData, expectedAuthor);
@@ -204,7 +204,7 @@ public class TransactionBuilderImplTest {
    }
 
    @Test
-   public void testCreateAttributeFromString()  {
+   public void testCreateAttributeFromString() {
       factory.createAttributeFromString(expectedAuthor, WordTemplateContent, "This is my word template content");
 
       verify(txDataManager).getForWrite(txData, expectedAuthor);
@@ -213,7 +213,7 @@ public class TransactionBuilderImplTest {
    }
 
    @Test
-   public void testSetSoleAttributeValue()  {
+   public void testSetSoleAttributeValue() {
       factory.setSoleAttributeValue(expectedAuthor, RelationOrder, LEXICOGRAPHICAL_DESC);
 
       verify(txDataManager).getForWrite(txData, expectedAuthor);
@@ -221,7 +221,7 @@ public class TransactionBuilderImplTest {
    }
 
    @Test
-   public void testSetSoleAttributeFromStream()  {
+   public void testSetSoleAttributeFromStream() {
       InputStream inputStream = Mockito.mock(InputStream.class);
 
       factory.setSoleAttributeFromStream(expectedAuthor, Company, inputStream);
@@ -231,7 +231,7 @@ public class TransactionBuilderImplTest {
    }
 
    @Test
-   public void testSetSoleAttributeFromString()  {
+   public void testSetSoleAttributeFromString() {
       factory.setSoleAttributeFromString(expectedAuthor, Name, "Name");
 
       verify(txDataManager).getForWrite(txData, expectedAuthor);
@@ -239,7 +239,7 @@ public class TransactionBuilderImplTest {
    }
 
    @Test
-   public void testSetAttributesFromValues()  {
+   public void testSetAttributesFromValues() {
       factory.setAttributesFromValues(expectedAuthor, PlainTextContent, Arrays.asList(true, true, false));
 
       verify(txDataManager).getForWrite(txData, expectedAuthor);
@@ -248,7 +248,7 @@ public class TransactionBuilderImplTest {
 
    @SuppressWarnings("unchecked")
    @Test
-   public void testSetAttributesFromValuesList()  {
+   public void testSetAttributesFromValuesList() {
       factory.setAttributesFromValues(expectedAuthor, CoreAttributeTypes.StaticId, Collections.EMPTY_LIST);
 
       verify(txDataManager).getForWrite(txData, expectedAuthor);
@@ -256,7 +256,7 @@ public class TransactionBuilderImplTest {
    }
 
    @Test
-   public void testSetAttributesFromStrings()  {
+   public void testSetAttributesFromStrings() {
       factory.setAttributesFromStrings(expectedAuthor, PlainTextContent, Arrays.asList("one", "two", "three"));
 
       verify(txDataManager).getForWrite(txData, expectedAuthor);
@@ -265,7 +265,7 @@ public class TransactionBuilderImplTest {
 
    @SuppressWarnings("unchecked")
    @Test
-   public void testSetAttributesFromStringList()  {
+   public void testSetAttributesFromStringList() {
       factory.setAttributesFromStrings(expectedAuthor, PlainTextContent, Collections.EMPTY_LIST);
 
       verify(txDataManager).getForWrite(txData, expectedAuthor);
@@ -274,7 +274,7 @@ public class TransactionBuilderImplTest {
 
    @SuppressWarnings("unchecked")
    @Test
-   public void testSetAttributeByIdFromValue()  {
+   public void testSetAttributeByIdFromValue() {
       factory.setAttributeById(expectedAuthor, attrId, false);
 
       verify(txDataManager).getForWrite(txData, expectedAuthor);
@@ -282,7 +282,7 @@ public class TransactionBuilderImplTest {
    }
 
    @Test
-   public void testSetAttributeByIdFromString()  {
+   public void testSetAttributeByIdFromString() {
       factory.setAttributeById(expectedAuthor, attrId, "value");
 
       verify(txDataManager).getForWrite(txData, expectedAuthor);
@@ -290,7 +290,7 @@ public class TransactionBuilderImplTest {
    }
 
    @Test
-   public void testSetAttributeById()  {
+   public void testSetAttributeById() {
       InputStream inputStream = Mockito.mock(InputStream.class);
 
       factory.setAttributeById(expectedAuthor, attrId, inputStream);
@@ -300,7 +300,7 @@ public class TransactionBuilderImplTest {
    }
 
    @Test
-   public void testDeleteByAttributeId()  {
+   public void testDeleteByAttributeId() {
       factory.deleteByAttributeId(expectedAuthor, attrId);
 
       verify(txDataManager).getForWrite(txData, expectedAuthor);
@@ -308,7 +308,7 @@ public class TransactionBuilderImplTest {
    }
 
    @Test
-   public void testDeleteSoleAttribute()  {
+   public void testDeleteSoleAttribute() {
       factory.deleteSoleAttribute(expectedAuthor, Name);
 
       verify(txDataManager).getForWrite(txData, expectedAuthor);
@@ -316,7 +316,7 @@ public class TransactionBuilderImplTest {
    }
 
    @Test
-   public void testDeleteAttributes()  {
+   public void testDeleteAttributes() {
       factory.deleteAttributes(expectedAuthor, FavoriteBranch);
 
       verify(txDataManager).getForWrite(txData, expectedAuthor);
@@ -324,7 +324,7 @@ public class TransactionBuilderImplTest {
    }
 
    @Test
-   public void testDeleteAttributesWithValue()  {
+   public void testDeleteAttributesWithValue() {
       factory.deleteAttributesWithValue(expectedAuthor, Active, true);
 
       verify(txDataManager).getForWrite(txData, expectedAuthor);
@@ -332,7 +332,7 @@ public class TransactionBuilderImplTest {
    }
 
    @Test
-   public void testDeleteArtifact()  {
+   public void testDeleteArtifact() {
       factory.deleteArtifact(expectedAuthor);
 
       verify(txDataManager).deleteArtifact(txData, expectedAuthor);
@@ -361,7 +361,7 @@ public class TransactionBuilderImplTest {
    }
 
    @Test
-   public void testCommitException()  {
+   public void testCommitException() {
       Exception exception = new IllegalStateException("onCommit Exception");
 
       doThrow(exception).when(txCallableFactory).createTx(txData);
@@ -371,14 +371,14 @@ public class TransactionBuilderImplTest {
    }
 
    @Test
-   public void testSetRationale()  {
+   public void testSetRationale() {
       factory.setRationale(node1, DEFAULT_HIERARCHY, node2, "This is my rationale");
 
       verify(txDataManager).setRationale(txData, node1, DEFAULT_HIERARCHY, node2, "This is my rationale");
    }
 
    @Test
-   public void testAddChildren()  {
+   public void testAddChildren() {
       List<ArtifactReadable> list = Arrays.asList(node1, node2);
 
       factory.addChildren(expectedAuthor, list);
@@ -387,26 +387,26 @@ public class TransactionBuilderImplTest {
    }
 
    @Test
-   public void TestAddChildrenAsList()  {
+   public void TestAddChildrenAsList() {
       Iterable<? extends ArtifactId> children = Collections.emptyList();
       factory.addChildren(expectedAuthor, children);
       verify(txDataManager).addChildren(txData, expectedAuthor, children);
    }
 
    @Test
-   public void testRelate()  {
+   public void testRelate() {
       factory.relate(node1, DEFAULT_HIERARCHY, node2);
       verify(txDataManager).relate(txData, node1, DEFAULT_HIERARCHY, node2);
    }
 
    @Test
-   public void testRelateWithOrder()  {
+   public void testRelateWithOrder() {
       factory.relate(node1, DEFAULT_HIERARCHY, node2, LEXICOGRAPHICAL_ASC);
       verify(txDataManager).relate(txData, node1, DEFAULT_HIERARCHY, node2, LEXICOGRAPHICAL_ASC);
    }
 
    @Test
-   public void testSetRelations()  {
+   public void testSetRelations() {
       Iterable<? extends ArtifactId> artBs = Collections.emptyList();
       factory.setRelations(node1, DEFAULT_HIERARCHY, artBs);
 
@@ -414,20 +414,20 @@ public class TransactionBuilderImplTest {
    }
 
    @Test
-   public void testUnrelateWithAandB()  {
+   public void testUnrelateWithAandB() {
       factory.unrelate(node1, TYPE_1, node2);
       verify(txDataManager).unrelate(txData, node1, TYPE_1, node2);
    }
 
    @Test
-   public void testUnrelateFromAllWithSide()  {
+   public void testUnrelateFromAllWithSide() {
       RelationTypeSide asTypeSide = RelationTypeSide.create(TYPE_1, SIDE_B);
       factory.unrelateFromAll(asTypeSide, expectedAuthor);
       verify(txDataManager).unrelateFromAll(txData, TYPE_1, expectedAuthor, SIDE_B);
    }
 
    @Test
-   public void testUnrelateFromAll()  {
+   public void testUnrelateFromAll() {
       factory.unrelateFromAll(expectedAuthor);
       verify(txDataManager).unrelateFromAll(txData, expectedAuthor);
    }

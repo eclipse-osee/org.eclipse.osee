@@ -23,13 +23,13 @@ public class XtraAttributeDataSqlHandler extends AbstractXtraTableSqlHandler {
    private String attrAlias;
 
    @Override
-   public void addTables(AbstractSqlWriter writer)  {
+   public void addTables(AbstractSqlWriter writer) {
       attrAlias = writer.addTable(TableEnum.ATTRIBUTE_TABLE, ObjectType.ATTRIBUTE);
       txsAlias = writer.addTable(TableEnum.TXS_TABLE, ObjectType.ATTRIBUTE);
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer)  {
+   public boolean addPredicates(AbstractSqlWriter writer) {
       String artAlias = writer.getLastAlias(TableEnum.ARTIFACT_TABLE);
       writer.writeEquals(artAlias, attrAlias, "art_id");
       writer.write(" AND ");

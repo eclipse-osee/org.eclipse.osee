@@ -26,11 +26,11 @@ import org.eclipse.osee.orcs.data.EnumType;
 public class AttributeTypesImpl implements AttributeTypes {
 
    public static interface AttributeTypeIndexProvider {
-      AttributeTypeIndex getAttributeTypeIndex() ;
+      AttributeTypeIndex getAttributeTypeIndex();
    }
 
    public static interface EnumTypeIndexProvider {
-      EnumTypeIndex getEnumTypeIndex() ;
+      EnumTypeIndex getEnumTypeIndex();
    }
 
    private static final String ATTRIBUTE_OCCURRENCE_UNLIMITED = "unlimited";
@@ -43,12 +43,12 @@ public class AttributeTypesImpl implements AttributeTypes {
       this.enumTypeIndexProvider = enumTypeIndexProvider;
    }
 
-   private XAttributeType getType(AttributeTypeId attributeType)  {
+   private XAttributeType getType(AttributeTypeId attributeType) {
       return provider.getAttributeTypeIndex().getDslTypeByToken(attributeType);
    }
 
    @Override
-   public Collection<AttributeTypeToken> getAll()  {
+   public Collection<AttributeTypeToken> getAll() {
       return provider.getAttributeTypeIndex().getAllTokens();
    }
 
@@ -63,23 +63,23 @@ public class AttributeTypesImpl implements AttributeTypes {
    }
 
    @Override
-   public String getBaseAttributeTypeId(AttributeTypeId attributeType)  {
+   public String getBaseAttributeTypeId(AttributeTypeId attributeType) {
       return getType(attributeType).getBaseAttributeType();
    }
 
    @Override
-   public String getAttributeProviderId(AttributeTypeId attrType)  {
+   public String getAttributeProviderId(AttributeTypeId attrType) {
       return getType(attrType).getDataProvider();
    }
 
    @Override
-   public String getDefaultValue(AttributeTypeId attrType)  {
+   public String getDefaultValue(AttributeTypeId attrType) {
       XAttributeType type = getType(attrType);
       return type.getDefaultValue();
    }
 
    @Override
-   public int getMaxOccurrences(AttributeTypeId attrType)  {
+   public int getMaxOccurrences(AttributeTypeId attrType) {
       XAttributeType type = getType(attrType);
       String maxValue = type.getMax();
       int max = Integer.MAX_VALUE;
@@ -92,7 +92,7 @@ public class AttributeTypesImpl implements AttributeTypes {
    }
 
    @Override
-   public int getMinOccurrences(AttributeTypeId attrType)  {
+   public int getMinOccurrences(AttributeTypeId attrType) {
       XAttributeType type = getType(attrType);
       String minValue = type.getMin();
       int min = 0;
@@ -103,7 +103,7 @@ public class AttributeTypesImpl implements AttributeTypes {
    }
 
    @Override
-   public String getFileTypeExtension(AttributeTypeId attrType)  {
+   public String getFileTypeExtension(AttributeTypeId attrType) {
       XAttributeType type = getType(attrType);
       String value = type.getFileExtension();
       return Strings.isValid(value) ? value : Strings.emptyString();
@@ -127,14 +127,14 @@ public class AttributeTypesImpl implements AttributeTypes {
    }
 
    @Override
-   public boolean isEnumerated(AttributeTypeId attrType)  {
+   public boolean isEnumerated(AttributeTypeId attrType) {
       XAttributeType type = getType(attrType);
       XOseeEnumType enumType = type.getEnumType();
       return enumType != null;
    }
 
    @Override
-   public EnumType getEnumType(AttributeTypeId attrType)  {
+   public EnumType getEnumType(AttributeTypeId attrType) {
       EnumType toReturn = null;
       XAttributeType type = getType(attrType);
       XOseeEnumType enumType = type.getEnumType();
@@ -145,41 +145,41 @@ public class AttributeTypesImpl implements AttributeTypes {
    }
 
    @Override
-   public String getDescription(AttributeTypeId attrType)  {
+   public String getDescription(AttributeTypeId attrType) {
       XAttributeType type = getType(attrType);
       String value = type.getDescription();
       return Strings.isValid(value) ? value : Strings.emptyString();
    }
 
    @Override
-   public boolean isEmpty()  {
+   public boolean isEmpty() {
       return provider.getAttributeTypeIndex().isEmpty();
    }
 
    @Override
-   public int size()  {
+   public int size() {
       return provider.getAttributeTypeIndex().size();
    }
 
    @Override
-   public Collection<AttributeTypeId> getAllTaggable()  {
+   public Collection<AttributeTypeId> getAllTaggable() {
       return provider.getAttributeTypeIndex().getAllTaggable();
    }
 
    @Override
-   public boolean exists(Id id)  {
+   public boolean exists(Id id) {
       return provider.getAttributeTypeIndex().exists(id);
    }
 
    @Override
-   public String getMediaType(AttributeTypeId attrType)  {
+   public String getMediaType(AttributeTypeId attrType) {
       XAttributeType type = getType(attrType);
       String value = type.getMediaType();
       return Strings.isValid(value) ? value : Strings.emptyString();
    }
 
    @Override
-   public boolean hasMediaType(AttributeTypeId attrType)  {
+   public boolean hasMediaType(AttributeTypeId attrType) {
       boolean toReturn = false;
       String mediaType = getMediaType(attrType);
       if (mediaType != null) {
@@ -189,7 +189,7 @@ public class AttributeTypesImpl implements AttributeTypes {
    }
 
    @Override
-   public boolean isBooleanType(AttributeTypeId attrType)  {
+   public boolean isBooleanType(AttributeTypeId attrType) {
       String baseType = getBaseAttributeTypeId(attrType);
       return baseType != null && baseType.toLowerCase().contains("boolean");
    }

@@ -43,8 +43,8 @@ public class PurgeArtifactType extends AbstractBlam {
    @Override
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XArtifactTypeMultiChoiceSelect\" displayName=\"Artifact Type(s) to purge\" />" + //
-      "<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Convert Artifacts\" />" + //
-      "<XWidget xwidgetType=\"XArtifactTypeComboViewer\" displayName=\"New Artifact Type\" /></xWidgets>";
+         "<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Convert Artifacts\" />" + //
+         "<XWidget xwidgetType=\"XArtifactTypeComboViewer\" displayName=\"New Artifact Type\" /></xWidgets>";
    }
 
    @Override

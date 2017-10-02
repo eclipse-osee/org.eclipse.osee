@@ -36,5 +36,5 @@ public abstract class AbstractAtsActionTest {
       Assert.assertNotNull("Image should be specified", action.getImageDescriptor());
    }
 
-   public abstract Action createAction() ;
+   public abstract Action createAction();
 }

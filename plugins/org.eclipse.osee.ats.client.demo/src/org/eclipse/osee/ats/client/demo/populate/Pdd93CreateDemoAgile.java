@@ -61,7 +61,7 @@ import org.eclipse.osee.support.test.util.TestUtil;
  */
 public class Pdd93CreateDemoAgile {
 
-   private static void validateArtifactCache()  {
+   private static void validateArtifactCache() {
       final Collection<Artifact> list = ArtifactCache.getDirtyArtifacts();
       if (!list.isEmpty()) {
          for (Artifact artifact : list) {

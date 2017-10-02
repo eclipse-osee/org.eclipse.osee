@@ -68,7 +68,7 @@ public class CacheUpdateCommand implements ConsoleCommand {
       }
 
       @Override
-      public Boolean call()  {
+      public Boolean call() {
          OrcsTypes orcsTypes = getOrcTypes();
          orcsTypes.invalidateAll();
          console.writeln("Type caches invalidated.");

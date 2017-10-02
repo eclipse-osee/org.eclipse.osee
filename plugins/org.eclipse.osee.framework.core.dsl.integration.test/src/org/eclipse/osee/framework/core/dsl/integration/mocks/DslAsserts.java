@@ -45,11 +45,11 @@ public final class DslAsserts {
       // Utility class
    }
 
-   public static void assertNullAccessDetail(RestrictionHandler<?> handler, ObjectRestriction restriction, ArtifactProxy artifactProxy, Scope expectedScopeLevel)  {
+   public static void assertNullAccessDetail(RestrictionHandler<?> handler, ObjectRestriction restriction, ArtifactProxy artifactProxy, Scope expectedScopeLevel) {
       assertAccessDetail(handler, restriction, artifactProxy, null, null, expectedScopeLevel);
    }
 
-   public static void assertAccessDetail(RestrictionHandler<?> handler, ObjectRestriction restriction, ArtifactProxy artifactProxy, Object expectedAccessObject, PermissionEnum expectedPermission, Scope expectedScopeLevel)  {
+   public static void assertAccessDetail(RestrictionHandler<?> handler, ObjectRestriction restriction, ArtifactProxy artifactProxy, Object expectedAccessObject, PermissionEnum expectedPermission, Scope expectedScopeLevel) {
       MockAccessDetailCollector collector = new MockAccessDetailCollector();
       handler.process(restriction, artifactProxy, collector, new Scope());
       AccessDetail<?> actualDetail = collector.getAccessDetails();

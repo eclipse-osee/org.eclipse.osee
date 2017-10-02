@@ -28,7 +28,7 @@ public interface AttributeContainer extends Identifiable<String> {
 
    boolean isLoaded();
 
-   void setLoaded(boolean value) ;
+   void setLoaded(boolean value);
 
    String getExceptionString();
 
@@ -39,19 +39,19 @@ public interface AttributeContainer extends Identifiable<String> {
 
    boolean areAttributesDirty();
 
-   int getMaximumAttributeTypeAllowed(AttributeTypeId attributeType) ;
+   int getMaximumAttributeTypeAllowed(AttributeTypeId attributeType);
 
-   int getMinimumAttributeTypeAllowed(AttributeTypeId attributeType) ;
+   int getMinimumAttributeTypeAllowed(AttributeTypeId attributeType);
 
    /////////////////////////////////////////////////////////////////
 
-   int getAttributeCount(AttributeTypeId type) ;
+   int getAttributeCount(AttributeTypeId type);
 
-   int getAttributeCount(AttributeTypeId type, DeletionFlag deletionFlag) ;
+   int getAttributeCount(AttributeTypeId type, DeletionFlag deletionFlag);
 
-   boolean isAttributeTypeValid(AttributeTypeId attributeType) ;
+   boolean isAttributeTypeValid(AttributeTypeId attributeType);
 
-   Collection<AttributeTypeToken> getValidAttributeTypes() ;
+   Collection<AttributeTypeToken> getValidAttributeTypes();
 
-   Collection<AttributeTypeToken> getExistingAttributeTypes() ;
+   Collection<AttributeTypeToken> getExistingAttributeTypes();
 }

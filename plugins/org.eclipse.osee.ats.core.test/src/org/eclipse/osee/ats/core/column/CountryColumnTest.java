@@ -39,7 +39,7 @@ public class CountryColumnTest extends CountryColumn {
    // @formatter:on
 
    @Before
-   public void setup()  {
+   public void setup() {
       MockitoAnnotations.initMocks(this);
    }
 

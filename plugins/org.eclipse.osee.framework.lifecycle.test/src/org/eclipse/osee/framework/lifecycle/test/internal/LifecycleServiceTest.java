@@ -32,7 +32,7 @@ import org.junit.Test;
 public class LifecycleServiceTest {
 
    @Test
-   public void testAccess()  {
+   public void testAccess() {
       ILifecycleService lifecycleServices = new LifecycleServiceImpl();
       Assert.assertTrue(lifecycleServices.getHandlerTypes().isEmpty());
 

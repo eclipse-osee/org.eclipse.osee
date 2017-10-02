@@ -76,9 +76,9 @@ public class ReportErrorsJob extends UIJob {
       private final String errorMessage;
 
       public ResourceErrorDialog(Shell parentShell, String dialogTitle, String dialogMessage, String errorMessage) {
-         super(parentShell, dialogTitle, PlatformUI.getWorkbench().getSharedImages().getImage(
-            ISharedImages.IMG_OBJS_ERROR_TSK), dialogMessage, MessageDialog.ERROR,
-            new String[] {IDialogConstants.OK_LABEL}, 0);
+         super(parentShell, dialogTitle,
+            PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_ERROR_TSK), dialogMessage,
+            MessageDialog.ERROR, new String[] {IDialogConstants.OK_LABEL}, 0);
          this.errorMessage = errorMessage;
       }
 

@@ -56,7 +56,7 @@ public class AccessModelInterpreterImplTest {
    }
 
    @Test
-   public void testGetContext()  {
+   public void testGetContext() {
 
       Collection<AccessContext> contexts = Arrays.asList(expectedContext1, expectedContext2);
       AccessContext actualContext1 = interpreterNoArtData.getContext(contexts, contextId1);
@@ -67,32 +67,32 @@ public class AccessModelInterpreterImplTest {
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testGetContextNullCheck1()  {
+   public void testGetContextNullCheck1() {
       interpreterNoArtData.getContext(null, contextId1);
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testGetContextNullCheck2()  {
+   public void testGetContextNullCheck2() {
       interpreterNoArtData.getContext(Collections.<AccessContext> emptyList(), null);
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testComputeAccessNullCheck1()  {
+   public void testComputeAccessNullCheck1() {
       interpreterNoArtData.computeAccessDetails(null, expectedContext1, new Object());
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testComputeAccessNullCheck2()  {
+   public void testComputeAccessNullCheck2() {
       interpreterNoArtData.computeAccessDetails(new MockAccessDetailCollector(), null, new Object());
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testComputeAccessNullCheck3()  {
+   public void testComputeAccessNullCheck3() {
       interpreterNoArtData.computeAccessDetails(new MockAccessDetailCollector(), expectedContext1, null);
    }
 
    @Test
-   public void testComputeAccessNotApplicableObject()  {
+   public void testComputeAccessNotApplicableObject() {
       final Object objectToCheck = new Object();
       MockArtifactDataProvider provider = new MockArtifactDataProvider(false, objectToCheck, null);
       AccessModelInterpreterImpl interpreter = new AccessModelInterpreterImpl(provider, null);
@@ -102,7 +102,7 @@ public class AccessModelInterpreterImplTest {
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testComputeAccessCastedObjectNull()  {
+   public void testComputeAccessCastedObjectNull() {
       final Object objectToCheck = new Object();
       MockArtifactDataProvider provider = new MockArtifactDataProvider(true, objectToCheck, null);
       AccessModelInterpreterImpl interpreter = new AccessModelInterpreterImpl(provider, null);
@@ -115,7 +115,7 @@ public class AccessModelInterpreterImplTest {
    }
 
    @Test
-   public void testComputeAccessCheckRestriction()  {
+   public void testComputeAccessCheckRestriction() {
       AccessContext accessContext = MockModel.createAccessContext(contextId2.getGuid(), "c2");
 
       MockArtifactProxy artifactData = new MockArtifactProxy("1234", null);
@@ -124,7 +124,7 @@ public class AccessModelInterpreterImplTest {
       assertComputeDetails(accessContext, artifactData, objectRestriction, false);
    }
 
-   private static void assertComputeDetails(AccessContext accessContext, MockArtifactProxy artifactData, ObjectRestriction objectRestriction, boolean expectedProcessCalled)  {
+   private static void assertComputeDetails(AccessContext accessContext, MockArtifactProxy artifactData, ObjectRestriction objectRestriction, boolean expectedProcessCalled) {
       final Object objectToCheck = new Object();
       MockArtifactDataProvider provider = new MockArtifactDataProvider(true, objectToCheck, artifactData);
       AccessDetailCollector collector = new CheckAccessDetailCollectorNotCalled();

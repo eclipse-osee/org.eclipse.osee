@@ -96,7 +96,7 @@ public class FrameworkAccessControlProxy implements CmAccessControl, HasAccessMo
       }
    }
 
-   private void checkInitialized()  {
+   private void checkInitialized() {
       Conditions.checkNotNull(getAccessControl(), "frameworkAccess",
          "FrameworkAccessControlService not properly initialized");
    }
@@ -118,7 +118,7 @@ public class FrameworkAccessControlProxy implements CmAccessControl, HasAccessMo
    }
 
    @Override
-   public Collection<? extends IAccessContextId> getContextId(ArtifactToken user, Object object)  {
+   public Collection<? extends IAccessContextId> getContextId(ArtifactToken user, Object object) {
       checkInitialized();
       return getAccessControl().getContextId(user, object);
    }

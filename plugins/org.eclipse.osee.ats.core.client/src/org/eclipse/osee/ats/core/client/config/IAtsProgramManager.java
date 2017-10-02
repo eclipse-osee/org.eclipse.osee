@@ -23,18 +23,18 @@ public interface IAtsProgramManager {
 
    public boolean isApplicable(TeamWorkFlowArtifact teamArt);
 
-   public IOperation createValidateReqChangesOp(TeamWorkFlowArtifact teamArt) ;
+   public IOperation createValidateReqChangesOp(TeamWorkFlowArtifact teamArt);
 
    public String getName();
 
-   public Collection<IAtsProgram> getPrograms() ;
+   public Collection<IAtsProgram> getPrograms();
 
    public String getXProgramComboWidgetName();
 
-   public IAtsProgram getProgram(TeamWorkFlowArtifact teamArt) ;
+   public IAtsProgram getProgram(TeamWorkFlowArtifact teamArt);
 
-   public ArtifactToken getReviewAssigneeUserGroup(TeamWorkFlowArtifact teamArt) ;
+   public ArtifactToken getReviewAssigneeUserGroup(TeamWorkFlowArtifact teamArt);
 
-   public ArtifactToken getPidsReviewAssigneeUserGroup() ;
+   public ArtifactToken getPidsReviewAssigneeUserGroup();
 
 }

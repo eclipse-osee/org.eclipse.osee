@@ -27,7 +27,7 @@ public class AttributeChangeWorker implements IChangeWorker {
    }
 
    @Override
-   public void revert()  {
+   public void revert() {
       if (change.isBaseline()) {
          artifact.getAttributeById(change.getItemId().getId(), true).replaceWithVersion(
             change.getBaselineGamma().getId().intValue());

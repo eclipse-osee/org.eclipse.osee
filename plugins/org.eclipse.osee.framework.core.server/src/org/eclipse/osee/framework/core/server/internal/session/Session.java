@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 /**
  * @author Roberto E. Escobar
  */
-public class Session extends BaseIdentity<String>implements ISession {
+public class Session extends BaseIdentity<String> implements ISession {
 
    private final String userId;
    private final Date creationDate;

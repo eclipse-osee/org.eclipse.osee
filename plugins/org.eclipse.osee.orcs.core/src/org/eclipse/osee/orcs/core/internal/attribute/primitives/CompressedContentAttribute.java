@@ -23,17 +23,17 @@ public final class CompressedContentAttribute extends BinaryAttribute<InputStrea
    public static final String NAME = CompressedContentAttribute.class.getSimpleName();
 
    @Override
-   public InputStream getValue()  {
+   public InputStream getValue() {
       return Lib.byteBufferToInputStream(getDataProxy().getValueAsBytes());
    }
 
    @Override
-   public boolean subClassSetValue(InputStream value)  {
+   public boolean subClassSetValue(InputStream value) {
       return setValueFromInputStream(value);
    }
 
    @Override
-   public boolean setValueFromInputStream(InputStream value)  {
+   public boolean setValueFromInputStream(InputStream value) {
       boolean response = false;
       try {
          if (value == null) {
@@ -61,7 +61,7 @@ public final class CompressedContentAttribute extends BinaryAttribute<InputStrea
    }
 
    @Override
-   protected void uponInitialize()  {
+   protected void uponInitialize() {
       getDataProxy().setDisplayableString(getAttributeType().getName());
    }
 }

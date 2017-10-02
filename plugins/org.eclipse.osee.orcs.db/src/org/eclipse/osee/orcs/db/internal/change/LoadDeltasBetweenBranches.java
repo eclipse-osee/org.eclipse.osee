@@ -136,7 +136,7 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
       return list;
    }
 
-   private DoubleKeyHashMap<Integer, Long, ChangeItem> loadSourceBranchChanges(TransactionId sourceBaselineTxId)  {
+   private DoubleKeyHashMap<Integer, Long, ChangeItem> loadSourceBranchChanges(TransactionId sourceBaselineTxId) {
       DoubleKeyHashMap<Integer, Long, ChangeItem> hashChangeData = new DoubleKeyHashMap<>();
 
       Consumer<JdbcStatement> consumer = stmt -> {
@@ -202,7 +202,7 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
       return hashChangeData;
    }
 
-   private void loadCurrentVersionData(ExportImportJoinQuery idJoin, DoubleKeyHashMap<Integer, Long, ChangeItem> changesByItemId, BranchId txBranchId, TransactionId txId, boolean isMergeBranch)  {
+   private void loadCurrentVersionData(ExportImportJoinQuery idJoin, DoubleKeyHashMap<Integer, Long, ChangeItem> changesByItemId, BranchId txBranchId, TransactionId txId, boolean isMergeBranch) {
       Consumer<JdbcStatement> consumer = stmt -> {
          checkForCancelled();
 
@@ -240,7 +240,7 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
 
    }
 
-   private void loadNonCurrentSourceVersionData(ExportImportJoinQuery idJoin, DoubleKeyHashMap<Integer, Long, ChangeItem> changesByItemId, TransactionId sourceBaselineTxId)  {
+   private void loadNonCurrentSourceVersionData(ExportImportJoinQuery idJoin, DoubleKeyHashMap<Integer, Long, ChangeItem> changesByItemId, TransactionId sourceBaselineTxId) {
       try (JdbcStatement chStmt = getJdbcClient().getStatement()) {
          String query =
             "select * from (select null as value, item.art_id as item_id, txs.gamma_id, txs.mod_type, txs.app_id, txs.transaction_id, idj.id2, 2 as table_type from osee_join_export_import idj, " + //

@@ -46,32 +46,32 @@ public class OseeDslAccessModelTest {
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testComputeAccessNullAgumentCheck1()  {
+   public void testComputeAccessNullAgumentCheck1() {
       AccessModel accessModel = new OseeDslAccessModel(null, null);
       accessModel.computeAccess(null, new ArrayList<Object>(), new AccessData());
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testComputeAccessNullAgumentCheck2()  {
+   public void testComputeAccessNullAgumentCheck2() {
       AccessModel accessModel = new OseeDslAccessModel(null, null);
       accessModel.computeAccess(accessContextId, null, new AccessData());
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testComputeAccessNullAgumentCheck3()  {
+   public void testComputeAccessNullAgumentCheck3() {
       AccessModel accessModel = new OseeDslAccessModel(null, null);
       accessModel.computeAccess(accessContextId, Collections.emptyList(), null);
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testComputeAccessNullDsl()  {
+   public void testComputeAccessNullDsl() {
       MockDslProvider dslProvider = new MockDslProvider(null);
       AccessModel accessModel = new OseeDslAccessModel(null, dslProvider);
       accessModel.computeAccess(accessContextId, Collections.emptyList(), new AccessData());
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testComputeAccessNullAccessContext()  {
+   public void testComputeAccessNullAccessContext() {
       MockAccessModelInterpreter interpreter = new MockAccessModelInterpreter(null);
       MockDslProvider dslProvider = new MockDslProvider(MockModel.createDsl());
       AccessModel accessModel = new OseeDslAccessModel(interpreter, dslProvider);
@@ -79,7 +79,7 @@ public class OseeDslAccessModelTest {
    }
 
    @Test
-   public void testComputeAccessTestCollection()  {
+   public void testComputeAccessTestCollection() {
 
       final Object checkedObject = new Object();
 
@@ -101,7 +101,7 @@ public class OseeDslAccessModelTest {
       MockAccessModelInterpreter interpreter = new MockAccessModelInterpreter(accessContext) {
 
          @Override
-         public void computeAccessDetails(AccessDetailCollector collector, AccessContext context, Object objectToCheck)  {
+         public void computeAccessDetails(AccessDetailCollector collector, AccessContext context, Object objectToCheck) {
             super.computeAccessDetails(collector, accessContext, objectToCheck);
             Assert.assertEquals(accessContext, context);
             Assert.assertEquals(checkedObject, objectToCheck);
@@ -155,14 +155,14 @@ public class OseeDslAccessModelTest {
       }
 
       @Override
-      public AccessContext getContext(Collection<AccessContext> contexts, IAccessContextId contextId)  {
+      public AccessContext getContext(Collection<AccessContext> contexts, IAccessContextId contextId) {
          this.contextId = contextId;
          this.contexts = contexts;
          return contextToReturn;
       }
 
       @Override
-      public void computeAccessDetails(AccessDetailCollector collector, AccessContext context, Object objectToCheck)  {
+      public void computeAccessDetails(AccessDetailCollector collector, AccessContext context, Object objectToCheck) {
          //
          wasComputeCalled = true;
       }

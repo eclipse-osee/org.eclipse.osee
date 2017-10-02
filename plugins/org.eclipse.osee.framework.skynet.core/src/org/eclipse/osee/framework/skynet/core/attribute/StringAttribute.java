@@ -15,7 +15,7 @@ package org.eclipse.osee.framework.skynet.core.attribute;
  */
 public class StringAttribute extends CharacterBackedAttribute<String> {
    @Override
-   public String getValue()  {
+   public String getValue() {
       return getAttributeDataProvider().getValueAsString();
    }
 
@@ -25,7 +25,7 @@ public class StringAttribute extends CharacterBackedAttribute<String> {
    }
 
    @Override
-   public String getDisplayableString()  {
+   public String getDisplayableString() {
       return getValue();
    }
 }

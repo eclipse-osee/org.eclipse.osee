@@ -35,19 +35,19 @@ public class XCheckBoxDam extends XCheckBox implements IAttributeWidget {
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType)  {
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
       this.artifact = artifact;
       this.attributeType = attributeType;
       super.set(artifact.getSoleAttributeValue(this.attributeType, Boolean.FALSE));
    }
 
    @Override
-   public void saveToArtifact()  {
+   public void saveToArtifact() {
       artifact.setSoleAttributeValue(attributeType, checkButton.getSelection());
    }
 
    @Override
-   public Result isDirty()  {
+   public Result isDirty() {
       if (isEditable()) {
          if (checkButton != null && !checkButton.isDisposed()) {
             Boolean enteredValue = checkButton.getSelection();
@@ -61,7 +61,7 @@ public class XCheckBoxDam extends XCheckBox implements IAttributeWidget {
    }
 
    @Override
-   public void revert()  {
+   public void revert() {
       setAttributeType(artifact, attributeType);
    }
 

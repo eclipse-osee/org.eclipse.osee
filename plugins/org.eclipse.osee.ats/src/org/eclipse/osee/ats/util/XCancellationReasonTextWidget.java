@@ -25,13 +25,13 @@ public class XCancellationReasonTextWidget extends XText implements IArtifactWid
 
    private AbstractWorkflowArtifact sma;
 
-   public XCancellationReasonTextWidget(AbstractWorkflowArtifact sma)  {
+   public XCancellationReasonTextWidget(AbstractWorkflowArtifact sma) {
       super("Cancallation Reason");
       setArtifact(sma);
    }
 
    @Override
-   public Result isDirty()  {
+   public Result isDirty() {
       if (!Widgets.isAccessible(getControl())) {
          return Result.FalseResult;
       }
@@ -47,14 +47,14 @@ public class XCancellationReasonTextWidget extends XText implements IArtifactWid
    }
 
    @Override
-   public void saveToArtifact()  {
+   public void saveToArtifact() {
       if (Strings.isValid(getText())) {
          sma.setCancellationReason(getText(), null);
       }
    }
 
    @Override
-   public void setArtifact(Artifact artifact)  {
+   public void setArtifact(Artifact artifact) {
       if (artifact instanceof AbstractWorkflowArtifact) {
          this.sma = (AbstractWorkflowArtifact) artifact;
          setText(sma.getCancelledReason());

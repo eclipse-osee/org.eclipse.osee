@@ -103,11 +103,11 @@ public class OseeLinkBuilder {
       super();
    }
 
-   public String getWordMlLink(LinkType destLinkType, Artifact artifact)  {
+   public String getWordMlLink(LinkType destLinkType, Artifact artifact) {
       return getWordMlLink(destLinkType, artifact, PresentationType.DEFAULT_OPEN);
    }
 
-   public String getWordMlLink(LinkType destLinkType, Artifact artifact, PresentationType presentationType)  {
+   public String getWordMlLink(LinkType destLinkType, Artifact artifact, PresentationType presentationType) {
       String linkFormat = getLinkFormat(destLinkType);
       String linkId = getLinkId(destLinkType, artifact, presentationType);
       String linkText = getLinkText(destLinkType, artifact);
@@ -174,7 +174,7 @@ public class OseeLinkBuilder {
       return linkType == LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER || linkType == LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER_AND_NAME;
    }
 
-   private String getLinkText(LinkType linkType, Artifact artifact)  {
+   private String getLinkText(LinkType linkType, Artifact artifact) {
       StringBuilder builder = new StringBuilder();
       if (isParagraphRequired(linkType)) {
          builder.append(artifact.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "Undefined"));
@@ -191,7 +191,7 @@ public class OseeLinkBuilder {
       return escapeXml(builder.toString());
    }
 
-   private String getLinkId(LinkType destLinkType, Artifact artifact, PresentationType presentationType)  {
+   private String getLinkId(LinkType destLinkType, Artifact artifact, PresentationType presentationType) {
       String toReturn;
       if (destLinkType == LinkType.OSEE_SERVER_LINK) {
          toReturn = escapeXml(ArtifactURL.getOpenInOseeLink(artifact, presentationType).toString());

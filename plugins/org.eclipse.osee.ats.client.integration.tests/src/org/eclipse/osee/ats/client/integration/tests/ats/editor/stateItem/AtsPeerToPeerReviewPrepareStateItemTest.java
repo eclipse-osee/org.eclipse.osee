@@ -69,7 +69,7 @@ public class AtsPeerToPeerReviewPrepareStateItemTest {
    }
 
    @Test
-   public void testTransitioning()  {
+   public void testTransitioning() {
       Assert.assertNotNull(peerRevArt);
 
       // setup fake combo that will hold values

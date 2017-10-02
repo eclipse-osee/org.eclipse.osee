@@ -25,7 +25,7 @@ public class ArtifactDelta {
    private final Artifact baseArt;
    private final TransactionDelta txDelta;
 
-   public ArtifactDelta(TransactionDelta txDelta, Artifact startArt, Artifact endArt)  {
+   public ArtifactDelta(TransactionDelta txDelta, Artifact startArt, Artifact endArt) {
       if (startArt == null && endArt == null) {
          throw new OseeArgumentException("the start and end artifacts can not both be null.");
       }
@@ -35,7 +35,7 @@ public class ArtifactDelta {
       this.txDelta = txDelta;
    }
 
-   public ArtifactDelta(TransactionDelta txDelta, Artifact startArt, Artifact endArt, Artifact baseArt)  {
+   public ArtifactDelta(TransactionDelta txDelta, Artifact startArt, Artifact endArt, Artifact baseArt) {
       if (startArt == null && endArt == null) {
          throw new OseeArgumentException("the start and end artifacts can not both be null.");
       }
@@ -45,7 +45,7 @@ public class ArtifactDelta {
       this.txDelta = txDelta;
    }
 
-   public ArtifactDelta(Artifact startArt, Artifact endArt)  {
+   public ArtifactDelta(Artifact startArt, Artifact endArt) {
       this(null, startArt, endArt);
    }
 

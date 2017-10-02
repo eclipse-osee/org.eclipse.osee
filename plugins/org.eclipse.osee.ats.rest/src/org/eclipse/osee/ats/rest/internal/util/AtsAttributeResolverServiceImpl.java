@@ -59,7 +59,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
       return (ArtifactReadable) services.getArtifact(artifact);
    }
 
-   public void start()  {
+   public void start() {
       Conditions.checkNotNull(orcsApi, "OrcsApi");
       logger.info("AtsAttributeResolverServiceImpl started");
    }
@@ -112,23 +112,23 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public <T> T getSoleAttributeValue(IAtsObject atsObject, AttributeTypeId attributeType, T defaultReturnValue)  {
+   public <T> T getSoleAttributeValue(IAtsObject atsObject, AttributeTypeId attributeType, T defaultReturnValue) {
       return getArtifact(atsObject).getSoleAttributeValue(attributeType, defaultReturnValue);
 
    }
 
    @Override
-   public Collection<String> getAttributesToStringList(IAtsObject atsObject, AttributeTypeId attributeType)  {
+   public Collection<String> getAttributesToStringList(IAtsObject atsObject, AttributeTypeId attributeType) {
       return getArtifact(atsObject).getAttributeValues(attributeType);
    }
 
    @Override
-   public boolean isAttributeTypeValid(IAtsWorkItem workItem, AttributeTypeId attributeType)  {
+   public boolean isAttributeTypeValid(IAtsWorkItem workItem, AttributeTypeId attributeType) {
       return getArtifact(workItem).isAttributeTypeValid(attributeType);
    }
 
    @Override
-   public String getSoleAttributeValueAsString(IAtsObject atsObject, AttributeTypeId attributeType, String defaultValue)  {
+   public String getSoleAttributeValueAsString(IAtsObject atsObject, AttributeTypeId attributeType, String defaultValue) {
       return getArtifact(atsObject).getSoleAttributeValue(attributeType, defaultValue);
    }
 
@@ -138,36 +138,36 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeId attributeType, Object value)  {
+   public void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeId attributeType, Object value) {
       // Sets on Server need to be through transaction
       throw new OseeStateException(
          "Invalid: Must use setSoleAttributeValue(IAtsWorkItem workItem, AttributeTypeId attributeType, Object value, IAtsChangeSet changes)");
    }
 
    @Override
-   public int getAttributeCount(IAtsWorkItem workItem, AttributeTypeId attributeType)  {
+   public int getAttributeCount(IAtsWorkItem workItem, AttributeTypeId attributeType) {
       return getArtifact(workItem).getAttributeCount(attributeType);
    }
 
    @Override
-   public int getAttributeCount(IAtsObject atsObject, AttributeTypeId attributeType)  {
+   public int getAttributeCount(IAtsObject atsObject, AttributeTypeId attributeType) {
       return getArtifact(atsObject).getAttributeCount(attributeType);
    }
 
    @Override
-   public int getAttributeCount(ArtifactId artifact, AttributeTypeId attributeType)  {
+   public int getAttributeCount(ArtifactId artifact, AttributeTypeId attributeType) {
       return getArtifact(artifact).getAttributeCount(attributeType);
    }
 
    @Override
-   public void addAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType, Object value)  {
+   public void addAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType, Object value) {
       // Sets on Server need to be through transaction
       throw new OseeStateException("Not Implemented");
    }
 
    @SuppressWarnings("unchecked")
    @Override
-   public <T> Collection<IAttribute<T>> getAttributes(IAtsWorkItem workItem, AttributeTypeId attributeType)  {
+   public <T> Collection<IAttribute<T>> getAttributes(IAtsWorkItem workItem, AttributeTypeId attributeType) {
       Collection<IAttribute<T>> attrs = new ArrayList<>();
       for (AttributeReadable<Object> attr : getArtifact(workItem).getAttributes(attributeType)) {
          attrs.add((IAttribute<T>) attr);
@@ -176,50 +176,50 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType)  {
+   public void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType) {
       // Sets on Server need to be through transaction
       throw new OseeStateException(
          "Invalid: Must use deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType, IAtsChangeSet changes)");
    }
 
    @Override
-   public void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType, IAtsChangeSet changes)  {
+   public void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType, IAtsChangeSet changes) {
       changes.deleteSoleAttribute(workItem, attributeType);
    }
 
    @Override
-   public void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeId attributeType, Object value, IAtsChangeSet changes)  {
+   public void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeId attributeType, Object value, IAtsChangeSet changes) {
       changes.setSoleAttributeValue(atsObject, attributeType, value);
    }
 
    @Override
-   public void addAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType, Object value, IAtsChangeSet changes)  {
+   public void addAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType, Object value, IAtsChangeSet changes) {
       changes.addAttribute(workItem, attributeType, value);
    }
 
    @Override
-   public void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType, Object value, IAtsChangeSet changes)  {
+   public void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType, Object value, IAtsChangeSet changes) {
       changes.deleteAttribute(workItem, attributeType, value);
    }
 
    @Override
-   public <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, AttributeTypeId attributeType, T value, IAtsChangeSet changes)  {
+   public <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, AttributeTypeId attributeType, T value, IAtsChangeSet changes) {
       changes.setValue(workItem, attr, attributeType, value);
    }
 
    @Override
-   public <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr, IAtsChangeSet changes)  {
+   public <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr, IAtsChangeSet changes) {
       changes.deleteAttribute(workItem, attr);
    }
 
    @Override
-   public <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr)  { // Sets on Server need to be through transaction
+   public <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr) { // Sets on Server need to be through transaction
       throw new OseeStateException(
          "Invalid: Must use deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType, IAtsChangeSet changes)");
    }
 
    @Override
-   public <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, AttributeTypeId attributeType, T value)  {
+   public <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, AttributeTypeId attributeType, T value) {
       // Sets on Server need to be through transaction
       throw new OseeStateException(
          "Invalid: Must use deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType, IAtsChangeSet changes)");
@@ -242,7 +242,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
 
    @SuppressWarnings("unchecked")
    @Override
-   public <T> Collection<IAttribute<T>> getAttributes(ArtifactId artifact, AttributeTypeId attributeType)  {
+   public <T> Collection<IAttribute<T>> getAttributes(ArtifactId artifact, AttributeTypeId attributeType) {
       Assert.isNotNull(artifact, "Artifact can not be null");
       Assert.isNotNull(attributeType, "Attribute Type can not be null");
       List<IAttribute<T>> attributes = new LinkedList<>();
@@ -268,7 +268,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    @Override
-   public <T> Collection<IAttribute<T>> getAttributes(IAtsWorkItem workItem)  {
+   public <T> Collection<IAttribute<T>> getAttributes(IAtsWorkItem workItem) {
       return getAttributes(workItem.getStoreObject());
    }
 

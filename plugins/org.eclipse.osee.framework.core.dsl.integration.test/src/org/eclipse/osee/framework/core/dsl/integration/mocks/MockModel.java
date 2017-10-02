@@ -37,7 +37,7 @@ public final class MockModel {
       // Utility class
    }
 
-   public static XArtifactMatcher createMatcher(String rawXTextData)  {
+   public static XArtifactMatcher createMatcher(String rawXTextData) {
       XArtifactMatcher toReturn = null;
       try {
          OseeDsl model = OseeDslResourceUtil.loadModel("osee:/text.osee", rawXTextData).getModel();
@@ -102,7 +102,7 @@ public final class MockModel {
       return toReturn;
    }
 
-   public static XArtifactType createXArtifactType(long uuid, String name)  {
+   public static XArtifactType createXArtifactType(long uuid, String name) {
       XArtifactType toReturn = OseeDslFactory.eINSTANCE.createXArtifactType();
       Assert.assertNotNull(toReturn);
       toReturn.setId(String.valueOf(uuid));
@@ -112,7 +112,7 @@ public final class MockModel {
       return toReturn;
    }
 
-   public static XAttributeType createXAttributeType(AttributeTypeId id, String name)  {
+   public static XAttributeType createXAttributeType(AttributeTypeId id, String name) {
       XAttributeType toReturn = OseeDslFactory.eINSTANCE.createXAttributeType();
       Assert.assertNotNull(toReturn);
       toReturn.setId(id.getIdString());
@@ -122,7 +122,7 @@ public final class MockModel {
       return toReturn;
    }
 
-   public static XRelationType createXRelationType(RelationTypeToken type)  {
+   public static XRelationType createXRelationType(RelationTypeToken type) {
       String name = type.getName();
       long id = type.getId();
       XRelationType toReturn = OseeDslFactory.eINSTANCE.createXRelationType();

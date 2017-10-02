@@ -41,7 +41,7 @@ public class BranchNameSqlHandler extends SqlHandler<CriteriaBranchName> {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer)  {
+   public boolean addPredicates(AbstractSqlWriter writer) {
       String value = criteria.getValue();
       if (criteria.isPattern()) {
          writer.writePatternMatch(brAlias + ".branch_name", "?");

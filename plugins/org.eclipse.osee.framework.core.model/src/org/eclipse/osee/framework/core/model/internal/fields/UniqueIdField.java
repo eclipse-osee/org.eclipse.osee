@@ -29,7 +29,7 @@ public final class UniqueIdField extends AbstractOseeField<Long> {
    }
 
    @Override
-   public void set(Long value)  {
+   public void set(Long value) {
       if (Id.SENTINEL.equals(get())) {
          isDirty |= Compare.isDifferent(get(), value);
          this.value = value;

@@ -66,7 +66,7 @@ public class EndDateColumn extends XViewerAtsAttributeValueColumn {
       return "";
    }
 
-   public static Date getDate(Object object)  {
+   public static Date getDate(Object object) {
       if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
          return getDate(AtsClientService.get().getWorkItemService().getFirstTeam(object));
       } else if (object instanceof AbstractWorkflowArtifact) {
@@ -75,7 +75,7 @@ public class EndDateColumn extends XViewerAtsAttributeValueColumn {
       return null;
    }
 
-   public static String getDateStr(Object object)  {
+   public static String getDateStr(Object object) {
       Set<String> strs = new HashSet<>();
       if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
          for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(object)) {

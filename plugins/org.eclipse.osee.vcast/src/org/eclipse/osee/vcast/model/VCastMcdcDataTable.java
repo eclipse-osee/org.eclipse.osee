@@ -29,7 +29,7 @@ public class VCastMcdcDataTable implements VCastTableData<VCastMcdcData> {
    }
 
    @Override
-   public Collection<VCastMcdcData> getRows(VCastDataStore dataStore)  {
+   public Collection<VCastMcdcData> getRows(VCastDataStore dataStore) {
       return dataStore.getAllMcdcData();
    }
 

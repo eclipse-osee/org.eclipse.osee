@@ -55,7 +55,7 @@ public class AttributeReadOnlyImplTest {
    }
 
    @Test
-   public void testGetAttributeType()  {
+   public void testGetAttributeType() {
       AttributeTypeToken expected = Name;
       when(proxiedObject.getAttributeType()).thenReturn(expected);
 
@@ -64,7 +64,7 @@ public class AttributeReadOnlyImplTest {
    }
 
    @Test
-   public void testGetDisplayableString()  {
+   public void testGetDisplayableString() {
       String expected = "Hello";
       when(proxiedObject.getDisplayableString()).thenReturn(expected);
 
@@ -97,7 +97,7 @@ public class AttributeReadOnlyImplTest {
    }
 
    @Test
-   public void testGetValue()  {
+   public void testGetValue() {
       Date expected = new Date();
       when(proxiedObject.getValue()).thenReturn(expected);
 
@@ -119,7 +119,7 @@ public class AttributeReadOnlyImplTest {
    }
 
    @Test
-   public void testIsOfType()  {
+   public void testIsOfType() {
       boolean expected = true;
       when(proxiedObject.isOfType(Name)).thenReturn(expected);
 

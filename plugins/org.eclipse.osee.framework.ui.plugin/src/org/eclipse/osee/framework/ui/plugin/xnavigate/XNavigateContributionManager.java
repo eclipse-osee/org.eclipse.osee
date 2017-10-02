@@ -34,7 +34,7 @@ public final class XNavigateContributionManager {
       //Utility Class
    }
 
-   public static Set<XNavigateExtensionPointData> getNavigateItems(String viewIdToMatch)  {
+   public static Set<XNavigateExtensionPointData> getNavigateItems(String viewIdToMatch) {
       Conditions.checkNotNull(viewIdToMatch, "viewIdToMatch");
       Set<XNavigateExtensionPointData> toReturn = new HashSet<>();
       List<IConfigurationElement> elements =

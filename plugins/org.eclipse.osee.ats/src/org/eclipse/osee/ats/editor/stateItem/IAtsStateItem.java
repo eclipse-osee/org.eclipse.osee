@@ -30,29 +30,29 @@ public interface IAtsStateItem {
 
    public String getFullName();
 
-   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, IAtsStateDefinition stateDefinition, Artifact art, boolean isEditable) ;
+   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, IAtsStateDefinition stateDefinition, Artifact art, boolean isEditable);
 
-   public void xWidgetCreated(XWidget xWidget, FormToolkit toolkit, IAtsStateDefinition stateDefinition, Artifact art, boolean isEditable) ;
+   public void xWidgetCreated(XWidget xWidget, FormToolkit toolkit, IAtsStateDefinition stateDefinition, Artifact art, boolean isEditable);
 
-   public void widgetModified(XWidget xWidget, FormToolkit toolkit, IAtsStateDefinition stateDefinition, Artifact art, boolean isEditable) ;
+   public void widgetModified(XWidget xWidget, FormToolkit toolkit, IAtsStateDefinition stateDefinition, Artifact art, boolean isEditable);
 
-   public String getOverrideTransitionToStateName(WfeWorkflowSection section) ;
+   public String getOverrideTransitionToStateName(WfeWorkflowSection section);
 
-   public Collection<IAtsUser> getOverrideTransitionToAssignees(AbstractWorkflowArtifact awa, String decision) ;
+   public Collection<IAtsUser> getOverrideTransitionToAssignees(AbstractWorkflowArtifact awa, String decision);
 
    public String getDescription();
 
-   public String getBranchShortName(AbstractWorkflowArtifact sma) ;
+   public String getBranchShortName(AbstractWorkflowArtifact sma);
 
-   public boolean isAccessControlViaAssigneesEnabledForBranching() ;
+   public boolean isAccessControlViaAssigneesEnabledForBranching();
 
    /**
     * @return Result of operation. If Result.isFalse(), commit will not continue and Result.popup will occur.
     */
-   public Result committing(AbstractWorkflowArtifact sma) ;
+   public Result committing(AbstractWorkflowArtifact sma);
 
-   public List<XWidget> getDynamicXWidgetsPostBody(AbstractWorkflowArtifact sma, String stateName) ;
+   public List<XWidget> getDynamicXWidgetsPostBody(AbstractWorkflowArtifact sma, String stateName);
 
-   public List<XWidget> getDynamicXWidgetsPreBody(AbstractWorkflowArtifact sma, String stateName) ;
+   public List<XWidget> getDynamicXWidgetsPreBody(AbstractWorkflowArtifact sma, String stateName);
 
 }

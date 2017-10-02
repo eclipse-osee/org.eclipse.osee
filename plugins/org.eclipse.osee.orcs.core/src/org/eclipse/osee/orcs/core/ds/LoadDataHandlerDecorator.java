@@ -33,70 +33,70 @@ public class LoadDataHandlerDecorator extends LoadDataHandlerAdapter {
    }
 
    @Override
-   public void onLoadStart()  {
+   public void onLoadStart() {
       if (handler != null) {
          handler.onLoadStart();
       }
    }
 
    @Override
-   public void onData(AttributeData data, MatchLocation match)  {
+   public void onData(AttributeData data, MatchLocation match) {
       if (handler != null) {
          handler.onData(data, match);
       }
    }
 
    @Override
-   public void onLoadDescription(LoadDescription data)  {
+   public void onLoadDescription(LoadDescription data) {
       if (handler != null) {
          handler.onLoadDescription(data);
       }
    }
 
    @Override
-   public void onData(BranchData data)  {
+   public void onData(BranchData data) {
       if (handler != null) {
          handler.onData(data);
       }
    }
 
    @Override
-   public void onData(TxOrcsData data)  {
+   public void onData(TxOrcsData data) {
       if (handler != null) {
          handler.onData(data);
       }
    }
 
    @Override
-   public void onData(ArtifactData data)  {
+   public void onData(ArtifactData data) {
       if (handler != null) {
          handler.onData(data);
       }
    }
 
    @Override
-   public void onData(AttributeData data)  {
+   public void onData(AttributeData data) {
       if (handler != null) {
          handler.onData(data);
       }
    }
 
    @Override
-   public void onData(RelationData data)  {
+   public void onData(RelationData data) {
       if (handler != null) {
          handler.onData(data);
       }
    }
 
    @Override
-   public void onDynamicData(Map<String, Object> data)  {
+   public void onDynamicData(Map<String, Object> data) {
       if (handler != null) {
          handler.onDynamicData(data);
       }
    }
 
    @Override
-   public void onLoadEnd()  {
+   public void onLoadEnd() {
       if (handler != null) {
          handler.onLoadEnd();
       }

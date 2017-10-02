@@ -61,8 +61,8 @@ public class AuthorizationAdminImpl implements AuthorizationAdmin {
       logger.trace("Updating AuthorizationAdminImpl...");
 
       config = AuthorizationConfigurationBuilder.newBuilder()//
-      .properties(properties)//
-      .build();
+         .properties(properties)//
+         .build();
    }
 
    public void addAuthorizationProvider(AuthorizationProvider provider) {

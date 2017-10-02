@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
  */
 public class DefaultHierarchySorter implements Comparator<Artifact> {
 
-   private List<Artifact> populateParent(Artifact artifact, List<Artifact> parentList)  {
+   private List<Artifact> populateParent(Artifact artifact, List<Artifact> parentList) {
       if (artifact != null) {
          parentList.add(artifact);
          parentList = populateParent(artifact.getParent(), parentList);

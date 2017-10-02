@@ -50,7 +50,7 @@ public class ExchangeUtil {
       return writer;
    }
 
-   public static Pair<Boolean, File> getTempExchangeFile(String exchangePath, Log logger, IResourceLocator locator, IResourceManager resourceManager)  {
+   public static Pair<Boolean, File> getTempExchangeFile(String exchangePath, Log logger, IResourceLocator locator, IResourceManager resourceManager) {
       File importSource = null;
       boolean wasZipExtractionRequired = false;
       IResource resource = resourceManager.acquire(locator, new PropertyStore());
@@ -89,7 +89,7 @@ public class ExchangeUtil {
       return rootDirectory;
    }
 
-   public static void readExchange(File file, ContentHandler handler)  {
+   public static void readExchange(File file, ContentHandler handler) {
       InputStream byteStream = null;
       try {
          byteStream = new BufferedInputStream(new FileInputStream(file));

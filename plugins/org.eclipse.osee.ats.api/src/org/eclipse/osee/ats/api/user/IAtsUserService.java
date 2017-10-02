@@ -23,21 +23,21 @@ import org.eclipse.osee.framework.core.enums.Active;
  */
 public interface IAtsUserService {
 
-   IAtsUser getCurrentUser() ;
+   IAtsUser getCurrentUser();
 
-   String getCurrentUserId() ;
+   String getCurrentUserId();
 
-   IAtsUser getUserById(String userId) ;
+   IAtsUser getUserById(String userId);
 
    IAtsUser getUserByArtifactId(ArtifactId id);
 
-   boolean isUserIdValid(String userId) ;
+   boolean isUserIdValid(String userId);
 
-   boolean isUserNameValid(String name) ;
+   boolean isUserNameValid(String name);
 
-   IAtsUser getUserByName(String name) ;
+   IAtsUser getUserByName(String name);
 
-   Collection<IAtsUser> getUsersByUserIds(Collection<String> userIds) ;
+   Collection<IAtsUser> getUsersByUserIds(Collection<String> userIds);
 
    boolean isAtsAdmin();
 

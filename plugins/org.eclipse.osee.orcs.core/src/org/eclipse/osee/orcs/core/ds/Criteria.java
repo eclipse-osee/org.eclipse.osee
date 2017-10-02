@@ -15,7 +15,7 @@ package org.eclipse.osee.orcs.core.ds;
  */
 public class Criteria {
 
-   public void checkValid(Options options)  {
+   public void checkValid(Options options) {
       // For subclasses to implement
    }
 

@@ -56,7 +56,7 @@ public class SearchDslTest {
    }
 
    @Test
-   public void testBuildValidSearchType()  {
+   public void testBuildValidSearchType() {
       when(queryFactory.fromBranch(COMMON)).thenReturn(builder);
 
       Predicate predicate =

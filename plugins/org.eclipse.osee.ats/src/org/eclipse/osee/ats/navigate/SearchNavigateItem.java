@@ -34,12 +34,12 @@ public class SearchNavigateItem extends XNavigateItem {
 
    private final WorldSearchItem wsi;
 
-   public SearchNavigateItem(XNavigateItem parent, WorldSearchItem wsi)  {
+   public SearchNavigateItem(XNavigateItem parent, WorldSearchItem wsi) {
       super(parent, wsi.getName(), AtsImage.GLOBE);
       this.wsi = wsi;
    }
 
-   public SearchNavigateItem(XNavigateItem parent, WorldSearchItem wsi, KeyedImage oseeImage)  {
+   public SearchNavigateItem(XNavigateItem parent, WorldSearchItem wsi, KeyedImage oseeImage) {
       super(parent, wsi.getName(), oseeImage);
       this.wsi = wsi;
    }

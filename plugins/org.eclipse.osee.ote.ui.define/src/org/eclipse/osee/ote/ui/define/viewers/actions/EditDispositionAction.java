@@ -53,19 +53,19 @@ public class EditDispositionAction extends AbstractActionHandler {
    }
 
    @Override
-   public void updateState()  {
+   public void updateState() {
       ArtifactTestRunOperator operator = SelectionHelper.getInstance().getSelection(getViewer());
       setEnabled(isValidSelection(operator));
    }
 
-   private boolean isValidSelection(ArtifactTestRunOperator operator)  {
+   private boolean isValidSelection(ArtifactTestRunOperator operator) {
       return operator != null && operator.hasValidArtifact() && operator.isFromLocalWorkspace() != true;
    }
 
-   private void checkPermissions(Artifact artifact)  {
+   private void checkPermissions(Artifact artifact) {
       if (true != AccessControlManager.hasPermission(artifact, PermissionEnum.READ)) {
-         throw new OseeArgumentException("The user %s does not have read access to %s",
-            UserManager.getUser(), artifact);
+         throw new OseeArgumentException("The user %s does not have read access to %s", UserManager.getUser(),
+            artifact);
       }
    }
 }

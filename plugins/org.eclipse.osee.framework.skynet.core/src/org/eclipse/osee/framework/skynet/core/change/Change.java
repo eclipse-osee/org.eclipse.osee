@@ -160,7 +160,7 @@ public abstract class Change implements IAdaptable, Comparable<Change>, HasBranc
     */
    public abstract String getWasValue();
 
-   public abstract String getItemTypeName() ;
+   public abstract String getItemTypeName();
 
    public abstract String getName();
 

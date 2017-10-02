@@ -45,13 +45,13 @@ public class RelationSqlHandler extends SqlHandler<CriteriaRelation> {
    }
 
    @Override
-   public void addSelect(AbstractSqlWriter writer)  {
+   public void addSelect(AbstractSqlWriter writer) {
       writer.write("%s.rel_link_id, %s.rel_link_type_id, %s.a_art_id, %s.b_art_id, %s.rationale", relationAlias,
          relationAlias, relationAlias, relationAlias, relationAlias);
    }
 
    @Override
-   public void addTables(AbstractSqlWriter writer)  {
+   public void addTables(AbstractSqlWriter writer) {
       jArtAlias = writer.addTable(TableEnum.JOIN_ID4_TABLE);
 
       if (criteria.getIds().size() > 1) {
@@ -67,7 +67,7 @@ public class RelationSqlHandler extends SqlHandler<CriteriaRelation> {
       txsAlias = writer.addTable(TableEnum.TXS_TABLE);
    }
 
-   private Collection<Long> getLocalTypeIds()  {
+   private Collection<Long> getLocalTypeIds() {
       Collection<Long> toReturn = new HashSet<>();
       for (Id type : criteria.getTypes()) {
          toReturn.add(type.getId());
@@ -76,7 +76,7 @@ public class RelationSqlHandler extends SqlHandler<CriteriaRelation> {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer)  {
+   public boolean addPredicates(AbstractSqlWriter writer) {
       writer.write("(%s.a_art_id = %s.id2 OR %s.b_art_id = %s.id2)", relationAlias, jArtAlias, relationAlias,
          jArtAlias);
       writer.write(" AND ");

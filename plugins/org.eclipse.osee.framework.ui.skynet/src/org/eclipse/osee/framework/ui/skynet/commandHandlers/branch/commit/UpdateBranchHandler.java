@@ -42,7 +42,7 @@ import org.eclipse.ui.progress.UIJob;
  */
 public class UpdateBranchHandler extends CommandHandler {
 
-   protected boolean isValid(IOseeBranch branch)  {
+   protected boolean isValid(IOseeBranch branch) {
       return !BranchManager.isParentSystemRoot(branch) && BranchManager.isEditable(
          branch) && BranchManager.getType(branch).isOfType(BranchType.WORKING,
             BranchType.BASELINE) && !BranchManager.hasChildren(branch);
@@ -59,7 +59,7 @@ public class UpdateBranchHandler extends CommandHandler {
    }
 
    @Override
-   public boolean isEnabledWithException(IStructuredSelection structuredSelection)  {
+   public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
       boolean enabled = false;
       IOseeBranch branch = getSelectedBranch(structuredSelection);
       if (branch != null) {
@@ -69,7 +69,7 @@ public class UpdateBranchHandler extends CommandHandler {
    }
 
    @Override
-   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection)  {
+   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {
       IOseeBranch branchToUpdate = getSelectedBranch(selection);
 
       if (branchToUpdate != null) {

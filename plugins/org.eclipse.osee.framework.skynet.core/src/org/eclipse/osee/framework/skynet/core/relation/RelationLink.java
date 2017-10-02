@@ -202,15 +202,15 @@ public class RelationLink implements HasBranch {
       return artifact.equals(artifactB) ? artifactA : artifactB;
    }
 
-   public Artifact getArtifactOnOtherSide(ArtifactId artifact)  {
+   public Artifact getArtifactOnOtherSide(ArtifactId artifact) {
       return getArtifact(getOtherSideArtifact(artifact));
    }
 
-   public Artifact getArtifactA()  {
+   public Artifact getArtifactA() {
       return getArtifact(artifactA);
    }
 
-   public Artifact getArtifactB()  {
+   public Artifact getArtifactB() {
       return getArtifact(artifactB);
    }
 
@@ -256,15 +256,15 @@ public class RelationLink implements HasBranch {
       return relationType;
    }
 
-   public String getSidePhrasingFor(Artifact artifact)  {
+   public String getSidePhrasingFor(Artifact artifact) {
       return getSidePhrasingFor(artifact, false);
    }
 
-   public String getSidePhrasingForOtherArtifact(Artifact artifact)  {
+   public String getSidePhrasingForOtherArtifact(Artifact artifact) {
       return getSidePhrasingFor(artifact, true);
    }
 
-   private String getSidePhrasingFor(Artifact artifact, boolean isOtherArtifact)  {
+   private String getSidePhrasingFor(Artifact artifact, boolean isOtherArtifact) {
       RelationSide side;
       if (artifact.equals(getArtifact(RelationSide.SIDE_A))) {
          side = RelationSide.SIDE_A;
@@ -359,7 +359,7 @@ public class RelationLink implements HasBranch {
       return result;
    }
 
-   public boolean isUserDefined()  {
+   public boolean isUserDefined() {
       RelationOrderFactory factory = new RelationOrderFactory();
       Artifact aArtifact = getArtifactA();
       Artifact bArtifact = getArtifactB();

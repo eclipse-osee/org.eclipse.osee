@@ -634,7 +634,7 @@ public class WfeTasksTab extends FormPage implements IWorldEditor, ISelectedAtsA
    }
 
    @Override
-   public void reSearch()  {
+   public void reSearch() {
       JobChangeAdapter listener = new JobChangeAdapter() {
 
          @Override
@@ -654,7 +654,7 @@ public class WfeTasksTab extends FormPage implements IWorldEditor, ISelectedAtsA
    }
 
    @Override
-   public IWorldEditorProvider getWorldEditorProvider()  {
+   public IWorldEditorProvider getWorldEditorProvider() {
       return null;
    }
 
@@ -692,7 +692,7 @@ public class WfeTasksTab extends FormPage implements IWorldEditor, ISelectedAtsA
    }
 
    @Override
-   public IAtsTeamWorkflow getTeamWf()  {
+   public IAtsTeamWorkflow getTeamWf() {
       return teamArt;
    }
 

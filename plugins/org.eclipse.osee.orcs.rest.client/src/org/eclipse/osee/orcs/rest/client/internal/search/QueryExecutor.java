@@ -21,7 +21,7 @@ import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResult;
  */
 public interface QueryExecutor {
 
-   int getCount(BranchId branch, List<Predicate> predicates, QueryOptions options) ;
+   int getCount(BranchId branch, List<Predicate> predicates, QueryOptions options);
 
-   SearchResult getResults(RequestType request, BranchId branch, List<Predicate> predicates, QueryOptions options) ;
+   SearchResult getResults(RequestType request, BranchId branch, List<Predicate> predicates, QueryOptions options);
 }

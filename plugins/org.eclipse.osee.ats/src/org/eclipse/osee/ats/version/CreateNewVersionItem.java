@@ -61,7 +61,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
    }
 
    @Override
-   public void run(TableLoadOption... tableLoadOptions)  {
+   public void run(TableLoadOption... tableLoadOptions) {
       IAtsTeamDefinition teamDefHoldingVersions = null;
       try {
          teamDefHoldingVersions = getReleaseableTeamDefinition();
@@ -131,7 +131,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
       return versions;
    }
 
-   public IAtsTeamDefinition getReleaseableTeamDefinition()  {
+   public IAtsTeamDefinition getReleaseableTeamDefinition() {
       if (teamDefHoldingVersions != null) {
          return teamDefHoldingVersions;
       }

@@ -38,7 +38,7 @@ public final class TxMonitorImpl<K> implements TxMonitor<K> {
 
       boolean containsItem(Object object);
 
-      void rollback() ;
+      void rollback();
    }
 
    private final TxMonitorCache<K> cache;
@@ -48,7 +48,7 @@ public final class TxMonitorImpl<K> implements TxMonitor<K> {
    }
 
    @Override
-   public void checkForComodification(K key, MonitoredTx tx, Object object)  {
+   public void checkForComodification(K key, MonitoredTx tx, Object object) {
       for (MonitoredTx otherTx : cache.getTxs(key)) {
          if (!otherTx.equals(tx)) {
             if (otherTx.containsItem(object)) {
@@ -60,7 +60,7 @@ public final class TxMonitorImpl<K> implements TxMonitor<K> {
    }
 
    @Override
-   public void createTx(K key, MonitoredTx tx)  {
+   public void createTx(K key, MonitoredTx tx) {
       if (cache.contains(key, tx.getUuid())) {
          throw new OseeStateException("key:[%s] tx:[%s] - transaction was already in the cache", key, tx);
       }
@@ -72,7 +72,7 @@ public final class TxMonitorImpl<K> implements TxMonitor<K> {
    }
 
    @Override
-   public void beginTx(K key, MonitoredTx tx)  {
+   public void beginTx(K key, MonitoredTx tx) {
       checkIsInCache(key, tx);
 
       TxState state = tx.getTxState();
@@ -83,7 +83,7 @@ public final class TxMonitorImpl<K> implements TxMonitor<K> {
    }
 
    @Override
-   public void endTx(K key, MonitoredTx tx)  {
+   public void endTx(K key, MonitoredTx tx) {
       checkIsInCache(key, tx);
 
       TxState state = tx.getTxState();
@@ -95,12 +95,12 @@ public final class TxMonitorImpl<K> implements TxMonitor<K> {
    }
 
    @Override
-   public void rollbackTx(K key, MonitoredTx tx)  {
+   public void rollbackTx(K key, MonitoredTx tx) {
       checkIsInCache(key, tx);
       tx.rollback();
    }
 
-   private void checkIsInCache(K key, MonitoredTx tx)  {
+   private void checkIsInCache(K key, MonitoredTx tx) {
       if (!cache.contains(key, tx.getUuid())) {
          throw new OseeStateException("key:[%s] tx:[%s] - has not been added to monitor", key, tx);
       }

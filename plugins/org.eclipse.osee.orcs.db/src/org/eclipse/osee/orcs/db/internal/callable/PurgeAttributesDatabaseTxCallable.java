@@ -37,7 +37,7 @@ public final class PurgeAttributesDatabaseTxCallable extends AbstractDatastoreTx
    }
 
    @Override
-   protected Void handleTxWork(JdbcConnection connection)  {
+   protected Void handleTxWork(JdbcConnection connection) {
       try (IdJoinQuery idJoin = joinFactory.createIdJoinQuery(connection)) {
          OseePreparedStatement attrBatch =
             getJdbcClient().getBatchStatement(connection, "delete from osee_attribute where attr_id = ?");

@@ -29,7 +29,7 @@ public class VCastMcdcCoveragePairTable implements VCastTableData<VCastMcdcCover
    }
 
    @Override
-   public Collection<VCastMcdcCoveragePair> getRows(VCastDataStore dataStore)  {
+   public Collection<VCastMcdcCoveragePair> getRows(VCastDataStore dataStore) {
       return dataStore.getAllMcdcCoveragePairs();
    }
 

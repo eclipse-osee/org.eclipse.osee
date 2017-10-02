@@ -26,7 +26,7 @@ public class WorkPackageIdColumn extends AbstractRelatedWorkPackageColumn {
    }
 
    @Override
-   protected String getColumnValue(IAtsWorkPackage workPkg)  {
+   protected String getColumnValue(IAtsWorkPackage workPkg) {
       return workPkg.getWorkPackageId();
    }
 

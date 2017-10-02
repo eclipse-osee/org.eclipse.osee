@@ -51,8 +51,8 @@ public final class Compare {
 
    private static boolean isDifferent(Collection<Object> original, Collection<Object> other) {
       return original.size() != other.size() || //
-      !Collections.setComplement(original, other).isEmpty() || //
-      !Collections.setComplement(other, original).isEmpty();
+         !Collections.setComplement(original, other).isEmpty() || //
+         !Collections.setComplement(other, original).isEmpty();
    }
 
    private static boolean isDifferent(Map<Object, Object> original, Map<Object, Object> other) {

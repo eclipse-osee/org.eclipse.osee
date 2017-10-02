@@ -24,17 +24,17 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
  */
 public interface IAtsWorkItemFilter {
 
-   public abstract IAtsWorkItemFilter isOfType(IArtifactType... artifactType) ;
+   public abstract IAtsWorkItemFilter isOfType(IArtifactType... artifactType);
 
-   public abstract IAtsWorkItemFilter union(IAtsWorkItemFilter... atsQuery) ;
+   public abstract IAtsWorkItemFilter union(IAtsWorkItemFilter... atsQuery);
 
-   public abstract IAtsWorkItemFilter fromTeam(IAtsTeamDefinition teamDef) ;
+   public abstract IAtsWorkItemFilter fromTeam(IAtsTeamDefinition teamDef);
 
-   public abstract IAtsWorkItemFilter isStateType(StateType... stateType) ;
+   public abstract IAtsWorkItemFilter isStateType(StateType... stateType);
 
-   public <T extends IAtsWorkItem> Collection<T> getItems() ;
+   public <T extends IAtsWorkItem> Collection<T> getItems();
 
-   public abstract IAtsWorkItemFilter withOrValue(AttributeTypeId attributeType, Collection<? extends Object> values) ;
+   public abstract IAtsWorkItemFilter withOrValue(AttributeTypeId attributeType, Collection<? extends Object> values);
 
    public abstract Collection<IAtsAction> getActions();
 

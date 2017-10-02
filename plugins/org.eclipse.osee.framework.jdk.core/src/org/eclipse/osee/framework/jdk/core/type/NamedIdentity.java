@@ -14,7 +14,7 @@ package org.eclipse.osee.framework.jdk.core.type;
 /**
  * @author Ryan D. Brooks
  */
-public class NamedIdentity<T> extends BaseIdentity<T>implements Identifiable<T> {
+public class NamedIdentity<T> extends BaseIdentity<T> implements Identifiable<T> {
    private String name;
 
    public NamedIdentity(T uid, String name) {

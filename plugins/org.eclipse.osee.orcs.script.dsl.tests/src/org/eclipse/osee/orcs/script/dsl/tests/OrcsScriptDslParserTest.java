@@ -130,12 +130,12 @@ public class OrcsScriptDslParserTest {
       //      verify.ruleError(OsTxQueryStatement.class, "tx where date = '09/10/2014 11:00'");
 
       String allPredicates = "tx where tx-id = 570" + //
-      " and type = [baseline, non-baseline]" + //
-      " and comment matches \"122.*?L\"" + //
-      " and tx-id != 21123" + //
-      " and commit-id is null" + //
-      " and author-id = [1231, 123]" + //
-      " and date = '09/10/2014 11:00:12 AM'";
+         " and type = [baseline, non-baseline]" + //
+         " and comment matches \"122.*?L\"" + //
+         " and tx-id != 21123" + //
+         " and commit-id is null" + //
+         " and author-id = [1231, 123]" + //
+         " and date = '09/10/2014 11:00:12 AM'";
 
       verify.rule(OsTxQueryStatement.class, allPredicates);
    }
@@ -159,11 +159,12 @@ public class OrcsScriptDslParserTest {
       verify.rule(OsBranchQueryStatement.class, "branch where type = [working, baseline, merge, system-root, port]");
 
       verify.rule(OsBranchQueryStatement.class, "branch where state = created");
-      verify.rule(OsBranchQueryStatement.class, "branch where state = [" + //
-      "created, modified, committed, rebaselined, deleted, " + //
-      "rebaseline_in_progress, commit_in_progress, creation_in_progress, " + //
-      "delete_in_progress, purge_in_progress, purged" + //
-      "]");
+      verify.rule(OsBranchQueryStatement.class,
+         "branch where state = [" + //
+            "created, modified, committed, rebaselined, deleted, " + //
+            "rebaseline_in_progress, commit_in_progress, creation_in_progress, " + //
+            "delete_in_progress, purge_in_progress, purged" + //
+            "]");
 
       verify.rule(OsBranchQueryStatement.class, "branch where archived is excluded");
       verify.rule(OsBranchQueryStatement.class, "branch where archived is included");
@@ -172,11 +173,11 @@ public class OrcsScriptDslParserTest {
       verify.rule(OsBranchQueryStatement.class, "branch where branch is parent-of 567");
 
       String allPredicates = "branch where branch-id = [570, 645]" + //
-      " and name matches \"m.*?e\"" + //
-      " and type = [working, merge]" + //
-      " and state = [created, committed]" + //
-      " and archived is excluded" + //
-      " and branch is child-of 567";
+         " and name matches \"m.*?e\"" + //
+         " and type = [working, merge]" + //
+         " and state = [created, committed]" + //
+         " and archived is excluded" + //
+         " and branch is child-of 567";
       verify.rule(OsBranchQueryStatement.class, allPredicates);
    }
 
@@ -212,7 +213,7 @@ public class OrcsScriptDslParserTest {
          "artifacts where attribute type = 570 [match-case, any-order] ['two','one']");
 
       String options = "contains, match-case, ignore-case, not-exists, exists, match-token-count, " + //
-      "ignore-token-count, exact-delim, whitespace-delim, any-delim, any-order, match-order";
+         "ignore-token-count, exact-delim, whitespace-delim, any-delim, any-order, match-order";
       verify.rule(OsArtifactQueryStatement.class, "artifacts where attribute type = 570 [" + options + "] 'Hello'");
       verify.rule(OsArtifactQueryStatement.class,
          "artifacts where attribute type = 570 [" + options + "] ['two','one']");

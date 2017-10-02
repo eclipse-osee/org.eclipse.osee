@@ -94,7 +94,7 @@ public class SafetyWorkflowEventHandler implements EventHandler {
       }
    }
 
-   private void checkEventObjects(Object branchId, Object userArt)  {
+   private void checkEventObjects(Object branchId, Object userArt) {
       if (!(branchId instanceof BranchId)) {
          throw new OseeArgumentException("BranchID provided to safety workflow creation event incorrect type: %s",
             branchId.getClass());
@@ -140,7 +140,7 @@ public class SafetyWorkflowEventHandler implements EventHandler {
                Arrays.asList(AtsCoreUsers.UNASSIGNED_USER), changes, new Date(), createdBy, new INewActionListener() {
 
                   @Override
-                  public void teamCreated(IAtsAction action, IAtsTeamWorkflow teamWf, IAtsChangeSet changes)  {
+                  public void teamCreated(IAtsAction action, IAtsTeamWorkflow teamWf, IAtsChangeSet changes) {
                      changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.Description,
                         "Review System Safety Changes for the associated RPCR to Complete the Workflow");
                   }

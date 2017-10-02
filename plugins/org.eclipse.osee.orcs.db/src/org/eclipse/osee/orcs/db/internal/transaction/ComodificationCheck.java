@@ -39,7 +39,7 @@ public class ComodificationCheck implements TransactionProcessor {
    }
 
    @Override
-   public void process(HasCancellation cancellation, OrcsSession session, TransactionData txData)  {
+   public void process(HasCancellation cancellation, OrcsSession session, TransactionData txData) {
       OnLoadChecker checker = new OnLoadChecker();
 
       cancellation.checkForCancelled();
@@ -73,7 +73,7 @@ public class ComodificationCheck implements TransactionProcessor {
          return relations.keySet();
       }
 
-      private void checkCoModified(OrcsData was, OrcsData is)  {
+      private void checkCoModified(OrcsData was, OrcsData is) {
          if (was != null && is != null) {
             if (was.getVersion().getTransactionId().notEqual(is.getVersion().getTransactionId())) {
                // TX_TODO can collect and then error with all data that was co-modified but for now just exception on first error
@@ -109,19 +109,19 @@ public class ComodificationCheck implements TransactionProcessor {
       }
 
       @Override
-      public void onData(ArtifactData data)  {
+      public void onData(ArtifactData data) {
          ArtifactData modified = artifacts.get(data.getLocalId());
          checkCoModified(data, modified);
       }
 
       @Override
-      public void onData(RelationData data)  {
+      public void onData(RelationData data) {
          RelationData modified = relations.get(data.getLocalId());
          checkCoModified(data, modified);
       }
 
       @Override
-      public void onData(AttributeData data)  {
+      public void onData(AttributeData data) {
          AttributeData modified = attributes.get(data.getLocalId());
          checkCoModified(data, modified);
       }

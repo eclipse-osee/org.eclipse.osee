@@ -36,7 +36,7 @@ public class RelationNodeLoaderImpl implements RelationNodeLoader {
    }
 
    @Override
-   public <T extends RelationNode> Iterable<T> loadNodes(OrcsSession session, final GraphData graph, Collection<Integer> ids, LoadLevel level)  {
+   public <T extends RelationNode> Iterable<T> loadNodes(OrcsSession session, final GraphData graph, Collection<Integer> ids, LoadLevel level) {
       GraphBuilder builder = graphBuilderFactory.createBuilderForGraph(graph);
 
       DataLoader loader = dataLoaderFactory.newDataLoaderFromIds(session, graph.getBranch(), ids);

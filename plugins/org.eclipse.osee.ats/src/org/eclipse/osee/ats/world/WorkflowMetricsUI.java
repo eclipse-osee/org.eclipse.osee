@@ -41,7 +41,7 @@ public class WorkflowMetricsUI {
       this.toolkit = toolkit;
    }
 
-   private void updateExtraInfoLine()  {
+   private void updateExtraInfoLine() {
       if (selectionMetricsAction != null && selectionMetricsAction.isChecked()) {
          if (showReleaseMetricsLabel == null || showReleaseMetricsLabel.isDisposed()) {
             showReleaseMetricsLabel = toolkit.createLabel(worldComposite.getParent(), "");

@@ -37,7 +37,7 @@ public class TeamWorkflowProviders implements ITeamWorkflowProvidersLazy {
       teamWorkflowProviders.remove(teamWorkflowProvider);
    }
 
-   public void start()  {
+   public void start() {
       logger.info("AtsTeamWorkflowProviders started");
    }
 

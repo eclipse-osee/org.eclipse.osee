@@ -86,7 +86,7 @@ public abstract class AbstractWorkItemFactory implements IAtsWorkItemFactory {
    }
 
    @Override
-   public IAtsTeamWorkflow getTeamWfNoCache(ArtifactId artifact)  {
+   public IAtsTeamWorkflow getTeamWfNoCache(ArtifactId artifact) {
       if (services.getStoreService().isOfType(artifact, AtsArtifactTypes.TeamWorkflow)) {
          return new TeamWorkflow(services.getLogger(), services, (ArtifactToken) artifact);
       }
@@ -94,7 +94,7 @@ public abstract class AbstractWorkItemFactory implements IAtsWorkItemFactory {
    }
 
    @Override
-   public IAtsTeamWorkflow getTeamWf(ArtifactId artifact)  {
+   public IAtsTeamWorkflow getTeamWf(ArtifactId artifact) {
       IAtsTeamWorkflow team = (IAtsTeamWorkflow) workItemCache.getIfPresent(artifact);
       if (team == null) {
          if (services.getStoreService().isOfType(artifact, AtsArtifactTypes.TeamWorkflow)) {
@@ -106,7 +106,7 @@ public abstract class AbstractWorkItemFactory implements IAtsWorkItemFactory {
    }
 
    @Override
-   public IAgileSprint getAgileSprint(ArtifactToken artifact)  {
+   public IAgileSprint getAgileSprint(ArtifactToken artifact) {
       IAgileSprint sprint = null;
       if (artifact instanceof IAgileSprint) {
          sprint = (IAgileSprint) artifact;
@@ -117,7 +117,7 @@ public abstract class AbstractWorkItemFactory implements IAtsWorkItemFactory {
    }
 
    @Override
-   public IAgileBacklog getAgileBacklog(ArtifactToken artifact)  {
+   public IAgileBacklog getAgileBacklog(ArtifactToken artifact) {
       IAgileBacklog backlog = null;
       if (artifact instanceof IAgileBacklog) {
          backlog = (IAgileBacklog) artifact;

@@ -22,7 +22,7 @@ import org.eclipse.osee.orcs.rest.model.BranchImportOptions;
  */
 public class HttpBranchExchange {
 
-   public static void importBranches(String path, boolean cleanAllBeforeImport, boolean allAsRootBranches, BranchId... branchIds)  {
+   public static void importBranches(String path, boolean cleanAllBeforeImport, boolean allAsRootBranches, BranchId... branchIds) {
       OseeClient oseeClient = ServiceUtil.getOseeClient();
       BranchEndpoint endpoint = oseeClient.getBranchEndpoint();
 

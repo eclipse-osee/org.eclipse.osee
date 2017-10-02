@@ -19,8 +19,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public interface HasMembers {
 
-   List<Artifact> getMembers() ;
+   List<Artifact> getMembers();
 
-   void addMember(ArtifactId artifact) ;
+   void addMember(ArtifactId artifact);
 
 }

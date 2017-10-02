@@ -28,7 +28,7 @@ public class DuplicateWorkflowViaWorldEditorActionTest extends AbstractAtsAction
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testException()  {
+   public void testException() {
       DuplicateWorkflowViaWorldEditorAction action =
          new DuplicateWorkflowViaWorldEditorAction(new SelectedAtsArtifactsAdapter());
       action.runWithException();

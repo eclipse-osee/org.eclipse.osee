@@ -35,8 +35,8 @@ public class HoursSpentTotalColumn extends XViewerAtsColumn implements IXViewerV
    }
 
    private HoursSpentTotalColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".totalHoursSpent", "Total Hours Spent", 40, XViewerAlign.Center, false,
-         SortDataType.Float, false, "Hours spent for all work related to all states.");
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".totalHoursSpent", "Total Hours Spent", 40, XViewerAlign.Center,
+         false, SortDataType.Float, false, "Hours spent for all work related to all states.");
    }
 
    /**

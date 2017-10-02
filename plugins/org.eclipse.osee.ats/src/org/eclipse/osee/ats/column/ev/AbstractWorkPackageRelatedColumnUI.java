@@ -101,7 +101,7 @@ public abstract class AbstractWorkPackageRelatedColumnUI extends XViewerAtsColum
       }
    }
 
-   private void openSelectedWorkPackages(Collection<AbstractWorkflowArtifact> awas)  {
+   private void openSelectedWorkPackages(Collection<AbstractWorkflowArtifact> awas) {
       List<String> guids = new ArrayList<>();
       for (AbstractWorkflowArtifact awa : awas) {
          IAtsWorkPackage workPkg = AtsClientService.get().getEarnedValueService().getWorkPackage((IAtsWorkItem) awa);

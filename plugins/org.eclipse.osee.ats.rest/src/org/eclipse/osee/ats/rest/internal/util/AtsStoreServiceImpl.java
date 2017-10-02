@@ -97,7 +97,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
     * Uses artifact type inheritance to retrieve all TeamWorkflow artifact types
     */
    @Override
-   public Set<IArtifactType> getTeamWorkflowArtifactTypes()  {
+   public Set<IArtifactType> getTeamWorkflowArtifactTypes() {
       Set<IArtifactType> artifactTypes = new HashSet<>();
       artifactTypes.addAll(
          atsServer.getOrcsApi().getOrcsTypes().getArtifactTypes().getAllDescendantTypes(AtsArtifactTypes.TeamWorkflow));
@@ -205,6 +205,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
       atsServer.getOrcsApi().getTransactionFactory().setTransactionCommitArtifact(trans, teamWf.getStoreObject());
       return Result.TrueResult;
    }
+
    @Override
    public TransactionId getTransactionId(IAtsWorkItem workItem) {
       TransactionId transId = TransactionId.SENTINEL;

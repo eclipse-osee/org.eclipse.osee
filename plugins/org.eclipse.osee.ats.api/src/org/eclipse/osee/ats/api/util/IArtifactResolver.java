@@ -22,11 +22,11 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
  */
 public interface IArtifactResolver {
 
-   public abstract ArtifactId get(IAtsObject atsObject) ;
+   public abstract ArtifactId get(IAtsObject atsObject);
 
-   public abstract <A extends ArtifactId> A get(IAtsWorkItem workItem, Class<?> clazz) ;
+   public abstract <A extends ArtifactId> A get(IAtsWorkItem workItem, Class<?> clazz);
 
-   public abstract <A extends ArtifactId> List<A> get(Collection<? extends IAtsWorkItem> workItems, Class<?> clazz) ;
+   public abstract <A extends ArtifactId> List<A> get(Collection<? extends IAtsWorkItem> workItems, Class<?> clazz);
 
    public abstract IArtifactType getArtifactType(IAtsWorkItem workItem);
 

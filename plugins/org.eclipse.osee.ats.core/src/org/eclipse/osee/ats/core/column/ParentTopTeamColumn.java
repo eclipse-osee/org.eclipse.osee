@@ -30,7 +30,7 @@ public final class ParentTopTeamColumn {
       // do nothing
    }
 
-   public static String getColumnText(IAtsObject atsObject)  {
+   public static String getColumnText(IAtsObject atsObject) {
       String result = "";
       IAtsTeamDefinition teamDef = null;
       if (atsObject instanceof IAtsWorkItem) {
@@ -55,7 +55,7 @@ public final class ParentTopTeamColumn {
       return result;
    }
 
-   protected static String getTopTeamDefName(IAtsTeamDefinition teamDef)  {
+   protected static String getTopTeamDefName(IAtsTeamDefinition teamDef) {
       String result = "";
       if (teamDef != null) {
          IAtsTeamDefinition teamDefinitionHoldingVersions = teamDef.getTeamDefinitionHoldingVersions();

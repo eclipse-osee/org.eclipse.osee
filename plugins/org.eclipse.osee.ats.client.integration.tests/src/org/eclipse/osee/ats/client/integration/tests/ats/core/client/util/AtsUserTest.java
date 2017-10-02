@@ -31,13 +31,13 @@ public class AtsUserTest {
    private static User user;
 
    @BeforeClass
-   public static void setUp()  {
+   public static void setUp() {
       user = UserManager.getUser();
       atsUser = AtsClientService.get().getUserService().getCurrentUser();
    }
 
    @org.junit.Test
-   public void testGetUserId()  {
+   public void testGetUserId() {
       Assert.assertEquals(user.getUserId(), atsUser.getUserId());
    }
 
@@ -52,7 +52,7 @@ public class AtsUserTest {
    }
 
    @org.junit.Test
-   public void testRemove()  {
+   public void testRemove() {
       Collection<IAtsUser> assignees = new HashSet<>();
       assignees.add(AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Alex_Kay));
       assignees.add(AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Joe_Smith));

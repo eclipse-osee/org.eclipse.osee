@@ -19,13 +19,13 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
  */
 public interface UserToken extends ArtifactToken, UserId {
 
-   public String getUserId() ;
+   public String getUserId();
 
-   public boolean isActive() ;
+   public boolean isActive();
 
-   public boolean isAdmin() ;
+   public boolean isAdmin();
 
-   public String getEmail() ;
+   public String getEmail();
 
    public boolean isCreationRequired();
 

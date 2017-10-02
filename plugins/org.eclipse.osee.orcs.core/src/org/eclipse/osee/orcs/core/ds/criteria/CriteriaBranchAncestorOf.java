@@ -32,7 +32,7 @@ public class CriteriaBranchAncestorOf extends Criteria implements BranchCriteria
    }
 
    @Override
-   public void checkValid(Options options)  {
+   public void checkValid(Options options) {
       Conditions.checkNotNull(getChild(), "Child branch");
    }
 

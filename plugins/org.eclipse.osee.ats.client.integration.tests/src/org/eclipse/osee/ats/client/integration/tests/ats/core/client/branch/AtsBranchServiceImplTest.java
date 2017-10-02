@@ -55,7 +55,7 @@ public class AtsBranchServiceImplTest {
    }
 
    @Test
-   public void testGetCommitTransactionsAndConfigItemsForTeamWf_teamDef()  {
+   public void testGetCommitTransactionsAndConfigItemsForTeamWf_teamDef() {
       AtsTestUtil.cleanupAndReset(
          AtsBranchServiceImplTest.class.getSimpleName() + ".testGetCommitTransactionsAndConfigItemsForTeamWf_teamDef");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
@@ -76,7 +76,7 @@ public class AtsBranchServiceImplTest {
    }
 
    @Test
-   public void testGetCommitTransactionsAndConfigItemsForTeamWf_versions()  {
+   public void testGetCommitTransactionsAndConfigItemsForTeamWf_versions() {
       AtsTestUtil.cleanupAndReset(
          AtsBranchServiceImplTest.class.getSimpleName() + ".testGetCommitTransactionsAndConfigItemsForTeamWf_versions");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
@@ -100,7 +100,7 @@ public class AtsBranchServiceImplTest {
    }
 
    @Test
-   public void testGetCommitTransactionsAndConfigItemsForTeam_txRecords()  {
+   public void testGetCommitTransactionsAndConfigItemsForTeam_txRecords() {
       AtsTestUtil.cleanupAndReset(
          AtsBranchServiceImplTest.class.getSimpleName() + ".testGetCommitTransactionsAndConfigItemsForTeam_txRecords");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();

@@ -69,7 +69,7 @@ import org.eclipse.ui.part.IPageSite;
 /**
  * @author Roberto E. Escobar
  */
-public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implements Adaptable , IRebuildMenuListener, IArtifactEventListener, IBranchProvider {
+public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implements Adaptable, IRebuildMenuListener, IArtifactEventListener, IBranchProvider {
    private static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.ArtifactSearchView";
 
    protected static final Match[] EMPTY_MATCH_ARRAY = new Match[0];

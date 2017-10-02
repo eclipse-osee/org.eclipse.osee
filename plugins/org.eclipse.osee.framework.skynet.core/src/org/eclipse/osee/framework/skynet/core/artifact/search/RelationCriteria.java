@@ -49,16 +49,14 @@ public class RelationCriteria implements ArtifactSearchCriteria {
    }
 
    @Override
-   public void addToQueryBuilder(QueryBuilder builder)  {
+   public void addToQueryBuilder(QueryBuilder builder) {
       if (artifactId.isValid()) {
-         RelationTypeSide rts =
-            RelationTypeSide.create(relationSide, relationType.getId(), Strings.EMPTY_STRING);
+         RelationTypeSide rts = RelationTypeSide.create(relationSide, relationType.getId(), Strings.EMPTY_STRING);
          builder.andRelatedTo(rts, artifactId);
       } else if (relationSide == null) {
          builder.andExists(relationType);
       } else {
-         RelationTypeSide rts =
-            RelationTypeSide.create(relationSide, relationType.getId(), "SearchRelationTypeSide");
+         RelationTypeSide rts = RelationTypeSide.create(relationSide, relationType.getId(), "SearchRelationTypeSide");
          builder.andExists(rts);
       }
    }

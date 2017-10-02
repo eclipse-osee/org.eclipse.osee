@@ -40,7 +40,7 @@ public class ArtifactMatchRestrictionHandlerTest extends BaseRestrictionHandlerT
    }
 
    @Test
-   public void testProcessDataNotMatchesRestriction()  {
+   public void testProcessDataNotMatchesRestriction() {
       XArtifactMatcher artifactRef = MockModel.createXArtifactMatcherRef("TestArtifact");
 
       ArtifactMatchRestriction restriction = MockModel.createArtifactMatchRestriction();
@@ -58,7 +58,7 @@ public class ArtifactMatchRestrictionHandlerTest extends BaseRestrictionHandlerT
    }
 
    @Test
-   public void testProcessCreateAccessDetail()  {
+   public void testProcessCreateAccessDetail() {
       XArtifactMatcher artifactRef = MockModel.createXArtifactMatcherRef("TestArtifact");
 
       ArtifactMatchRestriction restriction = MockModel.createArtifactMatchRestriction();

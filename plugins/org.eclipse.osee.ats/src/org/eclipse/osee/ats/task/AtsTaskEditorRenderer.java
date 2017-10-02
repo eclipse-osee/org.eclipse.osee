@@ -78,7 +78,7 @@ public class AtsTaskEditorRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public void open(List<Artifact> artifacts, PresentationType presentationType)  {
+   public void open(List<Artifact> artifacts, PresentationType presentationType) {
       AtsUtil.openInAtsTaskEditor("Tasks", artifacts);
    }
 }

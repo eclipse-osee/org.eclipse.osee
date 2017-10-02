@@ -54,7 +54,7 @@ public class CriteriaRelatedTo extends Criteria {
    }
 
    @Override
-   public void checkValid(Options options)  {
+   public void checkValid(Options options) {
       Conditions.checkNotNull(getType(), "relation type side");
    }
 

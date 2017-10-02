@@ -334,7 +334,7 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
    }
 
    @Override
-   public void setArtifact(Artifact artifact)  {
+   public void setArtifact(Artifact artifact) {
       if (!artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
          throw new OseeStateException("Must be TeamWorkflowArtifact, set was a [%s]", artifact.getArtifactTypeName());
       }

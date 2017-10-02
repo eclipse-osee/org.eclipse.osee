@@ -33,7 +33,7 @@ public abstract class CountingLoadDataHandler extends LoadDataHandlerDecorator {
    }
 
    @Override
-   public void onLoadStart()  {
+   public void onLoadStart() {
       getCounter().set(0);
       super.onLoadStart();
    }

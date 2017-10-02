@@ -19,6 +19,6 @@ import org.eclipse.osee.orcs.core.ds.TransactionData;
  */
 public interface TransactionProcessor {
 
-   void process(HasCancellation cancellation, OrcsSession session, TransactionData txData) ;
+   void process(HasCancellation cancellation, OrcsSession session, TransactionData txData);
 
 }

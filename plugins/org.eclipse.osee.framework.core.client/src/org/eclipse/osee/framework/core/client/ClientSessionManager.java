@@ -97,15 +97,15 @@ public class ClientSessionManager {
       return InternalClientSessionManager.getInstance().getAuthenticationProtocols();
    }
 
-   public static void authenticateAsGuest()  {
+   public static void authenticateAsGuest() {
       InternalClientSessionManager.getInstance().authenticateAsGuest();
    }
 
-   public static void authenticate(ICredentialProvider credentialProvider)  {
+   public static void authenticate(ICredentialProvider credentialProvider) {
       InternalClientSessionManager.getInstance().authenticate(credentialProvider);
    }
 
-   public static void releaseSession()  {
+   public static void releaseSession() {
       InternalClientSessionManager.getInstance().releaseSession();
    }
 

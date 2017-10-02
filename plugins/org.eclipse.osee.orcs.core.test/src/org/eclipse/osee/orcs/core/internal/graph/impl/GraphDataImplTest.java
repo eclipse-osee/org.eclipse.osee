@@ -117,7 +117,7 @@ public class GraphDataImplTest {
    }
 
    @Test
-   public void testAddNodeArtifact()  {
+   public void testAddNodeArtifact() {
       when(artifact.getLocalId()).thenReturn(10);
       when(artifactData.getLocalId()).thenReturn(10);
 
@@ -127,7 +127,7 @@ public class GraphDataImplTest {
    }
 
    @Test
-   public void testAddNodeAttribute()  {
+   public void testAddNodeAttribute() {
       when(container.getLocalId()).thenReturn(11);
       when(attributeData.getLocalId()).thenReturn(11);
 
@@ -137,7 +137,7 @@ public class GraphDataImplTest {
    }
 
    @Test
-   public void testGetNodeId()  {
+   public void testGetNodeId() {
       when(artifact1.getLocalId()).thenReturn(20);
       when(artifact2.getLocalId()).thenReturn(21);
       when(container1.getLocalId()).thenReturn(30);
@@ -160,7 +160,7 @@ public class GraphDataImplTest {
    }
 
    @Test
-   public void testGetNodeData()  {
+   public void testGetNodeData() {
       when(artifact1.getLocalId()).thenReturn(20);
       when(artifact2.getLocalId()).thenReturn(21);
       when(container1.getLocalId()).thenReturn(30);
@@ -188,7 +188,7 @@ public class GraphDataImplTest {
    }
 
    @Test
-   public void testRemoveNode()  {
+   public void testRemoveNode() {
       when(artifact1.getLocalId()).thenReturn(20);
       when(artifact2.getLocalId()).thenReturn(21);
       when(container1.getLocalId()).thenReturn(30);
@@ -220,7 +220,7 @@ public class GraphDataImplTest {
    }
 
    @Test
-   public void testAddAdjacencies()  {
+   public void testAddAdjacencies() {
       RelationNodeAdjacencies adjacencies = new RelationNodeAdjacencies();
       RelationNodeAdjacencies adj;
       Collection<Relation> all;

@@ -24,7 +24,7 @@ public interface GraphData extends HasBranch, HasTransaction {
 
    <T extends GraphNode> T getNode(Integer id);
 
-   void addNode(GraphNode node, boolean useBackingData) ;
+   void addNode(GraphNode node, boolean useBackingData);
 
    <T extends GraphNode> T removeNode(HasLocalId<Integer> node);
 

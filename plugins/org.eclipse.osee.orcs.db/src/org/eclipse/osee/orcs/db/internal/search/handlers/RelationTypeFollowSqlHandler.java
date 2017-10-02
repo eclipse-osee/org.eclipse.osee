@@ -43,7 +43,7 @@ public class RelationTypeFollowSqlHandler extends SqlHandler<CriteriaRelationTyp
    }
 
    @Override
-   public void addTables(AbstractSqlWriter writer)  {
+   public void addTables(AbstractSqlWriter writer) {
       List<String> artAliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
       if (artAliases.isEmpty()) {
          artAlias0 = writer.addTable(TableEnum.ARTIFACT_TABLE);
@@ -69,7 +69,7 @@ public class RelationTypeFollowSqlHandler extends SqlHandler<CriteriaRelationTyp
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer)  {
+   public boolean addPredicates(AbstractSqlWriter writer) {
       boolean includeDeletedRelations = OptionsUtil.areDeletedRelationsIncluded(writer.getOptions());
       RelationTypeSide typeSide = criteria.getType();
 

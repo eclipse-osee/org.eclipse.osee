@@ -192,7 +192,7 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public void editDispoSet(BranchId branch, String setId, DispoSetData newSet)  {
+   public void editDispoSet(BranchId branch, String setId, DispoSetData newSet) {
       DispoSet dispSetToEdit = getQuery().findDispoSetsById(branch, setId);
 
       if (dispSetToEdit != null) {
@@ -433,12 +433,12 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public List<DispoSet> getDispoSets(BranchId branch, String type)  {
+   public List<DispoSet> getDispoSets(BranchId branch, String type) {
       return getQuery().findDispoSets(branch, type);
    }
 
    @Override
-   public DispoSet getDispoSetById(BranchId branch, String setId)  {
+   public DispoSet getDispoSetById(BranchId branch, String setId) {
       return getQuery().findDispoSetsById(branch, setId);
    }
 

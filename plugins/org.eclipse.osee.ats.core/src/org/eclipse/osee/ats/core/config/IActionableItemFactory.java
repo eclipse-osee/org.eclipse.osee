@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
  */
 public interface IActionableItemFactory {
 
-   IAtsActionableItem createActionableItem(String name, long uuid, IAtsChangeSet changes, IAtsServices services) ;
+   IAtsActionableItem createActionableItem(String name, long uuid, IAtsChangeSet changes, IAtsServices services);
 
    IAtsActionableItem createActionableItem(String name, IAtsChangeSet changes, IAtsServices services);
 

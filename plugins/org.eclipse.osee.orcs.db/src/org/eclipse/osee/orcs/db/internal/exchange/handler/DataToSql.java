@@ -43,7 +43,7 @@ public class DataToSql {
       return notNullCount > 0 ? data : null;
    }
 
-   public static Object[] toDataArray(MetaData metadata, TranslationManager translator, Map<String, String> fieldMap)  {
+   public static Object[] toDataArray(MetaData metadata, TranslationManager translator, Map<String, String> fieldMap) {
       int notNullCount = 0;
       Object[] data = new Object[metadata.getColumnSize()];
       int index = 0;
@@ -69,7 +69,7 @@ public class DataToSql {
       return notNullCount > 0 ? data : null;
    }
 
-   public static Object stringToObject(Class<?> clazz, String columnName, String value)  {
+   public static Object stringToObject(Class<?> clazz, String columnName, String value) {
       Object convertedObject = null;
       if (clazz != null) {
          if (clazz == BigInteger.class) {

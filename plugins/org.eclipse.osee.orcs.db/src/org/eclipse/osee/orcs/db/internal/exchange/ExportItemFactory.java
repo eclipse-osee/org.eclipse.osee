@@ -95,7 +95,7 @@ public class ExportItemFactory {
       return orcsTypes;
    }
 
-   public List<AbstractExportItem> createTaskList(Long branchJoinId, PropertyStore options)  {
+   public List<AbstractExportItem> createTaskList(Long branchJoinId, PropertyStore options) {
       List<AbstractExportItem> items = new ArrayList<>();
 
       processTxOptions(options);
@@ -120,14 +120,14 @@ public class ExportItemFactory {
       return items;
    }
 
-   private void addItem(List<AbstractExportItem> items, Long branchJoinId, PropertyStore options, int gammaJoinId, ExportItem exportItem, String query)  {
+   private void addItem(List<AbstractExportItem> items, Long branchJoinId, PropertyStore options, int gammaJoinId, ExportItem exportItem, String query) {
       StringBuilder modifiedQuery = new StringBuilder(query);
       Object[] bindData = prepareQuery(exportItem, modifiedQuery, options, branchJoinId, gammaJoinId);
       items.add(new DbTableExportItem(getLogger(), getDbService(), getResourceManager(), exportItem,
          modifiedQuery.toString(), bindData));
    }
 
-   private void processTxOptions(PropertyStore options)  {
+   private void processTxOptions(PropertyStore options) {
       long maxTx = getDbService().fetch(-1L, GET_MAX_TX);
       long userMaxTx = getMaxTransaction(options);
       if (userMaxTx == Long.MIN_VALUE || userMaxTx > maxTx) {
@@ -135,7 +135,7 @@ public class ExportItemFactory {
       }
    }
 
-   private int createGammaJoin(JdbcClient jdbcClient, Long branchJoinId, PropertyStore options)  {
+   private int createGammaJoin(JdbcClient jdbcClient, Long branchJoinId, PropertyStore options) {
       List<Object> bindList = new ArrayList<>();
       int gammaJoinId = new Random().nextInt();
       StringBuilder sql = new StringBuilder(
@@ -157,7 +157,7 @@ public class ExportItemFactory {
       return gammaJoinId;
    }
 
-   private static Object[] prepareQuery(ExportItem exportItem, StringBuilder query, PropertyStore options, Long branchJoinId, int gammaJionId)  {
+   private static Object[] prepareQuery(ExportItem exportItem, StringBuilder query, PropertyStore options, Long branchJoinId, int gammaJionId) {
       List<Object> bindData = new ArrayList<>();
 
       if (exportItem.matches(ExportItem.OSEE_ARTIFACT_DATA, ExportItem.OSEE_ATTRIBUTE_DATA,
@@ -180,7 +180,7 @@ public class ExportItemFactory {
       return bindData.toArray(new Object[bindData.size()]);
    }
 
-   private static void addMaxMinFilter(StringBuilder query, List<Object> bindData, PropertyStore options)  {
+   private static void addMaxMinFilter(StringBuilder query, List<Object> bindData, PropertyStore options) {
       long minTxs = getMinTransaction(options);
       long maxTxs = getMaxTransaction(options);
 

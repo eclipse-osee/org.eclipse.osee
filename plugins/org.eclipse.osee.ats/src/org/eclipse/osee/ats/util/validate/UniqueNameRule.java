@@ -44,7 +44,7 @@ public class UniqueNameRule extends AbstractValidationRule {
    }
 
    @Override
-   protected ValidationResult validate(Artifact artToValidate, IProgressMonitor monitor)  {
+   protected ValidationResult validate(Artifact artToValidate, IProgressMonitor monitor) {
       Collection<String> errorMessages = new ArrayList<>();
       boolean validationPassed = true;
       if (hasArtifactType(artToValidate.getArtifactType())) {

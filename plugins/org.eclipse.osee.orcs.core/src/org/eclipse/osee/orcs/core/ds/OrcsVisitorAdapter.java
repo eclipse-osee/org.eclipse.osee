@@ -16,22 +16,22 @@ package org.eclipse.osee.orcs.core.ds;
 public class OrcsVisitorAdapter implements OrcsVisitor {
 
    @Override
-   public void visit(ArtifactData data)  {
+   public void visit(ArtifactData data) {
       //
    }
 
    @Override
-   public void visit(AttributeData data)  {
+   public void visit(AttributeData data) {
       //
    }
 
    @Override
-   public void visit(RelationData data)  {
+   public void visit(RelationData data) {
       //
    }
 
    @Override
-   public void visit(TupleData data)  {
+   public void visit(TupleData data) {
       //
    }
 

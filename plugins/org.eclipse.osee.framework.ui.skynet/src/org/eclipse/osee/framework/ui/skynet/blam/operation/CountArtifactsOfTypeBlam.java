@@ -61,10 +61,10 @@ public class CountArtifactsOfTypeBlam extends AbstractBlam {
    @Override
    public String getXWidgetsXml() {
       return "<xWidgets>" + //
-      "<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch\" /> " + //
-      "<XWidget xwidgetType=\"XCheckBox\" displayName=\"All Types\" /> " + //
-      "<XWidget xwidgetType=\"XArtifactTypeComboViewer\" displayName=\"Artifact Type\" />" + //
-      "</xWidgets>";
+         "<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch\" /> " + //
+         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"All Types\" /> " + //
+         "<XWidget xwidgetType=\"XArtifactTypeComboViewer\" displayName=\"Artifact Type\" />" + //
+         "</xWidgets>";
    }
 
    @Override

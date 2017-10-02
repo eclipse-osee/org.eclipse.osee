@@ -27,7 +27,7 @@ public class RelationTypeCacheTest extends AbstractOseeTypeCacheTest<RelationTyp
    private static RelationTypeCache cache;
 
    @BeforeClass
-   public static void prepareTestData()  {
+   public static void prepareTestData() {
       data = new ArrayList<>();
 
       cache = new RelationTypeCache();

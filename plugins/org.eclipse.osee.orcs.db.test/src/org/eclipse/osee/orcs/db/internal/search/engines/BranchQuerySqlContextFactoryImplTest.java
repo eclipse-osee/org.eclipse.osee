@@ -95,7 +95,7 @@ public class BranchQuerySqlContextFactoryImplTest {
    private QueryData queryData;
 
    @Before
-   public void setUp()  {
+   public void setUp() {
       MockitoAnnotations.initMocks(this);
 
       when(session.getGuid()).thenReturn(GUID.create());
@@ -314,7 +314,7 @@ public class BranchQuerySqlContextFactoryImplTest {
    }
 
    @Test
-   public void testQueryChildOf()  {
+   public void testQueryChildOf() {
       String expected = "WITH RECURSIVE chof1 (child_id, branch_level) AS ( \n" + //
          "  SELECT anch_br1.branch_id, 0 as branch_level FROM osee_branch anch_br1, osee_branch anch_br2\n" + //
          "   WHERE anch_br1.parent_branch_id = anch_br2.branch_id AND anch_br2.branch_id = ?\n" + //
@@ -344,7 +344,7 @@ public class BranchQuerySqlContextFactoryImplTest {
    }
 
    @Test
-   public void testQueryAncestorOf()  {
+   public void testQueryAncestorOf() {
       String expected = "WITH RECURSIVE anstrof1 (parent_id, branch_level) AS ( \n" + //
          "  SELECT anch_br1.parent_branch_id, 0 as branch_level FROM osee_branch anch_br1\n" + //
          "   WHERE anch_br1.branch_id = ?\n" + //
@@ -374,7 +374,7 @@ public class BranchQuerySqlContextFactoryImplTest {
    }
 
    @Test
-   public void testMultiples()  {
+   public void testMultiples() {
       String expected = "WITH RECURSIVE chof1 (child_id, branch_level) AS ( \n" + //
          "  SELECT anch_br1.branch_id, 0 as branch_level FROM osee_branch anch_br1, osee_branch anch_br2\n" + //
          "   WHERE anch_br1.parent_branch_id = anch_br2.branch_id AND anch_br2.branch_id = ?\n" + //

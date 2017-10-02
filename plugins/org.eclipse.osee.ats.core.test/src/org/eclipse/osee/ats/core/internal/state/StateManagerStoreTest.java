@@ -64,7 +64,7 @@ public class StateManagerStoreTest {
    // @formatter:on
 
    @Before
-   public void setup()  {
+   public void setup() {
       MockitoAnnotations.initMocks(this);
       when(workItem.getWorkDefinition()).thenReturn(workDef);
       when(workItem.getStateMgr()).thenReturn(stateMgr);

@@ -50,7 +50,7 @@ public interface IAtsTransitionManager {
     * Allow transition date to be used in log to be overridden for importing Actions from other systems and other
     * programatic transitions.
     */
-   public abstract IAtsUser getTransitionAsUser() ;
+   public abstract IAtsUser getTransitionAsUser();
 
    /**
     * Allow transition date to be used in log to be overridden for importing Actions from other systems and other
@@ -64,7 +64,7 @@ public interface IAtsTransitionManager {
     * Get transition to assignees. Verify that UnAssigned is not selected with another assignee. Ensure an assignee is
     * entered, else use current user or UnAssigneed if current user is SystemUser.
     */
-   public abstract List<? extends IAtsUser> getToAssignees(IAtsWorkItem workItem, IAtsStateDefinition toState) ;
+   public abstract List<? extends IAtsUser> getToAssignees(IAtsWorkItem workItem, IAtsStateDefinition toState);
 
    public abstract TransitionResults handleAllAndPersist();
 

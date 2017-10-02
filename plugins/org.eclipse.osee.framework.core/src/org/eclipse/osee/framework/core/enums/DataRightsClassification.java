@@ -12,13 +12,13 @@ package org.eclipse.osee.framework.core.enums;
 
 public enum DataRightsClassification {
 
-      governmentPurposeRights("Government Purpose Rights"),
-      limitedRights("Limited Rights"),
-      proprietary("Proprietary"),
-      restrictedRights("Restricted Rights"),
-      Unspecified("Unspecified");
+   governmentPurposeRights("Government Purpose Rights"),
+   limitedRights("Limited Rights"),
+   proprietary("Proprietary"),
+   restrictedRights("Restricted Rights"),
+   Unspecified("Unspecified");
 
-      String dataRightsClassification;
+   String dataRightsClassification;
 
    DataRightsClassification(String dataRightsClassification) {
       this.dataRightsClassification = dataRightsClassification;

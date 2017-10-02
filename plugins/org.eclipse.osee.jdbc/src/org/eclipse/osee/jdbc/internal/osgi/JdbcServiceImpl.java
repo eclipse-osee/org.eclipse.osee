@@ -100,7 +100,7 @@ public class JdbcServiceImpl implements JdbcService {
       JdbcServer newServer = null;
       if (hasServerConfig(props)) {
          JdbcServerBuilder builder = JdbcServerBuilder.newBuilder(props)//
-         .logger(asJdbcLogger(logger));
+            .logger(asJdbcLogger(logger));
 
          if (!Strings.isValid(builder.getDbUsername())) {
             String username = JdbcUtil.get(props, JdbcConstants.JDBC__CONNECTION_USERNAME, null);

@@ -41,7 +41,7 @@ public class TxCommentSqlHandler extends SqlHandler<CriteriaTxComment> {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer)  {
+   public boolean addPredicates(AbstractSqlWriter writer) {
       String value = criteria.getValue();
       if (criteria.isPattern()) {
          writer.writePatternMatch(txdAlias + ".osee_comment", "?");

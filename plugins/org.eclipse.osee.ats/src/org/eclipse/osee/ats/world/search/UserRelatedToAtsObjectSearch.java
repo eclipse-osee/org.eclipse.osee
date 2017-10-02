@@ -46,7 +46,7 @@ public class UserRelatedToAtsObjectSearch extends UserSearchItem {
    }
 
    @Override
-   protected Collection<Artifact> searchIt(IAtsUser atsUser)  {
+   protected Collection<Artifact> searchIt(IAtsUser atsUser) {
       // SMA having user as portion of current state attribute (Team WorkFlow and Task)
 
       if (isCancelled()) {
@@ -55,12 +55,12 @@ public class UserRelatedToAtsObjectSearch extends UserSearchItem {
 
       List<Artifact> arts = new ArrayList<>();
       if (activeObjectsOnly) {
-         arts.addAll(ArtifactQuery.getArtifactListFromAttributeKeywords(AtsClientService.get().getAtsBranch(), user.getUserId(),
-            false, EXCLUDE_DELETED, false, AtsAttributeTypes.CurrentState));
+         arts.addAll(ArtifactQuery.getArtifactListFromAttributeKeywords(AtsClientService.get().getAtsBranch(),
+            user.getUserId(), false, EXCLUDE_DELETED, false, AtsAttributeTypes.CurrentState));
       } else {
-         arts.addAll(
-            ArtifactQuery.getArtifactListFromAttributeKeywords(AtsClientService.get().getAtsBranch(), user.getUserId(), false,
-               EXCLUDE_DELETED, false, AtsAttributeTypes.CurrentState, AtsAttributeTypes.State, AtsAttributeTypes.Log));
+         arts.addAll(ArtifactQuery.getArtifactListFromAttributeKeywords(AtsClientService.get().getAtsBranch(),
+            user.getUserId(), false, EXCLUDE_DELETED, false, AtsAttributeTypes.CurrentState, AtsAttributeTypes.State,
+            AtsAttributeTypes.Log));
       }
       User user = AtsClientService.get().getUserServiceClient().getOseeUser(atsUser);
       arts.addAll(user.getRelatedArtifacts(AtsRelationTypes.TeamLead_Team));

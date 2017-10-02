@@ -17,6 +17,6 @@ public interface IOseeTypesHandler {
 
    boolean isApplicable(String resource);
 
-   void execute(IProgressMonitor monitor, URI uri) ;
+   void execute(IProgressMonitor monitor, URI uri);
 
 }

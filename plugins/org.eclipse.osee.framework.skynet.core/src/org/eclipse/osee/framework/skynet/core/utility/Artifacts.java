@@ -110,11 +110,11 @@ public final class Artifacts {
       return names;
    }
 
-   public static void persistInTransaction(String comment, final Collection<? extends Artifact> artifacts)  {
+   public static void persistInTransaction(String comment, final Collection<? extends Artifact> artifacts) {
       persistInTransaction(comment, artifacts.toArray(new Artifact[artifacts.size()]));
    }
 
-   public static void persistInTransaction(String comment, Artifact... artifacts)  {
+   public static void persistInTransaction(String comment, Artifact... artifacts) {
       SkynetTransaction transaction = TransactionManager.createTransaction(artifacts[0].getBranch(), comment);
       for (Artifact art : artifacts) {
          art.persist(transaction);
@@ -126,7 +126,7 @@ public final class Artifacts {
     * Recurses default hierarchy and collections children of parentArtifact that are of type class
     */
    @SuppressWarnings("unchecked")
-   public static <A extends Artifact> void getChildrenOfType(Artifact parentArtifact, Collection<A> children, Class<A> clazz, boolean recurse)  {
+   public static <A extends Artifact> void getChildrenOfType(Artifact parentArtifact, Collection<A> children, Class<A> clazz, boolean recurse) {
       for (Artifact child : parentArtifact.getChildren()) {
          if (child.getClass().equals(clazz)) {
             children.add((A) child);
@@ -141,7 +141,7 @@ public final class Artifacts {
     * @return Set of type class that includes parentArtifact and children and will recurse children if true
     */
    @SuppressWarnings("unchecked")
-   public static <A extends Artifact> Set<A> getChildrenAndThisOfTypeSet(Artifact parentArtifact, Class<A> clazz, boolean recurse)  {
+   public static <A extends Artifact> Set<A> getChildrenAndThisOfTypeSet(Artifact parentArtifact, Class<A> clazz, boolean recurse) {
       Set<A> thisAndChildren = new HashSet<>();
       if (parentArtifact.getClass().equals(clazz)) {
          thisAndChildren.add((A) parentArtifact);
@@ -151,7 +151,7 @@ public final class Artifacts {
    }
 
    @SuppressWarnings("unchecked")
-   public static <A extends Artifact> Set<A> getChildrenOfTypeSet(Artifact parentArtifact, Class<A> clazz, boolean recurse)  {
+   public static <A extends Artifact> Set<A> getChildrenOfTypeSet(Artifact parentArtifact, Class<A> clazz, boolean recurse) {
       Set<A> children = new HashSet<>();
       for (Artifact child : parentArtifact.getChildren()) {
          if (child.getClass().equals(clazz)) {
@@ -164,7 +164,7 @@ public final class Artifacts {
       return children;
    }
 
-   public static Map<String, String> getDetailsKeyValues(Artifact artifact)  {
+   public static Map<String, String> getDetailsKeyValues(Artifact artifact) {
       Map<String, String> details = new HashMap<>();
       if (artifact != null) {
          details.put("UUID", String.valueOf(artifact.getArtId()));

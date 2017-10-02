@@ -48,7 +48,7 @@ public class TxCommitIdsSqlHandler extends SqlHandler<CriteriaCommitIds> {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer)  {
+   public boolean addPredicates(AbstractSqlWriter writer) {
       Collection<Integer> ids = criteria.getIds();
       if (ids.size() > 1) {
          if (ids.contains(null)) {

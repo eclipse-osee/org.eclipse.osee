@@ -37,12 +37,12 @@ public interface IPopulateDemoDatabaseTest {
       Assert.assertTrue(true);
    }
 
-   default void testTaskContents(TaskArtifact task, String currentStateName, String relatedToState)  {
+   default void testTaskContents(TaskArtifact task, String currentStateName, String relatedToState) {
       Assert.assertEquals(currentStateName, task.getCurrentStateName());
       Assert.assertEquals(relatedToState, task.getSoleAttributeValue(AtsAttributeTypes.RelatedToState, ""));
    }
 
-   default void testReviewContents(IAtsAbstractReview review, String title, String currentStateName, String... assigneeStrs)  {
+   default void testReviewContents(IAtsAbstractReview review, String title, String currentStateName, String... assigneeStrs) {
       Assert.assertEquals(title, review.getName());
       Assert.assertEquals(currentStateName, review.getStateMgr().getCurrentStateName());
 
@@ -56,7 +56,7 @@ public interface IPopulateDemoDatabaseTest {
       }
    }
 
-   default void testTeamContents(IAtsTeamWorkflow teamWf, String title, String priority, String versionName, String currentStateName, String actionableItemStr, String assigneeStr, IArtifactType artifactType, IAtsTeamDefinition teamDef)  {
+   default void testTeamContents(IAtsTeamWorkflow teamWf, String title, String priority, String versionName, String currentStateName, String actionableItemStr, String assigneeStr, IArtifactType artifactType, IAtsTeamDefinition teamDef) {
       Assert.assertEquals(currentStateName, teamWf.getStateMgr().getCurrentStateName());
       Assert.assertEquals(priority, AtsClientService.get().getAttributeResolver().getSoleAttributeValue(teamWf,
          AtsAttributeTypes.PriorityType, ""));
@@ -74,7 +74,7 @@ public interface IPopulateDemoDatabaseTest {
          AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItemsStr(teamWf));
    }
 
-   default void testSwDesign1PeerAnd1DecisionReview(TeamWorkFlowArtifact designTeam)  {
+   default void testSwDesign1PeerAnd1DecisionReview(TeamWorkFlowArtifact designTeam) {
       Assert.assertNotNull(designTeam);
       PeerToPeerReviewArtifact peerArt = null;
       DecisionReviewArtifact decArt = null;

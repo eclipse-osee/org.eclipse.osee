@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil
 public class ReloadActionTest extends AbstractAtsActionRunTest {
 
    @Override
-   public ReloadAction createAction()  {
+   public ReloadAction createAction() {
       return new ReloadAction(AtsTestUtil.getTeamWf());
    }
 

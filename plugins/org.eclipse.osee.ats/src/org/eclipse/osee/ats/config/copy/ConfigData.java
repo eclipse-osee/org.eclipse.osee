@@ -90,7 +90,7 @@ public class ConfigData {
       this.persistChanges = persistChanges;
    }
 
-   public IAtsTeamDefinition getParentTeamDef()  {
+   public IAtsTeamDefinition getParentTeamDef() {
       IAtsTeamDefinition parentTeamDef = null;
       if (teamDef.getParentTeamDef() != null) {
          parentTeamDef = teamDef.getParentTeamDef();
@@ -100,7 +100,7 @@ public class ConfigData {
       return parentTeamDef;
    }
 
-   public IAtsActionableItem getParentActionableItem()  {
+   public IAtsActionableItem getParentActionableItem() {
       IAtsActionableItem parentActionableItem = null;
       // Determine parent actionable item if possible, otherwise use top actionable item
       Collection<IAtsActionableItem> fromAias = teamDef.getActionableItems();

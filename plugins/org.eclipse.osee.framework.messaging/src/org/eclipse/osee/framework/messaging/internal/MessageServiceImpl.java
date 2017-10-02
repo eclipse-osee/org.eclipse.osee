@@ -56,15 +56,15 @@ public class MessageServiceImpl implements MessageService {
          }
       }
       String message = "Default URI is null";
-      if(defaultURI != null) {
-         message =  defaultURI.toASCIIString();
+      if (defaultURI != null) {
+         message = defaultURI.toASCIIString();
       }
       OseeLog.logf(Activator.class, Level.FINER, "Default URI for message Service [%s]", message);
       return defaultURI;
    }
 
    @Override
-   public ConnectionNode getDefault()  {
+   public ConnectionNode getDefault() {
       return get(defaultNode);
    }
 
@@ -84,7 +84,7 @@ public class MessageServiceImpl implements MessageService {
    }
 
    @Override
-   public ConnectionNode get(NodeInfo nodeInfo)  {
+   public ConnectionNode get(NodeInfo nodeInfo) {
       ConnectionNode node = connectionNodes.get(nodeInfo);
       if (node == null) {
          OseeLog.logf(Activator.class, Level.FINEST, "going to create a new Connection Node for [%s]",

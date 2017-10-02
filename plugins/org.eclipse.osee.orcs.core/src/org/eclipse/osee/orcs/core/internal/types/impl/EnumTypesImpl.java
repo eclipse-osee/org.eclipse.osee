@@ -28,7 +28,7 @@ public class EnumTypesImpl implements EnumTypes {
    }
 
    @Override
-   public Collection<EnumType> getAll()  {
+   public Collection<EnumType> getAll() {
       return getIndex().getAllTokens();
    }
 
@@ -43,21 +43,21 @@ public class EnumTypesImpl implements EnumTypes {
    }
 
    @Override
-   public boolean exists(Id id)  {
+   public boolean exists(Id id) {
       return getIndex().exists(id);
    }
 
    @Override
-   public boolean isEmpty()  {
+   public boolean isEmpty() {
       return getAll().isEmpty();
    }
 
    @Override
-   public int size()  {
+   public int size() {
       return getAll().size();
    }
 
-   private EnumTypeIndex getIndex()  {
+   private EnumTypeIndex getIndex() {
       return indexProvider.getEnumTypeIndex();
    }
 

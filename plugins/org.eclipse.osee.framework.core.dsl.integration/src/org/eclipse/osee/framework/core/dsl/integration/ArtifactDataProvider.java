@@ -27,9 +27,9 @@ public interface ArtifactDataProvider {
       @Override
       ArtifactType getArtifactType();
 
-      boolean isAttributeTypeValid(AttributeTypeId attributeType) ;
+      boolean isAttributeTypeValid(AttributeTypeId attributeType);
 
-      Collection<RelationType> getValidRelationTypes() ;
+      Collection<RelationType> getValidRelationTypes();
 
       Collection<ArtifactProxy> getHierarchy();
 
@@ -40,5 +40,5 @@ public interface ArtifactDataProvider {
 
    boolean isApplicable(Object object);
 
-   ArtifactProxy asCastedObject(Object object) ;
+   ArtifactProxy asCastedObject(Object object);
 }

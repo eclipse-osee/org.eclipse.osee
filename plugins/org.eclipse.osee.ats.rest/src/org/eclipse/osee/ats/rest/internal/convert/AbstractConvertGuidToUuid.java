@@ -55,11 +55,11 @@ public abstract class AbstractConvertGuidToUuid implements IAtsDatabaseConversio
       return jdbcClient;
    }
 
-   protected BranchReadable getBranch(String guid)  {
+   protected BranchReadable getBranch(String guid) {
       return orcsApi.getQueryFactory().branchQuery().andId(getBranchIdLegacy(guid)).getResults().getExactlyOne();
    }
 
-   protected TransactionBuilder createTransactionBuilder()  {
+   protected TransactionBuilder createTransactionBuilder() {
       TransactionFactory txFactory = getOrcsApi().getTransactionFactory();
       Conditions.checkNotNull(txFactory, "transaction factory");
       return txFactory.createTransaction(COMMON, SystemUser.OseeSystem, getName());

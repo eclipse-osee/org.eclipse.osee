@@ -78,7 +78,7 @@ public class FixDuplicateAttributesCommand extends AbstractDatastoreConsoleComma
       }
 
       @Override
-      protected Object handleTxWork(JdbcConnection connection)  {
+      protected Object handleTxWork(JdbcConnection connection) {
          try (ExportImportJoinQuery gammaJoin = joinFactory.createExportImportJoinQuery(connection)) {
             selectAttributes(gammaJoin, connection);
             gammaJoin.store();
@@ -90,7 +90,7 @@ public class FixDuplicateAttributesCommand extends AbstractDatastoreConsoleComma
          return null;
       }
 
-      private void selectAttributes(ExportImportJoinQuery gammaJoin, JdbcConnection connection)  {
+      private void selectAttributes(ExportImportJoinQuery gammaJoin, JdbcConnection connection) {
          try (IdJoinQuery typeJoin = joinFactory.createIdJoinQuery(connection)) {
             populateAttributeTypeJoin(typeJoin);
             getJdbcClient().runQuery(stmt -> gammaJoin.add(stmt.getLong("gamma1"), stmt.getLong("gamma2")),
@@ -98,7 +98,7 @@ public class FixDuplicateAttributesCommand extends AbstractDatastoreConsoleComma
          }
       }
 
-      private void selectDuplicates(ExportImportJoinQuery gammaJoin, JdbcConnection connection)  {
+      private void selectDuplicates(ExportImportJoinQuery gammaJoin, JdbcConnection connection) {
          JdbcStatement chStmt = getJdbcClient().getStatement(connection);
          try {
             chStmt.runPreparedQuery(SELECT_DUPLICATES, gammaJoin.getQueryId(), TxChange.CURRENT, TxChange.CURRENT);
@@ -111,7 +111,7 @@ public class FixDuplicateAttributesCommand extends AbstractDatastoreConsoleComma
          }
       }
 
-      private void populateAttributeTypeJoin(IdJoinQuery typeJoin)  {
+      private void populateAttributeTypeJoin(IdJoinQuery typeJoin) {
          AttributeTypes types = orcsApi.getOrcsTypes().getAttributeTypes();
          for (AttributeTypeId attributeType : types.getAll()) {
             if (types.getMaxOccurrences(attributeType) == 1) {

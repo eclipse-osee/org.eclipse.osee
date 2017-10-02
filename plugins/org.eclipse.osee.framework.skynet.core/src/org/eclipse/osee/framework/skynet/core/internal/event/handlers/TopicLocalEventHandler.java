@@ -31,7 +31,7 @@ public class TopicLocalEventHandler implements EventHandlerLocal<TopicEventAdmin
    }
 
    @Override
-   public void send(Transport transport, Sender sender, TopicEvent event)  {
+   public void send(Transport transport, Sender sender, TopicEvent event) {
       if (transport.isDispatchToLocalAllowed(sender)) {
          transport.sendLocal(sender, event);
       }

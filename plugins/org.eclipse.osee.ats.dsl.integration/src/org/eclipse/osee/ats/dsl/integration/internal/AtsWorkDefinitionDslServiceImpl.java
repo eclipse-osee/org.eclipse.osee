@@ -51,7 +51,7 @@ public class AtsWorkDefinitionDslServiceImpl implements IAtsWorkDefinitionDslSer
       this.userService = userService;
    }
 
-   public void start()  {
+   public void start() {
       logger.info("AtsWorkDefinitionServiceImpl started");
    }
 

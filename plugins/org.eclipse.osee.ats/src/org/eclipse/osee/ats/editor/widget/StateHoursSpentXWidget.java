@@ -67,11 +67,11 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
 
    public final static String TOOLTIP = "Calculation: \n     State Hours Spent: amount entered by user\n" +
    //
-   "     Task Hours Spent: total hours spent of all tasks related to state\n" +
-   //
-   "     Review Hours Spent: total hours spent of all reviews related to state\n" +
-   //
-   "Total State Hours Spent: state hours + all task hours + all review hours";
+      "     Task Hours Spent: total hours spent of all tasks related to state\n" +
+      //
+      "     Review Hours Spent: total hours spent of all reviews related to state\n" +
+      //
+      "Total State Hours Spent: state hours + all task hours + all review hours";
 
    @Override
    public String getCurrentValue() {

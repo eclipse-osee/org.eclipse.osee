@@ -81,7 +81,7 @@ public class XWidgetRendererItem implements Cloneable {
       }
       if (dynamicXWidgetLayout != null) {
          return dynamicXWidgetLayout.isOrRequired(getStoreName()) || //
-         dynamicXWidgetLayout.isXOrRequired(getStoreName());
+            dynamicXWidgetLayout.isXOrRequired(getStoreName());
       }
       return false;
    }
@@ -110,7 +110,7 @@ public class XWidgetRendererItem implements Cloneable {
    }
 
    // TODO This method will need to be removed
-   public XWidget getXWidget()  {
+   public XWidget getXWidget() {
       if (xWidget == null) {
          xWidget = xWidgetFactory.createXWidget(this);
       }

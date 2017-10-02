@@ -15,6 +15,6 @@ package org.eclipse.osee.orcs.db.internal;
  */
 public interface IdentityLocator {
 
-   Long parseToLocalId(String value) ;
+   Long parseToLocalId(String value);
 
 }

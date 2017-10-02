@@ -95,7 +95,7 @@ public class ThreeWayWordMergeOperation extends AbstractOperation {
 
       CompareDataCollector colletor = new CompareDataCollector() {
          @Override
-         public void onCompare(CompareData data)  {
+         public void onCompare(CompareData data) {
             File mergedFile = new File(data.getOutputPath());
 
             monitor.worked(40);

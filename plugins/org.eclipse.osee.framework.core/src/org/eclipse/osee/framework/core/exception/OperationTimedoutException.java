@@ -30,7 +30,7 @@ public class OperationTimedoutException extends OseeCoreException {
    }
 
    private static final long serialVersionUID = -6697324585250125614L;
-   
+
    public OperationTimedoutException(String message, Object... args) {
       super(message, args);
    }

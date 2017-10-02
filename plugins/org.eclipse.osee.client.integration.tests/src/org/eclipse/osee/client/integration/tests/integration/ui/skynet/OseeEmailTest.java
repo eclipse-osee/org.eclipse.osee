@@ -67,15 +67,15 @@ public class OseeEmailTest {
       final String TEST_NAME = "Email Test 3/3 - with Outlook Attachment";
       OseeEmail emailMessage = new OseeEmail(emailAddress, TEST_NAME, TEST_NAME + "\n\nTesting the attachment\n" +
       //
-      "1) Double-click open attachment opens calendar event dialog\n" +
-      //
-      "2) Verify Time 8am - 1pm\n" +
-      //
-      "3) Verify date (today)\n" +
-      //
-      "4) Verify location: Conference Room\n" +
-      //
-      "5) Verify subject is name of this test" + infoStr, BodyType.Text);
+         "1) Double-click open attachment opens calendar event dialog\n" +
+         //
+         "2) Verify Time 8am - 1pm\n" +
+         //
+         "3) Verify date (today)\n" +
+         //
+         "4) Verify location: Conference Room\n" +
+         //
+         "5) Verify subject is name of this test" + infoStr, BodyType.Text);
       Date start = new Date();
       Date end = new Date(start.getTime() + 4 * 60 * 60 * 1000);
       String context = new OutlookCalendarEvent("Conference Room", TEST_NAME, start, end).getEvent();

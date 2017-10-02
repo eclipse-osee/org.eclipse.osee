@@ -98,7 +98,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
    /**
     * used recursively when originally passed a directory, thus an array of files is accepted
     */
-   private static void retrieveData(IProgressMonitor monitor, Collection<IAtsTeamWorkflow> teamWfs, AttributeTypeToken attributeType, XResultData rd)  {
+   private static void retrieveData(IProgressMonitor monitor, Collection<IAtsTeamWorkflow> teamWfs, AttributeTypeToken attributeType, XResultData rd) {
       monitor.subTask("Retrieving Actions");
 
       int x = 1;
@@ -126,7 +126,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
       rd.addRaw(AHTML.endMultiColumnTable());
    }
 
-   private static void processTeam(TeamWorkFlowArtifact teamArt, String buildId, AttributeTypeId attributeType, ICommitConfigItem commitConfigArt, XResultData rd)  {
+   private static void processTeam(TeamWorkFlowArtifact teamArt, String buildId, AttributeTypeId attributeType, ICommitConfigItem commitConfigArt, XResultData rd) {
       String rpcrNum = teamArt.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "");
       ChangeData changeData = AtsBranchManager.getChangeData(teamArt, commitConfigArt);
       for (Artifact modArt : changeData.getArtifacts(KindType.Artifact, ModificationType.NEW,

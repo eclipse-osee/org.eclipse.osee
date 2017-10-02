@@ -27,7 +27,7 @@ public class NewGoalTest extends AbstractAtsActionRunTest {
 
    @BeforeClass
    @AfterClass
-   public static void cleanup()  {
+   public static void cleanup() {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), NewGoalTest.class.getSimpleName());
       for (Artifact art : ArtifactQuery.getArtifactListFromName(NewGoalTest.class.getSimpleName(),

@@ -34,7 +34,7 @@ public final class AccessData {
       return accessMap.isEmpty();
    }
 
-   public void addAll(Object key, Collection<AccessDetail<?>> datas)  {
+   public void addAll(Object key, Collection<AccessDetail<?>> datas) {
       Conditions.checkNotNull(key, "access key");
       Conditions.checkNotNull(datas, "accessDetails");
       for (AccessDetail<?> data : datas) {
@@ -50,7 +50,7 @@ public final class AccessData {
       return toReturn;
    }
 
-   public void add(Object key, AccessDetail<?> data)  {
+   public void add(Object key, AccessDetail<?> data) {
       Conditions.checkNotNull(key, "access key");
       Conditions.checkNotNull(data, "access data");
 
@@ -60,7 +60,7 @@ public final class AccessData {
       accessMap.put(key, data.getAccessObject(), resolvedAccess);
    }
 
-   public Collection<AccessDetail<?>> getAccess(Object key)  {
+   public Collection<AccessDetail<?>> getAccess(Object key) {
       Conditions.checkNotNull(key, "access key");
       return accessMap.getValues(key);
    }

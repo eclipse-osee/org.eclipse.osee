@@ -8,13 +8,12 @@ import org.eclipse.xtext.generator.IFileSystemAccess;
 import org.eclipse.xtext.generator.IGenerator;
 
 /**
- * Generates code from your model files on save.
- * 
- * see http://www.eclipse.org/Xtext/documentation.html#TutorialCodeGeneration
+ * Generates code from your model files on save. see
+ * http://www.eclipse.org/Xtext/documentation.html#TutorialCodeGeneration
  */
 @SuppressWarnings("all")
 public class OrcsScriptDslGenerator implements IGenerator {
-  @Override
-  public void doGenerate(final Resource resource, final IFileSystemAccess fsa) {
-  }
+   @Override
+   public void doGenerate(final Resource resource, final IFileSystemAccess fsa) {
+   }
 }

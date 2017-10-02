@@ -85,7 +85,7 @@ public class WordMLApplicabilityHandler {
       featureDefinitionJson = featureDefArt.getSoleAttributeAsString(CoreAttributeTypes.GeneralStringData);
    }
 
-   public String previewValidApplicabilityContent(String content)  {
+   public String previewValidApplicabilityContent(String content) {
       String toReturn = content;
       int searchIndex = 0;
       int applicBlockCount = 0;

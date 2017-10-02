@@ -62,14 +62,14 @@ public class LifecycleServiceImpl implements ILifecycleService {
    }
 
    @Override
-   public <H extends LifecycleHandler> void addHandler(AbstractLifecycleVisitor.Type<H> type, final H handler)  {
+   public <H extends LifecycleHandler> void addHandler(AbstractLifecycleVisitor.Type<H> type, final H handler) {
       Conditions.checkNotNull(type, "handler type");
       Conditions.checkNotNull(handler, "handler");
       handlersByType.put(type, handler);
    }
 
    @Override
-   public <H extends LifecycleHandler> void removeHandler(AbstractLifecycleVisitor.Type<H> type, final H handler)  {
+   public <H extends LifecycleHandler> void removeHandler(AbstractLifecycleVisitor.Type<H> type, final H handler) {
       Conditions.checkNotNull(type, "handler type");
       Conditions.checkNotNull(handler, "handler");
       handlersByType.removeValue(type, handler);

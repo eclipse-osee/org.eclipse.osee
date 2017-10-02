@@ -38,7 +38,7 @@ public class ArtifactConflict extends Conflict {
    }
 
    @Override
-   public String getArtifactName()  {
+   public String getArtifactName() {
       if (sourceModType.isDeleted()) {
          return getDestArtifact().getName();
       } else {
@@ -52,7 +52,7 @@ public class ArtifactConflict extends Conflict {
    }
 
    @Override
-   public ConflictStatus computeStatus()  {
+   public ConflictStatus computeStatus() {
       return super.computeStatus(getObjectId(), ConflictStatus.INFORMATIONAL);
    }
 
@@ -81,7 +81,7 @@ public class ArtifactConflict extends Conflict {
       return "";
    }
 
-   protected Object getMergeValue()  {
+   protected Object getMergeValue() {
       return getArtifact();
    }
 
@@ -91,12 +91,12 @@ public class ArtifactConflict extends Conflict {
    }
 
    @Override
-   public boolean mergeEqualsDestination()  {
+   public boolean mergeEqualsDestination() {
       return getDestArtifact().equals(getMergeValue());
    }
 
    @Override
-   public boolean mergeEqualsSource()  {
+   public boolean mergeEqualsSource() {
       return getSourceArtifact().equals(getMergeValue());
    }
 

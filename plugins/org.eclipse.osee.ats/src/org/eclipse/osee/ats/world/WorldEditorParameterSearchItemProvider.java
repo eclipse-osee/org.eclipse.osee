@@ -47,7 +47,7 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
    }
 
    @Override
-   public IWorldEditorProvider copyProvider()  {
+   public IWorldEditorProvider copyProvider() {
       return new WorldEditorParameterSearchItemProvider(
          (WorldEditorParameterSearchItem) worldParameterSearchItem.copy(), customizeData, tableLoadOptions);
    }
@@ -57,12 +57,12 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
    }
 
    @Override
-   public String getName()  {
+   public String getName() {
       return worldParameterSearchItem.getName();
    }
 
    @Override
-   public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend)  {
+   public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend) {
       WorldSearchItem searchItem = getWorldSearchItem();
       if (searchItem instanceof AtsSearchWorkflowSearchItem) {
          AtsSearchWorkflowSearchItem workflowSearchItem = (AtsSearchWorkflowSearchItem) searchItem;
@@ -101,12 +101,12 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
    }
 
    @Override
-   public String getSelectedName(SearchType searchType)  {
+   public String getSelectedName(SearchType searchType) {
       return Strings.truncate(worldParameterSearchItem.getSelectedName(searchType), WorldEditor.TITLE_MAX_LENGTH, true);
    }
 
    @Override
-   public String getParameterXWidgetXml()  {
+   public String getParameterXWidgetXml() {
       return worldParameterSearchItem.getParameterXWidgetXml();
    }
 

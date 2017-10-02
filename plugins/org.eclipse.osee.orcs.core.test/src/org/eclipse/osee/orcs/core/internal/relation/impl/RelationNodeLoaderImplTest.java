@@ -71,7 +71,7 @@ public class RelationNodeLoaderImplTest {
    }
 
    @Test
-   public void testLoadNodes()  {
+   public void testLoadNodes() {
       Iterable<Artifact> artifacts = Arrays.asList(artifact);
 
       when(dataLoaderFactory.newDataLoaderFromIds(session, BRANCH, ids)).thenReturn(loader);

@@ -186,22 +186,22 @@ public class XWorkPackageWidget extends GenericXWidget implements IArtifactWidge
    }
 
    @Override
-   public Artifact getArtifact()  {
+   public Artifact getArtifact() {
       return workflow;
    }
 
    @Override
-   public void saveToArtifact()  {
+   public void saveToArtifact() {
       // do nothing
    }
 
    @Override
-   public void revert()  {
+   public void revert() {
       // do nothing
    }
 
    @Override
-   public Result isDirty()  {
+   public Result isDirty() {
       return Result.FalseResult;
    }
 

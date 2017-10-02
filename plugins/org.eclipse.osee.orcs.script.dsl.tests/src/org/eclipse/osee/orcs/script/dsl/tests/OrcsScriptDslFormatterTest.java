@@ -38,44 +38,44 @@ public class OrcsScriptDslFormatterTest {
 
    private static final String INPUT_1 = //
       "script-version 0.12.0   ; // a comment" + //
-      LN + //
-      "start from tx where date in  ( '12/24/2014 12:12:12 AM' .. '12/24/2014 12:12:12 AM' )" + //
-      "find artifacts where art-type instance-of [23]" + //
-      "                  follow    relation type = 324     to   side-A  ;" + //
-      "/**" + LN + //
-      " * multi-line comment" + LN + //
-      " */ start    from     branch    570      " + //
-      "follow relation type =    324 to    side-B" + //
-      "           find artifacts where art-type = 1231" + //
-      " collect artifacts as 'alias-2' {   id as 'id-1'   ,   guid as 'id-2'  ,  attributes { uri, txs {*} }, type }" + //
-      "       limit    34;" + //
-      "             start from branch  570 " + //
-      "follow relation type = 324    to side-B ;" + //
-      "              start    from tx * ;";
+         LN + //
+         "start from tx where date in  ( '12/24/2014 12:12:12 AM' .. '12/24/2014 12:12:12 AM' )" + //
+         "find artifacts where art-type instance-of [23]" + //
+         "                  follow    relation type = 324     to   side-A  ;" + //
+         "/**" + LN + //
+         " * multi-line comment" + LN + //
+         " */ start    from     branch    570      " + //
+         "follow relation type =    324 to    side-B" + //
+         "           find artifacts where art-type = 1231" + //
+         " collect artifacts as 'alias-2' {   id as 'id-1'   ,   guid as 'id-2'  ,  attributes { uri, txs {*} }, type }" + //
+         "       limit    34;" + //
+         "             start from branch  570 " + //
+         "follow relation type = 324    to side-B ;" + //
+         "              start    from tx * ;";
 
    private static final String FORMATTED_INPUT_1 = //
       "script-version 0.12.0; // a comment" + LN + //
-      LN + //
-      "start from tx where date in ('12/24/2014 12:12:12 AM'..'12/24/2014 12:12:12 AM')" + LN + //
-      "find artifacts where art-type instance-of [23]" + LN + //
-      "follow relation type = 324 to side-A;" + LN + //
-      LN + //
-      "/**" + LN + //
-      " * multi-line comment" + LN + //
-      " */" + LN + //
-      "start from branch 570" + LN + //
-      "follow relation type = 324 to side-B" + LN + //
-      "find artifacts where art-type = 1231" + LN + //
-      "collect artifacts as 'alias-2' {" + LN + //
-      INDENT + "id as 'id-1', guid as 'id-2', attributes {" + LN + //
-      INDENT + INDENT + "uri, txs { * }" + LN + //
-      INDENT + "}, type" + LN + //
-      "} limit 34;" + LN + //
-      LN + //
-      "start from branch 570" + LN + //
-      "follow relation type = 324 to side-B;" + LN + //
-      LN + //
-      "start from tx *;";
+         LN + //
+         "start from tx where date in ('12/24/2014 12:12:12 AM'..'12/24/2014 12:12:12 AM')" + LN + //
+         "find artifacts where art-type instance-of [23]" + LN + //
+         "follow relation type = 324 to side-A;" + LN + //
+         LN + //
+         "/**" + LN + //
+         " * multi-line comment" + LN + //
+         " */" + LN + //
+         "start from branch 570" + LN + //
+         "follow relation type = 324 to side-B" + LN + //
+         "find artifacts where art-type = 1231" + LN + //
+         "collect artifacts as 'alias-2' {" + LN + //
+         INDENT + "id as 'id-1', guid as 'id-2', attributes {" + LN + //
+         INDENT + INDENT + "uri, txs { * }" + LN + //
+         INDENT + "}, type" + LN + //
+         "} limit 34;" + LN + //
+         LN + //
+         "start from branch 570" + LN + //
+         "follow relation type = 324 to side-B;" + LN + //
+         LN + //
+         "start from tx *;";
 
    @Test
    public void testLoadSaveAndWithFormatting() throws Exception {

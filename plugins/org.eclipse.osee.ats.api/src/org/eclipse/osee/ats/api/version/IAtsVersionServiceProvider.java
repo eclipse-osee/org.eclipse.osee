@@ -15,6 +15,6 @@ package org.eclipse.osee.ats.api.version;
  */
 public interface IAtsVersionServiceProvider {
 
-   IAtsVersionService getVersionService() ;
+   IAtsVersionService getVersionService();
 
 }

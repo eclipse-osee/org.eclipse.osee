@@ -72,7 +72,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
       this.changes = changes;
    }
 
-   public void execute()  {
+   public void execute() {
       importUserDefinitions(atsDsl.getUserDef());
       importTeamDefinitions(atsDsl.getTeamDef(), AtsClientService.get().getConfigArtifact(
          TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService())));
@@ -81,7 +81,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
       importProgram(atsDsl.getProgram());
    }
 
-   private void importUserDefinitions(EList<UserDef> userDefs)  {
+   private void importUserDefinitions(EList<UserDef> userDefs) {
       for (UserDef dslUserDef : userDefs) {
          String dslUserName = Strings.unquote(dslUserDef.getName());
          Artifact userArt = null;
@@ -113,7 +113,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
    }
 
    @SuppressWarnings("deprecation")
-   private void importTeamDefinitions(EList<TeamDef> teamDefs, Artifact parentArtifact)  {
+   private void importTeamDefinitions(EList<TeamDef> teamDefs, Artifact parentArtifact) {
       for (TeamDef dslTeamDef : teamDefs) {
          String dslTeamName = Strings.unquote(dslTeamDef.getName());
          //         System.out.println("   - Importing Team " + dslTeamName);
@@ -169,7 +169,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
 
    }
 
-   private Set<Artifact> getUsers(EList<UserRef> userRefs)  {
+   private Set<Artifact> getUsers(EList<UserRef> userRefs) {
       Set<Artifact> users = new HashSet<>();
       if (userRefs != null) {
          IAtsUserServiceClient userServiceClient = AtsClientService.get().getUserServiceClient();
@@ -185,13 +185,13 @@ public class ImportAIsAndTeamDefinitionsToDb {
       return users;
    }
 
-   private void importAccessContextIds(Artifact teamOrAi, EList<String> contextIds)  {
+   private void importAccessContextIds(Artifact teamOrAi, EList<String> contextIds) {
       for (String accessContextId : contextIds) {
          teamOrAi.addAttribute(CoreAttributeTypes.AccessContextId, accessContextId);
       }
    }
 
-   private void importVersionDefinitions(EList<VersionDef> versionDefs, Artifact teamDef)  {
+   private void importVersionDefinitions(EList<VersionDef> versionDefs, Artifact teamDef) {
 
       Map<String, Artifact> nameToVerArt = new HashMap<>();
       for (VersionDef dslVersionDef : versionDefs) {
@@ -232,7 +232,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
    }
 
    @SuppressWarnings("deprecation")
-   private void importActionableItems(EList<ActionableItemDef> aiDefs, Artifact parentArtifact)  {
+   private void importActionableItems(EList<ActionableItemDef> aiDefs, Artifact parentArtifact) {
       for (ActionableItemDef dslAIDef : aiDefs) {
          String dslAIName = Strings.unquote(dslAIDef.getName());
          // System.out.println("   - Importing Actionable Item " + dslAIName);
@@ -280,7 +280,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
    }
 
    @SuppressWarnings("deprecation")
-   private void importProgram(EList<ProgramDef> programDefs)  {
+   private void importProgram(EList<ProgramDef> programDefs) {
       for (ProgramDef dslProgramDef : programDefs) {
          String dslProgramName = Strings.unquote(dslProgramDef.getName());
          Artifact newProgramArt = null;
@@ -340,7 +340,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
       }
    }
 
-   private Artifact getOrCreate(String artifactName, boolean isTeamDef, Artifact parentArtifact)  {
+   private Artifact getOrCreate(String artifactName, boolean isTeamDef, Artifact parentArtifact) {
       Artifact parent = parentArtifact;
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       if (parent == null) {

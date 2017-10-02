@@ -24,27 +24,27 @@ import org.eclipse.osee.framework.jdk.core.type.Identity;
  */
 public interface IAtsVersionService {
 
-   boolean hasTargetedVersion(IAtsWorkItem workItem) ;
+   boolean hasTargetedVersion(IAtsWorkItem workItem);
 
-   IAtsVersion getTargetedVersion(IAtsWorkItem workItem) ;
+   IAtsVersion getTargetedVersion(IAtsWorkItem workItem);
 
-   Collection<IAtsTeamWorkflow> getTargetedForTeamWorkflows(IAtsVersion version) ;
+   Collection<IAtsTeamWorkflow> getTargetedForTeamWorkflows(IAtsVersion version);
 
-   IAtsTeamDefinition getTeamDefinition(IAtsVersion version) ;
+   IAtsTeamDefinition getTeamDefinition(IAtsVersion version);
 
-   void setTeamDefinition(IAtsVersion version, IAtsTeamDefinition teamDef, IAtsChangeSet changes) ;
+   void setTeamDefinition(IAtsVersion version, IAtsTeamDefinition teamDef, IAtsChangeSet changes);
 
-   boolean isReleased(IAtsTeamWorkflow teamWf) ;
+   boolean isReleased(IAtsTeamWorkflow teamWf);
 
-   boolean isVersionLocked(IAtsTeamWorkflow teamWf) ;
+   boolean isVersionLocked(IAtsTeamWorkflow teamWf);
 
-   void removeTargetedVersion(IAtsTeamWorkflow teamWf, IAtsChangeSet changes) ;
+   void removeTargetedVersion(IAtsTeamWorkflow teamWf, IAtsChangeSet changes);
 
-   IAtsVersion getById(Identity<String> id) ;
+   IAtsVersion getById(Identity<String> id);
 
    BranchId getBranch(IAtsVersion version);
 
-   IAtsVersion getTargetedVersionByTeamWf(IAtsTeamWorkflow team) ;
+   IAtsVersion getTargetedVersionByTeamWf(IAtsTeamWorkflow team);
 
    IAtsVersion setTargetedVersion(IAtsTeamWorkflow teamWf, IAtsVersion version, IAtsChangeSet changes);
 

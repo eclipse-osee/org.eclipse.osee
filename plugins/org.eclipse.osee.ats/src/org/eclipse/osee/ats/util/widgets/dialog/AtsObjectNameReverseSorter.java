@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  * 
  * @author Donald G. Dunne
  */
-public class AtsObjectNameReverseSorter extends ViewerComparator	 {
+public class AtsObjectNameReverseSorter extends ViewerComparator {
 
    /**
     * Default sorter for artifacts. Sorts on descriptive name

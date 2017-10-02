@@ -29,7 +29,7 @@ public class VCastInstrumentedFileTable implements VCastTableData<VCastInstrumen
    }
 
    @Override
-   public Collection<VCastInstrumentedFile> getRows(VCastDataStore dataStore)  {
+   public Collection<VCastInstrumentedFile> getRows(VCastDataStore dataStore) {
       return dataStore.getAllInstrumentedFiles();
    }
 

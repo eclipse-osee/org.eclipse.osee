@@ -42,7 +42,7 @@ public class XIntegerDam extends XInteger implements IAttributeWidget {
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, AttributeTypeToken attrName)  {
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attrName) {
       this.artifact = artifact;
       this.attributeType = attrName;
       try {
@@ -70,7 +70,7 @@ public class XIntegerDam extends XInteger implements IAttributeWidget {
    }
 
    @Override
-   public Result isDirty()  {
+   public Result isDirty() {
       if (isEditable()) {
          try {
             Integer enteredValue = getInteger();
@@ -90,7 +90,7 @@ public class XIntegerDam extends XInteger implements IAttributeWidget {
    }
 
    @Override
-   public void revert()  {
+   public void revert() {
       setAttributeType(getArtifact(), getAttributeType());
    }
 

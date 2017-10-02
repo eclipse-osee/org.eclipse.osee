@@ -18,6 +18,6 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
  */
 public interface ISelectedTeamDefinitionArtifacts {
 
-   Collection<IAtsTeamDefinition> getSelectedTeamDefinitions() ;
+   Collection<IAtsTeamDefinition> getSelectedTeamDefinitions();
 
 }

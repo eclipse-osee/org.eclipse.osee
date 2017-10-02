@@ -45,7 +45,7 @@ public class RemainingPointsWorkflowColumn extends AbstractNumericTotalColumn {
    }
 
    @Override
-   protected int getPercentComplete(IAtsWorkItem workItem)  {
+   protected int getPercentComplete(IAtsWorkItem workItem) {
       return ((Artifact) workItem.getStoreObject()).getSoleAttributeValue(AtsAttributeTypes.PercentComplete, 0);
    }
 

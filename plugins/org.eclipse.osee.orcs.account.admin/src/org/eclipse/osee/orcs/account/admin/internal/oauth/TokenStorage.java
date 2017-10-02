@@ -27,11 +27,11 @@ public class TokenStorage extends AbstractDatabaseStorage<OAuthToken> {
 
    private static final String SELECT_TOKEN_BY_PARENT_TOKEN = //
       "WITH parent_token (id, refresh_key) AS (SELECT id, token_key FROM osee_oauth_token WHERE token_key = ? AND type_id = ?)" //
-      + "SELECT tk1.*, parent_token.refresh_key FROM osee_oauth_token tk1, parent_token WHERE tk1.parent_token_id = parent_token.id AND tk1.type_id = ?";
+         + "SELECT tk1.*, parent_token.refresh_key FROM osee_oauth_token tk1, parent_token WHERE tk1.parent_token_id = parent_token.id AND tk1.type_id = ?";
 
    private static final String SELECT_TOKEN_BY_CLIENT_ID_SUBJECT_ID_AND_GRANT_TYPE =
       "SELECT t1.*, t2.token_key AS refresh_key FROM osee_oauth_token t1 " //
-      + "LEFT OUTER JOIN osee_oauth_token t2 ON t2.id = t1.parent_token_id WHERE t1.client_id = ? AND t1.subject_id = ? AND t1.grant_type = ?";
+         + "LEFT OUTER JOIN osee_oauth_token t2 ON t2.id = t1.parent_token_id WHERE t1.client_id = ? AND t1.subject_id = ? AND t1.grant_type = ?";
 
    private static final String INSERT_TOKEN =
       "INSERT INTO osee_oauth_token (id, client_id, subject_id, issued_at, expires_in, token_key, token_type, grant_type, audience, parent_token_id, type_id) VALUES (?,?,?,?,?,?,?,?,?,?,?)";

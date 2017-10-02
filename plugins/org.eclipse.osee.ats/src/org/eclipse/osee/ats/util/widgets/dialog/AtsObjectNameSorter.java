@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * Default sorter for artifacts. Sorts on descriptive name
- * 	
+ * 
  * @author Donald G. Dunne
  */
 public class AtsObjectNameSorter extends ViewerComparator {

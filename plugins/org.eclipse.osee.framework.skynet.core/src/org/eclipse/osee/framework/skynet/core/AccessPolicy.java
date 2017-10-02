@@ -25,16 +25,16 @@ public interface AccessPolicy {
 
    boolean isReadOnly(Artifact artifact);
 
-   void removePermissions(BranchId branch) ;
+   void removePermissions(BranchId branch);
 
-   PermissionStatus hasBranchPermission(BranchId branch, PermissionEnum permission, Level level) ;
+   PermissionStatus hasBranchPermission(BranchId branch, PermissionEnum permission, Level level);
 
-   PermissionStatus hasAttributeTypePermission(Collection<? extends ArtifactToken> artifacts, AttributeTypeId attributeType, PermissionEnum permission, Level level) ;
+   PermissionStatus hasAttributeTypePermission(Collection<? extends ArtifactToken> artifacts, AttributeTypeId attributeType, PermissionEnum permission, Level level);
 
-   PermissionStatus hasArtifactTypePermission(BranchId branch, Collection<? extends ArtifactTypeId> artifactTypes, PermissionEnum permission, Level level) ;
+   PermissionStatus hasArtifactTypePermission(BranchId branch, Collection<? extends ArtifactTypeId> artifactTypes, PermissionEnum permission, Level level);
 
-   PermissionStatus hasArtifactPermission(Collection<Artifact> artifacts, PermissionEnum permission, Level level) ;
+   PermissionStatus hasArtifactPermission(Collection<Artifact> artifacts, PermissionEnum permission, Level level);
 
-   PermissionStatus canRelationBeModified(Artifact subject, Collection<Artifact> toBeRelated, RelationTypeSide relationTypeSide, Level level) ;
+   PermissionStatus canRelationBeModified(Artifact subject, Collection<Artifact> toBeRelated, RelationTypeSide relationTypeSide, Level level);
 
 }

@@ -80,7 +80,7 @@ public class ArtifactFactoryTest {
    private List<AttributeTypeId> types;
 
    @Before
-   public void init()  {
+   public void init() {
       MockitoAnnotations.initMocks(this);
 
       artifactFactory = new ArtifactFactory(dataFactory, attributeFactory, artifactTypeCache);
@@ -112,7 +112,7 @@ public class ArtifactFactoryTest {
    }
 
    @Test
-   public void testCreateArtifactFromBranchTypeAndGuid()  {
+   public void testCreateArtifactFromBranchTypeAndGuid() {
       when(dataFactory.create(COMMON, Artifact, guid)).thenReturn(artifactData);
 
       Artifact artifact = artifactFactory.createArtifact(session, COMMON, Artifact, guid);
@@ -123,7 +123,7 @@ public class ArtifactFactoryTest {
    }
 
    @Test
-   public void testCreateArtifactFromBranchTypeAndGuidAndUuid()  {
+   public void testCreateArtifactFromBranchTypeAndGuidAndUuid() {
       long uuid = 93456L;
       when(dataFactory.create(COMMON, Artifact, guid, uuid)).thenReturn(artifactData);
 
@@ -135,7 +135,7 @@ public class ArtifactFactoryTest {
    }
 
    @Test
-   public void testCreateArtifactFromArtifactData()  {
+   public void testCreateArtifactFromArtifactData() {
       Artifact artifact = artifactFactory.createArtifact(session, artifactData);
 
       assertEquals(Artifact, artifact.getArtifactType());
@@ -143,7 +143,7 @@ public class ArtifactFactoryTest {
    }
 
    @Test
-   public void testCopyArtifact()  {
+   public void testCopyArtifact() {
       when(dataFactory.copy(COMMON, artifactData)).thenReturn(otherArtifactData);
 
       when(source.getAttributes(CoreAttributeTypes.Annotation)).thenAnswer(new ReturnAttribute(attribute));
@@ -166,7 +166,7 @@ public class ArtifactFactoryTest {
    }
 
    @Test
-   public void testIntroduceArtifact()  {
+   public void testIntroduceArtifact() {
       when(dataFactory.introduce(COMMON, artifactData)).thenReturn(otherArtifactData);
 
       when(source.getExistingAttributeTypes()).thenAnswer(new ReturnExistingTypes(types));
@@ -183,7 +183,7 @@ public class ArtifactFactoryTest {
    }
 
    @Test
-   public void testClone()  {
+   public void testClone() {
       when(dataFactory.copy(COMMON, artifactData)).thenReturn(otherArtifactData);
 
       when(source.getExistingAttributeTypes()).thenAnswer(new ReturnExistingTypes(types));

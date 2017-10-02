@@ -53,13 +53,13 @@ public class AttributeResourceTest {
    private final String testString = "This is the test string";
 
    @Before
-   public void setup()  {
+   public void setup() {
       workingBranch = IOseeBranch.create(testInfo.getQualifiedTestName());
       BranchManager.createWorkingBranch(SAW_Bld_2, workingBranch);
    }
 
    @Test
-   public void testGetArtifactFromGUIDDeleted()  {
+   public void testGetArtifactFromGUIDDeleted() {
       Artifact newArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, workingBranch);
       newArtifact.setSoleAttributeFromString(CoreAttributeTypes.WordTemplateContent,
          String.format(
@@ -80,10 +80,9 @@ public class AttributeResourceTest {
 
    private String loadAttributeValue(int attrId, TransactionId transactionId, Artifact artifact) {
       String appServer = OseeClientProperties.getOseeApplicationServer();
-      URI uri =
-         UriBuilder.fromUri(appServer).path("orcs").path("branch").path(artifact.getBranch().getIdString()).path(
-            "artifact").path(artifact.getIdString()).path("attribute").path(String.valueOf(attrId)).path(
-               "version").path(String.valueOf(transactionId)).path("text").build();
+      URI uri = UriBuilder.fromUri(appServer).path("orcs").path("branch").path(artifact.getBranch().getIdString()).path(
+         "artifact").path(artifact.getIdString()).path("attribute").path(String.valueOf(attrId)).path("version").path(
+            String.valueOf(transactionId)).path("text").build();
       try {
          return JaxRsClient.newClient().target(uri).request(MediaType.TEXT_PLAIN).get(String.class);
       } catch (Exception ex) {

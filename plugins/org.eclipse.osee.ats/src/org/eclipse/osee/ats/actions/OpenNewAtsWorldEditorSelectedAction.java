@@ -34,13 +34,13 @@ public class OpenNewAtsWorldEditorSelectedAction extends AbstractAtsAction {
    }
 
    public interface IOpenNewAtsWorldEditorSelectedHandler {
-      CustomizeData getCustomizeDataCopy() ;
+      CustomizeData getCustomizeDataCopy();
 
-      List<Artifact> getSelectedArtifacts() ;
+      List<Artifact> getSelectedArtifacts();
    }
 
    @Override
-   public void runWithException()  {
+   public void runWithException() {
       if (openNewAtsWorldEditorSelectedHandler.getSelectedArtifacts().isEmpty()) {
          AWorkbench.popup("ERROR", "Select items to open");
          return;

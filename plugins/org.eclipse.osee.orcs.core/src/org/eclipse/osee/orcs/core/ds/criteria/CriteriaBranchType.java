@@ -33,7 +33,7 @@ public class CriteriaBranchType extends Criteria implements BranchCriteria {
    }
 
    @Override
-   public void checkValid(Options options)  {
+   public void checkValid(Options options) {
       Conditions.checkExpressionFailOnTrue(getTypes().isEmpty(), "Branch Types cannot be empty");
    }
 

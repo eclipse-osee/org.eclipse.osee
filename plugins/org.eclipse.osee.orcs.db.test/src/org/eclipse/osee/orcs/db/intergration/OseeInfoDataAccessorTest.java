@@ -24,7 +24,7 @@ import org.eclipse.osee.orcs.db.mocks.MockLog;
 public class OseeInfoDataAccessorTest {
 
    @org.junit.Test(expected = OseeStateException.class)
-   public void testSetBinaryDataPath()  {
+   public void testSetBinaryDataPath() {
       OseeInfoDataAccessor accessor = new OseeInfoDataAccessor();
       accessor.setLogger(new MockLog());
 
@@ -32,7 +32,7 @@ public class OseeInfoDataAccessorTest {
    }
 
    @org.junit.Test(expected = OseeStateException.class)
-   public void testSetCheckTagQueueOnStartupAllowed()  {
+   public void testSetCheckTagQueueOnStartupAllowed() {
       OseeInfoDataAccessor accessor = new OseeInfoDataAccessor();
       accessor.setLogger(new MockLog());
 

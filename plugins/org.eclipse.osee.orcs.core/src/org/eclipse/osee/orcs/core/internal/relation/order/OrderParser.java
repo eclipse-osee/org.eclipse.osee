@@ -70,7 +70,7 @@ public class OrderParser {
       this.relationCache = relationCache;
    }
 
-   public void loadFromXml(HasOrderData hasOrderData, String rawData)  {
+   public void loadFromXml(HasOrderData hasOrderData, String rawData) {
       Conditions.checkNotNull(hasOrderData, "orderData");
       if (Strings.isValid(rawData) && rawData.trim().length() > 0) {
          Reader reader = new StringReader(rawData);
@@ -88,7 +88,7 @@ public class OrderParser {
       }
    }
 
-   private void process(XMLStreamReader reader, HasOrderData hasOrderData)  {
+   private void process(XMLStreamReader reader, HasOrderData hasOrderData) {
       int eventType = reader.getEventType();
       switch (eventType) {
          case XMLStreamConstants.START_ELEMENT:
@@ -129,7 +129,7 @@ public class OrderParser {
       }
    }
 
-   public String toXml(HasOrderData hasOrderData)  {
+   public String toXml(HasOrderData hasOrderData) {
       Conditions.checkNotNull(hasOrderData, "orderData");
       StringWriter writer = new StringWriter();
       XMLStreamWriter xmlWriter = null;

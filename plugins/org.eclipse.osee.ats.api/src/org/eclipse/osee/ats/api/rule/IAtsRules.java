@@ -17,8 +17,8 @@ import java.util.Collection;
  */
 public interface IAtsRules {
 
-   public Collection<String> getRules() ;
+   public Collection<String> getRules();
 
-   public boolean hasRule(String rule) ;
+   public boolean hasRule(String rule);
 
 }

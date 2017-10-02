@@ -56,7 +56,7 @@ public class OrcsTypeLoaderCallable extends AbstractDatastoreCallable<IResource>
       return new OrcsTypesResource(uri, uriPaths);
    }
 
-   private Collection<String> findOseeTypeData()  {
+   private Collection<String> findOseeTypeData() {
       Collection<String> paths = new LinkedHashSet<>();
 
       getJdbcClient().runQuery(stmt -> {
@@ -78,7 +78,7 @@ public class OrcsTypeLoaderCallable extends AbstractDatastoreCallable<IResource>
       }
 
       @Override
-      public InputStream getContent()  {
+      public InputStream getContent() {
          return asInputStream(resources);
       }
 
@@ -98,7 +98,7 @@ public class OrcsTypeLoaderCallable extends AbstractDatastoreCallable<IResource>
          return false;
       }
 
-      private InputStream asInputStream(Collection<String> resources)  {
+      private InputStream asInputStream(Collection<String> resources) {
          PropertyStore options = new PropertyStore();
          options.put(StandardOptions.DecompressOnAquire.name(), "true");
          getLogger().info("osee types uri [" + uri + "] resources [" + resources + "]");

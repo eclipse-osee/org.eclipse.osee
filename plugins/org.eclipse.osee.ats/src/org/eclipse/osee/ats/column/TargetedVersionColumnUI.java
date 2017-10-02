@@ -104,7 +104,7 @@ public class TargetedVersionColumnUI extends XViewerAtsColumnIdColumn implements
       return false;
    }
 
-   public static boolean promptChangeVersion(AbstractWorkflowArtifact sma, VersionReleaseType versionReleaseType, VersionLockedType versionLockType)  {
+   public static boolean promptChangeVersion(AbstractWorkflowArtifact sma, VersionReleaseType versionReleaseType, VersionLockedType versionLockType) {
       if (AtsClientService.get().getUserService().isAtsAdmin() && !sma.isTeamWorkflow()) {
          AWorkbench.popup("ERROR ", "Cannot set version for: \n\n" + sma.getName());
          return false;
@@ -112,7 +112,7 @@ public class TargetedVersionColumnUI extends XViewerAtsColumnIdColumn implements
       return promptChangeVersion(Arrays.asList((TeamWorkFlowArtifact) sma), versionReleaseType, versionLockType);
    }
 
-   public static boolean promptChangeVersion(final Collection<? extends TeamWorkFlowArtifact> awas, VersionReleaseType versionReleaseType, VersionLockedType versionLockType)  {
+   public static boolean promptChangeVersion(final Collection<? extends TeamWorkFlowArtifact> awas, VersionReleaseType versionReleaseType, VersionLockedType versionLockType) {
       IAtsTeamDefinition teamDefHoldingVersions = null;
       for (TeamWorkFlowArtifact teamArt : awas) {
          if (!teamArt.getTeamDefinition().isTeamUsesVersions()) {

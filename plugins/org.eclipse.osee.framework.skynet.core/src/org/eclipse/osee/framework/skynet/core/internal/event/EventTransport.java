@@ -101,7 +101,7 @@ public class EventTransport implements Transport, IFrameworkEventListener {
    }
 
    @Override
-   public <E extends FrameworkEvent> void send(final Object object, final E event)  {
+   public <E extends FrameworkEvent> void send(final Object object, final E event) {
       if (areEventsAllowed()) {
          Sender sender = createSender(object, event);
          if (event instanceof HasNetworkSender) {
@@ -113,7 +113,7 @@ public class EventTransport implements Transport, IFrameworkEventListener {
    }
 
    @Override
-   public <E extends FrameworkEvent> void send(final Sender sender, final E event)  {
+   public <E extends FrameworkEvent> void send(final Sender sender, final E event) {
       if (areEventsAllowed()) {
          Conditions.checkNotNull(sender, "sender");
          Conditions.checkNotNull(event, "event");
@@ -154,7 +154,7 @@ public class EventTransport implements Transport, IFrameworkEventListener {
    }
 
    @Override
-   public <E extends FrameworkEvent, L extends IEventListener, H extends EventHandlerLocal<L, E>> void sendLocal(final Sender sender, final E event)  {
+   public <E extends FrameworkEvent, L extends IEventListener, H extends EventHandlerLocal<L, E>> void sendLocal(final Sender sender, final E event) {
       EventHandlerLocal<L, E> handler = handlers.getLocalHandler(event);
       Conditions.checkNotNull(handler, "localEventHandler", "No local event handler available for event [%s]",
          event.getClass().getName());
@@ -224,7 +224,7 @@ public class EventTransport implements Transport, IFrameworkEventListener {
       execute(runnable);
    }
 
-   private <E extends RemoteEvent> void handleEvent(Sender sender, E event)  {
+   private <E extends RemoteEvent> void handleEvent(Sender sender, E event) {
       EventHandlerRemote<E> handler = handlers.getRemoteHandler(event);
       Conditions.checkNotNull(handler, "remoteEventHandler", "No remote event handler available for event [%s]",
          event.getClass().getName());

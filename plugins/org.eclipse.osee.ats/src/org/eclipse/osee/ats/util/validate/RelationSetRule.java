@@ -41,7 +41,7 @@ public final class RelationSetRule extends AbstractValidationRule {
    }
 
    @Override
-   protected ValidationResult validate(Artifact artToValidate, IProgressMonitor monitor)  {
+   protected ValidationResult validate(Artifact artToValidate, IProgressMonitor monitor) {
       Collection<String> errorMessages = new ArrayList<>();
       boolean validationPassed = true;
       ArtifactType type = artToValidate.getArtifactType();

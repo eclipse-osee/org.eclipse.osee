@@ -55,7 +55,7 @@ public class TransitionHelperTest {
    TransitionHelper helper = null;
 
    @Before
-   public void setup()  {
+   public void setup() {
       MockitoAnnotations.initMocks(this);
 
       when(services.getAttributeResolver()).thenReturn(attrResolver);

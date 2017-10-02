@@ -20,7 +20,7 @@ public class FloatingPointAttribute extends CharacterBackedAttribute<Double> {
    private static final Double DEFAULT_DOUBLE = Double.MIN_VALUE;
 
    @Override
-   public Double getValue()  {
+   public Double getValue() {
       return (Double) getAttributeDataProvider().getValue();
    }
 

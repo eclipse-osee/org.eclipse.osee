@@ -35,7 +35,7 @@ public class ArtifactTypeWithInheritenceSearchItem extends WorldUISearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType)  {
+   public Collection<Artifact> performSearch(SearchType searchType) {
       return ArtifactQuery.getArtifactListFromTypeWithInheritence(artifactType, AtsClientService.get().getAtsBranch(),
          EXCLUDE_DELETED);
    }

@@ -71,7 +71,7 @@ public final class ConnectionHandler {
     *
     * @return number of records updated
     */
-   public static int runPreparedUpdate(String query, Object... data)  {
+   public static int runPreparedUpdate(String query, Object... data) {
       return getJdbcClient().runPreparedUpdate(query, data);
    }
 
@@ -80,7 +80,7 @@ public final class ConnectionHandler {
     *
     * @return number of records updated
     */
-   public static int runBatchUpdate(String query, List<Object[]> dataList)  {
+   public static int runBatchUpdate(String query, List<Object[]> dataList) {
       return getJdbcClient().runBatchUpdate(query, dataList);
    }
 
@@ -89,7 +89,7 @@ public final class ConnectionHandler {
     *
     * @return number of records updated
     */
-   public static int runPreparedUpdate(JdbcConnection connection, String query, Object... data)  {
+   public static int runPreparedUpdate(JdbcConnection connection, String query, Object... data) {
       return getJdbcClient().runPreparedUpdate(connection, query, data);
    }
 

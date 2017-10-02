@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.skynet.core.importing.RoughAttributeSet.RoughA
 public class RoughArtifactTranslatorImpl implements IRoughArtifactTranslator {
 
    @Override
-   public void translate(RoughArtifact roughArtifact, Artifact artifact)  {
+   public void translate(RoughArtifact roughArtifact, Artifact artifact) {
       RoughAttributeSet attributeSet = roughArtifact.getAttributes();
 
       for (Entry<CaseInsensitiveString, Collection<RoughAttribute>> entry : attributeSet) {

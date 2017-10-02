@@ -56,14 +56,14 @@ public class ArtifactMatchDataHandler extends LoadDataHandlerDecorator {
    }
 
    @Override
-   public void onLoadStart()  {
+   public void onLoadStart() {
       super.onLoadStart();
       matches = new HashMap<>();
       results = null;
    }
 
    @Override
-   public void onData(AttributeData data, MatchLocation match)  {
+   public void onData(AttributeData data, MatchLocation match) {
       super.onData(data, match);
       Integer artId = data.getArtifactId();
       synchronized (matches) {
@@ -77,12 +77,12 @@ public class ArtifactMatchDataHandler extends LoadDataHandlerDecorator {
    }
 
    @Override
-   public void onLoadEnd()  {
+   public void onLoadEnd() {
       super.onLoadEnd();
       buildResults();
    }
 
-   private void buildResults()  {
+   private void buildResults() {
       Iterable<Artifact> loaded = getHandler().getArtifacts();
 
       for (Artifact item : loaded) {
@@ -141,7 +141,7 @@ public class ArtifactMatchDataHandler extends LoadDataHandlerDecorator {
       }
 
       @Override
-      public Collection<AttributeReadable<?>> getElements()  {
+      public Collection<AttributeReadable<?>> getElements() {
          Collection<AttributeReadable<?>> filtered = Lists.newLinkedList();
          // look at all attributes since search already filters on deletion flag
          for (AttributeReadable<?> attribute : item.getAttributes(DeletionFlag.INCLUDE_DELETED)) {

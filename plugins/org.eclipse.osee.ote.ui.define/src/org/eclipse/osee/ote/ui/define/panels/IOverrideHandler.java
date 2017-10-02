@@ -21,6 +21,6 @@ public interface IOverrideHandler {
 
    public String getToolTipText();
 
-   public Set<Object> getOverridableFromUnselectable(Set<Object> unselectable) ;
+   public Set<Object> getOverridableFromUnselectable(Set<Object> unselectable);
 
 }

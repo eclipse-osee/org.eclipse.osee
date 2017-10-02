@@ -30,7 +30,7 @@ public class KeyValueArtifact {
    private final Artifact artifact;
    private final AttributeTypeId keyValueAttributeType;
 
-   public KeyValueArtifact(Artifact artifact, AttributeTypeId keyValueAttributeType)  {
+   public KeyValueArtifact(Artifact artifact, AttributeTypeId keyValueAttributeType) {
       this.artifact = artifact;
       this.keyValueAttributeType = keyValueAttributeType;
       load();
@@ -46,7 +46,7 @@ public class KeyValueArtifact {
       this.keyValueMap = hashCollection;
    }
 
-   public void save()  {
+   public void save() {
       if (keyValueMap.size() > 0) {
          Set<String> keyValues = new HashSet<>();
          for (String key : keyValueMap.keySet()) {
@@ -60,7 +60,7 @@ public class KeyValueArtifact {
       }
    }
 
-   public void load()  {
+   public void load() {
       for (String value : artifact.getAttributesToStringList(keyValueAttributeType)) {
          Matcher m = keyValuePattern.matcher(value);
          if (m.find()) {

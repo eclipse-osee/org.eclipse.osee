@@ -40,24 +40,24 @@ public class SystemPreferencesImpl implements SystemPreferences {
    }
 
    @Override
-   public String getSystemUuid()  {
+   public String getSystemUuid() {
       return getValue(DataStoreConstants.DATASTORE_ID_KEY);
    }
 
    @Override
-   public String getValue(String key)  {
+   public String getValue(String key) {
       String toReturn = accessor.getValue(key);
       cacheValue(key, toReturn);
       return toReturn;
    }
 
    @Override
-   public String getCachedValue(String key)  {
+   public String getCachedValue(String key) {
       return getCachedValue(key, Integer.MAX_VALUE);
    }
 
    @Override
-   public String getCachedValue(String key, long maxStaleness)  {
+   public String getCachedValue(String key, long maxStaleness) {
       Pair<Long, String> pair = cache.get(key);
       String value;
       if (pair == null || pair.getFirst() + maxStaleness < System.currentTimeMillis()) {
@@ -70,12 +70,12 @@ public class SystemPreferencesImpl implements SystemPreferences {
    }
 
    @Override
-   public boolean isEnabled(String key)  {
+   public boolean isEnabled(String key) {
       return isBoolean(key);
    }
 
    @Override
-   public boolean isCacheEnabled(String key)  {
+   public boolean isCacheEnabled(String key) {
       String dbProperty = getCachedValue(key);
       if (Strings.isValid(dbProperty)) {
          return dbProperty.equals("true");
@@ -84,17 +84,17 @@ public class SystemPreferencesImpl implements SystemPreferences {
    }
 
    @Override
-   public void setEnabled(String key, boolean enabled)  {
+   public void setEnabled(String key, boolean enabled) {
       setBoolean(key, enabled);
    }
 
    @Override
-   public void setBoolean(String key, boolean value)  {
+   public void setBoolean(String key, boolean value) {
       putValue(key, String.valueOf(value));
    }
 
    @Override
-   public boolean isBoolean(String key)  {
+   public boolean isBoolean(String key) {
       String dbProperty = getValue(key);
       if (Strings.isValid(dbProperty)) {
          return dbProperty.equals("true");
@@ -103,18 +103,18 @@ public class SystemPreferencesImpl implements SystemPreferences {
    }
 
    @Override
-   public boolean isBooleanUsingCache(String key)  {
+   public boolean isBooleanUsingCache(String key) {
       return isCacheEnabled(key);
    }
 
    @Override
-   public void putValue(String key, String value)  {
+   public void putValue(String key, String value) {
       accessor.putValue(key, value);
       cacheValue(key, value);
    }
 
    @Override
-   public Set<String> getKeys()  {
+   public Set<String> getKeys() {
       return accessor.getKeys();
    }
 

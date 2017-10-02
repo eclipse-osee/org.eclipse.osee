@@ -110,7 +110,7 @@ public final class ChangeItemUtil {
       return item;
    }
 
-   public static ChangeVersion getStartingVersion(ChangeItem item)  {
+   public static ChangeVersion getStartingVersion(ChangeItem item) {
       if (item == null) {
          throw new OseeArgumentException("ChangeItem cannot be null");
       }
@@ -127,7 +127,7 @@ public final class ChangeItemUtil {
       return toReturn;
    }
 
-   public static void copy(ChangeVersion source, ChangeVersion dest)  {
+   public static void copy(ChangeVersion source, ChangeVersion dest) {
       Conditions.checkNotNull(source, "Source ChangeVersion");
       Conditions.checkNotNull(dest, "Destination ChangeVersion");
       dest.copy(source);
@@ -159,14 +159,14 @@ public final class ChangeItemUtil {
 
    public static boolean hasBeenReplacedWithVersion(ChangeItem changeItem) {
       boolean results = areGammasEqual(changeItem.getCurrentVersion(), changeItem.getBaselineVersion()) && //
-      isModType(changeItem.getCurrentVersion(), ModificationType.MODIFIED);
+         isModType(changeItem.getCurrentVersion(), ModificationType.MODIFIED);
       return results;
    }
 
    public static boolean isAlreadyOnDestination(ChangeItem changeItem) {
       return areGammasEqual(changeItem.getCurrentVersion(), changeItem.getDestinationVersion()) && //
-      areModTypesEqual(changeItem.getCurrentVersion(), changeItem.getDestinationVersion()) && //
-      areApplicabilitiesEqual(changeItem.getCurrentVersion(), changeItem.getDestinationVersion());
+         areModTypesEqual(changeItem.getCurrentVersion(), changeItem.getDestinationVersion()) && //
+         areApplicabilitiesEqual(changeItem.getCurrentVersion(), changeItem.getDestinationVersion());
    }
 
    public static boolean areModTypesEqual(ChangeVersion object1, ChangeVersion object2) {

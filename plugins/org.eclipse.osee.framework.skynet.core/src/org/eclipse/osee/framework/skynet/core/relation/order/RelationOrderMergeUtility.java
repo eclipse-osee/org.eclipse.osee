@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 
 public class RelationOrderMergeUtility {
 
-   public static RelationOrderData mergeRelationOrder(Artifact left, Artifact right)  {
+   public static RelationOrderData mergeRelationOrder(Artifact left, Artifact right) {
       RelationOrderFactory factory = new RelationOrderFactory();
       RelationOrderData leftData = factory.createRelationOrderData(left);
       RelationOrderData rightData = factory.createRelationOrderData(right);
@@ -62,7 +62,7 @@ public class RelationOrderMergeUtility {
       return rts;
    }
 
-   private static List<String> mergeTypeSideOrder(Artifact left, Artifact right, RelationTypeSide rts)  {
+   private static List<String> mergeTypeSideOrder(Artifact left, Artifact right, RelationTypeSide rts) {
       RelationOrderMerger<String> merger = new RelationOrderMerger<>();
       List<String> leftRelatives = getGuidList(left.getRelatedArtifacts(rts, DeletionFlag.EXCLUDE_DELETED));
       List<String> rightRelatives = getGuidList(right.getRelatedArtifacts(rts, DeletionFlag.EXCLUDE_DELETED));
@@ -71,7 +71,7 @@ public class RelationOrderMergeUtility {
       return merger.computeMergedOrder(leftRelatives, rightRelatives, mergedSet);
    }
 
-   private static Collection<String> getMergedSet(Artifact left, Artifact right, RelationTypeSide relationTypeSide)  {
+   private static Collection<String> getMergedSet(Artifact left, Artifact right, RelationTypeSide relationTypeSide) {
       Collection<String> mergedSet = new HashSet<>();
       Collection<String> deleted = new HashSet<>();
       List<String> leftRelatives =
@@ -96,7 +96,7 @@ public class RelationOrderMergeUtility {
       return toReturn;
    }
 
-   private static Collection<String> getDeleted(Artifact art, RelationTypeSide relationType)  {
+   private static Collection<String> getDeleted(Artifact art, RelationTypeSide relationType) {
       Collection<String> toReturn = new HashSet<>();
 
       for (RelationLink link : art.getRelationsAll(DeletionFlag.INCLUDE_DELETED)) {

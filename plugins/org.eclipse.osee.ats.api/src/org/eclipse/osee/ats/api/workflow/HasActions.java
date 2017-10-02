@@ -17,8 +17,8 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
  * @author Donald G. Dunne
  */
 public interface HasActions {
-   public Collection<IAtsWorkItem> getActions() ;
+   public Collection<IAtsWorkItem> getActions();
 
-   public IAtsWorkItem getFirstAction() ;
+   public IAtsWorkItem getFirstAction();
 
 }

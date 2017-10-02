@@ -105,11 +105,11 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
       return false;
    }
 
-   public static boolean promptChangeOriginator(AbstractWorkflowArtifact sma, boolean persist)  {
+   public static boolean promptChangeOriginator(AbstractWorkflowArtifact sma, boolean persist) {
       return promptChangeOriginator(Arrays.asList(sma), persist);
    }
 
-   public static boolean promptChangeOriginator(final Collection<? extends AbstractWorkflowArtifact> awas, boolean persist)  {
+   public static boolean promptChangeOriginator(final Collection<? extends AbstractWorkflowArtifact> awas, boolean persist) {
       UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select New Originator",
          AtsClientService.get().getUserServiceClient().getOseeUsersSorted(Active.Active));
       int result = ld.open();

@@ -45,7 +45,7 @@ final class FileWatcherTimerTask extends TimerTask {
                   fileChangeEvents.add(new FileChangeEvent(entry.getKey(), FileChangeType.CREATED));
                } else if (latestLastModified == 0) {
                   // deleted
-                  assert!entry.getKey().exists() : "file still exist";
+                  assert !entry.getKey().exists() : "file still exist";
                   fileChangeEvents.add(new FileChangeEvent(entry.getKey(), FileChangeType.DELETED));
                } else {
                   // modified

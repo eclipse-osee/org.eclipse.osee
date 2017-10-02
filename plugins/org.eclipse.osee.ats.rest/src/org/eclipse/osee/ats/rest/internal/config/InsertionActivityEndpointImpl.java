@@ -33,7 +33,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 /**
  * Donald G. Dunne
  */
-public class InsertionActivityEndpointImpl extends BaseConfigEndpointImpl<JaxInsertionActivity>implements InsertionActivityEndpointApi {
+public class InsertionActivityEndpointImpl extends BaseConfigEndpointImpl<JaxInsertionActivity> implements InsertionActivityEndpointApi {
 
    private final long insertionUuid;
 

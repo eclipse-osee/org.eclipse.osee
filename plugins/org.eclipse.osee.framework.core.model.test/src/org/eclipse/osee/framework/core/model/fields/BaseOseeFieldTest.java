@@ -32,7 +32,7 @@ public abstract class BaseOseeFieldTest {
    }
 
    @Test
-   public void testInitialValues()  {
+   public void testInitialValues() {
       String message = "InitTest";
       checkObjects(message, test.getInitExpectedValue(), test.getField().get());
       Assert.assertEquals(message, test.isInitExpectedDirty(), test.getField().isDirty());
@@ -40,7 +40,7 @@ public abstract class BaseOseeFieldTest {
 
    @SuppressWarnings({"unchecked", "rawtypes"})
    @Test
-   public void testSettterGetter()  {
+   public void testSettterGetter() {
       int index = 0;
       for (FieldGetSetTestData testData : test.getTestDatas()) {
          String message = String.format("Test Data [%s]", ++index);

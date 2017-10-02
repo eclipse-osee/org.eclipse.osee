@@ -48,7 +48,7 @@ public class BranchIdsSqlHandler extends SqlHandler<CriteriaBranchIds> {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer)  {
+   public boolean addPredicates(AbstractSqlWriter writer) {
       Collection<? extends BranchId> ids = criteria.getIds();
       if (ids.size() > 1) {
          AbstractJoinQuery joinQuery = writer.writeJoin(ids);

@@ -30,8 +30,7 @@ class AtsWorkDefConfigEditorContextMenuProvider extends ContextMenuProvider {
     * Instantiate a new menu context provider for the specified EditPartViewer and ActionRegistry.
     * 
     * @param viewer the editor's graphical viewer
-    * @param registry the editor's action registry
-    *  if registry is <tt>null</tt>.
+    * @param registry the editor's action registry if registry is <tt>null</tt>.
     */
    public AtsWorkDefConfigEditorContextMenuProvider(EditPartViewer viewer, ActionRegistry registry) {
       super(viewer);

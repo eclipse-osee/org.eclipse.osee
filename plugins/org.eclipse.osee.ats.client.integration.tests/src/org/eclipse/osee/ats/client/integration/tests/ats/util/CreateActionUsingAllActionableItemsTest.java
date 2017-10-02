@@ -34,7 +34,7 @@ public class CreateActionUsingAllActionableItemsTest {
 
    @BeforeClass
    @AfterClass
-   public static void cleanup()  {
+   public static void cleanup() {
       AtsBulkLoad.reloadConfig(true);
       SkynetTransaction transaction = TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(),
          CreateActionUsingAllActionableItemsTest.class.getSimpleName());

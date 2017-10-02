@@ -51,11 +51,11 @@ public class AtsConfigWizardPage1 extends WizardPage {
       }
    };
 
-   public String getTeamDefName()  {
+   public String getTeamDefName() {
       return (String) getXWidget(TEAMDEF_NAME).getData();
    }
 
-   public List<String> getActionableItems()  {
+   public List<String> getActionableItems() {
       List<String> aias = new ArrayList<>();
       for (String aia : ((String) getXWidget(ACTIONABLE_ITEMS).getData()).split(",")) {
          aia = aia.replaceAll("^ *", "");
@@ -67,7 +67,7 @@ public class AtsConfigWizardPage1 extends WizardPage {
       return aias;
    }
 
-   public List<String> getVersions()  {
+   public List<String> getVersions() {
       List<String> versions = new ArrayList<>();
       for (String version : ((String) getXWidget(VERSIONS).getData()).split(",")) {
          version = version.replaceAll("^ *", "");
@@ -79,7 +79,7 @@ public class AtsConfigWizardPage1 extends WizardPage {
       return versions;
    }
 
-   public String getWorkDefinitionName()  {
+   public String getWorkDefinitionName() {
       return (String) getXWidget(WORKFLOW_ID).getData();
    }
 
@@ -94,15 +94,15 @@ public class AtsConfigWizardPage1 extends WizardPage {
       try {
          String xWidgetXml = "<WorkPage>" +
          //
-         "<XWidget displayName=\"" + TEAMDEF_NAME + "\" required=\"true\" xwidgetType=\"XText\"/>" +
-         //
-         "<XWidget displayName=\"" + ACTIONABLE_ITEMS + "\" required=\"true\" xwidgetType=\"XText\"/>" +
-         //
-         "<XWidget displayName=\"" + VERSIONS + "\" required=\"false\" xwidgetType=\"XText\"/>" +
-         //
-         "<XWidget displayName=\"" + WORKFLOW_ID + "\" required=\"false\" xwidgetType=\"XText\"/>" +
-         //
-         "</WorkPage>";
+            "<XWidget displayName=\"" + TEAMDEF_NAME + "\" required=\"true\" xwidgetType=\"XText\"/>" +
+            //
+            "<XWidget displayName=\"" + ACTIONABLE_ITEMS + "\" required=\"true\" xwidgetType=\"XText\"/>" +
+            //
+            "<XWidget displayName=\"" + VERSIONS + "\" required=\"false\" xwidgetType=\"XText\"/>" +
+            //
+            "<XWidget displayName=\"" + WORKFLOW_ID + "\" required=\"false\" xwidgetType=\"XText\"/>" +
+            //
+            "</WorkPage>";
          Composite comp = new Composite(parent, SWT.NONE);
          comp.setLayout(new GridLayout(1, false));
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -135,7 +135,7 @@ public class AtsConfigWizardPage1 extends WizardPage {
       }
    }
 
-   public XWidget getXWidget(String attrName)  {
+   public XWidget getXWidget(String attrName) {
       if (page == null) {
          throw new OseeArgumentException("WorkPage == null");
       }

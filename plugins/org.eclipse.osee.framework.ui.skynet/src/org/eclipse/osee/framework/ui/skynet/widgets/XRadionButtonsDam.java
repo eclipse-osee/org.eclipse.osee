@@ -26,7 +26,7 @@ public abstract class XRadionButtonsDam extends XRadioButtons implements IAttrib
    }
 
    @Override
-   public Artifact getArtifact()  {
+   public Artifact getArtifact() {
       return artifact;
    }
 

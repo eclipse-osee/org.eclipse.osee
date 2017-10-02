@@ -56,20 +56,20 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
    }
 
    @Override
-   public IAtsWorkPackage getWorkPackage(IAtsWorkItem workItem)  {
+   public IAtsWorkPackage getWorkPackage(IAtsWorkItem workItem) {
       ArtifactId workPackageId = getWorkPackageId(workItem);
       ArtifactToken workPkgArt = services.getArtifact(workPackageId);
       return new WorkPackage(logger, workPkgArt, services);
    }
 
    @Override
-   public Collection<IAtsWorkPackage> getWorkPackageOptions(IAtsObject object)  {
+   public Collection<IAtsWorkPackage> getWorkPackageOptions(IAtsObject object) {
       List<IAtsWorkPackage> workPackageOptions = new ArrayList<>();
       getWorkPackageOptions(object, workPackageOptions);
       return workPackageOptions;
    }
 
-   public Collection<IAtsWorkPackage> getWorkPackageOptions(IAtsObject object, List<IAtsWorkPackage> workPackageOptions)  {
+   public Collection<IAtsWorkPackage> getWorkPackageOptions(IAtsObject object, List<IAtsWorkPackage> workPackageOptions) {
       // Config objects get work package options from related work package artifacts
       if (object instanceof IAtsConfigObject) {
          IAtsConfigObject configObj = (IAtsConfigObject) object;
@@ -156,7 +156,7 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
    }
 
    @Override
-   public double getEstimatedHoursFromReviews(IAtsWorkItem workItem)  {
+   public double getEstimatedHoursFromReviews(IAtsWorkItem workItem) {
       double hours = 0;
       if (workItem.isTeamWorkflow()) {
          for (IAtsAbstractReview review : services.getReviewService().getReviews((IAtsTeamWorkflow) workItem)) {
@@ -167,7 +167,7 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
    }
 
    @Override
-   public double getEstimatedHoursFromReviews(IAtsWorkItem workItem, IStateToken relatedToState)  {
+   public double getEstimatedHoursFromReviews(IAtsWorkItem workItem, IStateToken relatedToState) {
       double hours = 0;
       if (workItem.isTeamWorkflow()) {
          IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) workItem;
@@ -181,13 +181,13 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
    }
 
    @Override
-   public double getEstimatedHoursTotal(IAtsWorkItem workItem, IStateToken relatedToState)  {
+   public double getEstimatedHoursTotal(IAtsWorkItem workItem, IStateToken relatedToState) {
       return getEstimatedHoursFromArtifact(workItem) + getEstimatedHoursFromTasks(workItem,
          relatedToState) + getEstimatedHoursFromReviews(workItem, relatedToState);
    }
 
    @Override
-   public double getEstimatedHoursTotal(IAtsWorkItem workItem)  {
+   public double getEstimatedHoursTotal(IAtsWorkItem workItem) {
       return getEstimatedHoursFromArtifact(workItem) + getEstimatedHoursFromTasks(
          workItem) + getEstimatedHoursFromReviews(workItem);
    }

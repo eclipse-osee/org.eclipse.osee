@@ -34,7 +34,7 @@ public class DeletePurgeAtsArtifactsAction extends AbstractAtsAction {
    }
 
    @Override
-   public void runWithException()  {
+   public void runWithException() {
       AtsDeleteManager.handleDeletePurgeAtsObject(selectedAtsArtifacts.getSelectedWorkflowArtifacts(),
          executeInCurrentThread, prompt ? DeleteOption.Prompt : null);
    }

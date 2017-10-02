@@ -61,7 +61,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    }
 
    @Override
-   public IAtsConfigObject getConfigObject(ArtifactId artifact)  {
+   public IAtsConfigObject getConfigObject(ArtifactId artifact) {
       IAtsConfigObject configObject = null;
       try {
          if (artifact instanceof ArtifactReadable) {
@@ -119,7 +119,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    }
 
    @Override
-   public IAtsTeamDefinition getTeamDef(ArtifactId artifact)  {
+   public IAtsTeamDefinition getTeamDef(ArtifactId artifact) {
       IAtsTeamDefinition teamDef = null;
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
@@ -131,7 +131,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    }
 
    @Override
-   public IAtsActionableItem getActionableItem(ArtifactId artifact)  {
+   public IAtsActionableItem getActionableItem(ArtifactId artifact) {
       IAtsActionableItem ai = null;
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;

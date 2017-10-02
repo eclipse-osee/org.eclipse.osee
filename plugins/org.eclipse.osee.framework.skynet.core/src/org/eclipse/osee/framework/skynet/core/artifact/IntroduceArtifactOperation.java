@@ -40,7 +40,7 @@ public class IntroduceArtifactOperation {
    private Collection<Artifact> sourceArtifacts;
    private List<Artifact> destinationArtifacts;
 
-   public IntroduceArtifactOperation(BranchId destinationBranch)  {
+   public IntroduceArtifactOperation(BranchId destinationBranch) {
       this(OseeSystemArtifacts.getDefaultHierarchyRootArtifact(destinationBranch));
    }
 
@@ -51,14 +51,13 @@ public class IntroduceArtifactOperation {
 
    /**
     * @return the introduced artifact on the destination branch
-    * 
     */
-   public Artifact introduce(Artifact sourceArtifact)  {
+   public Artifact introduce(Artifact sourceArtifact) {
       introduce(Arrays.asList(sourceArtifact));
       return destinationArtifacts.get(0);
    }
 
-   public List<Artifact> introduce(Collection<Artifact> sourceArtifacts)  {
+   public List<Artifact> introduce(Collection<Artifact> sourceArtifacts) {
       this.sourceArtifacts = sourceArtifacts;
       destinationArtifacts = new ArrayList<>(sourceArtifacts.size());
 
@@ -68,7 +67,7 @@ public class IntroduceArtifactOperation {
       return destinationArtifacts;
    }
 
-   private void introduceArtifact(Artifact sourceArtifact)  {
+   private void introduceArtifact(Artifact sourceArtifact) {
       Artifact destinationArtifact =
          ArtifactQuery.getArtifactOrNull(sourceArtifact, destinationBranch, DeletionFlag.INCLUDE_DELETED);
 
@@ -83,7 +82,7 @@ public class IntroduceArtifactOperation {
       destinationArtifacts.add(destinationArtifact);
    }
 
-   private void processArtifact(Artifact sourceArtifact, Artifact destinationArtifact)  {
+   private void processArtifact(Artifact sourceArtifact, Artifact destinationArtifact) {
       introduceAttributes(sourceArtifact, destinationArtifact);
 
       if (!sourceArtifact.isHistorical()) {
@@ -136,7 +135,7 @@ public class IntroduceArtifactOperation {
       }
    }
 
-   private void introduceRelations(Artifact sourceArtifact, Artifact destinationArtifact)  {
+   private void introduceRelations(Artifact sourceArtifact, Artifact destinationArtifact) {
       List<RelationLink> sourceRelations = sourceArtifact.getRelationsAll(DeletionFlag.INCLUDE_DELETED);
 
       for (RelationLink sourceRelation : sourceRelations) {
@@ -173,7 +172,7 @@ public class IntroduceArtifactOperation {
       }
    }
 
-   private void removeNewAttributesFromDestination(Artifact sourceArtifact, Artifact destinationArtifact)  {
+   private void removeNewAttributesFromDestination(Artifact sourceArtifact, Artifact destinationArtifact) {
       List<Attribute<?>> destAttributes = destinationArtifact.getAttributes(true);
 
       // since introduce is 'replacing' the destination artifact with the source artifact,

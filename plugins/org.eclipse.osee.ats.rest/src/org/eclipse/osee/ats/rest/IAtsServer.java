@@ -36,7 +36,7 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
  */
 public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFactoryProvider, IAtsCacheProvider, IAtsReviewServiceProvider, IAtsBranchServiceProvider, IArtifactProvider {
 
-   OrcsApi getOrcsApi() ;
+   OrcsApi getOrcsApi();
 
    @Override
    ArtifactReadable getArtifactByGuid(String guid);
@@ -71,7 +71,7 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
    AtsConfigEndpointApi getConfigurationEndpoint();
 
    AtsActionEndpointApi getActionEndpoint();
-   
+
    @Override
    IAtsChangeSet createChangeSet(String string, IAtsUser systemUser);
 

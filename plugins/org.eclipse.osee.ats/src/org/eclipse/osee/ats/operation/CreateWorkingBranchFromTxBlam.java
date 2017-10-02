@@ -78,7 +78,7 @@ public class CreateWorkingBranchFromTxBlam extends AbstractBlam {
    }
 
    @Override
-   public String getXWidgetsXml()  {
+   public String getXWidgetsXml() {
       return getXWidgetsXmlFromUiFile(getClass().getSimpleName(), Activator.PLUGIN_ID);
    }
 

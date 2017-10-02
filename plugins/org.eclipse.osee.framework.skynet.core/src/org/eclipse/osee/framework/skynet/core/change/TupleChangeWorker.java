@@ -22,7 +22,7 @@ public class TupleChangeWorker implements IChangeWorker {
    }
 
    @Override
-   public void revert()  {
+   public void revert() {
       // Currenlty no ability to revert Tuple changes
    }
 }

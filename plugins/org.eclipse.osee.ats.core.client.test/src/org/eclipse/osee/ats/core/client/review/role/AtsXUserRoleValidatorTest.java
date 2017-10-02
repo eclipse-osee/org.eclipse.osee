@@ -64,7 +64,7 @@ public class AtsXUserRoleValidatorTest {
    }
 
    @org.junit.Test
-   public void testValidateTransition()  {
+   public void testValidateTransition() {
       AtsXUserRoleValidator validator = new AtsXUserRoleValidator();
 
       when(widgetDef.getXWidgetName()).thenReturn("xList");
@@ -92,7 +92,7 @@ public class AtsXUserRoleValidatorTest {
    }
 
    @org.junit.Test
-   public void testValidateTransition_Roles()  {
+   public void testValidateTransition_Roles() {
       AtsXUserRoleValidator validator = new AtsXUserRoleValidator();
 
       when(widgetDef.getXWidgetName()).thenReturn("XUserRoleViewer");

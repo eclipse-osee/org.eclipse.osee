@@ -61,7 +61,7 @@ public class BooleanHandlePromptChange implements IHandlePromptChange {
    }
 
    @Override
-   public boolean store()  {
+   public boolean store() {
       if (persist) {
          SkynetTransaction transaction =
             TransactionManager.createTransaction(artifacts.iterator().next().getBranch(), "Prompt change boolean");

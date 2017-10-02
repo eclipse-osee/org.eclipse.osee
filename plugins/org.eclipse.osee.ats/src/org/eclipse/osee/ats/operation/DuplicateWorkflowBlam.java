@@ -108,7 +108,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
       });
    }
 
-   private void handleCreateNewWorkflow(Collection<TeamWorkFlowArtifact> teamArts, String title)  {
+   private void handleCreateNewWorkflow(Collection<TeamWorkFlowArtifact> teamArts, String title) {
       IAtsUser user = AtsClientService.get().getUserService().getCurrentUser();
 
       List<IAtsTeamWorkflow> teamWfs = new LinkedList<>();
@@ -144,7 +144,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
       return results;
    }
 
-   private void handleCreateDuplicate(Collection<TeamWorkFlowArtifact> teamArts, boolean duplicateTasks, String title)  {
+   private void handleCreateDuplicate(Collection<TeamWorkFlowArtifact> teamArts, boolean duplicateTasks, String title) {
       IAtsUser user = AtsClientService.get().getUserService().getCurrentUser();
 
       List<IAtsTeamWorkflow> teamWfs = new LinkedList<>();
@@ -165,7 +165,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable)  {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
       super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
       if (xWidget.getLabel().equals(TEAM_WORKFLOW) && defaultTeamWorkflows != null) {
          XListDropViewer viewer = (XListDropViewer) xWidget;
@@ -177,13 +177,13 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + TEAM_WORKFLOW + "\" />" +
       //
-      "<XWidget xwidgetType=\"XCombo(" + CREATE_NEW_WORFLOW_IN_START_STATE + "," + DUPLICATE_WORKFLOW + ")\" required=\"true\" displayName=\"" + DUPLICATE_METHOD + "\" horizontalLabel=\"true\" />" +
-      //
-      "<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + DUPLICATE_TASKS + "\" horizontalLabel=\"true\" defaultValue=\"false\"/>" +
-      //
-      "<XWidget xwidgetType=\"XText\" displayName=\"" + TITLE + "\" horizontalLabel=\"true\" defaultValue=\"" + getDefaultTitle() + "\"/>" +
-      //
-      "</xWidgets>";
+         "<XWidget xwidgetType=\"XCombo(" + CREATE_NEW_WORFLOW_IN_START_STATE + "," + DUPLICATE_WORKFLOW + ")\" required=\"true\" displayName=\"" + DUPLICATE_METHOD + "\" horizontalLabel=\"true\" />" +
+         //
+         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + DUPLICATE_TASKS + "\" horizontalLabel=\"true\" defaultValue=\"false\"/>" +
+         //
+         "<XWidget xwidgetType=\"XText\" displayName=\"" + TITLE + "\" horizontalLabel=\"true\" defaultValue=\"" + getDefaultTitle() + "\"/>" +
+         //
+         "</xWidgets>";
    }
 
    /**

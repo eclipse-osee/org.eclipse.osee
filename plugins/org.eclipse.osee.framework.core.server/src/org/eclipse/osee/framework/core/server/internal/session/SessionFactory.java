@@ -46,7 +46,7 @@ public final class SessionFactory implements IOseeTypeFactory {
       return toReturn;
    }
 
-   public OseeSessionGrant createSessionGrant(Session session, UserToken userToken, String authenticationType)  {
+   public OseeSessionGrant createSessionGrant(Session session, UserToken userToken, String authenticationType) {
       Conditions.checkNotNull(session, "Session");
       Conditions.checkNotNull(userToken, "IUserToken");
 

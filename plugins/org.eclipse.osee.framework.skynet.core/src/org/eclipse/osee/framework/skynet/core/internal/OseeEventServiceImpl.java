@@ -164,7 +164,7 @@ public class OseeEventServiceImpl implements OseeEventService {
       thread.start();
    }
 
-   public void stop()  {
+   public void stop() {
       if (thread != null) {
          thread.interrupt();
          thread = null;
@@ -238,7 +238,7 @@ public class OseeEventServiceImpl implements OseeEventService {
    }
 
    @Override
-   public <E extends FrameworkEvent> void send(Object object, E event)  {
+   public <E extends FrameworkEvent> void send(Object object, E event) {
       eventTransport.send(object, event);
    }
 
@@ -248,7 +248,7 @@ public class OseeEventServiceImpl implements OseeEventService {
    }
 
    @Override
-   public <E extends FrameworkEvent> void receive(Sender sender, E event)  {
+   public <E extends FrameworkEvent> void receive(Sender sender, E event) {
       eventTransport.sendLocal(sender, event);
    }
 

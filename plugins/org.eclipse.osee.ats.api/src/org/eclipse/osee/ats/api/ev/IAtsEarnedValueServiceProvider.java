@@ -15,5 +15,5 @@ package org.eclipse.osee.ats.api.ev;
  */
 public interface IAtsEarnedValueServiceProvider {
 
-   public IAtsEarnedValueService getEarnedValueService() ;
+   public IAtsEarnedValueService getEarnedValueService();
 }

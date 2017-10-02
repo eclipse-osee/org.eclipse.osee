@@ -66,12 +66,12 @@ public class WordMLProducer {
       alphabetMap.put("C.0", 3);
    }
 
-   public CharSequence startOutlineSubSection()  {
+   public CharSequence startOutlineSubSection() {
       CharSequence paragraphNumber = startOutlineSubSection(DEFAULT_FONT, null, null);
       return paragraphNumber;
    }
 
-   public CharSequence startOutlineSubSection(CharSequence font, CharSequence headingText, String outlineType)  {
+   public CharSequence startOutlineSubSection(CharSequence font, CharSequence headingText, String outlineType) {
       if (okToStartSubsection()) {
          outlineNumber[++outlineLevel]++;
          CharSequence paragraphNumber = getOutlineNumber();
@@ -86,7 +86,7 @@ public class WordMLProducer {
       }
    }
 
-   private void append(CharSequence value)  {
+   private void append(CharSequence value) {
       try {
          strB.append(value);
       } catch (IOException ex) {
@@ -94,7 +94,7 @@ public class WordMLProducer {
       }
    }
 
-   public void startOutlineSubSection(CharSequence style, CharSequence outlineNumber, CharSequence font, CharSequence headingText)  {
+   public void startOutlineSubSection(CharSequence style, CharSequence outlineNumber, CharSequence font, CharSequence headingText) {
       append("<wx:sub-section>");
       if (Strings.isValid(headingText)) {
          startParagraph();
@@ -110,7 +110,7 @@ public class WordMLProducer {
       }
    }
 
-   public void setPageBreak()  {
+   public void setPageBreak() {
       append("<w:p>");
       append("<w:pPr>");
       append("<w:sectPr>");
@@ -120,13 +120,13 @@ public class WordMLProducer {
       append("</w:p>");
    }
 
-   private void writeParagraphStyle(CharSequence style)  {
+   private void writeParagraphStyle(CharSequence style) {
       append("<w:pStyle w:val=\"");
       append(style);
       append("\"/>");
    }
 
-   private void writeHeadingText(CharSequence headingText)  {
+   private void writeHeadingText(CharSequence headingText) {
       append("<w:r><w:t>");
       append(Xml.escape(headingText));
       append("</w:t></w:r>");
@@ -168,11 +168,11 @@ public class WordMLProducer {
       return template;
    }
 
-   public void endOutlineSubSection()  {
+   public void endOutlineSubSection() {
       endOutlineSubSection(false);
    }
 
-   private void endOutlineSubSection(boolean force)  {
+   private void endOutlineSubSection(boolean force) {
       if (!force && flattenedLevelCount > 0) {
          flattenedLevelCount--;
       } else {
@@ -184,23 +184,23 @@ public class WordMLProducer {
       }
    }
 
-   public void addWordMl(CharSequence wordMl)  {
+   public void addWordMl(CharSequence wordMl) {
       append(wordMl);
    }
 
-   public void startParagraph()  {
+   public void startParagraph() {
       append("<w:p>");
    }
 
-   public void startSubSection()  {
+   public void startSubSection() {
       append("<wx:sect>");
    }
 
-   public void endSubSection()  {
+   public void endSubSection() {
       append("</wx:sect>");
    }
 
-   public void createSubDoc(String fileName)  {
+   public void createSubDoc(String fileName) {
       if (Strings.isValid(fileName)) {
          throw new IllegalArgumentException("The file name can not be null or empty.");
       }
@@ -208,7 +208,7 @@ public class WordMLProducer {
       append(SUB_DOC.replace(FILE_NAME, fileName));
    }
 
-   public void createHyperLinkDoc(String fileName)  {
+   public void createHyperLinkDoc(String fileName) {
       if (!Strings.isValid(fileName)) {
          throw new IllegalArgumentException("The file name can not be null or empty.");
       }
@@ -216,7 +216,7 @@ public class WordMLProducer {
       append(HYPER_LINK_DOC.replace(FILE_NAME, fileName));
    }
 
-   public void resetListValue()  {
+   public void resetListValue() {
       // extra paragraph needed to support WORD's bug to add in a trailing zero when using field codes
       startParagraph();
       addWordMl(LISTNUM_FIELD_HEAD);
@@ -228,35 +228,35 @@ public class WordMLProducer {
       endParagraph();
    }
 
-   public void endParagraph()  {
+   public void endParagraph() {
       append("</w:p>");
    }
 
-   public void startTable()  {
+   public void startTable() {
       append("<wx:sub-section><w:tbl>");
    }
 
-   public void endTable()  {
+   public void endTable() {
       append("</w:tbl></wx:sub-section>");
    }
 
-   public void startTableRow()  {
+   public void startTableRow() {
       append("<w:tr>");
    }
 
-   public void endTableRow()  {
+   public void endTableRow() {
       append("</w:tr>");
    }
 
-   public void startTableColumn()  {
+   public void startTableColumn() {
       append("<w:tc>");
    }
 
-   public void endTableColumn()  {
+   public void endTableColumn() {
       append("</w:tc>");
    }
 
-   public void addTableColumns(String... datas)  {
+   public void addTableColumns(String... datas) {
       for (String data : datas) {
          startTableColumn();
          addParagraph(data);
@@ -264,31 +264,31 @@ public class WordMLProducer {
       }
    }
 
-   public void addTableRow(String... datas)  {
+   public void addTableRow(String... datas) {
       startTableRow();
       addTableColumns(datas);
       endTableRow();
    }
 
-   public void addParagraphNoEscape(CharSequence text)  {
+   public void addParagraphNoEscape(CharSequence text) {
       append("<w:p><w:r><w:t>");
       append(text);
       append("</w:t></w:r></w:p>");
    }
 
-   public void addEditParagraphNoEscape(CharSequence text)  {
+   public void addEditParagraphNoEscape(CharSequence text) {
       startParagraph();
       append(text);
       endParagraph();
    }
 
-   public void addParagraph(CharSequence text)  {
+   public void addParagraph(CharSequence text) {
       startParagraph();
       addTextInsideParagraph(text);
       endParagraph();
    }
 
-   public void addParagraphBold(CharSequence text)  {
+   public void addParagraphBold(CharSequence text) {
       append("<w:p><w:r><w:rPr><w:b/></w:rPr><w:t>");
       append(Xml.escape(text));
       append("</w:t><w:rPr><w:b/></w:rPr></w:r></w:p>");
@@ -297,13 +297,13 @@ public class WordMLProducer {
    /**
     * This method will escape the provided text.
     */
-   public void addTextInsideParagraph(CharSequence text)  {
+   public void addTextInsideParagraph(CharSequence text) {
       append("<w:r><w:t>");
       append(Xml.escape(text));
       append("</w:t></w:r>");
    }
 
-   public void addTextInsideParagraph(CharSequence text, String rgbHexColor)  {
+   public void addTextInsideParagraph(CharSequence text, String rgbHexColor) {
       if (rgbHexColor == null) {
          throw new IllegalArgumentException("rgbHexColor can not be null");
       }
@@ -319,7 +319,7 @@ public class WordMLProducer {
       append("</w:t></w:r>");
    }
 
-   public void addOleData(CharSequence oleData)  {
+   public void addOleData(CharSequence oleData) {
       append("<w:docOleData>");
       append(oleData);
       append("</w:docOleData>");

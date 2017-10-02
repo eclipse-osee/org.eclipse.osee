@@ -42,9 +42,9 @@ public class AtsPeerToPeerReviewPrepareStateItem extends AtsStateItem {
    public void xWidgetCreated(XWidget widget, FormToolkit toolkit, IAtsStateDefinition stateDefinition, Artifact art, boolean isEditable) {
       try {
          if (art.isOfType(AtsArtifactTypes.PeerToPeerReview) && //
-         stateDefinition.getName().equals(PeerToPeerReviewState.Prepare.getName()) && //
-         ReviewManager.cast(art).getParentAWA() == null && //
-         widget.getLabel().equals(AtsAttributeTypes.ReviewBlocks.getUnqualifiedName())) {
+            stateDefinition.getName().equals(PeerToPeerReviewState.Prepare.getName()) && //
+            ReviewManager.cast(art).getParentAWA() == null && //
+            widget.getLabel().equals(AtsAttributeTypes.ReviewBlocks.getUnqualifiedName())) {
             XComboDam decisionComboDam = (XComboDam) widget;
             decisionComboDam.setEnabled(false);
             decisionComboDam.setRequiredEntry(false);

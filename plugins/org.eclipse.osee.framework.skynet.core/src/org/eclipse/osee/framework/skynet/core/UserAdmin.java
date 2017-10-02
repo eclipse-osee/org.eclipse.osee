@@ -22,35 +22,35 @@ public interface UserAdmin {
 
    void reset();
 
-   User getCurrentUser() ;
+   User getCurrentUser();
 
    void releaseCurrentUser();
 
-   User getUserByUserId(String userId) ;
+   User getUserByUserId(String userId);
 
-   List<User> getActiveUsers() ;
+   List<User> getActiveUsers();
 
-   List<User> getUsersAll() ;
+   List<User> getUsersAll();
 
-   List<User> getActiveUsersSortedByName() ;
+   List<User> getActiveUsersSortedByName();
 
-   List<User> getUsersAllSortedByName() ;
+   List<User> getUsersAllSortedByName();
 
-   String[] getUserNames() ;
+   String[] getUserNames();
 
-   User getUserByName(String name) ;
+   User getUserByName(String name);
 
-   User getUser(UserToken user) ;
+   User getUser(UserToken user);
 
    String getSafeUserNameById(ArtifactId userArtifactId);
 
-   String getUserNameById(ArtifactId userArtifactId) ;
+   String getUserNameById(ArtifactId userArtifactId);
 
-   User getUserByArtId(ArtifactId userArtifactId) ;
+   User getUserByArtId(ArtifactId userArtifactId);
 
-   User createUser(UserToken userToken, String comment) ;
+   User createUser(UserToken userToken, String comment);
 
-   User createUser(UserToken userToken, SkynetTransaction transaction) ;
+   User createUser(UserToken userToken, SkynetTransaction transaction);
 
    boolean isDuringCurrentUserCreation();
 

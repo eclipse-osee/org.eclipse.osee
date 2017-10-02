@@ -34,7 +34,7 @@ public class AddNoteActionTest extends AbstractAtsActionTest {
    }
 
    @Override
-   public Action createAction()  {
+   public Action createAction() {
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
       return new AddNoteAction(AtsTestUtil.getTeamWf(), new IDirtiableEditor() {
 

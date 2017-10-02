@@ -97,7 +97,7 @@ public class ExportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
       }
    }
 
-   private File createTempFolder()  {
+   private File createTempFolder() {
       String exchangeBasePath = ResourceConstants.getExchangeDataPath(getSystemPreferences());
       File rootDirectory = ExchangeUtil.createTempFolder(exchangeBasePath);
       if (!Strings.isValid(getExchangeFileName())) {

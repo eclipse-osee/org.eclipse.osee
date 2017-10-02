@@ -52,11 +52,11 @@ public class BranchDataFactory {
       return createBranchData(branch, parent, branchType, creationComment, fromTx, author, associatedArtifact, false);
    }
 
-   public CreateBranchData createCopyTxBranchData(IOseeBranch branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact)  {
+   public CreateBranchData createCopyTxBranchData(IOseeBranch branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact) {
       return createBranchData(branch, author, fromTransaction, associatedArtifact, BranchType.WORKING, "copied");
    }
 
-   public CreateBranchData createPortBranchData(IOseeBranch branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact)  {
+   public CreateBranchData createPortBranchData(IOseeBranch branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact) {
       return createBranchData(branch, author, fromTransaction, associatedArtifact, BranchType.PORT, "ported");
    }
 

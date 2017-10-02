@@ -26,7 +26,7 @@ public class AtsXDefectValidator extends AtsXWidgetValidator {
    public static String WIDGET_NAME = "XDefectViewer";
 
    @Override
-   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, IAtsServices atsServices)  {
+   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, IAtsServices atsServices) {
       WidgetResult result = WidgetResult.Valid;
       if (WIDGET_NAME.equals(widgetDef.getXWidgetName())) {
          ReviewDefectManager mgr = new ReviewDefectManager(provider);

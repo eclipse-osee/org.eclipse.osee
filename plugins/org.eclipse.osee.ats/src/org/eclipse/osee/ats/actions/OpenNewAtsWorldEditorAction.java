@@ -32,13 +32,13 @@ public class OpenNewAtsWorldEditorAction extends AbstractAtsAction {
    }
 
    public interface IOpenNewAtsWorldEditorHandler {
-      IWorldEditorProvider getWorldEditorProviderCopy() ;
+      IWorldEditorProvider getWorldEditorProviderCopy();
 
-      CustomizeData getCustomizeDataCopy() ;
+      CustomizeData getCustomizeDataCopy();
    }
 
    @Override
-   public void runWithException()  {
+   public void runWithException() {
       IWorldEditorProvider provider = openNewAtsWorldEditorHandler.getWorldEditorProviderCopy();
       provider.setCustomizeData(openNewAtsWorldEditorHandler.getCustomizeDataCopy());
       provider.setTableLoadOptions(TableLoadOption.NoUI);

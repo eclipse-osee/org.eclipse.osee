@@ -39,7 +39,7 @@ public class RelationChangeAcquirer extends ChangeAcquirer {
    }
 
    @Override
-   public ArrayList<ChangeBuilder> acquireChanges()  {
+   public ArrayList<ChangeBuilder> acquireChanges() {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       TransactionToken fromTransactionId;
       TransactionToken toTransactionId;

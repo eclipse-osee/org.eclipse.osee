@@ -64,7 +64,7 @@ public abstract class AbstractWordCompare implements IComparator {
       return renderer;
    }
 
-   protected IVbaDiffGenerator createGenerator(List<Artifact> artifacts, BranchId branch, PresentationType presentationType)  {
+   protected IVbaDiffGenerator createGenerator(List<Artifact> artifacts, BranchId branch, PresentationType presentationType) {
       boolean show = !((boolean) renderer.getRendererOptionValue(RendererOption.NO_DISPLAY));
       boolean executeVbScript = System.getProperty("os.name").contains("Windows");
       boolean skipErrors = !((boolean) renderer.getRendererOptionValue(RendererOption.SKIP_ERRORS));
@@ -78,7 +78,7 @@ public abstract class AbstractWordCompare implements IComparator {
    }
 
    @Override
-   public void compare(IProgressMonitor monitor, CompareDataCollector collector, PresentationType presentationType, ArtifactDelta artifactDelta, String pathPrefix)  {
+   public void compare(IProgressMonitor monitor, CompareDataCollector collector, PresentationType presentationType, ArtifactDelta artifactDelta, String pathPrefix) {
       boolean invalid = false;
       Artifact startArt = artifactDelta.getStartArtifact();
       Artifact endArt = artifactDelta.getEndArtifact();
@@ -137,7 +137,7 @@ public abstract class AbstractWordCompare implements IComparator {
    }
 
    @Override
-   public void compare(CompareDataCollector collector, Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType, String pathPrefix)  {
+   public void compare(CompareDataCollector collector, Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType, String pathPrefix) {
       IOseeBranch branch = (baseVersion != null ? baseVersion : newerVersion).getBranchToken();
 
       String resultPath = getDiffPath(baseVersion, newerVersion, presentationType, pathPrefix);
@@ -161,7 +161,7 @@ public abstract class AbstractWordCompare implements IComparator {
       collector.onCompare(data);
    }
 
-   protected String getDiffPath(Artifact baseVersion, Artifact newerVersion, PresentationType presentationType, String prefix)  {
+   protected String getDiffPath(Artifact baseVersion, Artifact newerVersion, PresentationType presentationType, String prefix) {
       Artifact artifact = baseVersion != null ? baseVersion : newerVersion;
       List<Artifact> artifacts = Collections.singletonList(artifact);
       String diffPath =
@@ -169,7 +169,7 @@ public abstract class AbstractWordCompare implements IComparator {
       return diffPath;
    }
 
-   protected void addToCompare(IProgressMonitor monitor, CompareData data, PresentationType presentationType, ArtifactDelta artifactDelta)  {
+   protected void addToCompare(IProgressMonitor monitor, CompareData data, PresentationType presentationType, ArtifactDelta artifactDelta) {
       Pair<String, Boolean> originalValue = null;
 
       Artifact baseArtifact = artifactDelta.getStartArtifact();
@@ -215,7 +215,7 @@ public abstract class AbstractWordCompare implements IComparator {
       data.add(compareFiles.getFirst().getLocation().toOSString(), compareFiles.getSecond().getLocation().toOSString());
    }
 
-   private Attribute<String> getWordContent(Artifact artifact)  {
+   private Attribute<String> getWordContent(Artifact artifact) {
       Attribute<String> toReturn = null;
       if (artifact != null && !artifact.isDeleted()) {
          for (AttributeTypeId wordAttr : wordAttributeType) {

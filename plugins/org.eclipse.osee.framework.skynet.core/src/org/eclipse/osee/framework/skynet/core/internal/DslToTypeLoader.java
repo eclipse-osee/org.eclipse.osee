@@ -141,7 +141,7 @@ public class DslToTypeLoader implements TypesLoader {
       }
    }
 
-   private void handleXArtifactTypeCrossRef(TypeBuffer buffer, BranchCache branchCache, XArtifactType xArtifactType)  {
+   private void handleXArtifactTypeCrossRef(TypeBuffer buffer, BranchCache branchCache, XArtifactType xArtifactType) {
       ArtifactType targetArtifactType = buffer.getArtTypes().getByGuid(Long.valueOf(xArtifactType.getId()));
       translateSuperTypes(buffer, targetArtifactType, xArtifactType);
       Map<BranchId, Collection<AttributeType>> validAttributesPerBranch =
@@ -149,7 +149,7 @@ public class DslToTypeLoader implements TypesLoader {
       targetArtifactType.setAllAttributeTypes(validAttributesPerBranch);
    }
 
-   private void translateSuperTypes(TypeBuffer buffer, ArtifactType targetArtifactType, XArtifactType xArtifactType)  {
+   private void translateSuperTypes(TypeBuffer buffer, ArtifactType targetArtifactType, XArtifactType xArtifactType) {
       Set<ArtifactType> oseeSuperTypes = new HashSet<>();
       for (XArtifactType xSuperType : xArtifactType.getSuperArtifactTypes()) {
          String superTypeName = xSuperType.getName();
@@ -162,7 +162,7 @@ public class DslToTypeLoader implements TypesLoader {
       }
    }
 
-   private Map<BranchId, Collection<AttributeType>> getOseeAttributes(TypeBuffer buffer, BranchCache branchCache, XArtifactType xArtifactType)  {
+   private Map<BranchId, Collection<AttributeType>> getOseeAttributes(TypeBuffer buffer, BranchCache branchCache, XArtifactType xArtifactType) {
       Map<BranchId, Collection<AttributeType>> validAttributes = new HashMap<BranchId, Collection<AttributeType>>();
       for (XAttributeTypeRef xAttributeTypeRef : xArtifactType.getValidAttributeTypes()) {
          XAttributeType xAttributeType = xAttributeTypeRef.getValidAttributeType();
@@ -183,7 +183,7 @@ public class DslToTypeLoader implements TypesLoader {
       return validAttributes;
    }
 
-   private BranchId getAttributeBranch(BranchCache branchCache, XAttributeTypeRef xAttributeTypeRef)  {
+   private BranchId getAttributeBranch(BranchCache branchCache, XAttributeTypeRef xAttributeTypeRef) {
       String branchIdStr = xAttributeTypeRef.getBranchUuid();
       if (branchIdStr == null) {
          return CoreBranches.SYSTEM_ROOT;
@@ -246,13 +246,13 @@ public class DslToTypeLoader implements TypesLoader {
       }
    }
 
-   private void translateXArtifactType(TypeBuffer buffer, XArtifactType xArtifactType)  {
+   private void translateXArtifactType(TypeBuffer buffer, XArtifactType xArtifactType) {
       String artifactTypeName = xArtifactType.getName();
       Long artUuid = Long.valueOf(xArtifactType.getId());
       artTypeFactory.createOrUpdate(buffer.getArtTypes(), artUuid, xArtifactType.isAbstract(), artifactTypeName);
    }
 
-   private void translateXEnumType(TypeBuffer buffer, XOseeEnumType xEnumType)  {
+   private void translateXEnumType(TypeBuffer buffer, XOseeEnumType xEnumType) {
       String enumTypeName = xEnumType.getName();
       Long enumUuid = Long.valueOf(xEnumType.getId());
       OseeEnumType oseeEnumType = enumTypeFactory.createOrUpdate(buffer.getEnumTypes(), enumUuid, enumTypeName);
@@ -313,7 +313,7 @@ public class DslToTypeLoader implements TypesLoader {
       }
    }
 
-   private void translateXAttributeType(TypeBuffer buffer, XAttributeType xAttributeType)  {
+   private void translateXAttributeType(TypeBuffer buffer, XAttributeType xAttributeType) {
       int min = Integer.parseInt(xAttributeType.getMin());
       int max = Integer.MAX_VALUE;
       if (!xAttributeType.getMax().equals("unlimited")) {
@@ -350,7 +350,7 @@ public class DslToTypeLoader implements TypesLoader {
       return value;
    }
 
-   private void translateXRelationType(TypeBuffer buffer, XRelationType xRelationType)  {
+   private void translateXRelationType(TypeBuffer buffer, XRelationType xRelationType) {
       RelationTypeMultiplicity multiplicity =
          RelationTypeMultiplicity.getFromString(xRelationType.getMultiplicity().name());
 

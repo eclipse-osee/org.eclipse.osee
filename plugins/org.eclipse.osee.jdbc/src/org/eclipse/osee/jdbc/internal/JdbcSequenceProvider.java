@@ -29,7 +29,7 @@ public class JdbcSequenceProvider {
       sequences.clear();
    }
 
-   public synchronized long getNextSequence(JdbcClient client, String sequenceName, boolean aggressiveFetch)  {
+   public synchronized long getNextSequence(JdbcClient client, String sequenceName, boolean aggressiveFetch) {
       SequenceRange range = getRange(sequenceName);
       if (range.lastAvailable == 0) {
          long lastValue = -1L;
@@ -63,7 +63,7 @@ public class JdbcSequenceProvider {
       return range;
    }
 
-   private void internalInitializeSequence(JdbcClient client, String sequenceName)  {
+   private void internalInitializeSequence(JdbcClient client, String sequenceName) {
       SequenceRange range = getRange(sequenceName);
       range.lastAvailable = 0;
       int initalValue = 0;

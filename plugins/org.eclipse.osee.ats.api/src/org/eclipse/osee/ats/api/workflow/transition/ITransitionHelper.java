@@ -46,7 +46,7 @@ public interface ITransitionHelper {
     */
    public Result handleExtraHoursSpent(IAtsChangeSet changes);
 
-   public Collection<? extends IAtsUser> getToAssignees(IAtsWorkItem workItem) ;
+   public Collection<? extends IAtsUser> getToAssignees(IAtsWorkItem workItem);
 
    public String getToStateName();
 
@@ -54,13 +54,13 @@ public interface ITransitionHelper {
 
    boolean isOverrideWorkingBranchCheck();
 
-   boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf) ;
+   boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf);
 
-   boolean isBranchInCommit(IAtsTeamWorkflow teamWf) ;
+   boolean isBranchInCommit(IAtsTeamWorkflow teamWf);
 
-   public boolean isSystemUser() ;
+   public boolean isSystemUser();
 
-   public boolean isSystemUserAssingee(IAtsWorkItem workItem) ;
+   public boolean isSystemUserAssingee(IAtsWorkItem workItem);
 
    public IAtsChangeSet getChangeSet();
 
@@ -68,9 +68,9 @@ public interface ITransitionHelper {
 
    public Collection<ITransitionListener> getTransitionListeners();
 
-   public IAtsUser getTransitionUser() ;
+   public IAtsUser getTransitionUser();
 
-   public void setTransitionUser(IAtsUser user) ;
+   public void setTransitionUser(IAtsUser user);
 
    public IAtsServices getServices();
 

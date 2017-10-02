@@ -47,7 +47,7 @@ public class LoadDeletedRelationTest {
    private IRelationType type;
 
    @Before
-   public void setUp()  {
+   public void setUp() {
       left = TestUtil.createSimpleArtifact(CoreArtifactTypes.Requirement, "Left", SAW_Bld_2);
       right = TestUtil.createSimpleArtifact(CoreArtifactTypes.Requirement, "Right", SAW_Bld_2);
       left.persist(getClass().getSimpleName());
@@ -58,7 +58,7 @@ public class LoadDeletedRelationTest {
    //not implemented  in the code
    @Ignore
    @Test
-   public void loadDeletedRelationTest()  {
+   public void loadDeletedRelationTest() {
       RelationManager.addRelation(type, left, right, "");
       left.persist(getClass().getSimpleName());
       RelationLink loaded = RelationManager.getLoadedRelation(type, left, right, SAW_Bld_2);
@@ -83,7 +83,7 @@ public class LoadDeletedRelationTest {
    }
 
    @After
-   public void tearDown()  {
+   public void tearDown() {
       left.purgeFromBranch();
       right.purgeFromBranch();
    }

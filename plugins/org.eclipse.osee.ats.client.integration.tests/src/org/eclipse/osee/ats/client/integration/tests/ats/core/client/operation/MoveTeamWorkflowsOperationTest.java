@@ -33,7 +33,7 @@ public class MoveTeamWorkflowsOperationTest {
    }
 
    @org.junit.Test
-   public void testDoWork()  {
+   public void testDoWork() {
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
       ActionArtifact actArt = AtsTestUtil.getActionArt();
       TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();

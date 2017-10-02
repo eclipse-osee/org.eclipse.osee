@@ -21,7 +21,7 @@ public interface IAtsAction extends IAtsObject, IAtsTeamWorkflowProvider {
 
    public String getAtsId();
 
-   void setAtsId(String atsId) ;
+   void setAtsId(String atsId);
 
    public static boolean isOfType(Object object) {
       return object instanceof IAtsAction;

@@ -30,14 +30,14 @@ import org.eclipse.osee.framework.core.util.Result;
  */
 public interface IAtsBranchService {
 
-   boolean isBranchInCommit(IAtsTeamWorkflow teamWf) ;
+   boolean isBranchInCommit(IAtsTeamWorkflow teamWf);
 
    /**
     * @return whether there is a working branch that is not committed
     */
-   boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf) ;
+   boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf);
 
-   IOseeBranch getBranch(IAtsTeamWorkflow teamWf) ;
+   IOseeBranch getBranch(IAtsTeamWorkflow teamWf);
 
    BranchId getBranch(IAtsConfigObject configObject);
 
@@ -110,9 +110,9 @@ public interface IAtsBranchService {
 
    boolean isMergeBranchExists(IAtsTeamWorkflow teamWf, BranchId workingBranch, BranchId destinationBranch);
 
-   Result isCommitBranchAllowed(IAtsTeamWorkflow teamWf) ;
+   Result isCommitBranchAllowed(IAtsTeamWorkflow teamWf);
 
-   Result isCreateBranchAllowed(IAtsTeamWorkflow teamWf) ;
+   Result isCreateBranchAllowed(IAtsTeamWorkflow teamWf);
 
    boolean branchExists(BranchId branch);
 
@@ -120,11 +120,11 @@ public interface IAtsBranchService {
 
    TransactionRecord getCommitTransactionRecord(IAtsTeamWorkflow teamWf, BranchId branch);
 
-   Collection<BranchId> getBranchesToCommitTo(IAtsTeamWorkflow teamWf) ;
+   Collection<BranchId> getBranchesToCommitTo(IAtsTeamWorkflow teamWf);
 
    Collection<BranchId> getBranchesInCommit();
 
-   boolean workingBranchCommittedToDestinationBranchParentPriorToDestinationBranchCreation(IAtsTeamWorkflow teamWf, BranchId destinationBranch, Collection<? extends TransactionToken> commitTransactionIds) ;
+   boolean workingBranchCommittedToDestinationBranchParentPriorToDestinationBranchCreation(IAtsTeamWorkflow teamWf, BranchId destinationBranch, Collection<? extends TransactionToken> commitTransactionIds);
 
    BranchId getParentBranch(BranchId branch);
 

@@ -152,7 +152,7 @@ public class ClientStorage {
       tx.commit();
    }
 
-   private ResultSet<ArtifactReadable> getOAuthTypesDefinition()  {
+   private ResultSet<ArtifactReadable> getOAuthTypesDefinition() {
       return newQuery().andUuid(OAUTH_TYPES.getUuid()).andTypeEquals(OAUTH_TYPES.getArtifactType()).getResults();
    }
 

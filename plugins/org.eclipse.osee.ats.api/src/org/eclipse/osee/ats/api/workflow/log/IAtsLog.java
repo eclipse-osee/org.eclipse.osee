@@ -18,39 +18,39 @@ import java.util.List;
  */
 public interface IAtsLog {
 
-   public abstract List<IAtsLogItem> getLogItems() ;
+   public abstract List<IAtsLogItem> getLogItems();
 
-   public abstract Date getLastStatusDate() ;
+   public abstract Date getLastStatusDate();
 
-   public abstract List<IAtsLogItem> getLogItemsReversed() ;
+   public abstract List<IAtsLogItem> getLogItemsReversed();
 
-   public abstract IAtsLogItem getLogItemWithTypeAsOfDate(LogType logType, Date date) ;
+   public abstract IAtsLogItem getLogItemWithTypeAsOfDate(LogType logType, Date date);
 
    /**
     * Used to reset the original originated user. Only for internal use. Kept for backward compatibility.
     */
-   public abstract void internalResetCreatedDate(Date date) ;
+   public abstract void internalResetCreatedDate(Date date);
 
-   public abstract String internalGetCancelledReason() ;
+   public abstract String internalGetCancelledReason();
 
    /**
     * This method is replaced by workItem.getCompletedFromState. Kept for backward compatibility.
     */
-   public abstract String internalGetCompletedFromState() ;
+   public abstract String internalGetCompletedFromState();
 
-   public abstract IAtsLogItem addLog(LogType type, String state, String msg, String userId) ;
+   public abstract IAtsLogItem addLog(LogType type, String state, String msg, String userId);
 
-   public abstract IAtsLogItem addLogItem(IAtsLogItem item) ;
+   public abstract IAtsLogItem addLogItem(IAtsLogItem item);
 
-   public abstract IAtsLogItem addLog(LogType type, String state, String msg, Date date, String userId) ;
+   public abstract IAtsLogItem addLog(LogType type, String state, String msg, Date date, String userId);
 
    public abstract void clearLog();
 
-   public abstract IAtsLogItem getLastEvent(LogType type) ;
+   public abstract IAtsLogItem getLastEvent(LogType type);
 
-   public abstract IAtsLogItem getStateEvent(LogType type, String stateName) ;
+   public abstract IAtsLogItem getStateEvent(LogType type, String stateName);
 
-   public abstract IAtsLogItem getStateEvent(LogType type) ;
+   public abstract IAtsLogItem getStateEvent(LogType type);
 
    public abstract void setLogId(String logId);
 

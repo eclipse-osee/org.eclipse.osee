@@ -36,11 +36,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact implements IAtsAbstractReview {
 
-   public AbstractReviewArtifact(Long id, String guid, BranchId branch, ArtifactTypeId artifactType)  {
+   public AbstractReviewArtifact(Long id, String guid, BranchId branch, ArtifactTypeId artifactType) {
       super(id, guid, branch, artifactType);
    }
 
-   public static List<IAtsUser> getImplementersByState(AbstractWorkflowArtifact workflow, IStateToken state)  {
+   public static List<IAtsUser> getImplementersByState(AbstractWorkflowArtifact workflow, IStateToken state) {
       List<IAtsUser> users = new ArrayList<>();
       if (workflow.isCancelled()) {
          users.add(workflow.getCancelledBy());
@@ -65,11 +65,11 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
       return "Review";
    }
 
-   public boolean isBlocking()  {
+   public boolean isBlocking() {
       return getReviewBlockType() != ReviewBlockType.None;
    }
 
-   public ReviewBlockType getReviewBlockType()  {
+   public ReviewBlockType getReviewBlockType() {
       String typeStr = getSoleAttributeValue(AtsAttributeTypes.ReviewBlocks, null);
       if (typeStr == null) {
          return ReviewBlockType.None;
@@ -78,7 +78,7 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
    }
 
    @Override
-   public AbstractWorkflowArtifact getParentAWA()  {
+   public AbstractWorkflowArtifact getParentAWA() {
       if (isStandAloneReview()) {
          return null;
       }
@@ -90,7 +90,7 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
    }
 
    @Override
-   public ActionArtifact getParentActionArtifact()  {
+   public ActionArtifact getParentActionArtifact() {
       if (isStandAloneReview()) {
          return null;
       }
@@ -105,7 +105,7 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
    }
 
    @Override
-   public TeamWorkFlowArtifact getParentTeamWorkflow()  {
+   public TeamWorkFlowArtifact getParentTeamWorkflow() {
       if (isStandAloneReview() || isDeleted()) {
          return null;
       }
@@ -134,7 +134,7 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
       return parentTeamArt;
    }
 
-   public boolean isStandAloneReview()  {
+   public boolean isStandAloneReview() {
       return AtsClientService.get().getWorkItemService().getActionableItemService().hasActionableItems(this);
    }
 
@@ -155,7 +155,7 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
    }
 
    @Override
-   public Set<IAtsActionableItem> getActionableItems()  {
+   public Set<IAtsActionableItem> getActionableItems() {
       return AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(this);
    }
 

@@ -106,7 +106,7 @@ public class CopyAtsConfigurationBlam extends AbstractBlam {
    public String getDescriptionUsage() {
       return "This BLAM will use existing configuration of a top Team Definition to create a new configuration..\n" +
       //
-      "This includes making team defs, actionable items, setting all team leads/team members and changing name using search string and replace string.";
+         "This includes making team defs, actionable items, setting all team leads/team members and changing name using search string and replace string.";
    }
 
    @Override
@@ -115,7 +115,7 @@ public class CopyAtsConfigurationBlam extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable)  {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
       super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
       if (xWidget.getLabel().equals("Top Team Definition to Copy From (most like new config)")) {
          xTeamDefinitionCombo = (XTeamDefinitionCombo) xWidget;

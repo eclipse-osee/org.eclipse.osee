@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
  */
 public interface IWorkPackageUtility extends IAtsColumn {
 
-   IAtsWorkPackage getWorkPackage(IAtsObject atsObject) ;
+   IAtsWorkPackage getWorkPackage(IAtsObject atsObject);
 
    ArtifactId getWorkPackageId(Object object);
 

@@ -51,7 +51,7 @@ public class CreateNewUsersByNameItem extends XNavigateItemAction {
    }
 
    @Override
-   public void run(TableLoadOption... tableLoadOptions)  {
+   public void run(TableLoadOption... tableLoadOptions) {
       EntryDialog ed = new EntryDialog(Displays.getActiveShell(), "Create New User(s)", null,
          "Enter User name(s) one per line", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       ed.setFillVertically(true);
@@ -96,7 +96,7 @@ public class CreateNewUsersByNameItem extends XNavigateItemAction {
       }
    }
 
-   private Set<Artifact> createNewUserItemTx(SkynetTransaction transaction, Set<String> userNames)  {
+   private Set<Artifact> createNewUserItemTx(SkynetTransaction transaction, Set<String> userNames) {
       Set<Artifact> newVersions = new HashSet<>();
       for (String userName : userNames) {
          Artifact userArt =

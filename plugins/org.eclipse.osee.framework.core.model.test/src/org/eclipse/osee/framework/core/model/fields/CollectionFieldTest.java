@@ -24,7 +24,7 @@ import org.junit.Test;
 public class CollectionFieldTest {
 
    @Test
-   public void testSetGetString()  {
+   public void testSetGetString() {
       List<String> values = new ArrayList<>();
       CollectionField<String> field = new CollectionField<>(values);
       Assert.assertFalse(field.isDirty());
@@ -49,7 +49,7 @@ public class CollectionFieldTest {
    }
 
    @Test
-   public void testSetGetInteger()  {
+   public void testSetGetInteger() {
       List<Integer> values = new ArrayList<>();
       CollectionField<Integer> field = new CollectionField<>(values);
       Assert.assertFalse(field.isDirty());

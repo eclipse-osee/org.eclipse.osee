@@ -57,7 +57,7 @@ public abstract class InternalOseeHttpServlet extends HttpServlet {
          request.getQueryString()) : "";
    }
 
-   protected abstract void checkAccessControl(HttpServletRequest request) ;
+   protected abstract void checkAccessControl(HttpServletRequest request);
 
    @Override
    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

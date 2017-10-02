@@ -44,12 +44,12 @@ public class AttributeSqlHandler extends SqlHandler<CriteriaAttribute> {
    }
 
    @Override
-   public void addSelect(AbstractSqlWriter writer)  {
+   public void addSelect(AbstractSqlWriter writer) {
       writer.write("%s.attr_id, %s.attr_type_id, %s.value, %s.uri", attrAlias, attrAlias, attrAlias, attrAlias);
    }
 
    @Override
-   public void addTables(AbstractSqlWriter writer)  {
+   public void addTables(AbstractSqlWriter writer) {
       jArtAlias = writer.addTable(TableEnum.JOIN_ID4_TABLE);
 
       if (criteria.getIds().size() > 1) {
@@ -65,7 +65,7 @@ public class AttributeSqlHandler extends SqlHandler<CriteriaAttribute> {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer)  {
+   public boolean addPredicates(AbstractSqlWriter writer) {
       writer.write(attrAlias);
       writer.write(".art_id = ");
       writer.write(jArtAlias);

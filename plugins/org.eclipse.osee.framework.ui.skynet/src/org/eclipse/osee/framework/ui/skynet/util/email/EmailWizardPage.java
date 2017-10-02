@@ -312,19 +312,19 @@ public class EmailWizardPage extends WizardPage {
       return previewMenu;
    }
 
-   public String[] getToAddresses()  {
+   public String[] getToAddresses() {
       return getEmails(toList);
    }
 
-   public String[] getCcAddresses()  {
+   public String[] getCcAddresses() {
       return getEmails(ccList);
    }
 
-   public String[] getBccAddresses()  {
+   public String[] getBccAddresses() {
       return getEmails(bccList);
    }
 
-   public String[] getEmails(ListViewer list)  {
+   public String[] getEmails(ListViewer list) {
 
       ArrayList<String> emails = new ArrayList<>();
       for (int x = 0; x < list.getList().getItemCount(); x++) {

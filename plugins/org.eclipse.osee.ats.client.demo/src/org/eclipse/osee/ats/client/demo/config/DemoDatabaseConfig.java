@@ -48,7 +48,7 @@ import org.eclipse.osee.support.test.util.TestUtil;
 public class DemoDatabaseConfig implements IDbInitializationTask {
 
    @Override
-   public void run()  {
+   public void run() {
 
       AtsWorkDefinitionSheetProviders.initializeDatabase(new XResultData(false), "demo");
       TestUtil.setDemoDb(true);
@@ -98,7 +98,7 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
       changes.execute();
    }
 
-   private void populateProgramBranch(BranchId programBranch)  {
+   private void populateProgramBranch(BranchId programBranch) {
       Artifact sawProduct =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.Component, programBranch, "SAW Product Decomposition");
 

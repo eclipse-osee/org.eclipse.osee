@@ -27,7 +27,7 @@ public class WorldAssigneeFilter extends ViewerFilter {
 
    Pattern p;
 
-   public WorldAssigneeFilter()  {
+   public WorldAssigneeFilter() {
       p = Pattern.compile(AtsClientService.get().getUserService().getCurrentUser().getName());
    }
 

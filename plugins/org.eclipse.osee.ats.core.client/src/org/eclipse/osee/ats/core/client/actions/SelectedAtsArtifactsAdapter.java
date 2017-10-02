@@ -25,17 +25,17 @@ public class SelectedAtsArtifactsAdapter implements ISelectedAtsArtifacts {
    }
 
    @Override
-   public Set<Artifact> getSelectedWorkflowArtifacts()  {
+   public Set<Artifact> getSelectedWorkflowArtifacts() {
       return Collections.emptySet();
    }
 
    @Override
-   public List<Artifact> getSelectedAtsArtifacts()  {
+   public List<Artifact> getSelectedAtsArtifacts() {
       return Collections.emptyList();
    }
 
    @Override
-   public List<TaskArtifact> getSelectedTaskArtifacts()  {
+   public List<TaskArtifact> getSelectedTaskArtifacts() {
       return Collections.emptyList();
    }
 

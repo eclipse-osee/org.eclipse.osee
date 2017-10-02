@@ -74,7 +74,7 @@ public class RelationNodeAdjacenciesTest {
    }
 
    @Test
-   public void testGetRelationsDirty()  {
+   public void testGetRelationsDirty() {
       assertEquals(1, collection.getDirties().size());
       assertEquals(dirty, collection.getDirties().iterator().next());
    }
@@ -101,7 +101,7 @@ public class RelationNodeAdjacenciesTest {
    }
 
    @Test
-   public void testGetExistingTypes()  {
+   public void testGetExistingTypes() {
       RelationTypeToken typeA = CoreRelationTypes.DEFAULT_HIERARCHY;
       RelationTypeToken typeB = CoreRelationTypes.Allocation__Component;
       RelationTypeToken typeC = CoreRelationTypes.Dependency__Artifact;
@@ -135,7 +135,7 @@ public class RelationNodeAdjacenciesTest {
    }
 
    @Test
-   public void testGetListDeletionFlag()  {
+   public void testGetListDeletionFlag() {
       List<Relation> list1 = collection.getList(DeletionFlag.INCLUDE_DELETED);
 
       assertEquals(3, list1.size());
@@ -152,7 +152,7 @@ public class RelationNodeAdjacenciesTest {
    }
 
    @Test
-   public void testGetSetDeletionFlag()  {
+   public void testGetSetDeletionFlag() {
       ResultSet<Relation> set1 = collection.getResultSet(DeletionFlag.INCLUDE_DELETED);
 
       assertEquals(3, set1.size());
@@ -169,7 +169,7 @@ public class RelationNodeAdjacenciesTest {
    }
 
    @Test
-   public void testGetListTypeAndDelete()  {
+   public void testGetListTypeAndDelete() {
       List<Relation> list1 = collection.getList(TYPE_3, DeletionFlag.INCLUDE_DELETED);
       assertEquals(1, list1.size());
       assertTrue(list1.contains(deleted));
@@ -179,7 +179,7 @@ public class RelationNodeAdjacenciesTest {
    }
 
    @Test
-   public void testGetSetTypeAndDelete()  {
+   public void testGetSetTypeAndDelete() {
       ResultSet<Relation> set1 = collection.getResultSet(TYPE_3, DeletionFlag.INCLUDE_DELETED);
 
       assertEquals(1, set1.size());
@@ -190,7 +190,7 @@ public class RelationNodeAdjacenciesTest {
    }
 
    @Test
-   public void testAccept()  {
+   public void testAccept() {
       RelationVisitor visitor = Mockito.mock(RelationVisitor.class);
       collection.accept(visitor);
 
@@ -200,7 +200,7 @@ public class RelationNodeAdjacenciesTest {
    }
 
    @Test
-   public void testLocalIdOnSide()  {
+   public void testLocalIdOnSide() {
       when(relation.isDeleted()).thenReturn(false);
       when(relation.getLocalIdForSide(RelationSide.SIDE_A)).thenReturn(11);
       when(relation.getLocalIdForSide(RelationSide.SIDE_B)).thenReturn(22);

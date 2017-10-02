@@ -40,7 +40,7 @@ public class OutfileDataCollector implements IDataListener {
       collectedData.put(name, value);
    }
 
-   public void populate(Artifact artifact, Artifact parent)  {
+   public void populate(Artifact artifact, Artifact parent) {
       Conditions.checkNotNull(artifact, "artifact");
       Conditions.checkNotNull(parent, "parent");
       for (String fieldName : collectedData.keySet()) {

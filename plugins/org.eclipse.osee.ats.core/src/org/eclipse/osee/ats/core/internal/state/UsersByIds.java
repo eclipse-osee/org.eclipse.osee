@@ -30,7 +30,7 @@ public class UsersByIds {
 
    public Pattern userPattern = Pattern.compile("<(.*?)>");
 
-   public String getStorageString(Collection<IAtsUser> users)  {
+   public String getStorageString(Collection<IAtsUser> users) {
       StringBuffer sb = new StringBuffer();
       for (IAtsUser u : users) {
          sb.append("<" + u.getUserId() + ">");

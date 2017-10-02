@@ -124,7 +124,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    }
 
    @Override
-   public void start()  {
+   public void start() {
       attributeResolverService = new AtsAttributeResolverServiceImpl();
 
       super.start();
@@ -170,12 +170,12 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    }
 
    @Override
-   public OrcsApi getOrcsApi()  {
+   public OrcsApi getOrcsApi() {
       return orcsApi;
    }
 
    @Override
-   public ArtifactReadable getArtifact(ArtifactId artifact)  {
+   public ArtifactReadable getArtifact(ArtifactId artifact) {
       ArtifactReadable result = null;
       if (artifact instanceof ArtifactReadable) {
          result = (ArtifactReadable) artifact;
@@ -194,7 +194,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    }
 
    @Override
-   public ArtifactReadable getArtifact(IAtsObject atsObject)  {
+   public ArtifactReadable getArtifact(IAtsObject atsObject) {
       ArtifactReadable result = null;
       if (atsObject.getStoreObject() instanceof ArtifactReadable) {
          result = (ArtifactReadable) atsObject.getStoreObject();
@@ -209,7 +209,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    }
 
    @Override
-   public ArtifactReadable getArtifactByGuid(String guid)  {
+   public ArtifactReadable getArtifactByGuid(String guid) {
       ArtifactReadable artifact = null;
       try {
          artifact = orcsApi.getQueryFactory().fromBranch(getAtsBranch()).andGuid(guid).getResults().getExactlyOne();
@@ -350,7 +350,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    }
 
    @Override
-   public <A extends IAtsConfigObject> A getSoleByUuid(long uuid, Class<A> clazz)  {
+   public <A extends IAtsConfigObject> A getSoleByUuid(long uuid, Class<A> clazz) {
       return getCache().getAtsObject(uuid);
    }
 

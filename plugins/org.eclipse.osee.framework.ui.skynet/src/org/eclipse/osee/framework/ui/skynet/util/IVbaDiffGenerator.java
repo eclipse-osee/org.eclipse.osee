@@ -18,5 +18,5 @@ import org.eclipse.osee.framework.core.model.change.CompareData;
  */
 public interface IVbaDiffGenerator {
 
-   public void generate(IProgressMonitor monitor, CompareData compareData) ;
+   public void generate(IProgressMonitor monitor, CompareData compareData);
 }

@@ -34,7 +34,7 @@ public class DefaultAttributeDataProvider<T> extends AbstractAttributeDataProvid
    }
 
    @Override
-   public String getDisplayableString()  {
+   public String getDisplayableString() {
       return getValueAsString();
    }
 
@@ -44,7 +44,7 @@ public class DefaultAttributeDataProvider<T> extends AbstractAttributeDataProvid
    }
 
    @Override
-   public String getValueAsString()  {
+   public String getValueAsString() {
       String fromStorage = null;
       byte[] data = null;
       try {
@@ -78,7 +78,7 @@ public class DefaultAttributeDataProvider<T> extends AbstractAttributeDataProvid
       return response;
    }
 
-   private String getInternalFileName()  {
+   private String getInternalFileName() {
       return BinaryContentUtils.generateFileName(getAttribute());
    }
 
@@ -104,23 +104,23 @@ public class DefaultAttributeDataProvider<T> extends AbstractAttributeDataProvid
    }
 
    @Override
-   public void loadData(Object... objects)  {
+   public void loadData(Object... objects) {
       if (objects != null && objects.length > 1) {
          if (objects[0] instanceof String) {
             objects[0] = getAttribute().convertStringToValue((String) objects[0]);
          }
-         storeValue((T)objects[0]);
+         storeValue((T) objects[0]);
          dataStore.setLocator((String) objects[1]);
       }
    }
 
    @Override
-   public void persist(int storageId)  {
+   public void persist(int storageId) {
       dataStore.persist(storageId);
    }
 
    @Override
-   public void purge()  {
+   public void purge() {
       dataStore.purge();
    }
 

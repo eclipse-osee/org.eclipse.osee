@@ -32,7 +32,7 @@ public class MultiBranchProvider implements BranchProvider {
       this.filter = filter;
    }
 
-   private Collection<Branch> getChildBranches(Branch branch)  {
+   private Collection<Branch> getChildBranches(Branch branch) {
       Set<Branch> children = new HashSet<>();
 
       branch.getChildBranches(children, true, filter);
@@ -43,7 +43,7 @@ public class MultiBranchProvider implements BranchProvider {
    }
 
    @Override
-   public Collection<Branch> getBranches()  {
+   public Collection<Branch> getBranches() {
       Conditions.checkNotNull(branches, "seeds");
       Set<Branch> result = branches;
       if (recursive) {

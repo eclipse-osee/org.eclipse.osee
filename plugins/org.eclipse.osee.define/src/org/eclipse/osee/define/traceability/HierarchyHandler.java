@@ -41,7 +41,7 @@ public final class HierarchyHandler {
       this.branch = transaction.getBranch();
    }
 
-   public void addArtifact(Artifact testUnit)  {
+   public void addArtifact(Artifact testUnit) {
       Conditions.checkExpressionFailOnTrue(!testUnit.isOnBranch(branch), "Artifact [%s] must be on branch [%s]",
          testUnit.toString(), branch.getId());
       Artifact folder = null;
@@ -59,15 +59,15 @@ public final class HierarchyHandler {
       addChildIfNotRelated(folder, testUnit);
    }
 
-   private Artifact getOrCreateUnknownTestUnitFolder()  {
+   private Artifact getOrCreateUnknownTestUnitFolder() {
       return getOrCreateTestUnitsFolder("Unknown Test Unit Type", true);
    }
 
-   private Artifact getOrCreateTestSupportFolder()  {
+   private Artifact getOrCreateTestSupportFolder() {
       return getOrCreateTestUnitsFolder(Requirements.TEST_SUPPORT_UNITS, true);
    }
 
-   private Artifact getOrCreateTestCaseFolder()  {
+   private Artifact getOrCreateTestCaseFolder() {
       return getOrCreateTestUnitsFolder("Test Cases", true);
    }
 
@@ -78,7 +78,7 @@ public final class HierarchyHandler {
       return root;
    }
 
-   private Artifact getOrCreateCodeUnitFolder(String codeUnitName)  {
+   private Artifact getOrCreateCodeUnitFolder(String codeUnitName) {
       Artifact root = getRoot();
       Artifact toReturn = getOrCreateFolder("Code Units", root);
 
@@ -93,7 +93,7 @@ public final class HierarchyHandler {
       return toReturn;
    }
 
-   private Artifact getOrCreateTestUnitsFolder(String subfolderName, boolean includesSubfolder)  {
+   private Artifact getOrCreateTestUnitsFolder(String subfolderName, boolean includesSubfolder) {
       Artifact root = getRoot();
       Artifact testFolder = getOrCreateFolder("Test", root);
       Artifact testUnitFolder = getOrCreateFolder("Test Units", testFolder);
@@ -105,7 +105,7 @@ public final class HierarchyHandler {
       return testUnitFolder;
    }
 
-   private void persistHelper(Artifact toPersist)  {
+   private void persistHelper(Artifact toPersist) {
       if (transaction != null) {
          toPersist.persist(transaction);
       }
@@ -119,7 +119,7 @@ public final class HierarchyHandler {
       }
    }
 
-   private Artifact getOrCreateFolder(String folderName, Artifact parentFolder)  {
+   private Artifact getOrCreateFolder(String folderName, Artifact parentFolder) {
       Artifact toReturn = folderNameToArtifact.get(folderName);
       if (toReturn == null) {
          List<Artifact> relatedFolders =

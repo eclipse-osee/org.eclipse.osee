@@ -134,7 +134,7 @@ public class SubsystemFullTraceReport extends AbstractBlam {
       Program.launch(iFile.getLocation().toOSString());
    }
 
-   private List<Artifact> prepareSubsystemRequirements(List<Artifact> artifacts)  {
+   private List<Artifact> prepareSubsystemRequirements(List<Artifact> artifacts) {
       List<Artifact> subsystemRequirements = new ArrayList<>(400);
       for (Artifact artifact : artifacts) {
          if (artifact.isOfType(CoreArtifactTypes.Folder)) {
@@ -189,7 +189,7 @@ public class SubsystemFullTraceReport extends AbstractBlam {
       }
    }
 
-   private String getRequirementText(Artifact req)  {
+   private String getRequirementText(Artifact req) {
       Attribute<?> templateContent = req.getSoleAttribute(CoreAttributeTypes.WordTemplateContent);
       String ret = templateContent.getDisplayableString();
       return StringUtils.trim(ret);
@@ -225,7 +225,7 @@ public class SubsystemFullTraceReport extends AbstractBlam {
    }
 
    @Override
-   public String getXWidgetsXml()  {
+   public String getXWidgetsXml() {
       StringBuilder sb = new StringBuilder();
       sb.append("<xWidgets>");
       sb.append(
@@ -259,7 +259,7 @@ public class SubsystemFullTraceReport extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreated(XWidget widget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable)  {
+   public void widgetCreated(XWidget widget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
       super.widgetCreated(widget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
 
       if (widget.getLabel().equals(SCRIPT_ROOT_DIR)) {

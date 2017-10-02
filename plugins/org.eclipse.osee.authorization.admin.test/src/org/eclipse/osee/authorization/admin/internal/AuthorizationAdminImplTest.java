@@ -119,8 +119,8 @@ public class AuthorizationAdminImplTest {
       assertEquals(false, actual);
 
       AuthorizationRequest request = AuthorizationRequestBuilder.newBuilder()//
-      .authorizationType(SCHEME_1) //
-      .build();
+         .authorizationType(SCHEME_1) //
+         .build();
 
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("Authorization Error - scheme [" + SCHEME_1 + "] is not allowed. Schemes available [].");
@@ -137,8 +137,8 @@ public class AuthorizationAdminImplTest {
       assertEquals(false, actual);
 
       AuthorizationRequest request = AuthorizationRequestBuilder.newBuilder()//
-      .authorizationType("None")//
-      .build();
+         .authorizationType("None")//
+         .build();
 
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("Authorization Error - scheme [None] is not allowed. Schemes available [].");
@@ -158,10 +158,10 @@ public class AuthorizationAdminImplTest {
 
       Date date = new Date();
       AuthorizationRequest request = AuthorizationRequestBuilder.newBuilder()//
-      .date(date)//
-      .authorizationType(SCHEME_1) //
-      .secure(true) //
-      .build();
+         .date(date)//
+         .authorizationType(SCHEME_1) //
+         .secure(true) //
+         .build();
 
       when(provider1.authorize(request)).thenReturn(null);
 
@@ -182,10 +182,10 @@ public class AuthorizationAdminImplTest {
       assertEquals(true, admin.isSchemeAllowed(SCHEME_1));
 
       AuthorizationRequest request = AuthorizationRequestBuilder.newBuilder()//
-      .date(date)//
-      .authorizationType(SCHEME_1) //
-      .secure(true) //
-      .build();
+         .date(date)//
+         .authorizationType(SCHEME_1) //
+         .secure(true) //
+         .build();
 
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("Authentication Error - scheme [" + SCHEME_1 + "] returned null provider");
@@ -206,10 +206,10 @@ public class AuthorizationAdminImplTest {
       assertEquals(true, admin.isSchemeAllowed(SCHEME_1));
 
       AuthorizationRequest request = AuthorizationRequestBuilder.newBuilder()//
-      .date(date)//
-      .authorizationType(SCHEME_1) //
-      .secure(true) //
-      .build();
+         .date(date)//
+         .authorizationType(SCHEME_1) //
+         .secure(true) //
+         .build();
 
       AuthorizationData data = Mockito.mock(AuthorizationData.class);
 
@@ -317,10 +317,10 @@ public class AuthorizationAdminImplTest {
       assertEquals(true, admin.isSchemeAllowed(DEFAULT_SCHEME));
 
       AuthorizationRequest request = AuthorizationRequestBuilder.newBuilder()//
-      .date(date)//
-      .authorizationType(SCHEME_1) //
-      .secure(true) //
-      .build();
+         .date(date)//
+         .authorizationType(SCHEME_1) //
+         .secure(true) //
+         .build();
 
       Authorization actual = admin.authorize(request);
 
@@ -348,10 +348,10 @@ public class AuthorizationAdminImplTest {
       assertEquals(true, admin.isSchemeAllowed(SCHEME_1));
 
       AuthorizationRequest request = AuthorizationRequestBuilder.newBuilder()//
-      .date(date)//
-      .authorizationType(SCHEME_1) //
-      .secure(true) //
-      .build();
+         .date(date)//
+         .authorizationType(SCHEME_1) //
+         .secure(true) //
+         .build();
 
       AuthorizationData data = Mockito.mock(AuthorizationData.class);
       Authority authority = Mockito.mock(Authority.class);

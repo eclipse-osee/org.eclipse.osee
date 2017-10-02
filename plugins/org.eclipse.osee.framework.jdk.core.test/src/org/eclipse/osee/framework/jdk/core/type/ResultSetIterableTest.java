@@ -62,7 +62,7 @@ public class ResultSetIterableTest {
    }
 
    @Test
-   public void testGetExactlyOneMultipleException()  {
+   public void testGetExactlyOneMultipleException() {
       data.add("a");
       data.add("b");
 
@@ -72,20 +72,20 @@ public class ResultSetIterableTest {
    }
 
    @Test
-   public void testGetExactlyOneNoneExistException()  {
+   public void testGetExactlyOneNoneExistException() {
       thrown.expect(ItemDoesNotExist.class);
       thrown.expectMessage("No item found");
       result.getExactlyOne();
    }
 
    @Test
-   public void testGetExactlyOne()  {
+   public void testGetExactlyOne() {
       data.add("c");
       assertEquals("c", result.getExactlyOne());
    }
 
    @Test
-   public void testGetOneOrNull()  {
+   public void testGetOneOrNull() {
       Assert.assertNull(result.getOneOrNull());
 
       data.add("a");
@@ -95,7 +95,7 @@ public class ResultSetIterableTest {
    }
 
    @Test
-   public void testGetAtMostOneOrNullExceptionMoreThanOne()  {
+   public void testGetAtMostOneOrNullExceptionMoreThanOne() {
       assertNull(result.getAtMostOneOrNull());
 
       data.add("a");
@@ -107,7 +107,7 @@ public class ResultSetIterableTest {
    }
 
    @Test
-   public void testGetAtMostOneOrNull()  {
+   public void testGetAtMostOneOrNull() {
       assertNull(result.getAtMostOneOrNull());
 
       data.add("a");

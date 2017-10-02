@@ -17,51 +17,51 @@ import java.util.Date;
  */
 public interface TestRunOperator {
 
-   public abstract String getScriptRevision() ;
+   public abstract String getScriptRevision();
 
-   public abstract Date getLastDateUploaded() ;
+   public abstract Date getLastDateUploaded();
 
-   public abstract String getChecksum() ;
+   public abstract String getChecksum();
 
-   public abstract String getOutfileUrl() ;
+   public abstract String getOutfileUrl();
 
    public abstract String getPartition();
 
    public abstract String getSubsystem();
 
-   public abstract int getTestPointsPassed() ;
+   public abstract int getTestPointsPassed();
 
-   public abstract int getTestPointsFailed() ;
+   public abstract int getTestPointsFailed();
 
-   public abstract int getTotalTestPoints() ;
+   public abstract int getTotalTestPoints();
 
-   public abstract Date getEndDate() ;
+   public abstract Date getEndDate();
 
-   public abstract Date getLastModifiedDate() ;
+   public abstract Date getLastModifiedDate();
 
-   public abstract Date getTestStartDate() ;
+   public abstract Date getTestStartDate();
 
-   public abstract String getTestResultStatus() ;
+   public abstract String getTestResultStatus();
 
    public abstract boolean isBatchModeAllowed();
 
-   public abstract String getOseeVersion() ;
+   public abstract String getOseeVersion();
 
-   public abstract String getOseeServerTitle() ;
+   public abstract String getOseeServerTitle();
 
-   public abstract String getOseeServerVersion() ;
+   public abstract String getOseeServerVersion();
 
-   public abstract String getProcessorId() ;
+   public abstract String getProcessorId();
 
-   public abstract String getRunDuration() ;
+   public abstract String getRunDuration();
 
-   public abstract String getQualificationLevel() ;
+   public abstract String getQualificationLevel();
 
-   public abstract String getBuildId() ;
+   public abstract String getBuildId();
 
-   public abstract String getRanOnOperatingSystem() ;
+   public abstract String getRanOnOperatingSystem();
 
-   public abstract String getLastAuthor() ;
+   public abstract String getLastAuthor();
 
    public abstract String getScriptSimpleName();
 

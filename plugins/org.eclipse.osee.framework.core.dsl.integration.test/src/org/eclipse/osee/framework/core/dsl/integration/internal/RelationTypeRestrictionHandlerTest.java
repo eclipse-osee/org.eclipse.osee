@@ -61,7 +61,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    }
 
    @Test
-   public void testProcessDataRelationTypeNoMatch()  {
+   public void testProcessDataRelationTypeNoMatch() {
       XRelationType relationTypeRef = MockModel.createXRelationType(relationType);
 
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
@@ -75,7 +75,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    }
 
    @Test
-   public void testProcessDataRelationTypeMatchSideANoMatch()  {
+   public void testProcessDataRelationTypeMatchSideANoMatch() {
       XRelationType relationTypeRef = MockModel.createXRelationType(relationType);
 
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
@@ -98,7 +98,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    }
 
    @Test
-   public void testProcessDataRelationTypeMatchSideAMatch()  {
+   public void testProcessDataRelationTypeMatchSideAMatch() {
       XRelationType relationTypeRef = MockModel.createXRelationType(relationType);
 
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
@@ -125,7 +125,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    }
 
    @Test
-   public void testProcessDataRelationTypeMatchSideBNoMatch()  {
+   public void testProcessDataRelationTypeMatchSideBNoMatch() {
       XRelationType relationTypeRef = MockModel.createXRelationType(relationType);
 
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
@@ -149,7 +149,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    }
 
    @Test
-   public void testProcessDataRelationTypeMatchSideBMatch()  {
+   public void testProcessDataRelationTypeMatchSideBMatch() {
       XRelationType relationTypeRef = MockModel.createXRelationType(relationType);
 
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
@@ -176,7 +176,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    }
 
    @Test
-   public void testProcessDataRelationTypeMatchBothMatch()  {
+   public void testProcessDataRelationTypeMatchBothMatch() {
       XRelationType relationTypeRef = MockModel.createXRelationType(relationType);
 
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
@@ -222,7 +222,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    }
 
    @Test
-   public void testProcessRelationWithRelationTypeAll()  {
+   public void testProcessRelationWithRelationTypeAll() {
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
       restriction.setRelationTypeMatch(true);
@@ -266,7 +266,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    }
 
    @Test
-   public void testProcessDataArtifactTypeMatch()  {
+   public void testProcessDataArtifactTypeMatch() {
 
       IArtifactType artifactType = CoreArtifactTypes.AbstractSoftwareRequirement;
       XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getGuid(), artifactType.getName());
@@ -303,7 +303,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
          expectedScope);
    }
 
-   private void testProcessRelationWithArtifactHelper(String artifactName, String matcherArtifactName, Scope expectedScope)  {
+   private void testProcessRelationWithArtifactHelper(String artifactName, String matcherArtifactName, Scope expectedScope) {
       XRelationType relationTypeRef = MockModel.createXRelationType(relationType);
 
       RelationTypeRestriction restriction = MockModel.createRelationTypeRestriction();
@@ -337,13 +337,13 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    }
 
    @Test
-   public void testProcessRelationWithArtifactMatch()  {
+   public void testProcessRelationWithArtifactMatch() {
       testProcessRelationWithArtifactHelper("artifactToMatch", "artifactToMatch",
          new Scope().addSubPath("artifactToMatch"));
    }
 
    @Test
-   public void testProcessRelationWithArtifactNoMatch()  {
+   public void testProcessRelationWithArtifactNoMatch() {
       testProcessRelationWithArtifactHelper("artifactToMatch", "differentArtifactToMatch", new Scope());
    }
 

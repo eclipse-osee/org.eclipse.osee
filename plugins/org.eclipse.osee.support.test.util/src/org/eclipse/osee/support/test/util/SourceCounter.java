@@ -203,8 +203,8 @@ public class SourceCounter {
       } else if (packageName.contains("test")) {
          return "Testing";
       } else if (packageName.contains("framework") || packageName.contains(
-         "client.integration") || packageName.contains("cluster") || packageName.contains(
-            "executor") || packageName.contains("database")) {
+         "client.integration") || packageName.contains(
+            "cluster") || packageName.contains("executor") || packageName.contains("database")) {
          return "Framework";
       }
       return "Unknown";

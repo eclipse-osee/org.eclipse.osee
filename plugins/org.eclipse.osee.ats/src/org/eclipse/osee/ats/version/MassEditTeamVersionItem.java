@@ -39,7 +39,7 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
       super(parent, name, oseeImage);
    }
 
-   private IAtsTeamDefinition getTeamDefinition()  {
+   private IAtsTeamDefinition getTeamDefinition() {
       if (selectedTeamDef != null) {
          return selectedTeamDef;
       }

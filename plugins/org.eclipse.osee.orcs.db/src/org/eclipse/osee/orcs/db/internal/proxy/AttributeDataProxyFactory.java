@@ -32,7 +32,7 @@ public class AttributeDataProxyFactory {
       this.logger = logger;
    }
 
-   public DataProxy createProxy(long typeUuid, Object value, String uri)  {
+   public DataProxy createProxy(long typeUuid, Object value, String uri) {
       AttributeTypeId attributeType = attributeTypeCache.get(typeUuid);
 
       Conditions.checkNotNull(attributeType, "AttributeType", "Unable to find attributeType for [%s]", typeUuid);
@@ -53,7 +53,7 @@ public class AttributeDataProxyFactory {
       return dataProxy;
    }
 
-   private Object intern(AttributeTypeId attributeType, Object original)  {
+   private Object intern(AttributeTypeId attributeType, Object original) {
       Object value = original;
       if (attributeTypeCache.isEnumerated(attributeType) && value instanceof String) {
          value = Strings.intern((String) value);

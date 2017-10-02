@@ -93,7 +93,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
     * Return true if merge branch exists in DB (whether archived or not)
     */
    @Override
-   public boolean isMergeBranchExists(IAtsTeamWorkflow teamWf, BranchId destinationBranch)  {
+   public boolean isMergeBranchExists(IAtsTeamWorkflow teamWf, BranchId destinationBranch) {
       return isMergeBranchExists(teamWf, getWorkingBranch(teamWf), destinationBranch);
    }
 
@@ -102,7 +102,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
     * have
     */
    @Override
-   public boolean isMergeBranchExists(IAtsTeamWorkflow teamWf, BranchId workingBranch, BranchId destinationBranch)  {
+   public boolean isMergeBranchExists(IAtsTeamWorkflow teamWf, BranchId workingBranch, BranchId destinationBranch) {
       if (workingBranch.isInvalid()) {
          return false;
       }
@@ -131,10 +131,9 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
       ArtifactId artId = ArtifactId.valueOf(teamWf.getId());
       if (!commitArtifactIdMap.containsKey(artId)) {
          txQuery.andCommitIds(teamWf.getId().intValue());
-         txQuery.getResults().forEach(tx -> commitArtifactIdMap.put(artId,
-            new TransactionRecord(tx.getId(), tx.getBranch(), tx.getComment(), tx.getDate(),
-               tx.getAuthor(), tx.getCommitArt().getId().intValue(), tx.getTxType(),
-               tx.getBuildId())));
+         txQuery.getResults().forEach(
+            tx -> commitArtifactIdMap.put(artId, new TransactionRecord(tx.getId(), tx.getBranch(), tx.getComment(),
+               tx.getDate(), tx.getAuthor(), tx.getCommitArt().getId().intValue(), tx.getTxType(), tx.getBuildId())));
       }
       Collection<TransactionRecord> transactions = commitArtifactIdMap.getValues(artId);
       return transactions == null ? Collections.emptyList() : transactions;

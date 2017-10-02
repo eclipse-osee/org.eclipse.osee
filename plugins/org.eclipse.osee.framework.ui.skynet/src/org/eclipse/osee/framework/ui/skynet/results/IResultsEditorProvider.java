@@ -17,8 +17,8 @@ import java.util.List;
  */
 public interface IResultsEditorProvider {
 
-   public String getEditorName() ;
+   public String getEditorName();
 
-   public List<IResultsEditorTab> getResultsEditorTabs() ;
+   public List<IResultsEditorTab> getResultsEditorTabs();
 
 }

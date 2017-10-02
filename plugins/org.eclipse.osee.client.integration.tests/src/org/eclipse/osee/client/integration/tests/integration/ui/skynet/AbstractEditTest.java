@@ -90,7 +90,7 @@ public abstract class AbstractEditTest {
       }
    }
 
-   private Artifact createArtifact(BranchId branch, IArtifactType artType, String artifactName)  {
+   private Artifact createArtifact(BranchId branch, IArtifactType artType, String artifactName) {
       Assert.assertNotNull(branch);
       Assert.assertNotNull(artifactName);
       Artifact artifact = ArtifactTypeManager.addArtifact(artType, branch, artifactName);
@@ -117,7 +117,7 @@ public abstract class AbstractEditTest {
       Assert.assertEquals(expected, actual);
    }
 
-   private IFile openArtifactForEdit(FileSystemRenderer renderer, Artifact artifact)  {
+   private IFile openArtifactForEdit(FileSystemRenderer renderer, Artifact artifact) {
       IFile editFile = renderer.renderToFile(artifact, artifact.getBranchToken(), PresentationType.SPECIALIZED_EDIT);
       Assert.assertNotNull(editFile);
       return editFile;

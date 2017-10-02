@@ -35,11 +35,11 @@ public class ArtifactPersistenceManager {
     * @param overrideDeleteCheck if <b>true</b> deletes without checking preconditions
     * @param artifacts The artifacts to delete.
     */
-   public static void deleteArtifact(SkynetTransaction transaction, boolean overrideDeleteCheck, final Artifact... artifacts)  {
+   public static void deleteArtifact(SkynetTransaction transaction, boolean overrideDeleteCheck, final Artifact... artifacts) {
       deleteArtifactCollection(transaction, overrideDeleteCheck, Arrays.asList(artifacts));
    }
 
-   public static void deleteArtifactCollection(SkynetTransaction transaction, boolean overrideDeleteCheck, final Collection<Artifact> artifacts)  {
+   public static void deleteArtifactCollection(SkynetTransaction transaction, boolean overrideDeleteCheck, final Collection<Artifact> artifacts) {
       if (artifacts.isEmpty()) {
          return;
       }
@@ -56,7 +56,7 @@ public class ArtifactPersistenceManager {
       }
    }
 
-   private static void performDeleteChecks(Collection<Artifact> artifacts)  {
+   private static void performDeleteChecks(Collection<Artifact> artifacts) {
       // Confirm artifacts are fit to delete
       for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
          IStatus result = check.isDeleteable(artifacts);
@@ -66,7 +66,7 @@ public class ArtifactPersistenceManager {
       }
    }
 
-   public static void performDeleteRelationChecks(Artifact artifact, IRelationType relationType)  {
+   public static void performDeleteRelationChecks(Artifact artifact, IRelationType relationType) {
       // Confirm relations are fit to delete
       for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
          IStatus result = check.isDeleteableRelation(artifact, relationType);
@@ -76,7 +76,7 @@ public class ArtifactPersistenceManager {
       }
    }
 
-   private static void bulkLoadRelatives(Collection<Artifact> artifacts)  {
+   private static void bulkLoadRelatives(Collection<Artifact> artifacts) {
       Collection<ArtifactId> relatives = new HashSet<>();
       for (Artifact artifact : artifacts) {
          for (RelationLink link : artifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
@@ -88,7 +88,7 @@ public class ArtifactPersistenceManager {
       ArtifactQuery.getArtifactListFrom(relatives, branch);
    }
 
-   private static void deleteTrace(Artifact artifact, SkynetTransaction transaction, boolean reorderRelations)  {
+   private static void deleteTrace(Artifact artifact, SkynetTransaction transaction, boolean reorderRelations) {
       if (!artifact.isDeleted()) {
          // This must be done first since the the actual deletion of an
          // artifact clears out the link manager

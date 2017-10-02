@@ -17,8 +17,8 @@ import org.eclipse.osee.orcs.core.ds.Attribute;
  */
 public interface ArtifactVisitor {
 
-   void visit(Artifact artifact) ;
+   void visit(Artifact artifact);
 
-   void visit(Attribute<?> attribute) ;
+   void visit(Attribute<?> attribute);
 
 }

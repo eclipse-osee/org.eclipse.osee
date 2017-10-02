@@ -18,9 +18,9 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
  */
 public interface HasOrderData extends Iterable<Entry<RelationTypeSide, OrderData>> {
 
-   void add(RelationTypeSide typeAndSide, OrderData data) ;
+   void add(RelationTypeSide typeAndSide, OrderData data);
 
-   void remove(RelationTypeSide typeAndSide) ;
+   void remove(RelationTypeSide typeAndSide);
 
    void clear();
 

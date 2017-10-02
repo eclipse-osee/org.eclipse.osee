@@ -23,16 +23,16 @@ import org.eclipse.osee.orcs.data.AttributeReadable;
  */
 public interface ExternalArtifactManager {
 
-   ResultSet<ArtifactReadable> asExternalArtifacts(OrcsSession session, Iterable<? extends Artifact> artifacts) ;
+   ResultSet<ArtifactReadable> asExternalArtifacts(OrcsSession session, Iterable<? extends Artifact> artifacts);
 
-   ResultSet<? extends RelationNode> asInternalArtifacts(Iterable<? extends ArtifactReadable> externals) ;
+   ResultSet<? extends RelationNode> asInternalArtifacts(Iterable<? extends ArtifactReadable> externals);
 
-   Artifact asInternalArtifact(ArtifactReadable external) ;
+   Artifact asInternalArtifact(ArtifactReadable external);
 
-   ArtifactReadable asExternalArtifact(OrcsSession session, Artifact artifact) ;
+   ArtifactReadable asExternalArtifact(OrcsSession session, Artifact artifact);
 
-   <T> AttributeReadable<T> asExternalAttribute(OrcsSession session, Attribute<T> attribute) ;
+   <T> AttributeReadable<T> asExternalAttribute(OrcsSession session, Attribute<T> attribute);
 
-   <T> ResultSet<AttributeReadable<T>> asExternalAttributes(OrcsSession session, Iterable<? extends Attribute<T>> attributes) ;
+   <T> ResultSet<AttributeReadable<T>> asExternalAttributes(OrcsSession session, Iterable<? extends Attribute<T>> attributes);
 
 }

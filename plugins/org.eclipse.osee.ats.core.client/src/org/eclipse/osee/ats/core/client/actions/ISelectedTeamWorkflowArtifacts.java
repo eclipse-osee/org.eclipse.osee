@@ -18,6 +18,6 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
  */
 public interface ISelectedTeamWorkflowArtifacts {
 
-   Set<? extends TeamWorkFlowArtifact> getSelectedTeamWorkflowArtifacts() ;
+   Set<? extends TeamWorkFlowArtifact> getSelectedTeamWorkflowArtifacts();
 
 }

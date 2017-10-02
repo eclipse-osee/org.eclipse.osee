@@ -140,7 +140,7 @@ public class OseeLinkBuilder {
       return String.format(OSEE_LINK_MARKER, guid);
    }
 
-   public String getWordMlLink(LinkType destLinkType, ArtifactReadable artifact, TransactionId txId, String sessionId, PresentationType presentationType, String permanentUrl)  {
+   public String getWordMlLink(LinkType destLinkType, ArtifactReadable artifact, TransactionId txId, String sessionId, PresentationType presentationType, String permanentUrl) {
       String linkFormat = getLinkFormat(destLinkType);
       String linkId = getLinkId(destLinkType, artifact, txId, sessionId, presentationType, permanentUrl);
       String linkText = getLinkText(destLinkType, artifact);
@@ -157,7 +157,7 @@ public class OseeLinkBuilder {
       return toReturn;
    }
 
-   private String getLinkId(LinkType destLinkType, ArtifactReadable artifact, TransactionId tx, String sessionId, PresentationType presentationType, String permanentUrl)  {
+   private String getLinkId(LinkType destLinkType, ArtifactReadable artifact, TransactionId tx, String sessionId, PresentationType presentationType, String permanentUrl) {
       String toReturn;
       if (destLinkType == LinkType.OSEE_SERVER_LINK) {
          toReturn = escapeXml(getOseeLink(artifact, presentationType, sessionId, permanentUrl));
@@ -193,7 +193,7 @@ public class OseeLinkBuilder {
       return url.toString();
    }
 
-   private String getLinkText(LinkType linkType, ArtifactReadable artifact)  {
+   private String getLinkText(LinkType linkType, ArtifactReadable artifact) {
       StringBuilder builder = new StringBuilder();
       if (isParagraphRequired(linkType)) {
          builder.append(artifact.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "Undefined"));

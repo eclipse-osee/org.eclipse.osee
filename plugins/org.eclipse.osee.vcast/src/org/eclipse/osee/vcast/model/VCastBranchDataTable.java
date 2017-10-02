@@ -26,7 +26,7 @@ public class VCastBranchDataTable implements VCastTableData<VCastBranchData> {
    }
 
    @Override
-   public Collection<VCastBranchData> getRows(VCastDataStore dataStore)  {
+   public Collection<VCastBranchData> getRows(VCastDataStore dataStore) {
       return dataStore.getAllBranchData();
    }
 

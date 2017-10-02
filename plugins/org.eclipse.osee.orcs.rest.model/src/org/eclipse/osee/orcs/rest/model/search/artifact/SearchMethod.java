@@ -36,7 +36,7 @@ public enum SearchMethod {
       return token;
    }
 
-   public static SearchMethod fromString(String value)  {
+   public static SearchMethod fromString(String value) {
       SearchMethod toReturn = null;
       for (SearchMethod op : SearchMethod.values()) {
          if (op.getToken().equals(value)) {

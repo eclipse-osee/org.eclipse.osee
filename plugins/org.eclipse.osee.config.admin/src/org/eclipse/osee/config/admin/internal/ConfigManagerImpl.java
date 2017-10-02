@@ -67,8 +67,8 @@ public class ConfigManagerImpl implements UriWatcherListener {
       logger.trace("Configuring ConfigurationManagerImpl...");
 
       ConfigManagerConfiguration newConfig = ConfigManagerConfigurationBuilder.newBuilder()//
-      .properties(properties) //
-      .build();
+         .properties(properties) //
+         .build();
       if (Compare.isDifferent(config, newConfig)) {
          configure(newConfig);
          config = newConfig;

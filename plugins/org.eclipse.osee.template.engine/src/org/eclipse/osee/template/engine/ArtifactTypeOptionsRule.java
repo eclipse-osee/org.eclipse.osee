@@ -45,46 +45,46 @@ public class ArtifactTypeOptionsRule extends AppendableRule<String> {
    private final Set<String> preselectedTypeNames;
    private String selectId;
    private final static String theJavaScript = "<script type=\"text/javascript\">\n" + //
-   "function typeSelected() {\n" + //
-   "    var available = document.getElementById(\"%s\");\n" + //
-   "    var selected = document.getElementById(\"%s\");\n" + //
-   "    var availableOptions = available.options;\n" + //
-   "    if(available.selectedIndex > -1) {\n" + //
-   "        var index = available.selectedIndex\n" + //
-   "        var text =  availableOptions[index].text;\n" + //
-   "        if (!text) {\n" + //
-   "            return;\n" + //
-   "        }\n" + //
-   "        var foundIt = false;\n" + //
-   "        var counter = 0;\n" + //
-   "        var selectedOptions = selected.options;\n" + //
-   "        while ((counter < selectedOptions.length) && !foundIt) {\n" + //
-   "            if (selectedOptions[counter].text == text) {\n" + //
-   "                foundIt = true;\n" + //
-   "            }\n" + //
-   "        counter++;\n" + //
-   "        }\n" + //
-   "        if (!foundIt) {\n" + //
-   "            var option = document.createElement(\"option\");\n" + //
-   "            option.text = text;\n" + //
-   "            option.value = availableOptions[index].value;\n" + //
-   "            selected.add(option);\n" + //
-   "        }\n" + //
-   "    }\n" + //
-   "    available.selectedIndex = -1;\n" + //
-   "}\n" + //
-   "function typeDeselected(evnt) {\n" + //
-   "    var selected = document.getElementById(\"%s\");\n" + //
-   "    var options = selected.options;\n" + //
-   "    while(selected.selectedIndex > -1) {\n" + //
-   "        selected.remove(selected.selectedIndex)\n" + //
-   "    }\n" + //
-   "    if (evnt) {\n" + //
-   "       evnt.preventDefault();\n" + //
-   "       evnt.returnValue = false;\n" + //
-   "    }\n" + //
-   "}\n" + //
-   "</script>";
+      "function typeSelected() {\n" + //
+      "    var available = document.getElementById(\"%s\");\n" + //
+      "    var selected = document.getElementById(\"%s\");\n" + //
+      "    var availableOptions = available.options;\n" + //
+      "    if(available.selectedIndex > -1) {\n" + //
+      "        var index = available.selectedIndex\n" + //
+      "        var text =  availableOptions[index].text;\n" + //
+      "        if (!text) {\n" + //
+      "            return;\n" + //
+      "        }\n" + //
+      "        var foundIt = false;\n" + //
+      "        var counter = 0;\n" + //
+      "        var selectedOptions = selected.options;\n" + //
+      "        while ((counter < selectedOptions.length) && !foundIt) {\n" + //
+      "            if (selectedOptions[counter].text == text) {\n" + //
+      "                foundIt = true;\n" + //
+      "            }\n" + //
+      "        counter++;\n" + //
+      "        }\n" + //
+      "        if (!foundIt) {\n" + //
+      "            var option = document.createElement(\"option\");\n" + //
+      "            option.text = text;\n" + //
+      "            option.value = availableOptions[index].value;\n" + //
+      "            selected.add(option);\n" + //
+      "        }\n" + //
+      "    }\n" + //
+      "    available.selectedIndex = -1;\n" + //
+      "}\n" + //
+      "function typeDeselected(evnt) {\n" + //
+      "    var selected = document.getElementById(\"%s\");\n" + //
+      "    var options = selected.options;\n" + //
+      "    while(selected.selectedIndex > -1) {\n" + //
+      "        selected.remove(selected.selectedIndex)\n" + //
+      "    }\n" + //
+      "    if (evnt) {\n" + //
+      "       evnt.preventDefault();\n" + //
+      "       evnt.returnValue = false;\n" + //
+      "    }\n" + //
+      "}\n" + //
+      "</script>";
 
    public ArtifactTypeOptionsRule(String selectId, Set<String> typeNames, Set<String> preselectedTypeNames) {
       super(RULE_NAME);

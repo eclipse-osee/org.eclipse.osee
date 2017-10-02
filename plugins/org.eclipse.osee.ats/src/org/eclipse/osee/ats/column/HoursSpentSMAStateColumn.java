@@ -35,8 +35,8 @@ public class HoursSpentSMAStateColumn extends XViewerAtsColumn implements IXView
    }
 
    private HoursSpentSMAStateColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".stateHoursSpent", "State Hours Spent", 40, XViewerAlign.Center, false,
-         SortDataType.Float, false, "Hours spent in performing the changes to the current state.");
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".stateHoursSpent", "State Hours Spent", 40, XViewerAlign.Center,
+         false, SortDataType.Float, false, "Hours spent in performing the changes to the current state.");
    }
 
    /**

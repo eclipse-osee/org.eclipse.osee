@@ -57,7 +57,7 @@ public class GraphDataImpl implements GraphData {
    }
 
    @Override
-   public void addNode(GraphNode node, boolean useBackingData)  {
+   public void addNode(GraphNode node, boolean useBackingData) {
       boolean sameBranches = getBranch().equals(node.getBranch());
       if (!sameBranches) {
          throw new OseeArgumentException("Invalid node added to graph. Graph[%s] Node[%s]", this,

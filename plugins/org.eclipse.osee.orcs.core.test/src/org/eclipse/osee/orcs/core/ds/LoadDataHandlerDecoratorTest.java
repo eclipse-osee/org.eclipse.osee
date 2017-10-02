@@ -46,7 +46,7 @@ public class LoadDataHandlerDecoratorTest {
    }
 
    @Test
-   public void testOnData()  {
+   public void testOnData() {
       decorated.onLoadStart();
       verify(handler).onLoadStart();
 

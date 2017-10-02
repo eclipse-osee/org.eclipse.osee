@@ -37,7 +37,7 @@ public class VCastFunctionTable implements VCastTableData<VCastFunction> {
    }
 
    @Override
-   public Collection<VCastFunction> getRows(VCastDataStore dataStore)  {
+   public Collection<VCastFunction> getRows(VCastDataStore dataStore) {
       return dataStore.getAllFunctions();
    }
 

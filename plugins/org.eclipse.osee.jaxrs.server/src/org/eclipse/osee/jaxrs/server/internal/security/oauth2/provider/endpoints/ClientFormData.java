@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.type.Named;
 /**
  * @author Roberto E. Escobar
  */
-public class ClientFormData extends BaseIdentity<String>implements Named {
+public class ClientFormData extends BaseIdentity<String> implements Named {
 
    private UserSubject userSubject;
    private String name;

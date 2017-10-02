@@ -109,37 +109,37 @@ public class BranchQueryBuilderImpl<T> implements BranchQueryBuilder<T> {
    }
 
    @Override
-   public T andIsOfType(BranchType... branchType)  {
+   public T andIsOfType(BranchType... branchType) {
       Criteria criteria = criteriaFactory.createBranchTypeCriteria(Arrays.asList(branchType));
       return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
-   public T andStateIs(BranchState... branchState)  {
+   public T andStateIs(BranchState... branchState) {
       Criteria criteria = criteriaFactory.createBranchStateCriteria(Arrays.asList(branchState));
       return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
-   public T andNameEquals(String value)  {
+   public T andNameEquals(String value) {
       Criteria criteria = criteriaFactory.createBranchNameCriteria(value, false);
       return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
-   public T andNamePattern(String pattern)  {
+   public T andNamePattern(String pattern) {
       Criteria criteria = criteriaFactory.createBranchNameCriteria(pattern, true);
       return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
-   public T andIsChildOf(BranchId parent)  {
+   public T andIsChildOf(BranchId parent) {
       Criteria criteria = criteriaFactory.createBranchChildOfCriteria(parent);
       return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
-   public T andIsAncestorOf(BranchId child)  {
+   public T andIsAncestorOf(BranchId child) {
       Criteria criteria = criteriaFactory.createBranchAncestorOfCriteria(child);
       return addAndCheck(getQueryData(), criteria);
    }
@@ -157,7 +157,7 @@ public class BranchQueryBuilderImpl<T> implements BranchQueryBuilder<T> {
    }
 
    @SuppressWarnings("unchecked")
-   private T addAndCheck(QueryData queryData, Criteria criteria)  {
+   private T addAndCheck(QueryData queryData, Criteria criteria) {
       criteria.checkValid(getOptions());
       queryData.addCriteria(criteria);
       return (T) this;

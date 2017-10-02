@@ -35,7 +35,7 @@ public class QuerySqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public void writeSelect(Iterable<SqlHandler<?>> handlers)  {
+   public void writeSelect(Iterable<SqlHandler<?>> handlers) {
       String tableAlias = getLastAlias(table);
       if (isCountQueryType()) {
          write("SELECT%s count(%s.%s)", getSqlHint(), tableAlias, idColumn);
@@ -45,7 +45,7 @@ public class QuerySqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public void writeGroupAndOrder()  {
+   public void writeGroupAndOrder() {
       if (!isCountQueryType()) {
          String tableAlias = getLastAlias(table);
          write("\n ORDER BY %s.%s", tableAlias, idColumn);
@@ -58,12 +58,12 @@ public class QuerySqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public String getTxBranchFilter(String txsAlias, boolean allowDeleted)  {
+   public String getTxBranchFilter(String txsAlias, boolean allowDeleted) {
       return Strings.emptyString();
    }
 
    @Override
-   public String getWithClauseTxBranchFilter(String txsAlias, boolean deletedPredicate)  {
+   public String getWithClauseTxBranchFilter(String txsAlias, boolean deletedPredicate) {
       return Strings.emptyString();
    }
 

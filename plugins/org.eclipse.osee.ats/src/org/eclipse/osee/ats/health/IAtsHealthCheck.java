@@ -28,8 +28,8 @@ public interface IAtsHealthCheck {
     *
     * @param results JavaTip
     */
-   public void validateAtsDatabase(Collection<Artifact> artifacts, ValidateResults results) ;
+   public void validateAtsDatabase(Collection<Artifact> artifacts, ValidateResults results);
 
-   public Result validateChangeReports(ChangeData currentChangeData, TeamWorkFlowArtifact teamArt, XResultData resultData) ;
+   public Result validateChangeReports(ChangeData currentChangeData, TeamWorkFlowArtifact teamArt, XResultData resultData);
 
 }

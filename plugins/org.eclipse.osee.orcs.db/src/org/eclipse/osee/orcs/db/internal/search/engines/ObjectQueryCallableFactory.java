@@ -59,7 +59,7 @@ public class ObjectQueryCallableFactory implements QueryCallableFactory {
             return count;
          }
 
-         protected int getCount()  {
+         protected int getCount() {
             QuerySqlContext queryContext =
                queryContextFactory.createQueryContext(getSession(), getQueryData(), QueryType.COUNT);
             checkForCancelled();

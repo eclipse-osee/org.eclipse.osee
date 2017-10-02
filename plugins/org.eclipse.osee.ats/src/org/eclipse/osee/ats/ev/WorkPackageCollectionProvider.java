@@ -38,7 +38,7 @@ public class WorkPackageCollectionProvider implements IWorkPackageProvider {
       return filterInput(true);
    }
 
-   private Collection<IAtsWorkPackage> filterInput(boolean showAll)  {
+   private Collection<IAtsWorkPackage> filterInput(boolean showAll) {
       java.util.List<IAtsWorkPackage> filtered = new ArrayList<>();
       for (IAtsWorkPackage workPkg : workPackages) {
          if (showAll || workPkg.isActive()) {

@@ -169,7 +169,7 @@ public class MergeXViewer extends XViewer {
       mergeXWidget.loadTable();
    }
 
-   private CompareHandler getCompareHandler(AttributeConflict attributeConflict)  {
+   private CompareHandler getCompareHandler(AttributeConflict attributeConflict) {
 
       Artifact sourceArtifact = attributeConflict.getArtifact();
       String leftName = sourceArtifact.getName() + " on Branch: " + attributeConflict.getSourceBranch().getName();

@@ -18,6 +18,6 @@ import java.nio.CharBuffer;
  */
 public interface IResourceHandler {
 
-   void onResourceFound(URI uriPath, String name, CharBuffer fileBuffer) ;
+   void onResourceFound(URI uriPath, String name, CharBuffer fileBuffer);
 
 }

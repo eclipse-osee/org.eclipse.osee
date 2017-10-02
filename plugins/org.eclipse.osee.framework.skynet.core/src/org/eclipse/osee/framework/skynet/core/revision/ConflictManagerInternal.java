@@ -96,7 +96,7 @@ public class ConflictManagerInternal {
    private static final String GET_COMMIT_TRANSACTION_COMMENT =
       "SELECT transaction_id FROM osee_tx_details WHERE osee_comment = ? AND branch_id = ?";
 
-   public static List<Conflict> getConflictsPerBranch(TransactionToken commitTransaction, IProgressMonitor monitor)  {
+   public static List<Conflict> getConflictsPerBranch(TransactionToken commitTransaction, IProgressMonitor monitor) {
       monitor.beginTask(String.format("Loading Merge Manager for Transaction %d", commitTransaction.getId()), 100);
       monitor.subTask("Finding Database stored conflicts");
       ArrayList<Conflict> conflicts = new ArrayList<>();
@@ -125,7 +125,7 @@ public class ConflictManagerInternal {
       return conflicts;
    }
 
-   public static List<Conflict> getConflictsPerBranch(IOseeBranch sourceBranch, IOseeBranch destinationBranch, TransactionToken baselineTransaction, IProgressMonitor monitor)  {
+   public static List<Conflict> getConflictsPerBranch(IOseeBranch sourceBranch, IOseeBranch destinationBranch, TransactionToken baselineTransaction, IProgressMonitor monitor) {
       List<ConflictBuilder> conflictBuilders = new ArrayList<>();
       List<Conflict> conflicts = new ArrayList<>();
       Set<ArtifactId> artIdSet = new HashSet<>();
@@ -189,7 +189,7 @@ public class ConflictManagerInternal {
       return conflicts;
    }
 
-   private static Conflict getConflict(ConflictBuilder conflictBuilder, IOseeBranch mergeBranch, Set<ArtifactId> artIdSetDontShow)  {
+   private static Conflict getConflict(ConflictBuilder conflictBuilder, IOseeBranch mergeBranch, Set<ArtifactId> artIdSetDontShow) {
       Conflict conflict = conflictBuilder.getConflict(mergeBranch, artIdSetDontShow);
       if (conflict != null) {
          conflict.computeStatus();
@@ -197,7 +197,7 @@ public class ConflictManagerInternal {
       return conflict;
    }
 
-   private static Collection<Artifact> preloadConflictArtifacts(BranchId sourceBranch, BranchId destBranch, IOseeBranch mergeBranch, Collection<ArtifactId> artIdSet, IProgressMonitor monitor)  {
+   private static Collection<Artifact> preloadConflictArtifacts(BranchId sourceBranch, BranchId destBranch, IOseeBranch mergeBranch, Collection<ArtifactId> artIdSet, IProgressMonitor monitor) {
       monitor.subTask("Preloading Artifacts Associated with the Conflicts");
 
       Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFrom(artIdSet, sourceBranch, INCLUDE_DELETED);
@@ -234,7 +234,7 @@ public class ConflictManagerInternal {
       }
    }
 
-   private static void loadArtifactVersionConflicts(String sql, IOseeBranch sourceBranch, IOseeBranch destinationBranch, TransactionToken baselineTransaction, Collection<ConflictBuilder> conflictBuilders, Set<ArtifactId> artIdSet, Set<ArtifactId> artIdSetDontShow, Set<ArtifactId> artIdSetDontAdd, IProgressMonitor monitor, TransactionToken commonTransaction)  {
+   private static void loadArtifactVersionConflicts(String sql, IOseeBranch sourceBranch, IOseeBranch destinationBranch, TransactionToken baselineTransaction, Collection<ConflictBuilder> conflictBuilders, Set<ArtifactId> artIdSet, Set<ArtifactId> artIdSetDontShow, Set<ArtifactId> artIdSetDontAdd, IProgressMonitor monitor, TransactionToken commonTransaction) {
       boolean hadEntries = false;
 
       monitor.subTask("Finding Artifact Version Conflicts");
@@ -282,7 +282,7 @@ public class ConflictManagerInternal {
       }
    }
 
-   private static void loadAttributeConflictsNew(IOseeBranch sourceBranch, IOseeBranch destinationBranch, TransactionToken baselineTransaction, Collection<ConflictBuilder> conflictBuilders, Set<ArtifactId> artIdSet, IProgressMonitor monitor, TransactionToken commonTransaction)  {
+   private static void loadAttributeConflictsNew(IOseeBranch sourceBranch, IOseeBranch destinationBranch, TransactionToken baselineTransaction, Collection<ConflictBuilder> conflictBuilders, Set<ArtifactId> artIdSet, IProgressMonitor monitor, TransactionToken commonTransaction) {
       monitor.subTask("Finding the Attribute Conflicts");
 
       AttributeConflictBuilder attributeConflictBuilder;
@@ -320,7 +320,7 @@ public class ConflictManagerInternal {
     *
     * @return Returns True if the AttributeConflict candidate is really a conflict.
     */
-   private static boolean isAttributeConflictValid(int destinationGammaId, BranchId sourceBranch)  {
+   private static boolean isAttributeConflictValid(int destinationGammaId, BranchId sourceBranch) {
       boolean isValidConflict = true;
       // We just need the largest value at first so the complete source branch
       // will be searched
@@ -345,13 +345,13 @@ public class ConflictManagerInternal {
    /**
     * @return Returns True if the destination gamma does not exist on a branch else false if it does.
     */
-   private static boolean isAttributeConflictValidOnBranch(int destinationGammaId, BranchId branch, TransactionId endTransaction)  {
+   private static boolean isAttributeConflictValidOnBranch(int destinationGammaId, BranchId branch, TransactionId endTransaction) {
       String sql =
          "SELECT count(1) FROM osee_txs txs WHERE txs.gamma_id = ? AND txs.branch_id = ? AND txs.transaction_id <= ?";
       return ConnectionHandler.getJdbcClient().fetch(0, sql, destinationGammaId, branch, endTransaction) == 0;
    }
 
-   private static void cleanUpConflictDB(Collection<Conflict> conflicts, BranchId branch, IProgressMonitor monitor)  {
+   private static void cleanUpConflictDB(Collection<Conflict> conflicts, BranchId branch, IProgressMonitor monitor) {
       monitor.subTask("Cleaning up old conflict data");
       if (conflicts != null && conflicts.size() != 0 && branch.isValid()) {
          try (Id4JoinQuery joinQuery = JoinUtility.createId4JoinQuery()) {
@@ -366,7 +366,7 @@ public class ConflictManagerInternal {
       monitor.worked(10);
    }
 
-   public static Collection<Long> getDestinationBranchesMerged(BranchId sourceBranch)  {
+   public static Collection<Long> getDestinationBranchesMerged(BranchId sourceBranch) {
       List<Long> destinationBranches = new LinkedList<>();
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
@@ -383,7 +383,7 @@ public class ConflictManagerInternal {
       return destinationBranches;
    }
 
-   private static TransactionToken getCommitTransaction(IOseeBranch sourceBranch, BranchId destBranch)  {
+   private static TransactionToken getCommitTransaction(IOseeBranch sourceBranch, BranchId destBranch) {
       TransactionToken transactionId = TransactionToken.SENTINEL;
       try (JdbcStatement stmt = ConnectionHandler.getStatement()) {
          stmt.runPreparedQuery(GET_MERGE_DATA, sourceBranch, destBranch);
@@ -406,7 +406,7 @@ public class ConflictManagerInternal {
     * branches that share a common history. If two branches share the same history than the point at which they diverged
     * should provide the reference for detecting conflicts based on the gamma at that point.
     */
-   public static TransactionToken findCommonTransaction(BranchId sourceBranch, BranchId destBranch)  {
+   public static TransactionToken findCommonTransaction(BranchId sourceBranch, BranchId destBranch) {
       Collection<BranchId> sourceBranches = BranchManager.getAncestors(sourceBranch);
       Collection<BranchId> destBranches = BranchManager.getAncestors(destBranch);
       BranchId commonAncestor = null;

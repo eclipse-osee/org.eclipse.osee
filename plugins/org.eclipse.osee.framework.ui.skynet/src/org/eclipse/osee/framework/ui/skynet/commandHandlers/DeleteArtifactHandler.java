@@ -31,7 +31,7 @@ public class DeleteArtifactHandler extends CommandHandler {
    private List<Artifact> artifacts;
 
    @Override
-   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection)  {
+   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {
       if (!artifacts.isEmpty()) {
          MessageDialog dialog = new MessageDialog(Displays.getActiveShell(), "Confirm Artifact Deletion", null,
             " Are you sure you want to delete this artifact and all of the default hierarchy children?",
@@ -48,7 +48,7 @@ public class DeleteArtifactHandler extends CommandHandler {
    }
 
    @Override
-   public boolean isEnabledWithException(IStructuredSelection structuredSelection)  {
+   public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
       boolean enabled = false;
       artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
       if (!artifacts.isEmpty()) {

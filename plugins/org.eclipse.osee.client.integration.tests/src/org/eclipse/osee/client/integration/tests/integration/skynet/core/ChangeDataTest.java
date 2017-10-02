@@ -60,7 +60,7 @@ public class ChangeDataTest {
    private ChangeData theData;
 
    @Before
-   public void setUp()  {
+   public void setUp() {
       workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, method.getQualifiedTestName());
       ArrayList<Change> theChanges = new ArrayList<>();
 

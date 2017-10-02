@@ -19,23 +19,22 @@ import org.eclipse.ui.PlatformUI;
  */
 public class RefreshAction implements IViewActionDelegate {
 
-  @Override
-  public void run(final IAction action) {
-    IViewPart view =
-        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-            .findView("org.eclipse.osee.doors.connector.ui.Doors");
+   @Override
+   public void run(final IAction action) {
+      IViewPart view = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
+         "org.eclipse.osee.doors.connector.ui.Doors");
 
-    ((Doors) view).refresh();
-  }
+      ((Doors) view).refresh();
+   }
 
-  @Override
-  public void selectionChanged(final IAction action, final ISelection selection) {
-    //
-  }
+   @Override
+   public void selectionChanged(final IAction action, final ISelection selection) {
+      //
+   }
 
-  @Override
-  public void init(final IViewPart view) {
-    //
-  }
+   @Override
+   public void init(final IViewPart view) {
+      //
+   }
 
 }

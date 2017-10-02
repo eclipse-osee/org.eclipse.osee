@@ -68,7 +68,7 @@ public class XViewerDataManager {
       }
    }
 
-   public void addArtifacts(IProgressMonitor monitor, final List<Artifact> artifacts)  {
+   public void addArtifacts(IProgressMonitor monitor, final List<Artifact> artifacts) {
       if (branchMap.isEmpty()) {
          if (xViewer.getXViewerFactory() instanceof MassXViewerFactory) {
             ((MassXViewerFactory) xViewer.getXViewerFactory()).registerAllAttributeColumnsForArtifacts(artifacts, true);

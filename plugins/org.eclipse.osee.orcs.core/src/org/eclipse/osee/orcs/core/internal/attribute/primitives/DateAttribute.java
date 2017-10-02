@@ -30,7 +30,7 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
    }
 
    @Override
-   public String getDisplayableString()  {
+   public String getDisplayableString() {
       return getAsFormattedString(MMDDYYHHMM);
    }
 
@@ -45,7 +45,7 @@ public class DateAttribute extends CharacterBackedAttribute<Date> {
     * @param pattern DateAttribute.MMDDYY, etc...
     * @return formated date
     */
-   public String getAsFormattedString(DateFormat dateFormat)  {
+   public String getAsFormattedString(DateFormat dateFormat) {
       Date date = getValue();
       return date != null ? dateFormat.format(date) : "";
    }

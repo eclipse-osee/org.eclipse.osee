@@ -61,39 +61,39 @@ public class User extends Artifact implements UserId {
       }
    }
 
-   public String getUserId()  {
+   public String getUserId() {
       return getSoleAttributeValue(CoreAttributeTypes.UserId, "");
    }
 
-   public void setUserID(String userId)  {
+   public void setUserID(String userId) {
       setSoleAttributeValue(CoreAttributeTypes.UserId, userId);
    }
 
-   public String getEmail()  {
+   public String getEmail() {
       return getSoleAttributeValue(CoreAttributeTypes.Email, "");
    }
 
-   public void setEmail(String email)  {
+   public void setEmail(String email) {
       setSoleAttributeValue(CoreAttributeTypes.Email, email);
    }
 
-   public String getPhone()  {
+   public String getPhone() {
       return getSoleAttributeValue(CoreAttributeTypes.Phone, "");
    }
 
-   public void setPhone(String phone)  {
+   public void setPhone(String phone) {
       setSoleAttributeValue(CoreAttributeTypes.Phone, phone);
    }
 
-   public boolean isActive()  {
+   public boolean isActive() {
       return getSoleAttributeValue(CoreAttributeTypes.Active);
    }
 
-   public void setActive(boolean active)  {
+   public void setActive(boolean active) {
       setSoleAttributeValue(CoreAttributeTypes.Active, active);
    }
 
-   public void toggleFavoriteBranch(BranchId favoriteBranch)  {
+   public void toggleFavoriteBranch(BranchId favoriteBranch) {
       Conditions.checkNotNull(favoriteBranch, "Branch");
       HashSet<BranchId> branches = new HashSet<>(
          BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING, BranchType.BASELINE));
@@ -126,7 +126,7 @@ public class User extends Artifact implements UserId {
       saveSettings();
    }
 
-   public boolean isFavoriteBranch(BranchId branch)  {
+   public boolean isFavoriteBranch(BranchId branch) {
       Collection<String> attributes = getAttributesToStringList(CoreAttributeTypes.FavoriteBranch);
       for (String value : attributes) {
          try {
@@ -140,32 +140,32 @@ public class User extends Artifact implements UserId {
       return false;
    }
 
-   public String getSetting(String key)  {
+   public String getSetting(String key) {
       ensureUserSettingsAreLoaded();
       return userSettings.get(key);
    }
 
-   public boolean getBooleanSetting(String key)  {
+   public boolean getBooleanSetting(String key) {
       return Boolean.parseBoolean(getSetting(key));
    }
 
-   public void setSetting(String key, String value)  {
+   public void setSetting(String key, String value) {
       ensureUserSettingsAreLoaded();
       userSettings.put(key, value);
 
    }
 
-   public void setSetting(String key, Long value)  {
+   public void setSetting(String key, Long value) {
       ensureUserSettingsAreLoaded();
       userSettings.put(key, value);
 
    }
 
-   public void saveSettings()  {
+   public void saveSettings() {
       saveSettings(null);
    }
 
-   public void saveSettings(SkynetTransaction transaction)  {
+   public void saveSettings(SkynetTransaction transaction) {
       if (userSettings != null) {
          StringWriter stringWriter = new StringWriter();
          try {
@@ -182,7 +182,7 @@ public class User extends Artifact implements UserId {
       }
    }
 
-   private void ensureUserSettingsAreLoaded()  {
+   private void ensureUserSettingsAreLoaded() {
       if (userSettings == null) {
          PropertyStore store = new PropertyStore(getGuid());
          try {
@@ -201,7 +201,7 @@ public class User extends Artifact implements UserId {
       return SystemUser.isSystemUser(this);
    }
 
-   public void setBooleanSetting(String key, boolean value)  {
+   public void setBooleanSetting(String key, boolean value) {
       setSetting(key, String.valueOf(value));
    }
 

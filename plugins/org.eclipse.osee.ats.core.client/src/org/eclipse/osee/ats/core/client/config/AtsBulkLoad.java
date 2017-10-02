@@ -53,7 +53,7 @@ public class AtsBulkLoad {
       return ops;
    }
 
-   public static void reloadConfig(boolean pend)  {
+   public static void reloadConfig(boolean pend) {
       if (pend) {
          AtsClientService.get().reloadAllCaches(pend);
       } else {
@@ -61,7 +61,7 @@ public class AtsBulkLoad {
       }
    }
 
-   public static Set<Artifact> bulkLoadArtifacts(Collection<? extends Artifact> artifacts)  {
+   public static Set<Artifact> bulkLoadArtifacts(Collection<? extends Artifact> artifacts) {
       List<Artifact> actions = new ArrayList<>();
       List<Artifact> teams = new ArrayList<>();
       List<Artifact> tasks = new ArrayList<>();

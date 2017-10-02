@@ -28,17 +28,17 @@ public interface ResourcesEndpoint {
 
    @GET
    Response getResource(@QueryParam("path") String path, //
-   @DefaultValue("false") @QueryParam("unzip") boolean decompressOnAquire, //
-   @DefaultValue("false") @QueryParam("zip") boolean compressOnAcquire);
+      @DefaultValue("false") @QueryParam("unzip") boolean decompressOnAquire, //
+      @DefaultValue("false") @QueryParam("zip") boolean compressOnAcquire);
 
    @POST
    @Path("{protocol}/{resourceId}")
    Response saveResource(InputStream inputStream, //
-   @PathParam("protocol") String protocol, //
-   @PathParam("resourceId") String resourceId, //
-   @QueryParam("name") String resourceName, //
-   @DefaultValue("false") @QueryParam("overwrite") boolean overwriteAllowed, //
-   @DefaultValue("false") @QueryParam("compress") boolean compressOnSave);
+      @PathParam("protocol") String protocol, //
+      @PathParam("resourceId") String resourceId, //
+      @QueryParam("name") String resourceName, //
+      @DefaultValue("false") @QueryParam("overwrite") boolean overwriteAllowed, //
+      @DefaultValue("false") @QueryParam("compress") boolean compressOnSave);
 
    @DELETE
    Response deleteResource(@QueryParam("path") String path);

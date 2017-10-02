@@ -237,7 +237,7 @@ public class TransitionToMenu {
          }
 
          @Override
-         public Collection<? extends IAtsUser> getToAssignees(IAtsWorkItem workItem)  {
+         public Collection<? extends IAtsUser> getToAssignees(IAtsWorkItem workItem) {
             return workItem.getAssignees();
          }
 

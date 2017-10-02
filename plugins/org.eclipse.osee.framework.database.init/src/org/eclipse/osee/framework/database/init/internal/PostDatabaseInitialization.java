@@ -26,7 +26,7 @@ public class PostDatabaseInitialization implements IDbInitializationTask {
       "begin DBMS_STATS.GATHER_SCHEMA_STATS (ownname => '', estimate_percent => 99," + " granularity => 'ALL', degree => NULL , cascade => TRUE); end;";
 
    @Override
-   public void run()  {
+   public void run() {
       OseeLog.log(PostDatabaseInitialization.class, Level.INFO, "Running Post-Initialization Process...");
 
       JdbcClient jdbcClient = DatabaseInitActivator.getInstance().getJdbcClient();

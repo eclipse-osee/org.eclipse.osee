@@ -77,7 +77,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
    }
 
    @Override
-   protected void doWork(IProgressMonitor monitor)  {
+   protected void doWork(IProgressMonitor monitor) {
       BranchState currentState = BranchManager.getState(sourceBranch);
       BranchManager.getBranch(sourceBranch).setBranchState(BranchState.COMMIT_IN_PROGRESS); // the server changes the state in the database to COMMIT_IN_PROGRESS
 
@@ -125,7 +125,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
       return toReturn;
    }
 
-   private void handleResponse(Long newTxId, IProgressMonitor monitor, BranchId sourceBranch, BranchId destinationBranch)  {
+   private void handleResponse(Long newTxId, IProgressMonitor monitor, BranchId sourceBranch, BranchId destinationBranch) {
       TransactionToken newTransaction = TransactionToken.valueOf(newTxId, destinationBranch);
       AccessPolicy accessPolicy = ServiceUtil.getAccessPolicy();
       accessPolicy.removePermissions(sourceBranch);
@@ -149,7 +149,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
          new BranchEvent(BranchEventType.Committed, sourceBranch, destinationBranch));
    }
 
-   private void handleArtifactEvents(TransactionToken newTransaction, Collection<Change> changes)  {
+   private void handleArtifactEvents(TransactionToken newTransaction, Collection<Change> changes) {
       ArtifactEvent artifactEvent = new ArtifactEvent(newTransaction);
       Map<Integer, EventModifiedBasicGuidArtifact> artEventMap = new HashMap<>();
       Set<Artifact> artifacts = new HashSet<>();

@@ -167,7 +167,7 @@ public class ValidationReportOperation extends AbstractOperation {
       }
    }
 
-   public static String getRequirementHyperlink(Artifact art)  {
+   public static String getRequirementHyperlink(Artifact art) {
       String atsId = AtsClientService.get().getAtsId(art);
       String linkName = String.format("%s(%s)", art.getName(), atsId);
       return XResultDataUI.getHyperlink(linkName, atsId, art.getBranch());

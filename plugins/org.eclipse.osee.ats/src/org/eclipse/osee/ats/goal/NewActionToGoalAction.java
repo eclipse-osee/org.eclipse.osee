@@ -91,7 +91,7 @@ public class NewActionToGoalAction extends Action {
          wizard.setNewActionListener(new INewActionListener() {
 
             @Override
-            public void teamCreated(IAtsAction action, IAtsTeamWorkflow teamWf, IAtsChangeSet changes)  {
+            public void teamCreated(IAtsAction action, IAtsTeamWorkflow teamWf, IAtsChangeSet changes) {
                List<Artifact> related = collectorArt.getRelatedArtifacts(memberProvider.getMemberRelationTypeSide());
                if (!related.contains(teamWf.getStoreObject())) {
                   changes.relate(collectorArt, memberProvider.getMemberRelationTypeSide(), teamWf.getStoreObject());

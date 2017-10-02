@@ -24,7 +24,7 @@ public class AtsUsersUtilityTest extends AbstractUserTest {
    }
 
    @Test
-   public void testGetValidEmailUsers()  {
+   public void testGetValidEmailUsers() {
       Set<IAtsUser> users = new HashSet<>();
       users.add(joe);
       users.add(steve);
@@ -40,7 +40,7 @@ public class AtsUsersUtilityTest extends AbstractUserTest {
    }
 
    @Test
-   public void testGetActiveEmailUsers()  {
+   public void testGetActiveEmailUsers() {
       Set<IAtsUser> users = new HashSet<>();
       users.add(joe);
       users.add(steve);

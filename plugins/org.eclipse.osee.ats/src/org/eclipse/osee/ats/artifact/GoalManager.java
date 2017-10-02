@@ -37,7 +37,7 @@ public class GoalManager extends MembersManager<GoalArtifact> {
    /**
     * change goal, prompt if member of two goals
     */
-   public GoalArtifact promptChangeGoalOrder(Artifact artifact)  {
+   public GoalArtifact promptChangeGoalOrder(Artifact artifact) {
       if (!isHasCollector(artifact)) {
          AWorkbench.popup(String.format("No Goal set for artifact [%s]", artifact));
          return null;
@@ -60,7 +60,7 @@ public class GoalManager extends MembersManager<GoalArtifact> {
       return promptChangeMemberOrder(goal, artifact);
    }
 
-   public static GoalArtifact createGoal(String title, IAtsChangeSet changes)  {
+   public static GoalArtifact createGoal(String title, IAtsChangeSet changes) {
       GoalArtifact goalArt = (GoalArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.Goal,
          AtsClientService.get().getAtsBranch(), title);
 
@@ -91,7 +91,7 @@ public class GoalManager extends MembersManager<GoalArtifact> {
    }
 
    @Override
-   public String getMemberOrder(GoalArtifact goalArt, Artifact member)  {
+   public String getMemberOrder(GoalArtifact goalArt, Artifact member) {
       return AtsClientService.get().getGoalMembersCache().getMemberOrder(goalArt, member);
    }
 

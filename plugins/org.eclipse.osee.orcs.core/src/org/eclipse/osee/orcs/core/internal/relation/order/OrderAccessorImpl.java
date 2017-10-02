@@ -25,14 +25,14 @@ public class OrderAccessorImpl implements OrderAccessor {
    }
 
    @Override
-   public void load(HasOrderData data)  {
+   public void load(HasOrderData data) {
       data.clear();
       String value = storage.getOrderData();
       parser.loadFromXml(data, value);
    }
 
    @Override
-   public void store(HasOrderData data, OrderChange changeType)  {
+   public void store(HasOrderData data, OrderChange changeType) {
       if (changeType != OrderChange.NoChange) {
          if (storage.isAccessible()) {
             String value = "";

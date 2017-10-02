@@ -42,7 +42,7 @@ public abstract class AbstractRelationSqlHandler<T extends Criteria> extends Sql
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer)  {
+   public boolean addPredicates(AbstractSqlWriter writer) {
       boolean modified = false;
       if (artAlias != null && artTxsAlias != null) {
          writer.writeEquals(artAlias, artTxsAlias, "gamma_id");

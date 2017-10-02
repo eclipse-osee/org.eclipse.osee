@@ -69,7 +69,7 @@ public class WfeRelationsHyperlinkComposite extends Composite {
       this.editor = editor;
    }
 
-   public void create(AbstractWorkflowArtifact sma)  {
+   public void create(AbstractWorkflowArtifact sma) {
       this.awa = sma;
       setLayout(ALayout.getZeroMarginLayout(2, false));
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -107,7 +107,7 @@ public class WfeRelationsHyperlinkComposite extends Composite {
 
    }
 
-   public static boolean relationExists(AbstractWorkflowArtifact smaArt)  {
+   public static boolean relationExists(AbstractWorkflowArtifact smaArt) {
       for (RelationTypeSide side : sides) {
          if (smaArt.getRelatedArtifacts(side).size() > 0) {
             return true;
@@ -120,14 +120,14 @@ public class WfeRelationsHyperlinkComposite extends Composite {
       return false;
    }
 
-   private String getCompletedCancelledString(Artifact art)  {
+   private String getCompletedCancelledString(Artifact art) {
       if (art instanceof AbstractWorkflowArtifact && ((AbstractWorkflowArtifact) art).isCompletedOrCancelled()) {
          return " " + ((AbstractWorkflowArtifact) art).getStateMgr().getCurrentStateName() + " ";
       }
       return "";
    }
 
-   private void createArtifactRelationHyperlinks(String prefix, Artifact thisArt, String action, RelationTypeSide relationEnum)  {
+   private void createArtifactRelationHyperlinks(String prefix, Artifact thisArt, String action, RelationTypeSide relationEnum) {
       for (final Artifact art : thisArt.getRelatedArtifacts(relationEnum)) {
          createLink(prefix, art, action, thisArt);
       }
@@ -172,7 +172,7 @@ public class WfeRelationsHyperlinkComposite extends Composite {
       }
    }
 
-   private void processReviewArtifact(final AbstractReviewArtifact reviewArt)  {
+   private void processReviewArtifact(final AbstractReviewArtifact reviewArt) {
       if (!AtsClientService.get().getWorkItemService().getActionableItemService().hasActionableItems(reviewArt)) {
          return;
       }
@@ -198,7 +198,7 @@ public class WfeRelationsHyperlinkComposite extends Composite {
       refreshActionableItemsLabel();
    }
 
-   private void refreshActionableItemsLabel()  {
+   private void refreshActionableItemsLabel() {
       if (actionableItemsLabel != null && awa instanceof AbstractReviewArtifact) {
          actionableItemsLabel.setText("This \"" + ((AbstractReviewArtifact) awa).getArtifactTypeName() +
          //
@@ -208,7 +208,7 @@ public class WfeRelationsHyperlinkComposite extends Composite {
       }
    }
 
-   public void refresh()  {
+   public void refresh() {
       refreshActionableItemsLabel();
    }
 

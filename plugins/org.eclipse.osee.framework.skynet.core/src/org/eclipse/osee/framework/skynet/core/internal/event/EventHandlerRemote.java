@@ -18,5 +18,5 @@ import org.eclipse.osee.framework.skynet.core.event.model.Sender;
  */
 public interface EventHandlerRemote<R extends RemoteEvent> {
 
-   void handle(Transport transport, Sender sender, R remoteEvent) ;
+   void handle(Transport transport, Sender sender, R remoteEvent);
 }

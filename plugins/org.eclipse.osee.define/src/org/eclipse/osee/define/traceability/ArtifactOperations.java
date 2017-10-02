@@ -91,7 +91,7 @@ public class ArtifactOperations {
       return artifact.getName();
    }
 
-   public String getParagraphNumber()  {
+   public String getParagraphNumber() {
       return artifact.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
    }
 

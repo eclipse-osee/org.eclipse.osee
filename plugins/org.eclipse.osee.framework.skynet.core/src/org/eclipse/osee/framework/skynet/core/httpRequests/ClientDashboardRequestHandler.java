@@ -81,7 +81,7 @@ public class ClientDashboardRequestHandler implements IHttpServerRequest {
       }
    }
 
-   private String getInfoString()  {
+   private String getInfoString() {
       StringBuffer sb = new StringBuffer(1000);
       sb.append("\nName: [" + UserManager.getUser().getName() + "]\n");
       sb.append(ClientSessionManager.getSession().toString().replaceAll("] ", "]\n"));

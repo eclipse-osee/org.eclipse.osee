@@ -23,7 +23,7 @@ import org.eclipse.osee.orcs.OrcsApi;
 /**
  * @author Angel Avila
  */
-public class StorageProviderImpl extends LazyObject<Storage>implements StorageProvider {
+public class StorageProviderImpl extends LazyObject<Storage> implements StorageProvider {
 
    private static final String DISPOSITION_TYPE_DEFINITIONS = "types/OseeTypes_Dispo.osee";
    private Log logger;

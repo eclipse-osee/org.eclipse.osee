@@ -40,7 +40,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  */
 public class WorkflowManager {
 
-   public static boolean isAssigneeEditable(AbstractWorkflowArtifact awa, boolean privilegedEditEnabled)  {
+   public static boolean isAssigneeEditable(AbstractWorkflowArtifact awa, boolean privilegedEditEnabled) {
       return !awa.isCompletedOrCancelled() && !awa.isReadOnly() &&
       // and access control writeable
          awa.isAccessControlWrite() && //
@@ -55,13 +55,13 @@ public class WorkflowManager {
             awa.teamDefHasRule(RuleDefinitionOption.AllowAssigneeToAll));
    }
 
-   private static boolean isParentTeamWorklfowCurrentStateAllowAssigneeToAll(AbstractWorkflowArtifact awa)  {
+   private static boolean isParentTeamWorklfowCurrentStateAllowAssigneeToAll(AbstractWorkflowArtifact awa) {
       TeamWorkFlowArtifact parentTeamArt = awa.getParentTeamWorkflow();
       return parentTeamArt != null && parentTeamArt.getStateDefinition().hasRule(
          RuleDefinitionOption.AllowAssigneeToAll.name());
    }
 
-   public static List<TeamWorkFlowArtifact> getAllTeamWorkflowArtifacts()  {
+   public static List<TeamWorkFlowArtifact> getAllTeamWorkflowArtifacts() {
       List<TeamWorkFlowArtifact> result = new ArrayList<>();
       for (ArtifactTypeId artType : AtsClientService.get().getStoreService().getTeamWorkflowArtifactTypes()) {
          List<TeamWorkFlowArtifact> teamArts = org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
@@ -81,7 +81,7 @@ public class WorkflowManager {
       return artifactsToReturn;
    }
 
-   public static Collection<AbstractWorkflowArtifact> filterOutCompleted(Collection<AbstractWorkflowArtifact> awas)  {
+   public static Collection<AbstractWorkflowArtifact> filterOutCompleted(Collection<AbstractWorkflowArtifact> awas) {
       List<AbstractWorkflowArtifact> artifactsToReturn = new ArrayList<>(awas.size());
       for (AbstractWorkflowArtifact awa : awas) {
          if (!awa.isCompleted()) {
@@ -91,7 +91,7 @@ public class WorkflowManager {
       return artifactsToReturn;
    }
 
-   public static Collection<AbstractWorkflowArtifact> filterOutCancelled(Collection<AbstractWorkflowArtifact> awas)  {
+   public static Collection<AbstractWorkflowArtifact> filterOutCancelled(Collection<AbstractWorkflowArtifact> awas) {
       List<AbstractWorkflowArtifact> artifactsToReturn = new ArrayList<>(awas.size());
       for (AbstractWorkflowArtifact awa : awas) {
          if (!awa.isCancelled()) {
@@ -132,7 +132,7 @@ public class WorkflowManager {
       return artifactsToReturn;
    }
 
-   public static Collection<AbstractWorkflowArtifact> getTeamDefinitionWorkflows(Collection<? extends Artifact> artifacts, Collection<IAtsTeamDefinition> teamDefs)  {
+   public static Collection<AbstractWorkflowArtifact> getTeamDefinitionWorkflows(Collection<? extends Artifact> artifacts, Collection<IAtsTeamDefinition> teamDefs) {
       List<AbstractWorkflowArtifact> returnawas = new ArrayList<>();
       for (AbstractWorkflowArtifact awa : getAwas(artifacts)) {
          if (awa.getParentTeamWorkflow() == null) {
@@ -145,7 +145,7 @@ public class WorkflowManager {
       return returnawas;
    }
 
-   public static Collection<AbstractWorkflowArtifact> getVersionWorkflows(Collection<? extends Artifact> artifacts, Collection<IAtsVersion> versionArts)  {
+   public static Collection<AbstractWorkflowArtifact> getVersionWorkflows(Collection<? extends Artifact> artifacts, Collection<IAtsVersion> versionArts) {
       List<AbstractWorkflowArtifact> returnawas = new ArrayList<>();
       for (AbstractWorkflowArtifact awa : getAwas(artifacts)) {
          if (awa.getParentTeamWorkflow() == null) {
@@ -176,7 +176,7 @@ public class WorkflowManager {
       return null;
    }
 
-   public static StateXWidgetPage getCurrentAtsWorkPage(AbstractWorkflowArtifact awa)  {
+   public static StateXWidgetPage getCurrentAtsWorkPage(AbstractWorkflowArtifact awa) {
       for (StateXWidgetPage statePage : getStatePagesOrderedByOrdinal(awa)) {
          if (awa.getStateMgr().getCurrentStateName().equals(statePage.getName())) {
             return statePage;
@@ -185,7 +185,7 @@ public class WorkflowManager {
       return null;
    }
 
-   public static List<StateXWidgetPage> getStatePagesOrderedByOrdinal(IAtsWorkItem workItem)  {
+   public static List<StateXWidgetPage> getStatePagesOrderedByOrdinal(IAtsWorkItem workItem) {
       List<StateXWidgetPage> statePages = new ArrayList<>();
       if (workItem != null) {
          IAtsWorkDefinition definition = workItem.getWorkDefinition();

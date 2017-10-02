@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.util.Overview.PreviewStyle;
  */
 public class AtsNotificationManagerUI {
 
-   public static String getPreviewHtml(AbstractWorkflowArtifact workflow, PreviewStyle... styles)  {
+   public static String getPreviewHtml(AbstractWorkflowArtifact workflow, PreviewStyle... styles) {
       Overview o = new Overview();
       o.addHeader(workflow, styles);
       o.addFooter(workflow, styles);

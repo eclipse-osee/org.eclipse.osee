@@ -79,7 +79,7 @@ public class EstimatedCompletionDateColumn extends XViewerAtsAttributeValueColum
       return null;
    }
 
-   public static Result isWorldViewEcdAlerting(Object object)  {
+   public static Result isWorldViewEcdAlerting(Object object) {
       if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
          for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(object)) {
             Result result = isWorldViewEcdAlerting(team);
@@ -93,7 +93,7 @@ public class EstimatedCompletionDateColumn extends XViewerAtsAttributeValueColum
       return Result.FalseResult;
    }
 
-   public static Date getDate(Object object)  {
+   public static Date getDate(Object object) {
       if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
          return getDate(AtsClientService.get().getWorkItemService().getFirstTeam(object));
       } else if (Artifacts.isOfType(object, AtsArtifactTypes.TeamWorkflow)) {

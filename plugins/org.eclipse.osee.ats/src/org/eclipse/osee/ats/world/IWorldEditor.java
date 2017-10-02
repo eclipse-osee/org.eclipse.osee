@@ -21,9 +21,9 @@ public interface IWorldEditor {
 
    public void setTableTitle(final String title, final boolean warning);
 
-   public void reSearch() ;
+   public void reSearch();
 
-   public IWorldEditorProvider getWorldEditorProvider() ;
+   public IWorldEditorProvider getWorldEditorProvider();
 
    public void createToolBarPulldown(Menu menu);
 

@@ -39,7 +39,7 @@ public class ArtifactTransactionData extends BaseTransactionData {
    }
 
    @Override
-   protected void addInsertToBatch(InsertDataCollector collector)  {
+   protected void addInsertToBatch(InsertDataCollector collector) {
       super.addInsertToBatch(collector);
       if (!artifact.isUseBackingdata()) {
          internalAddInsertToBatch(collector, 1, INSERT_ARTIFACT, getGammaId(), artifact.getArtId(),
@@ -48,7 +48,7 @@ public class ArtifactTransactionData extends BaseTransactionData {
    }
 
    @Override
-   protected void internalUpdate(TransactionRecord transactionId)  {
+   protected void internalUpdate(TransactionRecord transactionId) {
       artifact.internalSetPersistenceData(getGammaId(), transactionId, getModificationType(), getApplicabilityId(),
          false, false);
    }
@@ -64,7 +64,7 @@ public class ArtifactTransactionData extends BaseTransactionData {
    }
 
    @Override
-   protected int createGammaId()  {
+   protected int createGammaId() {
       return artifact.isUseBackingdata() ? artifact.getGammaId() : getNextGammaIdFromSequence();
    }
 

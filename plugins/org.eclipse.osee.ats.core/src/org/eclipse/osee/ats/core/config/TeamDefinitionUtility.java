@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 public class TeamDefinitionUtility implements ITeamDefinitionUtility {
 
    @Override
-   public Collection<IAtsTeamDefinition> getImpactedTeamDefs(Collection<IAtsActionableItem> aias)  {
+   public Collection<IAtsTeamDefinition> getImpactedTeamDefs(Collection<IAtsActionableItem> aias) {
       return TeamDefinitions.getImpactedTeamDefs(aias);
    }
 

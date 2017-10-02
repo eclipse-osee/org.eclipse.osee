@@ -50,13 +50,13 @@ public final class PurgeRelationTypeDatabaseTxCallable extends AbstractDatastore
    }
 
    @Override
-   protected Void handleTxWork(JdbcConnection connection)  {
+   protected Void handleTxWork(JdbcConnection connection) {
       List<Object[]> gammaIds = retrieveGammaIds(connection, typesToPurge);
       processDeletes(connection, gammaIds);
       return null;
    }
 
-   private List<Object[]> retrieveGammaIds(JdbcConnection connection, Collection<? extends IRelationType> types)  {
+   private List<Object[]> retrieveGammaIds(JdbcConnection connection, Collection<? extends IRelationType> types) {
       List<Object[]> gammas = new ArrayList<>(50000);
       JdbcStatement chStmt = getJdbcClient().getStatement(connection);
       try {
@@ -73,7 +73,7 @@ public final class PurgeRelationTypeDatabaseTxCallable extends AbstractDatastore
       return gammas;
    }
 
-   private void processDeletes(JdbcConnection connection, List<Object[]> gammas)  {
+   private void processDeletes(JdbcConnection connection, List<Object[]> gammas) {
       getJdbcClient().runBatchUpdate(connection, String.format(DELETE_BY_GAMMAS, "osee_txs"), gammas);
       getJdbcClient().runBatchUpdate(connection, String.format(DELETE_BY_GAMMAS, "osee_txs_archived"), gammas);
       getJdbcClient().runBatchUpdate(connection, String.format(DELETE_BY_GAMMAS, "osee_relation_link"), gammas);

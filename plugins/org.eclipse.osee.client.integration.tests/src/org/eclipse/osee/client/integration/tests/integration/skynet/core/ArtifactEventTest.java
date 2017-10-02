@@ -335,7 +335,7 @@ public class ArtifactEventTest {
       return false;
    }
 
-   private RemotePersistEvent1 getFakeGeneralDataArtifactRemoteEventForArtifactModified(Artifact modifiedArt)  {
+   private RemotePersistEvent1 getFakeGeneralDataArtifactRemoteEventForArtifactModified(Artifact modifiedArt) {
       // Create fake remote event that would come in from another client
       RemotePersistEvent1 remoteEvent = new RemotePersistEvent1();
       // Set sender to something other than this client so event system will think came from another client
@@ -354,7 +354,7 @@ public class ArtifactEventTest {
       return remoteEvent;
    }
 
-   private RemotePersistEvent1 getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(int relationId, RelationEventType relationEventType, IRelationType relType, Artifact artA, Artifact artB)  {
+   private RemotePersistEvent1 getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(int relationId, RelationEventType relationEventType, IRelationType relType, Artifact artA, Artifact artB) {
       // Create fake remote event that would come in from another client
       RemotePersistEvent1 remoteEvent = new RemotePersistEvent1();
       // Set sender to something other than this client so event system will think came from another client
@@ -864,10 +864,9 @@ public class ArtifactEventTest {
    /**
     * Need to always get a new relationId that hasn't been used in this DB yet
     *
-    * 
     * @throws OseeDataStoreException
     */
-   private int getIncrementingRelationId()  {
+   private int getIncrementingRelationId() {
       return (int) ConnectionHandler.getNextSequence(OseeData.REL_LINK_ID_SEQ, true);
    }
 

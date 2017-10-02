@@ -32,7 +32,7 @@ public class AtsXComboValidatorTest {
    // @formatter:on
 
    @org.junit.Test
-   public void testValidateTransition()  {
+   public void testValidateTransition() {
       AtsXComboValidator validator = new AtsXComboValidator();
 
       MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");

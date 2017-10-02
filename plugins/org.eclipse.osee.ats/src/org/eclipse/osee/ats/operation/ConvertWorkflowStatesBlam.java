@@ -108,11 +108,11 @@ public class ConvertWorkflowStatesBlam extends AbstractBlam {
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + SOURCE_TEAM_WORKFLOWS + "\" />" +
       //
-      "<XWidget xwidgetType=\"XText\" displayName=\"" + FROM_TO_MAP + "\" horizontalLabel=\"true\" />" +
-      //
-      "<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + PERSIST + "\" defaultValue=\"false\"/>" +
-      //
-      "</xWidgets>";
+         "<XWidget xwidgetType=\"XText\" displayName=\"" + FROM_TO_MAP + "\" horizontalLabel=\"true\" />" +
+         //
+         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + PERSIST + "\" defaultValue=\"false\"/>" +
+         //
+         "</xWidgets>";
    }
 
    @Override

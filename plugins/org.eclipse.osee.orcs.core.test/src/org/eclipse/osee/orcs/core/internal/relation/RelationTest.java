@@ -83,7 +83,7 @@ public class RelationTest {
    }
 
    @Test
-   public void testGetRelationType()  {
+   public void testGetRelationType() {
       relation.getRelationType();
 
       verify(relationTypes).get(TYPE_UUID);
@@ -137,7 +137,7 @@ public class RelationTest {
    }
 
    @Test
-   public void testIsOfType()  {
+   public void testIsOfType() {
       RelationTypeToken type1 = mock(RelationTypeToken.class);
       RelationTypeToken type2 = mock(RelationTypeToken.class);
 

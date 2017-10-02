@@ -24,7 +24,7 @@ public final class OrcsConditions {
       // Utility class
    }
 
-   public static void checkOnGraph(GraphData graph, RelationNode... nodes)  {
+   public static void checkOnGraph(GraphData graph, RelationNode... nodes) {
       checkNotNull(graph, "graph");
       for (RelationNode node : nodes) {
          checkNotNull(node, "node");
@@ -34,7 +34,7 @@ public final class OrcsConditions {
       }
    }
 
-   public static void checkBranch(GraphData graph, RelationNode... nodes)  {
+   public static void checkBranch(GraphData graph, RelationNode... nodes) {
       checkNotNull(graph, "graph");
       for (RelationNode node : nodes) {
          checkNotNull(node, "node");
@@ -45,12 +45,12 @@ public final class OrcsConditions {
       }
    }
 
-   public static void checkBranch(RelationNode node1, RelationNode node2)  {
+   public static void checkBranch(RelationNode node1, RelationNode node2) {
       boolean areEqual = node1.getBranch().equals(node2.getBranch());
       checkExpressionFailOnTrue(!areEqual, "Cross branch linking is not yet supported.");
    }
 
-   public static void checkRelateSelf(RelationNode node1, RelationNode node2)  {
+   public static void checkRelateSelf(RelationNode node1, RelationNode node2) {
       checkExpressionFailOnTrue(node1.equals(node2), "Not valid to relate [%s] to itself", node1);
    }
 }

@@ -59,7 +59,7 @@ public class LastModifiedDateColumn extends XViewerValueColumn {
       return "";
    }
 
-   public static Date getDate(Object object)  {
+   public static Date getDate(Object object) {
       Date result = null;
       if (object instanceof Artifact) {
          result = ((Artifact) object).getLastModified();

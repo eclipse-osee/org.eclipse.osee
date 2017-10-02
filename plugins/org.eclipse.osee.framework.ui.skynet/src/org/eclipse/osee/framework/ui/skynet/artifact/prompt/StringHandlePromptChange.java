@@ -45,7 +45,7 @@ public class StringHandlePromptChange implements IHandlePromptChange {
    }
 
    @Override
-   public boolean promptOk()  {
+   public boolean promptOk() {
       entryDialog.setFillVertically(multiLine);
       setInitialText(artifacts, entryDialog, format, attributeType);
       entryDialog.setNumberFormat(format);
@@ -53,7 +53,7 @@ public class StringHandlePromptChange implements IHandlePromptChange {
    }
 
    @Override
-   public boolean store()  {
+   public boolean store() {
       updateSmaAttributes(artifacts, attributeType, format, entryDialog);
       if (persist) {
          Artifacts.persistInTransaction("Persist SMA attributes", artifacts);
@@ -61,7 +61,7 @@ public class StringHandlePromptChange implements IHandlePromptChange {
       return true;
    }
 
-   private static void setInitialText(Collection<? extends Artifact> artifacts, EntryDialog entryDialog, NumberFormat format, AttributeTypeId attributeType)  {
+   private static void setInitialText(Collection<? extends Artifact> artifacts, EntryDialog entryDialog, NumberFormat format, AttributeTypeId attributeType) {
       if (artifacts.size() == 1) {
          Object smaObj = artifacts.iterator().next().getSoleAttributeValue(attributeType, "");
          String initialText = smaObj.equals("") ? "" : formatObject(smaObj, format);
@@ -71,7 +71,7 @@ public class StringHandlePromptChange implements IHandlePromptChange {
       }
    }
 
-   private static void updateSmaAttributes(final Collection<? extends Artifact> artifacts, AttributeTypeId attributeType, NumberFormat format, EntryDialog entryDialog)  {
+   private static void updateSmaAttributes(final Collection<? extends Artifact> artifacts, AttributeTypeId attributeType, NumberFormat format, EntryDialog entryDialog) {
       for (Artifact artifact : artifacts) {
          String value = entryDialog.getEntry();
          String safeValue = getSafeValue(value, format, attributeType);
@@ -83,7 +83,7 @@ public class StringHandlePromptChange implements IHandlePromptChange {
       }
    }
 
-   private static String getSafeValue(String value, NumberFormat format, AttributeTypeId attributeType)  {
+   private static String getSafeValue(String value, NumberFormat format, AttributeTypeId attributeType) {
       String toReturn = value;
       if (format != null) {
          try {

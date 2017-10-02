@@ -55,7 +55,7 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
    }
 
    @Override
-   public String getValue(String key)  {
+   public String getValue(String key) {
       String toReturn = null;
       if (OseeClient.OSEE_APPLICATION_SERVER_DATA.equals(key)) {
          toReturn = getOseeApplicationServerData();
@@ -68,7 +68,7 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
    }
 
    @Override
-   public boolean putValue(String key, String value)  {
+   public boolean putValue(String key, String value) {
       boolean wasUpdated = false;
       if (OseeClient.OSEE_APPLICATION_SERVER_DATA.equals(key)) {
          throw new OseeStateException(BINARY_DATA_ERROR_MSG, OseeClient.OSEE_APPLICATION_SERVER_DATA,
@@ -123,7 +123,7 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
    }
 
    @Override
-   public Set<String> getKeys()  {
+   public Set<String> getKeys() {
       Set<String> keys = new HashSet<>();
       jdbcClient.runQuery(stmt -> keys.add(stmt.getString("osee_key")), GET_KEYS_SQL);
       return keys;

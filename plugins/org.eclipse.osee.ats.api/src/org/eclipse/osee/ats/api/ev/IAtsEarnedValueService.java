@@ -24,9 +24,9 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
  */
 public interface IAtsEarnedValueService {
 
-   public IAtsWorkPackage getWorkPackage(IAtsWorkItem workItem) ;
+   public IAtsWorkPackage getWorkPackage(IAtsWorkItem workItem);
 
-   public Collection<IAtsWorkPackage> getWorkPackageOptions(IAtsObject object) ;
+   public Collection<IAtsWorkPackage> getWorkPackageOptions(IAtsObject object);
 
    public ArtifactId getWorkPackageId(IAtsWorkItem atsObject);
 
@@ -46,13 +46,13 @@ public interface IAtsEarnedValueService {
 
    double getEstimatedHoursFromTasks(IAtsWorkItem workItem);
 
-   double getEstimatedHoursFromReviews(IAtsWorkItem workItem) ;
+   double getEstimatedHoursFromReviews(IAtsWorkItem workItem);
 
-   double getEstimatedHoursFromReviews(IAtsWorkItem workItem, IStateToken relatedToState) ;
+   double getEstimatedHoursFromReviews(IAtsWorkItem workItem, IStateToken relatedToState);
 
-   double getEstimatedHoursTotal(IAtsWorkItem workItem, IStateToken relatedToState) ;
+   double getEstimatedHoursTotal(IAtsWorkItem workItem, IStateToken relatedToState);
 
-   double getEstimatedHoursTotal(IAtsWorkItem workItem) ;
+   double getEstimatedHoursTotal(IAtsWorkItem workItem);
 
    void setWorkPackage(IAtsWorkPackage workPackage, IAtsWorkItem workItem, IAtsChangeSet changes);
 

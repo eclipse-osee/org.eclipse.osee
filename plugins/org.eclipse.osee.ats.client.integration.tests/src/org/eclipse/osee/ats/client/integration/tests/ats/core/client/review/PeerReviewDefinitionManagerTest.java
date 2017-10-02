@@ -51,7 +51,7 @@ public class PeerReviewDefinitionManagerTest extends PeerReviewDefinitionManager
    }
 
    @org.junit.Test
-   public void testCreatePeerReviewDuringTransition()  {
+   public void testCreatePeerReviewDuringTransition() {
       AtsTestUtil.cleanupAndReset("PeerReviewDefinitionManagerTest");
 
       try {

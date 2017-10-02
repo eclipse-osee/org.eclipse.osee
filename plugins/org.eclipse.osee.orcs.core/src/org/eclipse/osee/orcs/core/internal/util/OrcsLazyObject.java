@@ -19,7 +19,7 @@ import org.eclipse.osee.orcs.core.ds.OrcsData;
 /**
  * @author Roberto E. Escobar
  */
-public abstract class OrcsLazyObject<T, D extends OrcsData> extends LazyObject<T>implements HasOrcsData<D> {
+public abstract class OrcsLazyObject<T, D extends OrcsData> extends LazyObject<T> implements HasOrcsData<D> {
 
    private D data;
 
@@ -50,6 +50,6 @@ public abstract class OrcsLazyObject<T, D extends OrcsData> extends LazyObject<T
       return new FutureTask<T>(callable);
    }
 
-   protected abstract T instance() ;
+   protected abstract T instance();
 
 }

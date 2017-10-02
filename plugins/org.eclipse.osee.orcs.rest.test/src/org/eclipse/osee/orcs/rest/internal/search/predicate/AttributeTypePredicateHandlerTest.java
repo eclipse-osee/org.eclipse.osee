@@ -47,7 +47,7 @@ public class AttributeTypePredicateHandlerTest {
    }
 
    @Test
-   public void testStringSearchOptions()  {
+   public void testStringSearchOptions() {
       AttributeTypePredicateHandler handler = new AttributeTypePredicateHandler();
       List<String> typeParameters = Collections.singletonList("0x0123");
       List<String> values = Collections.singletonList("value");

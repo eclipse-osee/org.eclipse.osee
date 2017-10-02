@@ -33,7 +33,7 @@ public class XmlDataSaxHandler extends AbstractSaxHandler {
    }
 
    @Override
-   public void endElementFound(String uri, String localName, String name)  {
+   public void endElementFound(String uri, String localName, String name) {
       if (level == 3) {
          roughArtifact.addAttribute(localName, getContents());
       }

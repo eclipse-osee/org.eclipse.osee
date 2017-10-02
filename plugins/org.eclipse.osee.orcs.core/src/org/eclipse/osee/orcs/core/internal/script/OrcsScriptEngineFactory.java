@@ -131,7 +131,7 @@ public class OrcsScriptEngineFactory implements ScriptEngineFactory {
    @Override
    public String getMethodCallSyntax(String obj, String method, String... args) {
       StringBuilder builder = new StringBuilder() //
-      .append(obj).append(".").append(method).append("(");
+         .append(obj).append(".").append(method).append("(");
       int argSize = args.length;
       if (argSize > 0) {
          for (int index = 0; index < argSize; index++) {

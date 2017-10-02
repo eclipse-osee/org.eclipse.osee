@@ -25,7 +25,7 @@ public abstract class AbstractAtsArtifact extends Artifact implements IAtsObject
       super(id, guid, branch, artifactType);
    }
 
-   public Artifact getParentAtsArtifact()  {
+   public Artifact getParentAtsArtifact() {
       return null;
    }
 

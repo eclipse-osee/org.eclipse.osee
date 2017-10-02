@@ -17,6 +17,6 @@ import org.eclipse.osee.orcs.rest.client.QueryBuilder;
  */
 public interface ArtifactSearchCriteria {
 
-   void addToQueryBuilder(QueryBuilder builder) ;
+   void addToQueryBuilder(QueryBuilder builder);
 
 }

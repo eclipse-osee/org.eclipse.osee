@@ -39,7 +39,7 @@ import org.junit.Test;
 public class ArtifactPromptChangeTest {
 
    @Test
-   public void test()  {
+   public void test() {
       boolean persist = true;
       List<Artifact> artifacts = new ArrayList<>();
 
@@ -94,7 +94,7 @@ public class ArtifactPromptChangeTest {
 
    private static class MockPromptFactory implements IPromptFactory {
       @Override
-      public IHandlePromptChange createPrompt(AttributeTypeId attributeType, String displayName, Collection<? extends Artifact> artifacts, boolean persist, boolean multiLine)  {
+      public IHandlePromptChange createPrompt(AttributeTypeId attributeType, String displayName, Collection<? extends Artifact> artifacts, boolean persist, boolean multiLine) {
          return new TestPromptChange(attributeType, persist);
       }
    }
@@ -109,12 +109,12 @@ public class ArtifactPromptChangeTest {
       }
 
       @Override
-      public boolean promptOk()  {
+      public boolean promptOk() {
          return true;
       }
 
       @Override
-      public boolean store()  {
+      public boolean store() {
          return persist && attributeType.equals(Name);
       }
    }

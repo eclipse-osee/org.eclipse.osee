@@ -35,7 +35,7 @@ public class OseeFieldMainTest {
    }
 
    @Test
-   public void testInitialValues()  {
+   public void testInitialValues() {
       String message = "InitTest";
       checkObjects(message, test.getInitExpectedValue(), test.getField().get());
       Assert.assertEquals(message, test.isInitExpectedDirty(), test.getField().isDirty());
@@ -43,7 +43,7 @@ public class OseeFieldMainTest {
 
    @SuppressWarnings({"unchecked", "rawtypes"})
    @Test
-   public void testSettterGetter()  {
+   public void testSettterGetter() {
       int index = 0;
       for (FieldGetSetTestData testData : test.getTestDatas()) {
          String message = String.format("Test Data [%s]", ++index);

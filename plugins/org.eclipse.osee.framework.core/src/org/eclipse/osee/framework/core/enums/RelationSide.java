@@ -33,7 +33,7 @@ public enum RelationSide {
       return this != side;
    }
 
-   public static RelationSide fromString(String name)  {
+   public static RelationSide fromString(String name) {
       if (!Strings.isValid(name)) {
          throw new OseeArgumentException("Name cannot be null or empty");
       }

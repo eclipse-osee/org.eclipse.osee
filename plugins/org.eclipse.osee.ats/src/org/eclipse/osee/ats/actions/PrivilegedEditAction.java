@@ -41,7 +41,7 @@ public class PrivilegedEditAction extends AbstractAtsAction {
    }
 
    @Override
-   public void runWithException()  {
+   public void runWithException() {
       if (sma.isReadOnly()) {
          new ReadOnlyHyperlinkListener(sma).linkActivated(null);
       }

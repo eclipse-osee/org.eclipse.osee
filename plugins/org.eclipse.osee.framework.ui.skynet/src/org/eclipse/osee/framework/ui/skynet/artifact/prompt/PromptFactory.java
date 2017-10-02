@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 public final class PromptFactory implements IPromptFactory {
 
    @Override
-   public IHandlePromptChange createPrompt(AttributeTypeId attributeType, String displayName, Collection<? extends Artifact> artifacts, boolean persist, boolean multiLine)  {
+   public IHandlePromptChange createPrompt(AttributeTypeId attributeType, String displayName, Collection<? extends Artifact> artifacts, boolean persist, boolean multiLine) {
       IHandlePromptChange promptChange;
 
       if (AttributeTypeManager.isBaseTypeCompatible(DateAttribute.class, attributeType)) {

@@ -37,7 +37,7 @@ public class TransactionQueryImpl extends TxQueryBuilderImpl<TransactionQuery> i
    }
 
    @Override
-   public ResultSet<TransactionReadable> getResults()  {
+   public ResultSet<TransactionReadable> getResults() {
       try {
          return createSearch().call();
       } catch (Exception ex) {
@@ -55,7 +55,7 @@ public class TransactionQueryImpl extends TxQueryBuilderImpl<TransactionQuery> i
    }
 
    @Override
-   public ResultSet<Long> getResultsAsIds()  {
+   public ResultSet<Long> getResultsAsIds() {
       try {
          return createSearchResultsAsIds().call();
       } catch (Exception ex) {
@@ -64,7 +64,7 @@ public class TransactionQueryImpl extends TxQueryBuilderImpl<TransactionQuery> i
    }
 
    @Override
-   public int getCount()  {
+   public int getCount() {
       try {
          return createCount().call();
       } catch (Exception ex) {
@@ -73,17 +73,17 @@ public class TransactionQueryImpl extends TxQueryBuilderImpl<TransactionQuery> i
    }
 
    @Override
-   public CancellableCallable<Integer> createCount()  {
+   public CancellableCallable<Integer> createCount() {
       return queryFactory.createTransactionCount(session, buildAndCopy());
    }
 
    @Override
-   public CancellableCallable<ResultSet<TransactionReadable>> createSearch()  {
+   public CancellableCallable<ResultSet<TransactionReadable>> createSearch() {
       return queryFactory.createTransactionSearch(session, buildAndCopy());
    }
 
    @Override
-   public CancellableCallable<ResultSet<Long>> createSearchResultsAsIds()  {
+   public CancellableCallable<ResultSet<Long>> createSearchResultsAsIds() {
       return queryFactory.createTransactionAsIdSearch(session, buildAndCopy());
    }
 

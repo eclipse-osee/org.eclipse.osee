@@ -19,6 +19,6 @@ import org.eclipse.osee.orcs.OrcsSession;
  */
 public interface GraphFactory {
 
-   GraphData createGraph(OrcsSession session, BranchId branch, TransactionId transactionId) ;
+   GraphData createGraph(OrcsSession session, BranchId branch, TransactionId transactionId);
 
 }

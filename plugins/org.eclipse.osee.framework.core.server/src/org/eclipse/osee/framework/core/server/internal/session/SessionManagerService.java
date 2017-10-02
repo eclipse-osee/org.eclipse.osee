@@ -51,7 +51,7 @@ public final class SessionManagerService implements ISessionManager {
       this.cacheAdmin = cacheAdmin;
    }
 
-   public void start()  {
+   public void start() {
       final JdbcClient jdbcClient = jdbcService.getClient();
 
       SessionFactory sessionFactory = new SessionFactory(logger, jdbcService);
@@ -74,37 +74,37 @@ public final class SessionManagerService implements ISessionManager {
    }
 
    @Override
-   public OseeSessionGrant createSession(OseeCredential credential)  {
+   public OseeSessionGrant createSession(OseeCredential credential) {
       return proxiedSessionManager.createSession(credential);
    }
 
    @Override
-   public void releaseSession(String sessionId)  {
+   public void releaseSession(String sessionId) {
       proxiedSessionManager.releaseSession(sessionId);
    }
 
    @Override
-   public ISession getSessionById(String sessionId)  {
+   public ISession getSessionById(String sessionId) {
       return proxiedSessionManager.getSessionById(sessionId);
    }
 
    @Override
-   public Collection<ISession> getSessionByClientAddress(String clientAddress)  {
+   public Collection<ISession> getSessionByClientAddress(String clientAddress) {
       return proxiedSessionManager.getSessionByClientAddress(clientAddress);
    }
 
    @Override
-   public Collection<ISession> getSessionsByUserId(String userId)  {
+   public Collection<ISession> getSessionsByUserId(String userId) {
       return proxiedSessionManager.getSessionsByUserId(userId);
    }
 
    @Override
-   public Collection<ISession> getAllSessions()  {
+   public Collection<ISession> getAllSessions() {
       return proxiedSessionManager.getAllSessions();
    }
 
    @Override
-   public void releaseSessionImmediate(String... sessionId)  {
+   public void releaseSessionImmediate(String... sessionId) {
       proxiedSessionManager.releaseSessionImmediate(sessionId);
    }
 

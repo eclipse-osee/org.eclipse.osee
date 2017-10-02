@@ -28,7 +28,7 @@ public class DecisionOptions {
    private final IAtsServices services;
    private final IAtsDecisionReview decRev;
 
-   public DecisionOptions(IAtsDecisionReview decRev, IAtsServices services)  {
+   public DecisionOptions(IAtsDecisionReview decRev, IAtsServices services) {
       this.decRev = decRev;
       this.services = services;
       this.attributeType = AtsAttributeTypes.DecisionReviewOptions;
@@ -38,7 +38,7 @@ public class DecisionOptions {
       return attributeType;
    }
 
-   public Set<DecisionOption> getDecisionOptions()  {
+   public Set<DecisionOption> getDecisionOptions() {
       String decString = services.getAttributeResolver().getSoleAttributeValue(decRev, getAttributeType(), "");
       return getDecisionOptions(decString, services);
    }
@@ -57,7 +57,7 @@ public class DecisionOptions {
       return decOptions;
    }
 
-   public DecisionOption getDecisionOption(String name)  {
+   public DecisionOption getDecisionOption(String name) {
       for (DecisionOption opt : getDecisionOptions()) {
          if (opt.getName().equals(name)) {
             return opt;
@@ -66,7 +66,7 @@ public class DecisionOptions {
       return null;
    }
 
-   public void validateDecisionOptions(TransitionResults results)  {
+   public void validateDecisionOptions(TransitionResults results) {
       validateDecisionOptions(results, decRev,
          services.getAttributeResolver().getSoleAttributeValue(decRev, getAttributeType(), ""), services);
    }
@@ -82,7 +82,7 @@ public class DecisionOptions {
       }
    }
 
-   public String toXml(Set<DecisionOption> opts)  {
+   public String toXml(Set<DecisionOption> opts) {
       StringBuffer sb = new StringBuffer();
       for (DecisionOption opt : opts) {
          sb.append(opt.toXml());
@@ -91,7 +91,7 @@ public class DecisionOptions {
       return sb.toString().replaceFirst("\n$", "");
    }
 
-   public void setDecisionOptions(String decisionOptions)  {
+   public void setDecisionOptions(String decisionOptions) {
       services.getAttributeResolver().setSoleAttributeValue(decRev, getAttributeType(),
          toXml(getDecisionOptions(decisionOptions, services)));
    }

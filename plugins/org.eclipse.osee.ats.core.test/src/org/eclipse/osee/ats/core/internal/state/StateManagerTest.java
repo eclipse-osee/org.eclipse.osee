@@ -70,7 +70,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testSetNotificationListener()  {
+   public void testSetNotificationListener() {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
       stateMgr.addAssignee(steve);
@@ -84,7 +84,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testAddAssignee()  {
+   public void testAddAssignee() {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
 
@@ -106,7 +106,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testAddAssignee_exception()  {
+   public void testAddAssignee_exception() {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
 
@@ -114,7 +114,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testSetAssignee()  {
+   public void testSetAssignee() {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
 
@@ -140,7 +140,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testSetAssignee_removeUnassigned()  {
+   public void testSetAssignee_removeUnassigned() {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
 
@@ -154,7 +154,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testSetAssignees_nextStateNotification()  {
+   public void testSetAssignees_nextStateNotification() {
       // create state with two assignees
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
@@ -172,7 +172,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testSetAssignees_sameStateNotification()  {
+   public void testSetAssignees_sameStateNotification() {
       // create state with two assignees
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
@@ -202,7 +202,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testSetAssignee_exception()  {
+   public void testSetAssignee_exception() {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
 
@@ -210,7 +210,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testIsUnAssigned()  {
+   public void testIsUnAssigned() {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
       Assert.assertFalse(stateMgr.isUnAssigned());
@@ -219,7 +219,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testIsUnAssignedSolely()  {
+   public void testIsUnAssignedSolely() {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
       Assert.assertFalse(stateMgr.isUnAssignedSolely());
@@ -232,7 +232,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testGetAssigneesStrString()  {
+   public void testGetAssigneesStrString() {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
       stateMgr.addAssignee(steve);
@@ -245,7 +245,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testAddAssignees()  {
+   public void testAddAssignees() {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
       stateMgr.addAssignees(Arrays.asList(joe, alice));
@@ -253,7 +253,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testAddAssignees_state()  {
+   public void testAddAssignees_state() {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
       stateMgr.addAssignees("endorse", Arrays.asList(joe, alice));
@@ -261,7 +261,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testSetAssigneesIAtsUser()  {
+   public void testSetAssigneesIAtsUser() {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
       stateMgr.setAssignee(joe);
@@ -271,7 +271,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testSetAssigneeStringIAtsUser()  {
+   public void testSetAssigneeStringIAtsUser() {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
       stateMgr.setAssignee("endorse", joe);
@@ -281,7 +281,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testSetAssigneesListOfQextendsIAtsUser()  {
+   public void testSetAssigneesListOfQextendsIAtsUser() {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
       stateMgr.addAssignees(Arrays.asList(joe, alice));
@@ -291,7 +291,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testSetAssigneesStringListOfQextendsIAtsUser()  {
+   public void testSetAssigneesStringListOfQextendsIAtsUser() {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
       stateMgr.setAssignee("endorse", joe);
@@ -301,7 +301,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testRemoveAssigneeIAtsUser()  {
+   public void testRemoveAssigneeIAtsUser() {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
       stateMgr.setAssignees("endorse", Arrays.asList(joe, alice));
@@ -311,7 +311,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testClearAssignees()  {
+   public void testClearAssignees() {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
       stateMgr.setAssignees("endorse", Arrays.asList(joe, alice));
@@ -350,7 +350,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test(expected = OseeStateException.class)
-   public void testGetAssigneesForState()  {
+   public void testGetAssigneesForState() {
       stateMgr.getAssignees();
    }
 
@@ -370,12 +370,12 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test(expected = OseeStateException.class)
-   public void setPercentComplete_exception()  {
+   public void setPercentComplete_exception() {
       stateMgr.setPercentComplete("endorse", 34);
    }
 
    @Test
-   public void setPercentComplete()  {
+   public void setPercentComplete() {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
       stateMgr.setPercentComplete("endorse", 34);
@@ -389,12 +389,12 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test(expected = OseeStateException.class)
-   public void setHoursSpent_exception()  {
+   public void setHoursSpent_exception() {
       stateMgr.setHoursSpent("endorse", 8.0);
    }
 
    @Test
-   public void setHoursSpent()  {
+   public void setHoursSpent() {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
       stateMgr.setHoursSpent("endorse", 8.0);
@@ -403,7 +403,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test(expected = OseeStateException.class)
-   public void removeAssignee_exception()  {
+   public void removeAssignee_exception() {
       stateMgr.removeAssignee(joe);
    }
 
@@ -424,7 +424,7 @@ public class StateManagerTest extends AbstractUserTest {
    }
 
    @Test
-   public void testSetMetrics()  {
+   public void testSetMetrics() {
       IAtsWorkItem awa = mock(IAtsWorkItem.class);
       StateManager mgr = new StateManager(awa, logFactory, services);
 

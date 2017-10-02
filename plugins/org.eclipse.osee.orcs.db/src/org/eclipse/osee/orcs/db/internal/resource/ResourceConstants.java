@@ -27,17 +27,17 @@ public final class ResourceConstants {
    public static final String EXCHANGE_RESOURCE_PROTOCOL = "exchange";
    public static final String ATTRIBUTE_RESOURCE_PROTOCOL = "attr";
 
-   public static String getExchangeDataPath(SystemPreferences preferences)  {
+   public static String getExchangeDataPath(SystemPreferences preferences) {
       String binaryDataPath = getBinaryDataPath(preferences);
       return binaryDataPath + File.separator + ResourceConstants.EXCHANGE_RESOURCE_PROTOCOL + File.separator;
    }
 
-   public static String getAttributeDataPath(SystemPreferences preferences)  {
+   public static String getAttributeDataPath(SystemPreferences preferences) {
       String binaryDataPath = getBinaryDataPath(preferences);
       return binaryDataPath + File.separator + ResourceConstants.ATTRIBUTE_RESOURCE_PROTOCOL + File.separator;
    }
 
-   public static String getBinaryDataPath(SystemPreferences preferences)  {
+   public static String getBinaryDataPath(SystemPreferences preferences) {
       return preferences.getValue(OseeClient.OSEE_APPLICATION_SERVER_DATA);
    }
 }

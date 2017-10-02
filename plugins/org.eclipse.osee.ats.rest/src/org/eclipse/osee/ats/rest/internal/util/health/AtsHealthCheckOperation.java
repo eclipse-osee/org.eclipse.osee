@@ -81,7 +81,7 @@ public class AtsHealthCheckOperation {
       }
    }
 
-   public void runIt(XResultData rd)  {
+   public void runIt(XResultData rd) {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
 
@@ -185,7 +185,7 @@ public class AtsHealthCheckOperation {
       }
    }
 
-   private List<Collection<Long>> loadWorkingWorkItemIds(XResultData rd)  {
+   private List<Collection<Long>> loadWorkingWorkItemIds(XResultData rd) {
       rd.log("testLoadAllCommonArtifactIds - Started " + DateUtil.getMMDDYYHHMM());
       List<Long> artIds = getCommonArtifactIds(rd);
       if (artIds.isEmpty()) {
@@ -195,7 +195,7 @@ public class AtsHealthCheckOperation {
       return Collections.subDivide(artIds, 4000);
    }
 
-   private List<Long> getCommonArtifactIds(XResultData rd)  {
+   private List<Long> getCommonArtifactIds(XResultData rd) {
       List<Long> artIds = new ArrayList<>();
       // For single or re-runs of subset
       //      artIds.addAll(Arrays.asList(8381138L, 600305128L, 9115994L, 8003310L, 8646243L, 8660113L, 9036993L, 8646249L));

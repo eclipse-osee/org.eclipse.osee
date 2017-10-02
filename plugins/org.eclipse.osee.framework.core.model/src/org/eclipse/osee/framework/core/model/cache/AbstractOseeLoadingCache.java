@@ -58,7 +58,7 @@ public abstract class AbstractOseeLoadingCache<T extends NamedIdBase> extends Ab
    }
 
    @Override
-   public synchronized void ensurePopulated()  {
+   public synchronized void ensurePopulated() {
       if (wasLoaded.compareAndSet(false, true)) {
          try {
             reloadCache();
@@ -70,7 +70,7 @@ public abstract class AbstractOseeLoadingCache<T extends NamedIdBase> extends Ab
    }
 
    @Override
-   public synchronized boolean reloadCache()  {
+   public synchronized boolean reloadCache() {
       dataAccessor.load(this);
       OseeLog.log(this.getClass(), Level.INFO, "Loaded " + getCacheId().toString().toLowerCase());
       setLastLoaded(System.currentTimeMillis());

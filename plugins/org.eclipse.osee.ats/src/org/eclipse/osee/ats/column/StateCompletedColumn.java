@@ -90,7 +90,7 @@ public class StateCompletedColumn extends XViewerAtsColumn implements IXViewerVa
       return "";
    }
 
-   String getCompletedDateByState(IAtsWorkItem workItem, IAtsStateDefinition state)  {
+   String getCompletedDateByState(IAtsWorkItem workItem, IAtsStateDefinition state) {
       IAtsLogItem stateEvent = workItem.getLog().getStateEvent(LogType.StateComplete, state.getName());
       if (stateEvent != null && stateEvent.getDate() != null) {
          return DateUtil.getMMDDYYHHMM(stateEvent.getDate());

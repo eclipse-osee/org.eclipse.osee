@@ -55,7 +55,7 @@ public final class ObjectAccessProviderProxy implements IAccessProvider {
    }
 
    @Override
-   public void computeAccess(ArtifactToken userArtifact, Collection<?> objToCheck, AccessData accessData)  {
+   public void computeAccess(ArtifactToken userArtifact, Collection<?> objToCheck, AccessData accessData) {
       for (Object object : objToCheck) {
          if (object instanceof Artifact) {
             setArtifactAccessData(userArtifact, (Artifact) object, accessData);
@@ -71,7 +71,7 @@ public final class ObjectAccessProviderProxy implements IAccessProvider {
       }
    }
 
-   private void setArtifactAccessData(ArtifactToken userArtifact, Artifact artifact, AccessData accessData)  {
+   private void setArtifactAccessData(ArtifactToken userArtifact, Artifact artifact, AccessData accessData) {
       setBranchAccessData(userArtifact, artifact.getBranch(), accessData);
       String reason = "Legacy Artifact Permission";
       PermissionEnum userPermission = getAccessService().getArtifactPermission(userArtifact, artifact);
@@ -91,7 +91,7 @@ public final class ObjectAccessProviderProxy implements IAccessProvider {
          new AccessDetail<ArtifactToken>(artifact, userPermission, Scope.createLegacyScope(), reason));
    }
 
-   private void setBranchAccessData(ArtifactToken userArtifact, BranchId branch, AccessData accessData)  {
+   private void setBranchAccessData(ArtifactToken userArtifact, BranchId branch, AccessData accessData) {
       String reason = "Legacy Branch Permission";
       PermissionEnum userPermission = getAccessService().getBranchPermission(userArtifact, branch);
       accessData.add(branch, new AccessDetail<BranchId>(branch, userPermission, Scope.createLegacyScope(), reason));

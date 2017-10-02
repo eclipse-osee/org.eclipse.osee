@@ -55,7 +55,7 @@ public class ModelAsserts {
       type.clearDirty();
    }
 
-   public static void checkEnumType(OseeEnumType expected, OseeEnumType actual)  {
+   public static void checkEnumType(OseeEnumType expected, OseeEnumType actual) {
       OseeEnumEntry[] expectedValues = expected.values();
       OseeEnumEntry[] actualValues = actual.values();
       Assert.assertEquals(expectedValues.length, actualValues.length);

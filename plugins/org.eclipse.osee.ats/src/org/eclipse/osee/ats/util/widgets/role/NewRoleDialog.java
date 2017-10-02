@@ -87,7 +87,7 @@ public class NewRoleDialog extends MessageDialog {
       return role;
    }
 
-   public Collection<IAtsUser> getUsers()  {
+   public Collection<IAtsUser> getUsers() {
       return AtsClientService.get().getUserServiceClient().getAtsUsers(users.getSelectedUsers());
    }
 

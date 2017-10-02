@@ -35,21 +35,21 @@ public class GlobalMenuPermissions {
     * Return permission set. This is a one-shot deal at the time of instantiation. Permissions are not kept up to date
     * with changes to getSelectedArtifacts in given globalMenuHelper. Must be called again to get refreshed permissions.
     */
-   public GlobalMenuPermissions(IGlobalMenuHelper globalMenuHelper)  {
+   public GlobalMenuPermissions(IGlobalMenuHelper globalMenuHelper) {
       this(globalMenuHelper.getArtifacts());
    }
 
    /**
     * Return permission set for given artifact.
     */
-   public GlobalMenuPermissions(Artifact artifact)  {
+   public GlobalMenuPermissions(Artifact artifact) {
       this(Arrays.asList(artifact));
    }
 
    /**
     * Return permission set for given artifacts.
     */
-   public GlobalMenuPermissions(Collection<Artifact> artifacts)  {
+   public GlobalMenuPermissions(Collection<Artifact> artifacts) {
       hasArtifacts = artifacts.size() > 0;
       writePermission = true;
       readPermission = true;
@@ -125,7 +125,7 @@ public class GlobalMenuPermissions {
    /**
     * @return the branchReadable
     */
-   public boolean isBranchReadable(BranchId branch)  {
+   public boolean isBranchReadable(BranchId branch) {
       return AccessControlManager.hasPermission(branch, PermissionEnum.READ);
    }
 

@@ -33,7 +33,7 @@ public class SearchQueryBuilder {
       this.handlers = handlers;
    }
 
-   public QueryBuilder build(QueryFactory queryFactory, SearchRequest params)  {
+   public QueryBuilder build(QueryFactory queryFactory, SearchRequest params) {
       Conditions.checkNotNull(queryFactory, "queryFactory");
       Conditions.checkNotNull(params, "params");
       QueryBuilder builder = queryFactory.fromBranch(params.getBranch());

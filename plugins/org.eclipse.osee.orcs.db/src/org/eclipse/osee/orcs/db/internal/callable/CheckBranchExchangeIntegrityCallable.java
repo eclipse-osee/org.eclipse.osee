@@ -52,11 +52,11 @@ public class CheckBranchExchangeIntegrityCallable extends AbstractDatastoreCalla
       this.resourceManager = resourceManager;
    }
 
-   private IResourceLocator findResourceToCheck(URI fileToCheck)  {
+   private IResourceLocator findResourceToCheck(URI fileToCheck) {
       return resourceManager.getResourceLocator(fileToCheck.toASCIIString());
    }
 
-   private IOseeExchangeDataProvider createExportDataProvider(IResourceLocator exportDataLocator)  {
+   private IOseeExchangeDataProvider createExportDataProvider(IResourceLocator exportDataLocator) {
       String exchangeBasePath = ResourceConstants.getExchangeDataPath(preferences);
       Pair<Boolean, File> result =
          ExchangeUtil.getTempExchangeFile(exchangeBasePath, getLogger(), exportDataLocator, resourceManager);

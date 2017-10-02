@@ -15,6 +15,6 @@ package org.eclipse.osee.orcs.core.ds;
  */
 public interface OrcsVisitable {
 
-   void accept(OrcsVisitor visitor) ;
+   void accept(OrcsVisitor visitor);
 
 }

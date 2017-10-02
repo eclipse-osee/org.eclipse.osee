@@ -15,5 +15,5 @@ package org.eclipse.osee.framework.core.services;
  */
 public interface HasCmAccessControl {
 
-   CmAccessControl getAccessControl() ;
+   CmAccessControl getAccessControl();
 }

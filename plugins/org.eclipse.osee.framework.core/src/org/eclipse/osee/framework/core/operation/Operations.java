@@ -56,7 +56,7 @@ public final class Operations {
    /**
     * Checks to see if the status has errors. If the status contains errors, an OseeCoreException will be thrown.
     */
-   public static void checkForErrorStatus(IStatus status)  {
+   public static void checkForErrorStatus(IStatus status) {
       if (status.getSeverity() == IStatus.ERROR) {
          Throwable th = status.getException();
          if (th != null) {
@@ -71,7 +71,7 @@ public final class Operations {
       return executeWork(operation, null);
    }
 
-   public static void executeWorkAndCheckStatus(IOperation operation)  {
+   public static void executeWorkAndCheckStatus(IOperation operation) {
       executeWorkAndCheckStatus(operation, null);
    }
 
@@ -79,7 +79,7 @@ public final class Operations {
     * Executes an operation by calling {@link #executeWork(IOperation, IProgressMonitor)} and checks for error status
     * {@link #checkForErrorStatus(IStatus)}. An OseeCoreException is thrown is an error is detected
     */
-   public static IStatus executeWorkAndCheckStatus(IOperation operation, IProgressMonitor monitor)  {
+   public static IStatus executeWorkAndCheckStatus(IOperation operation, IProgressMonitor monitor) {
       IStatus status = executeWork(operation, monitor);
       checkForErrorStatus(status);
       return status;

@@ -42,7 +42,7 @@ public class RelationResolverImpl implements RelationResolver {
 
    @SuppressWarnings("unchecked")
    @Override
-   public <T extends RelationNode> List<T> resolve(OrcsSession session, GraphData graph, List<Relation> links, RelationSide... sides)  {
+   public <T extends RelationNode> List<T> resolve(OrcsSession session, GraphData graph, List<Relation> links, RelationSide... sides) {
       List<T> toReturn = Collections.emptyList();
       if (!links.isEmpty()) {
          Set<Integer> toLoad = null;
@@ -86,7 +86,7 @@ public class RelationResolverImpl implements RelationResolver {
    }
 
    @Override
-   public void resolve(OrcsSession session, GraphData graph, RelationNode node)  {
+   public void resolve(OrcsSession session, GraphData graph, RelationNode node) {
       loader.loadNodes(session, graph, Collections.singleton(node.getLocalId()), LoadLevel.RELATION_DATA);
    }
 

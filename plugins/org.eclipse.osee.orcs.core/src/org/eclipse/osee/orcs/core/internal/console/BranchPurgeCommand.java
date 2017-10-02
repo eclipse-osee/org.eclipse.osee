@@ -149,7 +149,7 @@ public final class BranchPurgeCommand implements ConsoleCommand {
          return false;
       }
 
-      private Collection<BranchReadable> getBranchesToPurge()  {
+      private Collection<BranchReadable> getBranchesToPurge() {
          Set<BranchReadable> specifiedBranches = new HashSet<>();
          for (Long uuid : branchUuids) {
             if (uuid <= 0) {
@@ -175,7 +175,7 @@ public final class BranchPurgeCommand implements ConsoleCommand {
          return branchesToPurge;
       }
 
-      private Collection<BranchReadable> getChildBranchesToPurge(Iterable<BranchReadable> branches)  {
+      private Collection<BranchReadable> getChildBranchesToPurge(Iterable<BranchReadable> branches) {
 
          BranchQuery branchQuery = queryFactory.branchQuery();
          branchQuery.includeArchived();

@@ -49,9 +49,8 @@ public class RemoteResourceRequestJob extends Job {
          downloaded = remoteRequest.getResults();
          status = Status.OK_STATUS;
       } catch (Exception ex) {
-         status =
-            new Status(IStatus.ERROR, OteDefinePlugin.PLUGIN_ID, String.format("Error downloading resource [%s]",
-               targetFileName), ex);
+         status = new Status(IStatus.ERROR, OteDefinePlugin.PLUGIN_ID,
+            String.format("Error downloading resource [%s]", targetFileName), ex);
       }
       return status;
    }

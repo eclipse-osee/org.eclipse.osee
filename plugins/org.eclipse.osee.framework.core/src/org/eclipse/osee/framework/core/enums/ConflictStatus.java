@@ -38,7 +38,7 @@ public enum ConflictStatus {
       return value;
    }
 
-   public static ConflictStatus valueOf(int value)  {
+   public static ConflictStatus valueOf(int value) {
       for (ConflictStatus type : values()) {
          if (type.value == value) {
             return type;

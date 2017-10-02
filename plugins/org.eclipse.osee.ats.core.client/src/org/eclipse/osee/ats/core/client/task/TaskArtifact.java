@@ -34,12 +34,12 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IAtsTask, 
       super(id, guid, branch, artifactType);
    }
 
-   public boolean isRelatedToParentWorkflowCurrentState()  {
+   public boolean isRelatedToParentWorkflowCurrentState() {
       return getSoleAttributeValueAsString(AtsAttributeTypes.RelatedToState, "").equals(
          getParentAWA().getStateMgr().getCurrentStateName());
    }
 
-   public boolean isRelatedToUsed()  {
+   public boolean isRelatedToUsed() {
       return Strings.isValid(getSoleAttributeValueAsString(AtsAttributeTypes.RelatedToState, ""));
    }
 
@@ -53,12 +53,12 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IAtsTask, 
    }
 
    @Override
-   public double getManHrsPerDayPreference()  {
+   public double getManHrsPerDayPreference() {
       return getParentAWA().getManHrsPerDayPreference();
    }
 
    @Override
-   public AbstractWorkflowArtifact getParentAWA()  {
+   public AbstractWorkflowArtifact getParentAWA() {
       if (parentAwa != null) {
          return parentAwa;
       }
@@ -72,7 +72,7 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IAtsTask, 
    }
 
    @Override
-   public ActionArtifact getParentActionArtifact()  {
+   public ActionArtifact getParentActionArtifact() {
       if (parentAction != null) {
          return parentAction;
       }
@@ -81,7 +81,7 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IAtsTask, 
    }
 
    @Override
-   public TeamWorkFlowArtifact getParentTeamWorkflow()  {
+   public TeamWorkFlowArtifact getParentTeamWorkflow() {
       if (parentTeamArt != null) {
          return parentTeamArt;
       }
@@ -98,7 +98,7 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IAtsTask, 
    }
 
    @Override
-   public String getWorldViewSWEnhancement()  {
+   public String getWorldViewSWEnhancement() {
       AbstractWorkflowArtifact awa = getParentAWA();
       if (awa != null) {
          return awa.getWorldViewSWEnhancement();

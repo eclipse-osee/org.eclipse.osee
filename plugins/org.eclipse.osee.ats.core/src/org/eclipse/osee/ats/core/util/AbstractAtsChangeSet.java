@@ -60,7 +60,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    }
 
    @Override
-   public void add(Object obj)  {
+   public void add(Object obj) {
       Conditions.checkNotNull(obj, "object");
       if (obj instanceof Collection) {
          for (Object object : (Collection<?>) obj) {
@@ -78,7 +78,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    }
 
    @Override
-   public void addAll(Object... objects)  {
+   public void addAll(Object... objects) {
       Conditions.checkNotNull(objects, "objects");
       for (Object obj : objects) {
          add(obj);
@@ -117,7 +117,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    }
 
    @Override
-   public void addToDelete(Object obj)  {
+   public void addToDelete(Object obj) {
       Conditions.checkNotNull(obj, "object");
       if (obj instanceof Collection) {
          for (Object object : (Collection<?>) obj) {

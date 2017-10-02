@@ -14,5 +14,5 @@ package org.eclipse.osee.framework.lifecycle;
  * @author Jeff C. Phillips
  */
 public interface ILifecycleServiceProvider {
-   public ILifecycleService getLifecycleServices() ;
+   public ILifecycleService getLifecycleServices();
 }

@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeAdapter;
 public class ArtifactAttributeAdapter implements AttributeAdapter<ArtifactId> {
 
    @Override
-   public Artifact adapt(Attribute<?> attribute, Id id)  {
+   public Artifact adapt(Attribute<?> attribute, Id id) {
       return ArtifactQuery.getArtifactFromId(ArtifactId.valueOf(id), CoreBranches.COMMON, DeletionFlag.EXCLUDE_DELETED);
    }
 

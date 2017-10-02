@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 
 public abstract class IdentityReferenceAttribute extends CharacterBackedAttribute<Id> {
    @Override
-   public Id getValue()  {
+   public Id getValue() {
       return ServiceUtil.getAttributeAdapterService().adapt(this, (Id) getAttributeDataProvider().getValue());
    }
 

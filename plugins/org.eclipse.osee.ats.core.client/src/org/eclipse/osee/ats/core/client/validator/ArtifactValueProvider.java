@@ -44,7 +44,7 @@ public class ArtifactValueProvider implements IValueProvider {
    }
 
    @Override
-   public boolean isEmpty()  {
+   public boolean isEmpty() {
       AttributeType attributeType = getAtributeType();
       if (attributeType != null) {
          return artifact.getAttributeCount(attributeType) == 0;
@@ -53,7 +53,7 @@ public class ArtifactValueProvider implements IValueProvider {
    }
 
    @Override
-   public Collection<String> getValues()  {
+   public Collection<String> getValues() {
       AttributeType attributeType = getAtributeType();
       if (attributeType != null) {
          return artifact.getAttributesToStringList(attributeType);
@@ -61,7 +61,7 @@ public class ArtifactValueProvider implements IValueProvider {
       return Collections.emptyList();
    }
 
-   public AttributeType getAtributeType()  {
+   public AttributeType getAtributeType() {
       if (Strings.isValid(attributeTypeName)) {
          AttributeType attrType = AttributeTypeManager.getType(attributeTypeName);
          return attrType;
@@ -76,7 +76,7 @@ public class ArtifactValueProvider implements IValueProvider {
 
    @SuppressWarnings("deprecation")
    @Override
-   public Collection<Date> getDateValues()  {
+   public Collection<Date> getDateValues() {
       AttributeType attributeType = getAtributeType();
       if (attributeType != null) {
          List<Date> dates = new ArrayList<>();

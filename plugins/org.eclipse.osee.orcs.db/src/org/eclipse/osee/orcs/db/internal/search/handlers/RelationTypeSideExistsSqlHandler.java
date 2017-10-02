@@ -33,7 +33,7 @@ public class RelationTypeSideExistsSqlHandler extends AbstractRelationSqlHandler
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer)  {
+   public boolean addPredicates(AbstractSqlWriter writer) {
       super.addPredicates(writer);
 
       RelationTypeSide type = criteria.getType();

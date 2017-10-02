@@ -36,27 +36,27 @@ public class ConfigParserTest {
 
    private static final String VALID_CONFIG = //
       "{" + //
-      "\"config\": " + //
-      "  [" + //
-      "     {" + //
-      "        \"service.pid\": \"service-1\"," + //
-      "        \"key1\": \"val1\"," + //
-      "        \"key2\": \"val2\"" + //
-      "     }," + //
-      "     {" + //
-      "        \"service.pid\": \"service-2\"," + //
-      "        \"a\": \"34242\"," + //
-      "        \"b\": \"hello\"" + //
-      "     }," + //
-      "     {" + //
-      "        \"service.pid\": \"service-3\"" + //
-      "     }" + //
-      "  ]" + //
-      "}";
+         "\"config\": " + //
+         "  [" + //
+         "     {" + //
+         "        \"service.pid\": \"service-1\"," + //
+         "        \"key1\": \"val1\"," + //
+         "        \"key2\": \"val2\"" + //
+         "     }," + //
+         "     {" + //
+         "        \"service.pid\": \"service-2\"," + //
+         "        \"a\": \"34242\"," + //
+         "        \"b\": \"hello\"" + //
+         "     }," + //
+         "     {" + //
+         "        \"service.pid\": \"service-3\"" + //
+         "     }" + //
+         "  ]" + //
+         "}";
 
    private static final String ERROR_CONFIG_1 = "{" + //
-   "\"config\": [" + //
-   "{";
+      "\"config\": [" + //
+      "{";
 
    @Rule
    public ExpectedException thrown = ExpectedException.none();

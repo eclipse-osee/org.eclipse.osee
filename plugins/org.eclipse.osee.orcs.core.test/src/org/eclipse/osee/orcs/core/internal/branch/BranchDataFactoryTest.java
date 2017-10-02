@@ -77,7 +77,7 @@ public class BranchDataFactoryTest {
    }
 
    @Test
-   public void testDataForTopLevelBranch()  {
+   public void testDataForTopLevelBranch() {
       IOseeBranch branch = IOseeBranch.create("testDataForTopLevelBranch");
       CreateBranchData result = factory.createTopLevelBranchData(branch, author);
 
@@ -89,7 +89,7 @@ public class BranchDataFactoryTest {
    }
 
    @Test
-   public void testDataForBaselineBranch()  {
+   public void testDataForBaselineBranch() {
       IOseeBranch branch = IOseeBranch.create("testDataForBaselineBranch");
       CreateBranchData result = factory.createBaselineBranchData(branch, author, parentBranch, associatedArtifact);
 
@@ -101,7 +101,7 @@ public class BranchDataFactoryTest {
    }
 
    @Test
-   public void testDataForWorkingBranch()  {
+   public void testDataForWorkingBranch() {
       IOseeBranch branch = IOseeBranch.create("testDataForWorkingBranch");
 
       CreateBranchData result = factory.createWorkingBranchData(branch, author, parentBranch, associatedArtifact);
@@ -113,7 +113,7 @@ public class BranchDataFactoryTest {
    }
 
    @Test
-   public void testDataForCopyTxBranch()  {
+   public void testDataForCopyTxBranch() {
       IOseeBranch branch = IOseeBranch.create("testDataForCopyTxBranch");
 
       CreateBranchData result = factory.createCopyTxBranchData(branch, author, txRecord, ArtifactId.SENTINEL);
@@ -128,7 +128,7 @@ public class BranchDataFactoryTest {
    }
 
    @Test
-   public void testDataForPortBranch()  {
+   public void testDataForPortBranch() {
       IOseeBranch branch = IOseeBranch.create("testDataForPortBranch");
 
       CreateBranchData result = factory.createPortBranchData(branch, author, txRecord, ArtifactId.SENTINEL);

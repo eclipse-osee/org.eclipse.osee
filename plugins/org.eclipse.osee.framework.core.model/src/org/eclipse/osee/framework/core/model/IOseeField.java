@@ -15,9 +15,9 @@ package org.eclipse.osee.framework.core.model;
  */
 public interface IOseeField<T> {
 
-   void set(T value) ;
+   void set(T value);
 
-   T get() ;
+   T get();
 
    void clearDirty();
 

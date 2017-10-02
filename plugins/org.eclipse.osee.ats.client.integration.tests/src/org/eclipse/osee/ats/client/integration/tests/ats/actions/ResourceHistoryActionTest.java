@@ -36,7 +36,7 @@ public class ResourceHistoryActionTest extends AbstractAtsActionTest {
    }
 
    @Override
-   public ResourceHistoryAction createAction()  {
+   public ResourceHistoryAction createAction() {
       return new ResourceHistoryAction(AtsTestUtil.getTeamWf());
    }
 

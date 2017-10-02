@@ -53,7 +53,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
    }
 
    @Override
-   public void run(TableLoadOption... tableLoadOptions)  {
+   public void run(TableLoadOption... tableLoadOptions) {
       IAtsTeamDefinition teamDefHoldingVersions = getReleaseableTeamDefinition();
       if (teamDefHoldingVersions == null) {
          return;
@@ -120,7 +120,7 @@ public class ReleaseVersionItem extends XNavigateItemAction {
       }
    }
 
-   public IAtsTeamDefinition getReleaseableTeamDefinition()  {
+   public IAtsTeamDefinition getReleaseableTeamDefinition() {
       if (teamDefHoldingVersions != null) {
          return teamDefHoldingVersions;
       }

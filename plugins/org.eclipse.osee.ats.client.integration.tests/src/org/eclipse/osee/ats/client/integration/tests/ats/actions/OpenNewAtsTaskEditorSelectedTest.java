@@ -28,7 +28,7 @@ public class OpenNewAtsTaskEditorSelectedTest extends AbstractAtsActionRunTest {
       return new OpenNewAtsTaskEditorSelected(new IOpenNewAtsTaskEditorSelectedHandler() {
 
          @Override
-         public List<Artifact> getSelectedArtifacts()  {
+         public List<Artifact> getSelectedArtifacts() {
             return Arrays.asList(AtsTestUtil.getTeamWf());
          }
 

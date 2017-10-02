@@ -14,5 +14,5 @@ package org.eclipse.osee.framework.core.model.access;
  * @author Roberto E. Escobar
  */
 public interface AccessDetailCollector {
-   void collect(AccessDetail<?> accessDetail) ;
+   void collect(AccessDetail<?> accessDetail);
 }

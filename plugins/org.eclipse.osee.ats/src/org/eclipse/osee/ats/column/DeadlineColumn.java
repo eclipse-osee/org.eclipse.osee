@@ -76,7 +76,7 @@ public class DeadlineColumn extends XViewerAtsAttributeValueColumn {
       return null;
    }
 
-   public static Result isDeadlineAlerting(Object object)  {
+   public static Result isDeadlineAlerting(Object object) {
       if (object instanceof AbstractWorkflowArtifact) {
          return DeadlineManager.isDeadlineDateAlerting((AbstractWorkflowArtifact) object);
       } else if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
@@ -90,7 +90,7 @@ public class DeadlineColumn extends XViewerAtsAttributeValueColumn {
       return Result.FalseResult;
    }
 
-   public static Date getDate(Object object)  {
+   public static Date getDate(Object object) {
       if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
          return getDate(AtsClientService.get().getWorkItemService().getFirstTeam(object));
       } else if (Artifacts.isOfType(object, AtsArtifactTypes.TeamWorkflow)) {
@@ -104,7 +104,7 @@ public class DeadlineColumn extends XViewerAtsAttributeValueColumn {
       return null;
    }
 
-   public static String getDateStr(AbstractWorkflowArtifact artifact)  {
+   public static String getDateStr(AbstractWorkflowArtifact artifact) {
       return DateUtil.getMMDDYY(getDate(artifact));
    }
 

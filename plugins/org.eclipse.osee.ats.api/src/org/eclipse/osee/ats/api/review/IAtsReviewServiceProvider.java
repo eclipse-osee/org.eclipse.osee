@@ -15,5 +15,5 @@ package org.eclipse.osee.ats.api.review;
  */
 public interface IAtsReviewServiceProvider {
 
-   public IAtsReviewService getReviewService() ;
+   public IAtsReviewService getReviewService();
 }

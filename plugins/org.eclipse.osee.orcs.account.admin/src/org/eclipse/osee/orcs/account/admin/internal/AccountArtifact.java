@@ -20,7 +20,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 /**
  * @author Roberto E. Escobar
  */
-public class AccountArtifact extends BaseIdentity<String>implements Account {
+public class AccountArtifact extends BaseIdentity<String> implements Account {
 
    private static final String NOT_AVAILABLE = "N/A";
 

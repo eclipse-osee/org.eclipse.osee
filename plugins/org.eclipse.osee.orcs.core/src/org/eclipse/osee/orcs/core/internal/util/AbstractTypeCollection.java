@@ -34,9 +34,9 @@ public abstract class AbstractTypeCollection<TYPE, MATCH_DATA extends OrcsWritea
       super();
    }
 
-   protected abstract TYPE getType(DATA data) ;
+   protected abstract TYPE getType(DATA data);
 
-   public Collection<TYPE> getExistingTypes(DeletionFlag includeDeleted)  {
+   public Collection<TYPE> getExistingTypes(DeletionFlag includeDeleted) {
       Set<TYPE> toReturn = new LinkedHashSet<>();
       for (DATA data : getList(includeDeleted)) {
          if (isValid(data)) {
@@ -47,7 +47,7 @@ public abstract class AbstractTypeCollection<TYPE, MATCH_DATA extends OrcsWritea
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
-   public List<DATA> getDirties()  {
+   public List<DATA> getDirties() {
       Predicate matchDirties = isDirty();
       return getListByFilter(matchDirties);
    }
@@ -59,13 +59,13 @@ public abstract class AbstractTypeCollection<TYPE, MATCH_DATA extends OrcsWritea
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
-   public List<DATA> getList(DeletionFlag includeDeleted)  {
+   public List<DATA> getList(DeletionFlag includeDeleted) {
       Predicate deletedStateMatch = deletionFlagEquals(includeDeleted);
       return getListByFilter(deletedStateMatch);
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
-   public ResultSet<DATA> getResultSet(DeletionFlag includeDeleted)  {
+   public ResultSet<DATA> getResultSet(DeletionFlag includeDeleted) {
       Predicate value = deletionFlagEquals(includeDeleted);
       return getResultSetByFilter(value);
    }

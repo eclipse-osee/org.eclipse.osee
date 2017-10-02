@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 public class NotOnProductionDbInitializationRule implements IDbInitializationRule {
 
    @Override
-   public boolean isAllowed()  {
+   public boolean isAllowed() {
       return !ClientSessionManager.isProductionDataStore();
    }
 }

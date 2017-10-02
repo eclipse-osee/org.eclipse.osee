@@ -50,7 +50,7 @@ public final class UiSelectBetweenDeltasBranchProvider implements IBranchProvide
       return selectedBranch[0];
    }
 
-   private IStatus executeInUiThread(final Collection<BranchId> selectable, final BranchId[] selectedBranch)  {
+   private IStatus executeInUiThread(final Collection<BranchId> selectable, final BranchId[] selectedBranch) {
       IStatus status = null;
       Display display = AWorkbench.getDisplay();
       if (display.getThread().equals(Thread.currentThread())) {

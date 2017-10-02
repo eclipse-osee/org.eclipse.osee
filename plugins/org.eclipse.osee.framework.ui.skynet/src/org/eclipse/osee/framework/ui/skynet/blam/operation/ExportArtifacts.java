@@ -99,7 +99,7 @@ public class ExportArtifacts extends AbstractBlam {
       Program.launch(iFile.getLocation().toOSString());
    }
 
-   private void mapAttributeTypeToColumn(List<Artifact> artifacts)  {
+   private void mapAttributeTypeToColumn(List<Artifact> artifacts) {
       HashSet<AttributeTypeId> attributeTypes = new HashSet<>();
 
       for (Artifact artifact : artifacts) {

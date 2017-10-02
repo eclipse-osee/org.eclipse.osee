@@ -81,7 +81,7 @@ public class ReplaceArtifactWithBaselineOperation extends AbstractOperation {
       }
    }
 
-   private void persistAndReloadArtifacts()  {
+   private void persistAndReloadArtifacts() {
       for (Artifact artifact : artifacts) {
          artifact.reloadAttributesAndRelations();
       }

@@ -49,7 +49,7 @@ public class OrcsRelationLoadingTest {
       checkRelationsForSawBranch(orcsApi, queryFactory);
    }
 
-   private void checkRelationsForCommonBranch(OrcsApi oseeApi, QueryFactory queryFactory)  {
+   private void checkRelationsForCommonBranch(OrcsApi oseeApi, QueryFactory queryFactory) {
 
       ArtifactReadable art6 =
          queryFactory.fromBranch(CoreBranches.COMMON).andIsOfType(CoreArtifactTypes.OseeTypeDefinition).andNameEquals(
@@ -87,7 +87,7 @@ public class OrcsRelationLoadingTest {
 
    }
 
-   private void checkRelationsForSawBranch(OrcsApi oseeApi, QueryFactory queryFactory)  {
+   private void checkRelationsForSawBranch(OrcsApi oseeApi, QueryFactory queryFactory) {
       QueryBuilder builder = queryFactory.fromBranch(SAW_Bld_1).and(CoreAttributeTypes.Name, "Design Constraints");
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
 

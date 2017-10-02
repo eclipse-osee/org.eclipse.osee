@@ -29,7 +29,7 @@ public class SprintManager extends MembersManager<SprintArtifact> {
    /**
     * change sprint, error if member of two sprints
     */
-   public SprintArtifact promptChangeSprintOrder(Artifact artifact)  {
+   public SprintArtifact promptChangeSprintOrder(Artifact artifact) {
       if (!isHasCollector(artifact)) {
          AWorkbench.popup(String.format("No Sprint set for artifact [%s]", artifact));
          return null;
@@ -62,7 +62,7 @@ public class SprintManager extends MembersManager<SprintArtifact> {
    }
 
    @Override
-   public String getMemberOrder(SprintArtifact sprintArt, Artifact member)  {
+   public String getMemberOrder(SprintArtifact sprintArt, Artifact member) {
       return AtsClientService.get().getSprintItemsCache().getMemberOrder(sprintArt, member);
    }
 

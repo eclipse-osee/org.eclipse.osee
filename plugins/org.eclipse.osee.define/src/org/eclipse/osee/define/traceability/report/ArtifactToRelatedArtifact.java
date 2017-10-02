@@ -37,7 +37,7 @@ public class ArtifactToRelatedArtifact extends AbstractArtifactRelationReport {
       return toReturn.toArray(new String[toReturn.size()]);
    }
 
-   public List<String[]> getRelatedRows(RelationTypeSide[] relations, Artifact artifact)  {
+   public List<String[]> getRelatedRows(RelationTypeSide[] relations, Artifact artifact) {
       List<String[]> toReturn = new ArrayList<>();
       int maxSize = 0;
       List<List<String>> items = new ArrayList<>();

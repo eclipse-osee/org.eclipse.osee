@@ -103,7 +103,7 @@ public class WordTemplateRenderer extends WordRenderer {
       return new WordTemplateRenderer(rendererOptions);
    }
 
-   public void publish(Artifact masterTemplateArtifact, Artifact slaveTemplateArtifact, List<Artifact> artifacts)  {
+   public void publish(Artifact masterTemplateArtifact, Artifact slaveTemplateArtifact, List<Artifact> artifacts) {
       templateProcessor.publishWithNestedTemplates(masterTemplateArtifact, slaveTemplateArtifact, artifacts);
    }
 
@@ -161,7 +161,7 @@ public class WordTemplateRenderer extends WordRenderer {
    }
 
    @Override
-   public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, WordMLProducer producer, String format, String label, String footer)  {
+   public void renderAttribute(AttributeTypeToken attributeType, Artifact artifact, PresentationType presentationType, WordMLProducer producer, String format, String label, String footer) {
       WordMLProducer wordMl = producer;
 
       if (attributeType.equals(CoreAttributeTypes.WordTemplateContent)) {
@@ -221,7 +221,7 @@ public class WordTemplateRenderer extends WordRenderer {
    }
 
    @Override
-   public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts)  {
+   public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) {
       final List<Artifact> notMultiEditableArtifacts = new LinkedList<>();
       Artifact template;
       String templateContent = "";
@@ -303,7 +303,7 @@ public class WordTemplateRenderer extends WordRenderer {
          (String) getRendererOptionValue(RendererOption.OUTLINE_TYPE), presentationType);
    }
 
-   protected Artifact getTemplate(Artifact artifact, PresentationType presentationType)  {
+   protected Artifact getTemplate(Artifact artifact, PresentationType presentationType) {
       // if USE_TEMPLATE_ONCE then only the first two artifacts will use the whole template (since they are diff'd with each other)
       // The settings from the template are stored previously and will be used, just not the content of the Word template
 

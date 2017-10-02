@@ -39,22 +39,22 @@ public class XDefectViewer extends XLabelValue implements IArtifactWidget, IOsee
    }
 
    @Override
-   public void saveToArtifact()  {
+   public void saveToArtifact() {
       // do nothing
    }
 
    @Override
-   public void revert()  {
+   public void revert() {
       // do nothing
    }
 
    @Override
-   public Result isDirty()  {
+   public Result isDirty() {
       return Result.FalseResult;
    }
 
    @Override
-   public void setArtifact(Artifact artifact)  {
+   public void setArtifact(Artifact artifact) {
       reviewArt = (PeerToPeerReviewArtifact) artifact;
       refreshLabel();
    }
@@ -69,7 +69,7 @@ public class XDefectViewer extends XLabelValue implements IArtifactWidget, IOsee
       setValueText(String.format("%d Found. See Defects tab for details",
          reviewArt.getAttributeCount(AtsAttributeTypes.ReviewDefect)));
    }
-   
+
    public PeerToPeerReviewArtifact getReviewArt() {
       return reviewArt;
    }

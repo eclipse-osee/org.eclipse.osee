@@ -18,22 +18,22 @@ import org.eclipse.osee.ats.api.IAtsConfigObject;
  */
 public interface IAtsWorkPackage extends IAtsConfigObject {
 
-   public String getActivityId() ;
+   public String getActivityId();
 
-   public String getActivityName() ;
+   public String getActivityName();
 
    public String getGuid();
 
-   public String getWorkPackageId() ;
+   public String getWorkPackageId();
 
-   public String getWorkPackageProgram() ;
+   public String getWorkPackageProgram();
 
-   public AtsWorkPackageType getWorkPackageType() ;
+   public AtsWorkPackageType getWorkPackageType();
 
-   public int getWorkPackagePercent() ;
+   public int getWorkPackagePercent();
 
-   public Date getStartDate() ;
+   public Date getStartDate();
 
-   public Date getEndDate() ;
+   public Date getEndDate();
 
 }

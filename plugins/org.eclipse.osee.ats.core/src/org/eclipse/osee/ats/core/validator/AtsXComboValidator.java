@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.workdef.WidgetResult;
 public class AtsXComboValidator extends AtsXWidgetValidator {
 
    @Override
-   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, IAtsServices atsServices)  {
+   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, IAtsServices atsServices) {
       WidgetResult result = WidgetResult.Valid;
       if (widgetDef.getXWidgetName().startsWith("XComboDam")) {
          result = validateWidgetIsRequired(provider, widgetDef, fromStateDef, toStateDef);

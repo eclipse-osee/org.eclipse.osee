@@ -31,12 +31,12 @@ public abstract class AbstractOseeDslProvider implements OseeDslProvider {
       this.locationUri = locationUri;
    }
 
-   protected abstract String getModelFromStorage() ;
+   protected abstract String getModelFromStorage();
 
-   protected abstract void saveModelToStorage(String model) ;
+   protected abstract void saveModelToStorage(String model);
 
    @Override
-   public void loadDsl()  {
+   public void loadDsl() {
       String accessModel = getModelFromStorage();
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       IOperation op = ArtifactTypeManager.newExportTypesOp(outputStream);
@@ -50,7 +50,7 @@ public abstract class AbstractOseeDslProvider implements OseeDslProvider {
    }
 
    @Override
-   public OseeDsl getDsl()  {
+   public OseeDsl getDsl() {
       if (oseeDsl == null) {
          loadDsl();
       }
@@ -58,7 +58,7 @@ public abstract class AbstractOseeDslProvider implements OseeDslProvider {
    }
 
    @Override
-   public void storeDsl(OseeDsl dsl)  {
+   public void storeDsl(OseeDsl dsl) {
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       try {
          OseeDslResourceUtil.saveModel(dsl, locationUri, outputStream, false);

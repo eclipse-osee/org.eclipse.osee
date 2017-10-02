@@ -79,7 +79,7 @@ public class WfeWorkflowSection extends SectionPart {
    private final WorkflowEditor editor;
    private WfeTransitionComposite workflowTransitionComposite;
 
-   public WfeWorkflowSection(Composite parent, int style, StateXWidgetPage page, AbstractWorkflowArtifact sma, final WorkflowEditor editor)  {
+   public WfeWorkflowSection(Composite parent, int style, StateXWidgetPage page, AbstractWorkflowArtifact sma, final WorkflowEditor editor) {
       super(parent, editor.getToolkit(), style | ExpandableComposite.TWISTIE | ExpandableComposite.TITLE_BAR);
       this.statePage = page;
       this.sma = sma;
@@ -139,7 +139,7 @@ public class WfeWorkflowSection extends SectionPart {
       return sma.isInState(state);
    }
 
-   private synchronized void createSection(Section section)  {
+   private synchronized void createSection(Section section) {
       if (sectionCreated) {
          return;
       }
@@ -164,7 +164,7 @@ public class WfeWorkflowSection extends SectionPart {
       sectionCreated = true;
    }
 
-   protected Composite createWorkArea(Composite comp, StateXWidgetPage statePage, XFormToolkit toolkit)  {
+   protected Composite createWorkArea(Composite comp, StateXWidgetPage statePage, XFormToolkit toolkit) {
       statePage.generateLayoutDatas(sma);
 
       if (statePage.getStateDefinition().getDescription() != null) {
@@ -258,7 +258,7 @@ public class WfeWorkflowSection extends SectionPart {
       getManagedForm().reflow(true);
    }
 
-   private void createCancelledPageWidgets(Composite parent)  {
+   private void createCancelledPageWidgets(Composite parent) {
       XWidget xWidget = null;
       xWidget = new XLabelValue("Cancelled from State", sma.getCancelledFromState());
       xWidget.createWidgets(parent, 1);
@@ -274,7 +274,7 @@ public class WfeWorkflowSection extends SectionPart {
       allXWidgets.add(xWidget);
    }
 
-   private void createCompletedPageWidgets(Composite parent)  {
+   private void createCompletedPageWidgets(Composite parent) {
       XWidget xWidget = null;
       xWidget = new XLabelValue("Completed from State", sma.getCompletedFromState());
       xWidget.createWidgets(parent, 1);
@@ -343,7 +343,7 @@ public class WfeWorkflowSection extends SectionPart {
       return statePage + " for " + getSma();
    }
 
-   public Result isXWidgetDirty()  {
+   public Result isXWidgetDirty() {
       for (XWidget widget : allXWidgets) {
          if (widget instanceof IArtifactStoredWidget) {
             IArtifactStoredWidget artifactStoredWidget = (IArtifactStoredWidget) widget;
@@ -358,7 +358,7 @@ public class WfeWorkflowSection extends SectionPart {
       return Result.FalseResult;
    }
 
-   public void getDirtyIArtifactWidgets(List<IArtifactStoredWidget> widgets)  {
+   public void getDirtyIArtifactWidgets(List<IArtifactStoredWidget> widgets) {
       for (XWidget widget : allXWidgets) {
          if (widget instanceof IArtifactStoredWidget) {
             IArtifactStoredWidget artifactStoredWidget = (IArtifactStoredWidget) widget;
@@ -369,7 +369,7 @@ public class WfeWorkflowSection extends SectionPart {
       }
    }
 
-   protected static String getCurrentStateTitle(AbstractWorkflowArtifact sma, String statePageName, boolean isEditable, boolean isCurrentState, boolean isCancelledState)  {
+   protected static String getCurrentStateTitle(AbstractWorkflowArtifact sma, String statePageName, boolean isEditable, boolean isCurrentState, boolean isCancelledState) {
       StringBuffer sb = new StringBuffer(statePageName);
       if (isEditable && !sma.isCompleted() && !sma.isCancelled()) {
          sb.append(" - Current State");

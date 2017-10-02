@@ -39,7 +39,7 @@ public class EditStatusAction extends AbstractAtsAction {
    }
 
    @Override
-   public void runWithException()  {
+   public void runWithException() {
       Collection<AbstractWorkflowArtifact> smaArts =
          Collections.castMatching(AbstractWorkflowArtifact.class, selectedAtsArtifacts.getSelectedWorkflowArtifacts());
       if (WfePromptChangeStatus.promptChangeStatus(smaArts, true)) {

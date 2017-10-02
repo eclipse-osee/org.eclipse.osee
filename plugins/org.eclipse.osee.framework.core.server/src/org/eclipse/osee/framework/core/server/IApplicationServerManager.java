@@ -21,7 +21,7 @@ import java.util.concurrent.ThreadFactory;
  */
 public interface IApplicationServerManager {
 
-   void shutdown() ;
+   void shutdown();
 
    ThreadFactory createNewThreadFactory(String name, int priority);
 
@@ -41,7 +41,7 @@ public interface IApplicationServerManager {
 
    String[] getVersions();
 
-   void register(String context, OseeHttpServlet servlets) ;
+   void register(String context, OseeHttpServlet servlets);
 
    void unregister(String key);
 

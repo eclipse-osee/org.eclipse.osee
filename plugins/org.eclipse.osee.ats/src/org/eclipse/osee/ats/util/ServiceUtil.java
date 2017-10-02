@@ -32,7 +32,7 @@ public class ServiceUtil {
       return (T) getContext().getService(serviceReference);
    }
 
-   public static OseeClient getOseeClient()  {
+   public static OseeClient getOseeClient() {
       return getService(OseeClient.class);
    }
 

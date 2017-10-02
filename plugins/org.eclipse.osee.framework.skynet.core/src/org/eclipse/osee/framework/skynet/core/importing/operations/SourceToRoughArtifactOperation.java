@@ -50,7 +50,7 @@ public class SourceToRoughArtifactOperation extends AbstractOperation {
    /**
     * used recursively when originally passed a directory, thus an array of files is accepted
     */
-   private void extractArtifacts(IProgressMonitor monitor, double workPercentage, File[] files, RoughArtifactCollector collector, RoughArtifact parentArtifact)  {
+   private void extractArtifacts(IProgressMonitor monitor, double workPercentage, File[] files, RoughArtifactCollector collector, RoughArtifact parentArtifact) {
       int workAmount = calculateWork(workPercentage);
       for (File file : files) {
          if (file.isFile()) {
@@ -70,7 +70,7 @@ public class SourceToRoughArtifactOperation extends AbstractOperation {
       }
    }
 
-   private void processFile(File file, RoughArtifactCollector collector, RoughArtifact parent)  {
+   private void processFile(File file, RoughArtifactCollector collector, RoughArtifact parent) {
       RoughArtifactCollector tempCollector = new RoughArtifactCollector(parent);
       try {
          extractor.process(logger, file.toURI(), tempCollector);

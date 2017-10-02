@@ -37,7 +37,7 @@ public class VCastBranchCoverageTable implements VCastTableData<VCastBranchCover
    }
 
    @Override
-   public Collection<VCastBranchCoverage> getRows(VCastDataStore dataStore)  {
+   public Collection<VCastBranchCoverage> getRows(VCastDataStore dataStore) {
       return dataStore.getAllBranchCoverages();
    }
 

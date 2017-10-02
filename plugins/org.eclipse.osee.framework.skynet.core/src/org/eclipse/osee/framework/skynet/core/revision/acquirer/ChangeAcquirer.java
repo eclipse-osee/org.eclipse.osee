@@ -74,5 +74,5 @@ public abstract class ChangeAcquirer {
       return newAndDeletedArtifactIds;
    }
 
-   public abstract ArrayList<ChangeBuilder> acquireChanges() ;
+   public abstract ArrayList<ChangeBuilder> acquireChanges();
 }

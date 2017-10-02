@@ -53,7 +53,7 @@ public class ConvertVersionToAgileSprint extends XNavigateItemAction {
    }
 
    @Override
-   public void run(TableLoadOption... tableLoadOptions)  {
+   public void run(TableLoadOption... tableLoadOptions) {
 
       List<IAgileTeam> activeAgileTeams = new LinkedList<>();
       IAtsClient client = AtsClientService.get();

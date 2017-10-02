@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeAdapter;
 public class BranchAttributeAdapter implements AttributeAdapter<BranchId> {
 
    @Override
-   public BranchId adapt(Attribute<?> attribute, Id identity)  {
+   public BranchId adapt(Attribute<?> attribute, Id identity) {
       return BranchId.valueOf(identity.getId());
    }
 

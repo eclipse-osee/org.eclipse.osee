@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil
 public class OpenParentActionTest extends AbstractAtsActionRunTest {
 
    @Override
-   public OpenParentAction createAction()  {
+   public OpenParentAction createAction() {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       OpenParentAction action = new OpenParentAction(AtsTestUtil.getOrCreateTaskOffTeamWf1());
       if (!changes.isEmpty()) {

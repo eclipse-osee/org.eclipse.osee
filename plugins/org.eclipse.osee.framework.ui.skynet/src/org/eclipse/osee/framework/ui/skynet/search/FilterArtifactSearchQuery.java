@@ -34,7 +34,7 @@ public class FilterArtifactSearchQuery extends AbstractLegacyArtifactSearchQuery
    }
 
    @Override
-   public Collection<Artifact> getArtifacts()  {
+   public Collection<Artifact> getArtifacts() {
       boolean firstTime = true;
 
       QueryBuilderArtifact queryBuilderArtifact = ArtifactQuery.createQueryBuilder(branch);

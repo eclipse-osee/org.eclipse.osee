@@ -29,7 +29,7 @@ public class EditActionableItemsAction extends AbstractAtsAction {
    }
 
    @Override
-   public void runWithException()  {
+   public void runWithException() {
       AtsUtil.editActionableItems(teamWf);
    }
 

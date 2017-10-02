@@ -79,7 +79,7 @@ public class OriginatingWorkFlowColumn extends XViewerAtsColumn implements IXVie
       return "";
    }
 
-   public static String getWorldViewOriginatingWorkflowStr(Artifact actionArt)  {
+   public static String getWorldViewOriginatingWorkflowStr(Artifact actionArt) {
       Set<String> strs = new HashSet<>();
       for (IAtsTeamWorkflow team : getWorldViewOriginatingWorkflows(actionArt)) {
          strs.add(AtsClientService.get().getColumnService().getColumn(AtsColumnId.Team).getColumnText(team));
@@ -87,7 +87,7 @@ public class OriginatingWorkFlowColumn extends XViewerAtsColumn implements IXVie
       return Collections.toString(";", strs);
    }
 
-   public static Collection<IAtsTeamWorkflow> getWorldViewOriginatingWorkflows(Artifact actionArt)  {
+   public static Collection<IAtsTeamWorkflow> getWorldViewOriginatingWorkflows(Artifact actionArt) {
       if (AtsClientService.get().getWorkItemService().getTeams(actionArt).size() == 1) {
          return AtsClientService.get().getWorkItemService().getTeams(actionArt);
       }

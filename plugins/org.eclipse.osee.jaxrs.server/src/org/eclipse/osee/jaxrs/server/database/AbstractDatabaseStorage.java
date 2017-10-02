@@ -103,7 +103,7 @@ public abstract class AbstractDatabaseStorage<T> {
             getJdbcClient().runQuery(stmt -> {
                T data = readData(stmt);
                list.add(data);
-            } , query, data);
+            }, query, data);
             return ResultSets.newResultSet(list);
          }
       };

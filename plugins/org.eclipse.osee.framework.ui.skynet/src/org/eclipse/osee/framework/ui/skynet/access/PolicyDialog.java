@@ -123,7 +123,7 @@ public class PolicyDialog extends Dialog {
       return mainComposite;
    }
 
-   private void populateInputWidgets()  {
+   private void populateInputWidgets() {
 
       // Setup permissions combo
       permissionLevelCombo.setText("-Select Permission-");

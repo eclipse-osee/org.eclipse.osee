@@ -46,7 +46,7 @@ public class CmAccessProviderTest {
    }
 
    @Test
-   public void testCmProviderReturnsNull()  {
+   public void testCmProviderReturnsNull() {
       Collection<Object> objects = new ArrayList<>();
       objects.add(expectedObject);
       MockConfigurationManagementProvider cmProvider =
@@ -59,7 +59,7 @@ public class CmAccessProviderTest {
    }
 
    @Test
-   public void testCmProvider()  {
+   public void testCmProvider() {
       MockAccessModel accessModel = new MockAccessModel();
       MockCMWithAccessModel cm =
          new MockCMWithAccessModel(accessModel, expectedUser, expectedObject, false, Collections.singleton(contextId1));

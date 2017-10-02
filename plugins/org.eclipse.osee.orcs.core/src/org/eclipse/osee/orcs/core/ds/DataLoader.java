@@ -59,22 +59,22 @@ public interface DataLoader extends Loader {
 
    //////////// IDS
 
-   DataLoader withAttributeIds(int... attributeIds) ;
+   DataLoader withAttributeIds(int... attributeIds);
 
-   DataLoader withAttributeIds(Collection<Integer> attributeIds) ;
+   DataLoader withAttributeIds(Collection<Integer> attributeIds);
 
-   DataLoader withRelationIds(int... relationIds) ;
+   DataLoader withRelationIds(int... relationIds);
 
-   DataLoader withRelationIds(Collection<Integer> relationIds) ;
+   DataLoader withRelationIds(Collection<Integer> relationIds);
 
    ///////// TYPES
 
-   DataLoader withAttributeTypes(AttributeTypeId... attributeType) ;
+   DataLoader withAttributeTypes(AttributeTypeId... attributeType);
 
-   DataLoader withAttributeTypes(Collection<? extends AttributeTypeId> attributeTypes) ;
+   DataLoader withAttributeTypes(Collection<? extends AttributeTypeId> attributeTypes);
 
-   DataLoader withRelationTypes(IRelationType... relationType) ;
+   DataLoader withRelationTypes(IRelationType... relationType);
 
-   DataLoader withRelationTypes(Collection<? extends IRelationType> relationType) ;
+   DataLoader withRelationTypes(Collection<? extends IRelationType> relationType);
 
 }

@@ -115,7 +115,7 @@ public class AtsXWidgetValidateManagerTest {
    private class AtsExceptionValidator implements IAtsXWidgetValidator {
 
       @Override
-      public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, IAtsServices atsServices)  {
+      public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, IAtsServices atsServices) {
          throw new OseeStateException("problem");
       }
 

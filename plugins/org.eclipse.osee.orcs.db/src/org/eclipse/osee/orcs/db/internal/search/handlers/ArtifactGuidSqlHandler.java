@@ -86,7 +86,7 @@ public class ArtifactGuidSqlHandler extends SqlHandler<CriteriaArtifactGuids> {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer)  {
+   public boolean addPredicates(AbstractSqlWriter writer) {
       Collection<String> ids = criteria.getIds();
       if (ids.size() > 1) {
          joinQuery = writer.writeCharJoin(ids);

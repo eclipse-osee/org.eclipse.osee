@@ -16,5 +16,5 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 public interface AttributeModifier {
 
-   InputStream modifyForSave(Artifact owner, File file) ;
+   InputStream modifyForSave(Artifact owner, File file);
 }

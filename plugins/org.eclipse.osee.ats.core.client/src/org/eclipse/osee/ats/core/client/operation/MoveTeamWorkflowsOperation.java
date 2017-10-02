@@ -42,7 +42,7 @@ public class MoveTeamWorkflowsOperation extends AbstractOperation {
    }
 
    @Override
-   protected void doWork(IProgressMonitor monitor)  {
+   protected void doWork(IProgressMonitor monitor) {
       if (sourceTeamWorkflows.isEmpty()) {
          throw new OseeArgumentException("ERROR", "Must provide Source Team Workflow(s).");
       }

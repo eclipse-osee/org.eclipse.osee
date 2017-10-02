@@ -50,7 +50,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
    private AttributeTypeId attributeTypeToken;
    private ApplicabilityId applicabilityId;
 
-   void internalInitialize(AttributeTypeId attributeType, Artifact artifact, ModificationType modificationType, ApplicabilityId applicabilityId, boolean markDirty, boolean setDefaultValue)  {
+   void internalInitialize(AttributeTypeId attributeType, Artifact artifact, ModificationType modificationType, ApplicabilityId applicabilityId, boolean markDirty, boolean setDefaultValue) {
       this.attributeTypeToken = attributeType;
       this.artifactRef = new WeakReference<>(artifact);
       internalSetModType(modificationType, false, markDirty);
@@ -78,7 +78,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
    /**
     * Base implementation does nothing. Subclasses may override to do setup that depends on the attribute state data.
     */
-   protected void uponInitialize()  {
+   protected void uponInitialize() {
       // provided for subclass implementation
    }
 
@@ -100,7 +100,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
       return attributeChange;
    }
 
-   public void internalInitialize(AttributeTypeId attributeType, Artifact artifact, ModificationType modificationType, ApplicabilityId applicabilityId, AttributeId attributeId, int gammaId, boolean markDirty, boolean setDefaultValue)  {
+   public void internalInitialize(AttributeTypeId attributeType, Artifact artifact, ModificationType modificationType, ApplicabilityId applicabilityId, AttributeId attributeId, int gammaId, boolean markDirty, boolean setDefaultValue) {
       internalInitialize(attributeType, artifact, modificationType, applicabilityId, markDirty, setDefaultValue);
       this.attrId = attributeId;
       this.gammaId = gammaId;
@@ -129,12 +129,12 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
       return subClassSetValue(convertStringToValue(value));
    }
 
-   public boolean setFromString(String value)  {
+   public boolean setFromString(String value) {
       Conditions.checkNotNull(value, "Attribute value", "attribute id [%s]", getId());
       return setValue(convertStringToValue(value));
    }
 
-   private void checkIsRenameable(T value)  {
+   private void checkIsRenameable(T value) {
       if (getAttributeType().equals(CoreAttributeTypes.Name) && !value.equals(getValue())) {
          // Confirm artifact is fit to rename
          for (IArtifactCheck check : ArtifactChecks.getArtifactChecks()) {
@@ -155,18 +155,18 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
       return rawValue == null ? null : rawValue.toString();
    }
 
-   public final void resetToDefaultValue()  {
+   public final void resetToDefaultValue() {
       setToDefaultValue();
    }
 
-   protected void setToDefaultValue()  {
+   protected void setToDefaultValue() {
       String defaultValue = getAttributeType().getDefaultValue();
       if (defaultValue != null) {
          setFromStringNoDirty(defaultValue);
       }
    }
 
-   public boolean setValueFromInputStream(InputStream value)  {
+   public boolean setValueFromInputStream(InputStream value) {
       try {
          boolean response = setFromString(Lib.inputStreamToString(value));
          if (response) {
@@ -182,9 +182,9 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
     * Subclasses must provide an implementation of this method and in general should not override the other set value
     * methods. The value parameter will be non-null
     */
-   protected abstract boolean subClassSetValue(T value) ;
+   protected abstract boolean subClassSetValue(T value);
 
-   public String getDisplayableString()  {
+   public String getDisplayableString() {
       return getAttributeDataProvider().getDisplayableString();
    }
 
@@ -217,7 +217,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
       ArtifactCache.updateCachedArtifact(getArtifact());
    }
 
-   public Artifact getArtifact()  {
+   public Artifact getArtifact() {
       if (artifactRef.get() == null) {
          throw new OseeStateException("Artifact has been garbage collected");
       }
@@ -266,7 +266,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
    /**
     * Deletes the attribute
     */
-   public final void delete()  {
+   public final void delete() {
       if (isInDb()) {
          internalSetModType(ModificationType.DELETED, true, true);
       } else {
@@ -290,7 +290,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
    /**
     * Purges attribute binary data
     */
-   void purge()  {
+   void purge() {
       getAttributeDataProvider().purge();
    }
 
@@ -332,7 +332,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
    /**
     * @return the deleted
     */
-   public boolean isDeleted()  {
+   public boolean isDeleted() {
       try {
          return modificationType.isDeleted();
       } catch (NullPointerException ex) {

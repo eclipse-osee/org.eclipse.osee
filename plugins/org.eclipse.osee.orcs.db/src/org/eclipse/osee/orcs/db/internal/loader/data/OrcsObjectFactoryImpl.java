@@ -95,7 +95,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public ArtifactData createArtifactData(VersionData version, Integer localId, long typeUuid, ModificationType modType, String guid, ApplicabilityId applicId)  {
+   public ArtifactData createArtifactData(VersionData version, Integer localId, long typeUuid, ModificationType modType, String guid, ApplicabilityId applicId) {
       return createArtifactFromRow(version, localId, typeUuid, modType, typeUuid, modType, guid, applicId);
    }
 
@@ -113,14 +113,14 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public AttributeData createAttributeData(VersionData version, Integer localId, AttributeTypeId attributeType, ModificationType modType, int artifactId, Object value, String uri, ApplicabilityId applicId)  {
+   public AttributeData createAttributeData(VersionData version, Integer localId, AttributeTypeId attributeType, ModificationType modType, int artifactId, Object value, String uri, ApplicabilityId applicId) {
       Long typeId = attributeType.getId();
       DataProxy proxy = proxyFactory.createProxy(typeId, value, uri);
       return createAttributeFromRow(version, localId, typeId, modType, typeId, modType, artifactId, proxy, applicId);
    }
 
    @Override
-   public AttributeData createCopy(AttributeData source)  {
+   public AttributeData createCopy(AttributeData source) {
       VersionData newVersion = createCopy(source.getVersion());
       long typeId = source.getTypeUuid();
       DataProxy sourceProxy = source.getDataProxy();
@@ -131,7 +131,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public AttributeData createAttributeData(VersionData version, Integer localId, AttributeTypeId attributeType, ModificationType modType, int artId, ApplicabilityId applicId)  {
+   public AttributeData createAttributeData(VersionData version, Integer localId, AttributeTypeId attributeType, ModificationType modType, int artId, ApplicabilityId applicId) {
       long typeId = attributeType.getId();
       DataProxy proxy = proxyFactory.createProxy(typeId, "", "");
       return createAttributeFromRow(version, localId, typeId, modType, typeId, modType, artId, proxy, applicId);

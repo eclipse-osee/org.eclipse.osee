@@ -77,7 +77,7 @@ public class PublishSystemLevelSSDD extends AbstractBlam {
    }
 
    @Override
-   public String getXWidgetsXml()  {
+   public String getXWidgetsXml() {
       StringBuilder builder = new StringBuilder();
       builder.append("<xWidgets>");
       builder.append(branchXWidgetXml);
@@ -121,7 +121,7 @@ public class PublishSystemLevelSSDD extends AbstractBlam {
       Program.launch(iFile.getLocation().toOSString());
    }
 
-   private void getSubsystemList()  {
+   private void getSubsystemList() {
       for (Artifact systemRequirement : sysReqs) {
          List<Artifact> relatedArtifacts =
             systemRequirement.getRelatedArtifacts(CoreRelationTypes.Allocation__Component);

@@ -70,11 +70,11 @@ public class MoveTeamWorkflowsBlam extends AbstractBlam {
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + SOURCE_TEAM_WORKFLOWS + "\" />" +
       //
-      "<XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + DEST_TEAM_WORKFLOW + "\" />" +
-      //
-      "<XWidget xwidgetType=\"XText\" displayName=\"" + TITLE + "\" horizontalLabel=\"true\" />" +
-      //
-      "</xWidgets>";
+         "<XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + DEST_TEAM_WORKFLOW + "\" />" +
+         //
+         "<XWidget xwidgetType=\"XText\" displayName=\"" + TITLE + "\" horizontalLabel=\"true\" />" +
+         //
+         "</xWidgets>";
    }
 
    @Override

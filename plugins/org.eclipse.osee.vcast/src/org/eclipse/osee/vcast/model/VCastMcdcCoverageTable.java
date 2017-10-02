@@ -36,7 +36,7 @@ public class VCastMcdcCoverageTable implements VCastTableData<VCastMcdcCoverage>
    }
 
    @Override
-   public Collection<VCastMcdcCoverage> getRows(VCastDataStore dataStore)  {
+   public Collection<VCastMcdcCoverage> getRows(VCastDataStore dataStore) {
       return dataStore.getAllMcdcCoverages();
    }
 

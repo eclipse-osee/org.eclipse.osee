@@ -41,7 +41,7 @@ public class AtsLogFactory implements IAtsLogFactory {
    }
 
    @Override
-   public IAtsLogItem newLogItem(LogType type, Date date, IAtsUser user, String state, String msg)  {
+   public IAtsLogItem newLogItem(LogType type, Date date, IAtsUser user, String state, String msg) {
       return new LogItem(type, date, user.getUserId(), state, msg);
    }
 

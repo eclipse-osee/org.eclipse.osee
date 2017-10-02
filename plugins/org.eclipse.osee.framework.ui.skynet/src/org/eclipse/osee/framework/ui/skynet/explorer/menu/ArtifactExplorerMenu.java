@@ -286,7 +286,7 @@ public class ArtifactExplorerMenu {
             }
          }
 
-         private Artifact getParent()  {
+         private Artifact getParent() {
             IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
 
             if (selection.size() > 1) {
@@ -340,7 +340,7 @@ public class ArtifactExplorerMenu {
       return null;
    }
 
-   private static FilteredTreeArtifactTypeEntryDialog getDialog(Collection<? extends IArtifactType> validArtifactTypes)  {
+   private static FilteredTreeArtifactTypeEntryDialog getDialog(Collection<? extends IArtifactType> validArtifactTypes) {
       List<IArtifactType> artifactTypes = new ArrayList<>();
       for (IArtifactType artifactType : validArtifactTypes) {
          if (!((ArtifactType) artifactType).isAbstract() && ArtifactTypeManager.isUserCreationAllowed(artifactType)) {
@@ -644,7 +644,7 @@ public class ArtifactExplorerMenu {
       });
    }
 
-   private void performCopy()  {
+   private void performCopy() {
       IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
       List<Artifact> artifactTransferData = new ArrayList<>();
       Artifact artifact;
@@ -697,8 +697,7 @@ public class ArtifactExplorerMenu {
       IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
       if (selection != null) {
          if (selection.isEmpty()) {
-            destinationArtifact =
-               ArtifactQuery.getArtifactFromId(CoreArtifactTokens.DefaultHierarchyRoot, getBranch());
+            destinationArtifact = ArtifactQuery.getArtifactFromId(CoreArtifactTokens.DefaultHierarchyRoot, getBranch());
          } else if (selection.getFirstElement() instanceof Artifact) {
             Object object = selection.getFirstElement();
             Artifact artifact = (Artifact) object;

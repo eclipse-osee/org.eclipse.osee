@@ -49,7 +49,7 @@ public class TranslationManager {
       }
    }
 
-   public void loadTranslators(String sourceDatabaseId)  {
+   public void loadTranslators(String sourceDatabaseId) {
       for (IdTranslator translator : translators) {
          translator.load(sourceDatabaseId);
       }
@@ -63,7 +63,7 @@ public class TranslationManager {
       return toReturn;
    }
 
-   public void store(JdbcConnection connection, int importIdIndex)  {
+   public void store(JdbcConnection connection, int importIdIndex) {
       List<Object[]> data = new ArrayList<>();
       for (IdTranslator translatedIdMap : translators) {
          if (translatedIdMap.hasItemsToStore()) {
@@ -79,7 +79,7 @@ public class TranslationManager {
       return translatorMap.containsKey(name.toLowerCase());
    }
 
-   public Object translate(String name, Object original)  {
+   public Object translate(String name, Object original) {
       Object toReturn = original;
       if (original != null && !useOriginalIds) {
          IdTranslator translator = translatorMap.get(name.toLowerCase());

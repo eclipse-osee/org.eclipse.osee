@@ -29,7 +29,7 @@ public class VCastProjectTable implements VCastTableData<VCastProject> {
    }
 
    @Override
-   public Collection<VCastProject> getRows(VCastDataStore dataStore)  {
+   public Collection<VCastProject> getRows(VCastDataStore dataStore) {
       return dataStore.getAllProjects();
    }
 

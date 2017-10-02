@@ -25,7 +25,7 @@ public enum Function {
    UPDATE_BRANCH_STATE,
    UPDATE_ARCHIVE_STATE;
 
-   public static Function fromString(String toMatch)  {
+   public static Function fromString(String toMatch) {
       for (Function function : Function.values()) {
          if (function.name().equalsIgnoreCase(toMatch)) {
             return function;

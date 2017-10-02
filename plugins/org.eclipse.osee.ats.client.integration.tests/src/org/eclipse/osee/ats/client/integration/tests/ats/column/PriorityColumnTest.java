@@ -38,7 +38,8 @@ public class PriorityColumnTest {
 
       TeamWorkFlowArtifact codeArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
-      Assert.assertEquals("3", PriorityColumnUI.getInstance().getColumnText(codeArt, PriorityColumnUI.getInstance(), 0));
+      Assert.assertEquals("3",
+         PriorityColumnUI.getInstance().getColumnText(codeArt, PriorityColumnUI.getInstance(), 0));
 
       PeerToPeerReviewArtifact peerArt =
          (PeerToPeerReviewArtifact) codeArt.getRelatedArtifact(AtsRelationTypes.TeamWorkflowToReview_Review);
@@ -49,7 +50,8 @@ public class PriorityColumnTest {
       Assert.assertEquals("", PriorityColumnUI.getInstance().getColumnText(taskArt, PriorityColumnUI.getInstance(), 0));
 
       Artifact actionArt = reqArt.getParentActionArtifact();
-      Assert.assertEquals("3", PriorityColumnUI.getInstance().getColumnText(actionArt, PriorityColumnUI.getInstance(), 0));
+      Assert.assertEquals("3",
+         PriorityColumnUI.getInstance().getColumnText(actionArt, PriorityColumnUI.getInstance(), 0));
 
       TestUtil.severeLoggingEnd(loggingMonitor);
    }

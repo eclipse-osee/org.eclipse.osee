@@ -26,7 +26,7 @@ public class VarCharDataProxy<T> extends AbstractDataProxy<T> implements Charact
    private T rawValue;
 
    @Override
-   public String getDisplayableString()  {
+   public String getDisplayableString() {
       return getValueAsString();
    }
 
@@ -48,7 +48,7 @@ public class VarCharDataProxy<T> extends AbstractDataProxy<T> implements Charact
    }
 
    @Override
-   public String getValueAsString()  {
+   public String getValueAsString() {
       String fromStorage = getFromStorage();
       String toReturn = null;
       if (fromStorage != null) {
@@ -60,7 +60,7 @@ public class VarCharDataProxy<T> extends AbstractDataProxy<T> implements Charact
    }
 
    @Override
-   public boolean setValue(T value)  {
+   public boolean setValue(T value) {
       boolean response = false;
       Object currentValue;
       if (value instanceof String) {
@@ -78,7 +78,7 @@ public class VarCharDataProxy<T> extends AbstractDataProxy<T> implements Charact
       return response;
    }
 
-   private String getFromStorage()  {
+   private String getFromStorage() {
       String fromStorage = null;
       byte[] data = null;
       try {
@@ -93,7 +93,7 @@ public class VarCharDataProxy<T> extends AbstractDataProxy<T> implements Charact
       return fromStorage;
    }
 
-   private void storeValue(T value)  {
+   private void storeValue(T value) {
 
       if (value != null && value instanceof String && ((String) value).length() > JDBC__MAX_VARCHAR_LENGTH) {
          ResourceNameResolver resolver = getResolver();

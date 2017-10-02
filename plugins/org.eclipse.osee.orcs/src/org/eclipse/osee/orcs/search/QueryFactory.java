@@ -21,11 +21,11 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public interface QueryFactory {
 
-   QueryBuilder fromBranch(BranchId branch) ;
+   QueryBuilder fromBranch(BranchId branch);
 
-   QueryBuilder fromArtifactTypeAllBranches(IArtifactType artifactType) ;
+   QueryBuilder fromArtifactTypeAllBranches(IArtifactType artifactType);
 
-   QueryBuilder fromArtifacts(Collection<? extends ArtifactReadable> artifacts) ;
+   QueryBuilder fromArtifacts(Collection<? extends ArtifactReadable> artifacts);
 
    BranchQuery branchQuery();
 

@@ -39,23 +39,23 @@ public class XListDam extends XList implements IAttributeWidget {
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, AttributeTypeToken attrName)  {
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attrName) {
       this.artifact = artifact;
       this.attributeType = attrName;
       super.setSelected(getStoredStrs());
    }
 
    @Override
-   public void saveToArtifact()  {
+   public void saveToArtifact() {
       getArtifact().setAttributeValues(getAttributeType(), getSelectedStrs());
    }
 
-   public Collection<String> getStoredStrs()  {
+   public Collection<String> getStoredStrs() {
       return getArtifact().getAttributesToStringList(getAttributeType());
    }
 
    @Override
-   public Result isDirty()  {
+   public Result isDirty() {
       if (isEditable()) {
          try {
             Collection<String> enteredValues = getSelectedStrs();
@@ -71,7 +71,7 @@ public class XListDam extends XList implements IAttributeWidget {
    }
 
    @Override
-   public void revert()  {
+   public void revert() {
       setAttributeType(getArtifact(), getAttributeType());
    }
 

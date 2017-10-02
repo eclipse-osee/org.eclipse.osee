@@ -45,8 +45,8 @@ public class AtsChangeSetTest {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), getClass().getSimpleName());
 
-      folderArt =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, AtsClientService.get().getAtsBranch(), "AtsChangeSetTest");
+      folderArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, AtsClientService.get().getAtsBranch(),
+         "AtsChangeSetTest");
       folderArt.setSoleAttributeValue(CoreAttributeTypes.StaticId, "my static id");
       folderArt.persist(transaction);
 

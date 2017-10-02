@@ -22,7 +22,7 @@ public class OutputFactory {
    private OutputFactory() {
    }
 
-   public static IReportWriter getReportWriter(OutputFormat format)  {
+   public static IReportWriter getReportWriter(OutputFormat format) {
       IReportWriter toReturn = null;
       switch (format) {
          case EXCEL:
@@ -39,7 +39,7 @@ public class OutputFactory {
       return toReturn;
    }
 
-   public static String getOutputFilename(OutputFormat format, String reportId)  {
+   public static String getOutputFilename(OutputFormat format, String reportId) {
       String extension = "";
       switch (format) {
          case HTML:
@@ -65,7 +65,7 @@ public class OutputFactory {
       return builder.toString();
    }
 
-   public static String getContentType(OutputFormat format)  {
+   public static String getContentType(OutputFormat format) {
       String toReturn = "";
       switch (format) {
          case HTML:

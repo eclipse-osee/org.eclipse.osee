@@ -36,7 +36,7 @@ public class CriteriaTxIds extends Criteria implements TxCriteria {
    }
 
    @Override
-   public void checkValid(Options options)  {
+   public void checkValid(Options options) {
       Conditions.checkNotNullOrEmpty(ids, "tx ids");
    }
 

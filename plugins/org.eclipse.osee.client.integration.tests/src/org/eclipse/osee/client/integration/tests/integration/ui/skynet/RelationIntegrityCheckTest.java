@@ -107,14 +107,14 @@ public class RelationIntegrityCheckTest {
       Assert.assertTrue(checkIfAllFixed());
    }
 
-   private boolean checkIfAllFixed()  {
+   private boolean checkIfAllFixed() {
       map.clear();
       runQuery(RelationIntegrityCheck.DELETED_A_ARTIFACTS);
       runQuery(RelationIntegrityCheck.DELETED_B_ARTIFACTS);
       return map.isEmpty();
    }
 
-   private void applyFix()  {
+   private void applyFix() {
       List<Object[]> rowsToDelete = new LinkedList<>();
       for (LocalRelationLink relLink : map.allValues()) {
          rowsToDelete.add(new Object[] {relLink.gammaId, relLink.relTransId, relLink.branchUuid});

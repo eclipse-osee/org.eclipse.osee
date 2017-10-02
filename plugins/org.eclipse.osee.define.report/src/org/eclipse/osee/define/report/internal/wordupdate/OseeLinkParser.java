@@ -43,7 +43,7 @@ public final class OseeLinkParser {
       }
    }
 
-   public int getId()  {
+   public int getId() {
       int branchUuid = -1;
       if (parameterMap != null) {
          String branchUuidStr = parameterMap.get("branchUuid");
@@ -58,7 +58,7 @@ public final class OseeLinkParser {
       return branchUuid;
    }
 
-   public String getGuid()  {
+   public String getGuid() {
       String guidToReturn = null;
       if (parameterMap != null) {
          String guid = parameterMap.get("guid");

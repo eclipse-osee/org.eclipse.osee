@@ -46,7 +46,7 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
    }
 
    @Test
-   public void testProcessDataAttributeTypeNotApplicable()  {
+   public void testProcessDataAttributeTypeNotApplicable() {
       AttributeTypeRestriction restriction = MockModel.createAttributeTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
       restriction.setAttributeTypeRef(attributeTypeRef);
@@ -59,7 +59,7 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
    }
 
    @Test
-   public void testProcessDataAttributeTypeIsApplicable()  {
+   public void testProcessDataAttributeTypeIsApplicable() {
       AttributeTypeRestriction restriction = MockModel.createAttributeTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
       restriction.setAttributeTypeRef(attributeTypeRef);
@@ -73,7 +73,7 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
    }
 
    @Test
-   public void testProcessDataAttributeTypeIsApplicableArtifactTypeBoundedNoMatch()  {
+   public void testProcessDataAttributeTypeIsApplicableArtifactTypeBoundedNoMatch() {
       AttributeTypeRestriction restriction = MockModel.createAttributeTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
       restriction.setAttributeTypeRef(attributeTypeRef);
@@ -93,7 +93,7 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
    }
 
    @Test
-   public void testProcessDataAttributeTypeIsApplicableArtifactTypeMatch()  {
+   public void testProcessDataAttributeTypeIsApplicableArtifactTypeMatch() {
 
       AttributeTypeRestriction restriction = MockModel.createAttributeTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
@@ -114,7 +114,7 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
    }
 
    @Test
-   public void testProcessDataAttributeTypeIsApplicableArtifactTypeMatchWithInheritance()  {
+   public void testProcessDataAttributeTypeIsApplicableArtifactTypeMatchWithInheritance() {
       AttributeTypeRestriction restriction = MockModel.createAttributeTypeRestriction();
       restriction.setPermission(AccessPermissionEnum.ALLOW);
       restriction.setAttributeTypeRef(attributeTypeRef);

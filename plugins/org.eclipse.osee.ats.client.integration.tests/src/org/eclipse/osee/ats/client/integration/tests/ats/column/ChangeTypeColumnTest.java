@@ -32,7 +32,7 @@ public class ChangeTypeColumnTest {
 
    @BeforeClass
    @AfterClass
-   public static void cleanup()  {
+   public static void cleanup() {
       TeamWorkFlowArtifact reqArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
       reqArt.setSoleAttributeValue(AtsAttributeTypes.ChangeType, ChangeType.Problem.name());
@@ -46,7 +46,8 @@ public class ChangeTypeColumnTest {
       TeamWorkFlowArtifact codeArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
       Assert.assertEquals(ChangeType.Problem, ChangeTypeUtil.getChangeType(codeArt));
-      Assert.assertNotNull(ChangeTypeColumnUI.getInstance().getColumnImage(codeArt, ChangeTypeColumnUI.getInstance(), 0));
+      Assert.assertNotNull(
+         ChangeTypeColumnUI.getInstance().getColumnImage(codeArt, ChangeTypeColumnUI.getInstance(), 0));
 
       IAtsAction action = codeArt.getParentAction();
       Assert.assertEquals(ChangeType.Problem, ChangeTypeUtil.getChangeType(action));
@@ -69,7 +70,8 @@ public class ChangeTypeColumnTest {
       reqArt.persist(CategoryColumnTest.class.getSimpleName());
 
       Assert.assertEquals(ChangeType.Improvement, ChangeTypeUtil.getChangeType(reqArt));
-      Assert.assertNotNull(ChangeTypeColumnUI.getInstance().getColumnImage(reqArt, ChangeTypeColumnUI.getInstance(), 0));
+      Assert.assertNotNull(
+         ChangeTypeColumnUI.getInstance().getColumnImage(reqArt, ChangeTypeColumnUI.getInstance(), 0));
 
       Assert.assertEquals(ChangeType.Problem, ChangeTypeUtil.getChangeType(action));
       String columnText = ChangeTypeColumnUI.getInstance().getColumnText(action, ChangeTypeColumnUI.getInstance(), 0);

@@ -31,7 +31,7 @@ public class DeletePurgeAtsArtifactsActionTest extends AbstractAtsActionTest {
    }
 
    @Override
-   public DeletePurgeAtsArtifactsAction createAction()  {
+   public DeletePurgeAtsArtifactsAction createAction() {
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
       return new DeletePurgeAtsArtifactsAction(AtsTestUtil.getSelectedAtsArtifactsForTeamWf(), true);
    }

@@ -17,6 +17,6 @@ import org.eclipse.osee.orcs.core.ds.TupleData;
  */
 public interface TupleVisitor {
 
-   void visit(TupleData tuple) ;
+   void visit(TupleData tuple);
 
 }

@@ -26,10 +26,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 /**
  * @author Roberto E. Escobar
  */
-public class UserKeysProvider extends LazyObject<Iterable<? extends String>>implements CacheKeysLoader<String> {
+public class UserKeysProvider extends LazyObject<Iterable<? extends String>> implements CacheKeysLoader<String> {
 
    @Override
-   public Iterable<? extends String> getAllKeys()  {
+   public Iterable<? extends String> getAllKeys() {
       return get();
    }
 

@@ -19,6 +19,6 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
  */
 public interface ITeamDefinitionUtility {
 
-   public Collection<IAtsTeamDefinition> getImpactedTeamDefs(Collection<IAtsActionableItem> ais) ;
+   public Collection<IAtsTeamDefinition> getImpactedTeamDefs(Collection<IAtsActionableItem> ais);
 
 }

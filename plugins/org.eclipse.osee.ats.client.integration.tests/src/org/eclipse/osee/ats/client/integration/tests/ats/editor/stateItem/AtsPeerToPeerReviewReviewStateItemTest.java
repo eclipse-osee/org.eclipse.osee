@@ -61,7 +61,7 @@ public class AtsPeerToPeerReviewReviewStateItemTest {
    }
 
    @Test
-   public void testTransitioned()  {
+   public void testTransitioned() {
       Assert.assertNotNull(peerRevArt);
 
       // assignee should be user creating review

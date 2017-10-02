@@ -55,14 +55,14 @@ public final class PurgeAttributeTypeDatabaseTxCallable extends AbstractDatastor
    }
 
    @Override
-   protected Void handleTxWork(JdbcConnection connection)  {
+   protected Void handleTxWork(JdbcConnection connection) {
       List<Object[]> gammasAndBranchIds = retrieveBranchAndGammaIds(connection, typesToPurge);
       List<Object[]> gammas = retrieveGammaIds(connection, typesToPurge);
       processDeletes(connection, gammasAndBranchIds, gammas);
       return null;
    }
 
-   private List<Object[]> retrieveGammaIds(JdbcConnection connection, Collection<? extends AttributeTypeId> types)  {
+   private List<Object[]> retrieveGammaIds(JdbcConnection connection, Collection<? extends AttributeTypeId> types) {
       List<Object[]> gammas = new LinkedList<>();
       String sql;
       Object param;
@@ -81,7 +81,7 @@ public final class PurgeAttributeTypeDatabaseTxCallable extends AbstractDatastor
       return gammas;
    }
 
-   private List<Object[]> retrieveBranchAndGammaIds(JdbcConnection connection, Collection<? extends AttributeTypeId> types)  {
+   private List<Object[]> retrieveBranchAndGammaIds(JdbcConnection connection, Collection<? extends AttributeTypeId> types) {
       List<Object[]> gammasAndBranchIds = new LinkedList<>();
 
       try (IdJoinQuery joinQuery = joinFactory.createIdJoinQuery();
@@ -100,7 +100,7 @@ public final class PurgeAttributeTypeDatabaseTxCallable extends AbstractDatastor
       return gammasAndBranchIds;
    }
 
-   private void processDeletes(JdbcConnection connection, List<Object[]> gammasAndBranchIds, List<Object[]> gammas)  {
+   private void processDeletes(JdbcConnection connection, List<Object[]> gammasAndBranchIds, List<Object[]> gammas) {
       getJdbcClient().runBatchUpdate(connection, String.format(DELETE_BY_GAMMAS_AND_BRANCH, "osee_txs"),
          gammasAndBranchIds);
       getJdbcClient().runBatchUpdate(connection, String.format(DELETE_BY_GAMMAS_AND_BRANCH, "osee_txs_archived"),

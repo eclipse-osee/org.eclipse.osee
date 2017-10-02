@@ -50,7 +50,7 @@ public class TxTypesSqlHandler extends SqlHandler<CriteriaTxType> {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer)  {
+   public boolean addPredicates(AbstractSqlWriter writer) {
       Collection<TransactionDetailsType> types = criteria.getTypes();
       if (types.size() > 1) {
          Set<Integer> ids = new HashSet<>();

@@ -33,7 +33,7 @@ public class BranchCache extends AbstractOseeLoadingCache<Branch> {
       super(OseeCacheEnum.BRANCH_CACHE, dataAccessor);
    }
 
-   public MergeBranch findMergeBranch(BranchId sourceBranch, BranchId destinationBranch)  {
+   public MergeBranch findMergeBranch(BranchId sourceBranch, BranchId destinationBranch) {
       Conditions.checkNotNull(sourceBranch, "source branch");
       Conditions.checkNotNull(destinationBranch, "destination branch");
       MergeBranch toReturn = null;
@@ -63,7 +63,7 @@ public class BranchCache extends AbstractOseeLoadingCache<Branch> {
       throw new OseeNotFoundException("Merge branch not found for source [%s]", sourceBranch);
    }
 
-   public List<MergeBranch> findAllMergeBranches(BranchId sourceBranch)  {
+   public List<MergeBranch> findAllMergeBranches(BranchId sourceBranch) {
       Conditions.checkNotNull(sourceBranch, "source branch");
       List<MergeBranch> toReturn = new ArrayList<>();
       for (Branch branch : getAll()) {

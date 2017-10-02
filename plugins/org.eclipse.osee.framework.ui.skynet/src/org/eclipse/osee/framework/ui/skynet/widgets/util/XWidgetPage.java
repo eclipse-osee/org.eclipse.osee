@@ -76,26 +76,26 @@ public class XWidgetPage implements IDynamicWidgetLayoutListener {
       this((String) null, optionResolver, null);
    }
 
-   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, XWidgetPage page, XModifiedListener xModListener, boolean isEditable)  {
+   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, XWidgetPage page, XModifiedListener xModListener, boolean isEditable) {
       // provided for subclass implementation
    }
 
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, XWidgetPage page, XModifiedListener xModListener, boolean isEditable)  {
-      // provided for subclass implementation
-   }
-
-   @Override
-   public void createXWidgetLayoutData(XWidgetRendererItem workAttr, XWidget xWidget, FormToolkit toolkit, Artifact art, XModifiedListener xModListener, boolean isEditable)  {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, XWidgetPage page, XModifiedListener xModListener, boolean isEditable) {
       // provided for subclass implementation
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable)  {
+   public void createXWidgetLayoutData(XWidgetRendererItem workAttr, XWidget xWidget, FormToolkit toolkit, Artifact art, XModifiedListener xModListener, boolean isEditable) {
+      // provided for subclass implementation
+   }
+
+   @Override
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
       widgetCreated(xWidget, toolkit, art, this, xModListener, isEditable);
    }
 
    @Override
-   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable)  {
+   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) {
       widgetCreating(xWidget, toolkit, art, this, xModListener, isEditable);
    }
 
@@ -109,7 +109,7 @@ public class XWidgetPage implements IDynamicWidgetLayoutListener {
       }
    }
 
-   public SwtXWidgetRenderer createBody(IManagedForm managedForm, Composite parent, Artifact artifact, XModifiedListener xModListener, boolean isEditable)  {
+   public SwtXWidgetRenderer createBody(IManagedForm managedForm, Composite parent, Artifact artifact, XModifiedListener xModListener, boolean isEditable) {
       dynamicXWidgetLayout.createBody(managedForm, parent, artifact, xModListener, isEditable);
       return dynamicXWidgetLayout;
    }
@@ -152,7 +152,7 @@ public class XWidgetPage implements IDynamicWidgetLayoutListener {
       processLayoutDatas(doc.getDocumentElement());
    }
 
-   protected void processXmlLayoutDatas(String xWidgetXml)  {
+   protected void processXmlLayoutDatas(String xWidgetXml) {
       dynamicXWidgetLayout.processlayoutDatas(xWidgetXml);
    }
 

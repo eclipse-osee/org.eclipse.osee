@@ -58,7 +58,7 @@ public class PurgeTransactionTest {
 
    @Before
    @After
-   public void cleanup()  {
+   public void cleanup() {
       txEndpoint.purgeUnusedBackingDataAndTransactions();
    }
 
@@ -107,7 +107,7 @@ public class PurgeTransactionTest {
       txEndpoint.purgeUnusedBackingDataAndTransactions();
    }
 
-   private int getCurrentRows(TransactionId createTxId)  {
+   private int getCurrentRows(TransactionId createTxId) {
       final String query = "select count(*) from osee_txs where transaction_id=? and tx_current=1";
       return ConnectionHandler.getJdbcClient().fetch(-1, query, createTxId);
    }

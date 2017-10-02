@@ -56,17 +56,17 @@ public class OpenNewAtsTaskEditorActionTest extends AbstractAtsActionRunTest {
                }
 
                @Override
-               public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend)  {
+               public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend) {
                   // do nothing
                }
 
                @Override
-               public String getSelectedName(SearchType searchType)  {
+               public String getSelectedName(SearchType searchType) {
                   return null;
                }
 
                @Override
-               public IAtsVersion getTargetedVersionArtifact()  {
+               public IAtsVersion getTargetedVersionArtifact() {
                   return null;
                }
 

@@ -38,7 +38,7 @@ public class NewAction extends AbstractAtsAction {
    }
 
    @Override
-   public void runWithException()  {
+   public void runWithException() {
       NewActionWizard wizard = new NewActionWizard();
       if (actionableItem != null) {
          wizard.setInitialAias(

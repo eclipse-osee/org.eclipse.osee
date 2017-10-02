@@ -31,13 +31,13 @@ import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 public class ArchiveBranchHandler extends CommandHandler {
 
    @Override
-   public boolean isEnabledWithException(IStructuredSelection structuredSelection)  {
+   public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
       List<? extends BranchId> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
       return !branches.isEmpty() && AccessControlManager.isOseeAdmin();
    }
 
    @Override
-   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection)  {
+   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {
       Collection<? extends BranchId> branches = Handlers.getBranchesFromStructuredSelection(selection);
 
       for (BranchId branch : branches) {

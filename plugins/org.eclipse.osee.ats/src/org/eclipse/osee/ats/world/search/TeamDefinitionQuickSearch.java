@@ -28,7 +28,7 @@ public class TeamDefinitionQuickSearch extends AttributeValueQuickSearch {
    }
 
    @Override
-   public Collection<Artifact> performSearch()  {
+   public Collection<Artifact> performSearch() {
       return performSearch(true);
    }
 

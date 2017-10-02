@@ -20,66 +20,64 @@ import org.scribe.services.TimestampServiceImpl;
  */
 public abstract class AbstractOSLCDWAProviderInfo implements IDWAOSLCProviderInfo {
 
+   // Timestamp service
 
-  // Timestamp service
+   // HeaderExtractor
 
-  // HeaderExtractor
+   // Base String Extractor
 
-  // Base String Extractor
+   /*
+    * (non-Javadoc)
+    * @see com.bosch.icteam.doors.core.oauth.IOSLCDWAProvider#getAccessTokenExtractor()
+    */
+   @Override
+   public AccessTokenExtractor getAccessTokenExtractor() {
+      return new TokenExtractorImpl();
+   }
 
-  /*
-   * (non-Javadoc)
-   * @see com.bosch.icteam.doors.core.oauth.IOSLCDWAProvider#getAccessTokenExtractor()
-   */
-  @Override
-  public AccessTokenExtractor getAccessTokenExtractor() {
-    return new TokenExtractorImpl();
-  }
+   /*
+    * (non-Javadoc)
+    * @see com.bosch.icteam.doors.core.oauth.IOSLCDWAProvider#getBaseStringExtractor()
+    */
+   @Override
+   public RequestBaseStringExtractor getBaseStringExtractor() {
+      return new RequestBaseStringExtractor();
+   }
 
-  /*
-   * (non-Javadoc)
-   * @see com.bosch.icteam.doors.core.oauth.IOSLCDWAProvider#getBaseStringExtractor()
-   */
-  @Override
-  public RequestBaseStringExtractor getBaseStringExtractor() {
-    return new RequestBaseStringExtractor();
-  }
+   /*
+    * (non-Javadoc)
+    * @see com.bosch.icteam.doors.core.oauth.IOSLCDWAProvider#getHeaderExtractor()
+    */
+   @Override
+   public RequestHeaderExtractor getHeaderExtractor() {
+      return new RequestHeaderExtractor();
+   }
 
-  /*
-   * (non-Javadoc)
-   * @see com.bosch.icteam.doors.core.oauth.IOSLCDWAProvider#getHeaderExtractor()
-   */
-  @Override
-  public RequestHeaderExtractor getHeaderExtractor() {
-    return new RequestHeaderExtractor();
-  }
+   /*
+    * (non-Javadoc)
+    * @see com.bosch.icteam.doors.core.oauth.IOSLCDWAProvider#getRequestTokenExtractor()
+    */
+   @Override
+   public RequestTokenExtractor getRequestTokenExtractor() {
+      return new TokenExtractorImpl();
+   }
 
-  /*
-   * (non-Javadoc)
-   * @see com.bosch.icteam.doors.core.oauth.IOSLCDWAProvider#getRequestTokenExtractor()
-   */
-  @Override
-  public RequestTokenExtractor getRequestTokenExtractor() {
-    return new TokenExtractorImpl();
-  }
+   /*
+    * (non-Javadoc)
+    * @see com.bosch.icteam.doors.core.oauth.IOSLCDWAProvider#getSignatureService()
+    */
+   @Override
+   public SignatureService getSignatureService() {
+      return new HMACSha1SignatureService();
+   }
 
-  /*
-   * (non-Javadoc)
-   * @see com.bosch.icteam.doors.core.oauth.IOSLCDWAProvider#getSignatureService()
-   */
-  @Override
-  public SignatureService getSignatureService() {
-    return new HMACSha1SignatureService();
-  }
-
-  /*
-   * (non-Javadoc)
-   * @see com.bosch.icteam.doors.core.oauth.IOSLCDWAProvider#getTimestampService()
-   */
-  @Override
-  public TimestampService getTimestampService() {
-    return new TimestampServiceImpl();
-  }
-
+   /*
+    * (non-Javadoc)
+    * @see com.bosch.icteam.doors.core.oauth.IOSLCDWAProvider#getTimestampService()
+    */
+   @Override
+   public TimestampService getTimestampService() {
+      return new TimestampServiceImpl();
+   }
 
 }

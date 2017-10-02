@@ -40,11 +40,11 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
       return widgetDef.getOptions().contains(WidgetOption.REQUIRED_FOR_COMPLETION);
    }
 
-   public boolean isEmptyValue(IValueProvider provider)  {
+   public boolean isEmptyValue(IValueProvider provider) {
       return provider.isEmpty();
    }
 
-   public WidgetResult validateWidgetIsRequired(IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef)  {
+   public WidgetResult validateWidgetIsRequired(IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef) {
       if (isRequiredForTransition(widgetDef) && isEmptyValue(provider)) {
          return new WidgetResult(WidgetStatus.Invalid_Incompleted, widgetDef, "[%s] is required for transition",
             widgetDef.getName());
@@ -56,9 +56,9 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
    }
 
    @Override
-   public abstract WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider valueProvider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, IAtsServices services) ;
+   public abstract WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider valueProvider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, IAtsServices services);
 
-   public WidgetResult isValidDate(IValueProvider valueProvider, IAtsWidgetDefinition widgetDef)  {
+   public WidgetResult isValidDate(IValueProvider valueProvider, IAtsWidgetDefinition widgetDef) {
       for (Date date : valueProvider.getDateValues()) {
          if (widgetDef.is(WidgetOption.FUTURE_DATE_REQUIRED)) {
             if (date.before(new Date())) {
@@ -74,10 +74,10 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
       for (String attrStr : valueProvider.getValues()) {
 
          if (attrStr.matches("[-+]?\\d*\\.?\\d*")) {
-           WidgetResult result = checkValid(widgetDef, Double.parseDouble(attrStr), valueProvider.getName());
-           if(!result.isValid()) {
-              return result;
-           }
+            WidgetResult result = checkValid(widgetDef, Double.parseDouble(attrStr), valueProvider.getName());
+            if (!result.isValid()) {
+               return result;
+            }
          } else {
             return new WidgetResult(WidgetStatus.Invalid_Type, widgetDef, "[%s] value [%s] is not a valid number",
                valueProvider.getName(), attrStr);
@@ -101,7 +101,7 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
       return WidgetResult.Valid;
    }
 
-   public WidgetResult isValidList(IValueProvider valueProvider, IAtsWidgetDefinition widgetDef)  {
+   public WidgetResult isValidList(IValueProvider valueProvider, IAtsWidgetDefinition widgetDef) {
       return checkValid(widgetDef, valueProvider.getValues().size(), valueProvider.getName());
    }
 

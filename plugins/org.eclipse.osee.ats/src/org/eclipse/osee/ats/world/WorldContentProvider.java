@@ -116,7 +116,7 @@ public class WorldContentProvider implements ITreeContentProvider {
       return org.eclipse.osee.framework.jdk.core.util.Collections.EMPTY_ARRAY;
    }
 
-   public Collection<TaskArtifact> getTaskArtifactsSorted(TeamWorkFlowArtifact teamArt)  {
+   public Collection<TaskArtifact> getTaskArtifactsSorted(TeamWorkFlowArtifact teamArt) {
       return AtsTaskCache.getTaskArtifacts(teamArt);
    }
 
@@ -174,7 +174,7 @@ public class WorldContentProvider implements ITreeContentProvider {
       return true;
    }
 
-   private boolean hasAtsWorldChildren(AbstractWorkflowArtifact workflow)  {
+   private boolean hasAtsWorldChildren(AbstractWorkflowArtifact workflow) {
       if (workflow.isOfType(AtsArtifactTypes.Task)) {
          return false;
       }

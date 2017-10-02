@@ -52,7 +52,7 @@ public final class SkynetTransactionTest {
    public TestInfo method = new TestInfo();
 
    @Test(expected = OseeStateException.class)
-   public void test_overalappingTransactions()  {
+   public void test_overalappingTransactions() {
 
       SkynetTransaction trans1 = TransactionManager.createTransaction(SAW_Bld_1, createComment(1));
 
@@ -69,7 +69,7 @@ public final class SkynetTransactionTest {
    }
 
    @Test
-   public void test_overalappingTransactionsButWithDifferentArtifacts()  {
+   public void test_overalappingTransactionsButWithDifferentArtifacts() {
 
       SkynetTransaction trans1 = TransactionManager.createTransaction(SAW_Bld_1, createComment(1));
       SkynetTransaction trans2 = TransactionManager.createTransaction(SAW_Bld_1, createComment(2));

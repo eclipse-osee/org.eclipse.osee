@@ -95,7 +95,7 @@ public class AtsConfigOperation extends AbstractOperation {
       this.actionableItemToken = actionableItemToken;
    }
 
-   private void checkWorkItemNamespaceUnique()  {
+   private void checkWorkItemNamespaceUnique() {
       Artifact workDefArt = ArtifactQuery.getArtifactFromTypeAndNameNoException(AtsArtifactTypes.WorkDefinition, name,
          AtsClientService.get().getAtsBranch());
       if (workDefArt != null) {
@@ -137,7 +137,7 @@ public class AtsConfigOperation extends AbstractOperation {
       monitor.worked(calculateWork(0.30));
    }
 
-   private IAtsTeamDefinition createTeamDefinition(IAtsChangeSet changes, IAtsServices services)  {
+   private IAtsTeamDefinition createTeamDefinition(IAtsChangeSet changes, IAtsServices services) {
       IAtsTeamDefinition teamDef = null;
       if (teamDefToken == null) {
          teamDef = AtsClientService.get().createTeamDefinition(teamDefName, changes, services);
@@ -154,7 +154,7 @@ public class AtsConfigOperation extends AbstractOperation {
       return teamDef;
    }
 
-   private Collection<IAtsActionableItem> createActionableItems(IAtsChangeSet changes, IAtsTeamDefinition safetyTeamDef, IAtsServices services)  {
+   private Collection<IAtsActionableItem> createActionableItems(IAtsChangeSet changes, IAtsTeamDefinition safetyTeamDef, IAtsServices services) {
       Collection<IAtsActionableItem> aias = new ArrayList<>();
 
       // Create top actionable item
@@ -186,7 +186,7 @@ public class AtsConfigOperation extends AbstractOperation {
       aias.add(childAi);
    }
 
-   private void createVersions(IAtsChangeSet changes, IAtsTeamDefinition teamDef)  {
+   private void createVersions(IAtsChangeSet changes, IAtsTeamDefinition teamDef) {
       if (versionNames != null) {
          for (String name : versionNames) {
             IAtsVersion version = AtsClientService.get().getVersionService().createVersion(name, changes);
@@ -196,7 +196,7 @@ public class AtsConfigOperation extends AbstractOperation {
       }
    }
 
-   private IAtsWorkDefinition createWorkflowDefinition(XResultData resultData)  {
+   private IAtsWorkDefinition createWorkflowDefinition(XResultData resultData) {
       IAtsWorkDefinition workDef = AtsClientService.get().getWorkDefinitionService().getWorkDefinition(name);
       // If can't be found, create a new one
       if (workDef == null) {
@@ -223,7 +223,7 @@ public class AtsConfigOperation extends AbstractOperation {
       return workDef;
    }
 
-   private IAtsWorkDefinition generateDefaultWorkflow(String name, XResultData resultData, IAtsChangeSet changes)  {
+   private IAtsWorkDefinition generateDefaultWorkflow(String name, XResultData resultData, IAtsChangeSet changes) {
       IAtsWorkDefinition defaultWorkDef = AtsClientService.get().getWorkDefinitionService().getWorkDefinition(
          AtsWorkDefinitionSheetProviders.WORK_DEF_TEAM_DEFAULT);
 

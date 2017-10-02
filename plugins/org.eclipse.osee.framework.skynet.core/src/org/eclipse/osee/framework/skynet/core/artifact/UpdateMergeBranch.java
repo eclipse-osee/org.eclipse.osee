@@ -72,7 +72,7 @@ public class UpdateMergeBranch extends AbstractDbTxOperation {
    }
 
    @Override
-   protected void doTxWork(IProgressMonitor monitor, JdbcConnection connection)  {
+   protected void doTxWork(IProgressMonitor monitor, JdbcConnection connection) {
       Collection<ArtifactId> allMergeBranchArtifacts = getAllMergeArtifacts(mergeBranch);
       long time = System.currentTimeMillis();
       Collection<ArtifactId> allMergeBranchArtifactsCopy = new HashSet<>(allMergeBranchArtifacts);
@@ -145,7 +145,7 @@ public class UpdateMergeBranch extends AbstractDbTxOperation {
    private final static String INSERT_ARTIFACT_GAMMAS =
       "INSERT INTO OSEE_TXS (transaction_id, gamma_id, mod_type, tx_current, branch_id, app_id) SELECT ?, arv1.gamma_id, txs1.mod_type, ?, ?, txs1.app_id FROM osee_artifact arv1, osee_txs txs1, osee_join_id4 ald1 WHERE txs1.branch_id = ? AND txs1.tx_current in (1,2) AND txs1.gamma_id = arv1.gamma_id AND arv1.art_id = ald1.id2 and ald1.query_id = ?";
 
-   private void addArtifactsToBranch(JdbcConnection connection, BranchId sourceBranch, BranchId destBranch, BranchId mergeBranch, Collection<ArtifactId> artIds)  {
+   private void addArtifactsToBranch(JdbcConnection connection, BranchId sourceBranch, BranchId destBranch, BranchId mergeBranch, Collection<ArtifactId> artIds) {
       if (artIds == null || artIds.isEmpty()) {
          throw new IllegalArgumentException("Artifact IDs can not be null or empty");
       }
@@ -164,11 +164,11 @@ public class UpdateMergeBranch extends AbstractDbTxOperation {
       }
    }
 
-   private void insertGammas(JdbcConnection connection, String sql, TransactionId baseTx, int queryId, BranchId sourceBranch, BranchId mergeBranch)  {
+   private void insertGammas(JdbcConnection connection, String sql, TransactionId baseTx, int queryId, BranchId sourceBranch, BranchId mergeBranch) {
       getJdbcClient().runPreparedUpdate(connection, sql, baseTx, TxChange.CURRENT, mergeBranch, sourceBranch, queryId);
    }
 
-   private Collection<ArtifactId> getAllMergeArtifacts(BranchId branch)  {
+   private Collection<ArtifactId> getAllMergeArtifacts(BranchId branch) {
       Collection<ArtifactId> artSet = new HashSet<>();
 
       getJdbcClient().runQuery(stmt -> artSet.add(ArtifactId.valueOf(stmt.getLong("art_id"))),
@@ -190,7 +190,7 @@ public class UpdateMergeBranch extends AbstractDbTxOperation {
     * from the database. It also removes all history associated with this artifact (i.e. all transactions and gamma ids
     * will also be removed from the database only for the branch it is on).
     */
-   private void purgeArtifactFromBranch(JdbcConnection connection, BranchId branch, ArtifactId artId)  {
+   private void purgeArtifactFromBranch(JdbcConnection connection, BranchId branch, ArtifactId artId) {
       //Remove from Baseline
       getJdbcClient().runPreparedUpdate(connection, PURGE_ATTRIBUTE_FROM_MERGE_BRANCH, branch, artId);
       getJdbcClient().runPreparedUpdate(connection, PURGE_RELATION_FROM_MERGE_BRANCH, branch, artId, artId);

@@ -87,7 +87,7 @@ public class TxQuerySqlContextFactoryImplTest {
    private QueryData queryData;
 
    @Before
-   public void setUp()  {
+   public void setUp() {
       MockitoAnnotations.initMocks(this);
 
       String sessionId = GUID.create();

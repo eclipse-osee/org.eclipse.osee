@@ -38,7 +38,7 @@ public class FrameworkDslProvider extends AbstractOseeDslProvider {
    }
 
    @Override
-   protected String getModelFromStorage()  {
+   protected String getModelFromStorage() {
       Artifact storageArtifact = getStorageArtifact();
       if (storageArtifact != null) {
          return storageArtifact.getSoleAttributeValue(CoreAttributeTypes.GeneralStringData);
@@ -48,7 +48,7 @@ public class FrameworkDslProvider extends AbstractOseeDslProvider {
    }
 
    @Override
-   protected void saveModelToStorage(String model)  {
+   protected void saveModelToStorage(String model) {
       Artifact artifact = getStorageArtifact();
       if (artifact != null) {
          artifact.setSoleAttributeFromString(CoreAttributeTypes.GeneralStringData, model);

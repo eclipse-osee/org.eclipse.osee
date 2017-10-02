@@ -123,9 +123,8 @@ public class CommitDialog extends TitleAreaDialog {
       composite.setLayout(layout);
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      selectionComposite =
-         new SelectionComposite(composite, SWT.BORDER, columnNames, tableLabelProvider, selectable, true, selected,
-            unselectable, overrideHandler);
+      selectionComposite = new SelectionComposite(composite, SWT.BORDER, columnNames, tableLabelProvider, selectable,
+         true, selected, unselectable, overrideHandler);
       selectionComposite.setLayout(new GridLayout());
       selectionComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
    }

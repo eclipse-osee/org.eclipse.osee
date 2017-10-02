@@ -38,7 +38,7 @@ public class OrcsWriterSheetProcessorForDelete implements RowProcessor {
    }
 
    @Override
-   public void foundStartOfWorksheet(String sheetName)  {
+   public void foundStartOfWorksheet(String sheetName) {
       // do nothing
    }
 
@@ -61,7 +61,7 @@ public class OrcsWriterSheetProcessorForDelete implements RowProcessor {
    }
 
    @Override
-   public void processRow(String[] row)  {
+   public void processRow(String[] row) {
       rowCount++;
       OwArtifactToken artifact = null;
       String value = row[0];

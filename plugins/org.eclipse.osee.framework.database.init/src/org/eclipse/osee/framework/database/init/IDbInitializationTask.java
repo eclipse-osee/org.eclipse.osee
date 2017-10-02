@@ -12,6 +12,6 @@ package org.eclipse.osee.framework.database.init;
 
 public interface IDbInitializationTask {
 
-   void run() ;
+   void run();
 
 }

@@ -22,7 +22,7 @@ import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 public class RelationTypeSideNotExistsSqlHandler extends AbstractRelationSqlHandler<CriteriaRelationTypeSideNotExists> {
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer)  {
+   public boolean addPredicates(AbstractSqlWriter writer) {
       super.addPredicates(writer);
 
       RelationTypeSide type = criteria.getType();

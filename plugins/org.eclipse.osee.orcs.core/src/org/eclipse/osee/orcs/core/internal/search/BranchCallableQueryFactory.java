@@ -108,20 +108,20 @@ public class BranchCallableQueryFactory {
       private List<T> results;
 
       @Override
-      public void onLoadStart()  {
+      public void onLoadStart() {
          super.onLoadStart();
          branchMap = new LinkedHashMap<>();
       }
 
       @Override
-      public void onLoadEnd()  {
+      public void onLoadEnd() {
          super.onLoadEnd();
          results = new LinkedList<>(branchMap.values());
          branchMap.clear();
       }
 
       @Override
-      public void onData(BranchData data)  {
+      public void onData(BranchData data) {
          Long key = data.getId();
          T branch = branchMap.get(key);
          if (branch == null) {
@@ -134,7 +134,7 @@ public class BranchCallableQueryFactory {
          return results;
       }
 
-      public abstract T createBranch(BranchData data) ;
+      public abstract T createBranch(BranchData data);
 
    }
 

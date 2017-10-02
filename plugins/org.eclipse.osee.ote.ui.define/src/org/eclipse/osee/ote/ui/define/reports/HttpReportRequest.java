@@ -49,11 +49,11 @@ public class HttpReportRequest implements IHttpServerRequest {
       return REQUEST_TYPE;
    }
 
-   public static String getUrl(String id, String format, String source)  {
+   public static String getUrl(String id, String format, String source) {
       return getUrl(id, format, source, -1);
    }
 
-   public static String getUrl(String id, String format, String source, int preview)  {
+   public static String getUrl(String id, String format, String source, int preview) {
       Map<String, String> parameters = new HashMap<>();
       parameters.put(REPORT_ID, id);
       parameters.put(REPORT_FORMAT, format);

@@ -51,7 +51,7 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
    }
 
    @Override
-   public Collection<String> getRules()  {
+   public Collection<String> getRules() {
       Collection<String> rules = new ArrayList<>();
       try {
          rules = services.getAttributeResolver().getAttributeValues(artifact, AtsAttributeTypes.RuleDefinition);
@@ -62,7 +62,7 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
    }
 
    @Override
-   public boolean hasRule(String rule)  {
+   public boolean hasRule(String rule) {
       return getRules().contains(rule);
    }
 

@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.resource.management.util.ResourceLocator;
 public class ExchangeLocatorProvider implements IResourceLocatorProvider {
 
    @Override
-   public IResourceLocator generateResourceLocator(String seed, String name)  {
+   public IResourceLocator generateResourceLocator(String seed, String name) {
       URI uri = null;
       try {
          uri = new URI(generatePath(name));
@@ -34,7 +34,7 @@ public class ExchangeLocatorProvider implements IResourceLocatorProvider {
    }
 
    @Override
-   public IResourceLocator getResourceLocator(String path)  {
+   public IResourceLocator getResourceLocator(String path) {
       URI uri = null;
       if (isPathValid(path) != false) {
          try {

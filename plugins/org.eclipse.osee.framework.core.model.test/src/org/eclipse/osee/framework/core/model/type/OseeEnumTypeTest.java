@@ -20,19 +20,19 @@ import org.junit.Test;
 public class OseeEnumTypeTest {
 
    @Test(expected = OseeArgumentException.class)
-   public void enumNamesWithSpaces()  {
+   public void enumNamesWithSpaces() {
       OseeEnumType oseeEnum = new OseeEnumType(0x00L, "Test");
       oseeEnum.valueOf(new String(" apple "));
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void enumNamesWithGarbageData()  {
+   public void enumNamesWithGarbageData() {
       OseeEnumType oseeEnum = new OseeEnumType(0x00L, "Test");
       oseeEnum.valueOf(new String("#@Gbotkob!11233%20"));
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void enumNamesWithNull()  {
+   public void enumNamesWithNull() {
       OseeEnumType oseeEnum = new OseeEnumType(0x00L, "Test");
       oseeEnum.valueOf(null);
    }

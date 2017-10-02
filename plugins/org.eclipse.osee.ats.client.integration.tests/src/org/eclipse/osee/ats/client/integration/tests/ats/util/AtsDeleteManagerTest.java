@@ -160,7 +160,7 @@ public class AtsDeleteManagerTest {
       verifyExists(TestNames.ActionPurge, 0, 0, 0, 0, 0);
    }
 
-   private void verifyExists(TestNames testName, int expectedNumActions, int expectedNumCodeWorkflows, int expectedNumReqWorkflows, int expectedNumTasks, int expectedNumReviews)  {
+   private void verifyExists(TestNames testName, int expectedNumActions, int expectedNumCodeWorkflows, int expectedNumReqWorkflows, int expectedNumTasks, int expectedNumReviews) {
       List<Artifact> artifacts = ArtifactQuery.getArtifactListFromName(testName.toString(),
          AtsClientService.get().getAtsBranch(), EXCLUDE_DELETED, QueryOption.CONTAINS_MATCH_OPTIONS);
       CountingMap<IArtifactType> countMap = new CountingMap<>();
@@ -180,7 +180,7 @@ public class AtsDeleteManagerTest {
       Assert.assertEquals(message, expectedCount, actualCount);
    }
 
-   private IAtsTeamWorkflow createAction(TestNames testName, Collection<IAtsActionableItem> actionableItems)  {
+   private IAtsTeamWorkflow createAction(TestNames testName, Collection<IAtsActionableItem> actionableItems) {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("Delete Manager Test - testActionPurge");
 
       Date createdDate = new Date();

@@ -120,7 +120,7 @@ public class TxData {
          getComment());
    }
 
-   protected static TxData createTxData(TransactionRecord txId)  {
+   protected static TxData createTxData(TransactionRecord txId) {
       return new TxData(txId.getBranch(), txId.getAuthor(), txId.getTimeStamp(), txId.getComment(),
          txId.getTxType().getId(), txId.getCommit(), txId.getId());
    }

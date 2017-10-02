@@ -395,7 +395,7 @@ public class OrcsCollectorWriter {
       return date;
    }
 
-   public TransactionBuilder getTransaction()  {
+   public TransactionBuilder getTransaction() {
       if (transaction == null) {
          transaction =
             orcsApi.getTransactionFactory().createTransaction(branch, getUser(), collector.getPersistComment());

@@ -23,11 +23,11 @@ import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
  */
 public class OseeEnumTypeManager {
 
-   public static AbstractOseeCache<OseeEnumType> getCache()  {
+   public static AbstractOseeCache<OseeEnumType> getCache() {
       return ServiceUtil.getOseeCacheService().getEnumTypeCache();
    }
 
-   public static OseeEnumType getType(long enumTypeId)  {
+   public static OseeEnumType getType(long enumTypeId) {
       OseeEnumType oseeEnumType = getCache().getById(enumTypeId);
       if (oseeEnumType == null) {
          throw new OseeTypeDoesNotExist("Osee Enum Type with id:[%s] does not exist.", enumTypeId);
@@ -35,7 +35,7 @@ public class OseeEnumTypeManager {
       return oseeEnumType;
    }
 
-   public static Collection<String> getAllTypeNames()  {
+   public static Collection<String> getAllTypeNames() {
       List<String> items = new ArrayList<>();
       for (OseeEnumType types : getAllTypes()) {
          items.add(types.getName());
@@ -43,7 +43,7 @@ public class OseeEnumTypeManager {
       return items;
    }
 
-   public static Collection<OseeEnumType> getAllTypes()  {
+   public static Collection<OseeEnumType> getAllTypes() {
       return getCache().getAll();
    }
 

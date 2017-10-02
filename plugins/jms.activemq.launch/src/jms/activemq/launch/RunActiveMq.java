@@ -43,9 +43,8 @@ public class RunActiveMq implements IApplication {
       broker.start();
 
       if (isKillable) {
-         ActiveMQConnectionFactory factory =
-            new ActiveMQConnectionFactory(ActiveMQConnection.DEFAULT_USER, ActiveMQConnection.DEFAULT_PASSWORD,
-               BROKER_URI);
+         ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(ActiveMQConnection.DEFAULT_USER,
+            ActiveMQConnection.DEFAULT_PASSWORD, BROKER_URI);
          connection = factory.createConnection();
          connection.start();
          session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);

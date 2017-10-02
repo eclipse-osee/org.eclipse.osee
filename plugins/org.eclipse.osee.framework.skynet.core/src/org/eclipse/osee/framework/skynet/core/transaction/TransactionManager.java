@@ -101,24 +101,24 @@ public final class TransactionManager {
    private static final HashCollection<ArtifactId, TransactionRecord> commitArtifactIdMap =
       new HashCollection<>(true, HashSet.class);
 
-   public static SkynetTransaction createTransaction(BranchId branch, String comment)  {
+   public static SkynetTransaction createTransaction(BranchId branch, String comment) {
       SkynetTransaction tx = new SkynetTransaction(txMonitor, branch, comment);
       txMonitor.createTx(branch, tx);
       return tx;
    }
 
-   public static List<TransactionRecord> getTransaction(String comment)  {
+   public static List<TransactionRecord> getTransaction(String comment) {
       JdbcClient jdbcClient = ConnectionHandler.getJdbcClient();
       ArrayList<TransactionRecord> transactions = new ArrayList<>();
       jdbcClient.runQuery(stmt -> transactions.add(loadTransaction(stmt)), SELECT_TRANSACTION_COMMENTS, comment);
       return transactions;
    }
 
-   public static void setTransactionComment(TransactionId transaction, String comment)  {
+   public static void setTransactionComment(TransactionId transaction, String comment) {
       ConnectionHandler.runPreparedUpdate(UPDATE_TRANSACTION_COMMENTS, comment, transaction);
    }
 
-   public static List<TransactionRecord> getTransactionsForBranch(BranchId branch)  {
+   public static List<TransactionRecord> getTransactionsForBranch(BranchId branch) {
       JdbcClient jdbcClient = ConnectionHandler.getJdbcClient();
       ArrayList<TransactionRecord> transactions = new ArrayList<>();
       jdbcClient.runQuery(stmt -> transactions.add(loadTransaction(branch, stmt)), JdbcConstants.JDBC__MAX_FETCH_SIZE,
@@ -130,7 +130,7 @@ public final class TransactionManager {
       return (long) getTransaction(tx).getCommit();
    }
 
-   public synchronized static Collection<TransactionRecord> getCommittedArtifactTransactionIds(ArtifactId artifact)  {
+   public synchronized static Collection<TransactionRecord> getCommittedArtifactTransactionIds(ArtifactId artifact) {
       if (!commitArtifactIdMap.containsKey(artifact)) {
          ConnectionHandler.getJdbcClient().runQuery(stmt -> commitArtifactIdMap.put(artifact, loadTransaction(stmt)),
             SELECT_COMMIT_TRANSACTIONS, artifact);
@@ -152,23 +152,23 @@ public final class TransactionManager {
       commitArtifactIdMap.removeValues(associatedArtifact);
    }
 
-   public synchronized static void cacheCommittedArtifactTransaction(ArtifactId artifact, TransactionToken transactionId)  {
+   public synchronized static void cacheCommittedArtifactTransaction(ArtifactId artifact, TransactionToken transactionId) {
       commitArtifactIdMap.put(artifact, getTransactionRecord(transactionId.getId()));
    }
 
    /**
     * @return the largest (most recent) transaction on the given branch
     */
-   public static TransactionToken getHeadTransaction(BranchId branch)  {
+   public static TransactionToken getHeadTransaction(BranchId branch) {
       return getTransaction(branch, SELECT_HEAD_TRANSACTION, branch, branch);
    }
 
-   public static TransactionToken getPriorTransaction(TransactionToken tx)  {
+   public static TransactionToken getPriorTransaction(TransactionToken tx) {
       BranchId branch = tx.getBranch();
       return getTransaction(branch, SELECT_PRIOR_TRANSACTION, branch, tx.getId(), branch);
    }
 
-   private static TransactionRecord getTransaction(BranchId branch, String sql, Object... data)  {
+   private static TransactionRecord getTransaction(BranchId branch, String sql, Object... data) {
       JdbcClient jdbcClient = ConnectionHandler.getJdbcClient();
       return jdbcClient.fetchOrException(
          () -> new TransactionDoesNotExist("No transactions where found in the database for branch: %d",
@@ -192,13 +192,13 @@ public final class TransactionManager {
          buildId);
    }
 
-   public static synchronized void internalPersist(JdbcConnection connection, TransactionRecord transactionRecord)  {
+   public static synchronized void internalPersist(JdbcConnection connection, TransactionRecord transactionRecord) {
       ConnectionHandler.runPreparedUpdate(connection, INSERT_INTO_TRANSACTION_DETAIL, transactionRecord.getId(),
          transactionRecord.getComment(), transactionRecord.getTimeStamp(), transactionRecord.getAuthor(),
          transactionRecord.getBranch(), transactionRecord.getTxType().getId(), OseeCodeVersion.getVersionId());
    }
 
-   public static TransactionToken getTransactionAtDate(BranchId branch, Date maxDateExclusive)  {
+   public static TransactionToken getTransactionAtDate(BranchId branch, Date maxDateExclusive) {
       Conditions.checkNotNull(branch, "branch");
       Conditions.checkNotNull(maxDateExclusive, "max date exclusive");
 

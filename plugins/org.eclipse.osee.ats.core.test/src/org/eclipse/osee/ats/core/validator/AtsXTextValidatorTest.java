@@ -31,7 +31,7 @@ public class AtsXTextValidatorTest {
    // @formatter:on
 
    @org.junit.Test
-   public void testValidateTransition()  {
+   public void testValidateTransition() {
       AtsXTextValidator validator = new AtsXTextValidator();
 
       MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");

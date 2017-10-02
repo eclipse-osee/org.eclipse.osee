@@ -23,7 +23,7 @@ import org.junit.BeforeClass;
 public class DemoDbPopulateValidateAtsDatabaseTest extends AtsValidateAtsDatabaseTest {
 
    @BeforeClass
-   public static void cleanup()  {
+   public static void cleanup() {
       DemoUtil.checkDbInitAndPopulateSuccess();
    }
 }

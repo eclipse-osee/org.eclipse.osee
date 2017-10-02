@@ -163,7 +163,7 @@ public class NewActionPage2 extends WizardPage {
       return true;
    }
 
-   protected XWidget getXWidget(String displayName)  {
+   protected XWidget getXWidget(String displayName) {
       Conditions.checkNotNull(page, "WorkPage");
       return page.getLayoutData(displayName).getXWidget();
    }

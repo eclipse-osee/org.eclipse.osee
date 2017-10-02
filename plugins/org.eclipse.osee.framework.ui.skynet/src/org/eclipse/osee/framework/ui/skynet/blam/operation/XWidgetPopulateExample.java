@@ -44,7 +44,7 @@ public class XWidgetPopulateExample extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable)  {
+   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
       super.widgetCreating(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
       if (xWidget.getLabel().equals("Select an Option")) {
          XCombo combo = (XCombo) xWidget;
@@ -55,10 +55,10 @@ public class XWidgetPopulateExample extends AbstractBlam {
    @Override
    public String getDescriptionUsage() {
       return "This blam is an example to show how an XWidget can populate it's values ( or perform other"
-      //
-      + " operations on the XWidget ) during it's creation.  This is used when the options or default" +
-      //
-      " selected value may come from another dynamic source such as a database query.";
+         //
+         + " operations on the XWidget ) during it's creation.  This is used when the options or default" +
+         //
+         " selected value may come from another dynamic source such as a database query.";
    }
 
    @Override

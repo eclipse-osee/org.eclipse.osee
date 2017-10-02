@@ -45,7 +45,7 @@ public class AccessModelInterpreterImpl implements AccessModelInterpreter {
    }
 
    @Override
-   public AccessContext getContext(Collection<AccessContext> contexts, IAccessContextId contextId)  {
+   public AccessContext getContext(Collection<AccessContext> contexts, IAccessContextId contextId) {
       Conditions.checkNotNull(contexts, "accessContext collection");
       Conditions.checkNotNull(contextId, "accessContextId");
       AccessContext toReturn = null;
@@ -58,7 +58,7 @@ public class AccessModelInterpreterImpl implements AccessModelInterpreter {
    }
 
    @Override
-   public void computeAccessDetails(AccessDetailCollector collector, AccessContext context, Object objectToCheck)  {
+   public void computeAccessDetails(AccessDetailCollector collector, AccessContext context, Object objectToCheck) {
       Conditions.checkNotNull(collector, "accessDetailCollector");
       Conditions.checkNotNull(context, "accessContext");
       Conditions.checkNotNull(objectToCheck, "objectToCheck");
@@ -72,7 +72,7 @@ public class AccessModelInterpreterImpl implements AccessModelInterpreter {
       }
    }
 
-   private void collectApplicable(AccessDetailCollector collector, AccessContext context, ArtifactProxy artifactData)  {
+   private void collectApplicable(AccessDetailCollector collector, AccessContext context, ArtifactProxy artifactData) {
       Scope scope = getScope(context);
       processContext(collector, context, artifactData, scope);
 
@@ -94,7 +94,7 @@ public class AccessModelInterpreterImpl implements AccessModelInterpreter {
       scope.add(context.getName());
    }
 
-   private void processContext(AccessDetailCollector collector, AccessContext context, ArtifactProxy artifactData, Scope scope)  {
+   private void processContext(AccessDetailCollector collector, AccessContext context, ArtifactProxy artifactData, Scope scope) {
       collectRestrictions(collector, artifactData, context.getAccessRules(), scope);
 
       Collection<HierarchyRestriction> restrictions = context.getHierarchyRestrictions();
@@ -110,7 +110,7 @@ public class AccessModelInterpreterImpl implements AccessModelInterpreter {
       }
    }
 
-   private void collectRestrictions(AccessDetailCollector collector, ArtifactProxy artifactData, Collection<ObjectRestriction> restrictions, Scope scope)  {
+   private void collectRestrictions(AccessDetailCollector collector, ArtifactProxy artifactData, Collection<ObjectRestriction> restrictions, Scope scope) {
       for (ObjectRestriction objectRestriction : restrictions) {
          for (RestrictionHandler<?> restrictionHandler : restrictionHandlers) {
             restrictionHandler.process(objectRestriction, artifactData, collector, scope);

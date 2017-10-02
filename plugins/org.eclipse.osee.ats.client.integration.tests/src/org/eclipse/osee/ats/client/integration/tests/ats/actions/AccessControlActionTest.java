@@ -58,7 +58,7 @@ public class AccessControlActionTest extends AbstractAtsActionTest {
    }
 
    @Override
-   public Action createAction()  {
+   public Action createAction() {
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
       return new AccessControlAction(AtsTestUtil.getTeamWf());
    }

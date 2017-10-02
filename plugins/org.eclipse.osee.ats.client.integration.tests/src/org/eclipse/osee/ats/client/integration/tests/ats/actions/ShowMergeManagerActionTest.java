@@ -38,7 +38,7 @@ public class ShowMergeManagerActionTest extends AbstractAtsActionRunTest {
    }
 
    @Override
-   public ShowMergeManagerAction createAction()  {
+   public ShowMergeManagerAction createAction() {
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
       Result result = AtsTestUtil.createWorkingBranchFromTeamWf();
       createdBranch = AtsTestUtil.getTeamWf().getWorkingBranch();

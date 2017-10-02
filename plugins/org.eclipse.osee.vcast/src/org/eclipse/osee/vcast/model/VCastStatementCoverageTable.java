@@ -29,7 +29,7 @@ public class VCastStatementCoverageTable implements VCastTableData<VCastStatemen
    }
 
    @Override
-   public Collection<VCastStatementCoverage> getRows(VCastDataStore dataStore)  {
+   public Collection<VCastStatementCoverage> getRows(VCastDataStore dataStore) {
       return dataStore.getAllStatementCoverages();
    }
 

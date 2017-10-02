@@ -37,7 +37,7 @@ public class StateManagerTest {
    }
 
    @Test
-   public void testUpdateMetrics()  {
+   public void testUpdateMetrics() {
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
 
       TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();

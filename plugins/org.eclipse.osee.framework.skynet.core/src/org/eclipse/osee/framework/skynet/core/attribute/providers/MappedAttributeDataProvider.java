@@ -71,7 +71,7 @@ public class MappedAttributeDataProvider extends AbstractAttributeDataProvider i
       return client.getResourcesEndpoint();
    }
 
-   private String getOutfileName()  {
+   private String getOutfileName() {
       StringBuilder builder = new StringBuilder();
       //TestRunOperator operator = new TestRunOperator(getAttribute().getArtifact());
       builder.append(getAttribute().getArtifact().getName());
@@ -87,7 +87,7 @@ public class MappedAttributeDataProvider extends AbstractAttributeDataProvider i
    }
 
    @Override
-   public void persist(int storageId)  {
+   public void persist(int storageId) {
       try {
          if (isFromLocalWorkspace()) {
             InputStream inputStream = null;
@@ -127,7 +127,7 @@ public class MappedAttributeDataProvider extends AbstractAttributeDataProvider i
    }
 
    @Override
-   public void purge()  {
+   public void purge() {
       try {
          if (isRemoteUriValid()) {
             String path = BinaryContentUtils.asResourcePath(remoteUri);

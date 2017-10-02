@@ -24,17 +24,17 @@ import org.eclipse.osee.framework.core.util.Result;
  */
 public interface IAtsActionableItemService {
 
-   Set<IAtsActionableItem> getActionableItems(IAtsObject atsObject) ;
+   Set<IAtsActionableItem> getActionableItems(IAtsObject atsObject);
 
-   String getActionableItemsStr(IAtsObject atsObject) ;
+   String getActionableItemsStr(IAtsObject atsObject);
 
    Collection<ArtifactId> getActionableItemIds(IAtsObject atsObject);
 
-   void addActionableItem(IAtsObject atsObject, IAtsActionableItem aia, IAtsChangeSet changes) ;
+   void addActionableItem(IAtsObject atsObject, IAtsActionableItem aia, IAtsChangeSet changes);
 
-   void removeActionableItem(IAtsObject atsObject, IAtsActionableItem aia, IAtsChangeSet changes) ;
+   void removeActionableItem(IAtsObject atsObject, IAtsActionableItem aia, IAtsChangeSet changes);
 
-   Result setActionableItems(IAtsObject atsObject, Collection<IAtsActionableItem> newItems, IAtsChangeSet changes) ;
+   Result setActionableItems(IAtsObject atsObject, Collection<IAtsActionableItem> newItems, IAtsChangeSet changes);
 
    boolean hasActionableItems(IAtsObject atsObject);
 

@@ -114,7 +114,7 @@ public class DecisionOption {
       this.name = name;
    }
 
-   public String toXml()  {
+   public String toXml() {
       StringBuffer sb = new StringBuffer(name);
       sb.append(";");
       for (IAtsUser u : assignees) {

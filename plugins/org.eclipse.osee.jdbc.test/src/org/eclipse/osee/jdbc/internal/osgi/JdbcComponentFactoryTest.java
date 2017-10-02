@@ -46,62 +46,62 @@ public class JdbcComponentFactoryTest {
 
    private static final String CONFIG_1 = //
       " {" + //
-      "     'service.id':'1001'," + //
-      "     'jdbc.client.db.uri': 'uri1'," + //
-      "     'jdbc.client.db.username': 'user1'," + //
-      "     'osgi.binding': [                 " + //
-      "         'binding1'" + //
-      "     ]" + //
-      " }";
+         "     'service.id':'1001'," + //
+         "     'jdbc.client.db.uri': 'uri1'," + //
+         "     'jdbc.client.db.username': 'user1'," + //
+         "     'osgi.binding': [                 " + //
+         "         'binding1'" + //
+         "     ]" + //
+         " }";
 
    private static final String CONFIG_2 = //
       " {" + //
-      "     'service.id':'1002'," + //
-      "     'jdbc.client.db.uri': 'uri2'," + //
-      "     'jdbc.client.db.username': 'user2'," + //
-      "     'osgi.binding': [" + //
-      "         'binding2'" + //
-      "     ]" + //
-      " }";
+         "     'service.id':'1002'," + //
+         "     'jdbc.client.db.uri': 'uri2'," + //
+         "     'jdbc.client.db.username': 'user2'," + //
+         "     'osgi.binding': [" + //
+         "         'binding2'" + //
+         "     ]" + //
+         " }";
 
    private static final String CONFIG_3 = //
       " {" + //
-      "     'service.id':'1003'," + //
-      "     'jdbc.client.db.uri': 'uri3'," + //
-      "     'jdbc.client.db.username': 'user3'," + //
-      "     'osgi.binding': [" + //
-      "         'binding3'" + //
-      "     ]" + //
-      " }";
+         "     'service.id':'1003'," + //
+         "     'jdbc.client.db.uri': 'uri3'," + //
+         "     'jdbc.client.db.username': 'user3'," + //
+         "     'osgi.binding': [" + //
+         "         'binding3'" + //
+         "     ]" + //
+         " }";
 
    private static final String CONFIG_ID_COLLISION = //
       " {" + //
-      "     'service.id':'1001'," + //
-      "     'jdbc.client.db.uri': 'uri4'," + //
-      "     'jdbc.client.db.username': 'user4'," + //
-      "     'osgi.binding': [                 " + //
-      "         'binding4'" + //
-      "     ]" + //
-      " }";
+         "     'service.id':'1001'," + //
+         "     'jdbc.client.db.uri': 'uri4'," + //
+         "     'jdbc.client.db.username': 'user4'," + //
+         "     'osgi.binding': [                 " + //
+         "         'binding4'" + //
+         "     ]" + //
+         " }";
 
    private static final String CONFIG_BINDING_COLLISION = //
       " {" + //
-      "     'service.id':'1005'," + //
-      "     'jdbc.client.db.uri': 'uri5'," + //
-      "     'jdbc.client.db.username': 'user5'," + //
-      "     'osgi.binding': [" + //
-      "         'binding1'" + //
-      "     ]" + //
-      " }";
+         "     'service.id':'1005'," + //
+         "     'jdbc.client.db.uri': 'uri5'," + //
+         "     'jdbc.client.db.username': 'user5'," + //
+         "     'osgi.binding': [" + //
+         "         'binding1'" + //
+         "     ]" + //
+         " }";
 
    private static final String CONFIG_ID_NULL = //
       " {" + //
-      "     'jdbc.client.db.uri': 'uri6'," + //
-      "     'jdbc.client.db.username': 'user6'," + //
-      "     'osgi.binding': [                 " + //
-      "         'binding6'" + //
-      "     ]" + //
-      " }";
+         "     'jdbc.client.db.uri': 'uri6'," + //
+         "     'jdbc.client.db.username': 'user6'," + //
+         "     'osgi.binding': [                 " + //
+         "         'binding6'" + //
+         "     ]" + //
+         " }";
 
    @Rule
    public ExpectedException thrown = ExpectedException.none();

@@ -29,8 +29,8 @@ public final class ExcelXmlWriterTest {
 
    private static final String SAMPLE_STYLE = //
       "<Style ss:ID=\"Default\" ss:Name=\"Normal\">\n" + //
-      "<Alignment ss:Vertical=\"Top\" ss:WrapText=\"1\"/>\n" + //
-      "</Style>\n";
+         "<Alignment ss:Vertical=\"Top\" ss:WrapText=\"1\"/>\n" + //
+         "</Style>\n";
    private static final String BROKEN_TAGS_STYLE = //
       "<Styl" + "</Style>\n";
    private ISheetWriter excelWriter = null;

@@ -15,6 +15,6 @@ package org.eclipse.osee.orcs.core.internal.artifact;
  */
 public interface ArtifactVisitable {
 
-   void accept(ArtifactVisitor visitor) ;
+   void accept(ArtifactVisitor visitor);
 
 }

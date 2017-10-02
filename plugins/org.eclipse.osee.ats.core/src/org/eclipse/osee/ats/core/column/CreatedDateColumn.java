@@ -35,7 +35,7 @@ public class CreatedDateColumn extends AbstractServicesColumn {
       return getDateStr(atsObject);
    }
 
-   public static Date getDate(Object object)  {
+   public static Date getDate(Object object) {
       Date result = null;
       if (object instanceof IAtsAction) {
          IAtsAction action = (IAtsAction) object;
@@ -48,7 +48,7 @@ public class CreatedDateColumn extends AbstractServicesColumn {
       return result;
    }
 
-   public static String getDateStr(Object object)  {
+   public static String getDateStr(Object object) {
       Set<String> strs = new HashSet<>();
       if (object instanceof IAtsAction) {
          IAtsAction action = (IAtsAction) object;

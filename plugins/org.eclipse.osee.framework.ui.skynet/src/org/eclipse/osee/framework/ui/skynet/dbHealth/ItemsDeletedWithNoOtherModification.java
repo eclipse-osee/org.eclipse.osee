@@ -67,7 +67,7 @@ public class ItemsDeletedWithNoOtherModification extends DatabaseHealthOperation
       super("Items marked as deleted or artifact deleted without other entries in txs");
    }
 
-   private void loadData(String sql, TxChange txChange, ModificationType modificationType)  {
+   private void loadData(String sql, TxChange txChange, ModificationType modificationType) {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(sql, txChange, modificationType, modificationType);
@@ -81,7 +81,7 @@ public class ItemsDeletedWithNoOtherModification extends DatabaseHealthOperation
       }
    }
 
-   private void detectAndCollectErrors(IProgressMonitor monitor, TxChange txChange, ModificationType modificationType)  {
+   private void detectAndCollectErrors(IProgressMonitor monitor, TxChange txChange, ModificationType modificationType) {
       monitor.setTaskName("Loading Artifacts that were Introduced as Deleted");
       loadData(COMMITTED_NEW_AND_DELETED_ARTIFACTS, txChange, modificationType);
       checkForCancelledStatus(monitor);

@@ -29,7 +29,7 @@ public final class OsgiUtil {
       // Utility class
    }
 
-   public static <T> T getService(Class<T> clazz, String filter, long waitTimeMillis)  {
+   public static <T> T getService(Class<T> clazz, String filter, long waitTimeMillis) {
       Bundle bundle = FrameworkUtil.getBundle(OsgiUtil.class);
       checkStarted(bundle);
 

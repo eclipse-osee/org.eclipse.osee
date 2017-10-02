@@ -36,7 +36,7 @@ public class ListAndBulletRule extends AbstractValidationRule {
    }
 
    @Override
-   protected ValidationResult validate(Artifact artToValidate, IProgressMonitor monitor)  {
+   protected ValidationResult validate(Artifact artToValidate, IProgressMonitor monitor) {
       Collection<String> errorMessages = new ArrayList<>();
       boolean validationPassed = true;
       String wtc = artToValidate.getSoleAttributeValue(CoreAttributeTypes.WordTemplateContent, "");

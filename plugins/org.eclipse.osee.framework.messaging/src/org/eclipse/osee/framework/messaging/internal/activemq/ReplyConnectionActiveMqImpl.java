@@ -53,7 +53,7 @@ class ReplyConnectionActiveMqImpl implements ReplyConnection {
    }
 
    @Override
-   public void send(Object body, Class<?> clazz, OseeMessagingStatusCallback statusCallback)  {
+   public void send(Object body, Class<?> clazz, OseeMessagingStatusCallback statusCallback) {
       try {
          Message message = activeMqUtil.createMessage(session, clazz, body);
          message.setJMSCorrelationID(correlationId);

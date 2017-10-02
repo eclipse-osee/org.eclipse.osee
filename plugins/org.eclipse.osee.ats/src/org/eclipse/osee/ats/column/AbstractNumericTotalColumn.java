@@ -89,7 +89,7 @@ public abstract class AbstractNumericTotalColumn extends XViewerAtsColumn implem
       return false;
    }
 
-   public Result isPointsNumericValid(Object object)  {
+   public Result isPointsNumericValid(Object object) {
       if (object instanceof AbstractWorkflowArtifact) {
          AbstractWorkflowArtifact aba = (AbstractWorkflowArtifact) object;
          if (!aba.isAttributeTypeValid(pointsAttrType)) {
@@ -118,7 +118,7 @@ public abstract class AbstractNumericTotalColumn extends XViewerAtsColumn implem
       return Result.FalseResult;
    }
 
-   private double getRemainingPoints(Object object)  {
+   private double getRemainingPoints(Object object) {
       if (object instanceof AbstractWorkflowArtifact) {
          return getRemainPointsFromArtifact((IAtsWorkItem) object);
       } else if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
@@ -132,7 +132,7 @@ public abstract class AbstractNumericTotalColumn extends XViewerAtsColumn implem
       return 0;
    }
 
-   private double getRemainPointsFromArtifact(IAtsWorkItem workItem)  {
+   private double getRemainPointsFromArtifact(IAtsWorkItem workItem) {
       if (workItem.getStateMgr().getStateType().isCompletedOrCancelled()) {
          return 0;
       }

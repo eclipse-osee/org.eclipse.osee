@@ -40,102 +40,102 @@ public interface TransactionBuilder {
 
    String getComment();
 
-   void setComment(String comment) ;
+   void setComment(String comment);
 
    /**
     * @return TransactionRecord or null of no changes made
     */
-   TransactionReadable commit() ;
+   TransactionReadable commit();
 
    boolean isCommitInProgress();
 
    // ARTIFACT
 
-   ArtifactToken createArtifact(IArtifactType artifactType, String name) ;
+   ArtifactToken createArtifact(IArtifactType artifactType, String name);
 
-   ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid) ;
+   ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid);
 
-   ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid, long uuid) ;
+   ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid, long uuid);
 
    ArtifactToken createArtifact(ArtifactToken configsFolder);
 
-   void deleteArtifact(ArtifactId sourceArtifact) ;
+   void deleteArtifact(ArtifactId sourceArtifact);
 
-   ArtifactToken copyArtifact(ArtifactReadable sourceArtifact) ;
+   ArtifactToken copyArtifact(ArtifactReadable sourceArtifact);
 
-   ArtifactToken copyArtifact(ArtifactReadable sourceArtifact, Collection<AttributeTypeId> attributesToDuplicate) ;
+   ArtifactToken copyArtifact(ArtifactReadable sourceArtifact, Collection<AttributeTypeId> attributesToDuplicate);
 
-   ArtifactToken copyArtifact(BranchId fromBranch, ArtifactId sourceArtifact) ;
+   ArtifactToken copyArtifact(BranchId fromBranch, ArtifactId sourceArtifact);
 
-   ArtifactToken copyArtifact(BranchId fromBranch, ArtifactId sourceArtifact, Collection<AttributeTypeId> attributesToDuplicate) ;
+   ArtifactToken copyArtifact(BranchId fromBranch, ArtifactId sourceArtifact, Collection<AttributeTypeId> attributesToDuplicate);
 
-   ArtifactToken introduceArtifact(BranchId fromBranch, ArtifactId sourceArtifact) ;
+   ArtifactToken introduceArtifact(BranchId fromBranch, ArtifactId sourceArtifact);
 
-   ArtifactToken replaceWithVersion(ArtifactReadable sourceArtifact, ArtifactReadable destination) ;
+   ArtifactToken replaceWithVersion(ArtifactReadable sourceArtifact, ArtifactReadable destination);
 
    // ATTRIBUTE
 
-   void setName(ArtifactId art, String value) ;
+   void setName(ArtifactId art, String value);
 
-   AttributeId createAttribute(ArtifactId art, AttributeTypeId attributeType) ;
+   AttributeId createAttribute(ArtifactId art, AttributeTypeId attributeType);
 
-   <T> AttributeId createAttribute(ArtifactId art, AttributeTypeId attributeType, T value) ;
+   <T> AttributeId createAttribute(ArtifactId art, AttributeTypeId attributeType, T value);
 
-   AttributeId createAttributeFromString(ArtifactId art, AttributeTypeId attributeType, String value) ;
+   AttributeId createAttributeFromString(ArtifactId art, AttributeTypeId attributeType, String value);
 
-   <T> void setSoleAttributeValue(ArtifactId art, AttributeTypeId attributeType, T value) ;
+   <T> void setSoleAttributeValue(ArtifactId art, AttributeTypeId attributeType, T value);
 
-   void setSoleAttributeFromStream(ArtifactId art, AttributeTypeId attributeType, InputStream stream) ;
+   void setSoleAttributeFromStream(ArtifactId art, AttributeTypeId attributeType, InputStream stream);
 
-   void setSoleAttributeFromString(ArtifactId art, AttributeTypeId attributeType, String value) ;
+   void setSoleAttributeFromString(ArtifactId art, AttributeTypeId attributeType, String value);
 
-   <T> void setAttributesFromValues(ArtifactId art, AttributeTypeId attributeType, T... values) ;
+   <T> void setAttributesFromValues(ArtifactId art, AttributeTypeId attributeType, T... values);
 
-   <T> void setAttributesFromValues(ArtifactId art, AttributeTypeId attributeType, Collection<T> values) ;
+   <T> void setAttributesFromValues(ArtifactId art, AttributeTypeId attributeType, Collection<T> values);
 
-   void setAttributesFromStrings(ArtifactId art, AttributeTypeId attributeType, String... values) ;
+   void setAttributesFromStrings(ArtifactId art, AttributeTypeId attributeType, String... values);
 
-   void setAttributesFromStrings(ArtifactId art, AttributeTypeId attributeType, Collection<String> values) ;
+   void setAttributesFromStrings(ArtifactId art, AttributeTypeId attributeType, Collection<String> values);
 
-   <T> void setAttributeById(ArtifactId art, AttributeId attrId, T value) ;
+   <T> void setAttributeById(ArtifactId art, AttributeId attrId, T value);
 
-   void setAttributeById(ArtifactId art, AttributeId attrId, String value) ;
+   void setAttributeById(ArtifactId art, AttributeId attrId, String value);
 
-   void setAttributeById(ArtifactId art, AttributeId attrId, InputStream stream) ;
+   void setAttributeById(ArtifactId art, AttributeId attrId, InputStream stream);
 
    void setAttributeApplicability(ArtifactId art, AttributeId attrId, ApplicabilityId applicId);
 
-   void deleteByAttributeId(ArtifactId art, AttributeId attrId) ;
+   void deleteByAttributeId(ArtifactId art, AttributeId attrId);
 
-   void deleteSoleAttribute(ArtifactId art, AttributeTypeId attributeType) ;
+   void deleteSoleAttribute(ArtifactId art, AttributeTypeId attributeType);
 
-   void deleteAttributes(ArtifactId art, AttributeTypeId attributeType) ;
+   void deleteAttributes(ArtifactId art, AttributeTypeId attributeType);
 
-   void deleteAttributesWithValue(ArtifactId art, AttributeTypeId attributeType, Object value) ;
+   void deleteAttributesWithValue(ArtifactId art, AttributeTypeId attributeType, Object value);
 
    /// TX
 
-   void addChildren(ArtifactId artA, Iterable<? extends ArtifactId> children) ;
+   void addChildren(ArtifactId artA, Iterable<? extends ArtifactId> children);
 
-   void addChildren(ArtifactId artA, ArtifactId... children) ;
+   void addChildren(ArtifactId artA, ArtifactId... children);
 
-   void relate(ArtifactId artA, IRelationType relType, ArtifactId artB) ;
+   void relate(ArtifactId artA, IRelationType relType, ArtifactId artB);
 
-   void relate(ArtifactId artA, IRelationType relType, ArtifactId artB, String rationale) ;
+   void relate(ArtifactId artA, IRelationType relType, ArtifactId artB, String rationale);
 
-   void relate(ArtifactId artA, IRelationType relType, ArtifactId artB, RelationSorter sortType) ;
+   void relate(ArtifactId artA, IRelationType relType, ArtifactId artB, RelationSorter sortType);
 
-   void relate(ArtifactId artA, IRelationType relType, ArtifactId artB, String rationale, RelationSorter sortType) ;
+   void relate(ArtifactId artA, IRelationType relType, ArtifactId artB, String rationale, RelationSorter sortType);
 
-   void setRelations(ArtifactId artA, IRelationType relType, Iterable<? extends ArtifactId> artBs) ;
+   void setRelations(ArtifactId artA, IRelationType relType, Iterable<? extends ArtifactId> artBs);
 
-   void setRationale(ArtifactId artA, IRelationType relType, ArtifactId artB, String rationale) ;
+   void setRationale(ArtifactId artA, IRelationType relType, ArtifactId artB, String rationale);
 
-   void unrelate(ArtifactId artA, IRelationType relType, ArtifactId artB) ;
+   void unrelate(ArtifactId artA, IRelationType relType, ArtifactId artB);
 
-   void unrelateFromAll(ArtifactId art) ;
+   void unrelateFromAll(ArtifactId art);
 
-   void unrelateFromAll(RelationTypeSide typeSide, ArtifactId art) ;
+   void unrelateFromAll(RelationTypeSide typeSide, ArtifactId art);
 
    void setRelationApplicability(ArtifactId artA, IRelationType relType, ArtifactId artB, ApplicabilityId applicId);
 

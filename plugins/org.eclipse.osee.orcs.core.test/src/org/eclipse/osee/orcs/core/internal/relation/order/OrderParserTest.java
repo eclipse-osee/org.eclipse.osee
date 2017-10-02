@@ -98,7 +98,7 @@ public class OrderParserTest {
    private OrderParser parser;
 
    @Before
-   public void setUp()  {
+   public void setUp() {
       MockitoAnnotations.initMocks(this);
 
       parser = new OrderParser(relationTypeCache);
@@ -122,28 +122,28 @@ public class OrderParserTest {
    }
 
    @Test
-   public void testLoadFromXmlNull()  {
+   public void testLoadFromXmlNull() {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("orderData cannot be null");
       parser.loadFromXml(null, "");
    }
 
    @Test
-   public void testToXmlNull()  {
+   public void testToXmlNull() {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("orderData cannot be null");
       parser.toXml(null);
    }
 
    @Test
-   public void testInvalidXml()  {
+   public void testInvalidXml() {
       thrown.expect(OseeCoreException.class);
       parser.loadFromXml(hasOrderData, "<OrderList");
       verify(hasOrderData, never()).add(typeSideCaptor.capture(), orderDataCaptor.capture());
    }
 
    @Test
-   public void testInvalidData()  {
+   public void testInvalidData() {
       parser.loadFromXml(hasOrderData, null);
       verify(hasOrderData, never()).add(typeSideCaptor.capture(), orderDataCaptor.capture());
 
@@ -169,7 +169,7 @@ public class OrderParserTest {
    }
 
    @Test
-   public void testWithData1()  {
+   public void testWithData1() {
       parser.loadFromXml(hasOrderData, DATA_1);
 
       verify(hasOrderData, times(1)).add(typeSideCaptor.capture(), orderDataCaptor.capture());
@@ -178,7 +178,7 @@ public class OrderParserTest {
    }
 
    @Test
-   public void testWithData2()  {
+   public void testWithData2() {
       parser.loadFromXml(hasOrderData, DATA_2);
 
       verify(hasOrderData, times(1)).add(typeSideCaptor.capture(), orderDataCaptor.capture());
@@ -187,7 +187,7 @@ public class OrderParserTest {
    }
 
    @Test
-   public void testWithData3()  {
+   public void testWithData3() {
       parser.loadFromXml(hasOrderData, DATA_3);
 
       verify(hasOrderData, times(2)).add(typeSideCaptor.capture(), orderDataCaptor.capture());
@@ -197,7 +197,7 @@ public class OrderParserTest {
    }
 
    @Test
-   public void testWithData4EmptyList()  {
+   public void testWithData4EmptyList() {
       parser.loadFromXml(hasOrderData, DATA_4);
 
       verify(hasOrderData, times(1)).add(typeSideCaptor.capture(), orderDataCaptor.capture());
@@ -206,7 +206,7 @@ public class OrderParserTest {
    }
 
    @Test
-   public void testToXml()  {
+   public void testToXml() {
       //@formatter:off
       Map<RelationTypeSide, OrderData> data = new LinkedHashMap<>();
       add(data, REL_TYPE_1_ID, REL_TYPE_1_NAME, RelationSide.SIDE_B, USER_DEFINED, ORDER_LIST_2);
@@ -220,7 +220,7 @@ public class OrderParserTest {
    }
 
    @Test
-   public void testToXmlEmptyEntries()  {
+   public void testToXmlEmptyEntries() {
       Map<RelationTypeSide, OrderData> data = new LinkedHashMap<>();
       when(hasOrderData.iterator()).thenReturn(data.entrySet().iterator());
       when(hasOrderData.isEmpty()).thenReturn(true);
@@ -230,7 +230,7 @@ public class OrderParserTest {
    }
 
    @Test
-   public void testToXmlEmptyList()  {
+   public void testToXmlEmptyList() {
       Map<RelationTypeSide, OrderData> data = new LinkedHashMap<>();
       add(data, REL_TYPE_1_ID, REL_TYPE_2_NAME, RelationSide.SIDE_A, LEXICOGRAPHICAL_DESC);
       when(hasOrderData.iterator()).thenReturn(data.entrySet().iterator());

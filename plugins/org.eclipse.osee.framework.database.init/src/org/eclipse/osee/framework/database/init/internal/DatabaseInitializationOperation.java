@@ -114,14 +114,14 @@ public class DatabaseInitializationOperation extends AbstractOperation {
       }
    }
 
-   private void checkValidExtension(IExtension extension, String pointId)  {
+   private void checkValidExtension(IExtension extension, String pointId) {
       Conditions.checkNotNull(extension, "Extension", "Unable to locate extension [%s]", pointId);
       String extensionPointId = extension.getExtensionPointUniqueIdentifier();
       Conditions.checkExpressionFailOnTrue(!DefaultDbInitTasks.DB_INIT_TASK.getExtensionId().equals(extensionPointId),
          "Unknown extension id [%s] from extension [%s]", extensionPointId, pointId);
    }
 
-   private void processTasks()  {
+   private void processTasks() {
       OseeLog.log(DatabaseInitActivator.class, Level.INFO, "Configuring Database...");
       IDatabaseInitConfiguration configuration = getConfiguration();
       IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
@@ -183,7 +183,7 @@ public class DatabaseInitializationOperation extends AbstractOperation {
       return choices.get(selection);
    }
 
-   private void runDbInitTasks(IDatabaseInitConfiguration configuration, IExtension extension)  {
+   private void runDbInitTasks(IDatabaseInitConfiguration configuration, IExtension extension) {
       IConfigurationElement[] elements = extension.getConfigurationElements();
       String classname = null;
       String bundleName = null;
@@ -223,7 +223,7 @@ public class DatabaseInitializationOperation extends AbstractOperation {
       }
    }
 
-   private IDbInitializationRule createTask(Bundle bundle, String initRuleClassName)  {
+   private IDbInitializationRule createTask(Bundle bundle, String initRuleClassName) {
       Class<?> taskClass = null;
       try {
          taskClass = bundle.loadClass(initRuleClassName);
@@ -272,7 +272,7 @@ public class DatabaseInitializationOperation extends AbstractOperation {
       return canConnection;
    }
 
-   private void checkServerPreconditions()  {
+   private void checkServerPreconditions() {
       String serverUrl = OseeClientProperties.getOseeApplicationServer();
       Conditions.checkNotNullOrEmpty(serverUrl, "Application Server Address",
          "Database initialization requires an application server to be set by default.");

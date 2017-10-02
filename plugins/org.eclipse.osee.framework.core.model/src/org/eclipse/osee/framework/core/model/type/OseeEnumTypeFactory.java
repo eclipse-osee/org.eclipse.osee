@@ -23,18 +23,18 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
  */
 public class OseeEnumTypeFactory implements IOseeTypeFactory {
 
-   public OseeEnumType createEnumType(Long guid, String name)  {
+   public OseeEnumType createEnumType(Long guid, String name) {
       Conditions.checkNotNullOrEmpty(name, "osee enum type name");
       return new OseeEnumType(guid, name);
    }
 
-   public OseeEnumEntry createEnumEntry(String name, int ordinal, String description)  {
+   public OseeEnumEntry createEnumEntry(String name, int ordinal, String description) {
       Conditions.checkNotNullOrEmpty(name, "osee enum entry name");
       Conditions.checkExpressionFailOnTrue(ordinal < 0, "ordinal must be greater than or equal to zero");
       return new OseeEnumEntry(name, ordinal, description);
    }
 
-   public OseeEnumType createOrUpdate(IOseeCache<OseeEnumType> cache, long enumTypeId, StorageState storageState, Long guid, String enumTypeName)  {
+   public OseeEnumType createOrUpdate(IOseeCache<OseeEnumType> cache, long enumTypeId, StorageState storageState, Long guid, String enumTypeName) {
       Conditions.checkNotNull(cache, "OseeEnumTypeCache");
       OseeEnumType oseeEnumType = cache.getById(enumTypeId);
       if (oseeEnumType == null) {
@@ -47,7 +47,7 @@ public class OseeEnumTypeFactory implements IOseeTypeFactory {
       return oseeEnumType;
    }
 
-   public OseeEnumType createOrUpdate(OseeEnumTypeCache cache, Long guid, String enumTypeName)  {
+   public OseeEnumType createOrUpdate(OseeEnumTypeCache cache, Long guid, String enumTypeName) {
       Conditions.checkNotNull(cache, "OseeEnumTypeCache");
       OseeEnumType oseeEnumType = cache.getByGuid(guid);
       if (oseeEnumType == null) {
@@ -59,7 +59,7 @@ public class OseeEnumTypeFactory implements IOseeTypeFactory {
       return oseeEnumType;
    }
 
-   public OseeEnumEntry createOrUpdate(IOseeCache<OseeEnumType> cache, Long enumTypeGuid, String enumEntryName, int ordinal, String enumEntryDescription)  {
+   public OseeEnumEntry createOrUpdate(IOseeCache<OseeEnumType> cache, Long enumTypeGuid, String enumEntryName, int ordinal, String enumEntryDescription) {
       Conditions.checkNotNull(cache, "OseeEnumTypeCache");
       OseeEnumType oseeEnumType = ((AbstractOseeCache<OseeEnumType>) cache).getByGuid(enumTypeGuid);
       OseeEnumEntry enumEntry = oseeEnumType.getEntryByName(enumEntryName);

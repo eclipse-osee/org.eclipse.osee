@@ -23,7 +23,7 @@ public abstract class LazyObject<T> {
    private final Object lock = new Object();
    private FutureTask<T> lastLoader;
 
-   public final T get()  {
+   public final T get() {
       T object = instanceReference.get();
       if (object == null) {
          FutureTask<T> task;

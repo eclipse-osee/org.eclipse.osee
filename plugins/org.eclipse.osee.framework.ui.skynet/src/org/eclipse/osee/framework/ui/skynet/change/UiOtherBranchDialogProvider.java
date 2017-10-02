@@ -35,7 +35,7 @@ public final class UiOtherBranchDialogProvider implements IBranchProvider {
    }
 
    @Override
-   public IOseeBranch getBranch()  {
+   public IOseeBranch getBranch() {
       final IOseeBranch[] selectedBranch = new IOseeBranch[1];
       final Collection<? extends BranchId> selectable = BranchManager.getBaselineBranches();
       selectable.remove(uiData.getTxDelta().getStartTx().getBranch());
@@ -43,7 +43,7 @@ public final class UiOtherBranchDialogProvider implements IBranchProvider {
       return selectedBranch[0];
    }
 
-   private IStatus executeInUiThread(final Collection<? extends BranchId> selectable, final BranchId[] selectedBranch)  {
+   private IStatus executeInUiThread(final Collection<? extends BranchId> selectable, final BranchId[] selectedBranch) {
       IStatus status = null;
       Display display = AWorkbench.getDisplay();
       if (display.getThread().equals(Thread.currentThread())) {

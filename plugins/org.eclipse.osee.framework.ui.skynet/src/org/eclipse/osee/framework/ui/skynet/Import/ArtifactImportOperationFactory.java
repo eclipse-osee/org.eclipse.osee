@@ -64,15 +64,14 @@ public final class ArtifactImportOperationFactory {
     *
     * @param param
     * @return
-    * 
     */
-   public static IOperation completeOperation(ArtifactImportOperationParameter param)  {
+   public static IOperation completeOperation(ArtifactImportOperationParameter param) {
       return completeOperation(param.getSourceFile(), param.getDestinationArtifact(), param.getLogger(),
          param.getExtractor(), param.getResolver(), param.isStopOnError(), param.getGoverningTransaction(),
          param.isExecuteTransaction());
    }
 
-   public static IOperation completeOperation(File sourceFile, Artifact destinationArtifact, OperationLogger logger, IArtifactExtractor extractor, IArtifactImportResolver resolver, boolean stopOnError, SkynetTransaction governingTransaction, boolean executeTransaction)  {
+   public static IOperation completeOperation(File sourceFile, Artifact destinationArtifact, OperationLogger logger, IArtifactExtractor extractor, IArtifactImportResolver resolver, boolean stopOnError, SkynetTransaction governingTransaction, boolean executeTransaction) {
       CheckAndThrow(sourceFile, destinationArtifact, extractor, resolver);
 
       RoughArtifactCollector collector = new RoughArtifactCollector(new RoughArtifact(RoughArtifactKind.PRIMARY));
@@ -116,7 +115,7 @@ public final class ArtifactImportOperationFactory {
     * <li>CompleteArtifactImportOperation</li>
     * </ol>
     */
-   public static IOperation createOperation(File sourceFile, Artifact destinationArtifact, OperationLogger logger, IArtifactExtractor extractor, IArtifactImportResolver resolver, RoughArtifactCollector collector, Collection<IArtifactType> selectionArtifactTypes, boolean stopOnError, boolean deleteUnMatched, boolean runFilterByAttributes)  {
+   public static IOperation createOperation(File sourceFile, Artifact destinationArtifact, OperationLogger logger, IArtifactExtractor extractor, IArtifactImportResolver resolver, RoughArtifactCollector collector, Collection<IArtifactType> selectionArtifactTypes, boolean stopOnError, boolean deleteUnMatched, boolean runFilterByAttributes) {
       OperationBuilder builder =
          Operations.createBuilder("Artifact Import - ArtifactAndRoughToRealOperation, RoughToRealOperation");
       builder.addOp(createArtifactsCompOperation(
@@ -142,10 +141,9 @@ public final class ArtifactImportOperationFactory {
    }
 
    /**
-    * 
     * @see ArtifactImportWizard
     */
-   public static IOperation createRoughToRealOperation(String opName, final Artifact destinationArtifact, IArtifactImportResolver resolver, boolean stopOnError, RoughArtifactCollector collector, boolean deleteUnmatchedArtifacts, IArtifactExtractor extractor)  {
+   public static IOperation createRoughToRealOperation(String opName, final Artifact destinationArtifact, IArtifactImportResolver resolver, boolean stopOnError, RoughArtifactCollector collector, boolean deleteUnmatchedArtifacts, IArtifactExtractor extractor) {
       SkynetTransaction transaction = TransactionManager.createTransaction(destinationArtifact.getBranch(),
          "Artifact Import Wizard transaction " + opName);
 

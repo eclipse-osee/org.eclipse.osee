@@ -26,7 +26,7 @@ public class HandleImport {
    private static final String CLASSNAME = "classname";
    private static final String IMPORT_HANDLER_ID = "ImportHandler";
 
-   public static void handleImport(Collection<URI> resources, Object destination, boolean persistChanges)  {
+   public static void handleImport(Collection<URI> resources, Object destination, boolean persistChanges) {
       ExtensionDefinedObjects<ImportHandler> handlerExtensions = new ExtensionDefinedObjects<ImportHandler>(
          Activator.PLUGIN_ID + "." + IMPORT_HANDLER_ID, IMPORT_HANDLER_ID, CLASSNAME);
       List<ImportHandler> handlers = handlerExtensions.getObjects();

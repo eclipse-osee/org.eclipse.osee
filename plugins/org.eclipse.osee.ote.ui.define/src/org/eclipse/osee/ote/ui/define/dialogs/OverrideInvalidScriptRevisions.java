@@ -32,7 +32,7 @@ public class OverrideInvalidScriptRevisions implements IOverrideHandler {
    }
 
    @Override
-   public Set<Object> getOverridableFromUnselectable(Set<Object> unselectable)  {
+   public Set<Object> getOverridableFromUnselectable(Set<Object> unselectable) {
       Set<Object> toReturn = new HashSet<>();
       for (Object object : unselectable) {
          if (object instanceof Artifact) {

@@ -639,9 +639,8 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
    /**********************************************************************
     * @param column value from the Verification type cell
     * @param roughArtifact the artifact being populated
-    * 
     */
-   public void processVerification(String column, RoughArtifact roughArtifact)  {
+   public void processVerification(String column, RoughArtifact roughArtifact) {
       /**************************************************************
        * The followings possibilities exist for this field 1) Field empty 2) Some/all keywords The keywords may not be
        * filled in. In other words a keyword may be followed by a keyword instead of data.

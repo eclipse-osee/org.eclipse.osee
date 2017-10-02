@@ -40,7 +40,7 @@ public class CmAccessControlProviderImpl implements CmAccessControlProvider {
    }
 
    @Override
-   public CmAccessControl getService(ArtifactToken userArtifact, Object object)  {
+   public CmAccessControl getService(ArtifactToken userArtifact, Object object) {
       if (object instanceof HasCmAccessControl) {
          HasCmAccessControl cmContainer = (HasCmAccessControl) object;
          return cmContainer.getAccessControl();

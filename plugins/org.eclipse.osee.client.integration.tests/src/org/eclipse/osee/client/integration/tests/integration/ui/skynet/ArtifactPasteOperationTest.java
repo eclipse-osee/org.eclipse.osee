@@ -64,7 +64,7 @@ public class ArtifactPasteOperationTest {
    private RelationOrderFactory relationOrderFactory;
 
    @Before
-   public void setup()  {
+   public void setup() {
       List<Artifact> emptyList = Collections.emptyList();
       relationOrderFactory = new RelationOrderFactory();
 
@@ -87,7 +87,7 @@ public class ArtifactPasteOperationTest {
    }
 
    @After
-   public void cleanup()  {
+   public void cleanup() {
       delete(child1);
       delete(child2);
       delete(child3);
@@ -96,7 +96,7 @@ public class ArtifactPasteOperationTest {
       relationOrderFactory = null;
    }
 
-   private static void delete(Artifact artifact)  {
+   private static void delete(Artifact artifact) {
       if (artifact != null) {
          ArtifactCache.deCache(artifact);
          artifact.deleteAndPersist();
@@ -145,7 +145,7 @@ public class ArtifactPasteOperationTest {
       }
    }
 
-   private void checkPaste(Artifact destination, String expectedChild, Artifact copiedArtifact, RelationSorter expectedOrderType, String... names)  {
+   private void checkPaste(Artifact destination, String expectedChild, Artifact copiedArtifact, RelationSorter expectedOrderType, String... names) {
       Artifact newArtifact = destination.getChild(expectedChild);
       Assert.assertNotNull(newArtifact);
       Assert.assertTrue(!copiedArtifact.getGuid().equals(newArtifact.getGuid()));
@@ -173,7 +173,7 @@ public class ArtifactPasteOperationTest {
       checkRelationOrder(destination, USER_DEFINED, true);
    }
 
-   private void checkRelationOrder(Artifact artifactToCheck, RelationSorter expectedOrderType, boolean hasChildren)  {
+   private void checkRelationOrder(Artifact artifactToCheck, RelationSorter expectedOrderType, boolean hasChildren) {
       RelationOrderData data = relationOrderFactory.createRelationOrderData(artifactToCheck);
       Assert.assertEquals(1, data.size());
 

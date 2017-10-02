@@ -21,7 +21,7 @@ import org.eclipse.osee.orcs.core.internal.types.OrcsTypesLoader;
 /**
  * @author Roberto E. Escobar
  */
-public class OrcsTypesIndexProviderImpl extends LazyObject<OrcsTypesIndex>implements OrcsTypesIndexProvider {
+public class OrcsTypesIndexProviderImpl extends LazyObject<OrcsTypesIndex> implements OrcsTypesIndexProvider {
 
    private OrcsTypesLoader loader;
 
@@ -31,27 +31,27 @@ public class OrcsTypesIndexProviderImpl extends LazyObject<OrcsTypesIndex>implem
    }
 
    @Override
-   public ArtifactTypeIndex getArtifactTypeIndex()  {
+   public ArtifactTypeIndex getArtifactTypeIndex() {
       return get().getArtifactTypeIndex();
    }
 
    @Override
-   public AttributeTypeIndex getAttributeTypeIndex()  {
+   public AttributeTypeIndex getAttributeTypeIndex() {
       return get().getAttributeTypeIndex();
    }
 
    @Override
-   public EnumTypeIndex getEnumTypeIndex()  {
+   public EnumTypeIndex getEnumTypeIndex() {
       return get().getEnumTypeIndex();
    }
 
    @Override
-   public RelationTypeIndex getRelationTypeIndex()  {
+   public RelationTypeIndex getRelationTypeIndex() {
       return get().getRelationTypeIndex();
    }
 
    @Override
-   public IResource getOrcsTypesResource()  {
+   public IResource getOrcsTypesResource() {
       try {
          return get().getOrcsTypesResource();
       } catch (Exception ex) {

@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider;
 public class DemoArtifactImageProvider extends ArtifactImageProvider {
 
    @Override
-   public void init()  {
+   public void init() {
       ArtifactImageManager.registerBaseImage(DemoArtifactTypes.DemoCodeTeamWorkflow, DemoImage.DEMO_WORKFLOW, this);
       ArtifactImageManager.registerBaseImage(DemoArtifactTypes.DemoReqTeamWorkflow, DemoImage.DEMO_WORKFLOW, this);
       ArtifactImageManager.registerBaseImage(DemoArtifactTypes.DemoTestTeamWorkflow, DemoImage.DEMO_WORKFLOW, this);

@@ -49,7 +49,7 @@ public final class TestUtil {
    /**
     * Creates a simple artifact and adds it to the root artifact default hierarchical relation
     */
-   public static Artifact createSimpleArtifact(IArtifactType artifactType, String name, BranchId branch)  {
+   public static Artifact createSimpleArtifact(IArtifactType artifactType, String name, BranchId branch) {
       Artifact softArt = ArtifactTypeManager.addArtifact(artifactType, branch);
       softArt.setName(name);
       if (softArt.isAttributeTypeValid(CoreAttributeTypes.Subsystem)) {
@@ -60,7 +60,7 @@ public final class TestUtil {
       return softArt;
    }
 
-   public static Collection<Artifact> createSimpleArtifacts(IArtifactType artifactType, int numArts, String name, BranchId branch)  {
+   public static Collection<Artifact> createSimpleArtifacts(IArtifactType artifactType, int numArts, String name, BranchId branch) {
       List<Artifact> arts = new ArrayList<>();
       for (int x = 1; x < numArts + 1; x++) {
          arts.add(createSimpleArtifact(artifactType, name + " " + x, branch));
@@ -68,7 +68,7 @@ public final class TestUtil {
       return arts;
    }
 
-   public static Map<String, Integer> getTableRowCounts(String... tables)  {
+   public static Map<String, Integer> getTableRowCounts(String... tables) {
       Map<String, Integer> data = new HashMap<>();
       for (String tableName : tables) {
          data.put(tableName, getTableRowCount(tableName));
@@ -76,7 +76,7 @@ public final class TestUtil {
       return data;
    }
 
-   private static int getTableRowCount(String tableName)  {
+   private static int getTableRowCount(String tableName) {
       return ConnectionHandler.getJdbcClient().fetch(0, "SELECT count(1) FROM " + tableName);
    }
 

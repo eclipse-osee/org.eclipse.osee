@@ -40,29 +40,29 @@ public class OutlookCalendarEvent {
    public String getEvent() {
       return "\nBEGIN:VCALENDAR\n" +
       //
-      "PRODID:-//Microsoft Corporation//Outlook 10.0 MIMEDIR//EN\n" +
-      //
-      "VERSION:1.0\n" +
-      //
-      "BEGIN:VEVENT\n" +
-      //
-      "DTSTART:" + myDateFormat.format(startDate) + "\n" +
-      //
-      "DTEND:" + myDateFormat.format(endDate) + "\n" +
-      //
-      "LOCATION;ENCODING=QUOTED-PRINTABLE:" + location + "\n" +
-      //
-      "TRANSP:1\n" +
-      //
-      "DESCRIPTION;ENCODING=QUOTED-PRINTABLE:=0D=0A\n" +
-      //
-      "SUMMARY;ENCODING=QUOTED-PRINTABLE:Event:" + event + "\n" +
-      //
-      "PRIORITY:3\n" +
-      //
-      "END:VEVENT\n" +
-      //
-      "END:VCALENDAR\n";
+         "PRODID:-//Microsoft Corporation//Outlook 10.0 MIMEDIR//EN\n" +
+         //
+         "VERSION:1.0\n" +
+         //
+         "BEGIN:VEVENT\n" +
+         //
+         "DTSTART:" + myDateFormat.format(startDate) + "\n" +
+         //
+         "DTEND:" + myDateFormat.format(endDate) + "\n" +
+         //
+         "LOCATION;ENCODING=QUOTED-PRINTABLE:" + location + "\n" +
+         //
+         "TRANSP:1\n" +
+         //
+         "DESCRIPTION;ENCODING=QUOTED-PRINTABLE:=0D=0A\n" +
+         //
+         "SUMMARY;ENCODING=QUOTED-PRINTABLE:Event:" + event + "\n" +
+         //
+         "PRIORITY:3\n" +
+         //
+         "END:VEVENT\n" +
+         //
+         "END:VCALENDAR\n";
    }
 
 }

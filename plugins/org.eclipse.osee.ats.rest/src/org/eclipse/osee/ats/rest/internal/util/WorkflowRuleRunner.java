@@ -57,7 +57,8 @@ public class WorkflowRuleRunner {
                   // check team definition
                   if (workItem.getParentTeamWorkflow() != null && workItem.getParentTeamWorkflow().getTeamDefinition() != null) {
                      for (String teamDefRule : workItem.getParentTeamWorkflow().getTeamDefinition().getRules()) {
-                        IAtsRuleDefinition ruleDefinition = atsServer.getWorkDefinitionService().getRuleDefinition(teamDefRule);
+                        IAtsRuleDefinition ruleDefinition =
+                           atsServer.getWorkDefinitionService().getRuleDefinition(teamDefRule);
 
                         if (ruleDefinition != null && ruleDefinition.getRuleEvents().contains(
                            eventType) && ruleDefinition instanceof IExecutableRule) {
@@ -75,7 +76,8 @@ public class WorkflowRuleRunner {
                   if (workItem.getParentTeamWorkflow() != null && workItem.getParentTeamWorkflow().getTeamDefinition() != null) {
                      for (IAtsActionableItem ai : workItem.getParentTeamWorkflow().getActionableItems()) {
                         for (String aiRule : ai.getRules()) {
-                           IAtsRuleDefinition ruleDefinition = atsServer.getWorkDefinitionService().getRuleDefinition(aiRule);
+                           IAtsRuleDefinition ruleDefinition =
+                              atsServer.getWorkDefinitionService().getRuleDefinition(aiRule);
 
                            if (ruleDefinition != null && ruleDefinition.getRuleEvents().contains(
                               eventType) && ruleDefinition instanceof IExecutableRule) {
@@ -96,7 +98,8 @@ public class WorkflowRuleRunner {
                      IAtsStateDefinition stateDef =
                         workDef.getStateByName(workItem.getStateMgr().getCurrentStateName());
                      for (String teamDefRule : stateDef.getRules()) {
-                        IAtsRuleDefinition ruleDefinition = atsServer.getWorkDefinitionService().getRuleDefinition(teamDefRule);
+                        IAtsRuleDefinition ruleDefinition =
+                           atsServer.getWorkDefinitionService().getRuleDefinition(teamDefRule);
                         if (ruleDefinition.getRuleEvents().contains(
                            eventType) && ruleDefinition instanceof IExecutableRule) {
                            ((IExecutableRule) ruleDefinition).execute(workItem, atsServer.getServices(), changes,

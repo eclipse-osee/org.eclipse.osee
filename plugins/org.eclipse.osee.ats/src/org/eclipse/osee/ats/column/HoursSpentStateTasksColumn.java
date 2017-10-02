@@ -35,8 +35,8 @@ public class HoursSpentStateTasksColumn extends XViewerAtsColumn implements IXVi
    }
 
    private HoursSpentStateTasksColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".stateTaskHoursSpent", "State Task Hours Spent", 40, XViewerAlign.Center,
-         false, SortDataType.Float, false,
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".stateTaskHoursSpent", "State Task Hours Spent", 40,
+         XViewerAlign.Center, false, SortDataType.Float, false,
          "Hours spent in performing the changes for the tasks related to the current state.");
    }
 

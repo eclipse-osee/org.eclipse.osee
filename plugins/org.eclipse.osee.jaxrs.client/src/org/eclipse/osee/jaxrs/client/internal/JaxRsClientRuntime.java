@@ -99,9 +99,9 @@ public final class JaxRsClientRuntime {
          "Token cache evict timeout must be greater than 0");
 
       return CacheBuilder.newBuilder()//
-      .maximumSize(cacheMaxSize)//
-      .expireAfterWrite(cacheEvictTimeoutMillis, TimeUnit.MILLISECONDS)//
-      .build();
+         .maximumSize(cacheMaxSize)//
+         .expireAfterWrite(cacheEvictTimeoutMillis, TimeUnit.MILLISECONDS)//
+         .build();
    }
 
    private static OwnerCredentials newOwner(final String username, final String password) {

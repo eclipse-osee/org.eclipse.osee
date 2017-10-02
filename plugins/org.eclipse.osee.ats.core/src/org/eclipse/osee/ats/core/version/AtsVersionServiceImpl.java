@@ -55,7 +55,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    }
 
    @Override
-   public IAtsVersion getTargetedVersion(IAtsWorkItem workItem)  {
+   public IAtsVersion getTargetedVersion(IAtsWorkItem workItem) {
       IAtsVersion version = null;
       IAtsTeamWorkflow team = workItem.getParentTeamWorkflow();
       if (team != null) {
@@ -65,7 +65,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    }
 
    @Override
-   public IAtsVersion getTargetedVersionByTeamWf(IAtsTeamWorkflow team)  {
+   public IAtsVersion getTargetedVersionByTeamWf(IAtsTeamWorkflow team) {
       if (team == null) {
          throw new OseeArgumentException("Team Workflow can not be null %s", team);
       }
@@ -84,7 +84,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    }
 
    @Override
-   public void removeTargetedVersion(IAtsTeamWorkflow teamWf, IAtsChangeSet changes)  {
+   public void removeTargetedVersion(IAtsTeamWorkflow teamWf, IAtsChangeSet changes) {
       changes.unrelateAll(teamWf, AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
    }
 
@@ -128,7 +128,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
     * @return true if this is a TeamWorkflow and the version it's been targeted for has been released
     */
    @Override
-   public boolean isReleased(IAtsTeamWorkflow teamWf)  {
+   public boolean isReleased(IAtsTeamWorkflow teamWf) {
       boolean released = false;
       IAtsVersion verArt = getTargetedVersion(teamWf);
       if (verArt != null) {
@@ -138,7 +138,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    }
 
    @Override
-   public boolean isVersionLocked(IAtsTeamWorkflow teamWf)  {
+   public boolean isVersionLocked(IAtsTeamWorkflow teamWf) {
       boolean locked = false;
       IAtsVersion verArt = getTargetedVersion(teamWf);
       if (verArt != null) {
@@ -148,12 +148,12 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    }
 
    @Override
-   public boolean hasTargetedVersion(IAtsWorkItem workItem)  {
+   public boolean hasTargetedVersion(IAtsWorkItem workItem) {
       return getTargetedVersion(workItem) != null;
    }
 
    @Override
-   public void setTeamDefinition(IAtsVersion version, IAtsTeamDefinition teamDef, IAtsChangeSet changes)  {
+   public void setTeamDefinition(IAtsVersion version, IAtsTeamDefinition teamDef, IAtsChangeSet changes) {
       Object verArt = services.getArtifact(version);
       if (verArt == null) {
          throw new OseeStateException("Version [%s] does not exist.", version);
@@ -169,13 +169,13 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    }
 
    @Override
-   public IAtsTeamDefinition getTeamDefinition(IAtsVersion version)  {
+   public IAtsTeamDefinition getTeamDefinition(IAtsVersion version) {
       return services.getRelationResolver().getRelatedOrNull(version,
          AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition, IAtsTeamDefinition.class);
    }
 
    @Override
-   public IAtsVersion getById(Identity<String> id)  {
+   public IAtsVersion getById(Identity<String> id) {
       IAtsVersion version = null;
       Object verArt = null;
       if (id instanceof ArtifactId) {
@@ -190,7 +190,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    }
 
    @Override
-   public Collection<IAtsTeamWorkflow> getTargetedForTeamWorkflows(IAtsVersion verArt)  {
+   public Collection<IAtsTeamWorkflow> getTargetedForTeamWorkflows(IAtsVersion verArt) {
       List<IAtsTeamWorkflow> teamWorkflows = new LinkedList<>();
       for (IAtsTeamWorkflow teamWf : services.getRelationResolver().getRelated(verArt,
          AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow, IAtsTeamWorkflow.class)) {
@@ -226,12 +226,12 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    }
 
    @Override
-   public IAtsVersion createVersion(String title, long uuid, IAtsChangeSet changes)  {
+   public IAtsVersion createVersion(String title, long uuid, IAtsChangeSet changes) {
       return services.getVersionFactory().createVersion(title, uuid, changes, services);
    }
 
    @Override
-   public IAtsVersion createVersion(String name, IAtsChangeSet changes)  {
+   public IAtsVersion createVersion(String name, IAtsChangeSet changes) {
       return services.getVersionFactory().createVersion(name, changes, services);
    }
 

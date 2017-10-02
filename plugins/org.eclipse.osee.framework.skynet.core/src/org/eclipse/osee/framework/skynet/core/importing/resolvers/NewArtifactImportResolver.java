@@ -54,7 +54,7 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
    }
 
    @Override
-   public Artifact resolve(final RoughArtifact roughArtifact, final BranchId branch, Artifact realParent, Artifact root)  {
+   public Artifact resolve(final RoughArtifact roughArtifact, final BranchId branch, Artifact realParent, Artifact root) {
       ArtifactTypeId artifactType = getArtifactType(roughArtifact);
 
       OseeLog.logf(NewArtifactImportResolver.class, Level.INFO, "New artifact: [%s]. Attributes: [%s]", roughArtifact,

@@ -120,8 +120,8 @@ public class DeleteMultipleAttributesBlam extends AbstractBlam {
    @Override
    public String getDescriptionUsage() {
       return "Deletes attributes that appear multiple times when only a single instance is defined for its type.  " + //
-      "If multiple instances are detected, leaves a single instance on the artifact based on user's selection of " + //
-      "either newest or oldest.";
+         "If multiple instances are detected, leaves a single instance on the artifact based on user's selection of " + //
+         "either newest or oldest.";
    }
 
    @Override

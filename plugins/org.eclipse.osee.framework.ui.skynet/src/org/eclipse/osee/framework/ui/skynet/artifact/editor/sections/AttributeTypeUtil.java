@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
  */
 public class AttributeTypeUtil {
 
-   public static List<AttributeTypeToken> getEmptyTypes(Artifact artifact)  {
+   public static List<AttributeTypeToken> getEmptyTypes(Artifact artifact) {
       List<AttributeTypeToken> items = new ArrayList<>();
       for (AttributeTypeToken type : artifact.getAttributeTypes()) {
          if (CoreAttributeTypes.Name.notEqual(type) && artifact.getAttributes(type).isEmpty()) {
@@ -45,7 +45,7 @@ public class AttributeTypeUtil {
       return types;
    }
 
-   public static List<AttributeTypeToken> getTypesWithData(Artifact artifact)  {
+   public static List<AttributeTypeToken> getTypesWithData(Artifact artifact) {
       List<AttributeTypeToken> items = new ArrayList<>();
 
       List<Attribute<?>> attributeInstances = artifact.getAttributes(artifact.isDeleted());

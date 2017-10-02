@@ -51,7 +51,7 @@ public class SavePointManager {
       return jdbcClient;
    }
 
-   public void storeSavePoints(JdbcConnection connection, int importIdIndex)  {
+   public void storeSavePoints(JdbcConnection connection, int importIdIndex) {
       List<Object[]> data = new ArrayList<>();
       for (SavePoint savePoint : savePoints.values()) {
          int status = 1;
@@ -74,12 +74,12 @@ public class SavePointManager {
 
    }
 
-   public void loadSavePoints(String sourceDatabaseId, Date sourceExportDate)  {
+   public void loadSavePoints(String sourceDatabaseId, Date sourceExportDate) {
       setCurrentSetPointId(LOAD_SAVE_POINT_ID);
       getJdbcClient().runQuery(stmt -> {
          String key = stmt.getString("save_point_name");
          savePoints.put(key, new SavePoint(key));
-      } , QUERY_SAVE_POINTS_FROM_IMPORT_MAP, sourceDatabaseId, new Timestamp(sourceExportDate.getTime()));
+      }, QUERY_SAVE_POINTS_FROM_IMPORT_MAP, sourceDatabaseId, new Timestamp(sourceExportDate.getTime()));
       addCurrentSavePointToProcessed();
    }
 

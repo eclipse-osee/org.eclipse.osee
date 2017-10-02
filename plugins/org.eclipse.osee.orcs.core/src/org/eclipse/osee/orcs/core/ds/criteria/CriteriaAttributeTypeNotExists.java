@@ -33,7 +33,7 @@ public class CriteriaAttributeTypeNotExists extends Criteria {
    }
 
    @Override
-   public void checkValid(Options options)  {
+   public void checkValid(Options options) {
       Conditions.checkNotNull(getTypes(), "attribute types");
    }
 

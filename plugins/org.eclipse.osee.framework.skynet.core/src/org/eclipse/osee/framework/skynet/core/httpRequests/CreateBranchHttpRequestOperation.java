@@ -68,7 +68,7 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
    }
 
    @Override
-   protected void doWork(IProgressMonitor monitor)  {
+   protected void doWork(IProgressMonitor monitor) {
       BranchEndpoint proxy = ServiceUtil.getOseeClient().getBranchEndpoint();
 
       NewBranch data = new NewBranch();

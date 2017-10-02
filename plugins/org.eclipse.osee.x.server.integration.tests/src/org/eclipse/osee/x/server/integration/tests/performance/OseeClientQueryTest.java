@@ -44,7 +44,7 @@ public class OseeClientQueryTest {
    private static OseeClient createClient;
 
    @BeforeClass
-   public static void testSetup()  {
+   public static void testSetup() {
       createClient = IntegrationUtil.createClient();
       if (!createClient.isLocalHost()) {
          throw new OseeStateException("This test should be run with local test server, not %s",
@@ -56,7 +56,7 @@ public class OseeClientQueryTest {
    }
 
    @Test
-   public void searchForAttributeTypeByTokenId()  {
+   public void searchForAttributeTypeByTokenId() {
       final int EXPECTED_RESULTS = 1;
       SearchResult results =
          createClient.createQueryBuilder(COMMON).andIds(SystemUser.OseeSystem).getSearchResult(RequestType.IDS);
@@ -64,7 +64,7 @@ public class OseeClientQueryTest {
    }
 
    @Test
-   public void searchForAttributeTypeByTokenIds()  {
+   public void searchForAttributeTypeByTokenIds() {
       final int EXPECTED_RESULTS = 2;
       SearchResult results =
          createClient.createQueryBuilder(COMMON).andIds(SystemUser.OseeSystem, SystemUser.Anonymous).getSearchResult(
@@ -73,14 +73,14 @@ public class OseeClientQueryTest {
    }
 
    @Test
-   public void searchForArtifactByGuid()  {
+   public void searchForArtifactByGuid() {
       final int EXPECTED_RESULTS = 1;
       SearchResult results = createClient.createQueryBuilder(COMMON).andGuids(GUID1).getSearchResult(RequestType.IDS);
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 
    @Test
-   public void searchForArtifactByGuids()  {
+   public void searchForArtifactByGuids() {
       final int EXPECTED_RESULTS = 2;
       SearchResult results =
          createClient.createQueryBuilder(COMMON).andGuids(GUID1, GUID2).getSearchResult(RequestType.IDS);
@@ -88,7 +88,7 @@ public class OseeClientQueryTest {
    }
 
    @Test
-   public void searchForArtifactByLocalId()  {
+   public void searchForArtifactByLocalId() {
       final int EXPECTED_RESULTS = 1;
       SearchResult results =
          createClient.createQueryBuilder(COMMON).andLocalId(CoreArtifactTokens.UserGroups).getSearchResult(
@@ -97,7 +97,7 @@ public class OseeClientQueryTest {
    }
 
    @Test
-   public void searchForArtifactByName()  {
+   public void searchForArtifactByName() {
       final int EXPECTED_RESULTS = 1;
       SearchResult results =
          createClient.createQueryBuilder(COMMON).andNameEquals("Joe Smith").getSearchResult(RequestType.IDS);
@@ -105,7 +105,7 @@ public class OseeClientQueryTest {
    }
 
    @Test
-   public void searchForArtifactWithActionInName()  {
+   public void searchForArtifactWithActionInName() {
       final int EXPECTED_RESULTS = 45;
       SearchResult results = createClient.createQueryBuilder(COMMON).and(CoreAttributeTypes.Name, "SAW",
          QueryOption.CASE__IGNORE, QueryOption.TOKEN_MATCH_ORDER__MATCH, QueryOption.TOKEN_DELIMITER__ANY,
@@ -114,35 +114,35 @@ public class OseeClientQueryTest {
    }
 
    @Test
-   public void searchForArtifactType()  {
+   public void searchForArtifactType() {
       SearchResult results =
          createClient.createQueryBuilder(SAW_Bld_1).andTypeEquals(Folder).getSearchResult(RequestType.IDS);
       assertTrue(results.getTotal() > 8);
    }
 
    @Test
-   public void searchForArtifactTypes()  {
+   public void searchForArtifactTypes() {
       SearchResult results = createClient.createQueryBuilder(SAW_Bld_1).andTypeEquals(GeneralData, GeneralDocument,
          SoftwareRequirement).getSearchResult(RequestType.IDS);
       assertTrue(results.getTotal() > 24);
    }
 
    @Test
-   public void searchForArtifactTypesIncludeTypeInheritance()  {
+   public void searchForArtifactTypesIncludeTypeInheritance() {
       SearchResult results = createClient.createQueryBuilder(SAW_Bld_1).andIsOfType(GeneralData, GeneralDocument,
          Requirement).getSearchResult(RequestType.IDS);
       assertTrue(results.getTotal() > 150);
    }
 
    @Test
-   public void searchForExistenceOfAttributeType()  {
+   public void searchForExistenceOfAttributeType() {
       final int EXPECTED_RESULTS = 28;
       SearchResult results = createClient.createQueryBuilder(COMMON).andExists(Active).getSearchResult(RequestType.IDS);
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 
    @Test
-   public void searchForExistenceOfAttributeTypeIncludeDeleted()  {
+   public void searchForExistenceOfAttributeTypeIncludeDeleted() {
       final int EXPECTED_RESULTS = 28;
       SearchResult results =
          createClient.createQueryBuilder(COMMON).andExists(Active).includeDeleted().getSearchResult(RequestType.IDS);
@@ -150,7 +150,7 @@ public class OseeClientQueryTest {
    }
 
    @Test
-   public void searchForExistenceOfAttributeTypes()  {
+   public void searchForExistenceOfAttributeTypes() {
       final int EXPECTED_RESULTS = 28;
       SearchResult results =
          createClient.createQueryBuilder(COMMON).andExists(Active, AccessContextId).getSearchResult(RequestType.IDS);

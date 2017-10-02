@@ -59,7 +59,7 @@ public final class BaseToHeadHandler implements IChangeReportUiHandler {
    }
 
    @Override
-   public String getScenarioDescriptionHtml(ChangeUiData changeUiData)  {
+   public String getScenarioDescriptionHtml(ChangeUiData changeUiData) {
       TransactionDelta txDelta = changeUiData.getTxDelta();
       NumberFormat formatter = NumberFormat.getInstance();
       return String.format(

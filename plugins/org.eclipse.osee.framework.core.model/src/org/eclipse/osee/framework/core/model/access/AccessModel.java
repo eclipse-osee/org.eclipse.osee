@@ -18,5 +18,5 @@ import org.eclipse.osee.framework.core.data.IAccessContextId;
  */
 public interface AccessModel {
 
-   void computeAccess(IAccessContextId contextId, Collection<Object> objectsToCheck, AccessData accessData) ;
+   void computeAccess(IAccessContextId contextId, Collection<Object> objectsToCheck, AccessData accessData);
 }

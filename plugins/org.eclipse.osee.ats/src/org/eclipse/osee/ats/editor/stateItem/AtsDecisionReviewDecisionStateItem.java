@@ -47,7 +47,7 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
    }
 
    @Override
-   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, IAtsStateDefinition stateDefinition, Artifact art, boolean isEditable)  {
+   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, IAtsStateDefinition stateDefinition, Artifact art, boolean isEditable) {
       if (art.isOfType(AtsArtifactTypes.DecisionReview) && stateDefinition.getName().equals(
          DecisionReviewState.Decision.getName())) {
          if (xWidget == null) {
@@ -67,7 +67,7 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
    }
 
    @Override
-   public String getOverrideTransitionToStateName(WfeWorkflowSection section)  {
+   public String getOverrideTransitionToStateName(WfeWorkflowSection section) {
       if (isApplicable(section)) {
          if (section.getTransitionToStateCombo() == null || section.getTransitionToStateCombo().getSelected() == null) {
             return null;
@@ -87,7 +87,7 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
             DecisionReviewState.Decision.getName());
    }
 
-   public String getOverrideTransitionToStateName(DecisionReviewArtifact decArt, XComboDam decisionComboDam)  {
+   public String getOverrideTransitionToStateName(DecisionReviewArtifact decArt, XComboDam decisionComboDam) {
       DecisionOption decisionOption = getDecisionOption(decArt, decisionComboDam.get());
       if (decisionOption == null) {
          return null;
@@ -101,7 +101,7 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
    }
 
    @Override
-   public Collection<IAtsUser> getOverrideTransitionToAssignees(AbstractWorkflowArtifact awa, String decision)  {
+   public Collection<IAtsUser> getOverrideTransitionToAssignees(AbstractWorkflowArtifact awa, String decision) {
       if (isApplicable(awa)) {
          DecisionReviewArtifact decArt = (DecisionReviewArtifact) awa;
          return getOverrideTransitionToAssignees(decArt, decision);
@@ -109,7 +109,7 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
       return null;
    }
 
-   public Collection<IAtsUser> getOverrideTransitionToAssignees(DecisionReviewArtifact decArt, String decision)  {
+   public Collection<IAtsUser> getOverrideTransitionToAssignees(DecisionReviewArtifact decArt, String decision) {
       DecisionOption decisionOption = getDecisionOption(decArt, decision);
       if (decisionOption == null) {
          return null;
@@ -122,7 +122,7 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
          DecisionReviewState.Decision.getName());
    }
 
-   private DecisionOption getDecisionOption(DecisionReviewArtifact decRevArt, String decision)  {
+   private DecisionOption getDecisionOption(DecisionReviewArtifact decRevArt, String decision) {
       if (decision.equals("")) {
          return null;
       }

@@ -41,7 +41,7 @@ public final class ServiceDependencyTracker implements Closeable {
       this.serviceBindFactory = factory;
    }
 
-   public void open()  {
+   public void open() {
       Map<Class<?>, ServiceBindType> configuration = handler.getConfiguredDependencies();
       if (configuration != null) {
          for (Entry<Class<?>, ServiceBindType> entry : configuration.entrySet()) {

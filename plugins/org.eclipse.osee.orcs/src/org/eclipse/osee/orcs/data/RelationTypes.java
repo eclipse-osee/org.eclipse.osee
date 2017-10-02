@@ -23,25 +23,25 @@ import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
  */
 public interface RelationTypes extends IdCollection<RelationTypeToken> {
 
-   RelationTypeMultiplicity getMultiplicity(RelationTypeId relation) ;
+   RelationTypeMultiplicity getMultiplicity(RelationTypeId relation);
 
-   IArtifactType getArtifactTypeSideA(IRelationType relation) ;
+   IArtifactType getArtifactTypeSideA(IRelationType relation);
 
-   IArtifactType getArtifactTypeSideB(IRelationType relation) ;
+   IArtifactType getArtifactTypeSideB(IRelationType relation);
 
-   IArtifactType getArtifactType(RelationTypeId relation, RelationSide relationSide) ;
+   IArtifactType getArtifactType(RelationTypeId relation, RelationSide relationSide);
 
-   String getSideName(IRelationType relation, RelationSide relationSide) ;
+   String getSideName(IRelationType relation, RelationSide relationSide);
 
-   boolean isArtifactTypeAllowed(RelationTypeId relation, RelationSide relationSide, IArtifactType artifactType) ;
+   boolean isArtifactTypeAllowed(RelationTypeId relation, RelationSide relationSide, IArtifactType artifactType);
 
-   String getSideAName(IRelationType relation) ;
+   String getSideAName(IRelationType relation);
 
-   String getSideBName(IRelationType relation) ;
+   String getSideBName(IRelationType relation);
 
-   boolean isSideAName(IRelationType relation, String sideName) ;
+   boolean isSideAName(IRelationType relation, String sideName);
 
-   boolean isOrdered(IRelationType relation) ;
+   boolean isOrdered(IRelationType relation);
 
    RelationSorter getDefaultOrderTypeGuid(IRelationType relation);
 }

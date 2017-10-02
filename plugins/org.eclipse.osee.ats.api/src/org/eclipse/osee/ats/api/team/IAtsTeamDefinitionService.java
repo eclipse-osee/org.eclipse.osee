@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 
 public interface IAtsTeamDefinitionService {
 
-   IAtsTeamDefinition getTeamDefinition(IAtsWorkItem workItem) ;
+   IAtsTeamDefinition getTeamDefinition(IAtsWorkItem workItem);
 
    Collection<IAtsVersion> getVersions(IAtsTeamDefinition teamDef);
 

@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class AtsDslUtil {
 
-   public static String getString(WorkDefinitionSheet sheet)  {
+   public static String getString(WorkDefinitionSheet sheet) {
       if (!sheet.getFile().exists()) {
          OseeLog.logf(Activator.class, Level.SEVERE, "WorkDefinition [%s]", sheet);
          return null;

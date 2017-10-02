@@ -50,7 +50,7 @@ public class BranchTypesSqlHandler extends SqlHandler<CriteriaBranchType> {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer)  {
+   public boolean addPredicates(AbstractSqlWriter writer) {
       Collection<BranchType> types = criteria.getTypes();
       if (types.size() > 1) {
          Set<Integer> ids = new HashSet<>();

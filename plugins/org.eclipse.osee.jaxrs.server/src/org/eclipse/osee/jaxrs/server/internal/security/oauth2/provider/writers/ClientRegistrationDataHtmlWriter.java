@@ -48,10 +48,11 @@ public class ClientRegistrationDataHtmlWriter extends AbstractHtmlWriter<ClientR
       model.param(CLIENT_REG_FORM__REGISTRATION_DECISION_ACCEPT,
          ClientConstants.CLIENT_REGISTRATION__DECISION_REGISTER);
       model.param(CLIENT_REG_FORM__REGISTRATION_DECISION_CANCEL, ClientConstants.CLIENT_REGISTRATION__DECISION_CANCEL);
-      model.param(CLIENT_REG_FORM__HIDDEN_FIELDS_SECTION_TAG, HiddenFormFields.newForm() //
-      .add(CLIENT_REGISTRATION__APPLICATION_GUID, data.getClientGuid()) //
-      .add(OAuthConstants.SESSION_AUTHENTICITY_TOKEN, data.getAuthenticityToken())//
-      .build());
+      model.param(CLIENT_REG_FORM__HIDDEN_FIELDS_SECTION_TAG,
+         HiddenFormFields.newForm() //
+            .add(CLIENT_REGISTRATION__APPLICATION_GUID, data.getClientGuid()) //
+            .add(OAuthConstants.SESSION_AUTHENTICITY_TOKEN, data.getAuthenticityToken())//
+            .build());
       return model;
    }
 }

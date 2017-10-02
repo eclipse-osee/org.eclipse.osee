@@ -32,8 +32,8 @@ public class ProgramColumnUI extends XViewerAtsColumn implements IXViewerValueCo
    }
 
    private ProgramColumnUI() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".program", "Program", 80, XViewerAlign.Left, false, SortDataType.String,
-         false, "Program specified by related Work Package.  (I) if inherited from parent.");
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".program", "Program", 80, XViewerAlign.Left, false,
+         SortDataType.String, false, "Program specified by related Work Package.  (I) if inherited from parent.");
    }
 
    /**

@@ -27,7 +27,7 @@ public class ArtifactTypeCacheTest extends AbstractOseeTypeCacheTest<ArtifactTyp
    private static ArtifactTypeCache artCache;
 
    @BeforeClass
-   public static void prepareTestData()  {
+   public static void prepareTestData() {
       artifactTypes = new ArrayList<>();
       artCache = new ArtifactTypeCache();
 

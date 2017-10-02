@@ -18,6 +18,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
  */
 public interface IAtsTeamWorkflowProvider {
 
-   Collection<IAtsTeamWorkflow> getTeamWorkflows() ;
+   Collection<IAtsTeamWorkflow> getTeamWorkflows();
 
 }

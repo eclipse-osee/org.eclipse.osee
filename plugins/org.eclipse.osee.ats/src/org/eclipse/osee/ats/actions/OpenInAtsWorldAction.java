@@ -34,7 +34,7 @@ public class OpenInAtsWorldAction extends AbstractAtsAction {
    }
 
    @Override
-   public void runWithException()  {
+   public void runWithException() {
       ActionArtifact actionArt = sma.getParentActionArtifact();
       if (actionArt != null) {
          WorldEditor.open(

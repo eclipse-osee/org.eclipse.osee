@@ -17,10 +17,10 @@ import java.util.Set;
  */
 public interface KeyValueDataAccessor {
 
-   Set<String> getKeys() ;
+   Set<String> getKeys();
 
-   String getValue(String key) ;
+   String getValue(String key);
 
-   boolean putValue(String key, String value) ;
+   boolean putValue(String key, String value);
 
 }

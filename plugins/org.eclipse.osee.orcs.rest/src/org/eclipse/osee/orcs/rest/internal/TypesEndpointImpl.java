@@ -136,7 +136,7 @@ public class TypesEndpointImpl implements TypesEndpoint {
       }
 
       @Override
-      public InputStream getContent()  {
+      public InputStream getContent() {
          return new ByteArrayInputStream(bytes);
       }
 

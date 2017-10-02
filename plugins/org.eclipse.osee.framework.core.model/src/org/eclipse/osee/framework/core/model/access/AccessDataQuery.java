@@ -36,12 +36,12 @@ public class AccessDataQuery {
       return accessData.toString();
    }
 
-   public void branchMatches(PermissionEnum permissionToMatch, BranchId branchToMatch, PermissionStatus permissionStatus)  {
+   public void branchMatches(PermissionEnum permissionToMatch, BranchId branchToMatch, PermissionStatus permissionStatus) {
       Collection<AccessDetail<?>> branchAccessDetails = accessData.getAccess(branchToMatch);
       setTypePermissionStatus(permissionStatus, permissionToMatch, branchAccessDetails, branchToMatch);
    }
 
-   public void branchArtifactTypeMatches(PermissionEnum permissionToMatch, BranchId branchToMatch, ArtifactTypeId artifactType, PermissionStatus permissionStatus)  {
+   public void branchArtifactTypeMatches(PermissionEnum permissionToMatch, BranchId branchToMatch, ArtifactTypeId artifactType, PermissionStatus permissionStatus) {
       branchMatches(permissionToMatch, branchToMatch, permissionStatus);
       if (permissionStatus.matched()) {
          Collection<AccessDetail<?>> branchAccessDetails = accessData.getAccess(branchToMatch);
@@ -49,7 +49,7 @@ public class AccessDataQuery {
       }
    }
 
-   public void artifactTypeMatches(PermissionEnum permissionToMatch, ArtifactToken artifact, PermissionStatus permissionStatus)  {
+   public void artifactTypeMatches(PermissionEnum permissionToMatch, ArtifactToken artifact, PermissionStatus permissionStatus) {
       IArtifactType typeToMatch = artifact.getArtifactType();
       BranchId branchToMatch = artifact.getBranch();
       branchArtifactTypeMatches(permissionToMatch, branchToMatch, typeToMatch, permissionStatus);
@@ -59,7 +59,7 @@ public class AccessDataQuery {
       }
    }
 
-   public void artifactMatches(PermissionEnum permissionToMatch, ArtifactToken artifact, PermissionStatus permissionStatus)  {
+   public void artifactMatches(PermissionEnum permissionToMatch, ArtifactToken artifact, PermissionStatus permissionStatus) {
       BranchId branchToMatch = artifact.getBranch();
       branchMatches(permissionToMatch, branchToMatch, permissionStatus);
       if (permissionStatus.matched()) {
@@ -107,7 +107,7 @@ public class AccessDataQuery {
       }
    }
 
-   public void attributeTypeMatches(PermissionEnum permissionToMatch, ArtifactToken artifact, final AttributeTypeId attributeType, PermissionStatus permissionStatus)  {
+   public void attributeTypeMatches(PermissionEnum permissionToMatch, ArtifactToken artifact, final AttributeTypeId attributeType, PermissionStatus permissionStatus) {
       artifactMatches(permissionToMatch, artifact, permissionStatus);
       if (permissionStatus.matched()) {
          Collection<AccessDetail<?>> branchAccessDetails = accessData.getAccess(artifact.getBranch());
@@ -123,7 +123,7 @@ public class AccessDataQuery {
       }
    }
 
-   public void relationTypeMatches(PermissionEnum permissionToMatch, ArtifactToken artifact, RelationTypeSide relationTypeSide, PermissionStatus permissionStatus)  {
+   public void relationTypeMatches(PermissionEnum permissionToMatch, ArtifactToken artifact, RelationTypeSide relationTypeSide, PermissionStatus permissionStatus) {
       BranchId branchToMatch = artifact.getBranch();
       branchMatches(permissionToMatch, branchToMatch, permissionStatus);
       if (permissionStatus.matched()) {
@@ -134,7 +134,7 @@ public class AccessDataQuery {
       }
    }
 
-   public boolean matchesAll(PermissionEnum permissionToMatch)  {
+   public boolean matchesAll(PermissionEnum permissionToMatch) {
       PermissionStatus permissionStatus = new PermissionStatus();
       for (Object objectKey : accessData.keySet()) {
          if (objectKey instanceof ArtifactToken) {

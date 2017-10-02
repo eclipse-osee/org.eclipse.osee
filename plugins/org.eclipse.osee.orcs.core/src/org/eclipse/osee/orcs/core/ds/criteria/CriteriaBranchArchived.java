@@ -33,7 +33,7 @@ public class CriteriaBranchArchived extends Criteria implements BranchCriteria {
    }
 
    @Override
-   public void checkValid(Options options)  {
+   public void checkValid(Options options) {
       Conditions.checkNotNullOrEmpty(getStates(), "branch archived state");
    }
 

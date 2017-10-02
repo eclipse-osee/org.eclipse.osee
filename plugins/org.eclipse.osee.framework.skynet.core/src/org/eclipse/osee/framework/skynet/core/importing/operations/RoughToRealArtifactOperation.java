@@ -100,7 +100,7 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
       }
    }
 
-   private Artifact createArtifact(IProgressMonitor monitor, RoughArtifact roughArtifact, Artifact realParent)  {
+   private Artifact createArtifact(IProgressMonitor monitor, RoughArtifact roughArtifact, Artifact realParent) {
       Artifact realArtifact = roughToRealArtifact.get(roughArtifact);
       if (realArtifact != null) {
          return realArtifact;
@@ -128,14 +128,14 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
       return realArtifact;
    }
 
-   private void removeOtherParent(Artifact child, Artifact parent)  {
+   private void removeOtherParent(Artifact child, Artifact parent) {
       if (hasDifferentParent(child, parent)) {
          child.deleteRelations(CoreRelationTypes.Default_Hierarchical__Parent);
          child.persist(transaction);
       }
    }
 
-   private boolean hasDifferentParent(Artifact art, Artifact parent)  {
+   private boolean hasDifferentParent(Artifact art, Artifact parent) {
       return art.hasParent() && !art.getParent().equals(parent);
    }
 
@@ -152,7 +152,7 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
       return returnValue;
    }
 
-   private void createRelation(IProgressMonitor monitor, RoughRelation roughRelation)  {
+   private void createRelation(IProgressMonitor monitor, RoughRelation roughRelation) {
       RelationType relationType = RelationTypeManager.getType(roughRelation.getRelationTypeName());
       Artifact aArt = ArtifactQuery.getArtifactFromId(roughRelation.getAartifactGuid(), transaction.getBranch());
       Artifact bArt = ArtifactQuery.getArtifactFromId(roughRelation.getBartifactGuid(), transaction.getBranch());

@@ -37,7 +37,7 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
       this.branch = branch;
    }
 
-   private void writeSelectHelper()  {
+   private void writeSelectHelper() {
       String txAlias = getLastAlias(TableEnum.TXS_TABLE, ObjectType.ARTIFACT);
       String artAlias = getLastAlias(TableEnum.ARTIFACT_TABLE);
 
@@ -50,7 +50,7 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public void writeSelect(Iterable<SqlHandler<?>> handlers)  {
+   public void writeSelect(Iterable<SqlHandler<?>> handlers) {
       if (isCountQueryType()) {
          if (OptionsUtil.isHistorical(getOptions())) {
             write("SELECT count(xTable.art_id) FROM (\n ");
@@ -65,7 +65,7 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public void writeGroupAndOrder()  {
+   public void writeGroupAndOrder() {
       if (!isCountQueryType()) {
          String txAlias = getLastAlias(TableEnum.TXS_TABLE, ObjectType.ARTIFACT);
          String artAlias = getLastAlias(TableEnum.ARTIFACT_TABLE);
@@ -134,7 +134,7 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
    }
 
    @Override
-   public String getWithClauseTxBranchFilter(String txsAlias, boolean deletedPredicate)  {
+   public String getWithClauseTxBranchFilter(String txsAlias, boolean deletedPredicate) {
       StringBuilder sb = new StringBuilder();
 
       if (deletedPredicate) {

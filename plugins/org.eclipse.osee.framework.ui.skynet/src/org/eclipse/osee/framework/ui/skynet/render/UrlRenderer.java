@@ -82,7 +82,7 @@ public class UrlRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public void open(final List<Artifact> artifacts, PresentationType presentationType)  {
+   public void open(final List<Artifact> artifacts, PresentationType presentationType) {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {

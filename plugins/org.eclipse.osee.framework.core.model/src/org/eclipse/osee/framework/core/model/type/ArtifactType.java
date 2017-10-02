@@ -64,7 +64,7 @@ public class ArtifactType extends AbstractOseeIdType implements IArtifactType {
       return getFieldValueLogException(defaultValue, ARTIFACT_INHERITANCE_FIELD_KEY);
    }
 
-   public void setSuperTypes(Set<ArtifactType> superType)  {
+   public void setSuperTypes(Set<ArtifactType> superType) {
       Set<ArtifactType> originals = new HashSet<>(superTypes);
       setField(ARTIFACT_INHERITANCE_FIELD_KEY, superType);
       for (ArtifactType supers : superType) {
@@ -77,21 +77,21 @@ public class ArtifactType extends AbstractOseeIdType implements IArtifactType {
       }
    }
 
-   public Collection<ArtifactType> getFirstLevelDescendantTypes()  {
+   public Collection<ArtifactType> getFirstLevelDescendantTypes() {
       return getDescendants(this, false);
    }
 
-   public Collection<ArtifactType> getAllDescendantTypes()  {
+   public Collection<ArtifactType> getAllDescendantTypes() {
       return getDescendants(this, true);
    }
 
-   private Collection<ArtifactType> getDescendants(ArtifactType artifactType, boolean isRecursionAllowed)  {
+   private Collection<ArtifactType> getDescendants(ArtifactType artifactType, boolean isRecursionAllowed) {
       Collection<ArtifactType> descendants = new HashSet<>();
       populateDescendants(artifactType, descendants, isRecursionAllowed);
       return descendants;
    }
 
-   private void populateDescendants(ArtifactType artifactType, Collection<ArtifactType> descendants, boolean isRecursionAllowed)  {
+   private void populateDescendants(ArtifactType artifactType, Collection<ArtifactType> descendants, boolean isRecursionAllowed) {
       for (ArtifactType type : artifactType.childTypes) {
          if (isRecursionAllowed) {
             populateDescendants(type, descendants, isRecursionAllowed);
@@ -100,32 +100,32 @@ public class ArtifactType extends AbstractOseeIdType implements IArtifactType {
       }
    }
 
-   public void setAttributeTypes(Collection<AttributeType> attributeTypes, BranchId branch)  {
+   public void setAttributeTypes(Collection<AttributeType> attributeTypes, BranchId branch) {
       IOseeField<?> field = getField(ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY);
       ((ArtifactTypeAttributesField) field).put(branch, attributeTypes);
    }
 
-   public void setAllAttributeTypes(Map<BranchId, Collection<AttributeType>> attributeTypes)  {
+   public void setAllAttributeTypes(Map<BranchId, Collection<AttributeType>> attributeTypes) {
       IOseeField<?> field = getField(ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY);
       ((ArtifactTypeAttributesField) field).set(attributeTypes);
    }
 
-   public boolean isValidAttributeType(AttributeTypeId attributeType, Branch branch)  {
+   public boolean isValidAttributeType(AttributeTypeId attributeType, Branch branch) {
       return getAttributeTypes(branch).contains(attributeType);
    }
 
-   public Map<BranchId, Collection<AttributeType>> getLocalAttributeTypes()  {
+   public Map<BranchId, Collection<AttributeType>> getLocalAttributeTypes() {
       return getFieldValue(ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY);
    }
 
-   public Collection<AttributeTypeToken> getAttributeTypes(Branch branch)  {
+   public Collection<AttributeTypeToken> getAttributeTypes(Branch branch) {
       // Do not use ARTIFACT_TYPE_ATTRIBUTES_FIELD for this call since it must use branch inheritance to get all attribute types
       Set<AttributeTypeToken> attributeTypes = new HashSet<>();
       getAttributeTypes(attributeTypes, this, branch);
       return attributeTypes;
    }
 
-   private static void getAttributeTypes(Set<AttributeTypeToken> attributeTypes, ArtifactType artifactType, Branch branch)  {
+   private static void getAttributeTypes(Set<AttributeTypeToken> attributeTypes, ArtifactType artifactType, Branch branch) {
       Map<BranchId, Collection<AttributeType>> validityMap = artifactType.getLocalAttributeTypes();
 
       if (!validityMap.isEmpty()) {

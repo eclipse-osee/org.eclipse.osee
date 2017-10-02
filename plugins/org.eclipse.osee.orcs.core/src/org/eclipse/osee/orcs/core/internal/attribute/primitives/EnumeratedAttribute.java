@@ -21,7 +21,7 @@ public class EnumeratedAttribute extends StringAttribute {
    public static final String NAME = EnumeratedAttribute.class.getSimpleName();
 
    @Override
-   public String getDisplayableString()  {
+   public String getDisplayableString() {
       String toDisplay = getDataProxy().getDisplayableString();
       return Strings.isValid(toDisplay) ? toDisplay : "<Select>";
    }

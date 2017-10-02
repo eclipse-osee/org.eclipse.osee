@@ -55,14 +55,14 @@ public class OseeCoreException extends RuntimeException {
       return message;
    }
 
-   public static RuntimeException wrap(Throwable throwable)  {
+   public static RuntimeException wrap(Throwable throwable) {
       if (throwable instanceof RuntimeException) {
          return (RuntimeException) throwable;
       }
       return new OseeCoreException(throwable);
    }
 
-   public static void wrapAndThrow(Throwable throwable)  {
+   public static void wrapAndThrow(Throwable throwable) {
       throw wrap(throwable);
    }
 }

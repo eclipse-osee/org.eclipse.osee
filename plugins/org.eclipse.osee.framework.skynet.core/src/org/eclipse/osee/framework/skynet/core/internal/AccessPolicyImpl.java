@@ -44,7 +44,7 @@ public class AccessPolicyImpl implements AccessPolicy {
       this.service = service;
    }
 
-   private User getCurrentUser()  {
+   private User getCurrentUser() {
       return UserManager.getUser();
    }
 
@@ -71,7 +71,7 @@ public class AccessPolicyImpl implements AccessPolicy {
    }
 
    @Override
-   public void removePermissions(BranchId branch)  {
+   public void removePermissions(BranchId branch) {
       getAccessService().removePermissions(branch);
    }
 
@@ -87,7 +87,7 @@ public class AccessPolicyImpl implements AccessPolicy {
    }
 
    @Override
-   public PermissionStatus hasBranchPermission(BranchId branch, PermissionEnum permission, Level level)  {
+   public PermissionStatus hasBranchPermission(BranchId branch, PermissionEnum permission, Level level) {
       User currentUser = getCurrentUser();
       AccessDataQuery query = getAccessService().getAccessData(currentUser, java.util.Collections.singleton(branch));
       PermissionStatus permissionStatus = null;
@@ -106,7 +106,7 @@ public class AccessPolicyImpl implements AccessPolicy {
     * others will write to the log.
     */
    @Override
-   public PermissionStatus hasAttributeTypePermission(Collection<? extends ArtifactToken> artifacts, AttributeTypeId attributeType, PermissionEnum permission, Level level)  {
+   public PermissionStatus hasAttributeTypePermission(Collection<? extends ArtifactToken> artifacts, AttributeTypeId attributeType, PermissionEnum permission, Level level) {
       User currentUser = getCurrentUser();
       AccessDataQuery query = getAccessService().getAccessData(currentUser, artifacts);
 
@@ -130,7 +130,7 @@ public class AccessPolicyImpl implements AccessPolicy {
    }
 
    @Override
-   public PermissionStatus hasArtifactPermission(Collection<Artifact> artifacts, PermissionEnum permission, Level level)  {
+   public PermissionStatus hasArtifactPermission(Collection<Artifact> artifacts, PermissionEnum permission, Level level) {
       User currentUser = getCurrentUser();
       AccessDataQuery query = getAccessService().getAccessData(currentUser, artifacts);
 
@@ -155,7 +155,7 @@ public class AccessPolicyImpl implements AccessPolicy {
    }
 
    @Override
-   public PermissionStatus hasArtifactTypePermission(BranchId branch, Collection<? extends ArtifactTypeId> artifactTypes, PermissionEnum permission, Level level)  {
+   public PermissionStatus hasArtifactTypePermission(BranchId branch, Collection<? extends ArtifactTypeId> artifactTypes, PermissionEnum permission, Level level) {
       User currentUser = getCurrentUser();
       AccessDataQuery query = getAccessService().getAccessData(currentUser, java.util.Collections.singleton(branch));
 
@@ -179,7 +179,7 @@ public class AccessPolicyImpl implements AccessPolicy {
    }
 
    @Override
-   public PermissionStatus canRelationBeModified(Artifact subject, Collection<Artifact> toBeRelated, RelationTypeSide relationTypeSide, Level level)  {
+   public PermissionStatus canRelationBeModified(Artifact subject, Collection<Artifact> toBeRelated, RelationTypeSide relationTypeSide, Level level) {
       PermissionStatus subjectPermission = canRelationBeModifiedHelper(subject, null, relationTypeSide, level);
       if (subjectPermission.matched() && toBeRelated != null && !toBeRelated.isEmpty()) {
          for (Artifact art : toBeRelated) {
@@ -194,7 +194,7 @@ public class AccessPolicyImpl implements AccessPolicy {
       return subjectPermission;
    }
 
-   private PermissionStatus canRelationBeModifiedHelper(Artifact subject, Collection<Artifact> toBeRelated, RelationTypeSide relationTypeSide, Level level)  {
+   private PermissionStatus canRelationBeModifiedHelper(Artifact subject, Collection<Artifact> toBeRelated, RelationTypeSide relationTypeSide, Level level) {
       PermissionStatus status = hasArtifactRelationPermission(java.util.Collections.singleton(subject),
          java.util.Collections.singleton(relationTypeSide), PermissionEnum.WRITE, level);
 
@@ -209,7 +209,7 @@ public class AccessPolicyImpl implements AccessPolicy {
       return status;
    }
 
-   private PermissionStatus hasArtifactRelationPermission(Collection<? extends ArtifactToken> artifacts, Collection<? extends RelationTypeSide> relationTypeSides, PermissionEnum permission, Level level)  {
+   private PermissionStatus hasArtifactRelationPermission(Collection<? extends ArtifactToken> artifacts, Collection<? extends RelationTypeSide> relationTypeSides, PermissionEnum permission, Level level) {
       AccessDataQuery query = getAccessService().getAccessData(getCurrentUser(), artifacts);
 
       PermissionStatus permissionStatus = null;

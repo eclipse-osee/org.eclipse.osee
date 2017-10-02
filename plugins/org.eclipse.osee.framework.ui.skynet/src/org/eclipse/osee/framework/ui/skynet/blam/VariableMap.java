@@ -34,11 +34,11 @@ public class VariableMap {
       // provides a constructor that does not throw OseeArgumentException
    }
 
-   public VariableMap(Object... optionArgs)  {
+   public VariableMap(Object... optionArgs) {
       setValues(optionArgs);
    }
 
-   public void setValues(Object... optionArgs)  {
+   public void setValues(Object... optionArgs) {
       for (int i = 0; i < optionArgs.length; i += 2) {
          Object object = optionArgs[i];
          if (object instanceof String) {
@@ -66,11 +66,11 @@ public class VariableMap {
       variableMap.put(variableName, value);
    }
 
-   public IArtifactType getArtifactType(String parameterName)  {
+   public IArtifactType getArtifactType(String parameterName) {
       return getSingleCollectionValue(ArtifactType.class, parameterName);
    }
 
-   public List<IArtifactType> getArtifactTypes(String parameterName)  {
+   public List<IArtifactType> getArtifactTypes(String parameterName) {
       Collection<IArtifactType> artTypes = getCollection(IArtifactType.class, parameterName);
       if (artTypes == null) {
          return new ArrayList<IArtifactType>();
@@ -78,7 +78,7 @@ public class VariableMap {
       return new ArrayList<IArtifactType>(artTypes);
    }
 
-   public Artifact getArtifact(String parameterName)  {
+   public Artifact getArtifact(String parameterName) {
       Object object = variableMap.get(parameterName);
       if (object instanceof Artifact) {
          return (Artifact) object;
@@ -86,11 +86,11 @@ public class VariableMap {
       return getSingleCollectionValue(Artifact.class, parameterName);
    }
 
-   public AttributeType getAttributeType(String parameterName)  {
+   public AttributeType getAttributeType(String parameterName) {
       return getSingleCollectionValue(AttributeType.class, parameterName);
    }
 
-   public List<AttributeType> getAttributeTypes(String parameterName)  {
+   public List<AttributeType> getAttributeTypes(String parameterName) {
       Collection<AttributeType> attrTypes = getCollection(AttributeType.class, parameterName);
       if (attrTypes == null) {
          return new ArrayList<AttributeType>();
@@ -98,21 +98,21 @@ public class VariableMap {
       return new ArrayList<AttributeType>(attrTypes);
    }
 
-   public String getString(String parameterName)  {
+   public String getString(String parameterName) {
       return getValue(String.class, parameterName);
    }
 
-   public BranchId getBranch(String parameterName)  {
+   public BranchId getBranch(String parameterName) {
       return getValue(BranchId.class, parameterName);
    }
 
-   public boolean getBoolean(String parameterName)  {
+   public boolean getBoolean(String parameterName) {
       Boolean value = getValue(Boolean.class, parameterName);
       return value != null ? value : false;
    }
 
    @SuppressWarnings("unchecked")
-   public <T> Collection<T> getCollection(Class<T> clazz, String parameterName)  {
+   public <T> Collection<T> getCollection(Class<T> clazz, String parameterName) {
       List<T> results = new ArrayList<>();
       Collection<T> collection = getValue(Collection.class, parameterName);
 
@@ -126,11 +126,11 @@ public class VariableMap {
       return results;
    }
 
-   public User getUser(String parameterName)  {
+   public User getUser(String parameterName) {
       return getValue(User.class, parameterName);
    }
 
-   public List<Artifact> getArtifacts(String parameterName)  {
+   public List<Artifact> getArtifacts(String parameterName) {
       Collection<Artifact> artiafcts = getCollection(Artifact.class, parameterName);
       if (artiafcts == null) {
          return new ArrayList<Artifact>();
@@ -138,7 +138,7 @@ public class VariableMap {
       return new ArrayList<Artifact>(artiafcts);
    }
 
-   private <T> T getSingleCollectionValue(Class<T> clazz, String parameterName)  {
+   private <T> T getSingleCollectionValue(Class<T> clazz, String parameterName) {
       Collection<T> objects = getCollection(clazz, parameterName);
       if (objects.size() != 1) {
          throw new OseeArgumentException("Require a collection of size 1 not %d", objects.size());
@@ -146,7 +146,7 @@ public class VariableMap {
       return objects.iterator().next();
    }
 
-   private <T> T getValue(Class<T> clazz, String variableName)  {
+   private <T> T getValue(Class<T> clazz, String variableName) {
       Object value = variableMap.get(variableName);
 
       if (value != null && !clazz.isInstance(value)) {

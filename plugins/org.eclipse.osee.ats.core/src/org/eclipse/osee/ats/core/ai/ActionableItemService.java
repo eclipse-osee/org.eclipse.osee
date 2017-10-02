@@ -68,7 +68,7 @@ public class ActionableItemService implements IAtsActionableItemService {
    }
 
    @Override
-   public Set<IAtsActionableItem> getActionableItems(IAtsObject atsObject)  {
+   public Set<IAtsActionableItem> getActionableItems(IAtsObject atsObject) {
       Set<IAtsActionableItem> ais = new HashSet<>();
       if (!atsStoreService.isDeleted(atsObject)) {
          for (ArtifactId id : getActionableItemIds(atsObject)) {
@@ -86,7 +86,7 @@ public class ActionableItemService implements IAtsActionableItemService {
    }
 
    @Override
-   public String getActionableItemsStr(IAtsObject atsObject)  {
+   public String getActionableItemsStr(IAtsObject atsObject) {
       return AtsObjects.toString("; ", getActionableItems(atsObject));
    }
 
@@ -96,19 +96,19 @@ public class ActionableItemService implements IAtsActionableItemService {
    }
 
    @Override
-   public void addActionableItem(IAtsObject atsObject, IAtsActionableItem aia, IAtsChangeSet changes)  {
+   public void addActionableItem(IAtsObject atsObject, IAtsActionableItem aia, IAtsChangeSet changes) {
       if (!getActionableItemIds(atsObject).contains(atsObject)) {
          changes.addAttribute(atsObject, AtsAttributeTypes.ActionableItemReference, aia.getStoreObject());
       }
    }
 
    @Override
-   public void removeActionableItem(IAtsObject atsObject, IAtsActionableItem aia, IAtsChangeSet changes)  {
+   public void removeActionableItem(IAtsObject atsObject, IAtsActionableItem aia, IAtsChangeSet changes) {
       changes.deleteAttribute(atsObject, AtsAttributeTypes.ActionableItemReference, aia.getStoreObject());
    }
 
    @Override
-   public Result setActionableItems(IAtsObject atsObject, Collection<IAtsActionableItem> newItems, IAtsChangeSet changes)  {
+   public Result setActionableItems(IAtsObject atsObject, Collection<IAtsActionableItem> newItems, IAtsChangeSet changes) {
       Set<IAtsActionableItem> existingAias = getActionableItems(atsObject);
 
       // Remove non-selected items

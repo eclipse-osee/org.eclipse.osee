@@ -88,7 +88,7 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
    }
 
    @Override
-   protected Integer handleTxWork(JdbcConnection connection)  {
+   protected Integer handleTxWork(JdbcConnection connection) {
       Conditions.checkNotNull(txIdsToDelete, "transaction ids to delete");
       Conditions.checkExpressionFailOnTrue(txIdsToDelete.isEmpty(), "transaction ids to delete cannot be empty");
 
@@ -138,7 +138,7 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
       return purgeCount;
    }
 
-   private void computeNewTxCurrents(JdbcConnection connection, Collection<Object[]> updateData, String itemId, String tableName, Map<BranchId, IdJoinQuery> affected)  {
+   private void computeNewTxCurrents(JdbcConnection connection, Collection<Object[]> updateData, String itemId, String tableName, Map<BranchId, IdJoinQuery> affected) {
       String query = String.format(FIND_NEW_TX_CURRENTS, tableName, itemId);
 
       for (Entry<BranchId, IdJoinQuery> entry : affected.entrySet()) {
@@ -163,7 +163,7 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
       }
    }
 
-   private Map<BranchId, IdJoinQuery> findAffectedItems(JdbcConnection connection, String itemId, String itemTable, List<Object[]> bindDataList)  {
+   private Map<BranchId, IdJoinQuery> findAffectedItems(JdbcConnection connection, String itemId, String itemTable, List<Object[]> bindDataList) {
       Map<BranchId, IdJoinQuery> items = new HashMap<>();
       JdbcStatement statement = getJdbcClient().getStatement(connection);
 
@@ -187,7 +187,7 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
       return items;
    }
 
-   private void setChildBranchBaselineTxs(JdbcConnection connection, TransactionId toDeleteTransactionId, TransactionId previousTransactionId)  {
+   private void setChildBranchBaselineTxs(JdbcConnection connection, TransactionId toDeleteTransactionId, TransactionId previousTransactionId) {
       List<Object[]> data = new ArrayList<>();
       if (previousTransactionId.isValid()) {
          data.add(new Object[] {

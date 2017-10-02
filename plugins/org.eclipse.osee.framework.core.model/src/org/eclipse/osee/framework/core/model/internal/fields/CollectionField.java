@@ -32,7 +32,7 @@ public class CollectionField<T> extends AbstractOseeField<Collection<T>> {
    }
 
    @Override
-   public void set(Collection<T> input)  {
+   public void set(Collection<T> input) {
       Collection<T> checked = checkInput(input);
       boolean isDifferent = Compare.isDifferent(get(), checked);
       if (isDifferent) {
@@ -43,7 +43,7 @@ public class CollectionField<T> extends AbstractOseeField<Collection<T>> {
    }
 
    //OseeCoreException is thrown by inherited class
-   protected Collection<T> checkInput(Collection<T> input)  {
+   protected Collection<T> checkInput(Collection<T> input) {
       return input;
    }
 

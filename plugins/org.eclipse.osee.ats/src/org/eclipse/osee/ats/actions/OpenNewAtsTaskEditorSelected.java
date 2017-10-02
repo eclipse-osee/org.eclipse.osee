@@ -34,13 +34,13 @@ public class OpenNewAtsTaskEditorSelected extends AbstractAtsAction {
    }
 
    public interface IOpenNewAtsTaskEditorSelectedHandler {
-      CustomizeData getCustomizeDataCopy() ;
+      CustomizeData getCustomizeDataCopy();
 
-      List<Artifact> getSelectedArtifacts() ;
+      List<Artifact> getSelectedArtifacts();
    }
 
    @Override
-   public void runWithException()  {
+   public void runWithException() {
       if (openNewAtsTaskEditorSelectedHandler.getSelectedArtifacts().isEmpty()) {
          AWorkbench.popup("ERROR", "Select items to open");
          return;

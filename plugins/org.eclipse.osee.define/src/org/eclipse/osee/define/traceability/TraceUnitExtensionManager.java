@@ -51,22 +51,22 @@ public class TraceUnitExtensionManager {
       return instance;
    }
 
-   public Set<String> getTraceUnitHandlerIds()  {
+   public Set<String> getTraceUnitHandlerIds() {
       checkObjectsLoaded();
       return contributions.keySet();
    }
 
-   public Collection<TraceHandler> getAllTraceHandlers()  {
+   public Collection<TraceHandler> getAllTraceHandlers() {
       checkObjectsLoaded();
       return contributions.values();
    }
 
-   public TraceHandler getTraceUnitHandlerById(String id)  {
+   public TraceHandler getTraceUnitHandlerById(String id) {
       checkObjectsLoaded();
       return contributions.get(id);
    }
 
-   public TraceHandler getTraceHandlerByName(String name)  {
+   public TraceHandler getTraceHandlerByName(String name) {
       checkObjectsLoaded();
       TraceHandler toReturn = null;
       for (TraceHandler handler : getAllTraceHandlers()) {
@@ -78,7 +78,7 @@ public class TraceUnitExtensionManager {
       return toReturn;
    }
 
-   public ITraceParser getTraceParserById(String id)  {
+   public ITraceParser getTraceParserById(String id) {
       TraceHandler traceUnitHandler = getTraceUnitHandlerById(id);
       if (traceUnitHandler != null) {
          return traceUnitHandler.getParser();
@@ -86,7 +86,7 @@ public class TraceUnitExtensionManager {
       return null;
    }
 
-   public ITraceUnitResourceLocator getTraceUnitLocatorById(String id)  {
+   public ITraceUnitResourceLocator getTraceUnitLocatorById(String id) {
       TraceHandler traceUnitHandler = getTraceUnitHandlerById(id);
       if (traceUnitHandler != null) {
          return traceUnitHandler.getLocator();
@@ -94,7 +94,7 @@ public class TraceUnitExtensionManager {
       return null;
    }
 
-   public List<String> getAllTraceHandlerNames()  {
+   public List<String> getAllTraceHandlerNames() {
       List<String> handlerNames = new LinkedList<>();
       for (TraceHandler handler : getAllTraceHandlers()) {
          handlerNames.add(handler.getName());
@@ -102,7 +102,7 @@ public class TraceUnitExtensionManager {
       return handlerNames;
    }
 
-   public Collection<ITraceParser> getAllTraceParsers()  {
+   public Collection<ITraceParser> getAllTraceParsers() {
       checkObjectsLoaded();
       Set<ITraceParser> parsers = new HashSet<>();
       for (TraceHandler traceHandler : contributions.values()) {
@@ -114,7 +114,7 @@ public class TraceUnitExtensionManager {
       return parsers;
    }
 
-   public Collection<ITraceUnitResourceLocator> getAllTraceUnitLocators()  {
+   public Collection<ITraceUnitResourceLocator> getAllTraceUnitLocators() {
       checkObjectsLoaded();
       Set<ITraceUnitResourceLocator> locators = new HashSet<>();
       for (TraceHandler traceHandler : contributions.values()) {
@@ -126,7 +126,7 @@ public class TraceUnitExtensionManager {
       return locators;
    }
 
-   private void checkObjectsLoaded()  {
+   private void checkObjectsLoaded() {
       if (contributions.isEmpty()) {
          List<IConfigurationElement> elements =
             ExtensionPoints.getExtensionElements(Activator.PLUGIN_ID + "." + TRACE_UNIT_HANDLER, TRACE_UNIT_HANDLER);
@@ -147,7 +147,7 @@ public class TraceUnitExtensionManager {
       }
    }
 
-   private Object loadClass(String bundleName, String className)  {
+   private Object loadClass(String bundleName, String className) {
       Object object = null;
       if (Strings.isValid(bundleName) && Strings.isValid(className)) {
          try {

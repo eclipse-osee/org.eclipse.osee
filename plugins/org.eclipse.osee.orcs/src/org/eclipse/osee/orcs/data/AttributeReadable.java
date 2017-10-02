@@ -27,14 +27,14 @@ public interface AttributeReadable<T> extends OrcsReadable, IAttribute<T> {
    ModificationType getModificationType();
 
    @Override
-   AttributeTypeToken getAttributeType() ;
+   AttributeTypeToken getAttributeType();
 
-   boolean isOfType(AttributeTypeId otherAttributeType) ;
+   boolean isOfType(AttributeTypeId otherAttributeType);
 
    @Override
-   T getValue() ;
+   T getValue();
 
-   String getDisplayableString() ;
+   String getDisplayableString();
 
    @Override
    String toString();

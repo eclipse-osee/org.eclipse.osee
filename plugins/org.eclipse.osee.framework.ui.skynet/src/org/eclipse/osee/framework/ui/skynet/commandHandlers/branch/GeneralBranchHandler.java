@@ -52,7 +52,7 @@ public abstract class GeneralBranchHandler extends CommandHandler {
    public abstract void performOperation(final List<IOseeBranch> branches);
 
    @Override
-   public Object executeWithException(ExecutionEvent arg0, IStructuredSelection selection)  {
+   public Object executeWithException(ExecutionEvent arg0, IStructuredSelection selection) {
       List<IOseeBranch> selectedBranches = Handlers.getBranchesFromStructuredSelection(selection);
 
       Iterator<IOseeBranch> iterator = selectedBranches.iterator();
@@ -113,7 +113,7 @@ public abstract class GeneralBranchHandler extends CommandHandler {
    }
 
    @Override
-   public boolean isEnabledWithException(IStructuredSelection structuredSelection)  {
+   public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
       List<? extends BranchId> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
       return !branches.isEmpty() && (AccessControlManager.isOseeAdmin() || canEnableBranches(branches));
    }

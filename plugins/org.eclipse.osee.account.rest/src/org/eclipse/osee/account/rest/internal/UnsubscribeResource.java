@@ -90,20 +90,20 @@ public class UnsubscribeResource {
 
    private ViewModel newUnsubscribePage(URI unsubscribeUri, String subscriptionName, String accountName) {
       return new ViewModel(UNSUBSCRIBE_TEMPLATE) //
-      .param(UNSUBSCRIBE_URL, unsubscribeUri) //
-      .param(ACCOUNT_DISPLAY_NAME_TAG, accountName) //
-      .param(SUBSCRIPTION_NAME_TAG, subscriptionName);
+         .param(UNSUBSCRIBE_URL, unsubscribeUri) //
+         .param(ACCOUNT_DISPLAY_NAME_TAG, accountName) //
+         .param(SUBSCRIPTION_NAME_TAG, subscriptionName);
    }
 
    private ViewModel newUnsubscribeNoSubscriptionFoundPage(String subscriptionName, String accountName) {
       return new ViewModel(UNSUBSCRIBE_NO_SUBSCRIPTION_TEMPLATE) //
-      .param(ACCOUNT_DISPLAY_NAME_TAG, accountName) //
-      .param(SUBSCRIPTION_NAME_TAG, subscriptionName);
+         .param(ACCOUNT_DISPLAY_NAME_TAG, accountName) //
+         .param(SUBSCRIPTION_NAME_TAG, subscriptionName);
    }
 
    private ViewModel newUnsubscribeSuccessPage(String subscriptionName, String accountName) {
       return new ViewModel(UNSUBSCRIBE_SUCCESS_TEMPLATE) //
-      .param(ACCOUNT_DISPLAY_NAME_TAG, accountName) //
-      .param(SUBSCRIPTION_NAME_TAG, subscriptionName);
+         .param(ACCOUNT_DISPLAY_NAME_TAG, accountName) //
+         .param(SUBSCRIPTION_NAME_TAG, subscriptionName);
    }
 }

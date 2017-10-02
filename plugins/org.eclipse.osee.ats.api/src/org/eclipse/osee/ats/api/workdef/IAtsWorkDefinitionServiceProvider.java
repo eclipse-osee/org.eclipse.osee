@@ -15,5 +15,5 @@ package org.eclipse.osee.ats.api.workdef;
  */
 public interface IAtsWorkDefinitionServiceProvider {
 
-   public IAtsWorkDefinitionDslService getWorkDefService() ;
+   public IAtsWorkDefinitionDslService getWorkDefService();
 }

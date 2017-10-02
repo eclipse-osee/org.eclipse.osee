@@ -107,7 +107,7 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
     * Core of processing different WordML content "chunks".
     */
    @Override
-   public final void processContent(OperationLogger logger, RoughArtifactCollector collector, boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph)  {
+   public final void processContent(OperationLogger logger, RoughArtifactCollector collector, boolean forceBody, boolean forcePrimaryType, String headerNumber, String listIdentifier, String paragraphStyle, String content, boolean isParagraph) {
       if (Strings.isValid(content) && initalized) {
 
          if (!possibleTableOfContents) {
@@ -294,8 +294,6 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
 
    /**
     * Sets up storage (word formatted storage) for new artifact.
-    *
-    * 
     */
    protected void setContent() {
       if (roughArtifact != null) {
@@ -306,11 +304,11 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
    }
 
    @Override
-   public void finish()  {
+   public void finish() {
       setContent();
    }
 
-   public void processHeadingText(RoughArtifact roughArtifact, String headingText)  {
+   public void processHeadingText(RoughArtifact roughArtifact, String headingText) {
       roughArtifact.setName(headingText.trim());
    }
 

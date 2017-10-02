@@ -25,15 +25,15 @@ public interface IWorldEditorProvider {
    /**
     * Called to start the process of search and load.
     */
-   public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend) ;
+   public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend);
 
-   public String getSelectedName(SearchType searchType) ;
+   public String getSelectedName(SearchType searchType);
 
-   public String getName() ;
+   public String getName();
 
-   public IAtsVersion getTargetedVersionArtifact() ;
+   public IAtsVersion getTargetedVersionArtifact();
 
-   public IWorldEditorProvider copyProvider() ;
+   public IWorldEditorProvider copyProvider();
 
    public void setCustomizeData(CustomizeData customizeData);
 

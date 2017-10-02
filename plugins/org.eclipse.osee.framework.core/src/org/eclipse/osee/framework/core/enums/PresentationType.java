@@ -28,7 +28,7 @@ public enum PresentationType {
    PRODUCE_ATTRIBUTE, // used in conjunction with renderAttribute()
    WEB_PREVIEW;
 
-   public boolean matches(PresentationType... presentationTypes)  {
+   public boolean matches(PresentationType... presentationTypes) {
       Conditions.checkExpressionFailOnTrue(presentationTypes.length == 0, "presentationTypes to match cannot be empty");
       boolean result = false;
       for (PresentationType presentationType : presentationTypes) {

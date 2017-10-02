@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class PrivilegedUserManager {
 
-   public static Set<IAtsUser> getPrivilegedUsers(AbstractWorkflowArtifact workflow)  {
+   public static Set<IAtsUser> getPrivilegedUsers(AbstractWorkflowArtifact workflow) {
       Set<IAtsUser> users = new HashSet<>();
       if (workflow.getParentTeamWorkflow() != null) {
          users.addAll(getPrivilegedUsers(workflow.getParentTeamWorkflow()));
@@ -94,7 +94,7 @@ public class PrivilegedUserManager {
       return users;
    }
 
-   protected static void addPrivilegedUsersUpTeamDefinitionTree(IAtsTeamDefinition tda, Set<IAtsUser> users)  {
+   protected static void addPrivilegedUsersUpTeamDefinitionTree(IAtsTeamDefinition tda, Set<IAtsUser> users) {
       users.addAll(tda.getLeads());
       users.addAll(tda.getPrivilegedMembers());
 

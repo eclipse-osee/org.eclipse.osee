@@ -20,9 +20,9 @@ public interface ITraceUnitProcessor {
 
    public void initialize(IProgressMonitor monitor);
 
-   public void onComplete(IProgressMonitor monitor) ;
+   public void onComplete(IProgressMonitor monitor);
 
    public void clear();
 
-   public void process(IProgressMonitor monitor, TraceUnit testUnit) ;
+   public void process(IProgressMonitor monitor, TraceUnit testUnit);
 }

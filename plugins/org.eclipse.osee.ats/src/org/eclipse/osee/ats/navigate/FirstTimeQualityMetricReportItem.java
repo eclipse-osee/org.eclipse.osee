@@ -44,7 +44,6 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
-
 /**
  * @author Donald G. Dunne
  */
@@ -126,7 +125,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
     * Ratio of # of priority 1 and 2 OSEE problem actions (non-cancelled) that were orginated between a release and the
     * next release / # of non-support actions released in that release
     */
-   public static String getTeamWorkflowReport(String title, IAtsTeamDefinition teamDef, IProgressMonitor monitor)  {
+   public static String getTeamWorkflowReport(String title, IAtsTeamDefinition teamDef, IProgressMonitor monitor) {
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.heading(3, title));
       sb.append(AHTML.beginMultiColumnTable(100, 1));

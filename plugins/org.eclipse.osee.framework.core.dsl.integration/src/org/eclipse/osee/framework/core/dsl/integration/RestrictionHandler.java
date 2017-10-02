@@ -21,5 +21,5 @@ import org.eclipse.osee.framework.core.model.access.Scope;
 public interface RestrictionHandler<T> {
    public T asCastedObject(ObjectRestriction objectRestriction);
 
-   public void process(ObjectRestriction objectRestriction, ArtifactProxy artifactProxy, AccessDetailCollector collector, Scope scopeLevel) ;
+   public void process(ObjectRestriction objectRestriction, ArtifactProxy artifactProxy, AccessDetailCollector collector, Scope scopeLevel);
 }

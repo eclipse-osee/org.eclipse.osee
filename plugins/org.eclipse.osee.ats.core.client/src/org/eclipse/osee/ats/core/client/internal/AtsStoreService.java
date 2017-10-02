@@ -106,13 +106,13 @@ public class AtsStoreService implements IAtsStoreService {
     * Uses artifact type inheritance to retrieve all TeamWorkflow artifact types
     */
    @Override
-   public Set<IArtifactType> getTeamWorkflowArtifactTypes()  {
+   public Set<IArtifactType> getTeamWorkflowArtifactTypes() {
       Set<IArtifactType> artifactTypes = new HashSet<>();
       getTeamWorkflowArtifactTypesRecursive(ArtifactTypeManager.getType(AtsArtifactTypes.TeamWorkflow), artifactTypes);
       return artifactTypes;
    }
 
-   private static void getTeamWorkflowArtifactTypesRecursive(ArtifactType artifactType, Set<IArtifactType> allArtifactTypes)  {
+   private static void getTeamWorkflowArtifactTypesRecursive(ArtifactType artifactType, Set<IArtifactType> allArtifactTypes) {
       allArtifactTypes.add(artifactType);
       for (IArtifactType child : artifactType.getFirstLevelDescendantTypes()) {
          getTeamWorkflowArtifactTypesRecursive(ArtifactTypeManager.getType(child), allArtifactTypes);
@@ -226,6 +226,7 @@ public class AtsStoreService implements IAtsStoreService {
       }
       return transId;
    }
+
    @Override
    public boolean isDeleted(ArtifactId artifact) {
       ArtifactToken art = services.getArtifact(artifact);

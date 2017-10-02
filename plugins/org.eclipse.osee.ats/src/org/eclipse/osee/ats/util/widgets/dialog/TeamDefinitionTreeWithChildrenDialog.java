@@ -38,7 +38,7 @@ public class TeamDefinitionTreeWithChildrenDialog extends FilteredCheckboxTreeDi
    boolean recurseChildren = false;
    protected Composite dialogComp;
 
-   public TeamDefinitionTreeWithChildrenDialog(Active active)  {
+   public TeamDefinitionTreeWithChildrenDialog(Active active) {
       this(active, TeamDefinitions.getTeamTopLevelDefinitions(active, AtsClientService.get().getQueryService()));
    }
 
@@ -51,7 +51,7 @@ public class TeamDefinitionTreeWithChildrenDialog extends FilteredCheckboxTreeDi
    /**
     * @return selected team defs and children if recurseChildren was checked
     */
-   public Collection<IAtsTeamDefinition> getResultAndRecursedTeamDefs()  {
+   public Collection<IAtsTeamDefinition> getResultAndRecursedTeamDefs() {
       Set<IAtsTeamDefinition> teamDefs = new HashSet<>(10);
       for (Object obj : getResult()) {
          teamDefs.add((IAtsTeamDefinition) obj);

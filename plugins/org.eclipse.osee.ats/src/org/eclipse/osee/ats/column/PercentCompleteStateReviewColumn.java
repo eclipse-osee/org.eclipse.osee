@@ -70,7 +70,7 @@ public class PercentCompleteStateReviewColumn extends XViewerAtsColumn implement
    /**
     * Return Percent Complete ONLY on reviews related to stateName. Total Percent / # Reviews
     */
-   public static int getPercentCompleteStateReview(Artifact artifact)  {
+   public static int getPercentCompleteStateReview(Artifact artifact) {
       if (artifact.isOfType(AtsArtifactTypes.Action)) {
          double percent = 0;
          for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(artifact)) {
@@ -93,7 +93,7 @@ public class PercentCompleteStateReviewColumn extends XViewerAtsColumn implement
    /**
     * Return Percent Complete ONLY on reviews related to stateName. Total Percent / # Reviews
     */
-   public static int getPercentCompleteStateReview(Artifact artifact, IStateToken state)  {
+   public static int getPercentCompleteStateReview(Artifact artifact, IStateToken state) {
       if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
          return ReviewManager.getPercentComplete((TeamWorkFlowArtifact) artifact, state);
       }

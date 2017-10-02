@@ -20,62 +20,62 @@ import org.eclipse.osee.orcs.SystemPreferences;
 public class MockSystemPreferences implements SystemPreferences {
 
    @Override
-   public String getSystemUuid()  {
+   public String getSystemUuid() {
       return null;
    }
 
    @Override
-   public String getValue(String key)  {
+   public String getValue(String key) {
       return null;
    }
 
    @Override
-   public String getCachedValue(String key)  {
+   public String getCachedValue(String key) {
       return null;
    }
 
    @Override
-   public boolean isEnabled(String key)  {
+   public boolean isEnabled(String key) {
       return false;
    }
 
    @Override
-   public boolean isCacheEnabled(String key)  {
+   public boolean isCacheEnabled(String key) {
       return false;
    }
 
    @Override
-   public void setEnabled(String key, boolean enabled)  {
+   public void setEnabled(String key, boolean enabled) {
       //
    }
 
    @Override
-   public void setBoolean(String key, boolean value)  {
+   public void setBoolean(String key, boolean value) {
       //
    }
 
    @Override
-   public boolean isBoolean(String key)  {
+   public boolean isBoolean(String key) {
       return false;
    }
 
    @Override
-   public void putValue(String key, String value)  {
+   public void putValue(String key, String value) {
       //
    }
 
    @Override
-   public Set<String> getKeys()  {
+   public Set<String> getKeys() {
       return null;
    }
 
    @Override
-   public boolean isBooleanUsingCache(String key)  {
+   public boolean isBooleanUsingCache(String key) {
       return false;
    }
 
    @Override
-   public String getCachedValue(String key, long maxStaleness)  {
+   public String getCachedValue(String key, long maxStaleness) {
       return Strings.emptyString();
    }
 

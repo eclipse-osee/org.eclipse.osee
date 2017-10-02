@@ -34,7 +34,7 @@ public class BranchQueryImpl extends BranchQueryBuilderImpl<BranchQuery> impleme
    }
 
    @Override
-   public ResultSet<BranchReadable> getResults()  {
+   public ResultSet<BranchReadable> getResults() {
       try {
          return createSearch().call();
       } catch (Exception ex) {
@@ -43,7 +43,7 @@ public class BranchQueryImpl extends BranchQueryBuilderImpl<BranchQuery> impleme
    }
 
    @Override
-   public ResultSet<IOseeBranch> getResultsAsId()  {
+   public ResultSet<IOseeBranch> getResultsAsId() {
       try {
          return createSearchResultsAsIds().call();
       } catch (Exception ex) {
@@ -52,7 +52,7 @@ public class BranchQueryImpl extends BranchQueryBuilderImpl<BranchQuery> impleme
    }
 
    @Override
-   public int getCount()  {
+   public int getCount() {
       try {
          return createCount().call();
       } catch (Exception ex) {
@@ -61,17 +61,17 @@ public class BranchQueryImpl extends BranchQueryBuilderImpl<BranchQuery> impleme
    }
 
    @Override
-   public CancellableCallable<Integer> createCount()  {
+   public CancellableCallable<Integer> createCount() {
       return queryFactory.createBranchCount(session, buildAndCopy());
    }
 
    @Override
-   public CancellableCallable<ResultSet<BranchReadable>> createSearch()  {
+   public CancellableCallable<ResultSet<BranchReadable>> createSearch() {
       return queryFactory.createBranchSearch(session, buildAndCopy());
    }
 
    @Override
-   public CancellableCallable<ResultSet<IOseeBranch>> createSearchResultsAsIds()  {
+   public CancellableCallable<ResultSet<IOseeBranch>> createSearchResultsAsIds() {
       return queryFactory.createBranchAsIdSearch(session, buildAndCopy());
    }
 

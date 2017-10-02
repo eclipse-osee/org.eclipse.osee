@@ -45,7 +45,7 @@ public class BranchAccessObject extends AccessObject {
    }
 
    @Override
-   public void removeFromDatabase(int subjectId)  {
+   public void removeFromDatabase(int subjectId) {
       final String DELETE_BRANCH_ACL = "DELETE FROM OSEE_BRANCH_ACL WHERE privilege_entity_id = ? AND branch_id =?";
       ConnectionHandler.runPreparedUpdate(DELETE_BRANCH_ACL, subjectId, branch);
    }
@@ -61,7 +61,7 @@ public class BranchAccessObject extends AccessObject {
       return branchAccessObject;
    }
 
-   public static BranchAccessObject getBranchAccessObjectFromCache(BranchId branch)  {
+   public static BranchAccessObject getBranchAccessObjectFromCache(BranchId branch) {
       return cache.get(branch);
    }
 

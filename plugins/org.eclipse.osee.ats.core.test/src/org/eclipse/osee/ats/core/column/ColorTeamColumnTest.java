@@ -47,7 +47,7 @@ public class ColorTeamColumnTest {
    private final IAtsTeamWorkflow teamWf1 = new TeamWorkflow(null, null, Everyone);
 
    @Before
-   public void setup()  {
+   public void setup() {
       MockitoAnnotations.initMocks(this);
 
       when(atsServices.getAttributeResolver()).thenReturn(attributeResolver);

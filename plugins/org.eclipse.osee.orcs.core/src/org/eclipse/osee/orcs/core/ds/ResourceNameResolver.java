@@ -15,7 +15,7 @@ package org.eclipse.osee.orcs.core.ds;
  */
 public interface ResourceNameResolver {
 
-   String getStorageName() ;
+   String getStorageName();
 
-   String getInternalFileName() ;
+   String getInternalFileName();
 }

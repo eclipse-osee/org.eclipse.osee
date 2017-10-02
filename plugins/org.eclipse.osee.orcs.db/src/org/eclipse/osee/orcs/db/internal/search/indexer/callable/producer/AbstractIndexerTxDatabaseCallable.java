@@ -58,7 +58,7 @@ public abstract class AbstractIndexerTxDatabaseCallable extends AbstractDatastor
    }
 
    @Override
-   protected List<Future<?>> handleTxWork(JdbcConnection connection)  {
+   protected List<Future<?>> handleTxWork(JdbcConnection connection) {
       totalGammas = 0;
       try {
          convertInput(connection);
@@ -90,7 +90,7 @@ public abstract class AbstractIndexerTxDatabaseCallable extends AbstractDatastor
    }
 
    @Override
-   protected void handleTxFinally()  {
+   protected void handleTxFinally() {
       super.handleTxFinally();
       if (isOkToDispatch && !queryIds.isEmpty()) {
          for (int queryId : queryIds) {
@@ -104,7 +104,7 @@ public abstract class AbstractIndexerTxDatabaseCallable extends AbstractDatastor
       }
    }
 
-   protected void addEntry(JdbcConnection connection, long gammaId)  {
+   protected void addEntry(JdbcConnection connection, long gammaId) {
       if (currentJoinQuery == null) {
          currentJoinQuery = joinFactory.createTagQueueJoinQuery(connection);
       }
@@ -118,7 +118,7 @@ public abstract class AbstractIndexerTxDatabaseCallable extends AbstractDatastor
       return !isCacheAll && currentJoinQuery != null && currentJoinQuery.size() > cacheLimit;
    }
 
-   private void storeQueryIds(JdbcConnection connection)  {
+   private void storeQueryIds(JdbcConnection connection) {
       if (currentJoinQuery != null && !currentJoinQuery.isEmpty()) {
          currentJoinQuery.store();
          queryIds.add(currentJoinQuery.getQueryId());

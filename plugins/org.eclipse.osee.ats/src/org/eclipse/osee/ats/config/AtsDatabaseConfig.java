@@ -48,7 +48,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 public class AtsDatabaseConfig implements IDbInitializationTask {
 
    @Override
-   public void run()  {
+   public void run() {
       createAtsFolders();
 
       // load top team into cache
@@ -90,7 +90,7 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
       Operations.executeWorkAndCheckStatus(operation);
    }
 
-   public static void createAtsFolders()  {
+   public static void createAtsFolders() {
       BranchId atsBranch = AtsClientService.get().getAtsBranch();
       SkynetTransaction transaction = TransactionManager.createTransaction(atsBranch, "Create ATS Folders");
 

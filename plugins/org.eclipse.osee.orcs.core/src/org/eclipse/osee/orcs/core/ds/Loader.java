@@ -19,8 +19,8 @@ public interface Loader {
 
    Loader setOptions(Options sourceOptions);
 
-   void load(HasCancellation cancellation, LoadDataHandler handler) ;
+   void load(HasCancellation cancellation, LoadDataHandler handler);
 
-   void load(LoadDataHandler handler) ;
+   void load(LoadDataHandler handler);
 
 }

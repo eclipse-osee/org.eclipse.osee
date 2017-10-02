@@ -15,7 +15,7 @@ package org.eclipse.osee.framework.core.data;
  */
 public interface IAttribute<T> extends AttributeId {
 
-   public T getValue() ;
+   public T getValue();
 
    public AttributeTypeId getAttributeType();
 }

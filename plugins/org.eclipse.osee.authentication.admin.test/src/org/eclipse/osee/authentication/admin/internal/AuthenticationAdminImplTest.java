@@ -97,10 +97,10 @@ public class AuthenticationAdminImplTest {
    @Test
    public void testAuthenticateExceptionNoSchemeAvailable() {
       AuthenticationRequest request = AuthenticationRequestBuilder.newBuilder()//
-      .scheme(SCHEME_1) //
-      .userName(USERNAME)//
-      .password(PASSWORD)//
-      .build();
+         .scheme(SCHEME_1) //
+         .userName(USERNAME)//
+         .password(PASSWORD)//
+         .build();
 
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("Authentication Error - scheme [" + SCHEME_1 + "] is not allowed. Schemes available [].");
@@ -118,10 +118,10 @@ public class AuthenticationAdminImplTest {
       assertEquals(false, iterable.iterator().hasNext());
 
       AuthenticationRequest request = AuthenticationRequestBuilder.newBuilder()//
-      .scheme(SCHEME_1) //
-      .userName(USERNAME)//
-      .password(PASSWORD)//
-      .build();
+         .scheme(SCHEME_1) //
+         .userName(USERNAME)//
+         .password(PASSWORD)//
+         .build();
 
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("Authentication Error - scheme [" + SCHEME_1 + "] is not allowed. Schemes available [].");
@@ -146,10 +146,10 @@ public class AuthenticationAdminImplTest {
       assertEquals(SCHEME_1, iterable.iterator().next());
 
       AuthenticationRequest request = AuthenticationRequestBuilder.newBuilder()//
-      .scheme(SCHEME_1) //
-      .userName(USERNAME)//
-      .password(PASSWORD)//
-      .build();
+         .scheme(SCHEME_1) //
+         .userName(USERNAME)//
+         .password(PASSWORD)//
+         .build();
 
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("Authentication Error - scheme [" + SCHEME_1 + "] returned null principal");
@@ -174,10 +174,10 @@ public class AuthenticationAdminImplTest {
       assertEquals(SCHEME_1, iterable.iterator().next());
 
       AuthenticationRequest request = AuthenticationRequestBuilder.newBuilder()//
-      .scheme(SCHEME_1) //
-      .userName(USERNAME)//
-      .password(PASSWORD)//
-      .build();
+         .scheme(SCHEME_1) //
+         .userName(USERNAME)//
+         .password(PASSWORD)//
+         .build();
 
       when(provider1.authenticate(request)).thenReturn(authenticatedUser);
 

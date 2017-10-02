@@ -77,7 +77,7 @@ public class EmailGroupsBlamTest {
    }
 
    @Test
-   public void testEmailGroupsData()  {
+   public void testEmailGroupsData() {
       Assert.assertNotNull(newGroup);
 
       EmailGroupsData data = new EmailGroupsData();

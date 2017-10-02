@@ -56,12 +56,12 @@ public class FailoverConnectionNode implements ConnectionNode, Runnable {
    }
 
    @Override
-   public void send(MessageID messageId, Object message, OseeMessagingStatusCallback statusCallback)  {
+   public void send(MessageID messageId, Object message, OseeMessagingStatusCallback statusCallback) {
       send(messageId, message, null, statusCallback);
    }
 
    @Override
-   public void send(MessageID messageId, Object message, Properties properties, OseeMessagingStatusCallback statusCallback)  {
+   public void send(MessageID messageId, Object message, Properties properties, OseeMessagingStatusCallback statusCallback) {
       attemptSmartConnect();
       if (lastConnectedState) {
          try {
@@ -75,7 +75,7 @@ public class FailoverConnectionNode implements ConnectionNode, Runnable {
    }
 
    @Override
-   public void send(MessageID messageId, Object message)  {
+   public void send(MessageID messageId, Object message) {
       String errorMessage = String.format("Error sending message(%s)", messageId.getId());
       OseeMessagingStatusImpl defaultErrorHandler = new OseeMessagingStatusImpl(errorMessage, getClass());
       this.send(messageId, message, defaultErrorHandler);

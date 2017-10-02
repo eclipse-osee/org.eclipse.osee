@@ -175,7 +175,7 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       }
    }
 
-   private void updateTitleBar()  {
+   private void updateTitleBar() {
       if (managedForm != null && Widgets.isAccessible(managedForm.getForm())) {
          String titleString = editor.getTitleStr();
          String displayableTitle = Strings.escapeAmpersands(titleString);
@@ -264,7 +264,7 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       showBusy(set);
    }
 
-   private void createAtsBody()  {
+   private void createAtsBody() {
       if (Widgets.isAccessible(atsBody)) {
          if (getManagedForm() != null && getManagedForm().getMessageManager() != null) {
             getManagedForm().getMessageManager().removeAllMessages();
@@ -410,11 +410,11 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       }
    }
 
-   protected boolean isShowTargetedVersion()  {
+   protected boolean isShowTargetedVersion() {
       return awa.isTargetedVersionable();
    }
 
-   private void createTargetVersionAndAssigneeHeader(Composite parent, StateXWidgetPage page, XFormToolkit toolkit)  {
+   private void createTargetVersionAndAssigneeHeader(Composite parent, StateXWidgetPage page, XFormToolkit toolkit) {
       boolean isShowTargetedVersion = isShowTargetedVersion();
       boolean isCurrentNonCompleteCanceledState = page.isCurrentNonCompleteCancelledState(awa);
       if (!isShowTargetedVersion && !isCurrentNonCompleteCanceledState) {
@@ -468,7 +468,7 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       });
    }
 
-   private void refreshToolbar()  {
+   private void refreshToolbar() {
       IToolBarManager toolBarMgr = managedForm.getForm().getToolBarManager();
       toolBarMgr.removeAll();
 
@@ -502,7 +502,7 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       managedForm.getForm().updateToolBar();
    }
 
-   public Result isXWidgetDirty()  {
+   public Result isXWidgetDirty() {
       for (WfeWorkflowSection section : sections) {
          Result result = section.isXWidgetDirty();
          if (result.isTrue()) {
@@ -522,7 +522,7 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       return Result.TrueResult;
    }
 
-   public void saveXWidgetToArtifact()  {
+   public void saveXWidgetToArtifact() {
       List<IArtifactStoredWidget> artWidgets = new ArrayList<>();
       // Collect all dirty widgets first (so same attribute shown on different sections don't colide
       for (WfeWorkflowSection section : sections) {
@@ -717,7 +717,7 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       dragDropBox.setBackground(getLightGreyColor());
    }
 
-   public static void createSMANotesHeader(Composite comp, XFormToolkit toolkit, AbstractWorkflowArtifact sma, int horizontalSpan)  {
+   public static void createSMANotesHeader(Composite comp, XFormToolkit toolkit, AbstractWorkflowArtifact sma, int horizontalSpan) {
       // Display SMA Note
       String note = sma.getSoleAttributeValue(AtsAttributeTypes.SmaNote, "");
       if (!note.equals("")) {

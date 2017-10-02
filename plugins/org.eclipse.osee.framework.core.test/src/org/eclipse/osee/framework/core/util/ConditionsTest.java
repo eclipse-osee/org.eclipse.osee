@@ -51,22 +51,22 @@ public class ConditionsTest {
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testCheckNotNullWithException()  {
+   public void testCheckNotNullWithException() {
       Conditions.checkNotNull(null, "test object");
    }
 
    @Test
-   public void testCheckNotNullWithoutException()  {
+   public void testCheckNotNullWithoutException() {
       Conditions.checkNotNull("a", "test object");
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testCheckNotNullOrEmptyWithException()  {
+   public void testCheckNotNullOrEmptyWithException() {
       Conditions.checkNotNullOrEmpty("", "empty string");
    }
 
    @Test
-   public void testCheckNotNullOrEmptyWithoutException()  {
+   public void testCheckNotNullOrEmptyWithoutException() {
       Conditions.checkNotNullOrEmpty("a", "a string");
    }
 

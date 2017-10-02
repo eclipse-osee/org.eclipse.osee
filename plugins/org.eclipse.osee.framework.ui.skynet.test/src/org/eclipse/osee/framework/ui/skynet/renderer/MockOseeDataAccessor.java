@@ -40,7 +40,7 @@ public class MockOseeDataAccessor<K, T extends IOseeStorable> implements IOseeDa
    }
 
    @Override
-   public void load(IOseeCache<T> cache)  {
+   public void load(IOseeCache<T> cache) {
       Assert.assertNotNull(cache);
       setLoadCalled(true);
    }

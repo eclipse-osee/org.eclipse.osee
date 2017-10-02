@@ -27,13 +27,13 @@ public class XtraRelationDataSqlHandler extends AbstractXtraTableSqlHandler {
    }
 
    @Override
-   public void addTables(AbstractSqlWriter writer)  {
+   public void addTables(AbstractSqlWriter writer) {
       itemAlias = writer.addTable(TableEnum.RELATION_TABLE, ObjectType.RELATION);
       txsAlias = writer.addTable(TableEnum.TXS_TABLE, ObjectType.RELATION);
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer)  {
+   public boolean addPredicates(AbstractSqlWriter writer) {
       String artAlias = writer.getLastAlias(TableEnum.ARTIFACT_TABLE);
       writer.write("(");
       writer.write(artAlias);

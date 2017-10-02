@@ -32,7 +32,7 @@ public class IntegerAttribute extends CharacterBackedAttribute<Integer> {
       return toReturn;
    }
 
-   public Integer getDefaultValue()  {
+   public Integer getDefaultValue() {
       Integer toReturn = DEFAULT_INTEGER;
       String defaultValue = getDefaultValueFromMetaData();
       if (isValidInteger(defaultValue)) {

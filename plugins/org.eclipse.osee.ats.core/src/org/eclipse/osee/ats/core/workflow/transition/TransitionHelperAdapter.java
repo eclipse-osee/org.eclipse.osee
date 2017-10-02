@@ -61,22 +61,22 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
    }
 
    @Override
-   public boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf)  {
+   public boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf) {
       return services.getBranchService().isWorkingBranchInWork(teamWf);
    }
 
    @Override
-   public boolean isBranchInCommit(IAtsTeamWorkflow teamWf)  {
+   public boolean isBranchInCommit(IAtsTeamWorkflow teamWf) {
       return services.getBranchService().isBranchInCommit(teamWf);
    }
 
    @Override
-   public boolean isSystemUser()  {
+   public boolean isSystemUser() {
       return AtsCoreUsers.isAtsCoreUser(getTransitionUser());
    }
 
    @Override
-   public boolean isSystemUserAssingee(IAtsWorkItem workItem)  {
+   public boolean isSystemUserAssingee(IAtsWorkItem workItem) {
       return workItem.getStateMgr().getAssignees().contains(
          AtsCoreUsers.ANONYMOUS_USER) || workItem.getStateMgr().getAssignees().contains(AtsCoreUsers.SYSTEM_USER);
    }
@@ -87,7 +87,7 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
    }
 
    @Override
-   public IAtsUser getTransitionUser()  {
+   public IAtsUser getTransitionUser() {
       IAtsUser user = transitionUser;
       if (user == null) {
          user = services.getUserService().getCurrentUser();
@@ -96,7 +96,7 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
    }
 
    @Override
-   public void setTransitionUser(IAtsUser user)  {
+   public void setTransitionUser(IAtsUser user) {
       transitionUser = user;
    }
 

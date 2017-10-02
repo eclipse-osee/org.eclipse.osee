@@ -49,7 +49,7 @@ public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String> impleme
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType)  {
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
       this.artifact = artifact;
       this.attributeType = attributeType;
       int minOccurrence = AttributeTypeManager.getMinOccurrences(attributeType);
@@ -67,12 +67,12 @@ public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String> impleme
       return dialog;
    }
 
-   public Collection<String> getStored()  {
+   public Collection<String> getStored() {
       return getArtifact().getAttributesToStringList(getAttributeType());
    }
 
    @Override
-   public Result isDirty()  {
+   public Result isDirty() {
       if (isEditable()) {
          try {
             Collection<String> enteredValues = getSelected();
@@ -88,12 +88,12 @@ public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String> impleme
    }
 
    @Override
-   public void revert()  {
+   public void revert() {
       setAttributeType(getArtifact(), getAttributeType());
    }
 
    @Override
-   public void saveToArtifact()  {
+   public void saveToArtifact() {
       getArtifact().setAttributeValues(getAttributeType(), getSelected());
    }
 

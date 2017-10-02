@@ -22,10 +22,10 @@ public abstract class AbstractOseeField<T> implements IOseeField<T> {
    }
 
    @Override
-   public abstract void set(T value) ;
+   public abstract void set(T value);
 
    @Override
-   public abstract T get() ;
+   public abstract T get();
 
    @Override
    public void clearDirty() {

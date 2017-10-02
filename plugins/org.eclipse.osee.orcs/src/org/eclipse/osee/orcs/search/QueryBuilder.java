@@ -27,27 +27,27 @@ public interface QueryBuilder extends ArtifactQueryBuilder<QueryBuilder>, Query 
     *
     * @return artifact search results
     */
-   ResultSet<ArtifactReadable> getResults() ;
+   ResultSet<ArtifactReadable> getResults();
 
    /**
     * Executes query
     *
     * @return artifact search results with match locations
     */
-   ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> getMatches() ;
+   ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> getMatches();
 
    /**
     * Executes query
     *
     * @return localIds search results
     */
-   ResultSet<? extends ArtifactId> getResultsAsLocalIds() ;
+   ResultSet<? extends ArtifactId> getResultsAsLocalIds();
 
    /**
     * Count search results
     */
    @Override
-   int getCount() ;
+   int getCount();
 
    boolean exists();
 
@@ -55,27 +55,27 @@ public interface QueryBuilder extends ArtifactQueryBuilder<QueryBuilder>, Query 
     * Schedule a count search results
     */
    @Override
-   CancellableCallable<Integer> createCount() ;
+   CancellableCallable<Integer> createCount();
 
    /**
     * Schedule query
     *
     * @return artifact search results
     */
-   CancellableCallable<ResultSet<ArtifactReadable>> createSearch() ;
+   CancellableCallable<ResultSet<ArtifactReadable>> createSearch();
 
    /**
     * Schedule query and find matching locations
     *
     * @return artifact search results with match locations
     */
-   CancellableCallable<ResultSet<Match<ArtifactReadable, AttributeReadable<?>>>> createSearchWithMatches() ;
+   CancellableCallable<ResultSet<Match<ArtifactReadable, AttributeReadable<?>>>> createSearchWithMatches();
 
    /**
     * Schedule query and find matching locations
     *
     * @return localIds search results
     */
-   CancellableCallable<ResultSet<? extends ArtifactId>> createSearchResultsAsLocalIds() ;
+   CancellableCallable<ResultSet<? extends ArtifactId>> createSearchResultsAsLocalIds();
 
 }

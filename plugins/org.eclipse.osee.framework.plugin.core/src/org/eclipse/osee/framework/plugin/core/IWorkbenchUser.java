@@ -15,11 +15,11 @@ package org.eclipse.osee.framework.plugin.core;
  */
 public interface IWorkbenchUser {
 
-   String getEmail() ;
+   String getEmail();
 
-   String getName() ;
+   String getName();
 
-   String getUserID() ;
+   String getUserID();
 
-   boolean isActive() ;
+   boolean isActive();
 }

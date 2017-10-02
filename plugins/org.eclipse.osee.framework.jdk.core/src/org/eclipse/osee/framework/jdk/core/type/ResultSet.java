@@ -19,11 +19,11 @@ import java.util.List;
  */
 public interface ResultSet<T> extends Iterable<T> {
 
-   T getOneOrNull() ;
+   T getOneOrNull();
 
-   T getExactlyOne() ;
+   T getExactlyOne();
 
-   T getAtMostOneOrNull() ;
+   T getAtMostOneOrNull();
 
    int size();
 

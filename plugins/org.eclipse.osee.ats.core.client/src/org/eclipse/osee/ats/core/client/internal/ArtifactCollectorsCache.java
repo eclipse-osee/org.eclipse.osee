@@ -91,7 +91,7 @@ public class ArtifactCollectorsCache<T extends CollectorArtifact> implements IAr
    }
 
    @Override
-   public List<Artifact> getMembers(T collector)  {
+   public List<Artifact> getMembers(T collector) {
       initializeStructures();
       registerForEvents(collector);
       List<Artifact> members = cache.get(collector.getId());
@@ -131,7 +131,7 @@ public class ArtifactCollectorsCache<T extends CollectorArtifact> implements IAr
    }
 
    @Override
-   public String getMemberOrder(T collectorArt, Artifact member)  {
+   public String getMemberOrder(T collectorArt, Artifact member) {
       initializeStructures();
       if (collectorMemberOrderMap.getSubHash(collectorArt.getId()) == null) {
          fillOrderCache(collectorArt, getMembers(collectorArt));

@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 public class AssociatedArtifactCheck extends ArtifactCheck {
 
    @Override
-   public IStatus isDeleteable(Collection<Artifact> artifacts)  {
+   public IStatus isDeleteable(Collection<Artifact> artifacts) {
       return BranchManager.isDeleteable(artifacts);
    }
 }

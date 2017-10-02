@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
  */
 public class PredicateHandlerUtil {
 
-   public static Collection<AttributeTypeId> getAttributeTypes(Collection<String> types)  {
+   public static Collection<AttributeTypeId> getAttributeTypes(Collection<String> types) {
       Collection<AttributeTypeId> attrTypes = new LinkedHashSet<>();
       for (String value : types) {
          long uuid = parseUuid(value);
@@ -36,7 +36,7 @@ public class PredicateHandlerUtil {
       return attrTypes;
    }
 
-   public static Collection<IArtifactType> getIArtifactTypes(Collection<String> types)  {
+   public static Collection<IArtifactType> getIArtifactTypes(Collection<String> types) {
       Collection<IArtifactType> artTypes = new LinkedHashSet<>();
       for (String value : types) {
          long uuid = parseUuid(value);
@@ -47,7 +47,7 @@ public class PredicateHandlerUtil {
       return artTypes;
    }
 
-   public static Collection<IRelationType> getIRelationTypes(Collection<String> rels)  {
+   public static Collection<IRelationType> getIRelationTypes(Collection<String> rels) {
       Collection<IRelationType> types = new LinkedHashSet<>();
       for (String value : rels) {
          long longUuid = parseUuid(value);
@@ -58,7 +58,7 @@ public class PredicateHandlerUtil {
       return types;
    }
 
-   public static Collection<RelationTypeSide> getRelationTypeSides(Collection<String> rels)  {
+   public static Collection<RelationTypeSide> getRelationTypeSides(Collection<String> rels) {
       Collection<RelationTypeSide> relSides = new LinkedHashSet<>();
       for (String value : rels) {
          char sideChar = value.charAt(0);
@@ -75,7 +75,7 @@ public class PredicateHandlerUtil {
       return relSides;
    }
 
-   private static long parseUuid(String uuid)  {
+   private static long parseUuid(String uuid) {
       if (uuid.matches("-?\\d+")) {
          return Long.parseLong(uuid);
       }

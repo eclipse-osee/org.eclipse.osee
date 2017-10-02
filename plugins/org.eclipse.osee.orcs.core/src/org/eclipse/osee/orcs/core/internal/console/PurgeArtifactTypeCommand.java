@@ -76,7 +76,7 @@ public class PurgeArtifactTypeCommand implements ConsoleCommand {
             return null;
          }
 
-         private Set<IArtifactType> getTypes(String[] typesToPurge)  {
+         private Set<IArtifactType> getTypes(String[] typesToPurge) {
             ArtifactTypes artifactTypes = orcsTypes.getArtifactTypes();
             Set<IArtifactType> toReturn = new HashSet<>();
             for (String uuid : typesToPurge) {

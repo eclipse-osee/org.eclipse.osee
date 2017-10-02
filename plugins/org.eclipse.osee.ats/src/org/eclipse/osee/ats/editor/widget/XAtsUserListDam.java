@@ -212,12 +212,12 @@ public class XAtsUserListDam extends XListViewer implements IAttributeWidget {
    }
 
    @Override
-   public Artifact getArtifact()  {
+   public Artifact getArtifact() {
       return awa;
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType)  {
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeType) {
       this.awa = (AbstractWorkflowArtifact) artifact;
       this.attributeType = attributeType;
    }

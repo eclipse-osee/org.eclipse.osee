@@ -16,8 +16,8 @@ package org.eclipse.osee.framework.core.server.internal.session;
  */
 public interface WriteDataAccessor<D> {
 
-   void create(Iterable<D> sessions) ;
+   void create(Iterable<D> sessions);
 
-   void delete(Iterable<D> sessions) ;
+   void delete(Iterable<D> sessions);
 
 }

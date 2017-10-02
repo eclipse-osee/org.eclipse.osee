@@ -83,7 +83,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
       openViewUpon(sourceBranch, destBranch, tranId, null, true);
    }
 
-   public static void openView(final TransactionRecord commitTrans)  {
+   public static void openView(final TransactionRecord commitTrans) {
       Conditions.checkNotNull(commitTrans, "Commit Transaction ID");
       openViewUpon(null, null, null, commitTrans, true);
    }

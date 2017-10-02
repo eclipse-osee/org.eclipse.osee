@@ -29,7 +29,8 @@ public class WeeklyBenefitHrsColumn extends XViewerAtsAttributeValueColumn {
 
    private WeeklyBenefitHrsColumn() {
       super(AtsAttributeTypes.WeeklyBenefit, WorldXViewerFactory.COLUMN_NAMESPACE + ".weeklyBenefitHrs",
-         AtsAttributeTypes.WeeklyBenefit.getUnqualifiedName(), 40, XViewerAlign.Center, false, SortDataType.Float, true, "");
+         AtsAttributeTypes.WeeklyBenefit.getUnqualifiedName(), 40, XViewerAlign.Center, false, SortDataType.Float, true,
+         "");
    }
 
    /**

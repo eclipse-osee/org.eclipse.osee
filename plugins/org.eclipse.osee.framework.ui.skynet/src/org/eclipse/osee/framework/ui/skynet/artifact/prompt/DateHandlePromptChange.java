@@ -53,7 +53,7 @@ public class DateHandlePromptChange implements IHandlePromptChange {
    }
 
    @Override
-   public boolean store()  {
+   public boolean store() {
       for (Artifact artifact : artifacts) {
          if (diag.isNoneSelected()) {
             artifact.deleteSoleAttribute(attributeType);

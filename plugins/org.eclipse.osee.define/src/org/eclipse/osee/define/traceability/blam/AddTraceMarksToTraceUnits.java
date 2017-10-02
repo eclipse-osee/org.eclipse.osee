@@ -74,7 +74,7 @@ public class AddTraceMarksToTraceUnits extends AbstractBlam {
       return builder.toString();
    }
 
-   private void checkPath(String filePath, String type)  {
+   private void checkPath(String filePath, String type) {
       if (!Strings.isValid(filePath)) {
          throw new OseeArgumentException("Please enter a valid %s path", type);
       }
@@ -84,7 +84,7 @@ public class AddTraceMarksToTraceUnits extends AbstractBlam {
       }
    }
 
-   private URI getSourceURI(VariableMap variableMap)  {
+   private URI getSourceURI(VariableMap variableMap) {
       String filePath = variableMap.getString("Select File");
       String folderPath = variableMap.getString("Select Folder");
 
@@ -134,7 +134,7 @@ public class AddTraceMarksToTraceUnits extends AbstractBlam {
       }
    }
 
-   private void processFiles(List<File> files, BranchId branch)  {
+   private void processFiles(List<File> files, BranchId branch) {
       Matcher matcher = TestUnitTagger.ANNOTATION_PATTERN.matcher("");
       for (File file : files) {
          String guid = null;

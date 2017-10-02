@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
  */
 public class ArtifactURL {
 
-   public static URL getOpenInOseeLink(final Artifact artifact, String cmd, PresentationType presentationType)  {
+   public static URL getOpenInOseeLink(final Artifact artifact, String cmd, PresentationType presentationType) {
       Map<String, String> parameters = new HashMap<>();
       parameters.put("sessionId", ClientSessionManager.getSessionId());
       parameters.put("context", "osee/loopback");
@@ -54,11 +54,11 @@ public class ArtifactURL {
       return url;
    }
 
-   public static URL getOpenInOseeLink(final Artifact artifact, PresentationType presentationType)  {
+   public static URL getOpenInOseeLink(final Artifact artifact, PresentationType presentationType) {
       return getOpenInOseeLink(artifact, "open.artifact", presentationType);
    }
 
-   public static String getPermanentLinkBaseUrl(String context, Map<String, String> parameters)  {
+   public static String getPermanentLinkBaseUrl(String context, Map<String, String> parameters) {
       try {
          return HttpUrlBuilder.createURL(getSelectedPermanenrLinkUrl(), context, parameters);
       } catch (UnsupportedEncodingException ex) {
@@ -66,7 +66,7 @@ public class ArtifactURL {
       }
    }
 
-   public static String getSelectedPermanenrLinkUrl()  {
+   public static String getSelectedPermanenrLinkUrl() {
       HttpUrlBuilderClient httpBuilder = HttpUrlBuilderClient.getInstance();
       String address = null;
       if (httpBuilder.isUseConnectedServerUrl()) {
@@ -84,7 +84,7 @@ public class ArtifactURL {
       return normalize(address);
    }
 
-   public static String getPermanentBaseUrl()  {
+   public static String getPermanentBaseUrl() {
       String address = OseeInfo.getValue("osee.permanent.base.url");
       return normalize(address);
    }

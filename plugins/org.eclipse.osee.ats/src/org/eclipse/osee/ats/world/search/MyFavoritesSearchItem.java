@@ -31,13 +31,13 @@ public class MyFavoritesSearchItem extends UserSearchItem {
    }
 
    @Override
-   protected Collection<Artifact> searchIt(IAtsUser user)  {
+   protected Collection<Artifact> searchIt(IAtsUser user) {
       return AtsClientService.get().getUserServiceClient().getOseeUser(user).getRelatedArtifacts(
          AtsRelationTypes.FavoriteUser_Artifact);
    }
 
    @Override
-   public void performUI(SearchType searchType)  {
+   public void performUI(SearchType searchType) {
       if (user != null) {
          return;
       }

@@ -18,8 +18,8 @@ public interface OrderStore {
 
    boolean isAccessible();
 
-   String getOrderData() ;
+   String getOrderData();
 
-   void storeOrderData(OrderChange changeType, String data) ;
+   void storeOrderData(OrderChange changeType, String data);
 
 }

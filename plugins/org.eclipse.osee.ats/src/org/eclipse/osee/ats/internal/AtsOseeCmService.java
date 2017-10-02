@@ -50,7 +50,7 @@ public class AtsOseeCmService implements IOseeCmService {
    public void openArtifacts(String name, Collection<Artifact> artifacts, OseeCmEditor oseeCmEditor) {
       WorldEditor.open(new WorldEditorSimpleProvider(name, artifacts));
    }
-   
+
    @Override
    public boolean isPcrArtifact(Artifact artifact) {
       return AtsUtil.isAtsArtifact(artifact);

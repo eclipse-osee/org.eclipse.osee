@@ -17,6 +17,6 @@ import org.eclipse.osee.framework.core.data.OseeCredential;
  */
 public interface ICredentialProvider {
 
-   OseeCredential getCredential() ;
+   OseeCredential getCredential();
 
 }

@@ -58,12 +58,12 @@ public class ServiceBinderFactoryTest {
    }
 
    @Test(expected = OseeStateException.class)
-   public void testNullBindType()  {
+   public void testNullBindType() {
       factory.createTracker(null, String.class);
    }
 
    @Test(expected = IllegalStateException.class)
-   public void testCreateSingletonBinderTracker()  {
+   public void testCreateSingletonBinderTracker() {
       ServiceTracker tracker = factory.createTracker(ServiceBindType.SINGLETON, String.class);
       Assert.assertNotNull(tracker);
       tracker.open();
@@ -79,7 +79,7 @@ public class ServiceBinderFactoryTest {
    }
 
    @Test
-   public void testCreateMultiBinderTracker()  {
+   public void testCreateMultiBinderTracker() {
       ServiceTracker tracker = factory.createTracker(ServiceBindType.MANY, String.class);
       Assert.assertNotNull(tracker);
       tracker.open();

@@ -33,8 +33,8 @@ public class ReviewNumMajorDefectsColumn extends XViewerAtsColumn implements IXV
    }
 
    private ReviewNumMajorDefectsColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".reviewMajorDefects", "Review Major Defects", 40, XViewerAlign.Center, false,
-         SortDataType.Integer, false, "Number of Major Defects found in Review");
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".reviewMajorDefects", "Review Major Defects", 40,
+         XViewerAlign.Center, false, SortDataType.Integer, false, "Number of Major Defects found in Review");
    }
 
    /**

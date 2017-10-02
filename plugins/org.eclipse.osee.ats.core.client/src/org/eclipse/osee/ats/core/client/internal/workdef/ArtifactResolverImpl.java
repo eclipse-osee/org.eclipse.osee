@@ -37,7 +37,7 @@ public class ArtifactResolverImpl implements IArtifactResolver {
    }
 
    @Override
-   public ArtifactId get(IAtsObject atsObject)  {
+   public ArtifactId get(IAtsObject atsObject) {
       if (atsObject instanceof Artifact) {
          return (Artifact) atsObject;
       }
@@ -47,7 +47,7 @@ public class ArtifactResolverImpl implements IArtifactResolver {
 
    @Override
    @SuppressWarnings("unchecked")
-   public <A extends ArtifactId> A get(IAtsWorkItem workItem, Class<?> clazz)  {
+   public <A extends ArtifactId> A get(IAtsWorkItem workItem, Class<?> clazz) {
       ArtifactId artifact = get(workItem);
       if (clazz.isInstance(artifact)) {
          return (A) artifact;
@@ -57,7 +57,7 @@ public class ArtifactResolverImpl implements IArtifactResolver {
 
    @Override
    @SuppressWarnings("unchecked")
-   public <A extends ArtifactId> List<A> get(Collection<? extends IAtsWorkItem> workItems, Class<?> clazz)  {
+   public <A extends ArtifactId> List<A> get(Collection<? extends IAtsWorkItem> workItems, Class<?> clazz) {
       Assert.isNotNull(workItems, "Work Items can not be null");
       List<A> arts = new ArrayList<>();
       for (IAtsWorkItem workItem : workItems) {

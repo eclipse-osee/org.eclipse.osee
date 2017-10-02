@@ -30,27 +30,27 @@ public final class ServiceUtil {
       // Utility class
    }
 
-   private static <T> T getService(Class<T> clazz)  {
+   private static <T> T getService(Class<T> clazz) {
       return OsgiUtil.getService(ServiceUtil.class, clazz);
    }
 
-   public static AccountClient getAccountClient()  {
+   public static AccountClient getAccountClient() {
       return getService(AccountClient.class);
    }
 
-   public static OseeClient getOseeClient()  {
+   public static OseeClient getOseeClient() {
       return getService(OseeClient.class);
    }
 
-   public static IOseeCachingService getOseeCacheService()  {
+   public static IOseeCachingService getOseeCacheService() {
       return getService(IOseeCachingService.class);
    }
 
-   public static PackageAdmin getPackageAdmin()  {
+   public static PackageAdmin getPackageAdmin() {
       return getService(PackageAdmin.class);
    }
 
-   public static AccessPolicy getAccessPolicy()  {
+   public static AccessPolicy getAccessPolicy() {
       try {
          Bundle bundle = Platform.getBundle("org.eclipse.osee.framework.access");
          if (bundle.getState() != Bundle.ACTIVE) {
@@ -62,7 +62,7 @@ public final class ServiceUtil {
       return getService(AccessPolicy.class);
    }
 
-   public static IOseeCmService getOseeCmService()  {
+   public static IOseeCmService getOseeCmService() {
       return getService(IOseeCmService.class);
    }
 

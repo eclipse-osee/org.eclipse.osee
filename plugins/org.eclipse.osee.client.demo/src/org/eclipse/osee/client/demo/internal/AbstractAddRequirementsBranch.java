@@ -37,7 +37,7 @@ public abstract class AbstractAddRequirementsBranch implements IDbInitialization
    }
 
    @Override
-   public void run()  {
+   public void run() {
       BranchId requirementsBranch = BranchManager.createTopLevelBranch(branch);
 
       AccessControlManager.setPermission(UserManager.getUser(DemoUsers.Joe_Smith), requirementsBranch,

@@ -59,7 +59,7 @@ public class AtsDecisionReviewPrepareStateItemTest {
    }
 
    @Test
-   public void testTransitioning()  {
+   public void testTransitioning() {
       Assert.assertNotNull(decRevArt);
 
       // set valid options

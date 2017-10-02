@@ -101,7 +101,7 @@ public class RemainingHoursColumn extends XViewerAtsColumn implements IXViewerVa
       return false;
    }
 
-   public static Result isRemainingHoursValid(Object object)  {
+   public static Result isRemainingHoursValid(Object object) {
       if (object instanceof AbstractWorkflowArtifact) {
          AbstractWorkflowArtifact aba = (AbstractWorkflowArtifact) object;
          if (!aba.isAttributeTypeValid(AtsAttributeTypes.EstimatedHours)) {
@@ -130,7 +130,7 @@ public class RemainingHoursColumn extends XViewerAtsColumn implements IXViewerVa
       return Result.FalseResult;
    }
 
-   public static double getRemainingHours(Object object)  {
+   public static double getRemainingHours(Object object) {
       if (object instanceof AbstractWorkflowArtifact) {
          return ((AbstractWorkflowArtifact) object).getRemainHoursTotal();
       } else if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {

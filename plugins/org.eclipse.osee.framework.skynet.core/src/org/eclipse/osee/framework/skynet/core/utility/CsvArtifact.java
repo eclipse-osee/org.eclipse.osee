@@ -38,11 +38,11 @@ public class CsvArtifact {
       return artifact;
    }
 
-   public void setCsvData(String csvData)  {
+   public void setCsvData(String csvData) {
       artifact.setSoleAttributeFromString(CoreAttributeTypes.NativeContent, csvData);
    }
 
-   public String getCsvData()  {
+   public String getCsvData() {
       String csvData = null;
       if (artifact != null) {
          csvData = artifact.getSoleAttributeValueAsString(CoreAttributeTypes.NativeContent, null);
@@ -50,7 +50,7 @@ public class CsvArtifact {
       return csvData;
    }
 
-   public void appendData(String csvData)  {
+   public void appendData(String csvData) {
       String data = getCsvData();
       if (Strings.isValid(data)) {
          data = data.replaceFirst("\n+$", "");
@@ -64,7 +64,7 @@ public class CsvArtifact {
    /**
     * Creates a new un-persisted CsvArtifact
     */
-   public static CsvArtifact generateCsvArtifact(String staticId, String artifactName, String csvData, BranchId branch)  {
+   public static CsvArtifact generateCsvArtifact(String staticId, String artifactName, String csvData, BranchId branch) {
       Artifact artifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, branch);
       artifact.setName(artifactName);
       artifact.setSoleAttributeValue(CoreAttributeTypes.Extension, "csv");
@@ -73,7 +73,7 @@ public class CsvArtifact {
       return new CsvArtifact(artifact);
    }
 
-   public static CsvArtifact getCsvArtifact(String staticId, BranchId branch, boolean create)  {
+   public static CsvArtifact getCsvArtifact(String staticId, BranchId branch, boolean create) {
       Artifact art = null;
       try {
          art = ArtifactQuery.getArtifactFromTypeAndAttribute(CoreArtifactTypes.GeneralDocument,
@@ -88,7 +88,7 @@ public class CsvArtifact {
       return generateCsvArtifact(staticId, staticId, "", branch);
    }
 
-   public List<List<String>> getRows(boolean ignoreHeaderRow)  {
+   public List<List<String>> getRows(boolean ignoreHeaderRow) {
       List<List<String>> rows = new ArrayList<>();
       String csvData = getCsvData();
       String[] csvLines = csvData.split("\n");

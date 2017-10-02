@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public class SubscribeManager {
 
-   public static void addSubscribed(AbstractWorkflowArtifact workflow, IAtsUser user, IAtsChangeSet changes)  {
+   public static void addSubscribed(AbstractWorkflowArtifact workflow, IAtsUser user, IAtsChangeSet changes) {
       if (!workflow.getRelatedArtifactsUnSorted(AtsRelationTypes.SubscribedUser_User).contains(user)) {
          workflow.addRelation(AtsRelationTypes.SubscribedUser_User,
             AtsClientService.get().getUserServiceClient().getOseeUser(user));
@@ -32,13 +32,13 @@ public class SubscribeManager {
       }
    }
 
-   public static void removeSubscribed(AbstractWorkflowArtifact workflow, IAtsUser user, IAtsChangeSet changes)  {
+   public static void removeSubscribed(AbstractWorkflowArtifact workflow, IAtsUser user, IAtsChangeSet changes) {
       workflow.deleteRelation(AtsRelationTypes.SubscribedUser_User,
          AtsClientService.get().getUserServiceClient().getOseeUser(user));
       changes.add(workflow);
    }
 
-   public static boolean isSubscribed(AbstractWorkflowArtifact workflow, IAtsUser user)  {
+   public static boolean isSubscribed(AbstractWorkflowArtifact workflow, IAtsUser user) {
       return workflow.getRelatedArtifactsUnSorted(AtsRelationTypes.SubscribedUser_User).contains(user);
    }
 
@@ -50,11 +50,11 @@ public class SubscribeManager {
       }
    }
 
-   public static void toggleSubscribe(AbstractWorkflowArtifact awa)  {
+   public static void toggleSubscribe(AbstractWorkflowArtifact awa) {
       toggleSubscribe(Arrays.asList(awa));
    }
 
-   public static void toggleSubscribe(Collection<AbstractWorkflowArtifact> awas)  {
+   public static void toggleSubscribe(Collection<AbstractWorkflowArtifact> awas) {
       if (SubscribeManager.amISubscribed(awas.iterator().next())) {
          IAtsChangeSet changes = AtsClientService.get().createChangeSet("Toggle Subscribed");
          for (AbstractWorkflowArtifact awa : awas) {

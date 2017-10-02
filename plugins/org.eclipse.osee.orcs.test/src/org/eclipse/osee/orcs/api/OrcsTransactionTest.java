@@ -107,7 +107,7 @@ public class OrcsTransactionTest {
    }
 
    @Test
-   public void testWritingUriAttribute()  {
+   public void testWritingUriAttribute() {
       final String requirementText = "The engine torque shall be directly controllable through the engine control unit";
 
       TransactionBuilder tx = createTx();
@@ -139,7 +139,7 @@ public class OrcsTransactionTest {
    }
 
    @Test
-   public void testCreateArtifact()  {
+   public void testCreateArtifact() {
       String comment = "Test Artifact Write";
       String expectedName = "Create A Folder";
       String expectedAnnotation = "Annotate It";
@@ -177,7 +177,7 @@ public class OrcsTransactionTest {
    }
 
    @Test
-   public void testCreateArtifactWithoutTagger()  {
+   public void testCreateArtifactWithoutTagger() {
       String comment = "Test Artifact with untagged attribute";
       String expectedName = "Create An Artifact";
       String expectedAnnotation = "Annotate It";
@@ -252,7 +252,7 @@ public class OrcsTransactionTest {
    }
 
    @Test
-   public void testIntroduceOnSameBranch()  {
+   public void testIntroduceOnSameBranch() {
       ArtifactReadable user = query.fromBranch(COMMON).andId(SystemUser.Anonymous).getResults().getExactlyOne();
 
       TransactionBuilder tx = createTx();
@@ -262,7 +262,7 @@ public class OrcsTransactionTest {
    }
 
    @Test
-   public void testReadAfterWrite()  {
+   public void testReadAfterWrite() {
       QueryBuilder queryBuilder = query.fromBranch(COMMON).andId(OseeSystem);
 
       ArtifactReadable oseeSystem = queryBuilder.getResults().getExactlyOne();
@@ -278,7 +278,7 @@ public class OrcsTransactionTest {
    }
 
    @Test
-   public void testDeleteArtifact()  {
+   public void testDeleteArtifact() {
       TransactionBuilder tx = createTx();
       ArtifactId artifact = tx.createArtifact(CoreArtifactTypes.AccessControlModel, "deleteMe");
       tx.commit();
@@ -295,7 +295,7 @@ public class OrcsTransactionTest {
    }
 
    @Test
-   public void testDeleteAttribute()  {
+   public void testDeleteAttribute() {
       TransactionBuilder tx = createTx();
       ArtifactId artifact = tx.createArtifact(CoreArtifactTypes.AccessControlModel, "deleteThis");
       tx.createAttribute(artifact, CoreAttributeTypes.GeneralStringData, "deleted Name");
@@ -371,7 +371,7 @@ public class OrcsTransactionTest {
    }
 
    @Test
-   public void testHistoricalArtifactsCreated()  {
+   public void testHistoricalArtifactsCreated() {
       QueryBuilder builder = query.fromBranch(COMMON);
       builder.fromTransaction(transactions[0]);
       builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
@@ -381,7 +381,7 @@ public class OrcsTransactionTest {
    }
 
    @Test
-   public void testHistoricalOneArtifactDeleted()  {
+   public void testHistoricalOneArtifactDeleted() {
       QueryBuilder builder = query.fromBranch(COMMON);
       builder.fromTransaction(transactions[2]);
       builder.andIds(artifact1, artifact2);
@@ -389,7 +389,7 @@ public class OrcsTransactionTest {
    }
 
    @Test
-   public void testHistoricalDeletedAttribute()  {
+   public void testHistoricalDeletedAttribute() {
       QueryBuilder builder = query.fromBranch(COMMON);
       builder.fromTransaction(transactions[1]);
       builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
@@ -402,7 +402,7 @@ public class OrcsTransactionTest {
    }
 
    @Test
-   public void testHistoricalOneArtifactDeletedAttribute()  {
+   public void testHistoricalOneArtifactDeletedAttribute() {
       QueryBuilder builder = query.fromBranch(COMMON);
       builder.fromTransaction(transactions[1]);
       builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
@@ -412,7 +412,7 @@ public class OrcsTransactionTest {
    }
 
    @Test
-   public void testHistoricalIncludeDeletedAttribute()  {
+   public void testHistoricalIncludeDeletedAttribute() {
       QueryBuilder builder = query.fromBranch(COMMON);
       builder.fromTransaction(transactions[1]);
       builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
@@ -423,7 +423,7 @@ public class OrcsTransactionTest {
    }
 
    @Test
-   public void testHistoricalTwoArtifactsIncludeDeletedAttribute()  {
+   public void testHistoricalTwoArtifactsIncludeDeletedAttribute() {
       QueryBuilder builder = query.fromBranch(COMMON);
       builder.fromTransaction(transactions[1]);
       builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
@@ -434,7 +434,7 @@ public class OrcsTransactionTest {
    }
 
    @Test
-   public void testHistoricalAllowDeletedArtifactsDeletedAttributes()  {
+   public void testHistoricalAllowDeletedArtifactsDeletedAttributes() {
       QueryBuilder builder = query.fromBranch(COMMON);
       builder.fromTransaction(transactions[2]);
       builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
@@ -445,7 +445,7 @@ public class OrcsTransactionTest {
    }
 
    @Test
-   public void testHistoricalAllowDeletedArtifactsNondeletedAttribute()  {
+   public void testHistoricalAllowDeletedArtifactsNondeletedAttribute() {
       QueryBuilder builder = query.fromBranch(COMMON);
       builder.fromTransaction(transactions[2]);
       builder.andExists(CoreAttributeTypes.PublishInline, CoreAttributeTypes.Annotation);
@@ -456,7 +456,7 @@ public class OrcsTransactionTest {
    }
 
    @Test
-   public void testHistoricalRelation()  {
+   public void testHistoricalRelation() {
       QueryBuilder builder = query.fromBranch(COMMON);
       builder.fromTransaction(transactions[1]);
       builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
@@ -481,7 +481,7 @@ public class OrcsTransactionTest {
    }
 
    @Test
-   public void testHistoricalDeletedRelation()  {
+   public void testHistoricalDeletedRelation() {
       QueryBuilder builder = query.fromBranch(COMMON);
       builder.fromTransaction(transactions[1]);
       builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
@@ -506,7 +506,7 @@ public class OrcsTransactionTest {
    }
 
    @Test
-   public void testHistoricalAllowDeletedRelation()  {
+   public void testHistoricalAllowDeletedRelation() {
       QueryBuilder builder = query.fromBranch(COMMON);
       builder.fromTransaction(transactions[1]);
       builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
@@ -531,7 +531,7 @@ public class OrcsTransactionTest {
       verifyHistoricalArtifacts(artifacts, artifact1, null);
    }
 
-   public void verifyHistoricalArtifacts(ResultSet<ArtifactReadable> artifacts, ArtifactId artifact, ArtifactId artifact1)  {
+   public void verifyHistoricalArtifacts(ResultSet<ArtifactReadable> artifacts, ArtifactId artifact, ArtifactId artifact1) {
       int size = artifacts.size();
       int expectedSize = 0;
       if (artifact != null) {
@@ -558,7 +558,7 @@ public class OrcsTransactionTest {
    }
 
    @Test
-   public void testArtifactGetTransaction()  {
+   public void testArtifactGetTransaction() {
       TransactionBuilder tx = createTx();
 
       ArtifactId artId = tx.createArtifact(CoreArtifactTypes.Component, "A component");
@@ -578,7 +578,7 @@ public class OrcsTransactionTest {
    }
 
    @Test
-   public void testRelate()  {
+   public void testRelate() {
       TransactionBuilder tx1 = createTx();
       ArtifactId art1 = tx1.createArtifact(CoreArtifactTypes.Component, "A component");
       ArtifactId art2 = tx1.createArtifact(CoreArtifactTypes.User, "User Artifact");
@@ -594,7 +594,7 @@ public class OrcsTransactionTest {
    }
 
    @Test
-   public void testRelateTypeCheckException()  {
+   public void testRelateTypeCheckException() {
       TransactionBuilder tx1 = createTx();
       ArtifactId art1 = tx1.createArtifact(CoreArtifactTypes.Component, "A component");
       ArtifactId art2 = tx1.createArtifact(CoreArtifactTypes.User, "User Artifact");
@@ -606,7 +606,7 @@ public class OrcsTransactionTest {
    }
 
    @Test
-   public void testRelateWithSortType()  {
+   public void testRelateWithSortType() {
       TransactionBuilder tx1 = createTx();
       ArtifactId art1 = tx1.createArtifact(CoreArtifactTypes.Component, "A component");
       ArtifactId art2 = tx1.createArtifact(CoreArtifactTypes.Component, "B component");
@@ -646,7 +646,7 @@ public class OrcsTransactionTest {
    }
 
    @Test
-   public void testSetRelations()  {
+   public void testSetRelations() {
       TransactionBuilder tx1 = createTx();
       ArtifactId art1 = tx1.createArtifact(Component, "A component");
       ArtifactId art2 = tx1.createArtifact(Component, "B component");
@@ -698,7 +698,7 @@ public class OrcsTransactionTest {
    }
 
    @Test
-   public void testAddChildren()  {
+   public void testAddChildren() {
       TransactionBuilder tx1 = createTx();
       ArtifactId art1 = tx1.createArtifact(Component, "A component");
       ArtifactId art2 = tx1.createArtifact(Component, "C component");
@@ -730,7 +730,7 @@ public class OrcsTransactionTest {
    }
 
    @Test
-   public void testSetRationale()  {
+   public void testSetRationale() {
       String rationale = "This is my rationale";
 
       TransactionBuilder tx1 = createTx();
@@ -759,7 +759,7 @@ public class OrcsTransactionTest {
    }
 
    @Test
-   public void testUnrelate()  {
+   public void testUnrelate() {
       TransactionBuilder tx1 = createTx();
       ArtifactId art1 = tx1.createArtifact(Component, "A component");
       ArtifactId art2 = tx1.createArtifact(Component, "C component");
@@ -794,7 +794,7 @@ public class OrcsTransactionTest {
    }
 
    @Test
-   public void testUnrelateFromAllByType()  {
+   public void testUnrelateFromAllByType() {
       TransactionBuilder tx1 = createTx();
       ArtifactId art1 = tx1.createArtifact(Component, "A component");
       ArtifactId art2 = tx1.createArtifact(Component, "C component");
@@ -830,7 +830,7 @@ public class OrcsTransactionTest {
    }
 
    @Test
-   public void testAttributeCommitOnlyAffectNewStripe()  {
+   public void testAttributeCommitOnlyAffectNewStripe() {
       // create artifact and check exists and name set
       TransactionBuilder tx1 = createTx();
       ArtifactToken art1 = tx1.createArtifact(Component, "orig name");
@@ -856,7 +856,7 @@ public class OrcsTransactionTest {
    }
 
    @Test
-   public void testUnrelateFromAll()  {
+   public void testUnrelateFromAll() {
       ArtifactReadable artifact1 = null;
       ArtifactReadable artifact2 = null;
       ArtifactReadable artifact3 = null;
@@ -1050,11 +1050,11 @@ public class OrcsTransactionTest {
       tx.relate(parent2, Default_Hierarchical__Parent, child);
    }
 
-   private TransactionBuilder createTx()  {
+   private TransactionBuilder createTx() {
       return txFactory.createTransaction(COMMON, userArtifact, testName.getMethodName());
    }
 
-   private void checkTransaction(TransactionReadable previousTx, TransactionReadable newTx, BranchId branchId, String comment, ArtifactId user)  {
+   private void checkTransaction(TransactionReadable previousTx, TransactionReadable newTx, BranchId branchId, String comment, ArtifactId user) {
       assertTrue(previousTx.isOlderThan(newTx));
       assertEquals(comment, newTx.getComment());
       assertEquals(branchId, newTx.getBranch());

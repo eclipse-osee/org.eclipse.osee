@@ -37,14 +37,14 @@ public final class PurgeBranchHttpRequestOperation extends AbstractOperation {
    private final Branch branch;
    private final boolean recursive;
 
-   public PurgeBranchHttpRequestOperation(BranchId branch, boolean recursive)  {
+   public PurgeBranchHttpRequestOperation(BranchId branch, boolean recursive) {
       super("Purge " + branch, Activator.PLUGIN_ID);
       this.branch = BranchManager.getBranch(branch);
       this.recursive = recursive;
    }
 
    @Override
-   protected void doWork(IProgressMonitor monitor)  {
+   protected void doWork(IProgressMonitor monitor) {
       BranchState currentState = BranchManager.getState(branch);
       boolean archived = BranchManager.isArchived(branch);
 

@@ -115,7 +115,7 @@ public class RenameBranchHandler extends CommandHandler {
    }
 
    @Override
-   public boolean isEnabledWithException(IStructuredSelection structuredSelection)  {
+   public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
       List<IOseeBranch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
       if (branches.size() != 1) {
          return false;

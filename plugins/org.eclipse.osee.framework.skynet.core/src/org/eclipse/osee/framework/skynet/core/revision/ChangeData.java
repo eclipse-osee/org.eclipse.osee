@@ -63,7 +63,7 @@ public class ChangeData {
       return changes;
    }
 
-   public Collection<Change> getArtifactChangesByName(String name, String appendedInfo)  {
+   public Collection<Change> getArtifactChangesByName(String name, String appendedInfo) {
       Collection<Change> foundChanges = new HashSet<>();
       try {
          for (Change change : changes) {
@@ -109,14 +109,14 @@ public class ChangeData {
    /**
     * Return artifacts of kind and modType.
     */
-   public Collection<Artifact> getArtifacts(KindType kindType, ModificationType... modificationType)  {
+   public Collection<Artifact> getArtifacts(KindType kindType, ModificationType... modificationType) {
       return getArtifacts(kindType, null, modificationType);
    }
 
    /**
     * Return artifacts of kind and modType.
     */
-   public Collection<Artifact> getArtifacts(KindType kindType, List<AttributeTypeId> artifactTypesToIgnore, ModificationType... modificationType)  {
+   public Collection<Artifact> getArtifacts(KindType kindType, List<AttributeTypeId> artifactTypesToIgnore, ModificationType... modificationType) {
       if (kindType == KindType.RelationOnly) {
          return getArtifactsRelationOnly(modificationType);
       }
@@ -201,7 +201,7 @@ public class ChangeData {
       return false;
    }
 
-   private Collection<Artifact> getArtifactsRelationOnly(ModificationType... modificationType)  {
+   private Collection<Artifact> getArtifactsRelationOnly(ModificationType... modificationType) {
       Collection<Artifact> artMod = getArtifacts(KindType.Artifact, modificationType);
       Collection<Artifact> relMod = getArtifacts(KindType.Relation, modificationType);
       return Collections.setComplement(relMod, artMod);

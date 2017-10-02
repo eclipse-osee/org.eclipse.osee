@@ -17,7 +17,7 @@ public interface CanDelete extends HasDeleteState {
 
    boolean isDeleteAllowed();
 
-   void delete() ;
+   void delete();
 
-   void unDelete() ;
+   void unDelete();
 }

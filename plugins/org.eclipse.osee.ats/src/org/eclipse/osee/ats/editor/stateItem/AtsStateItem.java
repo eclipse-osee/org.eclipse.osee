@@ -40,12 +40,12 @@ public abstract class AtsStateItem implements IAtsStateItem {
    }
 
    @Override
-   public Result committing(AbstractWorkflowArtifact sma)  {
+   public Result committing(AbstractWorkflowArtifact sma) {
       return Result.TrueResult;
    }
 
    @Override
-   public String getBranchShortName(AbstractWorkflowArtifact sma)  {
+   public String getBranchShortName(AbstractWorkflowArtifact sma) {
       return null;
    }
 
@@ -55,42 +55,42 @@ public abstract class AtsStateItem implements IAtsStateItem {
    }
 
    @Override
-   public Collection<IAtsUser> getOverrideTransitionToAssignees(AbstractWorkflowArtifact awa, String decision)  {
+   public Collection<IAtsUser> getOverrideTransitionToAssignees(AbstractWorkflowArtifact awa, String decision) {
       return null;
    }
 
    @Override
-   public String getOverrideTransitionToStateName(WfeWorkflowSection section)  {
+   public String getOverrideTransitionToStateName(WfeWorkflowSection section) {
       return null;
    }
 
    @Override
-   public List<XWidget> getDynamicXWidgetsPostBody(AbstractWorkflowArtifact sma, String stateName)  {
+   public List<XWidget> getDynamicXWidgetsPostBody(AbstractWorkflowArtifact sma, String stateName) {
       return Collections.emptyList();
    }
 
    @Override
-   public List<XWidget> getDynamicXWidgetsPreBody(AbstractWorkflowArtifact sma, String stateName)  {
+   public List<XWidget> getDynamicXWidgetsPreBody(AbstractWorkflowArtifact sma, String stateName) {
       return Collections.emptyList();
    }
 
    @Override
-   public void xWidgetCreated(XWidget xWidget, FormToolkit toolkit, IAtsStateDefinition stateDefinition, Artifact art, boolean isEditable)  {
+   public void xWidgetCreated(XWidget xWidget, FormToolkit toolkit, IAtsStateDefinition stateDefinition, Artifact art, boolean isEditable) {
       // provided for subclass implementation
    }
 
    @Override
-   public void widgetModified(XWidget xWidget, FormToolkit toolkit, IAtsStateDefinition stateDefinition, Artifact art, boolean isEditable)  {
+   public void widgetModified(XWidget xWidget, FormToolkit toolkit, IAtsStateDefinition stateDefinition, Artifact art, boolean isEditable) {
       // provided for subclass implementation
    }
 
    @Override
-   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, IAtsStateDefinition stateDefinition, Artifact art, boolean isEditable)  {
+   public Result xWidgetCreating(XWidget xWidget, FormToolkit toolkit, IAtsStateDefinition stateDefinition, Artifact art, boolean isEditable) {
       return Result.TrueResult;
    }
 
    @Override
-   public boolean isAccessControlViaAssigneesEnabledForBranching()  {
+   public boolean isAccessControlViaAssigneesEnabledForBranching() {
       return false;
    }
 
@@ -107,7 +107,7 @@ public abstract class AtsStateItem implements IAtsStateItem {
    /**
     * Allows subclass to add changes to transition before commit.
     */
-   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes)  {
+   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes) {
       // provided for subclass implementation
    }
 
@@ -118,7 +118,7 @@ public abstract class AtsStateItem implements IAtsStateItem {
       // provided for subclass implementation
    }
 
-   public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees)  {
+   public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees) {
       // provided for subclass implementation
    }
 

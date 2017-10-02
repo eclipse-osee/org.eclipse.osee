@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
  */
 public interface AttributeAdapter<T> {
 
-   T adapt(Attribute<?> attribute, Id identity) ;
+   T adapt(Attribute<?> attribute, Id identity);
 
    Collection<AttributeTypeId> getSupportedTypes();
 

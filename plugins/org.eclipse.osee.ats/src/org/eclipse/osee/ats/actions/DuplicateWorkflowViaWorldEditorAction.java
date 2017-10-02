@@ -41,7 +41,7 @@ public class DuplicateWorkflowViaWorldEditorAction extends AbstractAtsAction {
       return ImageManager.getImageDescriptor(FrameworkImage.DUPLICATE);
    }
 
-   private Collection<TeamWorkFlowArtifact> getSelectedTeamWorkflowArtifacts()  {
+   private Collection<TeamWorkFlowArtifact> getSelectedTeamWorkflowArtifacts() {
       List<TeamWorkFlowArtifact> teams = new ArrayList<>();
       for (Artifact art : selectedAtsArtifacts.getSelectedWorkflowArtifacts()) {
          if (art instanceof TeamWorkFlowArtifact) {
@@ -52,7 +52,7 @@ public class DuplicateWorkflowViaWorldEditorAction extends AbstractAtsAction {
    }
 
    @Override
-   public void runWithException()  {
+   public void runWithException() {
       if (getSelectedTeamWorkflowArtifacts().isEmpty()) {
          throw new OseeArgumentException("Must select one or more team workflows to duplicate");
       }

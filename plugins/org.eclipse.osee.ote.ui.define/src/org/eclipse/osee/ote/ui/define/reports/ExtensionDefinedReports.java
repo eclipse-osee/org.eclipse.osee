@@ -101,8 +101,7 @@ public class ExtensionDefinedReports {
                   reportMap.put(identifier, new ReportData(identifier, name, object, imageDescriptor.createImage()));
                }
             } catch (Exception ex) {
-               OseeLog.logf(OteUiDefinePlugin.class, Level.SEVERE,
-                  ex, "Error loading report [%s]", className);
+               OseeLog.logf(OteUiDefinePlugin.class, Level.SEVERE, ex, "Error loading report [%s]", className);
             }
          }
       }

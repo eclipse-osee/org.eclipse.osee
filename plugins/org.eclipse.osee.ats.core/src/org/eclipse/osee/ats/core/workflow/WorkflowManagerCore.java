@@ -23,16 +23,16 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
  */
 public class WorkflowManagerCore {
 
-   public static boolean isEditable(IAtsUser user, IAtsWorkItem workItem, IAtsStateDefinition stateDef, boolean privilegedEditEnabled, IAtsUserService userService)  {
+   public static boolean isEditable(IAtsUser user, IAtsWorkItem workItem, IAtsStateDefinition stateDef, boolean privilegedEditEnabled, IAtsUserService userService) {
       return isEditable(workItem, stateDef, privilegedEditEnabled, user, userService.isAtsAdmin());
    }
 
-   public static boolean isEditable(IAtsWorkItem workItem, IAtsStateDefinition stateDef, boolean privilegedEditEnabled, IAtsUser currentUser, boolean isAtsAdmin)  {
+   public static boolean isEditable(IAtsWorkItem workItem, IAtsStateDefinition stateDef, boolean privilegedEditEnabled, IAtsUser currentUser, boolean isAtsAdmin) {
       WorkflowManagerCore wmc = new WorkflowManagerCore();
       return wmc.isWorkItemEditable(workItem, stateDef, privilegedEditEnabled, currentUser, isAtsAdmin);
    }
 
-   protected boolean isWorkItemEditable(IAtsWorkItem workItem, IAtsStateDefinition stateDef, boolean privilegedEditEnabled, IAtsUser currentUser, boolean isAtsAdmin)  {
+   protected boolean isWorkItemEditable(IAtsWorkItem workItem, IAtsStateDefinition stateDef, boolean privilegedEditEnabled, IAtsUser currentUser, boolean isAtsAdmin) {
       // must be current state
       return (stateDef == null || workItem.getStateDefinition().getName().equals(stateDef.getName())) &&
       // and one of these

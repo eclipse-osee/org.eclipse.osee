@@ -24,7 +24,7 @@ public class FieldTestUtil {
    private FieldTestUtil() {
    }
 
-   public static <T> void assertSetGet(CollectionField<T> field, List<T> setValues, List<T> expected, boolean expectedDirty)  {
+   public static <T> void assertSetGet(CollectionField<T> field, List<T> setValues, List<T> expected, boolean expectedDirty) {
       field.set(setValues);
       Assert.assertEquals(expectedDirty, field.isDirty());
 

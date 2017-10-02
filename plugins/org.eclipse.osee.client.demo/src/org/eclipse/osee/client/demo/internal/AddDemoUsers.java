@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 public class AddDemoUsers implements IDbInitializationTask {
 
    @Override
-   public void run()  {
+   public void run() {
       List<User> admins = new ArrayList<>();
 
       SkynetTransaction transaction = TransactionManager.createTransaction(CoreBranches.COMMON, "Add Dev Users");

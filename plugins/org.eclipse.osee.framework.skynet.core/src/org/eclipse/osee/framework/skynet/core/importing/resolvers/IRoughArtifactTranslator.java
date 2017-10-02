@@ -18,6 +18,6 @@ import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
  */
 public interface IRoughArtifactTranslator {
 
-   void translate(RoughArtifact roughArtifact, Artifact artifact) ;
+   void translate(RoughArtifact roughArtifact, Artifact artifact);
 
 }

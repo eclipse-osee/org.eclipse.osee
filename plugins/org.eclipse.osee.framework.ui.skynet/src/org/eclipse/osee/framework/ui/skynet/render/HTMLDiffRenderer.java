@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Display;
 public class HTMLDiffRenderer implements IComparator {
 
    @Override
-   public void compare(IProgressMonitor monitor, CompareDataCollector collector, PresentationType presentationType, ArtifactDelta artifactDelta, String pathPrefix)  {
+   public void compare(IProgressMonitor monitor, CompareDataCollector collector, PresentationType presentationType, ArtifactDelta artifactDelta, String pathPrefix) {
       String was = " ", is = " ", artifactName = null;
       Artifact startArtifact = artifactDelta.getStartArtifact();
       if (startArtifact != null) {
@@ -57,12 +57,12 @@ public class HTMLDiffRenderer implements IComparator {
    }
 
    @Override
-   public void compare(CompareDataCollector collector, Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType, String pathPrefix)  {
+   public void compare(CompareDataCollector collector, Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType, String pathPrefix) {
       throw new OseeCoreException("The HTML Content renderer does not support the compare operation");
    }
 
    @Override
-   public void compareArtifacts(IProgressMonitor monitor, CompareDataCollector collector, PresentationType presentationType, Collection<ArtifactDelta> artifactDeltas, String pathPrefix)  {
+   public void compareArtifacts(IProgressMonitor monitor, CompareDataCollector collector, PresentationType presentationType, Collection<ArtifactDelta> artifactDeltas, String pathPrefix) {
       for (ArtifactDelta artifactDelta : artifactDeltas) {
          compare(monitor, collector, presentationType, artifactDelta, pathPrefix);
       }

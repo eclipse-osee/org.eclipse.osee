@@ -15,6 +15,6 @@ package org.eclipse.osee.ats.api.workflow;
  */
 public interface IAtsWorkItemServiceProvider {
 
-   IAtsWorkItemService getWorkItemService() ;
+   IAtsWorkItemService getWorkItemService();
 
 }

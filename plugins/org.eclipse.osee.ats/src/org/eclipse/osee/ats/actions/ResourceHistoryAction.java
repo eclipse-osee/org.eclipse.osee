@@ -30,7 +30,7 @@ public class ResourceHistoryAction extends AbstractAtsAction {
    }
 
    @Override
-   public void runWithException()  {
+   public void runWithException() {
       HistoryView.open(sma);
    }
 

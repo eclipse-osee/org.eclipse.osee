@@ -44,7 +44,7 @@ public class AtsNavigateComposite extends XNavigateComposite {
    }
 
    @Override
-   protected void handleDoubleClick()  {
+   protected void handleDoubleClick() {
       IStructuredSelection sel = (IStructuredSelection) filteredTree.getViewer().getSelection();
       if (!sel.iterator().hasNext()) {
          return;
@@ -54,7 +54,7 @@ public class AtsNavigateComposite extends XNavigateComposite {
    }
 
    @Override
-   protected void handleDoubleClick(XNavigateItem item, TableLoadOption... tableLoadOptions)  {
+   protected void handleDoubleClick(XNavigateItem item, TableLoadOption... tableLoadOptions) {
       super.disposeTooltip();
       if (item.getChildren().size() > 0) {
          filteredTree.getViewer().setExpandedState(item, true);

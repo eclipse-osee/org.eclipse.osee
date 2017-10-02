@@ -33,7 +33,7 @@ public class XBranchSelectWidgetWithSave extends XBranchSelectWidget implements 
       addXModifiedListener(new DirtyListener());
    }
 
-   public List<BranchId> getStored()  {
+   public List<BranchId> getStored() {
       return artifact.getAttributeValues(attributeType);
    }
 
@@ -43,12 +43,12 @@ public class XBranchSelectWidgetWithSave extends XBranchSelectWidget implements 
    }
 
    @Override
-   public void saveToArtifact()  {
+   public void saveToArtifact() {
       artifact.setAttributeFromValues(attributeType, Arrays.asList(getSelection()));
    }
 
    @Override
-   public void revert()  {
+   public void revert() {
       setAttributeType(getArtifact(), getAttributeType());
    }
 
@@ -69,7 +69,7 @@ public class XBranchSelectWidgetWithSave extends XBranchSelectWidget implements 
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeTypeName)  {
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeTypeName) {
       this.artifact = artifact;
       this.attributeType = attributeTypeName;
       List<BranchId> storedBranchReference = getStored();

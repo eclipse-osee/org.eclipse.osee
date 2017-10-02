@@ -61,7 +61,7 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
    }
 
    @Override
-   public String getSelectedName(SearchType searchType)  {
+   public String getSelectedName(SearchType searchType) {
       if (getSearchVersionArtifact() != null) {
          return super.getName() + " - " + getSearchVersionArtifact();
       }
@@ -76,7 +76,7 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType)  {
+   public Collection<Artifact> performSearch(SearchType searchType) {
 
       if (getSearchVersionArtifact() == null) {
          throw new OseeArgumentException("Invalid release version");
@@ -101,7 +101,7 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
    }
 
    @Override
-   public void performUI(SearchType searchType)  {
+   public void performUI(SearchType searchType) {
       super.performUI(searchType);
       if (searchType == SearchType.ReSearch && selectedVersionArt != null) {
          return;

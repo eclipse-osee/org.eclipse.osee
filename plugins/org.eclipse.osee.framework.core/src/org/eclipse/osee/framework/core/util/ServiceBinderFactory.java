@@ -16,5 +16,5 @@ import org.osgi.util.tracker.ServiceTracker;
  * @author Roberto E. Escobar
  */
 public interface ServiceBinderFactory {
-   ServiceTracker createTracker(ServiceBindType bindType, Class<?> clazz) ;
+   ServiceTracker createTracker(ServiceBindType bindType, Class<?> clazz);
 }

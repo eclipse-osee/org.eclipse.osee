@@ -75,7 +75,7 @@ public class OrcsWriterExcelReader {
       }
 
       @Override
-      public void foundStartOfWorksheet(String sheetName)  {
+      public void foundStartOfWorksheet(String sheetName) {
          this.sheetName = sheetName;
          if (sheetName.equals(OrcsWriterUtil.CREATE_SHEET_NAME)) {
             createSheet = new OrcsWriterSheetProcessorForCreateUpdate(collector, result, true);
@@ -135,7 +135,7 @@ public class OrcsWriterExcelReader {
       }
 
       @Override
-      public void processRow(String[] row)  {
+      public void processRow(String[] row) {
          if (skipSheet) {
             return;
          }

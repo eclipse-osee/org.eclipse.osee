@@ -67,7 +67,7 @@ public class AttributeConflict extends Conflict {
 
    private String changeItemName;
 
-   public AttributeConflict(int sourceGamma, int destGamma, ArtifactId artId, TransactionToken toTransactionId, TransactionToken commitTransaction, String sourceValue, AttributeId attrId, AttributeTypeId attributeType, BranchId mergeBranch, IOseeBranch sourceBranch, IOseeBranch destBranch)  {
+   public AttributeConflict(int sourceGamma, int destGamma, ArtifactId artId, TransactionToken toTransactionId, TransactionToken commitTransaction, String sourceValue, AttributeId attrId, AttributeTypeId attributeType, BranchId mergeBranch, IOseeBranch sourceBranch, IOseeBranch destBranch) {
       super(sourceGamma, destGamma, artId, toTransactionId, commitTransaction, mergeBranch, sourceBranch, destBranch);
       this.attrId = attrId;
       this.attributeType = attributeType;
@@ -75,11 +75,11 @@ public class AttributeConflict extends Conflict {
       computeEqualsValues();
    }
 
-   public Attribute<?> getAttribute()  {
+   public Attribute<?> getAttribute() {
       return getArtifact().getAttributeById(attrId, false);
    }
 
-   public Attribute<?> getSourceAttribute(boolean allowDeleted)  {
+   public Attribute<?> getSourceAttribute(boolean allowDeleted) {
       Attribute<?> sourceAttribute = getSourceArtifact().getAttributeById(attrId, allowDeleted);
       if (sourceAttribute == null) {
          if (sourceBranch != null) {
@@ -92,7 +92,7 @@ public class AttributeConflict extends Conflict {
       return sourceAttribute;
    }
 
-   public Attribute<?> getDestAttribute()  {
+   public Attribute<?> getDestAttribute() {
       Attribute<?> destAttribute = getDestArtifact().getAttributeById(attrId, false);
       if (destAttribute == null) {
          throw new AttributeDoesNotExist("Attribute %s could not be found on artifact %s on branch %s", attrId,
@@ -101,7 +101,7 @@ public class AttributeConflict extends Conflict {
       return destAttribute;
    }
 
-   private Attribute<?> getAttribute(Artifact artifact)  {
+   private Attribute<?> getAttribute(Artifact artifact) {
       Attribute<?> attribute = artifact.getAttributeById(attrId, false);
       if (attribute == null) {
          throw new AttributeDoesNotExist("Attribute %s could not be found on artifact %s on branch %s", attrId,
@@ -114,7 +114,7 @@ public class AttributeConflict extends Conflict {
       return attributeType;
    }
 
-   public Object getSourceObject()  {
+   public Object getSourceObject() {
       if (sourceObject != null) {
          return sourceObject;
       }
@@ -126,7 +126,7 @@ public class AttributeConflict extends Conflict {
       return sourceObject;
    }
 
-   public Object getDestObject()  {
+   public Object getDestObject() {
       if (destObject != null) {
          return destObject;
       }
@@ -163,7 +163,7 @@ public class AttributeConflict extends Conflict {
    }
 
    @Override
-   public String getDestDisplayData()  {
+   public String getDestDisplayData() {
       String displayValue =
          isWordAttribute() ? STREAM_DATA : getDestObject() == null ? "Null Value" : getDestObject().toString();
       try {
@@ -175,7 +175,7 @@ public class AttributeConflict extends Conflict {
    }
 
    @Override
-   public String getSourceDisplayData()  {
+   public String getSourceDisplayData() {
       String displayValue =
          isWordAttribute() ? STREAM_DATA : getSourceObject() == null ? "Null Value" : getSourceObject().toString();
       try {
@@ -201,15 +201,15 @@ public class AttributeConflict extends Conflict {
       return sourceEqualsDest;
    }
 
-   public Object getMergeObject()  {
+   public Object getMergeObject() {
       return getAttribute() != null ? getAttribute().getValue() : null;
    }
 
-   public TreeSet<String> getEnumerationAttributeValues()  {
+   public TreeSet<String> getEnumerationAttributeValues() {
       return new TreeSet<String>(AttributeTypeManager.getEnumerationValues(getAttributeType()));
    }
 
-   public boolean setStringAttributeValue(String value)  {
+   public boolean setStringAttributeValue(String value) {
       if (!getStatus().isOverwriteAllowed()) {
          if (DEBUG) {
             System.out.println(
@@ -226,7 +226,7 @@ public class AttributeConflict extends Conflict {
       return true;
    }
 
-   public boolean setAttributeValue(Object value)  {
+   public boolean setAttributeValue(Object value) {
       if (!getStatus().isOverwriteAllowed()) {
          if (DEBUG) {
             System.out.println(
@@ -244,7 +244,7 @@ public class AttributeConflict extends Conflict {
    }
 
    @Override
-   public boolean setToSource()  {
+   public boolean setToSource() {
       if (!getStatus().isOverwriteAllowed() || getSourceObject() == null) {
          if (DEBUG) {
             System.out.println(String.format(
@@ -263,7 +263,7 @@ public class AttributeConflict extends Conflict {
    }
 
    @Override
-   public boolean setToDest()  {
+   public boolean setToDest() {
       if (!getStatus().isOverwriteAllowed() || getDestObject() == null) {
          if (DEBUG) {
             System.out.println(String.format(
@@ -282,7 +282,7 @@ public class AttributeConflict extends Conflict {
    }
 
    @Override
-   public boolean clearValue()  {
+   public boolean clearValue() {
       if (!getStatus().isOverwriteAllowed()) {
          if (DEBUG) {
             System.out.println(
@@ -306,13 +306,13 @@ public class AttributeConflict extends Conflict {
    }
 
    @Override
-   public void computeEqualsValues()  {
+   public void computeEqualsValues() {
       mergeEqualsSource = compareObjects(getMergeObject(), getSourceObject());
       mergeEqualsDest = compareObjects(getMergeObject(), getDestObject());
       sourceEqualsDest = compareObjects(getSourceObject(), getDestObject());
    }
 
-   private boolean compareObjects(Object obj1, Object obj2)  {
+   private boolean compareObjects(Object obj1, Object obj2) {
       if (obj1 == null || obj2 == null) {
          return false;
       }
@@ -334,7 +334,7 @@ public class AttributeConflict extends Conflict {
       return obj1.equals(obj2);
    }
 
-   public void markStatusToReflectEdit()  {
+   public void markStatusToReflectEdit() {
       computeEqualsValues();
       if (status.equals(ConflictStatus.UNTOUCHED) || status.equals(
          ConflictStatus.OUT_OF_DATE_RESOLVED) || status.equals(ConflictStatus.OUT_OF_DATE) || status.equals(
@@ -345,7 +345,7 @@ public class AttributeConflict extends Conflict {
    }
 
    @Override
-   public ConflictStatus computeStatus()  {
+   public ConflictStatus computeStatus() {
       ConflictStatus passedStatus = ConflictStatus.UNTOUCHED;
       try {
          getSourceAttribute(false);
@@ -367,7 +367,7 @@ public class AttributeConflict extends Conflict {
    }
 
    @Override
-   public String getMergeDisplayData()  {
+   public String getMergeDisplayData() {
       ConflictStatus status = getStatus();
       if (status.isUntouched() && !(sourceEqualsDestination() && mergeEqualsSource()) || status.isInformational()) {
          return NO_VALUE;
@@ -392,7 +392,7 @@ public class AttributeConflict extends Conflict {
    }
 
    @Override
-   public int getMergeGammaId()  {
+   public int getMergeGammaId() {
       return getAttribute().getGammaId();
    }
 
@@ -407,7 +407,7 @@ public class AttributeConflict extends Conflict {
    }
 
    @Override
-   public void setStatus(ConflictStatus status)  {
+   public void setStatus(ConflictStatus status) {
       if (status.equals(
          ConflictStatus.RESOLVED) && isWordAttribute() && ((WordAttribute) getAttribute()).containsWordAnnotations()) {
          throw new OseeStateException(RESOLVE_MERGE_MARKUP);
@@ -415,7 +415,7 @@ public class AttributeConflict extends Conflict {
       super.setStatus(status);
    }
 
-   public boolean wordMarkupPresent()  {
+   public boolean wordMarkupPresent() {
       if (isWordAttribute() && ((WordAttribute) getAttribute()).containsWordAnnotations()) {
          return true;
       }
@@ -423,7 +423,7 @@ public class AttributeConflict extends Conflict {
    }
 
    @Override
-   public boolean applyPreviousMerge(BranchId mergeBranchId, BranchId destBranchId)  {
+   public boolean applyPreviousMerge(BranchId mergeBranchId, BranchId destBranchId) {
       if (DEBUG) {
          System.out.println("Apply the merge using the merge branch value " + mergeBranchId);
       }
@@ -458,7 +458,7 @@ public class AttributeConflict extends Conflict {
       return returnValue;
    }
 
-   public boolean involvesNativeContent()  {
+   public boolean involvesNativeContent() {
       return getArtifact().isAttributeTypeValid(CoreAttributeTypes.NativeContent);
    }
 }

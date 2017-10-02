@@ -13,5 +13,5 @@ package org.eclipse.osee.framework.ui.skynet.render.compare;
 import org.eclipse.osee.framework.core.model.change.CompareData;
 
 public interface CompareDataCollector {
-   void onCompare(CompareData data) ;
+   void onCompare(CompareData data);
 }

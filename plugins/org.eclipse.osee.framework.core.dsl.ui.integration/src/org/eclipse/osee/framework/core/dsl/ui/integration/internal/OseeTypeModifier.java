@@ -43,7 +43,7 @@ import org.eclipse.osee.jaxrs.client.JaxRsClient;
 public class OseeTypeModifier implements AttributeModifier {
 
    @Override
-   public InputStream modifyForSave(Artifact owner, File file)  {
+   public InputStream modifyForSave(Artifact owner, File file) {
       String value = null;
       try {
          value = Lib.fileToString(file);
@@ -106,7 +106,7 @@ public class OseeTypeModifier implements AttributeModifier {
       return inputStream;
    }
 
-   private void addUuid(Set<Long> set, OseeType type)  {
+   private void addUuid(Set<Long> set, OseeType type) {
       Long uuid = Long.valueOf(type.getId());
       boolean wasAdded = set.add(uuid);
       Conditions.checkExpressionFailOnTrue(!wasAdded, "Duplicate uuid found: [0x%X]", uuid);

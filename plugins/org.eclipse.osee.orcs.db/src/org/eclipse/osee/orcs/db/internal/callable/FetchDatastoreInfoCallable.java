@@ -64,7 +64,7 @@ public class FetchDatastoreInfoCallable extends AbstractDatastoreCallable<DataSt
       return dataStoreInfo;
    }
 
-   private void addInfoProperties(Map<String, String> props)  {
+   private void addInfoProperties(Map<String, String> props) {
       for (String key : preferences.getKeys()) {
          String value = preferences.getValue(key);
          if (!Strings.isValid(value)) {
@@ -78,7 +78,7 @@ public class FetchDatastoreInfoCallable extends AbstractDatastoreCallable<DataSt
       props.put("ds.exchange.data.path", ResourceConstants.getExchangeDataPath(preferences));
    }
 
-   private void addDbMetaData(Map<String, String> props)  {
+   private void addDbMetaData(Map<String, String> props) {
       try (JdbcConnection connection = getJdbcClient().getConnection()) {
          DatabaseMetaData meta = connection.getMetaData();
          props.put("db.connection.url", meta.getURL());

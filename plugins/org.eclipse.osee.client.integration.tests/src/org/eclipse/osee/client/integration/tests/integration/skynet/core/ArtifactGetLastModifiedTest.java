@@ -94,7 +94,7 @@ public class ArtifactGetLastModifiedTest {
       assertEquals(UserManager.getUser(), artifact.getLastModifiedBy());
    }
 
-   private void assertBefore(Date previousModifyDate, Artifact artifact)  {
+   private void assertBefore(Date previousModifyDate, Artifact artifact) {
       String message = String.format("expected %tc to be before %tc", previousModifyDate, artifact.getLastModified());
       Assert.assertTrue(message, previousModifyDate.before(artifact.getLastModified()));
    }

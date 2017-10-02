@@ -30,7 +30,7 @@ import org.eclipse.osee.support.test.util.TestUtil;
 public class DemoWebDatabaseConfig implements IDbInitializationTask {
 
    @Override
-   public void run()  {
+   public void run() {
       TestUtil.setDemoDb(true);
 
       BranchId atsBranch = AtsClientService.get().getAtsBranch();

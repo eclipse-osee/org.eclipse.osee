@@ -159,7 +159,7 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
       }
    }
 
-   private void updateTitleBar()  {
+   private void updateTitleBar() {
       if (Widgets.isAccessible(scrolledForm)) {
          String titleString = editor.getTitleStr();
          String displayableTitle = Strings.escapeAmpersands(titleString);
@@ -486,45 +486,45 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
          return null;
       }
 
-      private CustomizeData getCustomizeData()  {
+      private CustomizeData getCustomizeData() {
          CustomizeData customizeData = worldComposite.getCustomizeDataCopy();
          Conditions.checkNotNull(customizeData, "Customized Data");
          return customizeData;
       }
 
-      private FilterData getFilterData()  {
+      private FilterData getFilterData() {
          FilterData filterData = getCustomizeData().getFilterData();
          Conditions.checkNotNull(filterData, "Filter Data");
          return filterData;
       }
 
-      private SortingData getSortingData()  {
+      private SortingData getSortingData() {
          SortingData sortingData = getCustomizeData().getSortingData();
          Conditions.checkNotNull(sortingData, "Sort Data");
          return sortingData;
       }
 
-      private String getFilterText()  {
+      private String getFilterText() {
          String filterText = getFilterData().getFilterText();
          Conditions.checkNotNull(filterText, "Filter Text");
          return filterText;
       }
 
-      private List<String> getSortingIds()  {
+      private List<String> getSortingIds() {
          return getSortingData().getSortingIds();
       }
 
-      private boolean isSortedByCollectorsOrder()  {
+      private boolean isSortedByCollectorsOrder() {
          List<String> sortingIds = getSortingIds();
          return sortingIds.size() == 1 && sortingIds.contains(provider.getColumnName());
       }
 
-      private boolean isFiltered()  {
+      private boolean isFiltered() {
          String filterText = getFilterText();
          return Strings.isValid(filterText);
       }
 
-      private boolean isDropValid()  {
+      private boolean isDropValid() {
          return !isFiltered() && isSortedByCollectorsOrder();
       }
 
@@ -667,7 +667,7 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
    }
 
    @Override
-   public void reSearch()  {
+   public void reSearch() {
       JobChangeAdapter listener = new JobChangeAdapter() {
 
          @Override
@@ -681,7 +681,7 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
    }
 
    @Override
-   public IWorldEditorProvider getWorldEditorProvider()  {
+   public IWorldEditorProvider getWorldEditorProvider() {
       return null;
    }
 

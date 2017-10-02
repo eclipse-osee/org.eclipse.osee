@@ -38,7 +38,7 @@ public class PeerReviewDefinitionManager extends TransitionAdapter {
    /**
     * Creates PeerToPeer review if one of same name doesn't already exist
     */
-   public static PeerToPeerReviewArtifact createNewPeerToPeerReview(IAtsPeerReviewDefinition peerRevDef, IAtsChangeSet changes, TeamWorkFlowArtifact teamArt, Date createdDate, IAtsUser createdBy)  {
+   public static PeerToPeerReviewArtifact createNewPeerToPeerReview(IAtsPeerReviewDefinition peerRevDef, IAtsChangeSet changes, TeamWorkFlowArtifact teamArt, Date createdDate, IAtsUser createdBy) {
       String title = peerRevDef.getReviewTitle();
       if (!Strings.isValid(title)) {
          title = String.format("Review [%s]", teamArt.getName());
@@ -74,7 +74,7 @@ public class PeerReviewDefinitionManager extends TransitionAdapter {
    }
 
    @Override
-   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes)  {
+   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes) {
       // Create any decision or peerToPeer reviews for transitionTo and transitionFrom
       if (!workItem.isTeamWorkflow()) {
          return;

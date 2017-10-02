@@ -112,7 +112,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
-   public void start()  {
+   public void start() {
       attributeResolverService = new AtsAttributeResolverServiceImpl();
 
       super.start();
@@ -164,12 +164,12 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
-   public Artifact getConfigArtifact(IAtsConfigObject atsConfigObject)  {
+   public Artifact getConfigArtifact(IAtsConfigObject atsConfigObject) {
       return AtsClientService.get().getArtifact(atsConfigObject);
    }
 
    @Override
-   public List<Artifact> getConfigArtifacts(Collection<? extends IAtsObject> atsObjects)  {
+   public List<Artifact> getConfigArtifacts(Collection<? extends IAtsObject> atsObjects) {
       List<Artifact> results = new LinkedList<>();
       for (ArtifactId artId : AtsObjects.getArtifacts(atsObjects)) {
          if (artId instanceof Artifact) {
@@ -185,7 +185,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
-   public void reloadWorkDefinitionCache(boolean pend)  {
+   public void reloadWorkDefinitionCache(boolean pend) {
       Runnable reload = new Runnable() {
 
          @Override
@@ -201,7 +201,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
-   public void reloadUserCache(boolean pend)  {
+   public void reloadUserCache(boolean pend) {
       Runnable reload = new Runnable() {
 
          @Override
@@ -218,7 +218,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
-   public void reloadAllCaches(boolean pend)  {
+   public void reloadAllCaches(boolean pend) {
       reloadUserCache(pend);
       reloadWorkDefinitionCache(pend);
       reloadConfigCache(pend);
@@ -286,36 +286,36 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
-   public IAtsTeamDefinition createTeamDefinition(String name, IAtsChangeSet changes, IAtsServices services)  {
+   public IAtsTeamDefinition createTeamDefinition(String name, IAtsChangeSet changes, IAtsServices services) {
       return createTeamDefinition(name, AtsUtilClient.createConfigObjectUuid(), changes, services);
    }
 
    @Override
-   public IAtsTeamDefinition createTeamDefinition(String name, long uuid, IAtsChangeSet changes, IAtsServices services)  {
+   public IAtsTeamDefinition createTeamDefinition(String name, long uuid, IAtsChangeSet changes, IAtsServices services) {
       IAtsTeamDefinition item = teamDefFactory.createTeamDefinition(name, uuid, changes, services);
       atsCache.cacheAtsObject(item);
       return item;
    }
 
    @Override
-   public IAtsActionableItem createActionableItem(String name, IAtsChangeSet changes, IAtsServices services)  {
+   public IAtsActionableItem createActionableItem(String name, IAtsChangeSet changes, IAtsServices services) {
       return createActionableItem(name, AtsUtilClient.createConfigObjectUuid(), changes, services);
    }
 
    @Override
-   public IAtsActionableItem createActionableItem(String name, long uuid, IAtsChangeSet changes, IAtsServices services)  {
+   public IAtsActionableItem createActionableItem(String name, long uuid, IAtsChangeSet changes, IAtsServices services) {
       IAtsActionableItem item = actionableItemFactory.createActionableItem(name, uuid, changes, services);
       atsCache.cacheAtsObject(item);
       return item;
    }
 
    @Override
-   public IAtsVersionService getVersionService()  {
+   public IAtsVersionService getVersionService() {
       return versionService;
    }
 
    @Override
-   public IAtsUserServiceClient getUserServiceClient()  {
+   public IAtsUserServiceClient getUserServiceClient() {
       return (IAtsUserServiceClient) userService;
    }
 
@@ -323,7 +323,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
     * @return corresponding Artifact or null if not found
     */
    @Override
-   public Artifact getArtifact(ArtifactId artifact)  {
+   public Artifact getArtifact(ArtifactId artifact) {
       if (artifact instanceof Artifact) {
          return (Artifact) artifact;
       }
@@ -338,7 +338,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
     * @return corresponding Artifact or null if not found
     */
    @Override
-   public Artifact getArtifact(IAtsObject atsObject)  {
+   public Artifact getArtifact(IAtsObject atsObject) {
       Artifact results = null;
       if (atsObject.getStoreObject() != null) {
          if (atsObject.getStoreObject() instanceof Artifact) {
@@ -362,7 +362,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
     * @return corresponding Artifact or null if not found
     */
    @Override
-   public Artifact getArtifact(Long uuid)  {
+   public Artifact getArtifact(Long uuid) {
       Conditions.checkExpressionFailOnTrue(uuid <= 0, "Uuid must be > 0; is %d", uuid);
       Artifact result = null;
       try {
@@ -374,12 +374,12 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
-   public IAtsWorkItemService getWorkItemService()  {
+   public IAtsWorkItemService getWorkItemService() {
       return workItemService;
    }
 
    @Override
-   public AbstractWorkflowArtifact getWorkflowArtifact(IAtsObject atsObject)  {
+   public AbstractWorkflowArtifact getWorkflowArtifact(IAtsObject atsObject) {
       return (AbstractWorkflowArtifact) getArtifact(atsObject);
    }
 
@@ -471,7 +471,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
-   public Artifact getArtifactByGuid(String guid)  {
+   public Artifact getArtifactByGuid(String guid) {
       return ArtifactQuery.getArtifactFromId(guid, getAtsBranch());
    }
 
@@ -497,7 +497,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
-   public <A extends IAtsConfigObject> A getSoleByUuid(long uuid, Class<A> clazz)  {
+   public <A extends IAtsConfigObject> A getSoleByUuid(long uuid, Class<A> clazz) {
       return getCache().getAtsObject(uuid);
    }
 

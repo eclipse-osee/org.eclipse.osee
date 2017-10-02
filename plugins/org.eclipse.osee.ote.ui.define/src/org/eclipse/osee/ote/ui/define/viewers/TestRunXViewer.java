@@ -227,7 +227,7 @@ public class TestRunXViewer extends XViewer {
       }
    }
 
-   public boolean handleChangeDisposition()  {
+   public boolean handleChangeDisposition() {
       if (!getSelectedArtifacts().isEmpty()) {
          return setDisposition(getSelectedArtifacts());
       }
@@ -253,7 +253,7 @@ public class TestRunXViewer extends XViewer {
       return returnValue;
    }
 
-   private boolean setDisposition(ArrayList<Artifact> selectedArtifacts)  {
+   private boolean setDisposition(ArrayList<Artifact> selectedArtifacts) {
       boolean returnValue = false;
       ArrayList<Artifact> dispositionArtifacts = new ArrayList<>();
       for (Artifact artifact : selectedArtifacts) {

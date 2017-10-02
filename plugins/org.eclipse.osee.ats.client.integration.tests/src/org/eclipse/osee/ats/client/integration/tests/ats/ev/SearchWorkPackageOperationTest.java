@@ -72,8 +72,8 @@ public class SearchWorkPackageOperationTest {
          new ArrayList<Long>(), false, Active.Both, EMPYT_RESULTS);
       addTest(data, "3 work packages should be returned", Arrays.asList(DemoArtifactToken.SAW_SW.getId()), true,
          new ArrayList<Long>(), false, Active.Both, Arrays.asList(WP_01, WP_02, WP_03));
-      addTest(data, "2 active work packages should be returned", Arrays.asList(DemoArtifactToken.SAW_SW.getId()),
-         true, new ArrayList<Long>(), false, Active.Active, Arrays.asList(WP_01, WP_02));
+      addTest(data, "2 active work packages should be returned", Arrays.asList(DemoArtifactToken.SAW_SW.getId()), true,
+         new ArrayList<Long>(), false, Active.Active, Arrays.asList(WP_01, WP_02));
       addTest(data, "1 in-active work packages should be returned", Arrays.asList(DemoArtifactToken.SAW_SW.getId()),
          true, new ArrayList<Long>(), false, Active.InActive, Arrays.asList(WP_03));
 
@@ -88,19 +88,18 @@ public class SearchWorkPackageOperationTest {
          Arrays.asList(DemoArtifactToken.SAW_CSCI_AI.getId()), true, Active.InActive, Arrays.asList(WP_0C));
 
       // Test configured by both
-      addTest(data, "4 active work packages should be returned", Arrays.asList(DemoArtifactToken.SAW_SW.getId()),
-         true, Arrays.asList(DemoArtifactToken.SAW_Test_AI.getId()), true, Active.Active,
+      addTest(data, "4 active work packages should be returned", Arrays.asList(DemoArtifactToken.SAW_SW.getId()), true,
+         Arrays.asList(DemoArtifactToken.SAW_Test_AI.getId()), true, Active.Active,
          Arrays.asList(WP_01, WP_02, WP_0A, WP_0B));
 
       return data;
    }
 
    @Test
-   public void testSearchResults()  {
+   public void testSearchResults() {
       List<IAtsTeamDefinition> teamDefs = new ArrayList<>();
       for (Long teamDefUuid : teamDefUuids) {
-         IAtsTeamDefinition teamDef =
-            AtsClientService.get().getCache().getAtsObject(teamDefUuid);
+         IAtsTeamDefinition teamDef = AtsClientService.get().getCache().getAtsObject(teamDefUuid);
          teamDefs.add(teamDef);
       }
 

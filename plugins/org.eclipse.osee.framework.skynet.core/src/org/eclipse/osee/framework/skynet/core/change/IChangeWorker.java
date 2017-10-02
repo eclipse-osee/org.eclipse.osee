@@ -15,5 +15,5 @@ package org.eclipse.osee.framework.skynet.core.change;
  * @author Wilik Karol
  */
 public interface IChangeWorker {
-   public void revert() ;
+   public void revert();
 }

@@ -69,7 +69,7 @@ public class AccessDataTest {
    }
 
    @Test
-   public void testIsEmpty()  {
+   public void testIsEmpty() {
       AccessData data = new AccessData();
       Assert.assertTrue(data.isEmpty());
       data.add(new Object(), createDetail(7, new Object()));
@@ -77,37 +77,37 @@ public class AccessDataTest {
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testAddNullCheck1()  {
+   public void testAddNullCheck1() {
       AccessData data = new AccessData();
       data.add(null, createDetail(4, new Object()));
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testAddNullCheck2()  {
+   public void testAddNullCheck2() {
       AccessData data = new AccessData();
       data.add(new Object(), null);
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testAddAllCheck1()  {
+   public void testAddAllCheck1() {
       AccessData data = new AccessData();
       data.addAll(null, Collections.<AccessDetail<?>> emptyList());
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testAddAllCheck2()  {
+   public void testAddAllCheck2() {
       AccessData data = new AccessData();
       data.addAll(new Object(), null);
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testGetAccessNullCheck()  {
+   public void testGetAccessNullCheck() {
       AccessData data = new AccessData();
       data.getAccess(null);
    }
 
    @Test
-   public void testAddAll()  {
+   public void testAddAll() {
       Collection<AccessDetail<?>> expectedDetails = new ArrayList<>();
       createTestObjects(expectedDetails, branchToCheck1, artifactType, attributeType, wordAttributeType,
          artifactToCheck, relTypeSide1, relTypeSide2, branchToCheck2);
@@ -125,7 +125,7 @@ public class AccessDataTest {
    }
 
    @Test
-   public void testAccessDetailMerge()  {
+   public void testAccessDetailMerge() {
       AccessData data = new AccessData();
 
       AccessDetail<?> detail1 = MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.DENY, "item 1 - deny",
@@ -147,7 +147,7 @@ public class AccessDataTest {
    }
 
    @Test
-   public void testAccessDetailMultipleKeys()  {
+   public void testAccessDetailMultipleKeys() {
       AccessDetail<?> detail1 = MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.DENY, "item 1 - deny",
          new Scope().add("same_scope"));
       AccessDetail<?> detail2 = MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.WRITE,
@@ -175,7 +175,7 @@ public class AccessDataTest {
    }
 
    @Test
-   public void testAccessDetailMultipleScopeLevels()  {
+   public void testAccessDetailMultipleScopeLevels() {
       AccessDetail<?> detail1 = MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.DENY, "item 1 - deny",
          new Scope().add("more").add("specific").add("scope"));
       AccessDetail<?> detail2 = MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.WRITE,
@@ -193,7 +193,7 @@ public class AccessDataTest {
    }
 
    @Test
-   public void testAccessDetailLegacyScope()  {
+   public void testAccessDetailLegacyScope() {
       AccessDetail<?> specificDetail = MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.DENY,
          "item 1 - deny", new Scope().add("more").add("specific").add("scope"));
       AccessDetail<?> lessSpecificDetail = MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.WRITE,
@@ -215,7 +215,7 @@ public class AccessDataTest {
    }
 
    @Test
-   public void testToString()  {
+   public void testToString() {
       AccessDetail<?> detail1 = MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.DENY, "item 1 - deny",
          new Scope().add("scope 1"));
       AccessDetail<?> detail2 = MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.WRITE,

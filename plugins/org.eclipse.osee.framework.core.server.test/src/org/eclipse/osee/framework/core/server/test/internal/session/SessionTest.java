@@ -117,7 +117,7 @@ public class SessionTest {
          data.add(
             new Object[] {session, guid, clientAddress, clientMachine, clientVersion, clientPort, creationDate, userId
 
-         });
+            });
       }
       return data;
    }

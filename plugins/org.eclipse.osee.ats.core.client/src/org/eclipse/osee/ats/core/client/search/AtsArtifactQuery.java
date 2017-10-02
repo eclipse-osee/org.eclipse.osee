@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  */
 public class AtsArtifactQuery {
 
-   public static Artifact getArtifactFromId(String guidOrAtsId)  {
+   public static Artifact getArtifactFromId(String guidOrAtsId) {
       List<Artifact> artifacts = new LinkedList<>();
 
       if (GUID.isValid(guidOrAtsId)) {
@@ -47,7 +47,7 @@ public class AtsArtifactQuery {
       return artifacts.iterator().next();
    }
 
-   public static List<Artifact> getArtifactListFromIds(Collection<String> guidsOrAtsIds)  {
+   public static List<Artifact> getArtifactListFromIds(Collection<String> guidsOrAtsIds) {
       List<Artifact> toReturn = new LinkedList<>();
       List<String> guids = new LinkedList<>();
       List<String> atsIds = new LinkedList<>();

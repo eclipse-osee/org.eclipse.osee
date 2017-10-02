@@ -15,8 +15,8 @@ package org.eclipse.osee.orcs.core.internal.relation.order;
  */
 public interface OrderAccessor {
 
-   void load(HasOrderData data) ;
+   void load(HasOrderData data);
 
-   void store(HasOrderData data, OrderChange changeType) ;
+   void store(HasOrderData data, OrderChange changeType);
 
 }

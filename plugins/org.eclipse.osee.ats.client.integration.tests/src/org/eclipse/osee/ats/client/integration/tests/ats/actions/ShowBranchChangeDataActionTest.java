@@ -22,7 +22,7 @@ import org.junit.Test;
 public class ShowBranchChangeDataActionTest extends AbstractAtsActionRunTest {
 
    @Override
-   public ShowBranchChangeDataAction createAction()  {
+   public ShowBranchChangeDataAction createAction() {
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
       Result result = AtsTestUtil.createWorkingBranchFromTeamWf();
       Assert.assertTrue(result.getText(), result.isTrue());

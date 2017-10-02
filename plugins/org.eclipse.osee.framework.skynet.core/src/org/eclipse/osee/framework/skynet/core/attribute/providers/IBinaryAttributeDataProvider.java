@@ -17,8 +17,8 @@ import java.nio.ByteBuffer;
  */
 public interface IBinaryAttributeDataProvider extends IAttributeDataProvider {
 
-   public ByteBuffer getValueAsBytes() ;
+   public ByteBuffer getValueAsBytes();
 
-   public boolean setValue(ByteBuffer data) ;
+   public boolean setValue(ByteBuffer data);
 
 }

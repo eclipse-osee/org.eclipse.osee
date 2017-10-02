@@ -63,7 +63,7 @@ public class ImplementersColumnTest extends AbstractUserTest {
       assigneeColumn = new AssigneeColumn(services);
    }
 
-   public void testGetImplementersStrFromInWorkWorkflow_null()  {
+   public void testGetImplementersStrFromInWorkWorkflow_null() {
       Assert.assertEquals("", impService.getImplementersStr(null));
    }
 
@@ -71,7 +71,7 @@ public class ImplementersColumnTest extends AbstractUserTest {
     * Should be blank if in Working state
     */
    @org.junit.Test
-   public void testGetImplementersStrFromInWorkWorkflow_workItem()  {
+   public void testGetImplementersStrFromInWorkWorkflow_workItem() {
       when(workItem.getStateMgr().getStateType()).thenReturn(StateType.Working);
       Assert.assertEquals("", impService.getImplementersStr(workItem));
    }
@@ -80,7 +80,7 @@ public class ImplementersColumnTest extends AbstractUserTest {
     * Should be blank if in Working state and Assigned
     */
    @org.junit.Test
-   public void testGetImplementersStrFromInWorkWorkflow_blankIfAssigned()  {
+   public void testGetImplementersStrFromInWorkWorkflow_blankIfAssigned() {
       List<IAtsUser> assigneesToReturn = new ArrayList<>();
       assigneesToReturn.addAll(Arrays.asList(steve, alice));
       when(workItem.getStateMgr().getStateType()).thenReturn(StateType.Working);
@@ -92,7 +92,7 @@ public class ImplementersColumnTest extends AbstractUserTest {
     * Test no completedBy, no completedFromState and no workItem.getImplementers()
     */
    @org.junit.Test
-   public void testGetImplementersStrFromCompletedCancelledWorkflow_blankIfNothingToShow()  {
+   public void testGetImplementersStrFromCompletedCancelledWorkflow_blankIfNothingToShow() {
       when(workItem.getStateMgr().getStateType()).thenReturn(StateType.Completed);
       Assert.assertEquals("", impService.getImplementersStr(workItem));
 
@@ -104,7 +104,7 @@ public class ImplementersColumnTest extends AbstractUserTest {
     * Test if CompletedBy set
     */
    @org.junit.Test
-   public void testGetImplementersStrFromCompletedCancelledWorkflow_completedBySet()  {
+   public void testGetImplementersStrFromCompletedCancelledWorkflow_completedBySet() {
       when(workItem.getStateMgr().getStateType()).thenReturn(StateType.Completed);
       when(workItem.getCompletedBy()).thenReturn(steve);
       Assert.assertEquals("steve", impService.getImplementersStr(workItem));
@@ -119,7 +119,7 @@ public class ImplementersColumnTest extends AbstractUserTest {
     * Test one CompletedBy and assignees from completedFromState
     */
    @org.junit.Test
-   public void testGetImplementersStrFromCompletedCancelledWorkflow_completedByAndAssignee()  {
+   public void testGetImplementersStrFromCompletedCancelledWorkflow_completedByAndAssignee() {
       List<IAtsUser> implementStateImplementers = new ArrayList<>();
       implementStateImplementers.add(alice);
 
@@ -142,7 +142,7 @@ public class ImplementersColumnTest extends AbstractUserTest {
     * Test one CompletedBy (steve) and assignees (alice, unassigned) from completedFromState
     */
    @org.junit.Test
-   public void testGetImplementersStrFromCompletedCancelledWorkflow_completedByAndAssigneeWithUnassigned()  {
+   public void testGetImplementersStrFromCompletedCancelledWorkflow_completedByAndAssigneeWithUnassigned() {
       when(workItem.isCompleted()).thenReturn(true);
       when(workItem.getStateMgr().getStateType()).thenReturn(StateType.Completed);
 
@@ -173,7 +173,7 @@ public class ImplementersColumnTest extends AbstractUserTest {
     * Test steve as completedBy and completedFrom only registers once in implementersStr
     */
    @org.junit.Test
-   public void testGetImplementersStrFromCompletedCancelledWorkflow_duplicatesHandled()  {
+   public void testGetImplementersStrFromCompletedCancelledWorkflow_duplicatesHandled() {
       List<IAtsUser> implementStateImplementers = new ArrayList<>();
       implementStateImplementers.add(alice);
       implementStateImplementers.add(steve);
@@ -197,7 +197,7 @@ public class ImplementersColumnTest extends AbstractUserTest {
     * Test one CompletedBy and assignees from completedFromState
     */
    @org.junit.Test
-   public void testGetImplementersStrFromCompletedCancelledWorkflow_fromAll()  {
+   public void testGetImplementersStrFromCompletedCancelledWorkflow_fromAll() {
 
       // completed by is steve
       when(workItem.getStateMgr().getStateType()).thenReturn(StateType.Completed);
@@ -234,7 +234,7 @@ public class ImplementersColumnTest extends AbstractUserTest {
    }
 
    @org.junit.Test
-   public void testGetImplementersStrFromCompletedWorkflow_duplicates()  {
+   public void testGetImplementersStrFromCompletedWorkflow_duplicates() {
       List<IAtsUser> implementersToReturn = new ArrayList<>();
       implementersToReturn.add(alice);
       List<IAtsUser> implementStateImplementers = new ArrayList<>();
@@ -256,7 +256,7 @@ public class ImplementersColumnTest extends AbstractUserTest {
    }
 
    @org.junit.Test
-   public void testGetImplementers_fromCompletedCancelledBy_noDuplicatesIfInImplementersAndCompletedBy()  {
+   public void testGetImplementers_fromCompletedCancelledBy_noDuplicatesIfInImplementersAndCompletedBy() {
       List<IAtsUser> implementStateImplementers = new ArrayList<>();
       implementStateImplementers.add(alice);
 
@@ -279,7 +279,7 @@ public class ImplementersColumnTest extends AbstractUserTest {
    }
 
    @org.junit.Test
-   public void testGetImplementersFromActionGroup()  {
+   public void testGetImplementersFromActionGroup() {
 
       when(group.getActions()).thenReturn(Arrays.asList(workItem, workItem2));
       when(workItem.getStateMgr().getStateType()).thenReturn(StateType.Working);
@@ -296,7 +296,7 @@ public class ImplementersColumnTest extends AbstractUserTest {
    }
 
    @org.junit.Test
-   public void testGetImplementersFromActionGroup_noDuplicates()  {
+   public void testGetImplementersFromActionGroup_noDuplicates() {
 
       when(group.getActions()).thenReturn(Arrays.asList(workItem, workItem2));
       when(workItem.getStateMgr().getStateType()).thenReturn(StateType.Cancelled);

@@ -58,7 +58,7 @@ public class StringGuidsToArtifactListOperationTest {
    private final String[] guids = new String[capacity];
 
    @Before
-   public void setUpOnce()  {
+   public void setUpOnce() {
       testBranch = BranchManager.createWorkingBranch(SAW_Bld_1,
          StringGuidsToArtifactListOperationTest.class.getSimpleName() + " Branch");
 
@@ -71,24 +71,24 @@ public class StringGuidsToArtifactListOperationTest {
    }
 
    @After
-   public void tearDownOnce()  {
+   public void tearDownOnce() {
       Operations.executeWorkAndCheckStatus(new PurgeBranchHttpRequestOperation(testBranch, true));
    }
 
    @Test
-   public void test_doWork_findCreatedArtifacts()  {
+   public void test_doWork_findCreatedArtifacts() {
       Operations.executeWorkAndCheckStatus(new StringGuidsToArtifactListOperation(new StringOperationLogger(),
          generateSampleClipboardContent(), testBranch, widgetMock_Equal));
    }
 
    @Test
-   public void test_doWork_guidGarbageData()  {
+   public void test_doWork_guidGarbageData() {
       Operations.executeWorkAndCheckStatus(new StringGuidsToArtifactListOperation(new StringOperationLogger(),
          generateGarbageClipboardContent(), testBranch, widgetMock_2Uniques));
    }
 
    @Test
-   public void test_doWork_nullClipboardData()  {
+   public void test_doWork_nullClipboardData() {
       Operations.executeWorkAndCheckStatus(
          new StringGuidsToArtifactListOperation(new StringOperationLogger(), null, testBranch, widgetMock_Equal));
    }

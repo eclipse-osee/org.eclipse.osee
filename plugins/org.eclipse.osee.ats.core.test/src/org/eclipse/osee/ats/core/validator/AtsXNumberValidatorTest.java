@@ -33,7 +33,7 @@ public class AtsXNumberValidatorTest {
    // @formatter:on
 
    @org.junit.Test
-   public void testValidateTransition()  {
+   public void testValidateTransition() {
       AtsXNumberValidator validator = new AtsXNumberValidator();
 
       MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
@@ -64,7 +64,7 @@ public class AtsXNumberValidatorTest {
    }
 
    @org.junit.Test
-   public void testValidateTransition_MinMaxConstraint()  {
+   public void testValidateTransition_MinMaxConstraint() {
       AtsXNumberValidator validator = new AtsXNumberValidator();
 
       MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");

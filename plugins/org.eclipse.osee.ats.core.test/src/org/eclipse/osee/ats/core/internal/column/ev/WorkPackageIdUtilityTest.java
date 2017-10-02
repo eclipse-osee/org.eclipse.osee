@@ -27,13 +27,13 @@ public class WorkPackageIdUtilityTest extends AbstractWorkPackageUtilityTest {
 
    @Override
    @Before
-   public void setup()  {
+   public void setup() {
       super.setup();
       util = new WorkPackageIdColumn(earnedValueServiceProvider, null);
    }
 
    @Test
-   public void testGetColumnText()  {
+   public void testGetColumnText() {
       when(workPkg.getWorkPackageId()).thenReturn("");
       Assert.assertEquals("", util.getColumnText(workItem));
 

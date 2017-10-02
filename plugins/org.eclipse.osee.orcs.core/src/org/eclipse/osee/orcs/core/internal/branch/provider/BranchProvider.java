@@ -17,5 +17,5 @@ import org.eclipse.osee.framework.core.model.Branch;
  * @author John R. Misinco
  */
 public interface BranchProvider {
-   Collection<Branch> getBranches() ;
+   Collection<Branch> getBranches();
 }

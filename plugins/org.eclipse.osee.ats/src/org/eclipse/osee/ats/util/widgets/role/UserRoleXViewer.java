@@ -190,7 +190,7 @@ public class UserRoleXViewer extends XViewer {
       return modified;
    }
 
-   private boolean setUser(Collection<UserRole> userRoles, User user)  {
+   private boolean setUser(Collection<UserRole> userRoles, User user) {
       boolean modified = false;
       for (UserRole userRole : userRoles) {
          IAtsUser atsUser = AtsClientService.get().getUserService().getUserById(userRole.getUserId());
@@ -215,7 +215,7 @@ public class UserRoleXViewer extends XViewer {
       return modified;
    }
 
-   public boolean promptChangeDate(XViewerColumn xCol, Collection<UserRole> userRoles, boolean columnMultiEdit)  {
+   public boolean promptChangeDate(XViewerColumn xCol, Collection<UserRole> userRoles, boolean columnMultiEdit) {
       boolean modified = false;
       if (userRoles != null && !userRoles.isEmpty()) {
          UserRole userRole = (UserRole) userRoles.toArray()[0];
@@ -251,7 +251,7 @@ public class UserRoleXViewer extends XViewer {
       return false;
    }
 
-   public boolean executeTransaction(Collection<UserRole> userRoles)  {
+   public boolean executeTransaction(Collection<UserRole> userRoles) {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("Modify Review Roles");
       for (UserRole userRole : userRoles) {
          xUserRoleViewer.getUserRoleMgr().addOrUpdateUserRole(userRole);

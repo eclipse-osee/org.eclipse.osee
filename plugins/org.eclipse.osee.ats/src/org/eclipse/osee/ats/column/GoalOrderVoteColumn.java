@@ -33,8 +33,8 @@ public class GoalOrderVoteColumn extends XViewerAtsAttributeValueColumn {
 
    private GoalOrderVoteColumn() {
       super(AtsAttributeTypes.GoalOrderVote, WorldXViewerFactory.COLUMN_NAMESPACE + ".goalOrderVote",
-         AtsAttributeTypes.GoalOrderVote.getUnqualifiedName(), DEFAULT_WIDTH, XViewerAlign.Left, false, SortDataType.String,
-         true, "");
+         AtsAttributeTypes.GoalOrderVote.getUnqualifiedName(), DEFAULT_WIDTH, XViewerAlign.Left, false,
+         SortDataType.String, true, "");
    }
 
    /**

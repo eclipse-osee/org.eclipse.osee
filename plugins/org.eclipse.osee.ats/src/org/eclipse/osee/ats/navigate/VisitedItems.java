@@ -38,7 +38,7 @@ public class VisitedItems extends XNavigateItemAction {
    }
 
    @Override
-   public void run(TableLoadOption... tableLoadOptions)  {
+   public void run(TableLoadOption... tableLoadOptions) {
       List<ArtifactId> artIds = new ArrayList<>();
       for (IAtsWorkItem workItem : getCache().getReverseVisited()) {
          artIds.add(ArtifactId.valueOf(workItem.getId()));

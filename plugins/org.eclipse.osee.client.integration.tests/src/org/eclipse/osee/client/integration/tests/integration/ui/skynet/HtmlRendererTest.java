@@ -75,7 +75,7 @@ public class HtmlRendererTest {
    }
 
    @Before
-   public void setUp()  {
+   public void setUp() {
       Artifact Folder;
       Artifact htmlArtifact;
       renderer = new HTMLRenderer(new HashMap<RendererOption, Object>());

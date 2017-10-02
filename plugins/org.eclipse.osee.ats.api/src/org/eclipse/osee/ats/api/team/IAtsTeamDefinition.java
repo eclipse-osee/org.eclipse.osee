@@ -41,11 +41,11 @@ public interface IAtsTeamDefinition extends IAtsConfigObject, IAtsRules, ICommit
 
    Collection<IAtsUser> getLeads();
 
-   Collection<IAtsUser> getLeads(Collection<IAtsActionableItem> actionableItems) ;
+   Collection<IAtsUser> getLeads(Collection<IAtsActionableItem> actionableItems);
 
-   Collection<IAtsUser> getMembers() ;
+   Collection<IAtsUser> getMembers();
 
-   Collection<IAtsUser> getMembersAndLeads() ;
+   Collection<IAtsUser> getMembersAndLeads();
 
    Collection<IAtsUser> getSubscribed();
 
@@ -74,19 +74,19 @@ public interface IAtsTeamDefinition extends IAtsConfigObject, IAtsRules, ICommit
     * Versions
     ******************************/
 
-   boolean isTeamUsesVersions() ;
+   boolean isTeamUsesVersions();
 
    IAtsVersion getNextReleaseVersion();
 
-   IAtsTeamDefinition getTeamDefinitionHoldingVersions() ;
+   IAtsTeamDefinition getTeamDefinitionHoldingVersions();
 
-   IAtsVersion getVersion(String name) ;
+   IAtsVersion getVersion(String name);
 
    Collection<IAtsVersion> getVersions();
 
-   Collection<IAtsVersion> getVersions(VersionReleaseType releaseType, VersionLockedType lockedType) ;
+   Collection<IAtsVersion> getVersions(VersionReleaseType releaseType, VersionLockedType lockedType);
 
-   Collection<IAtsVersion> getVersionsFromTeamDefHoldingVersions(VersionReleaseType releaseType, VersionLockedType lockedType) ;
+   Collection<IAtsVersion> getVersionsFromTeamDefHoldingVersions(VersionReleaseType releaseType, VersionLockedType lockedType);
 
    Collection<IAtsVersion> getVersionsLocked(VersionLockedType lockType);
 

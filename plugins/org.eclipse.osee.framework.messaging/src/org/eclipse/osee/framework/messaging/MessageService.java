@@ -17,9 +17,9 @@ import java.util.Collection;
  */
 public interface MessageService {
 
-   ConnectionNode getDefault() ;
+   ConnectionNode getDefault();
 
-   ConnectionNode get(NodeInfo nodeInfo) ;
+   ConnectionNode get(NodeInfo nodeInfo);
 
    Collection<NodeInfo> getAvailableConnections();
 

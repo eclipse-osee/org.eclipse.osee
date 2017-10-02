@@ -25,9 +25,9 @@ public interface ITemplateProvider {
    public static final int DEFAULT_MATCH = 10;
    public static final int NO_MATCH = -1;
 
-   public Artifact getTemplate(IRenderer renderer, Artifact artifact, PresentationType presentationType, String option) ;
+   public Artifact getTemplate(IRenderer renderer, Artifact artifact, PresentationType presentationType, String option);
 
    public abstract int getApplicabilityRating(IRenderer renderer, Artifact artifact, PresentationType presentationType, String option);
 
-   public List<Artifact> getAllTemplates() ;
+   public List<Artifact> getAllTemplates();
 }

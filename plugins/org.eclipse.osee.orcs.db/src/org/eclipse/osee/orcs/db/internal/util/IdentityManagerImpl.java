@@ -65,7 +65,7 @@ public class IdentityManagerImpl implements IdentityManager {
    }
 
    @Override
-   public Long parseToLocalId(String value)  {
+   public Long parseToLocalId(String value) {
       return Long.valueOf(value);
    }
 

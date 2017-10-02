@@ -24,7 +24,7 @@ public class VisitedItemCache {
    public List<Long> visitedUuids = new ArrayList<>();
    public Map<Long, IAtsWorkItem> uuidtoWorkItem = new HashMap<>();
 
-   public List<IAtsWorkItem> getReverseVisited()  {
+   public List<IAtsWorkItem> getReverseVisited() {
       // Search artifacts and hold on to references so don't get garbage collected
       List<IAtsWorkItem> revArts = new ArrayList<>();
       for (int x = visitedUuids.size() - 1; x >= 0; x--) {

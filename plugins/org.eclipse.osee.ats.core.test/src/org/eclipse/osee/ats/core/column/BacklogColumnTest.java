@@ -44,7 +44,7 @@ public class BacklogColumnTest extends ProgramColumn {
    // @formatter:on
 
    @Before
-   public void setup()  {
+   public void setup() {
       MockitoAnnotations.initMocks(this);
 
       when(services.getRelationResolver()).thenReturn(relResolver);

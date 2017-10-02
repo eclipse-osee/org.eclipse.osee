@@ -38,21 +38,21 @@ public interface BranchQueryBuilder<T> {
 
    boolean areArchivedIncluded();
 
-   T andIds(Collection<? extends BranchId> ids) ;
+   T andIds(Collection<? extends BranchId> ids);
 
    T andId(BranchId branchId);
 
-   T andIsOfType(BranchType... branchType) ;
+   T andIsOfType(BranchType... branchType);
 
-   T andStateIs(BranchState... branchState) ;
+   T andStateIs(BranchState... branchState);
 
-   T andNameEquals(String value) ;
+   T andNameEquals(String value);
 
-   T andNamePattern(String pattern) ;
+   T andNamePattern(String pattern);
 
-   T andIsChildOf(BranchId branch) ;
+   T andIsChildOf(BranchId branch);
 
-   T andIsAncestorOf(BranchId branch) ;
+   T andIsAncestorOf(BranchId branch);
 
    T andIsMergeFor(BranchId source, BranchId destination);
 

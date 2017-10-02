@@ -54,7 +54,7 @@ public class PeerToPeerReviewManagerTest extends PeerToPeerReviewManager {
    }
 
    @org.junit.Test
-   public void testCreateNewPeerToPeerReview__Base()  {
+   public void testCreateNewPeerToPeerReview__Base() {
       AtsTestUtil.cleanupAndReset("PeerToPeerReviewManagerTest - Base");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
 
@@ -80,7 +80,7 @@ public class PeerToPeerReviewManagerTest extends PeerToPeerReviewManager {
    }
 
    @org.junit.Test
-   public void testCreateNewPeerToPeerReview__Simple()  {
+   public void testCreateNewPeerToPeerReview__Simple() {
       AtsTestUtil.cleanupAndReset("PeerToPeerReviewManagerTest - Simple");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
 
@@ -104,7 +104,7 @@ public class PeerToPeerReviewManagerTest extends PeerToPeerReviewManager {
    }
 
    @org.junit.Test
-   public void testCreateNewPeerToPeerReview__StandAlone()  {
+   public void testCreateNewPeerToPeerReview__StandAlone() {
       AtsTestUtil.cleanupAndReset("PeerToPeerReviewManagerTest - StandAlone");
       IAtsActionableItem testAi = AtsTestUtil.getTestAi();
 

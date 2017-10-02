@@ -18,12 +18,12 @@ import org.eclipse.osee.framework.core.data.BranchId;
  */
 public interface AttributeDataFactory<T> {
 
-   AttributeData<T> create(ArtifactData parent, AttributeTypeId attributeType) ;
+   AttributeData<T> create(ArtifactData parent, AttributeTypeId attributeType);
 
-   AttributeData<T> copy(BranchId destination, AttributeData<T> orcsData) ;
+   AttributeData<T> copy(BranchId destination, AttributeData<T> orcsData);
 
-   AttributeData<T> clone(AttributeData<T> source) ;
+   AttributeData<T> clone(AttributeData<T> source);
 
-   AttributeData<T> introduce(BranchId destination, AttributeData<T> source) ;
+   AttributeData<T> introduce(BranchId destination, AttributeData<T> source);
 
 }

@@ -129,7 +129,7 @@ public class TransactionWriter {
       }
    }
 
-   public void write(JdbcConnection connection, TransactionReadable tx, OrcsChangeSet txData)  {
+   public void write(JdbcConnection connection, TransactionReadable tx, OrcsChangeSet txData) {
       sqlBuilder.accept(tx, txData);
       try {
          binaryStores = sqlBuilder.getBinaryStores();
@@ -157,7 +157,7 @@ public class TransactionWriter {
       }
    }
 
-   private void fetchTxNotCurrent(JdbcConnection connection, BranchId branch, List<Object[]> results, String query, AbstractJoinQuery join)  {
+   private void fetchTxNotCurrent(JdbcConnection connection, BranchId branch, List<Object[]> results, String query, AbstractJoinQuery join) {
       try {
          join.store();
          JdbcStatement chStmt = jdbcClient.getStatement(connection);

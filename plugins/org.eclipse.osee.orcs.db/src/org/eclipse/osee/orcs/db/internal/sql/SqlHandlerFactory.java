@@ -19,9 +19,9 @@ import org.eclipse.osee.orcs.core.ds.CriteriaSet;
  */
 public interface SqlHandlerFactory {
 
-   List<SqlHandler<?>> createHandlers(CriteriaSet... criteriaSet) ;
+   List<SqlHandler<?>> createHandlers(CriteriaSet... criteriaSet);
 
-   List<SqlHandler<?>> createHandlers(Iterable<CriteriaSet> criteriaSets) ;
+   List<SqlHandler<?>> createHandlers(Iterable<CriteriaSet> criteriaSets);
 
-   SqlHandler<?> createHandler(Criteria criteria) ;
+   SqlHandler<?> createHandler(Criteria criteria);
 }

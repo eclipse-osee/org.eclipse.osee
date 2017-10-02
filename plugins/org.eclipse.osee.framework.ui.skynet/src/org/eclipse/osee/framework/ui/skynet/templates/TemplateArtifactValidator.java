@@ -40,7 +40,7 @@ public class TemplateArtifactValidator implements IOseeValidator {
    }
 
    @Override
-   public IStatus validate(Artifact artifact, AttributeTypeToken attributeType, Object proposedObject)  {
+   public IStatus validate(Artifact artifact, AttributeTypeToken attributeType, Object proposedObject) {
       if (proposedObject instanceof String) {
          String toVerify = (String) proposedObject;
          if (Strings.isValid(toVerify)) {

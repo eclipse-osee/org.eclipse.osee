@@ -19,18 +19,18 @@ import org.eclipse.osee.framework.core.data.OseeSessionGrant;
  */
 public interface ISessionManager {
 
-   public OseeSessionGrant createSession(OseeCredential credential) ;
+   public OseeSessionGrant createSession(OseeCredential credential);
 
-   public void releaseSession(String sessionId) ;
+   public void releaseSession(String sessionId);
 
-   public ISession getSessionById(String sessionId) ;
+   public ISession getSessionById(String sessionId);
 
-   public Collection<ISession> getSessionByClientAddress(String clientAddress) ;
+   public Collection<ISession> getSessionByClientAddress(String clientAddress);
 
-   public Collection<ISession> getSessionsByUserId(String userId) ;
+   public Collection<ISession> getSessionsByUserId(String userId);
 
-   public Collection<ISession> getAllSessions() ;
+   public Collection<ISession> getAllSessions();
 
-   public void releaseSessionImmediate(String... sessionId) ;
+   public void releaseSessionImmediate(String... sessionId);
 
 }

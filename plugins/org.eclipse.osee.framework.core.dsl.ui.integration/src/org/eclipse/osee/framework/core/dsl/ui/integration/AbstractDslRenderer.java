@@ -94,13 +94,13 @@ public abstract class AbstractDslRenderer extends FileSystemRenderer {
     * Get the file extention associated with the dsl and related artifact.
     */
    @Override
-   public abstract String getAssociatedExtension(Artifact artifact) ;
+   public abstract String getAssociatedExtension(Artifact artifact);
 
    /**
     * Provides a render input stream for the given input.
     */
    @Override
-   public abstract InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) ;
+   public abstract InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts);
 
    /**
     * Provides the update operation for the renderer.
@@ -167,7 +167,7 @@ public abstract class AbstractDslRenderer extends FileSystemRenderer {
     * This is required by the base class but not by this renderer. Therefore, we stub it out.
     */
    @Override
-   public final Program getAssociatedProgram(Artifact artifact)  {
+   public final Program getAssociatedProgram(Artifact artifact) {
       throw new OseeCoreException("should not be called");
    }
 

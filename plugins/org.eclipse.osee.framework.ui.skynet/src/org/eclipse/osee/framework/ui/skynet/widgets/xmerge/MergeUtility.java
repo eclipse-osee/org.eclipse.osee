@@ -56,7 +56,7 @@ public class MergeUtility {
    public static final String OPEN_MERGE_DIALOG =
       "This will open a window that will allow in-document merging in Word.  You will need to right click on every difference and either accept or reject the change.  If you begin an in-document merge you will not be able to finalize the conflict until you resolve every change in the document.\n Computing a Merge will wipe out any merge changes you have made and start with a fresh diff of the two files.  If you want to only view the changes use the difference options.\n Change that touch the entire file are better handled using copy and paste. \n\nWARNING:  Word will occasionaly show incorrect changes especially when users have both modified the same block of text.  Check your final version.";
 
-   public static void clearValue(Conflict conflict, Shell shell, boolean prompt)  {
+   public static void clearValue(Conflict conflict, Shell shell, boolean prompt) {
       if (conflict == null) {
          return;
       }
@@ -65,7 +65,7 @@ public class MergeUtility {
       }
    }
 
-   public static void setToDest(Conflict conflict, Shell shell, boolean prompt)  {
+   public static void setToDest(Conflict conflict, Shell shell, boolean prompt) {
       if (conflict == null) {
          return;
       }
@@ -74,7 +74,7 @@ public class MergeUtility {
       }
    }
 
-   public static void setToSource(Conflict conflict, Shell shell, boolean prompt)  {
+   public static void setToSource(Conflict conflict, Shell shell, boolean prompt) {
       if (conflict == null) {
          return;
       }
@@ -83,7 +83,7 @@ public class MergeUtility {
       }
    }
 
-   public static boolean okToOverwriteEditedValue(Conflict conflict, Shell shell, boolean prompt)  {
+   public static boolean okToOverwriteEditedValue(Conflict conflict, Shell shell, boolean prompt) {
       boolean proceed = true;
       if (!conflict.getStatus().isEditable()) {
          if (shell != null) {
@@ -99,11 +99,11 @@ public class MergeUtility {
       return proceed;
    }
 
-   public static void showCompareFile(Artifact art1, Artifact art2, String filePrefix)  {
+   public static void showCompareFile(Artifact art1, Artifact art2, String filePrefix) {
       RendererManager.diffInJob(new ArtifactDelta(art1, art2), filePrefix);
    }
 
-   public static boolean showInformationalConflict(Shell shell, Conflict conflict)  {
+   public static boolean showInformationalConflict(Shell shell, Conflict conflict) {
       String srcDisplay = conflict.getSourceDisplayData();
       String destDisplay = conflict.getDestDisplayData();
       String msg = String.format(INFORMATIONAL_CONFLICT, srcDisplay, destDisplay);

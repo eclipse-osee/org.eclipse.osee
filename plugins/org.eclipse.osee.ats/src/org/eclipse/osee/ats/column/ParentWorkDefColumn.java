@@ -32,8 +32,8 @@ public class ParentWorkDefColumn extends XViewerAtsColumn implements IXViewerVal
    }
 
    private ParentWorkDefColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".parentworkdef", "Parent Work Definition", 75, XViewerAlign.Left, false,
-         SortDataType.String, false, "Work Definition of Parent Team Workflow");
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".parentworkdef", "Parent Work Definition", 75, XViewerAlign.Left,
+         false, SortDataType.String, false, "Work Definition of Parent Team Workflow");
    }
 
    /**

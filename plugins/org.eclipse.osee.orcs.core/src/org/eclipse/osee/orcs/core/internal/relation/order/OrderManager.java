@@ -45,7 +45,7 @@ public class OrderManager implements HasOrderData {
    }
 
    @Override
-   public void add(RelationTypeSide typeAndSide, OrderData data)  {
+   public void add(RelationTypeSide typeAndSide, OrderData data) {
       Conditions.checkNotNull(typeAndSide, "type and side key");
       Conditions.checkNotNull(data, "orderData");
 
@@ -53,7 +53,7 @@ public class OrderManager implements HasOrderData {
    }
 
    @Override
-   public void remove(RelationTypeSide typeAndSide)  {
+   public void remove(RelationTypeSide typeAndSide) {
       Conditions.checkNotNull(typeAndSide, "type and side key");
 
       orderDataMap.remove(typeAndSide);
@@ -82,11 +82,11 @@ public class OrderManager implements HasOrderData {
       return orderDataMap.size();
    }
 
-   public void load()  {
+   public void load() {
       accessor.load(this);
    }
 
-   public void store()  {
+   public void store() {
       accessor.store(this, OrderChange.Forced);
    }
 
@@ -94,18 +94,18 @@ public class OrderManager implements HasOrderData {
       return orderDataMap.keySet();
    }
 
-   private OrderData getOrderData(RelationTypeSide typeAndSide)  {
+   private OrderData getOrderData(RelationTypeSide typeAndSide) {
       Conditions.checkNotNull(typeAndSide, "type and side key");
       return orderDataMap.get(typeAndSide);
    }
 
-   public List<String> getOrderIds(RelationTypeSide typeAndSide)  {
+   public List<String> getOrderIds(RelationTypeSide typeAndSide) {
       Conditions.checkNotNull(typeAndSide, "type and side key");
       OrderData data = orderDataMap.get(typeAndSide);
       return data != null ? data.getOrderIds() : Collections.<String> emptyList();
    }
 
-   public RelationSorter getSorterId(RelationTypeSide typeAndSide)  {
+   public RelationSorter getSorterId(RelationTypeSide typeAndSide) {
       Conditions.checkNotNull(typeAndSide, "type and side key");
       OrderData data = orderDataMap.get(typeAndSide);
       RelationSorter sorterId = null;
@@ -117,11 +117,11 @@ public class OrderManager implements HasOrderData {
       return sorterId;
    }
 
-   private RelationSorter getDefaultSorterId(IRelationType type)  {
+   private RelationSorter getDefaultSorterId(IRelationType type) {
       return sorterProvider.getDefaultSorterId(type);
    }
 
-   public void sort(RelationTypeSide typeAndSide, List<? extends Identifiable<String>> listToOrder)  {
+   public void sort(RelationTypeSide typeAndSide, List<? extends Identifiable<String>> listToOrder) {
       if (listToOrder.size() > 1) {
          RelationSorter sorterId = getSorterId(typeAndSide);
          List<String> relativeOrder = getOrderIds(typeAndSide);
@@ -131,12 +131,12 @@ public class OrderManager implements HasOrderData {
       }
    }
 
-   public void setOrder(RelationTypeSide typeAndSide, List<? extends Identifiable<String>> relativeSequence)  {
+   public void setOrder(RelationTypeSide typeAndSide, List<? extends Identifiable<String>> relativeSequence) {
       RelationSorter sorterId = getSorterId(typeAndSide);
       setOrder(typeAndSide, sorterId, relativeSequence);
    }
 
-   public void setOrder(RelationTypeSide typeAndSide, RelationSorter sorterId, List<? extends Identifiable<String>> relativeSequence)  {
+   public void setOrder(RelationTypeSide typeAndSide, RelationSorter sorterId, List<? extends Identifiable<String>> relativeSequence) {
       List<String> sequence;
       if (!relativeSequence.isEmpty()) {
          sequence = new ArrayList<>();
@@ -149,7 +149,7 @@ public class OrderManager implements HasOrderData {
       setAndStoreOrder(typeAndSide, sorterId, sequence);
    }
 
-   private void setAndStoreOrder(RelationTypeSide typeAndSide, RelationSorter requestedSorterId, List<String> relativeSequence)  {
+   private void setAndStoreOrder(RelationTypeSide typeAndSide, RelationSorter requestedSorterId, List<String> relativeSequence) {
       boolean isDifferentSorterId = isDifferentSorterId(typeAndSide, requestedSorterId);
       boolean changingRelatives = isRelativeOrderChange(typeAndSide, requestedSorterId, relativeSequence);
 
@@ -173,17 +173,17 @@ public class OrderManager implements HasOrderData {
       accessor.store(this, changeType);
    }
 
-   private boolean isDifferentSorterId(RelationTypeSide typeAndSide, RelationSorter newSorterId)  {
+   private boolean isDifferentSorterId(RelationTypeSide typeAndSide, RelationSorter newSorterId) {
       RelationSorter currentSorter = getSorterId(typeAndSide);
       return !currentSorter.equals(newSorterId);
    }
 
-   private boolean isSetToDefaultSorter(RelationTypeSide typeAndSide, RelationSorter sorterId)  {
+   private boolean isSetToDefaultSorter(RelationTypeSide typeAndSide, RelationSorter sorterId) {
       RelationSorter defaultSorterId = getDefaultSorterId(typeAndSide);
       return defaultSorterId.equals(sorterId);
    }
 
-   private boolean isRelativeOrderChange(RelationTypeSide typeAndSide, RelationSorter sorterId, List<String> relativeSequence)  {
+   private boolean isRelativeOrderChange(RelationTypeSide typeAndSide, RelationSorter sorterId, List<String> relativeSequence) {
       boolean result = false;
       if (sorterId.equals(USER_DEFINED)) {
          List<String> currentOrder = getOrderIds(typeAndSide);

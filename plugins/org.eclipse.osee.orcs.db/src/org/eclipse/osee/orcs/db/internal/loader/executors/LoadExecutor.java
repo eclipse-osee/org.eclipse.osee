@@ -46,7 +46,7 @@ public class LoadExecutor extends AbstractLoadExecutor {
    }
 
    @Override
-   public void load(HasCancellation cancellation, LoadDataHandler handler, CriteriaOrcsLoad criteria, Options options)  {
+   public void load(HasCancellation cancellation, LoadDataHandler handler, CriteriaOrcsLoad criteria, Options options) {
       checkCancelled(cancellation);
 
       Id4JoinQuery join = joinFactory.createId4JoinQuery();

@@ -42,57 +42,57 @@ public class ConfigManagerImplTest {
 
    private static final String CONFIG_1 = //
       "{'config': [" + //
-      " {" + //
-      "     'service.pid':'1001'," + //
-      "     'a': '1'," + //
-      "     'b': '2'," + //
-      "     'c': '3'" + //
-      " }" + //
-      "]}";
+         " {" + //
+         "     'service.pid':'1001'," + //
+         "     'a': '1'," + //
+         "     'b': '2'," + //
+         "     'c': '3'" + //
+         " }" + //
+         "]}";
 
    private static final String CONFIG_1_WITH_CHANGE = //
       "{'config': [" + //
-      " {" + //
-      "     'service.pid':'1001'," + //
-      "     'a': '1'," + //
-      "     'c': '3'" + //
-      " }" + //
-      "]}";
+         " {" + //
+         "     'service.pid':'1001'," + //
+         "     'a': '1'," + //
+         "     'c': '3'" + //
+         " }" + //
+         "]}";
 
    private static final String CONFIG_1_AND_2 = //
       "{'config': [" + //
-      " {" + //
-      "     'service.pid':'1001'," + //
-      "     'a': '1'," + //
-      "     'c': '3'" + //
-      " }," + //
-      " {" + //
-      "     'service.pid':'1002'," + //
-      "     'd': '4'," + //
-      "     'e': '5'" + //
-      " }" + //
-      "]}";
+         " {" + //
+         "     'service.pid':'1001'," + //
+         "     'a': '1'," + //
+         "     'c': '3'" + //
+         " }," + //
+         " {" + //
+         "     'service.pid':'1002'," + //
+         "     'd': '4'," + //
+         "     'e': '5'" + //
+         " }" + //
+         "]}";
 
    private static final String CONFIG_1_AND_2_WITH_CHANGE = //
       "{'config': [" + //
-      " {" + //
-      "     'service.pid':'1001'," + //
-      "     'a': '1'," + //
-      "     'c': '3'" + //
-      " }," + //
-      " {" + //
-      "     'service.pid':'1002'," + //
-      "     'e': '5'" + //
-      " }" + //
-      "]}";
+         " {" + //
+         "     'service.pid':'1001'," + //
+         "     'a': '1'," + //
+         "     'c': '3'" + //
+         " }," + //
+         " {" + //
+         "     'service.pid':'1002'," + //
+         "     'e': '5'" + //
+         " }" + //
+         "]}";
 
    private static final String CONFIG_2_WITH_CHANGE = //
       "{'config': [" + //
-      " {" + //
-      "     'service.pid':'1002'," + //
-      "     'e': '5'" + //
-      " }" + //
-      "]}";
+         " {" + //
+         "     'service.pid':'1002'," + //
+         "     'e': '5'" + //
+         " }" + //
+         "]}";
 
    private static final String NO_CONFIG = //
       "{'config': []}";

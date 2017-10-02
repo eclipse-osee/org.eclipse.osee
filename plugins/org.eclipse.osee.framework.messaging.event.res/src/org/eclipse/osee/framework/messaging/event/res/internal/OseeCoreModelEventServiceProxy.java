@@ -51,37 +51,37 @@ public class OseeCoreModelEventServiceProxy implements IOseeCoreModelEventServic
       proxiedService = null;
    }
 
-   private void checkInitialized()  {
+   private void checkInitialized() {
       Conditions.checkNotNull(getProxiedService(),
          "IOseeCoreModelEventService was not initialized correctly. Make sure start() was called");
    }
 
    @Override
-   public void addFrameworkListener(IFrameworkEventListener frameworkEventListener)  {
+   public void addFrameworkListener(IFrameworkEventListener frameworkEventListener) {
       checkInitialized();
       getProxiedService().addFrameworkListener(frameworkEventListener);
    }
 
    @Override
-   public void removeFrameworkListener(IFrameworkEventListener frameworkEventListener)  {
+   public void removeFrameworkListener(IFrameworkEventListener frameworkEventListener) {
       checkInitialized();
       getProxiedService().removeFrameworkListener(frameworkEventListener);
    }
 
    @Override
-   public void addConnectionListener(ConnectionListener connectionListener)  {
+   public void addConnectionListener(ConnectionListener connectionListener) {
       checkInitialized();
       getProxiedService().addConnectionListener(connectionListener);
    }
 
    @Override
-   public void removeConnectionListener(ConnectionListener connectionListener)  {
+   public void removeConnectionListener(ConnectionListener connectionListener) {
       checkInitialized();
       getProxiedService().removeConnectionListener(connectionListener);
    }
 
    @Override
-   public void sendRemoteEvent(RemoteEvent remoteEvent)  {
+   public void sendRemoteEvent(RemoteEvent remoteEvent) {
       checkInitialized();
       getProxiedService().sendRemoteEvent(remoteEvent);
    }

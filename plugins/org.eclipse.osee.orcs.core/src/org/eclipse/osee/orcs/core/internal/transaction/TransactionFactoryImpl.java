@@ -73,7 +73,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
    }
 
    @Override
-   public TransactionBuilder createTransaction(BranchId branch, ArtifactId author, String comment)  {
+   public TransactionBuilder createTransaction(BranchId branch, ArtifactId author, String comment) {
       Conditions.checkNotNull(branch, "branch");
       Conditions.checkNotNull(author, "author");
       Conditions.checkNotNullOrEmpty(comment, "comment");

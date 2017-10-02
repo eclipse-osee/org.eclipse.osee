@@ -17,6 +17,6 @@ import java.util.Date;
  */
 public interface ISessionCollector {
 
-   void collect(String guid, String userId, Date creationDate, String clientVersion, String clientMachineName, String clientAddress, int clientPort) ;
+   void collect(String guid, String userId, Date creationDate, String clientVersion, String clientMachineName, String clientAddress, int clientPort);
 
 }

@@ -42,8 +42,8 @@ public class RestResourceConcatenatorTest {
 
    private static final String INVALID_RESOURCE = //
       "<some stuff = this is not a well formated \n" //
-      + "> . other characters that do not matter\n" //
-      + "</stuff>\n\n\n";
+         + "> . other characters that do not matter\n" //
+         + "</stuff>\n\n\n";
 
    @Rule
    public ExpectedException thrown = ExpectedException.none();

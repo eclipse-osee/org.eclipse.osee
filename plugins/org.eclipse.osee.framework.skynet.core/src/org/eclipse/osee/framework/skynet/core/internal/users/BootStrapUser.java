@@ -22,11 +22,11 @@ public class BootStrapUser extends User {
 
    public static BootStrapUser instance;
 
-   private BootStrapUser()  {
+   private BootStrapUser() {
       super(CoreBranches.COMMON);
    }
 
-   public static BootStrapUser getInstance()  {
+   public static BootStrapUser getInstance() {
       if (instance == null) {
          instance = new BootStrapUser();
       }
@@ -37,7 +37,7 @@ public class BootStrapUser extends User {
    private static final long serialVersionUID = 1L;
 
    @Override
-   public String getEmail()  {
+   public String getEmail() {
       return SystemUser.BootStrap.getEmail();
    }
 
@@ -47,12 +47,12 @@ public class BootStrapUser extends User {
    }
 
    @Override
-   public String getUserId()  {
+   public String getUserId() {
       return SystemUser.BootStrap.getUserId();
    }
 
    @Override
-   public boolean isActive()  {
+   public boolean isActive() {
       return SystemUser.BootStrap.isActive();
    }
 

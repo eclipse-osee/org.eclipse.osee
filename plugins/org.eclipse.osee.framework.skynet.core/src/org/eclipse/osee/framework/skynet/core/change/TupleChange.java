@@ -52,7 +52,7 @@ public class TupleChange extends Change {
    }
 
    @Override
-   public String getItemTypeName()  {
+   public String getItemTypeName() {
       return itemTypeId.getIdString();
    }
 

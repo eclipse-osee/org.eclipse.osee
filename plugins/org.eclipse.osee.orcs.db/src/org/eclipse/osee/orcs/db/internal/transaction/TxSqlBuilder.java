@@ -26,7 +26,7 @@ public interface TxSqlBuilder {
 
    void clear();
 
-   void accept(TransactionReadable tx, OrcsChangeSet txData) ;
+   void accept(TransactionReadable tx, OrcsChangeSet txData);
 
    Set<Entry<SqlOrderEnum, IdJoinQuery>> getTxNotCurrents();
 
@@ -34,6 +34,6 @@ public interface TxSqlBuilder {
 
    List<DataProxy<?>> getBinaryStores();
 
-   void updateAfterBinaryStorePersist() ;
+   void updateAfterBinaryStorePersist();
 
 }

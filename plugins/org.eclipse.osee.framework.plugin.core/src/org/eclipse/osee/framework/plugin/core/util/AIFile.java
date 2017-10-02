@@ -28,7 +28,7 @@ public final class AIFile {
       // utility class
    }
 
-   public static void writeToFile(IFile file, InputStream in)  {
+   public static void writeToFile(IFile file, InputStream in) {
       try {
          if (file.exists()) {
             file.setCharset("UTF-8", new NullProgressMonitor());
@@ -42,11 +42,11 @@ public final class AIFile {
       }
    }
 
-   public static void writeToFile(IFile file, String string)  {
+   public static void writeToFile(IFile file, String string) {
       writeToFile(file, string, "UTF-8");
    }
 
-   public static void writeToFile(IFile file, String string, String charcode)  {
+   public static void writeToFile(IFile file, String string, String charcode) {
       try {
          writeToFile(file, Streams.convertStringToInputStream(string, charcode));
       } catch (UnsupportedEncodingException ex) {

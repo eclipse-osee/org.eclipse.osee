@@ -59,7 +59,7 @@ public enum RelationTypeMultiplicity {
       return value;
    }
 
-   public String asLimitLabel(RelationSide side)  {
+   public String asLimitLabel(RelationSide side) {
       String toReturn;
       switch (side) {
          case SIDE_A:
@@ -74,7 +74,7 @@ public enum RelationTypeMultiplicity {
       return toReturn;
    }
 
-   public int getLimit(RelationSide side)  {
+   public int getLimit(RelationSide side) {
       int limit = -1;
       switch (side) {
          case SIDE_A:
@@ -89,7 +89,7 @@ public enum RelationTypeMultiplicity {
       return limit;
    }
 
-   public boolean isWithinLimit(RelationSide side, int nextCount)  {
+   public boolean isWithinLimit(RelationSide side, int nextCount) {
       int limit = getLimit(side);
       boolean result;
       if (limit == Integer.MAX_VALUE) {

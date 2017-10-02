@@ -31,7 +31,7 @@ public class CriteriaArtifactGuids extends Criteria {
    }
 
    @Override
-   public void checkValid(Options options)  {
+   public void checkValid(Options options) {
       Conditions.checkNotNullOrEmpty(artifactGuids, "artifact guids");
       List<String> invalids = new ArrayList<>();
       for (String guid : artifactGuids) {

@@ -101,17 +101,17 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    }
 
    @Override
-   public IArtifactType getArtifactType()  {
+   public IArtifactType getArtifactType() {
       return artifactTypeCache.get(getOrcsData().getTypeUuid());
    }
 
    @Override
-   public void setName(String name)  {
+   public void setName(String name) {
       setSoleAttributeFromString(CoreAttributeTypes.Name, name);
    }
 
    @Override
-   public void setArtifactType(IArtifactType artifactType)  {
+   public void setArtifactType(IArtifactType artifactType) {
       if (!getArtifactType().equals(artifactType)) {
          getOrcsData().setTypeUuid(artifactType.getGuid());
          objectEditState = EditState.ARTIFACT_TYPE_MODIFIED;
@@ -122,7 +122,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    }
 
    @Override
-   public boolean isOfType(ArtifactTypeId... otherTypes)  {
+   public boolean isOfType(ArtifactTypeId... otherTypes) {
       return artifactTypeCache.inheritsFrom(getArtifactType(), otherTypes);
    }
 
@@ -147,12 +147,12 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    }
 
    @Override
-   public boolean isAttributeTypeValid(AttributeTypeId attributeType)  {
+   public boolean isAttributeTypeValid(AttributeTypeId attributeType) {
       return artifactTypeCache.isValidAttributeType(getArtifactType(), getBranch(), attributeType);
    }
 
    @Override
-   public Collection<AttributeTypeToken> getValidAttributeTypes()  {
+   public Collection<AttributeTypeToken> getValidAttributeTypes() {
       return artifactTypeCache.getAttributeTypes(getArtifactType(), getBranch());
    }
 
@@ -166,7 +166,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    }
 
    @Override
-   public void accept(ArtifactVisitor visitor)  {
+   public void accept(ArtifactVisitor visitor) {
       visitor.visit(this);
       for (Attribute<?> attribute : getAllAttributes()) {
          visitor.visit(attribute);
@@ -174,7 +174,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    }
 
    @Override
-   public void delete()  {
+   public void delete() {
       getOrcsData().setModType(ModificationType.DELETED);
       deleteAttributesByArtifact();
    }
@@ -185,7 +185,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    }
 
    @Override
-   public void unDelete()  {
+   public void unDelete() {
       getOrcsData().setModType(getOrcsData().getBaseModType());
       unDeleteAttributesByArtifact();
    }
@@ -196,12 +196,12 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    }
 
    @Override
-   public String getOrderData()  {
+   public String getOrderData() {
       return getSoleAttributeAsString(CoreAttributeTypes.RelationOrder, Strings.emptyString());
    }
 
    @Override
-   public void storeOrderData(OrderChange changeType, String data)  {
+   public void storeOrderData(OrderChange changeType, String data) {
       if (Strings.isValid(data)) {
          setSoleAttributeFromString(CoreAttributeTypes.RelationOrder, data);
       } else {

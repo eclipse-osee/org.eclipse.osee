@@ -21,6 +21,6 @@ import org.eclipse.osee.orcs.core.internal.util.OrcsWriteable;
  */
 public interface RelationNode extends OrcsWriteable, GraphNode, OrderStore {
 
-   IArtifactType getArtifactType() ;
+   IArtifactType getArtifactType();
 
 }

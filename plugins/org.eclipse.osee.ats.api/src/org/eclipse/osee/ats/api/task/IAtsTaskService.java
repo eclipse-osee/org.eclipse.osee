@@ -40,11 +40,11 @@ public interface IAtsTaskService {
 
    NewTaskData getNewTaskData(IAtsTeamWorkflow teamWf, List<String> titles, List<IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String relatedToState, String taskWorkDef, Map<String, List<Object>> attributes);
 
-   Collection<IAtsTask> getTasks(IAtsTeamWorkflow teamWf, IStateToken relatedToState) ;
+   Collection<IAtsTask> getTasks(IAtsTeamWorkflow teamWf, IStateToken relatedToState);
 
-   Collection<IAtsTask> getTask(IAtsWorkItem workItem) ;
+   Collection<IAtsTask> getTask(IAtsWorkItem workItem);
 
-   Collection<IAtsTask> getTasks(IAtsTeamWorkflow teamWf) ;
+   Collection<IAtsTask> getTasks(IAtsTeamWorkflow teamWf);
 
    Collection<? extends IAtsTask> getTasks(IAtsWorkItem workItem, IStateToken state);
 

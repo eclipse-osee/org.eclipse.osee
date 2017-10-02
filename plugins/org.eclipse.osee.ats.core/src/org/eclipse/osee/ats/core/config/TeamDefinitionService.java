@@ -38,7 +38,7 @@ public class TeamDefinitionService implements IAtsTeamDefinitionService {
    }
 
    @Override
-   public IAtsTeamDefinition getTeamDefinition(IAtsWorkItem workItem)  {
+   public IAtsTeamDefinition getTeamDefinition(IAtsWorkItem workItem) {
       IAtsTeamDefinition teamDef = null;
       ArtifactId teamDefId = services.getAttributeResolver().getSoleArtifactIdReference(workItem,
          AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);

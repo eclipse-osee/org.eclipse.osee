@@ -47,13 +47,13 @@ public abstract class AbstractDatastoreTxCallable<T> extends AbstractDatastoreCa
       //
    }
 
-   protected abstract T handleTxWork(JdbcConnection connection) ;
+   protected abstract T handleTxWork(JdbcConnection connection);
 
    protected void handleTxException(Exception ex) {
       // Do nothing
    }
 
-   protected void handleTxFinally()  {
+   protected void handleTxFinally() {
       // Do nothing
    }
 
@@ -65,7 +65,7 @@ public abstract class AbstractDatastoreTxCallable<T> extends AbstractDatastoreCa
       }
 
       @Override
-      public void handleTxWork(JdbcConnection connection)  {
+      public void handleTxWork(JdbcConnection connection) {
          result = AbstractDatastoreTxCallable.this.handleTxWork(connection);
       }
 
@@ -75,7 +75,7 @@ public abstract class AbstractDatastoreTxCallable<T> extends AbstractDatastoreCa
       }
 
       @Override
-      public void handleTxFinally()  {
+      public void handleTxFinally() {
          AbstractDatastoreTxCallable.this.handleTxFinally();
       }
    };

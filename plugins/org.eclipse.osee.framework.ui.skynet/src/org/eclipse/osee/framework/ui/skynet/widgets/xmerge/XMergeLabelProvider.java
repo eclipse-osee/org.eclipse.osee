@@ -72,7 +72,7 @@ public class XMergeLabelProvider extends XViewerLabelProvider {
    }
 
    @Override
-   public String getColumnText(Object element, XViewerColumn aCol, int columnIndex)  {
+   public String getColumnText(Object element, XViewerColumn aCol, int columnIndex) {
       if (element instanceof Conflict) {
          Conflict conflict = (Conflict) element;
          if (aCol.equals(MergeXViewerFactory.Conflict_Resolved)) {
@@ -201,7 +201,7 @@ public class XMergeLabelProvider extends XViewerLabelProvider {
       return null;
    }
 
-   public static Image getMergeImage(Conflict conflict)  {
+   public static Image getMergeImage(Conflict conflict) {
       ConflictStatus status = conflict.getStatus();
       if (status.isInformational()) {
          return null;

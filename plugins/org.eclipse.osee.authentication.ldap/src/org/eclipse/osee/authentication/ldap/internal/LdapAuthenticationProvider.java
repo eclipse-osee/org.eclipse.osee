@@ -55,8 +55,8 @@ public final class LdapAuthenticationProvider implements AuthenticationProvider 
       logger.trace("Configuring LdapAuthenticationProvider...");
 
       config = LdapConfigurationBuilder.newBuilder()//
-      .properties(properties)//
-      .build();
+         .properties(properties)//
+         .build();
 
       if (authenticator != null) {
          authenticator.configure(config);

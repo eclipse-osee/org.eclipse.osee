@@ -54,7 +54,7 @@ public class InvalidTxCurrentsAndModTypesCallable extends AbstractDatastoreTxCal
       txsTableName = archived ? "_archived" : "";
    }
 
-   private void fixIssues()  {
+   private void fixIssues() {
       if (isFixOperationEnabled) {
          checkForCancelled();
          getJdbcClient().runBatchUpdate(String.format(DELETE_ADDRESS, txsTableName), purgeData);

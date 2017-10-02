@@ -62,7 +62,7 @@ public class BranchAncestorOfSqlHandler extends SqlHandler<CriteriaBranchAncesto
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer)  {
+   public boolean addPredicates(AbstractSqlWriter writer) {
       writer.write("%s.branch_id = %s.parent_id", brAlias, withAlias);
       return true;
    }

@@ -32,12 +32,12 @@ public interface IResourceLocatorProvider {
     * 
     * @return a resource locator
     */
-   IResourceLocator generateResourceLocator(String seed, String name) ;
+   IResourceLocator generateResourceLocator(String seed, String name);
 
    /**
     * Get resource locator
     * 
     * @return a resource locator
     */
-   IResourceLocator getResourceLocator(String path) ;
+   IResourceLocator getResourceLocator(String path);
 }

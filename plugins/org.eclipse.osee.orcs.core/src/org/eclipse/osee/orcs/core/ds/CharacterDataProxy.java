@@ -15,7 +15,7 @@ package org.eclipse.osee.orcs.core.ds;
  */
 public interface CharacterDataProxy<T> extends DataProxy<T> {
 
-   public String getValueAsString() ;
+   public String getValueAsString();
 
    public T getValue();
 

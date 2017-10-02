@@ -97,7 +97,7 @@ public class WfeTargetedVersionHeader extends Composite {
 
    }
 
-   private void updateLabel(AbstractWorkflowArtifact sma)  {
+   private void updateLabel(AbstractWorkflowArtifact sma) {
       if (Widgets.isAccessible(valueLabel)) {
          String value = "Not Set";
          if (AtsClientService.get().getVersionService().hasTargetedVersion(sma)) {

@@ -130,7 +130,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
       }
 
       @Override
-      public void foundStartOfWorksheet(String sheetName)  {
+      public void foundStartOfWorksheet(String sheetName) {
          rowCount = 0;
          if (sheetName.equals("relations")) {
             importingRelations = true;
@@ -171,7 +171,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
       }
 
       @Override
-      public void processRow(String[] row)  {
+      public void processRow(String[] row) {
          rowCount++;
          if (importingRelations) {
             String guida = null;

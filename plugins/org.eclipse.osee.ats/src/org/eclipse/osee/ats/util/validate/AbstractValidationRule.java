@@ -19,7 +19,7 @@ public abstract class AbstractValidationRule {
     * @param operation An AbstractOperation to be used simply to update the operation monitor during validation.
     * @param rd The XResultData object to write (or render) validation results to.
     */
-   protected abstract ValidationResult validate(Artifact artToValidate, IProgressMonitor monitor) ;
+   protected abstract ValidationResult validate(Artifact artToValidate, IProgressMonitor monitor);
 
    public abstract String getRuleDescription();
 

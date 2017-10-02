@@ -28,7 +28,7 @@ public class UserRole {
    private String guid = GUID.create();
    private Boolean completed = false;
 
-   public UserRole(Role role, IAtsUser user)  {
+   public UserRole(Role role, IAtsUser user) {
       this(role, user.getUserId());
    }
 
@@ -36,7 +36,7 @@ public class UserRole {
       this(role, userId, 0.0, false);
    }
 
-   public UserRole(Role role, IAtsUser user, Double hoursSpent, Boolean completed)  {
+   public UserRole(Role role, IAtsUser user, Double hoursSpent, Boolean completed) {
       this(role, user.getUserId(), hoursSpent, completed);
    }
 

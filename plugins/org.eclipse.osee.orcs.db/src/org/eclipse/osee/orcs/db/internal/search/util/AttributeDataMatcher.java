@@ -49,7 +49,7 @@ public class AttributeDataMatcher {
       this.attrTypes = attrTypes;
    }
 
-   protected Tagger getTagger(String taggerId)  {
+   protected Tagger getTagger(String taggerId) {
       Tagger toReturn = null;
       if (Strings.isValid(taggerId)) {
          toReturn = engine.getTagger(taggerId);
@@ -113,7 +113,7 @@ public class AttributeDataMatcher {
       return new AttributeIndexedResource(data);
    }
 
-   private String getValue(AttributeData<?> data)  {
+   private String getValue(AttributeData<?> data) {
       String value = "";
       DataProxy dataProxy = data.getDataProxy();
       if (dataProxy instanceof CharacterDataProxy) {

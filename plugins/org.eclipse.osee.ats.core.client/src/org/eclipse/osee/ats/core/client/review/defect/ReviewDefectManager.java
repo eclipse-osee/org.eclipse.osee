@@ -52,7 +52,7 @@ public class ReviewDefectManager {
       this.valueProvider = valueProvider;
    }
 
-   public String getHtml()  {
+   public String getHtml() {
       if (getDefectItems().isEmpty()) {
          return "";
       }
@@ -62,11 +62,11 @@ public class ReviewDefectManager {
       return sb.toString();
    }
 
-   public static Set<ReviewDefectItem> getDefectItems(Artifact artifact)  {
+   public static Set<ReviewDefectItem> getDefectItems(Artifact artifact) {
       return new ReviewDefectManager(artifact).getDefectItems();
    }
 
-   public void ensureLoaded()  {
+   public void ensureLoaded() {
       if (defectItems == null) {
          defectItems = new HashSet<>();
          for (String xml : valueProvider.getValues()) {
@@ -79,12 +79,12 @@ public class ReviewDefectManager {
       }
    }
 
-   public Set<ReviewDefectItem> getDefectItems()  {
+   public Set<ReviewDefectItem> getDefectItems() {
       ensureLoaded();
       return defectItems;
    }
 
-   public int getNumMajor(IAtsUser user)  {
+   public int getNumMajor(IAtsUser user) {
       int x = 0;
       for (ReviewDefectItem dItem : getDefectItems()) {
          if (dItem.getSeverity() == Severity.Major && dItem.getUser().equals(user)) {
@@ -94,7 +94,7 @@ public class ReviewDefectManager {
       return x;
    }
 
-   public int getNumMinor(IAtsUser user)  {
+   public int getNumMinor(IAtsUser user) {
       int x = 0;
       for (ReviewDefectItem dItem : getDefectItems()) {
          if (dItem.getSeverity() == Severity.Minor && dItem.getUser().equals(user)) {
@@ -104,7 +104,7 @@ public class ReviewDefectManager {
       return x;
    }
 
-   public int getNumIssues(IAtsUser user)  {
+   public int getNumIssues(IAtsUser user) {
       int x = 0;
       for (ReviewDefectItem dItem : getDefectItems()) {
          if (dItem.getSeverity() == Severity.Issue && dItem.getUser().equals(user)) {
@@ -114,7 +114,7 @@ public class ReviewDefectManager {
       return x;
    }
 
-   public int getNumMajor()  {
+   public int getNumMajor() {
       int x = 0;
       for (ReviewDefectItem dItem : getDefectItems()) {
          if (dItem.getSeverity() == Severity.Major) {
@@ -124,7 +124,7 @@ public class ReviewDefectManager {
       return x;
    }
 
-   public int getNumMinor()  {
+   public int getNumMinor() {
       int x = 0;
       for (ReviewDefectItem dItem : getDefectItems()) {
          if (dItem.getSeverity() == Severity.Minor) {
@@ -134,7 +134,7 @@ public class ReviewDefectManager {
       return x;
    }
 
-   public int getNumIssues()  {
+   public int getNumIssues() {
       int x = 0;
       for (ReviewDefectItem dItem : getDefectItems()) {
          if (dItem.getSeverity() == Severity.Issue) {
@@ -145,7 +145,7 @@ public class ReviewDefectManager {
    }
 
    @SuppressWarnings("deprecation")
-   private List<ReviewDefectItem> getStoredDefectItems(Artifact artifact)  {
+   private List<ReviewDefectItem> getStoredDefectItems(Artifact artifact) {
       // Add new ones: items in userRoles that are not in dbuserRoles
       List<ReviewDefectItem> storedDefectItems = new ArrayList<>();
       for (Attribute<?> attr : artifact.getAttributes(REVIEW_STORAGE_TYPE)) {
@@ -156,7 +156,7 @@ public class ReviewDefectManager {
    }
 
    @SuppressWarnings("deprecation")
-   public void saveToArtifact(Artifact artifact)  {
+   public void saveToArtifact(Artifact artifact) {
       // Change existing ones
       for (Attribute<?> attr : artifact.getAttributes(REVIEW_STORAGE_TYPE)) {
          ReviewDefectItem storedDefect = new ReviewDefectItem((String) attr.getValue());
@@ -185,7 +185,7 @@ public class ReviewDefectManager {
       }
    }
 
-   public void addOrUpdateDefectItem(ReviewDefectItem defectItem)  {
+   public void addOrUpdateDefectItem(ReviewDefectItem defectItem) {
       Set<ReviewDefectItem> defectItems = getDefectItems();
       boolean found = false;
       for (ReviewDefectItem dItem : defectItems) {
@@ -199,18 +199,18 @@ public class ReviewDefectManager {
       }
    }
 
-   public void removeDefectItem(ReviewDefectItem defectItem, boolean persist, SkynetTransaction transaction)  {
+   public void removeDefectItem(ReviewDefectItem defectItem, boolean persist, SkynetTransaction transaction) {
       Set<ReviewDefectItem> defectItems = getDefectItems();
       defectItems.remove(defectItem);
    }
 
-   public void addDefectItem(String description, boolean persist, SkynetTransaction transaction)  {
+   public void addDefectItem(String description, boolean persist, SkynetTransaction transaction) {
       ReviewDefectItem item = new ReviewDefectItem();
       item.setDescription(description);
       addOrUpdateDefectItem(item);
    }
 
-   public String getTable()  {
+   public String getTable() {
       StringBuilder builder = new StringBuilder();
       builder.append(
          "<TABLE BORDER=\"1\" cellspacing=\"1\" cellpadding=\"3%\" width=\"100%\"><THEAD><TR><TH>Severity</TH>" + "<TH>Disposition</TH><TH>Injection</TH><TH>User</TH><TH>Date</TH><TH>Description</TH><TH>Location</TH>" + "<TH>Resolution</TH><TH>Guid</TH><TH>Completed</TH></THEAD></TR>");

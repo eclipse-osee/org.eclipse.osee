@@ -19,9 +19,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public interface IAtsMetricsProvider {
 
-   public Collection<? extends Artifact> getMetricsWorkItems() ;
+   public Collection<? extends Artifact> getMetricsWorkItems();
 
-   public IAtsVersion getMetricsVersion() ;
+   public IAtsVersion getMetricsVersion();
 
-   public double getManHoursPerDayPreference() ;
+   public double getManHoursPerDayPreference();
 }

@@ -36,7 +36,7 @@ public class CopyAtsValidationTest {
    }
 
    @Test
-   public void testValidate()  {
+   public void testValidate() {
 
       // set name to one that can't be converted
       ConfigData data = getConfigData();
@@ -60,7 +60,7 @@ public class CopyAtsValidationTest {
       Assert.assertEquals(0, results.getNumErrors());
    }
 
-   public static ConfigData getConfigData()  {
+   public static ConfigData getConfigData() {
       ConfigData data = new ConfigData();
       data.setReplaceStr("CISv2");
       data.setSearchStr("CIS");

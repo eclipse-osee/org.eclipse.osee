@@ -29,7 +29,7 @@ public class UsersByIds {
 
    public static Pattern userPattern = Pattern.compile("<(.*?)>");
 
-   public static String getStorageString(Collection<User> users)  {
+   public static String getStorageString(Collection<User> users) {
       StringBuffer sb = new StringBuffer();
       for (User u : users) {
          sb.append("<" + u.getUserId() + ">");

@@ -29,7 +29,8 @@ public class LocChangedColumn extends XViewerAtsAttributeValueColumn {
 
    private LocChangedColumn() {
       super(AtsAttributeTypes.LocChanged, WorldXViewerFactory.COLUMN_NAMESPACE + ".locChanged",
-         AtsAttributeTypes.LocChanged.getUnqualifiedName(), 40, XViewerAlign.Center, false, SortDataType.Integer, true, "");
+         AtsAttributeTypes.LocChanged.getUnqualifiedName(), 40, XViewerAlign.Center, false, SortDataType.Integer, true,
+         "");
    }
 
    /**

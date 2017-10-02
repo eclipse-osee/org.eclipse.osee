@@ -47,7 +47,7 @@ public final class ArtifactTypeAttributesField extends AbstractOseeField<Map<Bra
    }
 
    @Override
-   public void set(Map<BranchId, Collection<AttributeType>> attributeTypeMap)  {
+   public void set(Map<BranchId, Collection<AttributeType>> attributeTypeMap) {
       Conditions.checkNotNull(attributeTypeMap, "attribute type map input");
       boolean isDifferent = Compare.isDifferent(get(), attributeTypeMap);
       if (isDifferent) {
@@ -60,7 +60,7 @@ public final class ArtifactTypeAttributesField extends AbstractOseeField<Map<Bra
       isDirty |= isDifferent;
    }
 
-   private void set(BranchId branch, Collection<AttributeType> attributeTypes)  {
+   private void set(BranchId branch, Collection<AttributeType> attributeTypes) {
       Conditions.checkNotNull(branch, "branch");
       Conditions.checkNotNull(attributeTypes, "attribute types list");
 

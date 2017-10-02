@@ -85,7 +85,7 @@ public class ArtifactTest {
 
    @SuppressWarnings("unchecked")
    @Before
-   public void init()  {
+   public void init() {
       MockitoAnnotations.initMocks(this);
       artifact = new ArtifactImpl(types, artifactData, attributeFactory);
       artifact.setGraph(graph);
@@ -117,7 +117,7 @@ public class ArtifactTest {
 
    @Test
    @SuppressWarnings("unchecked")
-   public void testAddAndGet()  {
+   public void testAddAndGet() {
       Attribute<Object> attribute = mock(Attribute.class);
       when(attribute.getOrcsData()).thenReturn(attributeData);
       Assert.assertEquals(0, artifact.getAttributes().size());
@@ -128,7 +128,7 @@ public class ArtifactTest {
 
    @Test
    @SuppressWarnings({"rawtypes", "unchecked"})
-   public void testAddException()  {
+   public void testAddException() {
       Attribute one = mock(Attribute.class);
       Attribute two = mock(Attribute.class);
       when(one.getOrcsData()).thenReturn(attributeData);
@@ -152,7 +152,7 @@ public class ArtifactTest {
    }
 
    @Test
-   public void testCreateAttribute()  {
+   public void testCreateAttribute() {
       artifact.createAttribute(CoreAttributeTypes.City);
       verify(attributeFactory).createAttributeWithDefaults(artifact, artifactData, CoreAttributeTypes.City);
    }
@@ -186,14 +186,14 @@ public class ArtifactTest {
    }
 
    @Test
-   public void testArtifactType()  {
+   public void testArtifactType() {
       artifact.getArtifactType();
       verify(types).get(artifactData.getTypeUuid());
    }
 
    @Test
    @SuppressWarnings({"rawtypes", "unchecked"})
-   public void testSetName()  {
+   public void testSetName() {
       Attribute attr = mock(Attribute.class);
       when(attr.getOrcsData()).thenReturn(attributeData);
       when(attributeFactory.createAttributeWithDefaults(any(), any(), eq(CoreAttributeTypes.Name))).thenReturn(attr);
@@ -202,7 +202,7 @@ public class ArtifactTest {
    }
 
    @Test
-   public void testSetArtifactType()  {
+   public void testSetArtifactType() {
       when(version.isInStorage()).thenReturn(true);
 
       artifact.setArtifactType(CoreArtifactTypes.CodeUnit);
@@ -223,7 +223,7 @@ public class ArtifactTest {
    }
 
    @Test
-   public void testIsOfType()  {
+   public void testIsOfType() {
       artifact.isOfType(CoreArtifactTypes.CodeUnit);
 
       verify(types).inheritsFrom(CoreArtifactTypes.GeneralData, CoreArtifactTypes.CodeUnit);
@@ -231,7 +231,7 @@ public class ArtifactTest {
 
    @Test
    @SuppressWarnings({"rawtypes", "unchecked"})
-   public void testIsDirty()  {
+   public void testIsDirty() {
       Assert.assertFalse(artifact.isDirty());
 
       // add dirty attribute
@@ -264,13 +264,13 @@ public class ArtifactTest {
    }
 
    @Test
-   public void testIsAttributeTypeValid()  {
+   public void testIsAttributeTypeValid() {
       artifact.isAttributeTypeValid(CoreAttributeTypes.Afha);
       verify(types).isValidAttributeType(eq(artifactType), any(), eq(CoreAttributeTypes.Afha));
    }
 
    @Test
-   public void testGetValidAttributeTypes()  {
+   public void testGetValidAttributeTypes() {
       artifact.getValidAttributeTypes();
       verify(types).getAttributeTypes(eq(artifactType), any());
    }
@@ -291,7 +291,7 @@ public class ArtifactTest {
 
    @Test
    @SuppressWarnings({"rawtypes", "unchecked"})
-   public void testGetName()  {
+   public void testGetName() {
       String name = artifact.getName();
       Assert.assertTrue(name.contains("AttributeDoesNotExist"));
 
@@ -306,7 +306,7 @@ public class ArtifactTest {
    }
 
    @Test
-   public void testGetMaximumAttributeTypeAllowed()  {
+   public void testGetMaximumAttributeTypeAllowed() {
       int expected = 5;
 
       when(attributeFactory.getMaxOccurrenceLimit(CoreAttributeTypes.AccessContextId)).thenReturn(expected);
@@ -320,7 +320,7 @@ public class ArtifactTest {
    }
 
    @Test
-   public void testGetMinimumAttributeTypeAllowed()  {
+   public void testGetMinimumAttributeTypeAllowed() {
       int expected = 5;
 
       when(attributeFactory.getMinOccurrenceLimit(CoreAttributeTypes.AccessContextId)).thenReturn(expected);
@@ -335,7 +335,7 @@ public class ArtifactTest {
 
    @Test
    @SuppressWarnings("unchecked")
-   public void testGetAttributeCount()  {
+   public void testGetAttributeCount() {
       artifact.add(CoreAttributeTypes.AccessContextId, notDeleted);
       artifact.add(CoreAttributeTypes.AccessContextId, deleted);
       artifact.add(CoreAttributeTypes.Name, differentType);
@@ -347,7 +347,7 @@ public class ArtifactTest {
 
    @Test
    @SuppressWarnings("unchecked")
-   public void testGetAttributes()  {
+   public void testGetAttributes() {
       artifact.add(CoreAttributeTypes.AccessContextId, notDeleted);
       artifact.add(CoreAttributeTypes.AccessContextId, deleted);
       artifact.add(CoreAttributeTypes.Name, differentType);
@@ -363,7 +363,7 @@ public class ArtifactTest {
 
    @Test
    @SuppressWarnings("unchecked")
-   public void testGetAttributeValues()  {
+   public void testGetAttributeValues() {
       artifact.add(CoreAttributeTypes.AccessContextId, notDeleted);
       artifact.add(CoreAttributeTypes.AccessContextId, deleted);
       when(notDeleted.getValue()).thenReturn("notDeleted");
@@ -375,7 +375,7 @@ public class ArtifactTest {
 
    @Test
    @SuppressWarnings("unchecked")
-   public void testGetSoleAttributeAsString()  {
+   public void testGetSoleAttributeAsString() {
       when(notDeleted.getValue()).thenReturn(new Integer(5));
       artifact.add(CoreAttributeTypes.AccessContextId, notDeleted);
       String attribute = artifact.getSoleAttributeAsString(CoreAttributeTypes.AccessContextId);
@@ -387,7 +387,7 @@ public class ArtifactTest {
 
    @Test
    @SuppressWarnings({"rawtypes", "unchecked"})
-   public void testGetSoleAttributeAsStringException()  {
+   public void testGetSoleAttributeAsStringException() {
       Attribute one = mock(Attribute.class);
       Attribute two = mock(Attribute.class);
       when(one.getOrcsData()).thenReturn(attributeData);
@@ -400,7 +400,7 @@ public class ArtifactTest {
 
    @Test
    @SuppressWarnings("unchecked")
-   public void testDeleteAttributesByArtifact()  {
+   public void testDeleteAttributesByArtifact() {
       artifact.add(CoreAttributeTypes.AccessContextId, notDeleted);
       artifact.add(CoreAttributeTypes.AccessContextId, deleted);
       artifact.add(CoreAttributeTypes.Active, differentType);
@@ -412,7 +412,7 @@ public class ArtifactTest {
 
    @Test
    @SuppressWarnings("unchecked")
-   public void testDeleteSoleAttribute()  {
+   public void testDeleteSoleAttribute() {
       when(attributeFactory.getMinOccurrenceLimit(attributeType)).thenReturn(0);
       when(notDeleted.getContainer()).thenReturn(artifact);
       artifact.add(attributeType, notDeleted);
@@ -422,7 +422,7 @@ public class ArtifactTest {
 
    @Test
    @SuppressWarnings("unchecked")
-   public void testDeleteSoleAttributeException()  {
+   public void testDeleteSoleAttributeException() {
       when(attributeFactory.getMinOccurrenceLimit(attributeType)).thenReturn(1);
       artifact.add(attributeType, notDeleted);
 
@@ -432,7 +432,7 @@ public class ArtifactTest {
 
    @Test
    @SuppressWarnings({"rawtypes", "unchecked"})
-   public void testSetAttributesFromStringsCreateAll()  {
+   public void testSetAttributesFromStringsCreateAll() {
       Attribute one = mock(Attribute.class);
       Attribute two = mock(Attribute.class);
       Attribute three = mock(Attribute.class);
@@ -452,7 +452,7 @@ public class ArtifactTest {
 
    @Test
    @SuppressWarnings({"rawtypes", "unchecked"})
-   public void testSetAttributesFromStringsCreateOne()  {
+   public void testSetAttributesFromStringsCreateOne() {
       Attribute one = mock(Attribute.class);
       Attribute two = mock(Attribute.class);
       when(one.getOrcsData()).thenReturn(attributeData);

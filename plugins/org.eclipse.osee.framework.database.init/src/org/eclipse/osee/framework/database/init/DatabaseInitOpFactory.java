@@ -24,29 +24,29 @@ public class DatabaseInitOpFactory {
       // static factory
    }
 
-   public static void executeWithoutPrompting(IDbInitChoiceEnum choice)  {
+   public static void executeWithoutPrompting(IDbInitChoiceEnum choice) {
       executeOperation(choice.name(), false);
    }
 
-   public static void executeWithoutPrompting(String choice)  {
+   public static void executeWithoutPrompting(String choice) {
       executeOperation(choice, false);
    }
 
-   public static void executeWithPromptsAndChoice(String choice)  {
+   public static void executeWithPromptsAndChoice(String choice) {
       executeOperation(choice, true);
    }
 
-   public static void executeWithPrompts()  {
+   public static void executeWithPrompts() {
       executeOperation(null, true);
    }
 
-   public static void executeConfigureFromJvmProperties()  {
+   public static void executeConfigureFromJvmProperties() {
       boolean arePromptsAllowed = OseeClientProperties.promptOnDbInit();
       String predefinedChoice = OseeClientProperties.getChoiceOnDbInit();
       executeOperation(predefinedChoice, arePromptsAllowed);
    }
 
-   private static void executeOperation(String predefinedChoice, boolean isPromptEnabled)  {
+   private static void executeOperation(String predefinedChoice, boolean isPromptEnabled) {
       IOperation operation = new DatabaseInitializationOperation(predefinedChoice, isPromptEnabled);
       Operations.executeWorkAndCheckStatus(operation);
    }

@@ -22,7 +22,9 @@ public class ExecutionStatusHandler extends AbstractParseHandler {
    @Override
    protected void processSaxChunk(Element element) {
       notifyOnDataEvent(TestRunField.SCRIPT_EXECUTION_TIME.toString(), Jaxp.getChildText(element, "Time"));
-      notifyOnDataEvent(TestRunField.SCRIPT_EXECUTION_RESULTS.toString(), Jaxp.getChildText(element, "ExecutionResult"));
-      notifyOnDataEvent(TestRunField.SCRIPT_EXECUTION_ERRORS.toString(), Jaxp.getChildText(element, "ExecutionDetails"));
+      notifyOnDataEvent(TestRunField.SCRIPT_EXECUTION_RESULTS.toString(),
+         Jaxp.getChildText(element, "ExecutionResult"));
+      notifyOnDataEvent(TestRunField.SCRIPT_EXECUTION_ERRORS.toString(),
+         Jaxp.getChildText(element, "ExecutionDetails"));
    }
 }

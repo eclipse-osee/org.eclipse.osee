@@ -105,7 +105,7 @@ public class UpdateAtsConfiguration {
       return viewsJson;
    }
 
-   private void createUpdateConfigAttributes(ArtifactReadable configArt, ArtifactReadable userArt, XResultData rd)  {
+   private void createUpdateConfigAttributes(ArtifactReadable configArt, ArtifactReadable userArt, XResultData rd) {
       try {
          AtsViews databaseViews = getConfigViews();
          for (String viewsJson : getViewsJsonStrings()) {

@@ -44,12 +44,12 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
       this.displayable = toDisplay;
    }
 
-   private String getInternalFileName()  {
+   private String getInternalFileName() {
       return BinaryContentUtils.generateFileName(getAttribute());
    }
 
    @Override
-   public boolean setValue(ByteBuffer data)  {
+   public boolean setValue(ByteBuffer data) {
       boolean response = false;
       try {
          if (!Arrays.equals(dataStore.getContent(), data != null ? data.array() : null)) {
@@ -71,7 +71,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
    }
 
    @Override
-   public ByteBuffer getValueAsBytes()  {
+   public ByteBuffer getValueAsBytes() {
       ByteBuffer decompressed = null;
       byte[] rawData = dataStore.getContent();
       if (rawData != null) {
@@ -86,7 +86,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
    }
 
    @Override
-   public String getValueAsString()  {
+   public String getValueAsString() {
       String toReturn = null;
       ByteBuffer data = getValueAsBytes();
       if (data != null) {
@@ -102,7 +102,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
    }
 
    @Override
-   public boolean setValue(Object value)  {
+   public boolean setValue(Object value) {
       ByteBuffer toSet = null;
       if (value != null && value instanceof String) {
          try {
@@ -128,12 +128,12 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
    }
 
    @Override
-   public void persist(int storageId)  {
+   public void persist(int storageId) {
       dataStore.persist(storageId);
    }
 
    @Override
-   public void purge()  {
+   public void purge() {
       dataStore.purge();
    }
 

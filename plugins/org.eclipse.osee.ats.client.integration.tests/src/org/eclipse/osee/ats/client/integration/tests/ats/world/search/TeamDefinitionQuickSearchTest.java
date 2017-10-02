@@ -39,7 +39,7 @@ public class TeamDefinitionQuickSearchTest {
    }
 
    @Test
-   public void testPerformSearch()  {
+   public void testPerformSearch() {
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName() + ".testPerformSearch");
       TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
       teamWf.persist(getClass().getSimpleName());

@@ -15,6 +15,6 @@ package org.eclipse.osee.orcs.utility;
  */
 public interface ObjectProvider<T> {
 
-   T get() ;
+   T get();
 
 }

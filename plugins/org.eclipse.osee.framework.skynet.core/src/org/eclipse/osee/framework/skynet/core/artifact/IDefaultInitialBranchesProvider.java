@@ -17,5 +17,5 @@ import org.eclipse.osee.framework.core.data.BranchId;
  * @author Robert A. Fisher
  */
 public interface IDefaultInitialBranchesProvider {
-   public Collection<BranchId> getDefaultInitialBranches() ;
+   public Collection<BranchId> getDefaultInitialBranches();
 }

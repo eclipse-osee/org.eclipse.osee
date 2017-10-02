@@ -96,16 +96,16 @@ public class NativeRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public String getAssociatedExtension(Artifact artifact)  {
+   public String getAssociatedExtension(Artifact artifact) {
       return getAssociatedExtension(artifact, "xml");
    }
 
-   private String getAssociatedExtension(Artifact artifact, String defaultValue)  {
+   private String getAssociatedExtension(Artifact artifact, String defaultValue) {
       return artifact.getSoleAttributeValue(CoreAttributeTypes.Extension, defaultValue);
    }
 
    @Override
-   public Program getAssociatedProgram(Artifact artifact)  {
+   public Program getAssociatedProgram(Artifact artifact) {
       String extension = getAssociatedExtension(artifact);
       Program program = ProgramFinder.findProgram(extension);
       if (program == null) {
@@ -116,7 +116,7 @@ public class NativeRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts)  {
+   public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) {
       Artifact artifact = artifacts.iterator().next();
       return artifact.getSoleAttributeValue(CoreAttributeTypes.NativeContent);
    }
@@ -127,7 +127,7 @@ public class NativeRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public void open(List<Artifact> artifacts, PresentationType presentationType)  {
+   public void open(List<Artifact> artifacts, PresentationType presentationType) {
       for (Artifact artifact : artifacts) {
          super.open(Arrays.asList(artifact), presentationType);
       }

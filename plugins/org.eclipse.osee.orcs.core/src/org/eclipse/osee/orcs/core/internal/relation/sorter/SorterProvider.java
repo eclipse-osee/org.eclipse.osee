@@ -42,17 +42,17 @@ public class SorterProvider {
       orderMap.put(order.getId(), order);
    }
 
-   public RelationSorter getDefaultSorterId(IRelationType relationType)  {
+   public RelationSorter getDefaultSorterId(IRelationType relationType) {
       Conditions.checkNotNull(relationType, "type");
       return typeCache.getDefaultOrderTypeGuid(relationType);
    }
 
-   public boolean exists(RelationSorter sorterId)  {
+   public boolean exists(RelationSorter sorterId) {
       Conditions.checkNotNull(sorterId, "sorterId");
       return orderMap.containsKey(sorterId);
    }
 
-   public Sorter getSorter(RelationSorter sorterId)  {
+   public Sorter getSorter(RelationSorter sorterId) {
       if (sorterId.equals(RelationSorter.PREEXISTING)) {
          throw new OseeArgumentException("No sorted is defined for preexisting (nor should there be).");
       }

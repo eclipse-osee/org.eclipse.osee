@@ -17,14 +17,14 @@ import org.eclipse.osee.framework.messaging.ConnectionListener;
  */
 public interface IOseeCoreModelEventService {
 
-   void addFrameworkListener(IFrameworkEventListener frameworkEventListener) ;
+   void addFrameworkListener(IFrameworkEventListener frameworkEventListener);
 
-   void removeFrameworkListener(IFrameworkEventListener frameworkEventListener) ;
+   void removeFrameworkListener(IFrameworkEventListener frameworkEventListener);
 
-   void addConnectionListener(ConnectionListener connectionListener) ;
+   void addConnectionListener(ConnectionListener connectionListener);
 
-   void removeConnectionListener(ConnectionListener connectionListener) ;
+   void removeConnectionListener(ConnectionListener connectionListener);
 
-   void sendRemoteEvent(RemoteEvent remoteEvent) ;
+   void sendRemoteEvent(RemoteEvent remoteEvent);
 
 }

@@ -36,7 +36,7 @@ public class LinkTestRunToTestScriptOperation {
       this.linked = new ArrayList<>();
    }
 
-   public void execute(final IProgressMonitor monitor)  {
+   public void execute(final IProgressMonitor monitor) {
       monitor.setTaskName(OPERATION_NAME);
       final AtomicInteger count = new AtomicInteger(0);
 
@@ -85,8 +85,8 @@ public class LinkTestRunToTestScriptOperation {
       public Object call() throws Exception {
          for (Artifact testRun : artifacts) {
 
-            monitor.subTask(String.format("Linking [%s] [%s of %s] ", testRun.getName(), count.incrementAndGet(),
-               totalSize));
+            monitor.subTask(
+               String.format("Linking [%s] [%s of %s] ", testRun.getName(), count.incrementAndGet(), totalSize));
             ArtifactTestRunOperator operator = new ArtifactTestRunOperator(testRun);
             try {
                operator.createTestScriptSoftLink();

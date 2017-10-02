@@ -117,7 +117,7 @@ public class EmailGroupsBlam extends AbstractBlam {
 
    }
 
-   private void sendEmailTo(EmailGroupsData data, final User user)  {
+   private void sendEmailTo(EmailGroupsData data, final User user) {
       final String emailAddress = user.getSoleAttributeValue(CoreAttributeTypes.Email, "");
       if (!EmailUtil.isEmailValid(emailAddress)) {
          logf("The email address \"%s\" for user %s is not valid.", emailAddress, user.getName());
@@ -131,7 +131,7 @@ public class EmailGroupsBlam extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable)  {
+   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
       super.widgetCreating(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
       if (xWidget.getLabel().equals("Groups")) {
          groupsList = (XArtifactList) xWidget;
@@ -160,7 +160,7 @@ public class EmailGroupsBlam extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable)  {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
       super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
       if (xWidget.getLabel().equals("Preview Message")) {
          XButtonPush button = (XButtonPush) xWidget;

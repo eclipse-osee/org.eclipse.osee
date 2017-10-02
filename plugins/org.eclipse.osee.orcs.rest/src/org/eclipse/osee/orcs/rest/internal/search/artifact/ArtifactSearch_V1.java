@@ -53,11 +53,11 @@ public class ArtifactSearch_V1 extends ArtifactSearch {
    @POST
    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-   public SearchResponse getSearchWithMatrixParams(SearchRequest parameters)  {
+   public SearchResponse getSearchWithMatrixParams(SearchRequest parameters) {
       return search(parameters);
    }
 
-   private SearchResponse search(SearchRequest params)  {
+   private SearchResponse search(SearchRequest params) {
       long startTime = System.currentTimeMillis();
 
       QueryFactory qFactory = orcsApi.getQueryFactory(); // Fix this

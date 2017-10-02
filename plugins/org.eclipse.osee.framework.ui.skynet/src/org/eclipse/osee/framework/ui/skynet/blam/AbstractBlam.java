@@ -119,7 +119,7 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
     */
    public abstract Collection<String> getCategories();
 
-   public String getXWidgetsXml()  {
+   public String getXWidgetsXml() {
       switch (source) {
          case FILE:
             return getXWidgetsXmlFromUiFile(getClass().getSimpleName(), Activator.PLUGIN_ID);
@@ -139,11 +139,10 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
     *
     * @param className class name of blam
     * @param nameOfBundle name of bundle i.e. org.eclipse.rcp.xyz
-    * @return contents of the {@code /bundleName/ui/<className>Ui.xml }
-    *  usually {@link IOException} or {@link NullPointerException} wrapped in
-    * {@link OseeCoreException}
+    * @return contents of the {@code /bundleName/ui/<className>Ui.xml } usually {@link IOException} or
+    * {@link NullPointerException} wrapped in {@link OseeCoreException}
     */
-   public String getXWidgetsXmlFromUiFile(String className, String nameOfBundle)  {
+   public String getXWidgetsXmlFromUiFile(String className, String nameOfBundle) {
       String file = String.format("ui/%sUi.xml", className);
       Bundle bundle = Platform.getBundle(nameOfBundle);
 
@@ -218,7 +217,7 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
       return getName().toLowerCase().contains(titleEnd.toLowerCase().trim()) ? getName() : getName() + titleEnd;
    }
 
-   public void addWidgets(IManagedForm managedForm, FormEditor editor, Composite sectionBody)  {
+   public void addWidgets(IManagedForm managedForm, FormEditor editor, Composite sectionBody) {
       // provided for subclass implementation
    }
 

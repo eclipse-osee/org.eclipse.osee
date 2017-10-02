@@ -31,13 +31,13 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
  */
 public interface IAtsConfigItemFactory {
 
-   IAtsTeamDefinition getTeamDef(ArtifactId artifact) ;
+   IAtsTeamDefinition getTeamDef(ArtifactId artifact);
 
-   IAtsActionableItem getActionableItem(ArtifactId artifact) ;
+   IAtsActionableItem getActionableItem(ArtifactId artifact);
 
-   IAtsConfigObject getConfigObject(ArtifactId artifact) ;
+   IAtsConfigObject getConfigObject(ArtifactId artifact);
 
-   IAtsVersion getVersion(ArtifactId artifact) ;
+   IAtsVersion getVersion(ArtifactId artifact);
 
    IAtsProgram getProgram(ArtifactId artifact);
 

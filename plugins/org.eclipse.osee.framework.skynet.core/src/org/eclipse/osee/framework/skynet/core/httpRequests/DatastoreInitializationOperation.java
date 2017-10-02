@@ -36,7 +36,7 @@ public final class DatastoreInitializationOperation extends AbstractOperation {
    }
 
    @Override
-   protected void doWork(IProgressMonitor monitor)  {
+   protected void doWork(IProgressMonitor monitor) {
       OseeClient oseeClient = ServiceUtil.getOseeClient();
       DatastoreEndpoint endPoint = oseeClient.getDatastoreEndpoint();
 

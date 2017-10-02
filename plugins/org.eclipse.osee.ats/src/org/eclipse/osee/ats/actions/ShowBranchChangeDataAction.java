@@ -38,7 +38,7 @@ public class ShowBranchChangeDataAction extends AbstractAtsAction {
    }
 
    @Override
-   public void runWithException()  {
+   public void runWithException() {
       if (!awa.isOfType(AtsArtifactTypes.TeamWorkflow)) {
          AWorkbench.popup("Only valid for Team Workflow artifacts");
          return;

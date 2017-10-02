@@ -67,14 +67,15 @@ public class AuthorizationDataHtmlWriter extends AbstractHtmlWriter<OAuthAuthori
       model.param(AUTHORIZE_PAGE__DECISION_ALLOW_TAG, AUTHORIZATION_DECISION_ALLOW);
       model.param(AUTHORIZE_PAGE__DECISION_DENY_TAG, AUTHORIZATION_DECISION_DENY);
 
-      model.param(AUTHORIZE_PAGE__HIDDEN_FIELDS_SECTION_TAG, HiddenFormFields.newForm() //
-      .add(OAuthConstants.CLIENT_AUDIENCE, data.getAudience()) //
-      .add(OAuthConstants.SESSION_AUTHENTICITY_TOKEN, data.getAuthenticityToken())//
-      .add(OAuthConstants.CLIENT_ID, data.getClientId()) //
-      .add(OAuthConstants.SCOPE, data.getProposedScope())//
-      .add(OAuthConstants.REDIRECT_URI, data.getRedirectUri()) //
-      .add(OAuthConstants.STATE, data.getState())//
-      .build());
+      model.param(AUTHORIZE_PAGE__HIDDEN_FIELDS_SECTION_TAG,
+         HiddenFormFields.newForm() //
+            .add(OAuthConstants.CLIENT_AUDIENCE, data.getAudience()) //
+            .add(OAuthConstants.SESSION_AUTHENTICITY_TOKEN, data.getAuthenticityToken())//
+            .add(OAuthConstants.CLIENT_ID, data.getClientId()) //
+            .add(OAuthConstants.SCOPE, data.getProposedScope())//
+            .add(OAuthConstants.REDIRECT_URI, data.getRedirectUri()) //
+            .add(OAuthConstants.STATE, data.getState())//
+            .build());
 
       InputFields input = InputFields.newListGroupContainer();
       List<? extends Permission> permissions = data.getPermissions();

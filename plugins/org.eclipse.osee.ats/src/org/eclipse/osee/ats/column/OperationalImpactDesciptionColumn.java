@@ -59,8 +59,10 @@ public class OperationalImpactDesciptionColumn extends XViewerValueColumn {
             return ((TeamWorkFlowArtifact) element).getSoleAttributeValue(
                AtsAttributeTypes.OperationalImpactDescription, "");
          }
-         if (Artifacts.isOfType(element, AtsArtifactTypes.Action) && AtsClientService.get().getWorkItemService().getTeams(element).size() == 1) {
-            return getColumnText(AtsClientService.get().getWorkItemService().getFirstTeam(element), column, columnIndex);
+         if (Artifacts.isOfType(element,
+            AtsArtifactTypes.Action) && AtsClientService.get().getWorkItemService().getTeams(element).size() == 1) {
+            return getColumnText(AtsClientService.get().getWorkItemService().getFirstTeam(element), column,
+               columnIndex);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

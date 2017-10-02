@@ -105,7 +105,7 @@ public class EmailActionsBlam extends AbstractBlam {
       logf("Sent %s notifications.", sent);
    }
 
-   private void addNotification(EmailActionsData data, final AbstractWorkflowArtifact awa, AtsNotificationCollector notifications)  {
+   private void addNotification(EmailActionsData data, final AbstractWorkflowArtifact awa, AtsNotificationCollector notifications) {
       Collection<IAtsUser> recipients = getRecipients(data.getEmailRecipient(), awa);
       Collection<IAtsUser> activeEmailUsers = AtsUsersUtility.getActiveEmailUsers(recipients);
       if (recipients.isEmpty()) {
@@ -181,7 +181,7 @@ public class EmailActionsBlam extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable)  {
+   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
       super.widgetCreating(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
       if (xWidget.getLabel().equals("Preview Message")) {
          XButtonPush button = (XButtonPush) xWidget;
@@ -204,8 +204,8 @@ public class EmailActionsBlam extends AbstractBlam {
    @Override
    public String getDescriptionUsage() {
       return "Loop through all dropped ATS Workflows and email to assignee(s) with message.  " //
-      + "Note: User will get one email containing all items they are assigned/originated.  " //
-      + "Note: Body is plain text and will be shown as is.";
+         + "Note: User will get one email containing all items they are assigned/originated.  " //
+         + "Note: Body is plain text and will be shown as is.";
    }
 
    @Override

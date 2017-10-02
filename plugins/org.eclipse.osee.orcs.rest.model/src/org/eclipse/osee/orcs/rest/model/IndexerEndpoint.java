@@ -29,7 +29,7 @@ public interface IndexerEndpoint {
    @PUT
    @Path("branches/{branch-uuids}")
    Response indexBranches(@PathParam("branch-uuids") String branchUuids, //
-   @DefaultValue("true") @QueryParam("missingItemsOnly") boolean missingItemsOnly);
+      @DefaultValue("true") @QueryParam("missingItemsOnly") boolean missingItemsOnly);
 
    @PUT
    @Path("resources")

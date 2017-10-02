@@ -39,6 +39,6 @@ public abstract class ConflictBuilder {
       this.destBranch = destBranch;
    }
 
-   public abstract Conflict getConflict(BranchId mergeBranch, Set<ArtifactId> artIdSet) ;
+   public abstract Conflict getConflict(BranchId mergeBranch, Set<ArtifactId> artIdSet);
 
 }

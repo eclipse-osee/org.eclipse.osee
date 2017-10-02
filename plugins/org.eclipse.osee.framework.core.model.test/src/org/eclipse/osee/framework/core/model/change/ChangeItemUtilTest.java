@@ -290,7 +290,7 @@ public class ChangeItemUtilTest {
    }
 
    @Test
-   public void testGetStartingVersion()  {
+   public void testGetStartingVersion() {
       ChangeVersion ver1 = ChangeTestUtility.createChange(111L, ModificationType.NEW);
       ChangeVersion ver2 = ChangeTestUtility.createChange(222L, ModificationType.MODIFIED);
       ChangeVersion ver3 = ChangeTestUtility.createChange(333L, ModificationType.DELETED);
@@ -322,7 +322,7 @@ public class ChangeItemUtilTest {
    }
 
    @Test
-   public void testCopy()  {
+   public void testCopy() {
       ChangeVersion expected =
          new ChangeVersion(GammaId.valueOf(5679L), ModificationType.MERGED, ApplicabilityToken.BASE);
 
@@ -348,7 +348,7 @@ public class ChangeItemUtilTest {
    }
 
    @Test
-   public void testIsRessurectedOnNewItem()  {
+   public void testIsRessurectedOnNewItem() {
       ChangeVersion base = ChangeTestUtility.createChange(0L, null);
       ChangeVersion first = ChangeTestUtility.createChange(0L, null);
       ChangeVersion current = ChangeTestUtility.createChange(3333L, ModificationType.NEW);

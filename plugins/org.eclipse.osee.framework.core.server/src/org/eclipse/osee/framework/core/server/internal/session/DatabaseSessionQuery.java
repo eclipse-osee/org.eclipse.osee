@@ -29,7 +29,7 @@ public final class DatabaseSessionQuery implements ISessionQuery {
    }
 
    @Override
-   public void selectAllServerManagedSessions(ISessionCollector collector)  {
+   public void selectAllServerManagedSessions(ISessionCollector collector) {
       querySessions(collector, SELECT_ALL_SESSIONS);
    }
 
@@ -38,7 +38,7 @@ public final class DatabaseSessionQuery implements ISessionQuery {
       querySessions(collector, SELECT_SESSION_BY_ID, id);
    }
 
-   private void querySessions(ISessionCollector collector, String sql, Object... params)  {
+   private void querySessions(ISessionCollector collector, String sql, Object... params) {
       Consumer<JdbcStatement> consumer = stmt -> {
          String sessionGuid = stmt.getString("session_id");
          String userId = stmt.getString("user_id");

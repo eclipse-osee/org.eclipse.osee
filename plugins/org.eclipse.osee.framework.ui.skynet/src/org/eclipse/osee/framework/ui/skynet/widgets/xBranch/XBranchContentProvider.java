@@ -153,7 +153,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
       return null;
    }
 
-   private Collection<Object> getTransactions(BranchId branch)  {
+   private Collection<Object> getTransactions(BranchId branch) {
       if (!showTransactions) {
          return Collections.emptyList();
       }

@@ -33,7 +33,7 @@ public abstract class AbstractEditorHandler extends CommandHandler {
    }
 
    @Override
-   public boolean isEnabledWithException(IStructuredSelection structuredSelection)  {
+   public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
       artifacts = Handlers.getArtifactsFromStructuredSelection(structuredSelection);
       if (!artifacts.isEmpty()) {
          return AccessControlManager.hasPermission(artifacts, getPermissionLevel());

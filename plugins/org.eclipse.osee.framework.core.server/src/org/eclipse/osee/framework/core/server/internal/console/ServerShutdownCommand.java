@@ -46,7 +46,7 @@ public class ServerShutdownCommand implements ConsoleCommand {
    @Override
    public String getUsage() {
       return "[oseeOnly=<TRUE|FALSE>] - To shutdown only the osee server instance without shutting down OSGI framework\n" + //
-      "                        - Shutsdown both osee server instance and OSGI framework\n";
+         "                        - Shutsdown both osee server instance and OSGI framework\n";
    }
 
    @Override

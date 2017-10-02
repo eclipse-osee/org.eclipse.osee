@@ -15,11 +15,11 @@ package org.eclipse.osee.orcs.core.ds;
  */
 public interface OrcsVisitor {
 
-   void visit(ArtifactData data) ;
+   void visit(ArtifactData data);
 
-   void visit(AttributeData data) ;
+   void visit(AttributeData data);
 
-   void visit(RelationData data) ;
+   void visit(RelationData data);
 
    void visit(TupleData data);
 

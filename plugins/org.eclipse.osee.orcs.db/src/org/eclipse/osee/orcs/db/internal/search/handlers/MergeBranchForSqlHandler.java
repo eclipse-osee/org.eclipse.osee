@@ -47,7 +47,7 @@ public class MergeBranchForSqlHandler extends SqlHandler<CriteriaMergeBranchFor>
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer)  {
+   public boolean addPredicates(AbstractSqlWriter writer) {
       writer.write("%s.source_branch_id = ?", mergeAlias);
       writer.addParameter(criteria.getSource());
       writer.writeAndLn();

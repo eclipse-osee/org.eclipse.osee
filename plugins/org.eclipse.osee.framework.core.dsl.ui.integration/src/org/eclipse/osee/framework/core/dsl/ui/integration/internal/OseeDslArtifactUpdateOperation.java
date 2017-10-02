@@ -73,7 +73,7 @@ public class OseeDslArtifactUpdateOperation extends AbstractOperation {
       return Lib.fileToString(file);
    }
 
-   protected void addChanges(Map<BranchId, SkynetTransaction> transactionMap, long branchId, String artifactGuid, String data)  {
+   protected void addChanges(Map<BranchId, SkynetTransaction> transactionMap, long branchId, String artifactGuid, String data) {
       BranchId branch = BranchId.valueOf(branchId);
       SkynetTransaction transaction = transactionMap.get(branch);
       if (transaction == null) {

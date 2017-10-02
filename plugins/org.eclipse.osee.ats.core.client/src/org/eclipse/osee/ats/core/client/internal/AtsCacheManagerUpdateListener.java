@@ -138,7 +138,7 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
       return reload;
    }
 
-   private void handleCachesForAddedModified(EventBasicGuidArtifact guidArt)  {
+   private void handleCachesForAddedModified(EventBasicGuidArtifact guidArt) {
       // Only process if in cache
       Artifact artifact = ArtifactCache.getActive(guidArt);
       if (artifact != null && guidArt.is(EventModType.Added)) {
@@ -158,7 +158,7 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
       }
    }
 
-   private void handleCachesForDeletedPurged(EventBasicGuidArtifact guidArt)  {
+   private void handleCachesForDeletedPurged(EventBasicGuidArtifact guidArt) {
       Artifact artifact = ArtifactCache.getActive(guidArt);
       if (guidArt.getArtifactType().equals(AtsArtifactTypes.Task) && guidArt.is(EventModType.Deleted,
          EventModType.Purged)) {

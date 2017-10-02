@@ -49,21 +49,21 @@ public abstract class WorldUISearchItem extends WorldSearchItem {
     * values (eg MyWorld)
     */
    @Override
-   public String getSelectedName(SearchType searchType)  {
+   public String getSelectedName(SearchType searchType) {
       return getName();
    }
 
-   public abstract Collection<Artifact> performSearch(SearchType searchType) ;
+   public abstract Collection<Artifact> performSearch(SearchType searchType);
 
-   public Collection<Artifact> performSearchGetResults()  {
+   public Collection<Artifact> performSearchGetResults() {
       return performSearchGetResults(false, SearchType.Search);
    }
 
-   public Collection<Artifact> performSearchGetResults(boolean performUi)  {
+   public Collection<Artifact> performSearchGetResults(boolean performUi) {
       return performSearchGetResults(performUi, SearchType.Search);
    }
 
-   public Collection<Artifact> performSearchGetResults(boolean performUi, final SearchType searchType)  {
+   public Collection<Artifact> performSearchGetResults(boolean performUi, final SearchType searchType) {
       cancelled = false;
       if (performUi) {
          Displays.pendInDisplayThread(new Runnable() {
@@ -84,7 +84,7 @@ public abstract class WorldUISearchItem extends WorldSearchItem {
       return performSearch(searchType);
    }
 
-   public void performUI(SearchType searchType)  {
+   public void performUI(SearchType searchType) {
       cancelled = false;
    }
 

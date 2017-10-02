@@ -48,14 +48,14 @@ public class DecisionReviewManagerTest extends DecisionReviewManager {
    }
 
    @org.junit.Test
-   public void testGetDecisionReviewOptionsStr()  {
+   public void testGetDecisionReviewOptionsStr() {
       Assert.assertEquals("Yes;Followup;<3333>\nNo;Completed;\n",
          AtsClientService.get().getReviewService().getDecisionReviewOptionsString(
             AtsClientService.get().getReviewService().getDefaultDecisionReviewOptions()));
    }
 
    @org.junit.Test
-   public void testCreateNewDecisionReviewAndTransitionToDecision__Normal()  {
+   public void testCreateNewDecisionReviewAndTransitionToDecision__Normal() {
       AtsTestUtil.cleanupAndReset("DecisionReviewManagerTest - Normal");
       TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
 
@@ -85,7 +85,7 @@ public class DecisionReviewManagerTest extends DecisionReviewManager {
    }
 
    @org.junit.Test
-   public void testCreateNewDecisionReviewAndTransitionToDecision__UnAssigned()  {
+   public void testCreateNewDecisionReviewAndTransitionToDecision__UnAssigned() {
       AtsTestUtil.cleanupAndReset("DecisionReviewManagerTest - UnAssigned");
       TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
 
@@ -116,7 +116,7 @@ public class DecisionReviewManagerTest extends DecisionReviewManager {
    }
 
    @org.junit.Test
-   public void testCreateNewDecisionReview__Base()  {
+   public void testCreateNewDecisionReview__Base() {
       AtsTestUtil.cleanupAndReset("DecisionReviewManagerTest - Base");
       TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
 
@@ -142,7 +142,7 @@ public class DecisionReviewManagerTest extends DecisionReviewManager {
    }
 
    @org.junit.Test
-   public void testCreateNewDecisionReview__BaseUnassigned()  {
+   public void testCreateNewDecisionReview__BaseUnassigned() {
       AtsTestUtil.cleanupAndReset("DecisionReviewManagerTest - BaseUnassigned");
       TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
 
@@ -161,7 +161,7 @@ public class DecisionReviewManagerTest extends DecisionReviewManager {
    }
 
    @org.junit.Test
-   public void testCreateNewDecisionReview__Sample()  {
+   public void testCreateNewDecisionReview__Sample() {
       AtsTestUtil.cleanupAndReset("DecisionReviewManagerTest - Sample");
       TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
 

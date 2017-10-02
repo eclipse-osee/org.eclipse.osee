@@ -89,7 +89,7 @@ public class ExcelAtsActionArtifactExtractor {
       this.toGoal = toGoal;
    }
 
-   public XResultData dataIsValid()  {
+   public XResultData dataIsValid() {
       if (!dataIsValid) {
          return new XResultData(false);
       }
@@ -269,7 +269,7 @@ public class ExcelAtsActionArtifactExtractor {
       }
    }
 
-   private void addToGoal(Collection<TeamWorkFlowArtifact> newTeamArts, IAtsChangeSet changes)  {
+   private void addToGoal(Collection<TeamWorkFlowArtifact> newTeamArts, IAtsChangeSet changes) {
       if (toGoal != null) {
          GoalArtifact goal = (GoalArtifact) AtsClientService.get().getArtifact(toGoal);
          if (goal == null) {
@@ -282,7 +282,7 @@ public class ExcelAtsActionArtifactExtractor {
       }
    }
 
-   public Map<IAtsTeamDefinition, Collection<IAtsActionableItem>> getTeamDefToAias(Collection<IAtsActionableItem> aias)  {
+   public Map<IAtsTeamDefinition, Collection<IAtsActionableItem>> getTeamDefToAias(Collection<IAtsActionableItem> aias) {
       Map<IAtsTeamDefinition, Collection<IAtsActionableItem>> teamDefToAias =
          new HashMap<IAtsTeamDefinition, Collection<IAtsActionableItem>>();
       for (IAtsActionableItem aia : aias) {
@@ -296,7 +296,7 @@ public class ExcelAtsActionArtifactExtractor {
       return teamDefToAias;
    }
 
-   public void process(URI source)  {
+   public void process(URI source) {
       try {
          XMLReader xmlReader = XMLReaderFactory.createXMLReader();
          XResultData rd = new XResultData();

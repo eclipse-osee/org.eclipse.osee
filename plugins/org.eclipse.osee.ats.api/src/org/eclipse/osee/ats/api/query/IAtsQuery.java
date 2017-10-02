@@ -33,15 +33,15 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
  */
 public interface IAtsQuery {
 
-   IAtsQuery andTeam(IAtsTeamDefinition teamDef) ;
+   IAtsQuery andTeam(IAtsTeamDefinition teamDef);
 
-   IAtsQuery andStateType(StateType... stateType) ;
+   IAtsQuery andStateType(StateType... stateType);
 
-   <T extends IAtsWorkItem> Collection<T> getItems() ;
+   <T extends IAtsWorkItem> Collection<T> getItems();
 
    <T extends IAtsWorkItem> Collection<T> getItems(Class<T> clazz);
 
-   IAtsQuery andAttr(AttributeTypeId attributeType, Collection<String> values, QueryOption... queryOption) ;
+   IAtsQuery andAttr(AttributeTypeId attributeType, Collection<String> values, QueryOption... queryOption);
 
    IAtsQuery andAtsIds(Collection<String> atsIds);
 
@@ -49,7 +49,7 @@ public interface IAtsQuery {
 
    IAtsQuery andLegacyIds(Collection<String> legacyIds);
 
-   IAtsWorkItemFilter andFilter() ;
+   IAtsWorkItemFilter andFilter();
 
    IAtsQuery isOfType(IArtifactType... artifactType);
 
@@ -93,7 +93,7 @@ public interface IAtsQuery {
 
    IAtsQuery andActionableItem(IAtsActionableItem actionableItem);
 
-   Collection<ArtifactId> getItemIds() ;
+   Collection<ArtifactId> getItemIds();
 
    IAtsQuery andAssigneeWas(IAtsUser... assignees);
 
@@ -125,7 +125,7 @@ public interface IAtsQuery {
    IAtsQuery andVersion(IAtsVersion version);
 
    IAtsQuery andName(String name, QueryOption... queryOption);
-   
+
    IAtsQuery andExists(AttributeTypeToken attributeType);
 
 }

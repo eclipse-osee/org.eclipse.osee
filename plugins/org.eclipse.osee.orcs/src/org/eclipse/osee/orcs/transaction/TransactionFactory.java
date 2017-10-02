@@ -25,7 +25,7 @@ import org.eclipse.osee.orcs.data.TransactionReadable;
  */
 public interface TransactionFactory {
 
-   TransactionBuilder createTransaction(BranchId branch, ArtifactId userArtifact, String comment) ;
+   TransactionBuilder createTransaction(BranchId branch, ArtifactId userArtifact, String comment);
 
    Callable<Integer> purgeTransaction(Collection<? extends TransactionId> transactions);
 

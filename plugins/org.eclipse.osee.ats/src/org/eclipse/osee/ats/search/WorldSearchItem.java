@@ -46,12 +46,12 @@ public class WorldSearchItem extends WorldUISearchItem {
    }
 
    @Override
-   public String getSelectedName(SearchType searchType)  {
+   public String getSelectedName(SearchType searchType) {
       return super.getSelectedName(searchType);
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType)  {
+   public Collection<Artifact> performSearch(SearchType searchType) {
 
       boolean assigneesWithCompletedOrCancelled = false;
       List<StateType> stateTypes = data.getStateTypes();

@@ -115,11 +115,11 @@ public class ArtifactTestRunOperator implements TestRunOperator {
       artifact.setSoleAttributeValue(OteAttributeTypes.EXTENSION, outfile);
    }
 
-   public boolean isFromLocalWorkspace()  {
+   public boolean isFromLocalWorkspace() {
       return getLastDateUploaded() == null;
    }
 
-   public void setLocalOutfileURI(String uri)  {
+   public void setLocalOutfileURI(String uri) {
       IAttributeDataProvider provider = getOutfileAttribute().getAttributeDataProvider();
       if (provider instanceof MappedAttributeDataProvider) {
          ((MappedAttributeDataProvider) provider).setLocalUri(uri);
@@ -139,7 +139,7 @@ public class ArtifactTestRunOperator implements TestRunOperator {
       }
    }
 
-   public Attribute<InputStream> getOutfileAttribute()  {
+   public Attribute<InputStream> getOutfileAttribute() {
       List<Attribute<InputStream>> attributes = artifact.getAttributes(OteAttributeTypes.OUTFILE_URL);
       return attributes != null && attributes.size() > 0 ? attributes.get(0) : null;
    }

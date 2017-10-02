@@ -49,7 +49,7 @@ public final class WordTemplateFileDiffer {
       this.renderer = renderer;
    }
 
-   public void generateFileDifferences(List<Artifact> endArtifacts, String diffPrefix, String nextParagraphNumber, String outlineType, boolean recurseChildren)  {
+   public void generateFileDifferences(List<Artifact> endArtifacts, String diffPrefix, String nextParagraphNumber, String outlineType, boolean recurseChildren) {
       Map<RendererOption, Object> rendererOptions = renderer.getRendererOptions();
       rendererOptions.put(RendererOption.PARAGRAPH_NUMBER, nextParagraphNumber);
       rendererOptions.put(RendererOption.OUTLINE_TYPE, outlineType);
@@ -57,7 +57,8 @@ public final class WordTemplateFileDiffer {
       rendererOptions.put(RendererOption.USE_ARTIFACT_NAMES, true);
       rendererOptions.put(RendererOption.IN_PUBLISH_MODE, true);
       // need to keep original value as well as reseting to false
-      rendererOptions.put(RendererOption.ORIG_PUBLISH_AS_DIFF, renderer.getRendererOptionValue(RendererOption.PUBLISH_DIFF));
+      rendererOptions.put(RendererOption.ORIG_PUBLISH_AS_DIFF,
+         renderer.getRendererOptionValue(RendererOption.PUBLISH_DIFF));
       rendererOptions.put(RendererOption.PUBLISH_DIFF, false);
 
       rendererOptions.put(RendererOption.RECURSE, recurseChildren);
@@ -96,8 +97,7 @@ public final class WordTemplateFileDiffer {
       Collection<Artifact> toProcess = recurseChildren || recurseOnLoad ? getAllArtifacts(endArtifacts) : endArtifacts;
       List<Change> changes = new LinkedList<>();
       ChangeDataLoader changeLoader = new ChangeDataLoader(changes, txDelta);
-      IProgressMonitor monitor =
-         (IProgressMonitor) renderer.getRendererOptionValue(RendererOption.PROGRESS_MONITOR);
+      IProgressMonitor monitor = (IProgressMonitor) renderer.getRendererOptionValue(RendererOption.PROGRESS_MONITOR);
       if (monitor == null) {
          monitor = new NullProgressMonitor();
       }
@@ -111,7 +111,7 @@ public final class WordTemplateFileDiffer {
       }
    }
 
-   private Collection<Artifact> getAllArtifacts(List<Artifact> endArtifacts)  {
+   private Collection<Artifact> getAllArtifacts(List<Artifact> endArtifacts) {
       Set<Artifact> toReturn = new LinkedHashSet<>();
       for (Artifact art : endArtifacts) {
          toReturn.add(art);
@@ -120,7 +120,7 @@ public final class WordTemplateFileDiffer {
       return toReturn;
    }
 
-   private void diff(List<Change> changes, Collection<Artifact> endArtifacts, String diffPrefix, TransactionDelta txDelta)  {
+   private void diff(List<Change> changes, Collection<Artifact> endArtifacts, String diffPrefix, TransactionDelta txDelta) {
 
       Collection<ArtifactDelta> artifactDeltas = new ArrayList<>();
       Set<Integer> addedIds = new HashSet<>();

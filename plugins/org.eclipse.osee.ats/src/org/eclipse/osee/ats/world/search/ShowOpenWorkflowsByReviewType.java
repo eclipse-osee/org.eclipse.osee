@@ -50,7 +50,7 @@ public class ShowOpenWorkflowsByReviewType extends WorldUISearchItem {
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType)  {
+   public Collection<Artifact> performSearch(SearchType searchType) {
       IAtsQuery query = AtsClientService.get().getQueryService().createQuery(workItemType);
       if (!showFinished) {
          query.andStateType(StateType.Working);

@@ -325,7 +325,7 @@ public class WordImageArtifactElementExtractor implements IElementExtractor {
       return checksum;
    }
 
-   private void validateEditTags()  {
+   private void validateEditTags() {
       if (numberOfStartTags == 0 || numberOfEndTags != numberOfStartTags) {
          throw new OseeCoreException(
             "This document is missing start/end edit tags, therefore the document will not be saved. You can re-edit the artifact and the edit tags should reappear.");

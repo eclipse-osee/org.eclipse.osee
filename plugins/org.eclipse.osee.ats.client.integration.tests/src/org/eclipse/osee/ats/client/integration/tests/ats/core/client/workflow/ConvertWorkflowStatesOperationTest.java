@@ -42,7 +42,7 @@ public class ConvertWorkflowStatesOperationTest {
 
    @BeforeClass
    @AfterClass
-   public static void cleanup()  {
+   public static void cleanup() {
       SkynetTransaction transaction = TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(),
          "ConvertWorkflowStatesOperationTest.cleanup");
       for (Artifact art : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.TeamWorkflow,

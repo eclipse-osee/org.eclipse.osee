@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.plugin.core.IWorkbenchUserService;
 public class WorkbenchUserService implements IWorkbenchUserService {
 
    @Override
-   public IWorkbenchUser getUser()  {
+   public IWorkbenchUser getUser() {
       return new WorkbenchUserAdaptor(UserManager.getUser());
    }
 
@@ -32,7 +32,7 @@ public class WorkbenchUserService implements IWorkbenchUserService {
       }
 
       @Override
-      public String getEmail()  {
+      public String getEmail() {
          return user.getEmail();
       }
 
@@ -42,12 +42,12 @@ public class WorkbenchUserService implements IWorkbenchUserService {
       }
 
       @Override
-      public String getUserID()  {
+      public String getUserID() {
          return user.getUserId();
       }
 
       @Override
-      public boolean isActive()  {
+      public boolean isActive() {
          return user.isActive();
       }
    }

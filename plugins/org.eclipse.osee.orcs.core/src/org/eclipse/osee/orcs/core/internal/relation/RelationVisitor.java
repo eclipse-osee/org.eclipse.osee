@@ -15,6 +15,6 @@ package org.eclipse.osee.orcs.core.internal.relation;
  */
 public interface RelationVisitor {
 
-   void visit(Relation relation) ;
+   void visit(Relation relation);
 
 }

@@ -39,7 +39,7 @@ public class ResultSetList<T> implements ResultSet<T> {
    }
 
    @Override
-   public T getAtMostOneOrNull()  {
+   public T getAtMostOneOrNull() {
       List<T> result = getList();
       if (result.size() > 1) {
          throw createManyExistException(result.size());
@@ -48,7 +48,7 @@ public class ResultSetList<T> implements ResultSet<T> {
    }
 
    @Override
-   public T getExactlyOne()  {
+   public T getExactlyOne() {
       T result = getAtMostOneOrNull();
       if (result == null) {
          throw createDoesNotExistException();

@@ -23,12 +23,12 @@ import org.eclipse.osee.ats.api.workdef.IStateToken;
 public class TransitionAdapter implements ITransitionListener {
 
    @Override
-   public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees)  {
+   public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees) {
       // provided for subclass implementation
    }
 
    @Override
-   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes)  {
+   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes) {
       // provided for subclass implementation
    }
 

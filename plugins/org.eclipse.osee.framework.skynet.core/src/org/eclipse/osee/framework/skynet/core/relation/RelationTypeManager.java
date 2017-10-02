@@ -30,15 +30,15 @@ import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
  */
 public class RelationTypeManager {
 
-   private static IOseeCachingService getCacheService()  {
+   private static IOseeCachingService getCacheService() {
       return ServiceUtil.getOseeCacheService();
    }
 
-   public static AbstractOseeCache<RelationType> getCache()  {
+   public static AbstractOseeCache<RelationType> getCache() {
       return getCacheService().getRelationTypeCache();
    }
 
-   public static List<RelationType> getValidTypes(ArtifactTypeId artifactType, BranchId branch)  {
+   public static List<RelationType> getValidTypes(ArtifactTypeId artifactType, BranchId branch) {
       Collection<RelationType> relationTypes = getAllTypes();
       List<RelationType> validRelationTypes = new ArrayList<>();
       for (RelationType relationType : relationTypes) {
@@ -53,7 +53,7 @@ public class RelationTypeManager {
       return validRelationTypes;
    }
 
-   public static int getRelationSideMax(IRelationType relType, ArtifactTypeId artifactType, RelationSide relationSide)  {
+   public static int getRelationSideMax(IRelationType relType, ArtifactTypeId artifactType, RelationSide relationSide) {
       RelationType relationType = getType(relType);
       int toReturn = 0;
       ArtifactType type = getCacheService().getArtifactTypeCache().get(artifactType);
@@ -66,18 +66,18 @@ public class RelationTypeManager {
    /**
     * @return all the relation types that are valid for the given branch
     */
-   public static Collection<RelationType> getValidTypes(BranchId branch)  {
+   public static Collection<RelationType> getValidTypes(BranchId branch) {
       return getAllTypes();
    }
 
    /**
     * @return all Relation types
     */
-   public static Collection<RelationType> getAllTypes()  {
+   public static Collection<RelationType> getAllTypes() {
       return getCache().getAll();
    }
 
-   public static RelationType getTypeByGuid(Long guid)  {
+   public static RelationType getTypeByGuid(Long guid) {
       RelationType relationType = getCache().getByGuid(guid);
       if (relationType == null) {
          getCacheService().reloadTypes();
@@ -89,7 +89,7 @@ public class RelationTypeManager {
       return relationType;
    }
 
-   public static RelationType getType(IRelationType relationType)  {
+   public static RelationType getType(IRelationType relationType) {
       if (relationType instanceof RelationType) {
          return (RelationType) relationType;
       }
@@ -97,7 +97,7 @@ public class RelationTypeManager {
       return getCache().get(relationType);
    }
 
-   public static RelationType getType(String typeName)  {
+   public static RelationType getType(String typeName) {
       RelationType relationType = getCache().getUniqueByName(typeName);
       if (relationType == null) {
          throw new OseeTypeDoesNotExist("The relation type [%s] does not exist", typeName);
@@ -105,7 +105,7 @@ public class RelationTypeManager {
       return relationType;
    }
 
-   public static boolean typeExists(String name)  {
+   public static boolean typeExists(String name) {
       return !getCache().getByName(name).isEmpty();
    }
 

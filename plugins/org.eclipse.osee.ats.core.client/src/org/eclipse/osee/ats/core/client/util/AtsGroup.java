@@ -33,19 +33,19 @@ public enum AtsGroup {
       group = new OseeGroup(token);
    }
 
-   public Artifact getArtifact()  {
+   public Artifact getArtifact() {
       return group.getGroupArtifact();
    }
 
-   public void addMember(User user)  {
+   public void addMember(User user) {
       group.addMember(user);
    }
 
-   public boolean isMember(User user)  {
+   public boolean isMember(User user) {
       return group.isMember(user);
    }
 
-   public boolean isCurrentUserMember()  {
+   public boolean isCurrentUserMember() {
       return group.isCurrentUserMember();
    }
 

@@ -48,7 +48,7 @@ public class UriDataProxy extends AbstractDataProxy implements CharacterDataProx
    }
 
    @Override
-   public boolean setValue(ByteBuffer data)  {
+   public boolean setValue(ByteBuffer data) {
       boolean response = false;
       try {
          ByteBuffer original = getValueAsBytes();
@@ -73,7 +73,7 @@ public class UriDataProxy extends AbstractDataProxy implements CharacterDataProx
    }
 
    @Override
-   public ByteBuffer getValueAsBytes()  {
+   public ByteBuffer getValueAsBytes() {
       ByteBuffer decompressed = null;
       byte[] rawData = getStorage().getContent();
       if (rawData != null) {
@@ -88,7 +88,7 @@ public class UriDataProxy extends AbstractDataProxy implements CharacterDataProx
    }
 
    @Override
-   public String getValueAsString()  {
+   public String getValueAsString() {
       String toReturn = null;
       ByteBuffer data = getValueAsBytes();
       if (data != null) {
@@ -104,7 +104,7 @@ public class UriDataProxy extends AbstractDataProxy implements CharacterDataProx
    }
 
    @Override
-   public boolean setValue(Object value)  {
+   public boolean setValue(Object value) {
       ByteBuffer toSet = null;
       if (value != null && value instanceof String) {
          try {

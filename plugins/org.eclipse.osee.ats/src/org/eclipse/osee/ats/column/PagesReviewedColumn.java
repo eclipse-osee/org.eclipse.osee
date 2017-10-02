@@ -29,7 +29,8 @@ public class PagesReviewedColumn extends XViewerAtsAttributeValueColumn {
 
    private PagesReviewedColumn() {
       super(AtsAttributeTypes.PagesReviewed, WorldXViewerFactory.COLUMN_NAMESPACE + ".pagesReviewed",
-         AtsAttributeTypes.PagesReviewed.getUnqualifiedName(), 40, XViewerAlign.Center, false, SortDataType.Integer, true, "");
+         AtsAttributeTypes.PagesReviewed.getUnqualifiedName(), 40, XViewerAlign.Center, false, SortDataType.Integer,
+         true, "");
    }
 
    /**

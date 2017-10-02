@@ -29,7 +29,7 @@ public class UserArtifactCheck extends ArtifactCheck {
    }
 
    @Override
-   public IStatus isDeleteable(Collection<Artifact> artifacts)  {
+   public IStatus isDeleteable(Collection<Artifact> artifacts) {
       if (enabled) {
          for (Artifact art : artifacts) {
             if (art.isOfType(CoreArtifactTypes.User)) {

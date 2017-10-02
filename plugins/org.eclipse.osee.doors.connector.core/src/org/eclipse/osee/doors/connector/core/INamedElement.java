@@ -5,7 +5,6 @@
  */
 package org.eclipse.osee.doors.connector.core;
 
-
 /**
  * Interface to get the name
  * 
@@ -13,10 +12,10 @@ package org.eclipse.osee.doors.connector.core;
  */
 public interface INamedElement {
 
-  /**
-   * Returns the name of this object
-   * 
-   * @return String value of the name
-   */
-  public String getName();
+   /**
+    * Returns the name of this object
+    * 
+    * @return String value of the name
+    */
+   public String getName();
 }

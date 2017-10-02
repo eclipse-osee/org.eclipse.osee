@@ -129,7 +129,7 @@ public class WorldXWidgetActionPage extends FormPage {
       return worldEditor.isDirty() ? new Result("Changes un-saved. Save first.") : Result.TrueResult;
    }
 
-   public String getXWidgetsXml()  {
+   public String getXWidgetsXml() {
       if (worldEditor.getWorldEditorProvider() instanceof IWorldEditorParameterProvider) {
          return ((IWorldEditorParameterProvider) worldEditor.getWorldEditorProvider()).getParameterXWidgetXml();
       }
@@ -195,7 +195,7 @@ public class WorldXWidgetActionPage extends FormPage {
       });
    }
 
-   private Section createParametersSection(IManagedForm managedForm, Composite body)  {
+   private Section createParametersSection(IManagedForm managedForm, Composite body) {
       parameterSection = toolkit.createSection(body, ExpandableComposite.TWISTIE);
       parameterSection.setText("Parameters");
       parameterSection.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -214,7 +214,7 @@ public class WorldXWidgetActionPage extends FormPage {
       return parameterSection;
    }
 
-   public void createSearchParametersOnRight(IManagedForm managedForm, Composite mainComp)  {
+   public void createSearchParametersOnRight(IManagedForm managedForm, Composite mainComp) {
       Composite paramComp = new Composite(mainComp, SWT.NONE);
       paramComp.setLayout(ALayout.getZeroMarginLayout(1, false));
       paramComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -253,14 +253,14 @@ public class WorldXWidgetActionPage extends FormPage {
       buttonComp.layout();
    }
 
-   public IDynamicWidgetLayoutListener getDynamicWidgetLayoutListener()  {
+   public IDynamicWidgetLayoutListener getDynamicWidgetLayoutListener() {
       if (worldEditor.getWorldEditorProvider() instanceof IWorldEditorParameterProvider) {
          return ((IWorldEditorParameterProvider) worldEditor.getWorldEditorProvider()).getDynamicWidgetLayoutListener();
       }
       return null;
    }
 
-   public void reSearch()  {
+   public void reSearch() {
       Result result = isResearchSearchValid();
       if (result.isFalse()) {
          AWorkbench.popup(result);
@@ -284,7 +284,7 @@ public class WorldXWidgetActionPage extends FormPage {
    /*
     * Mainly for testing purposes
     */
-   public void reSearch(boolean forcePend)  {
+   public void reSearch(boolean forcePend) {
       worldEditor.getWorldEditorProvider().run(worldEditor, SearchType.ReSearch, forcePend);
    }
 

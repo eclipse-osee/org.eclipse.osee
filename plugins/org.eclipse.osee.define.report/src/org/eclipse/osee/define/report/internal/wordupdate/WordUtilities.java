@@ -116,7 +116,7 @@ public class WordUtilities {
     * ensure all versions of MS Word will function correctly.
     */
 
-   public static String reassignBookMarkID(String content)  {
+   public static String reassignBookMarkID(String content) {
       return updateBookmarkIds.fixTags(content);
    }
 

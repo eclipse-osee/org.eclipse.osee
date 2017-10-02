@@ -30,7 +30,7 @@ import org.eclipse.osee.orcs.data.RelationTypes;
 public class RelationTypesImpl implements RelationTypes {
 
    public static interface RelationTypeIndexProvider {
-      RelationTypeIndex getRelationTypeIndex() ;
+      RelationTypeIndex getRelationTypeIndex();
    }
 
    private final RelationTypeIndexProvider provider;
@@ -39,13 +39,13 @@ public class RelationTypesImpl implements RelationTypes {
       this.provider = provider;
    }
 
-   private XRelationType getType(RelationTypeId type)  {
+   private XRelationType getType(RelationTypeId type) {
       Conditions.checkNotNull(type, "relationType");
       return provider.getRelationTypeIndex().getDslTypeByToken(type);
    }
 
    @Override
-   public Collection<RelationTypeToken> getAll()  {
+   public Collection<RelationTypeToken> getAll() {
       return provider.getRelationTypeIndex().getAllTokens();
    }
 
@@ -63,7 +63,7 @@ public class RelationTypesImpl implements RelationTypes {
    }
 
    @Override
-   public RelationTypeMultiplicity getMultiplicity(RelationTypeId relation)  {
+   public RelationTypeMultiplicity getMultiplicity(RelationTypeId relation) {
       XRelationType type = getType(relation);
       String multiplicityId = type.getMultiplicity().getName();
       RelationTypeMultiplicity multiplicity = RelationTypeMultiplicity.getFromString(multiplicityId);
@@ -71,25 +71,25 @@ public class RelationTypesImpl implements RelationTypes {
    }
 
    @Override
-   public String getSideName(IRelationType relation, RelationSide relationSide)  {
+   public String getSideName(IRelationType relation, RelationSide relationSide) {
       Conditions.checkNotNull(relationSide, "relationSide");
       return relationSide == RelationSide.SIDE_A ? getSideAName(relation) : getSideBName(relation);
    }
 
    @Override
-   public String getSideAName(IRelationType relation)  {
+   public String getSideAName(IRelationType relation) {
       XRelationType type = getType(relation);
       return type.getSideAName();
    }
 
    @Override
-   public String getSideBName(IRelationType relation)  {
+   public String getSideBName(IRelationType relation) {
       XRelationType type = getType(relation);
       return type.getSideBName();
    }
 
    @Override
-   public boolean isSideAName(IRelationType relation, String sideName)  {
+   public boolean isSideAName(IRelationType relation, String sideName) {
       XRelationType type = getType(relation);
       boolean isSideA = type.getSideAName().equals(sideName);
       if (!isSideA && !type.getSideBName().equals(sideName)) {
@@ -104,30 +104,30 @@ public class RelationTypesImpl implements RelationTypes {
    }
 
    @Override
-   public RelationSorter getDefaultOrderTypeGuid(IRelationType relation)  {
+   public RelationSorter getDefaultOrderTypeGuid(IRelationType relation) {
       XRelationType type = getType(relation);
       return RelationSorter.valueOfName(type.getDefaultOrderType());
    }
 
    @Override
-   public IArtifactType getArtifactTypeSideA(IRelationType relation)  {
+   public IArtifactType getArtifactTypeSideA(IRelationType relation) {
       return getArtifactType(relation, RelationSide.SIDE_A);
    }
 
    @Override
-   public IArtifactType getArtifactTypeSideB(IRelationType relation)  {
+   public IArtifactType getArtifactTypeSideB(IRelationType relation) {
       return getArtifactType(relation, RelationSide.SIDE_B);
    }
 
    @Override
-   public IArtifactType getArtifactType(RelationTypeId relation, RelationSide relationSide)  {
+   public IArtifactType getArtifactType(RelationTypeId relation, RelationSide relationSide) {
       Conditions.checkNotNull(relation, "relationType");
       Conditions.checkNotNull(relationSide, "relationSide");
       return provider.getRelationTypeIndex().getArtifactType(relation, relationSide);
    }
 
    @Override
-   public boolean isArtifactTypeAllowed(RelationTypeId relation, RelationSide relationSide, IArtifactType artifactType)  {
+   public boolean isArtifactTypeAllowed(RelationTypeId relation, RelationSide relationSide, IArtifactType artifactType) {
       Conditions.checkNotNull(relation, "relationType");
       Conditions.checkNotNull(relationSide, "relationSide");
       Conditions.checkNotNull(artifactType, "artifactType");
@@ -135,17 +135,17 @@ public class RelationTypesImpl implements RelationTypes {
    }
 
    @Override
-   public boolean isEmpty()  {
+   public boolean isEmpty() {
       return provider.getRelationTypeIndex().isEmpty();
    }
 
    @Override
-   public int size()  {
+   public int size() {
       return provider.getRelationTypeIndex().size();
    }
 
    @Override
-   public boolean exists(Id id)  {
+   public boolean exists(Id id) {
       return provider.getRelationTypeIndex().exists(id);
    }
 }

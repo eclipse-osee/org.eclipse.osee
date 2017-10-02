@@ -39,7 +39,7 @@ public class OseeGroup {
    /**
     * @return Returns the group.
     */
-   public Artifact getGroupArtifact()  {
+   public Artifact getGroupArtifact() {
       checkGroupExists();
       return groupArtifact;
    }
@@ -47,7 +47,7 @@ public class OseeGroup {
    /**
     * This does not persist the newly created relation that is the callers responsibility.
     */
-   public void addMember(User user)  {
+   public void addMember(User user) {
       getGroupArtifact().addRelation(CoreRelationTypes.Users_User, user);
    }
 
@@ -57,7 +57,7 @@ public class OseeGroup {
     * @param user to check
     * @return whether the user is a member of this group
     */
-   public boolean isMember(User user)  {
+   public boolean isMember(User user) {
       return isTemporaryOverride(user) || getGroupArtifact().isRelated(CoreRelationTypes.Users_User, user);
    }
 
@@ -66,7 +66,7 @@ public class OseeGroup {
     *
     * @return whether the current user is a member of this group
     */
-   public boolean isCurrentUserMember()  {
+   public boolean isCurrentUserMember() {
       return isMember(UserManager.getUser());
    }
 
@@ -88,13 +88,13 @@ public class OseeGroup {
       temporaryOverride.remove(token);
    }
 
-   private void checkGroupExists()  {
+   private void checkGroupExists() {
       if (groupArtifact == null) {
          groupArtifact = getOrCreateGroupArtifact(token);
       }
    }
 
-   private Artifact getOrCreateGroupArtifact(ArtifactToken token)  {
+   private Artifact getOrCreateGroupArtifact(ArtifactToken token) {
       Artifact groupArtifact = ArtifactQuery.getArtifactOrNull(token, EXCLUDE_DELETED);
       if (groupArtifact == null) {
          Artifact userGroupsFolder = getOrCreateUserGroupsFolder(COMMON);
@@ -104,7 +104,7 @@ public class OseeGroup {
       return groupArtifact;
    }
 
-   private Artifact getOrCreateUserGroupsFolder(BranchId branch)  {
+   private Artifact getOrCreateUserGroupsFolder(BranchId branch) {
       Artifact usersGroupFolder = ArtifactQuery.checkArtifactFromId(CoreArtifactTokens.UserGroups, branch);
       if (usersGroupFolder == null) {
          Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);

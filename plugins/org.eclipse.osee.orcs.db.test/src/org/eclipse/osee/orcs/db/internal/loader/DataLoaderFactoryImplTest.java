@@ -97,7 +97,7 @@ public class DataLoaderFactoryImplTest {
    private SqlObjectLoader spyLoader;
 
    @Before
-   public void setUp()  {
+   public void setUp() {
       MockitoAnnotations.initMocks(this);
 
       String sessionId = GUID.create();
@@ -115,7 +115,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadFull()  {
+   public void testLoadFull() {
       LoadLevel expectedLoadLevel = LoadLevel.ALL;
 
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON, Arrays.asList(1, 2, 3));
@@ -135,7 +135,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadArtifactIds()  {
+   public void testLoadArtifactIds() {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_DATA;
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
          " jart1.id2, jart1.id4, art1.art_type_id, art1.guid\n" + //
@@ -158,7 +158,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadArtifactIncludeDeleted()  {
+   public void testLoadArtifactIncludeDeleted() {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_DATA;
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
          " jart1.id2, jart1.id4, art1.art_type_id, art1.guid\n" + //
@@ -182,7 +182,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadArtifactHistorical()  {
+   public void testLoadArtifactHistorical() {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_DATA;
       String expected =
          "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id, txs1.transaction_id as stripe_transaction_id,\n" + //
@@ -206,7 +206,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadArtifactHistoricalIncludeDeleted()  {
+   public void testLoadArtifactHistoricalIncludeDeleted() {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_DATA;
       String expected =
          "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id, txs1.transaction_id as stripe_transaction_id,\n" + //
@@ -232,7 +232,7 @@ public class DataLoaderFactoryImplTest {
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    @Test
-   public void testLoadAttributes()  {
+   public void testLoadAttributes() {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
 
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
@@ -256,7 +256,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadAttributesWithType()  {
+   public void testLoadAttributesWithType() {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
 
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
@@ -281,7 +281,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadAttributesWithTypes()  {
+   public void testLoadAttributesWithTypes() {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
 
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
@@ -307,7 +307,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadAttributesWithId()  {
+   public void testLoadAttributesWithId() {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
 
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
@@ -332,7 +332,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadAttributesWithIds()  {
+   public void testLoadAttributesWithIds() {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
 
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
@@ -357,7 +357,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadAttributesWithIdsAndTypes()  {
+   public void testLoadAttributesWithIdsAndTypes() {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
 
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
@@ -384,7 +384,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadAttributesWithIdAndType()  {
+   public void testLoadAttributesWithIdAndType() {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
 
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
@@ -410,7 +410,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadAttributesIncludeDeleted()  {
+   public void testLoadAttributesIncludeDeleted() {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
 
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
@@ -435,7 +435,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadAttributesHistorical()  {
+   public void testLoadAttributesHistorical() {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
 
       String expected =
@@ -460,7 +460,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadAttributesHistoricalIncludeDeleted()  {
+   public void testLoadAttributesHistoricalIncludeDeleted() {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
 
       String expected =
@@ -488,7 +488,7 @@ public class DataLoaderFactoryImplTest {
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
    @Test
-   public void testLoadRelations()  {
+   public void testLoadRelations() {
       LoadLevel expectedLoadLevel = LoadLevel.RELATION_DATA;
 
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
@@ -512,7 +512,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadRelationsIncludeDeleted()  {
+   public void testLoadRelationsIncludeDeleted() {
       LoadLevel expectedLoadLevel = LoadLevel.RELATION_DATA;
 
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
@@ -537,7 +537,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadRelationsWithType()  {
+   public void testLoadRelationsWithType() {
       LoadLevel expectedLoadLevel = LoadLevel.RELATION_DATA;
 
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
@@ -563,7 +563,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadRelationsWithTypes()  {
+   public void testLoadRelationsWithTypes() {
       LoadLevel expectedLoadLevel = LoadLevel.RELATION_DATA;
 
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
@@ -591,7 +591,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadRelationsWithId()  {
+   public void testLoadRelationsWithId() {
       LoadLevel expectedLoadLevel = LoadLevel.RELATION_DATA;
 
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
@@ -616,7 +616,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadRelationsWithIds()  {
+   public void testLoadRelationsWithIds() {
       LoadLevel expectedLoadLevel = LoadLevel.RELATION_DATA;
 
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
@@ -641,7 +641,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadRelationsWithIdsAndTypes()  {
+   public void testLoadRelationsWithIdsAndTypes() {
       LoadLevel expectedLoadLevel = LoadLevel.RELATION_DATA;
 
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
@@ -669,7 +669,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadRelationsWithIdAndType()  {
+   public void testLoadRelationsWithIdAndType() {
       LoadLevel expectedLoadLevel = LoadLevel.RELATION_DATA;
 
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
@@ -696,7 +696,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadRelationsHistorical()  {
+   public void testLoadRelationsHistorical() {
       LoadLevel expectedLoadLevel = LoadLevel.RELATION_DATA;
 
       String expected =
@@ -721,7 +721,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadArtifactIncludeDeletedAttributes()  {
+   public void testLoadArtifactIncludeDeletedAttributes() {
       LoadLevel expectedLoadLevel = LoadLevel.ALL;
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
          " jart1.id2, jart1.id4, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
@@ -747,7 +747,7 @@ public class DataLoaderFactoryImplTest {
    }
 
    @Test
-   public void testLoadArtifactIncludeDeletedRelations()  {
+   public void testLoadArtifactIncludeDeletedRelations() {
       LoadLevel expectedLoadLevel = LoadLevel.ALL;
       String expected = "SELECT txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id,\n" + //
          " jart1.id2, jart1.id4, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
@@ -784,11 +784,11 @@ public class DataLoaderFactoryImplTest {
       return data;
    }
 
-   private void verifyCommon(TransactionId txId, LoadLevel level, DeletionFlag includeDeleted, String expectedSQL, Object... params)  {
+   private void verifyCommon(TransactionId txId, LoadLevel level, DeletionFlag includeDeleted, String expectedSQL, Object... params) {
       verifyCommon(txId, level, includeDeleted, expectedSQL, params, list());
    }
 
-   private void verifyCommon(TransactionId txId, LoadLevel level, DeletionFlag includeDeleted, String expectedSQL, Object[] params, List<Object[]> joinDatas)  {
+   private void verifyCommon(TransactionId txId, LoadLevel level, DeletionFlag includeDeleted, String expectedSQL, Object[] params, List<Object[]> joinDatas) {
       verify(spyLoader).loadArtifacts(eq(cancellation), eq(builder), joinCaptor.capture(), criteriaCaptor.capture(),
          contextCaptor.capture(), eq(200));
 

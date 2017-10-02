@@ -119,7 +119,7 @@ public class WorldComposite extends Composite implements IOseeTreeReportProvider
          xViewerFactory != null ? xViewerFactory : new WorldXViewerFactory(this), null);
    }
 
-   public static double getManHoursPerDayPreference(Collection<Artifact> worldArts)  {
+   public static double getManHoursPerDayPreference(Collection<Artifact> worldArts) {
       if (worldArts.size() > 0) {
          Artifact artifact = worldArts.iterator().next();
          if (artifact.isOfType(AtsArtifactTypes.Action)) {
@@ -327,7 +327,7 @@ public class WorldComposite extends Composite implements IOseeTreeReportProvider
    }
 
    @Override
-   public IWorldEditorProvider getWorldEditorProviderCopy()  {
+   public IWorldEditorProvider getWorldEditorProviderCopy() {
       IWorldEditorProvider copyProvider = iWorldEditor.getWorldEditorProvider().copyProvider();
       return copyProvider;
    }
@@ -397,7 +397,7 @@ public class WorldComposite extends Composite implements IOseeTreeReportProvider
    }
 
    @Override
-   public ITaskEditorProvider getTaskEditorProviderCopy()  {
+   public ITaskEditorProvider getTaskEditorProviderCopy() {
       return (ITaskEditorProvider) getWorldEditorProviderCopy();
    }
 

@@ -58,7 +58,7 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
    }
 
    @Override
-   public Version applyTransform(ExchangeDataProcessor processor, Log logger)  {
+   public Version applyTransform(ExchangeDataProcessor processor, Log logger) {
       List<Long> branchUuids = convertBranchTable(processor);
 
       Map<Long, Long> artifactGammaToNetGammaId = convertArtifactAndConflicts(processor);
@@ -81,7 +81,7 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
    }
 
    @Override
-   public void finalizeTransform(Log logger, OrcsSession session, JdbcClient jdbcClient, ExchangeDataProcessor processor)  {
+   public void finalizeTransform(Log logger, OrcsSession session, JdbcClient jdbcClient, ExchangeDataProcessor processor) {
       try {
          TxCurrentsOpFactory.createTxCurrentsAndModTypesOp(logger, session, jdbcClient, false).call();
          TxCurrentsOpFactory.createTxCurrentsAndModTypesOp(logger, session, jdbcClient, true).call();
@@ -90,14 +90,14 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
       }
    }
 
-   private List<Long> convertBranchTable(ExchangeDataProcessor processor)  {
+   private List<Long> convertBranchTable(ExchangeDataProcessor processor) {
       Map<Long, Integer> branchToBaseTx = new HashMap<>(10000);
       processor.parse(ExportItem.OSEE_TX_DETAILS_DATA, new V0_9_2TxDetailsHandler(branchToBaseTx));
       processor.transform(ExportItem.OSEE_BRANCH_DATA, new V0_9_2BranchTransformer(branchToBaseTx));
       return new ArrayList<Long>(branchToBaseTx.keySet());
    }
 
-   private Map<Long, Long> convertArtifactAndConflicts(ExchangeDataProcessor processor)  {
+   private Map<Long, Long> convertArtifactAndConflicts(ExchangeDataProcessor processor) {
       V0_9_2ArtifactVersionHandler handler = new V0_9_2ArtifactVersionHandler();
       processor.parse("osee.artifact.version.data.xml", handler);
       Map<Long, Long> artifactGammaToNetGammaId = handler.getArtifactGammaToNetGammaId();
@@ -109,7 +109,7 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
       return artifactGammaToNetGammaId;
    }
 
-   private void consolidateTxsAddressing(ExchangeDataProcessor processor, ExportItem exportItem, List<Long> branchUuids, Map<Long, Long> artifactGammaToNetGammaId)  {
+   private void consolidateTxsAddressing(ExchangeDataProcessor processor, ExportItem exportItem, List<Long> branchUuids, Map<Long, Long> artifactGammaToNetGammaId) {
       File targetFile = processor.getDataProvider().getFile(exportItem);
       File tempFile = new File(Lib.changeExtension(targetFile.getPath(), "temp"));
       Writer fileWriter = null;
@@ -156,7 +156,7 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
       }
    }
 
-   private void fixAddressing(Collection<Address> addresses)  {
+   private void fixAddressing(Collection<Address> addresses) {
       Iterator<Address> iterator = addresses.iterator();
 
       Address previousAddress = iterator.next();
@@ -176,7 +176,7 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
       previousAddress.setCorrectedTxCurrent(TxChange.getCurrent(previousAddress.getModType()));
    }
 
-   private ModificationType[] getNextPossibleStates(ModificationType state)  {
+   private ModificationType[] getNextPossibleStates(ModificationType state) {
       ModificationType[] nextAllowed = allowedStates.get(state);
       if (nextAllowed == null) {
          throw new OseeStateException("Unexcepted modification type [%s]", state.toString());

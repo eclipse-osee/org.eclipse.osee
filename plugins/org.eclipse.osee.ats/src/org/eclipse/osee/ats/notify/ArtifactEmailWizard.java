@@ -24,16 +24,16 @@ import org.eclipse.osee.framework.ui.skynet.util.email.EmailWizard;
  */
 public class ArtifactEmailWizard extends EmailWizard {
 
-   public ArtifactEmailWizard(AbstractWorkflowArtifact sma)  {
+   public ArtifactEmailWizard(AbstractWorkflowArtifact sma) {
       this(sma, null);
    }
 
-   public ArtifactEmailWizard(AbstractWorkflowArtifact sma, List<Object> toAddress)  {
+   public ArtifactEmailWizard(AbstractWorkflowArtifact sma, List<Object> toAddress) {
       super(AtsNotificationManagerUI.getPreviewHtml(sma, PreviewStyle.HYPEROPEN, PreviewStyle.NO_SUBSCRIBE_OR_FAVORITE),
          " Regarding " + sma.getArtifactTypeName() + " - " + sma.getName(), getEmailableGroups(sma), toAddress);
    }
 
-   public static List<EmailGroup> getEmailableGroups(IAtsWorkItem workItem)  {
+   public static List<EmailGroup> getEmailableGroups(IAtsWorkItem workItem) {
       ArrayList<EmailGroup> groupNames = new ArrayList<>();
       ArrayList<String> emails = new ArrayList<>();
       emails.add(workItem.getCreatedBy().getEmail());

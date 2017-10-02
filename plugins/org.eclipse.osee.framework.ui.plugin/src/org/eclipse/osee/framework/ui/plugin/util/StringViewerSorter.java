@@ -29,8 +29,8 @@ public class StringViewerSorter extends ViewerComparator {
 
    @Override
    public int compare(Viewer viewer, Object e1, Object e2) {
-	  String s1 = e1 != null ? e1.toString() : null;
-	  String s2 = e2 != null ? e2.toString() : null;
+      String s1 = e1 != null ? e1.toString() : null;
+      String s2 = e2 != null ? e2.toString() : null;
       return getComparator().compare(s1, s2);
    }
 }

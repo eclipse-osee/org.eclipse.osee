@@ -169,24 +169,24 @@ public final class AccessControlServiceProxy implements IAccessControlService {
       }
    }
 
-   private void checkInitialized()  {
+   private void checkInitialized() {
       Conditions.checkNotNull(getProxiedObject(), "accessService", "Access Service not properly initialized");
    }
 
    @Override
-   public boolean hasPermission(Object object, PermissionEnum permission)  {
+   public boolean hasPermission(Object object, PermissionEnum permission) {
       checkInitialized();
       return getProxiedObject().hasPermission(object, permission);
    }
 
    @Override
-   public void removePermissions(BranchId branch)  {
+   public void removePermissions(BranchId branch) {
       checkInitialized();
       getProxiedObject().removePermissions(branch);
    }
 
    @Override
-   public AccessDataQuery getAccessData(ArtifactToken userArtifact, Collection<?> itemsToCheck)  {
+   public AccessDataQuery getAccessData(ArtifactToken userArtifact, Collection<?> itemsToCheck) {
       checkInitialized();
       return getProxiedObject().getAccessData(userArtifact, itemsToCheck);
    }

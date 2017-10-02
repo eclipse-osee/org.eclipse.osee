@@ -29,6 +29,6 @@ public interface IdentityManager extends IdentityLocator {
 
    void invalidateIds();
 
-   String getUniqueGuid(String guid) ;
+   String getUniqueGuid(String guid);
 
 }

@@ -32,7 +32,7 @@ abstract class MenuSelectionEnabledHandler extends AbstractSelectionEnabledHandl
    }
 
    @Override
-   protected Object executeWithException(ExecutionEvent event, IStructuredSelection structuredSelection)  {
+   protected Object executeWithException(ExecutionEvent event, IStructuredSelection structuredSelection) {
       AttributeConflict attributeConflict = getConflictFromSelection(structuredSelection);
       if (attributeConflict != null) {
          executeWithException(attributeConflict);
@@ -45,9 +45,8 @@ abstract class MenuSelectionEnabledHandler extends AbstractSelectionEnabledHandl
     * 
     * @param conflict
     * @return
-    * 
     */
-   abstract void executeWithException(AttributeConflict attributeConflict) ;
+   abstract void executeWithException(AttributeConflict attributeConflict);
 
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) {

@@ -32,9 +32,9 @@ public class AttributeTypeEditPresenter {
 
       Collection<AttributeTypeToken> getSelections(OperationType operationType, String title, String message, List<AttributeTypeToken> input);
 
-      void addWidgetFor(Collection<AttributeTypeToken> attributeTypes) ;
+      void addWidgetFor(Collection<AttributeTypeToken> attributeTypes);
 
-      void removeWidgetFor(Collection<AttributeTypeToken> attributeTypes) ;
+      void removeWidgetFor(Collection<AttributeTypeToken> attributeTypes);
    }
 
    public static interface Model {
@@ -58,7 +58,7 @@ public class AttributeTypeEditPresenter {
       model.refreshDirtyArtifact();
    }
 
-   public void onAddAttributeType()  {
+   public void onAddAttributeType() {
       Artifact artifact = model.getArtifact();
       List<AttributeTypeToken> input = AttributeTypeUtil.getEmptyTypes(artifact);
       Collection<AttributeTypeToken> selectedItems =
@@ -72,7 +72,7 @@ public class AttributeTypeEditPresenter {
       }
    }
 
-   public void onRemoveAttributeType()  {
+   public void onRemoveAttributeType() {
       Artifact artifact = model.getArtifact();
       Collection<AttributeTypeToken> validTypesPerBranch = artifact.getAttributeTypes();
       List<AttributeTypeToken> input = AttributeTypeUtil.getTypesWithData(artifact);

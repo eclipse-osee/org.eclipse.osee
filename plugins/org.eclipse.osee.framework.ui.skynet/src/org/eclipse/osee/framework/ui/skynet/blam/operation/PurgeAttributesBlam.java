@@ -73,7 +73,7 @@ public class PurgeAttributesBlam extends AbstractBlam {
    @Override
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"artifacts\" /> " + //
-      "<XWidget xwidgetType=\"XAttributeTypeMultiChoiceSelect\" displayName=\"Attribute Type(s) to purge\" multiSelect=\"true\" /></xWidgets>";
+         "<XWidget xwidgetType=\"XAttributeTypeMultiChoiceSelect\" displayName=\"Attribute Type(s) to purge\" multiSelect=\"true\" /></xWidgets>";
    }
 
    @Override

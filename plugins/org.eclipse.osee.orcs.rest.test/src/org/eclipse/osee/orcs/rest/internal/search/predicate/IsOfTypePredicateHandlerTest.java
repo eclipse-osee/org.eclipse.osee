@@ -47,7 +47,7 @@ public class IsOfTypePredicateHandlerTest {
    }
 
    @Test
-   public void testHandleSingle()  {
+   public void testHandleSingle() {
       IsOfTypePredicateHandler handler = new IsOfTypePredicateHandler();
       //no type params, op, or flags for ids - any passed are ignored
 
@@ -62,7 +62,7 @@ public class IsOfTypePredicateHandlerTest {
    }
 
    @Test
-   public void testHandleMultiple()  {
+   public void testHandleMultiple() {
       IsOfTypePredicateHandler handler = new IsOfTypePredicateHandler();
       String id1 = "12345";
       String id2 = "45678";
@@ -78,14 +78,14 @@ public class IsOfTypePredicateHandlerTest {
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testHandleBadValues()  {
+   public void testHandleBadValues() {
       IsOfTypePredicateHandler handler = new IsOfTypePredicateHandler();
       Predicate testPredicate = new Predicate(SearchMethod.IS_OF_TYPE, null, null);
       handler.handle(builder, testPredicate);
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testBadSearchMethod()  {
+   public void testBadSearchMethod() {
       IsOfTypePredicateHandler handler = new IsOfTypePredicateHandler();
       String id1 = "12345";
       List<String> values = Collections.singletonList(id1);

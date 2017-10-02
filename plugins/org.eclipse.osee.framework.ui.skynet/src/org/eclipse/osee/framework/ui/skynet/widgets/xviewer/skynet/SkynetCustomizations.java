@@ -62,14 +62,14 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
       skynetXViewerFactory = null;
    }
 
-   public SkynetCustomizations(SkynetXViewerFactory skynetXViewerFactory)  {
+   public SkynetCustomizations(SkynetXViewerFactory skynetXViewerFactory) {
       this.skynetXViewerFactory = skynetXViewerFactory;
       this.userArtifactDefaults = new SkynetUserArtifactCustomizeDefaults(UserManager.getUser());
       globalCustomizationsArtifact = GlobalXViewerSettings.getCustomArtifact();
    }
 
    @Override
-   public List<CustomizeData> getSavedCustDatas()  {
+   public List<CustomizeData> getSavedCustDatas() {
       ensurePopulated(false);
       List<CustomizeData> thisCustDatas = new ArrayList<>();
       for (CustomizeData custData : custDatas) {
@@ -80,7 +80,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
       return thisCustDatas;
    }
 
-   private static void saveCustomization(CustomizeData custData, Artifact saveArt)  {
+   private static void saveCustomization(CustomizeData custData, Artifact saveArt) {
       boolean found = false;
       Collection<Attribute<String>> attributes = saveArt.getAttributes(CoreAttributeTypes.XViewerCustomization);
       for (Attribute<String> attribute : attributes) {
@@ -99,7 +99,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
    }
 
    @Override
-   public void saveCustomization(CustomizeData custData)  {
+   public void saveCustomization(CustomizeData custData) {
       if (custData.isPersonal()) {
          saveCustomization(custData, UserManager.getUser());
       } else {
@@ -111,7 +111,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
    /**
     * Load and cache all customizations
     */
-   public static synchronized void ensurePopulated(boolean force)  {
+   public static synchronized void ensurePopulated(boolean force) {
       if (custDatas == null || force) {
          if (custDatas == null) {
             custDatas = Collections.synchronizedList(new ArrayList<CustomizeData>());
@@ -146,7 +146,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
    }
 
    @Override
-   public void deleteCustomization(CustomizeData custData)  {
+   public void deleteCustomization(CustomizeData custData) {
       Artifact deleteArt = null;
       if (custData.isPersonal()) {
          deleteArt = UserManager.getUser();
@@ -162,7 +162,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
 
    }
 
-   public void deleteCustomization(CustomizeData custData, Artifact deleteArt)  {
+   public void deleteCustomization(CustomizeData custData, Artifact deleteArt) {
       Pattern pattern = Pattern.compile("name=\"(.*?)\".*?namespace=\"" + custData.getNameSpace() + "\"");
       for (Attribute<?> attribute : deleteArt.getAttributes(CoreAttributeTypes.XViewerCustomization)) {
          String str = attribute.getDisplayableString();
@@ -214,7 +214,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
       userArtifactDefaults.save();
    }
 
-   private static List<CustomizeData> getArtifactCustomizations(Artifact customizationArtifact)  {
+   private static List<CustomizeData> getArtifactCustomizations(Artifact customizationArtifact) {
       //      ElapsedTime time = new ElapsedTime("getArtifactCustomizations");
       List<CustomizeData> custDatas = new ArrayList<>();
       if (customizationArtifact != null) {

@@ -64,10 +64,10 @@ public class NoneAuthenticationProviderTest {
       assertEquals(NONE_SCHEME, iterable.iterator().next());
 
       AuthenticationRequest request = AuthenticationRequestBuilder.newBuilder()//
-      .scheme(NONE_SCHEME) //
-      .userName(USERNAME)//
-      .password(PASSWORD)//
-      .build();
+         .scheme(NONE_SCHEME) //
+         .userName(USERNAME)//
+         .password(PASSWORD)//
+         .build();
 
       AuthenticatedUser actual = admin.authenticate(request);
 

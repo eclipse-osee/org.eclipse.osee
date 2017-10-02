@@ -69,28 +69,28 @@ public class TransactionFactoryImplTest {
    }
 
    @Test
-   public void testNullAuthor()  {
+   public void testNullAuthor() {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("author cannot be null");
       factory.createTransaction(expectedBranch, null, "my comment");
    }
 
    @Test
-   public void testNullComment()  {
+   public void testNullComment() {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("comment cannot be null");
       factory.createTransaction(expectedBranch, expectedAuthor, null);
    }
 
    @Test
-   public void testEmptyComment()  {
+   public void testEmptyComment() {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("comment cannot be empty");
       factory.createTransaction(expectedBranch, expectedAuthor, "");
    }
 
    @Test
-   public void testCreateTransaction()  {
+   public void testCreateTransaction() {
       String expectedComment = "This is my comment";
 
       when(txDataManager.createTxData(session, expectedBranch)).thenReturn(txData);

@@ -181,7 +181,7 @@ public final class JdbcUtil {
       }
    }
 
-   private static void checkNotNullOrEmpty(String object, String objectName)  {
+   private static void checkNotNullOrEmpty(String object, String objectName) {
       checkNotNull(object, objectName);
       if (object.length() == 0) {
          throw newJdbcException("%s cannot be empty", objectName);

@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.OutlineNumberAttribute;
  */
 public class XViewerAttributeSortDataType {
 
-   public static SortDataType get(AttributeTypeId attributeType)  {
+   public static SortDataType get(AttributeTypeId attributeType) {
       SortDataType sortType = SortDataType.String;
       if (AttributeTypeManager.isBaseTypeCompatible(DateAttribute.class, attributeType)) {
          sortType = SortDataType.Date;

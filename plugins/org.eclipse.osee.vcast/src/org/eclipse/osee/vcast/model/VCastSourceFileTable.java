@@ -29,7 +29,7 @@ public class VCastSourceFileTable implements VCastTableData<VCastSourceFile> {
    }
 
    @Override
-   public Collection<VCastSourceFile> getRows(VCastDataStore dataStore)  {
+   public Collection<VCastSourceFile> getRows(VCastDataStore dataStore) {
       return dataStore.getAllSourceFiles();
    }
 

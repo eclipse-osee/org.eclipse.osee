@@ -92,8 +92,8 @@ public class LdapConnection implements Closeable {
       Attributes rootAtts = connection.getAttributes("");
       Attribute attribute = rootAtts.get(LDAP_CAPABILITIES__ATTRIBUTE_ID);
       return attribute != null && //
-      (attribute.contains(LDAP_CAPABILITIES__ACTIVE_DIRECTORY_OID) || //
-      attribute.contains(LDAP_CAPABILITIES__ACTIVE_DIRECTORY_APPLICATION_MODE_OID));
+         (attribute.contains(LDAP_CAPABILITIES__ACTIVE_DIRECTORY_OID) || //
+            attribute.contains(LDAP_CAPABILITIES__ACTIVE_DIRECTORY_APPLICATION_MODE_OID));
    }
 
    public boolean authenticate(String username, String password) throws AccountException {
@@ -158,10 +158,10 @@ public class LdapConnection implements Closeable {
       }
 
       LdapQuery query = new LdapQuery(logger)//
-      .base(searchBase)//
-      .pattern(accountSearchPattern)//
-      .fields(fieldsToGet)//
-      .scope(accountSearchScope);
+         .base(searchBase)//
+         .pattern(accountSearchPattern)//
+         .fields(fieldsToGet)//
+         .scope(accountSearchScope);
 
       HashMap<String, String> params = new HashMap<>();
       params.put(usernameVariableName, username);
@@ -200,10 +200,10 @@ public class LdapConnection implements Closeable {
          throw new UnsupportedOperationException("Not yet implemented");
       } else {
          LdapQuery query = new LdapQuery(logger) //
-         .base(searchBase)//
-         .pattern(groupByGroupMemberPattern)//
-         .fields(fieldsToGet)//
-         .scope(groupSearchScope);
+            .base(searchBase)//
+            .pattern(groupByGroupMemberPattern)//
+            .fields(fieldsToGet)//
+            .scope(groupSearchScope);
 
          HashMap<String, String> params = new HashMap<>();
          for (String key : query.getParameters()) {

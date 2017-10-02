@@ -46,7 +46,7 @@ public class OperationalImpactXWidget extends XComboWithText implements IArtifac
    }
 
    @Override
-   public void saveToArtifact()  {
+   public void saveToArtifact() {
       String impact = get();
       if (impact == null || impact.equals("")) {
          teamArt.deleteSoleAttribute(AtsAttributeTypes.OperationalImpact);
@@ -74,7 +74,7 @@ public class OperationalImpactXWidget extends XComboWithText implements IArtifac
    }
 
    @Override
-   public Result isDirty()  {
+   public Result isDirty() {
       if (!get().equals(teamArt.getSoleAttributeValue(AtsAttributeTypes.OperationalImpact, ""))) {
          return new Result(true, AtsAttributeTypes.OperationalImpact.toString());
       }

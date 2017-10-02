@@ -32,7 +32,7 @@ public class OpenInAtsWorldActionTest3 extends AbstractAtsActionRunTest {
    }
 
    @Override
-   public OpenInAtsWorldAction createAction()  {
+   public OpenInAtsWorldAction createAction() {
       AtsTestUtil.getTeamWf().deleteRelations(AtsRelationTypes.ActionToWorkflow_Action);
       AtsTestUtil.getTeamWf().persist(getClass().getSimpleName());
       return new OpenInAtsWorldAction(AtsTestUtil.getTeamWf());

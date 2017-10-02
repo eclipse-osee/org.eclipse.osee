@@ -24,17 +24,17 @@ public interface IOseeCache<TYPE> {
 
    void decacheAll();
 
-   void decache(TYPE... types) ;
+   void decache(TYPE... types);
 
-   void decache(TYPE type) ;
+   void decache(TYPE type);
 
-   void cache(TYPE... types) ;
+   void cache(TYPE... types);
 
-   void cache(TYPE type) ;
+   void cache(TYPE type);
 
-   Collection<TYPE> getAll() ;
+   Collection<TYPE> getAll();
 
-   TYPE getById(Number typeId) ;
+   TYPE getById(Number typeId);
 
-   TYPE getByGuid(Long guid) ;
+   TYPE getByGuid(Long guid);
 }

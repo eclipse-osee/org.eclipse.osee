@@ -66,7 +66,7 @@ public class UpdateBranchOperation extends AbstractOperation {
       }
    }
 
-   private IOseeBranch createTempBranch(IOseeBranch originalBranch)  {
+   private IOseeBranch createTempBranch(IOseeBranch originalBranch) {
       BranchId parentBranch = BranchManager.getParentBranch(originalBranch);
       return BranchManager.createWorkingBranch(parentBranch, getUpdatedName(originalBranch.getName()));
    }

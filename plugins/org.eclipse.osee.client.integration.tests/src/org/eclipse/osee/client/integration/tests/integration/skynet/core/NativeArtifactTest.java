@@ -101,11 +101,11 @@ public class NativeArtifactTest {
       }
    }
 
-   private Artifact getNativeArtifact()  {
+   private Artifact getNativeArtifact() {
       return getCsvArtifact(false).getArtifact();
    }
 
-   private CsvArtifact getCsvArtifact(boolean create)  {
+   private CsvArtifact getCsvArtifact(boolean create) {
       CsvArtifact csvArtifact = CsvArtifact.getCsvArtifact(ARTIFACT_NAME, SAW_Bld_2, create);
       testArtifacts.add(csvArtifact.getArtifact());
       return csvArtifact;

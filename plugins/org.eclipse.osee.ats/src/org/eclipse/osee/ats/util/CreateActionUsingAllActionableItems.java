@@ -64,7 +64,7 @@ public class CreateActionUsingAllActionableItems extends XNavigateItemAction {
       }
    }
 
-   public static ActionResult createActionWithAllAis()  {
+   public static ActionResult createActionWithAllAis() {
       Set<IAtsActionableItem> aias = new HashSet<>();
       for (IAtsActionableItem aia : ActionableItems.getActionableItems(Active.Active,
          AtsClientService.get().getQueryService())) {

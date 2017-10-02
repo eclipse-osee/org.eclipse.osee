@@ -107,7 +107,7 @@ public class AtsTestUtil {
    private static IAtsWidgetDefinition estHoursWidgetDef, workPackageWidgetDef;
    private static String postFixName;
 
-   public static void validateArtifactCache()  {
+   public static void validateArtifactCache() {
       final Collection<Artifact> dirtyArtifacts = ArtifactCache.getDirtyArtifacts();
       if (!dirtyArtifacts.isEmpty()) {
          for (Artifact artifact : dirtyArtifacts) {
@@ -119,7 +119,7 @@ public class AtsTestUtil {
       }
    }
 
-   public static void validateObjectsNull()  {
+   public static void validateObjectsNull() {
       validateObjectsNull("teamArt", teamWf);
       validateObjectsNull("teamArt2", teamArt2);
       validateObjectsNull("teamArt3", teamArt3);
@@ -150,18 +150,18 @@ public class AtsTestUtil {
       validateObjectsNull("workPackageWidgetDef", workPackageWidgetDef);
    }
 
-   private static void validateObjectsNull(String name, Object obj)  {
+   private static void validateObjectsNull(String name, Object obj) {
       if (obj != null) {
          throw new OseeStateException("[%s] objects should be null but is not", name);
       }
    }
 
-   public static IAtsWorkDefinition getWorkDef()  {
+   public static IAtsWorkDefinition getWorkDef() {
       ensureLoaded();
       return workDef;
    }
 
-   public static IAtsStateDefinition getAnalyzeStateDef()  {
+   public static IAtsStateDefinition getAnalyzeStateDef() {
       ensureLoaded();
       if (analyze == null) {
          analyze = workDef.getStateByName("Analyze");
@@ -169,7 +169,7 @@ public class AtsTestUtil {
       return analyze;
    }
 
-   public static IAtsWidgetDefinition getEstHoursWidgetDef()  {
+   public static IAtsWidgetDefinition getEstHoursWidgetDef() {
       ensureLoaded();
       if (estHoursWidgetDef == null) {
          for (IAtsLayoutItem item : getAnalyzeStateDef().getLayoutItems()) {
@@ -182,7 +182,7 @@ public class AtsTestUtil {
       return estHoursWidgetDef;
    }
 
-   public static IAtsWidgetDefinition getWorkPackageWidgetDef()  {
+   public static IAtsWidgetDefinition getWorkPackageWidgetDef() {
       ensureLoaded();
       if (workPackageWidgetDef == null) {
          for (IAtsLayoutItem item : getAnalyzeStateDef().getLayoutItems()) {
@@ -195,7 +195,7 @@ public class AtsTestUtil {
       return workPackageWidgetDef;
    }
 
-   public static IAtsStateDefinition getImplementStateDef()  {
+   public static IAtsStateDefinition getImplementStateDef() {
       ensureLoaded();
       if (implement == null) {
          implement = workDef.getStateByName("Implement");
@@ -203,7 +203,7 @@ public class AtsTestUtil {
       return implement;
    }
 
-   public static IAtsStateDefinition getCompletedStateDef()  {
+   public static IAtsStateDefinition getCompletedStateDef() {
       ensureLoaded();
       if (completed == null) {
          completed = workDef.getStateByName("Completed");
@@ -211,7 +211,7 @@ public class AtsTestUtil {
       return completed;
    }
 
-   public static IAtsStateDefinition getCancelledStateDef()  {
+   public static IAtsStateDefinition getCancelledStateDef() {
       ensureLoaded();
       if (cancelled == null) {
          cancelled = workDef.getStateByName("Cancelled");
@@ -219,13 +219,13 @@ public class AtsTestUtil {
       return cancelled;
    }
 
-   private static void ensureLoaded()  {
+   private static void ensureLoaded() {
       if (workDef == null) {
          throw new OseeStateException("Must call cleanAndReset before using this method");
       }
    }
 
-   private static void clearCaches()  {
+   private static void clearCaches() {
       if (workDef != null) {
          AtsClientService.get().getWorkDefinitionService().removeWorkDefinition(workDef);
       }
@@ -284,7 +284,7 @@ public class AtsTestUtil {
    /**
     * Clear workDef from cache, clear all objects and create new objects with postFixName in titles
     */
-   private static void reset(String postFixName)  {
+   private static void reset(String postFixName) {
       if (ClientSessionManager.isProductionDataStore()) {
          throw new OseeStateException("AtsTestUtil should not be run on production.");
       }
@@ -377,7 +377,7 @@ public class AtsTestUtil {
       }
    }
 
-   public static TaskArtifact getOrCreateTaskOffTeamWf1()  {
+   public static TaskArtifact getOrCreateTaskOffTeamWf1() {
       ensureLoaded();
       if (taskArtWf1 == null) {
          Collection<IAtsTask> createTasks =
@@ -389,7 +389,7 @@ public class AtsTestUtil {
       return taskArtWf1;
    }
 
-   public static DecisionReviewArtifact getOrCreateDecisionReview(ReviewBlockType reviewBlockType, AtsTestUtilState relatedToState, IAtsChangeSet changes)  {
+   public static DecisionReviewArtifact getOrCreateDecisionReview(ReviewBlockType reviewBlockType, AtsTestUtilState relatedToState, IAtsChangeSet changes) {
       ensureLoaded();
       if (decRevArt == null) {
          List<IAtsDecisionReviewOption> options = new ArrayList<>();
@@ -404,18 +404,18 @@ public class AtsTestUtil {
       return decRevArt;
    }
 
-   public static TeamWorkFlowArtifact getTeamWf()  {
+   public static TeamWorkFlowArtifact getTeamWf() {
       ensureLoaded();
       return teamWf;
    }
 
-   public static IAtsActionableItem getTestAi()  {
+   public static IAtsActionableItem getTestAi() {
       ensureLoaded();
       return testAi;
 
    }
 
-   public static IAtsTeamDefinition getTestTeamDef()  {
+   public static IAtsTeamDefinition getTestTeamDef() {
       ensureLoaded();
       return teamDef;
    }
@@ -424,18 +424,18 @@ public class AtsTestUtil {
     * All team defs, AIs, action and workflows will be deleted and new ones created with "name" as part of object
     * names/titles. In addition, ArtifactCache will validate that it is not dirty or display errors if it is.
     */
-   public static void cleanupAndReset(String name)  {
+   public static void cleanupAndReset(String name) {
       cleanup();
       reset(name);
    }
 
-   private static void delete(IAtsChangeSet changes, Artifact artifact)  {
+   private static void delete(IAtsChangeSet changes, Artifact artifact) {
       if (artifact != null) {
          changes.addToDelete(artifact);
       }
    }
 
-   private static void deleteTeamWf(TeamWorkFlowArtifact teamWfToDelete)  {
+   private static void deleteTeamWf(TeamWorkFlowArtifact teamWfToDelete) {
       if (teamWfToDelete != null) {
          IAtsChangeSet changes =
             AtsClientService.get().createChangeSet(AtsTestUtil.class.getSimpleName() + " - cleanup deleteTeamWf");
@@ -464,7 +464,7 @@ public class AtsTestUtil {
     * Cleanup all artifacts and confirm that ArtifactCache has no dirty artifacts. Should be called at beginning at end
     * of each test.
     */
-   public static void cleanup()  {
+   public static void cleanup() {
       WorldEditor.closeAll();
       WorkflowEditor.closeAll();
       TaskEditor.closeAll();
@@ -571,11 +571,11 @@ public class AtsTestUtil {
       Operations.executeWorkAndCheckStatus(new PurgeArtifacts(artifacts));
    }
 
-   public static Result transitionTo(AtsTestUtilState atsTestUtilState, IAtsUser user, IAtsChangeSet changes, TransitionOption... transitionOptions)  {
+   public static Result transitionTo(AtsTestUtilState atsTestUtilState, IAtsUser user, IAtsChangeSet changes, TransitionOption... transitionOptions) {
       return transitionTo(teamWf, atsTestUtilState, user, changes, transitionOptions);
    }
 
-   public static Result transitionTo(IAtsTeamWorkflow teamWf, AtsTestUtilState atsTestUtilState, IAtsUser user, IAtsChangeSet changes, TransitionOption... transitionOptions)  {
+   public static Result transitionTo(IAtsTeamWorkflow teamWf, AtsTestUtilState atsTestUtilState, IAtsUser user, IAtsChangeSet changes, TransitionOption... transitionOptions) {
       if (atsTestUtilState == AtsTestUtilState.Analyze && teamWf.getStateMgr().isInState(AtsTestUtilState.Analyze)) {
          return Result.TrueResult;
       }
@@ -639,7 +639,7 @@ public class AtsTestUtil {
       }
    }
 
-   public static PeerToPeerReviewArtifact getOrCreatePeerReview(ReviewBlockType reviewBlockType, AtsTestUtilState relatedToState, IAtsChangeSet changes)  {
+   public static PeerToPeerReviewArtifact getOrCreatePeerReview(ReviewBlockType reviewBlockType, AtsTestUtilState relatedToState, IAtsChangeSet changes) {
       ensureLoaded();
       try {
          if (peerRevArt == null) {
@@ -654,7 +654,7 @@ public class AtsTestUtil {
       return peerRevArt;
    }
 
-   public static TeamWorkFlowArtifact getTeamWf2()  {
+   public static TeamWorkFlowArtifact getTeamWf2() {
       ensureLoaded();
       if (teamArt2 == null) {
          IAtsChangeSet changes = AtsClientService.get().createChangeSet(AtsTestUtil.class.getSimpleName());
@@ -669,12 +669,12 @@ public class AtsTestUtil {
       return teamArt2;
    }
 
-   public static IAtsActionableItem getTestAi2()  {
+   public static IAtsActionableItem getTestAi2() {
       ensureLoaded();
       return testAi2;
    }
 
-   public static TeamWorkFlowArtifact getTeamWf3()  {
+   public static TeamWorkFlowArtifact getTeamWf3() {
       ensureLoaded();
       if (teamArt3 == null) {
          IAtsChangeSet changes = AtsClientService.get().createChangeSet(AtsTestUtil.class.getSimpleName());
@@ -689,12 +689,12 @@ public class AtsTestUtil {
       return teamArt3;
    }
 
-   public static IAtsActionableItem getTestAi3()  {
+   public static IAtsActionableItem getTestAi3() {
       ensureLoaded();
       return testAi3;
    }
 
-   public static TeamWorkFlowArtifact getTeamWf4()  {
+   public static TeamWorkFlowArtifact getTeamWf4() {
       ensureLoaded();
       if (teamArt4 == null) {
          IAtsChangeSet changes = AtsClientService.get().createChangeSet(AtsTestUtil.class.getSimpleName());
@@ -710,7 +710,7 @@ public class AtsTestUtil {
       return teamArt4;
    }
 
-   public static IAtsActionableItem getTestAi4()  {
+   public static IAtsActionableItem getTestAi4() {
       ensureLoaded();
       return testAi4;
    }
@@ -718,7 +718,7 @@ public class AtsTestUtil {
    /**
     * @return 2nd Action with single Team Workflow not tied to other ActionArt or TeamWf
     */
-   public static ActionArtifact getActionArt2()  {
+   public static ActionArtifact getActionArt2() {
       ensureLoaded();
       if (actionArt2 == null) {
          getTeamWf2();
@@ -729,7 +729,7 @@ public class AtsTestUtil {
    /**
     * @return 3rd Action with single Team Workflow not tied to other ActionArt or TeamWf
     */
-   public static ActionArtifact getActionArt3()  {
+   public static ActionArtifact getActionArt3() {
       ensureLoaded();
       if (actionArt3 == null) {
          getTeamWf3();
@@ -740,7 +740,7 @@ public class AtsTestUtil {
    /**
     * @return 4rd Action with single Team Workflow not tied to other ActionArt or TeamWf
     */
-   public static ActionArtifact getActionArt4()  {
+   public static ActionArtifact getActionArt4() {
       ensureLoaded();
       if (actionArt4 == null) {
          getTeamWf4();
@@ -748,7 +748,7 @@ public class AtsTestUtil {
       return actionArt4;
    }
 
-   public static ActionArtifact getActionArt()  {
+   public static ActionArtifact getActionArt() {
       ensureLoaded();
       return actionArt;
    }
@@ -757,12 +757,12 @@ public class AtsTestUtil {
       return new ISelectedAtsArtifacts() {
 
          @Override
-         public Set<Artifact> getSelectedWorkflowArtifacts()  {
+         public Set<Artifact> getSelectedWorkflowArtifacts() {
             return Collections.singleton(getTeamWf());
          }
 
          @Override
-         public List<Artifact> getSelectedAtsArtifacts()  {
+         public List<Artifact> getSelectedAtsArtifacts() {
             return Arrays.asList((Artifact) getTeamWf());
          }
 
@@ -774,7 +774,7 @@ public class AtsTestUtil {
       };
    }
 
-   public static Result createWorkingBranchFromTeamWf()  {
+   public static Result createWorkingBranchFromTeamWf() {
       configureVer1ForWorkingBranch();
       Result result = AtsBranchUtil.createWorkingBranch_Validate(teamWf);
       if (result.isFalse()) {
@@ -785,7 +785,7 @@ public class AtsTestUtil {
       return Result.TrueResult;
    }
 
-   public static void configureVer1ForWorkingBranch()  {
+   public static void configureVer1ForWorkingBranch() {
       IAtsVersion version = getVerArt1();
       Artifact verArt = ((Artifact) version.getStoreObject());
       verArt.setSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, true);

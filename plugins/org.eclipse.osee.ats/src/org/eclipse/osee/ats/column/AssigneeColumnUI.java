@@ -100,11 +100,11 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
       return false;
    }
 
-   public static boolean promptChangeAssignees(AbstractWorkflowArtifact sma, boolean persist)  {
+   public static boolean promptChangeAssignees(AbstractWorkflowArtifact sma, boolean persist) {
       return promptChangeAssignees(Arrays.asList(sma), persist);
    }
 
-   public static boolean promptChangeAssignees(final Collection<? extends AbstractWorkflowArtifact> awas, boolean persist)  {
+   public static boolean promptChangeAssignees(final Collection<? extends AbstractWorkflowArtifact> awas, boolean persist) {
       for (AbstractWorkflowArtifact awa : awas) {
          if (awa.isCompleted()) {
             AWorkbench.popup("ERROR",
@@ -198,7 +198,7 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
       return null;
    }
 
-   public static Image getAssigneeImage(Artifact artifact)  {
+   public static Image getAssigneeImage(Artifact artifact) {
       if (artifact.isDeleted()) {
          return null;
       }

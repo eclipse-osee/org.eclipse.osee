@@ -43,7 +43,7 @@ import org.eclipse.osee.jdbc.JdbcStatement;
  */
 public class AttributeLoader {
 
-   static void loadAttributeData(int queryId, CompositeKeyHashMap<ArtifactId, Id, Artifact> tempCache, boolean historical, DeletionFlag allowDeletedArtifacts, LoadLevel loadLevel, boolean isArchived)  {
+   static void loadAttributeData(int queryId, CompositeKeyHashMap<ArtifactId, Id, Artifact> tempCache, boolean historical, DeletionFlag allowDeletedArtifacts, LoadLevel loadLevel, boolean isArchived) {
       if (loadLevel == ARTIFACT_DATA || loadLevel == RELATION_DATA) {
          return;
       }
@@ -97,7 +97,7 @@ public class AttributeLoader {
          // do nothing
       }
 
-      public AttrData(JdbcStatement chStmt, boolean historical)  {
+      public AttrData(JdbcStatement chStmt, boolean historical) {
          artifactId = ArtifactId.valueOf(chStmt.getLong("art_id"));
          branch = BranchId.valueOf(chStmt.getLong("id1"));
          attrId = AttributeId.valueOf(chStmt.getLong("attr_id"));
@@ -158,7 +158,7 @@ public class AttributeLoader {
       return artifact;
    }
 
-   private static void loadAttributesFor(Artifact artifact, List<AttrData> attributes, boolean historical)  {
+   private static void loadAttributesFor(Artifact artifact, List<AttrData> attributes, boolean historical) {
       if (artifact == null) {
          return; // If the artifact is null, it means the attributes are orphaned.
       }
@@ -194,13 +194,13 @@ public class AttributeLoader {
       }
    }
 
-   private static void loadAttribute(Artifact artifact, AttrData current, AttrData previous)  {
+   private static void loadAttribute(Artifact artifact, AttrData current, AttrData previous) {
       boolean markDirty = false;
       artifact.internalInitializeAttribute(current.attributeType, current.attrId, current.gammaId, current.modType,
          current.applicabilityId, markDirty, current.value, current.uri);
    }
 
-   private static String getSql(DeletionFlag allowDeletedArtifacts, LoadLevel loadLevel, boolean historical, boolean isArchived)  {
+   private static String getSql(DeletionFlag allowDeletedArtifacts, LoadLevel loadLevel, boolean historical, boolean isArchived) {
       OseeSql sqlKey;
       if (historical && isArchived) {
          sqlKey = OseeSql.LOAD_HISTORICAL_ARCHIVED_ATTRIBUTES;

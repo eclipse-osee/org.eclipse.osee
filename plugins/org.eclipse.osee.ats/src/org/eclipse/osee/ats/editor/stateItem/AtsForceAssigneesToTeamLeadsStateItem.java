@@ -38,7 +38,7 @@ public class AtsForceAssigneesToTeamLeadsStateItem extends AtsStateItem implemen
    }
 
    @Override
-   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes)  {
+   public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes) {
       if (workItem instanceof IAtsTeamWorkflow && isForceAssigneesToTeamLeads(
          AtsClientService.get().getWorkDefinitionService().getStateDefinitionByName(workItem, toState.getName()))) {
          Collection<IAtsUser> teamLeads = ((TeamWorkFlowArtifact) workItem).getTeamDefinition().getLeads();

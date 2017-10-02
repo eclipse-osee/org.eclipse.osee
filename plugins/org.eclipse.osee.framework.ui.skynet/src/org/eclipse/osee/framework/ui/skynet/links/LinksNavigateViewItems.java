@@ -81,7 +81,7 @@ public class LinksNavigateViewItems implements XNavigateViewItems, IXNavigateCom
       }
    }
 
-   public static void addOseeLinksSectionChildren(XNavigateItem parentItem, List<XNavigateItem> resultItems)  {
+   public static void addOseeLinksSectionChildren(XNavigateItem parentItem, List<XNavigateItem> resultItems) {
       new AddNewLinkNavigateItem(parentItem);
       new EditLinksNavigateItem(parentItem, false);
       new EditLinksNavigateItem(parentItem, true);

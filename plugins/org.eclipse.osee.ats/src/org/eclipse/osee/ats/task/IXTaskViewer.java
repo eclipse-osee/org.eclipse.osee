@@ -17,9 +17,9 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
  */
 public interface IXTaskViewer {
 
-   public String getTabName() ;
+   public String getTabName();
 
-   public IAtsTeamWorkflow getTeamWf() ;
+   public IAtsTeamWorkflow getTeamWf();
 
    public boolean isTasksEditable();
 

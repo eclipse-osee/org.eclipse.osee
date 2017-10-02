@@ -83,7 +83,7 @@ public final class SkyWalkerOptions {
       listeners.add(skyWalkerOptionsChangeListener);
    }
 
-   public String getExtendedName(Artifact artifact)  {
+   public String getExtendedName(Artifact artifact) {
       if (getSelectedShowAttributeTypes().isEmpty()) {
          return "";
       } else {
@@ -139,7 +139,7 @@ public final class SkyWalkerOptions {
       }
    }
 
-   public String toXml()  {
+   public String toXml() {
       StringBuffer sb = new StringBuffer();
       sb.append(AXml.addTagData("guid", artifact.getGuid()));
       sb.append(AXml.addTagData("branchUuid", artifact.getBranch().getIdString() + ""));

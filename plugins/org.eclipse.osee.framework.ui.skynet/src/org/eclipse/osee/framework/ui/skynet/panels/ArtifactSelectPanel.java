@@ -48,7 +48,7 @@ public class ArtifactSelectPanel extends AbstractItemSelectPanel<Artifact> {
    }
 
    @Override
-   protected Dialog createSelectDialog(Shell shell, Artifact lastSelected)  {
+   protected Dialog createSelectDialog(Shell shell, Artifact lastSelected) {
       ArtifactSelectionDialog dialog = new ArtifactSelectionDialog(shell);
       dialog.setTitle(title);
       dialog.setMessage(message);

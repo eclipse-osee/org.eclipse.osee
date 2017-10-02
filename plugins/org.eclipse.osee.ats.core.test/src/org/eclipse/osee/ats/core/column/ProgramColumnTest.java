@@ -39,7 +39,7 @@ public class ProgramColumnTest extends ProgramColumn {
    // @formatter:on
 
    @Before
-   public void setup()  {
+   public void setup() {
       MockitoAnnotations.initMocks(this);
    }
 

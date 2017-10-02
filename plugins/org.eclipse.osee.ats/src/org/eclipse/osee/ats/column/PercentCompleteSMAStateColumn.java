@@ -33,8 +33,8 @@ public class PercentCompleteSMAStateColumn extends XViewerAtsColumn implements I
    }
 
    private PercentCompleteSMAStateColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".statePercentComplete", "State Percent Complete", 40, XViewerAlign.Center,
-         false, SortDataType.Percent, false,
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".statePercentComplete", "State Percent Complete", 40,
+         XViewerAlign.Center, false, SortDataType.Percent, false,
          "Percent Complete for the changes to the current state.\n\nAmount entered from user.");
    }
 

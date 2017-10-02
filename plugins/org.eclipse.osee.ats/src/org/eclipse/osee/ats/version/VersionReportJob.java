@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage;
 
-
 /**
  * @author Donald G. Dunne
  */
@@ -64,7 +63,7 @@ public class VersionReportJob extends Job {
       return Status.OK_STATUS;
    }
 
-   public static String getReleaseReportHtml(String title, IAtsVersion verArt, IProgressMonitor monitor)  {
+   public static String getReleaseReportHtml(String title, IAtsVersion verArt, IProgressMonitor monitor) {
       if (verArt == null) {
          AWorkbench.popup("ERROR", "Must select product, config and version.");
          return null;
@@ -77,7 +76,7 @@ public class VersionReportJob extends Job {
       return sb.toString();
    }
 
-   public static String getFullReleaseReport(IAtsTeamDefinition teamDef, IProgressMonitor monitor)  {
+   public static String getFullReleaseReport(IAtsTeamDefinition teamDef, IProgressMonitor monitor) {
       // Sort by release date and estimated release date
       Map<String, IAtsVersion> dateToVerArt = new HashMap<>();
       for (IAtsVersion verArt : teamDef.getVersions()) {
@@ -148,7 +147,7 @@ public class VersionReportJob extends Job {
       return released;
    }
 
-   public static String getTeamWorkflowReport(Collection<TeamWorkFlowArtifact> teamArts, Integer backgroundColor, IProgressMonitor monitor)  {
+   public static String getTeamWorkflowReport(Collection<TeamWorkFlowArtifact> teamArts, Integer backgroundColor, IProgressMonitor monitor) {
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.beginMultiColumnTable(100, 1, backgroundColor));
       sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "Team", "Priority", "Change", "Title", "ID"}));

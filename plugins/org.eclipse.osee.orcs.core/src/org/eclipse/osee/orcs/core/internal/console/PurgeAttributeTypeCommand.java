@@ -82,7 +82,7 @@ public class PurgeAttributeTypeCommand implements ConsoleCommand {
             return null;
          }
 
-         private Set<AttributeTypeId> getTypes(String[] typesToPurge)  {
+         private Set<AttributeTypeId> getTypes(String[] typesToPurge) {
             AttributeTypes attributeTypes = orcsTypes.getAttributeTypes();
             Set<AttributeTypeId> toReturn = new HashSet<>();
             for (String uuid : typesToPurge) {

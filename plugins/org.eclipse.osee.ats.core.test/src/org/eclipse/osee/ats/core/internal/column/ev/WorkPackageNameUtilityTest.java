@@ -27,7 +27,7 @@ public class WorkPackageNameUtilityTest extends AbstractWorkPackageUtilityTest {
 
    @Override
    @Before
-   public void setup()  {
+   public void setup() {
       super.setup();
       util = new WorkPackageNameColumn(earnedValueServiceProvider, null);
    }

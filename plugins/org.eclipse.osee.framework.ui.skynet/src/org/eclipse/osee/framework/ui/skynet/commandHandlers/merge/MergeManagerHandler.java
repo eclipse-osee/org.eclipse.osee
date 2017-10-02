@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
 public class MergeManagerHandler extends CommandHandler {
 
    @Override
-   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection)  {
+   public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {
       if (!selection.isEmpty()) {
          List<IOseeBranch> branches = Handlers.getBranchesFromStructuredSelection(selection);
 

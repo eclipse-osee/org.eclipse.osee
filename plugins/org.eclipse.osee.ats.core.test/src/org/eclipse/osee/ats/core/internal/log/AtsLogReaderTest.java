@@ -42,7 +42,7 @@ public class AtsLogReaderTest {
    private AtsLog log;
 
    @Before
-   public void setup()  {
+   public void setup() {
       MockitoAnnotations.initMocks(this);
       log = new AtsLog();
 

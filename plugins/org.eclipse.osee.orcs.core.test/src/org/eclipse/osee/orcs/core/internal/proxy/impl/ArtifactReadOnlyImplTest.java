@@ -99,7 +99,7 @@ public class ArtifactReadOnlyImplTest {
    }
 
    @Test
-   public void testGetArtifactType()  {
+   public void testGetArtifactType() {
       when(proxiedObject.getArtifactType()).thenReturn(artifactType);
 
       IArtifactType actual = readOnly.getArtifactType();
@@ -161,7 +161,7 @@ public class ArtifactReadOnlyImplTest {
    }
 
    @Test
-   public void testIsOfType()  {
+   public void testIsOfType() {
       IArtifactType type1 = mock(IArtifactType.class);
       IArtifactType type2 = mock(IArtifactType.class);
       when(proxiedObject.isOfType(type1, type2)).thenReturn(true);
@@ -173,7 +173,7 @@ public class ArtifactReadOnlyImplTest {
    }
 
    @Test
-   public void testGetExistingAttributeTypes()  {
+   public void testGetExistingAttributeTypes() {
       List<? extends AttributeTypeId> types = Arrays.asList(Active, Name);
       when(proxiedObject.getExistingAttributeTypes()).thenAnswer(answer(types));
 
@@ -184,7 +184,7 @@ public class ArtifactReadOnlyImplTest {
    }
 
    @Test
-   public void testGetValidAttributeTypes()  {
+   public void testGetValidAttributeTypes() {
       List<? extends AttributeTypeId> types = Arrays.asList(Active, Name, Annotation);
       when(proxiedObject.getValidAttributeTypes()).thenAnswer(answer(types));
 
@@ -195,7 +195,7 @@ public class ArtifactReadOnlyImplTest {
    }
 
    @Test
-   public void testGetAttributeCount1()  {
+   public void testGetAttributeCount1() {
       when(proxiedObject.getAttributeCount(attributeType)).thenReturn(45);
 
       int actual = readOnly.getAttributeCount(attributeType);
@@ -205,7 +205,7 @@ public class ArtifactReadOnlyImplTest {
    }
 
    @Test
-   public void testGetAttributeCount2()  {
+   public void testGetAttributeCount2() {
       when(proxiedObject.getAttributeCount(attributeType, EXCLUDE_DELETED)).thenReturn(47);
 
       int actual = readOnly.getAttributeCount(attributeType, EXCLUDE_DELETED);
@@ -215,7 +215,7 @@ public class ArtifactReadOnlyImplTest {
    }
 
    @Test
-   public void testIsAttributeTypeValid()  {
+   public void testIsAttributeTypeValid() {
       when(proxiedObject.isAttributeTypeValid(attributeType)).thenReturn(true);
 
       boolean actual = readOnly.isAttributeTypeValid(attributeType);
@@ -225,7 +225,7 @@ public class ArtifactReadOnlyImplTest {
    }
 
    @Test
-   public void testGetAttributeValues()  {
+   public void testGetAttributeValues() {
       List<Long> values = Arrays.asList(1L, 2L, 3L);
       when(proxiedObject.getAttributeValues(attributeType)).thenAnswer(answer(values));
 
@@ -236,7 +236,7 @@ public class ArtifactReadOnlyImplTest {
    }
 
    @Test
-   public void testGetSoleAttributeValue()  {
+   public void testGetSoleAttributeValue() {
       Date date = new Date();
       when(proxiedObject.getSoleAttributeValue(attributeType)).thenReturn(date);
 
@@ -247,7 +247,7 @@ public class ArtifactReadOnlyImplTest {
    }
 
    @Test
-   public void testGetSoleAttributeAsString1()  {
+   public void testGetSoleAttributeAsString1() {
       String expected = "Hello";
       when(proxiedObject.getSoleAttributeAsString(attributeType)).thenReturn(expected);
 
@@ -258,7 +258,7 @@ public class ArtifactReadOnlyImplTest {
    }
 
    @Test
-   public void testGetSoleAttributeAsString2()  {
+   public void testGetSoleAttributeAsString2() {
       String expected = "AnotherValue";
       when(proxiedObject.getSoleAttributeAsString(attributeType, "Hello")).thenReturn(expected);
 
@@ -269,7 +269,7 @@ public class ArtifactReadOnlyImplTest {
    }
 
    @Test
-   public void testGetValidRelationTypes()  {
+   public void testGetValidRelationTypes() {
       List<? extends IRelationType> types = Arrays.asList(CoreRelationTypes.Default_Hierarchical__Child);
 
       when(relationManager.getValidRelationTypes(session, proxiedObject)).thenAnswer(answer(types));
@@ -279,7 +279,7 @@ public class ArtifactReadOnlyImplTest {
    }
 
    @Test
-   public void testAreRelated()  {
+   public void testAreRelated() {
       when(proxyManager.asInternalArtifact(readable1)).thenReturn(artifact1);
       when(relationManager.areRelated(session, proxiedObject, DEFAULT_HIERARCHY, artifact1)).thenReturn(true);
 
@@ -291,7 +291,7 @@ public class ArtifactReadOnlyImplTest {
    }
 
    @Test
-   public void testGetParent()  {
+   public void testGetParent() {
       when(relationManager.getParent(session, proxiedObject)).thenReturn(artifact1);
       when(proxyManager.asExternalArtifact(session, artifact1)).thenReturn(readable1);
 
@@ -303,7 +303,7 @@ public class ArtifactReadOnlyImplTest {
    }
 
    @Test
-   public void testGetExistingRelationTypes()  {
+   public void testGetExistingRelationTypes() {
       List<? extends IRelationType> types = Arrays.asList(Allocation__Requirement);
       when(relationManager.getExistingRelationTypes(session, proxiedObject)).thenAnswer(answer(types));
 
@@ -314,7 +314,7 @@ public class ArtifactReadOnlyImplTest {
    }
 
    @Test
-   public void testGetMaximumRelationAllowed()  {
+   public void testGetMaximumRelationAllowed() {
       RelationTypeSide typeAndSide = Default_Hierarchical__Child;
       when(relationManager.getMaximumRelationAllowed(session, DEFAULT_HIERARCHY, proxiedObject, IS_PARENT)).thenReturn(
          6);
@@ -326,7 +326,7 @@ public class ArtifactReadOnlyImplTest {
    }
 
    @Test
-   public void testGetRationale()  {
+   public void testGetRationale() {
       String expected = "This is my rationale";
       when(proxyManager.asInternalArtifact(readable1)).thenReturn(artifact1);
       when(relationManager.getRationale(session, artifact1, DEFAULT_HIERARCHY, proxiedObject)).thenReturn(expected);
@@ -339,7 +339,7 @@ public class ArtifactReadOnlyImplTest {
    }
 
    @Test
-   public void testGetRelatedCount()  {
+   public void testGetRelatedCount() {
       int expected = 35;
       when(relationManager.getRelatedCount(session, DEFAULT_HIERARCHY, proxiedObject, IS_CHILD)).thenReturn(expected);
 
@@ -350,7 +350,7 @@ public class ArtifactReadOnlyImplTest {
    }
 
    @Test
-   public void testGetRelated()  {
+   public void testGetRelated() {
       ResultSet<ArtifactReadable> expected = ResultSets.singleton(readable1);
 
       ResultSet<Artifact> resultSet1 = ResultSets.singleton(artifact1);
@@ -367,7 +367,7 @@ public class ArtifactReadOnlyImplTest {
    }
 
    @Test
-   public void testGetChildren()  {
+   public void testGetChildren() {
       ResultSet<ArtifactReadable> expected = ResultSets.singleton(readable1);
 
       ResultSet<Artifact> resultSet1 = ResultSets.singleton(artifact1);
@@ -382,7 +382,7 @@ public class ArtifactReadOnlyImplTest {
    }
 
    @Test
-   public void testGetAttributeById()  {
+   public void testGetAttributeById() {
       when(proxiedObject.getAttributeById(attributeId)).thenAnswer(answer(attribute1));
       when(proxyManager.asExternalAttribute(session, attribute1)).thenReturn(attributeReadable1);
 
@@ -394,7 +394,7 @@ public class ArtifactReadOnlyImplTest {
    }
 
    @Test
-   public void testGetAttributes1()  {
+   public void testGetAttributes1() {
       List<Attribute<Object>> attributes1 = Collections.singletonList(attribute1);
       ResultSet<? extends AttributeReadable<Object>> expected = ResultSets.singleton(attributeReadable1);
       when(proxiedObject.getAttributes()).thenAnswer(answer(attributes1));
@@ -408,7 +408,7 @@ public class ArtifactReadOnlyImplTest {
    }
 
    @Test
-   public void testGetAttributes2()  {
+   public void testGetAttributes2() {
       List<Attribute<Object>> attributes1 = Collections.singletonList(attribute1);
       ResultSet<? extends AttributeReadable<Object>> expected = ResultSets.singleton(attributeReadable1);
       when(proxiedObject.getAttributes(EXCLUDE_DELETED)).thenAnswer(answer(attributes1));
@@ -422,7 +422,7 @@ public class ArtifactReadOnlyImplTest {
    }
 
    @Test
-   public void testGetAttributes3()  {
+   public void testGetAttributes3() {
       List<Attribute<Object>> attributes1 = Collections.singletonList(attribute1);
       ResultSet<? extends AttributeReadable<Object>> expected = ResultSets.singleton(attributeReadable1);
       when(proxiedObject.getAttributes(attributeType)).thenAnswer(answer(attributes1));
@@ -436,7 +436,7 @@ public class ArtifactReadOnlyImplTest {
    }
 
    @Test
-   public void testGetAttributes4()  {
+   public void testGetAttributes4() {
       List<Attribute<Object>> attributes1 = Collections.singletonList(attribute1);
       ResultSet<? extends AttributeReadable<Object>> expected = ResultSets.singleton(attributeReadable1);
       when(proxiedObject.getAttributes(attributeType, EXCLUDE_DELETED)).thenAnswer(answer(attributes1));

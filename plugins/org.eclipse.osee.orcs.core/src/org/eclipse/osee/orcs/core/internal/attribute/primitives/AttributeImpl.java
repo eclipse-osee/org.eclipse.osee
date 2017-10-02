@@ -39,7 +39,7 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
    private AttributeData attributeData;
 
    @Override
-   public void internalInitialize(AttributeTypes attributeTypeCache, Reference<AttributeContainer> containerReference, AttributeData attributeData, boolean isDirty, boolean setDefaultValue)  {
+   public void internalInitialize(AttributeTypes attributeTypeCache, Reference<AttributeContainer> containerReference, AttributeData attributeData, boolean isDirty, boolean setDefaultValue) {
       this.attributeTypeCache = attributeTypeCache;
       this.containerReference = containerReference;
       this.attributeData = attributeData;
@@ -68,7 +68,7 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
    /**
     * Base implementation does nothing. Subclasses may override to do setup that depends on the attribute state data.
     */
-   protected void uponInitialize()  {
+   protected void uponInitialize() {
       // provided for subclass implementation
    }
 
@@ -81,14 +81,14 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
    }
 
    @Override
-   public void setValue(T value)  {
+   public void setValue(T value) {
       if (subClassSetValue(value)) {
          markAsNewOrChanged();
       }
    }
 
    @Override
-   public boolean setFromString(String value)  {
+   public boolean setFromString(String value) {
       Conditions.checkNotNull(value, "Attribute value", "attribute id [%s]", getId());
       boolean response = subClassSetValue(convertStringToValue(value));
       if (response) {
@@ -98,19 +98,19 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
    }
 
    @Override
-   public final void resetToDefaultValue()  {
+   public final void resetToDefaultValue() {
       getOrcsData().setModType(ModificationType.MODIFIED);
       setToDefaultValue();
    }
 
-   protected void setToDefaultValue()  {
+   protected void setToDefaultValue() {
       if (defaultValue != null) {
          subClassSetValue(convertStringToValue(defaultValue));
       }
    }
 
    @Override
-   public boolean setValueFromInputStream(InputStream value)  {
+   public boolean setValueFromInputStream(InputStream value) {
       boolean success = false;
       try {
          success = setFromString(Lib.inputStreamToString(value));
@@ -127,13 +127,13 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
     * Subclasses must provide an implementation of this method and in general should not override the other set value
     * methods
     */
-   protected abstract boolean subClassSetValue(T value) ;
+   protected abstract boolean subClassSetValue(T value);
 
    @Override
-   public abstract T getValue() ;
+   public abstract T getValue();
 
    @Override
-   public String getDisplayableString()  {
+   public String getDisplayableString() {
       return getDataProxy().getDisplayableString();
    }
 
@@ -173,23 +173,22 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
    }
 
    @Override
-   public AttributeContainer getContainer()  {
+   public AttributeContainer getContainer() {
       if (containerReference.get() == null) {
          throw new OseeStateException("Attribute parent has been garbage collected");
       }
       return containerReference.get();
    }
 
-   protected String getDefaultValueFromMetaData()  {
+   protected String getDefaultValueFromMetaData() {
       return attributeTypeCache.getDefaultValue(getAttributeType());
    }
 
    /**
     * @return attributeType Attribute Type Information
-    * 
     */
    @Override
-   public AttributeTypeToken getAttributeType()  {
+   public AttributeTypeToken getAttributeType() {
       return attributeTypeCache.get(getOrcsData().getTypeUuid());
    }
 
@@ -197,10 +196,9 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
     * Currently this method provides support for quasi attribute type inheritance
     *
     * @return whether this attribute's type or any of its super-types are the specified type
-    * 
     */
    @Override
-   public boolean isOfType(AttributeTypeId otherAttributeType)  {
+   public boolean isOfType(AttributeTypeId otherAttributeType) {
       return getAttributeType().equals(otherAttributeType);
    }
 
@@ -219,11 +217,9 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
 
    /**
     * Deletes the attribute
-    *
-    * 
     */
    @Override
-   public final void delete()  {
+   public final void delete() {
       if (isInDb()) {
          markAsChanged(ModificationType.DELETED);
       } else {
@@ -249,7 +245,7 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
    /**
     * Purges the attribute from the database.
     */
-   public void purge()  {
+   public void purge() {
       getDataProxy().purge();
    }
 
@@ -281,10 +277,8 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
    /**
     * artifact.persist(); artifact.reloadAttributesAndRelations(); Will need to be called afterwards to see replaced
     * data in memory
-    *
-    * 
     */
-   public void replaceWithVersion(int gammaId)  {
+   public void replaceWithVersion(int gammaId) {
       internalSetModificationType(ModificationType.REPLACED_WITH_VERSION);
       getOrcsData().getVersion().setGammaId(gammaId);
       setDirtyFlag(true);
@@ -292,14 +286,13 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
 
    /**
     * @param modificationType the modificationType to set
-    * 
     */
-   public void internalSetModificationType(ModificationType modificationType)  {
+   public void internalSetModificationType(ModificationType modificationType) {
       Conditions.checkNotNull(modificationType, "modification type");
       getOrcsData().setModType(modificationType);
    }
 
-   public void internalSetDeletedFromRemoteEvent()  {
+   public void internalSetDeletedFromRemoteEvent() {
       internalSetModificationType(ModificationType.DELETED);
    }
 

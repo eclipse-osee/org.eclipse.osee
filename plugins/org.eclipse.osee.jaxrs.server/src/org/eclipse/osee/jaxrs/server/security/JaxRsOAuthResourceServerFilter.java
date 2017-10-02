@@ -99,9 +99,9 @@ public class JaxRsOAuthResourceServerFilter implements ContainerRequestFilter {
 
       private JaxRsOAuthResourceServerFilter build(ClientAccessTokenValidator validator) {
          JaxRsClient client = JaxRsClient.newBuilder()//
-         .username(resourceServerKey)//
-         .password(resourceServerSecret)//
-         .build();
+            .username(resourceServerKey)//
+            .password(resourceServerSecret)//
+            .build();
 
          validator.setClient(client);
          validator.setValidationServerUri(validationServerUri);
@@ -143,9 +143,9 @@ public class JaxRsOAuthResourceServerFilter implements ContainerRequestFilter {
             "Token cache evict timeout must be greater than 0");
 
          final Cache<String, AccessTokenValidation> cache = CacheBuilder.newBuilder()//
-         .maximumSize(cacheMaxSize)//
-         .expireAfterWrite(cacheEvictTimeoutMillis, TimeUnit.MILLISECONDS)//
-         .build();
+            .maximumSize(cacheMaxSize)//
+            .expireAfterWrite(cacheEvictTimeoutMillis, TimeUnit.MILLISECONDS)//
+            .build();
 
          return new ClientAccessTokenValidator() {
             @Override

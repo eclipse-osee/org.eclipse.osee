@@ -29,7 +29,7 @@ public class VCastSettingTable implements VCastTableData<VCastSetting> {
    }
 
    @Override
-   public Collection<VCastSetting> getRows(VCastDataStore dataStore)  {
+   public Collection<VCastSetting> getRows(VCastDataStore dataStore) {
       return dataStore.getAllSettings();
    }
 

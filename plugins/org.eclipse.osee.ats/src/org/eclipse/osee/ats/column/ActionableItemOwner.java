@@ -68,7 +68,7 @@ public class ActionableItemOwner extends XViewerAtsColumn implements IXViewerVal
       }
    }
 
-   public static Set<User> getActionableItemOwners(Object element)  {
+   public static Set<User> getActionableItemOwners(Object element) {
       Set<User> users = new HashSet<>();
       if (element instanceof ActionArtifact) {
          for (TeamWorkFlowArtifact teamArt : ((ActionArtifact) element).getTeams()) {

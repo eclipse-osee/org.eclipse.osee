@@ -96,7 +96,7 @@ public final class AttributeTypeEditDisplay implements AttributeTypeEditPresente
    }
 
    @Override
-   public void addWidgetFor(Collection<AttributeTypeToken> attributeTypes)  {
+   public void addWidgetFor(Collection<AttributeTypeToken> attributeTypes) {
       attributesForm.getAttributeFormPart().addWidgetForAttributeType(attributeTypes);
    }
 

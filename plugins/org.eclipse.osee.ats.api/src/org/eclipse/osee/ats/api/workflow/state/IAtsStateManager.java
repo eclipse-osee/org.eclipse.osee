@@ -30,101 +30,101 @@ public interface IAtsStateManager extends WorkStateFactory {
 
    StateType getCurrentStateType();
 
-   void updateMetrics(IStateToken state, double additionalHours, int percentComplete, boolean logMetrics, IAtsUser user) ;
+   void updateMetrics(IStateToken state, double additionalHours, int percentComplete, boolean logMetrics, IAtsUser user);
 
-   void setMetrics(double hours, int percentComplete, boolean logMetrics, IAtsUser user, Date date) ;
+   void setMetrics(double hours, int percentComplete, boolean logMetrics, IAtsUser user, Date date);
 
    /**
     * Set metrics and log if changed
     *
     * @param changes JavaTip
     */
-   void setMetrics(IStateToken state, double hours, int percentComplete, boolean logMetrics, IAtsUser user, Date date) ;
+   void setMetrics(IStateToken state, double hours, int percentComplete, boolean logMetrics, IAtsUser user, Date date);
 
-   StateType getStateType() ;
+   StateType getStateType();
 
-   void addAssignees(String stateName, Collection<? extends IAtsUser> assignees) ;
+   void addAssignees(String stateName, Collection<? extends IAtsUser> assignees);
 
-   String getHoursSpentStr(String stateName) ;
+   String getHoursSpentStr(String stateName);
 
-   void setAssignee(IAtsUser assignee) ;
+   void setAssignee(IAtsUser assignee);
 
-   void setAssignees(Collection<? extends IAtsUser> assignees) ;
+   void setAssignees(Collection<? extends IAtsUser> assignees);
 
    /**
     * Sets the assignees as attributes and relations AND writes to store. Does not persist.
     */
-   void setAssignees(String stateName, List<? extends IAtsUser> assignees) ;
+   void setAssignees(String stateName, List<? extends IAtsUser> assignees);
 
-   void transitionHelper(List<? extends IAtsUser> toAssignees, IStateToken fromStateName, IStateToken toStateName, String cancelReason) ;
+   void transitionHelper(List<? extends IAtsUser> toAssignees, IStateToken fromStateName, IStateToken toStateName, String cancelReason);
 
-   long getTimeInState() ;
+   long getTimeInState();
 
-   long getTimeInState(IStateToken state) ;
+   long getTimeInState(IStateToken state);
 
-   void addAssignee(String stateName, IAtsUser assignee) ;
+   void addAssignee(String stateName, IAtsUser assignee);
 
-   void addState(String stateName, List<? extends IAtsUser> assignees, double hoursSpent, int percentComplete) ;
+   void addState(String stateName, List<? extends IAtsUser> assignees, double hoursSpent, int percentComplete);
 
-   boolean isDirty() ;
+   boolean isDirty();
 
-   List<IAtsUser> getAssignees(String stateName) ;
+   List<IAtsUser> getAssignees(String stateName);
 
-   List<IAtsUser> getAssigneesForState(String fromStateName) ;
+   List<IAtsUser> getAssigneesForState(String fromStateName);
 
-   List<IAtsUser> getAssignees() ;
+   List<IAtsUser> getAssignees();
 
-   void setCurrentStateName(String currentStateName) ;
+   void setCurrentStateName(String currentStateName);
 
-   void addAssignee(IAtsUser assignee) ;
+   void addAssignee(IAtsUser assignee);
 
-   void addState(String stateName, List<? extends IAtsUser> assignees) ;
+   void addState(String stateName, List<? extends IAtsUser> assignees);
 
-   void setAssignees(List<? extends IAtsUser> assignees) ;
+   void setAssignees(List<? extends IAtsUser> assignees);
 
-   void createState(String stateName) ;
+   void createState(String stateName);
 
-   void setPercentComplete(String stateName, int percentComplete) ;
+   void setPercentComplete(String stateName, int percentComplete);
 
-   void setHoursSpent(String stateName, double hoursSpent) ;
+   void setHoursSpent(String stateName, double hoursSpent);
 
-   double getHoursSpent(String stateName) ;
+   double getHoursSpent(String stateName);
 
-   int getPercentComplete(String stateName) ;
+   int getPercentComplete(String stateName);
 
-   List<String> getVisitedStateNames() ;
+   List<String> getVisitedStateNames();
 
-   void removeAssignee(String stateName, IAtsUser assignee) ;
+   void removeAssignee(String stateName, IAtsUser assignee);
 
-   void setAssignee(IStateToken state, IAtsUser assignee) ;
+   void setAssignee(IStateToken state, IAtsUser assignee);
 
-   void createState(IStateToken state) ;
+   void createState(IStateToken state);
 
-   boolean isUnAssignedSolely() ;
+   boolean isUnAssignedSolely();
 
-   String getAssigneesStr() ;
+   String getAssigneesStr();
 
-   void removeAssignee(IAtsUser assignee) ;
+   void removeAssignee(IAtsUser assignee);
 
-   boolean isUnAssigned() ;
+   boolean isUnAssigned();
 
-   void clearAssignees() ;
+   void clearAssignees();
 
-   Collection<IAtsUser> getAssignees(IStateToken state) ;
+   Collection<IAtsUser> getAssignees(IStateToken state);
 
-   boolean isStateVisited(IStateToken state) ;
+   boolean isStateVisited(IStateToken state);
 
-   String getAssigneesStr(int length) ;
+   String getAssigneesStr(int length);
 
-   String getAssigneesStr(String stateName, int length) ;
+   String getAssigneesStr(String stateName, int length);
 
-   String getAssigneesStr(String stateName) ;
+   String getAssigneesStr(String stateName);
 
-   void addAssignees(Collection<? extends IAtsUser> assignees) ;
+   void addAssignees(Collection<? extends IAtsUser> assignees);
 
-   void setAssignee(String stateName, IAtsUser assignee) ;
+   void setAssignee(String stateName, IAtsUser assignee);
 
-   boolean isStateVisited(String stateName) ;
+   boolean isStateVisited(String stateName);
 
    @Override
    WorkState createStateData(String name, List<? extends IAtsUser> assignees);
@@ -135,18 +135,18 @@ public interface IAtsStateManager extends WorkStateFactory {
    @Override
    WorkState createStateData(String name, List<? extends IAtsUser> assignees, double hoursSpent, int percentComplete);
 
-   void addState(WorkState workState) ;
+   void addState(WorkState workState);
 
-   void validateNoBootstrapUser() ;
+   void validateNoBootstrapUser();
 
    @Override
    String getId();
 
-   IAtsLogItem getStateStartedData(IStateToken state) ;
+   IAtsLogItem getStateStartedData(IStateToken state);
 
-   IAtsLogItem getStateStartedData(String stateName) ;
+   IAtsLogItem getStateStartedData(String stateName);
 
-   Collection<? extends IAtsUser> getAssigneesAdded() ;
+   Collection<? extends IAtsUser> getAssigneesAdded();
 
    Integer getPercentCompleteValue();
 

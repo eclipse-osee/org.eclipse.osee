@@ -46,8 +46,8 @@ public final class TestPlanComplianceReportTest {
 
    private static final String EXPECTED_NOT_PERFORMED_DATA =
       "    <Cell><Data ss:Type=\"String\">Sample Test Procedure_0</Data></Cell>\n" + //
-      "    <Cell><Data ss:Type=\"String\">Not Performed</Data></Cell>\n" + //
-      "    <Cell><Data ss:Type=\"String\"> </Data></Cell>";
+         "    <Cell><Data ss:Type=\"String\">Not Performed</Data></Cell>\n" + //
+         "    <Cell><Data ss:Type=\"String\"> </Data></Cell>";
    private static final String EXPECTED_OSEE_ERROR_STYLE = "    <Cell ss:StyleID=\"OseeErrorStyle\">";
    private static final String EXPECTED_MULTIPLE_RESULTS_IN_1_CELL = //
       "    <Cell><Data ss:Type=\"String\">Sample_Test_Result_0&#10;Sample_Test_Result_1</Data></Cell>";
@@ -117,7 +117,7 @@ public final class TestPlanComplianceReportTest {
          new NullProgressMonitor(), resultBuffer, false);
    }
 
-   private VariableMap loadArtifacts(int amountOfTestProcedures, TestStatusEnum testProcedureStatus, int testResultsAmount)  {
+   private VariableMap loadArtifacts(int amountOfTestProcedures, TestStatusEnum testProcedureStatus, int testResultsAmount) {
       Artifact testPlan =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestPlanElement, SAW_Bld_1, "Sample_Test_Plan");
       testPlan.persist(getClass().getSimpleName());

@@ -34,7 +34,7 @@ public final class ArtifactPrompt {
       this.policyHandler = policyHandler;
    }
 
-   public boolean promptChangeAttribute(AttributeTypeToken attributeType, final Collection<? extends Artifact> artifacts, boolean persist, boolean multiLine)  {
+   public boolean promptChangeAttribute(AttributeTypeToken attributeType, final Collection<? extends Artifact> artifacts, boolean persist, boolean multiLine) {
       boolean toReturn = false;
       boolean hasPermission = policyHandler.hasAttributeTypePermission(artifacts, attributeType, PermissionEnum.WRITE,
          OseeLevel.SEVERE_POPUP).matched();

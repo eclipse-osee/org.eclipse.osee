@@ -21,10 +21,9 @@ public interface IResource {
    /**
     * Returns an open input stream of the contents of this resource.
     * 
-    * @return an input stream containing the contents of this resource
-    *  if this method fails.
+    * @return an input stream containing the contents of this resource if this method fails.
     */
-   public InputStream getContent() ;
+   public InputStream getContent();
 
    /**
     * Returns the absolute URI of this resource, or <code>null</code> if no URI can be determined.

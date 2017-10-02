@@ -98,7 +98,7 @@ public class WordMlLinkHandler {
     * @param content input
     * @return processed input
     */
-   public static String unlink(LinkType sourceLinkType, Artifact source, String content)  {
+   public static String unlink(LinkType sourceLinkType, Artifact source, String content) {
       LinkType linkType = checkLinkType(sourceLinkType);
       String modified = content;
       HashCollection<String, MatchRange> matchMap = parseOseeWordMLLinks(content, new HashCollection<>());
@@ -116,11 +116,11 @@ public class WordMlLinkHandler {
     * @param content input
     * @return processed input
     */
-   public static String link(LinkType destLinkType, Artifact source, String content, Set<String> unknownGuids)  {
+   public static String link(LinkType destLinkType, Artifact source, String content, Set<String> unknownGuids) {
       return link(destLinkType, source, content, unknownGuids, PresentationType.DEFAULT_OPEN);
    }
 
-   public static String link(LinkType destLinkType, Artifact source, String content, Set<String> unknownGuids, PresentationType presentationType)  {
+   public static String link(LinkType destLinkType, Artifact source, String content, Set<String> unknownGuids, PresentationType presentationType) {
       LinkType linkType = checkLinkType(destLinkType);
       String modified = content;
 
@@ -196,7 +196,7 @@ public class WordMlLinkHandler {
       return matchMap;
    }
 
-   private static List<Artifact> findArtifacts(TransactionToken transactionId, BranchId branch, boolean isHistorical, List<String> guidsFromLinks)  {
+   private static List<Artifact> findArtifacts(TransactionToken transactionId, BranchId branch, boolean isHistorical, List<String> guidsFromLinks) {
       List<Artifact> artifactsFromSearch;
       if (isHistorical) {
          artifactsFromSearch =
@@ -215,12 +215,12 @@ public class WordMlLinkHandler {
       return Collections.setComplement(guidsFromLinks, artGuids);
    }
 
-   private static String modifiedContent(LinkType destLinkType, Artifact source, String original, HashCollection<String, MatchRange> matchMap, boolean isUnliking, Set<String> unknown)  {
+   private static String modifiedContent(LinkType destLinkType, Artifact source, String original, HashCollection<String, MatchRange> matchMap, boolean isUnliking, Set<String> unknown) {
       return modifiedContent(destLinkType, source, original, matchMap, isUnliking, unknown,
          PresentationType.DEFAULT_OPEN);
    }
 
-   private static String modifiedContent(LinkType destLinkType, Artifact source, String original, HashCollection<String, MatchRange> matchMap, boolean isUnliking, Set<String> unknown, PresentationType presentationType)  {
+   private static String modifiedContent(LinkType destLinkType, Artifact source, String original, HashCollection<String, MatchRange> matchMap, boolean isUnliking, Set<String> unknown, PresentationType presentationType) {
       BranchId branch = source.getBranch();
       ChangeSet changeSet = new ChangeSet(original);
       List<Artifact> artifactsFromSearch = null;

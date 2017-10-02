@@ -42,7 +42,7 @@ public class ArtifactMatchRestrictionHandler implements RestrictionHandler<Artif
    }
 
    @Override
-   public void process(ObjectRestriction objectRestriction, ArtifactProxy artifactProxy, AccessDetailCollector collector, Scope scope)  {
+   public void process(ObjectRestriction objectRestriction, ArtifactProxy artifactProxy, AccessDetailCollector collector, Scope scope) {
       ArtifactMatchRestriction restriction = asCastedObject(objectRestriction);
       if (restriction != null) {
          XArtifactMatcher artifactMatcher = restriction.getArtifactMatcherRef();

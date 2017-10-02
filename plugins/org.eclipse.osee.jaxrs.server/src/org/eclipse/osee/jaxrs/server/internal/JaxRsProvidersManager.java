@@ -40,7 +40,7 @@ public final class JaxRsProvidersManager extends JaxRsDynamicServiceManager<Obje
 
    private boolean isJaxRsProvider(Object service) {
       return service != null && (hasRegisterableAnnotation(service) || //
-      service instanceof Feature || service instanceof DynamicFeature);
+         service instanceof Feature || service instanceof DynamicFeature);
    }
 
    private boolean hasRegisterableAnnotation(Object service) {

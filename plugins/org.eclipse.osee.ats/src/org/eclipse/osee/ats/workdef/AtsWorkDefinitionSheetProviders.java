@@ -50,7 +50,7 @@ public final class AtsWorkDefinitionSheetProviders {
       // Utility Class
    }
 
-   public static void initializeDatabase(XResultData resultData, String dbType)  {
+   public static void initializeDatabase(XResultData resultData, String dbType) {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("Import ATS Work Definitions, Teams and AIs");
       Artifact folder = OseeSystemArtifacts.getOrCreateArtifact(AtsArtifactToken.WorkDefinitionsFolder,
          AtsClientService.get().getAtsBranch());
@@ -64,7 +64,7 @@ public final class AtsWorkDefinitionSheetProviders {
       changes.execute();
    }
 
-   public static void importWorkDefinitionSheets(XResultData resultData, IAtsChangeSet changes, Artifact folder, Collection<WorkDefinitionSheet> sheets, Set<String> stateNames)  {
+   public static void importWorkDefinitionSheets(XResultData resultData, IAtsChangeSet changes, Artifact folder, Collection<WorkDefinitionSheet> sheets, Set<String> stateNames) {
       OseeLog.logf(Activator.class, Level.INFO, "Importing ATS Work Definitions");
       for (WorkDefinitionSheet sheet : sheets) {
          Artifact artifact =
@@ -76,14 +76,14 @@ public final class AtsWorkDefinitionSheetProviders {
       }
    }
 
-   public static void importTeamsAndAis(XResultData resultData, IAtsChangeSet changes, Artifact folder, Collection<WorkDefinitionSheet> sheets, String dbType)  {
+   public static void importTeamsAndAis(XResultData resultData, IAtsChangeSet changes, Artifact folder, Collection<WorkDefinitionSheet> sheets, String dbType) {
       OseeLog.logf(Activator.class, Level.INFO, "Importing ATS Teams and AIs");
       for (WorkDefinitionSheet sheet : sheets) {
          importAIsAndTeamsToDb(sheet, changes);
       }
    }
 
-   public static void importAIsAndTeamsToDatabase(String dbType)  {
+   public static void importAIsAndTeamsToDatabase(String dbType) {
 
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("Import ATS AIs and Team Definitions");
       for (WorkDefinitionSheet sheet : getWorkDefinitionSheets(dbType)) {
@@ -93,7 +93,7 @@ public final class AtsWorkDefinitionSheetProviders {
       changes.execute();
    }
 
-   public static void importAIsAndTeamsToDb(WorkDefinitionSheet sheet, IAtsChangeSet changes)  {
+   public static void importAIsAndTeamsToDb(WorkDefinitionSheet sheet, IAtsChangeSet changes) {
       String modelName = sheet.getFile().getName();
       AtsDsl atsDsl = AtsDslUtil.getFromSheet(modelName, sheet);
       ImportAIsAndTeamDefinitionsToDb importer = new ImportAIsAndTeamDefinitionsToDb(modelName, atsDsl, changes);

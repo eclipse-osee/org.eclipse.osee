@@ -70,9 +70,9 @@ public class OAuth2ResourceServer {
       audiences = Collections.emptyList();
 
       Builder builder = JaxRsOAuthResourceServerFilter.newBuilder() //
-      .serverKey(config.getResourceServerKey()) //
-      .serverSecret(config.getResourceServerSecret())//
-      .serverUri(config.getValidationServerUri());
+         .serverKey(config.getResourceServerKey()) //
+         .serverSecret(config.getResourceServerSecret())//
+         .serverUri(config.getValidationServerUri());
 
       if (config.isCacheTokensAllowed()) {
          filter = builder.build(config.getTokenCacheMaxSize(), config.getTokenCacheEvictTimeoutMillis());

@@ -19,7 +19,7 @@ import org.eclipse.osee.jaxrs.server.internal.applications.JaxRsApplicationRegis
 /**
  * @author Roberto E. Escobar
  */
-public final class JaxRsContainerProviderImpl extends LazyObject<JaxRsContainer>implements JaxRsContainerProvider {
+public final class JaxRsContainerProviderImpl extends LazyObject<JaxRsContainer> implements JaxRsContainerProvider {
 
    private final JaxRsFactory factory;
    private final String contextName;

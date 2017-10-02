@@ -15,5 +15,5 @@ package org.eclipse.osee.ats.api.workflow;
  */
 public interface IAtsBranchServiceProvider {
 
-   IAtsBranchService getBranchService() ;
+   IAtsBranchService getBranchService();
 }

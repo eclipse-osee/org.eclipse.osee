@@ -98,7 +98,7 @@ public final class RelationType extends AbstractOseeIdType implements RelationTy
       return getFieldValueLogException("", RELATION_SIDE_B_NAME_FIELD_KEY);
    }
 
-   public boolean isSideAName(String sideName)  {
+   public boolean isSideAName(String sideName) {
       if (!getSideAName().equals(sideName) && !getSideBName().equals(sideName)) {
          throw new OseeArgumentException("sideName does not match either of the available side names");
       }

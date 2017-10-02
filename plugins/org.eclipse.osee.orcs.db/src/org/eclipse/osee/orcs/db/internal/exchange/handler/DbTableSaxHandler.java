@@ -76,7 +76,7 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
       }
    }
 
-   private String importBinaryContent(String uriValue, String gammaId)  {
+   private String importBinaryContent(String uriValue, String gammaId) {
       String relativePath = Lib.isWindows() ? uriValue : uriValue.replaceAll("\\\\", File.separator);
       String entrySearch = ExportImportXml.RESOURCE_FOLDER_NAME + File.separator + relativePath;
       if (exportDataProvider.getExportedDataRoot() != null) {
@@ -99,14 +99,14 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
       }
    }
 
-   private long getTypeId(IdentityLocator identityService, Map<String, String> fieldMap)  {
+   private long getTypeId(IdentityLocator identityService, Map<String, String> fieldMap) {
       Conditions.checkNotNull(identityService, "identityService");
       String hexString = fieldMap.get(ExchangeDb.TYPE_GUID);
       return identityService.parseToLocalId(hexString);
    }
 
    @Override
-   protected void processData(Map<String, String> fieldMap)  {
+   protected void processData(Map<String, String> fieldMap) {
       boolean process = true;
       try {
          if (!branchesToImport.isEmpty()) {
@@ -211,7 +211,7 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
    }
 
    @Override
-   public void clearDataTable()  {
+   public void clearDataTable() {
       if (!getMetaData().getTableName().equals("osee_tx_details")) {
          super.clearDataTable();
       }

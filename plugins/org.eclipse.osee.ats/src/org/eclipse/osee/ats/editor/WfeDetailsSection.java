@@ -121,7 +121,7 @@ public class WfeDetailsSection extends SectionPart {
       }
    }
 
-   private void addSMADetails(AbstractWorkflowArtifact workflow, Map<String, String> details)  {
+   private void addSMADetails(AbstractWorkflowArtifact workflow, Map<String, String> details) {
       details.put("Workflow Definition", workflow.getWorkDefinition().getName());
       ActionArtifact parentAction = workflow.getParentActionArtifact();
       if (parentAction == null) {

@@ -55,7 +55,7 @@ public class RelationDeletionTest {
    }
 
    @After
-   public void cleanUp()  {
+   public void cleanUp() {
       Operations.executeWorkAndCheckStatus(new PurgeArtifacts(artifacts));
    }
 
@@ -91,7 +91,7 @@ public class RelationDeletionTest {
    }
 
    @Test
-   public void testDeleteThenUnDeleteRelation()  {
+   public void testDeleteThenUnDeleteRelation() {
       Artifact parent = createArtifact(CoreArtifactTypes.Folder, COMMON);
       Artifact child1 = createArtifact(CoreArtifactTypes.Folder, COMMON);
 
@@ -122,7 +122,7 @@ public class RelationDeletionTest {
 
    }
 
-   private Artifact createArtifact(IArtifactType artifactType, BranchId branch)  {
+   private Artifact createArtifact(IArtifactType artifactType, BranchId branch) {
       Artifact newArtifact = ArtifactTypeManager.addArtifact(artifactType, branch);
       artifacts.add(newArtifact);
       return newArtifact;

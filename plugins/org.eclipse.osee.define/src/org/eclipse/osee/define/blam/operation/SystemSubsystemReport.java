@@ -352,7 +352,7 @@ public class SystemSubsystemReport extends AbstractBlam {
       excelWriter.endSheet();
    }
 
-   private void recurseWholeSubsystem(String subSysName, Artifact subsysFolder, Set<String> missingAllocationGuids)  {
+   private void recurseWholeSubsystem(String subSysName, Artifact subsysFolder, Set<String> missingAllocationGuids) {
       Set<Artifact> subsysReqs = new LinkedHashSet<>();
       subsysToSubsysReqsMap.put(subSysName, subsysReqs);
       countDescendants(subSysName, subsysReqs, subsysFolder, missingAllocationGuids);
@@ -366,7 +366,7 @@ public class SystemSubsystemReport extends AbstractBlam {
       subsysMarkedAndAllocatedToComponentCount = 0;
    }
 
-   private void countDescendants(String subSysName, Set<Artifact> subsysReqs, Artifact artifact, Set<String> missingAllocationGuids)  {
+   private void countDescendants(String subSysName, Set<Artifact> subsysReqs, Artifact artifact, Set<String> missingAllocationGuids) {
       List<Artifact> children = artifact.getChildren();
       if (children != null && !children.isEmpty()) {
          ViewIdUtility.removeExcludedArtifacts(children.iterator(), findExcludedArtifactsByView);
@@ -489,7 +489,7 @@ public class SystemSubsystemReport extends AbstractBlam {
       excelWriter.endSheet();
    }
 
-   private Artifact getProductComponent(Artifact root)  {
+   private Artifact getProductComponent(Artifact root) {
       for (Artifact artifact : root.getChildren()) {
          if (artifact.isOfType(CoreArtifactTypes.Component)) {
             return artifact;

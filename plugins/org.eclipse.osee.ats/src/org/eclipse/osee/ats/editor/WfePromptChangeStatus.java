@@ -40,7 +40,7 @@ public class WfePromptChangeStatus {
       this.awas = awas;
    }
 
-   public static boolean promptChangeStatus(Collection<? extends AbstractWorkflowArtifact> awas, boolean persist)  {
+   public static boolean promptChangeStatus(Collection<? extends AbstractWorkflowArtifact> awas, boolean persist) {
       WfePromptChangeStatus promptChangeStatus = new WfePromptChangeStatus(awas);
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("Prompt Change Status");
       boolean result = promptChangeStatus.promptChangeStatus(changes).isTrue();
@@ -50,7 +50,7 @@ public class WfePromptChangeStatus {
       return result;
    }
 
-   public static Result isValidToChangeStatus(Collection<? extends AbstractWorkflowArtifact> awas)  {
+   public static Result isValidToChangeStatus(Collection<? extends AbstractWorkflowArtifact> awas) {
       // Don't allow statusing for any canceled tasks
       for (AbstractWorkflowArtifact awa : awas) {
          if (awa.isCancelled()) {
@@ -66,9 +66,9 @@ public class WfePromptChangeStatus {
                return new Result(String.format(
                   "Task work must be done in \"Related to State\" of parent workflow for Task titled: \"%s\".\n\n" +
                   //
-                  "Task work configured to be done in parent's \"%s\" state.\nParent workflow is currently in \"%s\" state.\n\n" +
-                  //
-                  "Either transition parent workflow or change Task's \"Related to State\" to perform task work.",
+                     "Task work configured to be done in parent's \"%s\" state.\nParent workflow is currently in \"%s\" state.\n\n" +
+                     //
+                     "Either transition parent workflow or change Task's \"Related to State\" to perform task work.",
                   taskArt.getName(), taskArt.getSoleAttributeValueAsString(AtsAttributeTypes.RelatedToState, "unknown"),
                   taskArt.getParentAWA().getStateMgr().getCurrentStateName()));
             }
@@ -78,7 +78,7 @@ public class WfePromptChangeStatus {
       return Result.TrueResult;
    }
 
-   public Result promptChangeStatus(IAtsChangeSet changes)  {
+   public Result promptChangeStatus(IAtsChangeSet changes) {
       Result result = isValidToChangeStatus(awas);
       if (result.isFalse()) {
          AWorkbench.popup(result);
@@ -96,13 +96,13 @@ public class WfePromptChangeStatus {
       return Result.FalseResult;
    }
 
-   public static void performChangeStatusAndPersist(Collection<? extends IAtsWorkItem> workItems, String selectedOption, double hours, int percent, boolean splitHours)  {
+   public static void performChangeStatusAndPersist(Collection<? extends IAtsWorkItem> workItems, String selectedOption, double hours, int percent, boolean splitHours) {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("ATS Prompt Change Status");
       performChangeStatus(workItems, selectedOption, hours, percent, splitHours, changes);
       changes.execute();
    }
 
-   public static void performChangeStatus(Collection<? extends IAtsWorkItem> workItems, String selectedOption, double hours, int percent, boolean splitHours, IAtsChangeSet changes)  {
+   public static void performChangeStatus(Collection<? extends IAtsWorkItem> workItems, String selectedOption, double hours, int percent, boolean splitHours, IAtsChangeSet changes) {
       if (splitHours) {
          hours = hours / workItems.size();
       }

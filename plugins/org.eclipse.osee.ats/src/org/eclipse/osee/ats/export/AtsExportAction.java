@@ -59,7 +59,7 @@ public class AtsExportAction extends Action {
       INCLUDE_TASKLIST;
    };
 
-   public Result export(Collection<? extends Artifact> artifacts, Collection<ExportOption> exportOption, String fileLocation)  {
+   public Result export(Collection<? extends Artifact> artifacts, Collection<ExportOption> exportOption, String fileLocation) {
       Result result = Result.TrueResult;
       boolean singleFile = exportOption.contains(ExportOption.MERGE_INTO_SINGLE_FILE);
       boolean asHtmlToFile = exportOption.contains(ExportOption.AS_HTML_TO_FILE);

@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class WfeWorkflowCustomSection extends WfeWorkflowSection {
 
-   public WfeWorkflowCustomSection(Composite parent, int style, StateXWidgetPage page, AbstractWorkflowArtifact sma, WorkflowEditor editor)  {
+   public WfeWorkflowCustomSection(Composite parent, int style, StateXWidgetPage page, AbstractWorkflowArtifact sma, WorkflowEditor editor) {
       super(parent, style, page, sma, editor);
    }
 

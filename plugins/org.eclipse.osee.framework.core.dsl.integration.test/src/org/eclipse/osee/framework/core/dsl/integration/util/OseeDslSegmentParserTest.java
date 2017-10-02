@@ -41,29 +41,29 @@ public class OseeDslSegmentParserTest {
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testGetStartTagNullCheck1()  {
+   public void testGetStartTagNullCheck1() {
       parser.getStartTag(null, null);
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testGetStartTagNullCheck2()  {
+   public void testGetStartTagNullCheck2() {
       ArtifactToken artifact = ArtifactToken.valueOf(45, "name", null);
       parser.getStartTag(artifact, null);
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testGetEndTagNullCheck1()  {
+   public void testGetEndTagNullCheck1() {
       parser.getEndTag(null, null);
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testGetEndTagNullCheck2()  {
+   public void testGetEndTagNullCheck2() {
       ArtifactToken artifact = ArtifactToken.valueOf(45, "name", null);
       parser.getEndTag(artifact, null);
    }
 
    @Test
-   public void testGetStartEndTag()  {
+   public void testGetStartEndTag() {
       IOseeBranch branch = CoreBranches.COMMON;
       final String artifactName = "artifactTest";
       final String branchName = branch.getName();
@@ -83,12 +83,12 @@ public class OseeDslSegmentParserTest {
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testGetTagLocationsNull()  {
+   public void testGetTagLocationsNull() {
       parser.getTagLocations(null);
    }
 
    @Test
-   public void testGetLocations()  {
+   public void testGetLocations() {
       final String artifactGuid = GUID.create();
       String data = null;
 
@@ -108,17 +108,17 @@ public class OseeDslSegmentParserTest {
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testGetSegmentsNull()  {
+   public void testGetSegmentsNull() {
       parser.getSegments((String) null);
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testGetSegmentsNull2()  {
+   public void testGetSegmentsNull2() {
       parser.getSegments((Collection<TagLocation>) null);
    }
 
    @Test(expected = OseeStateException.class)
-   public void testGetSegmentsUnMatched()  {
+   public void testGetSegmentsUnMatched() {
       TagLocation start = new TagLocation(true, 1L, "2", 0, 2);
       TagLocation end = new TagLocation(false, 1L, "2", 0, 2);
 
@@ -127,7 +127,7 @@ public class OseeDslSegmentParserTest {
    }
 
    @Test
-   public void testOrderedSegments()  {
+   public void testOrderedSegments() {
       TagLocation start1 = new TagLocation(true, 1L, "art_1", 0, 6);
       TagLocation end1 = new TagLocation(false, 1L, "art_1", 10, 12);
 
@@ -173,7 +173,7 @@ public class OseeDslSegmentParserTest {
       }
    }
 
-   private void checkGetTagLocations(String source, TagLocation... expectedLocations)  {
+   private void checkGetTagLocations(String source, TagLocation... expectedLocations) {
       Collection<TagLocation> segments = parser.getTagLocations(source);
       Assert.assertEquals("number of expected tagLocations don't match", expectedLocations.length, segments.size());
 

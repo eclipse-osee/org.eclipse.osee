@@ -53,7 +53,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
    }
 
    @Override
-   public void load(IOseeCache<Branch> cache)  {
+   public void load(IOseeCache<Branch> cache) {
       String sql = String.format(SELECT_BRANCHES, jdbcClient.getDbType().getRecursiveWithSql());
       Map<MergeBranch, Long> mergeIdMap = new HashMap<>();
       jdbcClient.runQuery(stmt -> cache.cache(load(cache, stmt, mergeIdMap)), JDBC__MAX_FETCH_SIZE, sql);

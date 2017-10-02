@@ -15,6 +15,6 @@ package org.eclipse.osee.orcs.core.ds;
  */
 public interface OrcsDataHandler<T> {
 
-   void onData(T data) ;
+   void onData(T data);
 
 }

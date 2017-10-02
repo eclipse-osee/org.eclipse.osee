@@ -17,9 +17,9 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
  */
 public interface OseeDslProvider {
 
-   void loadDsl() ;
+   void loadDsl();
 
-   OseeDsl getDsl() ;
+   OseeDsl getDsl();
 
-   void storeDsl(OseeDsl dsl) ;
+   void storeDsl(OseeDsl dsl);
 }

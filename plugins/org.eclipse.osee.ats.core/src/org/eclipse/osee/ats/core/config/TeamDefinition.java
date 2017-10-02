@@ -222,7 +222,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
    }
 
    @Override
-   public boolean isTeamUsesVersions()  {
+   public boolean isTeamUsesVersions() {
       return getTeamDefinitionHoldingVersions() != null;
    }
 
@@ -239,7 +239,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
    }
 
    @Override
-   public IAtsTeamDefinition getTeamDefinitionHoldingVersions()  {
+   public IAtsTeamDefinition getTeamDefinitionHoldingVersions() {
       IAtsTeamDefinition teamDef = null;
       if (getVersions().size() > 0) {
          teamDef = this;
@@ -286,7 +286,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
    }
 
    @Override
-   public Collection<IAtsVersion> getVersionsFromTeamDefHoldingVersions(VersionReleaseType releaseType, VersionLockedType lockedType)  {
+   public Collection<IAtsVersion> getVersionsFromTeamDefHoldingVersions(VersionReleaseType releaseType, VersionLockedType lockedType) {
       IAtsTeamDefinition teamDef = getTeamDefinitionHoldingVersions();
       if (teamDef == null) {
          return new ArrayList<IAtsVersion>();

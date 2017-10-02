@@ -145,7 +145,7 @@ public class ArtifactExtractorSelectPanel {
             }
          }
          delegateCombo.select(0);
-         if(extractor != null) {
+         if (extractor != null) {
             extractor.setDelegate(delegates.get(0));
          }
       }

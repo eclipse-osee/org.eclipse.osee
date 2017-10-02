@@ -41,7 +41,7 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
 
    private List<Artifact> templates;
 
-   private synchronized void ensureTemplateCachePopulated()  {
+   private synchronized void ensureTemplateCachePopulated() {
       if (templateMap == null) {
          templateMap = new HashMap<>();
          templates = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.RendererTemplate, COMMON);
@@ -69,7 +69,7 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
    }
 
    @Override
-   public Artifact getTemplate(IRenderer renderer, Artifact artifact, PresentationType presentationType, String option)  {
+   public Artifact getTemplate(IRenderer renderer, Artifact artifact, PresentationType presentationType, String option) {
       ensureTemplateCachePopulated();
 
       Artifact template = getArtifactFromOptionName(option);
@@ -91,7 +91,7 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
          renderer.toString(), artifact.toString(), presentationType, option);
    }
 
-   private Artifact getArtifactFromOptionName(String name)  {
+   private Artifact getArtifactFromOptionName(String name) {
       Artifact toReturn = null;
 
       if (name == null) {
@@ -105,7 +105,7 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
       return toReturn;
    }
 
-   private List<String> getPossibleTemplateNamesOrderedBySpecialization(IRenderer renderer, Artifact artifact, PresentationType presentationType, String option)  {
+   private List<String> getPossibleTemplateNamesOrderedBySpecialization(IRenderer renderer, Artifact artifact, PresentationType presentationType, String option) {
       if (renderer == null || presentationType == null) {
          throw new OseeArgumentException("Invalid renderer[%s] or presentationType[%s]",
             renderer == null ? "null" : renderer.toString(),
@@ -138,7 +138,7 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
    }
 
    @Override
-   public List<Artifact> getAllTemplates()  {
+   public List<Artifact> getAllTemplates() {
       if (templates == null) {
          templates = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.RendererTemplate, COMMON);
       }

@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Roberto E. Escobar
  */
-public class DynamicData extends BaseIdentity<String>implements Named {
+public class DynamicData extends BaseIdentity<String> implements Named {
 
    private static final String FIELD_NAME = "field.name";
    private static final String IS_HIDDEN = "is.hidden";

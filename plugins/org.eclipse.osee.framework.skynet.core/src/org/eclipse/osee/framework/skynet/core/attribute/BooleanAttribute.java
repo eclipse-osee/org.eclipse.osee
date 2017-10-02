@@ -17,7 +17,7 @@ public class BooleanAttribute extends CharacterBackedAttribute<Boolean> {
    public static final String[] booleanChoices = {"true", "false"};
 
    @Override
-   public Boolean getValue()  {
+   public Boolean getValue() {
       return (Boolean) getAttributeDataProvider().getValue();
    }
 

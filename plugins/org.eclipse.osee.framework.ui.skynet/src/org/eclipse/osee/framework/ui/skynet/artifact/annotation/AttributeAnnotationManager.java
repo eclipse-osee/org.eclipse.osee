@@ -45,11 +45,11 @@ public class AttributeAnnotationManager {
       this.artifact = artifact;
    }
 
-   private Collection<Attribute<String>> getAttributes()  {
+   private Collection<Attribute<String>> getAttributes() {
       return artifact.getAttributes(CoreAttributeTypes.Annotation);
    }
 
-   public static final Set<ArtifactAnnotation> getAnnotations(Artifact artifact)  {
+   public static final Set<ArtifactAnnotation> getAnnotations(Artifact artifact) {
       if (!guidToManager.containsKey(artifact) && artifact.getAttributeCount(CoreAttributeTypes.Annotation) == 0) {
          return Collections.emptySet();
       }
@@ -61,7 +61,7 @@ public class AttributeAnnotationManager {
       return annotations;
    }
 
-   public static final boolean isAnnotationWarning(Artifact artifact)  {
+   public static final boolean isAnnotationWarning(Artifact artifact) {
       for (ArtifactAnnotation notify : getAnnotations(artifact)) {
          if (notify.getType() == ArtifactAnnotation.Type.Warning || notify.getType() == ArtifactAnnotation.Type.Error) {
             return true;
@@ -74,7 +74,7 @@ public class AttributeAnnotationManager {
     * @return annotations stored in "Annotation" attribute of given artifact. NOTE: This is not a full list of
     * annotation for this artifact as annotations can be added via extension point.
     */
-   public List<ArtifactAnnotation> getAnnotations()  {
+   public List<ArtifactAnnotation> getAnnotations() {
       List<ArtifactAnnotation> annotations = new ArrayList<>();
       for (String value : artifact.getAttributesToStringList(CoreAttributeTypes.Annotation)) {
          ArtifactAnnotation annotation = new ArtifactAnnotation(value);
@@ -86,7 +86,7 @@ public class AttributeAnnotationManager {
    /**
     * Add an annotation to be stored in the "Annotation" attribute of this given artifact.
     */
-   public void addAnnotation(ArtifactAnnotation newAnnotation)  {
+   public void addAnnotation(ArtifactAnnotation newAnnotation) {
 
       // Update attribute if it already exists
       for (Attribute<String> attr : getAttributes()) {
@@ -102,7 +102,7 @@ public class AttributeAnnotationManager {
    /**
     * Remove the annotation from the "Annotation" attribute of the given artifact.
     */
-   public void removeAnnotation(ArtifactAnnotation annotation)  {
+   public void removeAnnotation(ArtifactAnnotation annotation) {
       // Update attribute if it already exists
       for (Attribute<String> attr : getAttributes()) {
          ArtifactAnnotation attrAnnotation = new ArtifactAnnotation(attr.getValue());

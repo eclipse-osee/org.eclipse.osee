@@ -58,7 +58,8 @@ public class HtmlTableReport {
 
    private String getReportSummary() {
       StringBuilder builder = new StringBuilder();
-      builder.append("<div id=\"title\" class=\"x-grid3-hd-text\" style=\"color:#15428b;background:#ebf3fd;border:1px solid #aaccf6;\">");
+      builder.append(
+         "<div id=\"title\" class=\"x-grid3-hd-text\" style=\"color:#15428b;background:#ebf3fd;border:1px solid #aaccf6;\">");
       builder.append("<table class=\" x-grid3-summary-row x-grid3-hd-text\" style=\"width:95%;color:#15428b;\">");
       builder.append("<tr>");
       builder.append("<td style=\"text-align:left; font-size:14px;\"><b>");

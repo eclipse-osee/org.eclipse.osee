@@ -120,7 +120,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
 
    }
 
-   public void handleUpdateMetrics()  {
+   public void handleUpdateMetrics() {
       refreshedOnce = false;
       if (metricsComposite != null) {
          metricsComposite.dispose();
@@ -153,7 +153,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
       computeScrollSize();
    }
 
-   private Date getEstimatedReleaseDate()  {
+   private Date getEstimatedReleaseDate() {
       if (estimatedReleaseXDate != null && estimatedReleaseXDate.getDate() != null) {
          return estimatedReleaseXDate.getDate();
       }
@@ -190,7 +190,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
       adapt(label);
    }
 
-   public void createOverviewChart(WorkflowMetrics sMet, Composite parent)  {
+   public void createOverviewChart(WorkflowMetrics sMet, Composite parent) {
       List<XBarGraphLine> lines = new ArrayList<>();
 
       lines.add(XBarGraphLine.getTextLine("Loaded", sMet.toStringObjectBreakout()));

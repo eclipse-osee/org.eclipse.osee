@@ -19,7 +19,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public interface IArtifactProvider {
 
-   ArtifactReadable getArtifact(ArtifactId artifact) ;
+   ArtifactReadable getArtifact(ArtifactId artifact);
 
-   ArtifactReadable getArtifact(IAtsObject atsObject) ;
+   ArtifactReadable getArtifact(IAtsObject atsObject);
 }

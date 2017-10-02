@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
-
 public class SubsystemRequirementVerificationLevel extends AbstractBlam {
 
    @Override
@@ -57,7 +56,7 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
    @SuppressWarnings("unused")
    private Collection<Artifact> bulkRequirements;
 
-   private void loadFields(VariableMap variableMap)  {
+   private void loadFields(VariableMap variableMap) {
       branch = variableMap.getBranch("Branch");
       subsystemRequirements =
          ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SubsystemRequirementMSWord, branch);
@@ -95,7 +94,7 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
       report.append(AHTML.addRowMultiColumnTable(cells));
    }
 
-   private void processSubsystemRequirement(Artifact reqArt)  {
+   private void processSubsystemRequirement(Artifact reqArt) {
       SubsystemRequirement req = new SubsystemRequirement(reqArt);
       req.process();
    }
@@ -112,7 +111,7 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
          this.req = req;
       }
 
-      public void process()  {
+      public void process() {
          getData();
          if (meetsCriteria()) {
             if (isUnspecified()) {
@@ -122,7 +121,7 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
          }
       }
 
-      private void getData()  {
+      private void getData() {
          this.hardwareComponents = getHardwareComponentCount();
          this.softwareRequirements = getSoftwareRequirementCount();
          paragraphNumber = req.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "UNDEFINED");
@@ -130,11 +129,11 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
          verificationLevel = req.getSoleAttributeValue(CoreAttributeTypes.VerificationLevel, "UNDEFINED");
       }
 
-      private int getHardwareComponentCount()  {
+      private int getHardwareComponentCount() {
          return RelationManager.getRelatedArtifactsCount(req, CoreRelationTypes.Allocation__Component);
       }
 
-      private int getSoftwareRequirementCount()  {
+      private int getSoftwareRequirementCount() {
          Collection<Artifact> traceCollection =
             RelationManager.getRelatedArtifacts(req, CoreRelationTypes.Requirement_Trace__Lower_Level);
          int ret = 0;
@@ -150,7 +149,7 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
          return hardwareComponents == 1 && softwareRequirements == 0;
       }
 
-      private void adjustVerificationLevel()  {
+      private void adjustVerificationLevel() {
          req.setSoleAttributeValue(CoreAttributeTypes.VerificationLevel, "Component");
          req.persist(SubsystemRequirementVerificationLevel.this.transaction);
       }

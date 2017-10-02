@@ -42,7 +42,7 @@ public final class PortPairsOperation extends AbstractOperation {
    private final List<Pair<String, String>> portPairs;
    private final boolean useAtsID;
 
-   public PortPairsOperation(OperationLogger logger, String portPairs, boolean useAtsID)  {
+   public PortPairsOperation(OperationLogger logger, String portPairs, boolean useAtsID) {
       this(logger, new ArrayList<Pair<String, String>>(), useAtsID);
       for (String pair : portPairs.split("[\n\r]+")) {
          String[] pairLine = pair.split("[\\s,]+");
@@ -60,7 +60,7 @@ public final class PortPairsOperation extends AbstractOperation {
    }
 
    @Override
-   protected void doWork(IProgressMonitor monitor)  {
+   protected void doWork(IProgressMonitor monitor) {
 
       if (portPairs.isEmpty()) {
          throw new OseeArgumentException("Must specify at least one pair.");
@@ -85,7 +85,7 @@ public final class PortPairsOperation extends AbstractOperation {
     * <li>commit into from port branch to destination working branch</li>
     * <li>report conflicts and commit completions if commit completes, delete port branch.</li>
     */
-   private void portPair(Pair<String, String> pair)  {
+   private void portPair(Pair<String, String> pair) {
       TeamWorkFlowArtifact sourceWorkflow;
       TeamWorkFlowArtifact destinationWorkflow;
       if (useAtsID) {
@@ -99,18 +99,18 @@ public final class PortPairsOperation extends AbstractOperation {
       doPortWork(sourceWorkflow, destinationWorkflow);
    }
 
-   private TeamWorkFlowArtifact getWorkflowFromRpcr(String workflowId)  {
+   private TeamWorkFlowArtifact getWorkflowFromRpcr(String workflowId) {
       IArtifactType LbaReqTeamWorkflow = TokenFactory.createArtifactType(204509162766347L, "Lba Req Team Workflow");
 
       return (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromTypeAndAttribute(LbaReqTeamWorkflow,
          AtsAttributeTypes.LegacyPcrId, workflowId, AtsClientService.get().getAtsBranch());
    }
 
-   private TeamWorkFlowArtifact getWorkflowFromAtsID(String atsID)  {
+   private TeamWorkFlowArtifact getWorkflowFromAtsID(String atsID) {
       return (TeamWorkFlowArtifact) AtsClientService.get().getArtifactByAtsId(atsID);
    }
 
-   private void doPortWork(TeamWorkFlowArtifact sourceWorkflow, TeamWorkFlowArtifact destinationWorkflow)  {
+   private void doPortWork(TeamWorkFlowArtifact sourceWorkflow, TeamWorkFlowArtifact destinationWorkflow) {
       if (destinationWorkflow.getWorkingBranchForceCacheUpdate() == null) {
          AtsBranchUtil.createWorkingBranch_Create(destinationWorkflow, true);
       }
@@ -135,7 +135,7 @@ public final class PortPairsOperation extends AbstractOperation {
       }
    }
 
-   private IOseeBranch getPortBranchFromWorkflow(TeamWorkFlowArtifact sourceWorkflow, TeamWorkFlowArtifact destinationWorkflow)  {
+   private IOseeBranch getPortBranchFromWorkflow(TeamWorkFlowArtifact sourceWorkflow, TeamWorkFlowArtifact destinationWorkflow) {
       if (!sourceWorkflow.isRelated(AtsRelationTypes.Port_To, destinationWorkflow)) {
          sourceWorkflow.addRelation(AtsRelationTypes.Port_To, destinationWorkflow);
          sourceWorkflow.persist("create port relation");

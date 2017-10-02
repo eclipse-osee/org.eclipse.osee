@@ -76,7 +76,7 @@ public class RendererManagerTest {
    }
 
    @Test
-   public void testGetBestRenderer()  {
+   public void testGetBestRenderer() {
       Artifact artifact = new Artifact(CoreBranches.COMMON, artifactType);
 
       if (defaultOption == Both) {
@@ -87,7 +87,7 @@ public class RendererManagerTest {
       }
    }
 
-   private void testGetBestRendererWithOption(Artifact artifact, DefaultOption option)  {
+   private void testGetBestRendererWithOption(Artifact artifact, DefaultOption option) {
       UserManager.setSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_ART_EDIT, String.valueOf(option == On));
 
       if (clazz == null) {
@@ -107,7 +107,7 @@ public class RendererManagerTest {
       }
    }
 
-   private IRenderer computeRenderer(Artifact artifact)  {
+   private IRenderer computeRenderer(Artifact artifact) {
       IRenderer renderer = RendererManager.getBestRenderer(presentationType, artifact);
       Assert.assertNotNull(renderer);
       return renderer;

@@ -95,7 +95,7 @@ public class AccountSessionDatabaseStore implements AccountSessionStorage {
                Date lastAccessedOn = stmt.getTimestamp("last_accessed_on");
                String accessedFrom = stmt.getString("accessed_from");
                String accessDetails = stmt.getString("access_details");
-                  ArtifactId artId = ArtifactId.valueOf(accountId);
+               ArtifactId artId = ArtifactId.valueOf(accountId);
                AccountSession session = factory.newAccountSession(artId, sessionToken, createdOn, lastAccessedOn,
                   accessedFrom, accessDetails);
                list.add(session);

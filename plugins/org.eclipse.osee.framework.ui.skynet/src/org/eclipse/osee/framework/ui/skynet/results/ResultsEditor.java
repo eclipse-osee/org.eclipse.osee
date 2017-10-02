@@ -77,7 +77,7 @@ public class ResultsEditor extends AbstractArtifactEditor {
       };
    }
 
-   List<IResultsEditorTab> getTabs()  {
+   List<IResultsEditorTab> getTabs() {
       if (tabs == null) {
          tabs = getResultsEditorProvider().getResultsEditorTabs();
          if (tabs == null || tabs.isEmpty()) {
@@ -159,7 +159,7 @@ public class ResultsEditor extends AbstractArtifactEditor {
       }
    }
 
-   public void addResultsTab(IResultsEditorTab tab)  {
+   public void addResultsTab(IResultsEditorTab tab) {
       Composite comp = tab.createTab(getContainer(), this);
       int pageIndex = addPage(comp);
       if (startPage == null) {

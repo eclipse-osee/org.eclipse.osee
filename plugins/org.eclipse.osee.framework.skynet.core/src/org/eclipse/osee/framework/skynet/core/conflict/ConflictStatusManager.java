@@ -36,7 +36,7 @@ public class ConflictStatusManager {
    private static final String MERGE_BRANCH_GAMMAS =
       "UPDATE osee_txs SET gamma_id = ? where (transaction_id, gamma_id) = (SELECT tx.transaction_id, tx.gamma_id FROM osee_txs tx, osee_attribute atr WHERE tx.branch_id = ? AND tx.transaction_id = ? AND atr.gamma_id = tx.gamma_id AND atr.attr_id = ? )";
 
-   public static void setStatus(ConflictStatus status, int sourceGamma, int destGamma, BranchId mergeBranch)  {
+   public static void setStatus(ConflictStatus status, int sourceGamma, int destGamma, BranchId mergeBranch) {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       //Gammas should be up to date so you can use them to get entry just update the status field.
       try {
@@ -47,7 +47,7 @@ public class ConflictStatusManager {
       }
    }
 
-   public static ConflictStatus computeStatus(int sourceGamma, int destGamma, BranchId branch, Id objectID, int conflictType, ConflictStatus passedStatus, TransactionId transactionId)  {
+   public static ConflictStatus computeStatus(int sourceGamma, int destGamma, BranchId branch, Id objectID, int conflictType, ConflictStatus passedStatus, TransactionId transactionId) {
       //Check for a value in the table, if there is not one in there then
       //add it with an unedited setting and return unedited
       //If gammas are out of date, update the gammas and down grade markedMerged to Edited

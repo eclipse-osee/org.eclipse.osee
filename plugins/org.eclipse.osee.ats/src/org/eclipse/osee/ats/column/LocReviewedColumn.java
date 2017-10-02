@@ -29,7 +29,8 @@ public class LocReviewedColumn extends XViewerAtsAttributeValueColumn {
 
    private LocReviewedColumn() {
       super(AtsAttributeTypes.LocReviewed, WorldXViewerFactory.COLUMN_NAMESPACE + ".locReviewed",
-         AtsAttributeTypes.LocReviewed.getUnqualifiedName(), 40, XViewerAlign.Center, false, SortDataType.Integer, true, "");
+         AtsAttributeTypes.LocReviewed.getUnqualifiedName(), 40, XViewerAlign.Center, false, SortDataType.Integer, true,
+         "");
    }
 
    /**

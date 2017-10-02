@@ -53,7 +53,7 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewDefinitio
    }
 
    @org.junit.Test
-   public void testCreateDecisionReviewDuringTransition_ToDecision()  {
+   public void testCreateDecisionReviewDuringTransition_ToDecision() {
       AtsTestUtil.cleanupAndReset("DecisionReviewDefinitionManagerTest - ToDecision");
 
       try {
@@ -99,7 +99,7 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewDefinitio
    }
 
    @org.junit.Test
-   public void testCreateDecisionReviewDuringTransition_Prepare()  {
+   public void testCreateDecisionReviewDuringTransition_Prepare() {
       AtsTestUtil.cleanupAndReset("DecisionReviewDefinitionManagerTest - Prepare");
 
       try {

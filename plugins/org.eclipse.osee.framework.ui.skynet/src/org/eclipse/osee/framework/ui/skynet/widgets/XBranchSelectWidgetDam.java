@@ -38,7 +38,7 @@ public class XBranchSelectWidgetDam extends XBranchSelectWidget implements IAttr
       addXModifiedListener(new DirtyListener());
    }
 
-   public Long getStoredUuid()  {
+   public Long getStoredUuid() {
       long resultUuid = 0;
       String uuidStr = artifact.getSoleAttributeValue(attributeType, null);
       if (Strings.isValid(uuidStr)) {
@@ -53,7 +53,7 @@ public class XBranchSelectWidgetDam extends XBranchSelectWidget implements IAttr
    }
 
    @Override
-   public void saveToArtifact()  {
+   public void saveToArtifact() {
       BranchId selection = getSelection();
       if (selection == null) {
          artifact.deleteAttributes(attributeType);
@@ -63,7 +63,7 @@ public class XBranchSelectWidgetDam extends XBranchSelectWidget implements IAttr
    }
 
    @Override
-   public void revert()  {
+   public void revert() {
       setAttributeType(getArtifact(), getAttributeType());
    }
 
@@ -84,7 +84,7 @@ public class XBranchSelectWidgetDam extends XBranchSelectWidget implements IAttr
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeTypeName)  {
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeTypeName) {
       setLabel(attributeTypeName.getUnqualifiedName());
       this.artifact = artifact;
       this.attributeType = attributeTypeName;

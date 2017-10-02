@@ -35,7 +35,7 @@ public class ArtifactTypeTest extends AbstractOseeTypeTest<Long, ArtifactType> {
    }
 
    @Test
-   public void testSetGetIsAbstract()  {
+   public void testSetGetIsAbstract() {
       Assert.assertEquals(isAbstract, getType().isAbstract());
       getType().clearDirty();
       Assert.assertFalse(getType().isDirty());

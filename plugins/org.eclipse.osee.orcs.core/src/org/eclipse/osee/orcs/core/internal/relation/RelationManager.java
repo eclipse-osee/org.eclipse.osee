@@ -29,67 +29,67 @@ import org.eclipse.osee.orcs.core.internal.graph.GraphData;
  */
 public interface RelationManager {
 
-   int getMaximumRelationAllowed(OrcsSession session, RelationTypeId type, RelationNode node, RelationSide side) ;
+   int getMaximumRelationAllowed(OrcsSession session, RelationTypeId type, RelationNode node, RelationSide side);
 
-   Collection<RelationTypeId> getValidRelationTypes(OrcsSession session, RelationNode node) ;
-
-   ///////////////////////////////////////
-
-   void accept(OrcsSession session, GraphData graph, RelationNode node, RelationVisitor visitor) ;
+   Collection<RelationTypeId> getValidRelationTypes(OrcsSession session, RelationNode node);
 
    ///////////////////////////////////////
 
-   boolean hasDirtyRelations(OrcsSession session, RelationNode node) ;
-
-   Collection<RelationTypeId> getExistingRelationTypes(OrcsSession session, RelationNode node) ;
-
-   int getRelatedCount(OrcsSession session, RelationTypeId type, RelationNode node, RelationSide side) ;
-
-   int getRelatedCount(OrcsSession session, RelationTypeId type, RelationNode node, RelationSide side, DeletionFlag includeDeleted) ;
-
-   boolean areRelated(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode) ;
-
-   String getRationale(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode) ;
+   void accept(OrcsSession session, GraphData graph, RelationNode node, RelationVisitor visitor);
 
    ///////////////////////////////////////
 
-   <T extends RelationNode> T getParent(OrcsSession session, RelationNode child) ;
+   boolean hasDirtyRelations(OrcsSession session, RelationNode node);
 
-   <T extends RelationNode> ResultSet<T> getChildren(OrcsSession session, RelationNode parent) ;
+   Collection<RelationTypeId> getExistingRelationTypes(OrcsSession session, RelationNode node);
 
-   <T extends RelationNode> ResultSet<T> getRelated(OrcsSession session, RelationTypeId type, RelationNode node, RelationSide side) ;
+   int getRelatedCount(OrcsSession session, RelationTypeId type, RelationNode node, RelationSide side);
 
-   <T extends RelationNode> ResultSet<T> getRelated(OrcsSession session, RelationTypeId type, RelationNode node, RelationSide side, DeletionFlag flag) ;
+   int getRelatedCount(OrcsSession session, RelationTypeId type, RelationNode node, RelationSide side, DeletionFlag includeDeleted);
+
+   boolean areRelated(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode);
+
+   String getRationale(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode);
 
    ///////////////////////////////////////
 
-   void addChild(OrcsSession session, RelationNode parent, RelationNode child) ;
+   <T extends RelationNode> T getParent(OrcsSession session, RelationNode child);
 
-   void addChildren(OrcsSession session, RelationNode parent, List<? extends RelationNode> children) ;
+   <T extends RelationNode> ResultSet<T> getChildren(OrcsSession session, RelationNode parent);
 
-   void relate(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode) ;
+   <T extends RelationNode> ResultSet<T> getRelated(OrcsSession session, RelationTypeId type, RelationNode node, RelationSide side);
 
-   void relate(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode, String rationale) ;
+   <T extends RelationNode> ResultSet<T> getRelated(OrcsSession session, RelationTypeId type, RelationNode node, RelationSide side, DeletionFlag flag);
 
-   void relate(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode, RelationSorter sortType) ;
+   ///////////////////////////////////////
 
-   void relate(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode, String rationale, RelationSorter sortType) ;
+   void addChild(OrcsSession session, RelationNode parent, RelationNode child);
 
-   void setRationale(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode, String rationale) ;
+   void addChildren(OrcsSession session, RelationNode parent, List<? extends RelationNode> children);
 
-   void unrelate(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode) ;
+   void relate(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode);
 
-   void unrelateFromAll(OrcsSession session, RelationNode node) ;
+   void relate(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode, String rationale);
 
-   void unrelateFromAll(OrcsSession session, RelationTypeId type, RelationNode node, RelationSide side) ;
+   void relate(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode, RelationSorter sortType);
 
-   void cloneRelations(OrcsSession session, RelationNode source, RelationNode destination) ;
+   void relate(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode, String rationale, RelationSorter sortType);
 
-   void introduce(OrcsSession session, BranchId branch, RelationNode source, RelationNode destination) ;
+   void setRationale(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode, String rationale);
+
+   void unrelate(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode);
+
+   void unrelateFromAll(OrcsSession session, RelationNode node);
+
+   void unrelateFromAll(OrcsSession session, RelationTypeId type, RelationNode node, RelationSide side);
+
+   void cloneRelations(OrcsSession session, RelationNode source, RelationNode destination);
+
+   void introduce(OrcsSession session, BranchId branch, RelationNode source, RelationNode destination);
 
    void setApplicabilityId(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode, ApplicabilityId applicId);
 
-   List<Relation> getRelations(OrcsSession session, RelationNode node, DeletionFlag includeDeleted) ;
+   List<Relation> getRelations(OrcsSession session, RelationNode node, DeletionFlag includeDeleted);
 
    ///////////////////////////////////////
 }

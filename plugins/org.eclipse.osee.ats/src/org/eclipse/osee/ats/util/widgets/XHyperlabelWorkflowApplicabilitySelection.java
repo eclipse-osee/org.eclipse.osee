@@ -107,12 +107,12 @@ public class XHyperlabelWorkflowApplicabilitySelection extends XHyperlinkLabelCm
    }
 
    @Override
-   public Artifact getArtifact()  {
+   public Artifact getArtifact() {
       return (Artifact) workItem.getStoreObject();
    }
 
    @Override
-   public void saveToArtifact()  {
+   public void saveToArtifact() {
       HashMap<ArtifactId, List<ApplicabilityId>> artToApplMap = new HashMap<>();
       List<ApplicabilityToken> selectedApplicabilities = getSelectedApplicabilities();
       if (!selectedApplicabilities.isEmpty()) {
@@ -123,7 +123,7 @@ public class XHyperlabelWorkflowApplicabilitySelection extends XHyperlinkLabelCm
    }
 
    @Override
-   public void revert()  {
+   public void revert() {
       this.selectedAppls = getStoredApplicabilities();
    }
 
@@ -133,7 +133,7 @@ public class XHyperlabelWorkflowApplicabilitySelection extends XHyperlinkLabelCm
    }
 
    @Override
-   public Result isDirty()  {
+   public Result isDirty() {
       if (!Collections.isEqual(getStoredApplicabilities(), getSelectedApplicabilities())) {
          return Result.TrueResult;
       }
@@ -141,7 +141,7 @@ public class XHyperlabelWorkflowApplicabilitySelection extends XHyperlinkLabelCm
    }
 
    @Override
-   public void setArtifact(Artifact artifact)  {
+   public void setArtifact(Artifact artifact) {
       if (artifact instanceof IAtsWorkItem) {
          this.workItem = (IAtsWorkItem) artifact;
          selectedAppls = getStoredApplicabilities();

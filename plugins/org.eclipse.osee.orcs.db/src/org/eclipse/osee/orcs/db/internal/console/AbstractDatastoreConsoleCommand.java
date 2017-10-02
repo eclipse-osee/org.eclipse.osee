@@ -47,7 +47,7 @@ public abstract class AbstractDatastoreConsoleCommand implements ConsoleCommand 
       return new ConsoleSession(id);
    }
 
-   private static final class ConsoleSession extends BaseIdentity<String>implements OrcsSession {
+   private static final class ConsoleSession extends BaseIdentity<String> implements OrcsSession {
       public ConsoleSession(String id) {
          super(id);
       }

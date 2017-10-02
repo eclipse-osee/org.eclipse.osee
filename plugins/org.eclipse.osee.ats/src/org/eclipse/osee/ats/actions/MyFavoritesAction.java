@@ -30,7 +30,7 @@ public class MyFavoritesAction extends AbstractAtsAction {
    }
 
    @Override
-   public void runWithException()  {
+   public void runWithException() {
       WorldEditor.open(new WorldEditorUISearchItemProvider(
          new MyFavoritesSearchItem("My Favorites", AtsClientService.get().getUserService().getCurrentUser()), null,
          TableLoadOption.None));

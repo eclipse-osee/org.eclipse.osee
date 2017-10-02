@@ -27,11 +27,11 @@ public interface Artifact extends ArtifactId, AttributeManager, HasTransaction, 
 
    TransactionId getLastModifiedTransaction();
 
-   void setArtifactType(IArtifactType artifactType) ;
+   void setArtifactType(IArtifactType artifactType);
 
-   void setName(String name) ;
+   void setName(String name);
 
-   boolean isOfType(ArtifactTypeId... otherTypes) ;
+   boolean isOfType(ArtifactTypeId... otherTypes);
 
    void setNotDirty();
 

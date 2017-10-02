@@ -334,7 +334,7 @@ public class RelationCacheTest {
    }
 
    @Test
-   public void testDeCache()  {
+   public void testDeCache() {
       RelationCache relCache = new RelationCache();
 
       Artifact artifactA = new Artifact(54L, COMMON);

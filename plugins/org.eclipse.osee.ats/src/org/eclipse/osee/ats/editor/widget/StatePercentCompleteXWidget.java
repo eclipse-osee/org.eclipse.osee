@@ -67,11 +67,11 @@ public class StatePercentCompleteXWidget extends XHyperlinkLabelValueSelection {
 
    public final static String TOOLTIP = "Calculation: \n     State Percent: amount entered by user\n" +
    //
-   "     Task Percent: total percent of all tasks related to state / number of tasks related to state\n" +
-   //
-   "     Review Percent: total percent of all reviews related to state / number of reviews related to state\n" +
-   //
-   "Total State Percent: state percent + all task percents + all review percents / 1 + num tasks + num reviews";
+      "     Task Percent: total percent of all tasks related to state / number of tasks related to state\n" +
+      //
+      "     Review Percent: total percent of all reviews related to state / number of reviews related to state\n" +
+      //
+      "Total State Percent: state percent + all task percents + all review percents / 1 + num tasks + num reviews";
 
    @Override
    public String getCurrentValue() {

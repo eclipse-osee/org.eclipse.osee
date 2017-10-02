@@ -230,7 +230,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
       }
    }
 
-   public static String toHTML(final TeamWorkFlowArtifact teamArt, IStateToken forState)  {
+   public static String toHTML(final TeamWorkFlowArtifact teamArt, IStateToken forState) {
       if (ReviewManager.getReviews(teamArt, forState).isEmpty()) {
          return "";
       }
@@ -252,7 +252,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
       return html.toString();
    }
 
-   private void createReviewHyperlink(Composite comp, IManagedForm managedForm, XFormToolkit toolkit, final AbstractReviewArtifact revArt, IStateToken forState)  {
+   private void createReviewHyperlink(Composite comp, IManagedForm managedForm, XFormToolkit toolkit, final AbstractReviewArtifact revArt, IStateToken forState) {
 
       Composite workComp = toolkit.createContainer(comp, 1);
       workComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING));
@@ -293,7 +293,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
       });
    }
 
-   public void addAdminRightClickOption()  {
+   public void addAdminRightClickOption() {
       // If ATS Admin, allow right-click to auto-complete tasks
       if (AtsClientService.get().getUserService().isAtsAdmin() && !AtsUtil.isProductionDb()) {
          labelWidget.addListener(SWT.MouseUp, new Listener() {

@@ -95,7 +95,7 @@ public final class AtsIdProvider {
       }
    }
 
-   protected String getNextId(String prefix, String seqName)  {
+   protected String getNextId(String prefix, String seqName) {
       return String.format("%s%d", prefix, sequenceProvider.getNext(seqName));
    }
 

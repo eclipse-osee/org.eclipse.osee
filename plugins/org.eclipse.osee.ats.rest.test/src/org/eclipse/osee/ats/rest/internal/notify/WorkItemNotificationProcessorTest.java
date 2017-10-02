@@ -119,7 +119,7 @@ public class WorkItemNotificationProcessorTest {
    }
 
    @org.junit.Test
-   public void testNotifyOriginator()  {
+   public void testNotifyOriginator() {
 
       WorkItemNotificationProcessor processor =
          new WorkItemNotificationProcessor(logger, atsServer, workItemFactory, userService, attrResolver);
@@ -148,7 +148,7 @@ public class WorkItemNotificationProcessorTest {
    }
 
    @org.junit.Test
-   public void testNotifyAssignee()  {
+   public void testNotifyAssignee() {
 
       WorkItemNotificationProcessor processor =
          new WorkItemNotificationProcessor(logger, atsServer, workItemFactory, userService, attrResolver);
@@ -202,7 +202,7 @@ public class WorkItemNotificationProcessorTest {
    }
 
    @org.junit.Test
-   public void testNotifySubscribe()  {
+   public void testNotifySubscribe() {
       when(teamWf.getStoreObject()).thenReturn(teamWfArt);
       when(atsServer.getRelationResolver()).thenReturn(relResolver);
       when(atsServer.getAttributeResolver()).thenReturn(attrResolver);
@@ -234,7 +234,7 @@ public class WorkItemNotificationProcessorTest {
    }
 
    @org.junit.Test
-   public void testNotifyCompleted()  {
+   public void testNotifyCompleted() {
 
       AtsWorkItemNotificationEvent event = new AtsWorkItemNotificationEvent();
       event.setFromUserId(joeSmith_CurrentUser.getUserId());
@@ -269,7 +269,7 @@ public class WorkItemNotificationProcessorTest {
    }
 
    @org.junit.Test
-   public void testNotifyCancelled()  {
+   public void testNotifyCancelled() {
 
       AtsWorkItemNotificationEvent event = new AtsWorkItemNotificationEvent();
       event.setFromUserId(joeSmith_CurrentUser.getUserId());
@@ -307,7 +307,7 @@ public class WorkItemNotificationProcessorTest {
    }
 
    @org.junit.Test
-   public void testNotifySubscribedTeamOrAi()  {
+   public void testNotifySubscribedTeamOrAi() {
 
       AtsWorkItemNotificationEvent event = new AtsWorkItemNotificationEvent();
       event.setFromUserId(joeSmith_CurrentUser.getUserId());

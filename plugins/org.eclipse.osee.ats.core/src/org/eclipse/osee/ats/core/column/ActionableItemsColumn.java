@@ -40,7 +40,7 @@ public class ActionableItemsColumn extends AbstractServicesColumn {
       return getActionableItemsStr(atsObject);
    }
 
-   public String getActionableItemsStr(IAtsObject atsObject)  {
+   public String getActionableItemsStr(IAtsObject atsObject) {
       List<IAtsActionableItem> ais = new ArrayList<>();
       ais.addAll(getActionableItems(atsObject));
       java.util.Collections.sort(ais, new Comparator<IAtsActionableItem>() {
@@ -61,7 +61,7 @@ public class ActionableItemsColumn extends AbstractServicesColumn {
       return sb.toString().replace(", $", "");
    }
 
-   public static Collection<IAtsActionableItem> getActionableItems(IAtsObject atsObject)  {
+   public static Collection<IAtsActionableItem> getActionableItems(IAtsObject atsObject) {
       Set<IAtsActionableItem> ais = new HashSet<>();
       // If object has children team workflows, roll-up results of all ais
       if (atsObject instanceof IAtsTeamWorkflowProvider) {

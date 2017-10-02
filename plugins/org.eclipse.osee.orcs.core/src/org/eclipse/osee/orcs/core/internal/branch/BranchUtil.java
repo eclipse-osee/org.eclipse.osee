@@ -21,7 +21,7 @@ public final class BranchUtil {
       //Utility class
    }
 
-   public static List<BranchReadable> orderByParentReadable(Iterable<? extends BranchReadable> branches)  {
+   public static List<BranchReadable> orderByParentReadable(Iterable<? extends BranchReadable> branches) {
       List<BranchReadable> sorted = Lists.newArrayList(branches);
 
       for (int i = 0; i < sorted.size(); i++) {

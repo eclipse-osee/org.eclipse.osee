@@ -39,17 +39,17 @@ public class VersionTeamMetrics {
    private final Set<VersionMetrics> verMets = new HashSet<>();
    Map<Date, VersionMetrics> relDateToVerMet = new HashMap<>();
 
-   public VersionTeamMetrics(IAtsTeamDefinition verTeamDef)  {
+   public VersionTeamMetrics(IAtsTeamDefinition verTeamDef) {
       this.verTeamDef = verTeamDef;
       loadMetrics();
    }
 
-   private void loadMetrics()  {
+   private void loadMetrics() {
       bulkLoadArtifacts();
       orderReleasedVersions();
    }
 
-   private void bulkLoadArtifacts()  {
+   private void bulkLoadArtifacts() {
       RelationManager.getRelatedArtifacts(Arrays.asList(AtsClientService.get().getConfigArtifact(this.verTeamDef)), 6,
          CoreRelationTypes.Default_Hierarchical__Child, AtsRelationTypes.TeamDefinitionToVersion_Version,
          AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow, AtsRelationTypes.TeamWfToTask_Task,
@@ -58,7 +58,7 @@ public class VersionTeamMetrics {
 
    private Map<TeamWorkFlowArtifact, Date> teamWorkflowToOrigDate = null;
 
-   public Collection<TeamWorkFlowArtifact> getWorkflowsOriginatedBetween(Date startDate, Date endDate)  {
+   public Collection<TeamWorkFlowArtifact> getWorkflowsOriginatedBetween(Date startDate, Date endDate) {
       if (teamWorkflowToOrigDate == null) {
          teamWorkflowToOrigDate = new HashMap<>();
          for (IAtsVersion verArt : verTeamDef.getVersions()) {

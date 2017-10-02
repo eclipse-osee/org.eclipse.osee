@@ -45,14 +45,14 @@ public class XWidgetEnableDisableBlamExample extends AbstractBlam {
    @Override
    public String getXWidgetsXml() {
       return "<xWidgets>" + //
-      "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Check Me\" />" + //
-      "<XWidget xwidgetType=\"XCombo(1,2,3)\" displayName=\"Enable/Disabled Combo\" />" + //
-      "</xWidgets>";
+         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Check Me\" />" + //
+         "<XWidget xwidgetType=\"XCombo(1,2,3)\" displayName=\"Enable/Disabled Combo\" />" + //
+         "</xWidgets>";
 
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable)  {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
       super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
       if (xWidget.getLabel().equals("Enable/Disabled Combo")) {
          combo = (XCombo) xWidget;

@@ -101,7 +101,7 @@ public class AtsCmAccessControlProxy implements CmAccessControl, HasAccessModel 
    }
 
    @Override
-   public Collection<? extends IAccessContextId> getContextId(ArtifactToken user, Object object)  {
+   public Collection<? extends IAccessContextId> getContextId(ArtifactToken user, Object object) {
       return getProxiedService().getContextId(user, object);
    }
 

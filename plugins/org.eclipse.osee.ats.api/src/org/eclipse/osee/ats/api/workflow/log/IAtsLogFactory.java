@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
  */
 public interface IAtsLogFactory {
 
-   IAtsLogItem newLogItem(LogType type, Date date, IAtsUser user, String state, String msg) ;
+   IAtsLogItem newLogItem(LogType type, Date date, IAtsUser user, String state, String msg);
 
    IAtsLog getLogLoaded(IAtsWorkItem workItem, IAttributeResolver attrResolver);
 

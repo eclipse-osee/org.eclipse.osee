@@ -47,7 +47,7 @@ public class OrderAccessorTest {
    }
 
    @Test
-   public void testLoad()  {
+   public void testLoad() {
       String storedData = "data";
       when(storage.getOrderData()).thenReturn(storedData);
 
@@ -58,7 +58,7 @@ public class OrderAccessorTest {
    }
 
    @Test
-   public void testStoreNotAccessible()  {
+   public void testStoreNotAccessible() {
       String storedData = "data";
 
       when(storage.isAccessible()).thenReturn(false);
@@ -73,7 +73,7 @@ public class OrderAccessorTest {
    }
 
    @Test
-   public void testStoreEmptyData()  {
+   public void testStoreEmptyData() {
       String storedData = "data";
 
       when(storage.isAccessible()).thenReturn(true);
@@ -88,7 +88,7 @@ public class OrderAccessorTest {
    }
 
    @Test
-   public void testStore()  {
+   public void testStore() {
       String storedData = "data";
 
       when(storage.isAccessible()).thenReturn(true);

@@ -55,7 +55,7 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
    }
 
    @Override
-   public void run(TableLoadOption... tableLoadOptions)  {
+   public void run(TableLoadOption... tableLoadOptions) {
       if (AtsUtil.isProductionDb()) {
          AWorkbench.popup("Can't be run on production");
          return;
@@ -104,7 +104,7 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
 
    }
 
-   private void createAction7(IAtsChangeSet changes, GoalArtifact facilitiesGoal)  {
+   private void createAction7(IAtsChangeSet changes, GoalArtifact facilitiesGoal) {
       ActionResult action = AtsClientService.get().getActionFactory().createAction(null, "Add the Improvement",
          "Description", ChangeType.Improvement, "4", false, null,
          ActionableItems.getActionableItems(Arrays.asList("Network"), AtsClientService.get().getServices()),
@@ -113,7 +113,7 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
       changes.add(facilitiesGoal);
    }
 
-   private IAtsTeamWorkflow createAction456(GoalArtifact sawCodeGoal, GoalArtifact facilitiesGoal, IAtsTeamWorkflow teamArt)  {
+   private IAtsTeamWorkflow createAction456(GoalArtifact sawCodeGoal, GoalArtifact facilitiesGoal, IAtsTeamWorkflow teamArt) {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getName());
       NewTaskDatas newTaskDatas = new NewTaskDatas();
       for (String msaTool : Arrays.asList("Backups", "Computers", "Network")) {
@@ -145,7 +145,7 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
       return teamArt;
    }
 
-   private void createAction3(IAtsChangeSet changes, GoalArtifact sawCodeGoal, GoalArtifact cisReqGoal)  {
+   private void createAction3(IAtsChangeSet changes, GoalArtifact sawCodeGoal, GoalArtifact cisReqGoal) {
       ActionResult action = AtsClientService.get().getActionFactory().createAction(null, "Remove Workflow button",
          "Description", ChangeType.Problem, "4", false, null,
          ActionableItems.getActionableItems(Arrays.asList("SAW Code", "CIS Requirements"),
@@ -155,7 +155,7 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
       cisReqGoal.addMember(AtsClientService.get().getWorkItemService().getFirstTeam(action).getStoreObject());
    }
 
-   private void createAction2(IAtsChangeSet changes, GoalArtifact sawCodeGoal, GoalArtifact cisReqGoal)  {
+   private void createAction2(IAtsChangeSet changes, GoalArtifact sawCodeGoal, GoalArtifact cisReqGoal) {
       ActionResult action = AtsClientService.get().getActionFactory().createAction(null, "Add CDB Check Signals",
          "Description", ChangeType.Problem, "4", false, null,
          ActionableItems.getActionableItems(Arrays.asList("SAW Code", "CIS Requirements"),
@@ -165,7 +165,7 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
       cisReqGoal.addMember(AtsClientService.get().getWorkItemService().getFirstTeam(action).getStoreObject());
    }
 
-   private IAtsTeamWorkflow createAction1(IAtsChangeSet changes, GoalArtifact sawCodeGoal)  {
+   private IAtsTeamWorkflow createAction1(IAtsChangeSet changes, GoalArtifact sawCodeGoal) {
       ActionResult action = AtsClientService.get().getActionFactory().createAction(null, "Fix this model",
          "Description", ChangeType.Problem, "2", false, null,
          ActionableItems.getActionableItems(Arrays.asList("SAW Code"), AtsClientService.get().getServices()),

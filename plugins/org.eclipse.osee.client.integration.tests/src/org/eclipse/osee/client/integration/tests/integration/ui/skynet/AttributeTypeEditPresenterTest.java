@@ -61,7 +61,7 @@ public class AttributeTypeEditPresenterTest {
    private MockEditor editor;
 
    @Before
-   public void setUp()  {
+   public void setUp() {
       display = new MockDisplay();
       editor = new MockEditor();
       controller = new AttributeTypeEditPresenter(editor, display);
@@ -72,14 +72,14 @@ public class AttributeTypeEditPresenterTest {
    }
 
    @After
-   public void tearDown()  {
+   public void tearDown() {
       if (artifact != null) {
          artifact.purgeFromBranch();
       }
    }
 
    @Test
-   public void testAddRemoveItems()  {
+   public void testAddRemoveItems() {
       String expectedTitle = "Add Attribute Types";
       String expectedOpMessage = "Select items to add.";
       String expectedNoneMessage = "No attribute types available to add.";
@@ -95,7 +95,7 @@ public class AttributeTypeEditPresenterTest {
       testOperation(expectedType, expectedTitle, expectedOpMessage, expectedNoneMessage);
    }
 
-   private static void performOp(AttributeTypeEditPresenter controller, OperationType operationType)  {
+   private static void performOp(AttributeTypeEditPresenter controller, OperationType operationType) {
       switch (operationType) {
          case ADD_ITEM:
             controller.onAddAttributeType();
@@ -108,7 +108,7 @@ public class AttributeTypeEditPresenterTest {
       }
    }
 
-   private void testOperation(OperationType operationType, String expectedTitle, String expectedOpMessage, String expectedNoneMessage)  {
+   private void testOperation(OperationType operationType, String expectedTitle, String expectedOpMessage, String expectedNoneMessage) {
       editor.setWasDirtyStateCalled(false);
       display.setAddWidgetsAttributeTypes(null);
       display.setRemoveWidgetsAttributeTypes(null);

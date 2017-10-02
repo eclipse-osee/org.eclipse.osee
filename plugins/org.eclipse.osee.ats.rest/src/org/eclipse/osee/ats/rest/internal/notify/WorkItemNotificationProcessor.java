@@ -58,7 +58,7 @@ public class WorkItemNotificationProcessor {
    private final IAtsServer atsServer;
    private static String actionUrl;
 
-   public WorkItemNotificationProcessor(Log logger, IAtsServer atsServer, IAtsWorkItemFactory workItemFactory, IAtsUserService userService, IAttributeResolver attrResolver)  {
+   public WorkItemNotificationProcessor(Log logger, IAtsServer atsServer, IAtsWorkItemFactory workItemFactory, IAtsUserService userService, IAttributeResolver attrResolver) {
       this.logger = logger;
       this.atsServer = atsServer;
       this.workItemFactory = workItemFactory;
@@ -69,7 +69,7 @@ public class WorkItemNotificationProcessor {
    /**
     * @param notifyUsers only valid for assignees notifyType. if null or any other type, the users will be computed
     */
-   public void run(AtsNotificationCollector notifications, AtsWorkItemNotificationEvent event)  {
+   public void run(AtsNotificationCollector notifications, AtsWorkItemNotificationEvent event) {
       Collection<AtsNotifyType> types = event.getNotifyTypes();
       List<IAtsUser> notifyUsers = new ArrayList<>();
       IAtsUser fromUser = AtsCoreUsers.SYSTEM_USER;
@@ -238,7 +238,7 @@ public class WorkItemNotificationProcessor {
       }
    }
 
-   public List<IAtsUser> getSubscribed(IAtsWorkItem workItem)  {
+   public List<IAtsUser> getSubscribed(IAtsWorkItem workItem) {
       ArrayList<IAtsUser> arts = new ArrayList<>();
       for (ArtifactId art : atsServer.getRelationResolver().getRelated(workItem.getStoreObject(),
          AtsRelationTypes.SubscribedUser_User)) {

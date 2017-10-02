@@ -17,6 +17,6 @@ import java.util.Map;
  */
 public interface DynamicDataHandler {
 
-   void onDynamicData(Map<String, Object> data) ;
+   void onDynamicData(Map<String, Object> data);
 
 }

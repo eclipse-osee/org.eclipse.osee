@@ -112,7 +112,7 @@ public class RelationManagerTest {
 
    @SuppressWarnings({"unchecked", "rawtypes"})
    @Before
-   public void setUp()  {
+   public void setUp() {
       MockitoAnnotations.initMocks(this);
 
       String sessionId = GUID.create();
@@ -214,7 +214,7 @@ public class RelationManagerTest {
       when(types.get((Id) Matchers.any())).thenReturn(CoreRelationTypes.Default_Hierarchical__Child);
    }
 
-   private void setupAdjacencies(RelationNode node, Relation... relations)  {
+   private void setupAdjacencies(RelationNode node, Relation... relations) {
       RelationNodeAdjacencies adjacents = new RelationNodeAdjacencies();
       graph.addAdjacencies(node, adjacents);
       when(graph.getAdjacencies(node)).thenReturn(adjacents);
@@ -224,7 +224,7 @@ public class RelationManagerTest {
    }
 
    @Test
-   public void testGetRelatedOnSideA()  {
+   public void testGetRelatedOnSideA() {
       ResultSet<RelationNode> nodes = manager.getRelated(session, DEFAULT_HIERARCHY, node1, IS_PARENT);
 
       verify(loader).loadNodes(eq(session), eq(graph), captor.capture(), eq(LoadLevel.ALL));
@@ -244,7 +244,7 @@ public class RelationManagerTest {
    }
 
    @Test
-   public void testGetRelatedOnSideB()  {
+   public void testGetRelatedOnSideB() {
       ResultSet<RelationNode> readables = manager.getRelated(session, DEFAULT_HIERARCHY, node1, IS_CHILD);
 
       verify(loader).loadNodes(eq(session), eq(graph), captor.capture(), eq(LoadLevel.ALL));
@@ -260,13 +260,13 @@ public class RelationManagerTest {
    }
 
    @Test
-   public void testGetParent()  {
+   public void testGetParent() {
       RelationNode actual = manager.getParent(session, node1);
       assertEquals(node4, actual);
    }
 
    @Test
-   public void testGetChildren()  {
+   public void testGetChildren() {
       ResultSet<RelationNode> actual = manager.getChildren(session, node1);
 
       assertEquals(3, actual.size());
@@ -277,13 +277,13 @@ public class RelationManagerTest {
    }
 
    @Test
-   public void testGetRationale()  {
+   public void testGetRationale() {
       String rationale = manager.getRationale(session, node4, DEFAULT_HIERARCHY, node1);
       assertEquals("rationale on relation3", rationale);
    }
 
    @Test
-   public void testGetRelatedCount()  {
+   public void testGetRelatedCount() {
       int actual = manager.getRelatedCount(session, DEFAULT_HIERARCHY, node1, IS_PARENT);
       assertEquals(3, actual);
 
@@ -298,7 +298,7 @@ public class RelationManagerTest {
    }
 
    @Test
-   public void testAreRelated()  {
+   public void testAreRelated() {
       assertTrue(manager.areRelated(session, node4, DEFAULT_HIERARCHY, node1));
 
       assertTrue(manager.areRelated(session, node1, DEFAULT_HIERARCHY, node2));
@@ -316,7 +316,7 @@ public class RelationManagerTest {
    }
 
    @Test
-   public void testIntroduce()  {
+   public void testIntroduce() {
       when(types.isArtifactTypeAllowed(CoreRelationTypes.Default_Hierarchical__Parent, RelationSide.SIDE_A,
          CoreArtifactTypes.SoftwareRequirement)).thenReturn(true);
       when(types.getMultiplicity(CoreRelationTypes.Default_Hierarchical__Parent)).thenReturn(

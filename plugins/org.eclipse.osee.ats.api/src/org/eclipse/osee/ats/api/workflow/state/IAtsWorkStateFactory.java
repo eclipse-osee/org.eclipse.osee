@@ -20,11 +20,11 @@ import org.eclipse.osee.ats.api.workflow.WorkState;
  */
 public interface IAtsWorkStateFactory {
 
-   public abstract String toStoreStr(IAtsStateManager stateMgr, String stateName) ;
+   public abstract String toStoreStr(IAtsStateManager stateMgr, String stateName);
 
-   public abstract WorkState fromStoreStr(String storeStr) ;
+   public abstract WorkState fromStoreStr(String storeStr);
 
-   public abstract String getStorageString(Collection<IAtsUser> users) ;
+   public abstract String getStorageString(Collection<IAtsUser> users);
 
    public abstract List<IAtsUser> getUsers(String sorageString);
 

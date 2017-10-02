@@ -69,7 +69,7 @@ public class RelationResolverTest {
    private List<Relation> links;
 
    @Before
-   public void init()  {
+   public void init() {
       MockitoAnnotations.initMocks(this);
 
       resolver = new RelationResolverImpl(loader);
@@ -103,7 +103,7 @@ public class RelationResolverTest {
    }
 
    @Test
-   public void testLoadAll()  {
+   public void testLoadAll() {
       List<RelationNode> loaded = Arrays.asList(node1, node2, node3, node4, node5, node6);
 
       when(resultSet.iterator()).thenReturn(loaded.iterator());
@@ -116,7 +116,7 @@ public class RelationResolverTest {
    }
 
    @Test
-   public void testLoadSideAOnly()  {
+   public void testLoadSideAOnly() {
       List<RelationNode> loaded = Arrays.asList(node1, node3, node5);
 
       when(resultSet.iterator()).thenReturn(loaded.iterator());
@@ -130,7 +130,7 @@ public class RelationResolverTest {
    }
 
    @Test
-   public void testLoadSideBOnly()  {
+   public void testLoadSideBOnly() {
       List<RelationNode> loaded = Arrays.asList(node2, node4, node6);
 
       when(resultSet.iterator()).thenReturn(loaded.iterator());
@@ -144,7 +144,7 @@ public class RelationResolverTest {
    }
 
    @Test
-   public void testLoadSideAFromCacheAndSideBFromLoader()  {
+   public void testLoadSideAFromCacheAndSideBFromLoader() {
       List<RelationNode> loaded = Arrays.asList(node2, node4, node6);
 
       when(graphData.getNode(11)).thenReturn(node1);

@@ -31,7 +31,7 @@ public enum StorageState {
       return value;
    }
 
-   public static StorageState valueOf(int value)  {
+   public static StorageState valueOf(int value) {
       for (StorageState type : values()) {
          if (type.value == value) {
             return type;

@@ -27,7 +27,7 @@ public class CompositeDatastoreTxCallable extends AbstractDatastoreTxCallable<Vo
    }
 
    @Override
-   protected Void handleTxWork(JdbcConnection connection)  {
+   protected Void handleTxWork(JdbcConnection connection) {
       for (AbstractDatastoreTxCallable<?> callable : callables) {
          callable.handleTxWork(connection);
       }

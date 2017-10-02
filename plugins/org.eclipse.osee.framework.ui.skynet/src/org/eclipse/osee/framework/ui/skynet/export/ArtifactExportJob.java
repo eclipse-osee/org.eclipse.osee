@@ -61,7 +61,7 @@ public class ArtifactExportJob extends Job {
       return toReturn;
    }
 
-   private int countDescendents()  {
+   private int countDescendents() {
       int total = 0;
       for (Artifact artifact : exportArtifacts) {
          total += artifact.getDescendants().size() + 1;

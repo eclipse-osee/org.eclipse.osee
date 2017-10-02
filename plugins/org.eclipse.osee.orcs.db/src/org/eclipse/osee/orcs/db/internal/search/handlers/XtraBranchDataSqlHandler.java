@@ -32,13 +32,13 @@ public class XtraBranchDataSqlHandler extends AbstractXtraTableSqlHandler {
    private String txsAlias;
 
    @Override
-   public void addTables(AbstractSqlWriter writer)  {
+   public void addTables(AbstractSqlWriter writer) {
       branchAlias = writer.addTable(TableEnum.BRANCH_TABLE, objectType);
       txsAlias = writer.getFirstAlias(getLevel(), TableEnum.TXS_TABLE, objectType);
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer)  {
+   public boolean addPredicates(AbstractSqlWriter writer) {
       if (txsAlias == null || txsAlias.isEmpty()) {
          return false;
       }

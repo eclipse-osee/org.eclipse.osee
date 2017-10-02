@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
  */
 public interface IAtsImplementerService {
 
-   String getImplementersStr(IAtsObject atsObject) ;
+   String getImplementersStr(IAtsObject atsObject);
 
    List<IAtsUser> getImplementers(IAtsObject atsObject);
 

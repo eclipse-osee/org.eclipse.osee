@@ -29,7 +29,7 @@ public class OseeEnumTypeCacheTest extends AbstractOseeTypeCacheTest<OseeEnumTyp
    private static OseeEnumTypeCache cache;
 
    @BeforeClass
-   public static void prepareTestData()  {
+   public static void prepareTestData() {
       data = new ArrayList<>();
 
       cache = new OseeEnumTypeCache();
@@ -54,7 +54,7 @@ public class OseeEnumTypeCacheTest extends AbstractOseeTypeCacheTest<OseeEnumTyp
    }
 
    @Override
-   protected void checkEquals(OseeEnumType expected, OseeEnumType actual)  {
+   protected void checkEquals(OseeEnumType expected, OseeEnumType actual) {
       ModelAsserts.checkEnumType(expected, actual);
    }
 

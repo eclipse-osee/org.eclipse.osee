@@ -178,12 +178,12 @@ public class OrcsScriptTest {
             "        }\n" + //
             "      }\n " + //
             "   }, {\n" + //
-               "      'id' : 1930169170,\n" + //
-               "      'attributes' : {\n" + //
-               "        'Name' : {\n" + //
-               "          'value' : 'Sprints'\n" + //
-               "        }\n" + //
-               "      }\n" + //
+            "      'id' : 1930169170,\n" + //
+            "      'attributes' : {\n" + //
+            "        'Name' : {\n" + //
+            "          'value' : 'Sprints'\n" + //
+            "        }\n" + //
+            "      }\n" + //
             "    } ]\n" + //
             "  } ]\n" + //
             "}");

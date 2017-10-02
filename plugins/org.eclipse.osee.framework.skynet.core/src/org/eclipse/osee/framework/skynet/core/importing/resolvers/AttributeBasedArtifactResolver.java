@@ -70,7 +70,7 @@ public class AttributeBasedArtifactResolver extends NewArtifactImportResolver {
    }
 
    @Override
-   public Artifact resolve(RoughArtifact roughArtifact, BranchId branch, Artifact realParent, Artifact root)  {
+   public Artifact resolve(RoughArtifact roughArtifact, BranchId branch, Artifact realParent, Artifact root) {
       Artifact realArtifact = null;
       RoughArtifact roughParent = roughArtifact.getRoughParent();
 

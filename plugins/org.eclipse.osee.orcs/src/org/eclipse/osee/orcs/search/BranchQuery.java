@@ -21,18 +21,18 @@ import org.eclipse.osee.orcs.data.BranchReadable;
  */
 public interface BranchQuery extends BranchQueryBuilder<BranchQuery>, Query {
 
-   ResultSet<BranchReadable> getResults() ;
+   ResultSet<BranchReadable> getResults();
 
-   ResultSet<IOseeBranch> getResultsAsId() ;
-
-   @Override
-   int getCount() ;
+   ResultSet<IOseeBranch> getResultsAsId();
 
    @Override
-   CancellableCallable<Integer> createCount() ;
+   int getCount();
 
-   CancellableCallable<ResultSet<BranchReadable>> createSearch() ;
+   @Override
+   CancellableCallable<Integer> createCount();
 
-   CancellableCallable<ResultSet<IOseeBranch>> createSearchResultsAsIds() ;
+   CancellableCallable<ResultSet<BranchReadable>> createSearch();
+
+   CancellableCallable<ResultSet<IOseeBranch>> createSearchResultsAsIds();
 
 }

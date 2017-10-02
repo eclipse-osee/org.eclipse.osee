@@ -25,7 +25,7 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 public class GuidsPredicateHandler implements PredicateHandler {
 
    @Override
-   public QueryBuilder handle(QueryBuilder builder, Predicate predicate)  {
+   public QueryBuilder handle(QueryBuilder builder, Predicate predicate) {
       if (predicate.getType() != SearchMethod.GUIDS) {
          throw new OseeArgumentException("This predicate handler only supports [%s]", SearchMethod.GUIDS);
       }

@@ -68,12 +68,12 @@ public class HTMLRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts)  {
+   public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) {
       return getRenderInputStream(presentationType, null, artifacts);
    }
 
    @Override
-   public InputStream getRenderInputStream(PresentationType presentationType, IOseeBranch branch, List<Artifact> artifacts)  {
+   public InputStream getRenderInputStream(PresentationType presentationType, IOseeBranch branch, List<Artifact> artifacts) {
       InputStream stream = null;
       StringBuilder content = new StringBuilder("");
       try {
@@ -95,7 +95,7 @@ public class HTMLRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public Program getAssociatedProgram(Artifact artifact)  {
+   public Program getAssociatedProgram(Artifact artifact) {
       Program program = Program.findProgram("htm");
       if (program == null) {
          throw new OseeArgumentException("No program associated with the extension *.htm found on your local machine.");

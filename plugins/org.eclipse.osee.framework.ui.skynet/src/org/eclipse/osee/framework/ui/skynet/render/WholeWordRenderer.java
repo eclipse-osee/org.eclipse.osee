@@ -104,7 +104,7 @@ public class WholeWordRenderer extends WordRenderer {
    }
 
    @Override
-   public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts)  {
+   public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) {
       InputStream stream = null;
       try {
          if (artifacts.isEmpty()) {
@@ -148,7 +148,7 @@ public class WholeWordRenderer extends WordRenderer {
    }
 
    @Override
-   public void open(List<Artifact> artifacts, PresentationType presentationType)  {
+   public void open(List<Artifact> artifacts, PresentationType presentationType) {
       for (Artifact artifact : artifacts) {
          super.open(Arrays.asList(artifact), presentationType);
       }

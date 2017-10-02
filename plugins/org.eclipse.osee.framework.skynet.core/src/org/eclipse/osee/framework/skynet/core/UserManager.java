@@ -67,26 +67,26 @@ public final class UserManager {
       // Utility class
    }
 
-   private static UserAdmin getUserAdmin()  {
+   private static UserAdmin getUserAdmin() {
       return provider.get();
    }
 
    /**
     * Returns the currently authenticated user
     */
-   public static User getUser()  {
+   public static User getUser() {
       return getUserAdmin().getCurrentUser();
    }
 
-   public static void releaseUser()  {
+   public static void releaseUser() {
       getUserAdmin().releaseCurrentUser();
    }
 
-   public static void clearCache()  {
+   public static void clearCache() {
       getUserAdmin().reset();
    }
 
-   public static List<User> getUsersByUserId(Collection<String> userIds)  {
+   public static List<User> getUsersByUserId(Collection<String> userIds) {
       List<User> users = new ArrayList<>();
       for (String userId : userIds) {
          try {
@@ -104,26 +104,26 @@ public final class UserManager {
    /**
     * @return shallow copy of ArrayList of all active users in the datastore sorted by user name
     */
-   public static List<User> getUsers()  {
+   public static List<User> getUsers() {
       return getUserAdmin().getActiveUsers();
    }
 
-   public static List<User> getUsersAll()  {
+   public static List<User> getUsersAll() {
       return getUserAdmin().getUsersAll();
    }
 
-   public static List<User> getUsersSortedByName()  {
+   public static List<User> getUsersSortedByName() {
       return getUserAdmin().getActiveUsersSortedByName();
    }
 
-   public static List<User> getUsersAllSortedByName()  {
+   public static List<User> getUsersAllSortedByName() {
       return getUserAdmin().getUsersAllSortedByName();
    }
 
    /**
     * Return sorted list of active User.getName() in database
     */
-   public static String[] getUserNames()  {
+   public static String[] getUserNames() {
       return getUserAdmin().getUserNames();
    }
 
@@ -144,11 +144,11 @@ public final class UserManager {
       return name;
    }
 
-   public static User getUserByArtId(ArtifactId userArtifactId)  {
+   public static User getUserByArtId(ArtifactId userArtifactId) {
       return getUserAdmin().getUserByArtId(userArtifactId);
    }
 
-   public static User getUserByArtId(long userArtifactId)  {
+   public static User getUserByArtId(long userArtifactId) {
       return getUserAdmin().getUserByArtId(ArtifactId.valueOf(userArtifactId));
    }
 
@@ -157,47 +157,46 @@ public final class UserManager {
     *
     * @return the first user found with the given name
     */
-   public static User getUserByName(String name)  {
+   public static User getUserByName(String name) {
       return getUserAdmin().getUserByName(name);
    }
 
-   public static User getUser(UserToken user)  {
+   public static User getUser(UserToken user) {
       return getUserAdmin().getUser(user);
    }
 
-   public static User getUserByUserId(String userId)  {
+   public static User getUserByUserId(String userId) {
       return getUserAdmin().getUserByUserId(userId);
    }
 
    /**
     * @return whether the Authentication manager is in the middle of creating a user
-    * 
     */
-   public static boolean duringMainUserCreation()  {
+   public static boolean duringMainUserCreation() {
       return getUserAdmin().isDuringCurrentUserCreation();
    }
 
-   public static User createUser(UserToken userToken, SkynetTransaction transaction)  {
+   public static User createUser(UserToken userToken, SkynetTransaction transaction) {
       return getUserAdmin().createUser(userToken, transaction);
    }
 
-   public static String getSetting(String key)  {
+   public static String getSetting(String key) {
       return getUser().getSetting(key);
    }
 
-   public static String getSetting(Long key)  {
+   public static String getSetting(Long key) {
       return getUser().getSetting(String.valueOf(key));
    }
 
-   public static boolean getBooleanSetting(String key)  {
+   public static boolean getBooleanSetting(String key) {
       return getUser().getBooleanSetting(key);
    }
 
-   public static void setSetting(String key, String value)  {
+   public static void setSetting(String key, String value) {
       getUser().setSetting(key, value);
    }
 
-   public static void setSetting(String key, Long value)  {
+   public static void setSetting(String key, Long value) {
       getUser().setSetting(key, String.valueOf(value));
    }
 

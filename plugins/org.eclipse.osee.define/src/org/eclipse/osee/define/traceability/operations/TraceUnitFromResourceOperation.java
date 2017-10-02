@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
  */
 public class TraceUnitFromResourceOperation {
 
-   public static Set<String> getTraceUnitHandlerIds()  {
+   public static Set<String> getTraceUnitHandlerIds() {
       return TraceUnitExtensionManager.getInstance().getTraceUnitHandlerIds();
    }
 
@@ -76,7 +76,7 @@ public class TraceUnitFromResourceOperation {
       operation.execute(monitor);
    }
 
-   private static void checkTraceUnitHandlerIdsArgument(String... traceUnitHandlerIds)  {
+   private static void checkTraceUnitHandlerIdsArgument(String... traceUnitHandlerIds) {
       if (traceUnitHandlerIds == null) {
          throw new OseeArgumentException("Test unit trace ids was null");
       }
@@ -95,7 +95,7 @@ public class TraceUnitFromResourceOperation {
       }
    }
 
-   private static void checkSourceArgument(Iterable<URI> sources)  {
+   private static void checkSourceArgument(Iterable<URI> sources) {
       if (sources == null) {
          throw new OseeArgumentException("Source was null");
       }
@@ -112,7 +112,7 @@ public class TraceUnitFromResourceOperation {
       }
    }
 
-   private static void checkBranchArguments(BranchId importToBranch)  {
+   private static void checkBranchArguments(BranchId importToBranch) {
       if (importToBranch == null) {
          throw new OseeArgumentException("Branch to import into was null");
       }

@@ -49,12 +49,12 @@ public class MessageServiceProxy implements MessageService {
    }
 
    @Override
-   public ConnectionNode getDefault()  {
+   public ConnectionNode getDefault() {
       return getProxiedService().getDefault();
    }
 
    @Override
-   public ConnectionNode get(NodeInfo nodeInfo)  {
+   public ConnectionNode get(NodeInfo nodeInfo) {
       return getProxiedService().get(nodeInfo);
    }
 

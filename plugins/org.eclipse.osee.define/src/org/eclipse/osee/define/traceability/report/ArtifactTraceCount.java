@@ -39,7 +39,7 @@ public class ArtifactTraceCount extends AbstractArtifactRelationReport {
       return header.toArray(new String[header.size()]);
    }
 
-   private AttributeTypeId getSubsystemAttributeType(Artifact artifact)  {
+   private AttributeTypeId getSubsystemAttributeType(Artifact artifact) {
       for (AttributeTypeId attributeType : artifact.getAttributeTypes()) {
          if (attributeType.equals(CoreAttributeTypes.Partition)) {
             return CoreAttributeTypes.Partition;
@@ -51,7 +51,7 @@ public class ArtifactTraceCount extends AbstractArtifactRelationReport {
    }
 
    @Override
-   public void process(IProgressMonitor monitor)  {
+   public void process(IProgressMonitor monitor) {
       String[] header = getHeader();
       notifyOnTableHeader(header);
       RelationTypeSide[] relations = getRelationsToCheck();

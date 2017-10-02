@@ -28,7 +28,7 @@ public class SubscribeUtility {
     * 
     * @param artifacts to subscribe or empty to remove all
     */
-   public static final void setSubcriptionsAndPersist(Artifact userArtifact, RelationTypeSide relationSide, Collection<? extends Artifact> artifacts, IArtifactType artifactType, String persistComment)  {
+   public static final void setSubcriptionsAndPersist(Artifact userArtifact, RelationTypeSide relationSide, Collection<? extends Artifact> artifacts, IArtifactType artifactType, String persistComment) {
       RelationTypeSideSorter sorter =
          RelationManager.createTypeSideSorter(userArtifact, relationSide, relationSide.getSide());
       Collection<Artifact> currentlyRelated = userArtifact.getRelatedArtifacts(relationSide, Artifact.class);

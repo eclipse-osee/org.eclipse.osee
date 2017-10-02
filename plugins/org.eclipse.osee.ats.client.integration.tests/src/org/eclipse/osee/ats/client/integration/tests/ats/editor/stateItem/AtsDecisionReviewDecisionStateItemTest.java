@@ -65,7 +65,7 @@ public class AtsDecisionReviewDecisionStateItemTest {
    }
 
    @Test
-   public void testXWidgetCreating()  {
+   public void testXWidgetCreating() {
       Assert.assertNotNull(decRevArt);
 
       // setup fake combo that will hold values
@@ -86,7 +86,7 @@ public class AtsDecisionReviewDecisionStateItemTest {
    }
 
    @Test
-   public void testGetOverrideTransitionToAssignees()  {
+   public void testGetOverrideTransitionToAssignees() {
       Assert.assertNotNull(decRevArt);
 
       // setup fake combo that will hold values
@@ -110,7 +110,7 @@ public class AtsDecisionReviewDecisionStateItemTest {
    }
 
    @Test
-   public void testGetOverrideTransitionToStateName()  {
+   public void testGetOverrideTransitionToStateName() {
       Assert.assertNotNull(decRevArt);
 
       // setup fake combo that will hold values

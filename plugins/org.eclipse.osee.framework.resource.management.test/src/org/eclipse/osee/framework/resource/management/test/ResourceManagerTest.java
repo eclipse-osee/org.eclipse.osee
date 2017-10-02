@@ -145,7 +145,7 @@ public class ResourceManagerTest {
    }
 
    @Test
-   public void testGenerateLocator()  {
+   public void testGenerateLocator() {
       // Test Protocol not found
       try {
          manager.generateResourceLocator("dummyProcotol", "", "");
@@ -163,7 +163,7 @@ public class ResourceManagerTest {
    }
 
    @Test
-   public void testGetLocator()  {
+   public void testGetLocator() {
       // Test Protocol not found
       try {
          manager.getResourceLocator("dummyProcotol://hello");

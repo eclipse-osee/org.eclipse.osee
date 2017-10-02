@@ -17,6 +17,6 @@ import org.eclipse.osee.ats.api.config.IAtsCache;
  */
 public interface IAtsCacheProvider {
 
-   IAtsCache getCache() ;
+   IAtsCache getCache();
 
 }

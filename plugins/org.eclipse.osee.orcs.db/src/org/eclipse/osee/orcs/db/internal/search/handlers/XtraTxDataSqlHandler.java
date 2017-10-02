@@ -32,13 +32,13 @@ public class XtraTxDataSqlHandler extends AbstractXtraTableSqlHandler {
    private String txsAlias;
 
    @Override
-   public void addTables(AbstractSqlWriter writer)  {
+   public void addTables(AbstractSqlWriter writer) {
       txdAlias = writer.addTable(TableEnum.TX_DETAILS_TABLE, objectType);
       txsAlias = writer.getFirstAlias(getLevel(), TableEnum.TXS_TABLE, objectType);
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer)  {
+   public boolean addPredicates(AbstractSqlWriter writer) {
       writer.writeEquals(txsAlias, txdAlias, "transaction_id");
       writer.write(" AND ");
       writer.writeEquals(txsAlias, txdAlias, "branch_id");

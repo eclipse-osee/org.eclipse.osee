@@ -46,7 +46,7 @@ public class XDateDam extends XDate implements IAttributeWidget {
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, AttributeTypeToken AttributeTypeId)  {
+   public void setAttributeType(Artifact artifact, AttributeTypeToken AttributeTypeId) {
       this.artifact = artifact;
       this.attributeType = AttributeTypeId;
       Date value = artifact.getSoleAttributeValue(getAttributeType(), null);
@@ -70,7 +70,7 @@ public class XDateDam extends XDate implements IAttributeWidget {
    }
 
    @Override
-   public Result isDirty()  {
+   public Result isDirty() {
       if (isEditable()) {
          Date enteredValue = getDate();
          Date storedValue = getArtifact().getSoleAttributeValue(getAttributeType(), null);
@@ -91,7 +91,7 @@ public class XDateDam extends XDate implements IAttributeWidget {
    }
 
    @Override
-   public void revert()  {
+   public void revert() {
       setAttributeType(getArtifact(), getAttributeType());
    }
 

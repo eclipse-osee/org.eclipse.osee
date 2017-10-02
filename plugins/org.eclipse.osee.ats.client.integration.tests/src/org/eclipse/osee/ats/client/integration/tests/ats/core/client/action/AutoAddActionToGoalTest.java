@@ -55,7 +55,7 @@ public class AutoAddActionToGoalTest {
 
    // Test that no action is added to the Goal
    @org.junit.Test
-   public void testNoActionAddedToGoal()  {
+   public void testNoActionAddedToGoal() {
       AtsTestUtil.cleanupAndReset("AutoAddActionToGoalTest - AutoAddActionToGoalTest - NoAdd");
 
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
@@ -69,7 +69,7 @@ public class AutoAddActionToGoalTest {
    // Create a goal with a relation to an AI and add an Action.  The
    // Team Workflow should be added to the Goal
    @org.junit.Test
-   public void testAutoAddActionToGoal_AI()  {
+   public void testAutoAddActionToGoal_AI() {
       AtsTestUtil.cleanupAndReset("AutoAddActionToGoalTest - AddActionWithAI");
 
       IAtsWorkDefinition workDef = AtsTestUtil.getWorkDef();
@@ -106,7 +106,7 @@ public class AutoAddActionToGoalTest {
    // Create a goal with a relation to a Team Definition and add an Action.  The
    // Team Workflow should be added to the Goal
    @org.junit.Test
-   public void testAutoAddActionToGoal_TeamWF()  {
+   public void testAutoAddActionToGoal_TeamWF() {
       AtsTestUtil.cleanupAndReset("AutoAddActionToGoalTest - AddActionWithTeamDef");
 
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
@@ -134,7 +134,7 @@ public class AutoAddActionToGoalTest {
    // Create a Goal with a relation to an AI and Team Definition.  The action should
    // only be added to the goal once.
    @org.junit.Test
-   public void testAutoAddActionToGoal_AIandTeamWF()  {
+   public void testAutoAddActionToGoal_AIandTeamWF() {
       AtsTestUtil.cleanupAndReset("AutoAddActionToGoalTest - AddActionWithAIandTeamDef");
 
       IAtsWorkDefinition workDef = AtsTestUtil.getWorkDef();
@@ -175,7 +175,7 @@ public class AutoAddActionToGoalTest {
    // one of those AIs.  Create two Actions and test Goal one has two members and Goal two has
    // only one member.
    @org.junit.Test
-   public void testAutoAddActionToGoal_TwoAIsTwoGoals()  {
+   public void testAutoAddActionToGoal_TwoAIsTwoGoals() {
       AtsTestUtil.cleanupAndReset("DecisionReviewManagerTest - UnAssigned");
 
       IAtsWorkDefinition workDef = AtsTestUtil.getWorkDef();

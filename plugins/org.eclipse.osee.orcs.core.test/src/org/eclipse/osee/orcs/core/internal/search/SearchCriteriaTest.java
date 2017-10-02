@@ -35,7 +35,7 @@ public class SearchCriteriaTest {
    private AttributeTypes cache;
 
    @Before
-   public void setup()  {
+   public void setup() {
       MockitoAnnotations.initMocks(this);
 
       when(cache.get(CoreAttributeTypes.Name)).thenReturn(CoreAttributeTypes.Name);
@@ -44,7 +44,7 @@ public class SearchCriteriaTest {
    }
 
    @Test
-   public void isTagged()  {
+   public void isTagged() {
       when(cache.isTaggable(CoreAttributeTypes.Name)).thenReturn(true);
 
       CriteriaAttributeKeywords keyword =
@@ -54,7 +54,7 @@ public class SearchCriteriaTest {
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void notTagged()  {
+   public void notTagged() {
 
       when(cache.isTaggable(CoreAttributeTypes.Active)).thenReturn(false);
 
@@ -66,7 +66,7 @@ public class SearchCriteriaTest {
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void notTaggedList()  {
+   public void notTaggedList() {
 
       when(cache.isTaggable(CoreAttributeTypes.FavoriteBranch)).thenReturn(false);
 

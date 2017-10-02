@@ -57,7 +57,7 @@ public class EventBasicGuidArtifact extends DefaultBasicGuidArtifact {
       return eventModType;
    }
 
-   public static Set<EventBasicGuidArtifact> getRemoteBasicGuidArtifact1(EventModType eventModType, Collection<? extends RemoteBasicGuidArtifact1> basicGuidArtifacts)  {
+   public static Set<EventBasicGuidArtifact> getRemoteBasicGuidArtifact1(EventModType eventModType, Collection<? extends RemoteBasicGuidArtifact1> basicGuidArtifacts) {
       if (eventModType == EventModType.ChangeType) {
          throw new OseeArgumentException("Can't be used for ChangeType");
       }

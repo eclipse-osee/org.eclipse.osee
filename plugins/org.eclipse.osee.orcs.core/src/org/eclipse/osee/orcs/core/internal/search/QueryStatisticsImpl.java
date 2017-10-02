@@ -59,7 +59,7 @@ public class QueryStatisticsImpl implements Cloneable, QueryStatistics {
       return longestQuery;
    }
 
-   public void addEntry(QueryData query, int found, long processingTime)  {
+   public void addEntry(QueryData query, int found, long processingTime) {
       Conditions.checkNotNull(query, "query");
       this.totalProcessed++;
       this.totalProcessingTime += processingTime;

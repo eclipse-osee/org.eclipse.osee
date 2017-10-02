@@ -63,14 +63,14 @@ public abstract class Conflict implements Adaptable {
       this.commitTransactionId = commitTransactionId;
    }
 
-   public Artifact getArtifact()  {
+   public Artifact getArtifact() {
       if (artifact == null) {
          artifact = ArtifactQuery.getArtifactFromId(artId, mergeBranch, INCLUDE_DELETED);
       }
       return artifact;
    }
 
-   public Artifact getSourceArtifact()  {
+   public Artifact getSourceArtifact() {
       if (sourceArtifact == null) {
          if (commitTransactionId == null) {
             sourceArtifact = ArtifactQuery.getArtifactFromId(artId, sourceBranch, INCLUDE_DELETED);
@@ -82,7 +82,7 @@ public abstract class Conflict implements Adaptable {
       return sourceArtifact;
    }
 
-   public Artifact getDestArtifact()  {
+   public Artifact getDestArtifact() {
       if (destArtifact == null) {
          if (commitTransactionId == null) {
             destArtifact = ArtifactQuery.getArtifactFromId(artId, destBranch, INCLUDE_DELETED);
@@ -135,9 +135,9 @@ public abstract class Conflict implements Adaptable {
       return commitTransactionId;
    }
 
-   public abstract ConflictStatus computeStatus() ;
+   public abstract ConflictStatus computeStatus();
 
-   protected ConflictStatus computeStatus(Id objectID, ConflictStatus defaultStatus)  {
+   protected ConflictStatus computeStatus(Id objectID, ConflictStatus defaultStatus) {
       ConflictStatus passedStatus = defaultStatus;
       try {
          if (sourceEqualsDestination() && mergeEqualsSource()) {
@@ -152,7 +152,7 @@ public abstract class Conflict implements Adaptable {
       return status;
    }
 
-   public void setStatus(ConflictStatus status)  {
+   public void setStatus(ConflictStatus status) {
       if (this.status.equals(status)) {
          return;
       }
@@ -160,7 +160,7 @@ public abstract class Conflict implements Adaptable {
       this.status = status;
    }
 
-   public String getArtifactName()  {
+   public String getArtifactName() {
       return getArtifact().getName();
    }
 
@@ -200,33 +200,33 @@ public abstract class Conflict implements Adaptable {
       return status;
    }
 
-   public void computeEqualsValues()  {
+   public void computeEqualsValues() {
       // provided for subclass implementation
    }
 
-   public abstract String getSourceDisplayData() ;
+   public abstract String getSourceDisplayData();
 
-   public abstract String getDestDisplayData() ;
+   public abstract String getDestDisplayData();
 
-   public abstract boolean mergeEqualsSource() ;
+   public abstract boolean mergeEqualsSource();
 
-   public abstract boolean mergeEqualsDestination() ;
+   public abstract boolean mergeEqualsDestination();
 
-   public abstract boolean sourceEqualsDestination() ;
+   public abstract boolean sourceEqualsDestination();
 
-   public abstract boolean setToSource() ;
+   public abstract boolean setToSource();
 
-   public abstract boolean setToDest() ;
+   public abstract boolean setToDest();
 
-   public abstract boolean clearValue() ;
+   public abstract boolean clearValue();
 
-   public abstract String getMergeDisplayData() ;
+   public abstract String getMergeDisplayData();
 
-   public abstract String getChangeItem() ;
+   public abstract String getChangeItem();
 
    public abstract ConflictType getConflictType();
 
-   public abstract int getMergeGammaId() ;
+   public abstract int getMergeGammaId();
 
    public abstract Id getObjectId();
 

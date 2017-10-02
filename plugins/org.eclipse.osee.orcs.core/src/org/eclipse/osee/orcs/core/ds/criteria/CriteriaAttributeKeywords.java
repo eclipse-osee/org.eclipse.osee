@@ -63,7 +63,7 @@ public class CriteriaAttributeKeywords extends Criteria {
    }
 
    @Override
-   public void checkValid(Options options)  {
+   public void checkValid(Options options) {
       Conditions.checkNotNullOrEmpty(getValues(), "search value");
       Conditions.checkNotNullOrEmpty(getTypes(), "attribute types");
       checkMultipleValues();
@@ -76,13 +76,13 @@ public class CriteriaAttributeKeywords extends Criteria {
          Collections.toString(",", values), Collections.toString(",", Arrays.asList(options)));
    }
 
-   private void checkMultipleValues()  {
+   private void checkMultipleValues() {
       if (getTypes().size() > 1 && getValues().size() > 1) {
          throw new OseeArgumentException("Multiple values is not valid with multiple types");
       }
    }
 
-   public void checkNotTaggable()  {
+   public void checkNotTaggable() {
       if (!includeAllTypes) {
          ArrayList<String> notTaggable = new ArrayList<>();
          if (attributeTypeCache != null) {

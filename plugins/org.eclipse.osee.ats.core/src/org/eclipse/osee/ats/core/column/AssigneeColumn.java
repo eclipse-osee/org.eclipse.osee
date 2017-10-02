@@ -43,7 +43,7 @@ public class AssigneeColumn extends AbstractServicesColumn {
       return getAssigneeStr(atsObject);
    }
 
-   public String getAssigneeStr(IAtsObject atsObject)  {
+   public String getAssigneeStr(IAtsObject atsObject) {
       if (atsObject instanceof HasActions) {
          HasActions hasActions = (HasActions) atsObject;
          // ensure consistent order by using lists

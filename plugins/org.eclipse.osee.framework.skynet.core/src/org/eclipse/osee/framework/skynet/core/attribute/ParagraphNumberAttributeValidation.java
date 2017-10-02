@@ -26,12 +26,12 @@ public class ParagraphNumberAttributeValidation implements IOseeValidator {
    }
 
    @Override
-   public boolean isApplicable(Artifact artifact, AttributeTypeId attributeType)  {
+   public boolean isApplicable(Artifact artifact, AttributeTypeId attributeType) {
       return attributeType.equals(CoreAttributeTypes.ParagraphNumber);
    }
 
    @Override
-   public IStatus validate(Artifact artifact, AttributeTypeToken attributeType, Object proposedObject)  {
+   public IStatus validate(Artifact artifact, AttributeTypeToken attributeType, Object proposedObject) {
       if (artifact.getSoleAttributeValueAsString(attributeType, "").matches(".*[a-zA-Z].*")) {
          return new Status(IStatus.ERROR, ParagraphNumberAttributeValidation.class.getName(),
             "Invalid Paragraph Number - letters are not allowed");

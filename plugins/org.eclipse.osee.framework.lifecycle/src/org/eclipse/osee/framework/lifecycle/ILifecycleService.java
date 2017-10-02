@@ -20,9 +20,9 @@ import org.eclipse.core.runtime.IStatus;
 
 public interface ILifecycleService {
 
-   public <H extends LifecycleHandler> void addHandler(AbstractLifecycleVisitor.Type<H> type, final H handler) ;
+   public <H extends LifecycleHandler> void addHandler(AbstractLifecycleVisitor.Type<H> type, final H handler);
 
-   public <H extends LifecycleHandler> void removeHandler(AbstractLifecycleVisitor.Type<H> type, final H handler) ;
+   public <H extends LifecycleHandler> void removeHandler(AbstractLifecycleVisitor.Type<H> type, final H handler);
 
    public Collection<AbstractLifecycleVisitor.Type<?>> getHandlerTypes();
 

@@ -16,5 +16,5 @@ import org.eclipse.osee.framework.core.data.BranchId;
  * @author Theron Virgin
  */
 public interface CommitAction {
-   public void runCommitAction(BranchId sourceBranch, BranchId destinationBranch) ;
+   public void runCommitAction(BranchId sourceBranch, BranchId destinationBranch);
 }

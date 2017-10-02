@@ -107,12 +107,12 @@ public class ArtifactTreeChildrenContentProvider implements ITreeContentProvider
    }
 
    /**
-    * This is the method invoked by calling the <b>setInput </b> method on the tree viewer. In fact, the
-    * <b>getElements </b> method is called only in response to the tree viewer's <b>setInput </b> method and should
-    * answer with the appropriate domain objects of the inputElement. The <b>getElements </b> and <b>getChildren </b>
-    * methods operate in a similar way. Depending on your domain objects, you may have the <b>getElements </b> simply
-    * return the result of calling <b>getChildren </b>. The two methods are kept distinct because it provides a clean
-    * way to differentiate between the root domain object and all other domain objects.
+    * This is the method invoked by calling the <b>setInput </b> method on the tree viewer. In fact, the <b>getElements
+    * </b> method is called only in response to the tree viewer's <b>setInput </b> method and should answer with the
+    * appropriate domain objects of the inputElement. The <b>getElements </b> and <b>getChildren </b> methods operate in
+    * a similar way. Depending on your domain objects, you may have the <b>getElements </b> simply return the result of
+    * calling <b>getChildren </b>. The two methods are kept distinct because it provides a clean way to differentiate
+    * between the root domain object and all other domain objects.
     * 
     * @see IStructuredContentProvider#getElements(Object)
     */

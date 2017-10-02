@@ -42,28 +42,28 @@ public abstract class MembersManager<T extends CollectorArtifact> {
 
    public abstract IArtifactType getArtifactType();
 
-   public boolean isHasCollector(Artifact artifact)  {
+   public boolean isHasCollector(Artifact artifact) {
       return artifact.getRelatedArtifactsCount(getMembersRelationTypeSide().getOpposite()) > 0;
    }
 
    /**
     * change member order for artifact within given member
     */
-   public T promptChangeMemberOrder(T memberArt, Artifact artifact)  {
+   public T promptChangeMemberOrder(T memberArt, Artifact artifact) {
       return promptChangeMemberOrder(memberArt, Arrays.asList(artifact));
    }
 
-   public void getCollectors(Artifact artifact, Set<Artifact> collectors, boolean recurse)  {
+   public void getCollectors(Artifact artifact, Set<Artifact> collectors, boolean recurse) {
       getCollectors(Arrays.asList(artifact), collectors, recurse);
    }
 
-   public Collection<Artifact> getCollectors(Artifact artifact, boolean recurse)  {
+   public Collection<Artifact> getCollectors(Artifact artifact, boolean recurse) {
       Set<Artifact> collectors = new HashSet<>();
       getCollectors(artifact, collectors, recurse);
       return collectors;
    }
 
-   public void getCollectors(Collection<Artifact> artifacts, Set<Artifact> goals, boolean recurse)  {
+   public void getCollectors(Collection<Artifact> artifacts, Set<Artifact> goals, boolean recurse) {
       for (Artifact art : artifacts) {
          if (art.isOfType(getArtifactType())) {
             goals.add(art);
@@ -79,7 +79,7 @@ public abstract class MembersManager<T extends CollectorArtifact> {
     * change member order for artifacts within given member
     */
    @SuppressWarnings("unchecked")
-   public T promptChangeMemberOrder(T memberArt, List<Artifact> artifacts)  {
+   public T promptChangeMemberOrder(T memberArt, List<Artifact> artifacts) {
       Object obj = null;
       T retVal = (T) obj;
 
@@ -123,7 +123,7 @@ public abstract class MembersManager<T extends CollectorArtifact> {
    }
 
    @SuppressWarnings("unchecked")
-   public String getMemberOrder(Artifact artifact)  {
+   public String getMemberOrder(Artifact artifact) {
       if (artifact.isOfType(getArtifactType())) {
          return "";
       }
@@ -140,5 +140,5 @@ public abstract class MembersManager<T extends CollectorArtifact> {
       return sb.toString();
    }
 
-   public abstract String getMemberOrder(T memberArt, Artifact member) ;
+   public abstract String getMemberOrder(T memberArt, Artifact member);
 }

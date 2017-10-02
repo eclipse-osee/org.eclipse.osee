@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider;
 public class OteArtifactImageProvider extends ArtifactImageProvider {
 
    @Override
-   public void init()  {
+   public void init() {
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.TestProcedure, OteDefineImage.TEST_PROCEDURE, this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.TestRun, OteDefineImage.TEST_RUN, this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.TestCase, OteDefineImage.TEST_CASE, this);

@@ -188,7 +188,7 @@ public class PreviewAndMultiPreviewTest {
       RendererManager.openInJob(art, PresentationType.PREVIEW);
    }
 
-   private Artifact createArtifact(IArtifactType type, BranchId branch, String name)  {
+   private Artifact createArtifact(IArtifactType type, BranchId branch, String name) {
       Artifact artifact = ArtifactTypeManager.addArtifact(type, branch, name);
       Assert.assertNotNull(artifact);
       testArtifacts.add(artifact);

@@ -96,9 +96,9 @@ public class OAuth2Transport {
          target = JaxRsClient.newClient().target(uri);
       } else {
          target = JaxRsClient.newBuilder()//
-         .username(credentials.getUsername())//
-         .password(credentials.getPassword())//
-         .build().target(uri);
+            .username(credentials.getUsername())//
+            .password(credentials.getPassword())//
+            .build().target(uri);
       }
 
       WebClient webClient = null;

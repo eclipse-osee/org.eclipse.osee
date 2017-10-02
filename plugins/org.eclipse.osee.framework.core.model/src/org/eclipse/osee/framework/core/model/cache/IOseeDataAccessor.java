@@ -14,5 +14,5 @@ package org.eclipse.osee.framework.core.model.cache;
  * @author Roberto E. Escobar
  */
 public interface IOseeDataAccessor<T> {
-   public void load(IOseeCache<T> cache) ;
+   public void load(IOseeCache<T> cache);
 }

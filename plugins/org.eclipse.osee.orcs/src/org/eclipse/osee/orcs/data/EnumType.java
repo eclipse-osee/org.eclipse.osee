@@ -28,7 +28,7 @@ public interface EnumType extends Id, FullyNamed {
 
    Set<String> valuesAsOrderedStringSet();
 
-   EnumEntry valueOf(int ordinal) ;
+   EnumEntry valueOf(int ordinal);
 
-   EnumEntry valueOf(String entryName) ;
+   EnumEntry valueOf(String entryName);
 }

@@ -62,7 +62,7 @@ public class IndexingTaskDatabaseTxCallableTest {
       initMocks(this);
       IndexedResourceLoader loader = new IndexedResourceLoader() {
          @Override
-         public void loadSource(OrcsDataHandler<IndexedResource> handler, int tagQueueQueryId)  {
+         public void loadSource(OrcsDataHandler<IndexedResource> handler, int tagQueueQueryId) {
             handler.onData(resource1);
             handler.onData(resource2);
          }

@@ -31,7 +31,7 @@ public class CriteriaRelationTypeNotExists extends Criteria {
    }
 
    @Override
-   public void checkValid(Options options)  {
+   public void checkValid(Options options) {
       Conditions.checkNotNull(getType(), "relation type");
    }
 

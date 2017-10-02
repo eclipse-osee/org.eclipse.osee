@@ -23,21 +23,21 @@ public interface IArtifactStoredWidget {
    /**
     * @return the artifact
     */
-   Artifact getArtifact() ;
+   Artifact getArtifact();
 
    /**
     * Save data changes to artifact
     */
-   public void saveToArtifact() ;
+   public void saveToArtifact();
 
    /**
     * Revert changes to widget data back to what was in artifact
     */
-   public void revert() ;
+   public void revert();
 
    /**
     * Return true if storage data different than widget data
     */
-   public Result isDirty() ;
+   public Result isDirty();
 
 }

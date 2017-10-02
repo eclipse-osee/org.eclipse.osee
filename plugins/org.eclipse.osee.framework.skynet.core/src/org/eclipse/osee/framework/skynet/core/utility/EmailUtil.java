@@ -31,7 +31,7 @@ public class EmailUtil {
       return addressPattern.matcher(email).matches();
    }
 
-   public static boolean isEmailValid(User user)  {
+   public static boolean isEmailValid(User user) {
       return isEmailValid(user.getEmail());
    }
 

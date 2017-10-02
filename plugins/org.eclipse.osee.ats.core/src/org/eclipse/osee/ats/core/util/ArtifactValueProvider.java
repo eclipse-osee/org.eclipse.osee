@@ -45,7 +45,7 @@ public class ArtifactValueProvider implements IValueProvider {
    }
 
    @Override
-   public boolean isEmpty()  {
+   public boolean isEmpty() {
       AttributeTypeId attributeType = getAtributeType();
       if (attributeType != null) {
          return services.getAttributeResolver().getAttributeCount(artifact, attributeType) == 0;
@@ -54,7 +54,7 @@ public class ArtifactValueProvider implements IValueProvider {
    }
 
    @Override
-   public Collection<String> getValues()  {
+   public Collection<String> getValues() {
       AttributeTypeId attributeType = getAtributeType();
       if (attributeType != null) {
          return services.getAttributeResolver().getAttributesToStringList(artifact, attributeType);
@@ -62,7 +62,7 @@ public class ArtifactValueProvider implements IValueProvider {
       return Collections.emptyList();
    }
 
-   public AttributeTypeId getAtributeType()  {
+   public AttributeTypeId getAtributeType() {
       if (attributeType == null && Strings.isValid(attributeTypeName)) {
          attributeType = services.getStoreService().getAttributeType(attributeTypeName);
       }
@@ -75,7 +75,7 @@ public class ArtifactValueProvider implements IValueProvider {
    }
 
    @Override
-   public Collection<Date> getDateValues()  {
+   public Collection<Date> getDateValues() {
       AttributeTypeId attributeType = getAtributeType();
       if (attributeType != null && services.getStoreService().isDateType(attributeType)) {
          return services.getAttributeResolver().getAttributeValues(artifact, attributeType);

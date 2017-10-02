@@ -98,7 +98,7 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
       }
    }
 
-   private String getPredicate(AbstractSqlWriter writer, String txsAliasName, String relAliasName)  {
+   private String getPredicate(AbstractSqlWriter writer, String txsAliasName, String relAliasName) {
       StringBuilder sb = new StringBuilder();
       RelationTypeSide typeSide = criteria.getType();
       sb.append(relAliasName);
@@ -152,7 +152,7 @@ public class RelatedToSqlHandler extends SqlHandler<CriteriaRelatedTo> {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer)  {
+   public boolean addPredicates(AbstractSqlWriter writer) {
       if (artAlias != null && artTxsAlias != null) {
          writer.writeEquals(artAlias, artTxsAlias, "gamma_id");
          writer.write(" AND ");

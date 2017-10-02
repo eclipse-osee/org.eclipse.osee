@@ -14,8 +14,8 @@ package org.eclipse.osee.framework.ui.skynet.artifact.prompt;
  * @author Jeff C. Phillips
  */
 public interface IHandlePromptChange {
-   boolean promptOk() ;
+   boolean promptOk();
 
-   boolean store() ;
+   boolean store();
 
 }

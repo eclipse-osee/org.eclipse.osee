@@ -114,7 +114,7 @@ public class DragDropHandler {
 
    }
 
-   private void performDrop(DropTargetEvent e)  {
+   private void performDrop(DropTargetEvent e) {
       Object object = e.data;
       if (object instanceof ArtifactData) {
          handleArtifactDrops((ArtifactData) object);
@@ -168,7 +168,7 @@ public class DragDropHandler {
 
    }
 
-   private void handleArtifactDrops(ArtifactData artifactData)  {
+   private void handleArtifactDrops(ArtifactData artifactData) {
       Artifact[] artifactsDropped = artifactData.getArtifacts();
       Set<Artifact> artifactsToAdd = new HashSet<>();
       for (Artifact artifact : artifactsDropped) {
@@ -179,7 +179,7 @@ public class DragDropHandler {
       addArtifactsToTable(new ArrayList<Artifact>(artifactsToAdd));
    }
 
-   private void handleResourceDrops(URI[] iFiles)  {
+   private void handleResourceDrops(URI[] iFiles) {
       BranchId branch = BranchComboDialog.getBranchFromUser();
       if (branch.isValid()) {
          OutfileToArtifactJob artifactJob = new OutfileToArtifactJob(branch, iFiles);

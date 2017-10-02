@@ -32,8 +32,8 @@ public class CountryColumnUI extends XViewerAtsColumn implements IXViewerValueCo
    }
 
    private CountryColumnUI() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".country", "Country", 80, XViewerAlign.Left, false, SortDataType.String,
-         false, "Country specified by related Work Package.  (I) if inherited from parent.");
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".country", "Country", 80, XViewerAlign.Left, false,
+         SortDataType.String, false, "Country specified by related Work Package.  (I) if inherited from parent.");
    }
 
    /**

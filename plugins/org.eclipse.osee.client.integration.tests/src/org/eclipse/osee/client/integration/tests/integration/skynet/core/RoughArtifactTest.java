@@ -39,7 +39,7 @@ public class RoughArtifactTest {
    }
 
    @Test(expected = OseeTypeDoesNotExist.class)
-   public void testNonExistingEnumeration()  {
+   public void testNonExistingEnumeration() {
       ra.addAttribute("Apple", "Orange");
    }
 }

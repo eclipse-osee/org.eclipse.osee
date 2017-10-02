@@ -33,13 +33,13 @@ public class SecureOseeHttpServlet extends OseeHttpServlet {
    }
 
    @Override
-   protected void checkAccessControl(HttpServletRequest request)  {
+   protected void checkAccessControl(HttpServletRequest request) {
       String sessionId = getSessionId(request);
       ISession session = sessionManager.getSessionById(sessionId);
       Conditions.checkNotNull(session, "session");
    }
 
-   public boolean isInitializing(HttpServletRequest request)  {
+   public boolean isInitializing(HttpServletRequest request) {
       String sessionId = getSessionId(request);
       ISession session = sessionManager.getSessionById(sessionId);
       String userId = session.getUserId();

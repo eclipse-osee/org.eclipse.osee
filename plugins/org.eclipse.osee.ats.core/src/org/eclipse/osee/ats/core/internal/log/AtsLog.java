@@ -41,7 +41,7 @@ public class AtsLog implements IAtsLog {
    }
 
    @Override
-   public Date getLastStatusDate()  {
+   public Date getLastStatusDate() {
       IAtsLogItem logItem = getLastEvent(LogType.Metrics);
       if (logItem == null) {
          return null;
@@ -50,14 +50,14 @@ public class AtsLog implements IAtsLog {
    }
 
    @Override
-   public List<IAtsLogItem> getLogItemsReversed()  {
+   public List<IAtsLogItem> getLogItemsReversed() {
       List<IAtsLogItem> logItems = new ArrayList<>(getLogItems());
       Collections.reverse(logItems);
       return logItems;
    }
 
    @Override
-   public IAtsLogItem getLogItemWithTypeAsOfDate(LogType logType, Date date)  {
+   public IAtsLogItem getLogItemWithTypeAsOfDate(LogType logType, Date date) {
       IAtsLogItem retLogItem = null;
       for (IAtsLogItem logItem : logItems) {
          if (logItem.getType().equals(logType)) {
@@ -76,7 +76,7 @@ public class AtsLog implements IAtsLog {
     * Used to reset the original originated user. Only for internal use. Kept for backward compatibility.
     */
    @Override
-   public void internalResetCreatedDate(Date date)  {
+   public void internalResetCreatedDate(Date date) {
       List<IAtsLogItem> logItems = getLogItems();
       for (IAtsLogItem item : logItems) {
          if (item.getType() == LogType.Originated) {
@@ -88,7 +88,7 @@ public class AtsLog implements IAtsLog {
    }
 
    @Override
-   public String internalGetCancelledReason()  {
+   public String internalGetCancelledReason() {
       IAtsLogItem item = getStateEvent(LogType.StateCancelled);
       if (item == null) {
          return "";
@@ -100,7 +100,7 @@ public class AtsLog implements IAtsLog {
     * This method is replaced by workItem.getCompletedFromState. Kept for backward compatibility.
     */
    @Override
-   public String internalGetCompletedFromState()  {
+   public String internalGetCompletedFromState() {
       IAtsLogItem item = getStateEvent(LogType.StateComplete);
       if (item == null) {
          return "";
@@ -109,17 +109,17 @@ public class AtsLog implements IAtsLog {
    }
 
    @Override
-   public IAtsLogItem addLogItem(IAtsLogItem item)  {
+   public IAtsLogItem addLogItem(IAtsLogItem item) {
       return addLog(item.getType(), item.getState(), item.getMsg(), item.getDate(), item.getUserId());
    }
 
    @Override
-   public IAtsLogItem addLog(LogType type, String state, String msg, String userId)  {
+   public IAtsLogItem addLog(LogType type, String state, String msg, String userId) {
       return addLog(type, state, msg, new Date(), userId);
    }
 
    @Override
-   public IAtsLogItem addLog(LogType type, String state, String msg, Date date, String userId)  {
+   public IAtsLogItem addLog(LogType type, String state, String msg, Date date, String userId) {
       LogItem logItem = new LogItem(type, date, userId, state, msg);
       List<IAtsLogItem> logItems = getLogItems();
       logItems.add(logItem);
@@ -134,7 +134,7 @@ public class AtsLog implements IAtsLog {
    }
 
    @Override
-   public IAtsLogItem getLastEvent(LogType type)  {
+   public IAtsLogItem getLastEvent(LogType type) {
       for (IAtsLogItem item : getLogItemsReversed()) {
          if (item.getType() == type) {
             return item;
@@ -144,7 +144,7 @@ public class AtsLog implements IAtsLog {
    }
 
    @Override
-   public IAtsLogItem getStateEvent(LogType type, String stateName)  {
+   public IAtsLogItem getStateEvent(LogType type, String stateName) {
       for (IAtsLogItem item : getLogItemsReversed()) {
          if (item.getType() == type && item.getState().equals(stateName)) {
             return item;
@@ -154,7 +154,7 @@ public class AtsLog implements IAtsLog {
    }
 
    @Override
-   public IAtsLogItem getStateEvent(LogType type)  {
+   public IAtsLogItem getStateEvent(LogType type) {
       for (IAtsLogItem item : getLogItemsReversed()) {
          if (item.getType() == type) {
             return item;
@@ -164,7 +164,7 @@ public class AtsLog implements IAtsLog {
    }
 
    @Override
-   public List<IAtsLogItem> getLogItems()  {
+   public List<IAtsLogItem> getLogItems() {
       return logItems;
    }
 

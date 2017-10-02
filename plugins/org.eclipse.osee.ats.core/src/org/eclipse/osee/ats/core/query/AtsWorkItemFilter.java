@@ -47,7 +47,7 @@ public class AtsWorkItemFilter implements IAtsWorkItemFilter {
    }
 
    @Override
-   public IAtsWorkItemFilter isOfType(IArtifactType... artifactType)  {
+   public IAtsWorkItemFilter isOfType(IArtifactType... artifactType) {
       boolean found = false;
       for (IAtsWorkItem item : new CopyOnWriteArrayList<IAtsWorkItem>(items)) {
          for (IArtifactType matchType : artifactType) {
@@ -64,7 +64,7 @@ public class AtsWorkItemFilter implements IAtsWorkItemFilter {
    }
 
    @Override
-   public IAtsWorkItemFilter union(IAtsWorkItemFilter... workItemFilter)  {
+   public IAtsWorkItemFilter union(IAtsWorkItemFilter... workItemFilter) {
       Set<IAtsWorkItem> items = new HashSet<>();
       items.addAll(this.items);
       for (IAtsWorkItemFilter filter : workItemFilter) {
@@ -75,7 +75,7 @@ public class AtsWorkItemFilter implements IAtsWorkItemFilter {
    }
 
    @Override
-   public IAtsWorkItemFilter fromTeam(IAtsTeamDefinition teamDef)  {
+   public IAtsWorkItemFilter fromTeam(IAtsTeamDefinition teamDef) {
       for (IAtsWorkItem workItem : new CopyOnWriteArrayList<IAtsWorkItem>(items)) {
          IAtsTeamDefinition itemTeamDef = workItem.getParentTeamWorkflow().getTeamDefinition();
          if (!itemTeamDef.getId().equals(teamDef.getId())) {
@@ -86,7 +86,7 @@ public class AtsWorkItemFilter implements IAtsWorkItemFilter {
    }
 
    @Override
-   public IAtsWorkItemFilter isStateType(StateType... stateType)  {
+   public IAtsWorkItemFilter isStateType(StateType... stateType) {
       List<StateType> types = new ArrayList<>();
       for (StateType type : stateType) {
          types.add(type);
@@ -106,7 +106,7 @@ public class AtsWorkItemFilter implements IAtsWorkItemFilter {
 
    @SuppressWarnings("unchecked")
    @Override
-   public <T extends IAtsWorkItem> Collection<T> getItems()  {
+   public <T extends IAtsWorkItem> Collection<T> getItems() {
       Set<T> workItems = new HashSet<>();
       Iterator<? extends IAtsWorkItem> iterator = items.iterator();
       while (iterator.hasNext()) {
@@ -116,7 +116,7 @@ public class AtsWorkItemFilter implements IAtsWorkItemFilter {
    }
 
    @Override
-   public IAtsWorkItemFilter withOrValue(AttributeTypeId attributeType, Collection<? extends Object> matchValues)  {
+   public IAtsWorkItemFilter withOrValue(AttributeTypeId attributeType, Collection<? extends Object> matchValues) {
       if (matchValues != null && !matchValues.isEmpty()) {
          for (IAtsWorkItem workItem : new CopyOnWriteArrayList<IAtsWorkItem>(items)) {
             Collection<Object> currAttrValues =

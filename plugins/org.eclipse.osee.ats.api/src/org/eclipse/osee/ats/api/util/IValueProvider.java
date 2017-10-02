@@ -20,10 +20,10 @@ public interface IValueProvider {
 
    public String getName();
 
-   public boolean isEmpty() ;
+   public boolean isEmpty();
 
-   public Collection<String> getValues() ;
+   public Collection<String> getValues();
 
-   public Collection<Date> getDateValues() ;
+   public Collection<Date> getDateValues();
 
 }

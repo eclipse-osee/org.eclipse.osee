@@ -99,7 +99,7 @@ public class LoadGraphOperation implements IExceptionableRunnable {
       return Status.OK_STATUS;
    }
 
-   private void updateView(IProgressMonitor monitor, BranchId branch, TransactionId revision)  {
+   private void updateView(IProgressMonitor monitor, BranchId branch, TransactionId revision) {
       monitor.setTaskName("Finding root node");
       int unitWork = (int) (TASK_STEPS / revision.getId());
       if (unitWork < 1) {

@@ -144,7 +144,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       }
    }
 
-   public void runIt(IProgressMonitor monitor, XResultData xResultData)  {
+   public void runIt(IProgressMonitor monitor, XResultData xResultData) {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
 
@@ -358,7 +358,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       results.logTestTimeSpent(date, "testCompletedCancelledStateAttributesSet");
    }
 
-   private static void fixCancelledByAttributes(SkynetTransaction transaction, AbstractWorkflowArtifact awa, ValidateResults results)  {
+   private static void fixCancelledByAttributes(SkynetTransaction transaction, AbstractWorkflowArtifact awa, ValidateResults results) {
       IAtsLogItem cancelledItem = getCancelledLogItem(awa);
       if (cancelledItem != null) {
          results.log(awa, "testCompletedCancelledStateAttributesSet",
@@ -374,7 +374,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       }
    }
 
-   private static void fixCompletedByAttributes(SkynetTransaction transaction, AbstractWorkflowArtifact awa, ValidateResults results)  {
+   private static void fixCompletedByAttributes(SkynetTransaction transaction, AbstractWorkflowArtifact awa, ValidateResults results) {
       IAtsLogItem completedItem = getPreviousStateLogItem(awa);
       if (completedItem != null) {
          results.log(awa, "testCompletedCancelledStateAttributesSet",
@@ -387,7 +387,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       }
    }
 
-   private static IAtsLogItem getCancelledLogItem(AbstractWorkflowArtifact awa)  {
+   private static IAtsLogItem getCancelledLogItem(AbstractWorkflowArtifact awa) {
       String currentStateName = awa.getCurrentStateName();
       IAtsLogItem fromItem = null;
       for (IAtsLogItem item : awa.getLog().getLogItemsReversed()) {
@@ -403,7 +403,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       return fromItem;
    }
 
-   private static IAtsLogItem getPreviousStateLogItem(AbstractWorkflowArtifact awa)  {
+   private static IAtsLogItem getPreviousStateLogItem(AbstractWorkflowArtifact awa) {
       String currentStateName = awa.getCurrentStateName();
       IAtsLogItem fromItem = null;
       for (IAtsLogItem item : awa.getLog().getLogItemsReversed()) {
@@ -416,7 +416,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       return fromItem;
    }
 
-   private void testStateAttributeDuplications(Collection<Artifact> artifacts)  {
+   private void testStateAttributeDuplications(Collection<Artifact> artifacts) {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Validate ATS Database");
       Date date = new Date();
@@ -590,7 +590,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       results.logTestTimeSpent(date, "testArtifactIds");
    }
 
-   public static void testVersionArtifacts(Collection<Artifact> artifacts, ValidateResults results)  {
+   public static void testVersionArtifacts(Collection<Artifact> artifacts, ValidateResults results) {
       Date date = new Date();
       for (Artifact artifact : artifacts) {
          if (artifact.isDeleted()) {
@@ -619,7 +619,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       results.logTestTimeSpent(date, "testVersionArtifacts");
    }
 
-   public static void testParallelConfig(List<Artifact> artifacts, ValidateResults results)  {
+   public static void testParallelConfig(List<Artifact> artifacts, ValidateResults results) {
       Date date = new Date();
       for (Artifact artifact : artifacts) {
          if (artifact.isDeleted()) {
@@ -647,7 +647,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       results.logTestTimeSpent(date, "testParallelConfig");
    }
 
-   public static void testTeamDefinitions(Collection<Artifact> artifacts, ValidateResults results)  {
+   public static void testTeamDefinitions(Collection<Artifact> artifacts, ValidateResults results) {
       Date date = new Date();
       for (Artifact art : artifacts) {
          if (art.isDeleted()) {
@@ -702,7 +702,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       results.logTestTimeSpent(date, "testTeamWorkflows");
    }
 
-   private List<Long> getInvalidUuids(List<Long> uuids)  {
+   private List<Long> getInvalidUuids(List<Long> uuids) {
       List<Long> badUuids = new ArrayList<>();
       for (Long uuid : uuids) {
          if (AtsClientService.get().getArtifact(uuid) == null) {
@@ -777,7 +777,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       results.logTestTimeSpent(date, "validateBranchUuid");
    }
 
-   public static List<Collection<ArtifactId>> loadAtsBranchArtifactIds(XResultData xResultData, IProgressMonitor monitor)  {
+   public static List<Collection<ArtifactId>> loadAtsBranchArtifactIds(XResultData xResultData, IProgressMonitor monitor) {
       if (xResultData == null) {
          xResultData = new XResultData();
       }
@@ -790,7 +790,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       return Collections.subDivide(artIds, 4000);
    }
 
-   private static List<ArtifactId> getCommonArtifactIds(XResultData xResultData)  {
+   private static List<ArtifactId> getCommonArtifactIds(XResultData xResultData) {
       List<ArtifactId> artIds = new ArrayList<>();
       xResultData.log(null, "getCommonArtifactIds - Started " + DateUtil.getMMDDYYHHMM());
       JdbcStatement chStmt = ConnectionHandler.getStatement();
@@ -841,7 +841,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    }
 
    @SuppressWarnings("deprecation")
-   private static void checkAndResolveDuplicateAttributes(Artifact artifact, boolean fixAttributeValues, ValidateResults results, SkynetTransaction transaction)  {
+   private static void checkAndResolveDuplicateAttributes(Artifact artifact, boolean fixAttributeValues, ValidateResults results, SkynetTransaction transaction) {
       for (AttributeType attrType : artifact.getAttributeTypesUsed()) {
          if (artifact.isDeleted()) {
             continue;

@@ -39,7 +39,7 @@ public class AllArtifactsSqlHandler extends SqlHandler<CriteriaAllArtifacts> {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer)  {
+   public boolean addPredicates(AbstractSqlWriter writer) {
       boolean modified = false;
       if (artAlias != null && txsAlias != null) {
          writer.write(artAlias);

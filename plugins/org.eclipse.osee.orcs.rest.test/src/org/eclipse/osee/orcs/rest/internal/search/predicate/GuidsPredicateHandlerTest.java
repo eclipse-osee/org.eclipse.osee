@@ -44,7 +44,7 @@ public class GuidsPredicateHandlerTest {
    }
 
    @Test
-   public void testHandleGuids()  {
+   public void testHandleGuids() {
       GuidsPredicateHandler handler = new GuidsPredicateHandler();
       // no type params for ids - any passed are ignored
       // if not all digits, treated as guid
@@ -58,14 +58,14 @@ public class GuidsPredicateHandlerTest {
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testHandleBadValues()  {
+   public void testHandleBadValues() {
       GuidsPredicateHandler handler = new GuidsPredicateHandler();
       Predicate testPredicate = new Predicate(SearchMethod.GUIDS, null, null);
       handler.handle(builder, testPredicate);
    }
 
    @Test(expected = OseeArgumentException.class)
-   public void testBadSearchMethod()  {
+   public void testBadSearchMethod() {
       GuidsPredicateHandler handler = new GuidsPredicateHandler();
       String id1 = "12345";
       List<String> values = Collections.singletonList(id1);

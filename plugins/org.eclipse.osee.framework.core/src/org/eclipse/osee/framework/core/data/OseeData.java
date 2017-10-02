@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 
-
 /**
  * @author Donald G. Dunne
  */
@@ -56,8 +55,7 @@ public class OseeData {
          }
       }
       if (!project.isOpen()) {
-         OseeLog.logf(OseeData.class, Level.INFO, "[%s] project is closed; re-opening",
-            OSEE_DATA_FOLDER_NAME);
+         OseeLog.logf(OseeData.class, Level.INFO, "[%s] project is closed; re-opening", OSEE_DATA_FOLDER_NAME);
          try {
             project.open(null);
          } catch (CoreException e) {
@@ -86,7 +84,7 @@ public class OseeData {
       return new File(workspaceRoot.getFile(new Path(path)).getLocation().toString());
    }
 
-   public static IFolder getFolder(String name)  {
+   public static IFolder getFolder(String name) {
       try {
          IFolder folder = getProject().getFolder(name);
          if (!folder.exists()) {

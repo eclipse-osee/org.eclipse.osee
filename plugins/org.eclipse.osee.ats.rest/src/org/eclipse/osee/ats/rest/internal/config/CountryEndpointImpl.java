@@ -33,7 +33,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 /**
  * Donald G. Dunne
  */
-public class CountryEndpointImpl extends BaseConfigEndpointImpl<JaxCountry>implements CountryEndpointApi {
+public class CountryEndpointImpl extends BaseConfigEndpointImpl<JaxCountry> implements CountryEndpointApi {
 
    public CountryEndpointImpl(IAtsServer atsServer) {
       super(AtsArtifactTypes.Country, AtsArtifactToken.CountryFolder, atsServer);

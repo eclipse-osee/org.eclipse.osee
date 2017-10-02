@@ -34,7 +34,7 @@ public class TaskMover {
       this.tasks = tasks;
    }
 
-   public Result moveTasks()  {
+   public Result moveTasks() {
       // Move Tasks
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("Drop Add Tasks");
       for (IAtsTask task : tasks) {

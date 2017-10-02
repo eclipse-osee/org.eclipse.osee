@@ -16,7 +16,7 @@ import org.eclipse.osee.orcs.OrcsSession;
 /**
  * @author Roberto E. Escobar
  */
-public class OrcsSessionImpl extends BaseIdentity<String>implements OrcsSession {
+public class OrcsSessionImpl extends BaseIdentity<String> implements OrcsSession {
    public OrcsSessionImpl(String sessionId) {
       super(sessionId);
    }

@@ -18,8 +18,8 @@ import org.eclipse.osee.executor.admin.CancellableCallable;
  */
 public interface Query {
 
-   int getCount() ;
+   int getCount();
 
-   CancellableCallable<Integer> createCount() ;
+   CancellableCallable<Integer> createCount();
 
 }

@@ -100,7 +100,7 @@ public class AtsTest_DemoPopulateAndTest_Suite {
       OseeLog.log(AtsTest_DemoPopulateAndTest_Suite.class, Level.SEVERE, "\nBegin Populate Demo DB...");
    }
 
-   private static void validateArtifactCache()  {
+   private static void validateArtifactCache() {
       final Collection<Artifact> list = ArtifactCache.getDirtyArtifacts();
       if (!list.isEmpty()) {
          for (Artifact artifact : list) {

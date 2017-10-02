@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public interface IArtifactDecoratorPreferences {
 
-   public String getSelectedAttributeData(Artifact artifact) ;
+   public String getSelectedAttributeData(Artifact artifact);
 
    public boolean showArtIds();
 

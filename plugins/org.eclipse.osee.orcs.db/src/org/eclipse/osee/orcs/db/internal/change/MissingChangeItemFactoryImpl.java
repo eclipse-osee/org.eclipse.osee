@@ -59,7 +59,7 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
    }
 
    @Override
-   public Collection<ChangeItem> createMissingChanges(HasCancellation cancellation, OrcsSession session, List<ChangeItem> changes, TransactionToken sourceTx, TransactionToken destTx, ApplicabilityQuery applicQuery)  {
+   public Collection<ChangeItem> createMissingChanges(HasCancellation cancellation, OrcsSession session, List<ChangeItem> changes, TransactionToken sourceTx, TransactionToken destTx, ApplicabilityQuery applicQuery) {
       if (changes != null && !changes.isEmpty()) {
          Set<ArtifactId> modifiedArtIds = new HashSet<>();
          Multimap<ArtifactId, Id> modifiedAttrIds = LinkedListMultimap.create();
@@ -117,7 +117,7 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
       return toReturn;
    }
 
-   private Set<ArtifactId> determineWhichArtifactsNotOnDestination(HasCancellation cancellation, OrcsSession session, Set<ArtifactId> artIds, TransactionToken destTx)  {
+   private Set<ArtifactId> determineWhichArtifactsNotOnDestination(HasCancellation cancellation, OrcsSession session, Set<ArtifactId> artIds, TransactionToken destTx) {
       DataLoader loader = dataLoaderFactory.newDataLoader(session, destTx.getBranch(), artIds);
       final Set<ArtifactId> missingArtIds = new LinkedHashSet<>(artIds);
       loader.includeDeletedArtifacts();
@@ -134,7 +134,7 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
       return missingArtIds;
    }
 
-   private Collection<ChangeItem> createMissingChangeItems(HasCancellation cancellation, OrcsSession session, TransactionToken sourceTx, TransactionToken destTx, final Set<ArtifactId> modifiedArtIds, final Multimap<ArtifactId, Id> modifiedAttrIds, final Multimap<ArtifactId, Id> modifiedRels, final Set<ArtifactId> missingArtIds, final Set<ArtifactId> allArtIds)  {
+   private Collection<ChangeItem> createMissingChangeItems(HasCancellation cancellation, OrcsSession session, TransactionToken sourceTx, TransactionToken destTx, final Set<ArtifactId> modifiedArtIds, final Multimap<ArtifactId, Id> modifiedAttrIds, final Multimap<ArtifactId, Id> modifiedRels, final Set<ArtifactId> missingArtIds, final Set<ArtifactId> allArtIds) {
       final Set<ChangeItem> toReturn = new LinkedHashSet<>();
       final Set<RelationData> relations = new LinkedHashSet<>();
 
@@ -147,7 +147,7 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
       loader.load(cancellation, new LoadDataHandlerAdapter() {
 
          @Override
-         public void onData(ArtifactData data)  {
+         public void onData(ArtifactData data) {
             if (!modifiedArtIds.contains(data)) {
                toReturn.add(createArtifactChangeItem(data));
             }
@@ -162,7 +162,7 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
          }
 
          @Override
-         public void onData(AttributeData data)  {
+         public void onData(AttributeData data) {
             if (!modifiedAttrIds.get(ArtifactId.valueOf(data.getArtifactId())).contains(data)) {
                toReturn.add(createAttributeChangeItem(data));
             }
@@ -192,7 +192,7 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
       return toReturn;
    }
 
-   private Set<ChangeItem> createExistingRelations(HasCancellation cancellation, OrcsSession session, TransactionToken destTx, final Multimap<ArtifactId, RelationData> relationChangesToAdd)  {
+   private Set<ChangeItem> createExistingRelations(HasCancellation cancellation, OrcsSession session, TransactionToken destTx, final Multimap<ArtifactId, RelationData> relationChangesToAdd) {
       final Set<ChangeItem> toReturn = new LinkedHashSet<>();
 
       DataLoader loader = dataLoaderFactory.newDataLoader(session, destTx.getBranch(), relationChangesToAdd.keySet());
@@ -201,7 +201,7 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
       loader.load(cancellation, new LoadDataHandlerAdapter() {
 
          @Override
-         public void onData(ArtifactData data)  {
+         public void onData(ArtifactData data) {
             for (RelationData relData : relationChangesToAdd.get(data)) {
                toReturn.add(createRelationChangeItem(relData));
             }
@@ -218,7 +218,7 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
       }
    }
 
-   private ChangeItem createArtifactChangeItem(ArtifactData data)  {
+   private ChangeItem createArtifactChangeItem(ArtifactData data) {
       ApplicabilityId appId = data.getApplicabilityId();
       ChangeItem artChange = ChangeItemUtil.newArtifactChange(ArtifactId.valueOf(data.getLocalId()),
          ArtifactTypeId.valueOf(data.getTypeUuid()), data.getVersion().getGammaId(), determineModType(data),
@@ -226,7 +226,7 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
       return artChange;
    }
 
-   private ChangeItem createAttributeChangeItem(AttributeData data)  {
+   private ChangeItem createAttributeChangeItem(AttributeData data) {
       ApplicabilityId appId = data.getApplicabilityId();
       ChangeItem attrChange = ChangeItemUtil.newAttributeChange(data, AttributeTypeId.valueOf(data.getTypeUuid()),
          ArtifactId.valueOf(data.getArtifactId()), data.getVersion().getGammaId(), determineModType(data),
@@ -235,7 +235,7 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
       return attrChange;
    }
 
-   private ChangeItem createRelationChangeItem(RelationData data)  {
+   private ChangeItem createRelationChangeItem(RelationData data) {
       ApplicabilityId appId = data.getApplicabilityId();
       return ChangeItemUtil.newRelationChange(RelationId.valueOf(Long.valueOf(data.getLocalId())),
          RelationTypeId.valueOf(data.getTypeUuid()), data.getVersion().getGammaId(), determineModType(data),

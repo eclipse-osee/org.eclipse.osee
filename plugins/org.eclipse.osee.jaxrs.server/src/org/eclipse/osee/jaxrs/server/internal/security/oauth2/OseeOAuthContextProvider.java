@@ -146,7 +146,7 @@ public class OseeOAuthContextProvider implements ContextProvider<OseeOAuthContex
       return new OseePermissionImpl(id, permission);
    }
 
-   private static final class OseePermissionImpl extends BaseIdentity<Long>implements OseePermission {
+   private static final class OseePermissionImpl extends BaseIdentity<Long> implements OseePermission {
 
       private final OAuthPermission permission;
 

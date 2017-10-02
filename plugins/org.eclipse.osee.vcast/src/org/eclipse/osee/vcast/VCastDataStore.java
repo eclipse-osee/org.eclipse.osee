@@ -37,53 +37,53 @@ import org.eclipse.osee.vcast.model.VCastWritable;
  */
 public interface VCastDataStore {
 
-   Collection<VCastBranchCoverage> getAllBranchCoverages() ;
+   Collection<VCastBranchCoverage> getAllBranchCoverages();
 
-   Collection<VCastBranchData> getAllBranchData() ;
+   Collection<VCastBranchData> getAllBranchData();
 
-   Collection<VCastFunction> getAllFunctions() ;
+   Collection<VCastFunction> getAllFunctions();
 
-   Collection<VCastInstrumentedFile> getAllInstrumentedFiles() ;
+   Collection<VCastInstrumentedFile> getAllInstrumentedFiles();
 
-   Collection<VCastMcdcCoverage> getAllMcdcCoverages() ;
+   Collection<VCastMcdcCoverage> getAllMcdcCoverages();
 
-   Collection<VCastMcdcCoverageCondition> getAllMcdcCoverageConditions() ;
+   Collection<VCastMcdcCoverageCondition> getAllMcdcCoverageConditions();
 
-   Collection<VCastMcdcCoveragePairRow> getAllMcdcCoveragePairRows() ;
+   Collection<VCastMcdcCoveragePairRow> getAllMcdcCoveragePairRows();
 
-   Collection<VCastMcdcCoveragePair> getAllMcdcCoveragePairs() ;
+   Collection<VCastMcdcCoveragePair> getAllMcdcCoveragePairs();
 
-   Collection<VCastMcdcData> getAllMcdcData() ;
+   Collection<VCastMcdcData> getAllMcdcData();
 
-   Collection<VCastMcdcDataCondition> getAllMcdcDataConditions() ;
+   Collection<VCastMcdcDataCondition> getAllMcdcDataConditions();
 
-   Collection<VCastProjectFile> getAllProjectFiles() ;
+   Collection<VCastProjectFile> getAllProjectFiles();
 
-   Collection<VCastProject> getAllProjects() ;
+   Collection<VCastProject> getAllProjects();
 
-   Collection<VCastResult> getAllResults() ;
+   Collection<VCastResult> getAllResults();
 
-   Collection<VCastSetting> getAllSettings() ;
+   Collection<VCastSetting> getAllSettings();
 
-   Collection<VCastSourceFile> getAllSourceFiles() ;
+   Collection<VCastSourceFile> getAllSourceFiles();
 
-   Collection<VCastStatementCoverage> getAllStatementCoverages() ;
+   Collection<VCastStatementCoverage> getAllStatementCoverages();
 
-   Collection<VCastStatementData> getAllStatementData() ;
+   Collection<VCastStatementData> getAllStatementData();
 
-   VCastVersion getVersion() ;
+   VCastVersion getVersion();
 
-   VCastWritable getWritable() ;
+   VCastWritable getWritable();
 
-   VCastSourceFileJoin getSourceFileJoin(VCastInstrumentedFile instrumentedFile) ;
+   VCastSourceFileJoin getSourceFileJoin(VCastInstrumentedFile instrumentedFile);
 
-   Collection<VCastFunction> getFunctions(VCastInstrumentedFile instrumentedFile) ;
+   Collection<VCastFunction> getFunctions(VCastInstrumentedFile instrumentedFile);
 
-   Collection<VCastStatementCoverage> getStatementCoverageLines(VCastFunction function) ;
+   Collection<VCastStatementCoverage> getStatementCoverageLines(VCastFunction function);
 
-   Collection<VCastStatementData> getStatementData(VCastStatementCoverage statementCoverage) ;
+   Collection<VCastStatementData> getStatementData(VCastStatementCoverage statementCoverage);
 
-   Collection<VCastResult> getResults(VCastStatementData statementDataItem) ;
+   Collection<VCastResult> getResults(VCastStatementData statementDataItem);
 
    void setIsMCDC();
 

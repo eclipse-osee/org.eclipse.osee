@@ -47,7 +47,7 @@ public class TxAuthorIdsSqlHandler extends SqlHandler<CriteriaAuthorIds> {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer)  {
+   public boolean addPredicates(AbstractSqlWriter writer) {
       Collection<Integer> ids = criteria.getIds();
       if (ids.size() > 1) {
          AbstractJoinQuery joinQuery = writer.writeIdJoin(ids);

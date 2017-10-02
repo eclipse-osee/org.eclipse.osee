@@ -45,8 +45,8 @@ public class JdbcRunFunctionTest {
       File newFile = folder.newFile("hsql.db." + testName.getMethodName());
 
       server = JdbcServerBuilder.hsql(newFile.toURI().toASCIIString())//
-      .useRandomPort(true) //
-      .build();
+         .useRandomPort(true) //
+         .build();
 
       JdbcServerConfig config = server.getConfig();
       dbName = config.getDbName();

@@ -73,7 +73,7 @@ public abstract class XFlatWidget<T> extends XLabel {
       return flatControl.pageIds;
    }
 
-   protected void setPageRange(int minPage, int maxPage)  {
+   protected void setPageRange(int minPage, int maxPage) {
       if (minPage < 0) {
          throw new OseeArgumentException("Min Number of Pages must be greater than 0");
       }

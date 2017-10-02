@@ -16,5 +16,5 @@ package org.eclipse.osee.framework.messaging;
 public interface ConnectionNodeFailoverSupport extends ConnectionNode {
    boolean isConnected();
 
-   public void start() ;
+   public void start();
 }

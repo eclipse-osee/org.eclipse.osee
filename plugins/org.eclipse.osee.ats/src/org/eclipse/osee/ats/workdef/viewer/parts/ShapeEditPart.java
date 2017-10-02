@@ -126,7 +126,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
     * Return a IFigure depending on the instance of the current model element. This allows this EditPart to be used for
     * both subclasses of Shape.
     */
-   protected IFigure createFigureForModel()  {
+   protected IFigure createFigureForModel() {
       if (getModel() instanceof RectangleShape) {
          return new RoundedRectangle();
       }
@@ -149,7 +149,7 @@ class ShapeEditPart extends AbstractGraphicalEditPart implements PropertyChangeL
       return (Shape) getModel();
    }
 
-   protected ConnectionAnchor getConnectionAnchor()  {
+   protected ConnectionAnchor getConnectionAnchor() {
       if (anchor == null) {
          if (getModel() instanceof RectangleShape) {
             anchor = new ChopboxAnchor(getFigure());

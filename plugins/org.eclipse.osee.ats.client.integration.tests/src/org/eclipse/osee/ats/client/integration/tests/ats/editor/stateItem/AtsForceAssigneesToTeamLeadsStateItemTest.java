@@ -67,7 +67,7 @@ public class AtsForceAssigneesToTeamLeadsStateItemTest {
    }
 
    @Test
-   public void testTransitioned()  {
+   public void testTransitioned() {
       Assert.assertNotNull(teamArt);
 
       // assignee should be Joe Smith

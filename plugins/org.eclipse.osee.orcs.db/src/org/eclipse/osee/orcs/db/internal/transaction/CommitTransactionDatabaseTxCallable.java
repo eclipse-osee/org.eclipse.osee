@@ -57,7 +57,7 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
       return identityManager.getNextTransactionId();
    }
 
-   private void process(TxWritePhaseEnum phase)  {
+   private void process(TxWritePhaseEnum phase) {
       Iterable<TransactionProcessor> processors = provider.getProcessor(phase);
       for (TransactionProcessor processor : processors) {
          processor.process(this, getSession(), transactionData);
@@ -70,7 +70,7 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
     * @return TransactionResult or null if no data was modified
     */
    @Override
-   protected TransactionResult handleTxWork(JdbcConnection connection)  {
+   protected TransactionResult handleTxWork(JdbcConnection connection) {
       /////
       // TODO:
       // 1. Make this whole method a critical region on a per branch basis - can only write to a branch on one thread at time
@@ -105,12 +105,12 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
    }
 
    @Override
-   protected void handleTxFinally()  {
+   protected void handleTxFinally() {
       super.handleTxFinally();
       process(TxWritePhaseEnum.AFTER_TX_WRITE);
    }
 
-   private TransactionReadable createTransactionRecord(BranchId branch, UserId author, String comment, TransactionId transaction)  {
+   private TransactionReadable createTransactionRecord(BranchId branch, UserId author, String comment, TransactionId transaction) {
 
       TransactionDetailsType txType = TransactionDetailsType.NonBaselined;
       Date transactionTime = GlobalTime.GreenwichMeanTimestamp();

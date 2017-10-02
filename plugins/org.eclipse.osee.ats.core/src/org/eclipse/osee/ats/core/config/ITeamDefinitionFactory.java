@@ -19,8 +19,8 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
  */
 public interface ITeamDefinitionFactory {
 
-   IAtsTeamDefinition createTeamDefinition(String name, long uuid, IAtsChangeSet changes, IAtsServices services) ;
+   IAtsTeamDefinition createTeamDefinition(String name, long uuid, IAtsChangeSet changes, IAtsServices services);
 
-   IAtsTeamDefinition createTeamDefinition(String name, IAtsChangeSet changes, IAtsServices services) ;
+   IAtsTeamDefinition createTeamDefinition(String name, IAtsChangeSet changes, IAtsServices services);
 
 }

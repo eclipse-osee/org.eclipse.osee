@@ -37,7 +37,7 @@ public class XBranchSelectByWidgetDam extends XBranchSelectWidget implements IAt
       addXModifiedListener(new DirtyListener());
    }
 
-   public Long getStoredUuid()  {
+   public Long getStoredUuid() {
       return Long.valueOf(artifact.getSoleAttributeValue(attributeType, ""));
    }
 
@@ -47,7 +47,7 @@ public class XBranchSelectByWidgetDam extends XBranchSelectWidget implements IAt
    }
 
    @Override
-   public void saveToArtifact()  {
+   public void saveToArtifact() {
       BranchId selection = getSelection();
       if (selection == null) {
          artifact.deleteAttributes(attributeType);
@@ -57,7 +57,7 @@ public class XBranchSelectByWidgetDam extends XBranchSelectWidget implements IAt
    }
 
    @Override
-   public void revert()  {
+   public void revert() {
       setAttributeType(getArtifact(), getAttributeType());
    }
 
@@ -78,7 +78,7 @@ public class XBranchSelectByWidgetDam extends XBranchSelectWidget implements IAt
    }
 
    @Override
-   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeTypeName)  {
+   public void setAttributeType(Artifact artifact, AttributeTypeToken attributeTypeName) {
       setLabel(attributeTypeName.getUnqualifiedName());
       this.artifact = artifact;
       this.attributeType = attributeTypeName;

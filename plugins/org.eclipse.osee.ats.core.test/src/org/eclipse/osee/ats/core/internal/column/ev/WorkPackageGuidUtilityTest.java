@@ -27,7 +27,7 @@ public class WorkPackageGuidUtilityTest extends AbstractWorkPackageUtilityTest {
 
    @Override
    @Before
-   public void setup()  {
+   public void setup() {
       super.setup();
       util = new WorkPackageGuidColumn(earnedValueServiceProvider, null);
    }

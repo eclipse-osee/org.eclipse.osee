@@ -167,7 +167,7 @@ public class AttributeFormPart extends AbstractFormPart {
       }
    }
 
-   public void addWidgetForAttributeType(Collection<AttributeTypeToken> attributeTypes)  {
+   public void addWidgetForAttributeType(Collection<AttributeTypeToken> attributeTypes) {
       Artifact artifact = editor.getEditorInput().getArtifact();
       boolean isEditable = !artifact.isReadOnly();
 

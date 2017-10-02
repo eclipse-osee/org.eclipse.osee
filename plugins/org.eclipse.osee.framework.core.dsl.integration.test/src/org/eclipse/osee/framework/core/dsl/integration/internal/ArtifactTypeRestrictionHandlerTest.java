@@ -39,7 +39,7 @@ public class ArtifactTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    }
 
    @Test
-   public void testProcessDataNotMatchesRestriction()  {
+   public void testProcessDataNotMatchesRestriction() {
       IArtifactType artifactType = CoreArtifactTypes.Requirement;
       XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getGuid(), artifactType.getName());
 
@@ -54,7 +54,7 @@ public class ArtifactTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    }
 
    @Test
-   public void testProcessCreateAccessDetail()  {
+   public void testProcessCreateAccessDetail() {
       IArtifactType artifactType = CoreArtifactTypes.Requirement;
       XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getGuid(), artifactType.getName());
 
@@ -71,7 +71,7 @@ public class ArtifactTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
    }
 
    @Test
-   public void testProcessArtifactTypeInheritance()  {
+   public void testProcessArtifactTypeInheritance() {
       IArtifactType artifactType = CoreArtifactTypes.Artifact;
       XArtifactType artifactTypeRef = MockModel.createXArtifactType(artifactType.getGuid(), artifactType.getName());
 

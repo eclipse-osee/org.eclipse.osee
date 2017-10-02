@@ -18,8 +18,8 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
  */
 public interface HasAssignees {
 
-   public List<IAtsUser> getAssignees() ;
+   public List<IAtsUser> getAssignees();
 
-   public List<IAtsUser> getImplementers() ;
+   public List<IAtsUser> getImplementers();
 
 }

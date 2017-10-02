@@ -41,7 +41,7 @@ public class TxGetPriorSqlHandler extends SqlHandler<CriteriaTxGetPrior> {
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer)  {
+   public boolean addPredicates(AbstractSqlWriter writer) {
       writer.write(txdAlias);
       writer.write(".transaction_id = ");
       writer.write("(SELECT max(td2.transaction_id) FROM ");

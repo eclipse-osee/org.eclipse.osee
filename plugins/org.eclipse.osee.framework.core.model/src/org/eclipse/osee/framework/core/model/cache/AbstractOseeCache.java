@@ -52,13 +52,13 @@ public abstract class AbstractOseeCache<T extends NamedIdBase> implements IOseeC
       return idToTypeMap.size();
    }
 
-   public boolean existsByGuid(Long id)  {
+   public boolean existsByGuid(Long id) {
       ensurePopulated();
       return idToTypeMap.containsKey(id);
    }
 
    @Override
-   public void decache(T... types)  {
+   public void decache(T... types) {
       Conditions.checkNotNull(types, "types to de-cache");
       for (T type : types) {
          decache(type);
@@ -66,7 +66,7 @@ public abstract class AbstractOseeCache<T extends NamedIdBase> implements IOseeC
    }
 
    @Override
-   public void decache(T type)  {
+   public void decache(T type) {
       Conditions.checkNotNull(type, "type to de-cache");
       ensurePopulated();
       decacheByName(type);
@@ -80,7 +80,7 @@ public abstract class AbstractOseeCache<T extends NamedIdBase> implements IOseeC
     * this method is intended for use by subclasses only. The calling method must synchronize the use of this view of
     * the views because it is not a copy. This method exists to improve performance for subclasses
     */
-   protected synchronized Collection<T> getRawValues()  {
+   protected synchronized Collection<T> getRawValues() {
       ensurePopulated();
       return idToTypeMap.values();
    }
@@ -101,7 +101,7 @@ public abstract class AbstractOseeCache<T extends NamedIdBase> implements IOseeC
    }
 
    @Override
-   public void cache(T... types)  {
+   public void cache(T... types) {
       Conditions.checkNotNull(types, "types to cache");
       for (T type : types) {
          cache(type);
@@ -109,7 +109,7 @@ public abstract class AbstractOseeCache<T extends NamedIdBase> implements IOseeC
    }
 
    @Override
-   public void cache(T type)  {
+   public void cache(T type) {
       Conditions.checkNotNull(type, "type to cache");
       ensurePopulated();
       nameToTypeMap.put(type.getName(), type);
@@ -117,18 +117,18 @@ public abstract class AbstractOseeCache<T extends NamedIdBase> implements IOseeC
    }
 
    @Override
-   public Collection<T> getAll()  {
+   public Collection<T> getAll() {
       ensurePopulated();
       return new ArrayList<T>(idToTypeMap.values());
    }
 
    @Override
-   public T getById(Number typeId)  {
+   public T getById(Number typeId) {
       ensurePopulated();
       return idToTypeMap.get(typeId.longValue());
    }
 
-   public T getUniqueByName(String typeName)  {
+   public T getUniqueByName(String typeName) {
       ensurePopulated();
       Collection<T> values = getByName(typeName);
       if (values.size() > 1) {
@@ -137,7 +137,7 @@ public abstract class AbstractOseeCache<T extends NamedIdBase> implements IOseeC
       return values.isEmpty() ? null : values.iterator().next();
    }
 
-   public Collection<T> getByName(String typeName)  {
+   public Collection<T> getByName(String typeName) {
       ensurePopulated();
       Collection<T> types = new ArrayList<>();
       Collection<T> values = nameToTypeMap.getValues(typeName);
@@ -147,7 +147,7 @@ public abstract class AbstractOseeCache<T extends NamedIdBase> implements IOseeC
       return types;
    }
 
-   public T getBySoleName(String typeName)  {
+   public T getBySoleName(String typeName) {
       ensurePopulated();
       Collection<T> types = getByName(typeName);
       if (types.size() != 1) {
@@ -158,23 +158,23 @@ public abstract class AbstractOseeCache<T extends NamedIdBase> implements IOseeC
    }
 
    @Override
-   public T getByGuid(Long id)  {
+   public T getByGuid(Long id) {
       ensurePopulated();
       return idToTypeMap.get(id);
    }
 
-   public T get(Id token)  {
+   public T get(Id token) {
       ensurePopulated();
       return getByGuid(token.getId());
    }
 
-   public void cacheFrom(AbstractOseeCache<T> source)  {
+   public void cacheFrom(AbstractOseeCache<T> source) {
       for (T type : source.getAll()) {
          cache(type);
       }
    }
 
-   protected void ensurePopulated()  {
+   protected void ensurePopulated() {
       // Do nothing
    }
 }

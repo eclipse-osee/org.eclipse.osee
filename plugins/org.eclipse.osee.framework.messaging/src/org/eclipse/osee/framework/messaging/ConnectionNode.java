@@ -61,7 +61,7 @@ public interface ConnectionNode {
     * @param statusCallback Used to relay the status of the sending of the message ( success, failure, etc). Can not be
     * null.
     */
-   void send(MessageID messageId, Object message, final OseeMessagingStatusCallback statusCallback) ;
+   void send(MessageID messageId, Object message, final OseeMessagingStatusCallback statusCallback);
 
    /**
     * Attaches the properties provided to the message before sending.
@@ -70,12 +70,12 @@ public interface ConnectionNode {
     * @param statusCallback Used to relay the status of the sending of the message ( success, failure, etc). Can not be
     * null.
     */
-   void send(MessageID messageId, Object message, Properties properties, OseeMessagingStatusCallback statusCallback) ;
+   void send(MessageID messageId, Object message, Properties properties, OseeMessagingStatusCallback statusCallback);
 
    /**
     * Sends given message. Uses default status handler to log failures in sending given message.
     */
-   void send(MessageID messageId, Object message) ;
+   void send(MessageID messageId, Object message);
 
    void addConnectionListener(ConnectionListener connectionListener);
 

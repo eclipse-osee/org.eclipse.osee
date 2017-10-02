@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.internal.event.Transport;
 public class TransactionRemoteEventHandler implements EventHandlerRemote<RemoteTransactionEvent1> {
 
    @Override
-   public void handle(Transport transport, Sender sender, RemoteTransactionEvent1 remoteEvent)  {
+   public void handle(Transport transport, Sender sender, RemoteTransactionEvent1 remoteEvent) {
       TransactionEvent transEvent = FrameworkEventUtil.getTransactionEvent(remoteEvent);
       if (transEvent.getEventType() == TransactionEventType.Purged) {
          PurgeTransactionEventUtil.handleRemotePurgeTransactionEvent(transEvent);

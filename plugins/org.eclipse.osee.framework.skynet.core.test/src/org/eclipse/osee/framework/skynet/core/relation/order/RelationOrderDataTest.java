@@ -49,7 +49,7 @@ public class RelationOrderDataTest {
    private RelationType relationType3;
 
    @Before
-   public void setUp()  {
+   public void setUp() {
       artifact = new Artifact(CoreBranches.SYSTEM_ROOT);
       accessor = new MockRelationOrderAccessor();
       data = new RelationOrderData(accessor, artifact);
@@ -77,7 +77,7 @@ public class RelationOrderDataTest {
    }
 
    @Test
-   public void testLoad()  {
+   public void testLoad() {
       accessor.clearLoadCalled();
 
       data.load();
@@ -107,7 +107,7 @@ public class RelationOrderDataTest {
    }
 
    @Test
-   public void testGetCurrentSorterGuid()  {
+   public void testGetCurrentSorterGuid() {
       List<Object[]> expected = new ArrayList<>();
       addData(expected);
 
@@ -127,7 +127,7 @@ public class RelationOrderDataTest {
    }
 
    @Test
-   public void testGetOrderList()  {
+   public void testGetOrderList() {
       List<Object[]> expected = new ArrayList<>();
       addData(expected);
 
@@ -149,7 +149,7 @@ public class RelationOrderDataTest {
    }
 
    @Test
-   public void testRemoveFromList()  {
+   public void testRemoveFromList() {
       List<Object[]> expected = new ArrayList<>();
       addData(expected);
 
@@ -171,7 +171,7 @@ public class RelationOrderDataTest {
    }
 
    @Test
-   public void testStore()  {
+   public void testStore() {
       List<Object[]> expected = new ArrayList<>();
       addData(expected);
 
@@ -227,7 +227,7 @@ public class RelationOrderDataTest {
       expectedData.add(new Object[] {relationType, side, sorterId, artGuids});
    }
 
-   private static RelationType createRelationType(long id, RelationTypeCache cache, String name, RelationSorter delationRelationOrderGuid)  {
+   private static RelationType createRelationType(long id, RelationTypeCache cache, String name, RelationSorter delationRelationOrderGuid) {
       RelationType relationType = new RelationType(id, name, name + "_A", name + "_B", Artifact, Artifact,
          RelationTypeMultiplicity.MANY_TO_MANY, delationRelationOrderGuid);
       cache.cache(relationType);

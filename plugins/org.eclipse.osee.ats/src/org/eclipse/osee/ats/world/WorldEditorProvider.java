@@ -49,12 +49,12 @@ public abstract class WorldEditorProvider implements IWorldEditorProvider {
    }
 
    @Override
-   public String getSelectedName(SearchType searchType)  {
+   public String getSelectedName(SearchType searchType) {
       return getName();
    }
 
    @Override
-   public IAtsVersion getTargetedVersionArtifact()  {
+   public IAtsVersion getTargetedVersionArtifact() {
       return null;
    }
 
@@ -69,7 +69,7 @@ public abstract class WorldEditorProvider implements IWorldEditorProvider {
    }
 
    @Override
-   public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend)  {
+   public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend) {
       this.worldEditor = worldEditor;
 
       boolean pend = Arrays.asList(tableLoadOptions).contains(TableLoadOption.ForcePend) || forcePend;
@@ -109,7 +109,7 @@ public abstract class WorldEditorProvider implements IWorldEditorProvider {
       private final boolean forcePend;
       private final WorldEditorProvider worldEditorProvider;
 
-      public LoadTableJob(WorldEditor worldEditor, WorldEditorProvider worldEditorProvider, SearchType searchType, TableLoadOption[] tableLoadOptions, boolean forcePend)  {
+      public LoadTableJob(WorldEditor worldEditor, WorldEditorProvider worldEditorProvider, SearchType searchType, TableLoadOption[] tableLoadOptions, boolean forcePend) {
          super("Loading \"" + worldEditorProvider.getSelectedName(searchType) + "\"...");
          this.worldEditor = worldEditor;
          this.worldEditorProvider = worldEditorProvider;

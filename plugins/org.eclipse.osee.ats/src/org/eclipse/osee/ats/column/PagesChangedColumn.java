@@ -29,7 +29,8 @@ public class PagesChangedColumn extends XViewerAtsAttributeValueColumn {
 
    private PagesChangedColumn() {
       super(AtsAttributeTypes.PagesChanged, WorldXViewerFactory.COLUMN_NAMESPACE + ".pagesChanged",
-         AtsAttributeTypes.PagesChanged.getUnqualifiedName(), 40, XViewerAlign.Center, false, SortDataType.Integer, true, "");
+         AtsAttributeTypes.PagesChanged.getUnqualifiedName(), 40, XViewerAlign.Center, false, SortDataType.Integer,
+         true, "");
    }
 
    /**

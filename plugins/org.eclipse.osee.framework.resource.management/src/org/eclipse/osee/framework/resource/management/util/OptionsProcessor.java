@@ -73,7 +73,7 @@ public class OptionsProcessor {
       }
    }
 
-   public File getStorageFile()  {
+   public File getStorageFile() {
       File storageFile = new File(fileuri);
       if (!overwrite) {
          if (storageFile.exists()) {
@@ -89,7 +89,7 @@ public class OptionsProcessor {
       return storageFile;
    }
 
-   public IResource getResourceToStore()  {
+   public IResource getResourceToStore() {
       IResource resourceToReturn;
       if (shouldCompress && !resource.isCompressed()) {
          resourceToReturn = Resources.compressResource(resource);
@@ -101,7 +101,7 @@ public class OptionsProcessor {
       return resourceToReturn;
    }
 
-   public IResource getResourceToServer()  {
+   public IResource getResourceToServer() {
       IResource toReturn = null;
       File testFile = new File(this.fileuri);
       if (testFile.exists()) {
@@ -117,7 +117,7 @@ public class OptionsProcessor {
       return toReturn;
    }
 
-   public IResourceLocator getActualResouceLocator()  {
+   public IResourceLocator getActualResouceLocator() {
       return new ResourceLocator(this.locatoruri);
    }
 

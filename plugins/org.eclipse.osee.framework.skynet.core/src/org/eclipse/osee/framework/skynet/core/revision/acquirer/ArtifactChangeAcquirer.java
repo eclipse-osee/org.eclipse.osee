@@ -39,7 +39,7 @@ public class ArtifactChangeAcquirer extends ChangeAcquirer {
    }
 
    @Override
-   public ArrayList<ChangeBuilder> acquireChanges()  {
+   public ArrayList<ChangeBuilder> acquireChanges() {
       Map<Integer, ArtifactChangeBuilder> artifactChangeBuilders = new HashMap<>();
       boolean hasBranch = getSourceBranch() != null;
       TransactionToken fromTransactionId;

@@ -58,12 +58,12 @@ public class AssigneeColumnTest extends AbstractUserTest {
    }
 
    @org.junit.Test
-   public void testGetAssigneeStr_null()  {
+   public void testGetAssigneeStr_null() {
       Assert.assertEquals("", assigneeColumn.getAssigneeStr(null));
    }
 
    @org.junit.Test
-   public void testGetAssigneeStrFromInWorkWorkflow()  {
+   public void testGetAssigneeStrFromInWorkWorkflow() {
       List<IAtsUser> assigneesToReturn = new ArrayList<>();
       assigneesToReturn.addAll(Arrays.asList(joe, steve, alice));
       when(stateMgr.getStateType()).thenReturn(StateType.Working);
@@ -73,7 +73,7 @@ public class AssigneeColumnTest extends AbstractUserTest {
    }
 
    @org.junit.Test
-   public void testGetAssigneeStrFromCompletedWorkflow()  {
+   public void testGetAssigneeStrFromCompletedWorkflow() {
       List<IAtsUser> assigneesToReturn = new ArrayList<>();
       when(stateMgr.getStateType()).thenReturn(StateType.Working);
       when(workItem.getAssignees()).thenReturn(assigneesToReturn);
@@ -102,7 +102,7 @@ public class AssigneeColumnTest extends AbstractUserTest {
    }
 
    @org.junit.Test
-   public void testGetAssigneeStrFromCancelledWorkflow()  {
+   public void testGetAssigneeStrFromCancelledWorkflow() {
       List<IAtsUser> assigneesToReturn = new ArrayList<>();
       when(stateMgr.getStateType()).thenReturn(StateType.Working);
       when(workItem.getAssignees()).thenReturn(assigneesToReturn);
@@ -130,7 +130,7 @@ public class AssigneeColumnTest extends AbstractUserTest {
    }
 
    @org.junit.Test
-   public void testGetAssigneesStr_hasActions_oneWorkingOneCancelled()  {
+   public void testGetAssigneesStr_hasActions_oneWorkingOneCancelled() {
 
       List<IAtsUser> assigneesToReturn = new ArrayList<>();
       when(stateMgr.getStateType()).thenReturn(StateType.Working);
@@ -150,7 +150,7 @@ public class AssigneeColumnTest extends AbstractUserTest {
    }
 
    @org.junit.Test
-   public void testGetAssigneesStr_hasActions_duplicateImplementers()  {
+   public void testGetAssigneesStr_hasActions_duplicateImplementers() {
 
       when(group.getActions()).thenReturn(Arrays.asList(workItem, workItem2));
       when(workItem.getStateMgr().getStateType()).thenReturn(StateType.Cancelled);
@@ -162,7 +162,7 @@ public class AssigneeColumnTest extends AbstractUserTest {
    }
 
    @org.junit.Test
-   public void testGetAssigneesStr_hasActions_twoCancelled()  {
+   public void testGetAssigneesStr_hasActions_twoCancelled() {
 
       when(group.getActions()).thenReturn(Arrays.asList(workItem, workItem2));
       when(workItem.getStateMgr().getStateType()).thenReturn(StateType.Cancelled);
@@ -175,7 +175,7 @@ public class AssigneeColumnTest extends AbstractUserTest {
    }
 
    @org.junit.Test
-   public void testGetAssigneesStr_hasActions_twoWorkingDuplicates()  {
+   public void testGetAssigneesStr_hasActions_twoWorkingDuplicates() {
 
       List<IAtsUser> assigneesToReturn = new ArrayList<>();
       assigneesToReturn.add(steve);
@@ -195,7 +195,7 @@ public class AssigneeColumnTest extends AbstractUserTest {
    }
 
    @org.junit.Test
-   public void testGetAssigneesStr_invalidImplementersString()  {
+   public void testGetAssigneesStr_invalidImplementersString() {
       AssigneeColumn column = new AssigneeColumn((IAtsServices) null);
       when(stateMgr.getStateType()).thenReturn(StateType.Cancelled);
       Assert.assertEquals("", column.getAssigneeStr(workItem));

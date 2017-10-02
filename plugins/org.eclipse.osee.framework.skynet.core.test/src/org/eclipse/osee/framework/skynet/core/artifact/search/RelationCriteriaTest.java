@@ -30,7 +30,7 @@ import org.mockito.ArgumentCaptor;
 public class RelationCriteriaTest {
 
    @Test
-   public void testAddRelationTypeSideToQueryBuilder()  {
+   public void testAddRelationTypeSideToQueryBuilder() {
       RelationCriteria criteria = new RelationCriteria(CoreRelationTypes.Allocation__Component);
       QueryBuilder builder = mock(QueryBuilder.class);
       criteria.addToQueryBuilder(builder);
@@ -47,7 +47,7 @@ public class RelationCriteriaTest {
    }
 
    @Test
-   public void testAddRelationTypeToQueryBuilder()  {
+   public void testAddRelationTypeToQueryBuilder() {
       RelationCriteria criteria = new RelationCriteria((IRelationType) CoreRelationTypes.Allocation__Component);
       QueryBuilder builder = mock(QueryBuilder.class);
       criteria.addToQueryBuilder(builder);

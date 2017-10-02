@@ -55,7 +55,7 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
       this(new HashMap<RendererOption, Object>());
    }
 
-   public IFile renderToFile(Artifact artifact, IOseeBranch branch, PresentationType presentationType)  {
+   public IFile renderToFile(Artifact artifact, IOseeBranch branch, PresentationType presentationType) {
       List<Artifact> artifacts;
       if (artifact == null) {
          artifacts = Collections.emptyList();
@@ -65,7 +65,7 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
       return renderToFile(artifacts, branch, presentationType);
    }
 
-   public IFile renderToFile(List<Artifact> artifacts, PresentationType presentationType)  {
+   public IFile renderToFile(List<Artifact> artifacts, PresentationType presentationType) {
       IOseeBranch initialBranch = null;
       for (Artifact artifact : artifacts) {
          if (initialBranch == null) {
@@ -80,7 +80,7 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
       return renderToFile(artifacts, initialBranch, presentationType);
    }
 
-   public IFile renderToFile(List<Artifact> artifacts, IOseeBranch branch, PresentationType presentationType)  {
+   public IFile renderToFile(List<Artifact> artifacts, IOseeBranch branch, PresentationType presentationType) {
       InputStream renderInputStream = getRenderInputStream(presentationType, branch, artifacts);
       IFile workingFile = RenderingUtil.getRenderFile(this, artifacts, branch, presentationType);
       AIFile.writeToFile(workingFile, renderInputStream);
@@ -94,18 +94,18 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
       return workingFile;
    }
 
-   public abstract InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) ;
+   public abstract InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts);
 
-   public InputStream getRenderInputStream(PresentationType presentationType, IOseeBranch branch, List<Artifact> artifacts)  {
+   public InputStream getRenderInputStream(PresentationType presentationType, IOseeBranch branch, List<Artifact> artifacts) {
       return getRenderInputStream(presentationType, artifacts);
    }
 
-   public abstract Program getAssociatedProgram(Artifact artifact) ;
+   public abstract Program getAssociatedProgram(Artifact artifact);
 
-   public abstract String getAssociatedExtension(Artifact artifact) ;
+   public abstract String getAssociatedExtension(Artifact artifact);
 
    @Override
-   public void open(List<Artifact> artifacts, PresentationType presentationType)  {
+   public void open(List<Artifact> artifacts, PresentationType presentationType) {
       if (presentationType == DEFAULT_OPEN) {
          presentationType = PREVIEW;
       }
@@ -142,5 +142,5 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
       }
    }
 
-   protected abstract IOperation getUpdateOperation(File file, List<Artifact> artifacts, BranchId branch, PresentationType presentationType) ;
+   protected abstract IOperation getUpdateOperation(File file, List<Artifact> artifacts, BranchId branch, PresentationType presentationType);
 }

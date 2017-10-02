@@ -53,14 +53,14 @@ public class OseeEnumType extends AbstractOseeIdType {
       return String.format("[%s] - %s", getName(), data);
    }
 
-   public OseeEnumEntry[] values()  {
+   public OseeEnumEntry[] values() {
       Collection<OseeEnumEntry> values = getFieldValue(OSEE_ENUM_TYPE_ENTRIES_FIELD);
       List<OseeEnumEntry> entries = new ArrayList<>(values);
       Collections.sort(entries);
       return entries.toArray(new OseeEnumEntry[entries.size()]);
    }
 
-   public OseeEnumEntry getEntryByName(String entryName)  {
+   public OseeEnumEntry getEntryByName(String entryName) {
       Collection<OseeEnumEntry> values = getFieldValue(OSEE_ENUM_TYPE_ENTRIES_FIELD);
       for (OseeEnumEntry entry : values) {
          if (entry.getName().equals(entryName)) {
@@ -70,7 +70,7 @@ public class OseeEnumType extends AbstractOseeIdType {
       return null;
    }
 
-   public Set<String> valuesAsOrderedStringSet()  {
+   public Set<String> valuesAsOrderedStringSet() {
       Set<String> values = new LinkedHashSet<>();
       for (OseeEnumEntry oseeEnumEntry : values()) {
          values.add(oseeEnumEntry.getName());
@@ -78,7 +78,7 @@ public class OseeEnumType extends AbstractOseeIdType {
       return values;
    }
 
-   public OseeEnumEntry valueOf(int ordinal)  {
+   public OseeEnumEntry valueOf(int ordinal) {
       OseeEnumEntry toReturn = null;
       for (OseeEnumEntry oseeEnumEntry : values()) {
          if (oseeEnumEntry.ordinal() == ordinal) {
@@ -94,7 +94,7 @@ public class OseeEnumType extends AbstractOseeIdType {
    /**
     * return the enum with the given name. Tolerates leading and trailing whitespace using trim()
     */
-   public OseeEnumEntry valueOf(String entryName)  {
+   public OseeEnumEntry valueOf(String entryName) {
       OseeEnumEntry toReturn = null;
       for (OseeEnumEntry oseeEnumEntry : values()) {
          if (oseeEnumEntry.getName().equals(entryName)) {
@@ -107,18 +107,18 @@ public class OseeEnumType extends AbstractOseeIdType {
       return toReturn;
    }
 
-   public void setEntries(List<OseeEnumEntry> entries)  {
+   public void setEntries(List<OseeEnumEntry> entries) {
       setField(OSEE_ENUM_TYPE_ENTRIES_FIELD, entries);
    }
 
-   public void addEntry(OseeEnumEntry entry)  {
+   public void addEntry(OseeEnumEntry entry) {
       List<OseeEnumEntry> entries = new ArrayList<>();
       entries.addAll(Arrays.asList(values()));
       entries.add(entry);
       setEntries(entries);
    }
 
-   public void removeEntry(OseeEnumEntry entry)  {
+   public void removeEntry(OseeEnumEntry entry) {
       List<OseeEnumEntry> entries = new ArrayList<>();
       entries.addAll(Arrays.asList(values()));
       if (!entries.remove(entry)) {

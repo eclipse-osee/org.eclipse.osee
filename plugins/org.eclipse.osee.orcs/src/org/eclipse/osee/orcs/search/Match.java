@@ -23,7 +23,7 @@ public interface Match<T, K> {
 
    public T getItem();
 
-   public Collection<K> getElements() ;
+   public Collection<K> getElements();
 
-   public List<MatchLocation> getLocation(K element) ;
+   public List<MatchLocation> getLocation(K element);
 }

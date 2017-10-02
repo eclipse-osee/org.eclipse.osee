@@ -90,27 +90,27 @@ public class XTransitionToStateComboWidget extends XComboViewer implements IArti
    }
 
    @Override
-   public void setArtifact(Artifact artifact)  {
+   public void setArtifact(Artifact artifact) {
       this.artifact = artifact;
    }
 
    @Override
-   public Artifact getArtifact()  {
+   public Artifact getArtifact() {
       return artifact;
    }
 
    @Override
-   public void saveToArtifact()  {
+   public void saveToArtifact() {
       // do nothing
    }
 
    @Override
-   public void revert()  {
+   public void revert() {
       // do nothing
    }
 
    @Override
-   public Result isDirty()  {
+   public Result isDirty() {
       return Result.FalseResult;
    }
 

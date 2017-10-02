@@ -29,8 +29,8 @@ public class ValidationRequiredColumn extends XViewerAtsAttributeValueColumn {
 
    private ValidationRequiredColumn() {
       super(AtsAttributeTypes.ValidationRequired, WorldXViewerFactory.COLUMN_NAMESPACE + ".validationRequired",
-         AtsAttributeTypes.ValidationRequired.getUnqualifiedName(), 80, XViewerAlign.Left, false, SortDataType.String, false,
-         "If set, Originator will be asked to perform a review to\nensure changes are as expected.");
+         AtsAttributeTypes.ValidationRequired.getUnqualifiedName(), 80, XViewerAlign.Left, false, SortDataType.String,
+         false, "If set, Originator will be asked to perform a review to\nensure changes are as expected.");
    }
 
    /**

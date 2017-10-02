@@ -76,7 +76,7 @@ public class MockWorkItem implements IAtsWorkItem {
    }
 
    @Override
-   public List<IAtsUser> getAssignees()  {
+   public List<IAtsUser> getAssignees() {
       return stateMgr.getAssignees();
    }
 

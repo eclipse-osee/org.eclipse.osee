@@ -42,12 +42,12 @@ public abstract class XButtonWithLabelDam extends XButton implements IArtifactWi
    protected abstract String getResultsText();
 
    @Override
-   public void setArtifact(Artifact artifact)  {
+   public void setArtifact(Artifact artifact) {
       this.artifact = artifact;
    }
 
    @Override
-   public Artifact getArtifact()  {
+   public Artifact getArtifact() {
       return artifact;
    }
 

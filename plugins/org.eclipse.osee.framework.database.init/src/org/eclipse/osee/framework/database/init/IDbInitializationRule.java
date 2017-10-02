@@ -15,6 +15,6 @@ package org.eclipse.osee.framework.database.init;
  */
 public interface IDbInitializationRule {
 
-   boolean isAllowed() ;
+   boolean isAllowed();
 
 }

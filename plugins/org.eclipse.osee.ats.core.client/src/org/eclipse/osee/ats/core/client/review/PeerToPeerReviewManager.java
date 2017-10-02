@@ -64,7 +64,7 @@ public class PeerToPeerReviewManager {
     *
     * @param user User to transition to OR null if should use user of current state
     */
-   public static Result transitionTo(PeerToPeerReviewArtifact reviewArt, PeerToPeerReviewState toState, Collection<UserRole> roles, Collection<ReviewDefectItem> defects, IAtsUser user, boolean popup, IAtsChangeSet changes)  {
+   public static Result transitionTo(PeerToPeerReviewArtifact reviewArt, PeerToPeerReviewState toState, Collection<UserRole> roles, Collection<ReviewDefectItem> defects, IAtsUser user, boolean popup, IAtsChangeSet changes) {
       Result result = setPrepareStateData(popup, reviewArt, roles, "DoThis.java", 100, .2, changes);
       if (result.isFalse()) {
          return result;
@@ -91,7 +91,7 @@ public class PeerToPeerReviewManager {
       return Result.TrueResult;
    }
 
-   private static Result transitionToState(StateType StateType, boolean popup, PeerToPeerReviewArtifact reviewArt, IStateToken toState, IAtsChangeSet changes)  {
+   private static Result transitionToState(StateType StateType, boolean popup, PeerToPeerReviewArtifact reviewArt, IStateToken toState, IAtsChangeSet changes) {
       TransitionHelper helper = new TransitionHelper("Transition to " + toState.getName(), Arrays.asList(reviewArt),
          toState.getName(), Arrays.asList(reviewArt.getStateMgr().getAssignees().iterator().next()), null, changes,
          AtsClientService.get().getServices(), TransitionOption.OverrideAssigneeCheck);
@@ -103,7 +103,7 @@ public class PeerToPeerReviewManager {
       return new Result("Error transitioning [%s]", results);
    }
 
-   public static Result setPrepareStateData(boolean popup, PeerToPeerReviewArtifact reviewArt, Collection<UserRole> roles, String reviewMaterials, int statePercentComplete, double stateHoursSpent, IAtsChangeSet changes)  {
+   public static Result setPrepareStateData(boolean popup, PeerToPeerReviewArtifact reviewArt, Collection<UserRole> roles, String reviewMaterials, int statePercentComplete, double stateHoursSpent, IAtsChangeSet changes) {
       if (!reviewArt.isInState(PeerToPeerReviewState.Prepare)) {
          Result result = new Result("Action not in Prepare state");
          if (result.isFalse() && popup) {
@@ -125,7 +125,7 @@ public class PeerToPeerReviewManager {
       return Result.TrueResult;
    }
 
-   public static Result setReviewStateData(PeerToPeerReviewArtifact reviewArt, Collection<UserRole> roles, Collection<ReviewDefectItem> defects, int statePercentComplete, double stateHoursSpent, IAtsChangeSet changes)  {
+   public static Result setReviewStateData(PeerToPeerReviewArtifact reviewArt, Collection<UserRole> roles, Collection<ReviewDefectItem> defects, int statePercentComplete, double stateHoursSpent, IAtsChangeSet changes) {
       if (roles != null) {
          IAtsPeerReviewRoleManager roleMgr = ((IAtsPeerToPeerReview) reviewArt).getRoleManager();
          for (UserRole role : roles) {
@@ -145,23 +145,23 @@ public class PeerToPeerReviewManager {
       return Result.TrueResult;
    }
 
-   public static PeerToPeerReviewArtifact createNewPeerToPeerReview(TeamWorkFlowArtifact teamArt, String reviewTitle, String againstState, IAtsChangeSet changes)  {
+   public static PeerToPeerReviewArtifact createNewPeerToPeerReview(TeamWorkFlowArtifact teamArt, String reviewTitle, String againstState, IAtsChangeSet changes) {
       return createNewPeerToPeerReview(teamArt, reviewTitle, againstState, new Date(),
          AtsClientService.get().getUserService().getCurrentUser(), changes);
    }
 
-   public static PeerToPeerReviewArtifact createNewPeerToPeerReview(IAtsWorkDefinition workDefinition, TeamWorkFlowArtifact teamArt, String reviewTitle, String againstState, IAtsChangeSet changes)  {
+   public static PeerToPeerReviewArtifact createNewPeerToPeerReview(IAtsWorkDefinition workDefinition, TeamWorkFlowArtifact teamArt, String reviewTitle, String againstState, IAtsChangeSet changes) {
       return createNewPeerToPeerReview(workDefinition, teamArt, teamArt.getTeamDefinition(), reviewTitle, againstState,
          new Date(), AtsClientService.get().getUserService().getCurrentUser(), changes);
    }
 
-   public static PeerToPeerReviewArtifact createNewPeerToPeerReview(TeamWorkFlowArtifact teamArt, String reviewTitle, String againstState, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes)  {
+   public static PeerToPeerReviewArtifact createNewPeerToPeerReview(TeamWorkFlowArtifact teamArt, String reviewTitle, String againstState, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) {
       return createNewPeerToPeerReview(
          AtsClientService.get().getWorkDefinitionService().getWorkDefinitionForPeerToPeerReviewNotYetCreated(teamArt),
          teamArt, teamArt.getTeamDefinition(), reviewTitle, againstState, createdDate, createdBy, changes);
    }
 
-   public static PeerToPeerReviewArtifact createNewPeerToPeerReview(IAtsActionableItem actionableItem, String reviewTitle, String againstState, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes)  {
+   public static PeerToPeerReviewArtifact createNewPeerToPeerReview(IAtsActionableItem actionableItem, String reviewTitle, String againstState, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) {
       IAtsTeamDefinition teamDef = actionableItem.getTeamDefinitionInherited();
       IAtsWorkDefinition workDefinition =
          AtsClientService.get().getWorkDefinitionService().getWorkDefinitionForPeerToPeerReviewNotYetCreatedAndStandalone(
@@ -174,7 +174,7 @@ public class PeerToPeerReviewManager {
       return peerArt;
    }
 
-   private static PeerToPeerReviewArtifact createNewPeerToPeerReview(IAtsWorkDefinition workDefinition, TeamWorkFlowArtifact teamArt, IAtsTeamDefinition teamDef, String reviewTitle, String againstState, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes)  {
+   private static PeerToPeerReviewArtifact createNewPeerToPeerReview(IAtsWorkDefinition workDefinition, TeamWorkFlowArtifact teamArt, IAtsTeamDefinition teamDef, String reviewTitle, String againstState, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) {
       PeerToPeerReviewArtifact peerToPeerRev =
          (PeerToPeerReviewArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.PeerToPeerReview,
             AtsClientService.get().getAtsBranch(), reviewTitle == null ? "Peer to Peer Review" : reviewTitle);
@@ -199,7 +199,7 @@ public class PeerToPeerReviewManager {
       return peerToPeerRev;
    }
 
-   public static boolean isStandAlongReview(Object object)  {
+   public static boolean isStandAlongReview(Object object) {
       if (object instanceof PeerToPeerReviewArtifact) {
          PeerToPeerReviewArtifact peerArt = (PeerToPeerReviewArtifact) object;
          return peerArt.isStandAloneReview();

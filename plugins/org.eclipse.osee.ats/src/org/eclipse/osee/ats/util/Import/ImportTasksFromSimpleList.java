@@ -119,7 +119,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
    }
 
    @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable)  {
+   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
       super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
       if (xWidget.getLabel().equals(TEAM_WORKFLOW) && taskableStateMachineArtifact != null) {
          final XListDropViewer viewer = (XListDropViewer) xWidget;
@@ -148,7 +148,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
 
    }
 
-   private void refreshStateCombo()  {
+   private void refreshStateCombo() {
       if (stateCombo != null && taskableStateMachineArtifact != null) {
          List<String> names = RelatedToStateColumn.getValidInWorkStates(taskableStateMachineArtifact);
          stateCombo.setDataStrings(names.toArray(new String[names.size()]));

@@ -79,9 +79,8 @@ public class ImportOutfileUIOperation {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            CommitTestRunJob newJob =
-               new CommitTestRunJob(job.getAll(), job.getCommitAllowed(), job.getCommitNotAllowed(),
-                  CommitConfiguration.isCommitOverrideAllowed());
+            CommitTestRunJob newJob = new CommitTestRunJob(job.getAll(), job.getCommitAllowed(),
+               job.getCommitNotAllowed(), CommitConfiguration.isCommitOverrideAllowed());
             newJob.schedule();
          }
       });

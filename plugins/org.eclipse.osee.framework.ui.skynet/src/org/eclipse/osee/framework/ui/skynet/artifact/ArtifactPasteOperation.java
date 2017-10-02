@@ -84,7 +84,7 @@ public class ArtifactPasteOperation extends AbstractOperation {
       }
    }
 
-   private void pasteRelationOrder(ArtifactPasteConfiguration config, Artifact source, Artifact newArtifact, List<Artifact> copiedChildren)  {
+   private void pasteRelationOrder(ArtifactPasteConfiguration config, Artifact source, Artifact newArtifact, List<Artifact> copiedChildren) {
       if (config.isKeepRelationOrderSettings()) {
          RelationTypeSide relationTypeSide = CoreRelationTypes.Default_Hierarchical__Child;
          RelationOrderData data = RelationManager.createRelationOrderData(source);
@@ -98,7 +98,7 @@ public class ArtifactPasteOperation extends AbstractOperation {
       }
    }
 
-   private Artifact pasteArtifact(IProgressMonitor monitor, double workAmount, ArtifactPasteConfiguration config, Artifact destination, Artifact source)  {
+   private Artifact pasteArtifact(IProgressMonitor monitor, double workAmount, ArtifactPasteConfiguration config, Artifact destination, Artifact source) {
       boolean workComplete = true;
       Artifact newArtifact = null;
       // We do not support duplicating user artifacts.

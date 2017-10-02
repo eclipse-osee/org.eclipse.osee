@@ -90,18 +90,18 @@ public class TransitionManagerTest {
    }
 
    @BeforeClass
-   public static void before()  {
+   public static void before() {
       AtsClientService.get().clearCaches();
    }
 
    @BeforeClass
    @AfterClass
-   public static void cleanup()  {
+   public static void cleanup() {
       AtsTestUtil.cleanup();
    }
 
    @org.junit.Test
-   public void testHandleTransitionValidation__NoAwas()  {
+   public void testHandleTransitionValidation__NoAwas() {
       AtsTestUtil.cleanupAndReset("TransitionManagerTest-A");
       TransitionHelper helper =
          new TransitionHelper(getClass().getSimpleName(), EMPTY_AWAS, AtsTestUtil.getImplementStateDef().getName(),
@@ -115,7 +115,7 @@ public class TransitionManagerTest {
    }
 
    @org.junit.Test
-   public void testHandleTransitionValidation__ToStateNotNull()  {
+   public void testHandleTransitionValidation__ToStateNotNull() {
       TransitionHelper helper = new TransitionHelper(getClass().getSimpleName(), Arrays.asList(AtsTestUtil.getTeamWf()),
          null, Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null,
          AtsClientService.get().createChangeSet(getClass().getSimpleName()), AtsClientService.get().getServices(),
@@ -127,7 +127,7 @@ public class TransitionManagerTest {
    }
 
    @org.junit.Test
-   public void testHandleTransitionValidation__InvalidToState()  {
+   public void testHandleTransitionValidation__InvalidToState() {
       TransitionHelper helper = new TransitionHelper(getClass().getSimpleName(), Arrays.asList(AtsTestUtil.getTeamWf()),
          "InvalidStateName", Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null,
          AtsClientService.get().createChangeSet(getClass().getSimpleName()), AtsClientService.get().getServices(),
@@ -140,7 +140,7 @@ public class TransitionManagerTest {
    }
 
    @org.junit.Test
-   public void testHandleTransitionValidation__MustBeAssigned()  {
+   public void testHandleTransitionValidation__MustBeAssigned() {
       AtsTestUtil.cleanupAndReset("TransitionManagerTest-B");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       IAtsTeamDefinition teamDef = teamArt.getTeamDefinition();
@@ -216,7 +216,7 @@ public class TransitionManagerTest {
    }
 
    @org.junit.Test
-   public void testHandleTransitionValidation__WorkingBranchTransitionable()  {
+   public void testHandleTransitionValidation__WorkingBranchTransitionable() {
       AtsTestUtil.cleanupAndReset("TransitionManagerTest-C");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       MockTransitionHelper helper = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
@@ -255,7 +255,7 @@ public class TransitionManagerTest {
    }
 
    @org.junit.Test
-   public void testHandleTransitionValidation__NoSystemUser()  {
+   public void testHandleTransitionValidation__NoSystemUser() {
       AtsTestUtil.cleanupAndReset("TransitionManagerTest-D");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       MockTransitionHelper helper = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
@@ -281,7 +281,7 @@ public class TransitionManagerTest {
    }
 
    @org.junit.Test
-   public void testIsStateTransitionable__ValidateXWidgets__RequiredForTransition()  {
+   public void testIsStateTransitionable__ValidateXWidgets__RequiredForTransition() {
       AtsTestUtil.cleanupAndReset("TransitionManagerTest-1");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       MockTransitionHelper helper = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
@@ -310,7 +310,7 @@ public class TransitionManagerTest {
    }
 
    @org.junit.Test
-   public void testIsStateTransitionable__ValidateXWidgets__RequiredForCompletion()  {
+   public void testIsStateTransitionable__ValidateXWidgets__RequiredForCompletion() {
       AtsTestUtil.cleanupAndReset("TransitionManagerTest-2");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       MockTransitionHelper helper = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
@@ -359,7 +359,7 @@ public class TransitionManagerTest {
    }
 
    @org.junit.Test
-   public void testIsStateTransitionable__ValidateTasks()  {
+   public void testIsStateTransitionable__ValidateTasks() {
 
       TransitionResults results = new TransitionResults();
       when(teamWf.isTeamWorkflow()).thenReturn(true);
@@ -398,7 +398,7 @@ public class TransitionManagerTest {
    }
 
    @org.junit.Test
-   public void testIsStateTransitionable__RequireTargetedVersion__FromTeamDef()  {
+   public void testIsStateTransitionable__RequireTargetedVersion__FromTeamDef() {
       AtsTestUtil.cleanupAndReset("TransitionManagerTest-4");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
@@ -430,7 +430,7 @@ public class TransitionManagerTest {
    }
 
    @org.junit.Test
-   public void testIsStateTransitionable__RequireTargetedVersion__FromPageDef()  {
+   public void testIsStateTransitionable__RequireTargetedVersion__FromPageDef() {
       AtsTestUtil.cleanupAndReset("TransitionManagerTest-5");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
@@ -473,7 +473,7 @@ public class TransitionManagerTest {
    }
 
    @org.junit.Test
-   public void testIsStateTransitionable__ReviewsCompleted()  {
+   public void testIsStateTransitionable__ReviewsCompleted() {
 
       AtsTestUtil.cleanupAndReset("TransitionManagerTest-6");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
@@ -531,7 +531,7 @@ public class TransitionManagerTest {
     * transition)
     */
    @org.junit.Test
-   public void testIsStateTransitionable__ToSameState()  {
+   public void testIsStateTransitionable__ToSameState() {
       AtsTestUtil.cleanupAndReset("TransitionManagerTest-8");
       TeamWorkFlowArtifact teamArt01 = AtsTestUtil.getTeamWf();
       TeamWorkFlowArtifact teamArt02 = AtsTestUtil.getTeamWf2();
@@ -578,7 +578,7 @@ public class TransitionManagerTest {
    }
 
    @org.junit.Test
-   public void testHandleTransitionValidation__AssigneesUpdate()  {
+   public void testHandleTransitionValidation__AssigneesUpdate() {
       AtsTestUtil.cleanupAndReset("TransitionManagerTest-E");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       List<IAtsUser> assigneesBefore = teamArt.getAssignees();
@@ -599,7 +599,7 @@ public class TransitionManagerTest {
    }
 
    @org.junit.Test
-   public void testHandleTransitionValidation__AssigneesNull()  {
+   public void testHandleTransitionValidation__AssigneesNull() {
       AtsTestUtil.cleanupAndReset("TransitionManagerTest-F");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       List<IAtsUser> assigneesBefore = teamArt.getAssignees();
@@ -621,7 +621,7 @@ public class TransitionManagerTest {
    }
 
    @org.junit.Test
-   public void testHandleTransition__PercentComplete()  {
+   public void testHandleTransition__PercentComplete() {
       AtsTestUtil.cleanupAndReset("TransitionManagerTest-G");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
 
@@ -677,7 +677,7 @@ public class TransitionManagerTest {
    }
 
    @org.junit.Test
-   public void testIsStateTransitionable__ReviewsCancelled()  {
+   public void testIsStateTransitionable__ReviewsCancelled() {
       AtsTestUtil.cleanupAndReset("TransitionManagerTest-Cancel");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       TransitionResults results = new TransitionResults();

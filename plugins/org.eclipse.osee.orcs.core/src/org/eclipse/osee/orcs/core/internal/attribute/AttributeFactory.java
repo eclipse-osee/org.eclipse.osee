@@ -48,16 +48,16 @@ public class AttributeFactory {
       this.cache = cache;
    }
 
-   public <T> Attribute<T> createAttributeWithDefaults(AttributeContainer container, ArtifactData artifactData, AttributeTypeId attributeType)  {
+   public <T> Attribute<T> createAttributeWithDefaults(AttributeContainer container, ArtifactData artifactData, AttributeTypeId attributeType) {
       AttributeData<T> data = dataFactory.create(artifactData, attributeType);
       return createAttribute(container, data, true, true);
    }
 
-   public <T> Attribute<T> createAttribute(AttributeContainer container, AttributeData<T> data)  {
+   public <T> Attribute<T> createAttribute(AttributeContainer container, AttributeData<T> data) {
       return createAttribute(container, data, false, false);
    }
 
-   private <T> Attribute<T> createAttribute(AttributeContainer container, AttributeData<T> data, boolean isDirty, boolean createWithDefaults)  {
+   private <T> Attribute<T> createAttribute(AttributeContainer container, AttributeData<T> data, boolean isDirty, boolean createWithDefaults) {
       AttributeTypeId type = cache.get(data.getTypeUuid());
       Conditions.checkNotNull(type, "attributeType", "Cannot find attribute type with uuid[%s]", data.getTypeUuid());
 
@@ -108,18 +108,18 @@ public class AttributeFactory {
       return (Attribute<T>) attribute;
    }
 
-   public <T> Attribute<T> copyAttribute(AttributeData<T> source, BranchId ontoBranch, AttributeContainer destinationContainer)  {
+   public <T> Attribute<T> copyAttribute(AttributeData<T> source, BranchId ontoBranch, AttributeContainer destinationContainer) {
       AttributeData<T> attributeData = dataFactory.copy(ontoBranch, source);
       return createAttribute(destinationContainer, attributeData, true, false);
    }
 
-   public <T> Attribute<T> cloneAttribute(AttributeData<T> source, AttributeContainer destinationContainer)  {
+   public <T> Attribute<T> cloneAttribute(AttributeData<T> source, AttributeContainer destinationContainer) {
       AttributeData<T> attributeData = dataFactory.clone(source);
       Attribute<T> destinationAttribute = createAttribute(destinationContainer, attributeData, false, false);
       return destinationAttribute;
    }
 
-   public <T> Attribute<T> introduceAttribute(AttributeData<T> source, BranchId ontoBranch, AttributeManager destination)  {
+   public <T> Attribute<T> introduceAttribute(AttributeData<T> source, BranchId ontoBranch, AttributeManager destination) {
       AttributeData<T> attributeData = dataFactory.introduce(ontoBranch, source);
       // In order to reflect attributes they must exist in the data store
       Attribute<T> destinationAttribute = null;
@@ -139,11 +139,11 @@ public class AttributeFactory {
       return new AttributeResourceNameResolver(cache, attribute);
    }
 
-   public int getMaxOccurrenceLimit(AttributeTypeId attributeType)  {
+   public int getMaxOccurrenceLimit(AttributeTypeId attributeType) {
       return cache.getMaxOccurrences(attributeType);
    }
 
-   public int getMinOccurrenceLimit(AttributeTypeId attributeType)  {
+   public int getMinOccurrenceLimit(AttributeTypeId attributeType) {
       return cache.getMinOccurrences(attributeType);
    }
 

@@ -47,7 +47,7 @@ public class WordTemplateContentRendererHandler {
       this.logger = logger;
    }
 
-   public Pair<String, Set<String>> renderWordML(WordTemplateContentData wtcData)  {
+   public Pair<String, Set<String>> renderWordML(WordTemplateContentData wtcData) {
       TransactionId txId = wtcData.getTxId();
       if (txId == null) {
          txId = TransactionId.SENTINEL;

@@ -18,6 +18,6 @@ import org.eclipse.osee.framework.core.util.Result;
  */
 public interface IAtsStateItemCore {
 
-   public Result workingBranchCreated(AbstractWorkflowArtifact awa) ;
+   public Result workingBranchCreated(AbstractWorkflowArtifact awa);
 
 }

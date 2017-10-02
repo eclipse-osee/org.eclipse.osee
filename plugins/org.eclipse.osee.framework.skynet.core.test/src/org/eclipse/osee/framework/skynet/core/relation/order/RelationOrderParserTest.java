@@ -85,7 +85,7 @@ public class RelationOrderParserTest {
    }
 
    @Test
-   public void testWithData1Parser()  {
+   public void testWithData1Parser() {
       RelationOrderParser parser = new RelationOrderParser();
 
       RelationOrderData data = new RelationOrderData(null, null);
@@ -116,7 +116,7 @@ public class RelationOrderParserTest {
    }
 
    @Test
-   public void testWithData2Parser()  {
+   public void testWithData2Parser() {
       RelationOrderParser parser = new RelationOrderParser();
 
       RelationOrderData data = new RelationOrderData(null, null);
@@ -137,7 +137,7 @@ public class RelationOrderParserTest {
    }
 
    @Test
-   public void testOneEntryEmptyList()  {
+   public void testOneEntryEmptyList() {
       RelationOrderParser parser = new RelationOrderParser();
 
       RelationOrderData data = new RelationOrderData(null, null);
@@ -154,7 +154,7 @@ public class RelationOrderParserTest {
    }
 
    @Test
-   public void testNullDataParser()  {
+   public void testNullDataParser() {
       RelationOrderParser parser = new RelationOrderParser();
 
       RelationOrderData data = new RelationOrderData(null, null);
@@ -180,7 +180,7 @@ public class RelationOrderParserTest {
    }
 
    @Test
-   public void testBadDataParser()  {
+   public void testBadDataParser() {
       RelationOrderParser parser = new RelationOrderParser();
 
       RelationOrderData data = new RelationOrderData(null, null);
@@ -195,7 +195,7 @@ public class RelationOrderParserTest {
       checkEmptyEntries(data, parser);
    }
 
-   private void checkEmptyEntries(RelationOrderData data, RelationOrderParser parser)  {
+   private void checkEmptyEntries(RelationOrderData data, RelationOrderParser parser) {
       Assert.assertFalse(data.hasEntries());
       Assert.assertEquals("<OrderList>\n</OrderList>", parser.toXml(data));
    }

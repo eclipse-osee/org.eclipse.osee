@@ -92,7 +92,7 @@ public enum OseeSql {
       return hints;
    }
 
-   public static Properties getSqlProperties(boolean areHintsSupported, boolean useOracleHints)  {
+   public static Properties getSqlProperties(boolean areHintsSupported, boolean useOracleHints) {
       Properties sqlProperties = new Properties();
       for (OseeSql oseeSql : OseeSql.values()) {
          String sql;

@@ -69,7 +69,7 @@ public class EnumeratedHandlePromptChange implements IHandlePromptChange {
    }
 
    @Override
-   public boolean store()  {
+   public boolean store() {
       if (isSingletonAttribute) {
          return storeSingleton();
       } else {
@@ -77,7 +77,7 @@ public class EnumeratedHandlePromptChange implements IHandlePromptChange {
       }
    }
 
-   private boolean storeSingleton()  {
+   private boolean storeSingleton() {
       boolean result = false;
       String selected = singletonDialog.getSelectedOption();
       boolean isRemoveAll = singletonDialog.isRemoveAllSelected();
@@ -105,7 +105,7 @@ public class EnumeratedHandlePromptChange implements IHandlePromptChange {
       return result;
    }
 
-   private boolean storeNonSingleton()  {
+   private boolean storeNonSingleton() {
       boolean result = false;
       Set<String> selected = new HashSet<>();
       for (Object obj : dialog.getResult()) {

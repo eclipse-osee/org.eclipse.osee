@@ -52,13 +52,13 @@ public class IntegerAttributeTest {
    private IOseeBranch workingBranch;
 
    @Before
-   public void setup()  {
+   public void setup() {
       workingBranch = IOseeBranch.create(testInfo.getQualifiedTestName());
       BranchManager.createWorkingBranch(SAW_Bld_2, workingBranch);
    }
 
    @Test(expected = ClassCastException.class)
-   public void testSetIntegerAttributeFail()  {
+   public void testSetIntegerAttributeFail() {
       Artifact newArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Breaker, workingBranch);
       newArtifact.setSoleAttributeValue(CoreAttributeTypes.CircuitBreakerId, "50");
       TransactionId txId = newArtifact.persist(getClass().getSimpleName());
@@ -68,7 +68,7 @@ public class IntegerAttributeTest {
    }
 
    @Test
-   public void testSetIntegerAttributeSucceed()  {
+   public void testSetIntegerAttributeSucceed() {
       Artifact newArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Breaker, workingBranch);
       newArtifact.setSoleAttributeValue(CoreAttributeTypes.CircuitBreakerId, 50);
       TransactionId txId = newArtifact.persist(getClass().getSimpleName());

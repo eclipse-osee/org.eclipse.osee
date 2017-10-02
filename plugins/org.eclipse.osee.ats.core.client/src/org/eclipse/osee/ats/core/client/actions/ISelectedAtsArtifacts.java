@@ -20,10 +20,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public interface ISelectedAtsArtifacts {
 
-   Set<Artifact> getSelectedWorkflowArtifacts() ;
+   Set<Artifact> getSelectedWorkflowArtifacts();
 
-   List<Artifact> getSelectedAtsArtifacts() ;
+   List<Artifact> getSelectedAtsArtifacts();
 
-   List<TaskArtifact> getSelectedTaskArtifacts() ;
+   List<TaskArtifact> getSelectedTaskArtifacts();
 
 }

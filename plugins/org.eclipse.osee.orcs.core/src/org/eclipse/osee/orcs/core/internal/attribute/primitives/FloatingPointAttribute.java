@@ -32,7 +32,7 @@ public class FloatingPointAttribute extends CharacterBackedAttribute<Double> {
       return toReturn;
    }
 
-   public Double getDefaultValue()  {
+   public Double getDefaultValue() {
       Double toReturn = DEFAULT_DOUBLE;
       String defaultValue = getDefaultValueFromMetaData();
       if (isValidDouble(defaultValue)) {

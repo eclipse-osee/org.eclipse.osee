@@ -43,7 +43,7 @@ public class TxDateWithOperatorSqlHandler extends SqlHandler<CriteriaDateWithOpe
    }
 
    @Override
-   public boolean addPredicates(AbstractSqlWriter writer)  {
+   public boolean addPredicates(AbstractSqlWriter writer) {
       Operator op = criteria.getOperator();
       Timestamp time = criteria.getTimestamp();
       writer.write(txAlias);

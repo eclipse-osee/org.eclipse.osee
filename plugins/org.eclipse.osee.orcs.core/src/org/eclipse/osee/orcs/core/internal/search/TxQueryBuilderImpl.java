@@ -50,52 +50,52 @@ public class TxQueryBuilderImpl<T> implements TxQueryBuilder<T> {
    }
 
    @Override
-   public T andTxIds(Collection<TransactionId> ids)  {
+   public T andTxIds(Collection<TransactionId> ids) {
       return addAndCheck(queryData, new CriteriaTxIds(ids));
    }
 
    @Override
-   public T andTxId(Operator op, int id)  {
+   public T andTxId(Operator op, int id) {
       Criteria criteria = criteriaFactory.newByIdWithOperator(op, id);
       return addAndCheck(queryData, criteria);
    }
 
    @Override
-   public T andTxId(Operator op1, int id1, Operator op2, int id2)  {
+   public T andTxId(Operator op1, int id1, Operator op2, int id2) {
       Criteria criteria = criteriaFactory.newByIdWithTwoOperators(op1, id1, op2, id2);
       return addAndCheck(queryData, criteria);
    }
 
    @Override
-   public T andCommentEquals(String value)  {
+   public T andCommentEquals(String value) {
       Criteria criteria = criteriaFactory.newCommentCriteria(value, false);
       return addAndCheck(queryData, criteria);
    }
 
    @Override
-   public T andCommentPattern(String pattern)  {
+   public T andCommentPattern(String pattern) {
       Criteria criteria = criteriaFactory.newCommentCriteria(pattern, true);
       return addAndCheck(queryData, criteria);
    }
 
    @Override
-   public T andIs(TransactionDetailsType... types)  {
+   public T andIs(TransactionDetailsType... types) {
       return andIs(Arrays.asList(types));
    }
 
    @Override
-   public T andIs(Collection<TransactionDetailsType> types)  {
+   public T andIs(Collection<TransactionDetailsType> types) {
       Criteria criteria = criteriaFactory.newTxTypeCriteria(types);
       return addAndCheck(queryData, criteria);
    }
 
    @Override
-   public T andBranch(BranchId... ids)  {
+   public T andBranch(BranchId... ids) {
       return andBranch(Arrays.asList(ids));
    }
 
    @Override
-   public T andBranch(Collection<? extends BranchId> ids)  {
+   public T andBranch(Collection<? extends BranchId> ids) {
       Set<Long> values = new LinkedHashSet<>();
       for (BranchId value : ids) {
          values.add(value.getUuid());
@@ -105,7 +105,7 @@ public class TxQueryBuilderImpl<T> implements TxQueryBuilder<T> {
    }
 
    @Override
-   public T andBranchIds(long... ids)  {
+   public T andBranchIds(long... ids) {
       Set<Long> values = new LinkedHashSet<>();
       for (long value : ids) {
          values.add(value);
@@ -114,35 +114,35 @@ public class TxQueryBuilderImpl<T> implements TxQueryBuilder<T> {
    }
 
    @Override
-   public T andBranchIds(Collection<Long> ids)  {
+   public T andBranchIds(Collection<Long> ids) {
       Criteria criteria = criteriaFactory.newTxBranchIdCriteria(ids);
       return addAndCheck(queryData, criteria);
    }
 
    @Override
-   public T andDate(Operator op, Timestamp date)  {
+   public T andDate(Operator op, Timestamp date) {
       Criteria criteria = criteriaFactory.newByDateWithOperator(op, date);
       return addAndCheck(queryData, criteria);
    }
 
    @Override
-   public T andDate(Timestamp from, Timestamp to)  {
+   public T andDate(Timestamp from, Timestamp to) {
       Criteria criteria = criteriaFactory.newByDateRange(from, to);
       return addAndCheck(queryData, criteria);
    }
 
    @Override
-   public T andAuthorLocalIds(ArtifactId... id)  {
+   public T andAuthorLocalIds(ArtifactId... id) {
       return andAuthorLocalIds(Arrays.asList(id));
    }
 
    @Override
-   public T andAuthorLocalIds(Collection<ArtifactId> ids)  {
+   public T andAuthorLocalIds(Collection<ArtifactId> ids) {
       return addAndCheck(queryData, new CriteriaTxArtifactIds(ids));
    }
 
    @Override
-   public T andAuthorIds(int... id)  {
+   public T andAuthorIds(int... id) {
       ArrayList<Integer> theList = new ArrayList<>();
       for (int i = 0; i < id.length; i++) {
          theList.add(new Integer(id[i]));
@@ -151,25 +151,25 @@ public class TxQueryBuilderImpl<T> implements TxQueryBuilder<T> {
    }
 
    @Override
-   public T andAuthorIds(Collection<Integer> ids)  {
+   public T andAuthorIds(Collection<Integer> ids) {
       Criteria criteria = criteriaFactory.newByAuthorId(ids);
       return addAndCheck(queryData, criteria);
    }
 
    @Override
-   public T andCommitIds(Integer... id)  {
+   public T andCommitIds(Integer... id) {
       return andCommitIds(Arrays.asList(id));
    }
 
    @Override
-   public T andNullCommitId()  {
+   public T andNullCommitId() {
       Collection<Integer> aNull = new ArrayList<>();
       aNull.add(null);
       return andCommitIds(aNull);
    }
 
    @Override
-   public T andCommitIds(Collection<Integer> ids)  {
+   public T andCommitIds(Collection<Integer> ids) {
       Criteria criteria = criteriaFactory.newByCommitId(ids);
       return addAndCheck(queryData, criteria);
    }
@@ -181,13 +181,13 @@ public class TxQueryBuilderImpl<T> implements TxQueryBuilder<T> {
    }
 
    @Override
-   public T andIsPriorTx(TransactionId txId)  {
+   public T andIsPriorTx(TransactionId txId) {
       Criteria criteria = criteriaFactory.newGetPriorTx(txId);
       return addAndCheck(queryData, criteria);
    }
 
    @SuppressWarnings("unchecked")
-   private T addAndCheck(QueryData queryData, Criteria criteria)  {
+   private T addAndCheck(QueryData queryData, Criteria criteria) {
       criteria.checkValid(getOptions());
       queryData.addCriteria(criteria);
       return (T) this;

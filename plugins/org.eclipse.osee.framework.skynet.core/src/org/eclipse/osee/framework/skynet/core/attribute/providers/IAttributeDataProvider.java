@@ -17,17 +17,17 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
  */
 public interface IAttributeDataProvider {
 
-   public String getDisplayableString() ;
+   public String getDisplayableString();
 
    public void setDisplayableString(String toDisplay) throws OseeDataStoreException;
 
-   public void loadData(Object... objects) ;
+   public void loadData(Object... objects);
 
    public Object getValue();
 
    public Object[] getData() throws OseeDataStoreException;
 
-   public void persist(int storageId) ;
+   public void persist(int storageId);
 
-   public void purge() ;
+   public void purge();
 }

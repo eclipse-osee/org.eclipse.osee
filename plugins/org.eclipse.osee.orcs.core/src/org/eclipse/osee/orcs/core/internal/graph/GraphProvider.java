@@ -19,6 +19,6 @@ import org.eclipse.osee.orcs.OrcsSession;
  */
 public interface GraphProvider {
 
-   GraphData getGraph(OrcsSession session, BranchId branch, TransactionId transactionId) ;
+   GraphData getGraph(OrcsSession session, BranchId branch, TransactionId transactionId);
 
 }

@@ -15,5 +15,5 @@ package org.eclipse.osee.framework.core.util;
  */
 public interface IGroupExplorerProvider {
 
-   public String getGroupExplorerName() ;
+   public String getGroupExplorerName();
 }

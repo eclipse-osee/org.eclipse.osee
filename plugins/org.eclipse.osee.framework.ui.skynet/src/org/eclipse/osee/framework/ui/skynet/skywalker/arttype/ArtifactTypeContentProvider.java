@@ -96,7 +96,7 @@ public class ArtifactTypeContentProvider implements IGraphEntityContentProvider 
       return null;
    }
 
-   public void getParents(ArtifactType artifactType, Set<ArtifactType> parents)  {
+   public void getParents(ArtifactType artifactType, Set<ArtifactType> parents) {
       for (ArtifactType artType : artifactType.getSuperArtifactTypes()) {
          parents.add(artType);
          parentTypes.add(artType);
@@ -104,7 +104,7 @@ public class ArtifactTypeContentProvider implements IGraphEntityContentProvider 
       }
    }
 
-   public void getDecendents(ArtifactType artifactType, Set<ArtifactType> decendents)  {
+   public void getDecendents(ArtifactType artifactType, Set<ArtifactType> decendents) {
       for (ArtifactType artType : artifactType.getFirstLevelDescendantTypes()) {
          if (!parentTypes.contains(artType)) {
             decendents.add(artType);

@@ -111,7 +111,7 @@ public class MissingChangeItemFactoryTest {
 
    @SuppressWarnings("unchecked")
    @Before
-   public void init()  {
+   public void init() {
       MockitoAnnotations.initMocks(this);
 
       when(dataLoaderFactory.newDataLoader(any(OrcsSession.class), eq(sourceBranch), any(Collection.class))).thenReturn(
@@ -123,7 +123,7 @@ public class MissingChangeItemFactoryTest {
    }
 
    @Test
-   public void testCreateMissingChanges()  {
+   public void testCreateMissingChanges() {
       doAnswer(new Answer<Object>() {
 
          @Override

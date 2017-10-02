@@ -49,73 +49,73 @@ public class TxMonitorImplTest {
    }
 
    @Test(expected = OseeStateException.class)
-   public void testCreatedButNotInCreatedState()  {
+   public void testCreatedButNotInCreatedState() {
       tx1.setTxState(TxState.ENDED);
       txMonitor.createTx(key1, tx1);
    }
 
    @Test(expected = OseeStateException.class)
-   public void testCreatedButWasFoundInCache()  {
+   public void testCreatedButWasFoundInCache() {
       txCache.putTx(key1, tx1);
       txMonitor.createTx(key1, tx1);
    }
 
    @Test
-   public void testCreateAddsItem()  {
+   public void testCreateAddsItem() {
       Assert.assertFalse(txCache.contains(key1, tx1.getUuid()));
       txMonitor.createTx(key1, tx1);
       Assert.assertTrue(txCache.contains(key1, tx1.getUuid()));
    }
 
    @Test(expected = OseeStateException.class)
-   public void testBeginButNotInCache()  {
+   public void testBeginButNotInCache() {
       Assert.assertFalse(txCache.contains(key1, tx1.getUuid()));
       txMonitor.beginTx(key1, tx1);
    }
 
    @Test(expected = OseeStateException.class)
-   public void testBeginButInEndedState()  {
+   public void testBeginButInEndedState() {
       txCache.putTx(key1, tx1);
       tx1.setTxState(TxState.ENDED);
       txMonitor.beginTx(key1, tx1);
    }
 
    @Test(expected = OseeStateException.class)
-   public void testBeginButInRunningState()  {
+   public void testBeginButInRunningState() {
       txCache.putTx(key1, tx1);
       tx1.setTxState(TxState.RUNNING);
       txMonitor.beginTx(key1, tx1);
    }
 
    @Test
-   public void testBeginCreated()  {
+   public void testBeginCreated() {
       txCache.putTx(key1, tx1);
       tx1.setTxState(TxState.CREATED);
       txMonitor.beginTx(key1, tx1);
    }
 
    @Test
-   public void testBeginModified()  {
+   public void testBeginModified() {
       txCache.putTx(key1, tx1);
       tx1.setTxState(TxState.MODIFIED);
       txMonitor.beginTx(key1, tx1);
    }
 
    @Test(expected = OseeStateException.class)
-   public void testEndButNotInCache()  {
+   public void testEndButNotInCache() {
       Assert.assertFalse(txCache.contains(key1, tx1.getUuid()));
       txMonitor.endTx(key1, tx1);
    }
 
    @Test(expected = OseeStateException.class)
-   public void testEndButNotInEndedState()  {
+   public void testEndButNotInEndedState() {
       txCache.putTx(key1, tx1);
       tx1.setTxState(TxState.RUNNING);
       txMonitor.endTx(key1, tx1);
    }
 
    @Test
-   public void testEndInEndedState()  {
+   public void testEndInEndedState() {
       txCache.putTx(key1, tx1);
       tx1.setTxState(TxState.ENDED);
       Assert.assertTrue(txCache.contains(key1, tx1.getUuid()));
@@ -124,7 +124,7 @@ public class TxMonitorImplTest {
    }
 
    @Test
-   public void testEndInEndedWithExceptionState()  {
+   public void testEndInEndedWithExceptionState() {
       txCache.putTx(key1, tx1);
       tx1.setTxState(TxState.ENDED_WITH_EXCEPTION);
       Assert.assertTrue(txCache.contains(key1, tx1.getUuid()));
@@ -133,13 +133,13 @@ public class TxMonitorImplTest {
    }
 
    @Test(expected = OseeStateException.class)
-   public void testRollbackButNotInCache()  {
+   public void testRollbackButNotInCache() {
       Assert.assertFalse(txCache.contains(key1, tx1.getUuid()));
       txMonitor.rollbackTx(key1, tx1);
    }
 
    @Test
-   public void testRollback()  {
+   public void testRollback() {
       txCache.putTx(key1, tx1);
       Assert.assertFalse(tx1.wasRollbackCalled());
       txMonitor.rollbackTx(key1, tx1);
@@ -147,7 +147,7 @@ public class TxMonitorImplTest {
    }
 
    @Test
-   public void testNormalPath()  {
+   public void testNormalPath() {
       tx1.setTxState(TxState.CREATED);
       txMonitor.createTx(key1, tx1);
       txMonitor.beginTx(key1, tx1);
@@ -156,7 +156,7 @@ public class TxMonitorImplTest {
    }
 
    @Test(expected = OseeStateException.class)
-   public void testCoModificationFail()  {
+   public void testCoModificationFail() {
       Object toModify = new Object();
       tx1.addItem(toModify);
       tx2.addItem(toModify);
@@ -166,7 +166,7 @@ public class TxMonitorImplTest {
    }
 
    @Test
-   public void testCoModificationOk()  {
+   public void testCoModificationOk() {
       Object toModify = new Object();
       tx1.addItem(toModify);
       tx2.addItem(toModify);

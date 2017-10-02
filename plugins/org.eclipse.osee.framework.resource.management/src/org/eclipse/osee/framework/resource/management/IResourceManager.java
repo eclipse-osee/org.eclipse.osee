@@ -29,14 +29,14 @@ public interface IResourceManager {
     * @param options operation options
     * @return the resource
     */
-   IResource acquire(IResourceLocator locator, PropertyStore options) ;
+   IResource acquire(IResourceLocator locator, PropertyStore options);
 
    /**
     * Determines if a resource exists for the given locator.
     *
     * @param locator location of the data to check
     */
-   boolean exists(IResourceLocator locator) ;
+   boolean exists(IResourceLocator locator);
 
    /**
     * Save input to location specified by resource locator
@@ -45,28 +45,28 @@ public interface IResourceManager {
     * @param resource to store
     * @param options operation options
     */
-   IResourceLocator save(final IResourceLocator locatorHint, final IResource resource, final PropertyStore options) ;
+   IResourceLocator save(final IResourceLocator locatorHint, final IResource resource, final PropertyStore options);
 
    /**
     * Delete resource specified by resource locator
     *
     * @param locator location of the resource to delete
     */
-   int delete(IResourceLocator locator) ;
+   int delete(IResourceLocator locator);
 
    /**
     * Generate a resource locator based on protocol, seed and name
     *
     * @return a resource locator
     */
-   IResourceLocator generateResourceLocator(String protocol, String seed, String name) ;
+   IResourceLocator generateResourceLocator(String protocol, String seed, String name);
 
    /**
     * Get resource locator based on protocol and path
     *
     * @return a resource locator
     */
-   IResourceLocator getResourceLocator(String path) ;
+   IResourceLocator getResourceLocator(String path);
 
    /**
     * Supported Protocols

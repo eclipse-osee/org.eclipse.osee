@@ -105,8 +105,7 @@ public class JdbcReadWriteTest {
       assertBook(iterator.next(), 3, "Romeo and Juliet", "William Shakespeare");
       assertBook(iterator.next(), 4, "The Great Gatsby", "F. Scott Fitzgerald");
 
-      assertEquals("William Shakespeare",
-         client.fetch("", "select author from books where id = ?", 3));
+      assertEquals("William Shakespeare", client.fetch("", "select author from books where id = ?", 3));
 
       client.runPreparedUpdate("insert into books (id, title, author) values (?,?,?)", 5, "Dracula", "Bram Stoker");
 
@@ -120,8 +119,7 @@ public class JdbcReadWriteTest {
                "Lord of the Flies", "William Golding");
          }
       });
-      assertEquals("Lord of the Flies",
-         client.fetch("", "select title from books where id = ?", 6));
+      assertEquals("Lord of the Flies", client.fetch("", "select title from books where id = ?", 6));
 
       Iterator<String[]> expectedRows = Arrays.asList(new String[][] {
          {"1", "The Odyssey", "Homer"},

@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil
 public class OpenWorkflowByIdActionTest extends AbstractAtsActionRunTest {
 
    @Override
-   public Action createAction()  {
+   public Action createAction() {
       OpenWorkflowByIdAction action = new OpenWorkflowByIdAction();
       action.setPend(true);
       action.setOverrideId(AtsTestUtil.getTeamWf().getAtsId());

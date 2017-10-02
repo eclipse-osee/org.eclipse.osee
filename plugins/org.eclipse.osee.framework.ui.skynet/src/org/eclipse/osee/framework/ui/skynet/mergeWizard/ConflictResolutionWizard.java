@@ -91,7 +91,7 @@ public class ConflictResolutionWizard extends Wizard {
       return super.performCancel();
    }
 
-   public void setResolution()  {
+   public void setResolution() {
       if (getContainer() != null) {
          IWizardPage page = getContainer().getCurrentPage();
          Image image = XMergeLabelProvider.getMergeImage(conflict);

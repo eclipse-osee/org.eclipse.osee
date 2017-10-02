@@ -26,7 +26,7 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 public class IsOfTypePredicateHandler implements PredicateHandler {
 
    @Override
-   public QueryBuilder handle(QueryBuilder builder, Predicate predicate)  {
+   public QueryBuilder handle(QueryBuilder builder, Predicate predicate) {
       if (predicate.getType() != SearchMethod.IS_OF_TYPE) {
          throw new OseeArgumentException("This predicate handler only supports [%s]", SearchMethod.IS_OF_TYPE);
       }

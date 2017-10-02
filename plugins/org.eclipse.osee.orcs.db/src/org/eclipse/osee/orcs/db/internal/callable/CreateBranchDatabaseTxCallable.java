@@ -109,7 +109,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
       this.buildVersionId = buildVersionId;
    }
 
-   private void checkPreconditions(JdbcConnection connection, BranchId parentBranch, BranchId destinationBranch)  {
+   private void checkPreconditions(JdbcConnection connection, BranchId parentBranch, BranchId destinationBranch) {
       if (newBranchData.getBranchType().isMergeBranch()) {
          if (jdbcClient.fetch(connection, 0, TEST_MERGE_BRANCH_EXISTENCE, parentBranch, destinationBranch) > 0) {
             throw new OseeStateException("Existing merge branch detected for [%s] and [%d]", parentBranch,
@@ -219,7 +219,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
       }
    }
 
-   private void populateBaseTransaction(double workAmount, JdbcConnection connection, TransactionId baseTxId, TransactionId sourceTxId)  {
+   private void populateBaseTransaction(double workAmount, JdbcConnection connection, TransactionId baseTxId, TransactionId sourceTxId) {
       if (newBranchData.getBranchType() != BranchType.SYSTEM_ROOT) {
          HashSet<Long> gammas = new HashSet<>(100000);
          BranchId parentBranch = newBranchData.getParentBranch();
@@ -239,7 +239,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
       }
    }
 
-   private void populateAddressingToCopy(JdbcConnection connection, OseePreparedStatement addressing, TransactionId baseTxId, HashSet<Long> gammas, String query, Object... parameters)  {
+   private void populateAddressingToCopy(JdbcConnection connection, OseePreparedStatement addressing, TransactionId baseTxId, HashSet<Long> gammas, String query, Object... parameters) {
       JdbcStatement chStmt = jdbcClient.getStatement(connection);
       try {
          chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, parameters);

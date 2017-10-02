@@ -25,21 +25,21 @@ import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
  */
 public interface IAtsWorkItemService {
 
-   IStateToken getCurrentState(IAtsWorkItem workItem) ;
+   IStateToken getCurrentState(IAtsWorkItem workItem);
 
-   Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow teamWf) ;
+   Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow teamWf);
 
-   Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow teamWf, IStateToken state) ;
+   Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow teamWf, IStateToken state);
 
-   IAtsTeamWorkflow getFirstTeam(Object object) ;
+   IAtsTeamWorkflow getFirstTeam(Object object);
 
    void clearImplementersCache(IAtsWorkItem workItem);
 
-   Collection<WidgetResult> validateWidgetTransition(IAtsWorkItem workItem, IAtsStateDefinition toStateDef) ;
+   Collection<WidgetResult> validateWidgetTransition(IAtsWorkItem workItem, IAtsStateDefinition toStateDef);
 
    Collection<ITransitionListener> getTransitionListeners();
 
-   String getTargetedVersionStr(IAtsTeamWorkflow teamWf) ;
+   String getTargetedVersionStr(IAtsTeamWorkflow teamWf);
 
    String getArtifactTypeShortName(IAtsTeamWorkflow teamWf);
 
@@ -50,7 +50,7 @@ public interface IAtsWorkItemService {
    /**
     * Assigned or Combined Id that will show at the top of the editor. Default is "<ATS Id> / <Legacy PCR Id (if set)>"
     */
-   String getCombinedPcrId(IAtsWorkItem workItem) ;
+   String getCombinedPcrId(IAtsWorkItem workItem);
 
    IAtsWorkItemNotes getNotes(IAtsWorkItem workItem);
 

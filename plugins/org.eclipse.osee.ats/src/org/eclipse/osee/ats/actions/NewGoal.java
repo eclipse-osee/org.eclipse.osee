@@ -34,7 +34,7 @@ public class NewGoal extends AbstractAtsAction {
    }
 
    @Override
-   public void runWithException()  {
+   public void runWithException() {
       String title = titleOverride;
       if (!Strings.isValid(title)) {
          EntryDialog dialog = new EntryDialog("New Goal", "Enter Title");

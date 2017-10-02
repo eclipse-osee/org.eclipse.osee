@@ -31,19 +31,19 @@ public class ApplicationServerDataStore {
       this.jdbcClient = jdbcClient;
    }
 
-   public void create(OseeServerInfo info)  {
+   public void create(OseeServerInfo info) {
       executeTx(TxType.CREATE, info);
    }
 
-   public void update(OseeServerInfo info)  {
+   public void update(OseeServerInfo info) {
       executeTx(TxType.UPDATE, info);
    }
 
-   public void delete(OseeServerInfo info)  {
+   public void delete(OseeServerInfo info) {
       executeTx(TxType.DELETE, info);
    }
 
-   private void executeTx(TxType op, OseeServerInfo info)  {
+   private void executeTx(TxType op, OseeServerInfo info) {
       jdbcClient.runTransaction(new ServerLookupTx(jdbcClient, op, info));
    }
 
@@ -75,7 +75,7 @@ public class ApplicationServerDataStore {
       }
 
       @Override
-      public void handleTxWork(JdbcConnection connection)  {
+      public void handleTxWork(JdbcConnection connection) {
          switch (txType) {
             case CREATE:
                create(connection);
@@ -91,7 +91,7 @@ public class ApplicationServerDataStore {
          }
       }
 
-      private void create(JdbcConnection connection)  {
+      private void create(JdbcConnection connection) {
          List<Object[]> insertData = new ArrayList<>();
          String serverId = data.getServerId();
          URI serverUri = data.getUri();
@@ -107,12 +107,12 @@ public class ApplicationServerDataStore {
          }
       }
 
-      private void update(JdbcConnection connection)  {
+      private void update(JdbcConnection connection) {
          delete(connection);
          create(connection);
       }
 
-      private void delete(JdbcConnection connection)  {
+      private void delete(JdbcConnection connection) {
          List<Object[]> deleteData = new ArrayList<>();
          deleteData.add(new Object[] {data.getServerId()});
          if (!deleteData.isEmpty()) {

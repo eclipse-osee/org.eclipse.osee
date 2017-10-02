@@ -15,20 +15,20 @@ package org.eclipse.osee.orcs.core.ds;
  */
 public interface LoadDataHandler extends AttributeDataMatchHandler, DynamicDataHandler {
 
-   void onLoadStart() ;
+   void onLoadStart();
 
-   void onLoadDescription(LoadDescription data) ;
+   void onLoadDescription(LoadDescription data);
 
-   void onData(BranchData data) ;
+   void onData(BranchData data);
 
-   void onData(TxOrcsData data) ;
+   void onData(TxOrcsData data);
 
-   void onData(ArtifactData data) ;
+   void onData(ArtifactData data);
 
-   void onData(AttributeData data) ;
+   void onData(AttributeData data);
 
-   void onData(RelationData data) ;
+   void onData(RelationData data);
 
-   void onLoadEnd() ;
+   void onLoadEnd();
 
 }

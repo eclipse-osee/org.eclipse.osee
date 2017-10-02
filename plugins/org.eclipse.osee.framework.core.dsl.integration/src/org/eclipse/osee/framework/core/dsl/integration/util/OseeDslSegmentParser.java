@@ -26,26 +26,26 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class OseeDslSegmentParser {
 
-   public String getStartTag(ArtifactToken artifact, IOseeBranch branch)  {
+   public String getStartTag(ArtifactToken artifact, IOseeBranch branch) {
       return getSegmentTag("start", artifact, branch);
    }
 
-   public String getEndTag(ArtifactToken artifact, IOseeBranch branch)  {
+   public String getEndTag(ArtifactToken artifact, IOseeBranch branch) {
       return getSegmentTag("end", artifact, branch);
    }
 
-   private static String getSegmentTag(String tagPrefix, ArtifactToken artifact, IOseeBranch branch)  {
+   private static String getSegmentTag(String tagPrefix, ArtifactToken artifact, IOseeBranch branch) {
       Conditions.checkNotNull(artifact, "artifact");
       Conditions.checkNotNull(branch, "branch");
       return String.format("//@%s_artifact branch/%s/artifact/%s/ (%s:%s)", tagPrefix, branch.getId(),
          artifact.getGuid(), branch.getName(), artifact.getName());
    }
 
-   public Collection<OseeDslSegment> getSegments(String source)  {
+   public Collection<OseeDslSegment> getSegments(String source) {
       return getSegments(getTagLocations(source));
    }
 
-   public Collection<OseeDslSegment> getSegments(Collection<TagLocation> tagLocations)  {
+   public Collection<OseeDslSegment> getSegments(Collection<TagLocation> tagLocations) {
       Conditions.checkNotNull(tagLocations, "tagLocations");
       Collection<OseeDslSegment> segments = new ArrayList<>();
       Stack<TagLocation> segmentStack = new Stack<>();
@@ -77,7 +77,7 @@ public class OseeDslSegmentParser {
       return seg1.getBranchUuid() == seg2.getBranchUuid() && seg1.getArtifactGuid().equals(seg2.getArtifactGuid());
    }
 
-   public Collection<TagLocation> getTagLocations(String source)  {
+   public Collection<TagLocation> getTagLocations(String source) {
       Conditions.checkNotNull(source, "artifact source data");
       Collection<TagLocation> segments = new ArrayList<>();
       Pattern pattern = Pattern.compile("\\s?//@(.*?)_artifact\\s+branch/(.*?)/artifact/(.*?)/\\s+\\(.*?\\)");

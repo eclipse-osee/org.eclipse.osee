@@ -60,17 +60,17 @@ public class PurgeUnusedBackingDataAndTransactions {
       this.jdbcClient = jdbcClient;
    }
 
-   private int purgeNotAddressedGammas(JdbcConnection connection, String tableName)  {
+   private int purgeNotAddressedGammas(JdbcConnection connection, String tableName) {
       String selectSql = String.format(NOT_ADDRESSESED_GAMMAS, tableName);
       return purgeGammas(connection, selectSql, tableName);
    }
 
-   private int purgeAddressedButNonexistentGammas(JdbcConnection connection, String tableName)  {
+   private int purgeAddressedButNonexistentGammas(JdbcConnection connection, String tableName) {
       return purgeData(connection, String.format(NONEXISTENT_GAMMAS, tableName),
          String.format(DELETE_GAMMAS_BY_BRANCH, tableName), this::addBranchGamma);
    }
 
-   private int purgeEmptyTransactions(JdbcConnection connection)  {
+   private int purgeEmptyTransactions(JdbcConnection connection) {
       return purgeData(connection, EMPTY_TRANSACTIONS, DELETE_EMPTY_TRANSACTIONS, this::addTx);
    }
 

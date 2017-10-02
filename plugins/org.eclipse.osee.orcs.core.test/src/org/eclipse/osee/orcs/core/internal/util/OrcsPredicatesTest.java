@@ -74,7 +74,7 @@ public class OrcsPredicatesTest {
    private Date date;
 
    @Before
-   public void init()  {
+   public void init() {
       MockitoAnnotations.initMocks(this);
 
       when(dirty.isDirty()).thenReturn(true);
@@ -141,7 +141,7 @@ public class OrcsPredicatesTest {
 
    @SuppressWarnings("unchecked")
    @Test
-   public void testAttributeStringEquals()  {
+   public void testAttributeStringEquals() {
       assertTrue(attributeStringEquals("45789").apply(attribute1));
       assertTrue(attributeStringEquals("true").apply(attribute2));
       assertTrue(attributeStringEquals(date.toString()).apply(attribute3));
@@ -179,7 +179,7 @@ public class OrcsPredicatesTest {
 
    @SuppressWarnings("unchecked")
    @Test
-   public void testAttributeContainsPattern()  {
+   public void testAttributeContainsPattern() {
       when(attribute1.getValue()).thenReturn("123-456-7890", "00-000-0000", "000-000-0000");
 
       Predicate<Attribute<CharSequence>> telAttribute = attributeContainsPattern("[0-9]{3}[-][0-9]{3}[-][0-9]{4}");
@@ -191,7 +191,7 @@ public class OrcsPredicatesTest {
 
    @SuppressWarnings("unchecked")
    @Test
-   public void testAttributeContainsPattern2()  {
+   public void testAttributeContainsPattern2() {
       Pattern pattern = Pattern.compile("[0-9]{3}[-][0-9]{3}[-][0-9]{4}");
       when(attribute1.getValue()).thenReturn("123-456-7890", "00-000-0000", "000-000-0000");
 
