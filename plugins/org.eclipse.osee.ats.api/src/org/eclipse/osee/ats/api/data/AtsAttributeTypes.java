@@ -167,13 +167,13 @@ public final class AtsAttributeTypes {
 
    // @formatter:on
 
-   private static AttributeTypeToken createType(Long guid, String name) {
+   public static AttributeTypeToken createType(Long guid, String name) {
       AttributeTypeToken type = AttributeTypeToken.valueOf(guid, "ats." + name);
       nameToTypeMap.put(type.getName(), type);
       return type;
    }
 
-   private static AttributeTypeToken createType(Long guid, String name, String description) {
+   public static AttributeTypeToken createType(Long guid, String name, String description) {
       AttributeTypeToken type = AttributeTypeToken.valueOf(guid, "ats." + name, description);
       nameToTypeMap.put(type.getName(), type);
       return type;

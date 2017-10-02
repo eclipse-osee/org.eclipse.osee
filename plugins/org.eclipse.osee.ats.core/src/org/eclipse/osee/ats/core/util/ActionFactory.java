@@ -252,6 +252,17 @@ public class ActionFactory implements IAtsActionFactory {
 
       changes.addWorkflowCreated(teamWf);
 
+      /**
+       * Add guid TeamDef and AI attributes. This can be removed after 0.26.0 where guids will no longer be needed.
+       */
+      String createGuidAttrs = services.getConfigValue("CreateGuidAttrs");
+      if (createGuidAttrs != null && createGuidAttrs.equals("true")) {
+         ConvertAtsConfigGuidAttributesOperations.convertActionableItemsIfNeeded(changes, teamWf.getStoreObject(),
+            services);
+         ConvertAtsConfigGuidAttributesOperations.convertTeamDefinitionIfNeeded(changes, teamWf.getStoreObject(),
+            services);
+      }
+
       return teamWf;
    }
 
