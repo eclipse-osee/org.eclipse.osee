@@ -67,7 +67,7 @@ public class AgileItemWriter {
          for (ArtifactToken awa : services.getArtifacts(newItem.getUuids())) {
             for (ArtifactToken feature : services.getRelationResolver().getRelated(awa,
                AtsRelationTypes.AgileFeatureToItem_FeatureGroup)) {
-               changes.unrelate(feature, AtsRelationTypes.AgileFeatureToItem_FeatureGroup, awa);
+               changes.unrelate(feature, AtsRelationTypes.AgileFeatureToItem_AtsItem, awa);
             }
          }
       }

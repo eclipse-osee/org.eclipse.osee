@@ -137,7 +137,7 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
          new FilteredCheckboxTreeDialog("Select Feature Group(s)", "Select Feature Group(s)",
             new ArrayTreeContentProvider(), new StringLabelProvider(), new StringNameComparator());
       dialog.setInput(activeFeatureGroups);
-      Collection<IAgileFeatureGroup> selectedFeatureGroups = getSelectedFeatureGroups(awas);
+      Collection<JaxAgileFeatureGroup> selectedFeatureGroups = getSelectedFeatureGroups(awas);
       if (!selectedFeatureGroups.isEmpty()) {
          dialog.setInitialSelections(selectedFeatureGroups);
       }
@@ -171,19 +171,28 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
       return true;
    }
 
-   private static Collection<IAgileFeatureGroup> getSelectedFeatureGroups(Collection<? extends AbstractWorkflowArtifact> awas) {
-      List<IAgileFeatureGroup> selected = new LinkedList<>();
+   private static Collection<JaxAgileFeatureGroup> getSelectedFeatureGroups(Collection<? extends AbstractWorkflowArtifact> awas) {
+      List<JaxAgileFeatureGroup> selected = new LinkedList<>();
       if (awas.size() == 1) {
          for (Artifact featureArt : awas.iterator().next().getRelatedArtifacts(
             AtsRelationTypes.AgileFeatureToItem_FeatureGroup)) {
             IAgileFeatureGroup featureGroup =
                AtsClientService.get().getConfigItemFactory().getAgileFeatureGroup(featureArt);
             if (featureGroup.isActive()) {
-               selected.add(featureGroup);
+               selected.add(createJaxAgileFeatureGroupFromAgileFeatureGroup(featureGroup));
             }
          }
       }
       return selected;
+   }
+
+   private static JaxAgileFeatureGroup createJaxAgileFeatureGroupFromAgileFeatureGroup(IAgileFeatureGroup group) {
+      JaxAgileFeatureGroup newGroup = new JaxAgileFeatureGroup();
+      newGroup.setName(group.getName());
+      newGroup.setUuid(group.getId());
+      newGroup.setActive(group.isActive());
+      newGroup.setTeamUuid(group.getTeamUuid());
+      return newGroup;
    }
 
    @Override
