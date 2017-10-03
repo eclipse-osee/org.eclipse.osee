@@ -15,6 +15,7 @@ import java.util.HashSet;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaRelation;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
+import org.eclipse.osee.orcs.db.internal.sql.ObjectType;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
@@ -64,7 +65,7 @@ public class RelationSqlHandler extends SqlHandler<CriteriaRelation> {
       }
 
       relationAlias = writer.addTable(TableEnum.RELATION_TABLE);
-      txsAlias = writer.addTable(TableEnum.TXS_TABLE);
+      txsAlias = writer.addTable(TableEnum.TXS_TABLE, ObjectType.RELATION);
    }
 
    private Collection<Long> getLocalTypeIds() {

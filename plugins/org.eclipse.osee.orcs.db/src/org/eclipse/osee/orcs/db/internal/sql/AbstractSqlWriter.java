@@ -202,18 +202,15 @@ public abstract class AbstractSqlWriter implements HasOptions {
    }
 
    protected boolean hasAlias(TableEnum table) {
-      ObjectType type = getObjectType(table);
-      return getAliasManager().hasAlias(level, table, type);
+      return getAliasManager().hasAlias(level, table, table.getObjectType());
    }
 
    public List<String> getAliases(TableEnum table) {
-      ObjectType type = getObjectType(table);
-      return getAliasManager().getAliases(level, table, type);
+      return getAliasManager().getAliases(level, table, table.getObjectType());
    }
 
    public String getFirstAlias(TableEnum table) {
-      ObjectType type = getObjectType(table);
-      return getFirstAlias(level, table, type);
+      return getFirstAlias(level, table, table.getObjectType());
    }
 
    public String getFirstAlias(int level, TableEnum table, ObjectType type) {
@@ -221,7 +218,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
    }
 
    public String getLastAlias(TableEnum table) {
-      ObjectType type = getObjectType(table);
+      ObjectType type = table.getObjectType();
       return getLastAlias(table, type);
    }
 
@@ -231,40 +228,13 @@ public abstract class AbstractSqlWriter implements HasOptions {
    }
 
    public String getNextAlias(AliasEntry table) {
-      ObjectType type = getObjectType(table);
+      ObjectType type = table.getObjectType();
       return getNextAlias(table, type);
    }
 
    private String getNextAlias(AliasEntry table, ObjectType type) {
       int level = getAliasManager().getLevel();
       return getAliasManager().getNextAlias(level, table, type);
-   }
-
-   private ObjectType getObjectType(AliasEntry entry) {
-      ObjectType toReturn = ObjectType.UNKNOWN;
-      if (entry instanceof TableEnum) {
-         TableEnum table = (TableEnum) entry;
-         switch (table) {
-            case BRANCH_TABLE:
-               toReturn = ObjectType.BRANCH;
-               break;
-            case TX_DETAILS_TABLE:
-               toReturn = ObjectType.TX;
-               break;
-            case ARTIFACT_TABLE:
-               toReturn = ObjectType.ARTIFACT;
-               break;
-            case ATTRIBUTE_TABLE:
-               toReturn = ObjectType.ATTRIBUTE;
-               break;
-            case RELATION_TABLE:
-               toReturn = ObjectType.RELATION;
-               break;
-            default:
-               break;
-         }
-      }
-      return toReturn;
    }
 
    public int nextAliasLevel() {
@@ -288,7 +258,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
    }
 
    public String getOrCreateTableAlias(TableEnum table, ObjectType objectType) {
-      String alias = getFirstAlias(table);
+      String alias = getFirstAlias(level, table, objectType);
       if (alias == null) {
          alias = addTable(table, objectType);
       }

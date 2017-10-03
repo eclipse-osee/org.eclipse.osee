@@ -14,12 +14,12 @@ package org.eclipse.osee.orcs.db.internal.sql;
  * @author Roberto E. Escobar
  */
 public enum TableEnum implements AliasEntry {
-   BRANCH_TABLE("osee_branch", "br"),
-   TX_DETAILS_TABLE("osee_tx_details", "txd"),
+   BRANCH_TABLE("osee_branch", "br", ObjectType.BRANCH),
+   TX_DETAILS_TABLE("osee_tx_details", "txd", ObjectType.TX),
    TXS_TABLE("osee_txs", "txs"),
-   ARTIFACT_TABLE("osee_artifact", "art"),
-   ATTRIBUTE_TABLE("osee_attribute", "att"),
-   RELATION_TABLE("osee_relation_link", "rel"),
+   ARTIFACT_TABLE("osee_artifact", "art", ObjectType.ARTIFACT),
+   ATTRIBUTE_TABLE("osee_attribute", "att", ObjectType.ATTRIBUTE),
+   RELATION_TABLE("osee_relation_link", "rel", ObjectType.RELATION),
    CHAR_JOIN_TABLE("osee_join_char_id", "jch"),
    ID_JOIN_TABLE("osee_join_id", "jid"),
    SEARCH_TAGS_TABLE("osee_search_tags", "tag"),
@@ -28,10 +28,16 @@ public enum TableEnum implements AliasEntry {
 
    private final String tableName;
    private final String aliasPrefix;
+   private final ObjectType objectType;
 
    private TableEnum(String tableName, String aliasPrefix) {
+      this(tableName, aliasPrefix, ObjectType.UNKNOWN);
+   }
+
+   private TableEnum(String tableName, String aliasPrefix, ObjectType objectType) {
       this.tableName = tableName;
       this.aliasPrefix = aliasPrefix;
+      this.objectType = objectType;
    }
 
    @Override
@@ -44,4 +50,8 @@ public enum TableEnum implements AliasEntry {
       return aliasPrefix;
    }
 
+   @Override
+   public ObjectType getObjectType() {
+      return objectType;
+   }
 }

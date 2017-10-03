@@ -15,7 +15,11 @@ package org.eclipse.osee.orcs.db.internal.sql;
  */
 public interface AliasEntry {
 
-   String getPrefix();
+   public String getPrefix();
 
-   String getName();
+   public String getName();
+
+   public default ObjectType getObjectType() {
+      return ObjectType.UNKNOWN;
+   }
 }

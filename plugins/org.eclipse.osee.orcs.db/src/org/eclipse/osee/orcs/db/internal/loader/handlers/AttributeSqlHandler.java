@@ -14,6 +14,7 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaAttribute;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
+import org.eclipse.osee.orcs.db.internal.sql.ObjectType;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
@@ -61,7 +62,7 @@ public class AttributeSqlHandler extends SqlHandler<CriteriaAttribute> {
       }
 
       attrAlias = writer.addTable(TableEnum.ATTRIBUTE_TABLE);
-      txsAlias = writer.addTable(TableEnum.TXS_TABLE);
+      txsAlias = writer.addTable(TableEnum.TXS_TABLE, ObjectType.ATTRIBUTE);
    }
 
    @Override
