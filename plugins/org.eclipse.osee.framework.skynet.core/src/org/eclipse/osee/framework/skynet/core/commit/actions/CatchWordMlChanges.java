@@ -14,25 +14,22 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
+import org.eclipse.osee.framework.skynet.core.utility.ApplicabilityUtility;
 import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
@@ -72,7 +69,7 @@ public class CatchWordMlChanges implements CommitAction {
                      Boolean.valueOf(OseeInfo.getCachedValue("osee.are.applicability.tags.invalid"));
                   Boolean isInvalidTags =
                      useInvalidTagsCheck ? (((WordAttribute) attribute).areApplicabilityTagsInvalid(destinationBranch,
-                        getValidFeatureValuesForBranch(destinationBranch),
+                        ApplicabilityUtility.getValidFeatureValuesForBranch(destinationBranch),
                         WordUtil.getValidConfigurations(destinationBranch))) : useInvalidTagsCheck;
                   if (isInvalidTags) {
                      applicabilityTags.put(attribute.getArtifact().getArtId(), attribute.getArtifact().getSafeName());
@@ -124,17 +121,5 @@ public class CatchWordMlChanges implements CommitAction {
    private String getArtifactErrorMessage(Artifact artifact) {
       return String.format("Error validating: [(%s)(%s) - %s] on branchUuid:[%s]", artifact.getArtId(),
          artifact.getGuid(), artifact.getName(), artifact.getBranch());
-   }
-
-   private HashCollection<String, String> getValidFeatureValuesForBranch(BranchId branch) {
-      List<FeatureDefinitionData> featureDefinitionData =
-         ServiceUtil.getOseeClient().getApplicabilityEndpoint(branch).getFeatureDefinitionData();
-
-      HashCollection<String, String> validFeatureValues = new HashCollection<>();
-      for (FeatureDefinitionData feat : featureDefinitionData) {
-         validFeatureValues.put(feat.getName(), feat.getValues());
-      }
-
-      return validFeatureValues;
    }
 }

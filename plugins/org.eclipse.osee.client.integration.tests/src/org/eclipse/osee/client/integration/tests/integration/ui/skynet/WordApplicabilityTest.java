@@ -14,16 +14,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.skynet.core.utility.ApplicabilityUtility;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
-import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
-import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,14 +34,12 @@ public class WordApplicabilityTest {
    private static final String TEST_ElSE_TAGS = "support/WordApplicabilityElseTags.xml";
    private static final String TEST_EMBEDDED_TAGS = "support/WordApplicabilityEmbeddedTags.xml";
 
-   private OseeClient oseeClient;
    HashCollection<String, String> validFeatureValuesForBranch;
    HashSet<String> validConfigurations;
 
    @Before
    public void setup() {
-      oseeClient = ServiceUtil.getOseeClient();
-      validFeatureValuesForBranch = getValidFeatureValuesForBranch(DemoBranches.SAW_Bld_1);
+      validFeatureValuesForBranch = ApplicabilityUtility.getValidFeatureValuesForBranch(DemoBranches.SAW_Bld_1);
       validConfigurations = getValidConfigurations(DemoBranches.SAW_Bld_1);
    }
 
@@ -78,18 +73,6 @@ public class WordApplicabilityTest {
 
       assertFalse(WordCoreUtil.areApplicabilityTagsInvalid(content, DemoBranches.SAW_Bld_1, validFeatureValuesForBranch,
          validConfigurations));
-   }
-
-   private HashCollection<String, String> getValidFeatureValuesForBranch(BranchId branch) {
-      List<FeatureDefinitionData> featureDefinitionData =
-         oseeClient.getApplicabilityEndpoint(branch).getFeatureDefinitionData();
-
-      HashCollection<String, String> validFeatureValues = new HashCollection<>();
-      for (FeatureDefinitionData feat : featureDefinitionData) {
-         validFeatureValues.put(feat.getName(), feat.getValues());
-      }
-
-      return validFeatureValues;
    }
 
    private HashSet<String> getValidConfigurations(BranchId branch) {

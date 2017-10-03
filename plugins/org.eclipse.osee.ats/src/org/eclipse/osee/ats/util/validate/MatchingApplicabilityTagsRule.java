@@ -13,15 +13,13 @@ package org.eclipse.osee.ats.util.validate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.ats.core.client.IAtsClient;
-import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.WordCoreUtil;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.utility.ApplicabilityUtility;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 
 /**
@@ -29,30 +27,16 @@ import org.eclipse.osee.framework.skynet.core.word.WordUtil;
  */
 public class MatchingApplicabilityTagsRule extends AbstractValidationRule {
 
-   private final IAtsClient atsClient;
-   private List<FeatureDefinitionData> featureDefinitionData;
    private HashCollection<String, String> validFeatureValues;
    private HashSet<String> validConfigurations;
-
-   public MatchingApplicabilityTagsRule(IAtsClient atsClient) {
-      this.atsClient = atsClient;
-   }
 
    @Override
    protected ValidationResult validate(Artifact artToValidate, IProgressMonitor monitor) throws OseeCoreException {
       Collection<String> errorMessages = new ArrayList<>();
       String wordml = artToValidate.getSoleAttributeValue(CoreAttributeTypes.WordTemplateContent, "");
 
-      if (featureDefinitionData == null) {
-         featureDefinitionData =
-            atsClient.getOseeClient().getApplicabilityEndpoint(artToValidate.getBranch()).getFeatureDefinitionData();
-      }
-
       if (validFeatureValues == null) {
-         validFeatureValues = new HashCollection<>();
-         for (FeatureDefinitionData feat : featureDefinitionData) {
-            validFeatureValues.put(feat.getName(), feat.getValues());
-         }
+         validFeatureValues = ApplicabilityUtility.getValidFeatureValuesForBranch(artToValidate.getBranch());
       }
 
       if (validConfigurations == null) {

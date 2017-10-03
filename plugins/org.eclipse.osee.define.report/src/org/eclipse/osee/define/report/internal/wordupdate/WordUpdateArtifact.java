@@ -250,7 +250,7 @@ public class WordUpdateArtifact {
 
       HashCollection<String, String> validFeatureValues = new HashCollection<>();
       for (FeatureDefinitionData feat : featureDefinitionData) {
-         validFeatureValues.put(feat.getName(), feat.getValues());
+         validFeatureValues.put(feat.getName().toUpperCase(), feat.getValues());
       }
 
       return validFeatureValues;
