@@ -106,6 +106,8 @@ public interface IAgileService {
 
    IAgileTeam getAgileTeam(IAtsTeamDefinition teamDef);
 
+   IAgileTeam getAgileTeam(IAgileSprint sprint);
+
    /**
     * Display Points as either "ats.Points" or "ats.Points Numeric" as configured on Agile Team artifact
     */
@@ -125,5 +127,4 @@ public interface IAgileService {
     * @return agile team from backlog
     */
    IAgileTeam getAgileTeamFromBacklog(IAgileBacklog backlog);
-
 }

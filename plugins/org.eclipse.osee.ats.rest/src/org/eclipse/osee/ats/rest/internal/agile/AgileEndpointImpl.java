@@ -216,8 +216,14 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    public List<IAtsActionableItem> getActionableAis(@PathParam("teamId") ArtifactId teamId) {
       IAgileTeam aTeam = atsServer.getAgileService().getAgileTeam(teamId);
       List<IAtsActionableItem> ais = new LinkedList<>();
+      // If ATS Teams are related, use their actionable items
       for (IAtsTeamDefinition teamDef : atsServer.getAgileService().getAtsTeams(aTeam)) {
          ais.addAll(atsServer.getActionableItemService().getActiveActionableItemsAndChildren(teamDef));
+      }
+      // Add any AgileTeam to AI relations
+      for (ArtifactId aiArt : atsServer.getRelationResolver().getRelated(aTeam,
+         AtsRelationTypes.AgileTeamToAtsAtsAis_AtsAis)) {
+         ais.add(atsServer.getConfigItemFactory().getActionableItem(aiArt));
       }
       Collections.sort(ais, new NamedComparator(SortOrder.ASCENDING));
       return ais;

@@ -38,6 +38,7 @@ public class NewActionData {
    String points;
    boolean unplanned;
    String sprint;
+   String agileTeam;
    String featureGroup;
    String workPackage;
 
@@ -204,5 +205,13 @@ public class NewActionData {
 
    public void setWorkPackage(String workPackage) {
       this.workPackage = workPackage;
+   }
+
+   public String getAgileTeam() {
+      return agileTeam;
+   }
+
+   public void setAgileTeam(String agileTeam) {
+      this.agileTeam = agileTeam;
    }
 }

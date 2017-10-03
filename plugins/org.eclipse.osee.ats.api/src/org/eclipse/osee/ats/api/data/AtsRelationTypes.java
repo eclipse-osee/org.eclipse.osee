@@ -47,6 +47,9 @@ public final class AtsRelationTypes {
    public static final RelationTypeSide AgileTeamToAtsTeam_AgileTeam = RelationTypeSide.create(RelationSide.SIDE_A, 9001858956696556140L, "AgileTeamToAtsTeam");
    public static final RelationTypeSide AgileTeamToAtsTeam_AtsTeam = AgileTeamToAtsTeam_AgileTeam.getOpposite();
 
+   public static final RelationTypeSide AgileTeamToAtsAtsAis_AgileTeam = RelationTypeSide.create(RelationSide.SIDE_A, 5336467317030669830L, "AgileTeamToAtsAtsAis");
+   public static final RelationTypeSide AgileTeamToAtsAtsAis_AtsAis = AgileTeamToAtsAtsAis_AgileTeam.getOpposite();
+
    public static final RelationTypeSide AgileTeamToBacklog_AgileTeam = RelationTypeSide.create(RelationSide.SIDE_A, 8816366550731954418L, "AgileTeamToBacklog");
    public static final RelationTypeSide AgileTeamToBacklog_Backlog = AgileTeamToBacklog_AgileTeam.getOpposite();
 

@@ -174,6 +174,17 @@ public class AgileService implements IAgileService {
       return aTeam;
    }
 
+   @Override
+   public IAgileTeam getAgileTeam(IAgileSprint sprint) {
+      IAgileTeam aTeam = null;
+      ArtifactId aTeamArt =
+         services.getRelationResolver().getRelatedOrNull(sprint, AtsRelationTypes.AgileTeamToSprint_AgileTeam);
+      if (aTeamArt != null) {
+         aTeam = services.getAgileService().getAgileTeam(aTeamArt);
+      }
+      return aTeam;
+   }
+
    /********************************
     ** Agile Feature Group
     ***********************************/

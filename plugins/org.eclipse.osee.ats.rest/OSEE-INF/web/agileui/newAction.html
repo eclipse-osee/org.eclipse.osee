@@ -16,7 +16,7 @@
 				<div menu></div>
 			</div>
 			<div id="newActionForm">
-				<form novalidate class="simple-form">
+				<form class="simple-form" novalidate>
 
 					<!-- TITLE -->
 					<label>Title: <input type="text" ng-model="action.title"
@@ -31,8 +31,10 @@
 					<!-- DESCRIPTION -->
 					<label for="textarea">Description: <textarea id="textarea"
 							rows name="Description" cols="40" ng-model="action.description"
-							rows="5"></textarea> <!-- Change Type--> <!-- Change Type-->
-					</label><br /> <label>Change Type:</label>&nbsp; <select id="changeType"
+							rows="5"></textarea></label><br />
+
+					<!-- Change Type-->
+					<label>Change Type:</label>&nbsp; <select id="changeType"
 						ng-model="action.changeType">
 						<option selected="selected" value="Improvement">Improvement</option>
 						<option value="Problem">Problem</option>
@@ -53,18 +55,18 @@
 					</select> <label>Need-By Date:</label> <input type="date" name="deadline"
 						ng-model="action.needByDate"><br />
 
-						<!-- POINTS -->
+					<!-- POINTS -->
 					</select> <label>Points:</label> <input type="text" name="points"
 						ng-model="action.points"><br />
 
-						<!-- UN-PLANNED -->
-					</select> <label>Un-Planned Work:</label> <input type="checkbox" name="unplanned"
-						ng-model="action.unplanned">
+					<!-- UN-PLANNED -->
+					</select> <label>Un-Planned Work:</label> <input type="checkbox"
+						name="unplanned" ng-model="action.unplanned">
 
 					<!-- SPRINT -->
 					<label for="textarea">Sprint: </label> <select
 						ng-model="action.sprint"
-						ng-options="item.uuid as item.name for item in validSprints">
+						ng-options="item.id as item.name for item in validSprints">
 					</select>
 
 					<!-- FEATURE GROUP -->
@@ -80,8 +82,8 @@
 					</select>
 
 					<div id="newActionButtonContainer">
-						<br /> 
-						<input type="submit" ng-click="createItem(action)" value="Create" />
+						<br /> <input type="submit" ng-click="createItem(action)"
+							value="Create" />
 					</div>
 
 				</form>

@@ -20,6 +20,7 @@ import java.util.Map.Entry;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
@@ -171,6 +172,7 @@ public class ActionFactory implements IAtsActionFactory {
          }
       }
 
+      // Set sprint
       String sprintStr = data.getSprint();
       if (Strings.isValid(sprintStr)) {
          for (IAtsTeamWorkflow teamWf : createAction.getTeamWfs()) {
@@ -178,7 +180,7 @@ public class ActionFactory implements IAtsActionFactory {
             if (Strings.isNumeric(sprintStr)) {
                sprint = services.getAgileService().getAgileSprint(Long.valueOf(sprintStr));
             } else {
-               IAgileTeam aTeam = services.getAgileService().getAgileTeam(teamWf.getTeamDefinition());
+               IAgileTeam aTeam = services.getAgileService().getAgileTeam(sprint);
                for (IAgileSprint aSprint : services.getAgileService().getAgileSprints(aTeam)) {
                   if (aSprint.getName().equals(sprintStr)) {
                      sprint = aSprint;
@@ -188,6 +190,31 @@ public class ActionFactory implements IAtsActionFactory {
             }
             if (sprint != null) {
                changes.relate(sprint, AtsRelationTypes.AgileSprintToItem_AtsItem, teamWf);
+            }
+         }
+      }
+
+      // Set backlog if not already set
+      // NOTE: This may cause a problem if team already configured to add new items to backlog
+      String agileTeamStr = data.getAgileTeam();
+      if (Strings.isValid(agileTeamStr)) {
+         for (IAtsTeamWorkflow teamWf : createAction.getTeamWfs()) {
+            IAgileTeam aTeam = null;
+            if (Strings.isNumeric(agileTeamStr)) {
+               aTeam = services.getAgileService().getAgileTeam(Long.valueOf(agileTeamStr));
+            } else {
+               ArtifactId aTeamArt = services.getArtifactByName(AtsArtifactTypes.AgileTeam, agileTeamStr);
+               if (aTeamArt != null) {
+                  aTeam = services.getAgileService().getAgileTeam(aTeamArt);
+               }
+            }
+            if (aTeam != null) {
+               IAgileBacklog backlog = services.getAgileService().getBacklogForTeam(aTeam.getId());
+               if (backlog != null) {
+                  if (!services.getRelationResolver().areRelated(backlog, AtsRelationTypes.Goal_Member, teamWf)) {
+                     changes.relate(backlog, AtsRelationTypes.Goal_Member, teamWf);
+                  }
+               }
             }
          }
       }

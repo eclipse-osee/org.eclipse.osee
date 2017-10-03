@@ -1608,6 +1608,16 @@ relationType "AgileTeamToFeatureGroup" {
 	multiplicity ONE_TO_MANY
 }
 
+relationType "AgileTeamToAtsAis" {
+	id 5336467317030669830
+	sideAName "Agile Team"
+	sideAArtifactType "Agile Team"
+	sideBName "ATS AIs"
+	sideBArtifactType "Actionable Item"
+	defaultOrderType Lexicographical_Ascending
+	multiplicity MANY_TO_MANY
+}
+
 relationType "AgileTeamToAtsTeam" {
 	id 9001858956696556140
 	sideAName "Agile Team"

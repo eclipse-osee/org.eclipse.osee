@@ -30,28 +30,29 @@ angular.module('AgileApp').controller(
 					AgileFactory.getTeamAis($scope.team).$promise
 						.then(function(data) {
 							$scope.validAis = data;
-							$scope.actionableItem = "";
+							$scope.action.actionableItem = "";
 					});
 					AgileFactory.getSprintsTokens($scope.team).$promise
 						.then(function(data) {
 							$scope.validSprints = data;
-							$scope.sprint = "";
+							$scope.action.sprint = "";
 					});
 					AgileFactory.getFeatureGroups($scope.team).$promise
 						.then(function(data) {
 							$scope.validFeatureGroups = data;
-							$scope.featureGroup = "";
+							$scope.action.featureGroup = "";
 					});
 						AgileFactory.getWorkPackages($scope.team).$promise
 						.then(function(data) {
 							$scope.validWorkPackages = data;
-							$scope.workPackage = "";
+							$scope.action.workPackage = "";
 					});
 
 					$scope.createItem = function() {
 						var loadingModal = null;
 						try {
 						$scope.action.asUserId = 99999999;
+						$scope.action.agileTeam = $scope.team.id;
 						$scope.action.createdByUserId = 99999999;
 						if ($scope.actionableItem) {
 							$scope.action.aiIds = [];
