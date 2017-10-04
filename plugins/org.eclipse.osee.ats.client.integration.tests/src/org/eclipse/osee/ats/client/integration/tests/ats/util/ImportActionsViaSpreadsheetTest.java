@@ -14,8 +14,11 @@ import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED
 import static org.junit.Assert.assertFalse;
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.agile.IAgileBacklog;
+import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -25,9 +28,12 @@ import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.Import.ImportActionsViaSpreadsheetBlam;
 import org.eclipse.osee.ats.util.Import.ImportActionsViaSpreadsheetBlam.ImportOption;
+import org.eclipse.osee.ats.util.Import.ImportAgileActionsViaSpreadsheetBlam;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -130,4 +136,51 @@ public class ImportActionsViaSpreadsheetTest {
       Assert.assertEquals("members should be in order", "Support what they need",
          ((IAtsObject) members.toArray()[4]).getDescription());
    }
+
+   @org.junit.Test
+   public void testImportAgileActions() throws Exception {
+
+      ImportAgileActionsViaSpreadsheetBlam blam = new ImportAgileActionsViaSpreadsheetBlam();
+
+      File file = blam.getSampleSpreadsheetFile();
+      Assert.assertNotNull(file);
+
+      // Two should be added to backlog
+      IAgileBacklog backlog = AtsClientService.get().getAgileService().getAgileBacklog(DemoArtifactToken.SAW_Backlog);
+      Assert.assertNotNull(backlog);
+
+      // Import actions to backlog and sprint
+      XResultData rd = blam.importActions(file, null, ImportOption.NONE);
+      Assert.assertEquals("No errors should be reported", "", rd.toString());
+
+      // Validate backlog
+      Collection<ArtifactToken> members =
+         AtsClientService.get().getRelationResolver().getRelated(backlog, AtsRelationTypes.Goal_Member);
+      Assert.assertEquals("Should be 20 members", 20, members.size());
+      Assert.assertTrue("members should be in order",
+         ((IAtsObject) members.toArray()[18]).getDescription().startsWith("Phase 1"));
+      Assert.assertTrue("members should be in order",
+         ((IAtsObject) members.toArray()[19]).getDescription().startsWith("Phase 2"));
+
+      // Two should be added to sprint and points set
+      IAgileSprint sprint2 = AtsClientService.get().getAgileService().getAgileSprint(DemoArtifactToken.SAW_Sprint_2);
+      Assert.assertNotNull(sprint2);
+
+      // Validate sprint
+      members =
+         AtsClientService.get().getRelationResolver().getRelated(sprint2, AtsRelationTypes.AgileSprintToItem_AtsItem);
+      Assert.assertEquals("Should be 19 members", 19, members.size());
+
+      Assert.assertTrue("members should be in order",
+         ((IAtsObject) members.toArray()[17]).getDescription().startsWith("Phase 1"));
+      Assert.assertEquals("2", AtsClientService.get().getAttributeResolver().getSoleAttributeValue(
+         ((IAtsObject) members.toArray()[17]), AtsAttributeTypes.Points, ""));
+
+      Assert.assertTrue("members should be in order",
+         ((IAtsObject) members.toArray()[18]).getDescription().startsWith("Phase 2"));
+      Assert.assertEquals("3", AtsClientService.get().getAttributeResolver().getSoleAttributeValue(
+         ((IAtsObject) members.toArray()[18]), AtsAttributeTypes.Points, ""));
+
+   }
+
 }

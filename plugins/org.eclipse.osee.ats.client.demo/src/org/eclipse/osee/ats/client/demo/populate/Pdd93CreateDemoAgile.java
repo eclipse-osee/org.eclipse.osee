@@ -45,6 +45,8 @@ import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
 import org.eclipse.osee.ats.demo.api.DemoWorkflowTitles;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -53,6 +55,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.support.test.util.TestUtil;
 
@@ -127,13 +130,18 @@ public class Pdd93CreateDemoAgile {
       AgileWriterResult result = agile.updateItems(item);
       Conditions.assertFalse(result.getResults().isErrors(), result.getResults().toString());
 
+      // Set backlog as user_defined member order
+      Artifact backlogArt = AtsClientService.get().getArtifact(backlog.getUuid());
+      RelationManager.setRelationOrder(backlogArt, AtsRelationTypes.Goal_Member, RelationSide.SIDE_B,
+         RelationSorter.USER_DEFINED, backlogArt.getRelatedArtifacts(AtsRelationTypes.Goal_Member));
+
       // Create Sprints
-      JaxNewAgileSprint newSprint = newSprint(DemoArtifactToken.SAW_Sprint_1);
-      response = agile.createSprint(newSprint.getTeamUuid(), newSprint);
+      JaxNewAgileSprint sprint1 = newSprint(DemoArtifactToken.SAW_Sprint_1);
+      response = agile.createSprint(sprint1.getTeamUuid(), sprint1);
       Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
 
-      newSprint = newSprint(DemoArtifactToken.SAW_Sprint_2);
-      response = agile.createSprint(newSprint.getTeamUuid(), newSprint);
+      JaxNewAgileSprint sprint2 = newSprint(DemoArtifactToken.SAW_Sprint_2);
+      response = agile.createSprint(sprint2.getTeamUuid(), sprint2);
       Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
 
       // Add items to Sprint
@@ -156,6 +164,14 @@ public class Pdd93CreateDemoAgile {
       Conditions.assertFalse(result.getResults().isErrors(), result.getResults().toString());
       result = agile.updateItems(completedItems);
       Conditions.assertFalse(result.getResults().isErrors(), result.getResults().toString());
+
+      Artifact sprint1Art = AtsClientService.get().getArtifact(sprint1.getUuid());
+      RelationManager.setRelationOrder(sprint1Art, AtsRelationTypes.AgileSprintToItem_AtsItem, RelationSide.SIDE_B,
+         RelationSorter.USER_DEFINED, sprint1Art.getRelatedArtifacts(AtsRelationTypes.AgileSprintToItem_AtsItem));
+
+      Artifact spring2Art = AtsClientService.get().getArtifact(sprint2.getUuid());
+      RelationManager.setRelationOrder(spring2Art, AtsRelationTypes.AgileSprintToItem_AtsItem, RelationSide.SIDE_B,
+         RelationSorter.USER_DEFINED, spring2Art.getRelatedArtifacts(AtsRelationTypes.AgileSprintToItem_AtsItem));
 
       // Transition First Sprint to completed
       IAtsWorkItem sprint = AtsClientService.get().getQueryService().createQuery(WorkItemType.WorkItem).andUuids(

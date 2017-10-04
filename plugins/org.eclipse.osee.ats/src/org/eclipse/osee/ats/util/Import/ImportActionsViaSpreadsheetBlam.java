@@ -51,6 +51,10 @@ public class ImportActionsViaSpreadsheetBlam extends AbstractBlam {
       return "Import Actions Via Spreadsheet";
    }
 
+   protected boolean includeGoalWidget() {
+      return true;
+   }
+
    @Override
    public String getXWidgetsXml() {
       StringBuilder builder = new StringBuilder();
@@ -61,8 +65,10 @@ public class ImportActionsViaSpreadsheetBlam extends AbstractBlam {
          "<XWidget xwidgetType=\"XFileTextWithSelectionDialog\" displayName=\"Excel Spreadsheet saved as xml\" />");
       builder.append(
          "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Email POCs\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
-      builder.append(
-         "<XWidget xwidgetType=\"XGoalCombo\" displayName=\"Add to Goal\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
+      if (includeGoalWidget()) {
+         builder.append(
+            "<XWidget xwidgetType=\"XGoalCombo\" displayName=\"Add to Goal\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
+      }
       builder.append("</xWidgets>");
       return builder.toString();
    }
@@ -78,10 +84,9 @@ public class ImportActionsViaSpreadsheetBlam extends AbstractBlam {
             return;
          }
          boolean emailPocs = variableMap.getBoolean("Email POCs");
-         IAtsGoal toGoal = (IAtsGoal) variableMap.getValue("Add to Goal");
 
          try {
-            importActions(file, toGoal, ImportOption.POPUP_ERROR_REPORT,
+            importActions(file, null, ImportOption.POPUP_ERROR_REPORT,
                emailPocs ? ImportOption.EMAIL_POCS : ImportOption.NONE);
          } catch (Exception ex) {
             log(ex);
@@ -133,7 +138,7 @@ public class ImportActionsViaSpreadsheetBlam extends AbstractBlam {
 
    public File getSampleSpreadsheetFile() throws Exception {
       PluginUtil util = new PluginUtil(Activator.PLUGIN_ID);
-      return util.getPluginFile("support/Action Import.xml");
+      return util.getPluginFile("support/Action_Import.xml");
    }
 
    @Override

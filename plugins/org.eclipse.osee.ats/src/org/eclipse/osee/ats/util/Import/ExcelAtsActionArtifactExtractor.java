@@ -26,9 +26,13 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.api.agile.IAgileBacklog;
+import org.eclipse.osee.ats.api.agile.IAgileSprint;
+import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.task.JaxAttribute;
@@ -83,6 +87,7 @@ public class ExcelAtsActionArtifactExtractor {
    private final boolean emailPOCs;
    private boolean dataIsValid = true;
    private final IAtsGoal toGoal;
+   private final Map<String, IAgileTeam> teamNameByTeamMap = new HashMap<>();
 
    public ExcelAtsActionArtifactExtractor(boolean emailPOCs, IAtsGoal toGoal) {
       this.emailPOCs = emailPOCs;
@@ -170,6 +175,37 @@ public class ExcelAtsActionArtifactExtractor {
                }
             }
          }
+
+         if (Strings.isValid(aData.agileTeamName)) {
+            IAgileTeam aTeam = getAgileTeamByName(aData.agileTeamName);
+            if (aTeam == null) {
+               rd.errorf("Invalid team name [%s]", aData.agileTeamName);
+            }
+            IAgileBacklog backlog = getAgileBacklog(aData.agileTeamName);
+            if (backlog == null) {
+               rd.errorf("No backlog for team [%s]", aData.agileTeamName);
+            }
+         }
+
+         if (Strings.isValid(aData.agileSprintName)) {
+            IAgileSprint sprint = getAgileSprint(aData.agileTeamName, aData.agileSprintName);
+            if (sprint == null) {
+               rd.errorf("Invalid sprint name [%s] for team [%s]", aData.agileSprintName, aData.agileTeamName);
+            }
+         }
+
+         if (Strings.isValid(aData.agilePoints)) {
+            IAgileTeam aTeam = getAgileTeamByName(aData.agileTeamName);
+            if (aTeam == null) {
+               rd.errorf("Invalid team name [%s] for points [%s]", aData.agileTeamName, aData.agilePoints);
+            } else {
+               AttributeTypeId pointsAttrType =
+                  AtsClientService.get().getAgileService().getAgileTeamPointsAttributeType(aTeam);
+               if (pointsAttrType == null) {
+                  rd.errorf("Points not configured for team [%s]", aData.agileTeamName);
+               }
+            }
+         }
       }
       return rd;
    }
@@ -191,6 +227,10 @@ public class ExcelAtsActionArtifactExtractor {
                newTeamWfs = AtsClientService.get().getWorkItemService().getTeams(result);
                addToGoal(org.eclipse.osee.framework.jdk.core.util.Collections.castAll(TeamWorkFlowArtifact.class,
                   AtsObjects.getArtifacts(newTeamWfs)), changes);
+               for (IAtsTeamWorkflow teamWf : newTeamWfs) {
+                  addToAgile(changes, aData, teamWf);
+               }
+
                actionNameToAction.put(aData.title, result);
                actionArts.add((Artifact) result.getActionArt());
             } else {
@@ -207,21 +247,23 @@ public class ExcelAtsActionArtifactExtractor {
                Map<IAtsTeamDefinition, Collection<IAtsActionableItem>> teamDefToAias = getTeamDefToAias(aias);
                for (Entry<IAtsTeamDefinition, Collection<IAtsActionableItem>> entry : teamDefToAias.entrySet()) {
 
-                  IAtsTeamWorkflow teamWorkflow = AtsClientService.get().getActionFactory().createTeamWorkflow(
+                  IAtsTeamWorkflow teamWf = AtsClientService.get().getActionFactory().createTeamWorkflow(
                      result.getAction(), entry.getKey(), entry.getValue(), aData.assignees, changes, createdDate,
                      createdBy, null, CreateTeamOption.Duplicate_If_Exists);
-                  changes.setSoleAttributeValue(teamWorkflow, AtsAttributeTypes.Description, aData.desc);
+                  changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.Description, aData.desc);
                   if (Strings.isValid(aData.priorityStr) && !aData.priorityStr.equals("<Select>")) {
-                     changes.setSoleAttributeValue(teamWorkflow, AtsAttributeTypes.PriorityType, aData.priorityStr);
+                     changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.PriorityType, aData.priorityStr);
                   }
-                  changes.setSoleAttributeValue(teamWorkflow, AtsAttributeTypes.ChangeType, aData.changeType);
+                  changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.ChangeType, aData.changeType);
+
+                  addToAgile(changes, aData, teamWf);
 
                   for (JaxAttribute attr : aData.attributes) {
                      AttributeTypeId attrType = AttributeTypeManager.getType(attr.getAttrTypeName());
-                     changes.setAttributeValues(teamWorkflow, attrType, attr.getValues());
+                     changes.setAttributeValues(teamWf, attrType, attr.getValues());
                   }
-                  newTeamWfs.add((TeamWorkFlowArtifact) teamWorkflow.getStoreObject());
-                  addToGoal(Collections.singleton((TeamWorkFlowArtifact) teamWorkflow.getStoreObject()), changes);
+                  newTeamWfs.add((TeamWorkFlowArtifact) teamWf.getStoreObject());
+                  addToGoal(Collections.singleton((TeamWorkFlowArtifact) teamWf.getStoreObject()), changes);
                }
             }
             if (!aData.version.equals("")) {
@@ -267,6 +309,70 @@ public class ExcelAtsActionArtifactExtractor {
       } finally {
          AtsUtilClient.setEmailEnabled(true);
       }
+   }
+
+   private void addToAgile(IAtsChangeSet changes, ActionData aData, IAtsTeamWorkflow teamWf) {
+      // If Agile Team, add workflow to backlog
+      if (Strings.isValid(aData.agileTeamName)) {
+         IAgileBacklog backlog = getAgileBacklog(aData.agileTeamName);
+         if (backlog != null) {
+            changes.relate(backlog, AtsRelationTypes.Goal_Member, teamWf);
+         }
+      }
+
+      // If Agile Sprint, add workflow to sprint
+      if (Strings.isValid(aData.agileSprintName)) {
+         IAgileSprint sprint = getAgileSprint(aData.agileTeamName, aData.agileSprintName);
+         if (sprint != null) {
+            changes.relate(sprint, AtsRelationTypes.AgileSprintToItem_AtsItem, teamWf);
+         }
+      }
+
+      // If Agile points, add points to workflow
+      if (Strings.isValid(aData.agilePoints)) {
+         IAgileTeam aTeam = getAgileTeamByName(aData.agileTeamName);
+         AttributeTypeId attrType = AtsClientService.get().getAgileService().getAgileTeamPointsAttributeType(aTeam);
+         if (attrType.getId().equals(AtsAttributeTypes.Points.getId())) {
+            changes.setSoleAttributeValue(teamWf, attrType, Integer.valueOf(aData.agilePoints));
+         } else if (attrType.getId().equals(AtsAttributeTypes.PointsNumeric.getId())) {
+            changes.setSoleAttributeValue(teamWf, attrType, Double.valueOf(aData.agilePoints));
+         } else {
+            throw new OseeArgumentException("Un-configured pointes types for team %s",
+               teamWf.getTeamDefinition().toStringWithId());
+         }
+      }
+   }
+
+   private IAgileTeam getAgileTeamByName(String agileTeamName) {
+      IAgileTeam team = teamNameByTeamMap.get(agileTeamName);
+      if (team == null) {
+         IAgileTeam aTeam = AtsClientService.get().getAgileService().getAgileTeamByName(agileTeamName);
+         if (aTeam != null) {
+            teamNameByTeamMap.put(agileTeamName, aTeam);
+            team = aTeam;
+         }
+      }
+      return team;
+   }
+
+   private IAgileSprint getAgileSprint(String agileTeamName, String agileSprintName) {
+      IAgileTeam aTeam = getAgileTeamByName(agileTeamName);
+      if (aTeam != null) {
+         for (IAgileSprint teamSprint : AtsClientService.get().getAgileService().getAgileSprints(aTeam)) {
+            if (teamSprint.getName().equals(agileSprintName)) {
+               return teamSprint;
+            }
+         }
+      }
+      return null;
+   }
+
+   private IAgileBacklog getAgileBacklog(String agileTeamName) {
+      IAgileTeam aTeam = AtsClientService.get().getAgileService().getAgileTeamByName(agileTeamName);
+      if (aTeam != null) {
+         return AtsClientService.get().getAgileService().getAgileBacklog(aTeam);
+      }
+      return null;
    }
 
    private void addToGoal(Collection<TeamWorkFlowArtifact> newTeamArts, IAtsChangeSet changes) {
@@ -341,20 +447,36 @@ public class ExcelAtsActionArtifactExtractor {
       protected String version = "";
       protected Double estimatedHours = null;
       protected List<JaxAttribute> attributes = new LinkedList<>();
+      protected String agilePoints;
+      protected String agileTeamName;
+      protected String agileSprintName;
    }
 
    private final static class InternalRowProcessor implements RowProcessor {
 
       private static enum Columns {
-         Title,
-         Description,
-         ActionableItems,
-         Assignees,
-         Priority,
-         ChangeType,
-         Version,
-         EstimatedHours,
-         Goal
+         Title("Title"),
+         Description("Description"),
+         ActionableItems("ActionableItems"),
+         Assignees("ActionableItems"),
+         Priority("Priority"),
+         ChangeType("ChangeType"),
+         Version("Version"),
+         EstimatedHours("EstimatedHours"),
+         Goal("Goal"),
+         AgileTeamName("Agile Team Name"),
+         AgileSprintName("Agile Sprint Name"),
+         AgilePoints("Agile Points");
+
+         private final String colName;
+
+         private Columns(String name) {
+            colName = name;
+         }
+
+         public String getColName() {
+            return colName;
+         }
       };
 
       private String[] headerRow;
@@ -438,6 +560,18 @@ public class ExcelAtsActionArtifactExtractor {
                   processActionableItems(cols, aData, i);
                } else if (header.equalsIgnoreCase(Columns.Assignees.name())) {
                   processAssignees(cols, aData, i);
+               } else if (header.equalsIgnoreCase(Columns.AgileTeamName.getColName())) {
+                  if (Strings.isValid(cols[i])) {
+                     aData.agileTeamName = cols[i];
+                  }
+               } else if (header.equalsIgnoreCase(Columns.AgileSprintName.getColName())) {
+                  if (Strings.isValid(cols[i])) {
+                     aData.agileSprintName = cols[i];
+                  }
+               } else if (header.equalsIgnoreCase(Columns.AgilePoints.getColName())) {
+                  if (Strings.isValid(cols[i])) {
+                     aData.agilePoints = cols[i];
+                  }
                } else {
                   String attrTypeName = header;
                   if (Strings.isValid(attrTypeName)) {

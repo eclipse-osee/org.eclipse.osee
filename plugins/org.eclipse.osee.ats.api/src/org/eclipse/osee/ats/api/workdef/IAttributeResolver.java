@@ -85,7 +85,7 @@ public interface IAttributeResolver {
 
    <T> Collection<T> getAttributeValues(IAtsObject atsObject, AttributeTypeId attributeType);
 
-   String getSoleAttributeValueAsString(ArtifactId artifact, AttributeTypeId worktype, String defaultReturnValue);
+   String getSoleAttributeValueAsString(ArtifactId artifact, AttributeTypeId attributeType, String defaultReturnValue);
 
    int getAttributeCount(IAtsWorkItem workItem, AttributeTypeId attributeType);
 

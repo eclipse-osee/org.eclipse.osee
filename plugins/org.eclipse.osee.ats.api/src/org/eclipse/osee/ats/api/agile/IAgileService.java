@@ -108,6 +108,8 @@ public interface IAgileService {
 
    IAgileTeam getAgileTeam(IAgileSprint sprint);
 
+   IAgileTeam getAgileTeamByName(String agileTeamName);
+
    /**
     * Display Points as either "ats.Points" or "ats.Points Numeric" as configured on Agile Team artifact
     */

@@ -61,6 +61,7 @@ import org.eclipse.osee.ats.util.CleanupOseeSystemAssignedWorkflows;
 import org.eclipse.osee.ats.util.CreateActionUsingAllActionableItems;
 import org.eclipse.osee.ats.util.DoesNotWorkItemAts;
 import org.eclipse.osee.ats.util.Import.ImportActionsViaSpreadsheetBlam;
+import org.eclipse.osee.ats.util.Import.ImportAgileActionsViaSpreadsheetBlam;
 import org.eclipse.osee.ats.version.CreateNewVersionItem;
 import org.eclipse.osee.ats.version.GenerateFullVersionReportItem;
 import org.eclipse.osee.ats.version.GenerateVersionReportItem;
@@ -256,6 +257,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
       XNavigateItem utilItems = new XNavigateItem(parent, "Util", FrameworkImage.GEAR);
       new ToggleAtsAdmin(utilItems);
       new XNavigateItemBlam(utilItems, new ImportActionsViaSpreadsheetBlam());
+      new XNavigateItemBlam(utilItems, new ImportAgileActionsViaSpreadsheetBlam());
       new XNavigateItemAction(utilItems, new CompareTwoStringsAction(), FrameworkImage.EDIT);
       new XNavigateItemAction(utilItems, new CompareTwoArtifactIdListsAction(), FrameworkImage.EDIT);
       new XNavigateItemAction(utilItems, new AtsExportAction(), FrameworkImage.EXPORT_DATA);

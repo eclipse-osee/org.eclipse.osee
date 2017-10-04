@@ -185,6 +185,16 @@ public class AgileService implements IAgileService {
       return aTeam;
    }
 
+   @Override
+   public IAgileTeam getAgileTeamByName(String agileTeamName) {
+      IAgileTeam aTeam = null;
+      ArtifactId aTeamArt = services.getArtifactByName(AtsArtifactTypes.AgileTeam, agileTeamName);
+      if (aTeamArt != null) {
+         aTeam = services.getConfigItemFactory().getAgileTeam(aTeamArt);
+      }
+      return aTeam;
+   }
+
    /********************************
     ** Agile Feature Group
     ***********************************/
