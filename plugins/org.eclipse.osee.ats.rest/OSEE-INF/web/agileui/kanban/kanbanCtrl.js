@@ -138,23 +138,32 @@ angular
 								AgileFactory.updateStatus(data).$promise
 										.then(
 												function(data) {
-													updateTask(taskId,
-															fromState, toState);
-													var toTd = document
-															.getElementById(idDropedToTd);
-													var card = document
-															.getElementById(idDraggedCard);
-													card.setAttribute("class",
-															"card " + toState)
-													var attribute = card
-															.getAttribute("ng-drag-data");
-													var newAttr = attribute
-															.replace(fromState,
-																	toState);
-													card.setAttribute(
-															"ng-drag-data",
-															newAttr);
-													toTd.appendChild(card);
+													if (data.errors > 0) {
+														alert(data.results.results);
+													} else {
+														updateTask(taskId,
+																fromState,
+																toState);
+														var toTd = document
+																.getElementById(idDropedToTd);
+														var card = document
+																.getElementById(idDraggedCard);
+														card
+																.setAttribute(
+																		"class",
+																		"card "
+																				+ toState)
+														var attribute = card
+																.getAttribute("ng-drag-data");
+														var newAttr = attribute
+																.replace(
+																		fromState,
+																		toState);
+														card.setAttribute(
+																"ng-drag-data",
+																newAttr);
+														toTd.appendChild(card);
+													}
 												},
 												function(reason) {
 													alert("Error updating status "
