@@ -28,7 +28,7 @@ import org.eclipse.osee.orcs.core.internal.types.BranchHierarchyProvider;
  */
 public class ArtifactTypeIndex extends TokenTypeIndex<IArtifactType, XArtifactType> {
 
-   private final Map<IArtifactType, ArtifactTypeMetaData> tokenToTypeData;
+   private final Map<ArtifactTypeId, ArtifactTypeMetaData> tokenToTypeData;
    private final BranchHierarchyProvider hierarchyProvider;
 
    public ArtifactTypeIndex(BranchHierarchyProvider hierarchyProvider) {
@@ -63,15 +63,15 @@ public class ArtifactTypeIndex extends TokenTypeIndex<IArtifactType, XArtifactTy
 
    public Collection<IArtifactType> getSuperTypes(ArtifactTypeId artifactType) {
       ArtifactTypeMetaData metaData = tokenToTypeData.get(artifactType);
-      return metaData != null ? metaData.getSuperTypes() : Collections.<IArtifactType> emptyList();
+      return metaData != null ? metaData.getSuperTypes() : Collections.emptyList();
    }
 
    public Collection<IArtifactType> getDescendantTypes(ArtifactTypeId artifactType) {
       ArtifactTypeMetaData metaData = tokenToTypeData.get(artifactType);
-      return metaData != null ? metaData.getDescendantTypes() : Collections.<IArtifactType> emptyList();
+      return metaData != null ? metaData.getDescendantTypes() : Collections.emptyList();
    }
 
-   public boolean hasSuperArtifactTypes(IArtifactType artType) {
+   public boolean hasSuperArtifactTypes(ArtifactTypeId artType) {
       return !getSuperTypes(artType).isEmpty();
    }
 
@@ -91,7 +91,7 @@ public class ArtifactTypeIndex extends TokenTypeIndex<IArtifactType, XArtifactTy
       if (thisType.equals(otherType)) {
          result = true;
       } else {
-         for (IArtifactType superType : getSuperTypes(thisType)) {
+         for (ArtifactTypeId superType : getSuperTypes(thisType)) {
             if (inheritsFrom(superType, otherType)) {
                result = true;
                break;
@@ -101,13 +101,13 @@ public class ArtifactTypeIndex extends TokenTypeIndex<IArtifactType, XArtifactTy
       return result;
    }
 
-   public Collection<AttributeTypeToken> getAttributeTypes(IArtifactType artType, BranchId branch) {
+   public Collection<AttributeTypeToken> getAttributeTypes(ArtifactTypeId artType, BranchId branch) {
       Set<AttributeTypeToken> attributeTypes = Sets.newLinkedHashSet();
       getAttributeTypes(attributeTypes, artType, branch);
       return attributeTypes;
    }
 
-   private void getAttributeTypes(Set<AttributeTypeToken> attributeTypes, IArtifactType artifactType, BranchId branch) {
+   private void getAttributeTypes(Set<AttributeTypeToken> attributeTypes, ArtifactTypeId artifactType, BranchId branch) {
       ArtifactTypeMetaData metaData = tokenToTypeData.get(artifactType);
       if (metaData != null) {
          Map<BranchId, Collection<AttributeTypeToken>> validityMap = metaData.getAttributeTypes();
@@ -120,7 +120,7 @@ public class ArtifactTypeIndex extends TokenTypeIndex<IArtifactType, XArtifactTy
             }
          }
       }
-      for (IArtifactType superType : getSuperTypes(artifactType)) {
+      for (ArtifactTypeId superType : getSuperTypes(artifactType)) {
          getAttributeTypes(attributeTypes, superType, branch);
       }
    }

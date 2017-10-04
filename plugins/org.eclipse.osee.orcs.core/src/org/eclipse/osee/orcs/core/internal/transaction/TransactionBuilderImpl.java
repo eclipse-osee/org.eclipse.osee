@@ -21,11 +21,11 @@ import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
@@ -96,17 +96,17 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public ArtifactToken createArtifact(IArtifactType artifactType, String name) {
+   public ArtifactToken createArtifact(ArtifactTypeId artifactType, String name) {
       return createArtifact(artifactType, name, null);
    }
 
    @Override
-   public ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid) {
+   public ArtifactToken createArtifact(ArtifactTypeId artifactType, String name, String guid) {
       return txManager.createArtifact(txData, artifactType, name, guid);
    }
 
    @Override
-   public ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid, long uuid) {
+   public ArtifactToken createArtifact(ArtifactTypeId artifactType, String name, String guid, long uuid) {
       Conditions.checkExpressionFailOnTrue(uuid <= 0L, "Invalid Uuid %d. Must be > 0", uuid);
       return txManager.createArtifact(txData, artifactType, name, guid, uuid);
    }

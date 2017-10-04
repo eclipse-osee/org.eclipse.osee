@@ -25,7 +25,7 @@ public interface ArtifactTypes extends IdCollection<IArtifactType> {
 
    boolean hasSuperArtifactTypes(IArtifactType artType);
 
-   Collection<? extends IArtifactType> getSuperArtifactTypes(IArtifactType artType);
+   Collection<? extends ArtifactTypeId> getSuperArtifactTypes(IArtifactType artType);
 
    Collection<? extends IArtifactType> getAllDescendantTypes(ArtifactTypeId artType);
 
@@ -33,7 +33,7 @@ public interface ArtifactTypes extends IdCollection<IArtifactType> {
 
    Collection<AttributeTypeToken> getAttributeTypes(IArtifactType artType, BranchId branch);
 
-   boolean isAbstract(IArtifactType artType);
+   boolean isAbstract(ArtifactTypeId artType);
 
    boolean inheritsFrom(ArtifactTypeId artType, ArtifactTypeId... otherTypes);
 

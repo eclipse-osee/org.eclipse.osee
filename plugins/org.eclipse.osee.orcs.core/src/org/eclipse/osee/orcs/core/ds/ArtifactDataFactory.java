@@ -10,22 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface ArtifactDataFactory {
 
-   ArtifactData create(BranchId branch, IArtifactType artifactType, String guid);
+   ArtifactData create(BranchId branch, ArtifactTypeId artifactType, String guid);
 
-   ArtifactData create(BranchId branch, IArtifactType artifactType, String guid, long artifactId);
+   ArtifactData create(BranchId branch, ArtifactTypeId artifactType, String guid, long artifactId);
 
    ArtifactData copy(BranchId destination, ArtifactData source);
 
    ArtifactData clone(ArtifactData source);
 
    ArtifactData introduce(BranchId destination, ArtifactData source);
-
 }

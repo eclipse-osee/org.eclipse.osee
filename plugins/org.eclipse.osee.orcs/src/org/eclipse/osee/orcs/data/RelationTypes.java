@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.data;
 
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
@@ -25,11 +26,11 @@ public interface RelationTypes extends IdCollection<RelationTypeToken> {
 
    RelationTypeMultiplicity getMultiplicity(RelationTypeId relation);
 
-   IArtifactType getArtifactTypeSideA(IRelationType relation);
+   ArtifactTypeId getArtifactTypeSideA(IRelationType relation);
 
-   IArtifactType getArtifactTypeSideB(IRelationType relation);
+   ArtifactTypeId getArtifactTypeSideB(IRelationType relation);
 
-   IArtifactType getArtifactType(RelationTypeId relation, RelationSide relationSide);
+   ArtifactTypeId getArtifactType(RelationTypeId relation, RelationSide relationSide);
 
    String getSideName(IRelationType relation, RelationSide relationSide);
 

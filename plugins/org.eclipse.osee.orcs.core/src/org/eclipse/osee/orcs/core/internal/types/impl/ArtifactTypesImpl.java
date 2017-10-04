@@ -43,7 +43,7 @@ public class ArtifactTypesImpl implements ArtifactTypes {
       return provider.getArtifactTypeIndex();
    }
 
-   private XArtifactType getType(IArtifactType artType) {
+   private XArtifactType getType(ArtifactTypeId artType) {
       Conditions.checkNotNull(artType, "artifactType");
       return getArtifactTypesIndex().getDslTypeByToken(artType);
    }
@@ -64,7 +64,7 @@ public class ArtifactTypesImpl implements ArtifactTypes {
    }
 
    @Override
-   public boolean isAbstract(IArtifactType artType) {
+   public boolean isAbstract(ArtifactTypeId artType) {
       XArtifactType type = getType(artType);
       return type.isAbstract();
    }
@@ -75,7 +75,7 @@ public class ArtifactTypesImpl implements ArtifactTypes {
    }
 
    @Override
-   public Collection<? extends IArtifactType> getSuperArtifactTypes(IArtifactType artType) {
+   public Collection<? extends ArtifactTypeId> getSuperArtifactTypes(IArtifactType artType) {
       Conditions.checkNotNull(artType, "artifactType");
       return getArtifactTypesIndex().getSuperTypes(artType);
    }

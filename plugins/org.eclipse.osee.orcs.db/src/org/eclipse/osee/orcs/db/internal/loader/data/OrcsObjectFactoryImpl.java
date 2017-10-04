@@ -13,10 +13,10 @@ package org.eclipse.osee.orcs.db.internal.loader.data;
 import java.util.Date;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -100,9 +100,8 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public ArtifactData createArtifactData(VersionData version, int localId, IArtifactType type, ModificationType modType, String guid, ApplicabilityId applicId) {
-      long typeUuid = type.getGuid();
-      return createArtifactFromRow(version, localId, typeUuid, modType, typeUuid, modType, guid, applicId);
+   public ArtifactData createArtifactData(VersionData version, int localId, ArtifactTypeId type, ModificationType modType, String guid, ApplicabilityId applicId) {
+      return createArtifactFromRow(version, localId, type.getId(), modType, type.getId(), modType, guid, applicId);
    }
 
    @Override

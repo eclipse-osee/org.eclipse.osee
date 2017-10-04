@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -75,8 +76,8 @@ public class DataFactoryImplTest {
    @Mock private DataProxy<Integer> dataProxy;
    @Mock private DataProxy<Integer> otherDataProxy;
 
-   @Mock private IArtifactType artifactTypeToken;
    //@formatter:on
+   private final IArtifactType artifactType = CoreArtifactTypes.SoftwareRequirement;
 
    private final ArtifactId art88 = ArtifactId.valueOf(88);
    private final ArtifactId art99 = ArtifactId.valueOf(99);
@@ -142,37 +143,33 @@ public class DataFactoryImplTest {
 
    @Test
    public void testCreateArtifactDataUsingAbstratArtifactType() {
-      when(artifactTypeToken.toString()).thenReturn("artifactTypeToken");
-      when(artifactCache.get(artifactTypeToken)).thenReturn(artifactTypeToken);
-      when(artifactCache.isAbstract(artifactTypeToken)).thenReturn(true);
+      when(artifactCache.get(artifactType)).thenReturn(artifactType);
+      when(artifactCache.isAbstract(artifactType)).thenReturn(true);
 
       thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("Cannot create an instance of abstract type [artifactTypeToken]");
-      dataFactory.create(COMMON, artifactTypeToken, guid);
+      thrown.expectMessage(String.format("Cannot create an instance of abstract type [%s]", artifactType));
+      dataFactory.create(COMMON, artifactType, guid);
    }
 
    @Test
    public void testCreateArtifactDataInvalidGuid() {
-      when(artifactCache.get(artifactTypeToken)).thenReturn(artifactTypeToken);
-      when(artifactCache.isAbstract(artifactTypeToken)).thenReturn(false);
-      when(artifactTypeToken.toString()).thenReturn("artifactTypeToken");
-
+      when(artifactCache.get(artifactType)).thenReturn(artifactType);
+      when(artifactCache.isAbstract(artifactType)).thenReturn(false);
       when(idFactory.getUniqueGuid(guid)).thenReturn("123");
 
       thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("Invalid guid [123] during artifact creation [type: artifactTypeToken]");
+      thrown.expectMessage(String.format("Invalid guid [123] during artifact creation [type: %s]", artifactType));
 
-      dataFactory.create(COMMON, artifactTypeToken, guid);
+      dataFactory.create(COMMON, artifactType, guid);
    }
 
    @Test
    public void testCreateArtifactData() {
-      when(artifactCache.isAbstract(artifactTypeToken)).thenReturn(false);
-      when(artifactTypeToken.getGuid()).thenReturn(4536L);
+      when(artifactCache.isAbstract(artifactType)).thenReturn(false);
       when(idFactory.getUniqueGuid(guid)).thenReturn(guid);
       when(idFactory.getNextArtifactId()).thenReturn(987);
 
-      ArtifactData actual = dataFactory.create(COMMON, artifactTypeToken, guid);
+      ArtifactData actual = dataFactory.create(COMMON, artifactType, guid);
       verify(idFactory).getUniqueGuid(guid);
       verify(idFactory).getNextArtifactId();
 
@@ -187,21 +184,20 @@ public class DataFactoryImplTest {
 
       assertEquals(987, actual.getLocalId().intValue());
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getModType());
-      assertEquals(4536L, actual.getTypeUuid());
+      assertEquals(artifactType, actual.getTypeUuid());
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getBaseModType());
-      assertEquals(4536L, actual.getBaseTypeUuid());
+      assertEquals(artifactType, actual.getBaseTypeUuid());
       assertEquals(guid, actual.getGuid());
    }
 
    @Test
    public void testCreateArtifactDataGenerateGuid() {
-      when(artifactCache.get(artifactTypeToken)).thenReturn(artifactTypeToken);
-      when(artifactTypeToken.getGuid()).thenReturn(4536L);
-      when(artifactCache.isAbstract(artifactTypeToken)).thenReturn(false);
+      when(artifactCache.get(artifactType)).thenReturn(artifactType);
+      when(artifactCache.isAbstract(artifactType)).thenReturn(false);
       when(idFactory.getUniqueGuid(guid)).thenReturn(guid);
       when(idFactory.getNextArtifactId()).thenReturn(987);
 
-      ArtifactData actual = dataFactory.create(COMMON, artifactTypeToken, guid);
+      ArtifactData actual = dataFactory.create(COMMON, artifactType, guid);
       verify(idFactory).getUniqueGuid(guid);
       verify(idFactory).getNextArtifactId();
 
@@ -215,9 +211,9 @@ public class DataFactoryImplTest {
 
       assertEquals(987, actual.getLocalId().intValue());
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getModType());
-      assertEquals(4536L, actual.getTypeUuid());
+      assertEquals(artifactType, actual.getTypeUuid());
       assertEquals(RelationalConstants.DEFAULT_MODIFICATION_TYPE, actual.getBaseModType());
-      assertEquals(4536L, actual.getBaseTypeUuid());
+      assertEquals(artifactType, actual.getBaseTypeUuid());
       assertEquals(guid, actual.getGuid());
    }
 
