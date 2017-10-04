@@ -8,9 +8,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.data;
+package org.eclipse.osee.framework.jdk.core.type;
 
 import java.io.IOException;
+import java.util.function.Function;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonProcessingException;
@@ -19,25 +20,29 @@ import org.codehaus.jackson.map.deser.std.StdDeserializer;
 import org.codehaus.jackson.node.TextNode;
 
 /**
- * @author Morgan E. Cook
+ * @author Ryan D. Brooks
  */
-public class BranchIdDeserializer extends StdDeserializer<BranchId> {
+public class IdDeserializer<T extends Id> extends StdDeserializer<T> {
+   private final Function<Long, T> creator;
 
-   public BranchIdDeserializer() {
-      this(BranchId.class);
+   public IdDeserializer(Function<Long, T> creator) {
+      this(Id.class, creator);
    }
 
-   public BranchIdDeserializer(Class<?> object) {
+   public IdDeserializer(Class<?> object, Function<Long, T> creator) {
       super(object);
+      this.creator = creator;
    }
 
    @Override
-   public BranchId deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+   public T deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
       JsonNode readTree = jp.getCodec().readTree(jp);
+      Long id;
       if (readTree instanceof TextNode) {
-         return BranchId.valueOf(readTree.asText());
+         id = Long.valueOf(readTree.asText());
+      } else {
+         id = readTree.get("id").asLong();
       }
-      return BranchId.create(readTree.get("id").asLong(), ArtifactId.valueOf(readTree.get("viewId").asLong()));
+      return creator.apply(id);
    }
-
 }

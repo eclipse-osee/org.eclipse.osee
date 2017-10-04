@@ -22,16 +22,16 @@ import org.codehaus.jackson.map.ser.std.SerializerBase;
 /**
  * @author Angel Avila
  */
-public class NamedIdSerializer extends SerializerBase<NamedIdBase> {
+public class NamedIdSerializer extends SerializerBase<NamedId> {
 
    public NamedIdSerializer() {
-      super(NamedIdBase.class);
+      super(NamedId.class);
    }
 
    @Override
-   public void serialize(NamedIdBase id, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonGenerationException {
+   public void serialize(NamedId id, JsonGenerator jgen, SerializerProvider provider) throws IOException, JsonGenerationException {
       jgen.writeStartObject();
-      jgen.writeStringField("id", String.valueOf(id.getId()));
+      jgen.writeStringField("id", id.getIdString());
       jgen.writeStringField("name", id.getName());
       jgen.writeEndObject();
    }
@@ -42,7 +42,7 @@ public class NamedIdSerializer extends SerializerBase<NamedIdBase> {
     * most cases; some sub-classes may want to change this behavior.
     */
    @Override
-   public void serializeWithType(NamedIdBase id, JsonGenerator jgen, SerializerProvider provider, TypeSerializer typeSer) throws IOException, JsonGenerationException {
+   public void serializeWithType(NamedId id, JsonGenerator jgen, SerializerProvider provider, TypeSerializer typeSer) throws IOException, JsonGenerationException {
       typeSer.writeTypePrefixForScalar(id, jgen);
       serialize(id, jgen, provider);
       typeSer.writeTypeSuffixForScalar(id, jgen);

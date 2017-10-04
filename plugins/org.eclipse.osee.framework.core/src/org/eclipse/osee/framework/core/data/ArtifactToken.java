@@ -10,15 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdSerializer;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 /**
  * @author Ryan D. Brooks
  * @author Donald G. Dunne
  */
+@JsonSerialize(using = NamedIdSerializer.class)
 public interface ArtifactToken extends ArtifactId, HasArtifactType, HasBranch, NamedId {
    default ArtifactTypeId getArtifactTypeId() {
       return null;
@@ -45,6 +48,10 @@ public interface ArtifactToken extends ArtifactId, HasArtifactType, HasBranch, N
 
    public static ArtifactToken valueOf(long id, String name, BranchId branch) {
       return valueOf(id, GUID.create(), name, branch, null);
+   }
+
+   public static ArtifactToken valueOf(long id, String name) {
+      return valueOf(id, GUID.create(), name, BranchId.SENTINEL, null);
    }
 
    public static ArtifactToken valueOf(long id, String name, BranchId branch, IArtifactType artifactType) {

@@ -18,6 +18,7 @@ import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
 import javax.ws.rs.ext.Provider;
+import org.codehaus.jackson.Version;
 import org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.codehaus.jackson.jaxrs.JsonMappingExceptionMapper;
@@ -25,6 +26,12 @@ import org.codehaus.jackson.jaxrs.JsonParseExceptionMapper;
 import org.codehaus.jackson.map.DeserializationConfig;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
+import org.codehaus.jackson.map.module.SimpleModule;
+import org.eclipse.osee.framework.core.data.ApplicabilityToken;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.jdk.core.type.IdDeserializer;
+import org.eclipse.osee.framework.jdk.core.type.NamedIdDeserializer;
 
 /**
  * @author Roberto E. Escobar
@@ -113,7 +120,15 @@ public class JacksonFeature implements Feature {
       objectMapper.configure(DeserializationConfig.Feature.USE_JAVA_ARRAY_FOR_JSON_ARRAY, true);
       objectMapper.configure(DeserializationConfig.Feature.UNWRAP_ROOT_VALUE, false);
       objectMapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+      SimpleModule module = new SimpleModule("OSEE", new Version(1, 0, 0, ""));
+
+      module.addDeserializer(ApplicabilityToken.class,
+         new NamedIdDeserializer<ApplicabilityToken>(ApplicabilityToken::create));
+      module.addDeserializer(ArtifactToken.class, new NamedIdDeserializer<ArtifactToken>(ArtifactToken::valueOf));
+      module.addDeserializer(ArtifactId.class, new IdDeserializer<ArtifactId>(ArtifactId::valueOf));
+
+      objectMapper.registerModule(module);
       return new JacksonJaxbJsonProvider(objectMapper, JacksonJaxbJsonProvider.DEFAULT_ANNOTATIONS);
    }
-
 }

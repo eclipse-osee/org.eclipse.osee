@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.core.data;
 
 import org.codehaus.jackson.annotate.JsonProperty;
-import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdSerializer;
@@ -20,7 +19,6 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdSerializer;
  * @author Angel Avila
  */
 @JsonSerialize(using = NamedIdSerializer.class)
-@JsonDeserialize(using = ApplicabilityTokenDeserializer.class)
 public class ApplicabilityToken extends NamedIdBase implements ApplicabilityId {
    public static final ApplicabilityToken BASE = new ApplicabilityToken(ApplicabilityId.BASE.getId(), "Base");
 
