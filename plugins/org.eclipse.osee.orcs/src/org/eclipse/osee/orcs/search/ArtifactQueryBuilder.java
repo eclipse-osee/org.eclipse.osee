@@ -125,6 +125,11 @@ public interface ArtifactQueryBuilder<T> {
    T andNotExists(AttributeTypeId attributeType);
 
    /**
+    * Search criteria that checks for the non-existence of an attribute type(s).
+    */
+   T andNotExists(AttributeTypeId attributeType, String value);
+
+   /**
     * Search criteria that follows the relation link ending on the given side
     *
     * @param relationType the type to start following the link from

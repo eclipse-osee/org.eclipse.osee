@@ -61,6 +61,9 @@ public class AttributeTypeNotExistsSqlHandler extends SqlHandler<CriteriaAttribu
       writer.write(TableEnum.TXS_TABLE.getName());
       writer.write(" txs WHERE ");
 
+      writer.writeEquals("attr", artAlias, "art_id");
+      writer.write(" AND ");
+
       if (types.size() > 1) {
          Set<AttributeTypeId> typeIds = new HashSet<>();
          for (AttributeTypeId type : types) {
@@ -75,18 +78,18 @@ public class AttributeTypeNotExistsSqlHandler extends SqlHandler<CriteriaAttribu
          writer.write(".query_id = ?");
          writer.addParameter(joinQuery.getQueryId());
       } else {
-         AttributeTypeId type = types.iterator().next();
          writer.write("attr.attr_type_id = ?");
-         writer.addParameter(type);
+         writer.addParameter(types.iterator().next());
       }
-
-      writer.writeAndLn();
+      if (criteria.getValue() != null) {
+         writer.write(" AND value = ?");
+         writer.addParameter(criteria.getValue());
+      }
+      writer.write(" AND ");
 
       writer.writeEquals("attr", "txs", "gamma_id");
-      writer.writeAndLn();
+      writer.write(" AND ");
       writer.write(writer.getTxBranchFilter("txs"));
-      writer.writeAndLn();
-      writer.writeEquals("attr", artAlias, "art_id");
       writer.write(")");
 
       return true;

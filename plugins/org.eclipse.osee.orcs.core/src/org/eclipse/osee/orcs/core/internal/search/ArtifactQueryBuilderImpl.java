@@ -33,6 +33,7 @@ import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.criteria.BranchCriteria;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeNotExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
 import org.eclipse.osee.orcs.core.ds.criteria.TxCriteria;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -223,6 +224,12 @@ public class ArtifactQueryBuilderImpl<T> implements ArtifactQueryBuilder<T> {
    @Override
    public T andNotExists(AttributeTypeId attributeType) {
       Criteria criteria = criteriaFactory.createNotExistsCriteria(attributeType);
+      return addAndCheck(getQueryData(), criteria);
+   }
+
+   @Override
+   public T andNotExists(AttributeTypeId attributeType, String value) {
+      Criteria criteria = new CriteriaAttributeTypeNotExists(attributeType, value);
       return addAndCheck(getQueryData(), criteria);
    }
 

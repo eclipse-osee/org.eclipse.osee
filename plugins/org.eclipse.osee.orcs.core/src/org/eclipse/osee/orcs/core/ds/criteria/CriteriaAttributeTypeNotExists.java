@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds.criteria;
 
+import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -22,14 +23,24 @@ import org.eclipse.osee.orcs.core.ds.Options;
 public class CriteriaAttributeTypeNotExists extends Criteria {
 
    private final Collection<AttributeTypeId> attributeTypes;
+   private final String value;
 
    public CriteriaAttributeTypeNotExists(Collection<AttributeTypeId> attributeTypes) {
-      super();
       this.attributeTypes = attributeTypes;
+      value = null;
+   }
+
+   public CriteriaAttributeTypeNotExists(AttributeTypeId attributeType, String value) {
+      this.attributeTypes = Arrays.asList(attributeType);
+      this.value = value;
    }
 
    public Collection<AttributeTypeId> getTypes() {
       return attributeTypes;
+   }
+
+   public String getValue() {
+      return value;
    }
 
    @Override
