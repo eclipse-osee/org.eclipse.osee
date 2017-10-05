@@ -1,0 +1,25 @@
+<div id={{task.guid}} ng-drag="true"
+	ng-drag-data='{"guid":"{{task.guid}}", "assignee":"{{assignee}}", "taskState":"{{state.name}}"}'
+	ng-drag-success="onDragComplete($data,$event)"
+	class="card {{state.name}}" ng-repeat="task in tasks">
+
+	<table width="100%" border="1" style="border-collapse: collapse;">
+		<tr align="left">
+			<td colspan="2" align="left" style="font-weight: bold"
+				title="{{task.name}}">{{task.name | truncate:50}}</td>
+		</tr>
+	</table>
+
+	<table width="100%" border="1" rules="none">
+		<tr>
+			<td align="left"><span style="font-weight: bold">Assignees:</span>
+				{{task.attributeMap["ats.Assignee"]}}</td>
+		</tr>
+	</table>
+	<table width="100%" border="1" style="border-collapse: collapse;">
+		<tr>
+			<td align="left"><a target="_blank" title="Open Task"
+				href="../ui/action/{{task.attributeMap['Shortname']}}">{{task.attributeMap['Shortname']}}</a></td>
+		</tr>
+	</table>
+</div>

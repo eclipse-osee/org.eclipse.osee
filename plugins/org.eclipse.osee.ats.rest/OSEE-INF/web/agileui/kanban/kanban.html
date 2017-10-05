@@ -9,10 +9,12 @@
 			<div class="panel-heading" id="backlogHeader">
 				<table width="100%">
 					<tr>
-						<td width="36%">Team: <strong>{{team.name}}</strong>
+						<td width="26%">Team: <strong>{{team.name}}</strong>
 						</td>
 						<td width="7%">Items: <strong>{{count}}</strong>
 						</td>
+						<td width="7%">
+						<td>Big Cards: <input type="checkbox" ng-model="bigCards"></td>
 						<td width="42%">
 							<table class="headerDropdowns" width="100%" border=1 rules=NONE
 								frame=BOX>
@@ -24,7 +26,6 @@
 									ng-model="selectedSprint"
 									ng-options="sprint.name for (key,sprint) in sprints">
 								</select></td>
-
 								<td width="30%"><select style="min-width: 100%;"
 									ng-model="_assignee"
 									ng-options="_assignee for _assignee in assignees">

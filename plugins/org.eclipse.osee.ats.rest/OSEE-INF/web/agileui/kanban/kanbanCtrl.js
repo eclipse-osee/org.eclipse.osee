@@ -119,6 +119,13 @@ angular
 								}
 							}
 
+							$scope.$watch("bigCards", function() {
+								if (_tasks && _tasks.tasks) {
+									$scope.availableStates = null;
+									getTasks();
+								}
+							});
+
 							/*
 							 * On state transition updates DOM and CSS for the
 							 * card
@@ -178,7 +185,8 @@ angular
 														.getSprintsTokens($scope.team).$promise
 														.then(function(data) {
 															$scope.sprints = data;
-															$scope.selectedSprint = $scope.sprints[0];														});
+															$scope.selectedSprint = $scope.sprints[0];
+														});
 											});
 
 							// populate model with tasks

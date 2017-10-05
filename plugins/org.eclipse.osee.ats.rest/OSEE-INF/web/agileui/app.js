@@ -38,7 +38,7 @@ app.config([ '$routeProvider', function($routeProvider) {
 
 app.factory("Global", function() {
 	var global = {};
-	global.loadingImg ="/ajax/libs/images/loading.gif";
+	global.loadingImg = "/ajax/libs/images/loading.gif";
 	return global;
 });
 
@@ -186,10 +186,19 @@ app.directive(
 		link : function(scope, element, attrs) {
 			var tasksAsCards = getTasksFor(scope.state.name, scope.assignee);
 			scope.tasks = tasksAsCards;
-
 		},
 		replace : true,
-		templateUrl : 'kanban/kanbanCard.html',
+		template : '<ng-include src="getTemplateUrl()"/>',
+		controller : function($scope) {
+			// function used on the ng-include to resolve the template
+			$scope.getTemplateUrl = function() {
+				// basic handling
+				if ($scope.bigCards) {
+					return "kanban/kanbanCard.html";
+				}
+				return "kanban/kanbanCardSm.html";
+			}
+		}
 	}
 });
 
