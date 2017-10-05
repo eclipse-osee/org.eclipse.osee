@@ -186,9 +186,11 @@ public class SprintDataBuilder {
 
    private double getPoints(AgileSprintData burn, IAgileItem item) {
       AttributeTypeId pointsType = services.getStoreService().getAttributeType(burn.getPointsAttrTypeName());
-      String value = services.getAttributeResolver().getSoleAttributeValueAsString(item, pointsType, "");
-      if (Strings.isNumeric(value)) {
-         return Double.valueOf(value);
+      Object value = services.getAttributeResolver().getSoleAttributeValue(item, pointsType, "");
+      if (value instanceof Double) {
+         return (Double) value;
+      } else if (value instanceof String && Strings.isNumeric((String) value)) {
+         return Double.valueOf((String) value);
       }
       return 0;
    }
