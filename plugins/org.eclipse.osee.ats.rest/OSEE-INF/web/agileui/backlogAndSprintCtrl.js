@@ -8,16 +8,15 @@ angular
 				[
 						'$scope',
 						'AgileFactory',
+						'Global',
 						'$resource',
 						'$window',
 						'$modal',
 						'$filter',
 						'$routeParams',
 						'LayoutService',
-						'PopupService',
-						function($scope, AgileFactory, $resource, $window,
-								$modal, $filter, $routeParams, LayoutService,
-								PopupService) {
+						function($scope, AgileFactory, Global, $resource, $window,
+								$modal, $filter, $routeParams, LayoutService) {
 
 							$scope.team = {};
 							$scope.backlog = {};
@@ -25,10 +24,11 @@ angular
 							$scope.team.id = $routeParams.team;
 							$scope.defaultItem = $routeParams.default;
 							$scope.count = "--";
+							$scope.loadingImg = Global.loadingImg;
 
 							
 							// ////////////////////////////////////
-							// Backlog table
+							// Backlog and Sprint table
 							// ////////////////////////////////////
 
 							var atsIdCellTemplate = '<div class="ngCellText" ng-class="col.colIndex()">'
@@ -106,6 +106,12 @@ angular
 							};
 
 
+							AgileFactory.getTeamToken($scope.team).$promise
+									.then(function(data) {
+										$scope.team.name = data.name;
+									});
+
+
 							var getTasks = function() {
 								var selected = $scope.selectedItem;
 
@@ -139,9 +145,7 @@ angular
 
 							// Only available and called when sprint is selected
 							$scope.updateSprint = function() {
-								var loadingModal = null;
 								try {
-								 loadingModal = PopupService.showLoadingModal(); 
 								 $scope.sprint.id = $scope.selectedItem.id;
 								 AgileFactory.updateSprint($scope.team, $scope.sprint).$promise
 										.then(function(data) {
@@ -149,69 +153,56 @@ angular
 											if (data.results.numErrors > 0) {
 												alert(data.results.results);
 											} 
-											loadingModal.close();
 										}).catch((err) => {
-											loadingModal.close();
 											alert(err);
 										});
-								} finally {
-									if(loadingModal) {
-										loadingModal.close();
-									}
+								} catch (err) {
+									alert(err);
 								}
 							};
 							
 							// add backlog and sprints to pulldown and set
 							// default if specified as query parameter
-							$scope.setupItemsPulldown = function() {
-								var loadingModal = PopupService
-										.showLoadingModal();
-								AgileFactory
-										.getBacklogToken($scope.team).$promise
-										.then(function(data) {
-											if (data && data.name) {
-												$scope.backlog.name = data.name;
-												$scope.backlog.id = data.id;
-												var item = $scope.backlog;
-												item.isBacklog = true;
-												// add backlog first
-												var defaultBacklogItem = item;
-												var activeItems = [];
-												activeItems
-														.push(item);
+							AgileFactory
+									.getBacklogToken($scope.team).$promise
+									.then(function(data) {
+										if (data && data.name) {
+											$scope.backlog.name = data.name;
+											$scope.backlog.id = data.id;
+											var item = $scope.backlog;
+											item.isBacklog = true;
+											// add backlog first
+											var defaultBacklogItem = item;
+											var activeItems = [];
+											activeItems
+													.push(item);
 
-												// get active sprints
-												AgileFactory
-														.getSprintsTokens($scope.team).$promise
-														.then(function(
-																data) {
-															var defaultSprintItem = null;
-															for (i = 0; i < data.length; i++) { 
-																var sprint = data[i];
-																if (!defaultSprintItem) {
-																	defaultSprintItem = sprint;
-																}
-																sprint.isBacklog = false;
-																activeItems
-																		.push(sprint);
+											// get active sprints
+											AgileFactory
+													.getSprintsTokens($scope.team).$promise
+													.then(function(
+															data) {
+														var defaultSprintItem = null;
+														for (i = 0; i < data.length; i++) { 
+															var sprint = data[i];
+															if (!defaultSprintItem) {
+																defaultSprintItem = sprint;
 															}
-															$scope.activeItems = activeItems;
+															sprint.isBacklog = false;
+															activeItems
+																	.push(sprint);
+														}
+														$scope.activeItems = activeItems;
 
-															if ($scope.defaultItem == "sprint") {
-																$scope.selectedItem = defaultSprintItem;
-															}else if ($scope.defaultItem = "backlog") {
-																$scope.selectedItem = defaultBacklogItem;
-															}
-															loadingModal
-																	.close();
-														});
+														if ($scope.defaultItem == "sprint") {
+															$scope.selectedItem = defaultSprintItem;
+														}else if ($scope.defaultItem = "backlog") {
+															$scope.selectedItem = defaultBacklogItem;
+														}
+													});
 
-											}
-										});
-							}
-
-
-							$scope.setupItemsPulldown();
+										}
+									});
 
 							// COMMON MENU COPIED TO ALL JS
 							$scope.openConfigForTeam = function(team) {

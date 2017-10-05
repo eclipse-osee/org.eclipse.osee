@@ -88,3 +88,8 @@
 .grid-align {
 	text-align: center;
 }
+
+#loadingImg {
+	height: 20px;
+	width: 20px;
+}

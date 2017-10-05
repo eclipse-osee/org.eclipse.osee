@@ -10,7 +10,7 @@
 						<tr>
 							<td width="25%">Team: <strong>{{selectedTeam.name}}</strong>
 							</td>
-							<td width="25%"><strong>{{selectedItem.name}}</strong></td>
+							<td width="25%"><strong>{{team.name}}</strong></td>
 							<td width="7%">Items: <strong>{{count}}</strong>
 							</td>
 							<td width="10%">
@@ -37,9 +37,8 @@
 					ng-grid="tasksGridOptions"></div>
 			</div>
 		</div>
+		<center><img src="{{loadingImg}}" id="loadingImg" ng-hide="tasks" align="middle"></center>
 
-		<script type="text/ng-template" id="loadingModal.html">
-        <div id="loadingModal" class="alert alert-info">Loading...</div>
       </script>
 
 	</div>

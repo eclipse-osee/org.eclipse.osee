@@ -8,7 +8,7 @@
 				<div class="panel-heading" id="backlogHeader">
 					<table width="100%">
 						<tr>
-							<td width="25%">Team: <strong>{{selectedTeam.name}}</strong>
+							<td width="25%">Team: <strong>{{team.name}}</strong>
 							</td>
 							<td width="25%"><strong>{{selectedItem.name}}</strong></td>
 							<td width="7%">Items: <strong>{{count}}</strong>
@@ -36,6 +36,7 @@
 					ng-grid="tasksGridOptions"></div>
 			</div>
 		</div>
+		<center><img src="{{loadingImg}}" id="loadingImg" ng-hide="tasks" align="middle"></center>
 
 		<script type="text/ng-template" id="loadingModal.html">
         <div id="loadingModal" class="alert alert-info">Loading...</div>

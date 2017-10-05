@@ -16,23 +16,21 @@ angular
 				[
 						'$scope',
 						'AgileFactory',
+						'Global',
 						'$routeParams',
-						'PopupService',
-						function($scope, AgileFactory, $routeParams,
-								PopupService) {
+						function($scope, AgileFactory, Global, $routeParams) {
 							"use strict"
 							$scope.team = {};
 							$scope.team.id = $routeParams.team;
 							$scope.nameFilter = null;
 							$scope.tasks = {};
+							$scope.loadingImg = Global.loadingImg;
 							/*
 							 * Fetches userName for a userID
 							 */
 							$scope.userName = function(userId) {
 								return getUserName(userId);
 							}
-
-							var loadingModal = PopupService.showLoadingModal();
 
 							AgileFactory.getTeamToken($scope.team).$promise
 									.then(function(data) {
@@ -180,11 +178,7 @@ angular
 														.getSprintsTokens($scope.team).$promise
 														.then(function(data) {
 															$scope.sprints = data;
-															$scope.selectedSprint = $scope.sprints[0];
-															loadingModal
-																	.close();
-
-														});
+															$scope.selectedSprint = $scope.sprints[0];														});
 											});
 
 							// populate model with tasks

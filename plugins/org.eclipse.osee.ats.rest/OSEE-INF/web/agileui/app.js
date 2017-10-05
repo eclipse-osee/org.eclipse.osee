@@ -36,6 +36,12 @@ app.config([ '$routeProvider', function($routeProvider) {
 	});
 } ]);
 
+app.factory("Global", function() {
+	var global = {};
+	global.loadingImg ="/ajax/libs/images/loading.gif";
+	return global;
+});
+
 app.factory("LayoutService", function() {
 	return {
 		resizeElementHeight : function(elementName) {
