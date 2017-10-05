@@ -849,7 +849,7 @@ public class WordTemplateRendererTest {
       String notesGuid = docFolder.getDescendant("Notes").getGuid();
       Artifact notes = ArtifactQuery.getArtifactFromId(notesGuid, updateBranch);
       notes.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
-         beginWordString + "Notes are great for small topics, and the link" + beginLinkInsert + hdwrGuid + endLinkInsert + " too." + endWordString);
+         beginWordString + "Notes are great for small topics, and the link " + beginLinkInsert + hdwrGuid + endLinkInsert + " too." + endWordString);
 
       notes.persist(onChildTx);
       onChildTx.execute();
