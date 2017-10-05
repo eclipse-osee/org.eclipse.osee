@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
@@ -69,7 +68,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -85,7 +83,7 @@ public class ExcelAtsActionArtifactExtractor {
    private final Set<Artifact> actionArts = new HashSet<>();
    private final Map<String, ActionResult> actionNameToAction = new HashMap<>(100);
    private final boolean emailPOCs;
-   private boolean dataIsValid = true;
+   private final boolean dataIsValid = true;
    private final IAtsGoal toGoal;
    private final Map<String, IAgileTeam> teamNameByTeamMap = new HashMap<>();
 
@@ -416,8 +414,6 @@ public class ExcelAtsActionArtifactExtractor {
          }
          if (!rd.isEmpty()) {
             XResultDataUI.report(rd, "Action Import Validation Errors");
-            dataIsValid = MessageDialog.openConfirm(AWorkbench.getDisplay().getActiveShell(), "Validation Results",
-               "Validation Issues Reported, Continue Anyway?");
          }
       } catch (Exception ex) {
          OseeCoreException.wrapAndThrow(ex);
