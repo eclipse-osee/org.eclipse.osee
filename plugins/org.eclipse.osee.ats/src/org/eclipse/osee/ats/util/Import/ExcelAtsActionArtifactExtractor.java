@@ -331,7 +331,7 @@ public class ExcelAtsActionArtifactExtractor {
          IAgileTeam aTeam = getAgileTeamByName(aData.agileTeamName);
          AttributeTypeId attrType = AtsClientService.get().getAgileService().getAgileTeamPointsAttributeType(aTeam);
          if (attrType.getId().equals(AtsAttributeTypes.Points.getId())) {
-            changes.setSoleAttributeValue(teamWf, attrType, Integer.valueOf(aData.agilePoints));
+            changes.setSoleAttributeValue(teamWf, attrType, aData.agilePoints);
          } else if (attrType.getId().equals(AtsAttributeTypes.PointsNumeric.getId())) {
             changes.setSoleAttributeValue(teamWf, attrType, Double.valueOf(aData.agilePoints));
          } else {

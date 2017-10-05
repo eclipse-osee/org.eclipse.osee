@@ -168,10 +168,12 @@ public class Pdd93CreateDemoAgile {
       Artifact sprint1Art = AtsClientService.get().getArtifact(sprint1.getUuid());
       RelationManager.setRelationOrder(sprint1Art, AtsRelationTypes.AgileSprintToItem_AtsItem, RelationSide.SIDE_B,
          RelationSorter.USER_DEFINED, sprint1Art.getRelatedArtifacts(AtsRelationTypes.AgileSprintToItem_AtsItem));
+      sprint1Art.persist("Set sort order for Sprint 1");
 
-      Artifact spring2Art = AtsClientService.get().getArtifact(sprint2.getUuid());
-      RelationManager.setRelationOrder(spring2Art, AtsRelationTypes.AgileSprintToItem_AtsItem, RelationSide.SIDE_B,
-         RelationSorter.USER_DEFINED, spring2Art.getRelatedArtifacts(AtsRelationTypes.AgileSprintToItem_AtsItem));
+      Artifact sprint2Art = AtsClientService.get().getArtifact(sprint2.getUuid());
+      RelationManager.setRelationOrder(sprint2Art, AtsRelationTypes.AgileSprintToItem_AtsItem, RelationSide.SIDE_B,
+         RelationSorter.USER_DEFINED, sprint2Art.getRelatedArtifacts(AtsRelationTypes.AgileSprintToItem_AtsItem));
+      sprint2Art.persist("Set sort order for Sprint 2");
 
       // Transition First Sprint to completed
       IAtsWorkItem sprint = AtsClientService.get().getQueryService().createQuery(WorkItemType.WorkItem).andUuids(
