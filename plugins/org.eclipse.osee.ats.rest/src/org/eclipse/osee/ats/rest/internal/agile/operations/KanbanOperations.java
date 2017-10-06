@@ -130,6 +130,9 @@ public class KanbanOperations {
 
    private static String getImplementerUserIdsString(IAtsWorkItem workItem, IAtsServer atsServer) {
       List<IAtsUser> implementers = atsServer.getImplementerService().getImplementers(workItem);
+      if (implementers.size() > 1) {
+         implementers.remove(AtsCoreUsers.SYSTEM_USER);
+      }
       if (implementers.isEmpty()) {
          if (workItem.isCancelled()) {
             return workItem.getCancelledBy().getUserId();
