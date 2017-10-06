@@ -5,7 +5,7 @@ angular.module('AgileApp').controller(
 		'NewActionCtrl',
 		[
 				'$scope',
-				'AgileFactory',
+				'AgileEndpoint',
 				'$resource',
 				'$window',
 				'$modal',
@@ -13,7 +13,7 @@ angular.module('AgileApp').controller(
 				'$routeParams',
 				'LayoutService',
 				'PopupService',
-				function($scope, AgileFactory, $resource, $window, $modal,
+				function($scope, AgileEndpoint, $resource, $window, $modal,
 						$filter, $routeParams, LayoutService, PopupService) {
 
 					$scope.team = {};
@@ -22,27 +22,27 @@ angular.module('AgileApp').controller(
 					$scope.team.sprint = "";
 					$scope.action = {};
  
-					AgileFactory.getTeamToken($scope.team).$promise
+					AgileEndpoint.getTeamToken($scope.team).$promise
 						.then(function(data) {
 							$scope.team.name = data.name;
 					});
 
-					AgileFactory.getTeamAis($scope.team).$promise
+					AgileEndpoint.getTeamAis($scope.team).$promise
 						.then(function(data) {
 							$scope.validAis = data;
 							$scope.action.actionableItem = "";
 					});
-					AgileFactory.getSprintsTokens($scope.team).$promise
+					AgileEndpoint.getSprintsTokens($scope.team).$promise
 						.then(function(data) {
 							$scope.validSprints = data;
 							$scope.action.sprint = "";
 					});
-					AgileFactory.getFeatureGroups($scope.team).$promise
+					AgileEndpoint.getFeatureGroups($scope.team).$promise
 						.then(function(data) {
 							$scope.validFeatureGroups = data;
 							$scope.action.featureGroup = "";
 					});
-						AgileFactory.getWorkPackages($scope.team).$promise
+						AgileEndpoint.getWorkPackages($scope.team).$promise
 						.then(function(data) {
 							$scope.validWorkPackages = data;
 							$scope.action.workPackage = "";
@@ -59,7 +59,7 @@ angular.module('AgileApp').controller(
 							$scope.action.aiIds[0] = $scope.actionableItem;
 						}
 						 loadingModal = PopupService.showLoadingModal(); 
-						AgileFactory.createItem($scope.action).$promise
+						AgileEndpoint.createItem($scope.action).$promise
 								.then(function(data) {
 									// open new tab to new action
 									if (data.results.numErrors > 0) {

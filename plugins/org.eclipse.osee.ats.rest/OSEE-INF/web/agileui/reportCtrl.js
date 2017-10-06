@@ -7,7 +7,7 @@ angular
 				'ReportCtrl',
 				[
 						'$scope',
-						'AgileFactory',
+						'AgileEndpoint',
 						'$resource',
 						'$window',
 						'$modal',
@@ -15,7 +15,7 @@ angular
 						'$routeParams',
 						'LayoutService',
 						'PopupService',
-						function($scope, AgileFactory, $resource, $window,
+						function($scope, AgileEndpoint, $resource, $window,
 								$modal, $filter, $routeParams, LayoutService,
 								PopupService) {
 
@@ -25,7 +25,7 @@ angular
 							$scope.reportname = $routeParams.reportname;
 
 							$scope.updateReports = function() {
-								AgileFactory.getTeamSingle($scope.team).$promise
+								AgileEndpoint.getTeamSingle($scope.team).$promise
 										.then(function(data) {
 											$scope.team.name = data.name;
 											$scope.sprint = {};
@@ -55,7 +55,7 @@ angular
 		
 											$("#b1").html(url);
 		
-											AgileFactory
+											AgileEndpoint
 													.getSprint(
 															$scope.team.id,
 															$scope.sprint.id).$promise

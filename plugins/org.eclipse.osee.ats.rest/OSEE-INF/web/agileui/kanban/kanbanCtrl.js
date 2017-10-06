@@ -15,10 +15,10 @@ angular
 				'KanbanCtrl',
 				[
 						'$scope',
-						'AgileFactory',
+						'AgileEndpoint',
 						'Global',
 						'$routeParams',
-						function($scope, AgileFactory, Global, $routeParams) {
+						function($scope, AgileEndpoint, Global, $routeParams) {
 							"use strict"
 							$scope.team = {};
 							$scope.team.id = $routeParams.team;
@@ -32,7 +32,7 @@ angular
 								return getUserName(userId);
 							}
 
-							AgileFactory.getTeamToken($scope.team).$promise
+							AgileEndpoint.getTeamToken($scope.team).$promise
 									.then(function(data) {
 										$scope.team.name = data.name;
 									});
@@ -65,7 +65,7 @@ angular
 							// Get tasks for selected spring
 							var getTasks = function() {
 								if ($scope.selectedSprint) {
-									AgileFactory.getSprintForKb($scope.team,
+									AgileEndpoint.getSprintForKb($scope.team,
 											$scope.selectedSprint).$promise
 											.then(function(data) {
 												_tasks = data;
@@ -140,7 +140,7 @@ angular
 								 * On state transition updates the new states to
 								 * the server.
 								 */
-								AgileFactory.updateStatus(data).$promise
+								AgileEndpoint.updateStatus(data).$promise
 										.then(
 												function(data) {
 													if (data.errors > 0) {
@@ -181,7 +181,7 @@ angular
 									.$watch(
 											"team",
 											function() {
-												AgileFactory
+												AgileEndpoint
 														.getSprintsTokens($scope.team).$promise
 														.then(function(data) {
 															$scope.sprints = data;

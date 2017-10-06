@@ -7,7 +7,7 @@ angular
 				'BurndownCtrl',
 				[
 						'$scope',
-						'AgileFactory',
+						'AgileEndpoint',
 						'$resource',
 						'$window',
 						'$modal',
@@ -15,7 +15,7 @@ angular
 						'$routeParams',
 						'LayoutService',
 						'PopupService',
-						function($scope, AgileFactory, $resource, $window,
+						function($scope, AgileEndpoint, $resource, $window,
 								$modal, $filter, $routeParams, LayoutService,
 								PopupService) {
 
@@ -24,10 +24,10 @@ angular
 							$scope.reportname = "Burn-Down";
 
 							$scope.updateReports = function() {
-								AgileFactory.getTeamSingle($scope.team).$promise
+								AgileEndpoint.getTeamSingle($scope.team).$promise
 										.then(function(data) {
 											$scope.selectedTeam = data;
-											AgileFactory
+											AgileEndpoint
 													.getTeamSingle($scope.selectedTeam).$promise
 													.then(function(data) {
 

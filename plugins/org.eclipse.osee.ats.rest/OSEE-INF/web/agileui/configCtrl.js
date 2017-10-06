@@ -7,7 +7,7 @@ angular
 				'ConfigCtrl',
 				[
 						'$scope',
-						'AgileFactory',
+						'AgileEndpoint',
 						'$resource',
 						'$window',
 						'$modal',
@@ -15,7 +15,7 @@ angular
 						'$routeParams',
 						'LayoutService',
 						'PopupService',
-						function($scope, AgileFactory, $resource, $window,
+						function($scope, AgileEndpoint, $resource, $window,
 								$modal, $filter, $routeParams, LayoutService,
 								PopupService) {
 
@@ -68,7 +68,7 @@ angular
 								var toPost = {};
 								toPost.uuid = team.uuid;
 								$scope.sprints = [];
-								AgileFactory.getSprints(toPost).$promise
+								AgileEndpoint.getSprints(toPost).$promise
 										.then(function(data) {
 											$scope.sprints = data;
 											LayoutService
@@ -78,14 +78,14 @@ angular
 							}
 
 							$scope.deleteTeam = function() {
-								AgileFactory.deleteTeam($scope.team).$promise
+								AgileEndpoint.deleteTeam($scope.team).$promise
 										.then(function(data) {
 											window.location.assign("main")
 										});
 							}
 
 							$scope.deleteSprint = function(sprint) {
-								AgileFactory.deleteSprint(sprint).$promise
+								AgileEndpoint.deleteSprint(sprint).$promise
 										.then(function(data) {
 											$scope.updateSprints();
 										});
@@ -99,7 +99,7 @@ angular
 
 								modalInstance.result
 										.then(function(teamName) {
-											AgileFactory.addNewSprint(
+											AgileEndpoint.addNewSprint(
 													$scope.selectedTeam,
 													teamName).$promise
 													.then(function(data) {
@@ -164,7 +164,7 @@ angular
 								var toPost = {};
 								toPost.uuid = team.uuid;
 								$scope.featureGroups = [];
-								AgileFactory.getFeatureGroups(toPost).$promise
+								AgileEndpoint.getFeatureGroups(toPost).$promise
 										.then(function(data) {
 											$scope.featureGroups = data;
 											LayoutService
@@ -174,7 +174,7 @@ angular
 							}
 
 							$scope.deleteFeatureGroup = function(featureGroup) {
-								AgileFactory.deleteFeatureGroup(featureGroup).$promise
+								AgileEndpoint.deleteFeatureGroup(featureGroup).$promise
 										.then(function(data) {
 											$scope.updateFeatureGroups();
 										});
@@ -188,7 +188,7 @@ angular
 
 								modalInstance.result
 										.then(function(teamName) {
-											AgileFactory.addNewFeatureGroup(
+											AgileEndpoint.addNewFeatureGroup(
 													$scope.selectedTeam,
 													teamName).$promise
 													.then(function(data) {
@@ -225,7 +225,7 @@ angular
 
 								modalInstance.result
 										.then(function(backlogName) {
-											AgileFactory.createBacklog(
+											AgileEndpoint.createBacklog(
 													$scope.selectedTeam,
 													backlogName).$promise
 													.then(function(data) {
@@ -259,7 +259,7 @@ angular
 
 								modalInstance.result
 										.then(function(backlogUuid) {
-											AgileFactory.enterBacklog(
+											AgileEndpoint.enterBacklog(
 													$scope.selectedTeam,
 													backlogUuid).$promise
 													.then(function(data) {
@@ -289,13 +289,13 @@ angular
 								$scope.isLoaded = "";
 								var loadingModal = PopupService
 										.showLoadingModal();
-								AgileFactory.getTeamSingle($scope.team).$promise
+								AgileEndpoint.getTeamSingle($scope.team).$promise
 										.then(function(data) {
 											$scope.selectedTeam = data;
 											$scope.teamName = data.name;
 											$scope.updateSprints();
 											$scope.updateFeatureGroups();
-											AgileFactory.getBacklog($scope.selectedTeam).$promise
+											AgileEndpoint.getBacklog($scope.selectedTeam).$promise
 											.then(function(data) {
 												if (data && data.name) {
 													$scope.selectedTeam.backlog = data.name;

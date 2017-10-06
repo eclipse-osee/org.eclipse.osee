@@ -7,7 +7,7 @@ angular
 				'TeamsCtrl',
 				[
 						'$scope',
-						'AgileFactory',
+						'AgileEndpoint',
 						'$resource',
 						'$window',
 						'$modal',
@@ -15,7 +15,7 @@ angular
 						'$routeParams',
 						'LayoutService',
 						'PopupService',
-						function($scope, AgileFactory, $resource, $window,
+						function($scope, AgileEndpoint, $resource, $window,
 								$modal, $filter, $routeParams, LayoutService,
 								PopupService) {
 
@@ -111,7 +111,7 @@ angular
 								$scope.sheets = null;
 								var loadingModal = PopupService
 										.showLoadingModal();
-								AgileFactory.getTeamsTokens().$promise.then(function(
+								AgileEndpoint.getTeamsTokens().$promise.then(function(
 										data) {
 									$scope.teams = data;
 									loadingModal.close();
@@ -133,7 +133,7 @@ angular
 								});
 
 								modalInstance.result.then(function(teamName) {
-									AgileFactory.addNewTeam(teamName).$promise
+									AgileEndpoint.addNewTeam(teamName).$promise
 											.then(function(data) {
 												$scope.updateTeams();
 											});

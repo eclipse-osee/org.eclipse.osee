@@ -7,7 +7,7 @@ angular
 				'BacklogAndSprintCtrl',
 				[
 						'$scope',
-						'AgileFactory',
+						'AgileEndpoint',
 						'Global',
 						'$resource',
 						'$window',
@@ -15,7 +15,7 @@ angular
 						'$filter',
 						'$routeParams',
 						'LayoutService',
-						function($scope, AgileFactory, Global, $resource, $window,
+						function($scope, AgileEndpoint, Global, $resource, $window,
 								$modal, $filter, $routeParams, LayoutService) {
 
 							$scope.team = {};
@@ -106,7 +106,7 @@ angular
 							};
 
 
-							AgileFactory.getTeamToken($scope.team).$promise
+							AgileEndpoint.getTeamToken($scope.team).$promise
 									.then(function(data) {
 										$scope.team.name = data.name;
 									});
@@ -117,7 +117,7 @@ angular
 
 								if (selected) {
 									if (selected.isBacklog) {
-										AgileFactory.getBacklogItems($scope.team).$promise
+										AgileEndpoint.getBacklogItems($scope.team).$promise
 												.then(function(data) {
 													$scope.tasks = data;
 													$scope.count = $scope.tasks.length;
@@ -125,7 +125,7 @@ angular
 													LayoutService.refresh();
 												});
 									} else {
-										AgileFactory.getSprintItems($scope.team, selected).$promise
+										AgileEndpoint.getSprintItems($scope.team, selected).$promise
 												.then(function(data) {
 													$scope.tasks = data;
 													$scope.count = $scope.tasks.length;
@@ -147,7 +147,7 @@ angular
 							$scope.updateSprint = function() {
 								try {
 								 $scope.sprint.id = $scope.selectedItem.id;
-								 AgileFactory.updateSprint($scope.team, $scope.sprint).$promise
+								 AgileEndpoint.updateSprint($scope.team, $scope.sprint).$promise
 										.then(function(data) {
 											// open new tab to new action
 											if (data.results.numErrors > 0) {
@@ -163,7 +163,7 @@ angular
 							
 							// add backlog and sprints to pulldown and set
 							// default if specified as query parameter
-							AgileFactory
+							AgileEndpoint
 									.getBacklogToken($scope.team).$promise
 									.then(function(data) {
 										if (data && data.name) {
@@ -178,7 +178,7 @@ angular
 													.push(item);
 
 											// get active sprints
-											AgileFactory
+											AgileEndpoint
 													.getSprintsTokens($scope.team).$promise
 													.then(function(
 															data) {

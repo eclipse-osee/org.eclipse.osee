@@ -1,7 +1,5 @@
-/**
- * Agile Factory
- */
-angular.module('AgileApp').factory('AgileFactory',
+
+angular.module('AgileApp').factory('AgileEndpoint',
 		[ '$resource', function($resource) {
 
 			var factory = {};
