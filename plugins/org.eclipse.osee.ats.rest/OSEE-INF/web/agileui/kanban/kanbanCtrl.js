@@ -95,13 +95,10 @@ angular
 													count += entry.taskUuids.length;
 												}
 
-												var temp = _
-														.keys(
-																assigneeNameToTasksUuids)
-														.sort();
-
-												$scope.assignees = _
+												var assignees = _
 														.keys(assigneeNameToTasksUuids);
+												assignees.sort();
+												$scope.assignees = assignees;
 												_tasks.assignees = assigneeNameToTasksUuids;
 
 												// process statesToTaskUuids
