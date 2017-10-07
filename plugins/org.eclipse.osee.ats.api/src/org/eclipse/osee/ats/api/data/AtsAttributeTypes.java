@@ -159,6 +159,9 @@ public final class AtsAttributeTypes {
    public static final AttributeTypeToken ColorTeam = createType(1364016837443371647L, "Color Team");
    public static final AttributeTypeToken IptTeam = createType(1364016887343371647L, "IPT Team");
 
+   // Agile
+   public static final AttributeTypeToken KanbanStoryName = createType(72645877009467643L, "kb.Story Name");
+
    // Program
    public static final AttributeTypeToken Namespace = createType(4676151691645786526L, "Namespace");
 

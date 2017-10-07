@@ -45,6 +45,7 @@ import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
 import org.eclipse.osee.ats.demo.api.DemoWorkflowTitles;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -184,6 +185,14 @@ public class Pdd93CreateDemoAgile {
             null, changes, AtsClientService.get().getServices(), TransitionOption.OverrideAssigneeCheck);
       IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
       TransitionResults results = transitionMgr.handleAll();
+
+      /**
+       * Setup Agile Team Story Names (this maps an assignee name to a story name for Agile Teams using stories instead
+       * of assignees in kanban
+       */
+      changes.addAttribute(agileTeam, AtsAttributeTypes.KanbanStoryName,
+         DemoUsers.Jason_Michael.getName() + ":Jason Rockstar Michael");
+
       if (results.isEmpty()) {
          changes.execute();
       } else {

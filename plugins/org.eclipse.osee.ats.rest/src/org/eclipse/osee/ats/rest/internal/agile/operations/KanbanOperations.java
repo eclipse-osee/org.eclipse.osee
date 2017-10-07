@@ -11,8 +11,10 @@
 package org.eclipse.osee.ats.rest.internal.agile.operations;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.ws.rs.core.Response.Status;
 import org.eclipse.osee.ats.api.IAtsObject;
@@ -20,6 +22,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileItem;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
+import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.agile.kanban.JaxKbAvailableState;
 import org.eclipse.osee.ats.api.agile.kanban.JaxKbSprint;
 import org.eclipse.osee.ats.api.agile.kanban.JaxKbTask;
@@ -33,6 +36,7 @@ import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
@@ -51,11 +55,17 @@ public class KanbanOperations {
       if (sprint == null) {
          throw new OseeWebApplicationException(Status.NOT_FOUND, "sprintUuid is not valid");
       }
+      IAgileTeam agileTeam = atsServer.getAgileService().getAgileTeam(teamUuid);
+      if (agileTeam == null) {
+         throw new OseeWebApplicationException(Status.NOT_FOUND, "teamUuid is not valid");
+      }
       JaxKbSprint items = new JaxKbSprint();
       items.setUuid(sprint.getId());
       items.setName(sprint.getName());
       items.setActive(sprint.isActive());
       items.setTeamUuid(sprint.getTeamUuid());
+
+      Map<String, String> assigneeToName = getNameOverride(sprint, atsServer);
       boolean unAssignedAdded = false;
       for (IAgileItem aItem : atsServer.getAgileService().getItems(sprint)) {
 
@@ -70,7 +80,11 @@ public class KanbanOperations {
          //   "sam5us" : "Sam Smith"
          //  },
          for (IAtsUser user : workItem.getStateMgr().getAssignees()) {
-            items.getUserIdToName().put(user.getUserId(), user.getName());
+            String name = user.getName();
+            if (assigneeToName.containsKey(name)) {
+               name = assigneeToName.get(name);
+            }
+            items.getUserIdToName().put(user.getUserId(), name);
             if (user.equals(AtsCoreUsers.UNASSIGNED_USER)) {
                unAssignedAdded = true;
             }
@@ -117,6 +131,19 @@ public class KanbanOperations {
       }
 
       return items;
+   }
+
+   private static Map<String, String> getNameOverride(IAgileSprint agileSprint, IAtsServer atsServer) {
+      Map<String, String> keyValueMap = new HashMap<>();
+      String valueStr =
+         atsServer.getAttributeResolver().getSoleAttributeValue(agileSprint, AtsAttributeTypes.KanbanStoryName, "");
+      if (Strings.isValid(valueStr)) {
+         for (String value : valueStr.split("\n")) {
+            String[] keyValue = value.split(":");
+            keyValueMap.put(keyValue[0], keyValue[1]);
+         }
+      }
+      return keyValueMap;
    }
 
    private static String getAssigneeUserIdsString(IAtsWorkItem workItem, IAtsServer atsServer) {

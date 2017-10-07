@@ -34,6 +34,7 @@ artifactType "Agile Sprint" extends "ats.State Machine" {
 	attribute "ats.Holiday"
 	attribute "ats.Planned Points"
 	attribute "ats.Un-Planned Points"
+	attribute "ats.kb.Story Name"
 }
 
 artifactType "Work Definition" extends "Artifact" {
@@ -272,6 +273,15 @@ artifactType "Work Package" extends "Artifact" {
 overrides artifactType "User" {
 	inheritAll
 	add attribute "ATS Quick Search"
+}
+
+attributeType "ats.kb.Story Name" extends StringAttribute {
+	id 72645877009467643
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "ATS Quick Search" extends StringAttribute {
