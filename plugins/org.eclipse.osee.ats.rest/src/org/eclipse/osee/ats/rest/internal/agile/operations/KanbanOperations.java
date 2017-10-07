@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.agile.operations;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -66,6 +67,7 @@ public class KanbanOperations {
       items.setTeamUuid(sprint.getTeamUuid());
 
       Map<String, String> assigneeToName = getNameOverride(sprint, atsServer);
+      Collection<String> ignoreStates = getIgnoreStates(agileTeam, atsServer);
       boolean unAssignedAdded = false;
       for (IAgileItem aItem : atsServer.getAgileService().getItems(sprint)) {
 
@@ -123,7 +125,7 @@ public class KanbanOperations {
          //    "stateType" : "Working",
          //    "toStates" : [ "Cancelled", "Completed", "InProgress" ]
          // },
-         addAvailableStates(items, aItem, workItem, artifact, atsServer);
+         addAvailableStates(items, aItem, workItem, artifact, atsServer, ignoreStates);
       }
       if (!unAssignedAdded) {
          items.getUserIdToName().put(AtsCoreUsers.UNASSIGNED_USER.getUserId(), AtsCoreUsers.UNASSIGNED_USER.getName());
@@ -131,6 +133,18 @@ public class KanbanOperations {
       }
 
       return items;
+   }
+
+   private static Collection<String> getIgnoreStates(IAgileTeam agileTeam, IAtsServer atsServer) {
+      List<String> values = new ArrayList<>();
+      String strValue =
+         atsServer.getAttributeResolver().getSoleAttributeValue(agileTeam, AtsAttributeTypes.KanbanIgnoreStates, "");
+      if (Strings.isValid(strValue)) {
+         for (String value : strValue.split(";")) {
+            values.add(value);
+         }
+      }
+      return values;
    }
 
    private static Map<String, String> getNameOverride(IAgileSprint agileSprint, IAtsServer atsServer) {
@@ -170,10 +184,13 @@ public class KanbanOperations {
       }
    }
 
-   private static void addAvailableStates(JaxKbSprint items, IAgileItem aItem, IAtsWorkItem workItem, ArtifactReadable artifact, IAtsServer atsServer) {
+   private static void addAvailableStates(JaxKbSprint items, IAgileItem aItem, IAtsWorkItem workItem, ArtifactReadable artifact, IAtsServer atsServer, Collection<String> ignoreStates) {
       try {
          IAtsWorkDefinition workDef = workItem.getWorkDefinition();
          for (IAtsStateDefinition stateDef : atsServer.getWorkDefinitionService().getStatesOrderedByOrdinal(workDef)) {
+            if (ignoreStates.contains(stateDef.getName())) {
+               continue;
+            }
             JaxKbAvailableState state = null;
             for (JaxKbAvailableState availState : items.getAvailableStates()) {
                if (availState.getName().equals(stateDef.getName())) {

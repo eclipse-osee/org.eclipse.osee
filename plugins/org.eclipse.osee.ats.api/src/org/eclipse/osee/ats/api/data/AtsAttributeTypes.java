@@ -161,6 +161,7 @@ public final class AtsAttributeTypes {
 
    // Agile
    public static final AttributeTypeToken KanbanStoryName = createType(72645877009467643L, "kb.Story Name");
+   public static final AttributeTypeToken KanbanIgnoreStates = createType(726700946264587643L, "kb.Ignore State");
 
    // Program
    public static final AttributeTypeToken Namespace = createType(4676151691645786526L, "Namespace");

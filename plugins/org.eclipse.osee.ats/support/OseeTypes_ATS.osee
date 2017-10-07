@@ -18,6 +18,7 @@ artifactType "Agile Team" extends "ats.Ats Config Artifact" {
 	id 7553778770333667393
 	attribute "ats.Description"
 	attribute "ats.Points Attribute Type"
+	attribute "ats.kb.Ignore States"
 }
 
 artifactType "Agile Backlog" extends "Goal" {
@@ -281,6 +282,14 @@ attributeType "ats.kb.Story Name" extends StringAttribute {
 	min 0
 	max unlimited
 	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
+attributeType "ats.kb.Ignore States" extends StringAttribute {
+	id 726700946264587643
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
 	mediaType "text/plain"
 }
 
