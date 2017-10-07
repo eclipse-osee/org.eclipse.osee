@@ -114,8 +114,7 @@ public final class JaxRsResourceManager implements BundleListener {
 
    public Resource findResource(ContainerRequestContext requestContext) {
       UriInfo uriInfo = requestContext.getUriInfo();
-      String path = uriInfo.getAbsolutePath().getPath();
-
+      String path = Lib.getURIAbsolutePath(uriInfo);
       Resource resource = getResource(path);
       if (resource == null) {
          if (!hasExtension(path)) {

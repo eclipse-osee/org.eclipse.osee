@@ -25,6 +25,7 @@ import org.apache.cxf.rs.security.oauth2.common.AccessTokenValidation;
 import org.apache.cxf.rs.security.oauth2.filters.OAuthRequestFilter;
 import org.apache.cxf.rs.security.oauth2.utils.OAuthConstants;
 import org.apache.cxf.security.SecurityContext;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.server.internal.JaxRsResourceManager;
 import org.eclipse.osee.jaxrs.server.internal.JaxRsResourceManager.Resource;
@@ -92,7 +93,7 @@ public class OAuth2RequestFilter extends OAuthRequestFilter {
    public void filter(ContainerRequestContext context) {
       boolean isSecurePath = isPathSecure(context);
       UriInfo uriInfo = context.getUriInfo();
-      String path = uriInfo.getAbsolutePath().getPath();
+      String path = Lib.getURIAbsolutePath(uriInfo);
       if (isSecurePath && path.contains("oauth2") || path.contains("accounts/self")) {
          if (isResourceOwnerRequest(context)) {
             handleResourceOwnerRequest(context);

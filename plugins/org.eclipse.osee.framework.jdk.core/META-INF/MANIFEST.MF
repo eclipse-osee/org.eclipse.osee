@@ -28,7 +28,8 @@ Export-Package: org.eclipse.osee.framework.jdk.core.collection.tree,
  org.eclipse.osee.framework.jdk.core.util.xml.parser,
  org.eclipse.osee.framework.jdk.core.validate
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.apache.commons.codec.binary,
+Import-Package: javax.ws.rs.core,
+ org.apache.commons.codec.binary,
  org.codehaus.jackson,
  org.codehaus.jackson.annotate,
  org.codehaus.jackson.map,

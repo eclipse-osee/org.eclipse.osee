@@ -38,6 +38,7 @@ import java.lang.management.MemoryUsage;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.ByteBuffer;
@@ -66,6 +67,7 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.util.io.IOInputThread;
@@ -78,6 +80,8 @@ import org.eclipse.osee.framework.jdk.core.util.io.MatchFilter;
  */
 public final class Lib {
    private static final Random RANDOM = new Random();
+
+   private final static String INVALID_URI_CHARACTERS_REGEX = "[<>]";
 
    @Deprecated
    public final static Runtime runtime = Runtime.getRuntime();
@@ -1797,5 +1801,26 @@ public final class Lib {
 
    public static boolean greaterThan(double d1, double d2) {
       return d1 > d2 + EPSILON;
+   }
+
+   /**
+    * Alternate method to UriInfo.getAbsolutePath() that supports invalid characters in the URI string, which are stored
+    * in a Regex constant.
+    *
+    * @return <b>Absolute URI path String with invalid characters removed</b>.
+    */
+   public static String getURIAbsolutePath(UriInfo uriInfo) {
+      String uriPath = uriInfo.getPath();
+      if (uriPath.startsWith("/")) {
+         uriPath = uriPath.replaceFirst("\\/+", "");
+      }
+      uriPath = uriPath.replaceAll(INVALID_URI_CHARACTERS_REGEX, "");
+      URI baseUri = uriInfo.getBaseUri();
+      String basePath = baseUri.toString();
+      if (!basePath.endsWith("/")) {
+         basePath += "/";
+         baseUri = URI.create(basePath);
+      }
+      return baseUri.resolve(uriPath).getPath();
    }
 }
