@@ -118,8 +118,7 @@ angular
 
 							$scope.$watch("bigCards", function() {
 								if (_tasks && _tasks.tasks) {
-									$scope.availableStates = null;
-									getTasks();
+									$scope.availableStates = $scope.availableStates;
 								}
 							});
 
