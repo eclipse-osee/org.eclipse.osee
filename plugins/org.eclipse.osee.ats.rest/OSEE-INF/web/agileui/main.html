@@ -1,52 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="height: 100%;>
   <head>
-    <meta charset="UTF-8"></meta>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
-    <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
-    
-    <link rel="stylesheet" type="text/css" href="/ajax/libs/bootstrap/3.3.2/css/bootstrap.min.css"></link>
-    
-    <title>OSEE Agile</title>
+    <meta charset="UTF-8">
+</meta>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+<meta name="viewport" content="width=device-width, initial-scale=1"></meta>
 
-    <link rel="stylesheet" type="text/css" href="/ajax/libs/ng-grid/2.0.11/ng-grid.min.css"></link>
-    <link rel="stylesheet" href="agile.css"></link>    
-    <link rel="stylesheet" href="kanban/kanban.css"></link>    
+<link rel="stylesheet" type="text/css"
+	href="/ajax/libs/bootstrap/3.3.2/css/bootstrap.min.css"></link>
 
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
+<title>OSEE Agile</title>
+
+<link rel="stylesheet" type="text/css"
+	href="/ajax/libs/ng-grid/2.0.11/ng-grid.min.css"></link>
+<link rel="stylesheet" href="agile.css"></link>
+<link rel="stylesheet" href="kanban/kanban.css"></link>
+
+<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+<!--[if lt IE 9]>
       <script src="/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="/ajax/libs/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 </head>
-<body ng-app="AgileApp" resize>
+<body ng-app="AgileApp" style="height: 100%;">
 
 	<nav class="navbar navbar-default" role="navigation">
 		<div class="container-fluid">
 			<div class="navbar-header">
-				<button type="button" class="navbar-toggle" data-toggle="collapse"
-					data-target="#bs-example-navbar-collapse-1">
-					<span class="sr-only">Toggle navigation</span> <span
-						class="icon-bar"></span> <span class="icon-bar"></span> <span
-						class="icon-bar"></span>
-				</button>
 				<a class="navbar-brand" href="#/main">OSEE Agile</a>
 			</div>
-			<div class="collapse navbar-collapse"
-				ng-controller="HeaderController">
-				<ul class="nav navbar-nav navbar-right">
-					<li ng-class="{ active: isActive('/team')}"><a href="#/home">Home</a></li>
-				</ul>
-			</div>
+			<ul class="nav navbar-nav navbar-right">
+				<li ng-class="{ active: isActive('/team')}"><a href="#/home">Home</a></li>
+			</ul>
 		</div>
 	</nav>
 
-	<script type="text/ng-template" id="loadingModal.html">
-        <div id="loadingModal" class="alert alert-info">Loading...</div>
-   </script>
-
-
-	<div ng-view></div>
+	<div ng-view style="height: 90%"></div>
 
 	<script>
 		function HeaderController($scope, $location) {
@@ -62,8 +51,10 @@
 	<script src="/ajax/libs/angularjs/1.2.28/angular-resource.min.js"></script>
 	<script src="/ajax/libs/ng-grid/2.0.11/ng-grid.min.js"></script>
 	<script src="/ajax/libs/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-	<script src="/ajax/libs/ui-bootstrap/0.12.0/ui-bootstrap-tpls-0.12.0.min.js"></script>
+	<script
+		src="/ajax/libs/ui-bootstrap/0.12.0/ui-bootstrap-tpls-0.12.0.min.js"></script>
 	<script src="/ajax/libs/moment/2.9.0/moment.min.js"></script>
+	<script src="kanban/underscore.js"></script>
 	<script src="app.js"></script>
 	<script src="agileEndpoint.js"></script>
 	<script src="configCtrl.js"></script>
@@ -72,6 +63,6 @@
 	<script src="backlogAndSprintCtrl.js"></script>
 	<script src="newActionCtrl.js"></script>
 	<script src="kanban/kanbanCtrl.js"></script>
-   <script src="kanban/ngDraggable.js"></script>
+	<script src="kanban/ngDraggable.js"></script>
 </body>
 </html>

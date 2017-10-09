@@ -1,25 +1,20 @@
-<!DOCTYPE html>
-<html>
-<body onload="zoom()">
-	<div class="container-fluid">
-		<div class="row col-lg-12"">
-			<div class="panel panel-primary" id="backlogContainer">
-				<div class="panel-heading" id="backlogHeader">
-					<table>
-						<tr>
-							<td width="15%">Team: <strong>{{team.name}}</strong>
-							</td>
-							<td width="30%"><strong>{{reportname}}</strong></td>
-						</tr>
-					</table>
-				</div>
-				<div menu></div>
-			</div>
-			<div id="b1" class="b1"></div>
+<div id="mainDiv">
+	<div class="panel panel-primary" id="mainHeader">
+		<div class="panel-heading" id="mainHeading">
+			<table id="mainHeaderTable">
+				<tr>
+					<td width="15%">Team: <strong>{{team.name}}</strong>
+					</td>
+					<td width="30%"><strong>{{reportname}}</strong></td>
+				</tr>
+			</table>
 		</div>
+		<div menu></div>
 	</div>
-	<script>
-		document.getElementById("b1").style.zoom = "400%"
-	</script>
+	<div id="b1" class="b1"></div>
+</div>
+<script>
+	document.getElementById("b1").style.zoom = "400%"
+</script>
 </body>
 </html>

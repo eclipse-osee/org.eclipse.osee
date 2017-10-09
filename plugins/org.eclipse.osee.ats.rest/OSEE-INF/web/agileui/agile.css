@@ -4,8 +4,24 @@
 	border-color: #ddd;
 }
 
-#loadingModal {
-	margin-bottom: 0px;
+#mainDiv {
+	height: 94%;
+	margin-left: 10px;
+	margin-right: 10px;
+	margin-top: 0px;
+}
+
+#mainHeader {
+	margin: 0px;
+}
+
+#mainHeading {
+	height: 65px;
+}
+
+#mainHeaderTable {
+	width: 100%;
+	margin: 0px;
 }
 
 .ngViewport.ng-scope>.ngCanvas {
@@ -15,14 +31,6 @@
 .ngViewport.ng-scope>.ngCanvas>.ng-scope {
 	width: 100% !important;
 	border-bottom-width: 0px !important;
-}
-
-#backlogContainer {
-	width: 100% !important;
-}
-
-#backlogHeader {
-	height: 55px;
 }
 
 #newActionForm {
@@ -35,24 +43,7 @@
 	margin: 0px;
 }
 
-#backlogTable {
-	width: 100% !important;
-}
-
 #configDiv {
-	width: 100% !important;
-}
-
-#sprintDiv {
-	width: 50% !important;
-	float: left;
-}
-
-#sprintHeading {
-	height: 40px;
-}
-
-#sprintConfigTable {
 	width: 100% !important;
 }
 
@@ -61,27 +52,11 @@
 	float: right;
 }
 
-#reset {
-	float: right;
-}
-
 #featureHeading {
 	height: 40px;
 }
 
 #featureGroupConfigTable {
-	width: 100% !important;
-}
-
-#teamsDiv {
-	width: 90s% !important;
-}
-
-#teamsHeading {
-	height: 40px;
-}
-
-#teamsTable {
 	width: 100% !important;
 }
 

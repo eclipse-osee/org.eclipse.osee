@@ -1,29 +1,28 @@
-<!DOCTYPE html>
-<html>
-<body>
-	<div class="container-fluid">
-
-		<div class="row col-lg-12">
-			<div class="panel panel-primary" id="teamsDiv">
-				<div class="panel-heading" id="teamsHeading">
-					<span class="pull-left"><strong>OSEE Agile Teams</strong></span> <span
-						class="pull-right">
-						<button type="button" class="btn btn-default btn-xs"
-							ng-click="addNewTeam()">
-							<span class="glyphicon glyphicon-plus"></span>
-						</button>
-						<button type="button" class="btn btn-default btn-xs"
-							ng-click="updateTeams()">
-							<span class="glyphicon glyphicon-refresh"></span>
-						</button>
-					</span>
-				</div>
-				<div ng-show="teams" id="teamTable" class="gridStyle"
-					ng-grid="teamGridOptions"></div>
-			</div>
+<div id="mainDiv">
+	<div class="panel panel-primary" id="mainHeader">
+		<div class="panel-heading" id="mainHeading">
+			<span class="pull-left"><strong>OSEE Agile Teams</strong></span> <span
+				class="pull-right">
+				<button type="button" class="btn btn-default btn-xs"
+					ng-click="addNewTeam()">
+					<span class="glyphicon glyphicon-plus"></span>
+				</button>
+				<button type="button" class="btn btn-default btn-xs"
+					ng-click="updateTeams()">
+					<span class="glyphicon glyphicon-refresh"></span>
+				</button>
+			</span>
 		</div>
+	</div>
+	<div ng-show="teams" id="teamTable" class="gridStyle"
+		ng-grid="teamGridOptions"></div>
 
-		<script type="text/ng-template" id="addNewTeam.html">
+	<center>
+		<img src="{{loadingImg}}" id="loadingImg" ng-hide="teams"
+			align="middle">
+	</center>
+
+	<script type="text/ng-template" id="addNewTeam.html">
         <div class="modal-header">
             <h3 class="modal-title">New Agile Team</h3>
         </div>
@@ -36,7 +35,4 @@
         </div>
     </script>
 
-	</div>
-
-</body>
-</html>
+</div>

@@ -102,67 +102,29 @@ app.directive('focusMe', function($timeout) {
 	};
 });
 
-app
-		.directive(
-				'resize',
-				function($window) {
-					return function(scope, element) {
-						var w = angular.element($window);
-						scope.getWindowDimensions = function() {
-							return {
-								'h' : w.height(),
-								'w' : w.width()
-							};
-						};
-						scope.$watch(scope.getWindowDimensions, function(
-								newValue, oldValue) {
-							scope.windowHeight = newValue.h;
-							scope.windowWidth = newValue.w;
+app.directive('resize', function($window) {
+	return function(scope, element) {
+		var w = angular.element($window);
+		scope.getWindowDimensions = function() {
+			return {
+				'h' : w.height(),
+				'w' : w.width()
+			};
+		};
+		scope.$watch(scope.getWindowDimensions, function(newValue, oldValue) {
+			scope.windowHeight = newValue.h;
+			scope.windowWidth = newValue.w;
 
-							scope.style = function() {
-								return {
-									'height' : (newValue.h - 100) + 'px',
-									'width' : (newValue.w - 100) + 'px'
-								};
-							};
+			scope.style = function() {
+				return {
+					'height' : (newValue.h - 100) + 'px',
+					'width' : (newValue.w - 100) + 'px'
+				};
+			};
 
-						}, true);
-
-						w
-								.bind(
-										'resize',
-										function(scope) {
-											var window = scope.currentTarget;
-											var elementNameArray = [
-													"backlogTable",
-													"sprintConfigTable",
-													"featureGroupConfigTable",
-													"teamTable" ];
-											var offsetArray = [ 120, 50, 50, 80 ];
-											var arrayLength = elementNameArray.length;
-											for (var i = 0; i < arrayLength; i++) {
-												var elementName = elementNameArray[i];
-												var element = window.document
-														.getElementById(elementName);
-												if (element) {
-													var height = 0;
-													var body = window.document.body;
-													if (window.innerHeight) {
-														height = window.innerHeight;
-													} else if (body.parentElement.clientHeight) {
-														height = body.parentElement.clientHeight;
-													} else if (body
-															&& body.clientHeight) {
-														height = body.clientHeight;
-													}
-													var offset = offsetArray[i];
-													element.style.height = ((height
-															- element.offsetTop - offset) + "px");
-												}
-											}
-										});
-					}
-				});
+		}, true);
+	}
+});
 
 app.directive('ngConfirmClick', [ function() {
 	return {

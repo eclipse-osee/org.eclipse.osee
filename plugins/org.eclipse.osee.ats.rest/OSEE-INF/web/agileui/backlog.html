@@ -1,48 +1,42 @@
-<!DOCTYPE html>
-<html>
-<body>
-	<div class="container-fluid">
-
-		<div class="row col-lg-12"">
-			<div class="panel panel-primary" id="backlogContainer">
-				<div class="panel-heading" id="backlogHeader">
-					<table width="100%">
-						<tr>
-							<td width="25%">Team: <strong>{{team.name}}</strong>
-							</td>
-							<td width="25%"><strong>{{selectedItem.name}}</strong></td>
-							<td width="7%">Items: <strong>{{count}}</strong>
-							</td>
-							<td width="10%">
-								<table class="headerDropdowns" width="100%" border=1 rules=NONE
-									frame=BOX>
-									<tr>
-										<td align="center" width="30%">Backlog or Sprint</td>
-									</tr>
-									<tr>
-										<td width="30%"><select style="min-width: 100%;" d
-											ng-model="selectedItem"
-											ng-options="item.name for (key,item) in activeItems">
-												<option value="">Select</option>
-										</select></td>
-									</tr>
-								</table>
-							</td>
-						</tr>
-					</table>
-				</div>
-				<div menu></div>
-				<div ng-show="tasks" id="taskTable" class="gridStyle"
-					ng-grid="tasksGridOptions"></div>
-			</div>
+<div id="mainDiv">
+	<div class="panel panel-primary" id="mainHeader">
+		<div class="panel-heading" id="mainHeading">
+			<table id="mainHeaderTable">
+				<tr>
+					<td width="25%">Team: <strong>{{team.name}}</strong>
+					</td>
+					<td width="25%"><strong>{{selectedItem.name}}</strong></td>
+					<td width="7%">Items: <strong>{{count}}</strong>
+					</td>
+					<td width="10%">
+						<table class="headerDropdowns" width="100%" border=1 rules=NONE
+							frame=BOX>
+							<tr>
+								<td align="center" width="30%">Backlog or Sprint</td>
+							</tr>
+							<tr>
+								<td width="30%"><select style="min-width: 100%;"
+									ng-model="selectedItem"
+									ng-options="item.name for (key,item) in activeItems">
+										<option value="">Select</option>
+								</select></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
 		</div>
-		<center><img src="{{loadingImg}}" id="loadingImg" ng-hide="tasks" align="middle"></center>
-
-		<script type="text/ng-template" id="loadingModal.html">
-        <div id="loadingModal" class="alert alert-info">Loading...</div>
-      </script>
-
 	</div>
 
-</body>
-</html>
+	<div menu></div>
+	
+	<center>
+		<img src="{{loadingImg}}" id="loadingImg" ng-hide="tasks"
+			align="middle">
+	</center>
+
+	<div ng-show="tasks" id="taskTable" class="gridStyle"
+		ng-grid="tasksGridOptions" style="height: 89%;" />
+
+</div>
+

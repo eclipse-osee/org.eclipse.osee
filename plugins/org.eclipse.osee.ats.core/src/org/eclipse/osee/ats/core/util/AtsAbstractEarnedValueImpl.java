@@ -13,9 +13,9 @@ package org.eclipse.osee.ats.core.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -58,8 +58,11 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
    @Override
    public IAtsWorkPackage getWorkPackage(IAtsWorkItem workItem) {
       ArtifactId workPackageId = getWorkPackageId(workItem);
-      ArtifactToken workPkgArt = atsApi.getArtifact(workPackageId);
-      return new WorkPackage(logger, workPkgArt, atsApi);
+      if (workPackageId.isValid()) {
+         ArtifactToken workPkgArt = atsApi.getArtifact(workPackageId);
+         return new WorkPackage(logger, workPkgArt, atsApi);
+      }
+      return null;
    }
 
    @Override
@@ -120,8 +123,7 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
    public Collection<IAtsWorkPackage> getWorkPackages(IAtsInsertionActivity insertionActivity) {
       List<IAtsWorkPackage> workPackages = new ArrayList<>();
       for (ArtifactToken artifact : atsApi.getRelationResolver().getRelated(
-         atsApi.getArtifact(insertionActivity.getId()),
-         AtsRelationTypes.InsertionActivityToWorkPackage_WorkPackage)) {
+         atsApi.getArtifact(insertionActivity.getId()), AtsRelationTypes.InsertionActivityToWorkPackage_WorkPackage)) {
          workPackages.add(new WorkPackage(logger, artifact, atsApi));
       }
       return workPackages;
