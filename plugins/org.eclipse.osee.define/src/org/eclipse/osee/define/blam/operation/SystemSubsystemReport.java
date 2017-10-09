@@ -298,18 +298,19 @@ public class SystemSubsystemReport extends AbstractBlam {
 
          if (artifact.isOfType(CoreArtifactTypes.SubsystemRequirementMSWord)) {
 
+            boolean isRelated = false;
             List<Artifact> relatedArtifacts = artifact.getRelatedArtifacts(CoreRelationTypes.Allocation__Component);
             if (relatedArtifacts != null && !relatedArtifacts.isEmpty()) {
                ViewIdUtility.removeExcludedArtifacts(relatedArtifacts.iterator(), findExcludedArtifactsByView);
+               isRelated = true;
             }
             for (Artifact component : relatedArtifacts) {
                components.add(component);
                row[2] = component.getName();
                excelWriter.writeRow(row);
-               row[0] = row[1] = null;
             }
 
-            if (row[0] != null) { // if this requirement has no allocated components (i.e. the for loop didn't run)
+            if (row[0] != null && !isRelated) { // if this requirement has no allocated components (i.e. the for loop didn't run)
                row[2] = null;
                excelWriter.writeRow(row);
             }
@@ -418,19 +419,20 @@ public class SystemSubsystemReport extends AbstractBlam {
          row[0] = sysReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
          row[1] = sysReq.getName();
 
+         boolean isRelated = false;
          List<Artifact> relatedArtifacts = sysReq.getRelatedArtifacts(CoreRelationTypes.Requirement_Trace__Lower_Level);
          if (relatedArtifacts != null && !relatedArtifacts.isEmpty()) {
             ViewIdUtility.removeExcludedArtifacts(relatedArtifacts.iterator(), findExcludedArtifactsByView);
+            isRelated = true;
          }
          for (Artifact subSysReq : relatedArtifacts) {
             if (subsysReqs.contains(subSysReq)) {
                row[2] = subSysReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
                row[3] = subSysReq.getName();
                excelWriter.writeRow(row);
-               row[0] = row[1] = null;
             }
          }
-         if (row[0] != null) { // if this requirement is not traced to any subsys req (i.e. the condition in the for loop didn't run)
+         if (row[0] != null && !isRelated) { // if this requirement is not traced to any subsys req (i.e. the condition in the for loop didn't run)
             row[2] = row[3] = null;
             excelWriter.writeRow(row);
          }
@@ -466,18 +468,20 @@ public class SystemSubsystemReport extends AbstractBlam {
             row[2] = "N/A: " + subsysReq.getArtifactTypeName();
          }
 
+         boolean isRelated = false;
          List<Artifact> relatedArtifacts =
             subsysReq.getRelatedArtifacts(CoreRelationTypes.Requirement_Trace__Higher_Level);
          if (relatedArtifacts != null && !relatedArtifacts.isEmpty()) {
             ViewIdUtility.removeExcludedArtifacts(relatedArtifacts.iterator(), findExcludedArtifactsByView);
+            isRelated = true;
          }
+
          for (Artifact subSysReq : relatedArtifacts) {
             row[3] = subSysReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
             row[4] = subSysReq.getName();
             excelWriter.writeRow(row);
-            row[0] = row[1] = row[2] = null;
          }
-         if (row[0] != null) { // if this requirement is not traced to any sys req (i.e. the for loop didn't run)
+         if (row[0] != null && !isRelated) { // if this requirement is not traced to any sys req (i.e. the for loop didn't run)
             row[3] = row[4] = null;
             excelWriter.writeRow(row);
          }

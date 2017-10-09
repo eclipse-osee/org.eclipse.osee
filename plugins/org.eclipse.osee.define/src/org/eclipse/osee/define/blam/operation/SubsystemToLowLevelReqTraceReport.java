@@ -54,7 +54,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * @author Ryan D. Brooks
  */
 public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
-   private static final String LOW_LEVEL_REQUIREMENTS = "Low Level Requirements";
+   private static final String LOW_LEVEL_REQUIREMENTS = "Lower Level Requirements";
    private CharBackedInputStream charBak;
    private ISheetWriter excelWriter;
    private final HashMap<String, List<Artifact>> subsysToSubsysReqsMap;
@@ -129,13 +129,15 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       for (Artifact lowLevelReq : lowLevelReqs) {
          row[0] = correct(lowLevelReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
          row[1] = lowLevelReq.getName();
+         boolean isRelated = false;
          if (isLowerLevelRequirement(lowLevelReq)) {
             row[2] = lowLevelReq.getAttributesToStringSorted(CoreAttributeTypes.QualificationMethod);
 
             List<Artifact> relatedArtifacts =
                lowLevelReq.getRelatedArtifacts(CoreRelationTypes.Requirement_Trace__Higher_Level);
-            if (relatedArtifacts != null) {
+            if (relatedArtifacts != null && !relatedArtifacts.isEmpty()) {
                ViewIdUtility.removeExcludedArtifacts(relatedArtifacts.iterator(), excludedArtifactIdMap);
+               isRelated = true;
             }
             for (Artifact subSysReq : relatedArtifacts) {
                row[3] = getAssociatedSubSystem(subSysReq);
@@ -143,13 +145,12 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
                row[5] = subSysReq.getName();
                row[6] = subSysReq.getSoleAttributeValue(CoreAttributeTypes.Subsystem, "");
                excelWriter.writeRow(row);
-               row[0] = row[1] = row[2] = null;
             }
          } else {
             row[2] = lowLevelReq.getArtifactTypeName();
          }
 
-         if (row[0] != null) { // if this requirement is not traced to any lower level req (i.e. the for loop didn't run)
+         if (row[0] != null && !isRelated) { // if this requirement is not traced to any lower level req (i.e. the for loop didn't run)
             row[3] = row[4] = row[5] = row[6] = null;
             excelWriter.writeRow(row);
          }
@@ -194,18 +195,19 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
                row[1] = higherLevelReq.getName();
                List<Artifact> relatedArtifacts =
                   higherLevelReq.getRelatedArtifacts(CoreRelationTypes.Requirement_Trace__Lower_Level);
-               if (relatedArtifacts != null) {
+               boolean isRelated = false;
+               if (relatedArtifacts != null && !relatedArtifacts.isEmpty()) {
                   ViewIdUtility.removeExcludedArtifacts(relatedArtifacts.iterator(), excludedArtifactIdMap);
+                  isRelated = true;
                }
                for (Artifact lowerLevelReq : relatedArtifacts) {
                   if (lowLevelReqs.contains(lowerLevelReq)) {
                      row[2] = correct(lowerLevelReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
                      row[3] = lowerLevelReq.getName();
                      excelWriter.writeRow(row);
-                     row[0] = row[1] = null;
                   }
                }
-               if (row[0] != null) { // if this requirement is not traced to any low level requirement(i.e. the for loop didn't run)
+               if (row[0] != null && !isRelated) { // if this requirement is not traced to any low level requirement(i.e. the for loop didn't run)
                   row[2] = row[3] = null;
                   excelWriter.writeRow(row);
                }
