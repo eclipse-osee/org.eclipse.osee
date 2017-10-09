@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.eclipse.osee.client.feature_0.25.0.qualifier.jar" id="org.eclipse.osee.client.feature" version="0.25.0.qualifier">
+   <feature url="features/org.eclipse.osee.client.feature_0.25.1.qualifier.jar" id="org.eclipse.osee.client.feature" version="0.25.1.qualifier">
       <category name="org.eclipse.osee.client"/>
    </feature>
-   <feature url="features/org.eclipse.osee.client.feature.source_0.25.0.qualifier.jar" id="org.eclipse.osee.client.feature.source" version="0.25.0.qualifier">
+   <feature url="features/org.eclipse.osee.client.feature.source_0.25.1.qualifier.jar" id="org.eclipse.osee.client.feature.source" version="0.25.1.qualifier">
       <category name="org.eclipse.osee.client"/>
    </feature>
-   <feature url="features/org.eclipse.osee.client.test.framework.feature_0.25.0.qualifier.jar" id="org.eclipse.osee.client.test.framework.feature" version="0.25.0.qualifier">
+   <feature url="features/org.eclipse.osee.client.test.framework.feature_0.25.1.qualifier.jar" id="org.eclipse.osee.client.test.framework.feature" version="0.25.1.qualifier">
       <category name="org.eclipse.osee.client.test"/>
    </feature>
-   <feature url="features/org.eclipse.osee.client.test.framework.feature.source_0.25.0.qualifier.jar" id="org.eclipse.osee.client.test.framework.feature.source" version="0.25.0.qualifier">
+   <feature url="features/org.eclipse.osee.client.test.framework.feature.source_0.25.1.qualifier.jar" id="org.eclipse.osee.client.test.framework.feature.source" version="0.25.1.qualifier">
       <category name="org.eclipse.osee.client.test"/>
    </feature>
-   <feature url="features/org.eclipse.osee.client.demo.feature_0.25.0.qualifier.jar" id="org.eclipse.osee.client.demo.feature" version="0.25.0.qualifier">
+   <feature url="features/org.eclipse.osee.client.demo.feature_0.25.1.qualifier.jar" id="org.eclipse.osee.client.demo.feature" version="0.25.1.qualifier">
       <category name="org.eclipse.osee.client.demo"/>
    </feature>
-   <feature url="features/org.eclipse.osee.client.demo.feature.source_0.25.0.qualifier.jar" id="org.eclipse.osee.client.demo.feature.source" version="0.25.0.qualifier">
+   <feature url="features/org.eclipse.osee.client.demo.feature.source_0.25.1.qualifier.jar" id="org.eclipse.osee.client.demo.feature.source" version="0.25.1.qualifier">
       <category name="org.eclipse.osee.client.demo"/>
    </feature>
    

@@ -6,13 +6,13 @@
 	<parent>
 		<groupId>org.eclipse.osee</groupId>
 		<artifactId>org.eclipse.osee.orcs.parent</artifactId>
-		<version>0.25.0-SNAPSHOT</version>
+		<version>0.25.1-SNAPSHOT</version>
 		<relativePath>../../plugins/org.eclipse.osee.orcs.parent</relativePath>
 	</parent>
 
 	<artifactId>org.eclipse.osee.orcs.p2</artifactId>
 	<packaging>eclipse-repository</packaging>
 	<name>OSEE ORCS - p2 Site (Incubation)</name>
-	<version>0.25.0-SNAPSHOT</version>
+	<version>0.25.1-SNAPSHOT</version>
 
 </project>

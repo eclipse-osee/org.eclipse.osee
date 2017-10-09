@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Template Engine Test
 Bundle-SymbolicName: org.eclipse.osee.template.engine.test
-Bundle-Version: 0.25.0.qualifier
+Bundle-Version: 0.25.1.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Fragment-Host: org.eclipse.osee.template.engine
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

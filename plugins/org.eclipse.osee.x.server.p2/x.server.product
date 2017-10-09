@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="OSEE Application Server X (Incubation)" uid="org.eclipse.osee.x.server.product" version="0.25.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="OSEE Application Server X (Incubation)" uid="org.eclipse.osee.x.server.product" version="0.25.1.qualifier" useFeatures="true" includeLaunchers="true">
 
 
    <configIni use="default">

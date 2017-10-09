@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Cache Admin (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.cache.admin
-Bundle-Version: 0.25.0.qualifier
+Bundle-Version: 0.25.1.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.google.common.base;version="15.0.0",

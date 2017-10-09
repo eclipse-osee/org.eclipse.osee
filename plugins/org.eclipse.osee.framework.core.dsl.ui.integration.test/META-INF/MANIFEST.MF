@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE ORCS DSL UI Integration Test (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.framework.core.dsl.ui.integration.test
-Bundle-Version: 0.25.0.qualifier
+Bundle-Version: 0.25.1.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Fragment-Host: org.eclipse.osee.framework.core.dsl.ui.integration
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

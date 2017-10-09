@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.eclipse.osee.ats.feature_0.25.0.qualifier.jar" id="org.eclipse.osee.ats.feature" version="0.25.0.qualifier">
+   <feature url="features/org.eclipse.osee.ats.feature_0.25.1.qualifier.jar" id="org.eclipse.osee.ats.feature" version="0.25.1.qualifier">
       <category name="org.eclipse.osee.ats"/>
    </feature>
-   <feature url="features/org.eclipse.osee.ats.feature.source_0.25.0.qualifier.jar" id="org.eclipse.osee.ats.feature.source" version="0.25.0.qualifier">
+   <feature url="features/org.eclipse.osee.ats.feature.source_0.25.1.qualifier.jar" id="org.eclipse.osee.ats.feature.source" version="0.25.1.qualifier">
       <category name="org.eclipse.osee.ats"/>
    </feature>
-   <feature url="features/org.eclipse.osee.ats.client.demo.feature_0.25.0.qualifier.jar" id="org.eclipse.osee.ats.client.demo.feature" version="0.25.0.qualifier">
+   <feature url="features/org.eclipse.osee.ats.client.demo.feature_0.25.1.qualifier.jar" id="org.eclipse.osee.ats.client.demo.feature" version="0.25.1.qualifier">
       <category name="org.eclipse.osee.ats.client.demo"/>
    </feature>
-   <feature url="features/org.eclipse.osee.ats.client.demo.feature.source_0.25.0.qualifier.jar" id="org.eclipse.osee.ats.client.demo.feature.source" version="0.25.0.qualifier">
+   <feature url="features/org.eclipse.osee.ats.client.demo.feature.source_0.25.1.qualifier.jar" id="org.eclipse.osee.ats.client.demo.feature.source" version="0.25.1.qualifier">
       <category name="org.eclipse.osee.ats.client.demo"/>
    </feature>
    

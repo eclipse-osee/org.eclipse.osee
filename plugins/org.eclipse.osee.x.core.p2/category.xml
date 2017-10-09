@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.eclipse.osee.x.core.feature_0.25.0.qualifier.jar" id="org.eclipse.osee.x.core.feature" version="0.25.0.qualifier">
+   <feature url="features/org.eclipse.osee.x.core.feature_0.25.1.qualifier.jar" id="org.eclipse.osee.x.core.feature" version="0.25.1.qualifier">
       <category name="org.eclipse.osee.x.core"/>
    </feature>
-   <feature url="features/org.eclipse.osee.x.core.feature.source_0.25.0.qualifier.jar" id="org.eclipse.osee.x.core.feature.source" version="0.25.0.qualifier">
+   <feature url="features/org.eclipse.osee.x.core.feature.source_0.25.1.qualifier.jar" id="org.eclipse.osee.x.core.feature.source" version="0.25.1.qualifier">
       <category name="org.eclipse.osee.x.core"/>
    </feature>
    <category-def name="org.eclipse.osee.x.core" label="Eclipse OSEE X Core - (Incubation)">

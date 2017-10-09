@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Define Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.define;singleton:=true
-Bundle-Version: 0.25.0.qualifier
+Bundle-Version: 0.25.1.qualifier
 Eclipse-ExtensibleAPI: true
 Bundle-Activator: org.eclipse.osee.define.internal.Activator
 Bundle-Vendor: Eclipse Open System Engineering Environment

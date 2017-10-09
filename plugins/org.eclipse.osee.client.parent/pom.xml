@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>org.eclipse.osee</groupId>
 		<artifactId>org.eclipse.osee.ide.parent</artifactId>
-		<version>0.25.0-SNAPSHOT</version>
+		<version>0.25.1-SNAPSHOT</version>
 		<relativePath>../../plugins/org.eclipse.osee.ide.parent</relativePath>
 	</parent>
 
@@ -14,7 +14,7 @@
 	<artifactId>org.eclipse.osee.client.parent</artifactId>
 	<packaging>pom</packaging>
 	<name>OSEE Client - Parent (Incubation)</name>
-	<version>0.25.0-SNAPSHOT</version>
+	<version>0.25.1-SNAPSHOT</version>
 
 	<profiles>
 
