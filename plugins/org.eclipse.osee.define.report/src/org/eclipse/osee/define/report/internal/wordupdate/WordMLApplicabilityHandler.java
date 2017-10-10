@@ -51,7 +51,7 @@ public class WordMLApplicabilityHandler {
 
    private static String SCRIPT_ENGINE_NAME = "JavaScript";
 
-   private Set<String> validConfigurations;
+   private final Set<String> validConfigurations;
    private Map<String, List<String>> viewApplicabilitiesMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
    private final String configurationToView;
    private final Stack<ApplicabilityBlock> applicBlocks;
@@ -177,7 +177,7 @@ public class WordMLApplicabilityHandler {
          // check this doesn't contain feature/config tags
          String beginningText = fullWordMl.substring(paragraphStartIndex, startInsertIndex);
 
-         if (toInsert.isEmpty() && paragraphStartIndex >= 0 && !beginningText.matches(
+         if (toInsert.isEmpty() && paragraphStartIndex > 0 && !beginningText.matches(
             "(?i).*?(" + WordCoreUtil.BEGINFEATURE + "|" + WordCoreUtil.BEGINCONFIG + "|" + WordCoreUtil.ENDCONFIG + "|" + WordCoreUtil.ENDFEATURE + ").*?")) {
             int endInsertIndex = applicabilityBlock.getEndInsertIndex();
             String findParagraphEnd = fullWordMl.substring(endInsertIndex);
