@@ -11,6 +11,10 @@ app.directive('oseeCheckboxControl', function () {
                 $scope.onNgChanged = function (controlschema) {
                     OseeAppSchema.updateItem(controlschema);
                 }
+                $scope.subLabelExists = function() {
+                    if(vm.uiSchema.options.subLabel) return true;
+                    else return false;
+                }
                 BaseController.call(vm, $scope);
 
             }
@@ -18,6 +22,7 @@ app.directive('oseeCheckboxControl', function () {
         controllerAs: 'vm',
         template: `
             <jsonforms-control>
+                <span class="osee-checkbox-label" ng-if="subLabelExists()" >{{vm.uiSchema.options.subLabel}}</span>
                 <input id="{{vm.id}}"
                     type="checkbox"
                     class="form-control-boolean"

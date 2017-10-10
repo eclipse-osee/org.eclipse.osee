@@ -12,18 +12,15 @@
 }
 
 .osee-textarea {
-    resize: none;
     height: 100px;
     background-color: cyan;
     max-width: 100%;
     min-width: 100%;
 }
 
-.oseeopt-textarea {
-    height: 100px;
-    background-color: cyan;
-    max-width: 100%;
-    min-width: 100%;
+.osee-checkbox-label {
+	 font-weight:bold;
+	 margin-right:20px;
 }
 
 .osee-multiselect-dropdown {

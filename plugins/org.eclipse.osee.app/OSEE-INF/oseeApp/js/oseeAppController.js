@@ -21,7 +21,7 @@ app.controller('oseeAppController', [
                 vm.oseeAppSchema = data.OseeApp;
                 vm.dataloaded = true;
                 vm.defaultUpdateURL = data.ItemUpdateURL;
-                if (data.ItemSubmitURL !== null) {
+                if (data.ItemSubmitURL) {
                     vm.submitURL = data.ItemSubmitURL;
                     vm.useSubmit = true;
                 }

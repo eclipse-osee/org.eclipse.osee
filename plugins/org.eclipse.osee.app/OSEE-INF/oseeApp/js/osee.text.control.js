@@ -10,19 +10,19 @@
 
             $scope.onInit = function() {
             }
-            return vm;
+            BaseController.call(vm, $scope);
         }],
         controllerAs: 'vm',
         template: `
             <jsonforms-control>
-                <textarea id="{{vm.id}}"
+                <a href='osee_app/ui/index.html#/'>Text</a><input id="{{vm.id}}"
                     class="form-control jsf-control-string osee-text"
                     style="{{vm.uiSchema.style}}"
                     data-ng-init="onInit()"
                     ng-model="vm.resolvedData[vm.fragment]"
                     ng-change="onNgChange('{{vm.uiSchema}}')"
                     ng-readonly="vm.uiSchema.readOnly">
-                </textarea>
+                </input>
             </jsonforms-control>
         `
     };
