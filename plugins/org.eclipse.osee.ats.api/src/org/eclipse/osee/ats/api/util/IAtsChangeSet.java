@@ -150,4 +150,9 @@ public interface IAtsChangeSet {
 
    List<IAtsWorkItem> getWorkItemsCreated();
 
+   /**
+    * This can be removed when both the client and server accept ArtifactId as a value. In 25.0, client accepts
+    * ArtifactId while server expects String.
+    */
+   void addArtifactReferencedAttribute(ArtifactId artifact, AttributeTypeId attributeType, ArtifactId artifactRef);
 }

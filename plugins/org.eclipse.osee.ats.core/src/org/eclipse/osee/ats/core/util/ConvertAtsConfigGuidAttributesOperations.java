@@ -51,7 +51,7 @@ public class ConvertAtsConfigGuidAttributesOperations {
       }
 
       for (ArtifactId need : neededAiRefIds) {
-         changes.addAttribute(art, AtsAttributeTypes.ActionableItemReference, need);
+         changes.addArtifactReferencedAttribute(art, AtsAttributeTypes.ActionableItemReference, need);
       }
 
       // convert id to guid
@@ -62,12 +62,17 @@ public class ConvertAtsConfigGuidAttributesOperations {
       }
 
       List<String> neededAiGuidIds = new LinkedList<>();
-      Collection<ArtifactId> aiArts =
+      Collection<Object> aiArts =
          services.getAttributeResolver().getAttributeValues(art, AtsAttributeTypes.ActionableItemReference);
-      for (ArtifactId id : aiArts) {
-         IAtsActionableItem ai = services.getConfigItem(id);
+      for (Object obj : aiArts) {
+         IAtsActionableItem ai = null;
+         if (obj instanceof ArtifactId) {
+            ai = services.getConfigItem((ArtifactId) obj);
+         } else {
+            ai = services.getConfigItem(Long.valueOf((String) obj));
+         }
          if (ai == null) {
-            services.getLogger().error("AI not found for id " + id + " for art " + art.toStringWithId());
+            services.getLogger().error("AI not found for id " + obj + " for art " + art.toStringWithId());
          } else if (!currentAiGuidIds.contains(ai.getStoreObject().getGuid())) {
             neededAiGuidIds.add(ai.getStoreObject().getGuid());
          }
@@ -86,7 +91,8 @@ public class ConvertAtsConfigGuidAttributesOperations {
          String teamDefGuid = services.getAttributeResolver().getSoleAttributeValue(art, TeamDefinition, "");
          if (Strings.isValid(teamDefGuid)) {
             IAtsTeamDefinition teamDef = services.getConfigItem(teamDefGuid);
-            changes.setSoleAttributeValue(art, AtsAttributeTypes.TeamDefinitionReference, teamDef.getStoreObject());
+            changes.addArtifactReferencedAttribute(art, AtsAttributeTypes.TeamDefinitionReference,
+               teamDef.getStoreObject());
          }
       }
       // convert id to guid

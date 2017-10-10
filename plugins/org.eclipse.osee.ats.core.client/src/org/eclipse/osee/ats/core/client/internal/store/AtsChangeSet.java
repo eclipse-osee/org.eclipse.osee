@@ -39,7 +39,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.ElapsedTime;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -403,6 +402,12 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    public void unrelateFromAll(RelationTypeSide relationSide, ArtifactId artifact) {
       Artifact art = getArtifact(artifact);
       art.deleteRelations(relationSide);
+   }
+
+   @Override
+   public void addArtifactReferencedAttribute(ArtifactId artifact, AttributeTypeId attributeType, ArtifactId artifactRef) {
+      Artifact art = getArtifact(artifact);
+      art.addAttributeFromString(attributeType, artifactRef.getId().toString());
    }
 
 }
