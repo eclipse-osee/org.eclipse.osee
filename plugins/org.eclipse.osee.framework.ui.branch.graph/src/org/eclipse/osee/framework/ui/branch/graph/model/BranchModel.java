@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.branch.graph.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,7 +19,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 /**
  * @author Roberto E. Escobar
  */
-public class BranchModel extends Node implements Serializable {
+public class BranchModel extends Node {
 
    private static final long serialVersionUID = 1017422142119868019L;
    private BranchModel parent;

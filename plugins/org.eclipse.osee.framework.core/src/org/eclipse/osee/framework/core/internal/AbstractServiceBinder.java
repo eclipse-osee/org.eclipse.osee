@@ -48,6 +48,7 @@ public abstract class AbstractServiceBinder {
       return bundleContext;
    }
 
+   @SuppressWarnings("rawtypes")
    public ServiceTracker createTracker(Class<?> clazz) {
       serviceMap.put(clazz, new CopyOnWriteArraySet<Object>());
       return new InternalServiceTracker(this, getBundleContext(), clazz);
@@ -108,6 +109,7 @@ public abstract class AbstractServiceBinder {
       return true;
    }
 
+   @SuppressWarnings("unchecked")
    private final static class InternalServiceTracker extends ServiceTracker {
       private final AbstractServiceBinder listener;
       private final Class<?> serviceClass;
@@ -118,6 +120,7 @@ public abstract class AbstractServiceBinder {
          this.serviceClass = serviceClass;
       }
 
+      @SuppressWarnings("rawtypes")
       @Override
       public Object addingService(ServiceReference reference) {
          Object object = super.addingService(reference);
@@ -125,6 +128,7 @@ public abstract class AbstractServiceBinder {
          return object;
       }
 
+      @SuppressWarnings("rawtypes")
       @Override
       public void removedService(ServiceReference reference, Object service) {
          listener.onRemovingService(serviceClass, service);

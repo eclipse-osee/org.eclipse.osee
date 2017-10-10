@@ -29,12 +29,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 /**
  * Unit Test for {@link PageCreator}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class PageCreatorTest {
@@ -194,16 +192,6 @@ public class PageCreatorTest {
       String actual = page.realizePage(ArtifactSelect);
       String expected = page.realizePage(ArtifactSelectExpected);
       Assert.assertEquals(expected, actual);
-   }
-
-   private static <T> Answer<T> answer(final T value) {
-      return new Answer<T>() {
-
-         @Override
-         public T answer(InvocationOnMock invocation) throws Throwable {
-            return value;
-         }
-      };
    }
 
 }

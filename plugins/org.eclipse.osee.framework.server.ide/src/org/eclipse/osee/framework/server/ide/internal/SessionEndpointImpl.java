@@ -33,8 +33,6 @@ import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISession;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.server.ide.api.SessionEndpoint;
-import org.eclipse.osee.jdbc.JdbcService;
-import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * @author Donald G. Dunne
@@ -44,16 +42,12 @@ public class SessionEndpointImpl implements SessionEndpoint {
    @Context
    private UriInfo uriInfo;
 
-   private final JdbcService jdbcService;
-   private final OrcsApi orcsApi;
    private final IAuthenticationManager authenticationManager;
    private final ISessionManager sessionManager;
 
    private final ActivityLog activityLog;
 
-   public SessionEndpointImpl(JdbcService jdbcService, OrcsApi orcsApi, IAuthenticationManager authenticationManager, ISessionManager sessionManager, ActivityLog activityLog) {
-      this.jdbcService = jdbcService;
-      this.orcsApi = orcsApi;
+   public SessionEndpointImpl(IAuthenticationManager authenticationManager, ISessionManager sessionManager, ActivityLog activityLog) {
       this.authenticationManager = authenticationManager;
       this.sessionManager = sessionManager;
       this.activityLog = activityLog;

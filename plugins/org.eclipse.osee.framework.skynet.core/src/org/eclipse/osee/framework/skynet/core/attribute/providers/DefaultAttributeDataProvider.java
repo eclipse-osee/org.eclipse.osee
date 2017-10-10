@@ -103,6 +103,7 @@ public class DefaultAttributeDataProvider<T> extends AbstractAttributeDataProvid
       return new Object[] {getAttribute().convertToStorageString(rawValue), dataStore.getLocator()};
    }
 
+   @SuppressWarnings("unchecked")
    @Override
    public void loadData(Object... objects) {
       if (objects != null && objects.length > 1) {

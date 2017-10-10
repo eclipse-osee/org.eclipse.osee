@@ -139,6 +139,7 @@ public class ArtifactTestRunOperator implements TestRunOperator {
       }
    }
 
+   @SuppressWarnings("deprecation")
    public Attribute<InputStream> getOutfileAttribute() {
       List<Attribute<InputStream>> attributes = artifact.getAttributes(OteAttributeTypes.OUTFILE_URL);
       return attributes != null && attributes.size() > 0 ? attributes.get(0) : null;
@@ -147,14 +148,13 @@ public class ArtifactTestRunOperator implements TestRunOperator {
    public boolean isScriptRevisionValid() {
       boolean toReturn = false;
       try {
-         URI url = new URI(getScriptUrl());
-
+         new URI(getScriptUrl());
          String revision = getScriptRevision();
          if (Strings.isValid(revision)) {
             toReturn = true;
          }
-
       } catch (Exception ex) {
+         // do nothing
       }
       return toReturn;
    }
@@ -165,6 +165,7 @@ public class ArtifactTestRunOperator implements TestRunOperator {
          fetched = getTestRunFetcher().searchForUniqueArtifactMatching(OteAttributeTypes.CHECKSUM, getChecksum(),
             artifact.getBranch());
       } catch (Exception ex) {
+         // do nothing
       }
       return fetched == null;
    }
@@ -249,6 +250,7 @@ public class ArtifactTestRunOperator implements TestRunOperator {
       try {
          toReturn = artifact.getSoleAttributeValue(OteAttributeTypes.SCRIPT_ABORTED, false);
       } catch (Exception ex) {
+         // do nothing
       }
       return toReturn;
    }
@@ -276,6 +278,7 @@ public class ArtifactTestRunOperator implements TestRunOperator {
       try {
          toReturn = artifact.getSoleAttributeValue(OteAttributeTypes.IS_BATCH_MODE_ALLOWED, false);
       } catch (Exception ex) {
+         // do nothing
       }
       return toReturn;
    }

@@ -39,7 +39,7 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Test Case for {@link RelationResolver}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class RelationResolverTest {
@@ -48,19 +48,19 @@ public class RelationResolverTest {
    @Mock private RelationNodeLoader loader;
    @Mock private OrcsSession session;
    @Mock private GraphData graphData;
-   
+
    @Mock private Relation relation1;
    @Mock private Relation relation2;
    @Mock private Relation relation3;
    @Mock private Relation relation4;
-   
+
    @Mock private RelationNode node1;
    @Mock private RelationNode node2;
    @Mock private RelationNode node3;
    @Mock private RelationNode node4;
    @Mock private RelationNode node5;
    @Mock private RelationNode node6;
-   
+
    @Mock private ResultSet<RelationNode> resultSet;
    @Captor private ArgumentCaptor<Collection<Integer>> captor;
    // @formatter:on
@@ -165,6 +165,7 @@ public class RelationResolverTest {
       assertCollection(arts, node1, node2, node3, node4, node5, node6);
    }
 
+   @SuppressWarnings("unchecked")
    private static <T> void assertCollection(Collection<T> actual, T... expecteds) {
       assertEquals(expecteds.length, actual.size());
       int index = 0;

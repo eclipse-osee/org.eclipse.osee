@@ -75,9 +75,7 @@ public class PublishSubsystemToDesignTraceability extends AbstractBlam {
 
       init();
       Set<ArtifactId> findExcludedArtifactsByView = ViewIdUtility.findExcludedArtifactsByView(viewId, branch);
-      if (subsystems != null) {
-         ViewIdUtility.removeExcludedArtifacts(subsystems.iterator(), findExcludedArtifactsByView);
-      }
+      ViewIdUtility.removeExcludedArtifacts(subsystems.iterator(), findExcludedArtifactsByView);
 
       monitor.subTask("Aquiring Design Artifacts"); // bulk load for performance reasons
       ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SubsystemDesign, branch);

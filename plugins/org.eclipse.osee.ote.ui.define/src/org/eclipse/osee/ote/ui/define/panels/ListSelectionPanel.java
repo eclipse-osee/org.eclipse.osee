@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.TableItem;
 /**
  * @author Roberto E. Escobar
  */
+@SuppressWarnings("deprecation")
 public class ListSelectionPanel extends Composite {
 
    private TableViewer tableViewer;

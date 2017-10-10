@@ -33,5 +33,7 @@ public abstract class ResourceFinder {
       return getBytes(stream, stream.available());
    }
 
-   public abstract void dispose();
+   public void dispose() {
+      // do nothing
+   }
 }

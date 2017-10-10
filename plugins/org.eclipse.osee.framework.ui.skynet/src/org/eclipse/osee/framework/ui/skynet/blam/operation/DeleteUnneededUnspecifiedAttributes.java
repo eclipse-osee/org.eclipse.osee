@@ -45,6 +45,7 @@ public class DeleteUnneededUnspecifiedAttributes extends AbstractBlam {
          TransactionManager.createTransaction(branch, "BLAM: Delete unneeded unspecified attributes");
 
       for (Artifact artifact : artifacts) {
+         @SuppressWarnings("deprecation")
          Collection<Attribute<String>> attributes = artifact.getAttributes(attributeType);
          for (Attribute<String> attribute1 : attributes) {
             if (!attribute1.getValue().equals(AttributeId.UNSPECIFIED)) {

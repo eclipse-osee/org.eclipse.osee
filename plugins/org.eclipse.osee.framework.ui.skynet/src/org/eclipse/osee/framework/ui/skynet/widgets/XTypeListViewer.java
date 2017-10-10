@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 /**
  * @author Jeff C. Phillips
  */
+@SuppressWarnings("deprecation")
 public abstract class XTypeListViewer extends XListViewer {
 
    public XTypeListViewer(String name) {

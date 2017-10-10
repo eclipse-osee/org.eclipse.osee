@@ -16,4 +16,5 @@ import org.eclipse.osee.orcs.core.ds.Criteria;
  * @author Roberto E. Escobar
  */
 public class CriteriaAllTxs extends Criteria implements TxCriteria {
+   // do nothing
 }

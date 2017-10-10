@@ -19,8 +19,10 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 
 public class SelectionProviderIntermediate implements IPostSelectionProvider {
 
+   @SuppressWarnings("rawtypes")
    private final ListenerList selectionListeners = new ListenerList();
 
+   @SuppressWarnings("rawtypes")
    private final ListenerList postSelectionListeners = new ListenerList();
 
    private ISelectionProvider delegate;
@@ -46,7 +48,7 @@ public class SelectionProviderIntermediate implements IPostSelectionProvider {
    /**
     * Sets a new selection provider to delegate to. Selection listeners registered with the previous delegate are
     * removed before.
-    * 
+    *
     * @param newDelegate new selection provider
     */
    public void setSelectionProviderDelegate(ISelectionProvider newDelegate) {
@@ -78,6 +80,7 @@ public class SelectionProviderIntermediate implements IPostSelectionProvider {
       fireSelectionChanged(postSelectionListeners, selection);
    }
 
+   @SuppressWarnings("rawtypes")
    private void fireSelectionChanged(ListenerList list, ISelection selection) {
       SelectionChangedEvent event = new SelectionChangedEvent(delegate, selection);
       Object[] listeners = list.getListeners();
@@ -89,6 +92,7 @@ public class SelectionProviderIntermediate implements IPostSelectionProvider {
 
    // IPostSelectionProvider Implementation
 
+   @SuppressWarnings("unchecked")
    @Override
    public void addSelectionChangedListener(ISelectionChangedListener listener) {
       selectionListeners.add(listener);
@@ -99,6 +103,7 @@ public class SelectionProviderIntermediate implements IPostSelectionProvider {
       selectionListeners.remove(listener);
    }
 
+   @SuppressWarnings("unchecked")
    @Override
    public void addPostSelectionChangedListener(ISelectionChangedListener listener) {
       postSelectionListeners.add(listener);

@@ -26,11 +26,8 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class RdfTreeViewer extends TreeViewer {
 
-   private final RdfExplorer rdfExplorer;
-
    public RdfTreeViewer(RdfExplorer rdfExplorer, Composite parent) {
       super(parent);
-      this.rdfExplorer = rdfExplorer;
       addSelectionChangedListener(new ISelectionChangedListener() {
 
          @Override

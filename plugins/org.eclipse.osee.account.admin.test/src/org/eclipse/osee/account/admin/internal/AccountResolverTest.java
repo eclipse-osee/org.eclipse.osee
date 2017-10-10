@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSetList;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -62,7 +61,6 @@ public class AccountResolverTest {
 
       resolver = new AccountResolver(validator, accountAdmin);
 
-      String uuid = GUID.create();
       when(account.getPreferences()).thenReturn(prefs);
       accountResult = new ResultSetList<>(Arrays.asList(account));
    }

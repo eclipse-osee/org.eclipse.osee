@@ -51,6 +51,7 @@ import org.eclipse.ui.progress.WorkbenchJob;
  * Dialog never changes the elements once the view is opened. If any other tree is based on this code, they may want to
  * address this issue. This is not public because it was customized for the Launch Dialog.
  */
+@SuppressWarnings("deprecation")
 public class FilteredCheckboxTree extends FilteredTree {
 
    private WorkbenchJob refreshJob;

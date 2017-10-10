@@ -64,6 +64,7 @@ public class BranchDataEditPart extends AbstractGraphicalEditPart {
 
    @Override
    protected void createEditPolicies() {
+      // do nothing
    }
 
    private final class PlusMinusFigureMouseListener implements ActionListener {

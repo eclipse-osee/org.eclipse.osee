@@ -97,6 +97,7 @@ public class WorkspaceBundleLoadCoordinator {
                      Thread.sleep(5000);
                   }
                } catch (InterruptedException e) {
+                  // do nothing
                }
                if (lastSize == bundlesToCheck.size()) {
                   if (lastSize != 0) {
@@ -106,6 +107,7 @@ public class WorkspaceBundleLoadCoordinator {
                         try {
                            Thread.sleep(1000 * 60); //give time to load so we don't get called twice
                         } catch (InterruptedException e) {
+                           // do nothing
                         }
                      }
                   }
@@ -255,6 +257,7 @@ public class WorkspaceBundleLoadCoordinator {
                   try {
                      page.hideView(viewReference);
                   } catch (Throwable th) {
+                     // do nothing
                   }
                }
             }
@@ -318,6 +321,7 @@ public class WorkspaceBundleLoadCoordinator {
       return true;
    }
 
+   @SuppressWarnings("resource")
    public static void copyFile(File source, File destination) throws IOException {
       final FileChannel in = new FileInputStream(source).getChannel();
       try {
@@ -451,6 +455,7 @@ public class WorkspaceBundleLoadCoordinator {
             try {
                waitForLoad.wait(20000);
             } catch (InterruptedException e) {
+               // do nothing
             }
          }
       } else {
@@ -623,7 +628,9 @@ public class WorkspaceBundleLoadCoordinator {
             try {
                info.install(context);
             } catch (BundleException e) {
+               // do nothing
             } catch (IOException e) {
+               // do nothing
             }
          }
          subMonitor.worked(workAmount * 2);
@@ -633,6 +640,7 @@ public class WorkspaceBundleLoadCoordinator {
             try {
                info.start(context);
             } catch (BundleException e) {
+               // do nothing
             }
          }
          subMonitor.worked(workAmount);

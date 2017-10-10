@@ -189,10 +189,10 @@ public class ResultsEditorConverter {
                   IResultsEditorTableTab tab = (IResultsEditorTableTab) rawTab;
                   String[] columns = getColumns(tab);
                   sheetWriter.startSheet(tab.getTabName(), columns.length);
-                  sheetWriter.writeRow(columns);
+                  sheetWriter.writeRow((Object[]) columns);
                   Collection<IResultsXViewerRow> rows = tab.getTableRows();
                   for (IResultsXViewerRow row : rows) {
-                     sheetWriter.writeRow(row.values());
+                     sheetWriter.writeRow((Object[]) row.values());
                   }
                   sheetWriter.endSheet();
                } else {

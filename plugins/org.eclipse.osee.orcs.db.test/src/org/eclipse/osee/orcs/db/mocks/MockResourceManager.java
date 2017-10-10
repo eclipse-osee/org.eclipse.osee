@@ -64,9 +64,11 @@ public class MockResourceManager implements IResourceManager {
 
    @Override
    public void save(long storageId, String storageName, DataResource dataResource, byte[] rawContent) {
+      // do nothing
    }
 
    @Override
    public void purge(DataResource dataResource) {
+      // do nothing
    }
 }

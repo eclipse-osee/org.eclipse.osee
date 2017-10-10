@@ -39,7 +39,7 @@ import org.eclipse.swt.widgets.Widget;
 
 /**
  * Utility class that provides helper functions for SWT widgets
- * 
+ *
  * @author Ken J. Aguilar
  */
 public final class Widgets {
@@ -230,7 +230,7 @@ public final class Widgets {
 
    /**
     * Positions the specified control within a grid layout
-    * 
+    *
     * @return Return grid data reference
     */
    public static GridData positionGridItem(Control control, boolean grabHExcess, boolean grabVExcess, int halign, int valign, int hspan) {
@@ -246,7 +246,7 @@ public final class Widgets {
 
    /**
     * Positions the specified control within a grid layout
-    * 
+    *
     * @return Return grid data reference
     */
    public static GridData positionGridItem(final Control control, final boolean grabHExcess, final boolean grabVExcess, final int halign, final int valign, final int hspan, final int vspan) {
@@ -264,7 +264,7 @@ public final class Widgets {
 
    /**
     * Positions the specified control within a grid layout
-    * 
+    *
     * @return return grid data reference
     */
    public static GridData positionGridItem(Control control, boolean grabHExcess, int halign, int valign, int hspan) {
@@ -279,7 +279,7 @@ public final class Widgets {
 
    /**
     * Positions the specified control within a grid layout
-    * 
+    *
     * @return return grid data reference
     */
    public static GridData positionGridItem(final Control control, final boolean grabHExcess, final int halign, final int valign) {
@@ -293,7 +293,7 @@ public final class Widgets {
 
    /**
     * Positions the specified control within a grid layout
-    * 
+    *
     * @return return grid data reference
     */
    public static GridData positionGridItem(Control control, boolean grabHExcess, int halign, int valign, int hspan, int vspan) {
@@ -309,7 +309,7 @@ public final class Widgets {
 
    /**
     * Positions the specified control within a grid layout
-    * 
+    *
     * @return return grid data reference
     */
    public static GridData positionGridItem(Control control, boolean grabHExcess, int halign, int valign, int hspan, int vspan, int width) {
@@ -326,7 +326,7 @@ public final class Widgets {
 
    /**
     * Positions the specified control within a grid layout
-    * 
+    *
     * @return return grid data reference
     */
    public static GridData positionGridItem(Control control, boolean grabHExcess, int halign, int valign, int hspan, int vspan, int width, int height) {
@@ -388,7 +388,7 @@ public final class Widgets {
 
    /**
     * Creates a text box that only accepts numbers
-    * 
+    *
     * @return Return numeric text
     */
    public static Text createNumericTxt(Composite comp, String defaultTxt, int limit) {
@@ -706,7 +706,7 @@ public final class Widgets {
 
    /**
     * Used in form layouts. Attaches the specified control to the specified edge of another control
-    * 
+    *
     * @param control the parimary control that will be attached to another control
     * @param itemToAttachTo the secondary control that the primary control will attach to
     * @param edge the primary control's edge to attach
@@ -758,6 +758,7 @@ public final class Widgets {
    /**
     * disposes all the supplied widgets if they are not null and not already disposed
     */
+   @SuppressWarnings("unchecked")
    public static <T extends Widget> void disposeWidgets(final T... widgets) {
       if (widgets == null) {
          return;
@@ -771,7 +772,7 @@ public final class Widgets {
 
    /**
     * disposes all the controls including child controls if they are not null and not already disposed
-    * 
+    *
     * @param Control control to dispose
     */
    public static void disposeWidget(final Widget widget) {
@@ -787,7 +788,7 @@ public final class Widgets {
 
    /**
     * Checks if widget is accessible
-    * 
+    *
     * @return <b>true</b> if widget is not null and is not disposed
     */
    public static boolean isAccessible(Widget widget) {

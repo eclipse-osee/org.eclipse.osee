@@ -206,6 +206,7 @@ public class ConflictTest {
          monitorLog.getSevereLogs().isEmpty());
    }
 
+   @SuppressWarnings("deprecation")
    @Test
    public void testMultiplicityCommit() {
       BranchId parent = SAW_Bld_1;

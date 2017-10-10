@@ -16,6 +16,7 @@ import org.eclipse.jface.viewers.ViewerSorter;
 /**
  * @author Michael S. Rodgers
  */
+@SuppressWarnings("deprecation")
 public class RelationTableSorter extends ViewerSorter {
 
    /**
@@ -29,7 +30,7 @@ public class RelationTableSorter extends ViewerSorter {
 
    /**
     * Creates a resource sorter that will use the given sort criteria.
-    * 
+    *
     * @param criteria the sort criterion to use: one of <code>NAME</code> or <code>TYPE</code>
     */
    public RelationTableSorter(int criteria) {
@@ -55,35 +56,33 @@ public class RelationTableSorter extends ViewerSorter {
 
    /**
     * Returns a number reflecting the collation order of the given names based on the description.
-    * 
+    *
     * @param model1 the first task element to be ordered
     * @param model2 the second task element to be ordered
     * @return a negative number if the first element is less than the second element; the value <code>0</code> if the
     * first element is equal to the second element; and a positive number if the first element is greater than the
     * second element
     */
-   @SuppressWarnings("unchecked")
    protected int compareNames(ArtifactModel model1, ArtifactModel model2) {
       return getComparator().compare(model1.getName(), model1.getName());
    }
 
    /**
     * Returns a number reflecting the collation order of the given tasks based on their owner.
-    * 
+    *
     * @param model1 the first resource element to be ordered
     * @param model2 the second resource element to be ordered
     * @return a negative number if the first element is less than the second element; the value <code>0</code> if the
     * first element is equal to the second element; and a positive number if the first element is greater than the
     * second element
     */
-   @SuppressWarnings("unchecked")
    protected int compareTypes(ArtifactModel model1, ArtifactModel model2) {
       return getComparator().compare(model1.getDescriptor().getName(), model2.getDescriptor().getName());
    }
 
    /**
     * Returns the sort criteria of this this sorter.
-    * 
+    *
     * @return the sort criterion
     */
    public int getCriteria() {

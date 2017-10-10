@@ -49,6 +49,7 @@ public class ArtifactSearchLabelProvider extends LabelProvider implements IStyle
    private static final String fgEllipses = " ... "; //$NON-NLS-1$
 
    private final AbstractArtifactSearchViewPage fPage;
+   @SuppressWarnings("rawtypes")
    private final Comparator fMatchComparator;
    private final ArtifactDecorator artifactDecorator;
 
@@ -58,7 +59,7 @@ public class ArtifactSearchLabelProvider extends LabelProvider implements IStyle
       this.artifactDecorator = artifactDecorator;
       this.disabledImageMap = new HashMap<>();
       fPage = page;
-      fMatchComparator = new Comparator() {
+      fMatchComparator = new Comparator<Object>() {
          @Override
          public int compare(Object o1, Object o2) {
             return ((AttributeMatch) o1).getOriginalOffset() - ((AttributeMatch) o2).getOriginalOffset();

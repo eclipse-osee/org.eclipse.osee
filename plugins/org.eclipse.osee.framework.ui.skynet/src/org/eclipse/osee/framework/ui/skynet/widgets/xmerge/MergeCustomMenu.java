@@ -201,14 +201,6 @@ public class MergeCustomMenu extends XViewerCustomMenu {
       return destReveal.getId();
    }
 
-   private String addRevertUnresolvableConflictsMenuItem(MenuManager menuManager, IHandler handler) {
-      CommandContributionItem revertSelected = Commands.getLocalCommandContribution(getSite(), "revertSelected",
-         "Revert Source Artifacts for Unresolvable Conflicts", null, null, null, null, null, null);
-      setCommandHandler(revertSelected, handler);
-      menuManager.add(revertSelected);
-      return revertSelected.getId();
-   }
-
    private String addMarkAsResolvedMenuItem(MenuManager menuManager, IHandler handler) {
       CommandContributionItem markAsResolvedSelected = Commands.getLocalCommandContribution(getSite(),
          "markAsResolvedSelected", "Mark as Resolved", null, null, null, null, null, null);

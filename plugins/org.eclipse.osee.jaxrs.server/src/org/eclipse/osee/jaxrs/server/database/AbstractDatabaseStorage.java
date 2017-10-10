@@ -66,6 +66,7 @@ public abstract class AbstractDatabaseStorage<T> {
       return execute(select(query, data));
    }
 
+   @SuppressWarnings("unchecked")
    protected void insertItems(final String insertSql, final T... items) {
       insertItems(insertSql, Arrays.asList(items));
    }
@@ -74,6 +75,7 @@ public abstract class AbstractDatabaseStorage<T> {
       execute(insert(insertSql, items));
    }
 
+   @SuppressWarnings("unchecked")
    protected void deleteItems(final String deleteSql, final T... items) {
       deleteItems(deleteSql, Arrays.asList(items));
    }
@@ -82,6 +84,7 @@ public abstract class AbstractDatabaseStorage<T> {
       execute(delete(deleteSql, items));
    }
 
+   @SuppressWarnings("unchecked")
    protected void updateItems(final String insertSql, final T... items) {
       updateItems(insertSql, Arrays.asList(items));
    }

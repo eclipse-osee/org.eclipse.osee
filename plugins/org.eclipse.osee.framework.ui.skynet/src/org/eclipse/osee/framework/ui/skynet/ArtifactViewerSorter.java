@@ -14,6 +14,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
+@SuppressWarnings("deprecation")
 public class ArtifactViewerSorter extends ViewerSorter {
 
    private final boolean reverse;
@@ -28,7 +29,6 @@ public class ArtifactViewerSorter extends ViewerSorter {
    }
 
    @Override
-   @SuppressWarnings("unchecked")
    public int compare(Viewer viewer, Object o1, Object o2) {
       if (reverse) {
          return getComparator().compare(((Artifact) o2).getName(), ((Artifact) o1).getName());

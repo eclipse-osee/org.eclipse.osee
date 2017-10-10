@@ -75,7 +75,6 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider, IArtif
       }
    }
 
-   @SuppressWarnings("rawtypes")
    private synchronized void initialize(AbstractArtifactSearchResult result) {
       searchResult = result;
       childrenMap = new HashMap<>();
@@ -126,7 +125,7 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider, IArtif
 
    /**
     * returns true if the child already was a child of parent.
-    * 
+    *
     * @return Returns <code>true</code> if the child was added
     */
    @SuppressWarnings("unchecked")

@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.plugin.core.CorePreferences;
 /**
  * @author Roberto E. Escobar
  */
+@SuppressWarnings("deprecation")
 public class CorePreferenceInitializer extends AbstractPreferenceInitializer {
 
    @Override

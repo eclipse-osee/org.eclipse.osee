@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
  */
 public class AttributeTypeUtil {
 
+   @SuppressWarnings("deprecation")
    public static List<AttributeTypeToken> getEmptyTypes(Artifact artifact) {
       List<AttributeTypeToken> items = new ArrayList<>();
       for (AttributeTypeToken type : artifact.getAttributeTypes()) {

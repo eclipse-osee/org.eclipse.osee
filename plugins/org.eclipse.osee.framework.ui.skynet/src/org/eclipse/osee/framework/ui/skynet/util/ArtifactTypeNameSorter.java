@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 /**
  * Default sorter for artifacts. Sorts on descriptive name
  */
+@SuppressWarnings("deprecation")
 public class ArtifactTypeNameSorter extends ViewerSorter {
 
    /**
@@ -27,7 +28,6 @@ public class ArtifactTypeNameSorter extends ViewerSorter {
    }
 
    @Override
-   @SuppressWarnings("unchecked")
    public int compare(Viewer viewer, Object o1, Object o2) {
 
       return getComparator().compare(((IArtifactType) o1).getName(), ((IArtifactType) o2).getName());

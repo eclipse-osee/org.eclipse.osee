@@ -14,5 +14,5 @@ package org.eclipse.osee.framework.messaging;
  * @author Andrew M. Finkbeiner
  */
 public interface SendListener {
-
+   // do nothing
 }

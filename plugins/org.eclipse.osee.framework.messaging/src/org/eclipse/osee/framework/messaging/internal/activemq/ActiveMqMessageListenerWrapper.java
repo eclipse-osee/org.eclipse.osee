@@ -85,7 +85,7 @@ class ActiveMqMessageListenerWrapper implements MessageListener {
       return listener;
    }
 
-   private void process(javax.jms.Message message, ReplyConnection replyConnection) throws JMSException {
+   private void process(javax.jms.Message message, ReplyConnection replyConnection) {
       executor.submit(new ListenerProcessRunnable(message, replyConnection));
    }
 

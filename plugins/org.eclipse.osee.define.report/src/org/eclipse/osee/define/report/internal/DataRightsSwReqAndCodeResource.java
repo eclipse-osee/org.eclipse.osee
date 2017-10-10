@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.define.report.internal;
 
-import java.util.Map;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -46,12 +45,10 @@ import org.eclipse.osee.orcs.transaction.TransactionFactory;
 public final class DataRightsSwReqAndCodeResource {
    private final OrcsApi orcsApi;
    private final IResourceRegistry resourceRegistry;
-   private final Map<String, Object> properties;
    private final Log logger;
    private final QueryFactory queryFactory;
 
-   public DataRightsSwReqAndCodeResource(Log logger, Map<String, Object> properties, IResourceRegistry resourceRegistry, OrcsApi orcsApi) {
-      this.properties = properties;
+   public DataRightsSwReqAndCodeResource(Log logger, IResourceRegistry resourceRegistry, OrcsApi orcsApi) {
       this.resourceRegistry = resourceRegistry;
       this.orcsApi = orcsApi;
       queryFactory = orcsApi.getQueryFactory();

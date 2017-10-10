@@ -20,9 +20,10 @@ import java.util.Collection;
  * removal of the key.
  * <p>
  * The implementation is tied to the HashCollectionPlus class, providing a null Object for the "plus" object.
- * 
+ *
  * @author David Diepenbrock
  */
+@SuppressWarnings("rawtypes")
 public class HashCollectionHeavy<K, V> extends HashCollectionPlus<K, V, Object> {
 
    private static IPlusProvider<Object> provider = new IPlusProvider<Object>() {
@@ -59,7 +60,7 @@ public class HashCollectionHeavy<K, V> extends HashCollectionPlus<K, V, Object> 
 
    /**
     * Creates an unsynchronized HashCollection using a default Collection type
-    * 
+    *
     * @see HashCollectionHeavy#HashCollection(boolean, Class, int, float)
     * @see HashCollectionPlus#DEFAULT_COLLECTION_TYPE
     */
@@ -69,7 +70,7 @@ public class HashCollectionHeavy<K, V> extends HashCollectionPlus<K, V, Object> 
 
    /**
     * Creates an unsynchronized HashCollection using a default Collection type
-    * 
+    *
     * @see HashCollectionHeavy#HashCollection(boolean, Class, int)
     * @see HashCollectionPlus#DEFAULT_COLLECTION_TYPE
     */
@@ -79,7 +80,7 @@ public class HashCollectionHeavy<K, V> extends HashCollectionPlus<K, V, Object> 
 
    /**
     * Creates an unsynchronized HashCollection using a default Collection type
-    * 
+    *
     * @see HashCollectionHeavy#HashCollection(boolean, Class, int)
     * @see HashCollectionPlus#DEFAULT_COLLECTION_TYPE
     */
@@ -89,7 +90,7 @@ public class HashCollectionHeavy<K, V> extends HashCollectionPlus<K, V, Object> 
 
    /**
     * Creates an unsynchronized HashCollection using a default Collection type
-    * 
+    *
     * @see HashCollectionHeavy#HashCollection(boolean, Class)
     * @see HashCollectionPlus#DEFAULT_COLLECTION_TYPE
     */

@@ -59,7 +59,7 @@ public class ExcelReportWriter implements IReportWriter {
    public void writeHeader(String[] headers) {
       try {
          this.sheetWriter.startSheet(title, headers.length);
-         this.sheetWriter.writeRow(headers);
+         this.sheetWriter.writeRow((Object[]) headers);
       } catch (IOException ex) {
          OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
       }
@@ -68,7 +68,7 @@ public class ExcelReportWriter implements IReportWriter {
    @Override
    public void writeRow(String... cellData) {
       try {
-         this.sheetWriter.writeRow(cellData);
+         this.sheetWriter.writeRow((Object[]) cellData);
       } catch (IOException ex) {
          OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
       }

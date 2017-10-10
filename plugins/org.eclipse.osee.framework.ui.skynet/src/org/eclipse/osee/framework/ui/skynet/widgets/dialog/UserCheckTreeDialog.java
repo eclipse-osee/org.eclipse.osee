@@ -129,7 +129,6 @@ public class UserCheckTreeDialog extends FilteredCheckboxTreeArtifactDialog {
          ((UserCheckTreeLabelProvider) getTreeViewer().getViewer().getLabelProvider()).setTeamMembers(teamMembers);
       }
       getTreeViewer().setSorter(new ViewerSorter() {
-         @SuppressWarnings("unchecked")
          @Override
          public int compare(Viewer viewer, Object e1, Object e2) {
             User user1 = (User) e1;

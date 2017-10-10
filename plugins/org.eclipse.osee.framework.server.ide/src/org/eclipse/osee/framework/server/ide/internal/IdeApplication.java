@@ -17,7 +17,6 @@ import javax.ws.rs.core.Application;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISessionManager;
-import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.OrcsApi;
 
@@ -33,7 +32,6 @@ public class IdeApplication extends Application {
    private final Set<Class<?>> classes = new HashSet<>();
    private static OrcsApi orcsApi;
 
-   private IResourceManager resourceManager;
    private ActivityLog activityLog;
    private JdbcService jdbcService;
    private IAuthenticationManager authenticationManager;
@@ -51,10 +49,6 @@ public class IdeApplication extends Application {
       this.activityLog = activityLog;
    }
 
-   public void setResourceManager(IResourceManager resourceManager) {
-      this.resourceManager = resourceManager;
-   }
-
    public void setAuthenticationManager(IAuthenticationManager authenticationManager) {
       this.authenticationManager = authenticationManager;
    }
@@ -69,7 +63,7 @@ public class IdeApplication extends Application {
 
    public void start() {
       resources.add(new ClientEndpointImpl(jdbcService, orcsApi));
-      resources.add(new SessionEndpointImpl(jdbcService, orcsApi, authenticationManager, sessionManager, activityLog));
+      resources.add(new SessionEndpointImpl(authenticationManager, sessionManager, activityLog));
    }
 
    public void stop() {

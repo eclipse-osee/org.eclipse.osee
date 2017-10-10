@@ -82,6 +82,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
 
    private static void saveCustomization(CustomizeData custData, Artifact saveArt) {
       boolean found = false;
+      @SuppressWarnings("deprecation")
       Collection<Attribute<String>> attributes = saveArt.getAttributes(CoreAttributeTypes.XViewerCustomization);
       for (Attribute<String> attribute : attributes) {
          if (attribute.getDisplayableString().contains(
@@ -138,7 +139,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
     * Artifact that holds default customizations for this XTreeViewer. These will be selectable to everyone, but only
     * writable to Developer/AtsAdmin. Users will be able to save their own customizations separately. If no defaults are
     * necessary, don't set this artifact upon creation.
-    * 
+    *
     * @param defaultCustomizationsArtifact The defaultCustomizationsArtifact to set.
     */
    public void setGlobalCustomizationsArtifact(Artifact defaultCustomizationsArtifact) {
@@ -162,6 +163,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
 
    }
 
+   @SuppressWarnings("deprecation")
    public void deleteCustomization(CustomizeData custData, Artifact deleteArt) {
       Pattern pattern = Pattern.compile("name=\"(.*?)\".*?namespace=\"" + custData.getNameSpace() + "\"");
       for (Attribute<?> attribute : deleteArt.getAttributes(CoreAttributeTypes.XViewerCustomization)) {
@@ -219,6 +221,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
       List<CustomizeData> custDatas = new ArrayList<>();
       if (customizationArtifact != null) {
 
+         @SuppressWarnings("deprecation")
          Collection<Attribute<String>> attributes =
             customizationArtifact.getAttributes(CoreAttributeTypes.XViewerCustomization);
          for (Attribute<String> attr : attributes) {

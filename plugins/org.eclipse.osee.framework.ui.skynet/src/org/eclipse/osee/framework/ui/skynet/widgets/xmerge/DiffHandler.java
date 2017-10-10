@@ -31,12 +31,10 @@ class DiffHandler extends AbstractSelectionEnabledHandler {
    private AttributeConflict attributeConflict;
    private ArtifactConflict artifactConflict;
    private List<Artifact> artifacts;
-   private final MergeXWidget mergeXWidget;
 
    public DiffHandler(MenuManager menuManager, int diffToShow, MergeXWidget mergeXWidget) {
       super(menuManager);
       this.diffToShow = diffToShow;
-      this.mergeXWidget = mergeXWidget;
    }
 
    @Override

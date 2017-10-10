@@ -33,6 +33,7 @@ public class GraphColorConstants {
    private GraphColorConstants() {
    }
 
+   @SuppressWarnings("incomplete-switch")
    public static Color getBranchColor(BranchModel branchModel) {
       Color toReturn = ColorConstants.gray;
       if (branchModel.isDefaultBranch()) {

@@ -57,6 +57,7 @@ import org.eclipse.ui.progress.UIJob;
 /**
  * @author Roberto E. Escobar
  */
+@SuppressWarnings("deprecation")
 public class RemoveTraceMarksFromTraceUnits extends AbstractBlam {
 
    @Override

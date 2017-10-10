@@ -178,6 +178,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       return branch;
    }
 
+   @SuppressWarnings("deprecation")
    private void createArtifactTypeSearchControls(Composite optionsComposite) {
       artifactTypeControls = new Composite(optionsComposite, SWT.MULTI);
       artifactTypeControls.setLayout(new GridLayout(1, true));
@@ -211,6 +212,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       searchTypeList.setData(filter.getFilterName(), filter);
    }
 
+   @SuppressWarnings("deprecation")
    private void createRelationSearchControls(Composite optionsComposite) {
       Composite relationControls = new Composite(optionsComposite, SWT.NONE);
       relationControls.setLayout(new GridLayout(2, true));
@@ -260,6 +262,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       addToSearchTypeList(new NotInRelationFilter(relationControls, relationTypeList, relationSideList));
    }
 
+   @SuppressWarnings("deprecation")
    private void createAttributeSearchControls(Composite optionsComposite) {
       attributeTypeControls = new Composite(optionsComposite, SWT.MULTI);
       attributeTypeControls.setLayout(new GridLayout(1, true));
@@ -304,6 +307,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       addToSearchTypeList(ATTRIBUTE_VALUE_FILTER);
    }
 
+   @SuppressWarnings("deprecation")
    private void createAttributeExistsControls(Composite optionsComposite) {
       attributeTypeControls = new Composite(optionsComposite, SWT.MULTI);
       attributeTypeControls.setLayout(new GridLayout(1, true));
@@ -334,6 +338,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       addToSearchTypeList(new AttributeNotExistsFilter(attributeTypeControls, attributeTypeList));
    }
 
+   @SuppressWarnings("deprecation")
    private void addFilterControls(Composite mainComposite) {
       Group filterGroup = new Group(mainComposite, SWT.NONE);
       filterGroup.setText("Create a Filter");

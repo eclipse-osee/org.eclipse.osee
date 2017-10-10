@@ -24,6 +24,7 @@ import org.osgi.util.tracker.ServiceTracker;
  * @author Roberto E. Escobar
  * @deprecated Use Declarative Services instead
  */
+@SuppressWarnings("rawtypes")
 @Deprecated
 public final class ServiceDependencyTracker implements Closeable {
 

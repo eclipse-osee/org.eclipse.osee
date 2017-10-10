@@ -24,11 +24,9 @@ import org.eclipse.osee.orcs.db.internal.callable.PurgeUnusedBackingDataAndTrans
  */
 @Path("/health")
 public final class DatabaseHealthResource {
-   private final Map<String, Object> properties;
    private final JdbcClient jdbcClient;
 
    public DatabaseHealthResource(Map<String, Object> properties, JdbcService jdbcService) {
-      this.properties = properties;
       this.jdbcClient = jdbcService.getClient();
    }
 

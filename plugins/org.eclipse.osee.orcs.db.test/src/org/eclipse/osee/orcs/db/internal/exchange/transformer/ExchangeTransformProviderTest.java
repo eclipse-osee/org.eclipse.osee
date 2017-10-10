@@ -24,7 +24,7 @@ import org.osgi.framework.Version;
 
 /**
  * Test Case for {@link ExchangeTransformProvider}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class ExchangeTransformProviderTest {
@@ -51,6 +51,7 @@ public class ExchangeTransformProviderTest {
       assertApplicable("1");
    }
 
+   @SuppressWarnings("unchecked")
    private static void assertApplicable(String versionToCheck, Class<? extends IOseeExchangeVersionTransformer>... expectedTransforms) {
       Version version = new Version(versionToCheck);
 

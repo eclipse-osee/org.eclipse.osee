@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.messaging.services.internal.OseeMessagingStatu
 /**
  * This is written using ActiveMQ as the use case. So it will only retry connection and it will keep all subscribes so
  * that when a valid connection is made it will do all of the requested subscriptions.
- * 
+ *
  * @author Andrew M. Finkbeiner
  */
 public class FailoverConnectionNode implements ConnectionNode, Runnable {
@@ -42,12 +42,10 @@ public class FailoverConnectionNode implements ConnectionNode, Runnable {
    private final List<ConnectionListener> connectionListeners;
    private final ScheduledExecutorService scheduledExecutor;
    private boolean lastConnectedState = false;
-   private final OseeExceptionListener exceptionListener;
    private final ScheduledFuture<?> itemToCancel;
 
    public FailoverConnectionNode(ConnectionNodeFailoverSupport connectionNode, ScheduledExecutorService scheduledExecutor, OseeExceptionListener exceptionListener) {
       this.connectionNode = connectionNode;
-      this.exceptionListener = exceptionListener;
       exceptionListener.setListener(this);
       savedSubscribes = new CopyOnWriteArrayList<>();
       connectionListeners = new CopyOnWriteArrayList<>();
@@ -169,13 +167,6 @@ public class FailoverConnectionNode implements ConnectionNode, Runnable {
       OseeMessagingListener listener;
       OseeMessagingStatusCallback statusCallback;
       String selector;
-
-      public SavedSubscribe(MessageID messageId, OseeMessagingListener listener, String selector, OseeMessagingStatusCallback statusCallback) {
-         this.messageId = messageId;
-         this.listener = listener;
-         this.statusCallback = statusCallback;
-         this.selector = selector;
-      }
 
       public SavedSubscribe(MessageID messageId, OseeMessagingListener listener, OseeMessagingStatusCallback statusCallback) {
          this.messageId = messageId;

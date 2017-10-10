@@ -44,6 +44,7 @@ import org.osgi.framework.FrameworkUtil;
 /**
  * @author Donald G. Dunne
  */
+@SuppressWarnings("deprecation")
 public final class AWorkspace {
 
    private AWorkspace() {

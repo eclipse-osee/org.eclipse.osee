@@ -34,6 +34,7 @@ public class TagProcessor {
          while (scanner.hasNext()) {
             processWord(scanner.next(), tagCollector);
          }
+         scanner.close();
       }
    }
 
@@ -60,6 +61,7 @@ public class TagProcessor {
                   String entry1 = innerScanner.next();
                   processWord(entry1, tagCollector);
                }
+               innerScanner.close();
             }
          }
       } catch (Exception ex) {

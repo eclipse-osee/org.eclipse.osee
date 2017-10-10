@@ -137,6 +137,7 @@ public class RelationTableViewer {
       column.setText(validColumnNames[ARTIFACT_NAME_NUM]);
       column.setWidth(validColumnWidths[ARTIFACT_NAME_NUM]);
       column.addSelectionListener(new SelectionAdapter() {
+         @SuppressWarnings("deprecation")
          @Override
          public void widgetSelected(SelectionEvent e) {
             tableViewer.setSorter(new RelationTableSorter(RelationTableSorter.ARTIFACT_NAME));
@@ -147,6 +148,7 @@ public class RelationTableViewer {
       column.setText(validColumnNames[ARTIFACT_TYPE_NUM]);
       column.setWidth(validColumnWidths[ARTIFACT_TYPE_NUM]);
       column.addSelectionListener(new SelectionAdapter() {
+         @SuppressWarnings("deprecation")
          @Override
          public void widgetSelected(SelectionEvent e) {
             tableViewer.setSorter(new RelationTableSorter(RelationTableSorter.ARTIFACT_TYPE));

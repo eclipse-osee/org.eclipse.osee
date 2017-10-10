@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResourceRegistry;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.osgi.service.event.EventAdmin;
 
 /**
  * @author Ryan D. Brooks
@@ -34,7 +33,6 @@ public final class OseeReportApplication extends Application {
    private OrcsApi orcsApi;
    private DefineApi defineApi;
    private Log logger;
-   private EventAdmin eventAdmin;
 
    public void setDefineApi(DefineApi defineApi) {
       this.defineApi = defineApi;
@@ -48,10 +46,6 @@ public final class OseeReportApplication extends Application {
       this.logger = logger;
    }
 
-   public void setEventAdmin(EventAdmin eventAdmin) {
-      this.eventAdmin = eventAdmin;
-   }
-
    public void start(Map<String, Object> properties) {
       IResourceRegistry resourceRegistry = new ResourceRegistry();
       OseeAppResourceTokens.register(resourceRegistry);
@@ -60,7 +54,7 @@ public final class OseeReportApplication extends Application {
       logger.debug(">>>>> registered Safety resource");
       singletons.add(new PublishLowHighReqTraceabilityResource(logger, resourceRegistry, orcsApi));
       logger.debug(">>>>> registered Low/High Trace resource");
-      singletons.add(new DataRightsSwReqAndCodeResource(logger, properties, resourceRegistry, orcsApi));
+      singletons.add(new DataRightsSwReqAndCodeResource(logger, resourceRegistry, orcsApi));
       logger.debug(">>>>> registered DataRightsSwReqAndCodeResource");
       singletons.add(new DataRightsEndpointImpl(defineApi));
       logger.debug(">>>>> registered DataRightsEndpoint");

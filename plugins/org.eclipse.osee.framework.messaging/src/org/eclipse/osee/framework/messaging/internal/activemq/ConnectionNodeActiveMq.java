@@ -370,10 +370,12 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
 
    @Override
    public void addConnectionListener(ConnectionListener connectionListener) {
+      // do nothing
    }
 
    @Override
    public void removeConnectionListener(ConnectionListener connectionListener) {
+      // do nothing
    }
 
    @Override

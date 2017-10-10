@@ -24,6 +24,7 @@ public class GraphImageConstants {
    private GraphImageConstants() {
    }
 
+   @SuppressWarnings("incomplete-switch")
    public static Image getImage(BranchId branch) {
       Image image = null;
       switch (BranchManager.getType(branch)) {

@@ -62,12 +62,33 @@ public class XMembersCombo extends GenericXWidget {
    }
 
    @Override
+   public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((selectedUser == null) ? 0 : selectedUser.hashCode());
+      return result;
+   }
+
+   @Override
    public boolean equals(Object obj) {
-      if (obj instanceof XMembersCombo) {
-         return ((XMembersCombo) obj).selectedUser.equals(selectedUser);
-      } else {
-         return super.equals(obj);
+      if (this == obj) {
+         return true;
       }
+      if (obj == null) {
+         return false;
+      }
+      if (getClass() != obj.getClass()) {
+         return false;
+      }
+      XMembersCombo other = (XMembersCombo) obj;
+      if (selectedUser == null) {
+         if (other.selectedUser != null) {
+            return false;
+         }
+      } else if (!selectedUser.equals(other.selectedUser)) {
+         return false;
+      }
+      return true;
    }
 
    public void set(User user) {

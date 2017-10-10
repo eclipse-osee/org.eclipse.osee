@@ -68,10 +68,12 @@ public class JarCollectionNature implements IProjectNature {
 
    @Override
    public void configure() {
+      // do nothing
    }
 
    @Override
    public void deconfigure() {
+      // do nothing
    }
 
    @Override

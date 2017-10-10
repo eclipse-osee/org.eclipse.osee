@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.jdk.core.type.Named;
 /**
  * @author Donald G. Dunne
  */
+@SuppressWarnings("deprecation")
 public class ToStringViewerSorter extends ViewerSorter {
 
    private final boolean showDashedFirst;
@@ -33,7 +34,6 @@ public class ToStringViewerSorter extends ViewerSorter {
       this.showDashedFirst = showDashedFirst;
    }
 
-   @SuppressWarnings("unchecked")
    @Override
    public int compare(Viewer viewer, Object e1, Object e2) {
       String s1 = e1 instanceof Named ? ((Named) e1).getName() : e1.toString();

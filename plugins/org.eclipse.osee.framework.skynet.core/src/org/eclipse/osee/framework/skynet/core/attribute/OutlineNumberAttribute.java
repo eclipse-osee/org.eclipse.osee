@@ -11,4 +11,5 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 public class OutlineNumberAttribute extends StringAttribute {
+   // do nothing
 }

@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.TabItem;
 /**
  * @author Donald G. Dunne
  */
+@SuppressWarnings("deprecation")
 public class SkyWalkerShowAttributeTabItem {
 
    private CheckboxTreeViewer treeViewer;

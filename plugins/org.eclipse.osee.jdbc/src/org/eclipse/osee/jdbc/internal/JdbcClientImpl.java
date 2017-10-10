@@ -374,10 +374,12 @@ public final class JdbcClientImpl implements JdbcClient {
       return fetch(connection, defaultValue, stmt -> fetch(stmt, defaultValue), query, data);
    }
 
+   @SuppressWarnings("unchecked")
    private static <R> R fetch(JdbcStatement stmt, R defaultValue) {
       return fetch(stmt, defaultValue, (Class<R>) defaultValue.getClass());
    }
 
+   @SuppressWarnings("unchecked")
    private static <R> R fetch(JdbcStatement stmt, R defaultValue, Class<R> clazz) {
       Object toReturn = null;
       if (Integer.class.isAssignableFrom(clazz)) {

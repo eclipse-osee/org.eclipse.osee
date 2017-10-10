@@ -27,6 +27,7 @@ public final class ResultSets {
       // Utility
    }
 
+   @SuppressWarnings("unchecked")
    public static <T> ResultSet<T> newResultSet(T... item) {
       ResultSet<T> toReturn;
       if (item == null || item.length <= 0) {

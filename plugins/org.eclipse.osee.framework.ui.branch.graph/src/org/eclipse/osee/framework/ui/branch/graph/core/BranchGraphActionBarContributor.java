@@ -50,6 +50,7 @@ public class BranchGraphActionBarContributor extends ActionBarContributor {
 
    @Override
    protected void declareGlobalActionKeys() {
+      // do nothing
    }
 
    @Override

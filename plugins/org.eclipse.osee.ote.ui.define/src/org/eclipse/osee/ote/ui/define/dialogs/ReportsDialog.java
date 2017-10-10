@@ -69,6 +69,7 @@ import org.eclipse.swt.widgets.Text;
 /**
  * @author Roberto E. Escobar
  */
+@SuppressWarnings("deprecation")
 public class ReportsDialog extends TitleAreaDialog {
    private static final Image MESSAGE_IMAGE = ImageManager.getImage(OteDefineImage.COMMIT_WIZ);
    private static final Image TITLE_BAR_IMAGE = ImageManager.getImage(OteDefineImage.COMMIT);

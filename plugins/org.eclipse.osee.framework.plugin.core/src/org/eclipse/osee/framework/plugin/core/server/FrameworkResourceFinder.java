@@ -28,9 +28,4 @@ public class FrameworkResourceFinder extends ResourceFinder {
       return null;
    }
 
-   @Override
-   public void dispose() {
-
-   }
-
 }

@@ -162,7 +162,6 @@ public class DataRightsOperationsImpl implements DataRightsOperations {
    private Map<String, DataRight> getClassificationToDataRights(QueryBuilder query) {
       Map<String, DataRight> toReturn = new HashMap<>();
 
-      @SuppressWarnings("unchecked")
       ArtifactReadable footerMappingArt = query.andId(MAPPING_ARTIFACT).getResults().getOneOrNull();
 
       if (footerMappingArt != null) {

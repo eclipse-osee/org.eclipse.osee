@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 /**
  * @author John Misinco
  */
+@SuppressWarnings("deprecation")
 public class RemoveObjectIdsFromTraceUnits extends AbstractBlam {
 
    @Override

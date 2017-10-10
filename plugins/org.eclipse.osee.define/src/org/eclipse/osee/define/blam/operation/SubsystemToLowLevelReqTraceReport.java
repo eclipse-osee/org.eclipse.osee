@@ -156,7 +156,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
 
          if (row[0] != null && !isRelated) { // if this requirement is not traced to any lower level req (i.e. the for loop didn't run)
             row[3] = row[4] = row[5] = row[6] = null;
-            excelWriter.writeRow(row);
+            excelWriter.writeRow((Object[]) row);
          }
       }
       excelWriter.endSheet();

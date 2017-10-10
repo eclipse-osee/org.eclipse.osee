@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 /**
  * Default sorter for artifacts. Sorts on descriptive name
  */
+@SuppressWarnings("deprecation")
 public class ArtifactNameReverseSorter extends ViewerSorter {
 
    /**
@@ -27,7 +28,6 @@ public class ArtifactNameReverseSorter extends ViewerSorter {
    }
 
    @Override
-   @SuppressWarnings("unchecked")
    public int compare(Viewer viewer, Object o1, Object o2) {
 
       return getComparator().compare(((Artifact) o2).getName(), ((Artifact) o1).getName());

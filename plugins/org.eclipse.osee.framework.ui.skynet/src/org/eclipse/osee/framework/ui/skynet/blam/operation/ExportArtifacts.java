@@ -89,7 +89,7 @@ public class ExportArtifacts extends AbstractBlam {
                }
             }
          }
-         excelWriter.writeRow(row);
+         excelWriter.writeRow((Object[]) row);
       }
 
       excelWriter.endSheet();

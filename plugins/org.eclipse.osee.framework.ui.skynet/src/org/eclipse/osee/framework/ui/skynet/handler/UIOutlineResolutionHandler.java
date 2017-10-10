@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 
 public class UIOutlineResolutionHandler implements IStatusHandler {
 
+   @SuppressWarnings("unchecked")
    @Override
    public Object handleStatus(IStatus status, Object source) throws CoreException {
       if (source instanceof ArrayList<?>) {

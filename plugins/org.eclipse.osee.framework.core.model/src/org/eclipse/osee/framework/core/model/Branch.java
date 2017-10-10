@@ -205,11 +205,4 @@ public class Branch extends NamedIdBase implements IOseeBranch, Adaptable {
       return branchView;
    }
 
-   /*
-    * Provide easy way to display/report [guid][name]
-    */
-   public final String toStringWithId() {
-      return String.format("[%s][%s]", getName(), getId());
-   }
-
 }

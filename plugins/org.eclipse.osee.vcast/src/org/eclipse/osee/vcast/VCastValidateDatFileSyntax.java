@@ -20,8 +20,6 @@ import org.eclipse.osee.framework.core.util.Result;
  */
 public class VCastValidateDatFileSyntax {
    private final static Pattern threeNumbersPattern = Pattern.compile("\\s*([0-9]+)\\s+([0-9]+)\\s+([0-9]+)");
-   private final static Pattern fiveNumbersPattern =
-      Pattern.compile("\\s*([0-9]+)\\s+([0-9]+)\\s+([0-9]+)\\s+([0-9]+)\\s+([0-9]+)");
    private final static Pattern threeNumbersPlusTokenPattern =
       Pattern.compile("\\s*([0-9]+)\\s+([0-9]+)\\s+([0-9]+)\\s+(T|F)");
 

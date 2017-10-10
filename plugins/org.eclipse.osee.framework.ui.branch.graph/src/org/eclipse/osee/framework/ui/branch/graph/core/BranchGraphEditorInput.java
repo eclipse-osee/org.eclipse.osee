@@ -14,7 +14,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.Adaptable;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
@@ -26,7 +25,6 @@ import org.eclipse.ui.PlatformUI;
 public class BranchGraphEditorInput implements IEditorInput, Adaptable {
 
    private final IOseeBranch branch;
-   private TransactionId transactionId;
 
    public BranchGraphEditorInput(IOseeBranch branch) {
       this.branch = branch;
@@ -61,22 +59,37 @@ public class BranchGraphEditorInput implements IEditorInput, Adaptable {
       return getName();
    }
 
-   public void setTransactionId(TransactionId transactionId) {
-      this.transactionId = transactionId;
-   }
-
    public BranchId getBranch() {
       return branch;
    }
 
    @Override
+   public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((branch == null) ? 0 : branch.hashCode());
+      return result;
+   }
+
+   @Override
    public boolean equals(Object obj) {
-      if (obj instanceof BranchGraphEditorInput) {
-         BranchGraphEditorInput compareTo = (BranchGraphEditorInput) obj;
-         if (branch != null && compareTo.getBranch() != null) {
-            return branch.equals(compareTo.getBranch());
-         }
+      if (this == obj) {
+         return true;
       }
-      return super.equals(obj);
+      if (obj == null) {
+         return false;
+      }
+      if (getClass() != obj.getClass()) {
+         return false;
+      }
+      BranchGraphEditorInput other = (BranchGraphEditorInput) obj;
+      if (branch == null) {
+         if (other.branch != null) {
+            return false;
+         }
+      } else if (!branch.equals(other.branch)) {
+         return false;
+      }
+      return true;
    }
 }

@@ -20,12 +20,15 @@ import org.osgi.util.tracker.ServiceTracker;
 /**
  * The activator class controls the plug-in life cycle
  */
+@SuppressWarnings("deprecation")
 public class PluginCoreActivator extends OseeActivator {
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.plugin.core";
 
    private static PluginCoreActivator pluginInstance;
+   @SuppressWarnings("rawtypes")
    private ServiceTracker packageAdminTracker;
 
+   @SuppressWarnings({"unchecked", "rawtypes"})
    @Override
    public void start(BundleContext context) throws Exception {
       super.start(context);

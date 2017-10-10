@@ -83,7 +83,6 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    private AtsConfigurations atsConfigurations;
    private final Collection<Long> teamDefIds = new LinkedList<>();
    private final Collection<Long> aiIds = new LinkedList<>();
-   private final long DEFAULT_CONFIG_LOADING_TIME = 1200000; // 20 minutes
 
    public AtsConfigEndpointImpl(IAtsServices services, OrcsApi orcsApi, Log logger) {
       this.services = services;

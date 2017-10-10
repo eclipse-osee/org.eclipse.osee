@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.branch.graph.core.BranchGraphEditor;
-import org.eclipse.osee.framework.ui.branch.graph.core.BranchGraphEditorInput;
 import org.eclipse.osee.framework.ui.branch.graph.model.GraphCache;
 import org.eclipse.osee.framework.ui.branch.graph.model.GraphLoader;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -67,9 +66,6 @@ public class LoadGraphOperation implements IExceptionableRunnable {
       monitor.worked(SHORT_TASK_STEPS);
       try {
          TransactionToken transaction = TransactionManager.getHeadTransaction(resource);
-         if (editor != null) {
-            ((BranchGraphEditorInput) editor.getEditorInput()).setTransactionId(transaction);
-         }
          BranchId path = transaction.getBranch();
 
          monitor.setTaskName("Initializating cache");

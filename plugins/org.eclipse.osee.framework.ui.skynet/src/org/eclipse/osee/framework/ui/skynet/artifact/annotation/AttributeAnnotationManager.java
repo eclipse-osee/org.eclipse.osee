@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 /**
  * Provides access to annotations stored as the "Annotation" attribute in the specified artifact or provided through
  * IArtifactAnnotation extension point.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AttributeAnnotationManager {
@@ -45,6 +45,7 @@ public class AttributeAnnotationManager {
       this.artifact = artifact;
    }
 
+   @SuppressWarnings("deprecation")
    private Collection<Attribute<String>> getAttributes() {
       return artifact.getAttributes(CoreAttributeTypes.Annotation);
    }

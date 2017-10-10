@@ -38,7 +38,7 @@ public class ClassServer extends Thread {
 
    /**
     * Construct a server
-    * 
+    *
     * @param port the port to use
     * @throws IOException if the server socket cannot be created
     */
@@ -157,10 +157,11 @@ public class ClassServer extends Thread {
 
    /**
     * This method provides a way for subclasses to be notified when a file has been completely downloaded.
-    * 
+    *
     * @param fp The path to the file that was downloaded.
     */
    protected void fileDownloaded(String fp, InetAddress addr) {
+      // do nothing
    }
 
    public URL getHostName() {
@@ -309,6 +310,7 @@ public class ClassServer extends Thread {
             try {
                sock.close();
             } catch (IOException e) {
+               // do nothing
             }
          }
       }

@@ -12,7 +12,6 @@ package org.eclipse.osee.account.rest.internal;
 
 import static org.eclipse.osee.account.rest.internal.JaxRsAuthenticatorConstants.DEFAULT_JAXRS_AUTH__ALLOW_AUTOMATIC_ACCOUNT_CREATION;
 import static org.eclipse.osee.account.rest.internal.JaxRsAuthenticatorConstants.JAXRS_AUTH__ALLOW_AUTOMATIC_ACCOUNT_CREATION;
-import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -104,7 +103,6 @@ public class JaxRsAuthenticatorImpl implements JaxRsAuthenticator {
       }
 
       // Preferences or other user specific properties
-      Map<String, String> properties = Collections.emptyMap();
       return OseePrincipal.Anonymous;
    }
 

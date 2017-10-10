@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 /**
  * Default sorter for branch. Sorts on descriptive name
  */
+@SuppressWarnings("deprecation")
 public class BranchNameSorter extends ViewerSorter {
 
    /**
@@ -27,7 +28,6 @@ public class BranchNameSorter extends ViewerSorter {
    }
 
    @Override
-   @SuppressWarnings("unchecked")
    public int compare(Viewer viewer, Object o1, Object o2) {
       if (o1 instanceof IOseeBranch && o2 instanceof IOseeBranch) {
          return getComparator().compare(((IOseeBranch) o1).getName(), ((IOseeBranch) o2).getName());

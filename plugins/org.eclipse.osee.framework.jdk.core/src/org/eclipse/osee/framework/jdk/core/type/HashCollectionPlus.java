@@ -29,9 +29,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * "plus" object whenever a new key is added to the Map. When all of the items in the Collection are removed, the entire
  * key is removed from the table - therefore, the "plus" object is only available as long as the Collection for a given
  * key is not empty.
- * 
+ *
  * @author David Diepenbrock
  */
+@SuppressWarnings("rawtypes")
 public class HashCollectionPlus<K, V, O> {
 
    private boolean isSynchronized;
@@ -105,7 +106,7 @@ public class HashCollectionPlus<K, V, O> {
 
    /**
     * Creates an unsynchronized HashCollectionPlus using a default Collection type (ArrayList)
-    * 
+    *
     * @see HashMap#HashMap(int, float)
     */
    public HashCollectionPlus(int initialCapacity, float loadFactor, IPlusProvider<O> plusProvider) {
@@ -114,7 +115,7 @@ public class HashCollectionPlus<K, V, O> {
 
    /**
     * Creates an unsynchronized HashCollectionPlus using a default Collection type (ArrayList)
-    * 
+    *
     * @see HashMap#HashMap(int)
     */
    public HashCollectionPlus(int initialCapacity, IPlusProvider<O> plusProvider) {
@@ -123,7 +124,7 @@ public class HashCollectionPlus<K, V, O> {
 
    /**
     * Creates an unsynchronized HashCollectionPlus using a default Collection type (ArrayList)
-    * 
+    *
     * @see HashMap#HashMap()
     */
    public HashCollectionPlus(IPlusProvider<O> plusProvider) {
@@ -137,7 +138,7 @@ public class HashCollectionPlus<K, V, O> {
    /**
     * Adds the value to the collection specified by the key. If there is not a collection for the given key, a new
     * collection is created and added to the hash.
-    * 
+    *
     * @param key The key whose collection we will add value to.
     * @param value The value to be added.
     * @return the collection containing value and all other items associated with the key.
@@ -170,7 +171,7 @@ public class HashCollectionPlus<K, V, O> {
 
    /**
     * Adds all of the items in the Collection values to the collection for the specified key.
-    * 
+    *
     * @param key The key to add the values to
     * @param values The values to be added
     * @return The collection for the key, containing all values.
@@ -223,7 +224,7 @@ public class HashCollectionPlus<K, V, O> {
 
    /**
     * Returns the Collection of items for this key, or null if the key does not exist.
-    * 
+    *
     * @return Return value collection reference
     */
    public Collection<V> getValues(K key) {
@@ -236,7 +237,7 @@ public class HashCollectionPlus<K, V, O> {
 
    /**
     * Returns the Collection all items
-    * 
+    *
     * @return Return value collection reference
     */
    public List<V> getValues() {
@@ -251,7 +252,7 @@ public class HashCollectionPlus<K, V, O> {
 
    /**
     * Returns the "plus" object associated with the key, or null if the key does not exist.
-    * 
+    *
     * @return Return object reference
     */
    public O getPlusObject(K key) {

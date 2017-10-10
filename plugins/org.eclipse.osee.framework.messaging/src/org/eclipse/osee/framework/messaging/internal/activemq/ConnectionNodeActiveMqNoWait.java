@@ -456,10 +456,12 @@ class ConnectionNodeActiveMqNoWait implements ConnectionNodeFailoverSupport, Mes
 
    @Override
    public void addConnectionListener(ConnectionListener connectionListener) {
+      // do nothing
    }
 
    @Override
    public void removeConnectionListener(ConnectionListener connectionListener) {
+      // do nothing
    }
 
    @Override

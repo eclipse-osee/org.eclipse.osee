@@ -411,10 +411,12 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
 
       @Override
       public void mouseDragged(MouseEvent event) {
+         // do nothing
       }
 
       @Override
       public void mouseEntered(MouseEvent event) {
+         // do nothing
       }
 
       @Override
@@ -429,10 +431,12 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
 
       @Override
       public void mouseMoved(MouseEvent event) {
+         // do nothing
       }
 
       @Override
       public void mouseDoubleClicked(MouseEvent event) {
+         // do nothing
       }
 
       @Override
@@ -452,6 +456,7 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
 
       @Override
       public void mouseReleased(MouseEvent event) {
+         // do nothing
       }
    }
 }

@@ -60,6 +60,7 @@ import org.eclipse.swt.widgets.Text;
  * @see org.eclipse.osee.framework.skynet.core.artifact.Attribute
  * @author Robert A. Fisher
  */
+@SuppressWarnings("deprecation")
 public class AttributeFindReplaceDialog extends Dialog {
    private ComboViewer cmbAttributeDescriptors;
    private Text txtFindRegEx;
@@ -130,7 +131,6 @@ public class AttributeFindReplaceDialog extends Dialog {
       cmbAttributeDescriptors.setContentProvider(new ArrayContentProvider());
       cmbAttributeDescriptors.setLabelProvider(new ArtifactTypeLabelProvider());
       cmbAttributeDescriptors.setSorter(new ViewerSorter() {
-         @SuppressWarnings("unchecked")
          @Override
          public int compare(Viewer viewer, Object e1, Object e2) {
             return getComparator().compare(((AttributeType) e1).getName(), ((AttributeType) e2).getName());

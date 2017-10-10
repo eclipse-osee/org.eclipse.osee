@@ -12,10 +12,8 @@ package org.eclipse.osee.framework.server.ide.internal;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
-import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.eclipse.osee.framework.server.ide.AdminServlet;
@@ -33,8 +31,6 @@ public class ServletRegistrationHandler {
    private Log logger;
    private ISessionManager sessionManager;
    private IApplicationServerManager appServerManager;
-   private IAuthenticationManager authenticationManager;
-   private ActivityLog activityLog;
 
    private final Set<String> contexts = new HashSet<>();
 
@@ -44,10 +40,6 @@ public class ServletRegistrationHandler {
 
    public void setAppServerManager(IApplicationServerManager appServerManager) {
       this.appServerManager = appServerManager;
-   }
-
-   public void setAuthenticationManager(IAuthenticationManager authenticationManager) {
-      this.authenticationManager = authenticationManager;
    }
 
    public void setLogger(Log logger) {
@@ -84,7 +76,4 @@ public class ServletRegistrationHandler {
       ServletUtil.register(httpService, appServerManager, servlet, contexts);
    }
 
-   public void setActivityLog(ActivityLog activityLog) {
-      this.activityLog = activityLog;
-   }
 }

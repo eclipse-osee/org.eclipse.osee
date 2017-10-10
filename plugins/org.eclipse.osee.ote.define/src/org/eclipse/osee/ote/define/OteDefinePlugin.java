@@ -21,9 +21,11 @@ public class OteDefinePlugin implements BundleActivator {
 
    @Override
    public void start(BundleContext context) throws Exception {
+      // do nothing
    }
 
    @Override
    public void stop(BundleContext context) throws Exception {
+      // do nothing
    }
 }

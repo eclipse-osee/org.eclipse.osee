@@ -54,6 +54,7 @@ import org.eclipse.swt.widgets.TableColumn;
 /**
  * @author Roberto E. Escobar
  */
+@SuppressWarnings("deprecation")
 public class SelectionComposite extends Composite {
    private static final Image CONFLICT_IMAGE = ImageManager.getImage(OteDefineImage.OBSTRUCTED);
    private static final Image CHECKED_IMAGE = ImageManager.getImage(OteDefineImage.CHECKBOX_ENABLED);
@@ -288,10 +289,12 @@ public class SelectionComposite extends Composite {
    private final class TableContentProvider implements IStructuredContentProvider {
       @Override
       public void dispose() {
+         // do nothing
       }
 
       @Override
       public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+         // do nothing
       }
 
       @Override

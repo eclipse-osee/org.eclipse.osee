@@ -72,6 +72,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 /**
  * @author Roberto E. Escobar
  */
+@SuppressWarnings("deprecation")
 public class TraceReportBlam extends AbstractBlam {
    private static final String BRANCH = "Branch";
    private final List<IResultsEditorTab> resultsTabs;
@@ -469,7 +470,7 @@ public class TraceReportBlam extends AbstractBlam {
       @Override
       public void addRow(Object data, String... row) {
          try {
-            sheetWriter.writeRow(row);
+            sheetWriter.writeRow((Object[]) row);
          } catch (IOException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
@@ -479,7 +480,7 @@ public class TraceReportBlam extends AbstractBlam {
       public void addTableHeader(String... header) {
          try {
             sheetWriter.startSheet(title, header.length);
-            sheetWriter.writeRow(header);
+            sheetWriter.writeRow((Object[]) header);
          } catch (IOException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }

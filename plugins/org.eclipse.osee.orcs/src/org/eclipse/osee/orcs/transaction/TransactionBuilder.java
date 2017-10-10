@@ -89,6 +89,7 @@ public interface TransactionBuilder {
 
    void setSoleAttributeFromString(ArtifactId art, AttributeTypeId attributeType, String value);
 
+   @SuppressWarnings("unchecked")
    <T> void setAttributesFromValues(ArtifactId art, AttributeTypeId attributeType, T... values);
 
    <T> void setAttributesFromValues(ArtifactId art, AttributeTypeId attributeType, Collection<T> values);

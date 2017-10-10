@@ -34,6 +34,7 @@ import org.eclipse.ui.part.FileEditorInput;
 /**
  * @author Roberto E. Escobar
  */
+@SuppressWarnings("restriction")
 public class OtherEditorHandler extends AbstractEditorHandler {
 
    @Override

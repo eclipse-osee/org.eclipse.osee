@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.messaging.integration;
 
-import static junit.framework.Assert.assertEquals;
 import static org.eclipse.osee.framework.messaging.data.DefaultNodeInfos.OSEE_JMS_BROKER_URI;
 import static org.eclipse.osee.framework.messaging.data.DefaultNodeInfos.OSEE_JMS_NODE;
 import static org.eclipse.osee.framework.messaging.data.TestMessages.JMS_TOPIC;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -34,9 +34,7 @@ import org.eclipse.osee.framework.messaging.data.TestMessages;
 import org.eclipse.osee.framework.messaging.internal.MessageServiceController.BrokerType;
 import org.eclipse.osee.framework.messaging.rules.MessageBroker;
 import org.eclipse.osee.framework.messaging.rules.MessageConnection;
-import org.eclipse.osee.framework.messaging.services.ServiceInfoPopulator;
 import org.eclipse.osee.framework.messaging.services.internal.OseeMessagingStatusImpl;
-import org.eclipse.osee.framework.messaging.services.messages.ServiceDescriptionPair;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -48,11 +46,6 @@ import org.mockito.MockitoAnnotations;
  * @author Andrew M. Finkbeiner
  */
 public class TestEmbeddedBrokerSendReceive {
-
-   private static final String SERVICE_NAME = TestEmbeddedBrokerSendReceive.class.getSimpleName();
-   private static final String SERVICE_VERSION = "1002";
-   private static final String SERVICE_ID = "some.service.id";
-   private static final String SERVICE_URL = "tcp://localhost:666";
 
    private static final int TOTAL_SUBSCRIBERS = 20;
 
@@ -255,27 +248,4 @@ public class TestEmbeddedBrokerSendReceive {
       return value * 1000;
    }
 
-   private static ServiceInfoPopulator info() {
-      return new MockServiceInfoPopulator("test", "one");
-   }
-
-   private static class MockServiceInfoPopulator implements ServiceInfoPopulator {
-
-      private final String name;
-      private final String value;
-
-      public MockServiceInfoPopulator(String name, String value) {
-         super();
-         this.name = name;
-         this.value = value;
-      }
-
-      @Override
-      public void updateServiceInfo(List<ServiceDescriptionPair> serviceDescription) {
-         ServiceDescriptionPair pair1 = new ServiceDescriptionPair();
-         pair1.setName(name);
-         pair1.setValue(value);
-         serviceDescription.add(pair1);
-      }
-   }
 }

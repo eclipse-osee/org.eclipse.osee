@@ -16,8 +16,10 @@ import org.osgi.util.tracker.ServiceTracker;
 /**
  * @author Andrew M. Finkbeiner
  */
+@SuppressWarnings("rawtypes")
 public class MessagingTracker extends ServiceTracker {
 
+   @SuppressWarnings("unchecked")
    public MessagingTracker() {
       super(Activator.getInstance().getContext(), OseeMessaging.class.getName(), null);
    }

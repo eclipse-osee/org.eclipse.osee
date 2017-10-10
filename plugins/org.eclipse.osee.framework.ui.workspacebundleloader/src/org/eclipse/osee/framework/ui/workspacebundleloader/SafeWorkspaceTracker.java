@@ -32,12 +32,14 @@ import org.osgi.util.tracker.ServiceTracker;
 /**
  * @author Andrew M. Finkbeiner
  */
+@SuppressWarnings("rawtypes")
 public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeListener<WorkspaceStarterNature>, WorkspaceLoader, IWorkbenchListener {
 
    private JarChangeResourceListener<WorkspaceStarterNature> workspaceListener;
    private SafeWorkspaceAccess service;
    private final WorkspaceBundleLoadCoordinator bundleCoordinator;
 
+   @SuppressWarnings("unchecked")
    public SafeWorkspaceTracker(BundleContext context) {
       super(context, SafeWorkspaceAccess.class.getName(), null);
       bundleCoordinator = new WorkspaceBundleLoadCoordinator(new File(OseeData.getPath().toFile(), "loadedbundles"));
@@ -45,6 +47,7 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
       PlatformUI.getWorkbench().addWorkbenchListener(this);
    }
 
+   @SuppressWarnings("unchecked")
    @Override
    public Object addingService(ServiceReference reference) {
       service = (SafeWorkspaceAccess) context.getService(reference);
@@ -103,6 +106,7 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
 
    @Override
    public void handlePostChange() {
+      // do nothing
    }
 
    @Override
@@ -145,6 +149,7 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
 
    @Override
    public void postShutdown(IWorkbench workbench) {
+      // do nothing
    }
 
 }

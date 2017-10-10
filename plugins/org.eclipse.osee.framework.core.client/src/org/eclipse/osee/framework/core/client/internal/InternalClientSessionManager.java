@@ -42,7 +42,6 @@ import org.eclipse.osee.jaxrs.client.JaxRsClient;
 public class InternalClientSessionManager {
    public static final String STATUS_ID = "Session Manager";
    private static final InternalClientSessionManager instance = new InternalClientSessionManager();
-   private static Object ideTarget;
 
    private final OseeClientInfo clientInfo;
    private OseeSessionGrant oseeSessionGrant;

@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 /**
  * @author Roberto E. Escobar
  */
+@SuppressWarnings("deprecation")
 public class ResourceToTraceUnit {
 
    private final UriResourceContentFinder resourceFinder;

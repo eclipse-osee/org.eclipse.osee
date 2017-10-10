@@ -55,6 +55,7 @@ import org.eclipse.ui.dialogs.PatternFilter;
 /**
  * @author Donald G. Dunne
  */
+@SuppressWarnings("deprecation")
 public class EmailWizardPage extends WizardPage {
    private Text text;
    private final List<Object> initialAddress;
@@ -76,7 +77,6 @@ public class EmailWizardPage extends WizardPage {
    }
 
    @Override
-   @SuppressWarnings("unchecked")
    public void createControl(Composite parent) {
       setTitle("Email Action");
       setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.EMAIL));

@@ -36,11 +36,9 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 final class ArtifactFileMonitor implements IFileWatcherListener {
    private final ResourceAttributes readonlyfileAttributes;
    private final FileWatcher watcher;
-   private final boolean firstTime;
    private final Map<File, IOperation> fileMap = new ConcurrentHashMap<>(128);
 
    public ArtifactFileMonitor() {
-      firstTime = true;
       readonlyfileAttributes = new ResourceAttributes();
       readonlyfileAttributes.setReadOnly(true);
 

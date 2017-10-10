@@ -91,6 +91,7 @@ public class DragDropHandler {
 
          @Override
          public void dragFinished(DragSourceEvent event) {
+            // do nothing
          }
 
          @Override

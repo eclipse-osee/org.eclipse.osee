@@ -41,6 +41,7 @@ import org.eclipse.swt.widgets.Table;
 /**
  * @author Donald G. Dunne
  */
+@SuppressWarnings("deprecation")
 public class XListViewer extends GenericXWidget {
 
    // XListViewer uses a table so images can be used.  SWT doesn't support images in ListViewer

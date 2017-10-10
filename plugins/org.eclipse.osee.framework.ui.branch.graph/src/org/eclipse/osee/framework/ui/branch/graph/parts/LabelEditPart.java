@@ -32,6 +32,7 @@ public class LabelEditPart extends AbstractGraphicalEditPart {
 
    @Override
    protected void createEditPolicies() {
+      // do nothing
    }
 
 }

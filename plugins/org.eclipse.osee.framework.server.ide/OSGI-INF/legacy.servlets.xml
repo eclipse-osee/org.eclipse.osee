@@ -6,7 +6,5 @@
    <reference bind="setHttpService" cardinality="1..1" interface="org.osgi.service.http.HttpService" name="HttpService" policy="static"/>
    <reference bind="setSessionManager" cardinality="1..1" interface="org.eclipse.osee.framework.core.server.ISessionManager" name="ISessionManager" policy="static"/>
    <reference bind="setAppServerManager" cardinality="1..1" interface="org.eclipse.osee.framework.core.server.IApplicationServerManager" name="IApplicationServerManager" policy="static"/>
-   <reference bind="setAuthenticationManager" cardinality="1..1" interface="org.eclipse.osee.framework.core.server.IAuthenticationManager" name="IAuthenticationManager" policy="static"/>
-   <reference bind="setActivityLog" cardinality="1..1" interface="org.eclipse.osee.activity.api.ActivityLog" name="ActivityLog" policy="static"/>
       
 </scr:component>

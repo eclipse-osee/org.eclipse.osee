@@ -85,7 +85,7 @@ public class BranchGraphOutlinePage extends Page implements IContentOutlinePage 
 
    @Override
    public void removeSelectionChangedListener(ISelectionChangedListener listener) {
-
+      // do nothing
    }
 
    @Override
@@ -97,7 +97,7 @@ public class BranchGraphOutlinePage extends Page implements IContentOutlinePage 
 
    @Override
    public void setSelection(ISelection selection) {
-
+      // do nothing
    }
 
    public void setTreeContent(Object object) {

@@ -10,14 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.branch.graph.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * @author Roberto E. Escobar
  */
-public class TxModel extends Node implements Serializable, Comparable<TxModel> {
+public class TxModel extends Node implements Comparable<TxModel> {
 
    private static final long serialVersionUID = -2246486595572509094L;
 

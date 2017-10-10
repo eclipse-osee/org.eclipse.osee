@@ -218,6 +218,7 @@ public final class ReplaceWithBaselineTest {
       revertArtifacts(changesAfterRevert, artifactsToRevert); //Only if not attributes
    }
 
+   @SuppressWarnings("incomplete-switch")
    private void setupBackgroundForScenario() throws Exception {
       baselineBranch = SAW_Bld_1;
 
@@ -336,6 +337,7 @@ public final class ReplaceWithBaselineTest {
 
    }
 
+   @SuppressWarnings("incomplete-switch")
    private void makeChange(List<TestData> datas) throws Exception {
       Artifact artifact = null;
       Attribute<?> attribute = null;

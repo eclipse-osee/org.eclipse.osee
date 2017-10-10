@@ -42,7 +42,7 @@ public class ManagedFolderArea {
    /**
     * should be a flat list of folders with the symbolic name of the bundle and then a version for each jar underneath
     * each folder.
-    * 
+    *
     * @param folderToReturn
     */
    private void cleanOutDirectory(File folderRoot) {
@@ -66,6 +66,7 @@ public class ManagedFolderArea {
       return oteFolder;
    }
 
+   @SuppressWarnings("resource")
    public List<BundleInfoLite> copyDeltasToManagedFolder(List<BundleInfoLite> copies) {
       List<BundleInfoLite> bundlesAdded = new ArrayList<>();
       for (BundleInfoLite info : copies) {
@@ -99,12 +100,14 @@ public class ManagedFolderArea {
                   in.close();
                }
             } catch (IOException e) {
+               // do nothing
             }
             try {
                if (out != null) {
                   out.close();
                }
             } catch (IOException e) {
+               // do nothing
             }
          }
       }

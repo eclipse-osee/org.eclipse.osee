@@ -23,7 +23,7 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link EnglishLanguage}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class EnglishLanguageTest {
@@ -102,6 +102,7 @@ public class EnglishLanguageTest {
             }
             builder.append(language.toSingular(scanner.next()));
          }
+         scanner.close();
          Assert.assertEquals(String.format("Original: [%s] ", key), testMap.get(key).toLowerCase(), builder.toString());
       }
    }

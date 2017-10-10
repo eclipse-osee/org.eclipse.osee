@@ -16,4 +16,5 @@ import org.eclipse.osee.orcs.core.ds.Criteria;
  * @author Roberto E. Escobar
  */
 public class CriteriaAllBranches extends Criteria implements BranchCriteria {
+   // do nothing
 }

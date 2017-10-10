@@ -25,7 +25,7 @@ import org.eclipse.core.runtime.IPath;
  * Handler for IResourceChangeEvent.POST_CHANGE and IResourceChangeEvent.PRE_CLOSE events for projects with a given
  * nature ID that extends JarCollectionNature. POST_CHANGE events against the jars in projects with the nature, and
  * close events on the projects with the nature are detected and offered to an IJarChangeListener.
- * 
+ *
  * @author Robert A. Fisher
  */
 public class JarChangeResourceListener<T extends JarCollectionNature> implements IResourceChangeListener {
@@ -60,8 +60,8 @@ public class JarChangeResourceListener<T extends JarCollectionNature> implements
                }
             }
          }
-      } catch (CoreException ex) {
-      } catch (MalformedURLException ex) {
+      } catch (Exception ex) {
+         // do nothing
       }
    }
 

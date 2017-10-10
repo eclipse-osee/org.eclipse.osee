@@ -14,7 +14,6 @@ import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.ui.actions.GEFActionConstants;
 import org.eclipse.gef.ui.actions.PrintAction;
-import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
 
 /**
@@ -35,7 +34,4 @@ public class BranchGraphEditorContextMenuProvider extends ContextMenuProvider {
       menu.appendToGroup(GEFActionConstants.GROUP_PRINT, new PrintAction(editor));
    }
 
-   private IAction getAction(String actionId) {
-      return editor.getActionRegistry().getAction(actionId);
-   }
 }

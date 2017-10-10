@@ -39,7 +39,7 @@ import org.osgi.service.component.ComponentInstance;
 
 /**
  * Test Case for {@link JdbcComponentFactory}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class JdbcComponentFactoryTest {
@@ -109,12 +109,13 @@ public class JdbcComponentFactoryTest {
    //@formatter:off
    @Mock private Log logger;
    @Mock private ComponentFactory componentFactory;
-   
+
    @Mock private ComponentInstance svcInstance;
    //@formatter:on
 
    private JdbcComponentFactory factory;
 
+   @SuppressWarnings("unchecked")
    @Before
    public void setup() {
       MockitoAnnotations.initMocks(this);

@@ -43,7 +43,7 @@ public class ScriptItem extends DataItem implements IXViewerItem {
       boolean wasThereAnError = false;
 
       try {
-         URI url = new URI(scriptUrl);
+         new URI(scriptUrl);
          this.scriptUrl = scriptUrl;
       } catch (Exception ex) {
          wasThereAnError = true;

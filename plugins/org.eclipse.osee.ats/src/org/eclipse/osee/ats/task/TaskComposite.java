@@ -16,7 +16,6 @@ import org.eclipse.osee.ats.core.client.task.TaskMover;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.WorkflowEditor;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.world.IWorldEditor;
 import org.eclipse.osee.ats.world.WorldComposite;
 import org.eclipse.osee.ats.world.WorldXViewer;
@@ -130,7 +129,7 @@ public class TaskComposite extends WorldComposite {
                return;
             }
             TaskMover mover =
-               new TaskMover(AtsClientService.get().getWorkDefinitionService(), iXTaskViewer.getTeamWf(), taskArts);
+               new TaskMover(iXTaskViewer.getTeamWf(), taskArts);
             mover.moveTasks();
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

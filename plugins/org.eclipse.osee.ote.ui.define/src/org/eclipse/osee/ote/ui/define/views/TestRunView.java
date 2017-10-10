@@ -71,7 +71,7 @@ public class TestRunView extends GenericViewPart implements IDataChangedListener
       parent.setLayout(new GridLayout());
 
       PlatformUI.getWorkbench().getService(IHandlerService.class);
-      handlerService = (IHandlerService) getSite().getService(IHandlerService.class);
+      handlerService = getSite().getService(IHandlerService.class);
 
       viewer = new TestRunXViewer(parent);
       Tree tree = viewer.getTree();

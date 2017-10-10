@@ -129,6 +129,7 @@ public class WordTemplateProcessor {
    private boolean outlining;
    private boolean recurseChildren;
    private String outlineNumber;
+   @SuppressWarnings("unused")
 
    //Attribute Options
    private String attributeLabel;
@@ -756,6 +757,7 @@ public class WordTemplateProcessor {
       wordMl.endParagraph();
    }
 
+   @SuppressWarnings("deprecation")
    private void processAttribute(Artifact artifact, WordMLProducer wordMl, AttributeElement attributeElement, AttributeTypeToken attributeType, boolean allAttrs, PresentationType presentationType, boolean publishInLine, String footer) {
       renderer.updateOption(RendererOption.ALL_ATTRIBUTES, allAttrs);
       // This is for SRS Publishing. Do not publish unspecified attributes

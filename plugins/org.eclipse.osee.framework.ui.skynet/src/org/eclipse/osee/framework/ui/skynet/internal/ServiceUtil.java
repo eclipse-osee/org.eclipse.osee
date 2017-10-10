@@ -24,6 +24,7 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.service.packageadmin.PackageAdmin;
 
+@SuppressWarnings("deprecation")
 public final class ServiceUtil {
 
    private ServiceUtil() {
@@ -46,6 +47,7 @@ public final class ServiceUtil {
       return getService(IOseeCachingService.class);
    }
 
+   @SuppressWarnings("deprecation")
    public static PackageAdmin getPackageAdmin() {
       return getService(PackageAdmin.class);
    }

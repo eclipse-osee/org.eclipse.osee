@@ -38,7 +38,6 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
 
    private final HistoryXViewer historyXViewer;
    private static Color lightGreyColor;
-   private final Map<XViewerColumn, Long> colToTime = new HashMap<XViewerColumn, Long>();
    private final Map<Object, Image> objectToImage = new HashMap<Object, Image>(500);
    private static Image transactionImage = null;
 

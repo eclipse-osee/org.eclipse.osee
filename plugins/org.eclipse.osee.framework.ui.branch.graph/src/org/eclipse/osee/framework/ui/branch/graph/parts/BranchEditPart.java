@@ -53,7 +53,7 @@ public class BranchEditPart extends AbstractGraphicalEditPart {
    }
 
    @Override
-   @SuppressWarnings("unchecked")
+   @SuppressWarnings({"unchecked", "rawtypes"})
    protected List getModelChildren() {
       List toReturn = new ArrayList();
 

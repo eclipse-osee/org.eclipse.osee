@@ -17,6 +17,7 @@ import org.eclipse.jface.viewers.ViewerSorter;
 /**
  * @author Robert A. Fisher
  */
+@SuppressWarnings("deprecation")
 public class ColumnSorter extends ViewerSorter {
    private final ITableLabelProvider labelProvider;
    private int columnToSort;
@@ -33,7 +34,6 @@ public class ColumnSorter extends ViewerSorter {
    }
 
    @Override
-   @SuppressWarnings("unchecked")
    public int compare(Viewer viewer, Object o1, Object o2) {
       int value;
 

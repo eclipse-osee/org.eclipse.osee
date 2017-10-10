@@ -17,11 +17,11 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 
 public class SelectionProvider implements ISelectionProvider {
-   private final ListenerList listenerList;
+   private final ListenerList<ISelectionChangedListener> listenerList;
    private ISelection selection;
 
    public SelectionProvider() {
-      this.listenerList = new ListenerList();
+      this.listenerList = new ListenerList<ISelectionChangedListener>();
    }
 
    @Override

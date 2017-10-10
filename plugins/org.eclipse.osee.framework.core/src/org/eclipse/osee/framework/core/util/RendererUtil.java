@@ -32,9 +32,6 @@ public class RendererUtil {
    private static IFolder compareFolder;
    private static IFolder previewFolder;
 
-   private static final String FILENAME_WARNING_MESSAGE =
-      "\n\nis approaching a large size which may cause the opening application to error. " + "\nSuggest moving your workspace to avoid potential errors. ";
-
    private static final Random generator = new Random();
    private static final DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
    private static final int FILENAME_LIMIT = 215;

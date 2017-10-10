@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 
 public class CollectionParser extends AbstractSaxHandler implements ICollectionSource {
 
@@ -29,14 +28,14 @@ public class CollectionParser extends AbstractSaxHandler implements ICollectionS
    }
 
    @Override
-   public void endElementFound(String uri, String localName, String name) throws SAXException {
+   public void endElementFound(String uri, String localName, String name) {
       for (SaxChunkCollector collector : collectors) {
          collector.endElementFound(localName, this);
       }
    }
 
    @Override
-   public void startElementFound(String uri, String localName, String name, Attributes attributes) throws SAXException {
+   public void startElementFound(String uri, String localName, String name, Attributes attributes) {
       for (SaxChunkCollector collector : collectors) {
          collector.startElementFound(localName, attributes, this);
       }

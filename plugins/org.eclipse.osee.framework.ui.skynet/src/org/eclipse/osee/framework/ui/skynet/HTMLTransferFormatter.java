@@ -34,6 +34,7 @@ public class HTMLTransferFormatter {
    private static final String END = "</A>";
    private static IPreferenceStore preferenceStore;
 
+   @SuppressWarnings("deprecation")
    private synchronized static IPreferenceStore getPreferenceStore() {
       if (preferenceStore == null) {
          preferenceStore = new ScopedPreferenceStore(new InstanceScope(), CoreClientConstants.getBundleId());

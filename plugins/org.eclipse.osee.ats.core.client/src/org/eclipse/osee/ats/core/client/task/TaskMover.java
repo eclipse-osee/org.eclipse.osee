@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.core.client.task;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
@@ -26,10 +25,8 @@ public class TaskMover {
 
    private final IAtsTeamWorkflow newParent;
    private final List<? extends IAtsTask> tasks;
-   private final IAtsWorkDefinitionService workDefinitionAdmin;
 
-   public TaskMover(IAtsWorkDefinitionService workDefinitionAdmin, IAtsTeamWorkflow newParent, List<? extends IAtsTask> tasks) {
-      this.workDefinitionAdmin = workDefinitionAdmin;
+   public TaskMover(IAtsTeamWorkflow newParent, List<? extends IAtsTask> tasks) {
       this.newParent = newParent;
       this.tasks = tasks;
    }

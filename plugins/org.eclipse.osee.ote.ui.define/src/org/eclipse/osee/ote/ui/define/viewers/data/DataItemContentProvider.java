@@ -24,7 +24,7 @@ public class DataItemContentProvider implements ITreeContentProvider {
    @Override
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Collection) {
-         return ((Collection) parentElement).toArray();
+         return ((Collection<?>) parentElement).toArray();
       }
       if (parentElement instanceof DataItem) {
          return ((DataItem) parentElement).getChildren();
@@ -61,10 +61,12 @@ public class DataItemContentProvider implements ITreeContentProvider {
 
    @Override
    public void dispose() {
+      // do nothing
    }
 
    @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+      // do nothing
    }
 
 }

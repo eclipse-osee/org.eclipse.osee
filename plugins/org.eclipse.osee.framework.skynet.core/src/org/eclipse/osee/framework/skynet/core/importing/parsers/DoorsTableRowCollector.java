@@ -268,6 +268,7 @@ public class DoorsTableRowCollector {
 
    // currently used only for debugging purposes
    // this makes it simple to check the contents of the import using a diff
+   @SuppressWarnings("unused")
    private void outputHTML(String file) throws FileNotFoundException, UnsupportedEncodingException {
       String outputfile = String.format("%s%s.html", file, Lib.getDateTimeString());
       PrintWriter writer = new PrintWriter(outputfile, "UTF-8");

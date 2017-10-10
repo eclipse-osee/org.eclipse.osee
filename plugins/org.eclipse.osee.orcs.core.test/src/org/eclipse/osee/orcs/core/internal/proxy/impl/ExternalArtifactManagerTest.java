@@ -45,19 +45,19 @@ public class ExternalArtifactManagerTest {
    // @formatter:off
    @Mock private RelationManager relationManager;
    @Mock private OrcsSession session;
-   
+
    @Mock private ArtifactReadOnlyImpl readable1;
    @Mock private ArtifactReadOnlyImpl readable2;
    @Mock private ArtifactReadOnlyImpl readable3;
-   
+
    @Mock private Artifact artifact1;
    @Mock private Artifact artifact2;
    @Mock private Artifact artifact3;
-   
+
    @Mock private Attribute<Integer> attribute1;
    @Mock private Attribute<Integer> attribute2;
    @Mock private Attribute<Integer> attribute3;
-   
+
    @Mock private AttributeReadable<Integer> attributeReadable1;
    @Mock private AttributeReadable<Integer> attributeReadable2;
    @Mock private AttributeReadable<Integer> attributeReadable3;
@@ -153,7 +153,6 @@ public class ExternalArtifactManagerTest {
       checkProxied(expected.get(2), iterator.next());
    }
 
-   @SuppressWarnings("unchecked")
    @Test
    public void testAsAttributeReadables() {
       List<? extends Attribute<Integer>> expected = Arrays.asList(attribute1, attribute2, attribute3);

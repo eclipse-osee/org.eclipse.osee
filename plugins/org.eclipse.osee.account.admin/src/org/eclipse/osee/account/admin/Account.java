@@ -18,8 +18,6 @@ import org.eclipse.osee.framework.jdk.core.type.NamedId;
  */
 public interface Account extends NamedId {
 
-   Long getId();
-
    boolean isActive();
 
    String getEmail();

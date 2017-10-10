@@ -33,8 +33,4 @@ public class OseeMessagingStatusImpl implements OseeMessagingStatusCallback {
       OseeLog.log(clazz, Level.SEVERE, failureMessage, th);
    }
 
-   @Override
-   public void success() {
-   }
-
 }

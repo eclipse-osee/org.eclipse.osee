@@ -26,7 +26,7 @@ import java.util.HashMap;
 /**
  * Protocol 2-byte 1-byte 1-byte n-bytes <command_id> <n_params> [<type_id> <parma_value>]* For each type, the protocol
  * explicitly defines the format of the paramater value.
- * 
+ *
  * @author Ryan D. Brooks
  */
 public class TaskServerThread implements Runnable {
@@ -79,10 +79,6 @@ public class TaskServerThread implements Runnable {
       if (result == null) {
          return;
       }
-      if (result instanceof Object[]) {
-
-      }
-
    }
 
    public void registerCommand(int commandId, Command command) {
@@ -118,7 +114,7 @@ public class TaskServerThread implements Runnable {
     * unsigned 2-byte array element count, element data float_array 15 unsigned 2-byte array element count, element data
     * double_array 16 unsigned 2-byte array element count, element data string_array 17 unsigned 2-byte array element
     * count, element data
-    * 
+    *
     * @return Return next parameter reference
     */
    private Object readNextParameter(Parameter typeId) {

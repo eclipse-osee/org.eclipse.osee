@@ -29,6 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author Donald G. Dunne
  */
+@SuppressWarnings("rawtypes")
 public class HashCollection<K, V> {
 
    private boolean isSynchronized;

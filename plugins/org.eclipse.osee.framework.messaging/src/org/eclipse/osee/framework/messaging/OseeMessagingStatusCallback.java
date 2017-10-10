@@ -14,7 +14,10 @@ package org.eclipse.osee.framework.messaging;
  * @author Andrew M. Finkbeiner
  */
 public interface OseeMessagingStatusCallback {
-   void success();
+
+   default public void success() {
+      // do nothing
+   }
 
    void fail(Throwable th);
 }

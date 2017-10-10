@@ -162,10 +162,6 @@ public class RdfExplorer extends GenericViewPart implements IRebuildMenuListener
    private class OpenOnShowListener implements MenuListener {
       private final List<MenuItem> items = new LinkedList<>();
 
-      public void add(MenuItem item) {
-         items.add(item);
-      }
-
       @Override
       public void menuShown(MenuEvent e) {
          for (MenuItem item : items) {

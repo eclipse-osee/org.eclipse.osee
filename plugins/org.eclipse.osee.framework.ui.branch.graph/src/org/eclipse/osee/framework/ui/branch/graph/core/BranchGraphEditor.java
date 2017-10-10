@@ -92,6 +92,7 @@ public class BranchGraphEditor extends GraphicalEditorWithFlyoutPalette {
       Jobs.runInJob(task.getName(), task, Activator.class, Activator.PLUGIN_ID, true);
    }
 
+   @SuppressWarnings("rawtypes")
    @Override
    public Object getAdapter(Class adapter) {
       if (adapter == GraphicalViewer.class || adapter == EditPartViewer.class) {
@@ -149,6 +150,7 @@ public class BranchGraphEditor extends GraphicalEditorWithFlyoutPalette {
       return overviewOutlinePage;
    }
 
+   @SuppressWarnings("deprecation")
    @Override
    protected void configureGraphicalViewer() {
       super.configureGraphicalViewer();
@@ -230,10 +232,12 @@ public class BranchGraphEditor extends GraphicalEditorWithFlyoutPalette {
             viewer.setCustomizer(new PaletteCustomizer() {
                @Override
                public void revertToSaved() {
+                  // do nothing
                }
 
                @Override
                public void save() {
+                  // do nothing
                }
             });
             viewer.addDragSourceListener(new TemplateTransferDragSourceListener(viewer));
