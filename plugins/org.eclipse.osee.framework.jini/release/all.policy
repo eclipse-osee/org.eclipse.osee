@@ -1,6 +1,0 @@
-/* Security policy for non-secure Reggie */
-
-/* Grant all permissions to our classes */
-grant {
-    permission java.security.AllPermission;
-};

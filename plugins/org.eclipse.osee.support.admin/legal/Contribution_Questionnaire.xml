@@ -501,10 +501,6 @@
     <Cell><Data ss:Type="Number">7187</Data></Cell>
    </Row>
    <Row>
-    <Cell><Data ss:Type="String">org.eclipse.osee.framework.jini</Data></Cell>
-    <Cell><Data ss:Type="Number">1821</Data></Cell>
-   </Row>
-   <Row>
     <Cell><Data ss:Type="String">org.eclipse.osee.framework.messaging.event.skynet</Data></Cell>
     <Cell><Data ss:Type="Number">550</Data></Cell>
    </Row>

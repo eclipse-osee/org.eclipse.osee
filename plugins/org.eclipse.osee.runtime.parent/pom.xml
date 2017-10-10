@@ -23,8 +23,6 @@
 
 		<module>../../features/org.eclipse.osee.core.plugin.feature</module>
 
-		<module>../../plugins/org.eclipse.osee.framework.jini</module>
-
 		<module>../../plugins/org.eclipse.osee.framework.messaging</module>
 		<module>../../plugins/org.eclipse.osee.framework.messaging.test</module>
 

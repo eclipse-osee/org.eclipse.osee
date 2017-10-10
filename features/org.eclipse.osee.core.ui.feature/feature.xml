@@ -21,7 +21,6 @@
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="net.jini"/>
-      <import plugin="org.eclipse.osee.framework.jini"/>
       <import plugin="com.jcraft.jsch"/>
       <import plugin="org.apache.commons.lang"/>
       <import plugin="org.eclipse.osee.framework.core"/>
