@@ -16,7 +16,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.navigate.AtsNavigateViewItems;
+import org.eclipse.osee.ats.navigate.NavigateViewItems;
 import org.eclipse.osee.ats.navigate.NavigateView;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -57,7 +57,7 @@ public final class DeleteSearchAction extends Action {
             selected);
          ((Artifact) AtsClientService.get().getUserService().getCurrentUser().getStoreObject()).reloadAttributesAndRelations();
          if (NavigateView.getNavigateView() != null) {
-            AtsNavigateViewItems.refreshTopAtsSearchItem();
+            NavigateViewItems.refreshTopAtsSearchItem();
          }
          AWorkbench.popup("Search Deleted");
       }

@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.internal;
 import org.eclipse.osee.ats.navigate.NavigateView;
 import org.eclipse.osee.ats.walker.ActionWalkerView;
 import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer;
-import org.eclipse.osee.framework.ui.skynet.group.GroupExplorer;
 import org.eclipse.osee.framework.ui.skynet.search.QuickSearchView;
 import org.eclipse.osee.framework.ui.skynet.skywalker.arttype.ArtifactTypeWalker;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchView;
@@ -24,11 +23,13 @@ import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
 /**
+ * Single main OSEE Perspective
+ *
  * @author Donald G. Dunne
  */
-public class ATSPerspective implements IPerspectiveFactory {
+public class OseePerspective implements IPerspectiveFactory {
 
-   public static String ID = "org.eclipse.osee.ats.ATSPerspective";
+   public static String ID = "org.eclipse.osee.OseePerspective";
 
    @Override
    public void createInitialLayout(final IPageLayout layout) {
@@ -42,7 +43,6 @@ public class ATSPerspective implements IPerspectiveFactory {
 
       layout.addShowViewShortcut(ArtifactExplorer.VIEW_ID);
       layout.addShowViewShortcut(BranchView.VIEW_ID);
-      layout.addShowViewShortcut(GroupExplorer.VIEW_ID);
       layout.addShowViewShortcut(QuickSearchView.VIEW_ID);
       layout.addShowViewShortcut(ArtifactTypeWalker.VIEW_ID);
       layout.addShowViewShortcut("osee.admin.AdminView");
@@ -67,7 +67,6 @@ public class ATSPerspective implements IPerspectiveFactory {
          bottom.addView("org.eclipse.pde.runtime.LogView");
       }
       bottom.addView(BranchView.VIEW_ID);
-      bottom.addView(GroupExplorer.VIEW_ID);
       bottom.addView(NewSearchUI.SEARCH_VIEW_ID);
       bottom.addPlaceholder(MergeView.VIEW_ID);
       bottom.addView(ActionWalkerView.VIEW_ID);

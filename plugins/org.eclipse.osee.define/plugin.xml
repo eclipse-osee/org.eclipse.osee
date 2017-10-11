@@ -37,45 +37,6 @@
             </description>
          </wizard>
       </extension>
-
-      <extension
-            point="org.eclipse.ui.perspectives">
-         <perspective
-               class="org.eclipse.osee.define.internal.DefinePerspectiveFactory"
-               fixed="false"
-               icon="images/laser_16_16.gif"
-               id="osee.define.PerspectiveFactory"
-               name="Define"/>
-      </extension>
-      <extension
-            point="org.eclipse.ui.perspectiveExtensions">
-         <perspectiveExtension targetID="org.eclipse.ui.resourcePerspective">
-            <perspectiveShortcut id="osee.define.PerspectiveFactory"/>
-         </perspectiveExtension>
-         <perspectiveExtension targetID="org.eclipse.osee.ats.ATSPerspective">
-            <perspectiveShortcut id="osee.define.PerspectiveFactory"/>
-         </perspectiveExtension>
-         <perspectiveExtension targetID="org.eclipse.jdt.ui.JavaPerspective">
-            <perspectiveShortcut id="osee.define.PerspectiveFactory"/>
-         </perspectiveExtension>
-         <perspectiveExtension targetID="osee.define.PerspectiveFactory">
-            <perspectiveShortcut id="org.eclipse.jdt.ui.JavaPerspective"/>
-            <perspectiveShortcut id="org.eclipse.ui.resourcePerspective"/>
-            <perspectiveShortcut id="org.eclipse.osee.ats.ATSPerspective"/>
-         </perspectiveExtension>
-      </extension>
-   <extension
-      id="org.eclipse.osee.ats"
-      name="OSEE"
-      point="org.eclipse.ui.views">
-      <view
-            allowMultiple="false"
-            category="osee.jdk.core.category"
-            class="org.eclipse.osee.define.navigate.DefineNavigateView"
-            icon="images/defineNav.gif"
-            id="org.eclipse.osee.define.DefineNavigateView"
-            name="Define Navigator"/>
-       </extension>
    <extension
          point="org.eclipse.osee.framework.ui.skynet.IgnorePublishAttribute">
       <attribute
@@ -212,38 +173,7 @@
             name="OSEE Category"
             id="osee.product.commands.category">
       </category>
-      <command
-            name="OSEE Define"
-            categoryId="osee.product.commands.category"
-            id="org.eclipse.osee.define.internal.OpenDefinePerspective">
-      </command>
    </extension>
-   <extension point="org.eclipse.ui.handlers">
-      <handler
-            commandId="org.eclipse.osee.define.internal.OpenDefinePerspective"
-            class="org.eclipse.osee.define.internal.OpenDefinePerspectiveHandler"> 
-      </handler>
-   </extension>
-   <extension point="org.eclipse.ui.commandImages">
-     <image commandId="org.eclipse.osee.define.internal.OpenDefinePerspective" icon="images/laser_16_16.gif"> </image>
-   </extension>
-   <extension
-         point="org.eclipse.ui.menus">
-      <menuContribution
-            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
-         <menu
-               label="OSEE"
-               mnemonic="O"
-               id="osee.product.oseeMenu">
-            <command commandId="org.eclipse.osee.define.internal.OpenDefinePerspective"
-                  mnemonic="D"
-                  id="org.eclipse.osee.define.internal.OpenDefinePerspective">
-            </command>
-         </menu>
-      </menuContribution>
-   </extension>
-
-
  <extension
        id="org.eclipse.osee.define.blam.operation.PublishSystemLevelSSDD"
        name="org.eclipse.osee.define.blam.operation.PublishSystemLevelSSDD"

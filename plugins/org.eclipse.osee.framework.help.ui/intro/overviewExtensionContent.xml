@@ -13,7 +13,7 @@
 			<link label="OSEE"
 				url="http://org.eclipse.ui.intro/runAction?pluginId=org.eclipse.osee.framework.help.ui&amp;class=org.eclipse.mylyn.internal.tasks.ui.actions.ShowTasksUiLegendAction&amp;id=org.eclipse.mylyn.doc.legend.show.action"
 				id="osee-overview" style-id="content-link">
-				<text>See the OSEE Define Perspective</text>
+				<text>See the OSEE Perspective</text>
 			</link>
 		</group>
 	</extensionContent>

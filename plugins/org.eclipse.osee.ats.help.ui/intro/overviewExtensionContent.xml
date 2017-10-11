@@ -6,7 +6,7 @@
 			<link label="ATS"
 				url="http://org.eclipse.ui.intro/runAction?pluginId=org.eclipse.osee.ats.help.ui&amp;class=org.eclipse.mylyn.internal.tasks.ui.actions.ShowTasksUiLegendAction&amp;id=org.eclipse.mylyn.doc.legend.show.action"
 				id="ats-overview" style-id="content-link">
-				<text>See the OSEE Define Perspective</text>
+				<text>See the OSEE Perspective</text>
 			</link>
 		</group>
 	</extensionContent>

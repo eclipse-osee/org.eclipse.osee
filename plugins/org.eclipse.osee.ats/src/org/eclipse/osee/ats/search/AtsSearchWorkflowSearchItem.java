@@ -41,7 +41,7 @@ import org.eclipse.ui.forms.IManagedForm;
 public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem {
 
    private static final AtsImage IMAGE = AtsImage.SEARCH;
-   private static final String TITLE = "ATS Search";
+   private static final String TITLE = "Action Search";
    protected WorldSearchItem searchItem;
    private long searchUuid = Lib.generateUuid();
    private String searchName = "";

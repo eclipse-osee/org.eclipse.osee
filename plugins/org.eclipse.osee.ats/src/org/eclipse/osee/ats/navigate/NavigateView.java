@@ -73,7 +73,7 @@ import org.eclipse.ui.progress.UIJob;
  */
 public class NavigateView extends ViewPart implements IXNavigateEventListener, IRefreshActionHandler {
 
-   public static final String VIEW_ID = "org.eclipse.osee.ats.navigate.NavigateView";
+   public static final String VIEW_ID = "org.eclipse.osee.navigate.NavigateView";
    private static final String INPUT = "filter";
    private static final String FILTER_STR = "filterStr";
 
@@ -92,7 +92,7 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
    }
 
    public void refreshData() {
-      OperationBuilder builder = Operations.createBuilder("Load ATS Navigator");
+      OperationBuilder builder = Operations.createBuilder("Load OSEE Navigator");
       builder.addOp(new AtsNavigateViewItemsOperation());
       Operations.executeAsJob(builder.build(), false, Job.LONG, new ReloadJobChangeAdapter(this));
    }
@@ -107,7 +107,7 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
 
       @Override
       public void done(IJobChangeEvent event) {
-         Job job = new UIJob("Load ATS Navigator") {
+         Job job = new UIJob("Load OSEE Navigator") {
 
             private Label userLabel;
 
@@ -126,7 +126,7 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
 
                      if (Widgets.isAccessible(parent)) {
 
-                        xNavComp = new AtsNavigateComposite(AtsNavigateViewItems.getInstance(), parent, SWT.NONE,
+                        xNavComp = new AtsNavigateComposite(NavigateViewItems.getInstance(), parent, SWT.NONE,
                            savedFilterStr);
 
                         XNavigateEventManager.register(navView);
@@ -264,7 +264,7 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
             return (NavigateView) page.showView(NavigateView.VIEW_ID);
          } catch (PartInitException e1) {
             MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-               "Launch Error", "Couldn't Launch OSEE ATS NavigateView " + e1.getMessage());
+               "Launch Error", "Couldn't Launch OSEE NavigateView " + e1.getMessage());
          }
       }
       return null;

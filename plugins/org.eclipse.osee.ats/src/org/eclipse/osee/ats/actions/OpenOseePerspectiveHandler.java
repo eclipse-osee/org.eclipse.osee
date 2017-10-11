@@ -12,17 +12,17 @@ package org.eclipse.osee.ats.actions;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.osee.ats.internal.ATSPerspective;
+import org.eclipse.osee.ats.internal.OseePerspective;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 
 /**
  * @author Donald G. Dunne
  */
-public class OpenAtsPerspectiveHandler extends AbstractHandler {
+public class OpenOseePerspectiveHandler extends AbstractHandler {
 
    @Override
    public Object execute(ExecutionEvent event) {
-      AWorkbench.openPerspective(ATSPerspective.ID);
+      AWorkbench.openPerspective(OseePerspective.ID);
       return null;
    }
 }

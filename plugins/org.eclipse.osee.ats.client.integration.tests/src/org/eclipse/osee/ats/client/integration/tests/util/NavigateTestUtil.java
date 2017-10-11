@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.client.integration.tests.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.navigate.AtsNavigateViewItems;
+import org.eclipse.osee.ats.navigate.NavigateViewItems;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -77,7 +77,7 @@ public final class NavigateTestUtil {
    private static synchronized void ensurePopulated() {
       if (!ensurePopulatedRanOnce) {
          ensurePopulatedRanOnce = true;
-         for (XNavigateItem item : AtsNavigateViewItems.getInstance().getSearchNavigateItems()) {
+         for (XNavigateItem item : NavigateViewItems.getInstance().getSearchNavigateItems()) {
             addToMap(item);
          }
       }

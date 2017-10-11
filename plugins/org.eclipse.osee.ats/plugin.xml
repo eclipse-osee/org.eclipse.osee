@@ -41,12 +41,12 @@
       <extension
          point="org.eclipse.ui.newWizards">
       <category
-            id="org.eclipse.osee.ats.category"
-            name="OSEE ATS">
+            id="org.eclipse.osee.category"
+            name="OSEE">
       </category>
       <wizard
             canFinishEarly="false"
-            category="org.eclipse.osee.ats.category"
+            category="org.eclipse.osee.category"
             class="org.eclipse.osee.ats.actions.wizard.NewActionWizard"
             hasPages="true"
             icon="images/action.gif"
@@ -55,7 +55,7 @@
       </wizard>
       <wizard
             canFinishEarly="false"
-            category="org.eclipse.osee.ats.category"
+            category="org.eclipse.osee.category"
             class="org.eclipse.osee.ats.config.wizard.AtsConfigWizard"
             hasPages="true"
             icon="images/workflow.gif"
@@ -65,11 +65,11 @@
    </extension>
 <extension point="org.eclipse.ui.perspectives">
    <perspective
-         name="ATS"
-         class="org.eclipse.osee.ats.internal.ATSPerspective"
+         name="OSEE"
+         class="org.eclipse.osee.ats.internal.OseePerspective"
          fixed="false"
-         id="org.eclipse.osee.ats.ATSPerspective"
-         icon="images/atsPerspective.gif">
+         id="org.eclipse.osee.OseePerspective"
+         icon="images/osee_16.png">
    </perspective>
    <perspective
          class="org.eclipse.osee.ats.review.ReviewPerspective"
@@ -81,39 +81,33 @@
       <extension
             point="org.eclipse.ui.perspectiveExtensions">
          <perspectiveExtension targetID="org.eclipse.ui.resourcePerspective">
-            <perspectiveShortcut id="org.eclipse.osee.ats.ATSPerspective"/>
-         </perspectiveExtension>
-         <perspectiveExtension targetID="osee.define.PerspectiveFactory">
-            <perspectiveShortcut id="org.eclipse.osee.ats.ATSPerspective"/>
+            <perspectiveShortcut id="org.eclipse.osee.OseePerspective"/>
          </perspectiveExtension>
          <perspectiveExtension targetID="org.eclipse.jdt.ui.JavaPerspective">
-            <perspectiveShortcut id="org.eclipse.osee.ats.ATSPerspective"/>
+            <perspectiveShortcut id="org.eclipse.osee.OseePerspective"/>
          </perspectiveExtension>
-         <perspectiveExtension targetID="org.eclipse.osee.ats.ATSPerspective">
+         <perspectiveExtension targetID="org.eclipse.osee.OseePerspective">
             <perspectiveShortcut id="org.eclipse.jdt.ui.JavaPerspective"/>
             <perspectiveShortcut id="org.eclipse.ui.resourcePerspective"/>
-            <perspectiveShortcut id="osee.define.PerspectiveFactory"/>
-            <perspectiveShortcut id="osee.define.PerspectiveFactory"/>
          </perspectiveExtension>
       </extension>
-
    <extension
       id="org.eclipse.osee.ats"
       name="ATS"
       point="org.eclipse.ui.views">
     <category
-         name="OSEE ATS"
-         id="org.eclipse.osee.ats.category"/>
+         name="OSEE"
+         id="org.eclipse.osee.category"/>
     <category
          id="org.eclipse.osee.ats.review.category"
          name="OSEE Review">
     </category>
     <view
          class="org.eclipse.osee.ats.navigate.NavigateView"
-         icon="images/atsNavigate.gif"
-         category="org.eclipse.osee.ats.category"
-         name="ATS Navigator"
-         id="org.eclipse.osee.ats.navigate.NavigateView">
+         icon="images/osee_16.png"
+         category="org.eclipse.osee.category"
+         name="OSEE Navigator"
+         id="org.eclipse.osee.navigate.NavigateView">
    </view>
     <view
          class="org.eclipse.osee.ats.walker.ActionWalkerView"
@@ -290,7 +284,7 @@
    <extension
          point="org.eclipse.osee.framework.ui.plugin.XCommonNavigateItem">
       <XCommonNavigateItem
-            classname="org.eclipse.osee.ats.navigate.AtsNavigateViewItems">
+            classname="org.eclipse.osee.ats.navigate.NavigateViewItems">
       </XCommonNavigateItem>
       <XCommonNavigateItem
             classname="org.eclipse.osee.ats.review.ReviewNavigateViewItems">
@@ -305,9 +299,9 @@
             id="osee.ats.product.commands.category">
       </category>
       <command
-            name="OSEE ATS"
-            categoryId="osee.ats.product.commands.category"
-            id="org.eclipse.osee.ats.actions.OpenAtsPerspective">
+            name="OSEE"
+            categoryId="osee.product.commands.category"
+            id="org.eclipse.osee.actions.OpenOseePerspective">
       </command>
       <command
             name="OSEE Review"
@@ -317,8 +311,8 @@
    </extension>
    <extension point="org.eclipse.ui.handlers">
       <handler
-            commandId="org.eclipse.osee.ats.actions.OpenAtsPerspective"
-            class="org.eclipse.osee.ats.actions.OpenAtsPerspectiveHandler"> 
+            commandId="org.eclipse.osee.actions.OpenOseePerspective"
+            class="org.eclipse.osee.ats.actions.OpenOseePerspectiveHandler"> 
       </handler>
       <handler
             commandId="org.eclipse.osee.ats.actions.OpenReviewPerspective"
@@ -330,7 +324,7 @@
       </handler>
    </extension>
    <extension point="org.eclipse.ui.commandImages">
-     <image commandId="org.eclipse.osee.ats.actions.OpenAtsPerspective" icon="images/action.gif"> </image>
+     <image commandId="org.eclipse.osee.actions.OpenOseePerspective" icon="images/osee_16.png"> </image>
      <image commandId="org.eclipse.osee.ats.actions.OpenReviewPerspective" icon="images/review.gif"> </image>
    </extension>
    <extension
@@ -341,9 +335,9 @@
                label="OSEE"
                mnemonic="O"
                id="osee.product.oseeMenu">
-            <command commandId="org.eclipse.osee.ats.actions.OpenAtsPerspective"
+            <command commandId="org.eclipse.osee.actions.OpenOseePerspective"
                   mnemonic="A"
-                  id="org.eclipse.osee.ats.actions.OpenAtsPerspective">
+                  id="org.eclipse.osee.actions.OpenOseePerspective">
             </command>
             <command commandId="org.eclipse.osee.ats.actions.OpenReviewPerspective"
                   mnemonic="R"

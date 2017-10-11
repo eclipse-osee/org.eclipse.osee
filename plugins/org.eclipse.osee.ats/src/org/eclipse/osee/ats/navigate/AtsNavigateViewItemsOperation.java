@@ -25,7 +25,7 @@ public class AtsNavigateViewItemsOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      AtsNavigateViewItems.getInstance().getSearchNavigateItems();
+      NavigateViewItems.getInstance().getSearchNavigateItems();
    }
 
 }

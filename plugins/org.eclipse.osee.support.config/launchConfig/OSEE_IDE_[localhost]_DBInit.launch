@@ -2,7 +2,7 @@
 <launchConfiguration type="org.eclipse.pde.ui.RuntimeWorkbench">
 <setAttribute key="additional_plugins">
 <setEntry value="com.google.guava:15.0.0.v201403281430:default:false"/>
-<setEntry value="org.eclipse.ui.views.log:1.0.600.v20150513-1840:default:true"/>
+<setEntry value="org.eclipse.ui.views.log:1.2.0.v20160418-1724:default:true"/>
 <setEntry value="org.postgresql.driver:8.3.0.qualifier:default:true"/>
 </setAttribute>
 <booleanAttribute key="append.args" value="true"/>
@@ -36,7 +36,6 @@
 <setAttribute key="selected_features">
 <setEntry value="org.eclipse.cvs.source:default"/>
 <setEntry value="org.eclipse.cvs:default"/>
-<setEntry value="org.eclipse.draw2d:default"/>
 <setEntry value="org.eclipse.e4.rcp.source:default"/>
 <setEntry value="org.eclipse.e4.rcp:default"/>
 <setEntry value="org.eclipse.emf.codegen.ecore.ui:default"/>
@@ -68,7 +67,6 @@
 <setEntry value="org.eclipse.equinox.p2.rcp.feature:default"/>
 <setEntry value="org.eclipse.equinox.p2.user.ui.source:default"/>
 <setEntry value="org.eclipse.equinox.p2.user.ui:default"/>
-<setEntry value="org.eclipse.gef:default"/>
 <setEntry value="org.eclipse.help.source:default"/>
 <setEntry value="org.eclipse.help:default"/>
 <setEntry value="org.eclipse.jdt.source:default"/>
@@ -79,7 +77,6 @@
 <setEntry value="org.eclipse.osee.ats.feature:default"/>
 <setEntry value="org.eclipse.osee.client.all.feature:default"/>
 <setEntry value="org.eclipse.osee.client.feature:default"/>
-<setEntry value="org.eclipse.osee.client.ote.feature:default"/>
 <setEntry value="org.eclipse.osee.core.feature:default"/>
 <setEntry value="org.eclipse.osee.core.plugin.feature:default"/>
 <setEntry value="org.eclipse.osee.core.runtime.feature:default"/>
@@ -95,7 +92,6 @@
 <setEntry value="org.eclipse.rcp.source:default"/>
 <setEntry value="org.eclipse.rcp:default"/>
 <setEntry value="org.eclipse.sdk:default"/>
-<setEntry value="org.eclipse.team.svn:default"/>
 <setEntry value="org.eclipse.xtend.sdk:default"/>
 <setEntry value="org.eclipse.xtext.docs:default"/>
 <setEntry value="org.eclipse.xtext.examples.source:default"/>
