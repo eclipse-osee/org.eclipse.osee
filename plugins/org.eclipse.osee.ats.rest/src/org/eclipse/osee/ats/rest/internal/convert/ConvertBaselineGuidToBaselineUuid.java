@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.rest.internal.convert;
 
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.rest.IAtsServer;
@@ -42,7 +42,7 @@ public class ConvertBaselineGuidToBaselineUuid extends AbstractConvertGuidToUuid
    }
 
    @Override
-   public void run(XResultData data, boolean reportOnly, IAtsServices services) {
+   public void run(XResultData data, boolean reportOnly, AtsApi atsApi) {
       if (reportOnly) {
          data.log("REPORT ONLY - Changes not persisted\n");
       }

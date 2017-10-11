@@ -16,7 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
@@ -41,7 +41,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
 
    private OrcsApi orcsApi;
    private Log logger;
-   private IAtsServices services;
+   private AtsApi atsApi;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -52,11 +52,11 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    private ArtifactReadable getArtifact(IAtsObject atsObject) {
-      return (ArtifactReadable) services.getArtifact(atsObject);
+      return (ArtifactReadable) atsApi.getArtifact(atsObject);
    }
 
    private ArtifactReadable getArtifact(ArtifactId artifact) {
-      return (ArtifactReadable) services.getArtifact(artifact);
+      return (ArtifactReadable) atsApi.getArtifact(artifact);
    }
 
    public void start() {
@@ -272,8 +272,8 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
       return getAttributes(workItem.getStoreObject());
    }
 
-   public void setServices(IAtsServices services) {
-      this.services = services;
+   public void setServices(AtsApi atsApi) {
+      this.atsApi = atsApi;
    }
 
 }

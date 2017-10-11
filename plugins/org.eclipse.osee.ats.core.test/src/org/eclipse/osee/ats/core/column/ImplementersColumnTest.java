@@ -14,7 +14,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
@@ -41,7 +41,7 @@ public class ImplementersColumnTest extends AbstractUserTest {
    @Mock private IAtsWorkItem workItem2;
    @Mock private IAtsStateManager stateMgr2;
    @Mock private AtsActionGroup group;
-   @Mock private IAtsServices services;
+   @Mock private AtsApi atsApi;
    @Mock private IAtsUserService userService;
    @Mock private IAttributeResolver attributeResolver;
    // @formatter:on
@@ -53,14 +53,14 @@ public class ImplementersColumnTest extends AbstractUserTest {
    @Before
    public void setup() {
       super.setup();
-      when(services.getUserService()).thenReturn(userService);
+      when(atsApi.getUserService()).thenReturn(userService);
       when(workItem.getStateMgr()).thenReturn(stateMgr);
       when(workItem2.getStateMgr()).thenReturn(stateMgr2);
-      when(services.getUserService()).thenReturn(userService);
-      when(services.getAttributeResolver()).thenReturn(attributeResolver);
+      when(atsApi.getUserService()).thenReturn(userService);
+      when(atsApi.getAttributeResolver()).thenReturn(attributeResolver);
 
       impService = new AtsImplementersService();
-      assigneeColumn = new AssigneeColumn(services);
+      assigneeColumn = new AssigneeColumn(atsApi);
    }
 
    public void testGetImplementersStrFromInWorkWorkflow_null() {

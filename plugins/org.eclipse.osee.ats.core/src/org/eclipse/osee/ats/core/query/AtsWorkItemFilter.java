@@ -17,7 +17,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.query.IAtsWorkItemFilter;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -34,16 +34,16 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 public class AtsWorkItemFilter implements IAtsWorkItemFilter {
 
    private Collection<? extends IAtsWorkItem> items;
-   private IAtsServices services;
+   private AtsApi atsApi;
 
-   public AtsWorkItemFilter(IAtsServices services) {
-      this(null, services);
-      this.services = services;
+   public AtsWorkItemFilter(AtsApi atsApi) {
+      this(null, atsApi);
+      this.atsApi = atsApi;
    }
 
-   public AtsWorkItemFilter(Collection<? extends IAtsWorkItem> workItems, IAtsServices services) {
+   public AtsWorkItemFilter(Collection<? extends IAtsWorkItem> workItems, AtsApi atsApi) {
       this.items = new ArrayList<>(workItems);
-      this.services = services;
+      this.atsApi = atsApi;
    }
 
    @Override
@@ -51,7 +51,7 @@ public class AtsWorkItemFilter implements IAtsWorkItemFilter {
       boolean found = false;
       for (IAtsWorkItem item : new CopyOnWriteArrayList<IAtsWorkItem>(items)) {
          for (IArtifactType matchType : artifactType) {
-            if (services.getArtifactResolver().isOfType(item, matchType)) {
+            if (atsApi.getArtifactResolver().isOfType(item, matchType)) {
                found = true;
                break;
             }
@@ -120,7 +120,7 @@ public class AtsWorkItemFilter implements IAtsWorkItemFilter {
       if (matchValues != null && !matchValues.isEmpty()) {
          for (IAtsWorkItem workItem : new CopyOnWriteArrayList<IAtsWorkItem>(items)) {
             Collection<Object> currAttrValues =
-               services.getAttributeResolver().getAttributeValues(workItem, attributeType);
+               atsApi.getAttributeResolver().getAttributeValues(workItem, attributeType);
             boolean found = false;
             for (Object matchValue : matchValues) {
                if (currAttrValues.contains(matchValue)) {

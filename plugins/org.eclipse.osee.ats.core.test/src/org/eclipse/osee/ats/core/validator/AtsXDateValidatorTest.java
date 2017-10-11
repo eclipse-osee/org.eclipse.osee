@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
@@ -29,7 +29,7 @@ import org.mockito.Mock;
  * @author Donald G. Dunne
  */
 public class AtsXDateValidatorTest {
-   private IAtsServices atsServices;
+   private AtsApi atsServices;
 
    // @formatter:off
    @Mock IAtsWorkItem workItem;

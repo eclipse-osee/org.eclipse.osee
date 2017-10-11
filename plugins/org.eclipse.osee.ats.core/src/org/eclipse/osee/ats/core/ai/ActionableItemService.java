@@ -16,8 +16,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -39,12 +39,12 @@ public class ActionableItemService implements IAtsActionableItemService {
 
    private final IAttributeResolver attrResolver;
    private final IAtsStoreService atsStoreService;
-   private final IAtsServices services;
+   private final AtsApi atsApi;
 
-   public ActionableItemService(IAttributeResolver attrResolver, IAtsStoreService atsStoreService, IAtsServices services) {
+   public ActionableItemService(IAttributeResolver attrResolver, IAtsStoreService atsStoreService, AtsApi atsApi) {
       this.attrResolver = attrResolver;
       this.atsStoreService = atsStoreService;
-      this.services = services;
+      this.atsApi = atsApi;
    }
 
    @Override
@@ -55,9 +55,9 @@ public class ActionableItemService implements IAtsActionableItemService {
    }
 
    private void getActiveActionableItemsAndChildrenRecurse(IAtsTeamDefinition teamDef, List<IAtsActionableItem> ais) {
-      for (ArtifactId aiArt : services.getRelationResolver().getRelated(teamDef,
+      for (ArtifactId aiArt : atsApi.getRelationResolver().getRelated(teamDef,
          AtsRelationTypes.TeamActionableItem_ActionableItem)) {
-         IAtsActionableItem ai = services.getConfigItem(aiArt);
+         IAtsActionableItem ai = atsApi.getConfigItem(aiArt);
          if (ai.isActionable()) {
             ais.add(ai);
          }
@@ -72,7 +72,7 @@ public class ActionableItemService implements IAtsActionableItemService {
       Set<IAtsActionableItem> ais = new HashSet<>();
       if (!atsStoreService.isDeleted(atsObject)) {
          for (ArtifactId id : getActionableItemIds(atsObject)) {
-            IAtsActionableItem aia = services.getConfigItem(id);
+            IAtsActionableItem aia = atsApi.getConfigItem(id);
             if (aia == null) {
                OseeLog.logf(ActionableItemService.class, Level.SEVERE,
                   "Actionable Item Guid [%s] from [%s] doesn't match item in AtsConfigCache", id,

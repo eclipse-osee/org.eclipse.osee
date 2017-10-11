@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.core.column;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
@@ -27,8 +27,8 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class TeamColumn extends AbstractServicesColumn {
 
-   public TeamColumn(IAtsServices services) {
-      super(services);
+   public TeamColumn(AtsApi atsApi) {
+      super(atsApi);
    }
 
    @Override
@@ -41,7 +41,7 @@ public class TeamColumn extends AbstractServicesColumn {
       }
       if (!Strings.isValid(result) && atsObject instanceof IAtsAbstractReview) {
          IAtsAbstractReview review = (IAtsAbstractReview) atsObject;
-         if (services.getReviewService().isStandAloneReview(review)) {
+         if (atsApi.getReviewService().isStandAloneReview(review)) {
             List<IAtsTeamDefinition> teams = new ArrayList<>();
             for (IAtsActionableItem ai : review.getActionableItems()) {
                if (ai.getTeamDefinitionInherited() != null) {

@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.rest;
 
 import java.util.Collection;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.notify.IAtsNotifier;
@@ -34,7 +34,7 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 /**
  * @author Donald G Dunne
  */
-public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFactoryProvider, IAtsCacheProvider, IAtsReviewServiceProvider, IAtsBranchServiceProvider, IArtifactProvider {
+public interface IAtsServer extends AtsApi, IAtsNotifier, IAtsConfigItemFactoryProvider, IAtsCacheProvider, IAtsReviewServiceProvider, IAtsBranchServiceProvider, IArtifactProvider {
 
    OrcsApi getOrcsApi();
 
@@ -50,7 +50,7 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
 
    boolean isProduction();
 
-   IAtsServices getServices();
+   AtsApi getServices();
 
    void setEmailEnabled(boolean emailEnabled);
 

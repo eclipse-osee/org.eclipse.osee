@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.core.internal.column.ev;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.column.IAtsColumn;
 import org.eclipse.osee.ats.api.column.IAtsColumnId;
 import org.eclipse.osee.ats.api.column.IAtsColumnService;
@@ -57,10 +57,10 @@ public class AtsColumnService implements IAtsColumnService {
 
    public static final String CELL_ERROR_PREFIX = "!Error";
    private Map<String, IAtsColumn> columnIdToAtsColumn;
-   private final IAtsServices services;
+   private final AtsApi atsApi;
 
-   public AtsColumnService(IAtsServices services) {
-      this.services = services;
+   public AtsColumnService(AtsApi atsApi) {
+      this.atsApi = atsApi;
    }
 
    @Override
@@ -76,9 +76,9 @@ public class AtsColumnService implements IAtsColumnService {
       }
 
       // Add from database configurations
-      for (AtsAttributeValueColumn attrCol : services.getConfigurations().getViews().getAttrColumns()) {
+      for (AtsAttributeValueColumn attrCol : atsApi.getConfigurations().getViews().getAttrColumns()) {
          if (id.equals(attrCol.getId())) {
-            column = new AtsAttributeValueColumnHandler(attrCol, services);
+            column = new AtsAttributeValueColumnHandler(attrCol, atsApi);
             break;
          }
       }
@@ -86,89 +86,89 @@ public class AtsColumnService implements IAtsColumnService {
       // Add from coded columns; this will only happen once per column as they're cached after this check
       if (column == null) {
          if (id.equals(AtsColumnId.ActionableItem.getId())) {
-            column = new ActionableItemsColumn(services);
+            column = new ActionableItemsColumn(atsApi);
          } else if (id.equals(AtsColumnId.LegacyPcrId.getId())) {
-            column = new AtsAttributeValueColumnHandler(AtsColumnToken.LegacyPcrIdColumn, services);
+            column = new AtsAttributeValueColumnHandler(AtsColumnToken.LegacyPcrIdColumn, atsApi);
          } else if (id.equals(AtsColumnId.Team.getId())) {
-            column = new TeamColumn(services);
+            column = new TeamColumn(atsApi);
          } else if (id.equals(AtsColumnId.Assignees.getId())) {
-            column = new AssigneeColumn(services);
+            column = new AssigneeColumn(atsApi);
          } else if (id.equals(AtsColumnId.AtsId.getId())) {
-            column = new AtsIdColumn(services);
+            column = new AtsIdColumn(atsApi);
          } else if (id.equals(AtsColumnId.ActivityId.getId())) {
-            column = new WorkPackageColumn(services.getEarnedValueServiceProvider());
+            column = new WorkPackageColumn(atsApi.getEarnedValueServiceProvider());
          } else if (id.equals(AtsColumnId.Implementers.getId())) {
-            column = new ImplementerColumn(services);
+            column = new ImplementerColumn(atsApi);
          } else if (id.equals(AtsColumnId.ChangeType.getId())) {
-            column = new AtsAttributeValueColumnHandler(AtsColumnToken.ChangeTypeColumn, services);
+            column = new AtsAttributeValueColumnHandler(AtsColumnToken.ChangeTypeColumn, atsApi);
          } else if (id.equals(AtsColumnId.CreatedDate.getId())) {
-            column = new CreatedDateColumn(services);
+            column = new CreatedDateColumn(atsApi);
          } else if (id.equals(AtsColumnId.CompletedDate.getId())) {
-            column = new CompletedDateColumn(services);
+            column = new CompletedDateColumn(atsApi);
          } else if (id.equals(AtsColumnId.CancelledDate.getId())) {
-            column = new CancelledDateColumn(services);
+            column = new CancelledDateColumn(atsApi);
          } else if (id.equals(AtsColumnId.CancelledBy.getId())) {
-            column = new CancelledByColumn(services);
+            column = new CancelledByColumn(atsApi);
          } else if (id.equals(AtsColumnId.CompletedBy.getId())) {
-            column = new CompletedByColumn(services);
+            column = new CompletedByColumn(atsApi);
          } else if (id.equals(AtsColumnId.CompletedCancelledBy.getId())) {
-            column = new CompletedCancelledByColumn(services);
+            column = new CompletedCancelledByColumn(atsApi);
          } else if (id.equals(AtsColumnId.CompletedCancelledDate.getId())) {
-            column = new CompletedCancelledDateColumn(services);
+            column = new CompletedCancelledDateColumn(atsApi);
          } else if (id.equals(AtsColumnId.Notes.getId())) {
-            column = new AtsAttributeValueColumnHandler(AtsColumnToken.NotesColumn, services);
+            column = new AtsAttributeValueColumnHandler(AtsColumnToken.NotesColumn, atsApi);
          } else if (id.equals(AtsColumnId.State.getId())) {
-            column = new StateColumn(services);
+            column = new StateColumn(atsApi);
          } else if (id.equals(AtsColumnId.Name.getId()) || id.equals(AtsColumnId.Title.getId())) {
-            column = new TitleColumn(services);
+            column = new TitleColumn(atsApi);
          } else if (id.equals(AtsColumnId.Type.getId())) {
-            column = new TypeColumn(services);
+            column = new TypeColumn(atsApi);
          } else if (id.equals(AtsColumnId.PercentCompleteWorkflow.getId())) {
-            column = new AtsAttributeValueColumnHandler(AtsColumnToken.PercentCompleteWorkflowColumn, services);
+            column = new AtsAttributeValueColumnHandler(AtsColumnToken.PercentCompleteWorkflowColumn, atsApi);
          } else if (id.equals(AtsColumnId.PercentCompleteTasks.getId())) {
-            column = new PercentCompleteTasksColumn(services);
+            column = new PercentCompleteTasksColumn(atsApi);
          } else if (id.equals(AtsColumnId.Uuid.getId())) {
-            column = new UuidColumn(services);
+            column = new UuidColumn(atsApi);
          } else if (id.equals(AtsColumnId.Priority.getId())) {
-            column = new AtsAttributeValueColumnHandler(AtsColumnToken.PriorityColumn, services);
+            column = new AtsAttributeValueColumnHandler(AtsColumnToken.PriorityColumn, atsApi);
          } else if (id.equals(AtsColumnId.WorkPackageName.getId())) {
-            column = new WorkPackageNameColumn(services.getEarnedValueServiceProvider(), services);
+            column = new WorkPackageNameColumn(atsApi.getEarnedValueServiceProvider(), atsApi);
          } else if (id.equals(AtsColumnId.WorkPackageId.getId())) {
-            column = new WorkPackageIdColumn(services.getEarnedValueServiceProvider(), services);
+            column = new WorkPackageIdColumn(atsApi.getEarnedValueServiceProvider(), atsApi);
          } else if (id.equals(AtsColumnId.WorkPackageType.getId())) {
-            column = new WorkPackageTypeColumn(services.getEarnedValueServiceProvider(), services);
+            column = new WorkPackageTypeColumn(atsApi.getEarnedValueServiceProvider(), atsApi);
          } else if (id.equals(AtsColumnId.WorkPackageProgram.getId())) {
-            column = new WorkPackageProgramColumn(services.getEarnedValueServiceProvider(), services);
+            column = new WorkPackageProgramColumn(atsApi.getEarnedValueServiceProvider(), atsApi);
          } else if (id.equals(AtsColumnId.WorkPackageGuid.getId())) {
-            column = new WorkPackageGuidColumn(services.getEarnedValueServiceProvider(), services);
+            column = new WorkPackageGuidColumn(atsApi.getEarnedValueServiceProvider(), atsApi);
          } else if (id.equals(AtsColumnId.State.getId())) {
-            column = new StateColumn(services);
+            column = new StateColumn(atsApi);
          } else if (id.equals(AtsColumnId.Uuid.getId())) {
-            column = new UuidColumn(services);
+            column = new UuidColumn(atsApi);
          } else if (id.equals(AtsColumnId.Insertion.getId())) {
-            column = new InsertionColumn(services);
+            column = new InsertionColumn(atsApi);
          } else if (id.equals(AtsColumnId.InsertionActivity.getId())) {
-            column = new InsertionActivityColumn(services);
+            column = new InsertionActivityColumn(atsApi);
          } else if (id.equals(AtsColumnId.TargetedVersion.getId())) {
-            column = new TargetedVersionColumn(services);
+            column = new TargetedVersionColumn(atsApi);
          } else if (id.equals(AtsColumnId.UnPlannedWork.getId())) {
-            column = new AtsAttributeValueColumnHandler(AtsColumnToken.UnPlannedWorkColumn, services);
+            column = new AtsAttributeValueColumnHandler(AtsColumnToken.UnPlannedWorkColumn, atsApi);
          } else if (id.equals(AtsColumnId.SprintOrder.getId())) {
-            column = new SprintOrderColumn(services);
+            column = new SprintOrderColumn(atsApi);
          } else if (id.equals(AtsColumnId.AgileTeamPoints.getId())) {
-            column = new AgileTeamPointsColumn(services);
+            column = new AgileTeamPointsColumn(atsApi);
          } else if (id.equals(AtsColumnId.CompletedCancelledDate.getId())) {
-            column = new CompletedCancelledDateColumn(services);
+            column = new CompletedCancelledDateColumn(atsApi);
          } else if (id.equals(AtsColumnId.AgileFeatureGroup.getId())) {
-            column = new AgileFeatureGroupColumn(services);
+            column = new AgileFeatureGroupColumn(atsApi);
          } else if (id.equals(AtsColumnId.TaskToRelatedArtifactType.getId())) {
-            column = new TaskRelatedArtifactTypeColumn(services);
+            column = new TaskRelatedArtifactTypeColumn(atsApi);
          }
       }
       // Add columns provided through OSGI services
       if (column == null) {
          for (IAtsColumnProvider provider : AtsColumnProviderCollector.getColumnProviders()) {
-            column = provider.getColumn(id, services);
+            column = provider.getColumn(id, atsApi);
             if (column != null) {
                break;
             }
@@ -177,15 +177,15 @@ public class AtsColumnService implements IAtsColumnService {
       // Add columns defined as attribute, if valid attribute
       if (column == null) {
          if (id.startsWith("attribute.")) {
-            AttributeTypeId attrType = services.getStoreService().getAttributeType(id.replaceFirst("attribute\\.", ""));
+            AttributeTypeId attrType = atsApi.getStoreService().getAttributeType(id.replaceFirst("attribute\\.", ""));
             if (attrType != null) {
-               column = new AttributeColumn(services, attrType);
+               column = new AttributeColumn(atsApi, attrType);
             }
          }
          if (id.startsWith("ats.")) {
-            AttributeTypeId attrType = services.getStoreService().getAttributeType(id);
+            AttributeTypeId attrType = atsApi.getStoreService().getAttributeType(id);
             if (attrType != null) {
-               column = new AttributeColumn(services, attrType);
+               column = new AttributeColumn(atsApi, attrType);
             }
          }
       }

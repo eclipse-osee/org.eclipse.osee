@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workflow.note;
 
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.framework.core.util.Result;
@@ -21,32 +21,32 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public class ArtifactNote implements INoteStorageProvider {
    private final IAtsWorkItem workItem;
-   private final IAtsServices services;
+   private final AtsApi atsApi;
 
-   public ArtifactNote(IAtsWorkItem workItem, IAtsServices services) {
+   public ArtifactNote(IAtsWorkItem workItem, AtsApi atsApi) {
       this.workItem = workItem;
-      this.services = services;
+      this.atsApi = atsApi;
    }
 
    @Override
    public String getNoteXml() {
-      return services.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.StateNotes, "");
+      return atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.StateNotes, "");
    }
 
    @Override
    public Result saveNoteXml(String xml) {
       try {
-         services.getAttributeResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.StateNotes, xml);
+         atsApi.getAttributeResolver().setSoleAttributeValue(workItem, AtsAttributeTypes.StateNotes, xml);
          return Result.TrueResult;
       } catch (OseeCoreException ex) {
-         services.getLogger().error(ex, "Error saving note xml");
+         atsApi.getLogger().error(ex, "Error saving note xml");
          return new Result(false, "saveLogXml exception " + ex.getLocalizedMessage());
       }
    }
 
    @Override
    public String getNoteTitle() {
-      return "History for \"" + services.getStoreService().getArtifactType(
+      return "History for \"" + atsApi.getStoreService().getArtifactType(
          workItem.getStoreObject()).getName() + "\" - " + getNoteId() + " - titled \"" + workItem.getName() + "\"";
    }
 
@@ -57,7 +57,7 @@ public class ArtifactNote implements INoteStorageProvider {
 
    @Override
    public boolean isNoteable() {
-      return services.getStoreService().isAttributeTypeValid(workItem, AtsAttributeTypes.StateNotes);
+      return atsApi.getStoreService().isAttributeTypeValid(workItem, AtsAttributeTypes.StateNotes);
    }
 
 }

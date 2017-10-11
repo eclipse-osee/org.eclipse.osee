@@ -17,8 +17,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -30,12 +30,12 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class TaskRelatedArtifactTypeColumn extends AbstractServicesColumn {
 
-   private static IAtsServices services;
+   private static AtsApi atsApi;
    private static final IArtifactType nullArtifactType = TokenFactory.createArtifactType(3824729235692L, "");
 
-   public TaskRelatedArtifactTypeColumn(IAtsServices services) {
-      super(services);
-      TaskRelatedArtifactTypeColumn.services = services;
+   public TaskRelatedArtifactTypeColumn(AtsApi atsApi) {
+      super(atsApi);
+      TaskRelatedArtifactTypeColumn.atsApi = atsApi;
    }
 
    @Override
@@ -57,7 +57,7 @@ public class TaskRelatedArtifactTypeColumn extends AbstractServicesColumn {
                Long relatedArtId = getRelatedArtId(workItem);
                if (relatedArtId != null) {
                   Map<Long, IArtifactType> results =
-                     services.getStoreService().getArtifactTypes(java.util.Collections.singleton(relatedArtId));
+                     atsApi.getStoreService().getArtifactTypes(java.util.Collections.singleton(relatedArtId));
                   if (results.isEmpty()) {
                      return nullArtifactType;
                   }
@@ -82,7 +82,7 @@ public class TaskRelatedArtifactTypeColumn extends AbstractServicesColumn {
          }
       }
       if (!relatedArtIds.isEmpty()) {
-         Map<Long, IArtifactType> results = services.getStoreService().getArtifactTypes(relatedArtIds);
+         Map<Long, IArtifactType> results = atsApi.getStoreService().getArtifactTypes(relatedArtIds);
          for (IAtsWorkItem workItem : workItems) {
             Long relatedArtId = getRelatedArtId(workItem);
             if (relatedArtId != null) {
@@ -94,7 +94,7 @@ public class TaskRelatedArtifactTypeColumn extends AbstractServicesColumn {
    }
 
    private static Long getRelatedArtId(IAtsWorkItem workItem) {
-      String relatedArtIdStr = services.getAttributeResolver().getSoleAttributeValueAsString(workItem,
+      String relatedArtIdStr = atsApi.getAttributeResolver().getSoleAttributeValueAsString(workItem,
          AtsAttributeTypes.TaskToChangedArtifactReference, null);
       if (Strings.isNumeric(relatedArtIdStr)) {
          return Long.valueOf(relatedArtIdStr);

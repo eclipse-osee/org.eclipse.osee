@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
@@ -74,10 +74,10 @@ public class AtsQueryImplTest {
 
    @Test
    public void test() {
-      IAtsServices services = AtsClientService.get().getServices();
-      IAtsQueryService queryService = services.getQueryService();
+      AtsApi atsApi = AtsClientService.get().getServices();
+      IAtsQueryService queryService = atsApi.getQueryService();
 
-      IAtsUser joeSmith = services.getUserService().getUserById("3333");
+      IAtsUser joeSmith = atsApi.getUserService().getUserById("3333");
 
       // test by type
       IAtsQuery query = queryService.createQuery(WorkItemType.TeamWorkflow);
@@ -88,7 +88,7 @@ public class AtsQueryImplTest {
 
       // assignee
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
-      query.andAssignee(services.getUserService().getUserById("3333"));
+      query.andAssignee(atsApi.getUserService().getUserById("3333"));
       assertEquals(7, query.getResults().size());
 
       // team
@@ -98,7 +98,7 @@ public class AtsQueryImplTest {
 
       // ai
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
-      ArtifactId ai = services.getArtifactByName(AtsArtifactTypes.ActionableItem, "SAW Requirements");
+      ArtifactId ai = atsApi.getArtifactByName(AtsArtifactTypes.ActionableItem, "SAW Requirements");
       query.andActionableItem(Arrays.asList(ai.getId()));
       assertEquals(4, query.getResults().size());
 
@@ -137,7 +137,7 @@ public class AtsQueryImplTest {
 
       // by version
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
-      ArtifactId version = services.getArtifactByName(AtsArtifactTypes.Version, "SAW_Bld_2");
+      ArtifactId version = atsApi.getArtifactByName(AtsArtifactTypes.Version, "SAW_Bld_2");
       query.andVersion(version.getId());
       assertEquals(14, query.getResults().size());
 
@@ -165,10 +165,10 @@ public class AtsQueryImplTest {
 
       // setup code workflow and task to have a work package
 
-      IAtsProgramService programService = services.getProgramService();
+      IAtsProgramService programService = atsApi.getProgramService();
 
       IAtsWorkPackage wp =
-         services.getProgramService().getWorkPackage(DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getId()); // Work Pkg 01
+         atsApi.getProgramService().getWorkPackage(DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getId()); // Work Pkg 01
       IAtsInsertionActivity activity = programService.getInsertionActivity(wp); // COMM Page
       IAtsInsertion insertion = programService.getInsertion(activity); // COMM
       IAtsProgram program = programService.getProgram(insertion); // SAW Program
@@ -181,7 +181,7 @@ public class AtsQueryImplTest {
       Conditions.checkNotNull(codeWf, "Code Team Workflow");
       Conditions.checkNotNull(codeTask, "Code Team Workflow");
 
-      services.getProgramService().setWorkPackage(wp, Arrays.asList(codeWf, codeTask), AtsCoreUsers.SYSTEM_USER);
+      atsApi.getProgramService().setWorkPackage(wp, Arrays.asList(codeWf, codeTask), AtsCoreUsers.SYSTEM_USER);
 
       // by program
       query = queryService.createQuery(WorkItemType.TeamWorkflow);

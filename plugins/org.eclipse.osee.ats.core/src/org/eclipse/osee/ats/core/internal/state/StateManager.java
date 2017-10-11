@@ -20,7 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
@@ -60,13 +60,13 @@ public class StateManager implements IAtsStateManager {
    private boolean dirty = false;
    private final String instanceGuid;
    private final IAtsLogFactory logFactory;
-   private final IAtsServices services;
+   private final AtsApi atsApi;
    private StateType stateType;
 
-   public StateManager(IAtsWorkItem workItem, IAtsLogFactory logFactory, IAtsServices services) {
+   public StateManager(IAtsWorkItem workItem, IAtsLogFactory logFactory, AtsApi atsApi) {
       this.workItem = workItem;
       this.logFactory = logFactory;
-      this.services = services;
+      this.atsApi = atsApi;
       this.factory = this;
       this.instanceGuid = GUID.create();
    }
@@ -112,7 +112,7 @@ public class StateManager implements IAtsStateManager {
          setHoursSpent(state.getName(), remaining);
       }
 
-      if (services.getWorkDefinitionService().isStateWeightingEnabled(workItem.getWorkDefinition())) {
+      if (atsApi.getWorkDefinitionService().isStateWeightingEnabled(workItem.getWorkDefinition())) {
          setPercentComplete(state.getName(), percentComplete);
       } else {
          this.percentCompleteValue = percentComplete;
@@ -124,15 +124,15 @@ public class StateManager implements IAtsStateManager {
    }
 
    protected void logMetrics(IStateToken state, IAtsUser user, Date date) {
-      String hoursSpent = AtsUtilCore.doubleToI18nString(HoursSpentUtil.getHoursSpentTotal(workItem, services));
-      logMetrics(services, logFactory, workItem,
-         PercentCompleteTotalUtil.getPercentCompleteTotal(workItem, services) + "", hoursSpent, state, user, date);
+      String hoursSpent = AtsUtilCore.doubleToI18nString(HoursSpentUtil.getHoursSpentTotal(workItem, atsApi));
+      logMetrics(atsApi, logFactory, workItem,
+         PercentCompleteTotalUtil.getPercentCompleteTotal(workItem, atsApi) + "", hoursSpent, state, user, date);
    }
 
-   public static void logMetrics(IAtsServices services, IAtsLogFactory logFactory, IAtsWorkItem workItem, String percent, String hours, IStateToken state, IAtsUser user, Date date) {
+   public static void logMetrics(AtsApi atsApi, IAtsLogFactory logFactory, IAtsWorkItem workItem, String percent, String hours, IStateToken state, IAtsUser user, Date date) {
       IAtsLogItem logItem =
          logFactory.newLogItem(LogType.Metrics, date, user, state.getName(), String.format("Percent %s Hours %s",
-            PercentCompleteTotalUtil.getPercentCompleteTotal(workItem, services), Double.parseDouble(hours)));
+            PercentCompleteTotalUtil.getPercentCompleteTotal(workItem, atsApi), Double.parseDouble(hours)));
       workItem.getLog().addLogItem(logItem);
    }
 

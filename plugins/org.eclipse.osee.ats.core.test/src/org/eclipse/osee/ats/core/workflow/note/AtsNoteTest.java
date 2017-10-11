@@ -14,7 +14,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.workflow.note.IAtsWorkItemNotes;
@@ -34,7 +34,7 @@ public class AtsNoteTest {
 
    // @formatter:off
    @Mock private IAtsUserService userService;
-   @Mock private IAtsServices services;
+   @Mock private AtsApi atsApi;
    @Mock private IAtsUser Joe;
    // @formatter:on
    List<IAtsUser> assignees = new ArrayList<>();
@@ -43,7 +43,7 @@ public class AtsNoteTest {
    public void setup() {
       MockitoAnnotations.initMocks(this);
 
-      when(services.getUserService()).thenReturn(userService);
+      when(atsApi.getUserService()).thenReturn(userService);
       when(userService.getUserById("333")).thenReturn(Joe);
       when(Joe.getUserId()).thenReturn("333");
    }
@@ -52,11 +52,11 @@ public class AtsNoteTest {
    public void testToAndFromStore() {
       Date date = new Date();
       SimpleNoteStore store = new SimpleNoteStore();
-      IAtsWorkItemNotes log = new AtsWorkItemNotes(store, services);
+      IAtsWorkItemNotes log = new AtsWorkItemNotes(store, atsApi);
       NoteItem item = NoteItemTest.getTestNoteItem(date, Joe);
       log.addNoteItem(item);
 
-      IAtsWorkItemNotes log2 = new AtsWorkItemNotes(store, services);
+      IAtsWorkItemNotes log2 = new AtsWorkItemNotes(store, atsApi);
       Assert.assertEquals(1, log2.getNoteItems().size());
       NoteItem loadItem = log2.getNoteItems().iterator().next();
       NoteItemTest.validate(loadItem, date, Joe);

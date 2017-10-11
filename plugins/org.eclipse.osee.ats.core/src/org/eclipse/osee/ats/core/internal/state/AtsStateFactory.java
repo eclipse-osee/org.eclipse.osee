@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.core.internal.state;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -30,12 +30,12 @@ public class AtsStateFactory implements IAtsStateFactory {
 
    private final IAtsWorkStateFactory workStateFactory;
    private final IAtsLogFactory logFactory;
-   private final IAtsServices services;
+   private final AtsApi atsApi;
    Map<Id, IAtsStateManager> idToStateManager = new HashMap<>();
    Map<Id, TransactionId> idToTransactionId = new HashMap<>();
 
-   public AtsStateFactory(IAtsServices services, IAtsWorkStateFactory workStateFactory, IAtsLogFactory logFactory) {
-      this.services = services;
+   public AtsStateFactory(AtsApi atsApi, IAtsWorkStateFactory workStateFactory, IAtsLogFactory logFactory) {
+      this.atsApi = atsApi;
       this.workStateFactory = workStateFactory;
       this.logFactory = logFactory;
    }
@@ -44,12 +44,12 @@ public class AtsStateFactory implements IAtsStateFactory {
    public IAtsStateManager getStateManager(IAtsWorkItem workItem) {
       IAtsStateManager stateMgr = idToStateManager.get(workItem);
       TransactionId transId = idToTransactionId.get(workItem);
-      TransactionId workItemTransaction = services.getStoreService().getTransactionId(workItem);
+      TransactionId workItemTransaction = atsApi.getStoreService().getTransactionId(workItem);
       if (stateMgr == null || (workItemTransaction.isValid() && workItemTransaction.notEqual(transId))) {
-         stateMgr = new StateManager(workItem, logFactory, services);
+         stateMgr = new StateManager(workItem, logFactory, atsApi);
          idToStateManager.put(workItem, stateMgr);
-         idToTransactionId.put(workItem, services.getStoreService().getTransactionId(workItem));
-         StateManagerStore.load(workItem, stateMgr, services.getAttributeResolver(), workStateFactory);
+         idToTransactionId.put(workItem, atsApi.getStoreService().getTransactionId(workItem));
+         StateManagerStore.load(workItem, stateMgr, atsApi.getAttributeResolver(), workStateFactory);
       }
       return stateMgr;
    }
@@ -57,12 +57,12 @@ public class AtsStateFactory implements IAtsStateFactory {
    @Override
    public void writeToStore(IAtsUser asUser, IAtsWorkItem workItem, IAtsChangeSet changes) {
       StateManagerStore.writeToStore(asUser, workItem, (StateManager) workItem.getStateMgr(),
-         services.getAttributeResolver(), changes, workStateFactory);
+         atsApi.getAttributeResolver(), changes, workStateFactory);
    }
 
    @Override
    public void load(IAtsWorkItem workItem, IAtsStateManager stateMgr) {
-      StateManagerStore.load(workItem, stateMgr, services.getAttributeResolver(), workStateFactory);
+      StateManagerStore.load(workItem, stateMgr, atsApi.getAttributeResolver(), workStateFactory);
    }
 
    @Override
@@ -73,7 +73,7 @@ public class AtsStateFactory implements IAtsStateFactory {
    @Override
    public void setStateMgr(IAtsWorkItem workItem, IAtsStateManager stateMgr) {
       idToStateManager.put(workItem, stateMgr);
-      idToTransactionId.put(workItem, services.getStoreService().getTransactionId(workItem));
+      idToTransactionId.put(workItem, atsApi.getStoreService().getTransactionId(workItem));
    }
 
 }

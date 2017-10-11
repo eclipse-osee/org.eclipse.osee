@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.internal.column.ev;
 
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
@@ -22,8 +22,8 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public class WorkPackageProgramColumn extends AbstractRelatedWorkPackageColumn {
 
-   public WorkPackageProgramColumn(IAtsEarnedValueServiceProvider earnedValueServiceProvider, IAtsServices services) {
-      super(earnedValueServiceProvider, services);
+   public WorkPackageProgramColumn(IAtsEarnedValueServiceProvider earnedValueServiceProvider, AtsApi atsApi) {
+      super(earnedValueServiceProvider, atsApi);
    }
 
    @Override
@@ -37,10 +37,10 @@ public class WorkPackageProgramColumn extends AbstractRelatedWorkPackageColumn {
 
    @Override
    protected String getColumnValue(ArtifactToken wpArt) {
-      if (services == null) {
+      if (atsApi == null) {
          return "";
       }
-      return services.getAttributeResolver().getSoleAttributeValue(wpArt, AtsAttributeTypes.WorkPackageProgram, "");
+      return atsApi.getAttributeResolver().getSoleAttributeValue(wpArt, AtsAttributeTypes.WorkPackageProgram, "");
    }
 
 }

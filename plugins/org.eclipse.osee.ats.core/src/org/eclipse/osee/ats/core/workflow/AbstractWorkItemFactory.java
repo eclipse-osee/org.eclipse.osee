@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileItem;
@@ -37,14 +37,14 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public abstract class AbstractWorkItemFactory implements IAtsWorkItemFactory {
 
-   protected final IAtsServices services;
+   protected final AtsApi atsApi;
    CacheBuilder<Object, Object> cacheBuilder = CacheBuilder.newBuilder() //
       .expireAfterWrite(1, TimeUnit.MINUTES);
 
    private final Cache<ArtifactId, IAtsWorkItem> workItemCache = cacheBuilder.build();
 
-   public AbstractWorkItemFactory(IAtsServices services) {
-      this.services = services;
+   public AbstractWorkItemFactory(AtsApi atsApi) {
+      this.atsApi = atsApi;
    }
 
    @Override
@@ -63,32 +63,32 @@ public abstract class AbstractWorkItemFactory implements IAtsWorkItemFactory {
    public IAtsWorkItem getWorkItem(ArtifactToken artifact) {
       IAtsWorkItem workItem = null;
       try {
-         if (services.getStoreService().isOfType(artifact, AtsArtifactTypes.TeamWorkflow)) {
+         if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.TeamWorkflow)) {
             workItem = getTeamWf(artifact);
-         } else if (services.getStoreService().isOfType(artifact,
-            AtsArtifactTypes.PeerToPeerReview) || services.getStoreService().isOfType(artifact,
+         } else if (atsApi.getStoreService().isOfType(artifact,
+            AtsArtifactTypes.PeerToPeerReview) || atsApi.getStoreService().isOfType(artifact,
                AtsArtifactTypes.DecisionReview)) {
             workItem = getReview(artifact);
-         } else if (services.getStoreService().isOfType(artifact, AtsArtifactTypes.Task)) {
+         } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.Task)) {
             workItem = getTask(artifact);
-         } else if (services.getStoreService().isOfType(artifact, AtsArtifactTypes.AgileBacklog)) {
+         } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.AgileBacklog)) {
             // note, an agile backlog is also a goal type, so this has to be before the goal
             workItem = getAgileBacklog(artifact);
-         } else if (services.getStoreService().isOfType(artifact, AtsArtifactTypes.Goal)) {
+         } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.Goal)) {
             workItem = getGoal(artifact);
-         } else if (services.getStoreService().isOfType(artifact, AtsArtifactTypes.AgileSprint)) {
+         } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.AgileSprint)) {
             workItem = getAgileSprint(artifact);
          }
       } catch (OseeCoreException ex) {
-         services.getLogger().error(ex, "Error getting work item for [%s]", artifact);
+         atsApi.getLogger().error(ex, "Error getting work item for [%s]", artifact);
       }
       return workItem;
    }
 
    @Override
    public IAtsTeamWorkflow getTeamWfNoCache(ArtifactId artifact) {
-      if (services.getStoreService().isOfType(artifact, AtsArtifactTypes.TeamWorkflow)) {
-         return new TeamWorkflow(services.getLogger(), services, (ArtifactToken) artifact);
+      if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.TeamWorkflow)) {
+         return new TeamWorkflow(atsApi.getLogger(), atsApi, (ArtifactToken) artifact);
       }
       return null;
    }
@@ -97,8 +97,8 @@ public abstract class AbstractWorkItemFactory implements IAtsWorkItemFactory {
    public IAtsTeamWorkflow getTeamWf(ArtifactId artifact) {
       IAtsTeamWorkflow team = (IAtsTeamWorkflow) workItemCache.getIfPresent(artifact);
       if (team == null) {
-         if (services.getStoreService().isOfType(artifact, AtsArtifactTypes.TeamWorkflow)) {
-            team = new TeamWorkflow(services.getLogger(), services, (ArtifactToken) artifact);
+         if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.TeamWorkflow)) {
+            team = new TeamWorkflow(atsApi.getLogger(), atsApi, (ArtifactToken) artifact);
             workItemCache.put(artifact, team);
          }
       }
@@ -111,7 +111,7 @@ public abstract class AbstractWorkItemFactory implements IAtsWorkItemFactory {
       if (artifact instanceof IAgileSprint) {
          sprint = (IAgileSprint) artifact;
       } else {
-         sprint = new AgileSprint(services.getLogger(), services, artifact);
+         sprint = new AgileSprint(atsApi.getLogger(), atsApi, artifact);
       }
       return sprint;
    }
@@ -122,7 +122,7 @@ public abstract class AbstractWorkItemFactory implements IAtsWorkItemFactory {
       if (artifact instanceof IAgileBacklog) {
          backlog = (IAgileBacklog) artifact;
       } else {
-         backlog = new AgileBacklog(services.getLogger(), services, artifact);
+         backlog = new AgileBacklog(atsApi.getLogger(), atsApi, artifact);
       }
       return backlog;
    }
@@ -130,16 +130,16 @@ public abstract class AbstractWorkItemFactory implements IAtsWorkItemFactory {
    @Override
    public IAgileItem getAgileItem(ArtifactToken artifact) {
       IAgileItem item = null;
-      ArtifactId art = services.getArtifact(artifact);
-      if (services.getStoreService().isOfType(art, AtsArtifactTypes.AbstractWorkflowArtifact)) {
-         item = new org.eclipse.osee.ats.core.agile.AgileItem(services.getLogger(), services, (ArtifactToken) art);
+      ArtifactId art = atsApi.getArtifact(artifact);
+      if (atsApi.getStoreService().isOfType(art, AtsArtifactTypes.AbstractWorkflowArtifact)) {
+         item = new org.eclipse.osee.ats.core.agile.AgileItem(atsApi.getLogger(), atsApi, (ArtifactToken) art);
       }
       return item;
    }
 
    @Override
    public IAtsWorkItem getWorkItemByAtsId(String atsId) {
-      return services.getQueryService().createQuery(WorkItemType.WorkItem).andAttr(AtsAttributeTypes.AtsId,
+      return atsApi.getQueryService().createQuery(WorkItemType.WorkItem).andAttr(AtsAttributeTypes.AtsId,
          atsId).getResults().getOneOrNull();
    }
 

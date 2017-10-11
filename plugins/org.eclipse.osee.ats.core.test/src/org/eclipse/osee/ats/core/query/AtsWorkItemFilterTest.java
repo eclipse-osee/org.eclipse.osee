@@ -14,7 +14,7 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -49,7 +49,7 @@ public class AtsWorkItemFilterTest {
    @Mock IAtsAction action2;
 
    @Mock IAtsTask task1;
-   @Mock IAtsServices services;
+   @Mock AtsApi atsApi;
    @Mock IAtsStateManager task1StateMgr;
 
    @Mock IArtifactResolver artifactResolver;
@@ -72,7 +72,7 @@ public class AtsWorkItemFilterTest {
 
    @Test
    public void testIsOfType() {
-      when(services.getArtifactResolver()).thenReturn(artifactResolver);
+      when(atsApi.getArtifactResolver()).thenReturn(artifactResolver);
       when(artifactResolver.isOfType(teamWf1, AtsArtifactTypes.TeamWorkflow)).thenReturn(true);
       when(artifactResolver.isOfType(teamWf1, AtsArtifactTypes.Task)).thenReturn(false);
       when(artifactResolver.isOfType(teamWf2, AtsArtifactTypes.TeamWorkflow)).thenReturn(true);
@@ -80,13 +80,13 @@ public class AtsWorkItemFilterTest {
       when(artifactResolver.isOfType(task1, AtsArtifactTypes.Task)).thenReturn(true);
       when(artifactResolver.isOfType(task1, AtsArtifactTypes.TeamWorkflow)).thenReturn(false);
 
-      AtsWorkItemFilter filter = new AtsWorkItemFilter(Arrays.asList(teamWf1, teamWf2, task1), services);
+      AtsWorkItemFilter filter = new AtsWorkItemFilter(Arrays.asList(teamWf1, teamWf2, task1), atsApi);
 
       Collection<IAtsTask> tasks = filter.isOfType(AtsArtifactTypes.Task).getItems();
       Assert.assertEquals(1, tasks.size());
       Assert.assertEquals(task1, tasks.iterator().next());
 
-      filter = new AtsWorkItemFilter(Arrays.asList(teamWf1, teamWf2, task1), services);
+      filter = new AtsWorkItemFilter(Arrays.asList(teamWf1, teamWf2, task1), atsApi);
 
       Collection<IAtsWorkItem> workItems =
          filter.isOfType(AtsArtifactTypes.Task, AtsArtifactTypes.TeamWorkflow).getItems();
@@ -95,8 +95,8 @@ public class AtsWorkItemFilterTest {
 
    @Test
    public void testUnion() {
-      AtsWorkItemFilter filter1 = new AtsWorkItemFilter(Arrays.asList(teamWf1, teamWf2), services);
-      AtsWorkItemFilter filter2 = new AtsWorkItemFilter(Arrays.asList(teamWf2, task1), services);
+      AtsWorkItemFilter filter1 = new AtsWorkItemFilter(Arrays.asList(teamWf1, teamWf2), atsApi);
+      AtsWorkItemFilter filter2 = new AtsWorkItemFilter(Arrays.asList(teamWf2, task1), atsApi);
       filter1.union(filter2);
       Assert.assertEquals(3, filter1.getItems().size());
    }
@@ -106,7 +106,7 @@ public class AtsWorkItemFilterTest {
       when(teamDef1.getId()).thenReturn(23L);
       when(teamDef2.getId()).thenReturn(55L);
 
-      AtsWorkItemFilter filter = new AtsWorkItemFilter(Arrays.asList(teamWf1, teamWf2, task1), services);
+      AtsWorkItemFilter filter = new AtsWorkItemFilter(Arrays.asList(teamWf1, teamWf2, task1), atsApi);
       filter.fromTeam(teamDef1);
       Assert.assertEquals(2, filter.getItems().size());
    }
@@ -122,36 +122,36 @@ public class AtsWorkItemFilterTest {
       when(task1.getStateMgr()).thenReturn(task1StateMgr);
       when(task1StateMgr.getStateType()).thenReturn(StateType.Working);
 
-      AtsWorkItemFilter filter1 = new AtsWorkItemFilter(Arrays.asList(teamWf1, teamWf2, task1), services);
+      AtsWorkItemFilter filter1 = new AtsWorkItemFilter(Arrays.asList(teamWf1, teamWf2, task1), atsApi);
       filter1.isStateType(StateType.Completed);
       Assert.assertEquals(1, filter1.getItems().size());
 
-      AtsWorkItemFilter filter2 = new AtsWorkItemFilter(Arrays.asList(teamWf1, teamWf2, task1), services);
+      AtsWorkItemFilter filter2 = new AtsWorkItemFilter(Arrays.asList(teamWf1, teamWf2, task1), atsApi);
       filter2.isStateType(StateType.Completed, StateType.Cancelled);
       Assert.assertEquals(2, filter2.getItems().size());
 
-      AtsWorkItemFilter filter3 = new AtsWorkItemFilter(Arrays.asList(teamWf1, teamWf2, task1), services);
+      AtsWorkItemFilter filter3 = new AtsWorkItemFilter(Arrays.asList(teamWf1, teamWf2, task1), atsApi);
       filter3.isStateType(StateType.Completed, StateType.Cancelled, StateType.Working);
       Assert.assertEquals(3, filter3.getItems().size());
    }
 
    @Test
    public void testWithOrValue() {
-      when(services.getAttributeResolver()).thenReturn(attributeResolver);
+      when(atsApi.getAttributeResolver()).thenReturn(attributeResolver);
       when(attributeResolver.getAttributeValues(teamWf1, AtsAttributeTypes.Category1)).thenReturn(
          Arrays.asList("asdf", "green"));
       when(attributeResolver.getAttributeValues(teamWf2, AtsAttributeTypes.Category1)).thenReturn(
          Arrays.asList("asdf", "blue"));
 
-      AtsWorkItemFilter filter = new AtsWorkItemFilter(Arrays.asList(teamWf1, teamWf2, task1), services);
+      AtsWorkItemFilter filter = new AtsWorkItemFilter(Arrays.asList(teamWf1, teamWf2, task1), atsApi);
       filter.withOrValue(AtsAttributeTypes.Category1, Collections.singleton("asdf"));
       Assert.assertEquals(2, filter.getItems().size());
 
-      filter = new AtsWorkItemFilter(Arrays.asList(teamWf1, teamWf2, task1), services);
+      filter = new AtsWorkItemFilter(Arrays.asList(teamWf1, teamWf2, task1), atsApi);
       filter.withOrValue(AtsAttributeTypes.Category1, Collections.singleton("blue"));
       Assert.assertEquals(1, filter.getItems().size());
 
-      filter = new AtsWorkItemFilter(Arrays.asList(teamWf1, teamWf2, task1), services);
+      filter = new AtsWorkItemFilter(Arrays.asList(teamWf1, teamWf2, task1), atsApi);
       filter.withOrValue(AtsAttributeTypes.Category1, Arrays.asList("green", "blue"));
       Assert.assertEquals(2, filter.getItems().size());
 
@@ -163,13 +163,13 @@ public class AtsWorkItemFilterTest {
       when(teamWf2.getParentAction()).thenReturn(action2);
       when(task1.getParentAction()).thenReturn(action1);
 
-      AtsWorkItemFilter filter2 = new AtsWorkItemFilter(Arrays.asList(teamWf1, teamWf2, task1), services);
+      AtsWorkItemFilter filter2 = new AtsWorkItemFilter(Arrays.asList(teamWf1, teamWf2, task1), atsApi);
       Assert.assertEquals(2, filter2.getActions().size());
    }
 
    @Test
    public void testGetTeamWorkflows() {
-      AtsWorkItemFilter filter2 = new AtsWorkItemFilter(Arrays.asList(teamWf1, teamWf2, task1), services);
+      AtsWorkItemFilter filter2 = new AtsWorkItemFilter(Arrays.asList(teamWf1, teamWf2, task1), atsApi);
       Assert.assertEquals(2, filter2.getTeamWorkflows().size());
    }
 

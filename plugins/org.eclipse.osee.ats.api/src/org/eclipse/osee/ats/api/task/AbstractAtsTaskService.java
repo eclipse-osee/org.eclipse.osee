@@ -11,7 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -26,10 +26,10 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public abstract class AbstractAtsTaskService implements IAtsTaskService {
 
    private static final String UNASSIGNED_USERID = "99999997";
-   private final IAtsServices services;
+   private final AtsApi atsApi;
 
-   public AbstractAtsTaskService(IAtsServices services) {
-      this.services = services;
+   public AbstractAtsTaskService(AtsApi atsApi) {
+      this.atsApi = atsApi;
    }
 
    @Override
@@ -88,12 +88,12 @@ public abstract class AbstractAtsTaskService implements IAtsTaskService {
 
    @Override
    public Collection<IAtsTask> getTasks(IAtsTeamWorkflow teamWf, IStateToken relatedToState) {
-      ArtifactId artifact = services.getArtifactResolver().get(teamWf);
+      ArtifactId artifact = atsApi.getArtifactResolver().get(teamWf);
       Conditions.checkNotNull(artifact, "teamWf", "Can't Find Artifact matching [%s]", teamWf.toString());
       List<IAtsTask> tasks = new LinkedList<>();
-      for (IAtsTask task : services.getRelationResolver().getRelated(teamWf, AtsRelationTypes.TeamWfToTask_Task,
+      for (IAtsTask task : atsApi.getRelationResolver().getRelated(teamWf, AtsRelationTypes.TeamWfToTask_Task,
          IAtsTask.class)) {
-         if (services.getAttributeResolver().getSoleAttributeValue(task, AtsAttributeTypes.RelatedToState, "").equals(
+         if (atsApi.getAttributeResolver().getSoleAttributeValue(task, AtsAttributeTypes.RelatedToState, "").equals(
             relatedToState.getName())) {
             tasks.add(task);
          }
@@ -103,7 +103,7 @@ public abstract class AbstractAtsTaskService implements IAtsTaskService {
 
    @Override
    public Collection<? extends IAtsTask> getTasks(IAtsWorkItem workItem, IStateToken state) {
-      ArtifactId artifact = services.getArtifactResolver().get(workItem);
+      ArtifactId artifact = atsApi.getArtifactResolver().get(workItem);
       Conditions.checkNotNull(artifact, "workItem", "Can't Find Artifact matching [%s]", workItem.toString());
       if (workItem instanceof IAtsTeamWorkflow) {
          return getTasks((IAtsTeamWorkflow) workItem, state);
@@ -113,9 +113,9 @@ public abstract class AbstractAtsTaskService implements IAtsTaskService {
 
    @Override
    public Collection<IAtsTask> getTasks(IAtsTeamWorkflow teamWf) {
-      ArtifactId artifact = services.getArtifactResolver().get(teamWf);
+      ArtifactId artifact = atsApi.getArtifactResolver().get(teamWf);
       Conditions.checkNotNull(artifact, "teamWf", "Can't Find Artifact matching [%s]", teamWf.toString());
-      return services.getRelationResolver().getRelated(teamWf, AtsRelationTypes.TeamWfToTask_Task, IAtsTask.class);
+      return atsApi.getRelationResolver().getRelated(teamWf, AtsRelationTypes.TeamWfToTask_Task, IAtsTask.class);
    }
 
    @Override
@@ -128,12 +128,12 @@ public abstract class AbstractAtsTaskService implements IAtsTaskService {
 
    @Override
    public boolean hasTasks(IAtsTeamWorkflow teamWf) {
-      return services.getRelationResolver().getRelatedCount(teamWf, AtsRelationTypes.TeamWfToTask_Task) > 0;
+      return atsApi.getRelationResolver().getRelatedCount(teamWf, AtsRelationTypes.TeamWfToTask_Task) > 0;
    }
 
    @Override
    public boolean isRelatedToState(IAtsTask task, String stateName) {
-      return services.getAttributeResolver().getSoleAttributeValue(task, AtsAttributeTypes.RelatedToState, "").equals(
+      return atsApi.getAttributeResolver().getSoleAttributeValue(task, AtsAttributeTypes.RelatedToState, "").equals(
          stateName);
    }
 

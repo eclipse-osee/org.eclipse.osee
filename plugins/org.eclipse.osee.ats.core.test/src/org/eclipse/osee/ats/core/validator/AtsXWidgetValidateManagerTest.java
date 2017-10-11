@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.core.validator;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IValueProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
@@ -34,7 +34,7 @@ import org.mockito.Mock;
  * @author Donald G. Dunne
  */
 public class AtsXWidgetValidateManagerTest {
-   IAtsServices atsServices;
+   AtsApi atsServices;
    // @formatter:off
    @Mock IAtsWorkItem workItem;
    // @formatter:on
@@ -99,7 +99,7 @@ public class AtsXWidgetValidateManagerTest {
    private class AtsValidator implements IAtsXWidgetValidator {
 
       @Override
-      public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, IAtsServices atsServices) {
+      public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, AtsApi atsServices) {
          return new WidgetResult(WidgetStatus.Valid, null, "Here it is");
       }
 
@@ -107,7 +107,7 @@ public class AtsXWidgetValidateManagerTest {
    private class AtsErrorValidator implements IAtsXWidgetValidator {
 
       @Override
-      public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, IAtsServices atsServices) {
+      public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, AtsApi atsServices) {
          return new WidgetResult(WidgetStatus.Invalid_Incompleted, null, "Here it is");
       }
 
@@ -115,7 +115,7 @@ public class AtsXWidgetValidateManagerTest {
    private class AtsExceptionValidator implements IAtsXWidgetValidator {
 
       @Override
-      public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, IAtsServices atsServices) {
+      public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, AtsApi atsServices) {
          throw new OseeStateException("problem");
       }
 

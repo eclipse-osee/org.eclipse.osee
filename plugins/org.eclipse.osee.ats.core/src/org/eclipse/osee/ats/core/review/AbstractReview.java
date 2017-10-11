@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.core.review;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
@@ -27,18 +27,18 @@ import org.eclipse.osee.logger.Log;
  */
 public abstract class AbstractReview extends WorkItem implements IAtsAbstractReview {
 
-   public AbstractReview(Log logger, IAtsServices services, ArtifactToken artifact) {
-      super(logger, services, artifact);
+   public AbstractReview(Log logger, AtsApi atsApi, ArtifactToken artifact) {
+      super(logger, atsApi, artifact);
    }
 
    @Override
    public Set<IAtsActionableItem> getActionableItems() {
       Set<IAtsActionableItem> ais = new HashSet<>();
       Collection<ArtifactId> artifactIds =
-         services.getAttributeResolver().getAttributeValues(artifact, AtsAttributeTypes.ActionableItemReference);
+         atsApi.getAttributeResolver().getAttributeValues(artifact, AtsAttributeTypes.ActionableItemReference);
       for (ArtifactId aiId : artifactIds) {
-         ArtifactId aiArt = services.getConfigItem(aiId);
-         IAtsActionableItem ai = services.getConfigItemFactory().getActionableItem(aiArt);
+         ArtifactId aiArt = atsApi.getConfigItem(aiId);
+         IAtsActionableItem ai = atsApi.getConfigItemFactory().getActionableItem(aiArt);
          ais.add(ai);
       }
       return ais;
@@ -46,6 +46,6 @@ public abstract class AbstractReview extends WorkItem implements IAtsAbstractRev
 
    @Override
    public String getRelatedToState() {
-      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.RelatedToState, "");
+      return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.RelatedToState, "");
    }
 }

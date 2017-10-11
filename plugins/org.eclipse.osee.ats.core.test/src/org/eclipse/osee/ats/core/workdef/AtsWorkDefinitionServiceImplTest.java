@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
@@ -76,7 +76,7 @@ public class AtsWorkDefinitionServiceImplTest {
    @Mock ITeamWorkflowProvidersLazy teamWorkflowProviders;
    @Mock IAttributeResolver attributeResolver;
    @Mock IAtsTask task;
-   @Mock IAtsServices services;
+   @Mock AtsApi atsApi;
    @Mock IAtsWorkDefinitionStringProvider workDefStringProvider;
    @Mock IAtsWorkDefinitionDslService workDefDslService;
 
@@ -95,10 +95,10 @@ public class AtsWorkDefinitionServiceImplTest {
       when(workDefinitionService.getWorkDefinition(eq(IAtsWorkDefinitionService.PeerToPeerDefaultWorkflowDefinitionId),
          any(XResultData.class))).thenReturn(defaultPeerToPeerWorkDef);
 
-      workDefinitionStore = new AtsWorkDefinitionStoreService(services);
-      workDefService = new AtsWorkDefinitionServiceImpl(services, workDefinitionStore, workDefStringProvider,
+      workDefinitionStore = new AtsWorkDefinitionStoreService(atsApi);
+      workDefService = new AtsWorkDefinitionServiceImpl(atsApi, workDefinitionStore, workDefStringProvider,
          workDefDslService, teamWorkflowProviders);
-      when(services.getAttributeResolver()).thenReturn(attributeResolver);
+      when(atsApi.getAttributeResolver()).thenReturn(attributeResolver);
 
       // always return myPeerToPeerWorkDef when requested
       workDefService = Mockito.spy(workDefService);

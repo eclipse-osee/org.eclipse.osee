@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.core.column;
 
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -24,8 +24,8 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
  */
 public class AgileFeatureGroupColumn extends AbstractServicesColumn {
 
-   public AgileFeatureGroupColumn(IAtsServices services) {
-      super(services);
+   public AgileFeatureGroupColumn(AtsApi atsApi) {
+      super(atsApi);
    }
 
    @Override
@@ -34,7 +34,7 @@ public class AgileFeatureGroupColumn extends AbstractServicesColumn {
       if (atsObject instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
          Set<String> groups = new HashSet<>();
-         for (ArtifactToken featureGroup : services.getRelationResolver().getRelated(workItem,
+         for (ArtifactToken featureGroup : atsApi.getRelationResolver().getRelated(workItem,
             AtsRelationTypes.AgileFeatureToItem_FeatureGroup)) {
             groups.add(featureGroup.getName());
          }

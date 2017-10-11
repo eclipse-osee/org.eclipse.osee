@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileSprintHtmlOperation;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
@@ -87,7 +87,7 @@ import org.osgi.service.event.EventAdmin;
 /**
  * @author Donald G. Dunne
  */
-public abstract class AtsCoreServiceImpl implements IAtsServices {
+public abstract class AtsApiImpl implements AtsApi {
 
    private static final Object lock = new Object();
    private volatile static IOseeBranch atsBranch;
@@ -131,7 +131,7 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
 
    private EventAdmin eventAdmin;
 
-   public AtsCoreServiceImpl() {
+   public AtsApiImpl() {
       searchDataProviders = new ArrayList<>();
    }
 

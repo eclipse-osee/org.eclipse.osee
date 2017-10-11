@@ -14,8 +14,8 @@ import java.util.Collection;
 import java.util.Map;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.column.AtsColumnIdValueColumn;
 import org.eclipse.osee.ats.api.config.ColumnAlign;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
@@ -29,15 +29,15 @@ import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 public class AtsColumnIdUI extends XViewerAtsColumn implements IAtsXViewerPreComputedColumn {
 
    private final AtsColumnIdValueColumn columnIdColumn;
-   private final IAtsServices services;
+   private final AtsApi atsApi;
 
-   public AtsColumnIdUI(AtsColumnIdValueColumn columnIdColumn, IAtsServices services) {
+   public AtsColumnIdUI(AtsColumnIdValueColumn columnIdColumn, AtsApi atsApi) {
       super(columnIdColumn.getId(), columnIdColumn.getName(), columnIdColumn.getWidth(),
          getXViewerAlign(columnIdColumn.getAlign()), columnIdColumn.isVisible(),
          SortDataType.valueOf(columnIdColumn.getSortDataType()), columnIdColumn.isColumnMultiEdit(),
          columnIdColumn.getDescription());
       this.columnIdColumn = columnIdColumn;
-      this.services = services;
+      this.atsApi = atsApi;
       setInheritParent(columnIdColumn.isInheritParent());
       setActionRollup(columnIdColumn.isActionRollup());
    }
@@ -48,7 +48,7 @@ public class AtsColumnIdUI extends XViewerAtsColumn implements IAtsXViewerPreCom
     */
    @Override
    public AtsColumnIdUI copy() {
-      AtsColumnIdUI newXCol = new AtsColumnIdUI(columnIdColumn, services);
+      AtsColumnIdUI newXCol = new AtsColumnIdUI(columnIdColumn, atsApi);
       super.copy(this, newXCol);
       return newXCol;
    }
@@ -59,7 +59,7 @@ public class AtsColumnIdUI extends XViewerAtsColumn implements IAtsXViewerPreCom
          String value = "";
          try {
             if (element instanceof IAtsObject) {
-               value = services.getColumnService().getColumnText(columnIdColumn.getColumnId(), (IAtsObject) element);
+               value = atsApi.getColumnService().getColumnText(columnIdColumn.getColumnId(), (IAtsObject) element);
             }
          } catch (Exception ex) {
             value = LogUtil.getCellExceptionString(ex);

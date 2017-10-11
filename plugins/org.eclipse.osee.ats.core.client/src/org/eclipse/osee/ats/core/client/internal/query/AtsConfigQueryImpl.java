@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.query.AbstractAtsConfigQueryImpl;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -34,8 +34,8 @@ public class AtsConfigQueryImpl extends AbstractAtsConfigQueryImpl {
 
    private QueryBuilderArtifact query;
 
-   public AtsConfigQueryImpl(IAtsServices services) {
-      super(services);
+   public AtsConfigQueryImpl(AtsApi atsApi) {
+      super(atsApi);
    }
 
    @Override

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.config;
 
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 
@@ -19,8 +19,8 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
  */
 public interface ITeamDefinitionFactory {
 
-   IAtsTeamDefinition createTeamDefinition(String name, long uuid, IAtsChangeSet changes, IAtsServices services);
+   IAtsTeamDefinition createTeamDefinition(String name, long uuid, IAtsChangeSet changes, AtsApi atsApi);
 
-   IAtsTeamDefinition createTeamDefinition(String name, IAtsChangeSet changes, IAtsServices services);
+   IAtsTeamDefinition createTeamDefinition(String name, IAtsChangeSet changes, AtsApi atsApi);
 
 }

@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.core.workflow;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
@@ -23,26 +23,26 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 
 public class Action extends AtsObject implements IAtsAction {
 
-   private final IAtsServices services;
+   private final AtsApi atsApi;
    private final ArtifactToken artifact;
 
-   public Action(IAtsServices services, ArtifactToken artifact) {
+   public Action(AtsApi atsApi, ArtifactToken artifact) {
       super(artifact.getName(), artifact.getId());
-      this.services = services;
+      this.atsApi = atsApi;
       this.artifact = artifact;
       setStoreObject(artifact);
    }
 
    @Override
    public Collection<IAtsTeamWorkflow> getTeamWorkflows() {
-      return services.getRelationResolver().getRelated(this, AtsRelationTypes.ActionToWorkflow_WorkFlow,
+      return atsApi.getRelationResolver().getRelated(this, AtsRelationTypes.ActionToWorkflow_WorkFlow,
          IAtsTeamWorkflow.class);
    }
 
    @Override
    public String getAtsId() {
       try {
-         return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.AtsId,
+         return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.AtsId,
             String.valueOf(getId()));
       } catch (OseeCoreException ex) {
          return null;

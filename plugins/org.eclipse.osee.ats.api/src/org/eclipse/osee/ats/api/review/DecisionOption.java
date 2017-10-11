@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.core.util.Result;
 
@@ -26,7 +26,7 @@ public class DecisionOption {
    private String name;
    private Collection<IAtsUser> assignees = new HashSet<>();
    private boolean followupRequired;
-   private final IAtsServices services;
+   private final AtsApi atsApi;
 
    @Override
    public int hashCode() {
@@ -36,18 +36,18 @@ public class DecisionOption {
       return result;
    }
 
-   public DecisionOption(IAtsServices services) {
-      this("", (IAtsUser) null, false, services);
+   public DecisionOption(AtsApi atsApi) {
+      this("", (IAtsUser) null, false, atsApi);
    }
 
-   public DecisionOption(String name, IAtsUser assignee, boolean followup, IAtsServices services) {
-      this(name, (assignee == null ? Collections.emptyList() : Collections.singleton(assignee)), followup, services);
+   public DecisionOption(String name, IAtsUser assignee, boolean followup, AtsApi atsApi) {
+      this(name, (assignee == null ? Collections.emptyList() : Collections.singleton(assignee)), followup, atsApi);
    }
 
-   public DecisionOption(String name, Collection<IAtsUser> assignees, boolean followup, IAtsServices services) {
+   public DecisionOption(String name, Collection<IAtsUser> assignees, boolean followup, AtsApi atsApi) {
       this.name = name;
       this.followupRequired = followup;
-      this.services = services;
+      this.atsApi = atsApi;
       if (assignees != null) {
          this.assignees = new HashSet<IAtsUser>(assignees);
       }
@@ -143,9 +143,9 @@ public class DecisionOption {
          m = Pattern.compile("<(.*?)>").matcher(m.group(3));
          while (m.find()) {
             try {
-               assignees.add(services.getUserService().getUserById(m.group(1)));
+               assignees.add(atsApi.getUserService().getUserById(m.group(1)));
             } catch (Exception ex) {
-               services.getLogger().error(ex, "Error deserializing xml in DecisionOption.setFromXml");
+               atsApi.getLogger().error(ex, "Error deserializing xml in DecisionOption.setFromXml");
             }
          }
          if (followupRequired && assignees.isEmpty()) {

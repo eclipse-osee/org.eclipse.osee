@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.core.util;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.util.IValueProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -29,18 +29,18 @@ public class ArtifactValueProvider implements IValueProvider {
 
    private final ArtifactToken artifact;
    private final String attributeTypeName;
-   private final IAtsServices services;
+   private final AtsApi atsApi;
    private AttributeTypeId attributeType;
 
-   public ArtifactValueProvider(ArtifactToken artifact, IAtsWidgetDefinition widgetDef, IAtsServices services) {
+   public ArtifactValueProvider(ArtifactToken artifact, IAtsWidgetDefinition widgetDef, AtsApi atsApi) {
       this.artifact = artifact;
-      this.services = services;
+      this.atsApi = atsApi;
       this.attributeTypeName = widgetDef.getAtrributeName();
    }
 
-   public ArtifactValueProvider(ArtifactToken artifact, AttributeTypeToken attributeType, IAtsServices services) {
+   public ArtifactValueProvider(ArtifactToken artifact, AttributeTypeToken attributeType, AtsApi atsApi) {
       this.artifact = artifact;
-      this.services = services;
+      this.atsApi = atsApi;
       this.attributeTypeName = attributeType.getName();
    }
 
@@ -48,7 +48,7 @@ public class ArtifactValueProvider implements IValueProvider {
    public boolean isEmpty() {
       AttributeTypeId attributeType = getAtributeType();
       if (attributeType != null) {
-         return services.getAttributeResolver().getAttributeCount(artifact, attributeType) == 0;
+         return atsApi.getAttributeResolver().getAttributeCount(artifact, attributeType) == 0;
       }
       return true;
    }
@@ -57,14 +57,14 @@ public class ArtifactValueProvider implements IValueProvider {
    public Collection<String> getValues() {
       AttributeTypeId attributeType = getAtributeType();
       if (attributeType != null) {
-         return services.getAttributeResolver().getAttributesToStringList(artifact, attributeType);
+         return atsApi.getAttributeResolver().getAttributesToStringList(artifact, attributeType);
       }
       return Collections.emptyList();
    }
 
    public AttributeTypeId getAtributeType() {
       if (attributeType == null && Strings.isValid(attributeTypeName)) {
-         attributeType = services.getStoreService().getAttributeType(attributeTypeName);
+         attributeType = atsApi.getStoreService().getAttributeType(attributeTypeName);
       }
       return attributeType;
    }
@@ -77,8 +77,8 @@ public class ArtifactValueProvider implements IValueProvider {
    @Override
    public Collection<Date> getDateValues() {
       AttributeTypeId attributeType = getAtributeType();
-      if (attributeType != null && services.getStoreService().isDateType(attributeType)) {
-         return services.getAttributeResolver().getAttributeValues(artifact, attributeType);
+      if (attributeType != null && atsApi.getStoreService().isDateType(attributeType)) {
+         return atsApi.getAttributeResolver().getAttributeValues(artifact, attributeType);
       }
       return Collections.emptyList();
 

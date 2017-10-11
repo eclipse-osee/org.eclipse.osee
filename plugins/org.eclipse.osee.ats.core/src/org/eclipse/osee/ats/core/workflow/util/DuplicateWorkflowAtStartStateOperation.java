@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -32,8 +32,8 @@ import org.eclipse.osee.framework.core.util.result.XResultData;
  */
 public class DuplicateWorkflowAtStartStateOperation extends AbstractDuplicateWorkflowOperation {
 
-   public DuplicateWorkflowAtStartStateOperation(Collection<IAtsTeamWorkflow> teamWfs, String title, IAtsUser asUser, IAtsServices services) {
-      super(teamWfs, title, asUser, services);
+   public DuplicateWorkflowAtStartStateOperation(Collection<IAtsTeamWorkflow> teamWfs, String title, IAtsUser asUser, AtsApi atsApi) {
+      super(teamWfs, title, asUser, atsApi);
    }
 
    @Override
@@ -45,10 +45,10 @@ public class DuplicateWorkflowAtStartStateOperation extends AbstractDuplicateWor
       oldToNewMap = new HashMap<>();
 
       IAtsChangeSet changes =
-         services.getStoreService().createAtsChangeSet("Duplicate Workflow - At Start State", asUser);
+         atsApi.getStoreService().createAtsChangeSet("Duplicate Workflow - At Start State", asUser);
 
       Date createdDate = new Date();
-      IAtsUser createdBy = services.getUserService().getCurrentUser();
+      IAtsUser createdBy = atsApi.getUserService().getCurrentUser();
       for (IAtsTeamWorkflow teamWf : teamWfs) {
 
          // assignees == add in existing assignees, leads and originator (current user)
@@ -56,12 +56,12 @@ public class DuplicateWorkflowAtStartStateOperation extends AbstractDuplicateWor
          assignees.addAll(teamWf.getStateMgr().getAssignees());
          IAtsTeamDefinition teamDef = teamWf.getTeamDefinition();
          assignees.addAll(teamDef.getLeads());
-         IAtsUser user = services.getUserService().getCurrentUser();
+         IAtsUser user = atsApi.getUserService().getCurrentUser();
          if (!assignees.contains(user)) {
             assignees.add(user);
          }
 
-         IAtsTeamWorkflow newTeamWf = services.getActionFactory().createTeamWorkflow(teamWf.getParentAction(), teamDef,
+         IAtsTeamWorkflow newTeamWf = atsApi.getActionFactory().createTeamWorkflow(teamWf.getParentAction(), teamDef,
             teamWf.getActionableItems(), assignees, changes, createdDate, createdBy, null,
             CreateTeamOption.Duplicate_If_Exists);
 

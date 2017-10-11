@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.core.column;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertion;
 import org.eclipse.osee.ats.core.config.WorkPackageUtility;
@@ -32,7 +32,7 @@ public class InsertionColumnTest {
 
    // @formatter:off
    @Mock private WorkPackageUtility util;
-   @Mock private IAtsServices services;
+   @Mock private AtsApi atsApi;
    @Mock private IAtsWorkItem workItem;
    @Mock private IAtsObject object;
    @Mock private IAtsInsertion program;
@@ -45,21 +45,21 @@ public class InsertionColumnTest {
 
    @Test
    public void test() {
-      String str = InsertionColumn.getInsertionStr(object, services, util);
+      String str = InsertionColumn.getInsertionStr(object, atsApi, util);
       assertEquals(str, "");
 
-      when(util.getInsertion(services, workItem)).thenReturn(new Pair<IAtsInsertion, Boolean>(null, false));
+      when(util.getInsertion(atsApi, workItem)).thenReturn(new Pair<IAtsInsertion, Boolean>(null, false));
 
-      str = InsertionColumn.getInsertionStr(workItem, services, util);
+      str = InsertionColumn.getInsertionStr(workItem, atsApi, util);
       assertEquals(str, "");
 
-      when(util.getInsertion(services, workItem)).thenReturn(new Pair<IAtsInsertion, Boolean>(program, false));
+      when(util.getInsertion(atsApi, workItem)).thenReturn(new Pair<IAtsInsertion, Boolean>(program, false));
       when(program.getName()).thenReturn("Country");
-      str = InsertionColumn.getInsertionStr(workItem, services, util);
+      str = InsertionColumn.getInsertionStr(workItem, atsApi, util);
       assertEquals(str, "Country");
 
-      when(util.getInsertion(services, workItem)).thenReturn(new Pair<IAtsInsertion, Boolean>(program, true));
-      str = InsertionColumn.getInsertionStr(workItem, services, util);
+      when(util.getInsertion(atsApi, workItem)).thenReturn(new Pair<IAtsInsertion, Boolean>(program, true));
+      str = InsertionColumn.getInsertionStr(workItem, atsApi, util);
       assertEquals(str, "Country (I)");
 
    }

@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.codehaus.jackson.annotate.JsonIgnore;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.util.ILineChart;
 import org.eclipse.osee.ats.core.internal.util.OseeResource;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
@@ -38,11 +38,11 @@ public class LineChart implements ILineChart {
    private String yAxisLabel;
    private List<String> xAxisLabels = new LinkedList<>();
    private String urlToGet;
-   private final IAtsServices services;
+   private final AtsApi atsApi;
    private final XResultData results = new XResultData();
 
-   public LineChart(IAtsServices services) {
-      this.services = services;
+   public LineChart(AtsApi atsApi) {
+      this.atsApi = atsApi;
    }
 
    @JsonIgnore
@@ -86,7 +86,7 @@ public class LineChart implements ILineChart {
          htmlChart = htmlChart.replaceFirst("PUT_XAXIS_LABEL_HERE", getxAxisLabel());
          htmlChart = htmlChart.replaceFirst("PUT_YAXIS_LABEL_HERE", getyAxisLabel());
          htmlChart = htmlChart.replaceFirst("PUT_TITLE_HERE", getTitle());
-         htmlChart = AtsUtilCore.resolveAjaxToBaseApplicationServer(htmlChart, services);
+         htmlChart = AtsUtilCore.resolveAjaxToBaseApplicationServer(htmlChart, atsApi);
          return htmlChart;
       } catch (Exception ex) {
          results.errorf("Exception generating LineChart [%s]", Lib.exceptionToString(ex));

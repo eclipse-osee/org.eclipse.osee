@@ -14,7 +14,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
@@ -142,7 +142,7 @@ public class TransitionHelperAdapterTest {
       }
 
       @Override
-      public IAtsServices getServices() {
+      public AtsApi getServices() {
          return null;
       }
 

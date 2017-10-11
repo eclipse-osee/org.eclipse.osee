@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.config;
 
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.util.result.XResultData;
@@ -29,7 +29,7 @@ public class ConvertCreateUpdateAtsConfig implements IAtsDatabaseConversion {
    }
 
    @Override
-   public void run(XResultData data, boolean reportOnly, IAtsServices services) {
+   public void run(XResultData data, boolean reportOnly, AtsApi atsApi) {
       if (reportOnly) {
          data.log("No REPORT-ONLY available for this conversion.\n");
       } else {

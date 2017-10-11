@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -31,19 +31,19 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
  */
 public class TeamDefinitionService implements IAtsTeamDefinitionService {
 
-   protected final IAtsServices services;
+   protected final AtsApi atsApi;
 
-   public TeamDefinitionService(IAtsServices services) {
-      this.services = services;
+   public TeamDefinitionService(AtsApi atsApi) {
+      this.atsApi = atsApi;
    }
 
    @Override
    public IAtsTeamDefinition getTeamDefinition(IAtsWorkItem workItem) {
       IAtsTeamDefinition teamDef = null;
-      ArtifactId teamDefId = services.getAttributeResolver().getSoleArtifactIdReference(workItem,
+      ArtifactId teamDefId = atsApi.getAttributeResolver().getSoleArtifactIdReference(workItem,
          AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);
       if (teamDefId.isValid()) {
-         teamDef = services.getConfigItem(teamDefId);
+         teamDef = atsApi.getConfigItem(teamDefId);
       }
       return teamDef;
    }
@@ -51,9 +51,9 @@ public class TeamDefinitionService implements IAtsTeamDefinitionService {
    @Override
    public Collection<IAtsVersion> getVersions(IAtsTeamDefinition teamDef) {
       List<IAtsVersion> versions = new ArrayList<>();
-      for (ArtifactId verArt : services.getRelationResolver().getRelated(teamDef,
+      for (ArtifactId verArt : atsApi.getRelationResolver().getRelated(teamDef,
          AtsRelationTypes.TeamDefinitionToVersion_Version)) {
-         versions.add(services.getConfigItemFactory().getVersion(verArt));
+         versions.add(atsApi.getConfigItemFactory().getVersion(verArt));
       }
       return versions;
    }
@@ -65,15 +65,15 @@ public class TeamDefinitionService implements IAtsTeamDefinitionService {
 
    @Override
    public IAtsTeamDefinition getTeamDefHoldingVersions(IAtsProgram program) {
-      return services.getProgramService().getTeamDefHoldingVersions(program);
+      return atsApi.getProgramService().getTeamDefHoldingVersions(program);
    }
 
    @Override
    public IAtsTeamDefinition getTeamDefinition(String name) {
       IAtsTeamDefinition teamDef = null;
-      ArtifactId teamDefArt = services.getArtifactByName(AtsArtifactTypes.TeamDefinition, name);
+      ArtifactId teamDefArt = atsApi.getArtifactByName(AtsArtifactTypes.TeamDefinition, name);
       if (teamDefArt != null) {
-         teamDef = services.getConfigItemFactory().getTeamDef(teamDefArt);
+         teamDef = atsApi.getConfigItemFactory().getTeamDef(teamDefArt);
       }
       return teamDef;
    }
@@ -81,9 +81,9 @@ public class TeamDefinitionService implements IAtsTeamDefinitionService {
    @Override
    public Collection<IAtsTeamDefinition> getTeamDefinitions(IAgileTeam agileTeam) {
       List<IAtsTeamDefinition> teamDefs = new LinkedList<>();
-      for (ArtifactId atsTeamArt : services.getRelationResolver().getRelated(agileTeam,
+      for (ArtifactId atsTeamArt : atsApi.getRelationResolver().getRelated(agileTeam,
          AtsRelationTypes.AgileTeamToAtsTeam_AtsTeam)) {
-         teamDefs.add(services.getConfigItemFactory().getTeamDef(atsTeamArt));
+         teamDefs.add(atsApi.getConfigItemFactory().getTeamDef(atsTeamArt));
       }
       return teamDefs;
    }

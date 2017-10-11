@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.review;
 
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -21,13 +21,13 @@ import org.eclipse.osee.logger.Log;
  */
 public class PeerToPeerReview extends AbstractReview implements IAtsPeerToPeerReview {
 
-   public PeerToPeerReview(Log logger, IAtsServices services, ArtifactToken artifact) {
-      super(logger, services, artifact);
+   public PeerToPeerReview(Log logger, AtsApi atsApi, ArtifactToken artifact) {
+      super(logger, atsApi, artifact);
    }
 
    @Override
    public IAtsPeerReviewRoleManager getRoleManager() {
-      return services.getReviewService().createPeerReviewRoleManager(this);
+      return atsApi.getReviewService().createPeerReviewRoleManager(this);
    }
 
 }

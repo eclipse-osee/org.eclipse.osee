@@ -14,7 +14,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
@@ -40,7 +40,7 @@ public class AssigneeColumnTest extends AbstractUserTest {
    @Mock private IAtsWorkItem workItem2;
    @Mock private IAtsStateManager stateMgr2;
    @Mock private AtsActionGroup group;
-   @Mock private IAtsServices services;
+   @Mock private AtsApi atsApi;
    @Mock private IAtsUserService userService;
    // @formatter:on
 
@@ -52,8 +52,8 @@ public class AssigneeColumnTest extends AbstractUserTest {
       super.setup();
       when(workItem.getStateMgr()).thenReturn(stateMgr);
       when(workItem2.getStateMgr()).thenReturn(stateMgr2);
-      when(services.getUserService()).thenReturn(userService);
-      assigneeColumn = new AssigneeColumn(services);
+      when(atsApi.getUserService()).thenReturn(userService);
+      assigneeColumn = new AssigneeColumn(atsApi);
 
    }
 
@@ -196,7 +196,7 @@ public class AssigneeColumnTest extends AbstractUserTest {
 
    @org.junit.Test
    public void testGetAssigneesStr_invalidImplementersString() {
-      AssigneeColumn column = new AssigneeColumn((IAtsServices) null);
+      AssigneeColumn column = new AssigneeColumn((AtsApi) null);
       when(stateMgr.getStateType()).thenReturn(StateType.Cancelled);
       Assert.assertEquals("", column.getAssigneeStr(workItem));
    }

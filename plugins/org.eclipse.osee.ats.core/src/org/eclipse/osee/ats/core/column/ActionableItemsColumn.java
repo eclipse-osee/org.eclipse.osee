@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemProvider;
@@ -31,8 +31,8 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
  */
 public class ActionableItemsColumn extends AbstractServicesColumn {
 
-   public ActionableItemsColumn(IAtsServices services) {
-      super(services);
+   public ActionableItemsColumn(AtsApi atsApi) {
+      super(atsApi);
    }
 
    @Override

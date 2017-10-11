@@ -15,7 +15,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.mail.api.MailService;
@@ -26,7 +26,7 @@ import org.eclipse.osee.mail.api.MailService;
 @Path("health")
 public final class HealthResource {
 
-   private IAtsServices services;
+   private AtsApi atsApi;
    private JdbcService jdbcService;
    private static MailService mailService;
 
@@ -38,8 +38,8 @@ public final class HealthResource {
       // for osgi instantiation; this optionally sets the mail service if available
    }
 
-   public HealthResource(IAtsServices services, JdbcService jdbcService) {
-      this.services = services;
+   public HealthResource(AtsApi atsApi, JdbcService jdbcService) {
+      this.atsApi = atsApi;
       this.jdbcService = jdbcService;
    }
 
@@ -49,7 +49,7 @@ public final class HealthResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public Response get() throws Exception {
-      AtsHealthCheckOperation validate = new AtsHealthCheckOperation(services, jdbcService, mailService);
+      AtsHealthCheckOperation validate = new AtsHealthCheckOperation(atsApi, jdbcService, mailService);
       XResultData rd = validate.run();
       return Response.ok(rd.toString().replaceAll("\n", "</br>")).build();
    }

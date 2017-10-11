@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.core.column;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -23,8 +23,8 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
  */
 public class StateColumn extends AbstractServicesColumn {
 
-   public StateColumn(IAtsServices services) {
-      super(services);
+   public StateColumn(AtsApi atsApi) {
+      super(atsApi);
    }
 
    @Override

@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.rest.internal.util;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.core.util.AtsAbstractEarnedValueImpl;
@@ -22,8 +22,8 @@ import org.eclipse.osee.logger.Log;
  */
 public class AtsEarnedValueImpl extends AtsAbstractEarnedValueImpl {
 
-   public AtsEarnedValueImpl(Log logger, IAtsServices services) {
-      super(logger, services);
+   public AtsEarnedValueImpl(Log logger, AtsApi atsApi) {
+      super(logger, atsApi);
    }
 
    @Override

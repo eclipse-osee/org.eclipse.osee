@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
@@ -46,20 +46,20 @@ public class AgileFactory {
       // Utilitiy class
    }
 
-   public static IAgileTeam createAgileTeam(Log logger, IAtsServices services, JaxNewAgileTeam newTeam) {
+   public static IAgileTeam createAgileTeam(Log logger, AtsApi atsApi, JaxNewAgileTeam newTeam) {
       org.eclipse.osee.framework.core.data.ArtifactId userArt =
-         services.getArtifact(services.getUserService().getCurrentUser());
+         atsApi.getArtifact(atsApi.getUserService().getCurrentUser());
 
-      ArtifactId agileTeamArt = services.getArtifact(newTeam.getUuid());
+      ArtifactId agileTeamArt = atsApi.getArtifact(newTeam.getUuid());
       if (agileTeamArt == null) {
 
-         IAtsChangeSet changes = services.createChangeSet("Create new Agile Team");
+         IAtsChangeSet changes = atsApi.createChangeSet("Create new Agile Team");
 
          agileTeamArt =
             changes.createArtifact(AtsArtifactTypes.AgileTeam, newTeam.getName(), GUID.create(), newTeam.getUuid());
          changes.setSoleAttributeValue(agileTeamArt, AtsAttributeTypes.Active, true);
-         ArtifactId topAgileFolder = AgileFolders.getOrCreateTopAgileFolder(services, userArt, changes);
-         if (topAgileFolder.notEqual(services.getRelationResolver().getParent(agileTeamArt))) {
+         ArtifactId topAgileFolder = AgileFolders.getOrCreateTopAgileFolder(atsApi, userArt, changes);
+         if (topAgileFolder.notEqual(atsApi.getRelationResolver().getParent(agileTeamArt))) {
             changes.unrelateFromAll(CoreRelationTypes.Default_Hierarchical__Parent, agileTeamArt);
             changes.addChild(topAgileFolder, agileTeamArt);
          }
@@ -69,15 +69,15 @@ public class AgileFactory {
 
          changes.execute();
       }
-      return getAgileTeam(logger, services, agileTeamArt);
+      return getAgileTeam(logger, atsApi, agileTeamArt);
    }
 
-   public static IAgileTeam updateAgileTeam(Log logger, IAtsServices services, JaxAgileTeam team) {
-      ArtifactId userArt = services.getArtifact(services.getUserService().getCurrentUser());
+   public static IAgileTeam updateAgileTeam(Log logger, AtsApi atsApi, JaxAgileTeam team) {
+      ArtifactId userArt = atsApi.getArtifact(atsApi.getUserService().getCurrentUser());
 
-      IAtsChangeSet changes = services.createChangeSet("Update new Agile Team");
+      IAtsChangeSet changes = atsApi.createChangeSet("Update new Agile Team");
 
-      ArtifactToken agileTeamArt = services.getArtifact(team.getUuid());
+      ArtifactToken agileTeamArt = atsApi.getArtifact(team.getUuid());
       if (agileTeamArt == null) {
          throw new OseeStateException("Agile Team not found with Uuid [%d]", team.getUuid());
       }
@@ -85,20 +85,20 @@ public class AgileFactory {
          changes.setName(agileTeamArt, team.getName());
       }
       if (Strings.isValid(team.getDescription()) && !team.getDescription().equals(
-         services.getAttributeResolver().getSoleAttributeValue(agileTeamArt, AtsAttributeTypes.Description, ""))) {
+         atsApi.getAttributeResolver().getSoleAttributeValue(agileTeamArt, AtsAttributeTypes.Description, ""))) {
          changes.setSoleAttributeValue(agileTeamArt, AtsAttributeTypes.Description, team.getDescription());
       }
       changes.setSoleAttributeValue(agileTeamArt, AtsAttributeTypes.Active, team.isActive());
-      ArtifactId topAgileFolder = AgileFolders.getOrCreateTopAgileFolder(services, userArt, changes);
-      if (topAgileFolder.notEqual(services.getRelationResolver().getParent(agileTeamArt))) {
+      ArtifactId topAgileFolder = AgileFolders.getOrCreateTopAgileFolder(atsApi, userArt, changes);
+      if (topAgileFolder.notEqual(atsApi.getRelationResolver().getParent(agileTeamArt))) {
          changes.unrelateFromAll(CoreRelationTypes.Default_Hierarchical__Parent, agileTeamArt);
          changes.addChild(topAgileFolder, agileTeamArt);
       }
 
       Set<ArtifactId> atsTeamArts = new HashSet<>();
       for (long atsTeamUuid : team.getAtsTeamUuids()) {
-         ArtifactId atsTeamArt = services.getArtifact(atsTeamUuid);
-         if (atsTeamArt != null && services.getStoreService().isOfType(atsTeamArt, AtsArtifactTypes.TeamDefinition)) {
+         ArtifactId atsTeamArt = atsApi.getArtifact(atsTeamUuid);
+         if (atsTeamArt != null && atsApi.getStoreService().isOfType(atsTeamArt, AtsArtifactTypes.TeamDefinition)) {
             atsTeamArts.add(atsTeamArt);
          } else {
             throw new OseeArgumentException("UUID %d is not a valid Ats Team Definition", atsTeamUuid);
@@ -107,109 +107,109 @@ public class AgileFactory {
       changes.setRelations(agileTeamArt, AtsRelationTypes.AgileTeamToAtsTeam_AtsTeam, atsTeamArts);
 
       changes.execute();
-      return getAgileTeam(logger, services, agileTeamArt);
+      return getAgileTeam(logger, atsApi, agileTeamArt);
    }
 
-   public static IAgileTeam getAgileTeam(Log logger, IAtsServices services, Object artifact) {
+   public static IAgileTeam getAgileTeam(Log logger, AtsApi atsApi, Object artifact) {
       IAgileTeam team = null;
       if (artifact instanceof ArtifactId) {
-         ArtifactToken art = services.getArtifact((ArtifactId) artifact);
-         team = new AgileTeam(logger, services, art);
+         ArtifactToken art = atsApi.getArtifact((ArtifactId) artifact);
+         team = new AgileTeam(logger, atsApi, art);
       }
       return team;
    }
 
-   public static IAgileFeatureGroup createAgileFeatureGroup(Log logger, IAtsServices services, long teamUuid, String name, String guid, Long uuid) {
+   public static IAgileFeatureGroup createAgileFeatureGroup(Log logger, AtsApi atsApi, long teamUuid, String name, String guid, Long uuid) {
       JaxAgileFeatureGroup feature = new JaxAgileFeatureGroup();
       feature.setName(name);
       feature.setUuid(uuid);
       feature.setTeamUuid(teamUuid);
       feature.setActive(true);
-      return createAgileFeatureGroup(logger, services, feature);
+      return createAgileFeatureGroup(logger, atsApi, feature);
    }
 
-   public static IAgileFeatureGroup createAgileFeatureGroup(Log logger, IAtsServices services, JaxAgileFeatureGroup newFeatureGroup) {
-      ArtifactId userArt = services.getArtifact(services.getUserService().getCurrentUser());
+   public static IAgileFeatureGroup createAgileFeatureGroup(Log logger, AtsApi atsApi, JaxAgileFeatureGroup newFeatureGroup) {
+      ArtifactId userArt = atsApi.getArtifact(atsApi.getUserService().getCurrentUser());
 
-      IAtsChangeSet changes = services.createChangeSet("Create new Agile Feature Group");
+      IAtsChangeSet changes = atsApi.createChangeSet("Create new Agile Feature Group");
 
       ArtifactId featureGroupArt = changes.createArtifact(AtsArtifactTypes.AgileFeatureGroup, newFeatureGroup.getName(),
          GUID.create(), newFeatureGroup.getUuid());
       changes.setSoleAttributeValue(featureGroupArt, AtsAttributeTypes.Active, newFeatureGroup.isActive());
 
       ArtifactId featureGroupFolder =
-         AgileFolders.getOrCreateTopFeatureGroupFolder(services, newFeatureGroup.getTeamUuid(), userArt, changes);
+         AgileFolders.getOrCreateTopFeatureGroupFolder(atsApi, newFeatureGroup.getTeamUuid(), userArt, changes);
       changes.addChild(featureGroupFolder, featureGroupArt);
 
-      ArtifactId team = AgileFolders.getTeamFolder(services, newFeatureGroup.getTeamUuid());
+      ArtifactId team = AgileFolders.getTeamFolder(atsApi, newFeatureGroup.getTeamUuid());
       changes.relate(team, AtsRelationTypes.AgileTeamToFeatureGroup_FeatureGroup, featureGroupArt);
 
       changes.execute();
-      return getAgileFeatureGroup(logger, services, featureGroupArt);
+      return getAgileFeatureGroup(logger, atsApi, featureGroupArt);
    }
 
-   public static IAgileFeatureGroup getAgileFeatureGroup(Log logger, IAtsServices services, ArtifactId artifact) {
-      return new AgileFeatureGroup(logger, services, services.getArtifact(artifact));
+   public static IAgileFeatureGroup getAgileFeatureGroup(Log logger, AtsApi atsApi, ArtifactId artifact) {
+      return new AgileFeatureGroup(logger, atsApi, atsApi.getArtifact(artifact));
    }
 
-   public static IAgileSprint createAgileSprint(Log logger, IAtsServices services, long teamUuid, String name, String guid, Long uuid) {
+   public static IAgileSprint createAgileSprint(Log logger, AtsApi atsApi, long teamUuid, String name, String guid, Long uuid) {
 
       IAtsChangeSet changes =
-         services.getStoreService().createAtsChangeSet("Create new Agile Sprint", AtsCoreUsers.SYSTEM_USER);
+         atsApi.getStoreService().createAtsChangeSet("Create new Agile Sprint", AtsCoreUsers.SYSTEM_USER);
 
       ArtifactToken sprintArt = changes.createArtifact(AtsArtifactTypes.AgileSprint, name, guid, uuid);
-      IAgileSprint sprint = services.getWorkItemFactory().getAgileSprint(sprintArt);
+      IAgileSprint sprint = atsApi.getWorkItemFactory().getAgileSprint(sprintArt);
 
-      services.getActionFactory().setAtsId(sprint, TeamDefinitions.getTopTeamDefinition(services.getQueryService()),
+      atsApi.getActionFactory().setAtsId(sprint, TeamDefinitions.getTopTeamDefinition(atsApi.getQueryService()),
          changes);
 
       // Initialize state machine
-      services.getActionFactory().initializeNewStateMachine(sprint, Arrays.asList(AtsCoreUsers.UNASSIGNED_USER),
-         new Date(), services.getUserService().getCurrentUser(), changes);
+      atsApi.getActionFactory().initializeNewStateMachine(sprint, Arrays.asList(AtsCoreUsers.UNASSIGNED_USER),
+         new Date(), atsApi.getUserService().getCurrentUser(), changes);
 
       changes.add(sprintArt);
 
-      ArtifactId teamFolder = AgileFolders.getTeamFolder(services, teamUuid);
-      ArtifactId agileSprintFolderArt = AgileFolders.getOrCreateTopSprintFolder(services, teamUuid, changes);
+      ArtifactId teamFolder = AgileFolders.getTeamFolder(atsApi, teamUuid);
+      ArtifactId agileSprintFolderArt = AgileFolders.getOrCreateTopSprintFolder(atsApi, teamUuid, changes);
       changes.relate(agileSprintFolderArt, CoreRelationTypes.Default_Hierarchical__Child, sprintArt);
       changes.relate(teamFolder, AtsRelationTypes.AgileTeamToSprint_Sprint, sprintArt);
 
       changes.execute();
-      return getAgileSprint(logger, services, sprintArt);
+      return getAgileSprint(logger, atsApi, sprintArt);
    }
 
-   public static IAgileSprint getAgileSprint(Log logger, IAtsServices services, ArtifactId artifact) {
-      ArtifactToken artifact2 = services.getArtifact(artifact);
-      return new AgileSprint(logger, services, artifact2);
+   public static IAgileSprint getAgileSprint(Log logger, AtsApi atsApi, ArtifactId artifact) {
+      ArtifactToken artifact2 = atsApi.getArtifact(artifact);
+      return new AgileSprint(logger, atsApi, artifact2);
    }
 
-   public static IAgileBacklog createAgileBacklog(Log logger, IAtsServices services, long teamUuid, String name, String guid, Long uuid) {
+   public static IAgileBacklog createAgileBacklog(Log logger, AtsApi atsApi, long teamUuid, String name, String guid, Long uuid) {
 
       IAtsChangeSet changes =
-         services.getStoreService().createAtsChangeSet("Create new Agile Backlog", AtsCoreUsers.SYSTEM_USER);
+         atsApi.getStoreService().createAtsChangeSet("Create new Agile Backlog", AtsCoreUsers.SYSTEM_USER);
 
       ArtifactToken backlogArt = changes.createArtifact(AtsArtifactTypes.AgileBacklog, name, guid, uuid);
-      IAgileBacklog sprint = services.getWorkItemFactory().getAgileBacklog(backlogArt);
+      IAgileBacklog sprint = atsApi.getWorkItemFactory().getAgileBacklog(backlogArt);
 
-      services.getActionFactory().setAtsId(sprint, TeamDefinitions.getTopTeamDefinition(services.getQueryService()),
+      atsApi.getActionFactory().setAtsId(sprint, TeamDefinitions.getTopTeamDefinition(atsApi.getQueryService()),
          changes);
 
       // Initialize state machine
-      services.getActionFactory().initializeNewStateMachine(sprint, Arrays.asList(AtsCoreUsers.UNASSIGNED_USER),
-         new Date(), services.getUserService().getCurrentUser(), changes);
+      atsApi.getActionFactory().initializeNewStateMachine(sprint, Arrays.asList(AtsCoreUsers.UNASSIGNED_USER),
+         new Date(), atsApi.getUserService().getCurrentUser(), changes);
 
       changes.add(backlogArt);
 
-      ArtifactId teamFolder = AgileFolders.getTeamFolder(services, teamUuid);
+      ArtifactId teamFolder = AgileFolders.getTeamFolder(atsApi, teamUuid);
       changes.relate(teamFolder, AtsRelationTypes.AgileTeamToBacklog_Backlog, backlogArt);
       changes.relate(teamFolder, CoreRelationTypes.Default_Hierarchical__Child, backlogArt);
 
       changes.execute();
-      return getAgileBacklog(logger, services, backlogArt);
+      return getAgileBacklog(logger, atsApi, backlogArt);
    }
 
-   public static IAgileBacklog getAgileBacklog(Log logger, IAtsServices services, Object artifact) {
-      return new AgileBacklog(logger, services, (ArtifactToken) artifact);
+   public static IAgileBacklog getAgileBacklog(Log logger, AtsApi atsApi, Object artifact) {
+      return new AgileBacklog(logger, atsApi, (ArtifactToken) artifact);
    }
 
 }

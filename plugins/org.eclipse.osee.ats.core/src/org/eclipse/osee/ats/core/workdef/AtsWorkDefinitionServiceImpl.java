@@ -24,7 +24,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
@@ -67,14 +67,14 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build();
    private final LoadingCache<Long, IAtsWorkDefinition> workDefIdToWorkDef;
    private final LoadingCache<IAtsWorkItem, IAtsWorkDefinition> workItemToWorkDef;
-   private final IAtsServices services;
+   private final AtsApi atsApi;
    private final ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy;
    private final IAtsWorkDefinitionDslService workDefinitionDslService;
    private final IAtsWorkDefinitionStringProvider workDefinitionStringProvider;
    private final AtsWorkDefinitionStoreService workDefinitionStore;
 
-   public AtsWorkDefinitionServiceImpl(IAtsServices services, AtsWorkDefinitionStoreService workDefinitionStore, IAtsWorkDefinitionStringProvider workDefinitionStringProvider, IAtsWorkDefinitionDslService workDefinitionDslService, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
-      this.services = services;
+   public AtsWorkDefinitionServiceImpl(AtsApi atsApi, AtsWorkDefinitionStoreService workDefinitionStore, IAtsWorkDefinitionStringProvider workDefinitionStringProvider, IAtsWorkDefinitionDslService workDefinitionDslService, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
+      this.atsApi = atsApi;
       this.workDefinitionStore = workDefinitionStore;
       this.workDefinitionStringProvider = workDefinitionStringProvider;
       this.workDefinitionDslService = workDefinitionDslService;
@@ -165,7 +165,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       try {
          workDef = getWorkDefinition(name, resultData);
       } catch (Exception ex) {
-         services.getLogger().error(ex, "Exception getting work definition [%s]", name);
+         atsApi.getLogger().error(ex, "Exception getting work definition [%s]", name);
       }
       if (workDef != null) {
          workDefIdToWorkDef.put(workDef.getId(), workDef);
@@ -178,7 +178,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
       // If this artifact specifies it's own workflow definition, use it
       String workFlowDefId = null;
       Collection<Object> attributeValues =
-         services.getAttributeResolver().getAttributeValues(workItem, AtsAttributeTypes.WorkflowDefinition);
+         atsApi.getAttributeResolver().getAttributeValues(workItem, AtsAttributeTypes.WorkflowDefinition);
       if (!attributeValues.isEmpty()) {
          workFlowDefId = (String) attributeValues.iterator().next();
       }
@@ -586,7 +586,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
             hasRule = teamWf.getTeamDefinition().hasRule(option.name());
          }
       } catch (Exception ex) {
-         services.getLogger().error(ex, "Error reading rule [%s] for workItem %s", option, workItem.toStringWithId());
+         atsApi.getLogger().error(ex, "Error reading rule [%s] for workItem %s", option, workItem.toStringWithId());
       }
       return hasRule;
    }

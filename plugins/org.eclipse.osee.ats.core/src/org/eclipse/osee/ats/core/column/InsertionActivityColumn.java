@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.core.column;
 
 import java.util.Map;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
@@ -28,8 +28,8 @@ public class InsertionActivityColumn extends AbstractServicesColumn {
 
    private Map<Object, ArtifactToken> idToInsertionActivity;
 
-   public InsertionActivityColumn(IAtsServices services) {
-      super(services);
+   public InsertionActivityColumn(AtsApi atsApi) {
+      super(atsApi);
    }
 
    /**
@@ -43,22 +43,22 @@ public class InsertionActivityColumn extends AbstractServicesColumn {
    @Override
    public String getText(IAtsObject atsObject) {
       String format = "%s";
-      if (services.getStoreService().isDeleted(atsObject)) {
+      if (atsApi.getStoreService().isDeleted(atsObject)) {
          format = "<Deleted> %s";
       }
       return String.format(format,
-         getInsertionActivityStr(atsObject, services, CountryColumn.getUtil(), idToInsertionActivity));
+         getInsertionActivityStr(atsObject, atsApi, CountryColumn.getUtil(), idToInsertionActivity));
    }
 
-   public static String getInsertionActivityStr(IAtsObject atsObject, IAtsServices services) {
-      return getInsertionActivityStr(atsObject, services, CountryColumn.getUtil());
+   public static String getInsertionActivityStr(IAtsObject atsObject, AtsApi atsApi) {
+      return getInsertionActivityStr(atsObject, atsApi, CountryColumn.getUtil());
    }
 
-   public static String getInsertionActivityStr(IAtsObject atsObject, IAtsServices services, WorkPackageUtility util) {
-      return getInsertionActivityStr(atsObject, services, util, null);
+   public static String getInsertionActivityStr(IAtsObject atsObject, AtsApi atsApi, WorkPackageUtility util) {
+      return getInsertionActivityStr(atsObject, atsApi, util, null);
    }
 
-   public static String getInsertionActivityStr(IAtsObject atsObject, IAtsServices services, WorkPackageUtility utilMap, Map<Object, ArtifactToken> idToInsertionActivity) {
+   public static String getInsertionActivityStr(IAtsObject atsObject, AtsApi atsApi, WorkPackageUtility utilMap, Map<Object, ArtifactToken> idToInsertionActivity) {
       String result = "";
       if (atsObject instanceof IAtsWorkItem) {
          if (idToInsertionActivity != null) {
@@ -69,7 +69,7 @@ public class InsertionActivityColumn extends AbstractServicesColumn {
          }
          if (Strings.isInValid(result)) {
             IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
-            Pair<IAtsInsertionActivity, Boolean> insertionActivity = utilMap.getInsertionActivity(services, workItem);
+            Pair<IAtsInsertionActivity, Boolean> insertionActivity = utilMap.getInsertionActivity(atsApi, workItem);
             if (insertionActivity.getFirst() != null) {
                result = String.format("%s%s", insertionActivity.getFirst().getName(),
                   insertionActivity.getSecond() ? " (I)" : "");
@@ -84,7 +84,7 @@ public class InsertionActivityColumn extends AbstractServicesColumn {
          }
          if (Strings.isInValid(result)) {
             IAtsWorkPackage workPackage = (IAtsWorkPackage) atsObject;
-            IAtsInsertionActivity insertionActivity = services.getProgramService().getInsertionActivity(workPackage);
+            IAtsInsertionActivity insertionActivity = atsApi.getProgramService().getInsertionActivity(workPackage);
             if (insertionActivity != null) {
                result = insertionActivity.getName();
             }

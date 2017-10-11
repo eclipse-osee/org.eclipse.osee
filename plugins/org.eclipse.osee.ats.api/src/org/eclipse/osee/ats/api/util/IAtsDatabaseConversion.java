@@ -10,14 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.util;
 
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 
 public interface IAtsDatabaseConversion {
 
    public String getName();
 
-   public void run(XResultData data, boolean reportOnly, IAtsServices services);
+   public void run(XResultData data, boolean reportOnly, AtsApi atsApi);
 
    public String getDescription();
 

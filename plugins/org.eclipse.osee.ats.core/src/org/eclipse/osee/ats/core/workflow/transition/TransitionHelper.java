@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -41,12 +41,12 @@ public class TransitionHelper extends TransitionHelperAdapter {
    private final IAtsChangeSet changes;
    private boolean executeChanges = false;
    private final IAtsWorkItemService workItemService;
-   private final IAtsServices services;
+   private final AtsApi atsApi;
 
-   public TransitionHelper(String name, Collection<? extends IAtsWorkItem> workItems, String toStateName, Collection<? extends IAtsUser> toAssignees, String cancellationReason, IAtsChangeSet changes, IAtsServices services, TransitionOption... transitionOption) {
-      super(services);
-      this.services = services;
-      this.workItemService = services.getWorkItemService();
+   public TransitionHelper(String name, Collection<? extends IAtsWorkItem> workItems, String toStateName, Collection<? extends IAtsUser> toAssignees, String cancellationReason, IAtsChangeSet changes, AtsApi atsApi, TransitionOption... transitionOption) {
+      super(atsApi);
+      this.atsApi = atsApi;
+      this.workItemService = atsApi.getWorkItemService();
       this.name = name;
       this.workItems = workItems;
       this.toStateName = toStateName;
@@ -159,8 +159,8 @@ public class TransitionHelper extends TransitionHelperAdapter {
    }
 
    @Override
-   public IAtsServices getServices() {
-      return services;
+   public AtsApi getServices() {
+      return atsApi;
    }
 
    public TransitionOption[] getTransitionOptions() {

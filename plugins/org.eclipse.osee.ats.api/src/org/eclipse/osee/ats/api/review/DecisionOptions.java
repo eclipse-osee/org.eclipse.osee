@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.api.review;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
@@ -25,12 +25,12 @@ import org.eclipse.osee.framework.core.util.Result;
 public class DecisionOptions {
 
    private final AttributeTypeId attributeType;
-   private final IAtsServices services;
+   private final AtsApi atsApi;
    private final IAtsDecisionReview decRev;
 
-   public DecisionOptions(IAtsDecisionReview decRev, IAtsServices services) {
+   public DecisionOptions(IAtsDecisionReview decRev, AtsApi atsApi) {
       this.decRev = decRev;
-      this.services = services;
+      this.atsApi = atsApi;
       this.attributeType = AtsAttributeTypes.DecisionReviewOptions;
    }
 
@@ -39,17 +39,17 @@ public class DecisionOptions {
    }
 
    public Set<DecisionOption> getDecisionOptions() {
-      String decString = services.getAttributeResolver().getSoleAttributeValue(decRev, getAttributeType(), "");
-      return getDecisionOptions(decString, services);
+      String decString = atsApi.getAttributeResolver().getSoleAttributeValue(decRev, getAttributeType(), "");
+      return getDecisionOptions(decString, atsApi);
    }
 
-   public static Set<DecisionOption> getDecisionOptions(String decisionOptions, IAtsServices services) {
+   public static Set<DecisionOption> getDecisionOptions(String decisionOptions, AtsApi atsApi) {
       Set<DecisionOption> decOptions = new LinkedHashSet<>();
       for (String decsionOpt : decisionOptions.split("[\n\r]+")) {
-         DecisionOption state = new DecisionOption(services);
+         DecisionOption state = new DecisionOption(atsApi);
          Result result = state.setFromXml(decsionOpt);
          if (result.isFalse()) {
-            services.getLogger().error(result.getText());
+            atsApi.getLogger().error(result.getText());
          } else {
             decOptions.add(state);
          }
@@ -68,12 +68,12 @@ public class DecisionOptions {
 
    public void validateDecisionOptions(TransitionResults results) {
       validateDecisionOptions(results, decRev,
-         services.getAttributeResolver().getSoleAttributeValue(decRev, getAttributeType(), ""), services);
+         atsApi.getAttributeResolver().getSoleAttributeValue(decRev, getAttributeType(), ""), atsApi);
    }
 
-   public static void validateDecisionOptions(TransitionResults results, IAtsDecisionReview decRev, String decisionOptions, IAtsServices services) {
+   public static void validateDecisionOptions(TransitionResults results, IAtsDecisionReview decRev, String decisionOptions, AtsApi atsApi) {
       for (String decsionOpt : decisionOptions.split("[\n\r]+")) {
-         DecisionOption state = new DecisionOption(services);
+         DecisionOption state = new DecisionOption(atsApi);
          Result result = state.setFromXml(decsionOpt);
          if (result.isFalse()) {
             results.addResult(decRev,
@@ -92,8 +92,8 @@ public class DecisionOptions {
    }
 
    public void setDecisionOptions(String decisionOptions) {
-      services.getAttributeResolver().setSoleAttributeValue(decRev, getAttributeType(),
-         toXml(getDecisionOptions(decisionOptions, services)));
+      atsApi.getAttributeResolver().setSoleAttributeValue(decRev, getAttributeType(),
+         toXml(getDecisionOptions(decisionOptions, atsApi)));
    }
 
 }

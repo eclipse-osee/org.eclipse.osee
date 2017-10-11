@@ -14,8 +14,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
-import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -33,12 +33,12 @@ import org.eclipse.osee.logger.Log;
 public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.impl.AtsObject implements IAtsConfigObject {
    protected ArtifactToken artifact;
    protected final Log logger;
-   protected final IAtsServices services;
+   protected final AtsApi atsApi;
 
-   public AtsConfigObject(Log logger, IAtsServices services, ArtifactToken artifact) {
+   public AtsConfigObject(Log logger, AtsApi atsApi, ArtifactToken artifact) {
       super(artifact.getName(), artifact.getId());
       this.logger = logger;
-      this.services = services;
+      this.atsApi = atsApi;
       this.artifact = artifact;
       setStoreObject(artifact);
    }
@@ -47,8 +47,8 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
       return logger;
    }
 
-   public IAtsServices getAtsServices() {
-      return services;
+   public AtsApi getAtsApi() {
+      return atsApi;
    }
 
    public void setFullName(String fullName) {
@@ -73,7 +73,7 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
    protected <T> T getAttributeValue(AttributeTypeId attributeType, Object defaultValue) {
       T value = null;
       try {
-         value = (T) services.getAttributeResolver().getSoleAttributeValue(artifact, attributeType, defaultValue);
+         value = (T) atsApi.getAttributeResolver().getSoleAttributeValue(artifact, attributeType, defaultValue);
       } catch (OseeCoreException ex) {
          logger.error(ex, "Error getting attribute value for - attributeType[%s]", attributeType);
       }
@@ -82,7 +82,7 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
 
    @Override
    public boolean isActive() {
-      if (services.getStoreService().isDeleted(artifact)) {
+      if (atsApi.getStoreService().isDeleted(artifact)) {
          return false;
       }
       return getAttributeValue(AtsAttributeTypes.Active, false);
@@ -91,7 +91,7 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
    public Collection<String> getStaticIds() {
       Collection<String> results = Collections.emptyList();
       try {
-         results = services.getAttributeResolver().getAttributeValues(artifact, CoreAttributeTypes.StaticId);
+         results = atsApi.getAttributeResolver().getAttributeValues(artifact, CoreAttributeTypes.StaticId);
       } catch (OseeCoreException ex) {
          logger.error(ex, "Error getting static Ids");
       }
@@ -109,9 +109,9 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
    protected Collection<IAtsUser> getRelatedUsers(RelationTypeSide relation) {
       Set<IAtsUser> results = new HashSet<>();
       try {
-         for (Object userArt : services.getRelationResolver().getRelated(artifact, relation)) {
-            IAtsUser lead = services.getUserService().getUserById(
-               (String) services.getAttributeResolver().getSoleAttributeValue((ArtifactId) userArt,
+         for (Object userArt : atsApi.getRelationResolver().getRelated(artifact, relation)) {
+            IAtsUser lead = atsApi.getUserService().getUserById(
+               (String) atsApi.getAttributeResolver().getSoleAttributeValue((ArtifactId) userArt,
                   CoreAttributeTypes.UserId, null));
             results.add(lead);
          }
@@ -133,6 +133,6 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
 
    @Override
    public String getDescription() {
-      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.Description, "");
+      return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.Description, "");
    }
 }

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.config;
 
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.country.IAtsCountry;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -27,11 +27,11 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
  */
 public class WorkPackageUtility {
 
-   public Pair<IAtsCountry, Boolean> getCountry(IAtsServices services, IAtsWorkItem workItem) {
+   public Pair<IAtsCountry, Boolean> getCountry(AtsApi atsApi, IAtsWorkItem workItem) {
       Pair<IAtsCountry, Boolean> result = new Pair<>(null, false);
-      Pair<IAtsProgram, Boolean> programResult = getProgram(services, workItem);
+      Pair<IAtsProgram, Boolean> programResult = getProgram(atsApi, workItem);
       if (programResult.getFirst() != null) {
-         IAtsCountry country = services.getRelationResolver().getRelatedOrNull(programResult.getFirst(),
+         IAtsCountry country = atsApi.getRelationResolver().getRelatedOrNull(programResult.getFirst(),
             AtsRelationTypes.CountryToProgram_Country, IAtsCountry.class);
          if (country != null) {
             result.setFirst(country);
@@ -41,11 +41,11 @@ public class WorkPackageUtility {
       return result;
    }
 
-   public Pair<IAtsProgram, Boolean> getProgram(IAtsServices services, IAtsWorkItem workItem) {
+   public Pair<IAtsProgram, Boolean> getProgram(AtsApi atsApi, IAtsWorkItem workItem) {
       Pair<IAtsProgram, Boolean> result = new Pair<>(null, false);
-      Pair<IAtsInsertion, Boolean> insertionResult = getInsertion(services, workItem);
+      Pair<IAtsInsertion, Boolean> insertionResult = getInsertion(atsApi, workItem);
       if (insertionResult.getFirst() != null) {
-         IAtsProgram program = services.getRelationResolver().getRelatedOrNull(insertionResult.getFirst(),
+         IAtsProgram program = atsApi.getRelationResolver().getRelatedOrNull(insertionResult.getFirst(),
             AtsRelationTypes.ProgramToInsertion_Program, IAtsProgram.class);
          if (program != null) {
             result.setFirst(program);
@@ -58,11 +58,11 @@ public class WorkPackageUtility {
    /**
     * @return IAtsInsertionActivity and true if value is inherited from parent team wf, false otherwise
     */
-   public Pair<IAtsInsertion, Boolean> getInsertion(IAtsServices services, IAtsWorkItem workItem) {
+   public Pair<IAtsInsertion, Boolean> getInsertion(AtsApi atsApi, IAtsWorkItem workItem) {
       Pair<IAtsInsertion, Boolean> result = new Pair<>(null, false);
-      Pair<IAtsInsertionActivity, Boolean> insertionActivityResult = getInsertionActivity(services, workItem);
+      Pair<IAtsInsertionActivity, Boolean> insertionActivityResult = getInsertionActivity(atsApi, workItem);
       if (insertionActivityResult.getFirst() != null) {
-         IAtsInsertion insertion = services.getRelationResolver().getRelatedOrNull(insertionActivityResult.getFirst(),
+         IAtsInsertion insertion = atsApi.getRelationResolver().getRelatedOrNull(insertionActivityResult.getFirst(),
             AtsRelationTypes.InsertionToInsertionActivity_Insertion, IAtsInsertion.class);
          if (insertion != null) {
             result.setFirst(insertion);
@@ -75,14 +75,14 @@ public class WorkPackageUtility {
    /**
     * @return IAtsInsertionActivity and true if value is inherited from parent team wf, false otherwise
     */
-   public Pair<IAtsInsertionActivity, Boolean> getInsertionActivity(IAtsServices services, IAtsWorkItem workItem) {
+   public Pair<IAtsInsertionActivity, Boolean> getInsertionActivity(AtsApi atsApi, IAtsWorkItem workItem) {
       Pair<IAtsInsertionActivity, Boolean> result = new Pair<>(null, false);
-      Pair<ArtifactId, Boolean> workPackageResult = getWorkPackageArtifact(services, workItem);
+      Pair<ArtifactId, Boolean> workPackageResult = getWorkPackageArtifact(atsApi, workItem);
       if (workPackageResult.getFirst() != null) {
-         ArtifactId activityArt = services.getRelationResolver().getRelatedOrNull(workPackageResult.getFirst(),
+         ArtifactId activityArt = atsApi.getRelationResolver().getRelatedOrNull(workPackageResult.getFirst(),
             AtsRelationTypes.InsertionActivityToWorkPackage_InsertionActivity);
          if (activityArt != null) {
-            IAtsInsertionActivity activity = services.getConfigItemFactory().getInsertionActivity(activityArt);
+            IAtsInsertionActivity activity = atsApi.getConfigItemFactory().getInsertionActivity(activityArt);
             result.setFirst(activity);
             result.setSecond(workPackageResult.getSecond());
          }
@@ -93,9 +93,9 @@ public class WorkPackageUtility {
    /**
     * @return Work Package artifact and true if value is inherited from parent team wf, false otherwise
     */
-   public Pair<ArtifactId, Boolean> getWorkPackageArtifact(IAtsServices services, IAtsWorkItem workItem) {
+   public Pair<ArtifactId, Boolean> getWorkPackageArtifact(AtsApi atsApi, IAtsWorkItem workItem) {
       Pair<ArtifactId, Boolean> result = new Pair<>(null, false);
-      ArtifactId workPackageId = services.getAttributeResolver().getSoleAttributeValue(workItem,
+      ArtifactId workPackageId = atsApi.getAttributeResolver().getSoleAttributeValue(workItem,
          AtsAttributeTypes.WorkPackageReference, ArtifactId.SENTINEL);
       if (workPackageId.isValid()) {
          result.setFirst(workPackageId);
@@ -103,7 +103,7 @@ public class WorkPackageUtility {
 
       if (result.getFirst() == null && !workItem.isTeamWorkflow()) {
          IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
-         Pair<ArtifactId, Boolean> teamResult = getWorkPackageArtifact(services, teamWf);
+         Pair<ArtifactId, Boolean> teamResult = getWorkPackageArtifact(atsApi, teamWf);
          if (teamResult.getFirst() != null) {
             result.setSecond(true);
             result.setFirst(teamResult.getFirst());

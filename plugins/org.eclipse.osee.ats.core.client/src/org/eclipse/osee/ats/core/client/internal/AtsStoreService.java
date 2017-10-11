@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
@@ -54,10 +54,10 @@ public class AtsStoreService implements IAtsStoreService {
    private final IAtsWorkItemFactory workItemFactory;
    private final IAtsUserService userService;
    private final JdbcService jdbcService;
-   private final IAtsServices services;
+   private final AtsApi atsApi;
 
-   public AtsStoreService(IAtsServices services, IAtsWorkItemFactory workItemFactory, IAtsUserService userService, JdbcService jdbcService) {
-      this.services = services;
+   public AtsStoreService(AtsApi atsApi, IAtsWorkItemFactory workItemFactory, IAtsUserService userService, JdbcService jdbcService) {
+      this.atsApi = atsApi;
       this.workItemFactory = workItemFactory;
       this.userService = userService;
       this.jdbcService = jdbcService;
@@ -220,7 +220,7 @@ public class AtsStoreService implements IAtsStoreService {
    @Override
    public TransactionId getTransactionId(IAtsWorkItem workItem) {
       TransactionId transId = TransactionId.SENTINEL;
-      ArtifactId artifact = services.getArtifact(workItem.getStoreObject());
+      ArtifactId artifact = atsApi.getArtifact(workItem.getStoreObject());
       if (artifact instanceof Artifact) {
          transId = ((Artifact) artifact).getTransaction();
       }
@@ -229,7 +229,7 @@ public class AtsStoreService implements IAtsStoreService {
 
    @Override
    public boolean isDeleted(ArtifactId artifact) {
-      ArtifactToken art = services.getArtifact(artifact);
+      ArtifactToken art = atsApi.getArtifact(artifact);
       if (art != null) {
          return ((Artifact) art).isDeleted();
       }

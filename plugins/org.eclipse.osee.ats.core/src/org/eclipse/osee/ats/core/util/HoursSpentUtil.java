@@ -1,7 +1,7 @@
 package org.eclipse.osee.ats.core.util;
 
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
@@ -19,17 +19,17 @@ public class HoursSpentUtil {
    /**
     * Return hours spent working states, reviews and tasks (not children SMAs)
     */
-   public static double getHoursSpentTotal(IAtsObject atsObject, IAtsServices services) {
+   public static double getHoursSpentTotal(IAtsObject atsObject, AtsApi atsApi) {
       double hours = 0.0;
       if (atsObject instanceof IAtsAction) {
          for (IAtsTeamWorkflow team : ((IAtsAction) atsObject).getTeamWorkflows()) {
             if (!team.getStateMgr().getStateType().isCancelled()) {
-               hours += getHoursSpentTotal(team, services);
+               hours += getHoursSpentTotal(team, atsApi);
             }
          }
       } else if (atsObject instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
-         hours = getHoursSpentTotal(workItem, services.getWorkItemService().getCurrentState(workItem), services);
+         hours = getHoursSpentTotal(workItem, atsApi.getWorkItemService().getCurrentState(workItem), atsApi);
       }
       return hours;
    }
@@ -37,12 +37,12 @@ public class HoursSpentUtil {
    /**
     * Return hours spent working all states, reviews and tasks (not children SMAs)
     */
-   public static double getHoursSpentTotal(IAtsObject atsObject, IStateToken state, IAtsServices services) {
+   public static double getHoursSpentTotal(IAtsObject atsObject, IStateToken state, AtsApi atsApi) {
       double hours = 0.0;
       if (atsObject instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
          hours = getHoursSpentTotalSMAState(hours, workItem) + getHoursSpentFromTasks(atsObject,
-            services) + getHoursSpentReview(atsObject, services);
+            atsApi) + getHoursSpentReview(atsObject, atsApi);
       }
       return hours;
    }
@@ -61,17 +61,17 @@ public class HoursSpentUtil {
    /**
     * Return hours spent working SMA state, state tasks and state reviews (not children SMAs)
     */
-   public static double getHoursSpentStateTotal(IAtsObject atsObject, IAtsServices services) {
+   public static double getHoursSpentStateTotal(IAtsObject atsObject, AtsApi atsApi) {
       double hours = 0.0;
       if (atsObject instanceof IAtsAction) {
          for (IAtsTeamWorkflow team : ((IAtsAction) atsObject).getTeamWorkflows()) {
             if (!team.getStateMgr().getStateType().isCancelled()) {
-               hours += getHoursSpentStateTotal(team, services);
+               hours += getHoursSpentStateTotal(team, atsApi);
             }
          }
       } else if (atsObject instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
-         hours = getHoursSpentStateTotal(workItem, services.getWorkItemService().getCurrentState(workItem), services);
+         hours = getHoursSpentStateTotal(workItem, atsApi.getWorkItemService().getCurrentState(workItem), atsApi);
       }
       return hours;
    }
@@ -79,12 +79,12 @@ public class HoursSpentUtil {
    /**
     * Return hours spent working SMA state, state tasks and state reviews (not children SMAs)
     */
-   public static double getHoursSpentStateTotal(IAtsObject atsObject, IStateToken state, IAtsServices services) {
+   public static double getHoursSpentStateTotal(IAtsObject atsObject, IStateToken state, AtsApi atsApi) {
       double hours = 0.0;
       if (atsObject instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
          hours = getHoursSpentSMAState(workItem, state) + getHoursSpentFromStateTasks(workItem, state,
-            services) + getHoursSpentStateReview(workItem, state, services);
+            atsApi) + getHoursSpentStateReview(workItem, state, atsApi);
       }
       return hours;
    }
@@ -92,17 +92,17 @@ public class HoursSpentUtil {
    /**
     * Return hours spent working ONLY the SMA stateName (not children SMAs)
     */
-   public static double getHoursSpentStateReview(IAtsObject atsObject, IAtsServices services) {
+   public static double getHoursSpentStateReview(IAtsObject atsObject, AtsApi atsApi) {
       double hours = 0.0;
       if (atsObject instanceof IAtsAction) {
          for (IAtsTeamWorkflow team : ((IAtsAction) atsObject).getTeamWorkflows()) {
             if (!team.getStateMgr().getStateType().isCancelled()) {
-               hours += getHoursSpentStateReview(team, services);
+               hours += getHoursSpentStateReview(team, atsApi);
             }
          }
       } else if (atsObject instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
-         hours = getHoursSpentStateReview(workItem, services.getWorkItemService().getCurrentState(workItem), services);
+         hours = getHoursSpentStateReview(workItem, atsApi.getWorkItemService().getCurrentState(workItem), atsApi);
       }
       return hours;
    }
@@ -110,10 +110,10 @@ public class HoursSpentUtil {
    /**
     * Return hours spent working ONLY the SMA stateName (not children SMAs)
     */
-   public static double getHoursSpentStateReview(IAtsObject atsObject, IStateToken state, IAtsServices services) {
+   public static double getHoursSpentStateReview(IAtsObject atsObject, IStateToken state, AtsApi atsApi) {
       double hours = 0.0;
       if (atsObject instanceof IAtsTeamWorkflow) {
-         for (IAtsAbstractReview review : services.getWorkItemService().getReviews((IAtsTeamWorkflow) atsObject,
+         for (IAtsAbstractReview review : atsApi.getWorkItemService().getReviews((IAtsTeamWorkflow) atsObject,
             state)) {
             hours += review.getStateMgr().getHoursSpent(state.getName());
          }
@@ -124,11 +124,11 @@ public class HoursSpentUtil {
    /**
     * Return hours spent for all reviews
     */
-   public static double getHoursSpentReview(IAtsObject atsObject, IAtsServices services) {
+   public static double getHoursSpentReview(IAtsObject atsObject, AtsApi atsApi) {
       double hours = 0.0;
       if (atsObject instanceof IAtsTeamWorkflow) {
-         for (IAtsAbstractReview review : services.getWorkItemService().getReviews((IAtsTeamWorkflow) atsObject)) {
-            hours += HoursSpentUtil.getHoursSpentTotal(review, services);
+         for (IAtsAbstractReview review : atsApi.getWorkItemService().getReviews((IAtsTeamWorkflow) atsObject)) {
+            hours += HoursSpentUtil.getHoursSpentTotal(review, atsApi);
          }
       }
       return hours;
@@ -137,17 +137,17 @@ public class HoursSpentUtil {
    /**
     * Return hours spent working ONLY the SMA stateName (not children SMAs)
     */
-   public static double getHoursSpentSMAState(IAtsObject atsObject, IAtsServices services) {
+   public static double getHoursSpentSMAState(IAtsObject atsObject, AtsApi atsApi) {
       double hours = 0.0;
       if (atsObject instanceof IAtsAction) {
          for (IAtsTeamWorkflow team : ((IAtsAction) atsObject).getTeamWorkflows()) {
             if (!team.getStateMgr().getStateType().isCancelled()) {
-               hours += getHoursSpentSMAState(team, services);
+               hours += getHoursSpentSMAState(team, atsApi);
             }
          }
       } else if (atsObject instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
-         hours = getHoursSpentSMAState(workItem, services.getWorkItemService().getCurrentState(workItem));
+         hours = getHoursSpentSMAState(workItem, atsApi.getWorkItemService().getCurrentState(workItem));
       }
       return hours;
    }
@@ -167,18 +167,18 @@ public class HoursSpentUtil {
    /**
     * Return hours spent working ONLY on tasks related to stateName
     */
-   public static double getHoursSpentFromStateTasks(IAtsObject atsObject, IAtsServices services) {
+   public static double getHoursSpentFromStateTasks(IAtsObject atsObject, AtsApi atsApi) {
       double hours = 0.0;
       if (atsObject instanceof IAtsAction) {
          for (IAtsTeamWorkflow team : ((IAtsAction) atsObject).getTeamWorkflows()) {
             if (!team.getStateMgr().getStateType().isCancelled()) {
-               hours += getHoursSpentFromStateTasks(team, services);
+               hours += getHoursSpentFromStateTasks(team, atsApi);
             }
          }
       } else if (atsObject instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
          hours =
-            getHoursSpentFromStateTasks(workItem, services.getWorkItemService().getCurrentState(workItem), services);
+            getHoursSpentFromStateTasks(workItem, atsApi.getWorkItemService().getCurrentState(workItem), atsApi);
       }
       return hours;
    }
@@ -189,11 +189,11 @@ public class HoursSpentUtil {
     * @param relatedToState state name of parent workflow's state
     * @return Returns the Hours Spent
     */
-   public static double getHoursSpentFromStateTasks(IAtsObject atsObject, IStateToken relatedToState, IAtsServices services) {
+   public static double getHoursSpentFromStateTasks(IAtsObject atsObject, IStateToken relatedToState, AtsApi atsApi) {
       double hours = 0.0;
       if (atsObject instanceof IAtsTeamWorkflow) {
-         for (IAtsTask taskArt : services.getTaskService().getTasks((IAtsTeamWorkflow) atsObject, relatedToState)) {
-            hours += HoursSpentUtil.getHoursSpentTotal(taskArt, services);
+         for (IAtsTask taskArt : atsApi.getTaskService().getTasks((IAtsTeamWorkflow) atsObject, relatedToState)) {
+            hours += HoursSpentUtil.getHoursSpentTotal(taskArt, atsApi);
          }
       }
       return hours;
@@ -204,11 +204,11 @@ public class HoursSpentUtil {
     *
     * @return Returns the Hours Spent
     */
-   public static double getHoursSpentFromTasks(IAtsObject atsObject, IAtsServices services) {
+   public static double getHoursSpentFromTasks(IAtsObject atsObject, AtsApi atsApi) {
       double hours = 0.0;
       if (atsObject instanceof IAtsTeamWorkflow) {
-         for (IAtsTask taskArt : services.getTaskService().getTasks((IAtsTeamWorkflow) atsObject)) {
-            hours += HoursSpentUtil.getHoursSpentTotal(taskArt, services);
+         for (IAtsTask taskArt : atsApi.getTaskService().getTasks((IAtsTeamWorkflow) atsObject)) {
+            hours += HoursSpentUtil.getHoursSpentTotal(taskArt, atsApi);
          }
       }
       return hours;

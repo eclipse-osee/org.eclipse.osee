@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.core.column;
 
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.country.IAtsCountry;
 import org.eclipse.osee.ats.core.config.WorkPackageUtility;
@@ -31,15 +31,15 @@ public class CountryColumn {
       return util;
    }
 
-   public static String getCountryStr(IAtsObject atsObject, IAtsServices services) {
-      return getCountryStr(atsObject, services, getUtil());
+   public static String getCountryStr(IAtsObject atsObject, AtsApi atsApi) {
+      return getCountryStr(atsObject, atsApi, getUtil());
    }
 
-   public static String getCountryStr(IAtsObject atsObject, IAtsServices services, WorkPackageUtility util) {
+   public static String getCountryStr(IAtsObject atsObject, AtsApi atsApi, WorkPackageUtility util) {
       String result = "";
       if (atsObject instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
-         Pair<IAtsCountry, Boolean> country = util.getCountry(services, workItem);
+         Pair<IAtsCountry, Boolean> country = util.getCountry(atsApi, workItem);
          if (country.getFirst() != null) {
             result = String.format("%s%s", country.getFirst().getName(), country.getSecond() ? " (I)" : "");
          }

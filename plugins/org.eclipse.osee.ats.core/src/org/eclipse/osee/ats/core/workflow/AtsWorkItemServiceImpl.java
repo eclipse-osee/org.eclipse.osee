@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.core.workflow;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -49,37 +49,37 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
 
    private final ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy;
-   private final IAtsServices services;
+   private final AtsApi atsApi;
    private IAtsActionableItemService actionableItemService;
 
-   public AtsWorkItemServiceImpl(IAtsServices services, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
-      this.services = services;
+   public AtsWorkItemServiceImpl(AtsApi atsApi, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
+      this.atsApi = atsApi;
       this.teamWorkflowProvidersLazy = teamWorkflowProvidersLazy;
    }
 
    @Override
    public IStateToken getCurrentState(IAtsWorkItem workItem) {
-      ArtifactId artifact = services.getArtifactResolver().get(workItem);
+      ArtifactId artifact = atsApi.getArtifactResolver().get(workItem);
       Conditions.checkNotNull(artifact, "workItem", "Can't Find Artifact matching [%s]", workItem.toString());
       return workItem.getStateDefinition();
    }
 
    @Override
    public Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow teamWf) {
-      ArtifactId artifact = services.getArtifactResolver().get(teamWf);
+      ArtifactId artifact = atsApi.getArtifactResolver().get(teamWf);
       Conditions.checkNotNull(artifact, "teamWf", "Can't Find Artifact matching [%s]", teamWf.toString());
-      return services.getRelationResolver().getRelated(teamWf, AtsRelationTypes.TeamWorkflowToReview_Review,
+      return atsApi.getRelationResolver().getRelated(teamWf, AtsRelationTypes.TeamWorkflowToReview_Review,
          IAtsAbstractReview.class);
    }
 
    @Override
    public Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow teamWf, IStateToken state) {
-      ArtifactId artifact = services.getArtifactResolver().get(teamWf);
+      ArtifactId artifact = atsApi.getArtifactResolver().get(teamWf);
       Conditions.checkNotNull(artifact, "teamWf", "Can't Find Artifact matching [%s]", teamWf.toString());
       List<IAtsAbstractReview> reviews = new LinkedList<>();
-      for (IAtsAbstractReview review : services.getRelationResolver().getRelated(teamWf,
+      for (IAtsAbstractReview review : atsApi.getRelationResolver().getRelated(teamWf,
          AtsRelationTypes.TeamWorkflowToReview_Review, IAtsAbstractReview.class)) {
-         if (services.getAttributeResolver().getSoleAttributeValue(review, AtsAttributeTypes.RelatedToState, "").equals(
+         if (atsApi.getAttributeResolver().getSoleAttributeValue(review, AtsAttributeTypes.RelatedToState, "").equals(
             state.getName())) {
             reviews.add(review);
          }
@@ -97,9 +97,9 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    public Collection<IAtsTeamWorkflow> getTeams(Object object) {
       List<IAtsTeamWorkflow> teams = new LinkedList<>();
       if (object instanceof IAtsAction) {
-         for (ArtifactToken teamWfArt : services.getRelationResolver().getRelated((IAtsAction) object,
+         for (ArtifactToken teamWfArt : atsApi.getRelationResolver().getRelated((IAtsAction) object,
             AtsRelationTypes.ActionToWorkflow_WorkFlow)) {
-            teams.add(services.getWorkItemFactory().getTeamWf(teamWfArt));
+            teams.add(atsApi.getWorkItemFactory().getTeamWf(teamWfArt));
          }
       } else if (object instanceof ActionResult) {
          return Collections.castAll(AtsObjects.getArtifacts(((ActionResult) object).getTeamWfArts()));
@@ -109,22 +109,22 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
 
    @Override
    public void clearImplementersCache(IAtsWorkItem workItem) {
-      services.clearImplementersCache(workItem);
+      atsApi.clearImplementersCache(workItem);
    }
 
    @Override
    public Collection<WidgetResult> validateWidgetTransition(IAtsWorkItem workItem, IAtsStateDefinition toStateDef) {
-      return AtsXWidgetValidateManager.validateTransition(workItem, toStateDef, services);
+      return AtsXWidgetValidateManager.validateTransition(workItem, toStateDef, atsApi);
    }
 
    @Override
    public Collection<ITransitionListener> getTransitionListeners() {
-      return services.getTransitionListeners();
+      return atsApi.getTransitionListeners();
    }
 
    @Override
    public String getTargetedVersionStr(IAtsTeamWorkflow teamWf) {
-      IAtsVersion targetedVersion = services.getVersionService().getTargetedVersionByTeamWf(teamWf);
+      IAtsVersion targetedVersion = atsApi.getVersionService().getTargetedVersionByTeamWf(teamWf);
       if (targetedVersion != null) {
          return targetedVersion.getName();
       }
@@ -146,7 +146,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    public IAtsActionableItemService getActionableItemService() {
       if (actionableItemService == null) {
          actionableItemService =
-            new ActionableItemService(services.getAttributeResolver(), services.getStoreService(), services);
+            new ActionableItemService(atsApi.getAttributeResolver(), atsApi.getStoreService(), atsApi);
       }
       return actionableItemService;
    }
@@ -163,12 +163,12 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
                }
             }
          } catch (Exception ex) {
-            services.getLogger().error(ex, "Error with provider %s", provider.toString());
+            atsApi.getLogger().error(ex, "Error with provider %s", provider.toString());
          }
       }
       if (Strings.isInValid(id)) {
          String legacyPcrId =
-            services.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.LegacyPcrId, "");
+            atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.LegacyPcrId, "");
          if (Strings.isValid(legacyPcrId)) {
             return String.format("%s - %s", workItem.getAtsId(), legacyPcrId);
          } else {
@@ -180,7 +180,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
 
    @Override
    public IAtsWorkItemNotes getNotes(IAtsWorkItem workItem) {
-      return new AtsWorkItemNotes(new ArtifactNote(workItem, services), services);
+      return new AtsWorkItemNotes(new ArtifactNote(workItem, atsApi), atsApi);
    }
 
    @Override
@@ -193,14 +193,14 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
       IAtsWorkItem workItem = null;
       ArtifactToken artifact = null;
       if (GUID.isValid(actionId)) {
-         artifact = services.getArtifactByGuid(actionId);
+         artifact = atsApi.getArtifactByGuid(actionId);
       } else if (Strings.isNumeric(actionId)) {
-         artifact = services.getArtifact(Long.valueOf(actionId));
+         artifact = atsApi.getArtifact(Long.valueOf(actionId));
       } else {
-         artifact = services.getArtifactByAtsId(actionId);
+         artifact = atsApi.getArtifactByAtsId(actionId);
       }
       if (artifact != null) {
-         workItem = services.getWorkItemFactory().getWorkItem(artifact);
+         workItem = atsApi.getWorkItemFactory().getWorkItem(artifact);
       }
       return workItem;
    }

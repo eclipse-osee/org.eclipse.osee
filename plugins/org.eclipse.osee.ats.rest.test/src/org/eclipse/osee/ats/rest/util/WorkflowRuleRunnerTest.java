@@ -17,7 +17,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -55,7 +55,7 @@ public class WorkflowRuleRunnerTest {
    @Mock IAtsChangeSet changes;
    @Mock IAtsTeamWorkflow teamWf;
    @Mock IAtsTeamDefinition teamDef;
-   @Mock IAtsServices atsServices;
+   @Mock AtsApi atsServices;
    @Mock IAtsStoreService atsStoreService;
    @Mock IAtsWorkDefinition atsWorkDef;
    @Mock IAtsWorkDefinitionService atsWorkDefAdmin;

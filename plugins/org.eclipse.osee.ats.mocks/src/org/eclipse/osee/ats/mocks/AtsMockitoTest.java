@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -67,7 +67,7 @@ public class AtsMockitoTest {
    @Mock protected IAtsBranchService branchService;
    @Mock protected IAtsWorkDefinitionService workDefService;
    @Mock protected IAtsWorkItemService workItemService;
-   @Mock protected IAtsServices atsServices;
+   @Mock protected AtsApi atsServices;
    // @formatter:on
 
    public String WORK_DEF_NAME = "Mock_Team_Workflow_Definition";

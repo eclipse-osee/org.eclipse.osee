@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
@@ -50,7 +50,7 @@ public class StateManagerTest extends AbstractUserTest {
    @Mock private IAtsStateDefinition endorseStateDef;
    @Mock private IAtsStateDefinition analyzeStateDef;
    @Mock private IAtsLogFactory logFactory;
-   @Mock private IAtsServices services;
+   @Mock private AtsApi atsApi;
    // @formatter:on
 
    @Override
@@ -59,7 +59,7 @@ public class StateManagerTest extends AbstractUserTest {
       super.setup();
 
       MockWorkItem workItem = Mockito.spy(new MockWorkItem("mock work item", "Endorse", StateType.Working));
-      stateMgr = Mockito.spy(new StateManager(workItem, logFactory, services));
+      stateMgr = Mockito.spy(new StateManager(workItem, logFactory, atsApi));
       when(workItem.getWorkDefinition()).thenReturn(workDef);
       when(workDef.getStateByName("endorse")).thenReturn(endorseStateDef);
       when(endorseStateDef.getStateType()).thenReturn(StateType.Working);
@@ -410,7 +410,7 @@ public class StateManagerTest extends AbstractUserTest {
    @Test
    public void testIsHoursEqual() {
       IAtsWorkItem awa = Mockito.mock(IAtsWorkItem.class);
-      StateManager mgr = new StateManager(awa, logFactory, services);
+      StateManager mgr = new StateManager(awa, logFactory, atsApi);
 
       assertTrue(mgr.isHoursEqual(1.0, 1.0));
       assertTrue(mgr.isHoursEqual(01.0, 1.0));
@@ -426,7 +426,7 @@ public class StateManagerTest extends AbstractUserTest {
    @Test
    public void testSetMetrics() {
       IAtsWorkItem awa = mock(IAtsWorkItem.class);
-      StateManager mgr = new StateManager(awa, logFactory, services);
+      StateManager mgr = new StateManager(awa, logFactory, atsApi);
 
       IAtsStateDefinition state = mock(IAtsStateDefinition.class);
       when(state.getName()).thenReturn("Endorse");

@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.core.column;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -21,21 +21,21 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
  */
 public class BacklogColumn {
 
-   public static String getColumnText(Object element, IAtsServices services, boolean forBacklog) {
+   public static String getColumnText(Object element, AtsApi atsApi, boolean forBacklog) {
       if (element instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) element;
          Collection<IAtsWorkItem> related =
-            services.getRelationResolver().getRelated(workItem, AtsRelationTypes.Goal_Goal, IAtsWorkItem.class);
+            atsApi.getRelationResolver().getRelated(workItem, AtsRelationTypes.Goal_Goal, IAtsWorkItem.class);
          if (!related.isEmpty()) {
             StringBuilder sb = new StringBuilder();
             for (IAtsWorkItem relatedWorkItem : related) {
                if (forBacklog) {
-                  if (isBacklog(relatedWorkItem, services)) {
+                  if (isBacklog(relatedWorkItem, atsApi)) {
                      sb.append(relatedWorkItem.getName());
                      sb.append("; ");
                   }
                } else {
-                  if (!isBacklog(relatedWorkItem, services)) {
+                  if (!isBacklog(relatedWorkItem, atsApi)) {
                      sb.append(relatedWorkItem.getName());
                      sb.append("; ");
                   }
@@ -47,11 +47,11 @@ public class BacklogColumn {
       return "";
    }
 
-   public static boolean isBacklog(IAtsWorkItem workItem, IAtsServices services) {
-      if (services.getStoreService().isOfType(workItem.getStoreObject(), AtsArtifactTypes.AgileBacklog)) {
+   public static boolean isBacklog(IAtsWorkItem workItem, AtsApi atsApi) {
+      if (atsApi.getStoreService().isOfType(workItem.getStoreObject(), AtsArtifactTypes.AgileBacklog)) {
          return true;
       }
-      return services.getRelationResolver().getRelatedCount(workItem,
+      return atsApi.getRelationResolver().getRelatedCount(workItem,
          AtsRelationTypes.AgileTeamToBacklog_AgileTeam) == 1;
    }
 }

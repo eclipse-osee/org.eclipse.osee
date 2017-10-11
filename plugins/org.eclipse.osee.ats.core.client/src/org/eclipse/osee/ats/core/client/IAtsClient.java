@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
 import org.eclipse.osee.ats.api.util.IAtsEventService;
@@ -37,7 +37,7 @@ import org.eclipse.osee.orcs.rest.client.OseeClient;
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolverProvider, IAtsReviewServiceProvider, IAtsBranchServiceProvider, IAtsCacheProvider, ITeamDefinitionFactory, IActionableItemFactory, IAtsVersionServiceProvider {
+public interface IAtsClient extends AtsApi, IAtsNotifier, IAttributeResolverProvider, IAtsReviewServiceProvider, IAtsBranchServiceProvider, IAtsCacheProvider, ITeamDefinitionFactory, IActionableItemFactory, IAtsVersionServiceProvider {
 
    /**
     * @return corresponding Artifact or null if not found
@@ -63,7 +63,7 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
 
    IAtsUserServiceClient getUserServiceClient();
 
-   IAtsServices getServices();
+   AtsApi getServices();
 
    @Override
    Artifact getArtifactByGuid(String guid);

@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -65,7 +65,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    protected Collection<WorkItemType> workItemTypes;
    protected Collection<IArtifactType> artifactTypes;
    protected Collection<ArtifactId> artifactIds;
-   protected final IAtsServices services;
+   protected final AtsApi atsApi;
    protected Collection<Long> aiUuids;
    protected Long versionUuid;
    protected String stateName;
@@ -78,8 +78,8 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    private ReleasedOption releasedOption;
    protected final List<IAtsQueryFilter> queryFilters;
 
-   public AbstractAtsQueryImpl(IAtsServices services) {
-      this.services = services;
+   public AbstractAtsQueryImpl(AtsApi atsApi) {
+      this.atsApi = atsApi;
       andRels = new HashMap<>();
       andAttr = new ArrayList<>();
       stateTypes = new ArrayList<>();
@@ -160,7 +160,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
          for (ArtifactId artifact : artifacts) {
             if (allArtTypes.isEmpty() || isArtifactTypeMatch(artifact, allArtTypes)) {
                if (artifact instanceof ArtifactToken) {
-                  IAtsWorkItem workItem = services.getWorkItemFactory().getWorkItem((ArtifactToken) artifact);
+                  IAtsWorkItem workItem = atsApi.getWorkItemFactory().getWorkItem((ArtifactToken) artifact);
                   if (workItem != null) {
                      workItems.add((T) workItem);
                   }
@@ -194,7 +194,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       Set<T> results = new HashSet<>();
       if (isVersionSpecified()) {
          for (T workItem : workItems) {
-            IAtsVersion version = services.getVersionService().getTargetedVersion((IAtsWorkItem) workItem);
+            IAtsVersion version = atsApi.getVersionService().getTargetedVersion((IAtsWorkItem) workItem);
             if (version != null) {
                if (releasedOption == ReleasedOption.Released && version.isReleased()) {
                   results.add(workItem);
@@ -212,7 +212,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
          return true;
       }
       for (IArtifactType artType : artTypes) {
-         if (services.getArtifactResolver().isOfType(artifact, artType)) {
+         if (atsApi.getArtifactResolver().isOfType(artifact, artType)) {
             return true;
          }
       }
@@ -222,7 +222,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    private <T> void getTasksFromSearchCriteria(Set<T> allResults, Set<IArtifactType> allArtTypes) {
       List<IArtifactType> artTypes = new LinkedList<>();
       for (IArtifactType artType : allArtTypes) {
-         if (services.getArtifactResolver().inheritsFrom(artType, AtsArtifactTypes.Task)) {
+         if (atsApi.getArtifactResolver().inheritsFrom(artType, AtsArtifactTypes.Task)) {
             artTypes.add(artType);
          }
       }
@@ -264,7 +264,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    private <T> void getSprintsFromSearchCriteria(Set<T> allResults, Set<IArtifactType> allArtTypes) {
       List<IArtifactType> artTypes = new LinkedList<>();
       for (IArtifactType artType : allArtTypes) {
-         if (services.getArtifactResolver().inheritsFrom(artType, AtsArtifactTypes.AgileSprint)) {
+         if (atsApi.getArtifactResolver().inheritsFrom(artType, AtsArtifactTypes.AgileSprint)) {
             artTypes.add(artType);
          }
       }
@@ -278,7 +278,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    private <T> void getGoalsFromSearchCriteria(Set<T> allResults, Set<IArtifactType> allArtTypes) {
       List<IArtifactType> artTypes = new LinkedList<>();
       for (IArtifactType artType : allArtTypes) {
-         if (services.getArtifactResolver().inheritsFrom(artType,
+         if (atsApi.getArtifactResolver().inheritsFrom(artType,
             AtsArtifactTypes.Goal) || workItemTypes.contains(WorkItemType.AgileBacklog)) {
             artTypes.add(artType);
          }
@@ -305,7 +305,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    private boolean typeIsSpecified(IArtifactType parentArtType, Set<IArtifactType> allArtTypes) {
       for (IArtifactType artifactType : allArtTypes) {
-         if (services.getArtifactResolver().inheritsFrom(artifactType, parentArtType)) {
+         if (atsApi.getArtifactResolver().inheritsFrom(artifactType, parentArtType)) {
             return true;
          }
       }
@@ -323,14 +323,14 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
          workItemTypes.contains(WorkItemType.DecisionReview) || typeIsSpecified(AtsArtifactTypes.DecisionReview,
             allArtTypes);
       for (IArtifactType artType : allArtTypes) {
-         if (isReviewSpecified && services.getArtifactResolver().inheritsFrom(artType,
+         if (isReviewSpecified && atsApi.getArtifactResolver().inheritsFrom(artType,
             AtsArtifactTypes.ReviewArtifact)) {
             artTypes.add(artType);
-         } else if (isPeerSpecified && services.getArtifactResolver().inheritsFrom(artType,
+         } else if (isPeerSpecified && atsApi.getArtifactResolver().inheritsFrom(artType,
             AtsArtifactTypes.PeerToPeerReview)) {
             artTypes.add(artType);
 
-         } else if (isDecisionSpecified && services.getArtifactResolver().inheritsFrom(artType,
+         } else if (isDecisionSpecified && atsApi.getArtifactResolver().inheritsFrom(artType,
             AtsArtifactTypes.DecisionReview)) {
             artTypes.add(artType);
          }
@@ -341,7 +341,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    private <T> void getTasksAndReviewsFromResultingTeamWfs(Collection<T> teamWfs, Set<T> allResults, Set<IArtifactType> allArtTypes) {
       List<IArtifactType> artTypes = new LinkedList<>();
       for (IArtifactType artType : allArtTypes) {
-         if (services.getArtifactResolver().inheritsFrom(artType, AtsArtifactTypes.Task)) {
+         if (atsApi.getArtifactResolver().inheritsFrom(artType, AtsArtifactTypes.Task)) {
             artTypes.add(artType);
          }
       }
@@ -352,10 +352,10 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
          List<Long> taskReviewUuids = new ArrayList<>();
          for (T teamWf : teamWfs) {
-            for (IAtsTask task : services.getTaskService().getTasks((IAtsTeamWorkflow) teamWf)) {
+            for (IAtsTask task : atsApi.getTaskService().getTasks((IAtsTeamWorkflow) teamWf)) {
                taskReviewUuids.add(task.getId());
             }
-            for (IAtsAbstractReview review : services.getReviewService().getReviews((IAtsTeamWorkflow) teamWf)) {
+            for (IAtsAbstractReview review : atsApi.getReviewService().getReviews((IAtsTeamWorkflow) teamWf)) {
                taskReviewUuids.add(review.getId());
             }
          }
@@ -453,7 +453,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    private List<IArtifactType> getTeamWorkflowArtTypes(Set<IArtifactType> allArtTypes) {
       List<IArtifactType> teamWorkflowArtTypes = new LinkedList<>();
       for (IArtifactType artType : allArtTypes) {
-         if (services.getArtifactResolver().inheritsFrom(artType, AtsArtifactTypes.TeamWorkflow)) {
+         if (atsApi.getArtifactResolver().inheritsFrom(artType, AtsArtifactTypes.TeamWorkflow)) {
             teamWorkflowArtTypes.add(artType);
          }
       }
@@ -557,7 +557,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    @Override
    public IAtsWorkItemFilter andFilter() {
-      return new AtsWorkItemFilter(getItems(), services);
+      return new AtsWorkItemFilter(getItems(), atsApi);
    }
 
    protected Set<IArtifactType> getArtifactTypesFromWorkItemTypes() {
@@ -627,10 +627,10 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       }
       boolean match = false;
       if (artifact instanceof ArtifactToken) {
-         IAtsWorkItem workItem = services.getWorkItemFactory().getWorkItem((ArtifactToken) artifact);
+         IAtsWorkItem workItem = atsApi.getWorkItemFactory().getWorkItem((ArtifactToken) artifact);
          IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
          if (teamWf != null) {
-            boolean released = services.getVersionService().isReleased(teamWf);
+            boolean released = atsApi.getVersionService().isReleased(teamWf);
             if (releasedOption == ReleasedOption.Released && released || releasedOption == ReleasedOption.UnReleased && !released) {
                match = true;
             }
@@ -752,7 +752,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    private void addWorkPackageCriteria() {
       if (isWorkPackageSpecified()) {
-         ArtifactId workPackArt = services.getArtifact(workPackageUuid);
+         ArtifactId workPackArt = atsApi.getArtifact(workPackageUuid);
          if (isColorTeamMatch(workPackArt)) {
             queryAnd(AtsAttributeTypes.WorkPackageReference, workPackArt.getIdString());
          }
@@ -761,7 +761,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    private boolean isColorTeamMatch(ArtifactId workPackArt) {
       return !isColorTeamSpecified() || isColorTeamSpecified() && colorTeam.equals(
-         services.getAttributeResolver().getSoleAttributeValue(workPackArt, AtsAttributeTypes.ColorTeam, ""));
+         atsApi.getAttributeResolver().getSoleAttributeValue(workPackArt, AtsAttributeTypes.ColorTeam, ""));
    }
 
    public abstract void queryAnd(AttributeTypeId attrType, String value);
@@ -854,13 +854,13 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    public void addProgramCriteria() {
       if (!isInsertionSpecified()) {
          if (programUuid != null && programUuid > 0) {
-            ArtifactId programArt = services.getArtifact(programUuid);
+            ArtifactId programArt = atsApi.getArtifact(programUuid);
             List<String> workPackageIds = new LinkedList<>();
-            for (ArtifactId insertionArt : services.getRelationResolver().getRelated(programArt,
+            for (ArtifactId insertionArt : atsApi.getRelationResolver().getRelated(programArt,
                AtsRelationTypes.ProgramToInsertion_Insertion)) {
-               for (ArtifactId insertionActivityArt : services.getRelationResolver().getRelated(insertionArt,
+               for (ArtifactId insertionActivityArt : atsApi.getRelationResolver().getRelated(insertionArt,
                   AtsRelationTypes.InsertionToInsertionActivity_InsertionActivity)) {
-                  for (ArtifactId workPackageArt : services.getRelationResolver().getRelated(insertionActivityArt,
+                  for (ArtifactId workPackageArt : atsApi.getRelationResolver().getRelated(insertionActivityArt,
                      AtsRelationTypes.InsertionActivityToWorkPackage_WorkPackage)) {
                      if (isColorTeamMatch(workPackageArt)) {
                         workPackageIds.add(workPackageArt.getIdString());
@@ -878,11 +878,11 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    public void addInsertionCriteria() {
       if (!isInsertionActivitySpecified()) {
          if (insertionUuid != null && insertionUuid > 0) {
-            ArtifactId insertionArt = services.getArtifact(insertionUuid);
+            ArtifactId insertionArt = atsApi.getArtifact(insertionUuid);
             List<String> workPackageIds = new LinkedList<>();
-            for (ArtifactId insertionActivityArt : services.getRelationResolver().getRelated(insertionArt,
+            for (ArtifactId insertionActivityArt : atsApi.getRelationResolver().getRelated(insertionArt,
                AtsRelationTypes.InsertionToInsertionActivity_InsertionActivity)) {
-               for (ArtifactId workPackageArt : services.getRelationResolver().getRelated(insertionActivityArt,
+               for (ArtifactId workPackageArt : atsApi.getRelationResolver().getRelated(insertionActivityArt,
                   AtsRelationTypes.InsertionActivityToWorkPackage_WorkPackage)) {
                   if (isColorTeamMatch(workPackageArt)) {
                      workPackageIds.add(workPackageArt.getIdString());
@@ -912,8 +912,8 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    private List<String> getWorkPackageIdsFromActivity() {
       List<String> ids = new LinkedList<>();
       if (insertionActivityUuid != null && insertionActivityUuid > 0) {
-         ArtifactId insertionActivityArt = services.getArtifact(insertionActivityUuid);
-         for (ArtifactId workPackageArt : services.getRelationResolver().getRelated(insertionActivityArt,
+         ArtifactId insertionActivityArt = atsApi.getArtifact(insertionActivityUuid);
+         for (ArtifactId workPackageArt : atsApi.getRelationResolver().getRelated(insertionActivityArt,
             AtsRelationTypes.InsertionActivityToWorkPackage_WorkPackage)) {
             if (isColorTeamMatch(workPackageArt)) {
                ids.add(workPackageArt.getIdString());
@@ -939,7 +939,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    @Override
    public IAtsWorkItemFilter createFilter() {
-      return new AtsWorkItemFilter(getItems(), services);
+      return new AtsWorkItemFilter(getItems(), atsApi);
    }
 
    @Override

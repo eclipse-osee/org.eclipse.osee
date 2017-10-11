@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.column;
 
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
@@ -22,14 +22,14 @@ public class AttributeColumn extends AbstractServicesColumn {
 
    private final AttributeTypeId attrType;
 
-   public AttributeColumn(IAtsServices services, AttributeTypeId attrType) {
-      super(services);
+   public AttributeColumn(AtsApi atsApi, AttributeTypeId attrType) {
+      super(atsApi);
       this.attrType = attrType;
    }
 
    @Override
    public String getText(IAtsObject atsObject) {
-      return Collections.toString("; ", services.getAttributeResolver().getAttributesToStringList(atsObject, attrType));
+      return Collections.toString("; ", atsApi.getAttributeResolver().getAttributesToStringList(atsObject, attrType));
    }
 
    @Override

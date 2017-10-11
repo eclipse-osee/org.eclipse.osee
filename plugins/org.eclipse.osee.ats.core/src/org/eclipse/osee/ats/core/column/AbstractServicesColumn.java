@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.column;
 
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.column.IAtsColumn;
 import org.eclipse.osee.ats.core.internal.column.ev.AtsColumnService;
 
@@ -22,10 +22,10 @@ import org.eclipse.osee.ats.core.internal.column.ev.AtsColumnService;
  */
 public abstract class AbstractServicesColumn implements IAtsColumn {
 
-   protected final IAtsServices services;
+   protected final AtsApi atsApi;
 
-   public AbstractServicesColumn(IAtsServices services) {
-      this.services = services;
+   public AbstractServicesColumn(AtsApi atsApi) {
+      this.atsApi = atsApi;
    }
 
    @Override

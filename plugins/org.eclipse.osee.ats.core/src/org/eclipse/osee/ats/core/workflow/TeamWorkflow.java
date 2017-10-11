@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.core.workflow;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -28,17 +28,17 @@ import org.eclipse.osee.logger.Log;
  */
 public class TeamWorkflow extends WorkItem implements IAtsTeamWorkflow {
 
-   public TeamWorkflow(Log logger, IAtsServices services, ArtifactToken artifact) {
-      super(logger, services, artifact);
+   public TeamWorkflow(Log logger, AtsApi atsApi, ArtifactToken artifact) {
+      super(logger, atsApi, artifact);
    }
 
    @Override
    public Set<IAtsActionableItem> getActionableItems() {
       Set<IAtsActionableItem> ais = new HashSet<>();
       Collection<ArtifactId> artIds =
-         services.getAttributeResolver().getArtifactIdReferences(artifact, AtsAttributeTypes.ActionableItemReference);
+         atsApi.getAttributeResolver().getArtifactIdReferences(artifact, AtsAttributeTypes.ActionableItemReference);
       for (ArtifactId artId : artIds) {
-         IAtsActionableItem ai = services.getConfigItem(artId);
+         IAtsActionableItem ai = atsApi.getConfigItem(artId);
          Conditions.assertNotNull(ai, "ai can not be null for artId %s", artId);
          ais.add(ai);
       }
@@ -48,10 +48,10 @@ public class TeamWorkflow extends WorkItem implements IAtsTeamWorkflow {
    @Override
    public IAtsTeamDefinition getTeamDefinition() {
       IAtsTeamDefinition teamDef = null;
-      ArtifactId teamDefId = services.getAttributeResolver().getSoleArtifactIdReference(artifact,
+      ArtifactId teamDefId = atsApi.getAttributeResolver().getSoleArtifactIdReference(artifact,
          AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);
       if (teamDefId.isValid()) {
-         teamDef = services.getConfigItem(teamDefId);
+         teamDef = atsApi.getConfigItem(teamDefId);
       }
       return teamDef;
    }

@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.core.validator;
 
 import java.util.Arrays;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
@@ -27,7 +27,7 @@ import org.mockito.Mock;
  * @author Donald G. Dunne
  */
 public class AtsXNumberValidatorTest {
-   private IAtsServices atsServices;
+   private AtsApi atsServices;
    // @formatter:off
    @Mock IAtsWorkItem workItem;
    // @formatter:on

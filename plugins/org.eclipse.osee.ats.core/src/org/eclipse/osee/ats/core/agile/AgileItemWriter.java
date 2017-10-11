@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.AgileWriterResult;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
@@ -41,12 +41,12 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class AgileItemWriter {
 
-   private final IAtsServices services;
+   private final AtsApi atsApi;
    private final JaxAgileItem newItem;
    private final IAgileService agileService;
 
-   public AgileItemWriter(IAtsServices services, IAgileService agileService, JaxAgileItem newItem) {
-      this.services = services;
+   public AgileItemWriter(AtsApi atsApi, IAgileService agileService, JaxAgileItem newItem) {
+      this.atsApi = atsApi;
       this.agileService = agileService;
       this.newItem = newItem;
    }
@@ -56,7 +56,7 @@ public class AgileItemWriter {
       result.setJaxAgileItem(newItem);
       try {
          IAtsChangeSet changes =
-            services.getStoreService().createAtsChangeSet("Update new Agile Item", AtsCoreUsers.SYSTEM_USER);
+            atsApi.getStoreService().createAtsChangeSet("Update new Agile Item", AtsCoreUsers.SYSTEM_USER);
          if (Strings.isValid(newItem.getToState())) {
             List<IAtsWorkItem> workItems = getWorkItems();
 
@@ -74,7 +74,7 @@ public class AgileItemWriter {
                   resolveAssignees(toStateAssignees);
                   TransitionHelper helper = new TransitionHelper("Transition Applicability Workflow",
                      Arrays.asList(workItem), newItem.getToState(), toStateAssignees, "Cancelled via Agile Kanban",
-                     changes, services, TransitionOption.OverrideAssigneeCheck);
+                     changes, atsApi, TransitionOption.OverrideAssigneeCheck);
                   helper.setTransitionUser(AtsCoreUsers.SYSTEM_USER);
                   IAtsTransitionManager mgr = TransitionFactory.getTransitionManager(helper);
                   TransitionResults results = new TransitionResults();
@@ -98,15 +98,15 @@ public class AgileItemWriter {
             for (IAgileFeatureGroup feature : features) {
                featureArts.add(feature.getStoreObject());
             }
-            for (ArtifactToken awa : services.getArtifacts(newItem.getUuids())) {
+            for (ArtifactToken awa : atsApi.getArtifacts(newItem.getUuids())) {
                for (IAgileFeatureGroup feature : features) {
                   ArtifactToken featureArt = feature.getStoreObject();
-                  if (!services.getRelationResolver().areRelated(featureArt,
+                  if (!atsApi.getRelationResolver().areRelated(featureArt,
                      AtsRelationTypes.AgileFeatureToItem_FeatureGroup, awa)) {
                      changes.relate(feature, AtsRelationTypes.AgileFeatureToItem_AtsItem, awa);
                   }
                }
-               for (ArtifactToken featureArt : services.getRelationResolver().getRelated(awa,
+               for (ArtifactToken featureArt : atsApi.getRelationResolver().getRelated(awa,
                   AtsRelationTypes.AgileFeatureToItem_FeatureGroup)) {
                   if (!featureArts.contains(featureArt)) {
                      changes.unrelate(featureArt, AtsRelationTypes.AgileFeatureToItem_AtsItem, awa);
@@ -114,8 +114,8 @@ public class AgileItemWriter {
                }
             }
          } else if (newItem.isRemoveFeatures()) {
-            for (ArtifactToken awa : services.getArtifacts(newItem.getUuids())) {
-               for (ArtifactToken feature : services.getRelationResolver().getRelated(awa,
+            for (ArtifactToken awa : atsApi.getArtifacts(newItem.getUuids())) {
+               for (ArtifactToken feature : atsApi.getRelationResolver().getRelated(awa,
                   AtsRelationTypes.AgileFeatureToItem_FeatureGroup)) {
                   changes.unrelate(feature, AtsRelationTypes.AgileFeatureToItem_AtsItem, awa);
                }
@@ -123,9 +123,9 @@ public class AgileItemWriter {
          }
 
          if (newItem.isSetSprint()) {
-            ArtifactToken sprintArt = services.getArtifact(newItem.getSprintUuid());
-            IAgileSprint sprint = services.getAgileService().getAgileSprint(sprintArt);
-            for (ArtifactToken awa : services.getArtifacts(newItem.getUuids())) {
+            ArtifactToken sprintArt = atsApi.getArtifact(newItem.getSprintUuid());
+            IAgileSprint sprint = atsApi.getAgileService().getAgileSprint(sprintArt);
+            for (ArtifactToken awa : atsApi.getArtifacts(newItem.getUuids())) {
                if (sprint != null) {
                   changes.setRelation(sprint, AtsRelationTypes.AgileSprintToItem_AtsItem, awa);
                } else {
@@ -136,9 +136,9 @@ public class AgileItemWriter {
          }
 
          if (newItem.isSetBacklog()) {
-            ArtifactToken backlogArt = services.getArtifact(newItem.getBacklogUuid());
-            IAgileSprint backlog = services.getAgileService().getAgileSprint(backlogArt);
-            for (ArtifactToken awa : services.getArtifacts(newItem.getUuids())) {
+            ArtifactToken backlogArt = atsApi.getArtifact(newItem.getBacklogUuid());
+            IAgileSprint backlog = atsApi.getAgileService().getAgileSprint(backlogArt);
+            for (ArtifactToken awa : atsApi.getArtifacts(newItem.getUuids())) {
                if (backlog != null) {
                   changes.setRelation(backlog, AtsRelationTypes.Goal_Member, awa);
                } else {
@@ -172,7 +172,7 @@ public class AgileItemWriter {
    private List<IAtsWorkItem> getWorkItems() {
       List<IAtsWorkItem> workItems = new LinkedList<IAtsWorkItem>();
       for (long uuid : newItem.getUuids()) {
-         IAtsWorkItem workItem = services.getTeamWf(uuid);
+         IAtsWorkItem workItem = atsApi.getTeamWf(uuid);
          workItems.add(workItem);
       }
       return workItems;
@@ -181,7 +181,7 @@ public class AgileItemWriter {
    private Collection<IAtsUser> getToStateAssignees(List<String> toStateUsers) {
       List<IAtsUser> users = new ArrayList<IAtsUser>();
       for (String userId : toStateUsers) {
-         users.add(services.getUserService().getUserById(userId));
+         users.add(atsApi.getUserService().getUserById(userId));
       }
       return users;
    }

@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.client.integration.tests.ats.workflow;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -37,17 +37,17 @@ public class AtsRelationResolverServiceTest {
 
    private static TeamWorkFlowArtifact sawCodeCommittedWf;
    private static Artifact topAi;
-   private static IAtsServices services;
+   private static AtsApi atsApi;
    private static IRelationResolver relationResolver;
    private static TeamWorkFlowArtifact sawCodeUnCommittedWf;
 
    @BeforeClass
    public static void setUpBeforeClass() throws Exception {
-      services = AtsClientService.get();
+      atsApi = AtsClientService.get();
       sawCodeCommittedWf = DemoUtil.getSawCodeCommittedWf();
       sawCodeUnCommittedWf = DemoUtil.getSawCodeUnCommittedWf();
-      topAi = (Artifact) services.getArtifact(AtsArtifactToken.TopActionableItem);
-      relationResolver = services.getRelationResolver();
+      topAi = (Artifact) atsApi.getArtifact(AtsArtifactToken.TopActionableItem);
+      relationResolver = atsApi.getRelationResolver();
    }
 
    @Test
@@ -63,11 +63,11 @@ public class AtsRelationResolverServiceTest {
 
    @Test
    public void testAreRelatedArtifactIdRelationTypeSideArtifactId() {
-      Artifact sawCsciAi = (Artifact) services.getArtifact(DemoArtifactToken.SAW_CSCI_AI);
+      Artifact sawCsciAi = (Artifact) atsApi.getArtifact(DemoArtifactToken.SAW_CSCI_AI);
       Assert.assertTrue(relationResolver.areRelated(topAi, CoreRelationTypes.Default_Hierarchical__Child, sawCsciAi));
       Assert.assertTrue(relationResolver.areRelated(sawCsciAi, CoreRelationTypes.Default_Hierarchical__Parent, topAi));
 
-      Artifact sawTestAi = (Artifact) services.getArtifact(DemoArtifactToken.SAW_Test_AI);
+      Artifact sawTestAi = (Artifact) atsApi.getArtifact(DemoArtifactToken.SAW_Test_AI);
       Assert.assertFalse(relationResolver.areRelated(topAi, CoreRelationTypes.Default_Hierarchical__Child, sawTestAi));
       Assert.assertFalse(relationResolver.areRelated(sawTestAi, CoreRelationTypes.Default_Hierarchical__Parent, topAi));
    }
@@ -95,7 +95,7 @@ public class AtsRelationResolverServiceTest {
 
    @Test
    public void testGetRelatedOrNullArtifactIdRelationTypeSide() {
-      ArtifactId sawTestAi = services.getArtifact(DemoArtifactToken.SAW_Test_AI);
+      ArtifactId sawTestAi = atsApi.getArtifact(DemoArtifactToken.SAW_Test_AI);
       ArtifactId relatedOrNull =
          relationResolver.getRelatedOrNull(sawTestAi, CoreRelationTypes.Default_Hierarchical__Parent);
       Assert.assertNotNull(relatedOrNull);
@@ -110,7 +110,7 @@ public class AtsRelationResolverServiceTest {
       Collection<ArtifactToken> related =
          relationResolver.getRelatedArtifacts((IAtsWorkItem) sawCodeCommittedWf, AtsRelationTypes.TeamWfToTask_Task);
       ArtifactToken firstTaskArt = related.iterator().next();
-      IAtsTask firstTask = services.getWorkItemFactory().getTask(firstTaskArt);
+      IAtsTask firstTask = atsApi.getWorkItemFactory().getTask(firstTaskArt);
 
       IAtsTeamWorkflow teamWf =
          relationResolver.getRelatedOrNull(firstTask, AtsRelationTypes.TeamWfToTask_TeamWf, IAtsTeamWorkflow.class);

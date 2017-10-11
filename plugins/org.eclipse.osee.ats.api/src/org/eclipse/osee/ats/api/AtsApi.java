@@ -66,7 +66,7 @@ import org.eclipse.osee.logger.Log;
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsServices extends IAtsEarnedValueServiceProvider, IAtsConfigurationProvider, IAtsWorkDefinitionStringProvider, IAtsWorkItemServiceProvider {
+public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsConfigurationProvider, IAtsWorkDefinitionStringProvider, IAtsWorkItemServiceProvider {
 
    IOseeBranch getAtsBranch();
 

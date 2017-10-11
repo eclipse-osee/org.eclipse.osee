@@ -37,7 +37,7 @@ import javax.ws.rs.core.UriInfo;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonGenerator;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -85,15 +85,15 @@ import org.eclipse.osee.jaxrs.mvc.IdentityView;
 @Path("action")
 public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
 
-   private final IAtsServices services;
+   private final AtsApi atsApi;
    private static final String ATS_UI_ACTION_PREFIX = "/ui/action/UUID";
 
    @Context
    private HttpHeaders httpHeaders;
    private final JsonFactory jsonFactory;
 
-   public AtsActionEndpointImpl(IAtsServices services, JsonFactory jsonFactory) {
-      this.services = services;
+   public AtsActionEndpointImpl(AtsApi atsApi, JsonFactory jsonFactory) {
+      this.atsApi = atsApi;
       this.jsonFactory = jsonFactory;
    }
 
@@ -114,7 +114,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @GET
    @Produces({MediaType.APPLICATION_JSON})
    public List<IAtsWorkItem> getAction(@PathParam("ids") String ids) throws Exception {
-      List<IAtsWorkItem> workItems = services.getQueryService().getWorkItemListByIds(ids);
+      List<IAtsWorkItem> workItems = atsApi.getQueryService().getWorkItemListByIds(ids);
       return workItems;
    }
 
@@ -127,7 +127,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @GET
    @Produces({MediaType.APPLICATION_JSON})
    public List<IAtsWorkItem> getActionDetails(@PathParam("ids") String ids) throws Exception {
-      List<IAtsWorkItem> workItems = services.getQueryService().getWorkItemListByIds(ids);
+      List<IAtsWorkItem> workItems = atsApi.getQueryService().getWorkItemListByIds(ids);
       return workItems;
    }
 
@@ -140,10 +140,10 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    public List<String> getUnreleasedVersionNames(@PathParam("id") String id) {
       List<String> versions = new LinkedList<>();
-      IAtsTeamWorkflow teamWf = services.getTeamWf(services.getArtifactById(id));
+      IAtsTeamWorkflow teamWf = atsApi.getTeamWf(atsApi.getArtifactById(id));
       IAtsTeamDefinition targedVersionsTeamDef = teamWf.getTeamDefinition().getTeamDefinitionHoldingVersions();
       if (targedVersionsTeamDef != null) {
-         for (IAtsVersion version : services.getVersionService().getVersions(targedVersionsTeamDef)) {
+         for (IAtsVersion version : atsApi.getVersionService().getVersions(targedVersionsTeamDef)) {
             if (!version.isReleased()) {
                versions.add(version.getName());
             }
@@ -161,7 +161,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    public List<String> getTransitionToStateNames(@PathParam("id") String id) {
       List<String> states = new LinkedList<>();
-      IAtsTeamWorkflow teamWf = services.getTeamWf(services.getArtifactById(id));
+      IAtsTeamWorkflow teamWf = atsApi.getTeamWf(atsApi.getArtifactById(id));
       states.add(teamWf.getStateDefinition().getDefaultToState().getName());
       for (IAtsStateDefinition state : teamWf.getStateDefinition().getToStates()) {
          if (!states.contains(state.getName())) {
@@ -173,7 +173,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
             states.add(state.getName());
          }
       }
-      for (IAtsVersion version : services.getVersionService().getVersions(teamWf.getTeamDefinition())) {
+      for (IAtsVersion version : atsApi.getVersionService().getVersions(teamWf.getTeamDefinition())) {
          if (!version.isReleased()) {
             states.add(version.getName());
          }
@@ -190,13 +190,13 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @GET
    @Produces({MediaType.APPLICATION_JSON})
    public Attribute getActionAttributeByType(@PathParam("actionId") String actionId, @PathParam("attrTypeId") String attrTypeId) {
-      IAtsWorkItem workItem = services.getWorkItemService().getWorkItemByAnyId(actionId);
+      IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItemByAnyId(actionId);
       Attribute attribute = getActionAttributeValues(attrTypeId, workItem);
       return attribute;
    }
 
    private Attribute getActionAttributeValues(String attrTypeId, IAtsWorkItem workItem) {
-      AttributeTypeId attrType = services.getStoreService().getAttributeType(Long.valueOf(attrTypeId));
+      AttributeTypeId attrType = atsApi.getStoreService().getAttributeType(Long.valueOf(attrTypeId));
       return getActionAttributeValues(attrType, workItem);
    }
 
@@ -204,7 +204,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       Attribute attribute = new Attribute();
       attribute.setArtId(workItem.getStoreObject());
       attribute.setAttrTypeId(attrType);
-      for (IAttribute<?> attr : services.getAttributeResolver().getAttributes(workItem, attrType)) {
+      for (IAttribute<?> attr : atsApi.getAttributeResolver().getAttributes(workItem, attrType)) {
          attribute.addAttribute(attr);
       }
       return attribute;
@@ -223,8 +223,8 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Produces({MediaType.APPLICATION_JSON})
    public Attribute setActionAttributeByType(@PathParam("actionId") String actionId, @PathParam("attrTypeIdOrKey") String attrTypeIdOrKey, List<String> values) {
       Conditions.assertNotNullOrEmpty(values, "values can not be null or empty");
-      IAtsWorkItem workItem = services.getWorkItemService().getWorkItemByAnyId(actionId);
-      IAtsChangeSet changes = services.createChangeSet("set attr by type or key " + attrTypeIdOrKey);
+      IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItemByAnyId(actionId);
+      IAtsChangeSet changes = atsApi.createChangeSet("set attr by type or key " + attrTypeIdOrKey);
       AttributeTypeId attrTypeId = null;
       if (attrTypeIdOrKey.equals(AttributeKey.Title.name())) {
          changes.setSoleAttributeValue(workItem, CoreAttributeTypes.Name, values.iterator().next());
@@ -241,8 +241,8 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       } else if (attrTypeIdOrKey.equals(AttributeKey.State.name())) {
          String state = values.iterator().next();
          TransitionHelper helper = new TransitionHelper("Transition Workflow", Arrays.asList(workItem), state,
-            new ArrayList<IAtsUser>(), "", changes, services, TransitionOption.OverrideAssigneeCheck);
-         IAtsUser asUser = services.getUserService().getUserByAccountId(httpHeaders);
+            new ArrayList<IAtsUser>(), "", changes, atsApi, TransitionOption.OverrideAssigneeCheck);
+         IAtsUser asUser = atsApi.getUserService().getUserByAccountId(httpHeaders);
          if (asUser == null) {
             asUser = AtsCoreUsers.SYSTEM_USER;
          }
@@ -264,11 +264,11 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          }
          String version = values.iterator().next();
          if (Strings.isValid(version)) {
-            IAtsVersion currVersion = services.getVersionService().getTargetedVersion(workItem);
+            IAtsVersion currVersion = atsApi.getVersionService().getTargetedVersion(workItem);
             if (!currVersion.getName().equals(version)) {
                IAtsVersion newVer = null;
                IAtsTeamDefinition teamDef = workItem.getParentTeamWorkflow().getTeamDefinition();
-               for (IAtsVersion teamDefVer : services.getVersionService().getVersions(teamDef)) {
+               for (IAtsVersion teamDefVer : atsApi.getVersionService().getVersions(teamDef)) {
                   if (teamDefVer.getName().equals(version)) {
                      newVer = teamDefVer;
                      break;
@@ -278,20 +278,20 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
                   throw new OseeArgumentException("Version [%s] not valid for team ", version,
                      teamDef.toStringWithId());
                }
-               services.getVersionService().setTargetedVersion(workItem.getParentTeamWorkflow(), newVer, changes);
+               atsApi.getVersionService().setTargetedVersion(workItem.getParentTeamWorkflow(), newVer, changes);
             }
          }
       } else if (attrTypeIdOrKey.equals(AttributeKey.Originator.name())) {
          String accountId = values.iterator().next();
          if (!Strings.isNumeric(accountId)) {
-            IAtsUser originator = services.getUserService().getUserByAccountId(Long.valueOf(accountId));
+            IAtsUser originator = atsApi.getUserService().getUserByAccountId(Long.valueOf(accountId));
             if (originator == null) {
                throw new OseeArgumentException("No user with account id [%s]", accountId);
             }
-            services.getActionFactory().setCreatedBy(workItem, originator, true, workItem.getCreatedDate(), changes);
+            atsApi.getActionFactory().setCreatedBy(workItem, originator, true, workItem.getCreatedDate(), changes);
          }
       } else {
-         attrTypeId = services.getStoreService().getAttributeType(Long.valueOf(attrTypeIdOrKey));
+         attrTypeId = atsApi.getStoreService().getAttributeType(Long.valueOf(attrTypeIdOrKey));
          if (attrTypeId != null) {
             changes.setAttributeValuesAsStrings(workItem, attrTypeId, values);
          }
@@ -299,7 +299,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       changes.executeIfNeeded();
 
       // reload to get latest
-      workItem = services.getWorkItemService().getWorkItemByAnyId(actionId);
+      workItem = atsApi.getWorkItemService().getWorkItemByAnyId(actionId);
       if (attrTypeId != null) {
          return getActionAttributeValues(attrTypeId, workItem);
       }
@@ -316,10 +316,10 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Produces({MediaType.APPLICATION_JSON})
    public String getActionStateFromLegacyPcrId(@PathParam("ids") String ids) throws Exception {
       List<IAtsWorkItem> workItems = new ArrayList<>();
-      for (String id : services.getQueryService().getIdsFromStr(ids)) {
-         ArtifactToken action = services.getArtifactByLegacyPcrId(id);
+      for (String id : atsApi.getQueryService().getIdsFromStr(ids)) {
+         ArtifactToken action = atsApi.getArtifactByLegacyPcrId(id);
          if (action != null) {
-            IAtsWorkItem workItem = services.getWorkItemFactory().getWorkItem(action);
+            IAtsWorkItem workItem = atsApi.getWorkItemFactory().getWorkItem(action);
             workItems.add(workItem);
          }
       }
@@ -331,7 +331,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @GET
    @Produces({MediaType.APPLICATION_JSON})
    public String getActionState(@PathParam("ids") String ids) throws Exception {
-      List<IAtsWorkItem> workItems = services.getWorkItemListByIds(ids);
+      List<IAtsWorkItem> workItems = atsApi.getWorkItemListByIds(ids);
       return getActionStateResultString(workItems);
    }
 
@@ -347,7 +347,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          writer.writeStringField("id", workItem.getIdString());
          writer.writeStringField("atsId", workItem.getAtsId());
          writer.writeStringField("legacyId",
-            services.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.LegacyPcrId, ""));
+            atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.LegacyPcrId, ""));
          writer.writeStringField("stateType", workItem.getStateMgr().getStateType().name());
          writer.writeStringField("state", workItem.getStateMgr().getCurrentStateName());
          writer.writeEndObject();
@@ -371,7 +371,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       Set<IAtsWorkItem> workItems = new HashSet<>();
       MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters(true);
       Set<Entry<String, List<String>>> entrySet = queryParameters.entrySet();
-      IAtsQuery query = services.getQueryService().createQuery(WorkItemType.WorkItem);
+      IAtsQuery query = atsApi.getQueryService().createQuery(WorkItemType.WorkItem);
       for (Entry<String, List<String>> entry : entrySet) {
          if (entry.getKey().equals("Title")) {
             query.andName(entry.getValue().iterator().next(), QueryOption.CONTAINS_MATCH_OPTIONS);
@@ -382,7 +382,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          } else if (entry.getKey().equals("Assignee")) {
             Collection<IAtsUser> assignees = new LinkedList<>();
             for (String userId : entry.getValue()) {
-               IAtsUser assignee = services.getUserService().getUserById(userId);
+               IAtsUser assignee = atsApi.getUserService().getUserById(userId);
                if (assignee != null) {
                   assignees.add(assignee);
                }
@@ -393,7 +393,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          } else if (entry.getKey().equals("Team")) {
             Collection<IAtsTeamDefinition> teams = new LinkedList<>();
             for (String teamId : entry.getValue()) {
-               IAtsTeamDefinition team = services.getConfigItem(Long.valueOf(teamId));
+               IAtsTeamDefinition team = atsApi.getConfigItem(Long.valueOf(teamId));
                if (team != null) {
                   teams.add(team);
                }
@@ -415,7 +415,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
                // do nothing
             }
          } else if (entry.getKey().equals("Originator")) {
-            IAtsUser assignee = services.getUserService().getUserById(entry.getValue().iterator().next());
+            IAtsUser assignee = atsApi.getUserService().getUserById(entry.getValue().iterator().next());
             query.andOriginator(assignee);
          } else if (entry.getKey().equals("WorkItemType")) {
             List<WorkItemType> workItemTypes = new LinkedList<>();
@@ -427,7 +427,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
             }
             query.andWorkItemType(workItemTypes.toArray(new WorkItemType[workItemTypes.size()]));
          } else if (entry.getKey().equals("Version")) {
-            IAtsVersion version = services.getConfigItem(Long.valueOf(entry.getValue().iterator().next()));
+            IAtsVersion version = atsApi.getConfigItem(Long.valueOf(entry.getValue().iterator().next()));
             query.andVersion(version);
          }
          // else, attempt to resolve as attribute type id or name
@@ -435,10 +435,10 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
             String key = entry.getKey();
             AttributeTypeId attrType = null;
             if (Strings.isNumeric(key)) {
-               attrType = services.getStoreService().getAttributeType(Long.valueOf(key));
+               attrType = atsApi.getStoreService().getAttributeType(Long.valueOf(key));
             }
             if (attrType == null) {
-               attrType = services.getStoreService().getAttributeType(key);
+               attrType = atsApi.getStoreService().getAttributeType(key);
             }
             if (attrType != null) {
                query.andAttr(attrType, entry.getValue());
@@ -456,14 +456,14 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    public NewActionResult createAction(NewActionData newActionData) {
       NewActionResult result = new NewActionResult();
       try {
-         IAtsUser asUser = services.getUserService().getUserById(newActionData.getAsUserId());
+         IAtsUser asUser = atsApi.getUserService().getUserById(newActionData.getAsUserId());
          if (asUser == null) {
             result.getResults().errorf("asUser [%s] not valid", newActionData.getAsUserId());
             return result;
          }
-         IAtsChangeSet changes = services.getStoreService().createAtsChangeSet("Create Action - Server", asUser);
+         IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet("Create Action - Server", asUser);
 
-         ActionFactory factory = new ActionFactory(services);
+         ActionFactory factory = new ActionFactory(atsApi);
          ActionResult actionResult = factory.createAction(newActionData, changes);
 
          TransactionId transaction = changes.executeIfNeeded();
@@ -511,7 +511,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       }
       List<IAtsActionableItem> aias = new ArrayList<>();
       IAtsActionableItem aia =
-         services.getQueryService().createQuery(AtsArtifactTypes.ActionableItem).andName(actionableItems).getOneOrNull(
+         atsApi.getQueryService().createQuery(AtsArtifactTypes.ActionableItem).andName(actionableItems).getOneOrNull(
             IAtsActionableItem.class);
       if (aia == null) {
          return RestUtil.returnBadRequest(String.format("actionableItems [%s] is not valid", actionableItems));
@@ -523,7 +523,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       if (!Strings.isValid(userId)) {
          return RestUtil.returnBadRequest("userId is not valid");
       }
-      IAtsUser atsUser = services.getUserService().getUserById(userId);
+      IAtsUser atsUser = atsApi.getUserService().getUserById(userId);
       if (atsUser == null) {
          return RestUtil.returnBadRequest(String.format("userId [%s] is not valid", userId));
       }
@@ -533,7 +533,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       if (!Strings.isValid(changeTypeStr)) {
          return RestUtil.returnBadRequest("changeType is not valid");
       }
-      IAtsChangeSet changes = services.getStoreService().createAtsChangeSet("Create Action - Server", atsUser);
+      IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet("Create Action - Server", atsUser);
 
       ChangeType changeType = null;
       try {
@@ -551,12 +551,12 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       }
 
       // create action
-      ActionResult action = services.getActionFactory().createAction(atsUser, title, description, changeType, priority,
+      ActionResult action = atsApi.getActionFactory().createAction(atsUser, title, description, changeType, priority,
          false, null, aias, new Date(), atsUser, null, changes);
       changes.execute();
 
       // Redirect to action ui
-      return RestUtil.redirect(action.getTeamWfs(), ATS_UI_ACTION_PREFIX, (IAtsServer) services);
+      return RestUtil.redirect(action.getTeamWfs(), ATS_UI_ACTION_PREFIX, (IAtsServer) atsApi);
    }
 
 }

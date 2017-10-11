@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.core.column;
 
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.core.config.WorkPackageUtility;
@@ -22,15 +22,15 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
  */
 public class ProgramColumn {
 
-   public static String getProgramStr(IAtsObject atsObject, IAtsServices services) {
-      return getProgramStr(atsObject, services, CountryColumn.getUtil());
+   public static String getProgramStr(IAtsObject atsObject, AtsApi atsApi) {
+      return getProgramStr(atsObject, atsApi, CountryColumn.getUtil());
    }
 
-   public static String getProgramStr(IAtsObject atsObject, IAtsServices services, WorkPackageUtility util) {
+   public static String getProgramStr(IAtsObject atsObject, AtsApi atsApi, WorkPackageUtility util) {
       String result = "";
       if (atsObject instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
-         Pair<IAtsProgram, Boolean> program = util.getProgram(services, workItem);
+         Pair<IAtsProgram, Boolean> program = util.getProgram(atsApi, workItem);
          if (program.getFirst() != null) {
             result = String.format("%s%s", program.getFirst().getName(), program.getSecond() ? " (I)" : "");
          }

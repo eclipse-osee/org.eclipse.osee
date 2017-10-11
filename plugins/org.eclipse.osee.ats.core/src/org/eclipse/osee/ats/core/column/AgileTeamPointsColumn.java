@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.column;
 
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 
 /**
@@ -21,15 +21,15 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
  */
 public class AgileTeamPointsColumn extends AbstractServicesColumn {
 
-   public AgileTeamPointsColumn(IAtsServices services) {
-      super(services);
+   public AgileTeamPointsColumn(AtsApi atsApi) {
+      super(atsApi);
    }
 
    @Override
    public String getText(IAtsObject atsObject) throws Exception {
       String result = "";
       if (atsObject instanceof IAtsWorkItem) {
-         result = services.getAgileService().getAgileTeamPointsStr((IAtsWorkItem) atsObject);
+         result = atsApi.getAgileService().getAgileTeamPointsStr((IAtsWorkItem) atsObject);
       }
       return result;
    }

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workdef.model;
 
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsPeerReviewRuleDefinition;
@@ -51,7 +51,7 @@ public class PeerReviewRuleDefinition extends RuleDefinition implements IAtsPeer
    }
 
    @Override
-   public void execute(IAtsWorkItem workItem, IAtsServices atsServices, IAtsChangeSet changes, RunRuleResults ruleResults) {
+   public void execute(IAtsWorkItem workItem, AtsApi atsServices, IAtsChangeSet changes, RunRuleResults ruleResults) {
       //
    }
 

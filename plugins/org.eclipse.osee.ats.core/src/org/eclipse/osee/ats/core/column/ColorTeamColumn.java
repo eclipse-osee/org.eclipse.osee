@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.column;
 
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.ColorColumn;
@@ -28,7 +28,7 @@ public class ColorTeamColumn {
    private static final String BLACK_HEX = "#000000";
    public static final String ATS_COLOR_TEAM_COLUMN_ID = "ats.Color Team";
 
-   public static Pair<String, Boolean> getWorkItemColorTeam(IAtsWorkItem workItem, IAtsServices atsServices) {
+   public static Pair<String, Boolean> getWorkItemColorTeam(IAtsWorkItem workItem, AtsApi atsServices) {
       Pair<String, Boolean> result = new Pair<>(null, false);
       IAttributeResolver attributeResolver = atsServices.getAttributeResolver();
       ArtifactId workPackageArt =

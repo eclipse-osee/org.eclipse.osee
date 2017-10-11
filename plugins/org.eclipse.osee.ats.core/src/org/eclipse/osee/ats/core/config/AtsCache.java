@@ -14,8 +14,8 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import java.util.concurrent.TimeUnit;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.config.IAtsCache;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
  */
 public class AtsCache implements IAtsCache {
 
-   private static IAtsServices services;
+   private static AtsApi atsApi;
    private final LoadingCache<Long, IAtsObject> uuidToAtsObjectCache = CacheBuilder.newBuilder() //
       .expireAfterWrite(15, TimeUnit.MINUTES) //
       .build(uuidToAtsObjectCacheLoader);
@@ -41,8 +41,8 @@ public class AtsCache implements IAtsCache {
       .expireAfterWrite(15, TimeUnit.MINUTES) //
       .build(tagToAtsObjectCacheLoader);
 
-   public AtsCache(IAtsServices services) {
-      AtsCache.services = services;
+   public AtsCache(AtsApi atsApi) {
+      AtsCache.atsApi = atsApi;
    }
 
    @Override
@@ -75,7 +75,7 @@ public class AtsCache implements IAtsCache {
    @Override
    public void cacheAtsObject(IAtsObject atsObject) {
       Conditions.checkNotNull(atsObject, "atsObject");
-      ArtifactToken storeObject = services.getArtifact(atsObject.getStoreObject());
+      ArtifactToken storeObject = atsApi.getArtifact(atsObject.getStoreObject());
       if (storeObject != null) {
          guidToAtsObjectCache.put(storeObject.getGuid(), atsObject);
          uuidToArtifactIdCache.put(atsObject.getId(), storeObject);
@@ -92,14 +92,14 @@ public class AtsCache implements IAtsCache {
    static CacheLoader<Long, IAtsObject> uuidToAtsObjectCacheLoader = new CacheLoader<Long, IAtsObject>() {
       @Override
       public IAtsObject load(Long uuid) {
-         return services.getConfigItemFactory().getConfigObject(services.getArtifact(uuid));
+         return atsApi.getConfigItemFactory().getConfigObject(atsApi.getArtifact(uuid));
       }
    };
 
    static CacheLoader<Long, ArtifactId> uuidToArtifactIdCacheLoader = new CacheLoader<Long, ArtifactId>() {
       @Override
       public ArtifactId load(Long uuid) {
-         return services.getArtifact(uuid);
+         return atsApi.getArtifact(uuid);
       }
    };
 
@@ -107,7 +107,7 @@ public class AtsCache implements IAtsCache {
       @Override
       public IAtsObject load(String tag) {
          if (GUID.isValid(tag)) {
-            return services.getConfigItemFactory().getConfigObject(services.getArtifactByGuid(tag));
+            return atsApi.getConfigItemFactory().getConfigObject(atsApi.getArtifactByGuid(tag));
          }
          throw new IllegalStateException(String.format("IAtsObject not tagged with tag [%s]", tag));
       }
@@ -117,7 +117,7 @@ public class AtsCache implements IAtsCache {
       @Override
       public ArtifactId load(String tag) {
          if (GUID.isValid(tag)) {
-            return services.getArtifactByGuid(tag);
+            return atsApi.getArtifactByGuid(tag);
          }
          throw new IllegalStateException(String.format("ArtifactId not tagged with tag [%s]", tag));
       }
@@ -133,8 +133,8 @@ public class AtsCache implements IAtsCache {
    @Override
    public void deCacheAtsObject(IAtsObject atsObject) {
       Conditions.checkNotNull(atsObject, "atsObject");
-      if (services.getArtifact(atsObject) != null) {
-         guidToAtsObjectCache.invalidate(services.getArtifact(atsObject).getGuid());
+      if (atsApi.getArtifact(atsObject) != null) {
+         guidToAtsObjectCache.invalidate(atsApi.getArtifact(atsObject).getGuid());
       }
 
       uuidToAtsObjectCache.invalidate(atsObject.getId());

@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -40,26 +40,26 @@ import org.eclipse.osee.logger.Log;
 public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueService {
 
    protected final Log logger;
-   protected final IAtsServices services;
+   protected final AtsApi atsApi;
 
-   public AtsAbstractEarnedValueImpl(Log logger, IAtsServices services) {
+   public AtsAbstractEarnedValueImpl(Log logger, AtsApi atsApi) {
       this.logger = logger;
-      this.services = services;
+      this.atsApi = atsApi;
    }
 
    @Override
    public ArtifactId getWorkPackageId(IAtsWorkItem workItem) {
-      ArtifactId artifact = services.getArtifact(workItem);
+      ArtifactId artifact = atsApi.getArtifact(workItem);
       Conditions.checkNotNull(artifact, "workItem", "Can't Find Work Package matching %s", workItem.toStringWithId());
-      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.WorkPackageReference,
+      return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.WorkPackageReference,
          ArtifactId.SENTINEL);
    }
 
    @Override
    public IAtsWorkPackage getWorkPackage(IAtsWorkItem workItem) {
       ArtifactId workPackageId = getWorkPackageId(workItem);
-      ArtifactToken workPkgArt = services.getArtifact(workPackageId);
-      return new WorkPackage(logger, workPkgArt, services);
+      ArtifactToken workPkgArt = atsApi.getArtifact(workPackageId);
+      return new WorkPackage(logger, workPkgArt, atsApi);
    }
 
    @Override
@@ -73,11 +73,11 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
       // Config objects get work package options from related work package artifacts
       if (object instanceof IAtsConfigObject) {
          IAtsConfigObject configObj = (IAtsConfigObject) object;
-         ArtifactId artifact = services.getArtifact(configObj);
+         ArtifactId artifact = atsApi.getArtifact(configObj);
          if (artifact != null) {
-            for (ArtifactToken workPackageArt : services.getRelationResolver().getRelated(artifact,
+            for (ArtifactToken workPackageArt : atsApi.getRelationResolver().getRelated(artifact,
                AtsRelationTypes.WorkPackage_WorkPackage)) {
-               workPackageOptions.add(new WorkPackage(logger, workPackageArt, services));
+               workPackageOptions.add(new WorkPackage(logger, workPackageArt, atsApi));
             }
          }
       }
@@ -113,23 +113,23 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
 
    @Override
    public IAtsWorkPackage getWorkPackage(ArtifactToken artifact) {
-      return new WorkPackage(logger, artifact, services);
+      return new WorkPackage(logger, artifact, atsApi);
    }
 
    @Override
    public Collection<IAtsWorkPackage> getWorkPackages(IAtsInsertionActivity insertionActivity) {
       List<IAtsWorkPackage> workPackages = new ArrayList<>();
-      for (ArtifactToken artifact : services.getRelationResolver().getRelated(
-         services.getArtifact(insertionActivity.getId()),
+      for (ArtifactToken artifact : atsApi.getRelationResolver().getRelated(
+         atsApi.getArtifact(insertionActivity.getId()),
          AtsRelationTypes.InsertionActivityToWorkPackage_WorkPackage)) {
-         workPackages.add(new WorkPackage(logger, artifact, services));
+         workPackages.add(new WorkPackage(logger, artifact, atsApi));
       }
       return workPackages;
    }
 
    @Override
    public double getEstimatedHoursFromArtifact(IAtsWorkItem workItem) {
-      return services.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.EstimatedHours, 0.0);
+      return atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.EstimatedHours, 0.0);
    }
 
    @Override
@@ -149,7 +149,7 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
          return 0;
       }
       double hours = 0;
-      for (IAtsTask task : services.getTaskService().getTask(workItem)) {
+      for (IAtsTask task : atsApi.getTaskService().getTask(workItem)) {
          hours += getEstimatedHoursFromArtifact(task);
       }
       return hours;
@@ -159,7 +159,7 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
    public double getEstimatedHoursFromReviews(IAtsWorkItem workItem) {
       double hours = 0;
       if (workItem.isTeamWorkflow()) {
-         for (IAtsAbstractReview review : services.getReviewService().getReviews((IAtsTeamWorkflow) workItem)) {
+         for (IAtsAbstractReview review : atsApi.getReviewService().getReviews((IAtsTeamWorkflow) workItem)) {
             hours += getEstimatedHoursFromArtifact(review);
          }
       }
@@ -171,7 +171,7 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
       double hours = 0;
       if (workItem.isTeamWorkflow()) {
          IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) workItem;
-         for (IAtsAbstractReview review : services.getReviewService().getReviews(teamWf)) {
+         for (IAtsAbstractReview review : atsApi.getReviewService().getReviews(teamWf)) {
             if (review.getRelatedToState().equals(relatedToState.getName())) {
                hours += getEstimatedHoursFromArtifact(review);
             }

@@ -16,7 +16,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
@@ -65,13 +65,13 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
 
    private final DoubleKeyHashMap<IAtsTeamDefinition, WizardFields, Object> teamDefFieldToWidget =
       new DoubleKeyHashMap<>();
-   private final IAtsServices services;
+   private final AtsApi atsApi;
    private final WizardFields[] fields;
    private XComboViewer versionCombo;
    private XCheckBox createBranchCheck;
 
-   public AbstractWizardItem(IAtsServices services, WizardFields... fields) {
-      this.services = services;
+   public AbstractWizardItem(AtsApi atsApi, WizardFields... fields) {
+      this.atsApi = atsApi;
       this.fields = fields;
    }
 
@@ -174,7 +174,7 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
       IAtsTeamDefinition teamDefHoldingVersions = teamDef.getTeamDefinitionHoldingVersions();
       if (teamDefHoldingVersions != null) {
          List<IAtsVersion> versions = new LinkedList<>();
-         for (IAtsVersion version : services.getVersionService().getVersions(teamDefHoldingVersions)) {
+         for (IAtsVersion version : atsApi.getVersionService().getVersions(teamDefHoldingVersions)) {
             if (!version.isReleased()) {
                versions.add(version);
             }
@@ -243,12 +243,12 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
 
    private void createSprintWidget(Composite parent, IAtsTeamDefinition teamDef) {
       ArtifactToken agileTeam =
-         services.getRelationResolver().getRelatedOrNull(teamDef, AtsRelationTypes.AgileTeamToAtsTeam_AgileTeam);
+         atsApi.getRelationResolver().getRelatedOrNull(teamDef, AtsRelationTypes.AgileTeamToAtsTeam_AgileTeam);
       if (agileTeam != null) {
          List<IAgileSprint> sprints = new LinkedList<>();
-         for (ArtifactToken sprintArt : services.getRelationResolver().getRelated(agileTeam,
+         for (ArtifactToken sprintArt : atsApi.getRelationResolver().getRelated(agileTeam,
             AtsRelationTypes.AgileTeamToSprint_Sprint)) {
-            IAgileSprint sprint = services.getWorkItemFactory().getAgileSprint(sprintArt);
+            IAgileSprint sprint = atsApi.getWorkItemFactory().getAgileSprint(sprintArt);
             if (sprint.isInWork()) {
                sprints.add(sprint);
             }
@@ -279,12 +279,12 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
 
    private void createFeatureGroupWidget(Composite parent, IAtsTeamDefinition teamDef) {
       ArtifactToken agileTeam =
-         services.getRelationResolver().getRelatedOrNull(teamDef, AtsRelationTypes.AgileTeamToAtsTeam_AgileTeam);
+         atsApi.getRelationResolver().getRelatedOrNull(teamDef, AtsRelationTypes.AgileTeamToAtsTeam_AgileTeam);
       if (agileTeam != null) {
          List<IAgileFeatureGroup> featureGroups = new LinkedList<>();
-         for (ArtifactToken featureGroupArt : services.getRelationResolver().getRelated(agileTeam,
+         for (ArtifactToken featureGroupArt : atsApi.getRelationResolver().getRelated(agileTeam,
             AtsRelationTypes.AgileTeamToFeatureGroup_FeatureGroup)) {
-            IAgileFeatureGroup featureGroup = services.getConfigItemFactory().getAgileFeatureGroup(featureGroupArt);
+            IAgileFeatureGroup featureGroup = atsApi.getConfigItemFactory().getAgileFeatureGroup(featureGroupArt);
             featureGroups.add(featureGroup);
          }
          if (!featureGroups.isEmpty()) {
@@ -354,7 +354,7 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
       if (versionCombo != null) {
          IAtsVersion version = (IAtsVersion) versionCombo.getSelected();
          if (version != null) {
-            services.getVersionService().setTargetedVersion(teamWf, version, changes);
+            atsApi.getVersionService().setTargetedVersion(teamWf, version, changes);
          }
       }
    }
@@ -375,7 +375,7 @@ public abstract class AbstractWizardItem implements IAtsWizardItem, IDynamicWidg
       if (workPackageWidget != null) {
          IAtsWorkPackage workPackage = workPackageWidget.getSelected();
          if (workPackage != null) {
-            services.getEarnedValueService().setWorkPackage(workPackage, teamWf, changes);
+            atsApi.getEarnedValueService().setWorkPackage(workPackage, teamWf, changes);
          }
       }
    }

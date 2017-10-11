@@ -10,22 +10,22 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.column;
 
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
 
 /**
  * @author Donald G. Dunne
  */
 public class TitleColumn extends AbstractServicesColumn {
 
-   public TitleColumn(IAtsServices services) {
-      super(services);
+   public TitleColumn(AtsApi atsApi) {
+      super(atsApi);
    }
 
    @Override
    public String getText(IAtsObject atsObject) {
       String format = "%s";
-      if (services.getStoreService().isDeleted(atsObject)) {
+      if (atsApi.getStoreService().isDeleted(atsObject)) {
          format = "<Deleted> %s";
       }
       return String.format(format, atsObject.getName());

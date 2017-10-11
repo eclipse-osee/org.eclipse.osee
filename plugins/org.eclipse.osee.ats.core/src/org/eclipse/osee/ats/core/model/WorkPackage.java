@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.core.model;
 
 import java.util.Date;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.ev.AtsWorkPackageType;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
@@ -32,22 +32,22 @@ import org.eclipse.osee.logger.Log;
 public class WorkPackage extends AtsConfigObject implements IAtsWorkPackage {
 
    private ArtifactToken artifact;
-   private final IAtsServices services;
+   private final AtsApi atsApi;
 
-   public WorkPackage(Log logger, ArtifactToken artifact, IAtsServices services) {
-      super(logger, services, artifact);
+   public WorkPackage(Log logger, ArtifactToken artifact, AtsApi atsApi) {
+      super(logger, atsApi, artifact);
       this.artifact = artifact;
-      this.services = services;
+      this.atsApi = atsApi;
    }
 
    @Override
    public String getActivityId() {
-      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.ActivityId, "");
+      return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.ActivityId, "");
    }
 
    @Override
    public String getActivityName() {
-      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.ActivityName, "");
+      return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.ActivityName, "");
    }
 
    @Override
@@ -62,18 +62,18 @@ public class WorkPackage extends AtsConfigObject implements IAtsWorkPackage {
 
    @Override
    public String getWorkPackageId() {
-      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.WorkPackageId, "");
+      return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.WorkPackageId, "");
    }
 
    @Override
    public String getWorkPackageProgram() {
-      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.WorkPackageProgram, "");
+      return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.WorkPackageProgram, "");
    }
 
    @Override
    public AtsWorkPackageType getWorkPackageType() {
       String value =
-         services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.WorkPackageType, "");
+         atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.WorkPackageType, "");
       AtsWorkPackageType type = AtsWorkPackageType.None;
       if (Strings.isValid(value)) {
          try {
@@ -88,22 +88,22 @@ public class WorkPackage extends AtsConfigObject implements IAtsWorkPackage {
 
    @Override
    public boolean isActive() {
-      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.Active, true);
+      return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.Active, true);
    }
 
    @Override
    public Date getStartDate() {
-      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.StartDate, null);
+      return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.StartDate, null);
    }
 
    @Override
    public Date getEndDate() {
-      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.EndDate, null);
+      return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.EndDate, null);
    }
 
    @Override
    public int getWorkPackagePercent() {
-      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.PercentComplete, 0);
+      return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.PercentComplete, 0);
    }
 
    @Override

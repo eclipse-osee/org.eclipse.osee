@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.core.column;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -23,8 +23,8 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
  */
 public class SprintOrderColumn extends AbstractServicesColumn {
 
-   public SprintOrderColumn(IAtsServices services) {
-      super(services);
+   public SprintOrderColumn(AtsApi atsApi) {
+      super(atsApi);
    }
 
    @Override
@@ -32,12 +32,12 @@ public class SprintOrderColumn extends AbstractServicesColumn {
       String result = "";
       if (atsObject instanceof IAtsWorkItem) {
          ArtifactId sprintArt =
-            services.getRelationResolver().getRelatedOrNull(atsObject, AtsRelationTypes.AgileSprintToItem_Sprint);
+            atsApi.getRelationResolver().getRelatedOrNull(atsObject, AtsRelationTypes.AgileSprintToItem_Sprint);
          if (sprintArt != null) {
-            Collection<ArtifactToken> items = services.getRelationResolver().getRelatedArtifacts(sprintArt,
-               AtsRelationTypes.AgileSprintToItem_AtsItem);
+            Collection<ArtifactToken> items =
+               atsApi.getRelationResolver().getRelatedArtifacts(sprintArt, AtsRelationTypes.AgileSprintToItem_AtsItem);
             int x = 1;
-            ArtifactToken artifact = services.getArtifact(atsObject);
+            ArtifactToken artifact = atsApi.getArtifact(atsObject);
             for (ArtifactId item : items) {
                if (item.equals(artifact)) {
                   result = String.valueOf(x);

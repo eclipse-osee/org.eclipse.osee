@@ -27,7 +27,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -300,7 +300,7 @@ public class TransitionToMenu {
          }
 
          @Override
-         public IAtsServices getServices() {
+         public AtsApi getServices() {
             return AtsClientService.get().getServices();
          }
 

@@ -20,7 +20,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.AttributeKey;
@@ -39,14 +39,14 @@ import org.eclipse.osee.orcs.data.EnumEntry;
 @Path("attr")
 public final class AtsAttributeEndpointImpl implements AtsAttributeEndpointApi {
 
-   private final IAtsServices services;
+   private final AtsApi atsApi;
    private final OrcsApi orcsApi;
 
    @Context
    private HttpHeaders httpHeaders;
 
-   public AtsAttributeEndpointImpl(IAtsServices services, OrcsApi orcsApi) {
-      this.services = services;
+   public AtsAttributeEndpointImpl(AtsApi atsApi, OrcsApi orcsApi) {
+      this.atsApi = atsApi;
       this.orcsApi = orcsApi;
    }
 
@@ -76,7 +76,7 @@ public final class AtsAttributeEndpointImpl implements AtsAttributeEndpointApi {
    public List<String> getValidValues(@PathParam("id") String id) {
       List<String> values = new LinkedList<>();
       if (id.equals(AttributeKey.Assignee.name()) || id.equals(AttributeKey.Originator.name())) {
-         List<IAtsUser> active = services.getUserService().getUsers(Active.Active);
+         List<IAtsUser> active = atsApi.getUserService().getUsers(Active.Active);
          for (IAtsUser user : active) {
             values.add(user.getName());
          }

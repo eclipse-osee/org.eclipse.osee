@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -45,12 +45,12 @@ import org.osgi.service.event.EventAdmin;
  */
 public class AtsVersionServiceImpl implements IAtsVersionService {
 
-   private final IAtsServices services;
+   private final AtsApi atsApi;
    private final EventAdmin eventAdmin;
 
-   public AtsVersionServiceImpl(IAtsServices services, EventAdmin eventAdmin) {
+   public AtsVersionServiceImpl(AtsApi atsApi, EventAdmin eventAdmin) {
       super();
-      this.services = services;
+      this.atsApi = atsApi;
       this.eventAdmin = eventAdmin;
    }
 
@@ -69,7 +69,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
       if (team == null) {
          throw new OseeArgumentException("Team Workflow can not be null %s", team);
       }
-      Collection<ArtifactToken> versions = services.getRelationResolver().getRelated(team.getStoreObject(),
+      Collection<ArtifactToken> versions = atsApi.getRelationResolver().getRelated(team.getStoreObject(),
          AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
       IAtsVersion version = null;
       if (!versions.isEmpty()) {
@@ -77,7 +77,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
             OseeLog.log(Activator.class, Level.SEVERE,
                "Multiple targeted versions for artifact " + team.toStringWithId());
          } else {
-            version = services.getConfigItemFactory().getVersion(versions.iterator().next());
+            version = atsApi.getConfigItemFactory().getVersion(versions.iterator().next());
          }
       }
       return version;
@@ -91,7 +91,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    @Override
    public IAtsVersion setTargetedVersion(IAtsTeamWorkflow teamWf, IAtsVersion version, IAtsChangeSet changes) {
       Collection<ArtifactToken> previousVersions =
-         services.getRelationResolver().getRelated(teamWf, AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
+         atsApi.getRelationResolver().getRelated(teamWf, AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
 
       ArtifactId previousVersion = ArtifactId.SENTINEL;
       if (!previousVersions.isEmpty()) {
@@ -154,15 +154,15 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
 
    @Override
    public void setTeamDefinition(IAtsVersion version, IAtsTeamDefinition teamDef, IAtsChangeSet changes) {
-      Object verArt = services.getArtifact(version);
+      Object verArt = atsApi.getArtifact(version);
       if (verArt == null) {
          throw new OseeStateException("Version [%s] does not exist.", version);
       }
-      Object teamDefArt = services.getArtifact(teamDef);
+      Object teamDefArt = atsApi.getArtifact(teamDef);
       if (teamDefArt == null) {
          throw new OseeStateException("Team Definition [%s] does not exist.", teamDef);
       }
-      if (!services.getRelationResolver().areRelated(version, AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition,
+      if (!atsApi.getRelationResolver().areRelated(version, AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition,
          teamDef)) {
          changes.relate(version, AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition, teamDefArt);
       }
@@ -170,7 +170,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
 
    @Override
    public IAtsTeamDefinition getTeamDefinition(IAtsVersion version) {
-      return services.getRelationResolver().getRelatedOrNull(version,
+      return atsApi.getRelationResolver().getRelatedOrNull(version,
          AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition, IAtsTeamDefinition.class);
    }
 
@@ -179,12 +179,12 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
       IAtsVersion version = null;
       Object verArt = null;
       if (id instanceof ArtifactId) {
-         verArt = services.getArtifact(((ArtifactId) id).getUuid());
+         verArt = atsApi.getArtifact(((ArtifactId) id).getUuid());
       } else {
-         verArt = services.getArtifactById(id.getGuid());
+         verArt = atsApi.getArtifactById(id.getGuid());
       }
       if (verArt != null) {
-         version = services.getConfigItemFactory().getVersion((ArtifactId) verArt);
+         version = atsApi.getConfigItemFactory().getVersion((ArtifactId) verArt);
       }
       return version;
    }
@@ -192,7 +192,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    @Override
    public Collection<IAtsTeamWorkflow> getTargetedForTeamWorkflows(IAtsVersion verArt) {
       List<IAtsTeamWorkflow> teamWorkflows = new LinkedList<>();
-      for (IAtsTeamWorkflow teamWf : services.getRelationResolver().getRelated(verArt,
+      for (IAtsTeamWorkflow teamWf : atsApi.getRelationResolver().getRelated(verArt,
          AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow, IAtsTeamWorkflow.class)) {
          teamWorkflows.add(teamWf);
       }
@@ -202,7 +202,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    @Override
    public BranchId getBranch(IAtsVersion version) {
       String branchId =
-         services.getAttributeResolver().getSoleAttributeValue(version, AtsAttributeTypes.BaselineBranchUuid, "");
+         atsApi.getAttributeResolver().getSoleAttributeValue(version, AtsAttributeTypes.BaselineBranchUuid, "");
       if (branchId == null || branchId.isEmpty()) {
          return BranchId.SENTINEL;
       }
@@ -212,32 +212,32 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    @Override
    public IAtsVersion createVersion(IAtsProgram program, String versionName, IAtsChangeSet changes) {
       IAtsVersion version = null;
-      version = services.getProgramService().getVersion(program, versionName);
+      version = atsApi.getProgramService().getVersion(program, versionName);
       if (version == null) {
          version =
-            services.getConfigItemFactory().getVersion(changes.createArtifact(AtsArtifactTypes.Version, versionName));
+            atsApi.getConfigItemFactory().getVersion(changes.createArtifact(AtsArtifactTypes.Version, versionName));
       }
       return version;
    }
 
    @Override
    public IAtsVersion getVersion(IAtsProgram program, String versionName, IAtsChangeSet changes) {
-      return services.getProgramService().getVersion(program, versionName);
+      return atsApi.getProgramService().getVersion(program, versionName);
    }
 
    @Override
    public IAtsVersion createVersion(String title, long uuid, IAtsChangeSet changes) {
-      return services.getVersionFactory().createVersion(title, uuid, changes, services);
+      return atsApi.getVersionFactory().createVersion(title, uuid, changes, atsApi);
    }
 
    @Override
    public IAtsVersion createVersion(String name, IAtsChangeSet changes) {
-      return services.getVersionFactory().createVersion(name, changes, services);
+      return atsApi.getVersionFactory().createVersion(name, changes, atsApi);
    }
 
    @Override
    public Collection<IAtsVersion> getVersions(IAtsTeamDefinition teamDef) {
-      return services.getTeamDefinitionService().getVersions(teamDef);
+      return atsApi.getTeamDefinitionService().getVersions(teamDef);
    }
 
 }

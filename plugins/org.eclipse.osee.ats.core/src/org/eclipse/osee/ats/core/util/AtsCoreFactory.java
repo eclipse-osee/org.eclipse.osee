@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.util;
 
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.column.IAtsColumnService;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
@@ -30,16 +30,16 @@ public final class AtsCoreFactory {
       //
    }
 
-   public static IAtsStateFactory newStateFactory(IAtsServices services, IAtsLogFactory logFactory) {
-      return new AtsStateFactory(services, new AtsWorkStateFactory(services.getUserService()), logFactory);
+   public static IAtsStateFactory newStateFactory(AtsApi atsApi, IAtsLogFactory logFactory) {
+      return new AtsStateFactory(atsApi, new AtsWorkStateFactory(atsApi.getUserService()), logFactory);
    }
 
    public static IAtsLogFactory newLogFactory() {
       return new AtsLogFactory();
    }
 
-   public static IAtsColumnService getColumnService(IAtsServices services) {
-      return new AtsColumnService(services);
+   public static IAtsColumnService getColumnService(AtsApi atsApi) {
+      return new AtsColumnService(atsApi);
    }
 
    public static IAtsWorkStateFactory getWorkStateFactory(IAtsUserService userService) {

@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.core.column;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -23,14 +23,14 @@ import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
  */
 public class PercentCompleteTasksColumn extends AbstractServicesColumn {
 
-   public PercentCompleteTasksColumn(IAtsServices services) {
-      super(services);
+   public PercentCompleteTasksColumn(AtsApi atsApi) {
+      super(atsApi);
    }
 
    @Override
    public String getText(IAtsObject atsObject) throws Exception {
       if (IAtsAction.isOfType(atsObject) || IAtsTeamWorkflow.isOfType(atsObject)) {
-         return String.valueOf(getPercentCompleteFromTasks(atsObject, services));
+         return String.valueOf(getPercentCompleteFromTasks(atsObject, atsApi));
       }
       return "";
    }
@@ -38,13 +38,13 @@ public class PercentCompleteTasksColumn extends AbstractServicesColumn {
    /**
     * Return Percent Complete ONLY on tasks. Total Percent / # Tasks
     */
-   public static int getPercentCompleteFromTasks(IAtsObject atsObject, IAtsServices services) {
+   public static int getPercentCompleteFromTasks(IAtsObject atsObject, AtsApi atsApi) {
       if (IAtsAction.isOfType(atsObject)) {
          IAtsAction action = (IAtsAction) atsObject;
          double percent = 0;
          for (IAtsTeamWorkflow teamWf : action.getTeamWorkflows()) {
             if (!teamWf.isCancelled()) {
-               percent += getPercentCompleteFromTasks(teamWf, services);
+               percent += getPercentCompleteFromTasks(teamWf, atsApi);
             }
          }
          if (percent == 0) {
@@ -54,16 +54,16 @@ public class PercentCompleteTasksColumn extends AbstractServicesColumn {
          return rollPercent.intValue();
       }
       if (IAtsTeamWorkflow.isOfType(atsObject)) {
-         return getPercentCompleteFromTasks((IAtsTeamWorkflow) atsObject, services);
+         return getPercentCompleteFromTasks((IAtsTeamWorkflow) atsObject, atsApi);
       }
       return 0;
    }
 
-   public static int getPercentCompleteFromTasks(IAtsTeamWorkflow teamWf, IAtsServices services) {
+   public static int getPercentCompleteFromTasks(IAtsTeamWorkflow teamWf, AtsApi atsApi) {
       int spent = 0, result = 0;
-      Collection<IAtsTask> tasks = services.getTaskService().getTasks(teamWf);
+      Collection<IAtsTask> tasks = atsApi.getTaskService().getTasks(teamWf);
       for (IAtsTask task : tasks) {
-         spent += PercentCompleteTotalUtil.getPercentCompleteTotal(task, services);
+         spent += PercentCompleteTotalUtil.getPercentCompleteTotal(task, atsApi);
       }
       if (spent > 0) {
          result = spent / tasks.size();

@@ -17,8 +17,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
-import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -30,14 +30,14 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public abstract class AbstractConfigResource {
 
-   protected final IAtsServices services;
+   protected final AtsApi atsApi;
    private final IArtifactType artifactType;
    protected IAtsServer atsServer;
 
-   public AbstractConfigResource(IArtifactType artifactType, IAtsServices services) {
+   public AbstractConfigResource(IArtifactType artifactType, AtsApi atsApi) {
       this.artifactType = artifactType;
-      this.services = services;
-      this.atsServer = (IAtsServer) services;
+      this.atsApi = atsApi;
+      this.atsServer = (IAtsServer) atsApi;
    }
 
    @GET
@@ -70,14 +70,14 @@ public abstract class AbstractConfigResource {
    }
 
    private IAtsConfigObject getObject(int uuid) {
-      ArtifactReadable configArt = (ArtifactReadable) services.getArtifact(new Long(uuid));
-      return services.getConfigItemFactory().getConfigObject(configArt);
+      ArtifactReadable configArt = (ArtifactReadable) atsApi.getArtifact(new Long(uuid));
+      return atsApi.getConfigItemFactory().getConfigObject(configArt);
    }
 
    private List<IAtsConfigObject> getObjects() {
       List<IAtsConfigObject> configs = new ArrayList<>();
-      for (ArtifactId art : services.getArtifacts(artifactType)) {
-         configs.add(services.getConfigItemFactory().getConfigObject(art));
+      for (ArtifactId art : atsApi.getArtifacts(artifactType)) {
+         configs.add(atsApi.getConfigItemFactory().getConfigObject(art));
       }
       return configs;
    }

@@ -3,7 +3,7 @@
    <implementation class="org.eclipse.osee.ats.core.client.internal.AtsClientImpl"/>
    <service>
       <provide interface="org.eclipse.osee.ats.core.client.IAtsClient"/>
-      <provide interface="org.eclipse.osee.ats.api.IAtsServices"/>
+      <provide interface="org.eclipse.osee.ats.api.AtsApi"/>
    </service>
    <reference bind="setJdbcService" cardinality="1..1" interface="org.eclipse.osee.jdbc.JdbcService" name="JdbcService" policy="static" target="(osgi.binding=skynet.jdbc.service)"/>
 	<reference bind="setEventAdmin" cardinality="1..1" interface="org.osgi.service.event.EventAdmin" name="EventAdmin" policy="static"/>

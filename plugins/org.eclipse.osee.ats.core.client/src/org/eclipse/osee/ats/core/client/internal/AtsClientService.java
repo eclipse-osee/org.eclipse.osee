@@ -80,7 +80,7 @@ public class AtsClientService {
    }
 
    /**
-    * This should not be used unless configurations are being updated. Use IAtsServices.getConfigurations
+    * This should not be used unless configurations are being updated. Use AtsApi.getConfigurations
     */
    public static AtsConfigEndpointApi getConfigEndpoint() {
       if (configEp == null) {

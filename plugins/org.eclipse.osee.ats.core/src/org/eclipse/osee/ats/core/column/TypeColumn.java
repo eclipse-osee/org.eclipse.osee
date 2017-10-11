@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.column;
 
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 
 /**
@@ -19,19 +19,19 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
  */
 public class TypeColumn extends AbstractServicesColumn {
 
-   public TypeColumn(IAtsServices services) {
-      super(services);
+   public TypeColumn(AtsApi atsApi) {
+      super(atsApi);
    }
 
    @Override
    public String getText(IAtsObject atsObject) {
-      if (!services.getStoreService().isDeleted(atsObject)) {
+      if (!atsApi.getStoreService().isDeleted(atsObject)) {
          if (atsObject instanceof IAtsTeamWorkflow) {
             return ((IAtsTeamWorkflow) atsObject).getTeamDefinition().getName() + " Workflow";
-         } else if (services.getAgileService().isBacklog(atsObject)) {
+         } else if (atsApi.getAgileService().isBacklog(atsObject)) {
             return "Backlog";
          } else {
-            return services.getStoreService().getArtifactType(atsObject).getName();
+            return atsApi.getStoreService().getArtifactType(atsObject).getName();
          }
       }
       return "(Deleted)";

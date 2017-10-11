@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
@@ -46,12 +46,12 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
    protected final IAtsUserService userService;
    protected final IAttributeResolver attrResolver;
    protected final IAtsPeerToPeerReview peerRev;
-   protected final IAtsServices services;
+   protected final AtsApi atsApi;
 
-   public UserRoleManager(IAtsPeerToPeerReview peerRev, IAtsServices services) {
-      this.services = services;
-      this.attrResolver = services.getAttributeResolver();
-      this.userService = services.getUserService();
+   public UserRoleManager(IAtsPeerToPeerReview peerRev, AtsApi atsApi) {
+      this.atsApi = atsApi;
+      this.attrResolver = atsApi.getAttributeResolver();
+      this.userService = atsApi.getUserService();
       this.peerRev = peerRev;
    }
 
@@ -121,8 +121,8 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
       }
       if (!found) {
          roleItems.add(userRole);
-         if (!peerRev.getAssignees().contains(getUser(userRole, services))) {
-            peerRev.getStateMgr().addAssignee(getUser(userRole, services));
+         if (!peerRev.getAssignees().contains(getUser(userRole, atsApi))) {
+            peerRev.getStateMgr().addAssignee(getUser(userRole, atsApi));
          }
       }
    }
@@ -136,7 +136,7 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
    private List<UserRole> getStoredUserRoles() {
       // Add new ones: items in userRoles that are not in dbuserRoles
       List<UserRole> storedUserRoles = new ArrayList<>();
-      for (IAttribute<Object> attr : services.getAttributeResolver().getAttributes(peerRev, AtsAttributeTypes.Role)) {
+      for (IAttribute<Object> attr : atsApi.getAttributeResolver().getAttributes(peerRev, AtsAttributeTypes.Role)) {
          UserRole storedRole = new UserRole((String) attr.getValue());
          storedUserRoles.add(storedRole);
       }
@@ -149,7 +149,7 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
          List<UserRole> storedUserRoles = getStoredUserRoles();
 
          // Change existing ones
-         for (IAttribute<Object> attr : services.getAttributeResolver().getAttributes(peerRev,
+         for (IAttribute<Object> attr : atsApi.getAttributeResolver().getAttributes(peerRev,
             AtsAttributeTypes.Role)) {
             UserRole storedRole = new UserRole((String) attr.getValue());
             for (UserRole pItem : getUserRoles()) {
@@ -163,7 +163,7 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
          // Remove deleted ones; items in dbuserRoles that are not in userRoles
          for (UserRole delUserRole : org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(
             updatedStoredUserRoles, userRoles)) {
-            for (IAttribute<Object> attr : services.getAttributeResolver().getAttributes(peerRev,
+            for (IAttribute<Object> attr : atsApi.getAttributeResolver().getAttributes(peerRev,
                AtsAttributeTypes.Role)) {
                UserRole storedRole = new UserRole((String) attr.getValue());
                if (storedRole.equals(delUserRole)) {
@@ -178,7 +178,7 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
          rollupHoursSpentToReviewState(peerRev);
          validateUserRolesCompleted(storedUserRoles, userRoles, changes);
       } catch (OseeCoreException ex) {
-         services.getLogger().error(ex, "Can't create ats review role document");
+         atsApi.getLogger().error(ex, "Can't create ats review role document");
       }
    }
 
@@ -189,7 +189,7 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
       }
       peerRev.getStateMgr().setMetrics(peerRev.getStateDefinition(), hoursSpent,
          peerRev.getStateMgr().getPercentComplete(peerRev.getStateMgr().getCurrentStateName()), true,
-         services.getUserService().getCurrentUser(), new Date());
+         atsApi.getUserService().getCurrentUser(), new Date());
    }
 
    private void validateUserRolesCompleted(List<UserRole> currentUserRoles, List<UserRole> newUserRoles, IAtsChangeSet changes) {
@@ -214,16 +214,16 @@ public class UserRoleManager implements IAtsPeerReviewRoleManager {
       if (numNewCompleted != numCurrentCompleted) {
          try {
             changes.addWorkItemNotificationEvent(
-               AtsNotificationEventFactory.getWorkItemNotificationEvent(services.getUserService().getCurrentUser(),
+               AtsNotificationEventFactory.getWorkItemNotificationEvent(atsApi.getUserService().getCurrentUser(),
                   (IAtsWorkItem) peerRev, AtsNotifyType.Peer_Reviewers_Completed));
          } catch (OseeCoreException ex) {
-            services.getLogger().error(ex, "Error adding ATS Notification Event");
+            atsApi.getLogger().error(ex, "Error adding ATS Notification Event");
          }
       }
    }
 
-   public static IAtsUser getUser(UserRole item, IAtsServices services) {
-      return services.getUserService().getUserById(item.getUserId());
+   public static IAtsUser getUser(UserRole item, AtsApi atsApi) {
+      return atsApi.getUserService().getUserById(item.getUserId());
    }
 
 }

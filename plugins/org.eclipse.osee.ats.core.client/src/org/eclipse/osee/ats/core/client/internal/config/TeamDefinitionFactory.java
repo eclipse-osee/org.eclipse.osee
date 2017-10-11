@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.internal.config;
 
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -26,14 +26,14 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 public class TeamDefinitionFactory implements ITeamDefinitionFactory {
 
    @Override
-   public IAtsTeamDefinition createTeamDefinition(String name, long uuid, IAtsChangeSet changes, IAtsServices services) {
+   public IAtsTeamDefinition createTeamDefinition(String name, long uuid, IAtsChangeSet changes, AtsApi atsApi) {
       ArtifactToken artifact = changes.createArtifact(AtsArtifactTypes.TeamDefinition, name, GUID.create(), uuid);
-      return new TeamDefinition(services.getLogger(), services, artifact);
+      return new TeamDefinition(atsApi.getLogger(), atsApi, artifact);
    }
 
    @Override
-   public IAtsTeamDefinition createTeamDefinition(String name, IAtsChangeSet changes, IAtsServices services) {
-      return createTeamDefinition(name, AtsUtilClient.createConfigObjectUuid(), changes, services);
+   public IAtsTeamDefinition createTeamDefinition(String name, IAtsChangeSet changes, AtsApi atsApi) {
+      return createTeamDefinition(name, AtsUtilClient.createConfigObjectUuid(), changes, atsApi);
    }
 
 }

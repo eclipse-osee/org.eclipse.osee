@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.core.validator;
 
 import java.util.Date;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IValueProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
@@ -56,7 +56,7 @@ public abstract class AtsXWidgetValidator implements IAtsXWidgetValidator {
    }
 
    @Override
-   public abstract WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider valueProvider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, IAtsServices services);
+   public abstract WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider valueProvider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, AtsApi atsApi);
 
    public WidgetResult isValidDate(IValueProvider valueProvider, IAtsWidgetDefinition widgetDef) {
       for (Date date : valueProvider.getDateValues()) {

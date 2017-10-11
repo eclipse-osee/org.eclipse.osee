@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.core.client.review.role;
 import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.review.IAtsPeerReviewRoleManager;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.Role;
@@ -41,7 +41,7 @@ public class AtsXUserRoleValidatorTest {
    // @formatter:off
    @Mock IAtsPeerToPeerReview workItem;
    @Mock IAtsWidgetDefinition widgetDef;
-   @Mock IAtsServices services;
+   @Mock AtsApi atsApi;
    @Mock IAtsStateDefinition fromStateDef;
    @Mock IAtsStateDefinition toStateDef;
    @Mock IAttributeResolver attrResolver;
@@ -57,8 +57,8 @@ public class AtsXUserRoleValidatorTest {
       when(fromStateDef.getStateType()).thenReturn(StateType.Working);
       when(toStateDef.getStateType()).thenReturn(StateType.Working);
 
-      when(services.getAttributeResolver()).thenReturn(attrResolver);
-      when(services.getUserService()).thenReturn(userService);
+      when(atsApi.getAttributeResolver()).thenReturn(attrResolver);
+      when(atsApi.getUserService()).thenReturn(userService);
 
       when(workItem.getRoleManager()).thenReturn(roleMgr);
    }
@@ -71,14 +71,14 @@ public class AtsXUserRoleValidatorTest {
 
       // Valid for anything not XIntegerDam
       WidgetResult result = validator.validateTransition(workItem, ValidatorTestUtil.emptyValueProvider, widgetDef,
-         fromStateDef, toStateDef, services);
+         fromStateDef, toStateDef, atsApi);
       ValidatorTestUtil.assertValidResult(result);
 
       when(widgetDef.getXWidgetName()).thenReturn("XUserRoleViewer");
 
       // Not valid to have no roles
       result = validator.validateTransition(workItem, ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef,
-         toStateDef, services);
+         toStateDef, atsApi);
       Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
       Assert.assertEquals(UserRoleError.OneRoleEntryRequired.getError(), result.getDetails());
 
@@ -86,7 +86,7 @@ public class AtsXUserRoleValidatorTest {
 
       // Not valid to have no roles
       result = validator.validateTransition(workItem, ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef,
-         toStateDef, services);
+         toStateDef, atsApi);
       Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
       Assert.assertEquals(UserRoleError.OneRoleEntryRequired.getError(), result.getDetails());
    }
@@ -109,19 +109,19 @@ public class AtsXUserRoleValidatorTest {
       when(fromStateDef.getName()).thenReturn("to");
 
       // Valid Roles
-      WidgetResult result = validator.validateTransition(workItem, null, widgetDef, fromStateDef, toStateDef, services);
+      WidgetResult result = validator.validateTransition(workItem, null, widgetDef, fromStateDef, toStateDef, atsApi);
       ValidatorTestUtil.assertValidResult(result);
 
       // Not valid to have no author
       when(roleMgr.getUserRoles(Role.Author)).thenReturn(Arrays.asList());
-      result = validator.validateTransition(workItem, null, widgetDef, fromStateDef, toStateDef, services);
+      result = validator.validateTransition(workItem, null, widgetDef, fromStateDef, toStateDef, atsApi);
       Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
       Assert.assertEquals(UserRoleError.MustHaveAtLeastOneAuthor.getError(), result.getDetails());
 
       // Not valid to have no reviewer
       when(roleMgr.getUserRoles(Role.Author)).thenReturn(Arrays.asList(author));
       when(roleMgr.getUserRoles(Role.Reviewer)).thenReturn(Arrays.asList());
-      result = validator.validateTransition(workItem, null, widgetDef, fromStateDef, toStateDef, services);
+      result = validator.validateTransition(workItem, null, widgetDef, fromStateDef, toStateDef, atsApi);
       Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
       Assert.assertEquals(UserRoleError.MustHaveAtLeastOneReviewer.getError(), result.getDetails());
 

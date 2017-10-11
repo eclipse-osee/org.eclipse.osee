@@ -18,7 +18,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -34,8 +34,8 @@ import org.eclipse.osee.framework.jdk.core.util.SortOrder;
 @Path("team")
 public class TeamResource extends AbstractConfigResource {
 
-   public TeamResource(IAtsServices services) {
-      super(AtsArtifactTypes.TeamDefinition, services);
+   public TeamResource(AtsApi atsApi) {
+      super(AtsArtifactTypes.TeamDefinition, atsApi);
    }
 
    @GET
@@ -43,8 +43,8 @@ public class TeamResource extends AbstractConfigResource {
    @Produces(MediaType.APPLICATION_JSON)
    public List<String> getVersionNames(@PathParam("id") Long id) throws Exception {
       List<String> versions = new LinkedList<>();
-      IAtsTeamDefinition teamDef = services.getConfigItem(id);
-      for (IAtsVersion version : services.getVersionService().getVersions(teamDef)) {
+      IAtsTeamDefinition teamDef = atsApi.getConfigItem(id);
+      for (IAtsVersion version : atsApi.getVersionService().getVersions(teamDef)) {
          versions.add(version.getName());
       }
       return versions;
@@ -54,10 +54,10 @@ public class TeamResource extends AbstractConfigResource {
    @GET
    @Produces(MediaType.APPLICATION_JSON)
    public List<IAtsActionableItem> getActionableAis(@PathParam("id") ArtifactId teamId) {
-      IAtsTeamDefinition teamDef = services.getConfigItem(teamId);
+      IAtsTeamDefinition teamDef = atsApi.getConfigItem(teamId);
       if (teamDef != null) {
          List<IAtsActionableItem> ais =
-            services.getActionableItemService().getActiveActionableItemsAndChildren(teamDef);
+            atsApi.getActionableItemService().getActiveActionableItemsAndChildren(teamDef);
          Collections.sort(ais, new NamedComparator(SortOrder.ASCENDING));
          return ais;
       }

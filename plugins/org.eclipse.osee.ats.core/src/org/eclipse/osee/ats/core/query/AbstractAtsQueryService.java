@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
@@ -31,11 +31,11 @@ import org.eclipse.osee.jdbc.JdbcService;
 public abstract class AbstractAtsQueryService implements IAtsQueryService {
 
    protected final JdbcService jdbcService;
-   private final IAtsServices services;
+   private final AtsApi atsApi;
 
-   public AbstractAtsQueryService(JdbcService jdbcService, IAtsServices services) {
+   public AbstractAtsQueryService(JdbcService jdbcService, AtsApi atsApi) {
       this.jdbcService = jdbcService;
-      this.services = services;
+      this.atsApi = atsApi;
    }
 
    @Override
@@ -43,9 +43,9 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
       List<ArtifactId> ids = new LinkedList<>();
       jdbcService.getClient().runQuery(stmt -> ids.add(ArtifactId.valueOf(stmt.getLong("art_id"))), query, data);
       List<IAtsWorkItem> workItems = new LinkedList<>();
-      for (ArtifactToken art : services.getQueryService().getArtifacts(ids, services.getAtsBranch())) {
-         if (services.getStoreService().isOfType(art, AtsArtifactTypes.AbstractWorkflowArtifact)) {
-            IAtsWorkItem workItem = services.getWorkItemFactory().getWorkItem(art);
+      for (ArtifactToken art : atsApi.getQueryService().getArtifacts(ids, atsApi.getAtsBranch())) {
+         if (atsApi.getStoreService().isOfType(art, AtsArtifactTypes.AbstractWorkflowArtifact)) {
+            IAtsWorkItem workItem = atsApi.getWorkItemFactory().getWorkItem(art);
             if (workItem != null) {
                workItems.add(workItem);
             }
@@ -58,7 +58,7 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
    public Collection<ArtifactToken> getArtifactsFromQuery(String query, Object... data) {
       List<ArtifactId> ids = new LinkedList<>();
       jdbcService.getClient().runQuery(stmt -> ids.add(ArtifactId.valueOf(stmt.getLong("art_id"))), query, data);
-      return services.getQueryService().getArtifacts(ids, services.getAtsBranch());
+      return atsApi.getQueryService().getArtifacts(ids, atsApi.getAtsBranch());
    }
 
    @Override
@@ -85,7 +85,7 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
    public List<IAtsWorkItem> getWorkItemListByIds(String ids) {
       List<IAtsWorkItem> workItems = new ArrayList<>();
       for (ArtifactToken art : getArtifactListByIdsStr(ids)) {
-         IAtsWorkItem workItem = services.getWorkItemFactory().getWorkItem(art);
+         IAtsWorkItem workItem = atsApi.getWorkItemFactory().getWorkItem(art);
          if (workItem != null) {
             workItems.add(workItem);
          }
@@ -141,15 +141,15 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
    }
 
    private ArtifactToken getArtifactByAtsId(String id) {
-      return services.getArtifactByAtsId(id);
+      return atsApi.getArtifactByAtsId(id);
    }
 
    private ArtifactToken getArtifact(Long uuid) {
-      return services.getArtifact(uuid);
+      return atsApi.getArtifact(uuid);
    }
 
    public ArtifactToken getArtifactByGuid(String guid) {
-      return services.getArtifactByGuid(guid);
+      return atsApi.getArtifactByGuid(guid);
    }
 
 }

@@ -20,9 +20,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
@@ -41,8 +41,8 @@ import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.core.agile.AgileService;
 import org.eclipse.osee.ats.core.ai.ActionableItemService;
 import org.eclipse.osee.ats.core.util.ActionFactory;
+import org.eclipse.osee.ats.core.util.AtsApiImpl;
 import org.eclipse.osee.ats.core.util.AtsCoreFactory;
-import org.eclipse.osee.ats.core.util.AtsCoreServiceImpl;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionServiceImpl;
 import org.eclipse.osee.ats.core.workflow.WorkItemFactory;
 import org.eclipse.osee.ats.rest.IAtsServer;
@@ -80,10 +80,10 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 /**
  * @author Donald G Dunne
  */
-public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
+public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
 
    public static String PLUGIN_ID = "org.eclipse.osee.ats.rest";
-   private static IAtsServices services;
+   private static AtsApi atsApi;
    private OrcsApi orcsApi;
    private AtsNotifierServiceImpl notifyService;
    private AtsNotificationEventProcessor notificationEventProcessor;
@@ -99,7 +99,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
 
    public AtsServerImpl() {
       super();
-      services = this;
+      atsApi = this;
    }
 
    public void setOrcsApi(OrcsApi orcsApi) {
@@ -283,7 +283,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    }
 
    @Override
-   public IAtsServices getServices() {
+   public AtsApi getServices() {
       return this;
    }
 
@@ -492,18 +492,18 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
       return System.getProperty("OseeApplicationServer");
    }
 
-   public static IAtsServices get() {
-      return services;
+   public static AtsApi get() {
+      return atsApi;
    }
 
    @Override
    public IAtsTeamWorkflow getTeamWf(ArtifactId artifact) {
-      return getWorkItemFactory().getTeamWf(services.getArtifact(artifact));
+      return getWorkItemFactory().getTeamWf(atsApi.getArtifact(artifact));
    }
 
    @Override
    public IAtsTeamWorkflow getTeamWf(Long id) {
-      return getWorkItemFactory().getTeamWf(services.getArtifact(id));
+      return getWorkItemFactory().getTeamWf(atsApi.getArtifact(id));
    }
 
    @Override

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.agile;
 
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.workflow.WorkItem;
@@ -24,8 +24,8 @@ import org.eclipse.osee.logger.Log;
  */
 public class AgileSprint extends WorkItem implements IAgileSprint {
 
-   public AgileSprint(Log logger, IAtsServices services, ArtifactToken artifact) {
-      super(logger, services, artifact);
+   public AgileSprint(Log logger, AtsApi atsApi, ArtifactToken artifact) {
+      super(logger, atsApi, artifact);
    }
 
    @Override
@@ -38,7 +38,7 @@ public class AgileSprint extends WorkItem implements IAgileSprint {
       long result = 0;
       try {
          ArtifactId agileTeam =
-            services.getRelationResolver().getRelatedOrNull(artifact, AtsRelationTypes.AgileTeamToSprint_AgileTeam);
+            atsApi.getRelationResolver().getRelatedOrNull(artifact, AtsRelationTypes.AgileTeamToSprint_AgileTeam);
          if (agileTeam != null) {
             result = agileTeam.getId();
          }

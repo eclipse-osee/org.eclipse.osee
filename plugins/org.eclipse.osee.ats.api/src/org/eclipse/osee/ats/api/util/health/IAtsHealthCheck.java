@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.util.health;
 
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 
@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
  */
 public interface IAtsHealthCheck {
 
-   public void check(ArtifactId artifact, IAtsWorkItem workItem, HealthCheckResults results, IAtsServices services);
+   public void check(ArtifactId artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi);
 
    public default String getName() {
       return getClass().getSimpleName();

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.agile.AgileReportType;
 import org.eclipse.osee.ats.api.agile.AgileSprintData;
 import org.eclipse.osee.ats.api.agile.AgileSprintDateData;
@@ -33,10 +33,10 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
  */
 public class SprintBurndownOperations implements IAgileSprintHtmlOperation {
 
-   private final IAtsServices services;
+   private final AtsApi atsApi;
 
-   public SprintBurndownOperations(IAtsServices services) {
-      this.services = services;
+   public SprintBurndownOperations(AtsApi atsApi) {
+      this.atsApi = atsApi;
    }
 
    @Override
@@ -53,9 +53,9 @@ public class SprintBurndownOperations implements IAgileSprintHtmlOperation {
    }
 
    public LineChart getChartData(long teamUuid, long sprintUuid) {
-      LineChart chart = new LineChart(services);
-      ArtifactToken team = services.getArtifact(teamUuid);
-      AgileSprintData data = SprintUtil.getAgileSprintData(services, teamUuid, sprintUuid, chart.getResults());
+      LineChart chart = new LineChart(atsApi);
+      ArtifactToken team = atsApi.getArtifact(teamUuid);
+      AgileSprintData data = SprintUtil.getAgileSprintData(atsApi, teamUuid, sprintUuid, chart.getResults());
       XResultData results = data.validate();
       if (results.isErrors()) {
          return chart;

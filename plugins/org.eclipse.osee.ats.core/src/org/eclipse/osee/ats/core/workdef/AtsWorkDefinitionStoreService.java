@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.core.workdef;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -26,17 +26,17 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
  */
 public class AtsWorkDefinitionStoreService implements IAtsWorkDefinitionStringProvider {
 
-   private final IAtsServices services;
+   private final AtsApi atsApi;
 
-   public AtsWorkDefinitionStoreService(IAtsServices services) {
-      this.services = services;
+   public AtsWorkDefinitionStoreService(AtsApi atsApi) {
+      this.atsApi = atsApi;
    }
 
    @Override
    public List<WorkDefData> getWorkDefinitionsData() {
       List<WorkDefData> results = new ArrayList<>();
-      for (ArtifactToken workDefArt : services.getQueryService().getArtifacts(AtsArtifactTypes.WorkDefinition,
-         services.getAtsBranch())) {
+      for (ArtifactToken workDefArt : atsApi.getQueryService().getArtifacts(AtsArtifactTypes.WorkDefinition,
+         atsApi.getAtsBranch())) {
          results.add(
             new WorkDefData(workDefArt.getId(), workDefArt.getName(), loadWorkDefinitionFromArtifact(workDefArt)));
       }
@@ -58,7 +58,7 @@ public class AtsWorkDefinitionStoreService implements IAtsWorkDefinitionStringPr
     * @return WorkDefData or null if not found
     */
    private WorkDefData loadWorkDefinitionFromArtifact(String name) {
-      ArtifactToken artifact = services.getArtifactByName(AtsArtifactTypes.WorkDefinition, name);
+      ArtifactToken artifact = atsApi.getArtifactByName(AtsArtifactTypes.WorkDefinition, name);
       if (artifact != null) {
          return new WorkDefData(artifact.getId(), artifact.getName(), loadWorkDefinitionFromArtifact(artifact));
       }
@@ -69,19 +69,19 @@ public class AtsWorkDefinitionStoreService implements IAtsWorkDefinitionStringPr
       Conditions.checkNotNull(artifact, "Work Definition artifact");
       String modelText = null;
       if (artifact != null) {
-         modelText = services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.DslSheet, "");
+         modelText = atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.DslSheet, "");
       }
       return modelText;
    }
 
    public String loadRuleDefinitionString() {
-      ArtifactToken artifact = services.getArtifact(AtsArtifactToken.RuleDefinitions);
+      ArtifactToken artifact = atsApi.getArtifact(AtsArtifactToken.RuleDefinitions);
       Conditions.checkNotNull(artifact, "Work Definition artifact");
-      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.DslSheet, "");
+      return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.DslSheet, "");
    }
 
    public WorkDefData loadWorkDefinitionString(Long id) {
-      ArtifactToken artifact = services.getArtifact(id);
+      ArtifactToken artifact = atsApi.getArtifact(id);
       Conditions.checkNotNull(artifact, "Work Definition artifact");
       return new WorkDefData(artifact.getId(), artifact.getName(), loadWorkDefinitionFromArtifact(artifact));
    }

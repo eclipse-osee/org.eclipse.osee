@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.JaxTeamDefinition;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -43,15 +43,15 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
 
    private JaxTeamDefinition jaxTeamDef;
 
-   public TeamDefinition(Log logger, IAtsServices services, JaxTeamDefinition jaxTeamDef) {
-      super(logger, services, ArtifactToken.valueOf(jaxTeamDef.getUuid(), jaxTeamDef.getGuid(), jaxTeamDef.getName(),
-         services.getAtsBranch(), AtsArtifactTypes.ActionableItem));
+   public TeamDefinition(Log logger, AtsApi atsApi, JaxTeamDefinition jaxTeamDef) {
+      super(logger, atsApi, ArtifactToken.valueOf(jaxTeamDef.getUuid(), jaxTeamDef.getGuid(), jaxTeamDef.getName(),
+         atsApi.getAtsBranch(), AtsArtifactTypes.ActionableItem));
       this.jaxTeamDef = jaxTeamDef;
    }
 
-   public TeamDefinition(Log logger, IAtsServices services, ArtifactToken artifact) {
-      super(logger, services, ArtifactToken.valueOf(artifact.getUuid(), artifact.getGuid(), artifact.getName(),
-         services.getAtsBranch(), AtsArtifactTypes.ActionableItem));
+   public TeamDefinition(Log logger, AtsApi atsApi, ArtifactToken artifact) {
+      super(logger, atsApi, ArtifactToken.valueOf(artifact.getUuid(), artifact.getGuid(), artifact.getName(),
+         atsApi.getAtsBranch(), AtsArtifactTypes.ActionableItem));
    }
 
    @Override
@@ -64,13 +64,13 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
       List<IAtsActionableItem> children = new LinkedList<>();
       if (jaxTeamDef != null) {
          for (Long aiId : jaxTeamDef.getAis()) {
-            children.add(new ActionableItem(logger, services, services.getConfigurations().getIdToAi().get(aiId)));
+            children.add(new ActionableItem(logger, atsApi, atsApi.getConfigurations().getIdToAi().get(aiId)));
          }
       } else {
-         for (ArtifactToken artifact : services.getRelationResolver().getRelated(artifact,
+         for (ArtifactToken artifact : atsApi.getRelationResolver().getRelated(artifact,
             AtsRelationTypes.TeamActionableItem_ActionableItem)) {
-            if (services.getStoreService().isOfType(artifact, AtsArtifactTypes.ActionableItem)) {
-               children.add(new ActionableItem(logger, services, artifact));
+            if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.ActionableItem)) {
+               children.add(new ActionableItem(logger, atsApi, artifact));
             }
          }
       }
@@ -82,9 +82,9 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
       IAtsTeamDefinition parent = null;
       try {
          Collection<ArtifactToken> related =
-            services.getRelationResolver().getRelated(artifact, CoreRelationTypes.Default_Hierarchical__Parent);
+            atsApi.getRelationResolver().getRelated(artifact, CoreRelationTypes.Default_Hierarchical__Parent);
          if (!related.isEmpty()) {
-            parent = services.getConfigItemFactory().getTeamDef(related.iterator().next());
+            parent = atsApi.getConfigItemFactory().getTeamDef(related.iterator().next());
          }
       } catch (OseeCoreException ex) {
          getLogger().error(ex, "Error getParentTeamDef");
@@ -96,9 +96,9 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
    public Collection<IAtsTeamDefinition> getChildrenTeamDefinitions() {
       Set<IAtsTeamDefinition> children = new HashSet<>();
       try {
-         for (ArtifactId childArt : services.getRelationResolver().getRelated(artifact,
+         for (ArtifactId childArt : atsApi.getRelationResolver().getRelated(artifact,
             CoreRelationTypes.Default_Hierarchical__Child)) {
-            IAtsTeamDefinition childTeamDef = services.getConfigItemFactory().getTeamDef(childArt);
+            IAtsTeamDefinition childTeamDef = atsApi.getConfigItemFactory().getTeamDef(childArt);
             if (childTeamDef != null) {
                children.add(childTeamDef);
             }
@@ -156,7 +156,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
       boolean set = false;
       try {
          set =
-            services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.AllowCommitBranch, false);
+            atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.AllowCommitBranch, false);
       } catch (OseeCoreException ex) {
          getLogger().error(ex, "Error is allow commit branch");
       }
@@ -179,7 +179,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
       boolean set = false;
       try {
          set =
-            services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.AllowCreateBranch, false);
+            atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.AllowCreateBranch, false);
       } catch (OseeCoreException ex) {
          getLogger().error(ex, "Error get allow create branch");
       }
@@ -268,9 +268,9 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
    public Collection<IAtsVersion> getVersions() {
       Set<IAtsVersion> results = new HashSet<>();
       try {
-         for (ArtifactId verArt : services.getRelationResolver().getRelated(artifact,
+         for (ArtifactId verArt : atsApi.getRelationResolver().getRelated(artifact,
             AtsRelationTypes.TeamDefinitionToVersion_Version)) {
-            IAtsVersion version = services.getConfigItemFactory().getVersion(verArt);
+            IAtsVersion version = atsApi.getConfigItemFactory().getVersion(verArt);
             results.add(version);
          }
       } catch (OseeCoreException ex) {
@@ -339,7 +339,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
    public Collection<String> getRules() {
       Collection<String> rules = new ArrayList<>();
       try {
-         rules = services.getAttributeResolver().getAttributesToStringList(this, AtsAttributeTypes.RuleDefinition);
+         rules = atsApi.getAttributeResolver().getAttributesToStringList(this, AtsAttributeTypes.RuleDefinition);
       } catch (OseeCoreException ex) {
          getLogger().error(ex, "Error getting rules");
       }

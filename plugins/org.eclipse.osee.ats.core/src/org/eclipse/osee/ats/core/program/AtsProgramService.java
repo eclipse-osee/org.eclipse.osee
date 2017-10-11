@@ -20,8 +20,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.WorkType;
@@ -57,7 +57,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class AtsProgramService implements IAtsProgramService {
 
-   static private IAtsServices services;
+   static private AtsApi atsApi;
    static CacheLoader<IAtsTeamDefinition, IAtsProgram> teamDefToAtsProgramCacheLoader =
       new CacheLoader<IAtsTeamDefinition, IAtsProgram>() {
          @Override
@@ -70,64 +70,64 @@ public class AtsProgramService implements IAtsProgramService {
          .expireAfterWrite(15, TimeUnit.MINUTES) //
          .build(teamDefToAtsProgramCacheLoader);
 
-   public AtsProgramService(IAtsServices services) {
-      AtsProgramService.services = services;
+   public AtsProgramService(AtsApi atsApi) {
+      AtsProgramService.atsApi = atsApi;
    }
 
    @Override
    public Collection<IAtsInsertionActivity> getInsertionActivities(IAtsInsertion insertion) {
       List<IAtsInsertionActivity> insertionActivitys = new ArrayList<>();
-      for (ArtifactId artifact : services.getRelationResolver().getRelated(services.getArtifact(insertion.getId()),
+      for (ArtifactId artifact : atsApi.getRelationResolver().getRelated(atsApi.getArtifact(insertion.getId()),
          AtsRelationTypes.InsertionToInsertionActivity_InsertionActivity)) {
-         insertionActivitys.add(services.getConfigItemFactory().getInsertionActivity(artifact));
+         insertionActivitys.add(atsApi.getConfigItemFactory().getInsertionActivity(artifact));
       }
       return insertionActivitys;
    }
 
    @Override
    public IAtsInsertionActivity getInsertionActivity(Long insertionActivityUuid) {
-      return services.getConfigItemFactory().getInsertionActivity(services.getArtifact(insertionActivityUuid));
+      return atsApi.getConfigItemFactory().getInsertionActivity(atsApi.getArtifact(insertionActivityUuid));
    }
 
    @Override
    public IAtsWorkPackage getWorkPackage(Long workPackageUuid) {
-      return services.getConfigItemFactory().getWorkPackage(services.getArtifact(workPackageUuid));
+      return atsApi.getConfigItemFactory().getWorkPackage(atsApi.getArtifact(workPackageUuid));
    }
 
    @Override
    public IAtsInsertionActivity getInsertionActivity(IAtsWorkPackage workPackage) {
-      ArtifactId wpArt = services.getArtifact(workPackage.getId());
-      Collection<ArtifactToken> related = services.getRelationResolver().getRelated(wpArt,
+      ArtifactId wpArt = atsApi.getArtifact(workPackage.getId());
+      Collection<ArtifactToken> related = atsApi.getRelationResolver().getRelated(wpArt,
          AtsRelationTypes.InsertionActivityToWorkPackage_InsertionActivity);
       if (related.size() > 0) {
-         return services.getConfigItemFactory().getInsertionActivity(related.iterator().next());
+         return atsApi.getConfigItemFactory().getInsertionActivity(related.iterator().next());
       }
       return null;
    }
 
    @Override
    public IAtsInsertion getInsertion(IAtsInsertionActivity activity) {
-      Collection<ArtifactToken> related = services.getRelationResolver().getRelated(activity.getStoreObject(),
+      Collection<ArtifactToken> related = atsApi.getRelationResolver().getRelated(activity.getStoreObject(),
          AtsRelationTypes.InsertionToInsertionActivity_Insertion);
       if (related.size() > 0) {
-         return services.getConfigItemFactory().getInsertion(related.iterator().next());
+         return atsApi.getConfigItemFactory().getInsertion(related.iterator().next());
       }
       return null;
    }
 
    @Override
    public IAtsProgram getProgram(IAtsInsertion insertion) {
-      Collection<ArtifactToken> related = services.getRelationResolver().getRelated(insertion.getStoreObject(),
+      Collection<ArtifactToken> related = atsApi.getRelationResolver().getRelated(insertion.getStoreObject(),
          AtsRelationTypes.ProgramToInsertion_Program);
       if (related.size() > 0) {
-         return services.getConfigItemFactory().getProgram(related.iterator().next());
+         return atsApi.getConfigItemFactory().getProgram(related.iterator().next());
       }
       return null;
    }
 
    @Override
    public void setWorkPackage(IAtsWorkPackage workPackage, List<IAtsWorkItem> workItems, IAtsUser asUser) {
-      IAtsChangeSet changes = services.getStoreService().createAtsChangeSet("Set Work Package", asUser);
+      IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet("Set Work Package", asUser);
       for (IAtsWorkItem workItem : workItems) {
          if (workPackage == null) {
             changes.deleteSoleAttribute(workItem, AtsAttributeTypes.WorkPackageReference);
@@ -143,37 +143,37 @@ public class AtsProgramService implements IAtsProgramService {
 
    @Override
    public IAtsInsertion getInsertion(Long insertionUuid) {
-      return services.getConfigItemFactory().getInsertion(services.getArtifact(insertionUuid));
+      return atsApi.getConfigItemFactory().getInsertion(atsApi.getArtifact(insertionUuid));
    }
 
    @Override
    public Collection<IAtsInsertion> getInsertions(IAtsProgram program) {
       List<IAtsInsertion> insertions = new ArrayList<>();
-      for (ArtifactId artifact : services.getRelationResolver().getRelated(services.getArtifact(program.getId()),
+      for (ArtifactId artifact : atsApi.getRelationResolver().getRelated(atsApi.getArtifact(program.getId()),
          AtsRelationTypes.ProgramToInsertion_Insertion)) {
-         insertions.add(services.getConfigItemFactory().getInsertion(artifact));
+         insertions.add(atsApi.getConfigItemFactory().getInsertion(artifact));
       }
       return insertions;
    }
 
    @Override
    public IAtsProgram getProgramByGuid(String guid) {
-      ArtifactId prgArt = services.getArtifactById(guid);
-      return services.getConfigItemFactory().getProgram(prgArt);
+      ArtifactId prgArt = atsApi.getArtifactById(guid);
+      return atsApi.getConfigItemFactory().getProgram(prgArt);
    }
 
    @Override
    public Collection<IAtsProgram> getPrograms() {
       List<IAtsProgram> programs = new ArrayList<>();
-      for (ArtifactId artifact : services.getQueryService().createQuery(AtsArtifactTypes.Program).getArtifacts()) {
-         programs.add(services.getConfigItemFactory().getProgram(artifact));
+      for (ArtifactId artifact : atsApi.getQueryService().createQuery(AtsArtifactTypes.Program).getArtifacts()) {
+         programs.add(atsApi.getConfigItemFactory().getProgram(artifact));
       }
       return programs;
    }
 
    @Override
    public IAtsProgram getProgram(Long programUuid) {
-      return services.getConfigItemFactory().getProgram(services.getArtifact(programUuid));
+      return atsApi.getConfigItemFactory().getProgram(atsApi.getArtifact(programUuid));
    }
 
    @Override
@@ -181,9 +181,9 @@ public class AtsProgramService implements IAtsProgramService {
       List<IAtsProgram> programs = new LinkedList<>();
       ArtifactId artifact = atsCountry.getStoreObject();
       if (artifact != null) {
-         for (ArtifactId related : services.getRelationResolver().getRelated(artifact,
+         for (ArtifactId related : atsApi.getRelationResolver().getRelated(artifact,
             AtsRelationTypes.CountryToProgram_Program)) {
-            programs.add(services.getConfigItemFactory().getProgram(related));
+            programs.add(atsApi.getConfigItemFactory().getProgram(related));
          }
       }
       return programs;
@@ -195,9 +195,9 @@ public class AtsProgramService implements IAtsProgramService {
       ArtifactId artifact = atsProgram.getStoreObject();
       if (artifact != null) {
          ArtifactId countryArt =
-            services.getRelationResolver().getRelatedOrNull(artifact, AtsRelationTypes.CountryToProgram_Country);
+            atsApi.getRelationResolver().getRelatedOrNull(artifact, AtsRelationTypes.CountryToProgram_Country);
          if (countryArt != null) {
-            country = services.getConfigItemFactory().getCountry(countryArt);
+            country = atsApi.getConfigItemFactory().getCountry(countryArt);
          }
       }
       return country;
@@ -221,12 +221,11 @@ public class AtsProgramService implements IAtsProgramService {
 
    private static IAtsProgram loadProgram(IAtsTeamDefinition teamDef) {
       IAtsProgram program = null;
-      Object object =
-         services.getAttributeResolver().getSoleAttributeValue(teamDef, AtsAttributeTypes.ProgramUuid, null);
+      Object object = atsApi.getAttributeResolver().getSoleAttributeValue(teamDef, AtsAttributeTypes.ProgramUuid, null);
       if (object instanceof ArtifactId) {
-         program = services.getConfigItemFactory().getProgram((ArtifactId) object);
+         program = atsApi.getConfigItemFactory().getProgram((ArtifactId) object);
       } else if (object instanceof String && Strings.isNumeric((String) object)) {
-         program = services.getProgramService().getProgram(Long.parseLong((String) object));
+         program = atsApi.getProgramService().getProgram(Long.parseLong((String) object));
       }
       if (program == null) {
          IAtsTeamDefinition topTeamDef = teamDef.getTeamDefinitionHoldingVersions();
@@ -235,7 +234,7 @@ public class AtsProgramService implements IAtsProgramService {
          }
       }
       if (program == null) {
-         program = (IAtsProgram) services.getQueryService().createQuery(AtsArtifactTypes.Program).andAttr(
+         program = (IAtsProgram) atsApi.getQueryService().createQuery(AtsArtifactTypes.Program).andAttr(
             AtsAttributeTypes.TeamDefinitionReference, teamDef.getIdString()).getConfigObjectResultSet().getOneOrNull();
       }
       return program;
@@ -243,7 +242,7 @@ public class AtsProgramService implements IAtsProgramService {
 
    @Override
    public String getDescription(IAtsProgram program) {
-      return services.getAttributeResolver().getSoleAttributeValue(program, AtsAttributeTypes.Description, "");
+      return atsApi.getAttributeResolver().getSoleAttributeValue(program, AtsAttributeTypes.Description, "");
    }
 
    @Override
@@ -254,17 +253,17 @@ public class AtsProgramService implements IAtsProgramService {
    @Override
    public IAtsTeamDefinition getTeamDefinition(IAtsProgram program) {
       IAtsTeamDefinition teamDefinition = null;
-      ArtifactId artId = services.getAttributeResolver().getSoleArtifactIdReference(program,
+      ArtifactId artId = atsApi.getAttributeResolver().getSoleArtifactIdReference(program,
          AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);
       if (artId.isValid()) {
-         teamDefinition = services.getConfigItem(artId);
+         teamDefinition = atsApi.getConfigItem(artId);
       }
       return teamDefinition;
    }
 
    @Override
    public Collection<IAtsActionableItem> getAis(IAtsProgram program) {
-      return Collections.castAll(services.getQueryService() //
+      return Collections.castAll(atsApi.getQueryService() //
          .createQuery(AtsArtifactTypes.ActionableItem) //
          .andAttr(AtsAttributeTypes.ProgramUuid, String.valueOf(program.getId())) //
          .getConfigObjectResultSet().getList());
@@ -272,7 +271,7 @@ public class AtsProgramService implements IAtsProgramService {
 
    @Override
    public Collection<IAtsTeamDefinition> getTeamDefs(IAtsProgram program) {
-      return Collections.castAll(services.getQueryService() //
+      return Collections.castAll(atsApi.getQueryService() //
          .createQuery(AtsArtifactTypes.TeamDefinition) //
          .andAttr(AtsAttributeTypes.ProgramUuid, String.valueOf(program.getId())) //
          .getConfigObjectResultSet().getList());
@@ -280,13 +279,13 @@ public class AtsProgramService implements IAtsProgramService {
 
    @Override
    public Collection<IAtsProgram> getPrograms(IArtifactType artifactType) {
-      return Collections.castAll(services.getQueryService() //
+      return Collections.castAll(atsApi.getQueryService() //
          .createQuery(artifactType).getConfigObjectResultSet().getList());
    }
 
    @Override
    public Collection<String> getCscis(IAtsProgram program) {
-      return services.getAttributeResolver().getAttributesToStringList(program, AtsAttributeTypes.CSCI);
+      return atsApi.getAttributeResolver().getAttributesToStringList(program, AtsAttributeTypes.CSCI);
    }
 
    @Override
@@ -296,7 +295,7 @@ public class AtsProgramService implements IAtsProgramService {
 
    @Override
    public Collection<IAtsActionableItem> getAis(IAtsProgram program, Collection<WorkType> workTypes) {
-      IAtsConfigQuery query = services.getQueryService() //
+      IAtsConfigQuery query = atsApi.getQueryService() //
          .createQuery(AtsArtifactTypes.ActionableItem) //
          .andAttr(AtsAttributeTypes.ProgramUuid, String.valueOf(program.getId()));
       List<String> types = new LinkedList<>();
@@ -309,7 +308,7 @@ public class AtsProgramService implements IAtsProgramService {
 
    @Override
    public Collection<IAtsTeamDefinition> getTeamDefs(IAtsProgram program, Collection<WorkType> workTypes) {
-      IAtsConfigQuery query = services.getQueryService() //
+      IAtsConfigQuery query = atsApi.getQueryService() //
          .createQuery(AtsArtifactTypes.TeamDefinition) //
          .andAttr(AtsAttributeTypes.ProgramUuid, String.valueOf(program.getId()));
       List<String> types = new LinkedList<>();
@@ -326,7 +325,7 @@ public class AtsProgramService implements IAtsProgramService {
       try {
          IAtsTeamDefinition teamDef = teamWf.getTeamDefinition();
          String typeStr =
-            services.getAttributeResolver().getSoleAttributeValueAsString(teamDef, AtsAttributeTypes.WorkType, "");
+            atsApi.getAttributeResolver().getSoleAttributeValueAsString(teamDef, AtsAttributeTypes.WorkType, "");
          if (Strings.isValid(typeStr)) {
             workType = WorkType.valueOf(typeStr);
          }
@@ -338,7 +337,7 @@ public class AtsProgramService implements IAtsProgramService {
 
    @Override
    public ProjectType getProjectType(IAtsProgram program) {
-      if (services.getAttributeResolver().getAttributeCount(program, AtsAttributeTypes.CSCI) > 1) {
+      if (atsApi.getAttributeResolver().getAttributeCount(program, AtsAttributeTypes.CSCI) > 1) {
          return ProjectType.MultiProcessor;
       } else {
          return ProjectType.SingleProcessor;
@@ -347,14 +346,14 @@ public class AtsProgramService implements IAtsProgramService {
 
    @Override
    public String getNamespace(IAtsProgram program) {
-      return services.getAttributeResolver().getSoleAttributeValue(program, AtsAttributeTypes.Namespace, "");
+      return atsApi.getAttributeResolver().getSoleAttributeValue(program, AtsAttributeTypes.Namespace, "");
    }
 
    @Override
    public long getCountryUuid(IAtsProgram program) {
       long countryUuid = 0L;
       ArtifactId countryArt =
-         services.getRelationResolver().getRelatedOrNull(program, AtsRelationTypes.CountryToProgram_Country);
+         atsApi.getRelationResolver().getRelatedOrNull(program, AtsRelationTypes.CountryToProgram_Country);
       if (countryArt != null) {
          countryUuid = countryArt.getId();
       }
@@ -369,7 +368,7 @@ public class AtsProgramService implements IAtsProgramService {
    @Override
    public Collection<IAtsTeamWorkflow> getWorkflows(IAtsProgram program) {
       Collection<IAtsTeamDefinition> workTypeTeamDefs = getTeamDefs(program);
-      return services.getQueryService().createQuery(WorkItemType.TeamWorkflow).andTeam(workTypeTeamDefs).getItems(
+      return atsApi.getQueryService().createQuery(WorkItemType.TeamWorkflow).andTeam(workTypeTeamDefs).getItems(
          IAtsTeamWorkflow.class);
    }
 
@@ -390,7 +389,7 @@ public class AtsProgramService implements IAtsProgramService {
             useWorkItem = ((IAtsTeamWorkflow) useWorkItem).getParentAction();
          }
          if (useWorkItem != null && useWorkItem instanceof IAtsAction) {
-            for (IAtsTeamWorkflow team : services.getWorkItemService().getTeams(useWorkItem)) {
+            for (IAtsTeamWorkflow team : atsApi.getWorkItemService().getTeams(useWorkItem)) {
                if (workTypeTeamDefs.contains(team.getTeamDefinition())) {
                   teamArts.add(team);
                }
@@ -402,7 +401,7 @@ public class AtsProgramService implements IAtsProgramService {
 
    @Override
    public boolean isActive(IAtsProgram program) {
-      return services.getAttributeResolver().getSoleAttributeValue(program, AtsAttributeTypes.Active, true);
+      return atsApi.getAttributeResolver().getSoleAttributeValue(program, AtsAttributeTypes.Active, true);
    }
 
    @Override
@@ -413,15 +412,15 @@ public class AtsProgramService implements IAtsProgramService {
    @Override
    public Collection<IAtsTeamWorkflow> getWorkflows(IAtsProgram program, Collection<WorkType> workTypes) {
       Collection<IAtsTeamDefinition> teamDefs =
-         services.getQueryService().createQuery(AtsArtifactTypes.TeamDefinition).andProgram(program).andWorkType(
+         atsApi.getQueryService().createQuery(AtsArtifactTypes.TeamDefinition).andProgram(program).andWorkType(
             workTypes).getConfigObjects();
       return Collections.castAll(
-         services.getQueryService().createQuery(WorkItemType.TeamWorkflow).andTeam(teamDefs).getResults().getList());
+         atsApi.getQueryService().createQuery(WorkItemType.TeamWorkflow).andTeam(teamDefs).getResults().getList());
    }
 
    @Override
    public Collection<IAtsVersion> getVersions(IAtsProgram program) {
-      IAtsTeamDefinition teamDefHoldingVersions = services.getProgramService().getTeamDefHoldingVersions(program);
+      IAtsTeamDefinition teamDefHoldingVersions = atsApi.getProgramService().getTeamDefHoldingVersions(program);
       if (teamDefHoldingVersions != null) {
          return teamDefHoldingVersions.getVersions();
       }

@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.core.agile;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -27,8 +27,8 @@ import org.eclipse.osee.logger.Log;
  */
 public class AgileTeam extends AtsConfigObject implements IAgileTeam {
 
-   public AgileTeam(Log logger, IAtsServices services, ArtifactToken artifact) {
-      super(logger, services, artifact);
+   public AgileTeam(Log logger, AtsApi atsApi, ArtifactToken artifact) {
+      super(logger, atsApi, artifact);
    }
 
    @Override
@@ -39,7 +39,7 @@ public class AgileTeam extends AtsConfigObject implements IAgileTeam {
    @Override
    public List<Long> getAtsTeamUuids() {
       List<Long> uuids = new ArrayList<>();
-      for (ArtifactId atsTeam : services.getRelationResolver().getRelated(artifact,
+      for (ArtifactId atsTeam : atsApi.getRelationResolver().getRelated(artifact,
          AtsRelationTypes.AgileTeamToAtsTeam_AtsTeam)) {
          uuids.add(new Long(atsTeam.getId()));
       }
@@ -48,7 +48,7 @@ public class AgileTeam extends AtsConfigObject implements IAgileTeam {
 
    @Override
    public String getDescription() {
-      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.Description, "");
+      return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.Description, "");
    }
 
    @Override
@@ -56,7 +56,7 @@ public class AgileTeam extends AtsConfigObject implements IAgileTeam {
       ArtifactId backlogId = ArtifactId.SENTINEL;
       try {
          backlogId =
-            services.getRelationResolver().getRelatedOrNull(artifact, AtsRelationTypes.AgileTeamToBacklog_Backlog);
+            atsApi.getRelationResolver().getRelatedOrNull(artifact, AtsRelationTypes.AgileTeamToBacklog_Backlog);
       } catch (Exception ex) {
          // do nothing
       }
@@ -67,7 +67,7 @@ public class AgileTeam extends AtsConfigObject implements IAgileTeam {
    public ArtifactId getSprintId() {
       ArtifactId sprintId = ArtifactId.SENTINEL;
       try {
-         for (IAgileSprint sprint : services.getAgileService().getSprintsForTeam(artifact.getId())) {
+         for (IAgileSprint sprint : atsApi.getAgileService().getSprintsForTeam(artifact.getId())) {
             if (sprint.isInWork()) {
                sprintId = sprint.getStoreObject();
             }

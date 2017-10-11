@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -38,8 +38,8 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
    private static String ATS_CONFIG_EXCLUDE_DUPLICATE_TYPE_IDS_KEY =
       "DuplicateWorkflowAsIsOperation_ExcludeAttrTypeIds";
 
-   public DuplicateWorkflowAsIsOperation(Collection<IAtsTeamWorkflow> teamWfs, boolean duplicateTasks, String title, IAtsUser asUser, IAtsServices services) {
-      super(teamWfs, title, asUser, services);
+   public DuplicateWorkflowAsIsOperation(Collection<IAtsTeamWorkflow> teamWfs, boolean duplicateTasks, String title, IAtsUser asUser, AtsApi atsApi) {
+      super(teamWfs, title, asUser, atsApi);
       this.duplicateTasks = duplicateTasks;
    }
 
@@ -51,7 +51,7 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
       }
       oldToNewMap = new HashMap<>();
 
-      IAtsChangeSet changes = services.getStoreService().createAtsChangeSet("Duplicate Workflow - As-Is", asUser);
+      IAtsChangeSet changes = atsApi.getStoreService().createAtsChangeSet("Duplicate Workflow - As-Is", asUser);
 
       for (IAtsTeamWorkflow teamWf : teamWfs) {
 
@@ -62,10 +62,10 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
             newTeamWf, AtsNotifyType.Originator, AtsNotifyType.Assigned, AtsNotifyType.SubscribedTeamOrAi));
 
          if (duplicateTasks) {
-            for (IAtsTask task : services.getTaskService().getTask(teamWf)) {
+            for (IAtsTask task : atsApi.getTaskService().getTask(teamWf)) {
                IAtsTask dupTaskArt = (IAtsTask) duplicateWorkItem(changes, task);
                dupTaskArt.getLog().addLog(LogType.Note, null, "Task duplicated from " + task.getAtsId(),
-                  services.getUserService().getCurrentUser().getUserId());
+                  atsApi.getUserService().getCurrentUser().getUserId());
                changes.relate(newTeamWf.getStoreObject(), AtsRelationTypes.TeamWfToTask_Task, dupTaskArt);
                // for tasks, add notification for subscribed only
                changes.addWorkItemNotificationEvent(AtsNotificationEventFactory.getWorkItemNotificationEvent(asUser,
@@ -84,12 +84,12 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
 
    private IAtsWorkItem duplicateWorkItem(IAtsChangeSet changes, IAtsWorkItem workItem) {
       ArtifactToken newWorkItemArt = changes.createArtifact(
-         services.getStoreService().getArtifactType(workItem.getStoreObject()), getTitle(workItem));
+         atsApi.getStoreService().getArtifactType(workItem.getStoreObject()), getTitle(workItem));
 
       if (workItem.isTeamWorkflow()) {
          changes.relate(newWorkItemArt, AtsRelationTypes.ActionToWorkflow_Action, workItem.getParentAction());
       }
-      IAtsLog atsLog = AtsCoreFactory.getLogFactory().getLogLoaded(workItem, services.getAttributeResolver());
+      IAtsLog atsLog = AtsCoreFactory.getLogFactory().getLogLoaded(workItem, atsApi.getAttributeResolver());
       atsLog.addLog(LogType.Note, null, "Workflow duplicated from " + workItem.getAtsId(), asUser.getUserId());
 
       // assignees == add in existing assignees, leads and originator (current user)
@@ -102,17 +102,17 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
             assignees.add(asUser);
          }
          // Auto-add actions to configured goals
-         services.getActionFactory().addActionToConfiguredGoal(teamWf.getTeamDefinition(), teamWf,
+         atsApi.getActionFactory().addActionToConfiguredGoal(teamWf.getTeamDefinition(), teamWf,
             teamWf.getActionableItems(), changes);
       }
 
-      for (IAttribute<Object> attr : services.getAttributeResolver().getAttributes(workItem.getStoreObject())) {
+      for (IAttribute<Object> attr : atsApi.getAttributeResolver().getAttributes(workItem.getStoreObject())) {
          if (!getExcludeTypes().contains(attr.getAttributeType())) {
             changes.addAttribute(newWorkItemArt, attr.getAttributeType(), attr.getValue());
          }
       }
-      IAtsWorkItem newWorkItem = services.getWorkItemFactory().getWorkItem(newWorkItemArt);
-      services.getActionFactory().setAtsId(newWorkItem, workItem.getParentTeamWorkflow().getTeamDefinition(), changes);
+      IAtsWorkItem newWorkItem = atsApi.getWorkItemFactory().getWorkItem(newWorkItemArt);
+      atsApi.getActionFactory().setAtsId(newWorkItem, workItem.getParentTeamWorkflow().getTeamDefinition(), changes);
       return newWorkItem;
    }
 
@@ -121,7 +121,7 @@ public class DuplicateWorkflowAsIsOperation extends AbstractDuplicateWorkflowOpe
          excludeTypes = new LinkedList<>();
          excludeTypes.add(AtsAttributeTypes.AtsId);
          excludeTypes.add(CoreAttributeTypes.Name);
-         String value = services.getConfigValue(ATS_CONFIG_EXCLUDE_DUPLICATE_TYPE_IDS_KEY);
+         String value = atsApi.getConfigValue(ATS_CONFIG_EXCLUDE_DUPLICATE_TYPE_IDS_KEY);
          if (Strings.isValid(value)) {
             for (String attrTypeId : value.split(";")) {
                if (Strings.isNumeric(attrTypeId)) {

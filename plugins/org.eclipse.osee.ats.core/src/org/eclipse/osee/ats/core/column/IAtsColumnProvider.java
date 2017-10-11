@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.column;
 
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.column.IAtsColumn;
 
 /**
@@ -18,6 +18,6 @@ import org.eclipse.osee.ats.api.column.IAtsColumn;
  */
 public interface IAtsColumnProvider {
 
-   public IAtsColumn getColumn(String id, IAtsServices services);
+   public IAtsColumn getColumn(String id, AtsApi atsApi);
 
 }

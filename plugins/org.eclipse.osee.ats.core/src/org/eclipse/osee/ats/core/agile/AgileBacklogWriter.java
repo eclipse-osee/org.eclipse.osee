@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.agile;
 
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
@@ -28,19 +28,19 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
  */
 public class AgileBacklogWriter {
 
-   private final IAtsServices services;
+   private final AtsApi atsApi;
    private final IAgileService agileService;
    private final JaxAgileBacklog updatedBacklog;
 
-   public AgileBacklogWriter(IAtsServices services, IAgileService agileService, JaxAgileBacklog updatedBacklog) {
-      this.services = services;
+   public AgileBacklogWriter(AtsApi atsApi, IAgileService agileService, JaxAgileBacklog updatedBacklog) {
+      this.atsApi = atsApi;
       this.agileService = agileService;
       this.updatedBacklog = updatedBacklog;
    }
 
    public IAgileBacklog write() {
       IAtsChangeSet changes =
-         services.getStoreService().createAtsChangeSet("Update Agile Backlog", AtsCoreUsers.SYSTEM_USER);
+         atsApi.getStoreService().createAtsChangeSet("Update Agile Backlog", AtsCoreUsers.SYSTEM_USER);
 
       // Validate backlog exists
       IAgileBacklog currentBacklog = agileService.getAgileBacklog(updatedBacklog.getUuid());
@@ -60,14 +60,14 @@ public class AgileBacklogWriter {
 
          // Else validate and relate new team
          else {
-            ArtifactToken updateBacklogArt = services.getArtifact(updatedBacklog.getUuid());
+            ArtifactToken updateBacklogArt = atsApi.getArtifact(updatedBacklog.getUuid());
             IAgileTeam updatedTeam = agileService.getAgileTeam(updatedBacklog.getTeamUuid());
             ArtifactToken updatedTeamArt = updatedTeam.getStoreObject();
-            if (!services.getStoreService().isOfType(updateBacklogArt, AtsArtifactTypes.Goal)) {
+            if (!atsApi.getStoreService().isOfType(updateBacklogArt, AtsArtifactTypes.Goal)) {
                throw new OseeArgumentException("Backlog UUID %d not valid type", updatedBacklog.getUuid());
-            } else if (services.getRelationResolver().getRelatedCount(updateBacklogArt,
+            } else if (atsApi.getRelationResolver().getRelatedCount(updateBacklogArt,
                AtsRelationTypes.AgileTeamToBacklog_AgileTeam) > 0) {
-               ArtifactToken currentTeamArt = services.getRelationResolver().getRelatedOrNull(updateBacklogArt,
+               ArtifactToken currentTeamArt = atsApi.getRelationResolver().getRelatedOrNull(updateBacklogArt,
                   AtsRelationTypes.AgileTeamToBacklog_AgileTeam);
                if (updatedTeamArt.notEqual(currentTeamArt)) {
                   changes.unrelate(currentTeamArt, AtsRelationTypes.AgileTeamToBacklog_Backlog, updateBacklogArt);
@@ -75,10 +75,10 @@ public class AgileBacklogWriter {
                }
             }
             changes.relate(updatedTeamArt, AtsRelationTypes.AgileTeamToBacklog_Backlog, updateBacklogArt);
-            if (!services.getRelationResolver().areRelated(updatedTeamArt,
-               CoreRelationTypes.Default_Hierarchical__Child, updateBacklogArt)) {
-               if (services.getRelationResolver().getParent(updateBacklogArt) != null) {
-                  changes.unrelate(services.getRelationResolver().getParent(updateBacklogArt),
+            if (!atsApi.getRelationResolver().areRelated(updatedTeamArt, CoreRelationTypes.Default_Hierarchical__Child,
+               updateBacklogArt)) {
+               if (atsApi.getRelationResolver().getParent(updateBacklogArt) != null) {
+                  changes.unrelate(atsApi.getRelationResolver().getParent(updateBacklogArt),
                      CoreRelationTypes.Default_Hierarchical__Child, updateBacklogArt);
                }
                changes.relate(updatedTeamArt, CoreRelationTypes.Default_Hierarchical__Child, updateBacklogArt);

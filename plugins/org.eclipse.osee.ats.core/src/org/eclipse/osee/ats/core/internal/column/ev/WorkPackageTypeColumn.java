@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.internal.column.ev;
 
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.ev.AtsWorkPackageType;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
@@ -24,8 +24,8 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class WorkPackageTypeColumn extends AbstractRelatedWorkPackageColumn {
 
-   public WorkPackageTypeColumn(IAtsEarnedValueServiceProvider earnedValueServiceProvider, IAtsServices services) {
-      super(earnedValueServiceProvider, services);
+   public WorkPackageTypeColumn(IAtsEarnedValueServiceProvider earnedValueServiceProvider, AtsApi atsApi) {
+      super(earnedValueServiceProvider, atsApi);
    }
 
    @Override
@@ -39,11 +39,10 @@ public class WorkPackageTypeColumn extends AbstractRelatedWorkPackageColumn {
 
    @Override
    protected String getColumnValue(ArtifactToken wpArt) {
-      if (services == null) {
+      if (atsApi == null) {
          return "";
       }
-      String value =
-         services.getAttributeResolver().getSoleAttributeValue(wpArt, AtsAttributeTypes.WorkPackageType, "");
+      String value = atsApi.getAttributeResolver().getSoleAttributeValue(wpArt, AtsAttributeTypes.WorkPackageType, "");
       AtsWorkPackageType type = AtsWorkPackageType.None;
       if (Strings.isValid(value)) {
          try {

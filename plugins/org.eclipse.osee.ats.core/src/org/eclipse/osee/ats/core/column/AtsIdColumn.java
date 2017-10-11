@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.core.column;
 
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 
@@ -22,8 +22,8 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
  */
 public class AtsIdColumn extends AbstractServicesColumn {
 
-   public AtsIdColumn(IAtsServices services) {
-      super(services);
+   public AtsIdColumn(AtsApi atsApi) {
+      super(atsApi);
    }
 
    @Override

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -52,23 +52,22 @@ public class Versions {
       return "";
    }
 
-   public static List<IAtsVersion> getParallelVersions(IAtsVersion version, IAtsServices services) {
+   public static List<IAtsVersion> getParallelVersions(IAtsVersion version, AtsApi atsApi) {
       List<IAtsVersion> parallelVersions = new ArrayList<>();
-      for (ArtifactId parallelVersion : services.getRelationResolver().getRelated(services.getArtifact(version),
+      for (ArtifactId parallelVersion : atsApi.getRelationResolver().getRelated(atsApi.getArtifact(version),
          AtsRelationTypes.ParallelVersion_Child)) {
-         IAtsVersion parallelVer = services.getConfigItemFactory().getVersion(parallelVersion);
+         IAtsVersion parallelVer = atsApi.getConfigItemFactory().getVersion(parallelVersion);
          parallelVersions.add(parallelVer);
       }
       return parallelVersions;
    }
 
-   public static void getParallelVersions(IAtsVersion version, Set<ICommitConfigItem> configArts, IAtsServices services) {
+   public static void getParallelVersions(IAtsVersion version, Set<ICommitConfigItem> configArts, AtsApi atsApi) {
       configArts.add(version);
-      for (IAtsVersion childArt : getParallelVersions(version, services)) {
+      for (IAtsVersion childArt : getParallelVersions(version, atsApi)) {
          if (!configArts.contains(childArt)) {
-            getParallelVersions(childArt, configArts, services);
+            getParallelVersions(childArt, configArts, atsApi);
          }
       }
    }
-
 }

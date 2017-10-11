@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.core.workflow.transition;
 import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.Collection;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
@@ -48,7 +48,7 @@ public class TransitionHelperTest {
    @Mock IAtsWorkItemService workItemService;
    @Mock IAtsUserService userService;
    @Mock IAtsBranchService branchService;
-   @Mock IAtsServices services;
+   @Mock AtsApi atsApi;
    @Mock IAttributeResolver attrResolver;
    // @formatter:on
 
@@ -58,13 +58,13 @@ public class TransitionHelperTest {
    public void setup() {
       MockitoAnnotations.initMocks(this);
 
-      when(services.getAttributeResolver()).thenReturn(attrResolver);
-      when(services.getBranchService()).thenReturn(branchService);
-      when(services.getUserService()).thenReturn(userService);
-      when(services.getWorkItemService()).thenReturn(workItemService);
+      when(atsApi.getAttributeResolver()).thenReturn(attrResolver);
+      when(atsApi.getBranchService()).thenReturn(branchService);
+      when(atsApi.getUserService()).thenReturn(userService);
+      when(atsApi.getWorkItemService()).thenReturn(workItemService);
 
       helper = new TransitionHelper("test", Arrays.asList(workItem, workItem2), "Completed", Arrays.asList(Joe, Kay),
-         "cancel reason", changes, services, TransitionOption.None);
+         "cancel reason", changes, atsApi, TransitionOption.None);
    }
 
    @Test
@@ -72,7 +72,7 @@ public class TransitionHelperTest {
       Assert.assertFalse(helper.isPrivilegedEditEnabled());
 
       TransitionHelper helper = new TransitionHelper("test", Arrays.asList(workItem, workItem2), "Completed",
-         Arrays.asList(Joe, Kay), "cancel reason", changes, services, TransitionOption.PrivilegedEditEnabled);
+         Arrays.asList(Joe, Kay), "cancel reason", changes, atsApi, TransitionOption.PrivilegedEditEnabled);
 
       Assert.assertTrue(helper.isPrivilegedEditEnabled());
    }
@@ -82,7 +82,7 @@ public class TransitionHelperTest {
       Assert.assertFalse(helper.isOverrideTransitionValidityCheck());
 
       TransitionHelper helper = new TransitionHelper("test", Arrays.asList(workItem, workItem2), "Completed",
-         Arrays.asList(Joe, Kay), "cancel reason", changes, services, TransitionOption.OverrideTransitionValidityCheck);
+         Arrays.asList(Joe, Kay), "cancel reason", changes, atsApi, TransitionOption.OverrideTransitionValidityCheck);
 
       Assert.assertTrue(helper.isOverrideTransitionValidityCheck());
    }
@@ -92,7 +92,7 @@ public class TransitionHelperTest {
       Assert.assertFalse(helper.isOverrideAssigneeCheck());
 
       TransitionHelper helper = new TransitionHelper("test", Arrays.asList(workItem, workItem2), "Completed",
-         Arrays.asList(Joe, Kay), "cancel reason", changes, services, TransitionOption.OverrideAssigneeCheck);
+         Arrays.asList(Joe, Kay), "cancel reason", changes, atsApi, TransitionOption.OverrideAssigneeCheck);
 
       Assert.assertTrue(helper.isOverrideAssigneeCheck());
    }
@@ -120,7 +120,7 @@ public class TransitionHelperTest {
       Assert.assertTrue(reason.isTrue());
 
       TransitionHelper helper2 = new TransitionHelper("test", Arrays.asList(workItem, workItem2), "Completed",
-         Arrays.asList(Joe, Kay), null, changes, services, TransitionOption.OverrideAssigneeCheck);
+         Arrays.asList(Joe, Kay), null, changes, atsApi, TransitionOption.OverrideAssigneeCheck);
 
       reason = helper2.getCompleteOrCancellationReason();
       Assert.assertEquals("", reason.getText());

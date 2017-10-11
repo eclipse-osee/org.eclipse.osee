@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.health.HealthCheckResults;
@@ -40,14 +40,14 @@ public class AtsHealthCheckOperation {
       "SELECT distinct art.art_id FROM osee_artifact art, osee_txs txs, OSEE_ATTRIBUTE attr " //
          + "WHERE attr.gamma_id = txs.gamma_id AND txs.tx_current = 1 AND txs.branch_id = 570 and " //
          + "attr.ART_ID = art.ART_ID and attr.ATTR_TYPE_ID = 1152921504606847147 and attr.VALUE = 'Working'";
-   private final IAtsServices services;
+   private final AtsApi atsApi;
    private final JdbcService jdbcService;
    private final MailService mailService;
    boolean inTest = false;
    private List<IAtsHealthCheck> healthChecks;
 
-   public AtsHealthCheckOperation(IAtsServices services, JdbcService jdbcService, MailService mailService) {
-      this.services = services;
+   public AtsHealthCheckOperation(AtsApi atsApi, JdbcService jdbcService, MailService mailService) {
+      this.atsApi = atsApi;
       this.jdbcService = jdbcService;
       this.mailService = mailService;
    }
@@ -102,12 +102,12 @@ public class AtsHealthCheckOperation {
          for (Collection<Long> artIdList : artIdLists) {
 
             System.err.println(String.format("processing %s / %s", x++, numblocks));
-            Collection<ArtifactToken> allArtifacts = services.getArtifacts(artIdList);
+            Collection<ArtifactToken> allArtifacts = atsApi.getArtifacts(artIdList);
 
             // remove all deleted/purged artifacts first
             List<ArtifactId> artifacts = new ArrayList<>(allArtifacts.size());
             for (ArtifactId artifact : allArtifacts) {
-               if (!services.getStoreService().isDeleted(artifact)) {
+               if (!atsApi.getStoreService().isDeleted(artifact)) {
                   artifacts.add(artifact);
                }
             }
@@ -115,13 +115,13 @@ public class AtsHealthCheckOperation {
 
             for (ArtifactId artifact : artifacts) {
                for (IAtsHealthCheck check : checks) {
-                  if (services.getStoreService().isDeleted(artifact)) {
+                  if (atsApi.getStoreService().isDeleted(artifact)) {
                      continue;
                   }
-                  IAtsWorkItem workItem = services.getWorkItemFactory().getWorkItem((ArtifactToken) artifact);
+                  IAtsWorkItem workItem = atsApi.getWorkItemFactory().getWorkItem((ArtifactToken) artifact);
                   Date date = new Date();
                   try {
-                     check.check(artifact, workItem, vResults, services);
+                     check.check(artifact, workItem, vResults, atsApi);
                   } catch (Exception ex) {
                      vResults.log(artifact, check.getName(), "Error: Exception: " + Lib.exceptionToString(ex));
                   }
@@ -153,7 +153,7 @@ public class AtsHealthCheckOperation {
    private static class TestWorkflowTeamDefinition implements IAtsHealthCheck {
 
       @Override
-      public void check(ArtifactId artifact, IAtsWorkItem workItem, HealthCheckResults results, IAtsServices services) {
+      public void check(ArtifactId artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi) {
          if (workItem.isTeamWorkflow()) {
             if (workItem.getParentTeamWorkflow().getTeamDefinition() == null) {
                error(results, workItem, "Team workflow has no Team Definition (re-run conversion?)");
@@ -165,15 +165,15 @@ public class AtsHealthCheckOperation {
    private static class TestWorkflowVersions implements IAtsHealthCheck {
 
       @Override
-      public void check(ArtifactId artifact, IAtsWorkItem workItem, HealthCheckResults results, IAtsServices services) {
+      public void check(ArtifactId artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi) {
          if (workItem.isTeamWorkflow()) {
             IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
-            Collection<ArtifactToken> versions = services.getRelationResolver().getRelated(teamWf,
-               AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
+            Collection<ArtifactToken> versions =
+               atsApi.getRelationResolver().getRelated(teamWf, AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
             if (versions.size() > 1) {
                error(results, workItem, "Team workflow has " + versions.size() + " versions; should only be 0 or 1");
             } else {
-               IAtsVersion version = services.getVersionService().getTargetedVersion(teamWf);
+               IAtsVersion version = atsApi.getVersionService().getTargetedVersion(teamWf);
                if (version != null && teamWf.getTeamDefinition() != null && teamWf.getTeamDefinition().getTeamDefinitionHoldingVersions() != null) {
                   if (!teamWf.getTeamDefinition().getTeamDefinitionHoldingVersions().getVersions().contains(version)) {
                      error(results, workItem,

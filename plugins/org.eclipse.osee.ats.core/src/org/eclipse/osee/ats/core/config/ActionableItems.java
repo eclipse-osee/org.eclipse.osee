@@ -16,8 +16,8 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
-import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -56,10 +56,10 @@ public class ActionableItems {
       }
    }
 
-   public static Set<IAtsActionableItem> getActionableItems(Collection<String> actionableItemNames, IAtsServices services) {
+   public static Set<IAtsActionableItem> getActionableItems(Collection<String> actionableItemNames, AtsApi atsApi) {
       Set<IAtsActionableItem> ais = new HashSet<>();
       for (String actionableItemName : actionableItemNames) {
-         for (IAtsActionableItem ai : services.getQueryService().createQuery(AtsArtifactTypes.ActionableItem).getItems(
+         for (IAtsActionableItem ai : atsApi.getQueryService().createQuery(AtsArtifactTypes.ActionableItem).getItems(
             IAtsActionableItem.class)) {
             if (ai.getName().equals(actionableItemName)) {
                ais.add(ai);
@@ -82,17 +82,17 @@ public class ActionableItems {
       return "Action can not be written against " + configObject.getName() + " \"" + configObject + "\" (" + configObject.getId() + ").\n\nChoose another item.";
    }
 
-   public static IAtsActionableItem getTopActionableItem(IAtsServices services) {
-      ArtifactToken artifact = services.getArtifact(AtsArtifactToken.TopActionableItem.getId());
-      return services.getConfigItem(artifact);
+   public static IAtsActionableItem getTopActionableItem(AtsApi atsApi) {
+      ArtifactToken artifact = atsApi.getArtifact(AtsArtifactToken.TopActionableItem.getId());
+      return atsApi.getConfigItem(artifact);
    }
 
    public static List<IAtsActionableItem> getActionableItemsAll(IAtsQueryService queryService) {
       return getActionableItems(Active.Both, queryService);
    }
 
-   public static List<IAtsActionableItem> getTopLevelActionableItems(Active active, IAtsServices services) {
-      IAtsActionableItem topAi = getTopActionableItem(services);
+   public static List<IAtsActionableItem> getTopLevelActionableItems(Active active, AtsApi atsApi) {
+      IAtsActionableItem topAi = getTopActionableItem(atsApi);
       if (topAi == null) {
          return java.util.Collections.emptyList();
       }

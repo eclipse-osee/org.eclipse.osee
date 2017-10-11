@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.core.workflow.transition;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -27,12 +27,12 @@ import org.eclipse.osee.ats.core.users.AtsCoreUsers;
  */
 public abstract class TransitionHelperAdapter implements ITransitionHelper {
 
-   private final IAtsServices services;
+   private final AtsApi atsApi;
    private IAtsUser transitionUser;
    private boolean workflowsReloaded = false;
 
-   public TransitionHelperAdapter(IAtsServices services) {
-      this.services = services;
+   public TransitionHelperAdapter(AtsApi atsApi) {
+      this.atsApi = atsApi;
    }
 
    @Override
@@ -62,12 +62,12 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
 
    @Override
    public boolean isWorkingBranchInWork(IAtsTeamWorkflow teamWf) {
-      return services.getBranchService().isWorkingBranchInWork(teamWf);
+      return atsApi.getBranchService().isWorkingBranchInWork(teamWf);
    }
 
    @Override
    public boolean isBranchInCommit(IAtsTeamWorkflow teamWf) {
-      return services.getBranchService().isBranchInCommit(teamWf);
+      return atsApi.getBranchService().isBranchInCommit(teamWf);
    }
 
    @Override
@@ -90,7 +90,7 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
    public IAtsUser getTransitionUser() {
       IAtsUser user = transitionUser;
       if (user == null) {
-         user = services.getUserService().getCurrentUser();
+         user = atsApi.getUserService().getCurrentUser();
       }
       return user;
    }
@@ -109,16 +109,16 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
          // Only reload work items that have been changed in the database and not updated locally
          List<IAtsWorkItem> workItemsToReload = new LinkedList<>();
          for (IAtsWorkItem workItem : getWorkItems()) {
-            boolean changed = services.getStoreService().isChangedInDb(workItem);
+            boolean changed = atsApi.getStoreService().isChangedInDb(workItem);
             if (changed) {
                workItemsToReload.add(workItem);
             }
          }
          if (!workItemsToReload.isEmpty()) {
-            services.getStoreService().reload(workItemsToReload);
+            atsApi.getStoreService().reload(workItemsToReload);
          }
          for (IAtsWorkItem workItem : getWorkItems()) {
-            if (services.getStoreService().isDeleted(workItem)) {
+            if (atsApi.getStoreService().isDeleted(workItem)) {
                results.addResult(workItem, TransitionResult.WORKITEM_DELETED);
             }
          }

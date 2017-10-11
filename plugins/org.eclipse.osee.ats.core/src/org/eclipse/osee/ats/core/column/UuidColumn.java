@@ -11,15 +11,15 @@
 package org.eclipse.osee.ats.core.column;
 
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 
 /**
  * @author Donald G. Dunne
  */
 public class UuidColumn extends AbstractServicesColumn {
 
-   public UuidColumn(IAtsServices services) {
-      super(services);
+   public UuidColumn(AtsApi atsApi) {
+      super(atsApi);
    }
 
    @Override

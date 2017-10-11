@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.core.client.branch.internal;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
  */
 public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
-   public AtsBranchServiceImpl(IAtsServices atsServices, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
+   public AtsBranchServiceImpl(AtsApi atsServices, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
       super(atsServices, teamWorkflowProvidersLazy);
    }
 
@@ -147,12 +147,12 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
          return new Result(false,
             String.format("Failure setting new branch name [%s] for branch [%s] ", newBranchName, workingBranch));
       }
-      IAtsChangeSet changes = services.createChangeSet(log);
+      IAtsChangeSet changes = atsApi.createChangeSet(log);
       fromTeamWf.getLog().addLog(LogType.Note, fromTeamWf.getStateMgr().getCurrentStateName(), log,
-         services.getUserService().getCurrentUserId());
+         atsApi.getUserService().getCurrentUserId());
       changes.add(fromTeamWf);
       toTeamWf.getLog().addLog(LogType.Note, toTeamWf.getStateMgr().getCurrentStateName(), log,
-         services.getUserService().getCurrentUserId());
+         atsApi.getUserService().getCurrentUserId());
       changes.add(toTeamWf);
       changes.execute();
       return Result.TrueResult;

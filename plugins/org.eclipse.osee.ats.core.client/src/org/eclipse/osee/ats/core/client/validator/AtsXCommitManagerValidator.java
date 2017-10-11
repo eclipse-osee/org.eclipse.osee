@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.core.client.validator;
 
 import java.util.logging.Level;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IValueProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
@@ -36,7 +36,7 @@ public class AtsXCommitManagerValidator extends AtsXWidgetValidator {
       "All branches must be configured for commit.";
 
    @Override
-   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, IAtsServices atsServices) {
+   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, AtsApi atsServices) {
       WidgetResult result = WidgetResult.Valid;
       if ("XCommitManager".equals(widgetDef.getXWidgetName())) {
          try {

@@ -14,7 +14,7 @@ import static org.eclipse.osee.ats.core.column.ColorTeamColumnTest.workPackageAr
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.country.IAtsCountry;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -47,7 +47,7 @@ public class WorkPackageUtilityTest {
    @Mock private IAtsTeamWorkflow teamWf;
    @Mock private IAtsTask task;
 
-   @Mock private IAtsServices services;
+   @Mock private AtsApi atsApi;
    @Mock private IAttributeResolver attributeResolver;
    @Mock private IRelationResolver relationResolver;
 
@@ -71,9 +71,9 @@ public class WorkPackageUtilityTest {
       when(task.getParentTeamWorkflow()).thenReturn(teamWf);
       when(task.isTeamWorkflow()).thenReturn(false);
 
-      when(services.getAttributeResolver()).thenReturn(attributeResolver);
-      when(services.getRelationResolver()).thenReturn(relationResolver);
-      when(services.getConfigItemFactory()).thenReturn(factory);
+      when(atsApi.getAttributeResolver()).thenReturn(attributeResolver);
+      when(atsApi.getRelationResolver()).thenReturn(relationResolver);
+      when(atsApi.getConfigItemFactory()).thenReturn(factory);
 
       util = new WorkPackageUtility();
    }
@@ -82,20 +82,20 @@ public class WorkPackageUtilityTest {
    public void testGetWorkPackageArtifact() throws Exception {
       when(attributeResolver.getSoleAttributeValue(teamWf, AtsAttributeTypes.WorkPackageReference,
          ArtifactId.SENTINEL)).thenReturn(ArtifactId.SENTINEL);
-      Pair<ArtifactId, Boolean> result = util.getWorkPackageArtifact(services, teamWf);
+      Pair<ArtifactId, Boolean> result = util.getWorkPackageArtifact(atsApi, teamWf);
       assertResult(result, null, false);
 
-      result = util.getWorkPackageArtifact(services, teamWf);
+      result = util.getWorkPackageArtifact(atsApi, teamWf);
       assertResult(result, null, false);
 
       when(attributeResolver.getSoleAttributeValue(teamWf, AtsAttributeTypes.WorkPackageReference,
          ArtifactId.SENTINEL)).thenReturn(workPackageArt);
-      result = util.getWorkPackageArtifact(services, teamWf);
+      result = util.getWorkPackageArtifact(atsApi, teamWf);
       assertResult(result, workPackageArt, false);
 
       when(attributeResolver.getSoleAttributeValue(task, AtsAttributeTypes.WorkPackageReference,
          ArtifactId.SENTINEL)).thenReturn(ArtifactId.SENTINEL);
-      result = util.getWorkPackageArtifact(services, task);
+      result = util.getWorkPackageArtifact(atsApi, task);
       assertResult(result, workPackageArt, true);
    }
 
@@ -103,7 +103,7 @@ public class WorkPackageUtilityTest {
    public void testGetInsertionActivity() throws Exception {
       when(attributeResolver.getSoleAttributeValue(teamWf, AtsAttributeTypes.WorkPackageReference,
          ArtifactId.SENTINEL)).thenReturn(ArtifactId.SENTINEL);
-      Pair<IAtsInsertionActivity, Boolean> result = util.getInsertionActivity(services, teamWf);
+      Pair<IAtsInsertionActivity, Boolean> result = util.getInsertionActivity(atsApi, teamWf);
       assertResult(result, null, false);
 
       when(attributeResolver.getSoleAttributeValue(teamWf, AtsAttributeTypes.WorkPackageReference,
@@ -111,18 +111,18 @@ public class WorkPackageUtilityTest {
 
       when(relationResolver.getRelatedOrNull(workPackageArt,
          AtsRelationTypes.InsertionActivityToWorkPackage_InsertionActivity)).thenReturn(null);
-      result = util.getInsertionActivity(services, teamWf);
+      result = util.getInsertionActivity(atsApi, teamWf);
       assertResult(result, null, false);
 
       when(relationResolver.getRelatedOrNull(workPackageArt,
          AtsRelationTypes.InsertionActivityToWorkPackage_InsertionActivity)).thenReturn(activityArt);
       when(factory.getInsertionActivity(activityArt)).thenReturn(activity);
-      result = util.getInsertionActivity(services, teamWf);
+      result = util.getInsertionActivity(atsApi, teamWf);
       assertResult(result, activity, false);
 
       when(attributeResolver.getSoleAttributeValue(task, AtsAttributeTypes.WorkPackageReference,
          ArtifactId.SENTINEL)).thenReturn(ArtifactId.SENTINEL);
-      result = util.getInsertionActivity(services, task);
+      result = util.getInsertionActivity(atsApi, task);
       assertResult(result, activity, true);
    }
 
@@ -134,18 +134,18 @@ public class WorkPackageUtilityTest {
          AtsRelationTypes.InsertionActivityToWorkPackage_InsertionActivity)).thenReturn(activityArt);
       when(factory.getInsertionActivity(activityArt)).thenReturn(null);
 
-      Pair<IAtsInsertion, Boolean> result = util.getInsertion(services, teamWf);
+      Pair<IAtsInsertion, Boolean> result = util.getInsertion(atsApi, teamWf);
       assertResult(result, null, false);
 
       when(factory.getInsertionActivity(activityArt)).thenReturn(activity);
       when(relationResolver.getRelatedOrNull(activity, AtsRelationTypes.InsertionToInsertionActivity_Insertion,
          IAtsInsertion.class)).thenReturn(insertion);
-      result = util.getInsertion(services, teamWf);
+      result = util.getInsertion(atsApi, teamWf);
       assertResult(result, insertion, false);
 
       when(attributeResolver.getSoleAttributeValue(task, AtsAttributeTypes.WorkPackageReference,
          ArtifactId.SENTINEL)).thenReturn(ArtifactId.SENTINEL);
-      result = util.getInsertion(services, task);
+      result = util.getInsertion(atsApi, task);
       assertResult(result, insertion, true);
    }
 
@@ -159,17 +159,17 @@ public class WorkPackageUtilityTest {
       when(relationResolver.getRelatedOrNull(activity, AtsRelationTypes.InsertionToInsertionActivity_Insertion,
          IAtsInsertion.class)).thenReturn(insertion);
 
-      Pair<IAtsProgram, Boolean> result = util.getProgram(services, teamWf);
+      Pair<IAtsProgram, Boolean> result = util.getProgram(atsApi, teamWf);
       assertResult(result, null, false);
 
       when(relationResolver.getRelatedOrNull(insertion, AtsRelationTypes.ProgramToInsertion_Program,
          IAtsProgram.class)).thenReturn(program);
-      result = util.getProgram(services, teamWf);
+      result = util.getProgram(atsApi, teamWf);
       assertResult(result, program, false);
 
       when(attributeResolver.getSoleAttributeValue(task, AtsAttributeTypes.WorkPackageReference,
          ArtifactId.SENTINEL)).thenReturn(ArtifactId.SENTINEL);
-      result = util.getProgram(services, task);
+      result = util.getProgram(atsApi, task);
       assertResult(result, program, true);
    }
 
@@ -179,7 +179,7 @@ public class WorkPackageUtilityTest {
          ArtifactId.SENTINEL)).thenReturn(workPackageArt);
       when(relationResolver.getRelatedOrNull(workPackageArt,
          AtsRelationTypes.InsertionActivityToWorkPackage_InsertionActivity)).thenReturn(activityArt);
-      when(services.getArtifact(37L)).thenReturn(workPackageArt);
+      when(atsApi.getArtifact(37L)).thenReturn(workPackageArt);
       when(factory.getInsertionActivity(activityArt)).thenReturn(null);
       when(factory.getInsertionActivity(activityArt)).thenReturn(activity);
       when(relationResolver.getRelatedOrNull(activity, AtsRelationTypes.InsertionToInsertionActivity_Insertion,
@@ -187,17 +187,17 @@ public class WorkPackageUtilityTest {
       when(relationResolver.getRelatedOrNull(insertion, AtsRelationTypes.ProgramToInsertion_Program,
          IAtsProgram.class)).thenReturn(program);
 
-      Pair<IAtsCountry, Boolean> result = util.getCountry(services, teamWf);
+      Pair<IAtsCountry, Boolean> result = util.getCountry(atsApi, teamWf);
       assertResult(result, null, false);
 
       when(relationResolver.getRelatedOrNull(program, AtsRelationTypes.CountryToProgram_Country,
          IAtsCountry.class)).thenReturn(country);
-      result = util.getCountry(services, teamWf);
+      result = util.getCountry(atsApi, teamWf);
       assertResult(result, country, false);
 
       when(attributeResolver.getSoleAttributeValue(task, AtsAttributeTypes.WorkPackageReference,
          ArtifactId.SENTINEL)).thenReturn(ArtifactId.SENTINEL);
-      result = util.getCountry(services, task);
+      result = util.getCountry(atsApi, task);
       assertResult(result, country, true);
    }
 

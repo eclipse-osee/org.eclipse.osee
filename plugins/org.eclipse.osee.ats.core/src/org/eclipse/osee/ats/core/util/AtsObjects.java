@@ -16,7 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
@@ -108,14 +108,14 @@ public class AtsObjects {
    /**
     * Return collection of TeamWfs. If Task or Review, return nothing. If Action, return children TeamWfs.
     */
-   public static Collection<ArtifactId> getTeamWfArtifacts(Collection<?> objects, IAtsServices services) {
+   public static Collection<ArtifactId> getTeamWfArtifacts(Collection<?> objects, AtsApi atsApi) {
       List<ArtifactId> artifacts = new LinkedList<>();
       for (Object object : objects) {
          if (object instanceof ArtifactToken) {
             ArtifactToken artId = (ArtifactToken) object;
-            if (services.getStoreService().isOfType(artId, AtsArtifactTypes.Action)) {
+            if (atsApi.getStoreService().isOfType(artId, AtsArtifactTypes.Action)) {
                artifacts.addAll(AtsObjects.getArtifacts(
-                  services.getWorkItemService().getTeams(services.getWorkItemFactory().getAction(artId))));
+                  atsApi.getWorkItemService().getTeams(atsApi.getWorkItemFactory().getAction(artId))));
             }
          }
          if (object instanceof IAtsTeamWorkflow) {

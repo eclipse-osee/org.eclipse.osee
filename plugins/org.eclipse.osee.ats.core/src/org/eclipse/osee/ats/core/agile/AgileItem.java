@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.agile;
 
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.agile.IAgileItem;
 import org.eclipse.osee.ats.core.workflow.WorkItem;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -21,8 +21,8 @@ import org.eclipse.osee.logger.Log;
  */
 public class AgileItem extends WorkItem implements IAgileItem {
 
-   public AgileItem(Log logger, IAtsServices services, ArtifactToken artifact) {
-      super(logger, services, artifact);
+   public AgileItem(Log logger, AtsApi atsApi, ArtifactToken artifact) {
+      super(logger, atsApi, artifact);
    }
 
    @Override

@@ -14,7 +14,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
@@ -58,7 +58,7 @@ public class StateManagerUtilityTest {
    @Mock IAtsWorkStateFactory workStateFactory;
    @Mock IAtsUserService userService;
    @Mock IAtsLogFactory logFactory;
-   @Mock IAtsServices services;
+   @Mock AtsApi atsApi;
    // @formatter:on
    private static final IAtsUser Joe = new AtsUser(DemoUsers.Joe_Smith);
    private static final IAtsUser Kay = new AtsUser(DemoUsers.Kay_Jones);
@@ -83,7 +83,7 @@ public class StateManagerUtilityTest {
 
    @Test
    public void testInitializeStateMachine() {
-      StateManager stateMgr = new StateManager(workItem, logFactory, services);
+      StateManager stateMgr = new StateManager(workItem, logFactory, atsApi);
       TestState state = new TestState("Analyze", StateType.Working);
       StateManagerUtility.initializeStateMachine(stateMgr, state, Arrays.asList(Joe, Kay), Joe, changes);
       Assert.assertEquals("Analyze", stateMgr.getCurrentStateName());

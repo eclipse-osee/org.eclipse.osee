@@ -23,7 +23,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 /**
- * Test Case for {@link AtsCoreServiceImpl}
+ * Test Case for {@link AtsApiImpl}
  *
  * @author Donald G. Dunne
  */
@@ -43,16 +43,16 @@ public class AtsCoreServiceImplTest {
    public void testGetAtsId() {
       ArtifactToken artifact = ArtifactToken.valueOf(0, null, COMMON);
       when(attrResolver.getSoleAttributeValue(artifact, AtsAttributeTypes.AtsId, null)).thenReturn(null);
-      String result = AtsCoreServiceImpl.getAtsId(attrResolver, artifact);
+      String result = AtsApiImpl.getAtsId(attrResolver, artifact);
       assertEquals(result, artifact.getGuid());
 
       when(attrResolver.getSoleAttributeValue(atsObject, AtsAttributeTypes.AtsId, null)).thenReturn(null);
       when(atsObject.getStoreObject()).thenReturn(artifact);
-      result = AtsCoreServiceImpl.getAtsId(attrResolver, atsObject);
+      result = AtsApiImpl.getAtsId(attrResolver, atsObject);
       assertEquals(result, artifact.getGuid());
 
       when(attrResolver.getSoleAttributeValue(artifact, AtsAttributeTypes.AtsId, null)).thenReturn("ATS23");
-      result = AtsCoreServiceImpl.getAtsId(attrResolver, artifact);
+      result = AtsApiImpl.getAtsId(attrResolver, artifact);
       assertEquals(result, "ATS23");
 
       when(attrResolver.getSoleAttributeValue(artifact, AtsAttributeTypes.AtsId, null)).thenReturn("ATS23");

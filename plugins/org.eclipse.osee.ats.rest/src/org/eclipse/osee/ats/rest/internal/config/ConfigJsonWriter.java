@@ -19,7 +19,7 @@ import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
@@ -283,10 +283,10 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
       writer.writeEndObject();
    }
 
-   public static Long getUuid(IAtsObject atsObject, IAtsServices services) {
+   public static Long getUuid(IAtsObject atsObject, AtsApi atsApi) {
       long uuid = atsObject.getId();
       if (uuid <= 0L) {
-         uuid = ((ArtifactReadable) services.getArtifact(atsObject)).getId();
+         uuid = ((ArtifactReadable) atsApi.getArtifact(atsObject)).getId();
       }
       return uuid;
    }

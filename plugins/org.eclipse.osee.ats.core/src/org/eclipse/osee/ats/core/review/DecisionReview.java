@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.review;
 
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.logger.Log;
@@ -20,8 +20,8 @@ import org.eclipse.osee.logger.Log;
  */
 public class DecisionReview extends AbstractReview implements IAtsDecisionReview {
 
-   public DecisionReview(Log logger, IAtsServices services, ArtifactToken artifact) {
-      super(logger, services, artifact);
+   public DecisionReview(Log logger, AtsApi atsApi, ArtifactToken artifact) {
+      super(logger, atsApi, artifact);
    }
 
 }

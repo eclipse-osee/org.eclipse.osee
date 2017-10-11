@@ -19,7 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
@@ -44,13 +44,13 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
    protected final List<AtsAttributeQuery> andAttr;
    protected List<IArtifactType> artifactTypes;
    protected ArtifactId artifactId;
-   protected final IAtsServices services;
+   protected final AtsApi atsApi;
    protected Collection<Long> aiUuids;
    protected List<ArtifactId> onlyIds = null;
    protected final List<IAtsQueryFilter> queryFilters;
 
-   public AbstractAtsConfigQueryImpl(IAtsServices services) {
-      this.services = services;
+   public AbstractAtsConfigQueryImpl(AtsApi atsApi) {
+      this.atsApi = atsApi;
       andAttr = new ArrayList<>();
       aiUuids = new ArrayList<>();
       queryFilters = new ArrayList<>();
@@ -70,7 +70,7 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
    public <T extends IAtsConfigObject> Collection<T> getConfigObjects() {
       Set<T> allResults = new HashSet<>();
       for (ArtifactToken artifact : getArtifacts()) {
-         IAtsConfigObject configObj = services.getConfigItemFactory().getConfigObject(artifact);
+         IAtsConfigObject configObj = atsApi.getConfigItemFactory().getConfigObject(artifact);
          if (configObj == null) {
             throw new OseeArgumentException("Non-AtsConfigObject Artifact Returned %s", artifact.toStringWithId());
          }
@@ -127,7 +127,7 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
          return true;
       }
       for (IArtifactType artType : artTypes) {
-         if (services.getArtifactResolver().isOfType(artifact, artType)) {
+         if (atsApi.getArtifactResolver().isOfType(artifact, artType)) {
             return true;
          }
       }

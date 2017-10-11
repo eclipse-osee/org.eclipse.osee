@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.core.column;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.country.IAtsCountry;
 import org.eclipse.osee.ats.core.config.WorkPackageUtility;
@@ -32,7 +32,7 @@ public class CountryColumnTest extends CountryColumn {
 
    // @formatter:off
    @Mock private WorkPackageUtility util;
-   @Mock private IAtsServices services;
+   @Mock private AtsApi atsApi;
    @Mock private IAtsWorkItem workItem;
    @Mock private IAtsObject object;
    @Mock private IAtsCountry country;
@@ -45,21 +45,21 @@ public class CountryColumnTest extends CountryColumn {
 
    @Test
    public void test() {
-      String str = CountryColumn.getCountryStr(object, services, util);
+      String str = CountryColumn.getCountryStr(object, atsApi, util);
       assertEquals(str, "");
 
-      when(util.getCountry(services, workItem)).thenReturn(new Pair<IAtsCountry, Boolean>(null, false));
+      when(util.getCountry(atsApi, workItem)).thenReturn(new Pair<IAtsCountry, Boolean>(null, false));
 
-      str = CountryColumn.getCountryStr(workItem, services, util);
+      str = CountryColumn.getCountryStr(workItem, atsApi, util);
       assertEquals(str, "");
 
-      when(util.getCountry(services, workItem)).thenReturn(new Pair<IAtsCountry, Boolean>(country, false));
+      when(util.getCountry(atsApi, workItem)).thenReturn(new Pair<IAtsCountry, Boolean>(country, false));
       when(country.getName()).thenReturn("Country");
-      str = CountryColumn.getCountryStr(workItem, services, util);
+      str = CountryColumn.getCountryStr(workItem, atsApi, util);
       assertEquals(str, "Country");
 
-      when(util.getCountry(services, workItem)).thenReturn(new Pair<IAtsCountry, Boolean>(country, true));
-      str = CountryColumn.getCountryStr(workItem, services, util);
+      when(util.getCountry(atsApi, workItem)).thenReturn(new Pair<IAtsCountry, Boolean>(country, true));
+      str = CountryColumn.getCountryStr(workItem, atsApi, util);
       assertEquals(str, "Country (I)");
 
    }

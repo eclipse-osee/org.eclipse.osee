@@ -14,7 +14,7 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTokens.Everyone;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
@@ -39,7 +39,7 @@ public class ColorTeamColumnTest {
    // @formatter:off
    @Mock private IAtsTask childWorkItem;
    @Mock private IAtsPeerToPeerReview peerReview;
-   @Mock private IAtsServices atsServices;
+   @Mock private AtsApi atsServices;
    @Mock private IAttributeResolver attributeResolver;
    // @formatter:on
 

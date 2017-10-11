@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workflow;
 
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
@@ -26,11 +26,11 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
  */
 public class WorkItemFactory extends AbstractWorkItemFactory {
 
-   private final IAtsServices services;
+   private final AtsApi atsApi;
 
-   public WorkItemFactory(IAtsServices services) {
-      super(services);
-      this.services = services;
+   public WorkItemFactory(AtsApi atsApi) {
+      super(atsApi);
+      this.atsApi = atsApi;
    }
 
    @Override
@@ -38,8 +38,8 @@ public class WorkItemFactory extends AbstractWorkItemFactory {
       IAtsTeamWorkflow team = null;
       if (artifact instanceof IAtsTeamWorkflow) {
          team = (IAtsTeamWorkflow) artifact;
-      } else if (services.getStoreService().isOfType(artifact, AtsArtifactTypes.TeamWorkflow)) {
-         team = new TeamWorkflow(services.getLogger(), services, artifact);
+      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.TeamWorkflow)) {
+         team = new TeamWorkflow(atsApi.getLogger(), atsApi, artifact);
       }
       return team;
    }
@@ -49,8 +49,8 @@ public class WorkItemFactory extends AbstractWorkItemFactory {
       IAtsGoal goal = null;
       if (artifact instanceof IAtsGoal) {
          goal = (IAtsGoal) artifact;
-      } else if (services.getStoreService().isOfType(artifact, AtsArtifactTypes.Goal)) {
-         goal = new Goal(services.getLogger(), services, artifact);
+      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.Goal)) {
+         goal = new Goal(atsApi.getLogger(), atsApi, artifact);
       }
       return goal;
    }
@@ -60,8 +60,8 @@ public class WorkItemFactory extends AbstractWorkItemFactory {
       IAtsTask task = null;
       if (artifact instanceof IAtsTask) {
          task = (IAtsTask) artifact;
-      } else if (services.getStoreService().isOfType(artifact, AtsArtifactTypes.Task)) {
-         task = new Task(services.getLogger(), services, artifact);
+      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.Task)) {
+         task = new Task(atsApi.getLogger(), atsApi, artifact);
       }
       return task;
    }
@@ -71,10 +71,10 @@ public class WorkItemFactory extends AbstractWorkItemFactory {
       IAtsAbstractReview review = null;
       if (artifact instanceof IAtsAbstractReview) {
          review = (IAtsAbstractReview) artifact;
-      } else if (services.getStoreService().isOfType(artifact, AtsArtifactTypes.PeerToPeerReview)) {
-         review = new PeerToPeerReview(services.getLogger(), services, artifact);
+      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.PeerToPeerReview)) {
+         review = new PeerToPeerReview(atsApi.getLogger(), atsApi, artifact);
       } else {
-         review = new DecisionReview(services.getLogger(), services, artifact);
+         review = new DecisionReview(atsApi.getLogger(), atsApi, artifact);
       }
       return review;
    }
@@ -84,8 +84,8 @@ public class WorkItemFactory extends AbstractWorkItemFactory {
       IAtsAction action = null;
       if (artifact instanceof IAtsAction) {
          action = (IAtsAction) artifact;
-      } else if (services.getStoreService().isOfType(artifact, AtsArtifactTypes.Action)) {
-         action = new Action(services, artifact);
+      } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.Action)) {
+         action = new Action(atsApi, artifact);
       }
       return action;
    }

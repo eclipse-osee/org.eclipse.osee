@@ -14,7 +14,7 @@ package org.eclipse.osee.ats.core.workflow.transition;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -40,11 +40,11 @@ public class TeamWorkFlowManager {
 
    private final IAtsTeamWorkflow teamWf;
    private final TransitionOption[] transitionOptions;
-   private final IAtsServices services;
+   private final AtsApi atsApi;
 
-   public TeamWorkFlowManager(IAtsTeamWorkflow teamWf, IAtsServices services, TransitionOption... transitionOptions) {
+   public TeamWorkFlowManager(IAtsTeamWorkflow teamWf, AtsApi atsApi, TransitionOption... transitionOptions) {
       this.teamWf = teamWf;
-      this.services = services;
+      this.atsApi = atsApi;
       this.transitionOptions = transitionOptions;
    }
 
@@ -110,7 +110,7 @@ public class TeamWorkFlowManager {
 
       if (teamWf.getStateMgr().isInState(TeamState.Implement)) {
          Result result =
-            transitionToState(popup, teamWf, TeamState.Completed, transitionToAssignees, changes, services);
+            transitionToState(popup, teamWf, TeamState.Completed, transitionToAssignees, changes, atsApi);
          if (result.isFalse()) {
             return result;
          }
@@ -124,7 +124,7 @@ public class TeamWorkFlowManager {
       if (result.isFalse()) {
          return result;
       }
-      result = transitionToState(popup, teamWf, TeamState.Implement, transitionToAssignees, changes, services);
+      result = transitionToState(popup, teamWf, TeamState.Implement, transitionToAssignees, changes, atsApi);
       if (result.isFalse()) {
          return result;
       }
@@ -136,7 +136,7 @@ public class TeamWorkFlowManager {
       if (result.isFalse()) {
          return result;
       }
-      result = transitionToState(popup, teamWf, TeamState.Authorize, transitionToAssignees, changes, services);
+      result = transitionToState(popup, teamWf, TeamState.Authorize, transitionToAssignees, changes, atsApi);
       if (result.isFalse()) {
          return result;
       }
@@ -148,16 +148,16 @@ public class TeamWorkFlowManager {
       if (result.isFalse()) {
          return result;
       }
-      result = transitionToState(popup, teamWf, TeamState.Analyze, transitionToAssignees, changes, services);
+      result = transitionToState(popup, teamWf, TeamState.Analyze, transitionToAssignees, changes, atsApi);
       if (result.isFalse()) {
          return result;
       }
       return Result.TrueResult;
    }
 
-   private Result transitionToState(boolean popup, IAtsTeamWorkflow teamWf, IStateToken toState, Collection<IAtsUser> transitionToAssignees, IAtsChangeSet changes, IAtsServices services) {
+   private Result transitionToState(boolean popup, IAtsTeamWorkflow teamWf, IStateToken toState, Collection<IAtsUser> transitionToAssignees, IAtsChangeSet changes, AtsApi atsApi) {
       TransitionHelper helper = new TransitionHelper("Transition to " + toState.getName(), Arrays.asList(teamWf),
-         toState.getName(), transitionToAssignees, null, changes, services, transitionOptions);
+         toState.getName(), transitionToAssignees, null, changes, atsApi, transitionOptions);
       IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
       TransitionResults results = transitionMgr.handleAll();
       if (results.isEmpty()) {

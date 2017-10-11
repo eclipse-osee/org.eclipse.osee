@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.core.util.AbstractAtsBranchService;
@@ -49,7 +49,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    private final HashCollection<ArtifactId, TransactionRecord> commitArtifactIdMap =
       new HashCollection<>(true, HashSet.class);
 
-   public AtsBranchServiceImpl(IAtsServices atsServices, OrcsApi orcsApi, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
+   public AtsBranchServiceImpl(AtsApi atsServices, OrcsApi orcsApi, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
       super(atsServices, teamWorkflowProvidersLazy);
       this.orcsApi = orcsApi;
       txQuery = orcsApi.getQueryFactory().transactionQuery();
@@ -198,7 +198,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    public CompareResults getChangeData(BranchId branch) {
       TransactionQuery transactionQuery2 = orcsApi.getQueryFactory().transactionQuery();
       TransactionQuery transactionQuery3 = orcsApi.getQueryFactory().transactionQuery();
-      BranchId parentBranch = services.getBranchService().getParentBranch(branch);
+      BranchId parentBranch = atsApi.getBranchService().getParentBranch(branch);
       TransactionReadable startTx = transactionQuery2.andIsHead(branch).getResults().getExactlyOne();
       TransactionReadable endTx = transactionQuery3.andIsHead(parentBranch).getResults().getExactlyOne();
       CompareResults results = orcsApi.getTransactionFactory().compareTxs(startTx, endTx);

@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.core.validator;
 
 import java.util.Arrays;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IValueProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
@@ -31,7 +31,7 @@ public class AtsXComboBooleanValidator extends AtsXWidgetValidator {
    }
 
    @Override
-   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, IAtsServices atsServices) {
+   public WidgetResult validateTransition(IAtsWorkItem workItem, IValueProvider provider, IAtsWidgetDefinition widgetDef, IAtsStateDefinition fromStateDef, IAtsStateDefinition toStateDef, AtsApi atsServices) {
       WidgetResult result = WidgetResult.Valid;
       if ("XComboBooleanDam".equals(widgetDef.getXWidgetName())) {
          result = validateWidgetIsRequired(provider, widgetDef, fromStateDef, fromStateDef);

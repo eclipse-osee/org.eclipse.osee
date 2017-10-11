@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -52,18 +52,18 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class AtsReviewServiceImpl implements IAtsReviewService {
 
-   private final IAtsServices services;
+   private final AtsApi atsApi;
    private final static String VALIDATE_REVIEW_TITLE = "Is the resolution of this Action valid?";
 
-   public AtsReviewServiceImpl(IAtsServices services) {
-      this.services = services;
+   public AtsReviewServiceImpl(AtsApi atsApi) {
+      this.atsApi = atsApi;
    }
 
    @Override
    public boolean isValidationReviewRequired(IAtsWorkItem workItem) {
       boolean required = false;
       if (workItem.isTeamWorkflow()) {
-         required = services.getAttributeResolver().getSoleAttributeValue(workItem,
+         required = atsApi.getAttributeResolver().getSoleAttributeValue(workItem,
             AtsAttributeTypes.ValidationRequired, false);
       }
       return required;
@@ -88,13 +88,13 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
 
          IAtsDecisionReview decRev = createNewDecisionReview(teamWf,
             isValidateReviewBlocking(teamWf.getStateDefinition()) ? ReviewBlockType.Transition : ReviewBlockType.None,
-            true, new Date(), services.getUserService().getCurrentUser(), changes);
+            true, new Date(), atsApi.getUserService().getCurrentUser(), changes);
          changes.setName(decRev, VALIDATE_REVIEW_TITLE);
          changes.setSoleAttributeValue(decRev, AtsAttributeTypes.DecisionReviewOptions,
             "No;Followup;" + getValidateReviewFollowupUsersStr(teamWf) + "\n" + "Yes;Completed;");
 
          TransitionHelper helper = new TransitionHelper("Transition to Decision", Arrays.asList(decRev),
-            DecisionReviewState.Decision.getName(), Arrays.asList(teamWf.getCreatedBy()), null, changes, services,
+            DecisionReviewState.Decision.getName(), Arrays.asList(teamWf.getCreatedBy()), null, changes, atsApi,
             TransitionOption.None);
          IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
          TransitionResults results = transitionMgr.handleAll();
@@ -114,7 +114,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    public String getValidateReviewFollowupUsersStr(IAtsTeamWorkflow teamWf) {
       try {
          Collection<IAtsUser> users = getValidateReviewFollowupUsers(teamWf);
-         return services.getWorkStateFactory().getStorageString(users);
+         return atsApi.getWorkStateFactory().getStorageString(users);
       } catch (Exception ex) {
          OseeLog.log(AtsReviewServiceImpl.class, Level.SEVERE, ex);
          return ex.getLocalizedMessage();
@@ -146,7 +146,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       // transition to decision
       TransitionHelper helper =
          new TransitionHelper("Transition to Decision", Arrays.asList(decRev), DecisionReviewState.Decision.getName(),
-            assignees, null, changes, services, TransitionOption.OverrideAssigneeCheck);
+            assignees, null, changes, atsApi, TransitionOption.OverrideAssigneeCheck);
       IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
       TransitionResults results = transitionMgr.handleAll();
 
@@ -172,13 +172,13 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    @Override
    public IAtsDecisionReview createNewDecisionReview(IAtsTeamWorkflow teamWf, ReviewBlockType reviewBlockType, String title, String relatedToState, String description, Collection<IAtsDecisionReviewOption> options, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) {
       ArtifactToken decRevArt = changes.createArtifact(AtsArtifactTypes.DecisionReview, title);
-      IAtsDecisionReview decRev = (IAtsDecisionReview) services.getWorkItemFactory().getReview(decRevArt);
+      IAtsDecisionReview decRev = (IAtsDecisionReview) atsApi.getWorkItemFactory().getReview(decRevArt);
 
       changes.relate(teamWf, AtsRelationTypes.TeamWorkflowToReview_Review, decRev);
-      services.getActionFactory().setAtsId(decRev, decRev.getParentTeamWorkflow().getTeamDefinition(), changes);
+      atsApi.getActionFactory().setAtsId(decRev, decRev.getParentTeamWorkflow().getTeamDefinition(), changes);
 
       // Initialize state machine
-      services.getActionFactory().initializeNewStateMachine(decRev, assignees, createdDate, createdBy, changes);
+      atsApi.getActionFactory().initializeNewStateMachine(decRev, assignees, createdDate, createdBy, changes);
 
       if (Strings.isValid(relatedToState)) {
          changes.setSoleAttributeValue(decRev, AtsAttributeTypes.RelatedToState, relatedToState);
@@ -225,42 +225,42 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    public List<IAtsDecisionReviewOption> getDefaultDecisionReviewOptions() {
       List<IAtsDecisionReviewOption> options = new ArrayList<>();
       options.add(new SimpleDecisionReviewOption("Yes", true,
-         Arrays.asList(services.getUserService().getCurrentUser().getUserId())));
+         Arrays.asList(atsApi.getUserService().getCurrentUser().getUserId())));
       options.add(new SimpleDecisionReviewOption("No", false, null));
       return options;
    }
 
    @Override
    public Collection<IAtsAbstractReview> getReviewsFromCurrentState(IAtsTeamWorkflow teamWf) {
-      return services.getWorkItemService().getReviews(teamWf, teamWf.getStateMgr().getCurrentState());
+      return atsApi.getWorkItemService().getReviews(teamWf, teamWf.getStateMgr().getCurrentState());
    }
 
    @Override
    public ReviewBlockType getReviewBlockType(IAtsAbstractReview review) {
-      String blockStr = services.getAttributeResolver().getSoleAttributeValueAsString(review,
+      String blockStr = atsApi.getAttributeResolver().getSoleAttributeValueAsString(review,
          AtsAttributeTypes.ReviewBlocks, ReviewBlockType.None.name());
       return ReviewBlockType.valueOf(blockStr);
    }
 
    @Override
    public boolean isStandAloneReview(IAtsAbstractReview review) {
-      return services.getAttributeResolver().getAttributeCount(review, AtsAttributeTypes.ActionableItemReference) > 0;
+      return atsApi.getAttributeResolver().getAttributeCount(review, AtsAttributeTypes.ActionableItemReference) > 0;
    }
 
    @Override
    public Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow teamWf) {
       List<IAtsAbstractReview> reviews = new ArrayList<>();
 
-      for (ArtifactToken reviewArt : services.getRelationResolver().getRelated(teamWf,
+      for (ArtifactToken reviewArt : atsApi.getRelationResolver().getRelated(teamWf,
          AtsRelationTypes.TeamWorkflowToReview_Review)) {
-         reviews.add(services.getWorkItemFactory().getReview(reviewArt));
+         reviews.add(atsApi.getWorkItemFactory().getReview(reviewArt));
       }
       return reviews;
    }
 
    @Override
    public IAtsPeerReviewRoleManager createPeerReviewRoleManager(IAtsPeerToPeerReview peerRev) {
-      return new UserRoleManager(peerRev, services);
+      return new UserRoleManager(peerRev, atsApi);
    }
 
 }

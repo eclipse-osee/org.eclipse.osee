@@ -18,7 +18,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.AtsConfigKey;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -87,28 +87,28 @@ public class AtsUtilCore {
       return table;
    }
 
-   public static String getActionUrl(String atsIdOrUuid, IAtsServices services) {
-      return getActionUrl(atsIdOrUuid, ATS_DEFAULT_ACTION_URL, services);
+   public static String getActionUrl(String atsIdOrUuid, AtsApi atsApi) {
+      return getActionUrl(atsIdOrUuid, ATS_DEFAULT_ACTION_URL, atsApi);
    }
 
-   public static String getActionUrl(String atsIdOrUuid, String defaultUrl, IAtsServices services) {
-      String actionUrl = getBaseActionUiUrl(defaultUrl, services);
+   public static String getActionUrl(String atsIdOrUuid, String defaultUrl, AtsApi atsApi) {
+      String actionUrl = getBaseActionUiUrl(defaultUrl, atsApi);
       actionUrl = actionUrl.replaceFirst("UUID", atsIdOrUuid);
       return actionUrl;
    }
 
-   public static String getBaseActionUiUrl(String defaultUrl, IAtsServices services) {
-      String actionUrl = services.getConfigValue(AtsUtilCore.ATS_CONFIG_ACTION_URL_KEY);
+   public static String getBaseActionUiUrl(String defaultUrl, AtsApi atsApi) {
+      String actionUrl = atsApi.getConfigValue(AtsUtilCore.ATS_CONFIG_ACTION_URL_KEY);
       if (!Strings.isValid(actionUrl)) {
          actionUrl = defaultUrl;
       }
       return actionUrl;
    }
 
-   public static String resolveAjaxToBaseApplicationServer(String html, IAtsServices services) {
-      String basePath = services.getConfigValue(AtsConfigKey.AJaxBasePath);
+   public static String resolveAjaxToBaseApplicationServer(String html, AtsApi atsApi) {
+      String basePath = atsApi.getConfigValue(AtsConfigKey.AJaxBasePath);
       if (!Strings.isValid(basePath)) {
-         basePath = services.getApplicationServerBase();
+         basePath = atsApi.getApplicationServerBase();
       }
       if (Strings.isValid(basePath)) {
          return html.replaceFirst("\\/ajax", basePath + "/ajax");

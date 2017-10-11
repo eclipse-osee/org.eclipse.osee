@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.core.workflow;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -42,22 +42,22 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    protected final ArtifactToken artifact;
    private IAtsLog atsLog;
-   protected final IAtsServices services;
+   protected final AtsApi atsApi;
    protected final Log logger;
    IAtsTeamWorkflow parentTeamWf;
    IAtsAction parentAction;
 
-   public WorkItem(Log logger, IAtsServices services, ArtifactToken artifact) {
+   public WorkItem(Log logger, AtsApi atsApi, ArtifactToken artifact) {
       super(artifact.getName(), artifact.getId());
       this.logger = logger;
-      this.services = services;
+      this.atsApi = atsApi;
       this.artifact = artifact;
       setStoreObject(artifact);
    }
 
    @Override
    public String getDescription() {
-      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.Description, "");
+      return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.Description, "");
    }
 
    @Override
@@ -68,7 +68,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    @Override
    public String getAtsId() {
       try {
-         return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.AtsId,
+         return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.AtsId,
             String.valueOf(getId()));
       } catch (OseeCoreException ex) {
          return null;
@@ -86,12 +86,12 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
             teamArt = artifact;
          } else if (isReview()) {
             teamArt =
-               services.getRelationResolver().getRelatedOrNull(artifact, AtsRelationTypes.TeamWorkflowToReview_Team);
+               atsApi.getRelationResolver().getRelatedOrNull(artifact, AtsRelationTypes.TeamWorkflowToReview_Team);
          } else if (isTask()) {
-            teamArt = services.getRelationResolver().getRelatedOrNull(artifact, AtsRelationTypes.TeamWfToTask_TeamWf);
+            teamArt = atsApi.getRelationResolver().getRelatedOrNull(artifact, AtsRelationTypes.TeamWfToTask_TeamWf);
          }
          if (teamArt != null) {
-            parentTeamWf = services.getWorkItemFactory().getTeamWf(teamArt);
+            parentTeamWf = atsApi.getWorkItemFactory().getTeamWf(teamArt);
          }
       }
       return parentTeamWf;
@@ -103,13 +103,13 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
          ArtifactToken actionArt = null;
          IAtsTeamWorkflow teamWf = getParentTeamWorkflow();
          if (teamWf != null) {
-            Collection<ArtifactToken> results = services.getRelationResolver().getRelated(teamWf.getStoreObject(),
+            Collection<ArtifactToken> results = atsApi.getRelationResolver().getRelated(teamWf.getStoreObject(),
                AtsRelationTypes.ActionToWorkflow_Action);
             if (!results.isEmpty()) {
                actionArt = results.iterator().next();
             }
          }
-         parentAction = services.getWorkItemFactory().getAction(actionArt);
+         parentAction = atsApi.getWorkItemFactory().getAction(actionArt);
       }
       return parentAction;
    }
@@ -126,14 +126,14 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    @Override
    public IAtsStateManager getStateMgr() {
-      return services.getStateFactory().getStateManager(this);
+      return atsApi.getStateFactory().getStateManager(this);
    }
 
    @Override
    public IAtsLog getLog() {
       if (atsLog == null) {
          try {
-            atsLog = services.getLogFactory().getLogLoaded(this, services.getAttributeResolver());
+            atsLog = atsApi.getLogFactory().getLogLoaded(this, atsApi.getAttributeResolver());
          } catch (OseeCoreException ex) {
             logger.error(ex, "Error getting Log for artifact[%s]", artifact);
          }
@@ -143,7 +143,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    @Override
    public IAtsWorkDefinition getWorkDefinition() {
-      return services.getWorkDefinitionService().getWorkDefinition(this);
+      return atsApi.getWorkDefinitionService().getWorkDefinition(this);
    }
 
    @Override
@@ -177,38 +177,38 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    @Override
    public IAtsUser getCreatedBy() {
       String userId =
-         services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CreatedBy, null);
-      return services.getUserService().getUserById(userId);
+         atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CreatedBy, null);
+      return atsApi.getUserService().getUserById(userId);
    }
 
    @Override
    public Date getCreatedDate() {
-      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CreatedDate, null);
+      return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CreatedDate, null);
    }
 
    @Override
    public IAtsUser getCompletedBy() {
       String userId =
-         services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CompletedBy, null);
-      return services.getUserService().getUserById(userId);
+         atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CompletedBy, null);
+      return atsApi.getUserService().getUserById(userId);
    }
 
    @Override
    public IAtsUser getCancelledBy() {
       String userId =
-         services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CancelledBy, null);
-      return services.getUserService().getUserById(userId);
+         atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CancelledBy, null);
+      return atsApi.getUserService().getUserById(userId);
    }
 
    @Override
    public String getCompletedFromState() {
-      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CompletedFromState,
+      return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CompletedFromState,
          null);
    }
 
    @Override
    public String getCancelledFromState() {
-      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CancelledFromState,
+      return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CancelledFromState,
          null);
    }
 
@@ -219,17 +219,17 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    @Override
    public Date getCompletedDate() {
-      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CompletedDate, null);
+      return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CompletedDate, null);
    }
 
    @Override
    public Date getCancelledDate() {
-      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CancelledDate, null);
+      return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CancelledDate, null);
    }
 
    @Override
    public String getCancelledReason() {
-      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CancelledReason, null);
+      return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CancelledReason, null);
    }
 
    @Override
@@ -254,7 +254,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    @Override
    public List<IAtsUser> getImplementers() {
-      return services.getImplementerService().getImplementers(this);
+      return atsApi.getImplementerService().getImplementers(this);
    }
 
    @Override
@@ -269,7 +269,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    @Override
    public void setStateMgr(IAtsStateManager stateMgr) {
-      services.getStateFactory().setStateMgr(this, stateMgr);
+      atsApi.getStateFactory().setStateMgr(this, stateMgr);
    }
 
    @Override

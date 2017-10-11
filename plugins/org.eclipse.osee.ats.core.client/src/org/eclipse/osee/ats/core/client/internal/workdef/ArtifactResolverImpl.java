@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IArtifactResolver;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
@@ -30,10 +30,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
  */
 public class ArtifactResolverImpl implements IArtifactResolver {
 
-   private final IAtsServices services;
+   private final AtsApi atsApi;
 
-   public ArtifactResolverImpl(IAtsServices services) {
-      this.services = services;
+   public ArtifactResolverImpl(AtsApi atsApi) {
+      this.atsApi = atsApi;
    }
 
    @Override
@@ -79,7 +79,7 @@ public class ArtifactResolverImpl implements IArtifactResolver {
    public boolean isOfType(ArtifactId artifact, IArtifactType artifactType) {
       Assert.isNotNull(artifact, "Artifact can not be null");
       Assert.isNotNull(artifactType, "Artifact Type can not be null");
-      return ((Artifact) services.getArtifact(artifact)).isOfType(artifactType);
+      return ((Artifact) atsApi.getArtifact(artifact)).isOfType(artifactType);
    }
 
    @Override

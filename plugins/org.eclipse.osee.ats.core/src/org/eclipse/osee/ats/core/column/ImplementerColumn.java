@@ -10,20 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.column;
 
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
 
 /**
  * @author Donald G. Dunne
  */
 public class ImplementerColumn extends AbstractServicesColumn {
 
-   public ImplementerColumn(IAtsServices services) {
-      super(services);
+   public ImplementerColumn(AtsApi atsApi) {
+      super(atsApi);
    }
 
    @Override
    public String getText(IAtsObject atsObject) {
-      return services.getImplementerService().getImplementersStr(atsObject);
+      return atsApi.getImplementerService().getImplementersStr(atsObject);
    }
 }

@@ -14,7 +14,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.workdef.IAtsRuleDefinition;
@@ -43,7 +43,7 @@ public class AtsWorkDefinitionServiceImplRulesTest {
    // @formatter:off
    @Mock AtsWorkDefinitionStoreService workDefinitionStore;
    @Mock IAtsWorkDefinitionDslService workDefinitionDslService;
-   @Mock IAtsServices services;
+   @Mock AtsApi atsApi;
    @Mock IAtsWorkDefinitionStringProvider workDefinitionStringProvider;
    @Mock IAtsRuleDefinition ruleDef1;
    @Mock IAtsRuleDefinition ruleDef2;
@@ -65,7 +65,7 @@ public class AtsWorkDefinitionServiceImplRulesTest {
       when(workDefinitionStore.loadRuleDefinitionString()).thenReturn("");
       when(workDefinitionDslService.getRuleDefinitions("")).thenReturn(new ArrayList<IAtsRuleDefinition>());
 
-      workDefService = new AtsWorkDefinitionServiceImpl(services, workDefinitionStore, workDefinitionStringProvider,
+      workDefService = new AtsWorkDefinitionServiceImpl(atsApi, workDefinitionStore, workDefinitionStringProvider,
          workDefinitionDslService, null);
 
       when(workDefinitionDslService.getRuleDefinitions("")).thenReturn(Arrays.asList(ruleDef1, ruleDef2));
@@ -95,9 +95,9 @@ public class AtsWorkDefinitionServiceImplRulesTest {
    @Test
    public void teamDefHasRule() {
       when(review.getParentTeamWorkflow()).thenReturn(teamWf);
-      TeamDefinition teamDef = new TeamDefinition(logger, services, teamDefArt);
+      TeamDefinition teamDef = new TeamDefinition(logger, atsApi, teamDefArt);
       when(teamWf.getTeamDefinition()).thenReturn(teamDef);
-      when(services.getAttributeResolver()).thenReturn(attrResolver);
+      when(atsApi.getAttributeResolver()).thenReturn(attrResolver);
       when(attrResolver.getAttributesToStringList(teamDef, AtsAttributeTypes.RuleDefinition)).thenReturn(
          Arrays.asList(RuleDefinitionOption.AllowPrivilegedEditToTeamMember.name(),
             RuleDefinitionOption.AllowPrivilegedEditToTeamMemberAndOriginator.name()));

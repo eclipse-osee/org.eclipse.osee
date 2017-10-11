@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.internal.column.ev;
 
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -20,8 +20,8 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
  */
 public class WorkPackageGuidColumn extends AbstractRelatedWorkPackageColumn {
 
-   public WorkPackageGuidColumn(IAtsEarnedValueServiceProvider earnedValueServiceProvider, IAtsServices services) {
-      super(earnedValueServiceProvider, services);
+   public WorkPackageGuidColumn(IAtsEarnedValueServiceProvider earnedValueServiceProvider, AtsApi atsApi) {
+      super(earnedValueServiceProvider, atsApi);
    }
 
    @Override

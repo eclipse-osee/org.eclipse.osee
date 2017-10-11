@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.core.internal.column.ev;
 
 import java.util.Map;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.column.IAtsColumn;
 import org.eclipse.osee.ats.api.column.IWorkPackageColumn;
@@ -32,11 +32,11 @@ public abstract class AbstractRelatedWorkPackageColumn implements IAtsColumn, IW
 
    private final IAtsEarnedValueServiceProvider earnedValueServiceProvider;
    private Map<ArtifactId, ArtifactToken> guidToWorkPackage;
-   protected final IAtsServices services;
+   protected final AtsApi atsApi;
 
-   public AbstractRelatedWorkPackageColumn(IAtsEarnedValueServiceProvider earnedValueServiceProvider, IAtsServices services) {
+   public AbstractRelatedWorkPackageColumn(IAtsEarnedValueServiceProvider earnedValueServiceProvider, AtsApi atsApi) {
       this.earnedValueServiceProvider = earnedValueServiceProvider;
-      this.services = services;
+      this.atsApi = atsApi;
    }
 
    /**

@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
@@ -70,7 +70,7 @@ import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
 import org.eclipse.osee.ats.core.config.TeamDefinition;
 import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.core.util.AtsCoreFactory;
-import org.eclipse.osee.ats.core.util.AtsCoreServiceImpl;
+import org.eclipse.osee.ats.core.util.AtsApiImpl;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionServiceImpl;
 import org.eclipse.osee.ats.core.workflow.WorkItemFactory;
@@ -97,7 +97,7 @@ import org.eclipse.osee.orcs.rest.client.OseeClient;
 /**
  * @author Donald G. Dunne
  */
-public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
+public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
 
    private IActionableItemFactory actionableItemFactory;
    private ITeamDefinitionFactory teamDefFactory;
@@ -226,7 +226,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
 
    @Override
    public void reloadConfigCache(boolean pend) {
-      final IAtsServices client = this;
+      final AtsApi client = this;
       Runnable reload = new Runnable() {
 
          @Override
@@ -286,25 +286,25 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
-   public IAtsTeamDefinition createTeamDefinition(String name, IAtsChangeSet changes, IAtsServices services) {
-      return createTeamDefinition(name, AtsUtilClient.createConfigObjectUuid(), changes, services);
+   public IAtsTeamDefinition createTeamDefinition(String name, IAtsChangeSet changes, AtsApi atsApi) {
+      return createTeamDefinition(name, AtsUtilClient.createConfigObjectUuid(), changes, atsApi);
    }
 
    @Override
-   public IAtsTeamDefinition createTeamDefinition(String name, long uuid, IAtsChangeSet changes, IAtsServices services) {
-      IAtsTeamDefinition item = teamDefFactory.createTeamDefinition(name, uuid, changes, services);
+   public IAtsTeamDefinition createTeamDefinition(String name, long uuid, IAtsChangeSet changes, AtsApi atsApi) {
+      IAtsTeamDefinition item = teamDefFactory.createTeamDefinition(name, uuid, changes, atsApi);
       atsCache.cacheAtsObject(item);
       return item;
    }
 
    @Override
-   public IAtsActionableItem createActionableItem(String name, IAtsChangeSet changes, IAtsServices services) {
-      return createActionableItem(name, AtsUtilClient.createConfigObjectUuid(), changes, services);
+   public IAtsActionableItem createActionableItem(String name, IAtsChangeSet changes, AtsApi atsApi) {
+      return createActionableItem(name, AtsUtilClient.createConfigObjectUuid(), changes, atsApi);
    }
 
    @Override
-   public IAtsActionableItem createActionableItem(String name, long uuid, IAtsChangeSet changes, IAtsServices services) {
-      IAtsActionableItem item = actionableItemFactory.createActionableItem(name, uuid, changes, services);
+   public IAtsActionableItem createActionableItem(String name, long uuid, IAtsChangeSet changes, AtsApi atsApi) {
+      IAtsActionableItem item = actionableItemFactory.createActionableItem(name, uuid, changes, atsApi);
       atsCache.cacheAtsObject(item);
       return item;
    }
@@ -424,7 +424,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
-   public IAtsServices getServices() {
+   public AtsApi getServices() {
       return this;
    }
 

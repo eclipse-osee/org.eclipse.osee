@@ -5,7 +5,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workflow.AtsTeamWfEndpointApi;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -19,9 +19,9 @@ import org.eclipse.osee.framework.core.model.change.CompareResults;
 @Path("teamwf")
 public class AtsTeamWfEndpointImpl implements AtsTeamWfEndpointApi {
 
-   private final IAtsServices services;
+   private final AtsApi services;
 
-   public AtsTeamWfEndpointImpl(IAtsServices services) {
+   public AtsTeamWfEndpointImpl(AtsApi services) {
       this.services = services;
    }
 

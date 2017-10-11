@@ -13,8 +13,8 @@ package org.eclipse.osee.ats.core.column;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.column.IAtsColumn;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
@@ -33,16 +33,16 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public class AtsAttributeValueColumnHandler implements IAtsColumn {
 
    private final AtsAttributeValueColumn column;
-   private final IAtsServices services;
+   private final AtsApi atsApi;
 
-   public AtsAttributeValueColumnHandler(AtsAttributeValueColumn column, IAtsServices services) {
+   public AtsAttributeValueColumnHandler(AtsAttributeValueColumn column, AtsApi atsApi) {
       this.column = column;
-      this.services = services;
+      this.atsApi = atsApi;
    }
 
    @Override
    public String getColumnText(IAtsObject atsObject) {
-      return getColumnText(atsObject, column.getAttrTypeId(), isActionRollup(), isInheritParent(), services);
+      return getColumnText(atsObject, column.getAttrTypeId(), isActionRollup(), isInheritParent(), atsApi);
    }
 
    private Boolean isInheritParent() {
@@ -55,20 +55,20 @@ public class AtsAttributeValueColumnHandler implements IAtsColumn {
       return actionRollup == null ? false : actionRollup;
    }
 
-   public static String getColumnText(IAtsObject atsObject, long attrTypeId, boolean isActionRollup, boolean isInheritParent, IAtsServices services) {
+   public static String getColumnText(IAtsObject atsObject, long attrTypeId, boolean isActionRollup, boolean isInheritParent, AtsApi atsApi) {
       try {
-         if (services.getStoreService().isDeleted(atsObject)) {
+         if (atsApi.getStoreService().isDeleted(atsObject)) {
             return "<deleted>";
          }
          if (atsObject instanceof IAtsWorkItem) {
             IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
             AttributeTypeId attributeType = AttributeTypeId.valueOf(attrTypeId);
             String result =
-               services.getAttributeResolver().getAttributesToStringUniqueList(workItem, attributeType, ";");
+               atsApi.getAttributeResolver().getAttributesToStringUniqueList(workItem, attributeType, ";");
             if (Strings.isValid(result)) {
                return result;
             } else if (isInheritParent && !workItem.isTeamWorkflow() && workItem.getParentTeamWorkflow() != null) {
-               result = Collections.toString("; ", services.getAttributeResolver().getAttributesToStringUniqueList(
+               result = Collections.toString("; ", atsApi.getAttributeResolver().getAttributesToStringUniqueList(
                   workItem.getParentTeamWorkflow(), attributeType, ";"));
                if (Strings.isValid(result)) {
                   return result;
@@ -80,7 +80,7 @@ public class AtsAttributeValueColumnHandler implements IAtsColumn {
             Set<String> strs = new HashSet<>();
             strs.add(atsObject.getName());
             for (IAtsTeamWorkflow team : teams) {
-               String str = getColumnText(team, attrTypeId, isActionRollup, isInheritParent, services);
+               String str = getColumnText(team, attrTypeId, isActionRollup, isInheritParent, atsApi);
                if (Strings.isValid(str)) {
                   strs.add(str);
                }
@@ -93,8 +93,8 @@ public class AtsAttributeValueColumnHandler implements IAtsColumn {
       return "";
    }
 
-   public static String getColumnText(IAtsObject atsObject, AttributeTypeId attributeType, boolean isActionRollup, boolean inheritParent, IAtsServices services) {
-      return getColumnText(atsObject, attributeType.getId(), isActionRollup, inheritParent, services);
+   public static String getColumnText(IAtsObject atsObject, AttributeTypeId attributeType, boolean isActionRollup, boolean inheritParent, AtsApi atsApi) {
+      return getColumnText(atsObject, attributeType.getId(), isActionRollup, inheritParent, atsApi);
    }
 
    @Override

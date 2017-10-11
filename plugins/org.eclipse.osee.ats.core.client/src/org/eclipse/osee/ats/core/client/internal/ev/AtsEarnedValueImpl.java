@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.core.client.internal.ev;
 
 import java.util.Collection;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.ev.AtsWorkPackageEndpointApi;
@@ -35,8 +35,8 @@ import org.eclipse.osee.logger.Log;
  */
 public class AtsEarnedValueImpl extends AtsAbstractEarnedValueImpl {
 
-   public AtsEarnedValueImpl(Log logger, IAtsServices services) {
-      super(logger, services);
+   public AtsEarnedValueImpl(Log logger, AtsApi atsApi) {
+      super(logger, atsApi);
    }
 
    @Override
@@ -63,7 +63,7 @@ public class AtsEarnedValueImpl extends AtsAbstractEarnedValueImpl {
 
    private void changeWorkPackage(IAtsWorkPackage workPackage, Collection<IAtsWorkItem> workItems, boolean remove) {
       JaxWorkPackageData data = new JaxWorkPackageData();
-      data.setAsUserId(services.getUserService().getCurrentUserId());
+      data.setAsUserId(atsApi.getUserService().getCurrentUserId());
       for (IAtsWorkItem workItem : workItems) {
          data.getWorkItemUuids().add(workItem.getId());
       }
@@ -79,7 +79,7 @@ public class AtsEarnedValueImpl extends AtsAbstractEarnedValueImpl {
          AtsObjects.toUuidsString(";", workItems));
       OseeEventManager.kickTopicEvent(getClass(), event);
 
-      services.getStoreService().reload(workItems);
+      atsApi.getStoreService().reload(workItems);
    }
 
    @Override

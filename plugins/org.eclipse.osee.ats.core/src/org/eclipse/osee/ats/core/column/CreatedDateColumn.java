@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -26,8 +26,8 @@ import org.eclipse.osee.framework.jdk.core.util.DateUtil;
  */
 public class CreatedDateColumn extends AbstractServicesColumn {
 
-   public CreatedDateColumn(IAtsServices services) {
-      super(services);
+   public CreatedDateColumn(AtsApi atsApi) {
+      super(atsApi);
    }
 
    @Override

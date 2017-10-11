@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.column;
 
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -23,14 +23,14 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class CompletedCancelledByColumn extends AbstractServicesColumn {
 
-   public CompletedCancelledByColumn(IAtsServices services) {
-      super(services);
+   public CompletedCancelledByColumn(AtsApi atsApi) {
+      super(atsApi);
    }
 
    @Override
    String getText(IAtsObject atsObject) throws Exception {
       if (atsObject instanceof IAtsWorkItem) {
-         IAtsUser user = getCompletedCancelledBy(atsObject, services);
+         IAtsUser user = getCompletedCancelledBy(atsObject, atsApi);
          if (user != null) {
             return user.getName();
          }
@@ -38,7 +38,7 @@ public class CompletedCancelledByColumn extends AbstractServicesColumn {
       return null;
    }
 
-   public static IAtsUser getCompletedCancelledBy(Object obj, IAtsServices services) {
+   public static IAtsUser getCompletedCancelledBy(Object obj, AtsApi atsApi) {
       String userId = null;
       if (obj instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) obj;
@@ -49,9 +49,9 @@ public class CompletedCancelledByColumn extends AbstractServicesColumn {
             type = AtsAttributeTypes.CancelledBy;
          }
          if (type != null) {
-            userId = services.getAttributeResolver().getSoleAttributeValue((IAtsWorkItem) obj, type, null);
+            userId = atsApi.getAttributeResolver().getSoleAttributeValue((IAtsWorkItem) obj, type, null);
             if (Strings.isValid(userId)) {
-               return services.getUserService().getUserById(userId);
+               return atsApi.getUserService().getUserById(userId);
             }
          }
       }

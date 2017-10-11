@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workflow;
 
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.logger.Log;
@@ -20,8 +20,8 @@ import org.eclipse.osee.logger.Log;
  */
 public class Goal extends WorkItem implements IAtsGoal {
 
-   public Goal(Log logger, IAtsServices services, ArtifactToken artifact) {
-      super(logger, services, artifact);
+   public Goal(Log logger, AtsApi atsApi, ArtifactToken artifact) {
+      super(logger, atsApi, artifact);
    }
 
 }

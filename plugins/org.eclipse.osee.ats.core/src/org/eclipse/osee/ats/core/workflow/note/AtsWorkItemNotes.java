@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.note.IAtsWorkItemNotes;
 import org.eclipse.osee.ats.api.workflow.note.NoteItem;
@@ -40,11 +40,11 @@ public class AtsWorkItemNotes implements IAtsWorkItemNotes {
    private final INoteStorageProvider storeProvder;
    public final static String LOG_ITEM_TAG = "Item";
    public final static String ATS_NOTE_TAG = "AtsNote";
-   private final IAtsServices services;
+   private final AtsApi atsApi;
 
-   public AtsWorkItemNotes(INoteStorageProvider storeProvder, IAtsServices services) {
+   public AtsWorkItemNotes(INoteStorageProvider storeProvder, AtsApi atsApi) {
       this.storeProvder = storeProvder;
-      this.services = services;
+      this.atsApi = atsApi;
    }
 
    @Override
@@ -77,20 +77,20 @@ public class AtsWorkItemNotes implements IAtsWorkItemNotes {
       try {
          String xml = storeProvder.getNoteXml();
          if (Strings.isValid(xml)) {
-            return fromXml(xml, storeProvder.getNoteId(), services);
+            return fromXml(xml, storeProvder.getNoteId(), atsApi);
          }
       } catch (Exception ex) {
-         services.getLogger().error(ex, "Error extracting note");
+         atsApi.getLogger().error(ex, "Error extracting note");
       }
       return Collections.emptyList();
    }
 
    public void saveNoteItems(List<NoteItem> items) {
       try {
-         String xml = toXml(items, services);
+         String xml = toXml(items, atsApi);
          storeProvder.saveNoteXml(xml);
       } catch (Exception ex) {
-         services.getLogger().error(ex, "Error saving note");
+         atsApi.getLogger().error(ex, "Error saving note");
       }
    }
 
@@ -153,7 +153,7 @@ public class AtsWorkItemNotes implements IAtsWorkItemNotes {
       this.enabled = enabled;
    }
 
-   public static List<NoteItem> fromXml(String xml, String atsId, IAtsServices services) {
+   public static List<NoteItem> fromXml(String xml, String atsId, AtsApi atsApi) {
       List<NoteItem> logItems = new ArrayList<>();
       try {
          if (Strings.isValid(xml)) {
@@ -161,12 +161,12 @@ public class AtsWorkItemNotes implements IAtsWorkItemNotes {
             for (int i = 0; i < nodes.getLength(); i++) {
                Element element = (Element) nodes.item(i);
                try {
-                  IAtsUser user = services.getUserService().getUserById(element.getAttribute("userId"));
+                  IAtsUser user = atsApi.getUserService().getUserById(element.getAttribute("userId"));
                   NoteItem item = new NoteItem(element.getAttribute("type"), element.getAttribute("state"), // NOPMD by b0727536 on 9/29/10 8:52 AM
                      element.getAttribute("date"), user, element.getAttribute("msg"));
                   logItems.add(item);
                } catch (UserNotInDatabase ex) {
-                  services.getLogger().error(ex, "Error parsing notes for [%s]", atsId);
+                  atsApi.getLogger().error(ex, "Error parsing notes for [%s]", atsId);
                   NoteItem item = new NoteItem(element.getAttribute("type"), element.getAttribute("state"), // NOPMD by b0727536 on 9/29/10 8:52 AM
                      element.getAttribute("date"), AtsCoreUsers.ANONYMOUS_USER, element.getAttribute("msg"));
                   logItems.add(item);
@@ -174,12 +174,12 @@ public class AtsWorkItemNotes implements IAtsWorkItemNotes {
             }
          }
       } catch (Exception ex) {
-         services.getLogger().error(ex, "Error reading AtsNote");
+         atsApi.getLogger().error(ex, "Error reading AtsNote");
       }
       return logItems;
    }
 
-   public static String toXml(List<NoteItem> items, IAtsServices services) {
+   public static String toXml(List<NoteItem> items, AtsApi atsApi) {
       try {
          Document doc = Jaxp.newDocumentNamespaceAware();
          Element rootElement = doc.createElement(ATS_NOTE_TAG);
@@ -195,7 +195,7 @@ public class AtsWorkItemNotes implements IAtsWorkItemNotes {
          }
          return Jaxp.getDocumentXml(doc);
       } catch (Exception ex) {
-         services.getLogger().error(ex, "Error writing AtsNote");
+         atsApi.getLogger().error(ex, "Error writing AtsNote");
       }
       return null;
    }

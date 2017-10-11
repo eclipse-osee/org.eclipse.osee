@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.workflow.note.NoteItem;
@@ -34,7 +34,7 @@ public class NoteItemTest {
 
    // @formatter:off
    @Mock private IAtsUserService userService;
-   @Mock private IAtsServices services;
+   @Mock private AtsApi atsApi;
    @Mock private IAtsUser Joe;
    // @formatter:on
    List<IAtsUser> assignees = new ArrayList<>();
@@ -43,7 +43,7 @@ public class NoteItemTest {
    public void setup() {
       MockitoAnnotations.initMocks(this);
 
-      when(services.getUserService()).thenReturn(userService);
+      when(atsApi.getUserService()).thenReturn(userService);
       when(userService.getUserById("333")).thenReturn(Joe);
       when(Joe.getUserId()).thenReturn("333");
    }
@@ -90,13 +90,13 @@ public class NoteItemTest {
       NoteItem item2 =
          new NoteItem(NoteType.Question.name(), "Analyze", String.valueOf(date.getTime()), Joe, "another message");
 
-      String xml = AtsWorkItemNotes.toXml(Arrays.asList(item, item2), services);
+      String xml = AtsWorkItemNotes.toXml(Arrays.asList(item, item2), atsApi);
       Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><AtsNote>" + //
          "<Item date=\"" + date.getTime() + "\" msg=\"my msg\" state=\"Implement\" type=\"Comment\" userId=\"" + Joe.getUserId() + "\"/>" + //
          "<Item date=\"" + date.getTime() + "\" msg=\"another message\" state=\"Analyze\" type=\"Question\" userId=\"" + Joe.getUserId() + "\"/></AtsNote>",
          xml);
 
-      List<NoteItem> items = AtsWorkItemNotes.fromXml(xml, "ASDF4", services);
+      List<NoteItem> items = AtsWorkItemNotes.fromXml(xml, "ASDF4", atsApi);
       validate(items.iterator().next(), date, Joe);
 
       NoteItem fromXmlItem2 = items.get(1);

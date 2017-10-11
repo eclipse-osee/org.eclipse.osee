@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.core.column;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.core.config.WorkPackageUtility;
@@ -32,7 +32,7 @@ public class InsertionActivityColumnTest {
 
 // @formatter:off
    @Mock private WorkPackageUtility util;
-   @Mock private IAtsServices services;
+   @Mock private AtsApi atsApi;
    @Mock private IAtsWorkItem workItem;
    @Mock private IAtsObject object;
    @Mock private IAtsInsertionActivity program;
@@ -45,24 +45,24 @@ public class InsertionActivityColumnTest {
 
    @Test
    public void test() {
-      String str = InsertionActivityColumn.getInsertionActivityStr(object, services, util);
+      String str = InsertionActivityColumn.getInsertionActivityStr(object, atsApi, util);
       assertEquals(str, "");
 
-      when(util.getInsertionActivity(services, workItem)).thenReturn(
+      when(util.getInsertionActivity(atsApi, workItem)).thenReturn(
          new Pair<IAtsInsertionActivity, Boolean>(null, false));
 
-      str = InsertionActivityColumn.getInsertionActivityStr(workItem, services, util);
+      str = InsertionActivityColumn.getInsertionActivityStr(workItem, atsApi, util);
       assertEquals(str, "");
 
-      when(util.getInsertionActivity(services, workItem)).thenReturn(
+      when(util.getInsertionActivity(atsApi, workItem)).thenReturn(
          new Pair<IAtsInsertionActivity, Boolean>(program, false));
       when(program.getName()).thenReturn("Country");
-      str = InsertionActivityColumn.getInsertionActivityStr(workItem, services, util);
+      str = InsertionActivityColumn.getInsertionActivityStr(workItem, atsApi, util);
       assertEquals(str, "Country");
 
-      when(util.getInsertionActivity(services, workItem)).thenReturn(
+      when(util.getInsertionActivity(atsApi, workItem)).thenReturn(
          new Pair<IAtsInsertionActivity, Boolean>(program, true));
-      str = InsertionActivityColumn.getInsertionActivityStr(workItem, services, util);
+      str = InsertionActivityColumn.getInsertionActivityStr(workItem, atsApi, util);
       assertEquals(str, "Country (I)");
 
    }

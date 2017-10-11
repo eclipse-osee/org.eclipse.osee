@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.core.validator;
 
 import static org.mockito.MockitoAnnotations.initMocks;
 import java.util.Arrays;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
@@ -34,7 +34,7 @@ import org.mockito.Mock;
 public class AtsXComboBooleanValidatorTest {
 
    private AtsXComboBooleanValidator validator;
-   private IAtsServices atsServices;
+   private AtsApi atsServices;
 
    // @formatter:off
    @Mock IAtsWorkItem workItem;

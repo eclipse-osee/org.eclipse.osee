@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.internal.config;
 
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -26,14 +26,14 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 public class ActionableItemFactory implements IActionableItemFactory {
 
    @Override
-   public IAtsActionableItem createActionableItem(String name, long uuid, IAtsChangeSet changes, IAtsServices services) {
+   public IAtsActionableItem createActionableItem(String name, long uuid, IAtsChangeSet changes, AtsApi atsApi) {
       ArtifactToken artifact = changes.createArtifact(AtsArtifactTypes.ActionableItem, name, GUID.create(), uuid);
-      return new ActionableItem(services.getLogger(), services, artifact);
+      return new ActionableItem(atsApi.getLogger(), atsApi, artifact);
    }
 
    @Override
-   public IAtsActionableItem createActionableItem(String name, IAtsChangeSet changes, IAtsServices services) {
-      return createActionableItem(name, AtsUtilClient.createConfigObjectUuid(), changes, services);
+   public IAtsActionableItem createActionableItem(String name, IAtsChangeSet changes, AtsApi atsApi) {
+      return createActionableItem(name, AtsUtilClient.createConfigObjectUuid(), changes, atsApi);
    }
 
 }

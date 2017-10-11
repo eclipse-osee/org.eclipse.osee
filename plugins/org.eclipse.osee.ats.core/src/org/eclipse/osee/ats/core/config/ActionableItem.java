@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.JaxActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -34,15 +34,15 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
 
    private JaxActionableItem jaxAI;
 
-   public ActionableItem(Log logger, IAtsServices services, JaxActionableItem jaxAI) {
-      super(logger, services, ArtifactToken.valueOf(jaxAI.getUuid(), jaxAI.getGuid(), jaxAI.getName(),
-         services.getAtsBranch(), AtsArtifactTypes.ActionableItem));
+   public ActionableItem(Log logger, AtsApi atsApi, JaxActionableItem jaxAI) {
+      super(logger, atsApi, ArtifactToken.valueOf(jaxAI.getUuid(), jaxAI.getGuid(), jaxAI.getName(),
+         atsApi.getAtsBranch(), AtsArtifactTypes.ActionableItem));
       this.jaxAI = jaxAI;
    }
 
-   public ActionableItem(Log logger, IAtsServices services, ArtifactToken artifact) {
-      super(logger, services, ArtifactToken.valueOf(artifact.getUuid(), artifact.getGuid(), artifact.getName(),
-         services.getAtsBranch(), AtsArtifactTypes.ActionableItem));
+   public ActionableItem(Log logger, AtsApi atsApi, ArtifactToken artifact) {
+      super(logger, atsApi, ArtifactToken.valueOf(artifact.getUuid(), artifact.getGuid(), artifact.getName(),
+         atsApi.getAtsBranch(), AtsArtifactTypes.ActionableItem));
    }
 
    @Override
@@ -54,7 +54,7 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
    public Collection<String> getRules() {
       Collection<String> rules = new ArrayList<>();
       try {
-         rules = services.getAttributeResolver().getAttributeValues(artifact, AtsAttributeTypes.RuleDefinition);
+         rules = atsApi.getAttributeResolver().getAttributeValues(artifact, AtsAttributeTypes.RuleDefinition);
       } catch (OseeCoreException ex) {
          getLogger().error(ex, "Error getting rules");
       }
@@ -71,12 +71,12 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
       List<IAtsActionableItem> children = new LinkedList<>();
       if (jaxAI != null) {
          for (Long aiId : jaxAI.getChildren()) {
-            children.add(new ActionableItem(logger, services, services.getConfigurations().getIdToAi().get(aiId)));
+            children.add(new ActionableItem(logger, atsApi, atsApi.getConfigurations().getIdToAi().get(aiId)));
          }
       } else {
-         for (ArtifactToken artifact : services.getRelationResolver().getChildren(artifact)) {
-            if (services.getStoreService().isOfType(artifact, AtsArtifactTypes.ActionableItem)) {
-               children.add(new ActionableItem(logger, services, artifact));
+         for (ArtifactToken artifact : atsApi.getRelationResolver().getChildren(artifact)) {
+            if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.ActionableItem)) {
+               children.add(new ActionableItem(logger, atsApi, artifact));
             }
          }
       }
@@ -88,12 +88,12 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
       IAtsActionableItem parent = null;
       try {
          if (jaxAI != null && jaxAI.getParentId() != null) {
-            parent = services.getConfigItemFactory().getActionableItem(services.getArtifact(jaxAI.getParentId()));
+            parent = atsApi.getConfigItemFactory().getActionableItem(atsApi.getArtifact(jaxAI.getParentId()));
          } else {
-            ArtifactToken art = services.getRelationResolver().getRelatedOrNull(artifact,
-               CoreRelationTypes.Default_Hierarchical__Parent);
+            ArtifactToken art =
+               atsApi.getRelationResolver().getRelatedOrNull(artifact, CoreRelationTypes.Default_Hierarchical__Parent);
             if (art != null) {
-               parent = services.getConfigItemFactory().getActionableItem(art);
+               parent = atsApi.getConfigItemFactory().getActionableItem(art);
             }
          }
       } catch (OseeCoreException ex) {
@@ -107,12 +107,12 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
       IAtsTeamDefinition teamDef = null;
       try {
          if (jaxAI != null && jaxAI.getTeamDefId() != null) {
-            teamDef = services.getConfigItemFactory().getTeamDef(services.getArtifact(jaxAI.getTeamDefId()));
+            teamDef = atsApi.getConfigItemFactory().getTeamDef(atsApi.getArtifact(jaxAI.getTeamDefId()));
          } else {
             ArtifactToken art =
-               services.getRelationResolver().getRelatedOrNull(artifact, AtsRelationTypes.TeamActionableItem_Team);
+               atsApi.getRelationResolver().getRelatedOrNull(artifact, AtsRelationTypes.TeamActionableItem_Team);
             if (art != null) {
-               teamDef = services.getConfigItemFactory().getTeamDef(art);
+               teamDef = atsApi.getConfigItemFactory().getTeamDef(art);
             }
          }
       } catch (OseeCoreException ex) {
@@ -128,7 +128,7 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
 
    @Override
    public boolean isAllowUserActionCreation() {
-      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.AllowUserActionCreation,
+      return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.AllowUserActionCreation,
          true);
    }
 

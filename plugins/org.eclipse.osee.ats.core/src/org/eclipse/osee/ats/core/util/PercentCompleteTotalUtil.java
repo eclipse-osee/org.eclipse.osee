@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.core.util;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
@@ -32,28 +32,28 @@ public class PercentCompleteTotalUtil {
     * <br>
     * percent = all state's percents / number of states (minus completed/canceled)
     */
-   public static int getPercentCompleteTotal(IAtsObject atsObject, IAtsServices services) {
+   public static int getPercentCompleteTotal(IAtsObject atsObject, AtsApi atsApi) {
       int percent = 0;
       if (atsObject instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
          if (workItem.getStateMgr().getStateType().isCompletedOrCancelled()) {
             percent = 100;
          } else {
-            if (services.getWorkDefinitionService().isStateWeightingEnabled(workItem.getWorkDefinition())) {
+            if (atsApi.getWorkDefinitionService().isStateWeightingEnabled(workItem.getWorkDefinition())) {
                // Calculate total percent using configured weighting
                for (IAtsStateDefinition stateDef : workItem.getWorkDefinition().getStates()) {
                   if (!stateDef.getStateType().isCompletedState() && !stateDef.getStateType().isCancelledState()) {
-                     percent = addStatePercentWithWeight(services, percent, workItem, stateDef);
+                     percent = addStatePercentWithWeight(atsApi, percent, workItem, stateDef);
                   }
                }
             } else {
-               percent = getPercentCompleteSMASinglePercent(workItem, services);
+               percent = getPercentCompleteSMASinglePercent(workItem, atsApi);
                if (percent == 0) {
                   if (isAnyStateHavePercentEntered(workItem)) {
                      int numStates = 0;
                      for (IAtsStateDefinition state : workItem.getWorkDefinition().getStates()) {
                         if (!state.getStateType().isCompletedState() && !state.getStateType().isCancelledState()) {
-                           percent += getPercentCompleteSMAStateTotal(workItem, state, services);
+                           percent += getPercentCompleteSMAStateTotal(workItem, state, atsApi);
                            numStates++;
                         }
                      }
@@ -68,10 +68,10 @@ public class PercentCompleteTotalUtil {
       return percent;
    }
 
-   private static int addStatePercentWithWeight(IAtsServices services, int percent, IAtsWorkItem workItem, IAtsStateDefinition stateDef) {
+   private static int addStatePercentWithWeight(AtsApi atsApi, int percent, IAtsWorkItem workItem, IAtsStateDefinition stateDef) {
       double stateWeightInt = stateDef.getStateWeight();
       double weight = stateWeightInt / 100;
-      int percentCompleteForState = getPercentCompleteSMAStateTotal(workItem, stateDef, services);
+      int percentCompleteForState = getPercentCompleteSMAStateTotal(workItem, stateDef, atsApi);
       percent += weight * percentCompleteForState;
       return percent;
    }
@@ -88,22 +88,22 @@ public class PercentCompleteTotalUtil {
    /**
     * Add percent represented by percent attribute, percent for reviews and tasks divided by number of objects.
     */
-   private static int getPercentCompleteSMASinglePercent(IAtsObject atsObject, IAtsServices services) {
+   private static int getPercentCompleteSMASinglePercent(IAtsObject atsObject, AtsApi atsApi) {
       int percent = 0;
       if (atsObject instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
          int numObjects = 1;
          percent =
-            services.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.PercentComplete, 0);
+            atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.PercentComplete, 0);
          if (workItem instanceof IAtsTeamWorkflow) {
-            for (IAtsAbstractReview revArt : services.getWorkItemService().getReviews((IAtsTeamWorkflow) workItem)) {
-               percent += getPercentCompleteTotal(revArt, services);
+            for (IAtsAbstractReview revArt : atsApi.getWorkItemService().getReviews((IAtsTeamWorkflow) workItem)) {
+               percent += getPercentCompleteTotal(revArt, atsApi);
                numObjects++;
             }
          }
          if (workItem instanceof IAtsTeamWorkflow) {
-            for (IAtsTask taskArt : services.getTaskService().getTasks((IAtsTeamWorkflow) workItem)) {
-               percent += getPercentCompleteTotal(taskArt, services);
+            for (IAtsTask taskArt : atsApi.getTaskService().getTasks((IAtsTeamWorkflow) workItem)) {
+               percent += getPercentCompleteTotal(taskArt, atsApi);
                numObjects++;
             }
          }
@@ -122,11 +122,11 @@ public class PercentCompleteTotalUtil {
     *
     * @param services JavaTip
     */
-   public static int getPercentCompleteSMAStateTotal(IAtsObject atsObject, IStateToken state, IAtsServices services) {
-      return getStateMetricsData(atsObject, state, services).getResultingPercent();
+   public static int getPercentCompleteSMAStateTotal(IAtsObject atsObject, IStateToken state, AtsApi atsApi) {
+      return getStateMetricsData(atsObject, state, atsApi).getResultingPercent();
    }
 
-   private static StateMetricsData getStateMetricsData(IAtsObject atsObject, IStateToken teamState, IAtsServices services) {
+   private static StateMetricsData getStateMetricsData(IAtsObject atsObject, IStateToken teamState, AtsApi atsApi) {
       if (!(atsObject instanceof IAtsWorkItem)) {
          return null;
       }
@@ -137,9 +137,9 @@ public class PercentCompleteTotalUtil {
 
       // Add percent for each task and bump objects for each task
       if (workItem instanceof IAtsTeamWorkflow) {
-         Collection<IAtsTask> tasks = services.getTaskService().getTasks((IAtsTeamWorkflow) workItem, teamState);
+         Collection<IAtsTask> tasks = atsApi.getTaskService().getTasks((IAtsTeamWorkflow) workItem, teamState);
          for (IAtsTask taskArt : tasks) {
-            percent += getPercentCompleteTotal(taskArt, services);
+            percent += getPercentCompleteTotal(taskArt, atsApi);
          }
          numObjects += tasks.size();
       }
@@ -147,9 +147,9 @@ public class PercentCompleteTotalUtil {
       // Add percent for each review and bump objects for each review
       if (workItem instanceof IAtsTeamWorkflow) {
          Collection<IAtsAbstractReview> reviews =
-            services.getWorkItemService().getReviews((IAtsTeamWorkflow) workItem, teamState);
+            atsApi.getWorkItemService().getReviews((IAtsTeamWorkflow) workItem, teamState);
          for (IAtsAbstractReview reviewArt : reviews) {
-            percent += getPercentCompleteTotal(reviewArt, services);
+            percent += getPercentCompleteTotal(reviewArt, atsApi);
          }
          numObjects += reviews.size();
       }
@@ -178,17 +178,17 @@ public class PercentCompleteTotalUtil {
    /**
     * Return Percent Complete working ONLY the current state (not children SMAs)
     */
-   public static int getPercentCompleteSMAState(IAtsObject atsObject, IAtsServices services) {
+   public static int getPercentCompleteSMAState(IAtsObject atsObject, AtsApi atsApi) {
       int percent = 0;
       if (atsObject instanceof IAtsAction) {
          IAtsAction action = (IAtsAction) atsObject;
          if (((IAtsAction) atsObject).getTeamWorkflows().size() == 1) {
-            return getPercentCompleteSMAState(services.getWorkItemService().getFirstTeam(action), services);
+            return getPercentCompleteSMAState(atsApi.getWorkItemService().getFirstTeam(action), atsApi);
          } else {
             int items = 0;
             for (IAtsTeamWorkflow team : ((IAtsAction) atsObject).getTeamWorkflows()) {
                if (!team.getStateMgr().getStateType().isCancelled()) {
-                  percent += getPercentCompleteSMAState(team, services);
+                  percent += getPercentCompleteSMAState(team, atsApi);
                   items++;
                }
             }
@@ -199,7 +199,7 @@ public class PercentCompleteTotalUtil {
          }
       } else if (atsObject instanceof IAtsWorkItem) {
          return getPercentCompleteSMAState(atsObject,
-            services.getWorkItemService().getCurrentState((IAtsWorkItem) atsObject));
+            atsApi.getWorkItemService().getCurrentState((IAtsWorkItem) atsObject));
       }
       return percent;
    }

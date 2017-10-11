@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.convert;
 
-import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -54,7 +54,7 @@ public class ConvertFavoriteBranchGuidToUuid extends AbstractConvertGuidToUuid {
    }
 
    @Override
-   public void run(XResultData data, boolean reportOnly, IAtsServices services) {
+   public void run(XResultData data, boolean reportOnly, AtsApi atsApi) {
       if (reportOnly) {
          data.log("REPORT ONLY - Changes not persisted\n");
       }
