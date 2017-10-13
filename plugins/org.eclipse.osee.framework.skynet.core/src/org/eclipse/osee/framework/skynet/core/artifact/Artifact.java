@@ -247,10 +247,16 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
    }
 
    /**
-    * Determines if this artifact's type equals, or is a sub-type of, at least one of the given artifact types.
+    * Determines if this artifact's type equals, or is a sub-type of, at least one of the given artifact types. 
+    * This is a relatively expensive operation, only use this method when you need either the multiple artifact
+    * types or to have sub-types included; otherwise us the less expensive equalsType below.
     */
    public final boolean isOfType(ArtifactTypeId... artifactTypes) {
       return getArtifactType().inheritsFrom(artifactTypes);
+   }
+
+   public final boolean equalsType(ArtifactTypeId artifactType) {
+      return artifactTypeId.equals(artifactType);
    }
 
    @Override
