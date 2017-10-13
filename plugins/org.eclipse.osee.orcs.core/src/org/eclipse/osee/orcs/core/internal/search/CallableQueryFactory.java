@@ -178,4 +178,8 @@ public class CallableQueryFactory {
       protected abstract T innerCall() throws Exception;
 
    }
+
+   public QueryEngine getQueryEngine() {
+      return queryEngine;
+   }
 }

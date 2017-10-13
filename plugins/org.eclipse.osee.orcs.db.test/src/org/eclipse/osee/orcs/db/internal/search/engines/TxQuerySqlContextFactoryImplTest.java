@@ -105,10 +105,8 @@ public class TxQuerySqlContextFactoryImplTest {
    @Test
    public void testCount() throws Exception {
       String expected = "SELECT count(txd1.transaction_id)\n" + //
-         " FROM \n" + //
-         "osee_join_id jid1, osee_tx_details txd1\n" + //
-         " WHERE \n" + //
-         "txd1.transaction_id = jid1.id AND jid1.query_id = ?";
+         " FROM osee_join_id jid1, osee_tx_details txd1\n" + //
+         " WHERE txd1.transaction_id = jid1.id AND jid1.query_id = ?";
       queryData.addCriteria(IDS);
 
       QuerySqlContext context = queryEngine.createQueryContext(session, queryData, QueryType.COUNT);
@@ -128,10 +126,8 @@ public class TxQuerySqlContextFactoryImplTest {
    @Test
    public void testQueryTxIds() throws Exception {
       String expected = "SELECT txd1.*\n" + //
-         " FROM \n" + //
-         "osee_join_id jid1, osee_tx_details txd1\n" + //
-         " WHERE \n" + //
-         "txd1.transaction_id = jid1.id AND jid1.query_id = ?\n" + //
+         " FROM osee_join_id jid1, osee_tx_details txd1\n" + //
+         " WHERE txd1.transaction_id = jid1.id AND jid1.query_id = ?\n" + //
          " ORDER BY txd1.transaction_id";
 
       queryData.addCriteria(IDS);
@@ -153,10 +149,8 @@ public class TxQuerySqlContextFactoryImplTest {
    @Test
    public void testComment() throws Exception {
       String expected = "SELECT txd1.*\n" + //
-         " FROM \n" + //
-         "osee_tx_details txd1\n" + //
-         " WHERE \n" + //
-         "txd1.osee_comment = ?\n" + //
+         " FROM osee_tx_details txd1\n" + //
+         " WHERE txd1.osee_comment = ?\n" + //
          " ORDER BY txd1.transaction_id";
 
       queryData.addCriteria(COMMENT);
@@ -173,10 +167,8 @@ public class TxQuerySqlContextFactoryImplTest {
    @Test
    public void testBranchType() throws Exception {
       String expected = "SELECT txd1.*\n" + //
-         " FROM \n" + //
-         "osee_join_id jid1, osee_tx_details txd1\n" + //
-         " WHERE \n" + //
-         "txd1.tx_type = jid1.id AND jid1.query_id = ?\n" + //
+         " FROM osee_join_id jid1, osee_tx_details txd1\n" + //
+         " WHERE txd1.tx_type = jid1.id AND jid1.query_id = ?\n" + //
          " ORDER BY txd1.transaction_id";
 
       queryData.addCriteria(TYPES);
@@ -200,10 +192,8 @@ public class TxQuerySqlContextFactoryImplTest {
    @Test
    public void testBranchTypeAndTxId() throws Exception {
       String expected = "SELECT txd1.*\n" + //
-         " FROM \n" + //
-         "osee_join_id jid1, osee_tx_details txd1, osee_join_id jid2\n" + //
-         " WHERE \n" + //
-         "txd1.transaction_id = jid1.id AND jid1.query_id = ?\n" + //
+         " FROM osee_join_id jid1, osee_tx_details txd1, osee_join_id jid2\n" + //
+         " WHERE txd1.transaction_id = jid1.id AND jid1.query_id = ?\n" + //
          " AND \n" + //
          "txd1.tx_type = jid2.id AND jid2.query_id = ?\n" + //
          " ORDER BY txd1.transaction_id";
@@ -231,10 +221,8 @@ public class TxQuerySqlContextFactoryImplTest {
    @Test
    public void testSixItemQuery() throws Exception {
       String expected = "SELECT txd1.*\n" + //
-         " FROM \n" + //
-         "osee_tx_details txd1, osee_join_id jid1, osee_join_id jid2, osee_join_id jid3\n" + //
-         " WHERE \n" + //
-         "txd1.transaction_id < ?\n" + //
+         " FROM osee_tx_details txd1, osee_join_id jid1, osee_join_id jid2, osee_join_id jid3\n" + //
+         " WHERE txd1.transaction_id < ?\n" + //
          " AND \n" + //
          "txd1.author = jid1.id AND jid1.query_id = ?\n" + //
          " AND \n" + //
@@ -273,10 +261,8 @@ public class TxQuerySqlContextFactoryImplTest {
    @Test
    public void testQueryTxPrior() throws Exception {
       String expected = "SELECT txd1.*\n" + //
-         " FROM \n" + //
-         "osee_tx_details txd1\n" + //
-         " WHERE \n" + //
-         "txd1.transaction_id = (SELECT max(td2.transaction_id) FROM osee_tx_details td1,osee_tx_details td2 WHERE td1.transaction_id = ? AND td1.branch_id = td2.branch_id AND td1.transaction_id > td2.transaction_id)\n" + //
+         " FROM osee_tx_details txd1\n" + //
+         " WHERE txd1.transaction_id = (SELECT max(td2.transaction_id) FROM osee_tx_details td1,osee_tx_details td2 WHERE td1.transaction_id = ? AND td1.branch_id = td2.branch_id AND td1.transaction_id > td2.transaction_id)\n" + //
          " ORDER BY txd1.transaction_id";
 
       TransactionId tx = TransactionId.valueOf(3);

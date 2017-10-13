@@ -10,12 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.search;
 
+import java.util.List;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.QueryData;
+import org.eclipse.osee.orcs.core.ds.QueryEngine;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaQueryTypeToken;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.Match;
@@ -28,11 +34,33 @@ public class QueryBuilderImpl extends ArtifactQueryBuilderImpl<QueryBuilder> imp
 
    private final CallableQueryFactory queryFactory;
    private final OrcsSession session;
+   private final QueryEngine queryEngine;
 
    public QueryBuilderImpl(CallableQueryFactory queryFactory, CriteriaFactory criteriaFactory, OrcsSession session, QueryData queryData) {
       super(criteriaFactory, queryData);
       this.queryFactory = queryFactory;
       this.session = session;
+      this.queryEngine = queryFactory.getQueryEngine();
+   }
+
+   @Override
+   public ArtifactToken loadArtifactToken() {
+      List<ArtifactToken> tokens = loadArtifactTokens();
+      if (tokens.size() != 1) {
+         throw new OseeCoreException("Expected exactly 1 artifact token not %s", tokens.size());
+      }
+      return tokens.get(0);
+   }
+
+   @Override
+   public List<ArtifactToken> loadArtifactTokens() {
+      return loadArtifactTokens(CoreAttributeTypes.Name);
+   }
+
+   @Override
+   public List<ArtifactToken> loadArtifactTokens(AttributeTypeId attributeType) {
+      getQueryData().addCriteria(new CriteriaQueryTypeToken(attributeType));
+      return queryEngine.loadArtifactTokens(build());
    }
 
    @Override
@@ -95,5 +123,4 @@ public class QueryBuilderImpl extends ArtifactQueryBuilderImpl<QueryBuilder> imp
    public CancellableCallable<Integer> createCount() {
       return queryFactory.createCount(session, buildAndCopy());
    }
-
 }

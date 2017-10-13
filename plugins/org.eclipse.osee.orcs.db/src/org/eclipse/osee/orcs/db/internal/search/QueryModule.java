@@ -72,12 +72,15 @@ public class QueryModule {
    }
 
    public QueryEngine createQueryEngine(DataLoaderFactory objectLoader, AttributeTypes attrTypes) {
-      QueryCallableFactory factory1 = newArtifactQueryEngine(logger, sqlJoinFactory, idService, jdbcClient,
-         taggingEngine, executorAdmin, objectLoader, attrTypes);
+
+      QuerySqlContextFactory sqlContextFactory =
+         Engines.createArtifactSqlContext(logger, sqlJoinFactory, idService, jdbcClient, taggingEngine);
+      QueryCallableFactory factory1 =
+         newArtifactQueryEngine(sqlContextFactory, logger, taggingEngine, executorAdmin, objectLoader, attrTypes);
       QueryCallableFactory factory2 = newBranchQueryEngine(logger, sqlJoinFactory, idService, jdbcClient, objectLoader);
       QueryCallableFactory factory3 = newTxQueryEngine(logger, sqlJoinFactory, idService, jdbcClient, objectLoader);
       QueryCallableFactory factory4 = newQueryEngine(logger, sqlJoinFactory, idService, jdbcClient, taggingEngine,
          executorAdmin, objectLoader, attrTypes);
-      return new QueryEngineImpl(factory1, factory2, factory3, factory4, jdbcClient, sqlJoinFactory);
+      return new QueryEngineImpl(factory1, factory2, factory3, factory4, jdbcClient, sqlJoinFactory, sqlContextFactory);
    }
 }

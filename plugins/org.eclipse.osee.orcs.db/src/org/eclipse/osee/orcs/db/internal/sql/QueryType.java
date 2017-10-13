@@ -15,5 +15,6 @@ package org.eclipse.osee.orcs.db.internal.sql;
  */
 public enum QueryType {
    COUNT,
-   SELECT;
+   SELECT,
+   TOKEN;
 }

@@ -87,19 +87,23 @@ public abstract class AbstractSqlWriter implements HasOptions {
       return QueryType.COUNT == queryType;
    }
 
+   public boolean isTokenQueryType() {
+      return QueryType.TOKEN == queryType;
+   }
+
    protected void write(Iterable<SqlHandler<?>> handlers) {
       computeTables(handlers);
       computeWithClause(handlers);
 
       writeWithClause();
       writeSelect(handlers);
-      write("\n FROM \n");
+      write("\n FROM ");
       writeTables();
-      write("\n WHERE \n");
+      write("\n WHERE ");
       writePredicates(handlers);
 
-      if (toString().endsWith("\n WHERE \n")) {
-         removeDanglingSeparator("\n WHERE \n");
+      if (toString().endsWith("\n WHERE ")) {
+         removeDanglingSeparator("\n WHERE ");
       }
       writeGroupAndOrder();
    }

@@ -52,7 +52,7 @@ public class ArtifactQueryBuilderImpl<T> implements ArtifactQueryBuilder<T> {
       this.queryData = queryData;
    }
 
-   private QueryData getQueryData() {
+   protected QueryData getQueryData() {
       return queryData;
    }
 

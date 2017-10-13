@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
+import java.util.List;
 import org.eclipse.osee.executor.admin.CancellableCallable;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.search.TupleQuery;
 
@@ -38,4 +40,6 @@ public interface QueryEngine {
    CancellableCallable<Integer> createQuery(OrcsSession session, QueryData queryData, LoadDataHandler handler);
 
    CancellableCallable<Integer> createQueryCount(OrcsSession session, QueryData queryData);
+
+   List<ArtifactToken> loadArtifactTokens(QueryData queryData);
 }

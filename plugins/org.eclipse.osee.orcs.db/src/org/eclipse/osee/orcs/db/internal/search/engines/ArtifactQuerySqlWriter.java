@@ -47,6 +47,9 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
       } else {
          write("%s.art_id, %s.branch_id", artAlias, txAlias);
       }
+      if (isTokenQueryType()) {
+         write(", value, art_type_id");
+      }
    }
 
    @Override
@@ -66,14 +69,14 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
 
    @Override
    public void writeGroupAndOrder() {
-      if (!isCountQueryType()) {
-         String txAlias = getLastAlias(TableEnum.TXS_TABLE, ObjectType.ARTIFACT);
-         String artAlias = getLastAlias(TableEnum.ARTIFACT_TABLE);
-         write("\n ORDER BY %s.art_id, %s.branch_id", artAlias, txAlias);
-      } else {
+      if (isCountQueryType()) {
          if (OptionsUtil.isHistorical(getOptions())) {
             write("\n) xTable");
          }
+      } else {
+         String txAlias = getLastAlias(TableEnum.TXS_TABLE, ObjectType.ARTIFACT);
+         String artAlias = getLastAlias(TableEnum.ARTIFACT_TABLE);
+         write("\n ORDER BY %s.art_id, %s.branch_id", artAlias, txAlias);
       }
    }
 
