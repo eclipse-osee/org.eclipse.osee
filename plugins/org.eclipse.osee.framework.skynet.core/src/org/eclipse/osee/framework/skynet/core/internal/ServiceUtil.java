@@ -30,6 +30,8 @@ import org.osgi.framework.BundleException;
 
 public final class ServiceUtil {
 
+   private static IOseeCachingService cacheService;
+
    private ServiceUtil() {
       // Utility class
    }
@@ -47,7 +49,10 @@ public final class ServiceUtil {
    }
 
    public static IOseeCachingService getOseeCacheService() throws OseeCoreException {
-      return getService(IOseeCachingService.class);
+      if (cacheService == null) {
+         cacheService = getService(IOseeCachingService.class);
+      }
+      return cacheService;
    }
 
    public static AttributeAdapterService getAttributeAdapterService() throws OseeCoreException {
