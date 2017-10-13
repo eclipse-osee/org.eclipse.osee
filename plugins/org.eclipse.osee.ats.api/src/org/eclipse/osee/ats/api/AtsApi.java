@@ -219,7 +219,7 @@ public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsConfiguratio
       return getTeamWf(ArtifactId.valueOf(id));
    }
 
-   Collection<ArtifactToken> getArtifacts(IArtifactType artifactType);
+   List<ArtifactToken> getArtifacts(IArtifactType artifactType);
 
    IAtsActionableItemService getActionableItemService();
 

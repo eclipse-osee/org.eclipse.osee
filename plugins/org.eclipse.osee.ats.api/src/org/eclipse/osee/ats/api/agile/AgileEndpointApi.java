@@ -26,9 +26,9 @@ import org.eclipse.osee.ats.api.agile.sprint.SprintConfigurations;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.util.ILineChart;
-import org.eclipse.osee.ats.api.util.JaxAtsObjectToken;
 import org.eclipse.osee.ats.api.workflow.JaxAtsObjects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 
 /**
@@ -43,7 +43,7 @@ public interface AgileEndpointApi {
    @GET
    @Path("team/token")
    @Produces(MediaType.APPLICATION_JSON)
-   public List<JaxAtsObjectToken> getTeamTokens() throws Exception;
+   public List<ArtifactToken> getTeamTokens() throws Exception;
 
    @GET
    @Path("team")
@@ -58,7 +58,7 @@ public interface AgileEndpointApi {
    @GET
    @Path("team/{teamId}/token")
    @Produces(MediaType.APPLICATION_JSON)
-   public JaxAtsObjectToken getTeamToken(@PathParam("teamId") long teamId);
+   public ArtifactToken getTeamToken(@PathParam("teamId") long teamId);
 
    @GET
    @Path("team/{teamId}/feature")
@@ -73,7 +73,7 @@ public interface AgileEndpointApi {
    @GET
    @Path("team/{teamId}/member")
    @Produces(MediaType.APPLICATION_JSON)
-   public List<JaxAtsObjectToken> getTeamMembers(@PathParam("teamId") ArtifactId teamId);
+   public List<ArtifactToken> getTeamMembers(@PathParam("teamId") ArtifactId teamId);
 
    @Path("team/{teamId}/workpackage")
    @GET
@@ -93,7 +93,7 @@ public interface AgileEndpointApi {
    @GET
    @Path("team/{teamId}/backlog/token")
    @Produces(MediaType.APPLICATION_JSON)
-   public JaxAtsObjectToken getBacklogToken(@PathParam("teamId") long teamId);
+   public ArtifactToken getBacklogToken(@PathParam("teamId") long teamId);
 
    @GET
    @Path("team/{teamId}/backlog/item")
@@ -116,7 +116,7 @@ public interface AgileEndpointApi {
    @GET
    @Path("team/{teamId}/sprint/token")
    @Produces(MediaType.APPLICATION_JSON)
-   public List<JaxAtsObjectToken> getSprintsTokens(@PathParam("teamId") long teamId);
+   public List<ArtifactToken> getSprintsTokens(@PathParam("teamId") long teamId);
 
    @GET
    @Path("team/{teamId}/sprint/{sprintId}")

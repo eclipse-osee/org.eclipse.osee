@@ -67,7 +67,6 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.ILineChart;
-import org.eclipse.osee.ats.api.util.JaxAtsObjectToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.JaxAtsObjects;
 import org.eclipse.osee.ats.core.agile.SprintUtil;
@@ -139,15 +138,8 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @Path("team/token")
    @GET
    @Produces(MediaType.APPLICATION_JSON)
-   public List<JaxAtsObjectToken> getTeamTokens() throws Exception {
-      List<JaxAtsObjectToken> teams = new ArrayList<>();
-      for (ArtifactToken art : atsApi.getArtifacts(AtsArtifactTypes.AgileTeam)) {
-         JaxAtsObjectToken team = new JaxAtsObjectToken();
-         team.setName(art.getName());
-         team.setId(art);
-         teams.add(team);
-      }
-      return teams;
+   public List<ArtifactToken> getTeamTokens() throws Exception {
+      return atsApi.getArtifacts(AtsArtifactTypes.AgileTeam);
    }
 
    @Override
@@ -169,16 +161,8 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @GET
    @Path("team/{teamId}/token")
    @Produces(MediaType.APPLICATION_JSON)
-   public JaxAtsObjectToken getTeamToken(@PathParam("teamId") long teamId) {
-      ArtifactToken token = atsApi.getQueryService().getArtifactToken(teamId);
-      return toAtsObjToken(token);
-   }
-
-   private JaxAtsObjectToken toAtsObjToken(ArtifactToken token) {
-      JaxAtsObjectToken result = new JaxAtsObjectToken();
-      result.setName(token.getName());
-      result.setId(token);
-      return result;
+   public ArtifactToken getTeamToken(@PathParam("teamId") long teamId) {
+      return atsApi.getQueryService().getArtifactToken(teamId);
    }
 
    @Override
@@ -220,21 +204,21 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @GET
    @Path("team/{teamId}/member")
    @Produces(MediaType.APPLICATION_JSON)
-   public List<JaxAtsObjectToken> getTeamMembers(@PathParam("teamId") ArtifactId teamId) {
+   public List<ArtifactToken> getTeamMembers(@PathParam("teamId") ArtifactId teamId) {
       IAgileTeam aTeam = atsApi.getConfigItem(teamId);
       Set<IAtsUser> activeMembers = atsApi.getAgileService().getTeamMebers(aTeam);
 
       // Construct list of users with team members sorted first and other users last
-      List<JaxAtsObjectToken> results = new LinkedList<>();
+      List<ArtifactToken> results = new LinkedList<>();
       for (IAtsUser user : activeMembers) {
-         results.add(JaxAtsObjectToken.construct(user.getStoreObject(), user.getName() + " (Team)"));
+         results.add(ArtifactToken.valueOf(user.getStoreObject(), user.getName() + " (Team)"));
       }
       Collections.sort(results, new NamedComparator(SortOrder.ASCENDING));
 
-      List<JaxAtsObjectToken> othersForSort = new LinkedList<>();
+      List<ArtifactToken> othersForSort = new LinkedList<>();
       for (IAtsUser user : atsApi.getUserService().getUsers()) {
          if (user.isActive() && !activeMembers.contains(user)) {
-            othersForSort.add(JaxAtsObjectToken.construct(user.getStoreObject()));
+            othersForSort.add(user.getStoreObject());
          }
       }
       Collections.sort(othersForSort, new NamedComparator(SortOrder.ASCENDING));
@@ -438,7 +422,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    }
 
    @Override
-   public List<JaxAtsObjectToken> getSprintsTokens(long teamId) {
+   public List<ArtifactToken> getSprintsTokens(long teamId) {
       if (teamId <= 0) {
          throw new OseeWebApplicationException(Status.NOT_FOUND, "teamId is not valid");
       }
@@ -449,9 +433,9 @@ public class AgileEndpointImpl implements AgileEndpointApi {
          TokenSearchOperations.getArtifactTokensMatchingAttrValue(atsApi.getAtsBranch(), relatedSprints,
             AtsAttributeTypes.CurrentStateType, StateType.Working.name(), orcsApi, jdbcService);
 
-      List<JaxAtsObjectToken> sprints = new ArrayList<>();
+      List<ArtifactToken> sprints = new ArrayList<>();
       for (ArtifactToken sprintArt : inWorkSprints) {
-         sprints.add(toAtsObjToken(sprintArt));
+         sprints.add(sprintArt);
       }
       return sprints;
    }
@@ -722,12 +706,11 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    }
 
    @Override
-   public JaxAtsObjectToken getBacklogToken(long teamId) {
+   public ArtifactToken getBacklogToken(long teamId) {
       if (teamId <= 0) {
          throw new OseeWebApplicationException(Status.NOT_FOUND, "teamId is not valid");
       }
-      ArtifactToken token = atsApi.getQueryService().getArtifactToken(teamId);
-      return toAtsObjToken(token);
+      return atsApi.getQueryService().getArtifactToken(teamId);
    }
 
    @Override

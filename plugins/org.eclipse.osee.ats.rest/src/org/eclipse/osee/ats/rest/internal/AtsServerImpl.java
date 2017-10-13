@@ -512,7 +512,7 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
    }
 
    @Override
-   public Collection<ArtifactToken> getArtifacts(IArtifactType artifactType) {
+   public List<ArtifactToken> getArtifacts(IArtifactType artifactType) {
       return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
          orcsApi.getQueryFactory().fromBranch(getAtsBranch()).andIsOfType(artifactType).getResults().getList());
    }
