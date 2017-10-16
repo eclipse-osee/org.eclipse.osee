@@ -14,10 +14,8 @@ angular
 						'$filter',
 						'$routeParams',
 						'LayoutService',
-						'PopupService',
 						function($scope, AgileEndpoint, $resource, $window,
-								$modal, $filter, $routeParams, LayoutService,
-								PopupService) {
+								$modal, $filter, $routeParams, LayoutService) {
 
 							$scope.team = {};
 							$scope.team.uuid = $routeParams.team;

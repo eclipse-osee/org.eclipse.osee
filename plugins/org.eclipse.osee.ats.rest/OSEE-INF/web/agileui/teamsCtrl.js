@@ -8,21 +8,22 @@ angular
 				[
 						'$scope',
 						'AgileEndpoint',
+						'Global',
 						'$resource',
 						'$window',
 						'$modal',
 						'$filter',
 						'$routeParams',
 						'LayoutService',
-						'PopupService',
-						function($scope, AgileEndpoint, $resource, $window,
-								$modal, $filter, $routeParams, LayoutService,
-								PopupService) {
+						function($scope, AgileEndpoint, Global, $resource,
+								$window, $modal, $filter, $routeParams,
+								LayoutService) {
 
 							// ////////////////////////////////////
 							// Agile Team table
 							// ////////////////////////////////////
 							$scope.selectedTeams = [];
+							$scope.loadingImg = Global.loadingImg;
 
 							var openTeamTmpl = '<button class="btn btn-default btn-sm" ng-click="openTeam(row.entity)">Open</button>';
 							var configTeamTmpl = '<button class="btn btn-default btn-sm" ng-click="openConfigForTeam(row.entity)">Config</button>';
@@ -72,7 +73,7 @@ angular
 									displayName : 'New Action',
 									width : 85,
 									cellTemplate : openNewActionImpl,
-									cellClass: 'grid-align'
+									cellClass : 'grid-align'
 								}, {
 									field : "burndown",
 									displayName : 'Burn-Down',
@@ -109,16 +110,13 @@ angular
 
 							$scope.updateTeams = function() {
 								$scope.sheets = null;
-								var loadingModal = PopupService
-										.showLoadingModal();
-								AgileEndpoint.getTeamsTokens().$promise.then(function(
-										data) {
-									$scope.teams = data;
-									loadingModal.close();
-									LayoutService
-											.resizeElementHeight("teamTable");
-									LayoutService.refresh();
-								});
+								AgileEndpoint.getTeamsTokens().$promise
+										.then(function(data) {
+											$scope.teams = data;
+											LayoutService
+													.resizeElementHeight("teamTable");
+											LayoutService.refresh();
+										});
 							}
 
 							$scope.openTeam = function(team) {
@@ -159,10 +157,11 @@ angular
 							$scope.refresh = function() {
 								$scope.updateTeams();
 							}
-							
+
 							$scope.refresh();
 
-							// NOT COMMON MENU, MUST REFERENCE team and not $scope
+							// NOT COMMON MENU, MUST REFERENCE team and not
+							// $scope
 							$scope.openConfigForTeam = function(team) {
 								window.location.assign("main#/config?team="
 										.concat(team.id))
@@ -174,18 +173,25 @@ angular
 							}
 
 							$scope.openBurndownForTeam = function(team) {
-								window.location.assign("main#/report?team="
-										.concat(team.id).concat("&reporttype=burndown&reportname=Burn-Down"))
+								window.location
+										.assign("main#/report?team="
+												.concat(team.id)
+												.concat(
+														"&reporttype=burndown&reportname=Burn-Down"))
 							}
 
 							$scope.openBurnupForTeam = function(team) {
-								window.location.assign("main#/report?team="
-										.concat(team.id).concat("&reporttype=burnup&reportname=Burn-Up"))
+								window.location
+										.assign("main#/report?team="
+												.concat(team.id)
+												.concat(
+														"&reporttype=burnup&reportname=Burn-Up"))
 							}
 
 							$scope.openBacklogForTeam = function(team) {
 								window.location.assign("main#/backlog?team="
-										.concat(team.id).concat("&default=backlog"))
+										.concat(team.id).concat(
+												"&default=backlog"))
 							}
 
 							$scope.openNewActionForTeam = function(team) {
@@ -195,17 +201,24 @@ angular
 
 							$scope.openSprintForTeam = function(team) {
 								window.location.assign("main#/sprint?team="
-										.concat(team.id).concat("&default=sprint"))
+										.concat(team.id).concat(
+												"&default=sprint"))
 							}
 
 							$scope.openSummaryForTeam = function(team) {
-								window.location.assign("main#/report?team="
-										.concat(team.id).concat("&reporttype=summary&reportname=Summary"))
+								window.location
+										.assign("main#/report?team="
+												.concat(team.id)
+												.concat(
+														"&reporttype=summary&reportname=Summary"))
 							}
 
 							$scope.openDataForTeam = function(team) {
-								window.location.assign("main#/report?team="
-										.concat(team.id).concat("&reporttype=data&reportname=Data"))
+								window.location
+										.assign("main#/report?team="
+												.concat(team.id)
+												.concat(
+														"&reporttype=data&reportname=Data"))
 							}
 
 						} ]);

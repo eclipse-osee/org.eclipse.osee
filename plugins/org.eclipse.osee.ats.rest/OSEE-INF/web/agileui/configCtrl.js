@@ -14,10 +14,8 @@ angular
 						'$filter',
 						'$routeParams',
 						'LayoutService',
-						'PopupService',
 						function($scope, AgileEndpoint, $resource, $window,
-								$modal, $filter, $routeParams, LayoutService,
-								PopupService) {
+								$modal, $filter, $routeParams, LayoutService) {
 
 							$scope.team = {};
 							$scope.team.uuid = $routeParams.team;
@@ -60,7 +58,7 @@ angular
 									displayName : 'Delete',
 									width : 60,
 									cellTemplate : deleteSprintImpl
-								}]
+								} ]
 							};
 
 							$scope.updateSprints = function() {
@@ -192,7 +190,8 @@ angular
 													$scope.selectedTeam,
 													teamName).$promise
 													.then(function(data) {
-														$scope.updateFeatureGroups();
+														$scope
+																.updateFeatureGroups();
 													});
 										});
 							}
@@ -287,27 +286,25 @@ angular
 
 							$scope.refresh = function() {
 								$scope.isLoaded = "";
-								var loadingModal = PopupService
-										.showLoadingModal();
 								AgileEndpoint.getTeamSingle($scope.team).$promise
 										.then(function(data) {
 											$scope.selectedTeam = data;
 											$scope.teamName = data.name;
 											$scope.updateSprints();
 											$scope.updateFeatureGroups();
-											AgileEndpoint.getBacklog($scope.selectedTeam).$promise
-											.then(function(data) {
-												if (data && data.name) {
-													$scope.selectedTeam.backlog = data.name;
-													$scope.selectedTeam.backlogUuid = data.uuid;
-												}
-											});
+											AgileEndpoint
+													.getBacklog($scope.selectedTeam).$promise
+													.then(function(data) {
+														if (data && data.name) {
+															$scope.selectedTeam.backlog = data.name;
+															$scope.selectedTeam.backlogUuid = data.uuid;
+														}
+													});
 											LayoutService
 													.resizeElementHeight("sprintConfigTable");
 											LayoutService
 													.resizeElementHeight("featureGroupConfigTable");
 											LayoutService.refresh();
-											loadingModal.close();
 											$scope.isLoaded = "true";
 										});
 							}
@@ -326,18 +323,25 @@ angular
 							}
 
 							$scope.openBurndownForTeam = function(team) {
-								window.location.assign("main#/report?team="
-										.concat($scope.team.id).concat("&reporttype=burndown&reportname=Burn-Down"))
+								window.location
+										.assign("main#/report?team="
+												.concat($scope.team.id)
+												.concat(
+														"&reporttype=burndown&reportname=Burn-Down"))
 							}
 
 							$scope.openBurnupForTeam = function(team) {
-								window.location.assign("main#/report?team="
-										.concat($scope.team.id).concat("&reporttype=burnup&reportname=Burn-Up"))
+								window.location
+										.assign("main#/report?team="
+												.concat($scope.team.id)
+												.concat(
+														"&reporttype=burnup&reportname=Burn-Up"))
 							}
 
 							$scope.openBacklogForTeam = function(team) {
 								window.location.assign("main#/backlog?team="
-										.concat($scope.team.id).concat("&default=backlog"))
+										.concat($scope.team.id).concat(
+												"&default=backlog"))
 							}
 
 							$scope.openNewActionForTeam = function(team) {
@@ -347,17 +351,24 @@ angular
 
 							$scope.openSprintForTeam = function(team) {
 								window.location.assign("main#/sprint?team="
-										.concat($scope.team.id).concat("&default=sprint"))
+										.concat($scope.team.id).concat(
+												"&default=sprint"))
 							}
 
 							$scope.openSummaryForTeam = function(team) {
-								window.location.assign("main#/report?team="
-										.concat($scope.team.id).concat("&reporttype=summary&reportname=Summary"))
+								window.location
+										.assign("main#/report?team="
+												.concat($scope.team.id)
+												.concat(
+														"&reporttype=summary&reportname=Summary"))
 							}
 
 							$scope.openDataForTeam = function(team) {
-								window.location.assign("main#/report?team="
-										.concat($scope.team.id).concat("&reporttype=data&reportname=Data"))
+								window.location
+										.assign("main#/report?team="
+												.concat($scope.team.id)
+												.concat(
+														"&reporttype=data&reportname=Data"))
 							}
 							// COMMON MENU COPIED TO ALL JS
 

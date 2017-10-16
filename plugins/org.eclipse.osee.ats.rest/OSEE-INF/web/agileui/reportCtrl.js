@@ -15,10 +15,8 @@ angular
 						'$filter',
 						'$routeParams',
 						'LayoutService',
-						'PopupService',
 						function($scope, AgileEndpoint, Global, $resource, $window,
-								$modal, $filter, $routeParams, LayoutService,
-								PopupService) {
+								$modal, $filter, $routeParams, LayoutService) {
 
 							$scope.team = {};
 							$scope.team.id = $routeParams.team;

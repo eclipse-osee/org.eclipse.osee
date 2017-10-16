@@ -65,21 +65,6 @@ app.factory("LayoutService", function() {
 	}
 });
 
-app.factory("PopupService", function($modal) {
-	return {
-		showLoadingModal : function(elementName) {
-			var modalInstance = $modal.open({
-				templateUrl : 'loadingModal.html',
-				size : 'sm',
-				windowClass : 'needsRerunModal',
-				backdrop : 'static'
-			});
-
-			return modalInstance;
-		}
-	}
-});
-
 app.directive('sprintconfig', function() {
 	return {
 		templateUrl : 'sprintConfig.html'

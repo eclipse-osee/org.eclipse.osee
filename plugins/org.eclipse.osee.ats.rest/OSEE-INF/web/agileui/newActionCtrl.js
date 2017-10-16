@@ -12,9 +12,8 @@ angular.module('AgileApp').controller(
 				'$filter',
 				'$routeParams',
 				'LayoutService',
-				'PopupService',
 				function($scope, AgileEndpoint, $resource, $window, $modal,
-						$filter, $routeParams, LayoutService, PopupService) {
+						$filter, $routeParams, LayoutService) {
 
 					$scope.team = {};
 					$scope.team.id = $routeParams.team;
@@ -49,8 +48,6 @@ angular.module('AgileApp').controller(
 					});
 
 					$scope.createItem = function() {
-						var loadingModal = null;
-						try {
 						$scope.action.asUserId = 99999999;
 						$scope.action.agileTeam = $scope.team.id;
 						$scope.action.createdByUserId = 99999999;
@@ -58,7 +55,6 @@ angular.module('AgileApp').controller(
 							$scope.action.aiIds = [];
 							$scope.action.aiIds[0] = $scope.actionableItem;
 						}
-						 loadingModal = PopupService.showLoadingModal(); 
 						AgileEndpoint.createItem($scope.action).$promise
 								.then(function(data) {
 									// open new tab to new action
@@ -76,16 +72,9 @@ angular.module('AgileApp').controller(
 											alert('Action Created');
 										}
 									}
-									loadingModal.close();
 								}).catch((err) => {
-									loadingModal.close();
 									alert(err);
 								});
-						} finally {
-							if(loadingModal) {
-								loadingModal.close();
-							}
-						}
 					};
 					
 					// COMMON MENU COPIED TO ALL JS
