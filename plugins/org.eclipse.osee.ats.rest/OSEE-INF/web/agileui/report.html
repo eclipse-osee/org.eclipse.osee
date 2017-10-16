@@ -11,10 +11,17 @@
 		</div>
 		<div menu></div>
 	</div>
-	<div id="b1" class="b1"></div>
+
+	<center>
+		<img src="{{loadingImg}}" id="loadingImg" ng-hide="loaded == true"
+			align="middle">
+	</center>
+
+	<div id="reportDiv" ng-show="firefox == false"></div>
+
+	<iframe name="reportFrame" ng-show="firefox == true" width="100%"
+		height="400" frameborder="1" allowfullscreen> </iframe>
+
 </div>
-<script>
-	document.getElementById("b1").style.zoom = "400%"
-</script>
 </body>
 </html>

@@ -8,6 +8,7 @@ angular
 				[
 						'$scope',
 						'AgileEndpoint',
+						'Global',
 						'$resource',
 						'$window',
 						'$modal',
@@ -15,7 +16,7 @@ angular
 						'$routeParams',
 						'LayoutService',
 						'PopupService',
-						function($scope, AgileEndpoint, $resource, $window,
+						function($scope, AgileEndpoint, Global, $resource, $window,
 								$modal, $filter, $routeParams, LayoutService,
 								PopupService) {
 
@@ -23,6 +24,7 @@ angular
 							$scope.team.id = $routeParams.team;
 							$scope.reporttype = $routeParams.reporttype;
 							$scope.reportname = $routeParams.reportname;
+							$scope.loadingImg = Global.loadingImg;
 
 							$scope.updateReports = function() {
 								AgileEndpoint.getTeamSingle($scope.team).$promise
@@ -30,9 +32,10 @@ angular
 											$scope.team.name = data.name;
 											$scope.sprint = {};
 											$scope.sprint.id = data.sprintId;
+											$scope.loadingImg = Global.loadingImg;
 		
 											var htmlcontent = $('#b1 ');
-											var url = "<object data=\"/ats/agile/team/";
+											var url = "/ats/agile/team/";
 											url = url
 													.concat($scope.team.id);
 											url = url
@@ -41,20 +44,30 @@ angular
 													.concat($scope.sprint.id);
 											if ($scope.reporttype == "burndown") {
 												url = url
-														.concat("/burndown/chart/ui?type=best\">");
+														.concat("/burndown/chart/ui?type=best");
 											} else if ($scope.reporttype == "burnup") {
 												url = url
-														.concat("/burnup/chart/ui?type=best\">");
+														.concat("/burnup/chart/ui?type=best");
 											} else if ($scope.reporttype == "data") {
 												url = url
-														.concat("/data/table?type=best\">");
+														.concat("/data/table?type=best");
 											} else if ($scope.reporttype == "summary") {
 												url = url
-														.concat("/summary?type=best\">");
+														.concat("/summary?type=best");
 											}
-		
-											$("#b1").html(url);
-		
+											
+											var ff =
+												  navigator.userAgent.search("Firefox");
+											if (ff > -1) {
+												$scope.firefox = true;
+												window.open(url, "reportFrame");
+											} else {
+												$scope.firefox = false;
+												$("#reportDiv").html("<object data=\"" + url + "\">");
+												document.getElementById("reportDiv").style.zoom = "400%"
+
+											}
+										    
 											AgileEndpoint
 													.getSprint(
 															$scope.team.id,
@@ -71,6 +84,7 @@ angular
 																.concat(
 																		new Date()
 																				.toLocaleString());
+														$scope.loaded = true;
 													}).catch((err) => {
 														alert(err);
 													});
