@@ -33,13 +33,13 @@
 	border-bottom-width: 0px !important;
 }
 
-#newActionForm {
+#newTaskForm {
 	width: 100% !important;
 	forground: black;
 	margin: 10px;
 }
 
-#newActionButtonContainer {
+#newTaskButtonContainer {
 	margin: 0px;
 }
 

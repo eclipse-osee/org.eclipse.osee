@@ -65,8 +65,10 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -115,6 +117,12 @@ public class ActionFactory implements IAtsActionFactory {
       Date needByDate = null;
       if (Strings.isNumeric(data.getNeedByDateLong())) {
          needByDate = new Date(Long.valueOf(data.getNeedByDateLong()));
+      } else if (Strings.isValid(data.getNeedByDate())) {
+         try {
+            needByDate = DateUtil.getDate("yyyy-MM-dd", data.getNeedByDate());
+         } catch (Exception ex) {
+            throw new OseeCoreException("Error parsing date.  Must be mm/dd/yyyy.", ex);
+         }
       }
       Date createdDate = null;
       if (Strings.isNumeric(data.getCreatedDateLong())) {
@@ -239,7 +247,6 @@ public class ActionFactory implements IAtsActionFactory {
    public ActionResult createAction(IAtsUser user, String title, String desc, ChangeType changeType, String priority, boolean validationRequired, Date needByDate, Collection<IAtsActionableItem> actionableItems, Date createdDate, IAtsUser createdBy, INewActionListener newActionListener, IAtsChangeSet changes) {
       Conditions.checkNotNullOrEmptyOrContainNull(actionableItems, "actionableItems");
       Conditions.assertNotNullOrEmpty(title, "Title must be specified");
-      Conditions.assertNotNull(changeType, "Change Type must be specified");
       // if "tt" is title, this is an action created for development. To
       // make it easier, all fields are automatically filled in for ATS developer
 

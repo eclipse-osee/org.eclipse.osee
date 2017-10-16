@@ -1,18 +1,16 @@
-/**
- * Agile Config Controller
- */
+
 angular.module('AgileApp').controller(
-		'NewActionCtrl',
+		'NewTaskCtrl',
 		[
 				'$scope',
 				'AgileEndpoint',
+				'Global',
 				'$resource',
 				'$window',
-				'$modal',
 				'$filter',
 				'$routeParams',
 				'LayoutService',
-				function($scope, AgileEndpoint, $resource, $window, $modal,
+				function($scope, AgileEndpoint, Global, $resource, $window,
 						$filter, $routeParams, LayoutService) {
 
 					$scope.team = {};
@@ -20,6 +18,8 @@ angular.module('AgileApp').controller(
 					$scope.team.backlog = "";
 					$scope.team.sprint = "";
 					$scope.action = {};
+					$scope.loadingImg = Global.loadingImg;
+					$scope.creating = false;
  
 					AgileEndpoint.getTeamToken($scope.team).$promise
 						.then(function(data) {
@@ -48,6 +48,7 @@ angular.module('AgileApp').controller(
 					});
 
 					$scope.createItem = function() {
+						$scope.creating = true;
 						$scope.action.asUserId = 99999999;
 						$scope.action.agileTeam = $scope.team.id;
 						$scope.action.createdByUserId = 99999999;
@@ -55,12 +56,14 @@ angular.module('AgileApp').controller(
 							$scope.action.aiIds = [];
 							$scope.action.aiIds[0] = $scope.actionableItem;
 						}
-						AgileEndpoint.createItem($scope.action).$promise
+						AgileEndpoint.createTask($scope.action).$promise
 								.then(function(data) {
 									// open new tab to new action
 									if (data.results.numErrors > 0) {
 										alert(data.results.results);
+										$scope.creating = false;
 									} else {
+										$scope.creating = false;
 										var url = "/ats/ui/action/" + data.teamWfs[0];
 										var win = window.open(url, '_blank');
 										if (win) {
@@ -69,12 +72,15 @@ angular.module('AgileApp').controller(
 											win.focus();
 										} else {
 											// Browser has blocked it
-											alert('Action Created');
+											alert('Task Created');
 										}
+										$scope.creating = false;
 									}
 								}).catch((err) => {
 									alert(err);
+									$scope.creating = false;
 								});
+						
 					};
 					
 					// COMMON MENU COPIED TO ALL JS
@@ -103,8 +109,8 @@ angular.module('AgileApp').controller(
 								.concat($scope.team.id).concat("&default=backlog"))
 					}
 
-					$scope.openNewActionForTeam = function(team) {
-						window.location.assign("main#/newAction?team="
+					$scope.openNewTaskForTeam = function(team) {
+						window.location.assign("main#/newTask?team="
 								.concat($scope.team.id))
 					}
 

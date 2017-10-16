@@ -13,18 +13,17 @@
 
 	<div menu></div>
 
-	<div id="newActionForm">
+	<div id="newTaskForm">
 		<form class="simple-form" novalidate>
 
 			<!-- TITLE -->
-			<label>Title: <input type="text" ng-model="action.title"
-				width="100%" /></label><br />
+			<label>Title: <input type="text" ng-model="action.title" /></label><br />
 
 			<!-- ACTIONABLE ITEMS -->
 			<label for="textarea">Actionable Item: </label> <select
 				ng-model="actionableItem"
 				ng-options="item.uuid as item.Name for item in validAis">
-			</select>
+			</select><br />
 
 			<!-- DESCRIPTION -->
 			<label for="textarea">Description: <textarea id="textarea"
@@ -51,21 +50,21 @@
 
 				<!-- NEED-BY DATE -->
 			</select> <label>Need-By Date:</label> <input type="date" name="deadline"
-				ng-model="action.needByDate"><br />
-
-			<!-- POINTS -->
-			</select> <label>Points:</label> <input type="text" name="points"
-				ng-model="action.points"><br />
-
-			<!-- UN-PLANNED -->
-			</select> <label>Un-Planned Work:</label> <input type="checkbox"
-				name="unplanned" ng-model="action.unplanned">
+				ng-model="action.needByDate" data-date-format="mm/dd/yyyy"><br />
 
 			<!-- SPRINT -->
 			<label for="textarea">Sprint: </label> <select
 				ng-model="action.sprint"
 				ng-options="item.id as item.name for item in validSprints">
 			</select>
+
+			<!-- POINTS -->
+			</select> <label>Points:</label> <input type="text" name="points"
+				ng-model="action.points">
+
+			<!-- UN-PLANNED -->
+			</select> <label>Un-Planned Work:</label> <input type="checkbox"
+				name="unplanned" ng-model="action.unplanned"><br />
 
 			<!-- FEATURE GROUP -->
 			<label for="textarea">Feature Group: </label> <select
@@ -81,8 +80,13 @@
 
 			<div id="newActionButtonContainer">
 				<br /> <input type="submit" ng-click="createItem(action)"
-					value="Create" />
+					value="Create" ng-show="creating == false" />
 			</div>
+			<center>
+				<img src="{{loadingImg}}" id="loadingImg" ng-show="creating == true"
+					align="middle"><label ng-show="creating == true">
+					Creating</label>
+			</center>
 
 		</form>
 	</div>

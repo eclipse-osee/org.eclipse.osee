@@ -33,7 +33,7 @@ angular.module('AgileApp').factory('AgileEndpoint',
 				return itemResource.update(data);
 			}
 			
-			factory.createItem = function(data) {
+			factory.createTask = function(data) {
 				return actionResource.save(data);
 			}
 

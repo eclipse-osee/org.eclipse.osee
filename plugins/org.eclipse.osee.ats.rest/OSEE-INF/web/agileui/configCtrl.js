@@ -344,8 +344,8 @@ angular
 												"&default=backlog"))
 							}
 
-							$scope.openNewActionForTeam = function(team) {
-								window.location.assign("main#/newAction?team="
+							$scope.openNewTaskForTeam = function(team) {
+								window.location.assign("main#/newTask?team="
 										.concat($scope.team.id))
 							}
 

@@ -148,7 +148,6 @@ angular
 								 $scope.sprint.id = $scope.selectedItem.id;
 								 AgileEndpoint.updateSprint($scope.team, $scope.sprint).$promise
 										.then(function(data) {
-											// open new tab to new action
 											if (data.results.numErrors > 0) {
 												alert(data.results.results);
 											} 
@@ -229,8 +228,8 @@ angular
 										.concat($scope.team.id).concat("&default=backlog"))
 							}
 
-							$scope.openNewActionForTeam = function(team) {
-								window.location.assign("main#/newAction?team="
+							$scope.openNewTaskForTeam = function(team) {
+								window.location.assign("main#/newTask?team="
 										.concat($scope.team.id))
 							}
 

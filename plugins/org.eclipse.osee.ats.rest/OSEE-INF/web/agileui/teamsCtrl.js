@@ -34,7 +34,7 @@ angular
 							var openBurnupImpl = '<button class="btn btn-default btn-sm" ng-click="openBurnupForTeam(row.entity)">Burn-Up</button>';
 							var openSummaryImpl = '<button class="btn btn-default btn-sm" ng-click="openSummaryForTeam(row.entity)">Summary</button>';
 							var openDataImpl = '<button class="btn btn-default btn-sm" ng-click="openDataForTeam(row.entity)">Data</button>';
-							var openNewActionImpl = '<button class="btn btn-default btn-sm" ng-click="openNewActionForTeam(row.entity)">New Action</button>';
+							var openNewTaskImpl = '<button class="btn btn-default btn-sm" ng-click="openNewTaskForTeam(row.entity)">New Task</button>';
 
 							$scope.teamGridOptions = {
 								data : 'teams',
@@ -69,10 +69,10 @@ angular
 									cellTemplate : openKanbanImpl,
 									cellClass : 'grid-align'
 								}, {
-									field : "newAction",
-									displayName : 'New Action',
+									field : "newTask",
+									displayName : 'New Task',
 									width : 85,
-									cellTemplate : openNewActionImpl,
+									cellTemplate : openNewTaskImpl,
 									cellClass : 'grid-align'
 								}, {
 									field : "burndown",
@@ -194,8 +194,8 @@ angular
 												"&default=backlog"))
 							}
 
-							$scope.openNewActionForTeam = function(team) {
-								window.location.assign("main#/newAction?team="
+							$scope.openNewTaskForTeam = function(team) {
+								window.location.assign("main#/newTask?team="
 										.concat(team.id))
 							}
 
