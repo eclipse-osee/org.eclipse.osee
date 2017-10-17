@@ -127,6 +127,7 @@ angular
 										AgileEndpoint.getSprintItems($scope.team, selected).$promise
 												.then(function(data) {
 													$scope.tasks = data;
+													
 													$scope.count = $scope.tasks.length;
 													LayoutService.resizeElementHeight("taskTable");
 													LayoutService.refresh();

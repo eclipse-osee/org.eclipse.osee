@@ -20,7 +20,7 @@ angular.module('AgileApp').controller(
 					$scope.action = {};
 					$scope.loadingImg = Global.loadingImg;
 					$scope.creating = false;
- 
+					
 					AgileEndpoint.getTeamToken($scope.team).$promise
 						.then(function(data) {
 							$scope.team.name = data.name;
@@ -41,10 +41,16 @@ angular.module('AgileApp').controller(
 							$scope.validFeatureGroups = data;
 							$scope.action.featureGroup = "";
 					});
-						AgileEndpoint.getWorkPackages($scope.team).$promise
+					AgileEndpoint.getWorkPackages($scope.team).$promise
 						.then(function(data) {
 							$scope.validWorkPackages = data;
 							$scope.action.workPackage = "";
+					});
+					AgileEndpoint.getTeamMembers($scope.team).$promise
+					.then(function(data) {
+						$scope.action.assigneesStr = "";
+						$scope.action.originatorStr = "";
+						$scope.users = data;
 					});
 
 					$scope.createItem = function() {

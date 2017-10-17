@@ -45,6 +45,7 @@ import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
 import org.eclipse.osee.ats.demo.api.DemoWorkflowTitles;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
@@ -109,6 +110,13 @@ public class Pdd93CreateDemoAgile {
       Artifact agileTeam = AtsClientService.get().getArtifact(newTeam.getUuid());
       agileTeam.addRelation(AtsRelationTypes.AgileTeamToAtsTeam_AtsTeam, sawCodeArt);
       agileTeam.persist("Assigne ATS Team to Agile Team");
+
+      // Add team members to agile team
+      Artifact joeUser = AtsClientService.get().getArtifact(DemoUsers.Joe_Smith);
+      agileTeam.addRelation(CoreRelationTypes.Users_User, joeUser);
+      Artifact kayUser = AtsClientService.get().getArtifact(DemoUsers.Kay_Jones);
+      agileTeam.addRelation(CoreRelationTypes.Users_User, kayUser);
+      agileTeam.persist("Add Team Members to Agile Team");
 
       // Create Backlog
       JaxNewAgileBacklog backlog = getBacklog();

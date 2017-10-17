@@ -41,6 +41,8 @@ public class NewActionData {
    String agileTeam;
    String featureGroup;
    String workPackage;
+   String originatorStr;
+   String assigneeStr;
 
    public NewActionData() {
       // jax-rs
@@ -213,5 +215,27 @@ public class NewActionData {
 
    public void setAgileTeam(String agileTeam) {
       this.agileTeam = agileTeam;
+   }
+
+   public String getOriginatorStr() {
+      return originatorStr;
+   }
+
+   /**
+    * @param originatorStr - originator id (not userId)
+    */
+   public void setOriginatorStr(String originatorStr) {
+      this.originatorStr = originatorStr;
+   }
+
+   public String getAssigneeStr() {
+      return assigneeStr;
+   }
+
+   /**
+    * @param assigneeStr - comma delimited assignee ids (not userId)
+    */
+   public void setAssigneeStr(String assigneeStr) {
+      this.assigneeStr = assigneeStr;
    }
 }

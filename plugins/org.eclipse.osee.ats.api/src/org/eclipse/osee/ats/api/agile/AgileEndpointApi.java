@@ -69,6 +69,11 @@ public interface AgileEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    public List<IAtsActionableItem> getActionableAis(@PathParam("teamId") ArtifactId teamId);
 
+   @GET
+   @Path("team/{teamId}/member")
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<JaxAtsObjectToken> getTeamMembers(@PathParam("teamId") ArtifactId teamId);
+
    @Path("team/{teamId}/workpackage")
    @GET
    @Produces(MediaType.APPLICATION_JSON)

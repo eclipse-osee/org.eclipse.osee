@@ -13,6 +13,7 @@
 
 	<div menu></div>
 
+
 	<div id="newTaskForm">
 		<form class="simple-form" novalidate>
 
@@ -29,6 +30,18 @@
 			<label for="textarea">Description: <textarea id="textarea"
 					rows name="Description" cols="40" ng-model="action.description"
 					rows="5"></textarea></label><br />
+
+			<!-- ASSIGNEE -->
+			<label for="textarea">Assignee: </label> <select
+				ng-model="action.assigneeStr"
+				ng-options="item.id as item.name for item in users">
+			</select>
+
+			<!-- ORIGINATOR -->
+			<label for="textarea">Originator: </label> <select
+				ng-model="action.originatorStr"
+				ng-options="item.id as item.name for item in users">
+			</select><br />
 
 			<!-- Change Type-->
 			<label>Change Type:</label>&nbsp; <select id="changeType"

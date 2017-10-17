@@ -227,6 +227,33 @@ public class ActionFactory implements IAtsActionFactory {
          }
       }
 
+      // set originator
+      if (Strings.isNumeric(data.getOriginatorStr())) {
+         IAtsUser originator = atsApi.getUserService().getUserByAccountId(Long.valueOf(data.getOriginatorStr()));
+         if (originator != null) {
+            for (IAtsTeamWorkflow teamWf : createAction.getTeamWfs()) {
+               changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.CreatedBy, originator.getUserId());
+            }
+         }
+      }
+
+      // set assignee
+      if (Strings.isValid(data.getAssigneeStr())) {
+         List<IAtsUser> assignees = new LinkedList<>();
+         for (String id : data.getAssigneeStr().split(",")) {
+            IAtsUser user = atsApi.getUserService().getUserByAccountId(Long.valueOf(id));
+            if (user != null) {
+               assignees.add(user);
+            }
+         }
+         if (!assignees.isEmpty()) {
+            for (IAtsTeamWorkflow teamWf : createAction.getTeamWfs()) {
+               teamWf.getStateMgr().setAssignees(assignees);
+               changes.add(teamWf);
+            }
+         }
+      }
+
       // set any additional values
       for (Entry<String, String> attr : data.getAttrValues().entrySet()) {
          if (!Strings.isNumeric(attr.getKey())) {

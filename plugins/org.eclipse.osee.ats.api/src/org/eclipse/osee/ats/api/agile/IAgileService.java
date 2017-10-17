@@ -12,8 +12,10 @@ package org.eclipse.osee.ats.api.agile;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -129,4 +131,7 @@ public interface IAgileService {
     * @return agile team from backlog
     */
    IAgileTeam getAgileTeamFromBacklog(IAgileBacklog backlog);
+
+   Set<IAtsUser> getTeamMebers(IAgileTeam agileTeam);
+
 }

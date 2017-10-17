@@ -38,6 +38,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.agile.operations.SprintBurndownOperations;
@@ -49,6 +50,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -193,6 +195,33 @@ public class AgileService implements IAgileService {
          aTeam = atsApi.getConfigItemFactory().getAgileTeam(aTeamArt);
       }
       return aTeam;
+   }
+
+   @Override
+   public Set<IAtsUser> getTeamMebers(IAgileTeam agileTeam) {
+      Set<IAtsUser> activeMembers = new HashSet<>();
+      // add users related to AgileTeam
+      for (ArtifactToken user : atsApi.getRelationResolver().getRelated(agileTeam, CoreRelationTypes.Users_User)) {
+         activeMembers.add(atsApi.getUserService().getUserByArtifactId(user));
+      }
+      // add lead and members related to AtsTeam
+      for (ArtifactToken atsTeam : atsApi.getRelationResolver().getRelated(agileTeam,
+         AtsRelationTypes.AgileTeamToAtsTeam_AtsTeam)) {
+
+         for (ArtifactToken user : atsApi.getRelationResolver().getRelated(atsTeam,
+            AtsRelationTypes.TeamMember_Member)) {
+            if (atsApi.getAttributeResolver().getSoleAttributeValue(user, CoreAttributeTypes.Active, true)) {
+               activeMembers.add(atsApi.getUserService().getUserByArtifactId(user));
+            }
+         }
+
+         for (ArtifactToken user : atsApi.getRelationResolver().getRelated(atsTeam, AtsRelationTypes.TeamLead_Lead)) {
+            if (atsApi.getAttributeResolver().getSoleAttributeValue(user, CoreAttributeTypes.Active, true)) {
+               activeMembers.add(atsApi.getUserService().getUserByArtifactId(user));
+            }
+         }
+      }
+      return activeMembers;
    }
 
    /********************************

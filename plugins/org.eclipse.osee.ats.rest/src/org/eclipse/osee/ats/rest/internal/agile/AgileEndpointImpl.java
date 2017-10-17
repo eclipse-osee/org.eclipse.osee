@@ -62,6 +62,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.ILineChart;
 import org.eclipse.osee.ats.api.util.JaxAtsObjectToken;
@@ -207,6 +208,33 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       wpList.addAll(wps);
       Collections.sort(wpList, new NamedComparator(SortOrder.ASCENDING));
       return wpList;
+   }
+
+   @Override
+   @GET
+   @Path("team/{teamId}/member")
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<JaxAtsObjectToken> getTeamMembers(@PathParam("teamId") ArtifactId teamId) {
+      IAgileTeam aTeam = atsServer.getConfigItem(teamId);
+      Set<IAtsUser> activeMembers = atsServer.getAgileService().getTeamMebers(aTeam);
+
+      // Construct list of users with team members sorted first and other users last
+      List<JaxAtsObjectToken> results = new LinkedList<>();
+      for (IAtsUser user : activeMembers) {
+         results.add(JaxAtsObjectToken.construct(user.getStoreObject(), user.getName() + " (Team)"));
+      }
+      Collections.sort(results, new NamedComparator(SortOrder.ASCENDING));
+
+      List<JaxAtsObjectToken> othersForSort = new LinkedList<>();
+      for (IAtsUser user : atsServer.getUserService().getUsers()) {
+         if (user.isActive() && !activeMembers.contains(user)) {
+            othersForSort.add(JaxAtsObjectToken.construct(user.getStoreObject()));
+         }
+      }
+      Collections.sort(othersForSort, new NamedComparator(SortOrder.ASCENDING));
+      results.addAll(othersForSort);
+
+      return results;
    }
 
    @Override
