@@ -196,6 +196,9 @@ public class WorldComposite extends Composite implements IOseeTreeReportProvider
                   setTableTitle(name, false);
                }
                worldXViewer.setInputXViewer(worldArts);
+               if (worldArts.size() == 0) {
+                  worldXViewer.setLoading(false);
+               }
                worldXViewer.updateStatusLabel();
                if (otherArts.size() > 0 && MessageDialog.openConfirm(Displays.getActiveShell(),
                   "Open in Artifact Editor?",
