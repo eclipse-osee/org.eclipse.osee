@@ -166,6 +166,9 @@ public class WordMLApplicabilityHandler {
       return true;
    }
 
+   // Leaving this method here for now....it is no longer being called and upon
+   // confirmation (in the release) that no major impacts, can be removed
+   @SuppressWarnings("unused")
    private String removeExtraParagraphs(String fullWordMl, String toInsert, ApplicabilityBlock applicabilityBlock) {
       int startInsertIndex = applicabilityBlock.getStartInsertIndex();
 
@@ -261,7 +264,6 @@ public class WordMLApplicabilityHandler {
 
       String toInsert = evaluateApplicabilityExpression(applicabilityBlock);
       toInsert = insertMissingbinData(toInsert, binDataMap);
-      toInsert = removeExtraParagraphs(fullWordML, toInsert, applicabilityBlock);
 
       return toInsert;
    }
