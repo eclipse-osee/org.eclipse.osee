@@ -113,4 +113,6 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
 
    OseeClient getOseeClient();
 
+   Artifact getArtifact(ArtifactId artifact, BranchId branch);
+
 }

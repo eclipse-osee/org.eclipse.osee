@@ -82,12 +82,6 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
       return branches;
    }
 
-   /**
-    * Return working branch associated with SMA whether it is committed or not; This data is cached across all workflows
-    * with the cache being updated by local and remote events.
-    *
-    * @param force == true does not used cached value
-    */
    @Override
    public IOseeBranch getWorkingBranch(IAtsTeamWorkflow teamWf, boolean force) {
       long now = new Date().getTime();
@@ -617,6 +611,15 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
       }
       defaultBranchName = Strings.truncate(defaultBranchName, 195, true);
       return defaultBranchName;
+   }
+
+   @Override
+   public BranchId getWorkingBranchInWork(IAtsTeamWorkflow teamWf) {
+      IOseeBranch branch = getWorkingBranch(teamWf);
+      if (branch != null && (getBranchState(branch).isCreated() || getBranchState(branch).isModified())) {
+         return branch;
+      }
+      return BranchId.SENTINEL;
    }
 
 }

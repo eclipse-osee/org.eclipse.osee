@@ -525,4 +525,9 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
       return agileService;
    }
 
+   @Override
+   public Artifact getArtifact(ArtifactId artifact, BranchId branch) {
+      return ArtifactQuery.getArtifactFromId(artifact, branch);
+   }
+
 }

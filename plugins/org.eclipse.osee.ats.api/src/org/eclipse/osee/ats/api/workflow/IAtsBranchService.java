@@ -88,7 +88,10 @@ public interface IAtsBranchService {
    BranchId getConfiguredBranchForWorkflow(IAtsTeamWorkflow teamWf);
 
    /**
-    * @return working branch or null if does not exist
+    * Return working branch associated with SMA whether it is committed or not; This data is cached across all workflows
+    * with the cache being updated by local and remote events.
+    *
+    * @param force == true does not used cached value
     */
    IOseeBranch getWorkingBranch(IAtsTeamWorkflow teamWf, boolean force);
 
@@ -143,5 +146,7 @@ public interface IAtsBranchService {
    CompareResults getChangeData(BranchId branch);
 
    CompareResults getChangeData(TransactionToken transaction);
+
+   BranchId getWorkingBranchInWork(IAtsTeamWorkflow teamWf);
 
 }
