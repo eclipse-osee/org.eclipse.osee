@@ -46,6 +46,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
+import org.eclipse.osee.framework.skynet.core.change.ArtifactWasIsLazyProvider;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.ErrorChange;
@@ -54,6 +55,7 @@ import org.eclipse.osee.framework.skynet.core.change.TupleChange;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
+import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
@@ -242,35 +244,21 @@ public class ChangeDataLoader extends AbstractOperation {
                   item.getDestinationVersion().getApplicabilityToken().getName(), AttributeId.valueOf(itemId),
                   attributeType, netModType, isHistorical, changeArtifact, artifactDelta);
             } else {
-               String isValue = item.getCurrentVersion().getValue();
 
-               String wasValue = "";
-               if (!txDelta.areOnTheSameBranch()) {
-                  ChangeVersion netChange = item.getNetChange();
-                  if (!ChangeItemUtil.isNew(netChange) && !ChangeItemUtil.isIntroduced(netChange)) {
-                     ChangeVersion fromVersion = ChangeItemUtil.getStartingVersion(item);
-                     wasValue = fromVersion.getValue();
-                  }
+               // Remove after 26.0 release; only set in OseeInfo if want to turn off
+               String value = OseeInfo.getValue("UseWasIsLazyProvider");
+               boolean useWasIsLazyProvider = !"false".equals(value);
+               ChangeDateLoaderWasIsLazyProvider wasIsProvider =
+                  new ChangeDateLoaderWasIsLazyProvider(txDelta, item, attributeType, artifactDelta);
+               if (useWasIsLazyProvider) {
+                  change = new AttributeChange(startTxBranch, itemGammaId, artId, txDelta, netModType, wasIsProvider,
+                     AttributeId.valueOf(itemId), attributeType, netModType, isHistorical, changeArtifact,
+                     artifactDelta);
                } else {
-                  Artifact startArtifact = null;
-
-                  if (artifactDelta != null) {
-                     startArtifact = artifactDelta.getBaseArtifact();
-                     if (startArtifact == null) {
-                        startArtifact = artifactDelta.getStartArtifact();
-                     }
-                  }
-
-                  if (startArtifact != null) {
-                     wasValue = startArtifact.getAttributesToString(attributeType);
-                     if (wasValue == null) {
-                        wasValue = "";
-                     }
-                  }
+                  change = new AttributeChange(startTxBranch, itemGammaId, artId, txDelta, netModType,
+                     wasIsProvider.getIsValue(), wasIsProvider.getWasValue(), AttributeId.valueOf(itemId),
+                     attributeType, netModType, isHistorical, changeArtifact, artifactDelta);
                }
-
-               change = new AttributeChange(startTxBranch, itemGammaId, artId, txDelta, netModType, isValue, wasValue,
-                  AttributeId.valueOf(itemId), attributeType, netModType, isHistorical, changeArtifact, artifactDelta);
             }
             break;
          case RELATION_CHANGE:
@@ -318,6 +306,58 @@ public class ChangeDataLoader extends AbstractOperation {
             throw new OseeCoreException("The change item must map to either an artifact, attribute or relation change");
       }
       return change;
+   }
+
+   private static class ChangeDateLoaderWasIsLazyProvider implements ArtifactWasIsLazyProvider {
+
+      private final TransactionDelta txDelta;
+      private final ChangeItem item;
+      private final AttributeType attributeType;
+      private final ArtifactDelta artifactDelta;
+
+      public ChangeDateLoaderWasIsLazyProvider(TransactionDelta txDelta, ChangeItem item, AttributeType attributeType, ArtifactDelta artifactDelta) {
+         this.txDelta = txDelta;
+         this.item = item;
+         this.attributeType = attributeType;
+         this.artifactDelta = artifactDelta;
+
+      }
+
+      @Override
+      public String getWasValue() {
+         String wasValue = "";
+         if (!txDelta.areOnTheSameBranch()) {
+            ChangeVersion netChange = item.getNetChange();
+            if (!ChangeItemUtil.isNew(netChange) && !ChangeItemUtil.isIntroduced(netChange)) {
+               ChangeVersion fromVersion = ChangeItemUtil.getStartingVersion(item);
+               wasValue = fromVersion.getValue();
+            }
+         } else {
+            Artifact startArtifact = null;
+
+            if (artifactDelta != null) {
+               startArtifact = artifactDelta.getBaseArtifact();
+               if (startArtifact == null) {
+                  startArtifact = artifactDelta.getStartArtifact();
+               }
+            }
+
+            if (startArtifact != null) {
+               wasValue = startArtifact.getAttributesToString(attributeType);
+               if (wasValue == null) {
+                  wasValue = "";
+               }
+            }
+         }
+
+         return wasValue;
+      }
+
+      @Override
+      public String getIsValue() {
+         return item.getCurrentVersion().getValue();
+      }
+
    }
 
    private void bulkLoadArtifactDeltas(CompositeKeyHashMap<TransactionId, ArtifactId, Artifact> bulkLoaded, Collection<ChangeItem> changeItems) throws OseeCoreException {

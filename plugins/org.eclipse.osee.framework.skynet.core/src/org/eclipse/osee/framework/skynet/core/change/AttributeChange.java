@@ -35,19 +35,33 @@ import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
 public final class AttributeChange extends Change {
    private final static LoadChangeType changeType = LoadChangeType.attribute;
 
-   private final String isValue;
-   private final String wasValue;
+   private String isValue;
+   private String wasValue;
    private final AttributeId attrId;
    private final AttributeType attributeType;
    private final ModificationType artModType;
+   private final ArtifactWasIsLazyProvider wasIsProvider;
 
    public AttributeChange(BranchId branch, GammaId sourceGamma, ArtifactId artId, TransactionDelta txDelta, ModificationType modType, String isValue, String wasValue, AttributeId attrId, AttributeType attributeType, ModificationType artModType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta) {
+      this(branch, sourceGamma, artId, txDelta, modType, isValue, wasValue, null, attrId, attributeType, artModType,
+         isHistorical, changeArtifact, artifactDelta);
+   }
+
+   public AttributeChange(BranchId branch, GammaId sourceGamma, ArtifactId artId, TransactionDelta txDelta, ModificationType modType, ArtifactWasIsLazyProvider wasIsProvider, AttributeId attrId, AttributeType attributeType, ModificationType artModType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta) {
+      this(branch, sourceGamma, artId, txDelta, modType, null, null, wasIsProvider, attrId, attributeType, artModType,
+         isHistorical, changeArtifact, artifactDelta);
+   }
+
+   public AttributeChange(BranchId branch, GammaId sourceGamma, ArtifactId artId, TransactionDelta txDelta, ModificationType modType, String isValue, String wasValue, ArtifactWasIsLazyProvider wasIsProvider, AttributeId attrId, AttributeType attributeType, ModificationType artModType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta) {
       super(branch, sourceGamma, artId, txDelta, modType, isHistorical, changeArtifact, artifactDelta);
       this.isValue = isValue;
       this.wasValue = wasValue;
+      this.wasIsProvider = wasIsProvider;
       this.attrId = attrId;
       this.attributeType = attributeType;
       this.artModType = artModType;
+      this.isValue = null;
+      this.wasValue = null;
    }
 
    @Override
@@ -96,12 +110,18 @@ public final class AttributeChange extends Change {
 
    @Override
    public String getIsValue() {
+      if (isValue == null) {
+         isValue = wasIsProvider.getIsValue();
+      }
       return isValue != null ? isValue : "";
    }
 
    @Override
    public String getWasValue() {
-      return wasValue;
+      if (wasValue == null) {
+         wasValue = wasIsProvider.getWasValue();
+      }
+      return wasValue != null ? wasValue : "";
    }
 
    public Attribute<?> getAttribute() throws OseeCoreException {

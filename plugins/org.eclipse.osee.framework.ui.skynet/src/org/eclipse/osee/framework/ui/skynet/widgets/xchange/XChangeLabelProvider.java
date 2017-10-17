@@ -11,19 +11,26 @@
 
 package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
+import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.ErrorChange;
+import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -76,8 +83,14 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
          } else if (cCol.equals(ChangeXViewerFactory.Item_Type)) {
             return change.getItemTypeName();
          } else if (cCol.equals(ChangeXViewerFactory.Is_Value)) {
+            if (isBinaryAttributeType(change)) {
+               return "<large>";
+            }
             return change.getIsValue();
          } else if (cCol.equals(ChangeXViewerFactory.Was_Value)) {
+            if (isBinaryAttributeType(change)) {
+               return "<large>";
+            }
             return change.getWasValue();
          } else if (cCol.equals(ChangeXViewerFactory.paraNumber)) {
             String paragraphNum = "";
@@ -91,6 +104,32 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
          return XViewerCells.getCellExceptionString(ex);
       }
       return "unhandled column";
+   }
+
+   private final Map<Id, Boolean> attrTypeIdToIsBinaryMap = new HashMap<>(20);
+
+   private boolean isBinaryAttributeType(Change change) {
+      if (change.getChangeType().equals(LoadChangeType.attribute)) {
+         Id itemTypeId = change.getChangeItem().getItemTypeId();
+         Boolean isBinary = attrTypeIdToIsBinaryMap.get(itemTypeId);
+         if (isBinary != null) {
+            return isBinary;
+         }
+         AttributeType type = AttributeTypeManager.getType(AttributeTypeId.valueOf(itemTypeId.getId()));
+         if (type == null) {
+            return false;
+         }
+         /*
+          * This is temporary. Once binary attributes are stored in database, we need to provide a way to either notate
+          * that types are "large" or possible provide the size of the attribute when requested so UIs can decide what
+          * to do with large values.
+          */
+         String attrProviderId = type.getAttributeProviderId();
+         isBinary = "org.eclipse.osee.framework.skynet.core.UriAttributeDataProvider".equals(attrProviderId);
+         attrTypeIdToIsBinaryMap.put(itemTypeId, isBinary);
+         return isBinary;
+      }
+      return false;
    }
 
    @Override
