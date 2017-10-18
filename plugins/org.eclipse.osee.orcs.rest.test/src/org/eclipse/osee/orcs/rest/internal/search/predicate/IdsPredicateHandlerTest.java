@@ -39,7 +39,7 @@ public class IdsPredicateHandlerTest {
    @Captor
    private ArgumentCaptor<Collection<String>> guidsCaptor;
    @Captor
-   private ArgumentCaptor<Collection<Long>> localIdsCaptor;
+   private ArgumentCaptor<Collection<Long>> idsCaptor;
 
    @Before
    public void initialize() {
@@ -56,9 +56,9 @@ public class IdsPredicateHandlerTest {
       List<String> values = Collections.singletonList(id1);
       Predicate testPredicate = new Predicate(SearchMethod.IDS, null, values);
       handler.handle(builder, testPredicate);
-      verify(builder).andUuids(localIdsCaptor.capture());
-      Assert.assertEquals(1, localIdsCaptor.getValue().size());
-      Assert.assertTrue(localIdsCaptor.getValue().contains(12345L));
+      verify(builder).andUuids(idsCaptor.capture());
+      Assert.assertEquals(1, idsCaptor.getValue().size());
+      Assert.assertTrue(idsCaptor.getValue().contains(12345L));
    }
 
    @Test(expected = OseeArgumentException.class)

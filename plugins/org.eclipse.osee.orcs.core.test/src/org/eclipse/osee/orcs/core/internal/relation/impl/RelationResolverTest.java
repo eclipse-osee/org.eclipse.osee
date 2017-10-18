@@ -86,17 +86,17 @@ public class RelationResolverTest {
       when(node5.getLocalId()).thenReturn(55);
       when(node6.getLocalId()).thenReturn(66);
 
-      when(relation1.getLocalIdForSide(RelationSide.SIDE_A)).thenReturn(11);
-      when(relation1.getLocalIdForSide(RelationSide.SIDE_B)).thenReturn(22);
+      when(relation1.getIdForSide(RelationSide.SIDE_A)).thenReturn(11);
+      when(relation1.getIdForSide(RelationSide.SIDE_B)).thenReturn(22);
 
-      when(relation2.getLocalIdForSide(RelationSide.SIDE_A)).thenReturn(33);
-      when(relation2.getLocalIdForSide(RelationSide.SIDE_B)).thenReturn(44);
+      when(relation2.getIdForSide(RelationSide.SIDE_A)).thenReturn(33);
+      when(relation2.getIdForSide(RelationSide.SIDE_B)).thenReturn(44);
 
-      when(relation3.getLocalIdForSide(RelationSide.SIDE_A)).thenReturn(55);
-      when(relation3.getLocalIdForSide(RelationSide.SIDE_B)).thenReturn(66);
+      when(relation3.getIdForSide(RelationSide.SIDE_A)).thenReturn(55);
+      when(relation3.getIdForSide(RelationSide.SIDE_B)).thenReturn(66);
 
-      when(relation4.getLocalIdForSide(RelationSide.SIDE_A)).thenReturn(11);
-      when(relation4.getLocalIdForSide(RelationSide.SIDE_B)).thenReturn(66);
+      when(relation4.getIdForSide(RelationSide.SIDE_A)).thenReturn(11);
+      when(relation4.getIdForSide(RelationSide.SIDE_B)).thenReturn(66);
 
       when(loader.loadNodes(eq(session), eq(graphData), anyCollectionOf(Integer.class), eq(LoadLevel.ALL))).thenReturn(
          resultSet);

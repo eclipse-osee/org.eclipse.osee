@@ -49,15 +49,15 @@ public class RelationResolverImpl implements RelationResolver {
          LinkedHashMap<Integer, T> items = new LinkedHashMap<>();
          for (Relation relation : links) {
             for (RelationSide side : sides) {
-               int localId = relation.getLocalIdForSide(side);
-               RelationNode node = graph.getNode(localId);
+               int id = relation.getIdForSide(side);
+               RelationNode node = graph.getNode(id);
                if (node == null) {
                   if (toLoad == null) {
                      toLoad = new LinkedHashSet<>();
                   }
-                  toLoad.add(localId);
+                  toLoad.add(id);
                }
-               items.put(localId, (T) node);
+               items.put(id, (T) node);
             }
          }
          if (toLoad != null && !toLoad.isEmpty()) {

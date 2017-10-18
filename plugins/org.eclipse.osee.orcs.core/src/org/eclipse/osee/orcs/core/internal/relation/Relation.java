@@ -146,7 +146,7 @@ public class Relation implements RelationReadable, HasOrcsData<RelationData>, Or
       return true;
    }
 
-   public Integer getLocalIdForSide(RelationSide side) {
+   public Integer getIdForSide(RelationSide side) {
       return getOrcsData().getArtIdOn(side);
    }
 

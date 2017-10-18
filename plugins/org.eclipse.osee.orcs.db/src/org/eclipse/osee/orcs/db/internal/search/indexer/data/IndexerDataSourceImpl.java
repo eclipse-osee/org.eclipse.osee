@@ -31,17 +31,17 @@ public class IndexerDataSourceImpl implements IndexedResource {
 
    private final IResourceManager resourceManager;
 
-   private final int localId;
+   private final int id;
    private final long typeUuid;
    private final long gammaId;
 
    private final String value;
    private final String uri;
 
-   public IndexerDataSourceImpl(IResourceManager resourceManager, int localId, long typeUuid, long gammaId, String value, String uri) {
+   public IndexerDataSourceImpl(IResourceManager resourceManager, int id, long typeUuid, long gammaId, String value, String uri) {
       super();
       this.resourceManager = resourceManager;
-      this.localId = localId;
+      this.id = id;
       this.typeUuid = typeUuid;
       this.gammaId = gammaId;
       this.value = value;
@@ -131,7 +131,7 @@ public class IndexerDataSourceImpl implements IndexedResource {
 
    @Override
    public String toString() {
-      return "IndexerDataSourceImpl [localId=" + localId + ", typeUuid=" + typeUuid + ", gammaId=" + gammaId + ", uri=" + uri + ", value=" + value + "]";
+      return "IndexerDataSourceImpl [id=" + id + ", typeUuid=" + typeUuid + ", gammaId=" + gammaId + ", uri=" + uri + ", value=" + value + "]";
    }
 
 }

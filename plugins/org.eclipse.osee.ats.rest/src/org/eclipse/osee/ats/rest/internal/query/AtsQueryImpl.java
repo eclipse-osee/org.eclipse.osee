@@ -72,7 +72,7 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    @Override
    public List<ArtifactId> queryGetIds() {
       List<ArtifactId> results = new LinkedList<>();
-      Iterator<? extends ArtifactId> iterator = query.getResultsAsLocalIds().iterator();
+      Iterator<? extends ArtifactId> iterator = query.getResultsIds().iterator();
       while (iterator.hasNext()) {
          results.add(iterator.next());
       }

@@ -73,31 +73,31 @@ public class ArtifactSearch_V1 extends ArtifactSearch {
       SearchResponse result = new SearchResponse();
       RequestType request = params.getRequestType();
       if (request != null) {
-         List<ArtifactId> localIds = new LinkedList<>();
+         List<ArtifactId> ids = new LinkedList<>();
          switch (request) {
             case COUNT:
                int total = builder.getCount();
                result.setTotal(total);
                break;
             case IDS:
-               for (ArtifactId art : builder.getResultsAsLocalIds()) {
-                  localIds.add(art);
+               for (ArtifactId art : builder.getResultsIds()) {
+                  ids.add(art);
                }
-               result.setIds(localIds);
-               result.setTotal(localIds.size());
+               result.setIds(ids);
+               result.setTotal(ids.size());
                break;
             case MATCHES:
                ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> matches = builder.getMatches();
                List<SearchMatch> searchMatches = new LinkedList<>();
                for (Match<ArtifactReadable, AttributeReadable<?>> match : matches) {
                   ArtifactId artId = match.getItem();
-                  localIds.add(artId);
+                  ids.add(artId);
                   for (AttributeReadable<?> attribute : match.getElements()) {
                      List<MatchLocation> locations = match.getLocation(attribute);
                      searchMatches.add(new SearchMatch(artId, attribute, locations));
                   }
                }
-               result.setIds(localIds);
+               result.setIds(ids);
                result.setMatches(searchMatches);
                result.setTotal(searchMatches.size());
                break;

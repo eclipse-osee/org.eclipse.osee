@@ -61,7 +61,7 @@ public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationO
             version.setStripeId(TransactionId.valueOf(chStmt.getLong("stripe_transaction_id")));
          }
 
-         int localId = chStmt.getInt("rel_link_id");
+         int id = chStmt.getInt("rel_link_id");
          ModificationType modType = ModificationType.valueOf(chStmt.getInt("mod_type"));
 
          String rationale = chStmt.getString("rationale");
@@ -70,8 +70,7 @@ public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationO
             rationale = "";
          }
 
-         toReturn =
-            factory.createRelationData(version, localId, relationType, modType, aArtId, bArtId, rationale, applicId);
+         toReturn = factory.createRelationData(version, id, relationType, modType, aArtId, bArtId, rationale, applicId);
 
       } else {
          if (!historical) {

@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.core.internal.graph.impl;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.HasLocalId;
+import org.eclipse.osee.framework.core.data.HasId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -46,7 +46,7 @@ public class GraphDataImpl implements GraphData {
    }
 
    @Override
-   public <T extends GraphNode> T getNode(HasLocalId<Integer> data) {
+   public <T extends GraphNode> T getNode(HasId<Integer> data) {
       return getNode(data.getLocalId());
    }
 
@@ -75,7 +75,7 @@ public class GraphDataImpl implements GraphData {
    }
 
    @Override
-   public <T extends GraphNode> T removeNode(HasLocalId<Integer> node) {
+   public <T extends GraphNode> T removeNode(HasId<Integer> node) {
       return removeNode(node.getLocalId());
    }
 
@@ -88,7 +88,7 @@ public class GraphDataImpl implements GraphData {
    }
 
    @Override
-   public <T extends GraphAdjacencies> T getAdjacencies(HasLocalId<Integer> node) {
+   public <T extends GraphAdjacencies> T getAdjacencies(HasId<Integer> node) {
       return getAdjacencies(node.getLocalId());
    }
 
@@ -99,7 +99,7 @@ public class GraphDataImpl implements GraphData {
    }
 
    @Override
-   public void addAdjacencies(HasLocalId<Integer> node, GraphAdjacencies adjacencies) {
+   public void addAdjacencies(HasId<Integer> node, GraphAdjacencies adjacencies) {
       addAdjacencies(node.getLocalId(), adjacencies);
    }
 
@@ -109,7 +109,7 @@ public class GraphDataImpl implements GraphData {
    }
 
    @Override
-   public <T extends GraphAdjacencies> T removeAdjacencies(HasLocalId<Integer> node) {
+   public <T extends GraphAdjacencies> T removeAdjacencies(HasId<Integer> node) {
       return removeAdjacencies(node.getLocalId());
    }
 

@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
 import com.google.common.base.Predicate;
 import java.util.Date;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.core.data.HasLocalId;
+import org.eclipse.osee.framework.core.data.HasId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.orcs.core.ds.Attribute;
@@ -42,7 +42,7 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Test Case for {@link OrcsPredicates}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class OrcsPredicatesTest {
@@ -50,10 +50,10 @@ public class OrcsPredicatesTest {
    // @formatter:off
    @Mock private Modifiable dirty;
    @Mock private Modifiable notDirty;
-   
+
    @Mock private HasDeleteState deleted;
    @Mock private HasDeleteState notDeleted;
-   
+
    @SuppressWarnings("rawtypes")
    @Mock private Attribute attribute1;
    @SuppressWarnings("rawtypes")
@@ -64,10 +64,10 @@ public class OrcsPredicatesTest {
    @Mock private Attribute attribute4;
    @SuppressWarnings("rawtypes")
    @Mock private Attribute attribute5;
-   
-   @Mock private HasLocalId localId1;
-   @Mock private HasLocalId localId2;
-   
+
+   @Mock private HasId id1;
+   @Mock private HasId id2;
+
    @Mock private Relation relation1;
    // @formatter:on
 
@@ -94,11 +94,11 @@ public class OrcsPredicatesTest {
       when(attribute4.getValue()).thenReturn("Hello");
       when(attribute5.getValue()).thenReturn(true);
 
-      when(localId1.getLocalId()).thenReturn(11);
-      when(localId2.getLocalId()).thenReturn(22);
+      when(id1.getLocalId()).thenReturn(11);
+      when(id2.getLocalId()).thenReturn(22);
 
-      when(relation1.getLocalIdForSide(RelationSide.SIDE_A)).thenReturn(11);
-      when(relation1.getLocalIdForSide(RelationSide.SIDE_B)).thenReturn(22);
+      when(relation1.getIdForSide(RelationSide.SIDE_A)).thenReturn(11);
+      when(relation1.getIdForSide(RelationSide.SIDE_B)).thenReturn(22);
    }
 
    @Test
@@ -204,15 +204,15 @@ public class OrcsPredicatesTest {
 
    @Test
    public void testNodeIdOnSideEquals() {
-      assertTrue(nodeIdOnSideEquals(localId1, RelationSide.SIDE_A).apply(relation1));
-      assertTrue(nodeIdOnSideEquals(localId2, RelationSide.SIDE_B).apply(relation1));
-      assertFalse(nodeIdOnSideEquals(localId2, RelationSide.SIDE_A).apply(relation1));
-      assertFalse(nodeIdOnSideEquals(localId1, RelationSide.SIDE_B).apply(relation1));
+      assertTrue(nodeIdOnSideEquals(id1, RelationSide.SIDE_A).apply(relation1));
+      assertTrue(nodeIdOnSideEquals(id2, RelationSide.SIDE_B).apply(relation1));
+      assertFalse(nodeIdOnSideEquals(id2, RelationSide.SIDE_A).apply(relation1));
+      assertFalse(nodeIdOnSideEquals(id1, RelationSide.SIDE_B).apply(relation1));
    }
 
    @Test
    public void testNodeIdEquals() {
-      assertTrue(nodeIdsEquals(localId1, localId2).apply(relation1));
-      assertFalse(nodeIdsEquals(localId2, localId1).apply(relation1));
+      assertTrue(nodeIdsEquals(id1, id2).apply(relation1));
+      assertFalse(nodeIdsEquals(id2, id1).apply(relation1));
    }
 }

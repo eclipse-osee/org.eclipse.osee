@@ -22,7 +22,7 @@ import org.eclipse.osee.orcs.core.ds.TxOrcsData;
  */
 public interface TransactionObjectFactory extends OrcsDataFactory {
 
-   TxOrcsData createTxData(Long localId, TransactionDetailsType type, Date date, String comment, BranchId branch, UserId author, ArtifactId commitArt, Long buildId);
+   TxOrcsData createTxData(Long id, TransactionDetailsType type, Date date, String comment, BranchId branch, UserId author, ArtifactId commitArt, Long buildId);
 
    TxOrcsData createCopy(TxOrcsData source);
 }

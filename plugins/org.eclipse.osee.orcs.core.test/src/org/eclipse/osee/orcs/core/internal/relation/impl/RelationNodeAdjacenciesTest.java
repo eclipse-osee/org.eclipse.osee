@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 import com.google.common.collect.Iterables;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.HasLocalId;
+import org.eclipse.osee.framework.core.data.HasId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -54,7 +54,7 @@ public class RelationNodeAdjacenciesTest {
    @Mock Relation deleted;
 
    @Mock Relation relation;
-   @Mock HasLocalId localId;
+   @Mock HasId id;
    // @formatter:on
 
    private final RelationNodeAdjacencies collection = new RelationNodeAdjacencies();
@@ -202,24 +202,24 @@ public class RelationNodeAdjacenciesTest {
    @Test
    public void testLocalIdOnSide() {
       when(relation.isDeleted()).thenReturn(false);
-      when(relation.getLocalIdForSide(RelationSide.SIDE_A)).thenReturn(11);
-      when(relation.getLocalIdForSide(RelationSide.SIDE_B)).thenReturn(22);
+      when(relation.getIdForSide(RelationSide.SIDE_A)).thenReturn(11);
+      when(relation.getIdForSide(RelationSide.SIDE_B)).thenReturn(22);
 
       collection.add(TYPE_1, relation);
 
-      when(localId.getLocalId()).thenReturn(22);
-      Relation actual = (Relation) collection.getResultSet(TYPE_1, DeletionFlag.EXCLUDE_DELETED, localId,
+      when(id.getLocalId()).thenReturn(22);
+      Relation actual = (Relation) collection.getResultSet(TYPE_1, DeletionFlag.EXCLUDE_DELETED, id,
          RelationSide.SIDE_A).getOneOrNull();
       assertNull(actual);
-      actual = (Relation) collection.getResultSet(TYPE_1, DeletionFlag.EXCLUDE_DELETED, localId,
+      actual = (Relation) collection.getResultSet(TYPE_1, DeletionFlag.EXCLUDE_DELETED, id,
          RelationSide.SIDE_B).getOneOrNull();
       assertEquals(relation, actual);
 
-      when(localId.getLocalId()).thenReturn(11);
-      actual = (Relation) collection.getResultSet(TYPE_1, DeletionFlag.EXCLUDE_DELETED, localId,
+      when(id.getLocalId()).thenReturn(11);
+      actual = (Relation) collection.getResultSet(TYPE_1, DeletionFlag.EXCLUDE_DELETED, id,
          RelationSide.SIDE_A).getOneOrNull();
       assertEquals(relation, actual);
-      actual = (Relation) collection.getResultSet(TYPE_1, DeletionFlag.EXCLUDE_DELETED, localId,
+      actual = (Relation) collection.getResultSet(TYPE_1, DeletionFlag.EXCLUDE_DELETED, id,
          RelationSide.SIDE_B).getOneOrNull();
       assertNull(actual);
    }

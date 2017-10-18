@@ -68,9 +68,9 @@ public class QueryBuilderImpl extends ArtifactQueryBuilderImpl<QueryBuilder> imp
    }
 
    @Override
-   public ResultSet<? extends ArtifactId> getResultsAsLocalIds() {
+   public ResultSet<? extends ArtifactId> getResultsIds() {
       try {
-         return createSearchResultsAsLocalIds().call();
+         return createSearchResultsAsIds().call();
       } catch (Exception ex) {
          throw OseeCoreException.wrap(ex);
       }
@@ -87,7 +87,7 @@ public class QueryBuilderImpl extends ArtifactQueryBuilderImpl<QueryBuilder> imp
    }
 
    @Override
-   public CancellableCallable<ResultSet<? extends ArtifactId>> createSearchResultsAsLocalIds() {
+   public CancellableCallable<ResultSet<? extends ArtifactId>> createSearchResultsAsIds() {
       return queryFactory.createLocalIdSearch(session, buildAndCopy());
    }
 

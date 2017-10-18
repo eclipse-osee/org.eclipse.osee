@@ -10,15 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader.data;
 
-import org.eclipse.osee.framework.core.data.HasLocalId;
+import org.eclipse.osee.framework.core.data.HasId;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 
 /**
  * @author Roberto E. Escobar
  */
-public abstract class OrcsObjectImpl<T extends Number> implements HasLocalId<T> {
+public abstract class OrcsObjectImpl<T extends Number> implements HasId<T> {
 
-   private T localId = null;
+   private T id = null;
 
    @SuppressWarnings("unchecked")
    protected OrcsObjectImpl() {
@@ -28,15 +28,15 @@ public abstract class OrcsObjectImpl<T extends Number> implements HasLocalId<T> 
 
    @Override
    public T getLocalId() {
-      return localId;
+      return id;
    }
 
-   public void setLocalId(T localId) {
-      this.localId = localId;
+   public void setLocalId(T id) {
+      this.id = id;
    }
 
    @Override
    public String toString() {
-      return "OrcsObject [localId=" + localId + "]";
+      return "OrcsObject [id=" + id + "]";
    }
 }

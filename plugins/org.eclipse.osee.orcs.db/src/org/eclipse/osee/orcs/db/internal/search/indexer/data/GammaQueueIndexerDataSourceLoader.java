@@ -83,8 +83,8 @@ public class GammaQueueIndexerDataSourceLoader implements IndexedResourceLoader 
       }
    }
 
-   private IndexedResource createData(int localId, long typeUuid, long gammaId, String value, String uri) {
-      return new IndexerDataSourceImpl(resourceManager, localId, typeUuid, gammaId, value, uri);
+   private IndexedResource createData(int id, long typeUuid, long gammaId, String value, String uri) {
+      return new IndexerDataSourceImpl(resourceManager, id, typeUuid, gammaId, value, uri);
    }
 
    private class AttributeData {

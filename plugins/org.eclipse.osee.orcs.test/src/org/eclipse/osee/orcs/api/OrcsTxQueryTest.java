@@ -492,9 +492,9 @@ public class OrcsTxQueryTest {
       assertEquals(Long.valueOf(CommonBranchHeadTransaction.getId() - 1), ids.next());
    }
 
-   private static void assertTx(List<TransactionReadable> transactions, TransactionId localId, TransactionDetailsType type, String comment, BranchId branch, ArtifactId author) {
-      TransactionReadable transaction = getTransaction(transactions, localId);
-      assertEquals(localId, transaction);
+   private static void assertTx(List<TransactionReadable> transactions, TransactionId id, TransactionDetailsType type, String comment, BranchId branch, ArtifactId author) {
+      TransactionReadable transaction = getTransaction(transactions, id);
+      assertEquals(id, transaction);
       assertEquals(type, transaction.getTxType());
       assertNotNull(DATE_FORMATTER.format(transaction.getDate()));
       assertEquals(comment, transaction.getComment());

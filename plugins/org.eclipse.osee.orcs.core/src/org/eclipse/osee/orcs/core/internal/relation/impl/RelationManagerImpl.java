@@ -306,7 +306,7 @@ public class RelationManagerImpl implements RelationManager {
       Set<RelationNode> otherNodes = new LinkedHashSet<>();
       for (Relation relation : relations) {
          relation.delete();
-         Integer artId = relation.getLocalIdForSide(otherSide);
+         Integer artId = relation.getIdForSide(otherSide);
          RelationNode otherNode = graph.getNode(artId);
          otherNodes.add(otherNode);
          modified = true;
@@ -342,7 +342,7 @@ public class RelationManagerImpl implements RelationManager {
                for (Relation relation : relations) {
                   relation.delete();
                   RelationTypeId type = relation.getRelationType();
-                  RelationSide otherSide = relation.getLocalIdForSide(SIDE_A) == node.getLocalId() ? SIDE_B : SIDE_A;
+                  RelationSide otherSide = relation.getIdForSide(SIDE_A) == node.getLocalId() ? SIDE_B : SIDE_A;
                   typesToRemove.put(type, otherSide);
                }
 
@@ -506,9 +506,9 @@ public class RelationManagerImpl implements RelationManager {
       relation.setApplicabilityId(applicId);
    }
 
-   private Relation findRelationByLocalId(RelationNodeAdjacencies adjacencies, Integer localId) {
+   private Relation findRelationByLocalId(RelationNodeAdjacencies adjacencies, Integer id) {
       for (Relation rel : adjacencies.getAll()) {
-         if (localId.equals(rel.getOrcsData().getLocalId())) {
+         if (id.equals(rel.getOrcsData().getLocalId())) {
             return rel;
          }
       }

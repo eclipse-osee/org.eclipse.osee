@@ -169,31 +169,31 @@ public class RelationManagerTest {
       mockDb.put(55, node5);
       mockDb.put(66, node6);
 
-      when(relation1.getLocalIdForSide(RelationSide.SIDE_A)).thenReturn(11);
-      when(relation1.getLocalIdForSide(RelationSide.SIDE_B)).thenReturn(22);
+      when(relation1.getIdForSide(RelationSide.SIDE_A)).thenReturn(11);
+      when(relation1.getIdForSide(RelationSide.SIDE_B)).thenReturn(22);
       when(relation1.getRelationType()).thenReturn(DEFAULT_HIERARCHY);
       when(relation1.getRationale()).thenReturn("rationale on relation1");
       when(relation1.getOrcsData()).thenReturn(data1);
       when(relation1.getOrcsData().getLocalId()).thenReturn(10);
       when(relation1.getModificationType()).thenReturn(ModificationType.NEW);
 
-      when(relation2.getLocalIdForSide(RelationSide.SIDE_A)).thenReturn(11);
-      when(relation2.getLocalIdForSide(RelationSide.SIDE_B)).thenReturn(33);
+      when(relation2.getIdForSide(RelationSide.SIDE_A)).thenReturn(11);
+      when(relation2.getIdForSide(RelationSide.SIDE_B)).thenReturn(33);
       when(relation2.getRelationType()).thenReturn(DEFAULT_HIERARCHY);
       when(relation2.getRationale()).thenReturn("rationale on relation2");
       when(relation2.getOrcsData()).thenReturn(data2);
       when(relation2.getOrcsData().getLocalId()).thenReturn(11);
 
-      when(relation3.getLocalIdForSide(RelationSide.SIDE_A)).thenReturn(44);
-      when(relation3.getLocalIdForSide(RelationSide.SIDE_B)).thenReturn(11);
+      when(relation3.getIdForSide(RelationSide.SIDE_A)).thenReturn(44);
+      when(relation3.getIdForSide(RelationSide.SIDE_B)).thenReturn(11);
       when(relation3.getRelationType()).thenReturn(DEFAULT_HIERARCHY);
       when(relation3.getRationale()).thenReturn("rationale on relation3");
       when(relation3.getOrcsData()).thenReturn(data3);
       when(relation3.getOrcsData().getLocalId()).thenReturn(12);
       when(relation3.getModificationType()).thenReturn(ModificationType.NEW);
 
-      when(relation4.getLocalIdForSide(RelationSide.SIDE_A)).thenReturn(11);
-      when(relation4.getLocalIdForSide(RelationSide.SIDE_B)).thenReturn(55);
+      when(relation4.getIdForSide(RelationSide.SIDE_A)).thenReturn(11);
+      when(relation4.getIdForSide(RelationSide.SIDE_B)).thenReturn(55);
       when(relation4.getRelationType()).thenReturn(DEFAULT_HIERARCHY);
       when(relation4.getRationale()).thenReturn("rationale on relation4");
       when(relation4.getOrcsData()).thenReturn(data4);

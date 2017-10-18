@@ -366,7 +366,7 @@ public class ArtifactQueryBuilder {
 
    private static final class LocalIdQueryBuilder implements InvocationHandler {
 
-      private final List<ArtifactId> localIds = new ArrayList<>();
+      private final List<ArtifactId> artIds = new ArrayList<>();
       private DeletionFlag allowDeleted = EXCLUDE_DELETED;
       private TransactionId txId = TransactionId.SENTINEL;
       private final BranchId branch;
@@ -423,7 +423,7 @@ public class ArtifactQueryBuilder {
       @SuppressWarnings("unused")
       public SearchResult getSearchResult() {
          SearchResponse response = new SearchResponse();
-         List<ArtifactId> ids = new LinkedList<>(localIds);
+         List<ArtifactId> ids = new LinkedList<>(artIds);
          response.setIds(ids);
          return response;
       }
@@ -433,24 +433,24 @@ public class ArtifactQueryBuilder {
          if (txId.isInvalid()) {
             txId = TransactionManager.getHeadTransaction(branch);
          }
-         List<Artifact> results = ArtifactLoader.loadArtifacts(localIds, branch, LoadLevel.ARTIFACT_DATA,
+         List<Artifact> results = ArtifactLoader.loadArtifacts(artIds, branch, LoadLevel.ARTIFACT_DATA,
             LoadType.INCLUDE_CACHE, allowDeleted, txId);
          return results.size();
       }
 
       @SuppressWarnings("unused")
       public void andLocalId(ArtifactId artifactId) {
-         localIds.add(artifactId);
+         artIds.add(artifactId);
       }
 
       @SuppressWarnings("unused")
       public void andLocalIds(Collection<? extends ArtifactId> artifactIds) {
-         localIds.addAll(artifactIds);
+         artIds.addAll(artifactIds);
       }
 
       @SuppressWarnings("unused")
       public List<ArtifactId> getIds() {
-         return localIds;
+         return artIds;
       }
    }
 }

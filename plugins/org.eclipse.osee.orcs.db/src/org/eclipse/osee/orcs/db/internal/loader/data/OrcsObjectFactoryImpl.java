@@ -95,13 +95,13 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public ArtifactData createArtifactData(VersionData version, Integer localId, long typeUuid, ModificationType modType, String guid, ApplicabilityId applicId) {
-      return createArtifactFromRow(version, localId, typeUuid, modType, typeUuid, modType, guid, applicId);
+   public ArtifactData createArtifactData(VersionData version, Integer id, long typeUuid, ModificationType modType, String guid, ApplicabilityId applicId) {
+      return createArtifactFromRow(version, id, typeUuid, modType, typeUuid, modType, guid, applicId);
    }
 
    @Override
-   public ArtifactData createArtifactData(VersionData version, int localId, ArtifactTypeId type, ModificationType modType, String guid, ApplicabilityId applicId) {
-      return createArtifactFromRow(version, localId, type.getId(), modType, type.getId(), modType, guid, applicId);
+   public ArtifactData createArtifactData(VersionData version, int id, ArtifactTypeId type, ModificationType modType, String guid, ApplicabilityId applicId) {
+      return createArtifactFromRow(version, id, type.getId(), modType, type.getId(), modType, guid, applicId);
    }
 
    @Override
@@ -112,10 +112,10 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public AttributeData createAttributeData(VersionData version, Integer localId, AttributeTypeId attributeType, ModificationType modType, int artifactId, Object value, String uri, ApplicabilityId applicId) {
+   public AttributeData createAttributeData(VersionData version, Integer id, AttributeTypeId attributeType, ModificationType modType, int artifactId, Object value, String uri, ApplicabilityId applicId) {
       Long typeId = attributeType.getId();
       DataProxy proxy = proxyFactory.createProxy(typeId, value, uri);
-      return createAttributeFromRow(version, localId, typeId, modType, typeId, modType, artifactId, proxy, applicId);
+      return createAttributeFromRow(version, id, typeId, modType, typeId, modType, artifactId, proxy, applicId);
    }
 
    @Override
@@ -130,22 +130,21 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public AttributeData createAttributeData(VersionData version, Integer localId, AttributeTypeId attributeType, ModificationType modType, int artId, ApplicabilityId applicId) {
+   public AttributeData createAttributeData(VersionData version, Integer id, AttributeTypeId attributeType, ModificationType modType, int artId, ApplicabilityId applicId) {
       long typeId = attributeType.getId();
       DataProxy proxy = proxyFactory.createProxy(typeId, "", "");
-      return createAttributeFromRow(version, localId, typeId, modType, typeId, modType, artId, proxy, applicId);
+      return createAttributeFromRow(version, id, typeId, modType, typeId, modType, artId, proxy, applicId);
    }
 
    @Override
-   public RelationData createRelationData(VersionData version, Integer localId, RelationTypeId relationType, ModificationType modType, ArtifactId aArtId, ArtifactId bArtId, String rationale, ApplicabilityId applicId) {
+   public RelationData createRelationData(VersionData version, Integer id, RelationTypeId relationType, ModificationType modType, ArtifactId aArtId, ArtifactId bArtId, String rationale, ApplicabilityId applicId) {
       long typeId = relationType.getId();
-      return createRelationData(version, localId, typeId, modType, typeId, modType, aArtId, bArtId, rationale,
-         applicId);
+      return createRelationData(version, id, typeId, modType, typeId, modType, aArtId, bArtId, rationale, applicId);
    }
 
-   private ArtifactData createArtifactFromRow(VersionData version, int localId, long localTypeID, ModificationType modType, long baseLocalTypeID, ModificationType baseModType, String guid, ApplicabilityId applicId) {
+   private ArtifactData createArtifactFromRow(VersionData version, int id, long localTypeID, ModificationType modType, long baseLocalTypeID, ModificationType baseModType, String guid, ApplicabilityId applicId) {
       ArtifactData data = new ArtifactDataImpl(version);
-      data.setLocalId(localId);
+      data.setLocalId(id);
       data.setTypeUuid(localTypeID);
       data.setBaseTypeUuid(baseLocalTypeID);
       data.setModType(modType);
@@ -155,9 +154,9 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       return data;
    }
 
-   private AttributeData createAttributeFromRow(VersionData version, int localId, long localTypeID, ModificationType modType, long baseLocalTypeID, ModificationType baseModType, int artifactId, DataProxy proxy, ApplicabilityId applicId) {
+   private AttributeData createAttributeFromRow(VersionData version, int id, long localTypeID, ModificationType modType, long baseLocalTypeID, ModificationType baseModType, int artifactId, DataProxy proxy, ApplicabilityId applicId) {
       AttributeData data = new AttributeDataImpl(version);
-      data.setLocalId(localId);
+      data.setLocalId(id);
       data.setTypeUuid(localTypeID);
       data.setBaseTypeUuid(baseLocalTypeID);
       data.setModType(modType);
@@ -168,9 +167,9 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       return data;
    }
 
-   private RelationData createRelationData(VersionData version, int localId, long relationType, ModificationType modType, long baseLocalTypeID, ModificationType baseModType, ArtifactId aArtId, ArtifactId bArtId, String rationale, ApplicabilityId applicId) {
+   private RelationData createRelationData(VersionData version, int id, long relationType, ModificationType modType, long baseLocalTypeID, ModificationType baseModType, ArtifactId aArtId, ArtifactId bArtId, String rationale, ApplicabilityId applicId) {
       RelationData data = new RelationDataImpl(version);
-      data.setLocalId(localId);
+      data.setLocalId(id);
       data.setTypeUuid(relationType);
       data.setBaseTypeUuid(baseLocalTypeID);
       data.setModType(modType);
@@ -178,8 +177,8 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       data.setArtIdA(aArtId);
       data.setArtIdB(bArtId);
       Conditions.assertNotNull(rationale,
-         "rationale can't be null for RelationData id [%s], type [%s], aArtId [%s], bArtId", localId, relationType,
-         aArtId, bArtId);
+         "rationale can't be null for RelationData id [%s], type [%s], aArtId [%s], bArtId", id, relationType, aArtId,
+         bArtId);
       data.setRationale(rationale);
       data.setApplicabilityId(applicId);
       return data;
@@ -216,8 +215,8 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public TxOrcsData createTxData(Long localId, TransactionDetailsType type, Date date, String comment, BranchId branch, UserId author, ArtifactId commitArt, Long buildId) {
-      TxOrcsData data = new TransactionDataImpl(localId);
+   public TxOrcsData createTxData(Long id, TransactionDetailsType type, Date date, String comment, BranchId branch, UserId author, ArtifactId commitArt, Long buildId) {
+      TxOrcsData data = new TransactionDataImpl(id);
       data.setTxType(type);
       data.setDate(date);
       data.setComment(comment);

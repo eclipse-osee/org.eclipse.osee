@@ -22,7 +22,7 @@ import org.eclipse.osee.orcs.core.ds.VersionData;
  */
 public interface RelationObjectFactory extends VersionObjectFactory {
 
-   RelationData createRelationData(VersionData version, Integer localId, RelationTypeId relationType, ModificationType modType, ArtifactId aArtId, ArtifactId bArtId, String rationale, ApplicabilityId applicId);
+   RelationData createRelationData(VersionData version, Integer id, RelationTypeId relationType, ModificationType modType, ArtifactId aArtId, ArtifactId bArtId, String rationale, ApplicabilityId applicId);
 
    RelationData createCopy(RelationData source);
 }

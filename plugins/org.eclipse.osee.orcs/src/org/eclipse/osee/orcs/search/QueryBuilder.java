@@ -23,25 +23,19 @@ import org.eclipse.osee.orcs.data.AttributeReadable;
 public interface QueryBuilder extends ArtifactQueryBuilder<QueryBuilder>, Query {
 
    /**
-    * Executes query
-    *
     * @return artifact search results
     */
    ResultSet<ArtifactReadable> getResults();
 
    /**
-    * Executes query
-    *
     * @return artifact search results with match locations
     */
    ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> getMatches();
 
    /**
-    * Executes query
-    *
-    * @return localIds search results
+    * @return ids search results
     */
-   ResultSet<? extends ArtifactId> getResultsAsLocalIds();
+   ResultSet<? extends ArtifactId> getResultsIds();
 
    /**
     * Count search results
@@ -74,8 +68,8 @@ public interface QueryBuilder extends ArtifactQueryBuilder<QueryBuilder>, Query 
    /**
     * Schedule query and find matching locations
     *
-    * @return localIds search results
+    * @return ids search results
     */
-   CancellableCallable<ResultSet<? extends ArtifactId>> createSearchResultsAsLocalIds();
+   CancellableCallable<ResultSet<? extends ArtifactId>> createSearchResultsAsIds();
 
 }

@@ -170,17 +170,17 @@ public class RelationManagerImplTest {
       when(graph.getAdjacencies(node1)).thenReturn(container1);
       when(graph.getAdjacencies(node2)).thenReturn(container2);
 
-      when(relation1.getLocalIdForSide(RelationSide.SIDE_A)).thenReturn(11);
-      when(relation1.getLocalIdForSide(RelationSide.SIDE_B)).thenReturn(22);
+      when(relation1.getIdForSide(RelationSide.SIDE_A)).thenReturn(11);
+      when(relation1.getIdForSide(RelationSide.SIDE_B)).thenReturn(22);
 
-      when(relation2.getLocalIdForSide(RelationSide.SIDE_A)).thenReturn(33);
-      when(relation2.getLocalIdForSide(RelationSide.SIDE_B)).thenReturn(44);
+      when(relation2.getIdForSide(RelationSide.SIDE_A)).thenReturn(33);
+      when(relation2.getIdForSide(RelationSide.SIDE_B)).thenReturn(44);
 
-      when(relation3.getLocalIdForSide(RelationSide.SIDE_A)).thenReturn(55);
-      when(relation3.getLocalIdForSide(RelationSide.SIDE_B)).thenReturn(66);
+      when(relation3.getIdForSide(RelationSide.SIDE_A)).thenReturn(55);
+      when(relation3.getIdForSide(RelationSide.SIDE_B)).thenReturn(66);
 
-      when(relation4.getLocalIdForSide(RelationSide.SIDE_A)).thenReturn(11);
-      when(relation4.getLocalIdForSide(RelationSide.SIDE_B)).thenReturn(66);
+      when(relation4.getIdForSide(RelationSide.SIDE_A)).thenReturn(11);
+      when(relation4.getIdForSide(RelationSide.SIDE_B)).thenReturn(66);
    }
 
    @Test
@@ -730,7 +730,7 @@ public class RelationManagerImplTest {
 
       when(container1.getList(DEFAULT_HIERARCHY, EXCLUDE_DELETED, node1, IS_PARENT)).thenReturn(relations1);
 
-      when(relation1.getLocalIdForSide(SIDE_B)).thenReturn(22);
+      when(relation1.getIdForSide(SIDE_B)).thenReturn(22);
       when(graph.getNode(22)).thenReturn(node2);
 
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
@@ -738,7 +738,7 @@ public class RelationManagerImplTest {
 
       manager.unrelateFromAll(session, DEFAULT_HIERARCHY, node1, IS_PARENT);
 
-      verify(relation1).getLocalIdForSide(SIDE_B);
+      verify(relation1).getIdForSide(SIDE_B);
       verify(graph).getNode(22);
       verify(container1).getList(DEFAULT_HIERARCHY, EXCLUDE_DELETED, node1, IS_PARENT);
       verify(resolver).resolve(session, graph, relations1, SIDE_B);
@@ -760,7 +760,7 @@ public class RelationManagerImplTest {
       when(container1.getList(DEFAULT_HIERARCHY, EXCLUDE_DELETED, node1, IS_PARENT)).thenReturn(asAParent);
       when(container1.getList(DEFAULT_HIERARCHY, EXCLUDE_DELETED, node1, IS_CHILD)).thenReturn(asAChild);
 
-      when(relation1.getLocalIdForSide(SIDE_A)).thenReturn(11);
+      when(relation1.getIdForSide(SIDE_A)).thenReturn(11);
 
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
 
@@ -774,7 +774,7 @@ public class RelationManagerImplTest {
       verify(container1).getList(DEFAULT_HIERARCHY, EXCLUDE_DELETED, node1, IS_PARENT);
       verify(node1).delete();
 
-      verify(relation1).getLocalIdForSide(SIDE_A);
+      verify(relation1).getIdForSide(SIDE_A);
       verify(relation1).delete();
       verify(container1).getList(DEFAULT_HIERARCHY, EXCLUDE_DELETED, node1, IS_CHILD);
       verify(resolver).resolve(session, graph, asAChild, SIDE_B);

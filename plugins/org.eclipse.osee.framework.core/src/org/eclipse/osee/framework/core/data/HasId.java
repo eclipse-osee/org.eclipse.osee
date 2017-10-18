@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.core.data;
 /**
  * @author Roberto E. Escobar
  */
-public interface HasLocalId<T extends Number> {
+public interface HasId<T extends Number> {
 
    T getLocalId();
 

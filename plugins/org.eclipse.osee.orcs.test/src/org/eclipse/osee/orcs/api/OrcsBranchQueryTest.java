@@ -306,9 +306,9 @@ public class OrcsBranchQueryTest {
          associatedArtifact);
    }
 
-   private static void assertBranch(BranchReadable actual, String name, Long localId, BranchType type, BranchState state, boolean isArchived, BranchId parent, ArtifactId associatedArtifact) {
+   private static void assertBranch(BranchReadable actual, String name, Long id, BranchType type, BranchState state, boolean isArchived, BranchId parent, ArtifactId associatedArtifact) {
       assertEquals(name, actual.getName());
-      assertEquals(localId, actual.getUuid());
+      assertEquals(id, actual.getUuid());
 
       assertEquals(type, actual.getBranchType());
       assertEquals(state, actual.getBranchState());
