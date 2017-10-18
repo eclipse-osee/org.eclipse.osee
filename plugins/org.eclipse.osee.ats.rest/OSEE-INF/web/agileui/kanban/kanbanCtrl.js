@@ -62,7 +62,7 @@ angular
 								}
 							}
 
-							// Get tasks for selected spring
+							// Get tasks for selected sprint
 							var getTasks = function() {
 								if ($scope.selectedSprint) {
 									AgileEndpoint.getSprintForKb($scope.team,

@@ -51,6 +51,7 @@ public class KanbanOperations {
       // Utility Class
    }
 
+   @SuppressWarnings("unchecked")
    public static JaxKbSprint getSprintItemsForKb(IAtsServer atsServer, long teamUuid, long sprintUuid) {
       IAgileSprint sprint = atsServer.getAgileService().getAgileSprint(sprintUuid);
       if (sprint == null) {
@@ -81,7 +82,8 @@ public class KanbanOperations {
          //   "jod6us" : "John Doe",
          //   "sam5us" : "Sam Smith"
          //  },
-         for (IAtsUser user : workItem.getStateMgr().getAssignees()) {
+         for (IAtsUser user : Collections.setUnion(workItem.getStateMgr().getAssignees(),
+            atsServer.getImplementerService().getImplementers(workItem))) {
             String name = user.getName();
             if (assigneeToName.containsKey(name)) {
                name = assigneeToName.get(name);
