@@ -21,8 +21,11 @@ import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_ACTIVITY_LOGGE
 import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_ACTIVITY_LOGGER__EXECUTOR_POOL_SIZE;
 import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_ACTIVITY_LOGGER__STACKTRACE_LINE_COUNT;
 import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_ACTIVITY_LOGGER__WRITE_RATE_IN_MILLIS;
+import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_CLIENT_ID;
+import static org.eclipse.osee.activity.api.Activity.THREAD_ACTIVITY;
 import static org.eclipse.osee.activity.internal.ActivityUtil.captureStackTrace;
 import static org.eclipse.osee.activity.internal.ActivityUtil.get;
+import java.net.UnknownHostException;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,13 +40,19 @@ import org.eclipse.osee.activity.api.Activity;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.activity.api.ActivityType;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
+import org.eclipse.osee.framework.core.data.OrcsTypesData;
+import org.eclipse.osee.framework.core.data.OseeClient;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.DrainingIterator;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Network;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.logger.Log;
+import org.eclipse.osee.orcs.SystemPreferences;
 
 /**
  * @author Ryan D. Brooks
@@ -73,13 +82,18 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
       }
    };
 
+   private final static int HALF_HOUR = 30 * 60 * 1000;
+   private static final int FIVE_MINUTES = 5 * 60 * 1000;
+
    private final ConcurrentHashMap<Long, Object[]> newEntities = new ConcurrentHashMap<>();
    private final ConcurrentHashMap<Long, Object[]> updatedEntities = new ConcurrentHashMap<>();
+   private final ThreadActivity threadActivity = new ThreadActivity();
    private static final Object[] EMPTY_ARRAY = new Object[0];
 
    private Log logger;
    private ExecutorAdmin executorAdmin;
    private ActivityStorage storage;
+   private SystemPreferences preferences;
 
    private final AtomicBoolean initialized = new AtomicBoolean(false);
    private ActivityMonitorImpl activityMonitor;
@@ -102,9 +116,47 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
       this.executorAdmin = executorAdmin;
    }
 
+   public void setSystemPreferences(SystemPreferences preferences) {
+      this.preferences = preferences;
+   }
+
    public void start(Map<String, Object> properties) throws Exception {
       activityMonitor = new ActivityMonitorImpl();
+      executorAdmin.schedule(this::continuouslyLogThreadActivity);
       update(properties);
+   }
+
+   private Void continuouslyLogThreadActivity() {
+      String portString = System.getProperty(OseeClient.OSGI_HTTP_PORT);
+      Long port;
+      try {
+         port = Long.valueOf(portString);
+      } catch (Exception ex) {
+         port = Id.SENTINEL;
+      }
+      String host = "";
+      try {
+         host = Network.getValidIP().getCanonicalHostName();
+      } catch (UnknownHostException ex) {
+         logger.warn(ex, "Error getting host for start of tread activity logging");
+      }
+      Long threadActivityParententryId = createActivityThread(THREAD_ACTIVITY, SystemUser.OseeSystem.getId(), port,
+         DEFAULT_CLIENT_ID, "Start of thread activity logging thread on " + host);
+
+      int sampleWindowMs;
+      while (true) {
+         String sampleWindowMsStr =
+            preferences.getCachedValue("thread.activity.sample.window." + OrcsTypesData.OSEE_TYPE_VERSION, HALF_HOUR);
+         if (Strings.isValid(sampleWindowMsStr)) {
+            sampleWindowMs = Integer.parseInt(sampleWindowMsStr);
+         } else {
+            sampleWindowMs = FIVE_MINUTES;
+         }
+         String threadActivity = getThreadActivity(sampleWindowMs);
+         if (!threadActivity.isEmpty()) {
+            createEntry(THREAD_ACTIVITY, threadActivityParententryId, COMPLETE_STATUS, threadActivity);
+         }
+      }
    }
 
    public void stop() {
@@ -503,5 +555,10 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
    @Override
    public void unInitialize() {
       this.initialized.set(false);
+   }
+
+   @Override
+   public String getThreadActivity(int sampleWindowMs) {
+      return threadActivity.getThreadActivity(sampleWindowMs);
    }
 }

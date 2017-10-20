@@ -77,4 +77,19 @@ public interface ActivityLog {
     * Sets the ActivityLog as un-initialized. Next call to create will re-initialize
     */
    void unInitialize();
+
+   /**
+    * Returns info for up to 15 threads ordered by most cpu time during the sample window </br>
+    * Augmented Backus-Naur Form (ABNF) defined in https://tools.ietf.org/html/rfc5234</br>
+    * ABNF Format:</br>
+    * <code>
+    * thread-activity = thread-info*</br>
+    * thread-info = <thread-name> "(" thread-id ")" elapsed ", " total ", " blocked ", " (stack-trace-element " ")*
+    * </code>
+    * <li>elapsed = cpu elapsed time in milliseconds of the named thread during the sample period (currently 5 minutes)
+    * <li>total = cpu elapsed time in milliseconds of the named thread since start of thread
+    * <li>blocked = milliseconds that the thread associated has blocked to enter or reenter a monitor since thread
+    * contention monitoring is enabled. -1 if thread contention monitoring is disabled.
+    */
+   String getThreadActivity(int sampleWindowMs);
 }

@@ -26,6 +26,7 @@ public enum Activity implements ActivityType {
    XNAVIGATEITEM(45L, INFO, "osee.framework.XNavigateItem", "XNavigateItem [%s]"),
    ACCESS_CONTROL_MODIFIED(99L, INFO, "osee.framework.access", "Access Control Modified [%s]"),
    BRANCH_OPERATION(61L, INFO, "org.eclipse.osee.orcs.rest.internal.branch"),
+   THREAD_ACTIVITY(777L, INFO, "org.eclipse.osee.activity"),
    PURGE_TRANSACTION(4455L, INFO, "org.eclipse.osee.orcs.rest.purge.transaction");
 
    private final Long typeId;

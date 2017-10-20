@@ -17,6 +17,7 @@ public class OseeClient {
 
    public static final String OSEE_APPLICATION_SERVER = "osee.application.server";
    public static final String OSEE_APPLICATION_SERVER_DATA = "osee.application.server.data";
+   public static final String OSGI_HTTP_PORT = "org.osgi.service.http.port";
 
    private OseeClient() {
       // utility class
