@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Test
 Bundle-SymbolicName: org.eclipse.osee.framework.messaging.event.res.test
-Bundle-Version: 0.25.1.qualifier
+Bundle-Version: 0.25.2.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Fragment-Host: org.eclipse.osee.framework.messaging.event.res
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

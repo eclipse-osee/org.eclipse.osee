@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Test Support Util Plug-in
 Bundle-SymbolicName: org.eclipse.osee.support.test.util
-Bundle-Version: 0.25.1.qualifier
+Bundle-Version: 0.25.2.qualifier
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.osee.support.test.util

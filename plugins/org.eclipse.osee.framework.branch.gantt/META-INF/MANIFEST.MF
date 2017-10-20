@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Branch Visualization
 Bundle-SymbolicName: org.eclipse.osee.framework.branch.gantt;singleton:=true
-Bundle-Version: 0.25.1.qualifier
+Bundle-Version: 0.25.2.qualifier
 Bundle-Activator: org.eclipse.osee.branch.gantt.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime

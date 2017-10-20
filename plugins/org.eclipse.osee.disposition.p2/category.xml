@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.eclipse.osee.xats.feature_0.25.1.qualifier.jar" id="org.eclipse.osee.disposition.feature" version="0.25.1.qualifier">
+   <feature url="features/org.eclipse.osee.xats.feature_0.25.2.qualifier.jar" id="org.eclipse.osee.disposition.feature" version="0.25.2.qualifier">
       <category name="org.eclipse.osee.disposition"/>
    </feature>
-   <feature url="features/org.eclipse.osee.disposition.feature.source_0.25.1.qualifier.jar" id="org.eclipse.osee.disposition.feature.source" version="0.25.1.qualifier">
+   <feature url="features/org.eclipse.osee.disposition.feature.source_0.25.2.qualifier.jar" id="org.eclipse.osee.disposition.feature.source" version="0.25.2.qualifier">
       <category name="org.eclipse.osee.disposition"/>
    </feature>
    <category-def name="org.eclipse.osee.disposition" label="Eclipse OSEE X ATS - (Incubation)">

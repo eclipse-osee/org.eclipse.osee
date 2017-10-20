@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Osee Logger Slf4j (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.logger.slf4j
-Bundle-Version: 0.25.1.qualifier
+Bundle-Version: 0.25.2.qualifier
 Import-Package: org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.logger,
  org.osgi.framework,

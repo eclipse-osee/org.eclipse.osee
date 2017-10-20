@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JMS Libraries
 Bundle-SymbolicName: jms.libraries
-Bundle-Version: 0.25.1.qualifier
+Bundle-Version: 0.25.2.qualifier
 Eclipse-BuddyPolicy: global
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ClassPath: libs/geronimo-j2ee-management_1.0_spec-1.0.jar,
