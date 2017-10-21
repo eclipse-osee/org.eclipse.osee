@@ -52,10 +52,12 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -67,6 +69,7 @@ import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -270,8 +273,13 @@ public class WordTemplateProcessor {
       artifactsToExclude = getNonApplicableArtifacts(artifacts, view == null ? ArtifactId.SENTINEL : view);
 
       if (!artifacts.isEmpty()) {
+         BranchId branchId = artifacts.get(0).getBranch();
+         Branch branch = BranchManager.getBranch(branchId);
+         if (branch.getBranchType().equals(BranchType.MERGE)) {
+            branch = branch.getParentBranch();
+         }
          ApplicabilityEndpoint applEndpoint =
-            ServiceUtil.getOseeClient().getApplicabilityEndpoint(artifacts.get(0).getBranch());
+            ServiceUtil.getOseeClient().getApplicabilityEndpoint(branch.getParentBranch());
 
          applicabilityTokens = new HashMap<>();
          Collection<ApplicabilityToken> appTokens = applEndpoint.getApplicabilityTokenMap();
