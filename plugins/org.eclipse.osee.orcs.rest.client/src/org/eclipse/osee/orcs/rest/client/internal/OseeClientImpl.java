@@ -81,7 +81,8 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
       client = JaxRsClient.newBuilder().properties(properties).build();
       String address = properties != null ? (String) properties.get(OSEE_APPLICATION_SERVER) : null;
       if (address == null) {
-         address = System.getProperty(OSEE_APPLICATION_SERVER, "http://localhost:8089");
+         address =
+            System.getProperty(OSEE_APPLICATION_SERVER, org.eclipse.osee.framework.core.data.OseeClient.DEFAULT_URL);
       }
       if (Strings.isValid(address)) {
          baseUri = UriBuilder.fromUri(address).build();

@@ -12,15 +12,14 @@ package org.eclipse.osee.x.server.integration.tests.endpoint;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
-import org.eclipse.osee.x.server.integration.tests.util.IntegrationUtil;
+import org.eclipse.osee.framework.core.data.OseeClient;
 import org.junit.Test;
 
 public class RestAssuredTest {
 
    @Test
    public void testOrcsApplicability() {
-      given().port(IntegrationUtil.getPort()).header("osee.account.id", "61106791").when().get(
+      given().port(OseeClient.getPort()).header("osee.account.id", "61106791").when().get(
          "/orcs/branch/3/applic/artifact/425075333").then().body("id", equalTo("1"));
    }
-
 }

@@ -132,8 +132,8 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
          types.put(type.getId(), type);
       }
       activityMonitor = new ActivityMonitorImpl();
-      executorAdmin.schedule(this::continuouslyLogThreadActivity);
       update(properties);
+      executorAdmin.schedule(this::continuouslyLogThreadActivity);
    }
 
    private Void continuouslyLogThreadActivity() {
@@ -258,8 +258,8 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
       if (enabled) {
          Object[] threadRootEntry = activityMonitor.getThreadRootEntry();
          // Should never have a null rootEntry, but still want to log message with sentinel
-         Long entryId = threadRootEntry == null ? LogEntry.SENTINEL : LogEntry.ENTRY_ID.from(threadRootEntry);
-         return createEntry(type, entryId, status, messageArgs);
+         Long parentId = threadRootEntry == null ? LogEntry.SENTINEL : LogEntry.ENTRY_ID.from(threadRootEntry);
+         return createEntry(type, parentId, status, messageArgs);
       }
       return 0L;
    }

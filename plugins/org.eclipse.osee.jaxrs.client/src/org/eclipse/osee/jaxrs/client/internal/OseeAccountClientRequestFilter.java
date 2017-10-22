@@ -27,7 +27,5 @@ public class OseeAccountClientRequestFilter implements ClientRequestFilter {
          JaxRsClient.getAccountId() == null ? "0" : JaxRsClient.getAccountId().toString());
       context.getHeaders().putSingle("osee.client.id",
          JaxRsClient.getClientId() == null ? "0" : JaxRsClient.getClientId().toString());
-      context.getHeaders().putSingle("osee.server.id",
-         JaxRsClient.getServerId() == null ? "0" : JaxRsClient.getServerId().toString());
    }
 }

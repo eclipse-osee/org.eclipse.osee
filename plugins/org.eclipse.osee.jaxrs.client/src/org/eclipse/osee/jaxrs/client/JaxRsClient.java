@@ -55,7 +55,8 @@ public final class JaxRsClient {
 
    private final JaxRsClientConfig config;
    private final JaxRsClientFactory factory;
-   private static Long accountId, clientId, serverId;
+   private static Long accountId;
+   private static Long clientId;
 
    protected JaxRsClient(JaxRsClientFactory factory, JaxRsClientConfig config) {
       super();
@@ -344,13 +345,4 @@ public final class JaxRsClient {
    public static void setClientId(Long clientId) {
       JaxRsClient.clientId = clientId;
    }
-
-   public static Long getServerId() {
-      return serverId;
-   }
-
-   public static void setServerId(Long serverId) {
-      JaxRsClient.serverId = serverId;
-   }
-
 }

@@ -18,6 +18,7 @@ import static org.eclipse.osee.account.rest.model.AccountContexts.ACCOUNT_LOGOUT
 import static org.eclipse.osee.account.rest.model.AccountContexts.ACCOUNT_PREFERENCES;
 import static org.eclipse.osee.account.rest.model.AccountContexts.ACCOUNT_SESSSIONS;
 import static org.eclipse.osee.account.rest.model.AccountContexts.ACCOUNT_USERNAME_TEMPLATE;
+import static org.eclipse.osee.framework.core.data.OseeClient.OSEE_APPLICATION_SERVER;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,7 +41,6 @@ import org.eclipse.osee.account.rest.model.AccountSessionData;
 import org.eclipse.osee.account.rest.model.AccountSessionDetailsData;
 import org.eclipse.osee.account.rest.model.AccountWebPreferences;
 import org.eclipse.osee.account.rest.model.SubscriptionData;
-import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
@@ -51,9 +51,6 @@ import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;
  * @author Roberto E. Escobar
  */
 public class AccountClientImpl implements AccountClient {
-
-   private static final String OSEE_APPLICATION_SERVER = OseeClient.OSEE_APPLICATION_SERVER;
-
    private volatile JaxRsClient client;
    private volatile URI baseUri;
 

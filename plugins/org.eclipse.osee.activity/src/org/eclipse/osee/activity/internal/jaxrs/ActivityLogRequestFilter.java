@@ -19,7 +19,9 @@ import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.ext.Provider;
 import org.eclipse.osee.activity.ActivityConstants;
 import org.eclipse.osee.activity.api.ActivityLog;
+import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 
@@ -50,13 +52,11 @@ public class ActivityLogRequestFilter implements ContainerRequestFilter {
       if (activityLog.isEnabled()) {
          try {
             String message = String.format("%s %s", context.getMethod(), context.getUriInfo().getPath());
-            Long serverId = getServerId(context);
-            Long clientId = ActivityConstants.DEFAULT_CLIENT_ID;
-            if (Strings.isNumeric(context.getHeaders().getFirst("osee.client.id"))) {
-               clientId = Long.valueOf(context.getHeaders().getFirst("osee.client.id"));
-            }
-
+            String clientStr = context.getHeaderString("osee.client.id");
+            Long clientId = Strings.isValid(clientStr) ? Long.valueOf(clientStr) : Id.SENTINEL;
+            Long serverId = Long.valueOf(OseeClient.getPort());
             UserId accountId = UserId.valueOf(context.getHeaderString("osee.account.id"));
+
             Long entryId = activityLog.createActivityThread(JAXRS_METHOD_CALL, accountId, serverId, clientId, message);
 
             context.setProperty(ActivityConstants.HTTP_HEADER__ACTIVITY_ENTRY_ID, entryId);
@@ -65,10 +65,4 @@ public class ActivityLogRequestFilter implements ContainerRequestFilter {
          }
       }
    }
-
-   private Long getServerId(ContainerRequestContext context) {
-      Long toReturn = ActivityConstants.DEFAULT_SERVER_ID;
-      return toReturn;
-   }
-
 }

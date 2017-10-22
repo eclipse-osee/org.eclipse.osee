@@ -121,24 +121,8 @@ public class RestUtil {
       }
    }
 
-   public static String getClientId(HttpHeaders httpHeaders) {
-      String clientId = httpHeaders.getHeaderString("osee.client.id");
-      if (clientId == null) {
-         clientId = "";
-      }
-      return clientId;
-   }
-
    public static String getAccountId(HttpHeaders httpHeaders) {
       String clientId = httpHeaders.getHeaderString("osee.account.id");
-      if (clientId == null) {
-         clientId = "";
-      }
-      return clientId;
-   }
-
-   public static String getServerId(HttpHeaders httpHeaders) {
-      String clientId = httpHeaders.getHeaderString("osee.server.id");
       if (clientId == null) {
          clientId = "";
       }

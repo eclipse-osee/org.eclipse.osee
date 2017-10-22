@@ -62,7 +62,7 @@ public class OseeClientInfo extends BaseExchangeData {
       int toReturn = -1;
       String port = this.getString(CLIENT_PORT);
       if (Strings.isValid(port)) {
-         toReturn = Integer.valueOf(port);
+         toReturn = Integer.parseInt(port);
       }
       return toReturn;
    }

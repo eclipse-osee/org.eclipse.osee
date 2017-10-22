@@ -52,6 +52,10 @@ public interface ActivityLog {
 
    Long createActivityThread(ActivityTypeToken type, UserId accountId, Long serverId, Long clientId, Object... messageArgs);
 
+   /**
+    * @param serverId id of server originating the message. -1 if a client originates the message
+    * @return the new entry id which is the parent id for all direct child entries created on this thread
+    */
    Long createActivityThread(Long parentId, ActivityTypeToken type, UserId accountId, Long serverId, Long clientId, Object... messageArgs);
 
    ActivityTypeToken getActivityType(ActivityTypeId typeId);

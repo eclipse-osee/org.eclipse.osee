@@ -11,7 +11,6 @@
 package org.eclipse.osee.activity.internal.jaxrs;
 
 import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_CLIENT_ID;
-import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_SERVER_ID;
 import static org.eclipse.osee.activity.ActivityConstants.ERROR_MSG__MISSING_ACTIVITY_HEADER;
 import static org.eclipse.osee.framework.core.data.CoreActivityTypes.JAXRS_METHOD_CALL_FILTER_ERROR;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -22,6 +21,7 @@ import javax.ws.rs.core.Response.StatusType;
 import javax.ws.rs.ext.Provider;
 import org.eclipse.osee.activity.ActivityConstants;
 import org.eclipse.osee.activity.api.ActivityLog;
+import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.logger.Log;
 
@@ -59,8 +59,8 @@ public class ActivityLogResponseFilter implements ContainerResponseFilter {
                }
             } else {
                // Response was called without a matching request
-               activityLog.createActivityThread(JAXRS_METHOD_CALL_FILTER_ERROR, SystemUser.Anonymous, DEFAULT_SERVER_ID,
-                  DEFAULT_CLIENT_ID, ERROR_MSG__MISSING_ACTIVITY_HEADER);
+               activityLog.createActivityThread(JAXRS_METHOD_CALL_FILTER_ERROR, SystemUser.Anonymous,
+                  Long.valueOf(OseeClient.getPort()), DEFAULT_CLIENT_ID, ERROR_MSG__MISSING_ACTIVITY_HEADER);
             }
          } catch (Throwable th) {
             logger.error(th, "Error during ActivityContainerResponseFilter");
