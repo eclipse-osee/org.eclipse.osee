@@ -22,12 +22,12 @@ public class ServerStatus {
    private final Map<String, String> data = new HashMap<String, String>();
 
    public void set(StatusKey key, String value) {
-      data.put(key.name(), value);
+      data.put(key.getShortName(), value);
    }
 
    @JsonIgnore
    public String get(StatusKey key) {
-      return data.get(key.name());
+      return data.get(key.getShortName());
    }
 
    public void add(String keyStr, String value) {

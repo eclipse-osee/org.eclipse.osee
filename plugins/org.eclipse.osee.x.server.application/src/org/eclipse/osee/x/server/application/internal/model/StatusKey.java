@@ -15,14 +15,10 @@ package org.eclipse.osee.x.server.application.internal.model;
  */
 public enum StatusKey {
    ServerUri("URI", false),
-   ServerState("State", false),
    MemoryAllocated("Mem Alloc", false),
    MemoryUsed("Mem-Used", false),
    MemoryMax("Mem-Max", false),
-   ActiveThreads("Threads", false),
-   JobManager("Jobs", false),
-   CurrentJob("Curr Job", false),
-   CurrentTasks("Curr Tasks", true),
+   ActiveThreads("Thread Activity", true),
    ServerId("ID", true),
    StartTime("Start", true),
    CodeLocation("Start", true),
@@ -30,7 +26,9 @@ public enum StatusKey {
    AuthenticationScheme("Auth-Scheme", true),
    AuthenticationSchemeSupported("Auth-Supported", true),
    SupportedVersions("Versions", true),
-   Unknown("Unknown", true);
+   SystemLoad("SystemLoad", false),
+   Unknown("Unknown", true),
+   UpTime("UpTime", false);
 
    private final String shortName;
    private final boolean details;
@@ -47,5 +45,4 @@ public enum StatusKey {
    public String getShortName() {
       return shortName;
    }
-
 }

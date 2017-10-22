@@ -23,6 +23,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.util.HttpProcessor;
@@ -44,14 +45,16 @@ public final class ServerHealthEndpointImpl {
    private final IApplicationServerManager applicationServerManager;
    private final Map<String, JdbcService> jdbcServices;
    private final IAuthenticationManager authManager;
+   private final ActivityLog activityLog;
    private ObjectMapper mapper;
    private static final String GET_VALUE_SQL = "Select OSEE_VALUE FROM osee_info where OSEE_KEY = ?";
    public static final String OSEE_HEALTH_SERVERS_KEY = "osee.health.servers";
 
-   public ServerHealthEndpointImpl(IApplicationServerManager applicationServerManager, Map<String, JdbcService> jdbcServices, IAuthenticationManager authManager) {
+   public ServerHealthEndpointImpl(IApplicationServerManager applicationServerManager, Map<String, JdbcService> jdbcServices, IAuthenticationManager authManager, ActivityLog activityLog) {
       this.applicationServerManager = applicationServerManager;
       this.jdbcServices = jdbcServices;
       this.authManager = authManager;
+      this.activityLog = activityLog;
    }
 
    @Path("top")
@@ -80,7 +83,7 @@ public final class ServerHealthEndpointImpl {
    @GET
    @Produces(MediaType.APPLICATION_JSON)
    public ServerStatus serverStatus() {
-      return new BuildServerStatusOperation(applicationServerManager, authManager).get();
+      return new BuildServerStatusOperation(applicationServerManager, authManager, activityLog).get();
    }
 
    @Path("status/all")

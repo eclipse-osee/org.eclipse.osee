@@ -7,4 +7,5 @@
    <reference bind="setApplicationServerManager" cardinality="1..1" interface="org.eclipse.osee.framework.core.server.IApplicationServerManager" name="IApplicationServerManager" policy="static"/>
    <reference bind="addJdbcService" cardinality="0..n" interface="org.eclipse.osee.jdbc.JdbcService" name="JdbcService" policy="dynamic" unbind="removeJdbcService"/>
    <reference bind="setAuthenticationManager" cardinality="1..1" interface="org.eclipse.osee.framework.core.server.IAuthenticationManager" name="IAuthenticationManager" policy="static"/>
+   <reference bind="setActivityLog" cardinality="1..1" interface="org.eclipse.osee.activity.api.ActivityLog" name="ActivityLog" policy="static"/>
 </scr:component>

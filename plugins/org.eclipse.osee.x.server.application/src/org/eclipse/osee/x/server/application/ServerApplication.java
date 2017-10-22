@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
+import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.jdbc.JdbcService;
@@ -32,6 +33,11 @@ public class ServerApplication extends Application {
    private IApplicationServerManager applicationServerManager;
    private final Map<String, JdbcService> jdbcServices = new ConcurrentHashMap<>();
    private IAuthenticationManager authManager;
+   private ActivityLog activityLog;
+
+   public void setActivityLog(ActivityLog activityLog) {
+      this.activityLog = activityLog;
+   }
 
    public void setAuthenticationManager(IAuthenticationManager authManager) {
       this.authManager = authManager;
@@ -55,7 +61,7 @@ public class ServerApplication extends Application {
    }
 
    public void start(Map<String, Object> properties) {
-      singletons.add(new ServerHealthEndpointImpl(applicationServerManager, jdbcServices, authManager));
+      singletons.add(new ServerHealthEndpointImpl(applicationServerManager, jdbcServices, authManager, activityLog));
    }
 
    public void stop() {

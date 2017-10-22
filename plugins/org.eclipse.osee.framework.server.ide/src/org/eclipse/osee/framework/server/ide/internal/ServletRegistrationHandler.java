@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.server.ide.internal;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
-import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.eclipse.osee.framework.server.ide.AdminServlet;
@@ -30,16 +29,11 @@ public class ServletRegistrationHandler {
    private HttpService httpService;
    private Log logger;
    private ISessionManager sessionManager;
-   private IApplicationServerManager appServerManager;
 
    private final Set<String> contexts = new HashSet<>();
 
    public void setSessionManager(ISessionManager sessionManager) {
       this.sessionManager = sessionManager;
-   }
-
-   public void setAppServerManager(IApplicationServerManager appServerManager) {
-      this.appServerManager = appServerManager;
    }
 
    public void setLogger(Log logger) {
@@ -55,12 +49,12 @@ public class ServletRegistrationHandler {
    }
 
    public synchronized void start(BundleContext context) {
-      ServletUtil.unregister(httpService, appServerManager, contexts);
+      ServletUtil.unregister(httpService, contexts);
       registerServices(context);
    }
 
    public synchronized void stop() {
-      ServletUtil.unregister(httpService, appServerManager, contexts);
+      ServletUtil.unregister(httpService, contexts);
       contexts.clear();
    }
 
@@ -73,7 +67,7 @@ public class ServletRegistrationHandler {
 
    private void register(OseeHttpServlet servlet, String contexts) {
       this.contexts.add(contexts);
-      ServletUtil.register(httpService, appServerManager, servlet, contexts);
+      ServletUtil.register(httpService, servlet, contexts);
    }
 
 }

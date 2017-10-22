@@ -9,15 +9,12 @@ Osee-Data: OSEE-INF/*
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: javax.ws.rs,
  javax.ws.rs.core,
- javax.ws.rs.ext,
- org.codehaus.jackson,
- org.codehaus.jackson.annotate;version="1.9.13",
- org.codehaus.jackson.map;version="1.9.13",
- org.eclipse.core.runtime.jobs,
- org.eclipse.equinox.app,
+ org.codehaus.jackson.annotate,
+ org.codehaus.jackson.map,
+ org.eclipse.osee.activity.api,
+ org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.server,
  org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.jdbc,
- org.eclipse.osee.logger,
- org.eclipse.osee.orcs.data
+ org.eclipse.osee.logger

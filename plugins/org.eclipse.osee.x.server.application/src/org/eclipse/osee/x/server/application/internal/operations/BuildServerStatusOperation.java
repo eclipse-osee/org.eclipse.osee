@@ -12,9 +12,13 @@ package org.eclipse.osee.x.server.application.internal.operations;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
+import java.lang.management.OperatingSystemMXBean;
+import java.lang.management.RuntimeMXBean;
 import java.text.DateFormat;
 import java.util.Arrays;
-import java.util.List;
+import org.eclipse.osee.activity.api.ActivityLog;
+import org.eclipse.osee.activity.api.ThreadStats;
+import org.eclipse.osee.framework.core.data.CoreActivityTypes;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
@@ -29,10 +33,14 @@ public class BuildServerStatusOperation {
 
    private final IApplicationServerManager applicationServerManager;
    private final IAuthenticationManager authManager;
+   private final ActivityLog activityLog;
+   private final RuntimeMXBean runtimeMxBean = ManagementFactory.getRuntimeMXBean();
+   private final OperatingSystemMXBean osMxBean = ManagementFactory.getOperatingSystemMXBean();
 
-   public BuildServerStatusOperation(IApplicationServerManager applicationServerManager, IAuthenticationManager authManager) {
+   public BuildServerStatusOperation(IApplicationServerManager applicationServerManager, IAuthenticationManager authManager, ActivityLog activityLog) {
       this.applicationServerManager = applicationServerManager;
       this.authManager = authManager;
+      this.activityLog = activityLog;
    }
 
    public ServerStatus get() {
@@ -41,6 +49,8 @@ public class BuildServerStatusOperation {
       stat.set(StatusKey.ServerId, applicationServerManager.getId());
       stat.set(StatusKey.StartTime, DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG).format(
          applicationServerManager.getDateStarted()));
+      stat.set(StatusKey.UpTime, String.valueOf(runtimeMxBean.getUptime()));
+      stat.set(StatusKey.SystemLoad, String.valueOf(osMxBean.getSystemLoadAverage()));
       stat.set(StatusKey.CodeLocation, System.getProperty("user.dir"));
       stat.set(StatusKey.BinaryDataPath, OseeServerProperties.getOseeApplicationServerData(null));
       stat.set(StatusKey.AuthenticationScheme, authManager.getProtocol());
@@ -50,11 +60,16 @@ public class BuildServerStatusOperation {
       stat.set(StatusKey.MemoryUsed, Lib.toMBytes(heapMem.getUsed()));
       stat.set(StatusKey.MemoryAllocated, Lib.toMBytes(heapMem.getCommitted()));
       stat.set(StatusKey.MemoryMax, Lib.toMBytes(heapMem.getMax()));
-      stat.set(StatusKey.ServerState, applicationServerManager.isSystemIdle() ? "IDLE" : "BUSY");
-      stat.set(StatusKey.ActiveThreads, String.valueOf(applicationServerManager.getNumberOfActiveThreads()));
-      List<String> entries = applicationServerManager.getCurrentProcesses();
-      stat.set(StatusKey.CurrentTasks,
-         entries.isEmpty() ? "NONE" : org.eclipse.osee.framework.jdk.core.util.Collections.toString(", ", entries));
+
+      ThreadStats[] threadStats = activityLog.getThreadActivity();
+      try {
+         Thread.sleep(4000);
+      } catch (InterruptedException ex) {
+         activityLog.createThrowableEntry(CoreActivityTypes.OSEE_ERROR, ex);
+      }
+      String threadReport = activityLog.getThreadActivityDelta(threadStats);
+
+      stat.set(StatusKey.ActiveThreads, threadReport);
       return stat;
    }
 }

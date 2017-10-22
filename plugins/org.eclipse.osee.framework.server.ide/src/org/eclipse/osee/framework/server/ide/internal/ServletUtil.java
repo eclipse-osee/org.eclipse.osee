@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.server.ide.internal;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.osgi.service.http.HttpService;
 
@@ -28,25 +27,21 @@ public final class ServletUtil {
       return !contextName.startsWith("/") ? "/" + contextName : contextName;
    }
 
-   public static void register(HttpService httpService, IApplicationServerManager manager, OseeHttpServlet servlet, String context) {
+   public static void register(HttpService httpService, OseeHttpServlet servlet, String context) {
       try {
          String contextName = normalizeContext(context);
          httpService.registerServlet(contextName, servlet, null, null);
-         manager.register(contextName, servlet);
          System.out.println(String.format("Registered servlet '%s'", contextName));
       } catch (Exception ex) {
          throw new RuntimeException(ex);
       }
    }
 
-   public static void unregister(HttpService httpService, IApplicationServerManager manager, Collection<String> contexts) {
+   public static void unregister(HttpService httpService, Collection<String> contexts) {
       for (String context : contexts) {
          String contextName = normalizeContext(context);
          if (httpService != null) {
             httpService.unregister(contextName);
-         }
-         if (manager != null) {
-            manager.unregister(contextName);
          }
          System.out.println(String.format("De-registering servlet '%s'", contextName));
       }

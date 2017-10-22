@@ -10,10 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server;
 
-import java.util.Collection;
 import java.util.Date;
-import java.util.List;
-import java.util.concurrent.ThreadFactory;
 
 /**
  * @author Roberto E. Escobar
@@ -22,13 +19,7 @@ public interface IApplicationServerManager {
 
    void shutdown();
 
-   ThreadFactory createNewThreadFactory(String name, int priority);
-
    boolean isSystemIdle();
-
-   int getNumberOfActiveThreads();
-
-   List<String> getCurrentProcesses();
 
    boolean executeLookupRegistration();
 
@@ -41,11 +32,4 @@ public interface IApplicationServerManager {
    Date getDateStarted();
 
    String[] getVersions();
-
-   void register(String context, OseeHttpServlet servlets);
-
-   void unregister(String key);
-
-   Collection<String> getRegisteredServlets();
-
 }

@@ -11,25 +11,17 @@
 package org.eclipse.osee.framework.core.server.internal;
 
 import java.io.ByteArrayInputStream;
-import java.lang.Thread.State;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ThreadFactory;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.OseeServerInfo;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
-import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.ChecksumUtil;
@@ -42,20 +34,12 @@ import org.eclipse.osee.logger.Log;
  * @author Roberto E. Escobar
  */
 public class ApplicationServerManager implements IApplicationServerManager {
-   private final Map<String, OseeServerThreadFactory> threadFactories;
-   private final Map<String, InternalOseeHttpServlet> oseeHttpServlets;
-
    private Log logger;
    private JdbcService jdbcService;
 
    private ApplicationServerDataStore dataStore;
    private OseeServerInfo serverInfo;
    private Timer timer;
-
-   public ApplicationServerManager() {
-      this.oseeHttpServlets = new ConcurrentHashMap<>();
-      this.threadFactories = new ConcurrentHashMap<>();
-   }
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -147,37 +131,8 @@ public class ApplicationServerManager implements IApplicationServerManager {
       return isRegistered;
    }
 
-   @Override
-   public void register(String context, OseeHttpServlet servlet) {
-      InternalOseeHttpServlet internalServlet = servlet;
-      this.oseeHttpServlets.put(context, internalServlet);
-   }
-
-   @Override
-   public void unregister(String key) {
-      this.oseeHttpServlets.remove(key);
-      this.threadFactories.remove(key);
-   }
-
-   @Override
-   public Collection<String> getRegisteredServlets() {
-      return oseeHttpServlets.keySet();
-   }
-
    private OseeServerInfo getApplicationServerInfo() {
       return serverInfo;
-   }
-
-   @Override
-   public ThreadFactory createNewThreadFactory(String name, int priority) {
-      OseeServerThreadFactory factory = new OseeServerThreadFactory(name, priority);
-      this.threadFactories.put(name, factory);
-      return factory;
-   }
-
-   private List<OseeServerThread> getThreadsFromFactory(String key) {
-      OseeServerThreadFactory factory = threadFactories.get(key);
-      return factory.getThreads();
    }
 
    /**
@@ -196,47 +151,6 @@ public class ApplicationServerManager implements IApplicationServerManager {
       }
       OseeServerInfo info = getApplicationServerInfo();
       deregisterWithDb(info);
-   }
-
-   @Override
-   public List<String> getCurrentProcesses() {
-      List<String> processList = new ArrayList<>();
-      for (String key : threadFactories.keySet()) {
-         for (OseeServerThread thread : getThreadsFromFactory(key)) {
-            State state = thread.getState();
-            if (!state.equals(State.TERMINATED)) {
-               processList.add(thread.getName());
-            }
-         }
-      }
-      for (String contexts : oseeHttpServlets.keySet()) {
-         InternalOseeHttpServlet servlets = oseeHttpServlets.get(contexts);
-         if (servlets.getState().equals(ProcessingStateEnum.BUSY)) {
-            processList.add(servlets.getCurrentRequest());
-         }
-      }
-      return processList;
-   }
-
-   @Override
-   public int getNumberOfActiveThreads() {
-      int totalProcesses = 0;
-      for (String contexts : oseeHttpServlets.keySet()) {
-         InternalOseeHttpServlet servlet = oseeHttpServlets.get(contexts);
-         if (servlet.getState().isBusy()) {
-            totalProcesses++;
-         }
-      }
-
-      for (String key : threadFactories.keySet()) {
-         for (OseeServerThread thread : getThreadsFromFactory(key)) {
-            State state = thread.getState();
-            if (State.TERMINATED != state) {
-               totalProcesses++;
-            }
-         }
-      }
-      return totalProcesses;
    }
 
    @Override
