@@ -151,14 +151,12 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
 
       Map<Long, ArtifactReadable> idToArtifact = new HashMap<>();
 
-      @SuppressWarnings("unused")
       List<ArtifactReadable> configArts =
          orcsApi.getQueryFactory().fromBranch(services.getAtsBranch()).andIsOfType(AtsArtifactTypes.TeamDefinition,
             AtsArtifactTypes.Version, AtsArtifactTypes.ActionableItem).getResults().getList();
 
       // load ats config objects
-      for (ArtifactReadable configArtId : orcsApi.getQueryFactory().fromBranch(services.getAtsBranch()).andIsOfType(
-         AtsArtifactTypes.TeamDefinition, AtsArtifactTypes.Version, AtsArtifactTypes.ActionableItem).getResults()) {
+      for (ArtifactReadable configArtId : configArts) {
          if (services.getStoreService().isOfType(configArtId, AtsArtifactTypes.TeamDefinition)) {
             JaxTeamDefinition teamDef = createJaxTeamDefinition(configArtId);
             configs.addTeamDef(teamDef);
