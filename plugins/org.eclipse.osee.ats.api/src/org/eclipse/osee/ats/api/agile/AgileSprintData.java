@@ -41,8 +41,6 @@ public class AgileSprintData {
       results.validateNotNull(getEndDateAsDate(), "End Date");
       results.validateNotNullOrEmpty(pointsAttrTypeName, "Points Attribute Type");
       results.validateNotNull(plannedPoints, "Planned Points");
-      results.validateTrue(unPlannedPoints == null || unPlannedPoints > 0,
-         "Un-Planned Points must either be specified or > 0");
       return results;
    }
 
