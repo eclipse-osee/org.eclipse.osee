@@ -12,6 +12,9 @@ package org.eclipse.osee.ats.util;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -26,6 +29,14 @@ public final class PromptChangeUtil {
 
    private PromptChangeUtil() {
       // Utility class
+   }
+
+   public static boolean promptChangeAttributeWI(final Collection<? extends IAtsWorkItem> workItems, AttributeTypeToken attributeType, boolean persist, boolean multiLine) {
+      List<AbstractWorkflowArtifact> awas = new LinkedList<>();
+      for (IAtsWorkItem workItem : workItems) {
+         awas.add((AbstractWorkflowArtifact) workItem.getStoreObject());
+      }
+      return ArtifactPromptChange.promptChangeAttribute(attributeType, awas, persist, multiLine);
    }
 
    public static boolean promptChangeAttribute(final Collection<? extends AbstractWorkflowArtifact> awas, AttributeTypeToken attributeType, boolean persist, boolean multiLine) {

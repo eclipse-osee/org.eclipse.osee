@@ -16,6 +16,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.ats.column.AgileTeamPointsColumnUI;
 import org.eclipse.osee.ats.column.AssigneeColumnUI;
 import org.eclipse.osee.ats.column.ChangeTypeColumnUI;
 import org.eclipse.osee.ats.column.CreatedDateColumnUI;
@@ -47,8 +48,8 @@ public class SprintXViewerFactory extends SkynetXViewerFactory {
       // Add default Sprint columns
       WorldXViewerUtil.addColumn(this, SprintOrderColumn.getInstance(), 45, sprintCols);
       WorldXViewerUtil.addColumn(this, new XViewerAtsAttributeValueColumn(AtsColumnToken.TitleColumn), 339, sprintCols);
-      WorldXViewerUtil.addColumn(this, WorldXViewerFactory.getColumnServiceColumn(AtsColumnToken.AgileTeamPointsColumn),
-         15, sprintCols);
+      WorldXViewerUtil.addColumn(this, AgileTeamPointsColumnUI.getInstance(),
+         AtsColumnToken.AgileTeamPointsColumn.getWidth(), sprintCols);
       WorldXViewerUtil.addColumn(this, WorldXViewerFactory.getColumnServiceColumn(AtsColumnToken.StateColumn), 74,
          sprintCols);
       WorldXViewerUtil.addColumn(this, PriorityColumnUI.getInstance(), 20, sprintCols);

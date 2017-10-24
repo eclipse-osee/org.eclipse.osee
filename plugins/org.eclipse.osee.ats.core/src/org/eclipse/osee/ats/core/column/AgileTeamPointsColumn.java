@@ -13,12 +13,6 @@ package org.eclipse.osee.ats.core.column;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * Display Points as either "ats.Points" or "ats.Points Numeric" as configured on Agile Team artifact
@@ -35,24 +29,7 @@ public class AgileTeamPointsColumn extends AbstractServicesColumn {
    public String getText(IAtsObject atsObject) throws Exception {
       String result = "";
       if (atsObject instanceof IAtsWorkItem) {
-         ArtifactToken sprintArt =
-            services.getRelationResolver().getRelatedOrNull(atsObject, AtsRelationTypes.AgileSprintToItem_Sprint);
-         Conditions.assertNotNull(sprintArt, "Sprint not found for item %s", atsObject.toStringWithId());
-         if (sprintArt != null) {
-            ArtifactToken agileTeamArt =
-               services.getRelationResolver().getRelatedOrNull(sprintArt, AtsRelationTypes.AgileTeamToSprint_AgileTeam);
-            Conditions.assertNotNull(agileTeamArt, "Agile Team not found for Stpring %s", sprintArt.toStringWithId());
-            AttributeTypeId pointsAttrType = AtsAttributeTypes.Points;
-            String pointsAttrTypeName = services.getAttributeResolver().getSoleAttributeValue(agileTeamArt,
-               AtsAttributeTypes.PointsAttributeType, "");
-            if (Strings.isValid(pointsAttrTypeName)) {
-               AttributeTypeId type = services.getStoreService().getAttributeType(pointsAttrTypeName);
-               if (type.isValid()) {
-                  pointsAttrType = type;
-               }
-            }
-            result = services.getAttributeResolver().getSoleAttributeValue(atsObject, pointsAttrType, "");
-         }
+         result = services.getAgileService().getAgileTeamPointsStr((IAtsWorkItem) atsObject);
       }
       return result;
    }

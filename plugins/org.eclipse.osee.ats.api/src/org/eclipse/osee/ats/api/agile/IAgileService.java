@@ -96,4 +96,24 @@ public interface IAgileService {
 
    Collection<ArtifactToken> getRelatedSprints(ArtifactId artifact);
 
+   /**
+    * Display Points as either "ats.Points" or "ats.Points Numeric" as configured on Agile Team artifact
+    */
+   String getAgileTeamPointsStr(IAtsWorkItem workItem);
+
+   /**
+    * @return agile team from team definition relation, then sprint relation, then backlog relation. Else null.
+    */
+   IAgileTeam getAgileTeam(IAtsWorkItem workItem);
+
+   /**
+    * @return agile team for sprint
+    */
+   IAgileTeam getAgileTeamFromSprint(IAgileSprint sprint);
+
+   /**
+    * @return agile team from backlog
+    */
+   IAgileTeam getAgileTeamFromBacklog(IAgileBacklog backlog);
+
 }

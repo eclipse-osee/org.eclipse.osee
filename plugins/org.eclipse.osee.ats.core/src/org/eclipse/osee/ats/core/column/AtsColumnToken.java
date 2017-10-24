@@ -60,8 +60,8 @@ public class AtsColumnToken {
       "Sprint order", 45, ColumnAlign.Left.name(), false, ColumnType.Integer, true,
       "Order of item within displayed sprint.  Editing this field changes order.", false, false);
    public static AtsColumnIdValueColumn AgileTeamPointsColumn = new AtsColumnIdValueColumn(AtsColumnId.AgileTeamPoints,
-      "Points", 40, ColumnAlign.Left.name(), false, ColumnType.Integer, false,
-      "Points as defined by AgileTeam configuration.  Either Points or Points Numeric", false, false);
+      "Agile Points", 40, ColumnAlign.Left.name(), false, ColumnType.Integer, true,
+      "Points as defined by AgileTeam configuration.  Either ats.Points or ats.Points Numeric", false, false);
    public static AtsColumnIdValueColumn AgileFeatureGroupColumn =
       new AtsColumnIdValueColumn(AtsColumnId.AgileFeatureGroup, "Feature Group", 110, ColumnAlign.Left.name(), false,
          ColumnType.String, false, "Agile Feature Group for this Item", false, false);

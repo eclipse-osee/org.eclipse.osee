@@ -34,7 +34,9 @@ import org.eclipse.osee.ats.api.agile.JaxNewAgileTeam;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -415,6 +417,79 @@ public class AgileService implements IAgileService {
          sprints.add(sprintArt);
       }
       return sprints;
+   }
+
+   @Override
+   public String getAgileTeamPointsStr(IAtsWorkItem workItem) {
+      String result =
+         services.getAttributeResolver().getSoleAttributeValueAsString(workItem, AtsAttributeTypes.Points, "");
+      if (Strings.isInValid(result)) {
+         result = services.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.PointsNumeric,
+            0.0).toString();
+      }
+      return result;
+   }
+
+   @Override
+   public IAgileTeam getAgileTeam(IAtsWorkItem workItem) {
+      IAgileTeam agileTeam = null;
+      IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
+      if (teamWf != null) {
+         // attempt to get from team definitions relation to agile team
+         IAtsTeamDefinition teamDef = teamWf.getTeamDefinition();
+         if (teamDef != null) {
+            ArtifactId agileTeamArt =
+               services.getRelationResolver().getRelatedOrNull(teamDef, AtsRelationTypes.AgileTeamToAtsTeam_AgileTeam);
+            if (agileTeamArt != null) {
+               agileTeam = services.getAgileService().getAgileTeam(agileTeamArt);
+            }
+         }
+         // attempt to get from workitem relation to sprint
+         if (agileTeam == null) {
+            ArtifactId sprintArt =
+               services.getRelationResolver().getRelatedOrNull(workItem, AtsRelationTypes.AgileSprintToItem_Sprint);
+            if (sprintArt != null) {
+               IAgileSprint sprint = getAgileSprint(sprintArt);
+               if (sprint != null) {
+                  agileTeam = services.getAgileService().getAgileTeamFromSprint(sprint);
+               }
+            }
+         }
+         // attemp to get from workitem relation to backlog
+         if (agileTeam == null) {
+            ArtifactId backlogArt =
+               services.getRelationResolver().getRelatedOrNull(workItem, AtsRelationTypes.Goal_Goal);
+            if (backlogArt != null) {
+               IAgileBacklog backlog = getAgileBacklog(backlogArt);
+               if (backlog != null) {
+                  agileTeam = services.getAgileService().getAgileTeamFromBacklog(backlog);
+               }
+            }
+         }
+      }
+      return agileTeam;
+   }
+
+   @Override
+   public IAgileTeam getAgileTeamFromSprint(IAgileSprint sprint) {
+      IAgileTeam agileTeam = null;
+      ArtifactId agileTeamArt =
+         services.getRelationResolver().getRelatedOrNull(sprint, AtsRelationTypes.AgileTeamToSprint_AgileTeam);
+      if (agileTeamArt != null) {
+         agileTeam = services.getAgileService().getAgileTeam(agileTeamArt);
+      }
+      return agileTeam;
+   }
+
+   @Override
+   public IAgileTeam getAgileTeamFromBacklog(IAgileBacklog backlog) {
+      IAgileTeam agileTeam = null;
+      ArtifactId agileBacklogArt =
+         services.getRelationResolver().getRelatedOrNull(backlog, AtsRelationTypes.AgileTeamToBacklog_AgileTeam);
+      if (agileBacklogArt != null) {
+         agileTeam = services.getAgileService().getAgileTeam(agileBacklogArt);
+      }
+      return agileTeam;
    }
 
 }
