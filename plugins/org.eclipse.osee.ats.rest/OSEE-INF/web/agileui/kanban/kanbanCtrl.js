@@ -69,58 +69,67 @@ angular
 											$scope.selectedSprint).$promise
 											.then(function(data) {
 												_tasks = data;
-												$scope.availableStates = data["availableStates"];
+												if (_tasks.statesToTaskUuids.length == 0) {
+													$scope.notasks = true;
+													$scope.count = 0;
+												} else {
+													$scope.notasks = false;
+													$scope.availableStates = data["availableStates"];
 
-												// process assigneesToUuids
-												var assigneeNameToTasksUuids = {};
-												var count = 0;
-												for (var i = 0; i < data.assigneesToTaskUuids.length; i++) {
-													var entry = data.assigneesToTaskUuids[i];
-													var name = data.userIdToName[entry.assigneeId];
-													assigneeNameToTasksUuids[name] = entry.taskUuids;
-													count += entry.taskUuids.length;
-												}
-
-												// Add implementers as assignees
-												// even though completed
-												for (var i = 0; i < data.implementersToTaskUuids.length; i++) {
-													var entry = data.implementersToTaskUuids[i];
-													var name = data.userIdToName[entry.assigneeId];
-													var assigneeEntry = assigneeNameToTasksUuids[name];
-													if (assigneeEntry) {
-														entry.taskUuids = entry.taskUuids
-																.concat(assigneeEntry);
+													// process assigneesToUuids
+													var assigneeNameToTasksUuids = {};
+													var count = 0;
+													for (var i = 0; i < data.assigneesToTaskUuids.length; i++) {
+														var entry = data.assigneesToTaskUuids[i];
+														var name = data.userIdToName[entry.assigneeId];
+														assigneeNameToTasksUuids[name] = entry.taskUuids;
+														count += entry.taskUuids.length;
 													}
-													assigneeNameToTasksUuids[name] = entry.taskUuids;
-													count += entry.taskUuids.length;
+
+													// Add implementers as
+													// assignees
+													// even though completed
+													for (var i = 0; i < data.implementersToTaskUuids.length; i++) {
+														var entry = data.implementersToTaskUuids[i];
+														var name = data.userIdToName[entry.assigneeId];
+														var assigneeEntry = assigneeNameToTasksUuids[name];
+														if (assigneeEntry) {
+															entry.taskUuids = entry.taskUuids
+																	.concat(assigneeEntry);
+														}
+														assigneeNameToTasksUuids[name] = entry.taskUuids;
+														count += entry.taskUuids.length;
+													}
+
+													var assignees = _
+															.keys(assigneeNameToTasksUuids);
+													assignees.sort();
+													$scope.assignees = assignees;
+													_tasks.assignees = assigneeNameToTasksUuids;
+
+													// process statesToTaskUuids
+													var states = {};
+													for (var i = 0; i < data.statesToTaskUuids.length; i++) {
+														var entry = data.statesToTaskUuids[i];
+														var name = entry.name;
+														states[name] = entry.taskUuids;
+													}
+
+													_tasks.states = states;
+													$scope.count = count;
 												}
-
-												var assignees = _
-														.keys(assigneeNameToTasksUuids);
-												assignees.sort();
-												$scope.assignees = assignees;
-												_tasks.assignees = assigneeNameToTasksUuids;
-
-												// process statesToTaskUuids
-												var states = {};
-												for (var i = 0; i < data.statesToTaskUuids.length; i++) {
-													var entry = data.statesToTaskUuids[i];
-													var name = entry.name;
-													states[name] = entry.taskUuids;
-												}
-
-												_tasks.states = states;
-												$scope.count = count;
-
 											});
 								}
 							}
 
-							$scope.$watch("bigCards", function() {
-								if (_tasks && _tasks.tasks) {
-									$scope.availableStates = $scope.availableStates;
-								}
-							});
+							$scope
+									.$watch(
+											"bigCards",
+											function() {
+												if (_tasks && _tasks.tasks) {
+													$scope.availableStates = $scope.availableStates;
+												}
+											});
 
 							/*
 							 * On state transition updates DOM and CSS for the

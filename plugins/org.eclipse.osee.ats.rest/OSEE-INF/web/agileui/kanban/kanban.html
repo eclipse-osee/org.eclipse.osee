@@ -36,8 +36,11 @@
 	<div menu></div>
 
 	<center>
-		<img src="{{loadingImg}}" id="loadingImg" ng-hide="availableStates"
-			align="middle">
+		<label ng-hide="availableStates"></br>
+		</br></label> <img src="{{loadingImg}}" id="loadingImg"
+			ng-hide="availableStates.length > 0 || notasks == true"
+			align="middle"> <label ng-show="notasks == true">No
+			Tasks Found</label>
 	</center>
 
 	<div id="board" ng-show="availableStates" ng-model="allTasks"

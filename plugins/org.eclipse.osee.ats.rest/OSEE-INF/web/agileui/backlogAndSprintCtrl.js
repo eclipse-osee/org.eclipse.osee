@@ -119,18 +119,27 @@ angular
 									if (selected.isBacklog) {
 										AgileEndpoint.getBacklogItems($scope.team).$promise
 												.then(function(data) {
-													$scope.tasks = data;
-													$scope.count = $scope.tasks.length;
-													LayoutService.refresh();
+													if (data.tasks && data.tasks.length == 0) {
+														$scope.notasks = true;
+													} else {
+														$scope.tasks = data;
+														$scope.count = $scope.tasks.length;
+														LayoutService.resizeElementHeight("taskTable");
+														LayoutService.refresh();
+													}
 												});
 									} else {
 										AgileEndpoint.getSprintItems($scope.team, selected).$promise
 												.then(function(data) {
-													$scope.tasks = data;
-													
-													$scope.count = $scope.tasks.length;
-													LayoutService.resizeElementHeight("taskTable");
-													LayoutService.refresh();
+													var result = data;
+													if (result && result.length == 0) {
+														$scope.notasks = true;
+													} else {
+														$scope.tasks = data;
+														$scope.count = $scope.tasks.length;
+														LayoutService.resizeElementHeight("taskTable");
+														LayoutService.refresh();
+													}
 												});
 									}
 								}
@@ -139,6 +148,8 @@ angular
 							// populate model with items
 							$scope.$watch("selectedItem", function() {
 								if ($scope.selectedItem) {
+									$scope.notasks = "";
+									$scope.tasks = null;
 									getTasks();
 								}
 							});

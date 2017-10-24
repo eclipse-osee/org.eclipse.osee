@@ -29,10 +29,13 @@
 	</div>
 
 	<div menu></div>
+	<div ng-hide="selectedItem.isBacklog" sprintconfig></div>
 	
 	<center>
-		<img src="{{loadingImg}}" id="loadingImg" ng-hide="tasks"
+		<label ng-hide="tasks"></br></br></label>
+		<img src="{{loadingImg}}" id="loadingImg" ng-hide="tasks.length > 0 || notasks == true"
 			align="middle">
+		<label ng-show="notasks == true">No Tasks Found</label>
 	</center>
 
 	<div ng-show="tasks" id="taskTable" class="gridStyle"

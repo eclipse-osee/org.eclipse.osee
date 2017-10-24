@@ -13,10 +13,10 @@ app.config([ '$routeProvider', function($routeProvider) {
 		templateUrl : 'kanban/kanban.html',
 		controller : 'KanbanCtrl'
 	}).when('/backlog', {
-		templateUrl : 'backlog.html',
+		templateUrl : 'backlogAndSprint.html',
 		controller : 'BacklogAndSprintCtrl'
 	}).when('/sprint', {
-		templateUrl : 'sprint.html',
+		templateUrl : 'backlogAndSprint.html',
 		controller : 'BacklogAndSprintCtrl'
 	}).when('/teams', {
 		templateUrl : 'teams.html',
