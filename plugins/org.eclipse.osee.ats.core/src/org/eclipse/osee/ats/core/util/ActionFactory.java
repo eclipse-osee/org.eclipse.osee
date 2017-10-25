@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.notify.AtsNotificationEventFactory;
 import org.eclipse.osee.ats.api.notify.AtsNotifyType;
 import org.eclipse.osee.ats.api.team.ChangeType;
@@ -130,11 +131,11 @@ public class ActionFactory implements IAtsActionFactory {
       } else {
          createdDate = new Date();
       }
-      ActionResult createAction = createAction(asUser, data.getTitle(), data.getDescription(), data.getChangeType(),
+      ActionResult result = createAction(asUser, data.getTitle(), data.getDescription(), data.getChangeType(),
          data.getPriority(), data.isValidationRequired(), needByDate, ais, createdDate, createdBy, null, changes);
 
       if (Strings.isValid(data.getPoints())) {
-         for (IAtsTeamWorkflow teamWf : createAction.getTeamWfs()) {
+         for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
             IAtsTeamDefinition teamDef = teamWf.getTeamDefinition();
             IAgileTeam agileTeam = atsApi.getAgileService().getAgileTeam(teamDef);
             String pointsAttrType = atsApi.getAttributeResolver().getSoleAttributeValue(agileTeam,
@@ -154,7 +155,7 @@ public class ActionFactory implements IAtsActionFactory {
       }
 
       if (data.isUnplanned()) {
-         for (IAtsTeamWorkflow teamWf : createAction.getTeamWfs()) {
+         for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
             changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.UnPlannedWork, true);
          }
       }
@@ -162,7 +163,7 @@ public class ActionFactory implements IAtsActionFactory {
       String featureGroup = data.getFeatureGroup();
       if (Strings.isValid(featureGroup)) {
          IAgileFeatureGroup group = null;
-         for (IAtsTeamWorkflow teamWf : createAction.getTeamWfs()) {
+         for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
             if (Strings.isNumeric(featureGroup)) {
                group = atsApi.getAgileService().getAgileFeatureGroup(ArtifactId.valueOf(featureGroup));
             } else {
@@ -183,7 +184,7 @@ public class ActionFactory implements IAtsActionFactory {
       // Set sprint
       String sprintStr = data.getSprint();
       if (Strings.isValid(sprintStr)) {
-         for (IAtsTeamWorkflow teamWf : createAction.getTeamWfs()) {
+         for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
             IAgileSprint sprint = null;
             if (Strings.isNumeric(sprintStr)) {
                sprint = atsApi.getAgileService().getAgileSprint(Long.valueOf(sprintStr));
@@ -206,7 +207,7 @@ public class ActionFactory implements IAtsActionFactory {
       // NOTE: This may cause a problem if team already configured to add new items to backlog
       String agileTeamStr = data.getAgileTeam();
       if (Strings.isValid(agileTeamStr)) {
-         for (IAtsTeamWorkflow teamWf : createAction.getTeamWfs()) {
+         for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
             IAgileTeam aTeam = null;
             if (Strings.isNumeric(agileTeamStr)) {
                aTeam = atsApi.getAgileService().getAgileTeam(Long.valueOf(agileTeamStr));
@@ -231,7 +232,7 @@ public class ActionFactory implements IAtsActionFactory {
       if (Strings.isNumeric(data.getOriginatorStr())) {
          IAtsUser originator = atsApi.getUserService().getUserByAccountId(Long.valueOf(data.getOriginatorStr()));
          if (originator != null) {
-            for (IAtsTeamWorkflow teamWf : createAction.getTeamWfs()) {
+            for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
                changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.CreatedBy, originator.getUserId());
             }
          }
@@ -247,10 +248,30 @@ public class ActionFactory implements IAtsActionFactory {
             }
          }
          if (!assignees.isEmpty()) {
-            for (IAtsTeamWorkflow teamWf : createAction.getTeamWfs()) {
+            for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
                teamWf.getStateMgr().setAssignees(assignees);
                changes.add(teamWf);
             }
+         }
+      }
+
+      // set work package
+      if (Strings.isValid(data.getWorkPackage())) {
+         IAtsWorkPackage workPkg = null;
+         if (Strings.isNumeric(data.getWorkPackage())) {
+            workPkg = atsApi.getEarnedValueService().getWorkPackage(ArtifactId.valueOf(data.getWorkPackage()));
+         } else {
+            ArtifactId art = atsApi.getArtifactByName(AtsArtifactTypes.WorkPackage, data.getWorkPackage());
+            if (art != null) {
+               workPkg = atsApi.getEarnedValueService().getWorkPackage(art);
+            }
+         }
+         if (workPkg != null) {
+            for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
+               atsApi.getEarnedValueService().setWorkPackage(workPkg, teamWf, changes);
+            }
+         } else {
+            result.getResults().errorf("Inavlid Work Package id or name [%s]", data.getWorkPackage());
          }
       }
 
@@ -263,11 +284,11 @@ public class ActionFactory implements IAtsActionFactory {
          if (attributeType == null) {
             throw new OseeArgumentException("Invalid attribute type id %s", attr.getKey());
          }
-         for (IAtsTeamWorkflow teamWf : createAction.getTeamWfs()) {
+         for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
             changes.setSoleAttributeValue(teamWf, attributeType, attr.getValue());
          }
       }
-      return createAction;
+      return result;
    }
 
    @Override

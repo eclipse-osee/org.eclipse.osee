@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.util.result.XResultData;
 
 /**
  * @author Donald G. Dunne
@@ -22,6 +23,7 @@ public class ActionResult {
 
    private IAtsAction action;
    private final Collection<IAtsTeamWorkflow> teamWfs;
+   private final XResultData results = new XResultData();
 
    public ActionResult(IAtsAction action, List<IAtsTeamWorkflow> teamWfs) {
       this.action = action;
@@ -58,5 +60,9 @@ public class ActionResult {
 
    public IAtsTeamWorkflow getFirstTeam() {
       return teamWfs.iterator().next();
+   }
+
+   public XResultData getResults() {
+      return results;
    }
 }

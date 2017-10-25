@@ -115,8 +115,9 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
    }
 
    @Override
-   public IAtsWorkPackage getWorkPackage(ArtifactToken artifact) {
-      return new WorkPackage(logger, artifact, atsApi);
+   public IAtsWorkPackage getWorkPackage(ArtifactId artifact) {
+      ArtifactToken realArt = atsApi.getArtifact(artifact);
+      return new WorkPackage(logger, realArt, atsApi);
    }
 
    @Override

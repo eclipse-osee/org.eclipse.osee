@@ -17,7 +17,6 @@ import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**
  * @author Donald G. Dunne
@@ -34,7 +33,7 @@ public interface IAtsEarnedValueService {
 
    public void removeWorkPackage(IAtsWorkPackage workPackage, Collection<IAtsWorkItem> workItems);
 
-   public IAtsWorkPackage getWorkPackage(ArtifactToken artifact);
+   public IAtsWorkPackage getWorkPackage(ArtifactId artifact);
 
    public Collection<String> getColorTeams();
 
