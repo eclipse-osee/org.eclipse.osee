@@ -71,8 +71,9 @@ public class WordCoreUtil {
    public static String BIN_DATA_STRING = "<w:binData.*?w:name=\"(.*?)\".*?</w:binData>";
    public static Pattern BIN_DATA_PATTERN =
       Pattern.compile(BIN_DATA_STRING, Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   public static Pattern IMG_SRC_PATTERN = Pattern.compile("<v:imagedata.*?src=\"(.*?)\".*?/>",
-      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+
+   public static Pattern IMG_SRC_PATTERN =
+      Pattern.compile("<v:imagedata.*?src=\"([^\"]+)", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 
    public static Pattern FULL_PATTERN =
       Pattern.compile("(" + BEGINFEATURE + ")|(" + ENDFEATURE + ")|(" + BEGINCONFIG + ")|(" + ENDCONFIG + ")",

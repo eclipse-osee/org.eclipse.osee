@@ -263,9 +263,7 @@ public class WordMLApplicabilityHandler {
       saveBinData(applicabilityBlock.getFullText(), binDataMap);
 
       String toInsert = evaluateApplicabilityExpression(applicabilityBlock);
-      toInsert = insertMissingbinData(toInsert, binDataMap);
-
-      return toInsert;
+      return insertMissingbinData(toInsert, binDataMap);
    }
 
    private String removeEmptyLists(String wordML) {
