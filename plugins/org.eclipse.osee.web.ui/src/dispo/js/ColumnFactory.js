@@ -126,10 +126,7 @@ app.factory('ColumnFactory', function() {
     {
         field: 'failureCount',
         displayName: 'Failure Count',
-        width: '4%',
-        filter: {
-            condition: usePureRegex
-        }
+        width: '4%'
     }, {
         field: 'discrepanciesAsRanges',
         displayName: 'Failed Points',
@@ -256,10 +253,7 @@ app.factory('ColumnFactory', function() {
     {
         field: 'failureCount',
         displayName: 'Failure Count',
-        width: '4%',
-        filter: {
-            condition: usePureRegex
-        }
+        width: '4%'
     }, {
         field: 'discrepanciesAsRanges',
         displayName: 'Failed Points',
@@ -313,10 +307,7 @@ app.factory('ColumnFactory', function() {
         field: 'aborted',
         width: '4%',
         displayName: 'Aborted',
-        enableCellEdit: false,
-        filter: {
-            condition: usePureRegex
-        },
+        enableCellEdit: false
     }, {
         field: 'category',
         displayName: 'Category',
