@@ -64,7 +64,7 @@ public class WordCoreUtil {
    public static String BEGINCONFIG =
       CONFIG + WORD_ML_TAGS + "( " + WORD_ML_TAGS + NOT + WORD_ML_TAGS + ")? ?" + ENDBRACKETS;
    public static String ENDCONFIG = END + WORD_ML_TAGS + CONFIG + OPTIONAL_ENDBRACKETS;
-   public static String ELSE_EXP = "(" + FEATURE + "|" + CONFIG + ")" + " " + ELSE;
+   public static String ELSE_EXP = "(" + FEATURE + "|" + CONFIG + ")" + WORD_ML_TAGS + " " + WORD_ML_TAGS + ELSE;
 
    public static Pattern ELSE_PATTERN = Pattern.compile(ELSE_EXP, Pattern.DOTALL | Pattern.MULTILINE);
 
