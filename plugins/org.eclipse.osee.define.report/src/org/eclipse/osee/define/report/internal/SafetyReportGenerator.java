@@ -128,12 +128,23 @@ public class SafetyReportGenerator {
             writer.writeCell(systemFunction.getSoleAttributeAsString(CoreAttributeTypes.FunctionalDAL, ""));
             writer.writeCell(systemFunction.getSoleAttributeAsString(CoreAttributeTypes.FunctionalDALRationale, ""));
 
+            StringBuilder paraNums = new StringBuilder();
+            StringBuilder reqNames = new StringBuilder();
+            boolean firstTime = true;
             for (ArtifactReadable systemRequirement : systemFunction.getRelated(
                CoreRelationTypes.Design__Requirement)) {
-               writer.writeCell(systemRequirement.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
-               writer.writeCell(systemRequirement.getName(), SYSTEM_REQUIREMENT_INDEX);
-               accumulator.output();
+               if (!firstTime) {
+                  paraNums.append(", ");
+                  reqNames.append(", ");
+               } else {
+                  firstTime = false;
+               }
+               paraNums.append(systemRequirement.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
+               reqNames.append(systemRequirement.getName());
             }
+            writer.writeCell(paraNums);
+            writer.writeCell(reqNames, SYSTEM_REQUIREMENT_INDEX);
+            accumulator.output();
             writer.endRow();
          }
       }
