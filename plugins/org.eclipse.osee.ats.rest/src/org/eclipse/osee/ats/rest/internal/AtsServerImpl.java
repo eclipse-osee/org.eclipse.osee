@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
@@ -26,7 +27,6 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
-import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
@@ -43,10 +43,11 @@ import org.eclipse.osee.ats.core.ai.ActionableItemService;
 import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.core.util.AtsApiImpl;
 import org.eclipse.osee.ats.core.util.AtsCoreFactory;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionServiceImpl;
 import org.eclipse.osee.ats.core.workflow.WorkItemFactory;
+import org.eclipse.osee.ats.rest.AtsConfigCache;
 import org.eclipse.osee.ats.rest.IAtsServer;
-import org.eclipse.osee.ats.rest.internal.config.AtsConfigEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.convert.ConvertBaselineGuidToBaselineUuid;
 import org.eclipse.osee.ats.rest.internal.convert.ConvertFavoriteBranchGuidToUuid;
 import org.eclipse.osee.ats.rest.internal.notify.AtsNotificationEventProcessor;
@@ -64,6 +65,7 @@ import org.eclipse.osee.ats.rest.internal.workitem.AtsTaskService;
 import org.eclipse.osee.ats.rest.internal.workitem.ConfigItemFactory;
 import org.eclipse.osee.ats.rest.util.ChangeTypeUtil;
 import org.eclipse.osee.ats.rest.util.IAtsNotifierServer;
+import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -73,6 +75,7 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
@@ -93,11 +96,17 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
    private final List<IAtsNotifierServer> notifiers = new CopyOnWriteArrayList<>();
    private final Map<String, IAtsDatabaseConversion> externalConversions =
       new ConcurrentHashMap<String, IAtsDatabaseConversion>();
-   private AtsConfigEndpointImpl configurationEndpoint;
    private AtsActionEndpointApi actionEndpoint;
+   private AtsConfigCache configCache;
+   private ExecutorAdmin executorAdmin;
 
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
+      configCache = new AtsConfigCache(this, orcsApi);
+   }
+
+   public void setExecutorAdmin(ExecutorAdmin executorAdmin) {
+      this.executorAdmin = executorAdmin;
    }
 
    @Override
@@ -155,7 +164,20 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
       addAtsDatabaseConversion(new ConvertBaselineGuidToBaselineUuid(logger, jdbcService.getClient(), orcsApi, this));
       addAtsDatabaseConversion(new ConvertFavoriteBranchGuidToUuid(logger, jdbcService.getClient(), orcsApi, this));
 
+      scheduleAtsConfigCacheReloader();
+
       logger.info("ATS Application started");
+   }
+
+   private void scheduleAtsConfigCacheReloader() {
+      long reloadTime = AtsUtilCore.SERVER_CONFIG_RELOAD_MIN_DEFAULT;
+      String reloadTimeStr = getConfigValue(AtsUtilCore.SERVER_CONFIG_RELOAD_MIN_KEY);
+      if (Strings.isNumeric(reloadTimeStr)) {
+         reloadTime = Long.valueOf(reloadTimeStr);
+      }
+
+      executorAdmin.scheduleWithFixedDelay("ATS Configuration Cache Reloader", configCache::reload, reloadTime,
+         reloadTime, TimeUnit.MINUTES);
    }
 
    @Override
@@ -306,6 +328,7 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
             thread.start();
          }
       }
+
    }
 
    public AtsNotifierServiceImpl getNotifyService() {
@@ -366,20 +389,12 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
 
    @Override
    public AtsConfigurations getConfigurations() {
-      return getConfigurationEndpoint().get();
+      return configCache.get();
    }
 
    @Override
-   public AtsConfigEndpointApi getConfigurationEndpoint() {
-      if (configurationEndpoint == null) {
-         configurationEndpoint = new AtsConfigEndpointImpl(this, orcsApi, logger);
-      }
-      return configurationEndpoint;
-   }
-
-   @Override
-   public void clearConfigurationsCaches() {
-      // do nothing
+   public AtsConfigurations reloadConfigurationCache() {
+      return configCache.reload();
    }
 
    @Override
@@ -470,7 +485,7 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
       super.clearCaches();
 
       // clear client config cache (read from server)
-      clearConfigurationsCaches();
+      reloadConfigurationCache();
    }
 
    @Override

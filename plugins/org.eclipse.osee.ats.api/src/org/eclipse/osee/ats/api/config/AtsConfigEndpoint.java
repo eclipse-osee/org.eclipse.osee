@@ -20,7 +20,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.workdef.JaxAtsWorkDef;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
@@ -29,7 +28,7 @@ import org.eclipse.osee.framework.jdk.core.type.ViewModel;
  * @author Donald G. Dunne
  */
 @Path("config")
-public interface AtsConfigEndpointApi {
+public interface AtsConfigEndpoint {
 
    /**
     * @return cached copy of AtsConfigurations that is reloaded every 5 minutes. Use getFromDb() for latest copy from
@@ -48,10 +47,15 @@ public interface AtsConfigEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    public AtsConfigurations getFromDb();
 
+   /**
+    * Requests that the server reload the ATS configuration cache and returns without waiting for the reload to occur
+    * 
+    * @return
+    */
    @GET
    @Path("clearcache")
    @Produces(MediaType.APPLICATION_JSON)
-   public String reloadCache();
+   public String requestCacheReload();
 
    /**
     * @return html5 action entry page

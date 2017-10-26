@@ -9,4 +9,5 @@
    <reference bind="setAtsServer" cardinality="1..1" interface="org.eclipse.osee.ats.rest.IAtsServer" name="IAtsServer" policy="static"/>
    <reference bind="setCpaServiceRegistry" cardinality="1..1" interface="org.eclipse.osee.ats.rest.internal.cpa.CpaServiceRegistry" name="CpaServiceRegistry" policy="static"/>
    <reference bind="setJdbcService" cardinality="1..1" interface="org.eclipse.osee.jdbc.JdbcService" name="JdbcService" policy="static"/>
+   <reference bind="setExecutorAdmin" cardinality="1..1" interface="org.eclipse.osee.executor.admin.ExecutorAdmin" name="ExecutorAdmin" policy="static"/>
 </scr:component>

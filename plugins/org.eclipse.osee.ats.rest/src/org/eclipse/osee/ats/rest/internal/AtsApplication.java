@@ -49,6 +49,7 @@ import org.eclipse.osee.ats.rest.internal.workitem.AtsTeamWfEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsWorkPackageEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.StateResource;
 import org.eclipse.osee.ats.rest.internal.world.WorldResource;
+import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResourceRegistry;
@@ -70,6 +71,12 @@ public class AtsApplication extends Application {
    private IAtsServer atsServer;
    private CpaServiceRegistry cpaRegistry;
    private JdbcService jdbcService;
+
+   private ExecutorAdmin executorAdmin;
+
+   public void setExecutorAdmin(ExecutorAdmin executorAdmin) {
+      this.executorAdmin = executorAdmin;
+   }
 
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -131,7 +138,7 @@ public class AtsApplication extends Application {
       singletons.add(new ProgramEndpointImpl(atsServer));
       singletons.add(new InsertionEndpointImpl(atsServer));
       singletons.add(new InsertionActivityEndpointImpl(atsServer));
-      singletons.add(new AtsConfigEndpointImpl(atsServer, orcsApi, logger));
+      singletons.add(new AtsConfigEndpointImpl(atsServer, orcsApi, logger, executorAdmin));
       singletons.add(new AtsTaskEndpointImpl(atsServer));
       singletons.add(new AtsNotifyEndpointImpl(atsServer));
       singletons.add(new AtsWorkPackageEndpointImpl(atsServer, logger));

@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
+import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.JaxActionableItem;
 import org.eclipse.osee.ats.api.config.JaxTeamDefinition;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
@@ -206,7 +207,7 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
 
          @Override
          public void run() {
-            configProvider.clearConfigurationsCaches();
+            configProvider.reloadConfigurationCache();
             getUserService().reloadCache();
          }
       };
@@ -269,10 +270,10 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    @Override
    public void clearCaches() {
       // clear server config cache
-      AtsClientService.getConfigEndpoint().reloadCache();
+      AtsClientService.getConfigEndpoint().requestCacheReload();
 
       // clear client config cache (read from server)
-      clearConfigurationsCaches();
+      reloadConfigurationCache();
 
       super.clearCaches();
       getWorkDefinitionService().clearCaches();
@@ -555,8 +556,8 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    }
 
    @Override
-   public void clearConfigurationsCaches() {
-      configProvider.clearConfigurationsCaches();
+   public AtsConfigurations reloadConfigurationCache() {
+      return configProvider.reloadConfigurationCache();
    }
 
    @Override

@@ -17,6 +17,6 @@ public interface IAtsConfigurationProvider {
 
    AtsConfigurations getConfigurations();
 
-   void clearConfigurationsCaches();
+   AtsConfigurations reloadConfigurationCache();
 
 }

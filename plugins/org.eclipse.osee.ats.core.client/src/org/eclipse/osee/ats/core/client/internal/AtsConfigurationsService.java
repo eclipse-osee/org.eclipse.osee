@@ -30,13 +30,13 @@ public class AtsConfigurationsService implements IAtsConfigurationProvider {
 
    @Override
    public AtsConfigurations getConfigurations() {
-      AtsConfigurations configs = configurationsCache.get();
-      return configs;
+      return configurationsCache.get();
    }
 
    @Override
-   public void clearConfigurationsCaches() {
+   public AtsConfigurations reloadConfigurationCache() {
       configurationsCache = Suppliers.memoizeWithExpiration(getConfigurationsSupplier(), 5, TimeUnit.MINUTES);
+      return configurationsCache.get();
    }
 
    private Supplier<AtsConfigurations> configurationsCache =
@@ -81,5 +81,4 @@ public class AtsConfigurationsService implements IAtsConfigurationProvider {
          return userArt;
       }
    }
-
 }

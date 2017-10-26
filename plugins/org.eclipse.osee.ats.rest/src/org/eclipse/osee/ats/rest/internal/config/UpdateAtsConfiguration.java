@@ -72,7 +72,7 @@ public class UpdateAtsConfiguration {
       } catch (Exception ex) {
          rd.errorf("Error in createUpdateValidStateAttributes [%s]", Lib.exceptionToString(ex));
       }
-      atsServer.setConfigValue(AtsUtilCore.SERVER_CONFIG_RELOAD_MS_KEY, AtsUtilCore.SERVER_CONFIG_RELOAD_MS_KEY);
+      atsServer.setConfigValue(AtsUtilCore.SERVER_CONFIG_RELOAD_MIN_KEY, AtsUtilCore.SERVER_CONFIG_RELOAD_MIN_KEY);
       return rd;
    }
 

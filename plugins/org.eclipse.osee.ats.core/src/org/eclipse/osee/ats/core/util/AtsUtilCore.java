@@ -17,8 +17,8 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.config.AtsConfigKey;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -32,8 +32,8 @@ public class AtsUtilCore {
    public static final String USER_CREATION_DISABLED = "UserCreationDisabled2";
    public static final String ATS_CONFIG_ACTION_URL_KEY = "ActionUrl";
    public static final String ATS_DEFAULT_ACTION_URL = "/ats/ui/action/UUID";
-   public final static String SERVER_CONFIG_RELOAD_MS_KEY = "server_config_reload_ms";
-   public final static long SERVER_CONFIG_RELOAD_MS_DEFAULT = 180000; // 3 minutes
+   public final static String SERVER_CONFIG_RELOAD_MIN_KEY = "server_config_reload_min";
+   public final static long SERVER_CONFIG_RELOAD_MIN_DEFAULT = 30;
 
    private static Map<Long, String> uuidToGuidMap = new HashMap<>(50);
 
