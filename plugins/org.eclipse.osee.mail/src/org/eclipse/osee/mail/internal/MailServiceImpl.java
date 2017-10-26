@@ -137,7 +137,7 @@ public class MailServiceImpl implements MailService {
 
          Callable<MailStatus> callable = newSendCallable(mail);
          try {
-            Future<MailStatus> future = executorAdmin.schedule(callable);
+            Future<MailStatus> future = executorAdmin.schedule("Mail Service", callable);
             futures.add(future);
          } catch (Exception ex) {
             logger.error(ex, "Error sending email [%s] ", uuid);

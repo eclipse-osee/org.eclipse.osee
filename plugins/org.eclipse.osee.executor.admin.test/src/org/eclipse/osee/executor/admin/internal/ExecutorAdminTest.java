@@ -51,20 +51,6 @@ public class ExecutorAdminTest {
    }
 
    @Test
-   public void testGetService() throws Exception {
-      ExecutorService defaultService = admin.getDefaultExecutor();
-      Assert.assertNotNull(defaultService);
-
-      ExecutorService serviceByName = admin.getExecutor("default.executor");
-      Assert.assertNotNull(serviceByName);
-      Assert.assertEquals(serviceByName, defaultService);
-
-      ExecutorService anotherExecutor = admin.getExecutor("hello");
-      Assert.assertNotNull(anotherExecutor);
-      Assert.assertTrue(!anotherExecutor.equals(defaultService));
-   }
-
-   @Test
    public void testTerminateExecutorService() throws Exception {
       ExecutorService anotherExecutor = admin.getExecutor("hello");
       Assert.assertNotNull(anotherExecutor);
