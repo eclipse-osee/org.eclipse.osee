@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en" >
+<head>
+ 
+</head>
+<body>
+        <h1 id="Priorities_for_classifying_problems">Priorities for classifying problems</h1>
+        <div>
+        Priority defaults to 0 when an Issue is initiated.
+        The Cognizant engineer(s) assess the priority and assign a value ranging from 1-5, according to the table below, 
+        when the Issue is in Open or Investigation State. 
+        During HIT review of the Issue the priority may be changed.  
+        Assessment of priority is from the perspective of the end user of a fielded product 
+        (i.e. if the issue is not resolved prior to Software Baseline Verification Testing (SBVT)).
+        </div>
+        <table border="1" >
+            <tr>
+                <th colspan="1" rowspan="1">Priority</th>
+                <th colspan="1" rowspan="1">Description</th>
+            </tr>
+            <tr>
+                <td colspan="1" rowspan="1">0</td>
+                <td colspan="1" rowspan="1">Not Prioritized (default)</td>
+            </tr>
+            <tr>
+                <td colspan="1" rowspan="1">1</td>
+                <td colspan="1" rowspan="1">
+                    <div>Safety/Prevents Mission</div>
+                    <ol type="a">
+                       <li>Prevent the accomplishment of an operational or mission essential capability or</li>
+                       <li>b. Jeopardize safety, security, or other requirement designated “critical”</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1" rowspan="1">2</td>
+                <td colspan="1" rowspan="1">
+                    <div>Adverse effects/No work-around</div>
+                    <ol type="a">
+                       <li>Adversely affect the accomplishment of an operational or mission essential capability and no work-around solution is known (i.e. the mission objective can be met but with a degraded outcome), or </li>
+                       <li>Adversely affect life cycle support of the system, and no work-around solution is known (i.e. the maintenance objective can be met but with a degraded outcome)</li>
+                    </ol>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1" rowspan="1">3</td>
+                <td colspan="1" rowspan="1">
+                    <div>Adverse effects/Work-around</div>
+                    <ol type="a">
+                       <li>Adversely affect the accomplishment of an operational or mission essential capability but a work-around solution is known (i.e. the mission objective can be met with a workaround action which was not originally planned), or </li>
+                       <li>Adversely affect life cycle support of the system, but a work-around solution is known (i.e. the maintenance objective can be met with a workaround action which was not originally planned)</li>
+                    </ol>
+                </td>            
+            </tr>
+            <tr>
+                <td colspan="1" rowspan="1">4</td>
+                <td colspan="1" rowspan="1">
+                    <div>Inconvenience/Annoyance</div>
+                    <ol type="a">
+                       <li>Results in user/operator inconvenience or annoyance but does not affect a required operational or mission essential capability, or </li>
+                       <li>Results in inconvenience or annoyance for development or support personnel, but does not prevent the accomplishment of those responsibilities</li>
+                    </ol>
+                </td>            
+            </tr>
+            <tr>
+                <td colspan="1" rowspan="1">5</td>
+                <td colspan="1" rowspan="1"><div>Any other effect</div><div>Document only changes</div></td>
+            </tr>
+            <tr>
+                <td colspan="1" rowspan="1">6</td>
+                <td colspan="1" rowspan="1">N/A: automatically used if the issue was found in a development build (see Is Developmental selection for further information)</td>
+            </tr>
+            <tr>
+                <td colspan="1" rowspan="1">Blank (not selectable)</td>
+                <td colspan="1" rowspan="1">No priority (-1 is stored in the database and the Priority field is not displayed) for issues with a status of Potential Future Design Change.  Note:  Crew Impact selection is allowed for issues without a priority.</td>
+            </tr>
+        </table>
+</body>
+</html>

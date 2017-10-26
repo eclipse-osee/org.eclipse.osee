@@ -32,6 +32,10 @@
     width: 100%;
 }
 
+.btn.priority{
+	text-decoration: underline;
+}
+
 #searchLabelDiv {
     display: inline-block;
 }

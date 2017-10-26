@@ -402,7 +402,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
             try {
                objValues.add(value);
             } catch (Exception ex) {
-               throw new OseeArgumentException(ex, "Invalid date value [%v]; must be long date", value);
+               throw new OseeArgumentException(ex, "Invalid value [%s]; must be string", value);
             }
          } else if (orcsApi.getOrcsTypes().getAttributeTypes().isDateType(attributeType)) {
             try {
@@ -438,6 +438,12 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
                objValues.add(bool);
             } catch (Exception ex) {
                throw new OseeArgumentException(ex, "Invalid boolean value [%s]", value);
+            }
+         } else if (orcsApi.getOrcsTypes().getAttributeTypes().isEnumerated(attributeType)) {
+            try {
+               objValues.add(value);
+            } catch (Exception ex) {
+               throw new OseeArgumentException(ex, "Invalid value [%s]; must be string", value);
             }
          } else {
             throw new OseeArgumentException("Unsupported attribute value [%s] for type [%s] and artifact %s", value,

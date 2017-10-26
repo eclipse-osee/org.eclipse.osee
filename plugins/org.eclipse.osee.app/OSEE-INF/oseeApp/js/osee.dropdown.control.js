@@ -13,7 +13,7 @@
             }],
             controllerAs: 'vm',
             template: `
-            <jsonforms-control>                <span ng-if = "linkExists()"> <a href="{{vm.uiSchema.options.link}}"><label>{{vm.uiSchema.options.subLabel}}</label></a></span>
+            <jsonforms-control>                <span ng-if = "linkExists()">                    <label>{{vm.uiSchema.options.subLabel}}</label>                    <a href="{{vm.uiSchema.options.link}}" class="btn pull-right">{{vm.uiSchema.options.linkText}}</a>                </span>
                     <select ng-options="option as option for option in vm.resolvedSchema.enum"
                         id="{{vm.id}}"
                         class="form-control jsf-control-enum"
