@@ -14,6 +14,7 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
 import java.util.Arrays;
+import org.eclipse.osee.activity.api.ThreadStats;
 
 /**
  * @author Ryan D. Brooks
@@ -22,40 +23,21 @@ public class ThreadActivity {
    private final ThreadMXBean threadMxBean = ManagementFactory.getThreadMXBean();
    private static final int ConvertToMillSec = 1000000;
 
-   private class ThreadStats {
-      final ThreadInfo threadInfo;
-      long cpuTime;
-      long cpuTimeElapsed;
-
-      public ThreadStats(ThreadInfo threadInfo, long cpuTime) {
-         this.threadInfo = threadInfo;
-         this.cpuTime = cpuTime;
-      }
-
-      public void setCpuTimeElapsed() {
-         long currentCpuTime = threadMxBean.getThreadCpuTime(threadInfo.getThreadId());
-         cpuTimeElapsed = currentCpuTime - cpuTime;
-         cpuTime = currentCpuTime;
-      }
-   }
-
-   public String getThreadActivity(int sampleWindowMs) {
+   public ThreadStats[] getThreadActivity() {
       ThreadInfo[] threadInfos = threadMxBean.dumpAllThreads(false, false);
       ThreadStats[] threadStats = new ThreadStats[threadInfos.length];
 
       for (int i = 0; i < threadStats.length; i++) {
          threadStats[i] = new ThreadStats(threadInfos[i], threadMxBean.getThreadCpuTime(threadInfos[i].getThreadId()));
       }
+      return threadStats;
+   }
 
+   public String getThreadActivityDelta(ThreadStats[] threadStats) {
       StringBuilder sb = new StringBuilder(400);
-      try {
-         Thread.sleep(sampleWindowMs);
-      } catch (InterruptedException ex) {
-         sb.append(ex);
-      }
 
       for (ThreadStats stat : threadStats) {
-         stat.setCpuTimeElapsed();
+         stat.setCpuTimeElapsed(threadMxBean);
       }
 
       Arrays.sort(threadStats, (ThreadStats t1, ThreadStats t2) -> Long.compare(t1.cpuTimeElapsed, t2.cpuTimeElapsed));

@@ -14,11 +14,9 @@ import static org.eclipse.osee.activity.ActivityConstants.ACTIVITY_LOGGER__CLEAN
 import static org.eclipse.osee.activity.ActivityConstants.ACTIVITY_LOGGER__CLEANER_KEEP_DAYS;
 import static org.eclipse.osee.activity.ActivityConstants.ACTIVITY_LOGGER__ENABLED;
 import static org.eclipse.osee.activity.ActivityConstants.ACTIVITY_LOGGER__EXECUTOR_ID;
-import static org.eclipse.osee.activity.ActivityConstants.ACTIVITY_LOGGER__EXECUTOR_POOL_SIZE;
 import static org.eclipse.osee.activity.ActivityConstants.ACTIVITY_LOGGER__STACKTRACE_LINE_COUNT;
 import static org.eclipse.osee.activity.ActivityConstants.ACTIVITY_LOGGER__WRITE_RATE_IN_MILLIS;
 import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_ACTIVITY_LOGGER__CLEANER_KEEP_DAYS;
-import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_ACTIVITY_LOGGER__EXECUTOR_POOL_SIZE;
 import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_ACTIVITY_LOGGER__STACKTRACE_LINE_COUNT;
 import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_ACTIVITY_LOGGER__WRITE_RATE_IN_MILLIS;
 import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_CLIENT_ID;
@@ -32,7 +30,6 @@ import java.net.UnknownHostException;
 import java.util.Calendar;
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.osee.activity.ActivityConstants;
@@ -40,6 +37,7 @@ import org.eclipse.osee.activity.ActivityStorage;
 import org.eclipse.osee.activity.api.ActivityEntry;
 import org.eclipse.osee.activity.api.ActivityEntryId;
 import org.eclipse.osee.activity.api.ActivityLog;
+import org.eclipse.osee.activity.api.ThreadStats;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.ActivityTypeId;
 import org.eclipse.osee.framework.core.data.ActivityTypeToken;
@@ -61,7 +59,7 @@ import org.eclipse.osee.orcs.SystemPreferences;
 /**
  * @author Ryan D. Brooks
  */
-public class ActivityLogImpl implements ActivityLog, Callable<Void> {
+public class ActivityLogImpl implements ActivityLog, Runnable {
 
    public static enum LogEntry {
       ENTRY_ID,
@@ -95,7 +93,6 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
 
    private final ConcurrentHashMap<Long, ActivityTypeToken> types = new ConcurrentHashMap<>(30);
    private final static int HALF_HOUR = 30 * 60 * 1000;
-   private static final int FIVE_MINUTES = 5 * 60 * 1000;
 
    private final ConcurrentHashMap<Long, Object[]> newEntities = new ConcurrentHashMap<>();
    private final ConcurrentHashMap<Long, Object[]> updatedEntities = new ConcurrentHashMap<>();
@@ -108,12 +105,13 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
    private ActivityMonitor activityMonitor;
    private volatile long freshnessMillis;
    private volatile int exceptionLineCount;
-   private volatile int executorPoolSize;
    private volatile long lastFlushTime;
    private volatile int cleanerKeepDays;
    private volatile boolean enabled = ActivityConstants.DEFAULT_ACTIVITY_LOGGER__ENABLED;
    private IApplicationServerManager applicationServerManager;
    private String host;
+   private ThreadStats[] threadStats;
+   private Long threadActivityParententryId;
 
    public void setApplicationServerManager(IApplicationServerManager applicationServerManager) {
       this.applicationServerManager = applicationServerManager;
@@ -145,30 +143,37 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
       Object[] defaultRootEntry = createEntry(Id.SENTINEL, DEFAULT_ROOT, SystemUser.OseeSystem, getThisServerId(),
          DEFAULT_CLIENT_ID, 0L, 0, "default root entry for " + host);
       activityMonitor = new ActivityMonitor(defaultRootEntry);
-      executorAdmin.schedule(this::continuouslyLogThreadActivity);
+      setupThreadActivityLogging();
    }
 
    private Long getThisServerId() {
       return (long) applicationServerManager.getPort();
    }
 
-   private Void continuouslyLogThreadActivity() {
-      Long threadActivityParententryId = createActivityThread(THREAD_ACTIVITY, SystemUser.OseeSystem, get(SERVER_ID),
+   private void setupThreadActivityLogging() {
+      threadActivityParententryId = createActivityThread(THREAD_ACTIVITY, SystemUser.OseeSystem, get(SERVER_ID),
          DEFAULT_CLIENT_ID, "Start of thread activity logging thread on " + host);
 
-      int sampleWindowMs;
-      while (true) {
-         String sampleWindowMsStr =
-            preferences.getCachedValue("thread.activity.sample.window." + OrcsTypesData.OSEE_TYPE_VERSION, HALF_HOUR);
-         if (Strings.isValid(sampleWindowMsStr)) {
-            sampleWindowMs = Integer.parseInt(sampleWindowMsStr);
-         } else {
-            sampleWindowMs = FIVE_MINUTES;
-         }
-         String threadActivity = getThreadActivity(sampleWindowMs);
-         if (!threadActivity.isEmpty()) {
-            createEntry(THREAD_ACTIVITY, threadActivityParententryId, COMPLETE_STATUS, threadActivity);
-         }
+      int sampleWindowSecs;
+      String sampleWindowSecStr =
+         preferences.getCachedValue("thread.activity.sample.window." + OrcsTypesData.OSEE_TYPE_VERSION, HALF_HOUR);
+      if (Strings.isValid(sampleWindowSecStr)) {
+         sampleWindowSecs = Integer.parseInt(sampleWindowSecStr);
+      } else {
+         sampleWindowSecs = 100;
+      }
+
+      threadStats = getThreadActivity();
+      executorAdmin.scheduleWithFixedDelay("Thread Activity Log", this::continuouslyLogThreadActivity, sampleWindowSecs,
+         sampleWindowSecs, TimeUnit.SECONDS);
+   }
+
+   private void continuouslyLogThreadActivity() {
+      String threadReport = getThreadActivityDelta(threadStats);
+      threadStats = getThreadActivity();
+
+      if (!threadReport.isEmpty()) {
+         createEntry(THREAD_ACTIVITY, threadActivityParententryId, COMPLETE_STATUS, threadReport);
       }
    }
 
@@ -190,7 +195,6 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
       //@formatter:off
       freshnessMillis = ActivityUtil.get(properties, ACTIVITY_LOGGER__WRITE_RATE_IN_MILLIS, DEFAULT_ACTIVITY_LOGGER__WRITE_RATE_IN_MILLIS);
       exceptionLineCount = ActivityUtil.get(properties, ACTIVITY_LOGGER__STACKTRACE_LINE_COUNT, DEFAULT_ACTIVITY_LOGGER__STACKTRACE_LINE_COUNT);
-      int newExecutorPoolSize = ActivityUtil.get(properties, ACTIVITY_LOGGER__EXECUTOR_POOL_SIZE, DEFAULT_ACTIVITY_LOGGER__EXECUTOR_POOL_SIZE);
       String value = (String)properties.get(ACTIVITY_LOGGER__ENABLED);
       int newCleanerKeepDays = ActivityUtil.get(properties, ACTIVITY_LOGGER__CLEANER_KEEP_DAYS, DEFAULT_ACTIVITY_LOGGER__CLEANER_KEEP_DAYS);
       if (Strings.isValid(value)) {
@@ -198,36 +202,17 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
       }
       //@formatter:on
 
-      if (newExecutorPoolSize != executorPoolSize) {
-         executorPoolSize = newExecutorPoolSize;
-         try {
-            executorAdmin.shutdown(ACTIVITY_LOGGER__EXECUTOR_ID);
-         } catch (Throwable th) {
-            logger.error(th, "Error shutting down executor [%s]", ACTIVITY_LOGGER__EXECUTOR_ID);
-         } finally {
-            try {
-               executorAdmin.createFixedPoolExecutor(ACTIVITY_LOGGER__EXECUTOR_ID, executorPoolSize);
-            } catch (Throwable th) {
-               logger.error(th, "Error creating new executor for [%s]", ACTIVITY_LOGGER__EXECUTOR_ID);
-            }
-         }
-      }
       if (newCleanerKeepDays != cleanerKeepDays) {
          cleanerKeepDays = newCleanerKeepDays;
          setupCleaner();
       }
    }
 
+   private void clean() {
+      storage.cleanEntries(cleanerKeepDays);
+   }
+
    private void setupCleaner() {
-      Callable<Void> cleaner = new Callable<Void>() {
-
-         @Override
-         public Void call() throws Exception {
-            storage.cleanEntries(cleanerKeepDays);
-            return null;
-         }
-      };
-
       // randomly pick a start time around midnight
       Random random = new Random();
       Calendar start = Calendar.getInstance();
@@ -242,7 +227,7 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
 
       // run once a day
       executorAdmin.shutdown(ACTIVITY_LOGGER__CLEANER_EXECUTOR_ID);
-      executorAdmin.scheduleAtFixedRate(ACTIVITY_LOGGER__CLEANER_EXECUTOR_ID, cleaner, startAfter, 60 * 24,
+      executorAdmin.scheduleAtFixedRate(ACTIVITY_LOGGER__CLEANER_EXECUTOR_ID, this::clean, startAfter, 60 * 24,
          TimeUnit.MINUTES);
    }
 
@@ -410,7 +395,7 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
    }
 
    @Override
-   public Void call() {
+   public void run() {
       if (enabled) {
          if (!newEntities.isEmpty()) {
             try {
@@ -430,14 +415,13 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
          newEntities.clear();
          updatedEntities.clear();
       }
-      return null;
    }
 
    private void flush(boolean force) {
       long currentTime = System.currentTimeMillis();
       if (force || currentTime - lastFlushTime > freshnessMillis) {
          try {
-            executorAdmin.schedule(ACTIVITY_LOGGER__EXECUTOR_ID, this);
+            executorAdmin.scheduleOnce("Activity Log flush to datastore", this);
          } catch (Exception ex) {
             logger.error(ex, "Error scheduling activity log callable");
          } finally {
@@ -513,7 +497,12 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
    }
 
    @Override
-   public String getThreadActivity(int sampleWindowMs) {
-      return threadActivity.getThreadActivity(sampleWindowMs);
+   public ThreadStats[] getThreadActivity() {
+      return threadActivity.getThreadActivity();
+   }
+
+   @Override
+   public String getThreadActivityDelta(ThreadStats[] threadStats) {
+      return threadActivity.getThreadActivityDelta(threadStats);
    }
 }

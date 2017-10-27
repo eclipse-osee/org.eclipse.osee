@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.eclipse.osee.executor.admin.CancellableCallable;
+import org.eclipse.osee.executor.admin.CancellableRunnable;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -152,8 +152,7 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
          dataToProcess.offer(data);
          try {
             if (executorStarted.compareAndSet(false, true)) {
-               CancellableCallable<Void> consumer = createConsumer(handler);
-               future = executorAdmin.schedule(consumer);
+               future = executorAdmin.scheduleOnce("AttributeData loader", createConsumer(handler));
             }
          } finally {
             if (cancellation.isCancelled()) {
@@ -163,38 +162,41 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
 
       }
 
-      private CancellableCallable<Void> createConsumer(final LoadDataHandler handler) {
-         return new CancellableCallable<Void>() {
+      private Runnable createConsumer(final LoadDataHandler handler) {
+         return new CancellableRunnable() {
             @Override
-            public Void call() throws Exception {
-               boolean isEndOfQueue = false;
-               Map<Integer, CriteriaMatchTracker> artIdToCriteriaTracker = Maps.newHashMap();
-               while (!isEndOfQueue) {
-                  Set<AttributeData> toProcess = new HashSet<>();
-                  AttributeData entry = dataToProcess.take();
-                  dataToProcess.drainTo(toProcess);
-                  toProcess.add(entry);
-                  for (AttributeData item : toProcess) {
-                     if (END_OF_QUEUE != item) {
-                        CriteriaMatchTracker tracker = artIdToCriteriaTracker.get(item.getArtifactId());
-                        if (tracker == null) {
-                           tracker = new CriteriaMatchTracker(criterias);
-                           artIdToCriteriaTracker.put(item.getArtifactId(), tracker);
+            public void run() {
+               try {
+                  boolean isEndOfQueue = false;
+                  Map<Integer, CriteriaMatchTracker> artIdToCriteriaTracker = Maps.newHashMap();
+                  while (!isEndOfQueue) {
+                     Set<AttributeData> toProcess = new HashSet<>();
+                     AttributeData entry = dataToProcess.take();
+                     dataToProcess.drainTo(toProcess);
+                     toProcess.add(entry);
+                     for (AttributeData item : toProcess) {
+                        if (END_OF_QUEUE != item) {
+                           CriteriaMatchTracker tracker = artIdToCriteriaTracker.get(item.getArtifactId());
+                           if (tracker == null) {
+                              tracker = new CriteriaMatchTracker(criterias);
+                              artIdToCriteriaTracker.put(item.getArtifactId(), tracker);
+                           }
+                           checkForCancelled();
+                           List<MatchLocation> matches = process(this, item, handler, tracker.remainingCriteriaToMatch);
+                           tracker.addMatches(item, matches);
+                        } else {
+                           isEndOfQueue = true;
                         }
-                        checkForCancelled();
-                        List<MatchLocation> matches = process(this, item, handler, tracker.remainingCriteriaToMatch);
-                        tracker.addMatches(item, matches);
-                     } else {
-                        isEndOfQueue = true;
                      }
                   }
+                  for (Entry<Integer, CriteriaMatchTracker> e : artIdToCriteriaTracker.entrySet()) {
+                     // matched all criteria
+                     CriteriaMatchTracker tracker = e.getValue();
+                     tracker.finish(handler);
+                  }
+               } catch (Exception ex) {
+                  OseeCoreException.wrapAndThrow(ex);
                }
-               for (Entry<Integer, CriteriaMatchTracker> e : artIdToCriteriaTracker.entrySet()) {
-                  // matched all criteria
-                  CriteriaMatchTracker tracker = e.getValue();
-                  tracker.finish(handler);
-               }
-               return null;
             }
          };
       }

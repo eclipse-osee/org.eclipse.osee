@@ -81,5 +81,7 @@ public interface ActivityLog {
     * <li>blocked = milliseconds that the thread associated has blocked to enter or reenter a monitor since thread
     * contention monitoring is enabled. -1 if thread contention monitoring is disabled.
     */
-   String getThreadActivity(int sampleWindowMs);
+   ThreadStats[] getThreadActivity();
+
+   String getThreadActivityDelta(ThreadStats[] threadStats);
 }

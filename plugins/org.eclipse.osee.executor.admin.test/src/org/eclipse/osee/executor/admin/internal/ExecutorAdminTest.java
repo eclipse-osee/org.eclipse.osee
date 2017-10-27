@@ -11,7 +11,6 @@
 package org.eclipse.osee.executor.admin.internal;
 
 import java.util.HashMap;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -81,14 +80,7 @@ public class ExecutorAdminTest {
    @Test
    public void testScheduleExecutor() throws InterruptedException {
       final AtomicInteger executed = new AtomicInteger();
-      admin.scheduleAtFixedRate("schedule.test", new Callable<Void>() {
-
-         @Override
-         public Void call() throws Exception {
-            executed.incrementAndGet();
-            return null;
-         }
-      }, -1, 250, TimeUnit.MILLISECONDS);
+      admin.scheduleAtFixedRate("schedule.test", () -> executed.incrementAndGet(), -1, 250, TimeUnit.MILLISECONDS);
       synchronized (this) {
          this.wait(1000L);
       }

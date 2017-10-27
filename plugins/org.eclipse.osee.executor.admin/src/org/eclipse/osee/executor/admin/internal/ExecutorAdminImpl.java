@@ -256,4 +256,18 @@ public class ExecutorAdminImpl implements ExecutorAdmin {
       };
    }
 
+   @Override
+   public Future<?> scheduleOnce(String name, Runnable task) {
+      return getExecutor(DEFAULT_EXECUTOR).submit(task);
+   }
+
+   @Override
+   public ScheduledFuture<?> scheduleAtFixedRate(String name, Runnable task, long initialDelay, long executionRate, TimeUnit timeUnit) {
+      return getScheduledExecutor(DEFAULT_EXECUTOR).scheduleAtFixedRate(task, initialDelay, executionRate, timeUnit);
+   }
+
+   @Override
+   public ScheduledFuture<?> scheduleWithFixedDelay(String name, Runnable task, long initialDelay, long delay, TimeUnit unit) {
+      return getScheduledExecutor(DEFAULT_EXECUTOR).scheduleWithFixedDelay(task, initialDelay, delay, unit);
+   }
 }

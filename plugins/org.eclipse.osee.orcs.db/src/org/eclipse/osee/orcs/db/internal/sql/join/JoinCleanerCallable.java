@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.sql.join;
 
-import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.jdbc.OseePreparedStatement;
@@ -21,7 +20,7 @@ import org.eclipse.osee.logger.Log;
  *
  * @author Roberto E. Escobar
  */
-public class JoinCleanerCallable extends CancellableCallable<Void> {
+public class JoinCleanerCallable implements Runnable {
    private final static String DELETE_JOIN_CLEANUP = "DELETE FROM osee_join_cleanup WHERE query_id = ?";
    private final static String SELECT_FROM_JOIN_CLEANUP = "SELECT * from osee_join_cleanup order by table_name";
 
@@ -49,7 +48,7 @@ public class JoinCleanerCallable extends CancellableCallable<Void> {
    }
 
    @Override
-   public Void call() throws Exception {
+   public void run() {
       try {
          resetForNextCall();
          try {
@@ -63,7 +62,6 @@ public class JoinCleanerCallable extends CancellableCallable<Void> {
       } catch (Exception ex) {
          logger.error(ex, "Error cleaning join tables");
       }
-      return null;
    }
 
    private void processRow(JdbcStatement stmt) {

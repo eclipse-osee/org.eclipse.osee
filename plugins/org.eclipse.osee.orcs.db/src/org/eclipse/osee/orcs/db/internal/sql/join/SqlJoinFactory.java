@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.sql.join;
 
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -43,8 +42,8 @@ public class SqlJoinFactory {
    }
 
    public void start() throws Exception {
-      Callable<?> callable = new JoinCleanerCallable(logger, jdbcClient);
-      executorAdmin.scheduleAtFixedRate(JOIN_CLEANER__EXECUTOR_ID, callable, DEFAULT_JOIN_CLEANER__PERIOD_MINUTES,
+      Runnable runnable = new JoinCleanerCallable(logger, jdbcClient);
+      executorAdmin.scheduleAtFixedRate(JOIN_CLEANER__EXECUTOR_ID, runnable, DEFAULT_JOIN_CLEANER__PERIOD_MINUTES,
          DEFAULT_JOIN_CLEANER__PERIOD_MINUTES, TimeUnit.MINUTES);
    }
 

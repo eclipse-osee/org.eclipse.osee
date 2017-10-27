@@ -12,6 +12,7 @@ package org.eclipse.osee.executor.admin;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -38,5 +39,11 @@ public interface ExecutorAdmin {
    <T> Future<T> scheduleAtFixedRate(String id, Callable<T> callable, long startAfter, long executionRate, TimeUnit timeUnit);
 
    void shutdown(String id);
+
+   Future<?> scheduleOnce(String name, Runnable task);
+
+   ScheduledFuture<?> scheduleAtFixedRate(String name, Runnable task, long initialDelay, long executionRate, TimeUnit timeUnit);
+
+   ScheduledFuture<?> scheduleWithFixedDelay(String name, Runnable task, long initialDelay, long delay, TimeUnit unit);
 
 }
