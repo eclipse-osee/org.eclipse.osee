@@ -19,11 +19,9 @@ import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.activation.CommandMap;
 import javax.activation.MailcapCommandMap;
-import org.eclipse.osee.executor.admin.ExecutionCallback;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.mail.api.MailCallback;
 import org.eclipse.osee.mail.api.MailMessage;
 import org.eclipse.osee.mail.api.MailService;
 import org.eclipse.osee.mail.api.MailStatus;
@@ -32,9 +30,6 @@ import org.eclipse.osee.mail.api.MailStatus;
  * @author Roberto E. Escobar
  */
 public class MailServiceImpl implements MailService {
-
-   private static final MailCallback NO_OP_CALLBACK = null;
-
    private ExecutorAdmin executorAdmin;
    private Log logger;
 
@@ -98,13 +93,8 @@ public class MailServiceImpl implements MailService {
 
    @Override
    public Future<MailStatus> sendAsyncTestMessage() {
-      return sendAsyncTestMessage(NO_OP_CALLBACK);
-   }
-
-   @Override
-   public Future<MailStatus> sendAsyncTestMessage(MailCallback callback) {
       MailMessage message = newTestMailMessage();
-      List<Future<MailStatus>> results = sendAsyncMessages(callback, message);
+      List<Future<MailStatus>> results = sendAsyncMessages(message);
       return results.isEmpty() ? null : results.iterator().next();
    }
 
@@ -125,17 +115,7 @@ public class MailServiceImpl implements MailService {
 
    @Override
    public List<Future<MailStatus>> sendAsyncMessages(MailMessage... email) {
-      return sendAsyncMessages(NO_OP_CALLBACK, email);
-   }
-
-   @Override
-   public List<Future<MailStatus>> sendAsyncMessages(Iterable<MailMessage> emails) {
-      return sendAsyncMessages(NO_OP_CALLBACK, emails);
-   }
-
-   @Override
-   public List<Future<MailStatus>> sendAsyncMessages(MailCallback callback, MailMessage... email) {
-      return sendAsyncMessages(callback, Arrays.asList(email));
+      return sendAsyncMessages(Arrays.asList(email));
    }
 
    private MailStatus executeAndGetStatus(Future<MailStatus> future) {
@@ -150,23 +130,16 @@ public class MailServiceImpl implements MailService {
    }
 
    @Override
-   public List<Future<MailStatus>> sendAsyncMessages(MailCallback mailCallback, Iterable<MailMessage> emails) {
+   public List<Future<MailStatus>> sendAsyncMessages(Iterable<MailMessage> emails) {
       List<Future<MailStatus>> futures = new ArrayList<>();
       for (MailMessage mail : emails) {
          String uuid = mail.getId();
 
          Callable<MailStatus> callable = newSendCallable(mail);
-         ExecutionCallback<MailStatus> callback = null;
-         if (mailCallback != null) {
-            callback = newExecutionCallback(uuid, mailCallback);
-         }
          try {
-            Future<MailStatus> future = executorAdmin.schedule(callable, callback);
+            Future<MailStatus> future = executorAdmin.schedule(callable);
             futures.add(future);
          } catch (Exception ex) {
-            if (mailCallback != null) {
-               mailCallback.onFailure(uuid, ex);
-            }
             logger.error(ex, "Error sending email [%s] ", uuid);
          }
       }
@@ -176,25 +149,4 @@ public class MailServiceImpl implements MailService {
    private Callable<MailStatus> newSendCallable(MailMessage mail) {
       return new SendMailCallable(config, factory, mail);
    }
-
-   private static ExecutionCallback<MailStatus> newExecutionCallback(final String mailId, final MailCallback mailCallback) {
-      return new ExecutionCallback<MailStatus>() {
-
-         @Override
-         public void onCancelled() {
-            mailCallback.onCancelled(mailId);
-         }
-
-         @Override
-         public void onSuccess(MailStatus status) {
-            mailCallback.onSuccess(mailId, status);
-         }
-
-         @Override
-         public void onFailure(Throwable throwable) {
-            mailCallback.onFailure(mailId, throwable);
-         }
-      };
-   }
-
 }

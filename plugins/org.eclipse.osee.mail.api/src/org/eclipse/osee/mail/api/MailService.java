@@ -22,18 +22,11 @@ public interface MailService {
 
    Future<MailStatus> sendAsyncTestMessage();
 
-   Future<MailStatus> sendAsyncTestMessage(MailCallback callback);
-
    List<MailStatus> sendMessages(MailMessage... email);
 
    List<MailStatus> sendMessages(Iterable<MailMessage> email);
 
-   List<Future<MailStatus>> sendAsyncMessages(MailCallback callback, MailMessage... emails);
-
-   List<Future<MailStatus>> sendAsyncMessages(MailCallback callback, Iterable<MailMessage> emails);
-
-   List<Future<MailStatus>> sendAsyncMessages(MailMessage... emails);
-
    List<Future<MailStatus>> sendAsyncMessages(Iterable<MailMessage> emails);
 
+   List<Future<MailStatus>> sendAsyncMessages(MailMessage... emails);
 }
