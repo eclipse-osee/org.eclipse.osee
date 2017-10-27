@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2017 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,11 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.executor.admin;
 
-import java.util.concurrent.Callable;
-
 /**
- * @author Roberto E. Escobar
+ * @author Ryan D. Brooks
  */
-public abstract class CancellableCallable<T> extends Cancellable implements Callable<T> {
-   // allows anonymous inner classes to be constructed that are both Cancellable and Callable
+public abstract class CancellableRunnable extends Cancellable implements Runnable {
+   // allows anonymous inner classes to be constructed that are both Cancellable and Runnable
 }

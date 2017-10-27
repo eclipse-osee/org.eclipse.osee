@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.core.internal.admin;
 
 import java.util.concurrent.Callable;
 import org.eclipse.osee.executor.admin.CancellableCallable;
+import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
@@ -78,8 +79,8 @@ public abstract class AbstractAdminCallable<T> extends CancellableCallable<T> {
       final Callable<?> inner = innerWorker;
       if (inner != null) {
          synchronized (inner) {
-            if (inner instanceof CancellableCallable) {
-               ((CancellableCallable<?>) inner).setCancel(isCancelled);
+            if (inner instanceof HasCancellation) {
+               ((HasCancellation) inner).setCancel(isCancelled);
             }
          }
       }
