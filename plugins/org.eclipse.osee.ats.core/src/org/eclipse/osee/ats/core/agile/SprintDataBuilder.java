@@ -52,93 +52,137 @@ public class SprintDataBuilder {
          ArtifactToken sprintArt = sprint.getStoreObject();
          sprintData.setSprintName(sprintArt.getName());
          sprintData.setAgileTeamName(agileTeam.getName());
-         Date startDate =
-            atsApi.getAttributeResolver().getSoleAttributeValue(sprintArt, AtsAttributeTypes.StartDate, null);
+
+         Date startDate = validateStartDate(sprintData, sprintArt);
          if (startDate == null) {
-            sprintData.getResults().error("Start Date must be set on Sprint");
             return sprintData;
          }
-         startDate = clearTimeComponent(startDate);
-         sprintData.setStartDateAsDate(startDate);
-         Date endDate = atsApi.getAttributeResolver().getSoleAttributeValue(sprintArt, AtsAttributeTypes.EndDate, null);
+
+         Date endDate = validateEndDate(sprintData, sprintArt);
          if (endDate == null) {
-            sprintData.getResults().error("End Date must be set on Sprint");
             return sprintData;
          }
-         endDate = clearTimeComponent(endDate);
-         sprintData.setEndDateAsDate(endDate);
+
+         // retrieve and store holidays
          List<Date> holidays = new LinkedList<>();
          holidays.addAll(atsApi.getAttributeResolver().getAttributeValues(sprintArt, AtsAttributeTypes.Holiday));
          sprintData.setHolidays(holidays);
+
+         // retrieve and store unPlanned points
          Integer unPlannedPoints =
             atsApi.getAttributeResolver().getSoleAttributeValue(sprintArt, AtsAttributeTypes.UnPlannedPoints, 0);
          sprintData.setUnPlannedPoints(unPlannedPoints);
+
+         // retrieve and store planned points
          Integer plannedPoints =
             atsApi.getAttributeResolver().getSoleAttributeValue(sprintArt, AtsAttributeTypes.PlannedPoints, 0);
          sprintData.setPlannedPoints(plannedPoints);
+
+         // store points attribute name
          sprintData.setPointsAttrTypeName(atsApi.getAttributeResolver().getSoleAttributeValue(agileTeam,
             AtsAttributeTypes.PointsAttributeType, AtsAttributeTypes.Points.getName()));
 
          int totalPoints = unPlannedPoints + plannedPoints;
          long oneDay = 24 * 60 * 60 * 1000;
-         if (startDate != null && endDate != null) {
-            for (Date date = startDate; date.before(endDate) || date.equals(endDate); date =
-               new Date(date.getTime() + oneDay)) {
-               // Skip holidays and weekends
-               Calendar c = Calendar.getInstance();
-               c.setTime(date);
-               if (c.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || c.get(
-                  Calendar.DAY_OF_WEEK) == Calendar.SUNDAY || isHoliday(date, sprintData.getHolidays())) {
-                  continue;
-               }
-               AgileSprintDateData bdDate = new AgileSprintDateData();
-               bdDate.setDate(date);
-               sprintData.getDates().add(bdDate);
-            }
-         }
+
+         computeDateBuckets(sprintData, startDate, endDate, oneDay);
+
          Collection<IAgileItem> items = atsApi.getAgileService().getItems(sprint);
+
          computeGoal(sprintData, totalPoints);
 
-         // compute total, unplanned and planned points
-         for (IAgileItem item : items) {
-            boolean completed = item.isCompletedOrCancelled();
-            boolean unPlanned =
-               atsApi.getAttributeResolver().getSoleAttributeValue(item, AtsAttributeTypes.UnPlannedWork, false);
-            Date completedCancelledDate = item.isCompleted() ? item.getCompletedDate() : item.getCancelledDate();
-            // loop through all dates and add points for dates after item was completed/cancelled
-            for (AgileSprintDateData dateBucket : sprintData.getDates()) {
-               double points = getPoints(sprintData, item);
-               if (completed) {
-                  // only get credit if completed before date bucket
-                  if (completed && completedCancelledDate.before(dateBucket.getDate())) {
-                     if (unPlanned) {
-                        if (dateBucket.getCompletedUnPlannedPoints() != null) {
-                           dateBucket.setCompletedUnPlannedPoints(dateBucket.getCompletedUnPlannedPoints() + points);
-                        } else {
-                           dateBucket.setCompletedUnPlannedPoints(points);
-                        }
-                     } else {
-                        if (dateBucket.getCompletedPlannedPoints() != null) {
-                           dateBucket.setCompletedPlannedPoints(dateBucket.getCompletedPlannedPoints() + points);
-                        } else {
-                           dateBucket.setCompletedPlannedPoints(points);
-                        }
-                     }
-                  }
-               }
-               // set points created before this date
-               Date createdDate = item.getCreatedDate();
-               if (createdDate.before(dateBucket.getDate())) {
-                  dateBucket.setTotalRealizedPoints(dateBucket.getTotalRealizedPoints() + points);
-               }
-            }
-         }
+         computeTotalUnplannedAndPlannedPoints(sprintData, items);
+
          computeUnPlannedIncomplete(sprintData);
+
          computeCompleted(sprintData);
+
       } catch (Exception ex) {
          sprintData.getResults().error("Error generating burndown data: \n\n" + Lib.exceptionToString(ex));
       }
       return sprintData;
+   }
+
+   private void computeTotalUnplannedAndPlannedPoints(AgileSprintData sprintData, Collection<IAgileItem> items) {
+      // compute total, unplanned and planned points
+      for (IAgileItem item : items) {
+         boolean completed = item.isCompletedOrCancelled();
+         boolean unPlanned =
+            atsApi.getAttributeResolver().getSoleAttributeValue(item, AtsAttributeTypes.UnPlannedWork, false);
+         Date completedCancelledDate = item.isCompleted() ? item.getCompletedDate() : item.getCancelledDate();
+         // loop through all dates and add points for dates after item was completed/cancelled
+         for (AgileSprintDateData dateBucket : sprintData.getDates()) {
+            double points = getPoints(sprintData, item);
+            if (completed) {
+               // only get credit if completed before date bucket
+               if (completed && completedCancelledDate.before(dateBucket.getDate())) {
+                  if (unPlanned) {
+                     if (dateBucket.getCompletedUnPlannedPoints() != null) {
+                        dateBucket.setCompletedUnPlannedPoints(dateBucket.getCompletedUnPlannedPoints() + points);
+                     } else {
+                        dateBucket.setCompletedUnPlannedPoints(points);
+                     }
+                  } else {
+                     if (dateBucket.getCompletedPlannedPoints() != null) {
+                        dateBucket.setCompletedPlannedPoints(dateBucket.getCompletedPlannedPoints() + points);
+                     } else {
+                        dateBucket.setCompletedPlannedPoints(points);
+                     }
+                  }
+               }
+            }
+            // set points created before this date
+            Date createdDate = item.getCreatedDate();
+            if (createdDate.before(dateBucket.getDate())) {
+               dateBucket.setTotalRealizedPoints(dateBucket.getTotalRealizedPoints() + points);
+            }
+         }
+      }
+   }
+
+   private void computeDateBuckets(AgileSprintData sprintData, Date startDate, Date endDate, long oneDay) {
+      for (Date date = startDate; date.before(endDate) || date.equals(endDate); date =
+         new Date(date.getTime() + oneDay)) {
+         // Skip holidays and weekends
+         Calendar c = Calendar.getInstance();
+         c.setTime(date);
+         if (c.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || c.get(
+            Calendar.DAY_OF_WEEK) == Calendar.SUNDAY || isHoliday(date, sprintData.getHolidays())) {
+            continue;
+         }
+         AgileSprintDateData sprintDateData = new AgileSprintDateData();
+         sprintDateData.setDate(date);
+         sprintData.getDates().add(sprintDateData);
+      }
+   }
+
+   /**
+    * @return valid date or null if not set
+    */
+   private Date validateEndDate(AgileSprintData sprintData, ArtifactToken sprintArt) {
+      Date endDate = atsApi.getAttributeResolver().getSoleAttributeValue(sprintArt, AtsAttributeTypes.EndDate, null);
+      if (endDate == null) {
+         sprintData.getResults().error("End Date must be set on Sprint");
+         return null;
+      }
+      endDate = clearTimeComponent(endDate);
+      sprintData.setEndDateAsDate(endDate);
+      return endDate;
+   }
+
+   /**
+    * @return valid date or null if not set
+    */
+   private Date validateStartDate(AgileSprintData sprintData, ArtifactToken sprintArt) {
+      Date startDate =
+         atsApi.getAttributeResolver().getSoleAttributeValue(sprintArt, AtsAttributeTypes.StartDate, null);
+      if (startDate == null) {
+         sprintData.getResults().error("Start Date must be set on Sprint");
+         return null;
+      }
+      startDate = clearTimeComponent(startDate);
+      sprintData.setStartDateAsDate(startDate);
+      return startDate;
    }
 
    // Incomplete should just be total unplanned minus total unplanned-completed
