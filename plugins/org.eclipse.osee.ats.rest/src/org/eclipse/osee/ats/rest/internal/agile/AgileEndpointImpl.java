@@ -34,6 +34,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
 import org.eclipse.osee.ats.api.agile.AgileItem;
@@ -96,6 +97,7 @@ import org.eclipse.osee.framework.jdk.core.util.SortOrder;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 import org.eclipse.osee.jdbc.JdbcService;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.template.engine.PageCreator;
 import org.eclipse.osee.template.engine.PageFactory;
@@ -107,14 +109,16 @@ public class AgileEndpointImpl implements AgileEndpointApi {
 
    @Context
    private UriInfo uriInfo;
-   private final IAtsServer atsServer;
+   private final AtsApi atsApi;
    private final IResourceRegistry resourceRegistry;
    private final JdbcService jdbcService;
+   private final OrcsApi orcsApi;
 
-   public AgileEndpointImpl(IAtsServer atsServer, IResourceRegistry resourceRegistry, JdbcService jdbcService) {
-      this.atsServer = atsServer;
+   public AgileEndpointImpl(AtsApi atsApi, IResourceRegistry resourceRegistry, JdbcService jdbcService, OrcsApi orcsApi) {
+      this.atsApi = atsApi;
       this.resourceRegistry = resourceRegistry;
       this.jdbcService = jdbcService;
+      this.orcsApi = orcsApi;
    }
 
    public void setUriInfo(UriInfo uriInfo) {
@@ -135,7 +139,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    public List<JaxAtsObjectToken> getTeamTokens() throws Exception {
       List<JaxAtsObjectToken> teams = new ArrayList<>();
-      for (ArtifactToken art : atsServer.getArtifacts(AtsArtifactTypes.AgileTeam)) {
+      for (ArtifactToken art : atsApi.getArtifacts(AtsArtifactTypes.AgileTeam)) {
          JaxAtsObjectToken team = new JaxAtsObjectToken();
          team.setName(art.getName());
          team.setId(art);
@@ -147,7 +151,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @Override
    public List<JaxAgileTeam> team() throws Exception {
       List<JaxAgileTeam> teams = new ArrayList<>();
-      for (IAgileTeam team : atsServer.getAgileService().getTeams()) {
+      for (IAgileTeam team : atsApi.getAgileService().getTeams()) {
          teams.add(toJaxTeam(team));
       }
       return teams;
@@ -155,7 +159,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
 
    @Override
    public JaxAgileTeam getTeam(long teamId) {
-      IAgileTeam team = atsServer.getAgileService().getAgileTeamById(teamId);
+      IAgileTeam team = atsApi.getAgileService().getAgileTeamById(teamId);
       return toJaxTeam(team);
    }
 
@@ -164,7 +168,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @Path("team/{teamId}/token")
    @Produces(MediaType.APPLICATION_JSON)
    public JaxAtsObjectToken getTeamToken(@PathParam("teamId") long teamId) {
-      ArtifactToken token = atsServer.getQueryService().getArtifactToken(teamId);
+      ArtifactToken token = atsApi.getQueryService().getArtifactToken(teamId);
       return toAtsObjToken(token);
    }
 
@@ -180,23 +184,23 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @GET
    @Produces(MediaType.APPLICATION_JSON)
    public List<IAtsWorkPackage> getWorkPackages(@PathParam("teamId") ArtifactId teamId) {
-      IAgileTeam aTeam = atsServer.getAgileService().getAgileTeam(teamId);
+      IAgileTeam aTeam = atsApi.getAgileService().getAgileTeam(teamId);
       Set<IAtsWorkPackage> wps = new HashSet<>();
       for (Long atsTeamUuid : aTeam.getAtsTeamUuids()) {
-         IAtsTeamDefinition teamDef = atsServer.getConfigItem(atsTeamUuid);
+         IAtsTeamDefinition teamDef = atsApi.getConfigItem(atsTeamUuid);
          if (teamDef != null) {
-            for (ArtifactId wpArt : atsServer.getRelationResolver().getRelated(teamDef,
+            for (ArtifactId wpArt : atsApi.getRelationResolver().getRelated(teamDef,
                AtsRelationTypes.WorkPackage_WorkPackage)) {
-               IAtsWorkPackage wp = atsServer.getConfigItem(wpArt);
+               IAtsWorkPackage wp = atsApi.getConfigItem(wpArt);
                if (wp != null && wp.isActive()) {
                   wps.add(wp);
                }
             }
-            for (IAtsActionableItem ai : atsServer.getActionableItemService().getActiveActionableItemsAndChildren(
+            for (IAtsActionableItem ai : atsApi.getActionableItemService().getActiveActionableItemsAndChildren(
                teamDef)) {
-               for (ArtifactId wpArt : atsServer.getRelationResolver().getRelated(ai,
+               for (ArtifactId wpArt : atsApi.getRelationResolver().getRelated(ai,
                   AtsRelationTypes.WorkPackage_WorkPackage)) {
-                  IAtsWorkPackage wp = atsServer.getConfigItem(wpArt);
+                  IAtsWorkPackage wp = atsApi.getConfigItem(wpArt);
                   if (wp != null && wp.isActive()) {
                      wps.add(wp);
                   }
@@ -215,8 +219,8 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @Path("team/{teamId}/member")
    @Produces(MediaType.APPLICATION_JSON)
    public List<JaxAtsObjectToken> getTeamMembers(@PathParam("teamId") ArtifactId teamId) {
-      IAgileTeam aTeam = atsServer.getConfigItem(teamId);
-      Set<IAtsUser> activeMembers = atsServer.getAgileService().getTeamMebers(aTeam);
+      IAgileTeam aTeam = atsApi.getConfigItem(teamId);
+      Set<IAtsUser> activeMembers = atsApi.getAgileService().getTeamMebers(aTeam);
 
       // Construct list of users with team members sorted first and other users last
       List<JaxAtsObjectToken> results = new LinkedList<>();
@@ -226,7 +230,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       Collections.sort(results, new NamedComparator(SortOrder.ASCENDING));
 
       List<JaxAtsObjectToken> othersForSort = new LinkedList<>();
-      for (IAtsUser user : atsServer.getUserService().getUsers()) {
+      for (IAtsUser user : atsApi.getUserService().getUsers()) {
          if (user.isActive() && !activeMembers.contains(user)) {
             othersForSort.add(JaxAtsObjectToken.construct(user.getStoreObject()));
          }
@@ -242,16 +246,16 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @GET
    @Produces(MediaType.APPLICATION_JSON)
    public List<IAtsActionableItem> getActionableAis(@PathParam("teamId") ArtifactId teamId) {
-      IAgileTeam aTeam = atsServer.getAgileService().getAgileTeam(teamId);
+      IAgileTeam aTeam = atsApi.getAgileService().getAgileTeam(teamId);
       List<IAtsActionableItem> ais = new LinkedList<>();
       // If ATS Teams are related, use their actionable items
-      for (IAtsTeamDefinition teamDef : atsServer.getAgileService().getAtsTeams(aTeam)) {
-         ais.addAll(atsServer.getActionableItemService().getActiveActionableItemsAndChildren(teamDef));
+      for (IAtsTeamDefinition teamDef : atsApi.getAgileService().getAtsTeams(aTeam)) {
+         ais.addAll(atsApi.getActionableItemService().getActiveActionableItemsAndChildren(teamDef));
       }
       // Add any AgileTeam to AI relations
-      for (ArtifactId aiArt : atsServer.getRelationResolver().getRelated(aTeam,
+      for (ArtifactId aiArt : atsApi.getRelationResolver().getRelated(aTeam,
          AtsRelationTypes.AgileTeamToAtsAtsAis_AtsAis)) {
-         ais.add(atsServer.getConfigItemFactory().getActionableItem(aiArt));
+         ais.add(atsApi.getConfigItemFactory().getActionableItem(aiArt));
       }
       Collections.sort(ais, new NamedComparator(SortOrder.ASCENDING));
       return ais;
@@ -269,7 +273,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
          newTeam.setUuid(Lib.generateArtifactIdAsInt());
       }
 
-      IAgileTeam updatedTeam = atsServer.getAgileService().createAgileTeam(newTeam);
+      IAgileTeam updatedTeam = atsApi.getAgileService().createAgileTeam(newTeam);
       JaxAgileTeam created = toJaxTeam(updatedTeam);
 
       UriBuilder builder = uriInfo.getRequestUriBuilder();
@@ -280,7 +284,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
 
    @Override
    public Response updateTeam(JaxAgileTeam team) {
-      IAgileTeam updatedTeam = atsServer.getAgileService().updateAgileTeam(team);
+      IAgileTeam updatedTeam = atsApi.getAgileService().updateAgileTeam(team);
       JaxAgileTeam created = toJaxTeam(updatedTeam);
 
       UriBuilder builder = uriInfo.getRequestUriBuilder();
@@ -303,7 +307,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
 
    @Override
    public Response deleteTeam(long teamId) {
-      atsServer.getAgileService().deleteAgileTeam(teamId);
+      atsApi.getAgileService().deleteAgileTeam(teamId);
       return Response.ok().build();
    }
 
@@ -314,12 +318,12 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @Override
    public List<JaxAgileFeatureGroup> getFeatureGroups(long teamId) {
       List<JaxAgileFeatureGroup> groups = new LinkedList<>();
-      ArtifactReadable agileTeamArt = atsServer.getArtifact(teamId);
-      for (ArtifactReadable child : agileTeamArt.getChildren()) {
+      ArtifactToken agileTeamArt = atsApi.getArtifact(teamId);
+      for (ArtifactToken child : atsApi.getRelationResolver().getChildren(agileTeamArt)) {
          if (child.getName().equals(IAgileService.FEATURE_GROUP_FOLDER_NAME)) {
-            for (ArtifactReadable subChild : child.getChildren()) {
-               if (subChild.isOfType(AtsArtifactTypes.AgileFeatureGroup)) {
-                  IAgileFeatureGroup group = atsServer.getConfigItemFactory().getAgileFeatureGroup(subChild);
+            for (ArtifactToken subChild : atsApi.getRelationResolver().getChildren(child)) {
+               if (atsApi.getStoreService().isOfType(subChild, AtsArtifactTypes.AgileFeatureGroup)) {
+                  IAgileFeatureGroup group = atsApi.getConfigItemFactory().getAgileFeatureGroup(subChild);
                   JaxAgileFeatureGroup newGroup = new JaxAgileFeatureGroup();
                   newGroup.setName(group.getName());
                   newGroup.setUuid(group.getId());
@@ -349,7 +353,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
          uuid = Lib.generateArtifactIdAsInt();
       }
 
-      IAgileFeatureGroup team = atsServer.getAgileService().createAgileFeatureGroup(newFeatureGroup.getTeamUuid(),
+      IAgileFeatureGroup team = atsApi.getAgileService().createAgileFeatureGroup(newFeatureGroup.getTeamUuid(),
          newFeatureGroup.getName(), guid, uuid);
       JaxAgileFeatureGroup newGroup = new JaxAgileFeatureGroup();
       newGroup.setName(team.getName());
@@ -366,7 +370,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @Override
    public JaxAgileFeatureGroup getFeatureGroup(long teamId, long featureUuid) {
       IAgileFeatureGroup feature =
-         atsServer.getAgileService().getAgileFeatureGroups(Arrays.asList(featureUuid)).iterator().next();
+         atsApi.getAgileService().getAgileFeatureGroups(Arrays.asList(featureUuid)).iterator().next();
       JaxAgileFeatureGroup created = new JaxAgileFeatureGroup();
       created.setName(feature.getName());
       created.setUuid(feature.getId());
@@ -377,7 +381,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
 
    @Override
    public Response deleteFeatureGroup(long teamId, long featureUuid) {
-      atsServer.getAgileService().deleteAgileFeatureGroup(featureUuid);
+      atsApi.getAgileService().deleteAgileFeatureGroup(featureUuid);
       return Response.ok().build();
    }
 
@@ -401,7 +405,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       }
 
       IAgileSprint sprint =
-         atsServer.getAgileService().createAgileSprint(newSprint.getTeamUuid(), newSprint.getName(), guid, uuid);
+         atsApi.getAgileService().createAgileSprint(newSprint.getTeamUuid(), newSprint.getName(), guid, uuid);
       JaxAgileSprint created = toJaxSprint(sprint);
 
       UriBuilder builder = uriInfo.getRequestUriBuilder();
@@ -425,7 +429,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
          throw new OseeWebApplicationException(Status.NOT_FOUND, "teamId is not valid");
       }
       List<JaxAgileSprint> sprints = new ArrayList<>();
-      for (IAgileSprint sprint : atsServer.getAgileService().getSprintsForTeam(teamId)) {
+      for (IAgileSprint sprint : atsApi.getAgileService().getSprintsForTeam(teamId)) {
          sprints.add(toJaxSprint(sprint));
       }
       return sprints;
@@ -436,13 +440,12 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       if (teamId <= 0) {
          throw new OseeWebApplicationException(Status.NOT_FOUND, "teamId is not valid");
       }
-      Collection<ArtifactToken> relatedSprints =
-         atsServer.getQueryService().getRelatedToTokens(atsServer.getAtsBranch(), ArtifactId.valueOf(teamId),
-            AtsRelationTypes.AgileTeamToSprint_Sprint, AtsArtifactTypes.AgileSprint);
+      Collection<ArtifactToken> relatedSprints = atsApi.getQueryService().getRelatedToTokens(atsApi.getAtsBranch(),
+         ArtifactId.valueOf(teamId), AtsRelationTypes.AgileTeamToSprint_Sprint, AtsArtifactTypes.AgileSprint);
 
       Collection<ArtifactToken> inWorkSprints =
-         TokenSearchOperations.getArtifactTokensMatchingAttrValue(atsServer.getAtsBranch(), relatedSprints,
-            AtsAttributeTypes.CurrentStateType, StateType.Working.name(), atsServer.getOrcsApi(), jdbcService);
+         TokenSearchOperations.getArtifactTokensMatchingAttrValue(atsApi.getAtsBranch(), relatedSprints,
+            AtsAttributeTypes.CurrentStateType, StateType.Working.name(), orcsApi, jdbcService);
 
       List<JaxAtsObjectToken> sprints = new ArrayList<>();
       for (ArtifactToken sprintArt : inWorkSprints) {
@@ -459,7 +462,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       if (sprintId <= 0) {
          throw new OseeWebApplicationException(Status.NOT_FOUND, "sprintId is not valid");
       }
-      for (IAgileSprint sprint : atsServer.getAgileService().getSprintsForTeam(teamId)) {
+      for (IAgileSprint sprint : atsApi.getAgileService().getSprintsForTeam(teamId)) {
          if (sprint.getId().equals(sprintId)) {
             return toJaxSprint(sprint);
          }
@@ -475,7 +478,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       if (teamId <= 0) {
          throw new OseeWebApplicationException(Status.NOT_FOUND, "teamId is not valid");
       }
-      for (IAgileSprint sprint : atsServer.getAgileService().getSprintsForTeam(teamId)) {
+      for (IAgileSprint sprint : atsApi.getAgileService().getSprintsForTeam(teamId)) {
          if (sprint.isActive()) {
             return toJaxSprint(sprint);
          }
@@ -490,9 +493,10 @@ public class AgileEndpointImpl implements AgileEndpointApi {
          if (Strings.isValid(report)) {
             return report;
          }
-         ArtifactReadable team = atsServer.getArtifact(teamId);
-         IAgileSprint sprint = atsServer.getAgileService().getAgileSprint(sprintId);
-         SprintPageBuilder page = new SprintPageBuilder(team, (ArtifactReadable) sprint.getStoreObject(), atsServer);
+         ArtifactToken team = atsApi.getArtifact(teamId);
+         IAgileSprint sprint = atsApi.getAgileService().getAgileSprint(sprintId);
+         SprintPageBuilder page =
+            new SprintPageBuilder((ArtifactReadable) team, (ArtifactReadable) sprint.getStoreObject(), atsApi);
          PageCreator appPage = PageFactory.newPageCreator(resourceRegistry);
          String result =
             page.generatePage(appPage, new ClassBasedResourceToken("sprintTemplate.html", SprintPageBuilder.class));
@@ -512,13 +516,12 @@ public class AgileEndpointImpl implements AgileEndpointApi {
             stored = values.iterator().next().equals("stored");
          }
       }
-      IAgileSprint sprint = atsServer.getAgileService().getAgileSprint(sprintId);
+      IAgileSprint sprint = atsApi.getAgileService().getAgileSprint(sprintId);
       Conditions.assertNotNull(sprint, "Invalid Sprint %s", sprintId);
       if ((best && sprint.isCompletedOrCancelled()) || stored) {
-         ArtifactToken rptArt = atsServer.getRelationResolver().getChildNamedOrNull(sprint, agileReportType.name());
+         ArtifactToken rptArt = atsApi.getRelationResolver().getChildNamedOrNull(sprint, agileReportType.name());
          if (rptArt != null) {
-            return atsServer.getAttributeResolver().getSoleAttributeValue(rptArt, CoreAttributeTypes.NativeContent,
-               null);
+            return atsApi.getAttributeResolver().getSoleAttributeValue(rptArt, CoreAttributeTypes.NativeContent, null);
          }
          if (stored) {
             return AHTML.simplePage("Stored Summary Not Found");
@@ -531,7 +534,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @Override
    public AgileSprintData getSprintData(long teamId, long sprintId) {
       XResultData results = new XResultData();
-      AgileSprintData data = SprintUtil.getAgileSprintData(atsServer, teamId, sprintId, results);
+      AgileSprintData data = SprintUtil.getAgileSprintData(atsApi, teamId, sprintId, results);
       data.validate();
       return data;
    }
@@ -543,7 +546,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    public AgileSprintData updateSprint(@PathParam("teamId") long teamId, @PathParam("sprintId") long sprintId, AgileSprintData sprintData) {
       XResultData results = new XResultData();
-      AgileSprintData data = SprintUtil.updateAgileSprintData(atsServer, teamId, sprintId, sprintData, results);
+      AgileSprintData data = SprintUtil.updateAgileSprintData(atsApi, teamId, sprintId, sprintData, results);
       return data;
    }
 
@@ -554,7 +557,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
          if (Strings.isValid(report)) {
             return report;
          }
-         AgileSprintData sprintData = SprintUtil.getAgileSprintData(atsServer, teamId, sprintId, new XResultData());
+         AgileSprintData sprintData = SprintUtil.getAgileSprintData(atsApi, teamId, sprintId, new XResultData());
          XResultData results = sprintData.validate();
          if (results.isErrors()) {
             throw new OseeArgumentException(results.toString());
@@ -570,7 +573,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    // Sprint Burndown Data and UI
    @Override
    public ILineChart getSprintBurndownChartData(long teamId, long sprintId) {
-      SprintBurndownOperations op = new SprintBurndownOperations(atsServer);
+      SprintBurndownOperations op = new SprintBurndownOperations(atsApi);
       return op.getChartData(teamId, sprintId);
    }
 
@@ -580,7 +583,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       if (Strings.isValid(report)) {
          return report;
       }
-      SprintBurndownOperations op = new SprintBurndownOperations(atsServer);
+      SprintBurndownOperations op = new SprintBurndownOperations(atsApi);
       return op.getReportHtml(teamId, sprintId);
    }
 
@@ -589,7 +592,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
     */
    @Override
    public XResultData storeSprintReports(long teamId, long sprintId) {
-      return atsServer.getAgileService().storeSprintReports(teamId, sprintId);
+      return atsApi.getAgileService().storeSprintReports(teamId, sprintId);
    }
 
    @Override
@@ -598,32 +601,32 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       if (Strings.isValid(report)) {
          return report;
       }
-      SprintBurnupOperations op = new SprintBurnupOperations(atsServer);
+      SprintBurnupOperations op = new SprintBurnupOperations(atsApi);
       return op.getReportHtml(teamId, sprintId);
    }
 
    @Override
    public LineChart getSprintBurnupChartData(long teamId, long sprintId) {
-      SprintBurnupOperations op = new SprintBurnupOperations(atsServer);
+      SprintBurnupOperations op = new SprintBurnupOperations(atsApi);
       return op.getChartData(teamId, sprintId);
    }
 
    @Override
    public Response deleteSprint(long teamId, long sprintId) {
-      atsServer.getAgileService().deleteSprint(sprintId);
+      atsApi.getAgileService().deleteSprint(sprintId);
       return Response.ok().build();
    }
 
    @Override
    public List<AgileItem> getSprintItems(long teamId, long sprintId) {
       List<AgileItem> items = new LinkedList<>();
-      IAgileSprint sprint = atsServer.getAgileService().getAgileSprint(sprintId);
-      IAgileTeam team = atsServer.getAgileService().getAgileTeam(teamId);
-      IAgileBacklog backlog = atsServer.getAgileService().getAgileBacklog(team);
+      IAgileSprint sprint = atsApi.getAgileService().getAgileSprint(sprintId);
+      IAgileTeam team = atsApi.getAgileService().getAgileTeam(teamId);
+      IAgileBacklog backlog = atsApi.getAgileService().getAgileBacklog(team);
       if (sprint != null) {
          int x = 1;
-         for (IAgileItem aItem : atsServer.getAgileService().getItems(sprint)) {
-            AgileItem item = SprintUtil.getAgileItem(aItem, atsServer);
+         for (IAgileItem aItem : atsApi.getAgileService().getItems(sprint)) {
+            AgileItem item = SprintUtil.getAgileItem(aItem, atsApi);
             item.setOrder(x++);
             item.setSprint(sprint.getName());
             if (backlog != null) {
@@ -637,7 +640,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
 
    @Override
    public JaxKbSprint getSprintItemsForKb(long teamId, long sprintId) {
-      return KanbanOperations.getSprintItemsForKb(atsServer, teamId, sprintId);
+      return KanbanOperations.getSprintItemsForKb((IAtsServer) atsApi, teamId, sprintId);
    }
 
    /********************************
@@ -664,14 +667,13 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       if (uuid == null || uuid <= 0) {
          uuid = Lib.generateArtifactIdAsInt();
       }
-      ArtifactReadable teamArt = atsServer.getArtifact(newBacklog.getTeamUuid());
-      if (!teamArt.getRelated(AtsRelationTypes.AgileTeamToBacklog_Backlog).isEmpty()) {
+      ArtifactToken teamArt = atsApi.getArtifact(newBacklog.getTeamUuid());
+      if (!atsApi.getRelationResolver().getRelated(teamArt, AtsRelationTypes.AgileTeamToBacklog_Backlog).isEmpty()) {
          new OseeWebApplicationException(Status.BAD_REQUEST, "Backlog already set for team %s",
             teamArt.toStringWithId());
       }
 
-      backlog =
-         atsServer.getAgileService().createAgileBacklog(newBacklog.getTeamUuid(), newBacklog.getName(), guid, uuid);
+      backlog = atsApi.getAgileService().createAgileBacklog(newBacklog.getTeamUuid(), newBacklog.getName(), guid, uuid);
       JaxAgileBacklog created = toJaxBacklog(backlog);
       UriBuilder builder = uriInfo.getRequestUriBuilder();
       URI location = builder.path("teams").path(String.valueOf(backlog.getTeamUuid())).path("backlog").build();
@@ -680,7 +682,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
 
    @Override
    public Response updateBacklog(long teamId, JaxAgileBacklog newBacklog) {
-      IAgileBacklog backlog = atsServer.getAgileService().updateAgileBacklog(newBacklog);
+      IAgileBacklog backlog = atsApi.getAgileService().updateAgileBacklog(newBacklog);
 
       JaxAgileBacklog created = toJaxBacklog(backlog);
       UriBuilder builder = uriInfo.getRequestUriBuilder();
@@ -693,7 +695,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       if (teamId <= 0) {
          throw new OseeWebApplicationException(Status.NOT_FOUND, "teamId is not valid");
       }
-      IAgileBacklog backlog = atsServer.getAgileService().getBacklogForTeam(teamId);
+      IAgileBacklog backlog = atsApi.getAgileService().getBacklogForTeam(teamId);
       if (backlog != null) {
          return toJaxBacklog(backlog);
       }
@@ -705,21 +707,21 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       if (teamId <= 0) {
          throw new OseeWebApplicationException(Status.NOT_FOUND, "teamId is not valid");
       }
-      ArtifactToken token = atsServer.getQueryService().getArtifactToken(teamId);
+      ArtifactToken token = atsApi.getQueryService().getArtifactToken(teamId);
       return toAtsObjToken(token);
    }
 
    @Override
    public List<AgileItem> getBacklogItems(long teamId) {
       List<AgileItem> items = new LinkedList<>();
-      IAgileTeam team = atsServer.getAgileService().getAgileTeam(teamId);
-      IAgileBacklog backlog = atsServer.getAgileService().getAgileBacklog(team);
+      IAgileTeam team = atsApi.getAgileService().getAgileTeam(teamId);
+      IAgileBacklog backlog = atsApi.getAgileService().getAgileBacklog(team);
       if (backlog != null) {
          int x = 1;
-         for (IAgileItem aItem : atsServer.getAgileService().getItems(backlog)) {
-            AgileItem item = SprintUtil.getAgileItem(aItem, atsServer);
+         for (IAgileItem aItem : atsApi.getAgileService().getItems(backlog)) {
+            AgileItem item = SprintUtil.getAgileItem(aItem, atsApi);
             item.setOrder(x++);
-            IAgileSprint sprint = atsServer.getAgileService().getSprint(aItem);
+            IAgileSprint sprint = atsApi.getAgileService().getSprint(aItem);
             if (sprint != null) {
                item.setSprint(sprint.getName());
             }
@@ -749,7 +751,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
          throw new OseeWebApplicationException(Status.NOT_FOUND, "itemUuid is not valid");
       }
 
-      AgileWriterResult result = atsServer.getAgileService().updateAgileItem(newItem);
+      AgileWriterResult result = atsApi.getAgileService().updateAgileItem(newItem);
       JaxAgileItem item = new JaxAgileItem();
       item.getUuids().addAll(result.getJaxAgileItem().getUuids());
       item.getFeatures().addAll(result.getJaxAgileItem().getFeatures());
@@ -760,7 +762,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
 
    @Override
    public AgileWriterResult updateItems(JaxAgileItem newItem) {
-      AgileWriterResult result = atsServer.getAgileService().updateAgileItem(newItem);
+      AgileWriterResult result = atsApi.getAgileService().updateAgileItem(newItem);
       JaxAgileItem item = new JaxAgileItem();
       item.getUuids().addAll(result.getJaxAgileItem().getUuids());
       item.getFeatures().addAll(result.getJaxAgileItem().getFeatures());
@@ -774,30 +776,30 @@ public class AgileEndpointImpl implements AgileEndpointApi {
     ***********************************/
    @Override
    public JaxAtsObjects getSprintItemsAsJax(long teamId, long sprintId) {
-      ArtifactReadable sprintArt = atsServer.getArtifact(sprintId);
+      ArtifactToken sprintArt = atsApi.getArtifact(sprintId);
       JaxAtsObjects objs = new JaxAtsObjects();
-      for (IAtsWorkItem workItem : atsServer.getWorkItemFactory().getWorkItems(
-         sprintArt.getRelated(AtsRelationTypes.AgileSprintToItem_AtsItem).getList())) {
+      for (IAtsWorkItem workItem : atsApi.getWorkItemFactory().getWorkItems(
+         atsApi.getRelationResolver().getRelated(sprintArt, AtsRelationTypes.AgileSprintToItem_AtsItem))) {
          objs.getAtsObjects().add(JaxAtsObjects.create(workItem));
       }
       return objs;
    }
 
    public Collection<IAtsWorkItem> getSprintWorkItems(long teamId, long sprintId) {
-      ArtifactReadable sprintArt = atsServer.getArtifact(sprintId);
-      return atsServer.getWorkItemFactory().getWorkItems(
-         sprintArt.getRelated(AtsRelationTypes.AgileSprintToItem_AtsItem).getList());
+      ArtifactToken sprintArt = atsApi.getArtifact(sprintId);
+      return atsApi.getWorkItemFactory().getWorkItems(
+         atsApi.getRelationResolver().getRelated(sprintArt, AtsRelationTypes.AgileSprintToItem_AtsItem));
    }
 
    @Override
    public Response getSprintItemsUI(long teamId, long sprintId) {
-      ArtifactReadable sprintArt = atsServer.getArtifact(sprintId);
+      ArtifactToken sprintArt = atsApi.getArtifact(sprintId);
       Conditions.assertNotNull(sprintArt, "Sprint not found with id %s", sprintId);
       Collection<IAtsWorkItem> myWorldItems = getSprintWorkItems(teamId, sprintId);
       CustomizeData custData = getDefaultAgileCustData();
       Conditions.assertNotNull(custData, "Can't retrieve default customization");
-      String table =
-         WorldResource.getCustomizedTable(atsServer, "Sprint - " + sprintArt.getName(), custData, myWorldItems);
+      String table = WorldResource.getCustomizedTable((IAtsServer) atsApi, "Sprint - " + sprintArt.getName(), custData,
+         myWorldItems);
       return Response.ok().entity(table).build();
    }
 
@@ -816,13 +818,13 @@ public class AgileEndpointImpl implements AgileEndpointApi {
 
    @Override
    public Response getSprintItemsUICustomized(long teamId, long sprintId, String customizeGuid) {
-      ArtifactReadable sprintArt = atsServer.getArtifact(sprintId);
+      ArtifactToken sprintArt = atsApi.getArtifact(sprintId);
       Conditions.assertNotNull(sprintArt, "Sprint not found with id %s", sprintId);
       Collection<IAtsWorkItem> myWorldItems = getSprintWorkItems(teamId, sprintId);
-      CustomizeData custData = atsServer.getCustomizationByGuid(customizeGuid);
+      CustomizeData custData = ((IAtsServer) atsApi).getCustomizationByGuid(customizeGuid);
       Conditions.assertNotNull(custData, "Can't retrieve customization with id %s", customizeGuid);
-      String table =
-         WorldResource.getCustomizedTable(atsServer, "Sprint - " + sprintArt.getName(), custData, myWorldItems);
+      String table = WorldResource.getCustomizedTable(((IAtsServer) atsApi), "Sprint - " + sprintArt.getName(),
+         custData, myWorldItems);
       return Response.ok().entity(table).build();
    }
 
@@ -830,24 +832,24 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @PUT
    @Path("item/{itemId}/feature")
    public Response addFeatureGroup(@PathParam("itemId") long itemId, String featureGroupName) {
-      ArtifactReadable itemArt = atsServer.getArtifact(itemId);
+      ArtifactToken itemArt = atsApi.getArtifact(itemId);
       Conditions.assertNotNull(itemArt, "Work Item not found with id %s", itemId);
-      IAgileItem item = atsServer.getWorkItemFactory().getAgileItem(itemArt);
+      IAgileItem item = atsApi.getWorkItemFactory().getAgileItem(itemArt);
       boolean found = false;
       // check to make sure item is not already related
-      for (IAgileFeatureGroup feature : atsServer.getAgileService().getFeatureGroups(item)) {
+      for (IAgileFeatureGroup feature : atsApi.getAgileService().getFeatureGroups(item)) {
          if (feature.getName().equals(featureGroupName)) {
             found = true;
             break;
          }
       }
       if (!found) {
-         IAgileTeam team = atsServer.getAgileService().getAgileTeam(item);
+         IAgileTeam team = atsApi.getAgileService().getAgileTeam(item);
          for (ArtifactReadable featureArt : ((ArtifactReadable) team.getStoreObject()).getRelated(
             AtsRelationTypes.AgileTeamToFeatureGroup_FeatureGroup)) {
             if (featureArt.getName().equals(featureGroupName)) {
                IAtsChangeSet changes =
-                  atsServer.createChangeSet("Add Feature Group to WorkItem", AtsCoreUsers.SYSTEM_USER);
+                  atsApi.createChangeSet("Add Feature Group to WorkItem", AtsCoreUsers.SYSTEM_USER);
                changes.relate(featureArt, AtsRelationTypes.AgileFeatureToItem_AtsItem, item);
                changes.execute();
                return Response.ok().build();
@@ -861,10 +863,10 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @PUT
    @Path("item/{itemId}/unplanned")
    public Response setUnPlanned(@PathParam("itemId") long itemId, boolean unPlanned) {
-      ArtifactReadable itemArt = atsServer.getArtifact(itemId);
+      ArtifactToken itemArt = atsApi.getArtifact(itemId);
       Conditions.assertNotNull(itemArt, "Work Item not found with id %s", itemId);
-      IAgileItem item = atsServer.getWorkItemFactory().getAgileItem(itemArt);
-      IAtsChangeSet changes = atsServer.createChangeSet("Set Agile UnPlanned", AtsCoreUsers.SYSTEM_USER);
+      IAgileItem item = atsApi.getWorkItemFactory().getAgileItem(itemArt);
+      IAtsChangeSet changes = atsApi.createChangeSet("Set Agile UnPlanned", AtsCoreUsers.SYSTEM_USER);
       changes.setSoleAttributeValue(item, AtsAttributeTypes.UnPlannedWork, unPlanned);
       changes.execute();
       return Response.ok().build();
@@ -874,12 +876,12 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @PUT
    @Path("item/{itemId}/points")
    public Response setPoints(@PathParam("itemId") long itemId, String points) {
-      ArtifactReadable itemArt = atsServer.getArtifact(itemId);
+      ArtifactToken itemArt = atsApi.getArtifact(itemId);
       Conditions.assertNotNull(itemArt, "Work Item not found with id %s", itemId);
-      IAgileItem item = atsServer.getWorkItemFactory().getAgileItem(itemArt);
-      IAgileTeam team = atsServer.getAgileService().getAgileTeam(item);
-      AttributeTypeId agileTeamPointsAttributeType = atsServer.getAgileService().getAgileTeamPointsAttributeType(team);
-      IAtsChangeSet changes = atsServer.createChangeSet("Set Points", AtsCoreUsers.SYSTEM_USER);
+      IAgileItem item = atsApi.getWorkItemFactory().getAgileItem(itemArt);
+      IAgileTeam team = atsApi.getAgileService().getAgileTeam(item);
+      AttributeTypeId agileTeamPointsAttributeType = atsApi.getAgileService().getAgileTeamPointsAttributeType(team);
+      IAtsChangeSet changes = atsApi.createChangeSet("Set Points", AtsCoreUsers.SYSTEM_USER);
       changes.setSoleAttributeValue(item, agileTeamPointsAttributeType, points);
       changes.execute();
       return Response.ok().build();
@@ -899,10 +901,11 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    }
 
    private IAgileSprint getSingleOrFirstSprint(long teamId) {
-      ArtifactReadable artifact = atsServer.getArtifact(teamId);
+      ArtifactToken artifact = atsApi.getArtifact(teamId);
       if (artifact != null) {
-         for (ArtifactReadable sprintArt : artifact.getRelated(AtsRelationTypes.AgileTeamToSprint_Sprint)) {
-            IAgileSprint sprint = atsServer.getWorkItemFactory().getAgileSprint(sprintArt);
+         for (ArtifactToken sprintArt : atsApi.getRelationResolver().getRelated(artifact,
+            AtsRelationTypes.AgileTeamToSprint_Sprint)) {
+            IAgileSprint sprint = atsApi.getWorkItemFactory().getAgileSprint(sprintArt);
             if (sprint.isInWork()) {
                return sprint;
             }

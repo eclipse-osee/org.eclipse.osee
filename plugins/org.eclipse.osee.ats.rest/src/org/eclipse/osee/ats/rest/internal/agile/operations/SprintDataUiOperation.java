@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.rest.internal.agile.operations;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.agile.AgileReportType;
 import org.eclipse.osee.ats.api.agile.IAgileSprintHtmlOperation;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.agile.AgileEndpointImpl;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 
@@ -32,7 +31,7 @@ public class SprintDataUiOperation implements IAgileSprintHtmlOperation {
 
    @Override
    public String getReportHtml(long teamId, long sprintId) {
-      AgileEndpointImpl agileEp = new AgileEndpointImpl((IAtsServer) atsApi, registry, null);
+      AgileEndpointImpl agileEp = new AgileEndpointImpl(atsApi, registry, null, null);
       return agileEp.getSprintDataTable(teamId, sprintId);
    }
 
