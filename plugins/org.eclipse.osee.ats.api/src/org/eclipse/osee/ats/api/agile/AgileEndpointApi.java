@@ -22,6 +22,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.api.agile.kanban.JaxKbSprint;
+import org.eclipse.osee.ats.api.agile.sprint.SprintConfigurations;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.util.ILineChart;
@@ -128,10 +129,21 @@ public interface AgileEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    public AgileSprintData updateSprint(@PathParam("teamId") long teamId, @PathParam("sprintId") long sprintId, AgileSprintData sprintData);
 
+   @POST
+   @Path("team/{teamId}/sprint/{sprintId}/config")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public SprintConfigurations updateSprintConfig(@PathParam("teamId") long teamId, @PathParam("sprintId") long sprintId, SprintConfigurations sprintConfig);
+
    @GET
    @Path("team/{teamId}/sprint/{sprintId}/kb")
    @Produces(MediaType.APPLICATION_JSON)
    public JaxKbSprint getSprintItemsForKb(@PathParam("teamId") long teamId, @PathParam("sprintId") long sprintId);
+
+   @GET
+   @Path("team/{teamId}/sprint/{sprintId}/config")
+   @Produces(MediaType.APPLICATION_JSON)
+   public SprintConfigurations getSprintConfig(@PathParam("teamId") long teamId, @PathParam("sprintId") long sprintId);
 
    @GET
    @Path("team/{teamId}/sprintcurrent")

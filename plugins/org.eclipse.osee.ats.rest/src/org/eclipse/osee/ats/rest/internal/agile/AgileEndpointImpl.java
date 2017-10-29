@@ -57,6 +57,7 @@ import org.eclipse.osee.ats.api.agile.JaxNewAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileSprint;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileTeam;
 import org.eclipse.osee.ats.api.agile.kanban.JaxKbSprint;
+import org.eclipse.osee.ats.api.agile.sprint.SprintConfigurations;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -76,6 +77,7 @@ import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.util.chart.LineChart;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.agile.operations.KanbanOperations;
+import org.eclipse.osee.ats.rest.internal.agile.operations.SprintConfigOperations;
 import org.eclipse.osee.ats.rest.internal.query.TokenSearchOperations;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.ats.rest.internal.world.WorldResource;
@@ -551,6 +553,17 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    }
 
    @Override
+   @POST
+   @Path("team/{teamId}/sprint/{sprintId}/config")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public SprintConfigurations updateSprintConfig(@PathParam("teamId") long teamId, @PathParam("sprintId") long sprintId, SprintConfigurations sprintConfig) {
+      SprintConfigOperations ops = new SprintConfigOperations(atsApi);
+      ops.update(sprintConfig);
+      return sprintConfig;
+   }
+
+   @Override
    public String getSprintDataTable(long teamId, long sprintId) {
       try {
          String report = getBestOrStored(sprintId, AgileReportType.Data_Table, uriInfo);
@@ -641,6 +654,12 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @Override
    public JaxKbSprint getSprintItemsForKb(long teamId, long sprintId) {
       return KanbanOperations.getSprintItemsForKb((IAtsServer) atsApi, teamId, sprintId);
+   }
+
+   @Override
+   public SprintConfigurations getSprintConfig(long teamId, long sprintId) {
+      SprintConfigOperations ops = new SprintConfigOperations(atsApi);
+      return ops.get(ArtifactId.valueOf(sprintId));
    }
 
    /********************************

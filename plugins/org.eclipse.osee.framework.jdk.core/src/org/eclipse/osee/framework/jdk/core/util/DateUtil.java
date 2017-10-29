@@ -27,6 +27,7 @@ public class DateUtil {
    public final static String MMDDYY = "MM/dd/yyyy";
    public final static String YYYYMMDD = "yyyy/MM/dd";
    public final static String YYYY_MM_DD = "yyyy_MM_dd";
+   public final static String YYYY_MM_DD_WITH_DASHES = "yyyy-MM-dd";
    public final static String MMDDYYHHMM = "MM/dd/yyyy hh:mm a";
    public final static String HHMMSS = "hh:mm:ss";
    public final static String HHMMSSSS = "hh:mm:ss:SS";

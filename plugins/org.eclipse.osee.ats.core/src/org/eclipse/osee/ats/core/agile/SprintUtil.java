@@ -121,8 +121,7 @@ public class SprintUtil {
       item.setAssignees(Collections.toString("; ", aItem.getStateMgr().getAssigneesStr()));
       item.setAtsId(aItem.getAtsId());
       item.setState(aItem.getStateMgr().getCurrentStateName());
-      item.setChangeType(
-         atsApi.getAttributeResolver().getSoleAttributeValue(aItem, AtsAttributeTypes.ChangeType, ""));
+      item.setChangeType(atsApi.getAttributeResolver().getSoleAttributeValue(aItem, AtsAttributeTypes.ChangeType, ""));
       IAtsVersion ver = atsApi.getVersionService().getTargetedVersion(aItem);
       item.setVersion(ver == null ? "" : ver.getName());
       Boolean unplanned =
@@ -134,4 +133,5 @@ public class SprintUtil {
       item.setLink("/ats/ui/action/" + item.getAtsId());
       return item;
    }
+
 }

@@ -14,11 +14,13 @@ angular.module('AgileApp').factory('AgileEndpoint',
 			var workPackageResource = $resource('/ats/agile/team/:teamid/workpackage');
 			var featureSingleResource = $resource('/ats/agile/team/:teamid/feature/:featureid');
 			var sprintResource = $resource('/ats/agile/team/:teamid/sprint');
+			var sprintConfigResource = $resource('/ats/agile/team/:teamid/sprint/:sprintid/config');
 			var sprintTokenResource = $resource('/ats/agile/team/:teamid/sprint/token');
 			var sprintCurrentResource = $resource('/ats/agile/team/:teamid/sprintcurrent');
 			var sprintSingleResource = $resource('/ats/agile/team/:teamid/sprint/:sprintid');
 			var sprintForKbResource = $resource('/ats/agile/team/:teamid/sprint/:sprintid/kb');
 			var sprintItemsResource = $resource('/ats/agile/team/:teamid/sprint/:sprintid/item');
+			var sprintConfigResource = $resource('/ats/agile/team/:teamid/sprint/:sprintid/config');
 			var backlogTokenResource = $resource('/ats/agile/team/:teamid/backlog/token');
 			var backlogResource = $resource('/ats/agile/team/:teamid/backlog');
 			var backlogItemsResource = $resource('/ats/agile/team/:teamid/backlog/item');
@@ -144,8 +146,16 @@ angular.module('AgileApp').factory('AgileEndpoint',
 				return sprintItemsResource.query({teamid: team.id, sprintid:sprint.id})
 			}
 
+			factory.getSprintConfig = function(team, sprint) {
+				return sprintConfigResource.get({teamid: team.id, sprintid:sprint.id})
+			}
+
 			factory.updateSprint = function(team, sprint) {
 				return sprintSingleResource.save({teamid:team.id, sprintid:sprint.id}, sprint)
+			}
+
+			factory.updateSprintConfig = function(team, sprint) {
+				return sprintConfigResource.save({teamid:team.id, sprintid:sprint.id}, sprint.config)
 			}
 
 			// ////////////////////////////////////

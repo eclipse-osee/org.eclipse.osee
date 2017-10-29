@@ -130,17 +130,21 @@ angular
 												});
 									} else {
 										AgileEndpoint.getSprintItems($scope.team, selected).$promise
-												.then(function(data) {
-													var result = data;
-													if (result && result.length == 0) {
-														$scope.notasks = true;
-													} else {
-														$scope.tasks = data;
-														$scope.count = $scope.tasks.length;
-														LayoutService.resizeElementHeight("taskTable");
-														LayoutService.refresh();
-													}
-												});
+											.then(function(data) {
+												var result = data;
+												if (result && result.length == 0) {
+													$scope.notasks = true;
+												} else {
+													$scope.tasks = data;
+													$scope.count = $scope.tasks.length;
+													LayoutService.resizeElementHeight("taskTable");
+													LayoutService.refresh();
+												}
+											});
+										AgileEndpoint.getSprintConfig($scope.team, selected).$promise
+											.then(function(data) {
+												$scope.sprint.config = data;
+											});
 									}
 								}
 							}
@@ -155,14 +159,17 @@ angular
 							});
 
 							// Only available and called when sprint is selected
-							$scope.updateSprint = function() {
+							$scope.updateSprintConfig = function() {
 								try {
 								 $scope.sprint.id = $scope.selectedItem.id;
-								 AgileEndpoint.updateSprint($scope.team, $scope.sprint).$promise
+								 AgileEndpoint.updateSprintConfig($scope.team, $scope.sprint).$promise
 										.then(function(data) {
 											if (data.results.numErrors > 0) {
 												alert(data.results.results);
-											} 
+											} else {
+												$scope.sprint.config = data;
+												alert("configuration saved");
+											}
 										}).catch((err) => {
 											alert(err);
 										});
