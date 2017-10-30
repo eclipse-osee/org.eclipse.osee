@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server;
 
-import java.net.URI;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -35,7 +34,9 @@ public interface IApplicationServerManager {
 
    String getId();
 
-   URI getServerUri();
+   String getServerUri();
+
+   int getPort();
 
    Date getDateStarted();
 

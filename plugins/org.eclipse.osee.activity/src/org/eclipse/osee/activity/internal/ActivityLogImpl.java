@@ -42,15 +42,14 @@ import org.eclipse.osee.framework.core.data.ActivityTypeId;
 import org.eclipse.osee.framework.core.data.ActivityTypeToken;
 import org.eclipse.osee.framework.core.data.CoreActivityTypes;
 import org.eclipse.osee.framework.core.data.OrcsTypesData;
-import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.SystemUser;
+import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.jdk.core.type.DrainingIterator;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.Network;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.logger.Log;
@@ -110,6 +109,11 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
    private volatile long lastFlushTime;
    private volatile int cleanerKeepDays;
    private volatile boolean enabled = ActivityConstants.DEFAULT_ACTIVITY_LOGGER__ENABLED;
+   private IApplicationServerManager applicationServerManager;
+
+   public void setApplicationServerManager(IApplicationServerManager applicationServerManager) {
+      this.applicationServerManager = applicationServerManager;
+   }
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -137,19 +141,8 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
    }
 
    private Void continuouslyLogThreadActivity() {
-      String portString = System.getProperty(OseeClient.OSGI_HTTP_PORT);
-      Long port;
-      try {
-         port = Long.valueOf(portString);
-      } catch (Exception ex) {
-         port = Id.SENTINEL;
-      }
-      String host = "";
-      try {
-         host = Network.getValidIP().getCanonicalHostName();
-      } catch (UnknownHostException ex) {
-         logger.warn(ex, "Error getting host for start of tread activity logging");
-      }
+      Long port = (long) applicationServerManager.getPort();
+      String host = applicationServerManager.getServerUri().toString();
       Long threadActivityParententryId = createActivityThread(THREAD_ACTIVITY, SystemUser.OseeSystem, port,
          DEFAULT_CLIENT_ID, "Start of thread activity logging thread on " + host);
 

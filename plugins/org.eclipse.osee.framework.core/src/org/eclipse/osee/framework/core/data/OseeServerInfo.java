@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.core.data;
 
 import java.io.InputStream;
-import java.net.URI;
 import java.sql.Timestamp;
 
 /**
@@ -25,18 +24,20 @@ public class OseeServerInfo extends BaseExchangeData {
    private static final String DATE_CREATED = "creationDate";
    private static final String SERVER_ID = "serverId";
    protected static final String IS_ACCEPTING_REQUESTS = "isAcceptingRequests";
+   private int port;
 
    public OseeServerInfo() {
       super();
    }
 
-   public OseeServerInfo(String serverId, String uri, String[] version, Timestamp dateStarted, boolean isAcceptingRequests) {
+   public OseeServerInfo(String serverId, String uri, int port, String[] version, Timestamp dateStarted, boolean isAcceptingRequests) {
       this();
       this.backingData.put(SERVER_ID, serverId);
       this.backingData.put(SERVER_URI, uri);
       this.backingData.put(VERSION, version);
       this.backingData.put(DATE_CREATED, dateStarted.getTime());
       this.backingData.put(IS_ACCEPTING_REQUESTS, isAcceptingRequests);
+      this.port = port;
    }
 
    /**
@@ -50,9 +51,8 @@ public class OseeServerInfo extends BaseExchangeData {
     * @return the server uri
     */
 
-   public URI getUri() {
-      String serverUri = getString(SERVER_URI);
-      return URI.create(serverUri);
+   public String getUri() {
+      return getString(SERVER_URI);
    }
 
    /**
@@ -79,7 +79,7 @@ public class OseeServerInfo extends BaseExchangeData {
 
    /**
     * Create new instance from XML input
-    * 
+    *
     * @param OseeServerInfo the new instance
     */
    public static OseeServerInfo fromXml(InputStream inputStream) {
@@ -88,4 +88,7 @@ public class OseeServerInfo extends BaseExchangeData {
       return serverInfo;
    }
 
+   public int getPort() {
+      return port;
+   }
 }

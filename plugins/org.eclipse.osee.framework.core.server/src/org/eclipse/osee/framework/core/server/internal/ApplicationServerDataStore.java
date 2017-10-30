@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server.internal;
 
-import java.net.URI;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -94,8 +93,7 @@ public class ApplicationServerDataStore {
       private void create(JdbcConnection connection) {
          List<Object[]> insertData = new ArrayList<>();
          String serverId = data.getServerId();
-         URI serverUri = data.getUri();
-         String uri = serverUri.toString();
+         String uri = data.getUri();
          Timestamp dateStarted = data.getDateStarted();
          int acceptingRequests = data.isAcceptingRequests() ? 1 : 0;
 

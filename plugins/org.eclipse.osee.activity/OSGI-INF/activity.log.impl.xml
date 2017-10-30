@@ -8,6 +8,7 @@
    <reference bind="setExecutorAdmin" cardinality="1..1" interface="org.eclipse.osee.executor.admin.ExecutorAdmin" name="ExecutorAdmin" policy="static"/>
    <reference bind="setActivityStorage" cardinality="1..1" interface="org.eclipse.osee.activity.ActivityStorage" name="ActivityStorage" policy="static"/>
    <reference bind="setSystemPreferences" cardinality="1..1" interface="org.eclipse.osee.orcs.SystemPreferences" name="SystemPreferences" policy="static"/>
+   <reference bind="setApplicationServerManager" cardinality="1..1" interface="org.eclipse.osee.framework.core.server.IApplicationServerManager" name="IApplicationServerManager" policy="static"/>
    <property name="osee.activity.log.executor.pool.size" type="Integer" value="1"/>
    <property name="osee.activity.log.stacktrace.line.count" type="Integer" value="5"/>
    <property name="osee.activity.log.write.rate.millis" type="Long" value="3000"/>

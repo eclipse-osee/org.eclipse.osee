@@ -132,7 +132,7 @@ public class ApplicationServerManager implements IApplicationServerManager {
       } catch (Exception ex) {
          logger.error(ex, "Error generating application server id");
       }
-      return new OseeServerInfo(checkSum, uri == null ? null : uri.toString(), defaultVersions,
+      return new OseeServerInfo(checkSum, uri == null ? null : uri.toString(), port, defaultVersions,
          GlobalTime.GreenwichMeanTimestamp(), false);
    }
 
@@ -245,8 +245,13 @@ public class ApplicationServerManager implements IApplicationServerManager {
    }
 
    @Override
-   public URI getServerUri() {
+   public String getServerUri() {
       return getApplicationServerInfo().getUri();
+   }
+
+   @Override
+   public int getPort() {
+      return getApplicationServerInfo().getPort();
    }
 
    @Override
