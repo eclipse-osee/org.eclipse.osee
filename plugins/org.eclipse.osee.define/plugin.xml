@@ -291,4 +291,16 @@
           className="org.eclipse.osee.define.blam.operation.FindErroneousEmbeddedLinksBlam">
     </Operation>
  </extension>
+ <extension
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.define.blam.operation.FindDuplicateArtifactNames">
+    </Operation>
+ </extension>
+ <extension
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.define.blam.operation.FindMissingOrUnspecifiedAttributes">
+    </Operation>
+ </extension>
 </plugin>
