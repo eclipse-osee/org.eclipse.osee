@@ -83,7 +83,6 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
 
    public static String PLUGIN_ID = "org.eclipse.osee.ats.rest";
-   private static AtsApi atsApi;
    private OrcsApi orcsApi;
    private AtsNotifierServiceImpl notifyService;
    private AtsNotificationEventProcessor notificationEventProcessor;
@@ -96,11 +95,6 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
       new ConcurrentHashMap<String, IAtsDatabaseConversion>();
    private AtsConfigEndpointImpl configurationEndpoint;
    private AtsActionEndpointApi actionEndpoint;
-
-   public AtsServerImpl() {
-      super();
-      atsApi = this;
-   }
 
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -492,18 +486,14 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
       return System.getProperty("OseeApplicationServer");
    }
 
-   public static AtsApi get() {
-      return atsApi;
-   }
-
    @Override
    public IAtsTeamWorkflow getTeamWf(ArtifactId artifact) {
-      return getWorkItemFactory().getTeamWf(atsApi.getArtifact(artifact));
+      return getWorkItemFactory().getTeamWf(getArtifact(artifact));
    }
 
    @Override
    public IAtsTeamWorkflow getTeamWf(Long id) {
-      return getWorkItemFactory().getTeamWf(atsApi.getArtifact(id));
+      return getWorkItemFactory().getTeamWf(getArtifact(id));
    }
 
    @Override

@@ -492,7 +492,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
          }
          ArtifactReadable team = atsServer.getArtifact(teamId);
          IAgileSprint sprint = atsServer.getAgileService().getAgileSprint(sprintId);
-         SprintPageBuilder page = new SprintPageBuilder(team, (ArtifactReadable) sprint.getStoreObject());
+         SprintPageBuilder page = new SprintPageBuilder(team, (ArtifactReadable) sprint.getStoreObject(), atsServer);
          PageCreator appPage = PageFactory.newPageCreator(resourceRegistry);
          String result =
             page.generatePage(appPage, new ClassBasedResourceToken("sprintTemplate.html", SprintPageBuilder.class));

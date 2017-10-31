@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.AtsApplication;
-import org.eclipse.osee.ats.rest.internal.AtsServerImpl;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -107,9 +106,4 @@ public class RestUtil {
    public static Response returnInternalServerError(String message) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).entity(message).build();
    }
-
-   public static String resolveAjaxToBaseApplicationServer(String html) {
-      return AtsUtilCore.resolveAjaxToBaseApplicationServer(html, AtsServerImpl.get());
-   }
-
 }

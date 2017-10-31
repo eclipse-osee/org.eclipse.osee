@@ -15,9 +15,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.rest.internal.util.RestUtil;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResourceToken;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -41,10 +42,12 @@ public class SprintPageBuilder {
    private int numActionsBacklog = 0;
    TreeMap<String, FeatureGroupSum> featureSums = new TreeMap<>();
    private final ArtifactReadable team;
+   private final AtsApi atsApi;
 
-   public SprintPageBuilder(ArtifactReadable team, ArtifactReadable sprint) {
+   public SprintPageBuilder(ArtifactReadable team, ArtifactReadable sprint, AtsApi atsApi) {
       this.team = team;
       this.sprint = sprint;
+      this.atsApi = atsApi;
    }
 
    public String generatePage(PageCreator page, ResourceToken token) {
@@ -61,7 +64,7 @@ public class SprintPageBuilder {
       page.addKeyValuePairs("numActionsBacklog", getNumActionsBacklog());
       page.addKeyValuePairs("tableContent", getTable());
       String html = page.realizePage(token);
-      html = RestUtil.resolveAjaxToBaseApplicationServer(html);
+      html = AtsUtilCore.resolveAjaxToBaseApplicationServer(html, atsApi);
       return html;
    }
 
