@@ -8,13 +8,14 @@ angular
 				[
 						'$scope',
 						'AgileEndpoint',
+						'Menu',
 						'$resource',
 						'$window',
 						'$modal',
 						'$filter',
 						'$routeParams',
 						'LayoutService',
-						function($scope, AgileEndpoint, $resource, $window,
+						function($scope, AgileEndpoint, Menu, $resource, $window,
 								$modal, $filter, $routeParams, LayoutService) {
 
 							$scope.team = {};
@@ -48,6 +49,16 @@ angular
 										});
 							}
 
+							// Copied through all controlers; ensure all are same
+							$scope.openBacklogForTeam = Menu.openBacklogForTeam;
+							$scope.openSprintForTeam = Menu.openSprintForTeam;
+							$scope.openKanbanForTeam = Menu.openKanbanForTeam;
+							$scope.openNewTaskForTeam = Menu.openNewTaskForTeam;
+							$scope.openBurndownForTeam = Menu.openBurndownForTeam;
+							$scope.openBurnupForTeam = Menu.openBurnupForTeam;
+							$scope.openSummaryForTeam = Menu.openSummaryForTeam;
+							$scope.openDataForTeam = Menu.openDataForTeam;
+							
 							$scope.updateReports();
 
 						} ]);

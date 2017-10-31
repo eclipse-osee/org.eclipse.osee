@@ -8,6 +8,7 @@ angular
 				[
 						'$scope',
 						'AgileEndpoint',
+						'Menu',
 						'Global',
 						'$resource',
 						'$window',
@@ -15,7 +16,7 @@ angular
 						'$filter',
 						'$routeParams',
 						'LayoutService',
-						function($scope, AgileEndpoint, Global, $resource,
+						function($scope, AgileEndpoint, Menu, Global, $resource,
 								$window, $modal, $filter, $routeParams,
 								LayoutService) {
 
@@ -160,65 +161,14 @@ angular
 
 							$scope.refresh();
 
-							// NOT COMMON MENU, MUST REFERENCE team and not
-							// $scope
-							$scope.openConfigForTeam = function(team) {
-								window.location.assign("main#/config?team="
-										.concat(team.id))
-							}
-
-							$scope.openKanbanForTeam = function(team) {
-								window.location.assign("main#/kanban?team="
-										.concat(team.id))
-							}
-
-							$scope.openBurndownForTeam = function(team) {
-								window.location
-										.assign("main#/report?team="
-												.concat(team.id)
-												.concat(
-														"&reporttype=burndown&reportname=Burn-Down"))
-							}
-
-							$scope.openBurnupForTeam = function(team) {
-								window.location
-										.assign("main#/report?team="
-												.concat(team.id)
-												.concat(
-														"&reporttype=burnup&reportname=Burn-Up"))
-							}
-
-							$scope.openBacklogForTeam = function(team) {
-								window.location.assign("main#/backlog?team="
-										.concat(team.id).concat(
-												"&default=backlog"))
-							}
-
-							$scope.openNewTaskForTeam = function(team) {
-								window.location.assign("main#/newTask?team="
-										.concat(team.id))
-							}
-
-							$scope.openSprintForTeam = function(team) {
-								window.location.assign("main#/sprint?team="
-										.concat(team.id).concat(
-												"&default=sprint"))
-							}
-
-							$scope.openSummaryForTeam = function(team) {
-								window.location
-										.assign("main#/report?team="
-												.concat(team.id)
-												.concat(
-														"&reporttype=summary&reportname=Summary"))
-							}
-
-							$scope.openDataForTeam = function(team) {
-								window.location
-										.assign("main#/report?team="
-												.concat(team.id)
-												.concat(
-														"&reporttype=data&reportname=Data"))
-							}
+							// Copied through all controlers; ensure all are same
+							$scope.openBacklogForTeam = Menu.openBacklogForTeam;
+							$scope.openSprintForTeam = Menu.openSprintForTeam;
+							$scope.openKanbanForTeam = Menu.openKanbanForTeam;
+							$scope.openNewTaskForTeam = Menu.openNewTaskForTeam;
+							$scope.openBurndownForTeam = Menu.openBurndownForTeam;
+							$scope.openBurnupForTeam = Menu.openBurnupForTeam;
+							$scope.openSummaryForTeam = Menu.openSummaryForTeam;
+							$scope.openDataForTeam = Menu.openDataForTeam;
 
 						} ]);
