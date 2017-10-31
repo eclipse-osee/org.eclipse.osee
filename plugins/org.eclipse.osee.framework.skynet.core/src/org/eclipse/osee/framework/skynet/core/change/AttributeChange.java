@@ -60,8 +60,8 @@ public final class AttributeChange extends Change {
       this.attrId = attrId;
       this.attributeType = attributeType;
       this.artModType = artModType;
-      this.isValue = null;
-      this.wasValue = null;
+      this.isValue = isValue;
+      this.wasValue = wasValue;
    }
 
    @Override
@@ -110,7 +110,7 @@ public final class AttributeChange extends Change {
 
    @Override
    public String getIsValue() {
-      if (isValue == null) {
+      if (isValue == null && wasIsProvider != null) {
          isValue = wasIsProvider.getIsValue();
       }
       return isValue != null ? isValue : "";
@@ -118,7 +118,7 @@ public final class AttributeChange extends Change {
 
    @Override
    public String getWasValue() {
-      if (wasValue == null) {
+      if (wasValue == null && wasIsProvider != null) {
          wasValue = wasIsProvider.getWasValue();
       }
       return wasValue != null ? wasValue : "";
