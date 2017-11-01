@@ -28,12 +28,15 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.config.JaxNamedId;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertion;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.api.insertion.JaxInsertion;
 import org.eclipse.osee.ats.api.insertion.JaxInsertionActivity;
+import org.eclipse.osee.ats.api.program.IAtsProgram;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.util.AbstractConfigResource;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -56,6 +59,20 @@ public class ProgramResource extends AbstractConfigResource {
 
    public ProgramResource(IAtsServer atsServer) {
       super(AtsArtifactTypes.Program, atsServer);
+   }
+
+   @GET
+   @Path("version")
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<JaxNamedId> getProgramsVersions() throws Exception {
+      List<JaxNamedId> programsVers = new LinkedList<>();
+      for (IAtsProgram program : atsServer.getProgramService().getPrograms()) {
+         for (IAtsVersion ver : atsServer.getProgramService().getVersions(program)) {
+            programsVers.add(
+               JaxNamedId.construct(ver.getId(), String.format("%s - %s", program.getName(), ver.getName())));
+         }
+      }
+      return programsVers;
    }
 
    @GET

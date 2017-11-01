@@ -181,10 +181,6 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       return states;
    }
 
-   /**
-    * @param ids (guid, atsId, long) of workItem
-    * @return html representation of the action
-    */
    @Override
    @Path("{actionId}/attributeType/{attrTypeId}")
    @GET
@@ -210,19 +206,13 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       return attribute;
    }
 
-   /**
-    * @param actionId (guid, atsId, long) of workItem
-    * @param attrTypeId can be the id of the attrType or one of (Title, Priority, ColorTeam, Assignee, IPT, Originator,
-    * Version, State). If State is sent in, it will result in the "transition" of the workflow.
-    * @return html representation of the action
-    */
    @Override
    @Path("{actionId}/attributeType/{attrTypeIdOrKey}")
    @PUT
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
    public Attribute setActionAttributeByType(@PathParam("actionId") String actionId, @PathParam("attrTypeIdOrKey") String attrTypeIdOrKey, List<String> values) {
-      Conditions.assertNotNullOrEmpty(values, "values can not be null or empty");
+      Conditions.assertNotNull(values, "values can not be null");
       IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItemByAnyId(actionId);
       IAtsChangeSet changes = atsApi.createChangeSet("set attr by type or key " + attrTypeIdOrKey);
       AttributeTypeId attrTypeId = null;
@@ -262,12 +252,38 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          if (!workItem.isTeamWorkflow()) {
             throw new OseeArgumentException("Not valid to set version for [%s]", workItem.getArtifactTypeName());
          }
-         String version = values.iterator().next();
-         if (Strings.isValid(version)) {
-            IAtsVersion currVersion = atsApi.getVersionService().getTargetedVersion(workItem);
-            if (!currVersion.getName().equals(version)) {
+         // If values emtpy, clear current version
+         IAtsVersion currVersion = atsApi.getVersionService().getTargetedVersion(workItem);
+         if (values.isEmpty() && currVersion != null) {
+            atsApi.getVersionService().removeTargetedVersion(workItem.getParentTeamWorkflow(), changes);
+         }
+         // If id, find matching id for this team
+         else if (Strings.isNumeric(values.iterator().next())) {
+            String version = values.iterator().next();
+            if (currVersion == null || !currVersion.getIdString().equals(version)) {
                IAtsVersion newVer = null;
-               IAtsTeamDefinition teamDef = workItem.getParentTeamWorkflow().getTeamDefinition();
+               IAtsTeamDefinition teamDef =
+                  workItem.getParentTeamWorkflow().getTeamDefinition().getTeamDefinitionHoldingVersions();
+               for (IAtsVersion teamDefVer : atsApi.getVersionService().getVersions(teamDef)) {
+                  if (teamDefVer.getIdString().equals(version)) {
+                     newVer = teamDefVer;
+                     break;
+                  }
+               }
+               if (newVer == null) {
+                  throw new OseeArgumentException("Version id [%s] not valid for team ", version,
+                     teamDef.toStringWithId());
+               }
+               atsApi.getVersionService().setTargetedVersion(workItem.getParentTeamWorkflow(), newVer, changes);
+            }
+         }
+         // Else if name, match name with version names for this team
+         else if (Strings.isValid(values.iterator().next())) {
+            String version = values.iterator().next();
+            if (currVersion == null || !currVersion.getName().equals(version)) {
+               IAtsVersion newVer = null;
+               IAtsTeamDefinition teamDef =
+                  workItem.getParentTeamWorkflow().getTeamDefinition().getTeamDefinitionHoldingVersions();
                for (IAtsVersion teamDefVer : atsApi.getVersionService().getVersions(teamDef)) {
                   if (teamDefVer.getName().equals(version)) {
                      newVer = teamDefVer;
@@ -275,7 +291,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
                   }
                }
                if (newVer == null) {
-                  throw new OseeArgumentException("Version [%s] not valid for team ", version,
+                  throw new OseeArgumentException("Version name [%s] not valid for team ", version,
                      teamDef.toStringWithId());
                }
                atsApi.getVersionService().setTargetedVersion(workItem.getParentTeamWorkflow(), newVer, changes);

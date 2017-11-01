@@ -97,7 +97,10 @@ public interface AtsActionEndpointApi {
 
    /**
     * @param actionId (guid, atsId, long) of workItem
-    * @return html representation of the changed attribute
+    * @param attrTypeId can be the id of the attrType or one of (Title, Priority, ColorTeam, Assignee, IPT, Originator,
+    * Version, State). If State is sent in, it will result in the "transition" of the workflow. Version can be either id
+    * or name.
+    * @return Attribute containing current values
     */
    @Path("{actionId}/attributeType/{attrTypeId}")
    @GET
@@ -106,7 +109,10 @@ public interface AtsActionEndpointApi {
 
    /**
     * @param actionId (guid, atsId, long) of workItem
-    * @return html representation of the changed attribute
+    * @param attrTypeId can be the id of the attrType or one of (Title, Priority, ColorTeam, Assignee, IPT, Originator,
+    * Version, State). If State is sent in, it will result in the "transition" of the workflow. Version can be either id
+    * or name.
+    * @return Attribute containing current values after change
     */
    @Path("{actionId}/attributeType/{attrTypeId}")
    @PUT

@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Form;
@@ -31,6 +32,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.Attribute;
 import org.eclipse.osee.ats.api.workflow.AttributeKey;
@@ -458,6 +460,41 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    @Test
    public void testSetActionIptByKey() {
       testSetActionByKey("", "My IPT", AtsAttributeTypes.IPT, AttributeKey.IPT);
+   }
+
+   @Test
+   public void testSetActionVersionByKey() {
+      TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
+
+      IAtsVersion version = AtsClientService.get().getVersionService().getTargetedVersion(teamWf);
+      Assert.assertEquals(DemoArtifactToken.SAW_Bld_2, version);
+
+      AtsActionEndpointApi actionEp = AtsClientService.getActionEndpoint();
+
+      // Set to Build 1 by id
+      IAtsVersion sawBld1Ver = AtsClientService.get().getConfigItem(DemoArtifactToken.SAW_Bld_1);
+      actionEp.setActionAttributeByType(teamWf.getIdString(), AttributeKey.Version.name(),
+         Collections.singletonList(sawBld1Ver.getIdString()));
+
+      AtsClientService.get().getStoreService().reload(Collections.singleton(teamWf));
+      IAtsVersion newVer = AtsClientService.get().getVersionService().getTargetedVersion(teamWf);
+      Assert.assertEquals(sawBld1Ver, newVer);
+
+      // Clear version
+      actionEp.setActionAttributeByType(teamWf.getIdString(), AttributeKey.Version.name(), Collections.emptyList());
+
+      AtsClientService.get().getStoreService().reload(Collections.singleton(teamWf));
+      IAtsVersion newVer3 = AtsClientService.get().getVersionService().getTargetedVersion(teamWf);
+      Assert.assertNull(newVer3);
+
+      // Set back to Build 2 by name
+      actionEp.setActionAttributeByType(teamWf.getIdString(), AttributeKey.Version.name(),
+         Collections.singletonList(DemoArtifactToken.SAW_Bld_2.getName()));
+
+      AtsClientService.get().getStoreService().reload(Collections.singleton(teamWf));
+      IAtsVersion newVer2 = AtsClientService.get().getVersionService().getTargetedVersion(teamWf);
+      Assert.assertEquals(DemoArtifactToken.SAW_Bld_2.getName(), newVer2.getName());
+
    }
 
    @Test
