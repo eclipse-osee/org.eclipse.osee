@@ -146,75 +146,81 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
             helper.getChangeSet().add(workItem);
             // Validate toState valid
             IAtsStateDefinition fromStateDef = workItem.getStateDefinition();
-            IAtsStateDefinition toStateDef = workItem.getWorkDefinition().getStateByName(helper.getToStateName());
-            if (toStateDef == null) {
-               results.addResult(workItem,
-                  new TransitionResult(String.format("Transition-To State [%s] does not exist for Work Definition [%s]",
-                     helper.getToStateName(), workItem.getWorkDefinition().getName())));
-               continue;
-            }
-
-            //Ignore transitions to the same state
-            if (!fromStateDef.equals(toStateDef)) {
-               // Validate transition from fromState and toState
-               if (!helper.isOverrideTransitionValidityCheck() && !fromStateDef.getToStates().contains(
-                  toStateDef) && !fromStateDef.getStateType().isCompletedOrCancelledState()) {
-                  String errStr =
-                     String.format("Work Definition [%s] is not configured to transition from \"[%s]\" to \"[%s]\"",
-                        fromStateDef.getWorkDefinition().getName(), fromStateDef.getName(), toStateDef.getName());
-                  OseeLog.log(TransitionManager.class, Level.SEVERE, errStr);
-                  results.addResult(workItem, new TransitionResult(errStr));
+            if (fromStateDef == null) {
+               OseeLog.log(TransitionManager.class, Level.SEVERE,
+                  String.format("from state for workItem %s is null", workItem.getName()));
+            } else {
+               IAtsStateDefinition toStateDef = workItem.getWorkDefinition().getStateByName(helper.getToStateName());
+               if (toStateDef == null) {
+                  results.addResult(workItem,
+                     new TransitionResult(
+                        String.format("Transition-To State [%s] does not exist for Work Definition [%s]",
+                           helper.getToStateName(), workItem.getWorkDefinition().getName())));
                   continue;
                }
 
-               // Validate Editable
-               boolean stateIsEditable = WorkflowManagerCore.isEditable(workItem, workItem.getStateDefinition(),
-                  helper.isPrivilegedEditEnabled(), helper.getTransitionUser(),
-                  userService.isAtsAdmin(helper.getTransitionUser()));
-               boolean currentlyUnAssignedOrCompletedOrCancelled =
-                  workItem.isCompletedOrCancelled() || workItem.getStateMgr().getAssignees().contains(
-                     AtsCoreUsers.UNASSIGNED_USER);
-               workItem.getStateMgr().validateNoBootstrapUser();
-               // Allow anyone to transition any task to completed/cancelled/working if parent is working
-               if (workItem.isTask() && workItem.getParentTeamWorkflow().getStateMgr().getStateType().isCompletedOrCancelled()) {
-                  results.addResult(workItem, TransitionResult.TASK_CANT_TRANSITION_IF_PARENT_COMPLETED);
-                  continue;
-               }
-               // Else, only allow transition if...
-               else if (!workItem.isTask() && !stateIsEditable && !currentlyUnAssignedOrCompletedOrCancelled && !overrideAssigneeCheck) {
-                  results.addResult(workItem, TransitionResult.MUST_BE_ASSIGNED);
-                  continue;
-               }
+               //Ignore transitions to the same state
+               if (!fromStateDef.equals(toStateDef)) {
+                  // Validate transition from fromState and toState
+                  if (!helper.isOverrideTransitionValidityCheck() && !fromStateDef.getToStates().contains(
+                     toStateDef) && !fromStateDef.getStateType().isCompletedOrCancelledState()) {
+                     String errStr =
+                        String.format("Work Definition [%s] is not configured to transition from \"[%s]\" to \"[%s]\"",
+                           fromStateDef.getWorkDefinition().getName(), fromStateDef.getName(), toStateDef.getName());
+                     OseeLog.log(TransitionManager.class, Level.SEVERE, errStr);
+                     results.addResult(workItem, new TransitionResult(errStr));
+                     continue;
+                  }
 
-               // Validate Working Branch
-               if (!helper.isOverrideWorkingBranchCheck()) {
-                  isWorkingBranchTransitionable(results, workItem, toStateDef);
+                  // Validate Editable
+                  boolean stateIsEditable = WorkflowManagerCore.isEditable(workItem, workItem.getStateDefinition(),
+                     helper.isPrivilegedEditEnabled(), helper.getTransitionUser(),
+                     userService.isAtsAdmin(helper.getTransitionUser()));
+                  boolean currentlyUnAssignedOrCompletedOrCancelled =
+                     workItem.isCompletedOrCancelled() || workItem.getStateMgr().getAssignees().contains(
+                        AtsCoreUsers.UNASSIGNED_USER);
+                  workItem.getStateMgr().validateNoBootstrapUser();
+                  // Allow anyone to transition any task to completed/cancelled/working if parent is working
+                  if (workItem.isTask() && workItem.getParentTeamWorkflow().getStateMgr().getStateType().isCompletedOrCancelled()) {
+                     results.addResult(workItem, TransitionResult.TASK_CANT_TRANSITION_IF_PARENT_COMPLETED);
+                     continue;
+                  }
+                  // Else, only allow transition if...
+                  else if (!workItem.isTask() && !stateIsEditable && !currentlyUnAssignedOrCompletedOrCancelled && !overrideAssigneeCheck) {
+                     results.addResult(workItem, TransitionResult.MUST_BE_ASSIGNED);
+                     continue;
+                  }
+
+                  // Validate Working Branch
+                  if (!helper.isOverrideWorkingBranchCheck()) {
+                     isWorkingBranchTransitionable(results, workItem, toStateDef);
+                     if (results.isCancelled()) {
+                        continue;
+                     }
+                  }
+
+                  // Validate Assignees (UnAssigned ok cause will be resolve to current user upon transition
+                  if (!overrideAssigneeCheck && !toStateDef.getStateType().isCancelledState() && helper.isSystemUserAssingee(
+                     workItem)) {
+                     results.addResult(workItem, TransitionResult.CAN_NOT_TRANSITION_WITH_SYSTEM_USER_ASSIGNED);
+                     continue;
+                  }
+
+                  // Validate state, widgets, rules unless OverrideAttributeValidation is set or transitioning to cancel
+                  isStateTransitionable(results, workItem, toStateDef);
                   if (results.isCancelled()) {
                      continue;
                   }
-               }
 
-               // Validate Assignees (UnAssigned ok cause will be resolve to current user upon transition
-               if (!overrideAssigneeCheck && !toStateDef.getStateType().isCancelledState() && helper.isSystemUserAssingee(
-                  workItem)) {
-                  results.addResult(workItem, TransitionResult.CAN_NOT_TRANSITION_WITH_SYSTEM_USER_ASSIGNED);
-                  continue;
-               }
+                  // Validate transition with extensions
+                  isTransitionValidForExtensions(results, workItem, fromStateDef, toStateDef);
+                  if (results.isCancelled()) {
+                     continue;
+                  }
 
-               // Validate state, widgets, rules unless OverrideAttributeValidation is set or transitioning to cancel
-               isStateTransitionable(results, workItem, toStateDef);
-               if (results.isCancelled()) {
-                  continue;
-               }
-
-               // Validate transition with extensions
-               isTransitionValidForExtensions(results, workItem, fromStateDef, toStateDef);
-               if (results.isCancelled()) {
-                  continue;
-               }
-
-               if (helper.isExecuteChanges()) {
-                  helper.getChangeSet().execute();
+                  if (helper.isExecuteChanges()) {
+                     helper.getChangeSet().execute();
+                  }
                }
             }
          } catch (OseeCoreException ex) {
