@@ -17,13 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -297,10 +291,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    }
 
    @Override
-   @GET
-   @Path("clearcache")
-   @Produces(MediaType.APPLICATION_JSON)
-   public String clearCaches() {
+   public String reloadCache() {
       atsConfigurations = null;
       Thread thread = new Thread() {
 
@@ -314,8 +305,6 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       return "Complete";
    }
 
-   @GET
-   @Produces(MediaType.APPLICATION_JSON)
    @Override
    public AtsConfigurations get() {
       if (atsConfigurations == null) {
@@ -324,29 +313,20 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       return atsConfigurations;
    }
 
-   @GET
-   @Path("fromdb")
-   @Produces(MediaType.APPLICATION_JSON)
    @Override
    public AtsConfigurations getFromDb() {
       return getAtsConfigurationsFromDb();
    }
 
-   @GET
-   @Path("ui/NewAtsBranchConfig")
    @Override
-   public ViewModel getNewSource() throws Exception {
+   public ViewModel getNewSource() {
       return new ViewModel("templates/newConfigBranch.html");
    }
 
-   @POST
-   @Path("branch")
    @Override
-   public AtsConfiguration createConfig(MultivaluedMap<String, String> form, @Context UriInfo uriInfo) {
+   public AtsConfiguration createConfig(MultivaluedMap<String, String> form) {
 
       // get parameters
-      String query = uriInfo.getPath();
-      System.out.println("query [" + query + "]");
       BranchId fromBranchUuid = BranchId.valueOf(form.getFirst("fromBranchUuid"));
       String newBranchName = form.getFirst("newBranchName");
       Conditions.checkNotNullOrEmpty(newBranchName, "newBranchName");
@@ -452,7 +432,6 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       return config;
    }
 
-   @POST
    @Override
    public Response createUpdateConfig() {
       XResultData resultData = new XResultData(false);
@@ -464,8 +443,6 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       return Response.ok(resultData.toString()).build();
    }
 
-   @PUT
-   @Path("workDef")
    @Override
    public Response storeWorkDef(JaxAtsWorkDef jaxWorkDef) {
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON,
@@ -562,13 +539,9 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    }
 
    @Override
-   @GET
-   @Path("alive")
-   @Produces(MediaType.APPLICATION_JSON)
    public XResultData alive() {
       XResultData results = new XResultData();
       results.logf("Alive");
       return results;
    }
-
 }

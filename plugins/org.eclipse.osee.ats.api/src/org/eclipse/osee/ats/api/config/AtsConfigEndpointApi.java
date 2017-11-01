@@ -17,7 +17,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
@@ -52,7 +51,7 @@ public interface AtsConfigEndpointApi {
    @GET
    @Path("clearcache")
    @Produces(MediaType.APPLICATION_JSON)
-   public String clearCaches();
+   public String reloadCache();
 
    /**
     * @return html5 action entry page
@@ -60,7 +59,7 @@ public interface AtsConfigEndpointApi {
    @GET
    @Path("ui/NewAtsBranchConfig")
    @Produces(MediaType.TEXT_HTML)
-   public ViewModel getNewSource() throws Exception;
+   public ViewModel getNewSource();
 
    /**
     * @return json representation of all Attribute Types as AtsAttributeValueColumn for use as a starting point in the
@@ -85,7 +84,7 @@ public interface AtsConfigEndpointApi {
    @Path("branch")
    @Consumes("application/x-www-form-urlencoded")
    @Produces(MediaType.APPLICATION_JSON)
-   public AtsConfiguration createConfig(MultivaluedMap<String, String> form, @Context UriInfo uriInfo);
+   public AtsConfiguration createConfig(MultivaluedMap<String, String> form);
 
    @POST
    public Response createUpdateConfig();

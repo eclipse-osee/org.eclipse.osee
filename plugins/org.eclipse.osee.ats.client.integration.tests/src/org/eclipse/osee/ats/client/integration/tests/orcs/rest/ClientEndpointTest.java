@@ -48,16 +48,6 @@ public class ClientEndpointTest {
    }
 
    @Test
-   public void testGetAllDetails() {
-      ClientEndpoint clientEp = AtsClientService.get().getOseeClient().getClientEndpoint();
-      Response response = clientEp.getAll();
-      Assert.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-      Sessions sessions = response.readEntity(Sessions.class);
-      System.out.println("sessions 1 - " + sessions);
-      Assert.assertTrue(sessions.sessions.size() >= 1);
-   }
-
-   @Test
    @Ignore
    public void testGetClientsForUser() {
       ClientEndpoint clientEp = AtsClientService.get().getOseeClient().getClientEndpoint();
