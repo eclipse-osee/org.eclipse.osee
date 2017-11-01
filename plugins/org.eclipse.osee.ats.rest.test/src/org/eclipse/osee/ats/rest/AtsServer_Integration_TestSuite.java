@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest;
 
-import org.eclipse.osee.ats.rest.internal.config.AtsRest_Internal_Config_IntegrationSuite;
 import org.eclipse.osee.ats.rest.internal.util.AtsRest_Internal_Util_IntegrationSuite;
 import org.eclipse.osee.ats.rest.util.AtsDabaseInitializedTest;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
@@ -26,7 +25,6 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
    AtsServer_JUnit_TestSuite.class,
    AtsDabaseInitializedTest.class,
-   AtsRest_Internal_Config_IntegrationSuite.class,
    AtsRest_Internal_Util_IntegrationSuite.class})
 public class AtsServer_Integration_TestSuite {
    @BeforeClass
