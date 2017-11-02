@@ -31,16 +31,26 @@ angular
 							// Backlog and Sprint table
 							// ////////////////////////////////////
 
-							var atsIdCellTemplate = '<div class="ngCellText" ng-class="col.colIndex()">'
-									+ '  <a href="/ats/ui/action/{{row.getProperty(col.field)}}">{{row.getProperty(col.field)}}</a>'
-									+ '</div>';
+							var atsIdCellTemplate = '<div class="ui-grid-cell-contents"><a href="/ats/ui/action/{{row.entity.atsId}}" ' +
+								' target="_blank">{{row.entity.atsId}}</a></div>';
 
 							$scope.tasksGridOptions = {
 								data : 'tasks',
 								enableHighlighting : true,
-								enableColumnResize : true,
-								multiSelect : false,
+                                enableColumnResize : true,
+								enableRowSelection: true,
+								enableRowHeaderSelection: false,
+								modifierKeysToMultiSelect: true,
+								multiSelect: false,
 								showFilter : true,
+								onRegisterApi: function(gridApi){
+								  $scope.gridApi = gridApi;
+								  gridApi.selection.on.rowSelectionChanged($scope,function(rows){
+								  	if (gridApi.selection.getSelectedRows().length == 1) {
+								  		$scope.selectedTask = gridApi.selection.getSelectedRows()[0];
+								  	}
+								  });
+								},
 								sortInfo : {
 									fields : [ 'order' ],
 									directions : [ 'asc' ]
@@ -62,7 +72,11 @@ angular
 									displayName : 'Change Type',
 									width : 50
 								}, {
-									field : 'assignees',
+									field : 'agilePoints',
+									displayName : 'Points',
+									width : 50
+								}, {
+									field : 'assigneesOrImplementers',
 									displayName : 'Assignees',
 									width : 160
 								}, {
@@ -142,9 +156,14 @@ angular
 												}
 											});
 										AgileEndpoint.getSprintConfig($scope.team, selected).$promise
-											.then(function(data) {
-												$scope.sprint.config = data;
-											});
+										.then(function(data) {
+											var config = {};
+											config.startDate = new Date(data.startDate);
+											config.endDate = new Date(data.endDate);
+											config.plannedPoints = data.plannedPoints;
+											config.unPlannedPoints = data.unPlannedPoints;
+											$scope.sprint.config = config;
+										});
 									}
 								}
 							}
@@ -157,6 +176,15 @@ angular
 									getTasks();
 								}
 							});
+							
+							$scope.onDblClick = function() {
+								var selected = $scope.selectedTask;
+								if (selected) {
+									var url = selected.link;
+									var win = window.open(url, '_blank');
+  									win.focus();
+								}
+							}
 
 							// Only available and called when sprint is selected
 							$scope.updateSprintConfig = function() {
@@ -221,7 +249,8 @@ angular
 										}
 									});
 							
-							// Copied through all controlers; ensure all are same
+							// Copied through all controlers; ensure all are
+							// same
 							$scope.openBacklogForTeam = Menu.openBacklogForTeam;
 							$scope.openSprintForTeam = Menu.openSprintForTeam;
 							$scope.openKanbanForTeam = Menu.openKanbanForTeam;

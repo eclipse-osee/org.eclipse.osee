@@ -498,8 +498,13 @@ public class AgileService implements IAgileService {
       String result =
          atsApi.getAttributeResolver().getSoleAttributeValueAsString(workItem, AtsAttributeTypes.Points, "");
       if (Strings.isInValid(result)) {
-         result = atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.PointsNumeric,
-            0.0).toString();
+         Double pts =
+            atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.PointsNumeric, 0.0);
+         if (pts == 0.0) {
+            result = "";
+         } else {
+            result = pts.toString();
+         }
       }
       return result;
    }

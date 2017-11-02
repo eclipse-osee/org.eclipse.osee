@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.agile;
 
 import java.util.Date;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.AgileItem;
 import org.eclipse.osee.ats.api.agile.AgileSprintData;
 import org.eclipse.osee.ats.api.agile.IAgileItem;
@@ -115,21 +116,31 @@ public class SprintUtil {
 
    public static AgileItem getAgileItem(IAgileItem aItem, AtsApi atsApi) {
       AgileItem item = new AgileItem();
+      IAtsWorkItem workItem = atsApi.getWorkItemFactory().getWorkItem(aItem.getStoreObject());
       item.setName(aItem.getName());
       item.setFeatureGroups(Collections.toString("; ", atsApi.getAgileService().getFeatureGroups(aItem)));
       item.setUuid(aItem.getId());
-      item.setAssignees(Collections.toString("; ", aItem.getStateMgr().getAssigneesStr()));
-      item.setAtsId(aItem.getAtsId());
+      if (aItem.isCompletedOrCancelled()) {
+         String implementers = atsApi.getImplementerService().getImplementersStr(aItem);
+         item.setImplementers(implementers);
+         item.setAssigneesOrImplementers("(" + implementers + ")");
+      } else {
+         String assignees = Collections.toString("; ", aItem.getStateMgr().getAssigneesStr());
+         item.setAssignees(assignees);
+         item.setAssigneesOrImplementers(assignees);
+      }
+      item.setAtsId(workItem.getAtsId());
       item.setState(aItem.getStateMgr().getCurrentStateName());
       item.setChangeType(atsApi.getAttributeResolver().getSoleAttributeValue(aItem, AtsAttributeTypes.ChangeType, ""));
-      IAtsVersion ver = atsApi.getVersionService().getTargetedVersion(aItem);
+      item.setAgilePoints(atsApi.getAgileService().getAgileTeamPointsStr(workItem));
+      IAtsVersion ver = atsApi.getVersionService().getTargetedVersion(workItem);
       item.setVersion(ver == null ? "" : ver.getName());
       Boolean unplanned =
          atsApi.getAttributeResolver().getSoleAttributeValue(aItem, AtsAttributeTypes.UnPlannedWork, false);
       item.setUnPlannedWork((unplanned ? "U" : ""));
       item.setNotes(atsApi.getAttributeResolver().getSoleAttributeValue(aItem, AtsAttributeTypes.SmaNote, ""));
-      item.setCreateDate(CreatedDateColumn.getDateStr(item));
-      item.setCompCancelDate(CompletedCancelledDateColumn.getCompletedCancelledDateStr(item));
+      item.setCreateDate(CreatedDateColumn.getDateStr(workItem));
+      item.setCompCancelDate(CompletedCancelledDateColumn.getCompletedCancelledDateStr(workItem));
       item.setLink("/ats/ui/action/" + item.getAtsId());
       return item;
    }

@@ -553,6 +553,12 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    }
 
    @Override
+   public SprintConfigurations getSprintConfig(long teamId, long sprintId) {
+      SprintConfigOperations ops = new SprintConfigOperations(atsApi);
+      return ops.get(ArtifactId.valueOf(sprintId));
+   }
+
+   @Override
    @POST
    @Path("team/{teamId}/sprint/{sprintId}/config")
    @Consumes(MediaType.APPLICATION_JSON)
@@ -656,12 +662,6 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       return KanbanOperations.getSprintItemsForKb((IAtsServer) atsApi, teamId, sprintId);
    }
 
-   @Override
-   public SprintConfigurations getSprintConfig(long teamId, long sprintId) {
-      SprintConfigOperations ops = new SprintConfigOperations(atsApi);
-      return ops.get(ArtifactId.valueOf(sprintId));
-   }
-
    /********************************
     ** Agile Backlog
     ***********************************/
@@ -744,6 +744,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
             if (sprint != null) {
                item.setSprint(sprint.getName());
             }
+            item.setBacklog(backlog.getName());
             items.add(item);
          }
       }

@@ -19,6 +19,9 @@ public class AgileItem extends JaxAtsObject {
 
    private String name;
    private String assignees;
+   private String implementers;
+   private String assigneesOrImplementers;
+   private String agilePoints;
    private String state;
    private int order;
    private String atsId;
@@ -172,6 +175,30 @@ public class AgileItem extends JaxAtsObject {
 
    public void setUnPlannedWork(String unPlannedWork) {
       this.unPlannedWork = unPlannedWork;
+   }
+
+   public String getImplementers() {
+      return implementers;
+   }
+
+   public void setImplementers(String implementers) {
+      this.implementers = implementers;
+   }
+
+   public String getAssigneesOrImplementers() {
+      return assigneesOrImplementers;
+   }
+
+   public void setAssigneesOrImplementers(String assigneesOrImplementers) {
+      this.assigneesOrImplementers = assigneesOrImplementers;
+   }
+
+   public String getAgilePoints() {
+      return agilePoints;
+   }
+
+   public void setAgilePoints(String agilePoints) {
+      this.agilePoints = agilePoints;
    }
 
 }
