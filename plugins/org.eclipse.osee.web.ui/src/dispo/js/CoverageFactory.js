@@ -24,11 +24,11 @@ app.factory('CoverageFactory', function() {
 	CoverageFactory.setTextForNonDefaultAnnotations = function(annotations, discrepancies) {
 		for(var i = 0; i < annotations.length; i++) {
 			if(!annotations[i].isDefault) { 
-        		var covered = annotations[i].idsOfCoveredDiscrepancies[0]
+        		var coveredId = annotations[i].idsOfCoveredDiscrepancies[0]
         		
-        		var text = discrepancies[covered];
-        		if(!text == null)
-	        			return annotations[i].customerNotes = text;
+        		var discrepancyAddress = discrepancies[coveredId];
+        		if(discrepancyAddress !== null)
+	        			return annotations[i].customerNotes;
 	        		else 
 	        			return annotations[i].customerNotes = "no text found";     		
     		} 
