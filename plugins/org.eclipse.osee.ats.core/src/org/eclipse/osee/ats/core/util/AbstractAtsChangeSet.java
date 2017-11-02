@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IExecuteListener;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.util.AtsRelationChange.RelationOperation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -221,6 +222,12 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    @Override
    public List<IAtsWorkItem> getWorkItemsCreated() {
       return workItemsCreated;
+   }
+
+   @Override
+   public void addChild(IAtsObject parent, IAtsObject child) {
+      add(new AtsRelationChange(parent, CoreRelationTypes.Default_Hierarchical__Child, Collections.singleton(child),
+         RelationOperation.Add));
    }
 
 }

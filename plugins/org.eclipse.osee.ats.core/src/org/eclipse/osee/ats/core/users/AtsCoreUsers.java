@@ -22,6 +22,7 @@ public final class AtsCoreUsers {
    public static final IAtsUser SYSTEM_USER = new AtsUser(SystemUser.OseeSystem);
    public static final IAtsUser ANONYMOUS_USER = new AtsUser(SystemUser.Anonymous);
    public static final IAtsUser UNASSIGNED_USER = new AtsUser(SystemUser.UnAssigned);
+   public static final IAtsUser BOOTSTRAP_USER = new AtsUser(SystemUser.BootStrap);
 
    private AtsCoreUsers() {
       // UtilityClass
@@ -40,7 +41,8 @@ public final class AtsCoreUsers {
    }
 
    public static boolean isAtsCoreUser(IAtsUser user) {
-      return SYSTEM_USER.equals(user) || ANONYMOUS_USER.equals(user) || UNASSIGNED_USER.equals(user);
+      return SYSTEM_USER.equals(user) || ANONYMOUS_USER.equals(user) || UNASSIGNED_USER.equals(
+         user) || BOOTSTRAP_USER.equals(user);
    }
 
    public static IAtsUser getAtsCoreUserByUserId(String userId) {
@@ -53,6 +55,10 @@ public final class AtsCoreUsers {
          toReturn = AtsCoreUsers.UNASSIGNED_USER;
       }
       return toReturn;
+   }
+
+   public static boolean isBootstrapUser(IAtsUser user) {
+      return BOOTSTRAP_USER.equals(user);
    }
 
 }

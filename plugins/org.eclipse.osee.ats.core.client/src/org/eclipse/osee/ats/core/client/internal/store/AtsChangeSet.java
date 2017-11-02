@@ -493,4 +493,5 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       }
       setAttributeValues(getArtifact(atsObject), attributeType, objValues);
    }
+
 }

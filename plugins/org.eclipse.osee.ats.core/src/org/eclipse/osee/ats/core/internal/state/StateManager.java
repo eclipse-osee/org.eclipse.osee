@@ -125,8 +125,8 @@ public class StateManager implements IAtsStateManager {
 
    protected void logMetrics(IStateToken state, IAtsUser user, Date date) {
       String hoursSpent = AtsUtilCore.doubleToI18nString(HoursSpentUtil.getHoursSpentTotal(workItem, atsApi));
-      logMetrics(atsApi, logFactory, workItem,
-         PercentCompleteTotalUtil.getPercentCompleteTotal(workItem, atsApi) + "", hoursSpent, state, user, date);
+      logMetrics(atsApi, logFactory, workItem, PercentCompleteTotalUtil.getPercentCompleteTotal(workItem, atsApi) + "",
+         hoursSpent, state, user, date);
    }
 
    public static void logMetrics(AtsApi atsApi, IAtsLogFactory logFactory, IAtsWorkItem workItem, String percent, String hours, IStateToken state, IAtsUser user, Date date) {
@@ -187,6 +187,9 @@ public class StateManager implements IAtsStateManager {
          return;
       }
       for (IAtsUser assignee : assignees) {
+         if (AtsCoreUsers.isBootstrapUser(assignee)) {
+            throw new OseeArgumentException("Can not assign workflow to Bootstrap");
+         }
          if (AtsCoreUsers.isGuestUser(assignee)) {
             throw new OseeArgumentException("Can not assign workflow to Guest");
          }
@@ -247,13 +250,15 @@ public class StateManager implements IAtsStateManager {
       }
 
       for (IAtsUser assignee : assignees) {
+         if (AtsCoreUsers.isBootstrapUser(assignee)) {
+            throw new OseeArgumentException("Can not assign workflow to Bootstrap");
+         }
          if (AtsCoreUsers.isGuestUser(assignee)) {
             throw new OseeArgumentException("Can not assign workflow to Guest");
          }
          if (AtsCoreUsers.isSystemUser(assignee)) {
             throw new OseeArgumentException("Can not assign workflow to System User");
          }
-
       }
 
       // Note: current and next state could be same

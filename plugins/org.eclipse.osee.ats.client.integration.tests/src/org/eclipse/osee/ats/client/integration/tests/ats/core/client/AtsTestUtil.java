@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -295,25 +296,31 @@ public class AtsTestUtil {
 
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(AtsTestUtil.class.getSimpleName());
 
+      IAtsActionableItem topAi = AtsClientService.get().getConfigItem(AtsArtifactToken.TopActionableItem);
+
       testAi = AtsClientService.get().createActionableItem(getTitle("AI", postFixName),
          AtsUtilClient.createConfigObjectUuid(), changes, AtsClientService.get());
       changes.setSoleAttributeValue(testAi, AtsAttributeTypes.Active, true);
       changes.setSoleAttributeValue(testAi, AtsAttributeTypes.Actionable, true);
+      changes.addChild(topAi, testAi);
 
       testAi2 = AtsClientService.get().createActionableItem(getTitle("AI2", postFixName),
          AtsUtilClient.createConfigObjectUuid(), changes, AtsClientService.get());
       changes.setSoleAttributeValue(testAi2, AtsAttributeTypes.Active, true);
       changes.setSoleAttributeValue(testAi2, AtsAttributeTypes.Actionable, true);
+      changes.addChild(testAi, testAi2);
 
       testAi3 = AtsClientService.get().createActionableItem(getTitle("AI3", postFixName),
          AtsUtilClient.createConfigObjectUuid(), changes, AtsClientService.get());
       changes.setSoleAttributeValue(testAi3, AtsAttributeTypes.Active, true);
       changes.setSoleAttributeValue(testAi3, AtsAttributeTypes.Actionable, true);
+      changes.addChild(testAi, testAi3);
 
       testAi4 = AtsClientService.get().createActionableItem(getTitle("AI4", postFixName),
          AtsUtilClient.createConfigObjectUuid(), changes, AtsClientService.get());
       changes.setSoleAttributeValue(testAi4, AtsAttributeTypes.Active, true);
       changes.setSoleAttributeValue(testAi4, AtsAttributeTypes.Actionable, true);
+      changes.addChild(testAi, testAi4);
 
       teamDef = AtsClientService.get().createTeamDefinition(getTitle("Team Def", postFixName),
          AtsUtilClient.createConfigObjectUuid(), changes, AtsClientService.get());
@@ -324,6 +331,8 @@ public class AtsTestUtil {
       changes.relate(teamDef, AtsRelationTypes.TeamActionableItem_ActionableItem, testAi2);
       changes.relate(teamDef, AtsRelationTypes.TeamActionableItem_ActionableItem, testAi3);
       changes.relate(teamDef, AtsRelationTypes.TeamActionableItem_ActionableItem, testAi4);
+      IAtsTeamDefinition topTeamDef = AtsClientService.get().getConfigItem(AtsArtifactToken.TopTeamDefinition);
+      changes.addChild(topTeamDef, teamDef);
 
       verArt1 = AtsClientService.get().getVersionService().createVersion(getTitle("ver 1.0", postFixName),
          AtsUtilClient.createConfigObjectUuid(), changes);

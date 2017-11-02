@@ -159,4 +159,6 @@ public interface IAtsChangeSet {
    void addArtifactReferencedAttribute(ArtifactId artifact, AttributeTypeId attributeType, ArtifactId artifactRef);
 
    void setAttributeValuesAsStrings(IAtsObject atsObject, AttributeTypeId attrType, List<String> values);
+
+   void addChild(IAtsObject parent, IAtsObject child);
 }

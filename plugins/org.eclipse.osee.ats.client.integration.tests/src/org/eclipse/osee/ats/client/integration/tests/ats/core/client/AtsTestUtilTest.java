@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -64,6 +65,8 @@ public class AtsTestUtilTest extends AtsTestUtil {
       Assert.assertNotNull(AtsTestUtil.getTeamWf().getTeamDefinition());
       String atsId = AtsTestUtil.getTeamWf().getAtsId();
       Assert.assertTrue(atsId.startsWith("TW"));
+      Assert.assertEquals(1, AtsTestUtil.getTeamWf().getStateMgr().getAssignees().size());
+      Assert.assertEquals(DemoUsers.Joe_Smith, AtsTestUtil.getTeamWf().getStateMgr().getAssignees().iterator().next());
    }
 
    public void testGetTeamWf2() {
