@@ -20,6 +20,7 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -38,6 +39,7 @@ import org.eclipse.osee.disposition.rest.DispoImporterApi;
 import org.eclipse.osee.disposition.rest.internal.DispoConnector;
 import org.eclipse.osee.disposition.rest.internal.DispoDataFactory;
 import org.eclipse.osee.disposition.rest.internal.importer.DispoSetCopier;
+import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -256,6 +258,16 @@ public class LisFileParser implements DispoImporterApi {
       newItem.setName(sourceFileJoin.getDisplayName() + "." + function.getName());
       newItem.setFileNumber(Integer.toString(fileNum));
       newItem.setMethodNumber(Integer.toString(functionNum));
+
+      try {
+         Date lastModified = DispoUtil.getTimestampOfFile(lisFile.getLISFile());
+         newItem.setLastUpdate(lastModified);
+      } catch (Throwable ex) {
+         report.addEntry("Get Timestamp of File",
+            String.format("Error retrieving the timestamp for [%s]. Error Message: [%s]", instrumentedFile.getId(),
+               ex.getMessage()),
+            ERROR);
+      }
 
       String datId = generateDatId(fileNum, functionNum);
       datIdToItem.put(datId, newItem);

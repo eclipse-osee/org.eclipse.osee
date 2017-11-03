@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.util;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -517,5 +519,15 @@ public final class DispoUtil {
       }
 
       return toReturn;
+   }
+
+   public static Date getTimestampOfFile(String fullPathFileName) {
+      Date date = new Date(0);
+      File f = new File(fullPathFileName);
+      if (f.exists()) {
+         long lastModified = f.lastModified();
+         date = new Date(lastModified);
+      }
+      return date;
    }
 }

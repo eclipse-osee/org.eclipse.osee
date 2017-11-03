@@ -48,6 +48,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -169,6 +170,7 @@ public class DispoApiImpl implements DispoApi {
          ArtifactReadable author = getQuery().findUser();
 
          DispoStorageMetadata metadata = new DispoStorageMetadata();
+
          getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), updatedItem, metadata);
          if (!metadata.getIdsOfUpdatedItems().isEmpty()) {
             updateBroadcaster.broadcastUpdateItems(metadata.getIdsOfUpdatedItems(), singleton(dispoItem),
@@ -208,6 +210,14 @@ public class DispoApiImpl implements DispoApi {
       if (dispoItemToEdit != null && newDispoItem.getAnnotationsList() == null && newDispoItem.getDiscrepanciesList() == null) { // We will not allow the user to do mass edit of Annotations or discrepancies
          ArtifactReadable author = getQuery().findUser();
          DispoStorageMetadata metadata = new DispoStorageMetadata();
+
+         try {
+            Date date = DispoUtil.getTimestampOfFile(getFullFilePathFromDispoItemId(branch, itemId, dispoItemToEdit));
+            newDispoItem.setLastUpdate(date);
+         } catch (Throwable ex) {
+            throw new OseeCoreException(ex);
+         }
+
          getWriter().updateDispoItem(author, branch, dispoItemToEdit.getGuid(), newDispoItem, metadata);
          if (!metadata.getIdsOfUpdatedItems().isEmpty()) {
             updateBroadcaster.broadcastUpdateItems(metadata.getIdsOfUpdatedItems(), singleton(newDispoItem),
@@ -216,6 +226,23 @@ public class DispoApiImpl implements DispoApi {
          wasUpdated = true;
       }
       return wasUpdated;
+   }
+
+   private String getFullFilePathFromDispoItemId(BranchId branch, String itemId, DispoItem dispoItemToEdit) {
+      Conditions.notNull(dispoItemToEdit);
+      Conditions.notNull(branch);
+      Conditions.notNull(itemId);
+
+      Long set = getQuery().getDispoItemParentSet(branch, itemId);
+      if (set != null) {
+         DispoSet dispoSet = getQuery().findDispoSetsById(branch, String.valueOf(set));
+         if (dispoSet != null) {
+            String importPath = dispoSet.getImportPath();
+            String name = dispoItemToEdit.getName().replaceAll(config.getFileExtRegex(), ".LIS");
+            return importPath + File.separator + "vcast" + File.separator + name;
+         }
+      }
+      return "";
    }
 
    @Override
@@ -330,6 +357,14 @@ public class DispoApiImpl implements DispoApi {
          modifiedDispoItem.setStatus(dispoConnector.getItemStatus(modifiedDispoItem));
 
          DispoStorageMetadata metadata = new DispoStorageMetadata();
+
+         try {
+            Date date = DispoUtil.getTimestampOfFile(getFullFilePathFromDispoItemId(branch, itemId, dispoItem));
+            modifiedDispoItem.setLastUpdate(date);
+         } catch (Throwable ex) {
+            throw new OseeCoreException(ex);
+         }
+
          getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), modifiedDispoItem, metadata);
          if (!metadata.getIdsOfUpdatedItems().isEmpty()) {
             updateBroadcaster.broadcastUpdateItems(metadata.getIdsOfUpdatedItems(), singleton(modifiedDispoItem),
