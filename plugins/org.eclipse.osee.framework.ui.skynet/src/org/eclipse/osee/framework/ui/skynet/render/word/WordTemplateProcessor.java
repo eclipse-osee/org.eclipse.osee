@@ -73,6 +73,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.ui.skynet.branch.ViewApplicabilityUtil;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.render.DataRightProvider;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
@@ -279,7 +280,7 @@ public class WordTemplateProcessor {
             branch = branch.getParentBranch();
          }
          ApplicabilityEndpoint applEndpoint =
-            ServiceUtil.getOseeClient().getApplicabilityEndpoint(branch.getParentBranch());
+            ServiceUtil.getOseeClient().getApplicabilityEndpoint(ViewApplicabilityUtil.getParentBranch(branch));
 
          applicabilityTokens = new HashMap<>();
          Collection<ApplicabilityToken> appTokens = applEndpoint.getApplicabilityTokenMap();
