@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.internal.importer;
 
+import org.eclipse.osee.disposition.rest.DispoApiConfiguration;
 import org.eclipse.osee.disposition.rest.DispoImporterApi;
 import org.eclipse.osee.disposition.rest.internal.DispoDataFactory;
 import org.eclipse.osee.disposition.rest.internal.importer.coverage.LisFileParser;
@@ -25,6 +26,7 @@ public class DispoImporterFactory {
    private final DispoDataFactory dataFactory;
    private final ExecutorAdmin executor;
    private final Log logger;
+   private final DispoApiConfiguration config;
 
    public enum ImportFormat {
       TMO,
@@ -32,10 +34,11 @@ public class DispoImporterFactory {
       LIS
    };
 
-   public DispoImporterFactory(DispoDataFactory dataFactory, ExecutorAdmin executor, Log logger) {
+   public DispoImporterFactory(DispoDataFactory dataFactory, ExecutorAdmin executor, DispoApiConfiguration config, Log logger) {
       this.dataFactory = dataFactory;
       this.executor = executor;
       this.logger = logger;
+      this.config = config;
    }
 
    public DispoImporterApi createImporter(ImportFormat format) {
@@ -45,7 +48,7 @@ public class DispoImporterFactory {
          case TMZ:
             return new TmzImporter(logger, dataFactory);
          case LIS:
-            return new LisFileParser(logger, dataFactory);
+            return new LisFileParser(logger, dataFactory, config);
          default:
             throw new OseeArgumentException("Unsupported format type: [%s]", format);
       }

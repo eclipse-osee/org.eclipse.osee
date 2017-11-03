@@ -35,6 +35,7 @@ import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.DispoSummarySeverity;
 import org.eclipse.osee.disposition.model.OperationReport;
+import org.eclipse.osee.disposition.rest.DispoApiConfiguration;
 import org.eclipse.osee.disposition.rest.DispoImporterApi;
 import org.eclipse.osee.disposition.rest.internal.DispoConnector;
 import org.eclipse.osee.disposition.rest.internal.DispoDataFactory;
@@ -77,11 +78,13 @@ public class LisFileParser implements DispoImporterApi {
    private final Set<String> alreadyUsedFileNames = new HashSet<>();
 
    private final DispoConnector dispoConnector = new DispoConnector();
+   private final DispoApiConfiguration config;
 
    private String vCastDir;
 
-   public LisFileParser(Log logger, DispoDataFactory dataFactory) {
+   public LisFileParser(Log logger, DispoDataFactory dataFactory, DispoApiConfiguration config) {
       this.dataFactory = dataFactory;
+      this.config = config;
    }
 
    @Override
@@ -260,7 +263,9 @@ public class LisFileParser implements DispoImporterApi {
       newItem.setMethodNumber(Integer.toString(functionNum));
 
       try {
-         Date lastModified = DispoUtil.getTimestampOfFile(lisFile.getLISFile());
+         String fileName = sourceFileJoin.getDisplayName();
+         String fullPathToFile = vCastDir + File.separator + fileName.replaceAll(config.getFileExtRegex(), ".LIS");
+         Date lastModified = DispoUtil.getTimestampOfFile(fullPathToFile);
          newItem.setLastUpdate(lastModified);
       } catch (Throwable ex) {
          report.addEntry("Get Timestamp of File",

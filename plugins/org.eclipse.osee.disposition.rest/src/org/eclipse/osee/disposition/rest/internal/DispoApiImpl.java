@@ -107,8 +107,8 @@ public class DispoApiImpl implements DispoApi {
 
    public void start(Map<String, Object> props) {
       logger.trace("Starting DispoApiImpl...");
-      importerFactory = new DispoImporterFactory(dataFactory, executor, logger);
       update(props);
+      importerFactory = new DispoImporterFactory(dataFactory, executor, config, logger);
    }
 
    public void update(Map<String, Object> props) {
