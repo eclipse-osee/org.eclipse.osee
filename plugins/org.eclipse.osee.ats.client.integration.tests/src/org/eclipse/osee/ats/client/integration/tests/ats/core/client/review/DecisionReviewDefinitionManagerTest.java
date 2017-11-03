@@ -42,9 +42,8 @@ import org.junit.BeforeClass;
  */
 public class DecisionReviewDefinitionManagerTest extends DecisionReviewDefinitionManager {
 
-   public static String WORK_DEF_FILE_NAME = "support/WorkDef_Team_DecisionReviewDefinitionManagerTest_toDecision.ats";
-   public static String WORK_DEF_FILE_NAME_PREPARE =
-      "support/WorkDef_Team_DecisionReviewDefinitionManagerTest_Prepare.ats";
+   public static String DECISION_WORK_DEF_NAME = "WorkDef_Team_DecisionReviewDefinitionManagerTest_toDecision";
+   public static String PREPARE_WORK_DEF_NAME = "WorkDef_Team_DecisionReviewDefinitionManagerTest_Prepare";
 
    @BeforeClass
    @AfterClass
@@ -57,17 +56,21 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewDefinitio
       AtsTestUtil.cleanupAndReset("DecisionReviewDefinitionManagerTest - ToDecision");
 
       try {
-         String atsDsl = AWorkspace.getOseeInfResource(WORK_DEF_FILE_NAME, AtsClientIntegrationTestSuite.class);
+         String atsDsl = AWorkspace.getOseeInfResource("support/" + DECISION_WORK_DEF_NAME + ".ats",
+            AtsClientIntegrationTestSuite.class).replaceAll("PUT_NAME_HERE", DECISION_WORK_DEF_NAME);
          JaxAtsWorkDef jaxWorkDef = new JaxAtsWorkDef();
-         jaxWorkDef.setName(AtsTestUtil.WORK_DEF_NAME);
+         jaxWorkDef.setName(DECISION_WORK_DEF_NAME);
          jaxWorkDef.setWorkDefDsl(atsDsl);
          AtsTestUtil.importWorkDefinition(jaxWorkDef);
          AtsClientService.get().clearCaches();
       } catch (Exception ex) {
-         throw new OseeCoreException(ex, "Error importing " + WORK_DEF_FILE_NAME);
+         throw new OseeCoreException(ex, "Error importing " + DECISION_WORK_DEF_NAME);
       }
 
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
+      teamArt.setSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, DECISION_WORK_DEF_NAME);
+      teamArt.persist("DecisionReviewDefinitionManagerTest - ToDecision");
+
       Assert.assertEquals("Implement State should have a single decision review definition", 1,
          teamArt.getWorkDefinition().getStateByName(TeamState.Implement.getName()).getDecisionReviews().size());
       Assert.assertEquals("No reviews should be present", 0, ReviewManager.getReviews(teamArt).size());
@@ -103,17 +106,21 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewDefinitio
       AtsTestUtil.cleanupAndReset("DecisionReviewDefinitionManagerTest - Prepare");
 
       try {
-         String atsDsl = AWorkspace.getOseeInfResource(WORK_DEF_FILE_NAME_PREPARE, AtsClientIntegrationTestSuite.class);
+         String atsDsl = AWorkspace.getOseeInfResource("support/" + PREPARE_WORK_DEF_NAME + ".ats",
+            AtsClientIntegrationTestSuite.class).replaceAll("PUT_NAME_HERE", PREPARE_WORK_DEF_NAME);
          JaxAtsWorkDef jaxWorkDef = new JaxAtsWorkDef();
-         jaxWorkDef.setName(AtsTestUtil.WORK_DEF_NAME);
+         jaxWorkDef.setName(PREPARE_WORK_DEF_NAME);
          jaxWorkDef.setWorkDefDsl(atsDsl);
          AtsTestUtil.importWorkDefinition(jaxWorkDef);
          AtsClientService.get().clearCaches();
       } catch (Exception ex) {
-         throw new OseeCoreException(ex, "Error importing " + WORK_DEF_FILE_NAME_PREPARE);
+         throw new OseeCoreException(ex, "Error importing " + PREPARE_WORK_DEF_NAME);
       }
 
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
+      teamArt.setSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, PREPARE_WORK_DEF_NAME);
+      teamArt.persist("DecisionReviewDefinitionManagerTest - Prepare");
+
       Assert.assertEquals("No reviews should be present", 0, ReviewManager.getReviews(teamArt).size());
 
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());

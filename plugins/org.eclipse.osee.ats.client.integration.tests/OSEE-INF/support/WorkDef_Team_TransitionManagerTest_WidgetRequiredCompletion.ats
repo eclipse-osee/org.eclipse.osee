@@ -1,5 +1,5 @@
-workDefinition "WorkDef_Team_AtsTestUtil" {
-	id "WorkDef_Team_AtsTestUtil"
+workDefinition "WorkDef_Team_TransitionManagerTest_WidgetRequiredCompletion" {
+	id "WorkDef_Team_TransitionManagerTest_WidgetRequiredCompletion"
 	startState "Analyze"
 
    widgetDefinition "Estimated Hours" {

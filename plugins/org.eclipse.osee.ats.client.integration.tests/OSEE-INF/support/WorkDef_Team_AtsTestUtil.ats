@@ -1,5 +1,5 @@
-workDefinition "WorkDef_Team_AtsTestUtil" {
-	id "WorkDef_Team_AtsTestUtil"
+workDefinition "PUT_NAME_HERE" {
+	id "PUT_NAME_HERE"
 	startState "Analyze"
 
    widgetDefinition "Estimated Hours" {

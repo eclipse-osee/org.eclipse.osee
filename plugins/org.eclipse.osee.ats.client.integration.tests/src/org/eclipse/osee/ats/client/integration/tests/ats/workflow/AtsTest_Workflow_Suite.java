@@ -24,7 +24,6 @@ import org.junit.runners.Suite;
    TeamWorkflowTest.class,
    AtsTest_WorkflowUtil_Suite.class,
    TaskRelatedToChangedArtifactTest.class,
-   StoreWorkDefinitionTest.class,
    AtsTaskEndpointImplTest.class,
    WfePromptChangeStatusTest.class,
    TeamWorkflowProvidersTest.class,

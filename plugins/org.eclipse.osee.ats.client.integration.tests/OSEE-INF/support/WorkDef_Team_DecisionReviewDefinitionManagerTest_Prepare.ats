@@ -1,5 +1,5 @@
-workDefinition "WorkDef_Team_AtsTestUtil" {
-	id "WorkDef_Team_AtsTestUtil"
+workDefinition "WorkDef_Team_DecisionReviewDefinitionManagerTest_Prepare" {
+	id "WorkDef_Team_DecisionReviewDefinitionManagerTest_Prepare"
 	startState "Analyze"
 
 	decisionReviewDefinition "Create New on Implement" {

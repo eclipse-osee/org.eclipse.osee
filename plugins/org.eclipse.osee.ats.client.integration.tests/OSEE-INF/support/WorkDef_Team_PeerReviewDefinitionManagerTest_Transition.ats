@@ -1,5 +1,5 @@
-workDefinition "WorkDef_Team_AtsTestUtil" {
-	id "WorkDef_Team_AtsTestUtil"
+workDefinition "WorkDef_Team_PeerReviewDefinitionManagerTest_Transition" {
+	id "WorkDef_Team_PeerReviewDefinitionManagerTest_Transition"
 	startState "Analyze"
 
 	peerReviewDefinition "Create New on Implement" {

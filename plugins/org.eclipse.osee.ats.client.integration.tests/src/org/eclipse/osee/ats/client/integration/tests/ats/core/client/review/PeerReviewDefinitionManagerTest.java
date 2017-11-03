@@ -42,7 +42,7 @@ import org.junit.BeforeClass;
  */
 public class PeerReviewDefinitionManagerTest extends PeerReviewDefinitionManager {
 
-   public static String WORK_DEF_FILE_NAME = "support/WorkDef_Team_PeerReviewDefinitionManagerTest_Transition.ats";
+   public static String WORK_DEF_NAME = "WorkDef_Team_PeerReviewDefinitionManagerTest_Transition";
 
    @BeforeClass
    @AfterClass
@@ -55,17 +55,21 @@ public class PeerReviewDefinitionManagerTest extends PeerReviewDefinitionManager
       AtsTestUtil.cleanupAndReset("PeerReviewDefinitionManagerTest");
 
       try {
-         String atsDsl = AWorkspace.getOseeInfResource(WORK_DEF_FILE_NAME, AtsClientIntegrationTestSuite.class);
+         String atsDsl =
+            AWorkspace.getOseeInfResource("support/" + WORK_DEF_NAME + ".ats", AtsClientIntegrationTestSuite.class);
          JaxAtsWorkDef jaxWorkDef = new JaxAtsWorkDef();
-         jaxWorkDef.setName(AtsTestUtil.WORK_DEF_NAME);
+         jaxWorkDef.setName(WORK_DEF_NAME);
          jaxWorkDef.setWorkDefDsl(atsDsl);
          AtsTestUtil.importWorkDefinition(jaxWorkDef);
          AtsClientService.get().clearCaches();
       } catch (Exception ex) {
-         throw new OseeCoreException(ex, "Error importing " + WORK_DEF_FILE_NAME);
+         throw new OseeCoreException(ex, "Error importing " + WORK_DEF_NAME);
       }
 
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
+      teamArt.setSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, WORK_DEF_NAME);
+      teamArt.persist("PeerReviewDefinitionManagerTest");
+
       Assert.assertEquals("Implement State should have a single peer review definition", 1,
          teamArt.getWorkDefinition().getStateByName(TeamState.Implement.getName()).getPeerReviews().size());
       Assert.assertEquals("No reviews should be present", 0, ReviewManager.getReviews(teamArt).size());

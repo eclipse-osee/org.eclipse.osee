@@ -68,12 +68,11 @@ import org.mockito.MockitoAnnotations;
 public class TransitionManagerTest {
 
    private static List<AbstractWorkflowArtifact> EMPTY_AWAS = new ArrayList<>();
-   public static String WORK_DEF_TARGETED_VERSION_FILE_NAME =
-      "support/WorkDef_Team_TransitionManagerTest_TargetedVersion.ats";
-   public static String WORK_DEF_WIDGET_REQUIRED_TRANSITION_FILE_NAME =
-      "support/WorkDef_Team_TransitionManagerTest_WidgetRequiredTransition.ats";
-   private static String WORK_DEF_WIDGET_REQUIRED_COMPLETION_FILE_NAME =
-      "support/WorkDef_Team_TransitionManagerTest_WidgetRequiredCompletion.ats";
+   public static String WORK_DEF_TARGETED_VERSION_NAME = "WorkDef_Team_TransitionManagerTest_TargetedVersion";
+   public static String WORK_DEF_WIDGET_REQUIRED_TRANSITION_NAME =
+      "WorkDef_Team_TransitionManagerTest_WidgetRequiredTransition";
+   private static String WORK_DEF_WIDGET_REQUIRED_COMPLETION_NAME =
+      "WorkDef_Team_TransitionManagerTest_WidgetRequiredCompletion";
 
    // @formatter:off
    @Mock private IAtsTeamWorkflow teamWf;
@@ -303,7 +302,10 @@ public class TransitionManagerTest {
 
       // test that estHours required fails validation
       results.clear();
-      loadWorkDefForTest(WORK_DEF_WIDGET_REQUIRED_TRANSITION_FILE_NAME);
+      loadWorkDefForTest(WORK_DEF_WIDGET_REQUIRED_TRANSITION_NAME);
+      teamArt.setSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, WORK_DEF_WIDGET_REQUIRED_TRANSITION_NAME);
+      teamArt.persist("TransitionManagerTest-1");
+
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.toString(), results.contains("[Estimated Hours] is required for transition"));
       Assert.assertTrue(results.toString(), results.contains("[Work Package] is required for transition"));
@@ -313,6 +315,7 @@ public class TransitionManagerTest {
    public void testIsStateTransitionable__ValidateXWidgets__RequiredForCompletion() {
       AtsTestUtil.cleanupAndReset("TransitionManagerTest-2");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
+
       MockTransitionHelper helper = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
          AtsTestUtil.getImplementStateDef().getName(),
          Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null,
@@ -339,7 +342,9 @@ public class TransitionManagerTest {
       // test that Work Package only widget required for normal transition
       results.clear();
       helper.setToStateName(AtsTestUtil.getCompletedStateDef().getName());
-      loadWorkDefForTest(WORK_DEF_WIDGET_REQUIRED_COMPLETION_FILE_NAME);
+      loadWorkDefForTest(WORK_DEF_WIDGET_REQUIRED_COMPLETION_NAME);
+      teamArt.setSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, WORK_DEF_WIDGET_REQUIRED_COMPLETION_NAME);
+      teamArt.persist("TransitionManagerTest-2");
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.contains("[Estimated Hours] is required for transition to [Completed]"));
       Assert.assertTrue(results.contains("[Work Package] is required for transition"));
@@ -433,6 +438,8 @@ public class TransitionManagerTest {
    public void testIsStateTransitionable__RequireTargetedVersion__FromPageDef() {
       AtsTestUtil.cleanupAndReset("TransitionManagerTest-5");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
+      teamArt.setSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, WORK_DEF_TARGETED_VERSION_NAME);
+      teamArt.persist("TransitionManagerTest-5");
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       MockTransitionHelper helper = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
          AtsTestUtil.getImplementStateDef().getName(),
@@ -446,7 +453,7 @@ public class TransitionManagerTest {
       Assert.assertTrue(results.isEmpty());
 
       // validate that can't transition without targeted version when team def rule is set
-      loadWorkDefForTest(WORK_DEF_TARGETED_VERSION_FILE_NAME);
+      loadWorkDefForTest(WORK_DEF_TARGETED_VERSION_NAME);
 
       results.clear();
       transMgr.handleTransitionValidation(results);
@@ -459,16 +466,17 @@ public class TransitionManagerTest {
       Assert.assertTrue(results.isEmpty());
    }
 
-   private void loadWorkDefForTest(String workDefFilename) {
+   private void loadWorkDefForTest(String workDefName) {
       try {
-         String atsDsl = AWorkspace.getOseeInfResource(workDefFilename, AtsClientIntegrationTestSuite.class);
+         String atsDsl =
+            AWorkspace.getOseeInfResource("support/" + workDefName + ".ats", AtsClientIntegrationTestSuite.class);
          JaxAtsWorkDef jaxWorkDef = new JaxAtsWorkDef();
-         jaxWorkDef.setName(AtsTestUtil.WORK_DEF_NAME);
+         jaxWorkDef.setName(workDefName);
          jaxWorkDef.setWorkDefDsl(atsDsl);
          AtsTestUtil.importWorkDefinition(jaxWorkDef);
          AtsClientService.get().clearCaches();
       } catch (Exception ex) {
-         throw new OseeCoreException(ex, "Error importing " + workDefFilename);
+         throw new OseeCoreException(ex, "Error importing " + workDefName);
       }
    }
 
