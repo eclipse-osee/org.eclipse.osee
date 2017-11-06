@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
+import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
 import org.eclipse.osee.ats.api.config.JaxActionableItem;
 import org.eclipse.osee.ats.api.config.JaxTeamDefinition;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
@@ -110,6 +111,10 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
 
    public AtsClientImpl() {
       super();
+   }
+
+   public void setConfigurationsService(IAtsConfigurationsService configurationsService) {
+      this.configurationsService = configurationsService;
    }
 
    @Override
@@ -207,7 +212,7 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
 
          @Override
          public void run() {
-            configProvider.reloadConfigurationCache();
+            configurationsService.getConfigurationsWithPend();
             getUserService().reloadCache();
          }
       };
@@ -237,10 +242,9 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
                ArtifactQuery.getArtifactListFromTypeWithInheritence(AtsArtifactTypes.AtsConfigObject, getAtsBranch(),
                   DeletionFlag.EXCLUDE_DELETED);
 
-               cacheActionableItems(configProvider.getConfigurations().getIdToAi().get(
-                  configProvider.getConfigurations().getTopActionableItem().getId()));
-               cacheTeamDefinitions(configProvider.getConfigurations().getIdToTeamDef().get(
-                  configProvider.getConfigurations().getTopTeamDefinition().getId()));
+               AtsConfigurations configs = getConfigService().getConfigurations();
+               cacheActionableItems(configs.getIdToAi().get(configs.getTopActionableItem().getId()));
+               cacheTeamDefinitions(configs.getIdToTeamDef().get(configs.getTopTeamDefinition().getId()));
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
@@ -249,14 +253,14 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
          private void cacheTeamDefinitions(JaxTeamDefinition jaxTeamDef) {
             atsCache.cacheAtsObject(new TeamDefinition(getLogger(), client, jaxTeamDef));
             for (Long childId : jaxTeamDef.getChildren()) {
-               cacheTeamDefinitions(configProvider.getConfigurations().getIdToTeamDef().get(childId));
+               cacheTeamDefinitions(getConfigService().getConfigurations().getIdToTeamDef().get(childId));
             }
          }
 
          private void cacheActionableItems(JaxActionableItem jaxAi) {
             atsCache.cacheAtsObject(new ActionableItem(getLogger(), client, jaxAi));
             for (Long child : jaxAi.getChildren()) {
-               cacheActionableItems(configProvider.getConfigurations().getIdToAi().get(child));
+               cacheActionableItems(getConfigService().getConfigurations().getIdToAi().get(child));
             }
          }
       };
@@ -269,11 +273,8 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
 
    @Override
    public void clearCaches() {
-      // clear server config cache
-      AtsClientService.getConfigEndpoint().requestCacheReload();
-
       // clear client config cache (read from server)
-      reloadConfigurationCache();
+      getConfigService().getConfigurations();
 
       super.clearCaches();
       getWorkDefinitionService().clearCaches();
@@ -552,12 +553,7 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
 
    @Override
    public List<WorkDefData> getWorkDefinitionsData() {
-      return getConfigurations().getWorkDefinitionsData();
-   }
-
-   @Override
-   public AtsConfigurations reloadConfigurationCache() {
-      return configProvider.reloadConfigurationCache();
+      return getConfigService().getConfigurations().getWorkDefinitionsData();
    }
 
    @Override
@@ -601,6 +597,15 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    @Override
    public IAtsActionableItemService getActionableItemService() {
       return actionableItemManager;
+   }
+
+   /**
+    * This should only be called by tests that require it or in a single server deployment (such as the demo dbinit).
+    */
+   @Override
+   public void reloadServerAndClientCaches() {
+      AtsClientService.getConfigEndpoint().getWithPend();
+      AtsClientService.get().getConfigService().getConfigurations();
    }
 
 }

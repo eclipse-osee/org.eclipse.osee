@@ -17,7 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.ws.rs.core.HttpHeaders;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.config.IAtsConfigurationProvider;
+import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
@@ -44,14 +44,20 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  */
 public class AtsUserServiceClientImpl extends AbstractAtsUserService implements IAtsUserServiceClient {
 
-   private IAtsConfigurationProvider configurationProvider;
+   private IAtsConfigurationsService configurationService;
 
    public AtsUserServiceClientImpl() {
       // For OSGI Instantiation
    }
 
-   public void setConfigurationsService(IAtsConfigurationProvider configurationProvider) {
-      this.configurationProvider = configurationProvider;
+   public void setConfigurationService(IAtsConfigurationsService configurationService) {
+      this.configurationService = configurationService;
+   }
+
+   @Override
+   public void reloadCache() {
+      configurationService.getConfigurationsWithPend();
+      super.reloadCache();
    }
 
    @Override
@@ -148,7 +154,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
 
    @Override
    public boolean isAtsAdmin(IAtsUser user) {
-      return configurationProvider.getConfigurations().getAtsAdmins().contains(user.getStoreObject());
+      return configurationService.getConfigurations().getAtsAdmins().contains(user.getStoreObject());
    }
 
    @Override
@@ -162,12 +168,12 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
 
    @Override
    public boolean isAtsAdmin() {
-      return configurationProvider.getConfigurations().getAtsAdmins().contains(getCurrentUser());
+      return configurationService.getConfigurations().getAtsAdmins().contains(getCurrentUser());
    }
 
    @Override
    public List<? extends IAtsUser> getUsers() {
-      return configurationProvider.getConfigurations().getUsers();
+      return configurationService.getConfigurations().getUsers();
    }
 
    @Override

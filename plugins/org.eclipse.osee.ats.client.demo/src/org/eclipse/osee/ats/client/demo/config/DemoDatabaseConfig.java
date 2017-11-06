@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
 import org.eclipse.osee.ats.config.AtsDatabaseConfig;
 import org.eclipse.osee.ats.core.client.util.AtsGroup;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.ats.demo.api.DemoSubsystems;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
@@ -76,6 +77,11 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
          PermissionEnum.FULLACCESS);
 
       AtsDatabaseConfig.organizePrograms(AtsArtifactTypes.Program, DemoArtifactToken.DemoPrograms);
+
+      AtsClientService.get().setConfigValue(AtsUtilCore.SINGLE_SERVER_DEPLOYMENT, "true");
+      // Reload caches cause Demo sheet import added new users
+      AtsClientService.getConfigEndpoint().getWithPend();
+      AtsClientService.get().getConfigService().getConfigurations();
 
    }
 

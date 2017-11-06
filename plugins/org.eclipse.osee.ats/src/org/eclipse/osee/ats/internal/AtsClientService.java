@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.internal;
 
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
-import org.eclipse.osee.ats.api.config.AtsConfigEndpoint;
+import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.ev.AtsWorkPackageEndpointApi;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.core.client.IAtsClient;
@@ -28,7 +28,7 @@ public class AtsClientService {
    private static IAtsClient atsClient;
    private static JaxRsWebTarget target;
    private static AtsTaskEndpointApi taskEp;
-   private static AtsConfigEndpoint configEp;
+   private static AtsConfigEndpointApi configEp;
    private static AgileEndpointApi agileEp;
    private static AtsWorkPackageEndpointApi workPackageEp;
    private static TupleEndpoint atsBranchTupleEndpoint;
@@ -58,9 +58,9 @@ public class AtsClientService {
       return taskEp;
    }
 
-   public static AtsConfigEndpoint getConfigEndpoint() {
+   public static AtsConfigEndpointApi getConfigEndpoint() {
       if (configEp == null) {
-         configEp = getAtsTarget().newProxy(AtsConfigEndpoint.class);
+         configEp = getAtsTarget().newProxy(AtsConfigEndpointApi.class);
       }
       return configEp;
    }

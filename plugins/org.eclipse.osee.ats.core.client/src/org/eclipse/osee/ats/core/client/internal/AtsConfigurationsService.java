@@ -14,7 +14,7 @@ import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
-import org.eclipse.osee.ats.api.config.IAtsConfigurationProvider;
+import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IUserArtLoader;
@@ -24,9 +24,11 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
+ * Provides client configurations through server endpoint
+ * 
  * @author Donald G. Dunne
  */
-public class AtsConfigurationsService implements IAtsConfigurationProvider {
+public class AtsConfigurationsService implements IAtsConfigurationsService {
 
    @Override
    public AtsConfigurations getConfigurations() {
@@ -34,12 +36,11 @@ public class AtsConfigurationsService implements IAtsConfigurationProvider {
    }
 
    @Override
-   public AtsConfigurations reloadConfigurationCache() {
-      configurationsCache = Suppliers.memoizeWithExpiration(getConfigurationsSupplier(), 5, TimeUnit.MINUTES);
-      return configurationsCache.get();
+   public AtsConfigurations getConfigurationsWithPend() {
+      return getConfigurationsSupplier().get();
    }
 
-   private Supplier<AtsConfigurations> configurationsCache =
+   private final Supplier<AtsConfigurations> configurationsCache =
       Suppliers.memoizeWithExpiration(getConfigurationsSupplier(), 5, TimeUnit.MINUTES);
 
    private Supplier<AtsConfigurations> getConfigurationsSupplier() {

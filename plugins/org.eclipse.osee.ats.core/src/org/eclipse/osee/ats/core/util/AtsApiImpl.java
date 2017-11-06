@@ -22,9 +22,8 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileSprintHtmlOperation;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.column.IAtsColumnService;
-import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.IAtsCache;
-import org.eclipse.osee.ats.api.config.IAtsConfigurationProvider;
+import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
@@ -101,7 +100,7 @@ public abstract class AtsApiImpl implements AtsApi {
    protected IAtsWorkDefinitionService workDefinitionService;
    protected IAtsWorkDefinitionDslService workDefinitionDslService;
    protected IAtsUserService userService;
-   protected IAtsConfigurationProvider configProvider;
+   protected IAtsConfigurationsService configurationsService;
    protected IAtsEarnedValueService earnedValueService;
    protected TeamWorkflowProviders teamWorkflowProvidersLazy;
    protected IAttributeResolver attributeResolverService;
@@ -145,10 +144,6 @@ public abstract class AtsApiImpl implements AtsApi {
 
    public void setLogger(Log logger) {
       this.logger = logger;
-   }
-
-   public void setConfigurationsService(IAtsConfigurationProvider configProvider) {
-      this.configProvider = configProvider;
    }
 
    public void setAtsUserService(IAtsUserService userServiceClient) {
@@ -384,11 +379,6 @@ public abstract class AtsApiImpl implements AtsApi {
    @Override
    public IAtsEarnedValueServiceProvider getEarnedValueServiceProvider() {
       return this;
-   }
-
-   @Override
-   public AtsConfigurations getConfigurations() {
-      return configProvider.getConfigurations();
    }
 
    @Override
@@ -650,6 +640,16 @@ public abstract class AtsApiImpl implements AtsApi {
    @Override
    public Collection<IAgileSprintHtmlOperation> getAgileSprintHtmlReportOperations() {
       return agileSprintHtmlReportOperations;
+   }
+
+   @Override
+   public boolean isSingleServerDeployment() {
+      return "true".equals(getConfigValue(AtsUtilCore.SINGLE_SERVER_DEPLOYMENT));
+   }
+
+   @Override
+   public IAtsConfigurationsService getConfigService() {
+      return configurationsService;
    }
 
 }

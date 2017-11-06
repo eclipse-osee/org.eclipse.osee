@@ -43,9 +43,9 @@ import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.util.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -67,6 +67,7 @@ public class AtsConfigOperation extends AbstractOperation {
    }
 
    private final String name;
+   private String workDefName;
    private final String teamDefName;
    private final Collection<String> versionNames;
    private final Collection<String> actionableItemsNames;
@@ -77,12 +78,13 @@ public class AtsConfigOperation extends AbstractOperation {
    private ArtifactToken actionableItemToken = null;
 
    /**
+    * @param name = name of work definition if workDefName is not set
     * @param teamDefName - name of team definition to use
     * @param versionNames - list of version names (if team is using versions)
     * @param actionableItems - list of actionable items
     */
    public AtsConfigOperation(String name, String teamDefName, Collection<String> versionNames, Collection<String> actionableItems) {
-      super("Configure Ats", Activator.PLUGIN_ID);
+      super(name, Activator.PLUGIN_ID);
       this.name = name;
       this.teamDefName = teamDefName;
       this.versionNames = versionNames;
@@ -95,15 +97,6 @@ public class AtsConfigOperation extends AbstractOperation {
       this.actionableItemToken = actionableItemToken;
    }
 
-   private void checkWorkItemNamespaceUnique() {
-      Artifact workDefArt = ArtifactQuery.getArtifactFromTypeAndNameNoException(AtsArtifactTypes.WorkDefinition, name,
-         AtsClientService.get().getAtsBranch());
-      if (workDefArt != null) {
-         throw new OseeArgumentException(
-            String.format("Configuration Namespace [%s] already used, choose a unique namespace.", name));
-      }
-   }
-
    public IAtsWorkDefinition getWorkDefinition() {
       return workDefinition;
    }
@@ -114,16 +107,15 @@ public class AtsConfigOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      checkWorkItemNamespaceUnique();
       monitor.worked(calculateWork(0.10));
 
       XResultData resultData = new XResultData();
-      this.workDefinition = createWorkflowDefinition(resultData);
+      this.workDefinition = createOrGetWorkflowDefinition(resultData);
       if (resultData.isErrors()) {
          throw new OseeStateException("Error created new Work Definition for Team Def %s", teamDef.toStringWithId());
       }
 
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Configure ATS for Default Team");
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(name);
 
       teamDef = createTeamDefinition(changes, AtsClientService.get());
       // Relate new team def to workflow artifact
@@ -142,8 +134,8 @@ public class AtsConfigOperation extends AbstractOperation {
       if (teamDefToken == null) {
          teamDef = AtsClientService.get().createTeamDefinition(teamDefName, changes, atsApi);
       } else {
-         teamDef = AtsClientService.get().createTeamDefinition(teamDefToken.getName(), teamDefToken.getId(), changes,
-            atsApi);
+         teamDef =
+            AtsClientService.get().createTeamDefinition(teamDefToken.getName(), teamDefToken.getId(), changes, atsApi);
       }
       changes.relate(TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService()),
          AtsRelationTypes.TeamMember_Member, AtsClientService.get().getUserService().getCurrentUser());
@@ -196,8 +188,13 @@ public class AtsConfigOperation extends AbstractOperation {
       }
    }
 
-   private IAtsWorkDefinition createWorkflowDefinition(XResultData resultData) {
-      IAtsWorkDefinition workDef = AtsClientService.get().getWorkDefinitionService().getWorkDefinition(name);
+   private IAtsWorkDefinition createOrGetWorkflowDefinition(XResultData resultData) {
+      IAtsWorkDefinition workDef = null;
+      if (Strings.isValid(workDefName)) {
+         workDef = AtsClientService.get().getWorkDefinitionService().getWorkDefinition(workDefName);
+      } else if (Strings.isValid(name)) {
+         workDef = AtsClientService.get().getWorkDefinitionService().getWorkDefinition(name);
+      }
       // If can't be found, create a new one
       if (workDef == null) {
          IAtsChangeSet changes = AtsClientService.get().getStoreService().createAtsChangeSet(
@@ -262,6 +259,14 @@ public class AtsConfigOperation extends AbstractOperation {
 
    public IAtsTeamDefinition getTeamDefinition() {
       return teamDef;
+   }
+
+   public String getWorkDefName() {
+      return workDefName;
+   }
+
+   public void setWorkDefName(String workDefName) {
+      this.workDefName = workDefName;
    }
 
 }

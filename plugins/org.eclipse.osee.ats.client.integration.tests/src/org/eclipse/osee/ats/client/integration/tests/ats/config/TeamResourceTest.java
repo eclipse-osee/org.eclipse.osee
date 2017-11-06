@@ -12,12 +12,10 @@ package org.eclipse.osee.ats.client.integration.tests.ats.config;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.demo.api.DemoTeam;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -26,11 +24,6 @@ import org.junit.Test;
  * @author Donald G. Dunne
  */
 public class TeamResourceTest extends AbstractConfigurationRestTest {
-
-   @BeforeClass
-   public static void setup() {
-      AtsClientService.get().clearCaches();
-   }
 
    @Test
    public void testAtsTeamsRestCall() throws Exception {

@@ -43,7 +43,7 @@ public class AtsBulkLoad {
             @Override
             protected void doWork(IProgressMonitor monitor) throws Exception {
                AtsClientService.get().clearCaches();
-               AtsClientService.get().getConfigurations();
+               AtsClientService.get().getConfigService().getConfigurations();
             }
          };
          ops.add(op);
@@ -51,14 +51,6 @@ public class AtsBulkLoad {
          ops.add(Operations.createNoOpOperation("ATS Bulk Loading"));
       }
       return ops;
-   }
-
-   public static void reloadConfig(boolean pend) {
-      if (pend) {
-         AtsClientService.get().reloadAllCaches(pend);
-      } else {
-         AtsClientService.get().clearCaches();
-      }
    }
 
    public static Set<Artifact> bulkLoadArtifacts(Collection<? extends Artifact> artifacts) {

@@ -20,7 +20,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.client.demo.config.DemoDbUtil;
 import org.eclipse.osee.ats.client.demo.internal.Activator;
-import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
+import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.access.AccessControlManager;
@@ -82,7 +82,8 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
 
       OseeLog.log(Activator.class, Level.INFO, "Populate Demo Database");
 
-      AtsBulkLoad.reloadConfig(true);
+      AtsClientService.getConfigEndpoint().getWithPend();
+      AtsClientService.get().getConfigService().getConfigurations();
 
       // Import all requirements on SAW_Bld_1 Branch
       demoDbImportReqsTx();

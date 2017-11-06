@@ -19,12 +19,12 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -52,6 +52,7 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
          AtsRelationTypes.TeamDefinitionToVersion_Version.getGuid(), AtsRelationTypes.TeamActionableItem_Team.getGuid(),
          AtsRelationTypes.PrivilegedMember_Team.getGuid(), AtsRelationTypes.TeamLead_Team.getGuid(),
          AtsRelationTypes.ParallelVersion_Child.getGuid(), AtsRelationTypes.ParallelVersion_Parent.getGuid());
+   private Boolean singleServerDeployment;
 
    @Override
    public List<? extends IEventFilter> getEventFilters() {
@@ -60,10 +61,19 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
 
    @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
-      if (!DbUtil.isDbInit()) {
+      if (!DbUtil.isDbInit() && !AtsUtilCore.isInTest() && isSingleServerDeployment()) {
          boolean handledConfigReload = processArtifacts(artifactEvent, sender);
-         processRelations(artifactEvent, handledConfigReload);
+         if (!handledConfigReload) {
+            processRelations(artifactEvent, handledConfigReload);
+         }
       }
+   }
+
+   private boolean isSingleServerDeployment() {
+      if (singleServerDeployment == null) {
+         singleServerDeployment = AtsClientService.get().isSingleServerDeployment();
+      }
+      return singleServerDeployment;
    }
 
    private void processRelations(ArtifactEvent artifactEvent, boolean handledConfigReload) {
@@ -73,7 +83,7 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
             try {
                RelationType typeByGuid = RelationTypeManager.getTypeByGuid(guidRel.getRelTypeGuid());
                if (configReloadRelationTypeGuids.contains(typeByGuid.getGuid())) {
-                  AtsBulkLoad.reloadConfig(false);
+                  AtsClientService.get().reloadServerAndClientCaches();
                   break;
                }
             } catch (OseeCoreException ex) {
@@ -115,7 +125,7 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
 
       if (reload) {
          try {
-            AtsBulkLoad.reloadConfig(false);
+            AtsClientService.get().reloadServerAndClientCaches();
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }

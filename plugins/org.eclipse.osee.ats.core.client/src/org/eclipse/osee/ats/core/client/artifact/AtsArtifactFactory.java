@@ -27,7 +27,7 @@ import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.WorkDefinition;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -55,28 +55,21 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
  */
 public class AtsArtifactFactory extends ArtifactFactory {
    private final List<ArtifactTypeId> disabledUserCreationTypes = new ArrayList<>(20);
-   private final List<ArtifactTypeId> supportedTypes = new ArrayList<>(20);
-   private static final ArtifactTypeId[] subclassesTypes = new ArtifactTypeId[] {
-      Action,
-      PeerToPeerReview,
-      DecisionReview,
-      Task,
-      TeamWorkflow,
-      Goal,
-      AgileSprint,
-      AgileBacklog};
+   private List<ArtifactTypeId> supportedTypes = null;
 
-   private void setupSupportedTypes() {
-      Collections.addAll(supportedTypes, subclassesTypes);
-      supportedTypes.addAll(AtsClientService.get().getStoreService().getTeamWorkflowArtifactTypes());
+   private Collection<ArtifactTypeId> getSupportedTypes() {
+      if (supportedTypes == null) {
+         supportedTypes = new LinkedList<>();
+         supportedTypes.addAll(Arrays.asList(Action, PeerToPeerReview, DecisionReview, Task, TeamWorkflow, Goal,
+            AgileSprint, AgileBacklog));
+         supportedTypes.addAll(AtsClientService.get().getStoreService().getTeamWorkflowArtifactTypes());
+      }
+      return supportedTypes;
    }
 
    @Override
    public boolean isResponsibleFor(ArtifactTypeId artifactType) {
-      if (supportedTypes.isEmpty()) {
-         setupSupportedTypes();
-      }
-      return supportedTypes.contains(artifactType);
+      return getSupportedTypes().contains(artifactType);
    }
 
    @Override
@@ -121,8 +114,10 @@ public class AtsArtifactFactory extends ArtifactFactory {
    }
 
    public void setupDisabledUserCreationArtifactTypes() {
-      Collections.addAll(disabledUserCreationTypes, subclassesTypes);
-      Collections.addAll(disabledUserCreationTypes, AgileTeam, AgileFeatureGroup);
+      disabledUserCreationTypes.addAll(getSupportedTypes());
+      disabledUserCreationTypes.add(AgileTeam);
+      disabledUserCreationTypes.add(AgileFeatureGroup);
+      disabledUserCreationTypes.add(AgileSprint);
       String configValue = AtsClientService.get().getConfigValue(AtsUtilCore.USER_CREATION_DISABLED);
       if (Strings.isValid(configValue)) {
          for (String artifactTypeToken : configValue.split(";")) {

@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.rest;
+package org.eclipse.osee.ats.rest.internal.config;
 
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.ActionableItem;
 import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.Configuration;
@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.AtsConfiguration;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.AtsViews;
+import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
 import org.eclipse.osee.ats.api.config.JaxActionableItem;
 import org.eclipse.osee.ats.api.config.JaxTeamDefinition;
 import org.eclipse.osee.ats.api.config.JaxVersion;
@@ -40,7 +41,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.WorkDefData;
-import org.eclipse.osee.ats.rest.internal.config.UpdateAtsConfiguration;
+import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -48,14 +49,16 @@ import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
+ * Loads the configurations from the database and provides to both server and clients through endpoint.
+ *
  * @author Donald G Dunne
  */
-public class AtsConfigCache {
+public class AtsConfigurationsService implements IAtsConfigurationsService {
    private final OrcsApi orcsApi;
    private final AtsApi atsApi;
    private AtsConfigurations atsConfigurations;
 
-   public AtsConfigCache(AtsApi atsApi, OrcsApi orcsApi) {
+   public AtsConfigurationsService(AtsApi atsApi, OrcsApi orcsApi) {
       this.atsApi = atsApi;
       this.orcsApi = orcsApi;
    }
@@ -64,22 +67,26 @@ public class AtsConfigCache {
     * Not synchronized to improve performance after cache is initially loaded. Depends on synchronization of load() and
     * its repeated check of atsConfigurations == null
     */
-   public AtsConfigurations get() {
+   @Override
+   public AtsConfigurations getConfigurations() {
       if (atsConfigurations == null) {
          load(false);
       }
       return atsConfigurations;
    }
 
-   public AtsConfigurations reload() {
+   @Override
+   public AtsConfigurations getConfigurationsWithPend() {
       return load(true);
    }
 
    private synchronized AtsConfigurations load(boolean reload) {
-      if (reload || atsConfigurations == null) { // fast design of get() depends on re-checking atsConfigurations == null here
+      // fast design of get() depends on re-checking atsConfigurations == null here
+      if (reload || atsConfigurations == null) {
          if (orcsApi.getAdminOps().isDataStoreInitialized()) {
             atsConfigurations = getAtsConfigurationsFromDb();
          } else {
+            // just return an empty one if database is being initialized so don't get NPE
             atsConfigurations = new AtsConfigurations();
          }
       }

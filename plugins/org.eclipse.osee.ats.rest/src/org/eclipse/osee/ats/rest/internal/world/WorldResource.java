@@ -203,7 +203,7 @@ public class WorldResource {
       headers.add("Link");
       sb.append(AHTML.addHeaderRowMultiColumnTable(headers));
 
-      AtsConfigurations configurations = atsServer.getConfigurations();
+      AtsConfigurations configurations = atsServer.getConfigService().getConfigurations();
       for (IAtsWorkItem workItem : workItems) {
 
          // create row

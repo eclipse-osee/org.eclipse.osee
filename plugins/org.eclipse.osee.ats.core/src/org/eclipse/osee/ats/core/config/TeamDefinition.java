@@ -60,7 +60,8 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
       List<IAtsActionableItem> children = new LinkedList<>();
       if (jaxTeamDef != null) {
          for (Long aiId : jaxTeamDef.getAis()) {
-            children.add(new ActionableItem(logger, atsApi, atsApi.getConfigurations().getIdToAi().get(aiId)));
+            children.add(
+               new ActionableItem(logger, atsApi, atsApi.getConfigService().getConfigurations().getIdToAi().get(aiId)));
          }
       } else {
          for (ArtifactToken artifact : atsApi.getRelationResolver().getRelated(artifact,

@@ -49,7 +49,6 @@ import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.client.demo.SprintItemData;
 import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
-import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
@@ -94,7 +93,8 @@ public class Pdd93CreateDemoAgile {
    public void run() throws Exception {
       validateArtifactCache();
 
-      AtsBulkLoad.reloadConfig(true);
+      AtsClientService.get().reloadServerAndClientCaches();
+
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
 
       // create agile program

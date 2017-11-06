@@ -29,7 +29,14 @@ public class ClearAtsConfigCache extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
 
+      AtsClientService.getConfigEndpoint().getWithPend();
       AtsClientService.get().clearCaches();
 
+   }
+
+   @Override
+   public String getDescription() {
+      return "Clear a singleton server of its cached data and then requests cache from client.\n" //
+         + "This will not work in a multiple server production environment";
    }
 }

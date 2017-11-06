@@ -112,7 +112,8 @@ public class AtsWorkDefinitionDslServiceImpl implements IAtsWorkDefinitionDslSer
          }
          return null;
       } catch (Exception ex) {
-         throw new OseeWrappedException(ex, "Error converting workDefStr [%s] to Work Definition", id);
+         throw new OseeWrappedException(ex, "Error converting workDef id [%s] to Work Definition. workDefStr: [%s]", id,
+            workDefinitionDsl);
       }
    }
 

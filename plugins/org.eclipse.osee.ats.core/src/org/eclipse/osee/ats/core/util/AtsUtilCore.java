@@ -33,6 +33,8 @@ public class AtsUtilCore {
    public static final String ATS_CONFIG_ACTION_URL_KEY = "ActionUrl";
    public static final String ATS_DEFAULT_ACTION_URL = "/ats/ui/action/ID";
    public final static String SERVER_CONFIG_RELOAD_MIN_KEY = "server_config_reload_min";
+   public final static long SERVER_CONFIG_RELOAD_MIN_DEFAULT = 30;
+   public static final String SINGLE_SERVER_DEPLOYMENT = "single_server_deployment";
 
    private static Map<Long, String> idToGuidMap = new HashMap<>(50);
 

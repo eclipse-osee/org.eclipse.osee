@@ -270,7 +270,7 @@ public class XNavigateComposite extends Composite {
                      label.setForeground(Displays.getSystemColor(SWT.COLOR_INFO_FOREGROUND));
                      label.setBackground(Displays.getSystemColor(SWT.COLOR_INFO_BACKGROUND));
                      label.setData("_TABLEITEM", item);
-                     label.setText(String.format("%s\n\n", item.getText(), description));
+                     label.setText(String.format("%s\n\n%s", item.getText(), description));
                      label.addListener(SWT.MouseExit, labelListener);
                      label.addListener(SWT.MouseDown, labelListener);
 

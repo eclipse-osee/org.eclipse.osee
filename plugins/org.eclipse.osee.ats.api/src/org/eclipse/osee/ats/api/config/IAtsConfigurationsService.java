@@ -13,10 +13,10 @@ package org.eclipse.osee.ats.api.config;
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsConfigurationProvider {
+public interface IAtsConfigurationsService {
 
    AtsConfigurations getConfigurations();
 
-   AtsConfigurations reloadConfigurationCache();
+   AtsConfigurations getConfigurationsWithPend();
 
 }

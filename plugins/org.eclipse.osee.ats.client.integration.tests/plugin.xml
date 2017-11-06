@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.osee.ats.AtsWorkDefinitionSheetProvider">
+      <AtsWorkDefinitionSheetProvider
+            classname="org.eclipse.osee.ats.client.integration.tests.util.AtsIntegrationTestWorkDefinitionSheetProvider"
+            db_type="demo">
+      </AtsWorkDefinitionSheetProvider>
+   </extension>
+
+</plugin>

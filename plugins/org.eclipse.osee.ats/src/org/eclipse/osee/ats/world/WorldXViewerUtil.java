@@ -74,7 +74,8 @@ public class WorldXViewerUtil {
    }
 
    public static List<XViewerAtsAttributeValueColumn> getConfigurationColumns() {
-      List<AtsAttributeValueColumn> columns = AtsClientService.getConfigEndpoint().get().getViews().getAttrColumns();
+      List<AtsAttributeValueColumn> columns =
+         AtsClientService.get().getConfigService().getConfigurations().getViews().getAttrColumns();
       List<XViewerAtsAttributeValueColumn> configColumns = new ArrayList<>();
       for (AtsAttributeValueColumn column : columns) {
          try {
@@ -97,7 +98,7 @@ public class WorldXViewerUtil {
    }
 
    public static void registerStateColumns(XViewerFactory factory) {
-      for (String stateName : AtsClientService.get().getConfigurations().getValidStateNames()) {
+      for (String stateName : AtsClientService.get().getConfigService().getConfigurations().getValidStateNames()) {
          factory.registerColumns(new StateAssigneesColumn(stateName));
          factory.registerColumns(new StateCompletedColumn(stateName));
       }

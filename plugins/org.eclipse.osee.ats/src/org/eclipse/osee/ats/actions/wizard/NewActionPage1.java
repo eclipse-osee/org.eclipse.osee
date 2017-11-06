@@ -24,6 +24,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.JaxActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -155,9 +156,9 @@ public class NewActionPage1 extends WizardPage {
          if (selectableAis == null) {
             List<IAtsActionableItem> activeActionableItemTree = new LinkedList<>();
             IAtsClient atsClient = AtsClientService.get();
-            for (Long aiId : atsClient.getConfigurations().getIdToAi().get(
-               atsClient.getConfigurations().getTopActionableItem().getId()).getChildren()) {
-               JaxActionableItem jai = atsClient.getConfigurations().getIdToAi().get(aiId);
+            AtsConfigurations configs = atsClient.getConfigService().getConfigurations();
+            for (Long aiId : configs.getIdToAi().get(configs.getTopActionableItem().getId()).getChildren()) {
+               JaxActionableItem jai = configs.getIdToAi().get(aiId);
                if (jai.isActive()) {
                   activeActionableItemTree.add(new ActionableItem(atsClient.getLogger(), atsClient, jai));
                }

@@ -88,6 +88,7 @@ public class AtsTest_DemoPopulateAndTest_Suite {
       // Re-authenticate so we can continue
       IdeClientSession session = ClientSessionManager.getSession();
       UserManager.releaseUser();
+      AtsClientService.getConfigEndpoint().getWithPend();
       AtsClientService.get().clearCaches();
 
       Assert.assertEquals("Must run populate as Joe Smith (3333)", DemoUsers.Joe_Smith.getUserId(),
@@ -97,7 +98,7 @@ public class AtsTest_DemoPopulateAndTest_Suite {
 
       validateArtifactCache();
 
-      OseeLog.log(AtsTest_DemoPopulateAndTest_Suite.class, Level.SEVERE, "\nBegin Populate Demo DB...");
+      OseeLog.log(AtsTest_DemoPopulateAndTest_Suite.class, Level.INFO, "\nBegin Populate Demo DB...");
    }
 
    private static void validateArtifactCache() {

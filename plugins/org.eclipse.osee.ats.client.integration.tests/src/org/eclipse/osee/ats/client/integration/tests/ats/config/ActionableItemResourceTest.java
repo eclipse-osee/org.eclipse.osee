@@ -17,7 +17,6 @@ import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -26,11 +25,6 @@ import org.junit.Test;
  * @author Donald G. Dunne
  */
 public class ActionableItemResourceTest extends AbstractConfigurationRestTest {
-
-   @BeforeClass
-   public static void setup() {
-      AtsClientService.get().clearCaches();
-   }
 
    @Test
    public void testAtsAisRestCall() throws Exception {

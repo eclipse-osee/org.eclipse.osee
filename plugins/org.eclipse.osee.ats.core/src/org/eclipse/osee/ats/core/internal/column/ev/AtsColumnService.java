@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.core.internal.column.ev;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.column.IAtsColumn;
 import org.eclipse.osee.ats.api.column.IAtsColumnId;
 import org.eclipse.osee.ats.api.column.IAtsColumnService;
@@ -36,6 +36,7 @@ import org.eclipse.osee.ats.core.column.CompletedCancelledDateColumn;
 import org.eclipse.osee.ats.core.column.CompletedDateColumn;
 import org.eclipse.osee.ats.core.column.CreatedDateColumn;
 import org.eclipse.osee.ats.core.column.IAtsColumnProvider;
+import org.eclipse.osee.ats.core.column.IdColumn;
 import org.eclipse.osee.ats.core.column.ImplementerColumn;
 import org.eclipse.osee.ats.core.column.InsertionActivityColumn;
 import org.eclipse.osee.ats.core.column.InsertionColumn;
@@ -47,7 +48,6 @@ import org.eclipse.osee.ats.core.column.TaskRelatedArtifactTypeColumn;
 import org.eclipse.osee.ats.core.column.TeamColumn;
 import org.eclipse.osee.ats.core.column.TitleColumn;
 import org.eclipse.osee.ats.core.column.TypeColumn;
-import org.eclipse.osee.ats.core.column.IdColumn;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 
 /**
@@ -76,7 +76,7 @@ public class AtsColumnService implements IAtsColumnService {
       }
 
       // Add from database configurations
-      for (AtsAttributeValueColumn attrCol : atsApi.getConfigurations().getViews().getAttrColumns()) {
+      for (AtsAttributeValueColumn attrCol : atsApi.getConfigService().getConfigurations().getViews().getAttrColumns()) {
          if (id.equals(attrCol.getId())) {
             column = new AtsAttributeValueColumnHandler(attrCol, atsApi);
             break;

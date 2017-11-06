@@ -41,6 +41,6 @@ public class StateNameSearchWidget extends AbstractXComboViewerSearchWidget<Stri
 
    @Override
    public Collection<String> getInput() {
-      return AtsClientService.get().getConfigurations().getValidStateNames();
+      return AtsClientService.get().getConfigService().getConfigurations().getValidStateNames();
    }
 }

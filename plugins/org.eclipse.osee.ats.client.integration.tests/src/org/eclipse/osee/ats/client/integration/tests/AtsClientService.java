@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.client.integration.tests;
 
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
-import org.eclipse.osee.ats.api.config.AtsConfigEndpoint;
+import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.country.CountryEndpointApi;
 import org.eclipse.osee.ats.api.ev.AtsWorkPackageEndpointApi;
 import org.eclipse.osee.ats.api.insertion.InsertionActivityEndpointApi;
@@ -43,7 +43,7 @@ public class AtsClientService {
    private static AtsTaskEndpointApi taskEp;
    private static AtsRuleEndpointApi ruleEp;
    private static AtsNotifyEndpointApi notifyEp;
-   private static AtsConfigEndpoint configEp;
+   private static AtsConfigEndpointApi configEp;
    private static AtsWorkPackageEndpointApi workPackageEp;
    private static AtsActionEndpointApi actionEp;
 
@@ -122,9 +122,9 @@ public class AtsClientService {
       return notifyEp;
    }
 
-   public static AtsConfigEndpoint getConfigEndpoint() {
+   public static AtsConfigEndpointApi getConfigEndpoint() {
       if (configEp == null) {
-         configEp = getAtsTarget().newProxy(AtsConfigEndpoint.class);
+         configEp = getAtsTarget().newProxy(AtsConfigEndpointApi.class);
       }
       return configEp;
    }

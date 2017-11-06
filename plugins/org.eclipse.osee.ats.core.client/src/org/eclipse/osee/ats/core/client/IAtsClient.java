@@ -12,9 +12,9 @@ package org.eclipse.osee.ats.core.client;
 
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
 import org.eclipse.osee.ats.api.util.IAtsEventService;
@@ -86,6 +86,8 @@ public interface IAtsClient extends AtsApi, IAtsNotifier, IAttributeResolverProv
    <T> T getConfigItem(ArtifactToken configToken);
 
    <T> Collection<T> getConfigItems(ArtifactToken... configTokens);
+
+   void reloadServerAndClientCaches();
 
    Artifact getArtifact(ArtifactId artifact, BranchId branch);
 

@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
-import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.team.ChangeType;
@@ -46,8 +45,8 @@ import org.eclipse.osee.ats.core.util.AtsCoreFactory;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionServiceImpl;
 import org.eclipse.osee.ats.core.workflow.WorkItemFactory;
-import org.eclipse.osee.ats.rest.AtsConfigCache;
 import org.eclipse.osee.ats.rest.IAtsServer;
+import org.eclipse.osee.ats.rest.internal.config.AtsConfigurationsService;
 import org.eclipse.osee.ats.rest.internal.convert.ConvertBaselineGuidToBaselineId;
 import org.eclipse.osee.ats.rest.internal.convert.ConvertFavoriteBranchGuidToId;
 import org.eclipse.osee.ats.rest.internal.notify.AtsNotificationEventProcessor;
@@ -92,17 +91,14 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
    private IAgileService agileService;
    private volatile boolean emailEnabled = true;
    private boolean loggedNotificationDisabled = false;
-
    private final List<IAtsNotifierServer> notifiers = new CopyOnWriteArrayList<>();
    private final Map<String, IAtsDatabaseConversion> externalConversions =
       new ConcurrentHashMap<String, IAtsDatabaseConversion>();
    private AtsActionEndpointApi actionEndpoint;
-   private AtsConfigCache configCache;
    private ExecutorAdmin executorAdmin;
 
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
-      configCache = new AtsConfigCache(this, orcsApi);
    }
 
    public void setExecutorAdmin(ExecutorAdmin executorAdmin) {
@@ -128,6 +124,7 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
 
    @Override
    public void start() {
+      configurationsService = new AtsConfigurationsService(this, orcsApi);
       attributeResolverService = new AtsAttributeResolverServiceImpl();
 
       super.start();
@@ -170,14 +167,25 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
    }
 
    private void scheduleAtsConfigCacheReloader() {
-      long reloadTimeMin = 30;
-      String reloadTimeStr = getConfigValue(AtsUtilCore.SERVER_CONFIG_RELOAD_MIN_KEY, "30");
+      long reloadTime = AtsUtilCore.SERVER_CONFIG_RELOAD_MIN_DEFAULT;
+      String reloadTimeStr =
+         orcsApi.getAdminOps().isDataStoreInitialized() ? getConfigValue(AtsUtilCore.SERVER_CONFIG_RELOAD_MIN_KEY) : "";
       if (Strings.isNumeric(reloadTimeStr)) {
-         reloadTimeMin = Long.valueOf(reloadTimeStr);
+         reloadTime = Long.valueOf(reloadTimeStr);
       }
 
-      executorAdmin.scheduleWithFixedDelay("ATS Configuration Cache Reloader", configCache::reload, reloadTimeMin,
-         reloadTimeMin, TimeUnit.MINUTES);
+      // run immediately, then re-run at reloadTime
+      executorAdmin.scheduleWithFixedDelay("ATS Configuration Cache Reloader", new ReloadConfigCache(), 0, reloadTime,
+         TimeUnit.MINUTES);
+   }
+
+   private class ReloadConfigCache implements Runnable {
+
+      @Override
+      public void run() {
+         getConfigService().getConfigurationsWithPend();
+      }
+
    }
 
    @Override
@@ -388,16 +396,6 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
    }
 
    @Override
-   public AtsConfigurations getConfigurations() {
-      return configCache.get();
-   }
-
-   @Override
-   public AtsConfigurations reloadConfigurationCache() {
-      return configCache.reload();
-   }
-
-   @Override
    public CustomizeData getCustomizationByGuid(String customize_guid) {
       CustomizeData cust = null;
       ArtifactReadable customizeStoreArt =
@@ -484,8 +482,7 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
    public void clearCaches() {
       super.clearCaches();
 
-      // clear client config cache (read from server)
-      reloadConfigurationCache();
+      getConfigService().getConfigurationsWithPend();
    }
 
    @Override

@@ -13,12 +13,10 @@ package org.eclipse.osee.ats.client.integration.tests.ats.core.client.review;
 import java.util.Arrays;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.JaxAtsWorkDef;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.client.integration.AtsClientIntegrationTestSuite;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.workflow.transition.MockTransitionHelper;
@@ -29,8 +27,6 @@ import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.ui.ws.AWorkspace;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -54,21 +50,11 @@ public class PeerReviewDefinitionManagerTest extends PeerReviewDefinitionManager
    public void testCreatePeerReviewDuringTransition() {
       AtsTestUtil.cleanupAndReset("PeerReviewDefinitionManagerTest");
 
-      try {
-         String atsDsl =
-            AWorkspace.getOseeInfResource("support/" + WORK_DEF_NAME + ".ats", AtsClientIntegrationTestSuite.class);
-         JaxAtsWorkDef jaxWorkDef = new JaxAtsWorkDef();
-         jaxWorkDef.setName(WORK_DEF_NAME);
-         jaxWorkDef.setWorkDefDsl(atsDsl);
-         AtsTestUtil.importWorkDefinition(jaxWorkDef);
-         AtsClientService.get().clearCaches();
-      } catch (Exception ex) {
-         throw new OseeCoreException(ex, "Error importing " + WORK_DEF_NAME);
-      }
-
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       teamArt.setSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, WORK_DEF_NAME);
       teamArt.persist("PeerReviewDefinitionManagerTest");
+
+      AtsClientService.get().getWorkDefinitionService().clearCaches();
 
       Assert.assertEquals("Implement State should have a single peer review definition", 1,
          teamArt.getWorkDefinition().getStateByName(TeamState.Implement.getName()).getPeerReviews().size());

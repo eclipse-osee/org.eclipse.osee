@@ -22,7 +22,7 @@ import javax.ws.rs.core.Response.Status;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
-import org.eclipse.osee.ats.api.config.AtsConfigEndpoint;
+import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.config.AtsConfiguration;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.ColumnAlign;
@@ -58,7 +58,7 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 /**
  * @author Donald G. Dunne
  */
-public final class AtsConfigEndpointImpl implements AtsConfigEndpoint {
+public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
 
    private final OrcsApi orcsApi;
    private final AtsApi atsApi;
@@ -74,13 +74,21 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpoint {
 
    @Override
    public String requestCacheReload() {
-      executorAdmin.scheduleOnce("REST requested ATS configuration cache reload", atsApi::reloadConfigurationCache);
+      executorAdmin.scheduleOnce("REST requested ATS configuration cache reload", getConfigService);
       return "ATS configuration cache reload request submitted.";
    }
 
+   private final Runnable getConfigService = new Runnable() {
+
+      @Override
+      public void run() {
+         atsApi.getConfigService().getConfigurationsWithPend();
+      }
+   };
+
    @Override
    public AtsConfigurations get() {
-      return atsApi.getConfigurations();
+      return atsApi.getConfigService().getConfigurations();
    }
 
    @Override
@@ -89,8 +97,8 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpoint {
    }
 
    @Override
-   public AtsConfigurations getFromDb() {
-      return atsApi.reloadConfigurationCache();
+   public AtsConfigurations getWithPend() {
+      return atsApi.getConfigService().getConfigurationsWithPend();
    }
 
    @Override

@@ -111,9 +111,9 @@ import org.eclipse.osee.ats.column.WeeklyBenefitHrsColumn;
 import org.eclipse.osee.ats.column.WorkDaysNeededColumn;
 import org.eclipse.osee.ats.column.WorkPackageTextColumn;
 import org.eclipse.osee.ats.column.WorkingBranchArchivedColumn;
+import org.eclipse.osee.ats.column.WorkingBranchIdColumn;
 import org.eclipse.osee.ats.column.WorkingBranchStateColumn;
 import org.eclipse.osee.ats.column.WorkingBranchTypeColumn;
-import org.eclipse.osee.ats.column.WorkingBranchIdColumn;
 import org.eclipse.osee.ats.column.ev.WorkPackageColumnUI;
 import org.eclipse.osee.ats.column.ev.WorkPackageGuidColumnUI;
 import org.eclipse.osee.ats.column.ev.WorkPackageIdColumnUI;
@@ -129,12 +129,12 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactTokenColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactTypeColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.GuidColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.IdColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedByColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedCommentColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedDateColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedTransactionColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedTransactionCommentColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.IdColumn;
 
 //import org.eclipse.osee.ats.column.ActivityIdColumn;
 
@@ -302,7 +302,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
     */
    private static XViewerColumn getAttriubuteConfigColumn(AtsAttributeValueColumn attrValueColumn) {
       XViewerColumn result = null;
-      for (AtsAttributeValueColumn column : AtsClientService.get().getConfigurations().getViews().getAttrColumns()) {
+      for (AtsAttributeValueColumn column : AtsClientService.get().getConfigService().getConfigurations().getViews().getAttrColumns()) {
          if (column.getNamespace().equals(NAMESPACE) && column.getId().equals(attrValueColumn.getId())) {
             result = new XViewerAtsAttributeValueColumn(column);
             break;

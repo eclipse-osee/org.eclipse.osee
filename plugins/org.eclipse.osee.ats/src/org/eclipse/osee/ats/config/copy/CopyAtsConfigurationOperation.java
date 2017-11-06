@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -96,7 +95,9 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
             return;
          }
 
-         AtsBulkLoad.reloadConfig(true);
+         if (AtsClientService.get().isSingleServerDeployment()) {
+            AtsClientService.get().reloadServerAndClientCaches();
+         }
          persistOrUndoChanges(changes);
          XResultDataUI.report(resultData, getName());
       } finally {
@@ -215,6 +216,12 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
    private void persistOrUndoChanges(IAtsChangeSet changes) {
       if (data.isPersistChanges()) {
          changes.execute();
+
+         /**
+          * Clear server and client caches so these new ATS Config objects are seen. This will only work in a singleton
+          * server environment.
+          */
+         AtsClientService.getConfigEndpoint().getWithPend();
          AtsClientService.get().clearCaches();
       } else {
          resultData.log("\n\nCleanup of created / modified artifacts\n\n");

@@ -2,6 +2,6 @@
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true">
    <implementation class="org.eclipse.osee.ats.core.client.internal.AtsConfigurationsService"/>
    <service>
-      <provide interface="org.eclipse.osee.ats.api.config.IAtsConfigurationProvider"/>
+      <provide interface="org.eclipse.osee.ats.api.config.IAtsConfigurationsService"/>
    </service>
 </scr:component>

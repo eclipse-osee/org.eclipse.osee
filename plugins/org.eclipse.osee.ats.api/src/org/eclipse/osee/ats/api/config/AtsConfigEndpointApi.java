@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.jdk.core.type.ViewModel;
  * @author Donald G. Dunne
  */
 @Path("config")
-public interface AtsConfigEndpoint {
+public interface AtsConfigEndpointApi {
 
    /**
     * @return cached copy of AtsConfigurations that is reloaded every 5 minutes. Use getFromDb() for latest copy from
@@ -46,7 +46,7 @@ public interface AtsConfigEndpoint {
    @GET
    @Path("fromdb")
    @Produces(MediaType.APPLICATION_JSON)
-   public AtsConfigurations getFromDb();
+   public AtsConfigurations getWithPend();
 
    @GET
    @Path("image")

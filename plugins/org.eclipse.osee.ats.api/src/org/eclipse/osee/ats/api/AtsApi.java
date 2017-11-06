@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.column.IAtsColumnService;
 import org.eclipse.osee.ats.api.config.AtsConfigKey;
 import org.eclipse.osee.ats.api.config.IAtsCache;
-import org.eclipse.osee.ats.api.config.IAtsConfigurationProvider;
+import org.eclipse.osee.ats.api.config.IAtsConfigurationsService;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
@@ -65,7 +65,7 @@ import org.eclipse.osee.logger.Log;
 /**
  * @author Donald G. Dunne
  */
-public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsConfigurationProvider, IAtsWorkDefinitionStringProvider, IAtsWorkItemServiceProvider {
+public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsWorkDefinitionStringProvider, IAtsWorkItemServiceProvider {
 
    IOseeBranch getAtsBranch();
 
@@ -224,5 +224,9 @@ public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsConfiguratio
    List<ArtifactToken> getArtifacts(IArtifactType artifactType);
 
    IAtsActionableItemService getActionableItemService();
+
+   boolean isSingleServerDeployment();
+
+   IAtsConfigurationsService getConfigService();
 
 }

@@ -65,8 +65,10 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
       changes.setSoleAttributeValue(aia, AtsAttributeTypes.Actionable, false);
       changes.execute();
 
+      AtsClientService.getConfigEndpoint().getWithPend();
       AtsClientService.get().clearCaches();
       AtsWorkDefinitionSheetProviders.initializeDatabase(new XResultData(false), "ats");
+      AtsClientService.getConfigEndpoint().getWithPend();
       AtsClientService.get().clearCaches();
 
       AtsGroup.AtsAdmin.getArtifact().persist(getClass().getSimpleName());
@@ -87,6 +89,7 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
       List<String> versions = new ArrayList<>();
       AtsConfigOperation operation = new AtsConfigOperation("Configure Safety For ATS",
          AtsArtifactToken.SafetyTeamDefinition, versions, AtsArtifactToken.SafetyActionableItem);
+      operation.setWorkDefName("WorkDef_Team_Default");
       Operations.executeWorkAndCheckStatus(operation);
    }
 

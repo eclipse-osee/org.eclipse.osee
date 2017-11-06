@@ -13,12 +13,10 @@ package org.eclipse.osee.ats.client.integration.tests.ats.core.client.review;
 import java.util.Arrays;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.JaxAtsWorkDef;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.client.integration.AtsClientIntegrationTestSuite;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.workflow.transition.MockTransitionHelper;
@@ -29,8 +27,6 @@ import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.ui.ws.AWorkspace;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -55,21 +51,11 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewDefinitio
    public void testCreateDecisionReviewDuringTransition_ToDecision() {
       AtsTestUtil.cleanupAndReset("DecisionReviewDefinitionManagerTest - ToDecision");
 
-      try {
-         String atsDsl = AWorkspace.getOseeInfResource("support/" + DECISION_WORK_DEF_NAME + ".ats",
-            AtsClientIntegrationTestSuite.class).replaceAll("PUT_NAME_HERE", DECISION_WORK_DEF_NAME);
-         JaxAtsWorkDef jaxWorkDef = new JaxAtsWorkDef();
-         jaxWorkDef.setName(DECISION_WORK_DEF_NAME);
-         jaxWorkDef.setWorkDefDsl(atsDsl);
-         AtsTestUtil.importWorkDefinition(jaxWorkDef);
-         AtsClientService.get().clearCaches();
-      } catch (Exception ex) {
-         throw new OseeCoreException(ex, "Error importing " + DECISION_WORK_DEF_NAME);
-      }
-
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       teamArt.setSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, DECISION_WORK_DEF_NAME);
       teamArt.persist("DecisionReviewDefinitionManagerTest - ToDecision");
+
+      AtsClientService.get().getWorkDefinitionService().clearCaches();
 
       Assert.assertEquals("Implement State should have a single decision review definition", 1,
          teamArt.getWorkDefinition().getStateByName(TeamState.Implement.getName()).getDecisionReviews().size());
@@ -105,21 +91,11 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewDefinitio
    public void testCreateDecisionReviewDuringTransition_Prepare() {
       AtsTestUtil.cleanupAndReset("DecisionReviewDefinitionManagerTest - Prepare");
 
-      try {
-         String atsDsl = AWorkspace.getOseeInfResource("support/" + PREPARE_WORK_DEF_NAME + ".ats",
-            AtsClientIntegrationTestSuite.class).replaceAll("PUT_NAME_HERE", PREPARE_WORK_DEF_NAME);
-         JaxAtsWorkDef jaxWorkDef = new JaxAtsWorkDef();
-         jaxWorkDef.setName(PREPARE_WORK_DEF_NAME);
-         jaxWorkDef.setWorkDefDsl(atsDsl);
-         AtsTestUtil.importWorkDefinition(jaxWorkDef);
-         AtsClientService.get().clearCaches();
-      } catch (Exception ex) {
-         throw new OseeCoreException(ex, "Error importing " + PREPARE_WORK_DEF_NAME);
-      }
-
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       teamArt.setSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, PREPARE_WORK_DEF_NAME);
       teamArt.persist("DecisionReviewDefinitionManagerTest - Prepare");
+
+      AtsClientService.get().getWorkDefinitionService().clearCaches();
 
       Assert.assertEquals("No reviews should be present", 0, ReviewManager.getReviews(teamArt).size());
 
