@@ -113,7 +113,6 @@ public class ActionFactory implements IAtsActionFactory {
          Conditions.assertNotNull(ai, "Actionable Item must be specified.");
          ais.add(ai);
       }
-      Conditions.assertNotNull(data.getDescription(), "Description must be specified.");
 
       Date needByDate = null;
       if (Strings.isNumeric(data.getNeedByDateLong())) {
