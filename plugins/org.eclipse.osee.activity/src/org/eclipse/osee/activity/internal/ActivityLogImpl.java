@@ -22,8 +22,11 @@ import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_ACTIVITY_LOGGE
 import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_ACTIVITY_LOGGER__STACKTRACE_LINE_COUNT;
 import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_ACTIVITY_LOGGER__WRITE_RATE_IN_MILLIS;
 import static org.eclipse.osee.activity.ActivityConstants.DEFAULT_CLIENT_ID;
+import static org.eclipse.osee.activity.internal.ActivityLogImpl.LogEntry.ENTRY_ID;
+import static org.eclipse.osee.activity.internal.ActivityLogImpl.LogEntry.SERVER_ID;
+import static org.eclipse.osee.activity.internal.ActivityLogImpl.LogEntry.START_TIME;
 import static org.eclipse.osee.activity.internal.ActivityUtil.captureStackTrace;
-import static org.eclipse.osee.activity.internal.ActivityUtil.get;
+import static org.eclipse.osee.framework.core.data.CoreActivityTypes.DEFAULT_ROOT;
 import static org.eclipse.osee.framework.core.data.CoreActivityTypes.THREAD_ACTIVITY;
 import java.net.UnknownHostException;
 import java.util.Calendar;
@@ -102,7 +105,7 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
    private ActivityStorage storage;
    private SystemPreferences preferences;
 
-   private ActivityMonitorImpl activityMonitor;
+   private ActivityMonitor activityMonitor;
    private volatile long freshnessMillis;
    private volatile int exceptionLineCount;
    private volatile int executorPoolSize;
@@ -110,6 +113,7 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
    private volatile int cleanerKeepDays;
    private volatile boolean enabled = ActivityConstants.DEFAULT_ACTIVITY_LOGGER__ENABLED;
    private IApplicationServerManager applicationServerManager;
+   private String host;
 
    public void setApplicationServerManager(IApplicationServerManager applicationServerManager) {
       this.applicationServerManager = applicationServerManager;
@@ -135,15 +139,21 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
       for (ActivityTypeToken type : CoreActivityTypes.getTypes()) {
          types.put(type.getId(), type);
       }
-      activityMonitor = new ActivityMonitorImpl();
       update(properties);
+
+      host = applicationServerManager.getServerUri().toString();
+      Object[] defaultRootEntry = createEntry(Id.SENTINEL, DEFAULT_ROOT, SystemUser.OseeSystem, getThisServerId(),
+         DEFAULT_CLIENT_ID, 0L, 0, "default root entry for " + host);
+      activityMonitor = new ActivityMonitor(defaultRootEntry);
       executorAdmin.schedule(this::continuouslyLogThreadActivity);
    }
 
+   private Long getThisServerId() {
+      return (long) applicationServerManager.getPort();
+   }
+
    private Void continuouslyLogThreadActivity() {
-      Long port = (long) applicationServerManager.getPort();
-      String host = applicationServerManager.getServerUri().toString();
-      Long threadActivityParententryId = createActivityThread(THREAD_ACTIVITY, SystemUser.OseeSystem, port,
+      Long threadActivityParententryId = createActivityThread(THREAD_ACTIVITY, SystemUser.OseeSystem, get(SERVER_ID),
          DEFAULT_CLIENT_ID, "Start of thread activity logging thread on " + host);
 
       int sampleWindowMs;
@@ -178,11 +188,11 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
 
    public void update(Map<String, Object> properties) {
       //@formatter:off
-      freshnessMillis = get(properties, ACTIVITY_LOGGER__WRITE_RATE_IN_MILLIS, DEFAULT_ACTIVITY_LOGGER__WRITE_RATE_IN_MILLIS);
-      exceptionLineCount = get(properties, ACTIVITY_LOGGER__STACKTRACE_LINE_COUNT, DEFAULT_ACTIVITY_LOGGER__STACKTRACE_LINE_COUNT);
-      int newExecutorPoolSize = get(properties, ACTIVITY_LOGGER__EXECUTOR_POOL_SIZE, DEFAULT_ACTIVITY_LOGGER__EXECUTOR_POOL_SIZE);
+      freshnessMillis = ActivityUtil.get(properties, ACTIVITY_LOGGER__WRITE_RATE_IN_MILLIS, DEFAULT_ACTIVITY_LOGGER__WRITE_RATE_IN_MILLIS);
+      exceptionLineCount = ActivityUtil.get(properties, ACTIVITY_LOGGER__STACKTRACE_LINE_COUNT, DEFAULT_ACTIVITY_LOGGER__STACKTRACE_LINE_COUNT);
+      int newExecutorPoolSize = ActivityUtil.get(properties, ACTIVITY_LOGGER__EXECUTOR_POOL_SIZE, DEFAULT_ACTIVITY_LOGGER__EXECUTOR_POOL_SIZE);
       String value = (String)properties.get(ACTIVITY_LOGGER__ENABLED);
-      int newCleanerKeepDays = get(properties, ACTIVITY_LOGGER__CLEANER_KEEP_DAYS, DEFAULT_ACTIVITY_LOGGER__CLEANER_KEEP_DAYS);
+      int newCleanerKeepDays = ActivityUtil.get(properties, ACTIVITY_LOGGER__CLEANER_KEEP_DAYS, DEFAULT_ACTIVITY_LOGGER__CLEANER_KEEP_DAYS);
       if (Strings.isValid(value)) {
          enabled = Boolean.valueOf(value);
       }
@@ -249,9 +259,7 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
    @Override
    public Long createEntry(ActivityTypeToken type, Integer status, Object... messageArgs) {
       if (enabled) {
-         Object[] threadRootEntry = activityMonitor.getThreadRootEntry();
-         // Should never have a null rootEntry, but still want to log message with sentinel
-         Long parentId = threadRootEntry == null ? LogEntry.SENTINEL : LogEntry.ENTRY_ID.from(threadRootEntry);
+         Long parentId = get(ENTRY_ID);
          return createEntry(type, parentId, status, messageArgs);
       }
       return 0L;
@@ -260,24 +268,25 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
    @Override
    public Long createEntry(ActivityTypeToken typeId, Long parentId, Integer status, Object... messageArgs) {
       if (enabled) {
-         Object[] rootEntry = activityMonitor.getThreadRootEntry();
-         // Should never have a null rootEntry, but still want to log message with sentinels
+         Object[] rootEntry = activityMonitor.getThreadRootEntry(parentId);
          UserId accountId = UserId.valueOf(LogEntry.ACCOUNT_ID.from(rootEntry));
          Long serverId = LogEntry.SERVER_ID.from(rootEntry);
          Long clientId = LogEntry.CLIENT_ID.from(rootEntry);
-         Object[] entry =
-            createEntry(parentId, typeId, accountId, serverId, clientId, computeDuration(), status, messageArgs);
+         Object[] entry = createEntry(parentId, typeId, accountId, serverId, clientId, computeDuration(parentId),
+            status, messageArgs);
          return LogEntry.ENTRY_ID.from(entry);
       }
       return 0L;
    }
 
+   private Long get(LogEntry entry) {
+      return entry.from(activityMonitor.getThreadRootEntry());
+   }
+
    @Override
    public Long createEntry(UserId accountId, Long clientId, ActivityTypeToken typeId, Long parentId, Integer status, String... messageArgs) {
-      Object[] rootEntry = activityMonitor.getThreadRootEntry();
-      Long serverId = LogEntry.SERVER_ID.from(rootEntry);
-      Object[] entry = createEntry(parentId, typeId, accountId, serverId, clientId, computeDuration(), status,
-         (Object[]) messageArgs);
+      Object[] entry = createEntry(parentId, typeId, accountId, get(SERVER_ID), clientId, computeDuration(parentId),
+         status, (Object[]) messageArgs);
       return LogEntry.ENTRY_ID.from(entry);
    }
 
@@ -374,9 +383,15 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
    }
 
    private Long computeDuration() {
-      long timeOfUpdate = System.currentTimeMillis();
-      Object[] rootEntry = activityMonitor.getThreadRootEntry();
-      return timeOfUpdate = rootEntry == null ? LogEntry.SENTINEL : timeOfUpdate - LogEntry.START_TIME.from(rootEntry);
+      return computeDuration(activityMonitor.getThreadRootEntry());
+   }
+
+   private Long computeDuration(Object[] threadRootEntry) {
+      return System.currentTimeMillis() - START_TIME.from(threadRootEntry);
+   }
+
+   private Long computeDuration(Long parentId) {
+      return computeDuration(activityMonitor.getThreadRootEntry(parentId));
    }
 
    /**
@@ -452,7 +467,7 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
 
    @Override
    public Long createActivityThread(ActivityTypeToken type, UserId accountId, Long serverId, Long clientId, Object... messageArgs) {
-      return createActivityThread(ActivityConstants.ROOT_ENTRY_ID, type, accountId, serverId, clientId, messageArgs);
+      return createActivityThread(Id.SENTINEL, type, accountId, serverId, clientId, messageArgs);
    }
 
    @Override
@@ -460,6 +475,11 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
       Object[] entry = createEntry(parentId, type, accountId, serverId, clientId, 0L, 0, messageArgs);
       activityMonitor.addActivityThread(entry);
       return LogEntry.ENTRY_ID.from(entry);
+   }
+
+   @Override
+   public void removeActivityThread() {
+      activityMonitor.removeActivityThread();
    }
 
    @Override

@@ -66,5 +66,6 @@ public class ActivityLogResponseFilter implements ContainerResponseFilter {
             logger.error(th, "Error during ActivityContainerResponseFilter");
          }
       }
+      activityLog.removeActivityThread();
    }
 }

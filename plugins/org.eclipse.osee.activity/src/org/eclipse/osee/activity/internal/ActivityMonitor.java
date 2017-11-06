@@ -10,17 +10,61 @@
  *******************************************************************************/
 package org.eclipse.osee.activity.internal;
 
+import java.util.Iterator;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import org.eclipse.osee.framework.jdk.core.type.Id;
+
 /**
  * @author Ryan D. Brooks
  */
-public interface ActivityMonitor {
+public final class ActivityMonitor {
 
-   Object[] getThreadRootEntry();
+   private final ConcurrentHashMap<Thread, Object[]> threadToRootEntry = new ConcurrentHashMap<>();
+   private final ConcurrentHashMap<Long, Object[]> parentToRootEntry = new ConcurrentHashMap<>();
+   private final Object[] defaultRootEntry;
 
-   Iterable<Thread> getActiveThreads();
+   public ActivityMonitor(Object[] defaultRootEntry) {
+      this.defaultRootEntry = defaultRootEntry;
+      parentToRootEntry.put(Id.SENTINEL, defaultRootEntry);
+   }
 
-   void addActivityThread(Object[] activityEntry);
+   public Object[] getDefaultRootEntry() {
+      return defaultRootEntry;
+   }
 
-   void removeActivityThread();
+   public Object[] getThreadRootEntry() {
+      Object[] threadRootEntry = threadToRootEntry.get(Thread.currentThread());
+      if (threadRootEntry == null) {
+         threadRootEntry = defaultRootEntry;
+      }
+      return threadRootEntry;
+   }
 
+   public Object[] getThreadRootEntry(Long parentId) {
+      Object[] threadRootEntry = parentToRootEntry.get(parentId);
+      if (threadRootEntry == null) {
+         threadRootEntry = getThreadRootEntry();
+      }
+      return threadRootEntry;
+   }
+
+   public synchronized Iterable<Thread> getActiveThreads() {
+      Set<Thread> threads = threadToRootEntry.keySet();
+      Iterator<Thread> threadIter = threads.iterator();
+      while (threadIter.hasNext()) {
+         if (!threadIter.next().isAlive()) {
+            threadIter.remove();
+         }
+      }
+      return threads;
+   }
+
+   public void addActivityThread(Object[] activityEntry) {
+      threadToRootEntry.put(Thread.currentThread(), activityEntry);
+   }
+
+   public void removeActivityThread() {
+      threadToRootEntry.remove(Thread.currentThread());
+   }
 }

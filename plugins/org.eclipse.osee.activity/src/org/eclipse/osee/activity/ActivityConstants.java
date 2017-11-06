@@ -47,5 +47,4 @@ public final class ActivityConstants {
       "Error [" + ActivityConstants.HTTP_HEADER__ACTIVITY_ENTRY_ID + "] was missing from request http header";
 
    public static final Long DEFAULT_CLIENT_ID = Id.SENTINEL;
-   public static final Long ROOT_ENTRY_ID = Id.SENTINEL;
 }

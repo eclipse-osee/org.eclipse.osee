@@ -58,6 +58,8 @@ public interface ActivityLog {
     */
    Long createActivityThread(Long parentId, ActivityTypeToken type, UserId accountId, Long serverId, Long clientId, Object... messageArgs);
 
+   void removeActivityThread();
+
    ActivityTypeToken getActivityType(ActivityTypeId typeId);
 
    boolean isEnabled();
