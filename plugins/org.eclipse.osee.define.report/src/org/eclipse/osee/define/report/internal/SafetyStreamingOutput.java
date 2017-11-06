@@ -28,20 +28,27 @@ public final class SafetyStreamingOutput implements StreamingOutput {
    private final BranchId branchId;
    private final String codeRoot;
    private final Log logger;
+   private final boolean validate;
 
-   public SafetyStreamingOutput(Log logger, OrcsApi orcsApi, BranchId branchId, String codeRoot) {
+   public SafetyStreamingOutput(Log logger, OrcsApi orcsApi, BranchId branchId, String codeRoot, String isOn) {
       this.logger = logger;
       this.orcsApi = orcsApi;
       this.branchId = branchId;
       this.codeRoot = codeRoot;
+      this.validate = (isOn != null && isOn.equals("on")) ? true : false;
    }
 
    @Override
    public void write(OutputStream output) {
       try {
          Writer writer = new OutputStreamWriter(output);
-         SafetyReportGenerator safetyReport = new SafetyReportGenerator(logger);
-         safetyReport.runOperation(orcsApi, branchId, codeRoot, writer);
+         if (validate) {
+            ValidatingSafetyReportGenerator teamSafetyReport = new ValidatingSafetyReportGenerator(logger);
+            teamSafetyReport.runOperation(orcsApi, branchId, codeRoot, writer);
+         } else {
+            SafetyReportGenerator safetyReport = new SafetyReportGenerator(logger);
+            safetyReport.runOperation(orcsApi, branchId, codeRoot, writer);
+         }
       } catch (Exception ex) {
          throw new WebApplicationException(ex);
       }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.define.report.internal;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -50,8 +51,8 @@ public final class SystemSafetyResource {
    @Path("safety")
    @GET
    @Produces(MediaType.APPLICATION_XML)
-   public Response getSystemSafetyReport(@QueryParam("branch") BranchId branchId, @QueryParam("code_root") String codeRoot) {
-      StreamingOutput streamingOutput = new SafetyStreamingOutput(logger, orcsApi, branchId, codeRoot);
+   public Response getSystemSafetyReport(@QueryParam("branch") BranchId branchId, @QueryParam("code_root") String codeRoot, @DefaultValue("on") @QueryParam("style") String validate) {
+      StreamingOutput streamingOutput = new SafetyStreamingOutput(logger, orcsApi, branchId, codeRoot, validate);
       ResponseBuilder builder = Response.ok(streamingOutput);
       builder.header("Content-Disposition", "attachment; filename=" + "Safety_Report.xml");
       return builder.build();

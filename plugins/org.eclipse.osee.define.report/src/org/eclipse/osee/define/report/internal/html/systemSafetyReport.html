@@ -16,11 +16,43 @@
 <?widgets?>
       <label>Selected Branch</label> <input id="selected_branch" type="text" list="workingAndBaselineBranches" required/><br />
       <label>Code Root Directory</label><input id="code_root_dir" type="text" /><br />
+      <label>Include validation rules?</label><input id="validate" type="checkbox" name="validate"/><br />
 <?javaScript?>
        function oseeAppStart(oseeAppParams) {
-
-           var branch = oseeAppParams["selected_branch"];
-           var rootDir = oseeAppParams["code_root_dir"];
-           window.location.assign("../safety?branch="+branch+"&code_root="+rootDir);
-
+            var branch = oseeAppParams["selected_branch"];
+            if(!branch) {
+                alert("Branch must be defined");
+                var button = document.getElementById("startToggleId");
+                button.value = "Start";
+                return;
+            }
+            var rootDir = oseeAppParams["code_root_dir"];
+            var validate = oseeAppParams["validate"];
+            var location = "../safety?branch="+branch+"&code_root="+rootDir+"&style="+validate;
+            var button = document.getElementById("startToggleId");
+            button.value = "Working ...";
+            var xhr = new XMLHttpRequest();
+            xhr.responseType = 'blob';
+            xhr.onload = function() {
+                if(xhr.status === 200) {
+                    var newDoc = document.createElement("a");
+                    newDoc.href = window.URL.createObjectURL(xhr.response); // xhr.response is a blob
+                    newDoc.download = "SystemSafetyReport.xml"; // Set the file name.
+                    newDoc.innerHTML = "Download File";
+                    newDoc.onClick = function destroyClickedElement(event)
+                    {
+                        document.body.removeChild(event.target);
+                    };
+                    newDoc.style.display = "none";
+                    document.body.appendChild(newDoc);
+                    newDoc.click();
+                }
+                else {
+                    alert("Error: "+xhr.status+", "+xhr.statusText);
+                }
+                var button = document.getElementById("startToggleId");
+                button.value = "Start";
+            };
+            xhr.open('GET', location);
+            xhr.send();
        }

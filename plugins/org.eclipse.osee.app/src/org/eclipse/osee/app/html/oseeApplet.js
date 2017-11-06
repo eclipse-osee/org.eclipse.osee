@@ -52,7 +52,8 @@
             
             for(var i = 0; i < inputElements.length; i++) {
                 var inputElement = inputElements[i];
-                if(inputElement.getAttribute("type") == "radio") {
+                var elementType = inputElement.getAttribute("type");
+                if(elementType == "radio" || elementType == "checkbox") {
                        if (inputElement.checked) {
 							params[inputElement.getAttribute("name")] = inputElement.value;
                         }
