@@ -10,12 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.cpa;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
 /**
  * @author Donald G. Dunne
  */
-@XmlRootElement
 public class CpaConfigTool {
    private String id;
 

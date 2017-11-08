@@ -12,12 +12,10 @@ package org.eclipse.osee.ats.api.task;
 
 import java.util.LinkedList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Donald G. Dunne
  */
-@XmlRootElement
 public class JaxRelation {
 
    private String relationTypeName;

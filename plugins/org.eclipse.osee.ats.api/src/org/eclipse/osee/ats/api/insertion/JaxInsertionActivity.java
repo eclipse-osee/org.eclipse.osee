@@ -10,13 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.insertion;
 
-import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.ats.api.agile.AbstractJaxNewAgileTeamObject;
 
 /**
  * @author David W. Miller
  */
-@XmlRootElement
 public class JaxInsertionActivity extends AbstractJaxNewAgileTeamObject {
 
    private long insertionId;

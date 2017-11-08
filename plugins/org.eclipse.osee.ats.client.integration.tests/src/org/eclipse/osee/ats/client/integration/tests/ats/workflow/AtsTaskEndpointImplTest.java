@@ -15,11 +15,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
+import org.eclipse.osee.ats.api.task.JaxAtsTasks;
 import org.eclipse.osee.ats.api.task.JaxAttribute;
 import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.task.NewTaskDataFactory;
@@ -86,8 +86,8 @@ public class AtsTaskEndpointImplTest {
       data.getNewTasks().add(newTask);
       newTask.addRelation(CoreRelationTypes.SupportingInfo_SupportedBy, codeTeamWfId);
 
-      Response response = taskEp.create(new NewTaskDatas(data));
-      Assert.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+      JaxAtsTasks tasks = taskEp.create(new NewTaskDatas(data));
+      Assert.assertEquals(1, tasks.getTasks().size());
 
       IAtsTask task = (IAtsTask) client.getQueryService().createQuery(WorkItemType.Task).andIds(
          newTask.getId()).getResults().getAtMostOneOrNull();
@@ -113,8 +113,8 @@ public class AtsTaskEndpointImplTest {
       data.getNewTasks().add(newTask);
       newTask.addRelation(CoreRelationTypes.SupportingInfo_SupportingInfo, codeTeamWfId);
 
-      response = taskEp.create(new NewTaskDatas(data));
-      Assert.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+      tasks = taskEp.create(new NewTaskDatas(data));
+      Assert.assertEquals(1, tasks.getTasks().size());
 
       task = (IAtsTask) client.getQueryService().createQuery(WorkItemType.Task).andIds(
          newTask.getId()).getResults().getAtMostOneOrNull();
@@ -154,11 +154,11 @@ public class AtsTaskEndpointImplTest {
       task3.addAttribute(CoreAttributeTypes.StaticId.getName(), "my static id");
       data.getNewTasks().add(task3);
 
-      Response response = taskEp.create(new NewTaskDatas(data));
-      Assert.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+      JaxAtsTasks tasks = taskEp.create(new NewTaskDatas(data));
+      Assert.assertEquals(3, tasks.getTasks().size());
 
       // Test Get
-      JaxAtsTask task1R = taskEp.get(taskId1).readEntity(JaxAtsTask.class);
+      JaxAtsTask task1R = taskEp.get(taskId1);
       Assert.assertNotNull(task1R);
       Assert.assertEquals("Task 1", task1R.getName());
       Assert.assertEquals(taskId1, task1R.getId().longValue());
@@ -184,7 +184,7 @@ public class AtsTaskEndpointImplTest {
          Assert.fail("Attribute WorkDefintiion wasn't found");
       }
 
-      JaxAtsTask task2R = taskEp.get(taskId2).readEntity(JaxAtsTask.class);
+      JaxAtsTask task2R = taskEp.get(taskId2);
       Assert.assertNotNull(task2R);
       Assert.assertEquals("Task 2", task2R.getName());
       Assert.assertEquals(taskId2, task2R.getId().longValue());
@@ -203,7 +203,7 @@ public class AtsTaskEndpointImplTest {
          }
       }
 
-      JaxAtsTask task3R = taskEp.get(taskId3).readEntity(JaxAtsTask.class);
+      JaxAtsTask task3R = taskEp.get(taskId3);
       Assert.assertNotNull(task3R);
       Assert.assertEquals("Task 3", task3R.getName());
       Assert.assertEquals(taskId3, task3R.getId().longValue());

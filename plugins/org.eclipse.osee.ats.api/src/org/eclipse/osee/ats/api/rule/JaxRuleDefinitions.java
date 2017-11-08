@@ -12,13 +12,11 @@ package org.eclipse.osee.ats.api.rule;
 
 import java.util.LinkedList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.ats.api.workdef.IAtsRuleDefinition;
 
 /**
  * @author Donald G. Dunne
  */
-@XmlRootElement
 public class JaxRuleDefinitions {
 
    private List<IAtsRuleDefinition> rules;

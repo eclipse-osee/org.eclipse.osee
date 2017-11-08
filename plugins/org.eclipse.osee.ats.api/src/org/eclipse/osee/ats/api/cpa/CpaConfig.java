@@ -12,12 +12,10 @@ package org.eclipse.osee.ats.api.cpa;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Donald G. Dunne
  */
-@XmlRootElement
 public class CpaConfig {
 
    private final List<String> applicabilityOptions = new ArrayList<>();

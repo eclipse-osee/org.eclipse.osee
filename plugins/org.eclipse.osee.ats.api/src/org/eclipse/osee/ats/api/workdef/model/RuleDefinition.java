@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.api.workdef.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsRuleDefinition;
 import org.eclipse.osee.ats.api.workdef.RuleEventType;
@@ -21,7 +20,6 @@ import org.eclipse.osee.ats.api.workdef.RuleLocations;
 /**
  * @author Mark Joy
  */
-@XmlRootElement
 public class RuleDefinition implements IAtsRuleDefinition {
    public String name = "";
    public String title = "";

@@ -12,12 +12,10 @@ package org.eclipse.osee.ats.api.util;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Donald G. Dunne
  */
-@XmlRootElement
 public class ColorColumn {
    List<ColorColumnValue> values = new ArrayList<>();
    String columnId;

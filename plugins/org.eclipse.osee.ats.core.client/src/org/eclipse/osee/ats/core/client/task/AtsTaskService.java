@@ -15,8 +15,6 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.task.AbstractAtsTaskService;
@@ -36,7 +34,6 @@ import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicIdRelation;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -62,26 +59,22 @@ public class AtsTaskService extends AbstractAtsTaskService {
    @Override
    public Collection<IAtsTask> createTasks(NewTaskDatas newTaskDatas) {
       AtsTaskEndpointApi taskEp = AtsClientService.getTaskEp();
-      Response response = taskEp.create(newTaskDatas);
-      if (response.getStatus() != Status.OK.getStatusCode()) {
-         throw new OseeCoreException("Error creating task [%s] [%s]", newTaskDatas, response.toString());
-      }
+      JaxAtsTasks jaxTasks = taskEp.create(newTaskDatas);
 
       List<IAtsTask> tasks = new LinkedList<>();
 
       ArtifactEvent artifactEvent = new ArtifactEvent(AtsClientService.get().getAtsBranch());
       for (NewTaskData newTaskData : newTaskDatas.getTaskDatas()) {
-         processForEvents(newTaskData, response, tasks, artifactEvent);
+         processForEvents(newTaskData, jaxTasks, tasks, artifactEvent);
       }
 
       OseeEventManager.kickPersistEvent(getClass(), artifactEvent);
       return tasks;
    }
 
-   private void processForEvents(NewTaskData newTaskData, Response response, List<IAtsTask> tasks, ArtifactEvent artifactEvent) {
+   private void processForEvents(NewTaskData newTaskData, JaxAtsTasks jaxTasks, List<IAtsTask> tasks, ArtifactEvent artifactEvent) {
       Artifact teamWf = atsClient.getArtifact(newTaskData.getTeamWfId());
 
-      JaxAtsTasks jaxTasks = response.readEntity(JaxAtsTasks.class);
       List<Long> artIds = new LinkedList<>();
 
       teamWf.reloadAttributesAndRelations();

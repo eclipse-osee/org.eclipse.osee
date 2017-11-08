@@ -10,9 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workflow;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
-@XmlRootElement
 public class AtsRestWorkItem {
 
    private final String name;

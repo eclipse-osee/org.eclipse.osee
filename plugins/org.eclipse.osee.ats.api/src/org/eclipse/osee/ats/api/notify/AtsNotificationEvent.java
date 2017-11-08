@@ -12,12 +12,10 @@ package org.eclipse.osee.ats.api.notify;
 
 import java.util.Collection;
 import java.util.HashSet;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Donald G. Dunne
  */
-@XmlRootElement
 public class AtsNotificationEvent {
 
    private Collection<String> userIds = new HashSet<>();

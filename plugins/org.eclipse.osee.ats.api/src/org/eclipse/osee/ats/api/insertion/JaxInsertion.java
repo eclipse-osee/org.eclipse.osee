@@ -10,13 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.insertion;
 
-import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.ats.api.config.JaxAtsObject;
 
 /**
  * @author David W. Miller
  */
-@XmlRootElement
 public class JaxInsertion extends JaxAtsObject {
 
    private long programId;

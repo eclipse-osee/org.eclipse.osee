@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.config;
 
-import javax.xml.bind.annotation.XmlRootElement;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.ser.std.ToStringSerializer;
 import org.eclipse.osee.ats.api.IAtsObject;
@@ -19,7 +18,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 /**
  * @author Donald G. Dunne
  */
-@XmlRootElement
 public class JaxAtsObject {
 
    protected String name;

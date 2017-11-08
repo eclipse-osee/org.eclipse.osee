@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.column;
 
-import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.ats.api.config.ColumnAlign;
 import org.eclipse.osee.ats.api.util.ColorColumn;
 import org.eclipse.osee.ats.api.util.ColumnType;
@@ -19,7 +18,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Donald G. Dunne
  */
-@XmlRootElement
 public class AtsValueColumn {
    private String name;
    private String id;

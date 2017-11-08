@@ -10,12 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.config;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
 /**
  * @author Donald G. Dunne
  */
-@XmlRootElement
 public class AtsConfiguration {
 
    private boolean isDefault;

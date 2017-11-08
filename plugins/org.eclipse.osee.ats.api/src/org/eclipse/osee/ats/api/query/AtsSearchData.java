@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.api.query;
 
 import java.util.LinkedList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.ats.api.review.ReviewFormalType;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
@@ -22,7 +21,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 /**
  * @author Donald G. Dunne
  */
-@XmlRootElement
 public class AtsSearchData {
 
    private long id;

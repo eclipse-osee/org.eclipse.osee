@@ -12,12 +12,10 @@ package org.eclipse.osee.ats.api.workdef;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Mark Joy
  */
-@XmlRootElement
 public class RunRuleData {
 
    List<Long> workItemIds;

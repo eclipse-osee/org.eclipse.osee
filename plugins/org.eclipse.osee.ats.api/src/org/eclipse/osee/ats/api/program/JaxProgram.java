@@ -10,13 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.program;
 
-import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.ats.api.config.JaxNewAtsConfigObject;
 
 /**
  * @author Donald G. Dunne
  */
-@XmlRootElement
 public class JaxProgram extends JaxNewAtsConfigObject {
 
    long countryId;

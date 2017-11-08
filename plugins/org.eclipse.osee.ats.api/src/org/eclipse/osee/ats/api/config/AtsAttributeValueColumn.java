@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.config;
 
-import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.ats.api.column.AtsValueColumn;
 import org.eclipse.osee.ats.api.util.ColumnType;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -19,7 +18,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Donald G. Dunne
  */
-@XmlRootElement
 public class AtsAttributeValueColumn extends AtsValueColumn {
    private long attrTypeId;
    private String attrTypeName;

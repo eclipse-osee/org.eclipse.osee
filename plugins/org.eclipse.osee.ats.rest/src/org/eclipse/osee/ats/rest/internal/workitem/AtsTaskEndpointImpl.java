@@ -18,7 +18,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
@@ -46,7 +45,7 @@ public class AtsTaskEndpointImpl implements AtsTaskEndpointApi {
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    @Override
-   public Response create(NewTaskDatas newTaskDatas) {
+   public JaxAtsTasks create(NewTaskDatas newTaskDatas) {
       CreateTasksOperation operation = new CreateTasksOperation(newTaskDatas, atsServer, new XResultData());
       XResultData results = operation.validate();
 
@@ -56,13 +55,13 @@ public class AtsTaskEndpointImpl implements AtsTaskEndpointApi {
       operation.run();
       JaxAtsTasks tasks = new JaxAtsTasks();
       tasks.getTasks().addAll(operation.getTasks());
-      return Response.ok().entity(tasks).build();
+      return tasks;
    }
 
    @GET
    @Path("{taskId}")
    @Override
-   public Response get(@PathParam("taskId") long taskId) {
+   public JaxAtsTask get(@PathParam("taskId") long taskId) {
       IAtsWorkItem task =
          atsServer.getQueryService().createQuery(WorkItemType.WorkItem).isOfType(WorkItemType.Task).andIds(
             taskId).getResults().getOneOrNull();
@@ -70,7 +69,7 @@ public class AtsTaskEndpointImpl implements AtsTaskEndpointApi {
          throw new OseeArgumentException("No Task found with id %d", taskId);
       }
       JaxAtsTask jaxAtsTask = CreateTasksOperation.createNewJaxTask(task.getId(), atsServer);
-      return Response.ok().entity(jaxAtsTask).build();
+      return jaxAtsTask;
    }
 
    @DELETE

@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.ats.api.user.AtsUser;
 import org.eclipse.osee.ats.api.util.ColorColumns;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionStringProvider;
@@ -26,7 +25,6 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 /**
  * @author Donald G. Dunne
  */
-@XmlRootElement
 public class AtsConfigurations implements IAtsWorkDefinitionStringProvider {
 
    private List<AtsConfiguration> configs = new ArrayList<>();

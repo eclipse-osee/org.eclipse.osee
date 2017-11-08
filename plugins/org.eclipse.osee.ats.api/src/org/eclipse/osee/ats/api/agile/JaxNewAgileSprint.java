@@ -10,12 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.agile;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
 /**
  * @author Donald G. Dunne
  */
-@XmlRootElement
 public class JaxNewAgileSprint extends AbstractJaxNewAgileTeamObject {
    // Nothing to implement
 }

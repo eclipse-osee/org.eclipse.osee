@@ -10,12 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workdef;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
 /**
  * @author Mark Joy
  */
-@XmlRootElement
 public class AddRuleData {
    Long configId;
    String ruleName;

@@ -10,12 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.util;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
 /**
  * @author Donald G. Dunne
  */
-@XmlRootElement
 public class ColorColumnValue {
 
    private String value;

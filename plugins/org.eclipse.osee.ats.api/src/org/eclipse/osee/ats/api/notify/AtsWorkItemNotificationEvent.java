@@ -13,12 +13,10 @@ package org.eclipse.osee.ats.api.notify;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Donald G. Dunne
  */
-@XmlRootElement
 public class AtsWorkItemNotificationEvent {
 
    private String fromUserId;

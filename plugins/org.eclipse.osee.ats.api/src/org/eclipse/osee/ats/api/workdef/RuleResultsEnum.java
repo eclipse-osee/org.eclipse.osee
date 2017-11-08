@@ -10,12 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workdef;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
 /**
  * @author Mark Joy
  */
-@XmlRootElement
 public enum RuleResultsEnum {
    CREATE_TASK,
    NEW_TASK,

@@ -11,13 +11,11 @@
 package org.eclipse.osee.ats.api.util;
 
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 
 /**
  * @author Donald G. Dunne
  */
-@XmlRootElement
 public class ColorTeam extends NamedIdBase {
 
    private List<Long> goalIds;

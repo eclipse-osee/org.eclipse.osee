@@ -11,12 +11,10 @@
 package org.eclipse.osee.ats.api.cpa;
 
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Donald G. Dunne
  */
-@XmlRootElement
 public class DecisionUpdate {
 
    private List<String> ids;

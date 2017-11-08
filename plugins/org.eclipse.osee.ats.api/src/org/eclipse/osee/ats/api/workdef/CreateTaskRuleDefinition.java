@@ -16,7 +16,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -27,7 +26,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 /**
  * @author Mark Joy
  */
-@XmlRootElement
 public class CreateTaskRuleDefinition extends RuleDefinition implements IAtsCreateTaskRuleDefinition {
 
    private String taskWorkDef;

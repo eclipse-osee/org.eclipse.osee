@@ -12,12 +12,10 @@ package org.eclipse.osee.ats.api.config;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Donald G. Dunne
  */
-@XmlRootElement
 public class AtsViews {
    private final List<AtsAttributeValueColumn> attrColumns = new ArrayList<>();
 
