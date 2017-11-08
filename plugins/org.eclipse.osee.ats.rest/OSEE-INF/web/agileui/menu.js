@@ -4,6 +4,11 @@ angular
 				'Menu',
 				[ function() {
 					return {
+						openTeamForTeam : function(team) {
+							window.location.assign("main#/team?team="
+									.concat(team.id))
+						},
+
 						openConfigForTeam : function(team) {
 							window.location.assign("main#/config?team="
 									.concat(team.id))

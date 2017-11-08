@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 Boeing.
+ * Copyright (c) 2017 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,24 +10,29 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.agile;
 
+import java.util.LinkedList;
+import java.util.List;
 import org.eclipse.osee.ats.api.config.JaxAtsObject;
 
 /**
- * A Feature Group is a part of a product. eg: ATS is a Feature Group of the OSEE Product. It usually does not get
- * "completed".
- * 
  * @author Donald G. Dunne
  */
-public class JaxAgileFeatureGroup extends JaxAtsObject {
+public class JaxAgileProgram extends JaxAtsObject implements IAgileProgram {
 
-   private long teamId;
+   String id;
+   List<Long> teamIds = new LinkedList<>();
 
-   public long getTeamId() {
-      return teamId;
+   public JaxAgileProgram() {
+      // for jax-rs
    }
 
-   public void setTeamId(long teamId) {
-      this.teamId = teamId;
+   @Override
+   public List<Long> getTeamIds() {
+      return teamIds;
+   }
+
+   public void setTeamids(List<Long> teamIds) {
+      this.teamIds = teamIds;
    }
 
 }

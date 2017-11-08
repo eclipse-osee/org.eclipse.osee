@@ -25,13 +25,22 @@ import org.eclipse.osee.ats.api.agile.AgileWriterResult;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileItem;
+import org.eclipse.osee.ats.api.agile.IAgileProgram;
+import org.eclipse.osee.ats.api.agile.IAgileProgramBacklog;
+import org.eclipse.osee.ats.api.agile.IAgileProgramBacklogItem;
+import org.eclipse.osee.ats.api.agile.IAgileProgramFeature;
 import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileSprintHtmlOperation;
+import org.eclipse.osee.ats.api.agile.IAgileStory;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.agile.JaxAgileBacklog;
 import org.eclipse.osee.ats.api.agile.JaxAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.JaxAgileItem;
+import org.eclipse.osee.ats.api.agile.JaxAgileProgramBacklog;
+import org.eclipse.osee.ats.api.agile.JaxAgileProgramBacklogItem;
+import org.eclipse.osee.ats.api.agile.JaxAgileProgramFeature;
+import org.eclipse.osee.ats.api.agile.JaxAgileStory;
 import org.eclipse.osee.ats.api.agile.JaxAgileTeam;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileTeam;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -41,6 +50,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.agile.operations.AgileProgramOperations;
 import org.eclipse.osee.ats.core.agile.operations.SprintBurndownOperations;
 import org.eclipse.osee.ats.core.agile.operations.SprintBurnupOperations;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -611,4 +621,51 @@ public class AgileService implements IAgileService {
       }
       return teamDefs;
    }
+
+   /********************************
+    ** Agile Program
+    ***********************************/
+
+   @Override
+   public IAgileProgram createAgileProgram(IAgileProgram agileProgram) {
+      AgileProgramOperations ops = new AgileProgramOperations(atsApi);
+      IAgileProgram program = ops.createAgileProgram(agileProgram);
+      return program;
+   }
+
+   @Override
+   public IAgileProgramFeature createAgileProgramFeature(IAgileProgramBacklogItem programBacklogItem, JaxAgileProgramFeature jaxFeature) {
+      AgileProgramOperations ops = new AgileProgramOperations(atsApi);
+      IAgileProgramFeature feature = ops.createAgileProgramFeature(programBacklogItem, jaxFeature);
+      return feature;
+   }
+
+   @Override
+   public void setAgileStory(IAtsTeamWorkflow teamWf, IAgileStory story, IAtsChangeSet changes) {
+      changes.unrelateFromAll(AtsRelationTypes.AgileStoryToItem_Story, teamWf.getStoreObject());
+      changes.relate(story, AtsRelationTypes.AgileStoryToItem_AtsItem, teamWf);
+   }
+
+   @Override
+   public IAgileStory createAgileStory(IAgileProgramFeature feature, JaxAgileStory jaxStory) {
+      AgileProgramOperations ops = new AgileProgramOperations(atsApi);
+      IAgileStory story = ops.createAgileStory(feature, jaxStory);
+      return story;
+   }
+
+   @Override
+   public IAgileProgramBacklog createAgileProgramBacklog(IAgileProgram agileProgram, JaxAgileProgramBacklog jaxProgramBacklog) {
+      AgileProgramOperations ops = new AgileProgramOperations(atsApi);
+      IAgileProgramBacklog progBacklog = ops.createAgileProgramBacklog(agileProgram, jaxProgramBacklog);
+      return progBacklog;
+   }
+
+   @Override
+   public IAgileProgramBacklogItem createAgileProgramBacklogItem(IAgileProgramBacklog programBacklog, JaxAgileProgramBacklogItem jaxProgramBacklogItem) {
+      AgileProgramOperations ops = new AgileProgramOperations(atsApi);
+      IAgileProgramBacklogItem progBacklogItem =
+         ops.createAgileProgramBacklogItem(programBacklog, jaxProgramBacklogItem);
+      return progBacklogItem;
+   }
+
 }

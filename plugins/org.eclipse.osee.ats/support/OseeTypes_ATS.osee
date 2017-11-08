@@ -21,6 +21,26 @@ artifactType "Agile Team" extends "ats.Ats Config Artifact" {
 	attribute "ats.kb.Ignore States"
 }
 
+artifactType "Agile Program" extends "ats.Ats Config Artifact" {
+	id 7844993694062372
+}
+
+artifactType "Agile Program Backlog" extends "ats.Ats Config Artifact" {
+	id 7844994687943135
+}
+
+artifactType "Agile Program Backlog Item" extends "ats.Ats Config Artifact" {
+	id 11221316461321645
+}
+
+artifactType "Agile Program Feature" extends "ats.Ats Config Artifact" {
+	id 99876313545914
+}
+
+artifactType "Agile Story" extends "ats.Ats Config Artifact" {
+	id 33216462134454
+}
+
 artifactType "Agile Backlog" extends "Goal" {
 	id 7553335770333667393
 }
@@ -1613,6 +1633,16 @@ relationType "AgileSprintToItem" {
 	sideAArtifactType "Agile Sprint"
 	sideBName "ATS Item"
 	sideBArtifactType "ats.Ats Artifact"
+	defaultOrderType Lexicographical_Ascending
+	multiplicity ONE_TO_MANY
+}
+
+relationType "AgileStoryToItem" {
+	id 98821417946551335
+	sideAName "Agile Story"
+	sideAArtifactType "Agile Story"
+	sideBName "ATS Team Workflow"
+	sideBArtifactType "Team Workflow"
 	defaultOrderType Lexicographical_Ascending
 	multiplicity ONE_TO_MANY
 }

@@ -41,13 +41,39 @@ public final class DemoArtifactToken {
       TokenFactory.createArtifactToken(3902389, "SAW SW", AtsArtifactTypes.TeamDefinition);
 
    public static final ArtifactToken SAW_Agile_Team =
-      TokenFactory.createArtifactToken(111, "SAW Agile Team", AtsArtifactTypes.TeamDefinition);
+      TokenFactory.createArtifactToken(111, "SAW Agile Team", AtsArtifactTypes.AgileTeam);
    public static final ArtifactToken SAW_Sprint_1 =
       TokenFactory.createArtifactToken(222, "SAW Sprint 1", AtsArtifactTypes.AgileSprint);
    public static final ArtifactToken SAW_Sprint_2 =
       TokenFactory.createArtifactToken(333, "SAW Sprint 2", AtsArtifactTypes.AgileSprint);
    public static final ArtifactToken SAW_Backlog =
       TokenFactory.createArtifactToken(444, "SAW Backlog", AtsArtifactTypes.AgileBacklog);
+
+   public static final ArtifactToken CIS_Agile_Team =
+      TokenFactory.createArtifactToken(7227, "CIS Agile Team", AtsArtifactTypes.AgileTeam);
+   public static final ArtifactToken CIS_Backlog =
+      TokenFactory.createArtifactToken(8228, "CIS Backlog", AtsArtifactTypes.AgileBacklog);
+
+   public static final ArtifactToken RD_Agile_Program =
+      TokenFactory.createArtifactToken(555, "RD Program", AtsArtifactTypes.AgileProgram);
+   public static final ArtifactToken RD_Program_Backlog =
+      TokenFactory.createArtifactToken(48784848, "RD Program Backlog", AtsArtifactTypes.AgileProgramBacklog);
+   public static final ArtifactToken RD_Program_Backlog_Item_1 =
+      TokenFactory.createArtifactToken(894868989, "Do this step first", AtsArtifactTypes.AgileProgramBacklogItem);
+   public static final ArtifactToken RD_Program_Backlog_Item_2 =
+      TokenFactory.createArtifactToken(121264651, "Do this step second", AtsArtifactTypes.AgileProgramBacklogItem);
+   public static final ArtifactToken RD_Program_Backlog_Item_3 =
+      TokenFactory.createArtifactToken(23236562, "Do this step third", AtsArtifactTypes.AgileProgramBacklogItem);
+
+   public static final ArtifactToken RD_Program_Feature_Robot_Nav =
+      TokenFactory.createArtifactToken(546565168, "Create Robot Navigation", AtsArtifactTypes.AgileProgramFeature);
+   public static final ArtifactToken RD_Robot_Nav_Story_1 = TokenFactory.createArtifactToken(1234687984,
+      "As a user I will move the robot forwards and backwards.", AtsArtifactTypes.AgileStory);
+   public static final ArtifactToken RD_Robot_Nav_Story_2 = TokenFactory.createArtifactToken(432156515,
+      "As a user I will move the robot left and right.", AtsArtifactTypes.AgileStory);
+
+   public static final ArtifactToken RD_Program_Feature_Robot_Voice =
+      TokenFactory.createArtifactToken(123456789, "Create Robot Voice", AtsArtifactTypes.AgileProgramFeature);
 
    public static final ArtifactToken SAW_HW_AI =
       TokenFactory.createArtifactToken(4687946, "SAW HW", AtsArtifactTypes.ActionableItem);

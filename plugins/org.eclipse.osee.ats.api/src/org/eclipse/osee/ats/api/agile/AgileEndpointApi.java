@@ -24,6 +24,7 @@ import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.api.agile.kanban.JaxKbSprint;
 import org.eclipse.osee.ats.api.agile.sprint.SprintConfigurations;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.config.JaxAtsObject;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.util.ILineChart;
 import org.eclipse.osee.ats.api.workflow.JaxAtsObjects;
@@ -41,9 +42,14 @@ public interface AgileEndpointApi {
    public String get();
 
    @GET
+   @Path("program/token")
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<JaxAtsObject> getProgramTokens() throws Exception;
+
+   @GET
    @Path("team/token")
    @Produces(MediaType.APPLICATION_JSON)
-   public List<ArtifactToken> getTeamTokens() throws Exception;
+   public List<JaxAtsObject> getTeamTokens() throws Exception;
 
    @GET
    @Path("team")

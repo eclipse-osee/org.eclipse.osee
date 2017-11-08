@@ -55,7 +55,9 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
       throw new UnsupportedOperationException("TeamDefinition.setFullName not implemented yet");
    }
 
-   public abstract String getTypeName();
+   public String getTypeName() {
+      return artifact.getArtifactType().getName();
+   }
 
    public String getFullName() {
       return getTypeName();

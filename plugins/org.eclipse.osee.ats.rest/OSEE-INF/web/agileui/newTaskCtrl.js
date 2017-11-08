@@ -93,6 +93,8 @@ angular.module('AgileApp').controller(
 						
 					};
 					
+					Global.loadActiveProgsTeams($scope, AgileEndpoint);
+
 					// Copied through all controlers; ensure all are same
 					$scope.openBacklogForTeam = Menu.openBacklogForTeam;
 					$scope.openSprintForTeam = Menu.openSprintForTeam;

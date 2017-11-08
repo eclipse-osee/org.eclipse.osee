@@ -59,8 +59,11 @@ public class AgileFactory {
             changes.createArtifact(AtsArtifactTypes.AgileTeam, newTeam.getName(), GUID.create(), newTeam.getId());
          changes.setSoleAttributeValue(agileTeamArt, AtsAttributeTypes.Active, true);
          ArtifactId topAgileFolder = AgileFolders.getOrCreateTopAgileFolder(atsApi, userArt, changes);
-         if (topAgileFolder.notEqual(atsApi.getRelationResolver().getParent(agileTeamArt))) {
-            changes.unrelateFromAll(CoreRelationTypes.Default_Hierarchical__Parent, agileTeamArt);
+
+         if (Strings.isNumeric(newTeam.getProgramId())) {
+            ArtifactId programArt = atsApi.getArtifact(Long.valueOf(newTeam.getProgramId()));
+            changes.addChild(programArt, agileTeamArt);
+         } else {
             changes.addChild(topAgileFolder, agileTeamArt);
          }
 

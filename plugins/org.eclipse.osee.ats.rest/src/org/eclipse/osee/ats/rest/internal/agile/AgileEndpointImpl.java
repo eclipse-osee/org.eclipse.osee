@@ -59,6 +59,7 @@ import org.eclipse.osee.ats.api.agile.JaxNewAgileTeam;
 import org.eclipse.osee.ats.api.agile.kanban.JaxKbSprint;
 import org.eclipse.osee.ats.api.agile.sprint.SprintConfigurations;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.config.JaxAtsObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -75,6 +76,7 @@ import org.eclipse.osee.ats.core.agile.operations.SprintBurnupOperations;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.util.chart.LineChart;
 import org.eclipse.osee.ats.rest.IAtsServer;
+import org.eclipse.osee.ats.rest.internal.agile.operations.EndpointOperations;
 import org.eclipse.osee.ats.rest.internal.agile.operations.KanbanOperations;
 import org.eclipse.osee.ats.rest.internal.agile.operations.SprintConfigOperations;
 import org.eclipse.osee.ats.rest.internal.query.TokenSearchOperations;
@@ -114,6 +116,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    private final IResourceRegistry resourceRegistry;
    private final JdbcService jdbcService;
    private final OrcsApi orcsApi;
+   private EndpointOperations endpointOps;
 
    public AgileEndpointImpl(AtsApi atsApi, IResourceRegistry resourceRegistry, JdbcService jdbcService, OrcsApi orcsApi) {
       this.atsApi = atsApi;
@@ -127,6 +130,28 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    }
 
    /********************************
+    ** Agile Program
+    ***********************************/
+
+   /**
+    * @query param active=true/false/null to filter out active
+    */
+   @Override
+   @Path("program/token")
+   @GET
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<JaxAtsObject> getProgramTokens() throws Exception {
+      return getEndpointOps().getActiveArtifactTypeTokens(AtsArtifactTypes.AgileProgram, uriInfo);
+   }
+
+   private EndpointOperations getEndpointOps() {
+      if (endpointOps == null) {
+         endpointOps = new EndpointOperations(atsApi);
+      }
+      return endpointOps;
+   }
+
+   /********************************
     ** Agile Team
     ***********************************/
    @Override
@@ -134,12 +159,15 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       return "Agile Resource";
    }
 
+   /**
+    * @query param active=true/false/null to filter out active
+    */
    @Override
    @Path("team/token")
    @GET
    @Produces(MediaType.APPLICATION_JSON)
-   public List<ArtifactToken> getTeamTokens() throws Exception {
-      return atsApi.getArtifacts(AtsArtifactTypes.AgileTeam);
+   public List<JaxAtsObject> getTeamTokens() throws Exception {
+      return getEndpointOps().getActiveArtifactTypeTokens(AtsArtifactTypes.AgileTeam, uriInfo);
    }
 
    @Override

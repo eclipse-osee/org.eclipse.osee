@@ -91,6 +91,11 @@ public class AtsUser extends JaxAtsObject implements IAtsUser {
    }
 
    @Override
+   public Long getId() {
+      return super.getId();
+   }
+
+   @Override
    @JsonIgnore
    public IArtifactType getArtifactType() {
       return CoreArtifactTypes.User;

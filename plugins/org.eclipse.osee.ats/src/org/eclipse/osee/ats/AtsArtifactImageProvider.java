@@ -41,6 +41,14 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.WorkDefinition, AtsImage.WORK_DEFINITION, this);
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Goal, AtsImage.GOAL, this);
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.AgileBacklog, AtsImage.AGILE_BACKLOG, this);
+      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.AgileProgram, AtsImage.AGILE_PROGRAM, this);
+      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.AgileProgramBacklogItem,
+         AtsImage.AGILE_PROGRAM_BACKLOG_ITEM, this);
+      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.AgileProgramBacklog, AtsImage.AGILE_PROGRAM_BACKLOG,
+         this);
+      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.AgileProgramFeature, AtsImage.AGILE_PROGRAM_FEATURE,
+         this);
+      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.AgileStory, AtsImage.AGILE_STORY, this);
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.PeerToPeerReview, AtsImage.PEER_REVIEW, this);
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Program, AtsImage.PROGRAM, this);
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Insertion, AtsImage.INSERTION, this);

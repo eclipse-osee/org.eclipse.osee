@@ -1,7 +1,7 @@
 /*******************************************************************************
- * Copyright (c) 2015 Boeing.
+ * Copyright (c) 2017 Boeing.
  * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
+ * are made available under the terms of the Eclipse  License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
@@ -10,21 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.agile;
 
-import org.eclipse.osee.ats.api.config.JaxAtsObject;
+import java.util.List;
 
 /**
  * @author Donald G. Dunne
  */
-public class JaxNewAgileTeam extends JaxAtsObject {
+public interface IAgileStory extends IAgileObject {
 
-   public String programId;
+   List<Long> getTaskIds();
 
-   public String getProgramId() {
-      return programId;
-   }
+   String getName();
 
-   public void setProgramId(String programId) {
-      this.programId = programId;
-   }
+   Long getId();
+
+   Long getFeatureId();
 
 }

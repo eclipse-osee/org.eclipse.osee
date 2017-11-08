@@ -59,6 +59,9 @@ public final class AtsRelationTypes {
    public static final RelationTypeSide AgileSprintToItem_Sprint= RelationTypeSide.create(RelationSide.SIDE_A, 988214123009313457L, "AgileSprintToItems");
    public static final RelationTypeSide AgileSprintToItem_AtsItem = AgileSprintToItem_Sprint.getOpposite();
 
+   public static final RelationTypeSide AgileStoryToItem_Story= RelationTypeSide.create(RelationSide.SIDE_A, 98821417946551335L, "AgileStoryToItems");
+   public static final RelationTypeSide AgileStoryToItem_AtsItem = AgileStoryToItem_Story.getOpposite();
+
    public static final RelationTypeSide AgileFeatureToItem_FeatureGroup = RelationTypeSide.create(RelationSide.SIDE_A, 6017077976601091441L, "AgileFeatureToItem");
    public static final RelationTypeSide AgileFeatureToItem_AtsItem = AgileFeatureToItem_FeatureGroup.getOpposite();
 

@@ -4,6 +4,8 @@ angular.module('AgileApp').factory('AgileEndpoint',
 
 			var factory = {};
 
+			var activeProgramsTokenResource = $resource('/ats/agile/program/token?active=true');
+			var activeTeamsTokenResource = $resource('/ats/agile/team/token?active=true');
 			var teamMembersResource = $resource('/ats/agile/team/:teamid/member');
 			var teamResource = $resource('/ats/agile/team');
 			var teamsTokenResource = $resource('/ats/agile/team/token');
@@ -29,6 +31,13 @@ angular.module('AgileApp').factory('AgileEndpoint',
 					{}, { 'update': { method:'PUT' } });
 
 			// ////////////////////////////////////
+			// Programs Teams
+			// ////////////////////////////////////
+			factory.getActiveProgramsTokens = function() {
+				return activeProgramsTokenResource.query();
+			}
+
+			// ////////////////////////////////////
 			// Agile Item
 			// ////////////////////////////////////
 
@@ -43,6 +52,10 @@ angular.module('AgileApp').factory('AgileEndpoint',
 			// ////////////////////////////////////
 			// Agile Teams
 			// ////////////////////////////////////
+			factory.getActiveTeamsTokens = function() {
+				return activeTeamsTokenResource.query();
+			}
+
 			factory.getTeams = function() {
 				return teamResource.query();
 			}

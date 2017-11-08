@@ -21,8 +21,18 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
 import org.eclipse.osee.ats.api.agile.AgileWriterResult;
+import org.eclipse.osee.ats.api.agile.IAgileProgram;
+import org.eclipse.osee.ats.api.agile.IAgileProgramBacklog;
+import org.eclipse.osee.ats.api.agile.IAgileProgramBacklogItem;
+import org.eclipse.osee.ats.api.agile.IAgileProgramFeature;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
+import org.eclipse.osee.ats.api.agile.IAgileStory;
 import org.eclipse.osee.ats.api.agile.JaxAgileItem;
+import org.eclipse.osee.ats.api.agile.JaxAgileProgram;
+import org.eclipse.osee.ats.api.agile.JaxAgileProgramBacklog;
+import org.eclipse.osee.ats.api.agile.JaxAgileProgramBacklogItem;
+import org.eclipse.osee.ats.api.agile.JaxAgileProgramFeature;
+import org.eclipse.osee.ats.api.agile.JaxAgileStory;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileBacklog;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileSprint;
@@ -31,6 +41,7 @@ import org.eclipse.osee.ats.api.config.JaxAtsObject;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
@@ -85,16 +96,125 @@ public class Pdd93CreateDemoAgile {
       AtsBulkLoad.reloadConfig(true);
       SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
 
-      createSampleAgileTeam();
+      // create agile program
+      IAgileProgram aProgram = createAgileProgram();
+      // create two agile teams and add to program
+      createSawAgileTeam(aProgram);
+      createCisAgileTeam(aProgram);
+      createProgramBacklogAndFeaturesAndStories(aProgram);
+
+      createAgileStandAloneTeam();
 
       TestUtil.severeLoggingEnd(monitorLog);
    }
 
-   private void createSampleAgileTeam() {
+   private void createProgramBacklogAndFeaturesAndStories(IAgileProgram aProgram) {
+
+      JaxAgileProgramBacklog jaxProgramBacklog =
+         JaxAgileProgramBacklog.construct(aProgram, DemoArtifactToken.RD_Program_Backlog);
+      IAgileProgramBacklog programBacklog =
+         AtsClientService.get().getAgileService().createAgileProgramBacklog(aProgram, jaxProgramBacklog);
+
+      JaxAgileProgramBacklogItem item1 =
+         JaxAgileProgramBacklogItem.construct(programBacklog, DemoArtifactToken.RD_Program_Backlog_Item_1);
+      IAgileProgramBacklogItem item =
+         AtsClientService.get().getAgileService().createAgileProgramBacklogItem(programBacklog, item1);
+
+      JaxAgileProgramBacklogItem item2 =
+         JaxAgileProgramBacklogItem.construct(programBacklog, DemoArtifactToken.RD_Program_Backlog_Item_2);
+      AtsClientService.get().getAgileService().createAgileProgramBacklogItem(programBacklog, item2);
+      JaxAgileProgramBacklogItem item3 =
+         JaxAgileProgramBacklogItem.construct(programBacklog, DemoArtifactToken.RD_Program_Backlog_Item_3);
+      AtsClientService.get().getAgileService().createAgileProgramBacklogItem(programBacklog, item3);
+
+      JaxAgileProgramFeature jaxFeature =
+         JaxAgileProgramFeature.construct(item1, DemoArtifactToken.RD_Program_Feature_Robot_Nav);
+      IAgileProgramFeature feature =
+         AtsClientService.get().getAgileService().createAgileProgramFeature(item, jaxFeature);
+
+      JaxAgileStory jaxStory1 = JaxAgileStory.construct(feature, DemoArtifactToken.RD_Robot_Nav_Story_1);
+      IAgileStory story1 = AtsClientService.get().getAgileService().createAgileStory(feature, jaxStory1);
+
+      JaxAgileStory jaxStory2 = JaxAgileStory.construct(feature, DemoArtifactToken.RD_Robot_Nav_Story_2);
+      IAgileStory story2 = AtsClientService.get().getAgileService().createAgileStory(feature, jaxStory2);
+
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Add Agile Items to Stories");
+      IAtsTeamWorkflow codeWf = AtsClientService.get().getTeamWf(DemoArtifactToken.SAW_Commited_Code_TeamWf);
+      AtsClientService.get().getAgileService().setAgileStory(codeWf, story1, changes);
+      IAtsTeamWorkflow testWf = AtsClientService.get().getTeamWf(DemoArtifactToken.SAW_Commited_Test_TeamWf);
+      AtsClientService.get().getAgileService().setAgileStory(testWf, story1, changes);
+      IAtsTeamWorkflow reqWf = AtsClientService.get().getTeamWf(DemoArtifactToken.SAW_Commited_Req_TeamWf);
+      AtsClientService.get().getAgileService().setAgileStory(reqWf, story1, changes);
+
+      IAtsTeamWorkflow codeWf2 = AtsClientService.get().getTeamWf(DemoArtifactToken.SAW_UnCommited_Code_TeamWf);
+      AtsClientService.get().getAgileService().setAgileStory(codeWf2, story2, changes);
+      IAtsTeamWorkflow testWf2 = AtsClientService.get().getTeamWf(DemoArtifactToken.SAW_UnCommited_Test_TeamWf);
+      AtsClientService.get().getAgileService().setAgileStory(testWf2, story2, changes);
+      IAtsTeamWorkflow reqWf2 = AtsClientService.get().getTeamWf(DemoArtifactToken.SAW_UnCommited_Req_TeamWf);
+      AtsClientService.get().getAgileService().setAgileStory(reqWf2, story2, changes);
+      changes.execute();
+
+      jaxFeature = JaxAgileProgramFeature.construct(item1, DemoArtifactToken.RD_Program_Feature_Robot_Voice);
+      AtsClientService.get().getAgileService().createAgileProgramFeature(item, jaxFeature);
+   }
+
+   private void createAgileStandAloneTeam() {
+      long teamId = 999L;
+
+      // Create Facilities Team
+      JaxNewAgileTeam newTeam = new JaxNewAgileTeam();
+      newTeam.setName("Facilities Team");
+      newTeam.setId(teamId);
+      Response response = AtsClientService.getAgile().createTeam(newTeam);
+      Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
+
+      // Create Backlog
+      JaxNewAgileBacklog backlog = new JaxNewAgileBacklog();
+      backlog.setName("Facilities Backlog");
+      backlog.setId(9991L);
+      backlog.setTeamId(newTeam.getId());
+      response = AtsClientService.getAgile().createBacklog(teamId, backlog);
+      Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
+   }
+
+   private void createCisAgileTeam(IAgileProgram aProgram) {
+      // Create CIS Team
+      JaxNewAgileTeam newTeam = new JaxNewAgileTeam();
+      newTeam.setName(DemoArtifactToken.CIS_Agile_Team.getName());
+      newTeam.setId(DemoArtifactToken.CIS_Agile_Team.getId());
+      newTeam.setProgramId(aProgram.getId().toString());
+      Response response = AtsClientService.getAgile().createTeam(newTeam);
+      Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
+
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet("Config Agile Team with points attr type");
+      Artifact sawAgileTeam = AtsClientService.get().getArtifact(DemoArtifactToken.CIS_Agile_Team.getId());
+      changes.setSoleAttributeValue(sawAgileTeam, AtsAttributeTypes.PointsAttributeType,
+         AtsAttributeTypes.Points.getName());
+      changes.execute();
+
+      // Create Backlog
+      JaxNewAgileBacklog backlog = new JaxNewAgileBacklog();
+      backlog.setName(DemoArtifactToken.CIS_Backlog.getName());
+      backlog.setId(DemoArtifactToken.CIS_Backlog.getId());
+      backlog.setTeamId(newTeam.getId());
+      response = AtsClientService.getAgile().createBacklog(DemoArtifactToken.CIS_Agile_Team.getId(), backlog);
+      Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
+   }
+
+   private IAgileProgram createAgileProgram() {
+      JaxAgileProgram jProgram = new JaxAgileProgram();
+      jProgram.setName(DemoArtifactToken.RD_Agile_Program.getName());
+      jProgram.setId(DemoArtifactToken.RD_Agile_Program.getId());
+      IAgileProgram aProgram = AtsClientService.get().getAgileService().createAgileProgram(jProgram);
+      return aProgram;
+   }
+
+   private void createSawAgileTeam(IAgileProgram aProgram) {
       AgileEndpointApi agile = AtsClientService.getAgile();
 
       // Create Team
       JaxNewAgileTeam newTeam = getJaxAgileTeam();
+      newTeam.setProgramId(aProgram.getId().toString());
       Response response = agile.createTeam(newTeam);
       Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
 

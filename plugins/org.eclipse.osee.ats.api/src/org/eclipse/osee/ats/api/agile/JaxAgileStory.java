@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 Boeing.
+ * Copyright (c) 2017 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,23 +11,29 @@
 package org.eclipse.osee.ats.api.agile;
 
 import org.eclipse.osee.ats.api.config.JaxAtsObject;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**
- * A Feature Group is a part of a product. eg: ATS is a Feature Group of the OSEE Product. It usually does not get
- * "completed".
- * 
  * @author Donald G. Dunne
  */
-public class JaxAgileFeatureGroup extends JaxAtsObject {
+public class JaxAgileStory extends JaxAtsObject {
 
-   private long teamId;
+   private long programId;
 
-   public long getTeamId() {
-      return teamId;
+   public long getProgramId() {
+      return programId;
    }
 
-   public void setTeamId(long teamId) {
-      this.teamId = teamId;
+   public void setProgramId(long programId) {
+      this.programId = programId;
+   }
+
+   public static JaxAgileStory construct(IAgileProgramFeature aFeature, ArtifactToken artifact) {
+      JaxAgileStory story = new JaxAgileStory();
+      story.setName(artifact.getName());
+      story.setId(artifact.getId());
+      story.setProgramId(aFeature.getId());
+      return story;
    }
 
 }

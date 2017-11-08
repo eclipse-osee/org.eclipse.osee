@@ -16,6 +16,8 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -133,5 +135,17 @@ public interface IAgileService {
    IAgileTeam getAgileTeamFromBacklog(IAgileBacklog backlog);
 
    Set<IAtsUser> getTeamMebers(IAgileTeam agileTeam);
+
+   IAgileProgram createAgileProgram(IAgileProgram agileProgram);
+
+   IAgileProgramFeature createAgileProgramFeature(IAgileProgramBacklogItem programBacklogItem, JaxAgileProgramFeature feature);
+
+   void setAgileStory(IAtsTeamWorkflow codeWf, IAgileStory story, IAtsChangeSet changes);
+
+   IAgileStory createAgileStory(IAgileProgramFeature feature, JaxAgileStory story);
+
+   IAgileProgramBacklog createAgileProgramBacklog(IAgileProgram agileProgram, JaxAgileProgramBacklog jaxProgramBacklog);
+
+   IAgileProgramBacklogItem createAgileProgramBacklogItem(IAgileProgramBacklog programBacklog, JaxAgileProgramBacklogItem jaxProgramBacklogItem);
 
 }

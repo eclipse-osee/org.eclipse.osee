@@ -15,7 +15,6 @@ import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.model.impl.AtsConfigObject;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -32,11 +31,6 @@ public class AgileTeam extends AtsConfigObject implements IAgileTeam {
    }
 
    @Override
-   public String getTypeName() {
-      return "Agile Team";
-   }
-
-   @Override
    public List<Long> getAtsTeamIds() {
       List<Long> ids = new ArrayList<>();
       for (ArtifactId atsTeam : atsApi.getRelationResolver().getRelated(artifact,
@@ -44,11 +38,6 @@ public class AgileTeam extends AtsConfigObject implements IAgileTeam {
          ids.add(new Long(atsTeam.getId()));
       }
       return ids;
-   }
-
-   @Override
-   public String getDescription() {
-      return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.Description, "");
    }
 
    @Override

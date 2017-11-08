@@ -6,8 +6,6 @@
 
 #mainDiv {
 	height: 94%;
-	margin-left: 10px;
-	margin-right: 10px;
 	margin-top: 0px;
 }
 
@@ -16,7 +14,7 @@
 }
 
 #mainHeading {
-	height: 65px;
+	height: 55px;
 }
 
 #mainHeaderTable {

@@ -6,9 +6,15 @@ var app = angular.module('AgileApp', [ 'ngRoute', 'ngResource', 'ui.bootstrap',
 
 app.config([ '$routeProvider', function($routeProvider) {
 	$routeProvider.when('/', {
-		redirectTo : "/teams",
+		redirectTo : "/select",
 	}).when('/home', {
-		redirectTo : "/teams",
+		redirectTo : "/select",
+	}).when('/select', {
+		templateUrl : 'select.html',
+		controller : 'SelectCtrl'
+	}).when('/team', {
+		templateUrl : 'team.html',
+		controller : 'TeamCtrl'
 	}).when('/kanban', {
 		templateUrl : 'kanban/kanban.html',
 		controller : 'KanbanCtrl'
@@ -18,6 +24,9 @@ app.config([ '$routeProvider', function($routeProvider) {
 	}).when('/sprint', {
 		templateUrl : 'backlogAndSprint.html',
 		controller : 'BacklogAndSprintCtrl'
+	}).when('/program', {
+		templateUrl : 'program.html',
+		controller : 'ProgramCtrl'
 	}).when('/teams', {
 		templateUrl : 'teams.html',
 		controller : 'TeamsCtrl'
@@ -32,14 +41,42 @@ app.config([ '$routeProvider', function($routeProvider) {
 		controller : 'NewTaskCtrl',
 		caseInsensitiveMatch : true
 	}).otherwise({
-		redirectTo : "/teams"
+		redirectTo : "/select"
 	});
 } ]);
 
 app.factory("Global", function() {
-	var global = {};
-	global.loadingImg = "/ajax/libs/images/loading.gif";
-	return global;
+	return {
+		loadingImg : function() {
+			var global = {};
+			global.loadingImg = "/ajax/libs/images/loading.gif";
+			return global;
+		},
+		loadActiveProgsTeams : function(scope, agileEp) {
+			var activeProgsTeams = [];
+			agileEp.getActiveProgramsTokens().$promise
+					.then(function(data) {
+						for (i = 0; i < data.length; i++) {
+							var prog = data[i];
+							prog.isProgram = true;
+							activeProgsTeams.push(prog);
+						}
+						agileEp.getActiveTeamsTokens().$promise
+								.then(function(data) {
+									for (i = 0; i < data.length; i++) {
+										var team = data[i];
+										team.isProgram = false;
+										activeProgsTeams.push(team);
+									}
+									scope.activeProgsTeams = activeProgsTeams;
+									// add to main scope so shared pulldown is populated
+									scope.$parent.activeProgsTeams = activeProgsTeams;
+								});
+					
+					});
+
+		}
+	}
 });
 
 app.factory("LayoutService", function() {

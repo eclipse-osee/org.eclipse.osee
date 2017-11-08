@@ -25,16 +25,19 @@
     <![endif]-->
 </head>
 <body ng-app="AgileApp" style="height: 100%;">
-
-	<nav class="navbar navbar-default" role="navigation">
-		<div class="container-fluid">
-			<div class="navbar-header">
-				<a class="navbar-brand" href="#/main">OSEE Agile</a>
-			</div>
-			<ul class="nav navbar-nav navbar-right">
-				<li ng-class="{ active: isActive('/team')}"><a href="#/home">Home</a></li>
-			</ul>
-		</div>
+	<nav>
+		<table width="100%" border=1 rules=NONE frame=BOX>
+			<tr>
+				<td><a class="navbar-brand" href="#/main">OSEE Agile</a></td>
+				<td align="right" width="50%">Program or Team : <select
+					style="width: 50%;" ng-model="selectedItem"
+					ng-options="item.name for (key,item) in activeProgsTeams">
+						<option value="">Select</option>
+				</select></td>
+				<td width="10%" align="right"><a href="#/main">Home</a></td>
+				<td width="5%" align="right"></td>
+			</tr>
+		</table>
 	</nav>
 
 	<div ng-view style="height: 90%"></div>
@@ -64,6 +67,9 @@
 	<script src="app.js"></script>
 	<script src="agileEndpoint.js"></script>
 	<script src="configCtrl.js"></script>
+	<script src="selectCtrl.js"></script>
+	<script src="teamCtrl.js"></script>
+	<script src="programCtrl.js"></script>
 	<script src="teamsCtrl.js"></script>
 	<script src="menu.js"></script>
 	<script src="reportCtrl.js"></script>

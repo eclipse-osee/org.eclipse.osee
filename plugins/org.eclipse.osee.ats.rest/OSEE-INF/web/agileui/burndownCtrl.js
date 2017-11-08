@@ -49,6 +49,9 @@ angular
 										});
 							}
 
+							$scope.updateReports();
+							Global.loadActiveProgsTeams($scope, AgileEndpoint);
+							
 							// Copied through all controlers; ensure all are same
 							$scope.openBacklogForTeam = Menu.openBacklogForTeam;
 							$scope.openSprintForTeam = Menu.openSprintForTeam;
@@ -59,6 +62,4 @@ angular
 							$scope.openSummaryForTeam = Menu.openSummaryForTeam;
 							$scope.openDataForTeam = Menu.openDataForTeam;
 							
-							$scope.updateReports();
-
 						} ]);

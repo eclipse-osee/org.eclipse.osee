@@ -249,6 +249,8 @@ angular
 										}
 									});
 							
+							Global.loadActiveProgsTeams($scope, AgileEndpoint);
+
 							// Copied through all controlers; ensure all are
 							// same
 							$scope.openBacklogForTeam = Menu.openBacklogForTeam;
