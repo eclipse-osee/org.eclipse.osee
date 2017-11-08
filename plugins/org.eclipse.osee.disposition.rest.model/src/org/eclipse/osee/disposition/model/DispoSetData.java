@@ -27,6 +27,7 @@ public class DispoSetData extends DispoSetDescriptorData implements DispoSet {
    private String importState;
    private OperationReport operationSummary;
    private String ciSet;
+   private String rerunList;
 
    public DispoSetData() {
 
@@ -83,6 +84,14 @@ public class DispoSetData extends DispoSetDescriptorData implements DispoSet {
    @Override
    public String getCiSet() {
       return ciSet;
+   }
+
+   public String getRerunList() {
+      return rerunList;
+   }
+
+   public void setRerunList(String rerunList) {
+      this.rerunList = rerunList;
    }
 
 }

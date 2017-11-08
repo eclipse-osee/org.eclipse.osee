@@ -279,4 +279,3 @@ app.provider('Annotation', function() {
     ];
 });
 
-

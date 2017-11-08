@@ -10,8 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.resources;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.annotation.security.RolesAllowed;
@@ -35,6 +38,7 @@ import org.eclipse.osee.disposition.rest.DispoRoles;
 import org.eclipse.osee.disposition.rest.internal.report.ExportSet;
 import org.eclipse.osee.disposition.rest.internal.report.STRSReport;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
  * @author Angel Avila
@@ -122,9 +126,8 @@ public class DispoAdminResource {
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Produces(MediaType.APPLICATION_JSON)
    public Response getDispoSetCopy(@QueryParam("destinationSet") String destinationSet, @QueryParam("sourceProgram") BranchId sourceBranch, @QueryParam("sourceSet") String sourceSet, CopySetParams params) {
-      Response.Status status;
       dispoApi.copyDispoSet(branch, destinationSet, sourceBranch, sourceSet, params);
-      status = Status.OK;
+      Response.Status status = Status.OK;
       return Response.status(status).build();
    }
 
@@ -138,6 +141,36 @@ public class DispoAdminResource {
          String.format("Mult Item Edit by: $s", params.getUserName()));
       status = Status.OK;
       return Response.status(status).build();
+   }
+
+   @Path("/rerun")
+   @GET
+   @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
+   @Produces(MediaType.APPLICATION_XML)
+   public Response getRerunReport(@QueryParam("primarySet") String primarySet) {
+      DispoSet set = dispoApi.getDispoSetById(branch, primarySet);
+      String rerunList = set.getRerunList();
+
+      StreamingOutput streamingOutput = new StreamingOutput() {
+
+         @Override
+         public void write(OutputStream outputStream) throws IOException, WebApplicationException {
+            Writer writer = new OutputStreamWriter(outputStream, "UTF-8");
+            BufferedWriter out = new BufferedWriter(writer);
+            try {
+               out.write(rerunList);
+            } finally {
+               Lib.close(out);
+            }
+            outputStream.flush();
+         }
+
+      };
+
+      String contentDisposition =
+         String.format("attachment; filename=\"%s.xml\"; creation-date=\"%s\"", "batch-list", new Date());
+      return Response.ok(streamingOutput).header("Content-Disposition", contentDisposition).type(
+         "application/xml").build();
    }
 
 }

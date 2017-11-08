@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.disposition.model.CopySetParamOption;
 import org.eclipse.osee.disposition.model.Discrepancy;
@@ -28,6 +29,7 @@ import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.disposition.rest.internal.DispoConnector;
+import org.eclipse.osee.disposition.rest.internal.report.FindReruns;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -38,11 +40,14 @@ public class DispoSetCopier {
 
    private final DispoConnector connector;
 
+   private final List<DispoAnnotationData> needsRerun = new ArrayList<>();
+   String batchRunList = "";
+
    public DispoSetCopier(DispoConnector connector) {
       this.connector = connector;
    }
 
-   public List<DispoItem> copyAllDispositions(Map<String, Set<DispoItemData>> nameToDestItems, Collection<DispoItem> sourceItems, boolean isCoverageCopy, OperationReport report) {
+   public List<DispoItem> copyAllDispositions(Map<String, Set<DispoItemData>> nameToDestItems, Collection<DispoItem> sourceItems, boolean isCoverageCopy, HashMap<String, String> reruns, OperationReport report) {
       List<DispoItem> modifiedItems = new ArrayList<>();
 
       // Iterate through every source item since we want to try to find a match for every item in the source
@@ -52,7 +57,8 @@ public class DispoSetCopier {
          if (destItem != null) {
             // Only try to copy over annotations if matching dest item is NOT PASS
             if (!destItem.getStatus().equals(DispoStrings.Item_Pass)) {
-               DispoItemData newItem = createNewItemWithCopiedAnnotations(destItem, sourceItem, isCoverageCopy, report);
+               DispoItemData newItem =
+                  createNewItemWithCopiedAnnotations(destItem, sourceItem, isCoverageCopy, reruns, report);
                if (newItem != null) {
                   modifiedItems.add(newItem);
 
@@ -100,7 +106,7 @@ public class DispoSetCopier {
       return destItem;
    }
 
-   private DispoItemData createNewItemWithCopiedAnnotations(DispoItemData destItem, DispoItem sourceItem, boolean isCoverageCopy, OperationReport report) {
+   private DispoItemData createNewItemWithCopiedAnnotations(DispoItemData destItem, DispoItem sourceItem, boolean isCoverageCopy, HashMap<String, String> reruns, OperationReport report) {
       DispoItemData toReturn = null;
       boolean isSameDiscrepancies = matchAllDiscrepancies(destItem, sourceItem);
       if (!isSameDiscrepancies) {
@@ -109,11 +115,11 @@ public class DispoSetCopier {
             WARNING);
 
       }
-      toReturn = buildNewItem(destItem, sourceItem, isCoverageCopy, report, isSameDiscrepancies);
+      toReturn = buildNewItem(destItem, sourceItem, isCoverageCopy, reruns, report, isSameDiscrepancies);
       return toReturn;
    }
 
-   private DispoItemData buildNewItem(DispoItemData destItem, DispoItem sourceItem, boolean isCoverageCopy, OperationReport report, boolean isSameDiscrepancies) {
+   private DispoItemData buildNewItem(DispoItemData destItem, DispoItem sourceItem, boolean isCoverageCopy, HashMap<String, String> reruns, OperationReport report, boolean isSameDiscrepancies) {
       boolean isChangesMade = false;
       DispoItemData newItem = initNewItem(destItem, sourceItem);
       List<DispoAnnotationData> newAnnotations = newItem.getAnnotationsList();
@@ -133,6 +139,10 @@ public class DispoSetCopier {
              * user should be aware.Currently only for Coverage
              */
             if (!destDefaultAnntationLocations.contains(sourceLocation)) {
+               if (!nonDefaultAnnotationLocations.containsKey(sourceLocation)) {
+                  newItem.setNeedsRerun(true);
+                  needsRerun.add(sourceAnnotation);
+               }
                report.addEntry(destItem.getName(),
                   String.format("Did not copy annotations for location(s) [%s] because they are default annotations",
                      sourceAnnotation.getLocationRefs()),
@@ -205,6 +215,14 @@ public class DispoSetCopier {
          // 2. None of the non-default Annotations cover a Discrepancy in the new import, in which case don't copy them over: MIGHT CHANGE THIS
          newItem = destItem;
          newItem.setGuid(sourceItem.getGuid());
+      } else if (newItem.getNeedsRerun() != null && newItem.getNeedsRerun()) {
+         report.addEntry(destItem.getName(), "Needs Rerun", UPDATE);
+         if (reruns != null) {
+            HashMap<String, String> tmpList = new FindReruns().createList(needsRerun);
+            for (Entry<String, String> entry : tmpList.entrySet()) {
+               reruns.put(entry.getKey(), entry.getValue());
+            }
+         }
       } else {
          report.addEntry(destItem.getName(), "Nothing to copy", IGNORE);
          newItem = null;

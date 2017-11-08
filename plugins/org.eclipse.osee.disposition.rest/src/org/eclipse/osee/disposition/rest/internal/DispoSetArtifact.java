@@ -92,4 +92,9 @@ public class DispoSetArtifact extends BaseIdentity<String> implements DispoSet {
       return artifact.getSoleAttributeAsString(DispoConstants.DispoCiSet, "");
    }
 
+   @Override
+   public String getRerunList() {
+      return artifact.getSoleAttributeAsString(DispoConstants.DispoRerunList, "");
+   }
+
 }

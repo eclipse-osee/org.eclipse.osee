@@ -12,6 +12,7 @@ artifactType "Disposition Set" extends "Artifact" {
    attribute "dispo.Dispo Config"
    attribute "dispo.Operation Summary"
    attribute "dispo.CI Set"
+   attribute "dispo.Rerun List"
 }
 
 artifactType "dispo.Dispositionable Item" extends "Artifact" {
@@ -292,6 +293,15 @@ attributeType "dispo.Last Updated" extends DateAttribute {
 
 attributeType "dispo.CI Set" extends StringAttribute {
 	id 5225296359986133054
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	defaultValue ""
+	mediaType "text/plain"
+}
+
+attributeType "dispo.Rerun List" extends StringAttribute {
+	id 3587660131087940587
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1

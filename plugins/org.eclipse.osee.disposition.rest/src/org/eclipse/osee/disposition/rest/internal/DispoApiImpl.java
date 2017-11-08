@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.disposition.model.CopySetParams;
 import org.eclipse.osee.disposition.model.Discrepancy;
@@ -610,12 +611,13 @@ public class DispoApiImpl implements DispoApi {
             namesToDestItems.put(name, itemsWithSameName);
          }
       }
+      HashMap<String, String> reruns = new HashMap<>();
       Map<String, DispoItem> namesToToEditItems = new HashMap<>();
       OperationReport report = new OperationReport();
 
       DispoSetCopier copier = new DispoSetCopier(dispoConnector);
       if (!params.getAnnotationParam().isNone()) {
-         List<DispoItem> copyResults = copier.copyAllDispositions(namesToDestItems, sourceItems, true, report);
+         List<DispoItem> copyResults = copier.copyAllDispositions(namesToDestItems, sourceItems, true, reruns, report);
          for (DispoItem item : copyResults) {
             namesToToEditItems.put(item.getName(), item);
          }
@@ -630,7 +632,22 @@ public class DispoApiImpl implements DispoApi {
          editDispoItems(branch, destSetId, namesToToEditItems.values(), false, operation);
          storageProvider.get().updateOperationSummary(getQuery().findUser(), branch, destSetId, report);
       }
+      storeRerunData(branch, destSetId, reruns);
+   }
 
+   private void storeRerunData(BranchId branch, String destSetId, HashMap<String, String> reruns) {
+      StringBuilder sb = new StringBuilder();
+      for (Entry<String, String> entry : reruns.entrySet()) {
+         sb = sb.append(DispoStrings.SCRIPT_ENTRY);
+         sb = sb.append(String.format(DispoStrings.SCRIPT_NAME, entry.getKey()));
+         sb = sb.append(String.format(DispoStrings.SCRIPT_PATH, entry.getValue()));
+         sb = sb.append(DispoStrings.IS_RUNNABLE);
+         sb = sb.append(DispoStrings.SCRIPT_ENTRY_END);
+      }
+      DispoSetData dispoSetData = new DispoSetData();
+      dispoSetData.setRerunList(DispoStrings.BATCH_RERUN_LIST + sb.toString() + DispoStrings.BATCH_RERUN_LIST_END);
+      ArtifactReadable author = getQuery().findUser();
+      storageProvider.get().updateDispoSet(author, branch, destSetId, dispoSetData);
    }
 
    @Override

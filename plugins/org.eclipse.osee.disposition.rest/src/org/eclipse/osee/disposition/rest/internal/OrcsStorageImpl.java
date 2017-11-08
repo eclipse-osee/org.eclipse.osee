@@ -237,6 +237,7 @@ public class OrcsStorageImpl implements Storage {
       JSONArray notesJarray = DispoUtil.noteListToJsonObj(descriptor.getNotesList());
       tx.setSoleAttributeFromString(creatdArtId, DispoConstants.DispoNotesJson, notesJarray.toString());
       tx.setSoleAttributeFromString(creatdArtId, DispoConstants.DispoCiSet, descriptor.getCiSet());
+      tx.setSoleAttributeFromString(creatdArtId, DispoConstants.DispoRerunList, descriptor.getRerunList());
       tx.commit();
       return creatdArtId.getUuid();
    }
@@ -272,6 +273,7 @@ public class OrcsStorageImpl implements Storage {
       String name = newData.getName();
       String importPath = newData.getImportPath();
       String ciSet = newData.getCiSet();
+      String rerunList = newData.getRerunList();
 
       JSONArray notesList = null;
       if (newData.getNotesList() != null) {
@@ -290,6 +292,9 @@ public class OrcsStorageImpl implements Storage {
       }
       if (ciSet != null && !ciSet.equals(origSetAs.getCiSet())) {
          tx.setSoleAttributeFromString(dispoSet, DispoConstants.DispoCiSet, ciSet);
+      }
+      if (rerunList != null && !rerunList.equals(origSetAs.getRerunList())) {
+         tx.setSoleAttributeFromString(dispoSet, DispoConstants.DispoRerunList, rerunList);
       }
       tx.commit();
    }

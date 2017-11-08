@@ -54,4 +54,14 @@ public class DispoStrings {
    public static final String Test_Unit_Resolution = "Test_Script";
    public static final String Exception_Handling_Resolution = "Exception_Handling";
 
+   public static final String XML_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+   public static final String BATCH_RERUN_LIST =
+      XML_HEADER + "<TestManagerConfig>\n" + "\t<ScriptPageConfig>\n" + "\t\t<ServicesSettings/>\n";
+   public static final String BATCH_RERUN_LIST_END = "\t</ScriptPageConfig>\n" + "</TestManagerConfig>";
+   public static final String SCRIPT_ENTRY = "\t\t<ScriptEntry>\n";
+   public static final String SCRIPT_ENTRY_END = "\t\t</ScriptEntry>\n";
+   public static final String IS_RUNNABLE = "\t\t\t<IsRunnable>true</IsRunnable>\n";
+   public static final String SCRIPT_NAME = "\t\t\t<Name>%s</Name>\n";
+   public static final String SCRIPT_PATH = "\t\t\t<Path>%s</Path>\n";
+
 }

@@ -8,8 +8,9 @@ app.controller('adminController', [
 	'CopySet', 
 	'CopySetCoverage', 
 	'MultiItemEdit',
+	'Config',
     'uiGridConstants',
-		    function($scope, $rootScope,  $modal, Program, Set, Report, CopySet, CopySetCoverage, MultiItemEdit, uiGridConstants) {
+		    function($scope, $rootScope,  $modal, Program, Set, Report, CopySet, CopySetCoverage, MultiItemEdit, Config, uiGridConstants) {
 		        $scope.readOnly = true;
 		        $scope.programSelection = null;
 		        $scope.modalShown = false;
@@ -21,13 +22,14 @@ app.controller('adminController', [
 		        $scope.selectedItems = [];
 		        $scope.isRunningOperation = false;
 		        $scope.cachedValue = "";
-
+		        $scope.types = [];
+		        $scope.isCoverage = $rootScope.type == 'codeCoverage';
 		        $scope.programs = Program.query();
 		        
 		        var isPrimary = function(importState) {
 		        	return row.entity.importState != "Warnings" && row.entity.importState != "Failed";
 		        }
-
+		        
 		        $scope.createNewProgram = function() {
 		            if ($scope.newProgramName != "") {
 		        		    var loadingModal = $scope.showLoadingModal();
@@ -218,6 +220,12 @@ app.controller('adminController', [
 			            	loadingModal.close();
 			            	alert(data.statusText);
 			            });
+			            Config.get({
+                            programId: $scope.programSelection,
+                            type: $rootScope.type
+                        }, function(data) {
+                       	      $scope.types = data.validResolutions;
+                        }); 
 		        };
 
 		        $scope.editSet = function editSet(set) {
@@ -352,6 +360,21 @@ app.controller('adminController', [
 		        		setId: set.ciDispositionSet
 		        	}, newSet);
 		        };
+		        
+		        
+		        $scope.rerunReportStatus = function rerunReportStatus (input) {
+		        	var newSet = $scope.getSetById(input.rerunDispositionSet);
+		        	var request = [];
+		        	request.push(
+		        	  "/dispo/program/",
+		        	  $scope.programSelection,
+		        	  "/admin/rerun?primarySet=",
+		        	  newSet.guid
+		        	  );
+		        	var url = request.join("");
+		            window.open(url);
+		        };
+		        
 		        
 		        
 		        // -------------------- Summary Grids ----------------------\\
@@ -735,6 +758,45 @@ app.controller('adminController', [
 		            $scope.ok = function() {
 		                var inputs = {};
 		                inputs.ciDispositionSet = this.dispositionSet;
+		                $modalInstance.close(inputs);
+		            };
+
+		            $scope.cancel = function() {
+		                $modalInstance.dismiss('cancel');
+		            };
+		        }
+		        
+		        
+		        // Report Reruns
+		        $scope.openRerunReportStatusModal = function() {
+		        	 var modalInstance = $modal.open({
+			                templateUrl: 'rerunReportStatus.html',
+			                controller: RerunReportStatusCtrl,
+			                size: 'sm',
+			                windowClass: 'rerunReportStatusModal',
+			                resolve: {
+			                	sets: function() {
+			                		return $scope.sets;
+			                	},
+			                	types: function() {
+			                		return $scope.types;
+			                	}
+			                }
+			            });
+
+			            modalInstance.result.then(function(inputs) {
+			            	$scope.rerunReportStatus(inputs);
+			            });
+		        }
+		        
+		        var RerunReportStatusCtrl = function($scope, $modalInstance, sets, types) {
+		        	$scope.rerunDispositionSet = "";
+		        	$scope.setsLocal = angular.copy(sets);
+		        	$scope.typesLocal = angular.copy(types);
+		            $scope.ok = function() {
+		                var inputs = {};
+		                inputs.rerunDispositionSet = this.dispositionSet;
+		                inputs.rerunResolutionTypes = this.resolutionTypes;
 		                $modalInstance.close(inputs);
 		            };
 

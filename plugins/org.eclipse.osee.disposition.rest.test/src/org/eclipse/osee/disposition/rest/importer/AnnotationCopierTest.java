@@ -162,7 +162,7 @@ public class AnnotationCopierTest {
       Map<String, Set<DispoItemData>> nameToItems = new HashMap<>();
       nameToItems.put(destItem.getName(), Collections.singleton(destItem));
       List<DispoItem> toModify =
-         copier.copyAllDispositions(nameToItems, Collections.singletonList((DispoItem) sourceItem), true, report);
+         copier.copyAllDispositions(nameToItems, Collections.singletonList((DispoItem) sourceItem), true, null, report);
 
       DispoItem modifiedItem = toModify.get(0);
       List<DispoAnnotationData> modifiedItemAnnotations = modifiedItem.getAnnotationsList();
@@ -215,7 +215,7 @@ public class AnnotationCopierTest {
       Map<String, Set<DispoItemData>> nameToItems = new HashMap<>();
       nameToItems.put(destItem.getName(), Collections.singleton(destItem));
       List<DispoItem> toModify =
-         copier.copyAllDispositions(nameToItems, Collections.singletonList((DispoItem) sourceItem), true, report);
+         copier.copyAllDispositions(nameToItems, Collections.singletonList((DispoItem) sourceItem), true, null, report);
 
       DispoItem modifiedItem = toModify.get(0);
       List<DispoAnnotationData> modifiedItemAnnotations = modifiedItem.getAnnotationsList();
