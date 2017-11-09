@@ -62,7 +62,7 @@ public class JaxTeamDefinition extends JaxAtsConfigObject {
    }
 
    public void addChild(JaxTeamDefinition child) {
-      children.add(child.getUuid());
+      children.add(child.getId());
    }
 
    public void addVersion(Long version) {

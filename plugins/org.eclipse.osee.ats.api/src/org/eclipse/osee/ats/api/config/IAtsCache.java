@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
  */
 public interface IAtsCache {
 
-   public <T extends IAtsObject> T getAtsObject(Long uuid);
+   public <T extends IAtsObject> T getAtsObject(Long id);
 
    public <T extends IAtsObject> T getAtsObject(ArtifactId artifact);
 

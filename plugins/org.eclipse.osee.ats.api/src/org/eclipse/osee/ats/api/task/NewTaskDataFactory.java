@@ -22,11 +22,11 @@ public class NewTaskDataFactory {
       // utility class
    }
 
-   public static NewTaskData get(String comment, String asUserId, Long teamWfUuid) {
+   public static NewTaskData get(String comment, String asUserId, Long teamWfId) {
       NewTaskData newTaskData = new NewTaskData();
       newTaskData.setAsUserId(asUserId);
       newTaskData.setCommitComment(comment);
-      newTaskData.setTeamWfUuid(teamWfUuid);
+      newTaskData.setTeamWfId(teamWfId);
       return newTaskData;
    }
 
@@ -34,7 +34,7 @@ public class NewTaskDataFactory {
       NewTaskData newTaskData = new NewTaskData();
       newTaskData.setAsUserId(atsUser.getUserId());
       newTaskData.setCommitComment(comment);
-      newTaskData.setTeamWfUuid(teamWf.getId());
+      newTaskData.setTeamWfId(teamWf.getId());
       return newTaskData;
    }
 }

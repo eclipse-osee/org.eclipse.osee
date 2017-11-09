@@ -34,7 +34,7 @@ public class AgileBacklog extends WorkItem implements IAgileBacklog {
    }
 
    @Override
-   public long getTeamUuid() {
+   public long getTeamId() {
       long result = 0;
       try {
          ArtifactId agileTeam =

@@ -56,7 +56,7 @@ public class AtsWorkPackageEndpointImplTest {
       IAtsWorkItem workItem = workItems.iterator().next();
       JaxWorkPackageData data = new JaxWorkPackageData();
       data.setAsUserId(AtsClientService.get().getUserService().getCurrentUserId());
-      data.getWorkItemUuids().add(workItem.getId());
+      data.getWorkItemIds().add(workItem.getId());
 
       workPackageEp.deleteWorkPackageItems(0L, data);
       assertEquals(1, workPackageEp.getWorkItems(DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getId()).size());

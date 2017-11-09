@@ -52,7 +52,7 @@ public interface IAtsVersionService {
 
    IAtsVersion getVersion(IAtsProgram program, String versionName, IAtsChangeSet changes);
 
-   IAtsVersion createVersion(String name, long uuid, IAtsChangeSet changes);
+   IAtsVersion createVersion(String name, long id, IAtsChangeSet changes);
 
    IAtsVersion createVersion(String name, IAtsChangeSet changes);
 

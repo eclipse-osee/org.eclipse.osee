@@ -85,13 +85,13 @@ public class AtsProgramService implements IAtsProgramService {
    }
 
    @Override
-   public IAtsInsertionActivity getInsertionActivity(Long insertionActivityUuid) {
-      return atsApi.getConfigItemFactory().getInsertionActivity(atsApi.getArtifact(insertionActivityUuid));
+   public IAtsInsertionActivity getInsertionActivity(Long insertionActivityId) {
+      return atsApi.getConfigItemFactory().getInsertionActivity(atsApi.getArtifact(insertionActivityId));
    }
 
    @Override
-   public IAtsWorkPackage getWorkPackage(Long workPackageUuid) {
-      return atsApi.getConfigItemFactory().getWorkPackage(atsApi.getArtifact(workPackageUuid));
+   public IAtsWorkPackage getWorkPackage(Long workPackageId) {
+      return atsApi.getConfigItemFactory().getWorkPackage(atsApi.getArtifact(workPackageId));
    }
 
    @Override
@@ -142,8 +142,8 @@ public class AtsProgramService implements IAtsProgramService {
    }
 
    @Override
-   public IAtsInsertion getInsertion(Long insertionUuid) {
-      return atsApi.getConfigItemFactory().getInsertion(atsApi.getArtifact(insertionUuid));
+   public IAtsInsertion getInsertion(Long insertionId) {
+      return atsApi.getConfigItemFactory().getInsertion(atsApi.getArtifact(insertionId));
    }
 
    @Override
@@ -172,8 +172,8 @@ public class AtsProgramService implements IAtsProgramService {
    }
 
    @Override
-   public IAtsProgram getProgram(Long programUuid) {
-      return atsApi.getConfigItemFactory().getProgram(atsApi.getArtifact(programUuid));
+   public IAtsProgram getProgram(Long programId) {
+      return atsApi.getConfigItemFactory().getProgram(atsApi.getArtifact(programId));
    }
 
    @Override
@@ -221,7 +221,7 @@ public class AtsProgramService implements IAtsProgramService {
 
    private static IAtsProgram loadProgram(IAtsTeamDefinition teamDef) {
       IAtsProgram program = null;
-      Object object = atsApi.getAttributeResolver().getSoleAttributeValue(teamDef, AtsAttributeTypes.ProgramUuid, null);
+      Object object = atsApi.getAttributeResolver().getSoleAttributeValue(teamDef, AtsAttributeTypes.ProgramId, null);
       if (object instanceof ArtifactId) {
          program = atsApi.getConfigItemFactory().getProgram((ArtifactId) object);
       } else if (object instanceof String && Strings.isNumeric((String) object)) {
@@ -265,7 +265,7 @@ public class AtsProgramService implements IAtsProgramService {
    public Collection<IAtsActionableItem> getAis(IAtsProgram program) {
       return Collections.castAll(atsApi.getQueryService() //
          .createQuery(AtsArtifactTypes.ActionableItem) //
-         .andAttr(AtsAttributeTypes.ProgramUuid, String.valueOf(program.getId())) //
+         .andAttr(AtsAttributeTypes.ProgramId, String.valueOf(program.getId())) //
          .getConfigObjectResultSet().getList());
    }
 
@@ -273,7 +273,7 @@ public class AtsProgramService implements IAtsProgramService {
    public Collection<IAtsTeamDefinition> getTeamDefs(IAtsProgram program) {
       return Collections.castAll(atsApi.getQueryService() //
          .createQuery(AtsArtifactTypes.TeamDefinition) //
-         .andAttr(AtsAttributeTypes.ProgramUuid, String.valueOf(program.getId())) //
+         .andAttr(AtsAttributeTypes.ProgramId, String.valueOf(program.getId())) //
          .getConfigObjectResultSet().getList());
    }
 
@@ -297,7 +297,7 @@ public class AtsProgramService implements IAtsProgramService {
    public Collection<IAtsActionableItem> getAis(IAtsProgram program, Collection<WorkType> workTypes) {
       IAtsConfigQuery query = atsApi.getQueryService() //
          .createQuery(AtsArtifactTypes.ActionableItem) //
-         .andAttr(AtsAttributeTypes.ProgramUuid, String.valueOf(program.getId()));
+         .andAttr(AtsAttributeTypes.ProgramId, String.valueOf(program.getId()));
       List<String> types = new LinkedList<>();
       for (WorkType type : workTypes) {
          types.add(type.name());
@@ -310,7 +310,7 @@ public class AtsProgramService implements IAtsProgramService {
    public Collection<IAtsTeamDefinition> getTeamDefs(IAtsProgram program, Collection<WorkType> workTypes) {
       IAtsConfigQuery query = atsApi.getQueryService() //
          .createQuery(AtsArtifactTypes.TeamDefinition) //
-         .andAttr(AtsAttributeTypes.ProgramUuid, String.valueOf(program.getId()));
+         .andAttr(AtsAttributeTypes.ProgramId, String.valueOf(program.getId()));
       List<String> types = new LinkedList<>();
       for (WorkType type : workTypes) {
          types.add(type.name());
@@ -350,14 +350,14 @@ public class AtsProgramService implements IAtsProgramService {
    }
 
    @Override
-   public long getCountryUuid(IAtsProgram program) {
-      long countryUuid = 0L;
+   public long getCountryId(IAtsProgram program) {
+      long countryId = 0L;
       ArtifactId countryArt =
          atsApi.getRelationResolver().getRelatedOrNull(program, AtsRelationTypes.CountryToProgram_Country);
       if (countryArt != null) {
-         countryUuid = countryArt.getId();
+         countryId = countryArt.getId();
       }
-      return countryUuid;
+      return countryId;
    }
 
    @Override

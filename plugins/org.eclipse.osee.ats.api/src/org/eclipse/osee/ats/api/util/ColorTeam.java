@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 @XmlRootElement
 public class ColorTeam extends NamedIdBase {
 
-   private List<Long> goalUuids;
+   private List<Long> goalIds;
 
    public ColorTeam() {
       this(-1L, "");
@@ -30,17 +30,17 @@ public class ColorTeam extends NamedIdBase {
       super(id, name);
    }
 
-   public List<Long> getGoalUuids() {
-      return goalUuids;
+   public List<Long> getGoalIds() {
+      return goalIds;
    }
 
-   public void setGoalUuids(List<Long> goalUuids) {
-      this.goalUuids = goalUuids;
+   public void setGoalIds(List<Long> goalIds) {
+      this.goalIds = goalIds;
    }
 
    @Override
    public String toString() {
-      return "ColorTeam [id=" + id + ", name=" + getName() + ", id=" + getId() + " goalUuids=" + goalUuids + "]";
+      return "ColorTeam [id=" + id + ", name=" + getName() + ", id=" + getId() + " goalIds=" + goalIds + "]";
    }
 
 }

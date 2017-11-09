@@ -68,7 +68,7 @@ public class LegacyPCRActionsWorldSearchItem extends WorldUISearchItem {
       if (isTeamDefsSet()) {
          TeamDefinitionQuickSearch srch = new TeamDefinitionQuickSearch(teamDefs);
          teamDefArts.addAll(srch.performSearch());
-         teamDefIds = AtsObjects.toUuids(teamDefs);
+         teamDefIds = AtsObjects.toIds(teamDefs);
       }
 
       // If both set, return intersection; else return just what was set

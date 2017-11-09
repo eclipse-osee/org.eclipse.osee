@@ -17,6 +17,6 @@ import org.eclipse.osee.ats.api.IAtsConfigObject;
  */
 public interface IAtsInsertion extends IAtsConfigObject {
 
-   long getProgramUuid();
+   long getProgramId();
 
 }

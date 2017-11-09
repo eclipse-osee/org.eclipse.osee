@@ -140,7 +140,7 @@ public class Version extends AtsConfigObject implements IAtsVersion {
    @Override
    public BranchId getBaselineBranchId() {
       return BranchId.valueOf(
-         atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.BaselineBranchUuid, "-1"));
+         atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.BaselineBranchId, "-1"));
    }
 
 }

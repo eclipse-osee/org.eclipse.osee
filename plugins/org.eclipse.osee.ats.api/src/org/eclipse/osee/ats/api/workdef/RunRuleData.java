@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class RunRuleData {
 
-   List<Long> workItemUuids;
+   List<Long> workItemIds;
    RuleEventType ruleEventType;
 
    public RuleEventType getRuleEventType() {
@@ -31,15 +31,15 @@ public class RunRuleData {
       this.ruleEventType = ruleEventType;
    }
 
-   public List<Long> getWorkItemUuids() {
-      if (workItemUuids == null) {
-         workItemUuids = new ArrayList<>();
+   public List<Long> getWorkItemIds() {
+      if (workItemIds == null) {
+         workItemIds = new ArrayList<>();
       }
-      return workItemUuids;
+      return workItemIds;
    }
 
-   public void setWorkItemUuids(List<Long> workItemUuids) {
-      this.workItemUuids = workItemUuids;
+   public void setWorkItemIds(List<Long> workItemIds) {
+      this.workItemIds = workItemIds;
    }
 
 }

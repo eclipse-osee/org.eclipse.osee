@@ -52,9 +52,9 @@ public class CpaFactory {
    }
 
    public static CpaBuild getVersion(IAtsVersion version, Object storeObject) {
-      Long uuid = version.getId();
-      CpaBuild build = new CpaBuild(uuid, version.getName());
-      setStoreObject(String.valueOf(uuid), storeObject);
+      Long id = version.getId();
+      CpaBuild build = new CpaBuild(id, version.getName());
+      setStoreObject(String.valueOf(id), storeObject);
       return build;
    }
 

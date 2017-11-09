@@ -30,12 +30,12 @@ public class AtsObjectsTest {
    }
 
    @Test
-   public void testToUuids() {
+   public void testToIds() {
       List<IAtsObject> objs = new ArrayList<>();
       objs.add(AtsCoreUsers.SYSTEM_USER);
       objs.add(AtsCoreUsers.ANONYMOUS_USER);
       Assert.assertEquals(Arrays.asList(AtsCoreUsers.SYSTEM_USER.getId(), AtsCoreUsers.ANONYMOUS_USER.getId()),
-         AtsObjects.toUuids(objs));
+         AtsObjects.toIds(objs));
    }
 
    @Test

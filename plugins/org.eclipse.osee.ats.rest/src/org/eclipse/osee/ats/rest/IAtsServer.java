@@ -54,10 +54,10 @@ public interface IAtsServer extends AtsApi, IAtsNotifier, IAtsConfigItemFactoryP
    void setEmailEnabled(boolean emailEnabled);
 
    @Override
-   ArtifactReadable getArtifact(Long uuid);
+   ArtifactReadable getArtifact(Long id);
 
    @Override
-   Collection<ArtifactToken> getArtifacts(Collection<Long> uuids);
+   Collection<ArtifactToken> getArtifacts(Collection<Long> ids);
 
    void addAtsDatabaseConversion(IAtsDatabaseConversion conversion);
 

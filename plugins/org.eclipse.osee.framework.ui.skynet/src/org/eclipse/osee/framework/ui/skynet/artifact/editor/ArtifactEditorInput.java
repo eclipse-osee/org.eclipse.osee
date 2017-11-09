@@ -29,7 +29,7 @@ import org.eclipse.ui.IPersistableElement;
 public class ArtifactEditorInput implements IEditorInput, IPersistableElement {
    private Artifact artifact;
    private BranchId savedBranchId;
-   private ArtifactId savedArtUuid;
+   private ArtifactId savedArtifactId;
    private String savedTitle;
    private boolean attemptedReload = false;
 
@@ -39,7 +39,7 @@ public class ArtifactEditorInput implements IEditorInput, IPersistableElement {
 
    public ArtifactEditorInput(BranchId branchId, ArtifactId artifactId, String title) {
       this.savedBranchId = branchId;
-      this.savedArtUuid = artifactId;
+      this.savedArtifactId = artifactId;
       this.savedTitle = title;
    }
 
@@ -49,7 +49,7 @@ public class ArtifactEditorInput implements IEditorInput, IPersistableElement {
    }
 
    public boolean isReload() {
-      return artifact == null && savedArtUuid != null;
+      return artifact == null && savedArtifactId != null;
    }
 
    @Override
@@ -124,9 +124,9 @@ public class ArtifactEditorInput implements IEditorInput, IPersistableElement {
 
    public Artifact loadArtifact() {
       if (artifact == null && !attemptedReload) {
-         if (savedArtUuid != null && savedBranchId.isValid()) {
+         if (savedArtifactId != null && savedBranchId.isValid()) {
             try {
-               artifact = ArtifactQuery.getArtifactFromId(savedArtUuid, savedBranchId);
+               artifact = ArtifactQuery.getArtifactFromId(savedArtifactId, savedBranchId);
             } catch (Exception ex) {
                // do nothing
             }
@@ -140,7 +140,7 @@ public class ArtifactEditorInput implements IEditorInput, IPersistableElement {
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + ((getArtUuid() == null) ? 0 : getArtUuid().hashCode());
+      result = prime * result + ((getArtId() == null) ? 0 : getArtId().hashCode());
       result = prime * result + getBranchId().hashCode();
       return result;
    }
@@ -155,12 +155,12 @@ public class ArtifactEditorInput implements IEditorInput, IPersistableElement {
       return id;
    }
 
-   public ArtifactId getArtUuid() {
+   public ArtifactId getArtId() {
       ArtifactId artifactId = ArtifactId.SENTINEL;
       if (artifact != null) {
          artifactId = artifact;
-      } else if (savedArtUuid != null) {
-         artifactId = savedArtUuid;
+      } else if (savedArtifactId != null) {
+         artifactId = savedArtifactId;
       }
       return artifactId;
    }
@@ -169,7 +169,7 @@ public class ArtifactEditorInput implements IEditorInput, IPersistableElement {
    public boolean equals(Object obj) {
       if (obj instanceof ArtifactEditorInput) {
          ArtifactEditorInput other = (ArtifactEditorInput) obj;
-         if (getArtUuid().notEqual(other.getArtUuid())) {
+         if (getArtId().notEqual(other.getArtId())) {
             return false;
          }
          return getBranchId().equals(other.getBranchId());
@@ -182,7 +182,7 @@ public class ArtifactEditorInput implements IEditorInput, IPersistableElement {
    }
 
    public ArtifactId getSavedArtUuid() {
-      return savedArtUuid;
+      return savedArtifactId;
    }
 
    public String getSavedTitle() {

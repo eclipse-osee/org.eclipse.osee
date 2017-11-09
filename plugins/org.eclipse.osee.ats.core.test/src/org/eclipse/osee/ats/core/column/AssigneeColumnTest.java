@@ -142,7 +142,7 @@ public class AssigneeColumnTest extends AbstractUserTest {
       implementStateImplementers.add(joe);
       when(workItem2.getImplementers()).thenReturn(implementStateImplementers);
 
-      AtsActionGroup group = new AtsActionGroup(GUID.create(), "group", Lib.generateUuid());
+      AtsActionGroup group = new AtsActionGroup(GUID.create(), "group", Lib.generateId());
       group.addAction(workItem);
       group.addAction(workItem2);
 
@@ -187,7 +187,7 @@ public class AssigneeColumnTest extends AbstractUserTest {
       when(workItem2.getAssignees()).thenReturn(assigneesToReturn2);
       when(stateMgr2.getStateType()).thenReturn(StateType.Working);
 
-      AtsActionGroup group = new AtsActionGroup(GUID.create(), "group", Lib.generateUuid());
+      AtsActionGroup group = new AtsActionGroup(GUID.create(), "group", Lib.generateId());
       group.addAction(workItem);
       group.addAction(workItem2);
 

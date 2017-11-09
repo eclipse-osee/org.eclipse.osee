@@ -43,7 +43,7 @@ public class InsertionActivityResourceTest extends AbstractConfigurationRestTest
 
    @Test
    public void testAtsInsertionActivityRestCall() throws Exception {
-      JsonArray array = getAndCheck("/ats/insertionactivity/" + DemoInsertionActivity.commPage.getUuid());
+      JsonArray array = getAndCheck("/ats/insertionactivity/" + DemoInsertionActivity.commPage.getId());
       Assert.assertEquals(1, array.size());
       JsonObject obj = getObjectNamed("COMM Page", array);
       Assert.assertNotNull("Did not find value COMM Page", obj);
@@ -52,7 +52,7 @@ public class InsertionActivityResourceTest extends AbstractConfigurationRestTest
 
    @Test
    public void testAtsInsertionActivityDetailsRestCall() throws Exception {
-      JsonArray array = getAndCheck("/ats/insertionactivity/" + DemoInsertionActivity.commPage.getUuid() + "/details");
+      JsonArray array = getAndCheck("/ats/insertionactivity/" + DemoInsertionActivity.commPage.getId() + "/details");
       Assert.assertEquals(1, array.size());
       JsonObject obj = getObjectNamed("COMM Page", array);
       Assert.assertNotNull("Did not find value COMM Page", obj);

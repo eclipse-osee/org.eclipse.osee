@@ -55,7 +55,7 @@ public class JaxActionableItem extends JaxAtsConfigObject {
    }
 
    public void addChild(JaxActionableItem child) {
-      children.add(child.getUuid());
+      children.add(child.getId());
    }
 
 }

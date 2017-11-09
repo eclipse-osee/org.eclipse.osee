@@ -17,15 +17,15 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 public class AddRuleData {
-   Long configUuid;
+   Long configId;
    String ruleName;
 
-   public Long getConfigItemUuid() {
-      return configUuid;
+   public Long getConfigItemId() {
+      return configId;
    }
 
-   public void setConfigItemUuid(Long configItemUuids) {
-      this.configUuid = configItemUuids;
+   public void setConfigItemId(Long configItemIds) {
+      this.configId = configItemIds;
    }
 
    public String getRuleName() {

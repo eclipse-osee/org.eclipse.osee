@@ -265,7 +265,7 @@ public class WorkItemNotificationProcessor {
          actionUrl = atsServer.getConfigValue("ActionUrl");
       }
       if (Strings.isValid(actionUrl)) {
-         return actionUrl.replaceFirst("UUID", String.valueOf(workItem.getId()));
+         return actionUrl.replaceFirst("ID", String.valueOf(workItem.getId()));
       }
       return "Not Configured";
    }

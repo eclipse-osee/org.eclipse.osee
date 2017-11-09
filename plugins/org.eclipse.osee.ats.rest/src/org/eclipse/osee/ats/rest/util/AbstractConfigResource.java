@@ -55,22 +55,22 @@ public abstract class AbstractConfigResource {
    }
 
    @GET
-   @Path("{uuid}")
+   @Path("{id}")
    @IdentityView
    @Produces(MediaType.APPLICATION_JSON)
-   public IAtsConfigObject getObjectJson(@PathParam("uuid") int uuid) throws Exception {
-      return getObject(uuid);
+   public IAtsConfigObject getObjectJson(@PathParam("id") int id) throws Exception {
+      return getObject(id);
    }
 
    @GET
-   @Path("{uuid}/details")
+   @Path("{id}/details")
    @Produces(MediaType.APPLICATION_JSON)
-   public IAtsConfigObject getObjectDetails(@PathParam("uuid") int uuid) throws Exception {
-      return getObject(uuid);
+   public IAtsConfigObject getObjectDetails(@PathParam("id") int id) throws Exception {
+      return getObject(id);
    }
 
-   private IAtsConfigObject getObject(int uuid) {
-      ArtifactReadable configArt = (ArtifactReadable) atsApi.getArtifact(new Long(uuid));
+   private IAtsConfigObject getObject(int id) {
+      ArtifactReadable configArt = (ArtifactReadable) atsApi.getArtifact(new Long(id));
       return atsApi.getConfigItemFactory().getConfigObject(configArt);
    }
 

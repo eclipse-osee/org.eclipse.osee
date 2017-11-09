@@ -113,7 +113,7 @@ import org.eclipse.osee.ats.column.WorkPackageTextColumn;
 import org.eclipse.osee.ats.column.WorkingBranchArchivedColumn;
 import org.eclipse.osee.ats.column.WorkingBranchStateColumn;
 import org.eclipse.osee.ats.column.WorkingBranchTypeColumn;
-import org.eclipse.osee.ats.column.WorkingBranchUuidColumn;
+import org.eclipse.osee.ats.column.WorkingBranchIdColumn;
 import org.eclipse.osee.ats.column.ev.WorkPackageColumnUI;
 import org.eclipse.osee.ats.column.ev.WorkPackageGuidColumnUI;
 import org.eclipse.osee.ats.column.ev.WorkPackageIdColumnUI;
@@ -134,7 +134,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastMo
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedDateColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedTransactionColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedTransactionCommentColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.UuidColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.IdColumn;
 
 //import org.eclipse.osee.ats.column.ActivityIdColumn;
 
@@ -185,7 +185,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          EstimatedCompletionDateColumn.getInstance(),
          ReleaseDateColumn.getInstance(),
          WorkPackageTextColumn.getInstance(),
-         WorkingBranchUuidColumn.getInstance(),
+         WorkingBranchIdColumn.getInstance(),
          WorkingBranchArchivedColumn.getInstance(),
          WorkingBranchStateColumn.getInstance(),
          WorkingBranchTypeColumn.getInstance(),
@@ -286,7 +286,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          RelatedArtifactLastModifiedByColumn.getInstance(),
          RelatedArtifactLastModifiedDateColumn.getInstance(),
          TaskRelatedArtifactTypeColumnUI.getInstance(),
-         new UuidColumn(false),};
+         new IdColumn(false),};
    }
 
    /**

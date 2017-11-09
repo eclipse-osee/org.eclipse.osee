@@ -17,9 +17,9 @@ import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.JsonProcessingException;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
@@ -105,7 +105,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
    public static void addProgramObject(IAtsServer atsServer, IAtsObject atsObject, Annotation[] annotations, JsonGenerator writer, boolean identityView, AttributeTypes attributeTypes) throws IOException, JsonGenerationException, JsonProcessingException {
       ArtifactReadable artifact = atsServer.getArtifact(atsObject);
       writer.writeStartObject();
-      writer.writeNumberField("uuid", getUuid(atsObject, atsServer));
+      writer.writeNumberField("id", getId(atsObject, atsServer));
       writer.writeStringField("Name", atsObject.getName());
       writer.writeStringField("Description", atsObject.getDescription());
 
@@ -184,7 +184,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
             Collection<IAtsProgram> programs = atsServer.getProgramService().getPrograms(country);
             for (IAtsProgram program : programs) {
                writer.writeStartObject();
-               writer.writeNumberField("uuid", program.getId());
+               writer.writeNumberField("id", program.getId());
                writer.writeStringField("Name", program.getName());
                writer.writeBooleanField("active", program.isActive());
                writer.writeEndObject();
@@ -199,7 +199,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
          Collection<IAgileFeatureGroup> featureGroups = atsServer.getAgileService().getAgileFeatureGroups(team);
          for (IAgileFeatureGroup group : featureGroups) {
             writer.writeStartObject();
-            writer.writeNumberField("uuid", group.getId());
+            writer.writeNumberField("id", group.getId());
             writer.writeStringField("Name", group.getName());
             writer.writeBooleanField("active", group.isActive());
             writer.writeEndObject();
@@ -209,7 +209,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
          Collection<IAgileSprint> agileSprints = atsServer.getAgileService().getAgileSprints(team);
          for (IAgileSprint sprint : agileSprints) {
             writer.writeStartObject();
-            writer.writeNumberField("uuid", sprint.getId());
+            writer.writeNumberField("id", sprint.getId());
             writer.writeStringField("Name", sprint.getName());
             writer.writeBooleanField("active", sprint.isActive());
             writer.writeEndObject();
@@ -218,7 +218,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
          ArtifactReadable teamArt = atsServer.getArtifact(team);
          ArtifactReadable backlogArt =
             teamArt.getRelated(AtsRelationTypes.AgileTeamToBacklog_Backlog).getAtMostOneOrNull();
-         writer.writeStringField("Backlog Uuid", backlogArt != null ? String.valueOf(backlogArt.getId()) : "");
+         writer.writeStringField("Backlog Id", backlogArt != null ? String.valueOf(backlogArt.getId()) : "");
          writer.writeStringField("Backlog", backlogArt != null ? String.valueOf(backlogArt.getName()) : "");
       }
       if (!identityView) {
@@ -278,16 +278,16 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
 
    private static void addArtifactIdentity(JsonGenerator writer, ArtifactReadable workArt) throws IOException, JsonGenerationException, JsonProcessingException {
       writer.writeStartObject();
-      writer.writeNumberField("uuid", workArt.getId());
+      writer.writeNumberField("id", workArt.getId());
       writer.writeStringField("Name", workArt.getName());
       writer.writeEndObject();
    }
 
-   public static Long getUuid(IAtsObject atsObject, AtsApi atsApi) {
-      long uuid = atsObject.getId();
-      if (uuid <= 0L) {
-         uuid = ((ArtifactReadable) atsApi.getArtifact(atsObject)).getId();
+   public static Long getId(IAtsObject atsObject, AtsApi atsApi) {
+      long id = atsObject.getId();
+      if (id <= 0L) {
+         id = ((ArtifactReadable) atsApi.getArtifact(atsObject)).getId();
       }
-      return uuid;
+      return id;
    }
 }

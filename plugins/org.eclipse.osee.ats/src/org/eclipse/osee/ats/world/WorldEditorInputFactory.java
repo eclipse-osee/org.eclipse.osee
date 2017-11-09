@@ -34,82 +34,82 @@ import org.eclipse.ui.IMemento;
 public class WorldEditorInputFactory implements IElementFactory {
 
    public final static String ID = "org.eclipse.osee.ats.WorldEditorInputFactory"; //$NON-NLS-1$
-   public final static String ART_UUIDS = "org.eclipse.osee.ats.WorldEditorInputFactory.artUuids"; //$NON-NLS-1$
-   public final static String BRANCH_KEY = "org.eclipse.osee.ats.WorldEditorInputFactory.branchUuid"; //$NON-NLS-1$
+   public final static String ART_IDS = "org.eclipse.osee.ats.WorldEditorInputFactory.artIds"; //$NON-NLS-1$
+   public final static String BRANCH_KEY = "org.eclipse.osee.ats.WorldEditorInputFactory.branchId"; //$NON-NLS-1$
    public final static String TITLE = "org.eclipse.osee.ats.WorldEditorInputFactory.title"; //$NON-NLS-1$
-   public final static String ATS_SEARCH_UUID = "org.eclipse.osee.ats.WorldEditorInputFactory.atsSearchUuid"; //$NON-NLS-1$
+   public final static String ATS_SEARCH_ID = "org.eclipse.osee.ats.WorldEditorInputFactory.atsSearchId"; //$NON-NLS-1$
    private static final String ATS_SEARCH_NAMESPACE = "org.eclipse.osee.ats.WorldEditorInputFactory.atsSearchNamespace"; //$NON-NLS-1$;
 
    @Override
    public IAdaptable createElement(IMemento memento) {
-      long atsSearchUuid = 0L;
+      long atsSearchId = 0L;
       BranchId branch = BranchId.SENTINEL;
       String title = memento.getString(TITLE);
       if (Strings.isValid(memento.getString(BRANCH_KEY))) {
          branch = BranchId.valueOf(memento.getString(BRANCH_KEY));
       }
-      List<ArtifactId> artUuids = Collections.fromString(memento.getString(ART_UUIDS), ArtifactId::valueOf);
-      String atsSearchUuidStr = memento.getString(ATS_SEARCH_UUID);
-      if (Strings.isNumeric(atsSearchUuidStr)) {
-         atsSearchUuid = Long.valueOf(atsSearchUuidStr);
+      List<ArtifactId> artIds = Collections.fromString(memento.getString(ART_IDS), ArtifactId::valueOf);
+      String atsSearchIdStr = memento.getString(ATS_SEARCH_ID);
+      if (Strings.isNumeric(atsSearchIdStr)) {
+         atsSearchId = Long.valueOf(atsSearchIdStr);
       }
       try {
-         if (atsSearchUuid > 0L) {
+         if (atsSearchId > 0L) {
             String namespace = memento.getString(ATS_SEARCH_NAMESPACE);
             if (Strings.isValid(namespace)) {
                if (AtsSearchTeamWorkflowSearchItem.NAMESPACE.equals(namespace)) {
                   AbstractWorkItemSearchItem searchItem = new AtsSearchTeamWorkflowSearchItem();
-                  searchItem.setRestoreUuid(atsSearchUuid);
+                  searchItem.setRestoreId(atsSearchId);
                   return new WorldEditorInput(new WorldEditorParameterSearchItemProvider(searchItem, null));
                }
                if (AtsSearchTaskSearchItem.NAMESPACE.equals(namespace)) {
                   AbstractWorkItemSearchItem searchItem = new AtsSearchTaskSearchItem();
-                  searchItem.setRestoreUuid(atsSearchUuid);
+                  searchItem.setRestoreId(atsSearchId);
                   return new WorldEditorInput(new WorldEditorParameterSearchItemProvider(searchItem, null));
                }
                if (AtsSearchGoalSearchItem.NAMESPACE.equals(namespace)) {
                   AbstractWorkItemSearchItem searchItem = new AtsSearchGoalSearchItem();
-                  searchItem.setRestoreUuid(atsSearchUuid);
+                  searchItem.setRestoreId(atsSearchId);
                   return new WorldEditorInput(new WorldEditorParameterSearchItemProvider(searchItem, null));
                }
                if (AtsSearchReviewSearchItem.NAMESPACE.equals(namespace)) {
                   AtsSearchReviewSearchItem searchItem = new AtsSearchReviewSearchItem();
-                  searchItem.setRestoreUuid(atsSearchUuid);
+                  searchItem.setRestoreId(atsSearchId);
                   return new WorldEditorInput(new WorldEditorParameterSearchItemProvider(searchItem, null));
                }
                if (AtsSearchWorkPackageSearchItem.NAMESPACE.equals(namespace)) {
                   AtsSearchWorkPackageSearchItem searchItem = new AtsSearchWorkPackageSearchItem();
-                  searchItem.setRestoreUuid(atsSearchUuid);
+                  searchItem.setRestoreId(atsSearchId);
                   return new WorldEditorInput(new WorldEditorParameterSearchItemProvider(searchItem, null));
                }
                for (IAtsWorldEditorItem item : AtsWorldEditorItems.getItems()) {
                   if (item.isWorldEditorSearchProviderNamespaceMatch(namespace)) {
-                     return item.getNewWorldEditorInputFromNamespace(namespace, atsSearchUuid);
+                     return item.getNewWorldEditorInputFromNamespace(namespace, atsSearchId);
                   }
                }
             }
             AtsSearchWorkflowSearchItem searchItem = new AtsSearchWorkflowSearchItem();
-            searchItem.setRestoreUuid(atsSearchUuid);
+            searchItem.setRestoreId(atsSearchId);
             return new WorldEditorInput(new WorldEditorParameterSearchItemProvider(searchItem, null));
          }
       } catch (Exception ex) {
          // do nothing
       }
-      return new WorldEditorInput(new WorldEditorReloadProvider(title, branch, artUuids));
+      return new WorldEditorInput(new WorldEditorReloadProvider(title, branch, artIds));
    }
 
    public static void saveState(IMemento memento, WorldEditorInput input) {
       String title = input.getName();
-      String artUuids = input.getIdString();
+      String artIds = input.getIdString();
       BranchId branch = input.getBranch();
 
-      if (Strings.isValid(artUuids) && branch.isValid() && Strings.isValid(title)) {
+      if (Strings.isValid(artIds) && branch.isValid() && Strings.isValid(title)) {
          memento.putString(BRANCH_KEY, branch.getIdString());
-         memento.putString(ART_UUIDS, artUuids);
+         memento.putString(ART_IDS, artIds);
          memento.putString(TITLE, title);
       }
-      if (input.getAtsSearchUuid() > 0L) {
-         memento.putString(ATS_SEARCH_UUID, String.valueOf(input.getAtsSearchUuid()));
+      if (input.getAtsSearchId() > 0L) {
+         memento.putString(ATS_SEARCH_ID, String.valueOf(input.getAtsSearchId()));
          memento.putString(ATS_SEARCH_NAMESPACE, String.valueOf(input.getAtsSearchNamespace()));
       }
    }

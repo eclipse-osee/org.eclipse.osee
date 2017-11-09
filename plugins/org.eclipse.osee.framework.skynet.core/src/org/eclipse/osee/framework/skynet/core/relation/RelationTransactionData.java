@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
-import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelation;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicIdRelation;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
@@ -89,7 +89,7 @@ public class RelationTransactionData extends BaseTransactionData {
       DefaultBasicGuidArtifact guidArtB =
          new DefaultBasicGuidArtifact(artifactB.getBranch(), artifactB.getArtifactTypeId(), artifactB);
 
-      DefaultBasicUuidRelation defaultBasicGuidRelation = new DefaultBasicUuidRelation(relation.getBranch(),
+      DefaultBasicIdRelation defaultBasicGuidRelation = new DefaultBasicIdRelation(relation.getBranch(),
          relation.getRelationType().getId(), relation.getId(), relation.getGammaId(), guidArtA, guidArtB);
       EventBasicGuidRelation event =
          new EventBasicGuidRelation(relationEventType, artifactA, artifactB, defaultBasicGuidRelation);

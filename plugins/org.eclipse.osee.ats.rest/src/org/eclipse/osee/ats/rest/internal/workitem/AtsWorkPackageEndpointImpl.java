@@ -81,11 +81,11 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
          throw new OseeArgumentException("Author with id [%s] Not Found", workPackageData.getAsUserId());
       }
       IAtsChangeSet changes = atsServer.getStoreService().createAtsChangeSet("Set Work Package", asUser);
-      for (Long workItemUuid : workPackageData.getWorkItemUuids()) {
-         IAtsWorkItem workItem = atsServer.getQueryService().createQuery(WorkItemType.WorkItem).andUuids(
-            workItemUuid).getResults().getAtMostOneOrNull();
+      for (Long workItemId : workPackageData.getWorkItemIds()) {
+         IAtsWorkItem workItem = atsServer.getQueryService().createQuery(WorkItemType.WorkItem).andIds(
+            workItemId).getResults().getAtMostOneOrNull();
          if (workItem == null) {
-            throw new OseeArgumentException("Work Item with id [%s] Not Found", workItemUuid);
+            throw new OseeArgumentException("Work Item with id [%s] Not Found", workItemId);
          }
          if (!workItem.isTask() && !workItem.isTeamWorkflow()) {
             throw new OseeArgumentException("Work Packages can only be set on Team Workflow or Task, not [%s]",
@@ -106,9 +106,9 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
             atsServer.getAttributeResolver().getSoleAttributeValue(workPackageArt, AtsAttributeTypes.ColorTeam, null);
          if (Strings.isValid(workPackageColorTeam)) {
             for (ColorTeam colorTeam : colorTeams.getTeams()) {
-               if (!colorTeam.getGoalUuids().isEmpty() && colorTeam.getName().equals(workPackageColorTeam)) {
-                  for (Long uuid : colorTeam.getGoalUuids()) {
-                     ArtifactReadable goalArt = atsServer.getArtifact(uuid);
+               if (!colorTeam.getGoalIds().isEmpty() && colorTeam.getName().equals(workPackageColorTeam)) {
+                  for (Long id : colorTeam.getGoalIds()) {
+                     ArtifactReadable goalArt = atsServer.getArtifact(id);
                      if (goalArt != null) {
                         IAtsWorkItem goalWorkItem = atsServer.getWorkItemFactory().getWorkItem(goalArt);
                         if (!atsServer.getRelationResolver().areRelated(goalWorkItem, AtsRelationTypes.Goal_Member,
@@ -117,8 +117,8 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
                         }
                      } else {
                         logger.error(
-                           "Goal Uuid [%d] invalid in Color Team [%s] for Work Package [%s] Work Item [%s]; Skipping...",
-                           uuid, colorTeam, workPackageArt.toStringWithId(), workItem.toStringWithId());
+                           "Goal Id [%d] invalid in Color Team [%s] for Work Package [%s] Work Item [%s]; Skipping...",
+                           id, colorTeam, workPackageArt.toStringWithId(), workItem.toStringWithId());
                      }
                   }
                }
@@ -156,11 +156,11 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
          throw new OseeArgumentException("Author with id [%s] Not Found", workPackageData.getAsUserId());
       }
       IAtsChangeSet changes = atsServer.getStoreService().createAtsChangeSet("Remove Work Package", asUser);
-      for (Long workItemUuid : workPackageData.getWorkItemUuids()) {
-         IAtsWorkItem workItem = atsServer.getQueryService().createQuery(WorkItemType.WorkItem).andUuids(
-            workItemUuid).getResults().getAtMostOneOrNull();
+      for (Long workItemId : workPackageData.getWorkItemIds()) {
+         IAtsWorkItem workItem = atsServer.getQueryService().createQuery(WorkItemType.WorkItem).andIds(
+            workItemId).getResults().getAtMostOneOrNull();
          if (workItem == null) {
-            throw new OseeArgumentException("Work Item with id [%s] Not Found", workItemUuid);
+            throw new OseeArgumentException("Work Item with id [%s] Not Found", workItemId);
          }
          if (atsServer.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.WorkPackageReference,
             null) != null) {

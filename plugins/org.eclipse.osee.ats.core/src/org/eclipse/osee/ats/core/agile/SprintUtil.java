@@ -119,7 +119,7 @@ public class SprintUtil {
       IAtsWorkItem workItem = atsApi.getWorkItemFactory().getWorkItem(aItem.getStoreObject());
       item.setName(aItem.getName());
       item.setFeatureGroups(Collections.toString("; ", atsApi.getAgileService().getFeatureGroups(aItem)));
-      item.setUuid(aItem.getId());
+      item.setId(aItem.getId());
       if (aItem.isCompletedOrCancelled()) {
          String implementers = atsApi.getImplementerService().getImplementersStr(aItem);
          item.setImplementers(implementers);

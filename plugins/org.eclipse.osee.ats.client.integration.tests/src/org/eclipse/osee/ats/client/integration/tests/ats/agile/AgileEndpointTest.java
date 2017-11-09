@@ -40,19 +40,19 @@ import org.junit.Test;
 public class AgileEndpointTest {
 
    private AgileEndpointApi agile;
-   private long teamUuid;
+   private long teamId;
 
    @Before
    public void setup() {
       agile = AtsClientService.getAgile();
-      teamUuid = Lib.generateArtifactIdAsInt();
+      teamId = Lib.generateArtifactIdAsInt();
    }
 
    @After
    public void cleanup() {
-      Artifact agileTeam = AtsClientService.get().getArtifact(teamUuid);
+      Artifact agileTeam = AtsClientService.get().getArtifact(teamId);
       if (agileTeam != null) {
-         agile.deleteTeam(teamUuid);
+         agile.deleteTeam(teamId);
       }
    }
 
@@ -64,10 +64,10 @@ public class AgileEndpointTest {
       Assert.assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
 
       // Test Get
-      JaxAgileTeam team = agile.getTeam(teamUuid);
+      JaxAgileTeam team = agile.getTeam(teamId);
       Assert.assertNotNull(team);
       Assert.assertEquals("My Agile Team", team.getName());
-      Assert.assertEquals(teamUuid, team.getUuid().longValue());
+      Assert.assertEquals(teamId, team.getId().longValue());
       Assert.assertEquals("", team.getDescription());
       Assert.assertEquals(true, team.isActive());
 
@@ -76,21 +76,21 @@ public class AgileEndpointTest {
       team.setActive(false);
       team.setName("New Name");
       agile.updateTeam(team);
-      JaxAgileTeam updatedTeam = agile.getTeam(teamUuid);
+      JaxAgileTeam updatedTeam = agile.getTeam(teamId);
       Assert.assertNotNull(updatedTeam);
       Assert.assertEquals("New Name", updatedTeam.getName());
       Assert.assertEquals("description", updatedTeam.getDescription());
       Assert.assertEquals(false, updatedTeam.isActive());
 
       // Test Delete
-      agile.deleteTeam(teamUuid);
-      Assert.assertNull(AtsClientService.get().getArtifact(teamUuid));
+      agile.deleteTeam(teamId);
+      Assert.assertNull(AtsClientService.get().getArtifact(teamId));
    }
 
    private JaxNewAgileTeam newJaxAgileTeam() {
       JaxNewAgileTeam newTeam = new JaxNewAgileTeam();
       newTeam.setName("My Agile Team");
-      newTeam.setUuid(teamUuid);
+      newTeam.setId(teamId);
       return newTeam;
    }
 
@@ -103,24 +103,24 @@ public class AgileEndpointTest {
       // Test Create
       JaxNewAgileSprint newSprint = new JaxNewAgileSprint();
       newSprint.setName("My Sprint");
-      Long uuid = Lib.generateArtifactIdAsInt();
-      newSprint.setUuid(uuid);
-      newSprint.setTeamUuid(teamUuid);
-      Response response2 = agile.createSprint(teamUuid, newSprint);
+      Long id = Lib.generateArtifactIdAsInt();
+      newSprint.setId(id);
+      newSprint.setTeamId(teamId);
+      Response response2 = agile.createSprint(teamId, newSprint);
       Assert.assertEquals(Response.Status.CREATED.getStatusCode(), response2.getStatus());
 
       // Test Get
-      List<JaxAgileSprint> sprints = agile.getSprints(teamUuid);
+      List<JaxAgileSprint> sprints = agile.getSprints(teamId);
       Assert.assertEquals(1, sprints.size());
       JaxAgileSprint sprint = sprints.iterator().next();
       Assert.assertEquals("My Sprint", sprint.getName());
-      Assert.assertEquals(teamUuid, sprint.getTeamUuid());
-      Assert.assertEquals(uuid.longValue(), sprint.getUuid().longValue());
+      Assert.assertEquals(teamId, sprint.getTeamId());
+      Assert.assertEquals(id.longValue(), sprint.getId().longValue());
 
       // Test Delete
-      agile.deleteSprint(teamUuid, sprint.getUuid());
-      sprints = agile.getSprints(teamUuid);
-      Assert.assertNull(AtsClientService.get().getArtifact(sprint.getUuid()));
+      agile.deleteSprint(teamId, sprint.getId());
+      sprints = agile.getSprints(teamId);
+      Assert.assertNull(AtsClientService.get().getArtifact(sprint.getId()));
    }
 
    @Test
@@ -132,26 +132,26 @@ public class AgileEndpointTest {
       // Test Create
       JaxNewAgileFeatureGroup group = new JaxNewAgileFeatureGroup();
       group.setName("Communications");
-      group.setTeamUuid(teamUuid);
-      Long uuid = Lib.generateArtifactIdAsInt();
-      group.setUuid(uuid);
+      group.setTeamId(teamId);
+      Long id = Lib.generateArtifactIdAsInt();
+      group.setId(id);
 
-      Response response2 = agile.createFeatureGroup(teamUuid, group);
+      Response response2 = agile.createFeatureGroup(teamId, group);
       Assert.assertEquals(Response.Status.CREATED.getStatusCode(), response2.getStatus());
 
       // Test Get
-      List<JaxAgileFeatureGroup> groups = agile.getFeatureGroups(teamUuid);
+      List<JaxAgileFeatureGroup> groups = agile.getFeatureGroups(teamId);
       Assert.assertEquals(1, groups.size());
       JaxAgileFeatureGroup newGroup = groups.iterator().next();
       Assert.assertEquals("Communications", newGroup.getName());
-      Assert.assertEquals(teamUuid, newGroup.getTeamUuid());
-      Assert.assertEquals(uuid.longValue(), newGroup.getUuid().longValue());
+      Assert.assertEquals(teamId, newGroup.getTeamId());
+      Assert.assertEquals(id.longValue(), newGroup.getId().longValue());
 
       // Test Delete
-      agile.deleteFeatureGroup(teamUuid, newGroup.getUuid());
-      groups = agile.getFeatureGroups(teamUuid);
+      agile.deleteFeatureGroup(teamId, newGroup.getId());
+      groups = agile.getFeatureGroups(teamId);
       Assert.assertTrue(groups.isEmpty());
-      Assert.assertNull(AtsClientService.get().getArtifact(newGroup.getUuid()));
+      Assert.assertNull(AtsClientService.get().getArtifact(newGroup.getId()));
    }
 
    @Test
@@ -162,20 +162,20 @@ public class AgileEndpointTest {
 
       JaxNewAgileBacklog backlog = new JaxNewAgileBacklog();
       backlog.setName("My Backlog");
-      backlog.setTeamUuid(teamUuid);
-      Long uuid = Lib.generateArtifactIdAsInt();
-      backlog.setUuid(uuid);
+      backlog.setTeamId(teamId);
+      Long id = Lib.generateArtifactIdAsInt();
+      backlog.setId(id);
 
       // Test Create
-      Response response2 = agile.createBacklog(teamUuid, backlog);
+      Response response2 = agile.createBacklog(teamId, backlog);
       Assert.assertEquals(Response.Status.CREATED.getStatusCode(), response2.getStatus());
 
       // Test Get
-      JaxAgileBacklog newBacklog = agile.getBacklog(teamUuid);
+      JaxAgileBacklog newBacklog = agile.getBacklog(teamId);
       Assert.assertEquals("My Backlog", newBacklog.getName());
-      Assert.assertEquals(teamUuid, newBacklog.getTeamUuid());
+      Assert.assertEquals(teamId, newBacklog.getTeamId());
       Assert.assertTrue(newBacklog.isActive());
-      Assert.assertEquals(uuid.longValue(), newBacklog.getUuid().longValue());
+      Assert.assertEquals(id.longValue(), newBacklog.getId().longValue());
    }
 
    @Test

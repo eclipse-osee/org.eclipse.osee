@@ -30,7 +30,7 @@ public class ConfigData {
    IAtsActionableItem actionableItem;
    boolean retainTeamLeads;
    boolean persistChanges;
-   Long newProgramUuid;
+   Long newProgramId;
 
    public void validateData(XResultData resultData) {
       if (teamDef == null) {
@@ -120,12 +120,12 @@ public class ConfigData {
       this.actionableItem = actionableItem;
    }
 
-   public Long getNewProgramUuid() {
-      return newProgramUuid;
+   public Long getNewProgramId() {
+      return newProgramId;
    }
 
-   public void setNewProgramUuid(Long newProgramUuid) {
-      this.newProgramUuid = newProgramUuid;
+   public void setNewProgramId(Long newProgramId) {
+      this.newProgramId = newProgramId;
    }
 
 }

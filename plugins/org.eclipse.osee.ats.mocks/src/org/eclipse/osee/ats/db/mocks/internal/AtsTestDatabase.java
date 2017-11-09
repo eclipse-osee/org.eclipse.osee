@@ -105,7 +105,7 @@ public class AtsTestDatabase {
 
    private Dictionary<String, Object> newConfig(String dbPath) {
       Map<String, Object> config = new LinkedHashMap<>();
-      config.put(JdbcConstants.JDBC_SERVICE__ID, Lib.generateUuid());
+      config.put(JdbcConstants.JDBC_SERVICE__ID, Lib.generateId());
       config.put(JdbcConstants.JDBC_SERVER__DB_DATA_PATH, dbPath);
       config.put(JdbcConstants.JDBC_SERVER__USE_RANDOM_PORT, true);
       config.put(JdbcConstants.JDBC_POOL__ENABLED, false);

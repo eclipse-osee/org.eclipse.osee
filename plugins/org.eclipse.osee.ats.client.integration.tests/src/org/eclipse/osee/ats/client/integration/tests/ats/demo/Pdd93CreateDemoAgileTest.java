@@ -49,13 +49,13 @@ public class Pdd93CreateDemoAgileTest implements IPopulateDemoDatabaseTest {
       int numFound = 0;
       for (IAgileSprint sprint : AtsClientService.get().getAgileService().getAgileSprints(team)) {
          if (sprint.getId().equals(DemoArtifactToken.SAW_Sprint_1.getId())) {
-            Assert.assertEquals(DemoArtifactToken.SAW_Agile_Team.getId(), Long.valueOf(sprint.getTeamUuid()));
+            Assert.assertEquals(DemoArtifactToken.SAW_Agile_Team.getId(), Long.valueOf(sprint.getTeamId()));
             Assert.assertEquals(DemoArtifactToken.SAW_Sprint_1.getName(), sprint.getName());
             Assert.assertEquals(false, sprint.isActive());
             numFound++;
          }
          if (sprint.getId().equals(DemoArtifactToken.SAW_Sprint_2.getId())) {
-            Assert.assertEquals(DemoArtifactToken.SAW_Agile_Team.getId(), Long.valueOf(sprint.getTeamUuid()));
+            Assert.assertEquals(DemoArtifactToken.SAW_Agile_Team.getId(), Long.valueOf(sprint.getTeamId()));
             Assert.assertEquals(DemoArtifactToken.SAW_Sprint_2.getName(), sprint.getName());
             Assert.assertEquals(true, sprint.isActive());
             numFound++;

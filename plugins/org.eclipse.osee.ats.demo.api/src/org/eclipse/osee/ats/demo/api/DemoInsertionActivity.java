@@ -45,22 +45,22 @@ public class DemoInsertionActivity extends JaxInsertionActivity {
 
    DemoInsertion insertion;
 
-   public DemoInsertionActivity(DemoInsertion insertion, String name, long uuid, String description) {
+   public DemoInsertionActivity(DemoInsertion insertion, String name, long id, String description) {
       this.insertion = insertion;
       setName(name);
-      setUuid(uuid);
+      setId(id);
       setActive(true);
       insertion.getActivities().add(this);
       setDescription(description);
-      setInsertionUuid(insertion.getUuid());
+      setInsertionId(insertion.getId());
       if (activities == null) {
          activities = new LinkedList<>();
       }
       activities.add(this);
    }
 
-   public DemoInsertionActivity(DemoInsertion insertion, long uuid) {
-      this(insertion, insertion.getName() + " Activity", uuid, "description");
+   public DemoInsertionActivity(DemoInsertion insertion, long id) {
+      this(insertion, insertion.getName() + " Activity", id, "description");
    }
 
    public static List<DemoInsertionActivity> getActivities() {

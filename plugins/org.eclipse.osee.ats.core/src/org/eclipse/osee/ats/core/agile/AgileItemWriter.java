@@ -98,7 +98,7 @@ public class AgileItemWriter {
             for (IAgileFeatureGroup feature : features) {
                featureArts.add(feature.getStoreObject());
             }
-            for (ArtifactToken awa : atsApi.getArtifacts(newItem.getUuids())) {
+            for (ArtifactToken awa : atsApi.getArtifacts(newItem.getIds())) {
                for (IAgileFeatureGroup feature : features) {
                   ArtifactToken featureArt = feature.getStoreObject();
                   if (!atsApi.getRelationResolver().areRelated(featureArt,
@@ -114,7 +114,7 @@ public class AgileItemWriter {
                }
             }
          } else if (newItem.isRemoveFeatures()) {
-            for (ArtifactToken awa : atsApi.getArtifacts(newItem.getUuids())) {
+            for (ArtifactToken awa : atsApi.getArtifacts(newItem.getIds())) {
                for (ArtifactToken feature : atsApi.getRelationResolver().getRelated(awa,
                   AtsRelationTypes.AgileFeatureToItem_FeatureGroup)) {
                   changes.unrelate(feature, AtsRelationTypes.AgileFeatureToItem_AtsItem, awa);
@@ -123,9 +123,9 @@ public class AgileItemWriter {
          }
 
          if (newItem.isSetSprint()) {
-            ArtifactToken sprintArt = atsApi.getArtifact(newItem.getSprintUuid());
+            ArtifactToken sprintArt = atsApi.getArtifact(newItem.getSprintId());
             IAgileSprint sprint = atsApi.getAgileService().getAgileSprint(sprintArt);
-            for (ArtifactToken awa : atsApi.getArtifacts(newItem.getUuids())) {
+            for (ArtifactToken awa : atsApi.getArtifacts(newItem.getIds())) {
                if (sprint != null) {
                   changes.setRelation(sprint, AtsRelationTypes.AgileSprintToItem_AtsItem, awa);
                } else {
@@ -136,9 +136,9 @@ public class AgileItemWriter {
          }
 
          if (newItem.isSetBacklog()) {
-            ArtifactToken backlogArt = atsApi.getArtifact(newItem.getBacklogUuid());
+            ArtifactToken backlogArt = atsApi.getArtifact(newItem.getBacklogId());
             IAgileSprint backlog = atsApi.getAgileService().getAgileSprint(backlogArt);
-            for (ArtifactToken awa : atsApi.getArtifacts(newItem.getUuids())) {
+            for (ArtifactToken awa : atsApi.getArtifacts(newItem.getIds())) {
                if (backlog != null) {
                   changes.setRelation(backlog, AtsRelationTypes.Goal_Member, awa);
                } else {
@@ -171,8 +171,8 @@ public class AgileItemWriter {
 
    private List<IAtsWorkItem> getWorkItems() {
       List<IAtsWorkItem> workItems = new LinkedList<IAtsWorkItem>();
-      for (long uuid : newItem.getUuids()) {
-         IAtsWorkItem workItem = atsApi.getTeamWf(uuid);
+      for (long id : newItem.getIds()) {
+         IAtsWorkItem workItem = atsApi.getTeamWf(id);
          workItems.add(workItem);
       }
       return workItems;

@@ -38,7 +38,7 @@ public interface IAtsVersion extends ICommitConfigItem, IAtsConfigObject {
     * Branching Data
     ******************************/
    /**
-    * @return directly configured baseline branch uuid or parentTeamDefinition's branch uuid
+    * @return directly configured baseline branch id or parentTeamDefinition's branch id
     */
    @Override
    BranchId getBaselineBranchId();

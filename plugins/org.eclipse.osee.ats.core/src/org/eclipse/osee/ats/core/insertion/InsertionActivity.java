@@ -21,7 +21,7 @@ import org.eclipse.osee.logger.Log;
  */
 public class InsertionActivity extends AtsConfigObject implements IAtsInsertionActivity {
 
-   private long insertionUuid;
+   private long insertionId;
 
    public InsertionActivity(Log logger, AtsApi atsServer, ArtifactToken artifact) {
       super(logger, atsServer, artifact);
@@ -33,11 +33,11 @@ public class InsertionActivity extends AtsConfigObject implements IAtsInsertionA
    }
 
    @Override
-   public long getInsertionUuid() {
-      return insertionUuid;
+   public long getInsertionId() {
+      return insertionId;
    }
 
-   public void setInsertionUuid(long insertionUuid) {
-      this.insertionUuid = insertionUuid;
+   public void setInsertionId(long insertionId) {
+      this.insertionId = insertionId;
    }
 }

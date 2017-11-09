@@ -26,7 +26,7 @@ public class AtsDslFormatter extends AbstractDeclarativeFormatter implements IIn
       "attributeName",
       "version",
       "staticId",
-      "baselineBranchUuid",
+      "baselineBranchId",
       "workDefinition",
       "teamDefinition",
       "privileged",

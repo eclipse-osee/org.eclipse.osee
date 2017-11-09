@@ -132,14 +132,14 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       //      if (!workItemsCreated.isEmpty()) {
       //         RunRuleData runRuleData = new RunRuleData();
       //         runRuleData.setRuleEventType(RuleEventType.CreateWorkflow);
-      //         runRuleData.getWorkItemUuids().addAll(AtsObjects.toUuids(workItemsCreated));
+      //         runRuleData.getWorkItemIds().addAll(AtsObjects.toIds(workItemsCreated));
       //         ElapsedTime time2 = new ElapsedTime("AtsChangeSet.runWorkflowRules");
       //         RunRuleResults results = AtsClientService.getRuleEp().runWorkflowRules(runRuleData);
       //         time2.end();
       //
       //         List<Artifact> changedArts = new LinkedList<>();
-      //         for (Long changedUuid : results.getChangedWorkitemUuids()) {
-      //            Artifact artifact = ArtifactCache.getActive(changedUuid, AtsClientService.get().getAtsBranch());
+      //         for (Long changedId : results.getChangedWorkitemIds()) {
+      //            Artifact artifact = ArtifactCache.getActive(changedId, AtsClientService.get().getAtsBranch());
       //            if (artifact != null) {
       //               changedArts.add(artifact);
       //            }
@@ -280,9 +280,9 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid, Long uuid) {
+   public ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid, Long id) {
       Artifact artifact =
-         ArtifactTypeManager.addArtifact(artifactType, AtsClientService.get().getAtsBranch(), name, guid, uuid);
+         ArtifactTypeManager.addArtifact(artifactType, AtsClientService.get().getAtsBranch(), name, guid, id);
       add(artifact);
       return artifact;
    }

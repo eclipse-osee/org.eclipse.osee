@@ -18,17 +18,17 @@ import java.util.List;
  */
 public class JaxWorkPackageData {
    String asUserId;
-   List<Long> workItemUuids = new ArrayList<>();
+   List<Long> workItemIds = new ArrayList<>();
 
    public JaxWorkPackageData() {
    }
 
-   public List<Long> getWorkItemUuids() {
-      return workItemUuids;
+   public List<Long> getWorkItemIds() {
+      return workItemIds;
    }
 
-   public void setWorkItemUuids(List<Long> workItemUuids) {
-      this.workItemUuids = workItemUuids;
+   public void setWorkItemIds(List<Long> workItemIds) {
+      this.workItemIds = workItemIds;
    }
 
    public String getAsUserId() {

@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
-import org.eclipse.osee.framework.skynet.core.event.filter.BranchUuidEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.filter.BranchIdEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
@@ -46,7 +46,7 @@ public class UserArtifactEventListener implements IArtifactEventListener {
    public UserArtifactEventListener(LazyObject<Cache<String, User>> cacheProvider, LazyObject<Iterable<? extends String>> keysProvider) {
       super();
       this.eventFilters = Arrays.asList(new ArtifactTypeEventFilter(CoreArtifactTypes.User),
-         new BranchUuidEventFilter(CoreBranches.COMMON));
+         new BranchIdEventFilter(CoreBranches.COMMON));
       this.cacheProvider = cacheProvider;
       this.keysProvider = keysProvider;
    }

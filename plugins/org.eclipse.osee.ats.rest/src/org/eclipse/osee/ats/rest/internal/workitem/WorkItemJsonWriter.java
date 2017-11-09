@@ -47,7 +47,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
 
    private JsonFactory jsonFactory;
    private IAtsServer atsServer;
-   private static final String ATS_UI_ACTION_PREFIX = "/ats/ui/action/UUID";
+   private static final String ATS_UI_ACTION_PREFIX = "/ats/ui/action/ID";
 
    public void setAtsServer(IAtsServer atsServer) {
       this.atsServer = atsServer;
@@ -102,7 +102,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
    protected static void addWorkItem(IAtsServer atsServer, IAtsWorkItem config, Annotation[] annotations, JsonGenerator writer, boolean identityView, AttributeTypes attributeTypes, List<WorkItemWriterOptions> options) throws IOException, JsonGenerationException, JsonProcessingException {
       ArtifactReadable action = (ArtifactReadable) config.getStoreObject();
       writer.writeStartObject();
-      writer.writeNumberField("uuid", ConfigJsonWriter.getUuid(config, atsServer));
+      writer.writeNumberField("id", ConfigJsonWriter.getId(config, atsServer));
       writer.writeStringField("Name", config.getName());
       String atsId = action.getSoleAttributeValue(AtsAttributeTypes.AtsId, "");
       writer.writeStringField("AtsId", atsId);

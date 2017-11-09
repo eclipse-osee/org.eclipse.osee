@@ -50,26 +50,26 @@ import org.junit.Test;
 public class AtsTaskEndpointImplTest {
 
    private AtsTaskEndpointApi taskEp;
-   private long taskUuid1, taskUuid2, taskUuid3, taskUuid4, codeTeamWfUuid;
+   private long taskId1, taskId2, taskId3, taskId4, codeTeamWfId;
    private IAtsClient client;
 
    @Before
    public void setup() {
       client = AtsClientService.get();
       taskEp = AtsClientService.getTaskEp();
-      taskUuid1 = Lib.generateArtifactIdAsInt();
-      taskUuid2 = Lib.generateArtifactIdAsInt();
-      taskUuid3 = Lib.generateArtifactIdAsInt();
-      taskUuid4 = Lib.generateArtifactIdAsInt();
-      codeTeamWfUuid = DemoUtil.getSawCodeUnCommittedWf().getId();
+      taskId1 = Lib.generateArtifactIdAsInt();
+      taskId2 = Lib.generateArtifactIdAsInt();
+      taskId3 = Lib.generateArtifactIdAsInt();
+      taskId4 = Lib.generateArtifactIdAsInt();
+      codeTeamWfId = DemoUtil.getSawCodeUnCommittedWf().getId();
    }
 
    @After
    public void cleanup() {
-      taskEp.delete(taskUuid1);
-      taskEp.delete(taskUuid2);
-      taskEp.delete(taskUuid3);
-      taskEp.delete(taskUuid4);
+      taskEp.delete(taskId1);
+      taskEp.delete(taskId2);
+      taskEp.delete(taskId3);
+      taskEp.delete(taskId4);
    }
 
    @Test
@@ -78,23 +78,23 @@ public class AtsTaskEndpointImplTest {
       String createdByUserId = DemoUsers.Joe_Smith.getUserId();
       Date createdDate = new Date();
       NewTaskData data = NewTaskDataFactory.get("Create Tasks via - " + getClass().getSimpleName(),
-         DemoUsers.Joe_Smith.getUserId(), codeTeamWfUuid);
+         DemoUsers.Joe_Smith.getUserId(), codeTeamWfId);
 
       // Test add relation where task on A side
-      JaxAtsTask newTask = createJaxAtsTask(taskUuid1, "Task 4", "description", createdByUserId, createdDate, null);
+      JaxAtsTask newTask = createJaxAtsTask(taskId1, "Task 4", "description", createdByUserId, createdDate, null);
       newTask.setTaskWorkDef("WorkDef_Task_Default");
       data.getNewTasks().add(newTask);
-      newTask.addRelation(CoreRelationTypes.SupportingInfo_SupportedBy, codeTeamWfUuid);
+      newTask.addRelation(CoreRelationTypes.SupportingInfo_SupportedBy, codeTeamWfId);
 
       Response response = taskEp.create(new NewTaskDatas(data));
       Assert.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 
-      IAtsTask task = (IAtsTask) client.getQueryService().createQuery(WorkItemType.Task).andUuids(
-         newTask.getUuid()).getResults().getAtMostOneOrNull();
+      IAtsTask task = (IAtsTask) client.getQueryService().createQuery(WorkItemType.Task).andIds(
+         newTask.getId()).getResults().getAtMostOneOrNull();
       Collection<IAtsWorkItem> workItems = client.getRelationResolver().getRelated(task,
          CoreRelationTypes.SupportingInfo_SupportedBy, IAtsWorkItem.class);
       Assert.assertEquals(1, workItems.size());
-      Assert.assertEquals(codeTeamWfUuid, workItems.iterator().next().getId().longValue());
+      Assert.assertEquals(codeTeamWfId, workItems.iterator().next().getId().longValue());
 
       IAtsChangeSet changes = client.getStoreService().createAtsChangeSet(getClass().getSimpleName() + " - cleanup",
          AtsCoreUsers.SYSTEM_USER);
@@ -107,21 +107,21 @@ public class AtsTaskEndpointImplTest {
 
       // Test add relation where task on B side
       data = NewTaskDataFactory.get("Create Tasks via - " + getClass().getSimpleName(), DemoUsers.Joe_Smith.getUserId(),
-         codeTeamWfUuid);
-      newTask = createJaxAtsTask(taskUuid4, "Task 4", "description", createdByUserId, createdDate, null);
+         codeTeamWfId);
+      newTask = createJaxAtsTask(taskId4, "Task 4", "description", createdByUserId, createdDate, null);
       newTask.setTaskWorkDef("WorkDef_Task_Default");
       data.getNewTasks().add(newTask);
-      newTask.addRelation(CoreRelationTypes.SupportingInfo_SupportingInfo, codeTeamWfUuid);
+      newTask.addRelation(CoreRelationTypes.SupportingInfo_SupportingInfo, codeTeamWfId);
 
       response = taskEp.create(new NewTaskDatas(data));
       Assert.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 
-      task = (IAtsTask) client.getQueryService().createQuery(WorkItemType.Task).andUuids(
-         newTask.getUuid()).getResults().getAtMostOneOrNull();
+      task = (IAtsTask) client.getQueryService().createQuery(WorkItemType.Task).andIds(
+         newTask.getId()).getResults().getAtMostOneOrNull();
       workItems = client.getRelationResolver().getRelated(task, CoreRelationTypes.SupportingInfo_SupportingInfo,
          IAtsWorkItem.class);
       Assert.assertEquals(1, workItems.size());
-      Assert.assertEquals(codeTeamWfUuid, workItems.iterator().next().getId().longValue());
+      Assert.assertEquals(codeTeamWfId, workItems.iterator().next().getId().longValue());
 
       changes = client.getStoreService().createAtsChangeSet(getClass().getSimpleName() + " - cleanup",
          AtsCoreUsers.SYSTEM_USER);
@@ -140,16 +140,16 @@ public class AtsTaskEndpointImplTest {
       String createdByUserId = DemoUsers.Joe_Smith.getUserId();
       Date createdDate = new Date();
       NewTaskData data = NewTaskDataFactory.get("Create Tasks via - " + getClass().getSimpleName(),
-         DemoUsers.Joe_Smith.getUserId(), codeTeamWfUuid);
+         DemoUsers.Joe_Smith.getUserId(), codeTeamWfId);
 
-      JaxAtsTask task = createJaxAtsTask(taskUuid1, "Task 1", "description", createdByUserId, createdDate, null);
+      JaxAtsTask task = createJaxAtsTask(taskId1, "Task 1", "description", createdByUserId, createdDate, null);
       task.setTaskWorkDef("WorkDef_Task_Default");
       data.getNewTasks().add(task);
 
-      JaxAtsTask task2 = createJaxAtsTask(taskUuid2, "Task 2", "description", createdByUserId, createdDate, null);
+      JaxAtsTask task2 = createJaxAtsTask(taskId2, "Task 2", "description", createdByUserId, createdDate, null);
       data.getNewTasks().add(task2);
 
-      JaxAtsTask task3 = createJaxAtsTask(taskUuid3, "Task 3", null, createdByUserId, createdDate,
+      JaxAtsTask task3 = createJaxAtsTask(taskId3, "Task 3", null, createdByUserId, createdDate,
          Arrays.asList(DemoUsers.Alex_Kay.getUserId()));
       task3.addAttribute(CoreAttributeTypes.StaticId.getName(), "my static id");
       data.getNewTasks().add(task3);
@@ -158,10 +158,10 @@ public class AtsTaskEndpointImplTest {
       Assert.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 
       // Test Get
-      JaxAtsTask task1R = taskEp.get(taskUuid1).readEntity(JaxAtsTask.class);
+      JaxAtsTask task1R = taskEp.get(taskId1).readEntity(JaxAtsTask.class);
       Assert.assertNotNull(task1R);
       Assert.assertEquals("Task 1", task1R.getName());
-      Assert.assertEquals(taskUuid1, task1R.getUuid().longValue());
+      Assert.assertEquals(taskId1, task1R.getId().longValue());
       Assert.assertEquals(createdByUserId, task1R.getCreatedByUserId());
       Assert.assertEquals("description", task1R.getDescription());
       Assert.assertEquals(true, task1R.isActive());
@@ -184,10 +184,10 @@ public class AtsTaskEndpointImplTest {
          Assert.fail("Attribute WorkDefintiion wasn't found");
       }
 
-      JaxAtsTask task2R = taskEp.get(taskUuid2).readEntity(JaxAtsTask.class);
+      JaxAtsTask task2R = taskEp.get(taskId2).readEntity(JaxAtsTask.class);
       Assert.assertNotNull(task2R);
       Assert.assertEquals("Task 2", task2R.getName());
-      Assert.assertEquals(taskUuid2, task2R.getUuid().longValue());
+      Assert.assertEquals(taskId2, task2R.getId().longValue());
       Assert.assertEquals(createdByUserId, task2R.getCreatedByUserId());
       Assert.assertEquals("description", task2R.getDescription());
       Assert.assertEquals(true, task2R.isActive());
@@ -203,10 +203,10 @@ public class AtsTaskEndpointImplTest {
          }
       }
 
-      JaxAtsTask task3R = taskEp.get(taskUuid3).readEntity(JaxAtsTask.class);
+      JaxAtsTask task3R = taskEp.get(taskId3).readEntity(JaxAtsTask.class);
       Assert.assertNotNull(task3R);
       Assert.assertEquals("Task 3", task3R.getName());
-      Assert.assertEquals(taskUuid3, task3R.getUuid().longValue());
+      Assert.assertEquals(taskId3, task3R.getId().longValue());
       Assert.assertEquals(createdByUserId, task2R.getCreatedByUserId());
       Assert.assertEquals("", task3R.getDescription());
       Assert.assertEquals(true, task3R.isActive());
@@ -224,17 +224,17 @@ public class AtsTaskEndpointImplTest {
       Assert.assertEquals(DemoUsers.Alex_Kay.getUserId(), task3R.getAssigneeUserIds().iterator().next());
 
       // Test Delete
-      taskEp.delete(taskUuid1);
-      Assert.assertNull(AtsClientService.get().getArtifact(taskUuid1));
-      taskEp.delete(taskUuid2);
-      Assert.assertNull(AtsClientService.get().getArtifact(taskUuid2));
-      taskEp.delete(taskUuid3);
-      Assert.assertNull(AtsClientService.get().getArtifact(taskUuid3));
+      taskEp.delete(taskId1);
+      Assert.assertNull(AtsClientService.get().getArtifact(taskId1));
+      taskEp.delete(taskId2);
+      Assert.assertNull(AtsClientService.get().getArtifact(taskId2));
+      taskEp.delete(taskId3);
+      Assert.assertNull(AtsClientService.get().getArtifact(taskId3));
    }
 
-   private JaxAtsTask createJaxAtsTask(long taskUuid, String title, String description, String createdByUserId, Date createdDate, List<String> assigneeUserIds) {
+   private JaxAtsTask createJaxAtsTask(long taskId, String title, String description, String createdByUserId, Date createdDate, List<String> assigneeUserIds) {
       JaxAtsTask task = new JaxAtsTask();
-      task.setUuid(taskUuid);
+      task.setId(taskId);
       task.setName(title);
       task.setDescription(description);
       task.setCreatedByUserId(createdByUserId);

@@ -48,7 +48,7 @@ public enum AtsColumnId implements IAtsColumnId {
    TargetedVersion("ats.column.versionTarget"),
    Title("framework.artifact.name.Title"),
    Type("ats.column.type"),
-   Uuid("framework.uuid"),
+   Id("framework.id"),
    UnPlannedWork("ats.Unplanned Work"),
    WorkPackageName("ats.column.workPackageName"),
    WorkPackageId("ats.column.workPackageId"),

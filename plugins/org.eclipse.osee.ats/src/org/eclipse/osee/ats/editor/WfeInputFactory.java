@@ -25,9 +25,9 @@ import org.eclipse.ui.IMemento;
 public class WfeInputFactory implements IElementFactory {
 
    public final static String ID = "org.eclipse.osee.ats.WEEditorInputFactory"; //$NON-NLS-1$
-   public final static String ART_KEY = "org.eclipse.osee.ats.WEEditorInputFactory.artUuid"; //$NON-NLS-1$
-   public final static String ART_KEY_AS_LONG = "org.eclipse.osee.ats.WEEditorInputFactory.artUuidAsLong"; //$NON-NLS-1$
-   public final static String BRANCH_KEY = "org.eclipse.osee.ats.WEEditorInputFactory.branchUuid"; //$NON-NLS-1$
+   public final static String ART_KEY = "org.eclipse.osee.ats.WEEditorInputFactory.artId"; //$NON-NLS-1$
+   public final static String ART_KEY_AS_LONG = "org.eclipse.osee.ats.WEEditorInputFactory.artIdAsLong"; //$NON-NLS-1$
+   public final static String BRANCH_KEY = "org.eclipse.osee.ats.WEEditorInputFactory.branchId"; //$NON-NLS-1$
    public final static String TITLE = "org.eclipse.osee.ats.WEEditorInputFactory.title"; //$NON-NLS-1$
 
    public WfeInputFactory() {
@@ -56,7 +56,7 @@ public class WfeInputFactory implements IElementFactory {
    }
 
    public static void saveState(IMemento memento, WfeInput input) {
-      ArtifactId artifactId = input.getArtUuid();
+      ArtifactId artifactId = input.getArtId();
       BranchId branch = input.getBranchId();
       String title = input.getSavedTitle();
       if (input.getArtifact() != null && !input.getArtifact().isDeleted()) {

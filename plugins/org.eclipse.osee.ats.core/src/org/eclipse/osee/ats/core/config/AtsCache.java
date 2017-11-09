@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 /**
- * Provide ATS Caching by uuid, guid and application tags. These are evacuating caches that will expire 15 minutes after
+ * Provide ATS Caching by id, guid and application tags. These are evacuating caches that will expire 15 minutes after
  * being cached.
  *
  * @author Donald G. Dunne
@@ -31,12 +31,12 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 public class AtsCache implements IAtsCache {
 
    private static AtsApi atsApi;
-   private final LoadingCache<Long, IAtsObject> uuidToAtsObjectCache = CacheBuilder.newBuilder() //
+   private final LoadingCache<Long, IAtsObject> idToAtsObjectCache = CacheBuilder.newBuilder() //
       .expireAfterWrite(15, TimeUnit.MINUTES) //
-      .build(uuidToAtsObjectCacheLoader);
-   private final LoadingCache<Long, ArtifactId> uuidToArtifactIdCache = CacheBuilder.newBuilder() //
+      .build(idToAtsObjectCacheLoader);
+   private final LoadingCache<Long, ArtifactId> idToArtifactIdCache = CacheBuilder.newBuilder() //
       .expireAfterWrite(15, TimeUnit.MINUTES) //
-      .build(uuidToArtifactIdCacheLoader);
+      .build(idToArtifactIdCacheLoader);
    private final LoadingCache<String, IAtsObject> guidToAtsObjectCache = CacheBuilder.newBuilder() //
       .expireAfterWrite(15, TimeUnit.MINUTES) //
       .build(tagToAtsObjectCacheLoader);
@@ -47,10 +47,10 @@ public class AtsCache implements IAtsCache {
 
    @Override
    @SuppressWarnings("unchecked")
-   public <T extends IAtsObject> T getAtsObject(Long uuid) {
-      Conditions.checkNotNull(uuid, "uuid");
+   public <T extends IAtsObject> T getAtsObject(Long id) {
+      Conditions.checkNotNull(id, "id");
       try {
-         return (T) uuidToAtsObjectCache.get(uuid);
+         return (T) idToAtsObjectCache.get(id);
       } catch (Exception ex) {
          return null;
       }
@@ -78,28 +78,28 @@ public class AtsCache implements IAtsCache {
       ArtifactToken storeObject = atsApi.getArtifact(atsObject.getStoreObject());
       if (storeObject != null) {
          guidToAtsObjectCache.put(storeObject.getGuid(), atsObject);
-         uuidToArtifactIdCache.put(atsObject.getId(), storeObject);
+         idToArtifactIdCache.put(atsObject.getId(), storeObject);
       }
-      uuidToAtsObjectCache.put(atsObject.getId(), atsObject);
+      idToAtsObjectCache.put(atsObject.getId(), atsObject);
    }
 
    @Override
    public void cacheArtifact(ArtifactId artifact) {
       Conditions.checkNotNull(artifact, "artifact");
-      uuidToArtifactIdCache.put(artifact.getId(), artifact);
+      idToArtifactIdCache.put(artifact.getId(), artifact);
    }
 
-   static CacheLoader<Long, IAtsObject> uuidToAtsObjectCacheLoader = new CacheLoader<Long, IAtsObject>() {
+   static CacheLoader<Long, IAtsObject> idToAtsObjectCacheLoader = new CacheLoader<Long, IAtsObject>() {
       @Override
-      public IAtsObject load(Long uuid) {
-         return atsApi.getConfigItemFactory().getConfigObject(atsApi.getArtifact(uuid));
+      public IAtsObject load(Long id) {
+         return atsApi.getConfigItemFactory().getConfigObject(atsApi.getArtifact(id));
       }
    };
 
-   static CacheLoader<Long, ArtifactId> uuidToArtifactIdCacheLoader = new CacheLoader<Long, ArtifactId>() {
+   static CacheLoader<Long, ArtifactId> idToArtifactIdCacheLoader = new CacheLoader<Long, ArtifactId>() {
       @Override
-      public ArtifactId load(Long uuid) {
-         return atsApi.getArtifact(uuid);
+      public ArtifactId load(Long id) {
+         return atsApi.getArtifact(id);
       }
    };
 
@@ -126,8 +126,8 @@ public class AtsCache implements IAtsCache {
    @Override
    public void invalidate() {
       guidToAtsObjectCache.invalidateAll();
-      uuidToAtsObjectCache.invalidateAll();
-      uuidToArtifactIdCache.invalidateAll();
+      idToAtsObjectCache.invalidateAll();
+      idToArtifactIdCache.invalidateAll();
    }
 
    @Override
@@ -137,7 +137,7 @@ public class AtsCache implements IAtsCache {
          guidToAtsObjectCache.invalidate(atsApi.getArtifact(atsObject).getGuid());
       }
 
-      uuidToAtsObjectCache.invalidate(atsObject.getId());
-      uuidToArtifactIdCache.invalidate(atsObject.getId());
+      idToAtsObjectCache.invalidate(atsObject.getId());
+      idToArtifactIdCache.invalidate(atsObject.getId());
    }
 }

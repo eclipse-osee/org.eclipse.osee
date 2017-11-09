@@ -8,7 +8,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
-import org.eclipse.osee.framework.skynet.core.event.filter.BranchUuidEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.filter.BranchIdEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
@@ -32,7 +32,7 @@ public class OrcsTypeChangeListener implements IArtifactEventListener {
       if (filters == null) {
          filters = new LinkedList<>();
          filters.add(new ArtifactTypeEventFilter(CoreArtifactTypes.OseeTypeDefinition));
-         filters.add(new BranchUuidEventFilter(CoreBranches.COMMON));
+         filters.add(new BranchIdEventFilter(CoreBranches.COMMON));
       }
       return filters;
    }

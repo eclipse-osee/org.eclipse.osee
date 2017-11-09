@@ -28,17 +28,17 @@ public interface IAtsCpaService {
 
    String getConfigJson() throws Exception;
 
-   URI getLocation(URI uri, String uuid);
+   URI getLocation(URI uri, String id);
 
    CpaPcr getPcr(String pcrId);
 
    Map<String, CpaPcr> getPcrsByIds(Collection<String> issueIds);
 
-   Collection<CpaBuild> getBuilds(String programUuid);
+   Collection<CpaBuild> getBuilds(String programId);
 
    /**
-    * Duplicate originatingPcrId for programUuid,versionUuid and return duplicatedPcrId
+    * Duplicate originatingPcrId for programId,versionId and return duplicatedPcrId
     */
-   String duplicate(IAtsTeamWorkflow cpaWf, String programUuid, String versionUuid, String originatingPcrId, XResultData rd);
+   String duplicate(IAtsTeamWorkflow cpaWf, String programId, String versionId, String originatingPcrId, XResultData rd);
 
 }

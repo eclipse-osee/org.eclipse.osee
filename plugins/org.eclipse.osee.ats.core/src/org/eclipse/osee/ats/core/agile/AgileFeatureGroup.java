@@ -34,7 +34,7 @@ public class AgileFeatureGroup extends AtsConfigObject implements IAgileFeatureG
    }
 
    @Override
-   public long getTeamUuid() {
+   public long getTeamId() {
       long result = 0;
       try {
          ArtifactId agileTeam = atsApi.getRelationResolver().getRelatedOrNull(artifact,

@@ -32,11 +32,11 @@ public interface AtsTaskEndpointApi {
    public Response create(NewTaskDatas newTaskDatas);
 
    @GET
-   @Path("{taskUuid}")
-   public Response get(@PathParam("taskUuid") long taskUuid);
+   @Path("{taskId}")
+   public Response get(@PathParam("taskId") long taskId);
 
    @DELETE
-   @Path("{taskUuid}")
-   public void delete(@PathParam("taskUuid") long taskUuid);
+   @Path("{taskId}")
+   public void delete(@PathParam("taskId") long taskId);
 
 }

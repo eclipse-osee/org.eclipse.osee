@@ -268,7 +268,7 @@ public final class NavigateViewItems implements XNavigateViewItems, IXNavigateCo
       new XNavigateItemAction(utilItems, new CompareTwoStringsAction(), FrameworkImage.EDIT);
       new XNavigateItemAction(utilItems, new CompareTwoArtifactIdListsAction(), FrameworkImage.EDIT);
       new XNavigateItemAction(utilItems, new AtsExportAction(), FrameworkImage.EXPORT_DATA);
-      new GenerateGuidUuidArtId(utilItems);
+      new GenerateGuidIdArtId(utilItems);
       new XNavigateItemOperation(utilItems, FrameworkImage.ARTIFACT_MASS_EDITOR, MassEditDirtyArtifactOperation.NAME,
          new MassEditDirtyArtifactOperation());
       new ClearAtsConfigCache(utilItems);

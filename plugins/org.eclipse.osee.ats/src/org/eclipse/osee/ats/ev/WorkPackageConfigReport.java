@@ -77,7 +77,7 @@ public class WorkPackageConfigReport extends XNavigateItemAction {
             data.getWorkPackageProgram(),
             data.getInsertionName(),
             data.getInsertionActivityName(), //
-            data.getWorkPackageId(),
+            data.getWorkPackageIdStr(),
             data.getActivityId(),
             String.valueOf(data.getWorkPackagePercentComplete()),
             String.valueOf(data.getWorkPackagePointsNumeric()),
@@ -90,7 +90,7 @@ public class WorkPackageConfigReport extends XNavigateItemAction {
             data.getWorkPackageAnnotation(),
             data.getTeamNames(),
             data.getCountryName(),
-            String.valueOf(data.getWorkPackageUuid()),
+            String.valueOf(data.getWorkPackageId()),
             //
          }));
       }
@@ -119,7 +119,7 @@ public class WorkPackageConfigReport extends XNavigateItemAction {
          WorkPackageReportColumns.wpAnnotation, //
          WorkPackageReportColumns.wpTeamAiNames, //
          WorkPackageReportColumns.countryColumn, //
-         WorkPackageReportColumns.wpUuid //
+         WorkPackageReportColumns.wpId //
       //
       );
       return columns;

@@ -304,31 +304,31 @@ public class AtsTestUtil {
       IAtsActionableItem topAi = AtsClientService.get().getConfigItem(AtsArtifactToken.TopActionableItem);
 
       testAi = AtsClientService.get().createActionableItem(getTitle("AI", postFixName),
-         AtsUtilClient.createConfigObjectUuid(), changes, AtsClientService.get());
+         AtsUtilClient.createConfigObjectId(), changes, AtsClientService.get());
       changes.setSoleAttributeValue(testAi, AtsAttributeTypes.Active, true);
       changes.setSoleAttributeValue(testAi, AtsAttributeTypes.Actionable, true);
       changes.addChild(topAi, testAi);
 
       testAi2 = AtsClientService.get().createActionableItem(getTitle("AI2", postFixName),
-         AtsUtilClient.createConfigObjectUuid(), changes, AtsClientService.get());
+         AtsUtilClient.createConfigObjectId(), changes, AtsClientService.get());
       changes.setSoleAttributeValue(testAi2, AtsAttributeTypes.Active, true);
       changes.setSoleAttributeValue(testAi2, AtsAttributeTypes.Actionable, true);
       changes.addChild(testAi, testAi2);
 
       testAi3 = AtsClientService.get().createActionableItem(getTitle("AI3", postFixName),
-         AtsUtilClient.createConfigObjectUuid(), changes, AtsClientService.get());
+         AtsUtilClient.createConfigObjectId(), changes, AtsClientService.get());
       changes.setSoleAttributeValue(testAi3, AtsAttributeTypes.Active, true);
       changes.setSoleAttributeValue(testAi3, AtsAttributeTypes.Actionable, true);
       changes.addChild(testAi, testAi3);
 
       testAi4 = AtsClientService.get().createActionableItem(getTitle("AI4", postFixName),
-         AtsUtilClient.createConfigObjectUuid(), changes, AtsClientService.get());
+         AtsUtilClient.createConfigObjectId(), changes, AtsClientService.get());
       changes.setSoleAttributeValue(testAi4, AtsAttributeTypes.Active, true);
       changes.setSoleAttributeValue(testAi4, AtsAttributeTypes.Actionable, true);
       changes.addChild(testAi, testAi4);
 
       teamDef = AtsClientService.get().createTeamDefinition(getTitle("Team Def", postFixName),
-         AtsUtilClient.createConfigObjectUuid(), changes, AtsClientService.get());
+         AtsUtilClient.createConfigObjectId(), changes, AtsClientService.get());
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.WorkflowDefinition, workDefName);
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.Active, true);
       changes.relate(teamDef, AtsRelationTypes.TeamLead_Lead, AtsClientService.get().getUserService().getCurrentUser());
@@ -340,19 +340,19 @@ public class AtsTestUtil {
       changes.addChild(topTeamDef, teamDef);
 
       verArt1 = AtsClientService.get().getVersionService().createVersion(getTitle("ver 1.0", postFixName),
-         AtsUtilClient.createConfigObjectUuid(), changes);
+         AtsUtilClient.createConfigObjectId(), changes);
       changes.relate(teamDef, AtsRelationTypes.TeamDefinitionToVersion_Version, verArt1);
 
       verArt2 = AtsClientService.get().getVersionService().createVersion(getTitle("ver 2.0", postFixName),
-         AtsUtilClient.createConfigObjectUuid(), changes);
+         AtsUtilClient.createConfigObjectId(), changes);
       changes.relate(teamDef, AtsRelationTypes.TeamDefinitionToVersion_Version, verArt2);
 
       verArt3 = AtsClientService.get().getVersionService().createVersion(getTitle("ver 3.0", postFixName),
-         AtsUtilClient.createConfigObjectUuid(), changes);
+         AtsUtilClient.createConfigObjectId(), changes);
       changes.relate(teamDef, AtsRelationTypes.TeamDefinitionToVersion_Version, verArt3);
 
       verArt4 = AtsClientService.get().getVersionService().createVersion(getTitle("ver 4.0", postFixName),
-         AtsUtilClient.createConfigObjectUuid(), changes);
+         AtsUtilClient.createConfigObjectId(), changes);
       changes.relate(teamDef, AtsRelationTypes.TeamDefinitionToVersion_Version, verArt4);
 
       ActionResult result = AtsClientService.get().getActionFactory().createAction(null,
@@ -813,7 +813,7 @@ public class AtsTestUtil {
       Artifact verArt = ((Artifact) version.getStoreObject());
       verArt.setSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, true);
       verArt.setSoleAttributeValue(AtsAttributeTypes.AllowCommitBranch, true);
-      verArt.setSoleAttributeValue(AtsAttributeTypes.BaselineBranchUuid, SAW_Bld_1.getIdString());
+      verArt.setSoleAttributeValue(AtsAttributeTypes.BaselineBranchId, SAW_Bld_1.getIdString());
       verArt.setRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow,
          Arrays.asList((Artifact) getTeamWf().getStoreObject()));
       verArt.persist(AtsTestUtil.class.getSimpleName() + "-SetTeamWfTargetedVer1");

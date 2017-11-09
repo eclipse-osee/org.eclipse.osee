@@ -15,9 +15,9 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileSprintHtmlOperation;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
@@ -92,7 +92,7 @@ public abstract class AtsApiImpl implements AtsApi {
    private static final Object lock = new Object();
    private volatile static IOseeBranch atsBranch;
    private static final String ATS_BRANCH_NAME = "ats.branch.name";
-   private static final String ATS_BRANCH_UUID = "ats.branch.uuid";
+   private static final String ATS_BRANCH_ID = "ats.branch.id";
    private final List<IAtsSearchDataProvider> searchDataProviders;
    protected Log logger;
    protected IAtsCache atsCache;
@@ -252,10 +252,10 @@ public abstract class AtsApiImpl implements AtsApi {
 
    @SuppressWarnings("unchecked")
    @Override
-   public <T> T getConfigItem(Long uuid) {
-      T atsObject = getCache().getAtsObject(uuid);
+   public <T> T getConfigItem(Long id) {
+      T atsObject = getCache().getAtsObject(id);
       if (atsObject == null) {
-         ArtifactId artifact = getArtifact(uuid);
+         ArtifactId artifact = getArtifact(id);
          if (artifact != null && artifact instanceof IAtsConfigObject) {
             atsObject = (T) getConfigItemFactory().getConfigObject(artifact);
          }
@@ -295,17 +295,17 @@ public abstract class AtsApiImpl implements AtsApi {
             // Preference store overrides all
             if (AtsPreferencesService.isAvailable()) {
                try {
-                  String atsBranchUuid = AtsPreferencesService.get(ATS_BRANCH_UUID);
-                  setConfig(atsBranchUuid, AtsPreferencesService.get(ATS_BRANCH_NAME));
+                  String atsBranchId = AtsPreferencesService.get(ATS_BRANCH_ID);
+                  setConfig(atsBranchId, AtsPreferencesService.get(ATS_BRANCH_NAME));
                } catch (Exception ex) {
                   OseeLog.log(AtsUtilCore.class, Level.SEVERE, "Error processing stored ATS Branch.", ex);
                }
             }
             // osee.ini -D option overrides default
             if (atsBranch == null) {
-               String atsBranchUuid = System.getProperty(ATS_BRANCH_UUID);
-               if (Strings.isValid(atsBranchUuid)) {
-                  setConfig(atsBranchUuid, System.getProperty(ATS_BRANCH_NAME));
+               String atsBranchId = System.getProperty(ATS_BRANCH_ID);
+               if (Strings.isValid(atsBranchId)) {
+                  setConfig(atsBranchId, System.getProperty(ATS_BRANCH_NAME));
                }
             }
             // default is always common
@@ -317,18 +317,18 @@ public abstract class AtsApiImpl implements AtsApi {
       return atsBranch;
    }
 
-   private void setConfig(String branchUuid, String name) {
+   private void setConfig(String branchId, String name) {
       if (!Strings.isValid(name)) {
          name = "unknown";
       }
-      if (Strings.isValid(branchUuid) && branchUuid.matches("\\d+")) {
-         atsBranch = IOseeBranch.create(Long.valueOf(branchUuid), name);
+      if (Strings.isValid(branchId) && branchId.matches("\\d+")) {
+         atsBranch = IOseeBranch.create(Long.valueOf(branchId), name);
       }
    }
 
    @Override
    public void storeAtsBranch(BranchId branch, String name) {
-      AtsPreferencesService.get().put(ATS_BRANCH_UUID, branch.getIdString());
+      AtsPreferencesService.get().put(ATS_BRANCH_ID, branch.getIdString());
       AtsPreferencesService.get().put(ATS_BRANCH_NAME, name);
    }
 

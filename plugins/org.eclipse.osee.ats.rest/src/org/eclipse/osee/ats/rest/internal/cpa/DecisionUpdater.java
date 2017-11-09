@@ -47,7 +47,7 @@ public class DecisionUpdater {
    public XResultData update() {
       XResultData rd = new XResultData(false);
       ResultSet<ArtifactReadable> results =
-         atsServer.getQuery().and(AtsAttributeTypes.AtsId, update.getUuids()).getResults();
+         atsServer.getQuery().and(AtsAttributeTypes.AtsId, update.getIds()).getResults();
       IAtsChangeSet changes =
          atsServer.getStoreService().createAtsChangeSet("Update CPA Decision", AtsCoreUsers.SYSTEM_USER);
       for (ArtifactReadable art : results) {

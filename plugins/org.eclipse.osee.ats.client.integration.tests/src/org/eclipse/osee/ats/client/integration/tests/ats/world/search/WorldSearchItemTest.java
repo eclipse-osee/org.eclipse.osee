@@ -39,7 +39,7 @@ public class WorldSearchItemTest {
       data.setUserId(DemoUsers.Joe_Smith.getUserId());
       data.setUserType(AtsSearchUserType.Assignee);
       data.setStateTypes(Arrays.asList(StateType.Working));
-      data.setTeamDefUuids(Arrays.asList(DemoArtifactToken.SAW_Code.getId()));
+      data.setTeamDefIds(Arrays.asList(DemoArtifactToken.SAW_Code.getId()));
       WorldSearchItem search = new WorldSearchItem(data);
       Collection<Artifact> results = search.performSearch(SearchType.Search);
       Assert.assertEquals(3, results.size());
@@ -53,7 +53,7 @@ public class WorldSearchItemTest {
       data.setUserId(DemoUsers.Joe_Smith.getUserId());
       data.setUserType(AtsSearchUserType.Assignee);
       data.setStateTypes(Arrays.asList(StateType.Completed));
-      data.setTeamDefUuids(Arrays.asList(DemoArtifactToken.SAW_Code.getId()));
+      data.setTeamDefIds(Arrays.asList(DemoArtifactToken.SAW_Code.getId()));
       WorldSearchItem search = new WorldSearchItem(data);
       Collection<Artifact> results = search.performSearch(SearchType.Search);
       Assert.assertEquals(0, results.size());
@@ -64,7 +64,7 @@ public class WorldSearchItemTest {
       AtsTestUtil.transitionTo(AtsTestUtilState.Completed, AtsClientService.get().getUserService().getCurrentUser(),
          changes);
       changes.execute();
-      data.setTeamDefUuids(Arrays.asList(AtsTestUtil.getTestTeamDef().getId()));
+      data.setTeamDefIds(Arrays.asList(AtsTestUtil.getTestTeamDef().getId()));
       search = new WorldSearchItem(data);
       results = search.performSearch(SearchType.Search);
       Assert.assertEquals(1, results.size());

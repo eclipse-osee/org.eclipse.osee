@@ -43,8 +43,8 @@ public class VersionSearchWidget extends AbstractXComboViewerSearchWidget<IAtsVe
    public void set(AtsSearchData data) {
       if (getWidget() != null) {
          setup(getWidget());
-         if (data.getVersionUuid() > 0) {
-            IAtsVersion version = AtsClientService.get().getCache().getAtsObject(data.getVersionUuid());
+         if (data.getVersionId() > 0) {
+            IAtsVersion version = AtsClientService.get().getCache().getAtsObject(data.getVersionId());
             if (version != null) {
                getWidget().setSelected(Arrays.asList(version));
             }

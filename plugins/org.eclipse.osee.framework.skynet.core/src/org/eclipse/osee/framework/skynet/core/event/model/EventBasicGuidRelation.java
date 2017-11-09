@@ -13,20 +13,20 @@ package org.eclipse.osee.framework.skynet.core.event.model;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
-import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelation;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicIdRelation;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 
 /**
  * @author Donald G. Dunne
  */
-public class EventBasicGuidRelation extends DefaultBasicUuidRelation {
+public class EventBasicGuidRelation extends DefaultBasicIdRelation {
 
    private final RelationEventType relationEventType;
    private final int artAId;
    private final int artBId;
    private String rationale;
 
-   public EventBasicGuidRelation(RelationEventType relationEventType, ArtifactId artAId, ArtifactId artBId, DefaultBasicUuidRelation guidRel) {
+   public EventBasicGuidRelation(RelationEventType relationEventType, ArtifactId artAId, ArtifactId artBId, DefaultBasicIdRelation guidRel) {
       this(relationEventType, guidRel.getBranch(), guidRel.getRelTypeGuid(), guidRel.getRelationId(),
          guidRel.getGammaId(), artAId.getId().intValue(), guidRel.getArtA(), artBId.getId().intValue(),
          guidRel.getArtB());

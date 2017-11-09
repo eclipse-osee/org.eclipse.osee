@@ -19,7 +19,7 @@ import java.util.List;
 public class JaxKbState {
 
    private String name;
-   private List<String> taskUuids = new ArrayList<String>();
+   private List<String> taskIds = new ArrayList<String>();
 
    public String getName() {
       return name;
@@ -29,12 +29,12 @@ public class JaxKbState {
       this.name = name;
    }
 
-   public List<String> getTaskUuids() {
-      return taskUuids;
+   public List<String> getTaskIds() {
+      return taskIds;
    }
 
-   public void setTaskUuids(List<String> taskUuids) {
-      this.taskUuids = taskUuids;
+   public void setTaskIds(List<String> taskIds) {
+      this.taskIds = taskIds;
    }
 
 }

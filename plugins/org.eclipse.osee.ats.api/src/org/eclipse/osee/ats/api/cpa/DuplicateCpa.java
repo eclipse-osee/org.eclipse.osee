@@ -18,26 +18,26 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class DuplicateCpa {
 
-   private String programUuid;
-   private String versionUuid;
-   private String cpaUuid;
+   private String programId;
+   private String versionId;
+   private String cpaId;
    private String userId;
    private boolean completeCpa;
 
-   public String getCpaUuid() {
-      return cpaUuid;
+   public String getCpaId() {
+      return cpaId;
    }
 
-   public void setCpaUuid(String cpaUuid) {
-      this.cpaUuid = cpaUuid;
+   public void setCpaId(String cpaId) {
+      this.cpaId = cpaId;
    }
 
-   public String getProgramUuid() {
-      return programUuid;
+   public String getProgramId() {
+      return programId;
    }
 
-   public void setProgramUuid(String programUuid) {
-      this.programUuid = programUuid;
+   public void setProgramId(String programId) {
+      this.programId = programId;
    }
 
    public String getUserId() {
@@ -56,12 +56,12 @@ public class DuplicateCpa {
       this.completeCpa = completeCpa;
    }
 
-   public String getVersionUuid() {
-      return versionUuid;
+   public String getVersionId() {
+      return versionId;
    }
 
-   public void setVersionUuid(String versionUuid) {
-      this.versionUuid = versionUuid;
+   public void setVersionId(String versionId) {
+      this.versionId = versionId;
    }
 
 }

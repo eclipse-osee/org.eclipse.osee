@@ -52,20 +52,20 @@ public class KanbanOperations {
    }
 
    @SuppressWarnings("unchecked")
-   public static JaxKbSprint getSprintItemsForKb(IAtsServer atsServer, long teamUuid, long sprintUuid) {
-      IAgileSprint sprint = atsServer.getAgileService().getAgileSprint(sprintUuid);
+   public static JaxKbSprint getSprintItemsForKb(IAtsServer atsServer, long teamId, long sprintId) {
+      IAgileSprint sprint = atsServer.getAgileService().getAgileSprint(sprintId);
       if (sprint == null) {
-         throw new OseeWebApplicationException(Status.NOT_FOUND, "sprintUuid is not valid");
+         throw new OseeWebApplicationException(Status.NOT_FOUND, "sprintId is not valid");
       }
-      IAgileTeam agileTeam = atsServer.getAgileService().getAgileTeam(teamUuid);
+      IAgileTeam agileTeam = atsServer.getAgileService().getAgileTeam(teamId);
       if (agileTeam == null) {
-         throw new OseeWebApplicationException(Status.NOT_FOUND, "teamUuid is not valid");
+         throw new OseeWebApplicationException(Status.NOT_FOUND, "teamId is not valid");
       }
       JaxKbSprint items = new JaxKbSprint();
-      items.setUuid(sprint.getId());
+      items.setId(sprint.getId());
       items.setName(sprint.getName());
       items.setActive(sprint.isActive());
-      items.setTeamUuid(sprint.getTeamUuid());
+      items.setTeamId(sprint.getTeamId());
 
       Map<String, String> assigneeToName = getNameOverride(sprint, atsServer);
       Collection<String> ignoreStates = getIgnoreStates(agileTeam, atsServer);
@@ -94,31 +94,31 @@ public class KanbanOperations {
             }
          }
 
-         //  "assigneesToTaskUuids" : {
+         //  "assigneesToTaskIds" : {
          //   "jod6us" : [ "1234", "6543", "3434","9898", "5656" ],
          //   "sam5us" : [ "3636","4325","2323" ]
          //  },
          if (workItem.getStateMgr().getStateType().isInWork()) {
-            String assigneesUuids = getAssigneeUserIdsString(workItem, atsServer);
-            items.addAssigneeIdToTaskUuid(assigneesUuids, String.valueOf(aItem.getId()));
+            String assigneesIds = getAssigneeUserIdsString(workItem, atsServer);
+            items.addAssigneeIdToTaskId(assigneesIds, String.valueOf(aItem.getId()));
          }
 
-         //  "implementersToTaskUuids" : {
+         //  "implementersToTaskIds" : {
          //   "jod6us" : [ "9898", "5656" ],
          //   "sam5us" : [ "4325" ]
          //  },
          if (workItem.getStateMgr().getStateType().isCompletedOrCancelled()) {
-            String implementersUuids = getImplementerUserIdsString(workItem, atsServer);
-            items.addImplementerIdToTaskUuid(implementersUuids, String.valueOf(aItem.getId()));
+            String implementersIds = getImplementerUserIdsString(workItem, atsServer);
+            items.addImplementerIdToTaskId(implementersIds, String.valueOf(aItem.getId()));
          }
 
-         // "statesToTaskUuids" : {
+         // "statesToTaskIds" : {
          //   "New" : [ "1234", "3434","2323" ],
          //   "InProgress" : [ "6543","3636" ],
          //   "Cancelled"  : [ "9898" ],
          //   "Completed"  : [ "5656","4325" ]
          // },
-         items.addStateNameToTaskUuid(workItem.getStateMgr().getCurrentStateName(), String.valueOf(aItem.getId()));
+         items.addStateNameToTaskId(workItem.getStateMgr().getCurrentStateName(), String.valueOf(aItem.getId()));
 
          // "availableStates" : [ {
          //    "name" : "New",
@@ -131,7 +131,7 @@ public class KanbanOperations {
       }
       if (!unAssignedAdded) {
          items.getUserIdToName().put(AtsCoreUsers.UNASSIGNED_USER.getUserId(), AtsCoreUsers.UNASSIGNED_USER.getName());
-         items.addAssigneeIdToTaskUuid(AtsCoreUsers.UNASSIGNED_USER.getUserId(), "");
+         items.addAssigneeIdToTaskId(AtsCoreUsers.UNASSIGNED_USER.getUserId(), "");
       }
 
       return items;

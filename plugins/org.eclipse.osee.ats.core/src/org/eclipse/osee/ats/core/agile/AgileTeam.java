@@ -37,13 +37,13 @@ public class AgileTeam extends AtsConfigObject implements IAgileTeam {
    }
 
    @Override
-   public List<Long> getAtsTeamUuids() {
-      List<Long> uuids = new ArrayList<>();
+   public List<Long> getAtsTeamIds() {
+      List<Long> ids = new ArrayList<>();
       for (ArtifactId atsTeam : atsApi.getRelationResolver().getRelated(artifact,
          AtsRelationTypes.AgileTeamToAtsTeam_AtsTeam)) {
-         uuids.add(new Long(atsTeam.getId()));
+         ids.add(new Long(atsTeam.getId()));
       }
-      return uuids;
+      return ids;
    }
 
    @Override

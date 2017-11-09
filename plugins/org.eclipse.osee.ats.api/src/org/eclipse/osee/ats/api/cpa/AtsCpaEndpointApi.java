@@ -38,19 +38,19 @@ public interface AtsCpaEndpointApi {
    public List<CpaProgram> getPrograms() throws Exception;
 
    @GET
-   @Path("program/{uuid}")
+   @Path("program/{id}")
    @Produces(MediaType.APPLICATION_JSON)
-   public List<CpaDecision> getDecisionByProgram(@PathParam("uuid") String uuid, @QueryParam("open") Boolean open) throws Exception;
+   public List<CpaDecision> getDecisionByProgram(@PathParam("id") String id, @QueryParam("open") Boolean open) throws Exception;
 
    @GET
-   @Path("program/{uuid}/build")
+   @Path("program/{id}/build")
    @Produces(MediaType.APPLICATION_JSON)
-   public List<CpaBuild> getBuildsByProgram(@PathParam("uuid") String programUuid) throws Exception;
+   public List<CpaBuild> getBuildsByProgram(@PathParam("id") String programId) throws Exception;
 
    @GET
-   @Path("decision/{uuid}")
+   @Path("decision/{id}")
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getDecision(@PathParam("uuid") String uuid, @QueryParam("pcrSystem") String pcrSystem) throws Exception;
+   public Response getDecision(@PathParam("id") String id, @QueryParam("pcrSystem") String pcrSystem) throws Exception;
 
    @POST
    @Consumes(MediaType.APPLICATION_JSON)

@@ -30,8 +30,8 @@ public interface CountryEndpointApi extends BaseConfigEndpointApi<JaxCountry> {
    @Consumes(MediaType.APPLICATION_JSON)
    public Response update(JaxCountry country) throws Exception;
 
-   @Path("{countryUuid}/program")
+   @Path("{countryId}/program")
    @Produces(MediaType.APPLICATION_JSON)
-   public ProgramEndpointApi getProgram(@PathParam("countryUuid") long countryUuid);
+   public ProgramEndpointApi getProgram(@PathParam("countryId") long countryId);
 
 }

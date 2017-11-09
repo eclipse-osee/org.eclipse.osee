@@ -26,7 +26,7 @@ public class AgileItem extends WorkItem implements IAgileItem {
    }
 
    @Override
-   public long getTeamUuid() {
+   public long getTeamId() {
       return 0;
    }
 

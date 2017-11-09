@@ -126,22 +126,22 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    }
 
    @Override
-   public List<ArtifactId> getRelatedTeamWorkflowUuidsBasedOnTeamDefsAisAndVersions(List<AtsAttributeQuery> teamWorkflowAttr) {
+   public List<ArtifactId> getRelatedTeamWorkflowIdsBasedOnTeamDefsAisAndVersions(List<AtsAttributeQuery> teamWorkflowAttr) {
       AtsQueryImpl search = new AtsQueryImpl(atsApi);
       search.isOfType(AtsArtifactTypes.TeamWorkflow);
-      if (teamDefUuids != null && !teamDefUuids.isEmpty()) {
-         search.andTeam(new ArrayList<Long>(teamDefUuids));
+      if (teamDefIds != null && !teamDefIds.isEmpty()) {
+         search.andTeam(new ArrayList<Long>(teamDefIds));
       }
       if (teamWorkflowAttr != null && !teamWorkflowAttr.isEmpty()) {
          for (AtsAttributeQuery attrQuery : teamWorkflowAttr) {
             search.andAttr.add(attrQuery);
          }
       }
-      if (aiUuids != null && !aiUuids.isEmpty()) {
-         search.andActionableItem(new ArrayList<Long>(aiUuids));
+      if (aiIds != null && !aiIds.isEmpty()) {
+         search.andActionableItem(new ArrayList<Long>(aiIds));
       }
-      if (versionUuid != null && versionUuid > 0) {
-         search.andVersion(versionUuid);
+      if (versionId != null && versionId > 0) {
+         search.andVersion(versionId);
       }
       return new ArrayList<>(search.getItemIds());
    }

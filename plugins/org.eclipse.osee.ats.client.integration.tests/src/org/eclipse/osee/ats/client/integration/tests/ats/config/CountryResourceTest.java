@@ -43,7 +43,7 @@ public class CountryResourceTest extends AbstractConfigurationRestTest {
 
    @Test
    public void testAtsCountryRestCall() throws Exception {
-      JsonArray array = getAndCheck("/ats/country/" + DemoCountry.usg.getUuid());
+      JsonArray array = getAndCheck("/ats/country/" + DemoCountry.usg.getId());
       Assert.assertEquals(1, array.size());
       JsonObject obj = getObjectNamed("USG", array);
       Assert.assertNotNull("Did not find value USG", obj);
@@ -52,7 +52,7 @@ public class CountryResourceTest extends AbstractConfigurationRestTest {
 
    @Test
    public void testAtsCountryDetailsRestCall() throws Exception {
-      JsonArray array = getAndCheck("/ats/country/" + DemoCountry.usg.getUuid() + "/details");
+      JsonArray array = getAndCheck("/ats/country/" + DemoCountry.usg.getId() + "/details");
       Assert.assertEquals(1, array.size());
       JsonObject obj = getObjectNamed("USG", array);
       Assert.assertNotNull("Did not find value USG", obj);

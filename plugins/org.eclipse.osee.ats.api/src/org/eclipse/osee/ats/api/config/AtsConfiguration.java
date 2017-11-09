@@ -20,8 +20,8 @@ public class AtsConfiguration {
 
    private boolean isDefault;
    private String name;
-   private long uuid;
-   private long branchUuid;
+   private long id;
+   private long branchId;
 
    public boolean isDefault() {
       return isDefault;
@@ -39,20 +39,20 @@ public class AtsConfiguration {
       this.name = name;
    }
 
-   public long getUuid() {
-      return uuid;
+   public long getId() {
+      return id;
    }
 
-   public void setUuid(long uuid) {
-      this.uuid = uuid;
+   public void setId(long id) {
+      this.id= id;
    }
 
-   public long getBranchUuid() {
-      return branchUuid;
+   public long getBranchId() {
+      return branchId;
    }
 
-   public void setBranchUuid(long branchUuid) {
-      this.branchUuid = branchUuid;
+   public void setBranchId(long branchId) {
+      this.branchId = branchId;
    }
 
    @Override

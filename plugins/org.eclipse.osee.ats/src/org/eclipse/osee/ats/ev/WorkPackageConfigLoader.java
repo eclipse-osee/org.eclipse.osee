@@ -76,7 +76,7 @@ public class WorkPackageConfigLoader {
          data.setColorTeam(workPackageArt.getSoleAttributeValueAsString(AtsAttributeTypes.ColorTeam, ""));
          data.setWorkPackageProgram(
             workPackageArt.getSoleAttributeValueAsString(AtsAttributeTypes.WorkPackageProgram, ""));
-         data.setWorkPackageId(workPackageArt.getSoleAttributeValue(AtsAttributeTypes.WorkPackageId, ""));
+         data.setWorkPackageIdStr(workPackageArt.getSoleAttributeValue(AtsAttributeTypes.WorkPackageId, ""));
          data.setActivityId(workPackageArt.getSoleAttributeValue(AtsAttributeTypes.ActivityId, ""));
          data.setWorkPackageIpt(workPackageArt.getSoleAttributeValue(AtsAttributeTypes.IPT, ""));
          data.setWorkPackageType(workPackageArt.getSoleAttributeValue(AtsAttributeTypes.WorkPackageType, ""));

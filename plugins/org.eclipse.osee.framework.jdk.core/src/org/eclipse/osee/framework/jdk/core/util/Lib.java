@@ -1707,6 +1707,13 @@ public final class Lib {
    /**
     * @return randomly generated unique long > 0
     */
+   public static Long generateId() {
+      return generateUuid();
+   }
+
+   /**
+    * @return randomly generated unique long > 0
+    */
    public static Long generateUuid() {
       long id = Math.abs(RANDOM.nextLong());
       if (id == 0) {

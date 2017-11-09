@@ -43,7 +43,7 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
    private static final AtsImage IMAGE = AtsImage.SEARCH;
    private static final String TITLE = "Action Search";
    protected WorldSearchItem searchItem;
-   private long searchUuid = Lib.generateUuid();
+   private long searchId = Lib.generateId();
    private String searchName = "";
    protected AtsSearchData savedData;
 
@@ -111,8 +111,8 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
    }
 
    public AtsSearchData loadSearchData(AtsSearchData data) {
-      if (searchUuid > 0) {
-         data.setUuid(searchUuid);
+      if (searchId > 0) {
+         data.setId(searchId);
       }
       data.setSearchName(searchName);
       if (getTitle() != null && Strings.isValid(getTitle().get())) {
@@ -133,31 +133,31 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
          data.getWorkItemTypes().clear();
          data.getWorkItemTypes().addAll(getWorkItemType().get());
       }
-      if (data.getTeamDefUuids() != null) {
-         data.getTeamDefUuids().clear();
-         data.getTeamDefUuids().addAll(getTeamDef().getUuids());
+      if (data.getTeamDefIds() != null) {
+         data.getTeamDefIds().clear();
+         data.getTeamDefIds().addAll(getTeamDef().getIds());
       }
-      if (getAi().getUuids() != null) {
-         data.getAiUuids().clear();
-         data.getAiUuids().addAll(getAi().getUuids());
+      if (getAi().getIds() != null) {
+         data.getAiIds().clear();
+         data.getAiIds().addAll(getAi().getIds());
       }
       if (getVersion().get() != null) {
-         data.setVersionUuid(getVersion().get().getId());
+         data.setVersionId(getVersion().get().getId());
       }
       if (getStateName() != null && Strings.isValid(getStateName().get())) {
          data.setState(getStateName().get());
       }
       if (showWorkPackageWidgets() && getProgram() != null && getProgram().get() != null) {
-         data.setProgramUuid(getProgram().get().getId());
+         data.setProgramId(getProgram().get().getId());
       }
       if (showWorkPackageWidgets() && getInsertion() != null && getInsertion().get() != null) {
-         data.setInsertionUuid(getInsertion().get().getId());
+         data.setInsertionId(getInsertion().get().getId());
       }
       if (showWorkPackageWidgets() && getInsertionActivity() != null && getInsertionActivity().get() != null) {
-         data.setInsertionActivityUuid(getInsertionActivity().get().getId());
+         data.setInsertionActivityId(getInsertionActivity().get().getId());
       }
       if (showWorkPackageWidgets() && getWorkPackage() != null && getWorkPackage().get() != null) {
-         data.setWorkPackageUuid(getWorkPackage().get().getId());
+         data.setWorkPackageId(getWorkPackage().get().getId());
       }
       if (getColorTeam() != null && Strings.isValid(getColorTeam().get())) {
          data.setColorTeam(getColorTeam().get());
@@ -176,7 +176,7 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
 
    public void loadWidgets(AtsSearchData data) {
       try {
-         searchUuid = data.getUuid();
+         searchId = data.getId();
          searchName = data.getSearchName();
          getTitle().set(data);
          getStateType().set(data);
@@ -214,16 +214,16 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       searchItem = new WorldSearchItem(data);
    }
 
-   public void setRestoreUuid(long searchUuid) {
-      Conditions.checkExpressionFailOnTrue(searchUuid <= 0, "searchUuid must be > 0, not %d", searchUuid);
-      this.searchUuid = searchUuid;
+   public void setRestoreId(long searchId) {
+      Conditions.checkExpressionFailOnTrue(searchId <= 0, "searchId must be > 0, not %d", searchId);
+      this.searchId = searchId;
    }
 
    @Override
    public void createParametersSectionCompleted(IManagedForm managedForm, Composite mainComp) {
-      if (searchUuid > 0) {
+      if (searchId > 0) {
          AtsSearchData data = AtsClientService.get().getQueryService().getSearch(
-            AtsClientService.get().getUserService().getCurrentUser(), searchUuid);
+            AtsClientService.get().getUserService().getCurrentUser(), searchId);
          if (data != null) {
             loadWidgets(data);
             searchName = data.getSearchName();
@@ -231,8 +231,8 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       }
    }
 
-   public long getSearchUuid() {
-      return searchUuid;
+   public long getSearchId() {
+      return searchId;
    }
 
    @Override
@@ -294,8 +294,8 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       this.searchName = searchName;
    }
 
-   public void setSearchUuid(long searchUuid) {
-      this.searchUuid = searchUuid;
+   public void setSearchId(long searchId) {
+      this.searchId = searchId;
    }
 
    public String getNamespace() {

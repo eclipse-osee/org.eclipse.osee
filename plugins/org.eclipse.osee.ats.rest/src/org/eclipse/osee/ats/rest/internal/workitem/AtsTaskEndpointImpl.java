@@ -60,26 +60,26 @@ public class AtsTaskEndpointImpl implements AtsTaskEndpointApi {
    }
 
    @GET
-   @Path("{taskUuid}")
+   @Path("{taskId}")
    @Override
-   public Response get(@PathParam("taskUuid") long taskUuid) {
+   public Response get(@PathParam("taskId") long taskId) {
       IAtsWorkItem task =
-         atsServer.getQueryService().createQuery(WorkItemType.WorkItem).isOfType(WorkItemType.Task).andUuids(
-            taskUuid).getResults().getOneOrNull();
+         atsServer.getQueryService().createQuery(WorkItemType.WorkItem).isOfType(WorkItemType.Task).andIds(
+            taskId).getResults().getOneOrNull();
       if (task == null) {
-         throw new OseeArgumentException("No Task found with id %d", taskUuid);
+         throw new OseeArgumentException("No Task found with id %d", taskId);
       }
       JaxAtsTask jaxAtsTask = CreateTasksOperation.createNewJaxTask(task.getId(), atsServer);
       return Response.ok().entity(jaxAtsTask).build();
    }
 
    @DELETE
-   @Path("{taskUuid}")
+   @Path("{taskId}")
    @Override
-   public void delete(@PathParam("taskUuid") long taskUuid) {
+   public void delete(@PathParam("taskId") long taskId) {
       IAtsWorkItem task =
-         atsServer.getQueryService().createQuery(WorkItemType.WorkItem).isOfType(WorkItemType.Task).andUuids(
-            taskUuid).getResults().getOneOrNull();
+         atsServer.getQueryService().createQuery(WorkItemType.WorkItem).isOfType(WorkItemType.Task).andIds(
+            taskId).getResults().getOneOrNull();
       if (task != null) {
          IAtsChangeSet changes =
             atsServer.getStoreService().createAtsChangeSet("Delete Task", AtsCoreUsers.SYSTEM_USER);

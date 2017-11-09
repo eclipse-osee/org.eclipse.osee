@@ -19,13 +19,13 @@ import org.eclipse.osee.ats.api.agile.AbstractJaxNewAgileTeamObject;
 @XmlRootElement
 public class JaxInsertionActivity extends AbstractJaxNewAgileTeamObject {
 
-   private long insertionUuid;
+   private long insertionId;
 
-   public long getInsertionUuid() {
-      return insertionUuid;
+   public long getInsertionId() {
+      return insertionId;
    }
 
-   public void setInsertionUuid(long insertionUuid) {
-      this.insertionUuid = insertionUuid;
+   public void setInsertionId(long insertionId) {
+      this.insertionId = insertionId;
    }
 }

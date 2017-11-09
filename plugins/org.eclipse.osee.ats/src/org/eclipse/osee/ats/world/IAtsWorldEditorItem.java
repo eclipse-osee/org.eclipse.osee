@@ -46,7 +46,7 @@ public interface IAtsWorldEditorItem {
       return false;
    }
 
-   public default IAdaptable getNewWorldEditorInputFromNamespace(String namespace, long atsSearchUuid) {
+   public default IAdaptable getNewWorldEditorInputFromNamespace(String namespace, long atsSearchId) {
       return null;
    }
 

@@ -61,13 +61,13 @@ public class WfeReloadTab extends FormPage {
    public final static String ID = "ats.reload.tab";
    private final WorkflowEditor editor;
    private final String title;
-   private final ArtifactId artUuid;
+   private final ArtifactId artId;
    private final BranchId branch;
 
    public WfeReloadTab(WorkflowEditor editor) {
       super(editor, ID, "Reload");
       this.editor = editor;
-      this.artUuid = editor.getWfeInput().getArtUuid();
+      this.artId = editor.getWfeInput().getArtId();
       this.title = editor.getWfeInput().getSavedTitle();
       this.branch = editor.getWfeInput().getBranchId();
    }
@@ -183,9 +183,9 @@ public class WfeReloadTab extends FormPage {
 
       @Override
       protected IStatus run(IProgressMonitor monitor) {
-         if (artUuid.isValid() && AtsClientService.get().getAtsBranch().equals(branch)) {
+         if (artId.isValid() && AtsClientService.get().getAtsBranch().equals(branch)) {
             try {
-               artifact = ArtifactQuery.getArtifactFromId(artUuid, AtsClientService.get().getAtsBranch());
+               artifact = ArtifactQuery.getArtifactFromId(artId, AtsClientService.get().getAtsBranch());
             } catch (ArtifactDoesNotExist ex) {
                // do nothing
             }

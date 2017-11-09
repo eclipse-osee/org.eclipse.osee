@@ -109,7 +109,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
          public void changesStored(IAtsChangeSet changes) {
             try {
                HashMap<String, Object> properties = new HashMap<String, Object>();
-               properties.put(AtsTopicEvent.WORK_ITEM_UUIDS_KEY, teamWf.getIdString());
+               properties.put(AtsTopicEvent.WORK_ITEM_IDS_KEY, teamWf.getIdString());
                properties.put(AtsTopicEvent.NEW_ATS_VERSION_ID, newVersion.getIdString());
                properties.put(AtsTopicEvent.PREVIOUS_ATS_VERSION_ID, previousVersion.getIdString());
 
@@ -179,7 +179,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
       IAtsVersion version = null;
       Object verArt = null;
       if (id instanceof ArtifactId) {
-         verArt = atsApi.getArtifact(((ArtifactId) id).getUuid());
+         verArt = atsApi.getArtifact(((ArtifactId) id).getId());
       } else {
          verArt = atsApi.getArtifactById(id.getGuid());
       }
@@ -202,7 +202,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    @Override
    public BranchId getBranch(IAtsVersion version) {
       String branchId =
-         atsApi.getAttributeResolver().getSoleAttributeValue(version, AtsAttributeTypes.BaselineBranchUuid, "");
+         atsApi.getAttributeResolver().getSoleAttributeValue(version, AtsAttributeTypes.BaselineBranchId, "");
       if (branchId == null || branchId.isEmpty()) {
          return BranchId.SENTINEL;
       }
@@ -226,8 +226,8 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    }
 
    @Override
-   public IAtsVersion createVersion(String title, long uuid, IAtsChangeSet changes) {
-      return atsApi.getVersionFactory().createVersion(title, uuid, changes, atsApi);
+   public IAtsVersion createVersion(String title, long id, IAtsChangeSet changes) {
+      return atsApi.getVersionFactory().createVersion(title, id, changes, atsApi);
    }
 
    @Override

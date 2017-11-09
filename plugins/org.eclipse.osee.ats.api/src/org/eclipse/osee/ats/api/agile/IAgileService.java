@@ -36,19 +36,19 @@ public interface IAgileService {
 
    IAgileFeatureGroup getAgileFeatureGroup(ArtifactId artifact);
 
-   IAgileFeatureGroup createAgileFeatureGroup(long teamUuid, String name, String guid, Long uuid);
+   IAgileFeatureGroup createAgileFeatureGroup(long teamId, String name, String guid, Long id);
 
-   void deleteAgileFeatureGroup(long teamUuid);
+   void deleteAgileFeatureGroup(long teamId);
 
-   void deleteAgileTeam(long uuid);
+   void deleteAgileTeam(long id);
 
    IAgileSprint getAgileSprint(ArtifactId artifact);
 
    IAgileSprint getAgileSprint(long id);
 
-   IAgileSprint createAgileSprint(long teamUuid, String name, String guid, Long uuid);
+   IAgileSprint createAgileSprint(long teamId, String name, String guid, Long id);
 
-   IAgileBacklog createAgileBacklog(long teamUuid, String name, String guid, Long uuid);
+   IAgileBacklog createAgileBacklog(long teamId, String name, String guid, Long id);
 
    IAgileBacklog getAgileBacklog(ArtifactId artifact);
 
@@ -56,23 +56,23 @@ public interface IAgileService {
 
    IAgileBacklog getAgileBacklog(IAgileTeam team);
 
-   Collection<IAgileFeatureGroup> getAgileFeatureGroups(List<Long> uuids);
+   Collection<IAgileFeatureGroup> getAgileFeatureGroups(List<Long> ids);
 
-   IAgileBacklog getBacklogForTeam(long teamUuid);
+   IAgileBacklog getBacklogForTeam(long teamId);
 
-   Collection<IAgileSprint> getSprintsForTeam(long teamUuid);
+   Collection<IAgileSprint> getSprintsForTeam(long teamId);
 
    Collection<IAgileTeam> getTeams();
 
-   IAgileTeam getAgileTeamById(long teamUuid);
+   IAgileTeam getAgileTeamById(long teamId);
 
    IAgileFeatureGroup createAgileFeatureGroup(JaxAgileFeatureGroup newFeatureGroup);
 
    IAgileBacklog updateAgileBacklog(JaxAgileBacklog backlog);
 
-   IAgileTeam getAgileTeam(long uuid);
+   IAgileTeam getAgileTeam(long id);
 
-   IAgileBacklog getAgileBacklog(long uuid);
+   IAgileBacklog getAgileBacklog(long id);
 
    Collection<IAgileFeatureGroup> getAgileFeatureGroups(IAgileTeam team);
 
@@ -84,7 +84,7 @@ public interface IAgileService {
 
    IAgileSprint getSprint(IAgileItem item);
 
-   void deleteSprint(long sprintUuid);
+   void deleteSprint(long sprintId);
 
    IAgileTeam createAgileTeam(JaxNewAgileTeam newTeam);
 

@@ -83,7 +83,7 @@ public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsConfiguratio
 
    IAtsVersionService getVersionService();
 
-   ArtifactToken getArtifact(Long uuid);
+   ArtifactToken getArtifact(Long id);
 
    ArtifactToken getArtifact(ArtifactId artifact);
 
@@ -107,7 +107,7 @@ public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsConfiguratio
 
    IAtsStoreService getStoreService();
 
-   <A extends IAtsConfigObject> A getSoleByUuid(long uuid, Class<A> clazz);
+   <A extends IAtsConfigObject> A getSoleById(long id, Class<A> clazz);
 
    Collection<ITransitionListener> getTransitionListeners();
 
@@ -149,7 +149,7 @@ public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsConfiguratio
 
    <T> T getConfigItem(String guid);
 
-   <T> T getConfigItem(Long uuid);
+   <T> T getConfigItem(Long id);
 
    void setConfigValue(String key, String value);
 

@@ -148,13 +148,13 @@ public class ConvertAtsConfigGuidAttributesOperation {
          "SELECT UNIQUE attr.art_id FROM OSEE_ATTRIBUTE attr, OSEE_TXS txs WHERE attr.GAMMA_ID = txs.GAMMA_ID AND " //
             + "txs.BRANCH_ID = 570 AND txs.TX_CURRENT = 1 AND attr.ATTR_TYPE_ID = 1152921504606847876");
 
-      Collection<ArtifactId> haveWorkPackageUuid = atsApi.getQueryService().getArtifactIdsFromQuery(
+      Collection<ArtifactId> haveWorkPackageId = atsApi.getQueryService().getArtifactIdsFromQuery(
          "SELECT UNIQUE attr.art_id FROM OSEE_ATTRIBUTE attr, OSEE_TXS txs WHERE attr.GAMMA_ID = txs.GAMMA_ID AND " //
             + "txs.BRANCH_ID = 570 AND txs.TX_CURRENT = 1 AND attr.ATTR_TYPE_ID = 473096133909456789");
 
       Set<ArtifactId> missingWorkPackage = new HashSet<>();
-      missingWorkPackage.addAll(Collections.setComplement(haveWorkPackageGuid, haveWorkPackageUuid));
-      missingWorkPackage.addAll(Collections.setComplement(haveWorkPackageUuid, haveWorkPackageGuid));
+      missingWorkPackage.addAll(Collections.setComplement(haveWorkPackageGuid, haveWorkPackageId));
+      missingWorkPackage.addAll(Collections.setComplement(haveWorkPackageId, haveWorkPackageGuid));
       return missingWorkPackage;
    }
 

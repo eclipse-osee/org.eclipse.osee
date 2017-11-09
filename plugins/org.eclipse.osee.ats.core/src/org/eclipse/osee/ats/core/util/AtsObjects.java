@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
@@ -30,16 +30,16 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
  */
 public class AtsObjects {
 
-   public static String toUuidsString(String separator, Collection<? extends IAtsObject> atsObjects) {
-      return Collections.toString(separator, toUuids(atsObjects));
+   public static String toIdsString(String separator, Collection<? extends IAtsObject> atsObjects) {
+      return Collections.toString(separator, toIds(atsObjects));
    }
 
-   public static List<Long> toUuids(Collection<? extends IAtsObject> atsObjects) {
-      List<Long> uuids = new ArrayList<>(atsObjects.size());
+   public static List<Long> toIds(Collection<? extends IAtsObject> atsObjects) {
+      List<Long> ids = new ArrayList<>(atsObjects.size());
       for (IAtsObject atsObject : atsObjects) {
-         uuids.add(atsObject.getId());
+         ids.add(atsObject.getId());
       }
-      return uuids;
+      return ids;
    }
 
    public static List<String> toGuids(Collection<? extends IAtsObject> atsObjects) {
@@ -136,7 +136,7 @@ public class AtsObjects {
       return active;
    }
 
-   public static List<String> toUuidStrings(Collection<? extends IAtsConfigObject> objects) {
+   public static List<String> toIdStrings(Collection<? extends IAtsConfigObject> objects) {
       List<String> ids = new LinkedList<>();
       for (IAtsConfigObject obj : objects) {
          ids.add(obj.getIdString());
@@ -144,7 +144,7 @@ public class AtsObjects {
       return ids;
    }
 
-   public static List<String> toUuidStringsFromLong(Collection<Long> ids) {
+   public static List<String> toIdStringsFromLong(Collection<Long> ids) {
       List<String> results = new LinkedList<>();
       for (Long id : ids) {
          results.add(id.toString());

@@ -65,7 +65,7 @@ public class AtsEarnedValueImpl extends AtsAbstractEarnedValueImpl {
       JaxWorkPackageData data = new JaxWorkPackageData();
       data.setAsUserId(atsApi.getUserService().getCurrentUserId());
       for (IAtsWorkItem workItem : workItems) {
-         data.getWorkItemUuids().add(workItem.getId());
+         data.getWorkItemIds().add(workItem.getId());
       }
 
       AtsWorkPackageEndpointApi workPackageEp = AtsClientService.getWorkPackageEndpoint();
@@ -75,8 +75,8 @@ public class AtsEarnedValueImpl extends AtsAbstractEarnedValueImpl {
          workPackageEp.setWorkPackage(workPackage.getId(), data);
       }
 
-      TopicEvent event = new TopicEvent(AtsTopicEvent.WORK_ITEM_MODIFIED, AtsTopicEvent.WORK_ITEM_UUIDS_KEY,
-         AtsObjects.toUuidsString(";", workItems));
+      TopicEvent event = new TopicEvent(AtsTopicEvent.WORK_ITEM_MODIFIED, AtsTopicEvent.WORK_ITEM_IDS_KEY,
+         AtsObjects.toIdsString(";", workItems));
       OseeEventManager.kickTopicEvent(getClass(), event);
 
       atsApi.getStoreService().reload(workItems);

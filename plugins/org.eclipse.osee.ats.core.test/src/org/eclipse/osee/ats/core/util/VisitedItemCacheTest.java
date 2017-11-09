@@ -39,7 +39,7 @@ public class VisitedItemCacheTest {
    @Test
    public void test() {
       VisitedItemCache cache = new VisitedItemCache();
-      assertEquals(0, cache.visitedUuids.size());
+      assertEquals(0, cache.visitedIds.size());
 
       cache.addVisited(workItem1);
       assertEquals(1, cache.getReverseVisited().size());

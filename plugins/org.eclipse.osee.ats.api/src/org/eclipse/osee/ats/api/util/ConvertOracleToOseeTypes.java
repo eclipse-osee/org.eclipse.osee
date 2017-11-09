@@ -100,7 +100,7 @@ public class ConvertOracleToOseeTypes {
 
    private String getIntegerAttrOseeTypes() {
       return "attributeType \"NAME\" extends IntegerAttribute {\n" + //
-         "   uuid UUID\n" + //
+         "   id ID\n" + //
          "   dataProvider DefaultAttributeDataProvider\n" + //
          "   min 0\n" + //
          "   max 1\n" + //
@@ -109,13 +109,13 @@ public class ConvertOracleToOseeTypes {
    }
 
    public String getAttrJavaType(String javaFieldName, String attrTypeName) {
-      return String.format("public static final AttributeTypeId %s = AttributeTypeToken.valueOf(UUIDL, \"%s\");\n",
+      return String.format("public static final AttributeTypeId %s = AttributeTypeToken.valueOf(IDL, \"%s\");\n",
          javaFieldName, attrTypeName);
    }
 
    private void replaceNameAndId(StringBuilder sb, String attrTypeName, String hexId, String str) {
       str = str.replaceFirst("NAME", attrTypeName);
-      str = str.replaceAll("UUID", hexId);
+      str = str.replaceAll("ID", hexId);
       sb.append(str);
    }
 
@@ -126,7 +126,7 @@ public class ConvertOracleToOseeTypes {
 
    public String getVarCharAttrOseeTypes() {
       return "attributeType \"NAME\" extends StringAttribute {\n" + //
-         "   uuid UUID\n" + //
+         "   id ID\n" + //
          "   dataProvider DefaultAttributeDataProvider\n" + //
          "   min 0\n" + //
          "   max 1\n" + //

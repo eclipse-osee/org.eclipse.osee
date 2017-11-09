@@ -17,6 +17,6 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
  */
 public interface IAgileItem extends IAtsWorkItem, IAgileObject {
 
-   public long getTeamUuid();
+   public long getTeamId();
 
 }

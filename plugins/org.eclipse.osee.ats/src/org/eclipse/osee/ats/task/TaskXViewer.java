@@ -136,13 +136,13 @@ public class TaskXViewer extends WorldXViewer {
                AtsClientService.get().getUserService().getCurrentUser().getUserId(), teamWf.getId());
             JaxAtsTask task = JaxAtsTaskFactory.get(newTaskData, ed.getEntry(),
                AtsClientService.get().getUserService().getCurrentUser(), new Date());
-            task.setUuid(Lib.generateArtifactIdAsInt());
+            task.setId(Lib.generateArtifactIdAsInt());
             if (Strings.isValid(ed.getSelection())) {
                task.setRelatedToState(ed.getSelection());
             }
             AtsClientService.get().getTaskService().createTasks(new NewTaskDatas(newTaskData));
 
-            taskArt = (TaskArtifact) AtsClientService.get().getArtifact(task.getUuid());
+            taskArt = (TaskArtifact) AtsClientService.get().getArtifact(task.getId());
             AtsTaskCache.decache((TeamWorkFlowArtifact) teamWf.getStoreObject());
          }
       } catch (Exception ex) {

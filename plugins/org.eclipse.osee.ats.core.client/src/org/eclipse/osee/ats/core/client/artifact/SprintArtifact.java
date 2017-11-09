@@ -54,7 +54,7 @@ public class SprintArtifact extends CollectorArtifact implements IAgileSprint {
    }
 
    @Override
-   public long getTeamUuid() {
+   public long getTeamId() {
       long result = 0;
       try {
          ArtifactId agileTeam = AtsClientService.get().getRelationResolver().getRelatedOrNull((ArtifactId) this,

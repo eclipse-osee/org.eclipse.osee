@@ -50,15 +50,15 @@ public class DemoInsertion extends JaxInsertion {
    List<DemoInsertionActivity> activities;
    private final DemoProgram program;
 
-   public DemoInsertion(DemoProgram program, String name, long uuid, String description) {
+   public DemoInsertion(DemoProgram program, String name, long id, String description) {
       this.program = program;
       setName(name);
-      setUuid(uuid);
+      setId(id);
       setActive(true);
       this.activities = new ArrayList<>();
       this.program.getInsertions().add(this);
       setDescription(description);
-      setProgramUuid(program.getUuid());
+      setProgramId(program.getId());
       if (insertions == null) {
          insertions = new LinkedList<>();
       }

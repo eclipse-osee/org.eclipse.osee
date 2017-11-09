@@ -59,7 +59,7 @@ public class OpenWorkflowsByTeamDefSearchItem extends WorldSearchItem {
       AtsSearchData data = getData();
       if (!Strings.isValid(data.getUserId())) {
          data.getWorkItemTypes().add(WorkItemType.TeamWorkflow);
-         data.setTeamDefUuids(AtsObjects.toUuids(teamDefProvider.getTeamDefs()));
+         data.setTeamDefIds(AtsObjects.toIds(teamDefProvider.getTeamDefs()));
          if (!includeCompletedCancelled) {
             data.setStateTypes(Arrays.asList(StateType.Working));
          }

@@ -43,7 +43,7 @@ public class AtsUser extends JaxAtsObject implements IAtsUser {
       this.userId = userId;
       this.email = email;
       this.active = active;
-      this.uuid = id;
+      this.id = id;
       this.name = name;
    }
 
@@ -88,11 +88,6 @@ public class AtsUser extends JaxAtsObject implements IAtsUser {
    @JsonIgnore
    public void setUserArtLoader(IUserArtLoader userArtLoader) {
       this.userArtLoader = userArtLoader;
-   }
-
-   @Override
-   public Long getId() {
-      return getUuid();
    }
 
    @Override

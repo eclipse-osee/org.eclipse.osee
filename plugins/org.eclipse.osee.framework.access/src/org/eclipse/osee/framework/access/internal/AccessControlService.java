@@ -69,7 +69,7 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventService;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
-import org.eclipse.osee.framework.skynet.core.event.filter.BranchUuidEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.filter.BranchIdEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.EventQosType;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
@@ -810,12 +810,12 @@ public class AccessControlService implements IAccessControlService {
 
       public AccessControlUpdateListener() {
          eventFilters = Arrays.asList(new ArtifactTypeEventFilter(CoreArtifactTypes.AccessControlModel),
-            new BranchUuidEventFilter(CoreBranches.COMMON));
+            new BranchIdEventFilter(CoreBranches.COMMON));
       }
 
       public AccessControlUpdateListener(ArtifactToken artifact) {
          eventFilters =
-            Arrays.asList(new ArtifactEventFilter(artifact), new BranchUuidEventFilter(artifact.getBranch()));
+            Arrays.asList(new ArtifactEventFilter(artifact), new BranchIdEventFilter(artifact.getBranch()));
       }
 
       @Override

@@ -23,10 +23,10 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 /**
  * @author Donald G. Dunne
  */
-public class GenerateGuidUuidArtId extends XNavigateItemAction {
+public class GenerateGuidIdArtId extends XNavigateItemAction {
 
-   public GenerateGuidUuidArtId(XNavigateItem parent) {
-      super(parent, "Generate Guid, Uuid and ArtId", AtsImage.REPORT);
+   public GenerateGuidIdArtId(XNavigateItem parent) {
+      super(parent, "Generate Guid, Id and ArtId", AtsImage.REPORT);
    }
 
    @Override
@@ -40,7 +40,7 @@ public class GenerateGuidUuidArtId extends XNavigateItemAction {
          }
          resultData.log(guid);
       }
-      resultData.log("\nGUID - Uuid");
+      resultData.log("\nGUID - Id");
       Random r = new Random();
       for (int i = 0; i < 10; i++) {
          long next = r.nextLong();

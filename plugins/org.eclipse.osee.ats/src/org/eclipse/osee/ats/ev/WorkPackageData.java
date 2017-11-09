@@ -19,7 +19,7 @@ public class WorkPackageData {
 
    private String colorTeam = "";
    private String workPackageProgram = "";
-   private String workPackageId = "";
+   private String workPackageIdStr = "";
    private String activityId = "";
    private String workPackageName;
    private String insertionActivityName = "";
@@ -27,7 +27,7 @@ public class WorkPackageData {
    private String programName = "";
    private String countryName = "";
    private String teamNames = "";
-   private long workPackageUuid;
+   private long workPackageId;
    private boolean workPackageActive = true;
    private int workPackagePercentComplete = 0;
    private double workPackagePointsNumeric = 0.0;
@@ -39,9 +39,9 @@ public class WorkPackageData {
    private String workPackageNotes = "";
    private String workPackageAnnotation = "";
 
-   public WorkPackageData(String workPackageName, long workPackageUuid) {
+   public WorkPackageData(String workPackageName, long workPackageId) {
       this.workPackageName = workPackageName;
-      this.workPackageUuid = workPackageUuid;
+      this.workPackageId = workPackageId;
    }
 
    public String getColorTeam() {
@@ -60,12 +60,12 @@ public class WorkPackageData {
       this.workPackageProgram = workPackageProgram;
    }
 
-   public String getWorkPackageId() {
-      return workPackageId;
+   public String getWorkPackageIdStr() {
+      return workPackageIdStr;
    }
 
-   public void setWorkPackageId(String workPackageId) {
-      this.workPackageId = workPackageId;
+   public void setWorkPackageIdStr(String workPackageIdStr) {
+      this.workPackageIdStr = workPackageIdStr;
    }
 
    public String getActivityId() {
@@ -124,12 +124,12 @@ public class WorkPackageData {
       this.teamNames = teamNames;
    }
 
-   public long getWorkPackageUuid() {
-      return workPackageUuid;
+   public long getWorkPackageId() {
+      return workPackageId;
    }
 
-   public void setWorkPackageUuid(long workPackageUuid) {
-      this.workPackageUuid = workPackageUuid;
+   public void setWorkPackageId(long workPackageId) {
+      this.workPackageId = workPackageId;
    }
 
    public boolean isWorkPackageActive() {

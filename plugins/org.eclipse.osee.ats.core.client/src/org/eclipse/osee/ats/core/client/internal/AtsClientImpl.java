@@ -288,24 +288,24 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
 
    @Override
    public IAtsTeamDefinition createTeamDefinition(String name, IAtsChangeSet changes, AtsApi atsApi) {
-      return createTeamDefinition(name, AtsUtilClient.createConfigObjectUuid(), changes, atsApi);
+      return createTeamDefinition(name, AtsUtilClient.createConfigObjectId(), changes, atsApi);
    }
 
    @Override
-   public IAtsTeamDefinition createTeamDefinition(String name, long uuid, IAtsChangeSet changes, AtsApi atsApi) {
-      IAtsTeamDefinition item = teamDefFactory.createTeamDefinition(name, uuid, changes, atsApi);
+   public IAtsTeamDefinition createTeamDefinition(String name, long id, IAtsChangeSet changes, AtsApi atsApi) {
+      IAtsTeamDefinition item = teamDefFactory.createTeamDefinition(name, id, changes, atsApi);
       atsCache.cacheAtsObject(item);
       return item;
    }
 
    @Override
    public IAtsActionableItem createActionableItem(String name, IAtsChangeSet changes, AtsApi atsApi) {
-      return createActionableItem(name, AtsUtilClient.createConfigObjectUuid(), changes, atsApi);
+      return createActionableItem(name, AtsUtilClient.createConfigObjectId(), changes, atsApi);
    }
 
    @Override
-   public IAtsActionableItem createActionableItem(String name, long uuid, IAtsChangeSet changes, AtsApi atsApi) {
-      IAtsActionableItem item = actionableItemFactory.createActionableItem(name, uuid, changes, atsApi);
+   public IAtsActionableItem createActionableItem(String name, long id, IAtsChangeSet changes, AtsApi atsApi) {
+      IAtsActionableItem item = actionableItemFactory.createActionableItem(name, id, changes, atsApi);
       atsCache.cacheAtsObject(item);
       return item;
    }
@@ -363,11 +363,11 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
     * @return corresponding Artifact or null if not found
     */
    @Override
-   public Artifact getArtifact(Long uuid) {
-      Conditions.checkExpressionFailOnTrue(uuid <= 0, "Uuid must be > 0; is %d", uuid);
+   public Artifact getArtifact(Long id) {
+      Conditions.checkExpressionFailOnTrue(id <= 0, "Id must be > 0; is %d", id);
       Artifact result = null;
       try {
-         result = ArtifactQuery.getArtifactFromId(uuid, getAtsBranch());
+         result = ArtifactQuery.getArtifactFromId(id, getAtsBranch());
       } catch (ArtifactDoesNotExist ex) {
          // do nothing
       }
@@ -498,8 +498,8 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    }
 
    @Override
-   public <A extends IAtsConfigObject> A getSoleByUuid(long uuid, Class<A> clazz) {
-      return getCache().getAtsObject(uuid);
+   public <A extends IAtsConfigObject> A getSoleById(long id, Class<A> clazz) {
+      return getCache().getAtsObject(id);
    }
 
    @Override

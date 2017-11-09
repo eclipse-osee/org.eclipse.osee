@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
-import org.eclipse.osee.framework.skynet.core.event.filter.BranchUuidEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.filter.BranchIdEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
@@ -61,7 +61,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
  */
 public class WfeDefectsTab extends FormPage implements IRefreshActionHandler, DefectRefreshListener, IArtifactEventListener {
    private static final List<IEventFilter> EVENT_FILTERS =
-      Arrays.asList(new BranchUuidEventFilter(AtsClientService.get().getAtsBranch()),
+      Arrays.asList(new BranchIdEventFilter(AtsClientService.get().getAtsBranch()),
          new ArtifactTypeEventFilter(AtsArtifactTypes.PeerToPeerReview));
    private Composite bodyComp;
    private ScrolledForm scrolledForm;

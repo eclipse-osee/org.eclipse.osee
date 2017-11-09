@@ -58,7 +58,7 @@ public class WorldReloadTab extends FormPage {
          bodyComp.setLayout(new GridLayout(1, false));
          bodyComp.setLayoutData(new GridData(SWT.LEFT, SWT.LEFT, true, false));
 
-         if (provider.getValidArtUuids().isEmpty()) {
+         if (provider.getValidArtIds().isEmpty()) {
             managedForm.getToolkit().createLabel(bodyComp, "Nothing to reload.");
          } else {
             Button reloadButton = new Button(bodyComp, SWT.PUSH);
@@ -151,7 +151,7 @@ public class WorldReloadTab extends FormPage {
 
       @Override
       protected IStatus run(IProgressMonitor monitor) {
-         if (provider.getValidArtUuids().isEmpty()) {
+         if (provider.getValidArtIds().isEmpty()) {
             AWorkbench.popup("No valid ids to reload.");
             success = false;
          } else {

@@ -148,6 +148,11 @@ public class ArtifactQueryBuilderImpl<T> implements ArtifactQueryBuilder<T> {
    }
 
    @Override
+   public T andId(long id) {
+      return andId(ArtifactId.valueOf(id));
+   }
+
+   @Override
    public T andId(ArtifactId id) {
       return addAndCheck(queryData, new CriteriaArtifactIds(id));
    }
@@ -159,6 +164,11 @@ public class ArtifactQueryBuilderImpl<T> implements ArtifactQueryBuilder<T> {
 
    @Override
    public T andUuids(Collection<Long> artifactIds) {
+      return andIds(artifactIds.stream().map(id -> ArtifactId.valueOf(id)).collect(Collectors.toList()));
+   }
+
+   @Override
+   public T andIdsL(Collection<Long> artifactIds) {
       return andIds(artifactIds.stream().map(id -> ArtifactId.valueOf(id)).collect(Collectors.toList()));
    }
 

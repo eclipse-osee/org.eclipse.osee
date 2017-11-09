@@ -55,16 +55,16 @@ public class AtsChangeSetTest {
    public void testCreateArtifact() {
       String className = getClass().getSimpleName();
       IAtsChangeSet changes = createAtsChangeSet();
-      Long uuid = Lib.generateArtifactIdAsInt();
+      Long id = Lib.generateArtifactIdAsInt();
       String guid = GUID.create();
       String name = "Ver 1 " + className;
-      changes.createArtifact(AtsArtifactTypes.Version, name, guid, uuid);
+      changes.createArtifact(AtsArtifactTypes.Version, name, guid, id);
       changes.execute();
 
-      ArtifactReadable verArt = atsServer.getOrcsApi().getQueryFactory().fromBranch(atsServer.getAtsBranch()).andUuid(
-         uuid).getResults().getAtMostOneOrNull();
+      ArtifactReadable verArt = atsServer.getOrcsApi().getQueryFactory().fromBranch(atsServer.getAtsBranch()).andId(
+         id).getResults().getAtMostOneOrNull();
       assertNotNull(verArt);
-      assertEquals(uuid.longValue(), verArt.getId().longValue());
+      assertEquals(id.longValue(), verArt.getId().longValue());
       assertEquals(guid, verArt.getGuid());
       assertEquals(name, verArt.getName());
    }

@@ -19,14 +19,14 @@ import org.eclipse.osee.ats.api.config.JaxAtsObject;
 @XmlRootElement
 public class JaxInsertion extends JaxAtsObject {
 
-   private long programUuid;
+   private long programId;
 
-   public long getProgramUuid() {
-      return programUuid;
+   public long getProgramId() {
+      return programId;
    }
 
-   public void setProgramUuid(long programUuid) {
-      this.programUuid = programUuid;
+   public void setProgramId(long programId) {
+      this.programId = programId;
    }
 
 }

@@ -34,7 +34,7 @@ public class Pdd97CreateDemoSawWorkTypes {
       sawProgram.persist(transaction);
       Artifact sawTeamDef = AtsClientService.get().getArtifact(DemoArtifactToken.SAW_SW);
       for (Artifact child : sawTeamDef.getChildren()) {
-         child.setSoleAttributeValue(AtsAttributeTypes.ProgramUuid, sawProgram);
+         child.setSoleAttributeValue(AtsAttributeTypes.ProgramId, sawProgram);
          if (child.getName().contains("Code")) {
             child.setSoleAttributeValue(AtsAttributeTypes.WorkType, WorkType.Code.name());
             child.addAttribute(AtsAttributeTypes.CSCI, DemoCsci.DP.name());
@@ -56,13 +56,13 @@ public class Pdd97CreateDemoSawWorkTypes {
       }
 
       Artifact sawTestAi = AtsClientService.get().getArtifact(DemoArtifactToken.SAW_Test_AI);
-      sawTestAi.setSoleAttributeValue(AtsAttributeTypes.ProgramUuid, sawProgram);
+      sawTestAi.setSoleAttributeValue(AtsAttributeTypes.ProgramId, sawProgram);
       sawTestAi.setSoleAttributeValue(AtsAttributeTypes.WorkType, WorkType.Test.name());
       sawTestAi.addAttribute(AtsAttributeTypes.CSCI, DemoCsci.DP.name());
       sawTestAi.persist(transaction);
 
       Artifact sawCodeAi = AtsClientService.get().getArtifact(DemoArtifactToken.SAW_Code_AI);
-      sawCodeAi.setSoleAttributeValue(AtsAttributeTypes.ProgramUuid, sawProgram);
+      sawCodeAi.setSoleAttributeValue(AtsAttributeTypes.ProgramId, sawProgram);
       sawCodeAi.setSoleAttributeValue(AtsAttributeTypes.WorkType, WorkType.Code.name());
       sawCodeAi.addAttribute(AtsAttributeTypes.CSCI, DemoCsci.SP.name());
       sawCodeAi.persist(transaction);

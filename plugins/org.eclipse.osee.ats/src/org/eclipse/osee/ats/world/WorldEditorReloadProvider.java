@@ -69,7 +69,7 @@ public class WorldEditorReloadProvider extends WorldEditorProvider {
    }
 
    public boolean searchAndLoad() {
-      List<ArtifactId> validArtifactIds = getValidArtUuids();
+      List<ArtifactId> validArtifactIds = getValidArtIds();
       if (validArtifactIds.isEmpty()) {
          AWorkbench.popup("No valid ids to load");
       } else {
@@ -85,14 +85,14 @@ public class WorldEditorReloadProvider extends WorldEditorProvider {
       return !artifacts.isEmpty();
    }
 
-   public List<ArtifactId> getValidArtUuids() {
-      List<ArtifactId> validartUuids = new ArrayList<>();
+   public List<ArtifactId> getValidArtIds() {
+      List<ArtifactId> validartIds = new ArrayList<>();
       for (ArtifactId artifactId : artifactIds) {
          if (artifactId.isValid()) {
-            validartUuids.add(artifactId);
+            validartIds.add(artifactId);
          }
       }
-      return validartUuids;
+      return validartIds;
    }
 
    @Override

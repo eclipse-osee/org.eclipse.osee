@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsGoal;
  */
 public interface IAgileBacklog extends IAtsGoal, IAgileObject {
 
-   public long getTeamUuid();
+   public long getTeamId();
 
    public boolean isActive();
 

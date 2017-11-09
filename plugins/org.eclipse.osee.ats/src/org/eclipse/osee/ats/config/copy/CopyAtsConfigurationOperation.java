@@ -242,9 +242,9 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       if (newName.equals(fromArtifact.getName())) {
          throw new OseeArgumentException("Could not get new name from name conversion.");
       }
-      // duplicate all but baseline branch uuid
+      // duplicate all but baseline branch id
       Artifact newTeamDef = fromArtifact.duplicate(AtsClientService.get().getAtsBranch(),
-         Arrays.asList(AtsAttributeTypes.BaselineBranchUuid));
+         Arrays.asList(AtsAttributeTypes.BaselineBranchId));
       newTeamDef.setName(newName);
       changes.add(newTeamDef);
       resultData.log("Creating new " + newTeamDef.getArtifactTypeName() + ": " + newTeamDef);
@@ -256,9 +256,8 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
             resultData.log("   - Converted \"ats.Full Name\" to " + newFullName);
          }
       }
-      if (data.getNewProgramUuid() != null) {
-         changes.setSoleAttributeFromString(newTeamDef, AtsAttributeTypes.ProgramUuid,
-            data.getNewProgramUuid().toString());
+      if (data.getNewProgramId() != null) {
+         changes.setSoleAttributeFromString(newTeamDef, AtsAttributeTypes.ProgramId, data.getNewProgramId().toString());
       }
       newArtifacts.add(newTeamDef);
       return newTeamDef;

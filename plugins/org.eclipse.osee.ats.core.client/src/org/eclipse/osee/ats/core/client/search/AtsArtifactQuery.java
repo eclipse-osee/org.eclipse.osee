@@ -73,7 +73,7 @@ public class AtsArtifactQuery {
       return toReturn;
    }
 
-   public static Artifact getArtifactFromId(long uuid) {
-      return ArtifactQuery.getArtifactFromId(ArtifactId.valueOf(uuid), AtsClientService.get().getAtsBranch());
+   public static Artifact getArtifactFromId(long id) {
+      return ArtifactQuery.getArtifactFromId(ArtifactId.valueOf(id), AtsClientService.get().getAtsBranch());
    }
 }

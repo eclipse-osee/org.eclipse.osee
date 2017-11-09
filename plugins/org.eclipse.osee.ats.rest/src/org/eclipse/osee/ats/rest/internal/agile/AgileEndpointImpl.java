@@ -188,8 +188,8 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    public List<IAtsWorkPackage> getWorkPackages(@PathParam("teamId") ArtifactId teamId) {
       IAgileTeam aTeam = atsApi.getAgileService().getAgileTeam(teamId);
       Set<IAtsWorkPackage> wps = new HashSet<>();
-      for (Long atsTeamUuid : aTeam.getAtsTeamUuids()) {
-         IAtsTeamDefinition teamDef = atsApi.getConfigItem(atsTeamUuid);
+      for (Long atsTeamId : aTeam.getAtsTeamIds()) {
+         IAtsTeamDefinition teamDef = atsApi.getConfigItem(atsTeamId);
          if (teamDef != null) {
             for (ArtifactId wpArt : atsApi.getRelationResolver().getRelated(teamDef,
                AtsRelationTypes.WorkPackage_WorkPackage)) {
@@ -270,16 +270,16 @@ public class AgileEndpointImpl implements AgileEndpointApi {
          throw new OseeWebApplicationException(Status.BAD_REQUEST, "name is not valid");
       }
 
-      Long id = newTeam.getUuid();
+      Long id = newTeam.getId();
       if (id == null || id <= 0) {
-         newTeam.setUuid(Lib.generateArtifactIdAsInt());
+         newTeam.setId(Lib.generateArtifactIdAsInt());
       }
 
       IAgileTeam updatedTeam = atsApi.getAgileService().createAgileTeam(newTeam);
       JaxAgileTeam created = toJaxTeam(updatedTeam);
 
       UriBuilder builder = uriInfo.getRequestUriBuilder();
-      URI location = builder.path("teams").path(String.valueOf(created.getUuid())).build();
+      URI location = builder.path("teams").path(String.valueOf(created.getId())).build();
       Response response = Response.created(location).entity(created).build();
       return response;
    }
@@ -290,7 +290,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       JaxAgileTeam created = toJaxTeam(updatedTeam);
 
       UriBuilder builder = uriInfo.getRequestUriBuilder();
-      URI location = builder.path("teams").path(String.valueOf(created.getUuid())).build();
+      URI location = builder.path("teams").path(String.valueOf(created.getId())).build();
       Response response = Response.created(location).entity(created).build();
       return response;
    }
@@ -298,9 +298,9 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    private JaxAgileTeam toJaxTeam(IAgileTeam updatedTeam) {
       JaxAgileTeam created = new JaxAgileTeam();
       created.setName(updatedTeam.getName());
-      created.setUuid(updatedTeam.getId());
+      created.setId(updatedTeam.getId());
       created.setActive(updatedTeam.isActive());
-      created.getAtsTeamUuids().addAll(updatedTeam.getAtsTeamUuids());
+      created.getAtsTeamIds().addAll(updatedTeam.getAtsTeamIds());
       created.setBacklogId(updatedTeam.getBacklogId());
       created.setSprintId(updatedTeam.getSprintId());
       created.setDescription(updatedTeam.getDescription());
@@ -328,9 +328,9 @@ public class AgileEndpointImpl implements AgileEndpointApi {
                   IAgileFeatureGroup group = atsApi.getConfigItemFactory().getAgileFeatureGroup(subChild);
                   JaxAgileFeatureGroup newGroup = new JaxAgileFeatureGroup();
                   newGroup.setName(group.getName());
-                  newGroup.setUuid(group.getId());
+                  newGroup.setId(group.getId());
                   newGroup.setActive(group.isActive());
-                  newGroup.setTeamUuid(group.getTeamUuid());
+                  newGroup.setTeamId(group.getTeamId());
                   groups.add(newGroup);
                }
             }
@@ -345,45 +345,45 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       if (!Strings.isValid(newFeatureGroup.getName())) {
          throw new OseeWebApplicationException(Status.BAD_REQUEST, "name is not valid");
       }
-      if (newFeatureGroup.getTeamUuid() <= 0) {
+      if (newFeatureGroup.getTeamId() <= 0) {
          throw new OseeWebApplicationException(Status.BAD_REQUEST, "teamId is not valid");
       }
 
       String guid = GUID.create();
-      Long uuid = newFeatureGroup.getUuid();
-      if (uuid == null || uuid <= 0) {
-         uuid = Lib.generateArtifactIdAsInt();
+      Long id = newFeatureGroup.getId();
+      if (id == null || id <= 0) {
+         id = Lib.generateArtifactIdAsInt();
       }
 
-      IAgileFeatureGroup team = atsApi.getAgileService().createAgileFeatureGroup(newFeatureGroup.getTeamUuid(),
-         newFeatureGroup.getName(), guid, uuid);
+      IAgileFeatureGroup team = atsApi.getAgileService().createAgileFeatureGroup(newFeatureGroup.getTeamId(),
+         newFeatureGroup.getName(), guid, id);
       JaxAgileFeatureGroup newGroup = new JaxAgileFeatureGroup();
       newGroup.setName(team.getName());
-      newGroup.setUuid(team.getId());
+      newGroup.setId(team.getId());
       newGroup.setActive(team.isActive());
-      newGroup.setTeamUuid(team.getTeamUuid());
+      newGroup.setTeamId(team.getTeamId());
 
       UriBuilder builder = uriInfo.getRequestUriBuilder();
-      URI location = builder.path("teams").path(String.valueOf(newGroup.getTeamUuid())).path("features").path(
-         String.valueOf(newGroup.getUuid())).build();
+      URI location = builder.path("teams").path(String.valueOf(newGroup.getTeamId())).path("features").path(
+         String.valueOf(newGroup.getId())).build();
       return Response.created(location).entity(newGroup).build();
    }
 
    @Override
-   public JaxAgileFeatureGroup getFeatureGroup(long teamId, long featureUuid) {
+   public JaxAgileFeatureGroup getFeatureGroup(long teamId, long featureId) {
       IAgileFeatureGroup feature =
-         atsApi.getAgileService().getAgileFeatureGroups(Arrays.asList(featureUuid)).iterator().next();
+         atsApi.getAgileService().getAgileFeatureGroups(Arrays.asList(featureId)).iterator().next();
       JaxAgileFeatureGroup created = new JaxAgileFeatureGroup();
       created.setName(feature.getName());
-      created.setUuid(feature.getId());
-      created.setTeamUuid(feature.getTeamUuid());
+      created.setId(feature.getId());
+      created.setTeamId(feature.getTeamId());
       created.setActive(feature.isActive());
       return created;
    }
 
    @Override
-   public Response deleteFeatureGroup(long teamId, long featureUuid) {
-      atsApi.getAgileService().deleteAgileFeatureGroup(featureUuid);
+   public Response deleteFeatureGroup(long teamId, long featureId) {
+      atsApi.getAgileService().deleteAgileFeatureGroup(featureId);
       return Response.ok().build();
    }
 
@@ -396,22 +396,22 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       if (!Strings.isValid(newSprint.getName())) {
          throw new OseeWebApplicationException(Status.BAD_REQUEST, "name is not valid");
       }
-      if (newSprint.getTeamUuid() <= 0) {
+      if (newSprint.getTeamId() <= 0) {
          throw new OseeWebApplicationException(Status.BAD_REQUEST, "teamId is not valid");
       }
 
       String guid = GUID.create();
-      Long uuid = newSprint.getUuid();
-      if (uuid == null || uuid <= 0) {
-         uuid = Lib.generateArtifactIdAsInt();
+      Long id = newSprint.getId();
+      if (id == null || id <= 0) {
+         id = Lib.generateArtifactIdAsInt();
       }
 
       IAgileSprint sprint =
-         atsApi.getAgileService().createAgileSprint(newSprint.getTeamUuid(), newSprint.getName(), guid, uuid);
+         atsApi.getAgileService().createAgileSprint(newSprint.getTeamId(), newSprint.getName(), guid, id);
       JaxAgileSprint created = toJaxSprint(sprint);
 
       UriBuilder builder = uriInfo.getRequestUriBuilder();
-      URI location = builder.path("teams").path(String.valueOf(newSprint.getTeamUuid())).path("sprints").path(
+      URI location = builder.path("teams").path(String.valueOf(newSprint.getTeamId())).path("sprints").path(
          String.valueOf(sprint.getId())).build();
       return Response.created(location).entity(created).build();
    }
@@ -420,8 +420,8 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       JaxAgileSprint created = new JaxAgileSprint();
       created.setName(sprint.getName());
       created.setActive(sprint.isActive());
-      created.setUuid(sprint.getId());
-      created.setTeamUuid(sprint.getTeamUuid());
+      created.setId(sprint.getId());
+      created.setTeamId(sprint.getTeamId());
       return created;
    }
 
@@ -671,7 +671,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       if (!Strings.isValid(newBacklog.getName())) {
          throw new OseeWebApplicationException(Status.BAD_REQUEST, "name is not valid");
       }
-      if (newBacklog.getTeamUuid() <= 0) {
+      if (newBacklog.getTeamId() <= 0) {
          throw new OseeWebApplicationException(Status.BAD_REQUEST, "teamId is not valid");
       }
 
@@ -682,20 +682,20 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       }
 
       String guid = GUID.create();
-      Long uuid = newBacklog.getUuid();
-      if (uuid == null || uuid <= 0) {
-         uuid = Lib.generateArtifactIdAsInt();
+      Long id = newBacklog.getId();
+      if (id == null || id <= 0) {
+         id = Lib.generateArtifactIdAsInt();
       }
-      ArtifactToken teamArt = atsApi.getArtifact(newBacklog.getTeamUuid());
+      ArtifactToken teamArt = atsApi.getArtifact(newBacklog.getTeamId());
       if (!atsApi.getRelationResolver().getRelated(teamArt, AtsRelationTypes.AgileTeamToBacklog_Backlog).isEmpty()) {
          new OseeWebApplicationException(Status.BAD_REQUEST, "Backlog already set for team %s",
             teamArt.toStringWithId());
       }
 
-      backlog = atsApi.getAgileService().createAgileBacklog(newBacklog.getTeamUuid(), newBacklog.getName(), guid, uuid);
+      backlog = atsApi.getAgileService().createAgileBacklog(newBacklog.getTeamId(), newBacklog.getName(), guid, id);
       JaxAgileBacklog created = toJaxBacklog(backlog);
       UriBuilder builder = uriInfo.getRequestUriBuilder();
-      URI location = builder.path("teams").path(String.valueOf(backlog.getTeamUuid())).path("backlog").build();
+      URI location = builder.path("teams").path(String.valueOf(backlog.getTeamId())).path("backlog").build();
       return Response.created(location).entity(created).build();
    }
 
@@ -705,7 +705,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
 
       JaxAgileBacklog created = toJaxBacklog(backlog);
       UriBuilder builder = uriInfo.getRequestUriBuilder();
-      URI location = builder.path("teams").path(String.valueOf(created.getTeamUuid())).build();
+      URI location = builder.path("teams").path(String.valueOf(created.getTeamId())).build();
       return Response.created(location).entity(created).build();
    }
 
@@ -756,8 +756,8 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       result.setActive(backlog.isActive());
       result.setActive(backlog.isActive());
       result.setName(backlog.getName());
-      result.setUuid(backlog.getId());
-      result.setTeamUuid(backlog.getTeamUuid());
+      result.setId(backlog.getId());
+      result.setTeamId(backlog.getTeamId());
       return result;
    }
 
@@ -766,16 +766,16 @@ public class AgileEndpointImpl implements AgileEndpointApi {
     ***********************************/
    @Override
    public AgileWriterResult updateAgileItem(long itemId, JaxAgileItem newItem) {
-      // validate uuid
-      if (newItem.getUuids().isEmpty()) {
-         throw new OseeWebApplicationException(Status.NOT_FOUND, "itemUuid is not valid");
+      // validate id
+      if (newItem.getIds().isEmpty()) {
+         throw new OseeWebApplicationException(Status.NOT_FOUND, "itemId is not valid");
       }
 
       AgileWriterResult result = atsApi.getAgileService().updateAgileItem(newItem);
       JaxAgileItem item = new JaxAgileItem();
-      item.getUuids().addAll(result.getJaxAgileItem().getUuids());
+      item.getIds().addAll(result.getJaxAgileItem().getIds());
       item.getFeatures().addAll(result.getJaxAgileItem().getFeatures());
-      item.setSprintUuid(result.getJaxAgileItem().getSprintUuid());
+      item.setSprintId(result.getJaxAgileItem().getSprintId());
 
       return result;
    }
@@ -784,9 +784,9 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    public AgileWriterResult updateItems(JaxAgileItem newItem) {
       AgileWriterResult result = atsApi.getAgileService().updateAgileItem(newItem);
       JaxAgileItem item = new JaxAgileItem();
-      item.getUuids().addAll(result.getJaxAgileItem().getUuids());
+      item.getIds().addAll(result.getJaxAgileItem().getIds());
       item.getFeatures().addAll(result.getJaxAgileItem().getFeatures());
-      item.setSprintUuid(result.getJaxAgileItem().getSprintUuid());
+      item.setSprintId(result.getJaxAgileItem().getSprintId());
 
       return result;
    }

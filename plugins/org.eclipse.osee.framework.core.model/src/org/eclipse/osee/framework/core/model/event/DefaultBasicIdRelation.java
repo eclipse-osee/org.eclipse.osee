@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.data.IRelationType;
 /**
  * @author Donald G. Dunne
  */
-public class DefaultBasicUuidRelation implements IBasicGuidRelation {
+public class DefaultBasicIdRelation implements IBasicGuidRelation {
 
    DefaultBasicGuidArtifact artA, artB;
    Long branchUuid;
@@ -24,7 +24,7 @@ public class DefaultBasicUuidRelation implements IBasicGuidRelation {
    int gammaId;
    int relationId;
 
-   public DefaultBasicUuidRelation(BranchId branch, Long relTypeUuid, int relationId, int gammaId, DefaultBasicGuidArtifact artA, DefaultBasicGuidArtifact artB) {
+   public DefaultBasicIdRelation(BranchId branch, Long relTypeUuid, int relationId, int gammaId, DefaultBasicGuidArtifact artA, DefaultBasicGuidArtifact artB) {
       this.branchUuid = branch.getId();
       this.relTypeUuid = relTypeUuid;
       this.relationId = relationId;

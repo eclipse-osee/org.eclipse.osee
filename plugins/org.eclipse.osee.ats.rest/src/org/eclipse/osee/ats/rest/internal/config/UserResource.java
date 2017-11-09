@@ -45,7 +45,7 @@ public final class UserResource {
       JSONArray arr = new JSONArray();
       for (IAtsUser user : userService.getUsers(active)) {
          JSONObject obj = new JSONObject();
-         obj.put("uuid", user.getUserId());
+         obj.put("id", user.getUserId());
          obj.put("name", user.getName());
          obj.put("email", user.getEmail());
          obj.put("active", user.isActive());

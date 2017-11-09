@@ -53,9 +53,9 @@ public class WorkItemJsonReader implements MessageBodyReader<IAtsWorkItem> {
                varData.put(key, value);
             }
          }
-         long uuid = Long.valueOf(varData.get("uuid"));
-         return AtsClientService.get().getQueryService().createQuery(WorkItemType.WorkItem).andUuids(
-            uuid).getResults().getAtMostOneOrNull();
+         long id = Long.valueOf(varData.get("id"));
+         return AtsClientService.get().getQueryService().createQuery(WorkItemType.WorkItem).andIds(
+            id).getResults().getAtMostOneOrNull();
       } catch (Exception ex) {
          throw new IOException("Error deserializing a TraxRpcr Item.", ex);
       }

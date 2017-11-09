@@ -79,43 +79,43 @@ public final class CpaResource implements AtsCpaEndpointApi {
    }
 
    @GET
-   @Path("program/{uuid}")
+   @Path("program/{id}")
    @Produces(MediaType.APPLICATION_JSON)
    @Override
-   public List<CpaDecision> getDecisionByProgram(@PathParam("uuid") String uuid, @QueryParam("open") Boolean open) throws Exception {
-      return DecisionLoader.createLoader(cpaRegistry, atsServer).andOpen(open).andProgramUuid(uuid).load();
+   public List<CpaDecision> getDecisionByProgram(@PathParam("id") String id, @QueryParam("open") Boolean open) throws Exception {
+      return DecisionLoader.createLoader(cpaRegistry, atsServer).andOpen(open).andProgramId(id).load();
    }
 
    @GET
-   @Path("program/{uuid}/build")
+   @Path("program/{id}/build")
    @Produces(MediaType.APPLICATION_JSON)
    @Override
-   public List<CpaBuild> getBuildsByProgram(@PathParam("uuid") String programUuid) throws Exception {
+   public List<CpaBuild> getBuildsByProgram(@PathParam("id") String programId) throws Exception {
       List<CpaBuild> builds = new ArrayList<>();
       for (IAtsCpaService service : cpaRegistry.getServices()) {
-         builds.addAll(service.getBuilds(programUuid));
+         builds.addAll(service.getBuilds(programId));
       }
       return builds;
    }
 
    @GET
-   @Path("decision/{uuid}")
+   @Path("decision/{id}")
    @Produces(MediaType.APPLICATION_JSON)
    @Override
-   public Response getDecision(@PathParam("uuid") String uuid, @QueryParam("pcrSystem") String pcrSystem) throws Exception {
+   public Response getDecision(@PathParam("id") String id, @QueryParam("pcrSystem") String pcrSystem) throws Exception {
       URI uri = null;
       if (pcrSystem == null) {
-         String actionUrl = AtsUtilCore.getActionUrl(uuid, atsServer);
+         String actionUrl = AtsUtilCore.getActionUrl(id, atsServer);
          uri = UriBuilder.fromUri(actionUrl).build();
       } else {
          IAtsCpaService service = cpaRegistry.getServiceById(pcrSystem);
-         uri = service.getLocation(UriBuilder.fromUri(CpaUtil.getCpaBasePath(atsServer)).build(), uuid);
+         uri = service.getLocation(UriBuilder.fromUri(CpaUtil.getCpaBasePath(atsServer)).build(), id);
       }
       return Response.seeOther(uri).build();
    }
 
    /**
-    * { "uuids": ["id1","id2"], "assignees": ["757","457"], "applicability": "Yes", "rationale": "Cause" }
+    * { "ids": ["id1","id2"], "assignees": ["757","457"], "applicability": "Yes", "rationale": "Cause" }
     */
    @POST
    @Consumes(MediaType.APPLICATION_JSON)
@@ -123,11 +123,11 @@ public final class CpaResource implements AtsCpaEndpointApi {
    @Override
    public List<CpaDecision> putDecision(final DecisionUpdate update) throws Exception {
       new DecisionUpdater(update, atsServer).update();
-      return DecisionLoader.createLoader(cpaRegistry, atsServer).andCpaIds(update.getUuids()).load();
+      return DecisionLoader.createLoader(cpaRegistry, atsServer).andCpaIds(update.getIds()).load();
    }
 
    /**
-    * { "programUuid": "3472723", "buildUuid": "363445", "uuids": [ "CPA41337" ], "userId": "727536" }
+    * { "programId": "3472723", "buildId": "363445", "ids": [ "CPA41337" ], "userId": "727536" }
     */
    @POST
    @Consumes(MediaType.APPLICATION_JSON)
@@ -139,7 +139,7 @@ public final class CpaResource implements AtsCpaEndpointApi {
          return Response.status(Status.NOT_ACCEPTABLE).entity(rd.toString()).build();
       }
       CpaDecision decision = DecisionLoader.createLoader(cpaRegistry, atsServer).andCpaIds(
-         java.util.Collections.singleton(duplicate.getCpaUuid())).load().iterator().next();
+         java.util.Collections.singleton(duplicate.getCpaId())).load().iterator().next();
       return Response.ok().entity(decision).build();
    }
 

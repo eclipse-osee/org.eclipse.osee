@@ -127,12 +127,12 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
       if (GUID.isValid(id)) {
          action = getArtifactByGuid(id);
       }
-      Long uuid = null;
+      Long pid = null;
       if (Strings.isNumeric(id)) {
-         uuid = Long.parseLong(id);
+         pid = Long.parseLong(id);
       }
-      if (uuid != null) {
-         action = getArtifact(uuid);
+      if (pid != null) {
+         action = getArtifact(pid);
       }
       if (action == null) {
          action = getArtifactByAtsId(id);
@@ -144,8 +144,8 @@ public abstract class AbstractAtsQueryService implements IAtsQueryService {
       return atsApi.getArtifactByAtsId(id);
    }
 
-   private ArtifactToken getArtifact(Long uuid) {
-      return atsApi.getArtifact(uuid);
+   private ArtifactToken getArtifact(Long id) {
+      return atsApi.getArtifact(id);
    }
 
    public ArtifactToken getArtifactByGuid(String guid) {

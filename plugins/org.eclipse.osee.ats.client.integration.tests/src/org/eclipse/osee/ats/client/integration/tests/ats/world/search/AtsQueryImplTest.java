@@ -102,14 +102,14 @@ public class AtsQueryImplTest {
       query.andActionableItem(Arrays.asList(ai.getId()));
       assertEquals(4, query.getResults().size());
 
-      // by uuids (hijack two workflows from previous search)
-      List<Long> uuids = new LinkedList<>();
+      // by ids (hijack two workflows from previous search)
+      List<Long> ids = new LinkedList<>();
       for (IAtsWorkItem workItem : query.getResults()) {
-         uuids.add(workItem.getId());
+         ids.add(workItem.getId());
       }
       query = queryService.createQuery(WorkItemType.WorkItem);
-      Iterator<Long> iterator = uuids.iterator();
-      query.andUuids(iterator.next(), iterator.next());
+      Iterator<Long> iterator = ids.iterator();
+      query.andIds(iterator.next(), iterator.next());
       assertEquals(2, query.getResults().size());
 
       // by state name

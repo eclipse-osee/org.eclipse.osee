@@ -92,29 +92,29 @@ public class WorldSearchItem extends WorldUISearchItem {
             query.andAssignee(userById);
          }
       }
-      if (!data.getTeamDefUuids().isEmpty()) {
-         query.andTeam(data.getTeamDefUuids());
+      if (!data.getTeamDefIds().isEmpty()) {
+         query.andTeam(data.getTeamDefIds());
       }
-      if (!data.getAiUuids().isEmpty()) {
-         query.andActionableItem(data.getAiUuids());
+      if (!data.getAiIds().isEmpty()) {
+         query.andActionableItem(data.getAiIds());
       }
-      if (data.getVersionUuid() != null && data.getVersionUuid() > 0L) {
-         query.andVersion(data.getVersionUuid());
+      if (data.getVersionId() != null && data.getVersionId() > 0L) {
+         query.andVersion(data.getVersionId());
       }
       if (Strings.isValid(data.getState())) {
          query.andState(data.getState());
       }
-      if (data.getProgramUuid() > 0L) {
-         query.andProgram(data.getProgramUuid());
+      if (data.getProgramId() > 0L) {
+         query.andProgram(data.getProgramId());
       }
-      if (data.getInsertionUuid() > 0L) {
-         query.andInsertion(data.getInsertionUuid());
+      if (data.getInsertionId() > 0L) {
+         query.andInsertion(data.getInsertionId());
       }
-      if (data.getInsertionActivityUuid() > 0L) {
-         query.andInsertionActivity(data.getInsertionActivityUuid());
+      if (data.getInsertionActivityId() > 0L) {
+         query.andInsertionActivity(data.getInsertionActivityId());
       }
-      if (data.getWorkPackageUuid() > 0L) {
-         query.andWorkPackage(data.getWorkPackageUuid());
+      if (data.getWorkPackageId() > 0L) {
+         query.andWorkPackage(data.getWorkPackageId());
       }
       if (Strings.isValid(data.getColorTeam())) {
          query.andColorTeam(data.getColorTeam());

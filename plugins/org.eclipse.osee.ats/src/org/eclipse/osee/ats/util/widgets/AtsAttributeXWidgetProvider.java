@@ -40,7 +40,7 @@ public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider
    @Override
    public List<XWidgetRendererItem> getDynamicXWidgetLayoutData(AttributeTypeToken attributeType) {
       List<XWidgetRendererItem> layouts = new ArrayList<>();
-      if (attributeType.equals(AtsAttributeTypes.BaselineBranchUuid)) {
+      if (attributeType.equals(AtsAttributeTypes.BaselineBranchId)) {
          layouts = super.getDynamicXWidgetLayoutData(attributeType);
          XWidgetRendererItem layoutData = layouts.get(0);
          layoutData.setXWidgetName("XBranchSelectWidgetDam");
@@ -52,7 +52,7 @@ public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider
          layouts = super.getDynamicXWidgetLayoutData(attributeType);
          XWidgetRendererItem layoutData = layouts.get(0);
          layoutData.getXOptionHandler().add(XOption.FILL_VERTICALLY);
-      } else if (attributeType.equals(AtsAttributeTypes.ProgramUuid)) {
+      } else if (attributeType.equals(AtsAttributeTypes.ProgramId)) {
          layouts = super.getDynamicXWidgetLayoutData(attributeType);
          XWidgetRendererItem layoutData = layouts.get(0);
          layoutData.setXWidgetName("XProgramSelectionWidget");

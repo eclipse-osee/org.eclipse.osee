@@ -65,7 +65,7 @@ public class AtsConfigPreferencePage extends PreferencePage implements IWorkbenc
 
                if (dialog.open() == 0) {
                   AtsConfiguration config = (AtsConfiguration) dialog.getResult()[0];
-                  BranchId branch = BranchId.valueOf(config.getBranchUuid());
+                  BranchId branch = BranchId.valueOf(config.getBranchId());
 
                   AtsClientService.get().storeAtsBranch(branch, config.getName());
 

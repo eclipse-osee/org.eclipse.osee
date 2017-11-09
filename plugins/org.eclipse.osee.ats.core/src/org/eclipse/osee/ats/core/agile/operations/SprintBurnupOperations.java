@@ -41,9 +41,9 @@ public class SprintBurnupOperations implements IAgileSprintHtmlOperation {
    }
 
    @Override
-   public String getReportHtml(long teamUuid, long sprintUuid) {
+   public String getReportHtml(long teamId, long sprintId) {
       try {
-         LineChart chart = getChartData(teamUuid, sprintUuid);
+         LineChart chart = getChartData(teamId, sprintId);
          if (chart.getResults().isErrors()) {
             return AHTML.simplePage(chart.getResults().toString().replaceAll("\n", "<br/>"));
          }
@@ -53,10 +53,10 @@ public class SprintBurnupOperations implements IAgileSprintHtmlOperation {
       }
    }
 
-   public LineChart getChartData(long teamUuid, long sprintUuid) {
+   public LineChart getChartData(long teamId, long sprintId) {
       LineChart chart = new LineChart(atsApi);
-      ArtifactToken team = atsApi.getArtifact(teamUuid);
-      AgileSprintData data = SprintUtil.getAgileSprintData(atsApi, teamUuid, sprintUuid, chart.getResults());
+      ArtifactToken team = atsApi.getArtifact(teamId);
+      AgileSprintData data = SprintUtil.getAgileSprintData(atsApi, teamId, sprintId, chart.getResults());
       XResultData results = data.validate();
       if (results.isErrors()) {
          return chart;

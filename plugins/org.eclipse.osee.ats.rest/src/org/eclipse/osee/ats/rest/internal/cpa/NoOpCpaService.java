@@ -45,7 +45,7 @@ public class NoOpCpaService implements IAtsCpaService {
    }
 
    @Override
-   public URI getLocation(URI uri, String uuid) {
+   public URI getLocation(URI uri, String id) {
       return null;
    }
 
@@ -60,12 +60,12 @@ public class NoOpCpaService implements IAtsCpaService {
    }
 
    @Override
-   public Collection<CpaBuild> getBuilds(String programUuid) {
+   public Collection<CpaBuild> getBuilds(String programId) {
       return Collections.emptyList();
    }
 
    @Override
-   public String duplicate(IAtsTeamWorkflow cpaWf, String programUuid, String versionUuid, String originatingPcrId, XResultData rd) {
+   public String duplicate(IAtsTeamWorkflow cpaWf, String programId, String versionId, String originatingPcrId, XResultData rd) {
       return null;
    }
 

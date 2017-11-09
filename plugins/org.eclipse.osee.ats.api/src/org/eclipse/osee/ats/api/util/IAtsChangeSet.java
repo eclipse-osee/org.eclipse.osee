@@ -76,7 +76,7 @@ public interface IAtsChangeSet {
 
    ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid);
 
-   ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid, Long uuid);
+   ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid, Long id);
 
    void relate(Object object1, RelationTypeSide relationSide, Object object2);
 

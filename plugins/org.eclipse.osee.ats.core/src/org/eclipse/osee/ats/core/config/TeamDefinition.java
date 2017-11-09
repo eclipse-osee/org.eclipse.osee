@@ -44,13 +44,13 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
    private JaxTeamDefinition jaxTeamDef;
 
    public TeamDefinition(Log logger, AtsApi atsApi, JaxTeamDefinition jaxTeamDef) {
-      super(logger, atsApi, ArtifactToken.valueOf(jaxTeamDef.getUuid(), jaxTeamDef.getGuid(), jaxTeamDef.getName(),
+      super(logger, atsApi, ArtifactToken.valueOf(jaxTeamDef.getId(), jaxTeamDef.getGuid(), jaxTeamDef.getName(),
          atsApi.getAtsBranch(), AtsArtifactTypes.ActionableItem));
       this.jaxTeamDef = jaxTeamDef;
    }
 
    public TeamDefinition(Log logger, AtsApi atsApi, ArtifactToken artifact) {
-      super(logger, atsApi, ArtifactToken.valueOf(artifact.getUuid(), artifact.getGuid(), artifact.getName(),
+      super(logger, atsApi, ArtifactToken.valueOf(artifact.getId(), artifact.getGuid(), artifact.getName(),
          atsApi.getAtsBranch(), AtsArtifactTypes.ActionableItem));
    }
 
@@ -199,7 +199,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
 
    @Override
    public BranchId getBaselineBranchId() {
-      return BranchId.valueOf((String) getAttributeValue(AtsAttributeTypes.BaselineBranchUuid, "0"));
+      return BranchId.valueOf((String) getAttributeValue(AtsAttributeTypes.BaselineBranchId, "0"));
    }
 
    @Override

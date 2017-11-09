@@ -48,8 +48,8 @@ import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionServiceImpl;
 import org.eclipse.osee.ats.core.workflow.WorkItemFactory;
 import org.eclipse.osee.ats.rest.AtsConfigCache;
 import org.eclipse.osee.ats.rest.IAtsServer;
-import org.eclipse.osee.ats.rest.internal.convert.ConvertBaselineGuidToBaselineUuid;
-import org.eclipse.osee.ats.rest.internal.convert.ConvertFavoriteBranchGuidToUuid;
+import org.eclipse.osee.ats.rest.internal.convert.ConvertBaselineGuidToBaselineId;
+import org.eclipse.osee.ats.rest.internal.convert.ConvertFavoriteBranchGuidToId;
 import org.eclipse.osee.ats.rest.internal.notify.AtsNotificationEventProcessor;
 import org.eclipse.osee.ats.rest.internal.notify.AtsNotifierServiceImpl;
 import org.eclipse.osee.ats.rest.internal.notify.WorkItemNotificationProcessor;
@@ -161,8 +161,8 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
       taskService = new AtsTaskService(this);
       earnedValueService = new AtsEarnedValueImpl(logger, this);
 
-      addAtsDatabaseConversion(new ConvertBaselineGuidToBaselineUuid(logger, jdbcService.getClient(), orcsApi, this));
-      addAtsDatabaseConversion(new ConvertFavoriteBranchGuidToUuid(logger, jdbcService.getClient(), orcsApi, this));
+      addAtsDatabaseConversion(new ConvertBaselineGuidToBaselineId(logger, jdbcService.getClient(), orcsApi, this));
+      addAtsDatabaseConversion(new ConvertFavoriteBranchGuidToId(logger, jdbcService.getClient(), orcsApi, this));
 
       scheduleAtsConfigCacheReloader();
 
@@ -200,7 +200,7 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
          if (atsObject.getStoreObject() instanceof ArtifactReadable) {
             result = (ArtifactReadable) atsObject.getStoreObject();
          } else {
-            result = orcsApi.getQueryFactory().fromBranch(getAtsBranch()).andUuid(
+            result = orcsApi.getQueryFactory().fromBranch(getAtsBranch()).andId(
                atsObject.getId()).getResults().getAtMostOneOrNull();
          }
       } else {
@@ -215,7 +215,7 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
       if (atsObject.getStoreObject() instanceof ArtifactReadable) {
          result = (ArtifactReadable) atsObject.getStoreObject();
       } else {
-         result = orcsApi.getQueryFactory().fromBranch(getAtsBranch()).andUuid(
+         result = orcsApi.getQueryFactory().fromBranch(getAtsBranch()).andId(
             atsObject.getId()).getResults().getAtMostOneOrNull();
          if (result != null) {
             atsObject.setStoreObject(result);
@@ -256,15 +256,15 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
    }
 
    @Override
-   public ArtifactReadable getArtifact(Long uuid) {
-      return orcsApi.getQueryFactory().fromBranch(getAtsBranch()).andUuid(uuid).getResults().getOneOrNull();
+   public ArtifactReadable getArtifact(Long id) {
+      return orcsApi.getQueryFactory().fromBranch(getAtsBranch()).andId(id).getResults().getOneOrNull();
    }
 
    @Override
-   public Collection<ArtifactToken> getArtifacts(Collection<Long> uuids) {
+   public Collection<ArtifactToken> getArtifacts(Collection<Long> ids) {
       Collection<ArtifactToken> artifacts = new LinkedList<>();
       Iterator<ArtifactReadable> iterator =
-         orcsApi.getQueryFactory().fromBranch(getAtsBranch()).andUuids(uuids).getResults().iterator();
+         orcsApi.getQueryFactory().fromBranch(getAtsBranch()).andUuids(ids).getResults().iterator();
       while (iterator.hasNext()) {
          artifacts.add(iterator.next());
       }
@@ -367,8 +367,8 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
    }
 
    @Override
-   public <A extends IAtsConfigObject> A getSoleByUuid(long uuid, Class<A> clazz) {
-      return getCache().getAtsObject(uuid);
+   public <A extends IAtsConfigObject> A getSoleById(long id, Class<A> clazz) {
+      return getCache().getAtsObject(id);
    }
 
    @Override

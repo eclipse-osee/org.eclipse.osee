@@ -130,19 +130,19 @@ public class AtsBranchConfigurationTest {
       }
       IAtsTeamDefinition teamDef = operation.getTeamDefinition();
       IAtsVersion versionToTarget = null;
-      long version1Uuid = 0L, version2Uuid = 0L;
+      long version1Id = 0L, version2Id = 0L;
       for (IAtsVersion vArt : teamDef.getVersions()) {
          if (vArt.getName().contains("Ver1")) {
             versionToTarget = vArt;
-            version1Uuid = vArt.getId();
+            version1Id = vArt.getId();
          } else {
-            version2Uuid = vArt.getId();
+            version2Id = vArt.getId();
          }
       }
 
       Assert.assertNotNull(versionToTarget);
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
-      changes.setSoleAttributeValue(versionToTarget, AtsAttributeTypes.BaselineBranchUuid,
+      changes.setSoleAttributeValue(versionToTarget, AtsAttributeTypes.BaselineBranchId,
          viaTeamDefBranch.getIdString());
       changes.setSoleAttributeValue(versionToTarget, AtsAttributeTypes.AllowCommitBranch, true);
       changes.setSoleAttributeValue(versionToTarget, AtsAttributeTypes.AllowCreateBranch, true);
@@ -207,8 +207,8 @@ public class AtsBranchConfigurationTest {
       assertTrue("Should be 1 new artifact in change report, found " + newArts.size(), newArts.size() == 1);
 
       TestUtil.severeLoggingEnd(monitor,
-         Arrays.asList("Version [[" + version1Uuid + "][BranchViaVersions - Ver1]] has no related team defininition",
-            "Version [[" + version2Uuid + "][BranchViaVersions - Ver2]] has no related team defininition"));
+         Arrays.asList("Version [[" + version1Id + "][BranchViaVersions - Ver1]] has no related team defininition",
+            "Version [[" + version2Id + "][BranchViaVersions - Ver2]] has no related team defininition"));
    }
 
    @org.junit.Test
@@ -248,7 +248,7 @@ public class AtsBranchConfigurationTest {
       }
       IAtsTeamDefinition teamDef = operation.getTeamDefinition();
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
-      changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.BaselineBranchUuid, viaTeamDefBranch.getIdString());
+      changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.BaselineBranchId, viaTeamDefBranch.getIdString());
       // setup team def to allow create/commit of branch
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.AllowCommitBranch, true);
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.AllowCreateBranch, true);
@@ -349,9 +349,9 @@ public class AtsBranchConfigurationTest {
       for (Artifact teamDefArt : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.TeamDefinition,
          branch.getName(), AtsClientService.get().getAtsBranch())) {
          teamDefArt.deleteAndPersist(transaction, false);
-         IAtsTeamDefinition soleByUuid = AtsClientService.get().getCache().getAtsObject(teamDefArt.getId());
-         if (soleByUuid != null) {
-            AtsClientService.get().getCache().deCacheAtsObject(soleByUuid);
+         IAtsTeamDefinition soleById = AtsClientService.get().getCache().getAtsObject(teamDefArt.getId());
+         if (soleById != null) {
+            AtsClientService.get().getCache().deCacheAtsObject(soleById);
          }
       }
       transaction.execute();
@@ -363,9 +363,9 @@ public class AtsBranchConfigurationTest {
          branch.getName(), AtsClientService.get().getAtsBranch())) {
          for (Artifact childArt : aiaArt.getChildren()) {
             childArt.deleteAndPersist(transaction, false);
-            IAtsActionableItem soleByUuid = AtsClientService.get().getCache().getAtsObject(childArt.getId());
-            if (soleByUuid != null) {
-               AtsClientService.get().getCache().deCacheAtsObject(soleByUuid);
+            IAtsActionableItem soleById = AtsClientService.get().getCache().getAtsObject(childArt.getId());
+            if (soleById != null) {
+               AtsClientService.get().getCache().deCacheAtsObject(soleById);
             }
          }
 

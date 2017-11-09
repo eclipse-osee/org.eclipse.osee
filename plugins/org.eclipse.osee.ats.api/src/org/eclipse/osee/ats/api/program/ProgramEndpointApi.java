@@ -30,8 +30,8 @@ public interface ProgramEndpointApi extends BaseConfigEndpointApi<JaxProgram> {
    @Consumes(MediaType.APPLICATION_JSON)
    public Response update(JaxProgram program) throws Exception;
 
-   @Path("{programUuid}/program")
+   @Path("{programId}/program")
    @Produces(MediaType.APPLICATION_JSON)
-   public InsertionEndpointApi getInsertion(@PathParam("programUuid") long programUuid);
+   public InsertionEndpointApi getInsertion(@PathParam("programId") long programId);
 
 }

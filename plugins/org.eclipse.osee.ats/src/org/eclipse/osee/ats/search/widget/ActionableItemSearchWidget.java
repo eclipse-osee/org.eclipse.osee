@@ -36,14 +36,14 @@ public class ActionableItemSearchWidget {
          searchItem.getBeginComposite(beginComposite)));
    }
 
-   public Collection<Long> getUuids() {
-      List<Long> uuids = new LinkedList<>();
+   public Collection<Long> getIds() {
+      List<Long> ids = new LinkedList<>();
       if (get() != null) {
          for (IAtsActionableItem ai : get()) {
-            uuids.add(ai.getId());
+            ids.add(ai.getId());
          }
       }
-      return uuids;
+      return ids;
    }
 
    public Collection<IAtsActionableItem> get() {
@@ -66,8 +66,8 @@ public class ActionableItemSearchWidget {
 
    public void set(AtsSearchData data) {
       List<IAtsActionableItem> ais = new LinkedList<>();
-      for (Long uuid : data.getAiUuids()) {
-         IAtsActionableItem ai = AtsClientService.get().getCache().getAtsObject(uuid);
+      for (Long id : data.getAiIds()) {
+         IAtsActionableItem ai = AtsClientService.get().getCache().getAtsObject(id);
          if (ai != null) {
             ais.add(ai);
          }

@@ -75,7 +75,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       if (user.getStoreObject() instanceof ArtifactReadable) {
          return (ArtifactReadable) user.getStoreObject();
       }
-      return orcsApi.getQueryFactory().fromBranch(atsServer.getAtsBranch()).andUuid(
+      return orcsApi.getQueryFactory().fromBranch(atsServer.getAtsBranch()).andId(
          user.getId()).getResults().getExactlyOne();
    }
 
@@ -200,8 +200,8 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid, Long uuid) {
-      ArtifactToken artifact = getTransaction().createArtifact(artifactType, name, guid, uuid);
+   public ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid, Long id) {
+      ArtifactToken artifact = getTransaction().createArtifact(artifactType, name, guid, id);
       add(artifact);
       return artifact;
    }

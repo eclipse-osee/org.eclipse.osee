@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
-import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelation;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicIdRelation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -115,8 +115,8 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
             for (RelationLink rel : artifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
                ArtifactToken artifactA = rel.getArtifactA();
                ArtifactToken artifactB = rel.getArtifactB();
-               DefaultBasicUuidRelation guidRelation =
-                  new DefaultBasicUuidRelation(branch, rel.getRelationType().getId(), rel.getId(), rel.getGammaId(),
+               DefaultBasicIdRelation guidRelation =
+                  new DefaultBasicIdRelation(branch, rel.getRelationType().getId(), rel.getId(), rel.getGammaId(),
                      new DefaultBasicGuidArtifact(branch, artifactA.getArtifactTypeId(), artifactA),
                      new DefaultBasicGuidArtifact(branch, artifactB.getArtifactTypeId(), artifactB));
                artifactEvent.addRelation(

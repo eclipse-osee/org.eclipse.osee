@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public final class StateResource {
 
    private final IAtsServer atsServer;
-   private static final String ATS_UI_ACTION_PREFIX = "/ui/action/UUID";
+   private static final String ATS_UI_ACTION_PREFIX = "/ui/action/ID";
 
    public StateResource(IAtsServer atsServer) {
       this.atsServer = atsServer;

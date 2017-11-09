@@ -35,7 +35,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelation;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicIdRelation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -79,41 +79,41 @@ public class AtsTaskService extends AbstractAtsTaskService {
    }
 
    private void processForEvents(NewTaskData newTaskData, Response response, List<IAtsTask> tasks, ArtifactEvent artifactEvent) {
-      Artifact teamWf = atsClient.getArtifact(newTaskData.getTeamWfUuid());
+      Artifact teamWf = atsClient.getArtifact(newTaskData.getTeamWfId());
 
       JaxAtsTasks jaxTasks = response.readEntity(JaxAtsTasks.class);
-      List<Long> artUuids = new LinkedList<>();
+      List<Long> artIds = new LinkedList<>();
 
       teamWf.reloadAttributesAndRelations();
       AtsTaskCache.decache((TeamWorkFlowArtifact) teamWf);
 
       for (JaxAtsTask task : jaxTasks.getTasks()) {
-         String guid = ArtifactQuery.getGuidFromUuid(task.getUuid(), AtsClientService.get().getAtsBranch());
+         String guid = ArtifactQuery.getGuidFromId(task.getId(), AtsClientService.get().getAtsBranch());
          artifactEvent.addArtifact(new EventBasicGuidArtifact(EventModType.Added, AtsClientService.get().getAtsBranch(),
             AtsArtifactTypes.Task, guid));
-         artUuids.add(task.getUuid());
+         artIds.add(task.getId());
 
          RelationLink relation = getRelation(teamWf, task);
          if (relation != null) {
-            Artifact taskArt = atsClient.getArtifact(task.getUuid());
+            Artifact taskArt = atsClient.getArtifact(task.getId());
 
-            DefaultBasicUuidRelation guidRelation = new DefaultBasicUuidRelation(AtsClientService.get().getAtsBranch(),
+            DefaultBasicIdRelation guidRelation = new DefaultBasicIdRelation(AtsClientService.get().getAtsBranch(),
                AtsRelationTypes.TeamWfToTask_Task.getGuid(), relation.getId(), relation.getGammaId(),
                teamWf.getBasicGuidArtifact(), taskArt.getBasicGuidArtifact());
 
             artifactEvent.getRelations().add(new EventBasicGuidRelation(RelationEventType.Added,
-               ArtifactId.valueOf(newTaskData.getTeamWfUuid()), ArtifactId.valueOf(task.getUuid()), guidRelation));
+               ArtifactId.valueOf(newTaskData.getTeamWfId()), ArtifactId.valueOf(task.getId()), guidRelation));
          }
       }
 
-      for (Long uuid : artUuids) {
-         tasks.add(AtsClientService.get().getWorkItemFactory().getTask(AtsClientService.get().getArtifact(uuid)));
+      for (Long id : artIds) {
+         tasks.add(AtsClientService.get().getWorkItemFactory().getTask(AtsClientService.get().getArtifact(id)));
       }
    }
 
    private RelationLink getRelation(Artifact teamWf, JaxAtsTask task) {
       for (RelationLink relation : teamWf.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
-         if (relation.getArtifactB().equals(task.getUuid())) {
+         if (relation.getArtifactB().equals(task.getId())) {
             return relation;
          }
       }

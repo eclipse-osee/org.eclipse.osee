@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
  */
 public interface IVersionFactory {
 
-   IAtsVersion createVersion(String title, long uuid, IAtsChangeSet changes, AtsApi atsApi);
+   IAtsVersion createVersion(String title, long id, IAtsChangeSet changes, AtsApi atsApi);
 
    IAtsVersion createVersion(String name, IAtsChangeSet changes, AtsApi atsApi);
 

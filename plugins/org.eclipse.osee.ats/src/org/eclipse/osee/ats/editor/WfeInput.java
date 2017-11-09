@@ -31,8 +31,8 @@ public class WfeInput extends ArtifactEditorInput {
       super(artifact);
    }
 
-   public WfeInput(BranchId branch, ArtifactId artUuid, String title) {
-      super(branch, artUuid, title);
+   public WfeInput(BranchId branch, ArtifactId artId, String title) {
+      super(branch, artId, title);
    }
 
    @Override

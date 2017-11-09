@@ -58,27 +58,27 @@ public abstract class BaseConfigEndpointImpl<T extends JaxAtsObject> implements 
 
    @Override
    @GET
-   @Path("{uuid}")
-   public T get(@PathParam("uuid") long uuid) throws Exception {
-      return getObject(uuid);
+   @Path("{id}")
+   public T get(@PathParam("id") long id) throws Exception {
+      return getObject(id);
    }
 
    @Override
    @POST
    public Response create(T jaxAtsObject) throws Exception {
-      if (jaxAtsObject.getUuid() <= 0L) {
-         throw new OseeStateException("Invalid uuid %d");
+      if (jaxAtsObject.getId() <= 0L) {
+         throw new OseeStateException("Invalid id %d");
       } else if (!Strings.isValid(jaxAtsObject.getName())) {
          throw new OseeStateException("Invalid name [%d]");
       }
-      ArtifactReadable artifact = atsServer.getArtifact(jaxAtsObject.getUuid());
+      ArtifactReadable artifact = atsServer.getArtifact(jaxAtsObject.getId());
       if (artifact != null) {
-         throw new OseeStateException("Artifact with uuid %d already exists", jaxAtsObject.getUuid());
+         throw new OseeStateException("Artifact with id %d already exists", jaxAtsObject.getId());
       }
       IAtsChangeSet changes =
          atsServer.getStoreService().createAtsChangeSet("Create " + artifactType.getName(), AtsCoreUsers.SYSTEM_USER);
       ArtifactId newArtifact =
-         changes.createArtifact(artifactType, jaxAtsObject.getName(), GUID.create(), jaxAtsObject.getUuid());
+         changes.createArtifact(artifactType, jaxAtsObject.getName(), GUID.create(), jaxAtsObject.getId());
       IAtsObject newAtsObject = atsServer.getConfigItemFactory().getConfigObject(newArtifact);
       if (typeFolder != null) {
          ArtifactReadable typeFolderArtifact = atsServer.getArtifact(typeFolder);
@@ -99,7 +99,7 @@ public abstract class BaseConfigEndpointImpl<T extends JaxAtsObject> implements 
       changes.setSoleAttributeValue(newAtsObject, AtsAttributeTypes.Active, jaxAtsObject.isActive());
       create(jaxAtsObject, newArtifact, changes);
       changes.execute();
-      return Response.created(new URI("/" + jaxAtsObject.getUuid())).build();
+      return Response.created(new URI("/" + jaxAtsObject.getId())).build();
    }
 
    /**
@@ -111,10 +111,10 @@ public abstract class BaseConfigEndpointImpl<T extends JaxAtsObject> implements 
 
    @Override
    @DELETE
-   public Response delete(@PathParam("uuid") long uuid) throws Exception {
-      ArtifactReadable artifact = atsServer.getArtifact(uuid);
+   public Response delete(@PathParam("id") long id) throws Exception {
+      ArtifactReadable artifact = atsServer.getArtifact(id);
       if (artifact == null) {
-         throw new OseeStateException("Artifact with uuid %d not found", uuid);
+         throw new OseeStateException("Artifact with id %d not found", id);
       }
       IAtsChangeSet changes =
          atsServer.getStoreService().createAtsChangeSet("Create " + artifactType.getName(), AtsCoreUsers.SYSTEM_USER);
@@ -125,8 +125,8 @@ public abstract class BaseConfigEndpointImpl<T extends JaxAtsObject> implements 
 
    public abstract T getConfigObject(ArtifactId artifact);
 
-   protected T getObject(long uuid) {
-      ArtifactReadable configArt = atsServer.getQuery().andUuid(uuid).getResults().getExactlyOne();
+   protected T getObject(long id) {
+      ArtifactReadable configArt = atsServer.getQuery().andId(id).getResults().getExactlyOne();
       return getConfigObject(configArt);
    }
 

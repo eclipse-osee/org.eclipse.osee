@@ -121,9 +121,9 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
 
       AgileEndpointApi agileEp = AtsClientService.getAgileEndpoint();
       List<JaxAgileFeatureGroup> activeFeatureGroups = new ArrayList<>();
-      long teamUuid = items.getCommonBacklog().getTeamUuid();
+      long teamId = items.getCommonBacklog().getTeamId();
       try {
-         for (JaxAgileFeatureGroup feature : agileEp.getFeatureGroups(items.getCommonBacklog().getTeamUuid())) {
+         for (JaxAgileFeatureGroup feature : agileEp.getFeatureGroups(items.getCommonBacklog().getTeamId())) {
             if (feature.isActive()) {
                activeFeatureGroups.add(feature);
             }
@@ -154,15 +154,15 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
       } else {
          updateItem.setSetFeatures(true);
          for (Object obj : dialog.getResult()) {
-            updateItem.getFeatures().add(((JaxAgileFeatureGroup) obj).getUuid());
+            updateItem.getFeatures().add(((JaxAgileFeatureGroup) obj).getId());
          }
       }
       for (AbstractWorkflowArtifact awa : awas) {
-         updateItem.getUuids().add(Long.valueOf(awa.getArtId()));
+         updateItem.getIds().add(Long.valueOf(awa.getArtId()));
       }
 
       try {
-         agileEp.updateAgileItem(teamUuid, updateItem);
+         agileEp.updateAgileItem(teamId, updateItem);
          ArtifactQuery.reloadArtifacts(awas);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -189,9 +189,9 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IAtsXVi
    private static JaxAgileFeatureGroup createJaxAgileFeatureGroupFromAgileFeatureGroup(IAgileFeatureGroup group) {
       JaxAgileFeatureGroup newGroup = new JaxAgileFeatureGroup();
       newGroup.setName(group.getName());
-      newGroup.setUuid(group.getId());
+      newGroup.setId(group.getId());
       newGroup.setActive(group.isActive());
-      newGroup.setTeamUuid(group.getTeamUuid());
+      newGroup.setTeamId(group.getTeamId());
       return newGroup;
    }
 

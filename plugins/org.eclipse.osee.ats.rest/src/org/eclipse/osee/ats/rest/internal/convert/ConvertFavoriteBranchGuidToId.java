@@ -30,25 +30,25 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 /**
  * @author Megumi Telles
  */
-public class ConvertFavoriteBranchGuidToUuid extends AbstractConvertGuidToUuid {
+public class ConvertFavoriteBranchGuidToId extends AbstractConvertGuidToId {
 
    private int numChanges = 0;
 
-   public ConvertFavoriteBranchGuidToUuid(Log logger, JdbcClient jdbcClient, OrcsApi orcsApi, IAtsServer atsServer) {
+   public ConvertFavoriteBranchGuidToId(Log logger, JdbcClient jdbcClient, OrcsApi orcsApi, IAtsServer atsServer) {
       super(logger, jdbcClient, orcsApi, atsServer);
    }
 
    @Override
    public String getName() {
-      return "FavoriteBranchGuidToUuid";
+      return "FavoriteBranchGuidToId";
    }
 
    @Override
    public String getDescription() {
       StringBuffer data = new StringBuffer();
-      data.append("ConvertFavoriteBranchGuidToUuid (required conversion)\n\n");
+      data.append("ConvertFavoriteBranchGuidToId (required conversion)\n\n");
       data.append("Necessary for upgrading from OSEE 0.16.2 to 0.17.0\n");
-      data.append("-- Converts a User's Favorite Branch Guid(s) to Uuid(s).\n\n");
+      data.append("-- Converts a User's Favorite Branch Guid(s) to Id(s).\n\n");
       data.append("NOTE: This operation can be run multiple times\n");
       return data.toString();
    }
@@ -62,7 +62,7 @@ public class ConvertFavoriteBranchGuidToUuid extends AbstractConvertGuidToUuid {
          QueryFactory queryFactory = getOrcsApi().getQueryFactory();
          TransactionBuilder tx = createTransactionBuilder();
          for (ArtifactReadable art : getUsersFavoriteBranch(queryFactory)) {
-            convertAttributeToUuid(data, reportOnly, tx, art, art.getAttributes(CoreAttributeTypes.FavoriteBranch));
+            convertAttributeToId(data, reportOnly, tx, art, art.getAttributes(CoreAttributeTypes.FavoriteBranch));
          }
          if (reportOnly) {
             data.log("\n" + numChanges + " Need to be Changed");
@@ -74,18 +74,18 @@ public class ConvertFavoriteBranchGuidToUuid extends AbstractConvertGuidToUuid {
          }
          numChanges = 0;
       } catch (OseeCoreException ex) {
-         getLogger().error(ex, "Exception occurred while trying to convert branch guid to uuid");
+         getLogger().error(ex, "Exception occurred while trying to convert branch guid to id");
       }
    }
 
-   private void convertAttributeToUuid(XResultData data, boolean reportOnly, TransactionBuilder tx, ArtifactReadable art, ResultSet<? extends AttributeReadable<Object>> favBranchAttrValues) {
+   private void convertAttributeToId(XResultData data, boolean reportOnly, TransactionBuilder tx, ArtifactReadable art, ResultSet<? extends AttributeReadable<Object>> favBranchAttrValues) {
       for (AttributeReadable<Object> attr : favBranchAttrValues) {
          String value = attr.toString();
          if (GUID.isValid(value)) {
             convert(data, reportOnly, tx, art, attr, value);
          } else {
             data.logf(
-               "Not a guid attribute value.  Actual value [%s] for artifact type [%s] name [%s] id [%s] NOT converted to uuid.\n \n",
+               "Not a guid attribute value.  Actual value [%s] for artifact type [%s] name [%s] id [%s] NOT converted to id.\n \n",
                value, art.getArtifactType(), art.getName(), art.getGuid());
          }
       }
@@ -99,22 +99,22 @@ public class ConvertFavoriteBranchGuidToUuid extends AbstractConvertGuidToUuid {
          getLogger().warn(ex, "No Branch found with value: [%s]", value);
       }
       if (branch != null) {
-         addUuid(data, reportOnly, tx, art, attr, branch);
+         addId(data, reportOnly, tx, art, attr, branch);
       } else {
          removeAttrForNonExistentBranch(data, reportOnly, tx, art, attr, value);
       }
    }
 
-   private void addUuid(XResultData data, boolean reportOnly, TransactionBuilder tx, ArtifactReadable art, AttributeReadable<Object> attr, BranchReadable branch) {
+   private void addId(XResultData data, boolean reportOnly, TransactionBuilder tx, ArtifactReadable art, AttributeReadable<Object> attr, BranchReadable branch) {
       numChanges++;
-      data.logf("Adding uuid attribute of value %s to artifact type [%s] name [%s] id [%s]\n", branch,
+      data.logf("Adding id attribute of value %s to artifact type [%s] name [%s] id [%s]\n", branch,
          art.getArtifactType(), art.getName(), art.getGuid());
       if (!reportOnly) {
          try {
             tx.setAttributeById(art, attr, branch.getIdString());
          } catch (OseeCoreException ex) {
             data.errorf(
-               "Error building transaction for convert to uuid attribute of value %s for artifact type [%s] name [%s] id [%s]\n",
+               "Error building transaction for convert to id attribute of value %s for artifact type [%s] name [%s] id [%s]\n",
                branch, art.getArtifactType(), art.getName(), art.getGuid());
          }
       }

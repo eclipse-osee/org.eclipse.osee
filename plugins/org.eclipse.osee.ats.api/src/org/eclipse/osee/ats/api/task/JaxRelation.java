@@ -22,7 +22,7 @@ public class JaxRelation {
 
    private String relationTypeName;
    private boolean sideA;
-   private List<Long> relatedUuids;
+   private List<Long> relatedIds;
 
    public String getRelationTypeName() {
       return relationTypeName;
@@ -40,20 +40,20 @@ public class JaxRelation {
       this.sideA = sideA;
    }
 
-   public List<Long> getRelatedUuids() {
-      if (relatedUuids == null) {
-         relatedUuids = new LinkedList<>();
+   public List<Long> getRelatedIds() {
+      if (relatedIds == null) {
+         relatedIds = new LinkedList<>();
       }
-      return relatedUuids;
+      return relatedIds;
    }
 
-   public void setRelatedUuids(List<Long> relatedUuids) {
-      this.relatedUuids = relatedUuids;
+   public void setRelatedIds(List<Long> relatedIds) {
+      this.relatedIds = relatedIds;
    }
 
    @Override
    public String toString() {
-      return "JaxRelation [type=" + relationTypeName + ", sideA=" + sideA + ", relatedUuids=" + relatedUuids + "]";
+      return "JaxRelation [type=" + relationTypeName + ", sideA=" + sideA + ", relatedIds=" + relatedIds + "]";
    }
 
 }

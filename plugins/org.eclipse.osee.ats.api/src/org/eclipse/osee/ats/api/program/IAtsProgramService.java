@@ -33,7 +33,7 @@ public interface IAtsProgramService {
    // country
    IAtsCountry getCountry(IAtsProgram atsProgram);
 
-   long getCountryUuid(IAtsProgram program);
+   long getCountryId(IAtsProgram program);
 
    // program
    IAtsProgram getProgram(IAtsWorkItem wi);
@@ -42,7 +42,7 @@ public interface IAtsProgramService {
 
    List<IAtsProgram> getPrograms(IAtsCountry atsCountry);
 
-   IAtsProgram getProgram(Long programUuid);
+   IAtsProgram getProgram(Long programId);
 
    Collection<IAtsProgram> getPrograms();
 
@@ -53,7 +53,7 @@ public interface IAtsProgramService {
    // insertions
    Collection<IAtsInsertion> getInsertions(IAtsProgram program);
 
-   IAtsInsertion getInsertion(Long insertionUuid);
+   IAtsInsertion getInsertion(Long insertionId);
 
    IAtsInsertion getInsertion(IAtsInsertionActivity activity);
 
@@ -62,10 +62,10 @@ public interface IAtsProgramService {
 
    Collection<IAtsInsertionActivity> getInsertionActivities(IAtsInsertion iAtsInsertion);
 
-   IAtsInsertionActivity getInsertionActivity(Long insertionActivityUuid);
+   IAtsInsertionActivity getInsertionActivity(Long insertionActivityId);
 
    // work package
-   IAtsWorkPackage getWorkPackage(Long workPackageUuid);
+   IAtsWorkPackage getWorkPackage(Long workPackageId);
 
    void setWorkPackage(IAtsWorkPackage workPackage, List<IAtsWorkItem> workItems, IAtsUser asUser);
 

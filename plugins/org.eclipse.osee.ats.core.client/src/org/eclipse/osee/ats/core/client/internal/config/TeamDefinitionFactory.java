@@ -26,14 +26,14 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 public class TeamDefinitionFactory implements ITeamDefinitionFactory {
 
    @Override
-   public IAtsTeamDefinition createTeamDefinition(String name, long uuid, IAtsChangeSet changes, AtsApi atsApi) {
-      ArtifactToken artifact = changes.createArtifact(AtsArtifactTypes.TeamDefinition, name, GUID.create(), uuid);
+   public IAtsTeamDefinition createTeamDefinition(String name, long id, IAtsChangeSet changes, AtsApi atsApi) {
+      ArtifactToken artifact = changes.createArtifact(AtsArtifactTypes.TeamDefinition, name, GUID.create(), id);
       return new TeamDefinition(atsApi.getLogger(), atsApi, artifact);
    }
 
    @Override
    public IAtsTeamDefinition createTeamDefinition(String name, IAtsChangeSet changes, AtsApi atsApi) {
-      return createTeamDefinition(name, AtsUtilClient.createConfigObjectUuid(), changes, atsApi);
+      return createTeamDefinition(name, AtsUtilClient.createConfigObjectId(), changes, atsApi);
    }
 
 }

@@ -105,8 +105,8 @@ public class AtsConfigCache {
          AtsConfiguration config = new AtsConfiguration();
          configs.getConfigs().add(config);
          config.setName(art.getName());
-         config.setUuid(art.getId());
-         config.setBranchUuid(Long.valueOf(art.getSoleAttributeValue(AtsConfiguredBranch, "0")));
+         config.setId(art.getId());
+         config.setBranchId(Long.valueOf(art.getSoleAttributeValue(AtsConfiguredBranch, "0")));
          config.setIsDefault(art.getSoleAttributeValue(Default, false));
       }
       UpdateAtsConfiguration update = new UpdateAtsConfiguration((IAtsServer) atsApi);
@@ -206,7 +206,7 @@ public class AtsConfigCache {
    private JaxTeamDefinition createJaxTeamDefinition(ArtifactReadable teamDefArt) {
       JaxTeamDefinition jaxTeamDef = new JaxTeamDefinition();
       jaxTeamDef.setName(teamDefArt.getName());
-      jaxTeamDef.setUuid(teamDefArt.getId());
+      jaxTeamDef.setId(teamDefArt.getId());
       jaxTeamDef.setGuid(teamDefArt.getGuid());
       jaxTeamDef.setActive(teamDefArt.getSoleAttributeValue(AtsAttributeTypes.Active, true));
       for (ArtifactToken ai : atsApi.getRelationResolver().getRelated(teamDefArt, TeamActionableItem_ActionableItem)) {
@@ -218,7 +218,7 @@ public class AtsConfigCache {
    private JaxVersion createJaxVersion(ArtifactReadable verArt) {
       JaxVersion jaxVersion = new JaxVersion();
       jaxVersion.setName(verArt.getName());
-      jaxVersion.setUuid(verArt.getId());
+      jaxVersion.setId(verArt.getId());
       jaxVersion.setGuid(verArt.getGuid());
       jaxVersion.setActive(verArt.getSoleAttributeValue(Active, true));
       return jaxVersion;
@@ -227,7 +227,7 @@ public class AtsConfigCache {
    private JaxActionableItem createJaxActionableItem(ArtifactReadable aiArt) {
       JaxActionableItem jaxAi = new JaxActionableItem();
       jaxAi.setName(aiArt.getName());
-      jaxAi.setUuid(aiArt.getId());
+      jaxAi.setId(aiArt.getId());
       jaxAi.setGuid(aiArt.getGuid());
       jaxAi.setDescription(aiArt.getSoleAttributeValue(Description, ""));
       jaxAi.setActive(aiArt.getSoleAttributeValue(Active, true));

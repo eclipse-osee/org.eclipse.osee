@@ -58,7 +58,7 @@ public class MoveWorkflowWorkingBranchToWorkflowAction extends AbstractAtsAction
             associatedWfIds.add(associatedArtifactId.getId());
          }
       }
-      Collection<IAtsTeamWorkflow> teamWfs = atsApi.getQueryService().createQuery(WorkItemType.TeamWorkflow).andUuids(
+      Collection<IAtsTeamWorkflow> teamWfs = atsApi.getQueryService().createQuery(WorkItemType.TeamWorkflow).andIds(
          associatedWfIds.toArray(new Long[associatedWfIds.size()])).getItems();
 
       FilteredTreeDialog dialog = new FilteredTreeDialog(MSG, "Select Team Workflow to move branch from.",

@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.LongAttribute;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.filter.BranchUuidEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.filter.BranchIdEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
@@ -56,7 +56,7 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
    private Artifact artifact;
    private AttributeTypeToken attributeType;
    private final XModifiedListener xModifiedListener;
-   private List<BranchUuidEventFilter> eventFilters;
+   private List<BranchIdEventFilter> eventFilters;
 
    public XStackedDam(String displayLabel) {
       super(displayLabel);
@@ -440,7 +440,7 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
    @Override
    public List<? extends IEventFilter> getEventFilters() {
       if (eventFilters == null && artifact != null) {
-         eventFilters = Collections.singletonList(new BranchUuidEventFilter(artifact.getBranch()));
+         eventFilters = Collections.singletonList(new BranchIdEventFilter(artifact.getBranch()));
       }
       return eventFilters;
    }

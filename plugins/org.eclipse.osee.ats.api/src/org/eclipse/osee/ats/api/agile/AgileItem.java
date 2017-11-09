@@ -25,7 +25,7 @@ public class AgileItem extends JaxAtsObject {
    private String state;
    private int order;
    private String atsId;
-   private long uuid;
+   private long id;
    private String featureGroups;
    private String sprint;
    private String backlog;
@@ -84,13 +84,13 @@ public class AgileItem extends JaxAtsObject {
    }
 
    @Override
-   public Long getUuid() {
-      return uuid;
+   public Long getId() {
+      return id;
    }
 
    @Override
-   public void setUuid(Long uuid) {
-      this.uuid = uuid;
+   public void setId(Long id) {
+      this.id = id;
    }
 
    public String getFeatureGroups() {
@@ -165,8 +165,8 @@ public class AgileItem extends JaxAtsObject {
       this.link = link;
    }
 
-   public void setUuid(long uuid) {
-      this.uuid = uuid;
+   public void setId(long id) {
+      this.id = id;
    }
 
    public String getUnPlannedWork() {

@@ -633,7 +633,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                      try {
                         if (!AtsClientService.get().getBranchService().isBranchValid(parallelVersion)) {
                            results.log(artifact, "testParallelConfig",
-                              "Error: [" + parallelVersion.toStringWithId() + "] in parallel config without parent branch uuid");
+                              "Error: [" + parallelVersion.toStringWithId() + "] in parallel config without parent branch id");
                         }
                      } catch (Exception ex) {
                         results.log(artifact, "testParallelConfig",
@@ -687,11 +687,11 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   results.log(artifact, "testTeamWorkflows",
                      "Error: TeamWorkflow " + XResultDataUI.getHyperlink(teamArt) + " has no TeamDefinition");
                }
-               List<Long> badUuids = getInvalidUuids(AtsObjects.toUuids(
+               List<Long> badIds = getInvalidIds(AtsObjects.toIds(
                   AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(teamArt)));
-               if (!badUuids.isEmpty()) {
+               if (!badIds.isEmpty()) {
                   results.log(artifact, "testTeamWorkflows", "Error: TeamWorkflow " + XResultDataUI.getHyperlink(
-                     teamArt) + " has AI uuids that don't exisit " + badUuids);
+                     teamArt) + " has AI ids that don't exisit " + badIds);
                }
             } catch (Exception ex) {
                results.log(artifact, "testTeamWorkflows",
@@ -702,14 +702,14 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       results.logTestTimeSpent(date, "testTeamWorkflows");
    }
 
-   private List<Long> getInvalidUuids(List<Long> uuids) {
-      List<Long> badUuids = new ArrayList<>();
-      for (Long uuid : uuids) {
-         if (AtsClientService.get().getArtifact(uuid) == null) {
-            badUuids.add(uuid);
+   private List<Long> getInvalidIds(List<Long> ids) {
+      List<Long> badIds = new ArrayList<>();
+      for (Long id : ids) {
+         if (AtsClientService.get().getArtifact(id) == null) {
+            badIds.add(id);
          }
       }
-      return badUuids;
+      return badIds;
    }
 
    private void testAtsBranchManager(Collection<Artifact> artifacts) {
@@ -756,25 +756,25 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       try {
          BranchId branch = parentBranchId;
          if (BranchManager.isArchived(branch)) {
-            results.log("validateBranchUuid",
+            results.log("validateBranchId",
                String.format(
-                  "Error: [%s][%d][%s] has Parent Branch Uuid attribute set to Archived Branch [%s] named [%s]",
+                  "Error: [%s][%d][%s] has Parent Branch Id attribute set to Archived Branch [%s] named [%s]",
                   name.getName(), name.getId(), name, parentBranchId, branch));
          } else if (!BranchManager.getType(branch).isBaselineBranch()) {
-            results.log("validateBranchUuid",
+            results.log("validateBranchId",
                String.format(
-                  "Error: [%s][%d][%s] has Parent Branch Uuid attribute [%s][%s] that is a [%s] branch; should be a BASELINE branch",
+                  "Error: [%s][%d][%s] has Parent Branch Id attribute [%s][%s] that is a [%s] branch; should be a BASELINE branch",
                   name.getName(), name.getId(), name, BranchManager.getType(branch).name(), parentBranchId, branch));
          }
       } catch (BranchDoesNotExist ex) {
-         results.log("validateBranchUuid",
-            String.format("Error: [%s][%d][%s] has Parent Branch Uuid attribute [%s] that references a non-existant",
+         results.log("validateBranchId",
+            String.format("Error: [%s][%d][%s] has Parent Branch Id attribute [%s] that references a non-existant",
                name.getName(), name.getId(), name, parentBranchId));
       } catch (Exception ex) {
-         results.log("validateBranchUuid",
+         results.log("validateBranchId",
             "Error: " + name.getName() + " [" + name.toStringWithId() + "] exception: " + ex.getLocalizedMessage());
       }
-      results.logTestTimeSpent(date, "validateBranchUuid");
+      results.logTestTimeSpent(date, "validateBranchId");
    }
 
    public static List<Collection<ArtifactId>> loadAtsBranchArtifactIds(XResultData xResultData, IProgressMonitor monitor) {

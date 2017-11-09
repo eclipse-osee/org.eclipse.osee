@@ -72,20 +72,19 @@ public class CreateNewAgileSprint extends XNavigateItemAction {
                   if (firstArtifact == null) {
                      throw new OseeCoreException("Must make a selection");
                   }
-                  int teamUuid = (firstArtifact).getArtId();
+                  int teamId = (firstArtifact).getArtId();
 
                   for (String name : ed.getEntry().split(",")) {
                      newSprint.setName(name);
-                     newSprint.setTeamUuid(teamUuid);
-                     Response response = ageilEp.createSprint(new Long(teamUuid), newSprint);
+                     newSprint.setTeamId(teamId);
+                     Response response = ageilEp.createSprint(new Long(teamId), newSprint);
                      JaxAgileSprint sprint = null;
                      if (response != null) {
                         sprint = response.readEntity(JaxAgileSprint.class);
                      }
                      if (sprint != null) {
-                        long uuid = sprint.getUuid();
-                        Artifact sprintArt =
-                           ArtifactQuery.getArtifactFromId(uuid, AtsClientService.get().getAtsBranch());
+                        long id = sprint.getId();
+                        Artifact sprintArt = ArtifactQuery.getArtifactFromId(id, AtsClientService.get().getAtsBranch());
                         sprintArt.getParent().reloadAttributesAndRelations();
                         AtsUtil.openArtifact(sprintArt.getGuid(), OseeCmEditor.CmPcrEditor);
                      } else {

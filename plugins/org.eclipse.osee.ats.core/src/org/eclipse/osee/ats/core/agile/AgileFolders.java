@@ -25,8 +25,8 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
  */
 public class AgileFolders {
 
-   public static ArtifactId getOrCreateTopSprintFolder(AtsApi atsApi, long teamUuid, IAtsChangeSet changes) {
-      ArtifactId teamFolder = getTeamFolder(atsApi, teamUuid);
+   public static ArtifactId getOrCreateTopSprintFolder(AtsApi atsApi, long teamId, IAtsChangeSet changes) {
+      ArtifactId teamFolder = getTeamFolder(atsApi, teamId);
       ArtifactId sprintFolder = null;
       for (ArtifactToken child : atsApi.getRelationResolver().getChildren(teamFolder)) {
          if (child.getName().equals(IAgileService.SPRINT_FOLDER_NAME)) {
@@ -40,12 +40,12 @@ public class AgileFolders {
       return sprintFolder;
    }
 
-   public static ArtifactId getTeamFolder(AtsApi atsApi, long teamUuid) {
-      return atsApi.getArtifact(teamUuid);
+   public static ArtifactId getTeamFolder(AtsApi atsApi, long teamId) {
+      return atsApi.getArtifact(teamId);
    }
 
-   public static ArtifactId getOrCreateTopFeatureGroupFolder(AtsApi atsApi, long teamUuid, ArtifactId artifact, IAtsChangeSet changes) {
-      ArtifactId teamFolder = AgileFolders.getTeamFolder(atsApi, teamUuid);
+   public static ArtifactId getOrCreateTopFeatureGroupFolder(AtsApi atsApi, long teamId, ArtifactId artifact, IAtsChangeSet changes) {
+      ArtifactId teamFolder = AgileFolders.getTeamFolder(atsApi, teamId);
       ArtifactId featureGroupFolder = null;
       for (ArtifactToken child : atsApi.getRelationResolver().getChildren(teamFolder)) {
          if (child.getName().equals(IAgileService.FEATURE_GROUP_FOLDER_NAME)) {

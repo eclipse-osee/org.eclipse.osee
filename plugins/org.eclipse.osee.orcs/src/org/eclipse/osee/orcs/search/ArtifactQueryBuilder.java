@@ -70,9 +70,19 @@ public interface ArtifactQueryBuilder<T> {
    T andUuid(long id);
 
    /**
+    * Search criteria that finds the artifact with given artifact id
+    */
+   T andId(long id);
+
+   /**
     * Search criteria that finds the artifacts of given uuids (artifact ids)
     */
    T andUuids(Collection<Long> uuids);
+
+   /**
+    * Search criteria that finds the artifacts of given uuids (artifact ids)
+    */
+   T andIdsL(Collection<Long> ids);
 
    /**
     * Search criteria that finds a given artifact with guid

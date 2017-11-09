@@ -27,13 +27,13 @@ public class AtsObjectTest {
       Assert.assertEquals("hello", obj.getName());
       Assert.assertEquals(456, obj.getId().longValue());
 
-      obj = new AtsObject("hello", Lib.generateUuid());
+      obj = new AtsObject("hello", Lib.generateId());
       Assert.assertEquals("hello", obj.getName());
    }
 
    @Test
    public void testGetSetDescription() {
-      AtsObject obj = new AtsObject("hello", Lib.generateUuid());
+      AtsObject obj = new AtsObject("hello", Lib.generateId());
       Assert.assertNull(obj.getDescription());
 
       obj.setDescription("desc");

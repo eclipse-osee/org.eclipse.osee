@@ -92,7 +92,7 @@ public class AtsMockitoTest {
       when(atsServices.getWorkItemService()).thenReturn(workItemService);
 
       when(currentUser.getName()).thenReturn("User1");
-      when(currentUser.getId()).thenReturn(Lib.generateUuid());
+      when(currentUser.getId()).thenReturn(Lib.generateId());
       when(currentUser.getUserId()).thenReturn("1324");
       when(currentUser.isActive()).thenReturn(true);
 
@@ -124,7 +124,7 @@ public class AtsMockitoTest {
       aias.add(testAi2);
 
       when(teamDef.getName()).thenReturn(getTitle("Test Team Def"));
-      when(teamDef.getId()).thenReturn(Lib.generateUuid());
+      when(teamDef.getId()).thenReturn(Lib.generateId());
       when(teamDef.getWorkflowDefinition()).thenReturn(WORK_DEF_NAME);
       when(teamDef.isActive()).thenReturn(true);
       when(teamDef.getLeads()).thenReturn(Arrays.asList(currentUser));
@@ -161,13 +161,13 @@ public class AtsMockitoTest {
 
    private void inializeTask(IAtsTask task, String name) {
       when(task.getName()).thenReturn(getTitle(name));
-      when(task.getId()).thenReturn(Lib.generateUuid());
+      when(task.getId()).thenReturn(Lib.generateId());
       when(task.getParentTeamWorkflow()).thenReturn(teamWf);
    }
 
    private void inializeVersion(IAtsVersion version, String name) {
       when(version.getName()).thenReturn(name);
-      when(version.getId()).thenReturn(Lib.generateUuid());
+      when(version.getId()).thenReturn(Lib.generateId());
    }
 
    private void initializeState(IAtsStateDefinition state, String name, StateType type, int ordinal, IAtsStateDefinition defaultToState, List<IAtsStateDefinition> toStates, List<IAtsStateDefinition> overrideValidationStates) {
@@ -183,7 +183,7 @@ public class AtsMockitoTest {
    }
 
    private void initializeAi(IAtsActionableItem ai, String name, boolean active, boolean actionable) {
-      when(ai.getId()).thenReturn(Lib.generateUuid());
+      when(ai.getId()).thenReturn(Lib.generateId());
       when(ai.getName()).thenReturn(name);
       when(ai.isActionable()).thenReturn(actionable);
       when(ai.isActive()).thenReturn(active);

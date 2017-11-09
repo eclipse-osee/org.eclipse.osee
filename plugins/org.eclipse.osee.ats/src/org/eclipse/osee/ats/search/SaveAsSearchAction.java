@@ -15,8 +15,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.navigate.NavigateViewItems;
 import org.eclipse.osee.ats.navigate.NavigateView;
+import org.eclipse.osee.ats.navigate.NavigateViewItems;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -57,16 +57,16 @@ public final class SaveAsSearchAction extends Action {
             return;
          }
          searchItem.setSearchName(dialog.getEntry());
-         searchItem.setSearchUuid(Lib.generateUuid());
+         searchItem.setSearchId(Lib.generateId());
 
          String namespace = searchItem.getNamespace();
          AtsSearchData data =
             AtsClientService.get().getQueryService().createSearchData(namespace, searchItem.getSearchName());
          searchItem.loadSearchData(data);
-         if (data.getUuid() <= 0) {
-            data.setUuid(Lib.generateArtifactIdAsInt());
+         if (data.getId() <= 0) {
+            data.setId(Lib.generateArtifactIdAsInt());
          }
-         Conditions.checkExpressionFailOnTrue(data.getUuid() <= 0, "searchUuid must be > 0, not %d", data.getUuid());
+         Conditions.checkExpressionFailOnTrue(data.getId() <= 0, "searchId must be > 0, not %d", data.getId());
          Conditions.checkNotNullOrEmpty(data.getSearchName(), "New Search Name");
          AtsClientService.get().getQueryService().saveSearch(asUser, data);
          ((Artifact) asUser.getStoreObject()).reloadAttributesAndRelations();

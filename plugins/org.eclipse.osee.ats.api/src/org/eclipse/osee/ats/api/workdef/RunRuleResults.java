@@ -26,18 +26,18 @@ public class RunRuleResults {
       return this.resultsList;
    }
 
-   public Collection<Long> getChangedWorkitemUuids() {
-      List<Long> uuidList = new ArrayList<>();
+   public Collection<Long> getChangedWorkitemIds() {
+      List<Long> idList = new ArrayList<>();
       for (RuleResultData result : this.resultsList) {
-         uuidList.add(result.uuid);
+         idList.add(result.id);
       }
-      return uuidList;
+      return idList;
    }
 
-   public void addChange(Long uuid, RuleResultsEnum changeType) {
+   public void addChange(Long id, RuleResultsEnum changeType) {
       Boolean addNew = true;
       for (RuleResultData result : this.resultsList) {
-         if (result.uuid == uuid) {
+         if (result.id == id) {
             if (!result.resultList.contains(changeType)) {
                result.resultList.add(changeType);
                addNew = false;
@@ -47,7 +47,7 @@ public class RunRuleResults {
       }
       if (addNew) {
          RuleResultData newresult = new RuleResultData();
-         newresult.uuid = uuid;
+         newresult.id = id;
          newresult.resultList.add(changeType);
          this.resultsList.add(newresult);
       }

@@ -23,17 +23,17 @@ import org.codehaus.jackson.map.ser.std.ToStringSerializer;
 public class NewTaskData {
 
    @JsonSerialize(using = ToStringSerializer.class)
-   Long teamWfUuid;
+   Long teamWfId;
    List<JaxAtsTask> newTasks;
    String asUserId;
    String commitComment;
 
-   public Long getTeamWfUuid() {
-      return teamWfUuid;
+   public Long getTeamWfId() {
+      return teamWfId;
    }
 
-   public void setTeamWfUuid(Long teamWfUuid) {
-      this.teamWfUuid = teamWfUuid;
+   public void setTeamWfId(Long teamWfId) {
+      this.teamWfId = teamWfId;
    }
 
    public List<JaxAtsTask> getNewTasks() {
@@ -65,7 +65,7 @@ public class NewTaskData {
 
    @Override
    public String toString() {
-      return "NewTaskData [teamUuid=" + teamWfUuid + ", tasks=" + newTasks + ", asUserId=" + asUserId + ", commitComment=" + commitComment + "]";
+      return "NewTaskData [teamId=" + teamWfId + ", tasks=" + newTasks + ", asUserId=" + asUserId + ", commitComment=" + commitComment + "]";
    }
 
    public boolean isEmpty() {

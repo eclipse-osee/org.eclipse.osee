@@ -33,7 +33,7 @@ public class JaxAtsObjects {
    public static JaxAtsObject create(IAtsObject atsObject) {
       JaxAtsObject obj = new JaxAtsObject();
       obj.setName(atsObject.getName());
-      obj.setUuid(atsObject.getId());
+      obj.setId(atsObject.getId());
       return obj;
    }
 }

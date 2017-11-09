@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class DecisionUpdate {
 
-   private List<String> uuids;
+   private List<String> ids;
    private List<String> assignees;
    private String rationale;
    private String applicability;
@@ -43,15 +43,15 @@ public class DecisionUpdate {
 
    @Override
    public String toString() {
-      return "DecisionUpdate [ids=" + uuids + ", assignees=" + assignees + ", rationale=" + rationale + ", applicability=" + applicability + "]";
+      return "DecisionUpdate [ids=" + ids + ", assignees=" + assignees + ", rationale=" + rationale + ", applicability=" + applicability + "]";
    }
 
-   public List<String> getUuids() {
-      return uuids;
+   public List<String> getIds() {
+      return ids;
    }
 
-   public void setUuids(List<String> uuids) {
-      this.uuids = uuids;
+   public void setIds(List<String> ids) {
+      this.ids = ids;
    }
 
    public String getApplicability() {

@@ -729,6 +729,10 @@ public class ArtifactQuery {
    }
 
    public static String getGuidFromUuid(long uuid, BranchId branch) {
+      return getGuidFromId(uuid, branch);
+   }
+
+   public static String getGuidFromId(long uuid, BranchId branch) {
       if (uuidToGuid == null) {
          uuidToGuid = new HashMap<>(200);
       }

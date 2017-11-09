@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 public class ColorTeamColumnUI extends XViewerAtsColumn implements IXViewerPreComputedColumn {
 
    public static final Integer DEFAULT_WIDTH = 45;
-   Map<Long, String> workItemUuidToColorTeam = new HashMap<>(100);
+   Map<Long, String> workItemIdToColorTeam = new HashMap<>(100);
    public static ColorTeamColumnUI instance = new ColorTeamColumnUI();
 
    public static ColorTeamColumnUI getInstance() {

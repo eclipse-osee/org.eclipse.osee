@@ -38,23 +38,23 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
  */
 public class DecisionLoader {
 
-   private String programUuid;
+   private String programId;
    private Boolean open;
    private final IAtsServer atsServer;
    private final CpaServiceRegistry cpaRegistry;
-   private Collection<String> uuids;
+   private Collection<String> ids;
 
    public static DecisionLoader createLoader(CpaServiceRegistry cpaRegistry, IAtsServer atsServer) {
       return new DecisionLoader(cpaRegistry, atsServer);
    }
 
-   public DecisionLoader andProgramUuid(String programUuid) {
-      this.programUuid = programUuid;
+   public DecisionLoader andProgramId(String programId) {
+      this.programId = programId;
       return this;
    }
 
-   public DecisionLoader andCpaIds(Collection<String> uuids) {
-      this.uuids = uuids;
+   public DecisionLoader andCpaIds(Collection<String> ids) {
+      this.ids = ids;
       return this;
    }
 
@@ -72,11 +72,11 @@ public class DecisionLoader {
       List<CpaDecision> decisions = new ArrayList<>();
       QueryBuilder queryBuilder = atsServer.getQuery().andTypeEquals(AtsArtifactTypes.TeamWorkflow).and(
          AtsAttributeTypes.ApplicabilityWorkflow, "true");
-      if (Strings.isValid(programUuid)) {
-         queryBuilder.and(AtsAttributeTypes.ProgramUuid, programUuid);
+      if (Strings.isValid(programId)) {
+         queryBuilder.and(AtsAttributeTypes.ProgramId, programId);
       }
-      if (Conditions.hasValues(uuids)) {
-         queryBuilder.and(AtsAttributeTypes.AtsId, uuids);
+      if (Conditions.hasValues(ids)) {
+         queryBuilder.and(AtsAttributeTypes.AtsId, ids);
       }
       if (open != null) {
          queryBuilder.and(AtsAttributeTypes.CurrentStateType,

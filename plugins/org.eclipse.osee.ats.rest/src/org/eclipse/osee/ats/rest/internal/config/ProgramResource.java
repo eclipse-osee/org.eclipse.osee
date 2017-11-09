@@ -76,15 +76,15 @@ public class ProgramResource extends AbstractConfigResource {
    }
 
    @GET
-   @Path("{uuid}/insertion")
+   @Path("{id}/insertion")
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getProgramInsertions(@PathParam("uuid") long uuid) throws Exception {
-      ArtifactReadable programArt = atsServer.getArtifact(uuid);
+   public Response getProgramInsertions(@PathParam("id") long id) throws Exception {
+      ArtifactReadable programArt = atsServer.getArtifact(id);
       if (programArt == null) {
-         throw new OseeCoreException("Given uuid not found");
+         throw new OseeCoreException("Given id not found");
       }
       if (!programArt.isOfType(AtsArtifactTypes.Program)) {
-         throw new OseeCoreException("Given uuid not program type");
+         throw new OseeCoreException("Given id not program type");
       }
       // get the insertions related to the given program
       ResultSet<ArtifactReadable> results = programArt.getRelated(AtsRelationTypes.ProgramToInsertion_Insertion);
@@ -99,36 +99,36 @@ public class ProgramResource extends AbstractConfigResource {
    }
 
    @POST
-   @Path("{programUuid}/insertion")
+   @Path("{programId}/insertion")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response createInsertion(@PathParam("programUuid") long programUuid, JaxInsertion newInsertion) throws Exception {
-      ArtifactReadable programArt = atsServer.getArtifact(programUuid);
+   public Response createInsertion(@PathParam("programId") long programId, JaxInsertion newInsertion) throws Exception {
+      ArtifactReadable programArt = atsServer.getArtifact(programId);
       if (programArt == null) {
-         throw new OseeCoreException("Given uuid not found");
+         throw new OseeCoreException("Given id not found");
       }
       if (!programArt.isOfType(AtsArtifactTypes.Program)) {
-         throw new OseeCoreException("Given uuid not program type");
+         throw new OseeCoreException("Given id not program type");
       }
-      ResultSet<?> results = atsServer.getQuery().andUuid(newInsertion.getUuid()).getResults();
+      ResultSet<?> results = atsServer.getQuery().andId(newInsertion.getId()).getResults();
       if (results.size() != 0) {
-         throw new OseeStateException("Insertion with id %d already exists", newInsertion.getUuid());
+         throw new OseeStateException("Insertion with id %d already exists", newInsertion.getId());
       }
       IAtsInsertion created = atsServer.getConfigItemFactory().createInsertion(programArt, newInsertion);
       return getResponse(created);
    }
 
    @PUT
-   @Path("{programUuid}/insertion")
+   @Path("{programId}/insertion")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response updateInsertion(@PathParam("programUuid") long programUuid, JaxInsertion insertion) {
-      ArtifactReadable insertionArt = atsServer.getArtifact(insertion.getUuid());
+   public Response updateInsertion(@PathParam("programId") long programId, JaxInsertion insertion) {
+      ArtifactReadable insertionArt = atsServer.getArtifact(insertion.getId());
       if (insertionArt == null) {
-         throw new OseeCoreException("Given insertion uuid not found");
+         throw new OseeCoreException("Given insertion id not found");
       }
       if (!insertionArt.isOfType(AtsArtifactTypes.Insertion)) {
-         throw new OseeCoreException("Given insertion uuid not insertion type");
+         throw new OseeCoreException("Given insertion id not insertion type");
       }
       Response response = null;
       if (!insertionArt.getName().equals(insertion.getName())) {
@@ -141,37 +141,37 @@ public class ProgramResource extends AbstractConfigResource {
    }
 
    @GET
-   @Path("{programUuid}/insertion/{uuid}")
+   @Path("{programId}/insertion/{id}")
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getInsertionDetails(@PathParam("programUuid") long programUuid, @PathParam("uuid") long uuid) throws Exception {
-      ArtifactReadable configArt = atsServer.getArtifact(uuid);
+   public Response getInsertionDetails(@PathParam("programId") long programId, @PathParam("id") long id) throws Exception {
+      ArtifactReadable configArt = atsServer.getArtifact(id);
       if (configArt == null) {
-         throw new OseeCoreException("Given uuid not found");
+         throw new OseeCoreException("Given id not found");
       }
       return Response.ok().entity(atsServer.getConfigItemFactory().getInsertion(configArt)).build();
    }
 
    @DELETE
-   @Path("{programUuid}/insertion/{insertionUuid}")
-   public Response deleteInsertion(@PathParam("insertionUuid") long insertionUuid) throws Exception {
-      ArtifactReadable insertion = atsServer.getArtifact(insertionUuid);
+   @Path("{programId}/insertion/{insertionId}")
+   public Response deleteInsertion(@PathParam("insertionId") long insertionId) throws Exception {
+      ArtifactReadable insertion = atsServer.getArtifact(insertionId);
       if (insertion == null) {
-         throw new OseeCoreException("Given insertion uuid not found");
+         throw new OseeCoreException("Given insertion id not found");
       }
       atsServer.getConfigItemFactory().deleteInsertion(insertion);
       return Response.ok().build();
    }
 
    @GET
-   @Path("{programUuid}/insertion/{insertionUuid}/activity")
+   @Path("{programId}/insertion/{insertionId}/activity")
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getInsertionActivitys(@PathParam("programUuid") long programUuid, @PathParam("insertionUuid") long insertionUuid) throws Exception {
-      ArtifactReadable insertion = atsServer.getArtifact(insertionUuid);
+   public Response getInsertionActivitys(@PathParam("programId") long programId, @PathParam("insertionId") long insertionId) throws Exception {
+      ArtifactReadable insertion = atsServer.getArtifact(insertionId);
       if (insertion == null) {
-         throw new OseeCoreException("Given insertion uuid not found");
+         throw new OseeCoreException("Given insertion id not found");
       }
       if (!insertion.isOfType(AtsArtifactTypes.Insertion)) {
-         throw new OseeCoreException("Given uuid not insertion type");
+         throw new OseeCoreException("Given id not insertion type");
       }
       // get the insertions related to the given program
       ResultSet<ArtifactReadable> results =
@@ -187,36 +187,36 @@ public class ProgramResource extends AbstractConfigResource {
    }
 
    @POST
-   @Path("{programUuid}/insertion/{insertionUuid}/activity")
+   @Path("{programId}/insertion/{insertionId}/activity")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response createInsertionActivity(@PathParam("programUuid") long programUuid, @PathParam("insertionUuid") long insertionUuid, JaxInsertionActivity newActivity) throws Exception {
-      ArtifactReadable insertion = atsServer.getArtifact(insertionUuid);
+   public Response createInsertionActivity(@PathParam("programId") long programId, @PathParam("insertionId") long insertionId, JaxInsertionActivity newActivity) throws Exception {
+      ArtifactReadable insertion = atsServer.getArtifact(insertionId);
       if (insertion == null) {
-         throw new OseeCoreException("Given insertion uuid not found");
+         throw new OseeCoreException("Given insertion id not found");
       }
       if (!insertion.isOfType(AtsArtifactTypes.Insertion)) {
-         throw new OseeCoreException("Given uuid not insertion type");
+         throw new OseeCoreException("Given id not insertion type");
       }
-      ResultSet<?> results = atsServer.getQuery().andUuid(newActivity.getUuid()).getResults();
+      ResultSet<?> results = atsServer.getQuery().andId(newActivity.getId()).getResults();
       if (results.size() != 0) {
-         throw new OseeStateException("Insertion Activity with id %d already exists", newActivity.getUuid());
+         throw new OseeStateException("Insertion Activity with id %d already exists", newActivity.getId());
       }
       IAtsInsertionActivity created = atsServer.getConfigItemFactory().createInsertionActivity(insertion, newActivity);
       return getResponse(created);
    }
 
    @PUT
-   @Path("{programUuid}/insertion/{insertionUuid}/activity")
+   @Path("{programId}/insertion/{insertionId}/activity")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response updateInsertionActivity(@PathParam("programUuid") long programUuid, @PathParam("insertionUuid") long insertionUuid, JaxInsertionActivity newActivity) throws Exception {
-      ArtifactReadable insertionActivityArt = atsServer.getArtifact(newActivity.getUuid());
+   public Response updateInsertionActivity(@PathParam("programId") long programId, @PathParam("insertionId") long insertionId, JaxInsertionActivity newActivity) throws Exception {
+      ArtifactReadable insertionActivityArt = atsServer.getArtifact(newActivity.getId());
       if (insertionActivityArt == null) {
-         throw new OseeCoreException("Given insertion activity uuid not found");
+         throw new OseeCoreException("Given insertion activity id not found");
       }
       if (!insertionActivityArt.isOfType(AtsArtifactTypes.InsertionActivity)) {
-         throw new OseeCoreException("Given insertion activity uuid not insertion activity type");
+         throw new OseeCoreException("Given insertion activity id not insertion activity type");
       }
       Response response = null;
       if (!insertionActivityArt.getName().equals(newActivity.getName())) {
@@ -229,17 +229,17 @@ public class ProgramResource extends AbstractConfigResource {
    }
 
    @GET
-   @Path("{programUuid}/insertion/{insertionUuid}/activity/{iaUuid}")
+   @Path("{programId}/insertion/{insertionId}/activity/{iaId}")
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getInsertionActivityDetails(@PathParam("programUuid") long programUuid, @PathParam("insertionUuid") long insertionUuid, @PathParam("iaUuid") long iaUuid) throws Exception {
-      ArtifactReadable configArt = atsServer.getQuery().andUuid(iaUuid).getResults().getExactlyOne();
+   public Response getInsertionActivityDetails(@PathParam("programId") long programId, @PathParam("insertionId") long insertionId, @PathParam("iaId") long iaId) throws Exception {
+      ArtifactReadable configArt = atsServer.getQuery().andId(iaId).getResults().getExactlyOne();
       return Response.ok().entity(atsServer.getConfigItemFactory().getInsertionActivity(configArt)).build();
    }
 
    @DELETE
-   @Path("{programUuid}/insertion/{insertionUuid}/activity/{iaUuid}")
-   public Response deleteInsertionActivity(@PathParam("iaUuid") long iaUuid) throws Exception {
-      ArtifactReadable insertionActivity = atsServer.getQuery().andUuid(iaUuid).getResults().getExactlyOne();
+   @Path("{programId}/insertion/{insertionId}/activity/{iaId}")
+   public Response deleteInsertionActivity(@PathParam("iaId") long iaId) throws Exception {
+      ArtifactReadable insertionActivity = atsServer.getQuery().andId(iaId).getResults().getExactlyOne();
       atsServer.getConfigItemFactory().deleteInsertionActivity(insertionActivity);
       return Response.ok().build();
    }

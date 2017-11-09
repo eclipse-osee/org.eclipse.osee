@@ -15,7 +15,7 @@ package org.eclipse.osee.ats.api.agile;
  */
 public interface IAgileSprintHtmlOperation {
 
-   public String getReportHtml(long teamUuid, long sprintUuid);
+   public String getReportHtml(long teamId, long sprintId);
 
    public AgileReportType getReportType();
 

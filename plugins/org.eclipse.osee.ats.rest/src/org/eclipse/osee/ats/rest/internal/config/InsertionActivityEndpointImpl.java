@@ -35,34 +35,34 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public class InsertionActivityEndpointImpl extends BaseConfigEndpointImpl<JaxInsertionActivity> implements InsertionActivityEndpointApi {
 
-   private final long insertionUuid;
+   private final long insertionId;
 
    public InsertionActivityEndpointImpl(IAtsServer atsServer) {
       this(atsServer, 0L);
    }
 
-   public InsertionActivityEndpointImpl(IAtsServer atsServer, long insertionUuid) {
+   public InsertionActivityEndpointImpl(IAtsServer atsServer, long insertionId) {
       super(AtsArtifactTypes.InsertionActivity, null, atsServer);
-      this.insertionUuid = insertionUuid;
+      this.insertionId = insertionId;
    }
 
    @PUT
    @Override
    public Response update(JaxInsertionActivity activity) throws Exception {
-      ArtifactReadable artifact = atsServer.getArtifact(activity.getUuid());
+      ArtifactReadable artifact = atsServer.getArtifact(activity.getId());
       if (artifact == null) {
-         throw new OseeStateException("Artifact with uuid %d not found", activity.getUuid());
+         throw new OseeStateException("Artifact with id %d not found", activity.getId());
       }
       IAtsChangeSet changes =
          atsServer.getStoreService().createAtsChangeSet("Create " + artifactType.getName(), AtsCoreUsers.SYSTEM_USER);
       ArtifactReadable configArtifact =
-         (ArtifactReadable) changes.createArtifact(artifactType, activity.getName(), GUID.create(), activity.getUuid());
+         (ArtifactReadable) changes.createArtifact(artifactType, activity.getName(), GUID.create(), activity.getId());
       IAtsConfigObject configObject = atsServer.getConfigItemFactory().getConfigObject(configArtifact);
       if (!configArtifact.getName().equals(activity.getName())) {
          changes.setSoleAttributeValue(configObject, CoreAttributeTypes.Name, activity.getName());
       }
       changes.execute();
-      return Response.created(new URI("/" + activity.getUuid())).build();
+      return Response.created(new URI("/" + activity.getId())).build();
    }
 
    @Override
@@ -70,7 +70,7 @@ public class InsertionActivityEndpointImpl extends BaseConfigEndpointImpl<JaxIns
       JaxInsertionActivity jaxInsertion = new JaxInsertionActivity();
       IAtsInsertionActivity insertion = atsServer.getConfigItemFactory().getInsertionActivity(artifact);
       jaxInsertion.setName(insertion.getName());
-      jaxInsertion.setUuid(insertion.getId());
+      jaxInsertion.setId(insertion.getId());
       jaxInsertion.setActive(insertion.isActive());
       jaxInsertion.setDescription(insertion.getDescription());
       return jaxInsertion;
@@ -79,15 +79,15 @@ public class InsertionActivityEndpointImpl extends BaseConfigEndpointImpl<JaxIns
    @Override
    public List<JaxInsertionActivity> getObjects() {
       List<JaxInsertionActivity> insertions = new ArrayList<>();
-      if (insertionUuid == 0L) {
+      if (insertionId == 0L) {
          for (ArtifactReadable art : atsServer.getQuery().andIsOfType(artifactType).getResults()) {
             insertions.add(getConfigObject(art));
          }
       } else {
-         for (ArtifactReadable activityArt : atsServer.getArtifact(insertionUuid).getRelated(
+         for (ArtifactReadable activityArt : atsServer.getArtifact(insertionId).getRelated(
             AtsRelationTypes.InsertionToInsertionActivity_InsertionActivity)) {
             JaxInsertionActivity activity = getConfigObject(activityArt);
-            activity.setInsertionUuid(insertionUuid);
+            activity.setInsertionId(insertionId);
             insertions.add(activity);
          }
       }
@@ -98,7 +98,7 @@ public class InsertionActivityEndpointImpl extends BaseConfigEndpointImpl<JaxIns
    protected void create(JaxInsertionActivity jaxInsertionActivity, ArtifactId insertionActivityArtId, IAtsChangeSet changes) {
       ArtifactReadable insertionActivityArt = (ArtifactReadable) insertionActivityArtId;
       if (insertionActivityArt.getRelatedCount(AtsRelationTypes.InsertionToInsertionActivity_Insertion) == 0) {
-         ArtifactReadable insertionArt = atsServer.getArtifact(jaxInsertionActivity.getInsertionUuid());
+         ArtifactReadable insertionArt = atsServer.getArtifact(jaxInsertionActivity.getInsertionId());
          changes.relate(insertionArt, AtsRelationTypes.InsertionToInsertionActivity_InsertionActivity,
             insertionActivityArt);
       }

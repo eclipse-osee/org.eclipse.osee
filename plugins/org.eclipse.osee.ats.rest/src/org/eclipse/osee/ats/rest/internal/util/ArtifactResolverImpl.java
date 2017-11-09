@@ -41,7 +41,7 @@ public class ArtifactResolverImpl implements IArtifactResolver {
       if (atsObject.getStoreObject() instanceof ArtifactReadable) {
          return atsObject.getStoreObject();
       }
-      ArtifactReadable artifact = orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).andUuid(
+      ArtifactReadable artifact = orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).andId(
          atsObject.getId()).getResults().getAtMostOneOrNull();
       return artifact;
    }

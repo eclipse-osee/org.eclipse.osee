@@ -27,7 +27,7 @@ public class AtsActionGroupTest {
 
    @Test
    public void testGetFirstAction() {
-      AtsActionGroup group = new AtsActionGroup(GUID.create(), "do this", Lib.generateUuid());
+      AtsActionGroup group = new AtsActionGroup(GUID.create(), "do this", Lib.generateId());
       Assert.assertEquals(0, group.getActions().size());
       Assert.assertEquals(null, group.getFirstAction());
 
@@ -41,7 +41,7 @@ public class AtsActionGroupTest {
 
    @Test
    public void testSetActions() {
-      AtsActionGroup group = new AtsActionGroup(GUID.create(), "do this", Lib.generateUuid());
+      AtsActionGroup group = new AtsActionGroup(GUID.create(), "do this", Lib.generateId());
 
       MockWorkItem item1 = new MockWorkItem("item 1", "Endorse", StateType.Working);
       MockWorkItem item2 = new MockWorkItem("item 2", "Endorse", StateType.Working);

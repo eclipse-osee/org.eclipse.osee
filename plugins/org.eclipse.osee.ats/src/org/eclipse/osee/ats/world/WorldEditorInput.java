@@ -107,7 +107,7 @@ public class WorldEditorInput implements IEditorInput, IPersistableElement, Adap
       Collection<? extends ArtifactId> artifactIds;
       if (editor.isReloadTabShown() && iWorldEditorProvider instanceof WorldEditorReloadProvider) {
          WorldEditorReloadProvider provider = (WorldEditorReloadProvider) iWorldEditorProvider;
-         artifactIds = provider.getValidArtUuids();
+         artifactIds = provider.getValidArtIds();
       } else {
          artifactIds = editor.getLoadedArtifacts();
       }
@@ -144,12 +144,12 @@ public class WorldEditorInput implements IEditorInput, IPersistableElement, Adap
       return branch;
    }
 
-   public Long getAtsSearchUuid() {
+   public Long getAtsSearchId() {
       if (iWorldEditorProvider instanceof WorldEditorParameterSearchItemProvider) {
          WorldSearchItem worldSearchItem =
             ((WorldEditorParameterSearchItemProvider) iWorldEditorProvider).getWorldSearchItem();
          if (worldSearchItem instanceof AtsSearchWorkflowSearchItem) {
-            return ((AtsSearchWorkflowSearchItem) worldSearchItem).getSearchUuid();
+            return ((AtsSearchWorkflowSearchItem) worldSearchItem).getSearchId();
          }
       }
       return 0L;

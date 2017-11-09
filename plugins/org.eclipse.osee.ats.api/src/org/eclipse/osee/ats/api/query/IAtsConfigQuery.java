@@ -44,7 +44,7 @@ public interface IAtsConfigQuery {
 
    IAtsConfigQuery andProgram(IAtsProgram program);
 
-   IAtsConfigQuery andProgram(Long uuid);
+   IAtsConfigQuery andProgram(Long id);
 
    IAtsConfigQuery andWorkType(WorkType workType, WorkType... workTypes);
 

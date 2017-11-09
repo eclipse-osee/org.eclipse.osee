@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.event.filter.BranchUuidEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.filter.BranchIdEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.model.TopicEvent;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.osgi.service.event.Event;
@@ -27,13 +27,13 @@ import org.osgi.service.event.Event;
  * @author Roberto E. Escobar
  */
 public final class EventUtil {
-   private static BranchUuidEventFilter commonBranchUuidEvenFilter = new BranchUuidEventFilter(CoreBranches.COMMON);
+   private static BranchIdEventFilter commonBranchUuidEvenFilter = new BranchIdEventFilter(CoreBranches.COMMON);
 
    private EventUtil() {
       // Utility Class
    }
 
-   public static BranchUuidEventFilter getCommonBranchFilter() {
+   public static BranchIdEventFilter getCommonBranchFilter() {
       return EventUtil.commonBranchUuidEvenFilter;
    }
 

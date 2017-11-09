@@ -18,14 +18,14 @@ import org.eclipse.osee.framework.core.model.event.IBasicGuidRelation;
 /**
  * @author Donald G. Dunne
  */
-public class BranchUuidEventFilter implements IEventFilter {
+public class BranchIdEventFilter implements IEventFilter {
 
    private final BranchId branchToken;
 
    /**
     * Provide branch of events that should be passed through. All other branches will be ignored.
     */
-   public BranchUuidEventFilter(BranchId branchToken) {
+   public BranchIdEventFilter(BranchId branchToken) {
       this.branchToken = branchToken;
    }
 

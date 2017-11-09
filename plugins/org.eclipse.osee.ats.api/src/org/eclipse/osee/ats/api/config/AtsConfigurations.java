@@ -141,15 +141,15 @@ public class AtsConfigurations implements IAtsWorkDefinitionStringProvider {
    }
 
    public void addTeamDef(JaxTeamDefinition teamDef) {
-      idToTeamDef.put(teamDef.getUuid(), teamDef);
+      idToTeamDef.put(teamDef.getId(), teamDef);
    }
 
    public void addAi(JaxActionableItem ai) {
-      idToAi.put(ai.getUuid(), ai);
+      idToAi.put(ai.getId(), ai);
    }
 
    public void addVersion(JaxVersion version) {
-      idToVersion.put(version.getUuid(), version);
+      idToVersion.put(version.getId(), version);
    }
 
    public void addWorkDefinition(WorkDefData workDef) {

@@ -113,7 +113,7 @@ public class Pdd95CreateDemoEVConfigAndWorkPackages {
    }
 
    private void relateInsertionActivity(Artifact workPackageArt, DemoInsertionActivity insertionActivity) {
-      Artifact insertionActivityArt = AtsClientService.get().getArtifact(insertionActivity.getUuid());
+      Artifact insertionActivityArt = AtsClientService.get().getArtifact(insertionActivity.getId());
       insertionActivityArt.addRelation(AtsRelationTypes.InsertionActivityToWorkPackage_WorkPackage, workPackageArt);
    }
 
@@ -142,14 +142,14 @@ public class Pdd95CreateDemoEVConfigAndWorkPackages {
          SkynetTransaction transaction =
             TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), "Create USG Country Config");
          Artifact country =
-            ArtifactQuery.getArtifactFromId(DemoCountry.usg.getUuid(), AtsClientService.get().getAtsBranch());
+            ArtifactQuery.getArtifactFromId(DemoCountry.usg.getId(), AtsClientService.get().getAtsBranch());
          Artifact program =
-            ArtifactQuery.getArtifactFromId(DemoProgram.sawProgram.getUuid(), AtsClientService.get().getAtsBranch());
+            ArtifactQuery.getArtifactFromId(DemoProgram.sawProgram.getId(), AtsClientService.get().getAtsBranch());
          country.addRelation(AtsRelationTypes.CountryToProgram_Program, program);
          program.persist(transaction);
 
          program =
-            ArtifactQuery.getArtifactFromId(DemoProgram.cisProgram.getUuid(), AtsClientService.get().getAtsBranch());
+            ArtifactQuery.getArtifactFromId(DemoProgram.cisProgram.getId(), AtsClientService.get().getAtsBranch());
          country.addRelation(AtsRelationTypes.CountryToProgram_Program, program);
          program.persist(transaction);
          country.persist(transaction);
@@ -204,10 +204,10 @@ public class Pdd95CreateDemoEVConfigAndWorkPackages {
    private JaxInsertionActivity createInsertionActivity(InsertionActivityEndpointApi insertionActivityEp, DemoInsertionActivity insertionActivity) throws Exception {
       JaxInsertionActivity jaxInsertionActivity = new JaxInsertionActivity();
       jaxInsertionActivity.setName(insertionActivity.getName());
-      jaxInsertionActivity.setUuid(insertionActivity.getUuid());
+      jaxInsertionActivity.setId(insertionActivity.getId());
       jaxInsertionActivity.setActive(insertionActivity.isActive());
       jaxInsertionActivity.setDescription(insertionActivity.getDescription());
-      jaxInsertionActivity.setInsertionUuid(insertionActivity.getInsertionUuid());
+      jaxInsertionActivity.setInsertionId(insertionActivity.getInsertionId());
       insertionActivityEp.create(jaxInsertionActivity);
       return jaxInsertionActivity;
    }
@@ -215,10 +215,10 @@ public class Pdd95CreateDemoEVConfigAndWorkPackages {
    private JaxInsertion createInsertion(InsertionEndpointApi insertionEp, DemoInsertion insertion) throws Exception {
       JaxInsertion jaxInsertion = new JaxInsertion();
       jaxInsertion.setName(insertion.getName());
-      jaxInsertion.setUuid(insertion.getUuid());
+      jaxInsertion.setId(insertion.getId());
       jaxInsertion.setActive(insertion.isActive());
       jaxInsertion.setDescription(insertion.getDescription());
-      jaxInsertion.setProgramUuid(insertion.getProgramUuid());
+      jaxInsertion.setProgramId(insertion.getProgramId());
       insertionEp.create(jaxInsertion);
       return jaxInsertion;
    }
@@ -226,10 +226,10 @@ public class Pdd95CreateDemoEVConfigAndWorkPackages {
    private JaxProgram createProgram(ProgramEndpointApi programEp, DemoProgram program) throws Exception {
       JaxProgram jaxProgram = new JaxProgram();
       jaxProgram.setName(program.getName());
-      jaxProgram.setUuid(program.getUuid());
+      jaxProgram.setId(program.getId());
       jaxProgram.setActive(program.isActive());
       jaxProgram.setDescription(program.getDescription());
-      jaxProgram.setCountryUuid(program.getCountryUuid());
+      jaxProgram.setCountryId(program.getCountryId());
       programEp.create(jaxProgram);
       return jaxProgram;
    }
@@ -237,7 +237,7 @@ public class Pdd95CreateDemoEVConfigAndWorkPackages {
    private JaxCountry createCountry(CountryEndpointApi countryEp, DemoCountry country) throws Exception {
       JaxCountry jaxCountry = new JaxCountry();
       jaxCountry.setName(country.getName());
-      jaxCountry.setUuid(country.getUuid());
+      jaxCountry.setId(country.getId());
       jaxCountry.setActive(country.isActive());
       jaxCountry.setDescription(country.getDescription());
       countryEp.create(jaxCountry);

@@ -73,7 +73,7 @@ public interface IAtsClient extends AtsApi, IAtsNotifier, IAttributeResolverProv
    IArtifactMembersCache<SprintArtifact> getSprintItemsCache();
 
    @Override
-   Artifact getArtifact(Long uuid);
+   Artifact getArtifact(Long id);
 
    IAtsEventService getEventService();
 

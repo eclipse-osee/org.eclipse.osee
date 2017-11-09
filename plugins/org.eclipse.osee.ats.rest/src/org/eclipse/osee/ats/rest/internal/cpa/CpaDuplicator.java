@@ -44,7 +44,7 @@ public class CpaDuplicator {
 
    public XResultData duplicate() {
       XResultData rd = new XResultData(false);
-      ArtifactReadable cpaArt = (ArtifactReadable) atsServer.getArtifactById(duplicate.getCpaUuid());
+      ArtifactReadable cpaArt = (ArtifactReadable) atsServer.getArtifactById(duplicate.getCpaId());
       String atsId = cpaArt.getSoleAttributeValue(AtsAttributeTypes.AtsId, null);
       String duplicatePcrId = "";
       if (!Strings.isValid(atsId)) {
@@ -57,14 +57,14 @@ public class CpaDuplicator {
                rd.errorf("CPA Tool not configured for Tool Id [%s].  Skipping.", cpaService);
             } else {
                IAtsChangeSet changes = atsServer.getStoreService().createAtsChangeSet(
-                  "Duplicate for CPA " + duplicate.getCpaUuid(), AtsCoreUsers.SYSTEM_USER);
+                  "Duplicate for CPA " + duplicate.getCpaId(), AtsCoreUsers.SYSTEM_USER);
                IAtsTeamWorkflow cpaWf = atsServer.getWorkItemFactory().getTeamWf(cpaArt);
                duplicatePcrId = cpaArt.getSoleAttributeValue(AtsAttributeTypes.DuplicatedPcrId, null);
                if (Strings.isValid(duplicatePcrId)) {
                   rd.errorf("CPA already has duplicate pcr id set as [%s].  Skipping.", duplicatePcrId);
                } else {
                   String originatingPcrId = cpaArt.getSoleAttributeValue(AtsAttributeTypes.OriginatingPcrId);
-                  duplicatePcrId = cpaService.duplicate(cpaWf, duplicate.getProgramUuid(), duplicate.getVersionUuid(),
+                  duplicatePcrId = cpaService.duplicate(cpaWf, duplicate.getProgramId(), duplicate.getVersionId(),
                      originatingPcrId, rd);
                   if (Strings.isValid(duplicatePcrId)) {
                      changes.setSoleAttributeValue(cpaWf, AtsAttributeTypes.DuplicatedPcrId, duplicatePcrId);

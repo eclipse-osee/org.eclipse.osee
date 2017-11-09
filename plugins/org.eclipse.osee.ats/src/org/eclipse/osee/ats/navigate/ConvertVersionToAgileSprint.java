@@ -100,20 +100,20 @@ public class ConvertVersionToAgileSprint extends XNavigateItemAction {
       try {
          AgileEndpointApi ageilEp = AtsClientService.getAgileEndpoint();
          JaxNewAgileSprint newSprint = new JaxNewAgileSprint();
-         long teamUuid = agileTeam.getId();
+         long teamId = agileTeam.getId();
 
          List<IAgileSprint> sprints = new LinkedList<>();
          for (IAtsVersion version : selectedVersions) {
             newSprint.setName(useVersionTitle ? version.getName() : newTitle);
-            newSprint.setTeamUuid(teamUuid);
-            Response response = ageilEp.createSprint(new Long(teamUuid), newSprint);
+            newSprint.setTeamId(teamId);
+            Response response = ageilEp.createSprint(new Long(teamId), newSprint);
             JaxAgileSprint jaxSprint = null;
             if (response != null) {
                jaxSprint = response.readEntity(JaxAgileSprint.class);
             }
             if (jaxSprint != null) {
-               long uuid = jaxSprint.getUuid();
-               IAgileSprint sprint = (SprintArtifact) client.getArtifact(uuid);
+               long id = jaxSprint.getId();
+               IAgileSprint sprint = (SprintArtifact) client.getArtifact(id);
                ((Artifact) sprint.getStoreObject()).getParent().reloadAttributesAndRelations();
 
                IAtsChangeSet changes =

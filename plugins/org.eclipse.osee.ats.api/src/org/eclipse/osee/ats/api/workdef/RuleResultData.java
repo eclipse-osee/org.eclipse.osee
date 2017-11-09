@@ -20,15 +20,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class RuleResultData {
 
-   Long uuid;
+   Long id;
    List<RuleResultsEnum> resultList = new ArrayList<>();
 
-   public Long getUuid() {
-      return uuid;
+   public Long getId() {
+      return id;
    }
 
-   public void setUuid(Long uuid) {
-      this.uuid = uuid;
+   public void setId(Long id) {
+      this.id= id;
    }
 
    public List<RuleResultsEnum> getResultList() {

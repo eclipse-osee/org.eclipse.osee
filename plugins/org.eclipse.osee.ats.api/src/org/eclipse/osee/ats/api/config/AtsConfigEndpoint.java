@@ -78,11 +78,11 @@ public interface AtsConfigEndpoint {
     * Create new ATS configuration branch and ATS config object on Common branch
     *
     * @param form containing information to configure new ATS branch
-    * @param form.fromBranchUuid of branch to get config artifacts from
+    * @param form.fromBranchId of branch to get config artifacts from
     * @param form.newBranchName of new branch
     * @param form.userId - userId of user performing transition
     * @param uriInfo
-    * @return json object with new branchUuid
+    * @return json object with new branchId
     */
    @POST
    @Path("branch")

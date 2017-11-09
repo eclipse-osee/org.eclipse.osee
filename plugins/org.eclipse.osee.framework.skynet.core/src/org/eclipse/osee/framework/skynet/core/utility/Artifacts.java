@@ -54,6 +54,14 @@ public final class Artifacts {
       return toReturn;
    }
 
+   public static Collection<Long> toIdsL(Collection<? extends ArtifactId> artifacts) {
+      Set<Long> toReturn = new HashSet<>(artifacts.size());
+      for (ArtifactId artId : artifacts) {
+         toReturn.add(artId.getId());
+      }
+      return toReturn;
+   }
+
    public static List<String> toGuids(Collection<? extends ArtifactId> artifacts) {
       List<String> guids = new ArrayList<>(artifacts.size());
       for (ArtifactId artifact : artifacts) {

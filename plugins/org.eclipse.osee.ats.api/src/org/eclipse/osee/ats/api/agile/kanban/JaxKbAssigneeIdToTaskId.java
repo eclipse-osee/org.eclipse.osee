@@ -16,17 +16,17 @@ import java.util.Set;
 /**
  * @author Donald G. Dunne
  */
-public class JaxKbAssigneeIdToTaskUuid {
+public class JaxKbAssigneeIdToTaskId {
 
    private String assigneeId;
-   private Set<String> taskUuids = new HashSet<String>();
+   private Set<String> taskIds = new HashSet<String>();
 
-   public Set<String> getTaskUuids() {
-      return taskUuids;
+   public Set<String> getTaskIds() {
+      return taskIds;
    }
 
-   public void setTaskUuids(Set<String> taskUuids) {
-      this.taskUuids = taskUuids;
+   public void setTaskIds(Set<String> taskIds) {
+      this.taskIds = taskIds;
    }
 
    public String getAssigneeId() {

@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class AbstractAgileObject {
 
    private String name;
-   private long uuid;
+   private long id;
    private boolean active;
 
    public String getName() {
@@ -30,15 +30,15 @@ public class AbstractAgileObject {
       this.name = name;
    }
 
-   public long getUuid() {
-      return uuid;
+   public long getId() {
+      return id;
    }
 
    /**
     * Provided for deserialization. Setting will not apply to new artifact.
     */
-   public void setUuid(long uuid) {
-      this.uuid = uuid;
+   public void setId(long id) {
+      this.id = id;
    }
 
    @Override
@@ -58,7 +58,7 @@ public class AbstractAgileObject {
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + (int) (uuid ^ uuid >>> 32);
+      result = prime * result + (int) (id ^ id >>> 32);
       return result;
    }
 
@@ -74,7 +74,7 @@ public class AbstractAgileObject {
          return false;
       }
       AbstractAgileObject other = (AbstractAgileObject) obj;
-      if (uuid != other.getUuid()) {
+      if (id != other.getId()) {
          return false;
       }
       return true;

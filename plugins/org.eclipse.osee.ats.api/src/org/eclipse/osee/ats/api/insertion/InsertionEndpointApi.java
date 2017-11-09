@@ -29,8 +29,8 @@ public interface InsertionEndpointApi extends BaseConfigEndpointApi<JaxInsertion
    @Consumes(MediaType.APPLICATION_JSON)
    public Response update(JaxInsertion insertion) throws Exception;
 
-   @Path("{insertionUuid}/activity")
+   @Path("{insertionId}/activity")
    @Produces(MediaType.APPLICATION_JSON)
-   public InsertionActivityEndpointApi getInsertionActivity(@PathParam("insertionUuid") long insertionUuid);
+   public InsertionActivityEndpointApi getInsertionActivity(@PathParam("insertionId") long insertionId);
 
 }

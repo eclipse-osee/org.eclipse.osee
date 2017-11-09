@@ -39,21 +39,21 @@ import org.junit.runners.Parameterized.Parameters;
 public class SearchWorkPackageOperationTest {
 
    private final String resultSize;
-   private final Collection<Long> teamDefUuids;
+   private final Collection<Long> teamDefIds;
    private final boolean includeChildrenTeamDefs;
-   private final Collection<Long> aiUuids;
+   private final Collection<Long> aiIds;
    private final Active activeOption;
-   private final Collection<Long> expectedWpUuids;
+   private final Collection<Long> expectedWpIds;
    private final boolean includeChildrenAIs;
 
-   public SearchWorkPackageOperationTest(String resultSize, Collection<Long> teamDefUuids, boolean includeChildrenTeamDefs, Collection<Long> aiUuids, boolean includeChildrenAIs, Active activeOption, Collection<Long> expectedWpUuids) {
+   public SearchWorkPackageOperationTest(String resultSize, Collection<Long> teamDefIds, boolean includeChildrenTeamDefs, Collection<Long> aiIds, boolean includeChildrenAIs, Active activeOption, Collection<Long> expectedWpIds) {
       this.resultSize = resultSize;
-      this.teamDefUuids = teamDefUuids;
+      this.teamDefIds = teamDefIds;
       this.includeChildrenTeamDefs = includeChildrenTeamDefs;
-      this.aiUuids = aiUuids;
+      this.aiIds = aiIds;
       this.includeChildrenAIs = includeChildrenAIs;
       this.activeOption = activeOption;
-      this.expectedWpUuids = expectedWpUuids;
+      this.expectedWpIds = expectedWpIds;
    }
 
    @Parameters
@@ -98,14 +98,14 @@ public class SearchWorkPackageOperationTest {
    @Test
    public void testSearchResults() {
       List<IAtsTeamDefinition> teamDefs = new ArrayList<>();
-      for (Long teamDefUuid : teamDefUuids) {
-         IAtsTeamDefinition teamDef = AtsClientService.get().getCache().getAtsObject(teamDefUuid);
+      for (Long teamDefId : teamDefIds) {
+         IAtsTeamDefinition teamDef = AtsClientService.get().getCache().getAtsObject(teamDefId);
          teamDefs.add(teamDef);
       }
 
       List<IAtsActionableItem> ais = new ArrayList<>();
-      for (Long aiUuid : aiUuids) {
-         IAtsActionableItem ai = AtsClientService.get().getCache().getAtsObject(aiUuid);
+      for (Long aiId : aiIds) {
+         IAtsActionableItem ai = AtsClientService.get().getCache().getAtsObject(aiId);
          ais.add(ai);
       }
 
@@ -113,23 +113,17 @@ public class SearchWorkPackageOperationTest {
          ais, includeChildrenAIs, activeOption);
       Operations.executeWorkAndCheckStatus(operation);
       Set<Artifact> resultArtifacts = operation.getResultArtifacts();
-      Collection<Long> resultArtifactGuids = Artifacts.toUuids(resultArtifacts);
-      Assert.assertEquals(resultSize, expectedWpUuids.size(), resultArtifacts.size());
-      for (Long expectedUuid : expectedWpUuids) {
-         Assert.assertTrue("Expected uuid " + expectedUuid + " not found in results",
-            resultArtifactGuids.contains(expectedUuid));
+      Collection<Long> resultArtifactGuids = Artifacts.toIdsL(resultArtifacts);
+      Assert.assertEquals(resultSize, expectedWpIds.size(), resultArtifacts.size());
+      for (Long expectedId : expectedWpIds) {
+         Assert.assertTrue("Expected id " + expectedId + " not found in results",
+            resultArtifactGuids.contains(expectedId));
       }
    }
 
-   private static void addTest(List<Object[]> testData, String toSearch, Collection<Long> teamDefUuids, boolean includeChildrenTeamDefs, Collection<Long> aiUuids, boolean includeChildrenAIs, Active both, Collection<Long> expectedWpUuids) {
-      testData.add(new Object[] {
-         toSearch,
-         teamDefUuids,
-         includeChildrenTeamDefs,
-         aiUuids,
-         includeChildrenAIs,
-         both,
-         expectedWpUuids});
+   private static void addTest(List<Object[]> testData, String toSearch, Collection<Long> teamDefIds, boolean includeChildrenTeamDefs, Collection<Long> aiIds, boolean includeChildrenAIs, Active both, Collection<Long> expectedWpIds) {
+      testData.add(
+         new Object[] {toSearch, teamDefIds, includeChildrenTeamDefs, aiIds, includeChildrenAIs, both, expectedWpIds});
    }
 
 }

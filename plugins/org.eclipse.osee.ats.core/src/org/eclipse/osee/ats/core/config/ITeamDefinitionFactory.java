@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
  */
 public interface ITeamDefinitionFactory {
 
-   IAtsTeamDefinition createTeamDefinition(String name, long uuid, IAtsChangeSet changes, AtsApi atsApi);
+   IAtsTeamDefinition createTeamDefinition(String name, long id, IAtsChangeSet changes, AtsApi atsApi);
 
    IAtsTeamDefinition createTeamDefinition(String name, IAtsChangeSet changes, AtsApi atsApi);
 

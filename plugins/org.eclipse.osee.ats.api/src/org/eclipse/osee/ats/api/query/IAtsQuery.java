@@ -53,7 +53,7 @@ public interface IAtsQuery {
 
    IAtsQuery isOfType(IArtifactType... artifactType);
 
-   IAtsQuery andUuids(Long... uuid);
+   IAtsQuery andIds(Long... id);
 
    IAtsQuery andAttr(AttributeTypeId attributeType, String value, QueryOption... queryOption);
 
@@ -73,21 +73,21 @@ public interface IAtsQuery {
 
    IAtsQuery andFavorite(IAtsUser atsUser);
 
-   IAtsQuery andTeam(List<Long> teamDefUuids);
+   IAtsQuery andTeam(List<Long> teamDefIds);
 
-   IAtsQuery andActionableItem(List<Long> aiUuids);
+   IAtsQuery andActionableItem(List<Long> aiIds);
 
-   IAtsQuery andVersion(Long versionUuid);
+   IAtsQuery andVersion(Long versionId);
 
    IAtsQuery andState(String stateName);
 
-   IAtsQuery andProgram(Long programUuid);
+   IAtsQuery andProgram(Long programId);
 
-   IAtsQuery andInsertion(Long insertionUuid);
+   IAtsQuery andInsertion(Long insertionId);
 
-   IAtsQuery andInsertionActivity(Long insertionActivityUuid);
+   IAtsQuery andInsertionActivity(Long insertionActivityId);
 
-   IAtsQuery andWorkPackage(Long workPackageUuid);
+   IAtsQuery andWorkPackage(Long workPackageId);
 
    IAtsQuery andColorTeam(String colorTeam);
 

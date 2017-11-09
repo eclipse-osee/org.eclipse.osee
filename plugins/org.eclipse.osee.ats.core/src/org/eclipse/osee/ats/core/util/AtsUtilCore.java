@@ -31,11 +31,11 @@ public class AtsUtilCore {
    public static final String DEFAULT_ATS_ID_VALUE = "0";
    public static final String USER_CREATION_DISABLED = "UserCreationDisabled2";
    public static final String ATS_CONFIG_ACTION_URL_KEY = "ActionUrl";
-   public static final String ATS_DEFAULT_ACTION_URL = "/ats/ui/action/UUID";
+   public static final String ATS_DEFAULT_ACTION_URL = "/ats/ui/action/ID";
    public final static String SERVER_CONFIG_RELOAD_MIN_KEY = "server_config_reload_min";
    public final static long SERVER_CONFIG_RELOAD_MIN_DEFAULT = 30;
 
-   private static Map<Long, String> uuidToGuidMap = new HashMap<>(50);
+   private static Map<Long, String> idToGuidMap = new HashMap<>(50);
 
    public static List<String> toGuids(Collection<? extends IAtsObject> atsObjects) {
       List<String> guids = new ArrayList<>(atsObjects.size());
@@ -66,19 +66,19 @@ public class AtsUtilCore {
    }
 
    public static String getGuid(IAtsObject atsObject) {
-      String guid = uuidToGuidMap.get(atsObject.getId());
+      String guid = idToGuidMap.get(atsObject.getId());
       if (!Strings.isValid(guid) && atsObject.getStoreObject() != null) {
          guid = atsObject.getStoreObject().getGuid();
       }
       return guid;
    }
 
-   public static String getGuid(Long uuid) {
-      return uuidToGuidMap.get(uuid);
+   public static String getGuid(Long id) {
+      return idToGuidMap.get(id);
    }
 
-   public static void putUuidToGuid(String guid, IAtsObject atsObject) {
-      uuidToGuidMap.put(atsObject.getId(), guid);
+   public static void putidToGuid(String guid, IAtsObject atsObject) {
+      idToGuidMap.put(atsObject.getId(), guid);
    }
 
    public static Dictionary<String, ?> hashTable(String key, String value) {
@@ -87,13 +87,13 @@ public class AtsUtilCore {
       return table;
    }
 
-   public static String getActionUrl(String atsIdOrUuid, AtsApi atsApi) {
-      return getActionUrl(atsIdOrUuid, ATS_DEFAULT_ACTION_URL, atsApi);
+   public static String getActionUrl(String atsIdOrid, AtsApi atsApi) {
+      return getActionUrl(atsIdOrid, ATS_DEFAULT_ACTION_URL, atsApi);
    }
 
-   public static String getActionUrl(String atsIdOrUuid, String defaultUrl, AtsApi atsApi) {
+   public static String getActionUrl(String atsIdOrid, String defaultUrl, AtsApi atsApi) {
       String actionUrl = getBaseActionUiUrl(defaultUrl, atsApi);
-      actionUrl = actionUrl.replaceFirst("UUID", atsIdOrUuid);
+      actionUrl = actionUrl.replaceFirst("ID", atsIdOrid);
       return actionUrl;
    }
 

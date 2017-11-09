@@ -21,43 +21,43 @@ import org.eclipse.osee.ats.api.agile.JaxAgileSprint;
  */
 public class JaxKbSprint extends JaxAgileSprint {
 
-   List<JaxKbAssigneeIdToTaskUuid> assigneesToTaskUuids = new LinkedList<JaxKbAssigneeIdToTaskUuid>();
-   List<JaxKbAssigneeIdToTaskUuid> implementersToTaskUuids = new LinkedList<JaxKbAssigneeIdToTaskUuid>();
+   List<JaxKbAssigneeIdToTaskId> assigneesToTaskIds = new LinkedList<JaxKbAssigneeIdToTaskId>();
+   List<JaxKbAssigneeIdToTaskId> implementersToTaskIds = new LinkedList<JaxKbAssigneeIdToTaskId>();
    Map<String, String> userIdToName = new HashMap<String, String>();
-   List<JaxKbState> statesToTaskUuids = new LinkedList<JaxKbState>();
+   List<JaxKbState> statesToTaskIds = new LinkedList<JaxKbState>();
    List<JaxKbAvailableState> availableStates = new LinkedList<JaxKbAvailableState>();
    Map<String, JaxKbTask> tasks = new HashMap<String, JaxKbTask>();
 
-   public void addAssigneeIdToTaskUuid(String assigneeId, String taskUuid) {
-      JaxKbAssigneeIdToTaskUuid assigneeToUuid = null;
-      for (JaxKbAssigneeIdToTaskUuid item : assigneesToTaskUuids) {
+   public void addAssigneeIdToTaskId(String assigneeId, String taskId) {
+      JaxKbAssigneeIdToTaskId assigneeToId = null;
+      for (JaxKbAssigneeIdToTaskId item : assigneesToTaskIds) {
          if (item.getAssigneeId().equals(assigneeId)) {
-            assigneeToUuid = item;
+            assigneeToId = item;
             break;
          }
       }
-      if (assigneeToUuid == null) {
-         assigneeToUuid = new JaxKbAssigneeIdToTaskUuid();
-         assigneeToUuid.setAssigneeId(assigneeId);
-         assigneesToTaskUuids.add(assigneeToUuid);
+      if (assigneeToId == null) {
+         assigneeToId = new JaxKbAssigneeIdToTaskId();
+         assigneeToId.setAssigneeId(assigneeId);
+         assigneesToTaskIds.add(assigneeToId);
       }
-      assigneeToUuid.getTaskUuids().add(taskUuid);
+      assigneeToId.getTaskIds().add(taskId);
    }
 
-   public void addImplementerIdToTaskUuid(String implementerId, String taskUuid) {
-      JaxKbAssigneeIdToTaskUuid implementerToUuid = null;
-      for (JaxKbAssigneeIdToTaskUuid item : implementersToTaskUuids) {
+   public void addImplementerIdToTaskId(String implementerId, String taskId) {
+      JaxKbAssigneeIdToTaskId implementerToId = null;
+      for (JaxKbAssigneeIdToTaskId item : implementersToTaskIds) {
          if (item.getAssigneeId().equals(implementerId)) {
-            implementerToUuid = item;
+            implementerToId = item;
             break;
          }
       }
-      if (implementerToUuid == null) {
-         implementerToUuid = new JaxKbAssigneeIdToTaskUuid();
-         implementerToUuid.setAssigneeId(implementerId);
-         implementersToTaskUuids.add(implementerToUuid);
+      if (implementerToId == null) {
+         implementerToId = new JaxKbAssigneeIdToTaskId();
+         implementerToId.setAssigneeId(implementerId);
+         implementersToTaskIds.add(implementerToId);
       }
-      implementerToUuid.getTaskUuids().add(taskUuid);
+      implementerToId.getTaskIds().add(taskId);
    }
 
    public Map<String, String> getUserIdToName() {
@@ -68,9 +68,9 @@ public class JaxKbSprint extends JaxAgileSprint {
       this.userIdToName = userIdToName;
    }
 
-   public void addStateNameToTaskUuid(String stateName, String taskUuid) {
+   public void addStateNameToTaskId(String stateName, String taskId) {
       JaxKbState state = null;
-      for (JaxKbState state2 : statesToTaskUuids) {
+      for (JaxKbState state2 : statesToTaskIds) {
          if (state2.getName().equals(stateName)) {
             state = state2;
             break;
@@ -79,9 +79,9 @@ public class JaxKbSprint extends JaxAgileSprint {
       if (state == null) {
          state = new JaxKbState();
          state.setName(stateName);
-         statesToTaskUuids.add(state);
+         statesToTaskIds.add(state);
       }
-      state.getTaskUuids().add(taskUuid);
+      state.getTaskIds().add(taskId);
    }
 
    public Map<String, JaxKbTask> getTasks() {
@@ -100,24 +100,24 @@ public class JaxKbSprint extends JaxAgileSprint {
       this.availableStates = availableStates;
    }
 
-   public List<JaxKbAssigneeIdToTaskUuid> getAssigneesToTaskUuids() {
-      return assigneesToTaskUuids;
+   public List<JaxKbAssigneeIdToTaskId> getAssigneesToTaskIds() {
+      return assigneesToTaskIds;
    }
 
-   public void setAssigneesToTaskUuids(List<JaxKbAssigneeIdToTaskUuid> assigneesToTaskUuids) {
-      this.assigneesToTaskUuids = assigneesToTaskUuids;
+   public void setAssigneesToTaskIds(List<JaxKbAssigneeIdToTaskId> assigneesToTaskIds) {
+      this.assigneesToTaskIds = assigneesToTaskIds;
    }
 
-   public List<JaxKbState> getStatesToTaskUuids() {
-      return statesToTaskUuids;
+   public List<JaxKbState> getStatesToTaskIds() {
+      return statesToTaskIds;
    }
 
-   public void setStatesToTaskUuids(List<JaxKbState> statesToTaskUuids) {
-      this.statesToTaskUuids = statesToTaskUuids;
+   public void setStatesToTaskIds(List<JaxKbState> statesToTaskIds) {
+      this.statesToTaskIds = statesToTaskIds;
    }
 
-   public List<JaxKbAssigneeIdToTaskUuid> getImplementersToTaskUuids() {
-      return implementersToTaskUuids;
+   public List<JaxKbAssigneeIdToTaskId> getImplementersToTaskIds() {
+      return implementersToTaskIds;
    }
 
 }

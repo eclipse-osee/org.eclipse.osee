@@ -84,7 +84,7 @@ public class XBranchViewSelect extends GenericXWidget {
          @Override
          public void widgetSelected(SelectionEvent e) {
             try {
-               String baselineBranch = artifact.getSoleAttributeValue(AtsAttributeTypes.BaselineBranchUuid, "");
+               String baselineBranch = artifact.getSoleAttributeValue(AtsAttributeTypes.BaselineBranchId, "");
                changeView(BranchId.valueOf(baselineBranch));
                refresh();
             } catch (OseeCoreException ex) {
@@ -111,7 +111,7 @@ public class XBranchViewSelect extends GenericXWidget {
       } else {
          try {
             ArtifactId versionConfig = applEndpoint.getVersionConfig(artifact);
-            String baselineBranch = artifact.getSoleAttributeValue(AtsAttributeTypes.BaselineBranchUuid, "");
+            String baselineBranch = artifact.getSoleAttributeValue(AtsAttributeTypes.BaselineBranchId, "");
             Map<Long, String> branchViews = ViewApplicabilityUtil.getBranchViews(BranchId.valueOf(baselineBranch));
             result = branchViews.get(versionConfig);
          } catch (OseeCoreException ex) {

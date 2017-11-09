@@ -19,13 +19,13 @@ import org.eclipse.osee.ats.api.config.JaxNewAtsConfigObject;
 @XmlRootElement
 public class JaxProgram extends JaxNewAtsConfigObject {
 
-   long countryUuid;
+   long countryId;
 
-   public long getCountryUuid() {
-      return countryUuid;
+   public long getCountryId() {
+      return countryId;
    }
 
-   public void setCountryUuid(long countryUuid) {
-      this.countryUuid = countryUuid;
+   public void setCountryId(long countryId) {
+      this.countryId = countryId;
    }
 }

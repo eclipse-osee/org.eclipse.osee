@@ -122,9 +122,9 @@ public class ImportAIsAndTeamDefinitionsToDb {
             newTeam = getOrCreate(dslTeamName, true, parentArtifact);
          }
          if (newTeam == null) {
-            long uuid = dslTeamDef.getUuid() > 0 ? dslTeamDef.getUuid() : Lib.generateArtifactIdAsInt();
+            long id = dslTeamDef.getUuid() > 0 ? dslTeamDef.getUuid() : Lib.generateArtifactIdAsInt();
             newTeam = ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamDefinition,
-               AtsClientService.get().getAtsBranch(), dslTeamName, null, uuid);
+               AtsClientService.get().getAtsBranch(), dslTeamName, null, id);
          }
          if (parentArtifact != null && parentArtifact.notEqual(newTeam)) {
             parentArtifact.addChild(newTeam);
@@ -197,9 +197,9 @@ public class ImportAIsAndTeamDefinitionsToDb {
       for (VersionDef dslVersionDef : versionDefs) {
          String dslVerName = Strings.unquote(dslVersionDef.getName());
          // System.out.println("   - Importing Version " + dslVerName);
-         long uuid = dslVersionDef.getUuid() > 0 ? dslVersionDef.getUuid() : Lib.generateArtifactIdAsInt();
+         long id = dslVersionDef.getUuid() > 0 ? dslVersionDef.getUuid() : Lib.generateArtifactIdAsInt();
          Artifact newVer = ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version,
-            AtsClientService.get().getAtsBranch(), dslVerName, null, uuid);
+            AtsClientService.get().getAtsBranch(), dslVerName, null, id);
 
          teamDef.addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, newVer);
          nameToVerArt.put(newVer.getName(), newVer);
@@ -213,7 +213,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
          newVer.setSoleAttributeValue(AtsAttributeTypes.Released,
             BooleanDefUtil.get(dslVersionDef.getReleased(), false));
          if (Strings.isValid(dslVersionDef.getBaselineBranchUuid())) {
-            newVer.setSoleAttributeValue(AtsAttributeTypes.BaselineBranchUuid, dslVersionDef.getBaselineBranchUuid());
+            newVer.setSoleAttributeValue(AtsAttributeTypes.BaselineBranchId, dslVersionDef.getBaselineBranchUuid());
          }
          for (String staticId : dslVersionDef.getStaticId()) {
             newVer.setSingletonAttributeValue(CoreAttributeTypes.StaticId, staticId);
@@ -241,9 +241,9 @@ public class ImportAIsAndTeamDefinitionsToDb {
             newAi = getOrCreate(dslAIName, false, parentArtifact);
          }
          if (newAi == null) {
-            long uuid = dslAIDef.getUuid() > 0 ? dslAIDef.getUuid() : Lib.generateArtifactIdAsInt();
+            long id = dslAIDef.getUuid() > 0 ? dslAIDef.getUuid() : Lib.generateArtifactIdAsInt();
             newAi = ArtifactTypeManager.addArtifact(AtsArtifactTypes.ActionableItem,
-               AtsClientService.get().getAtsBranch(), dslAIName, null, uuid);
+               AtsClientService.get().getAtsBranch(), dslAIName, null, id);
          }
          if (parentArtifact != null && parentArtifact.notEqual(newAi)) {
             parentArtifact.addChild(newAi);
@@ -289,9 +289,9 @@ public class ImportAIsAndTeamDefinitionsToDb {
          if (Strings.isValid(artifactTypeName)) {
             programArtifactType = ArtifactTypeManager.getType(artifactTypeName);
          }
-         long uuid = dslProgramDef.getUuid() > 0 ? dslProgramDef.getUuid() : Lib.generateArtifactIdAsInt();
+         long id = dslProgramDef.getUuid() > 0 ? dslProgramDef.getUuid() : Lib.generateArtifactIdAsInt();
          newProgramArt = ArtifactTypeManager.addArtifact(programArtifactType, AtsClientService.get().getAtsBranch(),
-            dslProgramName, null, uuid);
+            dslProgramName, null, id);
          changes.add(newProgramArt);
          newProgramArt.getAttributes(AtsAttributeTypes.Active).iterator().next().setValue(
             BooleanDefUtil.get(dslProgramDef.getActive(), true));
@@ -313,8 +313,8 @@ public class ImportAIsAndTeamDefinitionsToDb {
          } else if (attrDefOption instanceof AttrFullDef) {
             AttrFullDef attrFullDef = (AttrFullDef) attrDefOption;
             if (Strings.isValid(attrFullDef.getUuid())) {
-               Long uuid = Long.valueOf(attrFullDef.getUuid());
-               AttributeType attrType = AttributeTypeManager.getTypeByGuid(uuid);
+               Long id = Long.valueOf(attrFullDef.getUuid());
+               AttributeType attrType = AttributeTypeManager.getTypeByGuid(id);
                for (String value : attrFullDef.getValues()) {
                   newProgramArt.addAttribute(attrType, Strings.unquote(value));
                }

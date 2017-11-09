@@ -28,7 +28,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Test case for {@link BranchUuidEventFilter}
+ * Test case for {@link BranchIdEventFilter}
  *
  * @author Donald G. Dunne
  */
@@ -36,14 +36,14 @@ public class BranchUuidEventFilterTest {
 
    @Test
    public void testIsMatch() {
-      BranchUuidEventFilter branchFilter = new BranchUuidEventFilter(COMMON);
+      BranchIdEventFilter branchFilter = new BranchIdEventFilter(COMMON);
       Assert.assertTrue(branchFilter.isMatch(COMMON));
       Assert.assertFalse(branchFilter.isMatch(SYSTEM_ROOT));
    }
 
    @Test
    public void testIsMatchArtifacts() {
-      BranchUuidEventFilter branchFilter = new BranchUuidEventFilter(COMMON);
+      BranchIdEventFilter branchFilter = new BranchIdEventFilter(COMMON);
 
       EventBasicGuidArtifact guidArtA = new EventBasicGuidArtifact(EventModType.Added, BranchId.create(), Requirement);
       EventBasicGuidArtifact guidArtB =
@@ -64,7 +64,7 @@ public class BranchUuidEventFilterTest {
 
    @Test
    public void testIsMatchRelationArtifacts() {
-      BranchUuidEventFilter branchFilter = new BranchUuidEventFilter(COMMON);
+      BranchIdEventFilter branchFilter = new BranchIdEventFilter(COMMON);
 
       EventBasicGuidArtifact guidArtA = new EventBasicGuidArtifact(EventModType.Added, BranchId.create(), Requirement);
       EventBasicGuidArtifact guidArtB =

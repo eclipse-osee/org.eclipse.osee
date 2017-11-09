@@ -44,7 +44,7 @@ public class CoreAtsUsersTest {
    }
 
    @Test
-   public void testGetUuid() {
+   public void testGetId() {
       Assert.assertEquals(SystemUser.OseeSystem.getId(), AtsCoreUsers.SYSTEM_USER.getId());
       Assert.assertEquals(SystemUser.Anonymous.getId(), AtsCoreUsers.ANONYMOUS_USER.getId());
    }
@@ -88,10 +88,10 @@ public class CoreAtsUsersTest {
    public void testEqualsObject() {
       TestUser user = new TestUser();
       user.setUserId("99999999");
-      user.setUuid(11L);
+      user.setId(11L);
       Assert.assertTrue(AtsCoreUsers.SYSTEM_USER.equals(user));
       user.setUserId("234");
-      user.setUuid(95645L);
+      user.setId(95645L);
       Assert.assertFalse(AtsCoreUsers.SYSTEM_USER.equals(user));
       Assert.assertFalse(AtsCoreUsers.SYSTEM_USER.equals("asfd"));
       Assert.assertFalse(AtsCoreUsers.SYSTEM_USER.equals(null));

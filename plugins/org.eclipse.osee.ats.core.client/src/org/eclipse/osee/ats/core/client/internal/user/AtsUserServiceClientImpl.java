@@ -190,7 +190,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
       atsUser.setUserId(userArt.getSoleAttributeValue(CoreAttributeTypes.UserId, ""));
       atsUser.setEmail(userArt.getSoleAttributeValue(CoreAttributeTypes.Email, ""));
       atsUser.setActive(userArt.getSoleAttributeValue(CoreAttributeTypes.Active, true));
-      atsUser.setUuid(userArt.getUuid());
+      atsUser.setId(userArt.getId());
       return atsUser;
    }
 

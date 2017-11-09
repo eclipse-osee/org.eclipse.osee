@@ -81,9 +81,9 @@ public class AgileService implements IAgileService {
    }
 
    @Override
-   public IAgileTeam getAgileTeam(long uuid) {
+   public IAgileTeam getAgileTeam(long id) {
       IAgileTeam team = null;
-      ArtifactId teamArt = atsApi.getArtifact(uuid);
+      ArtifactId teamArt = atsApi.getArtifact(id);
       if (teamArt != null) {
          team = getAgileTeam(teamArt);
       }
@@ -91,9 +91,9 @@ public class AgileService implements IAgileService {
    }
 
    @Override
-   public IAgileTeam getAgileTeamById(long teamUuid) {
+   public IAgileTeam getAgileTeamById(long teamId) {
       IAgileTeam team = null;
-      ArtifactId artifact = atsApi.getArtifact(teamUuid);
+      ArtifactId artifact = atsApi.getArtifact(teamId);
       if (artifact != null) {
          team = getAgileTeam(artifact);
       }
@@ -111,10 +111,10 @@ public class AgileService implements IAgileService {
    }
 
    @Override
-   public void deleteAgileTeam(long uuid) {
-      ArtifactToken team = atsApi.getArtifact(uuid);
+   public void deleteAgileTeam(long id) {
+      ArtifactToken team = atsApi.getArtifact(id);
       if (!atsApi.getStoreService().isOfType(team, AtsArtifactTypes.AgileTeam)) {
-         throw new OseeArgumentException("UUID %d is not a valid Agile Team", uuid);
+         throw new OseeArgumentException("ID %d is not a valid Agile Team", id);
       }
       IAtsChangeSet changes = atsApi.createChangeSet("Delete Agile Team");
       deleteRecurse(atsApi.getRelationResolver().getChildren(team), changes);
@@ -233,10 +233,10 @@ public class AgileService implements IAgileService {
    }
 
    @Override
-   public void deleteAgileFeatureGroup(long uuid) {
-      ArtifactId featureGroup = atsApi.getArtifact(uuid);
+   public void deleteAgileFeatureGroup(long id) {
+      ArtifactId featureGroup = atsApi.getArtifact(id);
       if (!atsApi.getStoreService().isOfType(featureGroup, AtsArtifactTypes.AgileFeatureGroup)) {
-         throw new OseeArgumentException("UUID %d is not a valid Agile Feature Group", uuid);
+         throw new OseeArgumentException("ID %d is not a valid Agile Feature Group", id);
       }
       IAtsChangeSet changes = atsApi.createChangeSet("Delete Agile Feature Group");
       changes.deleteArtifact(featureGroup);
@@ -244,8 +244,8 @@ public class AgileService implements IAgileService {
    }
 
    @Override
-   public IAgileFeatureGroup createAgileFeatureGroup(long teamUuid, String name, String guid, Long uuid) {
-      return AgileFactory.createAgileFeatureGroup(logger, atsApi, teamUuid, name, guid, uuid);
+   public IAgileFeatureGroup createAgileFeatureGroup(long teamId, String name, String guid, Long id) {
+      return AgileFactory.createAgileFeatureGroup(logger, atsApi, teamId, name, guid, id);
    }
 
    @Override
@@ -265,9 +265,9 @@ public class AgileService implements IAgileService {
    }
 
    @Override
-   public IAgileBacklog getBacklogForTeam(long teamUuid) {
+   public IAgileBacklog getBacklogForTeam(long teamId) {
       IAgileBacklog backlog = null;
-      ArtifactId teamArt = atsApi.getArtifact(teamUuid);
+      ArtifactId teamArt = atsApi.getArtifact(teamId);
       ArtifactId backlogArt =
          atsApi.getRelationResolver().getRelatedOrNull(teamArt, AtsRelationTypes.AgileTeamToBacklog_Backlog);
       if (backlogArt != null) {
@@ -290,14 +290,14 @@ public class AgileService implements IAgileService {
    }
 
    @Override
-   public IAgileSprint createAgileSprint(long teamUuid, String name, String guid, Long uuid) {
-      return AgileFactory.createAgileSprint(logger, atsApi, teamUuid, name, guid, uuid);
+   public IAgileSprint createAgileSprint(long teamId, String name, String guid, Long id) {
+      return AgileFactory.createAgileSprint(logger, atsApi, teamId, name, guid, id);
    }
 
    @Override
-   public Collection<IAgileSprint> getSprintsForTeam(long teamUuid) {
+   public Collection<IAgileSprint> getSprintsForTeam(long teamId) {
       List<IAgileSprint> sprints = new ArrayList<>();
-      ArtifactId team = atsApi.getArtifact(teamUuid);
+      ArtifactId team = atsApi.getArtifact(teamId);
       for (ArtifactId sprintArt : atsApi.getRelationResolver().getRelated(team,
          AtsRelationTypes.AgileTeamToSprint_Sprint)) {
          sprints.add(getAgileSprint(sprintArt));
@@ -339,9 +339,9 @@ public class AgileService implements IAgileService {
    }
 
    @Override
-   public IAgileBacklog getAgileBacklog(long uuid) {
+   public IAgileBacklog getAgileBacklog(long id) {
       IAgileBacklog backlog = null;
-      ArtifactId teamArt = atsApi.getArtifact(uuid);
+      ArtifactId teamArt = atsApi.getArtifact(id);
       if (teamArt != null) {
          backlog = getAgileBacklog(teamArt);
       }
@@ -349,8 +349,8 @@ public class AgileService implements IAgileService {
    }
 
    @Override
-   public IAgileBacklog createAgileBacklog(long teamUuid, String name, String guid, Long uuid) {
-      return AgileFactory.createAgileBacklog(logger, atsApi, teamUuid, name, guid, uuid);
+   public IAgileBacklog createAgileBacklog(long teamId, String name, String guid, Long id) {
+      return AgileFactory.createAgileBacklog(logger, atsApi, teamId, name, guid, id);
    }
 
    @Override
@@ -366,9 +366,9 @@ public class AgileService implements IAgileService {
    }
 
    @Override
-   public Collection<IAgileFeatureGroup> getAgileFeatureGroups(List<Long> uuids) {
+   public Collection<IAgileFeatureGroup> getAgileFeatureGroups(List<Long> ids) {
       List<IAgileFeatureGroup> features = new LinkedList<>();
-      for (ArtifactId featureArt : atsApi.getArtifacts(uuids)) {
+      for (ArtifactId featureArt : atsApi.getArtifacts(ids)) {
          features.add(atsApi.getConfigItemFactory().getAgileFeatureGroup(featureArt));
       }
       return features;
@@ -422,8 +422,8 @@ public class AgileService implements IAgileService {
    }
 
    @Override
-   public void deleteSprint(long sprintUuid) {
-      ArtifactId sprint = atsApi.getArtifact(sprintUuid);
+   public void deleteSprint(long sprintId) {
+      ArtifactId sprint = atsApi.getArtifact(sprintId);
       if (sprint != null) {
          IAtsChangeSet changes = atsApi.createChangeSet("Delete Agile Sprint");
          changes.deleteArtifact(sprint);

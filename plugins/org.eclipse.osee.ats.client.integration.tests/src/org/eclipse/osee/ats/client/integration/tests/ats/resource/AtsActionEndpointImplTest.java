@@ -239,7 +239,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    private void testAction(JsonObject obj) {
       Assert.assertEquals(DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW,
          obj.get("Name").getAsString());
-      Assert.assertNotNull(obj.has("uuid"));
+      Assert.assertNotNull(obj.has("id"));
       Assert.assertNotNull(obj.has("AtsId"));
       Assert.assertEquals("/ats/ui/action/" + obj.get("AtsId").getAsString(), obj.get("actionLocation").getAsString());
    }

@@ -37,14 +37,14 @@ public class TeamDefinitionSearchWidget {
          TEAM_DEFINITIONS, searchItem.getBeginComposite(beginComposite)));
    }
 
-   public Collection<Long> getUuids() {
-      List<Long> uuids = new LinkedList<>();
+   public Collection<Long> getIds() {
+      List<Long> ids = new LinkedList<>();
       if (get() != null) {
          for (IAtsTeamDefinition teamDef : get()) {
-            uuids.add(teamDef.getId());
+            ids.add(teamDef.getId());
          }
       }
-      return uuids;
+      return ids;
    }
 
    public Collection<IAtsTeamDefinition> get() {
@@ -67,8 +67,8 @@ public class TeamDefinitionSearchWidget {
       if (getWidget() != null) {
          getWidget().handleClear();
          List<IAtsTeamDefinition> teamDefs = new LinkedList<>();
-         for (Long uuid : data.getTeamDefUuids()) {
-            IAtsTeamDefinition teamDef = AtsClientService.get().getCache().getAtsObject(uuid);
+         for (Long id : data.getTeamDefIds()) {
+            IAtsTeamDefinition teamDef = AtsClientService.get().getCache().getAtsObject(id);
             if (teamDef != null) {
                teamDefs.add(teamDef);
             }

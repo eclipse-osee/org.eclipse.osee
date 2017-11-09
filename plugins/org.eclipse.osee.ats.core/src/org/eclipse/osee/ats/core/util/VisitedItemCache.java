@@ -21,14 +21,14 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
  */
 public class VisitedItemCache {
 
-   public List<Long> visitedUuids = new ArrayList<>();
-   public Map<Long, IAtsWorkItem> uuidtoWorkItem = new HashMap<>();
+   public List<Long> visitedIds = new ArrayList<>();
+   public Map<Long, IAtsWorkItem> idtoWorkItem = new HashMap<>();
 
    public List<IAtsWorkItem> getReverseVisited() {
       // Search artifacts and hold on to references so don't get garbage collected
       List<IAtsWorkItem> revArts = new ArrayList<>();
-      for (int x = visitedUuids.size() - 1; x >= 0; x--) {
-         IAtsWorkItem workItem = uuidtoWorkItem.get(visitedUuids.get(x));
+      for (int x = visitedIds.size() - 1; x >= 0; x--) {
+         IAtsWorkItem workItem = idtoWorkItem.get(visitedIds.get(x));
          if (workItem != null) {
             revArts.add(workItem);
          }
@@ -37,16 +37,16 @@ public class VisitedItemCache {
    }
 
    public void addVisited(IAtsWorkItem workItem) {
-      if (!visitedUuids.contains(workItem.getId())) {
-         visitedUuids.add(workItem.getId());
-         uuidtoWorkItem.put(workItem.getId(), workItem);
+      if (!visitedIds.contains(workItem.getId())) {
+         visitedIds.add(workItem.getId());
+         idtoWorkItem.put(workItem.getId(), workItem);
       }
    }
 
    public void clearVisited() {
-      if (visitedUuids != null) {
-         visitedUuids.clear();
-         uuidtoWorkItem.clear();
+      if (visitedIds != null) {
+         visitedIds.clear();
+         idtoWorkItem.clear();
       }
    }
 

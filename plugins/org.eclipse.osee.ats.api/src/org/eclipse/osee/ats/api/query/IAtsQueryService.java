@@ -44,7 +44,7 @@ public interface IAtsQueryService {
 
    void removeSearch(IAtsUser atsUser, AtsSearchData data);
 
-   AtsSearchData getSearch(IAtsUser atsUser, Long uuid);
+   AtsSearchData getSearch(IAtsUser atsUser, Long id);
 
    AtsSearchData getSearch(String jsonStr);
 
@@ -60,7 +60,7 @@ public interface IAtsQueryService {
    List<ArtifactToken> getArtifactListByIdsStr(String id);
 
    /**
-    * @param id guid, uuid or AtsId
+    * @param id guid, id or AtsId
     */
    ArtifactToken getArtifactById(String id);
 

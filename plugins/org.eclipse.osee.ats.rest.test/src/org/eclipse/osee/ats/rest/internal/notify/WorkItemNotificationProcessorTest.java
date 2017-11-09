@@ -103,7 +103,7 @@ public class WorkItemNotificationProcessorTest {
       when(teamWf.getAtsId()).thenReturn(atsId);
       when(workItemFactory.getWorkItemByAtsId(atsId)).thenReturn(teamWf);
       when(attrResolver.getSoleAttributeValue(teamWf, AtsAttributeTypes.LegacyPcrId, "")).thenReturn(atsId);
-      when(atsServer.getConfigValue(eq("ActionUrl"))).thenReturn("http://ats/action/UUID/");
+      when(atsServer.getConfigValue(eq("ActionUrl"))).thenReturn("http://ats/action/ID/");
       when(teamWf.getId()).thenReturn(98L);
       when(teamWf.getArtifactTypeName()).thenReturn("Team Workflow");
       when(teamWf.getStateMgr()).thenReturn(stateMgr);

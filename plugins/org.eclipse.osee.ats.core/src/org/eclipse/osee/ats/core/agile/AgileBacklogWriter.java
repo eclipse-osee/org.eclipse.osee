@@ -43,15 +43,15 @@ public class AgileBacklogWriter {
          atsApi.getStoreService().createAtsChangeSet("Update Agile Backlog", AtsCoreUsers.SYSTEM_USER);
 
       // Validate backlog exists
-      IAgileBacklog currentBacklog = agileService.getAgileBacklog(updatedBacklog.getUuid());
+      IAgileBacklog currentBacklog = agileService.getAgileBacklog(updatedBacklog.getId());
       if (currentBacklog == null) {
-         throw new OseeArgumentException("No Backlog found with UUID %d", updatedBacklog.getUuid());
+         throw new OseeArgumentException("No Backlog found with ID %d", updatedBacklog.getId());
       }
-      if (currentBacklog.getTeamUuid() != updatedBacklog.getTeamUuid()) {
+      if (currentBacklog.getTeamId() != updatedBacklog.getTeamId()) {
 
-         // If teamUuid is empty, unrelate form backlog
-         if (currentBacklog.getTeamUuid() == IAgileService.EMPTY_VALUE) {
-            IAgileTeam team = agileService.getAgileTeam(currentBacklog.getTeamUuid());
+         // If teamId is empty, unrelate form backlog
+         if (currentBacklog.getTeamId() == IAgileService.EMPTY_VALUE) {
+            IAgileTeam team = agileService.getAgileTeam(currentBacklog.getTeamId());
             if (team != null) {
                changes.unrelateAll(team, AtsRelationTypes.AgileTeamToBacklog_Backlog);
                changes.add(team);
@@ -60,11 +60,11 @@ public class AgileBacklogWriter {
 
          // Else validate and relate new team
          else {
-            ArtifactToken updateBacklogArt = atsApi.getArtifact(updatedBacklog.getUuid());
-            IAgileTeam updatedTeam = agileService.getAgileTeam(updatedBacklog.getTeamUuid());
+            ArtifactToken updateBacklogArt = atsApi.getArtifact(updatedBacklog.getId());
+            IAgileTeam updatedTeam = agileService.getAgileTeam(updatedBacklog.getTeamId());
             ArtifactToken updatedTeamArt = updatedTeam.getStoreObject();
             if (!atsApi.getStoreService().isOfType(updateBacklogArt, AtsArtifactTypes.Goal)) {
-               throw new OseeArgumentException("Backlog UUID %d not valid type", updatedBacklog.getUuid());
+               throw new OseeArgumentException("Backlog ID %d not valid type", updatedBacklog.getId());
             } else if (atsApi.getRelationResolver().getRelatedCount(updateBacklogArt,
                AtsRelationTypes.AgileTeamToBacklog_AgileTeam) > 0) {
                ArtifactToken currentTeamArt = atsApi.getRelationResolver().getRelatedOrNull(updateBacklogArt,
@@ -89,6 +89,6 @@ public class AgileBacklogWriter {
       if (!changes.isEmpty()) {
          changes.execute();
       }
-      return agileService.getAgileBacklog(updatedBacklog.getUuid());
+      return agileService.getAgileBacklog(updatedBacklog.getId());
    }
 }

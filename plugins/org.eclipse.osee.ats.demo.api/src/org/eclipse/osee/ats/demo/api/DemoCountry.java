@@ -27,9 +27,9 @@ public class DemoCountry extends JaxCountry {
    List<DemoProgram> programs;
    private static List<DemoCountry> countries;
 
-   public DemoCountry(String name, long uuid, String description) {
+   public DemoCountry(String name, long id, String description) {
       setName(name);
-      setUuid(uuid);
+      setId(id);
       setDescription(description);
       setActive(true);
       this.programs = new ArrayList<>();

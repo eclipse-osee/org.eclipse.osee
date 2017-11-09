@@ -16,12 +16,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class AtsRestWorkItem {
 
    private final String name;
-   private final long uuid;
+   private final long id;
    private final String atsId;
 
-   public AtsRestWorkItem(String name, long uuid, String atsId) {
+   public AtsRestWorkItem(String name, long id, String atsId) {
       this.name = name;
-      this.uuid = uuid;
+      this.id = id;
       this.atsId = atsId;
    }
 
@@ -29,8 +29,8 @@ public class AtsRestWorkItem {
       return name;
    }
 
-   public long getUuid() {
-      return uuid;
+   public long getId() {
+      return id;
    }
 
    public String getAtsId() {

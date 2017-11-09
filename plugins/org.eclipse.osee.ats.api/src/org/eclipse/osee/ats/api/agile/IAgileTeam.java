@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
  */
 public interface IAgileTeam extends IAtsConfigObject, IAgileObject {
 
-   public List<Long> getAtsTeamUuids();
+   public List<Long> getAtsTeamIds();
 
    public ArtifactId getBacklogId();
 

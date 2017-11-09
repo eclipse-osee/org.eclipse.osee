@@ -26,7 +26,7 @@ import org.eclipse.osee.orcs.transaction.TransactionFactory;
 /**
  * @author Megumi Telles
  */
-public abstract class AbstractConvertGuidToUuid implements IAtsDatabaseConversion {
+public abstract class AbstractConvertGuidToId implements IAtsDatabaseConversion {
 
    private static final String SELECT_BRANCH_ID_BY_GUID = "select branch_id from osee_branch where branch_guid = ?";
 
@@ -35,7 +35,7 @@ public abstract class AbstractConvertGuidToUuid implements IAtsDatabaseConversio
    protected final OrcsApi orcsApi;
    protected final IAtsServer atsServer;
 
-   public AbstractConvertGuidToUuid(Log logger, JdbcClient jdbcClient, OrcsApi orcsApi, IAtsServer atsServer) {
+   public AbstractConvertGuidToId(Log logger, JdbcClient jdbcClient, OrcsApi orcsApi, IAtsServer atsServer) {
       super();
       this.logger = logger;
       this.jdbcClient = jdbcClient;
@@ -66,7 +66,7 @@ public abstract class AbstractConvertGuidToUuid implements IAtsDatabaseConversio
    }
 
    /**
-    * Temporary method till all code uses branch uuid. Remove after 0.17.0
+    * Temporary method till all code uses branch id. Remove after 0.17.0
     */
    private BranchId getBranchIdLegacy(String branchGuid) {
       BranchId branch = getJdbcClient().fetch(BranchId.SENTINEL, SELECT_BRANCH_ID_BY_GUID, branchGuid);

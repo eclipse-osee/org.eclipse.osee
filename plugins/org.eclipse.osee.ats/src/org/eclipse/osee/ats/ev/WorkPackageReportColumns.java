@@ -39,7 +39,7 @@ public class WorkPackageReportColumns {
       "Work Package Activity Id", 80, XViewerAlign.Left, true, SortDataType.String, false, "");
    protected static XViewerColumn wpTeamAiNames = new XViewerColumn("Work Package Teams/AIs", "Work Package Teams/AIs",
       200, XViewerAlign.Left, true, SortDataType.String, false, "");
-   protected static XViewerColumn wpUuid = new XViewerColumn("Work Package Uuid", "Work Package Uuid", 60,
+   protected static XViewerColumn wpId = new XViewerColumn("Work Package Id", "Work Package Id", 60,
       XViewerAlign.Left, true, SortDataType.Long, false, "");
    public static XViewerColumn wpActiveColumn = new XViewerColumn("Work Package Active", "Work Package Active", 40,
       XViewerAlign.Left, true, SortDataType.Boolean, false, "");

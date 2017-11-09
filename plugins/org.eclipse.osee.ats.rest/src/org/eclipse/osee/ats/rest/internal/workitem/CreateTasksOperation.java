@@ -60,7 +60,7 @@ public class CreateTasksOperation {
    private IAtsUser asUser;
    private final List<JaxAtsTask> tasks = new ArrayList<>();
    private Date createdByDate;
-   private Map<Long, IAtsTeamWorkflow> uuidToTeamWf;
+   private Map<Long, IAtsTeamWorkflow> idToTeamWf;
 
    public CreateTasksOperation(NewTaskData newTaskData, IAtsServer atsServer, XResultData resultData) {
       newTaskDatas = new NewTaskDatas();
@@ -79,40 +79,40 @@ public class CreateTasksOperation {
       if (resultData == null) {
          resultData = new XResultData(false);
       }
-      uuidToTeamWf = new HashMap<>();
+      idToTeamWf = new HashMap<>();
       for (NewTaskData newTaskData : newTaskDatas.getTaskDatas()) {
-         Long teamWfUuid = newTaskData.getTeamWfUuid();
-         if (teamWfUuid == null) {
-            resultData.error("Team Workflow uuid not specified");
+         Long teamWfId = newTaskData.getTeamWfId();
+         if (teamWfId == null) {
+            resultData.error("Team Workflow id not specified");
             continue;
          }
-         ArtifactReadable teamWfArt = atsServer.getArtifact(teamWfUuid);
+         ArtifactReadable teamWfArt = atsServer.getArtifact(teamWfId);
          if (teamWfArt == null) {
-            resultData.errorf("Team Workflow uuid %d does not exist", teamWfUuid);
+            resultData.errorf("Team Workflow id %d does not exist", teamWfId);
          }
-         IAtsTeamWorkflow teamWf = uuidToTeamWf.get(teamWfUuid);
+         IAtsTeamWorkflow teamWf = idToTeamWf.get(teamWfId);
          if (teamWf == null) {
             teamWf = atsServer.getWorkItemFactory().getTeamWf(teamWfArt);
-            uuidToTeamWf.put(teamWfUuid, teamWf);
+            idToTeamWf.put(teamWfId, teamWf);
          }
          String asUserId = newTaskData.getAsUserId();
          if (asUserId == null) {
-            resultData.error("As User Id uuid not specified");
+            resultData.error("As User Id id not specified");
          }
          asUser = atsServer.getUserService().getUserById(asUserId);
          if (asUser == null) {
-            resultData.errorf("As User Id uuid %d does not exist", asUserId);
+            resultData.errorf("As User Id id %d does not exist", asUserId);
          }
          if (!Strings.isValid(newTaskData.getCommitComment())) {
             resultData.errorf("Inavlidate Commit Comment [%s]", newTaskData.getCommitComment());
          }
 
          for (JaxAtsTask task : newTaskData.getNewTasks()) {
-            Long taskUuid = task.getUuid();
-            if (taskUuid != null && taskUuid > 0L) {
-               ArtifactReadable taskArt = atsServer.getArtifact(taskUuid);
+            Long taskId = task.getId();
+            if (taskId != null && taskId > 0L) {
+               ArtifactReadable taskArt = atsServer.getArtifact(taskId);
                if (taskArt != null) {
-                  resultData.errorf("Task with uuid %d already exists for %s", taskUuid, task);
+                  resultData.errorf("Task with id %d already exists for %s", taskId, task);
                }
             }
             if (!Strings.isValid(task.getName())) {
@@ -131,7 +131,7 @@ public class CreateTasksOperation {
             if (Strings.isValid(relatedToState)) {
                if (teamWorkflow.getWorkDefinition().getStateByName(relatedToState) == null) {
                   resultData.errorf("Task Related To State %s invalid for Team Workflow %d", relatedToState,
-                     teamWfUuid);
+                     teamWfId);
                }
             }
 
@@ -175,18 +175,18 @@ public class CreateTasksOperation {
                   resultData.errorf("Relation Type [%s] not valid for Task creation in %s",
                      relation.getRelationTypeName(), task);
                }
-               if (relation.getRelatedUuids().isEmpty()) {
-                  resultData.errorf("Relation [%s] Uuids must be suplied Task creation in %s",
+               if (relation.getRelatedIds().isEmpty()) {
+                  resultData.errorf("Relation [%s] Ids must be suplied Task creation in %s",
                      relation.getRelationTypeName(), task);
                }
-               Collection<ArtifactId> foundUuids =
-                  atsServer.getQueryService().createQuery(WorkItemType.WorkItem).andUuids(
-                     relation.getRelatedUuids().toArray(new Long[relation.getRelatedUuids().size()])).getItemIds();
-               List<Long> notFoundUuids = relation.getRelatedUuids();
-               notFoundUuids.removeAll(foundUuids);
-               if (foundUuids.size() != relation.getRelatedUuids().size()) {
-                  resultData.errorf("Relation [%s] Uuids [%s] do not match Work Items in task %s",
-                     relation.getRelationTypeName(), notFoundUuids, task);
+               Collection<ArtifactId> foundIds =
+                  atsServer.getQueryService().createQuery(WorkItemType.WorkItem).andIds(
+                     relation.getRelatedIds().toArray(new Long[relation.getRelatedIds().size()])).getItemIds();
+               List<Long> notFoundIds = relation.getRelatedIds();
+               notFoundIds.removeAll(foundIds);
+               if (foundIds.size() != relation.getRelatedIds().size()) {
+                  resultData.errorf("Relation [%s] Ids [%s] do not match Work Items in task %s",
+                     relation.getRelationTypeName(), notFoundIds, task);
                }
             }
          }
@@ -230,9 +230,9 @@ public class CreateTasksOperation {
 
       for (NewTaskData newTaskData : newTaskDatas.getTaskDatas()) {
          for (JaxAtsTask jaxTask : newTaskData.getNewTasks()) {
-            JaxAtsTask newJaxTask = createNewJaxTask(jaxTask.getUuid(), atsServer);
+            JaxAtsTask newJaxTask = createNewJaxTask(jaxTask.getId(), atsServer);
             if (newJaxTask == null) {
-               throw new OseeStateException("Unable to create return New Task for uuid " + jaxTask.getUuid());
+               throw new OseeStateException("Unable to create return New Task for id " + jaxTask.getId());
             }
             this.tasks.add(newJaxTask);
          }
@@ -250,16 +250,15 @@ public class CreateTasksOperation {
       for (NewTaskData newTaskData : newTaskDatas.getTaskDatas()) {
          for (JaxAtsTask jaxTask : newTaskData.getNewTasks()) {
 
-            Long uuid = jaxTask.getUuid();
-            if (uuid == null || uuid <= 0L) {
-               uuid = Lib.generateArtifactIdAsInt();
-               jaxTask.setUuid(uuid);
+            Long id = jaxTask.getId();
+            if (id == null || id <= 0L) {
+               id = Lib.generateArtifactIdAsInt();
+               jaxTask.setId(id);
             }
-            ArtifactToken taskArt =
-               changes.createArtifact(AtsArtifactTypes.Task, jaxTask.getName(), GUID.create(), uuid);
+            ArtifactToken taskArt = changes.createArtifact(AtsArtifactTypes.Task, jaxTask.getName(), GUID.create(), id);
             IAtsTask task = atsServer.getWorkItemFactory().getTask(taskArt);
 
-            IAtsTeamWorkflow teamWf = uuidToTeamWf.get(newTaskData.getTeamWfUuid());
+            IAtsTeamWorkflow teamWf = idToTeamWf.get(newTaskData.getTeamWfId());
             atsServer.getActionFactory().setAtsId(task, teamWf.getTeamDefinition(), changes);
             changes.relate(teamWf, AtsRelationTypes.TeamWfToTask_Task, taskArt);
 
@@ -307,8 +306,8 @@ public class CreateTasksOperation {
                   resultData.errorf("Relation Type [%s] not valid for Task creation in %s",
                      relation.getRelationTypeName(), task);
                }
-               Collection<IAtsWorkItem> items = atsServer.getQueryService().createQuery(WorkItemType.WorkItem).andUuids(
-                  relation.getRelatedUuids().toArray(new Long[relation.getRelatedUuids().size()])).getItems();
+               Collection<IAtsWorkItem> items = atsServer.getQueryService().createQuery(WorkItemType.WorkItem).andIds(
+                  relation.getRelatedIds().toArray(new Long[relation.getRelatedIds().size()])).getItems();
                RelationTypeSide side = null;
                if (relation.isSideA()) {
                   side = new RelationTypeSide(relationType, RelationSide.SIDE_A);
@@ -323,13 +322,13 @@ public class CreateTasksOperation {
 
    }
 
-   public static JaxAtsTask createNewJaxTask(Long uuid, IAtsServer atsServer) {
-      ArtifactReadable taskArt = atsServer.getArtifact(uuid);
+   public static JaxAtsTask createNewJaxTask(Long id, IAtsServer atsServer) {
+      ArtifactReadable taskArt = atsServer.getArtifact(id);
       if (taskArt != null) {
          JaxAtsTask newJaxTask = new JaxAtsTask();
          newJaxTask.setName(taskArt.getName());
          newJaxTask.setDescription(taskArt.getSoleAttributeValue(AtsAttributeTypes.Description, ""));
-         newJaxTask.setUuid(taskArt.getId());
+         newJaxTask.setId(taskArt.getId());
          newJaxTask.setActive(true);
          String createdByUserId = taskArt.getSoleAttributeValue(AtsAttributeTypes.CreatedBy, null);
          newJaxTask.setCreatedByUserId(createdByUserId);

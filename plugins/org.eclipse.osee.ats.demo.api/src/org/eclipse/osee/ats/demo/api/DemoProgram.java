@@ -36,15 +36,15 @@ public class DemoProgram extends JaxProgram {
    private final DemoCountry country;
    private static List<DemoProgram> programs;
 
-   public DemoProgram(DemoCountry country, String name, long uuid, String description) {
+   public DemoProgram(DemoCountry country, String name, long id, String description) {
       this.country = country;
       setName(name);
-      setUuid(uuid);
+      setId(id);
       setDescription(description);
       setActive(true);
       this.insertions = new ArrayList<>();
       country.getPrograms().add(this);
-      setCountryUuid(country.getUuid());
+      setCountryId(country.getId());
       if (programs == null) {
          programs = new LinkedList<>();
       }

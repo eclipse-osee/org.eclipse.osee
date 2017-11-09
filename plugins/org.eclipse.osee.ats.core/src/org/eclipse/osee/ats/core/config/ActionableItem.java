@@ -35,13 +35,13 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
    private JaxActionableItem jaxAI;
 
    public ActionableItem(Log logger, AtsApi atsApi, JaxActionableItem jaxAI) {
-      super(logger, atsApi, ArtifactToken.valueOf(jaxAI.getUuid(), jaxAI.getGuid(), jaxAI.getName(),
+      super(logger, atsApi, ArtifactToken.valueOf(jaxAI.getId(), jaxAI.getGuid(), jaxAI.getName(),
          atsApi.getAtsBranch(), AtsArtifactTypes.ActionableItem));
       this.jaxAI = jaxAI;
    }
 
    public ActionableItem(Log logger, AtsApi atsApi, ArtifactToken artifact) {
-      super(logger, atsApi, ArtifactToken.valueOf(artifact.getUuid(), artifact.getGuid(), artifact.getName(),
+      super(logger, atsApi, ArtifactToken.valueOf(artifact.getId(), artifact.getGuid(), artifact.getName(),
          atsApi.getAtsBranch(), AtsArtifactTypes.ActionableItem));
    }
 

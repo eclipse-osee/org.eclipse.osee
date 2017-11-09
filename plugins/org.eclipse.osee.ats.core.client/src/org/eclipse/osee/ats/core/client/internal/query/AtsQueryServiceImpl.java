@@ -113,7 +113,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
          atsClient.getStoreService().createAtsChangeSet("Save ATS Search", atsClient.getUserService().getCurrentUser());
 
       try {
-         IAttribute<Object> attr = getAttrById(userArt, data.getUuid());
+         IAttribute<Object> attr = getAttrById(userArt, data.getId());
          if (attr == null) {
             changes.addAttribute(atsUser, AtsAttributeTypes.QuickSearch, getStoreString(data));
          } else {
@@ -134,7 +134,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
          String jsonValue = (String) attr.getValue();
          try {
             AtsSearchData data = fromJson(jsonValue);
-            if (attrId.equals(data.getUuid())) {
+            if (attrId.equals(data.getId())) {
                return attr;
             }
          } catch (Exception ex) {
@@ -151,7 +151,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
          atsClient.getUserService().getCurrentUser());
 
       try {
-         IAttribute<Object> attr = getAttrById(userArt, data.getUuid());
+         IAttribute<Object> attr = getAttrById(userArt, data.getId());
          if (attr != null) {
             changes.deleteAttribute(userArt, attr);
             changes.execute();
@@ -162,10 +162,10 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public AtsSearchData getSearch(IAtsUser atsUser, Long uuid) {
+   public AtsSearchData getSearch(IAtsUser atsUser, Long id) {
       try {
          ArtifactId userArt = atsUser.getStoreObject();
-         IAttribute<Object> attr = getAttrById(userArt, uuid);
+         IAttribute<Object> attr = getAttrById(userArt, id);
          if (attr != null) {
             AtsSearchData existing = fromJson((String) attr.getValue());
             if (existing != null) {

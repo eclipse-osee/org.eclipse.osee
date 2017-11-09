@@ -84,7 +84,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public AtsSearchData getSearch(IAtsUser atsUser, Long uuid) {
+   public AtsSearchData getSearch(IAtsUser atsUser, Long id) {
       throw new UnsupportedOperationException("Unsupported on the server");
    }
 

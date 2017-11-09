@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventService;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
-import org.eclipse.osee.framework.skynet.core.event.filter.BranchUuidEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.filter.BranchIdEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.EventQosType;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
@@ -140,7 +140,7 @@ public class FrameworkAccessControlProxy implements CmAccessControl, HasAccessMo
                eventFilters = Arrays.asList(new ArtifactEventFilter(artifact));
             } else {
                eventFilters = Arrays.asList(new ArtifactTypeEventFilter(CoreArtifactTypes.AccessControlModel),
-                  new BranchUuidEventFilter(CoreBranches.COMMON));
+                  new BranchIdEventFilter(CoreBranches.COMMON));
             }
          }
          return eventFilters;

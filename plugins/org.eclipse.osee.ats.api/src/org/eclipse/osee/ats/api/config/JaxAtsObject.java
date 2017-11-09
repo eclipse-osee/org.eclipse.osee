@@ -24,7 +24,7 @@ public class JaxAtsObject {
 
    protected String name;
    @JsonSerialize(using = ToStringSerializer.class)
-   protected Long uuid;
+   protected Long id;
    protected String guid;
    protected boolean active;
    private String description;
@@ -37,15 +37,15 @@ public class JaxAtsObject {
       this.name = name;
    }
 
-   public Long getUuid() {
-      return uuid;
+   public Long getId() {
+      return id;
    }
 
    /**
     * Provided for deserialization. Setting will not apply to new artifact.
     */
-   public void setUuid(Long uuid) {
-      this.uuid = uuid;
+   public void setId(Long id) {
+      this.id = id;
    }
 
    @Override
@@ -74,7 +74,7 @@ public class JaxAtsObject {
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + (int) (uuid ^ uuid >>> 32);
+      result = prime * result + (int) (id ^ id >>> 32);
       return result;
    }
 
@@ -88,19 +88,19 @@ public class JaxAtsObject {
       }
       if (obj instanceof JaxAtsObject) {
          JaxAtsObject other = (JaxAtsObject) obj;
-         if (other.getUuid().equals(uuid)) {
+         if (other.getId().equals(id)) {
             return true;
          }
       }
       if (obj instanceof IAtsObject) {
          IAtsObject other = (IAtsObject) obj;
-         if (other.getId().equals(uuid)) {
+         if (other.getId().equals(id)) {
             return true;
          }
       }
       if (obj instanceof ArtifactId) {
          ArtifactId other = (ArtifactId) obj;
-         if (other.getUuid().equals(uuid)) {
+         if (other.getId().equals(id)) {
             return true;
          }
       }
@@ -124,7 +124,7 @@ public class JaxAtsObject {
    }
 
    public String toStringWithId() {
-      return String.format("[%s]-[%s]", getName(), getUuid());
+      return String.format("[%s]-[%s]", getName(), getId());
    }
 
 }

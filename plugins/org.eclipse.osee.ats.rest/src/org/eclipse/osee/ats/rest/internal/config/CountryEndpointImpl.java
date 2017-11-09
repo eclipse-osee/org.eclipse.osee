@@ -41,20 +41,20 @@ public class CountryEndpointImpl extends BaseConfigEndpointImpl<JaxCountry> impl
 
    @Override
    public Response update(JaxCountry country) throws Exception {
-      ArtifactReadable artifact = atsServer.getArtifact(country.getUuid());
+      ArtifactReadable artifact = atsServer.getArtifact(country.getId());
       if (artifact == null) {
-         throw new OseeStateException("Artifact with uuid %d not found", country.getUuid());
+         throw new OseeStateException("Artifact with id %d not found", country.getId());
       }
       IAtsChangeSet changes =
          atsServer.getStoreService().createAtsChangeSet("Create " + artifactType.getName(), AtsCoreUsers.SYSTEM_USER);
       ArtifactReadable configArtifact =
-         (ArtifactReadable) changes.createArtifact(artifactType, country.getName(), GUID.create(), country.getUuid());
+         (ArtifactReadable) changes.createArtifact(artifactType, country.getName(), GUID.create(), country.getId());
       IAtsConfigObject configObject = atsServer.getConfigItemFactory().getConfigObject(configArtifact);
       if (!configArtifact.getName().equals(country.getName())) {
          changes.setSoleAttributeValue(configObject, CoreAttributeTypes.Name, country.getName());
       }
       changes.execute();
-      return Response.created(new URI("/" + country.getUuid())).build();
+      return Response.created(new URI("/" + country.getId())).build();
    }
 
    @Override
@@ -62,7 +62,7 @@ public class CountryEndpointImpl extends BaseConfigEndpointImpl<JaxCountry> impl
       JaxCountry jaxCountry = new JaxCountry();
       IAtsCountry country = atsServer.getConfigItemFactory().getCountry(artifact);
       jaxCountry.setName(country.getName());
-      jaxCountry.setUuid(country.getId());
+      jaxCountry.setId(country.getId());
       jaxCountry.setActive(country.isActive());
       jaxCountry.setDescription(country.getDescription());
       return jaxCountry;
@@ -78,8 +78,8 @@ public class CountryEndpointImpl extends BaseConfigEndpointImpl<JaxCountry> impl
    }
 
    @Override
-   public ProgramEndpointApi getProgram(long countryUuid) {
-      return new ProgramEndpointImpl(atsServer, countryUuid);
+   public ProgramEndpointApi getProgram(long countryId) {
+      return new ProgramEndpointImpl(atsServer, countryId);
    }
 
 }

@@ -19,14 +19,14 @@ import org.eclipse.osee.ats.api.config.JaxAtsObject;
 @XmlRootElement
 public class AbstractJaxNewAgileTeamObject extends JaxAtsObject {
 
-   private long teamUuid;
+   private long teamId;
 
-   public long getTeamUuid() {
-      return teamUuid;
+   public long getTeamId() {
+      return teamId;
    }
 
-   public void setTeamUuid(long teamUuid) {
-      this.teamUuid = teamUuid;
+   public void setTeamId(long teamId) {
+      this.teamId = teamId;
    }
 
 }

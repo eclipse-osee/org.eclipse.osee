@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public class TeamDefinitionQuickSearch extends AttributeValueQuickSearch {
 
    public TeamDefinitionQuickSearch(Collection<? extends IAtsTeamDefinition> teamDefs) {
-      super(AtsAttributeTypes.TeamDefinitionReference, AtsObjects.toUuidStrings(teamDefs));
+      super(AtsAttributeTypes.TeamDefinitionReference, AtsObjects.toIdStrings(teamDefs));
    }
 
    @Override

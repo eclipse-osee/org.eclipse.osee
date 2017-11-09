@@ -69,7 +69,7 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
    }
 
    public TeamWorkFlowArtifact(ArtifactTypeId artifactType) {
-      super(Lib.generateUuid(), null, CoreBranches.COMMON, artifactType);
+      super(Lib.generateId(), null, CoreBranches.COMMON, artifactType);
    }
 
    @Override

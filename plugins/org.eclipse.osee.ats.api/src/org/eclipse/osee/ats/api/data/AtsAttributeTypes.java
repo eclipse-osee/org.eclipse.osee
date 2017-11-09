@@ -36,7 +36,7 @@ public final class AtsAttributeTypes {
    public static final AttributeTypeToken AtsIdSequenceName = createType(1163054603768431493L, "ATS Id Sequence Name", "ATS Id Sequence Name");
    public static final AttributeTypeToken AtsConfiguredBranch = createType(72063456936722683L, "ATS Configured Branch", "ATS Configured Branch");
    public static final AttributeTypeToken TaskToChangedArtifactReference = createType(1153126013769613562L, "Task To Changed Artifact Reference");
-   public static final AttributeTypeToken BaselineBranchUuid = createType(1152932018686787753L, "Baseline Branch Uuid", "Baseline branch associated with ATS object.");
+   public static final AttributeTypeToken BaselineBranchId = createType(1152932018686787753L, "Baseline Branch Id", "Baseline branch associated with ATS object.");
 
    public static final AttributeTypeToken Category1 = createType(1152921504606847212L, "Category", "Open field for user to be able to enter text to use for categorizing/sorting.");
    public static final AttributeTypeToken Category2 = createType(1152921504606847217L, "Category2", Category1.getDescription());
@@ -153,7 +153,7 @@ public final class AtsAttributeTypes {
    public static final AttributeTypeToken DuplicatedPcrId = createType(1152922093378076842L, "Duplicated PCR Id");
    public static final AttributeTypeToken OriginatingPcrId = createType(1152922093379125418L, "Originating PCR Id");
    public static final AttributeTypeToken PcrToolId = createType(1152922093370736810L, "PCR Tool Id");
-   public static final AttributeTypeToken ProgramUuid = createType(1152922093377028266L, "Program Uuid");
+   public static final AttributeTypeToken ProgramId = createType(1152922093377028266L, "Program Id");
    public static final AttributeTypeToken Rationale = createType(1152922093379715242L, "Rationale");
 
    public static final AttributeTypeToken ColorTeam = createType(1364016837443371647L, "Color Team");

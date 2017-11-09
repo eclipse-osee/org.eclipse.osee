@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 public class UniqueNameRule extends AbstractValidationRule {
 
    private final IArtifactType artifactType;
-   private final Collection<UuidPair> uuidPairs = new LinkedList<>();
+   private final Collection<IdPair> idPairs = new LinkedList<>();
    private final Map<IArtifactType, List<Artifact>> artTypeToArtifacts = new HashMap<IArtifactType, List<Artifact>>();
 
    public UniqueNameRule(IArtifactType artifactType) {
@@ -51,8 +51,8 @@ public class UniqueNameRule extends AbstractValidationRule {
          // validate that no other artifact of the given Artifact Type has the same name.
          List<Artifact> arts = getArtifactsOfType(artToValidate.getBranchToken(), artToValidate.getArtifactType());
          for (Artifact art : arts) {
-            if (art.getName().equalsIgnoreCase(artToValidate.getName()) && !art.getUuid().equals(
-               artToValidate.getUuid()) && !hasUuidPairAlreadyBeenEvaluated(art.getUuid(), artToValidate.getUuid())) {
+            if (art.getName().equalsIgnoreCase(artToValidate.getName()) && !art.getId().equals(
+               artToValidate.getId()) && !hasIdPairAlreadyBeenEvaluated(art.getId(), artToValidate.getId())) {
                /**************************************************************************
                 * Special case: Allow duplicate names of artifacts if<br/>
                 * 1) Artifact name is numeric <br/>
@@ -74,7 +74,7 @@ public class UniqueNameRule extends AbstractValidationRule {
                   artToValidate) + " and " + ValidationReportOperation.getRequirementHyperlink(
                      art) + " have same name value:\"" + artToValidate.getName() + " \"");
                validationPassed = false;
-               addUuidPair(art.getUuid(), artToValidate.getUuid());
+               addIdPair(art.getId(), artToValidate.getId());
             }
          }
       }
@@ -97,34 +97,34 @@ public class UniqueNameRule extends AbstractValidationRule {
             childArtifact.getParent().equals(parentArtifact));
    }
 
-   private void addUuidPair(Long uuidA, Long uuidB) {
-      uuidPairs.add(new UuidPair(uuidA, uuidB));
+   private void addIdPair(Long idA, Long idB) {
+      idPairs.add(new IdPair(idA, idB));
    }
 
-   private boolean hasUuidPairAlreadyBeenEvaluated(Long uuidA, Long uuidB) {
-      for (UuidPair uuidPair : uuidPairs) {
-         if (uuidPair.getUuidA().equals(uuidA) && uuidPair.getUuidB().equals(uuidB) || uuidPair.getUuidA().equals(
-            uuidB) && uuidPair.getUuidB().equals(uuidA)) {
+   private boolean hasIdPairAlreadyBeenEvaluated(Long idA, Long idB) {
+      for (IdPair idPair : idPairs) {
+         if (idPair.getIdA().equals(idA) && idPair.getIdB().equals(idB) || idPair.getIdA().equals(
+            idB) && idPair.getIdB().equals(idA)) {
             return true;
          }
       }
       return false;
    }
 
-   private class UuidPair {
-      private final Long uuidA, uuidB;
+   private class IdPair {
+      private final Long idA, idB;
 
-      public UuidPair(Long uuidA, Long uuidB) {
-         this.uuidA = uuidA;
-         this.uuidB = uuidB;
+      public IdPair(Long idA, Long idB) {
+         this.idA = idA;
+         this.idB = idB;
       }
 
-      public Long getUuidA() {
-         return uuidA;
+      public Long getIdA() {
+         return idA;
       }
 
-      public Long getUuidB() {
-         return uuidB;
+      public Long getIdB() {
+         return idB;
       }
    }
 

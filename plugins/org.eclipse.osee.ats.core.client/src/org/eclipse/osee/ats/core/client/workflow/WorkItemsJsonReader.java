@@ -49,18 +49,18 @@ public class WorkItemsJsonReader implements MessageBodyReader<Collection<IAtsWor
          JsonFactory jfactory = new JsonFactory();
          JsonParser jParser = jfactory.createJsonParser(entityStream);
 
-         List<Long> uuids = new ArrayList<>();
+         List<Long> ids = new ArrayList<>();
          JsonToken nextToken = jParser.nextToken();
          while (nextToken != JsonToken.END_ARRAY) {
             if (nextToken == JsonToken.START_OBJECT) {
                while (nextToken != JsonToken.END_OBJECT) {
                   String key = jParser.getCurrentName();
-                  if ("uuid".equals(key)) {
+                  if ("id".equals(key)) {
                      jParser.nextToken();
                      String value = jParser.getText();
                      if (Strings.isNumeric(value)) {
-                        long uuid = Long.valueOf(value);
-                        uuids.add(uuid);
+                        long id = Long.valueOf(value);
+                        ids.add(id);
                      }
                   }
                   nextToken = jParser.nextToken();
@@ -69,11 +69,11 @@ public class WorkItemsJsonReader implements MessageBodyReader<Collection<IAtsWor
             nextToken = jParser.nextToken();
          }
          Collection<IAtsWorkItem> items = null;
-         if (uuids.isEmpty()) {
+         if (ids.isEmpty()) {
             items = Collections.emptyList();
          } else {
-            items = AtsClientService.get().getQueryService().createQuery(WorkItemType.WorkItem).andUuids(
-               uuids.toArray(new Long[uuids.size()])).getItems();
+            items = AtsClientService.get().getQueryService().createQuery(WorkItemType.WorkItem).andIds(
+               ids.toArray(new Long[ids.size()])).getItems();
          }
          return items;
       } catch (Exception ex) {

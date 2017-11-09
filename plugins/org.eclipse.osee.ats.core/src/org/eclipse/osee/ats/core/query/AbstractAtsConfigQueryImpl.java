@@ -18,8 +18,8 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
@@ -45,14 +45,14 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
    protected List<IArtifactType> artifactTypes;
    protected ArtifactId artifactId;
    protected final AtsApi atsApi;
-   protected Collection<Long> aiUuids;
+   protected Collection<Long> aiIds;
    protected List<ArtifactId> onlyIds = null;
    protected final List<IAtsQueryFilter> queryFilters;
 
    public AbstractAtsConfigQueryImpl(AtsApi atsApi) {
       this.atsApi = atsApi;
       andAttr = new ArrayList<>();
-      aiUuids = new ArrayList<>();
+      aiIds = new ArrayList<>();
       queryFilters = new ArrayList<>();
    }
 
@@ -209,8 +209,8 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
    }
 
    @Override
-   public IAtsConfigQuery andProgram(Long uuid) {
-      return andAttr(AtsAttributeTypes.ProgramUuid, Collections.singleton(String.valueOf(uuid)));
+   public IAtsConfigQuery andProgram(Long id) {
+      return andAttr(AtsAttributeTypes.ProgramId, Collections.singleton(String.valueOf(id)));
    }
 
    @Override

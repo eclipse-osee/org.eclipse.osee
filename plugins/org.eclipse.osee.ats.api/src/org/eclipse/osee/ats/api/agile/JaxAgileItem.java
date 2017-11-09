@@ -18,10 +18,10 @@ import java.util.List;
  */
 public class JaxAgileItem {
 
-   private final List<Long> uuids = new ArrayList<>();
+   private final List<Long> ids = new ArrayList<>();
    private final List<Long> features = new ArrayList<>();
-   private long sprintUuid = 0;
-   private long backlogUuid = 0;
+   private long sprintId = 0;
+   private long backlogId = 0;
    private boolean setFeatures = false;
    private boolean removeFeatures = false;
    private boolean setSprint = false;
@@ -33,16 +33,16 @@ public class JaxAgileItem {
       return features;
    }
 
-   public long getSprintUuid() {
-      return sprintUuid;
+   public long getSprintId() {
+      return sprintId;
    }
 
-   public void setSprintUuid(long sprintUuid) {
-      this.sprintUuid = sprintUuid;
+   public void setSprintId(long sprintId) {
+      this.sprintId = sprintId;
    }
 
-   public List<Long> getUuids() {
-      return uuids;
+   public List<Long> getIds() {
+      return ids;
    }
 
    public boolean isSetFeatures() {
@@ -69,12 +69,12 @@ public class JaxAgileItem {
       this.setBacklog = setBacklog;
    }
 
-   public long getBacklogUuid() {
-      return backlogUuid;
+   public long getBacklogId() {
+      return backlogId;
    }
 
-   public void setBacklogUuid(long backlogUuid) {
-      this.backlogUuid = backlogUuid;
+   public void setBacklogId(long backlogId) {
+      this.backlogId = backlogId;
    }
 
    public boolean isRemoveFeatures() {

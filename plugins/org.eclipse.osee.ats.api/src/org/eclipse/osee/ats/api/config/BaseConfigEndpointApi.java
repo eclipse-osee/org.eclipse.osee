@@ -31,16 +31,16 @@ public interface BaseConfigEndpointApi<T extends JaxAtsObject> {
    public List<T> get() throws Exception;
 
    @GET
-   @Path("{uuid}")
+   @Path("{id}")
    @Produces(MediaType.APPLICATION_JSON)
-   public T get(@PathParam("uuid") long uuid) throws Exception;
+   public T get(@PathParam("id") long id) throws Exception;
 
    @POST
    @Consumes(MediaType.APPLICATION_JSON)
    public Response create(T atsConfigObject) throws Exception;
 
    @DELETE
-   @Path("{uuid}")
-   public Response delete(@PathParam("uuid") long uuid) throws Exception;
+   @Path("{id}")
+   public Response delete(@PathParam("id") long id) throws Exception;
 
 }

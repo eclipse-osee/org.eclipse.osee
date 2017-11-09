@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.event.filter.BranchUuidEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.filter.BranchIdEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.EventQosType;
 import org.eclipse.osee.framework.skynet.core.event.listener.IEventListener;
@@ -205,7 +205,7 @@ public final class OseeEventManager {
    public static List<IEventFilter> getEventFiltersForBranch(final BranchId branch) {
       try {
          List<IEventFilter> eventFilters = new ArrayList<>(2);
-         eventFilters.add(new BranchUuidEventFilter(branch));
+         eventFilters.add(new BranchIdEventFilter(branch));
          return eventFilters;
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

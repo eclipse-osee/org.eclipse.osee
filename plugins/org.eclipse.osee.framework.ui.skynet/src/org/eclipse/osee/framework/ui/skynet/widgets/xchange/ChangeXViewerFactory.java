@@ -21,11 +21,11 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactTypeColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.GuidColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.HierarchyIndexColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.IdColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedByColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedDateColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedTransactionColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedTransactionCommentColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.UuidColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ViewApplicabilityColumn;
 
 /**
@@ -56,7 +56,7 @@ public class ChangeXViewerFactory extends SkynetXViewerFactory {
       registerColumns(Name, Item_Type, Item_Kind, Change_Type, Is_Value, Was_Value, paraNumber);
       registerColumns(HierarchyIndexColumn.getInstance());
       registerColumns(new GuidColumn(false));
-      registerColumns(new UuidColumn(false));
+      registerColumns(new IdColumn(false));
       registerColumns(new ArtifactTypeColumn("framework.change.artifactType"));
       registerColumns(new ViewApplicabilityColumn(false));
       registerColumns(new LastModifiedDateColumn(false));

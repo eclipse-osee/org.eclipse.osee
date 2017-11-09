@@ -81,9 +81,9 @@ public interface AgileEndpointApi {
    public List<IAtsWorkPackage> getWorkPackages(@PathParam("teamId") ArtifactId teamId);
 
    @GET
-   @Path("team/{teamId}/feature/{featureUuid}")
+   @Path("team/{teamId}/feature/{featureId}")
    @Produces(MediaType.APPLICATION_JSON)
-   public JaxAgileFeatureGroup getFeatureGroup(long teamId, long featureUuid);
+   public JaxAgileFeatureGroup getFeatureGroup(long teamId, long featureId);
 
    @GET
    @Path("team/{teamId}/backlog")
@@ -291,8 +291,8 @@ public interface AgileEndpointApi {
    public AgileWriterResult updateItems(JaxAgileItem newItem);
 
    @DELETE
-   @Path("team/{teamId}/feature/{featureUuid}")
-   public Response deleteFeatureGroup(@PathParam("teamId") long teamId, @PathParam("featureUuid") long featureUuid);
+   @Path("team/{teamId}/feature/{featureId}")
+   public Response deleteFeatureGroup(@PathParam("teamId") long teamId, @PathParam("featureId") long featureId);
 
    @DELETE
    @Path("team/{teamId}/sprint/{sprintId}")

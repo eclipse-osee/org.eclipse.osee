@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelation;
+import org.eclipse.osee.framework.core.model.event.DefaultBasicIdRelation;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -165,7 +165,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
                RelationEventType relationEventType =
                   change.getModificationType().isDeleted() ? RelationEventType.Deleted : change.getModificationType().isUnDeleted() ? RelationEventType.Undeleted : RelationEventType.Added;
 
-               DefaultBasicUuidRelation defaultBasicGuidRelation = new DefaultBasicUuidRelation(relChange.getBranch(),
+               DefaultBasicIdRelation defaultBasicGuidRelation = new DefaultBasicIdRelation(relChange.getBranch(),
                   relChange.getRelationType().getGuid(), relChange.getItemId().getId().intValue(),
                   relChange.getGamma().getId().intValue(), relChange.getChangeArtifact().getBasicGuidArtifact(),
                   relChange.getEndTxBArtifact().getBasicGuidArtifact());

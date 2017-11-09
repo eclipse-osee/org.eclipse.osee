@@ -89,12 +89,12 @@ public class RestUtil {
 
    public static Response redirect(Collection<? extends IAtsWorkItem> workItems, String defaultUrl, IAtsServer atsServer) {
       String actionUrl = AtsUtilCore.getBaseActionUiUrl(defaultUrl, atsServer);
-      String uuids = "";
+      String ids = "";
       for (IAtsWorkItem teamWf : workItems) {
-         uuids += teamWf.getAtsId() + ",";
+         ids += teamWf.getAtsId() + ",";
       }
-      uuids = uuids.replaceFirst(",$", "");
-      actionUrl = actionUrl.replaceFirst("UUID", uuids);
+      ids = ids.replaceFirst(",$", "");
+      actionUrl = actionUrl.replaceFirst("ID", ids);
       URI uri = UriBuilder.fromUri(actionUrl).build();
       return Response.seeOther(uri).build();
    }

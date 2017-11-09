@@ -89,9 +89,9 @@ public class AtsProgramServiceTest {
       IAtsProgram program = programService.getProgram(insertions.iterator().next());
       assertEquals(sawProgram.getId(), program.getId());
 
-      Long uuid = insertions.iterator().next().getId();
-      IAtsInsertion insertion2 = programService.getInsertion(uuid);
-      assertEquals(insertion2.getId(), uuid);
+      Long id = insertions.iterator().next().getId();
+      IAtsInsertion insertion2 = programService.getInsertion(id);
+      assertEquals(insertion2.getId(), id);
    }
 
    @Test
@@ -111,9 +111,9 @@ public class AtsProgramServiceTest {
 
       assertEquals(commInsertion.getId(), insertion.getId());
 
-      Long uuid = activities.iterator().next().getId();
-      IAtsInsertionActivity activity2 = programService.getInsertionActivity(uuid);
-      assertEquals(activity2.getId(), uuid);
+      Long id = activities.iterator().next().getId();
+      IAtsInsertionActivity activity2 = programService.getInsertionActivity(id);
+      assertEquals(activity2.getId(), id);
    }
 
    @Test

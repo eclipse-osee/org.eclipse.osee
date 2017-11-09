@@ -17,6 +17,6 @@ import org.eclipse.osee.ats.api.IAtsConfigObject;
  */
 public interface IAgileFeatureGroup extends IAtsConfigObject, IAgileObject {
 
-   public long getTeamUuid();
+   public long getTeamId();
 
 }

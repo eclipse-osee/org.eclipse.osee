@@ -61,7 +61,7 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
       if (atsObjecct.getStoreObject() instanceof ArtifactReadable) {
          return (ArtifactReadable) atsObjecct.getStoreObject();
       }
-      return orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andUuid(
+      return orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
          atsObjecct.getId()).getResults().getAtMostOneOrNull();
    }
 
@@ -100,7 +100,7 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
       atsUser.setUserId(userArt.getSoleAttributeAsString(CoreAttributeTypes.UserId, ""));
       atsUser.setEmail(userArt.getSoleAttributeAsString(CoreAttributeTypes.Email, ""));
       atsUser.setActive(userArt.getSoleAttributeValue(CoreAttributeTypes.Active, true));
-      atsUser.setUuid(userArt.getId());
+      atsUser.setId(userArt.getId());
       return atsUser;
    }
 
@@ -153,7 +153,7 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
    protected IAtsUser loadUserByAccountId(Long accountId) {
       IAtsUser user = null;
       ArtifactId userArt =
-         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andUuid(accountId).getResults().getAtMostOneOrNull();
+         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(accountId).getResults().getAtMostOneOrNull();
       if (userArt != null) {
          user = createFromArtifact((ArtifactReadable) userArt);
       }

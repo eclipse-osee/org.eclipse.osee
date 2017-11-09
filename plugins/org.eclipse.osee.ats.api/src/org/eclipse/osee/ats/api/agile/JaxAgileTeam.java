@@ -20,17 +20,17 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
  */
 public class JaxAgileTeam extends JaxAtsObject {
 
-   private List<Long> atsTeamUuids = new ArrayList<>();
+   private List<Long> atsTeamIds = new ArrayList<>();
    private ArtifactId backlogId = ArtifactId.SENTINEL;
    private ArtifactId sprintId = ArtifactId.SENTINEL;
    private String description = "";
 
-   public List<Long> getAtsTeamUuids() {
-      return atsTeamUuids;
+   public List<Long> getAtsTeamIds() {
+      return atsTeamIds;
    }
 
-   public void setAtsTeamUuids(List<Long> atsTeamUuids) {
-      this.atsTeamUuids = atsTeamUuids;
+   public void setAtsTeamIds(List<Long> atsTeamIds) {
+      this.atsTeamIds = atsTeamIds;
    }
 
    @Override

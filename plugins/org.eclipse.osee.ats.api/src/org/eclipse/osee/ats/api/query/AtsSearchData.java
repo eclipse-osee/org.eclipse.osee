@@ -25,21 +25,21 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 @XmlRootElement
 public class AtsSearchData {
 
-   private long uuid;
+   private long id;
    private String searchName = "";
    private String userId = "";
    private String title = "";
    private List<StateType> stateTypes;
    private AtsSearchUserType userType;
    private List<WorkItemType> workItemTypes;
-   private List<Long> teamDefUuids;
-   private List<Long> aiUuids;
-   private Long versionUuid = 0L;
+   private List<Long> teamDefIds;
+   private List<Long> aiIds;
+   private Long versionId = 0L;
    private String state = "";
-   private Long programUuid = 0L;
-   private Long insertionUuid = 0L;
-   private Long insertionActivityUuid = 0L;
-   private Long workPackageUuid = 0L;
+   private Long programId = 0L;
+   private Long insertionId = 0L;
+   private Long insertionActivityId = 0L;
+   private Long workPackageId = 0L;
    private String colorTeam = "";
    private String namespace = "";
    private ReviewFormalType reviewType;
@@ -49,9 +49,9 @@ public class AtsSearchData {
       // for jackson deserialization
       stateTypes = new LinkedList<>();
       workItemTypes = new LinkedList<>();
-      teamDefUuids = new LinkedList<>();
-      aiUuids = new LinkedList<>();
-      uuid = Lib.generateUuid();
+      teamDefIds = new LinkedList<>();
+      aiIds = new LinkedList<>();
+      id = Lib.generateId();
    }
 
    public AtsSearchData(String searchName) {
@@ -65,20 +65,20 @@ public class AtsSearchData {
    }
 
    protected AtsSearchData copy(AtsSearchData item) {
-      item.uuid = uuid;
+      item.id = id;
       item.setTitle(getTitle());
       item.getStateTypes().addAll(getStateTypes());
       item.setUserType(getUserType());
       item.setUserId(getUserId());
       item.getWorkItemTypes().addAll(getWorkItemTypes());
-      item.setTeamDefUuids(getTeamDefUuids());
-      item.setAiUuids(getAiUuids());
-      item.setVersionUuid(getVersionUuid());
+      item.setTeamDefIds(getTeamDefIds());
+      item.setAiIds(getAiIds());
+      item.setVersionId(getVersionId());
       item.setState(getState());
-      item.setProgramUuid(getProgramUuid());
-      item.setInsertionUuid(getInsertionUuid());
-      item.setInsertionActivityUuid(getInsertionActivityUuid());
-      item.setWorkPackageUuid(getWorkPackageUuid());
+      item.setProgramId(getProgramId());
+      item.setInsertionId(getInsertionId());
+      item.setInsertionActivityId(getInsertionActivityId());
+      item.setWorkPackageId(getWorkPackageId());
       item.setColorTeam(getColorTeam());
       item.setReviewType(getReviewType());
       return item;
@@ -108,13 +108,13 @@ public class AtsSearchData {
       this.searchName = searchName;
    }
 
-   public long getUuid() {
-      return uuid;
+   public long getId() {
+      return id;
    }
 
-   public void setUuid(long uuid) {
-      Conditions.checkExpressionFailOnTrue(uuid <= 0, "Can't set uuid to 0");
-      this.uuid = uuid;
+   public void setId(long id) {
+      Conditions.checkExpressionFailOnTrue(id <= 0, "Can't set id to 0");
+      this.id = id;
    }
 
    @Override
@@ -146,28 +146,28 @@ public class AtsSearchData {
       this.workItemTypes = workItemTypes;
    }
 
-   public List<Long> getTeamDefUuids() {
-      return teamDefUuids;
+   public List<Long> getTeamDefIds() {
+      return teamDefIds;
    }
 
-   public void setTeamDefUuids(List<Long> teamDefUuids) {
-      this.teamDefUuids = teamDefUuids;
+   public void setTeamDefIds(List<Long> teamDefIds) {
+      this.teamDefIds = teamDefIds;
    }
 
-   public Long getVersionUuid() {
-      return versionUuid;
+   public Long getVersionId() {
+      return versionId;
    }
 
-   public void setVersionUuid(Long versionUuid) {
-      this.versionUuid = versionUuid;
+   public void setVersionId(Long versionId) {
+      this.versionId = versionId;
    }
 
-   public List<Long> getAiUuids() {
-      return aiUuids;
+   public List<Long> getAiIds() {
+      return aiIds;
    }
 
-   public void setAiUuids(List<Long> aiUuids) {
-      this.aiUuids = aiUuids;
+   public void setAiIds(List<Long> aiIds) {
+      this.aiIds = aiIds;
    }
 
    public String getState() {
@@ -178,36 +178,36 @@ public class AtsSearchData {
       this.state = state;
    }
 
-   public Long getProgramUuid() {
-      return programUuid;
+   public Long getProgramId() {
+      return programId;
    }
 
-   public void setProgramUuid(Long programUuid) {
-      this.programUuid = programUuid;
+   public void setProgramId(Long programId) {
+      this.programId = programId;
    }
 
-   public Long getInsertionUuid() {
-      return insertionUuid;
+   public Long getInsertionId() {
+      return insertionId;
    }
 
-   public void setInsertionUuid(Long insertionUuid) {
-      this.insertionUuid = insertionUuid;
+   public void setInsertionId(Long insertionId) {
+      this.insertionId = insertionId;
    }
 
-   public Long getInsertionActivityUuid() {
-      return insertionActivityUuid;
+   public Long getInsertionActivityId() {
+      return insertionActivityId;
    }
 
-   public void setInsertionActivityUuid(Long insertionActivityUuid) {
-      this.insertionActivityUuid = insertionActivityUuid;
+   public void setInsertionActivityId(Long insertionActivityId) {
+      this.insertionActivityId = insertionActivityId;
    }
 
-   public Long getWorkPackageUuid() {
-      return workPackageUuid;
+   public Long getWorkPackageId() {
+      return workPackageId;
    }
 
-   public void setWorkPackageUuid(Long workPackageUuid) {
-      this.workPackageUuid = workPackageUuid;
+   public void setWorkPackageId(Long workPackageId) {
+      this.workPackageId = workPackageId;
    }
 
    public String getColorTeam() {

@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.EventSystemPreferences;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.filter.BranchUuidEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.filter.BranchIdEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
@@ -167,11 +167,11 @@ public abstract class AbstractEditTest {
 
    private static final class UpdateArtifactListener implements IArtifactEventListener {
       private final EventBasicGuidArtifact artToLookFor;
-      private final BranchUuidEventFilter branchFilter;
+      private final BranchIdEventFilter branchFilter;
       private boolean wasUpdateReceived;
 
       public UpdateArtifactListener(EventModType modType, Artifact artifact) {
-         branchFilter = new BranchUuidEventFilter(artifact.getBranch());
+         branchFilter = new BranchIdEventFilter(artifact.getBranch());
          artToLookFor = new EventBasicGuidArtifact(modType, artifact);
          wasUpdateReceived = false;
       }

@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastMo
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedDateColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedTransactionColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedTransactionCommentColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.UuidColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.IdColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ViewApplicabilityColumn;
 
 /**
@@ -39,7 +39,7 @@ public class MassXViewerFactory extends SkynetXViewerFactory {
       registerColumns(nameCol);
       registerColumns(ArtifactTypeColumn.getInstance());
       registerColumns(new GuidColumn(true));
-      registerColumns(new UuidColumn(true));
+      registerColumns(new IdColumn(true));
       registerColumns(new ViewApplicabilityColumn(true));
       registerColumns(new LastModifiedDateColumn(true));
       registerColumns(new LastModifiedByColumn(true));

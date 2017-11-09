@@ -86,7 +86,7 @@ import org.eclipse.osee.jaxrs.mvc.IdentityView;
 public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
 
    private final AtsApi atsApi;
-   private static final String ATS_UI_ACTION_PREFIX = "/ui/action/UUID";
+   private static final String ATS_UI_ACTION_PREFIX = "/ui/action/ID";
 
    @Context
    private HttpHeaders httpHeaders;

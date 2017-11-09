@@ -38,10 +38,10 @@ public class InsertionSearchWidget extends AbstractXComboViewerSearchWidget<IAts
    public void set(AtsSearchData data) {
       if (getWidget() != null) {
          setup(getWidget());
-         Long insertionUuid = data.getInsertionUuid();
+         Long insertionId = data.getInsertionId();
          XComboViewer combo = getWidget();
-         if (insertionUuid != null && insertionUuid > 0) {
-            IAtsInsertion insertion = AtsClientService.get().getProgramService().getInsertion(insertionUuid);
+         if (insertionId != null && insertionId > 0) {
+            IAtsInsertion insertion = AtsClientService.get().getProgramService().getInsertion(insertionId);
             combo.setSelected(Arrays.asList(insertion));
          }
       }

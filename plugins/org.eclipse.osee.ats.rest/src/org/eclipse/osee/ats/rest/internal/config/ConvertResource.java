@@ -71,7 +71,7 @@ public final class ConvertResource {
    }
 
    /**
-    * @param convertName - conversion name to perform. eg: ProgramGuidToUuid
+    * @param convertName - conversion name to perform. eg: ProgramGuidToId
     * @param operation - run if conversion should run, report for report without persist
     * @return Html results of conversion
     */

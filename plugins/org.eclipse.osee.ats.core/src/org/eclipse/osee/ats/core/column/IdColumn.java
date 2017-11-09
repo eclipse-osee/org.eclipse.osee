@@ -16,9 +16,9 @@ import org.eclipse.osee.ats.api.AtsApi;
 /**
  * @author Donald G. Dunne
  */
-public class UuidColumn extends AbstractServicesColumn {
+public class IdColumn extends AbstractServicesColumn {
 
-   public UuidColumn(AtsApi atsApi) {
+   public IdColumn(AtsApi atsApi) {
       super(atsApi);
    }
 

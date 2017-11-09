@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
-import org.eclipse.osee.framework.skynet.core.event.filter.BranchUuidEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.filter.BranchIdEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 
@@ -42,19 +42,19 @@ public class AtsUtilClient {
       new ArtifactTypeEventFilter(AtsArtifactTypes.TeamWorkflow);
    private static List<IEventFilter> atsObjectEventFilter = new ArrayList<>(2);
    private static boolean emailEnabled = true;
-   private static BranchUuidEventFilter commonBranchUuidEventFilter;
+   private static BranchIdEventFilter commonBranchIdEventFilter;
 
    public static boolean isEmailEnabled() {
       return emailEnabled;
    }
 
    /**
-    * This is necessary for ATS Config object's uuid so they can be persisted. Can be removed once artifact ids go to
+    * This is necessary for ATS Config object's id so they can be persisted. Can be removed once artifact ids go to
     * random longs
     *
-    * @return uuid for ATS Config Object creation
+    * @return id for ATS Config Object creation
     */
-   public static long createConfigObjectUuid() {
+   public static long createConfigObjectId() {
       return Lib.generateArtifactIdAsInt();
    }
 
@@ -65,11 +65,11 @@ public class AtsUtilClient {
       emailEnabled = enabled;
    }
 
-   public static BranchUuidEventFilter getAtsBranchFilter() {
-      if (commonBranchUuidEventFilter == null) {
-         commonBranchUuidEventFilter = new BranchUuidEventFilter(AtsClientService.get().getAtsBranch());
+   public static BranchIdEventFilter getAtsBranchFilter() {
+      if (commonBranchIdEventFilter == null) {
+         commonBranchIdEventFilter = new BranchIdEventFilter(AtsClientService.get().getAtsBranch());
       }
-      return commonBranchUuidEventFilter;
+      return commonBranchIdEventFilter;
    }
 
    public synchronized static List<IEventFilter> getAtsObjectEventFilters() {

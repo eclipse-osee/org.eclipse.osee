@@ -183,10 +183,10 @@ public final class AtsUtil {
    /**
     * Only to be used by browser. Use open (artifact) instead.
     */
-   public static void openArtifact(long uuid, OseeCmEditor editor) {
+   public static void openArtifact(long id, OseeCmEditor editor) {
       Artifact artifact = null;
       try {
-         artifact = AtsArtifactQuery.getArtifactFromId(uuid);
+         artifact = AtsArtifactQuery.getArtifactFromId(id);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          return;

@@ -63,14 +63,14 @@ public class AtsRuleEndpointImpl implements AtsRuleEndpointApi {
       RunRuleResults ruleResults = new RunRuleResults();
 
       List<IAtsWorkItem> workItemsCreated = new LinkedList<>();
-      for (long workflowUuid : runRuleData.getWorkItemUuids()) {
-         ArtifactReadable artifact = atsServer.getArtifact(workflowUuid);
+      for (long workflowId : runRuleData.getWorkItemIds()) {
+         ArtifactReadable artifact = atsServer.getArtifact(workflowId);
          IAtsWorkItem workItem = atsServer.getWorkItemFactory().getWorkItem(artifact);
          if (workItem == null) {
-            throw new OseeArgumentException("Workflow of uuid [%d] does not exist", workflowUuid);
+            throw new OseeArgumentException("Workflow of id [%d] does not exist", workflowId);
          }
          if (!workItem.isTeamWorkflow()) {
-            throw new OseeArgumentException("Workflow of uuid [%d] is not a Team Workflow", workflowUuid);
+            throw new OseeArgumentException("Workflow of id [%d] is not a Team Workflow", workflowId);
          }
          workItemsCreated.add(workItem);
       }
@@ -86,7 +86,7 @@ public class AtsRuleEndpointImpl implements AtsRuleEndpointApi {
    @Path("rule")
    @Override
    public Response addRuleToConfig(AddRuleData setRuleData) {
-      ArtifactReadable artifact = atsServer.getArtifact(setRuleData.getConfigItemUuid());
+      ArtifactReadable artifact = atsServer.getArtifact(setRuleData.getConfigItemId());
       List<String> ruleList = artifact.getAttributeValues(AtsAttributeTypes.RuleDefinition);
       if (!ruleList.contains(setRuleData.getRuleName())) {
          IAtsChangeSet changes =
@@ -94,7 +94,7 @@ public class AtsRuleEndpointImpl implements AtsRuleEndpointApi {
          changes.addAttribute(atsServer.getConfigItemFactory().getConfigObject(artifact),
             AtsAttributeTypes.RuleDefinition, setRuleData.getRuleName());
          changes.execute();
-         IAtsConfigObject atsObject = atsServer.getCache().getAtsObject(setRuleData.getConfigItemUuid());
+         IAtsConfigObject atsObject = atsServer.getCache().getAtsObject(setRuleData.getConfigItemId());
          atsServer.getCache().deCacheAtsObject(atsObject);
       }
 

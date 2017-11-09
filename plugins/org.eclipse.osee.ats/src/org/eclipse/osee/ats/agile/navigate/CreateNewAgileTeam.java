@@ -56,9 +56,9 @@ public class CreateNewAgileTeam extends XNavigateItemAction {
                if (entity != null) {
                   JaxAgileTeam team = (JaxAgileTeam) entity;
                   Artifact teamArt =
-                     ArtifactQuery.getArtifactFromId(team.getUuid(), AtsClientService.get().getAtsBranch());
+                     ArtifactQuery.getArtifactFromId(team.getId(), AtsClientService.get().getAtsBranch());
                   teamArt.getParent().reloadAttributesAndRelations();
-                  AtsUtil.openArtifact(team.getUuid(), OseeCmEditor.CmPcrEditor);
+                  AtsUtil.openArtifact(team.getId(), OseeCmEditor.CmPcrEditor);
                } else {
                   AWorkbench.popup("Error Creating Team", response != null ? response.toString() : "");
                }

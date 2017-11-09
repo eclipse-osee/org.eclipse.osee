@@ -95,7 +95,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpoint {
    public AtsConfiguration createConfig(MultivaluedMap<String, String> form) {
 
       // get parameters
-      BranchId fromBranchUuid = BranchId.valueOf(form.getFirst("fromBranchUuid"));
+      BranchId fromBranchId = BranchId.valueOf(form.getFirst("fromBranchid"));
       String newBranchName = form.getFirst("newBranchName");
       Conditions.checkNotNullOrEmpty(newBranchName, "newBranchName");
       String userId = form.getFirst("userId");
@@ -105,7 +105,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpoint {
          logger.error("User by id [%s] does not exist", userId);
       }
       org.eclipse.osee.orcs.data.BranchReadable fromBranch =
-         orcsApi.getQueryFactory().branchQuery().andId(fromBranchUuid).getResults().getExactlyOne();
+         orcsApi.getQueryFactory().branchQuery().andId(fromBranchId).getResults().getExactlyOne();
 
       // Create new baseline branch off Root
       Callable<BranchReadable> newBranchCallable =
@@ -123,7 +123,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpoint {
       // Create config artifact on Common
       AtsConfiguration config = createConfigArtifactOnCommon(newBranchName, user, newBranch);
 
-      // Return new branch uuid
+      // Return new branch id
       return config;
    }
 
@@ -181,10 +181,10 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpoint {
          orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, userArt, "Add ATS Configuration");
       AtsConfiguration config = new AtsConfiguration();
       config.setName(branchName);
-      config.setBranchUuid(branch.getId());
+      config.setBranchId(branch.getId());
       config.setIsDefault(false);
       ArtifactId configArt = tx.createArtifact(AtsArtifactTypes.Configuration, branchName);
-      config.setUuid(((ArtifactReadable) configArt).getId());
+      config.setId(((ArtifactReadable) configArt).getId());
       tx.createAttribute(configArt, AtsAttributeTypes.AtsConfiguredBranch, branch.getIdString());
       XResultData rd = new XResultData();
       UpdateAtsConfiguration update = new UpdateAtsConfiguration((IAtsServer) atsApi);

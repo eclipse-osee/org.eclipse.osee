@@ -63,7 +63,7 @@ public class JaxAtsTask extends JaxAtsObject {
 
    @Override
    public String toString() {
-      return "JaxAtsTask [title=" + getName() + ", createdDate=" + createdDate + ", createdByUuid=" + createdByUserId + ", assigneeUuids=" + assigneeUserIds + ", relatedToState=" + relatedToState + "]";
+      return "JaxAtsTask [title=" + getName() + ", createdDate=" + createdDate + ", createdById=" + createdByUserId + ", assigneeIds=" + assigneeUserIds + ", relatedToState=" + relatedToState + "]";
    }
 
    public List<String> getAssigneeUserIds() {
@@ -108,12 +108,12 @@ public class JaxAtsTask extends JaxAtsObject {
       addAttribute(attrType.getName(), value);
    }
 
-   public void addRelation(RelationTypeSide relationSide, long... relatedUuid) {
+   public void addRelation(RelationTypeSide relationSide, long... relatedId) {
       JaxRelation relation = new JaxRelation();
       relation.setRelationTypeName(relationSide.getName());
       relation.setSideA(relationSide.getSide().isSideA());
-      for (long relationUuid : relatedUuid) {
-         relation.getRelatedUuids().add(relationUuid);
+      for (long relationId : relatedId) {
+         relation.getRelatedIds().add(relationId);
       }
       getRelations().add(relation);
    }
