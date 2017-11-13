@@ -31,6 +31,9 @@ angular.module('AgileApp').controller(
 						.then(function(data) {
 							$scope.validAis = data;
 							$scope.action.actionableItem = "";
+							if ($scope.validAis.length == 1) {
+								$scope.actionableItem = $scope.validAis[0].id;
+							}
 					});
 					AgileEndpoint.getSprintsTokens($scope.team).$promise
 						.then(function(data) {
