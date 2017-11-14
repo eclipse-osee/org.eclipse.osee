@@ -51,8 +51,7 @@ angular
 										|| fromAssigneeId !== toAssigneeId) {
 
 									var _data = {};
-									_data.uuid = data.guid;
-									_data.uuids = [ data.guid ];
+									_data.ids = [ data.guid ];
 									_data.toStateUsers = [ toAssigneeId ];
 									_data.toState = toState;
 
@@ -71,50 +70,50 @@ angular
 											$scope.selectedSprint).$promise
 											.then(function(data) {
 												_tasks = data;
-												if (_tasks.statesToTaskUuids.length == 0) {
+												if (_tasks.statesToTaskIds.length == 0) {
 													$scope.notasks = true;
 													$scope.count = 0;
 												} else {
 													$scope.notasks = false;
 													$scope.availableStates = data["availableStates"];
 
-													// process assigneesToUuids
-													var assigneeNameToTasksUuids = {};
+													// process assigneesToIds
+													var assigneeNameToTasksIds = {};
 													var count = 0;
-													for (var i = 0; i < data.assigneesToTaskUuids.length; i++) {
-														var entry = data.assigneesToTaskUuids[i];
+													for (var i = 0; i < data.assigneesToTaskIds.length; i++) {
+														var entry = data.assigneesToTaskIds[i];
 														var name = data.userIdToName[entry.assigneeId];
-														assigneeNameToTasksUuids[name] = entry.taskUuids;
-														count += entry.taskUuids.length;
+														assigneeNameToTasksIds[name] = entry.taskIds;
+														count += entry.taskIds.length;
 													}
 
 													// Add implementers as
 													// assignees
 													// even though completed
-													for (var i = 0; i < data.implementersToTaskUuids.length; i++) {
-														var entry = data.implementersToTaskUuids[i];
+													for (var i = 0; i < data.implementersToTaskIds.length; i++) {
+														var entry = data.implementersToTaskIds[i];
 														var name = data.userIdToName[entry.assigneeId];
-														var assigneeEntry = assigneeNameToTasksUuids[name];
+														var assigneeEntry = assigneeNameToTasksIds[name];
 														if (assigneeEntry) {
-															entry.taskUuids = entry.taskUuids
+															entry.taskIds = entry.taskIds
 																	.concat(assigneeEntry);
 														}
-														assigneeNameToTasksUuids[name] = entry.taskUuids;
-														count += entry.taskUuids.length;
+														assigneeNameToTasksIds[name] = entry.taskIds;
+														count += entry.taskIds.length;
 													}
 
 													var assignees = _
-															.keys(assigneeNameToTasksUuids);
+															.keys(assigneeNameToTasksIds);
 													assignees.sort();
 													$scope.assignees = assignees;
-													_tasks.assignees = assigneeNameToTasksUuids;
+													_tasks.assignees = assigneeNameToTasksIds;
 
-													// process statesToTaskUuids
+													// process statesToTaskIds
 													var states = {};
-													for (var i = 0; i < data.statesToTaskUuids.length; i++) {
-														var entry = data.statesToTaskUuids[i];
+													for (var i = 0; i < data.statesToTaskIds.length; i++) {
+														var entry = data.statesToTaskIds[i];
 														var name = entry.name;
-														states[name] = entry.taskUuids;
+														states[name] = entry.taskIds;
 													}
 
 													_tasks.states = states;

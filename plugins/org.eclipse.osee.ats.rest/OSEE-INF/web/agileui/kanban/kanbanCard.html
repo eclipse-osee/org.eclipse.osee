@@ -1,4 +1,4 @@
-<div id={{task.guid}} ng-drag="true"
+<div id={{task.guid}}  
 	ng-drag-data='{"guid":"{{task.guid}}", "assignee":"{{assignee}}", "taskState":"{{state.name}}"}'
 	ng-drag-success="onDragComplete($data,$event)"
 	class="card {{state.name}}" ng-repeat="task in tasks">

@@ -82,13 +82,13 @@
 			<!-- FEATURE GROUP -->
 			<label for="textarea">Feature Group: </label> <select
 				ng-model="action.featureGroup"
-				ng-options="item.uuid as item.name for item in validFeatureGroups">
+				ng-options="item.id as item.name for item in validFeatureGroups">
 			</select><br />
 
 			<!-- WORK PACKAGE -->
 			<label for="textarea">Work Package: </label> <select
 				ng-model="action.workPackage"
-				ng-options="item.uuid as item.Name for item in validWorkPackages">
+				ng-options="item.id as item.Name for item in validWorkPackages">
 			</select>
 
 			<div id="newActionButtonContainer">

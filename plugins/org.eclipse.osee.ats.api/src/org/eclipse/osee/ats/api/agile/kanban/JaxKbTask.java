@@ -19,6 +19,7 @@ import java.util.Map;
 public class JaxKbTask {
 
    private String name;
+   // ngDraggable and Agile web requires guid for tasks, don't change this id
    private String guid;
    private Map<String, String> attributeMap = new HashMap<String, String>();
    private String branchGuid;

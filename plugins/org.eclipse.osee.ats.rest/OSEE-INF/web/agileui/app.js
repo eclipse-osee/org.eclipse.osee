@@ -2,7 +2,7 @@
  * Agile app definition
  */
 var app = angular.module('AgileApp', [ 'ngRoute', 'ngResource', 'ui.bootstrap',
-		'ngGrid', 'ui.grid', 'ui.grid.selection', 'ui.grid.resizeColumns' ]);
+		'ngGrid', 'ngDraggable', 'ui.grid', 'ui.grid.selection', 'ui.grid.resizeColumns' ]);
 
 app.config([ '$routeProvider', function($routeProvider) {
 	$routeProvider.when('/', {

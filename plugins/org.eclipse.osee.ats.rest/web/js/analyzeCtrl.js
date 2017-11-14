@@ -27,8 +27,8 @@ angular.module('CpaApp').controller('AnalyzeCtrl',
 					selectWithCheckboxOnly: true,
 					enableColumnResize: true,
 					showFilter: true,
-					sortInfo: {fields: ['uuid'], directions: ['asc']},
-					columnDefs: [{field: 'uuid', displayName: 'Id', width: 85, cellTemplate: idCellTmpl}, 
+					sortInfo: {fields: ['id'], directions: ['asc']},
+					columnDefs: [{field: 'id', displayName: 'Id', width: 85, cellTemplate: idCellTmpl}, 
 					             {field: 'pcrSystem', displayName: 'Type', width: 60},
 					             {field: 'originatingPcr.programName', displayName: 'Original Project', width: 100, cellTemplate: origCellTmpl},
 					             {field: 'originatingPcr.priority', displayName: 'Priority', width: 40},
@@ -206,7 +206,7 @@ angular.module('CpaApp').controller('AnalyzeCtrl',
 							  var alreadySet = '';
 							  for(var i = 0; i < toUpdate.length; i++) {
 								  toSend.push(toUpdate[i]);
-								  ids += toUpdate[i].uuid;
+								  ids += toUpdate[i].id;
 								  ids += ', ';
 							  }
 							  ids = ids.slice(0, -2);

@@ -19,7 +19,7 @@ angular
 								$modal, $filter, $routeParams, LayoutService) {
 
 							$scope.team = {};
-							$scope.team.uuid = $routeParams.team;
+							$scope.team.id = $routeParams.team;
 							$scope.selectedTeam = {};
 							$scope.selectedTeam.name = "";
 							$scope.selectedTeam.description = "";
@@ -43,7 +43,7 @@ angular
 									directions : [ 'asc' ]
 								},
 								columnDefs : [ {
-									field : 'uuid',
+									field : 'id',
 									displayName : 'Id',
 									width : 50
 								}, {
@@ -65,7 +65,7 @@ angular
 							$scope.updateSprints = function() {
 								var team = $scope.selectedTeam;
 								var toPost = {};
-								toPost.uuid = team.uuid;
+								toPost.id = team.id;
 								$scope.sprints = [];
 								AgileEndpoint.getSprints(toPost).$promise
 										.then(function(data) {
@@ -139,7 +139,7 @@ angular
 									directions : [ 'asc' ]
 								},
 								columnDefs : [ {
-									field : 'uuid',
+									field : 'id',
 									displayName : 'Id',
 									width : 50
 								}, {
@@ -161,7 +161,7 @@ angular
 							$scope.updateFeatureGroups = function() {
 								var team = $scope.selectedTeam;
 								var toPost = {};
-								toPost.uuid = team.uuid;
+								toPost.id = team.id;
 								$scope.featureGroups = [];
 								AgileEndpoint.getFeatureGroups(toPost).$promise
 										.then(function(data) {
@@ -258,12 +258,12 @@ angular
 								});
 
 								modalInstance.result
-										.then(function(backlogUuid) {
+										.then(function(backlogId) {
 											AgileEndpoint.enterBacklog(
 													$scope.selectedTeam,
-													backlogUuid).$promise
+													backlogId).$promise
 													.then(function(data) {
-														$scope.selectedTeam.backlogUuid = data.uuid;
+														$scope.selectedTeam.backlogId = data.id;
 														$scope.selectedTeam.backlog = data.name;
 													});
 										});
@@ -277,7 +277,7 @@ angular
 								};
 
 								$scope.ok = function() {
-									$modalInstance.close($scope.backlog.uuid);
+									$modalInstance.close($scope.backlog.id);
 								};
 
 								$scope.cancel = function() {
@@ -298,7 +298,7 @@ angular
 													.then(function(data) {
 														if (data && data.name) {
 															$scope.selectedTeam.backlog = data.name;
-															$scope.selectedTeam.backlogUuid = data.uuid;
+															$scope.selectedTeam.backlogId = data.id;
 														}
 													});
 											LayoutService

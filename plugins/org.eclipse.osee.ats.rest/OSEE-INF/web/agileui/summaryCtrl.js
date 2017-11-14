@@ -18,7 +18,7 @@ angular
 								$modal, $filter, $routeParams, LayoutService) {
 
 							$scope.team = {};
-							$scope.team.uuid = $routeParams.team;
+							$scope.team.id = $routeParams.team;
 							$scope.reportname = "Sprint Summary";
 
 							$scope.updateReports = function() {
@@ -35,7 +35,7 @@ angular
 														var htmlcontent = $('#b1 ');
 														var url = "<object data=\"/ats/agile/team/";
 														url = url
-																.concat($scope.team.uuid);
+																.concat($scope.team.id);
 														url = url
 																.concat("/sprint/");
 														url = url

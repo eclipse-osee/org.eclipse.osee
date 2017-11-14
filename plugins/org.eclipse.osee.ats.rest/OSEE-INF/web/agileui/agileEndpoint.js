@@ -94,10 +94,10 @@ angular.module('AgileApp').factory('AgileEndpoint',
 			}
 			
 			factory.addNewFeatureGroup = function(team, featureGroupName) {
-				var param = {'uuid': team.uuid};
+				var param = {'id': team.id};
 				var toPost = {};
 				var newGroup = {};
-				newGroup.teamUuid = team.uuid;
+				newGroup.teamId = team.id;
 				newGroup.name = featureGroupName;
 				newGroup.active = true;
 				return featuresResource.save(param, newGroup);
@@ -116,7 +116,7 @@ angular.module('AgileApp').factory('AgileEndpoint',
 			
 			factory.getSprintCurrent = function(team) {
 				var param = {};
-				param.uuid = team.uuid;
+				param.id = team.id;
 				return sprintCurrentResource.get(param);
 			}
 			
@@ -134,9 +134,9 @@ angular.module('AgileApp').factory('AgileEndpoint',
 			
 			factory.addNewSprint = function(team, sprintName) {
 				var param = {};
-				param.uuid = team.uuid;
+				param.id = team.id;
 				var newSprint = {};
-				newSprint.teamUuid = team.uuid;
+				newSprint.teamId = team.id;
 				newSprint.name = sprintName;
 				newSprint.active = true;
 				return sprintResource.save(param, newSprint);
@@ -162,18 +162,18 @@ angular.module('AgileApp').factory('AgileEndpoint',
 			// Agile Backlog
 			// ////////////////////////////////////
 			factory.createBacklog = function(team, backlogName) {
-				var param = {'uuid': team.uuid};
+				var param = {'id': team.id};
 				var newBacklog = {};
-				newBacklog.teamUuid = team.uuid;
+				newBacklog.teamId = team.id;
 				newBacklog.name = backlogName;
 				newBacklog.active = true;
 				return backlogResource.save(param, newBacklog);
 			}
 
-			factory.enterBacklog = function(team, backlogUuid) {
+			factory.enterBacklog = function(team, backlogId) {
 				var param = {};
-				param.teamUuid = team.uuid;
-				param.uuid = backlogUuid; 
+				param.teamId = team.id;
+				param.id = backlogId; 
 				return backlogResource.save(param);
 			}
 			
