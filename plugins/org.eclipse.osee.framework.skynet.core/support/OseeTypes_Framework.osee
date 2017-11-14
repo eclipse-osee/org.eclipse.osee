@@ -767,13 +767,21 @@ artifactType "Indirect Software Requirement" extends "Abstract Software Requirem
 	id 25
 }
 
-artifactType "Implementation Details" extends "MS Word Template" {
-	id 26
+abstract artifactType "Abstract Implementation Details" extends "Artifact" {
+	id 921211884
 	attribute "Data Rights Classification"
 	attribute "Data Rights Basis"
 	attribute "Subject Matter Expert"	
 	attribute "Subsystem"	
-	attribute "Partition"				
+	attribute "Partition"
+}
+
+artifactType "Implementation Details" extends "Abstract Implementation Details", "MS Word Template" {
+	id 26				
+}
+
+artifactType "Implementation Details Plain Text" extends "Abstract Implementation Details", "Plain Text" {
+	id 638269899
 }
 
 artifactType "Implementation Details Procedure" extends "Implementation Details" {

@@ -48,6 +48,7 @@ public final class CoreArtifactTypes {
    public static final IArtifactType ImplementationDetailsFunction = TokenFactory.createArtifactType(139802, "Implementation Details Function");
    public static final IArtifactType ImplementationDetailsDrawing = TokenFactory.createArtifactType(209690, "Implementation Details Drawing");
    public static final IArtifactType ImplementationDetailsDataDefinition = TokenFactory.createArtifactType(279578, "Implementation Details Data Definition");
+   public static final IArtifactType ImplementationDetailsPlainText = TokenFactory.createArtifactType(638269899, "Implementation Details Plain Text");
    public static final IArtifactType ModelDiagram = TokenFactory.createArtifactType(98, "Model Diagram");
    public static final IArtifactType NativeArtifact = TokenFactory.createArtifactType(20, "Native Artifact");
    public static final IArtifactType WholeWord = TokenFactory.createArtifactType(18, "MS Word Whole Document");
