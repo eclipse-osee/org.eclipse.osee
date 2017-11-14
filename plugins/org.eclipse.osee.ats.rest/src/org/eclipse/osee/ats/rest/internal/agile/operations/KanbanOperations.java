@@ -38,9 +38,12 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IAttribute;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Donald G. Dunne
@@ -75,7 +78,7 @@ public class KanbanOperations {
          IAtsWorkItem workItem = atsApi.getQueryService().getTeamWf(aItem.getId());
          ArtifactToken artifact = atsApi.getQueryService().getArtifact(workItem.getId());
 
-         JaxKbTask task = createJaxKbTask(aItem, workItem, artifact, atsApi);
+         JaxKbTask task = getAsJaxKbTask(aItem, workItem, artifact, atsApi);
          items.getTasks().put(String.valueOf(aItem.getId()), task);
 
          // "userIdToName" : {
@@ -216,7 +219,7 @@ public class KanbanOperations {
       }
    }
 
-   private static JaxKbTask createJaxKbTask(IAgileItem aItem, IAtsWorkItem wItem, ArtifactToken artifact, AtsApi atsApi) {
+   private static JaxKbTask getAsJaxKbTask(IAgileItem aItem, IAtsWorkItem wItem, ArtifactToken artifact, AtsApi atsApi) {
       JaxKbTask task = new JaxKbTask();
       task.setName(aItem.getName());
       task.setGuid(String.valueOf(aItem.getId()));
@@ -256,6 +259,10 @@ public class KanbanOperations {
          }
       }
       task.getAttributeMap().put("actionableItemName", Collections.toString("; ", ais));
+      // store transaction to check if when it comes back as a change
+      TransactionId transactionId = ((ArtifactReadable) artifact).getTransaction();
+      Conditions.assertNotNull(transactionId, "transactId");
+      task.setTransactionId(transactionId);
       return task;
    }
 
