@@ -135,19 +135,29 @@ public class ActionFactory implements IAtsActionFactory {
 
       if (Strings.isValid(data.getPoints())) {
          for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
-            IAtsTeamDefinition teamDef = teamWf.getTeamDefinition();
-            IAgileTeam agileTeam = atsApi.getAgileService().getAgileTeam(teamDef);
+            IAgileTeam agileTeam = null;
+            if (Strings.isNumeric(data.getAgileTeam())) {
+               agileTeam = atsApi.getConfigItem(ArtifactId.valueOf(data.getAgileTeam()));
+            }
+            if (agileTeam == null) {
+               IAtsTeamDefinition teamDef = teamWf.getTeamDefinition();
+               agileTeam = atsApi.getAgileService().getAgileTeam(teamDef);
+            }
             String pointsAttrType = atsApi.getAttributeResolver().getSoleAttributeValue(agileTeam,
                AtsAttributeTypes.PointsAttributeType, null);
+            if (Strings.isInValid(pointsAttrType)) {
+               pointsAttrType = atsApi.getAttributeResolver().getSoleAttributeValue(teamWf.getTeamDefinition(),
+                  AtsAttributeTypes.PointsAttributeType, null);
+            }
             if (!Strings.isValid(pointsAttrType)) {
                throw new OseeArgumentException(
-                  "Points Attribute Type must be specified on Team Definition %s to set Points",
-                  teamDef.toStringWithId());
+                  "Points Attribute Type must be specified on either Agile Team or Team Defintion to set Points",
+                  agileTeam.toStringWithId());
             }
             AttributeTypeToken attributeType = atsApi.getAttributeResolver().getAttributeType(pointsAttrType);
             if (attributeType == null) {
-               throw new OseeArgumentException("Invalid Points Attribute Type [%s] on Team Definition %s",
-                  pointsAttrType, teamDef.toStringWithId());
+               throw new OseeArgumentException("Invalid Points Attribute Type [%s] on Agile Team or Team Definition",
+                  pointsAttrType);
             }
             changes.setSoleAttributeValue(teamWf, attributeType, data.getPoints());
          }
