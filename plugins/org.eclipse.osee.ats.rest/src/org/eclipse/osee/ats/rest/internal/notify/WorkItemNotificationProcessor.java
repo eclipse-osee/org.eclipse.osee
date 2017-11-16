@@ -262,7 +262,7 @@ public class WorkItemNotificationProcessor {
 
    private String getUrl(IAtsWorkItem workItem) {
       if (actionUrl == null) {
-         actionUrl = atsServer.getConfigValue("ActionUrl");
+         actionUrl = atsServer.getConfigValue("ActionUrl_26_0");
       }
       if (Strings.isValid(actionUrl)) {
          return actionUrl.replaceFirst("ID", String.valueOf(workItem.getId()));
