@@ -314,6 +314,21 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
             add(art);
          }
       }
+      artifact.setRelations(relationSide, artifacts);
+      add(artifact);
+   }
+
+   @Override
+   public void setRelationsAndOrder(Object object, RelationTypeSide relationSide, Collection<? extends Object> objects) {
+      Artifact artifact = getArtifact(object);
+      Set<Artifact> artifacts = new HashSet<>(objects.size());
+      for (Object obj : objects) {
+         Artifact art = getArtifact(obj);
+         if (art != null) {
+            artifacts.add(art);
+            add(art);
+         }
+      }
       artifact.setRelations(PREEXISTING, relationSide, artifacts);
       add(artifact);
    }

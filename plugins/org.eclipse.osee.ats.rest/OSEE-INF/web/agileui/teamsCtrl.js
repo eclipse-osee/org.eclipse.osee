@@ -24,7 +24,6 @@ angular
 							// Agile Team table
 							// ////////////////////////////////////
 							$scope.selectedTeams = [];
-							$scope.loadingImg = Global.loadingImg;
 
 							var openTeamTmpl = '<button class="btn btn-default btn-sm" ng-click="openTeam(row.entity)">Open</button>';
 							var configTeamTmpl = '<button class="btn btn-default btn-sm" ng-click="openConfigForTeam(row.entity)">Config</button>';
@@ -160,7 +159,7 @@ angular
 							}
 
 							$scope.refresh();
-							Global.loadActiveProgsTeams($scope, AgileEndpoint);
+							Global.loadActiveProgsTeams($scope, AgileEndpoint, Menu);
 
 							// Copied through all controlers; ensure all are same
 							$scope.openBacklogForTeam = Menu.openBacklogForTeam;

@@ -249,6 +249,21 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
+   public void setRelationsAndOrder(Object object, RelationTypeSide relationSide, Collection<? extends Object> objects) {
+      ArtifactReadable artifact = getArtifact(object);
+      List<ArtifactReadable> artifacts = new LinkedList<>();
+      for (Object obj : objects) {
+         ArtifactReadable art = getArtifact(obj);
+         if (art != null) {
+            artifacts.add(art);
+         }
+      }
+
+      getTransaction().setRelationsAndOrder(artifact, relationSide, artifacts);
+      artifacts.add(artifact);
+   }
+
+   @Override
    public void setRelations(Object object, RelationTypeSide relationSide, Collection<? extends Object> objects) {
       ArtifactReadable artifact = getArtifact(object);
       List<ArtifactReadable> artifacts = new LinkedList<>();
@@ -269,7 +284,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       // add all relations that do not exist
       for (Object obj : objects) {
          ArtifactReadable art = getArtifact(obj);
-         if (!art.areRelated(relationSide, art)) {
+         if (!artifact.areRelated(relationSide, art)) {
             relate(object, relationSide, obj);
          }
       }

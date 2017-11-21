@@ -26,7 +26,7 @@ angular
 							$scope.team.id = $routeParams.team;
 							$scope.nameFilter = null;
 							$scope.tasks = {};
-							$scope.loadingImg = Global.loadingImg;
+
 							/*
 							 * Fetches userName for a userID
 							 */

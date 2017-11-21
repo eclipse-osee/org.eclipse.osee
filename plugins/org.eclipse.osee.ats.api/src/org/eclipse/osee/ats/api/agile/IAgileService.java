@@ -148,4 +148,16 @@ public interface IAgileService {
 
    IAgileProgramBacklogItem createAgileProgramBacklogItem(IAgileProgramBacklog programBacklog, JaxAgileProgramBacklogItem jaxProgramBacklogItem);
 
+   IAgileProgram getAgileProgram(long programId);
+
+   IAgileProgramFeature getAgileProgramFeature(long programFeatureId);
+
+   IAgileProgramFeature createAgileProgramFeature(long teamId, String name, String guid, Long id);
+
+   IAgileProgramBacklogItem getAgileProgramBacklogItem(long programBacklogItemId);
+
+   IAgileProgramBacklog getAgileProgramBacklog(IAgileProgram program);
+
+   ArtifactToken getAgileProgramBacklogArt(IAgileProgram program);
+
 }

@@ -17,26 +17,8 @@ angular
 								$routeParams) {
 
 							$scope.selectedTeams = [];
-							$scope.loadingImg = Global.loadingImg;
+							$scope.activeProgsTeams = [];
 
-							Global.loadActiveProgsTeams($scope, AgileEndpoint);
-
-							$scope
-									.$watch(
-											"$parent.selectedItem",
-											function() {
-												var selected = $scope.$parent.selectedItem;
-
-												if (selected) {
-													if (selected.isProgram == false) {
-														Menu
-																.openTeamForTeam($scope.$parent.selectedItem);
-													} else {
-														Menu
-														Menu
-																.openProgram($scope.$parent.selectedItem);
-													}
-												}
-											});
+							Global.loadActiveProgsTeams($scope, AgileEndpoint, Menu);
 
 						} ]);

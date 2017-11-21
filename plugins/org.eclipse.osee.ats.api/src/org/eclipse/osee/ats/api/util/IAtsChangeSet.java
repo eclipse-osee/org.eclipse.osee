@@ -90,7 +90,17 @@ public interface IAtsChangeSet {
 
    void setRelation(Object object1, RelationTypeSide relationType, Object object2);
 
-   public void setRelations(Object object, RelationTypeSide relationSide, Collection<? extends Object> objects);
+   /**
+    * Set objects as the current related. Objects related and not in obects parameter will be unrelated. Missing objects
+    * will be related. No order will be set.
+    */
+   void setRelations(Object object, RelationTypeSide relationSide, Collection<? extends Object> objects);
+
+   /**
+    * Set objects as the current related and set the order based on the order in the given list. Any objects already
+    * related that are not in the provided artifacts list will be un-related.
+    */
+   void setRelationsAndOrder(Object object, RelationTypeSide relationSide, Collection<? extends Object> objects);
 
    <T> void setAttribute(IAtsWorkItem workItem, int attributeId, T value);
 
@@ -161,4 +171,5 @@ public interface IAtsChangeSet {
    void setAttributeValuesAsStrings(IAtsObject atsObject, AttributeTypeId attrType, List<String> values);
 
    void addChild(IAtsObject parent, IAtsObject child);
+
 }

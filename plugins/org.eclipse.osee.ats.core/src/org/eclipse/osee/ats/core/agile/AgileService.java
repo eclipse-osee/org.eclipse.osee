@@ -83,6 +83,79 @@ public class AgileService implements IAgileService {
    }
 
    /********************************
+    ** Agile Program
+    ***********************************/
+   @Override
+   public IAgileProgram getAgileProgram(long programId) {
+      IAgileProgram program = null;
+      ArtifactId progArt = atsApi.getArtifact(programId);
+      if (progArt != null) {
+         program = AgileProgram.construct(progArt, atsApi);
+      }
+      return program;
+   }
+
+   /********************************
+    ** Agile Program Feature
+    ***********************************/
+   @Override
+   public IAgileProgramFeature getAgileProgramFeature(long programFeatureId) {
+      IAgileProgramFeature programFeature = null;
+      ArtifactId progArt = atsApi.getArtifact(programFeatureId);
+      if (progArt != null) {
+         programFeature = AgileProgramFeature.construct(progArt, atsApi);
+      }
+      return programFeature;
+   }
+
+   @Override
+   public IAgileProgramFeature createAgileProgramFeature(long teamId, String name, String guid, Long id) {
+      return AgileFactory.createAgileProgramFeature(logger, atsApi, teamId, name, guid, id);
+   }
+
+   /********************************
+    ** Agile Program Backlog
+    ***********************************/
+
+   @Override
+   public IAgileProgramBacklog getAgileProgramBacklog(IAgileProgram program) {
+      IAgileProgramBacklog programBacklog = null;
+      ArtifactId programBacklogArt = getAgileProgramBacklogArt(program);
+      if (programBacklogArt != null) {
+         programBacklog = AgileProgramBacklog.construct(programBacklogArt, atsApi);
+      }
+      return programBacklog;
+   }
+
+   @Override
+   public ArtifactToken getAgileProgramBacklogArt(IAgileProgram program) {
+      ArtifactToken programBacklogArt = null;
+      ArtifactId programArt = atsApi.getArtifact(program.getId());
+      if (programArt != null) {
+         for (ArtifactToken child : atsApi.getRelationResolver().getChildren(programArt)) {
+            if (atsApi.getStoreService().isOfType(child, AtsArtifactTypes.AgileProgramBacklog)) {
+               programBacklogArt = child;
+               break;
+            }
+         }
+      }
+      return programBacklogArt;
+   }
+
+   /********************************
+    ** Agile Program Backlog Item
+    ***********************************/
+   @Override
+   public IAgileProgramBacklogItem getAgileProgramBacklogItem(long programBacklogItemId) {
+      IAgileProgramBacklogItem programBacklogItem = null;
+      ArtifactId progBackItemArt = atsApi.getArtifact(programBacklogItemId);
+      if (progBackItemArt != null) {
+         programBacklogItem = AgileProgramBacklogItem.construct(progBackItemArt, atsApi);
+      }
+      return programBacklogItem;
+   }
+
+   /********************************
     ** Agile Team
     ***********************************/
    @Override

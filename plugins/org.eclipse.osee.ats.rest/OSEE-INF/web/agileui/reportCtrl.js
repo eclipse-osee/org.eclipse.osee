@@ -23,15 +23,14 @@ angular
 							$scope.team.id = $routeParams.team;
 							$scope.reporttype = $routeParams.reporttype;
 							$scope.reportname = $routeParams.reportname;
-							$scope.loadingImg = Global.loadingImg;
 
 							$scope.updateReports = function() {
 								AgileEndpoint.getTeamSingle($scope.team).$promise
 										.then(function(data) {
 											$scope.team.name = data.name;
 											$scope.sprint = {};
-											$scope.sprint.id = data.sprintId;
-											$scope.loadingImg = Global.loadingImg;
+											$scope.sprint.id = data.sprintId.id;
+											$scope.sprint.name = data.sprintId.name;
 		
 											var htmlcontent = $('#b1 ');
 											var url = "/ats/agile/team/";
@@ -63,14 +62,14 @@ angular
 											} else {
 												$scope.firefox = false;
 												$("#reportDiv").html("<object data=\"" + url + "\">");
-												document.getElementById("reportDiv").style.zoom = "400%"
-
+												var element = document.getElementById("reportDiv");
+												element.style.zoom = "400%"
 											}
 										    
 											AgileEndpoint
 													.getSprint(
-															$scope.team.id,
-															$scope.sprint.id).$promise
+															$scope.team,
+															$scope.sprint).$promise
 													.then(function(
 															data) {
 														$scope.reportname = data.name
@@ -93,7 +92,7 @@ angular
 							}
 
 							$scope.updateReports();
-							Global.loadActiveProgsTeams($scope, AgileEndpoint);
+							Global.loadActiveProgsTeams($scope, AgileEndpoint, Menu);
 
 							// Copied through all controlers; ensure all are same
 							$scope.openBacklogForTeam = Menu.openBacklogForTeam;

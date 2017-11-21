@@ -30,10 +30,14 @@ public class JaxAgileProgramBacklogItem extends JaxAtsObject implements IAgilePr
    }
 
    public static JaxAgileProgramBacklogItem construct(IAgileProgramBacklog programBacklog, ArtifactToken artifact) {
+      return construct(programBacklog.getId(), artifact);
+   }
+
+   public static JaxAgileProgramBacklogItem construct(Long programBacklogId, ArtifactToken artifact) {
       JaxAgileProgramBacklogItem item = new JaxAgileProgramBacklogItem();
       item.setName(artifact.getName());
       item.setId(artifact.getId());
-      item.setBacklogId(programBacklog.getId());
+      item.setBacklogId(programBacklogId);
       return item;
    }
 

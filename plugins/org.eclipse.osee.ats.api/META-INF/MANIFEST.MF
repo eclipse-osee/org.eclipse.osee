@@ -7,7 +7,9 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.osee.ats.api,
  org.eclipse.osee.ats.api.agile,
+ org.eclipse.osee.ats.api.agile.atw,
  org.eclipse.osee.ats.api.agile.kanban,
+ org.eclipse.osee.ats.api.agile.program,
  org.eclipse.osee.ats.api.agile.sprint,
  org.eclipse.osee.ats.api.ai,
  org.eclipse.osee.ats.api.column,
@@ -39,6 +41,7 @@ Export-Package: org.eclipse.osee.ats.api,
  org.eclipse.osee.ats.api.workflow.state,
  org.eclipse.osee.ats.api.workflow.transition
 Import-Package: com.google.common.base,
+ com.google.gson;version="2.2.4",
  javax.ws.rs,
  javax.ws.rs.core,
  org.apache.commons.lang,

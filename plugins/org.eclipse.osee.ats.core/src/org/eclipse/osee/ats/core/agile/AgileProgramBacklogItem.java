@@ -14,6 +14,7 @@ import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.agile.IAgileProgramBacklogItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.model.impl.AtsConfigObject;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.logger.Log;
 
@@ -30,4 +31,8 @@ public class AgileProgramBacklogItem extends AtsConfigObject implements IAgilePr
    public Long getBacklogId() {
       return null;
    }
+   public static IAgileProgramBacklogItem construct(ArtifactId artifact, AtsApi atsApi) {
+      return new AgileProgramBacklogItem(atsApi.getLogger(), atsApi, atsApi.getArtifact(artifact));
+   }
+
 }

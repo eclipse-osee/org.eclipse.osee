@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -44,19 +45,28 @@ import org.eclipse.osee.ats.api.agile.AgileWriterResult;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileItem;
+import org.eclipse.osee.ats.api.agile.IAgileProgram;
+import org.eclipse.osee.ats.api.agile.IAgileProgramBacklogItem;
+import org.eclipse.osee.ats.api.agile.IAgileProgramFeature;
 import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.agile.JaxAgileBacklog;
 import org.eclipse.osee.ats.api.agile.JaxAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.JaxAgileItem;
+import org.eclipse.osee.ats.api.agile.JaxAgileProgramBacklogItem;
+import org.eclipse.osee.ats.api.agile.JaxAgileProgramFeature;
 import org.eclipse.osee.ats.api.agile.JaxAgileSprint;
 import org.eclipse.osee.ats.api.agile.JaxAgileTeam;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileBacklog;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileFeatureGroup;
+import org.eclipse.osee.ats.api.agile.JaxNewAgileProgramFeature;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileSprint;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileTeam;
+import org.eclipse.osee.ats.api.agile.atw.AtwNode;
 import org.eclipse.osee.ats.api.agile.kanban.JaxKbSprint;
+import org.eclipse.osee.ats.api.agile.program.JaxProgramBacklogItemUpdate;
+import org.eclipse.osee.ats.api.agile.program.UiGridProgram;
 import org.eclipse.osee.ats.api.agile.sprint.SprintConfigurations;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.JaxAtsObject;
@@ -68,6 +78,9 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.ILineChart;
+import org.eclipse.osee.ats.api.util.RestResult;
+import org.eclipse.osee.ats.api.util.UpdateLocation;
+import org.eclipse.osee.ats.api.util.UpdateType;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.JaxAtsObjects;
 import org.eclipse.osee.ats.core.agile.SprintUtil;
@@ -78,6 +91,7 @@ import org.eclipse.osee.ats.core.util.chart.LineChart;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.agile.operations.EndpointOperations;
 import org.eclipse.osee.ats.rest.internal.agile.operations.KanbanOperations;
+import org.eclipse.osee.ats.rest.internal.agile.operations.ProgramOperations;
 import org.eclipse.osee.ats.rest.internal.agile.operations.SprintConfigOperations;
 import org.eclipse.osee.ats.rest.internal.query.TokenSearchOperations;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
@@ -86,6 +100,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.ClassBasedResourceToken;
@@ -149,6 +164,164 @@ public class AgileEndpointImpl implements AgileEndpointApi {
          endpointOps = new EndpointOperations(atsApi);
       }
       return endpointOps;
+   }
+
+   @Override
+   @GET
+   @Path("program/{programId}/token")
+   @Produces(MediaType.APPLICATION_JSON)
+   public JaxAtsObject getProgramToken(@PathParam("programId") long programId) {
+      ArtifactToken token = atsApi.getQueryService().getArtifactToken(programId);
+      return toAtsObjToken(token);
+   }
+
+   private JaxAtsObject toAtsObjToken(ArtifactToken token) {
+      JaxAtsObject result = new JaxAtsObject();
+      result.setName(token.getName());
+      result.setId(token.getId());
+      return result;
+   }
+
+   @Override
+   @GET
+   @Path("program/{programId}/atw")
+   @Produces(MediaType.APPLICATION_JSON)
+   public String getProgramAtw(@PathParam("programId") long programId) throws Exception {
+      IAgileProgram aProgram = atsApi.getAgileService().getAgileProgram(programId);
+      ProgramOperations ops = new ProgramOperations(atsApi);
+      AtwNode atwTree = ops.getAtwTree(aProgram);
+
+      String string = JsonUtil.getMapper().writerWithDefaultPrettyPrinter().writeValueAsString(atwTree);
+      return "[" + string + "]";
+   }
+
+   @Override
+   @GET
+   @Path("program/{programId}/uigrid")
+   @Produces(MediaType.APPLICATION_JSON)
+   public UiGridProgram getProgramItems(@PathParam("programId") long programId) throws Exception {
+      IAgileProgram aProgram = atsApi.getAgileService().getAgileProgram(programId);
+      ProgramOperations ops = new ProgramOperations(atsApi);
+      UiGridProgram progTree = ops.getUiGridTree(aProgram);
+      return progTree;
+   }
+
+   /********************************
+    ** Agile Program Backlog Item
+    ***********************************/
+
+   @Override
+   @DELETE
+   @Path("programbacklogitem/{programBacklogItemId}")
+   public RestResult deleteProgramBacklogItem(@PathParam("programBacklogItemId") long programBacklogItemId) {
+      RestResult result = new RestResult();
+      try {
+         ArtifactToken programBacklogItem = atsApi.getArtifact(programBacklogItemId);
+         if (programBacklogItem == null) {
+            result.getResult().errorf("Invalid Program Backlog Item Id %s", programBacklogItemId);
+         } else {
+            IAtsChangeSet changes = atsApi.createChangeSet(
+               String.format("Delete Program Backlog Item [%s]", programBacklogItem.toStringWithId()));
+            changes.deleteArtifact(programBacklogItem);
+            changes.execute();
+         }
+      } catch (Exception ex) {
+         result.getResult().errorf("Error deleting Program Backlog Item [%s]", Lib.exceptionToString(ex));
+      }
+      return result;
+   }
+
+   @Override
+   @POST
+   @Path("program/{programId}/backlogitem")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public JaxProgramBacklogItemUpdate updateProgramBacklogItem(@PathParam("programId") long programId, JaxProgramBacklogItemUpdate pBacklogItem) {
+      IAgileProgram program = atsApi.getAgileService().getAgileProgram(programId);
+      if (program == null) {
+         pBacklogItem.getResults().errorf("Program Id %s not found", programId);
+         return pBacklogItem;
+      }
+
+      if (pBacklogItem.getType().equals(UpdateType.New)) {
+         if (!Strings.isValid(pBacklogItem.getTitle())) {
+            pBacklogItem.getResults().errorf("Program Title must be specified");
+            return pBacklogItem;
+         }
+
+         IAtsChangeSet changes = atsApi.createChangeSet(pBacklogItem.getType() + " Backlog Item");
+         ArtifactToken newBacklogItem =
+            changes.createArtifact(AtsArtifactTypes.AgileProgramBacklogItem, pBacklogItem.getTitle());
+         ArtifactToken programBacklog = atsApi.getAgileService().getAgileProgramBacklogArt(program);
+         ArtifactToken selectedItem = atsApi.getArtifact(pBacklogItem.getSelectedId());
+         List<ArtifactToken> items = new LinkedList<>();
+         if (pBacklogItem.getLocation().equals(UpdateLocation.First)) {
+            items.add(newBacklogItem);
+            items.addAll(atsApi.getRelationResolver().getChildren(programBacklog));
+         } else if (pBacklogItem.getLocation().equals(UpdateLocation.Last)) {
+            items.addAll(atsApi.getRelationResolver().getChildren(programBacklog));
+            items.add(newBacklogItem);
+         } else if (pBacklogItem.getLocation().equals(UpdateLocation.Selection)) {
+            items.addAll(atsApi.getRelationResolver().getChildren(programBacklog));
+            int index = items.indexOf(selectedItem);
+            items.add(index, newBacklogItem);
+         } else if (pBacklogItem.getLocation().equals(UpdateLocation.AfterSelection)) {
+            items.addAll(atsApi.getRelationResolver().getChildren(programBacklog));
+            int index = items.indexOf(selectedItem) + 1;
+            items.add(index, newBacklogItem);
+         } else {
+            pBacklogItem.getResults().errorf("UpdateLocation %s not supported", pBacklogItem.getLocation());
+            return pBacklogItem;
+         }
+         changes.setRelationsAndOrder(programBacklog, CoreRelationTypes.Default_Hierarchical__Child, items);
+         changes.execute();
+
+         pBacklogItem.setNewId(newBacklogItem.getId());
+         JaxAgileProgramBacklogItem newItem =
+            JaxAgileProgramBacklogItem.construct(programBacklog.getId(), newBacklogItem);
+         pBacklogItem.setItem(newItem);
+      } else {
+         pBacklogItem.getResults().errorf("Update Type %s not supported", pBacklogItem.getType());
+         return pBacklogItem;
+      }
+      return pBacklogItem;
+   }
+
+   /********************************
+    ** Agile Program Feature
+    ***********************************/
+
+   @Override
+   public Response createProgramFeature(Long programId, JaxNewAgileProgramFeature newProgramFeature) {
+      // validate title
+      if (!Strings.isValid(newProgramFeature.getName())) {
+         throw new OseeWebApplicationException(Status.BAD_REQUEST, "name is not valid");
+      }
+      if (newProgramFeature.getProgramBacklogItemId() <= 0) {
+         throw new OseeWebApplicationException(Status.BAD_REQUEST, "programBacklogItemId is not valid");
+      }
+
+      String guid = GUID.create();
+      Long id = newProgramFeature.getId();
+      if (id == null || id <= 0) {
+         id = Lib.generateArtifactIdAsInt();
+      }
+
+      IAgileProgramBacklogItem programBacklogItem =
+         atsApi.getAgileService().getAgileProgramBacklogItem(newProgramFeature.getProgramBacklogItemId());
+
+      IAgileProgramFeature programFeature = atsApi.getAgileService().createAgileProgramFeature(
+         programBacklogItem.getId(), newProgramFeature.getName(), guid, id);
+      JaxAgileProgramFeature newFeature = new JaxAgileProgramFeature();
+      newFeature.setName(programFeature.getName());
+      newFeature.setId(programFeature.getId());
+      ArtifactId featureArt = atsApi.getArtifact(programFeature.getId());
+      boolean active = atsApi.getAttributeResolver().getSoleAttributeValue(featureArt, AtsAttributeTypes.Active, true);
+      newFeature.setActive(active);
+      ArtifactToken programBacklogItemArt = atsApi.getRelationResolver().getParent(featureArt);
+      newFeature.setProgramBacklogItemId(programBacklogItemArt.getId());
+
+      return Response.ok().entity(newFeature).build();
    }
 
    /********************************
@@ -457,13 +630,15 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       Collection<ArtifactToken> relatedSprints = atsApi.getQueryService().getRelatedToTokens(atsApi.getAtsBranch(),
          ArtifactId.valueOf(teamId), AtsRelationTypes.AgileTeamToSprint_Sprint, AtsArtifactTypes.AgileSprint);
 
-      Collection<ArtifactToken> inWorkSprints =
-         TokenSearchOperations.getArtifactTokensMatchingAttrValue(atsApi.getAtsBranch(), relatedSprints,
-            AtsAttributeTypes.CurrentStateType, StateType.Working.name(), orcsApi, jdbcService);
-
       List<ArtifactToken> sprints = new ArrayList<>();
-      for (ArtifactToken sprintArt : inWorkSprints) {
-         sprints.add(sprintArt);
+      if (!relatedSprints.isEmpty()) {
+         Collection<ArtifactToken> inWorkSprints =
+            TokenSearchOperations.getArtifactTokensMatchingAttrValue(atsApi.getAtsBranch(), relatedSprints,
+               AtsAttributeTypes.CurrentStateType, StateType.Working.name(), orcsApi, jdbcService);
+
+         for (ArtifactToken sprintArt : inWorkSprints) {
+            sprints.add(sprintArt);
+         }
       }
       return sprints;
    }

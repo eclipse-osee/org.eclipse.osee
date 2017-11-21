@@ -19,7 +19,6 @@ angular.module('AgileApp').controller(
 					$scope.team.backlog = "";
 					$scope.team.sprint = "";
 					$scope.action = {};
-					$scope.loadingImg = Global.loadingImg;
 					$scope.creating = false;
 					
 					AgileEndpoint.getTeamToken($scope.team).$promise
@@ -93,7 +92,7 @@ angular.module('AgileApp').controller(
 						
 					};
 					
-					Global.loadActiveProgsTeams($scope, AgileEndpoint);
+					Global.loadActiveProgsTeams($scope, AgileEndpoint, Menu);
 
 					// Copied through all controlers; ensure all are same
 					$scope.openBacklogForTeam = Menu.openBacklogForTeam;

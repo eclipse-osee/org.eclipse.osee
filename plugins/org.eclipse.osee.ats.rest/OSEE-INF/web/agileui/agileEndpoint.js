@@ -10,6 +10,12 @@ angular.module('AgileApp').factory('AgileEndpoint',
 			var teamResource = $resource('/ats/agile/team');
 			var teamsTokenResource = $resource('/ats/agile/team/token');
 			var teamTokenResource = $resource('/ats/agile/team/:teamid/token');
+			var programTokenResource = $resource('/ats/agile/program/:programid/token');
+			var programAtwResource = $resource('/ats/agile/program/:programid/atw');
+			var programUiGridResource = $resource('/ats/agile/program/:programid/uigrid');
+			var programProgramBacklogItemResource = $resource('/ats/agile/program/:programid/backlogitem');
+			var programBacklogItemResource = $resource('/ats/agile/programbacklogitem/:programbacklogitem');
+			var backlogItemResource = $resource('/ats/agile/backlogitem/:backlogitemid');
 			var teamSingleResource = $resource('/ats/agile/team/:teamid');
 			var teamAisResource = $resource('/ats/agile/team/:teamid/ai');
 			var featuresResource = $resource('/ats/agile/team/:teamid/feature');
@@ -31,12 +37,36 @@ angular.module('AgileApp').factory('AgileEndpoint',
 					{}, { 'update': { method:'PUT' } });
 
 			// ////////////////////////////////////
-			// Programs Teams
+			// Programs 
 			// ////////////////////////////////////
 			factory.getActiveProgramsTokens = function() {
 				return activeProgramsTokenResource.query();
 			}
 
+			factory.getProgramToken = function(program) {
+				return programTokenResource.get({programid: program.id});
+			}
+
+			factory.getProgramAtw = function(program) {
+				return programAtwResource.query({programid: program.id});
+			}
+
+			factory.getProgramItems = function(program) {
+				return programUiGridResource.get({programid: program.id});
+			}
+
+			// ////////////////////////////////////
+			// Program Backlog Items
+			// ////////////////////////////////////
+
+			factory.updateProgramBacklogItem = function(item) {	
+				return programProgramBacklogItemResource.save({'programid': item.programId}, item);
+			}
+			
+			factory.deleteProgramBacklogItem = function(item) {	
+				return programBacklogItemResource.delete({'programbacklogitem': item.backlogitemid});
+			}
+			
 			// ////////////////////////////////////
 			// Agile Item
 			// ////////////////////////////////////
@@ -137,8 +167,8 @@ angular.module('AgileApp').factory('AgileEndpoint',
 				return sprintForKbResource.get({teamid: team.id, sprintid:sprint.id});
 			}
 			
-			factory.getSprint = function(teamId, sprintId) {
-				return sprintSingleResource.get({teamid: teamId, sprintid:sprintId});
+			factory.getSprint = function(team, sprint) {
+				return sprintSingleResource.get({teamid: team.id, sprintid:sprint.id});
 			}
 			
 			factory.deleteSprint = function(team) {

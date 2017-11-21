@@ -17,9 +17,12 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
+import org.eclipse.osee.ats.api.agile.IAgileProgram;
+import org.eclipse.osee.ats.api.agile.IAgileProgramFeature;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.agile.JaxAgileFeatureGroup;
+import org.eclipse.osee.ats.api.agile.JaxAgileProgramFeature;
 import org.eclipse.osee.ats.api.agile.JaxAgileTeam;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileTeam;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -131,6 +134,33 @@ public class AgileFactory {
       return createAgileFeatureGroup(logger, atsApi, feature);
    }
 
+   public static IAgileProgramFeature createAgileProgramFeature(Log logger, AtsApi atsApi, long programBacklogItemId, String name, String guid, Long id) {
+      JaxAgileProgramFeature feature = new JaxAgileProgramFeature();
+      feature.setName(name);
+      feature.setId(id);
+      feature.setProgramBacklogItemId(programBacklogItemId);
+      feature.setActive(true);
+      return createAgileProgramFeature(logger, atsApi, feature);
+   }
+
+   public static IAgileProgramFeature createAgileProgramFeature(Log logger, AtsApi atsApi, JaxAgileProgramFeature newProgramFeature) {
+      IAtsChangeSet changes = atsApi.createChangeSet("Create new Agile Program Feature");
+
+      ArtifactId programFeature = changes.createArtifact(AtsArtifactTypes.AgileProgramFeature,
+         newProgramFeature.getName(), GUID.create(), newProgramFeature.getId());
+      changes.setSoleAttributeValue(programFeature, AtsAttributeTypes.Active, newProgramFeature.isActive());
+
+      ArtifactId programBacklogItemArt = atsApi.getArtifact(newProgramFeature.getProgramBacklogItemId());
+      changes.addChild(programBacklogItemArt, programFeature);
+
+      changes.execute();
+      return getAgileProgramFeature(logger, atsApi, programFeature);
+   }
+
+   private static IAgileProgramFeature getAgileProgramFeature(Log logger, AtsApi atsApi, ArtifactId artifact) {
+      return new AgileProgramFeature(logger, atsApi, atsApi.getArtifact(artifact));
+   }
+
    public static IAgileFeatureGroup createAgileFeatureGroup(Log logger, AtsApi atsApi, JaxAgileFeatureGroup newFeatureGroup) {
       ArtifactId userArt = atsApi.getArtifact(atsApi.getUserService().getCurrentUser());
 
@@ -213,6 +243,10 @@ public class AgileFactory {
 
    public static IAgileBacklog getAgileBacklog(Log logger, AtsApi atsApi, Object artifact) {
       return new AgileBacklog(logger, atsApi, (ArtifactToken) artifact);
+   }
+
+   public static IAgileProgram getAgileProgram(ArtifactId progArt) {
+      return null;
    }
 
 }

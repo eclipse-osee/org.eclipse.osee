@@ -44,4 +44,8 @@ public class AgileProgramBacklog extends AtsConfigObject implements IAgileProgra
       }
       return ids;
    }
+   public static IAgileProgramBacklog construct(ArtifactId artifact, AtsApi atsApi) {
+      return new AgileProgramBacklog(atsApi.getLogger(), atsApi, atsApi.getArtifact(artifact));
+   }
+
 }

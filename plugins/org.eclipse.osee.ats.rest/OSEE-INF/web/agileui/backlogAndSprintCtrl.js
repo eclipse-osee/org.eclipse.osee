@@ -25,7 +25,6 @@ angular
 							$scope.team.id = $routeParams.team;
 							$scope.defaultItem = $routeParams.default;
 							$scope.count = "--";
-							$scope.loadingImg = Global.loadingImg;
 							
 							// ////////////////////////////////////
 							// Backlog and Sprint table
@@ -249,7 +248,7 @@ angular
 										}
 									});
 							
-							Global.loadActiveProgsTeams($scope, AgileEndpoint);
+							Global.loadActiveProgsTeams($scope, AgileEndpoint, Menu);
 
 							// Copied through all controlers; ensure all are
 							// same

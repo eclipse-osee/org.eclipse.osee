@@ -22,11 +22,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.api.agile.kanban.JaxKbSprint;
+import org.eclipse.osee.ats.api.agile.program.JaxProgramBacklogItemUpdate;
+import org.eclipse.osee.ats.api.agile.program.UiGridProgram;
 import org.eclipse.osee.ats.api.agile.sprint.SprintConfigurations;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.JaxAtsObject;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.util.ILineChart;
+import org.eclipse.osee.ats.api.util.RestResult;
 import org.eclipse.osee.ats.api.workflow.JaxAtsObjects;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -45,6 +48,31 @@ public interface AgileEndpointApi {
    @Path("program/token")
    @Produces(MediaType.APPLICATION_JSON)
    public List<JaxAtsObject> getProgramTokens() throws Exception;
+
+   @GET
+   @Path("program/{programId}/token")
+   @Produces(MediaType.APPLICATION_JSON)
+   public JaxAtsObject getProgramToken(@PathParam("programId") long programId);
+
+   @GET
+   @Path("program/{programId}/atw")
+   @Produces(MediaType.APPLICATION_JSON)
+   public String getProgramAtw(@PathParam("programId") long programId) throws Exception;
+
+   @GET
+   @Path("program/{programId}/uigrid")
+   @Produces(MediaType.APPLICATION_JSON)
+   public UiGridProgram getProgramItems(@PathParam("programId") long programId) throws Exception;
+
+   @POST
+   @Path("program/{programId}/backlogitem")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public JaxProgramBacklogItemUpdate updateProgramBacklogItem(@PathParam("programId") long programId, JaxProgramBacklogItemUpdate pBacklogItem);
+
+   @DELETE
+   @Path("programbacklogitem/{programBacklogItemId}")
+   public RestResult deleteProgramBacklogItem(@PathParam("programBacklogItemId") long programBacklogItemId);
 
    @GET
    @Path("team/token")
@@ -265,6 +293,12 @@ public interface AgileEndpointApi {
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    public Response createFeatureGroup(@PathParam("teamId") long teamId, JaxNewAgileFeatureGroup newFeatureGroup);
+
+   @POST
+   @Path("program/{programId}/feature")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public Response createProgramFeature(Long programId, JaxNewAgileProgramFeature feature);
 
    @POST
    @Path("team/{teamId}/sprint")

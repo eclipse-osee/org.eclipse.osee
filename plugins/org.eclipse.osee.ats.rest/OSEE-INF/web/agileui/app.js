@@ -2,105 +2,149 @@
  * Agile app definition
  */
 var app = angular.module('AgileApp', [ 'ngRoute', 'ngResource', 'ui.bootstrap',
-		'ngGrid', 'ngDraggable', 'ui.grid', 'ui.grid.selection', 'ui.grid.resizeColumns' ]);
+		'ngGrid', 'ngDraggable', 'ui.grid', 'ui.grid.treeView',
+		'ui.grid.selection', 'ui.grid.resizeColumns', 'ui.grid',
+		'ui.grid.autoResize', 'ui.grid.moveColumns', 'ui.grid.saveState',
+		'TreeWidget', 'LocalStorageModule', 'ui.grid.expandable',]);
 
-app.config([ '$routeProvider', function($routeProvider) {
-	$routeProvider.when('/', {
-		redirectTo : "/select",
-	}).when('/home', {
-		redirectTo : "/select",
-	}).when('/select', {
-		templateUrl : 'select.html',
-		controller : 'SelectCtrl'
-	}).when('/team', {
-		templateUrl : 'team.html',
-		controller : 'TeamCtrl'
-	}).when('/kanban', {
-		templateUrl : 'kanban/kanban.html',
-		controller : 'KanbanCtrl'
-	}).when('/backlog', {
-		templateUrl : 'backlogAndSprint.html',
-		controller : 'BacklogAndSprintCtrl'
-	}).when('/sprint', {
-		templateUrl : 'backlogAndSprint.html',
-		controller : 'BacklogAndSprintCtrl'
-	}).when('/program', {
-		templateUrl : 'program.html',
-		controller : 'ProgramCtrl'
-	}).when('/teams', {
-		templateUrl : 'teams.html',
-		controller : 'TeamsCtrl'
-	}).when('/config', {
-		templateUrl : 'config.html',
-		controller : 'ConfigCtrl'
-	}).when('/report', {
-		templateUrl : 'report.html',
-		controller : 'ReportCtrl'
-	}).when('/newTask', {
-		templateUrl : 'newTask.html',
-		controller : 'NewTaskCtrl',
-		caseInsensitiveMatch : true
-	}).otherwise({
-		redirectTo : "/select"
-	});
-} ]);
+app.config([
+		'$routeProvider',
+		'localStorageServiceProvider',
+		function($routeProvider, localStorageServiceProvider) {
+			localStorageServiceProvider.setPrefix('AgileApp').setStorageType(
+					'localStorage').setNotify(true, true);
+			$routeProvider.when('/', {
+				redirectTo : "/select",
+			}).when('/home', {
+				redirectTo : "/select",
+			}).when('/select', {
+				templateUrl : 'select.html',
+				controller : 'SelectCtrl'
+			}).when('/team', {
+				templateUrl : 'team.html',
+				controller : 'TeamCtrl'
+			}).when('/kanban', {
+				templateUrl : 'kanban/kanban.html',
+				controller : 'KanbanCtrl'
+			}).when('/backlog', {
+				templateUrl : 'backlogAndSprint.html',
+				controller : 'BacklogAndSprintCtrl'
+			}).when('/sprint', {
+				templateUrl : 'backlogAndSprint.html',
+				controller : 'BacklogAndSprintCtrl'
+			}).when('/programview', {
+				templateUrl : 'programView.html',
+				controller : 'ProgramViewCtrl'
+			}).when('/program', {
+				templateUrl : 'program.html',
+				controller : 'ProgramCtrl'
+			}).when('/teams', {
+				templateUrl : 'teams.html',
+				controller : 'TeamsCtrl'
+			}).when('/config', {
+				templateUrl : 'config.html',
+				controller : 'ConfigCtrl'
+			}).when('/report', {
+				templateUrl : 'report.html',
+				controller : 'ReportCtrl'
+			}).when('/newTask', {
+				templateUrl : 'newTask.html',
+				controller : 'NewTaskCtrl',
+				caseInsensitiveMatch : true
+			}).otherwise({
+				redirectTo : "/select"
+			});
+		} ]);
 
-app.factory("Global", function() {
-	return {
-		loadingImg : function() {
-			var global = {};
-			global.loadingImg = "/ajax/libs/images/loading.gif";
-			return global;
-		},
-		loadActiveProgsTeams : function(scope, agileEp) {
-			var activeProgsTeams = [];
-			agileEp.getActiveProgramsTokens().$promise
-					.then(function(data) {
-						for (i = 0; i < data.length; i++) {
-							var prog = data[i];
-							prog.isProgram = true;
-							activeProgsTeams.push(prog);
+app
+		.factory(
+				"Global",
+				function() {
+					return {
+						vars : function() {
+							var global = {};
+							global.loadingImg = "/ajax/libs/images/loading.gif";
+							return global;
+						},
+						loadActiveProgsTeams : function(scope, AgileEndpoint,
+								Menu) {
+							var activeProgsTeams = [];
+							AgileEndpoint.getActiveProgramsTokens().$promise
+									.then(function(data) {
+										for (i = 0; i < data.length; i++) {
+											var prog = data[i];
+											prog.isProgram = true;
+											activeProgsTeams.push(prog);
+										}
+										AgileEndpoint.getActiveTeamsTokens().$promise
+												.then(function(data) {
+													for (i = 0; i < data.length; i++) {
+														var team = data[i];
+														team.isProgram = false;
+														activeProgsTeams
+																.push(team);
+													}
+													scope.activeProgsTeams = activeProgsTeams;
+													// add to main scope so
+													// shared pulldown is
+													// populated
+													scope.$parent.activeProgsTeams = activeProgsTeams;
+
+													scope
+															.$watch(
+																	"selectedItem",
+																	function() {
+																		if (scope.selectedItem) {
+																			var selected = scope.selectedItem;
+
+																			if (selected) {
+																				if (selected.isProgram == false) {
+																					Menu
+																							.openTeamForTeam(selected);
+																				} else {
+																					Menu
+																							.openProgram(selected);
+																				}
+																			}
+																		}
+																	});
+
+												});
+
+									});
+
+						},
+					}
+				});
+
+app
+		.factory("LayoutService",
+				function() {
+					return {
+						resizeElementHeight : function(elementName) {
+							var element = window.document
+									.getElementById(elementName);
+							if (element) {
+								var height = 0;
+								var body = window.document.body;
+								if (window.innerHeight) {
+									height = window.innerHeight;
+								} else if (body.parentElement.clientHeight) {
+									height = body.parentElement.clientHeight;
+								} else if (body && body.clientHeight) {
+									height = body.clientHeight;
+								}
+								element.style.height = ((height
+										- element.offsetTop - 120) + "px");
+							}
+						},
+						refresh : function() {
+							setTimeout(function() {
+								$(window).trigger('resize');
+							}, 500);
 						}
-						agileEp.getActiveTeamsTokens().$promise
-								.then(function(data) {
-									for (i = 0; i < data.length; i++) {
-										var team = data[i];
-										team.isProgram = false;
-										activeProgsTeams.push(team);
-									}
-									scope.activeProgsTeams = activeProgsTeams;
-									// add to main scope so shared pulldown is populated
-									scope.$parent.activeProgsTeams = activeProgsTeams;
-								});
-					
-					});
-
-		}
-	}
-});
-
-app.factory("LayoutService", function() {
-	return {
-		resizeElementHeight : function(elementName) {
-			var element = window.document.getElementById(elementName);
-			var height = 0;
-			var body = window.document.body;
-			if (window.innerHeight) {
-				height = window.innerHeight;
-			} else if (body.parentElement.clientHeight) {
-				height = body.parentElement.clientHeight;
-			} else if (body && body.clientHeight) {
-				height = body.clientHeight;
-			}
-			element.style.height = ((height - element.offsetTop - 120) + "px");
-		},
-		refresh : function() {
-			setTimeout(function() {
-				$(window).trigger('resize');
-			}, 500);
-		}
-	}
-});
+					}
+				});
 
 app.directive('sprintconfig', function() {
 	return {

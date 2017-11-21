@@ -311,7 +311,7 @@ angular
 							}
 
 							$scope.refresh();
-							Global.loadActiveProgsTeams($scope, AgileEndpoint);
+							Global.loadActiveProgsTeams($scope, AgileEndpoint, Menu);
 
 							// Copied through all controlers; ensure all are same
 							$scope.openBacklogForTeam = Menu.openBacklogForTeam;

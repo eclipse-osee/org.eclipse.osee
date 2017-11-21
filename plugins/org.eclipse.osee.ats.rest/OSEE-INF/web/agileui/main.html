@@ -15,8 +15,10 @@
 	href="/ajax/libs/ng-grid/2.0.11/ng-grid.min.css"></link>
 <link rel="stylesheet" type="text/css"
 	href="/ajax/libs/ui-grid/4.0.4/ui-grid.min.css"></link>
-<link rel="stylesheet" href="agile.css"></link>
 <link rel="stylesheet" href="kanban/kanban.css"></link>
+<link rel="stylesheet" type="text/css"
+	href="/ajax/libs/angular-tree-widget/dist/angular-tree-widget.min.css">
+<link rel="stylesheet" href="agile.css"></link>
 
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
 <!--[if lt IE 9]>
@@ -28,13 +30,13 @@
 	<nav>
 		<table width="100%" border=1 rules=NONE frame=BOX>
 			<tr>
-				<td><a class="navbar-brand" href="#/main">OSEE Agile</a></td>
+				<td><a class="navbar-brand" href="#/home">OSEE Agile</a></td>
 				<td align="right" width="50%">Program or Team : <select
 					style="width: 50%;" ng-model="selectedItem"
-					ng-options="item.name for (key,item) in activeProgsTeams">
+					ng-options="item.name for (key,item) in activeProgsTeams | orderBy:'name'">
 						<option value="">Select</option>
 				</select></td>
-				<td width="10%" align="right"><a href="#/main">Home</a></td>
+				<td width="10%" align="right"><a href="#/home">Home</a></td>
 				<td width="5%" align="right"></td>
 			</tr>
 		</table>
@@ -51,18 +53,24 @@
 	</script>
 
 	<script src="/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-	
+
 	<!-- ngDraggable is only tested to angular 1.3.8; test or upgrade kanban if bump angular versions-->
 	<!-- https://github.com/fatlinesofcode/ngDraggable/blob/master/README.md -->
 	<script src="/ajax/libs/angularjs/1.3.11/angular.min.js"></script>
 	<script src="/ajax/libs/angularjs/1.3.11/angular-route.min.js"></script>
 	<script src="/ajax/libs/angularjs/1.3.11/angular-resource.min.js"></script>
+	<script src="/ajax/libs/angularjs/1.3.11/angular-animate.min.js"></script>
+	<script src="/ajax/libs/angular-recursion/angular-recursion.min.js"></script>
 	<script src="/ajax/libs/ng-grid/2.0.11/ng-grid.min.js"></script>
 	<script src="/ajax/libs/ui-grid/4.0.4/ui-grid.min.js"></script>
 	<script src="/ajax/libs/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 	<script
 		src="/ajax/libs/ui-bootstrap/0.12.0/ui-bootstrap-tpls-0.12.0.min.js"></script>
 	<script src="/ajax/libs/moment/2.9.0/moment.min.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/angular-local-storage/0.2.2/angular-local-storage.min.js"></script>
+	<script type="text/javascript"
+		src="/ajax/libs/angular-tree-widget/dist/angular-tree-widget.min.js"></script>
 	<script src="kanban/underscore.js"></script>
 	<script src="app.js"></script>
 	<script src="agileEndpoint.js"></script>

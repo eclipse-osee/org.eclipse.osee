@@ -18,14 +18,13 @@ angular
 
 							$scope.team = {};
 							$scope.team.id = $routeParams.team;
-							$scope.loadingImg = Global.loadingImg;
 
 							AgileEndpoint.getTeamToken($scope.team).$promise
 							.then(function(data) {
 								$scope.team.name = data.name;
 							});
 
-							Global.loadActiveProgsTeams($scope, AgileEndpoint);
+							Global.loadActiveProgsTeams($scope, AgileEndpoint, Menu);
 
 							// Copied through all controlers; ensure all are
 							// same

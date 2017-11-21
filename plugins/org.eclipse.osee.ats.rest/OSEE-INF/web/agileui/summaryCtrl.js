@@ -49,6 +49,6 @@ angular
 							}
 
 							$scope.updateReports();
-							Global.loadActiveProgsTeams($scope, AgileEndpoint);
+							Global.loadActiveProgsTeams($scope, AgileEndpoint, Menu);
 
 						} ]);

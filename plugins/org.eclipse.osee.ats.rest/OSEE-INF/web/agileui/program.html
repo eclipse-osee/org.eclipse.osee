@@ -1,8 +1,99 @@
 <div id="mainDiv">
 
+	<link rel="stylesheet" href="program.css"></link>
+
+	<div class="panel panel-primary" id="mainHeader">
+		<div class="panel-heading" id="mainHeading">
+			<table id="mainHeaderTable">
+				<tr>
+					<td width="25%">Agile Program: <strong>{{program.name}}</strong>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
 	<center>
-		<img src="{{loadingImg}}" id="loadingImg" ng-hide="activeProgsTeams"
-			align="middle">
+		<label ng-hide="data"></br> </br></label> <img
+			src="/ajax/libs/images/loading.gif" id="loadingImg"
+			ng-hide="data.length > 0 || noitems == true" align="middle"> <label
+			ng-show="noitems == true">No Items Found</label>
 	</center>
+
+	<div id="programMenu" float="right">
+		<button type="button" class="btn btn-default btn-xs"
+			ng-click="openProgramBacklogItemSection(selectedTask)"
+			ng-show="isPBacklog || isPBacklogItem">
+			<img src="/ats/agileui/images/agileProgramBacklogItem.gif" /> <span
+				class="glyphicon glyphicon-plus"></span> Add Backlog Item
+		</button>
+		<button type="button" class="btn btn-default btn-xs"
+			ng-click="deleteProgramBacklogItem(selectedTask)"
+			ng-show="isPBacklogItem">
+			<img src="/ats/agileui/images/agileProgramBacklogItem.gif" /> <span
+				class="glyphicon glyphicon-minus"></span> Delete Backlog Item
+		</button>
+		<button type="button" class="btn btn-default btn-xs"
+			ng-click="addProgramFeature(selectedTask)"
+			ng-show="isPBacklogItem || isPBacklogFeature">
+			<img src="/ats/agileui/images/agileProgramFeature.gif" /> <span
+				class="glyphicon glyphicon-plus"></span> Add Program Feature
+		</button>
+		<button type="button" class="btn btn-default btn-xs"
+			ng-click="deleteProgramFeature(selectedTask)"
+			ng-show="isPBacklogFeature">
+			<img src="/ats/agileui/images/agileProgramFeature.gif" /> <span
+				class="glyphicon glyphicon-minus"></span> Delete Program Feature
+		</button>
+		<button type="button" class="btn btn-default btn-xs"
+			ng-click="addStory(selectedTask)"
+			ng-show="isPBacklogFeature || isStory">
+			<img src="/ats/agileui/images/agileStory.gif" /> <span
+				class="glyphicon glyphicon-plus"></span> Add Story
+		</button>
+		<button type="button" class="btn btn-default btn-xs"
+			ng-click="deleteStory(selectedTask)" ng-show="isStory">
+			<img src="/ats/agileui/images/agileStory.gif" /> <span
+				class="glyphicon glyphicon-plus"></span> Delete Story
+		</button>
+		<button type="button" class="btn btn-default btn-xs"
+			ng-click="addNewTask(selectedTask)" ng-show="isStory || isTask">
+			<img src="/ats/agileui/images/agileTask.gif" /> <span
+				class="glyphicon glyphicon-plus"></span> Add New Task
+		</button>
+		<button type="button" class="btn btn-default btn-xs"
+			ng-click="addExistingTask(selectedTask)" ng-show="isStory || isTask">
+			<img src="/ats/agileui/images/agileTask.gif" /> <span
+				class="glyphicon glyphicon-plus"></span> Add Existing Task
+		</button>
+		<button type="button" class="btn btn-default btn-xs"
+			ng-click="deleteTask(selectedTask)" ng-show="isTask">
+			<img src="/ats/agileui/images/agileTask.gif" /> <span
+				class="glyphicon glyphicon-minus"></span> Delete Task
+		</button>
+	</div>
+
+	<div id="addProgramItem" ng-show="programBacklogItemSectionOpen"
+		boarder="2">
+		<div id="sectionInnerDiv">
+			<form class="simple-form" novalidate>
+				<label>Title:&nbsp;</label><input id="titleText" type="text"
+					ng-model="item.title" /><br />
+				<!– –> <label>Add After Selection</label> <input type="checkbox"
+					name="location" ng-model="item.addAfter">
+				</label> <br />
+				<br />
+				<!– –> <input type="submit" ng-click="addProgramBacklogItem(item)"
+					value="Create" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input
+					type="submit" ng-click="closeProgramBacklogItemSection(item)"
+					value="Close" />
+				<br />
+			</form>
+		</div>
+	</div>
+
+	<div ng-show="data" id="itemsTable" class="gridStyle"
+		ui-grid="itemsGridOptions" ui-grid-tree-view ui-grid-resize-columns
+		ui-grid-selection ui-grid-auto-resize ui-grid-save-state
+		ui-grid-move-columns ng-dblclick="onDblClick()" />
 
 </div>

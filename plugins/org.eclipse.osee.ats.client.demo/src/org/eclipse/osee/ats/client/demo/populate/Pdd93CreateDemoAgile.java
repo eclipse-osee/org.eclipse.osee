@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.api.agile.JaxAgileProgramFeature;
 import org.eclipse.osee.ats.api.agile.JaxAgileStory;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileBacklog;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileFeatureGroup;
+import org.eclipse.osee.ats.api.agile.JaxNewAgileProgramFeature;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileSprint;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileTeam;
 import org.eclipse.osee.ats.api.config.JaxAtsObject;
@@ -115,10 +116,10 @@ public class Pdd93CreateDemoAgile {
       IAgileProgramBacklog programBacklog =
          AtsClientService.get().getAgileService().createAgileProgramBacklog(aProgram, jaxProgramBacklog);
 
-      JaxAgileProgramBacklogItem item1 =
+      JaxAgileProgramBacklogItem backlogItem1 =
          JaxAgileProgramBacklogItem.construct(programBacklog, DemoArtifactToken.RD_Program_Backlog_Item_1);
       IAgileProgramBacklogItem item =
-         AtsClientService.get().getAgileService().createAgileProgramBacklogItem(programBacklog, item1);
+         AtsClientService.get().getAgileService().createAgileProgramBacklogItem(programBacklog, backlogItem1);
 
       JaxAgileProgramBacklogItem item2 =
          JaxAgileProgramBacklogItem.construct(programBacklog, DemoArtifactToken.RD_Program_Backlog_Item_2);
@@ -128,7 +129,7 @@ public class Pdd93CreateDemoAgile {
       AtsClientService.get().getAgileService().createAgileProgramBacklogItem(programBacklog, item3);
 
       JaxAgileProgramFeature jaxFeature =
-         JaxAgileProgramFeature.construct(item1, DemoArtifactToken.RD_Program_Feature_Robot_Nav);
+         JaxAgileProgramFeature.construct(backlogItem1, DemoArtifactToken.RD_Program_Feature_Robot_Nav);
       IAgileProgramFeature feature =
          AtsClientService.get().getAgileService().createAgileProgramFeature(item, jaxFeature);
 
@@ -154,7 +155,11 @@ public class Pdd93CreateDemoAgile {
       AtsClientService.get().getAgileService().setAgileStory(reqWf2, story2, changes);
       changes.execute();
 
-      jaxFeature = JaxAgileProgramFeature.construct(item1, DemoArtifactToken.RD_Program_Feature_Robot_Voice);
+      Artifact progArt = AtsClientService.get().getArtifact(aProgram.getId());
+      RelationManager.setRelationOrder(progArt, CoreRelationTypes.Default_Hierarchical__Child, RelationSide.SIDE_B,
+         RelationSorter.UNORDERED, progArt.getChildren());
+
+      jaxFeature = JaxAgileProgramFeature.construct(backlogItem1, DemoArtifactToken.RD_Program_Feature_Robot_Voice);
       AtsClientService.get().getAgileService().createAgileProgramFeature(item, jaxFeature);
    }
 
@@ -329,8 +334,8 @@ public class Pdd93CreateDemoAgile {
 
       // Create Feature Groups
       for (String name : Arrays.asList("Communications", "UI", "Documentation", "Framework")) {
-         JaxNewAgileFeatureGroup group = newFeatureGroup(name);
-         response = agile.createFeatureGroup(DemoArtifactToken.SAW_Agile_Team.getId(), group);
+         JaxNewAgileFeatureGroup featureGroup = newFeatureGroup(name);
+         response = agile.createFeatureGroup(DemoArtifactToken.SAW_Program.getId(), featureGroup);
          Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
       }
 
@@ -452,6 +457,14 @@ public class Pdd93CreateDemoAgile {
       backlog.setId(DemoArtifactToken.SAW_Backlog.getId());
       backlog.setTeamId(DemoArtifactToken.SAW_Agile_Team.getId());
       return backlog;
+   }
+
+   private JaxNewAgileProgramFeature newProgramFeature(String name) {
+      JaxNewAgileProgramFeature programFeature = new JaxNewAgileProgramFeature();
+      programFeature.setName(name);
+      programFeature.setProgramBacklogItemId(DemoArtifactToken.SAW_Agile_Team.getId());
+      programFeature.setId(Lib.generateArtifactIdAsInt());
+      return programFeature;
    }
 
    private JaxNewAgileFeatureGroup newFeatureGroup(String name) {
