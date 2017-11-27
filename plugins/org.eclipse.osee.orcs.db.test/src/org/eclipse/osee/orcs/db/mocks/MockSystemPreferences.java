@@ -79,4 +79,8 @@ public class MockSystemPreferences implements SystemPreferences {
       return Strings.emptyString();
    }
 
+   @Override
+   public String getCachedValue(String key, String defaultValue) {
+      return defaultValue;
+   }
 }

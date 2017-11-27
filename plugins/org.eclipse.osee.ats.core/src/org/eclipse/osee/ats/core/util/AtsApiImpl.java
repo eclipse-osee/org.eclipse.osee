@@ -222,6 +222,20 @@ public abstract class AtsApiImpl implements AtsApi {
    }
 
    @Override
+   public String getConfigValue(String key, String defaultValue) {
+      String value;
+      try {
+         value = getConfigValue(key);
+         if (Strings.isInValid(value)) {
+            value = defaultValue;
+         }
+      } catch (Exception ex) {
+         value = defaultValue;
+      }
+      return value;
+   }
+
+   @Override
    public <T> T getConfigItem(ArtifactId artifact) {
       return getConfigItem(artifact.getId());
    }

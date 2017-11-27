@@ -25,6 +25,8 @@ public interface SystemPreferences {
 
    public String getCachedValue(String key);
 
+   public String getCachedValue(String key, String defaultValue);
+
    public String getCachedValue(String key, long maxStaleness);
 
    /**

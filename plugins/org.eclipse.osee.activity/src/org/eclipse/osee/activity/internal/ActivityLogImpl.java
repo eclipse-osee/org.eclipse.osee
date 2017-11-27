@@ -156,7 +156,7 @@ public class ActivityLogImpl implements ActivityLog, Runnable {
 
       int sampleWindowSecs;
       String sampleWindowSecStr =
-         preferences.getCachedValue("thread.activity.sample.window." + OrcsTypesData.OSEE_TYPE_VERSION, HALF_HOUR);
+         preferences.getCachedValue("thread.activity.sample.window." + OrcsTypesData.OSEE_TYPE_VERSION, "100");
       if (Strings.isValid(sampleWindowSecStr)) {
          sampleWindowSecs = Integer.parseInt(sampleWindowSecStr);
       } else {

@@ -57,6 +57,20 @@ public class SystemPreferencesImpl implements SystemPreferences {
    }
 
    @Override
+   public String getCachedValue(String key, String defaultValue) {
+      String value;
+      try {
+         value = getCachedValue(key);
+         if (Strings.isInValid(value)) {
+            value = defaultValue;
+         }
+      } catch (Exception ex) {
+         value = defaultValue;
+      }
+      return value;
+   }
+
+   @Override
    public String getCachedValue(String key, long maxStaleness) {
       Pair<Long, String> pair = cache.get(key);
       String value;

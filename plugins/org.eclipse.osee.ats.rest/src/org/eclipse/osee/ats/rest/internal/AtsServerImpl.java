@@ -170,14 +170,14 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
    }
 
    private void scheduleAtsConfigCacheReloader() {
-      long reloadTime = AtsUtilCore.SERVER_CONFIG_RELOAD_MIN_DEFAULT;
-      String reloadTimeStr = getConfigValue(AtsUtilCore.SERVER_CONFIG_RELOAD_MIN_KEY);
+      long reloadTimeMin = 30;
+      String reloadTimeStr = getConfigValue(AtsUtilCore.SERVER_CONFIG_RELOAD_MIN_KEY, "30");
       if (Strings.isNumeric(reloadTimeStr)) {
-         reloadTime = Long.valueOf(reloadTimeStr);
+         reloadTimeMin = Long.valueOf(reloadTimeStr);
       }
 
-      executorAdmin.scheduleWithFixedDelay("ATS Configuration Cache Reloader", configCache::reload, reloadTime,
-         reloadTime, TimeUnit.MINUTES);
+      executorAdmin.scheduleWithFixedDelay("ATS Configuration Cache Reloader", configCache::reload, reloadTimeMin,
+         reloadTimeMin, TimeUnit.MINUTES);
    }
 
    @Override

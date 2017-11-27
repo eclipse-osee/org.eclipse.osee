@@ -145,6 +145,8 @@ public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsConfiguratio
     */
    String getConfigValue(String key);
 
+   String getConfigValue(String key, String defaultValue);
+
    Log getLogger();
 
    <T> T getConfigItem(String guid);
@@ -211,8 +213,8 @@ public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsConfiguratio
 
    Collection<IAgileSprintHtmlOperation> getAgileSprintHtmlReportOperations();
 
-   public default String getConfigValue(AtsConfigKey configKey) {
-      return getConfigValue(configKey.name());
+   public default String getConfigValue(AtsConfigKey configKey, String defaultValue) {
+      return getConfigValue(configKey.name(), defaultValue);
    }
 
    default IAtsWorkItem getTeamWf(long id) {

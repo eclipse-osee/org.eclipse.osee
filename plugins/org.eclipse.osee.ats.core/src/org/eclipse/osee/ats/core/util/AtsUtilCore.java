@@ -33,7 +33,6 @@ public class AtsUtilCore {
    public static final String ATS_CONFIG_ACTION_URL_KEY = "ActionUrl";
    public static final String ATS_DEFAULT_ACTION_URL = "/ats/ui/action/ID";
    public final static String SERVER_CONFIG_RELOAD_MIN_KEY = "server_config_reload_min";
-   public final static long SERVER_CONFIG_RELOAD_MIN_DEFAULT = 30;
 
    private static Map<Long, String> idToGuidMap = new HashMap<>(50);
 
@@ -98,22 +97,14 @@ public class AtsUtilCore {
    }
 
    public static String getBaseActionUiUrl(String defaultUrl, AtsApi atsApi) {
-      String actionUrl = atsApi.getConfigValue(AtsUtilCore.ATS_CONFIG_ACTION_URL_KEY);
-      if (!Strings.isValid(actionUrl)) {
-         actionUrl = defaultUrl;
-      }
-      return actionUrl;
+      return atsApi.getConfigValue(AtsUtilCore.ATS_CONFIG_ACTION_URL_KEY, defaultUrl);
    }
 
    public static String resolveAjaxToBaseApplicationServer(String html, AtsApi atsApi) {
-      String basePath = atsApi.getConfigValue(AtsConfigKey.AJaxBasePath);
-      if (!Strings.isValid(basePath)) {
-         basePath = atsApi.getApplicationServerBase();
-      }
+      String basePath = atsApi.getConfigValue(AtsConfigKey.AJaxBasePath, atsApi.getApplicationServerBase());
       if (Strings.isValid(basePath)) {
          return html.replaceFirst("\\/ajax", basePath + "/ajax");
       }
       return html;
    }
-
 }
