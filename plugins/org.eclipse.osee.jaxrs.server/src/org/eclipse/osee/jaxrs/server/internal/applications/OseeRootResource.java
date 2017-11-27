@@ -66,7 +66,7 @@ public class OseeRootResource {
 
       String scheme = location.getScheme();
       URI finalUri = UriBuilder//
-         .fromPath(basePath)//
+         .fromPath(location.toString())//
          .scheme(scheme)//
          .path("/osee/ui/index.html")//
          .fragment(location.getRawFragment())//
