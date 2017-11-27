@@ -24,7 +24,6 @@ public class OseeRootApplication extends Application {
 
    private final Set<Object> singletons = new HashSet<Object>();
 
-   @SuppressWarnings("unused")
    private Log logger;
 
    public void setLogger(Log logger) {
@@ -32,7 +31,7 @@ public class OseeRootApplication extends Application {
    }
 
    public void start() {
-      singletons.add(new OseeRootResource());
+      singletons.add(new OseeRootResource(logger));
    }
 
    public void stop() {
