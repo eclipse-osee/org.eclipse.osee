@@ -101,7 +101,7 @@ public class ViewApplicabilityUtil {
 
    public static Map<Long, String> getBranchViews(BranchId branch) {
       Map<Long, String> viewsToBranchData = new HashMap<Long, String>();
-      if (branch.isValid()) {
+      if (branch != null && branch.isValid()) {
          List<Artifact> branchViews = ArtifactQuery.getArtifactListFromType(BranchView, branch);
          for (Artifact art : branchViews) {
             viewsToBranchData.put(art.getId(), art.getName());

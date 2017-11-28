@@ -173,7 +173,7 @@ public final class ArtifactImageManager {
             }
          }
          if (keyedImage != null && modType != null) {
-            KeyedImage overlay = FrameworkImage.valueOf("OUTGOING_" + modType.toString());
+            KeyedImage overlay = FrameworkImage.valueOf("OUTGOING_" + modType.toString().toUpperCase());
             toReturn =
                ImageManager.getImage(ImageManager.setupImageWithOverlay(keyedImage, overlay, Location.TOP_LEFT));
          }
