@@ -91,5 +91,10 @@ public interface RelationManager {
 
    List<Relation> getRelations(OrcsSession session, RelationNode node, DeletionFlag includeDeleted);
 
+   /**
+    * Set USER_DEFINED order exactly as specified in bNodes List. Nodes not in bNodes will be removed.
+    */
+   void order(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationSide side, List<? extends RelationNode> bNodes);
+
    ///////////////////////////////////////
 }

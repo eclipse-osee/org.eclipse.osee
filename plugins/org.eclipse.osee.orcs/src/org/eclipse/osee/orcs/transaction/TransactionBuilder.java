@@ -140,7 +140,10 @@ public interface TransactionBuilder {
 
    void setRelationApplicability(ArtifactId artA, IRelationType relType, ArtifactId artB, ApplicabilityId applicId);
 
+   void setRelationsAndOrder(ArtifactId artifact, RelationTypeSide relationSide, List<? extends ArtifactId> artifacts);
+
    // Applicability
+
    void setApplicability(ArtifactId art, ApplicabilityId applicId);
 
    void setApplicabilityReference(HashMap<ArtifactId, List<ApplicabilityId>> artifacts);

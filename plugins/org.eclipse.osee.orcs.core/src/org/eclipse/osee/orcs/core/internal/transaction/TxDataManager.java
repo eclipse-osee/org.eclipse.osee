@@ -16,6 +16,7 @@ import com.google.common.collect.Sets;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
@@ -25,6 +26,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.Tuple3Type;
 import org.eclipse.osee.framework.core.data.Tuple4Type;
@@ -398,6 +400,17 @@ public class TxDataManager {
       for (Artifact asArtifactB : Sets.difference(relatedArtBs, asArtifactBs)) {
          relationManager.unrelate(session, asArtifactA, type, asArtifactB);
       }
+   }
+
+   public void setRelationsAndOrder(TxData txData, ArtifactId artA, RelationTypeSide relationSide, List<? extends ArtifactId> artBs) {
+      setRelations(txData, artA, relationSide, artBs);
+      Artifact asArtifactA = getForWrite(txData, artA);
+      List<Artifact> asArtifactBs = new LinkedList<>();
+      for (ArtifactId artB : artBs) {
+         asArtifactBs.add(getForWrite(txData, artB));
+      }
+
+      relationManager.order(txData.getSession(), asArtifactA, relationSide, relationSide.getSide(), asArtifactBs);
    }
 
    public void setRationale(TxData txData, ArtifactId artA, IRelationType type, ArtifactId artB, String rationale) {

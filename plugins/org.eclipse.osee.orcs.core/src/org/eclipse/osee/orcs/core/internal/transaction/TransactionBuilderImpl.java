@@ -302,6 +302,11 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
+   public void setRelationsAndOrder(ArtifactId artifact, RelationTypeSide relationSide, List<? extends ArtifactId> artifacts) {
+      txManager.setRelationsAndOrder(txData, artifact, relationSide, artifacts);
+   }
+
+   @Override
    public void setRationale(ArtifactId artA, IRelationType relType, ArtifactId artB, String rationale) {
       txManager.setRationale(txData, artA, relType, artB, rationale);
    }

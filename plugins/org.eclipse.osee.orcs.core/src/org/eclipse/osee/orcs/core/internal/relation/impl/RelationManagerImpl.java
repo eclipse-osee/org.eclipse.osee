@@ -455,6 +455,13 @@ public class RelationManagerImpl implements RelationManager {
    }
 
    @Override
+   public void order(OrcsSession session, RelationNode node1, RelationTypeId type, RelationSide side, List<? extends RelationNode> node2) {
+      OrderManager orderManager = orderFactory.createOrderManager(node1);
+      RelationTypeSide key = RelationTypeSide.create(relationTypes.get(type), side);
+      orderManager.setOrder(key, RelationSorter.USER_DEFINED, node2);
+   }
+
+   @Override
    public void cloneRelations(OrcsSession session, RelationNode source, RelationNode destination) {
       ensureRelationsInitialized(session, source.getGraph(), source);
       RelationNodeAdjacencies adjacencies1 = source.getGraph().getAdjacencies(source);
