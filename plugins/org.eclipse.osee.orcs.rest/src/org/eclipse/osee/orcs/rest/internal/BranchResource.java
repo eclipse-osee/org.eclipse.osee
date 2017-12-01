@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.rest.internal;
 
 import javax.ws.rs.GET;
-import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -41,11 +40,6 @@ public class BranchResource {
       this.request = request;
       this.branchId = branchId;
       this.orcsApi = orcsApi;
-   }
-
-   @Path("artifact")
-   public ArtifactsResource getArtifacts() {
-      return new ArtifactsResource(uriInfo, request, branchId, orcsApi);
    }
 
    /**

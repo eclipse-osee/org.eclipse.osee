@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.model.search.artifact.RequestType;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResult;
@@ -47,10 +46,6 @@ public class OseeClientQueryTest {
    @BeforeClass
    public static void testSetup() {
       oseeClient = IntegrationUtil.createClient();
-      if (!oseeClient.isLocalHost()) {
-         throw new OseeStateException("This test should be run with local test server, not %s",
-            oseeClient.getBaseUri());
-      }
 
       // Establish initial connection to the db using this random query
       oseeClient.createQueryBuilder(COMMON).andIds(SystemUser.OseeSystem).getSearchResult(RequestType.IDS);

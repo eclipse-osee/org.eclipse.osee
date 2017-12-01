@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal;
 
-import org.eclipse.osee.orcs.rest.internal.search.ArtifactSearch_V1Test;
 import org.eclipse.osee.orcs.rest.internal.search.dsl.SearchDslTest;
 import org.eclipse.osee.orcs.rest.internal.search.predicate.AttributeTypePredicateHandlerTest;
 import org.eclipse.osee.orcs.rest.internal.search.predicate.ExistenceTypePredicateHandlerTest;
@@ -34,8 +33,7 @@ import org.junit.runners.Suite;
    OrcsValidationHelperAdapterTest.class,
    GuidsPredicateHandlerTest.class,
    IsOfTypePredicateHandlerTest.class,
-   TypeEqualsPredicateHandlerTest.class,
-   ArtifactSearch_V1Test.class})
+   TypeEqualsPredicateHandlerTest.class})
 public class InternalTestSuite {
    // Test Suite
 }

@@ -39,6 +39,7 @@ import org.eclipse.osee.orcs.rest.client.internal.search.QueryBuilderImpl;
 import org.eclipse.osee.orcs.rest.client.internal.search.QueryExecutor;
 import org.eclipse.osee.orcs.rest.client.internal.search.QueryOptions;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
+import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.DatastoreEndpoint;
 import org.eclipse.osee.orcs.rest.model.IndexerEndpoint;
@@ -216,6 +217,12 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
    public ApplicabilityEndpoint getApplicabilityEndpoint(BranchId branch) {
       URI uri = UriBuilder.fromUri(orcsUri).path("branch/{branch}").build(branch.getId());
       return client.targetProxy(uri, ApplicabilityEndpoint.class);
+   }
+
+   @Override
+   public ArtifactEndpoint getArtifactEndpoint(BranchId branch) {
+      URI uri = UriBuilder.fromUri(orcsUri).path("branch/{branch}").build(branch.getId());
+      return client.targetProxy(uri, ArtifactEndpoint.class);
    }
 
    @Override

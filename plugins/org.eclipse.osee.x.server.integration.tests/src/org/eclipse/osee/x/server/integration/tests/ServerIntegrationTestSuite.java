@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.x.server.integration.tests;
 
+import org.eclipse.osee.x.server.integration.tests.endpoint.ArtifactEndpointTest;
 import org.eclipse.osee.x.server.integration.tests.endpoint.RestAssuredTest;
 import org.eclipse.osee.x.server.integration.tests.performance.AccountClientTest;
 import org.eclipse.osee.x.server.integration.tests.performance.OseeClientQueryTest;
@@ -17,7 +18,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({OseeClientQueryTest.class, AccountClientTest.class, RestAssuredTest.class})
+@Suite.SuiteClasses({
+   OseeClientQueryTest.class,
+   AccountClientTest.class,
+   RestAssuredTest.class,
+   ArtifactEndpointTest.class})
 public class ServerIntegrationTestSuite {
    // Test Suite
 }

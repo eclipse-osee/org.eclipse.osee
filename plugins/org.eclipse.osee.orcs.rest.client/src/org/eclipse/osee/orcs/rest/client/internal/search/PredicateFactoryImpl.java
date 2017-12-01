@@ -139,8 +139,7 @@ public class PredicateFactoryImpl implements PredicateFactory {
    private List<String> getLongIds(Collection<? extends Id> types) {
       List<String> toReturn = new LinkedList<>();
       for (Id type : types) {
-         Long value = type.getId();
-         toReturn.add(String.valueOf(value));
+         toReturn.add(type.getIdString());
       }
       return toReturn;
    }

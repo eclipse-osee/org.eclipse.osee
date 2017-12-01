@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
+import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
 import org.eclipse.osee.orcs.rest.model.TupleEndpoint;
 import org.eclipse.osee.orcs.search.BranchQuery;
 
@@ -34,8 +35,6 @@ import org.eclipse.osee.orcs.search.BranchQuery;
 @Path("branch")
 public class BranchesResource {
 
-   // Allows to insert contextual objects into the class,
-   // e.g. ServletContext, Request, Response, UriInfo
    @Context
    UriInfo uriInfo;
    @Context
@@ -64,5 +63,10 @@ public class BranchesResource {
    @Path("{branch}/applic")
    public ApplicabilityEndpoint getApplicability(@PathParam("branch") BranchId branch, @HeaderParam("osee.account.id") UserId accountId) {
       return new ApplicabilityEndpointImpl(OrcsApplication.getOrcsApi(), branch, accountId);
+   }
+
+   @Path("{branch}/artifact")
+   public ArtifactEndpoint getArtifact(@PathParam("branch") BranchId branch, @HeaderParam("osee.account.id") UserId accountId) {
+      return new ArtifactEndpointImpl(OrcsApplication.getOrcsApi(), branch, accountId, uriInfo);
    }
 }

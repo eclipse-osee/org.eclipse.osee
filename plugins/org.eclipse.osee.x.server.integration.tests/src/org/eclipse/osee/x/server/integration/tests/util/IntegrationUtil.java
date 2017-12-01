@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.account.rest.client.AccountClient;
 import org.eclipse.osee.account.rest.client.AccountClientStandaloneSetup;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.client.OseeClientStandaloneSetup;
 
@@ -25,7 +26,12 @@ public final class IntegrationUtil {
    }
 
    public static OseeClient createClient() {
-      return OseeClientStandaloneSetup.createClient(createClientConfig());
+      OseeClient oseeClient = OseeClientStandaloneSetup.createClient(createClientConfig());
+      if (!oseeClient.isLocalHost()) {
+         throw new OseeStateException("This test should be run with local test server, not %s",
+            oseeClient.getBaseUri());
+      }
+      return oseeClient;
    }
 
    public static AccountClient createAccountClient() {

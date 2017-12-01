@@ -19,6 +19,7 @@ import org.eclipse.osee.define.report.api.MSWordEndpoint;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.server.ide.api.client.ClientEndpoint;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
+import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.DatastoreEndpoint;
 import org.eclipse.osee.orcs.rest.model.IndexerEndpoint;
@@ -66,4 +67,5 @@ public interface OseeClient {
 
    String getBaseUri();
 
+   ArtifactEndpoint getArtifactEndpoint(BranchId branch);
 }
