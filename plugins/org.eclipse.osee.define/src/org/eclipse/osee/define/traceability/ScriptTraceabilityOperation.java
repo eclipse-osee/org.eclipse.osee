@@ -29,8 +29,8 @@ import org.eclipse.osee.define.traceability.TraceUnitExtensionManager.TraceHandl
 import org.eclipse.osee.define.traceability.data.RequirementData;
 import org.eclipse.osee.define.traceability.data.TraceMark;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -302,9 +302,9 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
          String inspection = getInspectionQual(reqArtifact);
          if (Strings.isValid(inspection)) {
             requirementToCodeUnitsMap.put(reqArtifact, inspection);
+         } else {
+            requirementToCodeUnitsMap.put(reqArtifact, path);
          }
-
-         requirementToCodeUnitsMap.put(reqArtifact, path);
       }
 
       if (writeOutResults) {

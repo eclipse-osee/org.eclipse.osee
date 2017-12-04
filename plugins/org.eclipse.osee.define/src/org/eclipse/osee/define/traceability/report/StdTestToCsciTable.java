@@ -14,11 +14,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 import org.eclipse.osee.define.traceability.ArtifactOperations;
 import org.eclipse.osee.define.traceability.RequirementTraceabilityData;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
@@ -141,9 +144,14 @@ public class StdTestToCsciTable implements ISimpleTable {
          List<String> units = new ArrayList<>(partitionToQualificationMethod.getValues(partition));
          Collections.sort(units);
          for (String codeUnit : units) {
-            List<Artifact> artifacts =
-               ArtifactOperations.sortByParagraphNumbers(qualificationMethodToRequirements.getValues(codeUnit));
-            processRow(sheetWriter, partition, codeUnit, artifacts);
+            Set<Artifact> artifacts = new HashSet<>();
+            for (Artifact req : qualificationMethodToRequirements.getValues(codeUnit)) {
+               List<String> attributeValues = req.getAttributeValues(CoreAttributeTypes.Partition);
+               if (attributeValues.contains(partition)) {
+                  artifacts.add(req);
+               }
+            }
+            processRow(sheetWriter, partition, codeUnit, ArtifactOperations.sortByParagraphNumbers(artifacts));
          }
       }
    }
