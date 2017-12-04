@@ -18,6 +18,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -60,11 +62,16 @@ public final class PurgeTransactionEventUtil {
          Operations.executeWorkAndCheckStatus(operation);
          if (!changes.isEmpty()) {
             for (Change change : changes) {
-               Artifact art = ArtifactQuery.getArtifactFromId(change.getArtId(), transId.getBranch());
-               guidToId.put(art.getGuid(), art.getId());
-               DefaultBasicGuidArtifact guidArt = new DefaultBasicGuidArtifact(change.getBranch(),
-                  ArtifactTypeId.valueOf(change.getArtifactType().getId()), art.getGuid());
-               txChg.getArtifacts().add(guidArt);
+               try {
+                  Artifact art = ArtifactQuery.getArtifactFromId(change.getArtId().getId().intValue(),
+                     transId.getBranch(), DeletionFlag.INCLUDE_DELETED);
+                  guidToId.put(art.getGuid(), art.getId());
+                  DefaultBasicGuidArtifact guidArt = new DefaultBasicGuidArtifact(change.getBranch(),
+                     ArtifactTypeId.valueOf(change.getArtifactType().getId()), art.getGuid());
+                  txChg.getArtifacts().add(guidArt);
+               } catch (ArtifactDoesNotExist ex) {
+                  OseeLog.log(Activator.class, Level.WARNING, ex);
+               }
             }
          }
       }
