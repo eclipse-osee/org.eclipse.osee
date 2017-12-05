@@ -153,7 +153,7 @@ public class ClientStorage {
    }
 
    private ResultSet<ArtifactReadable> getOAuthTypesDefinition() {
-      return newQuery().andUuid(OAUTH_TYPES.getUuid()).andTypeEquals(OAUTH_TYPES.getArtifactType()).getResults();
+      return newQuery().andUuid(OAUTH_TYPES.getUuid()).andTypeEquals(OAUTH_TYPES.getArtifactTypeId()).getResults();
    }
 
    public ArtifactId storeTypes(InputSupplier<? extends InputStream> resource) {

@@ -207,7 +207,7 @@ public class RoughArtifact {
       return attributes.getSoleAttributeValue(attributeName);
    }
 
-   public IArtifactType getPrimaryArtifactType() {
+   public ArtifactTypeId getPrimaryArtifactType() {
       return primaryArtifactType;
    }
 

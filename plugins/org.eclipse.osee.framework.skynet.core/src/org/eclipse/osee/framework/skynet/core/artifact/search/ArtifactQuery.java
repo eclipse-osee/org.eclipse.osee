@@ -121,9 +121,7 @@ public class ArtifactQuery {
    private static Artifact getOrCheckArtifactFromId(ArtifactId artifactId, BranchId branch, DeletionFlag allowDeleted, QueryType queryType) {
       ArtifactToken artifactToken;
       if (artifactId instanceof ArtifactToken) {
-         ArtifactToken inputToken = (ArtifactToken) artifactId;
-         artifactToken = ArtifactToken.valueOf(artifactId.getId(), artifactId.getGuid(), inputToken.getName(), branch,
-            inputToken.getArtifactType());
+         artifactToken = ArtifactToken.valueOf((ArtifactToken) artifactId, branch);
       } else {
          artifactToken = ArtifactToken.valueOf(artifactId, branch);
       }

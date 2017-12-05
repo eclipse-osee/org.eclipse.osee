@@ -50,7 +50,7 @@ public final class OseeSystemArtifacts {
    }
 
    public static Artifact getOrCreateArtifact(ArtifactToken artifactToken, BranchId branch) {
-      return getOrCreateCachedArtifact(artifactToken.getArtifactType(), artifactToken.getName(), branch,
+      return getOrCreateCachedArtifact(artifactToken.getArtifactTypeId(), artifactToken.getName(), branch,
          artifactToken.getGuid(), artifactToken.getUuid(), true);
    }
 

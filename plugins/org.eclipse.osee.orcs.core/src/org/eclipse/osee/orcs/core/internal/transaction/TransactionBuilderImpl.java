@@ -114,7 +114,8 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    @Override
    public ArtifactToken createArtifact(ArtifactToken token) {
       Conditions.checkExpressionFailOnTrue(token.isInvalid(), "Invalid Id %d. Must be > 0", token.getId());
-      return txManager.createArtifact(txData, token.getArtifactType(), token.getName(), token.getGuid(), token.getId());
+      return txManager.createArtifact(txData, token.getArtifactTypeId(), token.getName(), token.getGuid(),
+         token.getId());
    }
 
    @Override

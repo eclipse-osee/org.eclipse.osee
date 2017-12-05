@@ -166,7 +166,7 @@ public class ArtifactTypeManager {
    }
 
    public static Artifact addArtifact(ArtifactToken artifactToken, BranchId branch) {
-      return addArtifact(artifactToken.getArtifactType(), branch, artifactToken.getName(), artifactToken.getGuid(),
+      return addArtifact(artifactToken.getArtifactTypeId(), branch, artifactToken.getName(), artifactToken.getGuid(),
          artifactToken.getUuid());
    }
 

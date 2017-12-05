@@ -15,7 +15,6 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 
@@ -50,7 +49,7 @@ public class AccessDataQuery {
    }
 
    public void artifactTypeMatches(PermissionEnum permissionToMatch, ArtifactToken artifact, PermissionStatus permissionStatus) {
-      IArtifactType typeToMatch = artifact.getArtifactType();
+      ArtifactTypeId typeToMatch = artifact.getArtifactTypeId();
       BranchId branchToMatch = artifact.getBranch();
       branchArtifactTypeMatches(permissionToMatch, branchToMatch, typeToMatch, permissionStatus);
       if (permissionStatus.matched()) {
@@ -69,7 +68,7 @@ public class AccessDataQuery {
             @Override
             public boolean accept(AccessDetail<?> access) {
                return access.getAccessObject().equals(artifact) || access.getAccessObject().equals(
-                  artifact.getArtifactType());
+                  artifact.getArtifactTypeId());
             }
          });
 

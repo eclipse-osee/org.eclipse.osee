@@ -22,10 +22,10 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -70,13 +70,13 @@ public interface IAtsChangeSet {
 
    boolean isAttributeTypeValid(IAtsWorkItem workItem, AttributeTypeId attributeType);
 
-   ArtifactToken createArtifact(IArtifactType artifactType, String name);
+   ArtifactToken createArtifact(ArtifactTypeId artifactType, String name);
 
    void deleteAttributes(IAtsObject atsObject, AttributeTypeId attributeType);
 
-   ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid);
+   ArtifactToken createArtifact(ArtifactTypeId artifactType, String name, String guid);
 
-   ArtifactToken createArtifact(IArtifactType artifactType, String name, String guid, Long id);
+   ArtifactToken createArtifact(ArtifactTypeId artifactType, String name, String guid, Long id);
 
    void relate(Object object1, RelationTypeSide relationSide, Object object2);
 

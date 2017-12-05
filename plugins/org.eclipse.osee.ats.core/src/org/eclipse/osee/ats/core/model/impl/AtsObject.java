@@ -48,7 +48,7 @@ public class AtsObject extends NamedIdBase implements IAtsObject {
 
    @Override
    public ArtifactTypeId getArtifactType() {
-      return this.object.getArtifactType();
+      return this.object.getArtifactTypeId();
    }
 
    @Override

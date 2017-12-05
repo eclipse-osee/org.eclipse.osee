@@ -157,9 +157,8 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpoint {
       ArtifactReadable introArt =
          orcsApi.getQueryFactory().fromBranch(fromBranch).andId(introToken).getResults().getAtMostOneOrNull();
       if (introArt == null) {
-         introArt =
-            orcsApi.getQueryFactory().fromBranch(fromBranch).andTypeEquals(introToken.getArtifactType()).andNameEquals(
-               introToken.getName()).getResults().getAtMostOneOrNull();
+         introArt = orcsApi.getQueryFactory().fromBranch(fromBranch).andTypeEquals(
+            introToken.getArtifactTypeId()).andNameEquals(introToken.getName()).getResults().getAtMostOneOrNull();
       }
       Conditions.checkNotNull(introArt, "No artifact found for token " + introToken);
       ArtifactId artifact = tx.introduceArtifact(fromBranch, introArt);
@@ -168,7 +167,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpoint {
             orcsApi.getQueryFactory().fromBranch(newBranch).andId(relateToToken).getResults().getAtMostOneOrNull();
          if (relateToArt == null) {
             relateToArt = orcsApi.getQueryFactory().fromBranch(newBranch).andTypeEquals(
-               relateToToken.getArtifactType()).andNameEquals(
+               relateToToken.getArtifactTypeId()).andNameEquals(
                   relateToToken.getName()).getResults().getAtMostOneOrNull();
          }
       }
