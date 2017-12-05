@@ -14,7 +14,6 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import org.eclipse.osee.ats.api.config.JaxAtsObject;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -97,7 +96,7 @@ public class AtsUser extends JaxAtsObject implements IAtsUser {
 
    @Override
    @JsonIgnore
-   public IArtifactType getArtifactType() {
+   public ArtifactTypeId getArtifactType() {
       return CoreArtifactTypes.User;
    }
 

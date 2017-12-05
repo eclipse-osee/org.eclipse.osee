@@ -25,7 +25,6 @@ import org.eclipse.osee.ats.core.internal.log.AtsLogFactory;
 import org.eclipse.osee.ats.core.internal.state.StateManager;
 import org.eclipse.osee.ats.core.util.AtsUserGroup;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 
 /**
@@ -246,7 +245,7 @@ public class MockWorkItem implements IAtsWorkItem {
    }
 
    @Override
-   public IArtifactType getArtifactType() {
+   public ArtifactTypeId getArtifactType() {
       return null;
    }
 
