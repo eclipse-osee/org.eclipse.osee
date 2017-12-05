@@ -3,7 +3,7 @@
 <body>
   <div class="container-fluid" id="content">
     <div class="row">
-        <div class="col-md-3 col-md-offset-1">
+        <div class="col-md-2 col-md-offset-1">
             <div class="row">
                 <h5>Select ATS Version</h5>
                 <select class="form-control" ng-model="programSelection" ng-change="updateProgram()" ng-options="obj.value as obj.text for obj in programs"></select>
@@ -35,13 +35,13 @@
             
             
         </div>
-        <div ng-show="programSelection != null" class="col-md-6 col-md-offset-1">
+        <div ng-show="programSelection != null" class="col-md-7 col-md-offset-1 ">
             <div class="row">
                 <button ng-disabled="programSelection == null" ng-click="createNewSetModal()" class="btn pull-left">New</button>
                 <button ng-disabled="programSelection == null" ng-click="toggleReadOnly()" class="btn pull-right">Edit</button>
             </div>
             <div class="row">
-		      	<div id="itemsGrid" class="grid" ui-grid="gridOptions" ui-grid-edit ui-grid-auto-resize></div>
+		      	<div id="itemsGrid" class="grid" ui-grid="gridOptions" ui-grid-edit ui-grid-auto-resize ui-grid-resize-columns></div>
                 <div class="panel panel-default">
                 	<div class="panel-heading" id="operationsPanel">
                 		<h3 class="panel-title">Operations</h3>
@@ -60,7 +60,7 @@
         </div>
     </div>
     <div ng-show="programSelection != null" class="row">
-    	<div class="col-md-9 col-md-offset-1">
+    	<div class="col-md-11 col-md-offset-1">
             <div class="row" id="summaryContainer">
 		      	<div id="itemsGrid" class="grid" ui-grid="summaryGrid" ui-grid-resize-columns ui-grid-auto-resize></div>
             </div>
