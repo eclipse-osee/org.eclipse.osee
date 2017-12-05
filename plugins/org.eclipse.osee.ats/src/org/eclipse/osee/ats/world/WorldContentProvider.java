@@ -175,7 +175,7 @@ public class WorldContentProvider implements ITreeContentProvider {
    }
 
    private boolean hasAtsWorldChildren(AbstractWorkflowArtifact workflow) {
-      if (workflow.isOfType(AtsArtifactTypes.Task)) {
+      if (workflow.isTypeEqual(AtsArtifactTypes.Task)) {
          return false;
       }
       if (workflow instanceof TeamWorkFlowArtifact && workflow.getRelatedArtifactsCount(

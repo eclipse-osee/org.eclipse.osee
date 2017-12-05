@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 /**
  * @author Donald G. Dunne
@@ -98,11 +97,6 @@ public class AtsUser extends JaxAtsObject implements IAtsUser {
    @JsonIgnore
    public ArtifactTypeId getArtifactType() {
       return CoreArtifactTypes.User;
-   }
-
-   @Override
-   public boolean isOfType(ArtifactTypeId... artifactTypes) {
-      return Collections.asHashSet(artifactTypes).contains(getArtifactType());
    }
 
    @Override

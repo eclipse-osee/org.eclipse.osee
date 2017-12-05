@@ -32,7 +32,7 @@ public class ActionArtifactRollup {
 
    public ActionArtifactRollup(ActionArtifact action) {
       this.action = action;
-      if (!action.isOfType(AtsArtifactTypes.Action)) {
+      if (!action.isTypeEqual(AtsArtifactTypes.Action)) {
          throw new OseeArgumentException("Artifact must be an Action instead of [%s]", action.getArtifactTypeName());
       }
    }

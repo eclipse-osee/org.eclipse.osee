@@ -58,13 +58,13 @@ public final class AtsIdProvider {
    public String getNextAtsId() {
       String seqName = getAttrValueFromTeamDef(AtsAttributeTypes.AtsIdSequenceName);
       if (!Strings.isValid(seqName)) {
-         if (newObject.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+         if (newObject.isTypeEqual(AtsArtifactTypes.TeamWorkflow)) {
             seqName = DEFAULT_WORKFLOW_SEQ_NAME;
-         } else if (newObject.isOfType(AtsArtifactTypes.Action)) {
+         } else if (newObject.isTypeEqual(AtsArtifactTypes.Action)) {
             seqName = DEFAULT_ACTION_SEQ_NAME;
-         } else if (newObject.isOfType(AtsArtifactTypes.ReviewArtifact)) {
+         } else if (newObject.isTypeEqual(AtsArtifactTypes.ReviewArtifact)) {
             seqName = DEFAULT_REVIEW_SEQ_NAME;
-         } else if (newObject.isOfType(AtsArtifactTypes.Task)) {
+         } else if (newObject.isTypeEqual(AtsArtifactTypes.Task)) {
             seqName = DEFAULT_TASK_SEQ_NAME;
          } else {
             seqName = DEFAULT_SEQ_NAME;
@@ -72,13 +72,13 @@ public final class AtsIdProvider {
       }
       String prefixName = getAttrValueFromTeamDef(AtsAttributeTypes.AtsIdPrefix);
       if (!Strings.isValid(prefixName)) {
-         if (newObject.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+         if (newObject.isTypeEqual(AtsArtifactTypes.TeamWorkflow)) {
             prefixName = DEFAULT_WORKFLOW_ID_PREFIX;
-         } else if (newObject.isOfType(AtsArtifactTypes.Action)) {
+         } else if (newObject.isTypeEqual(AtsArtifactTypes.Action)) {
             prefixName = DEFAULT_ACTION_ID_PREFIX;
-         } else if (newObject.isOfType(AtsArtifactTypes.ReviewArtifact)) {
+         } else if (newObject.isTypeEqual(AtsArtifactTypes.ReviewArtifact)) {
             prefixName = DEFAULT_REVIEW_ID_PREFIX;
-         } else if (newObject.isOfType(AtsArtifactTypes.Task)) {
+         } else if (newObject.isTypeEqual(AtsArtifactTypes.Task)) {
             prefixName = DEFAULT_TASK_ID_PREFIX;
          } else {
             prefixName = DEFAULT_ID_PREFIX;

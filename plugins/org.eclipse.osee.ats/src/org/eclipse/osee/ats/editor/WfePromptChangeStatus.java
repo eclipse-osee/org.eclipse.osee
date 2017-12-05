@@ -60,7 +60,7 @@ public class WfePromptChangeStatus {
          }
 
          // If task status is being changed, make sure tasks belong to current state
-         if (awa.isOfType(AtsArtifactTypes.Task)) {
+         if (awa.isTypeEqual(AtsArtifactTypes.Task)) {
             TaskArtifact taskArt = (TaskArtifact) awa;
             if (taskArt.isRelatedToUsed() && !taskArt.isRelatedToParentWorkflowCurrentState()) {
                return new Result(String.format(

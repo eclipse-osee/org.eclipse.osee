@@ -673,22 +673,22 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    @Override
    public boolean isTeamWorkflow() {
-      return this.isOfType(AtsArtifactTypes.TeamWorkflow);
+      return isOfType(AtsArtifactTypes.TeamWorkflow);
    }
 
    @Override
    public boolean isDecisionReview() {
-      return this.isOfType(AtsArtifactTypes.DecisionReview);
+      return isOfType(AtsArtifactTypes.DecisionReview);
    }
 
    @Override
    public boolean isPeerReview() {
-      return this.isOfType(AtsArtifactTypes.PeerToPeerReview);
+      return isOfType(AtsArtifactTypes.PeerToPeerReview);
    }
 
    @Override
    public boolean isTask() {
-      return this.isOfType(AtsArtifactTypes.Task);
+      return isOfType(AtsArtifactTypes.Task);
    }
 
    @Override

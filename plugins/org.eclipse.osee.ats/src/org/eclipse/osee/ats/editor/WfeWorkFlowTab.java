@@ -158,10 +158,10 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
          bodyComp.setLayoutData(gd);
 
          setLoading(true);
-         if (awa.isOfType(AtsArtifactTypes.DecisionReview)) {
+         if (awa.isTypeEqual(AtsArtifactTypes.DecisionReview)) {
             HelpUtil.setHelp(managedForm.getForm(), AtsHelpContext.DECISION_REVIEW);
 
-         } else if (awa.isOfType(AtsArtifactTypes.PeerToPeerReview)) {
+         } else if (awa.isTypeEqual(AtsArtifactTypes.PeerToPeerReview)) {
             HelpUtil.setHelp(managedForm.getForm(), AtsHelpContext.PEER_TO_PEER_REVIEW);
 
          } else {

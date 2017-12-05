@@ -90,8 +90,10 @@ public class CopyActionDetails {
          result = "Task";
       } else if (awa.isOfType(AtsArtifactTypes.ReviewArtifact)) {
          result = "Review";
-      } else if (awa.isOfType(AtsArtifactTypes.Goal)) {
+      } else if (awa.isTypeEqual(AtsArtifactTypes.Goal)) {
          result = "Goal";
+      } else if (awa.isTypeEqual(AtsArtifactTypes.AgileBacklog)) {
+         result = "Backlog";
       }
       if (!Strings.isValid(result)) {
          result = "unknown";

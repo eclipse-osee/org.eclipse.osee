@@ -35,6 +35,13 @@ public interface IAtsObject extends NamedId, HasDescription {
 
    ArtifactTypeId getArtifactType();
 
-   boolean isOfType(ArtifactTypeId... artifactTypes);
-
+   default boolean isTypeEqual(ArtifactTypeId... artifactTypes) {
+      ArtifactTypeId artifactType = getArtifactType();
+      for (ArtifactTypeId artType : artifactTypes) {
+         if (artifactType.equals(artType)) {
+            return true;
+         }
+      }
+      return false;
+   }
 }

@@ -50,15 +50,4 @@ public class AtsObject extends NamedIdBase implements IAtsObject {
    public ArtifactTypeId getArtifactType() {
       return this.object.getArtifactTypeId();
    }
-
-   @Override
-   public boolean isOfType(ArtifactTypeId... artifactType) {
-      for (ArtifactTypeId artType : artifactType) {
-         if (getArtifactType().equals(artType)) {
-            return true;
-         }
-      }
-      return false;
-   }
-
 }

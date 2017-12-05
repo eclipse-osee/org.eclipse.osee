@@ -82,7 +82,7 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
    }
 
    private boolean isApplicable(WfeWorkflowSection section) {
-      return section.getSma().isOfType(
+      return section.getSma().isTypeEqual(
          AtsArtifactTypes.DecisionReview) && section.getSma().getCurrentStateName().equals(
             DecisionReviewState.Decision.getName());
    }
@@ -118,7 +118,7 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
    }
 
    private boolean isApplicable(AbstractWorkflowArtifact awa) {
-      return awa.isOfType(AtsArtifactTypes.DecisionReview) && awa.getCurrentStateName().equals(
+      return awa.isTypeEqual(AtsArtifactTypes.DecisionReview) && awa.getCurrentStateName().equals(
          DecisionReviewState.Decision.getName());
    }
 
