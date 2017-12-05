@@ -24,7 +24,6 @@ public interface ArtifactDataProvider {
 
    public static interface ArtifactProxy extends ArtifactToken {
 
-      @Override
       ArtifactType getArtifactType();
 
       boolean isAttributeTypeValid(AttributeTypeId attributeType);

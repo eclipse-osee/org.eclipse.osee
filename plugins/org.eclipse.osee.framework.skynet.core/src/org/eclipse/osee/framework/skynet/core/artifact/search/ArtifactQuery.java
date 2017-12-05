@@ -791,11 +791,10 @@ public class ArtifactQuery {
       List<ArtifactToken> tokens = new LinkedList<>();
       while (chStmt.next()) {
          Long artId = chStmt.getLong("art_id");
-         Long artTypeId = chStmt.getLong("art_type_id");
+         ArtifactTypeId artTypeId = ArtifactTypeId.valueOf(chStmt.getLong("art_type_id"));
          String name = chStmt.getString("value");
          String guid = chStmt.getString("guid");
-         ArtifactToken token =
-            ArtifactToken.valueOf(artId, guid, name, branch, ArtifactTypeManager.getTypeByGuid(artTypeId));
+         ArtifactToken token = ArtifactToken.valueOf(artId, guid, name, branch, artTypeId);
          tokens.add(token);
       }
       return tokens;
@@ -891,10 +890,9 @@ public class ArtifactQuery {
          chStmt.runPreparedQuery(query);
          while (chStmt.next()) {
             Long artId = chStmt.getLong("art_id");
-            Long artTypeId = chStmt.getLong("art_type_id");
+            ArtifactTypeId artTypeId = ArtifactTypeId.valueOf(chStmt.getLong("art_type_id"));
             String name = chStmt.getString("value");
-            ArtifactType artType = ArtifactTypeManager.getTypeByGuid(Long.valueOf(artTypeId));
-            ArtifactToken token = ArtifactToken.valueOf(artId, name, branch, artType);
+            ArtifactToken token = ArtifactToken.valueOf(artId, name, branch, artTypeId);
             Long artIdLong = isSideA ? artAIdToArtBId.get(artId) : artBIdToArtAId.get(artId);
             ArtifactId aArtId = ArtifactId.valueOf(artIdLong);
             artToRelatedTokens.put(aArtId, token);

@@ -49,7 +49,7 @@ public interface UserToken extends ArtifactToken, UserId {
          }
 
          @Override
-         public IArtifactType getArtifactType() {
+         public ArtifactTypeId getArtifactTypeId() {
             return CoreArtifactTypes.User;
          }
 

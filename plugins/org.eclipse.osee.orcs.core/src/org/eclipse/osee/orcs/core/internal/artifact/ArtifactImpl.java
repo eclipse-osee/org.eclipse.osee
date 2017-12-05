@@ -106,6 +106,11 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    }
 
    @Override
+   public ArtifactTypeId getArtifactTypeId() {
+      return getArtifactType();
+   }
+
+   @Override
    public void setName(String name) {
       setSoleAttributeFromString(CoreAttributeTypes.Name, name);
    }

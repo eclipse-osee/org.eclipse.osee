@@ -98,6 +98,11 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
+   public ArtifactTypeId getArtifactTypeId() {
+      return getArtifactType();
+   }
+
+   @Override
    public boolean isOfType(ArtifactTypeId... otherTypes) {
       return getProxiedObject().isOfType(otherTypes);
    }

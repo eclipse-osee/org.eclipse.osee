@@ -22,9 +22,10 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
  * @author Donald G. Dunne
  */
 @JsonSerialize(using = NamedIdSerializer.class)
-public interface ArtifactToken extends ArtifactId, HasArtifactType, HasBranch, NamedId {
+public interface ArtifactToken extends ArtifactId, HasBranch, NamedId {
+
    default ArtifactTypeId getArtifactTypeId() {
-      return getArtifactType();
+      return ArtifactTypeId.SENTINEL;
    }
 
    default boolean isTypeEqual(ArtifactTypeId artifactType) {
@@ -32,51 +33,51 @@ public interface ArtifactToken extends ArtifactId, HasArtifactType, HasBranch, N
    }
 
    public static ArtifactToken valueOf(Id id, BranchId branch) {
-      return valueOf(id.getId(), GUID.create(), null, branch, null);
+      return valueOf(id.getId(), GUID.create(), null, branch, ArtifactTypeId.SENTINEL);
    }
 
    public static ArtifactToken valueOf(ArtifactId id, String name) {
-      return valueOf(id.getId(), GUID.create(), name, BranchId.SENTINEL, null);
+      return valueOf(id.getId(), GUID.create(), name, BranchId.SENTINEL, ArtifactTypeId.SENTINEL);
    }
 
    public static ArtifactToken valueOf(ArtifactId id, BranchId branch) {
       if (id instanceof ArtifactToken) {
          return valueOf((ArtifactToken) id, branch);
       }
-      return valueOf(id.getId(), GUID.create(), null, branch, null);
+      return valueOf(id.getId(), GUID.create(), "", branch, ArtifactTypeId.SENTINEL);
    }
 
    public static ArtifactToken valueOf(ArtifactToken token, BranchId branch) {
-      return valueOf(token.getId(), token.getGuid(), token.getName(), branch, token.getArtifactType());
+      return valueOf(token.getId(), token.getGuid(), token.getName(), branch, token.getArtifactTypeId());
    }
 
    public static ArtifactToken valueOf(long id, BranchId branch) {
-      return valueOf(id, GUID.create(), null, branch, null);
+      return valueOf(id, GUID.create(), "", branch, ArtifactTypeId.SENTINEL);
    }
 
    public static ArtifactToken valueOf(long id, String name, BranchId branch) {
-      return valueOf(id, GUID.create(), name, branch, null);
+      return valueOf(id, GUID.create(), name, branch, ArtifactTypeId.SENTINEL);
    }
 
    public static ArtifactToken valueOf(long id, String name) {
-      return valueOf(id, GUID.create(), name, BranchId.SENTINEL, null);
+      return valueOf(id, GUID.create(), name, BranchId.SENTINEL, ArtifactTypeId.SENTINEL);
    }
 
-   public static ArtifactToken valueOf(long id, String name, IArtifactType artifactType) {
+   public static ArtifactToken valueOf(long id, String name, ArtifactTypeId artifactType) {
       return valueOf(id, GUID.create(), name, BranchId.SENTINEL, artifactType);
    }
 
-   public static ArtifactToken valueOf(long id, String name, BranchId branch, IArtifactType artifactType) {
+   public static ArtifactToken valueOf(long id, String name, BranchId branch, ArtifactTypeId artifactType) {
       return valueOf(id, GUID.create(), name, branch, artifactType);
    }
 
-   public static ArtifactToken valueOf(long id, String guid, String name, BranchId branch, IArtifactType artifactType) {
+   public static ArtifactToken valueOf(long id, String guid, String name, BranchId branch, ArtifactTypeId artifactType) {
       final class ArtifactTokenImpl extends NamedIdBase implements ArtifactToken {
          private final BranchId branch;
-         private final IArtifactType artifactType;
+         private final ArtifactTypeId artifactType;
          private final String guid;
 
-         public ArtifactTokenImpl(Long id, String guid, String name, BranchId branch, IArtifactType artifactType) {
+         public ArtifactTokenImpl(Long id, String guid, String name, BranchId branch, ArtifactTypeId artifactType) {
             super(id, name);
             this.branch = branch;
             this.artifactType = artifactType;
@@ -84,7 +85,7 @@ public interface ArtifactToken extends ArtifactId, HasArtifactType, HasBranch, N
          }
 
          @Override
-         public IArtifactType getArtifactType() {
+         public ArtifactTypeId getArtifactTypeId() {
             return artifactType;
          }
 

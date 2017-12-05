@@ -1439,7 +1439,6 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    /**
     * @return Returns the descriptor.
     */
-   @Override
    public final ArtifactType getArtifactType() {
       return ArtifactTypeManager.getType(getArtifactTypeId());
    }

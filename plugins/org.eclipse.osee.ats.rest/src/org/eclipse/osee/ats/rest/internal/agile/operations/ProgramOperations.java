@@ -87,7 +87,7 @@ public class ProgramOperations {
       item.setName(artifact.getName());
       item.setId(artifact.getId());
       item.setImage(getImage(artifact));
-      item.setType(artifact.getArtifactType().getName());
+      item.setType(atsApi.getStoreService().getArtifactType(artifact).getName());
       return item;
    }
 

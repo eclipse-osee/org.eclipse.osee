@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -75,10 +74,9 @@ public class TokenSearchOperations {
          chStmt.runPreparedQuery(query);
          while (chStmt.next()) {
             Long artId = chStmt.getLong("art_id");
-            Long artTypeId = chStmt.getLong("art_type_id");
+            ArtifactTypeId artTypeId = ArtifactTypeId.valueOf(chStmt.getLong("art_type_id"));
             String name = chStmt.getString("value");
-            IArtifactType artType = orcsApi.getOrcsTypes().getArtifactTypes().get(artTypeId);
-            ArtifactToken token = ArtifactToken.valueOf(artId, name, branch, artType);
+            ArtifactToken token = ArtifactToken.valueOf(artId, name, branch, artTypeId);
             Long artIdLong = isSideA ? artAIdToArtBId.get(artId) : artBIdToArtAId.get(artId);
             ArtifactId aArtId = ArtifactId.valueOf(artIdLong);
             artToRelatedTokens.put(aArtId, token);
