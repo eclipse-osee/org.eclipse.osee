@@ -48,7 +48,7 @@ public class TraceabilityContentProvider implements ITreeContentProvider {
          IResultsXViewerRow row = (IResultsXViewerRow) parentElement;
          Object data = row.getData();
          if (data instanceof Artifact) {
-            if (((Artifact) data).getArtifactType().inheritsFrom(CoreArtifactTypes.AbstractSoftwareRequirement)) {
+            if (((Artifact) data).isOfType(CoreArtifactTypes.AbstractSoftwareRequirement)) {
                List<Object> children = new LinkedList<>();
                try {
                   for (Artifact art : ((Artifact) data).getRelatedArtifacts(CoreRelationTypes.Verification__Verifier)) {

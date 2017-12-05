@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.dsl.integration.RoleContextProvider;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -86,10 +85,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, EventHand
       boolean result = false;
       try {
          if (!AtsClientService.get().getAtsBranch().equals(objectBranch)) {
-            ArtifactType assocArtType = BranchManager.getAssociatedArtifact(objectBranch).getArtifactType();
-            if (assocArtType != null) {
-               result = assocArtType.inheritsFrom(AtsArtifactTypes.AtsArtifact);
-            }
+            result = BranchManager.getAssociatedArtifact(objectBranch).isOfType(AtsArtifactTypes.AtsArtifact);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.INFO, "Error determining access applicibility", ex);
@@ -125,8 +121,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, EventHand
             if (contextIds.isEmpty()) {
                // Else, get from associated artifact
                Artifact assocArtifact = BranchManager.getAssociatedArtifact(branch);
-               ArtifactType assocArtType = assocArtifact.getArtifactType();
-               if (assocArtType.inheritsFrom(AtsArtifactTypes.TeamWorkflow)) {
+               if (assocArtifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                   contextIds.addAll(internalGetFromWorkflow((TeamWorkFlowArtifact) assocArtifact));
                } else {
                   contextIds.add(AtsBranchAccessContextId.DENY_CONTEXT);

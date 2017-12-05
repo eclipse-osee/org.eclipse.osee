@@ -67,7 +67,7 @@ public class GraphitiRenderer extends DefaultArtifactRenderer {
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact, Map<RendererOption, Object> rendererOptions) {
       int rating = IRenderer.NO_MATCH;
-      if (artifact.getArtifactType().inheritsFrom(CoreArtifactTypes.ModelDiagram)) {
+      if (artifact.isOfType(CoreArtifactTypes.ModelDiagram)) {
          if (presentationType.matches(RENDER_AS_HUMAN_READABLE_TEXT, PREVIEW, DEFAULT_OPEN, SPECIALIZED_EDIT)) {
             rating = IRenderer.PRESENTATION_SUBTYPE_MATCH;
          }
