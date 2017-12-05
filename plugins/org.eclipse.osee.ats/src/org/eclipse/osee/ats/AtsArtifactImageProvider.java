@@ -10,23 +10,32 @@
  *******************************************************************************/
 package org.eclipse.osee.ats;
 
+import java.util.HashMap;
+import java.util.Map;
+import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.util.SubscribeManager;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.FavoritesManager;
+import org.eclipse.osee.framework.core.data.ArtifactImage;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.util.CoreImage;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.osee.framework.ui.swt.OverlayImage.Location;
 
 /**
  * @author Ryan D. Brooks
  */
 public class AtsArtifactImageProvider extends ArtifactImageProvider {
+
+   private static Map<ArtifactImage, KeyedImage> keyedImageMap = new HashMap<ArtifactImage, KeyedImage>();
 
    @Override
    public void init() {
@@ -40,23 +49,17 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.RuleDefinition, AtsImage.RULE_DEFINITION, this);
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.WorkDefinition, AtsImage.WORK_DEFINITION, this);
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Goal, AtsImage.GOAL, this);
-      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.AgileBacklog, AtsImage.AGILE_BACKLOG, this);
-      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.AgileProgram, AtsImage.AGILE_PROGRAM, this);
-      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.AgileProgramBacklogItem,
-         AtsImage.AGILE_PROGRAM_BACKLOG_ITEM, this);
-      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.AgileProgramBacklog, AtsImage.AGILE_PROGRAM_BACKLOG,
-         this);
-      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.AgileProgramFeature, AtsImage.AGILE_PROGRAM_FEATURE,
-         this);
-      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.AgileStory, AtsImage.AGILE_STORY, this);
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.PeerToPeerReview, AtsImage.PEER_REVIEW, this);
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Program, AtsImage.PROGRAM, this);
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Insertion, AtsImage.INSERTION, this);
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.InsertionActivity, AtsImage.INSERTION_ACTIVITY, this);
-      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.AgileTeam, AtsImage.AGILE_TEAM, this);
-      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.AgileFeatureGroup, AtsImage.AGILE_FEATURE_GROUP, this);
-      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.AgileSprint, AtsImage.AGILE_SPRINT, this);
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.WorkPackage, AtsImage.WORK_PACKAGE, this);
+
+      for (ArtifactImage artImage : AtsArtifactImages.getImages()) {
+         CoreImage keyedImage = new CoreImage(Activator.PLUGIN_ID, artImage.getImageName());
+         keyedImageMap.put(artImage, keyedImage);
+         ArtifactImageManager.registerBaseImage(artImage.getArtifactType(), keyedImage, this);
+      }
 
       ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.Version);
       ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.Task);
@@ -68,6 +71,10 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
       for (IArtifactType artifactType : AtsClientService.get().getStoreService().getTeamWorkflowArtifactTypes()) {
          ArtifactImageManager.registerOverrideImageProvider(this, artifactType);
       }
+   }
+
+   public static KeyedImage getKeyedImage(ArtifactImage artifactImage) {
+      return keyedImageMap.get(artifactImage);
    }
 
    @Override

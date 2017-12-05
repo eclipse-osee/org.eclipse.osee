@@ -4,6 +4,7 @@ angular.module('AgileApp').factory('AgileEndpoint',
 
 			var factory = {};
 
+			var imagesResource = $resource('/ats/config/image');
 			var activeProgramsTokenResource = $resource('/ats/agile/program/token?active=true');
 			var activeTeamsTokenResource = $resource('/ats/agile/team/token?active=true');
 			var teamMembersResource = $resource('/ats/agile/team/:teamid/member');
@@ -35,6 +36,13 @@ angular.module('AgileApp').factory('AgileEndpoint',
 			var actionResource = $resource('/ats/action');
 			var itemResource = $resource('/ats/agile/items/:itemid', 
 					{}, { 'update': { method:'PUT' } });
+
+			// ////////////////////////////////////
+			// Config 
+			// ////////////////////////////////////
+			factory.getImages = function() {
+				return imagesResource.query();
+			}
 
 			// ////////////////////////////////////
 			// Programs 

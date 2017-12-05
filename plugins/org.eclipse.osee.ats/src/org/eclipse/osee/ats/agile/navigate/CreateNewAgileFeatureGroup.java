@@ -13,10 +13,11 @@ package org.eclipse.osee.ats.agile.navigate;
 import java.util.LinkedList;
 import java.util.List;
 import javax.ws.rs.core.Response;
-import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.AtsArtifactImageProvider;
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
 import org.eclipse.osee.ats.api.agile.JaxAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileFeatureGroup;
+import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.internal.Activator;
@@ -44,7 +45,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeArtifactD
 public class CreateNewAgileFeatureGroup extends XNavigateItemAction {
 
    public CreateNewAgileFeatureGroup(XNavigateItem parent) {
-      super(parent, "Create new Agile Feature Group", AtsImage.AGILE_FEATURE_GROUP);
+      super(parent, "Create new Agile Feature Group",
+         AtsArtifactImageProvider.getKeyedImage(AtsArtifactImages.AGILE_FEATURE_GROUP));
    }
 
    @Override

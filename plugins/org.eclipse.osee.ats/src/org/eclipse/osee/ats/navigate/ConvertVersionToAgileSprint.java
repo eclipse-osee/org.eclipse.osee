@@ -14,12 +14,13 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import javax.ws.rs.core.Response;
-import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.AtsArtifactImageProvider;
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.agile.JaxAgileSprint;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileSprint;
+import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -49,7 +50,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 public class ConvertVersionToAgileSprint extends XNavigateItemAction {
 
    public ConvertVersionToAgileSprint(XNavigateItem parent) {
-      super(parent, "Convert Version(s) to Agile Sprint", AtsImage.AGILE_SPRINT);
+      super(parent, "Convert Version(s) to Agile Sprint",
+         AtsArtifactImageProvider.getKeyedImage(AtsArtifactImages.AGILE_SPRINT));
    }
 
    @Override

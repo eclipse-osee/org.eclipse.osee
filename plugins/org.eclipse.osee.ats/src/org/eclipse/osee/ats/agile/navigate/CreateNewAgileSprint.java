@@ -13,10 +13,11 @@ package org.eclipse.osee.ats.agile.navigate;
 import java.util.LinkedList;
 import java.util.List;
 import javax.ws.rs.core.Response;
-import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.AtsArtifactImageProvider;
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
 import org.eclipse.osee.ats.api.agile.JaxAgileSprint;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileSprint;
+import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.internal.Activator;
@@ -44,7 +45,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeArtifactD
 public class CreateNewAgileSprint extends XNavigateItemAction {
 
    public CreateNewAgileSprint(XNavigateItem parent) {
-      super(parent, "Create new Agile Sprint", AtsImage.AGILE_SPRINT);
+      super(parent, "Create new Agile Sprint", AtsArtifactImageProvider.getKeyedImage(AtsArtifactImages.AGILE_SPRINT));
    }
 
    @Override

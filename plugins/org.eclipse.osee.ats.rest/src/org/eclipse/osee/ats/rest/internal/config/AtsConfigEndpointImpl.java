@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.api.config.AtsConfigEndpoint;
 import org.eclipse.osee.ats.api.config.AtsConfiguration;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.config.ColumnAlign;
+import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -34,6 +35,7 @@ import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactImage;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -79,6 +81,11 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpoint {
    @Override
    public AtsConfigurations get() {
       return atsApi.getConfigurations();
+   }
+
+   @Override
+   public List<ArtifactImage> getArtifactImages() {
+      return AtsArtifactImages.getImages();
    }
 
    @Override

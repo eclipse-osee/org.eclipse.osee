@@ -12,8 +12,9 @@ package org.eclipse.osee.ats.agile.navigate;
 
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.AtsArtifactImageProvider;
 import org.eclipse.osee.ats.AtsOpenOption;
+import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -35,7 +36,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeArtifactD
 public class OpenAgileBacklog extends XNavigateItemAction {
 
    public OpenAgileBacklog(XNavigateItem parent) {
-      super(parent, "Open Agile Backlog", AtsImage.AGILE_BACKLOG);
+      super(parent, "Open Agile Backlog", AtsArtifactImageProvider.getKeyedImage(AtsArtifactImages.AGILE_BACKLOG));
    }
 
    @Override

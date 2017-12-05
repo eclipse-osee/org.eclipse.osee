@@ -21,12 +21,14 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.osee.ats.AtsArtifactImageProvider;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.actions.AccessControlAction;
 import org.eclipse.osee.ats.actions.DirtyReportAction;
 import org.eclipse.osee.ats.actions.IDirtyReportable;
 import org.eclipse.osee.ats.actions.ResourceHistoryAction;
 import org.eclipse.osee.ats.agile.SprintMemberProvider;
+import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -668,7 +670,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
       if (getWfeInput().isReload()) {
          image = ImageManager.getImage(AtsImage.TEAM_WORKFLOW);
       } else if (getWfeInput().isBacklog()) {
-         image = ImageManager.getImage(AtsImage.AGILE_BACKLOG);
+         image = ImageManager.getImage(AtsArtifactImageProvider.getKeyedImage(AtsArtifactImages.AGILE_BACKLOG));
       } else {
          image = ArtifactImageManager.getImage(awa);
       }

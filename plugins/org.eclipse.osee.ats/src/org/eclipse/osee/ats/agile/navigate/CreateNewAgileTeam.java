@@ -11,10 +11,11 @@
 package org.eclipse.osee.ats.agile.navigate;
 
 import javax.ws.rs.core.Response;
-import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.AtsArtifactImageProvider;
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
 import org.eclipse.osee.ats.api.agile.JaxAgileTeam;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileTeam;
+import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -36,7 +37,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 public class CreateNewAgileTeam extends XNavigateItemAction {
 
    public CreateNewAgileTeam(XNavigateItem parent) {
-      super(parent, "Create new Agile Team", AtsImage.AGILE_TEAM);
+      super(parent, "Create new Agile Team", AtsArtifactImageProvider.getKeyedImage(AtsArtifactImages.AGILE_TEAM));
    }
 
    @Override

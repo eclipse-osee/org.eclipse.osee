@@ -12,6 +12,7 @@ package org.eclipse.osee.ats;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.framework.core.data.ArtifactImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
@@ -21,15 +22,6 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
 public enum AtsImage implements KeyedImage {
    ACTION("action.gif"),
    ACTIONABLE_ITEM("AI.gif"),
-   AGILE_SPRINT("agileSprint.gif"),
-   AGILE_TEAM("agileTeam.gif"),
-   AGILE_FEATURE_GROUP("agileFeatureGroup.gif"),
-   AGILE_BACKLOG("agileBacklog.gif"),
-   AGILE_PROGRAM("agileProgram.gif"),
-   AGILE_PROGRAM_BACKLOG("agileProgramBacklog.gif"),
-   AGILE_PROGRAM_BACKLOG_ITEM("agileProgramBacklogItem.gif"),
-   AGILE_PROGRAM_FEATURE("agileProgramFeature.gif"),
-   AGILE_STORY("agileStory.gif"),
    ART_VIEW("artView.gif"),
    ATS("atsPerspective.gif"),
    CENTER("center.gif"),
@@ -97,6 +89,10 @@ public enum AtsImage implements KeyedImage {
    ZOOM_OUT("zoom_out.gif");
 
    private final String fileName;
+
+   private AtsImage(ArtifactImage artImage) {
+      this.fileName = artImage.getImageName();
+   }
 
    private AtsImage(String fileName) {
       this.fileName = fileName;

@@ -24,7 +24,7 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.AtsArtifactImageProvider;
 import org.eclipse.osee.ats.actions.AddNoteAction;
 import org.eclipse.osee.ats.actions.CopyActionDetailsAction;
 import org.eclipse.osee.ats.actions.EmailActionAction;
@@ -40,6 +40,7 @@ import org.eclipse.osee.ats.actions.ReloadAction;
 import org.eclipse.osee.ats.actions.ResourceHistoryAction;
 import org.eclipse.osee.ats.actions.ShowChangeReportAction;
 import org.eclipse.osee.ats.actions.ShowMergeManagerAction;
+import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
@@ -181,7 +182,8 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
          String displayableTitle = Strings.escapeAmpersands(titleString);
          managedForm.getForm().setText(displayableTitle);
          if (AtsClientService.get().getAgileService().isBacklog(awa)) {
-            managedForm.getForm().setImage(ImageManager.getImage(AtsImage.AGILE_BACKLOG));
+            managedForm.getForm().setImage(
+               ImageManager.getImage(AtsArtifactImageProvider.getKeyedImage(AtsArtifactImages.AGILE_BACKLOG)));
          } else {
             managedForm.getForm().setImage(ArtifactImageManager.getImage(awa));
          }

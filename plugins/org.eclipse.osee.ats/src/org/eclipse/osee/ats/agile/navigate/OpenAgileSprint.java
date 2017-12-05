@@ -15,9 +15,10 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
-import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.AtsArtifactImageProvider;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -41,7 +42,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeArtifactD
 public class OpenAgileSprint extends XNavigateItemAction {
 
    public OpenAgileSprint(XNavigateItem parent) {
-      super(parent, "Open Agile Sprint", AtsImage.AGILE_SPRINT);
+      super(parent, "Open Agile Sprint", AtsArtifactImageProvider.getKeyedImage(AtsArtifactImages.AGILE_SPRINT));
    }
 
    @Override

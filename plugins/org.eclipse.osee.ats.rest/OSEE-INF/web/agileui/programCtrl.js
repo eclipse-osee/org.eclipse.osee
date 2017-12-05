@@ -89,7 +89,7 @@ angular
 											displayName : 'Title',
 											width : 450
 										}, {
-											field : 'type',
+											field : 'shortType',
 											displayName : 'Type',
 											width : 85
 										}, {
@@ -137,21 +137,31 @@ angular
 								$scope.isTask = false;
 								if ($scope.selectedTask) {
 									var sel = $scope.selectedTask;
-									if (sel.type == "Program Backlog") {
+									if (sel.shortType == "Program Backlog") {
 										$scope.isPBacklog = true;
-									} else if (sel.type == "Program Backlog Item") {
+									} else if (sel.shortType == "Program Backlog Item") {
 										$scope.isPBacklogItem = true;
-									} else if (sel.type == "Program Feature") {
+									} else if (sel.shortType == "Program Feature") {
 										$scope.isPBacklogFeature = true;
-									} else if (sel.type == "Story") {
+									} else if (sel.shortType == "Story") {
 										$scope.isStory = true;
-									} else if (sel.type == "Task") {
+									} else if (sel.shortType == "Task") {
 										$scope.isTask = true;
 									}
 								}
 							}
 
 							var getItems = function() {
+								
+								AgileEndpoint.getImages().$promise
+								.then(function(data) {
+									$scope.artTypeNameToImageMap = {};
+									for (var i = 0; i < data.length; i++) {
+										var item = data[i];
+										$scope.artTypeNameToImageMap[item.artifactTypeName] = item;
+									}
+								});
+								
 								AgileEndpoint.getProgramItems($scope.program).$promise
 										.then(function(data) {
 											var program = data;
@@ -173,8 +183,14 @@ angular
 							$scope.prepTaskForGrid = function(task) {
 								var level = task.tlevel;
 								task.$$treeLevel = level;
-								task.type = task.type
+								task.shortType = task.type
 										.replace("Agile ", "");
+								if (!task.image) {
+									var image = $scope.artTypeNameToImageMap[task.artifactTypeName];
+									if (image) {
+										task.image = $scope.image;
+									}
+								}
 							}
 
 							$scope.onDblClick = function() {
@@ -286,7 +302,7 @@ angular
 											.lastIndexOf(data), 1);
 								});
 							}
-
+							
 							getItems();
 
 							$scope

@@ -10,8 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.walker;
 
-import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.AtsArtifactImageProvider;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
+import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -76,7 +77,7 @@ public class SprintMemberWrapper implements IActionWalkerItem {
 
    @Override
    public Image getImage() {
-      return ImageManager.getImage(AtsImage.AGILE_SPRINT);
+      return ImageManager.getImage(AtsArtifactImageProvider.getKeyedImage(AtsArtifactImages.AGILE_SPRINT));
    }
 
    @Override

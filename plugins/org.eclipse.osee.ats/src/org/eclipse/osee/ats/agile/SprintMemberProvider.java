@@ -12,8 +12,9 @@ package org.eclipse.osee.ats.agile;
 
 import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
-import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.AtsArtifactImageProvider;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
+import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.artifact.SprintArtifact;
 import org.eclipse.osee.ats.goal.AbstractMemberProvider;
@@ -46,7 +47,7 @@ public class SprintMemberProvider extends AbstractMemberProvider {
 
    @Override
    public KeyedImage getImageKey() {
-      return AtsImage.AGILE_SPRINT;
+      return AtsArtifactImageProvider.getKeyedImage(AtsArtifactImages.AGILE_SPRINT);
    }
 
    @Override

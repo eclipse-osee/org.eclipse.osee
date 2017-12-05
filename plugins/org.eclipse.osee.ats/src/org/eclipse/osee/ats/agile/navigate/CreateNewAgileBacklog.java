@@ -13,10 +13,11 @@ package org.eclipse.osee.ats.agile.navigate;
 import java.util.LinkedList;
 import java.util.List;
 import javax.ws.rs.core.Response;
-import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.AtsArtifactImageProvider;
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
 import org.eclipse.osee.ats.api.agile.JaxAgileBacklog;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileBacklog;
+import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.internal.Activator;
@@ -44,7 +45,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTreeArtifactD
 public class CreateNewAgileBacklog extends XNavigateItemAction {
 
    public CreateNewAgileBacklog(XNavigateItem parent) {
-      super(parent, "Create new Agile Backlog", AtsImage.AGILE_BACKLOG);
+      super(parent, "Create new Agile Backlog",
+         AtsArtifactImageProvider.getKeyedImage(AtsArtifactImages.AGILE_BACKLOG));
    }
 
    @Override

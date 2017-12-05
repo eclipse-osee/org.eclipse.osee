@@ -21,6 +21,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.api.workdef.JaxAtsWorkDef;
+import org.eclipse.osee.framework.core.data.ArtifactImage;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
 
@@ -47,9 +48,14 @@ public interface AtsConfigEndpoint {
    @Produces(MediaType.APPLICATION_JSON)
    public AtsConfigurations getFromDb();
 
+   @GET
+   @Path("image")
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<ArtifactImage> getArtifactImages();
+
    /**
     * Requests that the server reload the ATS configuration cache and returns without waiting for the reload to occur
-    * 
+    *
     * @return
     */
    @GET

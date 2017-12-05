@@ -22,8 +22,9 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.AtsArtifactImageProvider;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
+import org.eclipse.osee.ats.api.data.AtsArtifactImages;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -174,7 +175,8 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
 
    private static SprintFilteredListDialog createDialog(SprintItems items, Set<IAgileSprint> activeSprints) {
       SprintFilteredListDialog dialog = new SprintFilteredListDialog("Select Sprint", "Select Sprint", activeSprints);
-      Window.setDefaultImage(ImageManager.getImage(AtsImage.AGILE_SPRINT));
+      Window.setDefaultImage(
+         ImageManager.getImage(AtsArtifactImageProvider.getKeyedImage(AtsArtifactImages.AGILE_SPRINT)));
       dialog.setInput(activeSprints);
       if (items.isCommonSelectedSprint() && items.getMultipleSprints().size() == 1) {
          dialog.setInitialSelections(Arrays.asList(items.getMultipleSprints().iterator().next()));
