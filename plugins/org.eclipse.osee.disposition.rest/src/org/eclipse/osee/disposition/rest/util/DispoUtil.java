@@ -14,6 +14,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -44,6 +45,7 @@ import org.json.JSONObject;
 public final class DispoUtil {
 
    private static final Pattern pattern = Pattern.compile("^[,\\d-\\s]+$");
+   private static final Pattern removeLastDot = Pattern.compile("[^\\.]([^.]*)$", Pattern.CASE_INSENSITIVE);
 
    private DispoUtil() {
       //
@@ -530,4 +532,30 @@ public final class DispoUtil {
       }
       return date;
    }
+
+   public static HashMap<String, String> splitTestScriptNameAndPath(List<DispoAnnotationData> annotations) {
+      HashMap<String, String> testScriptNameToPath = new HashMap<>();
+      for (DispoAnnotationData data : annotations) {
+         String name = "", path = "", comment = "";
+         String resolution = data.getResolution();
+         if (!resolution.isEmpty()) {
+            String[] split = resolution.split("___");
+            if (split.length > 1) {
+               path = split[0];
+               comment = split[1];
+            } else {
+               path = split.toString();
+            }
+            path = path.replaceFirst("results", "");
+            Matcher matcher = removeLastDot.matcher(path);
+            while (matcher.find()) {
+               name = matcher.group() + ".java";
+            }
+            path = path.replaceAll("\\.", "/");
+         }
+         testScriptNameToPath.put(name, path);
+      }
+      return testScriptNameToPath;
+   }
+
 }

@@ -26,6 +26,7 @@ import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoConfig;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoSet;
+import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.model.ResolutionMethod;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.internal.DispoConnector;
@@ -156,8 +157,8 @@ public class ExportSet {
          sheetWriter.endSheet();
 
          // Write Summary Sheet
-         sheetWriter.startSheet("Summary Sheet", headers.length);
          Object[] summarySheetHeaders = {"Unit", "Lines Covered", "Total Lines", "Percent Coverage"};
+         sheetWriter.startSheet("Summary Sheet", summarySheetHeaders.length);
          sheetWriter.writeRow(summarySheetHeaders);
          Object[] row2 = new String[4];
          for (String unit : unitToCovered.keySet()) {
@@ -170,6 +171,24 @@ public class ExportSet {
             Double percent = (((double) covered / total) * 100);
             row2[3] = String.format("%2.2f%%", percent);
             sheetWriter.writeRow(row2);
+         }
+         sheetWriter.endSheet();
+
+         // Write Test_Script Sheet
+         Object[] testScriptSheetHeaders =
+            {"Unit", "Code Line", "Resolution Type", "Script Name", "Script Path", "Script Notes"};
+         sheetWriter.startSheet("Test Script Sheet", testScriptSheetHeaders.length);
+         sheetWriter.writeRow(testScriptSheetHeaders);
+         for (DispoItem item : items) {
+            List<DispoAnnotationData> annotations = item.getAnnotationsList();
+            for (DispoAnnotationData annotation : annotations) {
+               if (annotation.getResolutionType().equals(DispoStrings.Test_Unit_Resolution)) {
+                  HashMap<String, String> testNameToPath =
+                     DispoUtil.splitTestScriptNameAndPath(Collections.singletonList(annotation));
+                  sheetWriter.writeRow(item.getName(), annotation.getLocationRefs(), annotation.getResolutionType(),
+                     testNameToPath.keySet(), testNameToPath.values(), annotation.getResolution());
+               }
+            }
          }
          sheetWriter.endSheet();
 
