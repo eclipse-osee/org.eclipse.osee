@@ -112,7 +112,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
 
    @Override
    public void setArtifactType(IArtifactType artifactType) {
-      if (!getArtifactType().equals(artifactType)) {
+      if (!isTypeEqual(artifactType)) {
          getOrcsData().setTypeUuid(artifactType.getGuid());
          objectEditState = EditState.ARTIFACT_TYPE_MODIFIED;
          if (getOrcsData().getVersion().isInStorage()) {

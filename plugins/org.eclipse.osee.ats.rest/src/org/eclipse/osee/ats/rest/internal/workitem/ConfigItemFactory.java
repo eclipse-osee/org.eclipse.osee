@@ -290,7 +290,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
          throw new OseeCoreException("No object found for id %d", id);
       }
 
-      if (!toDelete.getArtifactType().equals(type)) {
+      if (!toDelete.isTypeEqual(type)) {
          throw new OseeCoreException("Artifact type does not match for %s", comment);
       }
       TransactionBuilder transaction =

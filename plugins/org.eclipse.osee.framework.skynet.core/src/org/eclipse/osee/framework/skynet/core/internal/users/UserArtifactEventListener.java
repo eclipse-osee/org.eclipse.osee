@@ -77,7 +77,7 @@ public class UserArtifactEventListener implements IArtifactEventListener {
 
    private boolean areUsers(ArtifactEvent artifactEvent, EventModType... eventType) {
       for (EventBasicGuidArtifact artifact : artifactEvent.get(eventType)) {
-         if (artifact.getArtifactType().equals(CoreArtifactTypes.User)) {
+         if (artifact.isTypeEqual(CoreArtifactTypes.User)) {
             return true;
          }
       }

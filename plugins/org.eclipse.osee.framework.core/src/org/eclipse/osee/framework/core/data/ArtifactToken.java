@@ -27,6 +27,10 @@ public interface ArtifactToken extends ArtifactId, HasArtifactType, HasBranch, N
       return getArtifactType();
    }
 
+   default boolean isTypeEqual(ArtifactTypeId artifactType) {
+      return artifactType.equals(getArtifactTypeId());
+   }
+
    public static ArtifactToken valueOf(Id id, BranchId branch) {
       return valueOf(id.getId(), GUID.create(), null, branch, null);
    }
@@ -110,5 +114,4 @@ public interface ArtifactToken extends ArtifactId, HasArtifactType, HasBranch, N
       }
       return new ArtifactTokenImpl(id, guid, name, branch, artifactType);
    }
-
 }

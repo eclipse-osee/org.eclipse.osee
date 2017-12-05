@@ -118,7 +118,7 @@ public final class PublishLowHighReqStreamingOutput implements StreamingOutput {
       for (ArtifactReadable req : query.getResults().sort(new ParagraphNumberComparator(logger))) {
          boolean foundType = false;
          for (IArtifactType type : includeOnlyArtifactTypes) {
-            if (req.getArtifactType().equals(type)) {
+            if (req.isTypeEqual(type)) {
                foundType = true;
                break;
             }

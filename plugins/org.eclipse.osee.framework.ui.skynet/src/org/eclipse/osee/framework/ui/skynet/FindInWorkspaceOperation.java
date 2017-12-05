@@ -77,7 +77,7 @@ public class FindInWorkspaceOperation extends AbstractOperation {
       IContainer ws = ResourcesPlugin.getWorkspace().getRoot();
       List<Artifact> toSearch = new LinkedList<>(guids.values());
       for (Artifact artifact : toSearch) {
-         if (artifact.getArtifactType().equals(CoreArtifactTypes.TestCase)) {
+         if (artifact.isTypeEqual(CoreArtifactTypes.TestCase)) {
             String artifactName = artifact.getName();
             int endOfPackageName = artifactName.lastIndexOf(".");
             if (endOfPackageName != -1) {

@@ -30,6 +30,10 @@ public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements Ha
       this.artifactType = artifactType;
    }
 
+   public boolean isTypeEqual(ArtifactTypeId artifactType) {
+      return artifactType.equals(this.artifactType);
+   }
+
    public DefaultBasicGuidArtifact(BranchId branch, ArtifactTypeId artifactType) {
       this(branch, artifactType, GUID.create());
    }

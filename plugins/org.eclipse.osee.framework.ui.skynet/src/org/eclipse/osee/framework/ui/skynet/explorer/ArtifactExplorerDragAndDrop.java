@@ -358,7 +358,7 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
 
    private boolean isSameName(Artifact art, String fileName) {
       boolean isSame = false;
-      if (!art.getArtifactType().equals(CoreArtifactTypes.Folder)) {
+      if (!art.isTypeEqual(CoreArtifactTypes.Folder)) {
          if (art.getName().equals(FilenameUtils.getBaseName(fileName))) {
             isSame = true;
          }

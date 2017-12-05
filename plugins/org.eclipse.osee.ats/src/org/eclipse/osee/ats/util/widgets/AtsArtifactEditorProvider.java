@@ -22,7 +22,7 @@ public class AtsArtifactEditorProvider implements IArtifactEditorProvider {
 
    @Override
    public void contributeToHeader(Artifact artifact, Composite composite) {
-      if (artifact.getArtifactType().equals(AtsArtifactTypes.Version)) {
+      if (artifact.isTypeEqual(AtsArtifactTypes.Version)) {
          new XBranchViewSelect(artifact, "Branch View").createControls(composite, 2);
       }
    }

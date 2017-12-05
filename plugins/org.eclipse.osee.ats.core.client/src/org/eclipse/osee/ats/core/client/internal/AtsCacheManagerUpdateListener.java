@@ -160,7 +160,7 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
 
    private void handleCachesForDeletedPurged(EventBasicGuidArtifact guidArt) {
       Artifact artifact = ArtifactCache.getActive(guidArt);
-      if (guidArt.getArtifactType().equals(AtsArtifactTypes.Task) && guidArt.is(EventModType.Deleted,
+      if (guidArt.isTypeEqual(AtsArtifactTypes.Task) && guidArt.is(EventModType.Deleted,
          EventModType.Purged)) {
          if (artifact != null && !artifact.isDeleted()) {
             AtsTaskCache.decache(((TaskArtifact) artifact).getParentAWA());

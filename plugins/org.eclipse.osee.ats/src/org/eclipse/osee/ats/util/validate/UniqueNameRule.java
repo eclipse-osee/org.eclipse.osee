@@ -59,7 +59,7 @@ public class UniqueNameRule extends AbstractValidationRule {
                 * 2) Artifact type is different<br/>
                 */
                if (Strings.isNumeric(
-                  artToValidate.getName()) && !artToValidate.getArtifactType().equals(art.getArtifactType())) {
+                  artToValidate.getName()) && !artToValidate.isTypeEqual(art.getArtifactType())) {
                   continue;
                }
                /**************************************************************************
@@ -92,7 +92,7 @@ public class UniqueNameRule extends AbstractValidationRule {
    }
 
    private boolean isImplementationDetailsChild(Artifact childArtifact, Artifact parentArtifact) {
-      return parentArtifact.getArtifactType().equals(CoreArtifactTypes.SoftwareRequirement) && //
+      return parentArtifact.isTypeEqual(CoreArtifactTypes.SoftwareRequirement) && //
          (childArtifact.isOfType(CoreArtifactTypes.AbstractImplementationDetails) && //
             childArtifact.getParent().equals(parentArtifact));
    }
