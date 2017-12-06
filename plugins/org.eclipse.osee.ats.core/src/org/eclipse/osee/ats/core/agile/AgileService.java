@@ -397,7 +397,7 @@ public class AgileService implements IAgileService {
             items.add(atsApi.getWorkItemFactory().getAgileItem(art));
          } else {
             throw new OseeStateException("Inavlid artifact [%s] in [%s].  Only workflows are allowed, not [%s]",
-               art.toStringWithId(), backlogOrSprint, art.getArtifactType().getName());
+               art.toStringWithId(), backlogOrSprint, art.getArtifactTypeId());
          }
       }
       return items;

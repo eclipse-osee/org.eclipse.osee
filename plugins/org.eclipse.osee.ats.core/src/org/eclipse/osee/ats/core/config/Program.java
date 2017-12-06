@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.config;
 
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.core.model.impl.AtsConfigObject;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -22,12 +23,7 @@ import org.eclipse.osee.logger.Log;
 public class Program extends AtsConfigObject implements IAtsProgram {
 
    public Program(Log logger, AtsApi atsApi, ArtifactToken artifact) {
-      super(logger, atsApi, artifact);
-   }
-
-   @Override
-   public String getTypeName() {
-      return "Program";
+      super(logger, atsApi, artifact, AtsArtifactTypes.Program);
    }
 
    @Override

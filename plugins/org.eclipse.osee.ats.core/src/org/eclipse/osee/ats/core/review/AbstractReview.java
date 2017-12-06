@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.core.workflow.WorkItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -27,8 +28,8 @@ import org.eclipse.osee.logger.Log;
  */
 public abstract class AbstractReview extends WorkItem implements IAtsAbstractReview {
 
-   public AbstractReview(Log logger, AtsApi atsApi, ArtifactToken artifact) {
-      super(logger, atsApi, artifact);
+   public AbstractReview(Log logger, AtsApi atsApi, ArtifactToken artifact, IArtifactType artifactType) {
+      super(logger, atsApi, artifact, artifactType);
    }
 
    @Override

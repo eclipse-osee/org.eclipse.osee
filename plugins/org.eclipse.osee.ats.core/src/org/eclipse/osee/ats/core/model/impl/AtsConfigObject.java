@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -30,16 +31,18 @@ import org.eclipse.osee.logger.Log;
 /**
  * @author Donald G Dunne
  */
-public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.impl.AtsObject implements IAtsConfigObject {
+public class AtsConfigObject extends org.eclipse.osee.ats.core.model.impl.AtsObject implements IAtsConfigObject {
    protected ArtifactToken artifact;
    protected final Log logger;
    protected final AtsApi atsApi;
+   private final IArtifactType artifactType;
 
-   public AtsConfigObject(Log logger, AtsApi atsApi, ArtifactToken artifact) {
+   public AtsConfigObject(Log logger, AtsApi atsApi, ArtifactToken artifact, IArtifactType artifactType) {
       super(artifact.getName(), artifact.getId());
       this.logger = logger;
       this.atsApi = atsApi;
       this.artifact = artifact;
+      this.artifactType = artifactType;
       setStoreObject(artifact);
    }
 
@@ -56,7 +59,7 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
    }
 
    public String getTypeName() {
-      return artifact.getArtifactType().getName();
+      return artifactType.getName();
    }
 
    public String getFullName() {

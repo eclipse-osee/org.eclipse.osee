@@ -26,7 +26,7 @@ import org.eclipse.osee.logger.Log;
 public class AgileProgramBacklog extends AtsConfigObject implements IAgileProgramBacklog {
 
    public AgileProgramBacklog(Log logger, AtsApi atsApi, ArtifactToken artifact) {
-      super(logger, atsApi, artifact);
+      super(logger, atsApi, artifact, AtsArtifactTypes.AgileProgramBacklog);
    }
 
    @Override
@@ -44,5 +44,4 @@ public class AgileProgramBacklog extends AtsConfigObject implements IAgileProgra
       }
       return ids;
    }
-
 }

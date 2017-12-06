@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.agile;
 
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.workflow.WorkItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -25,7 +26,7 @@ import org.eclipse.osee.logger.Log;
 public class AgileBacklog extends WorkItem implements IAgileBacklog {
 
    public AgileBacklog(Log logger, AtsApi atsApi, ArtifactToken artifact) {
-      super(logger, atsApi, artifact);
+      super(logger, atsApi, artifact, AtsArtifactTypes.AgileBacklog);
    }
 
    @Override
@@ -47,5 +48,4 @@ public class AgileBacklog extends WorkItem implements IAgileBacklog {
       }
       return result;
    }
-
 }

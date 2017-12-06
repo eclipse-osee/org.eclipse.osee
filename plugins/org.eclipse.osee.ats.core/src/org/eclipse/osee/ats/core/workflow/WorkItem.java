@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.model.impl.AtsObject;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
 
@@ -46,12 +47,14 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    protected final Log logger;
    IAtsTeamWorkflow parentTeamWf;
    IAtsAction parentAction;
+   private final IArtifactType artifactType;
 
-   public WorkItem(Log logger, AtsApi atsApi, ArtifactToken artifact) {
+   public WorkItem(Log logger, AtsApi atsApi, ArtifactToken artifact, IArtifactType artifactType) {
       super(artifact.getName(), artifact.getId());
       this.logger = logger;
       this.atsApi = atsApi;
       this.artifact = artifact;
+      this.artifactType = artifactType;
       setStoreObject(artifact);
    }
 
@@ -176,8 +179,7 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    @Override
    public IAtsUser getCreatedBy() {
-      String userId =
-         atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CreatedBy, null);
+      String userId = atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CreatedBy, null);
       return atsApi.getUserService().getUserById(userId);
    }
 
@@ -202,19 +204,17 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    @Override
    public String getCompletedFromState() {
-      return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CompletedFromState,
-         null);
+      return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CompletedFromState, null);
    }
 
    @Override
    public String getCancelledFromState() {
-      return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CancelledFromState,
-         null);
+      return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.CancelledFromState, null);
    }
 
    @Override
    public String getArtifactTypeName() {
-      return artifact.getArtifactType().getName();
+      return artifactType.getName();
    }
 
    @Override

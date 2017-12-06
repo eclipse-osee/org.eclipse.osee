@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.model;
 
 import java.util.Date;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.ev.AtsWorkPackageType;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
@@ -35,7 +36,7 @@ public class WorkPackage extends AtsConfigObject implements IAtsWorkPackage {
    private final AtsApi atsApi;
 
    public WorkPackage(Log logger, ArtifactToken artifact, AtsApi atsApi) {
-      super(logger, atsApi, artifact);
+      super(logger, atsApi, artifact, AtsArtifactTypes.WorkPackage);
       this.artifact = artifact;
       this.atsApi = atsApi;
    }
@@ -175,10 +176,5 @@ public class WorkPackage extends AtsConfigObject implements IAtsWorkPackage {
    @Override
    public int compareTo(Named other) {
       return artifact.compareTo(other);
-   }
-
-   @Override
-   public String getTypeName() {
-      return artifact.getArtifactType().getName();
    }
 }

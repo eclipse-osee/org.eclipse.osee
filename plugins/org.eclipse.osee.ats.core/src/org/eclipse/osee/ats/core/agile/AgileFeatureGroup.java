@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.agile;
 
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.model.impl.AtsConfigObject;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -25,20 +26,15 @@ import org.eclipse.osee.logger.Log;
 public class AgileFeatureGroup extends AtsConfigObject implements IAgileFeatureGroup {
 
    public AgileFeatureGroup(Log logger, AtsApi atsApi, ArtifactToken artifact) {
-      super(logger, atsApi, artifact);
-   }
-
-   @Override
-   public String getTypeName() {
-      return "Agile Feature Group";
+      super(logger, atsApi, artifact, AtsArtifactTypes.AgileFeatureGroup);
    }
 
    @Override
    public long getTeamId() {
       long result = 0;
       try {
-         ArtifactId agileTeam = atsApi.getRelationResolver().getRelatedOrNull(artifact,
-            AtsRelationTypes.AgileTeamToFeatureGroup_AgileTeam);
+         ArtifactId agileTeam =
+            atsApi.getRelationResolver().getRelatedOrNull(artifact, AtsRelationTypes.AgileTeamToFeatureGroup_AgileTeam);
          if (agileTeam != null) {
             result = agileTeam.getId();
          }

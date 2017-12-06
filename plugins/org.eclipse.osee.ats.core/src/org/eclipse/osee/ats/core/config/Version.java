@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -32,7 +33,7 @@ import org.eclipse.osee.logger.Log;
 public class Version extends AtsConfigObject implements IAtsVersion {
 
    public Version(Log logger, AtsApi atsApi, ArtifactToken artifact) {
-      super(logger, atsApi, artifact);
+      super(logger, atsApi, artifact, AtsArtifactTypes.Version);
    }
 
    @Override
@@ -112,11 +113,6 @@ public class Version extends AtsConfigObject implements IAtsVersion {
    @Override
    public Boolean isNextVersion() {
       return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.NextVersion, false);
-   }
-
-   @Override
-   public String getTypeName() {
-      return "Version";
    }
 
    @Override

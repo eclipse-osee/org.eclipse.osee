@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.config;
 
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamDefinition;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -45,18 +46,13 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
 
    public TeamDefinition(Log logger, AtsApi atsApi, JaxTeamDefinition jaxTeamDef) {
       super(logger, atsApi, ArtifactToken.valueOf(jaxTeamDef.getId(), jaxTeamDef.getGuid(), jaxTeamDef.getName(),
-         atsApi.getAtsBranch(), AtsArtifactTypes.ActionableItem));
+         atsApi.getAtsBranch(), TeamDefinition), TeamDefinition);
       this.jaxTeamDef = jaxTeamDef;
    }
 
    public TeamDefinition(Log logger, AtsApi atsApi, ArtifactToken artifact) {
       super(logger, atsApi, ArtifactToken.valueOf(artifact.getId(), artifact.getGuid(), artifact.getName(),
-         atsApi.getAtsBranch(), AtsArtifactTypes.ActionableItem));
-   }
-
-   @Override
-   public String getTypeName() {
-      return "Team Definition";
+         atsApi.getAtsBranch(), TeamDefinition), TeamDefinition);
    }
 
    @Override

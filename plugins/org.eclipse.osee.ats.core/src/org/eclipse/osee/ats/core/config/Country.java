@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.config;
 
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.country.IAtsCountry;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.model.impl.AtsConfigObject;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -23,12 +24,7 @@ import org.eclipse.osee.logger.Log;
 public class Country extends AtsConfigObject implements IAtsCountry {
 
    public Country(Log logger, AtsApi atsApi, ArtifactToken artifact) {
-      super(logger, atsApi, artifact);
-   }
-
-   @Override
-   public String getTypeName() {
-      return "Country";
+      super(logger, atsApi, artifact, AtsArtifactTypes.Country);
    }
 
    @Override

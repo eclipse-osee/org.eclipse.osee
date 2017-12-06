@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.insertion;
 
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertion;
 import org.eclipse.osee.ats.core.model.impl.AtsConfigObject;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -24,12 +25,7 @@ public class Insertion extends AtsConfigObject implements IAtsInsertion {
    private long programId;
 
    public Insertion(Log logger, AtsApi atsServices, ArtifactToken artifact) {
-      super(logger, atsServices, artifact);
-   }
-
-   @Override
-   public String getTypeName() {
-      return "Insertion";
+      super(logger, atsServices, artifact, AtsArtifactTypes.Insertion);
    }
 
    @Override

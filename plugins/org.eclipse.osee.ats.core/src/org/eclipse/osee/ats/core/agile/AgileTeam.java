@@ -15,6 +15,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.model.impl.AtsConfigObject;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -27,7 +28,7 @@ import org.eclipse.osee.logger.Log;
 public class AgileTeam extends AtsConfigObject implements IAgileTeam {
 
    public AgileTeam(Log logger, AtsApi atsApi, ArtifactToken artifact) {
-      super(logger, atsApi, artifact);
+      super(logger, atsApi, artifact, AtsArtifactTypes.AgileTeam);
    }
 
    @Override
@@ -66,5 +67,4 @@ public class AgileTeam extends AtsConfigObject implements IAgileTeam {
       }
       return sprintId;
    }
-
 }

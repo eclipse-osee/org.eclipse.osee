@@ -26,7 +26,7 @@ import org.eclipse.osee.logger.Log;
 public class AgileStory extends AtsConfigObject implements IAgileStory {
 
    public AgileStory(Log logger, AtsApi atsApi, ArtifactToken artifact) {
-      super(logger, atsApi, artifact);
+      super(logger, atsApi, artifact, AtsArtifactTypes.AgileStory);
    }
 
    @Override
@@ -44,5 +44,4 @@ public class AgileStory extends AtsConfigObject implements IAgileStory {
    public Long getFeatureId() {
       return atsApi.getRelationResolver().getParent(artifact).getId();
    }
-
 }

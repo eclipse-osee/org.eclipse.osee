@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.config;
 
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.ActionableItem;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -35,19 +36,15 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
    private JaxActionableItem jaxAI;
 
    public ActionableItem(Log logger, AtsApi atsApi, JaxActionableItem jaxAI) {
-      super(logger, atsApi, ArtifactToken.valueOf(jaxAI.getId(), jaxAI.getGuid(), jaxAI.getName(),
-         atsApi.getAtsBranch(), AtsArtifactTypes.ActionableItem));
+      super(logger, atsApi,
+         ArtifactToken.valueOf(jaxAI.getId(), jaxAI.getGuid(), jaxAI.getName(), atsApi.getAtsBranch(), ActionableItem),
+         ActionableItem);
       this.jaxAI = jaxAI;
    }
 
    public ActionableItem(Log logger, AtsApi atsApi, ArtifactToken artifact) {
       super(logger, atsApi, ArtifactToken.valueOf(artifact.getId(), artifact.getGuid(), artifact.getName(),
-         atsApi.getAtsBranch(), AtsArtifactTypes.ActionableItem));
-   }
-
-   @Override
-   public String getTypeName() {
-      return "Actionable Item";
+         atsApi.getAtsBranch(), ActionableItem), ActionableItem);
    }
 
    @Override
