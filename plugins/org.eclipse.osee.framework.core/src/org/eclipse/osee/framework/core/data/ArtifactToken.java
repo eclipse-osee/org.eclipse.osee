@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 @JsonSerialize(using = NamedIdSerializer.class)
 public interface ArtifactToken extends ArtifactId, HasArtifactType, HasBranch, NamedId {
    default ArtifactTypeId getArtifactTypeId() {
-      return null;
+      return getArtifactType();
    }
 
    public static ArtifactToken valueOf(Id id, BranchId branch) {
@@ -56,6 +56,10 @@ public interface ArtifactToken extends ArtifactId, HasArtifactType, HasBranch, N
 
    public static ArtifactToken valueOf(long id, String name) {
       return valueOf(id, GUID.create(), name, BranchId.SENTINEL, null);
+   }
+
+   public static ArtifactToken valueOf(long id, String name, IArtifactType artifactType) {
+      return valueOf(id, GUID.create(), name, BranchId.SENTINEL, artifactType);
    }
 
    public static ArtifactToken valueOf(long id, String name, BranchId branch, IArtifactType artifactType) {

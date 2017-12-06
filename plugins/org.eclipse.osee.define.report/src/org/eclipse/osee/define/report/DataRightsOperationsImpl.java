@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.define.report;
 
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GeneralData;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,8 +24,6 @@ import org.eclipse.osee.define.report.api.DataRightsOperations;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DataRightsClassification;
@@ -42,8 +42,8 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 
 public class DataRightsOperationsImpl implements DataRightsOperations {
 
-   private static final ArtifactToken MAPPING_ARTIFACT = TokenFactory.createArtifactToken(5443258,
-      "AOkJ_kFNbEXCS7UjmfwA", "DataRightsFooters", CoreArtifactTypes.GeneralData);
+   private static final ArtifactToken MAPPING_ARTIFACT =
+      ArtifactToken.valueOf(5443258, "DataRightsFooters", COMMON, GeneralData);
 
    private final OrcsApi orcsApi;
 

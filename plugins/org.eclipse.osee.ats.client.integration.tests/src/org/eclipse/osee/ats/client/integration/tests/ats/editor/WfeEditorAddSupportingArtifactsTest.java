@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.editor;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.Arrays;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -39,7 +40,7 @@ public class WfeEditorAddSupportingArtifactsTest {
       AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
       TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
 
-      Artifact rootArt = ArtifactQuery.getArtifactFromToken(CoreArtifactTokens.DefaultHierarchyRoot);
+      Artifact rootArt = ArtifactQuery.getArtifactFromId(CoreArtifactTokens.DefaultHierarchyRoot, COMMON);
       Artifact firstArt = null, secondArt = null;
       for (Artifact child : rootArt.getChildren()) {
          if (firstArt == null) {

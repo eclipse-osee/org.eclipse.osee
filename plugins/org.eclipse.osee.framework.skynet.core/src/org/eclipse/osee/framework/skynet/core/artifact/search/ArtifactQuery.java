@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -760,7 +759,7 @@ public class ArtifactQuery {
       try {
          chStmt.runPreparedQuery(getTokenQuery(Active.Active, activeAttrType), artifactType.getId(), branch.getId(),
             branch.getId(), branch.getId());
-         List<ArtifactToken> tokens = extractTokensFromQuery(chStmt);
+         List<ArtifactToken> tokens = extractTokensFromQuery(chStmt, branch);
          return tokens;
       } finally {
          chStmt.close();
@@ -772,7 +771,7 @@ public class ArtifactQuery {
       try {
          chStmt.runPreparedQuery(getTokenQuery(Active.Both, null), artifactType.getId(), branch.getId(),
             branch.getId());
-         List<ArtifactToken> tokens = extractTokensFromQuery(chStmt);
+         List<ArtifactToken> tokens = extractTokensFromQuery(chStmt, branch);
          return tokens;
       } finally {
          chStmt.close();
@@ -790,7 +789,7 @@ public class ArtifactQuery {
       }
    }
 
-   private static List<ArtifactToken> extractTokensFromQuery(JdbcStatement chStmt) {
+   private static List<ArtifactToken> extractTokensFromQuery(JdbcStatement chStmt, BranchId branch) {
       List<ArtifactToken> tokens = new LinkedList<>();
       while (chStmt.next()) {
          Long artId = chStmt.getLong("art_id");
@@ -798,7 +797,7 @@ public class ArtifactQuery {
          String name = chStmt.getString("value");
          String guid = chStmt.getString("guid");
          ArtifactToken token =
-            TokenFactory.createArtifactToken(artId, guid, name, ArtifactTypeManager.getTypeByGuid(artTypeId));
+            ArtifactToken.valueOf(artId, guid, name, branch, ArtifactTypeManager.getTypeByGuid(artTypeId));
          tokens.add(token);
       }
       return tokens;
@@ -847,7 +846,7 @@ public class ArtifactQuery {
       try {
          String query = attributeTokenQuery.replaceFirst("ART_IDS_HERE", ids);
          chStmt.runPreparedQuery(query, branch, branch, attributetype, value);
-         List<ArtifactToken> tokens = extractTokensFromQuery(chStmt);
+         List<ArtifactToken> tokens = extractTokensFromQuery(chStmt, branch);
          return tokens;
       } finally {
          chStmt.close();
@@ -897,7 +896,7 @@ public class ArtifactQuery {
             Long artTypeId = chStmt.getLong("art_type_id");
             String name = chStmt.getString("value");
             ArtifactType artType = ArtifactTypeManager.getTypeByGuid(Long.valueOf(artTypeId));
-            ArtifactToken token = TokenFactory.createArtifactToken(artId, null, name, artType);
+            ArtifactToken token = ArtifactToken.valueOf(artId, name, branch, artType);
             Long artIdLong = isSideA ? artAIdToArtBId.get(artId) : artBIdToArtAId.get(artId);
             ArtifactId aArtId = ArtifactId.valueOf(artIdLong);
             artToRelatedTokens.put(aArtId, token);
@@ -908,7 +907,7 @@ public class ArtifactQuery {
       return artToRelatedTokens;
    }
 
-   public static Map<String, ArtifactToken> getArtifactTokensFromGuids(BranchId branchId, List<String> guids) {
+   public static Map<String, ArtifactToken> getArtifactTokensFromGuids(BranchId branch, List<String> guids) {
       Map<String, ArtifactToken> guidToToken = new HashMap<>();
       if (!guids.isEmpty()) {
          JdbcStatement chStmt = ConnectionHandler.getStatement();
@@ -921,8 +920,8 @@ public class ArtifactQuery {
          try {
             String query =
                artifactTokenByGuidQuery.replaceFirst("ART_GUIDS_HERE", sb.toString().replaceFirst(",$", ""));
-            chStmt.runPreparedQuery(query, branchId.getId());
-            for (ArtifactToken token : extractTokensFromQuery(chStmt)) {
+            chStmt.runPreparedQuery(query, branch);
+            for (ArtifactToken token : extractTokensFromQuery(chStmt, branch)) {
                guidToToken.put(token.getGuid(), token);
             }
          } finally {
@@ -940,15 +939,15 @@ public class ArtifactQuery {
       return null;
    }
 
-   public static Map<String, ArtifactToken> getArtifactTokensFromIds(BranchId branchId, Collection<String> artIds) {
+   public static Map<String, ArtifactToken> getArtifactTokensFromIds(BranchId branch, Collection<String> artIds) {
       Map<String, ArtifactToken> guidToToken = new HashMap<>();
       if (!artIds.isEmpty()) {
          JdbcStatement chStmt = ConnectionHandler.getStatement();
          try {
             String query = artifactTokenByArtIdQuery.replaceFirst("ART_IDS_HERE",
                org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", artIds));
-            chStmt.runPreparedQuery(query, branchId.getId());
-            for (ArtifactToken token : extractTokensFromQuery(chStmt)) {
+            chStmt.runPreparedQuery(query, branch);
+            for (ArtifactToken token : extractTokensFromQuery(chStmt, branch)) {
                guidToToken.put(token.getIdString(), token);
             }
          } finally {

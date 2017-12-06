@@ -33,6 +33,7 @@ import org.junit.Test;
  */
 public class OseeDslSegmentParserTest {
 
+   private static final ArtifactToken artifact = ArtifactToken.valueOf(45, "artifactTest", COMMON);
    private static OseeDslSegmentParser parser;
 
    @BeforeClass
@@ -47,7 +48,6 @@ public class OseeDslSegmentParserTest {
 
    @Test(expected = OseeArgumentException.class)
    public void testGetStartTagNullCheck2() {
-      ArtifactToken artifact = ArtifactToken.valueOf(45, "name", null);
       parser.getStartTag(artifact, null);
    }
 
@@ -58,18 +58,15 @@ public class OseeDslSegmentParserTest {
 
    @Test(expected = OseeArgumentException.class)
    public void testGetEndTagNullCheck2() {
-      ArtifactToken artifact = ArtifactToken.valueOf(45, "name", null);
       parser.getEndTag(artifact, null);
    }
 
    @Test
    public void testGetStartEndTag() {
       IOseeBranch branch = CoreBranches.COMMON;
-      final String artifactName = "artifactTest";
+      final String artifactName = artifact.getName();
       final String branchName = branch.getName();
       final Long branchId = branch.getId();
-
-      ArtifactToken artifact = ArtifactToken.valueOf(45, artifactName, branch);
 
       String actual = parser.getStartTag(artifact, branch);
       String expected = String.format("//@start_artifact branch/%d/artifact/%s/ (%s:%s)", branchId, artifact.getGuid(),

@@ -10,17 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config;
 
+import static org.eclipse.osee.ats.api.data.AtsArtifactTypes.TeamDefinition;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
@@ -34,9 +34,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 public class AtsConfig2DataExample extends AbstractAtsConfig2Data {
 
    public static ArtifactToken Software_Team =
-      TokenFactory.createArtifactToken(4696084, "AtsConfig2 Software", AtsArtifactTypes.TeamDefinition);
+      ArtifactToken.valueOf(4696084, "AtsConfig2 Software", COMMON, TeamDefinition);
    public static ArtifactToken Requirements_Team =
-      TokenFactory.createArtifactToken(4696085, "AtsConfig2 Requirements", AtsArtifactTypes.TeamDefinition);
+      ArtifactToken.valueOf(4696085, "AtsConfig2 Requirements", COMMON, TeamDefinition);
 
    public AtsConfig2DataExample() {
       super("AtsConfig2 Example Configuration");

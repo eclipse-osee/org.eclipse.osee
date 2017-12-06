@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.MergeBranch;
@@ -61,8 +60,8 @@ public class MergeManagerTest {
 
    private IOseeBranch workingBranch;
    private static Artifact newArt;
-   public static ArtifactToken NewArtifactToken = TokenFactory.createArtifactToken(3534859, "AAABER+3yR4A8O7WYQ+Xaw",
-      "ART_NAME", CoreArtifactTypes.SoftwareRequirement);
+   public static ArtifactToken NewArtifactToken =
+      ArtifactToken.valueOf(3534859, "ART_NAME", CoreArtifactTypes.SoftwareRequirement);
 
    private static final int DELETE_MERGE = 2;
 

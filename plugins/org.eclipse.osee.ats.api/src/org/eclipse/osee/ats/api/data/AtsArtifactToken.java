@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.data;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 
 /**
@@ -19,70 +19,46 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
  */
 public final class AtsArtifactToken {
 
+   // @formatter:off
    /**
     * This token points to the ATS Access Control artifact that matches the current code base. Production and other code
     * bases may be looking at different artifacts for their access control based on the current OSEE Types and Access
     * grammar.
     */
-   public static final ArtifactToken AtsCmAccessControl =
-      TokenFactory.createArtifactToken(8635612, "ATS CM Access Control", CoreArtifactTypes.GeneralData);
-
-   public static final ArtifactToken AtsConfig =
-      TokenFactory.createArtifactToken(5367053, "ATS Config", CoreArtifactTypes.GeneralData);
-   public static final ArtifactToken RuleDefinitions =
-      TokenFactory.createArtifactToken(7880473, "Rule Definitions", AtsArtifactTypes.RuleDefinition);
-   public static final ArtifactToken Users = TokenFactory.createArtifactToken(95459, "Users", CoreArtifactTypes.Folder);
-   public static ArtifactToken HeadingFolder =
-      TokenFactory.createArtifactToken(114713, "Action Tracking System", CoreArtifactTypes.Folder);
-   public static ArtifactToken TopTeamDefinition =
-      TokenFactory.createArtifactToken(56004, "Teams", AtsArtifactTypes.TeamDefinition);
-   public static ArtifactToken TopActionableItem =
-      TokenFactory.createArtifactToken(122894, "Actionable Items", AtsArtifactTypes.ActionableItem);
-   public static ArtifactToken CountryFolder =
-      TokenFactory.createArtifactToken(7968155, "Countries", CoreArtifactTypes.Folder);
-   public static ArtifactToken ProgramFolder =
-      TokenFactory.createArtifactToken(90442279, "Programs", CoreArtifactTypes.Folder);
-   public static ArtifactToken ConfigFolder =
-      TokenFactory.createArtifactToken(113036, "Config", CoreArtifactTypes.Folder);
-   public static ArtifactToken ConfigsFolder =
-      TokenFactory.createArtifactToken(5086714, "Configs", CoreArtifactTypes.Folder);
-   public static ArtifactToken WorkDefinitionsFolder =
-      TokenFactory.createArtifactToken(284655, "Work Definitions", CoreArtifactTypes.Folder);
-   public static ArtifactToken WebPrograms =
-      TokenFactory.createArtifactToken(277592, "Web Programs", CoreArtifactTypes.UniversalGroup);
-   public static ArtifactToken EVReportPrograms =
-      TokenFactory.createArtifactToken(8174118, "EV Report Programs", CoreArtifactTypes.UniversalGroup);
-   public static ArtifactToken AtsAdmin =
-      TokenFactory.createArtifactToken(136750, "AtsAdmin", CoreArtifactTypes.UserGroup);
-   public static ArtifactToken AtsTempAdmin =
-      TokenFactory.createArtifactToken(5367074, "AtsTempAdmin", CoreArtifactTypes.UserGroup);
+   public static final ArtifactToken AtsCmAccessControl = ArtifactToken.valueOf(8635612, "ATS CM Access Control", COMMON, CoreArtifactTypes.GeneralData);
+   public static final ArtifactToken AtsConfig = ArtifactToken.valueOf(5367053, "ATS Config", COMMON, CoreArtifactTypes.GeneralData);
+   public static final ArtifactToken RuleDefinitions = ArtifactToken.valueOf(7880473, "Rule Definitions", COMMON, AtsArtifactTypes.RuleDefinition);
+   public static final ArtifactToken Users = ArtifactToken.valueOf(95459, "Users", COMMON, CoreArtifactTypes.Folder);
+   public static ArtifactToken HeadingFolder = ArtifactToken.valueOf(114713, "Action Tracking System", COMMON, CoreArtifactTypes.Folder);
+   public static ArtifactToken TopTeamDefinition = ArtifactToken.valueOf(56004, "Teams", COMMON, AtsArtifactTypes.TeamDefinition);
+   public static ArtifactToken TopActionableItem = ArtifactToken.valueOf(122894, "Actionable Items", COMMON, AtsArtifactTypes.ActionableItem);
+   public static ArtifactToken CountryFolder = ArtifactToken.valueOf(7968155, "Countries", COMMON, CoreArtifactTypes.Folder);
+   public static ArtifactToken ProgramFolder = ArtifactToken.valueOf(90442279, "Programs", COMMON, CoreArtifactTypes.Folder);
+   public static ArtifactToken ConfigFolder = ArtifactToken.valueOf(113036, "Config", COMMON, CoreArtifactTypes.Folder);
+   public static ArtifactToken ConfigsFolder = ArtifactToken.valueOf(5086714, "Configs", COMMON, CoreArtifactTypes.Folder);
+   public static ArtifactToken WorkDefinitionsFolder = ArtifactToken.valueOf(284655, "Work Definitions", COMMON, CoreArtifactTypes.Folder);
+   public static ArtifactToken WebPrograms = ArtifactToken.valueOf(277592, "Web Programs", COMMON, CoreArtifactTypes.UniversalGroup);
+   public static ArtifactToken EVReportPrograms = ArtifactToken.valueOf(8174118, "EV Report Programs", COMMON, CoreArtifactTypes.UniversalGroup);
+   public static ArtifactToken AtsAdmin = ArtifactToken.valueOf(136750, "AtsAdmin", COMMON, CoreArtifactTypes.UserGroup);
+   public static ArtifactToken AtsTempAdmin = ArtifactToken.valueOf(5367074, "AtsTempAdmin", COMMON, CoreArtifactTypes.UserGroup);
 
    // Default Work Definitions
-   public static ArtifactToken WorkDef_Goal =
-      TokenFactory.createArtifactToken(142177, "WorkDef_Goal", AtsArtifactTypes.WorkDefinition);
-   public static ArtifactToken WorkDef_Review_Decision =
-      TokenFactory.createArtifactToken(25335, "WorkDef_Review_Decision", AtsArtifactTypes.WorkDefinition);
-   public static ArtifactToken WorkDef_Review_PeerToPeer =
-      TokenFactory.createArtifactToken(25334, "WorkDef_Review_PeerToPeer", AtsArtifactTypes.WorkDefinition);
-   public static ArtifactToken WorkDef_Task_Default =
-      TokenFactory.createArtifactToken(105373, "WorkDef_Task_Default", AtsArtifactTypes.WorkDefinition);
-   public static ArtifactToken WorkDef_Team_Default =
-      TokenFactory.createArtifactToken(72301, "WorkDef_Team_Default", AtsArtifactTypes.WorkDefinition);
-   public static ArtifactToken WorkDef_Team_Simple =
-      TokenFactory.createArtifactToken(72302, "WorkDef_Team_Simple", AtsArtifactTypes.WorkDefinition);
+   public static ArtifactToken WorkDef_Goal = ArtifactToken.valueOf(142177, "WorkDef_Goal", COMMON, AtsArtifactTypes.WorkDefinition);
+   public static ArtifactToken WorkDef_Review_Decision = ArtifactToken.valueOf(25335, "WorkDef_Review_Decision", COMMON, AtsArtifactTypes.WorkDefinition);
+   public static ArtifactToken WorkDef_Review_PeerToPeer = ArtifactToken.valueOf(25334, "WorkDef_Review_PeerToPeer", COMMON, AtsArtifactTypes.WorkDefinition);
+   public static ArtifactToken WorkDef_Task_Default = ArtifactToken.valueOf(105373, "WorkDef_Task_Default", COMMON, AtsArtifactTypes.WorkDefinition);
+   public static ArtifactToken WorkDef_Team_Default = ArtifactToken.valueOf(72301, "WorkDef_Team_Default", COMMON, AtsArtifactTypes.WorkDefinition);
+   public static ArtifactToken WorkDef_Team_Simple = ArtifactToken.valueOf(72302, "WorkDef_Team_Simple", COMMON, AtsArtifactTypes.WorkDefinition);
 
    // Safety Workflow configuration
-   public static final ArtifactToken SafetyActionableItem =
-      TokenFactory.createArtifactToken(7244546, "System Safety", AtsArtifactTypes.ActionableItem);
-   public static final ArtifactToken SafetyTeamDefinition =
-      TokenFactory.createArtifactToken(7241589, "System Safety Team", AtsArtifactTypes.TeamDefinition);
+   public static final ArtifactToken SafetyActionableItem = ArtifactToken.valueOf(7244546, "System Safety", COMMON, AtsArtifactTypes.ActionableItem);
+   public static final ArtifactToken SafetyTeamDefinition = ArtifactToken.valueOf(7241589, "System Safety Team", COMMON, AtsArtifactTypes.TeamDefinition);
 
    // Agile
-   public static ArtifactToken TopAgileFolder =
-      TokenFactory.createArtifactToken(6915493, "Agile", CoreArtifactTypes.Folder);
+   public static ArtifactToken TopAgileFolder = ArtifactToken.valueOf(6915493, "Agile", COMMON, CoreArtifactTypes.Folder);
+   // @formatter:off
 
    private AtsArtifactToken() {
       // Constants
    }
-
 }
