@@ -75,62 +75,74 @@ app.controller('adminController', [
 		        $scope.columnDefs1 = [{
 		            field: 'name',
 		            displayName: "Import",
-		            width: '9%',
+		            width: '7%',
 		            enableColumnMenu: false,
 		            enableCellEdit: false,
 		            cellTemplate: importCellTmpl
 		        }, {
 		        	field: 'name',
 		        	displayName: "Export",
-		        	width: '9%',
+		        	width: '7%',
 		        	enableColumnMenu: false,
 		            enableCellEdit: false,
 		        	cellTemplate: exportCellTmpl
 		        }, {
 		        	field: 'name',
 		            displayName: "Last Operation",
-		            width: '15%',
+		            width: '10%',
 		            enableColumnMenu: false,
 		            enableCellEdit: false,
 		        	cellTemplate: lastOperationCellTmpl
 		        }, {
+		            field: 'time',
+		            displayName: "Timestamp",
+		            width: '15%',
+		            enableColumnMenu: false,
+		            enableCellEdit: false
+		        }, {
 		            field: 'name',
 		            displayName: "Name",
-		            width: '20%',
+		            width: '12%',
 		            enableColumnMenu: false,
-		            enableCellEdit: false,
+		            enableCellEdit: false
 		        }, {
 		            field: 'importPath',
 		            displayName: "Path",
 		            enableColumnMenu: false,
-		            enableCellEdit: false,
+		            enableCellEdit: false
 		        }];
 
 		        $scope.columnDefs2 = [{
 		            field: 'name',
 		            displayName: "Import",
-		            width: '9%',
+		            width: '7%',
 		            enableColumnMenu: false,
 		            enableCellEdit: false,
 		            cellTemplate: importCellTmpl
 		        }, {
 		        	field: 'name',
 		        	displayName: "Export",
-		        	width: '9%',
+		        	width: '7%',
 		            enableColumnMenu: false,
 		            enableCellEdit: false,
 		        	cellTemplate: exportCellTmpl
 		        }, {
 		        	field: 'name',
 		            displayName: "Last Operation",
-		            width: '15%',
+		            width: '10%',
 		            enableColumnMenu: false,
 		            enableCellEdit: false,
 		        	cellTemplate: lastOperationCellTmpl
 		        }, {
+		            field: 'time',
+		            displayName: "Timestamp",
+		            width: '15%',
+		            enableColumnMenu: false,
+		            enableCellEdit: false
+		        }, {
 		            field: 'name',
 		            displayName: "Name",
-		            width: '20%',
+		            width: '12%',
 		            enableColumnMenu: false,
 		            enableCellEdit: true,
 		        }, {
@@ -200,6 +212,7 @@ app.controller('adminController', [
 			        	$scope.operationSummary = data.operationSummary;
 			            $scope.summaryGrid.data = $scope.operationSummary.entries;
 			        	set.importState = data.importState;
+			        	set.time = data.time;
 		        	}, function(data) {
 		        		set.gettingDetails = false;
 		        		alert("Could not update Set from Server");
@@ -273,7 +286,6 @@ app.controller('adminController', [
 		        
 
 		        $scope.importSet = function importSet(set) {
-		        	console.log(new Date().getTime());
 		            var newSet = new Set;
 		            newSet.operation = "Import";
 		            set.processingImport = true;
@@ -282,9 +294,11 @@ app.controller('adminController', [
 		                setId: set.guid
 		            }, newSet, function(data){
 		            	set.processingImport = false;
+		            	set.time = data.time;
 		            	$scope.getSetImportDetails(set);
 		            }, function() {
 		            	set.processingImport = false;
+		            	set.time = new Date();
 		            	$scope.getSetImportDetails(set);
 		            });
 		        };
@@ -333,11 +347,10 @@ app.controller('adminController', [
 		                sourceSet: inputs.sourceSet,
 		            }, function(data) {
 		            	$scope.isRunningOperation = false;
-		            	var reportUrl = data.operationStatus;
-		            	$scope.getSetImportDetails(destinationSet);
+		            	$scope.getSetImportDetails($scope.getSetById(inputs.destinationSet));
 		            }, function(data) {
 		            	$scope.isRunningOperation = false;
-		            	$scope.getSetImportDetails(destinationSet);
+		            	$scope.getSetImportDetails($scope.getSetById(inputs.destinationSet));
 		            });
 		        };
 		        

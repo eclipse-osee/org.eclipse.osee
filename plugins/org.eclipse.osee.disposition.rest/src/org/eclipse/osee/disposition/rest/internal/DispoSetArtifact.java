@@ -11,6 +11,7 @@
 package org.eclipse.osee.disposition.rest.internal;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.model.Note;
@@ -95,6 +96,11 @@ public class DispoSetArtifact extends BaseIdentity<String> implements DispoSet {
    @Override
    public String getRerunList() {
       return artifact.getSoleAttributeAsString(DispoConstants.DispoRerunList, "");
+   }
+
+   @Override
+   public Date getTime() {
+      return artifact.getSoleAttributeValue(DispoConstants.DispoTime, null);
    }
 
 }
