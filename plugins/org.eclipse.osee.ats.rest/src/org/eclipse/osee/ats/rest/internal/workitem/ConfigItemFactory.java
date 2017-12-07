@@ -301,7 +301,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
 
    @Override
    public boolean isAtsConfigArtifact(ArtifactId artifact) {
-      return getAtsConfigArtifactTypes().contains(((ArtifactReadable) artifact).getArtifactType());
+      return getAtsConfigArtifactTypes().contains(((ArtifactReadable) artifact).getArtifactTypeId());
    }
 
    @Override

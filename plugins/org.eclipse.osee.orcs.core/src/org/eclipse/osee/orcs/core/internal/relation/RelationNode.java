@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.relation;
 
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.orcs.core.internal.graph.GraphNode;
 import org.eclipse.osee.orcs.core.internal.relation.order.OrderStore;
 import org.eclipse.osee.orcs.core.internal.util.OrcsWriteable;
@@ -20,7 +19,5 @@ import org.eclipse.osee.orcs.core.internal.util.OrcsWriteable;
  * @author Megumi Telles
  */
 public interface RelationNode extends OrcsWriteable, GraphNode, OrderStore {
-
-   IArtifactType getArtifactType();
-
+   // composite interface
 }

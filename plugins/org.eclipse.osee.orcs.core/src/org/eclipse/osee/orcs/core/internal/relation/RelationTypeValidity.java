@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.core.internal.relation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -57,7 +57,7 @@ public class RelationTypeValidity {
       Conditions.checkNotNull(node, "node");
       Conditions.checkNotNull(side, "relationSide");
 
-      IArtifactType artifactType = node.getArtifactType();
+      ArtifactTypeId artifactType = node.getArtifactTypeId();
       boolean isValid = isRelationTypeValid(type, artifactType, side);
       if (!isValid) {
          throw new OseeArgumentException(
@@ -66,7 +66,7 @@ public class RelationTypeValidity {
       }
    }
 
-   public int getMaximumRelationsAllowed(RelationTypeId type, IArtifactType artifactType, RelationSide side) {
+   public int getMaximumRelationsAllowed(RelationTypeId type, ArtifactTypeId artifactType, RelationSide side) {
       Conditions.checkNotNull(type, "relationType");
       Conditions.checkNotNull(artifactType, "artifactType");
       Conditions.checkNotNull(side, "relationSide");
@@ -94,14 +94,14 @@ public class RelationTypeValidity {
       return toReturn;
    }
 
-   public boolean isRelationTypeValid(RelationTypeId relationType, IArtifactType artifactType, RelationSide relationSide) {
+   public boolean isRelationTypeValid(RelationTypeId relationType, ArtifactTypeId artifactType, RelationSide relationSide) {
       checkTypeExists(relationType);
       Conditions.checkNotNull(artifactType, "artifactType");
       Conditions.checkNotNull(relationSide, "relationSide");
       return getRelationSideMax(relationType, artifactType, relationSide) > 0;
    }
 
-   public List<RelationTypeId> getValidRelationTypes(IArtifactType artifactType) {
+   public List<RelationTypeId> getValidRelationTypes(ArtifactTypeId artifactType) {
       Conditions.checkNotNull(artifactType, "artifactType");
       Collection<? extends IRelationType> types = relationTypes.getAll();
       List<RelationTypeId> toReturn = new ArrayList<>();
@@ -113,7 +113,7 @@ public class RelationTypeValidity {
       return toReturn;
    }
 
-   private boolean isTypeAllowed(IArtifactType artifactType, IRelationType relationType) {
+   private boolean isTypeAllowed(ArtifactTypeId artifactType, IRelationType relationType) {
       boolean result = false;
       for (RelationSide side : RelationSide.values()) {
          int sideMax = getRelationSideMax(relationType, artifactType, side);
@@ -130,7 +130,7 @@ public class RelationTypeValidity {
       Conditions.checkExpressionFailOnTrue(!exists, "relationType [%s] does not exist", type);
    }
 
-   private int getRelationSideMax(RelationTypeId relationType, IArtifactType artifactType, RelationSide relationSide) {
+   private int getRelationSideMax(RelationTypeId relationType, ArtifactTypeId artifactType, RelationSide relationSide) {
       int toReturn = 0;
       if (relationTypes.isArtifactTypeAllowed(relationType, relationSide, artifactType)) {
          toReturn = relationTypes.getMultiplicity(relationType).getLimit(relationSide);

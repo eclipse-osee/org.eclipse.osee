@@ -186,8 +186,8 @@ public class RelationManagerImplTest {
    @Test
    public void testGetValidRelationTypes() {
       final List<IRelationType> expected = new ArrayList<>();
-      when(node1.getArtifactType()).thenReturn(artifactType1);
-      when(node2.getArtifactType()).thenReturn(artifactType2);
+      when(node1.getArtifactTypeId()).thenReturn(artifactType1);
+      when(node2.getArtifactTypeId()).thenReturn(artifactType2);
       when(validity.getValidRelationTypes(artifactType1)).thenAnswer(new Answer<List<IRelationType>>() {
          @Override
          public List<IRelationType> answer(InvocationOnMock invocation) throws Throwable {
@@ -201,8 +201,8 @@ public class RelationManagerImplTest {
 
    @Test
    public void testGetMaximumRelationAllowed() {
-      when(node1.getArtifactType()).thenReturn(artifactType1);
-      when(node2.getArtifactType()).thenReturn(artifactType2);
+      when(node1.getArtifactTypeId()).thenReturn(artifactType1);
+      when(node2.getArtifactTypeId()).thenReturn(artifactType2);
       when(validity.getMaximumRelationsAllowed(TYPE_1, artifactType1, SIDE_A)).thenReturn(11);
 
       int actual = manager.getMaximumRelationAllowed(session, TYPE_1, node1, SIDE_A);
@@ -478,8 +478,8 @@ public class RelationManagerImplTest {
    public void testRelateErrorMultiplicityNode1() {
       thrown.expect(OseeStateException.class);
 
-      when(node1.getArtifactType()).thenReturn(artifactType1);
-      when(node2.getArtifactType()).thenReturn(artifactType2);
+      when(node1.getArtifactTypeId()).thenReturn(artifactType1);
+      when(node2.getArtifactTypeId()).thenReturn(artifactType2);
       when(validity.getMaximumRelationsAllowed(Default_Hierarchical__Child, artifactType1, SIDE_A)).thenReturn(1);
 
       manager.relate(session, node1, TYPE_1, node2);
@@ -526,8 +526,8 @@ public class RelationManagerImplTest {
          relation1);
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
 
-      when(node1.getArtifactType()).thenReturn(artifactType1);
-      when(node2.getArtifactType()).thenReturn(artifactType2);
+      when(node1.getArtifactTypeId()).thenReturn(artifactType1);
+      when(node2.getArtifactTypeId()).thenReturn(artifactType2);
       when(validity.getMaximumRelationsAllowed(TYPE_1, artifactType1, SIDE_A)).thenReturn(10);
       when(validity.getMaximumRelationsAllowed(TYPE_1, artifactType2, SIDE_B)).thenReturn(10);
 
@@ -555,8 +555,8 @@ public class RelationManagerImplTest {
       RelationTypeSide typeSide = RelationTypeSide.create(TYPE_1, SIDE_B);
       when(orderManager1.getSorterId(typeSide)).thenReturn(UNORDERED);
 
-      when(node1.getArtifactType()).thenReturn(artifactType1);
-      when(node2.getArtifactType()).thenReturn(artifactType2);
+      when(node1.getArtifactTypeId()).thenReturn(artifactType1);
+      when(node2.getArtifactTypeId()).thenReturn(artifactType2);
       when(validity.getMaximumRelationsAllowed(TYPE_1, artifactType1, SIDE_A)).thenReturn(10);
       when(validity.getMaximumRelationsAllowed(TYPE_1, artifactType2, SIDE_B)).thenReturn(10);
 
@@ -585,8 +585,8 @@ public class RelationManagerImplTest {
       List<RelationNode> nodesToOrder = Arrays.asList(node3, node4, node5, node6);
       when(resolver.resolve(session, graph, toOrder, SIDE_B)).thenReturn(nodesToOrder);
 
-      when(node1.getArtifactType()).thenReturn(artifactType1);
-      when(node2.getArtifactType()).thenReturn(artifactType2);
+      when(node1.getArtifactTypeId()).thenReturn(artifactType1);
+      when(node2.getArtifactTypeId()).thenReturn(artifactType2);
       when(validity.getMaximumRelationsAllowed(TYPE_1, artifactType1, SIDE_A)).thenReturn(10);
       when(validity.getMaximumRelationsAllowed(TYPE_1, artifactType2, SIDE_B)).thenReturn(10);
 
@@ -624,8 +624,8 @@ public class RelationManagerImplTest {
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
       when(orderManager1.getSorterId(Default_Hierarchical__Child)).thenReturn(UNORDERED);
 
-      when(node1.getArtifactType()).thenReturn(artifactType1);
-      when(node2.getArtifactType()).thenReturn(artifactType2);
+      when(node1.getArtifactTypeId()).thenReturn(artifactType1);
+      when(node2.getArtifactTypeId()).thenReturn(artifactType2);
       when(validity.getMaximumRelationsAllowed(DEFAULT_HIERARCHY, artifactType1, SIDE_A)).thenReturn(10);
       when(validity.getMaximumRelationsAllowed(DEFAULT_HIERARCHY, artifactType2, SIDE_B)).thenReturn(10);
 
@@ -650,8 +650,8 @@ public class RelationManagerImplTest {
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
       when(orderManager1.getSorterId(Default_Hierarchical__Child)).thenReturn(UNORDERED);
 
-      when(node1.getArtifactType()).thenReturn(artifactType1);
-      when(node2.getArtifactType()).thenReturn(artifactType2);
+      when(node1.getArtifactTypeId()).thenReturn(artifactType1);
+      when(node2.getArtifactTypeId()).thenReturn(artifactType2);
       when(validity.getMaximumRelationsAllowed(DEFAULT_HIERARCHY, artifactType1, SIDE_A)).thenReturn(10);
       when(validity.getMaximumRelationsAllowed(DEFAULT_HIERARCHY, artifactType2, SIDE_B)).thenReturn(10);
 
@@ -677,8 +677,8 @@ public class RelationManagerImplTest {
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
       when(orderManager1.getSorterId(Default_Hierarchical__Child)).thenReturn(UNORDERED);
 
-      when(node1.getArtifactType()).thenReturn(artifactType1);
-      when(node2.getArtifactType()).thenReturn(artifactType2);
+      when(node1.getArtifactTypeId()).thenReturn(artifactType1);
+      when(node2.getArtifactTypeId()).thenReturn(artifactType2);
       when(validity.getMaximumRelationsAllowed(DEFAULT_HIERARCHY, artifactType1, SIDE_A)).thenReturn(10);
       when(validity.getMaximumRelationsAllowed(DEFAULT_HIERARCHY, artifactType2, SIDE_B)).thenReturn(10);
 

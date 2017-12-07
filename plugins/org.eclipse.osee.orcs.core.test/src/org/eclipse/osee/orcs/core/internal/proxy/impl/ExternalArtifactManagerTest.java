@@ -27,6 +27,7 @@ import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
 import org.eclipse.osee.orcs.core.internal.relation.RelationNode;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.junit.Before;
 import org.junit.Rule;
@@ -44,6 +45,7 @@ public class ExternalArtifactManagerTest {
 
    // @formatter:off
    @Mock private RelationManager relationManager;
+   @Mock private ArtifactTypes artifactTypeCache;
    @Mock private OrcsSession session;
 
    @Mock private ArtifactReadOnlyImpl readable1;
@@ -69,7 +71,7 @@ public class ExternalArtifactManagerTest {
    public void setUp() throws Exception {
       initMocks(this);
 
-      proxyManager = new ExternalArtifactManagerImpl(relationManager);
+      proxyManager = new ExternalArtifactManagerImpl(relationManager, artifactTypeCache);
    }
 
    @Test

@@ -118,7 +118,7 @@ public class ArtifactFactoryTest {
       Artifact artifact = artifactFactory.createArtifact(session, COMMON, Artifact, guid);
 
       verify(dataFactory).create(COMMON, Artifact, guid);
-      assertEquals(Artifact, artifact.getArtifactType());
+      assertEquals(Artifact, artifact.getArtifactTypeId());
       assertEquals(guid, artifact.getGuid());
    }
 
@@ -130,7 +130,7 @@ public class ArtifactFactoryTest {
       Artifact artifact = artifactFactory.createArtifact(session, COMMON, Artifact, guid, uuid);
 
       verify(dataFactory).create(COMMON, Artifact, guid, uuid);
-      assertEquals(Artifact, artifact.getArtifactType());
+      assertEquals(Artifact, artifact.getArtifactTypeId());
       assertEquals(guid, artifact.getGuid());
    }
 
@@ -138,7 +138,7 @@ public class ArtifactFactoryTest {
    public void testCreateArtifactFromArtifactData() {
       Artifact artifact = artifactFactory.createArtifact(session, artifactData);
 
-      assertEquals(Artifact, artifact.getArtifactType());
+      assertEquals(Artifact, artifact.getArtifactTypeId());
       assertEquals(guid, artifact.getGuid());
    }
 

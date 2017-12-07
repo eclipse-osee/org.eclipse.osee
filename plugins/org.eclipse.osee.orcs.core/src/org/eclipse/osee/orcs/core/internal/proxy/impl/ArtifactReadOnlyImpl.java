@@ -52,10 +52,12 @@ import org.eclipse.osee.orcs.data.RelationReadable;
 public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements ArtifactReadable {
 
    private final RelationManager relationManager;
+   private final IArtifactType artifactType;
 
-   public ArtifactReadOnlyImpl(ExternalArtifactManager proxyManager, RelationManager relationManager, OrcsSession session, Artifact proxiedObject) {
+   public ArtifactReadOnlyImpl(ExternalArtifactManager proxyManager, RelationManager relationManager, OrcsSession session, Artifact proxiedObject, IArtifactType artifactType) {
       super(proxyManager, session, proxiedObject);
       this.relationManager = relationManager;
+      this.artifactType = artifactType;
    }
 
    private RelationManager getRelationManager() {
@@ -94,12 +96,12 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
 
    @Override
    public IArtifactType getArtifactType() {
-      return getProxiedObject().getArtifactType();
+      return artifactType;
    }
 
    @Override
    public ArtifactTypeId getArtifactTypeId() {
-      return getArtifactType();
+      return artifactType;
    }
 
    @Override

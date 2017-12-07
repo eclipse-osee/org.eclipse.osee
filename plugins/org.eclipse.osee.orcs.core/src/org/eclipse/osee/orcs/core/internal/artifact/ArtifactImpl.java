@@ -100,8 +100,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
       return artifactData.getVersion().getBranch();
    }
 
-   @Override
-   public IArtifactType getArtifactType() {
+   private IArtifactType getArtifactType() {
       return artifactTypeCache.get(getOrcsData().getTypeUuid());
    }
 
@@ -128,7 +127,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
 
    @Override
    public boolean isOfType(ArtifactTypeId... otherTypes) {
-      return artifactTypeCache.inheritsFrom(getArtifactType(), otherTypes);
+      return artifactTypeCache.inheritsFrom(getArtifactTypeId(), otherTypes);
    }
 
    @Override
@@ -153,12 +152,12 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
 
    @Override
    public boolean isAttributeTypeValid(AttributeTypeId attributeType) {
-      return artifactTypeCache.isValidAttributeType(getArtifactType(), getBranch(), attributeType);
+      return artifactTypeCache.isValidAttributeType(getArtifactTypeId(), getBranch(), attributeType);
    }
 
    @Override
    public Collection<AttributeTypeToken> getValidAttributeTypes() {
-      return artifactTypeCache.getAttributeTypes(getArtifactType(), getBranch());
+      return artifactTypeCache.getAttributeTypes(getArtifactTypeId(), getBranch());
    }
 
    @Override

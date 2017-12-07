@@ -187,7 +187,7 @@ public class ArtifactTest {
 
    @Test
    public void testArtifactType() {
-      artifact.getArtifactType();
+      artifact.getArtifactTypeId();
       verify(types).get(artifactData.getTypeUuid());
    }
 

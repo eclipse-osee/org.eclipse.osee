@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.data;
 
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -34,7 +33,7 @@ public interface RelationTypes extends IdCollection<RelationTypeToken> {
 
    String getSideName(IRelationType relation, RelationSide relationSide);
 
-   boolean isArtifactTypeAllowed(RelationTypeId relation, RelationSide relationSide, IArtifactType artifactType);
+   boolean isArtifactTypeAllowed(RelationTypeId relation, RelationSide relationSide, ArtifactTypeId artifactType);
 
    String getSideAName(IRelationType relation);
 

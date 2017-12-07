@@ -21,6 +21,7 @@ import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
 import org.eclipse.osee.orcs.core.internal.relation.RelationNode;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 
 /**
@@ -30,15 +31,16 @@ public class ExternalArtifactManagerImpl implements ExternalArtifactManager {
 
    private final Function<ArtifactReadable, Artifact> readableToArtifact;
    private final RelationManager relationManager;
+   private final ArtifactTypes artifactTypeCache;
 
    public static interface ProxyProvider {
       Artifact getInternalArtifact(ArtifactReadable external);
    }
 
-   public ExternalArtifactManagerImpl(RelationManager relationManager) {
-      super();
+   public ExternalArtifactManagerImpl(RelationManager relationManager, ArtifactTypes artifactTypeCache) {
       this.relationManager = relationManager;
       this.readableToArtifact = new ReadableToArtifactFunction();
+      this.artifactTypeCache = artifactTypeCache;
    }
 
    @Override
@@ -48,7 +50,8 @@ public class ExternalArtifactManagerImpl implements ExternalArtifactManager {
 
    @Override
    public ArtifactReadable asExternalArtifact(OrcsSession session, Artifact artifact) {
-      return artifact == null ? null : new ArtifactReadOnlyImpl(this, relationManager, session, artifact);
+      return artifact == null ? null : new ArtifactReadOnlyImpl(this, relationManager, session, artifact,
+         artifactTypeCache.get(artifact.getArtifactTypeId()));
    }
 
    @Override

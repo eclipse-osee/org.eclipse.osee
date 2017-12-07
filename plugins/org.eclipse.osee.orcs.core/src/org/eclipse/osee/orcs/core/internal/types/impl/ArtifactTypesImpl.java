@@ -70,12 +70,12 @@ public class ArtifactTypesImpl implements ArtifactTypes {
    }
 
    @Override
-   public boolean hasSuperArtifactTypes(IArtifactType artType) {
+   public boolean hasSuperArtifactTypes(ArtifactTypeId artType) {
       return !getSuperArtifactTypes(artType).isEmpty();
    }
 
    @Override
-   public Collection<? extends ArtifactTypeId> getSuperArtifactTypes(IArtifactType artType) {
+   public Collection<? extends ArtifactTypeId> getSuperArtifactTypes(ArtifactTypeId artType) {
       Conditions.checkNotNull(artType, "artifactType");
       return getArtifactTypesIndex().getSuperTypes(artType);
    }
@@ -106,13 +106,13 @@ public class ArtifactTypesImpl implements ArtifactTypes {
    }
 
    @Override
-   public boolean isValidAttributeType(IArtifactType artType, BranchId branch, AttributeTypeId attributeType) {
+   public boolean isValidAttributeType(ArtifactTypeId artType, BranchId branch, AttributeTypeId attributeType) {
       Collection<AttributeTypeToken> attributes = getAttributeTypes(artType, branch);
       return attributes.contains(attributeType);
    }
 
    @Override
-   public Collection<AttributeTypeToken> getAttributeTypes(IArtifactType artType, BranchId branch) {
+   public Collection<AttributeTypeToken> getAttributeTypes(ArtifactTypeId artType, BranchId branch) {
       Conditions.checkNotNull(artType, "artifactType");
       Conditions.checkNotNull(branch, "branch");
       return getArtifactTypesIndex().getAttributeTypes(artType, branch);
@@ -134,7 +134,7 @@ public class ArtifactTypesImpl implements ArtifactTypes {
    }
 
    @Override
-   public Map<BranchId, Collection<AttributeTypeToken>> getAllAttributeTypes(IArtifactType artType) {
+   public Map<BranchId, Collection<AttributeTypeToken>> getAllAttributeTypes(ArtifactTypeId artType) {
       return getArtifactTypesIndex().getAllAttributeTypes(artType);
    }
 

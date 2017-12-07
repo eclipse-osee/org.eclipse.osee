@@ -93,19 +93,9 @@ public class ArtifactReadOnlyImplTest {
    public void setUp() {
       MockitoAnnotations.initMocks(this);
 
-      readOnly = new ArtifactReadOnlyImpl(proxyManager, relationManager, session, proxiedObject);
+      readOnly = new ArtifactReadOnlyImpl(proxyManager, relationManager, session, proxiedObject, artifactType);
 
       when(proxiedObject.getGraph()).thenReturn(graph);
-   }
-
-   @Test
-   public void testGetArtifactType() {
-      when(proxiedObject.getArtifactType()).thenReturn(artifactType);
-
-      IArtifactType actual = readOnly.getArtifactType();
-
-      assertEquals(artifactType, actual);
-      verify(proxiedObject).getArtifactType();
    }
 
    @Test

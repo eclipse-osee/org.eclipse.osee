@@ -298,7 +298,7 @@ public class TxDataManager {
       Artifact src = getSourceArtifact(txData, fromBranch, source);
       Artifact dest = null;
       if (destination == null) {
-         dest = artifactFactory.createArtifact(txData.getSession(), txData.getBranch(), src.getArtifactType(),
+         dest = artifactFactory.createArtifact(txData.getSession(), txData.getBranch(), src.getArtifactTypeId(),
             src.getGuid());
          dest.setGraph(loader.createGraph(txData.getSession(), txData.getBranch()));
       } else {

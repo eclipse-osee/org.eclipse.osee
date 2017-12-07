@@ -23,20 +23,20 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
  */
 public interface ArtifactTypes extends IdCollection<IArtifactType> {
 
-   boolean hasSuperArtifactTypes(IArtifactType artType);
+   boolean hasSuperArtifactTypes(ArtifactTypeId artType);
 
-   Collection<? extends ArtifactTypeId> getSuperArtifactTypes(IArtifactType artType);
+   Collection<? extends ArtifactTypeId> getSuperArtifactTypes(ArtifactTypeId artType);
 
    Collection<? extends IArtifactType> getAllDescendantTypes(ArtifactTypeId artType);
 
-   boolean isValidAttributeType(IArtifactType artType, BranchId branch, AttributeTypeId attributeType);
+   boolean isValidAttributeType(ArtifactTypeId artType, BranchId branch, AttributeTypeId attributeType);
 
-   Collection<AttributeTypeToken> getAttributeTypes(IArtifactType artType, BranchId branch);
+   Collection<AttributeTypeToken> getAttributeTypes(ArtifactTypeId artType, BranchId branch);
 
    boolean isAbstract(ArtifactTypeId artType);
 
    boolean inheritsFrom(ArtifactTypeId artType, ArtifactTypeId... otherTypes);
 
-   Map<BranchId, Collection<AttributeTypeToken>> getAllAttributeTypes(IArtifactType artType);
+   Map<BranchId, Collection<AttributeTypeToken>> getAllAttributeTypes(ArtifactTypeId artType);
 
 }

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.artifact;
 
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -23,7 +22,7 @@ import org.eclipse.osee.orcs.data.HasTransaction;
 /**
  * @author Megumi Telles
  */
-public interface Artifact extends ArtifactId, AttributeManager, HasTransaction, ArtifactVisitable, HasOrcsData<ArtifactData>, RelationNode {
+public interface Artifact extends AttributeManager, HasTransaction, ArtifactVisitable, HasOrcsData<ArtifactData>, RelationNode {
 
    TransactionId getLastModifiedTransaction();
 

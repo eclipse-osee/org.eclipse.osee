@@ -171,7 +171,7 @@ public class OrcsApiImpl implements OrcsApi {
          }
       };
 
-      proxyManager = new ExternalArtifactManagerImpl(relationManager);
+      proxyManager = new ExternalArtifactManagerImpl(relationManager, orcsTypes.getArtifactTypes());
 
       TransactionProvider txProvider = new TransactionProvider() {
 

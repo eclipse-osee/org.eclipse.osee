@@ -153,9 +153,9 @@ public class RelationManagerTest {
 
       when(graph.getTransaction()).thenReturn(TransactionId.SENTINEL);
 
-      when(node1.getArtifactType()).thenReturn(CoreArtifactTypes.SoftwareRequirement);
-      when(node2.getArtifactType()).thenReturn(CoreArtifactTypes.SoftwareRequirement);
-      when(node3.getArtifactType()).thenReturn(CoreArtifactTypes.SoftwareRequirement);
+      when(node1.getArtifactTypeId()).thenReturn(CoreArtifactTypes.SoftwareRequirement);
+      when(node2.getArtifactTypeId()).thenReturn(CoreArtifactTypes.SoftwareRequirement);
+      when(node3.getArtifactTypeId()).thenReturn(CoreArtifactTypes.SoftwareRequirement);
 
       when(node1.getOrderData()).thenReturn("");
       when(node2.getOrderData()).thenReturn("");

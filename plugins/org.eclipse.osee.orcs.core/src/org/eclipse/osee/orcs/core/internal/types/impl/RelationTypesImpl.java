@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.core.internal.types.impl;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeToken;
@@ -128,7 +127,7 @@ public class RelationTypesImpl implements RelationTypes {
    }
 
    @Override
-   public boolean isArtifactTypeAllowed(RelationTypeId relation, RelationSide relationSide, IArtifactType artifactType) {
+   public boolean isArtifactTypeAllowed(RelationTypeId relation, RelationSide relationSide, ArtifactTypeId artifactType) {
       Conditions.checkNotNull(relation, "relationType");
       Conditions.checkNotNull(relationSide, "relationSide");
       Conditions.checkNotNull(artifactType, "artifactType");
