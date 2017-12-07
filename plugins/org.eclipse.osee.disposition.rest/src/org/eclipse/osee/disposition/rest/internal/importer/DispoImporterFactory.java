@@ -12,6 +12,7 @@ package org.eclipse.osee.disposition.rest.internal.importer;
 
 import org.eclipse.osee.disposition.rest.DispoApiConfiguration;
 import org.eclipse.osee.disposition.rest.DispoImporterApi;
+import org.eclipse.osee.disposition.rest.internal.DispoConnector;
 import org.eclipse.osee.disposition.rest.internal.DispoDataFactory;
 import org.eclipse.osee.disposition.rest.internal.importer.coverage.LisFileParser;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
@@ -41,14 +42,14 @@ public class DispoImporterFactory {
       this.config = config;
    }
 
-   public DispoImporterApi createImporter(ImportFormat format) {
+   public DispoImporterApi createImporter(ImportFormat format, DispoConnector connector) {
       switch (format) {
          case TMO:
             return new TmoImporter(dataFactory, executor, logger);
          case TMZ:
             return new TmzImporter(logger, dataFactory);
          case LIS:
-            return new LisFileParser(logger, dataFactory, config);
+            return new LisFileParser(logger, dataFactory, config, connector);
          default:
             throw new OseeArgumentException("Unsupported format type: [%s]", format);
       }

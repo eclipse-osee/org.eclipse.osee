@@ -476,10 +476,11 @@ public class DispoApiImpl implements DispoApi {
             HashMap<String, DispoItem> nameToItemMap = getItemsMap(branch, setToEdit);
 
             DispoImporterApi importer;
+
             if (setToEdit.getDispoType().equalsIgnoreCase("codeCoverage")) {
-               importer = importerFactory.createImporter(ImportFormat.LIS);
+               importer = importerFactory.createImporter(ImportFormat.LIS, dispoConnector);
             } else {
-               importer = importerFactory.createImporter(ImportFormat.TMO);
+               importer = importerFactory.createImporter(ImportFormat.TMO, dispoConnector);
             }
 
             List<DispoItem> itemsFromParse =
