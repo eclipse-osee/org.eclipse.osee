@@ -429,4 +429,8 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
       return transaction;
    }
 
+   public void cancel() {
+      getTxMonitor().endTx(getBranch(), this);
+   }
+
 }

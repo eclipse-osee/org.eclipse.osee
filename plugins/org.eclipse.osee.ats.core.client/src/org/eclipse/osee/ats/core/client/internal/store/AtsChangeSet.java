@@ -65,41 +65,47 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       if (isEmpty() && execptionIfEmpty) {
          throw new OseeArgumentException("objects/deleteObjects cannot be empty");
       }
+      TransactionId transactionRecord;
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(), comment);
-      // First, create or update any artifacts that changed
-      for (IAtsObject atsObject : new ArrayList<>(atsObjects)) {
-         if (atsObject instanceof IAtsWorkItem) {
-            IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
-            if (workItem.getStateMgr().isDirty()) {
-               AtsClientService.get().getStateFactory().writeToStore(asUser, workItem, this);
+      try {
+         // First, create or update any artifacts that changed
+         for (IAtsObject atsObject : new ArrayList<>(atsObjects)) {
+            if (atsObject instanceof IAtsWorkItem) {
+               IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
+               if (workItem.getStateMgr().isDirty()) {
+                  AtsClientService.get().getStateFactory().writeToStore(asUser, workItem, this);
+               }
+               if (workItem.getLog().isDirty()) {
+                  AtsClientService.get().getLogFactory().writeToStore(workItem,
+                     AtsClientService.get().getAttributeResolver(), this);
+               }
             }
-            if (workItem.getLog().isDirty()) {
-               AtsClientService.get().getLogFactory().writeToStore(workItem,
-                  AtsClientService.get().getAttributeResolver(), this);
+            transaction.addArtifact(AtsClientService.get().getArtifact(atsObject));
+         }
+         for (ArtifactId artifact : artifacts) {
+            if (artifact instanceof Artifact) {
+               transaction.addArtifact((Artifact) artifact);
             }
          }
-         transaction.addArtifact(AtsClientService.get().getArtifact(atsObject));
-      }
-      for (ArtifactId artifact : artifacts) {
-         if (artifact instanceof Artifact) {
-            transaction.addArtifact((Artifact) artifact);
+         // Second, add or delete any relations; this has to be done separate so all artifacts are created
+         for (AtsRelationChange rel : relations) {
+            execute(rel, transaction);
          }
-      }
-      // Second, add or delete any relations; this has to be done separate so all artifacts are created
-      for (AtsRelationChange rel : relations) {
-         execute(rel, transaction);
-      }
-      // Third, delete any desired objects
-      for (ArtifactId artifact : deleteArtifacts) {
-         if (artifact instanceof Artifact) {
-            ((Artifact) artifact).deleteAndPersist(transaction);
+         // Third, delete any desired objects
+         for (ArtifactId artifact : deleteArtifacts) {
+            if (artifact instanceof Artifact) {
+               ((Artifact) artifact).deleteAndPersist(transaction);
+            }
          }
+         for (IAtsObject atsObject : deleteAtsObjects) {
+            AtsClientService.get().getArtifact(atsObject).deleteAndPersist(transaction);
+         }
+         transactionRecord = transaction.execute();
+      } catch (Exception ex) {
+         transaction.cancel();
+         throw OseeCoreException.wrap(ex);
       }
-      for (IAtsObject atsObject : deleteAtsObjects) {
-         AtsClientService.get().getArtifact(atsObject).deleteAndPersist(transaction);
-      }
-      TransactionId transactionRecord = transaction.execute();
       for (IExecuteListener listener : listeners) {
          listener.changesStored(this);
       }
