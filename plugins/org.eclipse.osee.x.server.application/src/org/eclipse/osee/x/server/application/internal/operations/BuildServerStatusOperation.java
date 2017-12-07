@@ -49,7 +49,11 @@ public class BuildServerStatusOperation {
       stat.set(StatusKey.ServerId, applicationServerManager.getId());
       stat.set(StatusKey.StartTime, DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG).format(
          applicationServerManager.getDateStarted()));
-      stat.set(StatusKey.UpTime, String.valueOf(runtimeMxBean.getUptime()));
+      int seconds = (int) (runtimeMxBean.getUptime() / 1000) % 60;
+      int minutes = (int) ((runtimeMxBean.getUptime() / (1000 * 60)) % 60);
+      int hours = (int) ((runtimeMxBean.getUptime() / (1000 * 60 * 60)) % 24);
+
+      stat.set(StatusKey.UpTime, String.format("%s hr %s min %s sec", hours, minutes, seconds));
       stat.set(StatusKey.SystemLoad, String.valueOf(osMxBean.getSystemLoadAverage()));
       stat.set(StatusKey.CodeLocation, System.getProperty("user.dir"));
       stat.set(StatusKey.BinaryDataPath, OseeServerProperties.getOseeApplicationServerData(null));
@@ -67,9 +71,9 @@ public class BuildServerStatusOperation {
       } catch (InterruptedException ex) {
          activityLog.createThrowableEntry(CoreActivityTypes.OSEE_ERROR, ex);
       }
-      String threadReport = activityLog.getThreadActivityDelta(threadStats);
-
-      stat.set(StatusKey.ActiveThreads, threadReport);
+      for (String threadStr : activityLog.getThreadActivityDelta(threadStats)) {
+         stat.add(threadStr);
+      }
       return stat;
    }
 }

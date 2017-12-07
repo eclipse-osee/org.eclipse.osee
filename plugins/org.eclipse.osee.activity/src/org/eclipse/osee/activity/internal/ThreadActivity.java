@@ -14,6 +14,8 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import org.eclipse.osee.activity.api.ThreadStats;
 
 /**
@@ -33,8 +35,8 @@ public class ThreadActivity {
       return threadStats;
    }
 
-   public String getThreadActivityDelta(ThreadStats[] threadStats) {
-      StringBuilder sb = new StringBuilder(400);
+   public List<String> getThreadActivityDelta(ThreadStats[] threadStats) {
+      List<String> threads = new LinkedList<>();
 
       for (ThreadStats stat : threadStats) {
          stat.setCpuTimeElapsed(threadMxBean);
@@ -49,14 +51,9 @@ public class ThreadActivity {
             break;
          }
 
-         sb.append(threadStats[i].threadInfo.getThreadName());
-         sb.append("(");
-         sb.append(threadStats[i].threadInfo.getThreadId());
-         sb.append("), ");
-         sb.append(threadStats[i].cpuTimeElapsed / ConvertToMillSec);
-         sb.append(", ");
-         sb.append(threadStats[i].cpuTime / ConvertToMillSec);
-         sb.append(", ");
+         threads.add(String.format("[%s] - id [%s] elapsed [%s] total [%s]", threadStats[i].threadInfo.getThreadName(),
+            threadStats[i].threadInfo.getThreadId(), threadStats[i].cpuTimeElapsed / ConvertToMillSec,
+            threadStats[i].cpuTime / ConvertToMillSec));
          // sb.append(threadStats[i].threadInfo.getBlockedTime());
          // sb.append(", ");
 
@@ -64,12 +61,10 @@ public class ThreadActivity {
          if (stackTrace.length > 0) {
             int stackCount = Math.min(4, stackTrace.length);
             for (int j = 0; j < stackCount; j++) {
-               sb.append(stackTrace[j]);
-               sb.append(' ');
+               threads.add("trace: " + String.valueOf(stackTrace[j]));
             }
          }
-         sb.append("\n");
       }
-      return sb.toString();
+      return threads;
    }
 }

@@ -11,6 +11,8 @@
 package org.eclipse.osee.x.server.application.internal.model;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
@@ -20,6 +22,7 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 public class ServerStatus {
 
    private final Map<String, String> data = new HashMap<String, String>();
+   private final List<String> threadStats = new LinkedList<>();
 
    public void set(StatusKey key, String value) {
       data.put(key.getShortName(), value);
@@ -51,6 +54,14 @@ public class ServerStatus {
 
    public Map<String, String> getData() {
       return data;
+   }
+
+   public List<String> getThreadStats() {
+      return threadStats;
+   }
+
+   public void add(String threadStr) {
+      threadStats.add(threadStr);
    }
 
 }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.activity.api;
 
+import java.util.List;
 import org.eclipse.osee.framework.core.data.ActivityTypeId;
 import org.eclipse.osee.framework.core.data.ActivityTypeToken;
 import org.eclipse.osee.framework.core.data.UserId;
@@ -83,5 +84,5 @@ public interface ActivityLog {
     */
    ThreadStats[] getThreadActivity();
 
-   String getThreadActivityDelta(ThreadStats[] threadStats);
+   List<String> getThreadActivityDelta(ThreadStats[] threadStats);
 }

@@ -21,7 +21,7 @@ public enum StatusKey {
    ActiveThreads("Thread Activity", true),
    ServerId("ID", true),
    StartTime("Start", true),
-   CodeLocation("Start", true),
+   CodeLocation("Code Loc", true),
    BinaryDataPath("Binary", true),
    AuthenticationScheme("Auth-Scheme", true),
    AuthenticationSchemeSupported("Auth-Supported", true),
