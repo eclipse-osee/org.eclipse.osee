@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.api.workdef;
 
 import java.util.Collection;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -40,6 +41,7 @@ public interface IRelationResolver {
 
    ArtifactToken getRelatedOrNull(IAtsObject atsObject, RelationTypeSide relationType);
 
+   @Nullable
    <T> T getRelatedOrNull(IAtsObject atsObject, RelationTypeSide relationType, Class<T> clazz);
 
    int getRelatedCount(IAtsWorkItem workItem, RelationTypeSide relationType);
