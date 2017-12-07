@@ -60,7 +60,7 @@ public class AtsTaskToChangedArtifactReferenceAttributeAdapter implements Attrib
                // First, attempt to get from Working Branch if still exists
                BranchId workingBranch = AtsClientService.get().getBranchService().getWorkingBranch(derivedTeamWf);
                if (workingBranch != null && branchIsInWork(workingBranch)) {
-                  retArt = ArtifactQuery.getArtifactFromId(uuid, workingBranch, DeletionFlag.INCLUDE_DELETED);
+                  retArt = ArtifactQuery.getArtifactFromIdOrNull(uuid, workingBranch, DeletionFlag.INCLUDE_DELETED);
                } else {
                   // Else get from first commit transaction
                   // NOTE: Each workflow has it's own commit in parallel dev

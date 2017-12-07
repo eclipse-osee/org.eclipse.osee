@@ -136,11 +136,20 @@ public class ArtifactQuery {
       return getOrCheckArtifactFromId(artId, branch, allowDeleted, QueryType.GET);
    }
 
+   public static Artifact getArtifactFromIdOrNull(int artId, BranchId branch, DeletionFlag allowDeleted) throws OseeCoreException {
+      return getOrCheckArtifactFromId(artId, branch, allowDeleted, QueryType.GET, false);
+   }
+
    public static Artifact getArtifactFromId(Long artId, BranchId branch, DeletionFlag allowDeleted) throws OseeCoreException {
       return getOrCheckArtifactFromId(artId.intValue(), branch, allowDeleted, QueryType.GET);
    }
 
    private static Artifact getOrCheckArtifactFromId(int artId, BranchId branch, DeletionFlag allowDeleted, QueryType queryType) throws OseeCoreException {
+      return getOrCheckArtifactFromId(artId, branch, allowDeleted, queryType, true);
+
+   }
+
+   private static Artifact getOrCheckArtifactFromId(int artId, BranchId branch, DeletionFlag allowDeleted, QueryType queryType, boolean exceptionIfNotFound) throws OseeCoreException {
       if (artId < 1) {
          throw new OseeArgumentException("Invalid Artifact Id: [%d]", artId);
       }
@@ -149,7 +158,7 @@ public class ArtifactQuery {
          if (artifact.isDeleted() && allowDeleted == EXCLUDE_DELETED) {
             if (queryType == QueryType.CHECK) {
                artifact = null;
-            } else {
+            } else if (exceptionIfNotFound) {
                throw new ArtifactDoesNotExist("Deleted artifact unexpectedly returned");
             }
          }
