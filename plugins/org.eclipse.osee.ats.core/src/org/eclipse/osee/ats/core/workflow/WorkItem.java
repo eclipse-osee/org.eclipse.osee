@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -45,6 +46,7 @@ import org.eclipse.osee.logger.Log;
 public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    protected final ArtifactToken artifact;
+   private IAtsStateManager stateMgr;
    private IAtsLog atsLog;
    private IWorkDefinitionMatch match;
    protected final IAtsServices services;
@@ -135,12 +137,20 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
 
    @Override
    public IAtsStateManager getStateMgr() {
-      return services.getStateFactory().getStateManager(this);
+      if (stateMgr == null) {
+         try {
+            stateMgr = services.getStateFactory().getStateManager(this, true);
+         } catch (OseeCoreException ex) {
+            logger.error(ex, "Error getting stateManager for artifact[%s]", artifact);
+         }
+      }
+      return stateMgr;
    }
 
    @Override
    public void setStateManager(IAtsStateManager stateMgr) {
-      services.getStateFactory().setStateMgr(this, stateMgr);
+      Conditions.assertNotNull(stateMgr, "stateMgr");
+      this.stateMgr = stateMgr;
    }
 
    @Override

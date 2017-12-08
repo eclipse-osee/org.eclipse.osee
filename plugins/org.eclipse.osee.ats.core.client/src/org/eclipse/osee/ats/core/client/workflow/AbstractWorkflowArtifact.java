@@ -36,6 +36,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
+import org.eclipse.osee.ats.api.workflow.note.IAtsWorkItemNotes;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.artifact.AbstractAtsArtifact;
@@ -87,6 +88,9 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    protected ActionArtifact parentAction;
    private IAtsLog atsLog;
    private TransactionId atsLogTx;
+   private TransactionId stateMgrTransactionNumber;
+   private IAtsWorkItemNotes atsNote;
+   private IAtsStateManager stateMgr;
 
    public AbstractWorkflowArtifact(String guid, BranchId branch, ArtifactTypeId artifactType) {
       super(guid, branch, artifactType);
@@ -155,6 +159,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       parentAction = null;
       parentAwa = null;
       parentTeamArt = null;
+      stateMgr = null;
       atsLog = null;
    }
 
@@ -680,7 +685,15 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    @Override
    public IAtsStateManager getStateMgr() {
-      return AtsClientService.get().getStateFactory().getStateManager(this);
+      if (stateMgr == null || getTransaction().notEqual(stateMgrTransactionNumber)) {
+         try {
+            stateMgr = AtsClientService.get().getStateFactory().getStateManager(this, isInDb());
+            stateMgrTransactionNumber = getTransaction();
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
+      }
+      return stateMgr;
    }
 
    @Override
@@ -773,9 +786,8 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    @Override
-   public void setStateManager(IAtsStateManager stateMgr) {
-      Conditions.assertNotNull(stateMgr, "StateManager");
-      AtsClientService.get().getStateFactory().setStateMgr(this, stateMgr);
+   public void setStateManager(IAtsStateManager stateManager) {
+      this.stateMgr = stateManager;
    }
 
    /**
