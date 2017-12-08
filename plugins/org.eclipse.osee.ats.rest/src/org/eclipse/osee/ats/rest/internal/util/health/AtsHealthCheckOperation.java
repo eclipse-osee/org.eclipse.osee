@@ -141,13 +141,43 @@ public class AtsHealthCheckOperation {
    private List<IAtsHealthCheck> getHealthChecks() {
       if (healthChecks == null) {
          healthChecks = new LinkedList<>();
+         healthChecks.add(new TestTaskParent());
          healthChecks.add(new TestWorkflowTeamDefinition());
          healthChecks.add(new TestWorkflowVersions());
+         healthChecks.add(new TestWorkflowDefinition());
          for (IAtsHealthCheckProvider provider : AtsHealthCheckProviderService.getHealthCheckProviders()) {
             healthChecks.addAll(provider.getHealthChecks());
          }
       }
       return healthChecks;
+   }
+
+   private static class TestTaskParent implements IAtsHealthCheck {
+
+      @Override
+      public void check(ArtifactId artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi) {
+         if (workItem.isTask()) {
+            if (atsApi.getRelationResolver().getRelatedOrNull(workItem, AtsRelationTypes.TeamWfToTask_TeamWf) == null) {
+               error(results, workItem, "Task has no parent");
+            }
+         }
+      }
+   }
+
+   private static class TestWorkflowDefinition implements IAtsHealthCheck {
+
+      @Override
+      public void check(ArtifactId artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi) {
+         if (workItem.getWorkDefinition() == null) {
+            error(results, workItem, "Workflow has no Work Definition");
+         }
+         if (workItem.getStateDefinition() == null) {
+            error(results, workItem, "Workflow can not get State Definition");
+         }
+         if (workItem.getStateMgr().getCurrentState() == null) {
+            error(results, workItem, "Workflow can not get current state");
+         }
+      }
    }
 
    private static class TestWorkflowTeamDefinition implements IAtsHealthCheck {
