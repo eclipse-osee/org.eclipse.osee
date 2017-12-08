@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
  * <ul>
  * <li></li>
  * </ul>
- * 
+ *
  * @author Roberto E. Escobar
  */
 public final class TxMonitorImpl<K> implements TxMonitor<K> {
@@ -105,6 +105,11 @@ public final class TxMonitorImpl<K> implements TxMonitor<K> {
       if (!cache.contains(key, tx.getUuid())) {
          throw new OseeStateException("key:[%s] tx:[%s] - has not been added to monitor", key, tx);
       }
+   }
+
+   @Override
+   public void cancel(K key, MonitoredTx tx) {
+      cache.removeTx(key, tx.getUuid());
    }
 
 }

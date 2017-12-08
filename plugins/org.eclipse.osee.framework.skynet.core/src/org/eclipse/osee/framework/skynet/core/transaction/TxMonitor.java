@@ -28,4 +28,6 @@ public interface TxMonitor<K> {
 
    void rollbackTx(K key, MonitoredTx tx) throws OseeCoreException;
 
+   void cancel(K key, MonitoredTx tx);
+
 }

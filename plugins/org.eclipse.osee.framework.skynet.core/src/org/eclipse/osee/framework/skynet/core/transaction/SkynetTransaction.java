@@ -430,7 +430,7 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
    }
 
    public void cancel() {
-      getTxMonitor().endTx(getBranch(), this);
+      getTxMonitor().cancel(getBranch(), this);
    }
 
 }
