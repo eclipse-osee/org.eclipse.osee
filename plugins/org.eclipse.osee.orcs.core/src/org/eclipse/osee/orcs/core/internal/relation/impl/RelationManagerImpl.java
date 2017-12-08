@@ -48,11 +48,11 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.core.internal.relation.Relation;
 import org.eclipse.osee.orcs.core.internal.relation.RelationFactory;
 import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
-import org.eclipse.osee.orcs.core.internal.relation.RelationNode;
 import org.eclipse.osee.orcs.core.internal.relation.RelationResolver;
 import org.eclipse.osee.orcs.core.internal.relation.RelationTypeValidity;
 import org.eclipse.osee.orcs.core.internal.relation.RelationVisitor;
@@ -87,19 +87,19 @@ public class RelationManagerImpl implements RelationManager {
    }
 
    @Override
-   public int getMaximumRelationAllowed(OrcsSession session, RelationTypeId type, RelationNode node, RelationSide side) {
+   public int getMaximumRelationAllowed(OrcsSession session, RelationTypeId type, Artifact node, RelationSide side) {
       Conditions.checkNotNull(node, "node");
       return validity.getMaximumRelationsAllowed(type, node.getArtifactTypeId(), side);
    }
 
    @Override
-   public Collection<RelationTypeId> getValidRelationTypes(OrcsSession session, RelationNode node) {
+   public Collection<RelationTypeId> getValidRelationTypes(OrcsSession session, Artifact node) {
       Conditions.checkNotNull(node, "node");
       return validity.getValidRelationTypes(node.getArtifactTypeId());
    }
 
    @Override
-   public void accept(OrcsSession session, GraphData graph, RelationNode node, RelationVisitor visitor) {
+   public void accept(OrcsSession session, GraphData graph, Artifact node, RelationVisitor visitor) {
       checkOnGraph(graph, node);
       ensureRelationsInitialized(session, graph, node);
       RelationNodeAdjacencies container = graph.getAdjacencies(node);
@@ -111,7 +111,7 @@ public class RelationManagerImpl implements RelationManager {
    }
 
    @Override
-   public boolean hasDirtyRelations(OrcsSession session, RelationNode node) {
+   public boolean hasDirtyRelations(OrcsSession session, Artifact node) {
       GraphData graph = node.getGraph();
       ensureRelationsInitialized(session, graph, node);
       RelationNodeAdjacencies container = graph.getAdjacencies(node);
@@ -119,7 +119,7 @@ public class RelationManagerImpl implements RelationManager {
    }
 
    @Override
-   public Collection<RelationTypeId> getExistingRelationTypes(OrcsSession session, RelationNode node) {
+   public Collection<RelationTypeId> getExistingRelationTypes(OrcsSession session, Artifact node) {
       checkNotNull(node, "node");
       GraphData graph = node.getGraph();
       ensureRelationsInitialized(session, graph, node);
@@ -135,38 +135,38 @@ public class RelationManagerImpl implements RelationManager {
    }
 
    @Override
-   public int getRelatedCount(OrcsSession session, RelationTypeId type, RelationNode node, RelationSide side) {
+   public int getRelatedCount(OrcsSession session, RelationTypeId type, Artifact node, RelationSide side) {
       return getRelatedCount(session, type, node, side, EXCLUDE_DELETED);
    }
 
    @Override
-   public int getRelatedCount(OrcsSession session, RelationTypeId type, RelationNode node, RelationSide side, DeletionFlag includeDeleted) {
+   public int getRelatedCount(OrcsSession session, RelationTypeId type, Artifact node, RelationSide side, DeletionFlag includeDeleted) {
       return getRelations(session, type, node, side, includeDeleted).size();
    }
 
    @Override
-   public boolean areRelated(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode) {
+   public boolean areRelated(OrcsSession session, Artifact aNode, RelationTypeId type, Artifact bNode) {
       return getRelation(session, aNode, type, bNode, EXCLUDE_DELETED).size() > 0;
    }
 
    @Override
-   public <T extends RelationNode> T getParent(OrcsSession session, RelationNode child) {
+   public <T extends Artifact> T getParent(OrcsSession session, Artifact child) {
       ResultSet<T> toReturn = getRelated(session, DEFAULT_HIERARCHY, child, IS_CHILD);
       return toReturn.getOneOrNull();
    }
 
    @Override
-   public <T extends RelationNode> ResultSet<T> getChildren(OrcsSession session, RelationNode parent) {
+   public <T extends Artifact> ResultSet<T> getChildren(OrcsSession session, Artifact parent) {
       return getRelated(session, DEFAULT_HIERARCHY, parent, IS_PARENT);
    }
 
    @Override
-   public <T extends RelationNode> ResultSet<T> getRelated(OrcsSession session, RelationTypeId type, RelationNode node, RelationSide side) {
+   public <T extends Artifact> ResultSet<T> getRelated(OrcsSession session, RelationTypeId type, Artifact node, RelationSide side) {
       return getRelated(session, type, node, side, EXCLUDE_DELETED);
    }
 
    @Override
-   public <T extends RelationNode> ResultSet<T> getRelated(OrcsSession session, RelationTypeId type, RelationNode node, RelationSide side, DeletionFlag flag) {
+   public <T extends Artifact> ResultSet<T> getRelated(OrcsSession session, RelationTypeId type, Artifact node, RelationSide side, DeletionFlag flag) {
       List<Relation> links = getRelations(session, type, node, side, flag);
       List<T> result = null;
       if (links.isEmpty()) {
@@ -185,13 +185,13 @@ public class RelationManagerImpl implements RelationManager {
    }
 
    @Override
-   public String getRationale(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode) {
+   public String getRationale(OrcsSession session, Artifact aNode, RelationTypeId type, Artifact bNode) {
       ResultSet<Relation> result = getRelation(session, aNode, type, bNode, EXCLUDE_DELETED);
       return result.getExactlyOne().getRationale();
    }
 
    @Override
-   public void setRationale(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode, String rationale) {
+   public void setRationale(OrcsSession session, Artifact aNode, RelationTypeId type, Artifact bNode, String rationale) {
       ResultSet<Relation> result = getRelation(session, aNode, type, bNode, EXCLUDE_DELETED);
       Relation relation = result.getExactlyOne();
       relation.setRationale(rationale);
@@ -199,35 +199,35 @@ public class RelationManagerImpl implements RelationManager {
 
    ///////////////////////// RELATE NODES ///////////////////
    @Override
-   public void addChild(OrcsSession session, RelationNode parent, RelationNode child) {
+   public void addChild(OrcsSession session, Artifact parent, Artifact child) {
       unrelateFromAll(session, DEFAULT_HIERARCHY, child, IS_CHILD);
       relate(session, parent, DEFAULT_HIERARCHY, child);
    }
 
    @Override
-   public void addChildren(OrcsSession session, RelationNode parent, List<? extends RelationNode> children) {
-      for (RelationNode child : children) {
+   public void addChildren(OrcsSession session, Artifact parent, List<? extends Artifact> children) {
+      for (Artifact child : children) {
          addChild(session, parent, child);
       }
    }
 
    @Override
-   public void relate(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode) {
+   public void relate(OrcsSession session, Artifact aNode, RelationTypeId type, Artifact bNode) {
       relate(session, aNode, type, bNode, emptyString(), PREEXISTING);
    }
 
    @Override
-   public void relate(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode, String rationale) {
+   public void relate(OrcsSession session, Artifact aNode, RelationTypeId type, Artifact bNode, String rationale) {
       relate(session, aNode, type, bNode, rationale, PREEXISTING);
    }
 
    @Override
-   public void relate(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode, RelationSorter sortType) {
+   public void relate(OrcsSession session, Artifact aNode, RelationTypeId type, Artifact bNode, RelationSorter sortType) {
       relate(session, aNode, type, bNode, emptyString(), sortType);
    }
 
    @Override
-   public void relate(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode, String rationale, RelationSorter sortType) {
+   public void relate(OrcsSession session, Artifact aNode, RelationTypeId type, Artifact bNode, String rationale, RelationSorter sortType) {
       checkBranch(aNode, bNode);
       checkRelateSelf(aNode, bNode);
       GraphData graph = getGraph(aNode, bNode);
@@ -256,13 +256,13 @@ public class RelationManagerImpl implements RelationManager {
       }
    }
 
-   private GraphData getGraph(RelationNode aNode, RelationNode bNode) {
+   private GraphData getGraph(Artifact aNode, Artifact bNode) {
       checkBranch(aNode, bNode);
       return aNode.getGraph().getTransaction().isOlderThan(
          bNode.getGraph().getTransaction()) ? bNode.getGraph() : aNode.getGraph();
    }
 
-   private void checkMultiplicityCanAdd(OrcsSession session, RelationTypeId type, RelationNode aNode, RelationNode bNode) {
+   private void checkMultiplicityCanAdd(OrcsSession session, RelationTypeId type, Artifact aNode, Artifact bNode) {
       int bSideCount = getRelations(session, type, aNode, SIDE_A, EXCLUDE_DELETED).size();
       int bSideMax = validity.getMaximumRelationsAllowed(type, bNode.getArtifactTypeId(), SIDE_B);
 
@@ -282,7 +282,7 @@ public class RelationManagerImpl implements RelationManager {
 
    ///////////////////////// UNRELATE NODES ///////////////////
    @Override
-   public void unrelate(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode) {
+   public void unrelate(OrcsSession session, Artifact aNode, RelationTypeId type, Artifact bNode) {
       Relation relation = getRelation(session, aNode, type, bNode, EXCLUDE_DELETED).getOneOrNull();
       boolean modified = false;
       if (relation != null) {
@@ -295,7 +295,7 @@ public class RelationManagerImpl implements RelationManager {
    }
 
    @Override
-   public void unrelateFromAll(OrcsSession session, RelationTypeId type, RelationNode node, RelationSide side) {
+   public void unrelateFromAll(OrcsSession session, RelationTypeId type, Artifact node, RelationSide side) {
       List<Relation> relations = getRelations(session, type, node, side, EXCLUDE_DELETED);
 
       RelationSide otherSide = side.oppositeSide();
@@ -303,11 +303,11 @@ public class RelationManagerImpl implements RelationManager {
       resolver.resolve(session, graph, relations, otherSide);
 
       boolean modified = false;
-      Set<RelationNode> otherNodes = new LinkedHashSet<>();
+      Set<Artifact> otherNodes = new LinkedHashSet<>();
       for (Relation relation : relations) {
          relation.delete();
          Integer artId = relation.getIdForSide(otherSide);
-         RelationNode otherNode = graph.getNode(artId);
+         Artifact otherNode = graph.getNode(artId);
          otherNodes.add(otherNode);
          modified = true;
       }
@@ -317,11 +317,11 @@ public class RelationManagerImpl implements RelationManager {
    }
 
    @Override
-   public void unrelateFromAll(OrcsSession session, RelationNode node) {
+   public void unrelateFromAll(OrcsSession session, Artifact node) {
       unrelate(session, node, true);
    }
 
-   private void unrelate(OrcsSession session, RelationNode node, boolean reorderRelations) {
+   private void unrelate(OrcsSession session, Artifact node, boolean reorderRelations) {
       checkNotNull(node, "node");
       if (node.isDeleteAllowed()) {
 
@@ -329,8 +329,8 @@ public class RelationManagerImpl implements RelationManager {
          List<Relation> relations = getRelations(session, node, EXCLUDE_DELETED);
          resolver.resolve(session, graph, relations, RelationSide.values());
 
-         ResultSet<RelationNode> children = getChildren(session, node);
-         for (RelationNode child : children) {
+         ResultSet<Artifact> children = getChildren(session, node);
+         for (Artifact child : children) {
             unrelate(session, child, false);
          }
 
@@ -354,7 +354,7 @@ public class RelationManagerImpl implements RelationManager {
                      RelationSide side = entry.getValue();
 
                      List<Relation> sideLinks = getRelations(session, type, node, side, EXCLUDE_DELETED);
-                     List<RelationNode> nodes = resolver.resolve(session, graph, sideLinks, side);
+                     List<Artifact> nodes = resolver.resolve(session, graph, sideLinks, side);
 
                      RelationTypeSide asTypeSide = RelationTypeSide.create(relationTypes.get(type), side);
                      orderManager.setOrder(asTypeSide, nodes);
@@ -369,14 +369,14 @@ public class RelationManagerImpl implements RelationManager {
    }
 
    ///////////////////////// READ HELPERS ///////////////////
-   private void ensureRelationsInitialized(OrcsSession session, GraphData graph, RelationNode node) {
+   private void ensureRelationsInitialized(OrcsSession session, GraphData graph, Artifact node) {
       if (graph.getAdjacencies(node) == null) {
          RelationNodeAdjacencies container = relationFactory.createRelationContainer();
          graph.addAdjacencies(node, container);
       }
    }
 
-   private ResultSet<Relation> getRelation(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode, DeletionFlag inludeDeleted) {
+   private ResultSet<Relation> getRelation(OrcsSession session, Artifact aNode, RelationTypeId type, Artifact bNode, DeletionFlag inludeDeleted) {
       GraphData graph = getGraph(aNode, bNode);
       checkNotNull(session, "session");
       checkNotNull(type, "relationType");
@@ -399,7 +399,7 @@ public class RelationManagerImpl implements RelationManager {
       return ResultSets.singleton(relation);
    }
 
-   private List<Relation> getRelations(OrcsSession session, RelationTypeId type, RelationNode node, RelationSide side, DeletionFlag includeDeleted) {
+   private List<Relation> getRelations(OrcsSession session, RelationTypeId type, Artifact node, RelationSide side, DeletionFlag includeDeleted) {
       checkNotNull(session, "session");
       checkNotNull(type, "relationType");
       checkNotNull(side, "relationSide");
@@ -412,7 +412,7 @@ public class RelationManagerImpl implements RelationManager {
    }
 
    @Override
-   public List<Relation> getRelations(OrcsSession session, RelationNode node, DeletionFlag includeDeleted) {
+   public List<Relation> getRelations(OrcsSession session, Artifact node, DeletionFlag includeDeleted) {
       checkNotNull(session, "session");
       GraphData graph = node.getGraph();
       ensureRelationsInitialized(session, graph, node);
@@ -425,11 +425,11 @@ public class RelationManagerImpl implements RelationManager {
       REMOVE_FROM_ORDER;
    }
 
-   private void order(OrcsSession session, RelationTypeId type, RelationNode node1, RelationSide side, OrderOp op, Collection<? extends RelationNode> node2) {
+   private void order(OrcsSession session, RelationTypeId type, Artifact node1, RelationSide side, OrderOp op, Collection<? extends Artifact> node2) {
       order(session, type, node1, side, PREEXISTING, op, node2);
    }
 
-   private void order(OrcsSession session, RelationTypeId type, RelationNode node1, RelationSide side, RelationSorter sorterId, OrderOp op, Collection<? extends RelationNode> node2) {
+   private void order(OrcsSession session, RelationTypeId type, Artifact node1, RelationSide side, RelationSorter sorterId, OrderOp op, Collection<? extends Artifact> node2) {
       OrderManager orderManager = orderFactory.createOrderManager(node1);
 
       RelationSide orderSide = side.oppositeSide();
@@ -440,9 +440,9 @@ public class RelationManagerImpl implements RelationManager {
       }
       List<Identifiable<String>> relatives = Collections.emptyList();
       if (USER_DEFINED == sorterIdToUse) {
-         ResultSet<RelationNode> arts = getRelated(session, type, node1, side);
+         ResultSet<Artifact> arts = getRelated(session, type, node1, side);
          relatives = new LinkedList<>();
-         for (RelationNode art : arts) {
+         for (Artifact art : arts) {
             relatives.add(art);
          }
          relatives.removeAll(node2); // ensure no duplicates
@@ -455,14 +455,14 @@ public class RelationManagerImpl implements RelationManager {
    }
 
    @Override
-   public void order(OrcsSession session, RelationNode node1, RelationTypeId type, RelationSide side, List<? extends RelationNode> node2) {
+   public void order(OrcsSession session, Artifact node1, RelationTypeId type, RelationSide side, List<? extends Artifact> node2) {
       OrderManager orderManager = orderFactory.createOrderManager(node1);
       RelationTypeSide key = RelationTypeSide.create(relationTypes.get(type), side);
       orderManager.setOrder(key, RelationSorter.USER_DEFINED, node2);
    }
 
    @Override
-   public void cloneRelations(OrcsSession session, RelationNode source, RelationNode destination) {
+   public void cloneRelations(OrcsSession session, Artifact source, Artifact destination) {
       ensureRelationsInitialized(session, source.getGraph(), source);
       RelationNodeAdjacencies adjacencies1 = source.getGraph().getAdjacencies(source);
       if (adjacencies1 != null) {
@@ -480,7 +480,7 @@ public class RelationManagerImpl implements RelationManager {
    }
 
    @Override
-   public void introduce(OrcsSession session, BranchId branch, RelationNode source, RelationNode destination) {
+   public void introduce(OrcsSession session, BranchId branch, Artifact source, Artifact destination) {
       ensureRelationsInitialized(session, source.getGraph(), source);
 
       Collection<RelationTypeId> validRelationTypes = getValidRelationTypes(session, destination);
@@ -507,7 +507,7 @@ public class RelationManagerImpl implements RelationManager {
    }
 
    @Override
-   public void setApplicabilityId(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode, ApplicabilityId applicId) {
+   public void setApplicabilityId(OrcsSession session, Artifact aNode, RelationTypeId type, Artifact bNode, ApplicabilityId applicId) {
       ResultSet<Relation> result = getRelation(session, aNode, type, bNode, EXCLUDE_DELETED);
       Relation relation = result.getExactlyOne();
       relation.setApplicabilityId(applicId);

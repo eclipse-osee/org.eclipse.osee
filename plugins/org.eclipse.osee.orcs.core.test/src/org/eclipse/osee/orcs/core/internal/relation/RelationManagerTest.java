@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.RelationData;
+import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 import org.eclipse.osee.orcs.core.internal.relation.impl.RelationNodeAdjacencies;
@@ -84,12 +85,12 @@ public class RelationManagerTest {
    @Mock private OrcsSession session;
    @Mock private GraphData graph;
 
-   @Mock private RelationNode node1;
-   @Mock private RelationNode node2;
-   @Mock private RelationNode node3;
-   @Mock private RelationNode node4;
-   @Mock private RelationNode node5;
-   @Mock private RelationNode node6;
+   @Mock private Artifact node1;
+   @Mock private Artifact node2;
+   @Mock private Artifact node3;
+   @Mock private Artifact node4;
+   @Mock private Artifact node5;
+   @Mock private Artifact node6;
 
    @Mock private RelationNodeAdjacencies adjancies1;
    @Mock private RelationNodeAdjacencies adjancies2;
@@ -108,7 +109,7 @@ public class RelationManagerTest {
    // @formatter:on
 
    private RelationManager manager;
-   private Map<Integer, RelationNode> mockDb;
+   private Map<Integer, Artifact> mockDb;
 
    @SuppressWarnings({"unchecked", "rawtypes"})
    @Before
@@ -214,7 +215,7 @@ public class RelationManagerTest {
       when(types.get((Id) Matchers.any())).thenReturn(CoreRelationTypes.Default_Hierarchical__Child);
    }
 
-   private void setupAdjacencies(RelationNode node, Relation... relations) {
+   private void setupAdjacencies(Artifact node, Relation... relations) {
       RelationNodeAdjacencies adjacents = new RelationNodeAdjacencies();
       graph.addAdjacencies(node, adjacents);
       when(graph.getAdjacencies(node)).thenReturn(adjacents);
@@ -225,7 +226,7 @@ public class RelationManagerTest {
 
    @Test
    public void testGetRelatedOnSideA() {
-      ResultSet<RelationNode> nodes = manager.getRelated(session, DEFAULT_HIERARCHY, node1, IS_PARENT);
+      ResultSet<Artifact> nodes = manager.getRelated(session, DEFAULT_HIERARCHY, node1, IS_PARENT);
 
       verify(loader).loadNodes(eq(session), eq(graph), captor.capture(), eq(LoadLevel.ALL));
 
@@ -237,7 +238,7 @@ public class RelationManagerTest {
       assertEquals(55, iterator.next().intValue());
 
       assertEquals(3, nodes.size());
-      Iterator<RelationNode> iterator2 = nodes.iterator();
+      Iterator<Artifact> iterator2 = nodes.iterator();
       assertEquals(node2, iterator2.next());
       assertEquals(node3, iterator2.next());
       assertEquals(node5, iterator2.next());
@@ -245,7 +246,7 @@ public class RelationManagerTest {
 
    @Test
    public void testGetRelatedOnSideB() {
-      ResultSet<RelationNode> readables = manager.getRelated(session, DEFAULT_HIERARCHY, node1, IS_CHILD);
+      ResultSet<Artifact> readables = manager.getRelated(session, DEFAULT_HIERARCHY, node1, IS_CHILD);
 
       verify(loader).loadNodes(eq(session), eq(graph), captor.capture(), eq(LoadLevel.ALL));
 
@@ -255,22 +256,22 @@ public class RelationManagerTest {
       assertEquals(44, iterator.next().intValue());
 
       assertEquals(1, readables.size());
-      Iterator<RelationNode> iterator2 = readables.iterator();
+      Iterator<Artifact> iterator2 = readables.iterator();
       assertEquals(node4, iterator2.next());
    }
 
    @Test
    public void testGetParent() {
-      RelationNode actual = manager.getParent(session, node1);
+      Artifact actual = manager.getParent(session, node1);
       assertEquals(node4, actual);
    }
 
    @Test
    public void testGetChildren() {
-      ResultSet<RelationNode> actual = manager.getChildren(session, node1);
+      ResultSet<Artifact> actual = manager.getChildren(session, node1);
 
       assertEquals(3, actual.size());
-      Iterator<RelationNode> iterator = actual.iterator();
+      Iterator<Artifact> iterator = actual.iterator();
       assertEquals(node2, iterator.next());
       assertEquals(node3, iterator.next());
       assertEquals(node5, iterator.next());
@@ -336,17 +337,17 @@ public class RelationManagerTest {
       assertTrue(rel2.equals(rel3));
 
    }
-   private class LoaderAnswer implements Answer<Iterable<RelationNode>> {
+   private class LoaderAnswer implements Answer<Iterable<Artifact>> {
 
       @SuppressWarnings("unchecked")
       @Override
-      public Iterable<RelationNode> answer(InvocationOnMock invocation) throws Throwable {
-         List<RelationNode> artLoaded = new ArrayList<>();
+      public Iterable<Artifact> answer(InvocationOnMock invocation) throws Throwable {
+         List<Artifact> artLoaded = new ArrayList<>();
 
          Collection<Integer> toLoad = (Collection<Integer>) invocation.getArguments()[2];
          artLoaded.clear();
          for (Integer item : toLoad) {
-            RelationNode node = mockDb.get(item);
+            Artifact node = mockDb.get(item);
             if (node != null) {
                artLoaded.add(node);
             }

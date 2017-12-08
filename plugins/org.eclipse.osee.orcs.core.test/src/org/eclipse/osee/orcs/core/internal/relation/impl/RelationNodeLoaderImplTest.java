@@ -27,7 +27,6 @@ import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.graph.GraphBuilder;
 import org.eclipse.osee.orcs.core.internal.graph.GraphBuilderFactory;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
-import org.eclipse.osee.orcs.core.internal.relation.RelationNode;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -58,13 +57,13 @@ public class RelationNodeLoaderImplTest {
    private static final TransactionId TRANSACTION_ID = TransactionId.valueOf(231214214);
    private static final Collection<Integer> ids = Arrays.asList(4, 5, 6, 7);
 
-   private RelationNodeLoaderImpl relationNode;
+   private RelationNodeLoaderImpl Artifact;
 
    @Before
    public void setUp() throws Exception {
       initMocks(this);
 
-      relationNode = new RelationNodeLoaderImpl(dataLoaderFactory, graphBuilderFactory);
+      Artifact = new RelationNodeLoaderImpl(dataLoaderFactory, graphBuilderFactory);
 
       when(graph.getBranch()).thenReturn(BRANCH);
       when(graph.getTransaction()).thenReturn(TRANSACTION_ID);
@@ -78,7 +77,7 @@ public class RelationNodeLoaderImplTest {
       when(graphBuilderFactory.createBuilderForGraph(graph)).thenReturn(builder);
       when(builder.getArtifacts()).thenReturn(artifacts);
 
-      Iterable<RelationNode> actual = relationNode.loadNodes(session, graph, ids, LoadLevel.ALL);
+      Iterable<Artifact> actual = Artifact.loadNodes(session, graph, ids, LoadLevel.ALL);
 
       verify(dataLoaderFactory).newDataLoaderFromIds(session, BRANCH, ids);
       verify(graphBuilderFactory).createBuilderForGraph(graph);

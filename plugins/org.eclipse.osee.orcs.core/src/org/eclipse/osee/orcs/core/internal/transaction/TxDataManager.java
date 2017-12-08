@@ -48,7 +48,6 @@ import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 import org.eclipse.osee.orcs.core.internal.relation.Relation;
 import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
-import org.eclipse.osee.orcs.core.internal.relation.RelationNode;
 import org.eclipse.osee.orcs.core.internal.relation.impl.RelationNodeAdjacencies;
 import org.eclipse.osee.orcs.core.internal.transaction.TxData.TxState;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -315,7 +314,7 @@ public class TxDataManager {
    }
 
    private void addAdjacencies(TxData txData, Artifact dest) {
-      GraphData destGraph = ((RelationNode) dest).getGraph();
+      GraphData destGraph = dest.getGraph();
       RelationNodeAdjacencies adjacencies = destGraph.getAdjacencies(dest);
       GraphData graph = txData.getGraph();
       if (adjacencies != null) {
@@ -354,8 +353,8 @@ public class TxDataManager {
    public void addChildren(TxData txData, ArtifactId artA, Iterable<? extends ArtifactId> children) {
       OrcsSession session = txData.getSession();
       Artifact asArtifact = getForWrite(txData, artA);
-      Iterable<? extends RelationNode> artifacts = getForWrite(txData, children);
-      List<RelationNode> nodes = Lists.newLinkedList(artifacts);
+      Iterable<? extends Artifact> artifacts = getForWrite(txData, children);
+      List<Artifact> nodes = Lists.newLinkedList(artifacts);
       relationManager.addChildren(session, asArtifact, nodes);
    }
 

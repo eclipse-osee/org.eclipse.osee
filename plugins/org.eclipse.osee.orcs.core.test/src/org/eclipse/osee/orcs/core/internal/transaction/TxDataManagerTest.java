@@ -55,7 +55,6 @@ import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 import org.eclipse.osee.orcs.core.internal.relation.Relation;
 import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
-import org.eclipse.osee.orcs.core.internal.relation.RelationNode;
 import org.eclipse.osee.orcs.core.internal.relation.impl.RelationNodeAdjacencies;
 import org.eclipse.osee.orcs.core.internal.transaction.TxData.TxState;
 import org.eclipse.osee.orcs.core.internal.transaction.TxDataManager.TxDataLoader;
@@ -104,7 +103,7 @@ public class TxDataManagerTest {
    @Mock private Artifact artifact3;
    @Mock private RelationNodeAdjacencies adjacencies;
    @Captor private ArgumentCaptor<Collection<ArtifactId>> idCaptor;
-   @Captor private ArgumentCaptor<List<? extends RelationNode>> nodeCaptor;
+   @Captor private ArgumentCaptor<List<? extends Artifact>> nodeCaptor;
    // @formatter:on
 
    private TxDataManager txDataManager;
@@ -602,7 +601,7 @@ public class TxDataManagerTest {
 
       verify(relationManager).addChildren(eq(session), eq(artifact1), nodeCaptor.capture());
 
-      Iterator<? extends RelationNode> iterator = nodeCaptor.getValue().iterator();
+      Iterator<? extends Artifact> iterator = nodeCaptor.getValue().iterator();
       assertEquals(artifact2, iterator.next());
       assertEquals(artifact3, iterator.next());
    }

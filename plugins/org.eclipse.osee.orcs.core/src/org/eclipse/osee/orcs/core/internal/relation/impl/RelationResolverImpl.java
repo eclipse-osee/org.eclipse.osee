@@ -22,9 +22,9 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.core.internal.relation.Relation;
-import org.eclipse.osee.orcs.core.internal.relation.RelationNode;
 import org.eclipse.osee.orcs.core.internal.relation.RelationNodeLoader;
 import org.eclipse.osee.orcs.core.internal.relation.RelationResolver;
 
@@ -42,7 +42,7 @@ public class RelationResolverImpl implements RelationResolver {
 
    @SuppressWarnings("unchecked")
    @Override
-   public <T extends RelationNode> List<T> resolve(OrcsSession session, GraphData graph, List<Relation> links, RelationSide... sides) {
+   public <T extends Artifact> List<T> resolve(OrcsSession session, GraphData graph, List<Relation> links, RelationSide... sides) {
       List<T> toReturn = Collections.emptyList();
       if (!links.isEmpty()) {
          Set<Integer> toLoad = null;
@@ -50,7 +50,7 @@ public class RelationResolverImpl implements RelationResolver {
          for (Relation relation : links) {
             for (RelationSide side : sides) {
                int id = relation.getIdForSide(side);
-               RelationNode node = graph.getNode(id);
+               Artifact node = graph.getNode(id);
                if (node == null) {
                   if (toLoad == null) {
                      toLoad = new LinkedHashSet<>();
@@ -86,7 +86,7 @@ public class RelationResolverImpl implements RelationResolver {
    }
 
    @Override
-   public void resolve(OrcsSession session, GraphData graph, RelationNode node) {
+   public void resolve(OrcsSession session, GraphData graph, Artifact node) {
       loader.loadNodes(session, graph, Collections.singleton(node.getLocalId()), LoadLevel.RELATION_DATA);
    }
 

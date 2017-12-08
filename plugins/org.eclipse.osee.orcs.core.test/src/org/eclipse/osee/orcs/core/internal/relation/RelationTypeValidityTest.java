@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.util.MultiplicityState;
 import org.eclipse.osee.orcs.data.RelationTypes;
 import org.junit.Before;
@@ -56,7 +57,7 @@ public class RelationTypeValidityTest {
 
    // @formatter:off
    @Mock private RelationTypes relTypes;
-   @Mock private RelationNode node;
+   @Mock private Artifact node;
    @Mock private IArtifactType artifactType;
    @Mock private IArtifactType artifactType2;
 

@@ -25,9 +25,9 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.core.internal.relation.Relation;
-import org.eclipse.osee.orcs.core.internal.relation.RelationNode;
 import org.eclipse.osee.orcs.core.internal.relation.RelationNodeLoader;
 import org.eclipse.osee.orcs.core.internal.relation.RelationResolver;
 import org.junit.Before;
@@ -54,14 +54,14 @@ public class RelationResolverTest {
    @Mock private Relation relation3;
    @Mock private Relation relation4;
 
-   @Mock private RelationNode node1;
-   @Mock private RelationNode node2;
-   @Mock private RelationNode node3;
-   @Mock private RelationNode node4;
-   @Mock private RelationNode node5;
-   @Mock private RelationNode node6;
+   @Mock private Artifact node1;
+   @Mock private Artifact node2;
+   @Mock private Artifact node3;
+   @Mock private Artifact node4;
+   @Mock private Artifact node5;
+   @Mock private Artifact node6;
 
-   @Mock private ResultSet<RelationNode> resultSet;
+   @Mock private ResultSet<Artifact> resultSet;
    @Captor private ArgumentCaptor<Collection<Integer>> captor;
    // @formatter:on
 
@@ -104,11 +104,11 @@ public class RelationResolverTest {
 
    @Test
    public void testLoadAll() {
-      List<RelationNode> loaded = Arrays.asList(node1, node2, node3, node4, node5, node6);
+      List<Artifact> loaded = Arrays.asList(node1, node2, node3, node4, node5, node6);
 
       when(resultSet.iterator()).thenReturn(loaded.iterator());
 
-      List<RelationNode> arts = resolver.resolve(session, graphData, links, RelationSide.SIDE_A, RelationSide.SIDE_B);
+      List<Artifact> arts = resolver.resolve(session, graphData, links, RelationSide.SIDE_A, RelationSide.SIDE_B);
 
       verify(loader).loadNodes(eq(session), eq(graphData), captor.capture(), eq(LoadLevel.ALL));
       assertCollection(captor.getValue(), 11, 22, 33, 44, 55, 66);
@@ -117,11 +117,11 @@ public class RelationResolverTest {
 
    @Test
    public void testLoadSideAOnly() {
-      List<RelationNode> loaded = Arrays.asList(node1, node3, node5);
+      List<Artifact> loaded = Arrays.asList(node1, node3, node5);
 
       when(resultSet.iterator()).thenReturn(loaded.iterator());
 
-      List<RelationNode> arts = resolver.resolve(session, graphData, links, RelationSide.SIDE_A);
+      List<Artifact> arts = resolver.resolve(session, graphData, links, RelationSide.SIDE_A);
 
       verify(loader).loadNodes(eq(session), eq(graphData), captor.capture(), eq(LoadLevel.ALL));
 
@@ -131,11 +131,11 @@ public class RelationResolverTest {
 
    @Test
    public void testLoadSideBOnly() {
-      List<RelationNode> loaded = Arrays.asList(node2, node4, node6);
+      List<Artifact> loaded = Arrays.asList(node2, node4, node6);
 
       when(resultSet.iterator()).thenReturn(loaded.iterator());
 
-      List<RelationNode> arts = resolver.resolve(session, graphData, links, RelationSide.SIDE_B);
+      List<Artifact> arts = resolver.resolve(session, graphData, links, RelationSide.SIDE_B);
 
       verify(loader).loadNodes(eq(session), eq(graphData), captor.capture(), eq(LoadLevel.ALL));
 
@@ -145,7 +145,7 @@ public class RelationResolverTest {
 
    @Test
    public void testLoadSideAFromCacheAndSideBFromLoader() {
-      List<RelationNode> loaded = Arrays.asList(node2, node4, node6);
+      List<Artifact> loaded = Arrays.asList(node2, node4, node6);
 
       when(graphData.getNode(11)).thenReturn(node1);
       when(graphData.getNode(33)).thenReturn(node3);
@@ -153,7 +153,7 @@ public class RelationResolverTest {
 
       when(resultSet.iterator()).thenReturn(loaded.iterator());
 
-      List<RelationNode> arts = resolver.resolve(session, graphData, links, RelationSide.SIDE_A, RelationSide.SIDE_B);
+      List<Artifact> arts = resolver.resolve(session, graphData, links, RelationSide.SIDE_A, RelationSide.SIDE_B);
 
       verify(graphData, times(2)).getNode(11);
       verify(graphData).getNode(33);

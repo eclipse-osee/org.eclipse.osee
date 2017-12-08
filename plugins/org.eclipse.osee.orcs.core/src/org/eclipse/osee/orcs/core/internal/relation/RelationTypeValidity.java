@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.util.MultiplicityState;
 import org.eclipse.osee.orcs.data.RelationTypes;
 
@@ -38,7 +39,7 @@ public class RelationTypeValidity {
       this.relationTypes = relationTypes;
    }
 
-   public void checkRelationTypeMultiplicity(RelationTypeToken type, RelationNode node, RelationSide side, int count) {
+   public void checkRelationTypeMultiplicity(RelationTypeToken type, Artifact node, RelationSide side, int count) {
       MultiplicityState state = getRelationMultiplicityState(type, side, count);
       switch (state) {
          case MAX_VIOLATION:
@@ -52,7 +53,7 @@ public class RelationTypeValidity {
       }
    }
 
-   public void checkRelationTypeValid(RelationTypeId type, RelationNode node, RelationSide side) {
+   public void checkRelationTypeValid(RelationTypeId type, Artifact node, RelationSide side) {
       Conditions.checkNotNull(type, "type");
       Conditions.checkNotNull(node, "node");
       Conditions.checkNotNull(side, "relationSide");

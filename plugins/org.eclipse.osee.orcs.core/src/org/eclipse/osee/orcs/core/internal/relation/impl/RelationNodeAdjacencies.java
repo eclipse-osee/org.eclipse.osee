@@ -22,9 +22,9 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
+import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.graph.GraphAdjacencies;
 import org.eclipse.osee.orcs.core.internal.relation.Relation;
-import org.eclipse.osee.orcs.core.internal.relation.RelationNode;
 import org.eclipse.osee.orcs.core.internal.relation.RelationVisitor;
 import org.eclipse.osee.orcs.core.internal.util.AbstractTypeCollection;
 import org.eclipse.osee.orcs.core.internal.util.OrcsPredicates;
@@ -84,7 +84,7 @@ public class RelationNodeAdjacencies extends AbstractTypeCollection<RelationType
    }
 
    @SuppressWarnings({"rawtypes", "unchecked"})
-   public Relation getRelation(RelationNode aNode, RelationTypeId type, RelationNode bNode, DeletionFlag excludeDeleted) {
+   public Relation getRelation(Artifact aNode, RelationTypeId type, Artifact bNode, DeletionFlag excludeDeleted) {
       Predicate<Relation> nodeMatcher = OrcsPredicates.nodeIdsEquals(aNode, bNode);
       Predicate deletionFlagEquals = deletionFlagEquals(excludeDeleted);
       Predicate matcher = and(deletionFlagEquals, nodeMatcher);

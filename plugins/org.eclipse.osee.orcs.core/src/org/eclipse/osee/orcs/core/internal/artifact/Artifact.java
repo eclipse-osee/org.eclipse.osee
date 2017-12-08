@@ -16,13 +16,15 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.HasOrcsData;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeManager;
-import org.eclipse.osee.orcs.core.internal.relation.RelationNode;
+import org.eclipse.osee.orcs.core.internal.graph.GraphNode;
+import org.eclipse.osee.orcs.core.internal.relation.order.OrderStore;
+import org.eclipse.osee.orcs.core.internal.util.OrcsWriteable;
 import org.eclipse.osee.orcs.data.HasTransaction;
 
 /**
  * @author Megumi Telles
  */
-public interface Artifact extends AttributeManager, HasTransaction, ArtifactVisitable, HasOrcsData<ArtifactData>, RelationNode {
+public interface Artifact extends AttributeManager, HasTransaction, ArtifactVisitable, HasOrcsData<ArtifactData>, OrcsWriteable, GraphNode, OrderStore {
 
    TransactionId getLastModifiedTransaction();
 

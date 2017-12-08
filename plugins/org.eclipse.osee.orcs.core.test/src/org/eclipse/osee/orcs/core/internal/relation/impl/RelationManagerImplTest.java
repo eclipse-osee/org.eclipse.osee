@@ -55,11 +55,11 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.core.internal.relation.Relation;
 import org.eclipse.osee.orcs.core.internal.relation.RelationFactory;
 import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
-import org.eclipse.osee.orcs.core.internal.relation.RelationNode;
 import org.eclipse.osee.orcs.core.internal.relation.RelationResolver;
 import org.eclipse.osee.orcs.core.internal.relation.RelationTypeValidity;
 import org.eclipse.osee.orcs.core.internal.relation.RelationVisitor;
@@ -105,12 +105,12 @@ public class RelationManagerImplTest {
 
    @Mock private GraphData graph;
 
-   @Mock private RelationNode node1;
-   @Mock private RelationNode node2;
-   @Mock private RelationNode node3;
-   @Mock private RelationNode node4;
-   @Mock private RelationNode node5;
-   @Mock private RelationNode node6;
+   @Mock private Artifact node1;
+   @Mock private Artifact node2;
+   @Mock private Artifact node3;
+   @Mock private Artifact node4;
+   @Mock private Artifact node5;
+   @Mock private Artifact node6;
 
    @Mock private RelationNodeAdjacencies container1;
    @Mock private RelationNodeAdjacencies container2;
@@ -274,12 +274,12 @@ public class RelationManagerImplTest {
    @Test
    public void testGetParent() {
       List<Relation> relations = Arrays.asList(relation1);
-      List<RelationNode> nodes = Arrays.asList(node1);
+      List<Artifact> nodes = Arrays.asList(node1);
 
       when(container1.getList(DEFAULT_HIERARCHY, EXCLUDE_DELETED, node1, IS_CHILD)).thenReturn(relations);
       when(resolver.resolve(session, graph, relations, SIDE_A)).thenReturn(nodes);
 
-      RelationNode parentNode = manager.getParent(session, node1);
+      Artifact parentNode = manager.getParent(session, node1);
 
       assertEquals(node1, parentNode);
       verify(resolver).resolve(session, graph, relations, SIDE_A);
@@ -288,13 +288,13 @@ public class RelationManagerImplTest {
    @Test
    public void testGetParentMoreThanOne() {
       List<Relation> relations = Arrays.asList(relation1, relation4);
-      List<RelationNode> arts = Arrays.asList(node1, node3);
+      List<Artifact> arts = Arrays.asList(node1, node3);
 
       when(container1.getList(DEFAULT_HIERARCHY, EXCLUDE_DELETED, node1, IS_CHILD)).thenReturn(relations);
       when(resolver.resolve(session, graph, relations, SIDE_A)).thenReturn(arts);
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
 
-      RelationNode parent = manager.getParent(session, node1);
+      Artifact parent = manager.getParent(session, node1);
       assertEquals(node1, parent);
 
       verify(resolver).resolve(session, graph, relations, SIDE_A);
@@ -311,15 +311,15 @@ public class RelationManagerImplTest {
    @Test
    public void testGetChildren() {
       List<Relation> relations = Arrays.asList(relation1, relation4);
-      List<RelationNode> nodes = Arrays.asList(node2, node6);
+      List<Artifact> nodes = Arrays.asList(node2, node6);
 
       when(container1.getList(DEFAULT_HIERARCHY, EXCLUDE_DELETED, node1, IS_PARENT)).thenReturn(relations);
       when(resolver.resolve(session, graph, relations, SIDE_B)).thenReturn(nodes);
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
 
-      ResultSet<RelationNode> result = manager.getChildren(session, node1);
+      ResultSet<Artifact> result = manager.getChildren(session, node1);
       assertEquals(2, result.size());
-      Iterator<RelationNode> iterator = result.iterator();
+      Iterator<Artifact> iterator = result.iterator();
       assertEquals(node2, iterator.next());
       assertEquals(node6, iterator.next());
 
@@ -351,16 +351,16 @@ public class RelationManagerImplTest {
    @Test
    public void testGetRelated() {
       List<Relation> relations = Arrays.asList(relation1, relation2, relation3);
-      List<RelationNode> nodes = Arrays.asList(node2, node3, node5);
+      List<Artifact> nodes = Arrays.asList(node2, node3, node5);
 
       when(container1.getList(TYPE_1, EXCLUDE_DELETED, node1, SIDE_B)).thenReturn(relations);
 
       when(resolver.resolve(session, graph, relations, SIDE_A)).thenReturn(nodes);
       when(orderFactory.createOrderManager(node1)).thenReturn(orderManager1);
 
-      ResultSet<RelationNode> result = manager.getRelated(session, TYPE_1, node1, SIDE_B);
+      ResultSet<Artifact> result = manager.getRelated(session, TYPE_1, node1, SIDE_B);
       assertEquals(3, result.size());
-      Iterator<RelationNode> iterator = result.iterator();
+      Iterator<Artifact> iterator = result.iterator();
       assertEquals(node2, iterator.next());
       assertEquals(node3, iterator.next());
       assertEquals(node5, iterator.next());
@@ -582,7 +582,7 @@ public class RelationManagerImplTest {
       List<Relation> toOrder = Arrays.asList(relation3, relation4);
       when(container1.getList(TYPE_1, EXCLUDE_DELETED, node1, SIDE_A)).thenReturn(toOrder);
 
-      List<RelationNode> nodesToOrder = Arrays.asList(node3, node4, node5, node6);
+      List<Artifact> nodesToOrder = Arrays.asList(node3, node4, node5, node6);
       when(resolver.resolve(session, graph, toOrder, SIDE_B)).thenReturn(nodesToOrder);
 
       when(node1.getArtifactTypeId()).thenReturn(artifactType1);
@@ -655,7 +655,7 @@ public class RelationManagerImplTest {
       when(validity.getMaximumRelationsAllowed(DEFAULT_HIERARCHY, artifactType1, SIDE_A)).thenReturn(10);
       when(validity.getMaximumRelationsAllowed(DEFAULT_HIERARCHY, artifactType2, SIDE_B)).thenReturn(10);
 
-      List<? extends RelationNode> children = Arrays.asList(node2);
+      List<? extends Artifact> children = Arrays.asList(node2);
       manager.addChildren(session, node1, children);
 
       verify(container1).getRelation(node1, DEFAULT_HIERARCHY, node2, INCLUDE_DELETED);
@@ -702,7 +702,7 @@ public class RelationManagerImplTest {
       List<Relation> relations = Arrays.asList(relation1);
       when(container1.getList(DEFAULT_HIERARCHY, EXCLUDE_DELETED, node1, IS_PARENT)).thenReturn(relations);
 
-      List<RelationNode> nodesToOrder = Arrays.asList(node3, node2, node5, node6);
+      List<Artifact> nodesToOrder = Arrays.asList(node3, node2, node5, node6);
       when(resolver.resolve(session, graph, relations, SIDE_B)).thenReturn(nodesToOrder);
 
       manager.unrelate(session, node1, DEFAULT_HIERARCHY, node2);
@@ -751,7 +751,7 @@ public class RelationManagerImplTest {
       List<Relation> allRelations = Arrays.asList(relation1);
       List<Relation> asAParent = Collections.emptyList();
       List<Relation> asAChild = Arrays.asList(relation2);
-      List<RelationNode> children = Arrays.asList(node2);
+      List<Artifact> children = Arrays.asList(node2);
 
       when(relation1.getRelationType()).thenReturn(DEFAULT_HIERARCHY);
       when(node1.isDeleteAllowed()).thenReturn(true);

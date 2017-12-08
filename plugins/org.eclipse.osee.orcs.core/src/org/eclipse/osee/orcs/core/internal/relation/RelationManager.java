@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 
 /**
@@ -29,72 +30,72 @@ import org.eclipse.osee.orcs.core.internal.graph.GraphData;
  */
 public interface RelationManager {
 
-   int getMaximumRelationAllowed(OrcsSession session, RelationTypeId type, RelationNode node, RelationSide side);
+   int getMaximumRelationAllowed(OrcsSession session, RelationTypeId type, Artifact node, RelationSide side);
 
-   Collection<RelationTypeId> getValidRelationTypes(OrcsSession session, RelationNode node);
-
-   ///////////////////////////////////////
-
-   void accept(OrcsSession session, GraphData graph, RelationNode node, RelationVisitor visitor);
+   Collection<RelationTypeId> getValidRelationTypes(OrcsSession session, Artifact node);
 
    ///////////////////////////////////////
 
-   boolean hasDirtyRelations(OrcsSession session, RelationNode node);
-
-   Collection<RelationTypeId> getExistingRelationTypes(OrcsSession session, RelationNode node);
-
-   int getRelatedCount(OrcsSession session, RelationTypeId type, RelationNode node, RelationSide side);
-
-   int getRelatedCount(OrcsSession session, RelationTypeId type, RelationNode node, RelationSide side, DeletionFlag includeDeleted);
-
-   boolean areRelated(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode);
-
-   String getRationale(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode);
+   void accept(OrcsSession session, GraphData graph, Artifact node, RelationVisitor visitor);
 
    ///////////////////////////////////////
 
-   <T extends RelationNode> T getParent(OrcsSession session, RelationNode child);
+   boolean hasDirtyRelations(OrcsSession session, Artifact node);
 
-   <T extends RelationNode> ResultSet<T> getChildren(OrcsSession session, RelationNode parent);
+   Collection<RelationTypeId> getExistingRelationTypes(OrcsSession session, Artifact node);
 
-   <T extends RelationNode> ResultSet<T> getRelated(OrcsSession session, RelationTypeId type, RelationNode node, RelationSide side);
+   int getRelatedCount(OrcsSession session, RelationTypeId type, Artifact node, RelationSide side);
 
-   <T extends RelationNode> ResultSet<T> getRelated(OrcsSession session, RelationTypeId type, RelationNode node, RelationSide side, DeletionFlag flag);
+   int getRelatedCount(OrcsSession session, RelationTypeId type, Artifact node, RelationSide side, DeletionFlag includeDeleted);
+
+   boolean areRelated(OrcsSession session, Artifact aNode, RelationTypeId type, Artifact bNode);
+
+   String getRationale(OrcsSession session, Artifact aNode, RelationTypeId type, Artifact bNode);
 
    ///////////////////////////////////////
 
-   void addChild(OrcsSession session, RelationNode parent, RelationNode child);
+   <T extends Artifact> T getParent(OrcsSession session, Artifact child);
 
-   void addChildren(OrcsSession session, RelationNode parent, List<? extends RelationNode> children);
+   <T extends Artifact> ResultSet<T> getChildren(OrcsSession session, Artifact parent);
 
-   void relate(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode);
+   <T extends Artifact> ResultSet<T> getRelated(OrcsSession session, RelationTypeId type, Artifact node, RelationSide side);
 
-   void relate(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode, String rationale);
+   <T extends Artifact> ResultSet<T> getRelated(OrcsSession session, RelationTypeId type, Artifact node, RelationSide side, DeletionFlag flag);
 
-   void relate(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode, RelationSorter sortType);
+   ///////////////////////////////////////
 
-   void relate(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode, String rationale, RelationSorter sortType);
+   void addChild(OrcsSession session, Artifact parent, Artifact child);
 
-   void setRationale(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode, String rationale);
+   void addChildren(OrcsSession session, Artifact parent, List<? extends Artifact> children);
 
-   void unrelate(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode);
+   void relate(OrcsSession session, Artifact aNode, RelationTypeId type, Artifact bNode);
 
-   void unrelateFromAll(OrcsSession session, RelationNode node);
+   void relate(OrcsSession session, Artifact aNode, RelationTypeId type, Artifact bNode, String rationale);
 
-   void unrelateFromAll(OrcsSession session, RelationTypeId type, RelationNode node, RelationSide side);
+   void relate(OrcsSession session, Artifact aNode, RelationTypeId type, Artifact bNode, RelationSorter sortType);
 
-   void cloneRelations(OrcsSession session, RelationNode source, RelationNode destination);
+   void relate(OrcsSession session, Artifact aNode, RelationTypeId type, Artifact bNode, String rationale, RelationSorter sortType);
 
-   void introduce(OrcsSession session, BranchId branch, RelationNode source, RelationNode destination);
+   void setRationale(OrcsSession session, Artifact aNode, RelationTypeId type, Artifact bNode, String rationale);
 
-   void setApplicabilityId(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationNode bNode, ApplicabilityId applicId);
+   void unrelate(OrcsSession session, Artifact aNode, RelationTypeId type, Artifact bNode);
 
-   List<Relation> getRelations(OrcsSession session, RelationNode node, DeletionFlag includeDeleted);
+   void unrelateFromAll(OrcsSession session, Artifact node);
+
+   void unrelateFromAll(OrcsSession session, RelationTypeId type, Artifact node, RelationSide side);
+
+   void cloneRelations(OrcsSession session, Artifact source, Artifact destination);
+
+   void introduce(OrcsSession session, BranchId branch, Artifact source, Artifact destination);
+
+   void setApplicabilityId(OrcsSession session, Artifact aNode, RelationTypeId type, Artifact bNode, ApplicabilityId applicId);
+
+   List<Relation> getRelations(OrcsSession session, Artifact node, DeletionFlag includeDeleted);
 
    /**
     * Set USER_DEFINED order exactly as specified in bNodes List. Nodes not in bNodes will be removed.
     */
-   void order(OrcsSession session, RelationNode aNode, RelationTypeId type, RelationSide side, List<? extends RelationNode> bNodes);
+   void order(OrcsSession session, Artifact aNode, RelationTypeId type, RelationSide side, List<? extends Artifact> bNodes);
 
    ///////////////////////////////////////
 }

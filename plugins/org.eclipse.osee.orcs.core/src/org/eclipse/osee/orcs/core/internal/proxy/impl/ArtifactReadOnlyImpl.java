@@ -41,7 +41,6 @@ import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 import org.eclipse.osee.orcs.core.internal.relation.Relation;
 import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
-import org.eclipse.osee.orcs.core.internal.relation.RelationNode;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.RelationReadable;
@@ -299,23 +298,23 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    @Override
    public boolean areRelated(RelationTypeSide typeAndSide, ArtifactReadable readable) {
       IRelationType type = typeAndSide.getRelationType();
-      Pair<RelationNode, RelationNode> nodes = asABNodes(typeAndSide.getSide(), readable);
+      Pair<Artifact, Artifact> nodes = asABNodes(typeAndSide.getSide(), readable);
       return getRelationManager().areRelated(getSession(), nodes.getFirst(), type, nodes.getSecond());
    }
 
    @Override
    public String getRationale(RelationTypeSide typeAndSide, ArtifactReadable readable) {
       IRelationType type = typeAndSide.getRelationType();
-      Pair<RelationNode, RelationNode> nodes = asABNodes(typeAndSide.getSide(), readable);
+      Pair<Artifact, Artifact> nodes = asABNodes(typeAndSide.getSide(), readable);
       return getRelationManager().getRationale(getSession(), nodes.getFirst(), type, nodes.getSecond());
    }
 
-   private Pair<RelationNode, RelationNode> asABNodes(RelationSide side, ArtifactReadable readable) {
+   private Pair<Artifact, Artifact> asABNodes(RelationSide side, ArtifactReadable readable) {
       Artifact thisArtifact = getProxiedObject();
       Artifact otherArtifact = getProxyManager().asInternalArtifact(readable);
 
-      RelationNode aNode;
-      RelationNode bNode;
+      Artifact aNode;
+      Artifact bNode;
       if (RelationSide.SIDE_A == side) {
          aNode = otherArtifact;
          bNode = thisArtifact;
@@ -323,7 +322,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
          aNode = thisArtifact;
          bNode = otherArtifact;
       }
-      return new Pair<RelationNode, RelationNode>(aNode, bNode);
+      return new Pair<Artifact, Artifact>(aNode, bNode);
    }
 
    private RelationSide whichSideAmIOn(RelationTypeSide typeAndSide) {

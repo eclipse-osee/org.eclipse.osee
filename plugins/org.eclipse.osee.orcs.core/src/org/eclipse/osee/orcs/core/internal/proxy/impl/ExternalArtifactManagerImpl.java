@@ -19,7 +19,6 @@ import org.eclipse.osee.orcs.core.ds.Attribute;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
-import org.eclipse.osee.orcs.core.internal.relation.RelationNode;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeReadable;
@@ -60,7 +59,7 @@ public class ExternalArtifactManagerImpl implements ExternalArtifactManager {
    }
 
    @Override
-   public ResultSet<? extends RelationNode> asInternalArtifacts(Iterable<? extends ArtifactReadable> externals) {
+   public ResultSet<? extends Artifact> asInternalArtifacts(Iterable<? extends ArtifactReadable> externals) {
       Iterable<Artifact> transformed = Iterables.transform(externals, readableToArtifact);
       return ResultSets.newResultSet(transformed);
    }

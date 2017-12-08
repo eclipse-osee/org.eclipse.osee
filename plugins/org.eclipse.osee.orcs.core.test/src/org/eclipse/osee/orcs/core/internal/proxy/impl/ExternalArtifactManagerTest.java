@@ -25,7 +25,6 @@ import org.eclipse.osee.orcs.core.ds.Attribute;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
-import org.eclipse.osee.orcs.core.internal.relation.RelationNode;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeReadable;
@@ -114,11 +113,11 @@ public class ExternalArtifactManagerTest {
 
       List<? extends ArtifactReadable> expected = Arrays.asList(readable1, readable2, readable3);
 
-      ResultSet<? extends RelationNode> actuals = proxyManager.asInternalArtifacts(expected);
+      ResultSet<? extends Artifact> actuals = proxyManager.asInternalArtifacts(expected);
       assertFalse(actuals.isEmpty());
       assertEquals(3, actuals.size());
 
-      Iterator<? extends RelationNode> iterator = actuals.iterator();
+      Iterator<? extends Artifact> iterator = actuals.iterator();
       assertEquals(artifact1, iterator.next());
       assertEquals(artifact2, iterator.next());
       assertEquals(artifact3, iterator.next());
