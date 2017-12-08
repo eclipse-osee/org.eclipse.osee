@@ -13,19 +13,21 @@ package org.eclipse.osee.ats.api.workflow.state;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 
 /**
  * @author Donald G Dunne
  */
 public interface IAtsStateFactory {
 
-   IAtsStateManager getStateManager(IAtsWorkItem workItem) throws OseeCoreException;
+   IAtsStateManager getStateManager(IAtsWorkItem workItem);
 
-   IAtsStateManager getStateManager(IAtsWorkItem workItem, boolean load);
-
-   void writeToStore(IAtsUser atsUser, IAtsWorkItem workItem, IAtsChangeSet changes) throws OseeCoreException;
+   void writeToStore(IAtsUser atsUser, IAtsWorkItem workItem, IAtsChangeSet changes);
 
    void load(IAtsWorkItem workItem, IAtsStateManager stateMgr);
+
+   void clearStateManager(Id id);
+
+   void setStateMgr(IAtsWorkItem workItem, IAtsStateManager stateMgr);
 
 }

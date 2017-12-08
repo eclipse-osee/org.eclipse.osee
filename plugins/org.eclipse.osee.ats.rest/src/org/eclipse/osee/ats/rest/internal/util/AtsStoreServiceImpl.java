@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -185,6 +186,16 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    @Override
    public boolean isArtifactTypeInheritsFrom(IArtifactType artifactType, IArtifactType baseArtifactType) {
       return atsServer.getOrcsApi().getOrcsTypes().getArtifactTypes().inheritsFrom(artifactType, baseArtifactType);
+   }
+
+   @Override
+   public TransactionId getTransactionId(IAtsWorkItem workItem) {
+      TransactionId transId = TransactionId.SENTINEL;
+      ArtifactId artifact = atsServer.getArtifact(workItem.getStoreObject());
+      if (artifact instanceof ArtifactReadable) {
+         transId = ((ArtifactReadable) artifact).getTransaction();
+      }
+      return transId;
    }
 
 }

@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.TransactionId;
 
 public interface IAtsStoreService {
 
@@ -71,4 +72,5 @@ public interface IAtsStoreService {
 
    boolean isArtifactTypeInheritsFrom(IArtifactType artifactType, IArtifactType baseArtifactType);
 
+   TransactionId getTransactionId(IAtsWorkItem workItem);
 }

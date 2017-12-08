@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
@@ -33,6 +34,7 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -49,11 +51,13 @@ public class AtsStoreService implements IAtsStoreService {
    private final IAtsWorkItemFactory workItemFactory;
    private final IAtsUserService userService;
    private final JdbcService jdbcService;
+   private final IAtsServices services;
 
-   public AtsStoreService(IAtsWorkItemFactory workItemFactory, IAtsUserService userService, JdbcService jdbcService) {
+   public AtsStoreService(IAtsWorkItemFactory workItemFactory, IAtsUserService userService, JdbcService jdbcService, IAtsServices services) {
       this.workItemFactory = workItemFactory;
       this.userService = userService;
       this.jdbcService = jdbcService;
+      this.services = services;
    }
 
    @Override
@@ -193,6 +197,16 @@ public class AtsStoreService implements IAtsStoreService {
    @Override
    public boolean isArtifactTypeInheritsFrom(IArtifactType artifactType, IArtifactType baseArtifactType) {
       return ArtifactTypeManager.inheritsFrom(artifactType, baseArtifactType);
+   }
+
+   @Override
+   public TransactionId getTransactionId(IAtsWorkItem workItem) {
+      TransactionId transId = TransactionId.SENTINEL;
+      ArtifactId artifact = services.getArtifact(workItem.getStoreObject());
+      if (artifact instanceof Artifact) {
+         transId = ((Artifact) artifact).getTransaction();
+      }
+      return transId;
    }
 
 }
