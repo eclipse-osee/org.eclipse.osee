@@ -29,6 +29,7 @@ public final class AtsArtifactTypes {
    public static final IArtifactType AbstractWorkflowArtifact = TokenFactory.createArtifactType(71, "Abstract State Machine Artifact");
    public static final IArtifactType ReviewArtifact = TokenFactory.createArtifactType(64, "Abstract Review Artifact");
    public static final IArtifactType TeamDefinition = TokenFactory.createArtifactType(68, "Team Definition");
+   public static final IArtifactType ResponsibleTeam = TokenFactory.createArtifactType(8943243743202487405L, "Responsible Team");
    public static final IArtifactType TeamWorkflow = TokenFactory.createArtifactType(73, "Team Workflow");
    public static final IArtifactType Version = TokenFactory.createArtifactType(70, "Version");
    public static final IArtifactType Goal = TokenFactory.createArtifactType(72, "Goal");

@@ -143,7 +143,11 @@ abstract artifactType "ats.Ats Config Artifact" extends "Artifact" {
 	attribute "ats.Active"
 }
 
-artifactType "Team Definition" extends "ats.Ats Team Definition or AI" , "Abstract Access Controlled" {
+artifactType "Responsible Team" extends "ats.Ats Team Definition or AI" {
+   id 8943243743202487405
+}
+
+artifactType "Team Definition" extends "Responsible Team" , "Abstract Access Controlled" {
 	id 68
 	attribute "ats.Hours Per Work Day"
 	attribute "ats.Full Name"
@@ -1540,7 +1544,7 @@ relationType "Work Package" {
 relationType "TeamLead" {
 	id 2305843009213694313
 	sideAName "Team Definition"
-	sideAArtifactType "Team Definition"
+	sideAArtifactType "Responsible Team"
 	sideBName "User"
 	sideBArtifactType "User"
 	defaultOrderType Unordered
@@ -1560,7 +1564,7 @@ relationType "ActionableItemLead" {
 relationType "TeamMember" {
 	id 2305843009213694314
 	sideAName "Team Definition"
-	sideAArtifactType "Team Definition"
+	sideAArtifactType "Responsible Team"
 	sideBName "User"
 	sideBArtifactType "User"
 	defaultOrderType Unordered
@@ -1575,6 +1579,16 @@ relationType "PrivilegedMember" {
 	sideBArtifactType "User"
 	defaultOrderType Unordered
 	multiplicity MANY_TO_MANY
+}
+
+relationType "ResponsibleTeam" {
+   id 7316843349212764388
+   sideAName "Team Workflow"
+   sideAArtifactType "Team Workflow"
+   sideBName "Responsible Team"
+   sideBArtifactType "Responsible Team"
+   defaultOrderType Unordered
+   multiplicity MANY_TO_ONE
 }
 
 relationType "TeamActionableItem" {

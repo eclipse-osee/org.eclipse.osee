@@ -107,6 +107,9 @@ public final class AtsRelationTypes {
    public static final RelationTypeSide TeamMember_Team = RelationTypeSide.create(RelationSide.SIDE_A, 2305843009213694314L, "TeamMember");
    public static final RelationTypeSide TeamMember_Member = TeamMember_Team.getOpposite();
 
+   public static final RelationTypeSide ResponsibleTeam_TeamWf = RelationTypeSide.create(RelationSide.SIDE_A, 7316843349212764388L, "ResponsibleTeam");
+   public static final RelationTypeSide ResponsibleTeam_Team = ResponsibleTeam_TeamWf.getOpposite();
+
    public static final RelationTypeSide TeamWorkflowTargetedForVersion_Workflow = RelationTypeSide.create(RelationSide.SIDE_A, 2305843009213694319L, "TeamWorkflowTargetedForVersion");
    public static final RelationTypeSide TeamWorkflowTargetedForVersion_Version = TeamWorkflowTargetedForVersion_Workflow.getOpposite();
 
