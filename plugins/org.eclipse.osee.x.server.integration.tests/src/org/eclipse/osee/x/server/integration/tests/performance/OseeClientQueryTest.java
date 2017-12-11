@@ -22,8 +22,11 @@ import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import java.io.StringWriter;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 import javax.ws.rs.core.MediaType;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -37,10 +40,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class OseeClientQueryTest {
-
-   private static final String GUID1 = SystemUser.Anonymous.getGuid();
-   private static final String GUID2 = SystemUser.OseeSystem.getGuid();
-
    private static OseeClient oseeClient;
 
    @BeforeClass
@@ -48,46 +47,21 @@ public class OseeClientQueryTest {
       oseeClient = IntegrationUtil.createClient();
 
       // Establish initial connection to the db using this random query
-      oseeClient.createQueryBuilder(COMMON).andIds(SystemUser.OseeSystem).getSearchResult(RequestType.IDS);
-   }
-
-   @Test
-   public void searchForAttributeTypeByTokenId() {
-      final int EXPECTED_RESULTS = 1;
-      SearchResult results =
-         oseeClient.createQueryBuilder(COMMON).andIds(SystemUser.OseeSystem).getSearchResult(RequestType.IDS);
-      assertEquals(EXPECTED_RESULTS, results.getTotal());
+      oseeClient.createQueryBuilder(COMMON).andId(SystemUser.OseeSystem).getSearchResult(RequestType.IDS);
    }
 
    @Test
    public void searchForAttributeTypeByTokenIds() {
-      final int EXPECTED_RESULTS = 2;
-      SearchResult results =
-         oseeClient.createQueryBuilder(COMMON).andIds(SystemUser.OseeSystem, SystemUser.Anonymous).getSearchResult(
-            RequestType.IDS);
-      assertEquals(EXPECTED_RESULTS, results.getTotal());
-   }
-
-   @Test
-   public void searchForArtifactByGuid() {
-      final int EXPECTED_RESULTS = 1;
-      SearchResult results = oseeClient.createQueryBuilder(COMMON).andGuids(GUID1).getSearchResult(RequestType.IDS);
-      assertEquals(EXPECTED_RESULTS, results.getTotal());
-   }
-
-   @Test
-   public void searchForArtifactByGuids() {
-      final int EXPECTED_RESULTS = 2;
-      SearchResult results =
-         oseeClient.createQueryBuilder(COMMON).andGuids(GUID1, GUID2).getSearchResult(RequestType.IDS);
-      assertEquals(EXPECTED_RESULTS, results.getTotal());
+      List<ArtifactToken> tokens = Arrays.asList(SystemUser.OseeSystem, SystemUser.Anonymous);
+      SearchResult results = oseeClient.createQueryBuilder(COMMON).andIds(tokens).getSearchResult(RequestType.IDS);
+      assertEquals(tokens.size(), results.getTotal());
    }
 
    @Test
    public void searchForArtifactByLocalId() {
       final int EXPECTED_RESULTS = 1;
       SearchResult results =
-         oseeClient.createQueryBuilder(COMMON).andLocalId(CoreArtifactTokens.UserGroups).getSearchResult(
+         oseeClient.createQueryBuilder(COMMON).andId(CoreArtifactTokens.UserGroups).getSearchResult(
             RequestType.IDS);
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }

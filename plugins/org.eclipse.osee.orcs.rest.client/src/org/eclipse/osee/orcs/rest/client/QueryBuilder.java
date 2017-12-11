@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.rest.client;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -51,17 +50,7 @@ public interface QueryBuilder {
    /**
     * Search criteria that finds a given artifact id
     */
-   QueryBuilder andLocalId(ArtifactId artifactId);
-
-   /**
-    * Search criteria that finds a given artifact ids
-    */
-   QueryBuilder andLocalIds(Collection<? extends ArtifactId> artifactIds);
-
-   /**
-    * Search criteria that finds a given artifact with guids
-    */
-   QueryBuilder andGuids(String... ids);
+   QueryBuilder andId(ArtifactId artifactId);
 
    /**
     * Search criteria that finds a given artifact with guids
@@ -69,14 +58,9 @@ public interface QueryBuilder {
    QueryBuilder andGuids(List<String> ids);
 
    /**
-    * Artifacts matching token id(s)
+    * Search criteria that finds artifacts with the given artifact ids
     */
-   QueryBuilder andIds(ArtifactToken... artifactToken);
-
-   /**
-    * Artifacts matching token id(s)
-    */
-   QueryBuilder andIds(Collection<? extends ArtifactToken> artifactTokens);
+   QueryBuilder andIds(Collection<? extends ArtifactId> artifactIds);
 
    /**
     * Search criteria that finds a given artifact type using type inheritance

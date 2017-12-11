@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.Id;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchMethod;
 
@@ -40,29 +39,20 @@ public class PredicateFactoryImpl implements PredicateFactory {
    }
 
    @Override
-   public Predicate createUuidSearch(List<String> ids) {
-      return createIdsSearch(SearchMethod.GUIDS, ids);
+   public Predicate createGuidSearch(List<String> ids) {
+      return createSearch(SearchMethod.GUIDS, ids);
    }
 
    @Override
-   public Predicate createLocalIdsSearch(Collection<? extends ArtifactId> ids) {
+   public Predicate createArtifactIdsSearch(Collection<? extends ArtifactId> ids) {
       List<String> strIds = new LinkedList<>();
       for (ArtifactId value : ids) {
          strIds.add(value.getIdString());
       }
-      return createIdsSearch(SearchMethod.IDS, strIds);
+      return createSearch(SearchMethod.IDS, strIds);
    }
 
-   @Override
-   public Predicate createIdSearch(Collection<? extends Identity<String>> ids) {
-      List<String> values = new LinkedList<>();
-      for (Identity<String> token : ids) {
-         values.add(token.getGuid());
-      }
-      return createIdsSearch(SearchMethod.GUIDS, values);
-   }
-
-   private Predicate createIdsSearch(SearchMethod method, List<String> ids) {
+   private Predicate createSearch(SearchMethod method, List<String> ids) {
       return new Predicate(method, emptyStringList, ids);
    }
 

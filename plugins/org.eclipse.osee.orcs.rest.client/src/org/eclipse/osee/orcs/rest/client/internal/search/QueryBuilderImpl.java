@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -92,35 +91,19 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
-   public QueryBuilder andLocalId(ArtifactId artifactId) {
-      return andLocalIds(Collections.singletonList(artifactId));
-   }
-
-   @Override
-   public QueryBuilder andLocalIds(Collection<? extends ArtifactId> artifactIds) {
-      predicates.add(predicateFactory.createLocalIdsSearch(artifactIds));
-      return this;
-   }
-
-   @Override
-   public QueryBuilder andGuids(String... ids) {
-      return andGuids(Arrays.asList(ids));
+   public QueryBuilder andId(ArtifactId artifactId) {
+      return andIds(Collections.singletonList(artifactId));
    }
 
    @Override
    public QueryBuilder andGuids(List<String> ids) {
-      predicates.add(predicateFactory.createUuidSearch(ids));
+      predicates.add(predicateFactory.createGuidSearch(ids));
       return this;
    }
 
    @Override
-   public QueryBuilder andIds(ArtifactToken... artifactToken) {
-      return andIds(Arrays.asList(artifactToken));
-   }
-
-   @Override
-   public QueryBuilder andIds(Collection<? extends ArtifactToken> artifactTokens) {
-      predicates.add(predicateFactory.createIdSearch(artifactTokens));
+   public QueryBuilder andIds(Collection<? extends ArtifactId> artifactIds) {
+      predicates.add(predicateFactory.createArtifactIdsSearch(artifactIds));
       return this;
    }
 

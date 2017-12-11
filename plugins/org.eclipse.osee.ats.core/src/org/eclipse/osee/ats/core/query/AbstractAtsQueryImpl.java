@@ -726,7 +726,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       }
 
       if (withIds && !artifactIds.isEmpty()) {
-         queryAndLocalIds(artifactIds);
+         queryAndIds(artifactIds);
       }
 
       addStateTypeNameAndAttributeCriteria();
@@ -848,7 +848,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       }
    }
 
-   public abstract void queryAndLocalIds(Collection<ArtifactId> artIds);
+   public abstract void queryAndIds(Collection<? extends ArtifactId> artIds);
 
    public void addProgramCriteria() {
       if (!isInsertionSpecified()) {

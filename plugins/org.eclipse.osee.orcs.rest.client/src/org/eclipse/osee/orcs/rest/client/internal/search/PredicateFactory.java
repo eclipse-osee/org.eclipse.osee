@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
 
 /**
@@ -26,11 +25,9 @@ import org.eclipse.osee.orcs.rest.model.search.artifact.Predicate;
  */
 public interface PredicateFactory {
 
-   Predicate createUuidSearch(List<String> ids);
+   Predicate createGuidSearch(List<String> ids);
 
-   Predicate createLocalIdsSearch(Collection<? extends ArtifactId> ids);
-
-   Predicate createIdSearch(Collection<? extends Identity<String>> ids);
+   Predicate createArtifactIdsSearch(Collection<? extends ArtifactId> ids);
 
    Predicate createIsOfTypeSearch(Collection<? extends ArtifactTypeId> artifactType);
 

@@ -53,7 +53,7 @@ final class IdArtifactSearch extends AbstractLegacyArtifactSearchQuery {
 
       QueryBuilderArtifact query = ArtifactQuery.createQueryBuilder(branchToSearch);
       if (!artIds.isEmpty()) {
-         query.andLocalIds(artIds);
+         query.andIds(artIds);
       }
       if (!guids.isEmpty()) {
          query.andGuids(guids);

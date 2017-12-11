@@ -125,7 +125,7 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    @Override
    public List<FeatureDefinitionData> getFeatureDefinitionData(BranchId branch) {
       BranchId branchToUse = branch;
-      BranchReadable br = branchQuery.andId(branch).getResults().getOneOrNull();
+      BranchReadable br = branchQuery.andId(branch).getResults().getExactlyOne();
       if (br.getBranchType().equals(BranchType.MERGE)) {
          branchToUse = br.getParentBranch();
       }

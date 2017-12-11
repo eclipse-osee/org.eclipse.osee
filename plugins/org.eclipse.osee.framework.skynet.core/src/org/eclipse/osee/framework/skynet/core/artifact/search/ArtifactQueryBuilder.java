@@ -223,12 +223,10 @@ public class ArtifactQueryBuilder {
          builder.includeDeleted();
       }
 
-      if (artifactId.isValid() || Conditions.hasValues(artifactIds)) {
-         if (Conditions.hasValues(artifactIds)) {
-            builder.andLocalIds(artifactIds);
-         } else if (artifactId.isValid()) {
-            builder.andLocalId(artifactId);
-         }
+      if (Conditions.hasValues(artifactIds)) {
+         builder.andIds(artifactIds);
+      } else if (artifactId.isValid()) {
+         builder.andId(artifactId);
       }
 
       if (Conditions.hasValues(artifactTypes)) {
@@ -236,7 +234,7 @@ public class ArtifactQueryBuilder {
       }
 
       if (guid != null) {
-         builder.andGuids(guid);
+         builder.andGuids(Arrays.asList(guid));
       }
 
       if (Conditions.hasValues(guids)) {
@@ -439,12 +437,12 @@ public class ArtifactQueryBuilder {
       }
 
       @SuppressWarnings("unused")
-      public void andLocalId(ArtifactId artifactId) {
+      public void andId(ArtifactId artifactId) {
          artIds.add(artifactId);
       }
 
       @SuppressWarnings("unused")
-      public void andLocalIds(Collection<? extends ArtifactId> artifactIds) {
+      public void andIds(Collection<? extends ArtifactId> artifactIds) {
          artIds.addAll(artifactIds);
       }
 
