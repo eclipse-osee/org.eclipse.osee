@@ -10,20 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.agile.program;
 
-import org.eclipse.osee.ats.api.agile.JaxAgileProgramBacklogItem;
+import org.eclipse.osee.ats.api.agile.JaxAgileProgramFeature;
 
 /**
  * @author Donald G. Dunne
  */
-public class JaxProgramBacklogItemUpdate extends JaxProgramBaseItem {
+public class JaxProgramFeatureUpdate extends JaxProgramBaseItem {
 
-   JaxAgileProgramBacklogItem item;
+   JaxAgileProgramFeature item;
 
-   public JaxAgileProgramBacklogItem getItem() {
+   public JaxAgileProgramFeature getItem() {
       return item;
    }
 
-   public void setItem(JaxAgileProgramBacklogItem item) {
+   public void setItem(JaxAgileProgramFeature item) {
       this.item = item;
    }
 

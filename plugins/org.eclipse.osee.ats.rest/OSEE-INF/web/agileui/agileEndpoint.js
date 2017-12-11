@@ -5,23 +5,38 @@ angular.module('AgileApp').factory('AgileEndpoint',
 			var factory = {};
 
 			var imagesResource = $resource('/ats/config/image');
+
+			// programs
 			var activeProgramsTokenResource = $resource('/ats/agile/program/token?active=true');
+			var programTokenResource = $resource('/ats/agile/program/:programid/token');
+			var programAtwResource = $resource('/ats/agile/program/:programid/atw');
+			var programUiGridResource = $resource('/ats/agile/program/:programid/uigrid');
+			
+			// teams
 			var activeTeamsTokenResource = $resource('/ats/agile/team/token?active=true');
 			var teamMembersResource = $resource('/ats/agile/team/:teamid/member');
 			var teamResource = $resource('/ats/agile/team');
 			var teamsTokenResource = $resource('/ats/agile/team/token');
 			var teamTokenResource = $resource('/ats/agile/team/:teamid/token');
-			var programTokenResource = $resource('/ats/agile/program/:programid/token');
-			var programAtwResource = $resource('/ats/agile/program/:programid/atw');
-			var programUiGridResource = $resource('/ats/agile/program/:programid/uigrid');
-			var programProgramBacklogItemResource = $resource('/ats/agile/program/:programid/backlogitem');
-			var programBacklogItemResource = $resource('/ats/agile/programbacklogitem/:programbacklogitem');
-			var backlogItemResource = $resource('/ats/agile/backlogitem/:backlogitemid');
 			var teamSingleResource = $resource('/ats/agile/team/:teamid');
 			var teamAisResource = $resource('/ats/agile/team/:teamid/ai');
+			
+			// program backlog item
+			var programProgramBacklogItemResource = $resource('/ats/agile/program/:programid/backlogitem');
+			var programBacklogItemResource = $resource('/ats/agile/programbacklogitem/:programbacklogitemid');
+
+			// program feature
+			var programProgramFeatureResource = $resource('/ats/agile/program/:programid/feature');
+			var programBacklogItemResource = $resource('/ats/agile/programfeature/:programfeatureid');
+
+			// feature group resource
 			var featuresResource = $resource('/ats/agile/team/:teamid/feature');
-			var workPackageResource = $resource('/ats/agile/team/:teamid/workpackage');
 			var featureSingleResource = $resource('/ats/agile/team/:teamid/feature/:featureid');
+			
+			// work package resource
+			var workPackageResource = $resource('/ats/agile/team/:teamid/workpackage');
+			
+			// sprint
 			var sprintResource = $resource('/ats/agile/team/:teamid/sprint');
 			var sprintConfigResource = $resource('/ats/agile/team/:teamid/sprint/:sprintid/config');
 			var sprintTokenResource = $resource('/ats/agile/team/:teamid/sprint/token');
@@ -30,10 +45,16 @@ angular.module('AgileApp').factory('AgileEndpoint',
 			var sprintForKbResource = $resource('/ats/agile/team/:teamid/sprint/:sprintid/kb');
 			var sprintItemsResource = $resource('/ats/agile/team/:teamid/sprint/:sprintid/item');
 			var sprintConfigResource = $resource('/ats/agile/team/:teamid/sprint/:sprintid/config');
+			
+			// program backlog
 			var backlogTokenResource = $resource('/ats/agile/team/:teamid/backlog/token');
 			var backlogResource = $resource('/ats/agile/team/:teamid/backlog');
 			var backlogItemsResource = $resource('/ats/agile/team/:teamid/backlog/item');
+			
+			// action
 			var actionResource = $resource('/ats/action');
+			
+			// task
 			var itemResource = $resource('/ats/agile/items/:itemid', 
 					{}, { 'update': { method:'PUT' } });
 
@@ -72,7 +93,19 @@ angular.module('AgileApp').factory('AgileEndpoint',
 			}
 			
 			factory.deleteProgramBacklogItem = function(item) {	
-				return programBacklogItemResource.delete({'programbacklogitem': item.backlogitemid});
+				return programBacklogItemResource.delete({'programbacklogitemid': item.backlogitemid});
+			}
+			
+			// ////////////////////////////////////
+			// Program Feature
+			// ////////////////////////////////////
+
+			factory.updateProgramFeature = function(item) {	
+				return programProgramFeatureResource.save({'programid': item.programId}, item);
+			}
+			
+			factory.deleteProgramFeature = function(item) {	
+				return programFeatureResource.delete({'programfeatureitemid': item.featureid});
 			}
 			
 			// ////////////////////////////////////

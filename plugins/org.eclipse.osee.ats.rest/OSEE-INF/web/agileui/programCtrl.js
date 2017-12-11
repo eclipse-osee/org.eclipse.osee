@@ -152,16 +152,16 @@ angular
 							}
 
 							var getItems = function() {
-								
+
 								AgileEndpoint.getImages().$promise
-								.then(function(data) {
-									$scope.artTypeNameToImageMap = {};
-									for (var i = 0; i < data.length; i++) {
-										var item = data[i];
-										$scope.artTypeNameToImageMap[item.artifactTypeName] = item;
-									}
-								});
-								
+										.then(function(data) {
+											$scope.artTypeNameToImageMap = {};
+											for (var i = 0; i < data.length; i++) {
+												var item = data[i];
+												$scope.artTypeNameToImageMap[item.artifactTypeName] = item;
+											}
+										});
+
 								AgileEndpoint.getProgramItems($scope.program).$promise
 										.then(function(data) {
 											var program = data;
@@ -171,7 +171,8 @@ angular
 											} else {
 												$scope.data = program.items;
 												for (var i = 0; i < $scope.data.length; i++) {
-													$scope.prepTaskForGrid($scope.data[i]);
+													$scope
+															.prepTaskForGrid($scope.data[i]);
 												}
 												LayoutService
 														.resizeElementHeight("itemsTable");
@@ -202,30 +203,22 @@ angular
 								}
 							}
 
+							// /////////////////////////////
+							// Program Backlog Items
+							// /////////////////////////////
 							$scope.openProgramBacklogItemSection = function(
 									selectedTask) {
 								$scope.programBacklogItemSectionOpen = true;
-								$scope.item = {};
-								$scope.item.location = "First";
+								$scope.setupNewItem();
 							}
 							$scope.closeProgramBacklogItemSection = function(
 									selectedTask) {
 								$scope.programBacklogItemSectionOpen = null;
 							}
 							$scope.addProgramBacklogItem = function(item) {
-								var pbi = {};
-								if (item.addAfter) {
-									pbi.location = "AfterSelection";
-								} else if ($scope.isPBacklogItem) {
-									pbi.location = "Selection";
-								} else {
-									pbi.location = item.location;
-								}
-								pbi.type = "New";
-								pbi.title = item.title;
-								pbi.programId = $scope.program.id;
-								pbi.selectedId = $scope.selectedTask.id;
-								AgileEndpoint.updateProgramBacklogItem(pbi).$promise
+								var newItem = $scope.setupAddItem(
+										"PBacklogItem", item);
+								AgileEndpoint.updateProgramBacklogItem(newItem).$promise
 										.then(function(data) {
 											var result = data;
 											if (result.errors) {
@@ -234,7 +227,7 @@ angular
 											} else {
 												var newItem = result.item;
 												newItem.tlevel = 1;
-												newItem.type = "Program Backlog Item";
+												newItem.type = "Agile Program Backlog Item";
 												$scope.prepTaskForGrid(newItem);
 												if ($scope.isPBacklog) {
 													$scope
@@ -252,6 +245,124 @@ angular
 										});
 							}
 
+							$scope.deleteProgramBacklogItem = function(item) {
+								var dialog = confirm("Delete Program Backlog Item ["
+										+ item.name
+										+ "] and all related features and stories (tasks will not be deleted)?");
+								if (dialog == true) {
+									var deleteItem = $scope
+											.setupDeleteItem(item);
+									deleteItem.backlogitemid = $scope.selectedTask.id;
+									AgileEndpoint
+											.deleteProgramBacklogItem(deleteItem).$promise
+											.then(function(data) {
+												var result = data;
+												if (result.errors) {
+													alert(result.results);
+												} else {
+													$scope.deleteSelected();
+												}
+											});
+								}
+							}
+
+							// /////////////////////////////
+							// Program Feature
+							// /////////////////////////////
+							$scope.openProgramFeatureSection = function(
+									selectedTask) {
+								$scope.programFeatureSectionOpen = true;
+								$scope.setupNewItem();
+							}
+							$scope.closeProgramFeatureSection = function(
+									selectedTask) {
+								$scope.programFeatureSectionOpen = null;
+							}
+							$scope.addProgramFeature = function(item) {
+								var newItem = $scope.setupAddItem(
+										"PBacklogFeature", item);
+								AgileEndpoint.updateProgramFeature(newItem).$promise
+										.then(function(data) {
+											var result = data;
+											if (result.errors) {
+												alert(result.results);
+												return;
+											} else {
+												var newItem = result.item;
+												newItem.tlevel = 2;
+												newItem.type = "Agile Program Feature";
+												$scope.prepTaskForGrid(newItem);
+												if ($scope.isPBacklogItem) {
+													$scope
+															.addAfterSelected(newItem);
+												} else if ($scope.isPBacklogFeature) {
+													var index = $scope.data
+															.lastIndexOf($scope.selectedTask);
+													if (result.location == "AfterSelection") {
+														index = index + 1;
+													}
+													$scope.data.splice(index,
+															0, newItem);
+												}
+											}
+										});
+							}
+
+							$scope.deleteProgramFeature = function(item) {
+								var dialog = confirm("Delete Program Feature ["
+										+ item.name
+										+ "] and all related stories (tasks will not be deleted)?");
+								if (dialog == true) {
+									var deleteItem = $scope
+											.setupDeleteItem(item);
+									deleteItem.backlogitemid = $scope.selectedTask.id;
+									AgileEndpoint
+											.deleteProgramFeature(deleteItem).$promise
+											.then(function(data) {
+												var result = data;
+												if (result.errors) {
+													alert(result.results);
+												} else {
+													$scope.deleteSelected();
+												}
+											});
+								}
+							}
+
+							// /////////////////////////////
+							// New / Delete Item Methods
+							// /////////////////////////////
+							$scope.setupNewItem = function(item) {
+								$scope.item = {};
+								$scope.item.location = "First";
+							}
+							$scope.setupAddItem = function(addType, item) {
+								var newItem = {};
+								if (item.addAfter) {
+									newItem.location = "AfterSelection";
+								} else if ((addType == "PBacklogItem"
+										&& $scope.isPBacklogItem) || (addType == "PBacklogFeature"
+											&& $scope.isPBacklogFeature)) {
+									newItem.location = "Selection";
+								} else {
+									newItem.location = item.location;
+								}
+								newItem.type = "New";
+								newItem.title = item.title;
+								newItem.programId = $scope.program.id;
+								newItem.selectedId = $scope.selectedTask.id;
+								return newItem;
+							}
+							$scope.setupDeleteItem = function(item) {
+								var deleteItem = {};
+								deleteItem.type = "Delete";
+								deleteItem.programId = $scope.program.id;
+								return deleteItem;
+							}
+
+							// /////////////////////////////
+							// Utility Methods
+							// /////////////////////////////
 							$scope.addAfterSelected = function(newItem) {
 								var index = $scope.data
 										.lastIndexOf($scope.selectedTask) + 1;
@@ -273,27 +384,6 @@ angular
 								return $scope.data.length - 1;
 							}
 
-							$scope.deleteProgramBacklogItem = function(item) {
-								var dialog = confirm("Delete Program Backlog Item ["
-										+ item.name
-										+ "] and all related features and stories (tasks will not be deleted)?");
-								if (dialog == true) {
-									var pbi = {};
-									pbi.type = "Delete";
-									pbi.programId = $scope.program.id;
-									pbi.backlogitemid = $scope.selectedTask.id;
-									AgileEndpoint.deleteProgramBacklogItem(pbi).$promise
-											.then(function(data) {
-												var result = data;
-												if (result.errors) {
-													alert(result.results);
-												} else {
-													$scope.deleteSelected();
-												}
-											});
-								}
-							}
-
 							$scope.deleteSelected = function() {
 								angular.forEach($scope.gridApi.selection
 										.getSelectedRows(), function(data,
@@ -302,7 +392,7 @@ angular
 											.lastIndexOf(data), 1);
 								});
 							}
-							
+
 							getItems();
 
 							$scope

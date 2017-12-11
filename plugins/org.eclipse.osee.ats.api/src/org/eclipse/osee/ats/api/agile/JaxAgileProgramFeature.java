@@ -20,11 +20,15 @@ public class JaxAgileProgramFeature extends JaxAtsObject {
 
    private long programBacklogItemId;
 
-   public static JaxAgileProgramFeature construct(JaxAgileProgramBacklogItem backlogItem, ArtifactToken programFeature) {
+   public static JaxAgileProgramFeature construct(IAgileProgramBacklogItem programBacklogItem, ArtifactToken programFeature) {
+      return construct(programBacklogItem.getId(), programFeature);
+   }
+
+   public static JaxAgileProgramFeature construct(Long programBacklogItemid, ArtifactToken programFeature) {
       JaxAgileProgramFeature feature = new JaxAgileProgramFeature();
       feature.setName(programFeature.getName());
       feature.setId(programFeature.getId());
-      feature.setProgramBacklogItemId(backlogItem.getId());
+      feature.setProgramBacklogItemId(programBacklogItemid);
       return feature;
    }
 

@@ -21,6 +21,8 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 public class AtsArtifactImages {
 
    private final static List<ArtifactImage> images = new LinkedList<ArtifactImage>();
+   public static ArtifactImage AGILE_TASK =
+      AtsArtifactImages.construct(AtsArtifactTypes.TeamWorkflow, "workflow.gif", "/ats/agileui/images");
    public static ArtifactImage AGILE_SPRINT =
       AtsArtifactImages.construct(AtsArtifactTypes.AgileSprint, "agileSprint.gif", "/ats/agileui/images");
    public static ArtifactImage AGILE_TEAM =
@@ -29,6 +31,8 @@ public class AtsArtifactImages {
       AtsArtifactImages.construct(AtsArtifactTypes.AgileFeatureGroup, "agileFeatureGroup.gif", "/ats/agileui/images");
    public static ArtifactImage AGILE_BACKLOG =
       AtsArtifactImages.construct(AtsArtifactTypes.AgileBacklog, "agileBacklog.gif", "/ats/agileui/images");
+   public static ArtifactImage AGILE_BACKLOG_ITEM = AtsArtifactImages.construct(
+      AtsArtifactTypes.AgileProgramBacklogItem, "agileProgramBacklogItem.gif", "/ats/agileui/images");
    public static ArtifactImage AGILE_PROGRAM =
       AtsArtifactImages.construct(AtsArtifactTypes.AgileProgram, "agileProgram.gif", "/ats/agileui/images");
    public static ArtifactImage AGILE_PROGRAM_BACKLOG = AtsArtifactImages.construct(AtsArtifactTypes.AgileProgramBacklog,

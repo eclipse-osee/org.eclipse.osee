@@ -33,7 +33,7 @@
 				class="glyphicon glyphicon-minus"></span> Delete Backlog Item
 		</button>
 		<button type="button" class="btn btn-default btn-xs"
-			ng-click="addProgramFeature(selectedTask)"
+			ng-click="openProgramFeatureSection(selectedTask)"
 			ng-show="isPBacklogItem || isPBacklogFeature">
 			<img src="/ats/agileui/images/agileProgramFeature.gif" /> <span
 				class="glyphicon glyphicon-plus"></span> Add Program Feature
@@ -72,11 +72,11 @@
 		</button>
 	</div>
 
-	<div id="addProgramItem" ng-show="programBacklogItemSectionOpen"
+	<div id="addProgramBacklogItem" ng-show="programBacklogItemSectionOpen"
 		boarder="2">
 		<div id="sectionInnerDiv">
 			<form class="simple-form" novalidate>
-				<label>Title:&nbsp;</label><input id="titleText" type="text"
+				<label>Program Backlog Item Title:&nbsp;</label><input id="titleText" type="text"
 					ng-model="item.title" /><br />
 				<!– –> <label>Add After Selection</label> <input type="checkbox"
 					name="location" ng-model="item.addAfter">
@@ -85,6 +85,25 @@
 				<!– –> <input type="submit" ng-click="addProgramBacklogItem(item)"
 					value="Create" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input
 					type="submit" ng-click="closeProgramBacklogItemSection(item)"
+					value="Close" />
+				<br />
+			</form>
+		</div>
+	</div>
+
+	<div id="addProgramFeature" ng-show="programFeatureSectionOpen"
+		boarder="2">
+		<div id="sectionInnerDiv">
+			<form class="simple-form" novalidate>
+				<label>Program Feature Title:&nbsp;</label><input id="titleText" type="text"
+					ng-model="item.title" /><br />
+				<!– –> <label>Add After Selection</label> <input type="checkbox"
+					name="location" ng-model="item.addAfter">
+				</label> <br />
+				<br />
+				<!– –> <input type="submit" ng-click="addProgramFeature(item)"
+					value="Create" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input
+					type="submit" ng-click="closeProgramFeatureSection(item)"
 					value="Close" />
 				<br />
 			</form>

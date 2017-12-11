@@ -1,4 +1,12 @@
-#addProgramItem {
+#addProgramBacklogItem {
+	background-color: lightgrey;
+	margin: 10px;
+	border-style: solid;
+	border-width: 1px;
+	width: 95%;
+}
+
+#addProgramFeature {
 	background-color: lightgrey;
 	margin: 10px;
 	border-style: solid;

@@ -66,6 +66,8 @@ import org.eclipse.osee.ats.api.agile.JaxNewAgileTeam;
 import org.eclipse.osee.ats.api.agile.atw.AtwNode;
 import org.eclipse.osee.ats.api.agile.kanban.JaxKbSprint;
 import org.eclipse.osee.ats.api.agile.program.JaxProgramBacklogItemUpdate;
+import org.eclipse.osee.ats.api.agile.program.JaxProgramBaseItem;
+import org.eclipse.osee.ats.api.agile.program.JaxProgramFeatureUpdate;
 import org.eclipse.osee.ats.api.agile.program.UiGridProgram;
 import org.eclipse.osee.ats.api.agile.sprint.SprintConfigurations;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
@@ -98,6 +100,7 @@ import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.ats.rest.internal.world.WorldResource;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -207,6 +210,69 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    }
 
    /********************************
+    ** Agile Program Item Methods
+    ***********************************/
+   private RestResult deleteProgramItem(long itemId, String itemName) {
+      RestResult result = new RestResult();
+      try {
+         ArtifactToken programBacklogItem = atsApi.getArtifact(itemId);
+         if (programBacklogItem == null) {
+            result.getResult().errorf("Invalid %s Id %s", itemName, itemId);
+         } else {
+            IAtsChangeSet changes =
+               atsApi.createChangeSet(String.format("Delete %s [%s]", itemName, programBacklogItem.toStringWithId()));
+            changes.deleteArtifact(programBacklogItem);
+            changes.execute();
+         }
+      } catch (Exception ex) {
+         result.getResult().errorf("Error deleting %s [%s]", itemName, Lib.exceptionToString(ex));
+      }
+      return result;
+   }
+
+   private JaxProgramBaseItem updateProgramItem(IAgileProgram program, JaxProgramBaseItem newItem, String itemName, ArtifactTypeId artifactType, ArtifactToken parentArtifact) {
+
+      if (newItem.getType().equals(UpdateType.New)) {
+         if (!Strings.isValid(newItem.getTitle())) {
+            newItem.getResults().errorf("Title must be specified");
+            return newItem;
+         }
+
+         IAtsChangeSet changes = atsApi.createChangeSet(newItem.getType() + " " + itemName);
+         ArtifactToken newitem = changes.createArtifact(artifactType, newItem.getTitle());
+         ArtifactToken selectedItem = atsApi.getArtifact(newItem.getSelectedId());
+         List<ArtifactToken> items = new LinkedList<>();
+         if (newItem.getLocation().equals(UpdateLocation.First)) {
+            items.add(newitem);
+            items.addAll(atsApi.getRelationResolver().getChildren(parentArtifact));
+         } else if (newItem.getLocation().equals(UpdateLocation.Last)) {
+            items.addAll(atsApi.getRelationResolver().getChildren(parentArtifact));
+            items.add(newitem);
+         } else if (newItem.getLocation().equals(UpdateLocation.Selection)) {
+            items.addAll(atsApi.getRelationResolver().getChildren(parentArtifact));
+            int index = items.indexOf(selectedItem);
+            items.add(index, newitem);
+         } else if (newItem.getLocation().equals(UpdateLocation.AfterSelection)) {
+            items.addAll(atsApi.getRelationResolver().getChildren(parentArtifact));
+            int index = items.indexOf(selectedItem) + 1;
+            items.add(index, newitem);
+         } else {
+            newItem.getResults().errorf("UpdateLocation %s not supported", newItem.getLocation());
+            return newItem;
+         }
+         changes.setRelationsAndOrder(parentArtifact, CoreRelationTypes.Default_Hierarchical__Child, items);
+         changes.execute();
+
+         newItem.setNewId(newitem.getId());
+
+      } else {
+         newItem.getResults().errorf("Update Type %s not supported", newItem.getType());
+         return newItem;
+      }
+      return newItem;
+   }
+
+   /********************************
     ** Agile Program Backlog Item
     ***********************************/
 
@@ -214,21 +280,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @DELETE
    @Path("programbacklogitem/{programBacklogItemId}")
    public RestResult deleteProgramBacklogItem(@PathParam("programBacklogItemId") long programBacklogItemId) {
-      RestResult result = new RestResult();
-      try {
-         ArtifactToken programBacklogItem = atsApi.getArtifact(programBacklogItemId);
-         if (programBacklogItem == null) {
-            result.getResult().errorf("Invalid Program Backlog Item Id %s", programBacklogItemId);
-         } else {
-            IAtsChangeSet changes = atsApi.createChangeSet(
-               String.format("Delete Program Backlog Item [%s]", programBacklogItem.toStringWithId()));
-            changes.deleteArtifact(programBacklogItem);
-            changes.execute();
-         }
-      } catch (Exception ex) {
-         result.getResult().errorf("Error deleting Program Backlog Item [%s]", Lib.exceptionToString(ex));
-      }
-      return result;
+      return deleteProgramItem(programBacklogItemId, AtsArtifactTypes.AgileProgramBacklogItem.getName());
    }
 
    @Override
@@ -242,54 +294,52 @@ public class AgileEndpointImpl implements AgileEndpointApi {
          pBacklogItem.getResults().errorf("Program Id %s not found", programId);
          return pBacklogItem;
       }
+      ArtifactToken programBacklog = atsApi.getAgileService().getAgileProgramBacklogArt(program);
+      JaxProgramBaseItem baseItem = updateProgramItem(program, pBacklogItem,
+         AtsArtifactTypes.AgileProgramBacklogItem.getName(), AtsArtifactTypes.AgileProgramBacklogItem, programBacklog);
 
-      if (pBacklogItem.getType().equals(UpdateType.New)) {
-         if (!Strings.isValid(pBacklogItem.getTitle())) {
-            pBacklogItem.getResults().errorf("Program Title must be specified");
-            return pBacklogItem;
-         }
-
-         IAtsChangeSet changes = atsApi.createChangeSet(pBacklogItem.getType() + " Backlog Item");
-         ArtifactToken newBacklogItem =
-            changes.createArtifact(AtsArtifactTypes.AgileProgramBacklogItem, pBacklogItem.getTitle());
-         ArtifactToken programBacklog = atsApi.getAgileService().getAgileProgramBacklogArt(program);
-         ArtifactToken selectedItem = atsApi.getArtifact(pBacklogItem.getSelectedId());
-         List<ArtifactToken> items = new LinkedList<>();
-         if (pBacklogItem.getLocation().equals(UpdateLocation.First)) {
-            items.add(newBacklogItem);
-            items.addAll(atsApi.getRelationResolver().getChildren(programBacklog));
-         } else if (pBacklogItem.getLocation().equals(UpdateLocation.Last)) {
-            items.addAll(atsApi.getRelationResolver().getChildren(programBacklog));
-            items.add(newBacklogItem);
-         } else if (pBacklogItem.getLocation().equals(UpdateLocation.Selection)) {
-            items.addAll(atsApi.getRelationResolver().getChildren(programBacklog));
-            int index = items.indexOf(selectedItem);
-            items.add(index, newBacklogItem);
-         } else if (pBacklogItem.getLocation().equals(UpdateLocation.AfterSelection)) {
-            items.addAll(atsApi.getRelationResolver().getChildren(programBacklog));
-            int index = items.indexOf(selectedItem) + 1;
-            items.add(index, newBacklogItem);
-         } else {
-            pBacklogItem.getResults().errorf("UpdateLocation %s not supported", pBacklogItem.getLocation());
-            return pBacklogItem;
-         }
-         changes.setRelationsAndOrder(programBacklog, CoreRelationTypes.Default_Hierarchical__Child, items);
-         changes.execute();
-
-         pBacklogItem.setNewId(newBacklogItem.getId());
-         JaxAgileProgramBacklogItem newItem =
-            JaxAgileProgramBacklogItem.construct(programBacklog.getId(), newBacklogItem);
-         pBacklogItem.setItem(newItem);
-      } else {
-         pBacklogItem.getResults().errorf("Update Type %s not supported", pBacklogItem.getType());
-         return pBacklogItem;
-      }
+      JaxAgileProgramBacklogItem newItem = JaxAgileProgramBacklogItem.construct(programBacklog.getId(),
+         ArtifactToken.valueOf(ArtifactId.valueOf(baseItem.getNewId()), pBacklogItem.getTitle()));
+      pBacklogItem.setItem(newItem);
       return pBacklogItem;
+
    }
 
    /********************************
     ** Agile Program Feature
     ***********************************/
+
+   @Override
+   @DELETE
+   @Path("programfeature/{programFeatureId}")
+   public RestResult deleteProgramFeature(@PathParam("programFeatureId") long programFeatureId) {
+      return deleteProgramItem(programFeatureId, AtsArtifactTypes.AgileProgramFeature.getName());
+   }
+
+   @Override
+   @POST
+   @Path("program/{programId}/feature")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public JaxProgramFeatureUpdate updateProgramFeature(@PathParam("programId") long programId, JaxProgramFeatureUpdate featureItem) {
+      IAgileProgram program = atsApi.getAgileService().getAgileProgram(programId);
+      if (program == null) {
+         featureItem.getResults().errorf("Program Id %s not found", programId);
+         return featureItem;
+      }
+      ArtifactToken parentBacklogItem = atsApi.getArtifact(featureItem.getSelectedId());
+      if (atsApi.getStoreService().isOfType(parentBacklogItem, AtsArtifactTypes.AgileProgramFeature)) {
+         parentBacklogItem = atsApi.getRelationResolver().getParent(parentBacklogItem);
+      }
+      JaxProgramBaseItem baseItem = updateProgramItem(program, featureItem,
+         AtsArtifactTypes.AgileProgramFeature.getName(), AtsArtifactTypes.AgileProgramFeature, parentBacklogItem);
+
+      JaxAgileProgramFeature newItem = JaxAgileProgramFeature.construct(parentBacklogItem.getId(),
+         ArtifactToken.valueOf(ArtifactId.valueOf(baseItem.getNewId()), featureItem.getTitle()));
+      featureItem.setItem(newItem);
+      return featureItem;
+
+   }
 
    @Override
    public Response createProgramFeature(Long programId, JaxNewAgileProgramFeature newProgramFeature) {

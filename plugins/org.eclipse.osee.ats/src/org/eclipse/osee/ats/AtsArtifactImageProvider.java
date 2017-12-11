@@ -44,7 +44,6 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Version, FrameworkImage.VERSION, this);
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.Task, AtsImage.TASK, this);
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.ActionableItem, AtsImage.ACTIONABLE_ITEM, this);
-      ArtifactImageManager.registerBaseImage(AtsArtifactTypes.TeamWorkflow, AtsImage.TEAM_WORKFLOW, this);
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.TeamDefinition, AtsImage.TEAM_DEFINITION, this);
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.RuleDefinition, AtsImage.RULE_DEFINITION, this);
       ArtifactImageManager.registerBaseImage(AtsArtifactTypes.WorkDefinition, AtsImage.WORK_DEFINITION, this);

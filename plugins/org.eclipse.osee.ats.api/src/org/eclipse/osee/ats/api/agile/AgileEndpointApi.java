@@ -23,6 +23,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.api.agile.kanban.JaxKbSprint;
 import org.eclipse.osee.ats.api.agile.program.JaxProgramBacklogItemUpdate;
+import org.eclipse.osee.ats.api.agile.program.JaxProgramFeatureUpdate;
 import org.eclipse.osee.ats.api.agile.program.UiGridProgram;
 import org.eclipse.osee.ats.api.agile.sprint.SprintConfigurations;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
@@ -73,6 +74,16 @@ public interface AgileEndpointApi {
    @DELETE
    @Path("programbacklogitem/{programBacklogItemId}")
    public RestResult deleteProgramBacklogItem(@PathParam("programBacklogItemId") long programBacklogItemId);
+
+   @POST
+   @Path("program/{programId}/feature")
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   public JaxProgramFeatureUpdate updateProgramFeature(@PathParam("programId") long programId, JaxProgramFeatureUpdate pBacklogItem);
+
+   @DELETE
+   @Path("programfeature/{programFeatureId}")
+   public RestResult deleteProgramFeature(@PathParam("programFeatureId") long programFeatureId);
 
    @GET
    @Path("team/token")
