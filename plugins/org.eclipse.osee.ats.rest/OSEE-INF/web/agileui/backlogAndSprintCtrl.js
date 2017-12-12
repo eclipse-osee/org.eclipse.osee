@@ -23,8 +23,16 @@ angular
 							$scope.backlog = {};
 							$scope.sprint = {};
 							$scope.team.id = $routeParams.team;
-							$scope.defaultItem = $routeParams.default;
+							$scope.activeSprints = [];
+							if ($routeParams.default == "backlog") {
+								$scope.isBacklog = true;
+								$scope.isString = false;
+							}else {
+								$scope.isSprint = true;
+								$scope.isBacklog = false;
+							}
 							$scope.count = "--";
+							$scope.selectedSprint = null;
 							
 							// ////////////////////////////////////
 							// Backlog and Sprint table
@@ -126,10 +134,7 @@ angular
 
 
 							var getTasks = function() {
-								var selected = $scope.selectedItem;
-
-								if (selected) {
-									if (selected.isBacklog) {
+									if ($scope.isBacklog) {
 										AgileEndpoint.getBacklogItems($scope.team).$promise
 												.then(function(data) {
 													if (data.tasks && data.tasks.length == 0) {
@@ -142,7 +147,7 @@ angular
 													}
 												});
 									} else {
-										AgileEndpoint.getSprintItems($scope.team, selected).$promise
+										AgileEndpoint.getSprintItems($scope.team, $scope.selectedSprint).$promise
 											.then(function(data) {
 												var result = data;
 												if (result && result.length == 0) {
@@ -154,28 +159,18 @@ angular
 													LayoutService.refresh();
 												}
 											});
-										AgileEndpoint.getSprintConfig($scope.team, selected).$promise
-										.then(function(data) {
-											var config = {};
-											config.startDate = new Date(data.startDate);
-											config.endDate = new Date(data.endDate);
-											config.plannedPoints = data.plannedPoints;
-											config.unPlannedPoints = data.unPlannedPoints;
-											$scope.sprint.config = config;
-										});
+										AgileEndpoint.getSprintConfig($scope.team, $scope.selectedSprint).$promise
+											.then(function(data) {
+												var config = {};
+												config.startDate = new Date(data.startDate);
+												config.endDate = new Date(data.endDate);
+												config.plannedPoints = data.plannedPoints;
+												config.unPlannedPoints = data.unPlannedPoints;
+												$scope.sprint.config = config;
+											});
 									}
-								}
 							}
 
-							// populate model with items
-							$scope.$watch("selectedItem", function() {
-								if ($scope.selectedItem) {
-									$scope.notasks = "";
-									$scope.tasks = null;
-									getTasks();
-								}
-							});
-							
 							$scope.onDblClick = function() {
 								var selected = $scope.selectedTask;
 								if (selected) {
@@ -188,7 +183,7 @@ angular
 							// Only available and called when sprint is selected
 							$scope.updateSprintConfig = function() {
 								try {
-								 $scope.sprint.id = $scope.selectedItem.id;
+								 $scope.sprint.id = $scope.selectedSprint.id;
 								 AgileEndpoint.updateSprintConfig($scope.team, $scope.sprint).$promise
 										.then(function(data) {
 											if (data.results.numErrors > 0) {
@@ -207,46 +202,44 @@ angular
 							
 							// add backlog and sprints to pulldown and set
 							// default if specified as query parameter
-							AgileEndpoint
+							if ($scope.isBacklog) {
+								AgileEndpoint
 									.getBacklogToken($scope.team).$promise
 									.then(function(data) {
 										if (data && data.name) {
 											$scope.backlog.name = data.name;
 											$scope.backlog.id = data.id;
-											var item = $scope.backlog;
-											item.isBacklog = true;
-											// add backlog first
-											var defaultBacklogItem = item;
-											var activeItems = [];
-											activeItems
-													.push(item);
-
-											// get active sprints
-											AgileEndpoint
-													.getSprintsTokens($scope.team).$promise
-													.then(function(
-															data) {
-														var defaultSprintItem = null;
-														for (i = 0; i < data.length; i++) { 
-															var sprint = data[i];
-															if (!defaultSprintItem) {
-																defaultSprintItem = sprint;
-															}
-															sprint.isBacklog = false;
-															activeItems
-																	.push(sprint);
-														}
-														$scope.activeItems = activeItems;
-
-														if ($scope.defaultItem == "sprint") {
-															$scope.selectedItem = defaultSprintItem;
-														}else if ($scope.defaultItem = "backlog") {
-															$scope.selectedItem = defaultBacklogItem;
-														}
-													});
-
+											$scope.isBacklog = true;
+											$scope.notasks = "";
+											$scope.tasks = null;
+											getTasks();
 										}
 									});
+							} 
+							else if ($scope.isSprint) {
+								// get active sprints
+								AgileEndpoint
+									.getSprintsTokens($scope.team).$promise
+									.then(function(
+											data) {
+										var defaultSprintItem = null;
+										var activeSprints = [];
+										for (i = 0; i < data.length; i++) { 
+											var sprint = data[i];
+											if (!defaultSprintItem) {
+												defaultSprintItem = sprint;
+											}
+											activeSprints
+													.push(sprint);
+										}
+										$scope.activeSprints = activeSprints;
+										$scope.selectedSprint = defaultSprintItem;
+										$scope.notasks = "";
+										$scope.tasks = null;
+										getTasks();
+									});
+							}	
+
 							
 							Global.loadActiveProgsTeams($scope, AgileEndpoint, Menu);
 

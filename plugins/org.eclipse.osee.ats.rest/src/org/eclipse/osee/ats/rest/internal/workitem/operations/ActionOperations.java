@@ -157,6 +157,23 @@ public class ActionOperations {
                changes.setSoleAttributeValue(workItem, attrTypeId, Collections.toString(",", values));
             }
          }
+      } else if (attrTypeIdOrKey.equals(AttributeKey.Assignee.name())) {
+         String accountIdOrName = values.iterator().next();
+         if (Strings.isNumeric(accountIdOrName)) {
+            IAtsUser assignee = atsApi.getUserService().getUserByAccountId(Long.valueOf(accountIdOrName));
+            if (assignee == null) {
+               throw new OseeArgumentException("No user with account id [%s]", accountIdOrName);
+            }
+            workItem.getStateMgr().addAssignee(assignee);
+            changes.add(workItem);
+         } else {
+            IAtsUser assignee = atsApi.getUserService().getUserByName(accountIdOrName);
+            if (assignee == null) {
+               throw new OseeArgumentException("No user with user name [%s]", accountIdOrName);
+            }
+            workItem.getStateMgr().addAssignee(assignee);
+            changes.add(workItem);
+         }
       } else {
          attrTypeId = getAttributeType(attrTypeIdOrKey);
          if (attrTypeId != null) {

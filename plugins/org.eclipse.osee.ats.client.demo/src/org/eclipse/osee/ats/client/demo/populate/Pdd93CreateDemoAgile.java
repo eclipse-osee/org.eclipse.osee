@@ -139,7 +139,11 @@ public class Pdd93CreateDemoAgile {
       JaxAgileStory jaxStory2 = JaxAgileStory.construct(feature, DemoArtifactToken.RD_Robot_Nav_Story_2);
       IAgileStory story2 = AtsClientService.get().getAgileService().createAgileStory(feature, jaxStory2);
 
+      JaxAgileStory jaxStory3 = JaxAgileStory.construct(feature, DemoArtifactToken.RD_Robot_Nav_Story_3);
+      IAgileStory story3 = AtsClientService.get().getAgileService().createAgileStory(feature, jaxStory3);
+
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("Add Agile Items to Stories");
+
       IAtsTeamWorkflow codeWf =
          AtsClientService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_Commited_Code_TeamWf);
       AtsClientService.get().getAgileService().setAgileStory(codeWf, story1, changes);
@@ -148,7 +152,25 @@ public class Pdd93CreateDemoAgile {
       AtsClientService.get().getAgileService().setAgileStory(testWf, story1, changes);
       IAtsTeamWorkflow reqWf =
          AtsClientService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_Commited_Req_TeamWf);
+
+      // relate story to agile team and sprint
+      ArtifactToken story1Art = AtsClientService.get().getQueryService().getArtifact(story1);
+      ArtifactToken agileTeamArt =
+         AtsClientService.get().getQueryService().getArtifact(DemoArtifactToken.SAW_Agile_Team);
+      changes.relate(story1Art, AtsRelationTypes.AgileStoryToAgileTeam_AgileTeam, agileTeamArt);
+      ArtifactToken sprint2Art = AtsClientService.get().getQueryService().getArtifact(DemoArtifactToken.SAW_Sprint_2);
+      changes.relate(story1Art, AtsRelationTypes.AgileStoryToSprint_Sprint, sprint2Art);
+
+      ArtifactToken story2Art = AtsClientService.get().getQueryService().getArtifact(story2);
+      changes.relate(story2Art, AtsRelationTypes.AgileStoryToAgileTeam_AgileTeam, agileTeamArt);
+      changes.relate(story2Art, AtsRelationTypes.AgileStoryToSprint_Sprint, sprint2Art);
+
+      ArtifactToken story3Art = AtsClientService.get().getQueryService().getArtifact(story3);
+      changes.relate(story3Art, AtsRelationTypes.AgileStoryToAgileTeam_AgileTeam, agileTeamArt);
+      changes.relate(story3Art, AtsRelationTypes.AgileStoryToSprint_Sprint, sprint2Art);
+
       AtsClientService.get().getAgileService().setAgileStory(reqWf, story1, changes);
+      changes.relate(story1Art, AtsRelationTypes.AgileStoryToItems_AtsItem, reqWf);
 
       IAtsTeamWorkflow codeWf2 =
          AtsClientService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_UnCommited_Code_TeamWf);
@@ -159,6 +181,16 @@ public class Pdd93CreateDemoAgile {
       IAtsTeamWorkflow reqWf2 =
          AtsClientService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_UnCommited_Req_TeamWf);
       AtsClientService.get().getAgileService().setAgileStory(reqWf2, story2, changes);
+
+      IAtsTeamWorkflow codeWf3 =
+         AtsClientService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_NoBranch_Code_TeamWf);
+      AtsClientService.get().getAgileService().setAgileStory(codeWf3, story3, changes);
+      IAtsTeamWorkflow testWf3 =
+         AtsClientService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_NoBranch_Test_TeamWf);
+      AtsClientService.get().getAgileService().setAgileStory(testWf3, story3, changes);
+      IAtsTeamWorkflow reqWf3 =
+         AtsClientService.get().getQueryService().getTeamWf(DemoArtifactToken.SAW_NoBranch_Req_TeamWf);
+      AtsClientService.get().getAgileService().setAgileStory(reqWf3, story3, changes);
       changes.execute();
 
       Artifact progArt = AtsClientService.get().getQueryServiceClient().getArtifact(aProgram);
@@ -384,6 +416,7 @@ public class Pdd93CreateDemoAgile {
       changes.setSoleAttributeValue(sprint, AtsAttributeTypes.PlannedPoints, 200);
       changes.addAttribute(sprint, AtsAttributeTypes.Holiday, holiday1);
       changes.addAttribute(sprint, AtsAttributeTypes.Holiday, holiday2);
+
       // set sprint data on sprint items
       Artifact agileTeamArt = AtsClientService.get().getQueryServiceClient().getArtifact(sprint).getRelatedArtifact(
          AtsRelationTypes.AgileTeamToSprint_AgileTeam);

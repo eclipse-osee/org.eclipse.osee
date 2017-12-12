@@ -1693,11 +1693,31 @@ relationType "AgileSprintToItem" {
 	multiplicity ONE_TO_MANY
 }
 
+relationType "AgileStoryToAgileTeam" {
+	id 7984323968228307345
+	sideAName "Agile Story"
+	sideAArtifactType "Agile Story"
+	sideBName "Agile Team"
+	sideBArtifactType "Agile Team"
+	defaultOrderType Lexicographical_Ascending
+	multiplicity MANY_TO_ONE
+}
+
+relationType "AgileStoryToSprint" {
+	id 2639165674435679873
+	sideAName "Agile Story"
+	sideAArtifactType "Agile Story"
+	sideBName "Agile Sprint"
+	sideBArtifactType "Agile Sprint"
+	defaultOrderType Lexicographical_Ascending
+	multiplicity MANY_TO_ONE
+}
+
 relationType "AgileStoryToItem" {
 	id 98821417946551335
 	sideAName "Agile Story"
 	sideAArtifactType "Agile Story"
-	sideBName "ATS Team Workflow"
+	sideBName "Team Workflow"
 	sideBArtifactType "Team Workflow"
 	defaultOrderType Lexicographical_Ascending
 	multiplicity ONE_TO_MANY

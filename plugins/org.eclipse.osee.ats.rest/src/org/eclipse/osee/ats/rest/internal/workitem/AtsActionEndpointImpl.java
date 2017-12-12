@@ -59,7 +59,11 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.api.workflow.NewActionResult;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.util.ActionFactory;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
+import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.ats.rest.internal.util.TargetedVersion;
 import org.eclipse.osee.ats.rest.internal.workitem.operations.ActionOperations;
@@ -68,6 +72,7 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -93,12 +98,10 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
 
    @Context
    private HttpHeaders httpHeaders;
-   private final JsonFactory jsonFactory;
 
    public AtsActionEndpointImpl(AtsApi atsApi, OrcsApi orcsApi, JsonFactory jsonFactory) {
       this.atsApi = atsApi;
       this.orcsApi = orcsApi;
-      this.jsonFactory = jsonFactory;
    }
 
    @Override
@@ -261,13 +264,128 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Produces({MediaType.APPLICATION_JSON})
    public Attribute setActionAttributeByType(@PathParam("id") String id, @PathParam("attrTypeIdOrKey") String attrTypeIdOrKey, List<String> values) {
       Conditions.assertNotNull(values, "values can not be null");
-      IAtsWorkItem workItem = atsApi.getQueryService().getWorkItem(id);
+      IAtsWorkItem workItem = atsApi.getQueryService().getWorkItemsByIds(id).iterator().next();
+      IAtsChangeSet changes = atsApi.createChangeSet("Set attr by type/key [" + attrTypeIdOrKey + "]");
       IAtsUser asUser = atsApi.getUserService().getUserByAccountId(httpHeaders);
       if (asUser == null) {
          asUser = AtsCoreUsers.SYSTEM_USER;
       }
-      ActionOperations ops = new ActionOperations(asUser, workItem, atsApi, orcsApi);
-      return ops.setActionAttributeByType(id, attrTypeIdOrKey, values);
+      AttributeTypeId attrTypeId = null;
+      if (attrTypeIdOrKey.equals(AttributeKey.Title.name())) {
+         changes.setSoleAttributeValue(workItem, CoreAttributeTypes.Name, values.iterator().next());
+         attrTypeId = CoreAttributeTypes.Name;
+      } else if (attrTypeIdOrKey.equals(AttributeKey.Priority.name())) {
+         changes.setSoleAttributeValue(workItem, AtsAttributeTypes.PriorityType, values.iterator().next());
+         attrTypeId = AtsAttributeTypes.PriorityType;
+      } else if (attrTypeIdOrKey.equals(AttributeKey.ColorTeam.name())) {
+         changes.setSoleAttributeValue(workItem, AtsAttributeTypes.ColorTeam, values.iterator().next());
+         attrTypeId = AtsAttributeTypes.ColorTeam;
+      } else if (attrTypeIdOrKey.equals(AttributeKey.IPT.name())) {
+         changes.setSoleAttributeValue(workItem, AtsAttributeTypes.IPT, values.iterator().next());
+         attrTypeId = AtsAttributeTypes.IPT;
+      } else if (attrTypeIdOrKey.equals(AttributeKey.State.name())) {
+         String state = values.iterator().next();
+         TransitionHelper helper = new TransitionHelper("Transition Workflow", Arrays.asList(workItem), state,
+            new ArrayList<IAtsUser>(), "", changes, atsApi, TransitionOption.OverrideAssigneeCheck);
+         helper.setTransitionUser(asUser);
+         TransitionManager mgr = new TransitionManager(helper);
+         TransitionResults results = new TransitionResults();
+         mgr.handleTransitionValidation(results);
+         if (!results.isEmpty()) {
+            throw new OseeArgumentException("Exception transitioning " + results.toString());
+         }
+         mgr.handleTransition(results);
+         if (!results.isEmpty()) {
+            throw new OseeArgumentException("Exception transitioning " + results.toString());
+         }
+         attrTypeId = AtsAttributeTypes.CurrentState;
+      } else if (attrTypeIdOrKey.equals(AttributeKey.Version.name())) {
+         if (!workItem.isTeamWorkflow()) {
+            throw new OseeArgumentException("Not valid to set version for [%s]", workItem.getArtifactTypeName());
+         }
+         // If values emtpy, clear current version
+         IAtsVersion currVersion = atsApi.getVersionService().getTargetedVersion(workItem);
+         if (values.isEmpty() && currVersion != null) {
+            atsApi.getVersionService().removeTargetedVersion(workItem.getParentTeamWorkflow(), changes);
+         }
+         // If id, find matching id for this team
+         else if (Strings.isNumeric(values.iterator().next())) {
+            String version = values.iterator().next();
+            if (currVersion == null || !currVersion.getIdString().equals(version)) {
+               IAtsVersion newVer = null;
+               IAtsTeamDefinition teamDef =
+                  workItem.getParentTeamWorkflow().getTeamDefinition().getTeamDefinitionHoldingVersions();
+               for (IAtsVersion teamDefVer : atsApi.getVersionService().getVersions(teamDef)) {
+                  if (teamDefVer.getIdString().equals(version)) {
+                     newVer = teamDefVer;
+                     break;
+                  }
+               }
+               if (newVer == null) {
+                  throw new OseeArgumentException("Version id [%s] not valid for team ", version,
+                     teamDef.toStringWithId());
+               }
+               atsApi.getVersionService().setTargetedVersion(workItem.getParentTeamWorkflow(), newVer, changes);
+            }
+         }
+         // Else if name, match name with version names for this team
+         else if (Strings.isValid(values.iterator().next())) {
+            String version = values.iterator().next();
+            if (currVersion == null || !currVersion.getName().equals(version)) {
+               IAtsVersion newVer = null;
+               IAtsTeamDefinition teamDef =
+                  workItem.getParentTeamWorkflow().getTeamDefinition().getTeamDefinitionHoldingVersions();
+               for (IAtsVersion teamDefVer : atsApi.getVersionService().getVersions(teamDef)) {
+                  if (teamDefVer.getName().equals(version)) {
+                     newVer = teamDefVer;
+                     break;
+                  }
+               }
+               if (newVer == null) {
+                  throw new OseeArgumentException("Version name [%s] not valid for team ", version,
+                     teamDef.toStringWithId());
+               }
+               atsApi.getVersionService().setTargetedVersion(workItem.getParentTeamWorkflow(), newVer, changes);
+            }
+         }
+      } else if (attrTypeIdOrKey.equals(AttributeKey.Originator.name())) {
+         String accountId = values.iterator().next();
+         if (!Strings.isNumeric(accountId)) {
+            IAtsUser originator = atsApi.getUserService().getUserByAccountId(Long.valueOf(accountId));
+            if (originator == null) {
+               throw new OseeArgumentException("No user with account id [%s]", accountId);
+            }
+            atsApi.getActionFactory().setCreatedBy(workItem, originator, true, workItem.getCreatedDate(), changes);
+         }
+      } else if (attrTypeIdOrKey.equals(AttributeKey.Assignee.name())) {
+         List<IAtsUser> assignees = new LinkedList<>();
+         for (String accountIdOrName : values) {
+            if (Strings.isNumeric(accountIdOrName)) {
+               IAtsUser assignee = atsApi.getUserService().getUserByAccountId(Long.valueOf(accountIdOrName));
+               if (assignee == null) {
+                  throw new OseeArgumentException("No user with account id [%s]", accountIdOrName);
+               } else {
+                  assignees.add(assignee);
+               }
+            } else {
+               IAtsUser assignee = atsApi.getUserService().getUserByName(accountIdOrName);
+               if (assignee == null) {
+                  throw new OseeArgumentException("No user with account name [%s]", accountIdOrName);
+               } else {
+                  assignees.add(assignee);
+               }
+            }
+         }
+         workItem.getStateMgr().setAssignees(assignees);
+         changes.add(workItem);
+      } else {
+         attrTypeId = atsApi.getStoreService().getAttributeType(Long.valueOf(attrTypeIdOrKey));
+         if (attrTypeId != null) {
+            changes.setAttributeValuesAsStrings(workItem, attrTypeId, values);
+         }
+      }
+      ActionOperations actionOps = new ActionOperations(asUser, workItem, atsApi, orcsApi);
+      return actionOps.setActionAttributeByType(id, attrTypeIdOrKey, values);
    }
 
    @Override

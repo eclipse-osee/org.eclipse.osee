@@ -400,7 +400,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void setAttributeValuesAsStrings(IAtsObject atsObject, AttributeTypeToken attributeType, List<String> values) {
+   public void setAttributeValuesAsStrings(IAtsObject atsObject, AttributeTypeId attributeType, List<String> values) {
       List<Object> objValues = new LinkedList<>();
       for (String value : values) {
          if (orcsApi.getOrcsTypes().getAttributeTypes().isStringType(attributeType)) {
@@ -456,7 +456,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          }
       }
       ArtifactReadable art = getArtifact(atsObject);
-      setAttributeValues(art, attributeType, objValues);
+      setAttributeValues(art, (AttributeTypeToken) attributeType, objValues);
    }
 
    @Override

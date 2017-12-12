@@ -65,6 +65,7 @@ import org.eclipse.osee.ats.api.agile.JaxNewAgileSprint;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileTeam;
 import org.eclipse.osee.ats.api.agile.atw.AtwNode;
 import org.eclipse.osee.ats.api.agile.kanban.JaxKbSprint;
+import org.eclipse.osee.ats.api.agile.kanban.KanbanRowType;
 import org.eclipse.osee.ats.api.agile.program.JaxProgramBacklogItemUpdate;
 import org.eclipse.osee.ats.api.agile.program.JaxProgramBaseItem;
 import org.eclipse.osee.ats.api.agile.program.JaxProgramFeatureUpdate;
@@ -78,7 +79,6 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.AtsCoreUsers;
-import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.ILineChart;
 import org.eclipse.osee.ats.api.util.RestResult;
@@ -459,25 +459,18 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    public List<ArtifactToken> getTeamMembers(@PathParam("teamId") ArtifactId teamId) {
       IAgileTeam aTeam = atsApi.getQueryService().getConfigItem(teamId);
-      Set<IAtsUser> activeMembers = atsApi.getAgileService().getTeamMebers(aTeam);
+      List<ArtifactToken> members = atsApi.getAgileService().getTeamMembersOrdered(aTeam);
+      return members;
+   }
 
-      // Construct list of users with team members sorted first and other users last
-      List<ArtifactToken> results = new LinkedList<>();
-      for (IAtsUser user : activeMembers) {
-         results.add(ArtifactToken.valueOf(user.getStoreObject(), user.getName() + " (Team)"));
-      }
-      Collections.sort(results, new NamedComparator(SortOrder.ASCENDING));
-
-      List<ArtifactToken> othersForSort = new LinkedList<>();
-      for (IAtsUser user : atsApi.getUserService().getUsers()) {
-         if (user.isActive() && !activeMembers.contains(user)) {
-            othersForSort.add(user.getStoreObject());
-         }
-      }
-      Collections.sort(othersForSort, new NamedComparator(SortOrder.ASCENDING));
-      results.addAll(othersForSort);
-
-      return results;
+   @Override
+   @GET
+   @Path("team/{teamId}/memberOther")
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<ArtifactToken> getOtherMembers(@PathParam("teamId") ArtifactId teamId) {
+      IAgileTeam aTeam = atsApi.getQueryService().getConfigItem(teamId);
+      List<ArtifactToken> members = atsApi.getAgileService().getTeamMembersOrdered(aTeam);
+      return members;
    }
 
    @Override
@@ -896,7 +889,26 @@ public class AgileEndpointImpl implements AgileEndpointApi {
 
    @Override
    public JaxKbSprint getSprintItemsForKb(long teamId, long sprintId) {
-      return KanbanOperations.getSprintItemsForKb(atsApi, teamId, sprintId);
+      return new KanbanOperations(atsApi, teamId, sprintId, KanbanRowType.BY_ASSIGNEE).getSprintItemsForKb();
+   }
+
+   public JaxKbSprint getSprintItemsForKb(AtsApi atsApi, long teamId, long sprintId) {
+      KanbanRowType rowType = KanbanRowType.BY_ASSIGNEE;
+      MultivaluedMap<String, String> qp = uriInfo.getQueryParameters(true);
+      List<String> values = qp.get("rowType");
+      if (Conditions.hasValues(values)) {
+         try {
+            rowType = KanbanRowType.valueOf(values.iterator().next());
+         } catch (Exception ex) {
+            // do nothing
+         }
+      }
+      return new KanbanOperations(atsApi, teamId, sprintId, rowType).getSprintItemsForKb();
+   }
+
+   @Override
+   public JaxKbSprint getSprintItemsForKbByStory(long teamId, long sprintId) {
+      return new KanbanOperations(atsApi, teamId, sprintId, KanbanRowType.BY_STORY).getSprintItemsForKb();
    }
 
    /********************************
@@ -1018,11 +1030,6 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @Override
    public AgileWriterResult updateItems(JaxAgileItem newItem) {
       AgileWriterResult result = atsApi.getAgileService().updateAgileItem(newItem);
-      JaxAgileItem item = new JaxAgileItem();
-      item.getIds().addAll(result.getJaxAgileItem().getIds());
-      item.getFeatures().addAll(result.getJaxAgileItem().getFeatures());
-      item.setSprintId(result.getJaxAgileItem().getSprintId());
-
       return result;
    }
 

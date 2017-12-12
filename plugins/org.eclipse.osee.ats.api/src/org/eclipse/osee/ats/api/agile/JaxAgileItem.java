@@ -29,6 +29,11 @@ public class JaxAgileItem extends JaxAgileObject {
    private String toState = null;
    private List<String> toStateUsers = new ArrayList<String>();
 
+   private boolean setAssignees = false;
+   private List<String> assigneesAccountIds = new ArrayList<>();
+   private String assigneesStr = "";
+   private String assigneesStrShort = "";
+
    public List<Long> getFeatures() {
       return features;
    }
@@ -99,6 +104,38 @@ public class JaxAgileItem extends JaxAgileObject {
 
    public String getToState() {
       return toState;
+   }
+
+   public boolean isSetAssignees() {
+      return setAssignees;
+   }
+
+   public void setSetAssignees(boolean setAssignees) {
+      this.setAssignees = setAssignees;
+   }
+
+   public List<String> getAssigneesAccountIds() {
+      return assigneesAccountIds;
+   }
+
+   public void setAssigneesAccountIds(List<String> assigneesAccountIds) {
+      this.assigneesAccountIds = assigneesAccountIds;
+   }
+
+   public String getAssigneesStr() {
+      return assigneesStr;
+   }
+
+   public void setAssigneesStr(String assigneesStr) {
+      this.assigneesStr = assigneesStr;
+   }
+
+   public String getAssigneesStrShort() {
+      return assigneesStrShort;
+   }
+
+   public void setAssigneesStrShort(String assigneesStrShort) {
+      this.assigneesStrShort = assigneesStrShort;
    }
 
 }

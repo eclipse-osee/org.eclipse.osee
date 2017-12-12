@@ -456,7 +456,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void setAttributeValuesAsStrings(IAtsObject atsObject, AttributeTypeToken attributeType, List<String> values) {
+   public void setAttributeValuesAsStrings(IAtsObject atsObject, AttributeTypeId attributeType, List<String> values) {
       List<Object> objValues = new LinkedList<>();
       for (String value : values) {
          if (AttributeTypeManager.isBaseTypeCompatible(StringAttribute.class, attributeType)) {
@@ -504,7 +504,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
             throw new OseeArgumentException("Unsupported attribute value [%v] for type [%s]", attributeType, value);
          }
       }
-      setAttributeValues(getArtifact(atsObject), attributeType, objValues);
+      setAttributeValues(atsObject, (AttributeTypeToken) attributeType, objValues);
    }
 
    @Override

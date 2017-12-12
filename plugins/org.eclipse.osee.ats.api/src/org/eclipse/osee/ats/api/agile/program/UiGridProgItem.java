@@ -24,6 +24,8 @@ public class UiGridProgItem extends JaxAtsObject {
    String type;
    int tLevel;
    boolean expanded = false;
+   String agilePoints;
+   String assigneesOrImplementers;
 
    public String getImage() {
       return image;
@@ -60,6 +62,22 @@ public class UiGridProgItem extends JaxAtsObject {
 
    public void setTLevel(int treeLevel) {
       this.tLevel = treeLevel;
+   }
+
+   public String getAgilePoints() {
+      return agilePoints;
+   }
+
+   public void setAgilePoints(String agilePoints) {
+      this.agilePoints = agilePoints;
+   }
+
+   public String getAssigneesOrImplementers() {
+      return assigneesOrImplementers;
+   }
+
+   public void setAssigneesOrImplementers(String assigneesOrImplementers) {
+      this.assigneesOrImplementers = assigneesOrImplementers;
    }
 
 }

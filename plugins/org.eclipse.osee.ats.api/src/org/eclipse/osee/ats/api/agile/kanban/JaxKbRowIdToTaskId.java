@@ -16,9 +16,9 @@ import java.util.Set;
 /**
  * @author Donald G. Dunne
  */
-public class JaxKbAssigneeIdToTaskId {
+public class JaxKbRowIdToTaskId {
 
-   private String assigneeId;
+   private String rowId;
    private Set<String> taskIds = new HashSet<String>();
 
    public Set<String> getTaskIds() {
@@ -29,12 +29,12 @@ public class JaxKbAssigneeIdToTaskId {
       this.taskIds = taskIds;
    }
 
-   public String getAssigneeId() {
-      return assigneeId;
+   public String getRowId() {
+      return rowId;
    }
 
-   public void setAssigneeId(String assigneeId) {
-      this.assigneeId = assigneeId;
+   public void setRowId(String rowId) {
+      this.rowId = rowId;
    }
 
 }

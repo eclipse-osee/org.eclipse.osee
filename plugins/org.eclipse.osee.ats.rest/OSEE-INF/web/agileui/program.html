@@ -1,3 +1,7 @@
+<!-- Shows single program view (after selection).  
+-- Will show program backlog and program agile teams.
+ -->
+
 <div id="mainDiv">
 
 	<link rel="stylesheet" href="program.css"></link>
@@ -25,6 +29,11 @@
 			ng-show="isPBacklog || isPBacklogItem">
 			<img src="/ats/agileui/images/agileProgramBacklogItem.gif" /> <span
 				class="glyphicon glyphicon-plus"></span> Add Backlog Item
+		</button>
+		<button type="button" class="btn btn-default btn-xs"
+			ng-show="isPBacklog ">
+			<img src="/ats/agileui/images/agileTeam.gif" /> <span
+				class="glyphicon glyphicon-plus"></span> Add Agile Item
 		</button>
 		<button type="button" class="btn btn-default btn-xs"
 			ng-click="deleteProgramBacklogItem(selectedTask)"
@@ -70,23 +79,32 @@
 			<img src="/ats/agileui/images/agileTask.gif" /> <span
 				class="glyphicon glyphicon-minus"></span> Delete Task
 		</button>
+		<button type="button" class="btn btn-default btn-xs"
+			ng-click="deleteTask(selectedTask)" ng-show="isStory">
+			<img src="/ats/agileui/images/agileTeam.gif" /> <span
+				class="glyphicon glyphicon-minus"></span> Set Responsible Agile Team
+		</button>
+		<button type="button" class="btn btn-default btn-xs"
+			ng-click="deleteTask(selectedTask)" ng-show="isStory">
+			<img src="/ats/agileui/images/agileSprint.gif" /> <span
+				class="glyphicon glyphicon-minus"></span> Set Agile Sprint
+		</button>
 	</div>
 
 	<div id="addProgramBacklogItem" ng-show="programBacklogItemSectionOpen"
 		boarder="2">
 		<div id="sectionInnerDiv">
 			<form class="simple-form" novalidate>
-				<label>Program Backlog Item Title:&nbsp;</label><input id="titleText" type="text"
-					ng-model="item.title" /><br />
-				<!– –> <label>Add After Selection</label> <input type="checkbox"
-					name="location" ng-model="item.addAfter">
-				</label> <br />
-				<br />
-				<!– –> <input type="submit" ng-click="addProgramBacklogItem(item)"
+				<label>Program Backlog Item Title:&nbsp;</label><input
+					id="titleText" type="text" ng-model="item.title" /><br />
+				<!– –>
+				<label>Add After Selection</label> <input type="checkbox"
+					name="location" ng-model="item.addAfter"> </label> <br /> <br />
+				<!– –>
+				<input type="submit" ng-click="addProgramBacklogItem(item)"
 					value="Create" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input
 					type="submit" ng-click="closeProgramBacklogItemSection(item)"
-					value="Close" />
-				<br />
+					value="Close" /> <br />
 			</form>
 		</div>
 	</div>
@@ -95,17 +113,16 @@
 		boarder="2">
 		<div id="sectionInnerDiv">
 			<form class="simple-form" novalidate>
-				<label>Program Feature Title:&nbsp;</label><input id="titleText" type="text"
-					ng-model="item.title" /><br />
-				<!– –> <label>Add After Selection</label> <input type="checkbox"
-					name="location" ng-model="item.addAfter">
-				</label> <br />
-				<br />
-				<!– –> <input type="submit" ng-click="addProgramFeature(item)"
+				<label>Program Feature Title:&nbsp;</label><input id="titleText"
+					type="text" ng-model="item.title" /><br />
+				<!– –>
+				<label>Add After Selection</label> <input type="checkbox"
+					name="location" ng-model="item.addAfter"> </label> <br /> <br />
+				<!– –>
+				<input type="submit" ng-click="addProgramFeature(item)"
 					value="Create" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input
 					type="submit" ng-click="closeProgramFeatureSection(item)"
-					value="Close" />
-				<br />
+					value="Close" /> <br />
 			</form>
 		</div>
 	</div>

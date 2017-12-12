@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.core.agile;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -47,6 +48,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.user.AtsCoreUsers;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -59,12 +61,15 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.NamedComparator;
+import org.eclipse.osee.framework.jdk.core.util.SortOrder;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 
@@ -742,8 +747,8 @@ public class AgileService implements IAgileService {
 
    @Override
    public void setAgileStory(IAtsTeamWorkflow teamWf, IAgileStory story, IAtsChangeSet changes) {
-      changes.unrelateFromAll(AtsRelationTypes.AgileStoryToItem_Story, teamWf.getStoreObject());
-      changes.relate(story, AtsRelationTypes.AgileStoryToItem_AtsItem, teamWf);
+      changes.unrelateFromAll(AtsRelationTypes.AgileStoryToItems_Story, teamWf.getStoreObject());
+      changes.relate(story, AtsRelationTypes.AgileStoryToItems_AtsItem, teamWf);
    }
 
    @Override
@@ -766,6 +771,38 @@ public class AgileService implements IAgileService {
       IAgileProgramBacklogItem progBacklogItem =
          ops.createAgileProgramBacklogItem(programBacklog, jaxProgramBacklogItem);
       return progBacklogItem;
+   }
+
+   @Override
+   public List<ArtifactToken> getTeamMembersOrdered(IAgileTeam aTeam) {
+      Set<IAtsUser> activeTeamMembers = atsApi.getAgileService().getTeamMebers(aTeam);
+
+      // Construct list of users with team members sorted first and other users last
+      List<ArtifactToken> results = new LinkedList<>();
+      for (IAtsUser user : activeTeamMembers) {
+         results.add(ArtifactToken.valueOf(user.getStoreObject(), user.getName()));
+      }
+      Collections.sort(results, new NamedComparator(SortOrder.ASCENDING));
+
+      // Add UnAssigned after team members for convenience
+      results.add(ArtifactToken.valueOf(AtsCoreUsers.UNASSIGNED_USER.getId(), AtsCoreUsers.UNASSIGNED_USER.getName(),
+         CoreBranches.COMMON));
+
+      return results;
+   }
+
+   @Override
+   public List<ArtifactToken> getOtherMembersOrdered(IAgileTeam aTeam) {
+      List<ArtifactToken> activeTeamMembers = getTeamMembersOrdered(aTeam);
+      List<ArtifactToken> results = new LinkedList<>();
+      for (IAtsUser user : atsApi.getUserService().getUsers()) {
+         if (!user.equals(AtsCoreUsers.UNASSIGNED_USER) && user.isActive() && !activeTeamMembers.contains(
+            user.getStoreObject())) {
+            results.add(user.getStoreObject());
+         }
+      }
+      Collections.sort(results, new NamedComparator(SortOrder.ASCENDING));
+      return results;
    }
 
 }

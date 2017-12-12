@@ -1,4 +1,6 @@
 /**
+ * Shows single program view (after selection).  Will show program backlog and program agile teams.
+ * 
  * Uses Angular-Tree-Widget - http://www.bestjquery.com/?291XT9RI
  */
 angular
@@ -145,7 +147,7 @@ angular
 										$scope.isPBacklogFeature = true;
 									} else if (sel.shortType == "Story") {
 										$scope.isStory = true;
-									} else if (sel.shortType == "Task") {
+									} else if (sel.shortType.endsWith("Team Workflow")) {
 										$scope.isTask = true;
 									}
 								}
@@ -187,9 +189,9 @@ angular
 								task.shortType = task.type
 										.replace("Agile ", "");
 								if (!task.image) {
-									var image = $scope.artTypeNameToImageMap[task.artifactTypeName];
+									var image = $scope.artTypeNameToImageMap[task.type];
 									if (image) {
-										task.image = $scope.image;
+										task.image = image.baseUrl + "/" + image.imageName;
 									}
 								}
 							}
@@ -337,12 +339,15 @@ angular
 								$scope.item.location = "First";
 							}
 							$scope.setupAddItem = function(addType, item) {
+								if (!$scope.selectedTask) {
+									alert("Must select item");
+									return;
+								}
 								var newItem = {};
 								if (item.addAfter) {
 									newItem.location = "AfterSelection";
-								} else if ((addType == "PBacklogItem"
-										&& $scope.isPBacklogItem) || (addType == "PBacklogFeature"
-											&& $scope.isPBacklogFeature)) {
+								} else if ((addType == "PBacklogItem" && $scope.isPBacklogItem)
+										|| (addType == "PBacklogFeature" && $scope.isPBacklogFeature)) {
 									newItem.location = "Selection";
 								} else {
 									newItem.location = item.location;

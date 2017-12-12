@@ -44,6 +44,7 @@ public class AgileItemWriter {
    private final AtsApi atsApi;
    private final JaxAgileItem newItem;
    private final IAgileService agileService;
+   private List<IAtsWorkItem> workItems;
 
    public AgileItemWriter(AtsApi atsApi, IAgileService agileService, JaxAgileItem newItem) {
       this.atsApi = atsApi;
@@ -63,18 +64,18 @@ public class AgileItemWriter {
             for (IAtsWorkItem workItem : workItems) {
                // just assignee change
                if (workItem.getStateMgr().getCurrentStateName().equals(newItem.getToState())) {
-                  Collection<IAtsUser> toStateAssignees = getToStateAssignees(newItem.getToStateUsers());
+                  Collection<IAtsUser> toStateAssignees = getAssignees(newItem.getToStateUsers());
                   resolveAssignees(toStateAssignees);
                   workItem.getStateMgr().setAssignees(toStateAssignees);
                   changes.add(workItem);
                }
                // transition change
                else {
-                  Collection<IAtsUser> toStateAssignees = getToStateAssignees(newItem.getToStateUsers());
+                  Collection<IAtsUser> toStateAssignees = getAssignees(newItem.getToStateUsers());
                   resolveAssignees(toStateAssignees);
-                  TransitionHelper helper = new TransitionHelper("Transition Applicability Workflow",
-                     Arrays.asList(workItem), newItem.getToState(), toStateAssignees, "Cancelled via Agile Kanban",
-                     changes, atsApi, TransitionOption.OverrideAssigneeCheck);
+                  TransitionHelper helper = new TransitionHelper("Transition Agile Workflow", Arrays.asList(workItem),
+                     newItem.getToState(), toStateAssignees, "Cancelled via Agile Kanban", changes, atsApi,
+                     TransitionOption.OverrideAssigneeCheck);
                   helper.setTransitionUser(AtsCoreUsers.SYSTEM_USER);
                   IAtsTransitionManager mgr = TransitionFactory.getTransitionManager(helper);
                   TransitionResults results = new TransitionResults();
@@ -148,6 +149,22 @@ public class AgileItemWriter {
             }
          }
 
+         if (newItem.isSetAssignees()) {
+            Collection<IAtsUser> assignees = getAssignees(newItem.getAssigneesAccountIds());
+            for (IAtsWorkItem workItem : getWorkItems()) {
+               workItem.getStateMgr().setAssignees(assignees);
+               changes.add(workItem);
+            }
+            // set return assignees string
+            List<String> assigneeNames = new LinkedList<>();
+            for (IAtsUser user : assignees) {
+               assigneeNames.add(user.getName());
+            }
+            String assigneesStr = org.eclipse.osee.framework.jdk.core.util.Collections.toString("; ", assigneeNames);
+            newItem.setAssigneesStr(assigneesStr);
+            newItem.setAssigneesStrShort(Strings.truncate(assigneesStr, 30, true));
+         }
+
          if (!changes.isEmpty()) {
             changes.execute();
          }
@@ -170,18 +187,20 @@ public class AgileItemWriter {
    }
 
    private List<IAtsWorkItem> getWorkItems() {
-      List<IAtsWorkItem> workItems = new LinkedList<IAtsWorkItem>();
-      for (long id : newItem.getIds()) {
-         IAtsWorkItem workItem = atsApi.getQueryService().getTeamWf(id);
-         workItems.add(workItem);
+      if (workItems == null) {
+         workItems = new LinkedList<IAtsWorkItem>();
+         for (long id : newItem.getIds()) {
+            IAtsWorkItem workItem = atsApi.getQueryService().getTeamWf(id);
+            workItems.add(workItem);
+         }
       }
       return workItems;
    }
 
-   private Collection<IAtsUser> getToStateAssignees(List<String> toStateUsers) {
+   private Collection<IAtsUser> getAssignees(List<String> usersAccountIds) {
       List<IAtsUser> users = new ArrayList<IAtsUser>();
-      for (String userId : toStateUsers) {
-         users.add(atsApi.getUserService().getUserById(userId));
+      for (String userId : usersAccountIds) {
+         users.add(atsApi.getUserService().getUserByAccountId(Long.valueOf(userId)));
       }
       return users;
    }

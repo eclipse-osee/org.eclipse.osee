@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.core.data.ArtifactImage;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -61,6 +62,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    private final AtsApi atsApi;
    private final Log logger;
    private final ExecutorAdmin executorAdmin;
+   private List<ArtifactImage> images;
 
    public AtsConfigEndpointImpl(AtsApi atsApi, OrcsApi orcsApi, Log logger, ExecutorAdmin executorAdmin) {
       this.atsApi = atsApi;
@@ -90,7 +92,15 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
 
    @Override
    public List<ArtifactImage> getArtifactImages() {
-      return AtsArtifactImages.getImages();
+      if (images == null) {
+         images = new LinkedList<>();
+         images.addAll(AtsArtifactImages.getImages());
+         for (IArtifactType artifactType : atsApi.getStoreService().getTeamWorkflowArtifactTypes()) {
+            images.add(ArtifactImage.construct(artifactType, AtsArtifactImages.AGILE_TASK.getImageName(),
+               AtsArtifactImages.AGILE_TASK.getBaseUrl()));
+         }
+      }
+      return images;
    }
 
    @Override

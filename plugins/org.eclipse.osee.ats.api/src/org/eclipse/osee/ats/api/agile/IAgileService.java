@@ -164,4 +164,14 @@ public interface IAgileService {
 
    IAgileFeatureGroup getAgileFeatureGroupById(ArtifactId agileFeatureGroupId);
 
+   /**
+    * @return Active team members (off Agile Team -> Users or ATS Team Def -> Member) sorted with UnAssigned at the end.
+    */
+   List<ArtifactToken> getTeamMembersOrdered(IAgileTeam aTeam);
+
+   /**
+    * @return Active non-team members sorted.
+    */
+   List<ArtifactToken> getOtherMembersOrdered(IAgileTeam aTeam);
+
 }

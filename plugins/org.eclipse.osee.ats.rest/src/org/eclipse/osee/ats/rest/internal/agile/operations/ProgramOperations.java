@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.agile.operations;
 
+import com.google.common.base.Strings;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileProgram;
 import org.eclipse.osee.ats.api.agile.atw.AtwNode;
 import org.eclipse.osee.ats.api.agile.program.UiGridProgItem;
@@ -82,10 +84,19 @@ public class ProgramOperations {
    }
 
    private List<UiGridProgItem> handleProgArtifactAndChildren(ArtifactToken artifact, UiGridProgItem parentNode, int level, LinkedList<UiGridProgItem> items) {
-      UiGridProgItem item = getProgItemFromArt(artifact);
-      item.setTLevel(level);
+      UiGridProgItem item = getProgItemFromArt(artifact, level);
       if (level >= 0) {
          items.add(item);
+      }
+      if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.AgileStory)) {
+         if (artifact.getName().contains("up")) {
+            item.setAgilePoints("Large");
+         } else if (artifact.getName().contains("forward")) {
+            item.setAgilePoints("Small");
+         } else if (artifact.getName().contains("left")) {
+            item.setAgilePoints("X-Large");
+         }
+         addTeamAndSprintAndTasksToStory(artifact, items, level + 1);
       }
 
       for (ArtifactToken child : atsApi.getRelationResolver().getChildren(artifact)) {
@@ -94,12 +105,56 @@ public class ProgramOperations {
       return items;
    }
 
-   private UiGridProgItem getProgItemFromArt(ArtifactToken artifact) {
+   private void addTeamAndSprintAndTasksToStory(ArtifactToken storyArt, LinkedList<UiGridProgItem> items, int level) {
+      ArtifactToken teamArt =
+         atsApi.getRelationResolver().getRelatedOrNull(storyArt, AtsRelationTypes.AgileStoryToAgileTeam_AgileTeam);
+      if (teamArt != null) {
+         UiGridProgItem item = getProgItemFromArt(teamArt, level);
+         items.add(item);
+      }
+      ArtifactToken sprintArt =
+         atsApi.getRelationResolver().getRelatedOrNull(storyArt, AtsRelationTypes.AgileStoryToSprint_Sprint);
+      if (sprintArt != null) {
+         UiGridProgItem item = getProgItemFromArt(sprintArt, level);
+         items.add(item);
+         for (ArtifactToken taskArt : atsApi.getRelationResolver().getRelatedArtifacts(sprintArt,
+            AtsRelationTypes.AgileSprintToItem_AtsItem)) {
+            UiGridProgItem taskItem = getProgItemFromArt(taskArt, level + 1);
+            taskItem.setTLevel(level + 1);
+            setTaskFields(taskArt, taskItem);
+            items.add(taskItem);
+         }
+
+      }
+      for (ArtifactToken taskArt : atsApi.getRelationResolver().getRelatedArtifacts(storyArt,
+         AtsRelationTypes.AgileStoryToItems_AtsItem)) {
+         UiGridProgItem taskItem = getProgItemFromArt(taskArt, level);
+         taskItem.setTLevel(level);
+         setTaskFields(taskArt, taskItem);
+         items.add(taskItem);
+      }
+   }
+
+   private void setTaskFields(ArtifactToken taskArt, UiGridProgItem taskItem) {
+      IAtsWorkItem workItem = atsApi.getQueryService().getTeamWf(taskArt);
+      String points = atsApi.getAgileService().getAgileTeamPointsStr(workItem);
+      if (org.eclipse.osee.framework.jdk.core.util.Strings.isValid(points)) {
+         taskItem.setAgilePoints(points);
+      }
+      String assignees = workItem.getStateMgr().getAssigneesStr();
+      if (org.eclipse.osee.framework.jdk.core.util.Strings.isValid(assignees)) {
+         taskItem.setAssigneesOrImplementers(assignees);
+      }
+   }
+
+   private UiGridProgItem getProgItemFromArt(ArtifactToken artifact, int level) {
       UiGridProgItem item = new UiGridProgItem();
-      item.setName(artifact.getName());
+      String paddedName = level > 0 ? Strings.repeat("  - ", level) + artifact.getName() : artifact.getName();
+      item.setName(paddedName);
       item.setId(artifact.getId());
       item.setImage(getImage(artifact));
       item.setType(atsApi.getStoreService().getArtifactType(artifact).getName());
+      item.setTLevel(level);
       return item;
    }
 

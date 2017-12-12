@@ -24,6 +24,13 @@ angular
 							"use strict"
 							$scope.team = {};
 							$scope.team.id = $routeParams.team;
+							if ($routeParams.rowType == "BY_STORY") {
+								$scope.byStory = true;
+								$scope.byAssignee = false;
+							}else  {
+								$scope.byStory = false;
+								$scope.byAssignee = true;
+							}
 							$scope.nameFilter = null;
 							$scope.tasks = {};
 
@@ -39,27 +46,144 @@ angular
 										$scope.team.name = data.name;
 									});
 
+							$scope.openAssigneePane = function(event) {
+								var id = event.currentTarget.id;
+								$scope.selectedCard = $scope.kb.tasks[id];
+								var assignees = [];
+								if ($scope.selectedCard.attributeMap.AssigneesStr) {
+									assignees = $scope.selectedCard.attributeMap.AssigneesStr.split('; ');
+								}
+								$scope.selectedTeamAssignees = assignees;
+								$scope.assigneeSelected = null;
+								$scope.assign = true;
+							}
+
+							$scope.isSelectedCardAssignee = function(user) {
+								if ($scope.selectedCard != null) {
+									var checked = $scope.selectedTeamAssignees.indexOf(user) != -1;
+									return checked;
+								}
+								return false;
+							}
+
+							$scope.isInWork = function(taskId) {
+								var task = $scope.kb.tasks[taskId];
+								var stateType =  task.attributeMap['ats.Current State Type'];
+								var isInWork = stateType == "Working";
+								return isInWork;
+							}
+
+
+							function remove(array, element) {
+							    const index = array.indexOf(element);
+							    array.splice(index, 1);
+							    return array;
+							}
+
+							$scope.handleAssigneeCheck = function(user) {
+								if ($scope.selectedTeamAssignees.indexOf(user) == -1) {
+									$scope.selectedTeamAssignees.push(user);
+								}else {
+									$scope.selectedTeamAssignees = remove($scope.selectedTeamAssignees,user);
+								}
+							}
+
+							$scope.submitAssigneePane = function(event) {
+								if ($scope.selectedTeamAssignees.length == 0) {
+									alert("Must select assignee(s) or UnAssigned");
+									return;
+								}
+								// change assignees here
+								var data = {};
+								data.ids = [];
+								data.ids.push($scope.selectedCard.guid);
+								 data.assigneesAccountIds = [];
+								 data.setAssignees = true;
+								for (var i = 0; i < $scope.selectedTeamAssignees.length; i++) {
+									var userStr = $scope.selectedTeamAssignees[i];
+									var id = $scope.kb.userNameToId[userStr];
+									data.assigneesAccountIds.push(id);
+								}
+
+								/*
+								 * On state transition updates the new states to
+								 * the server.
+								 */
+								AgileEndpoint.updateStatus(data).$promise
+										.then(
+												function(data) {
+													if (data.errors > 0) {
+														alert(data.results.results);
+													} else {
+														// change selected
+														// assignees on card
+
+														var task = $scope.kb.tasks[$scope.selectedCard.guid];
+														task.attributeMap['AssigneesStr'] = data.jaxAgileItem.assigneesStr;
+														task.attributeMap['AssigneesStrShort'] = data.jaxAgileItem.assigneesStrShort;
+														$scope.assign = false;
+													}
+												},
+												function(reason) {
+													alert("Error updating assignees "
+															+ reason);
+												});
+
+							}
+
+							$scope.closeAssigneePane = function(event) {
+								$scope.assign = false;
+							}
+
+							$scope.openAction = function(event) {
+								var id = event.currentTarget.id;
+								var url = "/ats/ui/action/" + id;
+								var win = window.open(url, '_blank');
+								win.focus();
+							}
+
+							$scope.openEditPane = function(event) {
+								var id = event.currentTarget.id;
+								$scope.selectedCard = $scope.kb.tasks[id];
+								$scope.edit = {};
+								$scope.edit.task = {};
+								$scope.edit.task.name = $scope.selectedCard.name;
+								$scope.edit.task.description = $scope.selectedCard.attributeMap["ats.Description"];
+								$scope.edit.task.points = $scope.selectedCard.attributeMap["ats.Points"];
+								$scope.edit.task.workPackage = 15;
+								// $scope.validWorkPackages = "[ { "id":"15", "name":"Add ARC 243 Radio"}, { "id":"15", "name":"Add ARC 243 Radio"} ]";
+								$scope.edit = true;
+							}
+							
+							$scope.saveEditPane = function(event) {
+								alert("save");
+								$scope.edit = false;
+							}
+							
+							$scope.cancelEditPane = function(event) {
+								$scope.edit = false;
+							}
+
 							/*
 							 * State transition
 							 */
 							$scope.onDropComplete = function(data, evt,
-									toState, toAssignees) {
+									toState, toRow) {
 								var fromState = data.taskState;
-								var fromAssigneeId = getUserId(data.assignee);
-								var toAssigneeId = getUserId(toAssignees);
+								var fromRowId = getRowId(data.row);
+								var toRowId = getRowId(toRow);
 								if (fromState !== toState
-										|| fromAssigneeId !== toAssigneeId) {
+										|| fromRowId !== toRowId) {
 
 									var _data = {};
 									_data.ids = [ data.guid ];
-									_data.toStateUsers = [ toAssigneeId ];
+									_data.toStateUsers = [ toRowId ];
 									_data.toState = toState;
 
-									update(_data, evt, data.guid, fromState,
+									updateForTransition(_data, evt, data.guid, fromState,
 											toState);
 									data.taskState = toState
 									return;
-
 								}
 							}
 
@@ -67,46 +191,38 @@ angular
 							var getTasks = function() {
 								if ($scope.selectedSprint) {
 									AgileEndpoint.getSprintForKb($scope.team,
-											$scope.selectedSprint).$promise
+											$scope.selectedSprint, $scope.byStory).$promise
 											.then(function(data) {
 												_tasks = data;
+												$scope.kb = _tasks;
 												if (_tasks.statesToTaskIds.length == 0) {
 													$scope.notasks = true;
 													$scope.count = 0;
+													$scope.rowtype = "";
 												} else {
 													$scope.notasks = false;
 													$scope.availableStates = data["availableStates"];
+													if (_tasks.rowType == "BY_STORY") {
+														$scope.rowtype = "Story";
+													} else {
+														$scope.rowtype = "Assignee";
+													}
 
-													// process assigneesToIds
-													var assigneeNameToTasksIds = {};
+													// process rowsToIds
+													var rowNameToTasksIds = {};
 													var count = 0;
-													for (var i = 0; i < data.assigneesToTaskIds.length; i++) {
-														var entry = data.assigneesToTaskIds[i];
-														var name = data.userIdToName[entry.assigneeId];
-														assigneeNameToTasksIds[name] = entry.taskIds;
+													for (var i = 0; i < data.rowToTaskIds.length; i++) {
+														var entry = data.rowToTaskIds[i];
+														var name = data.rowIdToName[entry.rowId];
+														rowNameToTasksIds[name] = entry.taskIds;
 														count += entry.taskIds.length;
 													}
 
-													// Add implementers as
-													// assignees
-													// even though completed
-													for (var i = 0; i < data.implementersToTaskIds.length; i++) {
-														var entry = data.implementersToTaskIds[i];
-														var name = data.userIdToName[entry.assigneeId];
-														var assigneeEntry = assigneeNameToTasksIds[name];
-														if (assigneeEntry) {
-															entry.taskIds = entry.taskIds
-																	.concat(assigneeEntry);
-														}
-														assigneeNameToTasksIds[name] = entry.taskIds;
-														count += entry.taskIds.length;
-													}
-
-													var assignees = _
-															.keys(assigneeNameToTasksIds);
-													assignees.sort();
-													$scope.assignees = assignees;
-													_tasks.assignees = assigneeNameToTasksIds;
+													var rows = _
+															.keys(rowNameToTasksIds);
+													rows.sort();
+													$scope.rows = rows;
+													_tasks.rows = rowNameToTasksIds;
 
 													// process statesToTaskIds
 													var states = {};
@@ -117,7 +233,9 @@ angular
 													}
 
 													_tasks.states = states;
+													$scope.teamMembersOrdered = $scope.kb.teamMembersOrdered;
 													$scope.count = count;
+
 												}
 											});
 								}
@@ -136,9 +254,9 @@ angular
 							 * On state transition updates DOM and CSS for the
 							 * card
 							 */
-							var update = function(data, evt, taskId, fromState,
+							var updateForTransition = function(data, evt, taskId, fromState,
 									toState) {
-								var idDropedToTd = getUserName(data.toStateUsers[0])
+								var idDropedToTd = getRowName(data.toStateUsers[0])
 										+ '-' + toState;
 								var idDraggedCard = taskId;
 
@@ -214,12 +332,12 @@ angular
 						} ]);
 
 /*
- * Returns Tasks for given Task state and assignee
+ * Returns Tasks for given Task state and row
  */
-var getTasksFor = function(taskState, assignee) {
+var getTasksFor = function(taskState, row) {
 	var tasksObject = {};
 	var tasksForState = _tasks.states[taskState];
-	var tasksAssigned = _tasks.assignees[assignee];
+	var tasksAssigned = _tasks.rows[row];
 	if (!_.isNull(tasksForState) && _.isArray(tasksForState)
 			&& _.isArray(tasksAssigned)) {
 		_.map(_.intersection(tasksForState, tasksAssigned), function(taskId) {
@@ -245,36 +363,36 @@ var updateTask = function(taskId, oldState, newState) {
 }
 
 /*
- * Fetches assignees for a task
+ * Fetches rows for a task
  */
-var getAssigneesForTask = function(taskId) {
-	var assigneesWithTask = []
-	var assignees = _tasks.assignees;
-	if (!_.isNull(assignees) && !_.isEmpty(assignees)) {
-		_.map(assignees, function(value, key) {
+var getRowsForTask = function(taskId) {
+	var rowsWithTask = []
+	var rows = _tasks.rows;
+	if (!_.isNull(rows) && !_.isEmpty(rows)) {
+		_.map(rows, function(value, key) {
 			if (_.contains(value, taskId)) {
-				assigneesWithTask.push(key);
+				rowsWithTask.push(key);
 			}
 		})
 	}
-	return assigneesWithTask;
+	return rowsWithTask;
 }
 
 /*
- * Fetches userName for a userID
+ * Fetches rowName for a rowId
  */
-var getUserName = function(userId) {
-	return _tasks.userIdToName[userId];
+var getRowName = function(userId) {
+	return _tasks.rowIdToName[userId];
 }
 
-var getUserId = function(userName) {
-	var resultUserId = "";
-	for ( var userId in _tasks.userIdToName) {
-		var name = _tasks.userIdToName[userId];
-		if (name === userName) {
-			resultUserId = userId;
+var getRowId = function(rowName) {
+	var resultRowId = "";
+	for ( var rowId in _tasks.rowIdToName) {
+		var name = _tasks.rowIdToName[rowId];
+		if (name === rowName) {
+			resultRowId = rowId;
 			break;
 		}
 	}
-	return resultUserId;
+	return resultRowId;
 }

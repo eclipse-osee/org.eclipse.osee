@@ -21,43 +21,31 @@ import org.eclipse.osee.ats.api.agile.JaxAgileSprint;
  */
 public class JaxKbSprint extends JaxAgileSprint {
 
-   List<JaxKbAssigneeIdToTaskId> assigneesToTaskIds = new LinkedList<JaxKbAssigneeIdToTaskId>();
-   List<JaxKbAssigneeIdToTaskId> implementersToTaskIds = new LinkedList<JaxKbAssigneeIdToTaskId>();
+   List<JaxKbRowIdToTaskId> rowToTaskIds = new LinkedList<JaxKbRowIdToTaskId>();
+   Map<String, String> rowIdToName = new HashMap<String, String>();
    Map<String, String> userIdToName = new HashMap<String, String>();
+   Map<String, String> userNameToId = new HashMap<String, String>();
+   List<String> teamMembersOrdered = new LinkedList<>();
+   List<String> otherMembersOrdered = new LinkedList<>();
    List<JaxKbState> statesToTaskIds = new LinkedList<JaxKbState>();
    List<JaxKbAvailableState> availableStates = new LinkedList<JaxKbAvailableState>();
    Map<String, JaxKbTask> tasks = new HashMap<String, JaxKbTask>();
+   KanbanRowType rowType;
 
-   public void addAssigneeIdToTaskId(String assigneeId, String taskId) {
-      JaxKbAssigneeIdToTaskId assigneeToId = null;
-      for (JaxKbAssigneeIdToTaskId item : assigneesToTaskIds) {
-         if (item.getAssigneeId().equals(assigneeId)) {
-            assigneeToId = item;
+   public void addRowIdToTaskId(String rowId, String taskId) {
+      JaxKbRowIdToTaskId rowToId = null;
+      for (JaxKbRowIdToTaskId item : rowToTaskIds) {
+         if (item.getRowId().equals(rowId)) {
+            rowToId = item;
             break;
          }
       }
-      if (assigneeToId == null) {
-         assigneeToId = new JaxKbAssigneeIdToTaskId();
-         assigneeToId.setAssigneeId(assigneeId);
-         assigneesToTaskIds.add(assigneeToId);
+      if (rowToId == null) {
+         rowToId = new JaxKbRowIdToTaskId();
+         rowToId.setRowId(rowId);
+         rowToTaskIds.add(rowToId);
       }
-      assigneeToId.getTaskIds().add(taskId);
-   }
-
-   public void addImplementerIdToTaskId(String implementerId, String taskId) {
-      JaxKbAssigneeIdToTaskId implementerToId = null;
-      for (JaxKbAssigneeIdToTaskId item : implementersToTaskIds) {
-         if (item.getAssigneeId().equals(implementerId)) {
-            implementerToId = item;
-            break;
-         }
-      }
-      if (implementerToId == null) {
-         implementerToId = new JaxKbAssigneeIdToTaskId();
-         implementerToId.setAssigneeId(implementerId);
-         implementersToTaskIds.add(implementerToId);
-      }
-      implementerToId.getTaskIds().add(taskId);
+      rowToId.getTaskIds().add(taskId);
    }
 
    public Map<String, String> getUserIdToName() {
@@ -100,12 +88,8 @@ public class JaxKbSprint extends JaxAgileSprint {
       this.availableStates = availableStates;
    }
 
-   public List<JaxKbAssigneeIdToTaskId> getAssigneesToTaskIds() {
-      return assigneesToTaskIds;
-   }
-
-   public void setAssigneesToTaskIds(List<JaxKbAssigneeIdToTaskId> assigneesToTaskIds) {
-      this.assigneesToTaskIds = assigneesToTaskIds;
+   public List<JaxKbRowIdToTaskId> getAssigneesToTaskIds() {
+      return rowToTaskIds;
    }
 
    public List<JaxKbState> getStatesToTaskIds() {
@@ -116,8 +100,52 @@ public class JaxKbSprint extends JaxAgileSprint {
       this.statesToTaskIds = statesToTaskIds;
    }
 
-   public List<JaxKbAssigneeIdToTaskId> getImplementersToTaskIds() {
-      return implementersToTaskIds;
+   public Map<String, String> getUserNameToId() {
+      return userNameToId;
+   }
+
+   public void setUserNameToId(Map<String, String> userNameToId) {
+      this.userNameToId = userNameToId;
+   }
+
+   public List<JaxKbRowIdToTaskId> getRowToTaskIds() {
+      return rowToTaskIds;
+   }
+
+   public void setRowToTaskIds(List<JaxKbRowIdToTaskId> rowToTaskIds) {
+      this.rowToTaskIds = rowToTaskIds;
+   }
+
+   public Map<String, String> getRowIdToName() {
+      return rowIdToName;
+   }
+
+   public void setRowIdToName(Map<String, String> rowIdToName) {
+      this.rowIdToName = rowIdToName;
+   }
+
+   public KanbanRowType getRowType() {
+      return rowType;
+   }
+
+   public void setRowType(KanbanRowType rowType) {
+      this.rowType = rowType;
+   }
+
+   public List<String> getTeamMembersOrdered() {
+      return teamMembersOrdered;
+   }
+
+   public void setTeamMembersOrdered(List<String> teamMembersOrdered) {
+      this.teamMembersOrdered = teamMembersOrdered;
+   }
+
+   public List<String> getOtherMembersOrdered() {
+      return otherMembersOrdered;
+   }
+
+   public void setOtherMembersOrdered(List<String> otherMembersOrdered) {
+      this.otherMembersOrdered = otherMembersOrdered;
    }
 
 }

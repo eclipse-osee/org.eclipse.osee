@@ -49,6 +49,7 @@ public final class DemoArtifactToken {
    public static final ArtifactToken RD_Program_Feature_Robot_Nav = ArtifactToken.valueOf(546565168, "Create Robot Navigation", COMMON, AtsArtifactTypes.AgileProgramFeature);
    public static final ArtifactToken RD_Robot_Nav_Story_1 = ArtifactToken.valueOf(1234687984, "As a user I will move the robot forwards and backwards.", COMMON, AtsArtifactTypes.AgileStory);
    public static final ArtifactToken RD_Robot_Nav_Story_2 = ArtifactToken.valueOf(432156515, "As a user I will move the robot left and right.", COMMON, AtsArtifactTypes.AgileStory);
+   public static final ArtifactToken RD_Robot_Nav_Story_3 = ArtifactToken.valueOf(794961344, "As a user I will move the robot up and down.", COMMON, AtsArtifactTypes.AgileStory);
 
    public static final ArtifactToken RD_Program_Feature_Robot_Voice = ArtifactToken.valueOf(123456789, "Create Robot Voice", COMMON, AtsArtifactTypes.AgileProgramFeature);
 

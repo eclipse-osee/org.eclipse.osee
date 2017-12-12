@@ -21,4 +21,5 @@ angular
 
 							Global.loadActiveProgsTeams($scope, AgileEndpoint, Menu);
 
+
 						} ]);

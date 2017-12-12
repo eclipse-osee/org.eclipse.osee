@@ -14,15 +14,14 @@
 							frame=BOX>
 							<tr>
 								<td align="center" width="30%">Sprint</td>
-								<td align="center" width="30%">Assignee/Story</td>
+								<td align="center" width="30%">{{rowtype}}</td>
 							</tr>
 							<td width="30%"><select style="min-width: 100%;"
 								ng-model="selectedSprint"
 								ng-options="sprint.name for (key,sprint) in sprints">
 							</select></td>
 							<td width="30%"><select style="min-width: 100%;"
-								ng-model="_assignee"
-								ng-options="_assignee for _assignee in assignees">
+								ng-model="row" ng-options="row for row in rows">
 									<option value="">Show All</option>
 							</select></td>
 							</tr>
@@ -36,38 +35,98 @@
 	<div menu></div>
 
 	<center>
-		<label ng-hide="availableStates"></br>
-		</br></label> <img src="/ajax/libs/images/loading.gif" id="loadingImg"
+		<label ng-hide="availableStates"></br> </br></label> <img
+			src="/ajax/libs/images/loading.gif" id="loadingImg"
 			ng-hide="availableStates.length > 0 || notasks == true"
 			align="middle"> <label ng-show="notasks == true">No
 			Tasks Found</label>
 	</center>
 
-	<div id="board" ng-show="availableStates" ng-model="allTasks"
-		style="height: 89%;" important>
+	<table width="100%" height="89%" important>
+		<tr>
+			<td>
+				<div id="board" ng-show="availableStates" ng-model="allTasks"
+					style="height: 89%;" important>
 
-		<table width="100%" border="3" style="table-layout: fixed;"height="89%" important>
-			<thead>
-				<tr>
-					<th class="boardStyle" align="center" style="width: 8%;"></th>
-					<th id={{state.name}} ng-repeat="state in availableStates"
-						class="boardStyle" align="center" style="width: 20%">{{state.name}}</th>
-				</tr>
-			</thead>
-			<tbody height="89%" important>
-				<tr border="1" id={{assignee}}
-					ng-repeat="assignee in assignees  | filter:_assignee"
-					style="height: 200px;">
-					<td valign="top" align="center" style="width: 4%;">{{assignee}}</td>
-					<td valign="top" id={{assignee}}-{{state.name}} ng-drop="true"
-						ng-drop-success="onDropComplete($data,$event,'{{state.name}}','{{assignee}}')"
-						ng-repeat="state in availableStates" style="width: 24%;">
-						<div cards></div>
-					</td>
+					<table width="100%" border="3" style="table-layout: fixed;"
+						height="89%" important>
+						<thead>
+							<tr>
+								<th class="boardStyle" align="center" style="width: 8%;"></th>
+								<th id={{state.name}} ng-repeat="state in availableStates"
+									class="boardStyle" align="center" style="width: 20%">{{state.name}}</th>
+							</tr>
+						</thead>
+						<tbody height="89%" important>
+							<tr border="1" id={{row}} ng-repeat="row in rows  | filter:row"
+								style="height: 200px;">
+								<td valign="top" align="center" style="width: 4%;">{{row}}</td>
+								<td valign="top" id={{row}}-{{state.name}} ng-drop="true"
+									ng-drop-success="onDropComplete($data,$event,'{{state.name}}','{{row}}')"
+									ng-repeat="state in availableStates" style="width: 24%;">
+									<div cards></div>
+								</td>
 
-				</tr>
-			</tbody>
-		</table>
+							</tr>
+						</tbody>
+					</table>
 
-	</div>
+				</div>
+			</td>
+			<td>
+				<div id="assigneePane" ng-show="assign"
+					style="height: 100%; width: 250px; border: 3px solid #666; padding: 10px"
+					important>
+					<label>Set Assignees for
+						[{{selectedCard.attributeMap["Shortname"]}}] -
+						[{{selectedCard.name}}]</label> <label
+						ng-repeat="user in teamMembersOrdered"> <input
+						type="checkbox" name="selectedAssignees[]"
+						ng-click="handleAssigneeCheck(user)" value="{{user}}"
+						ng-checked="isSelectedCardAssignee('{{user}}')">
+						{{user}}&nbsp;
+					</label>
+					<button type="button" class="btn btn-default btn-xs"
+						ng-click="submitAssigneePane($event)">Save</button>
+					<button type="button" class="btn btn-default btn-xs"
+						ng-click="closeAssigneePane($event)">Cancel</button>
+				</div>
+			</td>
+			<td>
+				<div id="editPane" ng-show="edit"
+					style="height: 100%; width: 350px; border: 3px solid #666; padding: 10px"
+					important>
+					<label>Edit [{{selectedCard.attributeMap["Shortname"]}}] -
+						[{{selectedCard.name}}]</label>
+
+					<!-- TITLE -->
+					<label>Title: <input type="text" ng-model="edit.task.name" /></label><br />
+
+					<!-- DESCRIPTION -->
+					<label for="textarea">Description: <textarea id="textarea"
+							rows name="Description" cols="30"
+							ng-model="edit.task.description" rows="5"></textarea></label><br />
+
+					<!-- POINTS -->
+					</select> <label>Points:</label> <input type="text" name="points"
+						ng-model="edit.task.points">
+
+					<!-- UN-PLANNED -->
+					</select> <label>Un-Planned Work:</label> <input type="checkbox"
+						name="unplanned" ng-model="edit.task.unplanned"><br />
+
+					<!-- WORK PACKAGE -->
+					<label for="textarea">Work Package: </label> <select
+						ng-model="edit.task.workPackage"
+						ng-options="item.id as item.name for item in validWorkPackages">
+					</select></br>
+
+					<button type="button" class="btn btn-default btn-xs"
+						ng-click="saveEditPane($event)">Save</button>
+					<button type="button" class="btn btn-default btn-xs"
+						ng-click="cancelEditPane($event)">Cancel</button>
+				</div>
+			</td>
+	</table>
+
 </div>

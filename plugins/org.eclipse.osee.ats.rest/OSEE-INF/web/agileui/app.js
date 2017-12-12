@@ -5,7 +5,7 @@ var app = angular.module('AgileApp', [ 'ngRoute', 'ngResource', 'ui.bootstrap',
 		'ngGrid', 'ngDraggable', 'ui.grid', 'ui.grid.treeView',
 		'ui.grid.selection', 'ui.grid.resizeColumns', 'ui.grid',
 		'ui.grid.autoResize', 'ui.grid.moveColumns', 'ui.grid.saveState',
-		'TreeWidget', 'LocalStorageModule', 'ui.grid.expandable',]);
+		'TreeWidget', 'LocalStorageModule', 'ui.grid.expandable' ]);
 
 app.config([
 		'$routeProvider',
@@ -88,26 +88,25 @@ app
 													// add to main scope so
 													// shared pulldown is
 													// populated
-													scope.$parent.activeProgsTeams = activeProgsTeams;
+													if (scope.$parent) {
+														scope.$parent.activeProgsTeams = activeProgsTeams;
+													}
 
-													scope
-															.$watch(
-																	"selectedItem",
-																	function() {
-																		if (scope.selectedItem) {
-																			var selected = scope.selectedItem;
-
-																			if (selected) {
-																				if (selected.isProgram == false) {
-																					Menu
-																							.openTeamForTeam(selected);
-																				} else {
-																					Menu
-																							.openProgram(selected);
-																				}
-																			}
-																		}
-																	});
+													scope.$parent.mainSelected = function() {
+														if (scope.mainSelectedItem != null) {
+															var selected = scope.mainSelectedItem;
+															if (selected) {
+																scope.mainSelectedItem = null;
+																if (selected.isProgram == false) {
+																	Menu
+																			.openTeamForTeam(selected);
+																} else {
+																	Menu
+																			.openProgram(selected);
+																}
+															}
+														}
+													};
 
 												});
 
@@ -212,7 +211,7 @@ app.directive(
 	return {
 		restrict : 'EA',
 		link : function(scope, element, attrs) {
-			var tasksAsCards = getTasksFor(scope.state.name, scope.assignee);
+			var tasksAsCards = getTasksFor(scope.state.name, scope.row);
 			scope.tasks = tasksAsCards;
 		},
 		replace : true,

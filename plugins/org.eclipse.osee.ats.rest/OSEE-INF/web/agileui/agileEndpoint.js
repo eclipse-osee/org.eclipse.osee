@@ -27,7 +27,7 @@ angular.module('AgileApp').factory('AgileEndpoint',
 
 			// program feature
 			var programProgramFeatureResource = $resource('/ats/agile/program/:programid/feature');
-			var programBacklogItemResource = $resource('/ats/agile/programfeature/:programfeatureid');
+			var programBacklogFeatureResource = $resource('/ats/agile/programfeature/:programfeatureid');
 
 			// feature group resource
 			var featuresResource = $resource('/ats/agile/team/:teamid/feature');
@@ -43,6 +43,7 @@ angular.module('AgileApp').factory('AgileEndpoint',
 			var sprintCurrentResource = $resource('/ats/agile/team/:teamid/sprintcurrent');
 			var sprintSingleResource = $resource('/ats/agile/team/:teamid/sprint/:sprintid');
 			var sprintForKbResource = $resource('/ats/agile/team/:teamid/sprint/:sprintid/kb');
+			var sprintForKbByStoryResource = $resource('/ats/agile/team/:teamid/sprint/:sprintid/kb/story');
 			var sprintItemsResource = $resource('/ats/agile/team/:teamid/sprint/:sprintid/item');
 			var sprintConfigResource = $resource('/ats/agile/team/:teamid/sprint/:sprintid/config');
 			
@@ -59,14 +60,14 @@ angular.module('AgileApp').factory('AgileEndpoint',
 					{}, { 'update': { method:'PUT' } });
 
 			// ////////////////////////////////////
-			// Config 
+			// Config
 			// ////////////////////////////////////
 			factory.getImages = function() {
 				return imagesResource.query();
 			}
 
 			// ////////////////////////////////////
-			// Programs 
+			// Programs
 			// ////////////////////////////////////
 			factory.getActiveProgramsTokens = function() {
 				return activeProgramsTokenResource.query();
@@ -204,8 +205,12 @@ angular.module('AgileApp').factory('AgileEndpoint',
 				return sprintCurrentResource.get(param);
 			}
 			
-			factory.getSprintForKb = function(team, sprint) {
-				return sprintForKbResource.get({teamid: team.id, sprintid:sprint.id});
+			factory.getSprintForKb = function(team, sprint, byStory) {
+				if (byStory) {
+					return sprintForKbByStoryResource.get({teamid: team.id, sprintid:sprint.id});
+				}else {
+					return sprintForKbResource.get({teamid: team.id, sprintid:sprint.id});
+				}
 			}
 			
 			factory.getSprint = function(team, sprint) {

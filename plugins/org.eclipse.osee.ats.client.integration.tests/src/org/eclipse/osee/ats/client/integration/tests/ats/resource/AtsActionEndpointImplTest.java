@@ -17,6 +17,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
@@ -470,6 +471,32 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       IAtsVersion newVer2 = AtsClientService.get().getVersionService().getTargetedVersion(teamWf);
       Assert.assertEquals(DemoArtifactToken.SAW_Bld_2.getName(), newVer2.getName());
 
+   }
+
+   @Test
+   public void testSetActionAssigneesByKey() {
+      AtsActionEndpointApi actionEp = AtsClientService.getActionEndpoint();
+      TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
+      List<IAtsUser> assignees = teamWf.getStateMgr().getAssignees();
+      Assert.assertEquals(1, assignees.size());
+      Assert.assertEquals(DemoUsers.Joe_Smith, assignees.iterator().next());
+
+      actionEp.setActionAttributeByType(teamWf.getIdString(), AttributeKey.Assignee.name(),
+         Arrays.asList(DemoUsers.Joe_Smith.getIdString(), DemoUsers.Kay_Jones.getIdString()));
+
+      teamWf.reloadAttributesAndRelations();
+      assignees = teamWf.getStateMgr().getAssignees();
+      Assert.assertEquals(2, assignees.size());
+      Assert.assertTrue(assignees.contains(DemoUsers.Kay_Jones));
+      Assert.assertTrue(assignees.contains(DemoUsers.Joe_Smith));
+
+      // reset back to Joe
+      actionEp.setActionAttributeByType(teamWf.getIdString(), AttributeKey.Assignee.name(),
+         Arrays.asList(DemoUsers.Joe_Smith.getIdString()));
+      teamWf.reloadAttributesAndRelations();
+      assignees = teamWf.getStateMgr().getAssignees();
+      Assert.assertEquals(1, assignees.size());
+      Assert.assertEquals(DemoUsers.Joe_Smith, assignees.iterator().next());
    }
 
    @Test

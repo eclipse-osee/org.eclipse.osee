@@ -32,7 +32,7 @@
 			<tr>
 				<td><a class="navbar-brand" href="#/home">OSEE Agile</a></td>
 				<td align="right" width="50%">Program or Team : <select
-					style="width: 50%;" ng-model="selectedItem"
+					style="width: 50%;" ng-model="mainSelectedItem" ng-change="mainSelected()"
 					ng-options="item.name for (key,item) in activeProgsTeams | orderBy:'name'">
 						<option value="">Select</option>
 				</select></td>
@@ -68,7 +68,7 @@
 		src="/ajax/libs/ui-bootstrap/0.12.0/ui-bootstrap-tpls-0.12.0.min.js"></script>
 	<script src="/ajax/libs/moment/2.9.0/moment.min.js"></script>
 	<script
-		src="https://cdnjs.cloudflare.com/ajax/libs/angular-local-storage/0.2.2/angular-local-storage.min.js"></script>
+		src="/ajax/libs/angular-local-storage/0.2.2/angular-local-storage.min.js"></script>
 	<script type="text/javascript"
 		src="/ajax/libs/angular-tree-widget/dist/angular-tree-widget.min.js"></script>
 	<script src="kanban/underscore.js"></script>

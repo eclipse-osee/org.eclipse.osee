@@ -115,10 +115,21 @@ public interface AgileEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    public List<IAtsActionableItem> getActionableAis(@PathParam("teamId") ArtifactId teamId);
 
+   /**
+    * @return Sorted users that are team members including UnAssigned
+    */
    @GET
    @Path("team/{teamId}/member")
    @Produces(MediaType.APPLICATION_JSON)
    public List<ArtifactToken> getTeamMembers(@PathParam("teamId") ArtifactId teamId);
+
+   /**
+    * @return Sorted users that are not members of given team
+    */
+   @GET
+   @Path("team/{teamId}/memberOther")
+   @Produces(MediaType.APPLICATION_JSON)
+   public List<ArtifactToken> getOtherMembers(@PathParam("teamId") ArtifactId teamId);
 
    @Path("team/{teamId}/workpackage")
    @GET
@@ -180,10 +191,18 @@ public interface AgileEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    public SprintConfigurations updateSprintConfig(@PathParam("teamId") long teamId, @PathParam("sprintId") long sprintId, SprintConfigurations sprintConfig);
 
+   /**
+    * QueryParam KanbanRowType rowType=BY_STORY or BY_ASSIGNEE
+    */
    @GET
    @Path("team/{teamId}/sprint/{sprintId}/kb")
    @Produces(MediaType.APPLICATION_JSON)
    public JaxKbSprint getSprintItemsForKb(@PathParam("teamId") long teamId, @PathParam("sprintId") long sprintId);
+
+   @GET
+   @Path("team/{teamId}/sprint/{sprintId}/kb/story")
+   @Produces(MediaType.APPLICATION_JSON)
+   public JaxKbSprint getSprintItemsForKbByStory(@PathParam("teamId") long teamId, @PathParam("sprintId") long sprintId);
 
    @GET
    @Path("team/{teamId}/sprint/{sprintId}/config")
