@@ -177,7 +177,7 @@ public class OseeLinkBuilder {
       parameters.put("sessionId", sessionId);
       parameters.put("context", "osee/loopback");
       parameters.put("guid", artifact.getGuid());
-      parameters.put("branchUuid", String.valueOf(artifact.getBranch().getGuid()));
+      parameters.put("branchUuid", artifact.getBranch().getIdString());
       parameters.put("isDeleted", String.valueOf(artifact.isDeleted()));
 
       if (artifact.isHistorical() && presentationType != PresentationType.DIFF && presentationType != PresentationType.F5_DIFF) {

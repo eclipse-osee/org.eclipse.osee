@@ -14,7 +14,6 @@ import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
@@ -23,13 +22,8 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 @JsonSerialize(using = BranchIdSerializer.class)
 @JsonDeserialize(using = BranchIdDeserializer.class)
-public interface BranchId extends Identity<Long>, Id {
+public interface BranchId extends Id {
    BranchId SENTINEL = valueOf(Id.SENTINEL);
-
-   @Override
-   default Long getGuid() {
-      return getId();
-   };
 
    public static BranchId valueOf(String id) {
       return Id.valueOf(id, BranchId::valueOf);

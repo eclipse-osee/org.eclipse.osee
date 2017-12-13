@@ -302,14 +302,12 @@ public class OrcsBranchQueryTest {
    private static void assertBranch(List<BranchReadable> list, IOseeBranch token, BranchType type, BranchState state, boolean isArchived, BranchId parent, ArtifactId associatedArtifact) {
       int index = list.indexOf(token);
       Assert.assertNotEquals(index, -1);
-      assertBranch(list.get(index), token.getName(), token.getGuid(), type, state, isArchived, parent,
-         associatedArtifact);
+      assertBranch(list.get(index), token.getName(), token, type, state, isArchived, parent, associatedArtifact);
    }
 
-   private static void assertBranch(BranchReadable actual, String name, Long id, BranchType type, BranchState state, boolean isArchived, BranchId parent, ArtifactId associatedArtifact) {
+   private static void assertBranch(BranchReadable actual, String name, BranchId id, BranchType type, BranchState state, boolean isArchived, BranchId parent, ArtifactId associatedArtifact) {
       assertEquals(name, actual.getName());
-      assertEquals(id, actual.getId());
-
+      assertEquals(id, actual);
       assertEquals(type, actual.getBranchType());
       assertEquals(state, actual.getBranchState());
       assertEquals(isArchived, actual.getArchiveState().isArchived());

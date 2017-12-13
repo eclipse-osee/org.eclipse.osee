@@ -56,7 +56,7 @@ import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.lifecycle.AbstractLifecycleVisitor;
 import org.eclipse.osee.framework.lifecycle.ILifecycleService;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -324,12 +324,12 @@ public class AccessControlService implements IAccessControlService {
       List<String> key = new LinkedList<>();
       for (Object o : objectsToCheck) {
          if (o instanceof BranchId) {
-            key.add(String.valueOf(((BranchId) o).getGuid()));
+            key.add(String.valueOf(((BranchId) o).getIdString()));
          } else if (o instanceof Artifact) {
             key.add(((Artifact) o).getGuid());
-            key.add(String.valueOf(((Artifact) o).getBranch().getGuid()));
+            key.add(String.valueOf(((Artifact) o).getBranch().getIdString()));
          } else {
-            key.add(GUID.create());
+            key.add(Lib.generateArtifactIdAsInt().toString());
          }
       }
 
@@ -814,8 +814,7 @@ public class AccessControlService implements IAccessControlService {
       }
 
       public AccessControlUpdateListener(ArtifactToken artifact) {
-         eventFilters =
-            Arrays.asList(new ArtifactEventFilter(artifact), new BranchIdEventFilter(artifact.getBranch()));
+         eventFilters = Arrays.asList(new ArtifactEventFilter(artifact), new BranchIdEventFilter(artifact.getBranch()));
       }
 
       @Override

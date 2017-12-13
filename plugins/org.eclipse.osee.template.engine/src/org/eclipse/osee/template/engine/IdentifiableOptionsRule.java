@@ -10,13 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.template.engine;
 
-import org.eclipse.osee.framework.jdk.core.type.Identity;
-import org.eclipse.osee.framework.jdk.core.type.Named;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 
 /**
  * @author Ryan D. Brooks
  */
-public final class IdentifiableOptionsRule<T extends Identity<String> & Named> extends OptionsRule<T> {
+public final class IdentifiableOptionsRule<T extends NamedId> extends OptionsRule<T> {
    Iterable<T> options;
 
    public IdentifiableOptionsRule(String ruleName, Iterable<T> options) {

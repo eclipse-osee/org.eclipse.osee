@@ -11,13 +11,12 @@
 package org.eclipse.osee.template.engine;
 
 import java.io.IOException;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
-import org.eclipse.osee.framework.jdk.core.type.Named;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 
 /**
  * @author Ryan D. Brooks
  */
-public abstract class OptionsRule<T extends Identity<?> & Named> extends AppendableRule<T> {
+public abstract class OptionsRule<T extends NamedId> extends AppendableRule<T> {
    private final String listId;
 
    protected String getListId() {
@@ -51,7 +50,7 @@ public abstract class OptionsRule<T extends Identity<?> & Named> extends Appenda
     * requires I/O or is otherwise computationally intensive, because getOptions() is not called until absolutely
     * required. For simpler cases, the concrete class IdentifiableOptionsRule can be used where the options are just
     * supplied in its constructor
-    * 
+    *
     * @return an Iterable that iterators over the list of options that each have a guid and a name
     * @throws Exception
     */
@@ -62,7 +61,7 @@ public abstract class OptionsRule<T extends Identity<?> & Named> extends Appenda
       appendable.append("<option value=\"");
       appendable.append(option.getName());
       appendable.append("\" guid=\"");
-      appendable.append(String.valueOf(option.getGuid()));
+      appendable.append(option.getIdString());
       appendable.append("\">\n");
    }
 

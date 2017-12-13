@@ -325,7 +325,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       }
 
       if (location == null) {
-         location = uriInfo.getRequestUriBuilder().path("{branch-uuid}").build(branch.getGuid());
+         location = uriInfo.getRequestUriBuilder().path("{branch-uuid}").build(branch.getIdString());
       }
       return location;
    }

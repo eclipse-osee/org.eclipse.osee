@@ -329,7 +329,7 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
       memento = memento.createChild(INPUT);
       if (artifact != null) {
          memento.putString(ART_GUID, artifact.getGuid());
-         memento.putString(BRANCH_ID, String.valueOf(artifact.getBranch().getGuid()));
+         memento.putString(BRANCH_ID, artifact.getBranch().getIdString());
       }
    }
 
@@ -434,7 +434,7 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
             try {
                IWorkbenchPage page = AWorkbench.getActivePage();
                HistoryView historyView = (HistoryView) page.showView(VIEW_ID,
-                  artifact.getGuid() + artifact.getBranch().getGuid(), IWorkbenchPage.VIEW_ACTIVATE);
+                  artifact.getGuid() + artifact.getBranch().getIdString(), IWorkbenchPage.VIEW_ACTIVATE);
 
                historyView.explore(artifact, loadHistory);
             } catch (Exception ex) {

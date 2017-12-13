@@ -131,8 +131,8 @@ public final class AttributeChange extends Change {
             return attribute;
          }
       }
-      throw new AttributeDoesNotExist("Attribute %d could not be found on artifact %d on branch %d", attrId, getArtId(),
-         getBranch().getGuid());
+      throw new AttributeDoesNotExist("Attribute %s could not be found on artifact %s on branch %s", attrId, getArtId(),
+         getBranch());
    }
 
    @SuppressWarnings("unchecked")
