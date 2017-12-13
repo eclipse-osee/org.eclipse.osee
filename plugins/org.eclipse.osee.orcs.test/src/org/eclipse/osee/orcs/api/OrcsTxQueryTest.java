@@ -171,7 +171,7 @@ public class OrcsTxQueryTest {
    @Test
    public void testGetByBranchIds() {
       TransactionQuery query = factory.transactionQuery();
-      query.andBranchIds(5, 4);
+      query.andBranchIds(Arrays.asList(BranchId.valueOf(5L), BranchId.valueOf(4L)));
 
       ResultSet<TransactionReadable> results = query.getResults();
       assertEquals(4, results.size());

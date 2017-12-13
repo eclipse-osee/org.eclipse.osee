@@ -43,9 +43,7 @@ public interface TxQueryBuilder<T> {
 
    T andBranch(Collection<? extends BranchId> ids);
 
-   T andBranchIds(long... id);
-
-   T andBranchIds(Collection<Long> ids);
+   T andBranchIds(Collection<? extends BranchId> ids);
 
    T andDate(Operator op, Timestamp date);
 

@@ -195,7 +195,7 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
       return toolBarManager;
    }
 
-   private void applyPreviousMerge(final long destBranchId) {
+   private void applyPreviousMerge(final IOseeBranch destinationBranch) {
       Job job = new Job("Apply Previous Merge") {
 
          @Override
@@ -205,7 +205,6 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
             monitor.beginTask("ApplyingPreviousMerge", conflicts.length);
             for (Conflict conflict : conflicts) {
                try {
-                  BranchId destinationBranch = BranchId.valueOf(destBranchId);
                   IOseeBranch mergeBranch = BranchManager.getMergeBranch(conflict.getSourceBranch(), destinationBranch);
                   conflict.applyPreviousMerge(mergeBranch, destinationBranch);
                } catch (OseeCoreException ex) {
@@ -691,13 +690,14 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
          if (conflicts.length != 0) {
             if (conflicts[0].getSourceBranch() != null) {
                ArrayList<String> selections = new ArrayList<>();
-               ArrayList<Long> branchUuids = new ArrayList<>();
+               ArrayList<IOseeBranch> branches = new ArrayList<>();
                try {
-                  Collection<Long> destBranches = ConflictManagerInternal.getDestinationBranchesMerged(sourceBranch);
-                  for (Long branchUuid : destBranches) {
-                     if (destBranch.notEqual(branchUuid)) {
-                        selections.add(BranchManager.getBranchName(BranchId.valueOf(branchUuid)));
-                        branchUuids.add(branchUuid);
+                  Collection<IOseeBranch> destBranches =
+                     ConflictManagerInternal.getDestinationBranchesMerged(sourceBranch);
+                  for (IOseeBranch branch : destBranches) {
+                     if (destBranch.notEqual(branch)) {
+                        selections.add(branch.getName());
+                        branches.add(branch);
                      }
                   }
                   if (selections.size() > 0) {
@@ -707,8 +707,8 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
                         new String[] {"Apply", "Cancel"}, 1);
                      if (dialog.open() == 0) {
                         System.out.print(
-                           "Applying the merge found for Branch " + branchUuids.toArray()[dialog.getSelection()]);
-                        applyPreviousMerge(branchUuids.get(dialog.getSelection()));
+                           "Applying the merge found for Branch " + branches.toArray()[dialog.getSelection()]);
+                        applyPreviousMerge(branches.get(dialog.getSelection()));
                      }
                   }
                   if (selections.isEmpty()) {

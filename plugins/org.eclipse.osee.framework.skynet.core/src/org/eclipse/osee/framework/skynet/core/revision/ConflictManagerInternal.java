@@ -366,13 +366,13 @@ public class ConflictManagerInternal {
       monitor.worked(10);
    }
 
-   public static Collection<Long> getDestinationBranchesMerged(BranchId sourceBranch) {
-      List<Long> destinationBranches = new LinkedList<>();
+   public static Collection<IOseeBranch> getDestinationBranchesMerged(BranchId sourceBranch) {
+      List<IOseeBranch> destinationBranches = new LinkedList<>();
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(GET_DESTINATION_BRANCHES, sourceBranch);
          while (chStmt.next()) {
-            destinationBranches.add(chStmt.getLong("dest_branch_id"));
+            destinationBranches.add(BranchManager.getBranchToken(chStmt.getLong("dest_branch_id")));
          }
       } finally {
          chStmt.close();

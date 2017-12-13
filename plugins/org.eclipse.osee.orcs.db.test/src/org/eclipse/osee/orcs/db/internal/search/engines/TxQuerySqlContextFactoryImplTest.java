@@ -15,10 +15,12 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import com.google.common.collect.Lists;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -67,7 +69,7 @@ public class TxQuerySqlContextFactoryImplTest {
    private static final Criteria COMMENT = comment("SimpleTemplateProviderTask", false);
    private static final Criteria TYPES =
       type(Arrays.asList(TransactionDetailsType.Baselined, TransactionDetailsType.NonBaselined));
-   private static final Criteria BRANCHIDS = branchUuids(1L, 2L, 3L, 4L, 5L);
+   private static final Criteria BRANCHIDS = branchIds(1L, 2L, 3L, 4L, 5L);
    private static final Criteria IDS_WITH_OPERATOR = idWithOperator(Operator.LESS_THAN, 1);
    private static final Criteria DATE_WITH_OPERATOR =
       dateWithOperator(Operator.LESS_THAN, Timestamp.valueOf("2013-05-06 12:34:56"));
@@ -301,8 +303,12 @@ public class TxQuerySqlContextFactoryImplTest {
       return new CriteriaTxType(types);
    }
 
-   private static Criteria branchUuids(Long... ids) {
-      return new CriteriaTxBranchIds(Arrays.asList(ids));
+   private static Criteria branchIds(Long... ids) {
+      List<BranchId> values = new ArrayList<>(ids.length);
+      for (Long id : ids) {
+         values.add(BranchId.valueOf(id));
+      }
+      return new CriteriaTxBranchIds(values);
    }
 
    private static Criteria idWithOperator(Operator op, int id) {

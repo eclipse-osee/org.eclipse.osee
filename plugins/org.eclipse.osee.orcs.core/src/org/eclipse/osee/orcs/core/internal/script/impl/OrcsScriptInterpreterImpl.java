@@ -388,7 +388,11 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
       @Override
       public Void caseOsTxBranchIdCriteria(OsTxBranchIdCriteria object) {
          Collection<Long> ids = resolver.resolve(Long.class, object.getIds());
-         getTxQuery().andBranchIds(ids);
+         Set<BranchId> values = new LinkedHashSet<>();
+         for (Long id : ids) {
+            values.add(BranchId.valueOf(id));
+         }
+         getTxQuery().andBranchIds(values);
          return null;
       }
 

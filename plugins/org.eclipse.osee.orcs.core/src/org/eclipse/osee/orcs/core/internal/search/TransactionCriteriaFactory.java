@@ -47,7 +47,7 @@ public class TransactionCriteriaFactory {
       return new CriteriaTxType(types);
    }
 
-   public Criteria newTxBranchIdCriteria(Collection<Long> ids) {
+   public Criteria newTxBranchIdCriteria(Collection<? extends BranchId> ids) {
       return new CriteriaTxBranchIds(ids);
    }
 

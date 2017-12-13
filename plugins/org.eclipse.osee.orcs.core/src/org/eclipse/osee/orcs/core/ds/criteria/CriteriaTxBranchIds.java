@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.core.ds.criteria;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.Options;
@@ -20,14 +21,14 @@ import org.eclipse.osee.orcs.core.ds.Options;
  */
 public class CriteriaTxBranchIds extends Criteria implements TxCriteria {
 
-   private final Collection<Long> ids;
+   private final Collection<? extends BranchId> ids;
 
-   public CriteriaTxBranchIds(Collection<Long> ids) {
+   public CriteriaTxBranchIds(Collection<? extends BranchId> ids) {
       super();
       this.ids = ids;
    }
 
-   public Collection<Long> getIds() {
+   public Collection<? extends BranchId> getIds() {
       return ids;
    }
 

@@ -14,8 +14,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -96,25 +94,12 @@ public class TxQueryBuilderImpl<T> implements TxQueryBuilder<T> {
 
    @Override
    public T andBranch(Collection<? extends BranchId> ids) {
-      Set<Long> values = new LinkedHashSet<>();
-      for (BranchId value : ids) {
-         values.add(value.getUuid());
-      }
-      Criteria criteria = criteriaFactory.newTxBranchIdCriteria(values);
+      Criteria criteria = criteriaFactory.newTxBranchIdCriteria(ids);
       return addAndCheck(queryData, criteria);
    }
 
    @Override
-   public T andBranchIds(long... ids) {
-      Set<Long> values = new LinkedHashSet<>();
-      for (long value : ids) {
-         values.add(value);
-      }
-      return andBranchIds(values);
-   }
-
-   @Override
-   public T andBranchIds(Collection<Long> ids) {
+   public T andBranchIds(Collection<? extends BranchId> ids) {
       Criteria criteria = criteriaFactory.newTxBranchIdCriteria(ids);
       return addAndCheck(queryData, criteria);
    }

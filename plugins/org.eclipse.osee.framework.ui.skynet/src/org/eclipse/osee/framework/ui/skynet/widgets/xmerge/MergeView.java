@@ -100,7 +100,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                      IWorkbenchPage page = AWorkbench.getActivePage();
                      IViewPart viewPart = page.showView(MergeView.VIEW_ID,
                         String.valueOf(
-                           sourceBranch != null ? sourceBranch.getUuid() * 100000 + destBranch.getUuid() : commitTrans.getId()),
+                           sourceBranch != null ? (sourceBranch.getId() / 2) + (destBranch.getId() / 2) : commitTrans.getId()),
                         IWorkbenchPage.VIEW_ACTIVATE);
                      if (viewPart instanceof MergeView) {
                         MergeView mergeView = (MergeView) viewPart;

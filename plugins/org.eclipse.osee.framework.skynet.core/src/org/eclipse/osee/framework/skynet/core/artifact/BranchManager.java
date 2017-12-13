@@ -633,7 +633,7 @@ public final class BranchManager {
       getCache().invalidate();
    }
 
-   public static BranchId getParentBranch(BranchId branch) {
+   public static IOseeBranch getParentBranch(BranchId branch) {
       return getBranch(branch).getParentBranch();
    }
 

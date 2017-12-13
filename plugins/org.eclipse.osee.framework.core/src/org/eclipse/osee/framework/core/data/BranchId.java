@@ -26,10 +26,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 public interface BranchId extends Identity<Long>, Id {
    BranchId SENTINEL = valueOf(Id.SENTINEL);
 
-   default Long getUuid() {
-      return getId();
-   }
-
    @Override
    default Long getGuid() {
       return getId();

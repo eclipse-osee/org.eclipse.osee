@@ -146,7 +146,7 @@ public final class StoreSkynetTransactionOperation extends AbstractDbTxOperation
          transactionData.addInsertToBatch(this);
 
          // Collect stale tx currents for batch update
-         fetchTxNotCurrent(connection, branch.getUuid(), transactionData, txNotCurrentData);
+         fetchTxNotCurrent(connection, branch, transactionData, txNotCurrentData);
       }
 
       // Insert into data tables - i.e. attribute, relation and artifact version tables
@@ -161,17 +161,14 @@ public final class StoreSkynetTransactionOperation extends AbstractDbTxOperation
       getJdbcClient().runBatchUpdate(connection, UPDATE_TXS_NOT_CURRENT, txNotCurrentData);
    }
 
-   private void fetchTxNotCurrent(JdbcConnection connection, Long branchId, BaseTransactionData transactionData, List<Object[]> results) {
-      JdbcStatement chStmt = getJdbcClient().getStatement(connection);
-      try {
+   private void fetchTxNotCurrent(JdbcConnection connection, BranchId branchId, BaseTransactionData transactionData, List<Object[]> results) {
+      try (JdbcStatement chStmt = getJdbcClient().getStatement(connection)) {
          String query = ServiceUtil.getSql(transactionData.getSelectTxNotCurrentSql());
 
          chStmt.runPreparedQuery(query, transactionData.getItemId(), branchId);
          while (chStmt.next()) {
             results.add(new Object[] {branchId, chStmt.getLong("transaction_id"), chStmt.getLong("gamma_id")});
          }
-      } finally {
-         chStmt.close();
       }
    }
 

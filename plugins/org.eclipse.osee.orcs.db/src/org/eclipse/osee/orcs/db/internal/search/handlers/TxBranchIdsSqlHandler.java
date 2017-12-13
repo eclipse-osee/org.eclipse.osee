@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxBranchIds;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
@@ -48,9 +49,9 @@ public class TxBranchIdsSqlHandler extends SqlHandler<CriteriaTxBranchIds> {
 
    @Override
    public boolean addPredicates(AbstractSqlWriter writer) {
-      Collection<Long> ids = criteria.getIds();
+      Collection<? extends BranchId> ids = criteria.getIds();
       if (ids.size() > 1) {
-         AbstractJoinQuery joinQuery = writer.writeIdJoin(ids);
+         AbstractJoinQuery joinQuery = writer.writeJoin(ids);
          writer.write(txAlias);
          writer.write(".branch_id = ");
          writer.write(jIdAlias);

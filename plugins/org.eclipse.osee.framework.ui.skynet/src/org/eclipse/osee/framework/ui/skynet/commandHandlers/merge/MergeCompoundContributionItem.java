@@ -69,19 +69,20 @@ public class MergeCompoundContributionItem extends CompoundContributionProvider 
             BranchId selectedBranch = branches.iterator().next();
             if (selectedBranch != null) {
                try {
-                  Collection<Long> destBranches = ConflictManagerInternal.getDestinationBranchesMerged(selectedBranch);
-                  BranchId parentBranch = BranchManager.getParentBranch(selectedBranch);
+                  Collection<IOseeBranch> destBranches =
+                     ConflictManagerInternal.getDestinationBranchesMerged(selectedBranch);
+                  IOseeBranch parentBranch = BranchManager.getParentBranch(selectedBranch);
                   if (parentBranch != null && !BranchManager.getType(
-                     selectedBranch).isMergeBranch() && !destBranches.contains(parentBranch.getUuid())) {
-                     destBranches.add(parentBranch.getUuid());
+                     selectedBranch).isMergeBranch() && !destBranches.contains(parentBranch)) {
+                     destBranches.add(parentBranch);
                   }
 
                   String commandId = "org.eclipse.osee.framework.ui.skynet.branch.BranchView.mergeManager";
                   Command command = configCommandParameter(commandId);
                   CommandContributionItem contributionItem = null;
 
-                  for (Long branchUuid : destBranches) {
-                     contributionItem = createCommand(branchUuid, commandId);
+                  for (IOseeBranch branch : destBranches) {
+                     contributionItem = createCommand(branch, commandId);
 
                      if (command != null && command.isEnabled()) {
                         contributionItems.add(contributionItem);
@@ -96,12 +97,11 @@ public class MergeCompoundContributionItem extends CompoundContributionProvider 
       return contributionItems.toArray(new IContributionItem[0]);
    }
 
-   private CommandContributionItem createCommand(Long branchUuid, String commandId) {
+   private CommandContributionItem createCommand(IOseeBranch branch, String commandId) {
       Map<String, String> parameters = new HashMap<>();
-      parameters.put(BranchView.BRANCH_ID, Long.toString(branchUuid));
+      parameters.put(BranchView.BRANCH_ID, branch.getIdString());
       CommandContributionItem contributionItem;
-      String label =
-         branchUuid.equals(0L) ? "Can't Merge a Root Branch" : BranchManager.getBranchToken(branchUuid).getName();
+      String label = branch.isValid() ? branch.getName() : "Can't Merge a Root Branch";
 
       contributionItem = new CommandContributionItem(
          new CommandContributionItemParameter(PlatformUI.getWorkbench().getActiveWorkbenchWindow(), label, commandId,
