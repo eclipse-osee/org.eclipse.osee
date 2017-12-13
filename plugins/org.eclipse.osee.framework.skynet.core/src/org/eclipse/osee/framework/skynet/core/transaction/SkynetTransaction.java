@@ -259,8 +259,9 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
 
    private void checkMultiplicity(Artifact artifact, Attribute<?> attr) {
       if (attr.getAttributeType().getMaxOccurrences() == 1 && artifact.getAttributeCount(attr.getAttributeType()) > 1) {
-         throw new OseeStateException("Artifact [%s] can only have 1 [%s] attribute but has %d", artifact.getName(),
-            attr.getAttributeType().getName(), artifact.getAttributeCount(attr.getAttributeType()));
+         throw new OseeStateException("Artifact %s can only have 1 [%s] attribute but has %d",
+            artifact.toStringWithId(), attr.getAttributeType().getName(),
+            artifact.getAttributeCount(attr.getAttributeType()));
       }
    }
 
@@ -273,7 +274,7 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
       if (limitToCheck == 1) {
          int count = art.getRelatedArtifactsCount(RelationTypeSide.create(relationType, sideToCheck));
          if (count > 1) {
-            throw new OseeStateException("Artifact [%s] can only have 1 [%s] on [%s] but has %d", art.getName(),
+            throw new OseeStateException("Artifact %s can only have 1 [%s] on [%s] but has %d", art.toStringWithId(),
                relationType.getSideName(sideToCheck), sideToCheck.name(), count);
          }
       }
