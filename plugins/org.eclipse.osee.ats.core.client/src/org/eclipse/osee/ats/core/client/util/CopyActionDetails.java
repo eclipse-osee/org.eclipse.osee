@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.core.client.util;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
@@ -46,6 +47,16 @@ public class CopyActionDetails {
             String formatStr = getFormatStr(teamDef);
             if (Strings.isValid(formatStr)) {
                detailsStr = formatStr;
+               IAtsAction action = awa.getParentAction();
+               if (action != null) {
+                  detailsStr = detailsStr.replaceAll("<actionatsid>", action.getAtsId());
+               }
+               String legacyPcrId = awa.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, null);
+               if (Strings.isValid(legacyPcrId)) {
+                  detailsStr = detailsStr.replaceAll("<legacypcrid>", " - [" + legacyPcrId + "]");
+               } else {
+                  detailsStr = detailsStr.replaceAll("<legacypcrid>", "");
+               }
                detailsStr = detailsStr.replaceAll("<atsid>", awa.getAtsId());
                detailsStr = detailsStr.replaceAll("<name>", awa.getName());
                detailsStr = detailsStr.replaceAll("<artType>", awa.getArtifactTypeName());
