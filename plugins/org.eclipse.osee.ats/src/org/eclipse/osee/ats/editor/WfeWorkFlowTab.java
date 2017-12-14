@@ -43,6 +43,7 @@ import org.eclipse.osee.ats.actions.ShowMergeManagerAction;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.note.NoteItem;
 import org.eclipse.osee.ats.artifact.WorkflowManager;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
@@ -635,8 +636,16 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       }
 
       try {
-         FormsUtil.createLabelText(toolkit, topLineComp, " Id: ",
+         FormsUtil.createLabelText(toolkit, topLineComp, awa.getArtifactType().getName() + " Id: ",
             AtsClientService.get().getWorkItemService().getCombinedPcrId(awa));
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      try {
+         IAtsAction action = awa.getParentAction();
+         if (action != null) {
+            FormsUtil.createLabelText(toolkit, topLineComp, "Action Id: ", action.getAtsId());
+         }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
