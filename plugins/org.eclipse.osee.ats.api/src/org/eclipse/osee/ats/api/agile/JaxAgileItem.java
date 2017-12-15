@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * @author Donald G. Dunne
  */
-public class JaxAgileItem {
+public class JaxAgileItem extends JaxAgileObject {
 
    private final List<Long> ids = new ArrayList<>();
    private final List<Long> features = new ArrayList<>();

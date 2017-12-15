@@ -10,28 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.agile;
 
+import org.eclipse.osee.ats.api.config.JaxAtsObject;
+
 /**
  * @author Donald G. Dunne
  */
-public class AbstractJaxNewAgileObject {
-
-   private String name;
-   private Long id;
-
-   public String getName() {
-      return name;
-   }
-
-   public void setName(String name) {
-      this.name = name;
-   }
-
-   public Long getId() {
-      return id;
-   }
-
-   public void setId(Long id) {
-      this.id = id;
-   }
-
+public class JaxAgileObject extends JaxAtsObject {
+   // do nothing
 }

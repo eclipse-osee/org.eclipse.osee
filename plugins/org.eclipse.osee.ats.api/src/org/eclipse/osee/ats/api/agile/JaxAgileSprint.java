@@ -10,21 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.agile;
 
-import org.eclipse.osee.ats.api.config.JaxAtsObject;
-
 /**
  * @author Donald G. Dunne
  */
-public class JaxAgileSprint extends JaxAtsObject {
-
-   private long teamId;
-
-   public long getTeamId() {
-      return teamId;
-   }
-
-   public void setTeamId(long teamId) {
-      this.teamId = teamId;
-   }
-
+public class JaxAgileSprint extends JaxAgileTeamObject {
+   // do nothing
 }

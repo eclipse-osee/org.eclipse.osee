@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.insertion;
 
-import org.eclipse.osee.ats.api.agile.AbstractJaxNewAgileTeamObject;
+import org.eclipse.osee.ats.api.agile.JaxAgileTeamObject;
 
 /**
  * @author David W. Miller
  */
-public class JaxInsertionActivity extends AbstractJaxNewAgileTeamObject {
+public class JaxInsertionActivity extends JaxAgileTeamObject {
 
    private long insertionId;
 

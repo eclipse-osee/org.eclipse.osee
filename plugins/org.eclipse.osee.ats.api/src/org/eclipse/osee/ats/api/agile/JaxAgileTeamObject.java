@@ -13,6 +13,16 @@ package org.eclipse.osee.ats.api.agile;
 /**
  * @author Donald G. Dunne
  */
-public class JaxNewAgileFeatureGroup extends JaxAgileTeamObject {
-   // Nothing to implement
+public class JaxAgileTeamObject extends JaxAgileObject {
+
+   private long teamId;
+
+   public long getTeamId() {
+      return teamId;
+   }
+
+   public void setTeamId(long teamId) {
+      this.teamId = teamId;
+   }
+
 }

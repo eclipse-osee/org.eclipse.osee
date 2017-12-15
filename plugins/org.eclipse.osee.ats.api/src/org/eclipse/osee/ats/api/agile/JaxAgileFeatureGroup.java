@@ -10,24 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.agile;
 
-import org.eclipse.osee.ats.api.config.JaxAtsObject;
-
 /**
  * A Feature Group is a part of a product. eg: ATS is a Feature Group of the OSEE Product. It usually does not get
  * "completed".
- * 
+ *
  * @author Donald G. Dunne
  */
-public class JaxAgileFeatureGroup extends JaxAtsObject {
-
-   private long teamId;
-
-   public long getTeamId() {
-      return teamId;
-   }
-
-   public void setTeamId(long teamId) {
-      this.teamId = teamId;
-   }
-
+public class JaxAgileFeatureGroup extends JaxAgileTeamObject {
+   // do nothing
 }

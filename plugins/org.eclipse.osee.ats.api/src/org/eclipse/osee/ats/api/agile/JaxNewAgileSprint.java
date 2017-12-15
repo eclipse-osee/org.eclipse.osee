@@ -13,6 +13,6 @@ package org.eclipse.osee.ats.api.agile;
 /**
  * @author Donald G. Dunne
  */
-public class JaxNewAgileSprint extends AbstractJaxNewAgileTeamObject {
+public class JaxNewAgileSprint extends JaxAgileTeamObject {
    // Nothing to implement
 }

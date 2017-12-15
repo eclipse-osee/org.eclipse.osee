@@ -10,13 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.agile;
 
-import org.eclipse.osee.ats.api.config.JaxAtsObject;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**
  * @author Donald G. Dunne
  */
-public class JaxAgileProgramBacklogItem extends JaxAtsObject implements IAgileProgramBacklogItem {
+public class JaxAgileProgramBacklogItem extends JaxAgileProgramObject implements IAgileProgramBacklogItem {
 
    private Long backlogId;
 

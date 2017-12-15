@@ -12,14 +12,12 @@ package org.eclipse.osee.ats.api.agile;
 
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.ats.api.config.JaxAtsObject;
 
 /**
  * @author Donald G. Dunne
  */
-public class JaxAgileProgram extends JaxAtsObject implements IAgileProgram {
+public class JaxAgileProgram extends JaxAgileProgramObject implements IAgileProgram {
 
-   String id;
    List<Long> teamIds = new LinkedList<>();
 
    public JaxAgileProgram() {
