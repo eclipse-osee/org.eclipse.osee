@@ -133,6 +133,15 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
+   public List<Pair<ArtifactId, ApplicabilityToken>> getApplicabilityTokensForArts(Collection<? extends ArtifactId> artIds) {
+      List<Pair<ArtifactId, ApplicabilityToken>> artToApplicToken = new ArrayList<>();
+      for (ArtifactId artId : artIds) {
+         artToApplicToken.add(new Pair<ArtifactId, ApplicabilityToken>(artId, getApplicabilityToken(artId)));
+      }
+      return artToApplicToken;
+   }
+
+   @Override
    public Collection<ApplicabilityToken> getApplicabilityTokenMap() {
       return orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityTokens(branch).values();
    }
@@ -161,7 +170,7 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
    }
 
    @Override
-   public List<Pair<ArtifactId, ApplicabilityToken>> getApplicabilityTokensForArts(Collection<? extends ArtifactId> artIds) {
+   public List<Pair<ArtifactId, ApplicabilityToken>> getApplicabilityTokens(Collection<? extends ArtifactId> artIds) {
       return orcsApi.getQueryFactory().applicabilityQuery().getApplicabilityTokens(artIds, branch);
    }
 
@@ -285,4 +294,5 @@ public class ApplicabilityEndpointImpl implements ApplicabilityEndpoint {
 
       return getAffectedBranches(timeInjectionMs, timeRemovalMs, applicabilityIds);
    }
+
 }

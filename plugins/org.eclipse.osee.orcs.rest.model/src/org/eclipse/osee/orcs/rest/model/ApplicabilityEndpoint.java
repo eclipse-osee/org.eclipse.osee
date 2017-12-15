@@ -95,9 +95,15 @@ public interface ApplicabilityEndpoint {
    ApplicabilityToken getApplicabilityToken(@PathParam("artId") ArtifactId artId);
 
    @PUT
+   @Path("artifacts")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces(MediaType.APPLICATION_JSON)
    List<Pair<ArtifactId, ApplicabilityToken>> getApplicabilityTokensForArts(Collection<? extends ArtifactId> artIds);
+
+   @PUT
+   @Consumes({MediaType.APPLICATION_JSON})
+   @Produces(MediaType.APPLICATION_JSON)
+   List<Pair<ArtifactId, ApplicabilityToken>> getApplicabilityTokens(Collection<? extends ArtifactId> artIds);
 
    @GET
    @Path("tokenMap")

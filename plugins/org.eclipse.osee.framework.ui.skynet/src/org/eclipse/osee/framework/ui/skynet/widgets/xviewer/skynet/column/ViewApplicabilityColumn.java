@@ -82,7 +82,7 @@ public class ViewApplicabilityColumn extends XViewerColumn implements IXViewerPr
          BranchId branch = artifacts.iterator().next().getBranch();
          ApplicabilityEndpoint applEndpoint = ServiceUtil.getOseeClient().getApplicabilityEndpoint(branch);
          List<Pair<ArtifactId, ApplicabilityToken>> applicabilities =
-            applEndpoint.getApplicabilityTokensForArts(artifacts);
+            applEndpoint.getApplicabilityTokens(artifacts);
          for (Pair<ArtifactId, ApplicabilityToken> pair : applicabilities) {
             preComputedValueMap.put(pair.getFirst().getId(), pair.getSecond().getName());
          }
