@@ -12,10 +12,11 @@ package org.eclipse.osee.framework.ui.skynet.explorer;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 
 /**
  * @author Robert A. Fisher
@@ -91,16 +92,9 @@ public class ArtifactExplorerLinkNode {
 
    public List<Artifact> getOppositeArtifacts() {
       List<Artifact> oppositeArtifacts = new ArrayList<>();
-      for (RelationLink link : artifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
-         if (link.getRelationType().getName().equals(relationTypeName)) {
-            if (link.getAArtifactId() == artifactId) {
-               oppositeArtifacts.add(link.getArtifactB());
-            } else {
-               oppositeArtifacts.add(link.getArtifactA());
-
-            }
-         }
-      }
+      RelationTypeSide relationSide =
+         new RelationTypeSide(relationType, parentIsOnSideA ? RelationSide.SIDE_B : RelationSide.SIDE_A);
+      oppositeArtifacts.addAll(artifact.getRelatedArtifacts(relationSide, DeletionFlag.EXCLUDE_DELETED));
       return oppositeArtifacts;
    }
 
