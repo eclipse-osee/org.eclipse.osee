@@ -118,11 +118,22 @@ public class FindErroneousEmbeddedLinksBlam extends AbstractBlam {
 
    private void findIncorrectLinks(Artifact artifact, String content, ISheetWriter excelWriter) throws IOException {
       Set<String> unknownGuids = new HashSet<>();
-      HashCollection<String, MatchRange> links = WordMlLinkHandler.getLinks(content);
+      HashCollection<String, MatchRange> errorMap = new HashCollection<>();
+      HashCollection<String, MatchRange> links = WordMlLinkHandler.getLinks(content, errorMap);
       if (!links.isEmpty()) {
          unknownGuids.addAll(links.keySet());
       }
+      findInvalid(artifact, excelWriter, unknownGuids);
 
+      unknownGuids.clear();
+      if (!errorMap.isEmpty()) {
+         unknownGuids.addAll(errorMap.keySet());
+      }
+      findInvalid(artifact, excelWriter, unknownGuids);
+
+   }
+
+   private void findInvalid(Artifact artifact, ISheetWriter excelWriter, Set<String> unknownGuids) throws IOException {
       Iterator<String> guidIter = unknownGuids.iterator();
       while (guidIter.hasNext()) {
          // Pointing to itself

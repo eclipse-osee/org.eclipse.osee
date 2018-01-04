@@ -30,18 +30,33 @@ public final class OseeLinkParser {
    private static final Matcher PARAMETER_MATCHER = Pattern.compile("([^&]*?)=([^&]*)").matcher("");
 
    private final Map<String, String> parameterMap;
+   private final Map<String, String> errorParamMap;
 
    public OseeLinkParser() {
       this.parameterMap = new HashMap<>();
+      this.errorParamMap = new HashMap<>();
    }
 
    public void parse(String link) {
       parameterMap.clear();
+      errorParamMap.clear();
       link = link.replaceAll("&amp;", "&");
       boolean wasHandled = parseOldSchoolStyleLinks(link);
+
       if (!wasHandled) {
-         parseNewStyleRequests(link);
+         wasHandled = parseNewStyleRequests(link);
       }
+
+      if (!wasHandled) {
+         errorParamMap.put("linkerr", link);
+      }
+   }
+
+   public String getErrLink() {
+      if (errorParamMap != null) {
+         return errorParamMap.get("linkerr");
+      }
+      return null;
    }
 
    public BranchId getId() throws OseeCoreException {
@@ -85,7 +100,8 @@ public final class OseeLinkParser {
     * Process new style requests are of the following format: http://127.0.0.1:<port>/
     * <ProcessType>?key1=value1&key2=value2...&key3=value3
     */
-   private void parseNewStyleRequests(String link) {
+   private boolean parseNewStyleRequests(String link) {
+      boolean wasHandled = false;
       String noHostStr = link.replaceFirst("^http:\\/\\/(.*?)\\/", "/");
       Matcher matcher = LINK_CONTEXT_MATCHER;
       matcher.reset(noHostStr);
@@ -94,8 +110,10 @@ public final class OseeLinkParser {
          dataMatcher.reset(matcher.group(2));
          while (dataMatcher.find()) {
             parameterMap.put(dataMatcher.group(1), dataMatcher.group(2));
+            wasHandled = true;
          }
       }
+      return wasHandled;
    }
 
    /**

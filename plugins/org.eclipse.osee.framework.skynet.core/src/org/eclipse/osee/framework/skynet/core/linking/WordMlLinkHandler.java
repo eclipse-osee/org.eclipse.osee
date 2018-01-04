@@ -102,7 +102,7 @@ public class WordMlLinkHandler {
    public static String unlink(LinkType sourceLinkType, Artifact source, String content) throws OseeCoreException {
       LinkType linkType = checkLinkType(sourceLinkType);
       String modified = content;
-      HashCollection<String, MatchRange> matchMap = parseOseeWordMLLinks(content);
+      HashCollection<String, MatchRange> matchMap = parseOseeWordMLLinks(content, new HashCollection<>());
       if (!matchMap.isEmpty()) {
          modified = modifiedContent(linkType, source, content, matchMap, true, null);
       }
@@ -125,7 +125,7 @@ public class WordMlLinkHandler {
       LinkType linkType = checkLinkType(destLinkType);
       String modified = content;
 
-      HashCollection<String, MatchRange> matchMap = getLinks(content);
+      HashCollection<String, MatchRange> matchMap = getLinks(content, new HashCollection<>());
       if (!matchMap.isEmpty()) {
          modified = modifiedContent(linkType, source, content, matchMap, false, unknownGuids, presentationType);
          unknownGuids.addAll(matchMap.keySet());
@@ -137,9 +137,9 @@ public class WordMlLinkHandler {
       return modified;
    }
 
-   public static HashCollection<String, MatchRange> getLinks(String content) {
+   public static HashCollection<String, MatchRange> getLinks(String content, HashCollection<String, MatchRange> errorMap) {
       // Detect legacy links
-      HashCollection<String, MatchRange> matchMap = parseOseeWordMLLinks(content);
+      HashCollection<String, MatchRange> matchMap = parseOseeWordMLLinks(content, errorMap);
 
       // Detect new style link marker
       OSEE_LINK_PATTERN.reset(content);
@@ -147,6 +147,8 @@ public class WordMlLinkHandler {
          String guid = OSEE_LINK_PATTERN.group(1);
          if (Strings.isValid(guid)) {
             matchMap.put(guid, new MatchRange(OSEE_LINK_PATTERN.start(), OSEE_LINK_PATTERN.end()));
+         } else {
+            errorMap.put(guid, new MatchRange(WORDML_LINK.start(), WORDML_LINK.end()));
          }
       }
       OSEE_LINK_PATTERN.reset();
@@ -158,7 +160,7 @@ public class WordMlLinkHandler {
     *
     * @return locations where WordMlLinks were found grouped by GUID
     */
-   private static HashCollection<String, MatchRange> parseOseeWordMLLinks(String content) throws OseeCoreException {
+   private static HashCollection<String, MatchRange> parseOseeWordMLLinks(String content, HashCollection<String, MatchRange> errorMap) throws OseeCoreException {
       HashCollection<String, MatchRange> matchMap = new HashCollection<>();
       OseeLinkParser linkParser = new OseeLinkParser();
       WORDML_LINK.reset(content);
@@ -169,6 +171,8 @@ public class WordMlLinkHandler {
             String guid = linkParser.getGuid();
             if (Strings.isValid(guid)) {
                matchMap.put(guid, new MatchRange(WORDML_LINK.start(), WORDML_LINK.end()));
+            } else {
+               errorMap.put(linkParser.getErrLink(), new MatchRange(WORDML_LINK.start(), WORDML_LINK.end()));
             }
          }
       }
@@ -182,6 +186,9 @@ public class WordMlLinkHandler {
             String guid = linkParser.getGuid();
             if (Strings.isValid(guid)) {
                matchMap.put(guid, new MatchRange(HYPERLINK_PATTERN.start(), HYPERLINK_PATTERN.end()));
+            } else {
+               errorMap.put(linkParser.getErrLink(),
+                  new MatchRange(HYPERLINK_PATTERN.start(), HYPERLINK_PATTERN.end()));
             }
          }
       }
