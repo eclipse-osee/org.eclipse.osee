@@ -53,9 +53,7 @@ public interface TransactionBuilder {
 
    ArtifactToken createArtifact(ArtifactTypeId artifactType, String name);
 
-   ArtifactToken createArtifact(ArtifactTypeId artifactType, String name, String guid);
-
-   ArtifactToken createArtifact(ArtifactTypeId artifactType, String name, String guid, long uuid);
+   ArtifactToken createArtifact(ArtifactTypeId artifactType, String name, Long artifactId);
 
    ArtifactToken createArtifact(ArtifactToken configsFolder);
 

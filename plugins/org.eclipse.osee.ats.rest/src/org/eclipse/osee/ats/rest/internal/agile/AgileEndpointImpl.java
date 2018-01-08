@@ -585,14 +585,13 @@ public class AgileEndpointImpl implements AgileEndpointApi {
          throw new OseeWebApplicationException(Status.BAD_REQUEST, "teamId is not valid");
       }
 
-      String guid = GUID.create();
       Long id = newSprint.getId();
       if (id == null || id <= 0) {
          id = Lib.generateArtifactIdAsInt();
       }
 
       IAgileSprint sprint =
-         atsApi.getAgileService().createAgileSprint(newSprint.getTeamId(), newSprint.getName(), guid, id);
+         atsApi.getAgileService().createAgileSprint(newSprint.getTeamId(), newSprint.getName(), id);
       JaxAgileSprint created = toJaxSprint(sprint);
 
       UriBuilder builder = uriInfo.getRequestUriBuilder();
@@ -868,7 +867,6 @@ public class AgileEndpointImpl implements AgileEndpointApi {
          new OseeWebApplicationException(Status.BAD_REQUEST, "name is not valid");
       }
 
-      String guid = GUID.create();
       Long id = newBacklog.getId();
       if (id == null || id <= 0) {
          id = Lib.generateArtifactIdAsInt();
@@ -879,7 +877,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
             teamArt.toStringWithId());
       }
 
-      backlog = atsApi.getAgileService().createAgileBacklog(newBacklog.getTeamId(), newBacklog.getName(), guid, id);
+      backlog = atsApi.getAgileService().createAgileBacklog(newBacklog.getTeamId(), newBacklog.getName(), id);
       JaxAgileBacklog created = toJaxBacklog(backlog);
       UriBuilder builder = uriInfo.getRequestUriBuilder();
       URI location = builder.path("teams").path(String.valueOf(backlog.getTeamId())).path("backlog").build();

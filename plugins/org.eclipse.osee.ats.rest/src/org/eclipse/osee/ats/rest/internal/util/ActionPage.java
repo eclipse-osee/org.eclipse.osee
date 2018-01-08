@@ -399,7 +399,6 @@ public class ActionPage {
       StringBuilder sb = new StringBuilder();
       if (details) {
          try {
-            addDetail(sb, "Guid", artifact.getGuid());
             addDetail(sb, "Artifact Type", artifact.getArtifactType().getName());
             sb.append("</br><b>Attribute Raw Data:</b></br>");
             for (AttributeReadable<?> attr : artifact.getAttributes()) {

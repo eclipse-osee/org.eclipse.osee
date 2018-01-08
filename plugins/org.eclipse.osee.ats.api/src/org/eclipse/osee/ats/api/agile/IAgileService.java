@@ -48,9 +48,9 @@ public interface IAgileService {
 
    IAgileSprint getAgileSprint(long id);
 
-   IAgileSprint createAgileSprint(long teamId, String name, String guid, Long id);
+   IAgileSprint createAgileSprint(long teamId, String name, Long id);
 
-   IAgileBacklog createAgileBacklog(long teamId, String name, String guid, Long id);
+   IAgileBacklog createAgileBacklog(long teamId, String name, Long id);
 
    IAgileBacklog getAgileBacklog(ArtifactId artifact);
 

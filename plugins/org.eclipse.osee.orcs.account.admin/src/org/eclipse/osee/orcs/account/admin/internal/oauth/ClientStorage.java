@@ -100,7 +100,7 @@ public class ClientStorage {
 
    public ArtifactId insert(OseePrincipal principal, OAuthClient data) {
       TransactionBuilder tx = newTransaction(principal, "Create OAuth Client");
-      ArtifactId artId = tx.createArtifact(OAUTH_CLIENT, data.getApplicationName(), data.getGuid());
+      ArtifactId artId = tx.createArtifact(OAUTH_CLIENT, data.getApplicationName(), data.getClientUuid());
       txSetClient(tx, artId, data);
       tx.commit();
       return artId;

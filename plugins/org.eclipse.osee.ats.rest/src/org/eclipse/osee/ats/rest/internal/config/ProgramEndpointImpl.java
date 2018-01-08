@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -57,7 +56,7 @@ public class ProgramEndpointImpl extends BaseConfigEndpointImpl<JaxProgram> impl
       IAtsChangeSet changes =
          atsServer.getStoreService().createAtsChangeSet("Create " + artifactType.getName(), AtsCoreUsers.SYSTEM_USER);
       ArtifactReadable configArtifact =
-         (ArtifactReadable) changes.createArtifact(artifactType, program.getName(), GUID.create(), program.getId());
+         (ArtifactReadable) changes.createArtifact(artifactType, program.getName(), program.getId());
       IAtsConfigObject configObject = atsServer.getConfigItemFactory().getConfigObject(configArtifact);
       if (!configArtifact.getName().equals(program.getName())) {
          changes.setSoleAttributeValue(configObject, CoreAttributeTypes.Name, program.getName());

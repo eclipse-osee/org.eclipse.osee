@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -70,7 +69,7 @@ public final class OseeSystemArtifacts {
          } else if (Strings.isValid(guid)) {
             artifact = ArtifactTypeManager.addArtifact(artifactType, branch, artifactName, guid);
          } else if (uuid != null && uuid > 0) {
-            artifact = ArtifactTypeManager.addArtifact(artifactType, branch, artifactName, GUID.create(), uuid);
+            artifact = ArtifactTypeManager.addArtifact(artifactType, branch, artifactName, uuid);
          } else {
             artifact = ArtifactTypeManager.addArtifact(artifactType, branch, artifactName);
          }

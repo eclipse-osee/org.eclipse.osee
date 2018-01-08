@@ -61,6 +61,13 @@ public class ArtifactFactory {
       return artifact;
    }
 
+   public Artifact createArtifact(OrcsSession session, BranchId branch, ArtifactTypeId artifactType, Long artifactId) {
+      ArtifactData artifactData = factory.create(branch, artifactType, artifactId);
+      Artifact artifact = createArtifact(session, artifactData);
+      artifact.setLoaded(true);
+      return artifact;
+   }
+
    public Artifact copyArtifact(OrcsSession session, Artifact source, Collection<? extends AttributeTypeId> types, BranchId ontoBranch) {
       ArtifactData artifactData = factory.copy(ontoBranch, source.getOrcsData());
       Artifact copy = createArtifact(session, artifactData);

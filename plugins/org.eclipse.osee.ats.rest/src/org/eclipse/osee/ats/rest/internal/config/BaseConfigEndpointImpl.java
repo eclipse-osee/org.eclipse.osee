@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -77,8 +76,7 @@ public abstract class BaseConfigEndpointImpl<T extends JaxAtsObject> implements 
       }
       IAtsChangeSet changes =
          atsServer.getStoreService().createAtsChangeSet("Create " + artifactType.getName(), AtsCoreUsers.SYSTEM_USER);
-      ArtifactId newArtifact =
-         changes.createArtifact(artifactType, jaxAtsObject.getName(), GUID.create(), jaxAtsObject.getId());
+      ArtifactId newArtifact = changes.createArtifact(artifactType, jaxAtsObject.getName(), jaxAtsObject.getId());
       IAtsObject newAtsObject = atsServer.getConfigItemFactory().getConfigObject(newArtifact);
       if (typeFolder != null) {
          ArtifactReadable typeFolderArtifact = atsServer.getArtifact(typeFolder);

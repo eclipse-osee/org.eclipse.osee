@@ -32,7 +32,7 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link AccessModelInterpreterImpl}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class AccessModelInterpreterImplTest {
@@ -118,7 +118,7 @@ public class AccessModelInterpreterImplTest {
    public void testComputeAccessCheckRestriction() {
       AccessContext accessContext = MockModel.createAccessContext(contextId2.getGuid(), "c2");
 
-      MockArtifactProxy artifactData = new MockArtifactProxy("1234", null);
+      MockArtifactProxy artifactData = new MockArtifactProxy();
 
       ObjectRestriction objectRestriction = null;
       assertComputeDetails(accessContext, artifactData, objectRestriction, false);

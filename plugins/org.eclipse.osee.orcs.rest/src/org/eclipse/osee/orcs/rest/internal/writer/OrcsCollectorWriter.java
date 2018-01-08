@@ -29,8 +29,6 @@ import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -252,16 +250,17 @@ public class OrcsCollectorWriter {
          IArtifactType artType = orcsApi.getOrcsTypes().getArtifactTypes().get(owArtType.getId());
 
          long artifactId = owArtifact.getId();
-         if (artifactId > 0L) {
-            if (idToArtifact == null) {
-               idToArtifact = new HashMap<>();
-            }
-         } else {
-            artifactId = Lib.generateArtifactIdAsInt();
-         }
          String name = owArtifact.getName();
-         ArtifactId artifact = getTransaction().createArtifact(artType, name, GUID.create(), artifactId);
+         ArtifactId artifact;
+         if (artifactId < 1) {
+            artifact = getTransaction().createArtifact(artType, name);
+         } else {
+            artifact = getTransaction().createArtifact(artType, name, artifactId);
+         }
 
+         if (idToArtifact == null) {
+            idToArtifact = new HashMap<>();
+         }
          idToArtifact.put(artifactId, artifact);
 
          try {

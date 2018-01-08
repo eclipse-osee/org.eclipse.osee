@@ -74,9 +74,7 @@ public interface IAtsChangeSet {
 
    void deleteAttributes(IAtsObject atsObject, AttributeTypeId attributeType);
 
-   ArtifactToken createArtifact(ArtifactTypeId artifactType, String name, String guid);
-
-   ArtifactToken createArtifact(ArtifactTypeId artifactType, String name, String guid, Long id);
+   ArtifactToken createArtifact(ArtifactTypeId artifactType, String name, Long artifactId);
 
    void relate(Object object1, RelationTypeSide relationSide, Object object2);
 

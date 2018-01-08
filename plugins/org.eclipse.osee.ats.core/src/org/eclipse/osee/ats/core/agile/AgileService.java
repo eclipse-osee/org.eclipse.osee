@@ -373,8 +373,8 @@ public class AgileService implements IAgileService {
    }
 
    @Override
-   public IAgileSprint createAgileSprint(long teamId, String name, String guid, Long id) {
-      return AgileFactory.createAgileSprint(logger, atsApi, teamId, name, guid, id);
+   public IAgileSprint createAgileSprint(long teamId, String name, Long id) {
+      return AgileFactory.createAgileSprint(logger, atsApi, teamId, name, id);
    }
 
    @Override
@@ -432,8 +432,8 @@ public class AgileService implements IAgileService {
    }
 
    @Override
-   public IAgileBacklog createAgileBacklog(long teamId, String name, String guid, Long id) {
-      return AgileFactory.createAgileBacklog(logger, atsApi, teamId, name, guid, id);
+   public IAgileBacklog createAgileBacklog(long teamId, String name, Long id) {
+      return AgileFactory.createAgileBacklog(logger, atsApi, teamId, name, id);
    }
 
    @Override

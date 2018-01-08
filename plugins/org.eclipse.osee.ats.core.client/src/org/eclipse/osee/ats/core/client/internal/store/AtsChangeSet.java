@@ -43,7 +43,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -261,13 +260,6 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public ArtifactToken createArtifact(ArtifactTypeId artifactType, String name) {
-      Artifact artifact = ArtifactTypeManager.addArtifact(artifactType, AtsClientService.get().getAtsBranch(), name);
-      add(artifact);
-      return artifact;
-   }
-
-   @Override
    public void deleteAttributes(IAtsObject atsObject, AttributeTypeId attributeType) {
       Artifact artifact = AtsClientService.get().getArtifact(atsObject);
       artifact.deleteAttributes(attributeType);
@@ -275,14 +267,16 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public ArtifactToken createArtifact(ArtifactTypeId artifactType, String name, String guid) {
-      return createArtifact(artifactType, name, guid, Lib.generateArtifactIdAsInt());
+   public ArtifactToken createArtifact(ArtifactTypeId artifactType, String name, Long artifactId) {
+      Artifact artifact =
+         ArtifactTypeManager.addArtifact(artifactType, AtsClientService.get().getAtsBranch(), name, artifactId);
+      add(artifact);
+      return artifact;
    }
 
    @Override
-   public ArtifactToken createArtifact(ArtifactTypeId artifactType, String name, String guid, Long id) {
-      Artifact artifact =
-         ArtifactTypeManager.addArtifact(artifactType, AtsClientService.get().getAtsBranch(), name, guid, id);
+   public ArtifactToken createArtifact(ArtifactTypeId artifactType, String name) {
+      Artifact artifact = ArtifactTypeManager.addArtifact(artifactType, AtsClientService.get().getAtsBranch(), name);
       add(artifact);
       return artifact;
    }

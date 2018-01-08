@@ -43,7 +43,6 @@ import org.eclipse.osee.framework.core.model.access.AccessDetailCollector;
 import org.eclipse.osee.framework.core.model.access.Scope;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -69,7 +68,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       restriction.setRelationTypeRef(relationTypeRef);
 
       // Artifact Data has no relation types therefore relation type will not match
-      MockArtifactProxy artData = new MockArtifactProxy(GUID.create(), null);
+      MockArtifactProxy artData = new MockArtifactProxy();
       Scope expectedScope = new Scope().add("fail");
       DslAsserts.assertNullAccessDetail(getRestrictionHandler(), restriction, artData, expectedScope);
    }
@@ -90,7 +89,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       ArtifactType artArtType = new ArtifactType(artTypeToken1.getGuid(), artTypeToken1.getName(), false);
 
       MockArtifactProxy artData =
-         new MockArtifactProxy(GUID.create(), artArtType, null, null, Collections.singleton(testRelationType));
+         new MockArtifactProxy(artArtType, null, null, Collections.singleton(testRelationType));
       RelationTypeSide expectedObject = new RelationTypeSide(testRelationType, RelationSide.SIDE_A);
       Scope expectedScope = new Scope();
       DslAsserts.assertAccessDetail(getRestrictionHandler(), restriction, artData, expectedObject, PermissionEnum.WRITE,
@@ -117,7 +116,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       artArtType.setSuperTypes(superTypes);
 
       MockArtifactProxy artData =
-         new MockArtifactProxy(GUID.create(), artArtType, null, null, Collections.singleton(testRelationType));
+         new MockArtifactProxy(artArtType, null, null, Collections.singleton(testRelationType));
       RelationTypeSide expectedObject = new RelationTypeSide(testRelationType, RelationSide.SIDE_A);
       Scope expectedScope = new Scope();
       DslAsserts.assertAccessDetail(getRestrictionHandler(), restriction, artData, expectedObject, PermissionEnum.WRITE,
@@ -140,7 +139,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       ArtifactType artArtType = new ArtifactType(artTypeToken1.getGuid(), artTypeToken1.getName(), false);
 
       MockArtifactProxy artData =
-         new MockArtifactProxy(GUID.create(), artArtType, null, null, Collections.singleton(testRelationType));
+         new MockArtifactProxy(artArtType, null, null, Collections.singleton(testRelationType));
 
       RelationTypeSide expectedObject = new RelationTypeSide(testRelationType, RelationSide.SIDE_B);
       Scope expectedScope = new Scope();
@@ -168,7 +167,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       artArtType.setSuperTypes(superTypes);
 
       MockArtifactProxy artData =
-         new MockArtifactProxy(GUID.create(), artArtType, null, null, Collections.singleton(testRelationType));
+         new MockArtifactProxy(artArtType, null, null, Collections.singleton(testRelationType));
       RelationTypeSide expectedObject = new RelationTypeSide(testRelationType, RelationSide.SIDE_B);
       Scope expectedScope = new Scope();
       DslAsserts.assertAccessDetail(getRestrictionHandler(), restriction, artData, expectedObject, PermissionEnum.WRITE,
@@ -195,7 +194,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       artArtType.setSuperTypes(superTypes);
 
       MockArtifactProxy artData =
-         new MockArtifactProxy(GUID.create(), artArtType, null, null, Collections.singleton(testRelationType));
+         new MockArtifactProxy(artArtType, null, null, Collections.singleton(testRelationType));
       RelationTypeSide expectedObject1 = new RelationTypeSide(testRelationType, RelationSide.SIDE_A);
       RelationTypeSide expectedObject2 = new RelationTypeSide(testRelationType, RelationSide.SIDE_B);
 
@@ -239,7 +238,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       artArtType.setSuperTypes(superTypes);
 
       MockArtifactProxy artData =
-         new MockArtifactProxy(GUID.create(), artArtType, null, null, Collections.singleton(testRelationType));
+         new MockArtifactProxy(artArtType, null, null, Collections.singleton(testRelationType));
       RelationTypeSide expectedObject1 = new RelationTypeSide(testRelationType, RelationSide.SIDE_A);
       RelationTypeSide expectedObject2 = new RelationTypeSide(testRelationType, RelationSide.SIDE_B);
 
@@ -292,8 +291,8 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       artArtType.setSuperTypes(superTypes);
 
       ArtifactToken expectedAccessObject = ArtifactToken.valueOf(1, "Another Artifact", BranchId.SENTINEL);
-      MockArtifactProxy artData = new MockArtifactProxy(expectedAccessObject.getGuid(), artArtType,
-         expectedAccessObject, null, Collections.singleton(testRelationType));
+      MockArtifactProxy artData =
+         new MockArtifactProxy(artArtType, expectedAccessObject, null, Collections.singleton(testRelationType));
 
       RelationTypeSide expectedObject = new RelationTypeSide(testRelationType, RelationSide.SIDE_B);
 
@@ -330,7 +329,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
 
       ArtifactToken dummy = ArtifactToken.valueOf(43, artifactName, BranchId.SENTINEL);
       MockArtifactProxy artData =
-         new MockArtifactProxy(GUID.create(), artArtType, dummy, null, Collections.singleton(testRelationType));
+         new MockArtifactProxy(artArtType, dummy, null, Collections.singleton(testRelationType));
       RelationTypeSide expectedObject = new RelationTypeSide(testRelationType, RelationSide.SIDE_B);
       DslAsserts.assertAccessDetail(getRestrictionHandler(), restriction, artData, expectedObject, PermissionEnum.WRITE,
          expectedScope);

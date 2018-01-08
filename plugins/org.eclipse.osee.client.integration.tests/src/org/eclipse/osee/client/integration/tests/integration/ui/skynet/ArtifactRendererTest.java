@@ -18,12 +18,11 @@ import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.core.data.GammaId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.change.Change;
@@ -61,13 +60,13 @@ public class ArtifactRendererTest {
    public void setUp() {
 
       startTx = TransactionManager.getHeadTransaction(COMMON);
-      artifact1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Artifact, COMMON, NAME1);
+      artifact1 = new Artifact(CoreBranches.COMMON, NAME1);
       String comment1 = getClass().getSimpleName() + "_1";
       artifact1.persist(comment1);
       endTx1 = TransactionManager.getTransaction(comment1).iterator().next();
       endTx1.setCommit(artifact1.getArtId());
 
-      artifact2 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Artifact, COMMON, NAME2);
+      artifact2 = new Artifact(CoreBranches.COMMON, NAME2);
       String comment2 = getClass().getSimpleName() + "_2";
       artifact2.persist(comment2);
       endTx2 = TransactionManager.getTransaction(comment2).iterator().next();

@@ -97,25 +97,17 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public ArtifactToken createArtifact(ArtifactTypeId artifactType, String name) {
-      return createArtifact(artifactType, name, null);
-   }
-
-   @Override
-   public ArtifactToken createArtifact(ArtifactTypeId artifactType, String name, String guid) {
-      return txManager.createArtifact(txData, artifactType, name, guid);
-   }
-
-   @Override
-   public ArtifactToken createArtifact(ArtifactTypeId artifactType, String name, String guid, long uuid) {
-      Conditions.checkExpressionFailOnTrue(uuid <= 0L, "Invalid Uuid %d. Must be > 0", uuid);
-      return txManager.createArtifact(txData, artifactType, name, guid, uuid);
+      return txManager.createArtifact(txData, artifactType, name, (String) null);
    }
 
    @Override
    public ArtifactToken createArtifact(ArtifactToken token) {
-      Conditions.checkExpressionFailOnTrue(token.isInvalid(), "Invalid Id %d. Must be > 0", token.getId());
-      return txManager.createArtifact(txData, token.getArtifactTypeId(), token.getName(), token.getGuid(),
-         token.getId());
+      return txManager.createArtifact(txData, token.getArtifactTypeId(), token.getName(), token.getUuid());
+   }
+
+   @Override
+   public ArtifactToken createArtifact(ArtifactTypeId artifactType, String name, Long artifactId) {
+      return txManager.createArtifact(txData, artifactType, name, artifactId);
    }
 
    @Override

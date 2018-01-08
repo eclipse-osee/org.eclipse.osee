@@ -58,6 +58,11 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
+   public ArtifactData create(BranchId branch, ArtifactTypeId token, Long artifactId) {
+      return this.create(branch, token, null, artifactId);
+   }
+
+   @Override
    public ArtifactData create(BranchId branchId, ArtifactTypeId token, String guid, long artifactId) {
       Conditions.checkNotNull(branchId, "branch");
 

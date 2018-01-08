@@ -124,7 +124,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
          if (newTeam == null) {
             long id = dslTeamDef.getUuid() > 0 ? dslTeamDef.getUuid() : Lib.generateArtifactIdAsInt();
             newTeam = ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamDefinition,
-               AtsClientService.get().getAtsBranch(), dslTeamName, null, id);
+               AtsClientService.get().getAtsBranch(), dslTeamName, id);
          }
          if (parentArtifact != null && parentArtifact.notEqual(newTeam)) {
             parentArtifact.addChild(newTeam);
@@ -199,7 +199,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
          // System.out.println("   - Importing Version " + dslVerName);
          long id = dslVersionDef.getUuid() > 0 ? dslVersionDef.getUuid() : Lib.generateArtifactIdAsInt();
          Artifact newVer = ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version,
-            AtsClientService.get().getAtsBranch(), dslVerName, null, id);
+            AtsClientService.get().getAtsBranch(), dslVerName, id);
 
          teamDef.addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, newVer);
          nameToVerArt.put(newVer.getName(), newVer);
@@ -243,7 +243,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
          if (newAi == null) {
             long id = dslAIDef.getUuid() > 0 ? dslAIDef.getUuid() : Lib.generateArtifactIdAsInt();
             newAi = ArtifactTypeManager.addArtifact(AtsArtifactTypes.ActionableItem,
-               AtsClientService.get().getAtsBranch(), dslAIName, null, id);
+               AtsClientService.get().getAtsBranch(), dslAIName, id);
          }
          if (parentArtifact != null && parentArtifact.notEqual(newAi)) {
             parentArtifact.addChild(newAi);
@@ -291,7 +291,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
          }
          long id = dslProgramDef.getUuid() > 0 ? dslProgramDef.getUuid() : Lib.generateArtifactIdAsInt();
          newProgramArt = ArtifactTypeManager.addArtifact(programArtifactType, AtsClientService.get().getAtsBranch(),
-            dslProgramName, null, id);
+            dslProgramName, id);
          changes.add(newProgramArt);
          newProgramArt.getAttributes(AtsAttributeTypes.Active).iterator().next().setValue(
             BooleanDefUtil.get(dslProgramDef.getActive(), true));

@@ -25,23 +25,24 @@ import org.eclipse.osee.framework.core.model.type.RelationType;
  */
 public class MockArtifactProxy implements ArtifactProxy {
 
-   private final String guid;
    private final ArtifactType artifactType;
    private final Collection<ArtifactProxy> hierarchy;
    private final Collection<RelationType> validRelationTypes;
    private final ArtifactToken artifactObject;
 
    public MockArtifactProxy(ArtifactToken artifactObject) {
-      this(artifactObject.getGuid(), null, artifactObject, Collections.<ArtifactProxy> emptyList(),
-         Collections.<RelationType> emptyList());
+      this(null, artifactObject, Collections.emptyList(), Collections.emptyList());
    }
 
-   public MockArtifactProxy(String guid, ArtifactType artifactType) {
-      this(guid, artifactType, null, Collections.<ArtifactProxy> emptyList(), Collections.<RelationType> emptyList());
+   public MockArtifactProxy() {
+      this((ArtifactType) null);
    }
 
-   public MockArtifactProxy(String guid, ArtifactType artifactType, ArtifactToken artifactObject, Collection<ArtifactProxy> hierarchy, Collection<RelationType> validRelationTypes) {
-      this.guid = guid;
+   public MockArtifactProxy(ArtifactType artifactType) {
+      this(artifactType, null, Collections.emptyList(), Collections.emptyList());
+   }
+
+   public MockArtifactProxy(ArtifactType artifactType, ArtifactToken artifactObject, Collection<ArtifactProxy> hierarchy, Collection<RelationType> validRelationTypes) {
       this.artifactType = artifactType;
       this.hierarchy = hierarchy;
       this.validRelationTypes = validRelationTypes;
@@ -50,7 +51,7 @@ public class MockArtifactProxy implements ArtifactProxy {
 
    @Override
    public String getGuid() {
-      return guid;
+      return artifactObject.getGuid();
    }
 
    @Override

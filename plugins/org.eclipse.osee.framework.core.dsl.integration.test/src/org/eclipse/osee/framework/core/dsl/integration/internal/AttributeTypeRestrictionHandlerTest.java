@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.access.Scope;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -141,7 +140,7 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
    }
 
    private static ArtifactProxy createArtifactProxy(ArtifactType artifactType, final AttributeTypeId expectedAttributeType, final MutableBoolean wasIsAttributeTypeValidCalled, final boolean isTypeValid) {
-      MockArtifactProxy artData = new MockArtifactProxy(GUID.create(), artifactType) {
+      MockArtifactProxy artData = new MockArtifactProxy(artifactType) {
 
          @Override
          public boolean isAttributeTypeValid(AttributeTypeId attributeType) {

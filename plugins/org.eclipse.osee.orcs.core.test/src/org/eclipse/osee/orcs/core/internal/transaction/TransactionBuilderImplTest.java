@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.transaction;
 
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.HardwareRequirement;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SoftwareRequirement;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Active;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Annotation;
@@ -139,14 +138,7 @@ public class TransactionBuilderImplTest {
    public void testCreateArtifact() {
       factory.createArtifact(SoftwareRequirement, "Software Requirement");
 
-      verify(txDataManager).createArtifact(txData, SoftwareRequirement, "Software Requirement", null);
-   }
-
-   @Test
-   public void testCreateArtifactWithGuid() {
-      factory.createArtifact(HardwareRequirement, "Hardware Requirement", guid);
-
-      verify(txDataManager).createArtifact(txData, HardwareRequirement, "Hardware Requirement", guid);
+      verify(txDataManager).createArtifact(txData, SoftwareRequirement, "Software Requirement", (String) null);
    }
 
    @Test

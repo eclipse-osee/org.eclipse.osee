@@ -23,12 +23,11 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.access.Scope;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.Test;
 
 /**
  * Test Case for {@link ArtifactTypeRestrictionHandler}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class ArtifactTypeRestrictionHandlerTest extends BaseRestrictionHandlerTest<ArtifactTypeRestriction> {
@@ -48,7 +47,7 @@ public class ArtifactTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       restriction.setArtifactTypeRef(artifactTypeRef);
 
       ArtifactType artifactType2 = new ArtifactType(0L, "Some Artifact Type", false);
-      MockArtifactProxy artData = new MockArtifactProxy(GUID.create(), artifactType2);
+      MockArtifactProxy artData = new MockArtifactProxy(artifactType2);
       Scope expectedScope = new Scope().add("fail");
       DslAsserts.assertNullAccessDetail(getRestrictionHandler(), restriction, artData, expectedScope);
    }
@@ -63,7 +62,7 @@ public class ArtifactTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       restriction.setArtifactTypeRef(artifactTypeRef);
 
       ArtifactType expectedAccessObject = new ArtifactType(artifactType.getGuid(), artifactType.getName(), false);
-      MockArtifactProxy artData = new MockArtifactProxy(GUID.create(), expectedAccessObject);
+      MockArtifactProxy artData = new MockArtifactProxy(expectedAccessObject);
 
       Scope expectedScope = new Scope();
       DslAsserts.assertAccessDetail(getRestrictionHandler(), restriction, artData, expectedAccessObject,
@@ -82,7 +81,7 @@ public class ArtifactTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       ArtifactType expectedAccessObject =
          new ArtifactType(CoreArtifactTypes.Requirement.getGuid(), CoreArtifactTypes.Requirement.getName(), false);
 
-      MockArtifactProxy artData = new MockArtifactProxy(GUID.create(), expectedAccessObject);
+      MockArtifactProxy artData = new MockArtifactProxy(expectedAccessObject);
       Scope expectedScope = new Scope();
       DslAsserts.assertNullAccessDetail(getRestrictionHandler(), restriction, artData, expectedScope);
 

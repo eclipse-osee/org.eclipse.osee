@@ -33,7 +33,6 @@ import org.eclipse.osee.ats.core.agile.AgileStory;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 /**
  * @author Donald G. Dunne
@@ -55,8 +54,8 @@ public class AgileProgramOperations {
 
          IAtsChangeSet changes = atsApi.createChangeSet("Create new Agile Program");
 
-         agileProgramArt = changes.createArtifact(AtsArtifactTypes.AgileProgram, agileProgram.getName(), GUID.create(),
-            agileProgram.getId());
+         agileProgramArt =
+            changes.createArtifact(AtsArtifactTypes.AgileProgram, agileProgram.getName(), agileProgram.getId());
          changes.setSoleAttributeValue(agileProgramArt, AtsAttributeTypes.Active, true);
          ArtifactId topAgileFolder = AgileFolders.getOrCreateTopAgileFolder(atsApi, userArt, changes);
          if (topAgileFolder.notEqual(atsApi.getRelationResolver().getParent(agileProgramArt))) {
@@ -100,8 +99,8 @@ public class AgileProgramOperations {
       ArtifactId agileProgramBacklogItemArt = atsApi.getArtifact(programBacklogItem.getId());
 
       IAtsChangeSet changes = atsApi.createChangeSet("Create new Agile Program");
-      ArtifactId featureArt = changes.createArtifact(AtsArtifactTypes.AgileProgramFeature, feature.getName(),
-         GUID.create(), feature.getId());
+      ArtifactId featureArt =
+         changes.createArtifact(AtsArtifactTypes.AgileProgramFeature, feature.getName(), feature.getId());
       changes.setSoleAttributeValue(agileProgramBacklogItemArt, AtsAttributeTypes.Active, true);
       changes.addChild(agileProgramBacklogItemArt, featureArt);
       changes.execute();
@@ -122,8 +121,7 @@ public class AgileProgramOperations {
       ArtifactId featureArt = atsApi.getArtifact(feature.getId());
 
       IAtsChangeSet changes = atsApi.createChangeSet("Create new Agile Story");
-      ArtifactId storyArt =
-         changes.createArtifact(AtsArtifactTypes.AgileStory, story.getName(), GUID.create(), story.getId());
+      ArtifactId storyArt = changes.createArtifact(AtsArtifactTypes.AgileStory, story.getName(), story.getId());
       changes.setSoleAttributeValue(storyArt, AtsAttributeTypes.Active, true);
       changes.addChild(featureArt, storyArt);
       changes.execute();
@@ -145,7 +143,7 @@ public class AgileProgramOperations {
 
       IAtsChangeSet changes = atsApi.createChangeSet("Create new Program Backlog");
       ArtifactId programBacklogArt = changes.createArtifact(AtsArtifactTypes.AgileProgramBacklog,
-         jaxProgramBacklog.getName(), GUID.create(), jaxProgramBacklog.getId());
+         jaxProgramBacklog.getName(), jaxProgramBacklog.getId());
       changes.setSoleAttributeValue(programBacklogArt, AtsAttributeTypes.Active, true);
       changes.addChild(programArt, programBacklogArt);
       changes.execute();
@@ -158,7 +156,7 @@ public class AgileProgramOperations {
 
       IAtsChangeSet changes = atsApi.createChangeSet("Create new Program Backlog Item");
       ArtifactId item = changes.createArtifact(AtsArtifactTypes.AgileProgramBacklogItem,
-         jaxProgramBacklogItem.getName(), GUID.create(), jaxProgramBacklogItem.getId());
+         jaxProgramBacklogItem.getName(), jaxProgramBacklogItem.getId());
       changes.setSoleAttributeValue(item, AtsAttributeTypes.Active, true);
       changes.addChild(programArt, item);
       changes.execute();

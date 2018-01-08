@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.api.version.IVersionFactory;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.config.Version;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 /**
  * @author Donald G. Dunne
@@ -32,7 +31,7 @@ public class VersionFactory implements IVersionFactory {
 
    @Override
    public IAtsVersion createVersion(String name, long id, IAtsChangeSet changes, AtsApi atsApi) {
-      ArtifactToken artifact = changes.createArtifact(AtsArtifactTypes.Version, name, GUID.create(), id);
+      ArtifactToken artifact = changes.createArtifact(AtsArtifactTypes.Version, name, id);
       return new Version(atsApi.getLogger(), atsApi, artifact);
    }
 

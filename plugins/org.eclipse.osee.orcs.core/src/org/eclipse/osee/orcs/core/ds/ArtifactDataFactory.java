@@ -22,6 +22,8 @@ public interface ArtifactDataFactory {
 
    ArtifactData create(BranchId branch, ArtifactTypeId artifactType, String guid, long artifactId);
 
+   ArtifactData create(BranchId branch, ArtifactTypeId artifactType, Long artifactId);
+
    ArtifactData copy(BranchId destination, ArtifactData source);
 
    ArtifactData clone(ArtifactData source);

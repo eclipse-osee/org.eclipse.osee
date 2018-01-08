@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.config.ActionableItem;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 /**
  * @author Donald G. Dunne
@@ -27,7 +26,7 @@ public class ActionableItemFactory implements IActionableItemFactory {
 
    @Override
    public IAtsActionableItem createActionableItem(String name, long id, IAtsChangeSet changes, AtsApi atsApi) {
-      ArtifactToken artifact = changes.createArtifact(AtsArtifactTypes.ActionableItem, name, GUID.create(), id);
+      ArtifactToken artifact = changes.createArtifact(AtsArtifactTypes.ActionableItem, name, id);
       return new ActionableItem(atsApi.getLogger(), atsApi, artifact);
    }
 

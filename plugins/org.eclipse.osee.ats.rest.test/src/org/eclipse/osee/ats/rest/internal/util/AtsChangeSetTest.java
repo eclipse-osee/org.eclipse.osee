@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
@@ -56,16 +55,14 @@ public class AtsChangeSetTest {
       String className = getClass().getSimpleName();
       IAtsChangeSet changes = createAtsChangeSet();
       Long id = Lib.generateArtifactIdAsInt();
-      String guid = GUID.create();
       String name = "Ver 1 " + className;
-      changes.createArtifact(AtsArtifactTypes.Version, name, guid, id);
+      changes.createArtifact(AtsArtifactTypes.Version, name, id);
       changes.execute();
 
       ArtifactReadable verArt = atsServer.getOrcsApi().getQueryFactory().fromBranch(atsServer.getAtsBranch()).andId(
          id).getResults().getAtMostOneOrNull();
       assertNotNull(verArt);
-      assertEquals(id.longValue(), verArt.getId().longValue());
-      assertEquals(guid, verArt.getGuid());
+      assertEquals(id, verArt.getId());
       assertEquals(name, verArt.getName());
    }
 

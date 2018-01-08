@@ -44,7 +44,6 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -130,8 +129,7 @@ public class CreateTasksOperation {
             String relatedToState = task.getRelatedToState();
             if (Strings.isValid(relatedToState)) {
                if (teamWorkflow.getWorkDefinition().getStateByName(relatedToState) == null) {
-                  resultData.errorf("Task Related To State %s invalid for Team Workflow %d", relatedToState,
-                     teamWfId);
+                  resultData.errorf("Task Related To State %s invalid for Team Workflow %d", relatedToState, teamWfId);
                }
             }
 
@@ -179,9 +177,8 @@ public class CreateTasksOperation {
                   resultData.errorf("Relation [%s] Ids must be suplied Task creation in %s",
                      relation.getRelationTypeName(), task);
                }
-               Collection<ArtifactId> foundIds =
-                  atsServer.getQueryService().createQuery(WorkItemType.WorkItem).andIds(
-                     relation.getRelatedIds().toArray(new Long[relation.getRelatedIds().size()])).getItemIds();
+               Collection<ArtifactId> foundIds = atsServer.getQueryService().createQuery(WorkItemType.WorkItem).andIds(
+                  relation.getRelatedIds().toArray(new Long[relation.getRelatedIds().size()])).getItemIds();
                List<Long> notFoundIds = relation.getRelatedIds();
                notFoundIds.removeAll(foundIds);
                if (foundIds.size() != relation.getRelatedIds().size()) {
@@ -255,7 +252,7 @@ public class CreateTasksOperation {
                id = Lib.generateArtifactIdAsInt();
                jaxTask.setId(id);
             }
-            ArtifactToken taskArt = changes.createArtifact(AtsArtifactTypes.Task, jaxTask.getName(), GUID.create(), id);
+            ArtifactToken taskArt = changes.createArtifact(AtsArtifactTypes.Task, jaxTask.getName(), id);
             IAtsTask task = atsServer.getWorkItemFactory().getTask(taskArt);
 
             IAtsTeamWorkflow teamWf = idToTeamWf.get(newTaskData.getTeamWfId());

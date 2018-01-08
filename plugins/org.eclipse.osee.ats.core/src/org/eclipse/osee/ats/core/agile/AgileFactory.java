@@ -36,7 +36,6 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 
@@ -58,8 +57,7 @@ public class AgileFactory {
 
          IAtsChangeSet changes = atsApi.createChangeSet("Create new Agile Team");
 
-         agileTeamArt =
-            changes.createArtifact(AtsArtifactTypes.AgileTeam, newTeam.getName(), GUID.create(), newTeam.getId());
+         agileTeamArt = changes.createArtifact(AtsArtifactTypes.AgileTeam, newTeam.getName(), newTeam.getId());
          changes.setSoleAttributeValue(agileTeamArt, AtsAttributeTypes.Active, true);
          ArtifactId topAgileFolder = AgileFolders.getOrCreateTopAgileFolder(atsApi, userArt, changes);
 
@@ -147,7 +145,7 @@ public class AgileFactory {
       IAtsChangeSet changes = atsApi.createChangeSet("Create new Agile Program Feature");
 
       ArtifactId programFeature = changes.createArtifact(AtsArtifactTypes.AgileProgramFeature,
-         newProgramFeature.getName(), GUID.create(), newProgramFeature.getId());
+         newProgramFeature.getName(), newProgramFeature.getId());
       changes.setSoleAttributeValue(programFeature, AtsAttributeTypes.Active, newProgramFeature.isActive());
 
       ArtifactId programBacklogItemArt = atsApi.getArtifact(newProgramFeature.getProgramBacklogItemId());
@@ -166,8 +164,8 @@ public class AgileFactory {
 
       IAtsChangeSet changes = atsApi.createChangeSet("Create new Agile Feature Group");
 
-      ArtifactId featureGroupArt = changes.createArtifact(AtsArtifactTypes.AgileFeatureGroup, newFeatureGroup.getName(),
-         GUID.create(), newFeatureGroup.getId());
+      ArtifactId featureGroupArt =
+         changes.createArtifact(AtsArtifactTypes.AgileFeatureGroup, newFeatureGroup.getName(), newFeatureGroup.getId());
       changes.setSoleAttributeValue(featureGroupArt, AtsAttributeTypes.Active, newFeatureGroup.isActive());
 
       ArtifactId featureGroupFolder =
@@ -185,12 +183,12 @@ public class AgileFactory {
       return new AgileFeatureGroup(logger, atsApi, atsApi.getArtifact(artifact));
    }
 
-   public static IAgileSprint createAgileSprint(Log logger, AtsApi atsApi, long teamId, String name, String guid, Long id) {
+   public static IAgileSprint createAgileSprint(Log logger, AtsApi atsApi, long teamId, String name, Long id) {
 
       IAtsChangeSet changes =
          atsApi.getStoreService().createAtsChangeSet("Create new Agile Sprint", AtsCoreUsers.SYSTEM_USER);
 
-      ArtifactToken sprintArt = changes.createArtifact(AtsArtifactTypes.AgileSprint, name, guid, id);
+      ArtifactToken sprintArt = changes.createArtifact(AtsArtifactTypes.AgileSprint, name, id);
       IAgileSprint sprint = atsApi.getWorkItemFactory().getAgileSprint(sprintArt);
 
       atsApi.getActionFactory().setAtsId(sprint, TeamDefinitions.getTopTeamDefinition(atsApi.getQueryService()),
@@ -216,12 +214,12 @@ public class AgileFactory {
       return new AgileSprint(logger, atsApi, artifact2);
    }
 
-   public static IAgileBacklog createAgileBacklog(Log logger, AtsApi atsApi, long teamId, String name, String guid, Long id) {
+   public static IAgileBacklog createAgileBacklog(Log logger, AtsApi atsApi, long teamId, String name, Long id) {
 
       IAtsChangeSet changes =
          atsApi.getStoreService().createAtsChangeSet("Create new Agile Backlog", AtsCoreUsers.SYSTEM_USER);
 
-      ArtifactToken backlogArt = changes.createArtifact(AtsArtifactTypes.AgileBacklog, name, guid, id);
+      ArtifactToken backlogArt = changes.createArtifact(AtsArtifactTypes.AgileBacklog, name, id);
       IAgileBacklog sprint = atsApi.getWorkItemFactory().getAgileBacklog(backlogArt);
 
       atsApi.getActionFactory().setAtsId(sprint, TeamDefinitions.getTopTeamDefinition(atsApi.getQueryService()),

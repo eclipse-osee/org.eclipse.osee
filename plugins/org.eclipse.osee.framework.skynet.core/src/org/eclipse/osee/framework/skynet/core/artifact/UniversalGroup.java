@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -94,7 +93,7 @@ public class UniversalGroup {
       }
 
       Artifact groupArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.UniversalGroup, branch,
-         groupToken.getName(), GUID.create(), groupToken.getId());
+         groupToken.getName(), groupToken.getId());
       groupArt.persist(transaction);
 
       Artifact groupRoot = getTopUniversalGroupArtifact(branch);

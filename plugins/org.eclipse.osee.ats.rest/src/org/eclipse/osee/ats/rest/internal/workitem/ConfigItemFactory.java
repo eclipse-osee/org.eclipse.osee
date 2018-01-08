@@ -40,7 +40,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -225,8 +224,8 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
       }
       IAtsChangeSet changes = atsServer.getStoreService().createAtsChangeSet("Create new Insertion",
          atsServer.getUserService().getCurrentUser());
-      ArtifactReadable insertionArt = (ArtifactReadable) changes.createArtifact(AtsArtifactTypes.Insertion,
-         newInsertion.getName(), GUID.create(), id);
+      ArtifactReadable insertionArt =
+         (ArtifactReadable) changes.createArtifact(AtsArtifactTypes.Insertion, newInsertion.getName(), id);
 
       changes.relate(programArtifact, AtsRelationTypes.ProgramToInsertion_Insertion, insertionArt);
       changes.execute();
@@ -257,8 +256,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
       IAtsChangeSet changes = atsServer.getStoreService().createAtsChangeSet("Create new Insertion Activity",
          atsServer.getUserService().getCurrentUser());
       ArtifactReadable insertionActivityArt =
-         (ArtifactReadable) changes.createArtifact(AtsArtifactTypes.InsertionActivity, newActivity.getName(),
-            GUID.create(), id);
+         (ArtifactReadable) changes.createArtifact(AtsArtifactTypes.InsertionActivity, newActivity.getName(), id);
 
       changes.relate(insertion, AtsRelationTypes.InsertionToInsertionActivity_InsertionActivity, insertionActivityArt);
       changes.execute();

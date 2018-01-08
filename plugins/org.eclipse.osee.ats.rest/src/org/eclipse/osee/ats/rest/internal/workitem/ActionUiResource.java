@@ -120,8 +120,6 @@ public final class ActionUiResource {
       for (ArtifactReadable art : sortedAis) {
          sb.append("<option value=\"");
          sb.append(art.getName());
-         sb.append("\" guid=\"");
-         sb.append(art.getGuid());
          sb.append("\">");
       }
       sb.append("</datalist>");

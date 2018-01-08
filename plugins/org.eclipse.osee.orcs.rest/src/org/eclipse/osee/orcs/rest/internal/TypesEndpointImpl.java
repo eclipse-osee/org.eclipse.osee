@@ -46,7 +46,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResource;
@@ -226,15 +225,11 @@ public class TypesEndpointImpl implements TypesEndpoint {
       TransactionBuilder tx =
          orcsApi.getTransactionFactory().createTransaction(COMMON, SystemUser.OseeSystem, "Add Types to Common Branch");
       for (OrcsTypeSheet sheet : typesData.getSheets()) {
-         String guid = GUID.create();
-         if (Strings.isValid(sheet.getGuid())) {
-            guid = sheet.getGuid();
-         }
          Long id = Lib.generateArtifactIdAsInt();
          if (Strings.isNumeric(sheet.getId())) {
             id = Long.valueOf(sheet.getId());
          }
-         ArtifactId artifact = tx.createArtifact(CoreArtifactTypes.OseeTypeDefinition, sheet.getName(), guid, id);
+         ArtifactId artifact = tx.createArtifact(CoreArtifactTypes.OseeTypeDefinition, sheet.getName(), id);
          tx.setSoleAttributeValue(artifact, CoreAttributeTypes.Active, true);
          tx.setSoleAttributeFromString(artifact, CoreAttributeTypes.UriGeneralStringData, sheet.getTypesSheet());
       }

@@ -145,7 +145,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
 
    @Override
    public ArtifactId createArtifact(ArtifactToken token) {
-      return createArtifact(token.getArtifactTypeId(), token.getName(), token.getGuid(), token.getId());
+      return createArtifact(token.getArtifactTypeId(), token.getName(), token.getId());
    }
 
    @Override

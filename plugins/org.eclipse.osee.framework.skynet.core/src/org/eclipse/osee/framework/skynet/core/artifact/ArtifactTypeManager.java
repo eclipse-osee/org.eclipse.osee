@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.internal.OseeTypesExportOperation;
@@ -146,28 +145,31 @@ public class ArtifactTypeManager {
     * Get a new instance of type artifactTypeName
     */
    public static Artifact addArtifact(ArtifactTypeId artifactType, BranchId branch) {
-      return addArtifact(artifactType, branch, null, null);
+      return addArtifact(artifactType, branch, null, null, null);
    }
 
    /**
     * Get a new instance of type artifactTypeName and set it's name.
     */
    public static Artifact addArtifact(ArtifactTypeId artifactType, BranchId branch, String name) {
-      return addArtifact(artifactType, branch, name, null);
+      return addArtifact(artifactType, branch, name, null, null);
+   }
+
+   public static Artifact addArtifact(ArtifactTypeId artifactType, BranchId branch, String name, Long artifactId) {
+      return addArtifact(artifactType, branch, name, null, artifactId);
    }
 
    public static Artifact addArtifact(ArtifactTypeId artifactType, BranchId branch, String name, String guid) {
       return getFactory(artifactType).makeNewArtifact(branch, artifactType, name, guid);
    }
 
-   public static Artifact addArtifact(ArtifactTypeId artifactType, BranchId branch, String name, String guid, long uuid) {
-      Conditions.checkExpressionFailOnTrue(uuid <= 0L, "Invalid Uuid %d. Must be > 0", uuid);
+   public static Artifact addArtifact(ArtifactTypeId artifactType, BranchId branch, String name, String guid, Long uuid) {
       return getFactory(artifactType).makeNewArtifact(branch, artifactType, name, guid, uuid);
    }
 
    public static Artifact addArtifact(ArtifactToken artifactToken, BranchId branch) {
       return addArtifact(artifactToken.getArtifactTypeId(), branch, artifactToken.getName(), artifactToken.getGuid(),
-         artifactToken.getUuid());
+         artifactToken.getId());
    }
 
    private static final String COUNT_ARTIFACT_OCCURRENCE =
@@ -258,5 +260,4 @@ public class ArtifactTypeManager {
       typesEndpoint.importOrcsTypes(typesData);
       typesEndpoint.dbInit();
    }
-
 }
