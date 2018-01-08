@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.config.ConfigJsonWriter;
 import org.eclipse.osee.ats.rest.internal.util.ActionPage;
+import org.eclipse.osee.ats.rest.internal.util.TargetedVersion;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
@@ -72,7 +73,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
       return assignableFrom && MediaType.APPLICATION_JSON_TYPE.equals(mediaType);
    }
 
-   private boolean matches(Class<? extends Annotation> toMatch, Annotation[] annotations) {
+   private static boolean matches(Class<? extends Annotation> toMatch, Annotation[] annotations) {
       for (Annotation annotation : annotations) {
          if (annotation.annotationType().isAssignableFrom(toMatch)) {
             return true;
@@ -109,16 +110,22 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
       writer.writeStringField("ArtifactType", action.getArtifactType().getName());
       String actionUrl = AtsUtilCore.getActionUrl(atsId, ATS_UI_ACTION_PREFIX, atsServer);
       writer.writeStringField("actionLocation", actionUrl);
+      IAtsWorkItem workItem = null;
       if (!identityView) {
          ConfigJsonWriter.addAttributeData(writer, attributeTypes, action, options, atsServer);
          writer.writeStringField("TeamName", ActionPage.getTeamStr(atsServer, action));
-         IAtsWorkItem workItem = atsServer.getWorkItemFactory().getWorkItem(action);
+         workItem = atsServer.getWorkItemFactory().getWorkItem(action);
          writer.writeStringField("Assignees", workItem.getStateMgr().getAssigneesStr());
          writer.writeStringField("ChangeType", action.getSoleAttributeAsString(AtsAttributeTypes.ChangeType, ""));
          writer.writeStringField("Priority", action.getSoleAttributeAsString(AtsAttributeTypes.PriorityType, ""));
          writer.writeStringField("State", workItem.getStateMgr().getCurrentStateName());
          writer.writeStringField("CreatedDate", DateUtil.get(workItem.getCreatedDate(), DateUtil.MMDDYY));
          writer.writeStringField("CreatedBy", workItem.getCreatedBy().getName());
+      }
+      if (!identityView || matches(TargetedVersion.class, annotations)) {
+         if (workItem == null) {
+            workItem = atsServer.getWorkItemFactory().getWorkItem(action);
+         }
          IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
          if (teamWf != null) {
             String version = atsServer.getWorkItemService().getTargetedVersionStr(teamWf);

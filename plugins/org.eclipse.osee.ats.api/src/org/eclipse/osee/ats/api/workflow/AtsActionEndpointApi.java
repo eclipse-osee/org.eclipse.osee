@@ -53,6 +53,14 @@ public interface AtsActionEndpointApi {
    public abstract List<IAtsWorkItem> getActionDetails(String ids) throws Exception;
 
    /**
+    * @param ids (guid, atsId) of action children to display
+    * @return html representation of the action children
+    */
+   @Path("{ids}/child")
+   @GET
+   public abstract List<IAtsWorkItem> getActionChildren(String ids) throws Exception;
+
+   /**
     * @param ids (ats.Legacy PCR Id) of action to display
     * @return html representation of the stateType;state
     */

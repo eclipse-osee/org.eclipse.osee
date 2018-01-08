@@ -219,6 +219,19 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    }
 
    @Test
+   public void testAtsActionsChildRestCall() throws Exception {
+      String url = "/ats/action/" + DemoUtil.getSawCodeCommittedWf().getParentAction().getIdString() + "/child";
+      JsonArray array = getAndCheckArray(url);
+      Assert.assertEquals(3, array.size());
+      JsonObject obj = (JsonObject) array.iterator().next();
+      testAction(obj);
+      String atsId = obj.get("AtsId").getAsString();
+      Assert.assertEquals(atsId, obj.get("AtsId").getAsString());
+      Assert.assertEquals(obj.get("TargetedVersion").getAsString().replaceAll("\n", ""),
+         DemoBranches.SAW_Bld_2.toString());
+   }
+
+   @Test
    public void testAtsActionsFieldsAsIdsAndDatesAsLong() throws Exception {
       String url =
          "/ats/action/" + DemoUtil.getSawCodeCommittedWf().getIdString() + "/details?" + WorkItemWriterOptions.FieldsAsIds.name() + "=true&" + WorkItemWriterOptions.DatesAsLong.name() + "=true";

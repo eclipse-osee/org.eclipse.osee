@@ -42,6 +42,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -66,6 +67,7 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
+import org.eclipse.osee.ats.rest.internal.util.TargetedVersion;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -129,6 +131,30 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    public List<IAtsWorkItem> getActionDetails(@PathParam("ids") String ids) throws Exception {
       List<IAtsWorkItem> workItems = atsApi.getQueryService().getWorkItemListByIds(ids);
       return workItems;
+   }
+
+   /**
+    * @param ids (guid, atsId) of action to display
+    * @return html representation of the action
+    */
+   @Override
+   @Path("{ids}/child")
+   @IdentityView
+   @TargetedVersion
+   @GET
+   @Produces({MediaType.APPLICATION_JSON})
+   public List<IAtsWorkItem> getActionChildren(@PathParam("ids") String ids) {
+      List<IAtsWorkItem> children = new LinkedList<>();
+      for (ArtifactToken action : atsApi.getQueryService().getArtifactListByIdsStr(ids)) {
+         for (ArtifactToken childWf : atsApi.getRelationResolver().getRelated(action,
+            AtsRelationTypes.ActionToWorkflow_WorkFlow)) {
+            IAtsWorkItem child = atsApi.getWorkItemFactory().getWorkItem(childWf);
+            if (child != null) {
+               children.add(child);
+            }
+         }
+      }
+      return children;
    }
 
    /**
