@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.core.enums;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.UserToken;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 
 /**
  * @author Donald G. Dunne
@@ -36,8 +36,7 @@ public final class SystemUser {
       return values;
    }
 
-   public static boolean isSystemUser(Identity<String> identity) {
-      return values().contains(identity);
+   public static boolean isSystemUser(Id user) {
+      return values().contains(user);
    }
-
 }

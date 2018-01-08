@@ -134,7 +134,7 @@ public class OrcsTransactionTest {
       });
 
       assertTrue(item.isPresent());
-      assertEquals(torqueRequirement.getGuid(), item.get().getGuid());
+      assertEquals(torqueRequirement, item.get());
    }
 
    @Test

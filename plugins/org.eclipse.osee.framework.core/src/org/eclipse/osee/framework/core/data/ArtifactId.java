@@ -14,13 +14,12 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.IdSerializer;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
 
 /**
  * @author Megumi Telles
  */
 @JsonSerialize(using = IdSerializer.class)
-public interface ArtifactId extends Identity<String>, Id {
+public interface ArtifactId extends Id {
 
    public static final ArtifactId SENTINEL = valueOf(Id.SENTINEL);
 
@@ -47,11 +46,6 @@ public interface ArtifactId extends Identity<String>, Id {
       final class ArtifactIdImpl extends BaseId implements ArtifactId, Comparable<ArtifactId> {
          public ArtifactIdImpl(Long artId) {
             super(artId);
-         }
-
-         @Override
-         public String getGuid() {
-            return null;
          }
 
          @Override

@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.event.model;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -48,7 +47,7 @@ public class EventBasicGuidArtifact extends DefaultBasicGuidArtifact {
       this.eventModType = eventModType;
    }
 
-   public EventBasicGuidArtifact(EventModType eventModType, BranchId branch, ArtifactTypeId artifactType, ArtifactId artifact) {
+   public EventBasicGuidArtifact(EventModType eventModType, BranchId branch, ArtifactTypeId artifactType, ArtifactToken artifact) {
       super(branch, artifactType, artifact);
       this.eventModType = eventModType;
    }

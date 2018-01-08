@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -62,9 +63,9 @@ public final class Artifacts {
       return toReturn;
    }
 
-   public static List<String> toGuids(Collection<? extends ArtifactId> artifacts) {
+   public static List<String> toGuids(Collection<? extends ArtifactToken> artifacts) {
       List<String> guids = new ArrayList<>(artifacts.size());
-      for (ArtifactId artifact : artifacts) {
+      for (ArtifactToken artifact : artifacts) {
          guids.add(artifact.getGuid());
       }
       return guids;

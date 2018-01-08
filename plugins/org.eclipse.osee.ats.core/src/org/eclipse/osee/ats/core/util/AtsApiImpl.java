@@ -194,7 +194,7 @@ public abstract class AtsApiImpl implements AtsApi {
    }
 
    @Override
-   public String getAtsId(ArtifactId artifact) {
+   public String getAtsId(ArtifactToken artifact) {
       return getAtsId(getAttributeResolver(), artifact);
    }
 
@@ -207,7 +207,7 @@ public abstract class AtsApiImpl implements AtsApi {
       return getAtsId(attrResolver, atsObject.getStoreObject());
    }
 
-   protected static String getAtsId(IAttributeResolver attrResolver, ArtifactId artifact) {
+   protected static String getAtsId(IAttributeResolver attrResolver, ArtifactToken artifact) {
       Conditions.checkNotNull(artifact, "artifact");
       String toReturn = attrResolver.getSoleAttributeValue(artifact, AtsAttributeTypes.AtsId, null);
       if (toReturn == null) {

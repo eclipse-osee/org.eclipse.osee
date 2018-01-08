@@ -32,11 +32,6 @@ public class ArtifactAccessObject extends AccessObject implements ArtifactId {
    }
 
    @Override
-   public String getGuid() {
-      return null;
-   }
-
-   @Override
    public int hashCode() {
       int result = 17;
       result = 31 * result + artId.hashCode();

@@ -154,6 +154,13 @@ public class TxDataManagerTest {
       when(artifact2.getGuid()).thenReturn(r2Guid);
       when(artifact3.getGuid()).thenReturn(r3Guid);
 
+      when(readable1.getId()).thenReturn(id1);
+      when(readable2.getId()).thenReturn(id2);
+      when(readable3.getId()).thenReturn(id3);
+      when(artifact1.getId()).thenReturn(id1);
+      when(artifact2.getId()).thenReturn(id2);
+      when(artifact3.getId()).thenReturn(id3);
+
       when(artifact1.getTransaction()).thenReturn(TransactionId.SENTINEL);
       when(graph.getTransaction()).thenReturn(TransactionId.SENTINEL);
    }
@@ -446,6 +453,8 @@ public class TxDataManagerTest {
       Artifact sourceArtifact = Mockito.spy(new ArtifactImpl(null, data, null));
 
       when(data.getGuid()).thenReturn(guid);
+      when(data.getId()).thenReturn(artifactId2.getId());
+      when(data.getLocalId()).thenReturn(artifactId2.getId().intValue());
 
       List<AttributeTypeId> copyTypes = Arrays.asList(CoreAttributeTypes.Active, CoreAttributeTypes.Name);
       when(sourceArtifact.getExistingAttributeTypes()).thenAnswer(answerValue(copyTypes));

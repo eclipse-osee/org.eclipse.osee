@@ -93,7 +93,7 @@ public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsWorkDefiniti
 
    ChangeType getChangeType(IAtsAction fromAction);
 
-   String getAtsId(ArtifactId artifact);
+   String getAtsId(ArtifactToken artifact);
 
    String getAtsId(IAtsObject atsObject);
 

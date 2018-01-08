@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.core.internal.transaction;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasBranch;
@@ -41,8 +40,8 @@ public class TxData implements HasSession, HasBranch {
    private final OrcsSession session;
    private final GraphData graph;
    private final List<TupleData> tuples = new ArrayList<>();
-   private final Map<String, Artifact> writeables = new HashMap<>();
-   private final Map<String, ArtifactReadable> readables = new HashMap<>();
+   private final HashMap<Long, Artifact> writeables = new HashMap<>();
+   private final HashMap<Long, ArtifactReadable> readables = new HashMap<>();
 
    private UserId author;
    private String comment;
@@ -109,11 +108,11 @@ public class TxData implements HasSession, HasBranch {
    }
 
    public Artifact add(Artifact artifact) {
-      return writeables.put(artifact.getGuid(), artifact);
+      return writeables.put(artifact.getId(), artifact);
    }
 
    public void add(ArtifactReadable artifact) {
-      readables.put(artifact.getGuid(), artifact);
+      readables.put(artifact.getId(), artifact);
    }
 
    public void add(TupleData tupleData) {
@@ -129,16 +128,15 @@ public class TxData implements HasSession, HasBranch {
    }
 
    public Artifact getWriteable(ArtifactId artifactId) {
-      return writeables.get(artifactId.getGuid());
+      return writeables.get(artifactId.getId());
    }
 
    public ArtifactReadable getReadable(ArtifactId artifactId) {
-      return readables.get(artifactId.getGuid());
+      return readables.get(artifactId.getId());
    }
 
    @Override
    public String toString() {
       return "TxData [session=" + session + ", graph=" + graph + ", author=" + author + ", comment=" + comment + ", isCommitInProgress=" + isCommitInProgress + ", txState=" + txState + "]";
    }
-
 }

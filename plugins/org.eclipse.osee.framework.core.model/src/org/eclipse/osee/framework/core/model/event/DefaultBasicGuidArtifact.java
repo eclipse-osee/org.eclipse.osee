@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.event;
 
-import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasBranch;
@@ -38,7 +38,7 @@ public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements Ha
       this(branch, artifactType, GUID.create());
    }
 
-   public DefaultBasicGuidArtifact(BranchId branch, ArtifactTypeId artifactType, ArtifactId artifact) {
+   public DefaultBasicGuidArtifact(BranchId branch, ArtifactTypeId artifactType, ArtifactToken artifact) {
       this(branch, artifactType, artifact.getGuid());
    }
 

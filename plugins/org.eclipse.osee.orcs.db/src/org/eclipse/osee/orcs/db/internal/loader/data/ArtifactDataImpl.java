@@ -10,14 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader.data;
 
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
+import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 
 /**
  * @author Roberto E. Escobar
  */
-public class ArtifactDataImpl extends OrcsVersionedObjectImpl implements ArtifactData {
+public class ArtifactDataImpl extends OrcsVersionedObjectImpl implements Identity<String>, ArtifactData {
 
    private String guid = RelationalConstants.DEFAULT_GUID;
    private boolean useBackingData = false;
@@ -65,5 +67,10 @@ public class ArtifactDataImpl extends OrcsVersionedObjectImpl implements Artifac
    @Override
    public Long getId() {
       return getLocalId().longValue();
+   }
+
+   @Override
+   public BranchId getBranch() {
+      return getVersion().getBranch();
    }
 }

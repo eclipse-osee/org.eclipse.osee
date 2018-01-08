@@ -117,7 +117,7 @@ public class TxDataManager {
       checkChangesAllowed(txData);
       Set<ArtifactId> toLoad = new LinkedHashSet<>();
 
-      LinkedHashMap<String, Artifact> items = new LinkedHashMap<>();
+      LinkedHashMap<Long, Artifact> items = new LinkedHashMap<>();
       for (ArtifactId artifactId : ids) {
          Artifact node = findArtifactLocallyForWrite(txData, artifactId);
          if (node == null) {
@@ -125,12 +125,12 @@ public class TxDataManager {
          } else {
             checkAndAdd(txData, node);
          }
-         items.put(artifactId.getGuid(), node);
+         items.put(artifactId.getId(), node);
       }
       if (!toLoad.isEmpty()) {
          Iterable<Artifact> result = loader.loadArtifacts(txData.getSession(), txData.getGraph(), toLoad);
          for (Artifact node : result) {
-            items.put(node.getGuid(), node);
+            items.put(node.getId(), node);
             checkAndAdd(txData, node);
          }
       }

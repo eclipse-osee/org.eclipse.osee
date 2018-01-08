@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 
 /**
@@ -30,7 +31,7 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
  * @author Roberto E. Escobar
  * @author Andrew M. Finkbeiner
  */
-public interface ArtifactReadable extends ArtifactToken, HasTransaction, OrcsReadable {
+public interface ArtifactReadable extends Identity<String>, ArtifactToken, HasTransaction, OrcsReadable {
    IArtifactType getArtifactType();
 
    TransactionId getLastModifiedTransaction();

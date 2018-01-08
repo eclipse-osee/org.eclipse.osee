@@ -66,6 +66,7 @@ import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.FullyNamed;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -98,7 +99,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
  * @author Ryan D. Brooks
  */
 
-public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, FullyNamed {
+public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, FullyNamed, Identity<String> {
    public static final String UNNAMED = "Unnamed";
    public static final String BEFORE_GUID_STRING = "/BeforeGUID/PrePend";
    public static final String AFTER_GUID_STRING = "/AfterGUID";

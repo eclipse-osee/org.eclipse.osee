@@ -94,7 +94,7 @@ public class ConvertAtsConfigGuidAttributesOperations {
       if (!Strings.isValid(teamDefGuid)) {
          ArtifactId teamDefArt = atsApi.getAttributeResolver().getSoleArtifactIdReference(art,
             AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);
-         ArtifactId artifact = atsApi.getArtifact(teamDefArt);
+         ArtifactToken artifact = atsApi.getArtifact(teamDefArt);
          if (artifact != null) {
             changes.setSoleAttributeValue(art, TeamDefinition, artifact.getGuid());
          }

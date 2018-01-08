@@ -16,8 +16,8 @@ import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
 
 /**
  * @author Donald G. Dunne
@@ -40,7 +40,7 @@ public interface IAtsVersionService {
 
    void removeTargetedVersion(IAtsTeamWorkflow teamWf, IAtsChangeSet changes);
 
-   IAtsVersion getById(Identity<String> id);
+   IAtsVersion getById(ArtifactId id);
 
    BranchId getBranch(IAtsVersion version);
 

@@ -35,11 +35,6 @@ public interface UserId extends ArtifactId {
          public UserIdImpl(Long id) {
             super(id);
          }
-
-         @Override
-         public String getGuid() {
-            return null;
-         }
       }
       return new UserIdImpl(id);
    }

@@ -24,6 +24,8 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 @JsonSerialize(using = NamedIdSerializer.class)
 public interface ArtifactToken extends ArtifactId, HasBranch, NamedId {
 
+   String getGuid();
+
    default ArtifactTypeId getArtifactTypeId() {
       return ArtifactTypeId.SENTINEL;
    }

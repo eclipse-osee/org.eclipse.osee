@@ -32,7 +32,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -175,16 +174,11 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    }
 
    @Override
-   public IAtsVersion getById(Identity<String> id) {
+   public IAtsVersion getById(ArtifactId id) {
       IAtsVersion version = null;
-      Object verArt = null;
-      if (id instanceof ArtifactId) {
-         verArt = atsApi.getArtifact(((ArtifactId) id).getId());
-      } else {
-         verArt = atsApi.getArtifactById(id.getGuid());
-      }
+      ArtifactToken verArt = atsApi.getArtifact(id.getId());
       if (verArt != null) {
-         version = atsApi.getConfigItemFactory().getVersion((ArtifactId) verArt);
+         version = atsApi.getConfigItemFactory().getVersion(verArt);
       }
       return version;
    }
