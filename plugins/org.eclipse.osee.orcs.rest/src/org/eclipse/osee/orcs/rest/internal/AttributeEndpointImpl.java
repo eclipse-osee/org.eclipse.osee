@@ -60,7 +60,7 @@ public class AttributeEndpointImpl implements AttributeEndpoint {
    @Override
    public String getAttributesAsHtml(ArtifactId artifactId) {
       ArtifactReadable artifact = query.andId(artifactId).getResults().getExactlyOne();
-      HtmlWriter writer = new HtmlWriter(uriInfo);
+      HtmlWriter writer = new HtmlWriter(uriInfo, orcsApi);
       return writer.toHtml(artifact.getAttributes());
    }
 

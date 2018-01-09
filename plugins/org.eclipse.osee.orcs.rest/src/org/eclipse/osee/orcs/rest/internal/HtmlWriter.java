@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.BranchReadable;
@@ -32,9 +32,11 @@ import org.eclipse.osee.orcs.data.TransactionReadable;
 public class HtmlWriter {
 
    private final UriInfo uriInfo;
+   private final OrcsApi orcsApi;
 
-   public HtmlWriter(UriInfo uriInfo) {
+   public HtmlWriter(UriInfo uriInfo, OrcsApi orcsApi) {
       this.uriInfo = uriInfo;
+      this.orcsApi = orcsApi;
    }
 
    public String toHtml(Iterable<? extends Object> objects) {
@@ -81,12 +83,7 @@ public class HtmlWriter {
       data.put("Artifact Id", artifact.getId());
       data.put("Tx Id", artifact.getTransaction());
       String branchId = artifact.getBranch().getIdString();
-      String branchName = null;
-      ResultSet<BranchReadable> results =
-         OrcsApplication.getOrcsApi().getQueryFactory().branchQuery().andId(artifact.getBranch()).getResults();
-      if (!results.isEmpty()) {
-         branchName = results.iterator().next().getName();
-      }
+      String branchName = getBranchFromId(artifact.getBranch()).getName();
 
       URI uri;
       if (isAtEndOfPath(uriInfo.getPath(), "artifact")) {
@@ -156,8 +153,7 @@ public class HtmlWriter {
    }
 
    private IOseeBranch getBranchFromId(BranchId branch) {
-      return OrcsApplication.getOrcsApi().getQueryFactory().branchQuery().andId(
-         branch).getResultsAsId().getExactlyOne();
+      return orcsApi.getQueryFactory().branchQuery().andId(branch).getResultsAsId().getExactlyOne();
    }
 
    public Map<String, Object> toData(TransactionReadable txRecord) {

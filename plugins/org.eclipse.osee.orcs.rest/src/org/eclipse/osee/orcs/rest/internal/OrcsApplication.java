@@ -31,16 +31,14 @@ import org.osgi.service.event.EventAdmin;
 public class OrcsApplication extends Application {
 
    private final Set<Object> resources = new HashSet<>();
-   private final Set<Class<?>> classes = new HashSet<>();
-   private static OrcsApi orcsApi;
-
+   private OrcsApi orcsApi;
    private IResourceManager resourceManager;
    private ActivityLog activityLog;
    private JdbcService jdbcService;
    private EventAdmin eventAdmin;
 
    public void setOrcsApi(OrcsApi orcsApi) {
-      OrcsApplication.orcsApi = orcsApi;
+      this.orcsApi = orcsApi;
    }
 
    public void setJdbcService(JdbcService jdbcService) {
@@ -59,12 +57,8 @@ public class OrcsApplication extends Application {
       this.resourceManager = resourceManager;
    }
 
-   public static OrcsApi getOrcsApi() {
-      return orcsApi;
-   }
-
    public void start() {
-      classes.add(BranchesResource.class);
+      resources.add(new BranchesResource(orcsApi));
       resources.add(new OrcsScriptEndpointImpl(orcsApi.getScriptEngine()));
       resources.add(new BranchEndpointImpl(orcsApi, resourceManager, activityLog));
       resources.add(new OrcsWriterEndpointImpl(orcsApi));
@@ -81,17 +75,10 @@ public class OrcsApplication extends Application {
 
    public void stop() {
       resources.clear();
-      classes.clear();
-   }
-
-   @Override
-   public Set<Class<?>> getClasses() {
-      return classes;
    }
 
    @Override
    public Set<Object> getSingletons() {
       return resources;
    }
-
 }

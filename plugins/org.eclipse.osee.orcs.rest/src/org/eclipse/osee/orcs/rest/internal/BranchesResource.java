@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.rest.model.ApplicabilityEndpoint;
 import org.eclipse.osee.orcs.rest.model.ArtifactEndpoint;
@@ -34,39 +35,44 @@ import org.eclipse.osee.orcs.search.BranchQuery;
  */
 @Path("branch")
 public class BranchesResource {
+   private final OrcsApi orcsApi;
 
    @Context
    UriInfo uriInfo;
    @Context
    Request request;
 
+   public BranchesResource(OrcsApi orcsApi) {
+      this.orcsApi = orcsApi;
+   }
+
    @Path("{uuid}")
    public BranchResource getBranch(@PathParam("uuid") BranchId id) {
-      return new BranchResource(uriInfo, request, id, OrcsApplication.getOrcsApi());
+      return new BranchResource(uriInfo, request, id, orcsApi);
    }
 
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getAsHtml() {
-      BranchQuery query = OrcsApplication.getOrcsApi().getQueryFactory().branchQuery();
+      BranchQuery query = orcsApi.getQueryFactory().branchQuery();
       ResultSet<BranchReadable> results = query.andIsOfType(BranchType.BASELINE, BranchType.WORKING).getResults();
 
-      HtmlWriter writer = new HtmlWriter(uriInfo);
+      HtmlWriter writer = new HtmlWriter(uriInfo, orcsApi);
       return writer.toHtml(results);
    }
 
    @Path("{branch}/tuples")
    public TupleEndpoint getTuples(@PathParam("branch") BranchId branch, @HeaderParam("osee.account.id") UserId accountId) {
-      return new TupleEndpointImpl(OrcsApplication.getOrcsApi(), branch, accountId);
+      return new TupleEndpointImpl(orcsApi, branch, accountId);
    }
 
    @Path("{branch}/applic")
    public ApplicabilityEndpoint getApplicability(@PathParam("branch") BranchId branch, @HeaderParam("osee.account.id") UserId accountId) {
-      return new ApplicabilityEndpointImpl(OrcsApplication.getOrcsApi(), branch, accountId);
+      return new ApplicabilityEndpointImpl(orcsApi, branch, accountId);
    }
 
    @Path("{branch}/artifact")
    public ArtifactEndpoint getArtifact(@PathParam("branch") BranchId branch, @HeaderParam("osee.account.id") UserId accountId) {
-      return new ArtifactEndpointImpl(OrcsApplication.getOrcsApi(), branch, accountId, uriInfo);
+      return new ArtifactEndpointImpl(orcsApi, branch, accountId, uriInfo);
    }
 }

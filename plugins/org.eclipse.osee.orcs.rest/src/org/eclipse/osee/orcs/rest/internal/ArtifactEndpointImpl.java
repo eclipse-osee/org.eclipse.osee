@@ -109,13 +109,13 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    public String getRootChildrenAsHtml() {
       ArtifactReadable rootArtifact = query.andIsHeirarchicalRootArtifact().getResults().getExactlyOne();
       ResultSet<ArtifactReadable> children = rootArtifact.getChildren();
-      HtmlWriter writer = new HtmlWriter(uriInfo);
+      HtmlWriter writer = new HtmlWriter(uriInfo, orcsApi);
       return writer.toHtml(children);
    }
 
    @Override
    public String getArtifactAsHtml(ArtifactId artifactId) {
-      HtmlWriter writer = new HtmlWriter(uriInfo);
+      HtmlWriter writer = new HtmlWriter(uriInfo, orcsApi);
       return writer.toHtml(query.andId(artifactId).getResults());
    }
 
