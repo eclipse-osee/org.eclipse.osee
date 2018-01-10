@@ -10,14 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserId;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -32,6 +38,7 @@ import org.eclipse.osee.orcs.rest.model.search.artifact.SearchRequest;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResponse;
 import org.eclipse.osee.orcs.search.Match;
 import org.eclipse.osee.orcs.search.QueryBuilder;
+import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
  * @author Ryan D. Brooks
@@ -122,5 +129,62 @@ public class ArtifactEndpointImpl implements ArtifactEndpoint {
    @Override
    public AttributeEndpoint getAttributes(ArtifactId artifactId) {
       return new AttributeEndpointImpl(artifactId, branch, orcsApi, query, uriInfo);
+   }
+
+   /**
+    * if exists = false then return all artifact of given type that do not have an attribute of the given type with the
+    * specified value. This includes artifacts that lack attributes of the given type as well as those that have that
+    * type but with a different value.
+    */
+   @Override
+   public List<ArtifactToken> getArtifactTokensByAttribute(ArtifactTypeId artifactType, AttributeTypeId attributeType, String value, boolean exists) {
+      if (exists) {
+         return query.andTypeEquals(artifactType).and(attributeType, value).loadArtifactTokens();
+      }
+      return query.andTypeEquals(artifactType).andNotExists(attributeType, value).loadArtifactTokens();
+   }
+
+   @Override
+   public List<ArtifactToken> getArtifactTokensByType(ArtifactTypeId artifactType) {
+      return query.andTypeEquals(artifactType).loadArtifactTokens();
+   }
+
+   @Override
+   public List<ArtifactToken> createArtifacts(BranchId branch, ArtifactTypeId artifactType, ArtifactId parent, List<String> names) {
+      ResultSet<ArtifactReadable> results =
+         query.andIsOfType(artifactType).and(CoreAttributeTypes.Name, names).getResults();
+      if (!results.isEmpty()) {
+         List<ArtifactReadable> duplicates = results.getList();
+         throw new OseeCoreException("Found %s artifacts of type %s with duplicate names: %s", results.size(),
+            artifactType, duplicates);
+      }
+
+      List<ArtifactToken> tokens = new ArrayList<>(names.size());
+      TransactionBuilder tx =
+         orcsApi.getTransactionFactory().createTransaction(branch, account, "rest - create artifacts");
+      for (String name : names) {
+         tokens.add(tx.createArtifact(artifactType, name));
+      }
+      if (parent.isValid()) {
+         tx.addChildren(parent, tokens);
+      }
+      tx.commit();
+      return tokens;
+   }
+
+   @Override
+   public TransactionId deleteArtifact(BranchId branch, ArtifactId artifact) {
+      TransactionBuilder tx =
+         orcsApi.getTransactionFactory().createTransaction(branch, account, "rest - delete artifact");
+      tx.deleteArtifact(artifact);
+      return tx.commit();
+   }
+
+   @Override
+   public TransactionId setSoleAttributeValue(BranchId branch, ArtifactId artifact, AttributeTypeId attributeType, String value) {
+      TransactionBuilder tx =
+         orcsApi.getTransactionFactory().createTransaction(branch, account, "rest - setSoleAttributeValue");
+      tx.setSoleAttributeFromString(artifact, attributeType, value);
+      return tx.commit();
    }
 }
