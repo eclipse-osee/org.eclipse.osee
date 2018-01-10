@@ -39,7 +39,8 @@ public class IdDeserializer<T extends Id> extends StdDeserializer<T> {
       JsonNode readTree = jp.getCodec().readTree(jp);
       Long id;
       if (readTree instanceof TextNode) {
-         id = Long.valueOf(readTree.asText());
+         String value = readTree.asText();
+         id = value.equals("") ? -1L : Long.valueOf(value);
       } else {
          id = readTree.get("id").asLong();
       }

@@ -11,15 +11,13 @@
 package org.eclipse.osee.orcs.account.admin.internal.oauth;
 
 import com.google.common.io.InputSupplier;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 import java.io.InputStream;
-import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import org.codehaus.jackson.type.TypeReference;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.server.security.OAuthClient;
@@ -30,13 +28,11 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public class ClientArtifact extends BaseIdentity<String> implements OAuthClient, InputSupplier<InputStream> {
 
-   private final GsonBuilder builder;
    private final ArtifactReadable artifact;
    private final OAuthClientCredential credential;
 
-   public ClientArtifact(GsonBuilder builder, ArtifactReadable artifact, OAuthClientCredential credential) {
+   public ClientArtifact(ArtifactReadable artifact, OAuthClientCredential credential) {
       super(artifact.getGuid());
-      this.builder = builder;
       this.credential = credential;
       this.artifact = artifact;
    }
@@ -98,15 +94,12 @@ public class ClientArtifact extends BaseIdentity<String> implements OAuthClient,
 
    @Override
    public Map<String, String> getProperties() {
-      Map<String, String> toReturn = Collections.emptyMap();
       String data = artifact.getSoleAttributeValue(OAuthTypes.OAUTH_CLIENT_PROPERTIES, null);
       if (Strings.isValid(data)) {
-         Gson gson = builder.create();
-         Type typeOfHashMap = new TypeToken<Map<String, String>>() { //
-         }.getType();
-         toReturn = gson.fromJson(data, typeOfHashMap);
+         return JsonUtil.readValue(data, new TypeReference<Map<String, String>>() {// used to avoid type erasure
+         });
       }
-      return toReturn;
+      return Collections.emptyMap();
    }
 
    @Override

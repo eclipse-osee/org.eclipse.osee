@@ -7,7 +7,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Service-Component: OSGI-INF/*.xml
 Import-Package: com.google.common.base;version="15.0.0",
  com.google.common.collect;version="15.0.0",
- com.google.gson,
  javax.ws.rs,
  javax.ws.rs.core,
  org.antlr.runtime,

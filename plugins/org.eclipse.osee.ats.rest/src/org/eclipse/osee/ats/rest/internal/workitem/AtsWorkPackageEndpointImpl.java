@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.workitem;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import java.util.Collection;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -33,6 +31,7 @@ import org.eclipse.osee.ats.api.util.ColorTeams;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.rest.IAtsServer;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
@@ -45,13 +44,11 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
 
    private static final String COLOR_TEAM_KEY = "colorTeam";
    private final IAtsServer atsServer;
-   private final Gson gson;
    private final Log logger;
 
    public AtsWorkPackageEndpointImpl(IAtsServer atsServer, Log logger) {
       this.atsServer = atsServer;
       this.logger = logger;
-      gson = new GsonBuilder().create();
    }
 
    @GET
@@ -139,7 +136,7 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
       String colorTeamStr = atsServer.getConfigValue(COLOR_TEAM_KEY);
       ColorTeams teams = null;
       if (Strings.isValid(colorTeamStr)) {
-         teams = gson.fromJson(colorTeamStr, ColorTeams.class);
+         teams = JsonUtil.readValue(colorTeamStr, ColorTeams.class);
       } else {
          teams = new ColorTeams();
       }

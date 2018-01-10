@@ -21,8 +21,6 @@ import static org.eclipse.osee.orcs.account.admin.internal.oauth.OAuthTypes.OAUT
 import static org.eclipse.osee.orcs.account.admin.internal.oauth.OAuthTypes.OAUTH_CLIENT_WEBSITE_URI;
 import static org.eclipse.osee.orcs.account.admin.internal.oauth.OAuthTypes.OAUTH_TYPES;
 import com.google.common.io.InputSupplier;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
@@ -32,6 +30,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -50,14 +49,12 @@ import org.eclipse.osee.orcs.transaction.TransactionFactory;
 public class ClientStorage {
 
    private final Log logger;
-   private final GsonBuilder builder;
    private final OrcsApi orcsApi;
    private final BranchId storageBranch;
 
-   public ClientStorage(Log logger, GsonBuilder builder, OrcsApi orcsApi, BranchId storageBranch) {
+   public ClientStorage(Log logger, OrcsApi orcsApi, BranchId storageBranch) {
       super();
       this.logger = logger;
-      this.builder = builder;
       this.orcsApi = orcsApi;
       this.storageBranch = storageBranch;
    }
@@ -139,8 +136,7 @@ public class ClientStorage {
       }
 
       Map<String, String> props = data.getProperties();
-      Gson gson = builder.create();
-      String json = gson.toJson(props);
+      String json = JsonUtil.toJson(props);
       tx.setSoleAttributeValue(artId, OAUTH_CLIENT_PROPERTIES, json);
    }
 
@@ -189,7 +185,6 @@ public class ClientStorage {
    }
 
    public OAuthClient newClient(ArtifactReadable artifact, OAuthClientCredential credential) {
-      return new ClientArtifact(builder, artifact, credential);
+      return new ClientArtifact(artifact, credential);
    }
-
 }

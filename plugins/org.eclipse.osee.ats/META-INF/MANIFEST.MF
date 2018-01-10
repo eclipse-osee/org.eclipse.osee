@@ -62,8 +62,6 @@ Export-Package: org.eclipse.osee.ats,
  org.eclipse.osee.ats.world,
  org.eclipse.osee.ats.world.search
 Import-Package: com.google.common.cache,
- com.google.gson,
- com.google.gson.reflect,
  com.google.inject,
  javax.mail,
  javax.mail.internet,

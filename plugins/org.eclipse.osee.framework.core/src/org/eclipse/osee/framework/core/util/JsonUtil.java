@@ -12,9 +12,11 @@ package org.eclipse.osee.framework.core.util;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Map;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -45,6 +47,14 @@ public class JsonUtil {
    public static JsonNode readTree(String json) {
       try {
          return getMapper().readTree(json);
+      } catch (IOException ex) {
+         throw OseeCoreException.wrap(ex);
+      }
+   }
+
+   public static String toJson(Object object) {
+      try {
+         return getMapper().writeValueAsString(object);
       } catch (IOException ex) {
          throw OseeCoreException.wrap(ex);
       }
@@ -85,5 +95,13 @@ public class JsonUtil {
          }
       }
       return null;
+   }
+
+   public static <T> T readValue(String json, TypeReference<Map<String, String>> typeReference) {
+      try {
+         return getMapper().readValue(json, typeReference);
+      } catch (IOException ex) {
+         throw OseeCoreException.wrap(ex);
+      }
    }
 }

@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.config;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -34,6 +32,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -49,7 +48,6 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
  */
 public class UpdateAtsConfiguration {
 
-   private final Gson gson;
    private final IAtsServer atsServer;
    private static final String VIEWS_KEY = "views";
    private static final String VIEWS_EQUAL_KEY = VIEWS_KEY + "=";
@@ -58,7 +56,6 @@ public class UpdateAtsConfiguration {
 
    public UpdateAtsConfiguration(IAtsServer atsServer) {
       this.atsServer = atsServer;
-      gson = new GsonBuilder().setPrettyPrinting().create();
    }
 
    public XResultData createUpdateConfig(XResultData rd) {
@@ -110,7 +107,7 @@ public class UpdateAtsConfiguration {
       try {
          AtsViews databaseViews = getConfigViews();
          for (String viewsJson : getViewsJsonStrings()) {
-            AtsViews atsViews = gson.fromJson(viewsJson, AtsViews.class);
+            AtsViews atsViews = JsonUtil.readValue(viewsJson, AtsViews.class);
             // merge any new default view items to current database view items
             List<AtsAttributeValueColumn> toAdd = new LinkedList<>();
             for (AtsAttributeValueColumn defaultView : atsViews.getAttrColumns()) {
@@ -161,7 +158,7 @@ public class UpdateAtsConfiguration {
    }
 
    private String getViewsAttrValue(AtsViews defaultViews) {
-      return VIEWS_EQUAL_KEY + gson.toJson(defaultViews);
+      return VIEWS_EQUAL_KEY + JsonUtil.toJson(defaultViews);
    }
 
    public ArtifactId getOrCreateConfigFolder(ArtifactId userArt, XResultData rd) {
@@ -195,7 +192,7 @@ public class UpdateAtsConfiguration {
    private void createUpdateColorColumnAttributes(ArtifactReadable atsConfigArt, ArtifactReadable userArt, XResultData rd) {
       ColorColumns columns = new ColorColumns();
       columns.addColumn(ColorTeamColumn.getColor());
-      String colorColumnsJson = gson.toJson(columns);
+      String colorColumnsJson = JsonUtil.toJson(columns);
       atsServer.setConfigValue(COLOR_COLUMN_KEY, colorColumnsJson);
    }
 
@@ -235,7 +232,7 @@ public class UpdateAtsConfiguration {
       String viewsStr = atsServer.getConfigValue(VIEWS_KEY);
       AtsViews views = null;
       if (Strings.isValid(viewsStr)) {
-         views = gson.fromJson(viewsStr, AtsViews.class);
+         views = JsonUtil.readValue(viewsStr, AtsViews.class);
       } else {
          views = new AtsViews();
       }
@@ -246,7 +243,7 @@ public class UpdateAtsConfiguration {
       String colorStr = atsServer.getConfigValue(COLOR_COLUMN_KEY);
       ColorColumns columns = null;
       if (Strings.isValid(colorStr)) {
-         columns = gson.fromJson(colorStr, ColorColumns.class);
+         columns = JsonUtil.readValue(colorStr, ColorColumns.class);
       } else {
          columns = new ColorColumns();
       }

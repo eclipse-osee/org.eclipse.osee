@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.account.admin.internal.oauth;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import com.google.common.io.InputSupplier;
-import com.google.gson.GsonBuilder;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,9 +54,8 @@ public class ClientStorageProvider extends LazyObject<ClientStorage> {
 
          @Override
          public ClientStorage call() throws Exception {
-            GsonBuilder builder = new GsonBuilder();
             BranchId storageBranch = CoreBranches.COMMON;
-            ClientStorage clientStorage = new ClientStorage(logger, builder, orcsApi, storageBranch);
+            ClientStorage clientStorage = new ClientStorage(logger, orcsApi, storageBranch);
 
             if (!clientStorage.typesExist()) {
                InputSupplier<InputStream> newTypesSupplier = newTypesSupplier();

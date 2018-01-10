@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.orcs.utility.RestUtil;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -52,7 +51,6 @@ public final class UserResource {
          obj.put("accountId", user.getStoreObject().getId());
          arr.put(obj);
       }
-      return RestUtil.jsonToPretty(arr, false);
+      return arr.toString();
    }
-
 }
