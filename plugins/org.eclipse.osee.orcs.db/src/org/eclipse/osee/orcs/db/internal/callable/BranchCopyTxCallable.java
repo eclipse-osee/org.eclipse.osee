@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
@@ -41,7 +42,7 @@ public final class BranchCopyTxCallable extends JdbcTransaction {
    private final CreateBranchData branchData;
 
    private static final String INSERT_TX_DETAILS =
-      "INSERT INTO osee_tx_details (branch_id, transaction_id, osee_comment, time, author, tx_type) VALUES (?,?,?,?,?,?)";
+      "INSERT INTO osee_tx_details (branch_id, transaction_id, osee_comment, time, author, tx_type, build_id) VALUES (?,?,?,?,?,?,?)";
 
    private static final String INSERT_ADDRESSING =
       "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id, app_id) VALUES (?,?,?,?,?,?)";
@@ -53,11 +54,14 @@ public final class BranchCopyTxCallable extends JdbcTransaction {
    private final SqlJoinFactory joinFactory;
    private final IdentityManager idManager;
 
-   public BranchCopyTxCallable(JdbcClient jdbcClient, SqlJoinFactory joinFactory, IdentityManager idManager, CreateBranchData branchData) {
+   private final Long buildVersionId;
+
+   public BranchCopyTxCallable(JdbcClient jdbcClient, SqlJoinFactory joinFactory, IdentityManager idManager, CreateBranchData branchData, Long buildVersionId) {
       this.jdbcClient = jdbcClient;
       this.joinFactory = joinFactory;
       this.branchData = branchData;
       this.idManager = idManager;
+      this.buildVersionId = buildVersionId;
    }
 
    @Override
@@ -67,7 +71,7 @@ public final class BranchCopyTxCallable extends JdbcTransaction {
       // transaction available on the new branch for merging or comparison purposes
       // first set aside the transaction
 
-      new CreateBranchDatabaseTxCallable(jdbcClient, idManager, branchData).handleTxWork(connection);
+      new CreateBranchDatabaseTxCallable(jdbcClient, idManager, branchData, buildVersionId).handleTxWork(connection);
 
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
       TransactionId nextTransactionId = idManager.getNextTransactionId();
@@ -75,7 +79,8 @@ public final class BranchCopyTxCallable extends JdbcTransaction {
       String creationComment = branchData.getCreationComment();
 
       jdbcClient.runPreparedUpdate(connection, INSERT_TX_DETAILS, branchData.getBranch(), nextTransactionId,
-         creationComment, timestamp, branchData.getAuthor(), TransactionDetailsType.NonBaselined.getId());
+         creationComment, timestamp, branchData.getAuthor(), TransactionDetailsType.NonBaselined.getId(),
+         OseeCodeVersion.getVersionId());
 
       populateTransaction(0.30, connection, nextTransactionId, branchData.getParentBranch(),
          branchData.getSavedTransaction());

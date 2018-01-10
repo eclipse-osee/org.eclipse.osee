@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -93,7 +94,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
       txNotCurrentsJoin = new HashMap<>();
 
       addRow(SqlOrderEnum.TXS_DETAIL, txId, tx.getComment(), tx.getDate(), tx.getAuthor(), tx.getBranch(),
-         tx.getTxType().getId());
+         tx.getTxType().getId(), OseeCodeVersion.getVersionId());
       changeSet.accept(this);
    }
 

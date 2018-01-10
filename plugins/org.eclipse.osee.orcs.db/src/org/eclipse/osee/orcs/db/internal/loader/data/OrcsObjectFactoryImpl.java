@@ -211,13 +211,14 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
 
    @Override
    public BranchData createCopy(BranchData source) {
-      return createBranchData(BranchId.create(source.getId(), source.getViewId()), source.getBranchType(), source.getName(), source.getParentBranch(),
-         source.getBaseTransaction(), source.getSourceTransaction(), source.getArchiveState(), source.getBranchState(),
-         source.getAssociatedArtifact(), source.isInheritAccessControl());
+      return createBranchData(BranchId.create(source.getId(), source.getViewId()), source.getBranchType(),
+         source.getName(), source.getParentBranch(), source.getBaseTransaction(), source.getSourceTransaction(),
+         source.getArchiveState(), source.getBranchState(), source.getAssociatedArtifact(),
+         source.isInheritAccessControl());
    }
 
    @Override
-   public TxOrcsData createTxData(Long localId, TransactionDetailsType type, Date date, String comment, BranchId branch, ArtifactId author, ArtifactId commitArt) {
+   public TxOrcsData createTxData(Long localId, TransactionDetailsType type, Date date, String comment, BranchId branch, ArtifactId author, ArtifactId commitArt, Long buildId) {
       TxOrcsData data = new TransactionDataImpl(localId);
       data.setTxType(type);
       data.setDate(date);
@@ -225,13 +226,14 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       data.setBranch(branch);
       data.setAuthor(author);
       data.setCommitArt(commitArt);
+      data.setBuildId(buildId);
       return data;
    }
 
    @Override
    public TxOrcsData createCopy(TxOrcsData source) {
       return createTxData(source.getId(), source.getTxType(), source.getDate(), source.getComment(), source.getBranch(),
-         source.getAuthor(), source.getCommitArt());
+         source.getAuthor(), source.getCommitArt(), source.getBuildId());
    }
 
    @Override

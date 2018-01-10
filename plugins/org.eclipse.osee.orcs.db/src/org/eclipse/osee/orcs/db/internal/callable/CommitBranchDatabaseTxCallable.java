@@ -42,7 +42,7 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
    private static final String COMMIT_COMMENT = "Commit Branch ";
 
    private static final String INSERT_COMMIT_TRANSACTION =
-      "insert into osee_tx_details(tx_type, branch_id, transaction_id, osee_comment, time, author, commit_art_id) values(?,?,?,?,?,?,?)";
+      "insert into osee_tx_details(tx_type, branch_id, transaction_id, osee_comment, time, author, commit_art_id, build_id) values(?,?,?,?,?,?,?,?)";
 
    private static final String INSERT_COMMIT_ADDRESSING =
       "insert into osee_txs(transaction_id, branch_id, gamma_id, mod_type, tx_current, app_id) values(?,?,?,?,?,?)";
@@ -66,7 +66,9 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
    private final BranchId mergeBranch;
    private final List<ChangeItem> changes;
 
-   public CommitBranchDatabaseTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, IdentityManager idManager, ArtifactId committer, BranchReadable sourceBranch, BranchReadable destinationBranch, BranchId mergeBranch, List<ChangeItem> changes) {
+   private final Long buildVersionId;
+
+   public CommitBranchDatabaseTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, IdentityManager idManager, ArtifactId committer, BranchReadable sourceBranch, BranchReadable destinationBranch, BranchId mergeBranch, List<ChangeItem> changes, Long buildVersionId) {
       super(logger, session, jdbcClient);
       this.joinFactory = joinFactory;
       this.idManager = idManager;
@@ -75,6 +77,7 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
       this.destinationBranch = destinationBranch;
       this.mergeBranch = mergeBranch;
       this.changes = changes;
+      this.buildVersionId = buildVersionId;
    }
 
    @Override
@@ -154,7 +157,7 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
 
       getJdbcClient().runPreparedUpdate(connection, INSERT_COMMIT_TRANSACTION,
          TransactionDetailsType.NonBaselined.getId(), destinationBranch, newTransactionNumber, comment, timestamp,
-         committer, sourceBranch.getAssociatedArtifact());
+         committer, sourceBranch.getAssociatedArtifact(), buildVersionId);
       return newTransactionNumber;
    }
 

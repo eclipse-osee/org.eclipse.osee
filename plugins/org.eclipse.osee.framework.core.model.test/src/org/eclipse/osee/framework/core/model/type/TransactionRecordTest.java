@@ -53,7 +53,7 @@ public class TransactionRecordTest {
       this.txType = txType;
 
       this.transaction =
-         new TransactionRecord(this.transactionNumber, branch, comment, time, authorArtId, commitArtId, txType);
+         new TransactionRecord(this.transactionNumber, branch, comment, time, authorArtId, commitArtId, txType, 234L);
    }
 
    @Test

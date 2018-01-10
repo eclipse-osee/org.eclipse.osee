@@ -32,4 +32,6 @@ public interface TxOrcsData extends TransactionReadable {
    void setDate(Date date);
 
    void setTxType(TransactionDetailsType type);
+
+   void setBuildId(Long buildId);
 }

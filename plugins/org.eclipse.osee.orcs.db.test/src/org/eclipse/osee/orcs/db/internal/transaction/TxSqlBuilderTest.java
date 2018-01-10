@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -188,6 +189,7 @@ public class TxSqlBuilderTest {
       assertEquals(EXPECTED_AUTHOR, data[index++]);
       assertEquals(COMMON, data[index++]);
       assertEquals(EXPECTED_TX_TYPE.getId(), data[index++]);
+      assertEquals(OseeCodeVersion.getVersionId(), data[index++]);
    }
 
    @Test

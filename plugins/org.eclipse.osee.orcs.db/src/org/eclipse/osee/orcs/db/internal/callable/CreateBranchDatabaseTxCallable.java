@@ -45,7 +45,7 @@ import org.eclipse.osee.orcs.db.internal.IdentityManager;
 public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
 
    private static final String INSERT_TX_DETAILS =
-      "INSERT INTO osee_tx_details (branch_id, transaction_id, osee_comment, time, author, tx_type) VALUES (?,?,?,?,?,?)";
+      "INSERT INTO osee_tx_details (branch_id, transaction_id, osee_comment, time, author, tx_type, build_id) VALUES (?,?,?,?,?,?,?)";
 
    private static final String UPDATE_BASELINE_BRANCH_TX =
       "UPDATE osee_branch SET baseline_transaction_id = ? WHERE branch_id = ? AND baseline_transaction_id = 1";
@@ -101,11 +101,13 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
    private final JdbcClient jdbcClient;
    private final IdentityManager idManager;
    private final CreateBranchData newBranchData;
+   private final Long buildVersionId;
 
-   public CreateBranchDatabaseTxCallable(JdbcClient jdbcClient, IdentityManager idManager, CreateBranchData branchData) {
+   public CreateBranchDatabaseTxCallable(JdbcClient jdbcClient, IdentityManager idManager, CreateBranchData branchData, Long buildVersionId) {
       this.jdbcClient = jdbcClient;
       this.idManager = idManager;
       this.newBranchData = branchData;
+      this.buildVersionId = buildVersionId;
    }
 
    private void checkPreconditions(JdbcConnection connection, BranchId parentBranch, BranchId destinationBranch) throws OseeCoreException {
@@ -199,7 +201,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
       nextTransactionId = tobeTransactionId;
       jdbcClient.runPreparedUpdate(connection, INSERT_TX_DETAILS, branch, nextTransactionId,
          newBranchData.getCreationComment(), timestamp, newBranchData.getAuthor(),
-         TransactionDetailsType.Baselined.getId());
+         TransactionDetailsType.Baselined.getId(), buildVersionId);
 
       if (needsUpdate) {
          jdbcClient.runPreparedUpdate(connection, UPDATE_BASELINE_BRANCH_TX, nextTransactionId, branch);

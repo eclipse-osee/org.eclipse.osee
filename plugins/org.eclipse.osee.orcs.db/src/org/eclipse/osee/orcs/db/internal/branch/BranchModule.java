@@ -16,6 +16,7 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -81,12 +82,14 @@ public class BranchModule {
       return new BranchDataStore() {
          @Override
          public void createBranch(CreateBranchData branchData) {
-            jdbcClient.runTransaction(new CreateBranchDatabaseTxCallable(jdbcClient, idManager, branchData));
+            jdbcClient.runTransaction(
+               new CreateBranchDatabaseTxCallable(jdbcClient, idManager, branchData, OseeCodeVersion.getVersionId()));
          }
 
          @Override
          public void createBranchCopyTx(CreateBranchData branchData) {
-            jdbcClient.runTransaction(new BranchCopyTxCallable(jdbcClient, joinFactory, idManager, branchData));
+            jdbcClient.runTransaction(new BranchCopyTxCallable(jdbcClient, joinFactory, idManager, branchData,
+               OseeCodeVersion.getVersionId()));
          }
 
          @Override

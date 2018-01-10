@@ -17,6 +17,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.column.HistoryTransactionAuthorColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.column.HistoryTransactionBuildIdColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.column.HistoryTransactionCommentColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.column.HistoryTransactionDateColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.column.HistoryTransactionIdColumn;
@@ -52,7 +53,7 @@ public class HistoryXViewerFactory extends SkynetXViewerFactory {
       historyTransactionDateColumn = new HistoryTransactionDateColumn(txCache);
       registerColumns(new HistoryTransactionIdColumn(txCache), gamma, itemType, itemChange, modType, itemId, was, is,
          historyTransactionDateColumn, new HistoryTransactionAuthorColumn(txCache),
-         new HistoryTransactionCommentColumn(txCache));
+         new HistoryTransactionCommentColumn(txCache), new HistoryTransactionBuildIdColumn(txCache));
       registerAllAttributeColumns();
    }
 

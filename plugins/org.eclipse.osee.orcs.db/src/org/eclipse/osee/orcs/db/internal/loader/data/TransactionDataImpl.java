@@ -29,6 +29,7 @@ public class TransactionDataImpl extends BaseId implements TxOrcsData {
    private ArtifactId commitId = ArtifactId.SENTINEL;
    private TransactionDetailsType type = TransactionDetailsType.INVALID;
    private Date date;
+   private Long buildId = 0L;
 
    public TransactionDataImpl(Long id) {
       super(id);
@@ -98,4 +99,15 @@ public class TransactionDataImpl extends BaseId implements TxOrcsData {
    public String toString() {
       return "TransactionDataImpl [id=" + getId() + ", authorId=" + authorId + ", branch=" + branch + ", comment=" + comment + ", commitId=" + commitId + ", date=" + date + ", type=" + type + "]";
    }
+
+   @Override
+   public Long getBuildId() {
+      return buildId;
+   }
+
+   @Override
+   public void setBuildId(Long buildId) {
+      this.buildId = buildId;
+   }
+
 }

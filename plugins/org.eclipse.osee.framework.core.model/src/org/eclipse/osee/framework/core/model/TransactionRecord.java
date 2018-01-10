@@ -24,17 +24,19 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class TransactionRecord extends BaseId implements TransactionToken, Adaptable {
    public static TransactionRecord SENTINEL =
-      new TransactionRecord(Id.SENTINEL, BranchId.SENTINEL, null, null, 0, 0, TransactionDetailsType.INVALID);
+      new TransactionRecord(Id.SENTINEL, BranchId.SENTINEL, null, null, 0, 0, TransactionDetailsType.INVALID, 0L);
    private final TransactionDetailsType txType;
    private final BranchId branch;
    private String comment;
    private Date time;
    private int authorArtId;
    private int commitArtId;
+   private Long buildId;
 
-   public TransactionRecord(Long id, BranchId branch, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType) {
+   public TransactionRecord(Long id, BranchId branch, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType, Long buildId) {
       super(id);
       this.branch = branch;
+      this.buildId = buildId;
       this.comment = Strings.intern(comment);
       this.time = time;
       this.authorArtId = authorArtId;
@@ -86,5 +88,13 @@ public class TransactionRecord extends BaseId implements TransactionToken, Adapt
    @Override
    public String toString() {
       return String.valueOf(getId());
+   }
+
+   public Long getBuildId() {
+      return buildId;
+   }
+
+   public void setBuildId(Long buildId) {
+      this.buildId = buildId;
    }
 }

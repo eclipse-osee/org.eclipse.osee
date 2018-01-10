@@ -37,12 +37,12 @@ import org.eclipse.osee.orcs.rest.client.OseeClient;
  */
 public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
    private static final String SELECT_BRANCHES =
-      "with%s recurse (id, branch_level) as (select branch_id, 1 from osee_branch where branch_id = 1 UNION ALL select branch_id, branch_level + 1 from recurse, osee_branch where parent_branch_id = recurse.id) select br.*, parTx.tx_type as p_tx_type, parTx.author as p_author, parTx.time as p_time, parTx.osee_comment as p_osee_comment, parTx.commit_art_id as p_commit_art_id, baseTx.tx_type as b_tx_type, baseTx.author as b_author, baseTx.time as b_time, baseTx.osee_comment as b_osee_comment, baseTx.commit_art_id as b_commit_art_id, source_branch_id, dest_branch_id from recurse, osee_branch br left outer join osee_merge on merge_branch_id = branch_id, osee_tx_details baseTx, osee_tx_details parTx where parent_transaction_id = parTx.transaction_id and baseline_transaction_id = baseTx.transaction_id and br.branch_id = recurse.id order by branch_level";
+      "with%s recurse (id, branch_level) as (select branch_id, 1 from osee_branch where branch_id = 1 UNION ALL select branch_id, branch_level + 1 from recurse, osee_branch where parent_branch_id = recurse.id) select br.*, parTx.build_id as p_tx_build_id, parTx.tx_type as p_tx_type, parTx.author as p_author, parTx.time as p_time, parTx.osee_comment as p_osee_comment, parTx.commit_art_id as p_commit_art_id, baseTx.build_id as b_tx_build_id, baseTx.tx_type as b_tx_type, baseTx.author as b_author, baseTx.time as b_time, baseTx.osee_comment as b_osee_comment, baseTx.commit_art_id as b_commit_art_id, source_branch_id, dest_branch_id from recurse, osee_branch br left outer join osee_merge on merge_branch_id = branch_id, osee_tx_details baseTx, osee_tx_details parTx where parent_transaction_id = parTx.transaction_id and baseline_transaction_id = baseTx.transaction_id and br.branch_id = recurse.id order by branch_level";
    private static final String SELECT_BRANCH =
-      "select br.*, parTx.tx_type as p_tx_type, parTx.author as p_author, parTx.time as p_time, parTx.osee_comment as p_osee_comment, parTx.commit_art_id as p_commit_art_id, baseTx.tx_type as b_tx_type, baseTx.author as b_author, baseTx.time as b_time, baseTx.osee_comment as b_osee_comment, baseTx.commit_art_id as b_commit_art_id, source_branch_id, dest_branch_id from osee_branch br left outer join osee_merge on merge_branch_id = branch_id, osee_tx_details baseTx, osee_tx_details parTx where parent_transaction_id = parTx.transaction_id and baseline_transaction_id = baseTx.transaction_id and br.branch_id = ?";
+      "select br.*, parTx.build_id as p_tx_build_id, parTx.tx_type as p_tx_type, parTx.author as p_author, parTx.time as p_time, parTx.osee_comment as p_osee_comment, parTx.commit_art_id as p_commit_art_id, baseTx.build_id as b_tx_build_id, baseTx.tx_type as b_tx_type, baseTx.author as b_author, baseTx.time as b_time, baseTx.osee_comment as b_osee_comment, baseTx.commit_art_id as b_commit_art_id, source_branch_id, dest_branch_id from osee_branch br left outer join osee_merge on merge_branch_id = branch_id, osee_tx_details baseTx, osee_tx_details parTx where parent_transaction_id = parTx.transaction_id and baseline_transaction_id = baseTx.transaction_id and br.branch_id = ?";
 
    private final JdbcClient jdbcClient;
-   private OseeClient oseeClient;
+   private final OseeClient oseeClient;
 
    public DatabaseBranchAccessor(JdbcClient jdbcClient, OseeClient oseeClient) {
       this.jdbcClient = jdbcClient;
@@ -139,6 +139,8 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
       Integer authorArtId = stmt.getInt(base ? "b_author" : "p_author");
       Integer commitArtId = stmt.getInt(base ? "b_commit_art_id" : "p_commit_art_id");
       TransactionDetailsType txType = TransactionDetailsType.toEnum(stmt.getInt(base ? "b_tx_type" : "p_tx_type"));
-      return new TransactionRecord(transactionId, branch, comment, timestamp, authorArtId, commitArtId, txType);
+      Long txBuildId = stmt.getLong(base ? "b_tx_build_id" : "p_tx_build_id");
+      return new TransactionRecord(transactionId, branch, comment, timestamp, authorArtId, commitArtId, txType,
+         txBuildId);
    }
 }

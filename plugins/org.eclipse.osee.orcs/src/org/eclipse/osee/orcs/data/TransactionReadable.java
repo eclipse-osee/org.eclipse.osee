@@ -30,4 +30,6 @@ public interface TransactionReadable extends TransactionToken {
 
    ArtifactId getCommitArt();
 
+   Long getBuildId();
+
 }

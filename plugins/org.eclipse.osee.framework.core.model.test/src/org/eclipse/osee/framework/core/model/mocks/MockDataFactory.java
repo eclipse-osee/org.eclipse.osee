@@ -77,7 +77,8 @@ public final class MockDataFactory {
          value++;
       }
       IOseeBranch branch = IOseeBranch.create(branchUuid, "fake test branch");
-      return new TransactionRecord(value * 47L, branch, "comment_" + value, new Date(), value * 37, value * 42, type);
+      return new TransactionRecord(value * 47L, branch, "comment_" + value, new Date(), value * 37, value * 42, type,
+         0L);
    }
 
    public static OseeEnumEntry createEnumEntry(int index) {

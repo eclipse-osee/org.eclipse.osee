@@ -16,6 +16,7 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.model.change.ChangeIgnoreType;
@@ -95,8 +96,9 @@ public class CommitBranchDatabaseCallable extends AbstractDatastoreCallable<Tran
       BranchId mergeBranch = getJdbcClient().fetch(BranchId.SENTINEL, SELECT_MERGE_BRANCH_UUID, source, destination);
       List<ChangeItem> changes = callComputeChanges(mergeBranch);
 
-      CancellableCallable<TransactionId> commitCallable = new CommitBranchDatabaseTxCallable(getLogger(), getSession(),
-         getJdbcClient(), joinFactory, idManager, committer, source, destination, mergeBranch, changes);
+      CancellableCallable<TransactionId> commitCallable =
+         new CommitBranchDatabaseTxCallable(getLogger(), getSession(), getJdbcClient(), joinFactory, idManager,
+            committer, source, destination, mergeBranch, changes, OseeCodeVersion.getVersionId());
       TransactionId newTx = callAndCheckForCancel(commitCallable);
 
       return newTx;

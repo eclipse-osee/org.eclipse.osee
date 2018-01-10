@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -58,7 +59,7 @@ import org.eclipse.osee.jdbc.JdbcStatement;
 public final class TransactionManager {
 
    private static final String INSERT_INTO_TRANSACTION_DETAIL =
-      "INSERT INTO osee_tx_details (transaction_id, osee_comment, time, author, branch_id, tx_type) VALUES (?, ?, ?, ?, ?, ?)";
+      "INSERT INTO osee_tx_details (transaction_id, osee_comment, time, author, branch_id, tx_type, build_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
    private static final String SELECT_TRANSACTIONS =
       "SELECT * FROM osee_tx_details WHERE branch_id = ? ORDER BY transaction_id DESC";
@@ -185,14 +186,16 @@ public final class TransactionManager {
       Date timestamp = stmt.getTimestamp("time");
       Integer authorArtId = stmt.getInt("author");
       Integer commitArtId = stmt.getInt("commit_art_id");
+      Long buildId = stmt.getLong("build_id");
       TransactionDetailsType txType = TransactionDetailsType.toEnum(stmt.getInt("tx_type"));
-      return new TransactionRecord(transactionNumber, branch, comment, timestamp, authorArtId, commitArtId, txType);
+      return new TransactionRecord(transactionNumber, branch, comment, timestamp, authorArtId, commitArtId, txType,
+         buildId);
    }
 
    public static synchronized void internalPersist(JdbcConnection connection, TransactionRecord transactionRecord) throws OseeCoreException {
       ConnectionHandler.runPreparedUpdate(connection, INSERT_INTO_TRANSACTION_DETAIL, transactionRecord.getId(),
          transactionRecord.getComment(), transactionRecord.getTimeStamp(), transactionRecord.getAuthor(),
-         transactionRecord.getBranch(), transactionRecord.getTxType().getId());
+         transactionRecord.getBranch(), transactionRecord.getTxType().getId(), OseeCodeVersion.getVersionId());
    }
 
    public static TransactionToken getTransactionAtDate(BranchId branch, Date maxDateExclusive) throws OseeCoreException {
