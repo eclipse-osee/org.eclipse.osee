@@ -131,7 +131,7 @@ public final class AtsBranchManager {
    /**
     * If working branch has no changes, allow for deletion.
     */
-   public static void deleteWorkingBranch(TeamWorkFlowArtifact teamWf, boolean promptUser) {
+   public static boolean deleteWorkingBranch(TeamWorkFlowArtifact teamWf, boolean promptUser, boolean pend) {
       boolean isExecutionAllowed = !promptUser;
       try {
          BranchId branch = AtsClientService.get().getBranchService().getWorkingBranch(teamWf);
@@ -152,7 +152,7 @@ public final class AtsBranchManager {
             Exception exception = null;
             Result result = Result.FalseResult;
             try {
-               result = AtsBranchUtil.deleteWorkingBranch(teamWf, true);
+               result = AtsBranchUtil.deleteWorkingBranch(teamWf, pend);
             } catch (Exception ex) {
                exception = ex;
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Problem deleting branch.", ex);
@@ -165,10 +165,12 @@ public final class AtsBranchManager {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, result.getText(), exception);
                }
             }
+            return true;
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Problem deleting branch.", ex);
       }
+      return false;
    }
 
    /**

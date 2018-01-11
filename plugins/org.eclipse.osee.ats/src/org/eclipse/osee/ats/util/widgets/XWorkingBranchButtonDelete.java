@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.util.widgets;
 
 import org.eclipse.osee.ats.util.AtsBranchManager;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
@@ -34,15 +35,25 @@ public class XWorkingBranchButtonDelete extends XWorkingBranchButtonAbstract {
          public void handleEvent(Event e) {
             disableAll = true;
             refreshEnablement(button);
-            AtsBranchManager.deleteWorkingBranch(getTeamArt(), true);
-            disableAll = false;
-            refreshEnablement(button);
+            button.setText("");
+            button.getParent().layout();
+            boolean deleted = AtsBranchManager.deleteWorkingBranch(getTeamArt(), true, false);
+            if (!deleted) {
+               button.setText("");
+               button.getParent().layout();
+               disableAll = false;
+               refreshEnablement(button);
+            }
          }
       });
    }
 
    @Override
    protected void refreshEnablement(Button button) {
+      if (Strings.isValid(button.getText())) {
+         button.setText("");
+         button.getParent().layout();
+      }
       button.setEnabled(!disableAll && isWorkingBranchInWork() && !isCommittedBranchExists());
    }
 

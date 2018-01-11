@@ -57,12 +57,12 @@ public class XWorkingBranchButtonCreate extends XWorkingBranchButtonAbstract {
                   refreshEnablement(button);
                   return;
                }
-               AtsBranchUtil.createWorkingBranch_Create(getTeamArt(), true);
+               button.setText("Creating Branch...");
+               button.getParent().layout();
+               AtsBranchUtil.createWorkingBranch_Create(getTeamArt(), false);
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
-            disableAll = false;
-            refreshEnablement(button);
          }
       });
    }

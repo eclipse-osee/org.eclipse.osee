@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SystemGroup;
@@ -173,12 +174,12 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
                   refreshEnablement();
                   return;
                }
-               AtsBranchUtil.createWorkingBranch_Create(teamArt, true);
+               createBranchButton.setText("Creating Branch...");
+               createBranchButton.getParent().layout();
+               AtsBranchUtil.createWorkingBranch_Create(teamArt, false);
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
-            enablement.refresh();
-            refreshEnablement();
          }
       });
 
@@ -215,9 +216,15 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
             refreshEnablement();
-            AtsBranchManager.deleteWorkingBranch(teamArt, true);
-            enablement.refresh();
-            refreshEnablement();
+            deleteBranchButton.setText("Deleting Branch...");
+            deleteBranchButton.getParent().layout();
+            boolean deleted = AtsBranchManager.deleteWorkingBranch(teamArt, true, false);
+            if (!deleted) {
+               deleteBranchButton.setText("");
+               deleteBranchButton.getParent().layout();
+               enablement.refresh();
+               refreshEnablement();
+            }
          }
       });
 
@@ -372,6 +379,10 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
       createBranchButton.setEnabled(enablement.isCreateBranchButtonEnabled());
       showArtifactExplorer.setEnabled(enablement.isShowArtifactExplorerButtonEnabled());
       showChangeReport.setEnabled(enablement.isShowChangeReportButtonEnabled());
+      if (Strings.isValid(deleteBranchButton.getText())) {
+         deleteBranchButton.setText("");
+         deleteBranchButton.getParent().layout();
+      }
       deleteBranchButton.setEnabled(enablement.isDeleteBranchButtonEnabled());
       favoriteBranchButton.setEnabled(enablement.isFavoriteBranchButtonEnabled());
       lockBranchButton.setEnabled(enablement.isDeleteBranchButtonEnabled());
