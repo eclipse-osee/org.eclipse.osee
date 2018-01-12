@@ -6,20 +6,27 @@ app.directive('oseeMultiselectDropdownControl', function () {
                 var vm = this;
                 vm.element = $route.current.params.element;
                 $scope.model = []; // This is where we can set default selections on initialization, if any.
-                console.log("logging url and control id, url: [" + $scope.uischema.scope.getUrl + "] and control id: [" + $scope.uischema.scope.$ref.substring($scope.uischema.scope.$ref.lastIndexOf('/') + 1) + "]");
+                var controlIdValue = OseeControlValues.parseAttribute($scope.uischema.scope.$ref);
+                console.log("logging url and control id, url: [" + $scope.uischema.scope.getUrl + "] and control id: [" + controlIdValue + "]");
                 OseeControlValues.queryUrl($scope.uischema.scope.getUrl + '/:controlId').query({
-                    controlId: $scope.uischema.scope.$ref.substring($scope.uischema.scope.$ref.lastIndexOf('/') + 1)
+                    controlId: controlIdValue
                 }, function (selections) {
                     var objects = [];
+                    // if there are no objects, use the local enumeration
+                    if(selections.length < 1) {
+                        for(i = 0; i < vm.resolvedSchema.enum.length; ++i) {
+                            selections[i] = vm.resolvedSchema.enum[i];                           
+                        }
+                    }
                     for (i = 0; i < selections.length; i++) {
                         objects[i] = {
                             id: i,
                             label: selections[i].toString()
                         };
 
-                        if (vm.resolvedData && vm.resolvedData[vm.fragment]) {
-                            console.log(vm.resolvedData[vm.fragment]);
-                            if (selections[i].toString() === vm.resolvedData[vm.fragment]) {
+                        if (vm.resolvedData && vm.resolvedData[vm.fragment]) {                 
+                            if (selections[i].toString() === vm.resolvedData.value) {
+                                console.log('selection['+selections[i].toString()+']data>'+vm.resolvedData.value+'<');
                                 $scope.model.push(objects[i]);
                             }
                         }
@@ -38,7 +45,8 @@ app.directive('oseeMultiselectDropdownControl', function () {
                 $scope.multiselectEvents = {
                     onSelectionChanged: function () {
                         var content = $scope.getEffectedData($scope.model);
-                        var parameter = $scope.getParameterFromString($scope.uischema.scope.putUrl, $scope.vm.element, $scope.vm.fragment);
+                        var parameter = $scope.getParameterFromString($scope.uischema.scope.putUrl, $scope.vm.element, 
+                                        OseeControlValues.parseAttribute($scope.vm.uiSchema.scope.$ref));
                         OseeControlValues.putUrl($scope.uischema.scope.putUrl).submit(parameter, content);
                     }
                 };

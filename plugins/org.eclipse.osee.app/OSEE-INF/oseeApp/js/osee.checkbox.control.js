@@ -6,6 +6,7 @@ app.directive('oseeCheckboxControl', function () {
                 var vm = this;
 
                 $scope.onNgBlur = function () {
+                    OseeAppSchema.doUpdate();
                 }
 
                 $scope.onNgChanged = function (controlschema) {
@@ -40,4 +41,5 @@ app.directive('oseeCheckboxControl', function () {
             RendererService.register('osee-checkbox-control', Testers.and(
                     // Inherit this custom control from schema that call out the following using this single option:
                     Testers.optionIs('customControlName', 'oseeCheckboxControl')), 10);
-        }]);
+        }
+]);

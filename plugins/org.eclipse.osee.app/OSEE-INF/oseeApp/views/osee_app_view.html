@@ -6,10 +6,16 @@
                 <div class="panel panel-primary" ng-show="oc.dataloaded" >
                     <div class="panel-heading clearfix">
                         <h3 class="panel-title" style="line-height:34px;">
-                            <div id="panel_name" >
+                            <div class="inside-panel" id="panel_name" >
                                 <strong>{{oc.name}}</strong>
                             </div>
-                            <div id="submit_button" ng-if="oc.useSubmit">
+                            <div class="inside-panel" id="back_button" >
+                                <h1 class="btn btn-lg btn-success" ng-click="oc.goBack()">Back</h1>
+                            </div>
+                            <div class="inside-panel" id="create_button" >
+                                <h1 class="btn btn-lg btn-success" ng-click="oc.newAction()">New</h1>
+                            </div>
+                            <div class="inside-panel" id="submit_button" ng-if="oc.useSubmit">
                                 <h1 class="btn btn-lg btn-success" ng-click="oc.submitForm()">Submit</h1>
                             </div>
                        </h3>
@@ -19,6 +25,9 @@
                     </div>
                     <div ng-if="!oc.loaded">
                         <strong>Loading</strong>
+                    </div>
+                    <div ng-if="oc.failed">
+                        <strong>Failed to Load</strong>
                     </div>
                 </div>
             </div>

@@ -1,4 +1,5 @@
-app.directive('oseeDateTimeControl', function() {
+
+app.directive('oseeDateTimeControl', function() {
     return {
         restrict: 'E',
         controller: ['BaseController', '$scope', '$routeParams', 'OseeAppSchema', function(
@@ -6,18 +7,25 @@
             var vm = this;
 
             $scope.onNgBlur = function() {
+                OseeAppSchema.doUpdate();
             }
             $scope.onNgChanged = function(controlschema) {
                 OseeAppSchema.updateItem(controlschema);
             }
             $scope.onInit = function() {
-                var given = vm.data[vm.fragment];
-                if (given) {
-                    var date = new Date(given);
-                    console.log("given date was: " + given + ", now " + date);
-                    vm.data[vm.fragment] = date;
+                var given;
+                var intermediate = vm.uiSchema.scope.$ref.substr(13);
+
+                var dateIndex;
+                if(intermediate.indexOf('/') > 0) {
+                    dateIndex = intermediate.substring(0, intermediate.indexOf('/'));
+                    given = new Date(vm.data[dateIndex].value); 
+                    vm.data[dateIndex].value = given;
+                } else {
+                    dateIndex = intermediate;
+                    given = new Date(vm.data[dateIndex]);
+                    vm.data[dateIndex] = given;
                 }
-                console.log("fragment = " + vm.fragment);
             }
             BaseController.call(vm, $scope);
         }],
@@ -31,6 +39,7 @@
                      ng-model="vm.resolvedData[vm.fragment]"
                      ng-change="onNgChanged('{{vm.uiSchema}}')"
                      ng-readonly="vm.uiSchema.readOnly"
+                     ng-blur="onNgBlur()"
                      data-ng-init="onInit()">
                    </input>
                    </jsonforms-control>`

@@ -27,6 +27,6 @@
                     vm.allGridSettings.data = listData;
                     vm.gridOptions = vm.allGridSettings;
                     vm.loaded = true;
-                });
+                }, function (response) {                    vm.failed = true;                   alert("Problem: " + response.message);                });
             });
         }]);

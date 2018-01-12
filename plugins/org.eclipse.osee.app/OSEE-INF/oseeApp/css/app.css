@@ -54,10 +54,29 @@ section.listview {
     border-left: 1px solid #eeeeee;
 }
 
-#submit_button {
-	float: right;
+#panel-title {
+	width 100%;
+	text-align: left;
+}
+.inside-panel {
+	display: inline-block;
 }
 
 #panel_name {
 	float: left;
 } 
+
+#create_button {
+   margin: 10px;
+   float: right;
+}
+
+#submit_button {
+   margin: 10px;
+   float: right;
+}
+
+#back_button {
+	float: right;
+   margin: 10px;
+}

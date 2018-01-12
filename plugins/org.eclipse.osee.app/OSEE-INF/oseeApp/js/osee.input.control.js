@@ -1,4 +1,5 @@
-app.directive('oseeInputControl', function () {
+
+app.directive('oseeInputControl', function () {
     return {
         restrict: 'E',
         controller: ['BaseController', '$scope', '$routeParams', 'OseeAppSchema', function (
@@ -6,9 +7,10 @@
                 var vm = this;
 
                 $scope.onNgBlur = function () {
+                    OseeAppSchema.doUpdate();
                 }
 
-                $scope.onNgChanged = function (controlschema) {
+                $scope.onNgChange = function (controlschema) {
                     OseeAppSchema.updateItem(controlschema);
                 }
                 BaseController.call(vm, $scope, $routeParams, OseeAppSchema);
@@ -22,7 +24,7 @@
                     class="form-control jsf-control-string"
                     ng-style="{{vm.uiSchema.style}}"
                     ng-model="vm.resolvedData[vm.fragment]"
-                    ng-change="vm.triggerChangeEvent('{{vm.uiSchema}}')"
+                    ng-change="onNgChange('{{vm.uiSchema}}')"
                     ng-readonly="vm.uiSchema.readOnly"
                     ng-blur="onNgBlur()">
                 </input>

@@ -4,7 +4,7 @@ app.controller('oseeAppController', [
         '$route',
         '$scope',
         '$resource',
-        function(OseeAppSchema, OseeControlValues, $route, $scope, $resource) {
+        function (OseeAppSchema, OseeControlValues, $route, $scope, $resource) {
             $route.current.params;
             var vm = this;
             vm.dataloaded = false;
@@ -21,6 +21,7 @@ app.controller('oseeAppController', [
                 vm.oseeAppSchema = data.OseeApp;
                 vm.dataloaded = true;
                 vm.defaultUpdateURL = data.ItemUpdateURL;
+                vm.createURL = data.ItemCreateURL;
                 if (data.ItemSubmitURL) {
                     vm.submitURL = data.ItemSubmitURL;
                     vm.useSubmit = true;
@@ -34,6 +35,9 @@ app.controller('oseeAppController', [
                         }, function (data) {
                             vm.oseeAppData = data[0];
                             vm.loaded = true;
+                        }, function (response) {
+                            vm.failed = true;
+                            alert("Problem: " + response.message);
                         });
                     } else if (data.SchemaType === 'isItem') {
                         vm.itemDataResource.get({
@@ -41,10 +45,34 @@ app.controller('oseeAppController', [
                         }, function (data) {
                             vm.oseeAppData = data;
                             vm.loaded = true;
+                        }, function (response) {
+                            vm.failed = true;
+                            alert("Problem: " + response.message);
                         });
                     }
                 }
-            });            
+            });
+
+            this.goBack = function () {
+                history.back();
+            };
+            this.newAction = function () {
+                vm.createAction = $resource(vm.createURL, null, {
+                        'create': {
+                            method: 'POST'
+                        }
+                    });
+
+                vm.createAction.create()
+                .$promise.then(
+                    function (data) {
+                    window.location.href = 'index.html#/osee_app?uuid=' + vm.appId +
+                        '&name=' + vm.name + '&element=' + data.id;
+                }, function (response) {
+                    vm.failed = true;
+                    alert("Problem: " + response.data);
+                });
+            };
 
             this.submitForm = function () {
                 vm.itemSubmitResource = $resource(vm.submitURL, null, {
@@ -63,25 +91,41 @@ app.controller('oseeAppController', [
                     alert("Data not ready to be submitted.");
                 }
             };
-
+            OseeAppSchema.doUpdate = function () {
+                if (this.changedItem) {
+                        var jsonData;
+                        if(this.changedData.value instanceof Date)  { 
+                            jsonData = JSON.stringify(this.changedData.value.getTime());
+                        } else {
+                            jsonData = JSON.stringify(this.changedData.value);
+                        }
+                    vm.putResource = $resource(
+                            vm.defaultUpdateURL, null, {
+                            'update': {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            }
+                        });
+                    vm.putResource.update({
+                        element: vm.element,
+                        updated: this.changedItem
+                    }, "[" + jsonData + "]").$promise.then(
+                        function (data) {
+                        // will need to update the gamma here
+                    }, function (response) {
+                        vm.failed = true;
+                        alert("Problem: " + response.message);
+                    });
+                    this.changedItem = null;
+                }
+            };
             OseeAppSchema.updateItem = function (controlschema) {
                 var input = JSON.parse(controlschema);
-                var changedItem = input.scope.$ref.substr(input.scope.$ref.lastIndexOf('/') + 1);
-                var changedData = vm.oseeAppData[changedItem];
-                var jsonData = JSON.stringify(changedData);
-                vm.putResource = $resource(
-                        vm.defaultUpdateURL, null, {
-                        'update': {
-                            method: 'PUT',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            }
-                        }
-                    });
-                vm.putResource.update({
-                    element: vm.element,
-                    updated: changedItem
-                }, "[" + jsonData + "]");
+                var intermediate = input.scope.$ref.substr(13);
+                this.changedItem = intermediate.substring(0, intermediate.indexOf('/'));
+                this.changedData = vm.oseeAppData[this.changedItem];
             }
         }
     ]);

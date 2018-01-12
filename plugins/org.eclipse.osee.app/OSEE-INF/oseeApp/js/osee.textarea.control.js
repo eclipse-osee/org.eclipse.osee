@@ -1,4 +1,5 @@
-app.directive('oseeTextareaControl', function() {
+
+app.directive('oseeTextareaControl', function() {
     return {
         restrict: 'E',
         controller: ['BaseController', '$scope', '$routeParams', 'OseeAppSchema', function(
@@ -7,10 +8,13 @@
 
             $scope.onNgChange = function(controlschema) {
                 OseeAppSchema.updateItem(controlschema);
+                console.log("got ng change");
             }
-            $scope.onInit = function() {
+            $scope.onNgBlur = function() {
+                console.log("got ng blur");
+                OseeAppSchema.doUpdate();
             }
-            BaseController.call(vm, $scope);
+            BaseController.call(vm, $scope, OseeAppSchema);
 
         }],
         controllerAs: 'vm',
@@ -18,11 +22,11 @@
             <jsonforms-control>
                 <textarea id="{{vm.id}}"
                     class="form-control jsf-control-string osee-textarea"
-                    style="{{vm.uiSchema.style}}"
+                    ng-style="{{vm.uiSchema.style}}"
                     rows="{{vm.uiSchema.rows}}"
-                    data-ng-init="onInit()"
                     ng-model="vm.resolvedData[vm.fragment]"
                     ng-change="onNgChange('{{vm.uiSchema}}')"
+                    ng-blur="onNgBlur()"
                     ng-readonly="vm.uiSchema.readOnly">
                 </textarea>
             </jsonforms-control>

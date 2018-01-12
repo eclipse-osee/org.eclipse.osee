@@ -1,26 +1,29 @@
-app.directive('oseeTextControl', function() {
+
+app.directive('oseeTextControl', function() {
     return {
         restrict: 'E',
         controller: ['BaseController', '$scope', 'OseeAppSchema', function(BaseController, $scope, OseeAppSchema) {
             var vm = this;
 
+            $scope.onNgBlur = function () {
+                OseeAppSchema.doUpdate();
+            }
+
             $scope.onNgChange = function(controlschema) {
                 OseeAppSchema.updateItem(controlschema);
             }
 
-            $scope.onInit = function() {
-            }
-            BaseController.call(vm, $scope);
+            BaseController.call(vm, $scope, OseeAppSchema);
         }],
         controllerAs: 'vm',
         template: `
             <jsonforms-control>
-                <a href='osee_app/ui/index.html#/'>Text</a><input id="{{vm.id}}"
+                <input id="{{vm.id}}"
                     class="form-control jsf-control-string osee-text"
                     style="{{vm.uiSchema.style}}"
-                    data-ng-init="onInit()"
                     ng-model="vm.resolvedData[vm.fragment]"
                     ng-change="onNgChange('{{vm.uiSchema}}')"
+                    ng-blur="onNgBlur()"
                     ng-readonly="vm.uiSchema.readOnly">
                 </input>
             </jsonforms-control>

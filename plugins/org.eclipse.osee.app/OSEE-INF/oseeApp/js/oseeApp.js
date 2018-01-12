@@ -49,4 +49,11 @@ app.service('OseeControlValues', function ($resource) {
             }
         });
     }
+    this.parseAttribute = function (schemaRef) {
+        var intermediate = schemaRef.substr(13);
+        if (intermediate.indexOf('/') > 0) {
+            return intermediate.substring(0, intermediate.indexOf('/'));
+        }
+        return intermediate;
+    }
 });
