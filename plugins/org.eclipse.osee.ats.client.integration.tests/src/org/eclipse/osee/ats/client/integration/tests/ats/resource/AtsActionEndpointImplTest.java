@@ -10,9 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.resource;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -26,6 +23,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
+import org.codehaus.jackson.JsonNode;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -54,6 +52,7 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -72,52 +71,52 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    private TeamWorkFlowArtifact teamWfArt;
 
    @Test
-   public void testUnrelasedVersions() throws Exception {
-      JsonArray json = queryAndConfirmCount(
+   public void testUnrelasedVersions() {
+      Object object = getFirstAndCount(
          "ats/action/" + DemoArtifactToken.SAW_Commited_Code_TeamWf.getIdString() + "/UnrelasedVersions", 2);
-      Assert.assertEquals(DemoBranches.SAW_Bld_2.getName(), json.iterator().next().getAsString());
+      Assert.assertEquals(DemoBranches.SAW_Bld_2.getName(), object);
    }
 
    @Test
-   public void testTransitionToStates() throws Exception {
-      JsonArray json = queryAndConfirmCount(
+   public void testTransitionToStates() {
+      Object object = getFirstAndCount(
          "ats/action/" + DemoArtifactToken.SAW_Commited_Code_TeamWf.getIdString() + "/TransitionToStates", 4);
-      Assert.assertEquals(TeamState.Completed.getName(), json.iterator().next().getAsString());
+      Assert.assertEquals(TeamState.Completed.getName(), object);
    }
 
    @Test
-   public void testQueryTitle() throws Exception {
-      queryAndConfirmCount("ats/action/query?Title=SAW", 21);
+   public void testQueryTitle() {
+      getFirstAndCount("ats/action/query?Title=SAW", 21);
    }
 
    @Test
-   public void testQueryPriority() throws Exception {
-      queryAndConfirmCount("ats/action/query?Priority=1&Priority=3", 24);
+   public void testQueryPriority() {
+      getFirstAndCount("ats/action/query?Priority=1&Priority=3", 24);
    }
 
    @Test
-   public void testQueryWorking() throws Exception {
-      queryAndConfirmCount("ats/action/query?StateType=Working", 54);
+   public void testQueryWorking() {
+      getFirstAndCount("ats/action/query?StateType=Working", 54);
    }
 
    @Test
-   public void testQueryAssignee() throws Exception {
-      queryAndConfirmCount("ats/action/query?Assignee=4444&Assignee=3333", 35);
+   public void testQueryAssignee() {
+      getFirstAndCount("ats/action/query?Assignee=4444&Assignee=3333", 35);
    }
 
    @Test
-   public void testQueryOriginator() throws Exception {
-      queryAndConfirmCount("ats/action/query?Originator=3333", 44);
+   public void testQueryOriginator() {
+      getFirstAndCount("ats/action/query?Originator=3333", 44);
    }
 
    @Test
-   public void testQueryTeam() throws Exception {
-      queryAndConfirmCount("ats/action/query?Team=30013695", 3);
+   public void testQueryTeam() {
+      getFirstAndCount("ats/action/query?Team=30013695", 3);
    }
 
    @Test
-   public void testQueryTeamPriorityAndWorking() throws Exception {
-      queryAndConfirmCount("ats/action/query?Team=30013695&Priority=3&Priority=2&StateType=Working", 2);
+   public void testQueryTeamPriorityAndWorking() {
+      getFirstAndCount("ats/action/query?Team=30013695&Priority=3&Priority=2&StateType=Working", 2);
    }
 
    public TeamWorkFlowArtifact getCodeWorkflow() {
@@ -130,149 +129,121 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    }
 
    @Test
-   public void testActionStateById() throws Exception {
-      String results =
-         getAndCheck("ats/action/" + getCodeWorkflow().getIdString() + "/state", MediaType.APPLICATION_JSON_TYPE);
+   public void testActionStateById() {
+      String results = getJson("ats/action/" + getCodeWorkflow().getIdString() + "/state");
       Assert.assertTrue(results, results.contains(getCodeWorkflow().getIdString()));
    }
 
    @Test
-   public void testActionStateByAtsId() throws Exception {
-      String results =
-         getAndCheck("ats/action/" + getCodeWorkflow().getAtsId() + "/state", MediaType.APPLICATION_JSON_TYPE);
+   public void testActionStateByAtsId() {
+      String results = getJson("ats/action/" + getCodeWorkflow().getAtsId() + "/state");
       Assert.assertTrue(results, results.contains(getCodeWorkflow().getIdString()));
    }
 
    @Test
-   public void testActionStateByLegacyId() throws Exception {
+   public void testActionStateByLegacyId() {
       getCodeWorkflow();
-      String results = getAndCheck("ats/action/PCR8125/legacy/state", MediaType.APPLICATION_JSON_TYPE);
+      String results = getJson("ats/action/PCR8125/legacy/state");
       Assert.assertTrue(results, results.contains(getCodeWorkflow().getIdString()));
    }
 
    @Test
-   public void testQuerySingle() throws Exception {
+   public void testQuerySingle() {
       TeamWorkFlowArtifact sawCodeCommittedWf = DemoUtil.getSawCodeCommittedWf();
-      String url = String.format("%s/ats/action/query?ats%%2EId=%s", getAppServerAddr(), sawCodeCommittedWf.getAtsId());
-      URI uri = new URL(url).toURI();
 
-      JsonArray array = getAndCheckArray(uri);
-      Assert.assertEquals(1, array.size());
-      JsonObject obj = (JsonObject) array.iterator().next();
-      testAction(obj);
-      String atsId = obj.get("AtsId").getAsString();
-      Assert.assertEquals(atsId, sawCodeCommittedWf.getAtsId());
+      String url = String.format("/ats/action/query?ats%%2EId=%s", sawCodeCommittedWf.getAtsId());
+      JsonNode action = testActionRestCall(url, 1);
+      Assert.assertEquals(action.get("AtsId").asText(), sawCodeCommittedWf.getAtsId());
 
-      url =
-         String.format("%s/ats/action/query?1152921504606847877=%s", getAppServerAddr(), sawCodeCommittedWf.getAtsId());
-      uri = new URL(url).toURI();
+      url = String.format("/ats/action/query?1152921504606847877=%s", sawCodeCommittedWf.getAtsId());
+      action = testActionRestCall(url, 1);
+      Assert.assertEquals(action.get("AtsId").asText(), sawCodeCommittedWf.getAtsId());
+   }
 
-      array = getAndCheckArray(uri);
-      Assert.assertEquals(1, array.size());
-      obj = (JsonObject) array.iterator().next();
-      testAction(obj);
-      atsId = obj.get("AtsId").getAsString();
-      Assert.assertEquals(atsId, sawCodeCommittedWf.getAtsId());
+   private JsonNode testActionRestCall(String url, int size) {
+      return testActionRestCall(toURI(url), size);
+   }
 
+   private JsonNode testActionRestCall(URI uri, int size) {
+      String json = getJson(uri);
+      JsonNode arrayNode = JsonUtil.readTree(json);
+      Assert.assertEquals(size, arrayNode.size());
+      arrayNode.forEach(this::testAction);
+      return arrayNode.get(0);
    }
 
    @Test
-   public void testQueryMulti() throws Exception {
+   public void testQueryMulti() {
       String name = DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW.replaceAll(" ", "%20");
-      URI uri = UriBuilder.fromUri(getAppServerAddr()).path("/ats/action/query").queryParam("Name", name).build();
-
-      JsonArray array = getAndCheckArray(uri);
-      Assert.assertEquals(3, array.size());
-      JsonObject obj = (JsonObject) array.iterator().next();
-      testAction(obj);
-      String atsId = obj.get("AtsId").getAsString();
-      Assert.assertEquals(atsId, obj.get("ats.Id").getAsString());
+      URI uri =
+         UriBuilder.fromUri(OseeClientProperties.getOseeApplicationServer()).path("/ats/action/query").queryParam(
+            "Name", name).build();
+      JsonNode action = testActionRestCall(uri, 3);
+      Assert.assertEquals(action.get("AtsId").asText(), action.get("ats.Id").asText());
    }
 
    @Test
-   public void testGet() throws Exception {
-      String results = getAndCheckStr("/ats/action");
+   public void testGet() {
+      String results = getHtml("/ats/action");
       Assert.assertTrue(results.contains("Action Resource"));
    }
 
    @Test
-   public void testAtsActionsRestCall() throws Exception {
+   public void testAtsActionsRestCall() {
       String url = "/ats/action/" + DemoUtil.getSawAtsIdsStr();
-      JsonArray array = getAndCheckArray(url);
-      Assert.assertEquals(3, array.size());
-      for (JsonElement elment : array) {
-         JsonObject obj = (JsonObject) elment;
-         testAction(obj);
-      }
+      testActionRestCall(url, 3);
    }
 
    @Test
-   public void testAtsActionsDetailsRestCall() throws Exception {
+   public void testAtsActionsDetailsRestCall() {
       String url = "/ats/action/" + DemoUtil.getSawCodeCommittedWf().getIdString() + "/details";
-      JsonArray array = getAndCheckArray(url);
-      Assert.assertEquals(1, array.size());
-      JsonObject obj = (JsonObject) array.iterator().next();
-      testAction(obj);
-      String atsId = obj.get("AtsId").getAsString();
-      Assert.assertEquals(atsId, obj.get("ats.Id").getAsString());
-      Assert.assertFalse(Strings.isNumeric(obj.get("ats.Created Date").getAsString()));
+      JsonNode action = testActionRestCall(url, 1);
+      Assert.assertEquals(action.get("AtsId").asText(), action.get("ats.Id").asText());
+      Assert.assertFalse(Strings.isNumeric(action.get("ats.Created Date").asText()));
    }
 
    @Test
-   public void testAtsActionsChildRestCall() throws Exception {
+   public void testAtsActionsChildRestCall() {
       String url = "/ats/action/" + DemoUtil.getSawCodeCommittedWf().getParentAction().getIdString() + "/child";
-      JsonArray array = getAndCheckArray(url);
-      Assert.assertEquals(3, array.size());
-      JsonObject obj = (JsonObject) array.iterator().next();
-      testAction(obj);
-      String atsId = obj.get("AtsId").getAsString();
-      Assert.assertEquals(atsId, obj.get("AtsId").getAsString());
-      Assert.assertEquals(obj.get("TargetedVersion").getAsString().replaceAll("\n", ""),
+      JsonNode action = testActionRestCall(url, 3);
+      Assert.assertEquals(action.get("TargetedVersion").asText().replaceAll("\n", ""),
          DemoBranches.SAW_Bld_2.toString());
    }
 
    @Test
-   public void testAtsActionsFieldsAsIdsAndDatesAsLong() throws Exception {
+   public void testAtsActionsFieldsAsIdsAndDatesAsLong() {
       String url =
          "/ats/action/" + DemoUtil.getSawCodeCommittedWf().getIdString() + "/details?" + WorkItemWriterOptions.FieldsAsIds.name() + "=true&" + WorkItemWriterOptions.DatesAsLong.name() + "=true";
-      JsonArray array = getAndCheckArray(url);
-      Assert.assertEquals(1, array.size());
-      JsonObject obj = (JsonObject) array.iterator().next();
+      JsonNode action = testActionRestCall(url, 1);
 
       // FieldsAsIds should replace attr type names with id as the field
-      Assert.assertFalse(obj.has(AtsAttributeTypes.CreatedDate.getName()));
-      String teamDefByAttrTypeId = obj.get(AtsAttributeTypes.CreatedDate.getIdString()).getAsString();
+      Assert.assertFalse(action.has(AtsAttributeTypes.CreatedDate.getName()));
+      String teamDefByAttrTypeId = action.get(AtsAttributeTypes.CreatedDate.getIdString()).asText();
       Assert.assertTrue(Strings.isNumeric(teamDefByAttrTypeId));
 
       // DatesAsLong should replace date value with long time value
-      String dateValue = obj.get(AtsAttributeTypes.CreatedDate.getIdString()).getAsString();
+      String dateValue = action.get(AtsAttributeTypes.CreatedDate.getIdString()).asText();
       Assert.assertTrue(Strings.isNumeric(dateValue));
    }
 
-   private void testAction(JsonObject obj) {
-      Assert.assertEquals(DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW,
-         obj.get("Name").getAsString());
-      Assert.assertNotNull(obj.has("id"));
-      Assert.assertNotNull(obj.has("AtsId"));
-      Assert.assertEquals("/ats/ui/action/" + obj.get("AtsId").getAsString(), obj.get("actionLocation").getAsString());
+   private JsonNode testAction(JsonNode action) {
+      Assert.assertEquals(DemoWorkflowTitles.SAW_COMMITTED_REQT_CHANGES_FOR_DIAGRAM_VIEW, action.get("Name").asText());
+      Assert.assertNotNull(action.has("id"));
+      Assert.assertNotNull(action.has("AtsId"));
+      Assert.assertEquals("/ats/ui/action/" + action.get("AtsId").asText(), action.get("actionLocation").asText());
+      return action;
    }
 
    @Test
-   public void testAtsActionRestCall() throws Exception {
-      JsonArray array = getAndCheckArray("/ats/action/" + DemoUtil.getSawCodeCommittedWf().getAtsId());
-      Assert.assertEquals(1, array.size());
-      JsonObject obj = (JsonObject) array.iterator().next();
-      testAction(obj);
+   public void testAtsActionRestCall() {
+      testActionRestCall("/ats/action/" + DemoUtil.getSawCodeCommittedWf().getAtsId(), 1);
    }
 
    @Test
-   public void testAtsActionDetailsRestCall() throws Exception {
-      JsonArray array = getAndCheckArray("/ats/action/" + DemoUtil.getSawCodeCommittedWf().getAtsId() + "/details");
-      Assert.assertEquals(1, array.size());
-      JsonObject obj = (JsonObject) array.iterator().next();
-      testAction(obj);
-      String atsId = obj.get("AtsId").getAsString();
-      Assert.assertEquals(atsId, obj.get("ats.Id").getAsString());
+   public void testAtsActionDetailsRestCall() {
+      JsonNode action =
+         testActionRestCall("/ats/action/" + DemoUtil.getSawCodeCommittedWf().getAtsId() + "/details", 1);
+      Assert.assertEquals(action.get("AtsId").asText(), action.get("ats.Id").asText());
    }
 
    @Test
@@ -538,7 +509,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
    }
 
    @Test
-   public void testCreateActionFromActionData() throws Exception {
+   public void testCreateActionFromActionData() {
       NewActionData data = new NewActionData();
       data.setAsUserId(AtsClientService.get().getUserService().getCurrentUserId());
       data.setTitle("My Action");

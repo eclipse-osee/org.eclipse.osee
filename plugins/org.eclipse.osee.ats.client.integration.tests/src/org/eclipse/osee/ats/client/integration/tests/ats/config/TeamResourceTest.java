@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.config;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import org.codehaus.jackson.JsonNode;
+import org.eclipse.osee.ats.client.integration.tests.ats.resource.AbstractRestTest;
 import org.eclipse.osee.ats.demo.api.DemoTeam;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -23,46 +23,35 @@ import org.junit.Test;
  *
  * @author Donald G. Dunne
  */
-public class TeamResourceTest extends AbstractConfigurationRestTest {
+public class TeamResourceTest extends AbstractRestTest {
 
-   @Test
-   public void testAtsTeamsRestCall() throws Exception {
-      JsonArray array = getAndCheck("/ats/team");
-      Assert.assertEquals(array.toString(), 18, array.size());
-      JsonObject obj = getObjectNamed("SAW SW", array);
-      Assert.assertNotNull(String.format("Did not find value SAW SW in JsonArray [%s]", array), obj);
-      Assert.assertFalse(obj.has("version"));
-      Assert.assertFalse(obj.has("ats.Active"));
+   private JsonNode testTeamUrl(String url, int size, boolean hasVersion) {
+      JsonNode obj = testUrl(url, size, "SAW SW", "ats.Active", hasVersion);
+      return obj;
    }
 
    @Test
-   public void testAtsTeamsDetailsRestCall() throws Exception {
-      JsonArray array = getAndCheck("/ats/team/details");
-      Assert.assertEquals(array.toString(), 18, array.size());
-      JsonObject obj = getObjectNamed("SAW SW", array);
-      Assert.assertNotNull(String.format("Did not find value SAW SW in JsonArray [%s]", array), obj);
-      Assert.assertEquals(3, obj.getAsJsonArray("version").size());
-      Assert.assertTrue(obj.has("ats.Active"));
+   public void testAtsTeamsRestCall() {
+      JsonNode team = testTeamUrl("/ats/team", 18, false);
+      Assert.assertFalse(team.has("version"));
    }
 
    @Test
-   public void testAtsTeamRestCall() throws Exception {
-      JsonArray array = getAndCheck("/ats/team/" + getSawSwTeamDef().getArtId());
-      Assert.assertEquals(1, array.size());
-      JsonObject obj = getObjectNamed("SAW SW", array);
-      Assert.assertNotNull(String.format("Did not find value SAW SW in JsonArray [%s]", array), obj);
-      Assert.assertFalse(obj.has("version"));
-      Assert.assertFalse(obj.has("ats.Active"));
+   public void testAtsTeamsDetailsRestCall() {
+      JsonNode team = testTeamUrl("/ats/team/details", 18, true);
+      Assert.assertEquals(3, team.get("version").size());
    }
 
    @Test
-   public void testAtsTeamDetailsRestCall() throws Exception {
-      JsonArray array = getAndCheck("/ats/team/" + getSawSwTeamDef().getArtId() + "/details");
-      Assert.assertEquals(1, array.size());
-      JsonObject obj = getObjectNamed("SAW SW", array);
-      Assert.assertNotNull(String.format("Did not find value SAW SW in JsonArray [%s]", array), obj);
-      Assert.assertTrue(obj.has("version"));
-      Assert.assertTrue(obj.has("ats.Active"));
+   public void testAtsTeamRestCall() {
+      JsonNode team = testTeamUrl("/ats/team/" + getSawSwTeamDef().getArtId(), 1, false);
+      Assert.assertFalse(team.has("version"));
+   }
+
+   @Test
+   public void testAtsTeamDetailsRestCall() {
+      JsonNode team = testTeamUrl("/ats/team/" + getSawSwTeamDef().getArtId() + "/details", 1, true);
+      Assert.assertTrue(team.has("version"));
    }
 
    private Artifact getSawSwTeamDef() {

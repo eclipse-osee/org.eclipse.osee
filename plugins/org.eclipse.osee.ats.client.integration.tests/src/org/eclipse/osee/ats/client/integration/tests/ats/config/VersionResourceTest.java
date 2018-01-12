@@ -10,13 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.config;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.junit.Assert;
+import static org.eclipse.osee.ats.demo.api.DemoArtifactToken.SAW_Bld_1;
+import org.eclipse.osee.ats.client.integration.tests.ats.resource.AbstractRestTest;
 import org.junit.Test;
 
 /**
@@ -24,47 +19,29 @@ import org.junit.Test;
  *
  * @author Donald G. Dunne
  */
-public class VersionResourceTest extends AbstractConfigurationRestTest {
+public class VersionResourceTest extends AbstractRestTest {
 
-   @Test
-   public void testAtsVersionsRestCall() throws Exception {
-      JsonArray array = getAndCheck("/ats/version");
-      Assert.assertEquals(6, array.size());
-      JsonObject obj = getObjectNamed("SAW_Bld_1", array);
-      Assert.assertNotNull("Did not find value SAW_Bld_1", obj);
-      Assert.assertFalse(obj.has("ats.Released"));
+   private void testVersionUrl(String url, int size, boolean hasReleased) {
+      testUrl(url, size, "SAW_Bld_1", "ats.Released", hasReleased);
    }
 
    @Test
-   public void testAtsVersionsDetailsRestCall() throws Exception {
-      JsonArray array = getAndCheck("/ats/version/details");
-      Assert.assertEquals(6, array.size());
-      JsonObject obj = getObjectNamed("SAW_Bld_1", array);
-      Assert.assertNotNull("Did not find value SAW_Bld_1", obj);
-      Assert.assertTrue(obj.has("ats.Released"));
+   public void testAtsVersionsRestCall() {
+      testVersionUrl("/ats/version", 6, false);
    }
 
    @Test
-   public void testAtsVersionRestCall() throws Exception {
-      JsonArray array = getAndCheck("/ats/version/" + getSawBld1().getArtId());
-      Assert.assertEquals(1, array.size());
-      JsonObject obj = getObjectNamed("SAW_Bld_1", array);
-      Assert.assertNotNull("Did not find value SAW_Bld_1", obj);
-      Assert.assertFalse(obj.has("ats.Released"));
+   public void testAtsVersionsDetailsRestCall() {
+      testVersionUrl("/ats/version/details", 6, true);
    }
 
    @Test
-   public void testAtsVersionDetailsRestCall() throws Exception {
-      JsonArray array = getAndCheck("/ats/version/" + getSawBld1().getArtId() + "/details");
-      Assert.assertEquals(1, array.size());
-      JsonObject obj = getObjectNamed("SAW_Bld_1", array);
-      Assert.assertNotNull("Did not find value SAW_Bld_1", obj);
-      Assert.assertTrue(obj.has("ats.Released"));
+   public void testAtsVersionRestCall() {
+      testVersionUrl("/ats/version/" + SAW_Bld_1.getIdString(), 1, false);
    }
 
-   private Artifact getSawBld1() {
-      return ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Version, "SAW_Bld_1",
-         AtsClientService.get().getAtsBranch());
+   @Test
+   public void testAtsVersionDetailsRestCall() {
+      testVersionUrl("/ats/version/" + SAW_Bld_1.getIdString() + "/details", 1, true);
    }
-
 }

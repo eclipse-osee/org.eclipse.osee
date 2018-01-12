@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.core.util;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import org.codehaus.jackson.JsonFactory;
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -41,6 +42,14 @@ public class JsonUtil {
       return mapper;
    }
 
+   public static JsonNode readTree(String json) {
+      try {
+         return getMapper().readTree(json);
+      } catch (IOException ex) {
+         throw OseeCoreException.wrap(ex);
+      }
+   }
+
    public static <T> T readValue(String content, Class<T> valueType) {
       try {
          return getMapper().readValue(content, valueType);
@@ -59,5 +68,22 @@ public class JsonUtil {
 
    public static JsonFactory getFactory() {
       return getMapperZ().getJsonFactory();
+   }
+
+   /**
+    * @param array must be a Json array of Json objects
+    * @param expectedName the value of the "Name" field
+    * @return the array element (JsonNode obj) named expectedName
+    */
+   public static JsonNode getArrayElement(JsonNode array, String key, String value) {
+      for (JsonNode element : array) {
+         JsonNode nameNode = element.get(key);
+         if (nameNode != null) {
+            if (value.equals(nameNode.asText())) {
+               return element;
+            }
+         }
+      }
+      return null;
    }
 }

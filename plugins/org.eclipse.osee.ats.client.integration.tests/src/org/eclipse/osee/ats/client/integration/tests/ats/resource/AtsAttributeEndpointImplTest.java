@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.resource;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.workflow.AttributeKey;
@@ -35,49 +33,45 @@ public class AtsAttributeEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testGet() throws Exception {
-      JsonObject json = queryAndReturnJsonObject("ats/attr");
-      Assert.assertTrue(json.has("attrs"));
+      Assert.assertTrue(getJson("ats/attr").contains("attrs"));
    }
 
    @Test
    public void testGetValidAssignees() throws Exception {
-      JsonArray json = queryAndConfirmCount("ats/attr/Assignee", 6);
-      Assert.assertEquals(DemoUsers.Alex_Kay.getName(), json.iterator().next().getAsString());
+      Object object = getFirstAndCount("ats/attr/Assignee", 6);
+      Assert.assertEquals(DemoUsers.Alex_Kay.getName(), object);
    }
 
    @Test
    public void testGetValidOriginators() throws Exception {
-      queryAndConfirmCount("ats/attr/Originator", 6);
+      getFirstAndCount("ats/attr/Originator", 6);
    }
 
    @Test
    public void testGetValidColorTeams() throws Exception {
-      queryAndConfirmCount(AttributeKey.ColorTeam.getUrl(), 11);
+      getFirstAndCount(AttributeKey.ColorTeam.getUrl(), 11);
 
-      JsonArray json = queryAndConfirmCount("ats/attr/ColorTeam", 11);
-      Assert.assertEquals("Blood Red Team", json.iterator().next().getAsString());
+      Object object = getFirstAndCount("ats/attr/ColorTeam", 11);
+      Assert.assertEquals("Blood Red Team", object);
    }
 
    @Test
    public void testGetValidPriority() throws Exception {
-      queryAndConfirmCount(AttributeKey.Priority.getUrl(), 5);
-
-      JsonArray json = queryAndConfirmCount("ats/attr/Priority", 5);
-      Assert.assertEquals("1", json.iterator().next().getAsString());
+      getFirstAndCount(AttributeKey.Priority.getUrl(), 5);
+      Object object = getFirstAndCount("ats/attr/Priority", 5);
+      Assert.assertEquals("1", object);
    }
 
    @Test
    public void testGetValidIPT() throws Exception {
-      queryAndConfirmCount(AttributeKey.IPT.getUrl(), 8);
-
-      JsonArray json = queryAndConfirmCount("ats/attr/IPT", 8);
-      Assert.assertEquals("AH-6", json.iterator().next().getAsString());
+      getFirstAndCount(AttributeKey.IPT.getUrl(), 8);
+      Object object = getFirstAndCount("ats/attr/IPT", 8);
+      Assert.assertEquals("AH-6", object);
    }
 
    @Test
    public void testEnumeration() throws Exception {
-      JsonArray json = queryAndConfirmCount("ats/attr/" + AtsAttributeTypes.ChangeType.getIdString(), 4);
-      Assert.assertEquals(ChangeType.Improvement.name(), json.iterator().next().getAsString());
+      Object object = getFirstAndCount("ats/attr/" + AtsAttributeTypes.ChangeType.getIdString(), 4);
+      Assert.assertEquals(ChangeType.Improvement.name(), object);
    }
-
 }

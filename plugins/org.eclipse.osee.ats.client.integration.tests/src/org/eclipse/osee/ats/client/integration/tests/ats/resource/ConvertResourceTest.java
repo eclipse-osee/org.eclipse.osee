@@ -15,15 +15,14 @@ import org.junit.Test;
 
 /**
  * Test unit for {@link ConvertResource}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class ConvertResourceTest extends AbstractRestTest {
 
    @Test
    public void testGet() throws Exception {
-      String results = getAndCheckStr("/ats/convert");
+      String results = getHtml("/ats/convert");
       Assert.assertTrue(results.contains("ATS - Conversions"));
    }
-
 }

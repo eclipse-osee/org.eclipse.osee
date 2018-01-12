@@ -10,10 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.config;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import org.eclipse.osee.ats.client.integration.tests.ats.resource.AbstractRestTest;
 import org.eclipse.osee.ats.demo.api.DemoInsertion;
-import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -21,42 +19,29 @@ import org.junit.Test;
  *
  * @author Donald G. Dunne
  */
-public class InsertionResourceTest extends AbstractConfigurationRestTest {
+public class InsertionResourceTest extends AbstractRestTest {
 
-   @Test
-   public void testAtsInsertionsRestCall() throws Exception {
-      JsonArray array = getAndCheck("/ats/insertion");
-      Assert.assertEquals(12, array.size());
-      JsonObject obj = getObjectNamed("COMM", array);
-      Assert.assertNotNull("Did not find value COMM", obj);
-      Assert.assertFalse(obj.has("ats.Description"));
+   private void testInsertionUrl(String url, int size, boolean hasDescription) {
+      testUrl(url, size, "COMM", "ats.Description", hasDescription);
    }
 
    @Test
-   public void testAtsInsertionsDetailsRestCall() throws Exception {
-      JsonArray array = getAndCheck("/ats/insertion/details");
-      Assert.assertEquals(12, array.size());
-      JsonObject obj = getObjectNamed("COMM", array);
-      Assert.assertNotNull("Did not find value COMM", obj);
-      Assert.assertTrue(obj.has("ats.Description"));
+   public void testAtsInsertionsRestCall() {
+      testInsertionUrl("/ats/insertion", 12, false);
    }
 
    @Test
-   public void testAtsInsertionRestCall() throws Exception {
-      JsonArray array = getAndCheck("/ats/insertion/" + DemoInsertion.sawComm.getId());
-      Assert.assertEquals(1, array.size());
-      JsonObject obj = getObjectNamed("COMM", array);
-      Assert.assertNotNull("Did not find value COMM", obj);
-      Assert.assertFalse(obj.has("ats.Description"));
+   public void testAtsInsertionsDetailsRestCall() {
+      testInsertionUrl("/ats/insertion/details", 12, true);
    }
 
    @Test
-   public void testAtsInsertionDetailsRestCall() throws Exception {
-      JsonArray array = getAndCheck("/ats/insertion/" + DemoInsertion.sawComm.getId() + "/details");
-      Assert.assertEquals(1, array.size());
-      JsonObject obj = getObjectNamed("COMM", array);
-      Assert.assertNotNull("Did not find value COMM", obj);
-      Assert.assertTrue(obj.has("ats.Description"));
+   public void testAtsInsertionRestCall() {
+      testInsertionUrl("/ats/insertion/" + DemoInsertion.sawComm.getId(), 1, false);
    }
 
+   @Test
+   public void testAtsInsertionDetailsRestCall() {
+      testInsertionUrl("/ats/insertion/" + DemoInsertion.sawComm.getId() + "/details", 1, true);
+   }
 }

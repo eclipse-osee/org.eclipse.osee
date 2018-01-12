@@ -10,10 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.config;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import org.eclipse.osee.ats.client.integration.tests.ats.resource.AbstractRestTest;
 import org.eclipse.osee.ats.demo.api.DemoCountry;
-import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -21,42 +19,29 @@ import org.junit.Test;
  *
  * @author Donald G. Dunne
  */
-public class CountryResourceTest extends AbstractConfigurationRestTest {
+public class CountryResourceTest extends AbstractRestTest {
 
-   @Test
-   public void testAtsCountriesRestCall() throws Exception {
-      JsonArray array = getAndCheck("/ats/country");
-      Assert.assertEquals(2, array.size());
-      JsonObject obj = getObjectNamed("USG", array);
-      Assert.assertNotNull("Did not find value USG", obj);
-      Assert.assertFalse(obj.has("ats.Description"));
+   private void testCountriesUrl(String url, int size, boolean hasDescription) {
+      testUrl(url, size, "USG", "ats.Description", hasDescription);
    }
 
    @Test
-   public void testAtsCountriesDetailsRestCall() throws Exception {
-      JsonArray array = getAndCheck("/ats/country/details");
-      Assert.assertEquals(2, array.size());
-      JsonObject obj = getObjectNamed("USG", array);
-      Assert.assertNotNull("Did not find value USG", obj);
-      Assert.assertTrue(obj.has("ats.Description"));
+   public void testAtsCountriesRestCall() {
+      testCountriesUrl("/ats/country", 2, false);
    }
 
    @Test
-   public void testAtsCountryRestCall() throws Exception {
-      JsonArray array = getAndCheck("/ats/country/" + DemoCountry.usg.getId());
-      Assert.assertEquals(1, array.size());
-      JsonObject obj = getObjectNamed("USG", array);
-      Assert.assertNotNull("Did not find value USG", obj);
-      Assert.assertFalse(obj.has("ats.Description"));
+   public void testAtsCountriesDetailsRestCall() {
+      testCountriesUrl("/ats/country/details", 2, true);
    }
 
    @Test
-   public void testAtsCountryDetailsRestCall() throws Exception {
-      JsonArray array = getAndCheck("/ats/country/" + DemoCountry.usg.getId() + "/details");
-      Assert.assertEquals(1, array.size());
-      JsonObject obj = getObjectNamed("USG", array);
-      Assert.assertNotNull("Did not find value USG", obj);
-      Assert.assertTrue(obj.has("ats.Description"));
+   public void testAtsCountryRestCall() {
+      testCountriesUrl("/ats/country/" + DemoCountry.usg.getId(), 1, false);
    }
 
+   @Test
+   public void testAtsCountryDetailsRestCall() {
+      testCountriesUrl("/ats/country/" + DemoCountry.usg.getId() + "/details", 1, true);
+   }
 }

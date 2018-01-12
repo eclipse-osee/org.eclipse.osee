@@ -10,13 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.config;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.client.integration.tests.ats.resource.AbstractRestTest;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -24,47 +22,34 @@ import org.junit.Test;
  *
  * @author Donald G. Dunne
  */
-public class ActionableItemResourceTest extends AbstractConfigurationRestTest {
+public class ActionableItemResourceTest extends AbstractRestTest {
 
-   @Test
-   public void testAtsAisRestCall() throws Exception {
-      JsonArray array = getAndCheck("/ats/ai");
-      Assert.assertEquals(46, array.size());
-      JsonObject obj = getObjectNamed("SAW Code", array);
-      Assert.assertNotNull("Did not find value SAW Code", obj);
-      Assert.assertFalse(obj.has("ats.Active"));
+   private void testActionableItemUrl(String url, int size, boolean isActive) {
+      testUrl(url, size, "SAW Code", "ats.Active", isActive);
    }
 
    @Test
-   public void testAtsAisDetailsRestCall() throws Exception {
-      JsonArray array = getAndCheck("/ats/ai/details");
-      Assert.assertEquals(46, array.size());
-      JsonObject obj = getObjectNamed("SAW Code", array);
-      Assert.assertNotNull("Did not find value SAW Code", obj);
-      Assert.assertTrue(obj.has("ats.Active"));
+   public void testAtsAisRestCall() {
+      testActionableItemUrl("/ats/ai", 46, false);
    }
 
    @Test
-   public void testAtsAiRestCall() throws Exception {
-      JsonArray array = getAndCheck("/ats/ai/" + getSawCodeAi().getArtId());
-      Assert.assertEquals(1, array.size());
-      JsonObject obj = getObjectNamed("SAW Code", array);
-      Assert.assertNotNull("Did not find value SAW Code", obj);
-      Assert.assertFalse(obj.has("ats.Active"));
+   public void testAtsAisDetailsRestCall() {
+      testActionableItemUrl("/ats/ai/details", 46, true);
    }
 
    @Test
-   public void testAtsAiDetailsRestCall() throws Exception {
-      JsonArray array = getAndCheck("/ats/ai/" + getSawCodeAi().getArtId() + "/details");
-      Assert.assertEquals(1, array.size());
-      JsonObject obj = getObjectNamed("SAW Code", array);
-      Assert.assertNotNull("Did not find value SAW Code", obj);
-      Assert.assertTrue(obj.has("ats.Active"));
+   public void testAtsAiRestCall() {
+      testActionableItemUrl("/ats/ai/" + getSawCodeAi().getArtId(), 1, false);
+   }
+
+   @Test
+   public void testAtsAiDetailsRestCall() {
+      testActionableItemUrl("/ats/ai/" + getSawCodeAi().getArtId() + "/details", 1, true);
    }
 
    private Artifact getSawCodeAi() {
       return ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.ActionableItem, "SAW Code",
          AtsClientService.get().getAtsBranch());
    }
-
 }

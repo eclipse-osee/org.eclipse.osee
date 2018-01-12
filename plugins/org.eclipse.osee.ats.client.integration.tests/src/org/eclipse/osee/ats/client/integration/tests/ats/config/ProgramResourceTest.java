@@ -10,13 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.config;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.junit.Assert;
+import static org.eclipse.osee.ats.demo.api.DemoArtifactToken.SAW_Program;
+import org.eclipse.osee.ats.client.integration.tests.ats.resource.AbstractRestTest;
 import org.junit.Test;
 
 /**
@@ -24,47 +19,29 @@ import org.junit.Test;
  *
  * @author Donald G. Dunne
  */
-public class ProgramResourceTest extends AbstractConfigurationRestTest {
+public class ProgramResourceTest extends AbstractRestTest {
 
-   @Test
-   public void testAtsProgramsRestCall() throws Exception {
-      JsonArray array = getAndCheck("/ats/program");
-      Assert.assertEquals(5, array.size());
-      JsonObject obj = getObjectNamed("SAW Program", array);
-      Assert.assertNotNull("Did not find value SAW Program", obj);
-      Assert.assertFalse(obj.has("ats.Description"));
+   private void testProgramUrl(String url, int size, boolean hasDescription) {
+      testUrl(url, size, "SAW Program", "ats.Description", hasDescription);
    }
 
    @Test
-   public void testAtsProgramsDetailsRestCall() throws Exception {
-      JsonArray array = getAndCheck("/ats/program/details");
-      Assert.assertEquals(5, array.size());
-      JsonObject obj = getObjectNamed("SAW Program", array);
-      Assert.assertNotNull("Did not find value SAW Program", obj);
-      Assert.assertTrue(obj.has("ats.Description"));
+   public void testAtsProgramsRestCall() {
+      testProgramUrl("/ats/program", 5, false);
    }
 
    @Test
-   public void testAtsProgramRestCall() throws Exception {
-      JsonArray array = getAndCheck("/ats/program/" + getSawProgram().getId());
-      Assert.assertEquals(1, array.size());
-      JsonObject obj = getObjectNamed("SAW Program", array);
-      Assert.assertNotNull("Did not find value SAW Program", obj);
-      Assert.assertFalse(obj.has("ats.Description"));
+   public void testAtsProgramsDetailsRestCall() {
+      testProgramUrl("/ats/program/details", 5, true);
    }
 
    @Test
-   public void testAtsProgramDetailsRestCall() throws Exception {
-      JsonArray array = getAndCheck("/ats/program/" + getSawProgram().getId() + "/details");
-      Assert.assertEquals(1, array.size());
-      JsonObject obj = getObjectNamed("SAW Program", array);
-      Assert.assertNotNull("Did not find value SAW Program", obj);
-      Assert.assertTrue(obj.has("ats.Description"));
+   public void testAtsProgramRestCall() {
+      testProgramUrl("/ats/program/" + SAW_Program.getIdString(), 1, false);
    }
 
-   private Artifact getSawProgram() {
-      return ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Program, "SAW Program",
-         AtsClientService.get().getAtsBranch());
+   @Test
+   public void testAtsProgramDetailsRestCall() {
+      testProgramUrl("/ats/program/" + SAW_Program.getIdString() + "/details", 1, true);
    }
-
 }

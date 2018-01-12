@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.resource;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import org.codehaus.jackson.JsonNode;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -24,10 +24,9 @@ public class UserResourceTest extends AbstractRestTest {
 
    @Test
    public void testGet() throws Exception {
-      JsonArray users = getAndCheckArray("/ats/user");
+      String json = getJson("/ats/user");
+      JsonNode users = JsonUtil.readTree(json);
       Assert.assertTrue(users.size() >= 9);
-      JsonObject obj = getObjectNamed("Joe Smith", users);
-      Assert.assertEquals("3333", obj.get("id").getAsString());
+      Assert.assertEquals(3333, JsonUtil.getArrayElement(users, "name", "Joe Smith").get("id").asInt());
    }
-
 }

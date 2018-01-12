@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.util.AtsObjects;
@@ -31,20 +30,20 @@ public class ActionUiResourceTest extends AbstractRestTest {
 
    @Test
    public void testGet() throws Exception {
-      String results = getAndCheckStr("/ats/ui/action");
+      String results = getHtml("/ats/ui/action");
       Assert.assertTrue(results.contains("ATS UI Resource"));
    }
 
    @Test
    public void getActionError() throws Exception {
-      String html = getAndCheck("/ats/ui/action/ASDF", MediaType.TEXT_HTML_TYPE);
+      String html = getHtml("/ats/ui/action/ASDF");
       Assert.assertTrue(html.contains("Action with id(s) [ASDF] can not be found"));
    }
 
    @Test
    public void getAction() throws Exception {
       TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
-      String html = getAndCheck("/ats/ui/action/" + teamWf.getAtsId(), MediaType.TEXT_HTML_TYPE);
+      String html = getHtml("/ats/ui/action/" + teamWf.getAtsId());
       Assert.assertTrue(html.contains("Title: <b>" + teamWf.getName() + "</b>"));
    }
 
@@ -53,39 +52,38 @@ public class ActionUiResourceTest extends AbstractRestTest {
       Collection<TeamWorkFlowArtifact> wfs =
          Arrays.asList(DemoUtil.getSawCodeCommittedWf(), DemoUtil.getSawTestCommittedWf());
       String atsIds = Collections.toString(",", AtsObjects.toAtsIds(wfs));
-      String html = getAndCheck("/ats/ui/action/" + atsIds, MediaType.TEXT_HTML_TYPE);
+      String html = getHtml("/ats/ui/action/" + atsIds);
       Assert.assertTrue(html.contains("$url='/ats/action/" + atsIds + "/details';"));
    }
 
    @Test
    public void getActionDetails() throws Exception {
       TeamWorkFlowArtifact teamWf = DemoUtil.getSawCodeCommittedWf();
-      String html = getAndCheck("/ats/ui/action/" + teamWf.getAtsId() + "/details", MediaType.TEXT_HTML_TYPE);
+      String html = getHtml("/ats/ui/action/" + teamWf.getAtsId() + "/details");
       Assert.assertTrue(html.contains("Artifact Type: <b>" + teamWf.getArtifactTypeName() + "</b>"));
    }
 
    @Test
    public void getActionDetailsError() throws Exception {
-      String html = getAndCheck("/ats/ui/action/" + DemoUtil.getSawAtsIdsStr() + "/details", MediaType.TEXT_HTML_TYPE);
+      String html = getHtml("/ats/ui/action/" + DemoUtil.getSawAtsIdsStr() + "/details");
       Assert.assertTrue(html.contains("can not be found"));
    }
 
    @Test
    public void getNewAction() throws Exception {
-      String html = getAndCheck("/ats/ui/action/NewAction", MediaType.TEXT_HTML_TYPE);
+      String html = getHtml("/ats/ui/action/NewAction");
       Assert.assertTrue(html.contains("ATS - Create new ATS Action"));
    }
 
    @Test
    public void getSearch() throws Exception {
-      String html = getAndCheck("/ats/ui/action/Search", MediaType.TEXT_HTML_TYPE);
+      String html = getHtml("/ats/ui/action/Search");
       Assert.assertTrue(html.contains("ATS - Search by Id"));
    }
 
    @Test
    public void getTransition() throws Exception {
-      String html = getAndCheck("/ats/ui/action/" + DemoUtil.getSawCodeCommittedWf().getAtsId() + "/Transition",
-         MediaType.TEXT_HTML_TYPE);
+      String html = getHtml("/ats/ui/action/" + DemoUtil.getSawCodeCommittedWf().getAtsId() + "/Transition");
       Assert.assertTrue(html.contains(
          "<input type=\"hidden\" name=\"atsId\" value=\"" + DemoUtil.getSawCodeCommittedWf().getAtsId() + "\">"));
       Matcher m = Pattern.compile(".*form action=\"\\/ats\\/action\\/state\" method=\"post\">").matcher(html);

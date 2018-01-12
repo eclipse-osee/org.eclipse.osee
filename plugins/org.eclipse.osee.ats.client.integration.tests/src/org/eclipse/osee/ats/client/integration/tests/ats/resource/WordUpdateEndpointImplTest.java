@@ -45,7 +45,7 @@ import org.junit.Test;
  *
  * @author David W. Miller
  */
-public class WordUpdateEndpointImplTest extends AbstractRestTest {
+public class WordUpdateEndpointImplTest {
    private Artifact artReqt = null;
    private BranchId branch = null;
 
