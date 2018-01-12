@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.eclipse.osee.dep.feature_0.25.2.qualifier.jar" id="org.eclipse.osee.dep.feature" version="0.25.2.qualifier">
+   <feature url="features/org.eclipse.osee.dep.feature_0.25.3.qualifier.jar" id="org.eclipse.osee.dep.feature" version="0.25.3.qualifier">
       <category name="org.eclipse.osee.dep"/>
    </feature>
-   <feature url="features/org.eclipse.osee.dep.feature.source_0.25.2.qualifier.jar" id="org.eclipse.osee.dep.feature.source" version="0.25.2.qualifier">
+   <feature url="features/org.eclipse.osee.dep.feature.source_0.25.3.qualifier.jar" id="org.eclipse.osee.dep.feature.source" version="0.25.3.qualifier">
       <category name="org.eclipse.osee.dep"/>
    </feature>
    <category-def name="org.eclipse.osee.dep" label="Eclipse OSEE Deps - (Incubation)">

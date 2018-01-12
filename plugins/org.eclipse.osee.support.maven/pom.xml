@@ -7,7 +7,7 @@
 	<artifactId>org.eclipse.osee.support.maven</artifactId>
 	<packaging>pom</packaging>
 	<name>OSEE Maven Build Support</name>
-	<version>0.25.2-SNAPSHOT</version>
+	<version>0.25.3-SNAPSHOT</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

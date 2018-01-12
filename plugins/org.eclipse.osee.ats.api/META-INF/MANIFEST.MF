@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Osee Ats Api (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ats.api
-Bundle-Version: 0.25.2.qualifier
+Bundle-Version: 0.25.3.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.osee.ats.api,

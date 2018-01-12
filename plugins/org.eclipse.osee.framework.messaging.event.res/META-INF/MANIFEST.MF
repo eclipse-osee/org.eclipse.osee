@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Framework Event Service (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.framework.messaging.event.res;singleton:=true
-Bundle-Version: 0.25.2.qualifier
+Bundle-Version: 0.25.3.qualifier
 Eclipse-ExtensibleAPI: true
 Bundle-ActivationPolicy: lazy
 Bundle-Description: Skynet Event Service - Skynet Cache Network Manager

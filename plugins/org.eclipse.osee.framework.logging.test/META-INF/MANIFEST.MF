@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Logging Test
 Bundle-SymbolicName: org.eclipse.osee.framework.logging.test
-Bundle-Version: 0.25.2.qualifier
+Bundle-Version: 0.25.3.qualifier
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Fragment-Host: org.eclipse.osee.framework.logging
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

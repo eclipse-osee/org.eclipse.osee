@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: OSEE ORCS Script DSL Tests (Incubation)
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Bundle-Version: 0.25.2.qualifier
+Bundle-Version: 0.25.3.qualifier
 Bundle-SymbolicName: org.eclipse.osee.orcs.script.dsl.tests
 Bundle-ActivationPolicy: lazy
 Fragment-Host: org.eclipse.osee.orcs.script.dsl

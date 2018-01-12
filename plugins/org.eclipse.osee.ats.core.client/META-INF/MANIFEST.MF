@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ATS Core Client
 Bundle-SymbolicName: org.eclipse.osee.ats.core.client;singleton:=true
-Bundle-Version: 0.25.2.qualifier
+Bundle-Version: 0.25.3.qualifier
 Eclipse-ExtensibleAPI: true
 Bundle-Activator: org.eclipse.osee.ats.core.client.internal.Activator
 Bundle-ActivationPolicy: lazy
