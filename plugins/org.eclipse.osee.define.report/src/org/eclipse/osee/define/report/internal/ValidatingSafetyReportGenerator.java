@@ -107,10 +107,12 @@ public class ValidatingSafetyReportGenerator {
    private void processSystemFunctions(ArtifactReadable functionsFolder, ISheetWriter writer) throws IOException {
       writer.startSheet("report", columnHeadings.length);
       writer.writeRow((Object[]) columnHeadings);
+      String[] currentRowValues = new String[columnHeadings.length];
 
       for (ArtifactReadable systemFunction : functionsFolder.getDescendants()) {
          if (systemFunction.isOfType(CoreArtifactTypes.SystemFunction)) {
-            writer.writeCell(systemFunction.getName());
+            clearRowValues(currentRowValues);
+            writeCell(systemFunction.getName(), currentRowValues, 0);
             accumulator.reset(systemFunction);
             accumulator.buildSubsystemsRequirementsMap(systemFunction);
             String sevCat;
@@ -121,12 +123,15 @@ public class ValidatingSafetyReportGenerator {
             } else {
                sevCat = systemFunction.getSoleAttributeAsString(CoreAttributeTypes.SeverityCategory);
             }
-            writer.writeCell(sevCat);
-            writeSFHAInfo(systemFunction, sevCat, writer);
+            writeCell(sevCat, currentRowValues, 1);
+            writeSFHAInfo(systemFunction, sevCat, writer, currentRowValues, 2);
 
-            writer.writeCell(systemFunction.getSoleAttributeAsString(CoreAttributeTypes.SoftwareSafetyImpact, ""));
-            writer.writeCell(systemFunction.getSoleAttributeAsString(CoreAttributeTypes.FunctionalDAL, ""));
-            writer.writeCell(systemFunction.getSoleAttributeAsString(CoreAttributeTypes.FunctionalDALRationale, ""));
+            writeCell(systemFunction.getSoleAttributeAsString(CoreAttributeTypes.SoftwareSafetyImpact, ""),
+               currentRowValues, 4);
+            writeCell(systemFunction.getSoleAttributeAsString(CoreAttributeTypes.FunctionalDAL, ""), currentRowValues,
+               5);
+            writeCell(systemFunction.getSoleAttributeAsString(CoreAttributeTypes.FunctionalDALRationale, ""),
+               currentRowValues, 6);
 
             StringBuilder paraNums = new StringBuilder();
             StringBuilder reqNames = new StringBuilder();
@@ -142,23 +147,34 @@ public class ValidatingSafetyReportGenerator {
                paraNums.append(systemRequirement.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
                reqNames.append(systemRequirement.getName());
             }
-            writer.writeCell(paraNums);
-            writer.writeCell(reqNames, SYSTEM_REQUIREMENT_INDEX);
-            accumulator.output();
-            writer.endRow();
+
+            writeCell(paraNums.toString(), currentRowValues, 7);
+            writeCell(reqNames.toString(), currentRowValues, SYSTEM_REQUIREMENT_INDEX);
+            accumulator.output(currentRowValues);
+            writer.writeRow((Object[]) currentRowValues);
          }
       }
       writer.endSheet();
    }
 
-   private void writeSFHAInfo(ArtifactReadable systemFunction, String sevCat, ISheetWriter writer) throws IOException {
+   private void clearRowValues(String[] toClear) {
+      for (int i = 0; i < toClear.length; ++i) {
+         toClear[i] = "";
+      }
+   }
+
+   private void writeCell(String value, String[] currentRow, int col) {
+      currentRow[col] = value;
+   }
+
+   private void writeSFHAInfo(ArtifactReadable systemFunction, String sevCat, ISheetWriter writer, String[] currentRowValues, int col) {
       ResultSet<ArtifactReadable> results = systemFunction.getRelated(CoreRelationTypes.Safety__Safety_Assessment);
       if (results.isEmpty()) {
-         writer.writeCell("No SFHA Hazards found");
-         writer.writeCell("N/A");
+         writeCell("No SFHA Hazards found", currentRowValues, col);
+         writeCell("N/A", currentRowValues, col + 1);
       } else {
-         writer.writeCell(getSFHAHazards(results));
-         writer.writeCell(compareHazardLevel(results, sevCat));
+         writeCell(getSFHAHazards(results), currentRowValues, col);
+         writeCell(compareHazardLevel(results, sevCat), currentRowValues, col + 1);
       }
 
    }

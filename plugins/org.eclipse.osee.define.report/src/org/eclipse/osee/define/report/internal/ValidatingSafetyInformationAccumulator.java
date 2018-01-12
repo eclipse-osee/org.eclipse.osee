@@ -131,10 +131,9 @@ public final class ValidatingSafetyInformationAccumulator {
       return localSubsystemRequirements;
    }
 
-   public void output() throws IOException {
+   public void output(String[] currentRowValues) throws IOException {
       for (ArtifactReadable subsystemFunction : subsystemFunctions) {
-         processSubsystemFunction(subsystemFunction);
-         writer.endRow();
+         processSubsystemFunction(subsystemFunction, currentRowValues);
       }
    }
 
@@ -153,45 +152,56 @@ public final class ValidatingSafetyInformationAccumulator {
       return SafetyCriticalityLookup.getDALLevelFromSeverityCategory(inputSafetyCriticality);
    }
 
-   private void processSubsystemFunction(ArtifactReadable subsystemFunction) throws IOException {
-      writer.writeCell(subsystemFunction.getName(), SafetyReportGenerator.SUBSYSTEM_FUNCTION_INDEX);
+   private void processSubsystemFunction(ArtifactReadable subsystemFunction, String[] currentRowValues) throws IOException {
+      writeCell(subsystemFunction.getName(), currentRowValues,
+         ValidatingSafetyReportGenerator.SUBSYSTEM_FUNCTION_INDEX);
       String sevCat =
          subsystemFunction.getSoleAttributeAsString(CoreAttributeTypes.SeverityCategory, "Error: not available");
-      writer.writeCell(sevCat);
-      writer.writeCell(subsystemFunction.getSoleAttributeAsString(CoreAttributeTypes.FunctionalDAL, ""));
-      writer.writeCell(subsystemFunction.getSoleAttributeAsString(CoreAttributeTypes.FunctionalDALRationale, ""));
+      writeCell(sevCat, currentRowValues, ValidatingSafetyReportGenerator.SUBSYSTEM_FUNCTION_INDEX + 1);
+      writeCell(subsystemFunction.getSoleAttributeAsString(CoreAttributeTypes.FunctionalDAL, ""), currentRowValues,
+         ValidatingSafetyReportGenerator.SUBSYSTEM_FUNCTION_INDEX + 2);
+      writeCell(subsystemFunction.getSoleAttributeAsString(CoreAttributeTypes.FunctionalDALRationale, ""),
+         currentRowValues, ValidatingSafetyReportGenerator.SUBSYSTEM_FUNCTION_INDEX + 3);
 
       for (ArtifactReadable subsystemRequirement : subsystemRequirements.get(subsystemFunction)) {
-         processSubsystemRequirement(subsystemRequirement, convertSafetyCriticalityToDAL(sevCat));
+         processSubsystemRequirement(subsystemRequirement, convertSafetyCriticalityToDAL(sevCat), currentRowValues);
       }
-      writer.endRow();
+      writer.writeRow((Object[]) currentRowValues);
    }
 
-   private void processSubsystemRequirement(ArtifactReadable subsystemRequirement, String criticality) throws IOException {
-      writer.writeCell(subsystemRequirement.getSoleAttributeAsString(CoreAttributeTypes.Subsystem, ""),
-         SafetyReportGenerator.SUBSYSTEM_INDEX);
-      writer.writeCell(subsystemRequirement.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
-      writer.writeCell(subsystemRequirement.getName());
-      writer.writeCell(subsystemRequirement.getSoleAttributeAsString(CoreAttributeTypes.ItemDAL, ""));
-      writer.writeCell(subsystemRequirement.getSoleAttributeAsString(CoreAttributeTypes.ItemDALRationale, ""));
+   private void writeCell(String value, String[] currentRow, int col) {
+      currentRow[col] = value;
+   }
+
+   private void processSubsystemRequirement(ArtifactReadable subsystemRequirement, String criticality, String[] currentRowValues) throws IOException {
+      writeCell(subsystemRequirement.getSoleAttributeAsString(CoreAttributeTypes.Subsystem, ""), currentRowValues,
+         ValidatingSafetyReportGenerator.SUBSYSTEM_INDEX);
+      writeCell(subsystemRequirement.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""), currentRowValues,
+         ValidatingSafetyReportGenerator.SUBSYSTEM_INDEX + 1);
+      writeCell(subsystemRequirement.getName(), currentRowValues, ValidatingSafetyReportGenerator.SUBSYSTEM_INDEX + 2);
+      writeCell(subsystemRequirement.getSoleAttributeAsString(CoreAttributeTypes.ItemDAL, ""), currentRowValues,
+         ValidatingSafetyReportGenerator.SUBSYSTEM_INDEX + 3);
+      writeCell(subsystemRequirement.getSoleAttributeAsString(CoreAttributeTypes.ItemDALRationale, ""),
+         currentRowValues, ValidatingSafetyReportGenerator.SUBSYSTEM_INDEX + 4);
 
       String currentCriticality = writeCriticalityWithDesignCheck(subsystemRequirement, criticality,
-         CoreAttributeTypes.ItemDAL, CoreRelationTypes.Design__Design, CoreAttributeTypes.SeverityCategory);
+         CoreAttributeTypes.ItemDAL, CoreRelationTypes.Design__Design, CoreAttributeTypes.SeverityCategory,
+         currentRowValues, ValidatingSafetyReportGenerator.SUBSYSTEM_INDEX + 5);
       for (ArtifactReadable softwareRequirement : softwareRequirements.get(subsystemRequirement)) {
-         processSoftwareRequirement(softwareRequirement, currentCriticality);
+         processSoftwareRequirement(softwareRequirement, currentCriticality, currentRowValues);
       }
-      writer.endRow();
+      writer.writeRow((Object[]) currentRowValues);
    }
 
-   private String writeCriticalityWithDesignCheck(ArtifactReadable art, String criticality, AttributeTypeId thisType, RelationTypeSide relType, AttributeTypeId otherType) throws IOException {
+   private String writeCriticalityWithDesignCheck(ArtifactReadable art, String criticality, AttributeTypeId thisType, RelationTypeSide relType, AttributeTypeId otherType, String[] currentRowValues, int col) {
       String current = art.getSoleAttributeAsString(thisType, "Error");
       if ("Error".equals(criticality) || "Error".equals(current)) {
-         writer.writeCell("Error: invalid content");
+         writeCell("Error: invalid content", currentRowValues, col);
          return "Error";
       }
 
       if (AttributeId.UNSPECIFIED.equals(current)) {
-         writer.writeCell(AttributeId.UNSPECIFIED);
+         writeCell(AttributeId.UNSPECIFIED, currentRowValues, col);
          return AttributeId.UNSPECIFIED;
       }
 
@@ -206,14 +216,14 @@ public final class ValidatingSafetyInformationAccumulator {
       int childValue = SafetyCriticalityLookup.getDALLevel(current);
 
       if (parentValue < childValue) {
-         writer.writeCell(String.format("%s [Error:<%s]", current, criticality));
+         writeCell(String.format("%s [Error:<%s]", current, criticality), currentRowValues, col);
       } else {
-         checkBackTrace(art, childValue, thisType, relType, otherType);
+         checkBackTrace(art, childValue, thisType, relType, otherType, currentRowValues, col);
       }
       return current;
    }
 
-   private void checkBackTrace(ArtifactReadable art, Integer current, AttributeTypeId thisType, RelationTypeSide relType, AttributeTypeId otherType) throws IOException {
+   private void checkBackTrace(ArtifactReadable art, Integer current, AttributeTypeId thisType, RelationTypeSide relType, AttributeTypeId otherType, String[] currentRowValues, int col) {
       /**
        * when the parent criticality is less critical than the child, we check to see if the child traces to any more
        * critical parent (thus justifying the criticality of the child) note: more critical = lower number
@@ -242,39 +252,46 @@ public final class ValidatingSafetyInformationAccumulator {
          maxCritVal = Integer.min(maxCritVal, parentCritVal);
       }
       if (current < maxCritVal) {
-         writer.writeCell(String.format("%s [Error:<%s]", SafetyCriticalityLookup.getDALLevelFromInt(current),
-            SafetyCriticalityLookup.getDALLevelFromInt(maxCritVal)));
+         writeCell(String.format("%s [Error:<%s]", SafetyCriticalityLookup.getDALLevelFromInt(current),
+            SafetyCriticalityLookup.getDALLevelFromInt(maxCritVal)), currentRowValues, col);
       } else {
-         writer.writeCell(SafetyCriticalityLookup.getDALLevelFromInt(current));
+         writeCell(SafetyCriticalityLookup.getDALLevelFromInt(current), currentRowValues, col);
       }
    }
 
-   private void processSoftwareRequirement(ArtifactReadable softwareRequirement, String sevCat) throws IOException {
-      writer.writeCell(softwareRequirement.getName(), SafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX);
+   private void processSoftwareRequirement(ArtifactReadable softwareRequirement, String sevCat, String[] currentRowValues) throws IOException {
+      writeCell(softwareRequirement.getName(), currentRowValues,
+         ValidatingSafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX);
       String softwareRequirementDAL = writeCriticalityWithDesignCheck(softwareRequirement, sevCat,
-         CoreAttributeTypes.ItemDAL, CoreRelationTypes.Requirement_Trace__Higher_Level, CoreAttributeTypes.ItemDAL);
-      writer.writeCell(softwareRequirement.getSoleAttributeAsString(CoreAttributeTypes.ItemDALRationale, ""));
-      writer.writeCell(softwareRequirement.getSoleAttributeAsString(CoreAttributeTypes.SoftwareControlCategory, ""));
-      writer.writeCell(
-         softwareRequirement.getSoleAttributeAsString(CoreAttributeTypes.SoftwareControlCategoryRationale, ""));
+         CoreAttributeTypes.ItemDAL, CoreRelationTypes.Requirement_Trace__Higher_Level, CoreAttributeTypes.ItemDAL,
+         currentRowValues, ValidatingSafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX + 1);
+      writeCell(softwareRequirement.getSoleAttributeAsString(CoreAttributeTypes.ItemDALRationale, ""), currentRowValues,
+         ValidatingSafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX + 2);
+      writeCell(softwareRequirement.getSoleAttributeAsString(CoreAttributeTypes.SoftwareControlCategory, ""),
+         currentRowValues, ValidatingSafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX + 3);
+      writeCell(softwareRequirement.getSoleAttributeAsString(CoreAttributeTypes.SoftwareControlCategoryRationale, ""),
+         currentRowValues, ValidatingSafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX + 4);
 
-      writer.writeCell(calculateBoeingEquivalentSWQualLevel(softwareRequirementDAL,
-         softwareRequirement.getAttributeCount(CoreAttributeTypes.Partition)));
-      writer.writeCell(functionalCategory);
+      writeCell(
+         calculateBoeingEquivalentSWQualLevel(softwareRequirementDAL,
+            softwareRequirement.getAttributeCount(CoreAttributeTypes.Partition)),
+         currentRowValues, ValidatingSafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX + 5);
+      writeCell(functionalCategory, currentRowValues, ValidatingSafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX + 6);
 
-      writer.writeCell(
-         Collections.toString(",", getAttributesToStringList(softwareRequirement, CoreAttributeTypes.Partition)));
+      writeCell(Collections.toString(",", getAttributesToStringList(softwareRequirement, CoreAttributeTypes.Partition)),
+         currentRowValues, ValidatingSafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX + 7);
 
-      writer.writeCell(safetyReport.getComponentUtil().getQualifiedComponentNames(softwareRequirement));
+      writeCell(safetyReport.getComponentUtil().getQualifiedComponentNames(softwareRequirement), currentRowValues,
+         ValidatingSafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX + 8);
       Collection<String> codeUnits = safetyReport.getRequirementToCodeUnitsValues(softwareRequirement);
 
       if (Conditions.hasValues(codeUnits)) {
          for (String codeUnit : codeUnits) {
-            writer.writeCell(codeUnit, SafetyReportGenerator.CODE_UNIT_INDEX);
-            writer.endRow();
+            writeCell(codeUnit, currentRowValues, ValidatingSafetyReportGenerator.CODE_UNIT_INDEX);
+            writer.writeRow((Object[]) currentRowValues);
          }
       } else {
-         writer.endRow();
+         writer.writeRow((Object[]) currentRowValues);
       }
    }
 
