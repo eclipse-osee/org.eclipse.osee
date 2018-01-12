@@ -17,5 +17,7 @@ public enum WorkItemWriterOptions {
    // write keys as long attribute ids instead of attribute name
    FieldsAsIds,
    // write dates as long instead of human readable date format
-   DatesAsLong
+   DatesAsLong,
+   // write attributes out with gammaIds
+   WriteWithGammas
 }

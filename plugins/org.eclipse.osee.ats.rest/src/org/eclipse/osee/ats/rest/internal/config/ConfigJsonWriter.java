@@ -7,6 +7,7 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -264,6 +265,53 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
       }
    }
 
+   public static void addAttributeDataWithGammas(JsonGenerator writer, ArtifactReadable artifact, List<WorkItemWriterOptions> options, IAtsServer atsServer) throws IOException, JsonGenerationException, JsonProcessingException {
+
+      ResultSet<? extends AttributeReadable<Object>> attributes = artifact.getAttributes();
+      boolean fieldsAsIds = options.contains(WorkItemWriterOptions.FieldsAsIds);
+      boolean datesAsLong = options.contains(WorkItemWriterOptions.DatesAsLong);
+
+      if (!attributes.isEmpty()) {
+         List<Long> writtenTypes = new LinkedList<Long>();
+         for (AttributeReadable<Object> attr : attributes) {
+            AttributeTypeToken attrType = attr.getAttributeType();
+            if (!writtenTypes.contains(attrType.getId())) {
+               writtenTypes.add(attrType.getId());
+               boolean isDateType = atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().isDateType(attrType);
+               List<Object> attributeValues = artifact.getAttributeValues(attrType);
+               if (!attributeValues.isEmpty()) {
+
+                  if (attributeValues.size() > 1) {
+                     if (fieldsAsIds) {
+                        writer.writeArrayFieldStart(attrType.getIdString());
+                     } else {
+                        writer.writeArrayFieldStart(attrType.getName());
+                     }
+                     for (Object value : attributeValues) {
+                        writer.writeStartObject();
+                        writeObjectValueField(writer, datesAsLong, isDateType, value);
+                        writer.writeNumberField("gammaId", attr.getGammaId());
+                        writer.writeEndObject();
+                     }
+                     writer.writeEndArray();
+                  } else if (attributeValues.size() == 1) {
+
+                     if (fieldsAsIds) {
+                        writer.writeObjectFieldStart(attrType.getIdString());
+                     } else {
+                        writer.writeObjectFieldStart(attrType.getName());
+                     }
+                     writeObjectValueField(writer, datesAsLong, isDateType, attr.getValue());
+                     writer.writeNumberField("gammaId", attr.getGammaId());
+
+                     writer.writeEndObject();
+                  }
+               }
+            }
+         }
+      }
+   }
+
    private static void writeObjectValue(JsonGenerator writer, boolean datesAsLong, boolean isDateType, Object value) throws IOException, JsonGenerationException, JsonProcessingException {
       if (isDateType) {
          if (datesAsLong) {
@@ -273,6 +321,18 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
          }
       } else {
          writer.writeObject(value);
+      }
+   }
+
+   private static void writeObjectValueField(JsonGenerator writer, boolean datesAsLong, boolean isDateType, Object value) throws IOException, JsonGenerationException, JsonProcessingException {
+      if (isDateType) {
+         if (datesAsLong) {
+            writer.writeStringField("value", String.valueOf(((Date) value).getTime()));
+         } else {
+            writer.writeStringField("value", DateUtil.getMMDDYY((Date) value));
+         }
+      } else {
+         writer.writeObjectField("value", value);
       }
    }
 

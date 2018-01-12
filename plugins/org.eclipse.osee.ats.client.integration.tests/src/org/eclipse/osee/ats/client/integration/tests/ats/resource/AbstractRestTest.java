@@ -32,6 +32,15 @@ public abstract class AbstractRestTest {
       return objs[0];
    }
 
+   protected Object getFirstAndCountGreater(String url, int count) {
+      String json = getJson(url);
+      Object[] objs = JsonUtil.readValue(json, Object[].class);
+      boolean countGE = objs.length >= count;
+      Assert.assertTrue(String.format("Length %d expected to be greater than or equal to %d", objs.length, count),
+         countGE);
+      return objs[0];
+   }
+
    protected JsonNode readTree(String url) {
       return JsonUtil.readTree(getJson(url));
    }

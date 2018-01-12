@@ -37,7 +37,6 @@ import org.eclipse.osee.ats.api.workflow.AttributeKey;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.NewActionData;
 import org.eclipse.osee.ats.api.workflow.NewActionResult;
-import org.eclipse.osee.ats.api.workflow.WorkItemWriterOptions;
 import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -208,22 +207,6 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       JsonNode action = testActionRestCall(url, 3);
       Assert.assertEquals(action.get("TargetedVersion").asText().replaceAll("\n", ""),
          DemoBranches.SAW_Bld_2.toString());
-   }
-
-   @Test
-   public void testAtsActionsFieldsAsIdsAndDatesAsLong() {
-      String url =
-         "/ats/action/" + DemoUtil.getSawCodeCommittedWf().getIdString() + "/details?" + WorkItemWriterOptions.FieldsAsIds.name() + "=true&" + WorkItemWriterOptions.DatesAsLong.name() + "=true";
-      JsonNode action = testActionRestCall(url, 1);
-
-      // FieldsAsIds should replace attr type names with id as the field
-      Assert.assertFalse(action.has(AtsAttributeTypes.CreatedDate.getName()));
-      String teamDefByAttrTypeId = action.get(AtsAttributeTypes.CreatedDate.getIdString()).asText();
-      Assert.assertTrue(Strings.isNumeric(teamDefByAttrTypeId));
-
-      // DatesAsLong should replace date value with long time value
-      String dateValue = action.get(AtsAttributeTypes.CreatedDate.getIdString()).asText();
-      Assert.assertTrue(Strings.isNumeric(dateValue));
    }
 
    private JsonNode testAction(JsonNode action) {

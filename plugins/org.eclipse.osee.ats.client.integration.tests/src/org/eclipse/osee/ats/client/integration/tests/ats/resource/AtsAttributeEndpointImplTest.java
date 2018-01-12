@@ -38,13 +38,13 @@ public class AtsAttributeEndpointImplTest extends AbstractRestTest {
 
    @Test
    public void testGetValidAssignees() throws Exception {
-      Object object = getFirstAndCount("ats/attr/Assignee", 6);
+      Object object = getFirstAndCountGreater("ats/attr/Assignee", 6);
       Assert.assertEquals(DemoUsers.Alex_Kay.getName(), object);
    }
 
    @Test
    public void testGetValidOriginators() throws Exception {
-      getFirstAndCount("ats/attr/Originator", 6);
+      getFirstAndCountGreater("ats/attr/Originator", 6);
    }
 
    @Test

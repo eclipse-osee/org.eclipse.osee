@@ -104,9 +104,19 @@ public class WorkItemsJsonWriter implements MessageBodyWriter<Collection<IAtsWor
             WorkItemWriterOptions.DatesAsLong.name()).equals("true")) {
             options.add(WorkItemWriterOptions.DatesAsLong);
          }
+         boolean writeWithGammas = false;
+         if (queryParameters.containsKey(WorkItemWriterOptions.WriteWithGammas.name()) && queryParameters.getFirst(
+            WorkItemWriterOptions.WriteWithGammas.name()).equals("true")) {
+            writeWithGammas = true;
+         }
          for (IAtsWorkItem workItem : workItems) {
-            WorkItemJsonWriter.addWorkItem(atsServer, workItem, annotations, writer,
-               matches(IdentityView.class, annotations), getAttributeTypes(), options);
+            if (writeWithGammas) {
+               WorkItemJsonWriter.addWorkItemWithGammas(atsServer, workItem, annotations, writer,
+                  matches(IdentityView.class, annotations), options);
+            } else {
+               WorkItemJsonWriter.addWorkItem(atsServer, workItem, annotations, writer,
+                  matches(IdentityView.class, annotations), getAttributeTypes(), options);
+            }
          }
          writer.writeEndArray();
       } finally {
