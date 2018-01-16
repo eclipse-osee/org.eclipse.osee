@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.jdk.core.type.HasDescription;
@@ -43,5 +44,9 @@ public interface IAtsObject extends NamedId, HasDescription {
          }
       }
       return false;
+   }
+
+   default ArtifactId getArtifactId() {
+      return ArtifactId.valueOf(getId());
    }
 }

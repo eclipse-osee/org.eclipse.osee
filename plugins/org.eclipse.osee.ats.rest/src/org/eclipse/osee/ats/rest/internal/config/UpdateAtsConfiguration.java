@@ -164,13 +164,13 @@ public class UpdateAtsConfiguration {
    }
 
    public ArtifactId getOrCreateConfigFolder(ArtifactId userArt, XResultData rd) {
-      ArtifactReadable configFolderArt = atsServer.getOrcsApi().getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
+      ArtifactReadable configFolderArt = atsServer.getQuery().andId(
          AtsArtifactToken.ConfigFolder).getResults().getAtMostOneOrNull();
       if (configFolderArt == null) {
          TransactionBuilder tx = atsServer.getOrcsApi().getTransactionFactory().createTransaction(CoreBranches.COMMON,
             userArt, "Create Config Folder");
          ArtifactReadable headingFolderArt =
-            atsServer.getOrcsApi().getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
+            atsServer.getQuery().andId(
                AtsArtifactToken.HeadingFolder).getResults().getExactlyOne();
          configFolderArt = (ArtifactReadable) tx.createArtifact(AtsArtifactToken.ConfigFolder);
          tx.relate(headingFolderArt, CoreRelationTypes.Default_Hierarchical__Parent, configFolderArt);
@@ -181,7 +181,7 @@ public class UpdateAtsConfiguration {
    }
 
    public ArtifactId getOrCreateAtsConfig(ArtifactReadable userArt, XResultData rd) {
-      ArtifactReadable atsConfigArt = atsServer.getOrcsApi().getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
+      ArtifactReadable atsConfigArt = atsServer.getQuery().andId(
          AtsArtifactToken.AtsConfig).getResults().getAtMostOneOrNull();
       if (atsConfigArt == null) {
          TransactionBuilder tx = atsServer.getOrcsApi().getTransactionFactory().createTransaction(CoreBranches.COMMON,
@@ -211,7 +211,7 @@ public class UpdateAtsConfiguration {
 
    public ArtifactId getOrCreateConfigsFolder(ArtifactId userArt, XResultData rd) {
       ArtifactId configFolderArt = getOrCreateConfigFolder(userArt, rd);
-      ArtifactId configsFolderArt = atsServer.getOrcsApi().getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
+      ArtifactId configsFolderArt = atsServer.getQuery().andId(
          AtsArtifactToken.ConfigsFolder).getResults().getAtMostOneOrNull();
       if (configsFolderArt == null) {
          TransactionBuilder tx = atsServer.getOrcsApi().getTransactionFactory().createTransaction(CoreBranches.COMMON,

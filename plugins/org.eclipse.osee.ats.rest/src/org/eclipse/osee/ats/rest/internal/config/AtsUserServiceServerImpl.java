@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.utility.RestUtil;
 
 /**
@@ -51,18 +52,24 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
    @Override
    public boolean isAtsAdmin(IAtsUser user) {
       if (atsAdminArt == null) {
-         atsAdminArt = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
-            AtsArtifactToken.AtsAdmin).getResults().getAtMostOneOrNull();
+         atsAdminArt = getArtifact(AtsArtifactToken.AtsAdmin);
       }
       return atsAdminArt.areRelated(CoreRelationTypes.User_Grouping__Members, getArtifact(user));
    }
 
-   private ArtifactReadable getArtifact(IAtsObject atsObjecct) {
-      if (atsObjecct.getStoreObject() instanceof ArtifactReadable) {
-         return (ArtifactReadable) atsObjecct.getStoreObject();
+   private ArtifactReadable getArtifact(IAtsObject atsObject) {
+      if (atsObject.getStoreObject() instanceof ArtifactReadable) {
+         return (ArtifactReadable) atsObject.getStoreObject();
       }
-      return orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(
-         atsObjecct.getId()).getResults().getAtMostOneOrNull();
+      return getArtifact(atsObject.getArtifactId());
+   }
+
+   private ArtifactReadable getArtifact(ArtifactId artifactId) {
+      return getQuery().andId(artifactId).getResults().getAtMostOneOrNull();
+   }
+
+   private QueryBuilder getQuery() {
+      return orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON);
    }
 
    @Override
@@ -112,8 +119,7 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
    @Override
    public List<IAtsUser> getUsersFromDb() {
       List<IAtsUser> users = new ArrayList<>();
-      for (ArtifactId art : orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(
-         CoreArtifactTypes.User).getResults()) {
+      for (ArtifactId art : getQuery().andIsOfType(CoreArtifactTypes.User).getResults()) {
          ArtifactReadable userArt = (ArtifactReadable) art;
          AtsUser atsUser = createFromArtifact(userArt);
          users.add(atsUser);
@@ -129,9 +135,8 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
 
    @Override
    protected IAtsUser loadUserFromDbByUserId(String userId) {
-      ArtifactReadable userArt =
-         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(CoreArtifactTypes.User).and(
-            CoreAttributeTypes.UserId, userId).getResults().getAtMostOneOrNull();
+      ArtifactReadable userArt = getQuery().andIsOfType(CoreArtifactTypes.User).and(CoreAttributeTypes.UserId,
+         userId).getResults().getAtMostOneOrNull();
       if (userArt != null) {
          return createFromArtifact(userArt);
       }
@@ -140,9 +145,8 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
 
    @Override
    protected IAtsUser loadUserFromDbByUserName(String name) {
-      ArtifactReadable userArt =
-         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(CoreArtifactTypes.User).and(
-            CoreAttributeTypes.Name, name).getResults().getAtMostOneOrNull();
+      ArtifactReadable userArt = getQuery().andIsOfType(CoreArtifactTypes.User).and(CoreAttributeTypes.Name,
+         name).getResults().getAtMostOneOrNull();
       if (userArt != null) {
          return createFromArtifact(userArt);
       }
@@ -152,8 +156,7 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
    @Override
    protected IAtsUser loadUserByAccountId(Long accountId) {
       IAtsUser user = null;
-      ArtifactId userArt =
-         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(accountId).getResults().getAtMostOneOrNull();
+      ArtifactId userArt = getArtifact(ArtifactId.valueOf(accountId));
       if (userArt != null) {
          user = createFromArtifact((ArtifactReadable) userArt);
       }
@@ -162,8 +165,7 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
 
    @Override
    public IAtsUser getUserByArtifactId(ArtifactId id) {
-      ArtifactReadable userArt =
-         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andId(id).getResults().getExactlyOne();
+      ArtifactReadable userArt = getQuery().andId(id).getResults().getExactlyOne();
       return createFromArtifact(userArt);
    }
 
@@ -177,5 +179,4 @@ public class AtsUserServiceServerImpl extends AbstractAtsUserService {
       }
       return user;
    }
-
 }

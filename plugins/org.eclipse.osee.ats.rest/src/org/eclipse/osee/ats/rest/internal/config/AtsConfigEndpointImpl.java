@@ -20,7 +20,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
-import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
 import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.config.AtsConfiguration;
@@ -61,12 +60,12 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
 
    private final OrcsApi orcsApi;
-   private final AtsApi atsApi;
+   private final IAtsServer atsServer;
    private final Log logger;
    private final ExecutorAdmin executorAdmin;
 
-   public AtsConfigEndpointImpl(AtsApi atsApi, OrcsApi orcsApi, Log logger, ExecutorAdmin executorAdmin) {
-      this.atsApi = atsApi;
+   public AtsConfigEndpointImpl(IAtsServer atsServer, OrcsApi orcsApi, Log logger, ExecutorAdmin executorAdmin) {
+      this.atsServer = atsServer;
       this.orcsApi = orcsApi;
       this.logger = logger;
       this.executorAdmin = executorAdmin;
@@ -82,13 +81,13 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
 
       @Override
       public void run() {
-         atsApi.getConfigService().getConfigurationsWithPend();
+         atsServer.getConfigService().getConfigurationsWithPend();
       }
    };
 
    @Override
    public AtsConfigurations get() {
-      return atsApi.getConfigService().getConfigurations();
+      return atsServer.getConfigService().getConfigurations();
    }
 
    @Override
@@ -98,7 +97,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
 
    @Override
    public AtsConfigurations getWithPend() {
-      return atsApi.getConfigService().getConfigurationsWithPend();
+      return atsServer.getConfigService().getConfigurationsWithPend();
    }
 
    @Override
@@ -115,7 +114,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       Conditions.checkNotNullOrEmpty(newBranchName, "newBranchName");
       String userId = form.getFirst("userId");
       Conditions.checkNotNullOrEmpty(userId, "UserId");
-      ArtifactId user = atsApi.getUserService().getUserById(userId).getStoreObject();
+      ArtifactId user = atsServer.getUserService().getUserById(userId).getStoreObject();
       if (user == null) {
          logger.error("User by id [%s] does not exist", userId);
       }
@@ -201,7 +200,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       config.setId(((ArtifactReadable) configArt).getId());
       tx.createAttribute(configArt, AtsAttributeTypes.AtsConfiguredBranch, branch.getIdString());
       XResultData rd = new XResultData();
-      UpdateAtsConfiguration update = new UpdateAtsConfiguration((IAtsServer) atsApi);
+      UpdateAtsConfiguration update = new UpdateAtsConfiguration(atsServer);
 
       // Get or create Configs folder
       ArtifactId configsFolderArt = update.getOrCreateConfigsFolder(userArt, rd);
@@ -217,7 +216,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    @Override
    public Response createUpdateConfig() {
       XResultData resultData = new XResultData(false);
-      UpdateAtsConfiguration update = new UpdateAtsConfiguration((IAtsServer) atsApi);
+      UpdateAtsConfiguration update = new UpdateAtsConfiguration(atsServer);
       update.createUpdateConfig(resultData);
       if (resultData.isEmpty()) {
          resultData.log("Nothing to update");
@@ -228,26 +227,25 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    @Override
    public Response storeWorkDef(JaxAtsWorkDef jaxWorkDef) {
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON,
-         atsApi.getArtifact(AtsCoreUsers.SYSTEM_USER), "Store Work Definition " + jaxWorkDef.getName());
-      ArtifactReadable workDefArt = orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).andIsOfType(
-         AtsArtifactTypes.WorkDefinition).andNameEquals(jaxWorkDef.getName()).getResults().getAtMostOneOrNull();
+         atsServer.getArtifact(AtsCoreUsers.SYSTEM_USER), "Store Work Definition " + jaxWorkDef.getName());
+      ArtifactReadable workDefArt = atsServer.getQuery().andIsOfType(AtsArtifactTypes.WorkDefinition).andNameEquals(
+         jaxWorkDef.getName()).getResults().getAtMostOneOrNull();
       if (workDefArt == null) {
          workDefArt = (ArtifactReadable) tx.createArtifact(AtsArtifactTypes.WorkDefinition, jaxWorkDef.getName());
       }
       tx.setSoleAttributeValue(workDefArt, AtsAttributeTypes.DslSheet, jaxWorkDef.getWorkDefDsl());
       if (workDefArt.getParent() == null) {
-         ArtifactReadable workDefFolder = (ArtifactReadable) atsApi.getArtifact(AtsArtifactToken.WorkDefinitionsFolder);
+         ArtifactReadable workDefFolder = atsServer.getArtifact(AtsArtifactToken.WorkDefinitionsFolder);
          tx.addChildren(workDefFolder, workDefArt);
       }
       tx.commit();
-      ((IAtsServer) atsApi).getWorkDefinitionService().clearCaches();
+      atsServer.getWorkDefinitionService().clearCaches();
       return Response.ok().build();
    }
 
    @Override
    public List<AtsAttributeValueColumn> generateAttrTypeViews() throws Exception {
       Map<String, AttributeTypeToken> idToToken = new HashMap<>();
-      IAtsServer atsServer = (IAtsServer) atsApi;
       for (AttributeTypeToken attrType : atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().getAll()) {
          idToToken.put(attrType.getName(), attrType);
       }

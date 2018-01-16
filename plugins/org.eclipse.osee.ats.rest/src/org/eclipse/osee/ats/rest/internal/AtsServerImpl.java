@@ -9,7 +9,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal;
 
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -70,7 +69,6 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
@@ -208,11 +206,10 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
          if (atsObject.getStoreObject() instanceof ArtifactReadable) {
             result = (ArtifactReadable) atsObject.getStoreObject();
          } else {
-            result = orcsApi.getQueryFactory().fromBranch(getAtsBranch()).andId(
-               atsObject.getId()).getResults().getAtMostOneOrNull();
+            result = getQuery().andId(atsObject.getId()).getResults().getAtMostOneOrNull();
          }
       } else {
-         result = orcsApi.getQueryFactory().fromBranch(getAtsBranch()).andId(artifact).getResults().getOneOrNull();
+         result = getQuery().andId(artifact).getResults().getOneOrNull();
       }
       return result;
    }
@@ -223,8 +220,7 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
       if (atsObject.getStoreObject() instanceof ArtifactReadable) {
          result = (ArtifactReadable) atsObject.getStoreObject();
       } else {
-         result = orcsApi.getQueryFactory().fromBranch(getAtsBranch()).andId(
-            atsObject.getId()).getResults().getAtMostOneOrNull();
+         result = getQuery().andId(atsObject.getId()).getResults().getAtMostOneOrNull();
          if (result != null) {
             atsObject.setStoreObject(result);
          }
@@ -236,7 +232,7 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
    public ArtifactReadable getArtifactByGuid(String guid) {
       ArtifactReadable artifact = null;
       try {
-         artifact = orcsApi.getQueryFactory().fromBranch(getAtsBranch()).andGuid(guid).getResults().getExactlyOne();
+         artifact = getQuery().andGuid(guid).getResults().getExactlyOne();
       } catch (ItemDoesNotExist ex) {
          // do nothing
       }
@@ -265,14 +261,13 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
 
    @Override
    public ArtifactReadable getArtifact(Long id) {
-      return orcsApi.getQueryFactory().fromBranch(getAtsBranch()).andId(id).getResults().getOneOrNull();
+      return getQuery().andId(id).getResults().getOneOrNull();
    }
 
    @Override
    public Collection<ArtifactToken> getArtifacts(Collection<Long> ids) {
       Collection<ArtifactToken> artifacts = new LinkedList<>();
-      Iterator<ArtifactReadable> iterator =
-         orcsApi.getQueryFactory().fromBranch(getAtsBranch()).andUuids(ids).getResults().iterator();
+      Iterator<ArtifactReadable> iterator = getQuery().andUuids(ids).getResults().iterator();
       while (iterator.hasNext()) {
          artifacts.add(iterator.next());
       }
@@ -287,8 +282,7 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
    @Override
    public String getConfigValue(String key) {
       String result = null;
-      ArtifactReadable atsConfig = orcsApi.getQueryFactory().fromBranch(COMMON).andId(
-         AtsArtifactToken.AtsConfig).getResults().getAtMostOneOrNull();
+      ArtifactReadable atsConfig = getQuery().andId(AtsArtifactToken.AtsConfig).getResults().getAtMostOneOrNull();
       if (atsConfig != null) {
          List<String> attributeValues = atsConfig.getAttributeValues(CoreAttributeTypes.GeneralStringData);
          for (String str : attributeValues) {
@@ -391,16 +385,14 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
 
    @Override
    public ArtifactToken getArtifactByName(IArtifactType artifactType, String name) {
-      return orcsApi.getQueryFactory().fromBranch(getAtsBranch()).andIsOfType(artifactType).andNameEquals(
-         name).getResults().getAtMostOneOrNull();
+      return getQuery().andIsOfType(artifactType).andNameEquals(name).getResults().getAtMostOneOrNull();
    }
 
    @Override
    public CustomizeData getCustomizationByGuid(String customize_guid) {
       CustomizeData cust = null;
-      ArtifactReadable customizeStoreArt =
-         orcsApi.getQueryFactory().fromBranch(getAtsBranch()).and(CoreAttributeTypes.XViewerCustomization,
-            customize_guid, QueryOption.CONTAINS_MATCH_OPTIONS).getResults().getAtMostOneOrNull();
+      ArtifactReadable customizeStoreArt = getQuery().and(CoreAttributeTypes.XViewerCustomization, customize_guid,
+         QueryOption.CONTAINS_MATCH_OPTIONS).getResults().getAtMostOneOrNull();
       if (customizeStoreArt != null) {
          for (String custXml : getAttributeResolver().getAttributesToStringList(customizeStoreArt,
             CoreAttributeTypes.XViewerCustomization)) {
@@ -423,8 +415,7 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
 
    private List<ArtifactId> getGlobalCustomizeArts() {
       List<ArtifactId> customizationArts = new ArrayList<>();
-      for (ArtifactId artifact : orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(
-         CoreArtifactTypes.XViewerGlobalCustomization).getResults()) {
+      for (ArtifactId artifact : getQuery().andIsOfType(CoreArtifactTypes.XViewerGlobalCustomization).getResults()) {
          customizationArts.add(artifact);
       }
       return customizationArts;
@@ -511,12 +502,11 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
    @Override
    public List<ArtifactToken> getArtifacts(IArtifactType artifactType) {
       return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
-         orcsApi.getQueryFactory().fromBranch(getAtsBranch()).andIsOfType(artifactType).getResults().getList());
+         getQuery().andIsOfType(artifactType).getResults().getList());
    }
 
    @Override
    public IAtsActionableItemService getActionableItemService() {
       return actionableItemManager;
    }
-
 }

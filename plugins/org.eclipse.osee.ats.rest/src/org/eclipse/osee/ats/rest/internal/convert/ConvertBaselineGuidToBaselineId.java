@@ -52,8 +52,8 @@ public class ConvertBaselineGuidToBaselineId extends AbstractConvertGuidToId {
       }
       TransactionBuilder tx = createTransactionBuilder();
       int numChanges = 0;
-      for (ArtifactReadable art : getOrcsApi().getQueryFactory().fromBranch(atsServer.getAtsBranch()).andTypeEquals(
-         AtsArtifactTypes.Version, AtsArtifactTypes.TeamDefinition).andExists(BaselineBranchGuid).getResults()) {
+      for (ArtifactReadable art : atsServer.getQuery().andTypeEquals(AtsArtifactTypes.Version,
+         AtsArtifactTypes.TeamDefinition).andExists(BaselineBranchGuid).getResults()) {
          List<String> attributeValues = art.getAttributeValues(BaselineBranchGuid);
          for (String guid : attributeValues) {
             if (!guid.isEmpty()) {
@@ -72,8 +72,8 @@ public class ConvertBaselineGuidToBaselineId extends AbstractConvertGuidToId {
                         data.logf("Adding id attribute of value %s to artifact type [%s] name [%s] id [%s]\n", branch,
                            art.getArtifactType(), art.getName(), art.getGuid());
                      } else if (isIdDifferent(baseLine, branch)) {
-                        data.logf("Updating id attribute of value %s to artifact type [%s] name [%s] id [%s]\n",
-                           branch, art.getArtifactType(), art.getName(), art.getGuid());
+                        data.logf("Updating id attribute of value %s to artifact type [%s] name [%s] id [%s]\n", branch,
+                           art.getArtifactType(), art.getName(), art.getGuid());
                      }
                      numChanges++;
                      if (!reportOnly) {

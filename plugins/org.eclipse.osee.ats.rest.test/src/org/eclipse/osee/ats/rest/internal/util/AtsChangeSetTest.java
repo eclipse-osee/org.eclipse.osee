@@ -59,8 +59,7 @@ public class AtsChangeSetTest {
       changes.createArtifact(AtsArtifactTypes.Version, name, id);
       changes.execute();
 
-      ArtifactReadable verArt = atsServer.getOrcsApi().getQueryFactory().fromBranch(atsServer.getAtsBranch()).andId(
-         id).getResults().getAtMostOneOrNull();
+      ArtifactReadable verArt = atsServer.getQuery().andId(id).getResults().getAtMostOneOrNull();
       assertNotNull(verArt);
       assertEquals(id, verArt.getId());
       assertEquals(name, verArt.getName());

@@ -15,9 +15,9 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IArtifactResolver;
+import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -28,11 +28,11 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public class ArtifactResolverImpl implements IArtifactResolver {
 
-   private final AtsApi atsApi;
+   private final IAtsServer atsServer;
    private final OrcsApi orcsApi;
 
-   public ArtifactResolverImpl(AtsApi atsApi, OrcsApi orcsApi) {
-      this.atsApi = atsApi;
+   public ArtifactResolverImpl(IAtsServer atsServer, OrcsApi orcsApi) {
+      this.atsServer = atsServer;
       this.orcsApi = orcsApi;
    }
 
@@ -41,8 +41,8 @@ public class ArtifactResolverImpl implements IArtifactResolver {
       if (atsObject.getStoreObject() instanceof ArtifactReadable) {
          return atsObject.getStoreObject();
       }
-      ArtifactReadable artifact = orcsApi.getQueryFactory().fromBranch(atsApi.getAtsBranch()).andId(
-         atsObject.getId()).getResults().getAtMostOneOrNull();
+      ArtifactReadable artifact =
+         atsServer.getQuery().andId(atsObject.getArtifactId()).getResults().getAtMostOneOrNull();
       return artifact;
    }
 
@@ -81,14 +81,14 @@ public class ArtifactResolverImpl implements IArtifactResolver {
    public boolean isOfType(ArtifactId artifact, IArtifactType artifactType) {
       Assert.isNotNull(artifact, "Artifact can not be null");
       Assert.isNotNull(artifactType, "Artifact Type can not be null");
-      return ((ArtifactReadable) atsApi.getArtifact(artifact)).isOfType(artifactType);
+      return atsServer.getArtifact(artifact).isOfType(artifactType);
    }
 
    @Override
    public boolean isOfType(IAtsObject atsObject, IArtifactType artifactType) {
       Assert.isNotNull(atsObject, "ATS Object can not be null");
       Assert.isNotNull(artifactType, "Artifact Type can not be null");
-      return isOfType(atsApi.getArtifact(atsObject), artifactType);
+      return isOfType(atsServer.getArtifact(atsObject), artifactType);
    }
 
    @Override
