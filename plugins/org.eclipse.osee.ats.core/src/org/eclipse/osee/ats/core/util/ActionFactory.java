@@ -103,8 +103,8 @@ public class ActionFactory implements IAtsActionFactory {
       if (Strings.isValid(data.getCreatedByUserId())) {
          createdBy = atsApi.getUserService().getUserById(data.getCreatedByUserId());
       }
-      if (createdBy == null && Strings.isValid(data.getCreatedDateLong())) {
-         createdBy = atsApi.getUserService().getUserByAccountId(Long.valueOf(data.getCreatedDateLong()));
+      if (createdBy == null && Strings.isValid(data.getCreatedByUserId())) {
+         createdBy = atsApi.getUserService().getUserByAccountId(Long.valueOf(data.getCreatedByUserId()));
       }
       Conditions.assertNotNull(createdBy, "Created-By must be specified.");
       Conditions.assertNotNullOrEmpty(data.getAiIds(), "Actionable Items must be specified");
