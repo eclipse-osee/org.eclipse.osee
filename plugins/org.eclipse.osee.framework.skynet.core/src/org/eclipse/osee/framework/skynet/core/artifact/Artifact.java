@@ -247,9 +247,9 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
    }
 
    /**
-    * Determines if this artifact's type equals, or is a sub-type of, at least one of the given artifact types. 
-    * This is a relatively expensive operation, only use this method when you need either the multiple artifact
-    * types or to have sub-types included; otherwise us the less expensive equalsType below.
+    * Determines if this artifact's type equals, or is a sub-type of, at least one of the given artifact types. This is
+    * a relatively expensive operation, only use this method when you need either the multiple artifact types or to have
+    * sub-types included; otherwise us the less expensive equalsType below.
     */
    public final boolean isOfType(ArtifactTypeId... artifactTypes) {
       return getArtifactType().inheritsFrom(artifactTypes);
@@ -735,8 +735,14 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
       if (soleAttributes.size() == 1) {
          T value = soleAttributes.iterator().next().getValue();
          if (value == null) {
-            OseeLog.log(Activator.class, Level.SEVERE,
-               "Attribute \"" + attributeType + "\" has null value for Artifact " + getGuid() + " \"" + getName() + "\"");
+            /**
+             * ArtifactReferenceAttributes can have an attribute value (art id), but getValue would return null if art
+             * id can't be resolved. Do not error on null, but instead just return default value.
+             */
+            if (!(soleAttributes.iterator().next() instanceof ArtifactReferenceAttribute)) {
+               OseeLog.log(Activator.class, Level.SEVERE,
+                  "Attribute \"" + attributeType + "\" has null value for Artifact " + getGuid() + " \"" + getName() + "\"");
+            }
             return defaultReturnValue;
          }
          return value;
