@@ -40,7 +40,7 @@ public class ActionableItemResourceTest extends AbstractRestTest {
 
    @Test
    public void testAtsAiRestCall() {
-      testActionableItemUrl("/ats/ai/" + getSawCodeAi().getArtId(), 1, false);
+      testUrl("/ats/ai/" + getSawCodeAi().getArtId(), "SAW Code");
    }
 
    @Test

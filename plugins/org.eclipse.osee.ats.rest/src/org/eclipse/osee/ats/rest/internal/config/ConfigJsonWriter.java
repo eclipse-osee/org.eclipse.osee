@@ -107,7 +107,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
       ArtifactReadable artifact = (ArtifactReadable) atsServer.getQueryService().getArtifact(atsObject);
       writer.writeStartObject();
       writer.writeNumberField("id", getId(atsObject, atsServer));
-      writer.writeStringField("Name", atsObject.getName());
+      writer.writeStringField("name", atsObject.getName());
       writer.writeStringField("Description", atsObject.getDescription());
 
       if (atsObject instanceof IAtsTeamDefinition) {
@@ -186,7 +186,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
             for (IAtsProgram program : programs) {
                writer.writeStartObject();
                writer.writeNumberField("id", program.getId());
-               writer.writeStringField("Name", program.getName());
+               writer.writeStringField("name", program.getName());
                writer.writeBooleanField("active", program.isActive());
                writer.writeEndObject();
             }
@@ -201,7 +201,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
          for (IAgileFeatureGroup group : featureGroups) {
             writer.writeStartObject();
             writer.writeNumberField("id", group.getId());
-            writer.writeStringField("Name", group.getName());
+            writer.writeStringField("name", group.getName());
             writer.writeBooleanField("active", group.isActive());
             writer.writeEndObject();
          }
@@ -211,7 +211,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
          for (IAgileSprint sprint : agileSprints) {
             writer.writeStartObject();
             writer.writeNumberField("id", sprint.getId());
-            writer.writeStringField("Name", sprint.getName());
+            writer.writeStringField("name", sprint.getName());
             writer.writeBooleanField("active", sprint.isActive());
             writer.writeEndObject();
          }
@@ -339,7 +339,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
    private static void addArtifactIdentity(JsonGenerator writer, ArtifactReadable workArt) throws IOException, JsonGenerationException, JsonProcessingException {
       writer.writeStartObject();
       writer.writeNumberField("id", workArt.getId());
-      writer.writeStringField("Name", workArt.getName());
+      writer.writeStringField("name", workArt.getName());
       writer.writeEndObject();
    }
 

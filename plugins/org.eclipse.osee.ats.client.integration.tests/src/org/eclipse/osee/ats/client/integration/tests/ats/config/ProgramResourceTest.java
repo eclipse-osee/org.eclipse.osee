@@ -22,7 +22,7 @@ import org.junit.Test;
 public class ProgramResourceTest extends AbstractRestTest {
 
    private void testProgramUrl(String url, int size, boolean hasDescription) {
-      testUrl(url, size, "SAW Program", "ats.Description", hasDescription);
+      testUrl(url, size, SAW_Program.getName(), "ats.Description", hasDescription);
    }
 
    @Test
@@ -37,7 +37,7 @@ public class ProgramResourceTest extends AbstractRestTest {
 
    @Test
    public void testAtsProgramRestCall() {
-      testProgramUrl("/ats/program/" + SAW_Program.getIdString(), 1, false);
+      testUrl("/ats/program/" + SAW_Program.getIdString(), SAW_Program.getName());
    }
 
    @Test

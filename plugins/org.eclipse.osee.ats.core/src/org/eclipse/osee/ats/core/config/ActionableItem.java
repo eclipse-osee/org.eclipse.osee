@@ -43,8 +43,7 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
    }
 
    public ActionableItem(Log logger, AtsApi atsApi, ArtifactToken artifact) {
-      super(logger, atsApi, ArtifactToken.valueOf(artifact.getId(), artifact.getGuid(), artifact.getName(),
-         atsApi.getAtsBranch(), ActionableItem), ActionableItem);
+      super(logger, atsApi, artifact, ActionableItem);
    }
 
    @Override
@@ -68,8 +67,8 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
       List<IAtsActionableItem> children = new LinkedList<>();
       if (jaxAI != null) {
          for (Long aiId : jaxAI.getChildren()) {
-            children.add(new ActionableItem(logger, atsApi,
-               atsApi.getConfigService().getConfigurations().getIdToAi().get(aiId)));
+            children.add(
+               new ActionableItem(logger, atsApi, atsApi.getConfigService().getConfigurations().getIdToAi().get(aiId)));
          }
       } else {
          for (ArtifactToken artifact : atsApi.getRelationResolver().getChildren(artifact)) {

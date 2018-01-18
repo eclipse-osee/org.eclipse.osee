@@ -40,9 +40,11 @@ import org.eclipse.osee.ats.api.insertion.JaxInsertionActivity;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.rest.util.AbstractConfigResource;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * Donald G. Dunne
@@ -57,14 +59,14 @@ public class ProgramResource extends AbstractConfigResource {
       this.uriInfo = uriInfo;
    }
 
-   public ProgramResource(AtsApi atsApi) {
-      super(AtsArtifactTypes.Program, atsApi);
+   public ProgramResource(AtsApi atsApi, OrcsApi orcsApi) {
+      super(AtsArtifactTypes.Program, atsApi, orcsApi);
    }
 
    @GET
    @Path("version")
    @Produces(MediaType.APPLICATION_JSON)
-   public List<JaxNamedId> getProgramsVersions() throws Exception {
+   public List<JaxNamedId> getProgramsVersions() {
       List<JaxNamedId> programsVers = new LinkedList<>();
       for (IAtsProgram program : atsApi.getProgramService().getPrograms()) {
          for (IAtsVersion ver : atsApi.getProgramService().getVersions(program)) {
@@ -78,7 +80,7 @@ public class ProgramResource extends AbstractConfigResource {
    @GET
    @Path("{id}/insertion")
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getProgramInsertions(@PathParam("id") long id) throws Exception {
+   public Response getProgramInsertions(@PathParam("id") long id) {
       org.eclipse.osee.framework.core.data.ArtifactToken programArt = atsApi.getQueryService().getArtifact(id);
       if (programArt == null) {
          throw new OseeCoreException("Given id not found");
@@ -103,7 +105,7 @@ public class ProgramResource extends AbstractConfigResource {
    @Path("{programId}/insertion")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response createInsertion(@PathParam("programId") long programId, JaxInsertion newInsertion) throws Exception {
+   public Response createInsertion(@PathParam("programId") long programId, JaxInsertion newInsertion) {
       ArtifactToken programArt = atsApi.getQueryService().getArtifact(programId);
       if (programArt == null) {
          throw new OseeCoreException("Given id not found");
@@ -144,7 +146,7 @@ public class ProgramResource extends AbstractConfigResource {
    @GET
    @Path("{programId}/insertion/{id}")
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getInsertionDetails(@PathParam("programId") long programId, @PathParam("id") long id) throws Exception {
+   public Response getInsertionDetails(@PathParam("programId") long programId, @PathParam("id") long id) {
       ArtifactToken configArt = atsApi.getQueryService().getArtifact(id);
       if (configArt == null) {
          throw new OseeCoreException("Given id not found");
@@ -154,19 +156,15 @@ public class ProgramResource extends AbstractConfigResource {
 
    @DELETE
    @Path("{programId}/insertion/{insertionId}")
-   public Response deleteInsertion(@PathParam("insertionId") long insertionId) throws Exception {
-      ArtifactToken insertion = atsApi.getQueryService().getArtifact(insertionId);
-      if (insertion == null) {
-         throw new OseeCoreException("Given insertion id not found");
-      }
-      atsApi.getConfigItemFactory().deleteInsertion(insertion);
+   public Response deleteInsertion(@PathParam("insertionId") ArtifactId insertionId) {
+      atsApi.getConfigItemFactory().deleteInsertion(insertionId);
       return Response.ok().build();
    }
 
    @GET
    @Path("{programId}/insertion/{insertionId}/activity")
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getInsertionActivitys(@PathParam("programId") long programId, @PathParam("insertionId") long insertionId) throws Exception {
+   public Response getInsertionActivitys(@PathParam("programId") long programId, @PathParam("insertionId") long insertionId) {
       ArtifactToken insertion = atsApi.getQueryService().getArtifact(insertionId);
       if (insertion == null) {
          throw new OseeCoreException("Given insertion id not found");
@@ -191,7 +189,7 @@ public class ProgramResource extends AbstractConfigResource {
    @Path("{programId}/insertion/{insertionId}/activity")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response createInsertionActivity(@PathParam("programId") long programId, @PathParam("insertionId") long insertionId, JaxInsertionActivity newActivity) throws Exception {
+   public Response createInsertionActivity(@PathParam("programId") long programId, @PathParam("insertionId") long insertionId, JaxInsertionActivity newActivity) {
       ArtifactToken insertion = atsApi.getQueryService().getArtifact(insertionId);
       if (insertion == null) {
          throw new OseeCoreException("Given insertion id not found");
@@ -211,7 +209,7 @@ public class ProgramResource extends AbstractConfigResource {
    @Path("{programId}/insertion/{insertionId}/activity")
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response updateInsertionActivity(@PathParam("programId") long programId, @PathParam("insertionId") long insertionId, JaxInsertionActivity newActivity) throws Exception {
+   public Response updateInsertionActivity(@PathParam("programId") long programId, @PathParam("insertionId") long insertionId, JaxInsertionActivity newActivity) {
       ArtifactToken insertionActivityArt = atsApi.getQueryService().getArtifact(newActivity.getId());
       if (insertionActivityArt == null) {
          throw new OseeCoreException("Given insertion activity id not found");
@@ -232,16 +230,14 @@ public class ProgramResource extends AbstractConfigResource {
    @GET
    @Path("{programId}/insertion/{insertionId}/activity/{iaId}")
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getInsertionActivityDetails(@PathParam("programId") long programId, @PathParam("insertionId") long insertionId, @PathParam("iaId") long iaId) throws Exception {
-      ArtifactToken configArt = atsApi.getQueryService().getArtifact(iaId);
-      return Response.ok().entity(atsApi.getConfigItemFactory().getInsertionActivity(configArt)).build();
+   public Response getInsertionActivityDetails(@PathParam("programId") long programId, @PathParam("insertionId") long insertionId, @PathParam("iaId") ArtifactId iaId) {
+      return Response.ok().entity(atsApi.getConfigItemFactory().getInsertionActivity(iaId)).build();
    }
 
    @DELETE
    @Path("{programId}/insertion/{insertionId}/activity/{iaId}")
-   public Response deleteInsertionActivity(@PathParam("iaId") long iaId) throws Exception {
-      ArtifactToken insertionActivity = atsApi.getQueryService().getArtifact(iaId);
-      atsApi.getConfigItemFactory().deleteInsertionActivity(insertionActivity);
+   public Response deleteInsertionActivity(@PathParam("iaId") ArtifactId iaId) {
+      atsApi.getConfigItemFactory().deleteInsertionActivity(iaId);
       return Response.ok().build();
    }
 

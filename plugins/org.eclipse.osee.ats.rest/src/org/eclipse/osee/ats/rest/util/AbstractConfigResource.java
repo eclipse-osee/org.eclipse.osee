@@ -20,8 +20,11 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.jaxrs.mvc.IdentityView;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
  * @author Donald G. Dunne
@@ -29,33 +32,37 @@ import org.eclipse.osee.jaxrs.mvc.IdentityView;
 public abstract class AbstractConfigResource {
 
    protected final AtsApi atsApi;
-   private final IArtifactType artifactType;
+   private final ArtifactTypeId artifactType;
+   private final QueryBuilder query;
 
-   public AbstractConfigResource(IArtifactType artifactType, AtsApi atsApi) {
+   public AbstractConfigResource(ArtifactTypeId artifactType, AtsApi atsApi, OrcsApi orcsApi) {
       this.artifactType = artifactType;
       this.atsApi = atsApi;
+      query = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON);
    }
 
    @GET
-   @IdentityView
    @Produces(MediaType.APPLICATION_JSON)
-   public List<IAtsConfigObject> get() {
-      return getObjects();
+   public List<ArtifactToken> get() {
+      return query.andIsOfType(artifactType).loadArtifactTokens();
    }
 
    @GET
    @Path("details")
    @Produces(MediaType.APPLICATION_JSON)
    public List<IAtsConfigObject> getObjectsJson() {
-      return getObjects();
+      List<IAtsConfigObject> configs = new ArrayList<>();
+      for (ArtifactId art : query.andTypeEquals(artifactType).getResults()) {
+         configs.add(atsApi.getConfigItemFactory().getConfigObject(art));
+      }
+      return configs;
    }
 
    @GET
    @Path("{id}")
-   @IdentityView
    @Produces(MediaType.APPLICATION_JSON)
-   public IAtsConfigObject getObjectJson(@PathParam("id") ArtifactId artifactId) {
-      return atsApi.getConfigItemFactory().getConfigObject(artifactId);
+   public ArtifactToken getObjectJson(@PathParam("id") ArtifactId artifactId) {
+      return query.andId(artifactId).loadArtifactToken();
    }
 
    @GET
@@ -63,13 +70,5 @@ public abstract class AbstractConfigResource {
    @Produces(MediaType.APPLICATION_JSON)
    public IAtsConfigObject getObjectDetails(@PathParam("id") ArtifactId artifactId) {
       return atsApi.getConfigItemFactory().getConfigObject(artifactId);
-   }
-
-   private List<IAtsConfigObject> getObjects() {
-      List<IAtsConfigObject> configs = new ArrayList<>();
-      for (ArtifactId art : atsApi.getQueryService().getArtifacts(artifactType)) {
-         configs.add(atsApi.getConfigItemFactory().getConfigObject(art));
-      }
-      return configs;
    }
 }

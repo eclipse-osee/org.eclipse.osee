@@ -22,7 +22,7 @@ import org.junit.Test;
 public class VersionResourceTest extends AbstractRestTest {
 
    private void testVersionUrl(String url, int size, boolean hasReleased) {
-      testUrl(url, size, "SAW_Bld_1", "ats.Released", hasReleased);
+      testUrl(url, size, SAW_Bld_1.getName(), "ats.Released", hasReleased);
    }
 
    @Test
@@ -37,7 +37,8 @@ public class VersionResourceTest extends AbstractRestTest {
 
    @Test
    public void testAtsVersionRestCall() {
-      testVersionUrl("/ats/version/" + SAW_Bld_1.getIdString(), 1, false);
+      testUrl("/ats/version/" + SAW_Bld_1.getIdString(), SAW_Bld_1.getName());
+
    }
 
    @Test

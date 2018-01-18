@@ -114,14 +114,14 @@ public class AtsApplication extends Application {
       atsServer.getAgileSprintHtmlReportOperations().add(new SprintDataUiOperation(atsServer, registry));
 
       // Resources
-      singletons.add(new VersionResource(atsServer));
-      singletons.add(new TeamResource(atsServer));
-      singletons.add(new ActionableItemResource(atsServer));
+      singletons.add(new VersionResource(atsServer, orcsApi));
+      singletons.add(new TeamResource(atsServer, orcsApi));
+      singletons.add(new ActionableItemResource(atsServer, orcsApi));
 
-      singletons.add(new CountryResource(atsServer));
-      singletons.add(new ProgramResource(atsServer));
-      singletons.add(new InsertionResource(atsServer));
-      singletons.add(new InsertionActivityResource(atsServer));
+      singletons.add(new CountryResource(atsServer, orcsApi));
+      singletons.add(new ProgramResource(atsServer, orcsApi));
+      singletons.add(new InsertionResource(atsServer, orcsApi));
+      singletons.add(new InsertionActivityResource(atsServer, orcsApi));
 
       singletons.add(new AtsActionEndpointImpl(atsServer, jsonFactory));
       singletons.add(new AtsRuleEndpointImpl(atsServer));

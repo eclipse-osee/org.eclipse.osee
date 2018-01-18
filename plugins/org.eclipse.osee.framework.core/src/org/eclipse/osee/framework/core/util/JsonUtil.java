@@ -77,9 +77,9 @@ public class JsonUtil {
     */
    public static JsonNode getArrayElement(JsonNode array, String key, String value) {
       for (JsonNode element : array) {
-         JsonNode nameNode = element.get(key);
-         if (nameNode != null) {
-            if (value.equals(nameNode.asText())) {
+         JsonNode node = element.get(key);
+         if (node != null) {
+            if (value.equals(node.asText())) {
                return element;
             }
          }

@@ -14,6 +14,7 @@ import javax.ws.rs.Path;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.util.AbstractConfigResource;
+import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * Donald G. Dunne
@@ -21,8 +22,8 @@ import org.eclipse.osee.ats.rest.util.AbstractConfigResource;
 @Path("ai")
 public class ActionableItemResource extends AbstractConfigResource {
 
-   public ActionableItemResource(IAtsServer atsServer) {
-      super(AtsArtifactTypes.ActionableItem, atsServer);
+   public ActionableItemResource(IAtsServer atsServer, OrcsApi orcsApi) {
+      super(AtsArtifactTypes.ActionableItem, atsServer, orcsApi);
    }
 
 }

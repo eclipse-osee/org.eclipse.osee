@@ -76,9 +76,20 @@ public abstract class AbstractRestTest {
       JsonNode array = readTree(url);
       Assert.assertEquals(array.toString(), size, array.size());
 
-      JsonNode obj = JsonUtil.getArrayElement(array, "Name", expectedName);
+      JsonNode obj = JsonUtil.getArrayElement(array, "name", expectedName);
       Assert.assertNotNull(String.format("Did not find value [%s] in JsonArray [%s]", expectedName, array), obj);
       Assert.assertEquals(keyExists, obj.has(key));
+      return obj;
+   }
+
+   protected JsonNode testUrl(String url, String expectedName) {
+      JsonNode node = readTree(url);
+
+      JsonNode obj = JsonUtil.getArrayElement(node, "name", expectedName);
+
+      JsonNode nameNode = node.get("name");
+      Assert.assertTrue(String.format("Did not find value [%s] in JsonArray [%s]", expectedName, node),
+         nameNode != null && expectedName.equals(nameNode.asText()));
       return obj;
    }
 }

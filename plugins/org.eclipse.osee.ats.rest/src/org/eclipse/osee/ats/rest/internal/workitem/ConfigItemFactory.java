@@ -251,7 +251,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
 
    @Override
    public void deleteInsertion(ArtifactId artifact) {
-      deleteConfigObject(artifact.getId(), "Delete Insertion", AtsArtifactTypes.Insertion);
+      deleteConfigObject(artifact, "Delete Insertion", AtsArtifactTypes.Insertion);
    }
 
    @Override
@@ -286,13 +286,13 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
 
    @Override
    public void deleteInsertionActivity(ArtifactId artifact) {
-      deleteConfigObject(artifact.getId(), "Delete Insertion Activity", AtsArtifactTypes.InsertionActivity);
+      deleteConfigObject(artifact, "Delete Insertion Activity", AtsArtifactTypes.InsertionActivity);
    }
 
-   private void deleteConfigObject(long id, String comment, IArtifactType type) {
+   private void deleteConfigObject(ArtifactId id, String comment, IArtifactType type) {
       ArtifactReadable toDelete = (ArtifactReadable) atsServer.getQueryService().getArtifact(id);
       if (toDelete == null) {
-         throw new OseeCoreException("No object found for id %d", id);
+         throw new OseeCoreException("No object found for id %s", id);
       }
 
       if (!toDelete.isTypeEqual(type)) {

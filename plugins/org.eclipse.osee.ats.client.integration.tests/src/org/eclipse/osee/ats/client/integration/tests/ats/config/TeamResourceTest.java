@@ -42,8 +42,7 @@ public class TeamResourceTest extends AbstractRestTest {
 
    @Test
    public void testAtsTeamRestCall() {
-      JsonNode team = testTeamUrl("/ats/team/" + DemoArtifactToken.SAW_SW.getIdString(), 1, false);
-      Assert.assertFalse(team.has("version"));
+      testUrl("/ats/team/" + DemoArtifactToken.SAW_SW.getIdString(), "SAW SW");
    }
 
    @Test

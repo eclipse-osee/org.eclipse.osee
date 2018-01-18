@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.rest.util.AbstractConfigResource;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.util.NamedComparator;
 import org.eclipse.osee.framework.jdk.core.util.SortOrder;
+import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * Donald G. Dunne
@@ -34,16 +35,16 @@ import org.eclipse.osee.framework.jdk.core.util.SortOrder;
 @Path("team")
 public class TeamResource extends AbstractConfigResource {
 
-   public TeamResource(AtsApi atsApi) {
-      super(AtsArtifactTypes.TeamDefinition, atsApi);
+   public TeamResource(AtsApi atsApi, OrcsApi orcsApi) {
+      super(AtsArtifactTypes.TeamDefinition, atsApi, orcsApi);
    }
 
    @GET
    @Path("{id}/Version")
    @Produces(MediaType.APPLICATION_JSON)
-   public List<String> getVersionNames(@PathParam("id") Long id) throws Exception {
+   public List<String> getVersionNames(@PathParam("id") ArtifactId teamId) {
       List<String> versions = new LinkedList<>();
-      IAtsTeamDefinition teamDef = atsApi.getQueryService().getConfigItem(id);
+      IAtsTeamDefinition teamDef = atsApi.getQueryService().getConfigItem(teamId);
       for (IAtsVersion version : atsApi.getVersionService().getVersions(teamDef)) {
          versions.add(version.getName());
       }

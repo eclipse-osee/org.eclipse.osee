@@ -14,6 +14,7 @@ import javax.ws.rs.Path;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.util.AbstractConfigResource;
+import org.eclipse.osee.orcs.OrcsApi;
 
 /**
  * Donald G. Dunne
@@ -21,8 +22,8 @@ import org.eclipse.osee.ats.rest.util.AbstractConfigResource;
 @Path("insertion")
 public class InsertionResource extends AbstractConfigResource {
 
-   public InsertionResource(IAtsServer atsServer) {
-      super(AtsArtifactTypes.Insertion, atsServer);
+   public InsertionResource(IAtsServer atsServer, OrcsApi orcsApi) {
+      super(AtsArtifactTypes.Insertion, atsServer, orcsApi);
    }
 
 }

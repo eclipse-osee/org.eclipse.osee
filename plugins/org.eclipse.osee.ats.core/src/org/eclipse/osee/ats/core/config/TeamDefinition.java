@@ -51,8 +51,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
    }
 
    public TeamDefinition(Log logger, AtsApi atsApi, ArtifactToken artifact) {
-      super(logger, atsApi, ArtifactToken.valueOf(artifact.getId(), artifact.getGuid(), artifact.getName(),
-         atsApi.getAtsBranch(), TeamDefinition), TeamDefinition);
+      super(logger, atsApi, artifact, TeamDefinition);
    }
 
    @Override
