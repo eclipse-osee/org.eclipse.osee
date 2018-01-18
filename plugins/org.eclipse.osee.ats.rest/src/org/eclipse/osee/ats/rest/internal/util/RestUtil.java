@@ -19,9 +19,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.AtsApplication;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
@@ -83,12 +83,12 @@ public class RestUtil {
          .param("PUT_TITLE_HERE", title);
    }
 
-   public static Response redirect(IAtsWorkItem workItem, String defaultUrl, IAtsServer atsServer) {
-      return redirect(Arrays.asList(workItem), defaultUrl, atsServer);
+   public static Response redirect(IAtsWorkItem workItem, String defaultUrl, AtsApi atsApi) {
+      return redirect(Arrays.asList(workItem), defaultUrl, atsApi);
    }
 
-   public static Response redirect(Collection<? extends IAtsWorkItem> workItems, String defaultUrl, IAtsServer atsServer) {
-      String actionUrl = AtsUtilCore.getBaseActionUiUrl(defaultUrl, atsServer);
+   public static Response redirect(Collection<? extends IAtsWorkItem> workItems, String defaultUrl, AtsApi atsApi) {
+      String actionUrl = AtsUtilCore.getBaseActionUiUrl(defaultUrl, atsApi);
       String ids = "";
       for (IAtsWorkItem teamWf : workItems) {
          ids += teamWf.getAtsId() + ",";

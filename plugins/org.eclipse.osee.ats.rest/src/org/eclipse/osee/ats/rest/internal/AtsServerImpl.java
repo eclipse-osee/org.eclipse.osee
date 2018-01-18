@@ -69,7 +69,6 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -386,23 +385,6 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
    @Override
    public ArtifactToken getArtifactByName(IArtifactType artifactType, String name) {
       return getQuery().andIsOfType(artifactType).andNameEquals(name).getResults().getAtMostOneOrNull();
-   }
-
-   @Override
-   public CustomizeData getCustomizationByGuid(String customize_guid) {
-      CustomizeData cust = null;
-      ArtifactReadable customizeStoreArt = getQuery().and(CoreAttributeTypes.XViewerCustomization, customize_guid,
-         QueryOption.CONTAINS_MATCH_OPTIONS).getResults().getAtMostOneOrNull();
-      if (customizeStoreArt != null) {
-         for (String custXml : getAttributeResolver().getAttributesToStringList(customizeStoreArt,
-            CoreAttributeTypes.XViewerCustomization)) {
-            if (custXml.contains(customize_guid)) {
-               cust = new CustomizeData(custXml);
-               break;
-            }
-         }
-      }
-      return cust;
    }
 
    private List<ArtifactId> getCustomizeArts() {

@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -87,4 +88,6 @@ public interface IAtsStoreService {
    default boolean isInDb(IAtsWorkItem workItem) {
       return getTransactionId(workItem).isValid();
    }
+
+   CustomizeData getCustomizationByGuid(String customize_guid);
 }

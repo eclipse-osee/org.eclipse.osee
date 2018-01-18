@@ -90,7 +90,6 @@ import org.eclipse.osee.ats.core.agile.operations.SprintBurndownOperations;
 import org.eclipse.osee.ats.core.agile.operations.SprintBurnupOperations;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.util.chart.LineChart;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.agile.operations.EndpointOperations;
 import org.eclipse.osee.ats.rest.internal.agile.operations.KanbanOperations;
 import org.eclipse.osee.ats.rest.internal.agile.operations.ProgramOperations;
@@ -640,8 +639,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
          id = Lib.generateArtifactIdAsInt();
       }
 
-      IAgileSprint sprint =
-         atsApi.getAgileService().createAgileSprint(newSprint.getTeamId(), newSprint.getName(), id);
+      IAgileSprint sprint = atsApi.getAgileService().createAgileSprint(newSprint.getTeamId(), newSprint.getName(), id);
       JaxAgileSprint created = toJaxSprint(sprint);
 
       UriBuilder builder = uriInfo.getRequestUriBuilder();
@@ -895,7 +893,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
 
    @Override
    public JaxKbSprint getSprintItemsForKb(long teamId, long sprintId) {
-      return KanbanOperations.getSprintItemsForKb((IAtsServer) atsApi, teamId, sprintId);
+      return KanbanOperations.getSprintItemsForKb(atsApi, teamId, sprintId);
    }
 
    /********************************
@@ -1052,8 +1050,8 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       Collection<IAtsWorkItem> myWorldItems = getSprintWorkItems(teamId, sprintId);
       CustomizeData custData = getDefaultAgileCustData();
       Conditions.assertNotNull(custData, "Can't retrieve default customization");
-      String table = WorldResource.getCustomizedTable((IAtsServer) atsApi, "Sprint - " + sprintArt.getName(), custData,
-         myWorldItems);
+      String table =
+         WorldResource.getCustomizedTable(atsApi, "Sprint - " + sprintArt.getName(), custData, myWorldItems);
       return Response.ok().entity(table).build();
    }
 
@@ -1075,10 +1073,10 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       ArtifactToken sprintArt = atsApi.getArtifact(sprintId);
       Conditions.assertNotNull(sprintArt, "Sprint not found with id %s", sprintId);
       Collection<IAtsWorkItem> myWorldItems = getSprintWorkItems(teamId, sprintId);
-      CustomizeData custData = ((IAtsServer) atsApi).getCustomizationByGuid(customizeGuid);
+      CustomizeData custData = atsApi.getStoreService().getCustomizationByGuid(customizeGuid);
       Conditions.assertNotNull(custData, "Can't retrieve customization with id %s", customizeGuid);
-      String table = WorldResource.getCustomizedTable(((IAtsServer) atsApi), "Sprint - " + sprintArt.getName(),
-         custData, myWorldItems);
+      String table =
+         WorldResource.getCustomizedTable(atsApi, "Sprint - " + sprintArt.getName(), custData, myWorldItems);
       return Response.ok().entity(table).build();
    }
 

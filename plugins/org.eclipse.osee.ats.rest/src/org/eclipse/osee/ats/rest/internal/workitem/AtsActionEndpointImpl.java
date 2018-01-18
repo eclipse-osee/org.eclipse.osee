@@ -65,7 +65,6 @@ import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.ats.rest.internal.util.TargetedVersion;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -448,9 +447,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
                List<StateType> stateTypes = new LinkedList<>();
                for (String type : entry.getValue()) {
                   StateType stateType2 = StateType.valueOf(type);
-                  if (stateType2 != null) {
-                     stateTypes.add(stateType2);
-                  }
+                  stateTypes.add(stateType2);
                }
                query.andStateType(stateTypes.toArray(new StateType[stateTypes.size()]));
             } catch (Exception ex) {
@@ -463,9 +460,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
             List<WorkItemType> workItemTypes = new LinkedList<>();
             for (String type : entry.getValue()) {
                WorkItemType workItem = WorkItemType.valueOf(type);
-               if (workItem != null) {
-                  workItemTypes.add(workItem);
-               }
+               workItemTypes.add(workItem);
             }
             query.andWorkItemType(workItemTypes.toArray(new WorkItemType[workItemTypes.size()]));
          } else if (entry.getKey().equals("Version")) {
@@ -598,7 +593,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       changes.execute();
 
       // Redirect to action ui
-      return RestUtil.redirect(action.getTeamWfs(), ATS_UI_ACTION_PREFIX, (IAtsServer) atsApi);
+      return RestUtil.redirect(action.getTeamWfs(), ATS_UI_ACTION_PREFIX, atsApi);
    }
 
 }

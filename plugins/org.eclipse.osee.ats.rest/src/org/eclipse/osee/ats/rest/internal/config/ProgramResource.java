@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.rest.internal.config;
 
 import java.net.URI;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import javax.ws.rs.Consumes;
@@ -27,6 +28,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.config.JaxNamedId;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -37,12 +39,10 @@ import org.eclipse.osee.ats.api.insertion.JaxInsertion;
 import org.eclipse.osee.ats.api.insertion.JaxInsertionActivity;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.util.AbstractConfigResource;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * Donald G. Dunne
@@ -57,8 +57,8 @@ public class ProgramResource extends AbstractConfigResource {
       this.uriInfo = uriInfo;
    }
 
-   public ProgramResource(IAtsServer atsServer) {
-      super(AtsArtifactTypes.Program, atsServer);
+   public ProgramResource(AtsApi atsApi) {
+      super(AtsArtifactTypes.Program, atsApi);
    }
 
    @GET
@@ -66,8 +66,8 @@ public class ProgramResource extends AbstractConfigResource {
    @Produces(MediaType.APPLICATION_JSON)
    public List<JaxNamedId> getProgramsVersions() throws Exception {
       List<JaxNamedId> programsVers = new LinkedList<>();
-      for (IAtsProgram program : atsServer.getProgramService().getPrograms()) {
-         for (IAtsVersion ver : atsServer.getProgramService().getVersions(program)) {
+      for (IAtsProgram program : atsApi.getProgramService().getPrograms()) {
+         for (IAtsVersion ver : atsApi.getProgramService().getVersions(program)) {
             programsVers.add(
                JaxNamedId.construct(ver.getId(), String.format("%s - %s", program.getName(), ver.getName())));
          }
@@ -79,18 +79,19 @@ public class ProgramResource extends AbstractConfigResource {
    @Path("{id}/insertion")
    @Produces(MediaType.APPLICATION_JSON)
    public Response getProgramInsertions(@PathParam("id") long id) throws Exception {
-      ArtifactReadable programArt = atsServer.getArtifact(id);
+      org.eclipse.osee.framework.core.data.ArtifactToken programArt = atsApi.getArtifact(id);
       if (programArt == null) {
          throw new OseeCoreException("Given id not found");
       }
-      if (!programArt.isOfType(AtsArtifactTypes.Program)) {
+      if (!atsApi.getStoreService().isOfType(programArt, AtsArtifactTypes.Program)) {
          throw new OseeCoreException("Given id not program type");
       }
       // get the insertions related to the given program
-      ResultSet<ArtifactReadable> results = programArt.getRelated(AtsRelationTypes.ProgramToInsertion_Insertion);
+      Collection<ArtifactToken> results =
+         atsApi.getRelationResolver().getRelated(programArt, AtsRelationTypes.ProgramToInsertion_Insertion);
       List<IAtsConfigObject> insertions = new LinkedList<>();
-      for (ArtifactReadable insertion : results) {
-         insertions.add(atsServer.getConfigItemFactory().getInsertion(insertion));
+      for (ArtifactToken insertion : results) {
+         insertions.add(atsApi.getConfigItemFactory().getInsertion(insertion));
       }
       // http://aruld.info/handling-generified-collections-in-jersey-jax-rs/
       GenericEntity<List<IAtsConfigObject>> entity = new GenericEntity<List<IAtsConfigObject>>(insertions) { //
@@ -103,18 +104,18 @@ public class ProgramResource extends AbstractConfigResource {
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    public Response createInsertion(@PathParam("programId") long programId, JaxInsertion newInsertion) throws Exception {
-      ArtifactReadable programArt = atsServer.getArtifact(programId);
+      ArtifactToken programArt = atsApi.getArtifact(programId);
       if (programArt == null) {
          throw new OseeCoreException("Given id not found");
       }
-      if (!programArt.isOfType(AtsArtifactTypes.Program)) {
+      if (!atsApi.getStoreService().isOfType(programArt, AtsArtifactTypes.Program)) {
          throw new OseeCoreException("Given id not program type");
       }
-      ResultSet<?> results = atsServer.getQuery().andId(newInsertion.getId()).getResults();
-      if (results.size() != 0) {
+      ArtifactToken artifact = atsApi.getArtifact(newInsertion.getId());
+      if (artifact != null) {
          throw new OseeStateException("Insertion with id %d already exists", newInsertion.getId());
       }
-      IAtsInsertion created = atsServer.getConfigItemFactory().createInsertion(programArt, newInsertion);
+      IAtsInsertion created = atsApi.getConfigItemFactory().createInsertion(programArt, newInsertion);
       return getResponse(created);
    }
 
@@ -123,16 +124,16 @@ public class ProgramResource extends AbstractConfigResource {
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    public Response updateInsertion(@PathParam("programId") long programId, JaxInsertion insertion) {
-      ArtifactReadable insertionArt = atsServer.getArtifact(insertion.getId());
+      ArtifactToken insertionArt = atsApi.getArtifact(insertion.getId());
       if (insertionArt == null) {
          throw new OseeCoreException("Given insertion id not found");
       }
-      if (!insertionArt.isOfType(AtsArtifactTypes.Insertion)) {
+      if (!atsApi.getStoreService().isOfType(insertionArt, AtsArtifactTypes.Insertion)) {
          throw new OseeCoreException("Given insertion id not insertion type");
       }
       Response response = null;
       if (!insertionArt.getName().equals(insertion.getName())) {
-         IAtsConfigObject updated = atsServer.getConfigItemFactory().updateInsertion(insertion);
+         IAtsConfigObject updated = atsApi.getConfigItemFactory().updateInsertion(insertion);
          response = Response.ok().entity(updated).build();
       } else {
          response = Response.notModified().build();
@@ -144,21 +145,21 @@ public class ProgramResource extends AbstractConfigResource {
    @Path("{programId}/insertion/{id}")
    @Produces(MediaType.APPLICATION_JSON)
    public Response getInsertionDetails(@PathParam("programId") long programId, @PathParam("id") long id) throws Exception {
-      ArtifactReadable configArt = atsServer.getArtifact(id);
+      ArtifactToken configArt = atsApi.getArtifact(id);
       if (configArt == null) {
          throw new OseeCoreException("Given id not found");
       }
-      return Response.ok().entity(atsServer.getConfigItemFactory().getInsertion(configArt)).build();
+      return Response.ok().entity(atsApi.getConfigItemFactory().getInsertion(configArt)).build();
    }
 
    @DELETE
    @Path("{programId}/insertion/{insertionId}")
    public Response deleteInsertion(@PathParam("insertionId") long insertionId) throws Exception {
-      ArtifactReadable insertion = atsServer.getArtifact(insertionId);
+      ArtifactToken insertion = atsApi.getArtifact(insertionId);
       if (insertion == null) {
          throw new OseeCoreException("Given insertion id not found");
       }
-      atsServer.getConfigItemFactory().deleteInsertion(insertion);
+      atsApi.getConfigItemFactory().deleteInsertion(insertion);
       return Response.ok().build();
    }
 
@@ -166,19 +167,19 @@ public class ProgramResource extends AbstractConfigResource {
    @Path("{programId}/insertion/{insertionId}/activity")
    @Produces(MediaType.APPLICATION_JSON)
    public Response getInsertionActivitys(@PathParam("programId") long programId, @PathParam("insertionId") long insertionId) throws Exception {
-      ArtifactReadable insertion = atsServer.getArtifact(insertionId);
+      ArtifactToken insertion = atsApi.getArtifact(insertionId);
       if (insertion == null) {
          throw new OseeCoreException("Given insertion id not found");
       }
-      if (!insertion.isOfType(AtsArtifactTypes.Insertion)) {
+      if (!atsApi.getStoreService().isOfType(insertion, AtsArtifactTypes.Insertion)) {
          throw new OseeCoreException("Given id not insertion type");
       }
       // get the insertions related to the given program
-      ResultSet<ArtifactReadable> results =
-         insertion.getRelated(AtsRelationTypes.InsertionToInsertionActivity_InsertionActivity);
+      Collection<ArtifactToken> results = atsApi.getRelationResolver().getRelated(insertion,
+         AtsRelationTypes.InsertionToInsertionActivity_InsertionActivity);
       List<IAtsConfigObject> insertionActivitys = new LinkedList<>();
-      for (ArtifactReadable insertionActivity : results) {
-         insertionActivitys.add(atsServer.getConfigItemFactory().getInsertionActivity(insertionActivity));
+      for (ArtifactToken insertionActivity : results) {
+         insertionActivitys.add(atsApi.getConfigItemFactory().getInsertionActivity(insertionActivity));
       }
       // http://aruld.info/handling-generified-collections-in-jersey-jax-rs/
       GenericEntity<List<IAtsConfigObject>> entity = new GenericEntity<List<IAtsConfigObject>>(insertionActivitys) { //
@@ -191,18 +192,18 @@ public class ProgramResource extends AbstractConfigResource {
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    public Response createInsertionActivity(@PathParam("programId") long programId, @PathParam("insertionId") long insertionId, JaxInsertionActivity newActivity) throws Exception {
-      ArtifactReadable insertion = atsServer.getArtifact(insertionId);
+      ArtifactToken insertion = atsApi.getArtifact(insertionId);
       if (insertion == null) {
          throw new OseeCoreException("Given insertion id not found");
       }
-      if (!insertion.isOfType(AtsArtifactTypes.Insertion)) {
+      if (!atsApi.getStoreService().isOfType(insertion, AtsArtifactTypes.Insertion)) {
          throw new OseeCoreException("Given id not insertion type");
       }
-      ResultSet<?> results = atsServer.getQuery().andId(newActivity.getId()).getResults();
-      if (results.size() != 0) {
+      ArtifactToken artifact = atsApi.getArtifact(newActivity.getId());
+      if (artifact != null) {
          throw new OseeStateException("Insertion Activity with id %d already exists", newActivity.getId());
       }
-      IAtsInsertionActivity created = atsServer.getConfigItemFactory().createInsertionActivity(insertion, newActivity);
+      IAtsInsertionActivity created = atsApi.getConfigItemFactory().createInsertionActivity(insertion, newActivity);
       return getResponse(created);
    }
 
@@ -211,16 +212,16 @@ public class ProgramResource extends AbstractConfigResource {
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    public Response updateInsertionActivity(@PathParam("programId") long programId, @PathParam("insertionId") long insertionId, JaxInsertionActivity newActivity) throws Exception {
-      ArtifactReadable insertionActivityArt = atsServer.getArtifact(newActivity.getId());
+      ArtifactToken insertionActivityArt = atsApi.getArtifact(newActivity.getId());
       if (insertionActivityArt == null) {
          throw new OseeCoreException("Given insertion activity id not found");
       }
-      if (!insertionActivityArt.isOfType(AtsArtifactTypes.InsertionActivity)) {
+      if (!atsApi.getStoreService().isOfType(insertionActivityArt, AtsArtifactTypes.InsertionActivity)) {
          throw new OseeCoreException("Given insertion activity id not insertion activity type");
       }
       Response response = null;
       if (!insertionActivityArt.getName().equals(newActivity.getName())) {
-         IAtsConfigObject updated = atsServer.getConfigItemFactory().updateInsertionActivity(newActivity);
+         IAtsConfigObject updated = atsApi.getConfigItemFactory().updateInsertionActivity(newActivity);
          response = Response.ok().entity(updated).build();
       } else {
          response = Response.notModified().build();
@@ -232,15 +233,15 @@ public class ProgramResource extends AbstractConfigResource {
    @Path("{programId}/insertion/{insertionId}/activity/{iaId}")
    @Produces(MediaType.APPLICATION_JSON)
    public Response getInsertionActivityDetails(@PathParam("programId") long programId, @PathParam("insertionId") long insertionId, @PathParam("iaId") long iaId) throws Exception {
-      ArtifactReadable configArt = atsServer.getQuery().andId(iaId).getResults().getExactlyOne();
-      return Response.ok().entity(atsServer.getConfigItemFactory().getInsertionActivity(configArt)).build();
+      ArtifactToken configArt = atsApi.getArtifact(iaId);
+      return Response.ok().entity(atsApi.getConfigItemFactory().getInsertionActivity(configArt)).build();
    }
 
    @DELETE
    @Path("{programId}/insertion/{insertionId}/activity/{iaId}")
    public Response deleteInsertionActivity(@PathParam("iaId") long iaId) throws Exception {
-      ArtifactReadable insertionActivity = atsServer.getQuery().andId(iaId).getResults().getExactlyOne();
-      atsServer.getConfigItemFactory().deleteInsertionActivity(insertionActivity);
+      ArtifactToken insertionActivity = atsApi.getArtifact(iaId);
+      atsApi.getConfigItemFactory().deleteInsertionActivity(insertionActivity);
       return Response.ok().build();
    }
 

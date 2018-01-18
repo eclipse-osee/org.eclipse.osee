@@ -61,8 +61,6 @@ public interface IAtsServer extends AtsApi, IAtsNotifier, IAtsConfigItemFactoryP
 
    void addAtsDatabaseConversion(IAtsDatabaseConversion conversion);
 
-   CustomizeData getCustomizationByGuid(String customize_guid);
-
    Collection<CustomizeData> getCustomizations(String namespace);
 
    Collection<CustomizeData> getCustomizationsGlobal(String namespace);

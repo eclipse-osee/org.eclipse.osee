@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -39,6 +40,8 @@ import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -218,4 +221,22 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    public boolean isDeleted(ArtifactId artifact) {
       return atsServer.getArtifact(artifact).isDeleted();
    }
+
+   @Override
+   public CustomizeData getCustomizationByGuid(String customize_guid) {
+      CustomizeData cust = null;
+      ArtifactReadable customizeStoreArt = atsServer.getQuery().and(CoreAttributeTypes.XViewerCustomization,
+         customize_guid, QueryOption.CONTAINS_MATCH_OPTIONS).getResults().getAtMostOneOrNull();
+      if (customizeStoreArt != null) {
+         for (String custXml : atsServer.getAttributeResolver().getAttributesToStringList(customizeStoreArt,
+            CoreAttributeTypes.XViewerCustomization)) {
+            if (custXml.contains(customize_guid)) {
+               cust = new CustomizeData(custXml);
+               break;
+            }
+         }
+      }
+      return cust;
+   }
+
 }

@@ -19,11 +19,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Donald G. Dunne
@@ -32,12 +31,10 @@ public abstract class AbstractConfigResource {
 
    protected final AtsApi atsApi;
    private final IArtifactType artifactType;
-   protected IAtsServer atsServer;
 
    public AbstractConfigResource(IArtifactType artifactType, AtsApi atsApi) {
       this.artifactType = artifactType;
       this.atsApi = atsApi;
-      this.atsServer = (IAtsServer) atsApi;
    }
 
    @GET
@@ -70,7 +67,7 @@ public abstract class AbstractConfigResource {
    }
 
    private IAtsConfigObject getObject(int id) {
-      ArtifactReadable configArt = (ArtifactReadable) atsApi.getArtifact(new Long(id));
+      ArtifactToken configArt = atsApi.getArtifact(new Long(id));
       return atsApi.getConfigItemFactory().getConfigObject(configArt);
    }
 

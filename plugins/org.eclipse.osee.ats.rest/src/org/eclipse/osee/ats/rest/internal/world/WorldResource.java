@@ -22,6 +22,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.column.IAtsColumnId;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
@@ -114,7 +115,7 @@ public class WorldResource {
       Conditions.checkNotNull(userById, "User by Id " + id);
 
       ElapsedTime getCustomization = new ElapsedTime("getCustomizationByGuid");
-      CustomizeData customization = atsServer.getCustomizationByGuid(customize_guid);
+      CustomizeData customization = atsServer.getStoreService().getCustomizationByGuid(customize_guid);
       getCustomization.end();
 
       ElapsedTime getWorkItems = new ElapsedTime("get work items");
@@ -170,7 +171,7 @@ public class WorldResource {
       ElapsedTime time = new ElapsedTime("start");
 
       ElapsedTime getCustomization = new ElapsedTime("getCustomizationByGuid");
-      CustomizeData customization = atsServer.getCustomizationByGuid(customize_guid);
+      CustomizeData customization = atsServer.getStoreService().getCustomizationByGuid(customize_guid);
       getCustomization.end();
 
       // get work items
@@ -187,7 +188,7 @@ public class WorldResource {
 
    }
 
-   public static String getCustomizedTable(IAtsServer atsServer, String title, CustomizeData customization, Collection<IAtsWorkItem> workItems) {
+   public static String getCustomizedTable(AtsApi atsApi, String title, CustomizeData customization, Collection<IAtsWorkItem> workItems) {
       Conditions.checkNotNull(customization, "Customization " + customization + " ");
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.heading(2, title));
@@ -203,7 +204,7 @@ public class WorldResource {
       headers.add("Link");
       sb.append(AHTML.addHeaderRowMultiColumnTable(headers));
 
-      AtsConfigurations configurations = atsServer.getConfigService().getConfigurations();
+      AtsConfigurations configurations = atsApi.getConfigService().getConfigurations();
       for (IAtsWorkItem workItem : workItems) {
 
          // create row
@@ -213,7 +214,7 @@ public class WorldResource {
             if (col.isShow()) {
                String text = "";
                if (Strings.isValid(col.getId())) {
-                  text = atsServer.getColumnService().getColumnText(configurations, col.getId(), workItem);
+                  text = atsApi.getColumnService().getColumnText(configurations, col.getId(), workItem);
                }
                rowStrs.add(text);
                colOptions.add("");
