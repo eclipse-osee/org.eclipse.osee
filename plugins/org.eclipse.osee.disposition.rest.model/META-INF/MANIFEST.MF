@@ -6,5 +6,12 @@ Bundle-Version: 0.26.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Export-Package: org.eclipse.osee.disposition.model
-Import-Package: org.eclipse.osee.framework.jdk.core.type
+Import-Package: org.codehaus.jackson,
+ org.codehaus.jackson.annotate,
+ org.codehaus.jackson.map,
+ org.codehaus.jackson.map.annotate,
+ org.codehaus.jackson.map.deser.std,
+ org.eclipse.osee.framework.core.util,
+ org.eclipse.osee.framework.jdk.core.type,
+ org.eclipse.osee.framework.jdk.core.util
 

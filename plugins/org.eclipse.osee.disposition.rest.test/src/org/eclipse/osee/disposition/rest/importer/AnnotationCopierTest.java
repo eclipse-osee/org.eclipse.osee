@@ -223,7 +223,7 @@ public class AnnotationCopierTest {
       DispoAnnotationData newAnnotation = modifiedItemAnnotations.get(1);
 
       // We should of copied all NON-Default Anntotations
-      Assert.assertEquals(expectedId, origAnnotation.getId());
+      Assert.assertEquals(expectedId, origAnnotation.getGuid());
       Assert.assertEquals("5-7", newAnnotation.getLocationRefs());
       Assert.assertEquals("Manual Annotation", newAnnotation.getResolution());
       Assert.assertEquals(2, modifiedItemAnnotations.size());

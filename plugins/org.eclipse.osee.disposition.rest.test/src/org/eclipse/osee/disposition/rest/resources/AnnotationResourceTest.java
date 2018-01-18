@@ -72,7 +72,7 @@ public class AnnotationResourceTest {
       Response postResponse = resource.postDispoAnnotation(annotationToCreate, "name");
       DispoAnnotationData returnedEntity = (DispoAnnotationData) postResponse.getEntity();
       assertEquals(Response.Status.CREATED.getStatusCode(), postResponse.getStatus());
-      assertEquals(mockId, returnedEntity.getId());
+      assertEquals(mockId, returnedEntity.getGuid());
       assertEquals("1-10", returnedEntity.getLocationRefs());
    }
 
@@ -111,9 +111,9 @@ public class AnnotationResourceTest {
       DispoAnnotationData expectedAnnotation = new DispoAnnotationData();
       expectedAnnotation.setId(mockId);
       expectedAnnotation.setLocationRefs("1-10");
-      when(dispositionApi.getDispoAnnotationById(branch, "itemId", expectedAnnotation.getId())).thenReturn(
+      when(dispositionApi.getDispoAnnotationById(branch, "itemId", expectedAnnotation.getGuid())).thenReturn(
          expectedAnnotation);
-      DispoAnnotationData oneSetResponse = resource.getAnnotationByIdJson(expectedAnnotation.getId());
+      DispoAnnotationData oneSetResponse = resource.getAnnotationByIdJson(expectedAnnotation.getGuid());
       assertEquals(expectedAnnotation, oneSetResponse);
    }
 
@@ -123,16 +123,16 @@ public class AnnotationResourceTest {
       newAnnotation.setLocationRefs("2-11");
       DispoAnnotationData annotationToEdit = new DispoAnnotationData();
       annotationToEdit.setId(mockId);
-      when(dispositionApi.editDispoAnnotation(branch, "itemId", annotationToEdit.getId(), newAnnotation, "name",
+      when(dispositionApi.editDispoAnnotation(branch, "itemId", annotationToEdit.getGuid(), newAnnotation, "name",
          false)).thenReturn(true);
       when(dispositionApi.getDispoItemById(branch, "itemId")).thenReturn(dispoItem);
       when(dispoItem.getStatus()).thenReturn(DispoStrings.Item_Complete);
-      Response response = resource.putDispoAnnotation(annotationToEdit.getId(), newAnnotation, "name");
+      Response response = resource.putDispoAnnotation(annotationToEdit.getGuid(), newAnnotation, "name");
       assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 
-      when(dispositionApi.editDispoAnnotation(branch, "itemId", annotationToEdit.getId(), newAnnotation, "name",
+      when(dispositionApi.editDispoAnnotation(branch, "itemId", annotationToEdit.getGuid(), newAnnotation, "name",
          false)).thenReturn(false);
-      response = resource.putDispoAnnotation(annotationToEdit.getId(), newAnnotation, "name");
+      response = resource.putDispoAnnotation(annotationToEdit.getGuid(), newAnnotation, "name");
       assertEquals(Response.Status.NOT_MODIFIED.getStatusCode(), response.getStatus());
    }
 
@@ -140,16 +140,18 @@ public class AnnotationResourceTest {
    public void testDelete() {
       DispoAnnotationData annotationToEdit = new DispoAnnotationData();
       annotationToEdit.setId(mockId);
-      when(dispositionApi.deleteDispoAnnotation(branch, "itemId", annotationToEdit.getId(), "name", false)).thenReturn(
-         true);
+      when(
+         dispositionApi.deleteDispoAnnotation(branch, "itemId", annotationToEdit.getGuid(), "name", false)).thenReturn(
+            true);
       when(dispositionApi.getDispoItemById(branch, "itemId")).thenReturn(dispoItem);
       when(dispoItem.getStatus()).thenReturn(DispoStrings.Item_InComplete);
-      Response response = resource.deleteDispoAnnotation(annotationToEdit.getId(), "name");
+      Response response = resource.deleteDispoAnnotation(annotationToEdit.getGuid(), "name");
       assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 
-      when(dispositionApi.deleteDispoAnnotation(branch, "itemId", annotationToEdit.getId(), "name", false)).thenReturn(
-         false);
-      response = resource.deleteDispoAnnotation(annotationToEdit.getId(), "name");
+      when(
+         dispositionApi.deleteDispoAnnotation(branch, "itemId", annotationToEdit.getGuid(), "name", false)).thenReturn(
+            false);
+      response = resource.deleteDispoAnnotation(annotationToEdit.getGuid(), "name");
       assertEquals(Response.Status.NOT_MODIFIED.getStatusCode(), response.getStatus());
    }
 }

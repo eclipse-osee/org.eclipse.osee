@@ -358,7 +358,7 @@
 			            headerRowHeight: 60, // give room for filter bar
 			            plugins: [filterBarPlugin],
 			            columnDefs: [{
-				        	field: "severity.name",
+				        	field: "severity",
 				        	displayName: "Severity",
 				        	headerCellTemplate: '/dispo/views/nameFilterTmpl.html',
 				        	width: 70

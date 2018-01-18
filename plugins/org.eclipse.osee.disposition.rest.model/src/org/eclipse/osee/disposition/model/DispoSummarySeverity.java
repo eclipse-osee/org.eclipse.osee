@@ -10,9 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.model;
 
+import org.codehaus.jackson.annotate.JsonValue;
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+
 /**
  * @author Angel Avila
  */
+
+@JsonDeserialize(using = DispoSummarySeverityDeserializer.class)
 public enum DispoSummarySeverity {
    IGNORE("Ignore"),
    WARNING("Warning"),
@@ -22,10 +28,6 @@ public enum DispoSummarySeverity {
 
    private String name;
 
-   DispoSummarySeverity() {
-
-   }
-
    DispoSummarySeverity(String name) {
       this.name = name;
    }
@@ -34,9 +36,21 @@ public enum DispoSummarySeverity {
       this.name = name;
    }
 
-   //   @JsonValue
    public String getName() {
       return name;
    }
 
+   public static DispoSummarySeverity forVal(String name) {
+      for (DispoSummarySeverity value : values()) {
+         if (value.name.equals(name)) {
+            return value;
+         }
+      }
+      throw new OseeArgumentException("No enum with name [%s]", name);
+   }
+
+   @JsonValue
+   public String toValue() {
+      return name;
+   }
 }

@@ -16,6 +16,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -23,8 +24,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 
 /**
  * @author Angel Avila
@@ -47,12 +47,12 @@ public class DispoItemListMessageWriter implements MessageBodyWriter<List<DispoI
 
    @Override
    public void writeTo(List<DispoItem> dispoItems, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
-      JSONArray jArray = new JSONArray();
+      List<DispoItem> reconstructedDispoItems = new ArrayList<>();
       for (DispoItem item : dispoItems) {
-         JSONObject jObject = DispoUtil.dispoItemToJsonObj(item, item.getIsIncludeDetails());
-         jArray.put(jObject);
+         DispoItem dispoItemData = DispoUtil.reconstructDispoItem(item, item.getIsIncludeDetails());
+         reconstructedDispoItems.add(dispoItemData);
       }
-      String jsonString = jArray.toString();
+      String jsonString = JsonUtil.toJson(reconstructedDispoItems);
       entityStream.write(jsonString.getBytes(Charset.forName("UTF-8")));
    }
 }

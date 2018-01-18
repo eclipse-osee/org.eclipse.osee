@@ -27,7 +27,7 @@ app.factory('CoverageFactory', function() {
         		var coveredId = annotations[i].idsOfCoveredDiscrepancies[0]
         		
         		var discrepancyAddress = discrepancies[coveredId];
-        		if(discrepancyAddress !== null)
+        		if(discrepancyAddress != null)
 	        			return annotations[i].customerNotes;
 	        		else 
 	        			return annotations[i].customerNotes = "no text found";     		

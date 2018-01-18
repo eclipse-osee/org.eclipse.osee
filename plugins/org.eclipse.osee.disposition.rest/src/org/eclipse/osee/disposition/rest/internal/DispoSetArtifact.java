@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.internal;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.disposition.model.DispoSet;
@@ -19,11 +18,7 @@ import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.disposition.rest.DispoConstants;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * @author Angel Avila
@@ -49,28 +44,14 @@ public class DispoSetArtifact extends BaseIdentity<String> implements DispoSet {
 
    @Override
    public List<Note> getNotesList() {
-      List<Note> toReturn = new ArrayList<Note>();
       String notesJson = artifact.getSoleAttributeAsString(DispoConstants.DispoNotesJson, "[]");
-      try {
-         JSONArray jArray = new JSONArray(notesJson);
-         for (int i = 0; i < jArray.length(); i++) {
-            toReturn.add(DispoUtil.jsonObjToNote(jArray.getJSONObject(i)));
-         }
-         return toReturn;
-      } catch (JSONException ex) {
-         throw new OseeCoreException("Could not parse Notes Json", ex);
-      }
+      return DispoUtil.jsonStringToList(notesJson, Note.class);
    }
 
    @Override
    public OperationReport getOperationSummary() {
       String operationSummaryJson = artifact.getSoleAttributeAsString(DispoConstants.OperationSummary, "{}");
-      try {
-         JSONObject jsonObject = new JSONObject(operationSummaryJson);
-         return DispoUtil.jsonObjToOperationSummary(jsonObject);
-      } catch (JSONException ex) {
-         throw new OseeCoreException("Could not parse Operation Sumary Json", ex);
-      }
+      return DispoUtil.jsonObjToOperationSummary(operationSummaryJson);
    }
 
    @Override
@@ -102,5 +83,4 @@ public class DispoSetArtifact extends BaseIdentity<String> implements DispoSet {
    public Date getTime() {
       return artifact.getSoleAttributeValue(DispoConstants.DispoTime, null);
    }
-
 }

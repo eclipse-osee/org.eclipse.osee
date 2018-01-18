@@ -10,10 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.internal;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.disposition.model.Discrepancy;
@@ -22,11 +19,7 @@ import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.rest.DispoConstants;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * @author Angel Avila
@@ -55,45 +48,16 @@ public class DispoItemArtifact extends BaseIdentity<String> implements DispoItem
       return isIncludeDetails;
    }
 
-   @SuppressWarnings("unchecked")
    @Override
    public Map<String, Discrepancy> getDiscrepanciesList() {
-      Map<String, Discrepancy> toReturn = new HashMap<String, Discrepancy>();
       String discrepanciesJson = artifact.getSoleAttributeAsString(DispoConstants.DispoDiscrepanciesJson, "{}");
-      try {
-         JSONObject jObject = DispoUtil.asJSONObject(discrepanciesJson);
-         Iterator<String> keys = jObject.keys();
-         while (keys.hasNext()) {
-            String key = keys.next();
-            Discrepancy discrepancy = DispoUtil.jsonObjToDiscrepancy(jObject.getJSONObject(key));
-            toReturn.put(key, discrepancy);
-         }
-         return toReturn;
-      } catch (JSONException ex) {
-         throw new OseeCoreException("Could not parse Discrepancies Json", ex);
-      }
+      return DispoUtil.jsonStringToDiscrepanciesMap(discrepanciesJson);
    }
 
    @Override
    public List<DispoAnnotationData> getAnnotationsList() {
-      List<DispoAnnotationData> toReturn = new ArrayList<DispoAnnotationData>();
       String annotationsList = artifact.getSoleAttributeAsString(DispoConstants.DispoAnnotationsJson, "[]");
-      try {
-         JSONArray jArray = DispoUtil.asJSONArray(annotationsList);
-         for (int i = 0; i < jArray.length(); i++) {
-            String className = jArray.get(i).getClass().getSimpleName();
-            if (className.equals("Null")) {
-               DispoAnnotationData annotation = null;
-               toReturn.add(annotation);
-            } else {
-               DispoAnnotationData annotation = DispoUtil.jsonObjToDispoAnnotationData(jArray.getJSONObject(i));
-               toReturn.add(annotation);
-            }
-         }
-         return toReturn;
-      } catch (JSONException ex) {
-         throw new OseeCoreException("Could not parse Annotations Json", ex);
-      }
+      return DispoUtil.jsonStringToList(annotationsList, DispoAnnotationData.class);
    }
 
    @Override
@@ -181,5 +145,4 @@ public class DispoItemArtifact extends BaseIdentity<String> implements DispoItem
    public String getTeam() {
       return artifact.getSoleAttributeAsString(DispoConstants.DispoItemTeam, "");
    }
-
 }

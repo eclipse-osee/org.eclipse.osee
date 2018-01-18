@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "DispoItemData")
 public class DispoItemData implements DispoItem {
+
    private String guid;
    private String name;
    private String assignee;

@@ -2,9 +2,9 @@
 <launchConfiguration type="org.eclipse.pde.ui.JunitLaunchConfig">
 <setAttribute key="additional_plugins">
 <setEntry value="oracle.driver:12.1.0.qualifier:default:true"/>
-<setEntry value="org.eclipse.osee.ats.client.integration.tests:0.23.1.qualifier:default:true"/>
-<setEntry value="org.eclipse.osee.client.integration.tests:0.23.1.qualifier:default:true"/>
-<setEntry value="org.eclipse.osee.client.test.framework:0.23.1.qualifier:default:true"/>
+<setEntry value="org.eclipse.osee.ats.client.integration.tests:0.26.0.qualifier:default:true"/>
+<setEntry value="org.eclipse.osee.client.integration.tests:0.26.0.qualifier:default:true"/>
+<setEntry value="org.eclipse.osee.client.test.framework:0.26.0.qualifier:default:true"/>
 </setAttribute>
 <booleanAttribute key="append.args" value="true"/>
 <booleanAttribute key="askclear" value="false"/>
@@ -22,7 +22,7 @@
 <booleanAttribute key="includeOptional" value="false"/>
 <stringAttribute key="location" value="${workspace_loc}/../junit-workspace-atsTest"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-<listEntry value="/org.eclipse.osee.ats.client.integration.tests/src/org/eclipse/osee/ats/client/integration/DemoDbInitLba8.java"/>
+<listEntry value="/org.eclipse.osee.ats.client.integration.tests/src/org/eclipse/osee/ats/client/integration/DemoDbInit_Database.java"/>
 </listAttribute>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
 <listEntry value="1"/>

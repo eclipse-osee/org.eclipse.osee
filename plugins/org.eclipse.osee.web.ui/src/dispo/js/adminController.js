@@ -527,7 +527,7 @@ app.controller('adminController', [
                 headerRowHeight: 60, // give room for filter bar
             
                 columnDefs : [{
-                    field: "severity.name",
+                    field: "severity",
                     displayName: "Severity",
                     width: '10%',
                 },{

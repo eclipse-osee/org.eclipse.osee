@@ -17,6 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 public class Discrepancy {
+
    private String id;
    private String text;
    private String location;

@@ -20,8 +20,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 import org.eclipse.osee.disposition.model.DispoSet;
-import org.eclipse.osee.disposition.rest.util.DispoUtil;
-import org.json.JSONObject;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 
 /**
  * @author Angel Avila
@@ -40,8 +39,7 @@ public class DispoSetMessageWriter implements MessageBodyWriter<DispoSet> {
 
    @Override
    public void writeTo(DispoSet dispoSet, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
-      JSONObject jsonObject = DispoUtil.dispoSetToJsonObj(dispoSet);
-      String jsonString = jsonObject.toString();
+      String jsonString = JsonUtil.toJson(dispoSet);
       entityStream.write(jsonString.getBytes(Charset.forName("UTF-8")));
    }
 }

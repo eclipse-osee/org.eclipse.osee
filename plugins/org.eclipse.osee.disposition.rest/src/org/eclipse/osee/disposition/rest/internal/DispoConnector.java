@@ -108,8 +108,10 @@ public class DispoConnector {
 
    private boolean anyAnnotationsModifyType(List<DispoAnnotationData> annotations) {
       for (DispoAnnotationData annotation : annotations) {
-         if (annotation.isResolutionMethodType()) {
-            return true;
+         if (annotation.getResolutionMethodType() != null) {
+            if (annotation.getResolutionMethodType().startsWith(DispoStrings.MODIFY)) {
+               return true;
+            }
          }
       }
       return false;

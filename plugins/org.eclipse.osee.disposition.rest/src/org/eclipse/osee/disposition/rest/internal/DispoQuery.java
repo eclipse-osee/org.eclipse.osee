@@ -31,9 +31,9 @@ public interface DispoQuery {
 
    ArtifactReadable findUser();
 
-   ArtifactReadable findUserByName(String name);
-
    ArtifactReadable findUser(String userId);
+
+   ArtifactReadable findUserByName(String name);
 
    boolean isUniqueProgramName(String name);
 

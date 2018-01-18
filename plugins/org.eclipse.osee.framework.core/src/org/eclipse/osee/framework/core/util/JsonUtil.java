@@ -15,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.Map;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -95,6 +96,15 @@ public class JsonUtil {
          }
       }
       return null;
+   }
+
+   public static JsonNode getJsonParserTree(JsonParser jp) {
+      try {
+         return jp.getCodec().readTree(jp);
+      } catch (Exception ex) {
+         throw OseeCoreException.wrap(ex);
+      }
+
    }
 
    public static <T> T readValue(String json, TypeReference<Map<String, String>> typeReference) {

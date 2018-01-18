@@ -25,6 +25,9 @@ public class OperationReport {
    private DispoSetStatus status = DispoSetStatus.NO_CHANGE;
 
    private List<OperationSummaryEntry> entries = new ArrayList<>();
+   private String name;
+   private boolean failed;
+   private String value;
 
    public OperationReport() {
    }
@@ -62,5 +65,29 @@ public class OperationReport {
 
    public void setEntries(List<OperationSummaryEntry> entries) {
       this.entries = entries;
+   }
+
+   public String getName() {
+      return name;
+   }
+
+   public void setName(String name) {
+      this.name = name;
+   }
+
+   public boolean isFailed() {
+      return failed;
+   }
+
+   public void setFailed(boolean failed) {
+      this.failed = failed;
+   }
+
+   public String getValue() {
+      return value;
+   }
+
+   public void setValue(String value) {
+      this.value = value;
    }
 }

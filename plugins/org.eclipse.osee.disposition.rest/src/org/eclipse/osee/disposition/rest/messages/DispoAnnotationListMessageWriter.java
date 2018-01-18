@@ -22,9 +22,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
-import org.eclipse.osee.disposition.rest.util.DispoUtil;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 
 /**
  * @author Angel Avila
@@ -47,12 +45,7 @@ public class DispoAnnotationListMessageWriter implements MessageBodyWriter<List<
 
    @Override
    public void writeTo(List<DispoAnnotationData> dispoAnnotations, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
-      JSONArray jArray = new JSONArray();
-      for (DispoAnnotationData annotation : dispoAnnotations) {
-         JSONObject jObject = DispoUtil.annotationToJsonObj(annotation);
-         jArray.put(jObject);
-      }
-      String jsonString = jArray.toString();
+      String jsonString = JsonUtil.toJson(dispoAnnotations);
       entityStream.write(jsonString.getBytes(Charset.forName("UTF-8")));
    }
 }

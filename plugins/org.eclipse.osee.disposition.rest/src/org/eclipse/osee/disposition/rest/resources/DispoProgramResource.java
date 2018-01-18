@@ -12,7 +12,10 @@ package org.eclipse.osee.disposition.rest.resources;
 
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -30,9 +33,7 @@ import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.DispoRoles;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 
 /**
  * @author Angel Avila
@@ -84,13 +85,12 @@ public class DispoProgramResource {
     * Get all Disposition Programs as JSON
     *
     * @return The Disposition Programs found
-    * @throws JSONException
     * @response.representation.200.doc OK, Found Disposition Program
     * @response.representation.404.doc Not Found, Could not find any Disposition Programs
     */
    @GET
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getAllPrograms() throws JSONException {
+   public Response getAllPrograms() {
       List<IOseeBranch> allPrograms = dispoApi.getDispoPrograms();
       Collections.sort(allPrograms, new Comparator<IOseeBranch>() {
          @Override
@@ -98,14 +98,15 @@ public class DispoProgramResource {
             return o1.getName().compareTo(o2.getName());
          }
       });
-      JSONArray jarray = new JSONArray();
+      List<Map<String, String>> branchList = new LinkedList<>();
 
       for (IOseeBranch branch : allPrograms) {
-         JSONObject jobject = new JSONObject();
+         Map<String, String> mapObject = new HashMap<>();
+
          String uuid = branch.getIdString();
-         jobject.put("value", uuid);
-         jobject.put("text", branch.getName());
-         jarray.put(jobject);
+         mapObject.put("value", uuid);
+         mapObject.put("text", branch.getName());
+         branchList.add(mapObject);
       }
       Status status;
       if (allPrograms.isEmpty()) {
@@ -113,7 +114,9 @@ public class DispoProgramResource {
       } else {
          status = Status.OK;
       }
-      return Response.status(status).entity(jarray.toString()).build();
+
+      String branchListJson = JsonUtil.toJson(branchList);
+      return Response.status(status).entity(branchListJson).build();
    }
 
    @Path("{branchId}/set")

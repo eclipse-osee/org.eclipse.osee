@@ -41,8 +41,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -80,11 +78,7 @@ public class DispoApiTest {
    @Mock
    private DispoSetArtifact dispoSetArtifact;
    @Mock
-   private JSONArray jsonArray;
-   @Mock
    private List<Note> mockNotes;
-   @Mock
-   private JSONObject jsonObject;
    @Mock
    private DispoAnnotationData mockAnnotation;
    @Mock
@@ -241,7 +235,7 @@ public class DispoApiTest {
       List<DispoAnnotationData> actualResultSet = dispoApi.getDispoAnnotations(branch, itemId.getGuid());
       DispoAnnotationData actualData = actualResultSet.iterator().next();
 
-      assertEquals(expectedId, actualData.getId());
+      assertEquals(expectedId, actualData.getGuid());
       assertEquals("1-10", actualData.getLocationRefs());
    }
 
@@ -261,7 +255,7 @@ public class DispoApiTest {
       DispoAnnotationData actualData = dispoApi.getDispoAnnotationById(branch, itemId.getGuid(), idOfAnnot);
       dispoApi.getDispoAnnotationById(branch, itemId.getGuid(), idOfAnnot);
 
-      assertEquals(idOfAnnot, actualData.getId());
+      assertEquals(idOfAnnot, actualData.getGuid());
       assertEquals("1-10", actualData.getLocationRefs());
    }
 

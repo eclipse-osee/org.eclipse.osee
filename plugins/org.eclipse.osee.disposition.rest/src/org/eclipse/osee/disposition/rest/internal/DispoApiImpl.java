@@ -432,7 +432,7 @@ public class DispoApiImpl implements DispoApi {
       DispoItem dispoItem = getQuery().findDispoItemById(branch, itemId);
       if (dispoItem != null) {
          for (DispoAnnotationData annotation : dispoItem.getAnnotationsList()) {
-            wasUpdated = deleteDispoAnnotation(branch, itemId, annotation.getId(), userName, isCi);
+            wasUpdated = deleteDispoAnnotation(branch, itemId, annotation.getGuid(), userName, isCi);
          }
       }
       return wasUpdated;

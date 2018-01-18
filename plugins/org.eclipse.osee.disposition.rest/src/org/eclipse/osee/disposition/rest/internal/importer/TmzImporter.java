@@ -12,8 +12,8 @@ package org.eclipse.osee.disposition.rest.internal.importer;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
 import java.io.InputStream;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,19 +23,20 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.type.TypeReference;
 import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.disposition.rest.DispoImporterApi;
 import org.eclipse.osee.disposition.rest.internal.DispoDataFactory;
+import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * @author John Misinco
@@ -123,53 +124,57 @@ public class TmzImporter implements DispoImporterApi {
       return toReturn;
    }
 
-   private void processOverview(String json, DispoItemData dispoItem) throws JSONException, ParseException {
-      JSONObject record = new JSONObject(json);
-      JSONObject properties = record.getJSONObject("properties");
-      dispoItem.setVersion(properties.getString("version_revision"));
-      Date date = DATE_FORMAT.parse(properties.getString("version_lastModificationDate"));
-      dispoItem.setCreationDate(date);
-      dispoItem.setLastUpdate(date);
-   }
-
-   private void processTestPointSummary(String json, Map<String, Discrepancy> discrepancies) throws JSONException {
-      JSONObject contents = new JSONObject(json);
-      JSONArray records = contents.getJSONArray("childRecords");
-      for (int i = 0; i < records.length(); i++) {
-         JSONObject record = records.getJSONObject(i);
-         String number = record.getString("number");
-         JSONObject testPoint = record.getJSONObject("testPoint");
-         boolean passed = testPoint.getBoolean("pass");
-         if (!passed) {
-            Discrepancy discrepancy = new Discrepancy();
-            discrepancy.setLocation(number);
-            String id = GUID.create();
-            discrepancy.setId(id);
-            boolean groupNameIsNull = testPoint.isNull("groupName");
-            if (groupNameIsNull) {
-               String name = testPoint.getString("testPointName");
-               String actual = testPoint.getString("actual");
-               String expected = testPoint.getString("expected");
-
-               String text = String.format("Failure at Test Point %s. Check Point: %s. Expected: %s. Actual: %s. ",
-                  number, name, expected, actual);
-               discrepancy.setText(text);
-            } else {
-               JSONArray testPoints = testPoint.getJSONArray("testPoints");
-               StringBuilder text = new StringBuilder(
-                  String.format("Failure at Test Point %s. Check Group with Checkpoint Failures: ", number));
-               for (int j = 0; j < testPoints.length(); j++) {
-                  JSONObject checkPoint = testPoints.getJSONObject(j);
-                  String name = checkPoint.getString("testPointName");
-                  String actual = checkPoint.getString("actual");
-                  String expected = checkPoint.getString("expected");
-                  text.append(String.format("Check Point: %s. Expected: %s. Actual: %s. ", name, expected, actual));
-               }
-               discrepancy.setText(text.toString());
-            }
-            discrepancies.put(id, discrepancy);
-         }
+   private void processOverview(String json, DispoItemData dispoItem) {
+      try {
+         TmzProperties properties = JsonUtil.getMapper().readValue(json, TmzProperties.class);
+         dispoItem.setVersion(properties.getVersion_revision());
+         Date date = DATE_FORMAT.parse(properties.getVersion_lastModificationDate());
+         dispoItem.setCreationDate(date);
+         dispoItem.setLastUpdate(date);
+      } catch (Exception ex) {
+         throw new OseeCoreException("Could not parse Tmz Properties Json", ex);
       }
    }
 
+   private void processTestPointSummary(String json, Map<String, Discrepancy> discrepancies) throws IOException {
+      List<TmzChildRecord> childRecords = new LinkedList<>();
+      JsonNode node = JsonUtil.getMapper().readTree(json).get("childRecords");
+      childRecords = JsonUtil.getMapper().readValue(node, new TypeReference<List<TmzChildRecord>>() { //
+      });
+
+      for (TmzChildRecord record : childRecords) {
+         int number = record.getNumber();
+         List<TmzTestPoint> testPoints = record.getTestPoint();
+         for (TmzTestPoint testPoint : testPoints) {
+            boolean passed = testPoint.getPass();
+            if (!passed) {
+               Discrepancy discrepancy = new Discrepancy();
+               discrepancy.setLocation(String.valueOf(number));
+               String id = GUID.create();
+               discrepancy.setId(id);
+               boolean groupNameIsNull = testPoint.getGroupName() == null || testPoint.getGroupName().equals("");
+               if (groupNameIsNull) {
+                  String name = testPoint.getTestPointName();
+                  String actual = testPoint.getActual();
+                  String expected = testPoint.getExpected();
+                  String text = String.format("Failure at Test Point %s. Check Point: %s. Expected: %s. Actual: %s. ",
+                     number, name, expected, actual);
+                  discrepancy.setText(text);
+               } else {
+                  List<TmzTestPoint> tmzTestPoints = testPoint.getTestPoints();
+                  StringBuilder text = new StringBuilder(
+                     String.format("Failure at Test Point %s. Check Group with Checkpoint Failures: ", number));
+                  for (TmzTestPoint checkPoint : tmzTestPoints) {
+                     String name = checkPoint.getTestPointName();
+                     String actual = checkPoint.getActual();
+                     String expected = checkPoint.getExpected();
+                     text.append(String.format("Check Point: %s. Expected: %s. Actual: %s. ", name, expected, actual));
+                  }
+                  discrepancy.setText(text.toString());
+               }
+               discrepancies.put(id, discrepancy);
+            }
+         }
+      }
+   }
 }

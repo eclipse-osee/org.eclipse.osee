@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.model;
 
+import org.codehaus.jackson.annotate.JsonCreator;
+import org.codehaus.jackson.annotate.JsonValue;
+
 /**
  * @author Angel Avila
  */
@@ -21,6 +24,26 @@ public enum DispoSetStatus {
 
    private Integer value;
    private String name;
+
+   @JsonCreator
+   public static DispoSetStatus forValue(String value) {
+      for (DispoSetStatus status : DispoSetStatus.values()) {
+         if (value.equals(status.getName())) {
+            return status;
+         }
+      }
+      return null;
+   }
+
+   @JsonValue
+   public String toValue() {
+      for (DispoSetStatus status : DispoSetStatus.values()) {
+         if (status.equals(this)) {
+            return status.getName();
+         }
+      }
+      return null;
+   }
 
    DispoSetStatus() {
 
