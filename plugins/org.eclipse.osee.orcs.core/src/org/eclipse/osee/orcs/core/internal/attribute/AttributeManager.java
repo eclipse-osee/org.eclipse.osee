@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.orcs.core.ds.Attribute;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 
 /**
  * @author Roberto E. Escobar
@@ -44,6 +45,8 @@ public interface AttributeManager extends AttributeContainer {
    String getSoleAttributeAsString(AttributeTypeId attributeType, String defaultValue);
 
    <T> List<T> getAttributeValues(AttributeTypeId attributeType);
+
+   Iterable<Collection<? extends AttributeReadable<Object>>> getAttributeIterable();
 
    <T> void setSoleAttributeValue(AttributeTypeId attributeType, T value);
 

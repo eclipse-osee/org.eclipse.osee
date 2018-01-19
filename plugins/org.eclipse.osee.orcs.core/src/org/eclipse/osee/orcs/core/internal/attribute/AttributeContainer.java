@@ -22,9 +22,9 @@ import org.eclipse.osee.orcs.core.ds.Attribute;
  */
 public interface AttributeContainer extends Identifiable<String> {
 
-   void add(AttributeTypeId attributeType, Attribute<? extends Object> attribute);
+   void add(AttributeTypeId attributeType, Attribute<?> attribute);
 
-   void remove(AttributeTypeId type, Attribute<? extends Object> attribute);
+   void remove(AttributeTypeId type, Attribute<?> attribute);
 
    boolean isLoaded();
 

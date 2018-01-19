@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.EditState;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -31,6 +32,7 @@ import org.eclipse.osee.orcs.core.internal.attribute.AttributeManagerImpl;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.core.internal.relation.order.OrderChange;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
+import org.eclipse.osee.orcs.data.AttributeReadable;
 
 public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
 
@@ -81,7 +83,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    @Override
    public TransactionId getLastModifiedTransaction() {
       TransactionId maxTransactionId = getOrcsData().getVersion().getTransactionId();
-      for (Attribute<?> attribute : getAllAttributes()) {
+      for (Attribute<?> attribute : getAttributes(DeletionFlag.INCLUDE_DELETED)) {
          TransactionId tx = attribute.getOrcsData().getVersion().getTransactionId();
          if (maxTransactionId.isOlderThan(tx)) {
             maxTransactionId = tx;
@@ -172,7 +174,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    @Override
    public void accept(ArtifactVisitor visitor) {
       visitor.visit(this);
-      for (Attribute<?> attribute : getAllAttributes()) {
+      for (Attribute<?> attribute : getAttributes(DeletionFlag.INCLUDE_DELETED)) {
          visitor.visit(attribute);
       }
    }
@@ -225,5 +227,10 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    @Override
    public Long getId() {
       return Long.valueOf(getLocalId());
+   }
+
+   @Override
+   public Iterable<Collection<? extends AttributeReadable<Object>>> getAttributeIterable() {
+      return null;
    }
 }

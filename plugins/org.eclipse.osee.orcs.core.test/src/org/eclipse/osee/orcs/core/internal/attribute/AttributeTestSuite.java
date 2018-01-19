@@ -17,11 +17,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-   AttributeCollectionTest.class,
-   AttributeFactoryTest.class,
-   AttributeResultSetTest.class,
-   ArtifactTest.class})
+@Suite.SuiteClasses({AttributeFactoryTest.class, AttributeResultSetTest.class, ArtifactTest.class})
 public class AttributeTestSuite {
    // Test Suite
 }

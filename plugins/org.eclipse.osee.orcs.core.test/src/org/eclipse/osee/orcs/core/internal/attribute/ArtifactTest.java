@@ -458,16 +458,10 @@ public class ArtifactTest {
       when(one.getOrcsData()).thenReturn(attributeData);
       when(two.getOrcsData()).thenReturn(attributeData);
 
+      when(one.getValue()).thenReturn("1");
       when(attributeFactory.getMaxOccurrenceLimit(attributeType)).thenReturn(3);
 
       when(attributeFactory.createAttributeWithDefaults(eq(artifact), any(), eq(attributeType))).thenReturn(two);
-      artifact.add(attributeType, one);
-      artifact.setAttributesFromStrings(attributeType, "1", "2");
-      verify(one).setFromString("1");
-      verify(two).setFromString("2");
-
-      reset(one, two);
-      when(one.getValue()).thenReturn("1");
       artifact.setAttributesFromStrings(attributeType, "1", "2");
       verify(one, never()).setFromString("1");
       verify(two).setFromString("2");

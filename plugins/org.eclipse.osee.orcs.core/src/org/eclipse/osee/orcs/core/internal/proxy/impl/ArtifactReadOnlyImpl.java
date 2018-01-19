@@ -169,6 +169,11 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
+   public Iterable<Collection<? extends AttributeReadable<Object>>> getAttributeIterable() {
+      return getProxiedObject().getAttributeIterable();
+   }
+
+   @Override
    public String getAttributeValuesAsString(AttributeTypeId attributeType) {
       List<Attribute<Object>> attributes = getProxiedObject().getAttributes(attributeType);
       return Collections.toString(", ", attributes);

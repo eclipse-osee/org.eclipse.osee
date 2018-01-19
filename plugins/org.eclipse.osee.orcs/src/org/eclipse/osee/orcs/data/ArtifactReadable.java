@@ -64,6 +64,8 @@ public interface ArtifactReadable extends Identity<String>, ArtifactToken, HasTr
 
    <T> List<T> getAttributeValues(AttributeTypeId attributeType);
 
+   Iterable<Collection<? extends AttributeReadable<Object>>> getAttributeIterable();
+
    ////////////////////
 
    AttributeReadable<Object> getAttributeById(AttributeId attributeId);
