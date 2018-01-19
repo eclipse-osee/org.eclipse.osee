@@ -47,7 +47,8 @@ public class OseeRootResource {
       String basePath;
       URI location = uriInfo.getRequestUri();
       if (Strings.isValid(forwardedServer)) {
-         basePath = forwardedServer;
+         String[] server = forwardedServer.split(",");
+         basePath = server[0];
       } else {
          basePath = location.toString();
       }
