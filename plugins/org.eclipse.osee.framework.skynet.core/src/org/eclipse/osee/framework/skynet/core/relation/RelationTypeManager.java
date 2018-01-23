@@ -98,15 +98,6 @@ public class RelationTypeManager {
    }
 
    public static RelationType getType(String typeName) {
-      RelationType relationType = getCache().getUniqueByName(typeName);
-      if (relationType == null) {
-         throw new OseeTypeDoesNotExist("The relation type [%s] does not exist", typeName);
-      }
-      return relationType;
+      return getCache().getByName(typeName);
    }
-
-   public static boolean typeExists(String name) {
-      return !getCache().getByName(name).isEmpty();
-   }
-
 }

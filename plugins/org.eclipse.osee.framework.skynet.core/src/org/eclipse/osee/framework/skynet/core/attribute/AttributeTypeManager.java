@@ -86,7 +86,7 @@ public class AttributeTypeManager {
    }
 
    public static boolean typeExists(String name) {
-      return !getCache().getByName(name).isEmpty();
+      return getCache().existsByName(name);
    }
 
    /**
@@ -116,11 +116,7 @@ public class AttributeTypeManager {
     * @return the attribute type with the given name or throws an OseeTypeDoesNotExist if it does not exist.
     */
    public static AttributeType getType(String name) {
-      AttributeType attributeType = getCache().getUniqueByName(name);
-      if (attributeType == null) {
-         throw new OseeTypeDoesNotExist("Attribute Type with name [%s] does not exist.", name);
-      }
-      return attributeType;
+      return getCache().getByName(name);
    }
 
    private static Set<String> getEnumerationValues(AttributeType attributeType) {

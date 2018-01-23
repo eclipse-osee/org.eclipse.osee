@@ -123,11 +123,7 @@ public class ArtifactTypeManager {
     * @param name artifact type name to match
     */
    public static ArtifactType getType(String name) {
-      ArtifactType artifactType = getCache().getUniqueByName(name);
-      if (artifactType == null) {
-         throw new OseeTypeDoesNotExist("Artifact type [%s] is not available.", name);
-      }
-      return artifactType;
+      return getCache().getByName(name);
    }
 
    public static ArtifactType getType(ArtifactTypeId artifactType) {

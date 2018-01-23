@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.core.model.cache;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
@@ -51,14 +50,6 @@ public abstract class AbstractOseeCacheTest<T extends NamedIdBase> {
    }
 
    @org.junit.Test
-   public void testExistByGuid() {
-      for (T expected : data) {
-         Assert.assertTrue(cache.existsByGuid(expected.getId()));
-      }
-      Assert.assertFalse(cache.existsByGuid(createKey()));
-   }
-
-   @org.junit.Test
    public void testCacheByGuid() {
       for (T expected : data) {
          T actual = cache.getByGuid(expected.getId());
@@ -79,7 +70,7 @@ public abstract class AbstractOseeCacheTest<T extends NamedIdBase> {
    @org.junit.Test
    public void testCacheByName() {
       for (T expected : data) {
-         T actual = cache.getUniqueByName(expected.getName());
+         T actual = cache.getByName(expected.getName());
          Assert.assertNotNull(actual);
          checkEquals(expected, actual);
       }
@@ -113,12 +104,11 @@ public abstract class AbstractOseeCacheTest<T extends NamedIdBase> {
       if (isInCacheExpected) {
          Assert.assertEquals(item, cache.getByGuid(item.getId()));
          Assert.assertEquals(item, cache.getById(item.getId()));
-         Assert.assertEquals(item, cache.getUniqueByName(item.getName()));
+         Assert.assertEquals(item, cache.getByName(item.getName()));
          Assert.assertTrue(cache.getAll().contains(item));
       } else {
          Assert.assertNull(cache.getByGuid(item.getId()));
          Assert.assertNull(cache.getById(item.getId()));
-         Assert.assertNull(cache.getUniqueByName(item.getName()));
          Assert.assertFalse(cache.getAll().contains(item));
       }
    }
@@ -126,47 +116,9 @@ public abstract class AbstractOseeCacheTest<T extends NamedIdBase> {
    @org.junit.Test
    public void testGetByName() {
       for (T expected : data) {
-         Collection<T> actual = cache.getByName(expected.getName());
-         Assert.assertNotNull(actual);
-         Assert.assertEquals(1, actual.size());
-         checkEquals(expected, actual.iterator().next());
+         T actual = cache.getByName(expected.getName());
+         checkEquals(expected, actual);
       }
-   }
-
-   @org.junit.Test
-   public void testMultipleGetByName() {
-      T item1 = data.get(0);
-      T item2 = data.get(1);
-      Assert.assertNotNull(item1);
-      Assert.assertNotNull(item2);
-
-      Collection<T> actual = cache.getByName(item1.getName());
-      Assert.assertNotNull(actual);
-      Assert.assertEquals(1, actual.size());
-      checkEquals(item1, actual.iterator().next());
-
-      actual = cache.getByName(item2.getName());
-      Assert.assertNotNull(actual);
-      Assert.assertEquals(1, actual.size());
-      checkEquals(item2, actual.iterator().next());
-
-      String originalName = item1.getName();
-      cache.decache(item1);
-
-      item1.setName(item2.getName());
-
-      cache.cache(item1);
-
-      actual = cache.getByName(originalName);
-      Assert.assertNotNull(actual);
-      Assert.assertEquals(0, actual.size());
-
-      actual = cache.getByName(item2.getName());
-      Assert.assertNotNull(actual);
-      Assert.assertEquals(2, actual.size());
-
-      checkEquals(item2, actual.iterator().next());
-      item1.setName(originalName);
    }
 
    @Test

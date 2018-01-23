@@ -153,7 +153,7 @@ public class DslToTypeLoader implements TypesLoader {
       Set<ArtifactType> oseeSuperTypes = new HashSet<>();
       for (XArtifactType xSuperType : xArtifactType.getSuperArtifactTypes()) {
          String superTypeName = xSuperType.getName();
-         ArtifactType oseeSuperType = buffer.getArtTypes().getUniqueByName(superTypeName);
+         ArtifactType oseeSuperType = buffer.getArtTypes().getByName(superTypeName);
          oseeSuperTypes.add(oseeSuperType);
       }
 
@@ -357,8 +357,8 @@ public class DslToTypeLoader implements TypesLoader {
       String sideATypeName = xRelationType.getSideAArtifactType().getName();
       String sideBTypeName = xRelationType.getSideBArtifactType().getName();
 
-      ArtifactType sideAType = buffer.getArtTypes().getUniqueByName(sideATypeName);
-      ArtifactType sideBType = buffer.getArtTypes().getUniqueByName(sideBTypeName);
+      ArtifactType sideAType = buffer.getArtTypes().getByName(sideATypeName);
+      ArtifactType sideBType = buffer.getArtTypes().getByName(sideBTypeName);
 
       Long relUuid = Long.valueOf(xRelationType.getId());
       relTypeFactory.createOrUpdate(buffer.getRelTypes(), //

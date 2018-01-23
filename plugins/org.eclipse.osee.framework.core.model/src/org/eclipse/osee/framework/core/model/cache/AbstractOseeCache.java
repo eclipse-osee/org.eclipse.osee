@@ -12,23 +12,19 @@ package org.eclipse.osee.framework.core.model.cache;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
 /**
  * @author Roberto E. Escobar
  */
 public abstract class AbstractOseeCache<T extends NamedIdBase> implements IOseeCache<T> {
-   private final HashCollection<String, T> nameToTypeMap = new HashCollection<>(true, CopyOnWriteArrayList.class);
+   private final ConcurrentHashMap<String, T> nameToTypeMap = new ConcurrentHashMap<>();
    private final ConcurrentHashMap<Long, T> idToTypeMap = new ConcurrentHashMap<>();
    private final OseeCacheEnum cacheId;
 
@@ -52,9 +48,9 @@ public abstract class AbstractOseeCache<T extends NamedIdBase> implements IOseeC
       return idToTypeMap.size();
    }
 
-   public boolean existsByGuid(Long id) {
+   public boolean existsByName(String name) {
       ensurePopulated();
-      return idToTypeMap.containsKey(id);
+      return nameToTypeMap.containsKey(name);
    }
 
    @Override
@@ -86,17 +82,11 @@ public abstract class AbstractOseeCache<T extends NamedIdBase> implements IOseeC
    }
 
    private void decacheByName(T type) {
-      Set<String> keysToRemove = new HashSet<>();
-
-      for (String name : nameToTypeMap.keySet()) {
-         Collection<T> items = nameToTypeMap.getValues(name);
-         if (items != null && items.contains(type)) {
-            keysToRemove.add(name);
+      Iterator<T> iterator = nameToTypeMap.values().iterator();
+      while (iterator.hasNext()) {
+         if (iterator.next().equals(type)) {
+            iterator.remove();
          }
-      }
-
-      for (String key : keysToRemove) {
-         nameToTypeMap.removeValue(key, type);
       }
    }
 
@@ -128,33 +118,13 @@ public abstract class AbstractOseeCache<T extends NamedIdBase> implements IOseeC
       return idToTypeMap.get(typeId.longValue());
    }
 
-   public T getUniqueByName(String typeName) {
+   public T getByName(String typeName) {
       ensurePopulated();
-      Collection<T> values = getByName(typeName);
-      if (values.size() > 1) {
-         throw new OseeStateException("Multiple items matching [%s] name exist", typeName);
+      T value = nameToTypeMap.get(typeName);
+      if (value == null) {
+         throw new ItemDoesNotExist("Cache does not contain item with name [%s]", typeName);
       }
-      return values.isEmpty() ? null : values.iterator().next();
-   }
-
-   public Collection<T> getByName(String typeName) {
-      ensurePopulated();
-      Collection<T> types = new ArrayList<>();
-      Collection<T> values = nameToTypeMap.getValues(typeName);
-      if (values != null) {
-         types.addAll(values);
-      }
-      return types;
-   }
-
-   public T getBySoleName(String typeName) {
-      ensurePopulated();
-      Collection<T> types = getByName(typeName);
-      if (types.size() != 1) {
-         throw new OseeArgumentException("AbstractOseeCache expected 1 type but found [%d] types for [%s]",
-            types.size(), typeName);
-      }
-      return types.iterator().next();
+      return value;
    }
 
    @Override
