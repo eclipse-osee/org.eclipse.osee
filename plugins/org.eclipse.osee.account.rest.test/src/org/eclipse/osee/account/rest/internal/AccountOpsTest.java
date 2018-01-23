@@ -17,7 +17,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -101,7 +100,8 @@ public class AccountOpsTest {
       when(accountAdmin.createAccount(any(CreateAccountRequest.class))).thenReturn(newAccountId);
 
       Account account = mockAccount(newAccountId, name, email, username, active);
-      when(accountAdmin.getAccountById(newAccountId)).thenReturn(account);
+      ResultSet<Account> result = ResultSets.singleton(account);
+      when(accountAdmin.getAccountById(newAccountId)).thenReturn(result);
 
       AccountInfoData actual = ops.createAccount(username, input);
 
@@ -214,7 +214,8 @@ public class AccountOpsTest {
    @Test
    public void testGetAccountData() {
       Account account = mockAccount(artId2, "acc2", "acc2@email.com", "u2", true);
-      when(accountAdmin.getAccountById(ACCOUNT_UID)).thenReturn(account);
+      ResultSet<Account> accounts = ResultSets.singleton(account);
+      when(accountAdmin.getAccountById(ACCOUNT_UID)).thenReturn(accounts);
 
       AccountInfoData actual = ops.getAccountData(ACCOUNT_UID);
 
@@ -235,7 +236,8 @@ public class AccountOpsTest {
       when(preferences.getId()).thenReturn(ArtifactId.valueOf(789L).getId());
       when(account.getPreferences()).thenReturn(preferences);
 
-      when(accountAdmin.getAccountById(ACCOUNT_UID)).thenReturn(account);
+      ResultSet<Account> accounts = ResultSets.singleton(account);
+      when(accountAdmin.getAccountById(ACCOUNT_UID)).thenReturn(accounts);
 
       AccountDetailsData actual = ops.getAccountDetailsData(ACCOUNT_UID);
 
@@ -266,7 +268,8 @@ public class AccountOpsTest {
       Account account = mock(Account.class);
       when(account.getPreferences()).thenReturn(preferences);
 
-      when(accountAdmin.getAccountById(ACCOUNT_UID)).thenReturn(account);
+      ResultSet<Account> accounts = ResultSets.singleton(account);
+      when(accountAdmin.getAccountById(ACCOUNT_UID)).thenReturn(accounts);
 
       AccountPreferencesData actual = ops.getAccountPreferencesDataById(ACCOUNT_UID);
       assertEquals((Long) 123L, actual.getId());
@@ -289,7 +292,7 @@ public class AccountOpsTest {
       Account account2 = mockAccount(artId2, "acc2", "acc2@email.com", "u2", false);
       Account account3 = mockAccount(artId3, "acc3", "acc3@email.com", "u3", true);
 
-      List<Account> accounts = Arrays.asList(account1, account2, account3);
+      ResultSet<Account> accounts = ResultSets.newResultSet(account1, account2, account3);
 
       when(accountAdmin.getAllAccounts()).thenReturn(accounts);
 
@@ -310,10 +313,11 @@ public class AccountOpsTest {
       ArtifactId accountId = ArtifactId.valueOf(23127916023214L);
 
       Account account = mock(Account.class);
+      ResultSet<Account> result = ResultSets.singleton(account);
 
       when(account.getId()).thenReturn(accountId.getUuid());
       when(account.isActive()).thenReturn(true);
-      when(accountAdmin.getAccountById(ACCOUNT_UID)).thenReturn(account);
+      when(accountAdmin.getAccountById(ACCOUNT_UID)).thenReturn(result);
 
       AccountActiveData actual = ops.isActive(ACCOUNT_UID);
 

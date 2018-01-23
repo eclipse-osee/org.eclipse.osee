@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.account.admin;
 
-import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -20,13 +19,15 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
  */
 public interface AccountAdmin {
 
-   List<Account> getAllAccounts();
+   ResultSet<Account> getAllAccounts();
 
-   Account getAccountById(ArtifactId accountId);
+   ResultSet<Account> getAccountById(ArtifactId accountId);
 
    ResultSet<Account> getAccountByEmail(String email);
 
-   AccountPreferences getAccountPreferencesById(ArtifactId accountId);
+   ResultSet<Account> getAccountByName(String name);
+
+   ResultSet<AccountPreferences> getAccountPreferencesById(ArtifactId accountId);
 
    ArtifactId createAccount(CreateAccountRequest request);
 
@@ -46,8 +47,12 @@ public interface AccountAdmin {
 
    ResultSet<AccountSession> getAccountSessionById(ArtifactId accountId);
 
+   ResultSet<Account> getAnonymousAccount();
+
    boolean setAccountWebPreference(ArtifactId accountId, String key, String itemId, String newValue);
 
    void deleteAccount(ArtifactId accountId);
+
+   AccountConfiguration getConfig();
 
 }

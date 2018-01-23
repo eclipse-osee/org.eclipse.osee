@@ -19,6 +19,7 @@ import org.eclipse.osee.account.rest.model.AccountWebPreferences;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.type.ResultSetTransform.Function;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -27,8 +28,14 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public class AccountFactory {
 
+   private final Function<String, ArtifactReadable, AccountPreferences> function2 = new ArtifactToAccountPreferences();
+
    public ResultSet<Account> newAccountResultSet(ResultSet<ArtifactReadable> results) {
       return ResultSets.transform(results, this::newAccount);
+   }
+
+   public ResultSet<AccountPreferences> newAccountPreferencesResultSet(ResultSet<ArtifactReadable> results) {
+      return ResultSets.transform(results, function2);
    }
 
    private Account newAccount(ArtifactReadable account) {
@@ -41,9 +48,22 @@ public class AccountFactory {
       return new AccountPreferencesArtifact(account.getGuid(), account);
    }
 
+   public AccountPreferences newAccountPreferences(ArtifactReadable artifact) {
+      String id = artifact.getGuid();
+      return new AccountPreferencesArtifact(id, artifact);
+   }
+
    public AccountWebPreferences newAccountWebPreferences(ArtifactReadable artifact) {
       String webPreferencesJson = artifact.getSoleAttributeAsString(CoreAttributeTypes.WebPreferences, "{}");
       return new AccountWebPreferences(webPreferencesJson, artifact.getName());
+   }
+
+   private class ArtifactToAccountPreferences implements Function<String, ArtifactReadable, AccountPreferences> {
+
+      @Override
+      public AccountPreferences apply(ArtifactReadable source) {
+         return newAccountPreferences(source);
+      }
    }
 
    public AccountSession newAccountSession(ArtifactId accountId, String sessionToken, String accessedFrom, String accessDetails) {

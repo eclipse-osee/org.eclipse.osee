@@ -41,17 +41,21 @@
    </body>
     <script>
    	 app.controller("indexController", [
- 				"$scope", '$location', '$window', 'Preferences', 'Attribute',
- 				function($scope, $location, $window, Preferences, Attribute) {
+ 				"$scope", '$location', '$window', 'Preferences', 'Attribute','Account',
+ 				function($scope, $location, $window, Preferences, Attribute, Account) {
  					$scope.links = [ { ref: '', name: 'Home'}];
+ 					Account.get({
+ 					}, function(data){
+ 						$scope.userName = data.name;
+ 					});
+		        	Attribute.get({
+		        	}, function(data) {
+		        		$scope.defaultLinks = data.links;
+		        	});
 		        	Preferences.get({
 		        		id: '11'
 		        	}, function(data) {
 		        		$scope.toolLinks = Object.keys(data.links).map(function (key) {return data.links[key]});
-		        	});
-		        	Attribute.get({
-		        	}, function(data) {
-		        		$scope.defaultLinks = data.links;
 		        	});
  				}]);
  	</script>

@@ -115,7 +115,7 @@ public class JaxRsAuthenticatorImpl implements JaxRsAuthenticator {
                CreateAccountRequestBuilder.newBuilder().active(subject.isActive()).displayName(
                   subject.getDisplayName()).email(subject.getEmailAddress()).userName(subject.getUserName()).build();
             ArtifactId accountId = accountAdmin.createAccount(request);
-            account = accountAdmin.getAccountById(accountId);
+            account = accountAdmin.getAccountById(accountId).getExactlyOne();
          } else {
             // or log in as anonymous ?
             throw new OseeCoreException("Account not found for [%s]", login);

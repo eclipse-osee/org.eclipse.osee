@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.type;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import org.eclipse.osee.framework.jdk.core.type.ResultSetTransform.Function;
 
 /**
  * @author Roberto E. Escobar
@@ -73,16 +73,13 @@ public final class ResultSets {
       return EMPTY_RESULT_SET;
    }
 
-   public static <F, T> ResultSet<T> transform(ResultSet<F> from, java.util.function.Function<F, T> function) {
-      List<T> toReturn;
-      if (from.isEmpty()) {
-         toReturn = Collections.emptyList();
+   public static <K, F extends Identity<K>, T extends Identity<K>> ResultSet<T> transform(ResultSet<F> result, Function<K, F, T> factory) {
+      ResultSet<T> toReturn;
+      if (result == null || result.isEmpty()) {
+         toReturn = emptyResultSet();
       } else {
-         toReturn = new ArrayList<>(from.size());
-         for (F item : from) {
-            toReturn.add(function.apply(item));
-         }
+         toReturn = new ResultSetTransform<>(result, factory);
       }
-      return new ResultSetList<>(toReturn);
+      return toReturn;
    }
 }

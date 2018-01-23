@@ -11,12 +11,12 @@
 package org.eclipse.osee.account.admin.internal;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.eclipse.osee.account.admin.AccessDetails;
 import org.eclipse.osee.account.admin.Account;
 import org.eclipse.osee.account.admin.AccountAdmin;
+import org.eclipse.osee.account.admin.AccountConfiguration;
 import org.eclipse.osee.account.admin.AccountConstants;
 import org.eclipse.osee.account.admin.AccountField;
 import org.eclipse.osee.account.admin.AccountLoginException;
@@ -49,6 +49,16 @@ public class AccountAdminImpl implements AccountAdmin {
    private AuthenticationAdmin authenticationAdmin;
 
    private Validator validator;
+   private volatile AccountConfiguration config;
+
+   public void setConfig(AccountConfiguration config) {
+      this.config = config;
+   }
+
+   @Override
+   public AccountConfiguration getConfig() {
+      return config;
+   }
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -75,6 +85,7 @@ public class AccountAdminImpl implements AccountAdmin {
 
    public void update(Map<String, Object> props) {
       validator.configure(props);
+      setConfig(AccountConfiguration.newConfig(props));
    }
 
    private AccountStorage getStorage() {
@@ -86,17 +97,17 @@ public class AccountAdminImpl implements AccountAdmin {
    }
 
    @Override
-   public List<Account> getAllAccounts() {
+   public ResultSet<Account> getAllAccounts() {
       return getStorage().getAllAccounts();
    }
 
    @Override
-   public Account getAccountById(ArtifactId accountId) {
+   public ResultSet<Account> getAccountById(ArtifactId accountId) {
       return getStorage().getAccountById(accountId);
    }
 
    @Override
-   public AccountPreferences getAccountPreferencesById(ArtifactId accountId) {
+   public ResultSet<AccountPreferences> getAccountPreferencesById(ArtifactId accountId) {
       return getStorage().getAccountPreferencesById(accountId);
    }
 
@@ -115,7 +126,7 @@ public class AccountAdminImpl implements AccountAdmin {
    @Override
    public boolean setActive(ArtifactId accountId, boolean active) {
       boolean modified = false;
-      Account account = getAccountById(accountId);
+      Account account = getAccountById(accountId).getOneOrNull();
       if (account.isActive() != active) {
          getStorage().setActive(accountId, active);
          modified = true;
@@ -132,7 +143,8 @@ public class AccountAdminImpl implements AccountAdmin {
    public boolean setAccountPreferences(ArtifactId accountId, Map<String, String> preferences) {
       boolean modified = false;
       Conditions.checkNotNull(preferences, "preferences");
-      AccountPreferences prefs = getAccountPreferencesById(accountId);
+      ResultSet<AccountPreferences> result = getAccountPreferencesById(accountId);
+      AccountPreferences prefs = result.getExactlyOne();
       Map<String, String> original = prefs.asMap();
       if (Compare.isDifferent(original, preferences)) {
          getStorage().setAccountPreferences(accountId, preferences);
@@ -146,7 +158,8 @@ public class AccountAdminImpl implements AccountAdmin {
       boolean modified = false;
       Conditions.checkNotNull(key, "account preference key");
       Conditions.checkNotNull(value, "account preference value", "Use delete account preference instead");
-      AccountPreferences prefs = getAccountPreferencesById(accountId);
+      ResultSet<AccountPreferences> result = getAccountPreferencesById(accountId);
+      AccountPreferences prefs = result.getExactlyOne();
       Map<String, String> original = prefs.asMap();
       HashMap<String, String> newPrefs = new HashMap<>(original);
       newPrefs.put(key, value);
@@ -177,7 +190,8 @@ public class AccountAdminImpl implements AccountAdmin {
    public boolean deleteAccountPreference(ArtifactId accountId, String key) {
       boolean modified = false;
       Conditions.checkNotNull(key, "account preference key");
-      AccountPreferences prefs = getAccountPreferencesById(accountId);
+      ResultSet<AccountPreferences> result = getAccountPreferencesById(accountId);
+      AccountPreferences prefs = result.getExactlyOne();
       Map<String, String> original = prefs.asMap();
       HashMap<String, String> newPrefs = new HashMap<>(original);
       newPrefs.remove(key);
@@ -240,6 +254,11 @@ public class AccountAdminImpl implements AccountAdmin {
    }
 
    @Override
+   public ResultSet<Account> getAnonymousAccount() {
+      return storage.getAnonymousAccount();
+   }
+
+   @Override
    public ResultSet<Account> getAccountByEmail(String email) {
       Conditions.checkNotNull(email, "email");
       return getStorage().getAccountByEmail(email);
@@ -248,6 +267,12 @@ public class AccountAdminImpl implements AccountAdmin {
    @Override
    public ResultSet<AccountSession> getAccountSessionById(ArtifactId accountId) {
       return getStorage().getAccountSessionById(accountId);
+   }
+
+   @Override
+   public ResultSet<Account> getAccountByName(String name) {
+      Conditions.checkNotNull(name, "name");
+      return getStorage().getAccountByName(name);
    }
 
 }

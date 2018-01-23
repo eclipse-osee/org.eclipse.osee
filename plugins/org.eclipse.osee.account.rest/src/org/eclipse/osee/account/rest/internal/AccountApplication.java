@@ -11,6 +11,7 @@
 package org.eclipse.osee.account.rest.internal;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
@@ -26,6 +27,11 @@ public class AccountApplication extends Application {
 
    private AccountAdmin accountAdmin;
    private SubscriptionAdmin subscriptionAdmin;
+   private volatile AccountConfiguration config;
+
+   public void setConfig(AccountConfiguration config) {
+      this.config = config;
+   }
 
    public void setAccountAdmin(AccountAdmin accountAdmin) {
       this.accountAdmin = accountAdmin;
@@ -35,10 +41,11 @@ public class AccountApplication extends Application {
       this.subscriptionAdmin = subscriptionAdmin;
    }
 
-   public void start() {
+   public void start(Map<String, Object> props) {
+      update(props);
       AccountOps ops = new AccountOps(accountAdmin);
 
-      singletons.add(new AccountsResource(ops));
+      singletons.add(new AccountsResource(ops, config));
       singletons.add(new SubscriptionsResource(subscriptionAdmin));
       singletons.add(new UnsubscribeResource(subscriptionAdmin));
    }
@@ -50,6 +57,10 @@ public class AccountApplication extends Application {
    @Override
    public Set<Object> getSingletons() {
       return singletons;
+   }
+
+   public void update(Map<String, Object> props) {
+      setConfig(AccountConfiguration.newConfig(props));
    }
 
 }

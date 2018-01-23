@@ -32,12 +32,6 @@ app.provider('Preferences', function() {
     this.$get = ['$resource',
         function($resource) {
             var Preferences = $resource('/accounts/preferences/:id', {}, {
-            	update: {
-                    method: 'PUT',
-                    headers: {
-                        "Accept": "application/json"
-                    }
-                }
             });
             return Preferences;
         }
@@ -47,9 +41,19 @@ app.provider('Preferences', function() {
 app.provider('Attribute', function() {
     this.$get = ['$resource',
         function($resource) {
-            var Attribute = $resource('http://localhost:8092/orcs/branch/570/artifact/18026/attribute/87782590', {}, {
+            var Attribute = $resource('https://osee.web.boeing.com/orcs/branch/570/artifact/18026/attribute/87782590', {}, {
             });
             return Attribute;
+        }
+    ];
+});
+
+app.provider('Account', function() {
+    this.$get = ['$resource',
+        function($resource) {
+            var Account = $resource('/accounts/user', {}, {
+            });
+            return Account;
         }
     ];
 });

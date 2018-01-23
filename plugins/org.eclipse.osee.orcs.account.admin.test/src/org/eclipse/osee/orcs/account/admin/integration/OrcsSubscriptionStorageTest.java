@@ -88,7 +88,7 @@ public class OrcsSubscriptionStorageTest {
 
    @Test
    public void testSubscriptionAPI() {
-      Account account = accountStorage.getAccountById(newAccountId);
+      Account account = accountStorage.getAccountById(newAccountId).getExactlyOne();
 
       ResultSet<Subscription> results = storage.getSubscriptionsByAccountId(newAccountId);
       assertEquals(true, results.isEmpty());

@@ -11,14 +11,10 @@
          <ul class="nav navbar-nav">
             <li ng-repeat="link in links" ng-hide='isDisabled(link)' ng-class='getNgClass(link)'><a href='{{ link.ref }}'>{{ link.name }}</a></li>
          </ul>
-         <oauth class="ng-isolate-scope" site='{{ site }}'
-            client-id="36fe99bb6c4158c041d6e6624f75460"
-            redirect-uri='{{ redirectUri }}'
-            scope="public"
-            template="/libs/js/oseeAuth/views/default.html"
-            authorize-path="/oauth2/authorize-implicit"
-            response-type="token">
-         </oauth>
+         <p class="navbar-text  navbar-right">
+             <span class="glyphicon glyphicon-user"></span>
+             <strong>{{$parent.userName}}</strong>  
+         </p>
       </div>
       <!-- /.navbar-collapse -->
    </div>
