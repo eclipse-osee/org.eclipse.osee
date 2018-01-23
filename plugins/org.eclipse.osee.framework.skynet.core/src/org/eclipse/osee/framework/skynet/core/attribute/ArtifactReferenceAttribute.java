@@ -16,8 +16,15 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
  * @author Roberto E. Escobar
  */
 public class ArtifactReferenceAttribute extends IdentityReferenceAttribute {
+
    @Override
    public ArtifactId convertStringToValue(String value) {
       return ArtifactId.valueOf(value);
    }
+
+   @Override
+   public String toString() {
+      return getValue().getIdString();
+   }
+
 }
