@@ -28,7 +28,8 @@ Export-Package: org.eclipse.osee.framework.jdk.core.collection.tree,
  org.eclipse.osee.framework.jdk.core.util.xml.parser,
  org.eclipse.osee.framework.jdk.core.validate
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: javax.ws.rs.core,
+Import-Package: com.google.common.collect,
+ javax.ws.rs.core,
  org.apache.commons.codec.binary,
  org.codehaus.jackson,
  org.codehaus.jackson.annotate,
@@ -36,4 +37,4 @@ Import-Package: javax.ws.rs.core,
  org.codehaus.jackson.map.annotate,
  org.codehaus.jackson.map.ser.std,
  org.eclipse.jdt.annotation
-Require-Bundle: org.codehaus.jackson.mapper;bundle-version="1.9.13"
+Require-Bundle: org.codehaus.jackson.mapper

@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.render;
 
 import static org.eclipse.osee.framework.core.enums.PresentationType.SPECIALIZED_EDIT;
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.PresentationType;
@@ -47,7 +46,8 @@ public final class OpenUsingRenderer extends AbstractOperation {
          RendererManager.createRenderMap(presentationType, artifacts, rendererOptions);
 
       for (IRenderer renderer : rendererArtifactMap.keySet()) {
-         renderer.open((LinkedList<Artifact>) rendererArtifactMap.getValues(renderer), presentationType);
+
+         renderer.open(rendererArtifactMap.getValues(renderer), presentationType);
          if (renderer instanceof DefaultArtifactRenderer) {
             resutPath =
                (String) ((DefaultArtifactRenderer) renderer).getRendererOptionValue(RendererOption.RESULT_PATH_RETURN);

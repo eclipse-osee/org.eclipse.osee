@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.api.team;
 
 import java.util.Collection;
+import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
@@ -82,7 +83,7 @@ public interface IAtsTeamDefinition extends IAtsConfigObject, IAtsRules, ICommit
 
    IAtsVersion getVersion(String name);
 
-   Collection<IAtsVersion> getVersions();
+   Set<IAtsVersion> getVersions();
 
    Collection<IAtsVersion> getVersions(VersionReleaseType releaseType, VersionLockedType lockedType);
 

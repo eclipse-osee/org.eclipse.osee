@@ -121,8 +121,7 @@ public class AccessControlService implements IAccessControlService {
    // branch_id, art_id, subject_id
    private final CompositeKeyHashMap<BranchId, Long, ArtifactId> artifactLockCache = new CompositeKeyHashMap<>();
 
-   private final HashCollection<Integer, PermissionEnum> subjectToPermissionCache =
-      new HashCollection<Integer, PermissionEnum>(true);
+   private final HashCollection<Integer, PermissionEnum> subjectToPermissionCache = new HashCollection<>(true);
 
    private final Cache<Collection<String>, AccessData> accessDataCache =
       CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.HOURS).build();

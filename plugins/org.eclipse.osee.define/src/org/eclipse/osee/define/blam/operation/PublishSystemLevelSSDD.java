@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.core.resources.IFile;
@@ -67,7 +66,7 @@ public class PublishSystemLevelSSDD extends AbstractBlam {
    }
 
    public PublishSystemLevelSSDD() {
-      subsystemToRequirements = new HashCollection<>(false, LinkedList.class);
+      subsystemToRequirements = new HashCollection<>();
    }
 
    private void init() throws IOException {

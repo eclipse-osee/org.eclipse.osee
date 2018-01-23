@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -41,7 +41,7 @@ public class BranchTraceabilityOperation extends TraceabilityProviderOperation {
 
    private final BranchId branch;
    private final RequirementData requirementData;
-   private HashCollection<Artifact, String> requirementToTestUnitsMap;
+   private HashCollectionSet<Artifact, String> requirementToTestUnitsMap;
    private Map<String, Artifact> testUnits;
    private final Collection<? extends IArtifactType> types;
    private final boolean withInheritance;
@@ -71,7 +71,7 @@ public class BranchTraceabilityOperation extends TraceabilityProviderOperation {
    }
 
    @Override
-   public HashCollection<Artifact, String> getRequirementToCodeUnitsMap() {
+   public HashCollectionSet<Artifact, String> getRequirementToCodeUnitsMap() {
       return requirementToTestUnitsMap;
    }
 
@@ -91,7 +91,7 @@ public class BranchTraceabilityOperation extends TraceabilityProviderOperation {
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       requirementData.initialize(monitor);
-      requirementToTestUnitsMap = new HashCollection<>();
+      requirementToTestUnitsMap = new HashCollectionSet<>(HashSet::new);
 
       Set<ArtifactId> excludedArtifactIdMap = ViewIdUtility.findExcludedArtifactsByView(viewId, branch);
       List<Artifact> unitsOnBranch = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.TestCase, branch);
@@ -120,7 +120,7 @@ public class BranchTraceabilityOperation extends TraceabilityProviderOperation {
          if (verifiers != null) {
             ViewIdUtility.removeExcludedArtifacts(verifiers.iterator(), excludedArtifactIdMap);
          }
-         Collection<String> verifierNames = new HashSet<>();
+         Set<String> verifierNames = new HashSet<>();
          String inspection = getInspectionQual(req);
          if (Strings.isValid(inspection)) {
             verifierNames.add(inspection);

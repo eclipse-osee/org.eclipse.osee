@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -70,8 +70,8 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
    private final RequirementData requirementData;
    private final ArrayList<String> noTraceabilityFiles = new ArrayList<>(200);
    private final CountingMap<Artifact> reqsTraceCounts = new CountingMap<>();
-   private final HashCollection<Artifact, String> requirementToCodeUnitsMap =
-      new HashCollection<>(false, LinkedHashSet.class);
+   private final HashCollectionSet<Artifact, String> requirementToCodeUnitsMap =
+      new HashCollectionSet<>(LinkedHashSet::new);
    private final HashSet<String> codeUnits = new HashSet<>();
    private final CharBackedInputStream charBak;
    private final ISheetWriter excelWriter;
@@ -322,7 +322,7 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
    }
 
    @Override
-   public HashCollection<Artifact, String> getRequirementToCodeUnitsMap() {
+   public HashCollectionSet<Artifact, String> getRequirementToCodeUnitsMap() {
       return requirementToCodeUnitsMap;
    }
 

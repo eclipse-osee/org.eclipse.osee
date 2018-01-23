@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Ken J. Aguilar
  */
 public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyOne, KeyTwo>, Value> {
-   private final HashCollection<KeyOne, KeyTwo> singleKeyMap;
+   private final HashCollectionSet<KeyOne, KeyTwo> singleKeyMap;
    private final Map<Pair<KeyOne, KeyTwo>, Value> map;
 
    private final ThreadLocal<Pair<KeyOne, KeyTwo>> threadLocalKey = new ThreadLocal<Pair<KeyOne, KeyTwo>>() {
@@ -49,7 +49,7 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
       } else {
          map = new HashMap<>(initialCapacity);
       }
-      singleKeyMap = new HashCollection<>(isThreadSafe, HashSet.class);
+      singleKeyMap = new HashCollectionSet<>(isThreadSafe, HashSet::new);
    }
 
    @Override
@@ -83,7 +83,7 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
     */
    @Override
    public boolean containsValue(Object value) {
-      return singleKeyMap.containsValue(value);
+      return map.containsValue(value);
    }
 
    @Override
@@ -95,33 +95,31 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
    @Override
    public Value get(Object key) {
       List<Value> values = getValues((KeyOne) key);
-      if (values != null && !values.isEmpty()) {
+      if (!values.isEmpty()) {
          return values.iterator().next();
       }
       return null;
    }
 
    public Map<KeyTwo, Value> getKeyedValues(KeyOne key1) {
-      Collection<KeyTwo> key2s = singleKeyMap.getValues(key1);
-      if (key2s == null) {
+      int size = singleKeyMap.sizeByKey(key1);
+      if (size == 0) {
          return Collections.emptyMap();
       }
-      Map<KeyTwo, Value> values = new HashMap<>(key2s.size());
-      for (KeyTwo key2 : key2s) {
-         values.put(key2, get(key1, key2));
-      }
+
+      Map<KeyTwo, Value> values = new HashMap<>(size);
+      singleKeyMap.forEachValue(key1, key2 -> values.put(key2, get(key1, key2)));
+
       return values;
    }
 
    public List<Value> getValues(KeyOne key1) {
-      Collection<KeyTwo> key2s = singleKeyMap.getValues(key1);
-      if (key2s == null) {
+      int size = singleKeyMap.sizeByKey(key1);
+      if (size == 0) {
          return Collections.emptyList();
       }
-      ArrayList<Value> values = new ArrayList<>(key2s.size());
-      for (KeyTwo key2 : key2s) {
-         values.add(get(key1, key2));
-      }
+      ArrayList<Value> values = new ArrayList<>(size);
+      singleKeyMap.forEachValue(key1, key2 -> values.add(get(key1, key2)));
       return values;
    }
 
@@ -132,9 +130,7 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
    public List<Pair<KeyOne, KeyTwo>> getEnumeratedKeys() {
       List<Pair<KeyOne, KeyTwo>> toReturn = new ArrayList<>();
       for (KeyOne firstKey : singleKeyMap.keySet()) {
-         for (KeyTwo secondKey : singleKeyMap.getValues(firstKey)) {
-            toReturn.add(new Pair<KeyOne, KeyTwo>(firstKey, secondKey));
-         }
+         singleKeyMap.forEachValue(firstKey, secondKey -> toReturn.add(new Pair<KeyOne, KeyTwo>(firstKey, secondKey)));
       }
       return toReturn;
    }
@@ -151,12 +147,12 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
 
    @Override
    public Value put(Pair<KeyOne, KeyTwo> key, Value value) {
-      singleKeyMap.put(key.getFirst(), key.getSecond());
+      put(key.getFirst(), key.getSecond());
       return map.put(key, value);
    }
 
    public Value put(KeyOne key1, KeyTwo key2, Value value) {
-      singleKeyMap.put(key1, key2);
+      put(key1, key2);
       return map.put(new Pair<KeyOne, KeyTwo>(key1, key2), value);
    }
 
@@ -165,7 +161,17 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
       map.putAll(copyMap);
 
       for (Pair<KeyOne, KeyTwo> key : copyMap.keySet()) {
-         singleKeyMap.put(key.getFirst(), key.getSecond());
+         put(key.getFirst(), key.getSecond());
+      }
+   }
+
+   private void put(KeyOne key1, KeyTwo key2) {
+      if (singleKeyMap.isSynchronized()) {
+         synchronized (singleKeyMap) {
+            singleKeyMap.put(key1, key2);
+         }
+      } else {
+         singleKeyMap.put(key1, key2);
       }
    }
 
@@ -183,14 +189,12 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
     * @return the previous value associated with key, or null if there was no mapping for key.
     */
    public Collection<Value> removeValues(KeyOne key1) {
-      Collection<KeyTwo> key2s = singleKeyMap.getValues(key1);
-      if (key2s == null) {
+      int size = singleKeyMap.sizeByKey(key1);
+      if (size == 0) {
          return null;
       }
-      ArrayList<Value> values = new ArrayList<>(key2s.size());
-      for (KeyTwo key2 : key2s) {
-         values.add(map.remove(threadLocalKey.get().set(key1, key2)));
-      }
+      ArrayList<Value> values = new ArrayList<>(size);
+      singleKeyMap.forEachValue(key1, key2 -> values.add(map.remove(threadLocalKey.get().set(key1, key2))));
       singleKeyMap.removeValues(key1);
       return values;
    }

@@ -577,7 +577,7 @@ public class ArtifactQuery {
          branchMap.put(artifact.getBranch(), artifact);
       }
       Set<ArtifactId> artIds = new HashSet<>();
-      for (Entry<BranchId, Collection<ArtifactToken>> entrySet : branchMap.entrySet()) {
+      for (Entry<BranchId, List<ArtifactToken>> entrySet : branchMap.entrySet()) {
          for (ArtifactToken artifact : entrySet.getValue()) {
             artIds.add(artifact);
          }

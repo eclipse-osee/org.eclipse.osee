@@ -19,7 +19,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.core.resources.IFile;
@@ -165,16 +164,14 @@ public final class RendererManager {
    }
 
    public static HashCollection<IRenderer, Artifact> createRenderMap(PresentationType presentationType, Collection<Artifact> artifacts, Map<RendererOption, Object> rendererOptions) {
-      HashCollection<IRenderer, Artifact> prototypeRendererArtifactMap =
-         new HashCollection<IRenderer, Artifact>(false, LinkedList.class);
+      HashCollection<IRenderer, Artifact> prototypeRendererArtifactMap = new HashCollection<IRenderer, Artifact>();
       for (Artifact artifact : artifacts) {
          IRenderer renderer = getBestRendererPrototype(presentationType, artifact, rendererOptions);
          prototypeRendererArtifactMap.put(renderer, artifact);
       }
 
       // now that the artifacts are grouped based on best renderer type, create instances of those renderer with the supplied options
-      HashCollection<IRenderer, Artifact> rendererArtifactMap =
-         new HashCollection<IRenderer, Artifact>(false, LinkedList.class);
+      HashCollection<IRenderer, Artifact> rendererArtifactMap = new HashCollection<IRenderer, Artifact>();
       for (IRenderer prototypeRenderer : prototypeRendererArtifactMap.keySet()) {
          IRenderer renderer = prototypeRenderer.newInstance(rendererOptions);
          rendererArtifactMap.put(renderer, prototypeRendererArtifactMap.getValues(prototypeRenderer));

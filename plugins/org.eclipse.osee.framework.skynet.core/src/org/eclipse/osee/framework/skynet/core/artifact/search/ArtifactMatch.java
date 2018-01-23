@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
@@ -39,7 +39,7 @@ public class ArtifactMatch {
       return matchData;
    }
 
-   public void addMatchData(AttributeId attr, Collection<MatchLocation> locations) {
+   public void addMatchData(AttributeId attr, List<MatchLocation> locations) {
       matchData.put(attr, locations);
    }
 }

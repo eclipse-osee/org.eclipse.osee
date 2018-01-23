@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.TreeSet;
 import org.eclipse.osee.define.traceability.ArtifactOperations;
 import org.eclipse.osee.define.traceability.RequirementTraceabilityData;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -98,7 +98,7 @@ public class StpTestToCsciTable implements ISimpleTable {
    @Override
    public void generateBody(ExcelXmlWriter sheetWriter) throws Exception {
       Collection<Artifact> directRequirements = source.getDirectSwRequirements();
-      HashCollection<String, Artifact> partitionMap = ArtifactOperations.sortByPartition(directRequirements);
+      HashCollectionSet<String, Artifact> partitionMap = ArtifactOperations.sortByPartition(directRequirements);
 
       for (String partition : new TreeSet<String>(partitionMap.keySet())) {
          Collection<Artifact> artifacts = partitionMap.getValues(partition);

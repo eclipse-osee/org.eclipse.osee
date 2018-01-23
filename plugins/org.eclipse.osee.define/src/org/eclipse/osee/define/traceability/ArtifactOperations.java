@@ -19,7 +19,7 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import org.eclipse.osee.define.internal.Activator;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -150,8 +150,8 @@ public class ArtifactOperations {
       qualificationFacility = qualFacilityBuilder.toString();
    }
 
-   public static HashCollection<String, Artifact> sortByPartition(Collection<Artifact> source) {
-      HashCollection<String, Artifact> partitionMap = new HashCollection<>(false, TreeSet.class);
+   public static HashCollectionSet<String, Artifact> sortByPartition(Collection<Artifact> source) {
+      HashCollectionSet<String, Artifact> partitionMap = new HashCollectionSet<>(TreeSet::new);
       for (Artifact artifact : source) {
          ArtifactOperations operator = new ArtifactOperations(artifact);
          List<String> partitions = operator.getPartitions();

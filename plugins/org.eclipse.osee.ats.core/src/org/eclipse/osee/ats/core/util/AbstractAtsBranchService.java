@@ -17,8 +17,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.commit.CommitStatus;
 import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -226,8 +226,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
       Set<ICommitConfigItem> configObjects = new HashSet<>();
       if (teamWf.getTeamDefinition().isTeamUsesVersions()) {
          if (atsApi.getVersionService().hasTargetedVersion(teamWf)) {
-            Versions.getParallelVersions(atsApi.getVersionService().getTargetedVersion(teamWf), configObjects,
-               atsApi);
+            Versions.getParallelVersions(atsApi.getVersionService().getTargetedVersion(teamWf), configObjects, atsApi);
          }
       } else {
          if (teamWf.isTeamWorkflow() && isBranchValid(teamWf.getTeamDefinition())) {
@@ -495,7 +494,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
          return CommitStatus.Branch_Not_Configured;
       }
 
-      Collection<? extends TransactionToken> transactions = getCommittedArtifactTransactionIds(teamWf);
+      Collection<TransactionRecord> transactions = getCommittedArtifactTransactionIds(teamWf);
       boolean mergeBranchExists = isMergeBranchExists(teamWf, destinationBranch);
 
       for (TransactionToken transId : transactions) {

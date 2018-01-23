@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -47,9 +47,9 @@ public class RequirementTraceabilityData {
    private final BranchId testProcedureBranch;
    private final TraceabilityProviderOperation traceabilityProvider;
    private RequirementData requirementData;
-   private HashCollection<Artifact, String> requirementsToCodeUnits;
-   private final HashCollection<String, Artifact> requirementNameToTestProcedures =
-      new HashCollection<String, Artifact>();
+   private HashCollectionSet<Artifact, String> requirementsToCodeUnits;
+   private final HashCollectionSet<String, Artifact> requirementNameToTestProcedures =
+      new HashCollectionSet<>(HashSet::new);
    private final Set<String> codeUnits = new TreeSet<>();
    private final Map<String, Artifact> testProcedures = new HashMap<>();
    private File testProcedureFilter;
@@ -158,7 +158,7 @@ public class RequirementTraceabilityData {
    /**
     * @return the requirementsToCodeUnits
     */
-   public HashCollection<Artifact, String> getRequirementsToCodeUnits() {
+   public HashCollectionSet<Artifact, String> getRequirementsToCodeUnits() {
       return requirementsToCodeUnits;
    }
 

@@ -32,7 +32,7 @@ import org.eclipse.osee.ats.core.client.workflow.EstimatedHoursUtil;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -63,9 +63,10 @@ public class WorkflowMetrics {
    Set<IAtsUser> assignees = new HashSet<>();
    Set<IAtsUser> assigneesAssignedOrCompleted = new HashSet<>();
 
-   private final HashCollection<IAtsUser, Artifact> userToAssignedSmas = new HashCollection<>(true, HashSet.class, 100);
-   private final HashCollection<IAtsUser, Artifact> userToCompletedSmas =
-      new HashCollection<>(true, HashSet.class, 100);
+   private final HashCollectionSet<IAtsUser, Artifact> userToAssignedSmas =
+      new HashCollectionSet<>(false, 100, HashSet::new);
+   private final HashCollectionSet<IAtsUser, Artifact> userToCompletedSmas =
+      new HashCollectionSet<>(false, 100, HashSet::new);
    private final double manHoursPerDay;
 
    public WorkflowMetrics(Collection<? extends Artifact> artifacts, IAtsVersion version, double manHoursPerDay, Date estimatedReleaseDate) {
@@ -149,7 +150,7 @@ public class WorkflowMetrics {
             estimatedReleaseDate == null ? "Not Set" : DateUtil.getMMDDYY(estimatedReleaseDate), daysTillRel) : "");
    }
 
-   public HashCollection<IAtsUser, Artifact> getUserToCompletedSmas() {
+   public HashCollectionSet<IAtsUser, Artifact> getUserToCompletedSmas() {
       return userToCompletedSmas;
    }
 
@@ -332,7 +333,7 @@ public class WorkflowMetrics {
       return taskArts;
    }
 
-   public HashCollection<IAtsUser, Artifact> getUserToAssignedSmas() {
+   public HashCollectionSet<IAtsUser, Artifact> getUserToAssignedSmas() {
       return userToAssignedSmas;
    }
 

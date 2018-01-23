@@ -82,6 +82,7 @@ public abstract class AbstractOseeCache<T extends NamedIdBase> implements IOseeC
    }
 
    private void decacheByName(T type) {
+
       Iterator<T> iterator = nameToTypeMap.values().iterator();
       while (iterator.hasNext()) {
          if (iterator.next().equals(type)) {

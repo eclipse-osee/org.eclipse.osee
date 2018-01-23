@@ -77,7 +77,7 @@ public class AdvancedKeywordSearchBlam extends AbstractBlam {
          headerList.add(attrType.getName());
       }
       resultData.addRaw(AHTML.addHeaderRowMultiColumnTable(headerList));
-      for (Entry<Artifact, Collection<String>> entry : artifactToMatch.entrySet()) {
+      for (Entry<Artifact, List<String>> entry : artifactToMatch.entrySet()) {
          List<String> valueList = new ArrayList<>();
          valueList.addAll(Arrays.asList(entry.getKey().getName(), Collections.toString(";", entry.getValue()),
             entry.getKey().getGuid(), XResultDataUI.getHyperlink("open", entry.getKey()),

@@ -11,7 +11,6 @@
 package org.eclipse.osee.define.blam.operation;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
@@ -25,7 +24,7 @@ import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -71,7 +70,7 @@ public class FixAttributeOperation extends AbstractOperation {
       checkPreConditions();
 
       monitor.subTask("Aquiring Artifacts");
-      HashCollection<Artifact, AttributeTypeToken> artifactAttributeMap = getArtifactsWithDuplicates(monitor);
+      HashCollectionSet<Artifact, AttributeTypeToken> artifactAttributeMap = getArtifactsWithDuplicates(monitor);
 
       SkynetTransaction transaction = null;
       if (commitChangesBool) {
@@ -79,7 +78,7 @@ public class FixAttributeOperation extends AbstractOperation {
       }
       List<String[]> rowData = new ArrayList<>();
 
-      for (Entry<Artifact, Collection<AttributeTypeToken>> entry : artifactAttributeMap.entrySet()) {
+      for (Entry<Artifact, Set<AttributeTypeToken>> entry : artifactAttributeMap.entrySet()) {
          Artifact artifact = entry.getKey();
          for (AttributeTypeToken attributeType : entry.getValue()) {
             List<Object> attributeValues = artifact.getAttributeValues(attributeType);
@@ -125,8 +124,8 @@ public class FixAttributeOperation extends AbstractOperation {
       }
    }
 
-   private HashCollection<Artifact, AttributeTypeToken> getArtifactsWithDuplicates(IProgressMonitor monitor) {
-      HashCollection<Artifact, AttributeTypeToken> artifactAttributeMap = new HashCollection<>(false, HashSet.class);
+   private HashCollectionSet<Artifact, AttributeTypeToken> getArtifactsWithDuplicates(IProgressMonitor monitor) {
+      HashCollectionSet<Artifact, AttributeTypeToken> artifactAttributeMap = new HashCollectionSet<>(HashSet::new);
 
       List<Artifact> artifacts =
          ArtifactQuery.getArtifactListFromBranch(branch, LoadLevel.ALL, DeletionFlag.EXCLUDE_DELETED);

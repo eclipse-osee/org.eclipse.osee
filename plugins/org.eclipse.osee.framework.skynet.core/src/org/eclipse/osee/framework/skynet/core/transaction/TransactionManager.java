@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.transaction;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -35,7 +34,7 @@ import org.eclipse.osee.framework.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -98,8 +97,9 @@ public final class TransactionManager {
       "select max(transaction_id) as prevTx from osee_attribute atr, osee_txs txs where branch_id = ? and art_id = ? and atr.gamma_id = txs.gamma_id and transaction_id < ?";
 
    private static final TxMonitorImpl<BranchId> txMonitor = new TxMonitorImpl<>(new TxMonitorCache<>());
-   private static final HashCollection<ArtifactId, TransactionRecord> commitArtifactIdMap =
-      new HashCollection<>(true, HashSet.class);
+   // The commitArtifactIdMap is protected from concurrent access via synchronizing all methods of this class that use it
+   private static final HashCollectionSet<ArtifactId, TransactionRecord> commitArtifactIdMap =
+      new HashCollectionSet<>(HashSet::new);
 
    public static SkynetTransaction createTransaction(BranchId branch, String comment) {
       SkynetTransaction tx = new SkynetTransaction(txMonitor, branch, comment);
@@ -135,12 +135,7 @@ public final class TransactionManager {
          ConnectionHandler.getJdbcClient().runQuery(stmt -> commitArtifactIdMap.put(artifact, loadTransaction(stmt)),
             SELECT_COMMIT_TRANSACTIONS, artifact);
       }
-      Collection<TransactionRecord> transactions = commitArtifactIdMap.getValues(artifact);
-      if (transactions == null) {
-         transactions = Collections.emptyList();
-         commitArtifactIdMap.put(artifact, transactions);
-      }
-      return transactions;
+      return commitArtifactIdMap.safeGetValues(artifact);
    }
 
    /**
@@ -148,7 +143,7 @@ public final class TransactionManager {
     * cache the next time it's accessed. This is provided for remote event commits. All other updates to cache should be
     * performed through cacheCommittedArtifactTransaction.
     */
-   public static void clearCommitArtifactCacheForAssociatedArtifact(ArtifactId associatedArtifact) {
+   public synchronized static void clearCommitArtifactCacheForAssociatedArtifact(ArtifactId associatedArtifact) {
       commitArtifactIdMap.removeValues(associatedArtifact);
    }
 

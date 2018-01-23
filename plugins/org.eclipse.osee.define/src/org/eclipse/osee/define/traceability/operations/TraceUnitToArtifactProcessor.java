@@ -41,7 +41,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -74,14 +74,14 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
    private SkynetTransaction transaction;
    private HierarchyHandler handler;
 
-   private final HashCollection<TraceUnit, TraceMark> reportTraceNotFound;
-   private final HashCollection<String, String> unknownRelationError;
+   private final HashCollectionSet<TraceUnit, TraceMark> reportTraceNotFound;
+   private final HashCollectionSet<String, String> unknownRelationError;
    private final Set<String> unRelatedUnits;
 
    public TraceUnitToArtifactProcessor(BranchId importIntoBranch, boolean addGuidToSourceFile) {
       this.importIntoBranch = importIntoBranch;
-      this.reportTraceNotFound = new HashCollection<>(false, HashSet.class);
-      this.unknownRelationError = new HashCollection<>(false, HashSet.class);
+      this.reportTraceNotFound = new HashCollectionSet<>(HashSet::new);
+      this.unknownRelationError = new HashCollectionSet<>(HashSet::new);
       this.unRelatedUnits = new HashSet<>();
       this.addGuidToSourceFile = addGuidToSourceFile;
    }

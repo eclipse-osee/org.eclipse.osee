@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.jdk.core.text.rules.ReplaceAll;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -113,7 +114,7 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
       File targetFile = processor.getDataProvider().getFile(exportItem);
       File tempFile = new File(Lib.changeExtension(targetFile.getPath(), "temp"));
       Writer fileWriter = null;
-      HashCollection<Long, Address> addressMap = new HashCollection<>(false, TreeSet.class);
+      HashCollectionSet<Long, Address> addressMap = new HashCollectionSet<>(TreeSet::new);
       V0_9_2TxsConsolidateParser transformer = new V0_9_2TxsConsolidateParser(artifactGammaToNetGammaId, addressMap);
       try {
          fileWriter = processor.startTransform(targetFile, tempFile, transformer);

@@ -55,6 +55,7 @@ import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -98,7 +99,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
    private ArrayList<String[]> statusLines;
    private ArrayList<RequirementStatus> statuses;
    private Collection<IAtsVersion> versions;
-   private HashCollection<String, Artifact> requirementNameToTestProcedures;
+   private HashCollectionSet<String, Artifact> requirementNameToTestProcedures;
 
    private XBranchSelectWidget reportBranchWidget;
    private XVersionList versionsListViewer;
@@ -521,9 +522,9 @@ public class DetailedTestStatusBlam extends AbstractBlam {
       }
    }
 
-   private HashCollection<String, Artifact> getTestProcedureTraceability(BranchId testProcedureBranch, IProgressMonitor monitor) {
+   private HashCollectionSet<String, Artifact> getTestProcedureTraceability(BranchId testProcedureBranch, IProgressMonitor monitor) {
       monitor.subTask("Gathering test procedures");
-      HashCollection<String, Artifact> requirementNameToTestProcedures = new HashCollection<>();
+      HashCollectionSet<String, Artifact> requirementNameToTestProcedures = new HashCollectionSet<>(HashSet::new);
       // Map Software Requirements from TestProcedure IOseeBranch to Requirements IOseeBranch
       List<Artifact> tpReqs =
          ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SoftwareRequirement, testProcedureBranch);

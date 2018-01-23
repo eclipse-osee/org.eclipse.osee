@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -64,7 +64,7 @@ public class SubsystemFullTraceReport extends AbstractBlam {
    private static final String SUBSYSTEM_REQUIREMENTS = "Subsystem Requirements";
    private CharBackedInputStream charBak;
    private ISheetWriter writer;
-   private HashCollection<Artifact, String> requirementsToCodeUnits;
+   private HashCollectionSet<Artifact, String> requirementsToCodeUnits;
    private static int SOFTWARE_REQUIREMENT_INDEX = 9;
    private static int TEST_INDEX = 13;
    private final ArrayList<String> tests = new ArrayList<>(50);

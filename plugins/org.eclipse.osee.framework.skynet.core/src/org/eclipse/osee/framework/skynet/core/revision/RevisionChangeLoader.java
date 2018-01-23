@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -197,7 +197,7 @@ public final class RevisionChangeLoader {
    }
 
    private CompositeKeyHashMap<TransactionToken, ArtifactId, Artifact> getBulkLoadedArtifacts(BranchId branch, boolean isHistorical, List<ChangeBuilder> changeBuilders) {
-      HashCollection<TransactionToken, ArtifactId> loadMap = new HashCollection<>(false, HashSet.class);
+      HashCollectionSet<TransactionToken, ArtifactId> loadMap = new HashCollectionSet<>(HashSet::new);
       for (ChangeBuilder builder : changeBuilders) {
          TransactionToken endTx = builder.getTxDelta().getEndTx();
          loadMap.put(endTx, builder.getArtId());
@@ -209,7 +209,7 @@ public final class RevisionChangeLoader {
 
       CompositeKeyHashMap<TransactionToken, ArtifactId, Artifact> loadedMap = new CompositeKeyHashMap<>();
 
-      for (Entry<TransactionToken, Collection<ArtifactId>> entry : loadMap.entrySet()) {
+      for (Entry<TransactionToken, Set<ArtifactId>> entry : loadMap.entrySet()) {
          Collection<Artifact> artifacts;
          if (isHistorical) {
             artifacts = ArtifactQuery.getHistoricalArtifactListFromIds(entry.getValue(), entry.getKey(),

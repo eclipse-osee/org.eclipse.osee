@@ -59,6 +59,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -99,7 +100,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
    private final CompositeKeyHashMap<String, String, RequirementStatus> reqTaskMap =
       new CompositeKeyHashMap<String, String, RequirementStatus>();
    private final StringBuilder sumFormula = new StringBuilder(500);
-   private HashCollection<Artifact, String> requirementToCodeUnitsMap;
+   private HashCollectionSet<Artifact, String> requirementToCodeUnitsMap;
    private final HashMap<String, String> testProcedureInfo = new HashMap<>();
    private final HashCollection<String, IAtsUser> legacyIdToImplementers = new HashCollection<>();
    private final HashMap<String, Artifact> testRunArtifacts = new HashMap<>();

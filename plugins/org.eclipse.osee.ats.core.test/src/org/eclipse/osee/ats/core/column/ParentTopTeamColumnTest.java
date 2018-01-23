@@ -12,6 +12,8 @@ package org.eclipse.osee.ats.core.column;
 
 import static org.mockito.Mockito.when;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -58,7 +60,9 @@ public class ParentTopTeamColumnTest {
     */
    @org.junit.Test
    public void testGetColumnText_fromTeamWf() throws Exception {
-      when(teamDef_top.getVersions()).thenReturn(Arrays.asList(ver1));
+      Set<IAtsVersion> ver = new HashSet<IAtsVersion>();
+      ver.addAll(Arrays.asList(ver1));
+      when(teamDef_top.getVersions()).thenReturn(ver);
 
       String columnText = ParentTopTeamColumn.getColumnText(teamWf1);
 
@@ -70,7 +74,9 @@ public class ParentTopTeamColumnTest {
     */
    @org.junit.Test
    public void testGetColumnText_fromRelatedReview() throws Exception {
-      when(teamDef_top.getVersions()).thenReturn(Arrays.asList(ver1));
+      Set<IAtsVersion> ver = new HashSet<IAtsVersion>();
+      ver.addAll(Arrays.asList(ver1));
+      when(teamDef_top.getVersions()).thenReturn(ver);
       when(rev1.getParentTeamWorkflow()).thenReturn(teamWf1);
 
       String columnText = ParentTopTeamColumn.getColumnText(rev1);

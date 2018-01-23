@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -18,7 +20,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.util.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -194,13 +196,14 @@ public class AtsHealthCheckOperation {
 
    private static class TestWorkflowVersions implements IAtsHealthCheck {
 
-      private final HashCollection<IAtsTeamDefinition, IAtsVersion> teamDefToVersions = new HashCollection<>();
+      private final HashCollectionSet<IAtsTeamDefinition, IAtsVersion> teamDefToVersions =
+         new HashCollectionSet<>(HashSet::new);
 
       /**
        * Cache this cause it's expensive to do repeatedly for the same teamDef
        */
       private Collection<IAtsVersion> getTeamVersions(IAtsTeamDefinition teamDef) {
-         Collection<IAtsVersion> teamDefVersions = teamDefToVersions.getValues(teamDef);
+         Set<IAtsVersion> teamDefVersions = teamDefToVersions.getValues(teamDef);
          if (teamDefVersions == null) {
             IAtsTeamDefinition teamDefHoldingVers = teamDef.getTeamDefinitionHoldingVersions();
             if (teamDefHoldingVers != null) {

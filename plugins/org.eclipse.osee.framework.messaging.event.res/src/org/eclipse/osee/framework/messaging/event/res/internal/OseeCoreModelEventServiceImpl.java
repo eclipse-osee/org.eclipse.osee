@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.ConnectionListener;
@@ -33,8 +33,8 @@ import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
  */
 public class OseeCoreModelEventServiceImpl implements OseeMessagingStatusCallback, IOseeCoreModelEventService {
 
-   private final Map<IFrameworkEventListener, HashCollection<ResMessages, OseeMessagingListener>> subscriptions =
-      new ConcurrentHashMap<IFrameworkEventListener, HashCollection<ResMessages, OseeMessagingListener>>();
+   private final Map<IFrameworkEventListener, HashCollectionSet<ResMessages, OseeMessagingListener>> subscriptions =
+      new ConcurrentHashMap<IFrameworkEventListener, HashCollectionSet<ResMessages, OseeMessagingListener>>();
 
    private final Map<ResMessages, Boolean> messages;
    private final MessageService messageService;
@@ -121,7 +121,7 @@ public class OseeCoreModelEventServiceImpl implements OseeMessagingStatusCallbac
    public void removeFrameworkListener(IFrameworkEventListener frameworkEventListener) {
       OseeLog.log(OseeCoreModelEventServiceImpl.class, Level.INFO, "De-Registering Client for Remote Events");
 
-      HashCollection<ResMessages, OseeMessagingListener> listeners = subscriptions.get(frameworkEventListener);
+      HashCollectionSet<ResMessages, OseeMessagingListener> listeners = subscriptions.get(frameworkEventListener);
       if (listeners != null) {
          for (ResMessages messageID : listeners.keySet()) {
             Collection<OseeMessagingListener> listernerList = listeners.getValues(messageID);
@@ -138,9 +138,9 @@ public class OseeCoreModelEventServiceImpl implements OseeMessagingStatusCallbac
    private <T extends RemoteEvent> void subscribe(ResMessages messageId, Class<T> clazz, boolean isVerbose, IFrameworkEventListener frameworkEventListener) {
       OseeMessagingListener listener = new FrameworkRelayMessagingListener<>(clazz, frameworkEventListener, isVerbose);
       getConnectionNode().subscribe(messageId, listener, this);
-      HashCollection<ResMessages, OseeMessagingListener> listeners = subscriptions.get(frameworkEventListener);
+      HashCollectionSet<ResMessages, OseeMessagingListener> listeners = subscriptions.get(frameworkEventListener);
       if (listeners == null) {
-         listeners = new HashCollection<>(true, HashSet.class);
+         listeners = new HashCollectionSet<>(true, HashSet::new);
          subscriptions.put(frameworkEventListener, listeners);
       }
       listeners.put(messageId, listener);

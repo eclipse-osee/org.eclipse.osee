@@ -264,7 +264,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
    }
 
    @Override
-   public Collection<IAtsVersion> getVersions() {
+   public Set<IAtsVersion> getVersions() {
       Set<IAtsVersion> results = new HashSet<>();
       try {
          for (ArtifactId verArt : atsApi.getRelationResolver().getRelated(artifact,

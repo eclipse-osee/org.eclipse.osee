@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -54,13 +54,13 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
 
    @Override
    protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
-      HashCollection<IOseeBranch, AttrData> attributesWithErrors = new HashCollection<>();
+      HashCollectionSet<IOseeBranch, AttrData> attributesWithErrors = new HashCollectionSet<>(HashSet::new);
       List<? extends IOseeBranch> branches = BranchManager.getBaselineBranches();
       if (branches.isEmpty()) {
          throw new OseeStateException("no branches found");
       }
       for (IOseeBranch branch : branches) {
-         Collection<AttrData> datas = getRepeatEnumeratedAttrs(monitor, branch);
+         Set<AttrData> datas = getRepeatEnumeratedAttrs(monitor, branch);
          if (!datas.isEmpty()) {
             attributesWithErrors.put(branch, datas);
          }

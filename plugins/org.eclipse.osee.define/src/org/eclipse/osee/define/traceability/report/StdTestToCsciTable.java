@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -23,6 +22,7 @@ import org.eclipse.osee.define.traceability.ArtifactOperations;
 import org.eclipse.osee.define.traceability.RequirementTraceabilityData;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
@@ -119,14 +119,12 @@ public class StdTestToCsciTable implements ISimpleTable {
    @Override
    public void generateBody(ExcelXmlWriter sheetWriter) throws Exception {
       Collection<Artifact> directRequirements = source.getAllSwRequirements();
-      HashCollection<String, Artifact> partitionMap = ArtifactOperations.sortByPartition(directRequirements);
+      HashCollectionSet<String, Artifact> partitionMap = ArtifactOperations.sortByPartition(directRequirements);
 
       HashCollection<Artifact, String> requirementsToQualificationMethod = getQualificationMethods(source);
 
-      HashCollection<String, String> partitionToQualificationMethod =
-         new HashCollection<String, String>(false, TreeSet.class);
-      HashCollection<String, Artifact> qualificationMethodToRequirements =
-         new HashCollection<String, Artifact>(false, TreeSet.class);
+      HashCollectionSet<String, String> partitionToQualificationMethod = new HashCollectionSet<>(TreeSet::new);
+      HashCollectionSet<String, Artifact> qualificationMethodToRequirements = new HashCollectionSet<>(TreeSet::new);
       for (String partition : partitionMap.keySet()) {
          for (Artifact artifact : partitionMap.getValues(partition)) {
 
@@ -162,12 +160,13 @@ public class StdTestToCsciTable implements ISimpleTable {
    }
 
    private HashCollection<Artifact, String> getQualificationMethods(RequirementTraceabilityData source) {
-      HashCollection<Artifact, String> toReturn = new HashCollection<>(false, LinkedList.class);
-      HashCollection<Artifact, String> requirementsToCodeUnits = source.getRequirementsToCodeUnits();
+      HashCollection<Artifact, String> toReturn = new HashCollection<>();
+      HashCollectionSet<Artifact, String> requirementsToCodeUnits = source.getRequirementsToCodeUnits();
 
       // Combine Test Scripts and Test Procedures
       for (Artifact requirement : source.getAllSwRequirements()) {
-         Collection<String> testScripts = requirementsToCodeUnits.getValues(requirement);
+         List<String> testScripts = new ArrayList<String>();
+         requirementsToCodeUnits.forEachValue(requirement, testScripts::add);
          if (testScripts != null) {
             toReturn.put(requirement, testScripts);
          }

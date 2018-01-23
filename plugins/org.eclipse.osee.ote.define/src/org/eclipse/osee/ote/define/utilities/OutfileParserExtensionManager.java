@@ -21,7 +21,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -39,13 +39,13 @@ public class OutfileParserExtensionManager {
    private static final String CLASS_NAME = "classname";
    private static final String SUPPORTED_EXTENSIONS = "supportedExtensions";
    private final Map<String, BaseOutfileParser> contributions;
-   private final HashCollection<String, BaseOutfileParser> extensionsToParsers;
+   private final HashCollectionSet<String, BaseOutfileParser> extensionsToParsers;
 
    private static OutfileParserExtensionManager instance = null;
 
    private OutfileParserExtensionManager() {
       contributions = new HashMap<>();
-      extensionsToParsers = new HashCollection<>(false, HashSet.class);
+      extensionsToParsers = new HashCollectionSet<>(HashSet::new);
    }
 
    public static OutfileParserExtensionManager getInstance() {

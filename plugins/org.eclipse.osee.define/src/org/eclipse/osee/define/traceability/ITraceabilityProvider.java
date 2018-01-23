@@ -13,7 +13,7 @@ package org.eclipse.osee.define.traceability;
 import java.util.Collection;
 import java.util.Set;
 import org.eclipse.osee.define.traceability.data.RequirementData;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -23,7 +23,7 @@ public interface ITraceabilityProvider {
 
    public RequirementData getRequirementData();
 
-   public HashCollection<Artifact, String> getRequirementToCodeUnitsMap();
+   public HashCollectionSet<Artifact, String> getRequirementToCodeUnitsMap();
 
    public Set<String> getCodeUnits();
 

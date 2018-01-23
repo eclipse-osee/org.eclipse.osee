@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.rest.internal.util;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,7 +31,7 @@ import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.change.CompareResults;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.data.TransactionReadable;
@@ -46,8 +45,8 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    private final OrcsApi orcsApi;
    private final TransactionQuery txQuery;
-   private final HashCollection<ArtifactId, TransactionRecord> commitArtifactIdMap =
-      new HashCollection<>(true, HashSet.class);
+   private final HashCollectionSet<ArtifactId, TransactionRecord> commitArtifactIdMap =
+      new HashCollectionSet<>(true, HashSet::new);
 
    public AtsBranchServiceImpl(AtsApi atsServices, OrcsApi orcsApi, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
       super(atsServices, teamWorkflowProvidersLazy);
@@ -135,8 +134,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
             tx -> commitArtifactIdMap.put(artId, new TransactionRecord(tx.getId(), tx.getBranch(), tx.getComment(),
                tx.getDate(), tx.getAuthor(), tx.getCommitArt().getId().intValue(), tx.getTxType(), tx.getBuildId())));
       }
-      Collection<TransactionRecord> transactions = commitArtifactIdMap.getValues(artId);
-      return transactions == null ? Collections.emptyList() : transactions;
+      return commitArtifactIdMap.safeGetValues(artId);
    }
 
    @Override

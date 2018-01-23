@@ -28,7 +28,7 @@ import org.eclipse.osee.define.traceability.TraceUnitExtensionManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.HashCollectionSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -49,13 +49,11 @@ public final class FindTraceUnitFromResource {
       //
    }
 
-   private static HashCollection<IArtifactType, ResourceIdentifier> toIdentifiers(IResource... resources) {
-      HashCollection<IArtifactType, ResourceIdentifier> returnCollection =
-         new HashCollection<IArtifactType, ResourceIdentifier>(false, HashSet.class);
+   private static HashCollectionSet<IArtifactType, ResourceIdentifier> toIdentifiers(IResource... resources) {
+      HashCollectionSet<IArtifactType, ResourceIdentifier> returnCollection = new HashCollectionSet<>(HashSet::new);
       if (resources != null && resources.length > 0) {
          try {
-            Collection<ITraceUnitResourceLocator> locators =
-               TraceUnitExtensionManager.getInstance().getAllTraceUnitLocators();
+            Set<ITraceUnitResourceLocator> locators = TraceUnitExtensionManager.getInstance().getAllTraceUnitLocators();
             for (IResource resource : resources) {
                resourceToId(returnCollection, resource, locators);
             }
@@ -66,7 +64,7 @@ public final class FindTraceUnitFromResource {
       return returnCollection;
    }
 
-   private static void resourceToId(HashCollection<IArtifactType, ResourceIdentifier> idStore, IResource resource, Collection<ITraceUnitResourceLocator> locators) {
+   private static void resourceToId(HashCollectionSet<IArtifactType, ResourceIdentifier> idStore, IResource resource, Set<ITraceUnitResourceLocator> locators) {
       try {
          IFileStore fileStore = EFS.getStore(resource.getLocationURI());
          for (ITraceUnitResourceLocator locator : locators) {
@@ -97,7 +95,7 @@ public final class FindTraceUnitFromResource {
    }
 
    public static void search(BranchId branch, IResource... resources) {
-      HashCollection<IArtifactType, ResourceIdentifier> typeAndIds = toIdentifiers(resources);
+      HashCollectionSet<IArtifactType, ResourceIdentifier> typeAndIds = toIdentifiers(resources);
       if (!typeAndIds.isEmpty()) {
          Set<Artifact> artifacts = new HashSet<>();
          for (IArtifactType artifactType : typeAndIds.keySet()) {

@@ -103,8 +103,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    public static final String UNNAMED = "Unnamed";
    public static final String BEFORE_GUID_STRING = "/BeforeGUID/PrePend";
    public static final String AFTER_GUID_STRING = "/AfterGUID";
-   private final HashCollection<AttributeTypeId, Attribute<?>> attributes =
-      new HashCollection<>(false, LinkedList.class, 12);
+   private final HashCollection<AttributeTypeId, Attribute<?>> attributes = new HashCollection<>(true);
    private final Set<DefaultBasicUuidRelationReorder> relationOrderRecords =
       new HashSet<DefaultBasicUuidRelationReorder>();
    private final BranchId branch;
@@ -564,7 +563,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
     */
    public final List<Attribute<?>> getAllAttributesIncludingHardDeleted(AttributeTypeId attributeType) {
       ensureAttributesLoaded();
-      return getAttributes((List<Attribute<?>>) attributes.getValues(attributeType), true);
+      return getAttributes(attributes.getValues(attributeType), true);
    }
 
    /**
@@ -595,7 +594,7 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
    @Deprecated
    public final <T> List<Attribute<T>> getAttributes(AttributeTypeId attributeType) {
       ensureAttributesLoaded();
-      return Collections.castAll(getAttributes((List<Attribute<?>>) attributes.getValues(attributeType), false));
+      return Collections.castAll(getAttributes(attributes.getValues(attributeType), false));
    }
 
    /**

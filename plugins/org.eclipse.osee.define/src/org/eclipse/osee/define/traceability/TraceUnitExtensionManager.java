@@ -114,7 +114,7 @@ public class TraceUnitExtensionManager {
       return parsers;
    }
 
-   public Collection<ITraceUnitResourceLocator> getAllTraceUnitLocators() {
+   public Set<ITraceUnitResourceLocator> getAllTraceUnitLocators() {
       checkObjectsLoaded();
       Set<ITraceUnitResourceLocator> locators = new HashSet<>();
       for (TraceHandler traceHandler : contributions.values()) {
