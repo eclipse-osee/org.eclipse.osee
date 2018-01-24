@@ -13,15 +13,15 @@ package org.eclipse.osee.ats.core.column;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.StateType;
-import org.eclipse.osee.ats.api.workflow.HasActions;
 import org.eclipse.osee.ats.api.workflow.HasAssignees;
 import org.eclipse.osee.ats.api.workflow.IAtsImplementerService;
 import org.eclipse.osee.ats.core.util.AtsObjects;
+import org.eclipse.osee.ats.core.workflow.Action;
 import org.eclipse.osee.ats.core.workflow.AtsImplementersService;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -44,12 +44,11 @@ public class AssigneeColumn extends AbstractServicesColumn {
    }
 
    public String getAssigneeStr(IAtsObject atsObject) {
-      if (atsObject instanceof HasActions) {
-         HasActions hasActions = (HasActions) atsObject;
+      if (atsObject instanceof Action) {
          // ensure consistent order by using lists
          List<IAtsUser> pocs = new ArrayList<>();
          List<IAtsUser> implementers = new ArrayList<>();
-         for (IAtsWorkItem workItem : hasActions.getActions()) {
+         for (IAtsWorkItem workItem : ((Action) atsObject).getTeamWorkflows()) {
             StateType stateType = workItem.getStateMgr().getStateType();
             if (stateType != null) {
                if (stateType.isCompletedOrCancelled()) {

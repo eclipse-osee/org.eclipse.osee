@@ -15,14 +15,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.AbstractUserTest;
-import org.eclipse.osee.ats.core.model.impl.AtsActionGroup;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.workflow.AtsImplementersService;
 import org.junit.Assert;
@@ -36,11 +36,11 @@ import org.mockito.Mock;
 public class ImplementersColumnTest extends AbstractUserTest {
 
    // @formatter:off
-   @Mock private IAtsWorkItem workItem;
+   @Mock private IAtsTeamWorkflow workItem;
    @Mock private IAtsStateManager stateMgr;
-   @Mock private IAtsWorkItem workItem2;
+   @Mock private IAtsTeamWorkflow workItem2;
    @Mock private IAtsStateManager stateMgr2;
-   @Mock private AtsActionGroup group;
+   @Mock private IAtsAction group;
    @Mock private AtsApi atsApi;
    @Mock private IAtsUserService userService;
    @Mock private IAttributeResolver attributeResolver;
@@ -58,6 +58,7 @@ public class ImplementersColumnTest extends AbstractUserTest {
       when(workItem2.getStateMgr()).thenReturn(stateMgr2);
       when(atsApi.getUserService()).thenReturn(userService);
       when(atsApi.getAttributeResolver()).thenReturn(attributeResolver);
+      when(group.getTeamWorkflows()).thenReturn(Arrays.asList(workItem, workItem2));
 
       impService = new AtsImplementersService();
       assigneeColumn = new AssigneeColumn(atsApi);
@@ -280,8 +281,6 @@ public class ImplementersColumnTest extends AbstractUserTest {
 
    @org.junit.Test
    public void testGetImplementersFromActionGroup() {
-
-      when(group.getActions()).thenReturn(Arrays.asList(workItem, workItem2));
       when(workItem.getStateMgr().getStateType()).thenReturn(StateType.Working);
       when(workItem.getCancelledBy()).thenReturn(alice);
       when(workItem2.getStateMgr().getStateType()).thenReturn(StateType.Working);
@@ -297,8 +296,6 @@ public class ImplementersColumnTest extends AbstractUserTest {
 
    @org.junit.Test
    public void testGetImplementersFromActionGroup_noDuplicates() {
-
-      when(group.getActions()).thenReturn(Arrays.asList(workItem, workItem2));
       when(workItem.getStateMgr().getStateType()).thenReturn(StateType.Cancelled);
       when(workItem.getCancelledBy()).thenReturn(steve);
       when(workItem2.getStateMgr().getStateType()).thenReturn(StateType.Cancelled);
@@ -308,5 +305,4 @@ public class ImplementersColumnTest extends AbstractUserTest {
       Assert.assertEquals(1, implementers.size());
       Assert.assertEquals(steve, implementers.iterator().next());
    }
-
 }

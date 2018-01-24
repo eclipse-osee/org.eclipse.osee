@@ -15,15 +15,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.AbstractUserTest;
-import org.eclipse.osee.ats.core.model.impl.AtsActionGroup;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.ats.core.workflow.Action;
 import org.junit.Assert;
 import org.junit.Before;
 import org.mockito.Mock;
@@ -35,11 +33,11 @@ import org.mockito.Mock;
 public class AssigneeColumnTest extends AbstractUserTest {
 
    // @formatter:off
-   @Mock private IAtsWorkItem workItem;
+   @Mock private IAtsTeamWorkflow workItem;
    @Mock private IAtsStateManager stateMgr;
-   @Mock private IAtsWorkItem workItem2;
+   @Mock private IAtsTeamWorkflow workItem2;
    @Mock private IAtsStateManager stateMgr2;
-   @Mock private AtsActionGroup group;
+   @Mock private Action action;
    @Mock private AtsApi atsApi;
    @Mock private IAtsUserService userService;
    // @formatter:on
@@ -53,8 +51,8 @@ public class AssigneeColumnTest extends AbstractUserTest {
       when(workItem.getStateMgr()).thenReturn(stateMgr);
       when(workItem2.getStateMgr()).thenReturn(stateMgr2);
       when(atsApi.getUserService()).thenReturn(userService);
+      when(action.getTeamWorkflows()).thenReturn(Arrays.asList(workItem, workItem2));
       assigneeColumn = new AssigneeColumn(atsApi);
-
    }
 
    @org.junit.Test
@@ -141,37 +139,29 @@ public class AssigneeColumnTest extends AbstractUserTest {
       List<IAtsUser> implementStateImplementers = new ArrayList<>();
       implementStateImplementers.add(joe);
       when(workItem2.getImplementers()).thenReturn(implementStateImplementers);
-
-      AtsActionGroup group = new AtsActionGroup(GUID.create(), "group", Lib.generateId());
-      group.addAction(workItem);
-      group.addAction(workItem2);
-
-      Assert.assertEquals("(joe)", assigneeColumn.getAssigneeStr(group));
+      Assert.assertEquals("(joe)", assigneeColumn.getAssigneeStr(action));
    }
 
    @org.junit.Test
    public void testGetAssigneesStr_hasActions_duplicateImplementers() {
-
-      when(group.getActions()).thenReturn(Arrays.asList(workItem, workItem2));
       when(workItem.getStateMgr().getStateType()).thenReturn(StateType.Cancelled);
       when(workItem.getImplementers()).thenReturn(Arrays.asList(joe));
       when(workItem2.getStateMgr().getStateType()).thenReturn(StateType.Cancelled);
       when(workItem2.getImplementers()).thenReturn(Arrays.asList(joe));
 
-      Assert.assertEquals("(joe)", assigneeColumn.getAssigneeStr(group));
+      Assert.assertEquals("(joe)", assigneeColumn.getAssigneeStr(action));
    }
 
    @org.junit.Test
    public void testGetAssigneesStr_hasActions_twoCancelled() {
 
-      when(group.getActions()).thenReturn(Arrays.asList(workItem, workItem2));
       when(workItem.getStateMgr().getStateType()).thenReturn(StateType.Cancelled);
       when(workItem.getImplementers()).thenReturn(Arrays.asList(steve));
       when(workItem2.getStateMgr().getStateType()).thenReturn(StateType.Cancelled);
       when(workItem2.getImplementers()).thenReturn(Arrays.asList(joe));
 
-      Assert.assertTrue(assigneeColumn.getAssigneeStr(group).contains("joe"));
-      Assert.assertTrue(assigneeColumn.getAssigneeStr(group).contains("steve"));
+      Assert.assertTrue(assigneeColumn.getAssigneeStr(action).contains("joe"));
+      Assert.assertTrue(assigneeColumn.getAssigneeStr(action).contains("steve"));
    }
 
    @org.junit.Test
@@ -186,12 +176,7 @@ public class AssigneeColumnTest extends AbstractUserTest {
       assigneesToReturn2.add(steve);
       when(workItem2.getAssignees()).thenReturn(assigneesToReturn2);
       when(stateMgr2.getStateType()).thenReturn(StateType.Working);
-
-      AtsActionGroup group = new AtsActionGroup(GUID.create(), "group", Lib.generateId());
-      group.addAction(workItem);
-      group.addAction(workItem2);
-
-      Assert.assertEquals("steve", assigneeColumn.getAssigneeStr(group));
+      Assert.assertEquals("steve", assigneeColumn.getAssigneeStr(action));
    }
 
    @org.junit.Test
@@ -200,5 +185,4 @@ public class AssigneeColumnTest extends AbstractUserTest {
       when(stateMgr.getStateType()).thenReturn(StateType.Cancelled);
       Assert.assertEquals("", column.getAssigneeStr(workItem));
    }
-
 }

@@ -21,8 +21,8 @@ import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsImplementerService;
-import org.eclipse.osee.ats.core.model.IActionGroup;
 import org.eclipse.osee.ats.core.review.DecisionReviewState;
 import org.eclipse.osee.ats.core.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
@@ -54,8 +54,8 @@ public class AtsImplementersService implements IAtsImplementerService {
    @Override
    public List<IAtsUser> getImplementers(IAtsObject atsObject) {
       List<IAtsUser> implementers = new LinkedList<>();
-      if (atsObject instanceof IActionGroup) {
-         implementers.addAll(getActionGroupImplementers((IActionGroup) atsObject));
+      if (atsObject instanceof IAtsAction) {
+         implementers.addAll(getActionGroupImplementers((IAtsAction) atsObject));
       } else if (atsObject instanceof IAtsWorkItem) {
          implementers.addAll(getWorkItemImplementers((IAtsWorkItem) atsObject));
       }
@@ -126,9 +126,9 @@ public class AtsImplementersService implements IAtsImplementerService {
       }
    }
 
-   public List<IAtsUser> getActionGroupImplementers(IActionGroup actionGroup) {
+   public List<IAtsUser> getActionGroupImplementers(IAtsAction actionGroup) {
       List<IAtsUser> implementers = new LinkedList<>();
-      for (IAtsWorkItem action : actionGroup.getActions()) {
+      for (IAtsWorkItem action : actionGroup.getTeamWorkflows()) {
          if (action.getStateMgr().getStateType().isCompletedOrCancelled()) {
             for (IAtsUser user : getWorkItemImplementers(action)) {
                if (!implementers.contains(user)) {
