@@ -62,8 +62,7 @@ public class QueryEngineImpl implements QueryEngine {
       if (isPostProcessRequired(queryData)) {
          return artifactQueryEngineFactory.getArtifactCount(queryData);
       }
-      QuerySqlContext queryContext = artifactSqlContextFactory.createQueryContext(null, queryData, QueryType.COUNT);
-      return sqlObjectLoader.getCount(queryContext);
+      return getCount(artifactSqlContextFactory, queryData);
    }
 
    private boolean isPostProcessRequired(QueryData queryData) {
@@ -71,32 +70,40 @@ public class QueryEngineImpl implements QueryEngine {
    }
 
    @Override
-   public CancellableCallable<Integer> createArtifactQuery(OrcsSession session, QueryData queryData, LoadDataHandler handler) {
-      return artifactQueryEngineFactory.createQuery(session, queryData, handler);
+   public void runArtifactQuery(QueryData queryData, LoadDataHandler handler) throws Exception {
+      artifactQueryEngineFactory.createQuery(null, queryData, handler).call();
+      queryData.reset();
    }
 
    @Override
    public int getBranchCount(QueryData queryData) {
-      QuerySqlContext queryContext = branchSqlContextFactory.createQueryContext(null, queryData, QueryType.COUNT);
-      return sqlObjectLoader.getCount(queryContext);
+      return getCount(branchSqlContextFactory, queryData);
    }
 
    @Override
    public void runBranchQuery(QueryData queryData, List<? super Branch> branches) {
       QuerySqlContext queryContext = branchSqlContextFactory.createQueryContext(null, queryData, QueryType.SELECT);
       sqlObjectLoader.loadBranches(branches, queryContext);
+      queryData.reset();
    }
 
    @Override
    public int getTxCount(QueryData queryData) {
-      QuerySqlContext queryContext = txSqlContextFactory.createQueryContext(null, queryData, QueryType.COUNT);
-      return sqlObjectLoader.getCount(queryContext);
+      return getCount(txSqlContextFactory, queryData);
+   }
+
+   private int getCount(QuerySqlContextFactory sqlContextFactory, QueryData queryData) {
+      QuerySqlContext queryContext = sqlContextFactory.createQueryContext(null, queryData, QueryType.COUNT);
+      int count = sqlObjectLoader.getCount(queryContext);
+      queryData.reset();
+      return count;
    }
 
    @Override
    public void runTxQuery(QueryData queryData, List<? super TransactionReadable> txs) {
       QuerySqlContext queryContext = txSqlContextFactory.createQueryContext(null, queryData, QueryType.SELECT);
       sqlObjectLoader.loadTransactions(txs, queryContext);
+      queryData.reset();
    }
 
    @Override
@@ -118,6 +125,7 @@ public class QueryEngineImpl implements QueryEngine {
          stmt -> tokens.add(ArtifactToken.valueOf(stmt.getLong("art_id"), stmt.getString("value"),
             queryContext.getBranch(), ArtifactTypeId.valueOf(stmt.getLong("art_type_id")))),
          JDBC__MAX_FETCH_SIZE, queryContext.getSql(), queryContext.getParameters().toArray());
+      queryData.reset();
       return tokens;
    }
 

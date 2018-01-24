@@ -13,26 +13,30 @@ package org.eclipse.osee.orcs.core.ds;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.orcs.core.ds.criteria.BranchCriteria;
 import org.eclipse.osee.orcs.core.ds.criteria.TxCriteria;
 
 /**
  * @author Roberto E. Escobar
  */
-public final class QueryData implements HasOptions {
+public final class QueryData implements HasOptions, HasBranch {
    private final List<List<Criteria>> criterias;
    private final SelectData selectData;
    private final Options options;
+   private final BranchId branch;
 
-   public QueryData(List<Criteria> criteriaSet, Options options) {
+   public QueryData(BranchId branch) {
       this.criterias = new ArrayList<>();
       this.selectData = new SelectData();
-      this.options = options;
-      criterias.add(criteriaSet);
+      this.options = OptionsUtil.createOptions();
+      this.branch = branch;
+      criterias.add(new ArrayList<>());
    }
 
    public QueryData() {
-      this(new ArrayList<>(), OptionsUtil.createOptions());
+      this(BranchId.SENTINEL);
    }
 
    @Override
@@ -128,7 +132,7 @@ public final class QueryData implements HasOptions {
    }
 
    public void reset() {
-      options.reset();
+      OptionsUtil.reset(options);
 
       List<Criteria> criteriaSet = criterias.get(0);
       criteriaSet.clear();
@@ -141,5 +145,10 @@ public final class QueryData implements HasOptions {
    @Override
    public String toString() {
       return "QueryData [criterias=" + criterias + ", selects=" + selectData + ", options=" + options + "]";
+   }
+
+   @Override
+   public BranchId getBranch() {
+      return branch;
    }
 }

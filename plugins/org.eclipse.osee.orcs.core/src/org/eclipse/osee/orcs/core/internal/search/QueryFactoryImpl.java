@@ -21,11 +21,8 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ApplicabilityDsQuery;
 import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.Options;
-import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
-import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranch;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.ApplicabilityQuery;
 import org.eclipse.osee.orcs.search.BranchQuery;
@@ -59,17 +56,6 @@ public class QueryFactoryImpl implements QueryFactory {
       this.queryEngine = queryEngine;
    }
 
-   private QueryBuilder createBuilder(BranchId branchId) {
-      Options options = OptionsUtil.createOptions();
-      List<Criteria> criteria = new ArrayList<>();
-      if (branchId != null) {
-         criteria.add(new CriteriaBranch(branchId));
-      }
-      QueryData queryData = new QueryData(criteria, options);
-      QueryBuilder builder = new QueryBuilderImpl(queryFctry, criteriaFctry, context, queryData);
-      return builder;
-   }
-
    @Override
    public BranchQuery branchQuery() {
       return new BranchQueryImpl(queryEngine, branchCriteriaFactory, new QueryData());
@@ -77,7 +63,7 @@ public class QueryFactoryImpl implements QueryFactory {
 
    @Override
    public QueryBuilder fromBranch(BranchId branch) {
-      return createBuilder(branch);
+      return new QueryBuilderImpl(queryFctry, criteriaFctry, context, new QueryData(branch));
    }
 
    @Override
@@ -93,7 +79,7 @@ public class QueryFactoryImpl implements QueryFactory {
 
    @Override
    public QueryBuilder fromArtifactTypeAllBranches(IArtifactType artifactType) {
-      QueryBuilder builder = createBuilder(null);
+      QueryBuilder builder = new QueryBuilderImpl(queryFctry, criteriaFctry, context, new QueryData());
       builder.andIsOfType(artifactType);
       return builder;
    }

@@ -43,13 +43,7 @@ public final class OptionsUtil {
 
    public static Options createOptions() {
       Options options = new Options();
-      setIncludeCache(options, false);
-      setIncludeDeletedArtifacts(options, false);
-      setIncludeDeletedAttributes(options, false);
-      setIncludeDeletedRelations(options, false);
-      setHeadTransaction(options);
-      setLoadLevel(options, LoadLevel.ALL);
-      setFromBranchView(options, ArtifactId.SENTINEL);
+      reset(options);
       return options;
    }
 
@@ -61,6 +55,7 @@ public final class OptionsUtil {
       setIncludeDeletedRelations(options, false);
       setHeadTransaction(options);
       setLoadLevel(options, LoadLevel.ALL);
+      setFromBranchView(options, ArtifactId.SENTINEL);
    }
 
    public static boolean isCacheIncluded(Options options) {

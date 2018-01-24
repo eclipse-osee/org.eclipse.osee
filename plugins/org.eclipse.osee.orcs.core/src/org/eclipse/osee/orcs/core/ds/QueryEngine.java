@@ -25,7 +25,7 @@ public interface QueryEngine {
 
    int getArtifactCount(QueryData queryData);
 
-   CancellableCallable<Integer> createArtifactQuery(OrcsSession session, QueryData queryData, LoadDataHandler handler);
+   void runArtifactQuery(QueryData queryData, LoadDataHandler handler) throws Exception;
 
    int getBranchCount(QueryData queryData);
 

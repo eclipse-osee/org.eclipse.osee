@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.db.internal.search.engines;
 
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.core.ds.Options;
+import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
 
 /**
@@ -22,9 +22,9 @@ public class ArtifactQuerySqlContext extends QuerySqlContext {
 
    private final BranchId branch;
 
-   public ArtifactQuerySqlContext(OrcsSession session, BranchId branchId, Options options) {
-      super(session, options, ObjectQueryType.ARTIFACT);
-      this.branch = branchId;
+   public ArtifactQuerySqlContext(OrcsSession session, QueryData queryData) {
+      super(session, queryData.getOptions(), ObjectQueryType.ARTIFACT);
+      this.branch = queryData.getBranch();
    }
 
    public BranchId getBranch() {
