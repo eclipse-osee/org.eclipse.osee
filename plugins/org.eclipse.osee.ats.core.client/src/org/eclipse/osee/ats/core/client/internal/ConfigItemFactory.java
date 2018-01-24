@@ -39,6 +39,7 @@ import org.eclipse.osee.ats.core.model.WorkPackage;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.logger.Log;
 
 /**
@@ -56,35 +57,39 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
 
    @Override
    public IAtsConfigObject getConfigObject(ArtifactId art) {
-      IAtsConfigObject configObject = null;
       if (art instanceof IAtsConfigObject) {
-         configObject = (IAtsConfigObject) art;
+         return (IAtsConfigObject) art;
       } else if (art instanceof Artifact) {
-         Artifact artifact = (Artifact) art;
-         if (artifact.isOfType(AtsArtifactTypes.Program)) {
-            configObject = getProgram(artifact);
-         } else if (artifact.isOfType(AtsArtifactTypes.Version)) {
-            configObject = getVersion(artifact);
-         } else if (artifact.isOfType(AtsArtifactTypes.TeamDefinition)) {
-            configObject = getTeamDef(artifact);
-         } else if (artifact.isOfType(AtsArtifactTypes.ActionableItem)) {
-            configObject = getActionableItem(artifact);
-         } else if (artifact.isOfType(AtsArtifactTypes.AgileTeam)) {
-            configObject = getAgileTeam(artifact);
-         } else if (artifact.isOfType(AtsArtifactTypes.AgileFeatureGroup)) {
-            configObject = getAgileFeatureGroup(artifact);
-         } else if (artifact.isOfType(AtsArtifactTypes.Insertion)) {
-            configObject = getInsertion(artifact);
-         } else if (artifact.isOfType(AtsArtifactTypes.InsertionActivity)) {
-            configObject = getInsertionActivity(artifact);
-         } else if (artifact.isOfType(AtsArtifactTypes.Country)) {
-            configObject = getCountry(artifact);
-         } else if (artifact.isOfType(AtsArtifactTypes.WorkPackage)) {
-            configObject = getWorkPackage(artifact);
-         } else {
-            throw new OseeArgumentException("Unhandled artifact type %s for %s", artifact.getArtifactTypeName(),
-               artifact.toStringWithId());
-         }
+         return getConfigObject((Artifact) art);
+      }
+      return getConfigObject(ArtifactQuery.getArtifactFromId(art, AtsClientService.get().getAtsBranch()));
+   }
+
+   private IAtsConfigObject getConfigObject(Artifact artifact) {
+      IAtsConfigObject configObject;
+      if (artifact.isOfType(AtsArtifactTypes.Program)) {
+         configObject = getProgram(artifact);
+      } else if (artifact.isOfType(AtsArtifactTypes.Version)) {
+         configObject = getVersion(artifact);
+      } else if (artifact.isOfType(AtsArtifactTypes.TeamDefinition)) {
+         configObject = getTeamDef(artifact);
+      } else if (artifact.isOfType(AtsArtifactTypes.ActionableItem)) {
+         configObject = getActionableItem(artifact);
+      } else if (artifact.isOfType(AtsArtifactTypes.AgileTeam)) {
+         configObject = getAgileTeam(artifact);
+      } else if (artifact.isOfType(AtsArtifactTypes.AgileFeatureGroup)) {
+         configObject = getAgileFeatureGroup(artifact);
+      } else if (artifact.isOfType(AtsArtifactTypes.Insertion)) {
+         configObject = getInsertion(artifact);
+      } else if (artifact.isOfType(AtsArtifactTypes.InsertionActivity)) {
+         configObject = getInsertionActivity(artifact);
+      } else if (artifact.isOfType(AtsArtifactTypes.Country)) {
+         configObject = getCountry(artifact);
+      } else if (artifact.isOfType(AtsArtifactTypes.WorkPackage)) {
+         configObject = getWorkPackage(artifact);
+      } else {
+         throw new OseeArgumentException("Unhandled artifact type %s for %s", artifact.getArtifactTypeName(),
+            artifact.toStringWithId());
       }
       return configObject;
    }

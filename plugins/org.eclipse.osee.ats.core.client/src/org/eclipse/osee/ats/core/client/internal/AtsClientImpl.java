@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileService;
@@ -442,12 +441,7 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    @SuppressWarnings("unchecked")
    @Override
    public <T> T getConfigItem(ArtifactToken configToken) {
-      ArtifactId artifact = getQueryService().getArtifact(configToken.getId());
-      if (artifact != null) {
-         IAtsConfigObject configObject = getConfigItemFactory().getConfigObject(artifact);
-         return (T) configObject;
-      }
-      return null;
+      return (T) getConfigItemFactory().getConfigObject(configToken);
    }
 
    @Override

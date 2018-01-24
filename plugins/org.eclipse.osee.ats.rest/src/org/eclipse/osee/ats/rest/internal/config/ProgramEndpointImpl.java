@@ -56,8 +56,7 @@ public class ProgramEndpointImpl extends BaseConfigEndpointImpl<JaxProgram> impl
       }
       IAtsChangeSet changes =
          atsServer.getStoreService().createAtsChangeSet("Create " + artifactType.getName(), AtsCoreUsers.SYSTEM_USER);
-      ArtifactReadable configArtifact =
-         (ArtifactReadable) changes.createArtifact(artifactType, program.getName(), program.getId());
+      ArtifactToken configArtifact = changes.createArtifact(artifactType, program.getName(), program.getId());
       IAtsConfigObject configObject = atsServer.getConfigItemFactory().getConfigObject(configArtifact);
       if (!configArtifact.getName().equals(program.getName())) {
          changes.setSoleAttributeValue(configObject, CoreAttributeTypes.Name, program.getName());

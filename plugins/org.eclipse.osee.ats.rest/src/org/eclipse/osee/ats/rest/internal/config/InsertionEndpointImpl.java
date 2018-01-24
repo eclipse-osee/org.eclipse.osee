@@ -56,8 +56,7 @@ public class InsertionEndpointImpl extends BaseConfigEndpointImpl<JaxInsertion> 
       }
       IAtsChangeSet changes =
          atsServer.getStoreService().createAtsChangeSet("Create " + artifactType.getName(), AtsCoreUsers.SYSTEM_USER);
-      ArtifactReadable configArtifact =
-         (ArtifactReadable) changes.createArtifact(artifactType, insertion.getName(), insertion.getId());
+      ArtifactToken configArtifact = changes.createArtifact(artifactType, insertion.getName(), insertion.getId());
       IAtsConfigObject configObject = atsServer.getConfigItemFactory().getConfigObject(configArtifact);
       if (!configArtifact.getName().equals(insertion.getName())) {
          changes.setSoleAttributeValue(configObject, CoreAttributeTypes.Name, insertion.getName());

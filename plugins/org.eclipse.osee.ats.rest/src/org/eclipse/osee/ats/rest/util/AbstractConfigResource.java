@@ -20,7 +20,6 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
 
@@ -40,14 +39,14 @@ public abstract class AbstractConfigResource {
    @GET
    @IdentityView
    @Produces(MediaType.APPLICATION_JSON)
-   public List<IAtsConfigObject> get() throws Exception {
+   public List<IAtsConfigObject> get() {
       return getObjects();
    }
 
    @GET
    @Path("details")
    @Produces(MediaType.APPLICATION_JSON)
-   public List<IAtsConfigObject> getObjectsJson() throws Exception {
+   public List<IAtsConfigObject> getObjectsJson() {
       return getObjects();
    }
 
@@ -55,20 +54,15 @@ public abstract class AbstractConfigResource {
    @Path("{id}")
    @IdentityView
    @Produces(MediaType.APPLICATION_JSON)
-   public IAtsConfigObject getObjectJson(@PathParam("id") int id) throws Exception {
-      return getObject(id);
+   public IAtsConfigObject getObjectJson(@PathParam("id") ArtifactId artifactId) {
+      return atsApi.getConfigItemFactory().getConfigObject(artifactId);
    }
 
    @GET
    @Path("{id}/details")
    @Produces(MediaType.APPLICATION_JSON)
-   public IAtsConfigObject getObjectDetails(@PathParam("id") int id) throws Exception {
-      return getObject(id);
-   }
-
-   private IAtsConfigObject getObject(int id) {
-      ArtifactToken configArt = atsApi.getQueryService().getArtifact(new Long(id));
-      return atsApi.getConfigItemFactory().getConfigObject(configArt);
+   public IAtsConfigObject getObjectDetails(@PathParam("id") ArtifactId artifactId) {
+      return atsApi.getConfigItemFactory().getConfigObject(artifactId);
    }
 
    private List<IAtsConfigObject> getObjects() {
@@ -78,5 +72,4 @@ public abstract class AbstractConfigResource {
       }
       return configs;
    }
-
 }

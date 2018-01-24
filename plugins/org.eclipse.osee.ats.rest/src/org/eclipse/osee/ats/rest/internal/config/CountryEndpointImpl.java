@@ -47,8 +47,7 @@ public class CountryEndpointImpl extends BaseConfigEndpointImpl<JaxCountry> impl
       }
       IAtsChangeSet changes =
          atsServer.getStoreService().createAtsChangeSet("Create " + artifactType.getName(), AtsCoreUsers.SYSTEM_USER);
-      ArtifactReadable configArtifact =
-         (ArtifactReadable) changes.createArtifact(artifactType, country.getName(), country.getId());
+      ArtifactToken configArtifact = changes.createArtifact(artifactType, country.getName(), country.getId());
       IAtsConfigObject configObject = atsServer.getConfigItemFactory().getConfigObject(configArtifact);
       if (!configArtifact.getName().equals(country.getName())) {
          changes.setSoleAttributeValue(configObject, CoreAttributeTypes.Name, country.getName());
