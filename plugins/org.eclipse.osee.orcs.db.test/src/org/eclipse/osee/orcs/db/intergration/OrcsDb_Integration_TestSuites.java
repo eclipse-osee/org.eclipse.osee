@@ -15,11 +15,11 @@ import org.junit.runners.Suite;
 
 /**
  * Integration test suite. DO NOT RUN WITH PDE JUnit launch. Use OrcsDbTestSuite.launch instead.
- * 
+ *
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({LoaderTest.class, OseeInfoDataAccessorTest.class, PurgeAttributeTest.class})
+@Suite.SuiteClasses({OseeInfoDataAccessorTest.class, PurgeAttributeTest.class})
 public class OrcsDb_Integration_TestSuites {
    // Test Suite
 }
