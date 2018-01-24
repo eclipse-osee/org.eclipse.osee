@@ -46,6 +46,8 @@ public class XWorkingBranchButtonCreate extends XWorkingBranchButtonAbstract {
             Result result = AtsBranchUtil.createWorkingBranch_Validate(getTeamArt());
             if (result.isFalse()) {
                AWorkbench.popup(result);
+               disableAll = false;
+               refreshEnablement(button);
                return;
             }
             try {
@@ -58,10 +60,13 @@ public class XWorkingBranchButtonCreate extends XWorkingBranchButtonAbstract {
                   return;
                }
                button.setText("Creating Branch...");
+               button.redraw();
                button.getParent().layout();
                AtsBranchUtil.createWorkingBranch_Create(getTeamArt(), false);
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+               disableAll = false;
+               refreshEnablement(button);
             }
          }
       });

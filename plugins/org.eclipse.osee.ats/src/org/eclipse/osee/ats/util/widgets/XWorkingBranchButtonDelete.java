@@ -35,7 +35,8 @@ public class XWorkingBranchButtonDelete extends XWorkingBranchButtonAbstract {
          public void handleEvent(Event e) {
             disableAll = true;
             refreshEnablement(button);
-            button.setText("");
+            button.setText("Deleting Branch...");
+            button.redraw();
             button.getParent().layout();
             boolean deleted = AtsBranchManager.deleteWorkingBranch(getTeamArt(), true, false);
             if (!deleted) {

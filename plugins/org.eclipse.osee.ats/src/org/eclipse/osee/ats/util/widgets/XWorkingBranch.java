@@ -163,6 +163,8 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
             Result result = AtsBranchUtil.createWorkingBranch_Validate(teamArt);
             if (result.isFalse()) {
                AWorkbench.popup(result);
+               enablement.refresh();
+               refreshEnablement();
                return;
             }
             try {
@@ -179,6 +181,8 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
                AtsBranchUtil.createWorkingBranch_Create(teamArt, false);
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+               enablement.refresh();
+               refreshEnablement();
             }
          }
       });
