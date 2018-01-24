@@ -29,4 +29,5 @@ public interface IAtsHealthCheck {
       results.log(workItem.getStoreObject(), getClass().getSimpleName(),
          String.format("Error: " + format + " for " + workItem.getAtsId(), data));
    }
+
 }

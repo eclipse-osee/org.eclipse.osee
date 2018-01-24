@@ -268,6 +268,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
 
    @Override
    public IAtsWorkDefinition computeWorkDefinition(IAtsWorkItem workItem) {
+      // If this artifact specifies it's own workflow definition, use it
       IAtsWorkDefinition workDef = getWorkDefinitionFromArtifactsAttributeValue(workItem);
       if (workDef == null && workItem instanceof IAtsTask) {
          workDef = computetWorkDefinitionForTask((IAtsTask) workItem);
@@ -281,8 +282,6 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
             }
          }
          if (workDef == null) {
-            // If this artifact specifies it's own workflow definition, use it
-            workDef = getWorkDefinitionFromArtifactsAttributeValue(workItem);
             // Otherwise, use workflow defined by attribute of WorkflowDefinition
             // Note: This is new.  Old TeamDefs got workflow off relation
             if (workItem instanceof IAtsTeamWorkflow) {

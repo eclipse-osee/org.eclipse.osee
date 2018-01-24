@@ -9,6 +9,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.health.HealthCheckResults;
 import org.eclipse.osee.ats.api.util.health.IAtsHealthCheck;
 import org.eclipse.osee.ats.api.util.health.IAtsHealthCheckProvider;
@@ -17,6 +18,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.util.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
@@ -44,7 +46,6 @@ public class AtsHealthCheckOperation {
    private final JdbcService jdbcService;
    private final MailService mailService;
    boolean inTest = false;
-   private List<IAtsHealthCheck> healthChecks;
 
    public AtsHealthCheckOperation(AtsApi atsApi, JdbcService jdbcService, MailService mailService) {
       this.atsApi = atsApi;
@@ -130,6 +131,8 @@ public class AtsHealthCheckOperation {
             }
             System.gc();
          }
+         // Throw away checks so caches will get garbage collected
+         checks = null;
       }
       // Log resultMap data into xResultData
       vResults.addResultsMapToResultData(rd);
@@ -138,16 +141,17 @@ public class AtsHealthCheckOperation {
       rd.logf("Completed processing %s work items.", count);
    }
 
+   /**
+    * Health checks can have caches to improve performance. Create new checks to ensure caches are cleared.
+    */
    private List<IAtsHealthCheck> getHealthChecks() {
-      if (healthChecks == null) {
-         healthChecks = new LinkedList<>();
-         healthChecks.add(new TestTaskParent());
-         healthChecks.add(new TestWorkflowTeamDefinition());
-         healthChecks.add(new TestWorkflowVersions());
-         healthChecks.add(new TestWorkflowDefinition());
-         for (IAtsHealthCheckProvider provider : AtsHealthCheckProviderService.getHealthCheckProviders()) {
-            healthChecks.addAll(provider.getHealthChecks());
-         }
+      List<IAtsHealthCheck> healthChecks = new LinkedList<>();
+      healthChecks.add(new TestTaskParent());
+      healthChecks.add(new TestWorkflowTeamDefinition());
+      healthChecks.add(new TestWorkflowVersions());
+      healthChecks.add(new TestWorkflowDefinition());
+      for (IAtsHealthCheckProvider provider : AtsHealthCheckProviderService.getHealthCheckProviders()) {
+         healthChecks.addAll(provider.getHealthChecks());
       }
       return healthChecks;
    }
@@ -170,11 +174,9 @@ public class AtsHealthCheckOperation {
       public void check(ArtifactId artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi) {
          if (workItem.getWorkDefinition() == null) {
             error(results, workItem, "Workflow has no Work Definition");
-         }
-         if (workItem.getStateDefinition() == null) {
+         } else if (workItem.getStateDefinition() == null) {
             error(results, workItem, "Workflow can not get State Definition");
-         }
-         if (workItem.getStateMgr().getCurrentState() == null) {
+         } else if (workItem.getStateMgr().getCurrentState() == null) {
             error(results, workItem, "Workflow can not get current state");
          }
       }
@@ -184,28 +186,43 @@ public class AtsHealthCheckOperation {
 
       @Override
       public void check(ArtifactId artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi) {
-         if (workItem.isTeamWorkflow()) {
-            if (workItem.getParentTeamWorkflow().getTeamDefinition() == null) {
-               error(results, workItem, "Team workflow has no Team Definition (re-run conversion?)");
-            }
+         if (workItem.isTeamWorkflow() && workItem.getParentTeamWorkflow().getTeamDefinition() == null) {
+            error(results, workItem, "Team workflow has no Team Definition (re-run conversion?)");
          }
       }
    }
 
    private static class TestWorkflowVersions implements IAtsHealthCheck {
 
+      private final HashCollection<IAtsTeamDefinition, IAtsVersion> teamDefToVersions = new HashCollection<>();
+
+      /**
+       * Cache this cause it's expensive to do repeatedly for the same teamDef
+       */
+      private Collection<IAtsVersion> getTeamVersions(IAtsTeamDefinition teamDef) {
+         Collection<IAtsVersion> teamDefVersions = teamDefToVersions.getValues(teamDef);
+         if (teamDefVersions == null) {
+            IAtsTeamDefinition teamDefHoldingVers = teamDef.getTeamDefinitionHoldingVersions();
+            if (teamDefHoldingVers != null) {
+               teamDefVersions = teamDefHoldingVers.getTeamDefinitionHoldingVersions().getVersions();
+               teamDefToVersions.put(teamDef, teamDefVersions);
+            }
+         }
+         return teamDefVersions;
+      }
+
       @Override
       public void check(ArtifactId artifact, IAtsWorkItem workItem, HealthCheckResults results, AtsApi atsApi) {
          if (workItem.isTeamWorkflow()) {
-            IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
+            IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) workItem;
             Collection<ArtifactToken> versions =
                atsApi.getRelationResolver().getRelated(teamWf, AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
             if (versions.size() > 1) {
                error(results, workItem, "Team workflow has " + versions.size() + " versions; should only be 0 or 1");
             } else {
-               IAtsVersion version = atsApi.getVersionService().getTargetedVersion(teamWf);
-               if (version != null && teamWf.getTeamDefinition() != null && teamWf.getTeamDefinition().getTeamDefinitionHoldingVersions() != null) {
-                  if (!teamWf.getTeamDefinition().getTeamDefinitionHoldingVersions().getVersions().contains(version)) {
+               IAtsVersion version = atsApi.getConfigItem(versions.iterator().next());
+               if (version != null) {
+                  if (!getTeamVersions(teamWf.getTeamDefinition()).contains(version)) {
                      error(results, workItem,
                         "Team workflow " + teamWf.getAtsId() + " has version" + version.toStringWithId() + " that does not belong to teamDefHoldingVersions ");
                   }

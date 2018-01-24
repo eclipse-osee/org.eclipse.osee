@@ -78,10 +78,12 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
    public IAtsTeamDefinition getParentTeamDef() {
       IAtsTeamDefinition parent = null;
       try {
-         Collection<ArtifactToken> related =
-            atsApi.getRelationResolver().getRelated(artifact, CoreRelationTypes.Default_Hierarchical__Parent);
-         if (!related.isEmpty()) {
-            parent = atsApi.getConfigItemFactory().getTeamDef(related.iterator().next());
+         ArtifactToken parentArt = atsApi.getRelationResolver().getParent(artifact);
+         if (parentArt != null) {
+            parent = atsApi.getCache().getAtsObject(parentArt.getId());
+            if (parent == null) {
+               parent = atsApi.getConfigItemFactory().getTeamDef(parentArt);
+            }
          }
       } catch (OseeCoreException ex) {
          getLogger().error(ex, "Error getParentTeamDef");
