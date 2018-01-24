@@ -170,7 +170,7 @@ public class TransitionManager implements IAtsTransitionManager, IExecuteListene
                   continue;
                }
                // Else, only allow transition if...
-               else if (!workItem.isTask() && !stateIsEditable && !currentlyUnAssigned && !overrideAssigneeCheck) {
+               else if (workItem.isInWork() && !workItem.isTask() && !stateIsEditable && !currentlyUnAssigned && !overrideAssigneeCheck) {
                   results.addResult(workItem, TransitionResult.MUST_BE_ASSIGNED);
                   continue;
                }
