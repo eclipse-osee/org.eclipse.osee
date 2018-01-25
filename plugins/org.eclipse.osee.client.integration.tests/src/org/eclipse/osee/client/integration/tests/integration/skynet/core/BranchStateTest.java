@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -165,6 +166,10 @@ public class BranchStateTest {
             ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, workingBranch, "A commit change");
          change.persist(getClass().getSimpleName());
 
+         Artifact workingBranchRoot = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(workingBranch);
+         workingBranchRoot.addChild(change);
+         workingBranchRoot.persist(getClass().getSimpleName());
+
          assertEquals(BranchState.MODIFIED, BranchManager.getState(workingBranch));
          assertTrue(BranchManager.isEditable(workingBranch));
 
@@ -230,12 +235,20 @@ public class BranchStateTest {
          baseArtifact.setSoleAttributeFromString(CoreAttributeTypes.Annotation, "This is the base annotation");
          baseArtifact.persist(getClass().getSimpleName());
 
+         Artifact rootArtifact = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(SAW_Bld_1);
+         rootArtifact.addChild(baseArtifact);
+         rootArtifact.persist(getClass().getSimpleName());
+
          workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, originalBranchName);
 
          // Add a new artifact on the working branch
          change = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, workingBranch,
             "Test Object on Working Branch");
          change.persist(getClass().getSimpleName());
+
+         Artifact workingBranchRoot = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(workingBranch);
+         workingBranchRoot.addChild(change);
+         workingBranchRoot.persist(getClass().getSimpleName());
 
          // Make a change on the parent
          baseArtifact.setSoleAttributeFromString(CoreAttributeTypes.Annotation, "This is the updated annotation");
@@ -284,6 +297,10 @@ public class BranchStateTest {
             ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, "Test Object");
          baseArtifact.setSoleAttributeFromString(CoreAttributeTypes.Annotation, "This is the base annotation");
          baseArtifact.persist(getClass().getSimpleName());
+
+         Artifact rootArtifact = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(SAW_Bld_1);
+         rootArtifact.addChild(baseArtifact);
+         rootArtifact.persist(getClass().getSimpleName());
 
          workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, originalBranchName);
 

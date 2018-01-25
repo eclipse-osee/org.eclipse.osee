@@ -276,5 +276,11 @@
       <OseeTypesHandler
             classname="org.eclipse.osee.framework.skynet.core.internal.XtextOseeTypesHandler">
       </OseeTypesHandler>
+   </extension>
+   <extension
+         point="org.eclipse.osee.framework.skynet.core.CommitActions">
+      <commitActions
+            className="org.eclipse.osee.framework.skynet.core.commit.actions.CatchArtifactChanges">
+      </commitActions>
    </extension>        
 </plugin>

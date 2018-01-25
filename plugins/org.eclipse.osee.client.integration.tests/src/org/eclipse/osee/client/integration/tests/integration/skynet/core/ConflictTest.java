@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
+import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -210,6 +211,10 @@ public class ConflictTest {
       Artifact testArt =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, parent, "Multiplicity Test");
       testArt.persist("Save testArt on parent");
+      Artifact rootArtifact = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(parent);
+      rootArtifact.addChild(testArt);
+      rootArtifact.persist(getClass().getSimpleName());
+
       BranchId child1 = BranchManager.createWorkingBranch(parent, "Child1");
       IOseeBranch child2 = BranchManager.createWorkingBranch(parent, "Child2");
 

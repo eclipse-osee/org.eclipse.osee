@@ -98,12 +98,15 @@ public class ValidationReportOperation extends AbstractOperation {
                      checkForCancelledStatus(monitor);
 
                      ValidationResult result = rule.validate(art, monitor);
-                     if (!result.didValidationPass()) {
-                        for (String errorMsg : result.getErrorMessages()) {
-                           if (art.isOfType(CoreArtifactTypes.DirectSoftwareRequirement)) {
-                              logf("Error: %s", errorMsg);
-                           } else {
-                              warnings.add(String.format("Warning: %s", errorMsg));
+                     if (!isSkipOrphanCheck(rule.getRuleTitle(), artIndex)) {
+                        if (!result.didValidationPass()) {
+                           for (String errorMsg : result.getErrorMessages()) {
+                              if (art.isOfType(CoreArtifactTypes.DirectSoftwareRequirement,
+                                 CoreArtifactTypes.AbstractImplementationDetails)) {
+                                 logf("Error: %s", errorMsg);
+                              } else {
+                                 warnings.add(String.format("Warning: %s", errorMsg));
+                              }
                            }
                         }
                      }
@@ -125,6 +128,10 @@ public class ValidationReportOperation extends AbstractOperation {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          logf("Error: %s", ex.getLocalizedMessage());
       }
+   }
+
+   private boolean isSkipOrphanCheck(String ruleTitle, int index) {
+      return ruleTitle.equals("Orphan Validation Checks") && index > 1;
    }
 
    private boolean isSkipRelationCheck(String ruleTitle) {
