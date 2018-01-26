@@ -53,7 +53,7 @@ public final class PurgeTransactionEventUtil {
       for (TransactionRecord transId : purgedTransactions) {
 
          TransactionChange txChg = new TransactionChange();
-         txChg.setBranchUuid(transId.getBranchId());
+         txChg.setBranch(transId.getBranch());
          txChg.setTransactionId(transId.getId().intValue());
          transactionEvent.getTransactionChanges().add(txChg);
 

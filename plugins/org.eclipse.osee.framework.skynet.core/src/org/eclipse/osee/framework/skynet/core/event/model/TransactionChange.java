@@ -13,30 +13,21 @@ package org.eclipse.osee.framework.skynet.core.event.model;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 
 public class TransactionChange implements FrameworkEvent {
 
-   private long branchUuid;
+   private BranchId branch;
    private int transactionId;
    private final Set<DefaultBasicGuidArtifact> artifacts = new HashSet<>();
 
-   /**
-    * Gets the value of the branchUuid property.
-    *
-    * @return possible object is {@link String }
-    */
-   public long getBranchUuid() {
-      return branchUuid;
+   public BranchId getBranch() {
+      return branch;
    }
 
-   /**
-    * Sets the value of the branchUuid property.
-    *
-    * @param value allowed object is {@link String }
-    */
-   public void setBranchUuid(long value) {
-      this.branchUuid = value;
+   public void setBranch(BranchId branch) {
+      this.branch = branch;
    }
 
    /**
@@ -74,6 +65,6 @@ public class TransactionChange implements FrameworkEvent {
 
    @Override
    public String toString() {
-      return "Transaction [branchId=" + branchUuid + ", transId=" + transactionId + ", arts=" + artifacts + "]";
+      return "Transaction [branchId=" + branch + ", transId=" + transactionId + ", arts=" + artifacts + "]";
    }
 }

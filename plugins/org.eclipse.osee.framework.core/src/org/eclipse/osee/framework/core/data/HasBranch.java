@@ -15,12 +15,10 @@ package org.eclipse.osee.framework.core.data;
  */
 public interface HasBranch {
 
-   default BranchId getBranch() {
-      return BranchId.valueOf(getBranchId());
-   }
+   BranchId getBranch();
 
-   default Long getBranchId() {
-      return getBranch().getId();
+   default String getBranchIdString() {
+      return getBranch().getIdString();
    }
 
    default boolean isOnSameBranch(HasBranch other) {

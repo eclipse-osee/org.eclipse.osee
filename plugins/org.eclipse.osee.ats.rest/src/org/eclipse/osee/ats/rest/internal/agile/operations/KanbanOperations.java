@@ -231,7 +231,7 @@ public class KanbanOperations {
          task.getAttributeMap().put("featureName", grps);
       }
 
-      task.setBranchGuid(String.valueOf(artifact.getBranchId()));
+      task.setBranchGuid(artifact.getBranchIdString());
       Collection<IAttribute<Object>> attributes = atsApi.getAttributeResolver().getAttributes(artifact);
       Collection<? extends AttributeTypeToken> attrTypes = atsApi.getStoreService().getAttributeTypes();
       Set<String> ais = new HashSet<String>();

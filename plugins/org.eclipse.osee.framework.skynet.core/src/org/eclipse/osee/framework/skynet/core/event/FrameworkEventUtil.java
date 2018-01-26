@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
 import org.eclipse.osee.framework.core.model.event.RelationOrderModType;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 import org.eclipse.osee.framework.messaging.event.res.RemoteTopicEvent1;
@@ -85,7 +84,7 @@ public final class FrameworkEventUtil {
       event.setEventTypeGuid(transEvent.getEventType().getGuid());
       for (TransactionChange change : transEvent.getTransactionChanges()) {
          RemoteTransactionChange1 remChange = new RemoteTransactionChange1();
-         remChange.setBranchGuid(change.getBranchUuid());
+         remChange.setBranchGuid(change.getBranch().getId());
          remChange.setTransactionId(change.getTransactionId());
          List<RemoteBasicGuidArtifact1> remChangeArts = remChange.getArtifacts();
          for (DefaultBasicGuidArtifact guidArt : change.getArtifacts()) {
@@ -102,7 +101,7 @@ public final class FrameworkEventUtil {
       event.setEventType(TransactionEventType.getByGuid(remEvent.getEventTypeGuid()));
       for (RemoteTransactionChange1 remChange : remEvent.getTransactions()) {
          TransactionChange change = new TransactionChange();
-         change.setBranchUuid(getBranchUuidFromRemoteEvent(remChange.getBranchGuid()));
+         change.setBranch(BranchId.valueOf(remChange.getBranchGuid()));
          change.setTransactionId(remChange.getTransactionId());
          Collection<DefaultBasicGuidArtifact> eventArts = change.getArtifacts();
          for (RemoteBasicGuidArtifact1 remGuidArt : remChange.getArtifacts()) {
@@ -212,18 +211,6 @@ public final class FrameworkEventUtil {
       event.setModTypeGuid(guidOrderRel.getModType().getGuid());
       event.setParentArt(getRemoteBasicGuidArtifact(guidOrderRel.getParentArt()));
       return event;
-   }
-
-   /**
-    * Before 0.17.0, events pass string branch guid for events. After 0.17.0, events will pass long branch uuid for
-    * events.
-    */
-   public static Long getBranchUuidFromRemoteEvent(String remoteBranchId) {
-      Long id = 0L;
-      if (Strings.isNumeric(remoteBranchId)) {
-         id = Long.valueOf(remoteBranchId);
-      }
-      return id;
    }
 
    public static EventBasicGuidRelation getEventBasicGuidRelation(RemoteBasicGuidRelation1 guidRel) {

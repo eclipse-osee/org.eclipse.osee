@@ -19,13 +19,13 @@ import org.eclipse.osee.framework.core.data.IRelationType;
 public class DefaultBasicIdRelation implements IBasicGuidRelation {
 
    DefaultBasicGuidArtifact artA, artB;
-   Long branchUuid;
+   BranchId branch;
    Long relTypeUuid;
    int gammaId;
    int relationId;
 
    public DefaultBasicIdRelation(BranchId branch, Long relTypeUuid, int relationId, int gammaId, DefaultBasicGuidArtifact artA, DefaultBasicGuidArtifact artB) {
-      this.branchUuid = branch.getId();
+      this.branch = branch;
       this.relTypeUuid = relTypeUuid;
       this.relationId = relationId;
       this.gammaId = gammaId;
@@ -44,8 +44,8 @@ public class DefaultBasicIdRelation implements IBasicGuidRelation {
    }
 
    @Override
-   public Long getBranchId() {
-      return branchUuid;
+   public BranchId getBranch() {
+      return branch;
    }
 
    @Override
@@ -66,8 +66,8 @@ public class DefaultBasicIdRelation implements IBasicGuidRelation {
       this.artB = artB;
    }
 
-   public void setBranchUuid(Long branchUuid) {
-      this.branchUuid = branchUuid;
+   public void setBranchUuid(BranchId branch) {
+      this.branch = branch;
    }
 
    public void setRelTypeGuid(Long relTypeGuid) {
@@ -84,7 +84,7 @@ public class DefaultBasicIdRelation implements IBasicGuidRelation {
       int result = 1;
       result = prime * result + (artA == null ? 0 : artA.hashCode());
       result = prime * result + (artB == null ? 0 : artB.hashCode());
-      result = prime * result + (branchUuid == null ? 0 : branchUuid.hashCode());
+      result = prime * result + (branch == null ? 0 : branch.hashCode());
       result = prime * result + gammaId;
       result = prime * result + (relTypeUuid == null ? 0 : relTypeUuid.hashCode());
       return result;
@@ -116,11 +116,7 @@ public class DefaultBasicIdRelation implements IBasicGuidRelation {
       } else if (!artB.equals(other.getArtB())) {
          return false;
       }
-      if (branchUuid == null) {
-         if (other.getBranchId() != null) {
-            return false;
-         }
-      } else if (!isOnSameBranch(other)) {
+      if (!isOnSameBranch(other)) {
          return false;
       }
       if (gammaId != other.getGammaId()) {

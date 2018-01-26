@@ -308,8 +308,8 @@ public class Artifact extends NamedIdBase implements ArtifactToken, Adaptable, F
       if (parentCount == 1) {
          toReturn = artifacts.iterator().next();
       } else if (parentCount > 1) {
-         throw new MultipleArtifactsExist("artifact %s branch [%s]-[%s] has %d parents", toStringWithId(),
-            getBranchToken().getName(), getBranchId(), parentCount);
+         throw new MultipleArtifactsExist("artifact %s branch [%s]-[%s] has %s parents", toStringWithId(),
+            getBranchToken().getName(), getBranchIdString(), parentCount);
       }
       return toReturn;
    }
