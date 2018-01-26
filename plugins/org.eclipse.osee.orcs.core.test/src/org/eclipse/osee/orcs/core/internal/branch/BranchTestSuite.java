@@ -10,12 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.branch;
 
-import org.eclipse.osee.orcs.core.internal.branch.provider.BranchProviderTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({BranchDataFactoryTest.class, BranchUtilBranchReadableTest.class, BranchProviderTestSuite.class})
+@Suite.SuiteClasses({BranchDataFactoryTest.class, BranchUtilBranchReadableTest.class})
 /**
  * @author John R. Misinco
  */
