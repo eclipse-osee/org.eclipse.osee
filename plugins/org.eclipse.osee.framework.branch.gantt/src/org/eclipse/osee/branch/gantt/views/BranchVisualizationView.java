@@ -22,7 +22,6 @@ import org.eclipse.nebula.widgets.ganttchart.GanttEvent;
 import org.eclipse.osee.branch.gantt.Activator;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -184,7 +183,7 @@ public class BranchVisualizationView extends ViewPart {
 
       // Create connections
       if (recurse) {
-         for (Branch childBranch : BranchManager.getChildBranches(branch, false)) {
+         for (IOseeBranch childBranch : BranchManager.getChildBranches(branch, false)) {
             if (BranchManager.getType(childBranch).isBaselineBranch()) {
                createEvents(gantEvent, childBranch, recurse);
                System.err.println("parent" + branch.getName() + " - child " + childBranch.getName());

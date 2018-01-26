@@ -129,7 +129,6 @@ public class WordTemplateProcessor {
    private boolean outlining;
    private boolean recurseChildren;
    private String outlineNumber;
-   @SuppressWarnings("unused")
 
    //Attribute Options
    private String attributeLabel;

@@ -95,12 +95,12 @@ public final class BranchManager {
       return ServiceUtil.getOseeCacheService().getBranchCache();
    }
 
-   public static List<Branch> getBranches(Predicate<Branch> branchFilter) {
+   public static List<IOseeBranch> getBranches(Predicate<Branch> branchFilter) {
       return getCache().getBranches(branchFilter);
    }
 
-   public static Branch getBranch(Predicate<Branch> branchFilter) {
-      List<Branch> branches = BranchManager.getBranches(branchFilter);
+   public static IOseeBranch getBranch(Predicate<Branch> branchFilter) {
+      List<IOseeBranch> branches = BranchManager.getBranches(branchFilter);
       if (branches.isEmpty()) {
          return null;
       } else if (branches.size() == 1) {
@@ -535,7 +535,7 @@ public final class BranchManager {
       return getBranches(BranchArchivedState.UNARCHIVED, BranchType.BASELINE);
    }
 
-   public static List<Branch> getBranches(BranchArchivedState archivedState, BranchType... branchTypes) {
+   public static List<IOseeBranch> getBranches(BranchArchivedState archivedState, BranchType... branchTypes) {
       return getCache().getBranches(new BranchFilter(archivedState, branchTypes));
    }
 
@@ -706,8 +706,8 @@ public final class BranchManager {
     * @param recurse if true all descendants are processed, otherwise, only direct descendants are.
     * @return all unarchived child branches that are not of type merge
     */
-   public static Collection<Branch> getChildBranches(BranchId branch, boolean recurse) {
-      Set<Branch> children = new HashSet<>();
+   public static Collection<IOseeBranch> getChildBranches(BranchId branch, boolean recurse) {
+      Set<IOseeBranch> children = new HashSet<>();
       BranchFilter filter = new BranchFilter(BranchArchivedState.UNARCHIVED);
       filter.setNegatedBranchTypes(BranchType.MERGE);
       getBranch(branch).getChildBranches(children, recurse, filter);

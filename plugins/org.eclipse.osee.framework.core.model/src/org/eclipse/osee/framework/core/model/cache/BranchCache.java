@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -86,7 +87,7 @@ public class BranchCache extends AbstractOseeLoadingCache<Branch> {
       return views;
    }
 
-   public synchronized List<Branch> getBranches(Predicate<Branch> branchFilter) {
+   public synchronized List<IOseeBranch> getBranches(Predicate<Branch> branchFilter) {
       return getRawValues().stream().filter(branchFilter).collect(Collectors.toList());
    }
 

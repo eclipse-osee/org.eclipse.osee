@@ -150,13 +150,13 @@ public class Branch extends NamedIdBase implements IOseeBranch, Adaptable {
     * @return all child branches. It is equivalent to calling getChildBranches with new BranchFilter() (.i.e no child
     * branches are excluded)
     */
-   public Collection<Branch> getAllChildBranches(boolean recurse) {
-      Set<Branch> children = new HashSet<>();
+   public Collection<IOseeBranch> getAllChildBranches(boolean recurse) {
+      Set<IOseeBranch> children = new HashSet<>();
       getChildBranches(children, recurse, b -> true);
       return children;
    }
 
-   public void getChildBranches(Collection<Branch> children, boolean recurse, Predicate<Branch> filter) {
+   public void getChildBranches(Collection<IOseeBranch> children, boolean recurse, Predicate<Branch> filter) {
       for (Branch branch : getChildren()) {
          if (filter.test(branch)) {
             children.add(branch);

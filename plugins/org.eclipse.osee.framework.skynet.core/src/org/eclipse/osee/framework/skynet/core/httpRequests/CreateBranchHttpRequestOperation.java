@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -95,7 +94,7 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
       }
    }
 
-   private Branch getBranchUuid(Response response) {
+   private IOseeBranch getBranchUuid(Response response) {
       BranchId branchId = BranchId.SENTINEL;
       if (response.hasEntity()) {
          org.eclipse.osee.orcs.rest.model.Branch branch =

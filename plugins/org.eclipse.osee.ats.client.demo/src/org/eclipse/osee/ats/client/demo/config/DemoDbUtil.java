@@ -19,11 +19,8 @@ import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -35,15 +32,7 @@ public class DemoDbUtil {
 
    public static String INTERFACE_INITIALIZATION = "Interface Initialization";
 
-   public static Result isDbPopulatedWithDemoData(boolean DEBUG, Branch branch) {
-      if (DemoDbUtil.getSoftwareRequirements(DEBUG, SoftwareRequirementStrs.Robot, branch).size() != 6) {
-         return new Result(
-            "Expected at least 6 Software Requirements with word \"Robot\".  Database is not be populated with demo data.");
-      }
-      return Result.TrueResult;
-   }
-
-   public static Collection<Artifact> getSoftwareRequirements(boolean DEBUG, SoftwareRequirementStrs str, IOseeBranch branch) {
+   public static Collection<Artifact> getSoftwareRequirements(boolean DEBUG, SoftwareRequirementStrs str, BranchId branch) {
       return getArtTypeRequirements(DEBUG, CoreArtifactTypes.SoftwareRequirement, str.name(), branch);
    }
 
