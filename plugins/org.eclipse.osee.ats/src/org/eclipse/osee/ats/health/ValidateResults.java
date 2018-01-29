@@ -25,7 +25,7 @@ public class ValidateResults {
 
    private final CountingMap<String> testNameToTimeSpentMap = new CountingMap<>();
    private final HashCollection<String, String> testNameToResultsMap = new HashCollection<>(50);
-   private final HashCollection<String, String> testNameToGuidMap = new HashCollection<>(50);
+   private final HashCollection<String, Long> testNameToIdMap = new HashCollection<>(50);
 
    public void logTestTimeSpent(Date date, String testName) {
       Date now = new Date();
@@ -35,7 +35,7 @@ public class ValidateResults {
 
    public void log(Artifact artifact, String testName, String message) {
       if (artifact != null) {
-         testNameToGuidMap.put(testName, artifact.getGuid());
+         testNameToIdMap.put(testName, artifact.getId());
       }
       log(testName, message);
       System.err.println(testName + " - " + message);
@@ -54,12 +54,12 @@ public class ValidateResults {
             xResultData.log(result);
          }
          // uniqueize guids
-         Set<String> guidStrs = new HashSet<>();
-         Collection<String> values = testNameToGuidMap.getValues(testName);
+         Set<Long> idStrs = new HashSet<>();
+         Collection<Long> values = testNameToIdMap.getValues(testName);
          if (values != null) {
-            guidStrs.addAll(values);
+            idStrs.addAll(values);
          }
-         xResultData.log(testName + "GUIDS: " + Collections.toString(",", guidStrs) + "\n");
+         xResultData.log(testName + "GUIDS: " + Collections.toString(",", idStrs) + "\n");
       }
    }
 

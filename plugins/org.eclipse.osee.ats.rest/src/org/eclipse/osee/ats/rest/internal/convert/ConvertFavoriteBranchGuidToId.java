@@ -86,7 +86,7 @@ public class ConvertFavoriteBranchGuidToId extends AbstractConvertGuidToId {
          } else {
             data.logf(
                "Not a guid attribute value.  Actual value [%s] for artifact type [%s] name [%s] id [%s] NOT converted to id.\n \n",
-               value, art.getArtifactType(), art.getName(), art.getGuid());
+               value, art.getArtifactType(), art.getName(), art.getId());
          }
       }
    }
@@ -108,14 +108,14 @@ public class ConvertFavoriteBranchGuidToId extends AbstractConvertGuidToId {
    private void addId(XResultData data, boolean reportOnly, TransactionBuilder tx, ArtifactReadable art, AttributeReadable<Object> attr, BranchReadable branch) {
       numChanges++;
       data.logf("Adding id attribute of value %s to artifact type [%s] name [%s] id [%s]\n", branch,
-         art.getArtifactType(), art.getName(), art.getGuid());
+         art.getArtifactType(), art.getName(), art.getId());
       if (!reportOnly) {
          try {
             tx.setAttributeById(art, attr, branch.getIdString());
          } catch (OseeCoreException ex) {
             data.errorf(
                "Error building transaction for convert to id attribute of value %s for artifact type [%s] name [%s] id [%s]\n",
-               branch, art.getArtifactType(), art.getName(), art.getGuid());
+               branch, art.getArtifactType(), art.getName(), art.getId());
          }
       }
    }

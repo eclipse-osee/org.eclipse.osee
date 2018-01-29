@@ -33,7 +33,7 @@ public interface IMemberProvider {
 
    void setArtifact(Artifact artifact);
 
-   String getGuid();
+   Long getId();
 
    void addMember(Artifact artifact);
 

@@ -72,8 +72,8 @@ public class GoalMemberProvider extends AbstractMemberProvider {
    }
 
    @Override
-   public String getGuid() {
-      return getArtifact().getGuid();
+   public Long getId() {
+      return getArtifact().getId();
    }
 
    @Override

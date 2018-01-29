@@ -197,7 +197,7 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
             teamArtsWithNoAction.add(getArtId());
          }
       } else if (arts.size() > 1) {
-         throw new OseeStateException("Team [%s] has multiple parent Actions", getGuid());
+         throw new OseeStateException("Team [%s] has multiple parent Actions", toStringWithId());
       }
       if (arts.size() > 0) {
          parentAction = (ActionArtifact) arts.iterator().next();
@@ -296,7 +296,7 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
       try {
          for (TaskArtifact taskArt : getTaskArtifacts()) {
             if (taskArt.isInWork()) {
-               return new Result(false, "Task " + taskArt.getGuid() + " Not Complete");
+               return new Result(false, "Task " + taskArt.toStringWithId() + " Not Complete");
             }
          }
       } catch (Exception ex) {

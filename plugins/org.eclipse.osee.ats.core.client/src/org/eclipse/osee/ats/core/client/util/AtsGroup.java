@@ -14,7 +14,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.Id;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.skynet.core.OseeGroup;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -63,15 +62,6 @@ public enum AtsGroup {
 
    public void removeTemporaryOverride() {
       group.removeTemporaryOverride();
-   }
-
-   public boolean isMember(Identifiable<String> user) {
-      for (Artifact art : group.getGroupArtifact().getRelatedArtifacts(CoreRelationTypes.Users_User)) {
-         if (art.getGuid().equals(user.getGuid())) {
-            return true;
-         }
-      }
-      return false;
    }
 
    public boolean isMember(Id user) {

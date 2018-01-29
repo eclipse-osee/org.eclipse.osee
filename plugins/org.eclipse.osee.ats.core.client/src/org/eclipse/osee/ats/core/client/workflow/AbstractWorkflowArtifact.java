@@ -318,8 +318,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
                if (rString == null) {
                   rString = RelationManager.reportHasDirtyLinks(artifact);
                }
-               return new Result(true,
-                  String.format("Artifact [%s][%s] is dirty\n\n%s", artifact, artifact.getGuid(), rString));
+               return new Result(true, String.format("Artifact %s is dirty\n\n%s", artifact.toStringWithId(), rString));
             }
          }
       } catch (Exception ex) {

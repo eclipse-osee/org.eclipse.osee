@@ -70,10 +70,10 @@ public class ConvertBaselineGuidToBaselineId extends AbstractConvertGuidToId {
                   if (!Strings.isValid(baseLine) || isIdDifferent(baseLine, branch)) {
                      if (!Strings.isValid(baseLine)) {
                         data.logf("Adding id attribute of value %s to artifact type [%s] name [%s] id [%s]\n", branch,
-                           art.getArtifactType(), art.getName(), art.getGuid());
+                           art.getArtifactType(), art.getName(), art.getId());
                      } else if (isIdDifferent(baseLine, branch)) {
                         data.logf("Updating id attribute of value %s to artifact type [%s] name [%s] id [%s]\n", branch,
-                           art.getArtifactType(), art.getName(), art.getGuid());
+                           art.getArtifactType(), art.getName(), art.getId());
                      }
                      numChanges++;
                      if (!reportOnly) {

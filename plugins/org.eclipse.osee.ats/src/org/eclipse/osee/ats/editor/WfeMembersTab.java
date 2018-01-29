@@ -118,7 +118,7 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
    private LoadingComposite loadingComposite;
    public final static String ID = "ats.members.tab";
    private final WorkflowEditor editor;
-   private static Map<String, Integer> guidToScrollLocation = new HashMap<>();
+   private static Map<Long, Integer> idToScrollLocation = new HashMap<>();
    private final ReloadJobChangeAdapter reloadAdapter;
    private final IMemberProvider provider;
    private WorkflowMetricsUI workflowMetricsUi;
@@ -352,7 +352,7 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
 
    private void jumptoScrollLocation() {
       //       Jump to scroll location if set
-      Integer selection = guidToScrollLocation.get(provider.getGuid());
+      Integer selection = idToScrollLocation.get(provider.getId());
       if (selection != null) {
          JumpScrollbarJob job = new JumpScrollbarJob("");
          job.schedule(500);
@@ -374,7 +374,7 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
    private void storeScrollLocation() {
       if (managedForm != null && managedForm.getForm() != null) {
          Integer selection = managedForm.getForm().getVerticalBar().getSelection();
-         guidToScrollLocation.put(provider.getGuid(), selection);
+         idToScrollLocation.put(provider.getId(), selection);
       }
    }
 
@@ -388,7 +388,7 @@ public class WfeMembersTab extends FormPage implements IWorldEditor, ISelectedAt
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {
-               Integer selection = guidToScrollLocation.get(provider.getGuid());
+               Integer selection = idToScrollLocation.get(provider.getId());
 
                // Find the ScrolledComposite operating on the control.
                ScrolledComposite sComp = null;

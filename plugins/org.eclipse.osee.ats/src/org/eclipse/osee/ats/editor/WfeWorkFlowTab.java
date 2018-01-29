@@ -113,7 +113,7 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
    private final AbstractWorkflowArtifact awa;
    private final List<WfeWorkflowSection> sections = new ArrayList<>();
    private final List<StateXWidgetPage> statePages = new ArrayList<>();
-   private static Map<String, Integer> guidToScrollLocation = new HashMap<>();
+   private static Map<Long, Integer> idToScrollLocation = new HashMap<>();
    private WfeRelationsHyperlinkComposite smaRelationsComposite;
    private IManagedForm managedForm;
    private Composite bodyComp;
@@ -294,7 +294,7 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       atsBody.layout();
       atsBody.setFocus();
       // Jump to scroll location if set
-      Integer selection = guidToScrollLocation.get(awa.getGuid());
+      Integer selection = idToScrollLocation.get(awa.getId());
       if (selection != null) {
          JumpScrollbarJob job = new JumpScrollbarJob("");
          job.schedule(500);
@@ -569,7 +569,7 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
    private void storeScrollLocation() {
       if (managedForm != null && managedForm.getForm() != null) {
          Integer selection = managedForm.getForm().getVerticalBar().getSelection();
-         guidToScrollLocation.put(awa.getGuid(), selection);
+         idToScrollLocation.put(awa.getId(), selection);
       }
    }
 
@@ -583,7 +583,7 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {
-               Integer selection = guidToScrollLocation.get(awa.getGuid());
+               Integer selection = idToScrollLocation.get(awa.getId());
 
                // Find the ScrolledComposite operating on the control.
                ScrolledComposite sComp = null;

@@ -10,12 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsObject;
@@ -37,14 +34,6 @@ public class AtsUtilCore {
    public static final String SINGLE_SERVER_DEPLOYMENT = "single_server_deployment";
 
    private static Map<Long, String> idToGuidMap = new HashMap<>(50);
-
-   public static List<String> toGuids(Collection<? extends IAtsObject> atsObjects) {
-      List<String> guids = new ArrayList<>(atsObjects.size());
-      for (IAtsObject atsObj : atsObjects) {
-         guids.add(AtsUtilCore.getGuid(atsObj));
-      }
-      return guids;
-   }
 
    public static boolean isInTest() {
       return Boolean.valueOf(System.getProperty("osee.isInTest"));
@@ -72,14 +61,6 @@ public class AtsUtilCore {
          guid = atsObject.getStoreObject().getGuid();
       }
       return guid;
-   }
-
-   public static String getGuid(Long id) {
-      return idToGuidMap.get(id);
-   }
-
-   public static void putidToGuid(String guid, IAtsObject atsObject) {
-      idToGuidMap.put(atsObject.getId(), guid);
    }
 
    public static Dictionary<String, ?> hashTable(String key, String value) {

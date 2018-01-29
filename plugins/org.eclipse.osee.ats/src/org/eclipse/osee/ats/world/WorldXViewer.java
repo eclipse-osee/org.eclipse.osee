@@ -253,7 +253,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
             if (art.isAttributeTypeValid(attributeType)) {
                useArts.add(art);
             } else {
-               rData.error(attributeType + " not valid for artifact " + art.getGuid() + " - " + art.getName());
+               rData.error(attributeType + " not valid for artifact " + art.toStringWithId());
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);

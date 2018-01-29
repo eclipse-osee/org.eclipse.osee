@@ -46,7 +46,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 public class AtsArtifactChecks extends ArtifactCheck {
 
    private static final List<Long> Admin_Only_Relation_Type_Ids = Arrays.asList(
-      AtsRelationTypes.TeamWorkflowToReview_Review.getGuid(), AtsRelationTypes.ActionToWorkflow_Action.getGuid());
+      AtsRelationTypes.TeamWorkflowToReview_Review.getId(), AtsRelationTypes.ActionToWorkflow_Action.getId());
    private static boolean deletionChecksEnabled = !AtsUtilCore.isInTest();
 
    @Override

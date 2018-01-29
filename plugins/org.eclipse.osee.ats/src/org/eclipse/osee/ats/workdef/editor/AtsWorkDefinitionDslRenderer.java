@@ -185,7 +185,7 @@ public final class AtsWorkDefinitionDslRenderer extends FileSystemRenderer {
             return;
          }
          if (artifact.isOfType(AtsArtifactTypes.WorkDefinition)) {
-            Artifact saveArt = ArtifactQuery.getArtifactFromId(artifact.getGuid(), artifact.getBranch());
+            Artifact saveArt = ArtifactQuery.getArtifactFromId(artifact.getId(), artifact.getBranch());
             String dslStr = Lib.fileToString(file);
             saveArt.setSoleAttributeValue(AtsAttributeTypes.DslSheet, dslStr);
             saveArt.persist(getName());
