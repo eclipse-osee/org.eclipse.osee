@@ -155,8 +155,7 @@ public class ArtifactTransfer extends ByteArrayTransfer {
     */
    private Artifact readArtifact(DataInputStream dataIn) throws IOException {
       int artID = dataIn.readInt();
-      long branchUuid = dataIn.readLong();
-      return ArtifactQuery.getArtifactFromId(artID, BranchId.valueOf(branchUuid));
+      return ArtifactQuery.getArtifactFromId(artID, BranchId.valueOf(dataIn.readLong()));
    }
 
    /**

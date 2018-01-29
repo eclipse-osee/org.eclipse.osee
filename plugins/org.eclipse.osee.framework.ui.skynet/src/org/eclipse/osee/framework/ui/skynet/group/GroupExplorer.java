@@ -26,7 +26,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -463,18 +462,11 @@ public class GroupExplorer extends GenericViewPart implements IArtifactEventList
    public void init(IViewSite site, IMemento memento) throws PartInitException {
       super.init(site, memento);
       try {
-         Long branchUuid = null;
-
          if (memento != null) {
             memento = memento.getChild(INPUT);
             if (memento != null) {
-               branchUuid = Long.parseLong(memento.getString(BRANCH_ID));
-               try {
-                  branch = BranchManager.getBranchToken(branchUuid);
-                  if (BranchManager.getState(branch).isDeleted() || BranchManager.isArchived(branch)) {
-                     branch = null;
-                  }
-               } catch (BranchDoesNotExist ex) {
+               branch = BranchId.valueOf(memento.getString(BRANCH_ID));
+               if (BranchManager.getState(branch).isDeleted() || BranchManager.isArchived(branch)) {
                   branch = null;
                }
             }

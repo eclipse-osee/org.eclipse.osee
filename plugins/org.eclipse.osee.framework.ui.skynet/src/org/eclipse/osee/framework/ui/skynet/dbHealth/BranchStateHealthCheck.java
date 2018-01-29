@@ -188,7 +188,7 @@ public class BranchStateHealthCheck extends DatabaseHealthOperation {
       try {
          chStmt.runPreparedQuery("select * from osee_merge");
          while (chStmt.next()) {
-            Integer branchUuid = chStmt.getInt("merge_branch_id");
+            Long branchUuid = chStmt.getLong("merge_branch_id");
             BranchData branchData = data.get(branchUuid);
             branchData.setHasCommitTransactionId(chStmt.getInt("commit_transaction_id") != -1);
          }

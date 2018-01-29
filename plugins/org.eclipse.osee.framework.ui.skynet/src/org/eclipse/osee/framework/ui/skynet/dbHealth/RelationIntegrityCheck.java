@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.util.result.Manipulations;
@@ -202,7 +203,7 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
             //typically during a merge of a branch, see RelationIntegrityCheckTest.java
             if (relLink.commitTrans > 0 && relLink.modType == 1) {
                commitOfNewRelationOnDeletedArtifactCases.add(
-                  new Object[] {relLink.gammaId, relLink.relTransId, relLink.branchUuid});
+                  new Object[] {relLink.gammaId, relLink.relTransId, relLink.branch});
                newRelationOnDeletedArtifact.add(relLink);
             } else {
                unExpectedCases.add(relLink);
@@ -213,7 +214,7 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
          } else {
             updatePreviousAddressing.add(new Object[] {relLink.gammaId, relLink.relTransId});
             insertArtifactDeleted.add(
-               new Object[] {relLink.gammaId, relLink.transIdForArtifactDeletion, relLink.branchUuid});
+               new Object[] {relLink.gammaId, relLink.transIdForArtifactDeletion, relLink.branch});
          }
       }
 
@@ -236,7 +237,7 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
    private void deleteInvalidRelationAddressing() {
       List<Object[]> rowsToDelete = new LinkedList<>();
       for (LocalRelationLink relLink : deleteMap.allValues()) {
-         rowsToDelete.add(new Object[] {relLink.gammaId, relLink.relTransId, relLink.branchUuid});
+         rowsToDelete.add(new Object[] {relLink.gammaId, relLink.relTransId, relLink.branch});
       }
 
       monitor.subTask("Deleting Relation Addressing with " + TxChange.DELETED + " Artifact");
@@ -289,7 +290,7 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
             Integer.toString(relLink.relLinkId),
             Long.toString(relLink.gammaId),
             Long.toString(relLink.relTransId),
-            Long.toString(relLink.branchUuid),
+            relLink.branch.getIdString(),
             Integer.toString(relLink.aArtId),
             Integer.toString(relLink.bArtId),
             Integer.toString(relLink.transIdForArtifactDeletion)}));
@@ -308,22 +309,20 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
       try {
          chStmt.runPreparedQuery(sql);
          while (chStmt.next()) {
-            //@formatter:off
-            Long gamma_id =            chStmt.getLong("gamma_id");
-            Long transactionId =       chStmt.getLong("transaction_id");
-            int relationId =           chStmt.getInt("rel_link_id");
-            long branchUuid =          chStmt.getLong("branch_id");
-            int a_sideArtifactId =     chStmt.getInt("a_art_id");
-            int b_sideArtifactId =     chStmt.getInt("b_art_id");
-            int deletedTransaction =   chStmt.getInt("deleted_tran");
+            Long gamma_id = chStmt.getLong("gamma_id");
+            Long transactionId = chStmt.getLong("transaction_id");
+            int relationId = chStmt.getInt("rel_link_id");
+            BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
+            int a_sideArtifactId = chStmt.getInt("a_art_id");
+            int b_sideArtifactId = chStmt.getInt("b_art_id");
+            int deletedTransaction = chStmt.getInt("deleted_tran");
 
-            int commitTransId =        forDelete ? 0 : chStmt.getInt("commit_trans_art_id");
-            int modType =              forDelete ? -1 : chStmt.getInt("creating_trans_mod_type");
-            //@formatter:on
+            int commitTransId = forDelete ? 0 : chStmt.getInt("commit_trans_art_id");
+            int modType = forDelete ? -1 : chStmt.getInt("creating_trans_mod_type");
 
             if (!map.containsKey(gamma_id,
                transactionId) && (forDelete || !deleteMap.containsKey(gamma_id, transactionId))) {
-               map.put(gamma_id, transactionId, new LocalRelationLink(relationId, gamma_id, transactionId, branchUuid,
+               map.put(gamma_id, transactionId, new LocalRelationLink(relationId, gamma_id, transactionId, branch,
                   a_sideArtifactId, b_sideArtifactId, deletedTransaction, commitTransId, modType));
             }
          }

@@ -343,8 +343,7 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
                String guid = memento.getString(ART_GUID);
                String branchUuidStr = memento.getString(BRANCH_ID);
                if (Strings.isValid(branchUuidStr)) {
-                  Long branchUuid = Long.valueOf(branchUuidStr);
-                  Artifact artifact = ArtifactQuery.getArtifactFromId(guid, BranchId.valueOf(branchUuid));
+                  Artifact artifact = ArtifactQuery.getArtifactFromId(guid, BranchId.valueOf(branchUuidStr));
                   openViewUpon(artifact, false);
                }
             } else {

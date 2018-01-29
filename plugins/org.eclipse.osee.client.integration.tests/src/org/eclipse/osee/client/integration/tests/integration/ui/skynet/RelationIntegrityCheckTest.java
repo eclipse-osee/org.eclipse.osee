@@ -117,7 +117,7 @@ public class RelationIntegrityCheckTest {
    private void applyFix() {
       List<Object[]> rowsToDelete = new LinkedList<>();
       for (LocalRelationLink relLink : map.allValues()) {
-         rowsToDelete.add(new Object[] {relLink.gammaId, relLink.relTransId, relLink.branchUuid});
+         rowsToDelete.add(new Object[] {relLink.gammaId, relLink.relTransId, relLink.branch});
       }
 
       if (!rowsToDelete.isEmpty()) {
@@ -130,23 +130,21 @@ public class RelationIntegrityCheckTest {
       try {
          chStmt.runPreparedQuery(sqlQuery);
          while (chStmt.next()) {
-            //@formatter:off
-            Long gammaId =              chStmt.getLong("gamma_id");
-            Long transactionId =        chStmt.getLong("transaction_id");
-            int relationId =           chStmt.getInt("rel_link_id");
-            long branchUuid =             chStmt.getLong("branch_id");
-            int a_sideArtifactId =     chStmt.getInt("a_art_id");
-            int b_sideArtifactId =     chStmt.getInt("b_art_id");
-            int deletedTransaction =   chStmt.getInt("deleted_tran");
+            Long gammaId = chStmt.getLong("gamma_id");
+            Long transactionId = chStmt.getLong("transaction_id");
+            int relationId = chStmt.getInt("rel_link_id");
+            BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
+            int a_sideArtifactId = chStmt.getInt("a_art_id");
+            int b_sideArtifactId = chStmt.getInt("b_art_id");
+            int deletedTransaction = chStmt.getInt("deleted_tran");
 
             //note: aliased column only present in RelationIntegrityCheck.DELETED_ARTIFACTS_QUERY
-            int commitTransId =        chStmt.getInt("commit_trans_art_id");
-            int modType =              chStmt.getInt("creating_trans_mod_type");
-            //@formatter:on
+            int commitTransId = chStmt.getInt("commit_trans_art_id");
+            int modType = chStmt.getInt("creating_trans_mod_type");
 
             if (!map.containsKey(gammaId, transactionId)) {
                if (commitTransId > 0 && modType == 1) {
-                  map.put(gammaId, transactionId, new LocalRelationLink(relationId, gammaId, transactionId, branchUuid,
+                  map.put(gammaId, transactionId, new LocalRelationLink(relationId, gammaId, transactionId, branch,
                      a_sideArtifactId, b_sideArtifactId, deletedTransaction, commitTransId, modType));
                }
             }

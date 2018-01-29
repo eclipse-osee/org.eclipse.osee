@@ -221,14 +221,14 @@ public class OrcsTypesIndexer {
    }
 
    private BranchId getAttributeBranch(XAttributeTypeRef xAttributeTypeRef) {
-      BranchId branchToken = CoreBranches.SYSTEM_ROOT;
+      BranchId branch = CoreBranches.SYSTEM_ROOT;
       if (Strings.isValid(xAttributeTypeRef.getBranchUuid())) {
-         Long branchId = Long.valueOf(xAttributeTypeRef.getBranchUuid());
-         if (branchId > 0) {
-            branchToken = BranchId.valueOf(branchId);
+         BranchId branchId = BranchId.valueOf(xAttributeTypeRef.getBranchUuid());
+         if (branchId.isValid()) {
+            branch = branchId;
          }
       }
-      return branchToken;
+      return branch;
    }
 
    private void applyArtifactTypeOverrides(XOseeArtifactTypeOverride xArtTypeOverride) {

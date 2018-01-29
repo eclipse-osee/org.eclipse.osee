@@ -175,16 +175,15 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
 
    private void getArtifactViloation(JdbcStatement stmt) {
       ArtifactId artId = ArtifactId.valueOf(stmt.getLong("art_id"));
-      Long branchId = stmt.getLong("branch_id");
+      BranchId branch = BranchId.valueOf(stmt.getLong("branch_id"));
       if (recurseChildrenBranches) {
-         BranchId branch = BranchId.valueOf(branchId);
          Artifact artifactFromId = ArtifactQuery.getArtifactFromId(artId, branch);
          artifactsToPurge.add(artifactFromId);
       } else {
          sb.append("ArtifactId[");
          sb.append(artId);
          sb.append("] BranchId[");
-         sb.append(branchId);
+         sb.append(branch);
          sb.append("]\n");
       }
    }

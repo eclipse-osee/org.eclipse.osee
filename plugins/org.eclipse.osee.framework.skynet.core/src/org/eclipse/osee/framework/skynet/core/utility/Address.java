@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.utility;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 
@@ -18,7 +19,7 @@ import org.eclipse.osee.framework.core.enums.TxChange;
  * @author Ryan D. Brooks
  */
 public final class Address implements Comparable<Address> {
-   private final long branchUuid;
+   private final BranchId branch;
    private final int itemId;
    private final Long transactionId;
    private final long gammaId;
@@ -29,9 +30,8 @@ public final class Address implements Comparable<Address> {
    private TxChange correctedTxCurrent;
    private boolean purge;
 
-   public Address(boolean isBaseline, long branchUuid, int itemId, Long transactionId, long gammaId, ModificationType modType, ApplicabilityId appId, TxChange txCurrent) {
-      super();
-      this.branchUuid = branchUuid;
+   public Address(boolean isBaseline, BranchId branch, int itemId, Long transactionId, long gammaId, ModificationType modType, ApplicabilityId appId, TxChange txCurrent) {
+      this.branch = branch;
       this.itemId = itemId;
       this.transactionId = transactionId;
       this.gammaId = gammaId;
@@ -46,7 +46,7 @@ public final class Address implements Comparable<Address> {
    }
 
    public boolean isSimilar(Address other) {
-      return other != null && other.itemId == itemId && other.branchUuid == branchUuid;
+      return other != null && other.itemId == itemId && other.branch.equals(branch);
    }
 
    public boolean isSameTransaction(Address other) {
@@ -62,7 +62,7 @@ public final class Address implements Comparable<Address> {
    }
 
    public boolean hasSameApplicability(Address other) {
-      return appId.equals(other.getBranchId());
+      return appId.equals(other.appId);
    }
 
    public void ensureCorrectCurrent() {
@@ -98,8 +98,8 @@ public final class Address implements Comparable<Address> {
       this.purge = purge;
    }
 
-   public Long getBranchId() {
-      return branchUuid;
+   public BranchId getBranch() {
+      return branch;
    }
 
    public int getItemId() {
@@ -140,7 +140,7 @@ public final class Address implements Comparable<Address> {
 
    @Override
    public String toString() {
-      return "Address [branchUuid=" + branchUuid + ", gammaId=" + gammaId + ", itemId=" + itemId + ", modType=" + modType + ", transactionId=" + transactionId + ", txCurrent=" + txCurrent + "]";
+      return "Address [branchUuid=" + branch + ", gammaId=" + gammaId + ", itemId=" + itemId + ", modType=" + modType + ", transactionId=" + transactionId + ", txCurrent=" + txCurrent + "]";
    }
 
    @Override

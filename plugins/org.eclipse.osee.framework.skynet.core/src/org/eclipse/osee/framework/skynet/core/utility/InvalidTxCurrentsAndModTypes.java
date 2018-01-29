@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
@@ -73,7 +74,7 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
    }
 
    private void logIssue(String issue, Address address) {
-      log(issue, String.valueOf(address.getBranchId()), String.valueOf(address.getItemId()),
+      log(issue, address.getBranch().toString(), String.valueOf(address.getItemId()),
          String.valueOf(address.getTransactionId()), String.valueOf(address.getGammaId()),
          address.getModType().toString(), address.getTxCurrent().toString());
    }
@@ -88,14 +89,14 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
          for (Address address : addresses) {
             if (address.isPurge()) {
                logIssue("purge", address);
-               purgeData.add(new Object[] {address.getTransactionId(), address.getGammaId(), address.getBranchId()});
+               purgeData.add(new Object[] {address.getTransactionId(), address.getGammaId(), address.getBranch()});
             } else if (address.getCorrectedTxCurrent() != null) {
                logIssue("corrected txCurrent: " + address.getCorrectedTxCurrent(), address);
                currentData.add(new Object[] {
                   address.getCorrectedTxCurrent(),
                   address.getTransactionId(),
                   address.getGammaId(),
-                  address.getBranchId()});
+                  address.getBranch()});
             } else {
                System.out.println("would have fixed merge here");
             }
@@ -184,8 +185,9 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
          TxChange txCurrent = TxChange.valueOf(stmt.getInt("tx_current"));
          TransactionDetailsType type = TransactionDetailsType.toEnum(stmt.getInt("tx_type"));
          ApplicabilityId appId = ApplicabilityId.valueOf(stmt.getLong("app_id"));
-         Address address = new Address(type.isBaseline(), stmt.getLong("branch_id"), stmt.getInt(columnName),
-            stmt.getLong("transaction_id"), stmt.getLong("gamma_id"), modType, appId, txCurrent);
+         Address address =
+            new Address(type.isBaseline(), BranchId.valueOf(stmt.getLong("branch_id")), stmt.getInt(columnName),
+               stmt.getLong("transaction_id"), stmt.getLong("gamma_id"), modType, appId, txCurrent);
 
          if (!address.isSimilar(previousAddress[0])) {
             if (!addresses.isEmpty()) {
