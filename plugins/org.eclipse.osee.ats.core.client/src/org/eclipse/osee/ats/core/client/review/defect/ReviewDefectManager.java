@@ -229,7 +229,7 @@ public class ReviewDefectManager {
          builder.append("<TD>" + item.getDescription() + "</TD>");
          builder.append("<TD>" + item.getLocation() + "</TD>");
          builder.append("<TD>" + item.getResolution() + "</TD>");
-         builder.append("<TD>" + item.getGuid() + "</TD>");
+         builder.append("<TD>" + item.getId() + "</TD>");
          builder.append("<TD>" + item.isClosed() + "</TD>");
          builder.append("</TR>");
 

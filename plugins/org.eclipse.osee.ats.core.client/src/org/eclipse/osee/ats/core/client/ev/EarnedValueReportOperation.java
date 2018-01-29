@@ -47,13 +47,11 @@ public class EarnedValueReportOperation extends AbstractOperation {
    public static final IColumn Related_Action_Id = new ColumnAdapter("ats.related.action.id", "Related Action Id", ColumnType.String, "");
    public static final IColumn Related_Action_Name = new ColumnAdapter("ats.related.action.name", "Related Action Name", ColumnType.String, "");
    public static final IColumn Related_Action_Type = new ColumnAdapter("ats.related.action.type", "Related Action Type", ColumnType.String, "");
-   public static final IColumn Related_Action_Guid = new ColumnAdapter("ats.related.action.guid", "Related Action Guid", ColumnType.String, "");
-   public static final IColumn Work_Package_Guid = new ColumnAdapter("ats.work.package.guid", "Related Work Package Guid", ColumnType.String, "");
+   public static final IColumn Related_Action_ArtId = new ColumnAdapter("ats.related.action.art.id", "Related Action Arifact Id", ColumnType.String, "");
    // @formatter:on
 
-   public static List<IColumn> columns =
-      Arrays.asList(Work_Package_Id, Work_Package_Name, Work_Package_Percent, Related_Action_Percent, Related_Action_Id,
-         Related_Action_Name, Related_Action_Type, Related_Action_Guid, Work_Package_Guid);
+   public static List<IColumn> columns = Arrays.asList(Work_Package_Id, Work_Package_Name, Work_Package_Percent,
+      Related_Action_Percent, Related_Action_Id, Related_Action_Name, Related_Action_Type, Related_Action_ArtId);
 
    public EarnedValueReportOperation(String operationName, Collection<IAtsWorkPackage> workPackages) {
       super(operationName, Activator.PLUGIN_ID);
@@ -77,14 +75,13 @@ public class EarnedValueReportOperation extends AbstractOperation {
             result.setValue(Work_Package_Id, workPkg.getWorkPackageId());
             result.setValue(Work_Package_Name, workPkg.getName());
             result.setValue(Work_Package_Percent, String.valueOf(workPkg.getWorkPackagePercent()));
-            result.setValue(Work_Package_Guid, String.valueOf(workPkg.getId()));
             result.setValue(Related_Action_Id, getActionId(art));
             result.setValue(Related_Action_Name, art.getName());
             result.setValue(Related_Action_Type, awa.getParentTeamWorkflow().getTeamDefinition().getName());
             result.setValue(Related_Action_Percent,
                String.valueOf(PercentCompleteTotalUtil.getPercentCompleteTotal((IAtsWorkItem) art,
                   AtsClientService.get().getServices())));
-            result.setValue(Related_Action_Guid, art.getGuid());
+            result.setValue(Related_Action_ArtId, art.getIdString());
          }
       }
 

@@ -50,7 +50,7 @@ public class TokenSearchOperations {
       try {
          String query = OseeSql.ARTIFACT_TO_RELATED_B_ARTIFACT_ID.getSql().replaceFirst("ART_IDS_HERE", ids);
          query = query.replaceAll("REL_SIDE_HERE", isSideA ? "b_art_id" : "a_art_id");
-         query = query.replaceAll("REL_TYPE_LINKE_ID_HERE", relationType.getGuid().toString());
+         query = query.replaceAll("REL_TYPE_LINKE_ID_HERE", relationType.getId().toString());
          query = query.replaceAll("BRANCH_ID_HERE", branch.getId().toString());
          chStmt.runPreparedQuery(query);
          while (chStmt.next()) {
@@ -69,7 +69,7 @@ public class TokenSearchOperations {
          String query = OseeSql.ARTIFACT_TOKENS_RELATED_TO_ARTIFACT_QUERY.getSql().replaceFirst("ART_IDS_HERE", ids);
          query = query.replaceAll("OPPOSITE_REL_SIDE_HERE", isSideA ? "a_art_id" : "b_art_id");
          query = query.replaceAll("REL_SIDE_HERE", isSideA ? "b_art_id" : "a_art_id");
-         query = query.replaceAll("REL_TYPE_LINKE_ID_HERE", relationType.getGuid().toString());
+         query = query.replaceAll("REL_TYPE_LINKE_ID_HERE", relationType.getId().toString());
          query = query.replaceAll("BRANCH_ID_HERE", branch.getId().toString());
          chStmt.runPreparedQuery(query);
          while (chStmt.next()) {

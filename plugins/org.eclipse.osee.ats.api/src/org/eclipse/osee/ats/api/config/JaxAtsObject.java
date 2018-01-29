@@ -23,6 +23,10 @@ public class JaxAtsObject {
    protected String name;
    @JsonSerialize(using = ToStringSerializer.class)
    protected Long id;
+   /**
+    * Do not remove this guid until IDE client no longer needs it for creating config objects. This class is used to
+    * serialize all the ATS config objects so the clients don't have to load them.
+    */
    protected String guid;
    protected boolean active;
    private String description;

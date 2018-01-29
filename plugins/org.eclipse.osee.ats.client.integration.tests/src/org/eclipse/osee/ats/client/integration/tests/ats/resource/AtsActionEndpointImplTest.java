@@ -278,9 +278,9 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
          AtsClientService.get().getAttributeResolver().getAttributesToStringList((IAtsObject) teamWf,
             CoreAttributeTypes.StaticId).size());
 
-      // test that search by guid or atsId work as well
+      // test that search by id or atsId work as well
       Attribute attribute =
-         actionEp.getActionAttributeByType(teamWf.getGuid(), CoreAttributeTypes.StaticId.getIdString());
+         actionEp.getActionAttributeByType(teamWf.getIdString(), CoreAttributeTypes.StaticId.getIdString());
       Assert.assertEquals(2, attribute.getValues().size());
       attribute = actionEp.getActionAttributeByType(teamWf.getAtsId(), CoreAttributeTypes.StaticId.getIdString());
       Assert.assertEquals(2, attribute.getValues().size());

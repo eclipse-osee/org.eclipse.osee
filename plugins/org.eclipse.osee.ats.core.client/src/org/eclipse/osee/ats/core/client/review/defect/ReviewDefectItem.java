@@ -32,7 +32,7 @@ public class ReviewDefectItem {
    private String location = "";
    private String resolution = "";
    private String userId;
-   private String guid = GUID.create();
+   private String id = GUID.create();
    private Severity severity = Severity.None;
    private Disposition disposition = Disposition.None;
    private InjectionActivity injectionActivity = InjectionActivity.None;
@@ -137,14 +137,14 @@ public class ReviewDefectItem {
    public boolean equals(Object obj) {
       if (obj instanceof ReviewDefectItem) {
          ReviewDefectItem di = (ReviewDefectItem) obj;
-         return di.guid.equals(getGuid());
+         return di.id.equals(getId());
       }
       return false;
    }
 
    @Override
    public int hashCode() {
-      return guid.hashCode();
+      return id.hashCode();
    }
 
    public String toXml() {
@@ -154,7 +154,7 @@ public class ReviewDefectItem {
          //
          "</date><user>" + userId + "</user><description>" + description + "</description><location>" + location +
          //
-         "</location><resolution>" + resolution + "</resolution><closed>" + closed + "</closed><guid>" + guid + "</guid>";
+         "</location><resolution>" + resolution + "</resolution><closed>" + closed + "</closed><guid>" + id + "</guid>";
    }
 
    private void fromXml(String xml) {
@@ -169,7 +169,7 @@ public class ReviewDefectItem {
       this.location = AXml.getTagData(xml, "location");
       this.resolution = AXml.getTagData(xml, "resolution");
       this.closed = AXml.getTagBooleanData(xml, "closed");
-      this.guid = AXml.getTagData(xml, "guid");
+      this.id = AXml.getTagData(xml, "guid");
    }
 
    public Date getDate() {
@@ -258,15 +258,12 @@ public class ReviewDefectItem {
       this.closed = closed;
    }
 
-   /**
-    * @return the guid
-    */
-   public String getGuid() {
-      return guid;
+   public String getId() {
+      return id;
    }
 
-   public void setGuid(String guid) {
-      this.guid = guid;
+   public void setId(String id) {
+      this.id = id;
    }
 
    public void setUser(User user) {
