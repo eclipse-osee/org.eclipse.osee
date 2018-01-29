@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 /**
  * @author Ryan D. Brooks
  */
-public class Branch extends NamedIdBase implements BranchReadable {
+public class Branch extends NamedIdBase implements IOseeBranch {
    private final ArtifactId associatedArtifact;
    private final TransactionId baselineTx;
    private final TransactionId parentTx;
@@ -41,47 +41,38 @@ public class Branch extends NamedIdBase implements BranchReadable {
       this.viewId = viewId;
    }
 
-   @Override
    public ArtifactId getAssociatedArtifact() {
       return associatedArtifact;
    }
 
-   @Override
    public TransactionId getBaselineTx() {
       return baselineTx;
    }
 
-   @Override
    public TransactionId getParentTx() {
       return parentTx;
    }
 
-   @Override
    public BranchId getParentBranch() {
       return parentBranch;
    }
 
-   @Override
    public boolean hasParentBranch() {
       return parentBranch.isValid();
    }
 
-   @Override
    public boolean isArchived() {
       return isArchived;
    }
 
-   @Override
    public BranchState getBranchState() {
       return branchState;
    }
 
-   @Override
    public BranchType getBranchType() {
       return branchType;
    }
 
-   @Override
    public boolean inheritAccessControl() {
       return inheritAccessControl;
    }

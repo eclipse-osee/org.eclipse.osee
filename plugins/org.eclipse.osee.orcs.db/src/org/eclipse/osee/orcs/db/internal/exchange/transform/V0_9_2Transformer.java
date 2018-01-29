@@ -148,7 +148,7 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
    private void writeAddresses(XMLStreamWriter writer, Collection<Address> addresses) throws XMLStreamException {
       for (Address address : addresses) {
          writer.writeStartElement("entry");
-         writer.writeAttribute("branch_id", String.valueOf(address.getBranchId()));
+         writer.writeAttribute("branch_id", address.getBranch().getIdString());
          writer.writeAttribute("gamma_id", String.valueOf(address.getGammaId()));
          writer.writeAttribute("tx_current", String.valueOf(address.getCorrectedTxCurrent()));
          writer.writeAttribute("mod_type", address.getModType().getIdString());

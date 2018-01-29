@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.util;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 
@@ -18,7 +19,7 @@ import org.eclipse.osee.framework.core.enums.TxChange;
  * @author Ryan D. Brooks
  */
 public final class Address implements Comparable<Address> {
-   private final Long branchId;
+   private final BranchId branch;
    private final int itemId;
    private final long transactionId;
    private final long gammaId;
@@ -31,7 +32,7 @@ public final class Address implements Comparable<Address> {
 
    public Address(boolean isBaseline, Long branchId, int itemId, long transactionId, long gammaId, ModificationType modType, ApplicabilityId appId, TxChange txCurrent) {
       super();
-      this.branchId = branchId;
+      this.branch = BranchId.valueOf(branchId);
       this.itemId = itemId;
       this.transactionId = transactionId;
       this.gammaId = gammaId;
@@ -46,7 +47,7 @@ public final class Address implements Comparable<Address> {
    }
 
    public boolean isSimilar(Address other) {
-      return other != null && other.itemId == itemId && other.branchId.equals(branchId);
+      return other != null && other.itemId == itemId && other.branch.equals(branch);
    }
 
    public boolean isSameTransaction(Address other) {
@@ -98,8 +99,8 @@ public final class Address implements Comparable<Address> {
       this.purge = purge;
    }
 
-   public Long getBranchId() {
-      return branchId;
+   public BranchId getBranch() {
+      return branch;
    }
 
    public int getItemId() {
@@ -140,7 +141,7 @@ public final class Address implements Comparable<Address> {
 
    @Override
    public String toString() {
-      return "Address [branchUuid=" + branchId + ", gammaId=" + gammaId + ", itemId=" + itemId + ", modType=" + modType + ", applicabilityId=" + appId + ", transactionId=" + transactionId + ", txCurrent=" + txCurrent + "]";
+      return "Address [branchUuid=" + branch + ", gammaId=" + gammaId + ", itemId=" + itemId + ", modType=" + modType + ", applicabilityId=" + appId + ", transactionId=" + transactionId + ", txCurrent=" + txCurrent + "]";
    }
 
    @Override

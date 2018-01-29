@@ -15,12 +15,9 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
-import org.eclipse.osee.framework.core.data.BranchReadable;
-import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.data.TransactionReadable;
-import org.eclipse.osee.orcs.rest.model.Branch;
 import org.eclipse.osee.orcs.rest.model.Transaction;
 
 /**
@@ -56,29 +53,6 @@ public final class OrcsRestUtil {
          toReturn.add(asTransaction(data));
       }
       return toReturn;
-   }
-
-   public static List<Branch> asBranches(ResultSet<? extends BranchReadable> results) {
-      List<Branch> toReturn = new ArrayList<>(results.size());
-      for (BranchReadable data : results) {
-         toReturn.add(asBranch(data));
-      }
-      return toReturn;
-   }
-
-   public static Branch asBranch(BranchReadable src) {
-      Branch data = new Branch();
-      data.setArchiveState(BranchArchivedState.fromBoolean(src.isArchived()));
-      data.setAssociatedArtifact(src.getAssociatedArtifact());
-      data.setBaseTransactionId(src.getBaselineTx());
-      data.setBranchState(src.getBranchState());
-      data.setBranchType(src.getBranchType());
-      data.setInheritAccessControl(src.inheritAccessControl());
-      data.setName(src.getName());
-      data.setParentBranch(src.getParentBranch());
-      data.setSourceTransactionId(src.getParentTx());
-      data.setBranchUuid(src.getId());
-      return data;
    }
 
    public static Transaction asTransaction(TransactionReadable tx) {

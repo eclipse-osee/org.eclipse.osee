@@ -11,9 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.httpRequests;
 
 import static org.eclipse.osee.framework.core.enums.SystemUser.OseeSystem;
-import java.net.URI;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -21,7 +18,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -29,7 +25,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
-import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.NewBranch;
 
@@ -68,7 +63,7 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) {
-      BranchEndpoint proxy = ServiceUtil.getOseeClient().getBranchEndpoint();
+      BranchEndpoint branchEndpoint = ServiceUtil.getOseeClient().getBranchEndpoint();
 
       NewBranch data = new NewBranch();
       data.setAssociatedArtifact(
@@ -83,38 +78,15 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
       data.setSourceTransactionId(parentTransaction);
       data.setTxCopyBranchType(isTxCopyBranchType());
 
-      try {
-         Response response = branch.isValid() ? proxy.createBranchWithId(branch, data) : proxy.createBranch(data);
-         if (Status.CREATED.getStatusCode() == response.getStatus()) {
-            newBranch = getBranchUuid(response); // can't use TokenFactory here because some places assume branch will be cached such as getBranchesByName
-            OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Added, newBranch));
-         }
-      } catch (Exception ex) {
-         throw JaxRsExceptions.asOseeException(ex);
-      }
+      BranchId response =
+         branch.isValid() ? branchEndpoint.createBranchWithId(branch, data) : branchEndpoint.createBranch(data);
+      newBranch = getBranchWithCacheWorkAround(response);
+      OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Added, newBranch));
    }
 
-   private IOseeBranch getBranchUuid(Response response) {
-      BranchId branchId = BranchId.SENTINEL;
-      if (response.hasEntity()) {
-         org.eclipse.osee.orcs.rest.model.Branch branch =
-            response.readEntity(org.eclipse.osee.orcs.rest.model.Branch.class);
-         branchId = BranchId.valueOf(branch.getBranchUuid());
-      } else {
-         URI location = response.getLocation();
-         if (location != null) {
-            String path = location.toASCIIString();
-            int index = path.lastIndexOf("branches/");
-            if (index > 0 && index < path.length()) {
-               String value = path.substring(index);
-               if (Strings.isNumeric(value)) {
-                  branchId = BranchId.valueOf(value);
-               }
-            }
-         }
-      }
-      // can't use TokenFactory here because some places assume branch will be cached such as getBranchesByName
-      return BranchManager.getBranch(branchId);
+   private IOseeBranch getBranchWithCacheWorkAround(BranchId branch) {
+      // use this work around because some places assume branch will be cached such as getBranchesByName
+      return BranchManager.getBranch(branch);
    }
 
    public IOseeBranch getNewBranch() {

@@ -73,7 +73,7 @@ public class InvalidTxCurrentsAndModTypesCallable extends AbstractDatastoreTxCal
             if (address.isPurge()) {
                logIssue("purged", address);
 
-               purgeData.add(new Object[] {address.getTransactionId(), address.getGammaId(), address.getBranchId()});
+               purgeData.add(new Object[] {address.getTransactionId(), address.getGammaId(), address.getBranch()});
             } else if (address.getCorrectedTxCurrent() != null) {
                logIssue("corrected txCurrent: " + address.getCorrectedTxCurrent(), address);
 
@@ -81,7 +81,7 @@ public class InvalidTxCurrentsAndModTypesCallable extends AbstractDatastoreTxCal
                   address.getCorrectedTxCurrent(),
                   address.getTransactionId(),
                   address.getGammaId(),
-                  address.getBranchId()});
+                  address.getBranch()});
             } else {
                logIssue("would have fixed merge here");
             }
@@ -189,7 +189,7 @@ public class InvalidTxCurrentsAndModTypesCallable extends AbstractDatastoreTxCal
    private void logIssue(String message, Address address) {
       getLogger().info("msg[%s] - branchId[%s] itemId[%s] txId[%s] gammaId[%s] modType[%s] txCurrent[%s]", //
          message, //
-         address.getBranchId(), //
+         address.getBranch(), //
          address.getItemId(), //
          address.getTransactionId(), //
          address.getGammaId(), //

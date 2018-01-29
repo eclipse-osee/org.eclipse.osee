@@ -95,10 +95,8 @@ public class OrcsTypesTest {
    private static final IRelationType REQUIREMENT_REL = TokenFactory.createRelationType(2305843009213694295L, "Requirement Relation");
    private static final IRelationType ANOTHER_REL = TokenFactory.createRelationType(2305843009213694296L, "Another Relation");
 
-   static long BRANCH_A_UUID = 3458234234L;
-   static long BRANCH_B_UUID = 9993245332L;
-   private static final BranchId BRANCH_A = IOseeBranch.create(BRANCH_A_UUID, "Branch A");
-   private static final BranchId BRANCH_B = IOseeBranch.create(BRANCH_B_UUID, "Branch B");
+   private static final BranchId BRANCH_A = IOseeBranch.create(3458234234L, "Branch A");
+   private static final BranchId BRANCH_B = IOseeBranch.create(9993245332L, "Branch B");
    private static final BranchId BRANCH_C = IOseeBranch.create("Branch C");
    private static final BranchId BRANCH_D = IOseeBranch.create("Branch D");
    private static final BranchId BRANCH_E = IOseeBranch.create("Branch E");
@@ -417,7 +415,7 @@ public class OrcsTypesTest {
       String overrideArtTypes =
          "\n overrides artifactType \"Artifact\" {\n" +
          "      inheritAll \n" +
-         "      update attribute \"Annotation\" branchUuid "+BRANCH_A_UUID+"\n" +
+         "      update attribute \"Annotation\" branchUuid "+BRANCH_A.getIdString()+"\n" +
          "}\n" +
          "\n overrides artifactType \"Other Artifact\" {\n" +
          "      inheritAll \n" +

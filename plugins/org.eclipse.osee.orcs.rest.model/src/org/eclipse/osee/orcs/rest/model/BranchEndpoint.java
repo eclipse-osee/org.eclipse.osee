@@ -24,6 +24,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -39,6 +40,11 @@ public interface BranchEndpoint {
    @GET
    @Produces({MediaType.APPLICATION_JSON})
    List<Branch> getBranches();
+
+   @POST
+   @Consumes(MediaType.APPLICATION_JSON)
+   @Produces(MediaType.APPLICATION_JSON)
+   List<Branch> getBranches(BranchQueryData query);
 
    /**
     * Perform a branch query based on query parameter input
@@ -77,7 +83,7 @@ public interface BranchEndpoint {
    @GET
    @Path("{branch}")
    @Produces({MediaType.APPLICATION_JSON})
-   Branch getBranch(@PathParam("branch") BranchId branch);
+   Branch getBranchById(@PathParam("branch") BranchId branch);
 
    @GET
    @Path("{branch1}/diff/{branch2}")
@@ -95,20 +101,15 @@ public interface BranchEndpoint {
    Transaction getBranchTx(@PathParam("branch") BranchId branch, @PathParam("tx-id") TransactionId txId);
 
    @POST
-   @Consumes(MediaType.APPLICATION_JSON)
-   @Produces(MediaType.APPLICATION_JSON)
-   List<Branch> getBranches(BranchQueryData query);
-
-   @POST
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
-   Response createBranch(NewBranch data);
+   BranchId createBranch(NewBranch data);
 
    @POST
    @Path("{branch}")
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
-   Response createBranchWithId(@PathParam("branch") BranchId branch, NewBranch data);
+   BranchId createBranchWithId(@PathParam("branch") BranchId branch, NewBranch data);
 
    @POST
    @Path("{branch}/commit/{destination-branch}")
