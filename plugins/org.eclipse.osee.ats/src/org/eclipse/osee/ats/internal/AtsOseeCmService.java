@@ -37,8 +37,8 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
 public class AtsOseeCmService implements IOseeCmService {
 
    @Override
-   public void openArtifact(String guid, OseeCmEditor oseeCmEditor) {
-      AtsUtil.openArtifact(guid, oseeCmEditor);
+   public void openArtifact(String id, OseeCmEditor oseeCmEditor) {
+      AtsUtil.openArtifact(id, oseeCmEditor);
    }
 
    @Override

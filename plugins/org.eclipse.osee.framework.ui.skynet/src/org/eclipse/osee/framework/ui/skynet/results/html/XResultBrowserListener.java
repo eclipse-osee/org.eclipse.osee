@@ -12,11 +12,10 @@
 package org.eclipse.osee.framework.ui.skynet.results.html;
 
 import java.net.URL;
-import java.util.logging.Level;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.PresentationType;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -54,19 +53,20 @@ public class XResultBrowserListener implements LocationListener {
          cmdStr = cmdStr.replaceFirst("blank", "");
          XResultBrowserHyperCmd xResultBrowserHyperCmd = XResultBrowserHyperCmd.getCmdStrHyperCmd(cmdStr);
          String value = XResultBrowserHyperCmd.getCmdStrValue(cmdStr);
+         IOseeCmService cmService = ServiceUtil.getOseeCmService();
          switch (xResultBrowserHyperCmd) {
             case openAction:
                event.doit = false;
-               openArtifact(value, OseeCmEditor.CmPcrEditor);
+               cmService.openArtifact(value, OseeCmEditor.CmPcrEditor);
                break;
             case openArtifactBranch:
                event.doit = false;
                try {
                   java.util.regex.Matcher m = Pattern.compile("^(.*?)\\((.*?)\\)$").matcher(value);
                   if (m.find()) {
-                     String guid = m.group(1);
+                     ArtifactId artId = ArtifactId.valueOf(m.group(1));
                      Long branchUuid = Long.parseLong(m.group(2));
-                     Artifact artifact = ArtifactQuery.getArtifactFromId(guid, BranchId.valueOf(branchUuid));
+                     Artifact artifact = ArtifactQuery.getArtifactFromId(artId, BranchId.valueOf(branchUuid));
                      RendererManager.openInJob(artifact, PresentationType.DEFAULT_OPEN);
                   }
                } catch (Exception ex) {
@@ -76,7 +76,7 @@ public class XResultBrowserListener implements LocationListener {
 
             case openArtifactEditor:
                event.doit = false;
-               openArtifact(value, OseeCmEditor.ArtifactEditor);
+               cmService.openArtifact(value, OseeCmEditor.ArtifactEditor);
                break;
             case openBranch:
                event.doit = false;
@@ -101,15 +101,6 @@ public class XResultBrowserListener implements LocationListener {
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Can't process hyperlink.", ex);
-      }
-   }
-
-   private void openArtifact(String guid, OseeCmEditor view) {
-      try {
-         IOseeCmService cmService = ServiceUtil.getOseeCmService();
-         cmService.openArtifact(guid, view);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 

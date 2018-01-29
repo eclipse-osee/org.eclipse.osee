@@ -31,7 +31,7 @@ public interface IOseeCmService {
 
    void openArtifact(Artifact artifact, OseeCmEditor oseeCmEditor);
 
-   void openArtifact(String guid, OseeCmEditor oseeCmEditor);
+   void openArtifact(String id, OseeCmEditor oseeCmEditor);
 
    void openArtifacts(String name, Collection<Artifact> artifacts, OseeCmEditor oseeCmEditor);
 

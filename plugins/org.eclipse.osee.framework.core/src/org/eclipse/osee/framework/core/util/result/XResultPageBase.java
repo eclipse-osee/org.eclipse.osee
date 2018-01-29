@@ -123,7 +123,7 @@ public class XResultPageBase {
       return getManipulatedHtml(manipulations);
    }
 
-   public String handleGuidCmdHyper(String str) {
+   public String handleIdCmdHyper(String str) {
       return str;
    }
 
@@ -138,7 +138,7 @@ public class XResultPageBase {
                str = str.replaceAll("\n", AHTML.newline());
             }
             if (manipulations.contains(Manipulations.GUID_CMD_HYPER)) {
-               str = handleGuidCmdHyper(str);
+               str = handleIdCmdHyper(str);
             }
             if (manipulations.contains(Manipulations.ERROR_RED)) {
                str = str.replaceAll("Error:", AHTML.color("red", "Error:"));

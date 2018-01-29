@@ -110,15 +110,14 @@ public class ResultsEditorExample extends XNavigateItemAction {
       List<XViewerColumn> artColumns = Arrays.asList(
          new XViewerColumn("Artifact", "Artifact", 200, XViewerAlign.Left, true, SortDataType.String, false,
             "Requirement Artifact"),
-         new XViewerColumn("GUID", "GUID", 200, XViewerAlign.Left, true, SortDataType.String, false,
-            "TestScript Name"));
+         new XViewerColumn("ID", "ID", 200, XViewerAlign.Left, true, SortDataType.String, false, "TestScript Name"));
 
       List<IResultsXViewerRow> artRows = new ArrayList<>();
       try {
          List<Artifact> userArts = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.User, CoreBranches.COMMON);
          for (int x = 0; x < (userArts.size() > 10 ? 10 : userArts.size()); x++) {
             Artifact artifact = userArts.get(x);
-            artRows.add(new ResultsXViewerRow(new String[] {artifact.getName(), artifact.getGuid()}, artifact));
+            artRows.add(new ResultsXViewerRow(new String[] {artifact.getName(), artifact.getIdString()}, artifact));
          }
       } catch (OseeCoreException ex) {
          // do nothing
