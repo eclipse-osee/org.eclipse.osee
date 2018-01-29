@@ -25,7 +25,6 @@ import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.model.WorkPackage;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -80,7 +79,7 @@ public class SearchWorkPackageOperation extends AbstractOperation {
 
    private void addAllAisGuids(IProgressMonitor monitor, Collection<IAtsActionableItem> ais2, boolean includeChildrenAis2, List<String> guids) {
       for (IAtsActionableItem ai : ais2) {
-         guids.add(AtsUtilCore.getGuid(ai));
+         guids.add(ai.getStoreObject().getGuid());
          if (includeChildrenAis2) {
             addAllAisGuids(monitor, ai.getChildrenActionableItems(), includeChildrenAis2, guids);
             checkForCancelledStatus(monitor);
@@ -90,7 +89,7 @@ public class SearchWorkPackageOperation extends AbstractOperation {
 
    private void addAllTeamDefGuids(IProgressMonitor monitor, Collection<IAtsTeamDefinition> teamDefs2, boolean includeChildrenTeamDefs2, List<String> guids) {
       for (IAtsTeamDefinition teamDef : teamDefs2) {
-         guids.add(AtsUtilCore.getGuid(teamDef));
+         guids.add(teamDef.getStoreObject().getGuid());
          if (includeChildrenTeamDefs2) {
             addAllTeamDefGuids(monitor, teamDef.getChildrenTeamDefinitions(), includeChildrenTeamDefs2, guids);
             checkForCancelledStatus(monitor);

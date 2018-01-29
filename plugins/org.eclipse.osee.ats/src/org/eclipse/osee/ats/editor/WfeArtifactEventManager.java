@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -221,8 +220,8 @@ public class WfeArtifactEventManager implements IArtifactEventListener {
                   for (EventBasicGuidRelation relation : artifactEvent.getRelations()) {
                      // If relation is parallel config and guid is one of parallel configured versions
                      if (relation.is(AtsRelationTypes.ParallelVersion_Child) && (relation.getArtA().getGuid().equals(
-                        AtsUtilCore.getGuid(version)) || relation.getArtB().getGuid().equals(
-                           AtsUtilCore.getGuid(version)))) {
+                        version.getStoreObject().getGuid()) || relation.getArtB().getGuid().equals(
+                           version.getStoreObject().getGuid()))) {
                         changed = true;
                         break;
                      }

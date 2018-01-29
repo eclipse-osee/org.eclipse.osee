@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.config.AtsConfigKey;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -53,14 +52,6 @@ public class AtsUtilCore {
       } else {
          return String.format("%4.2f", d);
       }
-   }
-
-   public static String getGuid(IAtsObject atsObject) {
-      String guid = idToGuidMap.get(atsObject.getId());
-      if (!Strings.isValid(guid) && atsObject.getStoreObject() != null) {
-         guid = atsObject.getStoreObject().getGuid();
-      }
-      return guid;
    }
 
    public static Dictionary<String, ?> hashTable(String key, String value) {

@@ -45,7 +45,7 @@ public class AtsObjects {
    public static List<String> toGuids(Collection<? extends IAtsObject> atsObjects) {
       List<String> guids = new ArrayList<>(atsObjects.size());
       for (IAtsObject atsObject : atsObjects) {
-         guids.add(AtsUtilCore.getGuid(atsObject));
+         guids.add(atsObject.getStoreObject().getGuid());
       }
       return guids;
    }
