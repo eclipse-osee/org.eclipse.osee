@@ -16,6 +16,8 @@ import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -66,15 +68,14 @@ public class OseeDslSegmentParser {
    }
 
    private void processData(Collection<OseeDslSegment> segments, TagLocation startSeg, TagLocation stopSeg) {
-      Long branchUuid = startSeg.getBranchUuid();
       String artifactGuid = startSeg.getArtifactGuid();
       int startAt = startSeg.end();
       int endAt = stopSeg.start();
-      segments.add(new OseeDslSegment(branchUuid, artifactGuid, startAt, endAt));
+      segments.add(new OseeDslSegment(startSeg.getBranch(), artifactGuid, startAt, endAt));
    }
 
    private boolean matches(TagLocation seg1, TagLocation seg2) {
-      return seg1.getBranchUuid() == seg2.getBranchUuid() && seg1.getArtifactGuid().equals(seg2.getArtifactGuid());
+      return seg1.getBranch() == seg2.getBranch() && seg1.getArtifactGuid().equals(seg2.getArtifactGuid());
    }
 
    public Collection<TagLocation> getTagLocations(String source) {
@@ -83,7 +84,6 @@ public class OseeDslSegmentParser {
       Pattern pattern = Pattern.compile("\\s?//@(.*?)_artifact\\s+branch/(.*?)/artifact/(.*?)/\\s+\\(.*?\\)");
       Matcher matcher = pattern.matcher(source);
 
-      Long branchUuid = null;
       String artifactGuid = null;
       String tag = null;
       int tagStart = -1;
@@ -93,11 +93,11 @@ public class OseeDslSegmentParser {
          tagEnd = matcher.end();
 
          tag = matcher.group(1);
-         branchUuid = Long.valueOf(matcher.group(2));
+         BranchId branch = BranchId.valueOf(matcher.group(2));
          artifactGuid = matcher.group(3);
-         if (Strings.isValid(tag) && branchUuid > 0 && Strings.isValid(artifactGuid)) {
+         if (Strings.isValid(tag) && branch.isValid() && Strings.isValid(artifactGuid)) {
             boolean isStartTag = tag.equalsIgnoreCase("start");
-            segments.add(new TagLocation(isStartTag, branchUuid, artifactGuid, tagStart, tagEnd));
+            segments.add(new TagLocation(isStartTag, branch, artifactGuid, tagStart, tagEnd));
          }
       }
       return segments;
@@ -106,15 +106,15 @@ public class OseeDslSegmentParser {
    public static final class TagLocation {
 
       private final boolean isStartTag;
-      private final Long branchUuid;
+      private final BranchId branch;
       private final String artifactGuid;
       private final int start;
       private final int end;
 
-      public TagLocation(boolean isStartTag, Long branchUuid, String artifactGuid, int start, int end) {
+      public TagLocation(boolean isStartTag, BranchId branch, String artifactGuid, int start, int end) {
          super();
          this.isStartTag = isStartTag;
-         this.branchUuid = branchUuid;
+         this.branch = branch;
          this.artifactGuid = artifactGuid;
          this.start = start;
          this.end = end;
@@ -124,8 +124,8 @@ public class OseeDslSegmentParser {
          return isStartTag;
       }
 
-      public long getBranchUuid() {
-         return branchUuid;
+      public BranchId getBranch() {
+         return branch;
       }
 
       public String getArtifactGuid() {
@@ -142,28 +142,27 @@ public class OseeDslSegmentParser {
 
       @Override
       public String toString() {
-         return "OseeDslSegment [isStartTag=" + isStartTag + ", branchUuid=" + branchUuid + ", artifactGuid=" + artifactGuid + ", start=" + start + ", end=" + end + "]";
+         return "OseeDslSegment [isStartTag=" + isStartTag + ", branchUuid=" + branch + ", artifactGuid=" + artifactGuid + ", start=" + start + ", end=" + end + "]";
       }
 
    }
 
-   public static final class OseeDslSegment {
-
-      private final Long branchId;
+   public static final class OseeDslSegment implements HasBranch {
+      private final BranchId branch;
       private final String artifactGuid;
       private final int start;
       private final int end;
 
-      public OseeDslSegment(Long branchId, String artifactGuid, int start, int end) {
-         super();
-         this.branchId = branchId;
+      public OseeDslSegment(BranchId branch, String artifactGuid, int start, int end) {
+         this.branch = branch;
          this.artifactGuid = artifactGuid;
          this.start = start;
          this.end = end;
       }
 
-      public Long getBranchId() {
-         return branchId;
+      @Override
+      public BranchId getBranch() {
+         return branch;
       }
 
       public String getArtifactGuid() {
@@ -183,7 +182,7 @@ public class OseeDslSegmentParser {
          final int prime = 31;
          int result = 1;
          result = prime * result + (artifactGuid == null ? 0 : artifactGuid.hashCode());
-         result = prime * result + (branchId == null ? 0 : branchId.hashCode());
+         result = prime * result + branch.hashCode();
          result = prime * result + end;
          result = prime * result + start;
          return result;
@@ -208,11 +207,7 @@ public class OseeDslSegmentParser {
          } else if (!artifactGuid.equals(other.artifactGuid)) {
             return false;
          }
-         if (branchId == null) {
-            if (other.branchId != null) {
-               return false;
-            }
-         } else if (!branchId.equals(other.branchId)) {
+         if (!isOnSameBranch(other)) {
             return false;
          }
          if (end != other.end) {
@@ -226,7 +221,7 @@ public class OseeDslSegmentParser {
 
       @Override
       public String toString() {
-         return "OseeDslSegment [branchId=" + branchId + ", artifactId=" + artifactGuid + ", start=" + start + ", end=" + end + "]";
+         return "OseeDslSegment [branchId=" + branch + ", artifactId=" + artifactGuid + ", start=" + start + ", end=" + end + "]";
       }
 
    }

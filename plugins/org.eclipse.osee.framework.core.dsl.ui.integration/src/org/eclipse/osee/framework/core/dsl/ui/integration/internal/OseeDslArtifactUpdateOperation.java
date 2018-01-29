@@ -58,7 +58,7 @@ public class OseeDslArtifactUpdateOperation extends AbstractOperation {
             int endAt = segment.end();
 
             String data = source.substring(startAt, endAt);
-            addChanges(transactionMap, segment.getBranchId(), segment.getArtifactGuid(), data);
+            addChanges(transactionMap, segment.getBranch(), segment.getArtifactGuid(), data);
             monitor.worked(workAmount);
          }
          monitor.setTaskName("Persist...");
@@ -73,8 +73,7 @@ public class OseeDslArtifactUpdateOperation extends AbstractOperation {
       return Lib.fileToString(file);
    }
 
-   protected void addChanges(Map<BranchId, SkynetTransaction> transactionMap, long branchId, String artifactGuid, String data) {
-      BranchId branch = BranchId.valueOf(branchId);
+   private void addChanges(Map<BranchId, SkynetTransaction> transactionMap, BranchId branch, String artifactGuid, String data) {
       SkynetTransaction transaction = transactionMap.get(branch);
       if (transaction == null) {
          transaction = TransactionManager.createTransaction(branch, "OseeDslArtifactUpdate");
