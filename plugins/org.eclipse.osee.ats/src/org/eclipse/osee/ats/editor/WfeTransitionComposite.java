@@ -43,7 +43,6 @@ import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.editor.widget.XTransitionToStateComboWidget;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.TransitionStatusDialog;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
@@ -63,6 +62,7 @@ import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -83,6 +83,7 @@ public class WfeTransitionComposite extends Composite {
    private final WfeWorkflowSection workflowSection;
    private final WorkflowEditor editor;
    private final Button transitionButton;
+   public final static Color ACTIVE_COLOR = new Color(null, 206, 212, 239);
 
    public WfeTransitionComposite(Composite parent, WfeWorkflowSection workflowSection, final WorkflowEditor editor, final boolean isEditable) {
       super(parent, SWT.NONE);
@@ -92,7 +93,7 @@ public class WfeTransitionComposite extends Composite {
       awa = workflowSection.getSma();
       setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       setLayout(new GridLayout(editor.getWorkFlowTab().isShowTargetedVersion() ? 7 : 5, false));
-      setBackground(AtsUtil.ACTIVE_COLOR);
+      setBackground(ACTIVE_COLOR);
 
       transitionButton = editor.getToolkit().createButton(this, "Transition", SWT.PUSH);
       transitionButton.addMouseListener(new MouseAdapter() {
@@ -120,10 +121,10 @@ public class WfeTransitionComposite extends Composite {
          }
 
       });
-      transitionButton.setBackground(AtsUtil.ACTIVE_COLOR);
+      transitionButton.setBackground(ACTIVE_COLOR);
 
       Label label = editor.getToolkit().createLabel(this, "to");
-      label.setBackground(AtsUtil.ACTIVE_COLOR);
+      label.setBackground(ACTIVE_COLOR);
 
       transitionToStateCombo = new XTransitionToStateComboWidget();
       transitionToStateCombo.setArtifact(awa);
@@ -144,7 +145,7 @@ public class WfeTransitionComposite extends Composite {
 
       if (editor.getWorkFlowTab().isShowTargetedVersion()) {
          WfeTargetedVersionHeader smaTargetedVersionHeader = new WfeTargetedVersionHeader(this, SWT.NONE, awa, editor);
-         smaTargetedVersionHeader.setBackground(AtsUtil.ACTIVE_COLOR);
+         smaTargetedVersionHeader.setBackground(ACTIVE_COLOR);
       }
 
       Hyperlink assigneesLabelLink = editor.getToolkit().createHyperlink(this, "Next State Assignee(s)", SWT.NONE);
@@ -170,12 +171,12 @@ public class WfeTransitionComposite extends Composite {
          }
 
       });
-      assigneesLabelLink.setBackground(AtsUtil.ACTIVE_COLOR);
+      assigneesLabelLink.setBackground(ACTIVE_COLOR);
 
       transitionAssigneesLabel =
          editor.getToolkit().createLabel(this, Strings.truncate(awa.getTransitionAssigneesStr(), 100, true));
       transitionAssigneesLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      transitionAssigneesLabel.setBackground(AtsUtil.ACTIVE_COLOR);
+      transitionAssigneesLabel.setBackground(ACTIVE_COLOR);
 
    }
 

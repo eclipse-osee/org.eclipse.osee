@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.AtsEditors;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -151,14 +151,14 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) {
       try {
          if (element instanceof AbstractWorkflowArtifact) {
-            return AtsUtil.getImage(Arrays.asList(((AbstractWorkflowArtifact) element).getCreatedBy()));
+            return AtsEditors.getImage(Arrays.asList(((AbstractWorkflowArtifact) element).getCreatedBy()));
          }
          if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
             Set<IAtsUser> users = new HashSet<>();
             for (IAtsTeamWorkflow team : AtsClientService.get().getWorkItemService().getTeams(element)) {
                users.add(team.getCreatedBy());
             }
-            return AtsUtil.getImage(users);
+            return AtsEditors.getImage(users);
          }
 
       } catch (Exception ex) {

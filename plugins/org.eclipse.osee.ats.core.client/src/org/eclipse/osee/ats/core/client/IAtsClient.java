@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsBranchServiceProvider;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.artifact.SprintArtifact;
 import org.eclipse.osee.ats.core.client.util.IArtifactMembersCache;
+import org.eclipse.osee.ats.core.client.util.IAtsClientUtil;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
 import org.eclipse.osee.ats.core.config.IAtsCacheProvider;
@@ -90,5 +91,7 @@ public interface IAtsClient extends AtsApi, IAtsNotifier, IAttributeResolverProv
    void reloadServerAndClientCaches();
 
    Artifact getArtifact(ArtifactId artifact, BranchId branch);
+
+   IAtsClientUtil getClientUtils();
 
 }

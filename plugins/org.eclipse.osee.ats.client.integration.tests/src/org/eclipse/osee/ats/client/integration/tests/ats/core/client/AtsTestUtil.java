@@ -65,7 +65,6 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.editor.WorkflowEditor;
 import org.eclipse.osee.ats.task.TaskEditor;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -366,7 +365,7 @@ public class AtsTestUtil {
    }
 
    private static String getNextAtsDsl() throws Exception {
-      workDefName = WORK_DEF_NAME + "_" + AtsUtil.getAtsDeveloperIncrementingNum();
+      workDefName = WORK_DEF_NAME + "_" + AtsClientService.get().getClientUtils().getAtsDeveloperIncrementingNum();
       if (atsDsl == null) {
          atsDsl =
             AWorkspace.getOseeInfResource("support/" + WORK_DEF_NAME + ".ats", AtsClientIntegrationTestSuite.class);

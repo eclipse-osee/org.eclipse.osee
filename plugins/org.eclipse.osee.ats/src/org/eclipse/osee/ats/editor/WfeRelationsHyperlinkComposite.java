@@ -21,9 +21,10 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.ActionableItems;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.AtsEditors;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -156,8 +157,8 @@ public class WfeRelationsHyperlinkComposite extends Composite {
 
             @Override
             public void linkActivated(HyperlinkEvent e) {
-               if (AtsUtil.isAtsArtifact(art)) {
-                  AtsUtil.openATSAction(art, AtsOpenOption.OpenOneOrPopupSelect);
+               if (AtsObjects.isAtsWorkItemOrAction(art)) {
+                  AtsEditors.openATSAction(art, AtsOpenOption.OpenOneOrPopupSelect);
                } else {
                   try {
                      RendererManager.open(art, PresentationType.DEFAULT_OPEN);

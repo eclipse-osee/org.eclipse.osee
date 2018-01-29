@@ -33,7 +33,7 @@ import org.eclipse.osee.ats.editor.WorkflowEditor;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.AtsEditors;
 import org.eclipse.osee.ats.walker.action.ActionWalkerLayoutAction;
 import org.eclipse.osee.ats.walker.action.ActionWalkerRefreshAction;
 import org.eclipse.osee.ats.walker.action.ActionWalkerShowAllAction;
@@ -138,7 +138,7 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
                AWorkbench.popup("ERROR", "Artifact has been deleted");
                return;
             } else {
-               AtsUtil.openATSAction(art, AtsOpenOption.OpenOneOrPopupSelect);
+               AtsEditors.openATSAction(art, AtsOpenOption.OpenOneOrPopupSelect);
             }
          } else if (obj instanceof IActionWalkerItem) {
             ((IActionWalkerItem) obj).handleDoubleClick();

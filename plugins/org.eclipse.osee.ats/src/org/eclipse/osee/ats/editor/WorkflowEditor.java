@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.osee.ats.AtsArtifactImageProvider;
@@ -46,7 +47,6 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.navigate.VisitedItems;
 import org.eclipse.osee.ats.task.TaskComposite;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.AtsMetricsComposite;
 import org.eclipse.osee.ats.world.IAtsMetricsProvider;
 import org.eclipse.osee.framework.access.AccessControlManager;
@@ -65,15 +65,19 @@ import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.AttributesComposite;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
+import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -352,7 +356,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
 
    private void createMetricsTab() {
       try {
-         Composite composite = AtsUtil.createCommonPageComposite(getContainer());
+         Composite composite = createCommonPageComposite(getContainer());
          createToolBar(composite);
          new AtsMetricsComposite(this, composite, SWT.NONE);
          int metricsPageIndex = addPage(composite);
@@ -370,7 +374,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
          }
 
          // Create Attributes tab
-         Composite composite = AtsUtil.createCommonPageComposite(getContainer());
+         Composite composite = createCommonPageComposite(getContainer());
          ToolBar toolBar = createToolBar(composite);
 
          ToolItem item = new ToolItem(toolBar, SWT.PUSH);
@@ -414,11 +418,11 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
    }
 
    private ToolBar createToolBar(Composite parent) {
-      ToolBar toolBar = AtsUtil.createCommonToolBar(parent);
+      ToolBar toolBar = createCommonToolBar(parent);
 
-      AtsUtil.actionToToolItem(toolBar, new ResourceHistoryAction(awa), FrameworkImage.EDIT_BLUE);
-      AtsUtil.actionToToolItem(toolBar, new AccessControlAction(awa), FrameworkImage.AUTHENTICATED);
-      AtsUtil.actionToToolItem(toolBar, new DirtyReportAction(this), FrameworkImage.DIRTY);
+      actionToToolItem(toolBar, new ResourceHistoryAction(awa), FrameworkImage.EDIT_BLUE);
+      actionToToolItem(toolBar, new AccessControlAction(awa), FrameworkImage.AUTHENTICATED);
+      actionToToolItem(toolBar, new DirtyReportAction(this), FrameworkImage.DIRTY);
       new ToolItem(toolBar, SWT.SEPARATOR);
       Text artifactInfoLabel = new Text(toolBar.getParent(), SWT.END);
       artifactInfoLabel.setEditable(false);
@@ -721,6 +725,46 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
 
    public static void edit(IAtsTeamWorkflow team) {
       editArtifact((TeamWorkFlowArtifact) team.getStoreObject());
+   }
+
+   public static Composite createCommonPageComposite(Composite parent) {
+      Composite composite = new Composite(parent, SWT.NONE);
+      GridLayout layout = new GridLayout(1, false);
+      layout.marginHeight = 0;
+      layout.marginWidth = 0;
+      layout.verticalSpacing = 0;
+      composite.setLayout(layout);
+
+      return composite;
+   }
+
+   private ToolItem actionToToolItem(ToolBar toolBar, Action action, KeyedImage imageEnum) {
+      final Action fAction = action;
+      ToolItem item = new ToolItem(toolBar, SWT.PUSH);
+      item.setImage(ImageManager.getImage(imageEnum));
+      item.setToolTipText(action.getToolTipText());
+      item.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            fAction.run();
+         }
+      });
+      return item;
+   }
+
+   private ToolBar createCommonToolBar(Composite parent) {
+      return createCommonToolBar(parent, null);
+   }
+
+   private ToolBar createCommonToolBar(Composite parent, XFormToolkit toolkit) {
+      ToolBar toolBar = ALayout.createCommonToolBar(parent);
+      if (toolkit != null) {
+         toolkit.adapt(toolBar.getParent());
+      }
+      if (toolkit != null) {
+         toolkit.adapt(toolBar);
+      }
+      return toolBar;
    }
 
 }

@@ -61,8 +61,10 @@ import org.eclipse.osee.ats.core.client.internal.workdef.ArtifactResolverImpl;
 import org.eclipse.osee.ats.core.client.internal.workflow.AtsAttributeResolverServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.workflow.AtsRelationResolverServiceImpl;
 import org.eclipse.osee.ats.core.client.task.AtsTaskService;
+import org.eclipse.osee.ats.core.client.util.AtsClientUtilImpl;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.util.IArtifactMembersCache;
+import org.eclipse.osee.ats.core.client.util.IAtsClientUtil;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionListeners;
@@ -108,6 +110,7 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    private ArtifactCollectorsCache<SprintArtifact> sprintItemsCache;
    private IAtsEventService eventService;
    private IAgileService agileService;
+   private IAtsClientUtil clientUtils;
 
    public AtsClientImpl() {
       super();
@@ -606,6 +609,14 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    public void reloadServerAndClientCaches() {
       AtsClientService.getConfigEndpoint().getWithPend();
       AtsClientService.get().getConfigService().getConfigurations();
+   }
+
+   @Override
+   public IAtsClientUtil getClientUtils() {
+      if (clientUtils == null) {
+         clientUtils = new AtsClientUtilImpl();
+      }
+      return clientUtils;
    }
 
 }

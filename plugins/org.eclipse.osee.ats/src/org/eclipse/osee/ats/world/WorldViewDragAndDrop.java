@@ -21,8 +21,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -71,7 +71,7 @@ public class WorldViewDragAndDrop extends SkynetDragAndDrop {
          if (artData != null) {
             Artifact[] artifacts = artData.getArtifacts();
             for (Artifact art : artifacts) {
-               if (AtsUtil.isAtsArtifact(art) || art.isOfType(CoreArtifactTypes.UniversalGroup)) {
+               if (AtsObjects.isAtsWorkItemOrAction(art) || art.isOfType(CoreArtifactTypes.UniversalGroup)) {
                   validForDrop = true;
                   break;
                }
@@ -102,7 +102,7 @@ public class WorldViewDragAndDrop extends SkynetDragAndDrop {
                      Artifact[] artifacts = artData.getArtifacts();
                      if (artifacts.length == 1) {
                         Artifact art = artifacts[0];
-                        if (AtsUtil.isAtsArtifact(art)) {
+                        if (AtsObjects.isAtsWorkItemOrAction(art)) {
                            name = art.getName();
                         } else if (art.isOfType(CoreArtifactTypes.UniversalGroup)) {
                            GroupWorldSearchItem groupWorldSearchItem = new GroupWorldSearchItem(art.getBranch());
@@ -113,12 +113,12 @@ public class WorldViewDragAndDrop extends SkynetDragAndDrop {
                         }
                      }
                      for (Artifact art : artifacts) {
-                        if (AtsUtil.isAtsArtifact(art)) {
+                        if (AtsObjects.isAtsWorkItemOrAction(art)) {
                            arts.add(art);
                         } else if (art.isOfType(CoreArtifactTypes.UniversalGroup)) {
                            for (Artifact relArt : art.getRelatedArtifacts(
                               CoreRelationTypes.Universal_Grouping__Members)) {
-                              if (AtsUtil.isAtsArtifact(relArt)) {
+                              if (AtsObjects.isAtsWorkItemOrAction(relArt)) {
                                  arts.add(relArt);
                               }
                            }

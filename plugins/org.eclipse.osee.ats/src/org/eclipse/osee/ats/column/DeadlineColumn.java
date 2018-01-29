@@ -19,8 +19,8 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DeadlineManager;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
@@ -64,7 +64,7 @@ public class DeadlineColumn extends XViewerAtsAttributeValueColumn {
    @Override
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) {
       try {
-         if (!AtsUtil.isAtsArtifact(element)) {
+         if (!AtsObjects.isAtsWorkItemOrAction(element)) {
             return null;
          }
          if (isDeadlineAlerting(element).isTrue()) {

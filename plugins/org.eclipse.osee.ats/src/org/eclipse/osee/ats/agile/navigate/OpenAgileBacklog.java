@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.AtsEditors;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -57,7 +57,7 @@ public class OpenAgileBacklog extends XNavigateItemAction {
          if (backlog == null) {
             AWorkbench.popup("No backlog set for team %s", agileTeamArt.toStringWithId());
          } else {
-            AtsUtil.openATSAction(backlog, AtsOpenOption.OpenAll);
+            AtsEditors.openATSAction(backlog, AtsOpenOption.OpenAll);
          }
       }
    }

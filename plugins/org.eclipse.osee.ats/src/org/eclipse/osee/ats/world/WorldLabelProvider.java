@@ -19,8 +19,8 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.workdef.StateColorToSwtColor;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -111,7 +111,7 @@ public class WorldLabelProvider extends XViewerLabelProvider {
    public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) {
       try {
          // NOTE: ID, Type, Title are handled by XViewerValueColumn values
-         if (!AtsUtil.isAtsArtifact(element)) {
+         if (!AtsObjects.isAtsWorkItemOrAction(element)) {
             return "";
          }
          for (IAtsWorldEditorItem item : AtsWorldEditorItems.getItems()) {

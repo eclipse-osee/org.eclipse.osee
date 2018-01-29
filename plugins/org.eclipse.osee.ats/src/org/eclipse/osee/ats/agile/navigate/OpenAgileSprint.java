@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.core.client.artifact.SprintArtifact;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.AtsEditors;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -68,9 +68,9 @@ public class OpenAgileSprint extends XNavigateItemAction {
          if (dialog2.open() == 0) {
             Collection<Artifact> selected = dialog2.getSelected();
             if (selected.size() == 1) {
-               AtsUtil.openATSAction(selected.iterator().next(), AtsOpenOption.OpenAll);
+               AtsEditors.openATSAction(selected.iterator().next(), AtsOpenOption.OpenAll);
             } else {
-               AtsUtil.openInAtsWorldEditor("Sprints", selected);
+               AtsEditors.openInAtsWorldEditor("Sprints", selected);
             }
          }
       }

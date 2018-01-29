@@ -35,7 +35,6 @@ import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.editor.WfePromptChangeStatus;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.util.Result;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -55,7 +54,7 @@ public class WfePromptChangeStatusTest {
    @Before
    public void setUp() throws Exception {
       // This test should only be run on test db
-      assertFalse("Test should not be run in production db", AtsUtil.isProductionDb());
+      assertFalse("Test should not be run in production db", AtsClientService.get().getStoreService().isProductionDb());
    }
 
    @BeforeClass

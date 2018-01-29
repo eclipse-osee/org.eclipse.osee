@@ -35,6 +35,7 @@ import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomMenu;
 import org.eclipse.osee.ats.actions.DeletePurgeAtsArtifactsAction;
 import org.eclipse.osee.ats.actions.DeleteTasksAction;
 import org.eclipse.osee.ats.actions.DeleteTasksAction.TaskArtifactProvider;
+import org.eclipse.osee.ats.actions.EditActionableItemsAction;
 import org.eclipse.osee.ats.actions.EditAssigneeAction;
 import org.eclipse.osee.ats.actions.EditStatusAction;
 import org.eclipse.osee.ats.actions.EmailActionAction;
@@ -56,7 +57,6 @@ import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.XWorldTextFilter;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeColumn;
 import org.eclipse.osee.ats.workflow.TransitionToMenu;
@@ -192,7 +192,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
             try {
                if (getSelectedTeamWorkflowArtifacts().size() == 1) {
                   TeamWorkFlowArtifact teamArt = getSelectedTeamWorkflowArtifacts().iterator().next();
-                  AtsUtil.editActionableItems(teamArt);
+                  EditActionableItemsAction.editActionableItems(teamArt);
                   refresh(getSelectedArtifactItems().toArray()[0]);
                }
             } catch (Exception ex) {

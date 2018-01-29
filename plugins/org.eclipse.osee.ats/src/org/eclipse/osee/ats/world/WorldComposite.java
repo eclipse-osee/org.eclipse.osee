@@ -43,12 +43,12 @@ import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.task.ITaskEditorProvider;
 import org.eclipse.osee.ats.task.TaskXViewer;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.core.enums.PresentationType;
@@ -170,7 +170,7 @@ public class WorldComposite extends Composite implements IOseeTreeReportProvider
       List<Artifact> worldArts = new LinkedList<Artifact>();
       List<Artifact> otherArts = new LinkedList<Artifact>();
       for (Artifact art : arts) {
-         if (AtsUtil.isAtsArtifact(art)) {
+         if (AtsObjects.isAtsWorkItemOrAction(art)) {
             worldArts.add(art);
          } else {
             otherArts.add(art);

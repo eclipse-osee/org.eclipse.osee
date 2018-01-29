@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.AtsEditors;
 import org.eclipse.osee.framework.core.enums.CommandGroup;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.util.RendererOption;
@@ -79,6 +79,6 @@ public class AtsTaskEditorRenderer extends DefaultArtifactRenderer {
 
    @Override
    public void open(List<Artifact> artifacts, PresentationType presentationType) {
-      AtsUtil.openInAtsTaskEditor("Tasks", artifacts);
+      AtsEditors.openInAtsTaskEditor("Tasks", artifacts);
    }
 }

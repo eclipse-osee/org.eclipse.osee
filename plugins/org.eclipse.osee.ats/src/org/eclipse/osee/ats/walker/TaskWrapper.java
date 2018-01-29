@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.walker;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.AtsEditors;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -85,7 +85,7 @@ public class TaskWrapper implements IActionWalkerItem {
    @Override
    public void handleDoubleClick() {
       try {
-         AtsUtil.openInAtsTaskEditor("Tasks", Collections.castAll(Artifact.class, teamArt.getTaskArtifacts()));
+         AtsEditors.openInAtsTaskEditor("Tasks", Collections.castAll(Artifact.class, teamArt.getTaskArtifacts()));
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }

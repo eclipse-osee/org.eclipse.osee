@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.AtsEditors;
 import org.eclipse.osee.ats.util.PromptChangeUtil;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -70,7 +70,7 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
 
    public XViewerAtsAttributeValueColumn(AtsAttributeValueColumn column) {
       super(AttributeTypeManager.getTypeByGuid(column.getAttrTypeId()), column.getId(), column.getName(),
-         column.getWidth(), AtsUtil.getXViewerAlign(column.getAlign()), column.isVisible(), getSortDataType(column),
+         column.getWidth(), AtsEditors.getXViewerAlign(column.getAlign()), column.isVisible(), getSortDataType(column),
          column.isColumnMultiEdit(), column.getDescription());
       setInheritParent(column.isInheritParent());
       setActionRollup(column.isActionRollup());

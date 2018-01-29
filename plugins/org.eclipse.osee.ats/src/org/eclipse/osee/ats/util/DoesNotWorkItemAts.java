@@ -51,7 +51,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
             valueColumn.setAttrTypeId(attrType.getId());
             valueColumn.setAttrTypeName(attrType.getName());
             valueColumn.setWidth(column.getWidth());
-            valueColumn.setAlign(AtsUtil.getColumnAlign(column.getAlign()));
+            valueColumn.setAlign(AtsEditors.getColumnAlign(column.getAlign()));
             valueColumn.setVisible(column.isShow());
             valueColumn.setSortDataType(column.getSortDataType().name());
             valueColumn.setColumnMultiEdit(column.isMultiColumnEditable());

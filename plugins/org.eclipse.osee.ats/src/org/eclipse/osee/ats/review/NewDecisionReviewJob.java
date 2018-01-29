@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.AtsEditors;
 
 /**
  * @author Donald G. Dunne
@@ -64,7 +64,7 @@ public class NewDecisionReviewJob extends Job {
                reviewBlockType, reviewTitle, againstState, description, options, assignees, createdDate, createdBy,
                changes).getStoreObject();
          changes.execute();
-         AtsUtil.openATSAction(decArt, AtsOpenOption.OpenOneOrPopupSelect);
+         AtsEditors.openATSAction(decArt, AtsOpenOption.OpenOneOrPopupSelect);
       } catch (Exception ex) {
          monitor.done();
          return new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, "Error creating Decision Review", ex);

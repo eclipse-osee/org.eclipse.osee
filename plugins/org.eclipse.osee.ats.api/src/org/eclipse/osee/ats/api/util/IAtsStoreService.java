@@ -38,8 +38,6 @@ public interface IAtsStoreService {
 
    boolean isDeleted(IAtsObject atsObject);
 
-   String getGuid(IAtsObject atsObject);
-
    boolean isAttributeTypeValid(IAtsObject atsObject, AttributeTypeId attributeType);
 
    boolean isAttributeTypeValid(ArtifactId artifact, AttributeTypeId attributeType);
@@ -90,4 +88,6 @@ public interface IAtsStoreService {
    }
 
    CustomizeData getCustomizationByGuid(String customize_guid);
+
+   boolean isProductionDb();
 }

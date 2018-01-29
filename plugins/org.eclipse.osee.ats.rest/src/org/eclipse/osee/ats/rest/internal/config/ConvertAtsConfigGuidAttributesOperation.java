@@ -165,7 +165,7 @@ public class ConvertAtsConfigGuidAttributesOperation {
          for (ArtifactToken workPackageArt : atsApi.getQueryService().getArtifacts(AtsArtifactTypes.WorkPackage,
             atsApi.getAtsBranch())) {
             IAtsWorkPackage workPkg = atsApi.getEarnedValueService().getWorkPackage(workPackageArt);
-            guidToWorkPackage.put(atsApi.getStoreService().getGuid(workPkg), workPkg);
+            guidToWorkPackage.put(workPkg.getGuid(), workPkg);
          }
          workPackagesLoaded = true;
       }
@@ -173,8 +173,7 @@ public class ConvertAtsConfigGuidAttributesOperation {
       ArtifactId workPackageId = atsApi.getAttributeResolver().getSoleArtifactIdReference(workItemArt,
          AtsAttributeTypes.WorkPackageReference, ArtifactId.SENTINEL);
       if (workPackageId.isInvalid()) {
-         String workPackageGuid =
-            atsApi.getAttributeResolver().getSoleAttributeValue(workItemArt, WorkPackageGuid, "");
+         String workPackageGuid = atsApi.getAttributeResolver().getSoleAttributeValue(workItemArt, WorkPackageGuid, "");
          if (Strings.isValid(workPackageGuid)) {
             IAtsWorkPackage workPackage = guidToWorkPackage.get(workPackageGuid);
             if (workPackage == null) {

@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewState;
 import org.eclipse.osee.ats.demo.api.DemoActionableItems;
 import org.eclipse.osee.ats.editor.stateItem.AtsPeerToPeerReviewPrepareStateItem;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboDam;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -47,7 +46,7 @@ public class AtsPeerToPeerReviewPrepareStateItemTest {
    @Before
    public void setUp() throws Exception {
       // This test should only be run on test db
-      assertFalse("Test should not be run in production db", AtsUtil.isProductionDb());
+      assertFalse("Test should not be run in production db", AtsClientService.get().getStoreService().isProductionDb());
 
       if (peerRevArt == null) {
          IAtsChangeSet changes = AtsClientService.get().getStoreService().createAtsChangeSet(getClass().getSimpleName(),

@@ -14,10 +14,12 @@ import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.util.AtsBranchManager;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.AtsEditors;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -37,13 +39,8 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
 public class AtsOseeCmService implements IOseeCmService {
 
    @Override
-   public void openArtifact(String id, OseeCmEditor oseeCmEditor) {
-      AtsUtil.openArtifact(id, oseeCmEditor);
-   }
-
-   @Override
-   public void openArtifact(Artifact artifact, OseeCmEditor oseeCmEditor) {
-      AtsUtil.openATSArtifact(artifact);
+   public void openArtifact(ArtifactId artifact, OseeCmEditor oseeCmEditor) {
+      AtsEditors.openATSArtifact(AtsClientService.get().getArtifact(artifact));
    }
 
    @Override
@@ -53,7 +50,7 @@ public class AtsOseeCmService implements IOseeCmService {
 
    @Override
    public boolean isPcrArtifact(Artifact artifact) {
-      return AtsUtil.isAtsArtifact(artifact);
+      return AtsObjects.isAtsWorkItemOrAction(artifact);
    }
 
    @Override

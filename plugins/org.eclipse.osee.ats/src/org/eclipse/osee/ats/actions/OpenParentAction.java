@@ -14,7 +14,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.AtsEditors;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
@@ -33,7 +33,7 @@ public class OpenParentAction extends AbstractAtsAction {
 
    @Override
    public void runWithException() {
-      AtsUtil.openATSAction(sma.getParentAWA(), AtsOpenOption.OpenOneOrPopupSelect);
+      AtsEditors.openATSAction(sma.getParentAWA(), AtsOpenOption.OpenOneOrPopupSelect);
    }
 
    @Override

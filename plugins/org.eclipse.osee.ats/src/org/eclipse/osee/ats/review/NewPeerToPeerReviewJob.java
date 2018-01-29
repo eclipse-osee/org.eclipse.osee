@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.AtsEditors;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 
@@ -82,7 +82,7 @@ public class NewPeerToPeerReviewJob extends Job {
          }
          changes.execute();
 
-         AtsUtil.openATSAction(peerArt, AtsOpenOption.OpenOneOrPopupSelect);
+         AtsEditors.openATSAction(peerArt, AtsOpenOption.OpenOneOrPopupSelect);
       } catch (Exception ex) {
          monitor.done();
          return new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, "Error creating PeerToPeer Review", ex);

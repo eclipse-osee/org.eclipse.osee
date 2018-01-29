@@ -11,13 +11,13 @@
 package org.eclipse.osee.ats.editor;
 
 import java.util.logging.Level;
+import org.eclipse.osee.ats.actions.EditActionableItemsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
@@ -71,7 +71,7 @@ public class WfeActionableItemHeader extends Composite {
                   if (editor.isDirty()) {
                      editor.doSave(null);
                   }
-                  AtsUtil.editActionableItems(teamWf);
+                  EditActionableItemsAction.editActionableItems(teamWf);
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }

@@ -295,11 +295,6 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
    }
 
    @Override
-   public boolean isProduction() {
-      return jdbcService.getClient().getConfig().isProduction();
-   }
-
-   @Override
    public AtsApi getServices() {
       return this;
    }
@@ -307,7 +302,7 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
    @Override
    public void sendNotifications(AtsNotificationCollector notifications) {
       if (isEmailEnabled()) {
-         if (notifiers.isEmpty() || !isProduction()) {
+         if (notifiers.isEmpty() || !getStoreService().isProductionDb()) {
             if (!loggedNotificationDisabled) {
                logger.info("Osee Notification Disabled");
                loggedNotificationDisabled = true;

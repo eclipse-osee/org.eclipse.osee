@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.cm;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -29,9 +30,7 @@ public interface IOseeCmService {
 
    KeyedImage getImage(ImageType imageType);
 
-   void openArtifact(Artifact artifact, OseeCmEditor oseeCmEditor);
-
-   void openArtifact(String id, OseeCmEditor oseeCmEditor);
+   void openArtifact(ArtifactId artifact, OseeCmEditor oseeCmEditor);
 
    void openArtifacts(String name, Collection<Artifact> artifacts, OseeCmEditor oseeCmEditor);
 

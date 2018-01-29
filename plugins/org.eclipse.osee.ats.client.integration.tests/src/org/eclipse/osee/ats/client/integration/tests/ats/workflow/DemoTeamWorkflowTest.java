@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.junit.After;
 import org.junit.Before;
@@ -41,7 +40,8 @@ public class DemoTeamWorkflowTest {
    @Before
    @After
    public void cleanup() throws Exception {
-      assertTrue("This can not be run on production databse.", !AtsUtil.isProductionDb());
+      assertTrue("This can not be run on production databse.",
+         !AtsClientService.get().getStoreService().isProductionDb());
 
       AtsTestUtil.cleanupSimpleTest(getClass().getSimpleName());
    }

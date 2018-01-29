@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.actions;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -34,7 +34,7 @@ public class DirtyReportAction extends AbstractAtsAction {
    @Override
    public void runWithException() {
       Result result = reportable.isDirtyResult();
-      if (AtsUtil.isInTest()) {
+      if (AtsUtilCore.isInTest()) {
          throw new OseeStateException("Dirty Report", result.isFalse() ? "Not Dirty" : "Dirty -> " + result.getText());
       } else {
          AWorkbench.popup("Dirty Report", result.isFalse() ? "Not Dirty" : "Dirty -> " + result.getText());

@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.api.workflow.ActionResult;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.AtsEditors;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -67,7 +67,7 @@ public class NewActionJob extends Job {
             throw new OseeArgumentException("Actionable Items can not be empty for New Action");
          }
          if ("tt".equals(title)) {
-            title += " " + AtsUtil.getAtsDeveloperIncrementingNum();
+            title += " " + AtsClientService.get().getClientUtils().getAtsDeveloperIncrementingNum();
          }
          IAtsChangeSet changes = AtsClientService.get().createChangeSet("Create New Action");
          result = AtsClientService.get().getActionFactory().createAction(
@@ -88,7 +88,7 @@ public class NewActionJob extends Job {
             // Because this is a job, it will automatically kill any popups that are created during.
             // Thus, if multiple teams were selected to create, don't popup on openAction or dialog
             // will exception out when it is killed at the end of this job.
-            AtsUtil.openATSAction((Artifact) result.getFirstTeam().getStoreObject(), AtsOpenOption.OpenAll);
+            AtsEditors.openATSAction((Artifact) result.getFirstTeam().getStoreObject(), AtsOpenOption.OpenAll);
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

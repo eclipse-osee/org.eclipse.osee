@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.Import.ImportActionsViaSpreadsheetBlam;
 import org.eclipse.osee.ats.util.Import.ImportActionsViaSpreadsheetBlam.ImportOption;
 import org.eclipse.osee.ats.util.Import.ImportAgileActionsViaSpreadsheetBlam;
@@ -63,7 +62,7 @@ public class ImportActionsViaSpreadsheetTest {
    @Before
    public void setUp() throws Exception {
       // This test should only be run on test db
-      assertFalse(AtsUtil.isProductionDb());
+      assertFalse(AtsClientService.get().getStoreService().isProductionDb());
 
       for (String title : ActionTitles) {
          List<Artifact> arts =

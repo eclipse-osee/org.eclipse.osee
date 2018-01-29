@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.AtsEditors;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -61,7 +61,7 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
 
                // Get all things user is directly assigned to
                Collection<Artifact> assignedToArts =
-                  AtsUtil.getAssigned(AtsClientService.get().getUserServiceClient().getUserFromOseeUser(fromUser));
+                  AtsEditors.getAssigned(AtsClientService.get().getUserServiceClient().getUserFromOseeUser(fromUser));
                Set<Artifact> atsArts = new HashSet<>();
                for (Artifact assignedArt : assignedToArts) {
                   if (assignedArt instanceof AbstractWorkflowArtifact) {

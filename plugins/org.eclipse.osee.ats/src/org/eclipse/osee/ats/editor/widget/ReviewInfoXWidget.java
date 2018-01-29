@@ -41,7 +41,6 @@ import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.review.NewDecisionReviewJob;
 import org.eclipse.osee.ats.review.NewPeerReviewDialog;
 import org.eclipse.osee.ats.review.NewPeerToPeerReviewJob;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.util.widgets.dialog.StateListAndTitleDialog;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -295,7 +294,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
 
    public void addAdminRightClickOption() {
       // If ATS Admin, allow right-click to auto-complete tasks
-      if (AtsClientService.get().getUserService().isAtsAdmin() && !AtsUtil.isProductionDb()) {
+      if (AtsClientService.get().getUserService().isAtsAdmin() && !AtsClientService.get().getStoreService().isProductionDb()) {
          labelWidget.addListener(SWT.MouseUp, new Listener() {
             @Override
             public void handleEvent(Event event) {

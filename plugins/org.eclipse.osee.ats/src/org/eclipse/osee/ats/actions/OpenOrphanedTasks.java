@@ -31,7 +31,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.AtsEditors;
 import org.eclipse.osee.ats.util.widgets.dialog.ActionableItemListDialog;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -119,7 +119,7 @@ public class OpenOrphanedTasks extends Action {
                         }
                      }
                      if (fAi == null) {
-                        AtsUtil.openInAtsWorldEditor("Orphaned Tasks", artifacts, data);
+                        AtsEditors.openInAtsWorldEditor("Orphaned Tasks", artifacts, data);
                      } else {
                         IAtsUser asUser = AtsClientService.get().getUserService().getCurrentUser();
                         IAtsChangeSet changes =
@@ -132,7 +132,7 @@ public class OpenOrphanedTasks extends Action {
                            changes.relate(teamWf, AtsRelationTypes.TeamWfToTask_Task, taskArt);
                         }
                         changes.execute();
-                        AtsUtil.openATSAction((Artifact) teamWf.getStoreObject(), AtsOpenOption.OpenOneOrPopupSelect);
+                        AtsEditors.openATSAction((Artifact) teamWf.getStoreObject(), AtsOpenOption.OpenOneOrPopupSelect);
                      }
                   }
                }

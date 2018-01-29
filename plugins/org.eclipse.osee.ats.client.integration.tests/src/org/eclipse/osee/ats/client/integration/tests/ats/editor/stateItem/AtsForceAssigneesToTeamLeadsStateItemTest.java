@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.editor.stateItem.AtsForceAssigneesToTeamLeadsStateItem;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -44,7 +43,7 @@ public class AtsForceAssigneesToTeamLeadsStateItemTest {
    @Before
    public void setUp() throws Exception {
       // This test should only be run on test db
-      assertFalse("Test should not be run in production db", AtsUtil.isProductionDb());
+      assertFalse("Test should not be run in production db", AtsClientService.get().getStoreService().isProductionDb());
 
       if (teamArt == null) {
          IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());

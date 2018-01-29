@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.client.demo.config.DemoDbUtil;
 import org.eclipse.osee.ats.client.demo.internal.Activator;
 import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -75,7 +74,7 @@ public class Pdd10SetupAndImportReqs implements IPopulateDemoDatabase {
    @Override
    public void run() {
       AtsUtilClient.setEmailEnabled(false);
-      if (AtsUtil.isProductionDb()) {
+      if (AtsClientService.get().getStoreService().isProductionDb()) {
          throw new IllegalStateException("PopulateDemoActions should not be run on production DB");
       }
       validateArtifactCache();

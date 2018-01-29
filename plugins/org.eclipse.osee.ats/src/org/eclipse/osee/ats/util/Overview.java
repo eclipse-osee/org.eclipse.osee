@@ -240,8 +240,8 @@ public class Overview {
    }
 
    public static String getOpenHyperlinkHtml(String name, Artifact art) {
-      return AHTML.getHyperlink(XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openAction, art.getGuid()),
-         name);
+      return AHTML.getHyperlink(
+         XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openAction, art.getIdString()), name);
    }
 
    public void addLog(AbstractWorkflowArtifact artifact) {

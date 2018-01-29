@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.artifact.SprintArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.AtsEditors;
 import org.eclipse.osee.ats.util.widgets.dialog.AtsConfigCheckTreeDialog;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -132,7 +132,7 @@ public class ConvertVersionToAgileSprint extends XNavigateItemAction {
                return;
             }
          }
-         AtsUtil.openInAtsWorldEditor(sprints, getName());
+         AtsEditors.openInAtsWorldEditor(sprints, getName());
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }

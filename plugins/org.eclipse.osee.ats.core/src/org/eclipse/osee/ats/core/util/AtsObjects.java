@@ -152,4 +152,8 @@ public class AtsObjects {
       return results;
    }
 
+   public static boolean isAtsWorkItemOrAction(Object element) {
+      return element instanceof IAtsAction || element instanceof IAtsWorkItem;
+   }
+
 }

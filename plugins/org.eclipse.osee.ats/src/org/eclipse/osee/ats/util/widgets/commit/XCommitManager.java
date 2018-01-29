@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.editor.WorkflowEditor;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsBranchManager;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -139,7 +138,7 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
             createTaskActionBar(tableComp);
 
             labelWidget.setText(getLabel() + ": ");// If ATS Admin, allow right-click to auto-complete reviews
-            if (AtsClientService.get().getUserService().isAtsAdmin() && !AtsUtil.isProductionDb()) {
+            if (AtsClientService.get().getUserService().isAtsAdmin() && !AtsClientService.get().getStoreService().isProductionDb()) {
                labelWidget.addListener(SWT.MouseUp, new Listener() {
                   @Override
                   public void handleEvent(Event event) {

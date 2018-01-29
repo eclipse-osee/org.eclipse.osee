@@ -47,10 +47,10 @@ import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.config.Versions;
 import org.eclipse.osee.ats.core.util.AtsObjects;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -230,7 +230,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                if (artifact instanceof TeamWorkFlowArtifact) {
                   AtsTaskCache.decache((TeamWorkFlowArtifact) artifact);
                }
-               if (!AtsUtil.isInTest() && !(artifact instanceof User)) {
+               if (!AtsUtilCore.isInTest() && !(artifact instanceof User)) {
                   ArtifactCache.deCache(artifact);
                }
             }

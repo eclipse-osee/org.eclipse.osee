@@ -32,7 +32,7 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsEditor;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.AtsEditors;
 import org.eclipse.osee.ats.util.widgets.dialog.AtsObjectNameSorter;
 import org.eclipse.osee.ats.world.IWorldEditorConsumer;
 import org.eclipse.osee.ats.world.WorldEditor;
@@ -104,7 +104,7 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
                openChangeReport(resultAtsArts, data.getEnteredIds());
             } else if (data.getAtsEditor() == AtsEditor.ArtifactEditor) {
                for (Artifact artifact : resultAtsArts) {
-                  AtsUtil.openArtifact(artifact, OseeCmEditor.ArtifactEditor);
+                  AtsEditors.openArtifact(artifact, OseeCmEditor.ArtifactEditor);
                }
             } else {
                WorldEditor.open(new WorldEditorSimpleProvider(getName(), resultAtsArts));
@@ -198,7 +198,7 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
                }
             }
             if (artifact.isOfType(AtsArtifactTypes.Action)) {
-               AtsUtil.openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
+               AtsEditors.openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
             } else {
                try {
                   WorkflowEditor.editArtifact(artifact);

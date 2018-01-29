@@ -39,7 +39,7 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.AtsEditors;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.util.result.XResultData;
@@ -74,7 +74,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
-      if (AtsUtil.isProductionDb()) {
+      if (AtsClientService.get().getStoreService().isProductionDb()) {
          AWorkbench.popup("ERROR", "This should not to be run on production DB");
          return;
       }
@@ -322,7 +322,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
             IAtsTeamWorkflow.class).iterator().next();
 
       resultData.log("Loaded TeamWf " + teamWf);
-      AtsUtil.openATSAction((Artifact) teamWf.getParentAction().getStoreObject(), AtsOpenOption.OpenOneOrPopupSelect);
+      AtsEditors.openATSAction((Artifact) teamWf.getParentAction().getStoreObject(), AtsOpenOption.OpenOneOrPopupSelect);
       validateActionAtStart(teamWf);
       XResultDataUI.report(resultData, title);
    }
@@ -337,7 +337,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
             IAtsTeamWorkflow.class).iterator().next();
 
       resultData.log("Loaded TeamWf " + teamWf);
-      AtsUtil.openATSAction((Artifact) teamWf.getParentAction().getStoreObject(), AtsOpenOption.OpenOneOrPopupSelect);
+      AtsEditors.openATSAction((Artifact) teamWf.getParentAction().getStoreObject(), AtsOpenOption.OpenOneOrPopupSelect);
       validateActionAtEnd(teamWf);
       XResultDataUI.report(resultData, title);
    }

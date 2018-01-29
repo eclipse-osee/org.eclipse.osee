@@ -33,7 +33,7 @@ import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.AtsEditors;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.ats.workdef.provider.AtsWorkDefinitionImporter;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -240,9 +240,9 @@ public class AtsConfigOperation extends AbstractOperation {
             public IStatus runInUIThread(IProgressMonitor monitor) {
                try {
                   Artifact teamDefArt = AtsClientService.get().getConfigArtifact(teamDef);
-                  AtsUtil.openATSAction(teamDefArt, AtsOpenOption.OpenAll);
+                  AtsEditors.openATSAction(teamDefArt, AtsOpenOption.OpenAll);
                   for (IAtsActionableItem aia : aias) {
-                     AtsUtil.openATSAction(AtsClientService.get().getConfigArtifact(aia), AtsOpenOption.OpenAll);
+                     AtsEditors.openATSAction(AtsClientService.get().getConfigArtifact(aia), AtsOpenOption.OpenAll);
                   }
                   RendererManager.open(ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition,
                      workDefinition.getName(), AtsClientService.get().getAtsBranch()),

@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil
 import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewState;
 import org.eclipse.osee.ats.editor.stateItem.AtsDecisionReviewPrepareStateItem;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -41,7 +40,7 @@ public class AtsDecisionReviewPrepareStateItemTest {
    @Before
    public void setUp() throws Exception {
       // This test should only be run on test db
-      assertFalse("Test should not be run in production db", AtsUtil.isProductionDb());
+      assertFalse("Test should not be run in production db", AtsClientService.get().getStoreService().isProductionDb());
 
       if (decRevArt == null) {
          // setup fake review artifact with decision options set

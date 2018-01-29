@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.AtsEditors;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
@@ -36,7 +36,7 @@ public class OpenTeamDefinitionAction extends AbstractAtsAction {
    @Override
    public void runWithException() {
       if (teamArt.getTeamDefinition() != null) {
-         AtsUtil.openATSAction(AtsClientService.get().getConfigArtifact(teamArt.getTeamDefinition()),
+         AtsEditors.openATSAction(AtsClientService.get().getConfigArtifact(teamArt.getTeamDefinition()),
             AtsOpenOption.OpenOneOrPopupSelect);
       }
    }

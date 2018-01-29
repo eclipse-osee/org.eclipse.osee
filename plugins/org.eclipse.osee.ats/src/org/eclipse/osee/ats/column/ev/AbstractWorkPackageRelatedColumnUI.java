@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.AtsEditors;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -116,7 +116,7 @@ public abstract class AbstractWorkPackageRelatedColumnUI extends XViewerAtsColum
          AWorkbench.popup("No Work Packages set for selected Work Items");
       } else {
          if (ids.size() == 1) {
-            AtsUtil.openArtifact(
+            AtsEditors.openArtifact(
                ArtifactQuery.getArtifactFromId(ids.iterator().next(), AtsClientService.get().getAtsBranch()),
                OseeCmEditor.ArtifactEditor);
          } else {

@@ -33,7 +33,6 @@ import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.config.ActionableItems;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -56,7 +55,7 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
-      if (AtsUtil.isProductionDb()) {
+      if (AtsClientService.get().getStoreService().isProductionDb()) {
          AWorkbench.popup("Can't be run on production");
          return;
       }

@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.column;
 
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
 import org.eclipse.osee.ats.api.config.ColumnAlign;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.AtsEditors;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 
 public class AtsAttributeValueColumnFactory {
@@ -23,7 +23,7 @@ public class AtsAttributeValueColumnFactory {
       col.setNamespace(namespace);
       col.setAttrTypeId(inCol.getAttributeType().getId());
       col.setAttrTypeName(inCol.getAttributeType().getName());
-      ColumnAlign colAlign = AtsUtil.getColumnAlign(inCol.getAlign());
+      ColumnAlign colAlign = AtsEditors.getColumnAlign(inCol.getAlign());
       col.setAlign(colAlign);
       col.setColumnMultiEdit(inCol.isMultiColumnEditable());
       col.setDescription(inCol.getDescription());

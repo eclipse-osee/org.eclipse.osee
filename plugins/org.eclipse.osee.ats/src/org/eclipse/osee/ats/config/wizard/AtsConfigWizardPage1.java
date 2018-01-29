@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -121,14 +121,15 @@ public class AtsConfigWizardPage1 extends WizardPage {
                   ((XText) getXWidget(ACTIONABLE_ITEMS)).set("Lab Station, Lab Computer, Lab Fire System");
                   ((XText) getXWidget(VERSIONS)).set("SAW 1.0, SAW 2.0, SAW 3.0");
                   ((XText) getXWidget(WORKFLOW_ID)).setText(
-                     "WorkDef_Team_SawLabs" + AtsUtil.getAtsDeveloperIncrementingNum());
+                     "WorkDef_Team_SawLabs" + AtsClientService.get().getClientUtils().getAtsDeveloperIncrementingNum());
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }
             }
          });
          setControl(comp);
-         ((XText) getXWidget(WORKFLOW_ID)).setText("WorkDef_Team_SawLabs" + AtsUtil.getAtsDeveloperIncrementingNum());
+         ((XText) getXWidget(WORKFLOW_ID)).setText(
+            "WorkDef_Team_SawLabs" + AtsClientService.get().getClientUtils().getAtsDeveloperIncrementingNum());
 
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

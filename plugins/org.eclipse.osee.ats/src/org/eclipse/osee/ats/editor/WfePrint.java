@@ -31,7 +31,6 @@ import org.eclipse.osee.ats.core.workflow.log.AtsLogUtility;
 import org.eclipse.osee.ats.editor.widget.ReviewInfoXWidget;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
 import org.eclipse.osee.framework.core.util.result.Manipulations;
@@ -50,6 +49,8 @@ public class WfePrint extends Action {
 
    private final AbstractWorkflowArtifact sma;
    boolean includeTaskList = true;
+   private final String normalColor = "#FFFFFF";
+   private final String activeColor = "#EEEEEE";
 
    public WfePrint(AbstractWorkflowArtifact sma) {
       super();
@@ -173,8 +174,8 @@ public class WfePrint extends Action {
             }
             if (sma.isInState(statePage) || sma.getStateMgr().isStateVisited(statePage)) {
                statePage.generateLayoutDatas(sma);
-               rd.addRaw(statePage.getHtml(sma.isInState(statePage) ? AtsUtil.activeColor : AtsUtil.normalColor,
-                  notesSb.toString(), getStateHoursSpentHtml(statePage) + getReviewData(sma, statePage)));
+               rd.addRaw(statePage.getHtml(sma.isInState(statePage) ? activeColor : normalColor, notesSb.toString(),
+                  getStateHoursSpentHtml(statePage) + getReviewData(sma, statePage)));
                rd.addRaw(AHTML.newline());
             }
          }

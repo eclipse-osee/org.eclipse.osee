@@ -36,7 +36,6 @@ import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TeamWorkFlowManager;
 import org.eclipse.osee.ats.editor.WorkflowEditor;
 import org.eclipse.osee.ats.util.AtsBranchManager;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -89,7 +88,7 @@ public class AtsBranchConfigurationTest {
 
    @Before
    public void testSetup() throws Exception {
-      if (AtsUtil.isProductionDb()) {
+      if (AtsClientService.get().getStoreService().isProductionDb()) {
          throw new IllegalStateException("BranchConfigThroughTeamDefTest should not be run on production DB");
       }
    }

@@ -19,11 +19,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.editor.WorkflowEditor;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.task.TaskEditorProvider;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -35,6 +35,8 @@ import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
@@ -205,7 +207,7 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
    }
 
    private void createMetricsTab() {
-      Composite comp = AtsUtil.createCommonPageComposite(getContainer());
+      Composite comp = WorkflowEditor.createCommonPageComposite(getContainer());
       new AtsMetricsComposite(this, comp, SWT.NONE);
       int metricsPageIndex = addPage(comp);
       setPageText(metricsPageIndex, "Metrics");
@@ -255,7 +257,7 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
       try {
          for (IAtsWorldEditorItem item : AtsWorldEditorItems.getItems()) {
             for (final Action action : item.getWorldEditorMenuActions(getWorldEditorProvider(), this)) {
-               AtsUtil.actionToMenuItem(menu, action, SWT.PUSH);
+               actionToMenuItem(menu, action, SWT.PUSH);
             }
          }
       } catch (Exception ex) {
@@ -280,6 +282,25 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
 
    public boolean isTaskEditor() {
       return getWorldEditorInput().getIWorldEditorProvider() instanceof TaskEditorProvider;
+   }
+
+   protected MenuItem actionToMenuItem(Menu menu, final Action action, final int buttonType) {
+      final Action fAction = action;
+      MenuItem item = new MenuItem(menu, buttonType);
+      item.setText(action.getText());
+      if (action.getImageDescriptor() != null) {
+         item.setImage(action.getImageDescriptor().createImage());
+      }
+      item.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            if (buttonType == SWT.CHECK) {
+               action.setChecked(!action.isChecked());
+            }
+            fAction.run();
+         }
+      });
+      return item;
    }
 
 }

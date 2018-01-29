@@ -89,11 +89,6 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
       return atsServer.getArtifact(atsObject).isDeleted();
    }
 
-   @Override
-   public String getGuid(IAtsObject atsObject) {
-      return atsServer.getArtifact(atsObject).getGuid();
-   }
-
    /**
     * Uses artifact type inheritance to retrieve all TeamWorkflow artifact types
     */
@@ -237,6 +232,11 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
          }
       }
       return cust;
+   }
+
+   @Override
+   public boolean isProductionDb() {
+      return jdbcService.getClient().getConfig().isProduction();
    }
 
 }

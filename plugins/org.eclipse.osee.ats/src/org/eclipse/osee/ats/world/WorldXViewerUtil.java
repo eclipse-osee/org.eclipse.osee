@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.column.StateAssigneesColumn;
 import org.eclipse.osee.ats.column.StateCompletedColumn;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.AtsEditors;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -81,7 +81,7 @@ public class WorldXViewerUtil {
          try {
             AttributeType attrType = AttributeTypeManager.getTypeByGuid(column.getAttrTypeId());
             XViewerAtsAttributeValueColumn valueColumn = new XViewerAtsAttributeValueColumn(attrType, column.getWidth(),
-               AtsUtil.getXViewerAlign(column.getAlign()), column.isVisible(),
+               AtsEditors.getXViewerAlign(column.getAlign()), column.isVisible(),
                SortDataType.valueOf(column.getSortDataType()), column.isColumnMultiEdit(), column.getDescription());
             valueColumn.setBooleanNotSetShow(column.getBooleanNotSetShow());
             valueColumn.setBooleanOnFalseShow(column.getBooleanOnFalseShow());

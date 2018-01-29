@@ -47,8 +47,6 @@ public interface IAtsServer extends AtsApi, IAtsNotifier, IAtsConfigItemFactoryP
 
    QueryBuilder getQuery();
 
-   boolean isProduction();
-
    AtsApi getServices();
 
    void setEmailEnabled(boolean emailEnabled);

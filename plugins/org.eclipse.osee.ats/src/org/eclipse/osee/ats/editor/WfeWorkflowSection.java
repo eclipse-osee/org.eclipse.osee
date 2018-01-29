@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.editor.widget.StatePercentCompleteXWidget;
 import org.eclipse.osee.ats.editor.widget.TaskInfoXWidget;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.XCancellationReasonTextWidget;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
 import org.eclipse.osee.framework.core.util.Result;
@@ -102,7 +101,7 @@ public class WfeWorkflowSection extends SectionPart {
             statePage.getStateType().isCancelledState()));
          if (sma.isInState(statePage)) {
             section.setTitleBarForeground(Displays.getSystemColor(SWT.COLOR_DARK_GREEN));
-            section.setBackground(AtsUtil.ACTIVE_COLOR);
+            section.setBackground(WfeTransitionComposite.ACTIVE_COLOR);
          }
          section.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
          // section.setBackground(Displays.getSystemColor(SWT.COLOR_MAGENTA));
@@ -175,7 +174,7 @@ public class WfeWorkflowSection extends SectionPart {
          Label descLabel = editor.getToolkit().createLabel(labelComp,
             " State Description: " + statePage.getStateDefinition().getDescription());
          GridData gd = new GridData(SWT.FILL, SWT.NONE, true, false);
-         descLabel.setBackground(AtsUtil.ACTIVE_COLOR);
+         descLabel.setBackground(WfeTransitionComposite.ACTIVE_COLOR);
          descLabel.setLayoutData(gd);
       }
 

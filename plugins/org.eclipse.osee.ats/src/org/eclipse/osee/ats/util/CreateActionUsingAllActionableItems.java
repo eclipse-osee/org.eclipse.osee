@@ -53,11 +53,11 @@ public class CreateActionUsingAllActionableItems extends XNavigateItemAction {
          int numWfs = action.getTeamWfs().size();
          if (numWfs > 30) {
             AWorkbench.popup(numWfs + " Workflows were created.  Only opening one.");
-            AtsUtil.openATSAction((Artifact) action.getTeamWfs().iterator().next().getStoreObject(),
+            AtsEditors.openATSAction((Artifact) action.getTeamWfs().iterator().next().getStoreObject(),
                AtsOpenOption.OpenOneOrPopupSelect);
          } else {
             AWorkbench.popup("Completed", "Completed");
-            AtsUtil.openATSAction((ActionArtifact) action.getAction().getStoreObject(), AtsOpenOption.OpenAll);
+            AtsEditors.openATSAction((ActionArtifact) action.getAction().getStoreObject(), AtsOpenOption.OpenAll);
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

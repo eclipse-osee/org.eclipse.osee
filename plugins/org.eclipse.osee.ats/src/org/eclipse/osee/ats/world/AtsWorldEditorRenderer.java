@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.AtsEditors;
 import org.eclipse.osee.framework.core.enums.CommandGroup;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -95,6 +95,6 @@ public class AtsWorldEditorRenderer extends DefaultArtifactRenderer {
 
    @Override
    public void open(List<Artifact> artifacts, PresentationType presentationType) {
-      AtsUtil.openInAtsWorldEditor("ATS", artifacts);
+      AtsEditors.openInAtsWorldEditor("ATS", artifacts);
    }
 }

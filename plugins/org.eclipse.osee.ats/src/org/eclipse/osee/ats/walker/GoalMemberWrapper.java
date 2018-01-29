@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.walker;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.AtsEditors;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -85,7 +85,7 @@ public class GoalMemberWrapper implements IActionWalkerItem {
    @Override
    public void handleDoubleClick() {
       try {
-         AtsUtil.openInAtsWorldEditor(String.format("Goal [%s] Members", goal.getName()),
+         AtsEditors.openInAtsWorldEditor(String.format("Goal [%s] Members", goal.getName()),
             Collections.castAll(Artifact.class, goal.getMembers()));
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IdeClientSession;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
@@ -118,7 +117,7 @@ public class AtsTest_DemoPopulateAndTest_Suite {
    public static void testPopulateDemoDb() {
       try {
          // This test should only be run on test db
-         assertFalse(AtsUtil.isProductionDb());
+         assertFalse(AtsClientService.get().getStoreService().isProductionDb());
          // Confirm test setup with demo data
          Result result = DemoUtil.isDbPopulatedWithDemoData();
          assertTrue(result.getText(), result.isTrue());

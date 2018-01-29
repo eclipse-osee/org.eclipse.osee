@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.util.widgets.defect;
 
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Severity;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -66,7 +66,7 @@ public class NewDefectDialog extends EntryDialog {
          public void mouseUp(MouseEvent e) {
             super.mouseUp(e);
             if (e.button == 3) {
-               text.set("description " + AtsUtil.getAtsDeveloperIncrementingNum());
+               text.set("description " + AtsClientService.get().getClientUtils().getAtsDeveloperIncrementingNum());
                severityCombo.set("Issue");
                text2.set("location");
             }

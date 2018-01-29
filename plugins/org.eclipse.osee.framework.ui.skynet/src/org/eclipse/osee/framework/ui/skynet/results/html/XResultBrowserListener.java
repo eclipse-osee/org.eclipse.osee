@@ -57,7 +57,7 @@ public class XResultBrowserListener implements LocationListener {
          switch (xResultBrowserHyperCmd) {
             case openAction:
                event.doit = false;
-               cmService.openArtifact(value, OseeCmEditor.CmPcrEditor);
+               cmService.openArtifact(ArtifactId.valueOf(value), OseeCmEditor.CmPcrEditor);
                break;
             case openArtifactBranch:
                event.doit = false;
@@ -76,7 +76,7 @@ public class XResultBrowserListener implements LocationListener {
 
             case openArtifactEditor:
                event.doit = false;
-               cmService.openArtifact(value, OseeCmEditor.ArtifactEditor);
+               cmService.openArtifact(ArtifactId.valueOf(value), OseeCmEditor.ArtifactEditor);
                break;
             case openBranch:
                event.doit = false;

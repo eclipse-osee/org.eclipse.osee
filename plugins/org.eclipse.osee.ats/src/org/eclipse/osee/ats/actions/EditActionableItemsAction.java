@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.actions;
 
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
@@ -30,7 +29,11 @@ public class EditActionableItemsAction extends AbstractAtsAction {
 
    @Override
    public void runWithException() {
-      AtsUtil.editActionableItems(teamWf);
+      editActionableItems(teamWf);
+   }
+
+   public static void editActionableItems(TeamWorkFlowArtifact teamArt) {
+      new ModifyActionableItemAction(teamArt).run();
    }
 
 }

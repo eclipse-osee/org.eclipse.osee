@@ -22,9 +22,9 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -60,7 +60,7 @@ public class OperationalImpactWorkaroundColumn extends XViewerValueColumn {
 
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
-      if (AtsUtil.isAtsArtifact(element)) {
+      if (AtsObjects.isAtsWorkItemOrAction(element)) {
          try {
             return getOperationalImpact((Artifact) element);
          } catch (OseeCoreException ex) {

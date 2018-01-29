@@ -41,7 +41,7 @@ import org.eclipse.osee.ats.core.config.TeamDefinitionUtility;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsObjectLabelProvider;
-import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.AtsEditors;
 import org.eclipse.osee.ats.util.widgets.dialog.AITreeContentProvider;
 import org.eclipse.osee.ats.util.widgets.dialog.AtsObjectNameSorter;
 import org.eclipse.osee.framework.core.enums.Active;
@@ -324,7 +324,7 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
          List<IAtsTeamWorkflow> newTeamWfs = op.getNewTeamWfs();
          refreshTables(op.getTeamWf());
          if (!newTeamWfs.isEmpty()) {
-            AtsUtil.openInAtsWorldEditor("New Team Workflows", newTeamWfs);
+            AtsEditors.openInAtsWorldEditor("New Team Workflows", newTeamWfs);
          }
       }
    }
