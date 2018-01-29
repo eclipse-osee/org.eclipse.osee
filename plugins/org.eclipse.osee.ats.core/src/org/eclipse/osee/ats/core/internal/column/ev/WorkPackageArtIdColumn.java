@@ -18,20 +18,20 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
 /**
  * @author Donald G. Dunne
  */
-public class WorkPackageGuidColumn extends AbstractRelatedWorkPackageColumn {
+public class WorkPackageArtIdColumn extends AbstractRelatedWorkPackageColumn {
 
-   public WorkPackageGuidColumn(IAtsEarnedValueServiceProvider earnedValueServiceProvider, AtsApi atsApi) {
+   public WorkPackageArtIdColumn(IAtsEarnedValueServiceProvider earnedValueServiceProvider, AtsApi atsApi) {
       super(earnedValueServiceProvider, atsApi);
    }
 
    @Override
    protected String getColumnValue(IAtsWorkPackage workPkg) {
-      return workPkg.getGuid();
+      return workPkg.getIdString();
    }
 
    @Override
    protected String getColumnValue(ArtifactToken wpArt) {
-      return wpArt.getGuid();
+      return wpArt.getIdString();
    }
 
 }

@@ -17,28 +17,28 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test case for {@link WorkPackageGuidColumn}
+ * Test case for {@link WorkPackageArtIdColumn}
  *
  * @author Donald G. Dunne
  */
-public class WorkPackageGuidUtilityTest extends AbstractWorkPackageUtilityTest {
+public class WorkPackageArtIdUtilityTest extends AbstractWorkPackageUtilityTest {
 
-   WorkPackageGuidColumn util;
+   WorkPackageArtIdColumn util;
 
    @Override
    @Before
    public void setup() {
       super.setup();
-      util = new WorkPackageGuidColumn(earnedValueServiceProvider, null);
+      util = new WorkPackageArtIdColumn(earnedValueServiceProvider, null);
    }
 
    @Test
    public void testGetColumnText() {
-      when(workPkg.getGuid()).thenReturn("");
+      when(workPkg.getIdString()).thenReturn("");
       Assert.assertEquals("", util.getColumnText(workItem));
 
-      when(workPkg.getGuid()).thenReturn("AHSXGTSD34");
-      Assert.assertEquals("AHSXGTSD34", util.getColumnText(workItem));
+      when(workPkg.getIdString()).thenReturn("334534");
+      Assert.assertEquals("334534", util.getColumnText(workItem));
    }
 
    @Override

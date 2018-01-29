@@ -77,7 +77,7 @@ public class InsertionActivityColumn extends AbstractServicesColumn {
          }
       } else if (atsObject instanceof IAtsWorkPackage) {
          if (idToInsertionActivity != null) {
-            ArtifactToken insertionActivityArt = idToInsertionActivity.get(((IAtsWorkPackage) atsObject).getGuid());
+            ArtifactToken insertionActivityArt = idToInsertionActivity.get(((IAtsWorkPackage) atsObject).getId());
             if (insertionActivityArt != null) {
                result = insertionActivityArt.getName();
             }

@@ -211,7 +211,7 @@ public abstract class AtsApiImpl implements AtsApi {
       Conditions.checkNotNull(artifact, "artifact");
       String toReturn = attrResolver.getSoleAttributeValue(artifact, AtsAttributeTypes.AtsId, null);
       if (toReturn == null) {
-         toReturn = artifact.getGuid();
+         toReturn = artifact.getIdString();
       }
       return toReturn;
    }

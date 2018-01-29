@@ -21,7 +21,7 @@ import org.junit.runners.Suite;
    WorkPackageIdUtilityTest.class,
    WorkPackageNameUtilityTest.class,
    WorkPackageProgramUtilityTest.class,
-   WorkPackageGuidUtilityTest.class,
+   WorkPackageArtIdUtilityTest.class,
    WorkPackageTypeUtilityTest.class})
 /**
  * This test suite contains tests that can be run as stand-alone JUnit tests (JT)

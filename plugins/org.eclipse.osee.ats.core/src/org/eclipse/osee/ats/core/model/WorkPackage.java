@@ -57,11 +57,6 @@ public class WorkPackage extends AtsConfigObject implements IAtsWorkPackage {
    }
 
    @Override
-   public String getGuid() {
-      return artifact.getGuid();
-   }
-
-   @Override
    public String getWorkPackageId() {
       return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.WorkPackageId, "");
    }
@@ -132,7 +127,7 @@ public class WorkPackage extends AtsConfigObject implements IAtsWorkPackage {
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + (getGuid() == null ? 0 : getGuid().hashCode());
+      result = prime * result + (getId() == null ? 0 : getId().hashCode());
       return result;
    }
 
@@ -148,11 +143,11 @@ public class WorkPackage extends AtsConfigObject implements IAtsWorkPackage {
          return false;
       }
       IAtsWorkPackage other = (IAtsWorkPackage) obj;
-      if (getGuid() == null) {
-         if (other.getGuid() != null) {
+      if (getId() == null) {
+         if (other.getId() != null) {
             return false;
          }
-      } else if (!getGuid().equals(other.getGuid())) {
+      } else if (!getId().equals(other.getId())) {
          return false;
       }
       return true;

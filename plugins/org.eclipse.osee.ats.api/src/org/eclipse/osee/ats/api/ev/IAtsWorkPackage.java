@@ -22,8 +22,6 @@ public interface IAtsWorkPackage extends IAtsConfigObject {
 
    public String getActivityName();
 
-   public String getGuid();
-
    public String getWorkPackageId();
 
    public String getWorkPackageProgram();

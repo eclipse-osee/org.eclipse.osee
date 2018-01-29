@@ -41,21 +41,21 @@ public class AtsCoreServiceImplTest {
 
    @Test
    public void testGetAtsId() {
-      ArtifactToken artifact = ArtifactToken.valueOf(0, null, COMMON);
+      ArtifactToken artifact = ArtifactToken.valueOf(345, null, COMMON);
       when(attrResolver.getSoleAttributeValue(artifact, AtsAttributeTypes.AtsId, null)).thenReturn(null);
       String result = AtsApiImpl.getAtsId(attrResolver, artifact);
-      assertEquals(result, artifact.getGuid());
+      assertEquals("345", result);
 
       when(attrResolver.getSoleAttributeValue(atsObject, AtsAttributeTypes.AtsId, null)).thenReturn(null);
       when(atsObject.getStoreObject()).thenReturn(artifact);
       result = AtsApiImpl.getAtsId(attrResolver, atsObject);
-      assertEquals(result, artifact.getGuid());
+      assertEquals("345", result);
 
       when(attrResolver.getSoleAttributeValue(artifact, AtsAttributeTypes.AtsId, null)).thenReturn("ATS23");
       result = AtsApiImpl.getAtsId(attrResolver, artifact);
-      assertEquals(result, "ATS23");
+      assertEquals("ATS23", result);
 
       when(attrResolver.getSoleAttributeValue(artifact, AtsAttributeTypes.AtsId, null)).thenReturn("ATS23");
-      assertEquals(result, "ATS23");
+      assertEquals("ATS23", result);
    }
 }

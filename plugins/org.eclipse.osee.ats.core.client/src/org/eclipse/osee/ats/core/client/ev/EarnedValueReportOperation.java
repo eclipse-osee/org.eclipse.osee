@@ -77,7 +77,7 @@ public class EarnedValueReportOperation extends AbstractOperation {
             result.setValue(Work_Package_Id, workPkg.getWorkPackageId());
             result.setValue(Work_Package_Name, workPkg.getName());
             result.setValue(Work_Package_Percent, String.valueOf(workPkg.getWorkPackagePercent()));
-            result.setValue(Work_Package_Guid, String.valueOf(workPkg.getGuid()));
+            result.setValue(Work_Package_Guid, String.valueOf(workPkg.getId()));
             result.setValue(Related_Action_Id, getActionId(art));
             result.setValue(Related_Action_Name, art.getName());
             result.setValue(Related_Action_Type, awa.getParentTeamWorkflow().getTeamDefinition().getName());

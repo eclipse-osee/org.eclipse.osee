@@ -165,7 +165,7 @@ public class ConvertAtsConfigGuidAttributesOperation {
          for (ArtifactToken workPackageArt : atsApi.getQueryService().getArtifacts(AtsArtifactTypes.WorkPackage,
             atsApi.getAtsBranch())) {
             IAtsWorkPackage workPkg = atsApi.getEarnedValueService().getWorkPackage(workPackageArt);
-            guidToWorkPackage.put(workPkg.getGuid(), workPkg);
+            guidToWorkPackage.put(workPkg.getStoreObject().getGuid(), workPkg);
          }
          workPackagesLoaded = true;
       }

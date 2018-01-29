@@ -10,9 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.internal.column.ev;
 
+import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.AtsApi;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.column.IAtsColumn;
 import org.eclipse.osee.ats.api.column.IWorkPackageColumn;
@@ -31,7 +32,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public abstract class AbstractRelatedWorkPackageColumn implements IAtsColumn, IWorkPackageColumn {
 
    private final IAtsEarnedValueServiceProvider earnedValueServiceProvider;
-   private Map<ArtifactId, ArtifactToken> guidToWorkPackage;
+   private Map<ArtifactId, ArtifactToken> idToWorkPackage = new HashMap<ArtifactId, ArtifactToken>();
    protected final AtsApi atsApi;
 
    public AbstractRelatedWorkPackageColumn(IAtsEarnedValueServiceProvider earnedValueServiceProvider, AtsApi atsApi) {
@@ -44,7 +45,7 @@ public abstract class AbstractRelatedWorkPackageColumn implements IAtsColumn, IW
     */
    @Override
    public void setIdToWorkPackageCache(Map<ArtifactId, ArtifactToken> guidToWorkPackage) {
-      this.guidToWorkPackage = guidToWorkPackage;
+      this.idToWorkPackage = guidToWorkPackage;
    }
 
    @Override
@@ -55,13 +56,16 @@ public abstract class AbstractRelatedWorkPackageColumn implements IAtsColumn, IW
             ArtifactId workPackageId =
                earnedValueServiceProvider.getEarnedValueService().getWorkPackageId((IAtsWorkItem) atsObject);
             if (workPackageId.isValid()) {
-               if (guidToWorkPackage != null) {
-                  ArtifactToken wpArt = guidToWorkPackage.get(workPackageId);
-                  result = getColumnValue(wpArt);
-                  if (Strings.isInValid(result)) {
-                     IAtsWorkPackage workPkg = earnedValueServiceProvider.getEarnedValueService().getWorkPackage(wpArt);
-                     if (workPkg != null) {
-                        result = getColumnValue(workPkg);
+               if (idToWorkPackage != null) {
+                  ArtifactToken wpArt = idToWorkPackage.get(workPackageId);
+                  if (wpArt != null) {
+                     result = getColumnValue(wpArt);
+                     if (Strings.isInValid(result)) {
+                        IAtsWorkPackage workPkg =
+                           earnedValueServiceProvider.getEarnedValueService().getWorkPackage(wpArt);
+                        if (workPkg != null) {
+                           result = getColumnValue(workPkg);
+                        }
                      }
                   }
                }
@@ -70,8 +74,8 @@ public abstract class AbstractRelatedWorkPackageColumn implements IAtsColumn, IW
                      earnedValueServiceProvider.getEarnedValueService().getWorkPackage((IAtsWorkItem) atsObject);
                   if (workPkg != null) {
                      result = getColumnValue(workPkg);
-                     if (guidToWorkPackage != null) {
-                        guidToWorkPackage.put(workPackageId, workPkg.getStoreObject());
+                     if (idToWorkPackage != null) {
+                        idToWorkPackage.put(workPackageId, workPkg.getStoreObject());
                      }
                   }
                }
