@@ -194,10 +194,10 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
          orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON, userArt, "Add ATS Configuration");
       AtsConfiguration config = new AtsConfiguration();
       config.setName(branchName);
-      config.setBranchId(branch.getId());
+      config.setBranchId(branch);
       config.setIsDefault(false);
       ArtifactId configArt = tx.createArtifact(AtsArtifactTypes.Configuration, branchName);
-      config.setId(((ArtifactReadable) configArt).getId());
+      config.setArtifactId(configArt);
       tx.createAttribute(configArt, AtsAttributeTypes.AtsConfiguredBranch, branch.getIdString());
       XResultData rd = new XResultData();
       UpdateAtsConfiguration update = new UpdateAtsConfiguration(atsServer);

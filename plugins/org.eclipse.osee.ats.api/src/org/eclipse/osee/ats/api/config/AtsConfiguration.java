@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.config;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
+
 /**
  * @author Donald G. Dunne
  */
@@ -17,8 +20,8 @@ public class AtsConfiguration {
 
    private boolean isDefault;
    private String name;
-   private long id;
-   private long branchId;
+   private ArtifactId id;
+   private BranchId branchId;
 
    public boolean isDefault() {
       return isDefault;
@@ -36,19 +39,19 @@ public class AtsConfiguration {
       this.name = name;
    }
 
-   public long getId() {
+   public ArtifactId getId() {
       return id;
    }
 
-   public void setId(long id) {
-      this.id= id;
+   public void setArtifactId(ArtifactId id) {
+      this.id = id;
    }
 
-   public long getBranchId() {
+   public BranchId getBranchId() {
       return branchId;
    }
 
-   public void setBranchId(long branchId) {
+   public void setBranchId(BranchId branchId) {
       this.branchId = branchId;
    }
 

@@ -42,6 +42,7 @@ import org.eclipse.osee.ats.api.workdef.WorkDefData;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -109,8 +110,8 @@ public class AtsConfigurationsService implements IAtsConfigurationsService {
          AtsConfiguration config = new AtsConfiguration();
          configs.getConfigs().add(config);
          config.setName(art.getName());
-         config.setId(art.getId());
-         config.setBranchId(Long.valueOf(art.getSoleAttributeValue(AtsConfiguredBranch, "0")));
+         config.setArtifactId(art);
+         config.setBranchId(BranchId.valueOf(art.getSoleAttributeValue(AtsConfiguredBranch, "0")));
          config.setIsDefault(art.getSoleAttributeValue(Default, false));
       }
       UpdateAtsConfiguration update = new UpdateAtsConfiguration(atsServer);
