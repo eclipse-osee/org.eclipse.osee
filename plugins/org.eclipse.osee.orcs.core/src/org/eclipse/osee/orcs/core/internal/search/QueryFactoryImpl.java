@@ -22,6 +22,7 @@ import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
+import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaBranch;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.ApplicabilityQuery;
@@ -40,22 +41,22 @@ public class QueryFactoryImpl implements QueryFactory {
    private final CriteriaFactory criteriaFctry;
    private final CallableQueryFactory queryFctry;
    private final BranchCriteriaFactory branchCriteriaFactory;
-   private final BranchCallableQueryFactory branchQueryFactory;
    private final TransactionCallableQueryFactory txQueryFactory;
    private final TransactionCriteriaFactory txCriteriaFactory;
    private final TupleQuery tupleQuery;
    private final ApplicabilityDsQuery applicabilityDsQuery;
+   private final QueryEngine queryEngine;
 
-   public QueryFactoryImpl(OrcsSession context, CriteriaFactory criteriaFctry, CallableQueryFactory queryFctry, BranchCriteriaFactory branchCriteriaFactory, BranchCallableQueryFactory branchQueryFactory, TransactionCallableQueryFactory txQueryFactory, TransactionCriteriaFactory txCriteriaFactory, TupleQuery tupleQuery, ApplicabilityDsQuery applicabilityDsQuery) {
+   public QueryFactoryImpl(OrcsSession context, CriteriaFactory criteriaFctry, CallableQueryFactory queryFctry, BranchCriteriaFactory branchCriteriaFactory, TransactionCallableQueryFactory txQueryFactory, TransactionCriteriaFactory txCriteriaFactory, TupleQuery tupleQuery, ApplicabilityDsQuery applicabilityDsQuery, QueryEngine queryEngine) {
       this.context = context;
       this.criteriaFctry = criteriaFctry;
       this.queryFctry = queryFctry;
       this.branchCriteriaFactory = branchCriteriaFactory;
-      this.branchQueryFactory = branchQueryFactory;
       this.txQueryFactory = txQueryFactory;
       this.txCriteriaFactory = txCriteriaFactory;
       this.tupleQuery = tupleQuery;
       this.applicabilityDsQuery = applicabilityDsQuery;
+      this.queryEngine = queryEngine;
    }
 
    private QueryBuilder createBuilder(BranchId branchId) {
@@ -74,8 +75,7 @@ public class QueryFactoryImpl implements QueryFactory {
       Options options = OptionsUtil.createOptions();
       CriteriaSet criteriaSet = new CriteriaSet();
       QueryData queryData = new QueryData(criteriaSet, options);
-      BranchQueryImpl query = new BranchQueryImpl(branchQueryFactory, branchCriteriaFactory, context, queryData);
-      return query;
+      return new BranchQueryImpl(queryEngine, branchCriteriaFactory, queryData);
    }
 
    @Override

@@ -10,12 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.search;
 
-import org.eclipse.osee.executor.admin.CancellableCallable;
+import java.util.LinkedList;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.framework.jdk.core.type.ResultSets;
+import org.eclipse.osee.orcs.core.ds.BranchData;
+import org.eclipse.osee.orcs.core.ds.LoadDataHandlerAdapter;
+import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
+import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.search.BranchQuery;
 
@@ -23,61 +28,55 @@ import org.eclipse.osee.orcs.search.BranchQuery;
  * @author Roberto E. Escobar
  */
 public class BranchQueryImpl extends BranchQueryBuilderImpl<BranchQuery> implements BranchQuery {
+   private final QueryEngine queryEngine;
 
-   private final BranchCallableQueryFactory queryFactory;
-   private final OrcsSession session;
-
-   public BranchQueryImpl(BranchCallableQueryFactory queryFactory, BranchCriteriaFactory criteriaFactory, OrcsSession session, QueryData queryData) {
+   public BranchQueryImpl(QueryEngine queryEngine, BranchCriteriaFactory criteriaFactory, QueryData queryData) {
       super(criteriaFactory, queryData);
-      this.queryFactory = queryFactory;
-      this.session = session;
+      this.queryEngine = queryEngine;
    }
 
    @Override
    public ResultSet<BranchReadable> getResults() {
-      try {
-         return createSearch().call();
-      } catch (Exception ex) {
-         throw OseeCoreException.wrap(ex);
-      }
+      return query(new BranchLoadHandler<BranchReadable>());
    }
 
    @Override
    public ResultSet<IOseeBranch> getResultsAsId() {
-      try {
-         return createSearchResultsAsIds().call();
-      } catch (Exception ex) {
-         throw OseeCoreException.wrap(ex);
+      return query(new BranchLoadHandler<IOseeBranch>());
+   }
+
+   private <T extends IOseeBranch> ResultSet<T> query(BranchLoadHandler<T> handler) {
+      QueryData queryData = build();
+      OptionsUtil.setLoadLevel(queryData.getOptions(), LoadLevel.ALL);
+      queryEngine.runBranchQuery(queryData, handler);
+      return ResultSets.newResultSet(handler.getBranches());
+   }
+
+   public static final class BranchLoadHandler<T extends IOseeBranch> extends LoadDataHandlerAdapter {
+      private final List<T> results = new LinkedList<>();
+
+      @Override
+      public void onLoadStart() {
+         results.clear();
+      }
+
+      @Override
+      public void onData(BranchData data) {
+         results.add((T) data);
+      }
+
+      public List<T> getBranches() {
+         return results;
       }
    }
 
    @Override
    public int getCount() {
-      try {
-         return createCount().call();
-      } catch (Exception ex) {
-         throw OseeCoreException.wrap(ex);
-      }
+      return queryEngine.getBranchCount(buildAndCopy());
    }
 
    @Override
    public boolean exists() {
       return getCount() > 0;
    }
-
-   @Override
-   public CancellableCallable<Integer> createCount() {
-      return queryFactory.createBranchCount(session, buildAndCopy());
-   }
-
-   @Override
-   public CancellableCallable<ResultSet<BranchReadable>> createSearch() {
-      return queryFactory.createBranchSearch(session, buildAndCopy());
-   }
-
-   @Override
-   public CancellableCallable<ResultSet<IOseeBranch>> createSearchResultsAsIds() {
-      return queryFactory.createBranchAsIdSearch(session, buildAndCopy());
-   }
-
 }

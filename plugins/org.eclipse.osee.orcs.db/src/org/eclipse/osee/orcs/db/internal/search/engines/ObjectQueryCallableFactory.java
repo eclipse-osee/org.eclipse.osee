@@ -44,6 +44,11 @@ public class ObjectQueryCallableFactory implements QueryCallableFactory {
    }
 
    @Override
+   public QuerySqlContextFactory getSqlContextFactory() {
+      return queryContextFactory;
+   }
+
+   @Override
    public CancellableCallable<Integer> createCount(OrcsSession session, QueryData queryData) {
       return new AbstractObjectSearchCallable(logger, session, queryData) {
 

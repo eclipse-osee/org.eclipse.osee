@@ -30,7 +30,6 @@ public interface TransactionQuery extends TxQueryBuilder<TransactionQuery>, Quer
    @Override
    int getCount();
 
-   @Override
    CancellableCallable<Integer> createCount();
 
    CancellableCallable<ResultSet<TransactionReadable>> createSearch();

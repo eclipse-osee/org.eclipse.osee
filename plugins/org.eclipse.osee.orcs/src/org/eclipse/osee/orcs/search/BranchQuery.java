@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.search;
 
-import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.data.BranchReadable;
@@ -27,12 +26,4 @@ public interface BranchQuery extends BranchQueryBuilder<BranchQuery>, Query {
 
    @Override
    int getCount();
-
-   @Override
-   CancellableCallable<Integer> createCount();
-
-   CancellableCallable<ResultSet<BranchReadable>> createSearch();
-
-   CancellableCallable<ResultSet<IOseeBranch>> createSearchResultsAsIds();
-
 }

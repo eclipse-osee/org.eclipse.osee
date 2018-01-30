@@ -31,7 +31,6 @@ public interface BranchReadable extends IOseeBranch {
 
    boolean hasParentBranch();
 
-   // These get Id method might change
    ArtifactId getAssociatedArtifact();
 
    TransactionId getBaseTransaction();
@@ -41,5 +40,4 @@ public interface BranchReadable extends IOseeBranch {
    BranchId getParentBranch();
 
    boolean isInheritAccessControl();
-
 }

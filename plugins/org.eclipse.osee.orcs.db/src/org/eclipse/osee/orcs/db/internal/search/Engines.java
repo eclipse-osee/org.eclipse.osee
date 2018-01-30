@@ -21,7 +21,6 @@ import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.BranchData;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandlerDecorator;
@@ -76,22 +75,6 @@ public final class Engines {
       AttributeDataMatcher matcher = new AttributeDataMatcher(logger, taggingEngine, attrTypes);
       QueryFilterFactoryImpl filterFactory = new QueryFilterFactoryImpl(logger, executorAdmin, matcher);
       return new ObjectQueryCallableFactory(logger, objectLoader, sqlContextFactory, filterFactory);
-   }
-
-   public static QueryCallableFactory newBranchQueryEngine(Log logger, SqlJoinFactory joinFactory, IdentityLocator idService, JdbcClient jdbcClient, DataLoaderFactory objectLoader) {
-      QuerySqlContextFactory sqlContextFactory = newBranchSqlContextFactory(logger, joinFactory, idService, jdbcClient);
-      return new AbstractSimpleQueryCallableFactory(logger, objectLoader, sqlContextFactory) {
-         @Override
-         protected LoadDataHandler createCountingHandler(final AtomicInteger counter, LoadDataHandler handler) {
-            return new LoadDataHandlerDecorator(handler) {
-               @Override
-               public void onData(BranchData data) {
-                  counter.getAndIncrement();
-                  super.onData(data);
-               }
-            };
-         }
-      };
    }
 
    public static QueryCallableFactory newTxQueryEngine(Log logger, SqlJoinFactory joinFactory, IdentityLocator idService, JdbcClient jdbcClient, DataLoaderFactory objectLoader) {

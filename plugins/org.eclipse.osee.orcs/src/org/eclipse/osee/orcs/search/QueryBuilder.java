@@ -49,7 +49,6 @@ public interface QueryBuilder extends ArtifactQueryBuilder<QueryBuilder>, Query 
    /**
     * Schedule a count search results
     */
-   @Override
    CancellableCallable<Integer> createCount();
 
    /**

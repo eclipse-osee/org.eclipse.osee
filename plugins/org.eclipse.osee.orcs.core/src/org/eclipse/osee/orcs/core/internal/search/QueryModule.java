@@ -34,27 +34,26 @@ public class QueryModule implements HasStatistics<QueryStatistics> {
    private final CriteriaFactory criteriaFctry;
    private final CallableQueryFactory artQueryFactory;
 
-   private final BranchCallableQueryFactory branchQueryFactory;
    private final BranchCriteriaFactory branchCriteriaFactory;
 
    private final TransactionCallableQueryFactory txQueryFactory;
    private final TransactionCriteriaFactory txCriteriaFactory;
    private final TupleQuery tupleQuery;
    private final ApplicabilityDsQuery applicabilityDsQuery;
+   private final QueryEngine queryEngine;
 
    public static interface QueryModuleProvider {
       QueryFactory getQueryFactory(OrcsSession session);
    }
 
    public QueryModule(Log logger, QueryEngine queryEngine, GraphBuilderFactory builderFactory, GraphProvider provider, ArtifactTypes artifactTypeCache, AttributeTypes attributeTypeCache, ExternalArtifactManager proxyManager) {
+      this.queryEngine = queryEngine;
       QueryStatsCollectorImpl queryStatsCollector = new QueryStatsCollectorImpl(statistics);
       criteriaFctry = new CriteriaFactory(artifactTypeCache, attributeTypeCache);
       artQueryFactory =
          new CallableQueryFactory(logger, queryEngine, queryStatsCollector, builderFactory, provider, proxyManager);
 
       branchCriteriaFactory = new BranchCriteriaFactory();
-      branchQueryFactory = new BranchCallableQueryFactory(logger, queryEngine, queryStatsCollector);
-
       txQueryFactory = new TransactionCallableQueryFactory(logger, queryEngine, queryStatsCollector);
       txCriteriaFactory = new TransactionCriteriaFactory();
       tupleQuery = queryEngine.createTupleQuery();
@@ -62,8 +61,8 @@ public class QueryModule implements HasStatistics<QueryStatistics> {
    }
 
    public QueryFactory createQueryFactory(OrcsSession session) {
-      return new QueryFactoryImpl(session, criteriaFctry, artQueryFactory, branchCriteriaFactory, branchQueryFactory,
-         txQueryFactory, txCriteriaFactory, tupleQuery, applicabilityDsQuery);
+      return new QueryFactoryImpl(session, criteriaFctry, artQueryFactory, branchCriteriaFactory, txQueryFactory,
+         txCriteriaFactory, tupleQuery, applicabilityDsQuery, queryEngine);
    }
 
    @Override

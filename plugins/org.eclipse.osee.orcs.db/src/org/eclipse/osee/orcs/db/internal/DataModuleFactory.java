@@ -26,6 +26,7 @@ import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.branch.BranchModule;
 import org.eclipse.osee.orcs.db.internal.branch.KeyValueModule;
 import org.eclipse.osee.orcs.db.internal.loader.LoaderModule;
+import org.eclipse.osee.orcs.db.internal.loader.SqlObjectLoader;
 import org.eclipse.osee.orcs.db.internal.loader.processor.DynamicLoadProcessor;
 import org.eclipse.osee.orcs.db.internal.proxy.AttributeDataProxyFactory;
 import org.eclipse.osee.orcs.db.internal.search.QueryModule;
@@ -66,9 +67,10 @@ public class DataModuleFactory {
       final OrcsObjectFactory objectFactory = loaderModule.createOrcsObjectFactory(proxyFactory);
       final DataFactory dataFactory = loaderModule.createDataFactory(objectFactory, artifactTypes);
       final DynamicLoadProcessor loadProcessor = loaderModule.createDynamicLoadProcessor(orcsTypes, proxyFactory);
-      final DataLoaderFactory dataLoaderFactory =
-         loaderModule.createDataLoaderFactory(objectFactory, loadProcessor, attributeTypes);
-      final QueryEngine queryEngine = queryModule.createQueryEngine(dataLoaderFactory, attributeTypes);
+      SqlObjectLoader sqlObjectLoader =
+         loaderModule.createSqlObjectLoader(objectFactory, loadProcessor, attributeTypes);
+      final DataLoaderFactory dataLoaderFactory = loaderModule.createDataLoaderFactory(sqlObjectLoader);
+      final QueryEngine queryEngine = queryModule.createQueryEngine(dataLoaderFactory, attributeTypes, sqlObjectLoader);
       final BranchDataStore branchDataStore = branchModule.createBranchDataStore(dataLoaderFactory);
       final KeyValueStore keyValueStore = keyValueModule.createKeyValueStore();
       final TxDataStore txDataStore = txModule.createTransactionStore(dataLoaderFactory, indexer, attributeTypes);

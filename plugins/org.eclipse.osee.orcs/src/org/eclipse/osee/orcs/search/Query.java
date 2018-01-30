@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.search;
 
-import org.eclipse.osee.executor.admin.CancellableCallable;
-
 /**
  * @author Ryan D. Brooks
  * @author Roberto E. Escobar
@@ -19,8 +17,6 @@ import org.eclipse.osee.executor.admin.CancellableCallable;
 public interface Query {
 
    int getCount();
-
-   CancellableCallable<Integer> createCount();
 
    boolean exists();
 }

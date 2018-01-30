@@ -24,4 +24,5 @@ public interface QueryCallableFactory {
 
    CancellableCallable<Integer> createQuery(OrcsSession session, QueryData queryData, LoadDataHandler handler);
 
+   QuerySqlContextFactory getSqlContextFactory();
 }

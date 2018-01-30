@@ -33,10 +33,14 @@ public abstract class AbstractSimpleQueryCallableFactory implements QueryCallabl
    private final QuerySqlContextFactory queryContextFactory;
 
    public AbstractSimpleQueryCallableFactory(Log logger, DataLoaderFactory objectLoader, QuerySqlContextFactory queryEngine) {
-      super();
       this.logger = logger;
       this.objectLoader = objectLoader;
       this.queryContextFactory = queryEngine;
+   }
+
+   @Override
+   public QuerySqlContextFactory getSqlContextFactory() {
+      return queryContextFactory;
    }
 
    @Override
@@ -60,12 +64,11 @@ public abstract class AbstractSimpleQueryCallableFactory implements QueryCallabl
 
          @Override
          protected Integer innerCall() throws Exception {
-            QuerySqlContext queryContext =
-               queryContextFactory.createQueryContext(getSession(), getQueryData(), QueryType.SELECT);
+            QuerySqlContext queryContext = queryContextFactory.createQueryContext(session, queryData, QueryType.SELECT);
             checkForCancelled();
 
             DataLoader loader = objectLoader.newDataLoader(queryContext);
-            loader.setOptions(getQueryData().getOptions());
+            loader.setOptions(queryData.getOptions());
 
             final AtomicInteger counter = new AtomicInteger();
             LoadDataHandler countingHandler = createCountingHandler(counter, handler);

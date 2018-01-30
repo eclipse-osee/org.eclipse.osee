@@ -19,32 +19,23 @@ import java.util.List;
  * @author Roberto E. Escobar
  */
 public class ResultSetList<T> implements ResultSet<T> {
-
    private final List<T> data;
 
-   protected ResultSetList() {
-      super();
-      this.data = Collections.emptyList();
-   }
-
    public ResultSetList(List<T> data) {
-      super();
       this.data = data;
    }
 
    @Override
    public T getOneOrNull() {
-      List<T> result = getList();
-      return result.isEmpty() ? null : result.iterator().next();
+      return data.isEmpty() ? null : data.iterator().next();
    }
 
    @Override
    public T getAtMostOneOrNull() {
-      List<T> result = getList();
-      if (result.size() > 1) {
-         throw createManyExistException(result.size());
+      if (data.size() > 1) {
+         throw createManyExistException(data.size());
       }
-      return result.isEmpty() ? null : result.iterator().next();
+      return data.isEmpty() ? null : iterator().next();
    }
 
    @Override
@@ -63,7 +54,7 @@ public class ResultSetList<T> implements ResultSet<T> {
 
    @Override
    public Iterator<T> iterator() {
-      return getList().iterator();
+      return data.iterator();
    }
 
    protected OseeCoreException createManyExistException(int count) {
@@ -86,8 +77,7 @@ public class ResultSetList<T> implements ResultSet<T> {
 
    @Override
    public ResultSet<T> sort(Comparator<T> comparator) {
-      Collections.sort(getList(), comparator);
+      Collections.sort(data, comparator);
       return this;
    }
-
 }

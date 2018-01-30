@@ -42,9 +42,6 @@ public class QueryContextLoadExecutor extends AbstractLoadExecutor {
          case TX:
             getLoader().loadTransactions(cancellation, handler, queryContext, fetchSize);
             break;
-         case BRANCH:
-            getLoader().loadBranches(cancellation, handler, queryContext, fetchSize);
-            break;
          case DYNAMIC_OBJECT:
             getLoader().loadDynamicObjects(cancellation, handler, queryContext, fetchSize);
             break;
