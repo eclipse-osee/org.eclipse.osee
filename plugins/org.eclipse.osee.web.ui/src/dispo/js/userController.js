@@ -14,7 +14,7 @@ app.controller('userController', [
     'uiGridTreeViewConstants',
     'ColumnFactory',
     'CoverageFactory',
-    function($scope, $modal, $rootScope, Program, Set, Item, Annotation, SetSearch, SourceFile, Config, uiGridConstants, uiGridTreeViewConstants, ColumnFactory, CoverageFactory) {
+    function($scope, $modal, $rootScope, Program, Set, MassDisposition, Item, Annotation, SetSearch, SourceFile, Config, uiGridConstants, uiGridTreeViewConstants, ColumnFactory, CoverageFactory) {
         $scope.editItems = false;
         $scope.selectedItems = [];
         $scope.programSelection = null;
