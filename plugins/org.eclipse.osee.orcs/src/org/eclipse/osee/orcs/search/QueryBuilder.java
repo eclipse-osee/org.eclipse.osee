@@ -47,14 +47,6 @@ public interface QueryBuilder extends ArtifactQueryBuilder<QueryBuilder>, Query 
    ResultSet<? extends ArtifactId> getResultsIds();
 
    /**
-    * Count search results
-    */
-   @Override
-   int getCount();
-
-   boolean exists();
-
-   /**
     * Schedule a count search results
     */
    @Override

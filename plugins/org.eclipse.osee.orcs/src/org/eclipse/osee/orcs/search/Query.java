@@ -22,4 +22,5 @@ public interface Query {
 
    CancellableCallable<Integer> createCount();
 
+   boolean exists();
 }

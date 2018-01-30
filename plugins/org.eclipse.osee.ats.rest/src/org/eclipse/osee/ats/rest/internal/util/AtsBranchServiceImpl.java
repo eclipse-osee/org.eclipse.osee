@@ -108,7 +108,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
       }
       BranchQuery query = orcsApi.getQueryFactory().branchQuery();
       query = query.andIsMergeFor(workingBranch, destinationBranch);
-      return query.getCount() > 0;
+      return query.exists();
    }
 
    private BranchReadable getBranch(BranchId branch) {
@@ -118,7 +118,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    @Override
    public boolean branchExists(BranchId branch) {
       BranchQuery query = orcsApi.getQueryFactory().branchQuery();
-      return query.andId(branch).getCount() > 0;
+      return query.andId(branch).exists();
    }
 
    @Override

@@ -95,7 +95,7 @@ public class ClientStorage {
    }
 
    public boolean exists(Long uuid) {
-      return newQuery().andIsOfType(OAUTH_CLIENT).andUuid(uuid).getCount() > 0;
+      return newQuery().andIsOfType(OAUTH_CLIENT).andUuid(uuid).exists();
    }
 
    public ArtifactId insert(OseePrincipal principal, OAuthClient data) {

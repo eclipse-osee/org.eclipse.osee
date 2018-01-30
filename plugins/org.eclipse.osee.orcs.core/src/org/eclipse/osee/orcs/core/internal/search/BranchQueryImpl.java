@@ -61,6 +61,11 @@ public class BranchQueryImpl extends BranchQueryBuilderImpl<BranchQuery> impleme
    }
 
    @Override
+   public boolean exists() {
+      return getCount() > 0;
+   }
+
+   @Override
    public CancellableCallable<Integer> createCount() {
       return queryFactory.createBranchCount(session, buildAndCopy());
    }

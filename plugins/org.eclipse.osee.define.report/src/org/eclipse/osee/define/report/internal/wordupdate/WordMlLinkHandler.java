@@ -22,8 +22,8 @@ import org.eclipse.osee.define.report.api.OseeLinkBuilder;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.model.type.LinkType;
 import org.eclipse.osee.framework.core.enums.PresentationType;
+import org.eclipse.osee.framework.core.model.type.LinkType;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -217,7 +217,7 @@ public class WordMlLinkHandler {
       List<String> guidsFromLinks = new ArrayList<>(matchMap.keySet());
 
       artifactsFromSearch = findArtifacts(queryFactory, branch, guidsFromLinks, txId);
-      boolean isMergeBranch = queryFactory.branchQuery().andId(branch).andIsOfType(BranchType.MERGE).getCount() > 0;
+      boolean isMergeBranch = queryFactory.branchQuery().andId(branch).andIsOfType(BranchType.MERGE).exists();
       if (guidsFromLinks.size() != artifactsFromSearch.size() && isMergeBranch) {
          BranchReadable branchReadable = queryFactory.branchQuery().andId(branch).getResults().getExactlyOne();
          List<String> unknownGuids = getGuidsNotFound(guidsFromLinks, artifactsFromSearch);

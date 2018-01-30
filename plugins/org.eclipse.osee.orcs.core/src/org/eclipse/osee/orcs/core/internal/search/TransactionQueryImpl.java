@@ -73,6 +73,11 @@ public class TransactionQueryImpl extends TxQueryBuilderImpl<TransactionQuery> i
    }
 
    @Override
+   public boolean exists() {
+      return getCount() > 0;
+   }
+
+   @Override
    public CancellableCallable<Integer> createCount() {
       return queryFactory.createTransactionCount(session, buildAndCopy());
    }

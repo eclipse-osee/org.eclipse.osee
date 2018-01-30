@@ -58,20 +58,17 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
 
    @Override
    public boolean userNameExists(String username) {
-      int count = newQuery().andIsOfType(CoreArtifactTypes.User).and(CoreAttributeTypes.UserId, username).getCount();
-      return count > 0;
+      return newQuery().andIsOfType(CoreArtifactTypes.User).and(CoreAttributeTypes.UserId, username).exists();
    }
 
    @Override
    public boolean emailExists(String email) {
-      int count = newQuery().andIsOfType(CoreArtifactTypes.User).and(CoreAttributeTypes.Email, email).getCount();
-      return count > 0;
+      return newQuery().andIsOfType(CoreArtifactTypes.User).and(CoreAttributeTypes.Email, email).exists();
    }
 
    @Override
    public boolean displayNameExists(String displayName) {
-      int count = newQuery().andIsOfType(CoreArtifactTypes.User).andNameEquals(displayName).getCount();
-      return count > 0;
+      return newQuery().andIsOfType(CoreArtifactTypes.User).andNameEquals(displayName).exists();
    }
 
    @Override

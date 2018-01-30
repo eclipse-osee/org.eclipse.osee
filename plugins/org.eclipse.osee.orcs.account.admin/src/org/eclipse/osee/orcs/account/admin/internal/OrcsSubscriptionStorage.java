@@ -98,7 +98,6 @@ public class OrcsSubscriptionStorage extends AbstractOrcsStorage implements Subs
       return getFactory().newAccountSubscriptionGroupResultSet(results);
    }
 
-   @SuppressWarnings("unchecked")
    @Override
    public SubscriptionGroupId createSubscriptionGroup(String name) {
       String comment = String.format("Create subscription group [%s]", name);
@@ -136,8 +135,7 @@ public class OrcsSubscriptionStorage extends AbstractOrcsStorage implements Subs
 
    @Override
    public boolean subscriptionGroupNameExists(String groupName) {
-      int count = newQuery().andIsOfType(CoreArtifactTypes.SubscriptionGroup).andNameEquals(groupName).getCount();
-      return count > 0;
+      return newQuery().andIsOfType(CoreArtifactTypes.SubscriptionGroup).andNameEquals(groupName).exists();
    }
 
    @Override
