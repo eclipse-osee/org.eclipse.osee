@@ -16,20 +16,15 @@ import static org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactor
 import static org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactoryUtil.createTxSqlHandlerFactory;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
-import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
-import org.eclipse.osee.orcs.core.ds.LoadDataHandlerDecorator;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
-import org.eclipse.osee.orcs.core.ds.TxOrcsData;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext.ObjectQueryType;
-import org.eclipse.osee.orcs.db.internal.search.engines.AbstractSimpleQueryCallableFactory;
 import org.eclipse.osee.orcs.db.internal.search.engines.ArtifactQuerySqlContextFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.search.engines.ObjectQueryCallableFactory;
 import org.eclipse.osee.orcs.db.internal.search.engines.ObjectQuerySqlContextFactoryImpl;
@@ -75,22 +70,6 @@ public final class Engines {
       AttributeDataMatcher matcher = new AttributeDataMatcher(logger, taggingEngine, attrTypes);
       QueryFilterFactoryImpl filterFactory = new QueryFilterFactoryImpl(logger, executorAdmin, matcher);
       return new ObjectQueryCallableFactory(logger, objectLoader, sqlContextFactory, filterFactory);
-   }
-
-   public static QueryCallableFactory newTxQueryEngine(Log logger, SqlJoinFactory joinFactory, IdentityLocator idService, JdbcClient jdbcClient, DataLoaderFactory objectLoader) {
-      QuerySqlContextFactory sqlContextFactory = newTxSqlContextFactory(logger, joinFactory, idService, jdbcClient);
-      return new AbstractSimpleQueryCallableFactory(logger, objectLoader, sqlContextFactory) {
-         @Override
-         protected LoadDataHandler createCountingHandler(final AtomicInteger counter, LoadDataHandler handler) {
-            return new LoadDataHandlerDecorator(handler) {
-               @Override
-               public void onData(TxOrcsData data) {
-                  counter.getAndIncrement();
-                  super.onData(data);
-               }
-            };
-         }
-      };
    }
 
    public static QueryCallableFactory newQueryEngine(Log logger, SqlJoinFactory joinFactory, //
@@ -140,5 +119,4 @@ public final class Engines {
       IndexingTaskConsumer indexConsumer = new IndexingTaskConsumerImpl(executorAdmin, callableFactory);
       return new QueryEngineIndexerImpl(logger, jdbcClient, sqlJoinFactory, indexConsumer);
    }
-
 }

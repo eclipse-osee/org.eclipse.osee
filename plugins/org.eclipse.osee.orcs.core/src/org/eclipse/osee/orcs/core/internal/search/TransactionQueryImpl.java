@@ -12,13 +12,14 @@ package org.eclipse.osee.orcs.core.internal.search;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.executor.admin.CancellableCallable;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
-import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
+import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.search.TransactionQuery;
 
@@ -26,70 +27,47 @@ import org.eclipse.osee.orcs.search.TransactionQuery;
  * @author Roberto E. Escobar
  */
 public class TransactionQueryImpl extends TxQueryBuilderImpl<TransactionQuery> implements TransactionQuery {
+   private final QueryEngine queryEngine;
 
-   private final TransactionCallableQueryFactory queryFactory;
-   private final OrcsSession session;
-
-   public TransactionQueryImpl(TransactionCallableQueryFactory queryFactory, TransactionCriteriaFactory criteriaFactory, OrcsSession session, QueryData queryData) {
+   public TransactionQueryImpl(QueryEngine queryEngine, TransactionCriteriaFactory criteriaFactory, QueryData queryData) {
       super(criteriaFactory, queryData);
-      this.queryFactory = queryFactory;
-      this.session = session;
+      this.queryEngine = queryEngine;
    }
 
    @Override
    public ResultSet<TransactionReadable> getResults() {
-      try {
-         return createSearch().call();
-      } catch (Exception ex) {
-         throw OseeCoreException.wrap(ex);
-      }
+      List<TransactionReadable> txs = new ArrayList<>();
+      query(txs);
+      return ResultSets.newResultSet(txs);
    }
 
    @Override
    public ResultSet<TransactionToken> getTokens() {
-      List<TransactionToken> tokens = new ArrayList<>();
-      for (TransactionReadable tx : getResults()) {
-         tokens.add(tx);
-      }
-      return ResultSets.newResultSet(tokens);
+      List<TransactionToken> txs = new ArrayList<>();
+      query(txs);
+      return ResultSets.newResultSet(txs);
    }
 
    @Override
-   public ResultSet<Long> getResultsAsIds() {
-      try {
-         return createSearchResultsAsIds().call();
-      } catch (Exception ex) {
-         throw OseeCoreException.wrap(ex);
-      }
+   public ResultSet<TransactionId> getResultsAsIds() {
+      List<TransactionId> txs = new ArrayList<>();
+      query(txs);
+      return ResultSets.newResultSet(txs);
+   }
+
+   private void query(List<? super TransactionReadable> txs) {
+      QueryData queryData = build();
+      OptionsUtil.setLoadLevel(queryData.getOptions(), LoadLevel.ALL);
+      queryEngine.runTxQuery(queryData, txs);
    }
 
    @Override
    public int getCount() {
-      try {
-         return createCount().call();
-      } catch (Exception ex) {
-         throw OseeCoreException.wrap(ex);
-      }
+      return queryEngine.getTxCount(build());
    }
 
    @Override
    public boolean exists() {
       return getCount() > 0;
    }
-
-   @Override
-   public CancellableCallable<Integer> createCount() {
-      return queryFactory.createTransactionCount(session, buildAndCopy());
-   }
-
-   @Override
-   public CancellableCallable<ResultSet<TransactionReadable>> createSearch() {
-      return queryFactory.createTransactionSearch(session, buildAndCopy());
-   }
-
-   @Override
-   public CancellableCallable<ResultSet<Long>> createSearchResultsAsIds() {
-      return queryFactory.createTransactionAsIdSearch(session, buildAndCopy());
-   }
-
 }

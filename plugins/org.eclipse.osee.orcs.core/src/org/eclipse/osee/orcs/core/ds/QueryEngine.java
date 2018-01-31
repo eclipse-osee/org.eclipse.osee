@@ -15,6 +15,7 @@ import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.data.BranchReadable;
+import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.search.TupleQuery;
 
 /**
@@ -34,9 +35,9 @@ public interface QueryEngine {
 
    ApplicabilityDsQuery createApplicabilityDsQuery();
 
-   CancellableCallable<Integer> createTxCount(OrcsSession session, QueryData queryData);
+   int getTxCount(QueryData queryData);
 
-   CancellableCallable<Integer> createTxQuery(OrcsSession session, QueryData queryData, LoadDataHandler handler);
+   void runTxQuery(QueryData queryData, List<? super TransactionReadable> txs);
 
    CancellableCallable<Integer> createQuery(OrcsSession session, QueryData queryData, LoadDataHandler handler);
 

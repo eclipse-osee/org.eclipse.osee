@@ -41,18 +41,16 @@ public class QueryFactoryImpl implements QueryFactory {
    private final CriteriaFactory criteriaFctry;
    private final CallableQueryFactory queryFctry;
    private final BranchCriteriaFactory branchCriteriaFactory;
-   private final TransactionCallableQueryFactory txQueryFactory;
    private final TransactionCriteriaFactory txCriteriaFactory;
    private final TupleQuery tupleQuery;
    private final ApplicabilityDsQuery applicabilityDsQuery;
    private final QueryEngine queryEngine;
 
-   public QueryFactoryImpl(OrcsSession context, CriteriaFactory criteriaFctry, CallableQueryFactory queryFctry, BranchCriteriaFactory branchCriteriaFactory, TransactionCallableQueryFactory txQueryFactory, TransactionCriteriaFactory txCriteriaFactory, TupleQuery tupleQuery, ApplicabilityDsQuery applicabilityDsQuery, QueryEngine queryEngine) {
+   public QueryFactoryImpl(OrcsSession context, CriteriaFactory criteriaFctry, CallableQueryFactory queryFctry, BranchCriteriaFactory branchCriteriaFactory, TransactionCriteriaFactory txCriteriaFactory, TupleQuery tupleQuery, ApplicabilityDsQuery applicabilityDsQuery, QueryEngine queryEngine) {
       this.context = context;
       this.criteriaFctry = criteriaFctry;
       this.queryFctry = queryFctry;
       this.branchCriteriaFactory = branchCriteriaFactory;
-      this.txQueryFactory = txQueryFactory;
       this.txCriteriaFactory = txCriteriaFactory;
       this.tupleQuery = tupleQuery;
       this.applicabilityDsQuery = applicabilityDsQuery;
@@ -106,7 +104,7 @@ public class QueryFactoryImpl implements QueryFactory {
       Options options = OptionsUtil.createOptions();
       CriteriaSet criteriaSet = new CriteriaSet();
       QueryData queryData = new QueryData(criteriaSet, options);
-      TransactionQueryImpl query = new TransactionQueryImpl(txQueryFactory, txCriteriaFactory, context, queryData);
+      TransactionQueryImpl query = new TransactionQueryImpl(queryEngine, txCriteriaFactory, queryData);
       return query;
    }
 

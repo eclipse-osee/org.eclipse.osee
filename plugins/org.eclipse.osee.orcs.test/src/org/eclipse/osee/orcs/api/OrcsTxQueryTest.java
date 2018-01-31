@@ -72,6 +72,7 @@ public class OrcsTxQueryTest {
    private final int NumberCommonTransactions = 132;
 
    private final TransactionId CommonBranchHeadTransaction = TransactionId.valueOf(178);
+   private final TransactionId CommonBranchHeadPriorTransaction = TransactionId.valueOf(177);
    private final TransactionId tx1 = TransactionId.valueOf(1);
    private final TransactionId tx2 = TransactionId.valueOf(2);
    private final TransactionId tx3 = TransactionId.valueOf(3);
@@ -123,7 +124,7 @@ public class OrcsTxQueryTest {
       assertTxExists(transactions, tx3);
       assertTxExists(transactions, tx23);
 
-      Iterator<Long> ids = query.getResultsAsIds().iterator();
+      Iterator<TransactionId> ids = query.getResultsAsIds().iterator();
       assertEquals(tx3, ids.next());
       assertEquals(tx23, ids.next());
    }
@@ -486,10 +487,10 @@ public class OrcsTxQueryTest {
       assertEquals(1, query.getCount());
 
       List<TransactionReadable> transactions = results.getList();
-      assertTxExists(transactions, Long.valueOf(CommonBranchHeadTransaction.getId() - 1));
+      assertTxExists(transactions, CommonBranchHeadPriorTransaction);
 
-      Iterator<Long> ids = query.getResultsAsIds().iterator();
-      assertEquals(Long.valueOf(CommonBranchHeadTransaction.getId() - 1), ids.next());
+      Iterator<TransactionId> ids = query.getResultsAsIds().iterator();
+      assertEquals(CommonBranchHeadPriorTransaction, ids.next());
    }
 
    private static void assertTx(List<TransactionReadable> transactions, TransactionId id, TransactionDetailsType type, String comment, BranchId branch, ArtifactId author) {
@@ -504,17 +505,13 @@ public class OrcsTxQueryTest {
       assertTrue(transaction.getCommitArt().isInvalid());
    }
 
-   private void assertTxExists(List<TransactionReadable> transactions, Long txId) {
-      assertTrue(getTransaction(transactions, txId) != null);
-   }
-
    private void assertTxExists(List<TransactionReadable> transactions, TransactionId txId) {
-      assertTxExists(transactions, txId.getId());
+      assertTrue(getTransaction(transactions, txId) != null);
    }
 
    private static TransactionReadable getTransaction(List<TransactionReadable> transactions, Long txId) {
       for (TransactionReadable tx : transactions) {
-         if (tx.getId().equals(txId)) {
+         if (tx.equals(txId)) {
             return tx;
          }
       }

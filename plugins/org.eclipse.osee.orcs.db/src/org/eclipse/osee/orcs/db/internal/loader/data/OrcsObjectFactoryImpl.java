@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader.data;
 
-import java.util.Date;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
@@ -24,9 +23,7 @@ import org.eclipse.osee.framework.core.data.Tuple2Type;
 import org.eclipse.osee.framework.core.data.Tuple3Type;
 import org.eclipse.osee.framework.core.data.Tuple4Type;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
-import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
@@ -34,7 +31,6 @@ import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.TupleData;
-import org.eclipse.osee.orcs.core.ds.TxOrcsData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.proxy.AttributeDataProxyFactory;
@@ -186,25 +182,6 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       return createRelationData(newVersion, source.getLocalId(), source.getTypeUuid(), source.getModType(),
          source.getBaseTypeUuid(), source.getBaseModType(), source.getArtifactIdA(), source.getArtifactIdB(),
          source.getRationale(), source.getApplicabilityId());
-   }
-
-   @Override
-   public TxOrcsData createTxData(Long id, TransactionDetailsType type, Date date, String comment, BranchId branch, UserId author, ArtifactId commitArt, Long buildId) {
-      TxOrcsData data = new TransactionDataImpl(id);
-      data.setTxType(type);
-      data.setDate(date);
-      data.setComment(comment);
-      data.setBranch(branch);
-      data.setAuthor(author);
-      data.setCommitArt(commitArt);
-      data.setBuildId(buildId);
-      return data;
-   }
-
-   @Override
-   public TxOrcsData createCopy(TxOrcsData source) {
-      return createTxData(source.getId(), source.getTxType(), source.getDate(), source.getComment(), source.getBranch(),
-         source.getAuthor(), source.getCommitArt(), source.getBuildId());
    }
 
    private TupleData createTuple2Data(VersionData version, BranchId branch, TupleTypeId tupleType, Long e1, Long e2) {

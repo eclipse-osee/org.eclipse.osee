@@ -19,11 +19,11 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ApplicabilityDsQuery;
-import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.data.BranchReadable;
+import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.internal.loader.SqlObjectLoader;
 import org.eclipse.osee.orcs.db.internal.search.QueryCallableFactory;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
@@ -38,23 +38,21 @@ import org.eclipse.osee.orcs.search.TupleQuery;
 public class QueryEngineImpl implements QueryEngine {
    private final QueryCallableFactory artifactQueryEngineFactory;
    private final QuerySqlContextFactory branchSqlContextFactory;
-   private final QueryCallableFactory txQueryEngineFactory;
+   private final QuerySqlContextFactory txSqlContextFactory;
    private final QueryCallableFactory allQueryEngineFactory;
    private final JdbcClient jdbcClient;
    private final SqlJoinFactory sqlJoinFactory;
    private final QuerySqlContextFactory artifactSqlContextFactory;
-   private final DataLoaderFactory objectLoader;
    private final SqlObjectLoader sqlObjectLoader;
 
-   public QueryEngineImpl(QueryCallableFactory artifactQueryEngineFactory, QuerySqlContextFactory branchSqlContextFactory, QueryCallableFactory txQueryEngineFactory, QueryCallableFactory allQueryEngineFactory, JdbcClient jdbcClient, SqlJoinFactory sqlJoinFactory, QuerySqlContextFactory artifactSqlContextFactory, DataLoaderFactory objectLoader, SqlObjectLoader sqlObjectLoader) {
+   public QueryEngineImpl(QueryCallableFactory artifactQueryEngineFactory, QuerySqlContextFactory branchSqlContextFactory, QuerySqlContextFactory txSqlContextFactory, QueryCallableFactory allQueryEngineFactory, JdbcClient jdbcClient, SqlJoinFactory sqlJoinFactory, QuerySqlContextFactory artifactSqlContextFactory, SqlObjectLoader sqlObjectLoader) {
       this.artifactQueryEngineFactory = artifactQueryEngineFactory;
       this.branchSqlContextFactory = branchSqlContextFactory;
-      this.txQueryEngineFactory = txQueryEngineFactory;
+      this.txSqlContextFactory = txSqlContextFactory;
       this.allQueryEngineFactory = allQueryEngineFactory;
       this.jdbcClient = jdbcClient;
       this.sqlJoinFactory = sqlJoinFactory;
       this.artifactSqlContextFactory = artifactSqlContextFactory;
-      this.objectLoader = objectLoader;
       this.sqlObjectLoader = sqlObjectLoader;
    }
 
@@ -81,13 +79,15 @@ public class QueryEngineImpl implements QueryEngine {
    }
 
    @Override
-   public CancellableCallable<Integer> createTxCount(OrcsSession session, QueryData queryData) {
-      return txQueryEngineFactory.createCount(session, queryData);
+   public int getTxCount(QueryData queryData) {
+      QuerySqlContext queryContext = txSqlContextFactory.createQueryContext(null, queryData, QueryType.COUNT);
+      return sqlObjectLoader.getCount(queryContext);
    }
 
    @Override
-   public CancellableCallable<Integer> createTxQuery(OrcsSession session, QueryData queryData, LoadDataHandler handler) {
-      return txQueryEngineFactory.createQuery(session, queryData, handler);
+   public void runTxQuery(QueryData queryData, List<? super TransactionReadable> txs) {
+      QuerySqlContext queryContext = txSqlContextFactory.createQueryContext(null, queryData, QueryType.SELECT);
+      sqlObjectLoader.loadTransactions(txs, queryContext);
    }
 
    @Override

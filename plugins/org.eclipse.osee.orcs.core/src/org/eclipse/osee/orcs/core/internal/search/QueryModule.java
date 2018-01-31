@@ -35,8 +35,6 @@ public class QueryModule implements HasStatistics<QueryStatistics> {
    private final CallableQueryFactory artQueryFactory;
 
    private final BranchCriteriaFactory branchCriteriaFactory;
-
-   private final TransactionCallableQueryFactory txQueryFactory;
    private final TransactionCriteriaFactory txCriteriaFactory;
    private final TupleQuery tupleQuery;
    private final ApplicabilityDsQuery applicabilityDsQuery;
@@ -54,15 +52,14 @@ public class QueryModule implements HasStatistics<QueryStatistics> {
          new CallableQueryFactory(logger, queryEngine, queryStatsCollector, builderFactory, provider, proxyManager);
 
       branchCriteriaFactory = new BranchCriteriaFactory();
-      txQueryFactory = new TransactionCallableQueryFactory(logger, queryEngine, queryStatsCollector);
       txCriteriaFactory = new TransactionCriteriaFactory();
       tupleQuery = queryEngine.createTupleQuery();
       applicabilityDsQuery = queryEngine.createApplicabilityDsQuery();
    }
 
    public QueryFactory createQueryFactory(OrcsSession session) {
-      return new QueryFactoryImpl(session, criteriaFctry, artQueryFactory, branchCriteriaFactory, txQueryFactory,
-         txCriteriaFactory, tupleQuery, applicabilityDsQuery, queryEngine);
+      return new QueryFactoryImpl(session, criteriaFctry, artQueryFactory, branchCriteriaFactory, txCriteriaFactory,
+         tupleQuery, applicabilityDsQuery, queryEngine);
    }
 
    @Override

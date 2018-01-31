@@ -39,9 +39,6 @@ public class QueryContextLoadExecutor extends AbstractLoadExecutor {
       int fetchSize = LoadUtil.computeFetchSize(MIN_FETCH_SIZE);
       ObjectQueryType typeToLoad = queryContext.getOrcsObjectType();
       switch (typeToLoad) {
-         case TX:
-            getLoader().loadTransactions(cancellation, handler, queryContext, fetchSize);
-            break;
          case DYNAMIC_OBJECT:
             getLoader().loadDynamicObjects(cancellation, handler, queryContext, fetchSize);
             break;
@@ -49,5 +46,4 @@ public class QueryContextLoadExecutor extends AbstractLoadExecutor {
             throw new OseeStateException("Unable to determine object to load from [%s]", queryContext);
       }
    }
-
 }

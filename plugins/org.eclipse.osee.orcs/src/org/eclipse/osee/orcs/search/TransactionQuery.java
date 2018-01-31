@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.search;
 
-import org.eclipse.osee.executor.admin.CancellableCallable;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.data.TransactionReadable;
@@ -25,15 +25,5 @@ public interface TransactionQuery extends TxQueryBuilder<TransactionQuery>, Quer
 
    ResultSet<TransactionToken> getTokens();
 
-   ResultSet<Long> getResultsAsIds();
-
-   @Override
-   int getCount();
-
-   CancellableCallable<Integer> createCount();
-
-   CancellableCallable<ResultSet<TransactionReadable>> createSearch();
-
-   CancellableCallable<ResultSet<Long>> createSearchResultsAsIds();
-
+   ResultSet<TransactionId> getResultsAsIds();
 }

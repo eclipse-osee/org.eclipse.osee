@@ -17,10 +17,12 @@ import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
+import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -36,18 +38,18 @@ import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.OrcsDataHandler;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.ResultObjectDescription;
-import org.eclipse.osee.orcs.core.ds.TxOrcsData;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.data.BranchReadable;
+import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
 import org.eclipse.osee.orcs.db.internal.loader.data.BranchDataImpl;
+import org.eclipse.osee.orcs.db.internal.loader.data.TransactionDataImpl;
 import org.eclipse.osee.orcs.db.internal.loader.processor.AbstractLoadProcessor;
 import org.eclipse.osee.orcs.db.internal.loader.processor.ArtifactLoadProcessor;
 import org.eclipse.osee.orcs.db.internal.loader.processor.AttributeLoadProcessor;
 import org.eclipse.osee.orcs.db.internal.loader.processor.DynamicLoadProcessor;
 import org.eclipse.osee.orcs.db.internal.loader.processor.RelationLoadProcessor;
-import org.eclipse.osee.orcs.db.internal.loader.processor.TransactionLoadProcessor;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.SqlContext;
@@ -61,20 +63,16 @@ import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
  * @author Andrew M. Finkbeiner
  */
 public class SqlObjectLoader {
-
-   private final TransactionLoadProcessor txProcessor;
    private final ArtifactLoadProcessor artifactProcessor;
    private final AttributeLoadProcessor attributeProcessor;
    private final RelationLoadProcessor relationProcessor;
    private final DynamicLoadProcessor dynamicProcessor;
-
    private final Log logger;
    private final JdbcClient jdbcClient;
    private final SqlJoinFactory joinFactory;
    private final SqlHandlerFactory handlerFactory;
 
    public SqlObjectLoader(Log logger, JdbcClient jdbcClient, SqlJoinFactory joinFactory, SqlHandlerFactory handlerFactory, OrcsObjectFactory objectFactory, DynamicLoadProcessor dynamicProcessor, AttributeTypes attributeTypes) {
-      super();
       this.logger = logger;
       this.jdbcClient = jdbcClient;
       this.joinFactory = joinFactory;
@@ -84,7 +82,6 @@ public class SqlObjectLoader {
       artifactProcessor = new ArtifactLoadProcessor(objectFactory);
       attributeProcessor = new AttributeLoadProcessor(logger, objectFactory, attributeTypes);
       relationProcessor = new RelationLoadProcessor(logger, objectFactory);
-      txProcessor = new TransactionLoadProcessor(objectFactory);
    }
 
    public SqlHandlerFactory getFactory() {
@@ -157,15 +154,20 @@ public class SqlObjectLoader {
       load(loadContext, stmtConsumer);
    }
 
-   public void loadTransactions(HasCancellation cancellation, LoadDataHandler handler, QuerySqlContext context, int fetchSize) {
-      logger.trace("Sql Transaction Load - loadContext[%s] fetchSize[%s]", context, fetchSize);
-      checkCancelled(cancellation);
+   public void loadTransactions(List<? super TransactionReadable> txs, QuerySqlContext queryContext) {
+      Consumer<JdbcStatement> stmtConsumer = stmt -> {
+         TransactionDataImpl tx = new TransactionDataImpl(stmt.getLong("transaction_id"));
+         tx.setBranch(BranchId.valueOf(stmt.getLong("branch_id")));
+         tx.setTxType(TransactionDetailsType.toEnum(stmt.getInt("tx_type")));
+         tx.setComment(stmt.getString("osee_comment"));
+         tx.setDate(stmt.getTimestamp("time"));
+         tx.setAuthor(UserId.valueOf(stmt.getLong("author")));
+         tx.setCommitArt(ArtifactId.valueOf(stmt.getLong("commit_art_id")));
+         tx.setBuildId(stmt.getLong("build_id"));
+         txs.add(tx);
+      };
 
-      LoadDescription description = createDescription(context.getSession(), context.getOptions());
-      handler.onLoadDescription(description);
-
-      OrcsDataHandler<TxOrcsData> txHandler = asTransactionHandler(handler);
-      load(txProcessor, txHandler, context, fetchSize);
+      load(queryContext, stmtConsumer);
    }
 
    public void loadDynamicObjects(HasCancellation cancellation, LoadDataHandler handler, QuerySqlContext context, int fetchSize) {
@@ -297,10 +299,6 @@ public class SqlObjectLoader {
       }
    }
 
-   private static LoadDescription createDescription(final OrcsSession session, final Options options) {
-      return createDescription(session, options, null, TransactionId.SENTINEL, null);
-   }
-
    private static LoadDescription createDescription(final OrcsSession session, final Options options, final ResultObjectDescription data) {
       return createDescription(session, options, null, TransactionId.SENTINEL, data);
    }
@@ -369,16 +367,6 @@ public class SqlObjectLoader {
 
          @Override
          public void onData(RelationData data) {
-            handler.onData(data);
-         }
-      };
-   }
-
-   private static OrcsDataHandler<TxOrcsData> asTransactionHandler(final LoadDataHandler handler) {
-      return new OrcsDataHandler<TxOrcsData>() {
-
-         @Override
-         public void onData(TxOrcsData data) {
             handler.onData(data);
          }
       };
