@@ -44,8 +44,8 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
    }
 
    public static boolean useMultiLineWidget(AttributeTypeToken attributeType) {
-      return AttributeTypeManager.isBaseTypeCompatible(WordAttribute.class, attributeType) || attributeType.equals(
-         CoreAttributeTypes.RelationOrder) || attributeType.equals(CoreAttributeTypes.PlainTextContent);
+      return AttributeTypeManager.isBaseTypeCompatible(WordAttribute.class,
+         attributeType) || attributeType.equals(CoreAttributeTypes.PlainTextContent);
    }
 
    @Override
@@ -59,7 +59,10 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
       String xWidgetName;
       try {
          xWidgetName = AttributeTypeToXWidgetName.getXWidgetName(attributeType);
-         if (DslGrammarManager.isDslAttributeType(attributeType)) {
+         if (attributeType.getName().equals("Relation Order")) {
+            defaultData.getXOptionHandler().add(XOption.FILL_VERTICALLY);
+            xWidgetName = "XTextDam";
+         } else if (DslGrammarManager.isDslAttributeType(attributeType)) {
             xWidgetName = XDslEditorWidgetDam.WIDGET_ID;
          } else if (useMultiLineWidget(attributeType)) {
             xWidgetName = "XStackedDam";

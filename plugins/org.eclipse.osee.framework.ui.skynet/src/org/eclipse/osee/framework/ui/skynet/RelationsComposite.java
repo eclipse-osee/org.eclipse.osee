@@ -223,12 +223,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
             @Override
             public void onSelected(RelationTypeSideSorter sorter, RelationSorter wasId, RelationSorter isId) {
                editor.onDirtied();
-               Object parent = ((ITreeContentProvider) treeViewer.getContentProvider()).getParent(sorter);
-               if (parent != null) {
-                  treeViewer.refresh(parent);
-               } else {
-                  treeViewer.refresh();
-               }
+               treeViewer.refresh();
             }
          });
          contributionItem.fill(popupMenu, 0);
