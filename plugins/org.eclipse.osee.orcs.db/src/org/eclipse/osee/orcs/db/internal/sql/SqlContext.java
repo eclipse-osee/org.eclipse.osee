@@ -34,4 +34,11 @@ public interface SqlContext extends DataStoreContext {
 
    void clear();
 
+   /**
+    * Gives the JDBC driver a hint as to the number of rows that should be fetched from the database when more rows are
+    * needed. If the value specified is zero, then the hint is ignored. The default implementation returns 0
+    */
+   default int getFetchSize() {
+      return 0;
+   }
 }

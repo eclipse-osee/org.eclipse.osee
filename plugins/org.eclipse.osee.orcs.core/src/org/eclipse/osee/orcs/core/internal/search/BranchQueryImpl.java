@@ -10,14 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.search;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
-import org.eclipse.osee.orcs.core.ds.BranchData;
-import org.eclipse.osee.orcs.core.ds.LoadDataHandlerAdapter;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
@@ -37,42 +35,27 @@ public class BranchQueryImpl extends BranchQueryBuilderImpl<BranchQuery> impleme
 
    @Override
    public ResultSet<BranchReadable> getResults() {
-      return query(new BranchLoadHandler<BranchReadable>());
+      List<BranchReadable> branches = new ArrayList<>();
+      query(branches);
+      return ResultSets.newResultSet(branches);
    }
 
    @Override
    public ResultSet<IOseeBranch> getResultsAsId() {
-      return query(new BranchLoadHandler<IOseeBranch>());
+      List<IOseeBranch> branches = new ArrayList<>();
+      query(branches);
+      return ResultSets.newResultSet(branches);
    }
 
-   private <T extends IOseeBranch> ResultSet<T> query(BranchLoadHandler<T> handler) {
+   private void query(List<? super BranchReadable> branches) {
       QueryData queryData = build();
       OptionsUtil.setLoadLevel(queryData.getOptions(), LoadLevel.ALL);
-      queryEngine.runBranchQuery(queryData, handler);
-      return ResultSets.newResultSet(handler.getBranches());
-   }
-
-   public static final class BranchLoadHandler<T extends IOseeBranch> extends LoadDataHandlerAdapter {
-      private final List<T> results = new LinkedList<>();
-
-      @Override
-      public void onLoadStart() {
-         results.clear();
-      }
-
-      @Override
-      public void onData(BranchData data) {
-         results.add((T) data);
-      }
-
-      public List<T> getBranches() {
-         return results;
-      }
+      queryEngine.runBranchQuery(queryData, branches);
    }
 
    @Override
    public int getCount() {
-      return queryEngine.getBranchCount(buildAndCopy());
+      return queryEngine.getBranchCount(build());
    }
 
    @Override

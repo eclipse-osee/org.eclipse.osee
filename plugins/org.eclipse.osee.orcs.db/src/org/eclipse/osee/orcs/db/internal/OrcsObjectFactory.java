@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.db.internal;
 
 import org.eclipse.osee.orcs.db.internal.loader.data.ArtifactObjectFactory;
 import org.eclipse.osee.orcs.db.internal.loader.data.AttributeObjectFactory;
-import org.eclipse.osee.orcs.db.internal.loader.data.BranchObjectFactory;
 import org.eclipse.osee.orcs.db.internal.loader.data.RelationObjectFactory;
 import org.eclipse.osee.orcs.db.internal.loader.data.TransactionObjectFactory;
 import org.eclipse.osee.orcs.db.internal.loader.data.TupleObjectFactory;
@@ -20,6 +19,6 @@ import org.eclipse.osee.orcs.db.internal.loader.data.TupleObjectFactory;
 /**
  * @author Roberto E. Escobar
  */
-public interface OrcsObjectFactory extends TransactionObjectFactory, BranchObjectFactory, ArtifactObjectFactory, AttributeObjectFactory, RelationObjectFactory, TupleObjectFactory {
+public interface OrcsObjectFactory extends TransactionObjectFactory, ArtifactObjectFactory, AttributeObjectFactory, RelationObjectFactory, TupleObjectFactory {
    //
 }

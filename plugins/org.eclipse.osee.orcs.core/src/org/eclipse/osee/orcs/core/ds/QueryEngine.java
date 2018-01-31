@@ -14,6 +14,7 @@ import java.util.List;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.search.TupleQuery;
 
 /**
@@ -27,7 +28,7 @@ public interface QueryEngine {
 
    int getBranchCount(QueryData queryData);
 
-   void runBranchQuery(QueryData queryData, LoadDataHandler handler);
+   void runBranchQuery(QueryData queryData, List<? super BranchReadable> branches);
 
    TupleQuery createTupleQuery();
 

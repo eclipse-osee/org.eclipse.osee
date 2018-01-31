@@ -10,10 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader;
 
+import java.util.List;
 import java.util.concurrent.CancellationException;
+import java.util.function.Consumer;
 import org.eclipse.osee.executor.admin.HasCancellation;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.enums.BranchArchivedState;
+import org.eclipse.osee.framework.core.enums.BranchState;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -22,7 +28,6 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
-import org.eclipse.osee.orcs.core.ds.BranchData;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.LoadDescription;
@@ -33,12 +38,13 @@ import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.ResultObjectDescription;
 import org.eclipse.osee.orcs.core.ds.TxOrcsData;
 import org.eclipse.osee.orcs.data.AttributeTypes;
+import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
+import org.eclipse.osee.orcs.db.internal.loader.data.BranchDataImpl;
 import org.eclipse.osee.orcs.db.internal.loader.processor.AbstractLoadProcessor;
 import org.eclipse.osee.orcs.db.internal.loader.processor.ArtifactLoadProcessor;
 import org.eclipse.osee.orcs.db.internal.loader.processor.AttributeLoadProcessor;
-import org.eclipse.osee.orcs.db.internal.loader.processor.BranchLoadProcessor;
 import org.eclipse.osee.orcs.db.internal.loader.processor.DynamicLoadProcessor;
 import org.eclipse.osee.orcs.db.internal.loader.processor.RelationLoadProcessor;
 import org.eclipse.osee.orcs.db.internal.loader.processor.TransactionLoadProcessor;
@@ -56,7 +62,6 @@ import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
  */
 public class SqlObjectLoader {
 
-   private final BranchLoadProcessor branchProcessor;
    private final TransactionLoadProcessor txProcessor;
    private final ArtifactLoadProcessor artifactProcessor;
    private final AttributeLoadProcessor attributeProcessor;
@@ -79,7 +84,6 @@ public class SqlObjectLoader {
       artifactProcessor = new ArtifactLoadProcessor(objectFactory);
       attributeProcessor = new AttributeLoadProcessor(logger, objectFactory, attributeTypes);
       relationProcessor = new RelationLoadProcessor(logger, objectFactory);
-      branchProcessor = new BranchLoadProcessor(objectFactory);
       txProcessor = new TransactionLoadProcessor(objectFactory);
    }
 
@@ -130,15 +134,27 @@ public class SqlObjectLoader {
       }
    }
 
-   public void loadBranches(HasCancellation cancellation, LoadDataHandler handler, QuerySqlContext context, int fetchSize) {
-      logger.trace("Sql Branch Load - loadContext[%s] fetchSize[%s]", context, fetchSize);
-      checkCancelled(cancellation);
+   public void loadBranches(List<? super BranchReadable> branches, QuerySqlContext loadContext) {
+      logger.trace("Sql Branch Load - loadContext[%s]", loadContext);
 
-      LoadDescription description = createDescription(context.getSession(), context.getOptions());
-      handler.onLoadDescription(description);
+      Consumer<JdbcStatement> stmtConsumer = stmt -> {
+         BranchId branchId = BranchId.valueOf(stmt.getLong("branch_id"));
+         String branchName = stmt.getString("branch_name");
+         BranchDataImpl branch = new BranchDataImpl(branchId, branchName);
 
-      OrcsDataHandler<BranchData> branchHandler = asBranchHandler(handler);
-      load(branchProcessor, branchHandler, context, fetchSize);
+         branch.setArchiveState(BranchArchivedState.valueOf(stmt.getInt("archived")));
+         branch.setAssociatedArtifact(ArtifactId.valueOf(stmt.getLong("associated_art_id")));
+         branch.setBaseTransaction(TransactionId.valueOf(stmt.getLong("baseline_transaction_id")));
+         branch.setBranchState(BranchState.getBranchState(stmt.getInt("branch_state")));
+         branch.setBranchType(BranchType.valueOf(stmt.getInt("branch_type")));
+         branch.setParentBranch(BranchId.valueOf(stmt.getLong("parent_branch_id")));
+         branch.setSourceTransaction(TransactionId.valueOf(stmt.getLong("parent_transaction_id")));
+         branch.setInheritAccessControl(stmt.getInt("inherit_access_control") != 0);
+
+         branches.add(branch);
+      };
+
+      load(loadContext, stmtConsumer);
    }
 
    public void loadTransactions(HasCancellation cancellation, LoadDataHandler handler, QuerySqlContext context, int fetchSize) {
@@ -225,6 +241,24 @@ public class SqlObjectLoader {
    protected TransactionId loadHeadTransactionId(BranchId branch) {
       String sql = "SELECT max(transaction_id) FROM osee_tx_details WHERE branch_id = ?";
       return getJdbcClient().fetch(TransactionId.SENTINEL, sql, branch);
+   }
+
+   private void load(SqlContext queryContext, Consumer<JdbcStatement> consumer) {
+      try {
+         for (AbstractJoinQuery join : queryContext.getJoins()) {
+            join.store();
+         }
+         jdbcClient.runQuery(consumer, queryContext.getFetchSize(), queryContext.getSql(),
+            queryContext.getParameters().toArray());
+      } finally {
+         for (AbstractJoinQuery join : queryContext.getJoins()) {
+            try {
+               join.close();
+            } catch (Exception ex) {
+               // Do nothing
+            }
+         }
+      }
    }
 
    protected <H> void load(AbstractLoadProcessor<H> processor, H handler, SqlContext loadContext, int fetchSize) {
@@ -340,16 +374,6 @@ public class SqlObjectLoader {
       };
    }
 
-   private static OrcsDataHandler<BranchData> asBranchHandler(final LoadDataHandler handler) {
-      return new OrcsDataHandler<BranchData>() {
-
-         @Override
-         public void onData(BranchData data) {
-            handler.onData(data);
-         }
-      };
-   }
-
    private static OrcsDataHandler<TxOrcsData> asTransactionHandler(final LoadDataHandler handler) {
       return new OrcsDataHandler<TxOrcsData>() {
 
@@ -360,4 +384,20 @@ public class SqlObjectLoader {
       };
    }
 
+   public int getCount(SqlContext queryContext) {
+      try {
+         for (AbstractJoinQuery join : queryContext.getJoins()) {
+            join.store();
+         }
+         return jdbcClient.fetch(-1, queryContext.getSql(), queryContext.getParameters().toArray());
+      } finally {
+         for (AbstractJoinQuery join : queryContext.getJoins()) {
+            try {
+               join.close();
+            } catch (Exception ex) {
+               // Do nothing
+            }
+         }
+      }
+   }
 }

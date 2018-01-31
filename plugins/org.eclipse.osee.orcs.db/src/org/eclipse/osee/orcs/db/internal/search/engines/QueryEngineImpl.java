@@ -19,11 +19,11 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ApplicabilityDsQuery;
-import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
+import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.db.internal.loader.SqlObjectLoader;
 import org.eclipse.osee.orcs.db.internal.search.QueryCallableFactory;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
@@ -71,15 +71,13 @@ public class QueryEngineImpl implements QueryEngine {
    @Override
    public int getBranchCount(QueryData queryData) {
       QuerySqlContext queryContext = branchSqlContextFactory.createQueryContext(null, queryData, QueryType.COUNT);
-      return objectLoader.getCount(null, queryContext);
+      return sqlObjectLoader.getCount(queryContext);
    }
 
    @Override
-   public void runBranchQuery(QueryData queryData, LoadDataHandler handler) {
+   public void runBranchQuery(QueryData queryData, List<? super BranchReadable> branches) {
       QuerySqlContext queryContext = branchSqlContextFactory.createQueryContext(null, queryData, QueryType.SELECT);
-      DataLoader loader = objectLoader.newDataLoader(queryContext);
-      loader.setOptions(queryData.getOptions());
-      sqlObjectLoader.loadBranches(null, handler, queryContext, 0);
+      sqlObjectLoader.loadBranches(branches, queryContext);
    }
 
    @Override
