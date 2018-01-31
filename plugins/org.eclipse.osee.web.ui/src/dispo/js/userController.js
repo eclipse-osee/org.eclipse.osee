@@ -425,7 +425,8 @@ app.controller('userController', [
                 programId: $scope.programSelection,
                 setId: $scope.setSelection,
                 resolutionType: resolutionType,
-                resolution: resolution
+                resolution: resolution,
+                userName: $rootScope.cachedName
             }, itemIds, function(data){
             	$scope.items = {};
                 Item.query({
@@ -483,6 +484,7 @@ app.controller('userController', [
                 programId: $scope.programSelection,
                 setId: $scope.setSelection,
                 itemId: item.guid,
+                userName: $rootScope.cachedName
             }, newItem, function() {
                 if ($scope.isMulitEditRequest) {
                     $scope.gridApi.selection.clearSelectedRows();
@@ -522,6 +524,7 @@ app.controller('userController', [
                             programId: $scope.programSelection,
                             setId: $scope.setSelection,
                             itemId: $scope.selectedItem.guid,
+                            userName: $rootScope.cachedName
                         }, newItem, function() {
                             $scope.selectedItem.assignee = $rootScope.cachedName;
                             $scope.editAnnotationServerCall(colDef, oldValue, annotation)

@@ -61,7 +61,7 @@ public class DispoSetResource {
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response postDispoSet(DispoSetDescriptorData descriptor) {
+   public Response postDispoSet(DispoSetDescriptorData descriptor, @QueryParam("userName") String userName) {
       Response.Status status;
       Response response;
       String name = descriptor.getName();
@@ -71,7 +71,7 @@ public class DispoSetResource {
       if (!name.isEmpty() && !importPath.isEmpty() && !dispoType.isEmpty()) {
          boolean isUniqueSetName = dispoApi.isUniqueSetName(branch, name);
          if (isUniqueSetName) {
-            Long createdSetId = dispoApi.createDispoSet(branch, descriptor);
+            Long createdSetId = dispoApi.createDispoSet(branch, descriptor, userName);
             DispoSet createdSet = dispoApi.getDispoSetById(branch, String.valueOf(createdSetId));
             status = Status.CREATED;
             response = Response.status(status).entity(createdSet).build();
@@ -129,9 +129,9 @@ public class DispoSetResource {
    @PUT
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Consumes(MediaType.APPLICATION_JSON)
-   public Response putDispoSet(@PathParam("setId") String setId, DispoSetData newDispositionSet) {
+   public Response putDispoSet(@PathParam("setId") String setId, DispoSetData newDispositionSet, @QueryParam("userName") String userName) {
       Response.Status status;
-      dispoApi.editDispoSet(branch, setId, newDispositionSet);
+      dispoApi.editDispoSet(branch, setId, newDispositionSet, userName);
       status = Status.OK;
       return Response.status(status).build();
    }
@@ -149,9 +149,9 @@ public class DispoSetResource {
    @POST
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Consumes(MediaType.APPLICATION_JSON)
-   public Response runMassDisposition(@PathParam("setId") String setId, @QueryParam("resolutionType") String resolutionType, @QueryParam("resolution") String resolution, List<String> itemIds) {
+   public Response runMassDisposition(@PathParam("setId") String setId, @QueryParam("resolutionType") String resolutionType, @QueryParam("resolution") String resolution, List<String> itemIds, @QueryParam("userName") String userName) {
       Response.Status status;
-      dispoApi.editMassDispositions(branch, setId, itemIds, resolutionType, resolution);
+      dispoApi.editMassDispositions(branch, setId, itemIds, resolutionType, resolution, userName);
       status = Status.OK;
       return Response.status(status).build();
    }
@@ -167,9 +167,9 @@ public class DispoSetResource {
    @Path("{setId}")
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @DELETE
-   public Response deleteDispoSet(@PathParam("setId") String setId) {
+   public Response deleteDispoSet(@PathParam("setId") String setId, @QueryParam("userName") String userName) {
       Response.Status status = Status.NOT_FOUND;
-      boolean wasDeleted = dispoApi.deleteDispoSet(branch, setId);
+      boolean wasDeleted = dispoApi.deleteDispoSet(branch, setId, userName);
       if (wasDeleted) {
          status = Status.OK;
       } else {

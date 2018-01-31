@@ -114,9 +114,9 @@ public class DispoAdminResource {
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getDispoSetCopyCoverage(@QueryParam("destinationSet") String destinationSet, @QueryParam("sourceBranch") BranchId sourceBranch, @QueryParam("sourcePackage") Long sourcePackage, CopySetParams params) {
+   public Response getDispoSetCopyCoverage(@QueryParam("destinationSet") String destinationSet, @QueryParam("sourceBranch") BranchId sourceBranch, @QueryParam("sourcePackage") Long sourcePackage, CopySetParams params, @QueryParam("userName") String userName) {
       Response.Status status;
-      dispoApi.copyDispoSetCoverage(sourceBranch, sourcePackage, branch, destinationSet, params);
+      dispoApi.copyDispoSetCoverage(sourceBranch, sourcePackage, branch, destinationSet, params, userName);
       status = Status.OK;
       return Response.status(status).build();
    }
@@ -125,8 +125,8 @@ public class DispoAdminResource {
    @POST
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getDispoSetCopy(@QueryParam("destinationSet") String destinationSet, @QueryParam("sourceProgram") BranchId sourceBranch, @QueryParam("sourceSet") String sourceSet, CopySetParams params) {
-      dispoApi.copyDispoSet(branch, destinationSet, sourceBranch, sourceSet, params);
+   public Response getDispoSetCopy(@QueryParam("destinationSet") String destinationSet, @QueryParam("sourceProgram") BranchId sourceBranch, @QueryParam("sourceSet") String sourceSet, CopySetParams params, @QueryParam("userName") String userName) {
+      dispoApi.copyDispoSet(branch, destinationSet, sourceBranch, sourceSet, params, userName);
       Response.Status status = Status.OK;
       return Response.status(status).build();
    }
@@ -135,10 +135,10 @@ public class DispoAdminResource {
    @POST
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Consumes(MediaType.APPLICATION_JSON)
-   public Response multiItemEdit(MassTeamAssignParams params) {
+   public Response multiItemEdit(MassTeamAssignParams params, @QueryParam("userName") String userName) {
       Response.Status status;
       dispoApi.massEditTeam(branch, params.getSetId(), params.getNamesList(), params.getTeam(),
-         String.format("Mult Item Edit by: $s", params.getUserName()));
+         String.format("Mult Item Edit by: $s", params.getUserName()), userName);
       status = Status.OK;
       return Response.status(status).build();
    }

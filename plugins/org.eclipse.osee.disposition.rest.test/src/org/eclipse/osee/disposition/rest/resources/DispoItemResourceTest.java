@@ -98,12 +98,12 @@ public class DispoItemResourceTest {
       DispoItemData newItem = new DispoItemData();
       DispoItemData itemToEdt = new DispoItemData();
       itemToEdt.setGuid(id1.getGuid());
-      when(dispositionApi.editDispoItem(branch, id1.getGuid(), newItem)).thenReturn(true);
-      Response response = resource.putDispoItem(id1.getGuid(), newItem);
+      when(dispositionApi.editDispoItem(branch, id1.getGuid(), newItem, "")).thenReturn(true);
+      Response response = resource.putDispoItem(id1.getGuid(), newItem, "");
       assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 
-      when(dispositionApi.editDispoItem(branch, id1.getGuid(), newItem)).thenReturn(false);
-      response = resource.putDispoItem(id1.getGuid(), newItem);
+      when(dispositionApi.editDispoItem(branch, id1.getGuid(), newItem, "")).thenReturn(false);
+      response = resource.putDispoItem(id1.getGuid(), newItem, "");
       String returnedMessage = (String) response.getEntity();
       assertEquals(Response.Status.NOT_MODIFIED.getStatusCode(), response.getStatus());
       assertEquals(DispoMessages.Item_NotFound, returnedMessage);
@@ -113,12 +113,12 @@ public class DispoItemResourceTest {
    public void testDelete() {
       DispoItemData itemToEdt = new DispoItemData();
       itemToEdt.setGuid(id1.getGuid());
-      when(dispositionApi.deleteDispoItem(branch, id1.getGuid())).thenReturn(true);
-      Response response = resource.deleteDispoItem(id1.getGuid());
+      when(dispositionApi.deleteDispoItem(branch, id1.getGuid(), "")).thenReturn(true);
+      Response response = resource.deleteDispoItem(id1.getGuid(), "");
       assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 
-      when(dispositionApi.deleteDispoItem(branch, id1.getGuid())).thenReturn(false);
-      response = resource.deleteDispoItem(id1.getGuid());
+      when(dispositionApi.deleteDispoItem(branch, id1.getGuid(), "")).thenReturn(false);
+      response = resource.deleteDispoItem(id1.getGuid(), "");
       String returnedMessage = (String) response.getEntity();
       assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
       assertEquals(DispoMessages.Item_NotFound, returnedMessage);

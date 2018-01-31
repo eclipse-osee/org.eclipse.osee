@@ -26,6 +26,7 @@ import org.eclipse.osee.disposition.rest.integration.util.DispositionInitializer
 import org.eclipse.osee.disposition.rest.integration.util.DispositionIntegrationRule;
 import org.eclipse.osee.disposition.rest.integration.util.DispositionTestUtil;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
@@ -90,11 +91,11 @@ public class DispositionIntegrationTest {
 
       DispoSetData devSetEdited = new DispoSetData();
       devSetEdited.setImportPath(folder.getRoot().toString());
-      dispoApi.editDispoSet(branch, devSetId, devSetEdited);
+      dispoApi.editDispoSet(branch, devSetId, devSetEdited, DemoUsers.Kay_Jones.getIdString());
 
       DispoSetData devSetEdited2 = new DispoSetData();
       devSetEdited2.setOperation(DispoStrings.Operation_Import);
-      dispoApi.editDispoSet(branch, devSetId, devSetEdited2);
+      dispoApi.editDispoSet(branch, devSetId, devSetEdited2, DemoUsers.Kay_Jones.getIdString());
 
       // should have new items now
       List<DispoItem> dispoItems = dispoApi.getDispoItems(branch, devSetId, false);

@@ -139,22 +139,22 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public Long createDispoProgram(String name) {
-      ArtifactReadable author = getQuery().findUser();
+   public Long createDispoProgram(String name, String userName) {
+      ArtifactReadable author = getQuery().findUserByName(userName);
       return getWriter().createDispoProgram(author, name);
    }
 
    @Override
-   public Long createDispoSet(BranchId branch, DispoSetDescriptorData descriptor) {
+   public Long createDispoSet(BranchId branch, DispoSetDescriptorData descriptor, String userName) {
       DispoSetData newSet = dataFactory.creteSetDataFromDescriptor(descriptor);
-      ArtifactReadable author = getQuery().findUser();
+      ArtifactReadable author = getQuery().findUserByName(userName);
       return getWriter().createDispoSet(author, branch, newSet);
    }
 
-   private void createDispoItems(BranchId branch, String setId, List<DispoItem> dispoItems) {
+   private void createDispoItems(BranchId branch, String setId, List<DispoItem> dispoItems, String userName) {
       DispoSet parentSet = getQuery().findDispoSetsById(branch, setId);
       if (parentSet != null) {
-         ArtifactReadable author = getQuery().findUser();
+         ArtifactReadable author = getQuery().findUserByName(userName);
          getWriter().createDispoItems(author, branch, parentSet, dispoItems);
       }
    }
@@ -177,7 +177,7 @@ public class DispoApiImpl implements DispoApi {
 
          DispoItem updatedItem;
          updatedItem = dataFactory.createUpdatedItem(annotationsList, discrepanciesList);
-         ArtifactReadable author = getQuery().findUser();
+         ArtifactReadable author = getQuery().findUserByName(userName);
 
          DispoStorageMetadata metadata = new DispoStorageMetadata();
 
@@ -192,44 +192,44 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public void editDispoSet(BranchId branch, String setId, DispoSetData newSet) {
+   public void editDispoSet(BranchId branch, String setId, DispoSetData newSet, String userName) {
       DispoSet dispSetToEdit = getQuery().findDispoSetsById(branch, setId);
 
       if (dispSetToEdit != null) {
          if (newSet.getOperation() != null) {
-            runOperation(branch, dispSetToEdit, newSet);
+            runOperation(branch, dispSetToEdit, newSet, userName);
          }
 
-         ArtifactReadable author = getQuery().findUser();
+         ArtifactReadable author = getQuery().findUserByName(userName);
          getWriter().updateDispoSet(author, branch, dispSetToEdit.getGuid(), newSet);
       }
    }
 
    @Override
-   public boolean deleteDispoSet(BranchId branch, String setId) {
-      ArtifactReadable author = getQuery().findUser();
+   public boolean deleteDispoSet(BranchId branch, String setId, String userName) {
+      ArtifactReadable author = getQuery().findUserByName(userName);
       updateBroadcaster.broadcastDeleteSet(getDispoSetById(branch, setId));
       return getWriter().deleteDispoSet(author, branch, setId);
    }
 
    @Override
-   public boolean editMassDispositions(BranchId branch, String setId, List<String> ids, String resolutionType, String resolution) {
+   public boolean editMassDispositions(BranchId branch, String setId, List<String> ids, String resolutionType, String resolution, String userName) {
       boolean wasUpdated = false;
       List<DispoItem> itemsToEdit = massDisposition(branch, setId, ids, resolutionType, resolution);
       if (itemsToEdit.size() > 0) {
-         editDispoItems(branch, setId, itemsToEdit, true, "Import");
+         editDispoItems(branch, setId, itemsToEdit, true, "Import", userName);
          wasUpdated = true;
       }
       return wasUpdated;
    }
 
    @Override
-   public boolean editDispoItem(BranchId branch, String itemId, DispoItemData newDispoItem) {
+   public boolean editDispoItem(BranchId branch, String itemId, DispoItemData newDispoItem, String userName) {
       boolean wasUpdated = false;
       DispoItem dispoItemToEdit = getQuery().findDispoItemById(branch, itemId);
 
       if (dispoItemToEdit != null && newDispoItem.getAnnotationsList() == null && newDispoItem.getDiscrepanciesList() == null) { // We will not allow the user to do mass edit of Annotations or discrepancies
-         ArtifactReadable author = getQuery().findUser();
+         ArtifactReadable author = getQuery().findUserByName(userName);
          DispoStorageMetadata metadata = new DispoStorageMetadata();
 
          try {
@@ -267,7 +267,7 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public boolean massEditTeam(BranchId branch, String setId, List<String> itemNames, String team, String operation) {
+   public boolean massEditTeam(BranchId branch, String setId, List<String> itemNames, String team, String operation, String userName) {
       boolean wasUpdated = false;
       Set<DispoItem> dispoItems = new HashSet<>();
       List<DispoItem> itemsFromSet = getDispoItems(branch, setId);
@@ -307,7 +307,7 @@ public class DispoApiImpl implements DispoApi {
                   DispoSummarySeverity.WARNING);
             }
          }
-         editDispoItems(branch, setId, dispoItems, false, operation);
+         editDispoItems(branch, setId, dispoItems, false, operation, userName);
       } else {
          report.addEntry("Womp womp womp",
             "No items were updated. Please check your 'Items' list and make sure it's a comma seperated list of item names",
@@ -315,15 +315,15 @@ public class DispoApiImpl implements DispoApi {
       }
 
       // Generate report
-      ArtifactReadable author = getQuery().findUser();
+      ArtifactReadable author = getQuery().findUserByName(userName);
       getWriter().updateOperationSummary(author, branch, setId, report);
       return wasUpdated;
    }
 
-   private boolean editDispoItems(BranchId branch, String setId, Collection<DispoItem> dispoItems, boolean resetRerunFlag, String operation) {
+   private boolean editDispoItems(BranchId branch, String setId, Collection<DispoItem> dispoItems, boolean resetRerunFlag, String operation, String userName) {
       boolean wasUpdated = false;
 
-      ArtifactReadable author = getQuery().findUser();
+      ArtifactReadable author = getQuery().findUserByName(userName);
       DispoStorageMetadata metadata = new DispoStorageMetadata();
       getWriter().updateDispoItems(author, branch, dispoItems, resetRerunFlag, operation, metadata);
       if (!metadata.getIdsOfUpdatedItems().isEmpty()) {
@@ -335,8 +335,8 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public boolean deleteDispoItem(BranchId branch, String itemId) {
-      ArtifactReadable author = getQuery().findUser();
+   public boolean deleteDispoItem(BranchId branch, String itemId, String userName) {
+      ArtifactReadable author = getQuery().findUserByName(userName);
       return getWriter().deleteDispoItem(author, branch, itemId);
    }
 
@@ -372,7 +372,7 @@ public class DispoApiImpl implements DispoApi {
             dispoConnector.connectAnnotation(newAnnotation, discrepanciesList);
          }
          annotationsList.set(indexOfAnnotation, newAnnotation);
-         ArtifactReadable author = getQuery().findUser();
+         ArtifactReadable author = getQuery().findUserByName(userName);
          DispoItemData modifiedDispoItem = DispoUtil.itemArtToItemData(getDispoItemById(branch, itemId), true);
 
          modifiedDispoItem.setAnnotationsList(annotationsList);
@@ -414,7 +414,7 @@ public class DispoApiImpl implements DispoApi {
 
          DispoItem updatedItem = dataFactory.createUpdatedItem(newAnnotationsList, discrepanciesList);
 
-         ArtifactReadable author = getQuery().findUser();
+         ArtifactReadable author = getQuery().findUserByName(userName);
          DispoStorageMetadata metadata = new DispoStorageMetadata();
          getWriter().updateDispoItem(author, branch, dispoItem.getGuid(), updatedItem, metadata);
          if (!metadata.getIdsOfUpdatedItems().isEmpty()) {
@@ -500,10 +500,10 @@ public class DispoApiImpl implements DispoApi {
       return getQuery().isUniqueSetName(branch, name);
    }
 
-   private void runOperation(BranchId branch, DispoSet setToEdit, DispoSetData newSet) {
+   private void runOperation(BranchId branch, DispoSet setToEdit, DispoSetData newSet, String userName) {
       OperationReport report = new OperationReport();
       String operation = newSet.getOperation();
-      ArtifactReadable author = getQuery().findUser();
+      ArtifactReadable author = getQuery().findUserByName(userName);
       if (operation.equals(DispoStrings.Operation_Import)) {
          try {
             HashMap<String, DispoItem> nameToItemMap = getItemsMap(branch, setToEdit);
@@ -534,10 +534,10 @@ public class DispoApiImpl implements DispoApi {
 
             if (!report.getStatus().isFailed()) {
                if (itemsToCreate.size() > 0) {
-                  createDispoItems(branch, setToEdit.getGuid(), itemsToCreate);
+                  createDispoItems(branch, setToEdit.getGuid(), itemsToCreate, userName);
                }
                if (itemsToEdit.size() > 0) {
-                  editDispoItems(branch, setToEdit.getGuid(), itemsToEdit, true, "Import");
+                  editDispoItems(branch, setToEdit.getGuid(), itemsToEdit, true, "Import", userName);
                }
             }
 
@@ -648,7 +648,7 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public void copyDispoSetCoverage(BranchId sourceBranch, Long sourceCoverageUuid, BranchId destBranch, String destSetId, CopySetParams params) {
+   public void copyDispoSetCoverage(BranchId sourceBranch, Long sourceCoverageUuid, BranchId destBranch, String destSetId, CopySetParams params, String userName) {
       Map<String, ArtifactReadable> coverageUnits = getQuery().getCoverageUnits(sourceBranch, sourceCoverageUuid);
       List<DispoItem> destItems = getDispoItems(destBranch, destSetId);
 
@@ -660,13 +660,13 @@ public class DispoApiImpl implements DispoApi {
       String operation =
          String.format("Copy From Legacy Coverage - Branch [%s] and Source Set [%s]", sourceBranch, sourceCoverageUuid);
       if (!copyData.isEmpty()) {
-         editDispoItems(destBranch, destSetId, copyData, false, operation);
+         editDispoItems(destBranch, destSetId, copyData, false, operation, userName);
          storageProvider.get().updateOperationSummary(getQuery().findUser(), destBranch, destSetId, report);
       }
    }
 
    @Override
-   public void copyDispoSet(BranchId branch, String destSetId, BranchId sourceBranch, String sourceSetId, CopySetParams params) {
+   public void copyDispoSet(BranchId branch, String destSetId, BranchId sourceBranch, String sourceSetId, CopySetParams params, String userName) {
       List<DispoItem> sourceItems = getDispoItems(sourceBranch, sourceSetId);
       Map<String, Set<DispoItemData>> namesToDestItems = new HashMap<>();
       for (DispoItem itemArt : getDispoItems(branch, destSetId)) {
@@ -701,7 +701,7 @@ public class DispoApiImpl implements DispoApi {
 
       String operation = String.format("Copy Set from Program [%s] and Set [%s]", sourceBranch, sourceSetId);
       if (!namesToToEditItems.isEmpty() && !report.getStatus().isFailed()) {
-         editDispoItems(branch, destSetId, namesToToEditItems.values(), false, operation);
+         editDispoItems(branch, destSetId, namesToToEditItems.values(), false, operation, userName);
          storageProvider.get().updateOperationSummary(getQuery().findUser(), branch, destSetId, report);
       }
       storeRerunData(branch, destSetId, reruns);

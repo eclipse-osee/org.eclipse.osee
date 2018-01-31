@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
@@ -44,7 +45,7 @@ public class DispositionInitializer {
 
       // create Dispo Config Art
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON,
-         SystemUser.OseeSystem, "Create Dispo Config");
+         DemoUsers.Joe_Smith, "Create Dispo Config");
       ArtifactId createArtifact = tx.createArtifact(CoreArtifactTypes.GeneralData, DispoStrings.Dispo_Config_Art);
       StringBuffer sb = new StringBuffer(SAW_Bld_1.getIdString());
       sb.append(":");
@@ -61,6 +62,6 @@ public class DispositionInitializer {
       descriptor.setName("DEMO SET");
       descriptor.setImportPath("c:");
       BranchId branch = SAW_Bld_1_FOR_DISPO;
-      dispoApi.createDispoSet(branch, descriptor);
+      dispoApi.createDispoSet(branch, descriptor, DemoUsers.Joe_Smith.getIdString());
    }
 }

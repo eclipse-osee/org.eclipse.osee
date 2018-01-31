@@ -63,11 +63,11 @@ public class DispoSetResourceTest {
       expected.setGuid(id1AsString);
       expected.setName(descriptor.getName());
       expected.setImportPath(descriptor.getImportPath());
-      when(dispositionApi.createDispoSet(branch, descriptor)).thenReturn(id1);
+      when(dispositionApi.createDispoSet(branch, descriptor, "")).thenReturn(id1);
       when(dispositionApi.getDispoSetById(branch, id1AsString)).thenReturn(expected);
       when(dispositionApi.isUniqueSetName(branch, descriptor.getName())).thenReturn(true);
 
-      Response postResponse = resource.postDispoSet(descriptor);
+      Response postResponse = resource.postDispoSet(descriptor, "");
       DispoSetData returnedEntity = (DispoSetData) postResponse.getEntity();
       assertEquals(Response.Status.CREATED.getStatusCode(), postResponse.getStatus());
       assertEquals(id1AsString, returnedEntity.getGuid());
@@ -81,7 +81,7 @@ public class DispoSetResourceTest {
       DispoSetDescriptorData badNameDescriptor = new DispoSetDescriptorData();
       badNameDescriptor.setName("");
       badNameDescriptor.setImportPath("c:");
-      Response postResponseBadName = resource.postDispoSet(badNameDescriptor);
+      Response postResponseBadName = resource.postDispoSet(badNameDescriptor, "");
       String returnedEntityBadName = (String) postResponseBadName.getEntity();
       assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), postResponseBadName.getStatus());
       assertEquals(DispoMessages.Set_EmptyNameOrPath, returnedEntityBadName);
@@ -90,7 +90,7 @@ public class DispoSetResourceTest {
       DispoSetDescriptorData badPathDescriptor = new DispoSetDescriptorData();
       badPathDescriptor.setName("name");
       badPathDescriptor.setImportPath("");
-      Response postResponseBadPath = resource.postDispoSet(badPathDescriptor);
+      Response postResponseBadPath = resource.postDispoSet(badPathDescriptor, "");
       String returnedEntityBadPath = (String) postResponseBadPath.getEntity();
       assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), postResponseBadPath.getStatus());
       assertEquals(DispoMessages.Set_EmptyNameOrPath, returnedEntityBadPath);
@@ -105,7 +105,7 @@ public class DispoSetResourceTest {
 
       when(dispositionApi.isUniqueSetName(branch, descriptor.getName())).thenReturn(false);
 
-      Response postResponse = resource.postDispoSet(descriptor);
+      Response postResponse = resource.postDispoSet(descriptor, "");
       String returnedEntity = (String) postResponse.getEntity();
       assertEquals(Response.Status.CONFLICT.getStatusCode(), postResponse.getStatus());
       assertEquals(DispoMessages.Set_ConflictingNames, returnedEntity);
@@ -152,7 +152,7 @@ public class DispoSetResourceTest {
       DispoSetData newSet = new DispoSetData();
       DispoSetData setToEdt = new DispoSetData();
       setToEdt.setGuid(id1AsString);
-      Response response = resource.putDispoSet(id1AsString, newSet);
+      Response response = resource.putDispoSet(id1AsString, newSet, "");
       assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
    }
 
@@ -160,12 +160,12 @@ public class DispoSetResourceTest {
    public void testDelete() {
       DispoSetData setToEdt = new DispoSetData();
       setToEdt.setGuid(id1AsString);
-      when(dispositionApi.deleteDispoSet(branch, id1AsString)).thenReturn(true);
-      Response response = resource.deleteDispoSet(id1AsString);
+      when(dispositionApi.deleteDispoSet(branch, id1AsString, "")).thenReturn(true);
+      Response response = resource.deleteDispoSet(id1AsString, "");
       assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 
-      when(dispositionApi.deleteDispoSet(branch, id1AsString)).thenReturn(false);
-      response = resource.deleteDispoSet(id1AsString);
+      when(dispositionApi.deleteDispoSet(branch, id1AsString, "")).thenReturn(false);
+      response = resource.deleteDispoSet(id1AsString, "");
       assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
    }
 }

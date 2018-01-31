@@ -20,6 +20,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -58,14 +59,14 @@ public class DispoProgramResource {
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.TEXT_PLAIN)
-   public Response createProgram(DispoProgamDescriptorData programDescriptor) {
+   public Response createProgram(DispoProgamDescriptorData programDescriptor, @QueryParam("userName") String userName) {
       String name = programDescriptor.getName();
       Response.Status status;
       Response response;
       if (!name.isEmpty()) {
          boolean isUniqueName = dispoApi.isUniqueProgramName(name);
          if (isUniqueName) {
-            long createdProgramId = dispoApi.createDispoProgram(name);
+            long createdProgramId = dispoApi.createDispoProgram(name, userName);
             status = Status.CREATED;
             response = Response.status(status).entity(createdProgramId).build();
          } else {

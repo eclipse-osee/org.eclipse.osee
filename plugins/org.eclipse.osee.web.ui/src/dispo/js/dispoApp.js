@@ -295,3 +295,13 @@ app.provider('Annotation', function() {
     ];
 });
 
+app.provider('Account', function() {
+    this.$get = ['$resource',
+     function($resource) {
+	   var Account = $resource('/accounts/user', {}, {
+	 });
+	 return Account;
+	}
+  ];
+});
+

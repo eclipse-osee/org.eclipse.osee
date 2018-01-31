@@ -53,9 +53,9 @@ public interface DispoApi {
    DispoSet getDispoItemParentSet(BranchId branch, String itemId);
 
    // Writes
-   Long createDispoProgram(String name);
+   Long createDispoProgram(String name, String userName);
 
-   Long createDispoSet(BranchId branch, DispoSetDescriptorData descriptor);
+   Long createDispoSet(BranchId branch, DispoSetDescriptorData descriptor, String userName);
 
    String createDispoAnnotation(BranchId branch, String itemId, DispoAnnotationData annotation, String userName, boolean isCi);
 
@@ -67,25 +67,25 @@ public interface DispoApi {
 
    void editDispoDiscrepancies(BranchId branch, String itemId, List<Discrepancy> discrepancies, String userName);
 
-   void editDispoSet(BranchId branch, String dispoSetId, DispoSetData newDispoSet);
+   void editDispoSet(BranchId branch, String dispoSetId, DispoSetData newDispoSet, String userName);
 
-   boolean editDispoItem(BranchId branch, String itemId, DispoItemData newDispoItem);
+   boolean editDispoItem(BranchId branch, String itemId, DispoItemData newDispoItem, String userName);
 
-   boolean editMassDispositions(BranchId branch, String itemId, List<String> ids, String resolutionType, String resolution);
+   boolean editMassDispositions(BranchId branch, String itemId, List<String> ids, String resolutionType, String resolution, String userName);
 
-   boolean massEditTeam(BranchId branch, String setId, List<String> itemNames, String team, String commitMessage);
+   boolean massEditTeam(BranchId branch, String setId, List<String> itemNames, String team, String commitMessage, String userName);
 
    boolean editDispoAnnotation(BranchId branch, String itemId, String annotationId, DispoAnnotationData newAnnotation, String userName, boolean isCi);
 
-   void copyDispoSet(BranchId branch, String destSetId, BranchId sourceBranch, String sourceSetId, CopySetParams params);
+   void copyDispoSet(BranchId branch, String destSetId, BranchId sourceBranch, String sourceSetId, CopySetParams params, String userName);
 
-   void copyDispoSetCoverage(BranchId sourceBranch, Long sourceCoverageUuid, BranchId destBranch, String destSetId, CopySetParams params);
+   void copyDispoSetCoverage(BranchId sourceBranch, Long sourceCoverageUuid, BranchId destBranch, String destSetId, CopySetParams params, String userName);
 
    // Deletes
 
-   boolean deleteDispoSet(BranchId branch, String dispoSetId);
+   boolean deleteDispoSet(BranchId branch, String dispoSetId, String userName);
 
-   boolean deleteDispoItem(BranchId branch, String itemId);
+   boolean deleteDispoItem(BranchId branch, String itemId, String userName);
 
    boolean deleteDispoAnnotation(BranchId branch, String itemId, String annotationId, String userName, boolean isCi);
 

@@ -75,9 +75,9 @@ public class DispoItemResource {
    @Path("{itemId}")
    @PUT
    @Consumes(MediaType.APPLICATION_JSON)
-   public Response putDispoItem(@PathParam("itemId") String itemId, DispoItemData newDispoItem) {
+   public Response putDispoItem(@PathParam("itemId") String itemId, DispoItemData newDispoItem, @QueryParam("userName") String userName) {
       Response response;
-      boolean wasEdited = dispoApi.editDispoItem(branch, itemId, newDispoItem);
+      boolean wasEdited = dispoApi.editDispoItem(branch, itemId, newDispoItem, userName);
       if (wasEdited) {
          response = Response.status(Response.Status.OK).build();
       } else {
@@ -96,9 +96,9 @@ public class DispoItemResource {
     */
    @Path("{itemId}")
    @DELETE
-   public Response deleteDispoItem(@PathParam("itemId") String itemId) {
+   public Response deleteDispoItem(@PathParam("itemId") String itemId, @QueryParam("userName") String userName) {
       Response response;
-      boolean wasEdited = dispoApi.deleteDispoItem(branch, itemId);
+      boolean wasEdited = dispoApi.deleteDispoItem(branch, itemId, userName);
       if (wasEdited) {
          response = Response.status(Response.Status.OK).build();
       } else {

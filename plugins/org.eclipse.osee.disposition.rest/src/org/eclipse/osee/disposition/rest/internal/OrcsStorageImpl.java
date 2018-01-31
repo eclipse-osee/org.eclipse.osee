@@ -216,13 +216,13 @@ public class OrcsStorageImpl implements Storage {
    public Long createDispoSet(ArtifactReadable author, BranchId branch, DispoSet descriptor) {
       TransactionBuilder tx = getTxFactory().createTransaction(branch, author, "Create Dispo Set");
       ArtifactId creatdArtId = tx.createArtifact(DispoConstants.DispoSet, descriptor.getName());
-      tx.setSoleAttributeFromString(creatdArtId, DispoConstants.ImportPath, descriptor.getImportPath());
-      tx.setSoleAttributeFromString(creatdArtId, DispoConstants.ImportState, descriptor.getImportState());
-      tx.setSoleAttributeFromString(creatdArtId, DispoConstants.DispoType, descriptor.getDispoType());
+      tx.setSoleAttributeValue(creatdArtId, DispoConstants.ImportPath, descriptor.getImportPath());
+      tx.setSoleAttributeValue(creatdArtId, DispoConstants.ImportState, descriptor.getImportState());
+      tx.setSoleAttributeValue(creatdArtId, DispoConstants.DispoType, descriptor.getDispoType());
       JSONArray notesJarray = DispoUtil.noteListToJsonObj(descriptor.getNotesList());
-      tx.setSoleAttributeFromString(creatdArtId, DispoConstants.DispoNotesJson, notesJarray.toString());
-      tx.setSoleAttributeFromString(creatdArtId, DispoConstants.DispoCiSet, descriptor.getCiSet());
-      tx.setSoleAttributeFromString(creatdArtId, DispoConstants.DispoRerunList, descriptor.getRerunList());
+      tx.setSoleAttributeValue(creatdArtId, DispoConstants.DispoNotesJson, notesJarray.toString());
+      tx.setSoleAttributeValue(creatdArtId, DispoConstants.DispoCiSet, descriptor.getCiSet());
+      tx.setSoleAttributeValue(creatdArtId, DispoConstants.DispoRerunList, descriptor.getRerunList());
       tx.setSoleAttributeValue(creatdArtId, DispoConstants.DispoTime, descriptor.getTime());
       tx.commit();
       return creatdArtId.getUuid();
@@ -307,22 +307,22 @@ public class OrcsStorageImpl implements Storage {
 
          // Need to convert to Json String
          String discrepanciesAsJsonString = DispoUtil.disrepanciesMapToJson(item.getDiscrepanciesList()).toString();
-         tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoDiscrepanciesJson, discrepanciesAsJsonString);
+         tx.setSoleAttributeValue(createdItem, DispoConstants.DispoDiscrepanciesJson, discrepanciesAsJsonString);
          String annotationsAsJsonString = DispoUtil.annotationsListToJson(item.getAnnotationsList()).toString();
-         tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoAnnotationsJson, annotationsAsJsonString);
+         tx.setSoleAttributeValue(createdItem, DispoConstants.DispoAnnotationsJson, annotationsAsJsonString);
          // End
 
-         tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoItemVersion, item.getVersion());
-         tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoItemAssignee, item.getAssignee());
-         tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoItemMachine, item.getMachine());
-         tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoItemCategory, item.getCategory());
-         tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoItemElapsedTime, item.getElapsedTime());
+         tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemVersion, item.getVersion());
+         tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemAssignee, item.getAssignee());
+         tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemMachine, item.getMachine());
+         tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemCategory, item.getCategory());
+         tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemElapsedTime, item.getElapsedTime());
 
          if (Strings.isValid(item.getFileNumber())) {
-            tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoItemFileNumber, item.getFileNumber());
+            tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemFileNumber, item.getFileNumber());
          }
          if (Strings.isValid(item.getMethodNumber())) {
-            tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoItemMethodNumber, item.getMethodNumber());
+            tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemMethodNumber, item.getMethodNumber());
          }
          tx.relate(parentSetArt, CoreRelationTypes.Default_Hierarchical__Child, createdItem);
       }
@@ -638,4 +638,14 @@ public class OrcsStorageImpl implements Storage {
          DispoConstants.DispoCiSet).getResults().getList();
    }
 
+   @Override
+   public ArtifactReadable findUserByName(String name) {
+      ArtifactReadable user =
+         getQuery().fromBranch(COMMON).andIsOfType(CoreArtifactTypes.User).and(CoreAttributeTypes.Name,
+            name).getResults().getOneOrNull();
+      if (user == null) {
+         user = findUser();
+      }
+      return user;
+   }
 }

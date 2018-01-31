@@ -124,7 +124,7 @@ public class DispoApiTest {
       when(itemId.getGuid()).thenReturn("mnopqr");
 
       when(mockBranch.getName()).thenReturn("branchName");
-      when(storage.findUser()).thenReturn(author);
+      when(storage.findUserByName(null)).thenReturn(author);
       when(storageProvider.get()).thenReturn(storage);
 
       dispoApi.setStorageProvider(storageProvider);
@@ -276,7 +276,7 @@ public class DispoApiTest {
       when(dataFactory.creteSetDataFromDescriptor(descriptor)).thenReturn(setFromDescriptor);
 
       when(storage.createDispoSet(author, branch, setFromDescriptor)).thenReturn(mockArtId);
-      Long createDispoSetId = dispoApi.createDispoSet(branch, descriptor);
+      Long createDispoSetId = dispoApi.createDispoSet(branch, descriptor, author.getIdString());
       assertEquals(mockArtId, createDispoSetId);
    }
 
@@ -325,16 +325,16 @@ public class DispoApiTest {
       when(storage.findDispoItemById(branch, itemId.getGuid())).thenReturn(dispoItem);
       when(dispoItem.getDiscrepanciesList()).thenReturn(mockDiscrepancies);
 
-      boolean actual = dispoApi.editDispoItem(branch, itemId.getGuid(), newItem);
+      boolean actual = dispoApi.editDispoItem(branch, itemId.getGuid(), newItem, author.getIdString());
       assertTrue(actual);
 
       Map<String, Discrepancy> discrepanciesList = new HashMap<String, Discrepancy>();
       newItem.setDiscrepanciesList(discrepanciesList);
-      actual = dispoApi.editDispoItem(branch, itemId.getGuid(), newItem);
+      actual = dispoApi.editDispoItem(branch, itemId.getGuid(), newItem, author.getIdString());
       assertFalse(actual);
 
       newItem.setAnnotationsList(mockAnnotations);
-      actual = dispoApi.editDispoItem(branch, itemId.getGuid(), newItem);
+      actual = dispoApi.editDispoItem(branch, itemId.getGuid(), newItem, author.getIdString());
       assertFalse(actual);
    }
 
