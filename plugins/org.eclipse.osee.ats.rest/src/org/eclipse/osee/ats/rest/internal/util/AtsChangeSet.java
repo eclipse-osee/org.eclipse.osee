@@ -220,7 +220,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          if (atsObject.getStoreObject() instanceof ArtifactReadable) {
             artifact = (ArtifactReadable) atsObject.getStoreObject();
          } else {
-            artifact = atsServer.getArtifact(atsObject.getId());
+            artifact = (ArtifactReadable) atsServer.getQueryService().getArtifact(atsObject.getId());
          }
       }
       return artifact;

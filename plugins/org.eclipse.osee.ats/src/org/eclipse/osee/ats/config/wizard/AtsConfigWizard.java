@@ -85,9 +85,11 @@ public class AtsConfigWizard extends Wizard implements INewWizard {
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {
                try {
-                  AtsEditors.openATSAction(AtsClientService.get().getConfigArtifact(teamDef), AtsOpenOption.OpenAll);
+                  AtsEditors.openATSAction(AtsClientService.get().getQueryService().getArtifact(teamDef),
+                     AtsOpenOption.OpenAll);
                   for (IAtsActionableItem aia : aias) {
-                     AtsEditors.openATSAction(AtsClientService.get().getConfigArtifact(aia), AtsOpenOption.OpenAll);
+                     AtsEditors.openATSAction(AtsClientService.get().getQueryService().getArtifact(aia),
+                        AtsOpenOption.OpenAll);
                   }
                   RendererManager.open(ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition,
                      workDefinition.getName(), AtsClientService.get().getAtsBranch()),

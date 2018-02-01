@@ -39,7 +39,7 @@ public class TeamWorkflow extends WorkItem implements IAtsTeamWorkflow {
       Collection<ArtifactId> artIds =
          atsApi.getAttributeResolver().getArtifactIdReferences(artifact, AtsAttributeTypes.ActionableItemReference);
       for (ArtifactId artId : artIds) {
-         IAtsActionableItem ai = atsApi.getConfigItem(artId);
+         IAtsActionableItem ai = atsApi.getQueryService().getConfigItem(artId);
          Conditions.assertNotNull(ai, "ai can not be null for artId %s", artId);
          ais.add(ai);
       }
@@ -52,7 +52,7 @@ public class TeamWorkflow extends WorkItem implements IAtsTeamWorkflow {
       ArtifactId teamDefId = atsApi.getAttributeResolver().getSoleArtifactIdReference(artifact,
          AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);
       if (teamDefId.isValid()) {
-         teamDef = atsApi.getConfigItem(teamDefId);
+         teamDef = atsApi.getQueryService().getConfigItem(teamDefId);
       }
       return teamDef;
    }

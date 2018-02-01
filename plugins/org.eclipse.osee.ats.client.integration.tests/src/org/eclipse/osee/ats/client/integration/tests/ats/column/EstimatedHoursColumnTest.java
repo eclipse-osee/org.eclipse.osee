@@ -67,9 +67,9 @@ public class EstimatedHoursColumnTest {
       Artifact taskArt1 = null, taskArt2 = null;
       for (IAtsTask task : createTasks) {
          if (task.getName().endsWith("2")) {
-            taskArt2 = AtsClientService.get().getArtifact(task);
+            taskArt2 = (Artifact) AtsClientService.get().getQueryService().getArtifact(task);
          } else {
-            taskArt1 = AtsClientService.get().getArtifact(task);
+            taskArt1 = (Artifact) AtsClientService.get().getQueryService().getArtifact(task);
          }
       }
 

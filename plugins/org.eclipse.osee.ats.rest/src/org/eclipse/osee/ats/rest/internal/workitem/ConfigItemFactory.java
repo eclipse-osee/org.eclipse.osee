@@ -283,7 +283,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    }
 
    private void deleteConfigObject(long id, String comment, IArtifactType type) {
-      ArtifactReadable toDelete = atsServer.getArtifact(id);
+      ArtifactReadable toDelete = (ArtifactReadable) atsServer.getQueryService().getArtifact(id);
       if (toDelete == null) {
          throw new OseeCoreException("No object found for id %d", id);
       }

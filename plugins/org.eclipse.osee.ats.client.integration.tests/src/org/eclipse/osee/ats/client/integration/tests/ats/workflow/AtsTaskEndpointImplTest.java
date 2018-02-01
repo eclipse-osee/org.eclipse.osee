@@ -225,11 +225,11 @@ public class AtsTaskEndpointImplTest {
 
       // Test Delete
       taskEp.delete(taskId1);
-      Assert.assertNull(AtsClientService.get().getArtifact(taskId1));
+      Assert.assertNull(AtsClientService.get().getQueryService().getArtifact(taskId1));
       taskEp.delete(taskId2);
-      Assert.assertNull(AtsClientService.get().getArtifact(taskId2));
+      Assert.assertNull(AtsClientService.get().getQueryService().getArtifact(taskId2));
       taskEp.delete(taskId3);
-      Assert.assertNull(AtsClientService.get().getArtifact(taskId3));
+      Assert.assertNull(AtsClientService.get().getQueryService().getArtifact(taskId3));
    }
 
    private JaxAtsTask createJaxAtsTask(long taskId, String title, String description, String createdByUserId, Date createdDate, List<String> assigneeUserIds) {

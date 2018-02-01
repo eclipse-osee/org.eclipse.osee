@@ -75,13 +75,13 @@ public class AtsWorkDefinitionStoreService implements IAtsWorkDefinitionStringPr
    }
 
    public String loadRuleDefinitionString() {
-      ArtifactToken artifact = atsApi.getArtifact(AtsArtifactToken.RuleDefinitions);
+      ArtifactToken artifact = atsApi.getQueryService().getArtifact(AtsArtifactToken.RuleDefinitions);
       Conditions.checkNotNull(artifact, "Work Definition artifact");
       return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.DslSheet, "");
    }
 
    public WorkDefData loadWorkDefinitionString(Long id) {
-      ArtifactToken artifact = atsApi.getArtifact(id);
+      ArtifactToken artifact = atsApi.getQueryService().getArtifact(id);
       Conditions.checkNotNull(artifact, "Work Definition artifact");
       return new WorkDefData(artifact.getId(), artifact.getName(), loadWorkDefinitionFromArtifact(artifact));
    }

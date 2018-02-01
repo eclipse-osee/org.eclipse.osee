@@ -92,7 +92,7 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
 
       changes = AtsClientService.get().createChangeSet(getName());
       for (IAtsTask task : createTasks) {
-         Artifact taskArt = AtsClientService.get().getArtifact(task);
+         Artifact taskArt = (Artifact) AtsClientService.get().getQueryService().getArtifact(task);
          toolsTeamGoal.addMember(taskArt);
          changes.relate(toolsTeamGoal, AtsRelationTypes.Goal_Member, taskArt);
       }

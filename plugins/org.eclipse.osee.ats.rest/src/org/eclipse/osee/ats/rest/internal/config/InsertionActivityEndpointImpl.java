@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -48,7 +49,7 @@ public class InsertionActivityEndpointImpl extends BaseConfigEndpointImpl<JaxIns
    @PUT
    @Override
    public Response update(JaxInsertionActivity activity) throws Exception {
-      ArtifactReadable artifact = atsServer.getArtifact(activity.getId());
+      ArtifactReadable artifact = (ArtifactReadable) atsServer.getQueryService().getArtifact(activity.getId());
       if (artifact == null) {
          throw new OseeStateException("Artifact with id %d not found", activity.getId());
       }
@@ -83,7 +84,8 @@ public class InsertionActivityEndpointImpl extends BaseConfigEndpointImpl<JaxIns
             insertions.add(getConfigObject(art));
          }
       } else {
-         for (ArtifactReadable activityArt : atsServer.getArtifact(insertionId).getRelated(
+         for (ArtifactToken activityArt : atsServer.getRelationResolver().getRelated(
+            atsServer.getQueryService().getArtifact(insertionId),
             AtsRelationTypes.InsertionToInsertionActivity_InsertionActivity)) {
             JaxInsertionActivity activity = getConfigObject(activityArt);
             activity.setInsertionId(insertionId);
@@ -97,7 +99,8 @@ public class InsertionActivityEndpointImpl extends BaseConfigEndpointImpl<JaxIns
    protected void create(JaxInsertionActivity jaxInsertionActivity, ArtifactId insertionActivityArtId, IAtsChangeSet changes) {
       ArtifactReadable insertionActivityArt = (ArtifactReadable) insertionActivityArtId;
       if (insertionActivityArt.getRelatedCount(AtsRelationTypes.InsertionToInsertionActivity_Insertion) == 0) {
-         ArtifactReadable insertionArt = atsServer.getArtifact(jaxInsertionActivity.getInsertionId());
+         ArtifactReadable insertionArt =
+            (ArtifactReadable) atsServer.getQueryService().getArtifact(jaxInsertionActivity.getInsertionId());
          changes.relate(insertionArt, AtsRelationTypes.InsertionToInsertionActivity_InsertionActivity,
             insertionActivityArt);
       }

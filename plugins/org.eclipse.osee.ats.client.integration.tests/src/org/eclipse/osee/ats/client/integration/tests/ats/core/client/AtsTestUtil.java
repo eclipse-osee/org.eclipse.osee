@@ -509,16 +509,16 @@ public class AtsTestUtil {
       delete(changes, actionArt3);
       delete(changes, actionArt4);
       if (verArt1 != null) {
-         delete(changes, AtsClientService.get().getArtifact(verArt1));
+         delete(changes, (Artifact) AtsClientService.get().getQueryService().getArtifact(verArt1));
       }
       if (verArt2 != null) {
-         delete(changes, AtsClientService.get().getArtifact(verArt2));
+         delete(changes, (Artifact) AtsClientService.get().getQueryService().getArtifact(verArt2));
       }
       if (verArt3 != null) {
-         delete(changes, AtsClientService.get().getArtifact(verArt3));
+         delete(changes, (Artifact) AtsClientService.get().getQueryService().getArtifact(verArt3));
       }
       if (verArt4 != null) {
-         delete(changes, AtsClientService.get().getArtifact(verArt4));
+         delete(changes, (Artifact) AtsClientService.get().getQueryService().getArtifact(verArt4));
       }
       if (!changes.isEmpty()) {
          changes.execute();
@@ -533,7 +533,7 @@ public class AtsTestUtil {
          AtsTestUtil.class.getSimpleName() + " - cleanup config");
       for (IAtsConfigObject config : Arrays.asList(teamDef, testAi, testAi2, testAi3, testAi4)) {
          if (config != null) {
-            Artifact art = AtsClientService.get().getArtifact(config);
+            Artifact art = (Artifact) AtsClientService.get().getQueryService().getArtifact(config);
             if (art != null) {
                art.deleteAndPersist(transaction);
             }

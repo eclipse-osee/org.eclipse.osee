@@ -307,7 +307,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                      List<AbstractWorkflowArtifact> awas = new ArrayList<>();
                      for (IAtsAbstractReview review : ReviewManager.getReviewsFromCurrentState(teamArt)) {
                         AbstractReviewArtifact revArt =
-                           (AbstractReviewArtifact) AtsClientService.get().getArtifact(review);
+                           (AbstractReviewArtifact) AtsClientService.get().getQueryService().getArtifact(review);
                         if (!revArt.isCompletedOrCancelled()) {
                            if (revArt.getStateMgr().isUnAssigned()) {
                               revArt.getStateMgr().setAssignee(

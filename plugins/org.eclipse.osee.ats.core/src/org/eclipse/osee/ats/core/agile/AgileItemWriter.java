@@ -123,7 +123,7 @@ public class AgileItemWriter {
          }
 
          if (newItem.isSetSprint()) {
-            ArtifactToken sprintArt = atsApi.getArtifact(newItem.getSprintId());
+            ArtifactToken sprintArt = atsApi.getQueryService().getArtifact(newItem.getSprintId());
             IAgileSprint sprint = atsApi.getAgileService().getAgileSprint(sprintArt);
             for (ArtifactToken awa : atsApi.getArtifacts(newItem.getIds())) {
                if (sprint != null) {
@@ -136,7 +136,7 @@ public class AgileItemWriter {
          }
 
          if (newItem.isSetBacklog()) {
-            ArtifactToken backlogArt = atsApi.getArtifact(newItem.getBacklogId());
+            ArtifactToken backlogArt = atsApi.getQueryService().getArtifact(newItem.getBacklogId());
             IAgileSprint backlog = atsApi.getAgileService().getAgileSprint(backlogArt);
             for (ArtifactToken awa : atsApi.getArtifacts(newItem.getIds())) {
                if (backlog != null) {
@@ -172,7 +172,7 @@ public class AgileItemWriter {
    private List<IAtsWorkItem> getWorkItems() {
       List<IAtsWorkItem> workItems = new LinkedList<IAtsWorkItem>();
       for (long id : newItem.getIds()) {
-         IAtsWorkItem workItem = atsApi.getTeamWf(id);
+         IAtsWorkItem workItem = atsApi.getQueryService().getTeamWf(id);
          workItems.add(workItem);
       }
       return workItems;

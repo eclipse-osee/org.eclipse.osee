@@ -64,7 +64,7 @@ public class AtsRuleEndpointImpl implements AtsRuleEndpointApi {
 
       List<IAtsWorkItem> workItemsCreated = new LinkedList<>();
       for (long workflowId : runRuleData.getWorkItemIds()) {
-         ArtifactReadable artifact = atsServer.getArtifact(workflowId);
+         ArtifactReadable artifact = (ArtifactReadable) atsServer.getQueryService().getArtifact(workflowId);
          IAtsWorkItem workItem = atsServer.getWorkItemFactory().getWorkItem(artifact);
          if (workItem == null) {
             throw new OseeArgumentException("Workflow of id [%d] does not exist", workflowId);
@@ -86,7 +86,7 @@ public class AtsRuleEndpointImpl implements AtsRuleEndpointApi {
    @Path("rule")
    @Override
    public Response addRuleToConfig(AddRuleData setRuleData) {
-      ArtifactReadable artifact = atsServer.getArtifact(setRuleData.getConfigItemId());
+      ArtifactReadable artifact = (ArtifactReadable) atsServer.getQueryService().getArtifact(setRuleData.getConfigItemId());
       List<String> ruleList = artifact.getAttributeValues(AtsAttributeTypes.RuleDefinition);
       if (!ruleList.contains(setRuleData.getRuleName())) {
          IAtsChangeSet changes =

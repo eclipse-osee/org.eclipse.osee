@@ -47,8 +47,9 @@ public class AgileProgramFeature extends AtsConfigObject implements IAgileProgra
    public Long getProgramId() {
       return atsApi.getRelationResolver().getParent(artifact).getId();
    }
+
    public static IAgileProgramFeature construct(ArtifactId progFeatureArt, AtsApi atsApi) {
-      return new AgileProgramFeature(atsApi.getLogger(), atsApi, atsApi.getArtifact(progFeatureArt));
+      return new AgileProgramFeature(atsApi.getLogger(), atsApi, atsApi.getQueryService().getArtifact(progFeatureArt));
    }
 
 }

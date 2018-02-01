@@ -109,7 +109,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
     * Has potential of returning null if this fromAi has already been processed.
     */
    protected IAtsActionableItem createActionableItems(IAtsChangeSet changes, IAtsActionableItem fromAi, IAtsActionableItem parentAi) {
-      Artifact fromAiArt = AtsClientService.get().getConfigArtifact(fromAi);
+      Artifact fromAiArt = (Artifact) AtsClientService.get().getQueryService().getArtifact(fromAi);
 
       if (processedFromAis.contains(fromAiArt)) {
          resultData.log(String.format("Skipping already processed fromAi [%s]", fromAiArt));
@@ -117,7 +117,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       } else {
          processedFromAis.add(fromAiArt);
       }
-      Artifact parentAiArt = AtsClientService.get().getArtifact(parentAi);
+      Artifact parentAiArt = (Artifact) AtsClientService.get().getQueryService().getArtifact(parentAi);
 
       // Get or create new team definition
       Artifact newAiArt = duplicateTeamDefinitionOrActionableItem(changes, fromAiArt);
@@ -136,7 +136,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
             resultData.warningf("No related Team Definition [%s] in scope for AI [%s].  Configure by hand.",
                fromTeamDefArt, newAiArt);
          } else {
-            Artifact newTeamDefArt = AtsClientService.get().getConfigArtifact(newTeamDef);
+            Artifact newTeamDefArt = (Artifact) AtsClientService.get().getQueryService().getArtifact(newTeamDef);
             newAiArt.addRelation(AtsRelationTypes.TeamActionableItem_Team, newTeamDefArt);
             changes.add(newTeamDefArt);
          }
@@ -155,8 +155,8 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
 
    protected IAtsTeamDefinition createTeamDefinitions(IAtsChangeSet changes, IAtsTeamDefinition fromTeamDef, IAtsTeamDefinition parentTeamDef) {
       // Get or create new team definition
-      Artifact parentTeamDefArt = AtsClientService.get().getConfigArtifact(parentTeamDef);
-      Artifact fromTeamDefArt = AtsClientService.get().getConfigArtifact(fromTeamDef);
+      Artifact parentTeamDefArt = (Artifact) AtsClientService.get().getQueryService().getArtifact(parentTeamDef);
+      Artifact fromTeamDefArt = (Artifact) AtsClientService.get().getQueryService().getArtifact(fromTeamDef);
 
       Artifact newTeamDefArt = duplicateTeamDefinitionOrActionableItem(changes, fromTeamDefArt);
       changes.add(newTeamDefArt);
@@ -182,8 +182,8 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
    }
 
    private void duplicateTeamLeadsAndMembers(IAtsChangeSet changes, IAtsTeamDefinition fromTeamDef, IAtsTeamDefinition newTeamDef) {
-      Artifact fromTeamDefArt = AtsClientService.get().getConfigArtifact(fromTeamDef);
-      Artifact newTeamDefArt = AtsClientService.get().getConfigArtifact(newTeamDef);
+      Artifact fromTeamDefArt = (Artifact) AtsClientService.get().getQueryService().getArtifact(fromTeamDef);
+      Artifact newTeamDefArt = (Artifact) AtsClientService.get().getQueryService().getArtifact(newTeamDef);
 
       Collection<Artifact> leads = newTeamDefArt.getRelatedArtifacts(AtsRelationTypes.TeamLead_Lead);
       for (Artifact user : fromTeamDefArt.getRelatedArtifacts(AtsRelationTypes.TeamLead_Lead)) {

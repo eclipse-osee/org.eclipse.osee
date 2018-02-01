@@ -11,7 +11,9 @@
 package org.eclipse.osee.ats.api.agile;
 
 import java.util.List;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 
 /**
  * @author Donald G. Dunne
@@ -29,6 +31,11 @@ public class JaxAgileProgramBacklog extends JaxAgileProgramObject implements IAg
    @Override
    public List<Long> getBacklogItemIds() {
       return null;
+   }
+
+   @Override
+   public ArtifactTypeId getArtifactType() {
+      return AtsArtifactTypes.AgileBacklog;
    }
 
 }

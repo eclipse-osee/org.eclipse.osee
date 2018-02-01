@@ -88,7 +88,7 @@ public class AgileService implements IAgileService {
    @Override
    public IAgileProgram getAgileProgram(long programId) {
       IAgileProgram program = null;
-      ArtifactId progArt = atsApi.getArtifact(programId);
+      ArtifactId progArt = atsApi.getQueryService().getArtifact(programId);
       if (progArt != null) {
          program = AgileProgram.construct(progArt, atsApi);
       }
@@ -101,7 +101,7 @@ public class AgileService implements IAgileService {
    @Override
    public IAgileProgramFeature getAgileProgramFeature(long programFeatureId) {
       IAgileProgramFeature programFeature = null;
-      ArtifactId progArt = atsApi.getArtifact(programFeatureId);
+      ArtifactId progArt = atsApi.getQueryService().getArtifact(programFeatureId);
       if (progArt != null) {
          programFeature = AgileProgramFeature.construct(progArt, atsApi);
       }
@@ -130,7 +130,7 @@ public class AgileService implements IAgileService {
    @Override
    public ArtifactToken getAgileProgramBacklogArt(IAgileProgram program) {
       ArtifactToken programBacklogArt = null;
-      ArtifactId programArt = atsApi.getArtifact(program.getId());
+      ArtifactId programArt = atsApi.getQueryService().getArtifact(program.getId());
       if (programArt != null) {
          for (ArtifactToken child : atsApi.getRelationResolver().getChildren(programArt)) {
             if (atsApi.getStoreService().isOfType(child, AtsArtifactTypes.AgileProgramBacklog)) {
@@ -148,7 +148,7 @@ public class AgileService implements IAgileService {
    @Override
    public IAgileProgramBacklogItem getAgileProgramBacklogItem(long programBacklogItemId) {
       IAgileProgramBacklogItem programBacklogItem = null;
-      ArtifactId progBackItemArt = atsApi.getArtifact(programBacklogItemId);
+      ArtifactId progBackItemArt = atsApi.getQueryService().getArtifact(programBacklogItemId);
       if (progBackItemArt != null) {
          programBacklogItem = AgileProgramBacklogItem.construct(progBackItemArt, atsApi);
       }
@@ -166,7 +166,7 @@ public class AgileService implements IAgileService {
    @Override
    public IAgileTeam getAgileTeam(long id) {
       IAgileTeam team = null;
-      ArtifactId teamArt = atsApi.getArtifact(id);
+      ArtifactId teamArt = atsApi.getQueryService().getArtifact(id);
       if (teamArt != null) {
          team = getAgileTeam(teamArt);
       }
@@ -176,7 +176,7 @@ public class AgileService implements IAgileService {
    @Override
    public IAgileTeam getAgileTeamById(long teamId) {
       IAgileTeam team = null;
-      ArtifactId artifact = atsApi.getArtifact(teamId);
+      ArtifactId artifact = atsApi.getQueryService().getArtifact(teamId);
       if (artifact != null) {
          team = getAgileTeam(artifact);
       }
@@ -195,7 +195,7 @@ public class AgileService implements IAgileService {
 
    @Override
    public void deleteAgileTeam(long id) {
-      ArtifactToken team = atsApi.getArtifact(id);
+      ArtifactToken team = atsApi.getQueryService().getArtifact(id);
       if (!atsApi.getStoreService().isOfType(team, AtsArtifactTypes.AgileTeam)) {
          throw new OseeArgumentException("ID %d is not a valid Agile Team", id);
       }
@@ -317,7 +317,7 @@ public class AgileService implements IAgileService {
 
    @Override
    public void deleteAgileFeatureGroup(long id) {
-      ArtifactId featureGroup = atsApi.getArtifact(id);
+      ArtifactId featureGroup = atsApi.getQueryService().getArtifact(id);
       if (!atsApi.getStoreService().isOfType(featureGroup, AtsArtifactTypes.AgileFeatureGroup)) {
          throw new OseeArgumentException("ID %d is not a valid Agile Feature Group", id);
       }
@@ -350,7 +350,7 @@ public class AgileService implements IAgileService {
    @Override
    public IAgileBacklog getBacklogForTeam(long teamId) {
       IAgileBacklog backlog = null;
-      ArtifactId teamArt = atsApi.getArtifact(teamId);
+      ArtifactId teamArt = atsApi.getQueryService().getArtifact(teamId);
       ArtifactId backlogArt =
          atsApi.getRelationResolver().getRelatedOrNull(teamArt, AtsRelationTypes.AgileTeamToBacklog_Backlog);
       if (backlogArt != null) {
@@ -380,7 +380,7 @@ public class AgileService implements IAgileService {
    @Override
    public Collection<IAgileSprint> getSprintsForTeam(long teamId) {
       List<IAgileSprint> sprints = new ArrayList<>();
-      ArtifactId team = atsApi.getArtifact(teamId);
+      ArtifactId team = atsApi.getQueryService().getArtifact(teamId);
       for (ArtifactId sprintArt : atsApi.getRelationResolver().getRelated(team,
          AtsRelationTypes.AgileTeamToSprint_Sprint)) {
          sprints.add(getAgileSprint(sprintArt));
@@ -424,7 +424,7 @@ public class AgileService implements IAgileService {
    @Override
    public IAgileBacklog getAgileBacklog(long id) {
       IAgileBacklog backlog = null;
-      ArtifactId teamArt = atsApi.getArtifact(id);
+      ArtifactId teamArt = atsApi.getQueryService().getArtifact(id);
       if (teamArt != null) {
          backlog = getAgileBacklog(teamArt);
       }
@@ -484,7 +484,7 @@ public class AgileService implements IAgileService {
    @Override
    public Collection<IAgileFeatureGroup> getFeatureGroups(IAgileItem aItem) {
       List<IAgileFeatureGroup> groups = new LinkedList<>();
-      ArtifactId itemArt = atsApi.getArtifact(aItem);
+      ArtifactId itemArt = atsApi.getQueryService().getArtifact(aItem);
       for (ArtifactId featureGroup : atsApi.getRelationResolver().getRelated(itemArt,
          AtsRelationTypes.AgileFeatureToItem_FeatureGroup)) {
          groups.add(atsApi.getAgileService().getAgileFeatureGroup(featureGroup));
@@ -495,7 +495,7 @@ public class AgileService implements IAgileService {
    @Override
    public IAgileSprint getSprint(IAgileItem item) {
       IAgileSprint sprint = null;
-      ArtifactToken itemArt = atsApi.getArtifact(item);
+      ArtifactToken itemArt = atsApi.getQueryService().getArtifact(item);
       ArtifactToken sprintArt =
          atsApi.getRelationResolver().getRelatedOrNull(itemArt, AtsRelationTypes.AgileSprintToItem_Sprint);
       if (sprintArt != null) {
@@ -506,7 +506,7 @@ public class AgileService implements IAgileService {
 
    @Override
    public void deleteSprint(long sprintId) {
-      ArtifactId sprint = atsApi.getArtifact(sprintId);
+      ArtifactId sprint = atsApi.getQueryService().getArtifact(sprintId);
       if (sprint != null) {
          IAtsChangeSet changes = atsApi.createChangeSet("Delete Agile Sprint");
          changes.deleteArtifact(sprint);
@@ -516,7 +516,7 @@ public class AgileService implements IAgileService {
 
    @Override
    public IAgileTeam getAgileTeam(IAgileItem item) {
-      ArtifactId itemArt = atsApi.getArtifact(item);
+      ArtifactId itemArt = atsApi.getQueryService().getArtifact(item);
       ArtifactId backlogArt = atsApi.getRelationResolver().getRelatedOrNull(itemArt, AtsRelationTypes.Goal_Member);
       if (backlogArt != null) {
          ArtifactId teamArt =
@@ -658,7 +658,7 @@ public class AgileService implements IAgileService {
       XResultData results = new XResultData();
       results.setTitle("Store Sprint Reports");
       IAtsChangeSet changes = atsApi.createChangeSet("Store Agile Sprint Reports");
-      IAgileSprint sprint = getAgileSprint(atsApi.getArtifact(sprintId));
+      IAgileSprint sprint = getAgileSprint(atsApi.getQueryService().getArtifact(sprintId));
       createUpdateBurnChart(new SprintBurndownOperations(atsApi), teamId, sprintId, atsApi, changes, sprint);
       createUpdateBurnChart(new SprintBurnupOperations(atsApi), teamId, sprintId, atsApi, changes, sprint);
       for (IAgileSprintHtmlOperation operation : atsApi.getAgileSprintHtmlReportOperations()) {
@@ -690,7 +690,7 @@ public class AgileService implements IAgileService {
       List<IAtsTeamDefinition> teamDefs = new LinkedList<>();
       for (ArtifactId teamArt : atsApi.getRelationResolver().getRelated(aTeam.getStoreObject(),
          AtsRelationTypes.AgileTeamToAtsTeam_AtsTeam)) {
-         teamDefs.add(atsApi.getConfigItem(teamArt));
+         teamDefs.add(atsApi.getQueryService().getConfigItem(teamArt));
       }
       return teamDefs;
    }

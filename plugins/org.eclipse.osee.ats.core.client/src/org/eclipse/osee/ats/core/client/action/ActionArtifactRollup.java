@@ -46,7 +46,7 @@ public class ActionArtifactRollup {
    }
 
    public static void resetChangeTypeOffChildren(IAtsAction action) {
-      Artifact actionArt = AtsClientService.get().getArtifact(action);
+      Artifact actionArt = (Artifact) AtsClientService.get().getQueryService().getArtifact(action);
       if (!actionArt.isOfType(AtsArtifactTypes.Action)) {
          throw new OseeArgumentException("Artifact must be an Action instead of [%s]", actionArt.getArtifactTypeName());
       }

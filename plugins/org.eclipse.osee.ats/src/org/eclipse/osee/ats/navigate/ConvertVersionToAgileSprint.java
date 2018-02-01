@@ -115,7 +115,7 @@ public class ConvertVersionToAgileSprint extends XNavigateItemAction {
             }
             if (jaxSprint != null) {
                long id = jaxSprint.getId();
-               IAgileSprint sprint = (SprintArtifact) client.getArtifact(id);
+               IAgileSprint sprint = (SprintArtifact) client.getQueryService().getArtifact(id);
                ((Artifact) sprint.getStoreObject()).getParent().reloadAttributesAndRelations();
 
                IAtsChangeSet changes =

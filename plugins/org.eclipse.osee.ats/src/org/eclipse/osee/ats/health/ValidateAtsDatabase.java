@@ -702,7 +702,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private List<Long> getInvalidIds(List<Long> ids) {
       List<Long> badIds = new ArrayList<>();
       for (Long id : ids) {
-         if (AtsClientService.get().getArtifact(id) == null) {
+         if (AtsClientService.get().getQueryService().getArtifact(id) == null) {
             badIds.add(id);
          }
       }
@@ -939,7 +939,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                         "Error: Team workflow " + XResultDataUI.getHyperlink(
                            teamArt) + " has version" + XResultDataUI.getHyperlink(
                               artifact) + " that does not belong to teamDefHoldingVersions" + XResultDataUI.getHyperlink(
-                                 AtsClientService.get().getConfigArtifact(
+                                 (Artifact) AtsClientService.get().getQueryService().getArtifact(
                                     teamArt.getTeamDefinition().getTeamDefinitionHoldingVersions())));
                   }
                }

@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -79,8 +80,10 @@ public class ActionableItemOwner extends XViewerAtsColumn implements IXViewerVal
          if (teamArt != null) {
             for (IAtsActionableItem aia : AtsClientService.get().getWorkItemService().getActionableItemService().getActionableItems(
                teamArt)) {
-               users.addAll(AtsClientService.get().getConfigArtifact(aia).getRelatedArtifacts(
-                  AtsRelationTypes.ActionableItem_User, User.class));
+               for (ArtifactToken art : AtsClientService.get().getRelationResolver().getRelated(aia.getStoreObject(),
+                  AtsRelationTypes.ActionableItem_User)) {
+                  users.add((User) art);
+               }
             }
          }
       } else if (element instanceof IAtsWorkItem) {

@@ -34,7 +34,7 @@ public class ProgramOperations {
    }
 
    public AtwNode getAtwTree(IAgileProgram program) {
-      ArtifactToken progArt = atsApi.getArtifact(program.getId());
+      ArtifactToken progArt = atsApi.getQueryService().getArtifact(program.getId());
       AtwNode progNode = handleArtifactAndChildren(progArt, null);
       progNode.setExpanded(true);
       return progNode;
@@ -61,7 +61,7 @@ public class ProgramOperations {
    }
 
    public UiGridProgram getUiGridTree(IAgileProgram program) {
-      ArtifactToken progArt = atsApi.getArtifact(program.getId());
+      ArtifactToken progArt = atsApi.getQueryService().getArtifact(program.getId());
       UiGridProgram progItem = new UiGridProgram();
       progItem.setId(program.getId());
       progItem.setName(program.getName());

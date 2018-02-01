@@ -36,7 +36,7 @@ public interface AtsActionEndpointApi {
    public abstract String get() throws Exception;
 
    /**
-    * @param ids (guid, atsId) of action to display
+    * @param ids (atsId, artId) of action to display
     * @return html representation of the action
     */
    @Path("{ids}")
@@ -45,7 +45,7 @@ public interface AtsActionEndpointApi {
    public abstract List<IAtsWorkItem> getAction(String ids) throws Exception;
 
    /**
-    * @param ids (guid, atsId) of action to display
+    * @param ids (atsId, artId) of action to display
     * @return html representation of the action
     */
    @Path("{ids}/details")
@@ -53,7 +53,7 @@ public interface AtsActionEndpointApi {
    public abstract List<IAtsWorkItem> getActionDetails(String ids) throws Exception;
 
    /**
-    * @param ids (guid, atsId) of action children to display
+    * @param ids (atsId, artId) of action children to display
     * @return html representation of the action children
     */
    @Path("{ids}/child")
@@ -69,7 +69,7 @@ public interface AtsActionEndpointApi {
    public abstract String getActionStateFromLegacyPcrId(String ids) throws Exception;
 
    /**
-    * @param ids (guid, atsId) of action to display
+    * @param ids (atsId, artId) of action to display
     * @return html representation of the stateType;state
     */
    @Path("{ids}/state")
@@ -104,7 +104,7 @@ public interface AtsActionEndpointApi {
    public abstract Response createAction(MultivaluedMap<String, String> form) throws Exception;
 
    /**
-    * @param actionId (guid, atsId, long) of workItem
+    * @param actionId (atsId, artId) of workItem
     * @param attrTypeId can be the id of the attrType or one of (Title, Priority, ColorTeam, Assignee, IPT, Originator,
     * Version, State). If State is sent in, it will result in the "transition" of the workflow. Version can be either id
     * or name.
@@ -116,7 +116,7 @@ public interface AtsActionEndpointApi {
    public Attribute getActionAttributeByType(@PathParam("actionId") String actionId, @PathParam("attrTypeId") String attrTypeId);
 
    /**
-    * @param actionId (guid, atsId, long) of workItem
+    * @param actionId (atsId, artId) of workItem
     * @param attrTypeId can be the id of the attrType or one of (Title, Priority, ColorTeam, Assignee, IPT, Originator,
     * Version, State). If State is sent in, it will result in the "transition" of the workflow. Version can be either id
     * or name.

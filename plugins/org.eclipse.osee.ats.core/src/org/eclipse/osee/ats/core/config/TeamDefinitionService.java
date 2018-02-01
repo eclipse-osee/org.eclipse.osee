@@ -43,7 +43,7 @@ public class TeamDefinitionService implements IAtsTeamDefinitionService {
       ArtifactId teamDefId = atsApi.getAttributeResolver().getSoleArtifactIdReference(workItem,
          AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);
       if (teamDefId.isValid()) {
-         teamDef = atsApi.getConfigItem(teamDefId);
+         teamDef = atsApi.getQueryService().getConfigItem(teamDefId);
       }
       return teamDef;
    }

@@ -17,10 +17,6 @@ import java.util.List;
  */
 public interface IAgileProgram extends IAgileObject {
 
-   String getName();
-
    List<Long> getTeamIds();
-
-   Long getId();
 
 }

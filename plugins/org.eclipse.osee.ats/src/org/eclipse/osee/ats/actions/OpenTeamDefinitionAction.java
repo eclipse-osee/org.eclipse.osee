@@ -36,7 +36,7 @@ public class OpenTeamDefinitionAction extends AbstractAtsAction {
    @Override
    public void runWithException() {
       if (teamArt.getTeamDefinition() != null) {
-         AtsEditors.openATSAction(AtsClientService.get().getConfigArtifact(teamArt.getTeamDefinition()),
+         AtsEditors.openATSAction(AtsClientService.get().getQueryService().getArtifact(teamArt.getTeamDefinition()),
             AtsOpenOption.OpenOneOrPopupSelect);
       }
    }

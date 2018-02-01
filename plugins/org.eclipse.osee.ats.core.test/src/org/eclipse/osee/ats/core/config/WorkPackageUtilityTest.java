@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertion;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
+import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
@@ -59,6 +60,8 @@ public class WorkPackageUtilityTest {
    @Mock private IAtsCountry country;
 
    @Mock private IAtsConfigItemFactory factory;
+   @Mock private IAtsQueryService queryService;
+
    // @formatter:on
 
    private WorkPackageUtility util;
@@ -74,6 +77,7 @@ public class WorkPackageUtilityTest {
       when(atsApi.getAttributeResolver()).thenReturn(attributeResolver);
       when(atsApi.getRelationResolver()).thenReturn(relationResolver);
       when(atsApi.getConfigItemFactory()).thenReturn(factory);
+      when(atsApi.getQueryService()).thenReturn(queryService);
 
       util = new WorkPackageUtility();
    }
@@ -179,7 +183,7 @@ public class WorkPackageUtilityTest {
          ArtifactId.SENTINEL)).thenReturn(workPackageArt);
       when(relationResolver.getRelatedOrNull(workPackageArt,
          AtsRelationTypes.InsertionActivityToWorkPackage_InsertionActivity)).thenReturn(activityArt);
-      when(atsApi.getArtifact(37L)).thenReturn(workPackageArt);
+      when(atsApi.getQueryService().getArtifact(37L)).thenReturn(workPackageArt);
       when(factory.getInsertionActivity(activityArt)).thenReturn(null);
       when(factory.getInsertionActivity(activityArt)).thenReturn(activity);
       when(relationResolver.getRelatedOrNull(activity, AtsRelationTypes.InsertionToInsertionActivity_Insertion,

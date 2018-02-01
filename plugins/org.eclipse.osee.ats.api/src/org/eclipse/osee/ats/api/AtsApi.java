@@ -47,14 +47,12 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsActionFactory;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsImplementerService;
-import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemServiceProvider;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -83,12 +81,6 @@ public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsWorkDefiniti
 
    IAtsVersionService getVersionService();
 
-   ArtifactToken getArtifact(Long id);
-
-   ArtifactToken getArtifact(ArtifactId artifact);
-
-   ArtifactToken getArtifact(IAtsObject atsObject);
-
    void setChangeType(IAtsObject atsObject, ChangeType changeType, IAtsChangeSet changes);
 
    ChangeType getChangeType(IAtsAction fromAction);
@@ -101,13 +93,9 @@ public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsWorkDefiniti
 
    IAtsWorkItemFactory getWorkItemFactory();
 
-   ArtifactToken getArtifactById(String id);
-
    IAtsConfigItemFactory getConfigItemFactory();
 
    IAtsStoreService getStoreService();
-
-   <A extends IAtsConfigObject> A getSoleById(long id, Class<A> clazz);
 
    Collection<ITransitionListener> getTransitionListeners();
 
@@ -118,8 +106,6 @@ public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsWorkDefiniti
    IAtsTaskService getTaskService();
 
    ArtifactToken getArtifactByName(IArtifactType artifactType, String name);
-
-   ArtifactToken getArtifactByGuid(String guid);
 
    IAtsProgramService getProgramService();
 
@@ -148,10 +134,6 @@ public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsWorkDefiniti
    String getConfigValue(String key, String defaultValue);
 
    Log getLogger();
-
-   <T> T getConfigItem(String guid);
-
-   <T> T getConfigItem(Long id);
 
    void setConfigValue(String key, String value);
 
@@ -183,30 +165,6 @@ public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsWorkDefiniti
 
    IAgileService getAgileService();
 
-   ArtifactToken getArtifactByAtsId(String id);
-
-   <T> T getConfigItem(ArtifactId artId);
-
-   IAtsTeamWorkflow getTeamWf(Long id);
-
-   IAtsTeamWorkflow getTeamWf(ArtifactId artifact);
-
-   ArtifactToken getArtifactByLegacyPcrId(String id);
-
-   Collection<ArtifactToken> getArtifactsByLegacyPcrId(String id);
-
-   Collection<IAtsWorkItem> getWorkItemsByLegacyPcrId(String id);
-
-   /**
-    * @param ids AtsId, legacy id or guid
-    */
-   List<ArtifactToken> getArtifactListByIds(String ids);
-
-   /**
-    * @param ids AtsId, legacy id or guid
-    */
-   List<IAtsWorkItem> getWorkItemListByIds(String ids);
-
    JdbcService getJdbcService();
 
    String getApplicationServerBase();
@@ -216,12 +174,6 @@ public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsWorkDefiniti
    public default String getConfigValue(AtsConfigKey configKey, String defaultValue) {
       return getConfigValue(configKey.name(), defaultValue);
    }
-
-   default IAtsWorkItem getTeamWf(long id) {
-      return getTeamWf(ArtifactId.valueOf(id));
-   }
-
-   List<ArtifactToken> getArtifacts(IArtifactType artifactType);
 
    IAtsActionableItemService getActionableItemService();
 

@@ -40,7 +40,7 @@ public class AtsOseeCmService implements IOseeCmService {
 
    @Override
    public void openArtifact(ArtifactId artifact, OseeCmEditor oseeCmEditor) {
-      AtsEditors.openATSArtifact(AtsClientService.get().getArtifact(artifact));
+      AtsEditors.openATSArtifact(AtsClientService.get().getQueryService().getArtifact(artifact));
    }
 
    @Override

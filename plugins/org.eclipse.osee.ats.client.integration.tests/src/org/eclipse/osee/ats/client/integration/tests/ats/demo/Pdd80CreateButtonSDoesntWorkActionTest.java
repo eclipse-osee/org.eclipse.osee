@@ -35,7 +35,7 @@ public class Pdd80CreateButtonSDoesntWorkActionTest implements IPopulateDemoData
       Pdd80CreateButtonSDoesntWorkAction create = new Pdd80CreateButtonSDoesntWorkAction();
       create.run();
 
-      IAtsTeamWorkflow teamWf = AtsClientService.get().getTeamWf(DemoArtifactToken.ButtonSDoesntWorkOnHelp_TeamWf);
+      IAtsTeamWorkflow teamWf = AtsClientService.get().getQueryService().getTeamWf(DemoArtifactToken.ButtonSDoesntWorkOnHelp_TeamWf);
       Assert.assertNotNull(teamWf);
 
       testTeamContents(teamWf, DemoArtifactToken.ButtonSDoesntWorkOnHelp_TeamWf.getName(), "3", "",

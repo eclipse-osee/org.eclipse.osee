@@ -17,6 +17,7 @@ import static org.mockito.Mockito.when;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
@@ -40,6 +41,7 @@ public class ColorTeamColumnTest {
    @Mock private IAtsTask childWorkItem;
    @Mock private IAtsPeerToPeerReview peerReview;
    @Mock private AtsApi atsServices;
+   @Mock private IAtsQueryService queryService;
    @Mock private IAttributeResolver attributeResolver;
    // @formatter:on
 
@@ -51,6 +53,7 @@ public class ColorTeamColumnTest {
       MockitoAnnotations.initMocks(this);
 
       when(atsServices.getAttributeResolver()).thenReturn(attributeResolver);
+      when(atsServices.getQueryService()).thenReturn(queryService);
    }
 
    @org.junit.Test
@@ -67,7 +70,7 @@ public class ColorTeamColumnTest {
       result = ColorTeamColumn.getWorkItemColorTeam(teamWf1, atsServices);
       assertEquals("", result.getFirst());
 
-      when(atsServices.getArtifactById("id")).thenReturn(workPackageArt);
+      when(queryService.getArtifactById("id")).thenReturn(workPackageArt);
       when(attributeResolver.getSoleAttributeValue(workPackageArt, AtsAttributeTypes.ColorTeam, "")).thenReturn("");
 
       result = ColorTeamColumn.getWorkItemColorTeam(teamWf1, atsServices);

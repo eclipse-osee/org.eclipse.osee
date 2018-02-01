@@ -37,7 +37,7 @@ public class SprintOrderColumn extends AbstractServicesColumn {
             Collection<ArtifactToken> items =
                atsApi.getRelationResolver().getRelatedArtifacts(sprintArt, AtsRelationTypes.AgileSprintToItem_AtsItem);
             int x = 1;
-            ArtifactToken artifact = atsApi.getArtifact(atsObject);
+            ArtifactToken artifact = atsApi.getQueryService().getArtifact(atsObject);
             for (ArtifactId item : items) {
                if (item.equals(artifact)) {
                   result = String.valueOf(x);

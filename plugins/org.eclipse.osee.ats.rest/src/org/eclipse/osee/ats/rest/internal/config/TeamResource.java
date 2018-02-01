@@ -43,7 +43,7 @@ public class TeamResource extends AbstractConfigResource {
    @Produces(MediaType.APPLICATION_JSON)
    public List<String> getVersionNames(@PathParam("id") Long id) throws Exception {
       List<String> versions = new LinkedList<>();
-      IAtsTeamDefinition teamDef = atsApi.getConfigItem(id);
+      IAtsTeamDefinition teamDef = atsApi.getQueryService().getConfigItem(id);
       for (IAtsVersion version : atsApi.getVersionService().getVersions(teamDef)) {
          versions.add(version.getName());
       }
@@ -54,10 +54,9 @@ public class TeamResource extends AbstractConfigResource {
    @GET
    @Produces(MediaType.APPLICATION_JSON)
    public List<IAtsActionableItem> getActionableAis(@PathParam("id") ArtifactId teamId) {
-      IAtsTeamDefinition teamDef = atsApi.getConfigItem(teamId);
+      IAtsTeamDefinition teamDef = atsApi.getQueryService().getConfigItem(teamId);
       if (teamDef != null) {
-         List<IAtsActionableItem> ais =
-            atsApi.getActionableItemService().getActiveActionableItemsAndChildren(teamDef);
+         List<IAtsActionableItem> ais = atsApi.getActionableItemService().getActiveActionableItemsAndChildren(teamDef);
          Collections.sort(ais, new NamedComparator(SortOrder.ASCENDING));
          return ais;
       }

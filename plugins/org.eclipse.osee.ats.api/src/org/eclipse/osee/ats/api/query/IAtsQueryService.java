@@ -14,8 +14,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
@@ -55,15 +59,6 @@ public interface IAtsQueryService {
 
    Collection<ArtifactToken> getArtifacts(List<ArtifactId> ids, BranchId branch);
 
-   List<IAtsWorkItem> getWorkItemListByIds(String id);
-
-   List<ArtifactToken> getArtifactListByIdsStr(String id);
-
-   /**
-    * @param id guid, id or AtsId
-    */
-   ArtifactToken getArtifactById(String id);
-
    void runUpdate(String query, Object... data);
 
    IAtsOrcsScriptQuery createOrcsScriptQuery(String query, Object... data);
@@ -72,8 +67,6 @@ public interface IAtsQueryService {
 
    Collection<ArtifactToken> getArtifacts(IArtifactType artifactType, BranchId branch);
 
-   List<String> getIdsFromStr(String idList);
-
    List<ArtifactId> getArtifactIdsFromQuery(String query, Object... data);
 
    ArtifactToken getArtifactToken(long id);
@@ -81,5 +74,70 @@ public interface IAtsQueryService {
    List<ArtifactToken> getArtifactTokensFromQuery(String query, Object... data);
 
    Collection<ArtifactToken> getRelatedToTokens(BranchId branch, ArtifactId artifact, RelationTypeSide relationType, ArtifactTypeId artifactType);
+
+   /**
+    * @param id artifact id or ATS Id
+    */
+   @Nullable
+   IAtsWorkItem getWorkItem(String id);
+
+   /**
+    * @param comma separated id artifact id or ATS Id
+    */
+   List<IAtsWorkItem> getWorkItemsByIds(String ids);
+
+   /**
+    * @param comma separated id artifact id or ATS Id
+    */
+   List<ArtifactToken> getArtifactsByIds(String ids);
+
+   /**
+    * @param comma separated id artifact id or ATS Id
+    */
+   ArtifactToken getArtifactById(String id);
+
+   /**
+    * @param comma separated ids
+    */
+   List<String> getIdsFromStr(String ids);
+
+   ArtifactToken getArtifactByAtsId(String id);
+
+   ArtifactToken getArtifactByLegacyPcrId(String id);
+
+   Collection<ArtifactToken> getArtifactsByLegacyPcrId(String id);
+
+   Collection<IAtsWorkItem> getWorkItemsByLegacyPcrId(String id);
+
+   @Nullable
+   ArtifactToken getArtifact(Long id);
+
+   @Nullable
+   <T extends ArtifactId> ArtifactToken getArtifact(T artifact);
+
+   @Nullable
+   <T extends IAtsObject> ArtifactToken getArtifact(T atsObject);
+
+   <T> T getConfigItem(String guid);
+
+   <T> T getConfigItem(Long id);
+
+   <T> T getConfigItem(ArtifactId artId);
+
+   IAtsTeamWorkflow getTeamWf(Long id);
+
+   IAtsTeamWorkflow getTeamWf(ArtifactId artifact);
+
+   default IAtsWorkItem getTeamWf(long id) {
+      return getTeamWf(ArtifactId.valueOf(id));
+   }
+
+   List<ArtifactToken> getArtifacts(IArtifactType artifactType);
+
+   <A extends IAtsConfigObject> A getSoleById(long id, Class<A> clazz);
+
+   ArtifactToken getConfigArtifact(IAtsConfigObject atsConfigObject);
+
+   ArtifactToken getArtifact(ArtifactId artifact, BranchId branch);
 
 }

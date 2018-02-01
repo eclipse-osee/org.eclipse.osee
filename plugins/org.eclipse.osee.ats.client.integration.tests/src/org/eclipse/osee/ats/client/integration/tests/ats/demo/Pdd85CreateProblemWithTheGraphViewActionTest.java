@@ -35,7 +35,7 @@ public class Pdd85CreateProblemWithTheGraphViewActionTest implements IPopulateDe
       Pdd85CreateProblemWithTheGraphViewAction create = new Pdd85CreateProblemWithTheGraphViewAction();
       create.run();
 
-      IAtsTeamWorkflow teamWf = AtsClientService.get().getTeamWf(DemoArtifactToken.ProblemWithTheGraphView_TeamWf);
+      IAtsTeamWorkflow teamWf = AtsClientService.get().getQueryService().getTeamWf(DemoArtifactToken.ProblemWithTheGraphView_TeamWf);
       Assert.assertNotNull(teamWf);
 
       testTeamContents(teamWf, DemoArtifactToken.ProblemWithTheGraphView_TeamWf.getName(), "1", "",

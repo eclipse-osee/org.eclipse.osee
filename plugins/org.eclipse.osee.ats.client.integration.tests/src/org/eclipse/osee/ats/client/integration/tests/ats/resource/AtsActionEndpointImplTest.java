@@ -513,7 +513,7 @@ public class AtsActionEndpointImplTest extends AbstractRestTest {
       Assert.assertNotNull(result.getAction());
       Assert.assertEquals(1, result.getTeamWfs().size());
       ArtifactId teamWfArt = result.getTeamWfs().iterator().next();
-      IAtsTeamWorkflow teamWf = AtsClientService.get().getTeamWf(teamWfArt);
+      IAtsTeamWorkflow teamWf = AtsClientService.get().getQueryService().getTeamWf(teamWfArt);
       Assert.assertNotNull(teamWf);
       Assert.assertEquals("My Action", teamWf.getName());
       Assert.assertEquals("desc", teamWf.getDescription());

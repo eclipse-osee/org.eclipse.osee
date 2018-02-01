@@ -39,8 +39,9 @@ public class AgileProgram extends AtsConfigObject implements IAgileProgram {
       }
       return ids;
    }
+
    public static IAgileProgram construct(ArtifactId progArt, AtsApi atsApi) {
-      return new AgileProgram(atsApi.getLogger(), atsApi, atsApi.getArtifact(progArt));
+      return new AgileProgram(atsApi.getLogger(), atsApi, atsApi.getQueryService().getArtifact(progArt));
    }
 
 }

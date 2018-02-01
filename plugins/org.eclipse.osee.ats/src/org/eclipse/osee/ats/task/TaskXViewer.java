@@ -142,7 +142,7 @@ public class TaskXViewer extends WorldXViewer {
             }
             AtsClientService.get().getTaskService().createTasks(new NewTaskDatas(newTaskData));
 
-            taskArt = (TaskArtifact) AtsClientService.get().getArtifact(task.getId());
+            taskArt = (TaskArtifact) AtsClientService.get().getQueryService().getArtifact(task.getId());
             AtsTaskCache.decache((TeamWorkFlowArtifact) teamWf.getStoreObject());
          }
       } catch (Exception ex) {

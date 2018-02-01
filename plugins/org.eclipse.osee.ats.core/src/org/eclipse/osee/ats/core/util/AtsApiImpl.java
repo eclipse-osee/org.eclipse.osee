@@ -16,9 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileSprintHtmlOperation;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemService;
 import org.eclipse.osee.ats.api.column.IAtsColumnService;
@@ -51,7 +49,6 @@ import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.ats.api.workflow.IAtsActionFactory;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsImplementerService;
-import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
@@ -73,8 +70,6 @@ import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -230,42 +225,8 @@ public abstract class AtsApiImpl implements AtsApi {
    }
 
    @Override
-   public <T> T getConfigItem(ArtifactId artifact) {
-      return getConfigItem(artifact.getId());
-   }
-
-   @SuppressWarnings("unchecked")
-   @Override
-   public <T> T getConfigItem(String id) {
-      T atsObject = null;
-      if (Strings.isNumeric(id)) {
-         atsObject = getCache().getAtsObject(Long.valueOf(id));
-         if (atsObject == null) {
-            ArtifactId artifact = getArtifact(Long.valueOf(id));
-            if (artifact != null && artifact instanceof IAtsConfigObject) {
-               atsObject = (T) getConfigItemFactory().getConfigObject(artifact);
-            }
-         }
-      }
-      return atsObject;
-   }
-
-   @SuppressWarnings("unchecked")
-   @Override
-   public <T> T getConfigItem(Long id) {
-      T atsObject = getCache().getAtsObject(id);
-      if (atsObject == null) {
-         ArtifactId artifact = getArtifact(id);
-         if (artifact != null && artifact instanceof IAtsConfigObject) {
-            atsObject = (T) getConfigItemFactory().getConfigObject(artifact);
-         }
-      }
-      return atsObject;
-   }
-
-   @Override
    public void setConfigValue(String key, String value) {
-      ArtifactId atsConfig = getArtifact(AtsArtifactToken.AtsConfig);
+      ArtifactId atsConfig = getQueryService().getArtifact(AtsArtifactToken.AtsConfig);
       IAtsChangeSet changes =
          getStoreService().createAtsChangeSet("Set AtsConfig Value", getUserService().getCurrentUser());
       if (atsConfig != null) {
@@ -518,109 +479,6 @@ public abstract class AtsApiImpl implements AtsApi {
    @Override
    public IAtsChangeSet createChangeSet(String comment, IAtsUser user) {
       return getStoreService().createAtsChangeSet(comment, user);
-   }
-
-   /**
-    * Quick Search for single attribute search takes 22 seconds, just use straight database call instead. Replace this
-    * when searching is improved.
-    */
-   private static String ATTR_QUERY =
-      "SELECT art.art_id FROM osee_artifact art, osee_txs txs, OSEE_ATTRIBUTE attr WHERE art.gamma_id = txs.gamma_id " //
-         + "AND txs.tx_current = 1 AND txs.branch_id = ? and attr.ART_ID = art.ART_ID and " //
-         + "attr.ATTR_TYPE_ID = ? and attr.VALUE = ?";
-
-   @Override
-   public ArtifactToken getArtifactByAtsId(String id) {
-      ArtifactToken artifact = null;
-      try {
-         Collection<ArtifactToken> workItems = getQueryService().getArtifactsFromQuery(ATTR_QUERY, getAtsBranch(),
-            AtsAttributeTypes.AtsId.getIdString(), id);
-         if (!workItems.isEmpty()) {
-            artifact = workItems.iterator().next();
-         }
-      } catch (ItemDoesNotExist ex) {
-         // do nothing
-      }
-      return artifact;
-   }
-
-   @Override
-   public IAtsTeamWorkflow getTeamWf(ArtifactId artifact) {
-      ArtifactId art = getArtifact(artifact);
-      if (art != null) {
-         return getWorkItemFactory().getTeamWf(art);
-      }
-      return null;
-   }
-
-   @Override
-   public IAtsTeamWorkflow getTeamWf(Long id) {
-      ArtifactId art = getArtifact(id);
-      if (art != null) {
-         return getWorkItemFactory().getTeamWf(art);
-      }
-      return null;
-   }
-
-   @Override
-   public ArtifactToken getArtifactByLegacyPcrId(String id) {
-      try {
-         Collection<ArtifactToken> workItems = getQueryService().getArtifactsFromQuery(ATTR_QUERY, getAtsBranch(),
-            AtsAttributeTypes.LegacyPcrId.getIdString(), id);
-         if (workItems.size() == 1) {
-            return workItems.iterator().next();
-         } else if (workItems.size() > 1) {
-            throw new OseeStateException("More than 1 artifact exists with legacy id [%s]", id);
-         }
-      } catch (ItemDoesNotExist ex) {
-         // do nothing
-      }
-      return null;
-   }
-
-   @Override
-   public Collection<ArtifactToken> getArtifactsByLegacyPcrId(String id) {
-      return getQueryService().getArtifactsFromQuery(ATTR_QUERY, getAtsBranch(),
-         AtsAttributeTypes.LegacyPcrId.getIdString(), id);
-   }
-
-   @Override
-   public Collection<IAtsWorkItem> getWorkItemsByLegacyPcrId(String id) {
-      List<IAtsWorkItem> workItems = new LinkedList<>();
-      for (ArtifactToken art : getQueryService().getArtifactsFromQuery(ATTR_QUERY, getAtsBranch(),
-         AtsAttributeTypes.LegacyPcrId.getIdString(), id)) {
-         IAtsWorkItem workItem = getWorkItemFactory().getWorkItem(art);
-         if (workItem != null) {
-            workItems.add(workItem);
-         }
-      }
-      return workItems;
-   }
-
-   @Override
-   public List<IAtsWorkItem> getWorkItemListByIds(String ids) {
-      List<IAtsWorkItem> workItems = new ArrayList<>();
-      for (ArtifactToken art : getArtifactListByIds(ids)) {
-         IAtsWorkItem workItem = workItemFactory.getWorkItem(art);
-         if (workItem != null) {
-            workItems.add(workItem);
-         }
-      }
-      return workItems;
-   }
-
-   @Override
-   public List<ArtifactToken> getArtifactListByIds(String ids) {
-      List<ArtifactToken> actions = new ArrayList<>();
-      for (String id : ids.split(",")) {
-         id = id.replaceAll("^ +", "");
-         id = id.replaceAll(" +$", "");
-         ArtifactToken action = getArtifactById(id);
-         if (action != null) {
-            actions.add(action);
-         }
-      }
-      return actions;
    }
 
    @Override

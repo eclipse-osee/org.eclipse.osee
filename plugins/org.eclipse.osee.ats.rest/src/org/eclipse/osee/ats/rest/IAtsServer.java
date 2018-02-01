@@ -22,37 +22,25 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchServiceProvider;
-import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.config.IAtsCacheProvider;
-import org.eclipse.osee.ats.rest.util.IArtifactProvider;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
  * @author Donald G Dunne
  */
-public interface IAtsServer extends AtsApi, IAtsNotifier, IAtsConfigItemFactoryProvider, IAtsCacheProvider, IAtsReviewServiceProvider, IAtsBranchServiceProvider, IArtifactProvider {
+public interface IAtsServer extends AtsApi, IAtsNotifier, IAtsConfigItemFactoryProvider, IAtsCacheProvider, IAtsReviewServiceProvider, IAtsBranchServiceProvider {
 
    OrcsApi getOrcsApi();
 
-   @Override
-   ArtifactReadable getArtifactByGuid(String guid);
-
    Iterable<IAtsDatabaseConversion> getDatabaseConversions();
-
-   @Override
-   ArtifactReadable getArtifactByAtsId(String id);
 
    QueryBuilder getQuery();
 
    AtsApi getServices();
 
    void setEmailEnabled(boolean emailEnabled);
-
-   @Override
-   ArtifactReadable getArtifact(Long id);
 
    @Override
    Collection<ArtifactToken> getArtifacts(Collection<Long> ids);
@@ -67,9 +55,6 @@ public interface IAtsServer extends AtsApi, IAtsNotifier, IAtsConfigItemFactoryP
 
    @Override
    IAtsChangeSet createChangeSet(String string, IAtsUser systemUser);
-
-   @Override
-   IAtsTeamWorkflow getTeamWf(Long id);
 
    @Override
    IAtsActionableItemService getActionableItemService();

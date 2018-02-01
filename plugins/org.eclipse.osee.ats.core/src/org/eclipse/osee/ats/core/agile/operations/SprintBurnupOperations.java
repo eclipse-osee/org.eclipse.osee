@@ -55,7 +55,7 @@ public class SprintBurnupOperations implements IAgileSprintHtmlOperation {
 
    public LineChart getChartData(long teamId, long sprintId) {
       LineChart chart = new LineChart(atsApi);
-      ArtifactToken team = atsApi.getArtifact(teamId);
+      ArtifactToken team = atsApi.getQueryService().getArtifact(teamId);
       AgileSprintData data = SprintUtil.getAgileSprintData(atsApi, teamId, sprintId, chart.getResults());
       XResultData results = data.validate();
       if (results.isErrors()) {

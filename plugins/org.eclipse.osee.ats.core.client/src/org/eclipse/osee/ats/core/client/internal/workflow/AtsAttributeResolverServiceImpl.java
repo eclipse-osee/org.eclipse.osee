@@ -78,13 +78,13 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
 
    @Override
    public <T> T getSoleAttributeValue(IAtsObject atsObject, AttributeTypeId attributeType, T defaultReturnValue) {
-      return AtsClientService.get().getArtifact(atsObject).getSoleAttributeValue(attributeType, defaultReturnValue);
+      return getArtifact(atsObject).getSoleAttributeValue(attributeType, defaultReturnValue);
 
    }
 
    @Override
    public Collection<String> getAttributesToStringList(IAtsObject atsObject, AttributeTypeId attributeType) {
-      return AtsClientService.get().getArtifact(atsObject).getAttributesToStringList(attributeType);
+      return getArtifact(atsObject).getAttributesToStringList(attributeType);
    }
 
    @Override
@@ -94,13 +94,13 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
 
    @Override
    public boolean isAttributeTypeValid(IAtsWorkItem workItem, AttributeTypeId attributeType) {
-      return AtsClientService.get().getArtifact(workItem).isAttributeTypeValid(attributeType);
+      return getArtifact(workItem.getStoreObject()).isAttributeTypeValid(attributeType);
    }
 
    @Override
    public String getSoleAttributeValueAsString(IAtsObject atsObject, AttributeTypeId attributeType, String defaultValue) {
       String result = defaultValue;
-      Artifact artifact = AtsClientService.get().getArtifact(atsObject);
+      Artifact artifact = getArtifact(atsObject.getArtifactId());
       if (artifact != null) {
          result = artifact.getSoleAttributeValueAsString(attributeType, defaultValue);
       }
@@ -110,43 +110,58 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    @Override
    public String getSoleAttributeValueAsString(ArtifactId artifact, AttributeTypeId attributeType, String defaultValue) {
       String result = defaultValue;
-      Artifact art = AtsClientService.get().getArtifact(artifact);
-      if (artifact != null) {
+      Artifact art = (Artifact) AtsClientService.get().getQueryService().getArtifact(artifact);
+      if (art != null) {
          result = art.getSoleAttributeValueAsString(attributeType, defaultValue);
       }
       return result;
    }
 
+   private Artifact getArtifact(IAtsObject atsObject) {
+      return getArtifact(atsObject.getStoreObject());
+   }
+
+   private Artifact getArtifact(ArtifactId artifact) {
+      if (artifact instanceof Artifact) {
+         return (Artifact) artifact;
+      }
+      ArtifactId art = AtsClientService.get().getQueryService().getArtifact(artifact);
+      if (art instanceof Artifact) {
+         return (Artifact) art;
+      }
+      return null;
+   }
+
    @Override
    public void setSoleAttributeValue(IAtsObject atsObject, AttributeTypeId attributeType, Object value) {
-      AtsClientService.get().getArtifact(atsObject).setSoleAttributeValue(attributeType, value);
+      getArtifact(atsObject).setSoleAttributeValue(attributeType, value);
    }
 
    @Override
    public int getAttributeCount(IAtsWorkItem workItem, AttributeTypeId attributeType) {
-      return AtsClientService.get().getArtifact(workItem).getAttributeCount(attributeType);
+      return getArtifact(workItem).getAttributeCount(attributeType);
    }
 
    @Override
    public int getAttributeCount(IAtsObject atsObject, AttributeTypeId attributeType) {
-      return AtsClientService.get().getArtifact(atsObject).getAttributeCount(attributeType);
+      return getArtifact(atsObject).getAttributeCount(attributeType);
    }
 
    @Override
    public int getAttributeCount(ArtifactId artifact, AttributeTypeId attributeType) {
-      return AtsClientService.get().getArtifact(artifact).getAttributeCount(attributeType);
+      return getArtifact(artifact).getAttributeCount(attributeType);
    }
 
    @Override
    public void addAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType, Object value) {
-      AtsClientService.get().getArtifact(workItem).addAttribute(attributeType, value);
+      getArtifact(workItem).addAttribute(attributeType, value);
    }
 
    @SuppressWarnings({"unchecked", "deprecation"})
    @Override
    public <T> Collection<IAttribute<T>> getAttributes(IAtsWorkItem workItem, AttributeTypeId attributeType) {
       List<IAttribute<T>> attrs = new ArrayList<>();
-      for (Attribute<Object> attr : AtsClientService.get().getArtifact(workItem).getAttributes(attributeType)) {
+      for (Attribute<Object> attr : getArtifact(workItem).getAttributes(attributeType)) {
          attrs.add((IAttribute<T>) attr);
       }
       return attrs;
@@ -154,7 +169,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
 
    @Override
    public void deleteSoleAttribute(IAtsWorkItem workItem, AttributeTypeId attributeType) {
-      AtsClientService.get().getArtifact(workItem).deleteSoleAttribute(attributeType);
+      getArtifact(workItem).deleteSoleAttribute(attributeType);
    }
 
    @Override
@@ -166,7 +181,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
 
    @Override
    public <T> void deleteAttribute(IAtsWorkItem workItem, IAttribute<T> attr) {
-      Artifact artifact = AtsClientService.get().getArtifact(workItem);
+      Artifact artifact = getArtifact(workItem);
       Attribute<?> attribute = (Attribute<?>) attr;
       Attribute<?> attributeById = artifact.getAttributeById(attribute.getId(), false);
       attributeById.delete();
@@ -195,7 +210,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
       if (changes != null) {
          changes.addAttribute(workItem, attributeType, value);
       } else {
-         AtsClientService.get().getArtifact(workItem).addAttribute(attributeType, value);
+         getArtifact(workItem).addAttribute(attributeType, value);
       }
    }
 
@@ -204,7 +219,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
       if (changes != null) {
          changes.deleteAttribute(workItem, attributeType, value);
       } else {
-         AtsClientService.get().getArtifact(workItem).deleteAttribute(attributeType, value);
+         getArtifact(workItem).deleteAttribute(attributeType, value);
       }
    }
 
@@ -224,7 +239,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
       if (changes != null) {
          changes.deleteAttribute(workItem, attr);
       } else {
-         Artifact artifact = AtsClientService.get().getArtifact(workItem);
+         Artifact artifact = getArtifact(workItem);
          Attribute<?> attribute = (Attribute<?>) attr;
          Attribute<?> attributeById = artifact.getAttributeById(attribute.getId(), false);
          attributeById.delete();
@@ -233,14 +248,14 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
 
    @Override
    public <T> T getSoleAttributeValue(ArtifactId artifact, AttributeTypeId attributeType, T defaultValue) {
-      return AtsClientService.get().getArtifact(artifact).getSoleAttributeValue(attributeType, defaultValue);
+      return getArtifact(artifact).getSoleAttributeValue(attributeType, defaultValue);
    }
 
    @Override
    public <T> Collection<T> getAttributeValues(ArtifactId artifact, AttributeTypeId attributeType) {
       Assert.isNotNull(artifact, "Artifact can not be null");
       Assert.isNotNull(attributeType, "Attribute Type can not be null");
-      return AtsClientService.get().getArtifact(artifact).getAttributeValues(attributeType);
+      return getArtifact(artifact).getAttributeValues(attributeType);
    }
 
    @Override
@@ -256,7 +271,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
       Assert.isNotNull(artifact, "Artifact can not be null");
       Assert.isNotNull(attributeType, "Attribute Type can not be null");
       List<IAttribute<T>> attributes = new LinkedList<>();
-      for (Attribute<Object> attr : AtsClientService.get().getArtifact(artifact).getAttributes(attributeType)) {
+      for (Attribute<Object> attr : getArtifact(artifact).getAttributes(attributeType)) {
          attributes.add((IAttribute<T>) attr);
       }
       return attributes;
@@ -266,7 +281,7 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    @Override
    public <T> Collection<IAttribute<T>> getAttributes(ArtifactId artifact) {
       List<IAttribute<T>> attributes = new LinkedList<>();
-      for (Attribute<?> attr : AtsClientService.get().getArtifact(artifact).getAttributes()) {
+      for (Attribute<?> attr : getArtifact(artifact).getAttributes()) {
          attributes.add((IAttribute<T>) attr);
       }
       return attributes;

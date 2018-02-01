@@ -50,7 +50,7 @@ public class AgileEndpointTest {
 
    @After
    public void cleanup() {
-      Artifact agileTeam = AtsClientService.get().getArtifact(teamId);
+      Artifact agileTeam = (Artifact) AtsClientService.get().getQueryService().getArtifact(teamId);
       if (agileTeam != null) {
          agile.deleteTeam(teamId);
       }
@@ -84,7 +84,7 @@ public class AgileEndpointTest {
 
       // Test Delete
       agile.deleteTeam(teamId);
-      Assert.assertNull(AtsClientService.get().getArtifact(teamId));
+      Assert.assertNull(AtsClientService.get().getQueryService().getArtifact(teamId));
    }
 
    private JaxNewAgileTeam newJaxAgileTeam() {
@@ -120,7 +120,7 @@ public class AgileEndpointTest {
       // Test Delete
       agile.deleteSprint(teamId, sprint.getId());
       sprints = agile.getSprints(teamId);
-      Assert.assertNull(AtsClientService.get().getArtifact(sprint.getId()));
+      Assert.assertNull(AtsClientService.get().getQueryService().getArtifact(sprint.getId()));
    }
 
    @Test
@@ -151,7 +151,7 @@ public class AgileEndpointTest {
       agile.deleteFeatureGroup(teamId, newGroup.getId());
       groups = agile.getFeatureGroups(teamId);
       Assert.assertTrue(groups.isEmpty());
-      Assert.assertNull(AtsClientService.get().getArtifact(newGroup.getId()));
+      Assert.assertNull(AtsClientService.get().getQueryService().getArtifact(newGroup.getId()));
    }
 
    @Test
@@ -231,7 +231,8 @@ public class AgileEndpointTest {
       XResultData results =
          agile.storeSprintReports(DemoArtifactToken.SAW_Agile_Team.getId(), DemoArtifactToken.SAW_Sprint_2.getId());
       Assert.assertFalse(results.toString(), results.isErrors());
-      AtsClientService.get().getArtifact(DemoArtifactToken.SAW_Sprint_2).reloadAttributesAndRelations();
+      ((Artifact) AtsClientService.get().getQueryService().getArtifact(
+         DemoArtifactToken.SAW_Sprint_2)).reloadAttributesAndRelations();
       Assert.assertEquals(4,
          AtsClientService.get().getRelationResolver().getChildren(DemoArtifactToken.SAW_Sprint_2).size());
    }

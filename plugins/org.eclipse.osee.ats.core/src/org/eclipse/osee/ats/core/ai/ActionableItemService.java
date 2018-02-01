@@ -57,7 +57,7 @@ public class ActionableItemService implements IAtsActionableItemService {
    private void getActiveActionableItemsAndChildrenRecurse(IAtsTeamDefinition teamDef, List<IAtsActionableItem> ais) {
       for (ArtifactId aiArt : atsApi.getRelationResolver().getRelated(teamDef,
          AtsRelationTypes.TeamActionableItem_ActionableItem)) {
-         IAtsActionableItem ai = atsApi.getConfigItem(aiArt);
+         IAtsActionableItem ai = atsApi.getQueryService().getConfigItem(aiArt);
          if (ai.isActionable()) {
             ais.add(ai);
          }
@@ -72,7 +72,7 @@ public class ActionableItemService implements IAtsActionableItemService {
       Set<IAtsActionableItem> ais = new HashSet<>();
       if (!atsStoreService.isDeleted(atsObject)) {
          for (ArtifactId id : getActionableItemIds(atsObject)) {
-            IAtsActionableItem aia = atsApi.getConfigItem(id);
+            IAtsActionableItem aia = atsApi.getQueryService().getConfigItem(id);
             if (aia == null) {
                OseeLog.logf(ActionableItemService.class, Level.SEVERE,
                   "Actionable Item id [%s] from [%s] doesn't match item in AtsConfigCache", id,

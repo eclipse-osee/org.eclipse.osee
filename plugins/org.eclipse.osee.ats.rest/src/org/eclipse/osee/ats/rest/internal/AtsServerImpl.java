@@ -21,7 +21,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileService;
@@ -34,7 +33,6 @@ import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.api.workdef.WorkDefData;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
-import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.core.agile.AgileService;
 import org.eclipse.osee.ats.core.ai.ActionableItemService;
@@ -70,7 +68,6 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.JsonUtil;
-import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -196,71 +193,8 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
    }
 
    @Override
-   public ArtifactReadable getArtifact(ArtifactId artifact) {
-      ArtifactReadable result = null;
-      if (artifact instanceof ArtifactReadable) {
-         result = (ArtifactReadable) artifact;
-      } else if (artifact instanceof IAtsObject) {
-         IAtsObject atsObject = (IAtsObject) artifact;
-         if (atsObject.getStoreObject() instanceof ArtifactReadable) {
-            result = (ArtifactReadable) atsObject.getStoreObject();
-         } else {
-            result = getQuery().andId(atsObject.getId()).getResults().getAtMostOneOrNull();
-         }
-      } else {
-         result = getQuery().andId(artifact).getResults().getOneOrNull();
-      }
-      return result;
-   }
-
-   @Override
-   public ArtifactReadable getArtifact(IAtsObject atsObject) {
-      ArtifactReadable result = null;
-      if (atsObject.getStoreObject() instanceof ArtifactReadable) {
-         result = (ArtifactReadable) atsObject.getStoreObject();
-      } else {
-         result = getQuery().andId(atsObject.getId()).getResults().getAtMostOneOrNull();
-         if (result != null) {
-            atsObject.setStoreObject(result);
-         }
-      }
-      return result;
-   }
-
-   @Override
-   public ArtifactReadable getArtifactByGuid(String guid) {
-      ArtifactReadable artifact = null;
-      try {
-         artifact = getQuery().andGuid(guid).getResults().getExactlyOne();
-      } catch (ItemDoesNotExist ex) {
-         // do nothing
-      }
-      return artifact;
-   }
-
-   @Override
    public Iterable<IAtsDatabaseConversion> getDatabaseConversions() {
       return externalConversions.values();
-   }
-
-   @Override
-   public ArtifactReadable getArtifactByAtsId(String id) {
-      return (ArtifactReadable) super.getArtifactByAtsId(id);
-   }
-
-   @Override
-   public ArtifactReadable getArtifactByLegacyPcrId(String id) {
-      return (ArtifactReadable) super.getArtifactByLegacyPcrId(id);
-   }
-
-   @Override
-   public ArtifactReadable getArtifactById(String id) {
-      return (ArtifactReadable) getQueryService().getArtifactById(id);
-   }
-
-   @Override
-   public ArtifactReadable getArtifact(Long id) {
-      return getQuery().andId(id).getResults().getOneOrNull();
    }
 
    @Override
@@ -363,11 +297,6 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
    }
 
    @Override
-   public <A extends IAtsConfigObject> A getSoleById(long id, Class<A> clazz) {
-      return getCache().getAtsObject(id);
-   }
-
-   @Override
    public Collection<ITransitionListener> getTransitionListeners() {
       return Collections.emptyList();
    }
@@ -464,22 +393,6 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
    @Override
    public String getApplicationServerBase() {
       return System.getProperty("OseeApplicationServer");
-   }
-
-   @Override
-   public IAtsTeamWorkflow getTeamWf(ArtifactId artifact) {
-      return getWorkItemFactory().getTeamWf(getArtifact(artifact));
-   }
-
-   @Override
-   public IAtsTeamWorkflow getTeamWf(Long id) {
-      return getWorkItemFactory().getTeamWf(getArtifact(id));
-   }
-
-   @Override
-   public List<ArtifactToken> getArtifacts(IArtifactType artifactType) {
-      return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
-         getQuery().andIsOfType(artifactType).getResults().getList());
    }
 
    @Override

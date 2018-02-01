@@ -751,7 +751,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    private void addWorkPackageCriteria() {
       if (isWorkPackageSpecified()) {
-         ArtifactId workPackArt = atsApi.getArtifact(workPackageId);
+         ArtifactId workPackArt = atsApi.getQueryService().getArtifact(workPackageId);
          if (isColorTeamMatch(workPackArt)) {
             queryAnd(AtsAttributeTypes.WorkPackageReference, workPackArt.getIdString());
          }
@@ -853,7 +853,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    public void addProgramCriteria() {
       if (!isInsertionSpecified()) {
          if (programId != null && programId > 0) {
-            ArtifactId programArt = atsApi.getArtifact(programId);
+            ArtifactId programArt = atsApi.getQueryService().getArtifact(programId);
             List<String> workPackageIds = new LinkedList<>();
             for (ArtifactId insertionArt : atsApi.getRelationResolver().getRelated(programArt,
                AtsRelationTypes.ProgramToInsertion_Insertion)) {
@@ -877,7 +877,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    public void addInsertionCriteria() {
       if (!isInsertionActivitySpecified()) {
          if (insertionId != null && insertionId > 0) {
-            ArtifactId insertionArt = atsApi.getArtifact(insertionId);
+            ArtifactId insertionArt = atsApi.getQueryService().getArtifact(insertionId);
             List<String> workPackageIds = new LinkedList<>();
             for (ArtifactId insertionActivityArt : atsApi.getRelationResolver().getRelated(insertionArt,
                AtsRelationTypes.InsertionToInsertionActivity_InsertionActivity)) {
@@ -911,7 +911,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    private List<String> getWorkPackageIdsFromActivity() {
       List<String> ids = new LinkedList<>();
       if (insertionActivityId != null && insertionActivityId > 0) {
-         ArtifactId insertionActivityArt = atsApi.getArtifact(insertionActivityId);
+         ArtifactId insertionActivityArt = atsApi.getQueryService().getArtifact(insertionActivityId);
          for (ArtifactId workPackageArt : atsApi.getRelationResolver().getRelated(insertionActivityArt,
             AtsRelationTypes.InsertionActivityToWorkPackage_WorkPackage)) {
             if (isColorTeamMatch(workPackageArt)) {

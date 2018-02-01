@@ -41,7 +41,7 @@ public class AgileFolders {
    }
 
    public static ArtifactId getTeamFolder(AtsApi atsApi, long teamId) {
-      return atsApi.getArtifact(teamId);
+      return atsApi.getQueryService().getArtifact(teamId);
    }
 
    public static ArtifactId getOrCreateTopFeatureGroupFolder(AtsApi atsApi, long teamId, ArtifactId artifact, IAtsChangeSet changes) {
@@ -60,10 +60,10 @@ public class AgileFolders {
    }
 
    public static ArtifactId getOrCreateTopAgileFolder(AtsApi atsApi, ArtifactId userArt, IAtsChangeSet changes) {
-      ArtifactId agileFolder = atsApi.getArtifact(AtsArtifactToken.TopAgileFolder);
+      ArtifactId agileFolder = atsApi.getQueryService().getArtifact(AtsArtifactToken.TopAgileFolder);
       if (agileFolder == null) {
          agileFolder = changes.createArtifact(AtsArtifactToken.TopAgileFolder);
-         ArtifactId rootArtifact = atsApi.getArtifact(CoreArtifactTokens.DefaultHierarchyRoot);
+         ArtifactId rootArtifact = atsApi.getQueryService().getArtifact(CoreArtifactTokens.DefaultHierarchyRoot);
          changes.addChild(rootArtifact, agileFolder);
       }
       return agileFolder;

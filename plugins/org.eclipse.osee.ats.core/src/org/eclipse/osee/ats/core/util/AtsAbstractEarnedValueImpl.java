@@ -49,7 +49,7 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
 
    @Override
    public ArtifactId getWorkPackageId(IAtsWorkItem workItem) {
-      ArtifactId artifact = atsApi.getArtifact(workItem);
+      ArtifactId artifact = atsApi.getQueryService().getArtifact(workItem);
       Conditions.checkNotNull(artifact, "workItem", "Can't Find Work Package matching %s", workItem.toStringWithId());
       return atsApi.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.WorkPackageReference,
          ArtifactId.SENTINEL);
@@ -59,7 +59,7 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
    public IAtsWorkPackage getWorkPackage(IAtsWorkItem workItem) {
       ArtifactId workPackageId = getWorkPackageId(workItem);
       if (workPackageId.isValid()) {
-         ArtifactToken workPkgArt = atsApi.getArtifact(workPackageId);
+         ArtifactToken workPkgArt = atsApi.getQueryService().getArtifact(workPackageId);
          return new WorkPackage(logger, workPkgArt, atsApi);
       }
       return null;
@@ -76,7 +76,7 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
       // Config objects get work package options from related work package artifacts
       if (object instanceof IAtsConfigObject) {
          IAtsConfigObject configObj = (IAtsConfigObject) object;
-         ArtifactId artifact = atsApi.getArtifact(configObj);
+         ArtifactId artifact = atsApi.getQueryService().getArtifact(configObj);
          if (artifact != null) {
             for (ArtifactToken workPackageArt : atsApi.getRelationResolver().getRelated(artifact,
                AtsRelationTypes.WorkPackage_WorkPackage)) {
@@ -116,7 +116,7 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
 
    @Override
    public IAtsWorkPackage getWorkPackage(ArtifactId artifact) {
-      ArtifactToken realArt = atsApi.getArtifact(artifact);
+      ArtifactToken realArt = atsApi.getQueryService().getArtifact(artifact);
       return new WorkPackage(logger, realArt, atsApi);
    }
 
@@ -124,7 +124,7 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
    public Collection<IAtsWorkPackage> getWorkPackages(IAtsInsertionActivity insertionActivity) {
       List<IAtsWorkPackage> workPackages = new ArrayList<>();
       for (ArtifactToken artifact : atsApi.getRelationResolver().getRelated(
-         atsApi.getArtifact(insertionActivity.getId()), AtsRelationTypes.InsertionActivityToWorkPackage_WorkPackage)) {
+         atsApi.getQueryService().getArtifact(insertionActivity.getId()), AtsRelationTypes.InsertionActivityToWorkPackage_WorkPackage)) {
          workPackages.add(new WorkPackage(logger, artifact, atsApi));
       }
       return workPackages;

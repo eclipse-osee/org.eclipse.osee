@@ -72,8 +72,8 @@ public class KanbanOperations {
       boolean unAssignedAdded = false;
       for (IAgileItem aItem : atsApi.getAgileService().getItems(sprint)) {
 
-         IAtsWorkItem workItem = atsApi.getTeamWf(aItem.getId());
-         ArtifactToken artifact = atsApi.getArtifact(workItem.getId());
+         IAtsWorkItem workItem = atsApi.getQueryService().getTeamWf(aItem.getId());
+         ArtifactToken artifact = atsApi.getQueryService().getArtifact(workItem.getId());
 
          JaxKbTask task = createJaxKbTask(aItem, workItem, artifact, atsApi);
          items.getTasks().put(String.valueOf(aItem.getId()), task);
@@ -250,7 +250,7 @@ public class KanbanOperations {
             } else if (attrType.equals(AtsAttributeTypes.ActionableItemReference)) {
                for (Object id : atsApi.getAttributeResolver().getAttributeValues(artifact,
                   AtsAttributeTypes.ActionableItemReference)) {
-                  ais.add(((IAtsObject) atsApi.getConfigItem((ArtifactId) id)).getName());
+                  ais.add(((IAtsObject) atsApi.getQueryService().getConfigItem((ArtifactId) id)).getName());
                }
             }
          }

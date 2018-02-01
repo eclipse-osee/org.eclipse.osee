@@ -76,9 +76,9 @@ public class AtsChangeSetTest {
       ArtifactId verArt = changes.createArtifact(AtsArtifactTypes.Version, "Ver 2 " + className);
       changes.execute();
 
-      ArtifactReadable folder = atsServer.getArtifact(folderArt.getId());
+      ArtifactReadable folder = (ArtifactReadable) atsServer.getQueryService().getArtifact(folderArt.getId());
       assertNotNull(folder);
-      IAtsVersion version = atsServer.getConfigItemFactory().getVersion(atsServer.getArtifact(verArt.getId()));
+      IAtsVersion version = atsServer.getConfigItemFactory().getVersion((ArtifactReadable) atsServer.getQueryService().getArtifact(verArt.getId()));
       assertNotNull(version);
 
       // add relation from folder to version
@@ -87,8 +87,8 @@ public class AtsChangeSetTest {
       changes.execute();
 
       // test that folder to version is valid for the correct direction
-      ArtifactReadable folderArt2 = atsServer.getArtifact(folder.getId());
-      ArtifactReadable verArt2 = atsServer.getArtifact(version.getId());
+      ArtifactReadable folderArt2 = (ArtifactReadable) atsServer.getQueryService().getArtifact(folder.getId());
+      ArtifactReadable verArt2 = (ArtifactReadable) atsServer.getQueryService().getArtifact(version.getId());
       assertTrue(folderArt2.areRelated(CoreRelationTypes.SupportingInfo_SupportingInfo, verArt2));
       assertFalse(folderArt2.areRelated(CoreRelationTypes.SupportingInfo_SupportedBy, verArt2));
       assertTrue(verArt2.areRelated(CoreRelationTypes.SupportingInfo_SupportedBy, folderArt2));
@@ -100,25 +100,25 @@ public class AtsChangeSetTest {
       changes.execute();
 
       // test that folder and version are not related in any direction
-      ArtifactReadable folderArt21 = atsServer.getArtifact(folder.getId());
-      ArtifactReadable verArt21 = atsServer.getArtifact(version.getId());
+      ArtifactReadable folderArt21 = (ArtifactReadable) atsServer.getQueryService().getArtifact(folder.getId());
+      ArtifactReadable verArt21 = (ArtifactReadable) atsServer.getQueryService().getArtifact(version.getId());
       assertFalse(folderArt21.areRelated(CoreRelationTypes.SupportingInfo_SupportingInfo, verArt21));
       assertFalse(folderArt21.areRelated(CoreRelationTypes.SupportingInfo_SupportedBy, verArt21));
       assertFalse(verArt21.areRelated(CoreRelationTypes.SupportingInfo_SupportedBy, folderArt21));
       assertFalse(verArt21.areRelated(CoreRelationTypes.SupportingInfo_SupportingInfo, folderArt21));
 
       // relate version to folder with same relation, but opposite order
-      folder = atsServer.getArtifact(folderArt.getId());
+      folder = (ArtifactReadable) atsServer.getQueryService().getArtifact(folderArt.getId());
       assertNotNull(folder);
-      version = atsServer.getConfigItemFactory().getVersion(atsServer.getArtifact(verArt.getId()));
+      version = atsServer.getConfigItemFactory().getVersion((ArtifactReadable) atsServer.getQueryService().getArtifact(verArt.getId()));
       assertNotNull(version);
       changes = createAtsChangeSet();
       changes.relate(version, CoreRelationTypes.SupportingInfo_SupportedBy, folder);
       changes.execute();
 
       // test that version and folder are related as expected
-      ArtifactReadable folderArt22 = atsServer.getArtifact(folder.getId());
-      ArtifactReadable verArt22 = atsServer.getArtifact(version.getId());
+      ArtifactReadable folderArt22 = (ArtifactReadable) atsServer.getQueryService().getArtifact(folder.getId());
+      ArtifactReadable verArt22 = (ArtifactReadable) atsServer.getQueryService().getArtifact(version.getId());
       assertTrue(folderArt22.areRelated(CoreRelationTypes.SupportingInfo_SupportingInfo, verArt22));
       assertFalse(folderArt22.areRelated(CoreRelationTypes.SupportingInfo_SupportedBy, verArt22));
       assertTrue(verArt22.areRelated(CoreRelationTypes.SupportingInfo_SupportedBy, folderArt22));
@@ -130,8 +130,8 @@ public class AtsChangeSetTest {
       changes.execute();
 
       // test that all version and folder are not related in any direction
-      ArtifactReadable folderArt221 = atsServer.getArtifact(folder.getId());
-      ArtifactReadable verArt221 = atsServer.getArtifact(version.getId());
+      ArtifactReadable folderArt221 = (ArtifactReadable) atsServer.getQueryService().getArtifact(folder.getId());
+      ArtifactReadable verArt221 = (ArtifactReadable) atsServer.getQueryService().getArtifact(version.getId());
       assertFalse(folderArt221.areRelated(CoreRelationTypes.SupportingInfo_SupportingInfo, verArt221));
       assertFalse(folderArt221.areRelated(CoreRelationTypes.SupportingInfo_SupportedBy, verArt221));
       assertFalse(verArt221.areRelated(CoreRelationTypes.SupportingInfo_SupportedBy, folderArt221));
@@ -148,8 +148,8 @@ public class AtsChangeSetTest {
       changes.execute();
 
       // test that folder to version is valid for the correct direction
-      ArtifactReadable folderArt2 = atsServer.getArtifact(folderArt.getId());
-      ArtifactReadable verArt2 = atsServer.getArtifact(verArt.getId());
+      ArtifactReadable folderArt2 = (ArtifactReadable) atsServer.getQueryService().getArtifact(folderArt.getId());
+      ArtifactReadable verArt2 = (ArtifactReadable) atsServer.getQueryService().getArtifact(verArt.getId());
       assertTrue(folderArt2.areRelated(CoreRelationTypes.SupportingInfo_SupportingInfo, verArt2));
       assertFalse(folderArt2.areRelated(CoreRelationTypes.SupportingInfo_SupportedBy, verArt2));
       assertTrue(verArt2.areRelated(CoreRelationTypes.SupportingInfo_SupportedBy, folderArt2));
@@ -160,8 +160,8 @@ public class AtsChangeSetTest {
       changes.unrelate(folderArt2, CoreRelationTypes.SupportingInfo_SupportingInfo, verArt2);
       changes.execute();
 
-      ArtifactReadable folderArt221 = atsServer.getArtifact(folderArt.getId());
-      ArtifactReadable verArt221 = atsServer.getArtifact(verArt.getId());
+      ArtifactReadable folderArt221 = (ArtifactReadable) atsServer.getQueryService().getArtifact(folderArt.getId());
+      ArtifactReadable verArt221 = (ArtifactReadable) atsServer.getQueryService().getArtifact(verArt.getId());
       assertFalse(folderArt221.areRelated(CoreRelationTypes.SupportingInfo_SupportingInfo, verArt221));
       assertFalse(folderArt221.areRelated(CoreRelationTypes.SupportingInfo_SupportedBy, verArt221));
       assertFalse(verArt221.areRelated(CoreRelationTypes.SupportingInfo_SupportedBy, folderArt221));
@@ -181,10 +181,10 @@ public class AtsChangeSetTest {
       changes.execute();
 
       // test that version 1 is related and not 2 and 3
-      ArtifactReadable folderArt2 = atsServer.getArtifact(folderArt.getId());
-      ArtifactReadable verArt1 = atsServer.getArtifact(ver1ArtId.getId());
-      ArtifactReadable verArt2 = atsServer.getArtifact(ver2ArtId.getId());
-      ArtifactReadable verArt3 = atsServer.getArtifact(ver3ArtId.getId());
+      ArtifactReadable folderArt2 = (ArtifactReadable) atsServer.getQueryService().getArtifact(folderArt.getId());
+      ArtifactReadable verArt1 = (ArtifactReadable) atsServer.getQueryService().getArtifact(ver1ArtId.getId());
+      ArtifactReadable verArt2 = (ArtifactReadable) atsServer.getQueryService().getArtifact(ver2ArtId.getId());
+      ArtifactReadable verArt3 = (ArtifactReadable) atsServer.getQueryService().getArtifact(ver3ArtId.getId());
       assertTrue(folderArt2.areRelated(CoreRelationTypes.SupportingInfo_SupportingInfo, verArt1));
       assertFalse(folderArt2.areRelated(CoreRelationTypes.SupportingInfo_SupportingInfo, verArt2));
       assertFalse(folderArt2.areRelated(CoreRelationTypes.SupportingInfo_SupportingInfo, verArt3));
@@ -196,10 +196,10 @@ public class AtsChangeSetTest {
       changes.execute();
 
       // confirm 2 and 3 are related and not 1
-      ArtifactReadable folderArt21 = atsServer.getArtifact(folderArt.getId());
-      ArtifactReadable verArt11 = atsServer.getArtifact(ver1ArtId.getId());
-      ArtifactReadable verArt21 = atsServer.getArtifact(ver2ArtId.getId());
-      ArtifactReadable verArt31 = atsServer.getArtifact(ver3ArtId.getId());
+      ArtifactReadable folderArt21 = (ArtifactReadable) atsServer.getQueryService().getArtifact(folderArt.getId());
+      ArtifactReadable verArt11 = (ArtifactReadable) atsServer.getQueryService().getArtifact(ver1ArtId.getId());
+      ArtifactReadable verArt21 = (ArtifactReadable) atsServer.getQueryService().getArtifact(ver2ArtId.getId());
+      ArtifactReadable verArt31 = (ArtifactReadable) atsServer.getQueryService().getArtifact(ver3ArtId.getId());
       assertFalse(folderArt21.areRelated(CoreRelationTypes.SupportingInfo_SupportingInfo, verArt11));
       assertTrue(folderArt21.areRelated(CoreRelationTypes.SupportingInfo_SupportingInfo, verArt21));
       assertTrue(folderArt21.areRelated(CoreRelationTypes.SupportingInfo_SupportingInfo, verArt31));
@@ -211,10 +211,10 @@ public class AtsChangeSetTest {
       changes.execute();
 
       // confirm 1 and 2 are related and not 3
-      ArtifactReadable folderArt211 = atsServer.getArtifact(folderArt.getId());
-      ArtifactReadable verArt111 = atsServer.getArtifact(ver1ArtId.getId());
-      ArtifactReadable verArt211 = atsServer.getArtifact(ver2ArtId.getId());
-      ArtifactReadable verArt311 = atsServer.getArtifact(ver3ArtId.getId());
+      ArtifactReadable folderArt211 = (ArtifactReadable) atsServer.getQueryService().getArtifact(folderArt.getId());
+      ArtifactReadable verArt111 = (ArtifactReadable) atsServer.getQueryService().getArtifact(ver1ArtId.getId());
+      ArtifactReadable verArt211 = (ArtifactReadable) atsServer.getQueryService().getArtifact(ver2ArtId.getId());
+      ArtifactReadable verArt311 = (ArtifactReadable) atsServer.getQueryService().getArtifact(ver3ArtId.getId());
       assertTrue(folderArt211.areRelated(CoreRelationTypes.SupportingInfo_SupportingInfo, verArt111));
       assertTrue(folderArt211.areRelated(CoreRelationTypes.SupportingInfo_SupportingInfo, verArt211));
       assertFalse(folderArt211.areRelated(CoreRelationTypes.SupportingInfo_SupportingInfo, verArt311));
@@ -239,9 +239,9 @@ public class AtsChangeSetTest {
       changes.execute();
 
       // reload artifacts to get latest stripe
-      ver1 = atsServer.getArtifact(ver1.getId());
-      ver2 = atsServer.getArtifact(ver2.getId());
-      teamWf = atsServer.getArtifact(teamWf.getId());
+      ver1 = (ArtifactReadable) atsServer.getQueryService().getArtifact(ver1.getId());
+      ver2 = (ArtifactReadable) atsServer.getQueryService().getArtifact(ver2.getId());
+      teamWf = (ArtifactReadable) atsServer.getQueryService().getArtifact(teamWf.getId());
 
       // ensure that teamWf is related to ver1
       Assert.assertEquals(ver1.getId(),
@@ -253,9 +253,9 @@ public class AtsChangeSetTest {
       changes.execute();
 
       // reload artifacts to get latest stripe
-      ver1 = atsServer.getArtifact(ver1.getId());
-      ver2 = atsServer.getArtifact(ver2.getId());
-      teamWf = atsServer.getArtifact(teamWf.getId());
+      ver1 = (ArtifactReadable) atsServer.getQueryService().getArtifact(ver1.getId());
+      ver2 = (ArtifactReadable) atsServer.getQueryService().getArtifact(ver2.getId());
+      teamWf = (ArtifactReadable) atsServer.getQueryService().getArtifact(teamWf.getId());
 
       // ensure teamWf is related to ver2 and not related to ver1
       IAtsVersion targetedVersion =

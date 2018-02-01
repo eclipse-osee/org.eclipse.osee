@@ -130,7 +130,7 @@ public abstract class AbstractWorkItemFactory implements IAtsWorkItemFactory {
    @Override
    public IAgileItem getAgileItem(ArtifactToken artifact) {
       IAgileItem item = null;
-      ArtifactId art = atsApi.getArtifact(artifact);
+      ArtifactId art = atsApi.getQueryService().getArtifact(artifact);
       if (atsApi.getStoreService().isOfType(art, AtsArtifactTypes.AbstractWorkflowArtifact)) {
          item = new org.eclipse.osee.ats.core.agile.AgileItem(atsApi.getLogger(), atsApi, (ArtifactToken) art);
       }

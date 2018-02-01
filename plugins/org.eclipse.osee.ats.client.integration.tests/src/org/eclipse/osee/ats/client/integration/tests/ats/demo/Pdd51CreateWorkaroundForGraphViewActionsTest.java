@@ -39,7 +39,7 @@ public class Pdd51CreateWorkaroundForGraphViewActionsTest implements IPopulateDe
       for (ArtifactToken version : create.getVersionToWorkflowToken().keySet()) {
          ArtifactToken teamWfArtToken = create.getVersionToWorkflowToken().get(version);
 
-         IAtsTeamWorkflow teamWf = AtsClientService.get().getTeamWf(teamWfArtToken);
+         IAtsTeamWorkflow teamWf = AtsClientService.get().getQueryService().getTeamWf(teamWfArtToken);
          Assert.assertNotNull(teamWf);
 
          testTeamContents(teamWf, teamWfArtToken.getName(), "1", version.getName(), getState(version).getName(),

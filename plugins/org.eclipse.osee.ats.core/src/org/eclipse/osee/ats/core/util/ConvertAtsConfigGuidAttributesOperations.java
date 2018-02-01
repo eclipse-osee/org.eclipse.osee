@@ -42,7 +42,7 @@ public class ConvertAtsConfigGuidAttributesOperations {
       List<ArtifactId> neededAiRefIds = new LinkedList<>();
       for (IAttribute<?> attr : atsApi.getAttributeResolver().getAttributes(art, ActionableItem)) {
          String aiArtGuid = (String) attr.getValue();
-         IAtsActionableItem ai = atsApi.getConfigItem(aiArtGuid);
+         IAtsActionableItem ai = atsApi.getQueryService().getConfigItem(aiArtGuid);
          if (ai == null) {
             atsApi.getLogger().error("AI not found for aiArtGuid " + aiArtGuid + " for art " + art.toStringWithId());
          } else if (!currentAiRefIds.contains(ai.getId())) {
@@ -65,7 +65,7 @@ public class ConvertAtsConfigGuidAttributesOperations {
       Collection<ArtifactId> aiArts =
          atsApi.getAttributeResolver().getAttributeValues(art, AtsAttributeTypes.ActionableItemReference);
       for (ArtifactId id : aiArts) {
-         IAtsActionableItem ai = atsApi.getConfigItem(id);
+         IAtsActionableItem ai = atsApi.getQueryService().getConfigItem(id);
          if (ai == null) {
             atsApi.getLogger().error("AI not found for id " + id + " for art " + art.toStringWithId());
          } else if (!currentAiGuidIds.contains(ai.getStoreObject().getGuid())) {
@@ -85,7 +85,7 @@ public class ConvertAtsConfigGuidAttributesOperations {
       if (teamDefId.isInvalid()) {
          String teamDefGuid = atsApi.getAttributeResolver().getSoleAttributeValue(art, TeamDefinition, "");
          if (Strings.isValid(teamDefGuid)) {
-            IAtsTeamDefinition teamDef = atsApi.getConfigItem(teamDefGuid);
+            IAtsTeamDefinition teamDef = atsApi.getQueryService().getConfigItem(teamDefGuid);
             changes.setSoleAttributeValue(art, AtsAttributeTypes.TeamDefinitionReference, teamDef.getStoreObject());
          }
       }
@@ -94,7 +94,7 @@ public class ConvertAtsConfigGuidAttributesOperations {
       if (!Strings.isValid(teamDefGuid)) {
          ArtifactId teamDefArt = atsApi.getAttributeResolver().getSoleArtifactIdReference(art,
             AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);
-         ArtifactToken artifact = atsApi.getArtifact(teamDefArt);
+         ArtifactToken artifact = atsApi.getQueryService().getArtifact(teamDefArt);
          if (artifact != null) {
             changes.setSoleAttributeValue(art, TeamDefinition, artifact.getGuid());
          }

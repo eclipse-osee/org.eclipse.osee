@@ -73,7 +73,7 @@ public class AtsTaskService extends AbstractAtsTaskService {
    }
 
    private void processForEvents(NewTaskData newTaskData, JaxAtsTasks jaxTasks, List<IAtsTask> tasks, ArtifactEvent artifactEvent) {
-      Artifact teamWf = atsClient.getArtifact(newTaskData.getTeamWfId());
+      Artifact teamWf = (Artifact) atsClient.getQueryService().getArtifact(newTaskData.getTeamWfId());
 
       List<Long> artIds = new LinkedList<>();
 
@@ -88,7 +88,7 @@ public class AtsTaskService extends AbstractAtsTaskService {
 
          RelationLink relation = getRelation(teamWf, task);
          if (relation != null) {
-            Artifact taskArt = atsClient.getArtifact(task.getId());
+            Artifact taskArt = (Artifact) atsClient.getQueryService().getArtifact(task.getId());
 
             DefaultBasicIdRelation guidRelation = new DefaultBasicIdRelation(AtsClientService.get().getAtsBranch(),
                AtsRelationTypes.TeamWfToTask_Task.getGuid(), relation.getId(), relation.getGammaId(),
@@ -100,7 +100,8 @@ public class AtsTaskService extends AbstractAtsTaskService {
       }
 
       for (Long id : artIds) {
-         tasks.add(AtsClientService.get().getWorkItemFactory().getTask(AtsClientService.get().getArtifact(id)));
+         tasks.add(AtsClientService.get().getWorkItemFactory().getTask(
+            AtsClientService.get().getQueryService().getArtifact(id)));
       }
    }
 

@@ -35,7 +35,7 @@ public class Pdd86CreateProblemWithTheUserWindowActionTest implements IPopulateD
       Pdd86CreateProblemWithTheUserWindowAction create = new Pdd86CreateProblemWithTheUserWindowAction();
       create.run();
 
-      IAtsTeamWorkflow teamWf = AtsClientService.get().getTeamWf(DemoArtifactToken.ProblemWithTheUserWindow_TeamWf);
+      IAtsTeamWorkflow teamWf = AtsClientService.get().getQueryService().getTeamWf(DemoArtifactToken.ProblemWithTheUserWindow_TeamWf);
       Assert.assertNotNull(teamWf);
 
       testTeamContents(teamWf, DemoArtifactToken.ProblemWithTheUserWindow_TeamWf.getName(), "4", "",

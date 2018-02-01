@@ -86,7 +86,7 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
       IAtsActionableItem parent = null;
       try {
          if (jaxAI != null && jaxAI.getParentId() != null) {
-            parent = atsApi.getConfigItemFactory().getActionableItem(atsApi.getArtifact(jaxAI.getParentId()));
+            parent = atsApi.getConfigItemFactory().getActionableItem(atsApi.getQueryService().getArtifact(jaxAI.getParentId()));
          } else {
             ArtifactToken art =
                atsApi.getRelationResolver().getRelatedOrNull(artifact, CoreRelationTypes.Default_Hierarchical__Parent);
@@ -105,7 +105,7 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
       IAtsTeamDefinition teamDef = null;
       try {
          if (jaxAI != null && jaxAI.getTeamDefId() != null) {
-            teamDef = atsApi.getConfigItemFactory().getTeamDef(atsApi.getArtifact(jaxAI.getTeamDefId()));
+            teamDef = atsApi.getConfigItemFactory().getTeamDef(atsApi.getQueryService().getArtifact(jaxAI.getTeamDefId()));
          } else {
             ArtifactToken art =
                atsApi.getRelationResolver().getRelatedOrNull(artifact, AtsRelationTypes.TeamActionableItem_Team);

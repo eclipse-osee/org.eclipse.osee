@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -49,7 +50,7 @@ public class ProgramEndpointImpl extends BaseConfigEndpointImpl<JaxProgram> impl
    @PUT
    @Override
    public Response update(JaxProgram program) throws Exception {
-      ArtifactReadable artifact = atsServer.getArtifact(program.getId());
+      ArtifactReadable artifact = (ArtifactReadable) atsServer.getQueryService().getArtifact(program.getId());
       if (artifact == null) {
          throw new OseeStateException("Artifact with id %d not found", program.getId());
       }
@@ -84,8 +85,8 @@ public class ProgramEndpointImpl extends BaseConfigEndpointImpl<JaxProgram> impl
             configs.add(getConfigObject(art));
          }
       } else {
-         for (ArtifactReadable art : atsServer.getArtifact(countryId).getRelated(
-            AtsRelationTypes.CountryToProgram_Program)) {
+         for (ArtifactToken art : atsServer.getRelationResolver().getRelated(
+            atsServer.getQueryService().getArtifact(countryId), AtsRelationTypes.CountryToProgram_Program)) {
             JaxProgram program = getConfigObject(art);
             program.setCountryId(countryId);
             configs.add(program);
@@ -98,7 +99,8 @@ public class ProgramEndpointImpl extends BaseConfigEndpointImpl<JaxProgram> impl
    protected void create(JaxProgram jaxProgram, ArtifactId programArtId, IAtsChangeSet changes) {
       ArtifactReadable programArt = (ArtifactReadable) programArtId;
       if (programArt.getRelatedCount(AtsRelationTypes.CountryToProgram_Country) == 0) {
-         ArtifactReadable countryArt = atsServer.getArtifact(jaxProgram.getCountryId());
+         ArtifactReadable countryArt =
+            (ArtifactReadable) atsServer.getQueryService().getArtifact(jaxProgram.getCountryId());
          changes.relate(countryArt, AtsRelationTypes.CountryToProgram_Program, programArt);
       }
    }

@@ -61,7 +61,7 @@ public class EndpointOperations {
    public List<JaxAtsObject> getActiveArtifactTypeTokens(IArtifactType artifactType, UriInfo uriInfo) throws Exception {
       Boolean active = getActiveQueryParamOrNull(uriInfo);
       List<JaxAtsObject> teams = new ArrayList<>();
-      for (ArtifactToken art : atsApi.getArtifacts(artifactType)) {
+      for (ArtifactToken art : atsApi.getQueryService().getArtifacts(artifactType)) {
          if (active != null) {
             if (filterOutActiveIfSet(active, art) == null) {
                continue;

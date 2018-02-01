@@ -67,13 +67,13 @@ public abstract class AbstractConfigResource {
    }
 
    private IAtsConfigObject getObject(int id) {
-      ArtifactToken configArt = atsApi.getArtifact(new Long(id));
+      ArtifactToken configArt = atsApi.getQueryService().getArtifact(new Long(id));
       return atsApi.getConfigItemFactory().getConfigObject(configArt);
    }
 
    private List<IAtsConfigObject> getObjects() {
       List<IAtsConfigObject> configs = new ArrayList<>();
-      for (ArtifactId art : atsApi.getArtifacts(artifactType)) {
+      for (ArtifactId art : atsApi.getQueryService().getArtifacts(artifactType)) {
          configs.add(atsApi.getConfigItemFactory().getConfigObject(art));
       }
       return configs;

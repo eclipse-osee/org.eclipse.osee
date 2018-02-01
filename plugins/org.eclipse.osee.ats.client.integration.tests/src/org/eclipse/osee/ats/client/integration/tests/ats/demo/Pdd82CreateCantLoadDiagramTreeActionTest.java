@@ -35,7 +35,7 @@ public class Pdd82CreateCantLoadDiagramTreeActionTest implements IPopulateDemoDa
       Pdd82CreateCantLoadDiagramTreeAction create = new Pdd82CreateCantLoadDiagramTreeAction();
       create.run();
 
-      IAtsTeamWorkflow teamWf = AtsClientService.get().getTeamWf(DemoArtifactToken.CantLoadDiagramTree_TeamWf);
+      IAtsTeamWorkflow teamWf = AtsClientService.get().getQueryService().getTeamWf(DemoArtifactToken.CantLoadDiagramTree_TeamWf);
       Assert.assertNotNull(teamWf);
 
       testTeamContents(teamWf, DemoArtifactToken.CantLoadDiagramTree_TeamWf.getName(), "3", "",

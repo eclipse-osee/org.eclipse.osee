@@ -69,7 +69,7 @@ public class AtsProgramServiceTest {
       IAtsProgram program4 = programService.getProgram(insertions.iterator().next());
       assertEquals(program.getId(), program4.getId());
 
-      program4 = programService.getProgramByGuid(program.getStoreObject().getGuid());
+      program4 = programService.getProgram(program.getStoreObject().getId());
       assertEquals(program.getId(), program4.getId());
    }
 

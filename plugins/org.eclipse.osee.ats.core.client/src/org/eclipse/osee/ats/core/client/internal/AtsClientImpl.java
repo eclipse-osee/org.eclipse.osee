@@ -81,16 +81,11 @@ import org.eclipse.osee.ats.core.workflow.WorkItemFactory;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -173,18 +168,13 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    }
 
    @Override
-   public Artifact getConfigArtifact(IAtsConfigObject atsConfigObject) {
-      return AtsClientService.get().getArtifact(atsConfigObject);
-   }
-
-   @Override
    public List<Artifact> getConfigArtifacts(Collection<? extends IAtsObject> atsObjects) {
       List<Artifact> results = new LinkedList<>();
       for (ArtifactId artId : AtsObjects.getArtifacts(atsObjects)) {
          if (artId instanceof Artifact) {
             results.add((Artifact) artId);
          } else {
-            Artifact artifact = AtsClientService.get().getArtifact(artId);
+            Artifact artifact = (Artifact) AtsClientService.get().getQueryService().getArtifact(artId);
             if (artifact != null) {
                results.add(artifact);
             }
@@ -324,68 +314,9 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
       return (IAtsUserServiceClient) userService;
    }
 
-   /**
-    * @return corresponding Artifact or null if not found
-    */
-   @Override
-   public Artifact getArtifact(ArtifactId artifact) {
-      if (artifact instanceof Artifact) {
-         return (Artifact) artifact;
-      }
-      try {
-         return ArtifactQuery.getArtifactFromId(artifact, getAtsBranch());
-      } catch (ArtifactDoesNotExist ex) {
-         return null;
-      }
-   }
-
-   /**
-    * @return corresponding Artifact or null if not found
-    */
-   @Override
-   public Artifact getArtifact(IAtsObject atsObject) {
-      Artifact results = null;
-      if (atsObject.getStoreObject() != null) {
-         if (atsObject.getStoreObject() instanceof Artifact) {
-            results = (Artifact) atsObject.getStoreObject();
-         } else {
-            results = AtsClientService.get().getArtifact(atsObject.getId());
-            if (results != null) {
-               atsObject.setStoreObject(results);
-            }
-         }
-      } else {
-         results = getArtifact(atsObject.getId());
-         if (results != null) {
-            atsObject.setStoreObject(results);
-         }
-      }
-      return results;
-   }
-
-   /**
-    * @return corresponding Artifact or null if not found
-    */
-   @Override
-   public Artifact getArtifact(Long id) {
-      Conditions.checkExpressionFailOnTrue(id <= 0, "Id must be > 0; is %d", id);
-      Artifact result = null;
-      try {
-         result = ArtifactQuery.getArtifactFromId(id, getAtsBranch());
-      } catch (ArtifactDoesNotExist ex) {
-         // do nothing
-      }
-      return result;
-   }
-
    @Override
    public IAtsWorkItemService getWorkItemService() {
       return workItemService;
-   }
-
-   @Override
-   public AbstractWorkflowArtifact getWorkflowArtifact(IAtsObject atsObject) {
-      return (AbstractWorkflowArtifact) getArtifact(atsObject);
    }
 
    @Override
@@ -456,36 +387,6 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    }
 
    @Override
-   public Artifact getArtifactById(String id) {
-      Artifact result = null;
-      if (GUID.isValid(id)) {
-         result = getArtifactByGuid(id);
-      }
-      if (result == null && Strings.isNumeric(id)) {
-         result = getArtifact(Long.valueOf(id));
-      }
-      if (result == null) {
-         result = getArtifactByAtsId(id);
-      }
-      return result;
-   }
-
-   @Override
-   public Artifact getArtifactByAtsId(String id) {
-      return (Artifact) super.getArtifactByAtsId(id);
-   }
-
-   @Override
-   public Artifact getArtifactByGuid(String guid) {
-      return ArtifactQuery.getArtifactFromId(guid, getAtsBranch());
-   }
-
-   @Override
-   public Artifact getArtifactByLegacyPcrId(String id) {
-      return (Artifact) super.getArtifactByLegacyPcrId(id);
-   }
-
-   @Override
    public IArtifactMembersCache<GoalArtifact> getGoalMembersCache() {
       if (goalMembersCache == null) {
          goalMembersCache = new ArtifactCollectorsCache<>(AtsRelationTypes.Goal_Member);
@@ -502,18 +403,13 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    }
 
    @Override
-   public <A extends IAtsConfigObject> A getSoleById(long id, Class<A> clazz) {
-      return getCache().getAtsObject(id);
-   }
-
-   @Override
    public Collection<ITransitionListener> getTransitionListeners() {
       return TransitionListeners.getListeners();
    }
 
    @Override
    public void clearImplementersCache(IAtsWorkItem workItem) {
-      AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) getArtifact(workItem);
+      AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) getQueryService().getArtifact(workItem);
       if (awa != null) {
          awa.clearImplementersCache();
       }
@@ -559,15 +455,10 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
       return getConfigService().getConfigurations().getWorkDefinitionsData();
    }
 
-   @Override
-   public Artifact getArtifact(ArtifactId artifact, BranchId branch) {
-      return ArtifactQuery.getArtifactFromId(artifact, branch);
-   }
-
    @SuppressWarnings("unchecked")
    @Override
    public <T> T getConfigItem(ArtifactToken configToken) {
-      ArtifactId artifact = getArtifact(configToken.getId());
+      ArtifactId artifact = getQueryService().getArtifact(configToken.getId());
       if (artifact != null) {
          IAtsConfigObject configObject = getConfigItemFactory().getConfigObject(artifact);
          return (T) configObject;
@@ -590,11 +481,6 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    @Override
    public String getApplicationServerBase() {
       return OseeClientProperties.getOseeApplicationServer();
-   }
-
-   @Override
-   public List<ArtifactToken> getArtifacts(IArtifactType artifactType) {
-      return Collections.castAll(ArtifactQuery.getArtifactListFromType(artifactType, getAtsBranch()));
    }
 
    @Override

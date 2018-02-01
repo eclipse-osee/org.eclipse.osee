@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.rest.internal.query;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.IAtsConfigQuery;
@@ -30,9 +31,11 @@ import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.jdbc.JdbcService;
+import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Donald G. Dunne
@@ -138,5 +141,55 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
          return result;
       }
       return java.util.Collections.emptyList();
+   }
+
+   @Override
+   public <T extends ArtifactId> ArtifactReadable getArtifact(T artifact) {
+      ArtifactReadable result = null;
+      try {
+         if (artifact instanceof ArtifactReadable) {
+            result = (ArtifactReadable) artifact;
+         } else if (artifact instanceof IAtsObject) {
+            IAtsObject atsObject = (IAtsObject) artifact;
+            if (atsObject.getStoreObject() instanceof ArtifactReadable) {
+               result = (ArtifactReadable) atsObject.getStoreObject();
+            } else {
+               result = getArtifact(atsObject.getId());
+            }
+         } else {
+            result = getArtifact(artifact.getId());
+         }
+      } catch (ArtifactDoesNotExist ex) {
+         // do nothing
+      }
+      return result;
+   }
+
+   @Override
+   public <T extends IAtsObject> ArtifactReadable getArtifact(T atsObject) {
+      ArtifactReadable result = null;
+      try {
+         if (atsObject.getStoreObject() instanceof ArtifactReadable) {
+            result = (ArtifactReadable) atsObject.getStoreObject();
+         } else {
+            result = getArtifact(atsObject.getId());
+            if (result != null) {
+               atsObject.setStoreObject(result);
+            }
+         }
+      } catch (ArtifactDoesNotExist ex) {
+         // do nothing
+      }
+      return result;
+   }
+
+   @Override
+   public ArtifactReadable getArtifact(Long id) {
+      return atsServer.getQuery().andId(id).getResults().getAtMostOneOrNull();
+   }
+
+   @Override
+   public ArtifactReadable getArtifact(ArtifactId artifact, BranchId branch) {
+      throw new UnsupportedOperationException();
    }
 }

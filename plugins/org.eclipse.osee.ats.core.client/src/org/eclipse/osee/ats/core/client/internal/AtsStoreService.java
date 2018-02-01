@@ -98,7 +98,7 @@ public class AtsStoreService implements IAtsStoreService {
 
    @Override
    public boolean isDeleted(IAtsObject atsObject) {
-      return AtsClientService.get().getArtifact(atsObject).isDeleted();
+      return ((Artifact) AtsClientService.get().getQueryService().getArtifact(atsObject)).isDeleted();
    }
 
    /**
@@ -120,7 +120,7 @@ public class AtsStoreService implements IAtsStoreService {
 
    @Override
    public boolean isAttributeTypeValid(IAtsObject atsObject, AttributeTypeId attributeType) {
-      return isAttributeTypeValid(AtsClientService.get().getArtifact(atsObject), attributeType);
+      return isAttributeTypeValid(AtsClientService.get().getQueryService().getArtifact(atsObject), attributeType);
    }
 
    @Override
@@ -188,12 +188,12 @@ public class AtsStoreService implements IAtsStoreService {
 
    @Override
    public IArtifactType getArtifactType(IAtsObject atsObject) {
-      return getArtifactType(AtsClientService.get().getArtifact(atsObject));
+      return getArtifactType(AtsClientService.get().getQueryService().getArtifact(atsObject));
    }
 
    @Override
    public boolean isOfType(IAtsObject atsObject, IArtifactType artifactType) {
-      return isOfType(AtsClientService.get().getArtifact(atsObject), artifactType);
+      return isOfType(AtsClientService.get().getQueryService().getArtifact(atsObject), artifactType);
    }
 
    @Override
@@ -219,7 +219,7 @@ public class AtsStoreService implements IAtsStoreService {
    @Override
    public TransactionId getTransactionId(IAtsWorkItem workItem) {
       TransactionId transId = TransactionId.SENTINEL;
-      ArtifactId artifact = atsApi.getArtifact(workItem.getStoreObject());
+      ArtifactId artifact = atsApi.getQueryService().getArtifact(workItem.getStoreObject());
       if (artifact instanceof Artifact) {
          transId = ((Artifact) artifact).getTransaction();
       }
@@ -228,7 +228,7 @@ public class AtsStoreService implements IAtsStoreService {
 
    @Override
    public boolean isDeleted(ArtifactId artifact) {
-      ArtifactToken art = atsApi.getArtifact(artifact);
+      ArtifactToken art = atsApi.getQueryService().getArtifact(artifact);
       if (art != null) {
          return ((Artifact) art).isDeleted();
       }

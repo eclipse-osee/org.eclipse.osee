@@ -118,7 +118,7 @@ public final class AtsEditors {
 
    public static void openATSAction(final ArtifactToken art, final AtsOpenOption atsOpenOption) {
       try {
-         Artifact artifact = AtsClientService.get().getArtifact(art);
+         Artifact artifact = (Artifact) AtsClientService.get().getQueryService().getArtifact(art);
          if (artifact.isOfType(AtsArtifactTypes.Action)) {
             ActionArtifact action = (ActionArtifact) artifact;
             Collection<IAtsTeamWorkflow> teams = AtsClientService.get().getWorkItemService().getTeams(artifact);

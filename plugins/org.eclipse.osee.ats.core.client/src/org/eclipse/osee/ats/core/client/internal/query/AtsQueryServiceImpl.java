@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
@@ -38,12 +39,15 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttribute;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
+import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.jdbc.JdbcService;
 
@@ -261,6 +265,61 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
          return result;
       }
       return java.util.Collections.emptyList();
+   }
+
+   @Override
+   public Artifact getArtifact(Long id) {
+      try {
+         return ArtifactQuery.getArtifactFromId(id, atsClient.getAtsBranch());
+      } catch (ArtifactDoesNotExist ex) {
+         // do nothing
+      }
+      return null;
+   }
+
+   @Override
+   public <T extends IAtsObject> Artifact getArtifact(T atsObject) {
+      Artifact result = null;
+      try {
+         if (atsObject.getStoreObject() instanceof Artifact) {
+            result = (Artifact) atsObject.getStoreObject();
+         } else {
+            result = getArtifact(atsObject.getId());
+            if (result != null) {
+               atsObject.setStoreObject(result);
+            }
+         }
+      } catch (ArtifactDoesNotExist ex) {
+         // do nothing
+      }
+      return result;
+   }
+
+   @Override
+   public <T extends ArtifactId> Artifact getArtifact(T artifact) {
+      Artifact result = null;
+      try {
+         if (artifact instanceof Artifact) {
+            result = (Artifact) artifact;
+         } else if (artifact instanceof IAtsObject) {
+            IAtsObject atsObject = (IAtsObject) artifact;
+            if (atsObject.getStoreObject() instanceof Artifact) {
+               result = (Artifact) atsObject.getStoreObject();
+            } else {
+               result = getArtifact(atsObject.getId());
+            }
+         } else {
+            result = getArtifact(artifact.getId());
+         }
+      } catch (ArtifactDoesNotExist ex) {
+         // do nothing
+      }
+      return result;
+   }
+
+   @Override
+   public Artifact getArtifact(ArtifactId artifact, BranchId branch) {
+      return ArtifactQuery.getArtifactOrNull(artifact, branch, DeletionFlag.EXCLUDE_DELETED);
    }
 
 }

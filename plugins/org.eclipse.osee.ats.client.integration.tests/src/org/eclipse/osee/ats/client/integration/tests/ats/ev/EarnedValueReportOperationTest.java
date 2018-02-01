@@ -67,7 +67,7 @@ public class EarnedValueReportOperationTest {
    @Test
    public void testEmptyReport() {
       List<IAtsWorkPackage> workPackages = Arrays.asList(AtsClientService.get().getEarnedValueService().getWorkPackage(
-         AtsClientService.get().getArtifact(DemoArtifactToken.SAW_Test_AI_WorkPackage_0C)));
+         AtsClientService.get().getQueryService().getArtifact(DemoArtifactToken.SAW_Test_AI_WorkPackage_0C)));
       Assert.assertEquals(1, workPackages.size());
 
       // Confirm that report is empty for Work Packages

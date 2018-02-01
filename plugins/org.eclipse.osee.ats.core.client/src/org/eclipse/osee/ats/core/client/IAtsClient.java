@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.core.client;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.AtsApi;
-import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
@@ -25,13 +24,10 @@ import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.artifact.SprintArtifact;
 import org.eclipse.osee.ats.core.client.util.IArtifactMembersCache;
 import org.eclipse.osee.ats.core.client.util.IAtsClientUtil;
-import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
 import org.eclipse.osee.ats.core.config.IAtsCacheProvider;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 
@@ -39,22 +35,6 @@ import org.eclipse.osee.orcs.rest.client.OseeClient;
  * @author Donald G. Dunne
  */
 public interface IAtsClient extends AtsApi, IAtsNotifier, IAttributeResolverProvider, IAtsReviewServiceProvider, IAtsBranchServiceProvider, IAtsCacheProvider, ITeamDefinitionFactory, IActionableItemFactory, IAtsVersionServiceProvider {
-
-   /**
-    * @return corresponding Artifact or null if not found
-    */
-   @Override
-   Artifact getArtifact(ArtifactId artifact);
-
-   Artifact getConfigArtifact(IAtsConfigObject atsConfigObject);
-
-   /**
-    * @return corresponding Artifact or null if not found
-    */
-   @Override
-   Artifact getArtifact(IAtsObject atsObject);
-
-   AbstractWorkflowArtifact getWorkflowArtifact(IAtsObject atsObject);
 
    List<Artifact> getConfigArtifacts(Collection<? extends IAtsObject> atsObjects);
 
@@ -66,15 +46,9 @@ public interface IAtsClient extends AtsApi, IAtsNotifier, IAttributeResolverProv
 
    AtsApi getServices();
 
-   @Override
-   Artifact getArtifactByGuid(String guid);
-
    IArtifactMembersCache<GoalArtifact> getGoalMembersCache();
 
    IArtifactMembersCache<SprintArtifact> getSprintItemsCache();
-
-   @Override
-   Artifact getArtifact(Long id);
 
    IAtsEventService getEventService();
 
@@ -89,8 +63,6 @@ public interface IAtsClient extends AtsApi, IAtsNotifier, IAttributeResolverProv
    <T> Collection<T> getConfigItems(ArtifactToken... configTokens);
 
    void reloadServerAndClientCaches();
-
-   Artifact getArtifact(ArtifactId artifact, BranchId branch);
 
    IAtsClientUtil getClientUtils();
 

@@ -52,11 +52,11 @@ public class AtsAttributeResolverServiceImpl extends AbstractAtsAttributeResolve
    }
 
    private ArtifactReadable getArtifact(IAtsObject atsObject) {
-      return (ArtifactReadable) atsApi.getArtifact(atsObject);
+      return (ArtifactReadable) atsApi.getQueryService().getArtifact(atsObject);
    }
 
    private ArtifactReadable getArtifact(ArtifactId artifact) {
-      return (ArtifactReadable) atsApi.getArtifact(artifact);
+      return (ArtifactReadable) atsApi.getQueryService().getArtifact(artifact);
    }
 
    public void start() {

@@ -96,7 +96,7 @@ public class SprintUtil {
       if (sprintId <= 0) {
          results.errorf("sprintId %s is not valid", sprintId);
       }
-      ArtifactToken sprintArt = atsApi.getArtifact(sprintId);
+      ArtifactToken sprintArt = atsApi.getQueryService().getArtifact(sprintId);
       if (sprintArt == null) {
          results.errorf("Sprint can not be found with id %s", sprintId);
       }

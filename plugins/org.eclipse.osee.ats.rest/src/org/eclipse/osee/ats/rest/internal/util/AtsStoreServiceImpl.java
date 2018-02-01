@@ -86,7 +86,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
 
    @Override
    public boolean isDeleted(IAtsObject atsObject) {
-      return atsServer.getArtifact(atsObject).isDeleted();
+      return ((ArtifactReadable) atsServer.getQueryService().getArtifact(atsObject)).isDeleted();
    }
 
    /**
@@ -127,7 +127,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
 
    @Override
    public boolean isOfType(ArtifactId artifact, ArtifactTypeId... artifactType) {
-      return atsServer.getArtifact(artifact).isOfType(artifactType);
+      return ((ArtifactReadable) atsServer.getQueryService().getArtifact(artifact)).isOfType(artifactType);
    }
 
    @Override
@@ -173,7 +173,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
 
    @Override
    public IArtifactType getArtifactType(IAtsObject atsObject) {
-      return getArtifactType(atsServer.getArtifact(atsObject.getStoreObject()));
+      return getArtifactType(atsServer.getQueryService().getArtifact(atsObject.getStoreObject()));
    }
 
    @Override
@@ -205,7 +205,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    @Override
    public TransactionId getTransactionId(IAtsWorkItem workItem) {
       TransactionId transId = TransactionId.SENTINEL;
-      ArtifactId artifact = atsServer.getArtifact(workItem.getStoreObject());
+      ArtifactId artifact = atsServer.getQueryService().getArtifact(workItem.getStoreObject());
       if (artifact instanceof ArtifactReadable) {
          transId = ((ArtifactReadable) artifact).getTransaction();
       }
@@ -214,7 +214,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
 
    @Override
    public boolean isDeleted(ArtifactId artifact) {
-      return atsServer.getArtifact(artifact).isDeleted();
+      return ((ArtifactReadable) atsServer.getQueryService().getArtifact(artifact)).isDeleted();
    }
 
    @Override

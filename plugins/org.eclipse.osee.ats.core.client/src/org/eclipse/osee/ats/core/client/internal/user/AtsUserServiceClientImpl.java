@@ -160,7 +160,7 @@ public class AtsUserServiceClientImpl extends AbstractAtsUserService implements 
    @Override
    public boolean isAtsAdmin(boolean useCache) {
       if (!useCache) {
-         Artifact atsAdmin = AtsClientService.get().getArtifact(AtsArtifactToken.AtsAdmin);
+         Artifact atsAdmin = (Artifact) AtsClientService.get().getQueryService().getArtifact(AtsArtifactToken.AtsAdmin);
          return atsAdmin.isRelated(CoreRelationTypes.Users_User, getCurrentOseeUser());
       }
       return isAtsAdmin();

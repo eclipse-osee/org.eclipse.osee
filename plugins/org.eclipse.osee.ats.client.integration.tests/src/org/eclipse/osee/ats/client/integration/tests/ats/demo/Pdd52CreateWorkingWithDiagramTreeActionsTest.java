@@ -40,7 +40,7 @@ public class Pdd52CreateWorkingWithDiagramTreeActionsTest implements IPopulateDe
       for (ArtifactToken version : create.getVersionToWorkflowToken().keySet()) {
          ArtifactToken teamWfArtToken = create.getVersionToWorkflowToken().get(version);
 
-         IAtsTeamWorkflow teamWf = AtsClientService.get().getTeamWf(teamWfArtToken);
+         IAtsTeamWorkflow teamWf = AtsClientService.get().getQueryService().getTeamWf(teamWfArtToken);
          Assert.assertNotNull(teamWf);
 
          testTeamContents(teamWf, teamWfArtToken.getName(), "3", version.getName(), getState(version).getName(),

@@ -59,7 +59,8 @@ public class AtsBranchAccessManagerTest {
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
       SkynetTransaction transaction = TransactionManager.createTransaction(AtsClientService.get().getAtsBranch(),
          "testGetContextIdArtifact cleanup");
-      Artifact teamDefArt = AtsClientService.get().getConfigArtifact(teamArt.getTeamDefinition());
+      Artifact teamDefArt =
+         (Artifact) AtsClientService.get().getQueryService().getArtifact(teamArt.getTeamDefinition());
       teamDefArt.deleteAttributes(CoreAttributeTypes.AccessContextId);
       teamDefArt.persist(transaction);
       for (Artifact art : teamDefArt.getRelatedArtifacts(AtsRelationTypes.TeamActionableItem_ActionableItem)) {
@@ -88,7 +89,8 @@ public class AtsBranchAccessManagerTest {
 
       String teamDefContextId1 = "teamDef.context.1";
       String teamDefContextId2 = "teamDef.context.2";
-      Artifact teamDefArt = AtsClientService.get().getConfigArtifact(teamArt.getTeamDefinition());
+      Artifact teamDefArt =
+         (Artifact) AtsClientService.get().getQueryService().getArtifact(teamArt.getTeamDefinition());
       teamDefArt.setAttributeValues(CoreAttributeTypes.AccessContextId,
          Arrays.asList(teamDefContextId1, teamDefContextId2));
       teamDefArt.persist(getClass().getSimpleName());
@@ -96,7 +98,7 @@ public class AtsBranchAccessManagerTest {
       Assert.assertEquals(2, mgr.getContextId(teamArt.getWorkingBranch(), false).size());
 
       String aiContextId = "ai.context.1";
-      Artifact aiArt = AtsClientService.get().getConfigArtifact(
+      Artifact aiArt = (Artifact) AtsClientService.get().getQueryService().getArtifact(
          ActionableItems.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Requirements.getName()),
             AtsClientService.get()).iterator().next());
       aiArt.setAttributeValues(CoreAttributeTypes.AccessContextId, Arrays.asList(aiContextId));
@@ -129,7 +131,8 @@ public class AtsBranchAccessManagerTest {
       Assert.assertEquals(0, mgr.getContextId(teamArt.getWorkingBranch()).size());
 
       String teamDefContextId1 = "teamDef.context.1, this is the name";
-      Artifact teamDefArt = AtsClientService.get().getConfigArtifact(teamArt.getTeamDefinition());
+      Artifact teamDefArt =
+         (Artifact) AtsClientService.get().getQueryService().getArtifact(teamArt.getTeamDefinition());
       teamDefArt.setAttributeValues(CoreAttributeTypes.AccessContextId, Arrays.asList(teamDefContextId1));
       teamDefArt.persist(getClass().getSimpleName());
 

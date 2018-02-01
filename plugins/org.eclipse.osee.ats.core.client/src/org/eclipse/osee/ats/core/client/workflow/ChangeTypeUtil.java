@@ -14,6 +14,7 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Donald G. Dunne
@@ -30,15 +31,17 @@ public class ChangeTypeUtil {
 
    public static ChangeType getChangeType(IAtsObject atsObject) {
       return ChangeType.getChangeType(
-         AtsClientService.get().getArtifact(atsObject).getSoleAttributeValue(AtsAttributeTypes.ChangeType, ""));
+         ((Artifact) AtsClientService.get().getQueryService().getArtifact(atsObject)).getSoleAttributeValue(
+            AtsAttributeTypes.ChangeType, ""));
    }
 
    public static void setChangeType(IAtsObject atsObject, ChangeType changeType) {
       if (changeType == ChangeType.None) {
-         AtsClientService.get().getArtifact(atsObject).deleteSoleAttribute(AtsAttributeTypes.ChangeType);
+         ((Artifact) AtsClientService.get().getQueryService().getArtifact(atsObject)).deleteSoleAttribute(
+            AtsAttributeTypes.ChangeType);
       } else {
-         AtsClientService.get().getArtifact(atsObject).setSoleAttributeValue(AtsAttributeTypes.ChangeType,
-            changeType.name());
+         ((Artifact) AtsClientService.get().getQueryService().getArtifact(atsObject)).setSoleAttributeValue(
+            AtsAttributeTypes.ChangeType, changeType.name());
       }
    }
 

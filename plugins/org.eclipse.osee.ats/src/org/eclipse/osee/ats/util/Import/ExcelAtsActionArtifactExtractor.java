@@ -375,7 +375,7 @@ public class ExcelAtsActionArtifactExtractor {
 
    private void addToGoal(Collection<TeamWorkFlowArtifact> newTeamArts, IAtsChangeSet changes) {
       if (toGoal != null) {
-         GoalArtifact goal = (GoalArtifact) AtsClientService.get().getArtifact(toGoal);
+         GoalArtifact goal = (GoalArtifact) AtsClientService.get().getQueryService().getArtifact(toGoal);
          if (goal == null) {
             throw new OseeArgumentException("Goal artifact does not exist for goal %s", toGoal.toStringWithId());
          }

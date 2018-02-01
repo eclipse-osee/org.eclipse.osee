@@ -69,7 +69,8 @@ public class AtsBranchCommitOperation extends AbstractOperation {
          // Loop through this state's blocking reviews to confirm complete
          if (teamArt.isTeamWorkflow()) {
             for (IAtsAbstractReview review : ReviewManager.getReviewsFromCurrentState(teamArt)) {
-               AbstractReviewArtifact reviewArt = (AbstractReviewArtifact) AtsClientService.get().getArtifact(review);
+               AbstractReviewArtifact reviewArt =
+                  (AbstractReviewArtifact) AtsClientService.get().getQueryService().getArtifact(review);
                if (reviewArt.getReviewBlockType() == ReviewBlockType.Commit && !reviewArt.isCompletedOrCancelled()) {
                   throw new OseeStateException("Blocking Review must be completed before commit.");
                }

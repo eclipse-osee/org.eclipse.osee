@@ -94,10 +94,10 @@ public class AtsRelationResolverServiceImpl extends AbstractRelationResolverServ
          if (atsObject.getStoreObject() instanceof Artifact) {
             useArt = (Artifact) atsObject.getStoreObject();
          } else {
-            useArt = atsClient.getArtifact(atsObject.getId());
+            useArt = (Artifact) atsClient.getQueryService().getArtifact(atsObject.getId());
          }
       } else if (object instanceof ArtifactId) {
-         useArt = atsClient.getArtifact(((ArtifactId) object).getId());
+         useArt = (Artifact) atsClient.getQueryService().getArtifact(((ArtifactId) object).getId());
       }
       return useArt;
    }

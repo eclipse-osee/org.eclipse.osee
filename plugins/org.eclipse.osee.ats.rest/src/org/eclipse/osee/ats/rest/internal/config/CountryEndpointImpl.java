@@ -40,7 +40,7 @@ public class CountryEndpointImpl extends BaseConfigEndpointImpl<JaxCountry> impl
 
    @Override
    public Response update(JaxCountry country) throws Exception {
-      ArtifactReadable artifact = atsServer.getArtifact(country.getId());
+      ArtifactReadable artifact = (ArtifactReadable) atsServer.getQueryService().getArtifact(country.getId());
       if (artifact == null) {
          throw new OseeStateException("Artifact with id %d not found", country.getId());
       }

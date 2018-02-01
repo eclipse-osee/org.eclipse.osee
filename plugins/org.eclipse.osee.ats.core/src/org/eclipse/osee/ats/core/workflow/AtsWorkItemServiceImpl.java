@@ -193,11 +193,11 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
       IAtsWorkItem workItem = null;
       ArtifactToken artifact = null;
       if (GUID.isValid(actionId)) {
-         artifact = atsApi.getArtifactByGuid(actionId);
+         artifact = atsApi.getQueryService().getConfigItem(actionId);
       } else if (Strings.isNumeric(actionId)) {
-         artifact = atsApi.getArtifact(Long.valueOf(actionId));
+         artifact = atsApi.getQueryService().getArtifact(Long.valueOf(actionId));
       } else {
-         artifact = atsApi.getArtifactByAtsId(actionId);
+         artifact = atsApi.getQueryService().getArtifactByAtsId(actionId);
       }
       if (artifact != null) {
          workItem = atsApi.getWorkItemFactory().getWorkItem(artifact);

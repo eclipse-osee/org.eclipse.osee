@@ -31,8 +31,9 @@ public class AgileProgramBacklogItem extends AtsConfigObject implements IAgilePr
    public Long getBacklogId() {
       return null;
    }
+
    public static IAgileProgramBacklogItem construct(ArtifactId artifact, AtsApi atsApi) {
-      return new AgileProgramBacklogItem(atsApi.getLogger(), atsApi, atsApi.getArtifact(artifact));
+      return new AgileProgramBacklogItem(atsApi.getLogger(), atsApi, atsApi.getQueryService().getArtifact(artifact));
    }
 
 }

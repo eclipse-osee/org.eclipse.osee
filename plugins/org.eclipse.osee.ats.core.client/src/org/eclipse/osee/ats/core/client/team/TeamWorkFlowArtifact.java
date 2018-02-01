@@ -137,7 +137,7 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
       if (artId.isInvalid()) {
          throw new OseeArgumentException("TeamWorkflow [%s] has no Team Definition associated.", getAtsId());
       }
-      IAtsTeamDefinition teamDef = AtsClientService.get().getConfigItem(artId);
+      IAtsTeamDefinition teamDef = AtsClientService.get().getQueryService().getConfigItem(artId);
       Conditions.checkNotNull(teamDef, String.format("TeamDef null for Team WF %s", toStringWithId()));
       return teamDef;
    }
@@ -223,7 +223,7 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
    private double getHoursPerWorkDayFromItemAndChildren(IAtsTeamDefinition teamDef) {
       try {
          double manDayHours = 0;
-         Artifact artifact = AtsClientService.get().getConfigArtifact(getTeamDefinition());
+         Artifact artifact = (Artifact) AtsClientService.get().getQueryService().getArtifact(getTeamDefinition());
          if (artifact != null) {
             manDayHours = artifact.getSoleAttributeValue(AtsAttributeTypes.HoursPerWorkDay, 0.0);
          }

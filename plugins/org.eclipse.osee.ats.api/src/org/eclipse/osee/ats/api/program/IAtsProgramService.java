@@ -38,8 +38,6 @@ public interface IAtsProgramService {
    // program
    IAtsProgram getProgram(IAtsWorkItem wi);
 
-   IAtsProgram getProgramByGuid(String guid);
-
    List<IAtsProgram> getPrograms(IAtsCountry atsCountry);
 
    IAtsProgram getProgram(Long programId);

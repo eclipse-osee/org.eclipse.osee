@@ -85,7 +85,7 @@ public final class StateResource {
       if (operation.equals("transition")) {
          ArtifactToken action = null;
          try {
-            action = atsServer.getArtifactById(id);
+            action = atsServer.getQueryService().getArtifactById(id);
          } catch (Exception ex) {
             // do nothing
          }

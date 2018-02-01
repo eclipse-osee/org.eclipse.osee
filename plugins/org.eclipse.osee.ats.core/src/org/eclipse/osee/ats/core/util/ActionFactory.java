@@ -110,7 +110,7 @@ public class ActionFactory implements IAtsActionFactory {
       Conditions.assertNotNullOrEmpty(data.getAiIds(), "Actionable Items must be specified");
       List<IAtsActionableItem> ais = new LinkedList<>();
       for (String aiId : data.getAiIds()) {
-         IAtsActionableItem ai = atsApi.getConfigItem(Long.valueOf(aiId));
+         IAtsActionableItem ai = atsApi.getQueryService().getConfigItem(Long.valueOf(aiId));
          Conditions.assertNotNull(ai, "Actionable Item must be specified.");
          ais.add(ai);
       }
@@ -138,7 +138,7 @@ public class ActionFactory implements IAtsActionFactory {
          for (IAtsTeamWorkflow teamWf : result.getTeamWfs()) {
             IAgileTeam agileTeam = null;
             if (Strings.isNumeric(data.getAgileTeam())) {
-               agileTeam = atsApi.getConfigItem(ArtifactId.valueOf(data.getAgileTeam()));
+               agileTeam = atsApi.getQueryService().getConfigItem(ArtifactId.valueOf(data.getAgileTeam()));
             }
             if (agileTeam == null) {
                IAtsTeamDefinition teamDef = teamWf.getTeamDefinition();

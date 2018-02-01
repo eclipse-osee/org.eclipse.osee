@@ -50,9 +50,9 @@ public class AgileFactory {
 
    public static IAgileTeam createAgileTeam(Log logger, AtsApi atsApi, JaxNewAgileTeam newTeam) {
       org.eclipse.osee.framework.core.data.ArtifactId userArt =
-         atsApi.getArtifact(atsApi.getUserService().getCurrentUser());
+         atsApi.getQueryService().getArtifact(atsApi.getUserService().getCurrentUser());
 
-      ArtifactId agileTeamArt = atsApi.getArtifact(newTeam.getId());
+      ArtifactId agileTeamArt = atsApi.getQueryService().getArtifact(newTeam.getId());
       if (agileTeamArt == null) {
 
          IAtsChangeSet changes = atsApi.createChangeSet("Create new Agile Team");
@@ -62,7 +62,7 @@ public class AgileFactory {
          ArtifactId topAgileFolder = AgileFolders.getOrCreateTopAgileFolder(atsApi, userArt, changes);
 
          if (Strings.isNumeric(newTeam.getProgramId())) {
-            ArtifactId programArt = atsApi.getArtifact(Long.valueOf(newTeam.getProgramId()));
+            ArtifactId programArt = atsApi.getQueryService().getArtifact(Long.valueOf(newTeam.getProgramId()));
             changes.addChild(programArt, agileTeamArt);
          } else {
             changes.addChild(topAgileFolder, agileTeamArt);
@@ -77,11 +77,11 @@ public class AgileFactory {
    }
 
    public static IAgileTeam updateAgileTeam(Log logger, AtsApi atsApi, JaxAgileTeam team) {
-      ArtifactId userArt = atsApi.getArtifact(atsApi.getUserService().getCurrentUser());
+      ArtifactId userArt = atsApi.getQueryService().getArtifact(atsApi.getUserService().getCurrentUser());
 
       IAtsChangeSet changes = atsApi.createChangeSet("Update new Agile Team");
 
-      ArtifactToken agileTeamArt = atsApi.getArtifact(team.getId());
+      ArtifactToken agileTeamArt = atsApi.getQueryService().getArtifact(team.getId());
       if (agileTeamArt == null) {
          throw new OseeStateException("Agile Team not found with Id [%d]", team.getId());
       }
@@ -101,7 +101,7 @@ public class AgileFactory {
 
       Set<ArtifactId> atsTeamArts = new HashSet<>();
       for (long atsTeamId : team.getAtsTeamIds()) {
-         ArtifactId atsTeamArt = atsApi.getArtifact(atsTeamId);
+         ArtifactId atsTeamArt = atsApi.getQueryService().getArtifact(atsTeamId);
          if (atsTeamArt != null && atsApi.getStoreService().isOfType(atsTeamArt, AtsArtifactTypes.TeamDefinition)) {
             atsTeamArts.add(atsTeamArt);
          } else {
@@ -117,7 +117,7 @@ public class AgileFactory {
    public static IAgileTeam getAgileTeam(Log logger, AtsApi atsApi, Object artifact) {
       IAgileTeam team = null;
       if (artifact instanceof ArtifactId) {
-         ArtifactToken art = atsApi.getArtifact((ArtifactId) artifact);
+         ArtifactToken art = atsApi.getQueryService().getArtifact((ArtifactId) artifact);
          team = new AgileTeam(logger, atsApi, art);
       }
       return team;
@@ -148,7 +148,8 @@ public class AgileFactory {
          newProgramFeature.getName(), newProgramFeature.getId());
       changes.setSoleAttributeValue(programFeature, AtsAttributeTypes.Active, newProgramFeature.isActive());
 
-      ArtifactId programBacklogItemArt = atsApi.getArtifact(newProgramFeature.getProgramBacklogItemId());
+      ArtifactId programBacklogItemArt =
+         atsApi.getQueryService().getArtifact(newProgramFeature.getProgramBacklogItemId());
       changes.addChild(programBacklogItemArt, programFeature);
 
       changes.execute();
@@ -156,11 +157,11 @@ public class AgileFactory {
    }
 
    private static IAgileProgramFeature getAgileProgramFeature(Log logger, AtsApi atsApi, ArtifactId artifact) {
-      return new AgileProgramFeature(logger, atsApi, atsApi.getArtifact(artifact));
+      return new AgileProgramFeature(logger, atsApi, atsApi.getQueryService().getArtifact(artifact));
    }
 
    public static IAgileFeatureGroup createAgileFeatureGroup(Log logger, AtsApi atsApi, JaxAgileFeatureGroup newFeatureGroup) {
-      ArtifactId userArt = atsApi.getArtifact(atsApi.getUserService().getCurrentUser());
+      ArtifactId userArt = atsApi.getQueryService().getArtifact(atsApi.getUserService().getCurrentUser());
 
       IAtsChangeSet changes = atsApi.createChangeSet("Create new Agile Feature Group");
 
@@ -180,7 +181,7 @@ public class AgileFactory {
    }
 
    public static IAgileFeatureGroup getAgileFeatureGroup(Log logger, AtsApi atsApi, ArtifactId artifact) {
-      return new AgileFeatureGroup(logger, atsApi, atsApi.getArtifact(artifact));
+      return new AgileFeatureGroup(logger, atsApi, atsApi.getQueryService().getArtifact(artifact));
    }
 
    public static IAgileSprint createAgileSprint(Log logger, AtsApi atsApi, long teamId, String name, Long id) {
@@ -210,7 +211,7 @@ public class AgileFactory {
    }
 
    public static IAgileSprint getAgileSprint(Log logger, AtsApi atsApi, ArtifactId artifact) {
-      ArtifactToken artifact2 = atsApi.getArtifact(artifact);
+      ArtifactToken artifact2 = atsApi.getQueryService().getArtifact(artifact);
       return new AgileSprint(logger, atsApi, artifact2);
    }
 

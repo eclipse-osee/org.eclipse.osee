@@ -35,7 +35,7 @@ public class Pdd84CreateProblemInDiagramTreeActionTest implements IPopulateDemoD
       Pdd84CreateProblemInDiagramTreeAction create = new Pdd84CreateProblemInDiagramTreeAction();
       create.run();
 
-      IAtsTeamWorkflow teamWf = AtsClientService.get().getTeamWf(DemoArtifactToken.ProblemInDiagramTree_TeamWf);
+      IAtsTeamWorkflow teamWf = AtsClientService.get().getQueryService().getTeamWf(DemoArtifactToken.ProblemInDiagramTree_TeamWf);
       Assert.assertNotNull(teamWf);
 
       testTeamContents(teamWf, DemoArtifactToken.ProblemInDiagramTree_TeamWf.getName(), "3", "",

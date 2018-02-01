@@ -333,7 +333,7 @@ public class AtsBranchConfigurationTest {
       for (IAtsVersion version : AtsClientService.get().getQueryService().createQuery(
          AtsArtifactTypes.Version).getItems(IAtsVersion.class)) {
          if (version.getName().contains(branch.getName())) {
-            Artifact artifact = AtsClientService.get().getConfigArtifact(version);
+            Artifact artifact = (Artifact) AtsClientService.get().getQueryService().getArtifact(version);
             if (artifact != null) {
                artifact.deleteAndPersist(transaction);
             }

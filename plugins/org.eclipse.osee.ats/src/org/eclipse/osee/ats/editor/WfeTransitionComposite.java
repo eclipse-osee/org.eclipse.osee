@@ -202,7 +202,7 @@ public class WfeTransitionComposite extends Composite {
 
          @Override
          public Collection<? extends IAtsUser> getToAssignees(IAtsWorkItem workItem) {
-            AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) AtsClientService.get().getArtifact(workItem);
+            AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) AtsClientService.get().getQueryService().getArtifact(workItem);
             return awa.getTransitionAssignees();
          }
 

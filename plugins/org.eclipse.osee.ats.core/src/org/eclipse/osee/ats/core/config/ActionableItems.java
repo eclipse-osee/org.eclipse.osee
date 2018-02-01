@@ -83,8 +83,8 @@ public class ActionableItems {
    }
 
    public static IAtsActionableItem getTopActionableItem(AtsApi atsApi) {
-      ArtifactToken artifact = atsApi.getArtifact(AtsArtifactToken.TopActionableItem.getId());
-      return atsApi.getConfigItem(artifact);
+      ArtifactToken artifact = atsApi.getQueryService().getArtifact(AtsArtifactToken.TopActionableItem.getId());
+      return atsApi.getQueryService().getConfigItem(artifact);
    }
 
    public static List<IAtsActionableItem> getActionableItemsAll(IAtsQueryService queryService) {

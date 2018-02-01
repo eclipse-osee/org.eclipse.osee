@@ -70,7 +70,7 @@ public abstract class BaseConfigEndpointImpl<T extends JaxAtsObject> implements 
       } else if (!Strings.isValid(jaxAtsObject.getName())) {
          throw new OseeStateException("Invalid name [%d]");
       }
-      ArtifactReadable artifact = atsServer.getArtifact(jaxAtsObject.getId());
+      ArtifactReadable artifact = (ArtifactReadable) atsServer.getQueryService().getArtifact(jaxAtsObject.getId());
       if (artifact != null) {
          throw new OseeStateException("Artifact with id %d already exists", jaxAtsObject.getId());
       }
@@ -79,12 +79,12 @@ public abstract class BaseConfigEndpointImpl<T extends JaxAtsObject> implements 
       ArtifactId newArtifact = changes.createArtifact(artifactType, jaxAtsObject.getName(), jaxAtsObject.getId());
       IAtsObject newAtsObject = atsServer.getConfigItemFactory().getConfigObject(newArtifact);
       if (typeFolder != null) {
-         ArtifactReadable typeFolderArtifact = atsServer.getArtifact(typeFolder);
+         ArtifactReadable typeFolderArtifact = (ArtifactReadable) atsServer.getQueryService().getArtifact(typeFolder);
          if (typeFolderArtifact == null) {
             typeFolderArtifact = (ArtifactReadable) changes.createArtifact(AtsArtifactToken.CountryFolder);
          }
          if (typeFolderArtifact.getParent() == null) {
-            ArtifactReadable headingFolder = atsServer.getArtifact(AtsArtifactToken.HeadingFolder);
+            ArtifactReadable headingFolder = (ArtifactReadable) atsServer.getQueryService().getArtifact(AtsArtifactToken.HeadingFolder);
             changes.relate(headingFolder, CoreRelationTypes.Default_Hierarchical__Child, typeFolderArtifact);
          }
          changes.relate(typeFolderArtifact, CoreRelationTypes.Default_Hierarchical__Child, newArtifact);
@@ -110,7 +110,7 @@ public abstract class BaseConfigEndpointImpl<T extends JaxAtsObject> implements 
    @Override
    @DELETE
    public Response delete(@PathParam("id") long id) throws Exception {
-      ArtifactReadable artifact = atsServer.getArtifact(id);
+      ArtifactReadable artifact = (ArtifactReadable) atsServer.getQueryService().getArtifact(id);
       if (artifact == null) {
          throw new OseeStateException("Artifact with id %d not found", id);
       }

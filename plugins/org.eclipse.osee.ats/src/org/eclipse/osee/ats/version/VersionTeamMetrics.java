@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 
 /**
@@ -50,7 +51,8 @@ public class VersionTeamMetrics {
    }
 
    private void bulkLoadArtifacts() {
-      RelationManager.getRelatedArtifacts(Arrays.asList(AtsClientService.get().getConfigArtifact(this.verTeamDef)), 6,
+      RelationManager.getRelatedArtifacts(
+         Arrays.asList((Artifact) AtsClientService.get().getQueryService().getArtifact(this.verTeamDef)), 6,
          CoreRelationTypes.Default_Hierarchical__Child, AtsRelationTypes.TeamDefinitionToVersion_Version,
          AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow, AtsRelationTypes.TeamWfToTask_Task,
          AtsRelationTypes.ActionToWorkflow_Action);

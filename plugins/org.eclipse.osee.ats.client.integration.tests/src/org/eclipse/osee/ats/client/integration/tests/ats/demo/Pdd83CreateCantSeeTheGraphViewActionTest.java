@@ -35,7 +35,7 @@ public class Pdd83CreateCantSeeTheGraphViewActionTest implements IPopulateDemoDa
       Pdd83CreateCantSeeTheGraphViewAction create = new Pdd83CreateCantSeeTheGraphViewAction();
       create.run();
 
-      IAtsTeamWorkflow teamWf = AtsClientService.get().getTeamWf(DemoArtifactToken.CantSeeTheGraphView_TeamWf);
+      IAtsTeamWorkflow teamWf = AtsClientService.get().getQueryService().getTeamWf(DemoArtifactToken.CantSeeTheGraphView_TeamWf);
       Assert.assertNotNull(teamWf);
 
       testTeamContents(teamWf, DemoArtifactToken.CantSeeTheGraphView_TeamWf.getName(), "1", "",

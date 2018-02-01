@@ -192,7 +192,7 @@ public class ConvertAtsConfigGuidAttributesOperation {
       if (Strings.isInValid(workPackageGuid)) {
          ArtifactId workPackageArt = atsApi.getAttributeResolver().getSoleArtifactIdReference(workItemArt,
             AtsAttributeTypes.WorkPackageReference, ArtifactId.SENTINEL);
-         ArtifactReadable artifact = (ArtifactReadable) atsApi.getArtifact(workPackageArt);
+         ArtifactReadable artifact = (ArtifactReadable) atsApi.getQueryService().getArtifact(workPackageArt);
          if (artifact != null) {
             changes.setSoleAttributeValue(workItemArt, WorkPackageGuid, artifact.getGuid());
          }

@@ -153,11 +153,11 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
 
    @Override
    public void setTeamDefinition(IAtsVersion version, IAtsTeamDefinition teamDef, IAtsChangeSet changes) {
-      Object verArt = atsApi.getArtifact(version);
+      Object verArt = atsApi.getQueryService().getArtifact(version);
       if (verArt == null) {
          throw new OseeStateException("Version [%s] does not exist.", version);
       }
-      Object teamDefArt = atsApi.getArtifact(teamDef);
+      Object teamDefArt = atsApi.getQueryService().getArtifact(teamDef);
       if (teamDefArt == null) {
          throw new OseeStateException("Team Definition [%s] does not exist.", teamDef);
       }
@@ -176,7 +176,7 @@ public class AtsVersionServiceImpl implements IAtsVersionService {
    @Override
    public IAtsVersion getById(ArtifactId id) {
       IAtsVersion version = null;
-      ArtifactToken verArt = atsApi.getArtifact(id.getId());
+      ArtifactToken verArt = atsApi.getQueryService().getArtifact(id.getId());
       if (verArt != null) {
          version = atsApi.getConfigItemFactory().getVersion(verArt);
       }

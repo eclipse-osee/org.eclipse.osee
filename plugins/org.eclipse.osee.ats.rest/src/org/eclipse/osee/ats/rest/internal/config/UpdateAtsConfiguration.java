@@ -61,7 +61,7 @@ public class UpdateAtsConfiguration {
    }
 
    public XResultData createUpdateConfig(XResultData rd) {
-      ArtifactReadable userArt = atsServer.getArtifact(AtsCoreUsers.SYSTEM_USER);
+      ArtifactReadable userArt = (ArtifactReadable) atsServer.getQueryService().getArtifact(AtsCoreUsers.SYSTEM_USER);
       ArtifactId configFolder = getOrCreateConfigFolder(userArt, rd);
       ArtifactReadable atsConfigArt = (ArtifactReadable) getOrCreateAtsConfig(userArt, rd);
       createRuleDefinitions(userArt, configFolder, rd);
@@ -78,7 +78,7 @@ public class UpdateAtsConfiguration {
 
    private void createRuleDefinitions(ArtifactReadable userArt, ArtifactId configFolderArt, XResultData rd) {
       try {
-         if (atsServer.getArtifact(AtsArtifactToken.RuleDefinitions) == null) {
+         if ((ArtifactReadable) atsServer.getQueryService().getArtifact(AtsArtifactToken.RuleDefinitions) == null) {
             TransactionBuilder tx = atsServer.getOrcsApi().getTransactionFactory().createTransaction(
                CoreBranches.COMMON, userArt, "Add Rule Definitions Artifact");
             ArtifactId ruleDefConfigArt = tx.createArtifact(AtsArtifactToken.RuleDefinitions);

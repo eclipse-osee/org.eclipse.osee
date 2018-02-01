@@ -253,7 +253,7 @@ public class NewActionPage1 extends WizardPage {
             selected.add((IAtsActionableItem) obj);
          } else if (obj instanceof JaxActionableItem) {
             JaxActionableItem jai = (JaxActionableItem) obj;
-            selected.add(AtsClientService.get().getConfigItem(jai.getId()));
+            selected.add(AtsClientService.get().getQueryService().getConfigItem(jai.getId()));
          }
       }
       return selected;

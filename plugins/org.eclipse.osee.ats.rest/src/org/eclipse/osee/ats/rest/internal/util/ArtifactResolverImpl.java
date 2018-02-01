@@ -81,14 +81,14 @@ public class ArtifactResolverImpl implements IArtifactResolver {
    public boolean isOfType(ArtifactId artifact, IArtifactType artifactType) {
       Assert.isNotNull(artifact, "Artifact can not be null");
       Assert.isNotNull(artifactType, "Artifact Type can not be null");
-      return atsServer.getArtifact(artifact).isOfType(artifactType);
+      return atsServer.getStoreService().isOfType(artifact, artifactType);
    }
 
    @Override
    public boolean isOfType(IAtsObject atsObject, IArtifactType artifactType) {
       Assert.isNotNull(atsObject, "ATS Object can not be null");
       Assert.isNotNull(artifactType, "Artifact Type can not be null");
-      return isOfType(atsServer.getArtifact(atsObject), artifactType);
+      return isOfType(atsServer.getQueryService().getArtifact(atsObject), artifactType);
    }
 
    @Override

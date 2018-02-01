@@ -73,10 +73,11 @@ public class ImportAIsAndTeamDefinitionsToDb {
 
    public void execute() {
       importUserDefinitions(atsDsl.getUserDef());
-      importTeamDefinitions(atsDsl.getTeamDef(), AtsClientService.get().getConfigArtifact(
+      importTeamDefinitions(atsDsl.getTeamDef(), (Artifact) AtsClientService.get().getQueryService().getArtifact(
          TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService())));
       importActionableItems(atsDsl.getActionableItemDef(),
-         AtsClientService.get().getConfigArtifact(ActionableItems.getTopActionableItem(AtsClientService.get())));
+         (Artifact) AtsClientService.get().getQueryService().getArtifact(
+            ActionableItems.getTopActionableItem(AtsClientService.get())));
       importProgram(atsDsl.getProgram());
    }
 
@@ -105,10 +106,10 @@ public class ImportAIsAndTeamDefinitionsToDb {
    }
 
    private UserToken getOseeUser(final UserDef dslUserDef) {
-      return UserToken.create(Lib.generateArtifactIdAsInt(), Strings.unquote(dslUserDef.getName()), Strings.isValid(dslUserDef.getEmail()) ? dslUserDef.getEmail() : Strings.unquote(dslUserDef.getName()),
+      return UserToken.create(Lib.generateArtifactIdAsInt(), Strings.unquote(dslUserDef.getName()),
+         Strings.isValid(dslUserDef.getEmail()) ? dslUserDef.getEmail() : Strings.unquote(dslUserDef.getName()),
          Strings.isValid(dslUserDef.getUserId()) ? dslUserDef.getUserId() : Strings.unquote(dslUserDef.getName()),
-         BooleanDefUtil.get(dslUserDef.getActive(), true),
-         false, true);
+         BooleanDefUtil.get(dslUserDef.getActive(), true), false, true);
    }
 
    @SuppressWarnings("deprecation")
@@ -344,7 +345,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       if (parent == null) {
          if (isTeamDef) {
-            parent = AtsClientService.get().getArtifact(
+            parent = (Artifact) AtsClientService.get().getQueryService().getArtifact(
                TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService()));
          } else {
             parent = (Artifact) ActionableItems.getTopActionableItem(AtsClientService.get());

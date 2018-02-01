@@ -53,14 +53,14 @@ public final class ActionUiResource {
    }
 
    /**
-    * @param id (guid, atsId) of action to display
+    * @param id (artId, atsId) of action to display
     * @return html representation of the action
     */
    @Path("{ids}")
    @GET
    @Produces(MediaType.TEXT_HTML)
    public ViewModel getAction(@PathParam("ids") String ids) throws Exception {
-      List<IAtsWorkItem> workItems = atsServer.getQueryService().getWorkItemListByIds(ids);
+      List<IAtsWorkItem> workItems = atsServer.getQueryService().getWorkItemsByIds(ids);
       if (workItems.isEmpty()) {
          return RestUtil.simplePage(String.format("Action with id(s) [%s] can not be found", ids));
       }
@@ -90,7 +90,7 @@ public final class ActionUiResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public ViewModel getActionWithDetails(@PathParam("id") String id) throws Exception {
-      ArtifactReadable action = (ArtifactReadable) atsServer.getArtifactById(id);
+      ArtifactReadable action = (ArtifactReadable) atsServer.getQueryService().getArtifactById(id);
       if (action == null) {
          return RestUtil.simplePage(String.format("Action with id [%s] can not be found", id));
       }
@@ -155,7 +155,7 @@ public final class ActionUiResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public ViewModel getTransition(@PathParam("id") String id) throws Exception {
-      ArtifactReadable action = (ArtifactReadable) atsServer.getArtifactById(id);
+      ArtifactReadable action = (ArtifactReadable) atsServer.getQueryService().getArtifactById(id);
       if (action == null) {
          return RestUtil.simplePage(String.format("Action with id [%s] can not be found", id));
       }

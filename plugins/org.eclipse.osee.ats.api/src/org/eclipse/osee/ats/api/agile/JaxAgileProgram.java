@@ -12,6 +12,8 @@ package org.eclipse.osee.ats.api.agile;
 
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 
 /**
  * @author Donald G. Dunne
@@ -31,6 +33,11 @@ public class JaxAgileProgram extends JaxAgileProgramObject implements IAgileProg
 
    public void setTeamids(List<Long> teamIds) {
       this.teamIds = teamIds;
+   }
+
+   @Override
+   public ArtifactTypeId getArtifactType() {
+      return AtsArtifactTypes.AgileProgram;
    }
 
 }

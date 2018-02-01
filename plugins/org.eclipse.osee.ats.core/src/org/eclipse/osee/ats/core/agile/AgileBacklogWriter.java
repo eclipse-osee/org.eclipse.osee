@@ -60,7 +60,7 @@ public class AgileBacklogWriter {
 
          // Else validate and relate new team
          else {
-            ArtifactToken updateBacklogArt = atsApi.getArtifact(updatedBacklog.getId());
+            ArtifactToken updateBacklogArt = atsApi.getQueryService().getArtifact(updatedBacklog.getId());
             IAgileTeam updatedTeam = agileService.getAgileTeam(updatedBacklog.getTeamId());
             ArtifactToken updatedTeamArt = updatedTeam.getStoreObject();
             if (!atsApi.getStoreService().isOfType(updateBacklogArt, AtsArtifactTypes.Goal)) {

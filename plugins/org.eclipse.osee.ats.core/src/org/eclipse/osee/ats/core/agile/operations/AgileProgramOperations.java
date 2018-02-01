@@ -47,9 +47,9 @@ public class AgileProgramOperations {
 
    public IAgileProgram createAgileProgram(IAgileProgram agileProgram) {
       org.eclipse.osee.framework.core.data.ArtifactId userArt =
-         atsApi.getArtifact(atsApi.getUserService().getCurrentUser());
+         atsApi.getQueryService().getArtifact(atsApi.getUserService().getCurrentUser());
 
-      ArtifactId agileProgramArt = atsApi.getArtifact(agileProgram.getId());
+      ArtifactId agileProgramArt = atsApi.getQueryService().getArtifact(agileProgram);
       if (agileProgramArt == null) {
 
          IAtsChangeSet changes = atsApi.createChangeSet("Create new Agile Program");
@@ -65,7 +65,7 @@ public class AgileProgramOperations {
 
          // re-set parent to program
          for (Long aTeamId : agileProgram.getTeamIds()) {
-            IAgileTeam aTeam = atsApi.getConfigItem(aTeamId);
+            IAgileTeam aTeam = atsApi.getQueryService().getConfigItem(aTeamId);
             if (aTeam != null) {
                changes.unrelateAll(aTeam, CoreRelationTypes.Default_Hierarchical__Parent);
                changes.addChild(agileProgramArt, aTeam.getStoreObject());
@@ -80,7 +80,7 @@ public class AgileProgramOperations {
    public static IAgileProgram getAgileProgram(AtsApi atsApi, Object artifact) {
       IAgileProgram program = null;
       if (artifact instanceof ArtifactId) {
-         ArtifactToken art = atsApi.getArtifact((ArtifactId) artifact);
+         ArtifactToken art = atsApi.getQueryService().getArtifact((ArtifactId) artifact);
          program = new AgileProgram(atsApi.getLogger(), atsApi, art);
       }
       return program;
@@ -89,14 +89,14 @@ public class AgileProgramOperations {
    public static IAgileProgramFeature getAgileProgramFeature(AtsApi atsApi, Object artifact) {
       IAgileProgramFeature feature = null;
       if (artifact instanceof ArtifactId) {
-         ArtifactToken art = atsApi.getArtifact((ArtifactId) artifact);
+         ArtifactToken art = atsApi.getQueryService().getArtifact((ArtifactId) artifact);
          feature = new AgileProgramFeature(atsApi.getLogger(), atsApi, art);
       }
       return feature;
    }
 
    public IAgileProgramFeature createAgileProgramFeature(IAgileProgramBacklogItem programBacklogItem, JaxAgileProgramFeature feature) {
-      ArtifactId agileProgramBacklogItemArt = atsApi.getArtifact(programBacklogItem.getId());
+      ArtifactId agileProgramBacklogItemArt = atsApi.getQueryService().getArtifact(programBacklogItem.getId());
 
       IAtsChangeSet changes = atsApi.createChangeSet("Create new Agile Program");
       ArtifactId featureArt =
@@ -111,14 +111,14 @@ public class AgileProgramOperations {
    public static IAgileStory getAgileStory(AtsApi atsApi, Object artifact) {
       IAgileStory story = null;
       if (artifact instanceof ArtifactId) {
-         ArtifactToken art = atsApi.getArtifact((ArtifactId) artifact);
+         ArtifactToken art = atsApi.getQueryService().getArtifact((ArtifactId) artifact);
          story = new AgileStory(atsApi.getLogger(), atsApi, art);
       }
       return story;
    }
 
    public IAgileStory createAgileStory(IAgileProgramFeature feature, JaxAgileStory story) {
-      ArtifactId featureArt = atsApi.getArtifact(feature.getId());
+      ArtifactId featureArt = atsApi.getQueryService().getArtifact(feature.getId());
 
       IAtsChangeSet changes = atsApi.createChangeSet("Create new Agile Story");
       ArtifactId storyArt = changes.createArtifact(AtsArtifactTypes.AgileStory, story.getName(), story.getId());
@@ -132,14 +132,14 @@ public class AgileProgramOperations {
    public static IAgileProgramBacklog getAgileProgramBacklog(AtsApi atsApi, Object artifact) {
       IAgileProgramBacklog progBacklog = null;
       if (artifact instanceof ArtifactId) {
-         ArtifactToken art = atsApi.getArtifact((ArtifactId) artifact);
+         ArtifactToken art = atsApi.getQueryService().getArtifact((ArtifactId) artifact);
          progBacklog = new AgileProgramBacklog(atsApi.getLogger(), atsApi, art);
       }
       return progBacklog;
    }
 
    public IAgileProgramBacklog createAgileProgramBacklog(IAgileProgram agileProgram, JaxAgileProgramBacklog jaxProgramBacklog) {
-      ArtifactId programArt = atsApi.getArtifact(agileProgram.getId());
+      ArtifactId programArt = atsApi.getQueryService().getArtifact(agileProgram.getId());
 
       IAtsChangeSet changes = atsApi.createChangeSet("Create new Program Backlog");
       ArtifactId programBacklogArt = changes.createArtifact(AtsArtifactTypes.AgileProgramBacklog,
@@ -152,7 +152,7 @@ public class AgileProgramOperations {
    }
 
    public IAgileProgramBacklogItem createAgileProgramBacklogItem(IAgileProgramBacklog agileProgramBacklog, JaxAgileProgramBacklogItem jaxProgramBacklogItem) {
-      ArtifactId programArt = atsApi.getArtifact(agileProgramBacklog.getId());
+      ArtifactId programArt = atsApi.getQueryService().getArtifact(agileProgramBacklog.getId());
 
       IAtsChangeSet changes = atsApi.createChangeSet("Create new Program Backlog Item");
       ArtifactId item = changes.createArtifact(AtsArtifactTypes.AgileProgramBacklogItem,
@@ -167,7 +167,7 @@ public class AgileProgramOperations {
    public static IAgileProgramBacklogItem getAgileProgramBacklogItem(AtsApi atsApi, Object artifact) {
       IAgileProgramBacklogItem item = null;
       if (artifact instanceof ArtifactId) {
-         ArtifactToken art = atsApi.getArtifact((ArtifactId) artifact);
+         ArtifactToken art = atsApi.getQueryService().getArtifact((ArtifactId) artifact);
          item = new AgileProgramBacklogItem(atsApi.getLogger(), atsApi, art);
       }
       return item;

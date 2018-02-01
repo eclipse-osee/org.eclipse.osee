@@ -59,7 +59,7 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
    @Produces({MediaType.APPLICATION_JSON})
    @Override
    public Collection<IAtsWorkItem> getWorkItems(@PathParam("workPackageId") long workPackageId) {
-      ArtifactReadable workPackageArt = atsServer.getArtifact(workPackageId);
+      ArtifactReadable workPackageArt = (ArtifactReadable) (ArtifactReadable) atsServer.getQueryService().getArtifact(workPackageId);
       if (workPackageArt == null) {
          throw new OseeArgumentException("Work Package with id [%s] Not Found", workPackageId);
       }
@@ -72,7 +72,7 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
    @Consumes({MediaType.APPLICATION_JSON})
    @Override
    public Response setWorkPackage(@PathParam("workPackageId") long workPackageId, JaxWorkPackageData workPackageData) {
-      ArtifactReadable workPackageArt = atsServer.getArtifact(workPackageId);
+      ArtifactReadable workPackageArt = (ArtifactReadable) (ArtifactReadable) atsServer.getQueryService().getArtifact(workPackageId);
       if (workPackageArt == null) {
          throw new OseeArgumentException("Work Package with id [%s] Not Found", workPackageId);
       }
@@ -108,7 +108,7 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
             for (ColorTeam colorTeam : colorTeams.getTeams()) {
                if (!colorTeam.getGoalIds().isEmpty() && colorTeam.getName().equals(workPackageColorTeam)) {
                   for (Long id : colorTeam.getGoalIds()) {
-                     ArtifactReadable goalArt = atsServer.getArtifact(id);
+                     ArtifactReadable goalArt = (ArtifactReadable) (ArtifactReadable) atsServer.getQueryService().getArtifact(id);
                      if (goalArt != null) {
                         IAtsWorkItem goalWorkItem = atsServer.getWorkItemFactory().getWorkItem(goalArt);
                         if (!atsServer.getRelationResolver().areRelated(goalWorkItem, AtsRelationTypes.Goal_Member,

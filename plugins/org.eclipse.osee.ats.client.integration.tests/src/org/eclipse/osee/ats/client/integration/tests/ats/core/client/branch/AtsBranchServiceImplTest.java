@@ -66,7 +66,7 @@ public class AtsBranchServiceImplTest {
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.BaselineBranchId, SAW_Bld_1.getIdString());
       // clear versions to config item is from teamDef
       for (IAtsVersion version : teamDef.getVersions()) {
-         changes.deleteArtifact(AtsClientService.get().getArtifact(version));
+         changes.deleteArtifact(AtsClientService.get().getQueryService().getArtifact(version));
       }
       changes.execute();
       Collection<Object> commitObjs =
@@ -87,8 +87,8 @@ public class AtsBranchServiceImplTest {
       IAtsVersion version1 = AtsTestUtil.getVerArt1();
       IAtsVersion version2 = AtsTestUtil.getVerArt2();
 
-      changes.setRelation(AtsClientService.get().getArtifact(version1), AtsRelationTypes.ParallelVersion_Child,
-         AtsClientService.get().getArtifact(version2));
+      changes.setRelation(AtsClientService.get().getQueryService().getArtifact(version1), AtsRelationTypes.ParallelVersion_Child,
+         AtsClientService.get().getQueryService().getArtifact(version2));
       AtsClientService.get().getVersionService().setTargetedVersion(teamArt, version1, changes);
       changes.execute();
 
@@ -109,7 +109,7 @@ public class AtsBranchServiceImplTest {
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.BaselineBranchId, SAW_Bld_1.getIdString());
       // clear versions to config item is from teamDef
       for (IAtsVersion version : teamDef.getVersions()) {
-         changes.deleteArtifact(AtsClientService.get().getArtifact(version));
+         changes.deleteArtifact(AtsClientService.get().getQueryService().getArtifact(version));
       }
       changes.execute();
       //Test TxRecords

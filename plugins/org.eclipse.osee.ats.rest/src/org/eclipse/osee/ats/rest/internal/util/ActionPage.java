@@ -130,7 +130,7 @@ public class ActionPage {
       ArtifactId artId = atsServer.getAttributeResolver().getSoleArtifactIdReference(action,
          AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);
       if (artId.isValid()) {
-         results = atsServer.getArtifact(artId).getName();
+         results = atsServer.getQueryService().getArtifact(artId).getName();
       } else {
          ArtifactReadable teamWf = getParentTeamWf(action);
          if (teamWf != null && teamWf.notEqual(action)) {
@@ -158,7 +158,7 @@ public class ActionPage {
       if (teamWf != null) {
          Collection<ArtifactId> artifactIds = teamWf.getAttributeValues(AtsAttributeTypes.ActionableItemReference);
          for (ArtifactId artifactId : artifactIds) {
-            sb.append(atsServer.getArtifact(artifactId));
+            sb.append(atsServer.getQueryService().getArtifact(artifactId));
             sb.append(", ");
          }
       }

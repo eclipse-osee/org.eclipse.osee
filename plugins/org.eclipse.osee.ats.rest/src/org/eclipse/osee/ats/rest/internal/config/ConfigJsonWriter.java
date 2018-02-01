@@ -104,7 +104,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
    }
 
    public static void addProgramObject(IAtsServer atsServer, IAtsObject atsObject, Annotation[] annotations, JsonGenerator writer, boolean identityView, AttributeTypes attributeTypes) throws IOException, JsonGenerationException, JsonProcessingException {
-      ArtifactReadable artifact = atsServer.getArtifact(atsObject);
+      ArtifactReadable artifact = (ArtifactReadable) atsServer.getQueryService().getArtifact(atsObject);
       writer.writeStartObject();
       writer.writeNumberField("id", getId(atsObject, atsServer));
       writer.writeStringField("Name", atsObject.getName());
@@ -216,7 +216,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
             writer.writeEndObject();
          }
          writer.writeEndArray();
-         ArtifactReadable teamArt = atsServer.getArtifact(team);
+         ArtifactReadable teamArt = (ArtifactReadable) atsServer.getQueryService().getArtifact(team);
          ArtifactReadable backlogArt =
             teamArt.getRelated(AtsRelationTypes.AgileTeamToBacklog_Backlog).getAtMostOneOrNull();
          writer.writeStringField("Backlog Id", backlogArt != null ? String.valueOf(backlogArt.getId()) : "");
@@ -346,7 +346,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
    public static Long getId(IAtsObject atsObject, AtsApi atsApi) {
       long id = atsObject.getId();
       if (id <= 0L) {
-         id = ((ArtifactReadable) atsApi.getArtifact(atsObject)).getId();
+         id = ((ArtifactReadable) atsApi.getQueryService().getArtifact(atsObject)).getId();
       }
       return id;
    }

@@ -85,7 +85,7 @@ public class CreateTasksOperation {
             resultData.error("Team Workflow id not specified");
             continue;
          }
-         ArtifactReadable teamWfArt = atsServer.getArtifact(teamWfId);
+         ArtifactReadable teamWfArt = (ArtifactReadable) atsServer.getQueryService().getArtifact(teamWfId);
          if (teamWfArt == null) {
             resultData.errorf("Team Workflow id %d does not exist", teamWfId);
          }
@@ -109,7 +109,7 @@ public class CreateTasksOperation {
          for (JaxAtsTask task : newTaskData.getNewTasks()) {
             Long taskId = task.getId();
             if (taskId != null && taskId > 0L) {
-               ArtifactReadable taskArt = atsServer.getArtifact(taskId);
+               ArtifactReadable taskArt = (ArtifactReadable) atsServer.getQueryService().getArtifact(taskId);
                if (taskArt != null) {
                   resultData.errorf("Task with id %d already exists for %s", taskId, task);
                }
@@ -320,7 +320,7 @@ public class CreateTasksOperation {
    }
 
    public static JaxAtsTask createNewJaxTask(Long id, IAtsServer atsServer) {
-      ArtifactReadable taskArt = atsServer.getArtifact(id);
+      ArtifactReadable taskArt = (ArtifactReadable) atsServer.getQueryService().getArtifact(id);
       if (taskArt != null) {
          JaxAtsTask newJaxTask = new JaxAtsTask();
          newJaxTask.setName(taskArt.getName());

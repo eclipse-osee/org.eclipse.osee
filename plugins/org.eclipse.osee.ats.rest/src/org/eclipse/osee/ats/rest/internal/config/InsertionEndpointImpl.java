@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -49,7 +50,7 @@ public class InsertionEndpointImpl extends BaseConfigEndpointImpl<JaxInsertion> 
    @PUT
    @Override
    public Response update(JaxInsertion insertion) throws Exception {
-      ArtifactReadable artifact = atsServer.getArtifact(insertion.getId());
+      ArtifactReadable artifact = (ArtifactReadable) atsServer.getQueryService().getArtifact(insertion.getId());
       if (artifact == null) {
          throw new OseeStateException("Artifact with id %d not found", insertion.getId());
       }
@@ -84,8 +85,8 @@ public class InsertionEndpointImpl extends BaseConfigEndpointImpl<JaxInsertion> 
             insertions.add(getConfigObject(art));
          }
       } else {
-         for (ArtifactReadable insertionArt : atsServer.getArtifact(programId).getRelated(
-            AtsRelationTypes.ProgramToInsertion_Insertion)) {
+         for (ArtifactToken insertionArt : atsServer.getRelationResolver().getRelated(
+            atsServer.getQueryService().getArtifact(programId), AtsRelationTypes.ProgramToInsertion_Insertion)) {
             JaxInsertion insertion = getConfigObject(insertionArt);
             insertion.setProgramId(programId);
             insertions.add(insertion);
@@ -98,7 +99,8 @@ public class InsertionEndpointImpl extends BaseConfigEndpointImpl<JaxInsertion> 
    protected void create(JaxInsertion jaxInsertion, ArtifactId insertionArtId, IAtsChangeSet changes) {
       ArtifactReadable insertionArt = (ArtifactReadable) insertionArtId;
       if (insertionArt.getRelatedCount(AtsRelationTypes.ProgramToInsertion_Program) == 0) {
-         ArtifactReadable programArt = atsServer.getArtifact(jaxInsertion.getProgramId());
+         ArtifactReadable programArt =
+            (ArtifactReadable) atsServer.getQueryService().getArtifact(jaxInsertion.getProgramId());
          changes.relate(programArt, AtsRelationTypes.ProgramToInsertion_Insertion, insertionArt);
       }
    }

@@ -106,8 +106,8 @@ public final class PortPairsOperation extends AbstractOperation {
          AtsAttributeTypes.LegacyPcrId, workflowId, AtsClientService.get().getAtsBranch());
    }
 
-   private TeamWorkFlowArtifact getWorkflowFromAtsID(String atsID) {
-      return (TeamWorkFlowArtifact) AtsClientService.get().getArtifactByAtsId(atsID);
+   private TeamWorkFlowArtifact getWorkflowFromAtsID(String atsId) {
+      return (TeamWorkFlowArtifact) AtsClientService.get().getQueryService().getArtifactByAtsId(atsId);
    }
 
    private void doPortWork(TeamWorkFlowArtifact sourceWorkflow, TeamWorkFlowArtifact destinationWorkflow) {

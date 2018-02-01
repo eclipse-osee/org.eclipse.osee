@@ -77,7 +77,8 @@ public class AtsProgramService implements IAtsProgramService {
    @Override
    public Collection<IAtsInsertionActivity> getInsertionActivities(IAtsInsertion insertion) {
       List<IAtsInsertionActivity> insertionActivitys = new ArrayList<>();
-      for (ArtifactId artifact : atsApi.getRelationResolver().getRelated(atsApi.getArtifact(insertion.getId()),
+      for (ArtifactId artifact : atsApi.getRelationResolver().getRelated(
+         atsApi.getQueryService().getArtifact(insertion.getId()),
          AtsRelationTypes.InsertionToInsertionActivity_InsertionActivity)) {
          insertionActivitys.add(atsApi.getConfigItemFactory().getInsertionActivity(artifact));
       }
@@ -86,17 +87,18 @@ public class AtsProgramService implements IAtsProgramService {
 
    @Override
    public IAtsInsertionActivity getInsertionActivity(Long insertionActivityId) {
-      return atsApi.getConfigItemFactory().getInsertionActivity(atsApi.getArtifact(insertionActivityId));
+      return atsApi.getConfigItemFactory().getInsertionActivity(
+         atsApi.getQueryService().getArtifact(insertionActivityId));
    }
 
    @Override
    public IAtsWorkPackage getWorkPackage(Long workPackageId) {
-      return atsApi.getConfigItemFactory().getWorkPackage(atsApi.getArtifact(workPackageId));
+      return atsApi.getConfigItemFactory().getWorkPackage(atsApi.getQueryService().getArtifact(workPackageId));
    }
 
    @Override
    public IAtsInsertionActivity getInsertionActivity(IAtsWorkPackage workPackage) {
-      ArtifactId wpArt = atsApi.getArtifact(workPackage.getId());
+      ArtifactId wpArt = atsApi.getQueryService().getArtifact(workPackage.getId());
       Collection<ArtifactToken> related = atsApi.getRelationResolver().getRelated(wpArt,
          AtsRelationTypes.InsertionActivityToWorkPackage_InsertionActivity);
       if (related.size() > 0) {
@@ -143,23 +145,17 @@ public class AtsProgramService implements IAtsProgramService {
 
    @Override
    public IAtsInsertion getInsertion(Long insertionId) {
-      return atsApi.getConfigItemFactory().getInsertion(atsApi.getArtifact(insertionId));
+      return atsApi.getConfigItemFactory().getInsertion(atsApi.getQueryService().getArtifact(insertionId));
    }
 
    @Override
    public Collection<IAtsInsertion> getInsertions(IAtsProgram program) {
       List<IAtsInsertion> insertions = new ArrayList<>();
-      for (ArtifactId artifact : atsApi.getRelationResolver().getRelated(atsApi.getArtifact(program.getId()),
-         AtsRelationTypes.ProgramToInsertion_Insertion)) {
+      for (ArtifactId artifact : atsApi.getRelationResolver().getRelated(
+         atsApi.getQueryService().getArtifact(program.getId()), AtsRelationTypes.ProgramToInsertion_Insertion)) {
          insertions.add(atsApi.getConfigItemFactory().getInsertion(artifact));
       }
       return insertions;
-   }
-
-   @Override
-   public IAtsProgram getProgramByGuid(String guid) {
-      ArtifactId prgArt = atsApi.getArtifactById(guid);
-      return atsApi.getConfigItemFactory().getProgram(prgArt);
    }
 
    @Override
@@ -173,7 +169,7 @@ public class AtsProgramService implements IAtsProgramService {
 
    @Override
    public IAtsProgram getProgram(Long programId) {
-      return atsApi.getConfigItemFactory().getProgram(atsApi.getArtifact(programId));
+      return atsApi.getConfigItemFactory().getProgram(atsApi.getQueryService().getArtifact(programId));
    }
 
    @Override
@@ -256,7 +252,7 @@ public class AtsProgramService implements IAtsProgramService {
       ArtifactId artId = atsApi.getAttributeResolver().getSoleArtifactIdReference(program,
          AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);
       if (artId.isValid()) {
-         teamDefinition = atsApi.getConfigItem(artId);
+         teamDefinition = atsApi.getQueryService().getConfigItem(artId);
       }
       return teamDefinition;
    }

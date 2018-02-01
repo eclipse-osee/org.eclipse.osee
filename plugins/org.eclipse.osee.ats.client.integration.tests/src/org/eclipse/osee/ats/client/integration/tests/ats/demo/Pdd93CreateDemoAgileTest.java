@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.demo.populate.Pdd93CreateDemoAgile;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -38,7 +39,7 @@ public class Pdd93CreateDemoAgileTest implements IPopulateDemoDatabaseTest {
       Assert.assertEquals("SAW Agile Team", team.getName());
       Assert.assertEquals(true, team.isActive());
 
-      AtsClientService.get().getArtifact(team).reloadAttributesAndRelations();
+      ((Artifact) AtsClientService.get().getQueryService().getArtifact(team)).reloadAttributesAndRelations();
 
       IAgileBacklog backlog = AtsClientService.get().getAgileService().getAgileBacklog(team);
       Assert.assertNotNull(backlog);

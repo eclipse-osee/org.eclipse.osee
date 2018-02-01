@@ -106,7 +106,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    }
 
    /**
-    * @param ids (guid, atsId, legacy pcr id) of action to display
+    * @param ids (artId, atsId) of action to display
     * @return html representation of the action
     */
    @Override
@@ -115,12 +115,12 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @GET
    @Produces({MediaType.APPLICATION_JSON})
    public List<IAtsWorkItem> getAction(@PathParam("ids") String ids) throws Exception {
-      List<IAtsWorkItem> workItems = atsApi.getQueryService().getWorkItemListByIds(ids);
+      List<IAtsWorkItem> workItems = atsApi.getQueryService().getWorkItemsByIds(ids);
       return workItems;
    }
 
    /**
-    * @param ids (guid, atsId) of action to display
+    * @param ids (artId, atsId) of action to display
     * @return html representation of the action
     */
    @Override
@@ -128,12 +128,12 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @GET
    @Produces({MediaType.APPLICATION_JSON})
    public List<IAtsWorkItem> getActionDetails(@PathParam("ids") String ids) throws Exception {
-      List<IAtsWorkItem> workItems = atsApi.getQueryService().getWorkItemListByIds(ids);
+      List<IAtsWorkItem> workItems = atsApi.getQueryService().getWorkItemsByIds(ids);
       return workItems;
    }
 
    /**
-    * @param ids (guid, atsId) of action to display
+    * @param ids (artId, atsId) of action to display
     * @return html representation of the action
     */
    @Override
@@ -144,7 +144,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Produces({MediaType.APPLICATION_JSON})
    public List<IAtsWorkItem> getActionChildren(@PathParam("ids") String ids) {
       List<IAtsWorkItem> children = new LinkedList<>();
-      for (ArtifactToken action : atsApi.getQueryService().getArtifactListByIdsStr(ids)) {
+      for (ArtifactToken action : atsApi.getQueryService().getArtifactsByIds(ids)) {
          for (ArtifactToken childWf : atsApi.getRelationResolver().getRelated(action,
             AtsRelationTypes.ActionToWorkflow_WorkFlow)) {
             IAtsWorkItem child = atsApi.getWorkItemFactory().getWorkItem(childWf);
@@ -165,7 +165,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    public List<String> getUnreleasedVersionNames(@PathParam("id") String id) {
       List<String> versions = new LinkedList<>();
-      IAtsTeamWorkflow teamWf = atsApi.getTeamWf(atsApi.getArtifactById(id));
+      IAtsTeamWorkflow teamWf = atsApi.getQueryService().getTeamWf(atsApi.getQueryService().getArtifactById(id));
       IAtsTeamDefinition targedVersionsTeamDef = teamWf.getTeamDefinition().getTeamDefinitionHoldingVersions();
       if (targedVersionsTeamDef != null) {
          for (IAtsVersion version : atsApi.getVersionService().getVersions(targedVersionsTeamDef)) {
@@ -186,7 +186,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    public List<String> getTransitionToStateNames(@PathParam("id") String id) {
       List<String> states = new LinkedList<>();
-      IAtsTeamWorkflow teamWf = atsApi.getTeamWf(atsApi.getArtifactById(id));
+      IAtsTeamWorkflow teamWf = atsApi.getQueryService().getTeamWf(atsApi.getQueryService().getArtifactById(id));
       states.add(teamWf.getStateDefinition().getDefaultToState().getName());
       for (IAtsStateDefinition state : teamWf.getStateDefinition().getToStates()) {
          if (!states.contains(state.getName())) {
@@ -207,11 +207,11 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    }
 
    @Override
-   @Path("{actionId}/attributeType/{attrTypeId}")
+   @Path("{id}/attributeType/{attrTypeId}")
    @GET
    @Produces({MediaType.APPLICATION_JSON})
-   public Attribute getActionAttributeByType(@PathParam("actionId") String actionId, @PathParam("attrTypeId") String attrTypeId) {
-      IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItemByAnyId(actionId);
+   public Attribute getActionAttributeByType(@PathParam("id") String id, @PathParam("attrTypeId") String attrTypeId) {
+      IAtsWorkItem workItem = atsApi.getQueryService().getWorkItem(id);
       Attribute attribute = getActionAttributeValues(attrTypeId, workItem);
       return attribute;
    }
@@ -232,13 +232,13 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    }
 
    @Override
-   @Path("{actionId}/attributeType/{attrTypeIdOrKey}")
+   @Path("{id}/attributeType/{attrTypeIdOrKey}")
    @PUT
    @Consumes({MediaType.APPLICATION_JSON})
    @Produces({MediaType.APPLICATION_JSON})
-   public Attribute setActionAttributeByType(@PathParam("actionId") String actionId, @PathParam("attrTypeIdOrKey") String attrTypeIdOrKey, List<String> values) {
+   public Attribute setActionAttributeByType(@PathParam("id") String id, @PathParam("attrTypeIdOrKey") String attrTypeIdOrKey, List<String> values) {
       Conditions.assertNotNull(values, "values can not be null");
-      IAtsWorkItem workItem = atsApi.getWorkItemService().getWorkItemByAnyId(actionId);
+      IAtsWorkItem workItem = atsApi.getQueryService().getWorkItem(id);
       IAtsChangeSet changes = atsApi.createChangeSet("set attr by type or key " + attrTypeIdOrKey);
       AttributeTypeId attrTypeId = null;
       if (attrTypeIdOrKey.equals(AttributeKey.Title.name())) {
@@ -340,7 +340,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       changes.executeIfNeeded();
 
       // reload to get latest
-      workItem = atsApi.getWorkItemService().getWorkItemByAnyId(actionId);
+      workItem = atsApi.getQueryService().getWorkItem(id);
       if (attrTypeId != null) {
          return getActionAttributeValues(attrTypeId, workItem);
       }
@@ -358,7 +358,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    public String getActionStateFromLegacyPcrId(@PathParam("ids") String ids) throws Exception {
       List<IAtsWorkItem> workItems = new ArrayList<>();
       for (String id : atsApi.getQueryService().getIdsFromStr(ids)) {
-         ArtifactToken action = atsApi.getArtifactByLegacyPcrId(id);
+         ArtifactToken action = atsApi.getQueryService().getArtifactByLegacyPcrId(id);
          if (action != null) {
             IAtsWorkItem workItem = atsApi.getWorkItemFactory().getWorkItem(action);
             workItems.add(workItem);
@@ -372,7 +372,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @GET
    @Produces({MediaType.APPLICATION_JSON})
    public String getActionState(@PathParam("ids") String ids) throws Exception {
-      List<IAtsWorkItem> workItems = atsApi.getWorkItemListByIds(ids);
+      List<IAtsWorkItem> workItems = atsApi.getQueryService().getWorkItemsByIds(ids);
       return getActionStateResultString(workItems);
    }
 
@@ -434,7 +434,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
          } else if (entry.getKey().equals("Team")) {
             Collection<IAtsTeamDefinition> teams = new LinkedList<>();
             for (String teamId : entry.getValue()) {
-               IAtsTeamDefinition team = atsApi.getConfigItem(Long.valueOf(teamId));
+               IAtsTeamDefinition team = atsApi.getQueryService().getConfigItem(Long.valueOf(teamId));
                if (team != null) {
                   teams.add(team);
                }
@@ -464,7 +464,8 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
             }
             query.andWorkItemType(workItemTypes.toArray(new WorkItemType[workItemTypes.size()]));
          } else if (entry.getKey().equals("Version")) {
-            IAtsVersion version = atsApi.getConfigItem(Long.valueOf(entry.getValue().iterator().next()));
+            IAtsVersion version =
+               atsApi.getQueryService().getConfigItem(Long.valueOf(entry.getValue().iterator().next()));
             query.andVersion(version);
          }
          // else, attempt to resolve as attribute type id or name

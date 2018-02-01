@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.api.config.IAtsCache;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 /**
  * Provide ATS Caching by id, guid and application tags. These are evacuating caches that will expire 15 minutes after
@@ -61,7 +60,7 @@ public class AtsCache implements IAtsCache {
    @Override
    public void cacheAtsObject(IAtsObject atsObject) {
       Conditions.checkNotNull(atsObject, "atsObject");
-      ArtifactToken storeObject = atsApi.getArtifact(atsObject.getStoreObject());
+      ArtifactToken storeObject = atsApi.getQueryService().getArtifact(atsObject.getStoreObject());
       if (storeObject != null) {
          idToArtifactIdCache.put(atsObject.getId(), storeObject);
       }
@@ -77,34 +76,14 @@ public class AtsCache implements IAtsCache {
    static CacheLoader<Long, IAtsObject> idToAtsObjectCacheLoader = new CacheLoader<Long, IAtsObject>() {
       @Override
       public IAtsObject load(Long id) {
-         return atsApi.getConfigItemFactory().getConfigObject(atsApi.getArtifact(id));
+         return atsApi.getConfigItemFactory().getConfigObject(atsApi.getQueryService().getArtifact(id));
       }
    };
 
    static CacheLoader<Long, ArtifactId> idToArtifactIdCacheLoader = new CacheLoader<Long, ArtifactId>() {
       @Override
       public ArtifactId load(Long id) {
-         return atsApi.getArtifact(id);
-      }
-   };
-
-   static CacheLoader<String, IAtsObject> tagToAtsObjectCacheLoader = new CacheLoader<String, IAtsObject>() {
-      @Override
-      public IAtsObject load(String tag) {
-         if (GUID.isValid(tag)) {
-            return atsApi.getConfigItemFactory().getConfigObject(atsApi.getArtifactByGuid(tag));
-         }
-         throw new IllegalStateException(String.format("IAtsObject not tagged with tag [%s]", tag));
-      }
-   };
-
-   static CacheLoader<String, ArtifactId> tagToArtifactIdCacheLoader = new CacheLoader<String, ArtifactId>() {
-      @Override
-      public ArtifactId load(String tag) {
-         if (GUID.isValid(tag)) {
-            return atsApi.getArtifactByGuid(tag);
-         }
-         throw new IllegalStateException(String.format("ArtifactId not tagged with tag [%s]", tag));
+         return atsApi.getQueryService().getArtifact(id);
       }
    };
 

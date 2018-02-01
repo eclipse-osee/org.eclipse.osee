@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.agile;
 
+import org.eclipse.osee.ats.api.IAtsObject;
+
 /**
  * @author Donald G. Dunne
  */
-public interface IAgileObject {
+public interface IAgileObject extends IAtsObject {
    // do nothing
 }
