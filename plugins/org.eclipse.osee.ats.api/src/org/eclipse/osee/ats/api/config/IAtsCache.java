@@ -22,8 +22,6 @@ public interface IAtsCache {
 
    public <T extends IAtsObject> T getAtsObject(ArtifactId artifact);
 
-   public <T extends IAtsObject> T getAtsObjectByGuid(String guid);
-
    public void cacheAtsObject(IAtsObject atsObject);
 
    public void cacheArtifact(ArtifactId artifact);

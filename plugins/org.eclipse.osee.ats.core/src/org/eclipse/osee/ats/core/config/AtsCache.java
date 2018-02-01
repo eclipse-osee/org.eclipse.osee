@@ -37,9 +37,6 @@ public class AtsCache implements IAtsCache {
    private final LoadingCache<Long, ArtifactId> idToArtifactIdCache = CacheBuilder.newBuilder() //
       .expireAfterWrite(15, TimeUnit.MINUTES) //
       .build(idToArtifactIdCacheLoader);
-   private final LoadingCache<String, IAtsObject> guidToAtsObjectCache = CacheBuilder.newBuilder() //
-      .expireAfterWrite(15, TimeUnit.MINUTES) //
-      .build(tagToAtsObjectCacheLoader);
 
    public AtsCache(AtsApi atsApi) {
       AtsCache.atsApi = atsApi;
@@ -62,22 +59,10 @@ public class AtsCache implements IAtsCache {
    }
 
    @Override
-   @SuppressWarnings("unchecked")
-   public <T extends IAtsObject> T getAtsObjectByGuid(String guid) {
-      Conditions.checkNotNullOrEmpty(guid, "guid");
-      try {
-         return (T) guidToAtsObjectCache.get(guid);
-      } catch (Exception ex) {
-         return null;
-      }
-   }
-
-   @Override
    public void cacheAtsObject(IAtsObject atsObject) {
       Conditions.checkNotNull(atsObject, "atsObject");
       ArtifactToken storeObject = atsApi.getArtifact(atsObject.getStoreObject());
       if (storeObject != null) {
-         guidToAtsObjectCache.put(storeObject.getGuid(), atsObject);
          idToArtifactIdCache.put(atsObject.getId(), storeObject);
       }
       idToAtsObjectCache.put(atsObject.getId(), atsObject);
@@ -125,7 +110,6 @@ public class AtsCache implements IAtsCache {
 
    @Override
    public void invalidate() {
-      guidToAtsObjectCache.invalidateAll();
       idToAtsObjectCache.invalidateAll();
       idToArtifactIdCache.invalidateAll();
    }
@@ -133,10 +117,6 @@ public class AtsCache implements IAtsCache {
    @Override
    public void deCacheAtsObject(IAtsObject atsObject) {
       Conditions.checkNotNull(atsObject, "atsObject");
-      if (atsApi.getArtifact(atsObject) != null) {
-         guidToAtsObjectCache.invalidate(atsApi.getArtifact(atsObject).getGuid());
-      }
-
       idToAtsObjectCache.invalidate(atsObject.getId());
       idToArtifactIdCache.invalidate(atsObject.getId());
    }
