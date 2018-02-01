@@ -19,10 +19,6 @@ public interface LoadDataHandler extends AttributeDataMatchHandler, DynamicDataH
 
    void onLoadDescription(LoadDescription data);
 
-   void onData(BranchData data);
-
-   void onData(TxOrcsData data);
-
    void onData(ArtifactData data);
 
    void onData(AttributeData data);
@@ -30,5 +26,4 @@ public interface LoadDataHandler extends AttributeDataMatchHandler, DynamicDataH
    void onData(RelationData data);
 
    void onLoadEnd();
-
 }

@@ -29,16 +29,6 @@ public class LoadDataHandlerAdapter implements LoadDataHandler {
    }
 
    @Override
-   public void onData(BranchData data) {
-      //
-   }
-
-   @Override
-   public void onData(TxOrcsData data) {
-      //
-   }
-
-   @Override
    public void onData(ArtifactData data) {
       //
    }

@@ -17,13 +17,12 @@ import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
-import org.eclipse.osee.orcs.core.ds.BranchData;
 import org.eclipse.osee.orcs.data.BranchReadable;
 
 /**
  * @author Roberto E. Escobar
  */
-public class BranchDataImpl extends NamedIdBase implements BranchData, BranchReadable {
+public class BranchDataImpl extends NamedIdBase implements BranchReadable {
    private ArtifactId associatedArtifact = ArtifactId.SENTINEL;
    private TransactionId baseTransaction = TransactionId.SENTINEL;
    private TransactionId sourceTransaction = TransactionId.SENTINEL;
@@ -48,7 +47,6 @@ public class BranchDataImpl extends NamedIdBase implements BranchData, BranchRea
       return associatedArtifact;
    }
 
-   @Override
    public void setAssociatedArtifact(ArtifactId associatedArtifact) {
       this.associatedArtifact = associatedArtifact;
    }
@@ -58,7 +56,6 @@ public class BranchDataImpl extends NamedIdBase implements BranchData, BranchRea
       return baseTransaction;
    }
 
-   @Override
    public void setBaseTransaction(TransactionId baseTx) {
       baseTransaction = baseTx;
    }
@@ -68,7 +65,6 @@ public class BranchDataImpl extends NamedIdBase implements BranchData, BranchRea
       return sourceTransaction;
    }
 
-   @Override
    public void setSourceTransaction(TransactionId sourceTx) {
       sourceTransaction = sourceTx;
    }
@@ -78,7 +74,6 @@ public class BranchDataImpl extends NamedIdBase implements BranchData, BranchRea
       return parentBranch;
    }
 
-   @Override
    public void setParentBranch(BranchId parent) {
       parentBranch = parent;
    }
@@ -93,7 +88,6 @@ public class BranchDataImpl extends NamedIdBase implements BranchData, BranchRea
       return archiveState;
    }
 
-   @Override
    public void setArchiveState(BranchArchivedState state) {
       this.archiveState = state;
    }
@@ -103,7 +97,6 @@ public class BranchDataImpl extends NamedIdBase implements BranchData, BranchRea
       return branchState;
    }
 
-   @Override
    public void setBranchState(BranchState state) {
       this.branchState = state;
    }
@@ -113,7 +106,6 @@ public class BranchDataImpl extends NamedIdBase implements BranchData, BranchRea
       return branchType;
    }
 
-   @Override
    public void setBranchType(BranchType type) {
       branchType = type;
    }
@@ -128,7 +120,6 @@ public class BranchDataImpl extends NamedIdBase implements BranchData, BranchRea
       return inheritAccessControl;
    }
 
-   @Override
    public void setInheritAccessControl(boolean inheritAccessControl) {
       this.inheritAccessControl = inheritAccessControl;
    }
