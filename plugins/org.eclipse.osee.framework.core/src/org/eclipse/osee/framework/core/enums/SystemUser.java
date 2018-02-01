@@ -21,10 +21,10 @@ import org.eclipse.osee.framework.jdk.core.type.Id;
 public final class SystemUser {
 
    // @formatter:off
-   public static final UserToken OseeSystem = UserToken.create(11, "AAABDBYPet4AGJyrc9dY1w", "OSEE System", "", "99999999", false, false, false);
-   public static final UserToken Anonymous = UserToken.create(1896, "AAABDi35uzwAxJLISLBZdA", "Anonymous", "", "99999998", false, false, false);
-   public static final UserToken BootStrap = UserToken.create(2184322, "noguid", "Boot Strap", "bootstrap@osee.org", "bootstrap", true, false, false);
-   public static final UserToken UnAssigned = UserToken.create(33429, "AAABDi1tMx8Al92YWMjeRw", "UnAssigned", "", "99999997", true, false, false);
+   public static final UserToken OseeSystem = UserToken.create(11, "OSEE System", "", "99999999", false, false, false);
+   public static final UserToken Anonymous = UserToken.create(1896, "Anonymous", "", "99999998", false, false, false);
+   public static final UserToken BootStrap = UserToken.create(2184322, "Boot Strap", "bootstrap@osee.org", "bootstrap", true, false, false);
+   public static final UserToken UnAssigned = UserToken.create(33429, "UnAssigned", "", "99999997", true, false, false);
    public static final List<UserToken> values = Arrays.asList(OseeSystem, Anonymous, BootStrap, UnAssigned);
    // @formatter:on
 

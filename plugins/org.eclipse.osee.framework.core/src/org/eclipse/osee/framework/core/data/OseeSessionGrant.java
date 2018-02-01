@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.core.data;
 
 import java.util.Properties;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 /**
@@ -91,8 +90,8 @@ public class OseeSessionGrant {
    }
 
    private UserToken getGrantedUserToken() {
-      return UserToken.create(Lib.generateArtifactIdAsInt(), GUID.create(), oseeUserName, oseeUserEmail, oseeUserId,
-         isOseeUserActive, false, false);
+      return UserToken.create(Lib.generateArtifactIdAsInt(), oseeUserName, oseeUserEmail, oseeUserId, isOseeUserActive,
+         false, false);
    }
 
    public String getDbDriver() {

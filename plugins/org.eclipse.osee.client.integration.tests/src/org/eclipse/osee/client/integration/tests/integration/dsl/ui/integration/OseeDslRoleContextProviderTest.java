@@ -47,11 +47,11 @@ public class OseeDslRoleContextProviderTest {
    @Test
    public void testGetContextId() throws Exception {
       String contextGuid = GUID.create();
-      String testSheet = getTestSheet1(contextGuid, SystemUser.Anonymous.getGuid());
+      Artifact user = ArtifactQuery.getArtifactFromToken(SystemUser.Anonymous);
+      String testSheet = getTestSheet1(contextGuid, user.getGuid());
       OseeDsl model = OseeDslResourceUtil.loadModel("osee:/text.osee", testSheet).getModel();
       MockDslProvider dslProvider = new MockDslProvider(model);
       OseeDslRoleContextProvider contextProvider = new OseeDslRoleContextProvider(dslProvider);
-      Artifact user = ArtifactQuery.getArtifactFromToken(SystemUser.Anonymous);
       Collection<? extends IAccessContextId> contextIds = contextProvider.getContextId(user);
 
       Assert.assertEquals(1, contextIds.size());
@@ -63,11 +63,11 @@ public class OseeDslRoleContextProviderTest {
       String contextGuid1 = GUID.create();
       String contextGuid2 = GUID.create();
       String role2Guid = GUID.create();
-      String testSheet = getTestSheet2(contextGuid1, SystemUser.Anonymous.getGuid(), contextGuid2, role2Guid);
+      Artifact user = ArtifactQuery.getArtifactFromToken(SystemUser.Anonymous);
+      String testSheet = getTestSheet2(contextGuid1, user.getGuid(), contextGuid2, role2Guid);
       OseeDsl model = OseeDslResourceUtil.loadModel("osee:/text.osee", testSheet).getModel();
       MockDslProvider dslProvider = new MockDslProvider(model);
       OseeDslRoleContextProvider contextProvider = new OseeDslRoleContextProvider(dslProvider);
-      Artifact user = ArtifactQuery.getArtifactFromToken(SystemUser.Anonymous);
       Collection<? extends IAccessContextId> contextIds = contextProvider.getContextId(user);
 
       Assert.assertEquals(1, contextIds.size());

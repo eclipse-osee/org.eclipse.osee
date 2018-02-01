@@ -50,7 +50,13 @@ public interface ArtifactToken extends ArtifactId, HasBranch, NamedId {
    }
 
    public static ArtifactToken valueOf(ArtifactToken token, BranchId branch) {
-      return valueOf(token.getId(), token.getGuid(), token.getName(), branch, token.getArtifactTypeId());
+      String useGuid = null;
+      try {
+         useGuid = token.getGuid();
+      } catch (UnsupportedOperationException ex) {
+         // do nothing
+      }
+      return valueOf(token.getId(), useGuid, token.getName(), branch, token.getArtifactTypeId());
    }
 
    public static ArtifactToken valueOf(long id, BranchId branch) {

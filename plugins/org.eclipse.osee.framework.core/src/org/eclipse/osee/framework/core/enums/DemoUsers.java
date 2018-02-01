@@ -20,11 +20,11 @@ import org.eclipse.osee.framework.core.data.UserToken;
 public final class DemoUsers {
 
    // @formatter:off
-   public static final UserToken Joe_Smith = UserToken.create(61106791, "ABNRvbZxXHICYklfslwA", "Joe Smith", "joe@boeing.com", "3333", true, false, false);
-   public static final UserToken Kay_Jones = UserToken.create(5896672, "ABNRvuB8x3VARkkn3YAA", "Kay Jones", "kay@boeing.com", "4444", true, false, false);
-   public static final UserToken Jason_Michael = UserToken.create(277990, "ABNRvuHWtXAdxbG3mUAA", "Jason Michael", "jason@boeing.com", "5555", true, true, false);
-   public static final UserToken Alex_Kay = UserToken.create(8006939, "ABNRvuKDIWOcPDe4X0wA", "Alex Kay", "", "6666", true, false, false);
-   public static final UserToken Inactive_Steve = UserToken.create(5808093, "ABNRvuRG6jKwKnEoX4gA", "Inactive Steve", "insactiveSteve@boeing.com", "7777", false, false, false);
+   public static final UserToken Joe_Smith = UserToken.create(61106791, "Joe Smith", "joe@boeing.com", "3333", true, false, false);
+   public static final UserToken Kay_Jones = UserToken.create(5896672, "Kay Jones", "kay@boeing.com", "4444", true, false, false);
+   public static final UserToken Jason_Michael = UserToken.create(277990, "Jason Michael", "jason@boeing.com", "5555", true, true, false);
+   public static final UserToken Alex_Kay = UserToken.create(8006939, "Alex Kay", "", "6666", true, false, false);
+   public static final UserToken Inactive_Steve = UserToken.create(5808093, "Inactive Steve", "insactiveSteve@boeing.com", "7777", false, false, false);
    public static List<UserToken> values = Arrays.asList(Joe_Smith, Kay_Jones, Jason_Michael, Alex_Kay, Inactive_Steve);
    // @formatter:on
 

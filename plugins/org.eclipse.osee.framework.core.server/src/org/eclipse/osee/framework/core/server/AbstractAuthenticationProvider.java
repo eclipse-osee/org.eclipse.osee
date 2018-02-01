@@ -15,7 +15,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -56,8 +55,8 @@ public abstract class AbstractAuthenticationProvider implements IAuthenticationP
 
          ArtifactReadable artifact = query.getResults().getOneOrNull();
          if (artifact != null) {
-            toReturn = UserToken.create(artifact.getUuid(), artifact.getGuid(), artifact.getName(),
-               artifact.getSoleAttributeAsString(CoreAttributeTypes.Email, ""), userId, true, false, false);
+            toReturn = UserToken.create(artifact.getUuid(), artifact.getName(), artifact.getSoleAttributeAsString(CoreAttributeTypes.Email, ""),
+               userId, true, false, false);
          } else {
             getLogger().info("Unable to find userId:[%s] on [%s]", userId, CoreBranches.COMMON);
          }
@@ -68,7 +67,7 @@ public abstract class AbstractAuthenticationProvider implements IAuthenticationP
    }
 
    protected UserToken createUserToken(boolean isCreationRequired, String userName, String userId, String userEmail, boolean isActive) {
-      return UserToken.create(Lib.generateArtifactIdAsInt(), GUID.create(), userName, userEmail, userId, isActive,
-         false, isCreationRequired);
+      return UserToken.create(Lib.generateArtifactIdAsInt(), userName, userEmail, userId, isActive, false,
+         isCreationRequired);
    }
 }

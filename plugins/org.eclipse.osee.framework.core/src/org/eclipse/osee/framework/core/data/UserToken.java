@@ -29,18 +29,16 @@ public interface UserToken extends ArtifactToken, UserId {
 
    public boolean isCreationRequired();
 
-   public static UserToken create(long id, String guid, String name, String email, String userId, boolean active, boolean admin, boolean creationRequired) {
+   public static UserToken create(long id, String name, String email, String userId, boolean active, boolean admin, boolean creationRequired) {
       final class UserTokenImpl extends NamedIdBase implements UserToken {
          private final String userId;
          private final boolean active;
          private final boolean admin;
          private final String email;
-         private final String guid;
          private final boolean creationRequired;
 
-         public UserTokenImpl(long id, String guid, String name, String userId, boolean active, boolean admin, String email, boolean creationRequired) {
+         public UserTokenImpl(long id, String name, String userId, boolean active, boolean admin, String email, boolean creationRequired) {
             super(id, name);
-            this.guid = guid;
             this.userId = userId;
             this.active = active;
             this.admin = admin;
@@ -86,15 +84,15 @@ public interface UserToken extends ArtifactToken, UserId {
          }
 
          @Override
-         public String getGuid() {
-            return guid;
-         }
-
-         @Override
          public BranchId getBranch() {
             return CoreBranches.COMMON;
          }
+
+         @Override
+         public String getGuid() {
+            throw new UnsupportedOperationException("not supported");
+         }
       }
-      return new UserTokenImpl(id, guid, name, userId, active, admin, email, creationRequired);
+      return new UserTokenImpl(id, name, userId, active, admin, email, creationRequired);
    }
 }
