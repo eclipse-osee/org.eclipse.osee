@@ -16,7 +16,7 @@ import java.util.List;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
-import org.eclipse.osee.framework.core.data.BranchReadable;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ApplicabilityDsQuery;
@@ -73,7 +73,7 @@ public class QueryEngineImpl implements QueryEngine {
    }
 
    @Override
-   public void runBranchQuery(QueryData queryData, List<? super BranchReadable> branches) {
+   public void runBranchQuery(QueryData queryData, List<? super Branch> branches) {
       QuerySqlContext queryContext = branchSqlContextFactory.createQueryContext(null, queryData, QueryType.SELECT);
       sqlObjectLoader.loadBranches(branches, queryContext);
    }

@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.core.internal.search;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.BranchReadable;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -34,8 +34,8 @@ public class BranchQueryImpl extends BranchQueryBuilderImpl<BranchQuery> impleme
    }
 
    @Override
-   public ResultSet<BranchReadable> getResults() {
-      List<BranchReadable> branches = new ArrayList<>();
+   public ResultSet<Branch> getResults() {
+      List<Branch> branches = new ArrayList<>();
       query(branches);
       return ResultSets.newResultSet(branches);
    }
@@ -47,7 +47,7 @@ public class BranchQueryImpl extends BranchQueryBuilderImpl<BranchQuery> impleme
       return ResultSets.newResultSet(branches);
    }
 
-   private void query(List<? super BranchReadable> branches) {
+   private void query(List<? super Branch> branches) {
       QueryData queryData = build();
       OptionsUtil.setLoadLevel(queryData.getOptions(), LoadLevel.ALL);
       queryEngine.runBranchQuery(queryData, branches);

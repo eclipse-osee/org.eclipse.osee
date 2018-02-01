@@ -17,7 +17,7 @@ import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
-import org.eclipse.osee.framework.core.data.BranchReadable;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.model.change.ChangeIgnoreType;
@@ -41,9 +41,9 @@ public class CommitBranchDatabaseCallable extends AbstractDatastoreCallable<Tran
    private final IdentityManager idManager;
    private final ArtifactId committer;
    private final TransactionToken sourceHead;
-   private final BranchReadable source;
+   private final Branch source;
    private final TransactionToken destinationHead;
-   private final BranchReadable destination;
+   private final Branch destination;
    private final MissingChangeItemFactory missingChangeItemFactory;
    private final ApplicabilityQuery applicQuery;
 
@@ -52,7 +52,7 @@ public class CommitBranchDatabaseCallable extends AbstractDatastoreCallable<Tran
    private static final String SELECT_MERGE_BRANCH_HEAD_TX =
       "select max(transaction_id) from osee_tx_details where branch_id = ?";
 
-   public CommitBranchDatabaseCallable(Log logger, OrcsSession session, JdbcClient service, SqlJoinFactory joinFactory, IdentityManager idManager, ArtifactId committer, BranchReadable source, TransactionToken sourceHead, BranchReadable destination, TransactionToken destinationHead, MissingChangeItemFactory missingChangeItemFactory, ApplicabilityQuery applicQuery) {
+   public CommitBranchDatabaseCallable(Log logger, OrcsSession session, JdbcClient service, SqlJoinFactory joinFactory, IdentityManager idManager, ArtifactId committer, Branch source, TransactionToken sourceHead, Branch destination, TransactionToken destinationHead, MissingChangeItemFactory missingChangeItemFactory, ApplicabilityQuery applicQuery) {
       super(logger, session, service);
       this.joinFactory = joinFactory;
       this.idManager = idManager;

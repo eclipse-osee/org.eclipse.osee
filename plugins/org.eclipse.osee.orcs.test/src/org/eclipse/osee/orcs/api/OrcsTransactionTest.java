@@ -34,7 +34,7 @@ import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchReadable;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserId;
@@ -219,9 +219,9 @@ public class OrcsTransactionTest {
 
       // duplicate on different branch
       IOseeBranch branchToken = IOseeBranch.create("DuplicateArtifact tests");
-      Callable<BranchReadable> callableBranch = orcsBranch.createTopLevelBranch(branchToken, userArtifact);
+      Callable<Branch> callableBranch = orcsBranch.createTopLevelBranch(branchToken, userArtifact);
 
-      BranchReadable topLevelBranch = callableBranch.call();
+      Branch topLevelBranch = callableBranch.call();
 
       TransactionBuilder transaction2 =
          txFactory.createTransaction(topLevelBranch, userArtifact, testName.getMethodName());
@@ -238,7 +238,7 @@ public class OrcsTransactionTest {
       ArtifactReadable user = query.fromBranch(COMMON).andId(SystemUser.Anonymous).getResults().getExactlyOne();
 
       IOseeBranch branchToken = IOseeBranch.create("IntroduceArtifact tests");
-      BranchReadable topLevelBranch = orcsBranch.createTopLevelBranch(branchToken, userArtifact).call();
+      Branch topLevelBranch = orcsBranch.createTopLevelBranch(branchToken, userArtifact).call();
 
       TransactionBuilder transaction =
          txFactory.createTransaction(topLevelBranch, userArtifact, testName.getMethodName());

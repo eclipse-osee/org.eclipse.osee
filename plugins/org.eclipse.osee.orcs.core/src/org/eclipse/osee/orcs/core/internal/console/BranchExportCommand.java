@@ -20,7 +20,7 @@ import org.eclipse.osee.console.admin.ConsoleCommand;
 import org.eclipse.osee.console.admin.ConsoleParameters;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchReadable;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -109,7 +109,7 @@ public final class BranchExportCommand implements ConsoleCommand {
          List<BranchId> branches = new LinkedList<>();
          BranchQuery branchQuery = orcsApi.getQueryFactory().branchQuery();
          if (includeBranchIds.isEmpty()) {
-            ResultSet<BranchReadable> branchReadables = null;
+            ResultSet<Branch> branchReadables = null;
             if (includeArchivedBranches) {
                branchQuery.includeArchived();
             } else {
@@ -118,7 +118,7 @@ public final class BranchExportCommand implements ConsoleCommand {
             branchReadables = branchQuery.andIsOfType(BranchType.WORKING, BranchType.BASELINE, BranchType.MERGE,
                BranchType.PORT, BranchType.SYSTEM_ROOT).getResults();
 
-            for (BranchReadable branch : branchReadables) {
+            for (Branch branch : branchReadables) {
                branches.add(branch);
             }
          } else {
@@ -130,7 +130,7 @@ public final class BranchExportCommand implements ConsoleCommand {
          branchQuery = orcsApi.getQueryFactory().branchQuery();
          if (!excludeBranchIds.isEmpty()) {
             for (String branchUuidString : excludeBranchIds) {
-               BranchReadable toExclude =
+               Branch toExclude =
                   branchQuery.andId(BranchId.valueOf(branchUuidString)).getResults().getExactlyOne();
                branches.remove(toExclude);
             }

@@ -14,8 +14,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchReadable;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -39,9 +39,9 @@ public interface BranchDataStore {
 
    void createBranchCopyTx(CreateBranchData branchData);
 
-   Callable<Void> purgeBranch(OrcsSession session, BranchReadable branch);
+   Callable<Void> purgeBranch(OrcsSession session, Branch branch);
 
-   Callable<TransactionId> commitBranch(OrcsSession session, ArtifactId committer, BranchReadable source, TransactionToken sourceHead, BranchReadable destination, TransactionToken destinationHead, ApplicabilityQuery applicQuery);
+   Callable<TransactionId> commitBranch(OrcsSession session, ArtifactId committer, Branch source, TransactionToken sourceHead, Branch destination, TransactionToken destinationHead, ApplicabilityQuery applicQuery);
 
    Callable<List<ChangeItem>> compareBranch(OrcsSession session, TransactionToken sourceTx, TransactionToken destinationTx, ApplicabilityQuery applicQuery);
 

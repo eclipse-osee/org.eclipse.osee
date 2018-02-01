@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.BranchReadable;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -57,7 +57,7 @@ public class ArtifactFactoryTest {
    public ExpectedException thrown = ExpectedException.none();
 
    // @formatter:off
-   @Mock private BranchReadable branch;
+   @Mock private Branch branch;
    @Mock private ArtifactData artifactData;
    @Mock private VersionData artifactVersion;
 

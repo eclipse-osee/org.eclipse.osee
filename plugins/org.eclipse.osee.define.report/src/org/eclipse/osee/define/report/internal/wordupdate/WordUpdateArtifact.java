@@ -26,8 +26,8 @@ import org.eclipse.osee.define.report.api.WordUpdateChange;
 import org.eclipse.osee.define.report.api.WordUpdateData;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchReadable;
 import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -251,7 +251,7 @@ public class WordUpdateArtifact {
    }
 
    private HashSet<String> getValidConfigurations(BranchId branch) {
-      BranchReadable br = orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getOneOrNull();
+      Branch br = orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getOneOrNull();
       if (br.getBranchType().equals(BranchType.MERGE)) {
          branch = br.getParentBranch();
       }

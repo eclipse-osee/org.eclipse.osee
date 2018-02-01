@@ -15,7 +15,7 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import org.eclipse.osee.executor.admin.CancellableCallable;
-import org.eclipse.osee.framework.core.data.BranchReadable;
+import org.eclipse.osee.framework.core.data.Branch;
 
 /**
  * @author Roberto E. Escobar
@@ -24,7 +24,7 @@ public interface QueryIndexer {
 
    CancellableCallable<Integer> indexAllFromQueue(IndexerCollector... collector);
 
-   CancellableCallable<Integer> indexBranches(Set<BranchReadable> branches, boolean indexOnlyMissing, IndexerCollector... collector);
+   CancellableCallable<Integer> indexBranches(Set<Branch> branches, boolean indexOnlyMissing, IndexerCollector... collector);
 
    Callable<List<Future<?>>> indexResources(Iterable<Long> gammaIds, IndexerCollector... collector);
 

@@ -18,7 +18,7 @@ import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.console.admin.ConsoleCommand;
 import org.eclipse.osee.console.admin.ConsoleParameters;
 import org.eclipse.osee.executor.admin.CancellableCallable;
-import org.eclipse.osee.framework.core.data.BranchReadable;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
@@ -136,16 +136,16 @@ public final class BranchCommand implements ConsoleCommand {
          filter.setNegatedBranchStates(notStates);
 
          BranchQuery query = orcsApi.getQueryFactory().branchQuery();
-         ResultSet<BranchReadable> branches = query.excludeArchived().andIsOfType(BranchType.WORKING).getResults();
+         ResultSet<Branch> branches = query.excludeArchived().andIsOfType(BranchType.WORKING).getResults();
 
-         branches.sort(new Comparator<BranchReadable>() {
+         branches.sort(new Comparator<Branch>() {
             @Override
-            public int compare(BranchReadable o1, BranchReadable o2) {
+            public int compare(Branch o1, Branch o2) {
                return 0;
             }
          });
          int count = 0;
-         for (BranchReadable aBranch : branches) {
+         for (Branch aBranch : branches) {
             console.writeln("[%s] - id[%s] guid[%s] sTx[%s] bTx[%s] parent[%s] type[%s] state[%s] archive[%s] name[%s]",
                ++count, aBranch, aBranch, aBranch.getName(), aBranch.getBranchType(), aBranch.getBranchState(),
                aBranch.isArchived(), aBranch.getParentTx(), aBranch.getBaselineTx(), aBranch.getParentBranch());

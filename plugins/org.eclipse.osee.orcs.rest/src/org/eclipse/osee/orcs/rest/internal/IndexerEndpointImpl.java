@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchReadable;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
@@ -57,7 +57,7 @@ public class IndexerEndpointImpl implements IndexerEndpoint {
    @Override
    public Response indexBranches(String branchIdsStr, boolean missingItemsOnly) {
       List<BranchId> branchIds = Collections.fromString(branchIdsStr, BranchId::valueOf);
-      ResultSet<BranchReadable> results = newBranchQuery().andIds(branchIds).getResults();
+      ResultSet<Branch> results = newBranchQuery().andIds(branchIds).getResults();
       Callable<Integer> op = getIndexer().indexBranches(Sets.newLinkedHashSet(results), missingItemsOnly);
       Integer result = executeCallable(op);
       boolean modified = result > 0;

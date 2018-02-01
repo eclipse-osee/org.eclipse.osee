@@ -20,7 +20,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.define.report.api.OseeLinkBuilder;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchReadable;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.PresentationType;
@@ -219,7 +219,7 @@ public class WordMlLinkHandler {
       artifactsFromSearch = findArtifacts(queryFactory, branch, guidsFromLinks, txId);
       boolean isMergeBranch = queryFactory.branchQuery().andId(branch).andIsOfType(BranchType.MERGE).exists();
       if (guidsFromLinks.size() != artifactsFromSearch.size() && isMergeBranch) {
-         BranchReadable branchReadable = queryFactory.branchQuery().andId(branch).getResults().getExactlyOne();
+         Branch branchReadable = queryFactory.branchQuery().andId(branch).getResults().getExactlyOne();
          List<String> unknownGuids = getGuidsNotFound(guidsFromLinks, artifactsFromSearch);
 
          List<ArtifactReadable> union = new ArrayList<>();

@@ -32,8 +32,8 @@ import org.eclipse.osee.disposition.rest.DispoConstants;
 import org.eclipse.osee.disposition.rest.internal.importer.coverage.CoverageUtil;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchReadable;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -604,8 +604,8 @@ public class OrcsStorageImpl implements Storage {
    @Override
    public List<CiSetData> getAllCiSets() {
       List<CiSetData> setData = new ArrayList<>();
-      List<BranchReadable> dispoBranches = findDispoBranches();
-      for (BranchReadable branch : dispoBranches) {
+      List<Branch> dispoBranches = findDispoBranches();
+      for (BranchId branch : dispoBranches) {
          for (ArtifactReadable dispoSet : findAllCiSets(branch)) {
             String ciSet = dispoSet.getSoleAttributeValue(DispoConstants.DispoCiSet, "");
             if (!ciSet.isEmpty()) {
@@ -624,8 +624,8 @@ public class OrcsStorageImpl implements Storage {
       return getQuery().fromBranch(branch).andId(setId).getResults().getList();
    }
 
-   private List<BranchReadable> findDispoBranches() {
-      BranchReadable dispoParent = getQuery().branchQuery().andNameEquals("Dispo Parent").getResults().getOneOrNull();
+   private List<Branch> findDispoBranches() {
+      Branch dispoParent = getQuery().branchQuery().andNameEquals("Dispo Parent").getResults().getOneOrNull();
       return getQuery().branchQuery().andIsChildOf(
          dispoParent).excludeArchived().excludeDeleted().getResults().getList();
    }

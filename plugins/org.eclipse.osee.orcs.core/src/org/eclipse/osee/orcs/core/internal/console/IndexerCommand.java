@@ -19,7 +19,7 @@ import org.eclipse.osee.console.admin.ConsoleCommand;
 import org.eclipse.osee.console.admin.ConsoleParameters;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchReadable;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.search.QueryIndexer;
@@ -109,7 +109,7 @@ public class IndexerCommand implements ConsoleCommand {
          long startTime = System.currentTimeMillis();
          boolean indexOnlyMissingitems = false;
 
-         Set<BranchReadable> branches = new HashSet<>();
+         Set<Branch> branches = new HashSet<>();
          String[] uuids = params.getArray("branchUuids");
          if (uuids != null && uuids.length > 0) {
             for (String uuid : uuids) {

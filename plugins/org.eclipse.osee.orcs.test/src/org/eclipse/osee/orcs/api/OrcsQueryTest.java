@@ -30,7 +30,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.BranchReadable;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -392,7 +392,7 @@ public class OrcsQueryTest {
    public void testAndNameEquals() throws Exception {
       // This test sets up two folders, the name of the first has the name of the second in it
       // The goal is to make sure query.AndNameEquals doesn't return a match unless it matches exactly
-      BranchReadable branch = setupNameEqualsArtifacts();
+      Branch branch = setupNameEqualsArtifacts();
       try {
          QueryBuilder builder = factory.fromBranch(branch);
          builder.andNameEquals("Folder");
@@ -546,9 +546,9 @@ public class OrcsQueryTest {
       return names;
    }
 
-   private BranchReadable setupNameEqualsArtifacts() throws Exception {
+   private Branch setupNameEqualsArtifacts() throws Exception {
       IOseeBranch branchToken = IOseeBranch.create("TestAndNameEquals");
-      BranchReadable branch = branchApi.createTopLevelBranch(branchToken, author).call();
+      Branch branch = branchApi.createTopLevelBranch(branchToken, author).call();
       TransactionBuilder tx = txFactory.createTransaction(branch, author, "add folders");
       tx.createArtifact(CoreArtifactTypes.Folder, "First Folder");
       tx.createArtifact(CoreArtifactTypes.Folder, "Folder");

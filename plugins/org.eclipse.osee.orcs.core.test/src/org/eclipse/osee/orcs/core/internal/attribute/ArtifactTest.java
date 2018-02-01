@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
-import org.eclipse.osee.framework.core.data.BranchReadable;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -64,7 +64,7 @@ public class ArtifactTest {
 
    @Mock private VersionData version;
    @Mock private AttributeData attributeData;
-   @Mock private BranchReadable branch;
+   @Mock private Branch branch;
 
    @SuppressWarnings("rawtypes")
    @Mock private Attribute attribute;

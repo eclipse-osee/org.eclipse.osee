@@ -12,13 +12,8 @@ package org.eclipse.osee.orcs.core.internal.branch;
 
 import java.util.Arrays;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchReadable;
-import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.enums.BranchState;
-import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,68 +21,29 @@ import org.junit.Test;
 /**
  * @author David W. Miller
  */
-public class BranchUtilBranchReadableTest {
+public class BranchUtilTest {
 
-   private BranchReadableImpl one, two, three, four, five, six, seven, eight, nine, ten;
+   private BranchMock one, two, three, four, five, six, seven, eight, nine, ten;
 
    @Before
    public void init() {
-      one = new BranchReadableImpl(1);
-      two = new BranchReadableImpl(2);
-      three = new BranchReadableImpl(3);
-      four = new BranchReadableImpl(4);
-      five = new BranchReadableImpl(5);
-      six = new BranchReadableImpl(6);
-      seven = new BranchReadableImpl(7);
-      eight = new BranchReadableImpl(8);
-      nine = new BranchReadableImpl(9);
-      ten = new BranchReadableImpl(10);
+      one = new BranchMock(1);
+      two = new BranchMock(2);
+      three = new BranchMock(3);
+      four = new BranchMock(4);
+      five = new BranchMock(5);
+      six = new BranchMock(6);
+      seven = new BranchMock(7);
+      eight = new BranchMock(8);
+      nine = new BranchMock(9);
+      ten = new BranchMock(10);
    }
 
-   private static class BranchReadableImpl extends NamedIdBase implements BranchReadable {
+   private static final class BranchMock extends Branch {
       private BranchId parent;
 
-      public void setParentBranch(BranchId parent) {
-         this.parent = parent;
-      }
-
-      public BranchReadableImpl(int branchId) {
-         super((long) branchId, String.valueOf(branchId));
-      }
-
-      @Override
-      public boolean isArchived() {
-         return false;
-      }
-
-      @Override
-      public BranchState getBranchState() {
-         return null;
-      }
-
-      @Override
-      public BranchType getBranchType() {
-         return null;
-      }
-
-      @Override
-      public boolean hasParentBranch() {
-         return false;
-      }
-
-      @Override
-      public ArtifactId getAssociatedArtifact() {
-         return ArtifactId.SENTINEL;
-      }
-
-      @Override
-      public TransactionId getBaselineTx() {
-         return null;
-      }
-
-      @Override
-      public TransactionId getParentTx() {
-         return null;
+      public BranchMock(long id) {
+         super(id, String.valueOf(id), null, null, null, null, false, null, null, false, null);
       }
 
       @Override
@@ -95,45 +51,44 @@ public class BranchUtilBranchReadableTest {
          return parent;
       }
 
-      @Override
-      public boolean inheritAccessControl() {
-         return false;
+      public void setParentBranch(BranchId parent) {
+         this.parent = parent;
       }
    }
 
    @Test
    public void testConnectedBranchSorting() {
       initBranchParentageList();
-      List<BranchReadable> ordered = BranchUtil.orderByParentReadable(getOutOfOrderList());
+      List<Branch> ordered = BranchUtil.orderByParentReadable(getOutOfOrderList());
       Assert.assertEquals("[10, 9, 8, 7, 6, 5, 4, 3, 2, 1]", ordered.toString());
    }
 
    @Test
    public void testDisjointBranchSorting() {
       initDisjointParentageList();
-      List<BranchReadable> ordered = BranchUtil.orderByParentReadable(getDisjointOrderList());
+      List<Branch> ordered = BranchUtil.orderByParentReadable(getDisjointOrderList());
       Assert.assertEquals("[4, 3, 2, 7, 6, 5, 10, 9, 8, 1]", ordered.toString());
    }
 
    @Test
    public void testDisjointOutOfOrderBranchSorting() {
       initDisjointParentageList();
-      List<BranchReadable> ordered = BranchUtil.orderByParentReadable(getOutOfOrderList());
+      List<Branch> ordered = BranchUtil.orderByParentReadable(getOutOfOrderList());
       Assert.assertEquals("[4, 10, 7, 3, 6, 9, 8, 2, 5, 1]", ordered.toString());
    }
 
    @Test
    public void testOutsideParentsBranchSorting() {
       initOutsideParentList();
-      List<BranchReadable> ordered = BranchUtil.orderByParentReadable(getOutOfOrderList());
+      List<Branch> ordered = BranchUtil.orderByParentReadable(getOutOfOrderList());
       Assert.assertEquals("[4, 10, 3, 2, 7, 6, 9, 8, 1, 5]", ordered.toString());
    }
 
-   private List<BranchReadable> getOutOfOrderList() {
+   private List<Branch> getOutOfOrderList() {
       return Arrays.asList(three, eight, one, four, five, six, ten, nine, two, seven);
    }
 
-   private List<BranchReadable> getDisjointOrderList() {
+   private List<Branch> getDisjointOrderList() {
       return Arrays.asList(two, three, four, five, six, seven, eight, nine, ten, one);
    }
 

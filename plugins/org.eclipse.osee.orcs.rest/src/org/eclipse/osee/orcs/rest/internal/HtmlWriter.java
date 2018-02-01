@@ -18,7 +18,7 @@ import java.util.Map.Entry;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchReadable;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -43,8 +43,8 @@ public class HtmlWriter {
       StringBuilder builder = new StringBuilder();
       builder.append("<html><body>");
       for (Object object : objects) {
-         if (object instanceof BranchReadable) {
-            BranchReadable branch = (BranchReadable) object;
+         if (object instanceof Branch) {
+            Branch branch = (Branch) object;
             addTable(builder, toData(branch));
          } else if (object instanceof ArtifactReadable) {
             ArtifactReadable artifact = (ArtifactReadable) object;
@@ -118,7 +118,7 @@ public class HtmlWriter {
       return data;
    }
 
-   private Map<String, Object> toData(BranchReadable branch) {
+   private Map<String, Object> toData(Branch branch) {
       Map<String, Object> data = new LinkedHashMap<>();
       data.put("Name", branch.getName());
       data.put("Branch Id", branch.getId());

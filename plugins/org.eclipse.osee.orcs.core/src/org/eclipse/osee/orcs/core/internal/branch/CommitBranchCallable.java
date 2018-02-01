@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.core.internal.branch;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchReadable;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -42,9 +42,9 @@ public class CommitBranchCallable extends AbstractBranchCallable<TransactionToke
       Conditions.checkNotNull(source, "sourceBranch");
       Conditions.checkNotNull(destination, "destinationBranch");
 
-      BranchReadable sourceBranch = queryFactory.branchQuery().andId(source).getResults().getExactlyOne();
+      Branch sourceBranch = queryFactory.branchQuery().andId(source).getResults().getExactlyOne();
       TransactionToken sourceHead = queryFactory.transactionQuery().andIsHead(source).getResults().getExactlyOne();
-      BranchReadable destinationBranch = queryFactory.branchQuery().andId(destination).getResults().getExactlyOne();
+      Branch destinationBranch = queryFactory.branchQuery().andId(destination).getResults().getExactlyOne();
       TransactionToken destinationHead =
          queryFactory.transactionQuery().andIsHead(destination).getResults().getExactlyOne();
 

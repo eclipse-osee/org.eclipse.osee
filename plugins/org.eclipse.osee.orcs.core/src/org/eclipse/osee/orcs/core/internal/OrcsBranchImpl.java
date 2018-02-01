@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchReadable;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -61,7 +61,7 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
-   public Callable<BranchReadable> createBranch(CreateBranchData branchData) {
+   public Callable<Branch> createBranch(CreateBranchData branchData) {
       return new CreateBranchCallable(logger, session, branchStore, branchData, queryFactory);
    }
 
@@ -142,34 +142,34 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
-   public Callable<BranchReadable> createTopLevelBranch(IOseeBranch branch, ArtifactId author) {
+   public Callable<Branch> createTopLevelBranch(IOseeBranch branch, ArtifactId author) {
       CreateBranchData branchData = branchDataFactory.createTopLevelBranchData(branch, author);
       return createBranch(branchData);
    }
 
    @Override
-   public Callable<BranchReadable> createBaselineBranch(IOseeBranch branch, ArtifactId author, IOseeBranch parent, ArtifactId associatedArtifact) {
+   public Callable<Branch> createBaselineBranch(IOseeBranch branch, ArtifactId author, IOseeBranch parent, ArtifactId associatedArtifact) {
       CreateBranchData branchData =
          branchDataFactory.createBaselineBranchData(branch, author, parent, associatedArtifact);
       return createBranch(branchData);
    }
 
    @Override
-   public Callable<BranchReadable> createWorkingBranch(IOseeBranch branch, ArtifactId author, IOseeBranch parent, ArtifactId associatedArtifact) {
+   public Callable<Branch> createWorkingBranch(IOseeBranch branch, ArtifactId author, IOseeBranch parent, ArtifactId associatedArtifact) {
       CreateBranchData branchData =
          branchDataFactory.createWorkingBranchData(branch, author, parent, associatedArtifact);
       return createBranch(branchData);
    }
 
    @Override
-   public Callable<BranchReadable> createCopyTxBranch(IOseeBranch branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact) {
+   public Callable<Branch> createCopyTxBranch(IOseeBranch branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact) {
       CreateBranchData branchData =
          branchDataFactory.createCopyTxBranchData(branch, author, fromTransaction, associatedArtifact);
       return createBranch(branchData);
    }
 
    @Override
-   public Callable<BranchReadable> createPortBranch(IOseeBranch branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact) {
+   public Callable<Branch> createPortBranch(IOseeBranch branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact) {
       CreateBranchData branchData =
          branchDataFactory.createPortBranchData(branch, author, fromTransaction, associatedArtifact);
       return createBranch(branchData);

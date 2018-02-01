@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchReadable;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -46,15 +46,15 @@ public interface OrcsBranch {
    // branch state
    // assoc art id
 
-   Callable<BranchReadable> createTopLevelBranch(IOseeBranch branch, ArtifactId author);
+   Callable<Branch> createTopLevelBranch(IOseeBranch branch, ArtifactId author);
 
-   Callable<BranchReadable> createBaselineBranch(IOseeBranch branch, ArtifactId author, IOseeBranch parent, ArtifactId associatedArtifact);
+   Callable<Branch> createBaselineBranch(IOseeBranch branch, ArtifactId author, IOseeBranch parent, ArtifactId associatedArtifact);
 
-   Callable<BranchReadable> createWorkingBranch(IOseeBranch branch, ArtifactId author, IOseeBranch parent, ArtifactId associatedArtifact);
+   Callable<Branch> createWorkingBranch(IOseeBranch branch, ArtifactId author, IOseeBranch parent, ArtifactId associatedArtifact);
 
-   Callable<BranchReadable> createCopyTxBranch(IOseeBranch branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact);
+   Callable<Branch> createCopyTxBranch(IOseeBranch branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact);
 
-   Callable<BranchReadable> createPortBranch(IOseeBranch branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact);
+   Callable<Branch> createPortBranch(IOseeBranch branch, ArtifactId author, TransactionId fromTransaction, ArtifactId associatedArtifact);
 
    /////////////////////////////////////////////////////////////////////////
 
@@ -72,7 +72,7 @@ public interface OrcsBranch {
 
    /////////////////////////////////////////////////////////////////////////
 
-   Callable<BranchReadable> createBranch(CreateBranchData branchData);
+   Callable<Branch> createBranch(CreateBranchData branchData);
 
    Callable<Void> archiveUnarchiveBranch(BranchId branch, ArchiveOperation archiveOp);
 

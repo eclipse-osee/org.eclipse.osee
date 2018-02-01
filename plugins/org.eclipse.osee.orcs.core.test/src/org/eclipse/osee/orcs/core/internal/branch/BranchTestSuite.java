@@ -14,7 +14,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({BranchDataFactoryTest.class, BranchUtilBranchReadableTest.class})
+@Suite.SuiteClasses({BranchDataFactoryTest.class, BranchUtilTest.class})
 /**
  * @author John R. Misinco
  */

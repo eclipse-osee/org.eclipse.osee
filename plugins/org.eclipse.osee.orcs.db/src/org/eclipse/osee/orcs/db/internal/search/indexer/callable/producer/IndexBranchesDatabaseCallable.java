@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.db.internal.search.indexer.callable.producer;
 import java.util.Collection;
 import java.util.function.Consumer;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
-import org.eclipse.osee.framework.core.data.BranchReadable;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Triplet;
@@ -62,11 +62,11 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
    private final AttributeTypes types;
    private final IndexingTaskConsumer consumer;
    private final IndexerCollector collector;
-   private final Collection<BranchReadable> branches;
+   private final Collection<Branch> branches;
    private final Collection<? extends AttributeTypeId> typesToTag;
    private final boolean tagOnlyMissingGammas;
 
-   public IndexBranchesDatabaseCallable(Log logger, OrcsSession session, JdbcClient service, SqlJoinFactory joinFactory, AttributeTypes types, IndexingTaskConsumer consumer, IndexerCollector collector, Collection<? extends AttributeTypeId> typesToTag, Collection<BranchReadable> branches, boolean tagOnlyMissingGammas) {
+   public IndexBranchesDatabaseCallable(Log logger, OrcsSession session, JdbcClient service, SqlJoinFactory joinFactory, AttributeTypes types, IndexingTaskConsumer consumer, IndexerCollector collector, Collection<? extends AttributeTypeId> typesToTag, Collection<Branch> branches, boolean tagOnlyMissingGammas) {
       super(logger, session, service);
       this.joinFactory = joinFactory;
       this.types = types;

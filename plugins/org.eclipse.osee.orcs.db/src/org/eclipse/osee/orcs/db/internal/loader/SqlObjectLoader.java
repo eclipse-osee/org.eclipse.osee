@@ -15,8 +15,8 @@ import java.util.concurrent.CancellationException;
 import java.util.function.Consumer;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchReadable;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -42,7 +42,6 @@ import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
-import org.eclipse.osee.orcs.db.internal.loader.data.BranchDataImpl;
 import org.eclipse.osee.orcs.db.internal.loader.data.TransactionDataImpl;
 import org.eclipse.osee.orcs.db.internal.loader.processor.AbstractLoadProcessor;
 import org.eclipse.osee.orcs.db.internal.loader.processor.ArtifactLoadProcessor;
@@ -130,22 +129,24 @@ public class SqlObjectLoader {
       }
    }
 
-   public void loadBranches(List<? super BranchReadable> branches, QuerySqlContext loadContext) {
+   public void loadBranches(List<? super Branch> branches, QuerySqlContext loadContext) {
       logger.trace("Sql Branch Load - loadContext[%s]", loadContext);
 
       Consumer<JdbcStatement> stmtConsumer = stmt -> {
-         BranchId branchId = BranchId.valueOf(stmt.getLong("branch_id"));
-         String branchName = stmt.getString("branch_name");
-         BranchDataImpl branch = new BranchDataImpl(branchId, branchName);
+         Long branchId = Long.valueOf(stmt.getLong("branch_id"));
+         String name = stmt.getString("branch_name");
+         ArtifactId associatedArtifact = ArtifactId.valueOf(stmt.getLong("associated_art_id"));
+         TransactionId baselineTx = TransactionId.valueOf(stmt.getLong("baseline_transaction_id"));
+         TransactionId parentTx = TransactionId.valueOf(stmt.getLong("parent_transaction_id"));
+         BranchId parentBranch = BranchId.valueOf(stmt.getLong("parent_branch_id"));
+         boolean isArchived = stmt.getInt("archived") == 1;
+         BranchState branchState = BranchState.getBranchState(stmt.getInt("branch_state"));
+         BranchType branchType = BranchType.valueOf(stmt.getInt("branch_type"));
+         boolean inheritAccessControl = stmt.getInt("inherit_access_control") != 0;
+         ArtifactId viewId = ArtifactId.SENTINEL;
 
-         branch.setArchived(stmt.getInt("archived") == 1);
-         branch.setAssociatedArtifact(ArtifactId.valueOf(stmt.getLong("associated_art_id")));
-         branch.setBaseTransaction(TransactionId.valueOf(stmt.getLong("baseline_transaction_id")));
-         branch.setBranchState(BranchState.getBranchState(stmt.getInt("branch_state")));
-         branch.setBranchType(BranchType.valueOf(stmt.getInt("branch_type")));
-         branch.setParentBranch(BranchId.valueOf(stmt.getLong("parent_branch_id")));
-         branch.setSourceTransaction(TransactionId.valueOf(stmt.getLong("parent_transaction_id")));
-         branch.setInheritAccessControl(stmt.getInt("inherit_access_control") != 0);
+         Branch branch = new Branch(branchId, name, associatedArtifact, baselineTx, parentTx, parentBranch, isArchived,
+            branchState, branchType, inheritAccessControl, viewId);
 
          branches.add(branch);
       };

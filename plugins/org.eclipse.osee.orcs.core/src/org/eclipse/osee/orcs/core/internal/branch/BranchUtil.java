@@ -12,8 +12,8 @@ package org.eclipse.osee.orcs.core.internal.branch;
 
 import com.google.common.collect.Lists;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchReadable;
 
 public final class BranchUtil {
 
@@ -21,11 +21,11 @@ public final class BranchUtil {
       //Utility class
    }
 
-   public static List<BranchReadable> orderByParentReadable(Iterable<? extends BranchReadable> branches) {
-      List<BranchReadable> sorted = Lists.newArrayList(branches);
+   public static List<Branch> orderByParentReadable(Iterable<? extends Branch> branches) {
+      List<Branch> sorted = Lists.newArrayList(branches);
 
       for (int i = 0; i < sorted.size(); i++) {
-         BranchReadable current = sorted.get(i);
+         Branch current = sorted.get(i);
          BranchId parent = current.getParentBranch();
 
          int parentIdx = sorted.indexOf(parent);

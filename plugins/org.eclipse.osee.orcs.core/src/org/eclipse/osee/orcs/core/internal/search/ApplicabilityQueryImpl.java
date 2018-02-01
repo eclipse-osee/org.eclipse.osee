@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchReadable;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchViewData;
 import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
 import org.eclipse.osee.framework.core.data.TransactionId;
@@ -125,7 +125,7 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
    @Override
    public List<FeatureDefinitionData> getFeatureDefinitionData(BranchId branch) {
       BranchId branchToUse = branch;
-      BranchReadable br = branchQuery.andId(branch).getResults().getExactlyOne();
+      Branch br = branchQuery.andId(branch).getResults().getExactlyOne();
       if (br.getBranchType().equals(BranchType.MERGE)) {
          branchToUse = br.getParentBranch();
       }
@@ -266,8 +266,8 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
       // Get all Branch Views
       List<BranchViewData> branchViews = getViews();
 
-      HashMap<Long, BranchReadable> childBaselineBranchIds = new HashMap<>();
-      for (BranchReadable childBranch : branchQuery.andIsChildOf(branch).getResults()) {
+      HashMap<Long, Branch> childBaselineBranchIds = new HashMap<>();
+      for (Branch childBranch : branchQuery.andIsChildOf(branch).getResults()) {
          if (childBranch.getBranchType().equals(BranchType.BASELINE)) {
             childBaselineBranchIds.put(childBranch.getId(), childBranch);
          }
@@ -279,7 +279,7 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
       }
 
       for (BranchViewData branchView : branchViews) {
-         BranchReadable baseBranch = childBaselineBranchIds.get(branchView.getBranch().getId());
+         Branch baseBranch = childBaselineBranchIds.get(branchView.getBranch().getId());
          if (baseBranch != null) {
             // Check Dates on baseBranch
             Date baseDate =

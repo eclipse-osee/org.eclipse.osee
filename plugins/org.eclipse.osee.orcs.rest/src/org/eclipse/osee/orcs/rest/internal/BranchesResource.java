@@ -20,7 +20,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchReadable;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.UserId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -55,7 +55,7 @@ public class BranchesResource {
    @Produces(MediaType.TEXT_HTML)
    public String getAsHtml() {
       BranchQuery query = orcsApi.getQueryFactory().branchQuery();
-      ResultSet<BranchReadable> results = query.andIsOfType(BranchType.BASELINE, BranchType.WORKING).getResults();
+      ResultSet<Branch> results = query.andIsOfType(BranchType.BASELINE, BranchType.WORKING).getResults();
 
       HtmlWriter writer = new HtmlWriter(uriInfo, orcsApi);
       return writer.toHtml(results);

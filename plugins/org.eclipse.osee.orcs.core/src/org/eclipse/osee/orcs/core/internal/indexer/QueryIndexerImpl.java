@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
 import org.eclipse.osee.executor.admin.CancellableCallable;
-import org.eclipse.osee.framework.core.data.BranchReadable;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.data.AttributeTypes;
@@ -42,7 +42,7 @@ public class QueryIndexerImpl implements QueryIndexer {
    }
 
    @Override
-   public CancellableCallable<Integer> indexBranches(final Set<BranchReadable> branches, final boolean indexOnlyMissing, final IndexerCollector... collector) {
+   public CancellableCallable<Integer> indexBranches(final Set<Branch> branches, final boolean indexOnlyMissing, final IndexerCollector... collector) {
       return new CancellableCallable<Integer>() {
          @Override
          public Integer call() throws Exception {

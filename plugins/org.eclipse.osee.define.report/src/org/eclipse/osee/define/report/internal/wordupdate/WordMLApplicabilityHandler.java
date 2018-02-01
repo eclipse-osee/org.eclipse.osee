@@ -29,7 +29,7 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchReadable;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchViewData;
 import org.eclipse.osee.framework.core.data.FeatureDefinitionData;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -75,7 +75,7 @@ public class WordMLApplicabilityHandler {
          orcsApi.getQueryFactory().fromBranch(branchToUse).andId(view).getResults().getAtMostOneOrNull();
       configurationToView = viewArtifact.getName();
 
-      BranchReadable br = orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getOneOrNull();
+      Branch br = orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getOneOrNull();
       if (br.getBranchType().equals(BranchType.MERGE)) {
          branch = br.getParentBranch();
       }

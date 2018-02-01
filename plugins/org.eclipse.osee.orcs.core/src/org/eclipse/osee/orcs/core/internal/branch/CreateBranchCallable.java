@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.branch;
 
-import org.eclipse.osee.framework.core.data.BranchReadable;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
@@ -20,7 +20,7 @@ import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.TransactionQuery;
 
-public class CreateBranchCallable extends AbstractBranchCallable<BranchReadable> {
+public class CreateBranchCallable extends AbstractBranchCallable<Branch> {
 
    private final CreateBranchData branchData;
    private final QueryFactory queryFactory;
@@ -32,7 +32,7 @@ public class CreateBranchCallable extends AbstractBranchCallable<BranchReadable>
    }
 
    @Override
-   protected BranchReadable innerCall() throws Exception {
+   protected Branch innerCall() throws Exception {
       Conditions.checkNotNull(branchData, "branchData");
 
       Conditions.checkNotNull(branchData.getBranch(), "branchUuid");

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.search;
 
-import org.eclipse.osee.framework.core.data.BranchReadable;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 
@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
  */
 public interface BranchQuery extends BranchQueryBuilder<BranchQuery>, Query {
 
-   ResultSet<BranchReadable> getResults();
+   ResultSet<Branch> getResults();
 
    ResultSet<IOseeBranch> getResultsAsId();
 

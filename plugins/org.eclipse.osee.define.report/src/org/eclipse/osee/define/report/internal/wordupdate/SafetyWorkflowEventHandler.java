@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchReadable;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -78,7 +78,7 @@ public class SafetyWorkflowEventHandler implements EventHandler {
 
          checkEventObjects(branchId, userArt); // throws exception if incorrect
 
-         BranchReadable branch = queryFactory.branchQuery().andId((BranchId) branchId).getResults().getExactlyOne();
+         Branch branch = queryFactory.branchQuery().andId((BranchId) branchId).getResults().getExactlyOne();
          ArtifactId workflowId = branch.getAssociatedArtifact();
          if (workflowId.notEqual(SystemUser.OseeSystem)) {
             ArtifactReadable assocArt = atsServer.getQuery().andId(workflowId).andIsOfType(

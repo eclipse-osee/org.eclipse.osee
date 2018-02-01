@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchReadable;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
@@ -60,14 +60,14 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
 
    private final IdentityManager idManager;
    private final ArtifactId committer;
-   private final BranchReadable sourceBranch;
-   private final BranchReadable destinationBranch;
+   private final Branch sourceBranch;
+   private final Branch destinationBranch;
    private final BranchId mergeBranch;
    private final List<ChangeItem> changes;
 
    private final Long buildVersionId;
 
-   public CommitBranchDatabaseTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, IdentityManager idManager, ArtifactId committer, BranchReadable sourceBranch, BranchReadable destinationBranch, BranchId mergeBranch, List<ChangeItem> changes, Long buildVersionId) {
+   public CommitBranchDatabaseTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, IdentityManager idManager, ArtifactId committer, Branch sourceBranch, Branch destinationBranch, BranchId mergeBranch, List<ChangeItem> changes, Long buildVersionId) {
       super(logger, session, jdbcClient);
       this.idManager = idManager;
       this.committer = committer;

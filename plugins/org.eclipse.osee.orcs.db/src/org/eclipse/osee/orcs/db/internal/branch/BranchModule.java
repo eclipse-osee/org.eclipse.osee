@@ -17,7 +17,7 @@ import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
-import org.eclipse.osee.framework.core.data.BranchReadable;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -101,13 +101,13 @@ public class BranchModule {
          }
 
          @Override
-         public Callable<TransactionId> commitBranch(OrcsSession session, ArtifactId committer, BranchReadable source, TransactionToken sourceHead, BranchReadable destination, TransactionToken destinationHead, ApplicabilityQuery applicQuery) {
+         public Callable<TransactionId> commitBranch(OrcsSession session, ArtifactId committer, Branch source, TransactionToken sourceHead, Branch destination, TransactionToken destinationHead, ApplicabilityQuery applicQuery) {
             return new CommitBranchDatabaseCallable(logger, session, jdbcClient, joinFactory, idManager, committer,
                source, sourceHead, destination, destinationHead, missingChangeItemFactory, applicQuery);
          }
 
          @Override
-         public Callable<Void> purgeBranch(OrcsSession session, BranchReadable toDelete) {
+         public Callable<Void> purgeBranch(OrcsSession session, Branch toDelete) {
             return new PurgeBranchDatabaseCallable(logger, session, jdbcClient, toDelete);
          }
 

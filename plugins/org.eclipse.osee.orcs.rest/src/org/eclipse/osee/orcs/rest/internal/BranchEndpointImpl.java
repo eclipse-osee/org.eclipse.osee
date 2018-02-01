@@ -130,7 +130,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    private BranchReadable getBranchById(BranchId branch) {
-      ResultSet<BranchReadable> results = newBranchQuery().andId(branch)//
+      ResultSet<? extends BranchReadable> results = newBranchQuery().andId(branch)//
          .includeArchived()//
          .includeDeleted()//
          .getResults();
@@ -147,7 +147,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
    @Override
    public List<Branch> getBranches() {
-      ResultSet<BranchReadable> results = newBranchQuery()//
+      ResultSet<? extends BranchReadable> results = newBranchQuery()//
          .includeArchived()//
          .includeDeleted()//
          .getResults();
@@ -156,8 +156,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
    @Override
    public List<Branch> getBranches(BranchQueryData options) {
-      ResultSet<BranchReadable> results = searchBranches(options);
-      return asBranches(results);
+      return asBranches(searchBranches(options));
    }
 
    @Override
@@ -204,7 +203,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
    @Override
    public List<Branch> getBaselineBranches() {
-      ResultSet<BranchReadable> results = newBranchQuery()//
+      ResultSet<? extends BranchReadable> results = newBranchQuery()//
          .includeArchived(false) //
          .includeDeleted(false) //
          .andIsOfType(BranchType.BASELINE)//
@@ -214,7 +213,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
    @Override
    public List<Branch> getWorkingBranches() {
-      ResultSet<BranchReadable> results = newBranchQuery()//
+      ResultSet<? extends BranchReadable> results = newBranchQuery()//
          .includeArchived(false) //
          .includeDeleted(false) //
          .andIsOfType(BranchType.WORKING)//
@@ -288,8 +287,8 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
       createData.setTxCopyBranchType(data.isTxCopyBranchType());
 
-      Callable<BranchReadable> op = getBranchOps().createBranch(createData);
-      BranchReadable result = executeCallable(op);
+      Callable<org.eclipse.osee.framework.core.data.Branch> op = getBranchOps().createBranch(createData);
+      org.eclipse.osee.framework.core.data.Branch result = executeCallable(op);
 
       UriInfo uriInfo = getUriInfo();
       URI uri = getBranchLocation(uriInfo, result);
@@ -744,7 +743,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       }
    }
 
-   private ResultSet<BranchReadable> searchBranches(BranchQueryData options) {
+   private ResultSet<? extends BranchReadable> searchBranches(BranchQueryData options) {
       BranchQuery query = orcsApi.getQueryFactory().branchQuery();
 
       List<BranchId> branchIds = options.getBranchIds();

@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.core.util.AbstractAtsBranchService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchReadable;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -84,7 +84,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    @Override
    public BranchState getBranchState(BranchId branch) {
       BranchQuery query = orcsApi.getQueryFactory().branchQuery();
-      BranchReadable fullBranch = query.andId(branch).getResults().getExactlyOne();
+      Branch fullBranch = query.andId(branch).getResults().getExactlyOne();
       return fullBranch.getBranchState();
    }
 
@@ -110,7 +110,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
       return query.exists();
    }
 
-   private BranchReadable getBranch(BranchId branch) {
+   private Branch getBranch(BranchId branch) {
       return orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getExactlyOne();
    }
 
@@ -140,7 +140,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    @Override
    public BranchId getParentBranch(BranchId branch) {
       BranchQuery query = orcsApi.getQueryFactory().branchQuery();
-      BranchReadable fullBranch = query.andId(branch).getResults().getExactlyOne();
+      Branch fullBranch = query.andId(branch).getResults().getExactlyOne();
       return fullBranch.getParentBranch();
    }
 
@@ -172,7 +172,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    @Override
    public Collection<BranchId> getBranches(BranchArchivedState archivedState, BranchType branchTypes) {
       List<BranchId> branches = new LinkedList<>();
-      for (BranchReadable branch : orcsApi.getQueryFactory().branchQuery().andIsOfType(
+      for (Branch branch : orcsApi.getQueryFactory().branchQuery().andIsOfType(
          branchTypes).excludeArchived().getResults()) {
          branches.add(branch);
       }

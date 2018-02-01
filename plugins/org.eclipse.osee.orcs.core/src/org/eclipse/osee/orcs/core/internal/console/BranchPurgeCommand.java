@@ -23,7 +23,7 @@ import org.eclipse.osee.console.admin.ConsoleCommand;
 import org.eclipse.osee.console.admin.ConsoleParameters;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchReadable;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -134,7 +134,7 @@ public final class BranchPurgeCommand implements ConsoleCommand {
          this.runPurge = runPurge;
       }
 
-      private boolean filterBranch(BranchReadable branch) {
+      private boolean filterBranch(Branch branch) {
          if (!includeBaseline && branch.getBranchType().isBaselineBranch()) {
             console.writeln(ERROR_STRING, branch, branch.getBranchType());
             return true;
@@ -148,13 +148,13 @@ public final class BranchPurgeCommand implements ConsoleCommand {
          return false;
       }
 
-      private Collection<BranchReadable> getBranchesToPurge() {
-         Set<BranchReadable> specifiedBranches = new HashSet<>();
+      private Collection<Branch> getBranchesToPurge() {
+         Set<Branch> specifiedBranches = new HashSet<>();
          for (Long uuid : branchUuids) {
             if (uuid <= 0) {
                console.writeln("UUID listed %s is not a valid UUID", uuid);
             } else {
-               BranchReadable cached =
+               Branch cached =
                   queryFactory.branchQuery().andId(BranchId.valueOf(uuid)).getResults().getExactlyOne();
                if (cached != null) {
                   specifiedBranches.add(cached);
@@ -162,10 +162,10 @@ public final class BranchPurgeCommand implements ConsoleCommand {
             }
          }
 
-         Collection<BranchReadable> branchesToPurge =
+         Collection<Branch> branchesToPurge =
             recurse ? getChildBranchesToPurge(specifiedBranches) : specifiedBranches;
 
-         Iterator<BranchReadable> iter = branchesToPurge.iterator();
+         Iterator<Branch> iter = branchesToPurge.iterator();
          while (iter.hasNext()) {
             if (filterBranch(iter.next())) {
                iter.remove();
@@ -174,7 +174,7 @@ public final class BranchPurgeCommand implements ConsoleCommand {
          return branchesToPurge;
       }
 
-      private Collection<BranchReadable> getChildBranchesToPurge(Iterable<BranchReadable> branches) {
+      private Collection<Branch> getChildBranchesToPurge(Iterable<Branch> branches) {
 
          BranchQuery branchQuery = queryFactory.branchQuery();
          branchQuery.includeArchived();
@@ -195,9 +195,9 @@ public final class BranchPurgeCommand implements ConsoleCommand {
             branchQuery.andStateIs(BranchState.DELETED);
          }
 
-         Set<BranchReadable> results = new HashSet<>();
-         for (BranchReadable parent : branches) {
-            for (BranchReadable branch : branchQuery.andIsChildOf(parent).getResults()) {
+         Set<Branch> results = new HashSet<>();
+         for (Branch parent : branches) {
+            for (Branch branch : branchQuery.andIsChildOf(parent).getResults()) {
                if (includeUnarchived || branch.isArchived()) {
                   results.add(branch);
                }
@@ -205,14 +205,14 @@ public final class BranchPurgeCommand implements ConsoleCommand {
          }
 
          if (recurse) {
-            results.addAll(getChildBranchesToPurge(new ArrayList<BranchReadable>(results)));
+            results.addAll(getChildBranchesToPurge(new ArrayList<Branch>(results)));
          }
          return results;
       }
 
       @Override
       public List<BranchId> call() throws Exception {
-         Collection<BranchReadable> branchesToPurge = getBranchesToPurge();
+         Collection<Branch> branchesToPurge = getBranchesToPurge();
 
          Conditions.checkNotNull(branchesToPurge, "branchesToPurge");
          if (branchesToPurge.isEmpty()) {

@@ -16,7 +16,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.BranchReadable;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -45,8 +45,8 @@ public class BranchDataFactoryTest {
    @Mock private TransactionQuery txQuery;
    @Mock private QueryFactory queryFactory;
    @Mock private ResultSet<TransactionToken> results;
-   @Mock private ResultSet<BranchReadable> branchResults;
-   @Mock private BranchReadable parentBranch;
+   @Mock private ResultSet<Branch> branchResults;
+   @Mock private Branch parentBranch;
    // @formatter:on
 
    private final ArtifactId associatedArtifact = ArtifactId.valueOf(66);
