@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.server.ide.data;
 
+import org.eclipse.osee.framework.core.data.BranchReadable;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.jdbc.JdbcClient;
-import org.eclipse.osee.orcs.data.BranchReadable;
 
 /**
  * @author Roberto E. Escobar

@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.search;
 
+import org.eclipse.osee.framework.core.data.BranchReadable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.orcs.data.BranchReadable;
 
 /**
  * @author Ryan D. Brooks
