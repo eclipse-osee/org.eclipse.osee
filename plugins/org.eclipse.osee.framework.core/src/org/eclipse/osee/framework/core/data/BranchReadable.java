@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
-import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 
@@ -19,7 +18,7 @@ import org.eclipse.osee.framework.core.enums.BranchType;
  */
 public interface BranchReadable extends IOseeBranch {
 
-   BranchArchivedState getArchiveState();
+   boolean isArchived();
 
    BranchState getBranchState();
 
@@ -29,11 +28,11 @@ public interface BranchReadable extends IOseeBranch {
 
    ArtifactId getAssociatedArtifact();
 
-   TransactionId getBaseTransaction();
+   TransactionId getBaselineTx();
 
-   TransactionId getSourceTransaction();
+   TransactionId getParentTx();
 
    BranchId getParentBranch();
 
-   boolean isInheritAccessControl();
+   boolean inheritAccessControl();
 }

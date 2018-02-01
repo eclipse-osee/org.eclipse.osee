@@ -14,7 +14,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchReadable;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
@@ -27,7 +26,7 @@ public class BranchDataImpl extends NamedIdBase implements BranchReadable {
    private TransactionId baseTransaction = TransactionId.SENTINEL;
    private TransactionId sourceTransaction = TransactionId.SENTINEL;
    private BranchId parentBranch = BranchId.SENTINEL;
-   private BranchArchivedState archiveState = BranchArchivedState.UNARCHIVED;
+   private boolean isArchived;
    private BranchState branchState = BranchState.CREATED;
    private BranchType branchType = BranchType.WORKING;
    private boolean inheritAccessControl = false;
@@ -52,7 +51,7 @@ public class BranchDataImpl extends NamedIdBase implements BranchReadable {
    }
 
    @Override
-   public TransactionId getBaseTransaction() {
+   public TransactionId getBaselineTx() {
       return baseTransaction;
    }
 
@@ -61,7 +60,7 @@ public class BranchDataImpl extends NamedIdBase implements BranchReadable {
    }
 
    @Override
-   public TransactionId getSourceTransaction() {
+   public TransactionId getParentTx() {
       return sourceTransaction;
    }
 
@@ -84,12 +83,12 @@ public class BranchDataImpl extends NamedIdBase implements BranchReadable {
    }
 
    @Override
-   public BranchArchivedState getArchiveState() {
-      return archiveState;
+   public boolean isArchived() {
+      return isArchived;
    }
 
-   public void setArchiveState(BranchArchivedState state) {
-      this.archiveState = state;
+   public void setArchived(boolean isArchived) {
+      this.isArchived = isArchived;
    }
 
    @Override
@@ -116,7 +115,7 @@ public class BranchDataImpl extends NamedIdBase implements BranchReadable {
    }
 
    @Override
-   public boolean isInheritAccessControl() {
+   public boolean inheritAccessControl() {
       return inheritAccessControl;
    }
 

@@ -27,6 +27,6 @@ public class ArtifactUtil {
    }
 
    private static String getTransactionTable(BranchReadable branch) {
-      return branch.getArchiveState().isArchived() ? "osee_txs_archived" : "osee_txs";
+      return branch.isArchived() ? "osee_txs_archived" : "osee_txs";
    }
 }

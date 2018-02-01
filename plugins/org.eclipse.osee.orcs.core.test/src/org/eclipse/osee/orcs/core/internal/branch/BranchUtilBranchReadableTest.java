@@ -16,7 +16,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchReadable;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
@@ -57,8 +56,8 @@ public class BranchUtilBranchReadableTest {
       }
 
       @Override
-      public BranchArchivedState getArchiveState() {
-         return null;
+      public boolean isArchived() {
+         return false;
       }
 
       @Override
@@ -82,12 +81,12 @@ public class BranchUtilBranchReadableTest {
       }
 
       @Override
-      public TransactionId getBaseTransaction() {
+      public TransactionId getBaselineTx() {
          return null;
       }
 
       @Override
-      public TransactionId getSourceTransaction() {
+      public TransactionId getParentTx() {
          return null;
       }
 
@@ -97,7 +96,7 @@ public class BranchUtilBranchReadableTest {
       }
 
       @Override
-      public boolean isInheritAccessControl() {
+      public boolean inheritAccessControl() {
          return false;
       }
    }

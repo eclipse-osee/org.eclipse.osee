@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchReadable;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.UserId;
-import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
@@ -139,7 +138,7 @@ public class SqlObjectLoader {
          String branchName = stmt.getString("branch_name");
          BranchDataImpl branch = new BranchDataImpl(branchId, branchName);
 
-         branch.setArchiveState(BranchArchivedState.valueOf(stmt.getInt("archived")));
+         branch.setArchived(stmt.getInt("archived") == 1);
          branch.setAssociatedArtifact(ArtifactId.valueOf(stmt.getLong("associated_art_id")));
          branch.setBaseTransaction(TransactionId.valueOf(stmt.getLong("baseline_transaction_id")));
          branch.setBranchState(BranchState.getBranchState(stmt.getInt("branch_state")));

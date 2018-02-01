@@ -122,7 +122,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    @Override
    public boolean isArchived(BranchId branch) {
-      return getBranch(branch).getArchiveState().isArchived();
+      return getBranch(branch).isArchived();
    }
 
    @Override

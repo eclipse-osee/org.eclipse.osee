@@ -25,7 +25,6 @@ import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.BranchReadable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -139,8 +138,8 @@ public final class BranchPurgeCommand implements ConsoleCommand {
          if (!includeBaseline && branch.getBranchType().isBaselineBranch()) {
             console.writeln(ERROR_STRING, branch, branch.getBranchType());
             return true;
-         } else if (!includeUnarchived && branch.getArchiveState() == BranchArchivedState.UNARCHIVED) {
-            console.writeln(ERROR_STRING, branch, branch.getArchiveState());
+         } else if (!includeUnarchived && !branch.isArchived()) {
+            console.writeln(ERROR_STRING, branch, "archived");
             return true;
          } else if (!includeUndeleted && branch.getBranchState() != BranchState.DELETED) {
             console.writeln(ERROR_STRING, branch, branch.getBranchState());
@@ -199,7 +198,7 @@ public final class BranchPurgeCommand implements ConsoleCommand {
          Set<BranchReadable> results = new HashSet<>();
          for (BranchReadable parent : branches) {
             for (BranchReadable branch : branchQuery.andIsChildOf(parent).getResults()) {
-               if (includeUnarchived || branch.getArchiveState() == BranchArchivedState.ARCHIVED) {
+               if (includeUnarchived || branch.isArchived()) {
                   results.add(branch);
                }
             }

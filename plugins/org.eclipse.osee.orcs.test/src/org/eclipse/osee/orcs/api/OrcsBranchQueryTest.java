@@ -310,7 +310,7 @@ public class OrcsBranchQueryTest {
       assertEquals(id, actual);
       assertEquals(type, actual.getBranchType());
       assertEquals(state, actual.getBranchState());
-      assertEquals(isArchived, actual.getArchiveState().isArchived());
+      assertEquals(isArchived, actual.isArchived());
       assertEquals(parent, actual.getParentBranch());
       assertEquals(associatedArtifact, actual.getAssociatedArtifact());
    }

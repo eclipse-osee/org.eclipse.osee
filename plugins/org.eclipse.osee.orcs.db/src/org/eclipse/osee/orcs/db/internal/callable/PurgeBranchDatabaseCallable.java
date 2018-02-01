@@ -48,7 +48,7 @@ public class PurgeBranchDatabaseCallable extends AbstractDatastoreTxCallable<Voi
    @Override
    protected Void handleTxWork(JdbcConnection connection) {
       List<Pair<BranchId, Boolean>> branches = findMergeBranches(connection);
-      branches.add(new Pair<BranchId, Boolean>(toDelete, toDelete.getArchiveState().isArchived()));
+      branches.add(new Pair<BranchId, Boolean>(toDelete, toDelete.isArchived()));
       for (Pair<BranchId, Boolean> toPurge : branches) {
          purgeBranch(connection, toPurge.getFirst(), toPurge.getSecond());
       }

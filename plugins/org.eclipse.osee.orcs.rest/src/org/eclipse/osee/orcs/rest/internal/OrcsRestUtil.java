@@ -16,6 +16,7 @@ import java.util.concurrent.Callable;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import org.eclipse.osee.framework.core.data.BranchReadable;
+import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.data.TransactionReadable;
@@ -67,15 +68,15 @@ public final class OrcsRestUtil {
 
    public static Branch asBranch(BranchReadable src) {
       Branch data = new Branch();
-      data.setArchiveState(src.getArchiveState());
+      data.setArchiveState(BranchArchivedState.fromBoolean(src.isArchived()));
       data.setAssociatedArtifact(src.getAssociatedArtifact());
-      data.setBaseTransactionId(src.getBaseTransaction());
+      data.setBaseTransactionId(src.getBaselineTx());
       data.setBranchState(src.getBranchState());
       data.setBranchType(src.getBranchType());
-      data.setInheritAccessControl(src.isInheritAccessControl());
+      data.setInheritAccessControl(src.inheritAccessControl());
       data.setName(src.getName());
       data.setParentBranch(src.getParentBranch());
-      data.setSourceTransactionId(src.getSourceTransaction());
+      data.setSourceTransactionId(src.getParentTx());
       data.setBranchUuid(src.getId());
       return data;
    }

@@ -283,7 +283,7 @@ public class ApplicabilityQueryImpl implements ApplicabilityQuery {
          if (baseBranch != null) {
             // Check Dates on baseBranch
             Date baseDate =
-               transactionQuery.andTxId(baseBranch.getBaseTransaction()).getResults().getExactlyOne().getDate();
+               transactionQuery.andTxId(baseBranch.getBaselineTx()).getResults().getExactlyOne().getDate();
             if (baseDate.after(injection) && (removalDateMs == -1 || baseDate.before(removal))) {
                // now determine what views of this branch are applicable
                for (ArtifactId view : branchView.getBranchViews()) {

@@ -37,7 +37,6 @@ import org.eclipse.osee.framework.core.data.BranchReadable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -366,8 +365,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       BranchReadable branch = getBranchById(branchId);
 
       boolean modified = false;
-      BranchArchivedState currentState = branch.getArchiveState();
-      if (BranchArchivedState.UNARCHIVED == currentState) {
+      if (!branch.isArchived()) {
          Callable<?> op = getBranchOps().archiveUnarchiveBranch(branch, ArchiveOperation.ARCHIVE);
          executeCallable(op);
          modified = true;
@@ -672,10 +670,9 @@ public class BranchEndpointImpl implements BranchEndpoint {
    @Override
    public Response unarchiveBranch(BranchId branchId) {
       BranchReadable branch = getBranchById(branchId);
-      BranchArchivedState state = branch.getArchiveState();
 
       boolean modified = false;
-      if (BranchArchivedState.ARCHIVED == state) {
+      if (branch.isArchived()) {
          Callable<?> op = getBranchOps().archiveUnarchiveBranch(branch, ArchiveOperation.UNARCHIVE);
          executeCallable(op);
          modified = true;

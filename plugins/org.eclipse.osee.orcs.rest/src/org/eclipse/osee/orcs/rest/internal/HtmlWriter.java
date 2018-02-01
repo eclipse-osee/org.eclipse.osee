@@ -124,7 +124,7 @@ public class HtmlWriter {
       data.put("Branch Id", branch.getId());
       data.put("State", branch.getBranchState());
       data.put("Type", branch.getBranchType());
-      data.put("Archived", branch.getArchiveState());
+      data.put("Archived", branch.isArchived());
       if (branch.hasParentBranch()) {
          try {
             IOseeBranch parent = getBranchFromId(branch.getParentBranch());

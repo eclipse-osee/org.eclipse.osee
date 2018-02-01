@@ -94,7 +94,7 @@ public class OrcsBranchImpl implements OrcsBranch {
    @Override
    public Callable<List<ChangeItem>> compareBranch(BranchId branch) {
       TransactionId baseTransaction =
-         queryFactory.branchQuery().andId(branch).getResults().getExactlyOne().getBaseTransaction();
+         queryFactory.branchQuery().andId(branch).getResults().getExactlyOne().getBaselineTx();
       TransactionToken fromTx = queryFactory.transactionQuery().andTxId(baseTransaction).getResults().getExactlyOne();
       TransactionToken toTx = queryFactory.transactionQuery().andIsHead(branch).getResults().getExactlyOne();
       return branchStore.compareBranch(session, fromTx, toTx, queryFactory.applicabilityQuery());
