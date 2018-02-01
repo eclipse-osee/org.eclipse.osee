@@ -208,7 +208,7 @@ public class AtsStoreService implements IAtsStoreService {
 
    @Override
    public AttributeTypeId getAttributeType(Long attrTypeId) {
-      return AttributeTypeManager.getTypeByGuid(attrTypeId);
+      return AttributeTypeManager.getTypeById(attrTypeId);
    }
 
    @Override

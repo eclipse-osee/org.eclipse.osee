@@ -51,11 +51,11 @@ public class AtsObjects {
    }
 
    public static List<String> toAtsIds(Collection<? extends IAtsWorkItem> workItem) {
-      List<String> guids = new ArrayList<>(workItem.size());
+      List<String> ids = new ArrayList<>(workItem.size());
       for (IAtsWorkItem atsObject : workItem) {
-         guids.add(atsObject.getAtsId());
+         ids.add(atsObject.getAtsId());
       }
-      return guids;
+      return ids;
    }
 
    /**
@@ -86,11 +86,11 @@ public class AtsObjects {
    }
 
    public static String toAtsIdsFromActions(Collection<IAtsAction> actions) {
-      List<String> guids = new ArrayList<>(actions.size());
+      List<String> atsIds = new ArrayList<>(actions.size());
       for (IAtsAction action : actions) {
-         guids.add(action.getAtsId());
+         atsIds.add(action.getAtsId());
       }
-      return Collections.toString(", ", guids);
+      return Collections.toString(", ", atsIds);
    }
 
    public static Collection<ArtifactId> getArtifacts(Collection<?> objects) {

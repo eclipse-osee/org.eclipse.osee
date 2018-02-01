@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public class WorkPackageColumn implements IWorkPackageUtility, IWorkPackageColumn {
 
    private final IAtsEarnedValueServiceProvider earnedValueServiceProvider;
-   private Map<ArtifactId, ArtifactToken> guidToWorkPackage;
+   private Map<ArtifactId, ArtifactToken> idToWorkPackage;
 
    public WorkPackageColumn(IAtsEarnedValueServiceProvider earnedValueServiceProvider) {
       this.earnedValueServiceProvider = earnedValueServiceProvider;
@@ -46,7 +46,7 @@ public class WorkPackageColumn implements IWorkPackageUtility, IWorkPackageColum
     */
    @Override
    public void setIdToWorkPackageCache(Map<ArtifactId, ArtifactToken> guidToWorkPackage) {
-      this.guidToWorkPackage = guidToWorkPackage;
+      this.idToWorkPackage = guidToWorkPackage;
    }
 
    @Override
@@ -57,17 +57,17 @@ public class WorkPackageColumn implements IWorkPackageUtility, IWorkPackageColum
          if (atsObject instanceof IAtsWorkItem) {
             ArtifactId workPackageId =
                earnedValueServiceProvider.getEarnedValueService().getWorkPackageId((IAtsWorkItem) atsObject);
-            if (guidToWorkPackage != null) {
+            if (idToWorkPackage != null) {
                if (workPackageId.isValid()) {
-                  ArtifactToken wpArt = guidToWorkPackage.get(workPackageId);
+                  ArtifactToken wpArt = idToWorkPackage.get(workPackageId);
                   workPackage = earnedValueServiceProvider.getEarnedValueService().getWorkPackage(wpArt);
                }
             }
             if (workPackage == null) {
                workPackage =
                   earnedValueServiceProvider.getEarnedValueService().getWorkPackage((IAtsWorkItem) atsObject);
-               if (workPackage != null && guidToWorkPackage != null) {
-                  guidToWorkPackage.put(workPackageId, workPackage.getStoreObject());
+               if (workPackage != null && idToWorkPackage != null) {
+                  idToWorkPackage.put(workPackageId, workPackage.getStoreObject());
                }
             }
             if (workPackage != null) {
@@ -100,9 +100,9 @@ public class WorkPackageColumn implements IWorkPackageUtility, IWorkPackageColum
       IAtsWorkPackage workPackage = null;
       ArtifactId workPackageId =
          earnedValueServiceProvider.getEarnedValueService().getWorkPackageId((IAtsWorkItem) atsObject);
-      if (guidToWorkPackage != null) {
+      if (idToWorkPackage != null) {
          if (workPackageId.isValid()) {
-            ArtifactToken wpArt = guidToWorkPackage.get(workPackageId);
+            ArtifactToken wpArt = idToWorkPackage.get(workPackageId);
             workPackage = earnedValueServiceProvider.getEarnedValueService().getWorkPackage(wpArt);
             if (workPackage != null) {
                return workPackage;

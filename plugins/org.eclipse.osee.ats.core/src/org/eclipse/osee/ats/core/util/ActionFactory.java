@@ -429,13 +429,13 @@ public class ActionFactory implements IAtsActionFactory {
       setArtifactIdentifyData(action, teamWf, changes);
 
       /**
-       * Relate Workflow to ActionableItems (by guid) if team is responsible for that AI
+       * Relate Workflow to ActionableItems (by id) if team is responsible for that AI
        */
       for (IAtsActionableItem aia : applicableAis) {
          atsApi.getActionableItemService().addActionableItem(teamWf, aia, changes);
       }
 
-      // Relate WorkFlow to Team Definition (by guid due to relation loading issues)
+      // Relate WorkFlow to Team Definition (by id due to relation loading issues)
       changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.TeamDefinitionReference, teamDef.getStoreObject());
 
       setAtsId(teamWf, teamWf.getTeamDefinition(), changes);

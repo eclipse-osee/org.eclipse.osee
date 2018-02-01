@@ -111,7 +111,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
             int attrId = chStmt.getInt("attr_id");
             int artId = chStmt.getInt("art_id");
             int sourceGamma = chStmt.getInt("gamma_id");
-            AttributeTypeToken attributeType = AttributeTypeManager.getTypeByGuid(chStmt.getLong("attr_type_id"));
+            AttributeTypeToken attributeType = AttributeTypeManager.getTypeById(chStmt.getLong("attr_type_id"));
             ArtifactTypeId artifactType = ArtifactTypeId.valueOf(chStmt.getLong("art_type_id"));
             String isValue = chStmt.getString("is_value");
             ModificationType modificationType = ModificationType.valueOf(chStmt.getInt("mod_type"));

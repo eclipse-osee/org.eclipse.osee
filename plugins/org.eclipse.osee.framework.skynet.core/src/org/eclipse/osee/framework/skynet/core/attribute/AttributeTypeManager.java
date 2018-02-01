@@ -93,7 +93,7 @@ public class AttributeTypeManager {
     * @return Returns the attribute type matching the guid
     * @param guid attribute type guid to match
     */
-   public static AttributeType getTypeByGuid(Long guid) {
+   public static AttributeType getTypeById(Long guid) {
       if (guid == null) {
          throw new OseeArgumentException("[%s] is not a valid guid", guid);
       }
@@ -109,7 +109,7 @@ public class AttributeTypeManager {
    }
 
    public static AttributeType getType(AttributeTypeId type) {
-      return getTypeByGuid(type.getId());
+      return getTypeById(type.getId());
    }
 
    /**

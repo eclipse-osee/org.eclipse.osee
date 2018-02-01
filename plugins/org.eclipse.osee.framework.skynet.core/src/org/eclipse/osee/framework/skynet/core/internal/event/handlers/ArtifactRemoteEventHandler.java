@@ -113,7 +113,7 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
                if (!OseeEventManager.getPreferences().isEnableRemoteEventLoopback()) {
                   ModificationType modificationType =
                      AttributeEventModificationType.getType(attrChange.getModTypeGuid()).getModificationType();
-                  AttributeType attributeType = AttributeTypeManager.getTypeByGuid(attrChange.getAttrTypeGuid());
+                  AttributeType attributeType = AttributeTypeManager.getTypeById(attrChange.getAttrTypeGuid());
                   try {
                      Attribute<?> attribute = artifact.getAttributeById(attrChange.getAttributeId(), true);
                      // Attribute already exists (but may be deleted), process update

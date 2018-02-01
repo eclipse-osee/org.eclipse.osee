@@ -53,12 +53,10 @@ public class MultipleIdSearchUi {
       public void run() {
          EntryDialog ed = null;
          if (AtsClientService.get().getUserService().isAtsAdmin()) {
-            ed =
-               new EntryCheckDialog(data.getName(), "Enter Legacy ID, Guid or ID (comma separated)", "Include ArtIds");
+            ed = new EntryCheckDialog(data.getName(), "Enter Legacy ID, ID (comma separated)", "Include ArtIds");
          } else {
             ed = new EntryDialog(Displays.getActiveShell(), data.getName(), null,
-               "Enter Legacy ID, Guid or ID (comma separated)", MessageDialog.QUESTION, new String[] {"OK", "Cancel"},
-               0);
+               "Enter Legacy ID or ID (comma separated)", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
          }
          if (multiLine) {
             ed.setFillVertically(true);

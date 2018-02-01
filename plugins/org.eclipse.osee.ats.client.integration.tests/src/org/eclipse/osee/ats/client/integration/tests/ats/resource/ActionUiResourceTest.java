@@ -89,7 +89,8 @@ public class ActionUiResourceTest extends AbstractRestTest {
       Matcher m = Pattern.compile(".*form action=\"\\/ats\\/action\\/state\" method=\"post\">").matcher(html);
       Assert.assertTrue(m.find());
       for (String stateName : Arrays.asList("Cancelled", "Completed", "Analyze", "Authorize")) {
-         Assert.assertTrue(html.contains("<option value=\"" + stateName + "\" guid=\"" + stateName + "\">"));
+         Assert.assertTrue("html should contain state name " + stateName,
+            html.contains("<option value=\"" + stateName + "\" id=\"" + stateName + "\">"));
       }
    }
 

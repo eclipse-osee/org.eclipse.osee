@@ -85,7 +85,7 @@ public class OrcsWriterEndpointTest extends AbstractRestTest {
 
       for (OwArtifact art : collector.getCreate()) {
          long artTypeId = art.getType().getId();
-         ArtifactType typeById = ArtifactTypeManager.getTypeByGuid(artTypeId);
+         ArtifactType typeById = ArtifactTypeManager.getType(artTypeId);
          assertNotNull(typeById);
          if (typeById.equals(CoreArtifactTypes.Folder)) {
             long artId = art.getId();

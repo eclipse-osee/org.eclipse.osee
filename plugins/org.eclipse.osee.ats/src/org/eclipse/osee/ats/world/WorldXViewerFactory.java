@@ -115,7 +115,6 @@ import org.eclipse.osee.ats.column.WorkingBranchIdColumn;
 import org.eclipse.osee.ats.column.WorkingBranchStateColumn;
 import org.eclipse.osee.ats.column.WorkingBranchTypeColumn;
 import org.eclipse.osee.ats.column.ev.WorkPackageColumnUI;
-import org.eclipse.osee.ats.column.ev.WorkPackageGuidColumnUI;
 import org.eclipse.osee.ats.column.ev.WorkPackageIdColumnUI;
 import org.eclipse.osee.ats.column.ev.WorkPackageNameColumnUI;
 import org.eclipse.osee.ats.column.ev.WorkPackageProgramColumnUI;
@@ -128,7 +127,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.IOseeTreeReportProvi
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactTokenColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactTypeColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.GuidColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.IdColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedByColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedCommentColumn;
@@ -194,7 +192,6 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          WorkPackageNameColumnUI.getInstance(),
          WorkPackageTypeColumnUI.getInstance(),
          WorkPackageProgramColumnUI.getInstance(),
-         WorkPackageGuidColumnUI.getInstance(),
          CategoryColumn.getCategory1Instance(),
          CategoryColumn.getCategory2Instance(),
          CategoryColumn.getCategory3Instance(),
@@ -264,7 +261,6 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          LocReviewedColumn.getInstance(),
          PagesChangedColumn.getInstance(),
          PagesReviewedColumn.getInstance(),
-         new GuidColumn(false),
          ParentTopTeamColumnUI.getInstance(),
          ActionableItemOwner.getInstance(),
          getColumnServiceColumn(AtsColumnToken.AtsIdColumn),

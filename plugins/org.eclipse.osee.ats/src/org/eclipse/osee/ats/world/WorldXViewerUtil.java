@@ -79,7 +79,7 @@ public class WorldXViewerUtil {
       List<XViewerAtsAttributeValueColumn> configColumns = new ArrayList<>();
       for (AtsAttributeValueColumn column : columns) {
          try {
-            AttributeType attrType = AttributeTypeManager.getTypeByGuid(column.getAttrTypeId());
+            AttributeType attrType = AttributeTypeManager.getTypeById(column.getAttrTypeId());
             XViewerAtsAttributeValueColumn valueColumn = new XViewerAtsAttributeValueColumn(attrType, column.getWidth(),
                AtsEditors.getXViewerAlign(column.getAlign()), column.isVisible(),
                SortDataType.valueOf(column.getSortDataType()), column.isColumnMultiEdit(), column.getDescription());

@@ -74,7 +74,7 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
          for (AttrData attrData : attributesWithErrors.getValues(branch)) {
             appendToDetails(AHTML.addRowMultiColumnTable(new String[] {
                attrData.getArtifactId().toString(),
-               AttributeTypeManager.getTypeByGuid(attrData.getAttributeTypeId()).getName(),
+               AttributeTypeManager.getTypeById(attrData.getAttributeTypeId()).getName(),
                attrData.getValue()}));
          }
       }
@@ -98,7 +98,7 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
                "Delete Repeat Attribute Values for" + branch.getShortName());
             for (AttrData attrData : attributeData) {
                Artifact artifact = ArtifactQuery.getArtifactFromId(attrData.getArtifactId(), branch);
-               AttributeType attributeType = AttributeTypeManager.getTypeByGuid(attrData.getAttributeTypeId());
+               AttributeType attributeType = AttributeTypeManager.getTypeById(attrData.getAttributeTypeId());
                if (attributeType.isEnumerated()) {
                   artifact.setAttributeValues(attributeType, artifact.getAttributesToStringList(attributeType));
                   artifact.persist(transaction);

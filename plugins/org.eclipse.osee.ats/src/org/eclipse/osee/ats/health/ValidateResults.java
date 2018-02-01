@@ -53,13 +53,13 @@ public class ValidateResults {
          for (String result : testNameToResultsMap.getValues(testName)) {
             xResultData.log(result);
          }
-         // uniqueize guids
+         // uniqueize ids
          Set<Long> idStrs = new HashSet<>();
          Collection<Long> values = testNameToIdMap.getValues(testName);
          if (values != null) {
             idStrs.addAll(values);
          }
-         xResultData.log(testName + "GUIDS: " + Collections.toString(",", idStrs) + "\n");
+         xResultData.log(testName + "IDS: " + Collections.toString(",", idStrs) + "\n");
       }
    }
 

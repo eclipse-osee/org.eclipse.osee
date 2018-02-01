@@ -69,7 +69,7 @@ public class ActionArtifact extends Artifact implements IAtsAction {
 
    @Override
    public String getAtsId() {
-      String toReturn = getGuid();
+      String toReturn = getIdString();
       try {
          toReturn = getSoleAttributeValueAsString(AtsAttributeTypes.AtsId, toReturn);
       } catch (OseeCoreException ex) {

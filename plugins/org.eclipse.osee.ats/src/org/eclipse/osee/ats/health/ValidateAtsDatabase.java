@@ -162,9 +162,6 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       //      ids.add(new Integer(1070598));
       //      artIdLists.add(ids);
 
-      // Un-comment to load from guid list
-      //      artIdLists = getFromGuids();
-
       if (monitor != null) {
          monitor.beginTask(getName(), artIdLists.size());
       }

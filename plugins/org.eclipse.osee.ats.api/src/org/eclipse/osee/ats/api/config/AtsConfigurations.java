@@ -21,14 +21,12 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionStringProvider;
 import org.eclipse.osee.ats.api.workdef.WorkDefData;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsConfigurations implements IAtsWorkDefinitionStringProvider {
 
-   private final String id = GUID.create();
    private List<AtsConfiguration> configs = new ArrayList<>();
    private AtsViews views = new AtsViews();
    private ColorColumns colorColumns = new ColorColumns();

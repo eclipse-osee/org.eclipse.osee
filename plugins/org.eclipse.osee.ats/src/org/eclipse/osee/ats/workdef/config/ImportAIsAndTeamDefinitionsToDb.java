@@ -313,7 +313,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
             AttrFullDef attrFullDef = (AttrFullDef) attrDefOption;
             if (Strings.isValid(attrFullDef.getUuid())) {
                Long id = Long.valueOf(attrFullDef.getUuid());
-               AttributeType attrType = AttributeTypeManager.getTypeByGuid(id);
+               AttributeType attrType = AttributeTypeManager.getTypeById(id);
                for (String value : attrFullDef.getValues()) {
                   newProgramArt.addAttribute(attrType, Strings.unquote(value));
                }

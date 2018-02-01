@@ -51,7 +51,7 @@ public class AtsConfigResultsEditor extends AbstractOperation {
       List<XViewerColumn> artColumns = Arrays.asList(
          new XViewerColumn("Type", "Type", 175, XViewerAlign.Left, true, SortDataType.String, false, "Type"),
          new XViewerColumn("Name", "Name", 300, XViewerAlign.Left, true, SortDataType.String, false, "Name"),
-         new XViewerColumn("Guid", "Guid", 150, XViewerAlign.Left, true, SortDataType.String, false, "Guid"));
+         new XViewerColumn("Id", "Id", 150, XViewerAlign.Left, true, SortDataType.String, false, "Id"));
 
       final List<IResultsEditorTab> toReturn = new LinkedList<>();
       IResultsEditorLabelProvider provider = new IResultsEditorLabelProvider() {

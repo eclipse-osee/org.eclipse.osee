@@ -69,7 +69,7 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
    }
 
    public XViewerAtsAttributeValueColumn(AtsAttributeValueColumn column) {
-      super(AttributeTypeManager.getTypeByGuid(column.getAttrTypeId()), column.getId(), column.getName(),
+      super(AttributeTypeManager.getTypeById(column.getAttrTypeId()), column.getId(), column.getName(),
          column.getWidth(), AtsEditors.getXViewerAlign(column.getAlign()), column.isVisible(), getSortDataType(column),
          column.isColumnMultiEdit(), column.getDescription());
       setInheritParent(column.isInheritParent());

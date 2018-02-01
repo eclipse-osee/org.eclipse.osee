@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PresentationType;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.core.util.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -40,8 +40,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
- * Admin only. Create new users by name, each will be given a guid as user id. Development use only.
- * 
+ * Admin only. Create new users by name, each will be given a id as user id. Development use only.
+ *
  * @author Donald G. Dunne
  */
 public class CreateNewUsersByNameItem extends XNavigateItemAction {
@@ -101,7 +101,7 @@ public class CreateNewUsersByNameItem extends XNavigateItemAction {
       for (String userName : userNames) {
          Artifact userArt =
             ArtifactTypeManager.addArtifact(CoreArtifactTypes.User, AtsClientService.get().getAtsBranch(), userName);
-         userArt.setSoleAttributeValue(CoreAttributeTypes.UserId, GUID.create());
+         userArt.setSoleAttributeValue(CoreAttributeTypes.UserId, Lib.generateArtifactIdAsInt().toString());
          userArt.persist(transaction);
          newVersions.add(userArt);
       }

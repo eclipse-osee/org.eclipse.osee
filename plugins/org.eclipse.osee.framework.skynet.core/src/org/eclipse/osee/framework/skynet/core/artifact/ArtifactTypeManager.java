@@ -100,6 +100,14 @@ public class ArtifactTypeManager {
    }
 
    /**
+    * @return Returns the artifact type matching the id
+    * @param id artifact type guid to match
+    */
+   public static ArtifactType getType(Long id) {
+      return getTypeByGuid(id);
+   }
+
+   /**
     * @return Returns the artifact type matching the guid
     * @param guid artifact type guid to match
     */

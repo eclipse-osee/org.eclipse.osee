@@ -19,5 +19,5 @@ import org.eclipse.osee.framework.core.data.ArtifactToken;
  */
 public interface IWorkPackageColumn {
 
-   public void setIdToWorkPackageCache(Map<ArtifactId, ArtifactToken> guidToWorkPackage);
+   public void setIdToWorkPackageCache(Map<ArtifactId, ArtifactToken> idToWorkPackage);
 }

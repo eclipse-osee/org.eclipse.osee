@@ -41,11 +41,11 @@ public abstract class AbstractRelatedWorkPackageColumn implements IAtsColumn, IW
    }
 
    /**
-    * Set optional map to use as a cache of work item id (Long) or work package guid (String) to Insertion artifact.
+    * Set optional map to use as a cache of work item id (Long) or work package id (String) to Insertion artifact.
     */
    @Override
-   public void setIdToWorkPackageCache(Map<ArtifactId, ArtifactToken> guidToWorkPackage) {
-      this.idToWorkPackage = guidToWorkPackage;
+   public void setIdToWorkPackageCache(Map<ArtifactId, ArtifactToken> idToWorkPackage) {
+      this.idToWorkPackage = idToWorkPackage;
    }
 
    @Override

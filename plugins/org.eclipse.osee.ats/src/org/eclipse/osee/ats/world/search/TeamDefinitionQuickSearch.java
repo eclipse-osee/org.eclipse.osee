@@ -17,7 +17,8 @@ import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
- * Return all Team Workflows with one of TeamDefs guids as TeamDefinition attribute. Uses quick search for performance.
+ * Return all Team Workflows with one of TeamDefs reference as TeamDefinition attribute. Uses quick search for
+ * performance.
  *
  * @author Donald G. Dunne
  */

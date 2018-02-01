@@ -86,7 +86,7 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
       }
       searchAndSplitResults();
       if (resultAtsArts.isEmpty() && resultNonAtsArts.isEmpty()) {
-         AWorkbench.popup("Invalid ID/Guid/Legacy PCR Id(s): " + Collections.toString(", ", data.getIds()));
+         AWorkbench.popup("Invalid ID/Legacy PCR Id(s): " + Collections.toString(", ", data.getIds()));
          return;
       }
       if (resultNonAtsArts.size() > 0) {
@@ -226,10 +226,10 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
          }
       }
 
-      // This does id/guid search
-      List<String> validGuidsAndIds = data.getIds();
-      if (!validGuidsAndIds.isEmpty()) {
-         for (Artifact art : AtsArtifactQuery.getArtifactListFromIds(validGuidsAndIds)) {
+      // This does id search
+      List<String> validIds = data.getIds();
+      if (!validIds.isEmpty()) {
+         for (Artifact art : AtsArtifactQuery.getArtifactListFromIds(validIds)) {
             artifacts.add(art);
          }
       }

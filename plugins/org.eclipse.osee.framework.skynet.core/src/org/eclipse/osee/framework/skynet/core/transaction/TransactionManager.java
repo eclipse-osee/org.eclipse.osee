@@ -384,7 +384,7 @@ public final class TransactionManager {
    }
 
    private static AttributeRow loadAttributeChange(JdbcStatement chStmt) {
-      AttributeTypeId attributeType = AttributeTypeManager.getTypeByGuid(chStmt.getLong("attr_type_id"));
+      AttributeTypeId attributeType = AttributeTypeManager.getTypeById(chStmt.getLong("attr_type_id"));
       BranchId branch = BranchId.valueOf(chStmt.getLong("branch_id"));
       Long gammaId = Long.valueOf(chStmt.getLong("gamma_id"));
       Integer artId = Integer.valueOf(chStmt.getInt("art_id"));

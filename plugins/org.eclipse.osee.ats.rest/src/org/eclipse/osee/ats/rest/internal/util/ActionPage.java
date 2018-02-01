@@ -105,7 +105,6 @@ public class ActionPage {
       page.param("createdDate", workItem.getCreatedDate().toString());
       page.param("version", getVersion(workItem));
       page.param("workDef", getWorkDefStr(workItem));
-      page.param("guid", workItem.getId());
       if (!addTransition) {
          page.param("transition", "");
       } else {
@@ -196,7 +195,7 @@ public class ActionPage {
       for (IAtsStateDefinition state : workItem.getStateDefinition().getToStates()) {
          sb.append("<option value=\"");
          sb.append(state.getName());
-         sb.append("\" guid=\"");
+         sb.append("\" id=\"");
          sb.append(state.getName());
          sb.append("\">\n");
       }

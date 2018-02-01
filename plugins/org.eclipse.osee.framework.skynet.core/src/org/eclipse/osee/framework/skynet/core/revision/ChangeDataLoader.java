@@ -236,7 +236,7 @@ public class ChangeDataLoader extends AbstractOperation {
             }
             break;
          case ATTRIBUTE_CHANGE:
-            AttributeTypeToken attributeType = AttributeTypeManager.getTypeByGuid(item.getItemTypeId().getId());
+            AttributeTypeToken attributeType = AttributeTypeManager.getTypeById(item.getItemTypeId().getId());
             if (item.isApplicabilityCopy() || ChangeItemUtil.hasApplicabilityOnlyChange(item)) {
                netModType = ModificationType.APPLICABILITY;
                change = new AttributeChange(startTxBranch, itemGammaId, artId, txDelta, netModType,

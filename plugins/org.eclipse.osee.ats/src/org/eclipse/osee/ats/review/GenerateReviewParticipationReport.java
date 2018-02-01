@@ -47,7 +47,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.OseeTreeRepor
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactNameColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactTypeColumn;
-import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.GuidColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.IdColumn;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
@@ -161,7 +161,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
          registerColumns(new XViewerReviewRoleColumn(user));
          registerColumns(RelatedToStateColumn.getInstance());
          registerColumns(new ArtifactNameColumn(true));
-         registerColumns(new GuidColumn(true));
+         registerColumns(new IdColumn(true));
          registerAllAttributeColumns();
       }
 

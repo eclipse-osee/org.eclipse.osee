@@ -43,7 +43,7 @@ import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -58,7 +58,7 @@ public class StateManager implements IAtsStateManager {
    private Integer percentCompleteValue = 0;
    private final List<IAtsUser> initialAssignees = new ArrayList<>();
    private boolean dirty = false;
-   private final String instanceGuid;
+   private final String instanceId;
    private final IAtsLogFactory logFactory;
    private final AtsApi atsApi;
    private StateType stateType;
@@ -68,7 +68,7 @@ public class StateManager implements IAtsStateManager {
       this.logFactory = logFactory;
       this.atsApi = atsApi;
       this.factory = this;
-      this.instanceGuid = GUID.create();
+      this.instanceId = Lib.generateArtifactIdAsInt().toString();
    }
 
    public void setStateType(StateType stateType) {
@@ -645,7 +645,7 @@ public class StateManager implements IAtsStateManager {
 
    @Override
    public String toString() {
-      return String.format("StateManager id[%s] for workitem [%s]", instanceGuid, workItem);
+      return String.format("StateManager id[%s] for workitem [%s]", instanceId, workItem);
    }
 
    @Override

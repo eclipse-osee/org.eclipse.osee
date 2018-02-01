@@ -75,7 +75,7 @@ public class ActionableItemService implements IAtsActionableItemService {
             IAtsActionableItem aia = atsApi.getConfigItem(id);
             if (aia == null) {
                OseeLog.logf(ActionableItemService.class, Level.SEVERE,
-                  "Actionable Item Guid [%s] from [%s] doesn't match item in AtsConfigCache", id,
+                  "Actionable Item id [%s] from [%s] doesn't match item in AtsConfigCache", id,
                   atsObject.toStringWithId());
             } else {
                ais.add(aia);

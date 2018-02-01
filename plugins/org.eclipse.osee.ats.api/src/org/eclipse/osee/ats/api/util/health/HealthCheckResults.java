@@ -57,7 +57,7 @@ public class HealthCheckResults {
          for (String result : testNameToResultsMap.getValues(testName)) {
             xResultData.log("   - " + result);
          }
-         // uniqueize guids
+         // uniqueize ids
          Set<String> idStrs = new HashSet<>();
          Collection<String> values = testNameToIdMap.getValues(testName);
          if (values != null) {

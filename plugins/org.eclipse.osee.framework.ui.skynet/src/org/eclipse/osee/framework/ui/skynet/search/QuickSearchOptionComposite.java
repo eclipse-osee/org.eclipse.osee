@@ -508,7 +508,7 @@ public class QuickSearchOptionComposite extends Composite {
             for (String entry : items) {
                try {
                   Long id = Long.parseLong(entry);
-                  AttributeType type = AttributeTypeManager.getTypeByGuid(id);
+                  AttributeType type = AttributeTypeManager.getTypeById(id);
                   configuration.add(type);
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);

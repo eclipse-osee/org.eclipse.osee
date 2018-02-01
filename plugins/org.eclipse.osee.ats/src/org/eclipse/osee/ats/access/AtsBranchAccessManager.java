@@ -63,7 +63,7 @@ import org.osgi.service.event.EventHandler;
  */
 public class AtsBranchAccessManager implements IArtifactEventListener, EventHandler {
 
-   // Cache to store artifact guid to context id list so don't have to re-compute
+   // Cache to store branch id to context id list so don't have to re-compute
    private final Map<BranchId, Collection<IAccessContextId>> branchIdToContextIdCache = new HashMap<>(50);
 
    private final RoleContextProvider roleContextProvider;
