@@ -372,20 +372,24 @@ public class ActionPage {
 
    private void addWidgetDefault(StringBuilder sb, IAtsWorkItem workItem, IAtsWidgetDefinition widget) {
       sb.append(widget.getName());
-      sb.append(": <b>");
       try {
-         AttributeTypeId attributeType = atsServer.getAttributeResolver().getAttributeType(widget.getAtrributeName());
-         Collection<String> attributesToStringList =
-            atsServer.getAttributeResolver().getAttributesToStringList(workItem, attributeType);
-         if (attributesToStringList.size() > 1) {
-            sb.append(attributesToStringList.toString());
-         } else if (attributesToStringList.size() == 1) {
-            sb.append(AHTML.textToHtml(String.valueOf(attributesToStringList.iterator().next())));
+         String widgetAttrName = widget.getAtrributeName();
+         if (widgetAttrName != null) {
+            sb.append(": <b>");
+            AttributeTypeId attributeType =
+               atsServer.getAttributeResolver().getAttributeType(widget.getAtrributeName());
+            Collection<String> attributesToStringList =
+               atsServer.getAttributeResolver().getAttributesToStringList(workItem, attributeType);
+            if (attributesToStringList.size() > 1) {
+               sb.append(attributesToStringList.toString());
+            } else if (attributesToStringList.size() == 1) {
+               sb.append(AHTML.textToHtml(String.valueOf(attributesToStringList.iterator().next())));
+            }
+            sb.append("</b>");
          }
       } catch (OseeCoreException ex) {
          sb.append("exception: " + ex.getLocalizedMessage());
       }
-      sb.append("</b>");
    }
 
    private String getStateHtmlTemplate() throws Exception {

@@ -26,7 +26,8 @@ public interface IAtsWidgetDefinition extends IAtsLayoutItem {
    public String getDescription();
 
    /**
-    * Storage
+    * Storage returns name of the attribute type used for storage, if there is no attribute storage, this will return
+    * null
     */
    public String getAtrributeName();
 
