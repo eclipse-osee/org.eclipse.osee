@@ -257,6 +257,10 @@ public class WordUpdateArtifact {
    }
 
    private HashSet<String> getValidConfigurations(BranchId branch) {
+      BranchReadable br = orcsApi.getQueryFactory().branchQuery().andId(branch).getResults().getOneOrNull();
+      if (br.getBranchType().equals(BranchType.MERGE)) {
+         branch = br.getParentBranch();
+      }
       return WordMLApplicabilityHandler.getValidConfigurations(orcsApi, branch);
    }
 }
