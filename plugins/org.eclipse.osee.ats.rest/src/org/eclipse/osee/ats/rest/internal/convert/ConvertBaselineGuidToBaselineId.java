@@ -23,7 +23,6 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
@@ -57,7 +56,7 @@ public class ConvertBaselineGuidToBaselineId extends AbstractConvertGuidToId {
          List<String> attributeValues = art.getAttributeValues(BaselineBranchGuid);
          for (String guid : attributeValues) {
             if (!guid.isEmpty()) {
-               BranchReadable branch = null;
+               BranchId branch = null;
                try {
                   branch = getBranch(guid);
                } catch (Exception ex) {

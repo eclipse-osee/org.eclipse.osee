@@ -15,10 +15,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
 import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
@@ -43,15 +41,14 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.util.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
@@ -118,17 +115,14 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       if (user == null) {
          logger.error("User by id [%s] does not exist", userId);
       }
-      org.eclipse.osee.orcs.data.BranchReadable fromBranch =
-         orcsApi.getQueryFactory().branchQuery().andId(fromBranchId).getResults().getExactlyOne();
+      BranchId fromBranch = orcsApi.getQueryFactory().branchQuery().andId(fromBranchId).getResults().getExactlyOne();
 
       // Create new baseline branch off Root
-      Callable<BranchReadable> newBranchCallable =
-         orcsApi.getBranchOps().createTopLevelBranch(IOseeBranch.create(newBranchName), user);
-      BranchReadable newBranch;
+      BranchId newBranch;
       try {
-         newBranch = newBranchCallable.call();
+         newBranch = orcsApi.getBranchOps().createTopLevelBranch(IOseeBranch.create(newBranchName), user).call();
       } catch (Exception ex) {
-         throw new OseeWebApplicationException(ex, Status.INTERNAL_SERVER_ERROR, "Error creating new branch");
+         throw OseeCoreException.wrap(ex);
       }
 
       // Introduce all ATS heading artifacts to new branch
@@ -141,7 +135,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       return config;
    }
 
-   private void introduceAtsHeadingArtifacts(org.eclipse.osee.orcs.data.BranchReadable fromBranch, BranchReadable newBranch, ArtifactId userArt) {
+   private void introduceAtsHeadingArtifacts(BranchId fromBranch, BranchId newBranch, ArtifactId userArt) {
       TransactionBuilder tx =
          orcsApi.getTransactionFactory().createTransaction(newBranch, userArt, "Add ATS Configuration");
 
@@ -167,7 +161,7 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
       tx.commit();
    }
 
-   private ArtifactId introduceAndRelateTo(TransactionBuilder tx, org.eclipse.osee.orcs.data.BranchReadable fromBranch, ArtifactToken introToken, BranchReadable newBranch, ArtifactToken relateToToken, ArtifactId relateToArt) {
+   private ArtifactId introduceAndRelateTo(TransactionBuilder tx, BranchId fromBranch, ArtifactToken introToken, BranchId newBranch, ArtifactToken relateToToken, ArtifactId relateToArt) {
       ArtifactReadable introArt =
          orcsApi.getQueryFactory().fromBranch(fromBranch).andId(introToken).getResults().getAtMostOneOrNull();
       if (introArt == null) {

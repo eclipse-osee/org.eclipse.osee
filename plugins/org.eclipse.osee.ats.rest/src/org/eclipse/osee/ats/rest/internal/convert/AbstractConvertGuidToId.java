@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
 
@@ -55,8 +54,8 @@ public abstract class AbstractConvertGuidToId implements IAtsDatabaseConversion 
       return jdbcClient;
    }
 
-   protected BranchReadable getBranch(String guid) {
-      return orcsApi.getQueryFactory().branchQuery().andId(getBranchIdLegacy(guid)).getResults().getExactlyOne();
+   protected BranchId getBranch(String guid) {
+      return orcsApi.getQueryFactory().branchQuery().andId(getBranchIdLegacy(guid)).getResultsAsId().getExactlyOne();
    }
 
    protected TransactionBuilder createTransactionBuilder() {

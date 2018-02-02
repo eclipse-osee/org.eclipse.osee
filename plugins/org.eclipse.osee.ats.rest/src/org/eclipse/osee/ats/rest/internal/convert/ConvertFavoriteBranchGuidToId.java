@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.rest.internal.convert;
 
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.rest.IAtsServer;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.result.XResultData;
@@ -23,7 +24,6 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
-import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
@@ -92,7 +92,7 @@ public class ConvertFavoriteBranchGuidToId extends AbstractConvertGuidToId {
    }
 
    private void convert(XResultData data, boolean reportOnly, TransactionBuilder tx, ArtifactReadable art, AttributeReadable<Object> attr, String value) {
-      BranchReadable branch = null;
+      BranchId branch = null;
       try {
          branch = getBranch(value);
       } catch (OseeCoreException ex) {
@@ -105,7 +105,7 @@ public class ConvertFavoriteBranchGuidToId extends AbstractConvertGuidToId {
       }
    }
 
-   private void addId(XResultData data, boolean reportOnly, TransactionBuilder tx, ArtifactReadable art, AttributeReadable<Object> attr, BranchReadable branch) {
+   private void addId(XResultData data, boolean reportOnly, TransactionBuilder tx, ArtifactReadable art, AttributeReadable<Object> attr, BranchId branch) {
       numChanges++;
       data.logf("Adding id attribute of value %s to artifact type [%s] name [%s] id [%s]\n", branch,
          art.getArtifactType(), art.getName(), art.getId());

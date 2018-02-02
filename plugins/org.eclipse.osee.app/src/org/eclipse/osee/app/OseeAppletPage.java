@@ -16,11 +16,11 @@ import static org.eclipse.osee.framework.core.enums.BranchType.BASELINE;
 import static org.eclipse.osee.framework.core.enums.BranchType.WORKING;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.type.ClassBasedResourceToken;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResourceToken;
-import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.search.BranchQuery;
 import org.eclipse.osee.template.engine.AppendableRule;
 import org.eclipse.osee.template.engine.CompositeRule;
@@ -68,13 +68,13 @@ public class OseeAppletPage {
       CharSequence widgets = page.getValue("widgets");
       Matcher matcher = listAttributePattern.matcher(widgets);
 
-      CompositeRule<BranchReadable> dataListsRule = new CompositeRule<>("dataLists");
+      CompositeRule<IOseeBranch> dataListsRule = new CompositeRule<>("dataLists");
       while (matcher.find()) {
          String listId = matcher.group(1);
          if (listId.equals("baselineBranches") || listId.equals("workingAndBaselineBranches")) {
             if (!dataListsRule.ruleExists(listId)) {
-               Iterable<BranchReadable> options = getBranchOptions(query, listId);
-               dataListsRule.addRule(new IdentifiableLongOptionsRule<BranchReadable>("", options, listId));
+               Iterable<IOseeBranch> options = getBranchOptions(query, listId);
+               dataListsRule.addRule(new IdentifiableLongOptionsRule<IOseeBranch>("", options, listId));
             }
          }
       }
@@ -83,12 +83,12 @@ public class OseeAppletPage {
       return page.realizePage(OseeAppResourceTokens.OseeAppHtml);
    }
 
-   private Iterable<BranchReadable> getBranchOptions(BranchQuery query, String listId) {
+   private Iterable<IOseeBranch> getBranchOptions(BranchQuery query, String listId) {
       BranchType[] branchTypes =
          listId.equals("baselineBranches") ? new BranchType[] {BASELINE} : new BranchType[] {BASELINE, WORKING};
       query.andIsOfType(branchTypes);
       query.andStateIs(CREATED, MODIFIED);
 
-      return query.getResults();
+      return query.getResultsAsId();
    }
 }
