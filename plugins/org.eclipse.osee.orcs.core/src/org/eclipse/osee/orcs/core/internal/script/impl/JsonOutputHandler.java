@@ -38,7 +38,6 @@ import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.BinaryDataProxy;
 import org.eclipse.osee.orcs.core.ds.CharacterDataProxy;
 import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.DynamicData;
 import org.eclipse.osee.orcs.core.ds.DynamicObject;
@@ -310,7 +309,7 @@ public class JsonOutputHandler extends OrcsScriptOutputHandler {
    }
 
    private void writeQuery(QueryData queryData) throws IOException {
-      List<CriteriaSet> criteriaSets = queryData.getCriteriaSets();
+      List<List<Criteria>> criteriaSets = queryData.getCriteriaSets();
       List<SelectSet> selectSets = queryData.getSelectSets();
       writer.writeArrayFieldStart("query");
       for (int index = 0; index < criteriaSets.size(); index++) {
@@ -323,9 +322,9 @@ public class JsonOutputHandler extends OrcsScriptOutputHandler {
       writer.writeEndArray();
    }
 
-   private void writeCriterias(CriteriaSet criteriaSet) throws IOException {
+   private void writeCriterias(List<Criteria> criteriaSet) throws IOException {
       writer.writeArrayFieldStart("criteria");
-      for (Criteria criteria : criteriaSet.getCriterias()) {
+      for (Criteria criteria : criteriaSet) {
          String value = criteria.toString();
          value = value.replaceAll("\\[", "");
          value = value.replaceAll("\\]", "");

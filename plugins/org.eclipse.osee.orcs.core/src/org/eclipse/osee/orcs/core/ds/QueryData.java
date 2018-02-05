@@ -20,11 +20,11 @@ import org.eclipse.osee.orcs.core.ds.criteria.TxCriteria;
  * @author Roberto E. Escobar
  */
 public final class QueryData implements HasOptions {
-   private final List<CriteriaSet> criterias;
+   private final List<List<Criteria>> criterias;
    private final SelectData selectData;
    private final Options options;
 
-   public QueryData(CriteriaSet criteriaSet, Options options) {
+   public QueryData(List<Criteria> criteriaSet, Options options) {
       this.criterias = new ArrayList<>();
       this.selectData = new SelectData();
       this.options = options;
@@ -32,7 +32,7 @@ public final class QueryData implements HasOptions {
    }
 
    public QueryData() {
-      this(new CriteriaSet(), OptionsUtil.createOptions());
+      this(new ArrayList<>(), OptionsUtil.createOptions());
    }
 
    @Override
@@ -42,26 +42,26 @@ public final class QueryData implements HasOptions {
 
    public List<Criteria> getAllCriteria() {
       List<Criteria> allCriterias = new ArrayList<>();
-      for (CriteriaSet set : criterias) {
-         allCriterias.addAll(set.getCriterias());
+      for (List<Criteria> list : criterias) {
+         allCriterias.addAll(list);
       }
       return allCriterias;
    }
 
    public boolean hasNoCriteria() {
-      return criterias.get(0).getCriterias().isEmpty();
+      return criterias.get(0).isEmpty();
    }
 
-   public List<CriteriaSet> getCriteriaSets() {
+   public List<List<Criteria>> getCriteriaSets() {
       return Collections.unmodifiableList(criterias);
    }
 
-   public CriteriaSet getLastCriteriaSet() {
+   public List<Criteria> getLastCriteriaSet() {
       return criterias.get(criterias.size() - 1);
    }
 
-   public CriteriaSet newCriteriaSet() {
-      CriteriaSet criteriaSet = new CriteriaSet();
+   public List<Criteria> newCriteriaSet() {
+      List<Criteria> criteriaSet = new ArrayList<>();
       criterias.add(criteriaSet);
       selectData.newSelectSet();
       return criteriaSet;
@@ -80,17 +80,21 @@ public final class QueryData implements HasOptions {
    }
 
    public void addCriteria(Criteria... criterias) {
-      CriteriaSet criteriaSet = getLastCriteriaSet();
+      List<Criteria> criteriaSet = getLastCriteriaSet();
       for (Criteria criteria : criterias) {
          criteriaSet.add(criteria);
       }
+   }
+
+   public void addCriteria(Criteria criteria) {
+      getLastCriteriaSet().add(criteria);
    }
 
    /**
     * @return true if this queryData has no branch or txs criteria (including when there is no criteria)
     */
    public boolean hasOnlyBranchOrTxCriterias() {
-      for (CriteriaSet criteriaSet : criterias) {
+      for (List<Criteria> criteriaSet : criterias) {
          for (Criteria criteria : criteriaSet) {
             if (!(criteria instanceof TxCriteria) && !(criteria instanceof BranchCriteria)) {
                return false;
@@ -101,21 +105,33 @@ public final class QueryData implements HasOptions {
    }
 
    public boolean hasCriteriaType(Class<? extends Criteria> type) {
-      boolean result = false;
-      for (CriteriaSet criteriaSet : criterias) {
-         if (criteriaSet.hasCriteriaType(type)) {
-            result = true;
-            break;
+      for (List<Criteria> criteriaSet : criterias) {
+         for (Criteria criteria : criteriaSet) {
+            if (type.isInstance(criteria)) {
+               return true;
+            }
          }
       }
-      return result;
+      return false;
+   }
+
+   public <T extends Criteria> List<T> getCriteriaByType(Class<T> type) {
+      List<T> matchingCriteria = new ArrayList<>(2);
+      for (List<Criteria> criteriaSet : criterias) {
+         for (Criteria criteria : criteriaSet) {
+            if (type.isInstance(criteria)) {
+               matchingCriteria.add((T) criteria);
+            }
+         }
+      }
+      return matchingCriteria;
    }
 
    public void reset() {
       options.reset();
 
-      CriteriaSet criteriaSet = criterias.get(0);
-      criteriaSet.reset();
+      List<Criteria> criteriaSet = criterias.get(0);
+      criteriaSet.clear();
       criterias.clear();
       criterias.add(criteriaSet);
 

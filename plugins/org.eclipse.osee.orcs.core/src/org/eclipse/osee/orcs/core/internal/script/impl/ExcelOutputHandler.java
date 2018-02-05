@@ -32,7 +32,6 @@ import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.BinaryDataProxy;
 import org.eclipse.osee.orcs.core.ds.CharacterDataProxy;
 import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.DynamicData;
 import org.eclipse.osee.orcs.core.ds.DynamicObject;
 import org.eclipse.osee.orcs.core.ds.LoadDescription;
@@ -395,7 +394,7 @@ public class ExcelOutputHandler extends OrcsScriptOutputHandler {
    }
 
    private void writeQuery(QueryData queryData) throws IOException {
-      List<CriteriaSet> criteriaSets = queryData.getCriteriaSets();
+      List<List<Criteria>> criteriaSets = queryData.getCriteriaSets();
       List<SelectSet> selectSets = queryData.getSelectSets();
       writer.writeCell("query:");
       writer.endRow();
@@ -409,14 +408,14 @@ public class ExcelOutputHandler extends OrcsScriptOutputHandler {
       writer.endRow();
    }
 
-   private void writeCriterias(CriteriaSet criteriaSet) throws IOException {
+   private void writeCriterias(List<Criteria> criteriaSet) throws IOException {
       writer.writeCell("criteria:");
-      if (criteriaSet.getCriterias().size() == 0) {
+      if (criteriaSet.size() == 0) {
          writer.writeCell("none");
          writer.endRow();
       } else {
          writer.endRow();
-         for (Criteria criteria : criteriaSet.getCriterias()) {
+         for (Criteria criteria : criteriaSet) {
             String value = criteria.toString();
             writer.writeCell(value);
             writer.endRow();

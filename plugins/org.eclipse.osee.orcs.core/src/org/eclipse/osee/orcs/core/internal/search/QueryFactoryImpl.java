@@ -10,15 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.search;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.ApplicabilityDsQuery;
-import org.eclipse.osee.orcs.core.ds.CriteriaSet;
+import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
@@ -59,11 +61,11 @@ public class QueryFactoryImpl implements QueryFactory {
 
    private QueryBuilder createBuilder(BranchId branchId) {
       Options options = OptionsUtil.createOptions();
-      CriteriaSet criteriaSet = new CriteriaSet();
+      List<Criteria> criteria = new ArrayList<>();
       if (branchId != null) {
-         criteriaSet.add(new CriteriaBranch(branchId));
+         criteria.add(new CriteriaBranch(branchId));
       }
-      QueryData queryData = new QueryData(criteriaSet, options);
+      QueryData queryData = new QueryData(criteria, options);
       QueryBuilder builder = new QueryBuilderImpl(queryFctry, criteriaFctry, context, queryData);
       return builder;
    }

@@ -94,7 +94,6 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.orcs.OrcsTypes;
-import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.DataModule;
 import org.eclipse.osee.orcs.core.ds.DynamicData;
 import org.eclipse.osee.orcs.core.ds.DynamicObject;
@@ -185,9 +184,8 @@ public class OrcsScriptInterpreterTest {
       QueryData queryData = Iterables.getFirst(assembler.getQueries(), null);
       assertNotNull(queryData);
 
-      CriteriaSet criteriaSet = Iterables.getFirst(queryData.getCriteriaSets(), null);
-      assertEquals(1, criteriaSet.getCriterias().size());
-      assertEquals(true, criteriaSet.hasCriteriaType(CriteriaBranchIds.class));
+      assertEquals(1, queryData.getLastCriteriaSet().size());
+      assertEquals(true, queryData.hasCriteriaType(CriteriaBranchIds.class));
 
       SelectSet selectSet = Iterables.getFirst(queryData.getSelectSets(), null);
       assertEquals(-1, selectSet.getLimit());
@@ -221,9 +219,8 @@ public class OrcsScriptInterpreterTest {
       QueryData queryData = Iterables.getFirst(assembler.getQueries(), null);
       assertNotNull(queryData);
 
-      CriteriaSet criteriaSet = Iterables.getFirst(queryData.getCriteriaSets(), null);
-      assertEquals(1, criteriaSet.getCriterias().size());
-      assertEquals(true, criteriaSet.hasCriteriaType(CriteriaTxIds.class));
+      assertEquals(1, queryData.getLastCriteriaSet().size());
+      assertEquals(true, queryData.hasCriteriaType(CriteriaTxIds.class));
 
       SelectSet selectSet = Iterables.getFirst(queryData.getSelectSets(), null);
       assertEquals(-1, selectSet.getLimit());
@@ -255,10 +252,9 @@ public class OrcsScriptInterpreterTest {
       QueryData queryData = Iterables.getFirst(assembler.getQueries(), null);
       assertNotNull(queryData);
 
-      CriteriaSet criteriaSet = Iterables.getFirst(queryData.getCriteriaSets(), null);
-      assertEquals(2, criteriaSet.getCriterias().size());
-      assertEquals(true, criteriaSet.hasCriteriaType(CriteriaBranchIds.class));
-      assertEquals(true, criteriaSet.hasCriteriaType(CriteriaArtifactIds.class));
+      assertEquals(2, queryData.getLastCriteriaSet().size());
+      assertEquals(true, queryData.hasCriteriaType(CriteriaBranchIds.class));
+      assertEquals(true, queryData.hasCriteriaType(CriteriaArtifactIds.class));
 
       SelectSet selectSet = Iterables.getFirst(queryData.getSelectSets(), null);
       assertEquals(-1, selectSet.getLimit());
@@ -290,10 +286,9 @@ public class OrcsScriptInterpreterTest {
       QueryData queryData = Iterables.getFirst(assembler.getQueries(), null);
       assertNotNull(queryData);
 
-      CriteriaSet criteriaSet = Iterables.getFirst(queryData.getCriteriaSets(), null);
-      assertEquals(2, criteriaSet.getCriterias().size());
-      assertEquals(true, criteriaSet.hasCriteriaType(CriteriaBranchIds.class));
-      assertEquals(true, criteriaSet.hasCriteriaType(CriteriaArtifactIds.class));
+      assertEquals(2, queryData.getLastCriteriaSet().size());
+      assertEquals(true, queryData.hasCriteriaType(CriteriaBranchIds.class));
+      assertEquals(true, queryData.hasCriteriaType(CriteriaArtifactIds.class));
 
       SelectSet selectSet = Iterables.getFirst(queryData.getSelectSets(), null);
       assertEquals(-1, selectSet.getLimit());
@@ -361,10 +356,9 @@ public class OrcsScriptInterpreterTest {
       QueryData queryData = Iterables.getFirst(assembler.getQueries(), null);
       assertNotNull(queryData);
 
-      CriteriaSet criteriaSet = Iterables.getFirst(queryData.getCriteriaSets(), null);
-      assertEquals(2, criteriaSet.getCriterias().size());
-      assertEquals(true, criteriaSet.hasCriteriaType(CriteriaBranchIds.class));
-      assertEquals(true, criteriaSet.hasCriteriaType(CriteriaArtifactIds.class));
+      assertEquals(2, queryData.getLastCriteriaSet().size());
+      assertEquals(true, queryData.hasCriteriaType(CriteriaBranchIds.class));
+      assertEquals(true, queryData.hasCriteriaType(CriteriaArtifactIds.class));
 
       SelectSet selectSet = Iterables.getFirst(queryData.getSelectSets(), null);
       assertEquals(-1, selectSet.getLimit());
@@ -448,11 +442,10 @@ public class OrcsScriptInterpreterTest {
       QueryData queryData = Iterables.getFirst(assembler.getQueries(), null);
       assertNotNull(queryData);
 
-      CriteriaSet criteriaSet = Iterables.getFirst(queryData.getCriteriaSets(), null);
-      assertEquals(3, criteriaSet.getCriterias().size());
-      assertEquals(true, criteriaSet.hasCriteriaType(CriteriaBranchIds.class));
-      assertEquals(true, criteriaSet.hasCriteriaType(CriteriaArtifactIds.class));
-      assertEquals(true, criteriaSet.hasCriteriaType(CriteriaRelationTypeFollow.class));
+      assertEquals(3, queryData.getCriteriaSets().get(0).size());
+      assertEquals(true, queryData.hasCriteriaType(CriteriaBranchIds.class));
+      assertEquals(true, queryData.hasCriteriaType(CriteriaArtifactIds.class));
+      assertEquals(true, queryData.hasCriteriaType(CriteriaRelationTypeFollow.class));
 
       List<SelectSet> selectSets = queryData.getSelectSets();
       assertEquals(2, selectSets.size());

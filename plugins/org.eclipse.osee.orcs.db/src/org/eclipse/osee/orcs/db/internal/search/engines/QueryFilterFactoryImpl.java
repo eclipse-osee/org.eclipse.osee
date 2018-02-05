@@ -36,7 +36,6 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.CountingLoadDataHandler;
-import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
@@ -73,8 +72,7 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
 
    @Override
    public CountingLoadDataHandler createHandler(HasCancellation cancellation, QueryData queryData, QuerySqlContext queryContext, LoadDataHandler handler) throws Exception {
-      CriteriaSet criteriaSet = queryData.getLastCriteriaSet();
-      Set<CriteriaAttributeKeywords> criterias = criteriaSet.getCriteriaByType(CriteriaAttributeKeywords.class);
+      List<CriteriaAttributeKeywords> criterias = queryData.getCriteriaByType(CriteriaAttributeKeywords.class);
       CountingLoadDataHandler countingHandler;
       if (criterias.isEmpty()) {
          // Nothing to Loading
@@ -112,14 +110,14 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
    private final class ConsumerImpl implements Consumer {
 
       private final HasCancellation cancellation;
-      private final Set<CriteriaAttributeKeywords> criterias;
+      private final List<CriteriaAttributeKeywords> criterias;
 
       private final AtomicBoolean executorStarted = new AtomicBoolean();
 
       private final LinkedBlockingQueue<AttributeData> dataToProcess = new LinkedBlockingQueue<>();
       private Future<?> future;
 
-      public ConsumerImpl(HasCancellation cancellation, Set<CriteriaAttributeKeywords> criterias) {
+      public ConsumerImpl(HasCancellation cancellation, List<CriteriaAttributeKeywords> criterias) {
          super();
          this.cancellation = cancellation;
          this.criterias = criterias;
@@ -340,7 +338,7 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
       private final Map<AttributeData, Set<MatchLocation>> matches = Maps.newHashMap();
       private final Set<CriteriaAttributeKeywords> remainingCriteriaToMatch;
 
-      public CriteriaMatchTracker(Set<CriteriaAttributeKeywords> criteria) {
+      public CriteriaMatchTracker(List<CriteriaAttributeKeywords> criteria) {
          remainingCriteriaToMatch = Sets.newHashSet(criteria);
       }
 
