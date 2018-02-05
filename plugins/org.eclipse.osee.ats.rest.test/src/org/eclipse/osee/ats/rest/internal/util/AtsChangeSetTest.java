@@ -59,7 +59,7 @@ public class AtsChangeSetTest {
       changes.createArtifact(AtsArtifactTypes.Version, name, id);
       changes.execute();
 
-      ArtifactReadable verArt = atsServer.getQuery().andId(id).getResults().getAtMostOneOrNull();
+      ArtifactToken verArt = atsServer.getQueryService().getArtifact(id);
       assertNotNull(verArt);
       assertEquals(id, verArt.getId());
       assertEquals(name, verArt.getName());
@@ -78,7 +78,8 @@ public class AtsChangeSetTest {
 
       ArtifactReadable folder = (ArtifactReadable) atsServer.getQueryService().getArtifact(folderArt.getId());
       assertNotNull(folder);
-      IAtsVersion version = atsServer.getConfigItemFactory().getVersion((ArtifactReadable) atsServer.getQueryService().getArtifact(verArt.getId()));
+      IAtsVersion version =
+         atsServer.getConfigItemFactory().getVersion(atsServer.getQueryService().getArtifact(verArt.getId()));
       assertNotNull(version);
 
       // add relation from folder to version
@@ -110,7 +111,7 @@ public class AtsChangeSetTest {
       // relate version to folder with same relation, but opposite order
       folder = (ArtifactReadable) atsServer.getQueryService().getArtifact(folderArt.getId());
       assertNotNull(folder);
-      version = atsServer.getConfigItemFactory().getVersion((ArtifactReadable) atsServer.getQueryService().getArtifact(verArt.getId()));
+      version = atsServer.getConfigItemFactory().getVersion(atsServer.getQueryService().getArtifact(verArt.getId()));
       assertNotNull(version);
       changes = createAtsChangeSet();
       changes.relate(version, CoreRelationTypes.SupportingInfo_SupportedBy, folder);
@@ -239,9 +240,9 @@ public class AtsChangeSetTest {
       changes.execute();
 
       // reload artifacts to get latest stripe
-      ver1 = (ArtifactReadable) atsServer.getQueryService().getArtifact(ver1.getId());
-      ver2 = (ArtifactReadable) atsServer.getQueryService().getArtifact(ver2.getId());
-      teamWf = (ArtifactReadable) atsServer.getQueryService().getArtifact(teamWf.getId());
+      ver1 = atsServer.getQueryService().getArtifact(ver1.getId());
+      ver2 = atsServer.getQueryService().getArtifact(ver2.getId());
+      teamWf = atsServer.getQueryService().getArtifact(teamWf.getId());
 
       // ensure that teamWf is related to ver1
       Assert.assertEquals(ver1.getId(),
@@ -253,9 +254,9 @@ public class AtsChangeSetTest {
       changes.execute();
 
       // reload artifacts to get latest stripe
-      ver1 = (ArtifactReadable) atsServer.getQueryService().getArtifact(ver1.getId());
-      ver2 = (ArtifactReadable) atsServer.getQueryService().getArtifact(ver2.getId());
-      teamWf = (ArtifactReadable) atsServer.getQueryService().getArtifact(teamWf.getId());
+      ver1 = atsServer.getQueryService().getArtifact(ver1.getId());
+      ver2 = atsServer.getQueryService().getArtifact(ver2.getId());
+      teamWf = atsServer.getQueryService().getArtifact(teamWf.getId());
 
       // ensure teamWf is related to ver2 and not related to ver1
       IAtsVersion targetedVersion =

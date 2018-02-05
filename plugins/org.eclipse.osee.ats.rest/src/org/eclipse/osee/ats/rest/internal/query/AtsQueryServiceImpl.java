@@ -12,6 +12,8 @@ package org.eclipse.osee.ats.rest.internal.query;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -36,6 +38,7 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
  * @author Donald G. Dunne
@@ -47,6 +50,10 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    public AtsQueryServiceImpl(IAtsServer atsServer, JdbcService jdbcService) {
       super(jdbcService, atsServer.getServices());
       this.atsServer = atsServer;
+   }
+
+   private QueryBuilder getQuery() {
+      return atsServer.getOrcsApi().getQueryFactory().fromBranch(atsServer.getAtsBranch());
    }
 
    @Override
@@ -108,7 +115,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public Collection<ArtifactToken> getArtifacts(IArtifactType artifactType, BranchId branch) {
+   public Collection<ArtifactToken> getArtifacts(BranchId branch, IArtifactType... artifactType) {
       return Collections.castAll(atsServer.getOrcsApi().getQueryFactory().fromBranch(branch).andTypeEquals(
          artifactType).getResults().getList());
    }
@@ -185,11 +192,26 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
 
    @Override
    public ArtifactReadable getArtifact(Long id) {
-      return atsServer.getQuery().andId(id).getResults().getAtMostOneOrNull();
+      return getQuery().andId(id).getResults().getAtMostOneOrNull();
    }
 
    @Override
    public ArtifactReadable getArtifact(ArtifactId artifact, BranchId branch) {
       throw new UnsupportedOperationException();
+   }
+
+   @Override
+   public Collection<ArtifactToken> getArtifacts(Collection<Long> ids) {
+      Collection<ArtifactToken> artifacts = new LinkedList<>();
+      Iterator<ArtifactReadable> iterator = getQuery().andUuids(ids).getResults().iterator();
+      while (iterator.hasNext()) {
+         artifacts.add(iterator.next());
+      }
+      return artifacts;
+   }
+
+   @Override
+   public ArtifactToken getArtifactByName(IArtifactType artifactType, String name) {
+      return getQuery().andIsOfType(artifactType).andNameEquals(name).getResults().getAtMostOneOrNull();
    }
 }

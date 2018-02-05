@@ -81,7 +81,7 @@ public class ProgramEndpointImpl extends BaseConfigEndpointImpl<JaxProgram> impl
    public List<JaxProgram> getObjects() {
       List<JaxProgram> configs = new ArrayList<>();
       if (countryId == 0L) {
-         for (ArtifactReadable art : atsServer.getQuery().andIsOfType(artifactType).getResults()) {
+         for (ArtifactToken art : atsServer.getQueryService().getArtifacts(artifactType)) {
             configs.add(getConfigObject(art));
          }
       } else {

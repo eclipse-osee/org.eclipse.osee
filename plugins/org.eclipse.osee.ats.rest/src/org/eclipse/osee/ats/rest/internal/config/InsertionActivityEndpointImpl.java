@@ -80,7 +80,7 @@ public class InsertionActivityEndpointImpl extends BaseConfigEndpointImpl<JaxIns
    public List<JaxInsertionActivity> getObjects() {
       List<JaxInsertionActivity> insertions = new ArrayList<>();
       if (insertionId == 0L) {
-         for (ArtifactReadable art : atsServer.getQuery().andIsOfType(artifactType).getResults()) {
+         for (ArtifactToken art : atsServer.getQueryService().getArtifacts(artifactType)) {
             insertions.add(getConfigObject(art));
          }
       } else {

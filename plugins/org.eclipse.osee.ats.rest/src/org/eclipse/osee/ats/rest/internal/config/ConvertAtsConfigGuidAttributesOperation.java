@@ -68,7 +68,7 @@ public class ConvertAtsConfigGuidAttributesOperation {
          for (ArtifactId art : artIds) {
             ids.add(art.getId());
          }
-         Collection<ArtifactToken> allArtifacts = atsApi.getArtifacts(ids);
+         Collection<ArtifactToken> allArtifacts = atsApi.getQueryService().getArtifacts(ids);
          IAtsChangeSet changes = atsApi.createChangeSet("Update TeamDef, AI and WorkPkg TeamWf GUIDs");
          for (ArtifactToken art : allArtifacts) {
             ConvertAtsConfigGuidAttributesOperations.convertTeamDefinitionIfNeeded(changes, art, atsApi);
@@ -97,7 +97,7 @@ public class ConvertAtsConfigGuidAttributesOperation {
          for (ArtifactId art : artIds) {
             ids.add(art.getId());
          }
-         Collection<ArtifactToken> allArtifacts = atsApi.getArtifacts(ids);
+         Collection<ArtifactToken> allArtifacts = atsApi.getQueryService().getArtifacts(ids);
          IAtsChangeSet changes = atsApi.createChangeSet("Update Work Package GUIDs");
          for (ArtifactToken art : allArtifacts) {
             convertWorkPackageIfNeeded(changes, art);
@@ -124,8 +124,8 @@ public class ConvertAtsConfigGuidAttributesOperation {
 
       // Delete AIs for Action, they shouldn't have them
       changes = atsApi.createChangeSet("Remove Action AI and TeamDef GUIDs");
-      for (ArtifactToken actionArt : atsApi.getQueryService().getArtifacts(AtsArtifactTypes.Action,
-         atsApi.getAtsBranch())) {
+      for (ArtifactToken actionArt : atsApi.getQueryService().getArtifacts(atsApi.getAtsBranch(),
+         AtsArtifactTypes.Action)) {
          changes.deleteAttributes(actionArt, ConvertAtsConfigGuidAttributesOperations.TeamDefinition);
          changes.deleteAttributes(actionArt, ConvertAtsConfigGuidAttributesOperations.ActionableItem);
       }
@@ -162,8 +162,8 @@ public class ConvertAtsConfigGuidAttributesOperation {
 
    private void convertWorkPackageIfNeeded(IAtsChangeSet changes, ArtifactToken workItemArt) {
       if (!workPackagesLoaded) {
-         for (ArtifactToken workPackageArt : atsApi.getQueryService().getArtifacts(AtsArtifactTypes.WorkPackage,
-            atsApi.getAtsBranch())) {
+         for (ArtifactToken workPackageArt : atsApi.getQueryService().getArtifacts(atsApi.getAtsBranch(),
+            AtsArtifactTypes.WorkPackage)) {
             IAtsWorkPackage workPkg = atsApi.getEarnedValueService().getWorkPackage(workPackageArt);
             guidToWorkPackage.put(workPkg.getStoreObject().getGuid(), workPkg);
          }

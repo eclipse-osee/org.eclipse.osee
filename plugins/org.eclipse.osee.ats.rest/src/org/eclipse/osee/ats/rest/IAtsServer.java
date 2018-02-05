@@ -23,9 +23,7 @@ import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
 import org.eclipse.osee.ats.api.workflow.AtsActionEndpointApi;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchServiceProvider;
 import org.eclipse.osee.ats.core.config.IAtsCacheProvider;
-import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
  * @author Donald G Dunne
@@ -36,14 +34,9 @@ public interface IAtsServer extends AtsApi, IAtsNotifier, IAtsConfigItemFactoryP
 
    Iterable<IAtsDatabaseConversion> getDatabaseConversions();
 
-   QueryBuilder getQuery();
-
    AtsApi getServices();
 
    void setEmailEnabled(boolean emailEnabled);
-
-   @Override
-   Collection<ArtifactToken> getArtifacts(Collection<Long> ids);
 
    void addAtsDatabaseConversion(IAtsDatabaseConversion conversion);
 

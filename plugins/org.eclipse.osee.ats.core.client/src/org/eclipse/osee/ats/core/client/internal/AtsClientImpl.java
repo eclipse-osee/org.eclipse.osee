@@ -85,7 +85,6 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.util.OsgiUtil;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -416,11 +415,6 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    }
 
    @Override
-   public ArtifactToken getArtifactByName(IArtifactType artType, String name) {
-      return ArtifactQuery.getArtifactFromTypeAndNameNoException(artType, name, getAtsBranch());
-   }
-
-   @Override
    public IAtsEventService getEventService() {
       return eventService;
    }
@@ -433,16 +427,6 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
    @Override
    public OseeClient getOseeClient() {
       return OsgiUtil.getService(getClass(), OseeClient.class);
-   }
-
-   @Override
-   public Collection<ArtifactToken> getArtifacts(Collection<Long> ids) {
-      List<ArtifactId> artifactIds = new ArrayList<>(ids.size());
-      for (Long id : ids) {
-         artifactIds.add(ArtifactId.valueOf(id));
-      }
-      return Collections.castAll(
-         ArtifactQuery.getArtifactListFrom(artifactIds, getAtsBranch(), DeletionFlag.EXCLUDE_DELETED));
    }
 
    @Override

@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -70,7 +71,7 @@ public class CountryEndpointImpl extends BaseConfigEndpointImpl<JaxCountry> impl
    @Override
    public List<JaxCountry> getObjects() {
       List<JaxCountry> configs = new ArrayList<>();
-      for (ArtifactReadable art : atsServer.getQuery().andIsOfType(artifactType).getResults()) {
+      for (ArtifactToken art : atsServer.getQueryService().getArtifacts(artifactType)) {
          configs.add(getConfigObject(art));
       }
       return configs;

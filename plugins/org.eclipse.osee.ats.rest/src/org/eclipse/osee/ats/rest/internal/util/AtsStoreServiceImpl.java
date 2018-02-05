@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
+import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
  * @author Donald G. Dunne
@@ -73,11 +74,15 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
          asUser, notifier);
    }
 
+   public QueryBuilder getQuery() {
+      return atsServer.getOrcsApi().getQueryFactory().fromBranch(atsServer.getAtsBranch());
+   }
+
    @Override
    public List<IAtsWorkItem> reload(Collection<IAtsWorkItem> inWorkWorkflows) {
       List<IAtsWorkItem> workItems = new ArrayList<>(inWorkWorkflows.size());
       List<String> guids = AtsObjects.toGuids(inWorkWorkflows);
-      Iterator<ArtifactReadable> arts = atsServer.getQuery().andGuids(guids).getResults().iterator();
+      Iterator<ArtifactReadable> arts = getQuery().andGuids(guids).getResults().iterator();
       while (arts.hasNext()) {
          workItems.add(atsServer.getWorkItemFactory().getWorkItem(arts.next()));
       }
@@ -220,8 +225,8 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    @Override
    public CustomizeData getCustomizationByGuid(String customize_guid) {
       CustomizeData cust = null;
-      ArtifactReadable customizeStoreArt = atsServer.getQuery().and(CoreAttributeTypes.XViewerCustomization,
-         customize_guid, QueryOption.CONTAINS_MATCH_OPTIONS).getResults().getAtMostOneOrNull();
+      ArtifactReadable customizeStoreArt = getQuery().and(CoreAttributeTypes.XViewerCustomization, customize_guid,
+         QueryOption.CONTAINS_MATCH_OPTIONS).getResults().getAtMostOneOrNull();
       if (customizeStoreArt != null) {
          for (String custXml : atsServer.getAttributeResolver().getAttributesToStringList(customizeStoreArt,
             CoreAttributeTypes.XViewerCustomization)) {

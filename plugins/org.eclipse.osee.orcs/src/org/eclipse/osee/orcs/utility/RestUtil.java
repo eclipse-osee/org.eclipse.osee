@@ -15,6 +15,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import javax.ws.rs.core.HttpHeaders;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -50,7 +51,7 @@ public class RestUtil {
       return pretty ? jsonToPretty(json.toString()) : json.toString();
    }
 
-   public static JSONArray getDefaultJSonArray(ResultSet<ArtifactReadable> artifacts) throws JSONException {
+   public static JSONArray getDefaultJSonArray(Collection<ArtifactReadable> artifacts) throws JSONException {
       return getDefaultJSonArrayIterator(artifacts);
    }
 

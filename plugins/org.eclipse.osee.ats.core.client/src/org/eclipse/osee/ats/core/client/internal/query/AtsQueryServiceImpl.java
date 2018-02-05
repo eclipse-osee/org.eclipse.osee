@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.client.internal.query;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
@@ -242,8 +243,9 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    }
 
    @Override
-   public Collection<ArtifactToken> getArtifacts(IArtifactType artifactType, BranchId branch) {
-      return Collections.castAll(ArtifactQuery.getArtifactListFromType(artifactType, branch));
+   public Collection<ArtifactToken> getArtifacts(BranchId branch, IArtifactType... artifactType) {
+      List<IArtifactType> types = Arrays.asList(artifactType);
+      return Collections.castAll(ArtifactQuery.getArtifactListFromTypes(types, branch, DeletionFlag.EXCLUDE_DELETED));
    }
 
    @Override
@@ -320,6 +322,21 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
    @Override
    public Artifact getArtifact(ArtifactId artifact, BranchId branch) {
       return ArtifactQuery.getArtifactOrNull(artifact, branch, DeletionFlag.EXCLUDE_DELETED);
+   }
+
+   @Override
+   public Collection<ArtifactToken> getArtifacts(Collection<Long> ids) {
+      List<ArtifactId> artifactIds = new ArrayList<>(ids.size());
+      for (Long id : ids) {
+         artifactIds.add(ArtifactId.valueOf(id));
+      }
+      return Collections.castAll(
+         ArtifactQuery.getArtifactListFrom(artifactIds, atsClient.getAtsBranch(), DeletionFlag.EXCLUDE_DELETED));
+   }
+
+   @Override
+   public ArtifactToken getArtifactByName(IArtifactType artType, String name) {
+      return ArtifactQuery.getArtifactFromTypeAndNameNoException(artType, name, atsClient.getAtsBranch());
    }
 
 }

@@ -273,7 +273,7 @@ public class AgileService implements IAgileService {
    @Override
    public IAgileTeam getAgileTeamByName(String agileTeamName) {
       IAgileTeam aTeam = null;
-      ArtifactId aTeamArt = atsApi.getArtifactByName(AtsArtifactTypes.AgileTeam, agileTeamName);
+      ArtifactId aTeamArt = atsApi.getQueryService().getArtifactByName(AtsArtifactTypes.AgileTeam, agileTeamName);
       if (aTeamArt != null) {
          aTeam = atsApi.getConfigItemFactory().getAgileTeam(aTeamArt);
       }
@@ -451,7 +451,7 @@ public class AgileService implements IAgileService {
    @Override
    public Collection<IAgileFeatureGroup> getAgileFeatureGroups(List<Long> ids) {
       List<IAgileFeatureGroup> features = new LinkedList<>();
-      for (ArtifactId featureArt : atsApi.getArtifacts(ids)) {
+      for (ArtifactId featureArt : atsApi.getQueryService().getArtifacts(ids)) {
          features.add(atsApi.getConfigItemFactory().getAgileFeatureGroup(featureArt));
       }
       return features;

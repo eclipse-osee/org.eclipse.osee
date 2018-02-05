@@ -50,7 +50,7 @@ public class AtsConfigQueryImpl extends AbstractAtsConfigQueryImpl {
 
    @Override
    public void createQueryBuilder() {
-      query = atsServer.getQuery();
+      query = atsServer.getOrcsApi().getQueryFactory().fromBranch(atsServer.getAtsBranch());
    }
 
    private QueryBuilder getQuery() {

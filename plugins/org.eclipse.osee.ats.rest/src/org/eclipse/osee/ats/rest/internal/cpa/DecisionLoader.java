@@ -70,8 +70,9 @@ public class DecisionLoader {
 
    public List<CpaDecision> load() {
       List<CpaDecision> decisions = new ArrayList<>();
-      QueryBuilder queryBuilder = atsServer.getQuery().andTypeEquals(AtsArtifactTypes.TeamWorkflow).and(
-         AtsAttributeTypes.ApplicabilityWorkflow, "true");
+      QueryBuilder queryBuilder =
+         atsServer.getOrcsApi().getQueryFactory().fromBranch(atsServer.getAtsBranch()).andTypeEquals(
+            AtsArtifactTypes.TeamWorkflow).and(AtsAttributeTypes.ApplicabilityWorkflow, "true");
       if (Strings.isValid(programId)) {
          queryBuilder.and(AtsAttributeTypes.ProgramId, programId);
       }

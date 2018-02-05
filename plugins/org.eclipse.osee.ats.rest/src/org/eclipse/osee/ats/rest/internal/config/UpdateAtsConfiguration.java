@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -164,15 +165,12 @@ public class UpdateAtsConfiguration {
    }
 
    public ArtifactId getOrCreateConfigFolder(ArtifactId userArt, XResultData rd) {
-      ArtifactReadable configFolderArt = atsServer.getQuery().andId(
-         AtsArtifactToken.ConfigFolder).getResults().getAtMostOneOrNull();
+      ArtifactToken configFolderArt = atsServer.getQueryService().getArtifact(AtsArtifactToken.ConfigFolder);
       if (configFolderArt == null) {
          TransactionBuilder tx = atsServer.getOrcsApi().getTransactionFactory().createTransaction(CoreBranches.COMMON,
             userArt, "Create Config Folder");
-         ArtifactReadable headingFolderArt =
-            atsServer.getQuery().andId(
-               AtsArtifactToken.HeadingFolder).getResults().getExactlyOne();
-         configFolderArt = (ArtifactReadable) tx.createArtifact(AtsArtifactToken.ConfigFolder);
+         ArtifactToken headingFolderArt = atsServer.getQueryService().getArtifact(AtsArtifactToken.HeadingFolder);
+         configFolderArt = tx.createArtifact(AtsArtifactToken.ConfigFolder);
          tx.relate(headingFolderArt, CoreRelationTypes.Default_Hierarchical__Parent, configFolderArt);
          tx.commit();
          rd.log("Created Config Folder");
@@ -181,13 +179,12 @@ public class UpdateAtsConfiguration {
    }
 
    public ArtifactId getOrCreateAtsConfig(ArtifactReadable userArt, XResultData rd) {
-      ArtifactReadable atsConfigArt = atsServer.getQuery().andId(
-         AtsArtifactToken.AtsConfig).getResults().getAtMostOneOrNull();
+      ArtifactToken atsConfigArt = atsServer.getQueryService().getArtifact(AtsArtifactToken.AtsConfig);
       if (atsConfigArt == null) {
          TransactionBuilder tx = atsServer.getOrcsApi().getTransactionFactory().createTransaction(CoreBranches.COMMON,
             userArt, "Create AtsConfig");
          ArtifactReadable headingFolderArt = (ArtifactReadable) getOrCreateConfigFolder(userArt, rd);
-         atsConfigArt = (ArtifactReadable) tx.createArtifact(AtsArtifactToken.AtsConfig);
+         atsConfigArt = tx.createArtifact(AtsArtifactToken.AtsConfig);
          tx.relate(headingFolderArt, CoreRelationTypes.Default_Hierarchical__Parent, atsConfigArt);
          tx.commit();
          rd.log("Created AtsConfig");
@@ -211,8 +208,7 @@ public class UpdateAtsConfiguration {
 
    public ArtifactId getOrCreateConfigsFolder(ArtifactId userArt, XResultData rd) {
       ArtifactId configFolderArt = getOrCreateConfigFolder(userArt, rd);
-      ArtifactId configsFolderArt = atsServer.getQuery().andId(
-         AtsArtifactToken.ConfigsFolder).getResults().getAtMostOneOrNull();
+      ArtifactId configsFolderArt = atsServer.getQueryService().getArtifact(AtsArtifactToken.ConfigsFolder);
       if (configsFolderArt == null) {
          TransactionBuilder tx = atsServer.getOrcsApi().getTransactionFactory().createTransaction(CoreBranches.COMMON,
             userArt, "Create Configs Folder");

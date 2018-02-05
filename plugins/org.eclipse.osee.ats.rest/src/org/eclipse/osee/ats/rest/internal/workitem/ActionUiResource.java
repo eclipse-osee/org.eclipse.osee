@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.rest.internal.workitem;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -24,7 +25,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.util.ActionPage;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
-import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -105,8 +106,8 @@ public final class ActionUiResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public ViewModel getNewSource() throws Exception {
-      List<ArtifactReadable> sortedAis = new ArrayList<>();
-      for (ArtifactReadable ai : getAis()) {
+      List<ArtifactToken> sortedAis = new ArrayList<>();
+      for (ArtifactToken ai : getAis()) {
          sortedAis.add(ai);
       }
       Collections.sort(sortedAis, new IdComparator());
@@ -115,9 +116,9 @@ public final class ActionUiResource {
          .param("ActionableItemDataList", getAiDataList(sortedAis));
    }
 
-   private String getAiDataList(List<ArtifactReadable> sortedAis) {
+   private String getAiDataList(List<ArtifactToken> sortedAis) {
       StringBuilder sb = new StringBuilder("<datalist id=\"actionableItemList\">");
-      for (ArtifactReadable art : sortedAis) {
+      for (ArtifactToken art : sortedAis) {
          sb.append("<option value=\"");
          sb.append(art.getName());
          sb.append("\">");
@@ -125,16 +126,16 @@ public final class ActionUiResource {
       sb.append("</datalist>");
       return sb.toString();
    }
-   private static final class IdComparator implements Comparator<ArtifactReadable> {
+   private static final class IdComparator implements Comparator<ArtifactToken> {
 
       @Override
-      public int compare(ArtifactReadable arg0, ArtifactReadable arg1) {
+      public int compare(ArtifactToken arg0, ArtifactToken arg1) {
          return arg0.getName().compareTo(arg1.getName());
       }
    };
 
-   private ResultSet<ArtifactReadable> getAis() {
-      return atsServer.getQuery().andIsOfType(AtsArtifactTypes.ActionableItem).getResults();
+   private Collection<ArtifactToken> getAis() {
+      return atsServer.getQueryService().getArtifacts(AtsArtifactTypes.ActionableItem);
    }
 
    /**

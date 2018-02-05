@@ -51,8 +51,8 @@ public class ConvertBaselineGuidToBaselineId extends AbstractConvertGuidToId {
       }
       TransactionBuilder tx = createTransactionBuilder();
       int numChanges = 0;
-      for (ArtifactReadable art : atsServer.getQuery().andTypeEquals(AtsArtifactTypes.Version,
-         AtsArtifactTypes.TeamDefinition).andExists(BaselineBranchGuid).getResults()) {
+      for (ArtifactReadable art : orcsApi.getQueryFactory().fromBranch(atsServer.getAtsBranch()).andTypeEquals(
+         AtsArtifactTypes.Version, AtsArtifactTypes.TeamDefinition).andExists(BaselineBranchGuid).getResults()) {
          List<String> attributeValues = art.getAttributeValues(BaselineBranchGuid);
          for (String guid : attributeValues) {
             if (!guid.isEmpty()) {

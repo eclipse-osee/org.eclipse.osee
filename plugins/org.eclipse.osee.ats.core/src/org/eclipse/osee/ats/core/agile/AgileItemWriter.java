@@ -98,7 +98,7 @@ public class AgileItemWriter {
             for (IAgileFeatureGroup feature : features) {
                featureArts.add(feature.getStoreObject());
             }
-            for (ArtifactToken awa : atsApi.getArtifacts(newItem.getIds())) {
+            for (ArtifactToken awa : atsApi.getQueryService().getArtifacts(newItem.getIds())) {
                for (IAgileFeatureGroup feature : features) {
                   ArtifactToken featureArt = feature.getStoreObject();
                   if (!atsApi.getRelationResolver().areRelated(featureArt,
@@ -114,7 +114,7 @@ public class AgileItemWriter {
                }
             }
          } else if (newItem.isRemoveFeatures()) {
-            for (ArtifactToken awa : atsApi.getArtifacts(newItem.getIds())) {
+            for (ArtifactToken awa : atsApi.getQueryService().getArtifacts(newItem.getIds())) {
                for (ArtifactToken feature : atsApi.getRelationResolver().getRelated(awa,
                   AtsRelationTypes.AgileFeatureToItem_FeatureGroup)) {
                   changes.unrelate(feature, AtsRelationTypes.AgileFeatureToItem_AtsItem, awa);
@@ -125,7 +125,7 @@ public class AgileItemWriter {
          if (newItem.isSetSprint()) {
             ArtifactToken sprintArt = atsApi.getQueryService().getArtifact(newItem.getSprintId());
             IAgileSprint sprint = atsApi.getAgileService().getAgileSprint(sprintArt);
-            for (ArtifactToken awa : atsApi.getArtifacts(newItem.getIds())) {
+            for (ArtifactToken awa : atsApi.getQueryService().getArtifacts(newItem.getIds())) {
                if (sprint != null) {
                   changes.setRelation(sprint, AtsRelationTypes.AgileSprintToItem_AtsItem, awa);
                } else {
@@ -138,7 +138,7 @@ public class AgileItemWriter {
          if (newItem.isSetBacklog()) {
             ArtifactToken backlogArt = atsApi.getQueryService().getArtifact(newItem.getBacklogId());
             IAgileSprint backlog = atsApi.getAgileService().getAgileSprint(backlogArt);
-            for (ArtifactToken awa : atsApi.getArtifacts(newItem.getIds())) {
+            for (ArtifactToken awa : atsApi.getQueryService().getArtifacts(newItem.getIds())) {
                if (backlog != null) {
                   changes.setRelation(backlog, AtsRelationTypes.Goal_Member, awa);
                } else {

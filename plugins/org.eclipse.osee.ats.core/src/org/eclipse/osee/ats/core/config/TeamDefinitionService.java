@@ -71,7 +71,7 @@ public class TeamDefinitionService implements IAtsTeamDefinitionService {
    @Override
    public IAtsTeamDefinition getTeamDefinition(String name) {
       IAtsTeamDefinition teamDef = null;
-      ArtifactId teamDefArt = atsApi.getArtifactByName(AtsArtifactTypes.TeamDefinition, name);
+      ArtifactId teamDefArt = atsApi.getQueryService().getArtifactByName(AtsArtifactTypes.TeamDefinition, name);
       if (teamDefArt != null) {
          teamDef = atsApi.getConfigItemFactory().getTeamDef(teamDefArt);
       }

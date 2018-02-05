@@ -221,15 +221,18 @@ public final class AtsConfigEndpointImpl implements AtsConfigEndpointApi {
    @Override
    public Response storeWorkDef(JaxAtsWorkDef jaxWorkDef) {
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON,
-         (ArtifactReadable) atsServer.getQueryService().getArtifact(AtsCoreUsers.SYSTEM_USER), "Store Work Definition " + jaxWorkDef.getName());
-      ArtifactReadable workDefArt = atsServer.getQuery().andIsOfType(AtsArtifactTypes.WorkDefinition).andNameEquals(
-         jaxWorkDef.getName()).getResults().getAtMostOneOrNull();
+         atsServer.getQueryService().getArtifact(AtsCoreUsers.SYSTEM_USER),
+         "Store Work Definition " + jaxWorkDef.getName());
+      ArtifactReadable workDefArt =
+         (ArtifactReadable) atsServer.getQueryService().getArtifactByName(AtsArtifactTypes.WorkDefinition,
+            jaxWorkDef.getName());
       if (workDefArt == null) {
          workDefArt = (ArtifactReadable) tx.createArtifact(AtsArtifactTypes.WorkDefinition, jaxWorkDef.getName());
       }
       tx.setSoleAttributeValue(workDefArt, AtsAttributeTypes.DslSheet, jaxWorkDef.getWorkDefDsl());
       if (workDefArt.getParent() == null) {
-         ArtifactReadable workDefFolder = (ArtifactReadable) atsServer.getQueryService().getArtifact(AtsArtifactToken.WorkDefinitionsFolder);
+         ArtifactReadable workDefFolder =
+            (ArtifactReadable) atsServer.getQueryService().getArtifact(AtsArtifactToken.WorkDefinitionsFolder);
          tx.addChildren(workDefFolder, workDefArt);
       }
       tx.commit();

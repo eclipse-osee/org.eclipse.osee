@@ -65,7 +65,7 @@ public interface IAtsQueryService {
 
    Collection<ArtifactToken> getArtifactsFromQuery(String query, Object... data);
 
-   Collection<ArtifactToken> getArtifacts(IArtifactType artifactType, BranchId branch);
+   Collection<ArtifactToken> getArtifacts(BranchId branch, IArtifactType... artifactType);
 
    List<ArtifactId> getArtifactIdsFromQuery(String query, Object... data);
 
@@ -139,5 +139,9 @@ public interface IAtsQueryService {
    ArtifactToken getConfigArtifact(IAtsConfigObject atsConfigObject);
 
    ArtifactToken getArtifact(ArtifactId artifact, BranchId branch);
+
+   Collection<ArtifactToken> getArtifacts(Collection<Long> ids);
+
+   ArtifactToken getArtifactByName(IArtifactType artifactType, String name);
 
 }

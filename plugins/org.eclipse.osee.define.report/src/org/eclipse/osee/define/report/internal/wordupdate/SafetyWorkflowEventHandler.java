@@ -81,8 +81,9 @@ public class SafetyWorkflowEventHandler implements EventHandler {
          Branch branch = queryFactory.branchQuery().andId((BranchId) branchId).getResults().getExactlyOne();
          ArtifactId workflowId = branch.getAssociatedArtifact();
          if (workflowId.notEqual(SystemUser.OseeSystem)) {
-            ArtifactReadable assocArt = atsServer.getQuery().andId(workflowId).andIsOfType(
-               AtsArtifactTypes.TeamWorkflow).getResults().getExactlyOne();
+            ArtifactReadable assocArt =
+               atsServer.getOrcsApi().getQueryFactory().fromBranch(atsServer.getAtsBranch()).andId(
+                  workflowId).andIsOfType(AtsArtifactTypes.TeamWorkflow).getResults().getExactlyOne();
             IAtsTeamWorkflow safetyWf = getSafetyWorkflow(assocArt);
             if (safetyWf == null) {
                IAtsTeamWorkflow teamWf = atsServer.getWorkItemFactory().getTeamWf(assocArt);

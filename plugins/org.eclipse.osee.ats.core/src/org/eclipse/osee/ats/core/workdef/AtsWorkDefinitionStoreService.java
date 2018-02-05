@@ -35,8 +35,8 @@ public class AtsWorkDefinitionStoreService implements IAtsWorkDefinitionStringPr
    @Override
    public List<WorkDefData> getWorkDefinitionsData() {
       List<WorkDefData> results = new ArrayList<>();
-      for (ArtifactToken workDefArt : atsApi.getQueryService().getArtifacts(AtsArtifactTypes.WorkDefinition,
-         atsApi.getAtsBranch())) {
+      for (ArtifactToken workDefArt : atsApi.getQueryService().getArtifacts(atsApi.getAtsBranch(),
+         AtsArtifactTypes.WorkDefinition)) {
          results.add(
             new WorkDefData(workDefArt.getId(), workDefArt.getName(), loadWorkDefinitionFromArtifact(workDefArt)));
       }
@@ -58,7 +58,7 @@ public class AtsWorkDefinitionStoreService implements IAtsWorkDefinitionStringPr
     * @return WorkDefData or null if not found
     */
    private WorkDefData loadWorkDefinitionFromArtifact(String name) {
-      ArtifactToken artifact = atsApi.getArtifactByName(AtsArtifactTypes.WorkDefinition, name);
+      ArtifactToken artifact = atsApi.getQueryService().getArtifactByName(AtsArtifactTypes.WorkDefinition, name);
       if (artifact != null) {
          return new WorkDefData(artifact.getId(), artifact.getName(), loadWorkDefinitionFromArtifact(artifact));
       }

@@ -75,7 +75,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       if (user.getStoreObject() instanceof ArtifactReadable) {
          return (ArtifactReadable) user.getStoreObject();
       }
-      return atsServer.getQuery().andId(user.getArtifactId()).getResults().getExactlyOne();
+      return (ArtifactReadable) atsServer.getQueryService().getArtifact(user);
    }
 
    @Override

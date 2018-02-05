@@ -105,8 +105,6 @@ public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsWorkDefiniti
 
    IAtsTaskService getTaskService();
 
-   ArtifactToken getArtifactByName(IArtifactType artifactType, String name);
-
    IAtsProgramService getProgramService();
 
    IAtsQueryService getQueryService();
@@ -160,8 +158,6 @@ public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsWorkDefiniti
    IAtsTeamDefinitionService getTeamDefinitionService();
 
    void sendNotifications(AtsNotificationCollector notifications);
-
-   Collection<ArtifactToken> getArtifacts(Collection<Long> ids);
 
    IAgileService getAgileService();
 

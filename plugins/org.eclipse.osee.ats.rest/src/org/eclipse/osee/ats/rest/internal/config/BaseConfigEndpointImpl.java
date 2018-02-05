@@ -84,7 +84,8 @@ public abstract class BaseConfigEndpointImpl<T extends JaxAtsObject> implements 
             typeFolderArtifact = (ArtifactReadable) changes.createArtifact(AtsArtifactToken.CountryFolder);
          }
          if (typeFolderArtifact.getParent() == null) {
-            ArtifactReadable headingFolder = (ArtifactReadable) atsServer.getQueryService().getArtifact(AtsArtifactToken.HeadingFolder);
+            ArtifactReadable headingFolder =
+               (ArtifactReadable) atsServer.getQueryService().getArtifact(AtsArtifactToken.HeadingFolder);
             changes.relate(headingFolder, CoreRelationTypes.Default_Hierarchical__Child, typeFolderArtifact);
          }
          changes.relate(typeFolderArtifact, CoreRelationTypes.Default_Hierarchical__Child, newArtifact);
@@ -124,7 +125,7 @@ public abstract class BaseConfigEndpointImpl<T extends JaxAtsObject> implements 
    public abstract T getConfigObject(ArtifactId artifact);
 
    protected T getObject(long id) {
-      ArtifactReadable configArt = atsServer.getQuery().andId(id).getResults().getExactlyOne();
+      ArtifactToken configArt = atsServer.getQueryService().getArtifact(id);
       return getConfigObject(configArt);
    }
 

@@ -60,7 +60,9 @@ public class AtsQueryImplTest {
 
       IAtsClient client = AtsClientService.get();
 
-      Artifact wpArt = (Artifact) AtsClientService.get().getArtifactByName(AtsArtifactTypes.WorkPackage, "Work Pkg 01");
+      Artifact wpArt =
+         (Artifact) AtsClientService.get().getQueryService().getArtifactByName(AtsArtifactTypes.WorkPackage,
+            "Work Pkg 01");
       Conditions.checkNotNull(wpArt, "Work Package");
       IAtsWorkPackage wp = client.getEarnedValueService().getWorkPackage(wpArt);
 
@@ -98,7 +100,7 @@ public class AtsQueryImplTest {
 
       // ai
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
-      ArtifactId ai = atsApi.getArtifactByName(AtsArtifactTypes.ActionableItem, "SAW Requirements");
+      ArtifactId ai = atsApi.getQueryService().getArtifactByName(AtsArtifactTypes.ActionableItem, "SAW Requirements");
       query.andActionableItem(Arrays.asList(ai.getId()));
       assertEquals(4, query.getResults().size());
 
@@ -137,7 +139,7 @@ public class AtsQueryImplTest {
 
       // by version
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
-      ArtifactId version = atsApi.getArtifactByName(AtsArtifactTypes.Version, "SAW_Bld_2");
+      ArtifactId version = atsApi.getQueryService().getArtifactByName(AtsArtifactTypes.Version, "SAW_Bld_2");
       query.andVersion(version.getId());
       assertEquals(14, query.getResults().size());
 

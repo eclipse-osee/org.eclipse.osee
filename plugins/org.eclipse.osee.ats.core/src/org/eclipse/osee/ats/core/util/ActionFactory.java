@@ -222,7 +222,8 @@ public class ActionFactory implements IAtsActionFactory {
             if (Strings.isNumeric(agileTeamStr)) {
                aTeam = atsApi.getAgileService().getAgileTeam(Long.valueOf(agileTeamStr));
             } else {
-               ArtifactId aTeamArt = atsApi.getArtifactByName(AtsArtifactTypes.AgileTeam, agileTeamStr);
+               ArtifactId aTeamArt =
+                  atsApi.getQueryService().getArtifactByName(AtsArtifactTypes.AgileTeam, agileTeamStr);
                if (aTeamArt != null) {
                   aTeam = atsApi.getAgileService().getAgileTeam(aTeamArt);
                }
@@ -271,7 +272,8 @@ public class ActionFactory implements IAtsActionFactory {
          if (Strings.isNumeric(data.getWorkPackage())) {
             workPkg = atsApi.getEarnedValueService().getWorkPackage(ArtifactId.valueOf(data.getWorkPackage()));
          } else {
-            ArtifactId art = atsApi.getArtifactByName(AtsArtifactTypes.WorkPackage, data.getWorkPackage());
+            ArtifactId art =
+               atsApi.getQueryService().getArtifactByName(AtsArtifactTypes.WorkPackage, data.getWorkPackage());
             if (art != null) {
                workPkg = atsApi.getEarnedValueService().getWorkPackage(art);
             }

@@ -105,7 +105,7 @@ public class AtsHealthCheckOperation {
          for (Collection<Long> artIdList : artIdLists) {
 
             System.err.println(String.format("processing %s / %s", x++, numblocks));
-            Collection<ArtifactToken> allArtifacts = atsApi.getArtifacts(artIdList);
+            Collection<ArtifactToken> allArtifacts = atsApi.getQueryService().getArtifacts(artIdList);
 
             // remove all deleted/purged artifacts first
             List<ArtifactId> artifacts = new ArrayList<>(allArtifacts.size());

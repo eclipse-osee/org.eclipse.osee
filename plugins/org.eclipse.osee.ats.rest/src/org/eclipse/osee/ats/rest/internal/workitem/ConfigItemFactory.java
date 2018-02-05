@@ -239,7 +239,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
       changes.setSoleAttributeValue(ArtifactId.valueOf(updatedInsertion.getId()), CoreAttributeTypes.Name,
          updatedInsertion.getName());
       changes.execute();
-      return getInsertion(atsServer.getQuery().andId(updatedInsertion.getId()).getResults().getExactlyOne());
+      return getInsertion(atsServer.getQueryService().getArtifact(updatedInsertion.getId()));
    }
 
    @Override
@@ -268,13 +268,13 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
       IAtsChangeSet changes = atsServer.getStoreService().createAtsChangeSet("Update Insertion",
          atsServer.getUserService().getCurrentUser());
       ArtifactReadable insertionActivityArt =
-         atsServer.getQuery().andId(updatedActivity.getId()).getResults().getExactlyOne();
+         (ArtifactReadable) atsServer.getQueryService().getArtifact(updatedActivity.getId());
 
       changes.setSoleAttributeValue(insertionActivityArt, CoreAttributeTypes.Name, updatedActivity.getName());
       changes.setSoleAttributeValue(ArtifactId.valueOf(updatedActivity.getId()), CoreAttributeTypes.Name,
          updatedActivity.getName());
       changes.execute();
-      return getInsertionActivity(atsServer.getQuery().andId(updatedActivity.getId()).getResults().getExactlyOne());
+      return getInsertionActivity(atsServer.getQueryService().getArtifact(updatedActivity.getId()));
    }
 
    @Override

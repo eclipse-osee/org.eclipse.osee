@@ -41,9 +41,7 @@ public class ArtifactResolverImpl implements IArtifactResolver {
       if (atsObject.getStoreObject() instanceof ArtifactReadable) {
          return atsObject.getStoreObject();
       }
-      ArtifactReadable artifact =
-         atsServer.getQuery().andId(atsObject.getArtifactId()).getResults().getAtMostOneOrNull();
-      return artifact;
+      return atsServer.getQueryService().getArtifact(atsObject);
    }
 
    @Override

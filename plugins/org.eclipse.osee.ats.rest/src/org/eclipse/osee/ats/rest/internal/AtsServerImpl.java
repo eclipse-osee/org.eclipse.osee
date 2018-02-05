@@ -12,8 +12,6 @@ package org.eclipse.osee.ats.rest.internal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -70,8 +68,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.JsonUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.search.QueryBuilder;
 
 /**
  * @author Donald G Dunne
@@ -198,26 +194,12 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
    }
 
    @Override
-   public Collection<ArtifactToken> getArtifacts(Collection<Long> ids) {
-      Collection<ArtifactToken> artifacts = new LinkedList<>();
-      Iterator<ArtifactReadable> iterator = getQuery().andUuids(ids).getResults().iterator();
-      while (iterator.hasNext()) {
-         artifacts.add(iterator.next());
-      }
-      return artifacts;
-   }
-
-   @Override
-   public QueryBuilder getQuery() {
-      return getOrcsApi().getQueryFactory().fromBranch(getAtsBranch());
-   }
-
-   @Override
    public String getConfigValue(String key) {
       String result = null;
-      ArtifactReadable atsConfig = getQuery().andId(AtsArtifactToken.AtsConfig).getResults().getAtMostOneOrNull();
+      ArtifactToken atsConfig = getQueryService().getArtifact(AtsArtifactToken.AtsConfig);
       if (atsConfig != null) {
-         List<String> attributeValues = atsConfig.getAttributeValues(CoreAttributeTypes.GeneralStringData);
+         Collection<String> attributeValues =
+            getAttributeResolver().getAttributesToStringList(atsConfig, CoreAttributeTypes.GeneralStringData);
          for (String str : attributeValues) {
             if (str.startsWith(key)) {
                result = str.replaceFirst(key + "=", "");
@@ -306,14 +288,9 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
       // do nothing; no cache on server
    }
 
-   @Override
-   public ArtifactToken getArtifactByName(IArtifactType artifactType, String name) {
-      return getQuery().andIsOfType(artifactType).andNameEquals(name).getResults().getAtMostOneOrNull();
-   }
-
    private List<ArtifactId> getCustomizeArts() {
       List<ArtifactId> customizationArts = getGlobalCustomizeArts();
-      for (ArtifactId artifact : getQuery().andIsOfType(CoreArtifactTypes.User).getResults()) {
+      for (ArtifactId artifact : getQueryService().getArtifacts(CoreArtifactTypes.User)) {
          customizationArts.add(artifact);
       }
       return customizationArts;
@@ -321,7 +298,7 @@ public class AtsServerImpl extends AtsApiImpl implements IAtsServer {
 
    private List<ArtifactId> getGlobalCustomizeArts() {
       List<ArtifactId> customizationArts = new ArrayList<>();
-      for (ArtifactId artifact : getQuery().andIsOfType(CoreArtifactTypes.XViewerGlobalCustomization).getResults()) {
+      for (ArtifactId artifact : getQueryService().getArtifacts(CoreArtifactTypes.XViewerGlobalCustomization)) {
          customizationArts.add(artifact);
       }
       return customizationArts;

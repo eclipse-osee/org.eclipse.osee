@@ -12,12 +12,14 @@ package org.eclipse.osee.ats.rest.internal.cpa;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.cpa.DecisionUpdate;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
@@ -27,9 +29,7 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.util.result.XResultData;
-import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Donald G. Dunne
@@ -46,12 +46,11 @@ public class DecisionUpdater {
 
    public XResultData update() {
       XResultData rd = new XResultData(false);
-      ResultSet<ArtifactReadable> results =
-         atsServer.getQuery().and(AtsAttributeTypes.AtsId, update.getIds()).getResults();
+      Collection<IAtsTeamWorkflow> teamWfs =
+         atsServer.getQueryService().createQuery(WorkItemType.TeamWorkflow).andAtsIds(update.getIds()).getItems();
       IAtsChangeSet changes =
          atsServer.getStoreService().createAtsChangeSet("Update CPA Decision", AtsCoreUsers.SYSTEM_USER);
-      for (ArtifactReadable art : results) {
-         IAtsTeamWorkflow teamWf = atsServer.getWorkItemFactory().getTeamWf(art);
+      for (IAtsTeamWorkflow teamWf : teamWfs) {
          if (!rd.isErrors()) {
             updateRationale(update, changes, teamWf, rd);
          }

@@ -23,6 +23,7 @@ import static org.eclipse.osee.ats.api.data.AtsAttributeTypes.DslSheet;
 import static org.eclipse.osee.ats.api.data.AtsRelationTypes.TeamActionableItem_ActionableItem;
 import static org.eclipse.osee.ats.api.data.AtsRelationTypes.TeamDefinitionToVersion_Version;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Users_User;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,7 +44,7 @@ import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -103,7 +104,8 @@ public class AtsConfigurationsService implements IAtsConfigurationsService {
          aiIds.add(art.getId());
       }
 
-      ResultSet<ArtifactReadable> artifacts = atsServer.getQuery().andTypeEquals(Configuration).getResults();
+      Collection<ArtifactReadable> artifacts =
+         Collections.castAll(atsServer.getQueryService().getArtifacts(Configuration));
       // load ats branch configurations
       AtsConfigurations configs = new AtsConfigurations();
       for (ArtifactReadable art : artifacts) {
@@ -128,7 +130,7 @@ public class AtsConfigurationsService implements IAtsConfigurationsService {
       }
       // load admins
       ArtifactReadable atsAdminArt =
-         atsServer.getQuery().andId(AtsArtifactToken.AtsAdmin).getResults().getAtMostOneOrNull();
+         (ArtifactReadable) atsServer.getQueryService().getArtifact(AtsArtifactToken.AtsAdmin);
       if (atsAdminArt != null) {
          for (ArtifactReadable member : atsAdminArt.getRelated(Users_User)) {
             configs.getAtsAdmins().add(member);
@@ -137,8 +139,8 @@ public class AtsConfigurationsService implements IAtsConfigurationsService {
 
       Map<Long, ArtifactReadable> idToArtifact = new HashMap<>();
 
-      List<ArtifactReadable> configArts =
-         atsServer.getQuery().andIsOfType(TeamDefinition, Version, ActionableItem).getResults().getList();
+      List<ArtifactReadable> configArts = Collections.castAll(
+         atsServer.getQueryService().getArtifacts(atsServer.getAtsBranch(), TeamDefinition, Version, ActionableItem));
 
       // load ats config objects
       for (ArtifactReadable configArtId : configArts) {
@@ -166,7 +168,7 @@ public class AtsConfigurationsService implements IAtsConfigurationsService {
       configs.setTopActionableItem(AtsArtifactToken.TopActionableItem);
 
       // load work definitions
-      for (ArtifactToken workDefArt : atsServer.getQuery().andIsOfType(WorkDefinition).getResults()) {
+      for (ArtifactToken workDefArt : atsServer.getQueryService().getArtifacts(WorkDefinition)) {
          String workDefStr = atsServer.getAttributeResolver().getSoleAttributeValueAsString(workDefArt, DslSheet, "");
          configs.getWorkDefinitionsData().add(new WorkDefData(workDefArt.getId(), workDefArt.getName(), workDefStr));
       }

@@ -81,7 +81,7 @@ public class InsertionEndpointImpl extends BaseConfigEndpointImpl<JaxInsertion> 
    public List<JaxInsertion> getObjects() {
       List<JaxInsertion> insertions = new ArrayList<>();
       if (programId == 0L) {
-         for (ArtifactReadable art : atsServer.getQuery().andIsOfType(artifactType).getResults()) {
+         for (ArtifactToken art : atsServer.getQueryService().getArtifacts(artifactType)) {
             insertions.add(getConfigObject(art));
          }
       } else {
