@@ -27,9 +27,6 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.CriteriaSet;
-import org.eclipse.osee.orcs.core.ds.Options;
-import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAuthorIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaCommitIds;
@@ -96,10 +93,7 @@ public class TxQuerySqlContextFactoryImplTest {
       when(session.getGuid()).thenReturn(sessionId);
 
       queryEngine = Engines.newTxSqlContextFactory(logger, joinFactory, identityService, null);
-
-      CriteriaSet criteriaSet = new CriteriaSet();
-      Options options = OptionsUtil.createOptions();
-      queryData = new QueryData(criteriaSet, options);
+      queryData = new QueryData();
    }
 
    @Test

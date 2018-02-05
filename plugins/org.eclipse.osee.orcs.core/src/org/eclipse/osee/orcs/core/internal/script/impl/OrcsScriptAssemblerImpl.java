@@ -10,22 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.script.impl;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.OrcsTypes;
-import org.eclipse.osee.orcs.core.ds.CriteriaSet;
 import org.eclipse.osee.orcs.core.ds.DataModule;
 import org.eclipse.osee.orcs.core.ds.DynamicData;
 import org.eclipse.osee.orcs.core.ds.DynamicObject;
-import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
-import org.eclipse.osee.orcs.core.ds.SelectData;
 import org.eclipse.osee.orcs.core.ds.SelectSet;
 import org.eclipse.osee.orcs.core.internal.script.OrcsScriptAssembler;
 import org.eclipse.osee.orcs.core.internal.script.OrcsScriptExecutor;
@@ -96,15 +92,7 @@ public class OrcsScriptAssemblerImpl implements OrcsScriptAssembler, OrcsScriptE
 
    @Override
    public void onQueryStart() {
-      Options options = OptionsUtil.createOptions();
-
-      OptionsUtil.setIncludeDeletedArtifacts(options, false);
-      OptionsUtil.setIncludeDeletedAttributes(options, false);
-      OptionsUtil.setIncludeDeletedRelations(options, false);
-
-      List<CriteriaSet> criterias = new ArrayList<>();
-      criterias.add(new CriteriaSet());
-      queries.add(new QueryData(options, criterias, new SelectData()));
+      queries.add(new QueryData());
    }
 
    @Override

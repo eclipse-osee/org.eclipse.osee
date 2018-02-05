@@ -163,18 +163,8 @@ public class BranchQueryBuilderImpl<T> implements BranchQueryBuilder<T> {
       return (T) this;
    }
 
-   public QueryData buildAndCopy() {
-      return build(true);
-   }
-
    public QueryData build() {
-      return build(false);
-   }
-
-   private QueryData build(boolean clone) {
-      QueryData queryData = clone ? getQueryData().clone() : getQueryData();
-      Collection<Criteria> criterias = queryData.getAllCriteria();
-      if (criterias.isEmpty()) {
+      if (queryData.hasNoCriteria()) {
          addAndCheck(queryData, criteriaFactory.createAllBranchesCriteria());
       }
       if (!areArchivedIncluded()) {
@@ -192,5 +182,4 @@ public class BranchQueryBuilderImpl<T> implements BranchQueryBuilder<T> {
       }
       return queryData;
    }
-
 }

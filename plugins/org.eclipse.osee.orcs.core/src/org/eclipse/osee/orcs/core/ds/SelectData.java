@@ -63,14 +63,4 @@ public class SelectData implements Cloneable {
          selects.add(data);
       }
    }
-
-   @Override
-   public SelectData clone() {
-      List<SelectSet> cloned = new ArrayList<>(selects.size());
-      for (SelectSet select : selects) {
-         cloned.add(select.clone());
-      }
-      return new SelectData(cloned);
-   }
-
 }

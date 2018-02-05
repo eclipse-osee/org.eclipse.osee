@@ -31,11 +31,9 @@ import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
-import org.eclipse.osee.orcs.core.ds.criteria.BranchCriteria;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeNotExists;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaRelatedTo;
-import org.eclipse.osee.orcs.core.ds.criteria.TxCriteria;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.ArtifactQueryBuilder;
 
@@ -335,29 +333,8 @@ public class ArtifactQueryBuilderImpl<T> implements ArtifactQueryBuilder<T> {
       return (T) this;
    }
 
-   private boolean hasOnlyBranchOrTxCriterias(Collection<Criteria> criterias) {
-      boolean result = true;
-      for (Criteria criteria : criterias) {
-         if (!(criteria instanceof TxCriteria) && !(criteria instanceof BranchCriteria)) {
-            result = false;
-            break;
-         }
-      }
-      return result;
-   }
-
-   public QueryData buildAndCopy() {
-      return build(true);
-   }
-
    public QueryData build() {
-      return build(false);
-   }
-
-   private QueryData build(boolean clone) {
-      QueryData queryData = clone ? getQueryData().clone() : getQueryData();
-      Collection<Criteria> criterias = queryData.getAllCriteria();
-      if (criterias.isEmpty() || hasOnlyBranchOrTxCriterias(criterias)) {
+      if (queryData.hasOnlyBranchOrTxCriterias()) {
          addAndCheck(queryData, criteriaFactory.createAllArtifactsCriteria());
       }
       return queryData;

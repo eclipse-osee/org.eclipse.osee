@@ -38,13 +38,4 @@ public class SelectSet implements Cloneable {
    public void setData(DynamicData data) {
       this.data = data;
    }
-
-   @Override
-   public SelectSet clone() {
-      SelectSet clone = new SelectSet();
-      clone.limit = limit;
-      clone.data = data;
-      return clone;
-   }
-
 }

@@ -17,8 +17,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.orcs.core.ds.CriteriaSet;
-import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.statistics.QueryStatistics;
@@ -45,7 +43,7 @@ public class QueryStatisticsTest {
    }
 
    private static QueryData createQueryData(String value) {
-      QueryData queryData = new QueryData(new CriteriaSet(), OptionsUtil.createOptions());
+      QueryData queryData = new QueryData();
       Collection<AttributeTypeId> types = Collections.singleton(CoreAttributeTypes.Name);
       queryData.addCriteria(new CriteriaAttributeKeywords(false, types, null, value, QueryOption.TOKEN_DELIMITER__ANY,
          QueryOption.TOKEN_MATCH_ORDER__MATCH, QueryOption.TOKEN_COUNT__IGNORE, QueryOption.CASE__MATCH));

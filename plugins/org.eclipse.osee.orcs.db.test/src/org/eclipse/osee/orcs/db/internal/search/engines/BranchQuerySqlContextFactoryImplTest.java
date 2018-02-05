@@ -37,9 +37,6 @@ import org.eclipse.osee.jdbc.JdbcDbType;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.CriteriaSet;
-import org.eclipse.osee.orcs.core.ds.Options;
-import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllBranches;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAssociatedArtId;
@@ -102,9 +99,7 @@ public class BranchQuerySqlContextFactoryImplTest {
       queryEngine = Engines.newBranchSqlContextFactory(logger, joinFactory, identityService, jdbcClient);
       when(jdbcClient.getDbType()).thenReturn(JdbcDbType.hsql);
 
-      CriteriaSet criteriaSet = new CriteriaSet();
-      Options options = OptionsUtil.createBranchOptions();
-      queryData = new QueryData(criteriaSet, options);
+      queryData = new QueryData();
    }
 
    @Test

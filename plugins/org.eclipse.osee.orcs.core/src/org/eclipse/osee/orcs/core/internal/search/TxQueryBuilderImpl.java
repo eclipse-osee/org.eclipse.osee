@@ -178,20 +178,12 @@ public class TxQueryBuilderImpl<T> implements TxQueryBuilder<T> {
       return (T) this;
    }
 
-   public QueryData buildAndCopy() {
-      return build(true);
-   }
-
    public QueryData build() {
-      return build(false);
-   }
-
-   private QueryData build(boolean clone) {
-      QueryData queryData = clone ? getQueryData().clone() : getQueryData();
-      if (queryData.getAllCriteria().isEmpty()) {
+      if (queryData.hasNoCriteria()) {
          addAndCheck(queryData, criteriaFactory.createAllTransactionsCriteria());
       }
       return queryData;
+
    }
 
    @Override

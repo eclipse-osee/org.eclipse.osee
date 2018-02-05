@@ -13,25 +13,26 @@ package org.eclipse.osee.orcs.core.ds;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.eclipse.osee.orcs.core.ds.criteria.BranchCriteria;
+import org.eclipse.osee.orcs.core.ds.criteria.TxCriteria;
 
 /**
  * @author Roberto E. Escobar
  */
-public class QueryData implements HasOptions, Cloneable {
-
+public final class QueryData implements HasOptions {
    private final List<CriteriaSet> criterias;
    private final SelectData selectData;
    private final Options options;
 
-   public QueryData(Options options, List<CriteriaSet> criterias, SelectData selectData) {
-      this.criterias = criterias;
-      this.selectData = selectData;
+   public QueryData(CriteriaSet criteriaSet, Options options) {
+      this.criterias = new ArrayList<>();
+      this.selectData = new SelectData();
       this.options = options;
+      criterias.add(criteriaSet);
    }
 
-   public QueryData(CriteriaSet criteriaSet, Options options) {
-      this(options, new ArrayList<CriteriaSet>(), new SelectData());
-      criterias.add(criteriaSet);
+   public QueryData() {
+      this(new CriteriaSet(), OptionsUtil.createOptions());
    }
 
    @Override
@@ -47,12 +48,16 @@ public class QueryData implements HasOptions, Cloneable {
       return allCriterias;
    }
 
+   public boolean hasNoCriteria() {
+      return criterias.get(0).getCriterias().isEmpty();
+   }
+
    public List<CriteriaSet> getCriteriaSets() {
       return Collections.unmodifiableList(criterias);
    }
 
    public CriteriaSet getLastCriteriaSet() {
-      return !criterias.isEmpty() ? criterias.get(criterias.size() - 1) : null;
+      return criterias.get(criterias.size() - 1);
    }
 
    public CriteriaSet newCriteriaSet() {
@@ -81,6 +86,20 @@ public class QueryData implements HasOptions, Cloneable {
       }
    }
 
+   /**
+    * @return true if this queryData has no branch or txs criteria (including when there is no criteria)
+    */
+   public boolean hasOnlyBranchOrTxCriterias() {
+      for (CriteriaSet criteriaSet : criterias) {
+         for (Criteria criteria : criteriaSet) {
+            if (!(criteria instanceof TxCriteria) && !(criteria instanceof BranchCriteria)) {
+               return false;
+            }
+         }
+      }
+      return true;
+   }
+
    public boolean hasCriteriaType(Class<? extends Criteria> type) {
       boolean result = false;
       for (CriteriaSet criteriaSet : criterias) {
@@ -95,30 +114,16 @@ public class QueryData implements HasOptions, Cloneable {
    public void reset() {
       options.reset();
 
-      CriteriaSet criteriaSet = null;
-      if (!criterias.isEmpty()) {
-         criteriaSet = criterias.get(0);
-         criteriaSet.reset();
-      }
+      CriteriaSet criteriaSet = criterias.get(0);
+      criteriaSet.reset();
       criterias.clear();
-      if (criteriaSet != null) {
-         criterias.add(criteriaSet);
-      }
-   }
+      criterias.add(criteriaSet);
 
-   @Override
-   public QueryData clone() {
-      List<CriteriaSet> newCriterias = new ArrayList<>(criterias.size());
-      for (CriteriaSet criteriaSet : criterias) {
-         newCriterias.add(criteriaSet.clone());
-      }
-      SelectData newSelectData = selectData.clone();
-      return new QueryData(options.clone(), newCriterias, newSelectData);
+      selectData.reset();
    }
 
    @Override
    public String toString() {
       return "QueryData [criterias=" + criterias + ", selects=" + selectData + ", options=" + options + "]";
    }
-
 }

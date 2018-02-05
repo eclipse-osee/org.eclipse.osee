@@ -106,21 +106,21 @@ public class QueryBuilderImpl extends ArtifactQueryBuilderImpl<QueryBuilder> imp
 
    @Override
    public CancellableCallable<ResultSet<ArtifactReadable>> createSearch() {
-      return queryFactory.createSearch(session, buildAndCopy());
+      return queryFactory.createSearch(session, build());
    }
 
    @Override
    public CancellableCallable<ResultSet<Match<ArtifactReadable, AttributeReadable<?>>>> createSearchWithMatches() {
-      return queryFactory.createSearchWithMatches(session, buildAndCopy());
+      return queryFactory.createSearchWithMatches(session, build());
    }
 
    @Override
    public CancellableCallable<ResultSet<? extends ArtifactId>> createSearchResultsAsIds() {
-      return queryFactory.createLocalIdSearch(session, buildAndCopy());
+      return queryFactory.createLocalIdSearch(session, build());
    }
 
    @Override
    public CancellableCallable<Integer> createCount() {
-      return queryFactory.createCount(session, buildAndCopy());
+      return queryFactory.createCount(session, build());
    }
 }

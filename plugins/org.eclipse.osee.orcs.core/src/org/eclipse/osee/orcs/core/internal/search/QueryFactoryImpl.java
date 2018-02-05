@@ -70,10 +70,7 @@ public class QueryFactoryImpl implements QueryFactory {
 
    @Override
    public BranchQuery branchQuery() {
-      Options options = OptionsUtil.createOptions();
-      CriteriaSet criteriaSet = new CriteriaSet();
-      QueryData queryData = new QueryData(criteriaSet, options);
-      return new BranchQueryImpl(queryEngine, branchCriteriaFactory, queryData);
+      return new BranchQueryImpl(queryEngine, branchCriteriaFactory, new QueryData());
    }
 
    @Override
@@ -101,11 +98,7 @@ public class QueryFactoryImpl implements QueryFactory {
 
    @Override
    public TransactionQuery transactionQuery() {
-      Options options = OptionsUtil.createOptions();
-      CriteriaSet criteriaSet = new CriteriaSet();
-      QueryData queryData = new QueryData(criteriaSet, options);
-      TransactionQueryImpl query = new TransactionQueryImpl(queryEngine, txCriteriaFactory, queryData);
-      return query;
+      return new TransactionQueryImpl(queryEngine, txCriteriaFactory, new QueryData());
    }
 
    @Override
