@@ -47,7 +47,7 @@ public class ObjectQuerySqlContextFactoryImpl implements QuerySqlContextFactory 
       QuerySqlContext context = new QuerySqlContext(session, queryData.getOptions(), ObjectQueryType.DYNAMIC_OBJECT);
       AbstractSqlWriter writer =
          new ObjectQuerySqlWriter(logger, joinFactory, jdbcClient, context, queryType, queryData);
-      List<SqlHandler<?>> handlers = handlerFactory.createHandlers(queryData.getCriteriaSets());
+      List<SqlHandler<?>> handlers = handlerFactory.createHandlers(queryData);
       writer.build(handlers);
       return context;
    }

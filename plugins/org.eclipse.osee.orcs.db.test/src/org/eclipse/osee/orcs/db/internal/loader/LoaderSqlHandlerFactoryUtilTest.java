@@ -10,14 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.CriteriaSet;
+import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaArtifact;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaAttribute;
@@ -37,7 +33,7 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Test Case for {@link LoaderSqlHandlerFactoryUtil}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class LoaderSqlHandlerFactoryUtilTest {
@@ -58,15 +54,12 @@ public class LoaderSqlHandlerFactoryUtilTest {
 
    @Test
    public void testQueryModuleFactory() throws Exception {
-      List<Criteria> criteria = new ArrayList<>();
-      criteria.add(new CriteriaArtifact());
-      criteria.add(new CriteriaAttribute(null, null));
-      criteria.add(new CriteriaRelation(null, null));
+      QueryData queryData = new QueryData();
+      queryData.addCriteria(new CriteriaArtifact());
+      queryData.addCriteria(new CriteriaAttribute(null, null));
+      queryData.addCriteria(new CriteriaRelation(null, null));
 
-      Collections.shuffle(criteria);
-
-      CriteriaSet criteriaSet = createCriteria(criteria);
-      List<SqlHandler<?>> handlers = factory.createHandlers(criteriaSet);
+      List<SqlHandler<?>> handlers = factory.createHandlers(queryData);
 
       Assert.assertEquals(3, handlers.size());
 
@@ -86,13 +79,5 @@ public class LoaderSqlHandlerFactoryUtilTest {
       Assert.assertEquals(logger, actual.getLogger());
       Assert.assertEquals(idService, actual.getIdentityService());
       Assert.assertEquals(priority.ordinal(), actual.getPriority());
-   }
-
-   private static CriteriaSet createCriteria(Collection<? extends Criteria> criteria) {
-      CriteriaSet set = new CriteriaSet();
-      for (Criteria crit : criteria) {
-         set.add(crit);
-      }
-      return set;
    }
 }

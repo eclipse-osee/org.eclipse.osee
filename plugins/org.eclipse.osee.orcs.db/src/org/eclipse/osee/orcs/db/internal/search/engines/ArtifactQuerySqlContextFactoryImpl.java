@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.db.internal.search.engines;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
-import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -27,7 +26,6 @@ import org.eclipse.osee.orcs.db.internal.search.QuerySqlContextFactory;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.QueryType;
 import org.eclipse.osee.orcs.db.internal.sql.SqlContext;
-import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactory;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
@@ -52,11 +50,8 @@ public class ArtifactQuerySqlContextFactoryImpl implements QuerySqlContextFactor
    @Override
    public QuerySqlContext createQueryContext(OrcsSession session, QueryData queryData, QueryType queryType) {
       QuerySqlContext context = createContext(session, queryData);
-
       AbstractSqlWriter writer = createQueryWriter(context, queryData, queryType);
-
-      List<SqlHandler<?>> handlers = handlerFactory.createHandlers(queryData.getCriteriaSets());
-      writer.build(handlers);
+      writer.build(handlerFactory.createHandlers(queryData));
       return context;
    }
 

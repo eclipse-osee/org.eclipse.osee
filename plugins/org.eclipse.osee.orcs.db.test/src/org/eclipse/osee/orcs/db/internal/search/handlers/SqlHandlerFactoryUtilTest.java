@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.db.internal.search.handlers;
 
 import static org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactoryUtil.createArtifactSqlHandlerFactory;
 import static org.mockito.MockitoAnnotations.initMocks;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -21,6 +20,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
+import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAllArtifacts;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactGuids;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaArtifactIds;
@@ -66,24 +66,21 @@ public class SqlHandlerFactoryUtilTest {
 
    @Test
    public void testQueryModuleFactory() throws Exception {
-      List<Criteria> criteria = new ArrayList<>();
-      criteria.add(new CriteriaArtifactGuids(null));
-      criteria.add(new CriteriaArtifactIds(Collections.emptyList()));
-      criteria.add(new CriteriaRelationTypeFollow(null));
-      criteria.add(new CriteriaArtifactType(null, null, true));
-      criteria.add(new CriteriaRelationTypeExists(null));
-      criteria.add(new CriteriaAttributeTypeExists(null));
-      criteria.add(new CriteriaAttributeTypeNotExists(null));
-      criteria.add(new CriteriaAttributeOther(null, null));
-      criteria.add(
+      QueryData queryData = new QueryData();
+      queryData.addCriteria(new CriteriaArtifactGuids(null));
+      queryData.addCriteria(new CriteriaArtifactIds(Collections.emptyList()));
+      queryData.addCriteria(new CriteriaRelationTypeFollow(null));
+      queryData.addCriteria(new CriteriaArtifactType(null, null, true));
+      queryData.addCriteria(new CriteriaRelationTypeExists(null));
+      queryData.addCriteria(new CriteriaAttributeTypeExists(null));
+      queryData.addCriteria(new CriteriaAttributeTypeNotExists(null));
+      queryData.addCriteria(new CriteriaAttributeOther(null, null));
+      queryData.addCriteria(
          new CriteriaAttributeKeywords(false, null, null, Collections.<String> emptyList(), null, null, null));
-      criteria.add(new CriteriaRelatedTo(null, (Collection<? extends ArtifactId>) null));
-      criteria.add(new CriteriaAllArtifacts());
+      queryData.addCriteria(new CriteriaRelatedTo(null, (Collection<? extends ArtifactId>) null));
+      queryData.addCriteria(new CriteriaAllArtifacts());
 
-      Collections.shuffle(criteria);
-
-      CriteriaSet criteriaSet = createCriteria(criteria);
-      List<SqlHandler<?>> handlers = factory.createHandlers(criteriaSet);
+      List<SqlHandler<?>> handlers = factory.createHandlers(queryData);
 
       Assert.assertEquals(11, handlers.size());
 

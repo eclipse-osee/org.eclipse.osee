@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.db.internal.sql;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +18,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.CriteriaSet;
+import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.db.internal.IdentityLocator;
 import org.eclipse.osee.orcs.db.internal.search.tagger.HasTagProcessor;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TagProcessor;
@@ -44,15 +44,10 @@ public class SqlHandlerFactoryImpl implements SqlHandlerFactory {
    }
 
    @Override
-   public List<SqlHandler<?>> createHandlers(CriteriaSet... criteriaSet) {
-      return createHandlers(Arrays.asList(criteriaSet));
-   }
-
-   @Override
-   public List<SqlHandler<?>> createHandlers(Iterable<CriteriaSet> criteriaSets) {
+   public List<SqlHandler<?>> createHandlers(QueryData queryData) {
       List<SqlHandler<?>> handlers = new ArrayList<>();
       int level = 0;
-      for (CriteriaSet criteriaSet : criteriaSets) {
+      for (CriteriaSet criteriaSet : queryData.getCriteriaSets()) {
          addHandlers(handlers, level, criteriaSet);
          level++;
       }

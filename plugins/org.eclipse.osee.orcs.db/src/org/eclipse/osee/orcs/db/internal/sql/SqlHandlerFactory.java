@@ -12,16 +12,14 @@ package org.eclipse.osee.orcs.db.internal.sql;
 
 import java.util.List;
 import org.eclipse.osee.orcs.core.ds.Criteria;
-import org.eclipse.osee.orcs.core.ds.CriteriaSet;
+import org.eclipse.osee.orcs.core.ds.QueryData;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface SqlHandlerFactory {
 
-   List<SqlHandler<?>> createHandlers(CriteriaSet... criteriaSet);
-
-   List<SqlHandler<?>> createHandlers(Iterable<CriteriaSet> criteriaSets);
+   List<SqlHandler<?>> createHandlers(QueryData queryData);
 
    SqlHandler<?> createHandler(Criteria criteria);
 }

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.engines;
 
-import java.util.List;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -20,7 +19,6 @@ import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext.ObjectQueryType;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContextFactory;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.QueryType;
-import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactory;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
@@ -53,9 +51,7 @@ public class QuerySqlContextFactoryImpl implements QuerySqlContextFactory {
       QuerySqlContext context = new QuerySqlContext(session, queryData.getOptions(), type);
       AbstractSqlWriter writer =
          new QuerySqlWriter(logger, joinFactory, jdbcClient, context, queryType, table, idColumn);
-      List<SqlHandler<?>> handlers = handlerFactory.createHandlers(queryData.getCriteriaSets());
-      writer.build(handlers);
+      writer.build(handlerFactory.createHandlers(queryData));
       return context;
    }
-
 }
