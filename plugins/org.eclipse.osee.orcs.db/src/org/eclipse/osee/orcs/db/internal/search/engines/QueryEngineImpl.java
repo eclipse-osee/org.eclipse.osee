@@ -23,6 +23,7 @@ import org.eclipse.osee.orcs.core.ds.ApplicabilityDsQuery;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.QueryEngine;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.internal.loader.SqlObjectLoader;
 import org.eclipse.osee.orcs.db.internal.search.QueryCallableFactory;
@@ -57,8 +58,16 @@ public class QueryEngineImpl implements QueryEngine {
    }
 
    @Override
-   public CancellableCallable<Integer> createArtifactCount(OrcsSession session, QueryData queryData) {
-      return artifactQueryEngineFactory.createCount(session, queryData);
+   public int getArtifactCount(QueryData queryData) {
+      if (isPostProcessRequired(queryData)) {
+         return artifactQueryEngineFactory.getArtifactCount(queryData);
+      }
+      QuerySqlContext queryContext = artifactSqlContextFactory.createQueryContext(null, queryData, QueryType.COUNT);
+      return sqlObjectLoader.getCount(queryContext);
+   }
+
+   private boolean isPostProcessRequired(QueryData queryData) {
+      return queryData.hasCriteriaType(CriteriaAttributeKeywords.class);
    }
 
    @Override
@@ -93,11 +102,6 @@ public class QueryEngineImpl implements QueryEngine {
    @Override
    public CancellableCallable<Integer> createQuery(OrcsSession session, QueryData queryData, LoadDataHandler handler) {
       return allQueryEngineFactory.createQuery(session, queryData, handler);
-   }
-
-   @Override
-   public CancellableCallable<Integer> createQueryCount(OrcsSession session, QueryData queryData) {
-      return allQueryEngineFactory.createCount(session, queryData);
    }
 
    @Override

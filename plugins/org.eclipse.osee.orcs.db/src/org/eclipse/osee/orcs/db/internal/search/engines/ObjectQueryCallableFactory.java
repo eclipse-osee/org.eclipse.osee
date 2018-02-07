@@ -18,7 +18,9 @@ import org.eclipse.osee.orcs.core.ds.CountingLoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.DataLoader;
 import org.eclipse.osee.orcs.core.ds.DataLoaderFactory;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
+import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
+import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeKeywords;
 import org.eclipse.osee.orcs.db.internal.search.QueryCallableFactory;
 import org.eclipse.osee.orcs.db.internal.search.QueryFilterFactory;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
@@ -31,14 +33,14 @@ import org.eclipse.osee.orcs.db.internal.sql.QueryType;
 public class ObjectQueryCallableFactory implements QueryCallableFactory {
 
    private final Log logger;
-   private final DataLoaderFactory objectLoader;
+   private final DataLoaderFactory dataLoaderFactory;
    private final QuerySqlContextFactory queryContextFactory;
    private final QueryFilterFactory factory;
 
-   public ObjectQueryCallableFactory(Log logger, DataLoaderFactory objectLoader, QuerySqlContextFactory queryEngine, QueryFilterFactoryImpl factory) {
+   public ObjectQueryCallableFactory(Log logger, DataLoaderFactory dataLoaderFactory, QuerySqlContextFactory queryEngine, QueryFilterFactoryImpl factory) {
       super();
       this.logger = logger;
-      this.objectLoader = objectLoader;
+      this.dataLoaderFactory = dataLoaderFactory;
       this.queryContextFactory = queryEngine;
       this.factory = factory;
    }
@@ -48,30 +50,24 @@ public class ObjectQueryCallableFactory implements QueryCallableFactory {
       return queryContextFactory;
    }
 
+   private boolean isLoadLevelTooLow(LoadLevel level) {
+      return LoadLevel.ARTIFACT_DATA == level;
+   }
+
    @Override
-   public CancellableCallable<Integer> createCount(OrcsSession session, QueryData queryData) {
-      return new AbstractObjectSearchCallable(logger, session, queryData) {
+   public int getArtifactCount(QueryData queryData) {
+      QuerySqlContext queryContext = queryContextFactory.createQueryContext(null, queryData, QueryType.SELECT);
 
-         @Override
-         protected Integer innerCall() throws Exception {
-            int count = -1;
-            if (isPostProcessRequired()) {
-               count = loadAndGetCount(null, true);
-            } else {
-               count = getCount();
-            }
-            checkForCancelled();
-            return count;
-         }
+      DataLoader loader = dataLoaderFactory.newDataLoader(queryContext);
+      loader.setOptions(queryData.getOptions());
 
-         protected int getCount() {
-            QuerySqlContext queryContext =
-               queryContextFactory.createQueryContext(getSession(), getQueryData(), QueryType.COUNT);
-            checkForCancelled();
-            return objectLoader.getCount(this, queryContext);
-         }
-
-      };
+      // Ensure we will receive attribute data for post-process
+      if (isLoadLevelTooLow(OptionsUtil.getLoadLevel(queryData.getOptions()))) {
+         OptionsUtil.setLoadLevel(queryData.getOptions(), LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA);
+      }
+      CountingLoadDataHandler countingHandler = factory.createHandler(queryData, queryContext, null);
+      loader.load(null, countingHandler);
+      return countingHandler.getCount();
    }
 
    @Override
@@ -97,7 +93,7 @@ public class ObjectQueryCallableFactory implements QueryCallableFactory {
       }
 
       protected boolean isPostProcessRequired() {
-         return factory.isFilterRequired(getQueryData());
+         return getQueryData().hasCriteriaType(CriteriaAttributeKeywords.class);
       }
 
       protected int loadAndGetCount(LoadDataHandler handler, boolean enableFilter) throws Exception {
@@ -105,7 +101,7 @@ public class ObjectQueryCallableFactory implements QueryCallableFactory {
             queryContextFactory.createQueryContext(getSession(), getQueryData(), QueryType.SELECT);
          checkForCancelled();
 
-         DataLoader loader = objectLoader.newDataLoader(queryContext);
+         DataLoader loader = dataLoaderFactory.newDataLoader(queryContext);
          loader.setOptions(getQueryData().getOptions());
 
          if (enableFilter) {
@@ -115,10 +111,9 @@ public class ObjectQueryCallableFactory implements QueryCallableFactory {
                loader.withLoadLevel(LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA);
             }
          }
-         CountingLoadDataHandler countingHandler = factory.createHandler(this, getQueryData(), queryContext, handler);
+         CountingLoadDataHandler countingHandler = factory.createHandler(getQueryData(), queryContext, handler);
          loader.load(this, countingHandler);
          return countingHandler.getCount();
       }
    }
-
 }

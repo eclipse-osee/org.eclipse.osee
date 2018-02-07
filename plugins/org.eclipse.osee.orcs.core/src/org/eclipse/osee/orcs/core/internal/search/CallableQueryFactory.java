@@ -58,17 +58,6 @@ public class CallableQueryFactory {
       this.proxyManager = proxyManager;
    }
 
-   public CancellableCallable<Integer> createCount(OrcsSession session, QueryData queryData) {
-      return new AbstractSearchCallable<Integer>(session, queryData) {
-         @Override
-         protected Integer innerCall() throws Exception {
-            Integer results = queryEngine.createArtifactCount(getSession(), getQueryData()).call();
-            setItemsFound(results);
-            return results;
-         }
-      };
-   }
-
    public CancellableCallable<ResultSet<? extends ArtifactId>> createLocalIdSearch(OrcsSession session, QueryData queryData) {
       return new AbstractSearchCallable<ResultSet<? extends ArtifactId>>(session, queryData) {
 

@@ -47,11 +47,6 @@ public interface QueryBuilder extends ArtifactQueryBuilder<QueryBuilder>, Query 
    ResultSet<? extends ArtifactId> getResultsIds();
 
    /**
-    * Schedule a count search results
-    */
-   CancellableCallable<Integer> createCount();
-
-   /**
     * Schedule query
     *
     * @return artifact search results

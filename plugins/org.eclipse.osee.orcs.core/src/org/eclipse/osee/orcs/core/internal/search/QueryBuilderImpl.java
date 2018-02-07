@@ -83,11 +83,7 @@ public class QueryBuilderImpl extends ArtifactQueryBuilderImpl<QueryBuilder> imp
 
    @Override
    public int getCount() {
-      try {
-         return createCount().call();
-      } catch (Exception ex) {
-         throw OseeCoreException.wrap(ex);
-      }
+      return queryEngine.getArtifactCount(getQueryData());
    }
 
    @Override
@@ -117,10 +113,5 @@ public class QueryBuilderImpl extends ArtifactQueryBuilderImpl<QueryBuilder> imp
    @Override
    public CancellableCallable<ResultSet<? extends ArtifactId>> createSearchResultsAsIds() {
       return queryFactory.createLocalIdSearch(session, build());
-   }
-
-   @Override
-   public CancellableCallable<Integer> createCount() {
-      return queryFactory.createCount(session, build());
    }
 }

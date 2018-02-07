@@ -44,21 +44,6 @@ public abstract class AbstractSimpleQueryCallableFactory implements QueryCallabl
    }
 
    @Override
-   public CancellableCallable<Integer> createCount(OrcsSession session, QueryData queryData) {
-      return new AbstractSearchCallable(logger, session, queryData) {
-
-         @Override
-         protected Integer innerCall() throws Exception {
-            QuerySqlContext queryContext =
-               queryContextFactory.createQueryContext(getSession(), getQueryData(), QueryType.COUNT);
-            checkForCancelled();
-            return objectLoader.getCount(this, queryContext);
-         }
-
-      };
-   }
-
-   @Override
    public CancellableCallable<Integer> createQuery(OrcsSession session, final QueryData queryData, final LoadDataHandler handler) {
       return new AbstractSearchCallable(logger, session, queryData) {
 

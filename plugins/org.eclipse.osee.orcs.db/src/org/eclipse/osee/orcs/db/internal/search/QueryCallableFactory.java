@@ -20,7 +20,7 @@ import org.eclipse.osee.orcs.core.ds.QueryData;
  */
 public interface QueryCallableFactory {
 
-   CancellableCallable<Integer> createCount(OrcsSession session, QueryData queryData);
+   int getArtifactCount(QueryData queryData);
 
    CancellableCallable<Integer> createQuery(OrcsSession session, QueryData queryData, LoadDataHandler handler);
 

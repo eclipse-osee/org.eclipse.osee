@@ -23,7 +23,7 @@ import org.eclipse.osee.orcs.search.TupleQuery;
  */
 public interface QueryEngine {
 
-   CancellableCallable<Integer> createArtifactCount(OrcsSession session, QueryData queryData);
+   int getArtifactCount(QueryData queryData);
 
    CancellableCallable<Integer> createArtifactQuery(OrcsSession session, QueryData queryData, LoadDataHandler handler);
 
@@ -40,8 +40,6 @@ public interface QueryEngine {
    void runTxQuery(QueryData queryData, List<? super TransactionReadable> txs);
 
    CancellableCallable<Integer> createQuery(OrcsSession session, QueryData queryData, LoadDataHandler handler);
-
-   CancellableCallable<Integer> createQueryCount(OrcsSession session, QueryData queryData);
 
    List<ArtifactToken> loadArtifactTokens(QueryData queryData);
 }

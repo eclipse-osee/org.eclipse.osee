@@ -53,25 +53,18 @@ import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
  * @author Roberto E. Escobar
  */
 public class QueryFilterFactoryImpl implements QueryFilterFactory {
-
    private final Log logger;
    private final ExecutorAdmin executorAdmin;
    private final AttributeDataMatcher matcher;
 
    public QueryFilterFactoryImpl(Log logger, ExecutorAdmin executorAdmin, AttributeDataMatcher matcher) {
-      super();
       this.logger = logger;
       this.executorAdmin = executorAdmin;
       this.matcher = matcher;
    }
 
    @Override
-   public boolean isFilterRequired(QueryData queryData) {
-      return queryData.hasCriteriaType(CriteriaAttributeKeywords.class);
-   }
-
-   @Override
-   public CountingLoadDataHandler createHandler(HasCancellation cancellation, QueryData queryData, QuerySqlContext queryContext, LoadDataHandler handler) throws Exception {
+   public CountingLoadDataHandler createHandler(QueryData queryData, QuerySqlContext queryContext, LoadDataHandler handler) {
       List<CriteriaAttributeKeywords> criterias = queryData.getCriteriaByType(CriteriaAttributeKeywords.class);
       CountingLoadDataHandler countingHandler;
       if (criterias.isEmpty()) {
@@ -81,7 +74,7 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
          int initialSize = computeFetchSize(queryContext);
          LoadDataBuffer buffer = new LoadDataBuffer(initialSize);
 
-         Consumer consumer = new ConsumerImpl(cancellation, criterias);
+         Consumer consumer = new ConsumerImpl(criterias);
          countingHandler = new AttributeDataProducer(buffer, handler, consumer);
       }
       return countingHandler;
@@ -109,7 +102,6 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
 
    private final class ConsumerImpl implements Consumer {
 
-      private final HasCancellation cancellation;
       private final List<CriteriaAttributeKeywords> criterias;
 
       private final AtomicBoolean executorStarted = new AtomicBoolean();
@@ -117,9 +109,7 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
       private final LinkedBlockingQueue<AttributeData> dataToProcess = new LinkedBlockingQueue<>();
       private Future<?> future;
 
-      public ConsumerImpl(HasCancellation cancellation, List<CriteriaAttributeKeywords> criterias) {
-         super();
-         this.cancellation = cancellation;
+      public ConsumerImpl(List<CriteriaAttributeKeywords> criterias) {
          this.criterias = criterias;
       }
 
@@ -135,29 +125,14 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
 
       @Override
       public void onData(AttributeData data, LoadDataHandler handler) {
-         try {
-            addToQueue(data, handler);
-         } catch (Exception ex) {
-            OseeCoreException.wrapAndThrow(ex);
-         } finally {
-            if (cancellation.isCancelled()) {
-               cancelFutures();
-            }
-         }
+         addToQueue(data, handler);
       }
 
-      private void addToQueue(AttributeData data, LoadDataHandler handler) throws Exception {
+      private void addToQueue(AttributeData data, LoadDataHandler handler) {
          dataToProcess.offer(data);
-         try {
-            if (executorStarted.compareAndSet(false, true)) {
-               future = executorAdmin.scheduleOnce("AttributeData loader", createConsumer(handler));
-            }
-         } finally {
-            if (cancellation.isCancelled()) {
-               cancelFutures();
-            }
+         if (executorStarted.compareAndSet(false, true)) {
+            future = executorAdmin.scheduleOnce("AttributeData loader", createConsumer(handler));
          }
-
       }
 
       private Runnable createConsumer(final LoadDataHandler handler) {
@@ -233,12 +208,8 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
 
       private void waitForResults() throws Exception {
          if (future != null) {
-            if (cancellation.isCancelled()) {
-               future.cancel(true);
-            } else {
-               // Wait for execution
-               future.get();
-            }
+            // Wait for execution
+            future.get();
          }
       }
 
