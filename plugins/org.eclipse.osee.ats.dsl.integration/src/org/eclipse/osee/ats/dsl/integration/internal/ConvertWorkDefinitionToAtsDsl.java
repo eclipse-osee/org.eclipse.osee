@@ -73,7 +73,7 @@ public class ConvertWorkDefinitionToAtsDsl {
       // Process work definition
       dslWorkDef = AtsDslFactoryImpl.init().createWorkDef();
       dslWorkDef.setName(Strings.quote(definitionName));
-      dslWorkDef.getId().add(definitionName);
+      dslWorkDef.getId().add(workDef.getIdString());
 
       // Process Work States
       for (IAtsStateDefinition stateDef : workDef.getStates()) {

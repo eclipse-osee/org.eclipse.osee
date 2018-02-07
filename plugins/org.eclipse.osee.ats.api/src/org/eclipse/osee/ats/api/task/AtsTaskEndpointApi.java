@@ -32,6 +32,7 @@ public interface AtsTaskEndpointApi {
 
    @GET
    @Path("{taskId}")
+   @Produces(MediaType.APPLICATION_JSON)
    public JaxAtsTask get(@PathParam("taskId") long taskId);
 
    @DELETE

@@ -35,13 +35,13 @@ public class WorkItemFactory extends AbstractWorkItemFactory {
 
    @Override
    public IAtsTeamWorkflow getTeamWf(ArtifactToken artifact) {
-      IAtsTeamWorkflow team = null;
+      IAtsTeamWorkflow teamWf = null;
       if (artifact instanceof IAtsTeamWorkflow) {
-         team = (IAtsTeamWorkflow) artifact;
+         teamWf = (IAtsTeamWorkflow) artifact;
       } else if (atsApi.getStoreService().isOfType(artifact, AtsArtifactTypes.TeamWorkflow)) {
-         team = new TeamWorkflow(atsApi.getLogger(), atsApi, artifact);
+         teamWf = new TeamWorkflow(atsApi.getLogger(), atsApi, artifact);
       }
-      return team;
+      return teamWf;
    }
 
    @Override

@@ -242,6 +242,14 @@ public class StateManager implements IAtsStateManager {
       }
       IAtsStateDefinition stateDef = workItem.getWorkDefinition().getStateByName(stateName);
       StateType stateType = stateDef.getStateType();
+      setAssignees(stateName, stateType, assignees);
+   }
+
+   @Override
+   public void setAssignees(String stateName, StateType stateType, List<? extends IAtsUser> assignees) {
+      if (assignees == null) {
+         return;
+      }
       if (stateType.isCompletedOrCancelledState()) {
          if (assignees.isEmpty()) {
             return;

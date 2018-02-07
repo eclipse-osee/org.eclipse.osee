@@ -48,6 +48,7 @@ import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.config.Versions;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.util.ConvertAtsConfigGuidAttributesOperations;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -502,7 +503,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       Date date = new Date();
       for (Artifact artifact : artifacts) {
          try {
-            String workDefName = artifact.getSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, "");
+            // delete after 26.0
+            String workDefName =
+               artifact.getSoleAttributeValue(ConvertAtsConfigGuidAttributesOperations.WorkflowDefinition, "");
             if (Strings.isValid(workDefName) && AtsClientService.get().getWorkDefinitionService().getWorkDefinition(
                workDefName) == null) {
                results.log(artifact, "testAttributeSetWorkDefinitionsExist",
@@ -511,6 +514,18 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                         artifact),
                      workDefName));
             }
+
+            ArtifactId workDefArt =
+               artifact.getSoleAttributeValue(AtsAttributeTypes.WorkflowDefinitionReference, ArtifactId.SENTINEL);
+            if (workDefArt.isValid() && AtsClientService.get().getWorkDefinitionService().getWorkDefinition(
+               workDefArt) == null) {
+               results.log(artifact, "testAttributeSetWorkDefinitionsExist",
+                  String.format(
+                     "Error: ats.Work Definition attribute value [%s] not valid work definition for " + XResultDataUI.getHyperlink(
+                        artifact),
+                     workDefName));
+            }
+
          } catch (Exception ex) {
             results.log(artifact, "testAttributeSetWorkDefinitionsExist",
                "Error: " + artifact.getArtifactTypeName() + " exception: " + ex.getLocalizedMessage());

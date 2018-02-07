@@ -34,10 +34,7 @@ public interface INewActionListener {
       // for override
    }
 
-   /**
-    * @return workflow id to use instead of default configured id
-    */
-   public default String getOverrideWorkDefinitionId(IAtsTeamWorkflow teamWf) {
+   public default ArtifactToken getOverrideWorkDefinitionId(IAtsTeamWorkflow teamWf) {
       // for override
       return null;
    }

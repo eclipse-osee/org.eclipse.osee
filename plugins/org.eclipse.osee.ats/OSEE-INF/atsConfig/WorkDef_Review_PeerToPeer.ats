@@ -1,5 +1,5 @@
 workDefinition "WorkDef_Review_PeerToPeer" {
-   id "WorkDef_Review_PeerToPeer"
+   id "25334"
    startState "Prepare"
 
    widgetDefinition "Title" {

@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.search.UserRelatedToAtsObjectSearch;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.util.ConvertAtsConfigGuidAttributesOperations;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -232,10 +233,11 @@ public class AtsArtifactChecks extends ArtifactCheck {
 
    private IStatus checkAtsWorkDefinitions(boolean isAtsAdmin, Collection<Artifact> artifacts) {
       for (Artifact art : artifacts) {
+         // legacy work definition check (remove after 26.0)
          if (art.isOfType(AtsArtifactTypes.WorkDefinition)) {
-            List<Artifact> artifactListFromTypeAndAttribute =
-               ArtifactQuery.getArtifactListFromTypeAndAttribute(AtsArtifactTypes.WorkDefinition,
-                  AtsAttributeTypes.WorkflowDefinition, art.getName(), AtsClientService.get().getAtsBranch());
+            List<Artifact> artifactListFromTypeAndAttribute = ArtifactQuery.getArtifactListFromTypeAndAttribute(
+               AtsArtifactTypes.WorkDefinition, ConvertAtsConfigGuidAttributesOperations.WorkflowDefinition,
+               art.getName(), AtsClientService.get().getAtsBranch());
             if (artifactListFromTypeAndAttribute.size() > 0) {
                return createStatus(String.format(
                   "ATS WorkDefinition [%s] selected to delete has ats.WorkDefinition attributes set to it's name in %d artifact.  These must be changed first.",
@@ -245,6 +247,20 @@ public class AtsArtifactChecks extends ArtifactCheck {
                return createStatus("Deletion of Work Definitions is only permitted by ATS Admin.");
             }
          }
+         if (art.isOfType(AtsArtifactTypes.WorkDefinition)) {
+            List<Artifact> artifactListFromTypeAndAttribute = ArtifactQuery.getArtifactListFromTypeAndAttribute(
+               AtsArtifactTypes.WorkDefinition, AtsAttributeTypes.WorkflowDefinitionReference, art.getIdString(),
+               AtsClientService.get().getAtsBranch());
+            if (artifactListFromTypeAndAttribute.size() > 0) {
+               return createStatus(String.format(
+                  "ATS WorkDefinition [%s] selected to delete has ats.WorkDefinitionReference attributes set to it's name in %d artifact.  These must be changed first.",
+                  art, artifactListFromTypeAndAttribute.size()));
+            }
+            if (!isAtsAdmin) {
+               return createStatus("Deletion of Work Definitions is only permitted by ATS Admin.");
+            }
+         }
+
       }
       return Status.OK_STATUS;
    }

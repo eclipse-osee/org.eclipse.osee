@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -195,9 +196,12 @@ public class AgileFactory {
       atsApi.getActionFactory().setAtsId(sprint, TeamDefinitions.getTopTeamDefinition(atsApi.getQueryService()),
          changes);
 
+      IAtsWorkDefinition workDefinition =
+         atsApi.getWorkDefinitionService().computeAndSetWorkDefinitionAttrs(sprint, null, changes);
+
       // Initialize state machine
       atsApi.getActionFactory().initializeNewStateMachine(sprint, Arrays.asList(AtsCoreUsers.UNASSIGNED_USER),
-         new Date(), atsApi.getUserService().getCurrentUser(), changes);
+         new Date(), atsApi.getUserService().getCurrentUser(), workDefinition, changes);
 
       changes.add(sprintArt);
 
@@ -221,14 +225,17 @@ public class AgileFactory {
          atsApi.getStoreService().createAtsChangeSet("Create new Agile Backlog", AtsCoreUsers.SYSTEM_USER);
 
       ArtifactToken backlogArt = changes.createArtifact(AtsArtifactTypes.AgileBacklog, name, id);
-      IAgileBacklog sprint = atsApi.getWorkItemFactory().getAgileBacklog(backlogArt);
+      IAgileBacklog backlog = atsApi.getWorkItemFactory().getAgileBacklog(backlogArt);
 
-      atsApi.getActionFactory().setAtsId(sprint, TeamDefinitions.getTopTeamDefinition(atsApi.getQueryService()),
+      atsApi.getActionFactory().setAtsId(backlog, TeamDefinitions.getTopTeamDefinition(atsApi.getQueryService()),
          changes);
 
+      IAtsWorkDefinition workDefinition =
+         atsApi.getWorkDefinitionService().computeAndSetWorkDefinitionAttrs(backlog, null, changes);
+
       // Initialize state machine
-      atsApi.getActionFactory().initializeNewStateMachine(sprint, Arrays.asList(AtsCoreUsers.UNASSIGNED_USER),
-         new Date(), atsApi.getUserService().getCurrentUser(), changes);
+      atsApi.getActionFactory().initializeNewStateMachine(backlog, Arrays.asList(AtsCoreUsers.UNASSIGNED_USER),
+         new Date(), atsApi.getUserService().getCurrentUser(), workDefinition, changes);
 
       changes.add(backlogArt);
 

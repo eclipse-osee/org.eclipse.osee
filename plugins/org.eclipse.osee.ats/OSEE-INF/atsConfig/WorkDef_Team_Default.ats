@@ -1,5 +1,5 @@
 workDefinition "WorkDef_Team_Default" {
-	id "WorkDef_Team_Default"
+	id "72301"
    startState "Endorse" 
 
    widgetDefinition "Problem" { 

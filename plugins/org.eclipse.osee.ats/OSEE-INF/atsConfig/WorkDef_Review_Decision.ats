@@ -1,5 +1,5 @@
 workDefinition "WorkDef_Review_Decision" {
-   id "WorkDef_Review_Decision"
+   id "25335"
    startState "Prepare"
 
    widgetDefinition "Question" {

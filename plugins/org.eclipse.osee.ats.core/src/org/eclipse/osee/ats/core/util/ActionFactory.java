@@ -36,7 +36,6 @@ import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
-import org.eclipse.osee.ats.api.team.ITeamWorkflowProvider;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
@@ -442,31 +441,11 @@ public class ActionFactory implements IAtsActionFactory {
 
       setAtsId(teamWf, teamWf.getTeamDefinition(), changes);
 
-      // If work def id is specified by listener, set as attribute
-      boolean set = false;
-      if (newActionListener != null) {
-         String overrideWorkDefId = newActionListener.getOverrideWorkDefinitionId(teamWf);
-         if (Strings.isValid(overrideWorkDefId)) {
-            changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.WorkflowDefinition, overrideWorkDefId);
-            set = true;
-         }
-      }
-      // else if work def is specified by provider, set as attribute
-      if (!set) {
-         for (ITeamWorkflowProvider provider : atsApi.getWorkItemService().getTeamWorkflowProviders().getProviders()) {
-            String overrideWorkDefId = provider.getOverrideWorkflowDefinitionId(teamWf);
-            if (Strings.isValid(overrideWorkDefId)) {
-               changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.WorkflowDefinition, overrideWorkDefId);
-            }
-         }
-      }
+      IAtsWorkDefinition workDefinition =
+         atsApi.getWorkDefinitionService().computeAndSetWorkDefinitionAttrs(teamWf, newActionListener, changes);
 
       // Initialize state machine
-      String workDefinitionName = getWorkDefinitionName(teamDef);
-      if (!Strings.isValid(workDefinitionName)) {
-         throw new OseeStateException("Work Definition for Team Def [%s] does not exist", teamDef);
-      }
-      initializeNewStateMachine(teamWf, assignees, createdDate, createdBy, changes);
+      initializeNewStateMachine(teamWf, assignees, createdDate, createdBy, workDefinition, changes);
 
       // Notify listener of team creation
       if (newActionListener != null) {
@@ -500,37 +479,17 @@ public class ActionFactory implements IAtsActionFactory {
       return teamWf;
    }
 
-   public String getWorkDefinitionName(IAtsTeamDefinition teamDef) {
-      String workDefName =
-         attrResolver.getSoleAttributeValueAsString(teamDef, AtsAttributeTypes.WorkflowDefinition, null);
-      if (Strings.isValid(workDefName)) {
-         return workDefName;
-      }
-
-      IAtsTeamDefinition parentTeamDef = teamDef.getParentTeamDef();
-      if (parentTeamDef == null) {
-         return "WorkDef_Team_Default";
-      }
-      return getWorkDefinitionName(parentTeamDef);
-   }
-
-   @Override
-   public void initializeNewStateMachine(IAtsWorkItem workItem, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) {
-      initializeNewStateMachine(workItem, assignees, createdDate, createdBy, null, changes);
-   }
-
    @Override
    public void initializeNewStateMachine(IAtsWorkItem workItem, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IAtsWorkDefinition workDefinition, IAtsChangeSet changes) {
       Conditions.checkNotNull(createdDate, "createdDate");
       Conditions.checkNotNull(createdBy, "createdBy");
       Conditions.checkNotNull(changes, "changes");
-      IAtsStateDefinition startState = null;
-      if (workDefinition == null) {
-         startState = workItem.getWorkDefinition().getStartState();
-      } else {
-         startState = workDefinition.getStartState();
-         changes.addAttribute(workItem, AtsAttributeTypes.WorkflowDefinition, workDefinition.getName());
-      }
+      Conditions.checkNotNull(workDefinition, "workDefinition");
+
+      // set for bootstrapping issues only when creating initial work item
+      atsApi.getWorkDefinitionService().internalSetWorkDefinition(workItem, workDefinition);
+
+      IAtsStateDefinition startState = workDefinition.getStartState();
       StateManager stateMgr = new StateManager(workItem, atsApi.getLogFactory(), atsApi);
       workItem.setStateMgr(stateMgr);
 

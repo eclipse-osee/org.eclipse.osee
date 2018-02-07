@@ -33,4 +33,5 @@ public abstract class AbstractAtsArtifact extends Artifact implements IAtsObject
    public ArtifactToken getStoreObject() {
       return this;
    }
+
 }

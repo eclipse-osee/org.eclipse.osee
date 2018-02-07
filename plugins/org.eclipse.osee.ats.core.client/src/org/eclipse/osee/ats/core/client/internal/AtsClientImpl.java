@@ -90,6 +90,7 @@ import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 
 /**
@@ -482,6 +483,11 @@ public class AtsClientImpl extends AtsApiImpl implements IAtsClient {
          clientUtils = new AtsClientUtilImpl();
       }
       return clientUtils;
+   }
+
+   @Override
+   public boolean isWorkDefAsName() {
+      return "true".equals(OseeInfo.getCachedValue("osee.work.def.as.name"));
    }
 
 }

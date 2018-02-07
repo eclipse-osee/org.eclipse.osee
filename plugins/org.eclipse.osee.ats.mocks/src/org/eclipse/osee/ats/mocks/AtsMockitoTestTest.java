@@ -137,7 +137,6 @@ public class AtsMockitoTestTest extends AtsMockitoTest {
       Assert.assertTrue(teamDef.getActionableItems().contains(testAi));
       Assert.assertTrue(teamDef.getActionableItems().contains(testAi2));
       Assert.assertTrue(teamDef.isActive());
-      Assert.assertEquals(WORK_DEF_NAME, teamDef.getWorkflowDefinition());
    }
 
    @Test

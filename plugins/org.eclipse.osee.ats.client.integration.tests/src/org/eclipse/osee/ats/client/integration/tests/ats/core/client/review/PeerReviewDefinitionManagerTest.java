@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.client.integration.tests.ats.core.client.review;
 
 import java.util.Arrays;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
@@ -27,6 +28,7 @@ import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -38,7 +40,8 @@ import org.junit.BeforeClass;
  */
 public class PeerReviewDefinitionManagerTest extends PeerReviewDefinitionManager {
 
-   public static String WORK_DEF_NAME = "WorkDef_Team_PeerReviewDefinitionManagerTest_Transition";
+   public static ArtifactToken PeerWorkDefId = ArtifactToken.valueOf(162205335,
+      "WorkDef_Team_PeerReviewDefinitionManagerTest_Transition", AtsArtifactTypes.WorkDefinition);
 
    @BeforeClass
    @AfterClass
@@ -50,18 +53,22 @@ public class PeerReviewDefinitionManagerTest extends PeerReviewDefinitionManager
    public void testCreatePeerReviewDuringTransition() {
       AtsTestUtil.cleanupAndReset("PeerReviewDefinitionManagerTest");
 
-      TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
-      teamArt.setSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, WORK_DEF_NAME);
-      teamArt.persist("PeerReviewDefinitionManagerTest");
+      TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
+
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      AtsClientService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamWf, PeerWorkDefId, changes);
+      changes.execute();
+
+      teamWf.persist("PeerReviewDefinitionManagerTest");
 
       AtsClientService.get().getWorkDefinitionService().clearCaches();
 
       Assert.assertEquals("Implement State should have a single peer review definition", 1,
-         teamArt.getWorkDefinition().getStateByName(TeamState.Implement.getName()).getPeerReviews().size());
-      Assert.assertEquals("No reviews should be present", 0, ReviewManager.getReviews(teamArt).size());
+         teamWf.getWorkDefinition().getStateByName(TeamState.Implement.getName()).getPeerReviews().size());
+      Assert.assertEquals("No reviews should be present", 0, ReviewManager.getReviews(teamWf).size());
 
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
-      MockTransitionHelper helper = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
+      changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      MockTransitionHelper helper = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamWf),
          TeamState.Implement.getName(), Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null,
          changes, TransitionOption.None);
       IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
@@ -69,8 +76,8 @@ public class PeerReviewDefinitionManagerTest extends PeerReviewDefinitionManager
 
       Assert.assertTrue(results.toString(), results.isEmpty());
 
-      Assert.assertEquals("One review should be present", 1, ReviewManager.getReviews(teamArt).size());
-      PeerToPeerReviewArtifact decArt = (PeerToPeerReviewArtifact) ReviewManager.getReviews(teamArt).iterator().next();
+      Assert.assertEquals("One review should be present", 1, ReviewManager.getReviews(teamWf).size());
+      PeerToPeerReviewArtifact decArt = (PeerToPeerReviewArtifact) ReviewManager.getReviews(teamWf).iterator().next();
 
       Assert.assertEquals(PeerToPeerReviewState.Prepare.getName(), decArt.getCurrentStateName());
       Assert.assertEquals("UnAssigned", decArt.getStateMgr().getAssigneesStr());

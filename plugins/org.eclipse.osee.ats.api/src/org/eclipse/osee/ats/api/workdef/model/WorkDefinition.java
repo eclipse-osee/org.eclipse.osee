@@ -12,8 +12,11 @@ package org.eclipse.osee.ats.api.workdef.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 
 /**
  * @author Donald G. Dunne
@@ -22,6 +25,7 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
 
    private final List<IAtsStateDefinition> states = new ArrayList<>(5);
    private IAtsStateDefinition startState;
+   private ArtifactToken artifact;
 
    public WorkDefinition(Long id, String name) {
       super(id, name);
@@ -58,6 +62,21 @@ public class WorkDefinition extends AbstractWorkDefItem implements IAtsWorkDefin
    @Override
    public List<IAtsStateDefinition> getStates() {
       return states;
+   }
+
+   @Override
+   public ArtifactTypeId getArtifactType() {
+      return AtsArtifactTypes.WorkDefinition;
+   }
+
+   @Override
+   public void setStoreObject(ArtifactToken artifact) {
+      this.artifact = artifact;
+   }
+
+   @Override
+   public ArtifactToken getStoreObject() {
+      return artifact;
    }
 
 }

@@ -13,6 +13,9 @@ package org.eclipse.osee.ats.client.integration.tests.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.ats.client.integration.tests.ats.core.client.review.DecisionReviewDefinitionManagerTest;
+import org.eclipse.osee.ats.client.integration.tests.ats.core.client.review.PeerReviewDefinitionManagerTest;
+import org.eclipse.osee.ats.client.integration.tests.ats.core.client.workflow.transition.TransitionManagerTest;
 import org.eclipse.osee.ats.core.workdef.WorkDefinitionSheet;
 import org.eclipse.osee.ats.workdef.IAtsWorkDefinitionSheetProvider;
 
@@ -24,17 +27,19 @@ public class AtsIntegrationTestWorkDefinitionSheetProvider implements IAtsWorkDe
    @Override
    public Collection<WorkDefinitionSheet> getWorkDefinitionSheets() {
       List<WorkDefinitionSheet> sheets = new ArrayList<>();
-      sheets.add(new WorkDefinitionSheet("WorkDef_Team_DecisionReviewDefinitionManagerTest_Prepare",
+      sheets.add(new WorkDefinitionSheet(TransitionManagerTest.WorkDefTeamAtsTestUtil,
          AtsIntegrationTestWorkDefinitionSheetProvider.class));
-      sheets.add(new WorkDefinitionSheet("WorkDef_Team_DecisionReviewDefinitionManagerTest_toDecision",
+      sheets.add(new WorkDefinitionSheet(TransitionManagerTest.WorkDefTargetedVersionId,
          AtsIntegrationTestWorkDefinitionSheetProvider.class));
-      sheets.add(new WorkDefinitionSheet("WorkDef_Team_PeerReviewDefinitionManagerTest_Transition",
+      sheets.add(new WorkDefinitionSheet(TransitionManagerTest.WorkDefWidgetRequiredCompletionId,
          AtsIntegrationTestWorkDefinitionSheetProvider.class));
-      sheets.add(new WorkDefinitionSheet("WorkDef_Team_TransitionManagerTest_TargetedVersion",
+      sheets.add(new WorkDefinitionSheet(TransitionManagerTest.WorkDefWidgetRequiredTransitionId,
          AtsIntegrationTestWorkDefinitionSheetProvider.class));
-      sheets.add(new WorkDefinitionSheet("WorkDef_Team_TransitionManagerTest_WidgetRequiredCompletion",
+      sheets.add(new WorkDefinitionSheet(DecisionReviewDefinitionManagerTest.DecisionWorkDefPrepareId,
          AtsIntegrationTestWorkDefinitionSheetProvider.class));
-      sheets.add(new WorkDefinitionSheet("WorkDef_Team_TransitionManagerTest_WidgetRequiredTransition",
+      sheets.add(new WorkDefinitionSheet(DecisionReviewDefinitionManagerTest.DecisionWorkDefToDecisionId,
+         AtsIntegrationTestWorkDefinitionSheetProvider.class));
+      sheets.add(new WorkDefinitionSheet(PeerReviewDefinitionManagerTest.PeerWorkDefId,
          AtsIntegrationTestWorkDefinitionSheetProvider.class));
       return sheets;
    }

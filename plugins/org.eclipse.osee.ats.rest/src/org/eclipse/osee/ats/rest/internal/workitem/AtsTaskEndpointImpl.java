@@ -62,6 +62,7 @@ public class AtsTaskEndpointImpl implements AtsTaskEndpointApi {
 
    @GET
    @Path("{taskId}")
+   @Produces(MediaType.APPLICATION_JSON)
    @Override
    public JaxAtsTask get(@PathParam("taskId") long taskId) {
       IAtsWorkItem task =

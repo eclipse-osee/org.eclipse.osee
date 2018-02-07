@@ -15,9 +15,13 @@ import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
-import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.INewActionListener;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 
 /**
@@ -38,11 +42,11 @@ public interface IAtsWorkDefinitionService {
 
    void removeWorkDefinition(IAtsWorkDefinition workDef);
 
+   void internalSetWorkDefinition(IAtsWorkItem workItem, IAtsWorkDefinition workDef);
+
    IAtsWorkDefinition getWorkDefinition(IAtsWorkItem workItem);
 
    IAtsWorkDefinition getWorkDefinition(String name);
-
-   IAtsWorkDefinition computetWorkDefinitionForTask(IAtsTask task);
 
    IAtsWorkDefinition copyWorkDefinition(String newName, IAtsWorkDefinition workDef, XResultData resultData);
 
@@ -100,5 +104,23 @@ public interface IAtsWorkDefinitionService {
    void reloadAll();
 
    IAtsWorkDefinition computeWorkDefinition(IAtsWorkItem workItem);
+
+   ArtifactToken getWorkDefArt(String workDefName);
+
+   IAtsWorkDefinition getWorkDefinition(ArtifactId workDefart);
+
+   IAtsWorkDefinition computeWorkDefinitionForTeamWfNotYetCreated(IAtsTeamWorkflow teamWf, INewActionListener newActionListener);
+
+   void setWorkDefinitionAttrs(IAtsWorkItem workItem, IAtsWorkDefinition workDefinition, IAtsChangeSet changes);
+
+   IAtsWorkDefinition computeAndSetWorkDefinitionAttrs(IAtsWorkItem workItem, INewActionListener newActionListener, IAtsChangeSet changes);
+
+   void setWorkDefinitionAttrs(IAtsWorkItem workItem, ArtifactToken workDefArt, IAtsChangeSet changes);
+
+   void setWorkDefinitionAttrs(IAtsTeamDefinition teamDef, IAtsWorkDefinition workDefinition, IAtsChangeSet changes);
+
+   void setWorkDefinitionAttrs(IAtsTeamDefinition teamDef, ArtifactToken workDefArt, IAtsChangeSet changes);
+
+   void internalClearWorkDefinition(IAtsWorkItem workItem);
 
 }

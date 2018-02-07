@@ -10,22 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.editor.stateItem;
 
-import static org.junit.Assert.assertFalse;
 import java.util.Arrays;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
+import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
+import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil.AtsTestUtilState;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewState;
 import org.eclipse.osee.ats.editor.stateItem.AtsDecisionReviewPrepareStateItem;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -35,37 +32,17 @@ import org.junit.Test;
  */
 public class AtsDecisionReviewPrepareStateItemTest {
 
-   public static DecisionReviewArtifact decRevArt;
-
-   @Before
-   public void setUp() throws Exception {
-      // This test should only be run on test db
-      assertFalse("Test should not be run in production db", AtsClientService.get().getStoreService().isProductionDb());
-
-      if (decRevArt == null) {
-         // setup fake review artifact with decision options set
-         decRevArt = (DecisionReviewArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.DecisionReview,
-            AtsClientService.get().getAtsBranch());
-         decRevArt.setName(getClass().getSimpleName());
-         decRevArt.persist(getClass().getSimpleName());
-      }
-   }
-
-   @BeforeClass
-   @AfterClass
-   public static void testCleanup() throws Exception {
-      AtsTestUtil.cleanupSimpleTest(AtsDecisionReviewPrepareStateItemTest.class.getSimpleName());
-   }
-
    @Test
    public void testTransitioning() {
-      Assert.assertNotNull(decRevArt);
-
+      AtsTestUtil.cleanupAndReset(getClass().getSimpleName());
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      DecisionReviewArtifact decRevArt =
+         AtsTestUtil.getOrCreateDecisionReview(ReviewBlockType.None, AtsTestUtilState.Analyze, changes);
       // set valid options
       String decisionOptionStr = AtsClientService.get().getReviewService().getDecisionReviewOptionsString(
          AtsClientService.get().getReviewService().getDefaultDecisionReviewOptions());
       decRevArt.setSoleAttributeValue(AtsAttributeTypes.DecisionReviewOptions, decisionOptionStr);
-      decRevArt.persist(getClass().getSimpleName());
+      changes.execute();
 
       IStateToken fromState = decRevArt.getWorkDefinition().getStateByName(DecisionReviewState.Prepare.getName());
       IStateToken toState = decRevArt.getWorkDefinition().getStateByName(DecisionReviewState.Decision.getName());

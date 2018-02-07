@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workdef;
 
+import org.eclipse.osee.framework.core.data.ArtifactToken;
+
 /**
  * @author Donald G. Dunne
  */
@@ -18,15 +20,17 @@ public class WorkDefData {
    private Long id;
    private String name;
    private String dsl;
+   private ArtifactToken artifact;
 
    public WorkDefData() {
       // For Jax-RS instantiation
    }
 
-   public WorkDefData(Long id, String name, String dsl) {
+   public WorkDefData(Long id, String name, String dsl, ArtifactToken artifact) {
       this.id = id;
       this.name = name;
       this.dsl = dsl;
+      this.artifact = artifact;
    }
 
    public String getDsl() {
@@ -51,5 +55,13 @@ public class WorkDefData {
 
    public void setName(String name) {
       this.name = name;
+   }
+
+   public ArtifactToken getStoreObject() {
+      return artifact;
+   }
+
+   public void setStoreObject(ArtifactToken artifact) {
+      this.artifact = artifact;
    }
 }

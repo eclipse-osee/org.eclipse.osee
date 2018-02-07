@@ -16,7 +16,6 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.artifact.GoalManager;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
@@ -73,7 +72,6 @@ public class AutoAddActionToGoalTest {
    public void testAutoAddActionToGoal_AI() {
       AtsTestUtil.cleanupAndReset("AutoAddActionToGoalTest - AddActionWithAI");
 
-      IAtsWorkDefinition workDef = AtsTestUtil.getWorkDef();
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       GoalArtifact goalArt = GoalManager.createGoal("AutoAddActionToGoalTest - AddActionToGoalFromAI", changes);
       changes.execute();
@@ -90,8 +88,6 @@ public class AutoAddActionToGoalTest {
          (Artifact) AtsClientService.get().getQueryService().getArtifact((IAtsObject) AtsTestUtil.getTestAi2());
 
       goalArt.addRelation(AtsRelationTypes.AutoAddActionToGoal_ConfigObject, testAI2);
-
-      AtsClientService.get().getWorkDefinitionService().addWorkDefinition(workDef);
 
       TeamWorkFlowArtifact teamWf2 = AtsTestUtil.getTeamWf2();
 
@@ -140,8 +136,6 @@ public class AutoAddActionToGoalTest {
    public void testAutoAddActionToGoal_AIandTeamWF() {
       AtsTestUtil.cleanupAndReset("AutoAddActionToGoalTest - AddActionWithAIandTeamDef");
 
-      IAtsWorkDefinition workDef = AtsTestUtil.getWorkDef();
-
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       IAtsTeamDefinition teamDef = AtsTestUtil.getTestTeamDef();
       for (IAtsVersion version : teamDef.getVersions()) {
@@ -157,8 +151,6 @@ public class AutoAddActionToGoalTest {
       goalArt.addRelation(AtsRelationTypes.AutoAddActionToGoal_ConfigObject, testAI2Art);
       goalArt.addRelation(AtsRelationTypes.AutoAddActionToGoal_ConfigObject, teamDefArtifact);
       changes.execute();
-
-      AtsClientService.get().getWorkDefinitionService().addWorkDefinition(workDef);
 
       TeamWorkFlowArtifact teamWf2 = AtsTestUtil.getTeamWf2();
       List<Artifact> memArt = goalArt.getRelatedArtifacts(AtsRelationTypes.Goal_Member);
@@ -182,7 +174,6 @@ public class AutoAddActionToGoalTest {
    public void testAutoAddActionToGoal_TwoAIsTwoGoals() {
       AtsTestUtil.cleanupAndReset("DecisionReviewManagerTest - UnAssigned");
 
-      IAtsWorkDefinition workDef = AtsTestUtil.getWorkDef();
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
       GoalArtifact goalArt = GoalManager.createGoal("AutoAddActionToGoalTest - AddTwoActions", changes);
       GoalArtifact goalArt2 = GoalManager.createGoal("AutoAddActionToGoalTest - SecondGoal", changes);
@@ -199,8 +190,6 @@ public class AutoAddActionToGoalTest {
       goalArt.addRelation(AtsRelationTypes.AutoAddActionToGoal_ConfigObject, testAI2);
       goalArt.addRelation(AtsRelationTypes.AutoAddActionToGoal_ConfigObject, testAI3);
       goalArt2.addRelation(AtsRelationTypes.AutoAddActionToGoal_ConfigObject, testAI2);
-
-      AtsClientService.get().getWorkDefinitionService().addWorkDefinition(workDef);
 
       TeamWorkFlowArtifact teamWf2 = AtsTestUtil.getTeamWf2();
       TeamWorkFlowArtifact teamWf3 = AtsTestUtil.getTeamWf3();

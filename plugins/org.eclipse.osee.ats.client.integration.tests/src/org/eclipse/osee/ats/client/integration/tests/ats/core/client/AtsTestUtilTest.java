@@ -51,7 +51,7 @@ public class AtsTestUtilTest extends AtsTestUtil {
       AtsTestUtil.cleanup();
       boolean exceptionThrown = false;
       try {
-         Assert.assertNull(AtsTestUtil.getWorkDef());
+         Assert.assertNull(AtsTestUtil.getTestTeamDef());
       } catch (OseeStateException ex) {
          Assert.assertEquals(ex.getMessage(), "Must call cleanAndReset before using this method");
          exceptionThrown = true;

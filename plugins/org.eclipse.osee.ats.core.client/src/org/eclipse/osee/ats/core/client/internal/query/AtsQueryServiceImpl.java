@@ -272,6 +272,7 @@ public class AtsQueryServiceImpl extends AbstractAtsQueryService {
 
    @Override
    public Artifact getArtifact(Long id) {
+      Conditions.assertTrue(id > 0, "Art Id must be > 0, not %s", id);
       try {
          return ArtifactQuery.getArtifactFromId(id, atsClient.getAtsBranch());
       } catch (ArtifactDoesNotExist ex) {

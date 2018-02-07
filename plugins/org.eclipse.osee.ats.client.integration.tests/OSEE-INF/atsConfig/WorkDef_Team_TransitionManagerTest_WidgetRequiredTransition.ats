@@ -1,5 +1,5 @@
 workDefinition "WorkDef_Team_TransitionManagerTest_WidgetRequiredTransition" {
-	id "WorkDef_Team_TransitionManagerTest_WidgetRequiredTransition"
+	id "16919464"
 	startState "Analyze"
 
    widgetDefinition "Estimated Hours" {

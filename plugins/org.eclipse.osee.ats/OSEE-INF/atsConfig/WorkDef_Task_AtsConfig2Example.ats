@@ -1,5 +1,5 @@
 workDefinition "WorkDef_Task_AtsConfig2Example" {
-   id "WorkDef_Task_AtsConfig2Example"
+   id "824992064"
    startState "None"
    
    widgetDefinition "Title" {

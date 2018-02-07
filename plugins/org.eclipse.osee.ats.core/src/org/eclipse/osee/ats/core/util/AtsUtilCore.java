@@ -11,9 +11,7 @@
 package org.eclipse.osee.ats.core.util;
 
 import java.util.Dictionary;
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Map;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.config.AtsConfigKey;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -31,8 +29,6 @@ public class AtsUtilCore {
    public final static String SERVER_CONFIG_RELOAD_MIN_KEY = "server_config_reload_min";
    public final static long SERVER_CONFIG_RELOAD_MIN_DEFAULT = 30;
    public static final String SINGLE_SERVER_DEPLOYMENT = "single_server_deployment";
-
-   private static Map<Long, String> idToGuidMap = new HashMap<>(50);
 
    public static boolean isInTest() {
       return Boolean.valueOf(System.getProperty("osee.isInTest"));

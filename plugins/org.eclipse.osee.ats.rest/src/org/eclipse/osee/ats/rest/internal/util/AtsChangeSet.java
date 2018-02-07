@@ -104,7 +104,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       notifier.sendNotifications(getNotifications());
       for (IAtsObject atsObject : new ArrayList<>(atsObjects)) {
          if (atsObject instanceof IAtsWorkItem) {
-            atsApi.getStoreService().clearCaches((IAtsWorkItem) atsObject);
+            atsApi.getWorkDefinitionService().internalClearWorkDefinition((IAtsWorkItem) atsObject);
          }
       }
 

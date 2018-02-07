@@ -1,5 +1,5 @@
 workDefinition "WorkDef_Team_PeerReviewDefinitionManagerTest_Transition" {
-	id "WorkDef_Team_PeerReviewDefinitionManagerTest_Transition"
+	id "162205335"
 	startState "Analyze"
 
 	peerReviewDefinition "Create New on Implement" {

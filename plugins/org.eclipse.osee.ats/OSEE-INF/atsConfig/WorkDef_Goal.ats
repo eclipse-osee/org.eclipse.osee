@@ -1,5 +1,5 @@
 workDefinition "WorkDef_Goal" {
-   id "WorkDef_Goal"
+   id "142177"
    startState "InWork"
 
    widgetDefinition "Title" {

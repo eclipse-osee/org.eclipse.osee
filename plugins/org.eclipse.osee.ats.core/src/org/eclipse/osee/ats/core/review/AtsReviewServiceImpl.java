@@ -31,6 +31,8 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.model.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -43,6 +45,7 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -63,8 +66,8 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    public boolean isValidationReviewRequired(IAtsWorkItem workItem) {
       boolean required = false;
       if (workItem.isTeamWorkflow()) {
-         required = atsApi.getAttributeResolver().getSoleAttributeValue(workItem,
-            AtsAttributeTypes.ValidationRequired, false);
+         required =
+            atsApi.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.ValidationRequired, false);
       }
       return required;
    }
@@ -177,8 +180,14 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
       changes.relate(teamWf, AtsRelationTypes.TeamWorkflowToReview_Review, decRev);
       atsApi.getActionFactory().setAtsId(decRev, decRev.getParentTeamWorkflow().getTeamDefinition(), changes);
 
+      IAtsWorkDefinition workDefinition =
+         atsApi.getWorkDefinitionService().computeAndSetWorkDefinitionAttrs(decRev, null, changes);
+      Conditions.assertNotNull(workDefinition, "Work Definition can not be null for %s", decRev.toStringWithId());
+
       // Initialize state machine
-      atsApi.getActionFactory().initializeNewStateMachine(decRev, assignees, createdDate, createdBy, changes);
+      atsApi.getActionFactory().initializeNewStateMachine(decRev, null, createdDate, createdBy, workDefinition,
+         changes);
+      decRev.getStateMgr().setAssignees(workDefinition.getStartState().getName(), StateType.Working, assignees);
 
       if (Strings.isValid(relatedToState)) {
          changes.setSoleAttributeValue(decRev, AtsAttributeTypes.RelatedToState, relatedToState);

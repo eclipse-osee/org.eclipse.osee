@@ -172,7 +172,8 @@ public class AtsConfigurationsService implements IAtsConfigurationsService {
       // load work definitions
       for (ArtifactToken workDefArt : atsApi.getQueryService().getArtifacts(WorkDefinition)) {
          String workDefStr = atsApi.getAttributeResolver().getSoleAttributeValueAsString(workDefArt, DslSheet, "");
-         configs.getWorkDefinitionsData().add(new WorkDefData(workDefArt.getId(), workDefArt.getName(), workDefStr));
+         configs.getWorkDefinitionsData().add(
+            new WorkDefData(workDefArt.getId(), workDefArt.getName(), workDefStr, workDefArt));
       }
       return configs;
    }

@@ -20,6 +20,7 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.config.JaxTeamDefinition;
+import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -78,7 +79,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
       IAtsTeamDefinition parent = null;
       try {
          ArtifactToken parentArt = atsApi.getRelationResolver().getParent(artifact);
-         if (parentArt != null) {
+         if (parentArt != null && !parentArt.equals(AtsArtifactToken.HeadingFolder)) {
             parent = atsApi.getCache().getAtsObject(parentArt.getId());
             if (parent == null) {
                parent = atsApi.getConfigItemFactory().getTeamDef(parentArt);
@@ -316,21 +317,6 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
          }
       }
       return versions;
-   }
-
-   @Override
-   public String getWorkflowDefinition() {
-      return getAttributeValue(AtsAttributeTypes.WorkflowDefinition, "");
-   }
-
-   @Override
-   public String getRelatedTaskWorkDefinition() {
-      return getAttributeValue(AtsAttributeTypes.RelatedTaskWorkDefinition, "");
-   }
-
-   @Override
-   public String getRelatedPeerWorkDefinition() {
-      return getAttributeValue(AtsAttributeTypes.RelatedPeerWorkflowDefinition, "");
    }
 
    @Override

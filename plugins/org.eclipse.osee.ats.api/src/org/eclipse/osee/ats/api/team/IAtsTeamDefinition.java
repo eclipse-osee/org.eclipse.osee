@@ -93,14 +93,4 @@ public interface IAtsTeamDefinition extends IAtsConfigObject, IAtsRules, ICommit
 
    Collection<IAtsVersion> getVersionsReleased(VersionReleaseType releaseType);
 
-   /*****************************
-    * Work Definitions
-    ******************************/
-
-   String getWorkflowDefinition();
-
-   String getRelatedTaskWorkDefinition();
-
-   String getRelatedPeerWorkDefinition();
-
 }

@@ -413,7 +413,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    @Override
    public IAtsWorkDefinition getWorkDefinition() {
       try {
-         return AtsClientService.get().getWorkDefinitionService().getWorkDefinition(this);
+         return AtsClientService.get().getWorkDefinitionService().getWorkDefinition((IAtsWorkItem) this);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }

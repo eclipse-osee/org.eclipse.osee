@@ -1,6 +1,6 @@
 
 workDefinition "WorkDef_Team_AtsConfig2Example" {
-	id "WorkDef_Team_AtsConfig2Example"
+	id "282846363"
    startState "Analyze" 
 
    widgetDefinition "Need By" {

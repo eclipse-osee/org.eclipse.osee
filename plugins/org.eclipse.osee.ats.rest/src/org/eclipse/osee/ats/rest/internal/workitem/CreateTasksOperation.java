@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -155,10 +156,11 @@ public class CreateTasksOperation {
                   resultData.errorf("Exception finding Task Work Def [%s].  Exception: %s", task.getTaskWorkDef(),
                      ex.getMessage());
                }
-               if (workDefinition == null) {
-                  resultData.errorf("Task Work Def [%s] does not exist", task.getTaskWorkDef());
-               }
             }
+            if (workDefinition == null) {
+               workDefinition = atsApi.getWorkDefinitionService().computedWorkDefinitionForTaskNotYetCreated(teamWf);
+            }
+            Conditions.assertNotNull(workDefinition, "Work Definition can not be null for [%s]", task.getTaskWorkDef());
 
             for (JaxAttribute attribute : task.getAttributes()) {
                AttributeTypeId attrType = atsApi.getStoreService().getAttributeType(attribute.getAttrTypeName());
@@ -258,15 +260,10 @@ public class CreateTasksOperation {
                assignees.add(AtsCoreUsers.UNASSIGNED_USER);
             }
 
-            IAtsWorkDefinition workDefinition = null;
-            if (Strings.isValid(jaxTask.getTaskWorkDef())) {
-               try {
-                  workDefinition =
-                     atsApi.getWorkDefinitionService().getWorkDefinition(jaxTask.getTaskWorkDef(), new XResultData());
-               } catch (Exception ex) {
-                  throw new OseeArgumentException("Exception finding Task Work Def [%s]", jaxTask.getTaskWorkDef(), ex);
-               }
-            }
+            IAtsWorkDefinition workDefinition =
+               atsApi.getWorkDefinitionService().computeAndSetWorkDefinitionAttrs(task, null, changes);
+            Conditions.assertNotNull(workDefinition, "Work Definition can not be null for [%s]", task);
+
             if (Strings.isValid(jaxTask.getDescription())) {
                changes.setSoleAttributeValue(task, AtsAttributeTypes.Description, jaxTask.getDescription());
             }

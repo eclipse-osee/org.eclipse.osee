@@ -118,8 +118,11 @@ public class AtsConfigOperation extends AbstractOperation {
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(name);
 
       teamDef = createTeamDefinition(changes, AtsClientService.get());
+
       // Relate new team def to workflow artifact
-      changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.WorkflowDefinition, workDefinition.getName());
+      ArtifactToken workDefArt =
+         AtsClientService.get().getWorkDefinitionService().getWorkDefArt(workDefinition.getName());
+      AtsClientService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamDef, workDefArt, changes);
 
       actionableItems = createActionableItems(changes, teamDef, AtsClientService.get());
 
@@ -204,7 +207,7 @@ public class AtsConfigOperation extends AbstractOperation {
          try {
             String workDefXml = AtsClientService.get().getWorkDefinitionService().getStorageString(workDef, resultData);
             workDefArt = AtsWorkDefinitionImporter.get().importWorkDefinitionToDb(workDefXml, workDef.getName(), name,
-               null, resultData, changes);
+               resultData, null, null, changes);
             Artifact folder =
                (Artifact) AtsClientService.get().getQueryService().getArtifact(AtsArtifactToken.WorkDefinitionsFolder);
             folder.addChild(workDefArt);

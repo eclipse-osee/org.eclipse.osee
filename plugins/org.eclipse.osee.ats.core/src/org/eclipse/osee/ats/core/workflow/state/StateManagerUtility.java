@@ -44,12 +44,13 @@ public class StateManagerUtility {
       if (workPage.getStateType().isWorkingState()) {
          if (assignees.isEmpty()) {
             if (currentUser.notEqual(AtsCoreUsers.SYSTEM_USER)) {
-               stateMgr.setAssignees(Arrays.asList(currentUser));
+               stateMgr.setAssignees(workPage.getName(), workPage.getStateType(), Arrays.asList(currentUser));
             } else {
-               stateMgr.setAssignee(AtsCoreUsers.UNASSIGNED_USER);
+               stateMgr.setAssignees(workPage.getName(), workPage.getStateType(),
+                  Arrays.asList(AtsCoreUsers.UNASSIGNED_USER));
             }
          } else {
-            stateMgr.setAssignees(assignees);
+            stateMgr.setAssignees(workPage.getName(), workPage.getStateType(), assignees);
          }
       }
    }

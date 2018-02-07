@@ -185,10 +185,13 @@ public class PeerToPeerReviewManager {
 
       AtsClientService.get().getActionFactory().setAtsId(peerToPeerRev, teamDef, changes);
 
-      // Initialize state machine
-      peerToPeerRev.setSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, workDefinition.getName());
+      if (workDefinition != null) {
+         workDefinition = AtsClientService.get().getWorkDefinitionService().computeAndSetWorkDefinitionAttrs(
+            peerToPeerRev, null, changes);
+      }
+
       AtsClientService.get().getActionFactory().initializeNewStateMachine(peerToPeerRev, null, createdDate, createdBy,
-         changes);
+         workDefinition, changes);
 
       if (teamArt != null && againstState != null) {
          peerToPeerRev.setSoleAttributeValue(AtsAttributeTypes.RelatedToState, againstState);

@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
@@ -31,6 +32,7 @@ import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
+import org.eclipse.osee.ats.core.util.ConvertAtsConfigGuidAttributesOperations;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
@@ -174,10 +176,15 @@ public class AtsTaskEndpointImplTest {
       // Work Definition should be set
       boolean found = false;
       for (JaxAttribute attr : attributes) {
-         if (attr.getAttrTypeName().equals(AtsAttributeTypes.WorkflowDefinition.getName())) {
+         if (attr.getAttrTypeName().equals(ConvertAtsConfigGuidAttributesOperations.WorkflowDefinition.getName())) {
             found = true;
             Assert.assertEquals("Expected Attribute WorkDefintiion WorkDef_Task_Default", "WorkDef_Task_Default",
                attr.getValues().iterator().next());
+         }
+         if (attr.getAttrTypeName().equals(AtsAttributeTypes.WorkflowDefinitionReference.getName())) {
+            found = true;
+            Assert.assertEquals("Expected Attribute WorkDefintiion WorkDef_Task_Default",
+               AtsArtifactToken.WorkDef_Task_Default.getIdString(), attr.getValues().iterator().next());
          }
       }
       if (!found) {
@@ -195,13 +202,21 @@ public class AtsTaskEndpointImplTest {
       Assert.assertEquals(SystemUser.UnAssigned.getUserId(), task2R.getAssigneeUserIds().iterator().next());
       // Work Definition attribute should NOT be set
       attributes = task2R.getAttributes();
-      found = false;
+      boolean foundByName = false;
+      boolean foundById = false;
       for (JaxAttribute attr : attributes) {
-         if (attr.getAttrTypeName().equals(AtsAttributeTypes.WorkflowDefinition.getName())) {
-            Assert.fail(
-               String.format("WorkDefintiion should not be set but is [%s]", attr.getValues().iterator().next()));
+         if (attr.getAttrTypeName().equals(ConvertAtsConfigGuidAttributesOperations.WorkflowDefinition.getName())) {
+            Assert.assertEquals(AtsArtifactToken.WorkDef_Task_Default.getName(), attr.getValues().iterator().next());
+            foundByName = true;
+         }
+         if (attr.getAttrTypeName().equals(AtsAttributeTypes.WorkflowDefinitionReference.getName())) {
+            Assert.assertEquals(AtsArtifactToken.WorkDef_Task_Default.getIdString(),
+               attr.getValues().iterator().next());
+            foundById = true;
          }
       }
+      Assert.assertTrue(foundByName);
+      Assert.assertTrue(foundById);
 
       JaxAtsTask task3R = taskEp.get(taskId3);
       Assert.assertNotNull(task3R);
@@ -211,7 +226,7 @@ public class AtsTaskEndpointImplTest {
       Assert.assertEquals("", task3R.getDescription());
       Assert.assertEquals(true, task3R.isActive());
       Assert.assertEquals(1, task3R.getAssigneeUserIds().size());
-      Assert.assertEquals(9, task3R.getAttributes().size());
+      Assert.assertEquals(11, task3R.getAttributes().size());
       found = false;
       for (JaxAttribute attribute : task3R.getAttributes()) {
          if (attribute.getAttrTypeName().equals(CoreAttributeTypes.StaticId.getName())) {

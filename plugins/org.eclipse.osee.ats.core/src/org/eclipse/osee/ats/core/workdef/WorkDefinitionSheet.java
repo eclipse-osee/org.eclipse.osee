@@ -26,8 +26,8 @@ public class WorkDefinitionSheet {
       this.clazz = clazz;
    }
 
-   public WorkDefinitionSheet(ArtifactToken artifact) {
-      this(artifact.getName(), null);
+   public WorkDefinitionSheet(ArtifactToken artifact, Class<?> clazz) {
+      this(artifact.getName(), clazz);
       this.artifact = artifact;
    }
 
@@ -40,7 +40,7 @@ public class WorkDefinitionSheet {
       return name;
    }
 
-   public ArtifactToken getToken() {
+   public ArtifactToken getArtifact() {
       return artifact;
    }
 

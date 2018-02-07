@@ -1,5 +1,5 @@
 workDefinition "WorkDef_Team_Demo_SwDesign" {
-   id "WorkDef_Team_Demo_SwDesign"
+   id "3625963"
    startState "Endorse"
 
    widgetDefinition "Problem" {

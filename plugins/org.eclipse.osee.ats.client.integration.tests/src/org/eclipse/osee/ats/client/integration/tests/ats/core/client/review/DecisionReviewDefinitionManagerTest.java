@@ -11,9 +11,11 @@
 package org.eclipse.osee.ats.client.integration.tests.ats.core.client.review;
 
 import java.util.Arrays;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
@@ -27,6 +29,7 @@ import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -38,8 +41,11 @@ import org.junit.BeforeClass;
  */
 public class DecisionReviewDefinitionManagerTest extends DecisionReviewDefinitionManager {
 
-   public static String DECISION_WORK_DEF_NAME = "WorkDef_Team_DecisionReviewDefinitionManagerTest_toDecision";
-   public static String PREPARE_WORK_DEF_NAME = "WorkDef_Team_DecisionReviewDefinitionManagerTest_Prepare";
+   public static ArtifactToken DecisionWorkDefToDecisionId = ArtifactToken.valueOf(913396704,
+      "WorkDef_Team_DecisionReviewDefinitionManagerTest_toDecision", AtsArtifactTypes.WorkDefinition);
+
+   public static ArtifactToken DecisionWorkDefPrepareId = ArtifactToken.valueOf(916526903,
+      "WorkDef_Team_DecisionReviewDefinitionManagerTest_Prepare", AtsArtifactTypes.WorkDefinition);
 
    @BeforeClass
    @AfterClass
@@ -51,29 +57,32 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewDefinitio
    public void testCreateDecisionReviewDuringTransition_ToDecision() {
       AtsTestUtil.cleanupAndReset("DecisionReviewDefinitionManagerTest - ToDecision");
 
-      TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
-      teamArt.setSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, DECISION_WORK_DEF_NAME);
-      teamArt.persist("DecisionReviewDefinitionManagerTest - ToDecision");
+      TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
+
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      AtsClientService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamWf, DecisionWorkDefToDecisionId,
+         changes);
+      changes.execute();
 
       AtsClientService.get().getWorkDefinitionService().clearCaches();
 
       Assert.assertEquals("Implement State should have a single decision review definition", 1,
-         teamArt.getWorkDefinition().getStateByName(TeamState.Implement.getName()).getDecisionReviews().size());
-      Assert.assertEquals("No reviews should be present", 0, ReviewManager.getReviews(teamArt).size());
+         teamWf.getWorkDefinition().getStateByName(TeamState.Implement.getName()).getDecisionReviews().size());
+      Assert.assertEquals("No reviews should be present", 0, ReviewManager.getReviews(teamWf).size());
 
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
-      MockTransitionHelper helper = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
+      changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      MockTransitionHelper helper = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamWf),
          TeamState.Implement.getName(), Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null,
          changes, TransitionOption.None);
       IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
       TransitionResults results = transitionMgr.handleAllAndPersist();
 
       Assert.assertTrue(results.toString(), results.isEmpty());
-      Assert.assertFalse(teamArt.isDirty());
-      Assert.assertFalse(teamArt.getLog().isDirty());
+      Assert.assertFalse(teamWf.isDirty());
+      Assert.assertFalse(teamWf.getLog().isDirty());
 
-      Assert.assertEquals("One review should be present", 1, ReviewManager.getReviews(teamArt).size());
-      DecisionReviewArtifact decArt = (DecisionReviewArtifact) ReviewManager.getReviews(teamArt).iterator().next();
+      Assert.assertEquals("One review should be present", 1, ReviewManager.getReviews(teamWf).size());
+      DecisionReviewArtifact decArt = (DecisionReviewArtifact) ReviewManager.getReviews(teamWf).iterator().next();
 
       Assert.assertEquals(DecisionReviewState.Decision.getName(), decArt.getCurrentStateName());
       Assert.assertEquals("UnAssigned", decArt.getStateMgr().getAssigneesStr());
@@ -91,17 +100,20 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewDefinitio
    public void testCreateDecisionReviewDuringTransition_Prepare() {
       AtsTestUtil.cleanupAndReset("DecisionReviewDefinitionManagerTest - Prepare");
 
-      TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
-      teamArt.setSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, PREPARE_WORK_DEF_NAME);
-      teamArt.persist("DecisionReviewDefinitionManagerTest - Prepare");
+      IAtsTeamWorkflow teamWf = AtsTestUtil.getTeamWf();
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      AtsClientService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamWf, DecisionWorkDefPrepareId,
+         changes);
+      changes.execute();
 
       AtsClientService.get().getWorkDefinitionService().clearCaches();
 
-      Assert.assertEquals("No reviews should be present", 0, ReviewManager.getReviews(teamArt).size());
+      Assert.assertEquals("No reviews should be present", 0, ReviewManager.getReviews(teamWf).size());
 
-      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
-      MockTransitionHelper helper = new MockTransitionHelper(getClass().getSimpleName(), Arrays.asList(teamArt),
-         TeamState.Implement.getName(), Arrays.asList(AtsClientService.get().getUserService().getCurrentUser
+      changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      MockTransitionHelper helper = new MockTransitionHelper(getClass().getSimpleName(),
+         Arrays.asList((TeamWorkFlowArtifact) teamWf.getStoreObject()), TeamState.Implement.getName(),
+         Arrays.asList(AtsClientService.get().getUserService().getCurrentUser
 
          ()), null, changes, TransitionOption.None);
       IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
@@ -109,8 +121,8 @@ public class DecisionReviewDefinitionManagerTest extends DecisionReviewDefinitio
 
       Assert.assertTrue(results.toString(), results.isEmpty());
 
-      Assert.assertEquals("One review should be present", 1, ReviewManager.getReviews(teamArt).size());
-      DecisionReviewArtifact decArt = (DecisionReviewArtifact) ReviewManager.getReviews(teamArt).iterator().next();
+      Assert.assertEquals("One review should be present", 1, ReviewManager.getReviews(teamWf).size());
+      DecisionReviewArtifact decArt = (DecisionReviewArtifact) ReviewManager.getReviews(teamWf).iterator().next();
 
       Assert.assertEquals(DecisionReviewState.Prepare.getName(), decArt.getCurrentStateName());
       // Current user assigned if non specified

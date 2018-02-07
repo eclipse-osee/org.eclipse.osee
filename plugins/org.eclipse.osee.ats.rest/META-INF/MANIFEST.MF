@@ -70,7 +70,8 @@ Import-Package: com.google.common.base,
  org.json,
  org.osgi.framework,
  org.osgi.service.event
-Require-Bundle: org.eclipse.osee.ats.api
+Require-Bundle: org.eclipse.osee.ats.api,
+ org.eclipse.osee.framework.core.server
 Export-Package: org.eclipse.osee.ats.rest,
  org.eclipse.osee.ats.rest.util
 Bundle-ActivationPolicy: lazy

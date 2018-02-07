@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.ArtifactTypeId;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
@@ -161,6 +162,10 @@ public class ArtifactTypeManager {
 
    public static Artifact addArtifact(ArtifactTypeId artifactType, BranchId branch, String name, Long artifactId) {
       return addArtifact(artifactType, branch, name, null, artifactId);
+   }
+
+   public static Artifact addArtifact(ArtifactTypeId artifactType, BranchId branch, String name, ArtifactId artifact) {
+      return addArtifact(artifactType, branch, name, null, artifact.getId());
    }
 
    public static Artifact addArtifact(ArtifactTypeId artifactType, BranchId branch, String name, String guid) {

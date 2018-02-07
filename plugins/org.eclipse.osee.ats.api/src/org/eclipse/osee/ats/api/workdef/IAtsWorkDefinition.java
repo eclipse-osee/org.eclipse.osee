@@ -11,13 +11,12 @@
 package org.eclipse.osee.ats.api.workdef;
 
 import java.util.List;
-import org.eclipse.osee.framework.jdk.core.type.HasDescription;
-import org.eclipse.osee.framework.jdk.core.type.NamedId;
+import org.eclipse.osee.ats.api.IAtsObject;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsWorkDefinition extends NamedId, HasDescription {
+public interface IAtsWorkDefinition extends IAtsObject {
 
    List<IAtsStateDefinition> getStates();
 

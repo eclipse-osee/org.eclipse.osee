@@ -159,8 +159,11 @@ artifactType "Team Definition" extends "Responsible Team" , "Abstract Access Con
 	attribute "ats.Allow Create Branch"
 	attribute "ats.Allow Commit Branch"
 	attribute "ats.Related Task Workflow Definition"
+	attribute "ats.Related Task Workflow Definition Reference"
 	attribute "ats.Related Peer Workflow Definition"
+	attribute "ats.Related Peer Workflow Definition Reference"
 	attribute "ats.Workflow Definition"
+	attribute "ats.Workflow Definition Reference"
 	attribute "ats.Id Prefix"
 	attribute "ats.Id Sequence Name"
 	attribute "ats.Team Workflow Artifact Type"
@@ -228,6 +231,7 @@ abstract artifactType "ats.State Machine" extends "ats.Ats Artifact" {
 	attribute "ats.Cancelled From State"
 	attribute "ats.Cancelled Reason"
 	attribute "ats.Workflow Definition"
+	attribute "ats.Workflow Definition Reference"
 	attribute "ats.Work Package Guid"
 	attribute "ats.Work Package Reference"
 	attribute "ats.Id"
@@ -265,6 +269,7 @@ artifactType "Team Workflow" extends "ats.State Machine" , "Abstract Access Cont
 	attribute "ats.Operational Impact Workaround"
 	attribute "ats.Operational Impact Workaround Description"
 	attribute "ats.Related Task Workflow Definition"
+	attribute "ats.Related Task Workflow Definition Reference"
 	attribute "ats.Program Uuid"
 	attribute "ats.Applicability Workflow"
 	attribute "ats.Applicable to Program"
@@ -733,6 +738,16 @@ attributeType "ats.Workflow Definition" extends StringAttribute {
 	mediaType "text/plain"
 }
 
+attributeType "ats.Workflow Definition Reference" extends ArtifactReferenceAttribute {
+	id 53049621055799825
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	description "Team Workflow to Work Definition"
+	mediaType "text/plain"
+}
+
 attributeType "ats.Rule Definition" extends StringAttribute {
 	id 1152921504606847150
 	dataProvider DefaultAttributeDataProvider
@@ -749,6 +764,16 @@ attributeType "ats.Related Task Workflow Definition" extends StringAttribute {
 	mediaType "text/plain"
 }
 
+attributeType "ats.Related Task Workflow Definition Reference" extends ArtifactReferenceAttribute {
+	id 2492475839748929444
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
+
 attributeType "ats.Related Peer Workflow Definition" extends StringAttribute {
    id 1152921504606847870
    dataProvider DefaultAttributeDataProvider
@@ -757,6 +782,14 @@ attributeType "ats.Related Peer Workflow Definition" extends StringAttribute {
 	mediaType "text/plain"
 }
 
+attributeType "ats.Related Peer Workflow Definition Reference" extends ArtifactReferenceAttribute {
+	id 6245695017677665082
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
 
 attributeType "ats.Active" extends BooleanAttribute {
 	id 1152921504606847153

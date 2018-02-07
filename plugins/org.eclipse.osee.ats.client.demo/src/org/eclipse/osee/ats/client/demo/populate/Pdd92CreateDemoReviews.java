@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.client.demo.populate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.review.Role;
@@ -32,6 +33,7 @@ import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Dispositi
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.InjectionActivity;
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Severity;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.util.ConvertAtsConfigGuidAttributesOperations;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.util.Result;
@@ -156,11 +158,20 @@ public class Pdd92CreateDemoReviews {
       for (ReviewDefectItem defect : defects) {
          defect.setClosed(true);
       }
-
-      PeerToPeerReviewManager.setPrepareStateData(false, reviewArt, roles, "here", 100, 2.5, changes);
       changes.execute();
 
+      ArtifactId workDefId = AtsClientService.get().getAttributeResolver().getSoleAttributeValue((IAtsObject) reviewArt,
+         AtsAttributeTypes.WorkflowDefinitionReference, ArtifactId.SENTINEL);
+      System.err.println("Work Def Ref " + workDefId);
+      String workDefName = AtsClientService.get().getAttributeResolver().getSoleAttributeValue((IAtsObject) reviewArt,
+         ConvertAtsConfigGuidAttributesOperations.WorkflowDefinition, "");
+      System.err.println("Work Def " + workDefName);
+      System.err.println(String.format("Work Def [%s], work def as name == %s", reviewArt.getWorkDefinition(),
+         AtsClientService.get().isWorkDefAsName()));
+
       changes = AtsClientService.get().createChangeSet("Populate Demo DB - Create PeerToPeer Reviews 2");
+      PeerToPeerReviewManager.setPrepareStateData(false, reviewArt, roles, "here", 100, 2.5, changes);
+      changes.execute();
 
       result = PeerToPeerReviewManager.transitionTo(reviewArt, PeerToPeerReviewState.Completed, roles, defects,
          AtsClientService.get().getUserService().getCurrentUser(), false, changes);

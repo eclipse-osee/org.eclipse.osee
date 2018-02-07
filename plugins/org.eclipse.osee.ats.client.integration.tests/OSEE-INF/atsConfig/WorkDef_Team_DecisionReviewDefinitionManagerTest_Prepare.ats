@@ -1,5 +1,5 @@
 workDefinition "WorkDef_Team_DecisionReviewDefinitionManagerTest_Prepare" {
-	id "WorkDef_Team_DecisionReviewDefinitionManagerTest_Prepare"
+	id "916526903"
 	startState "Analyze"
 
 	decisionReviewDefinition "Create New on Implement" {

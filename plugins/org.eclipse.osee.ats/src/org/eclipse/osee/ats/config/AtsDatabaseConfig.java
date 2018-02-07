@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.core.client.util.AtsGroup;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -41,6 +40,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 
 /**
  * @author Donald G. Dunne
@@ -49,14 +49,17 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
 
    @Override
    public void run() {
+      OseeInfo.setValue("osee.work.def.as.name", "true");
+
       createAtsFolders();
 
       // load top team into cache
       Artifact topTeamDefArt = ArtifactQuery.getArtifactFromToken(AtsArtifactToken.TopTeamDefinition);
       IAtsTeamDefinition teamDef = AtsClientService.get().getConfigItem(topTeamDefArt);
+
       IAtsChangeSet changes = AtsClientService.get().createChangeSet("Set Top Team Work Definition");
-      changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.WorkflowDefinition,
-         IAtsWorkDefinitionService.TeamWorkflowDefaultDefinitionId);
+      AtsClientService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamDef,
+         AtsArtifactToken.WorkDef_Team_Default, changes);
       changes.execute();
 
       // load top ai into cache

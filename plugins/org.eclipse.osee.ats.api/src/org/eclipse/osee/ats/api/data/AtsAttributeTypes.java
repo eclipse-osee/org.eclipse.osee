@@ -129,13 +129,13 @@ public final class AtsAttributeTypes {
    public static final AttributeTypeToken ValidationRequired = createType(1152921504606847146L, "Validation Required", "If selected, originator will be asked to validate the implementation.");
    public static final AttributeTypeToken VersionLocked = createType(1152921504606847156L, "Version Locked", "True if version artifact is locked.");
    public static final AttributeTypeToken WeeklyBenefit = createType(1152921504606847186L, "Weekly Benefit", "Estimated number of hours that will be saved over a single year if this change is completed.");
-   public static final AttributeTypeToken WorkflowDefinition = createType(1152921504606847149L, "Workflow Definition", "Specific work flow definition id used by this Workflow artifact");
+   public static final AttributeTypeToken WorkflowDefinitionReference = createType(53049621055799825L, "Workflow Definition Reference", "Specific work flow definition id used by this Workflow artifact");
    public static final AttributeTypeToken WorkType = createType(72063456955810043L, "Work Type", "Work Type of this Team.");
    public static final AttributeTypeToken TeamWorkflowArtifactType = createType(1152921504606847148L, "Team Workflow Artifact Type", "Specific Artifact Type to use in creation of Team Workflow");
-   public static final AttributeTypeToken RelatedTaskWorkDefinition = createType(1152921504606847152L, "Related Task Workflow Definition", "Specific work flow definition id used by Tasks related to this Workflow");
+   public static final AttributeTypeToken RelatedTaskWorkDefinitionReference = createType(2492475839748929444L, "Related Task Workflow Definition Reference", "Specific work flow definition id used by Tasks related to this Workflow");
    public static final AttributeTypeToken WorkPackage = createType(1152921504606847206L, "Work Package", "Designated accounting work package for completing workflow.");
    public static final AttributeTypeToken WorkPackageReference = createType(473096133909456789L, "Work Package Reference", "Designated accounting work package for completing workflow.");
-   public static final AttributeTypeToken RelatedPeerWorkflowDefinition = createType(1152921504606847870L, "Related Peer Workflow Definition", "Specific work flow definition id used by Peer To Peer Reviews for this Team");
+   public static final AttributeTypeToken RelatedPeerWorkflowDefinitionReference = createType(6245695017677665082L, "Related Peer Workflow Definition", "Specific work flow definition id used by Peer To Peer Reviews for this Team");
 
    public static final AttributeTypeToken WorkPackageId = createType(1152921504606847872L, "Work Package ID");
    public static final AttributeTypeToken WorkPackageProgram = createType(1152921504606847873L, "Work Package Program");

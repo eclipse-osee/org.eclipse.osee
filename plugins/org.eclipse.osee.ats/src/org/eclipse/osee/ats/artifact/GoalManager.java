@@ -16,6 +16,7 @@ import java.util.Date;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.goal.MembersLabelProvider;
@@ -23,6 +24,7 @@ import org.eclipse.osee.ats.goal.MembersViewerSorter;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -67,9 +69,13 @@ public class GoalManager extends MembersManager<GoalArtifact> {
       AtsClientService.get().getActionFactory().setAtsId(goalArt,
          TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService()), changes);
 
+      IAtsWorkDefinition workDefinition =
+         AtsClientService.get().getWorkDefinitionService().computeAndSetWorkDefinitionAttrs(goalArt, null, changes);
+      Conditions.assertNotNull(workDefinition, "Work Definition can not be null for %s", goalArt.toStringWithId());
+
       AtsClientService.get().getActionFactory().initializeNewStateMachine(goalArt,
          Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), new Date(),
-         AtsClientService.get().getUserService().getCurrentUser(), changes);
+         AtsClientService.get().getUserService().getCurrentUser(), workDefinition, changes);
 
       changes.add(goalArt);
       return goalArt;

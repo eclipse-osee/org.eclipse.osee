@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.server.internal.util;
+package org.eclipse.osee.framework.core.server;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -156,4 +156,6 @@ public interface IAtsStateManager extends WorkStateFactory {
 
    boolean isInState(IStateToken state);
 
+   void setAssignees(String stateName, StateType stateType, List<? extends IAtsUser> assignees);
+
 }

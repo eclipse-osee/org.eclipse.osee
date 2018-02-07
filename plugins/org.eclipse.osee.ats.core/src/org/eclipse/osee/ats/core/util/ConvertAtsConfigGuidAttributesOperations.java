@@ -11,13 +11,16 @@
 package org.eclipse.osee.ats.core.util;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.ats.api.AtsApi;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeToken;
@@ -29,10 +32,19 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class ConvertAtsConfigGuidAttributesOperations {
 
+   // Remove static after 25.0
    public static final AttributeTypeToken TeamDefinition =
       AtsAttributeTypes.createType(1152921504606847201L, "Team Definition");
    public static final AttributeTypeToken ActionableItem = AtsAttributeTypes.createType(1152921504606847200L,
       "Actionable Item", "Actionable Items that are impacted by this change.");
+   // Remove static after 26.0
+   public static final AttributeTypeToken WorkflowDefinition = AtsAttributeTypes.createType(1152921504606847149L,
+      "Workflow Definition", "Specific work flow definition id used by this Workflow artifact");
+   public static final AttributeTypeToken RelatedTaskWorkDefinition = AtsAttributeTypes.createType(1152921504606847152L,
+      "Related Task Workflow Definition", "Specific work flow definition id used by Tasks related to this Workflow");
+   public static final AttributeTypeToken RelatedPeerWorkflowDefinition =
+      AtsAttributeTypes.createType(1152921504606847870L, "Related Peer Workflow Definition",
+         "Specific work flow definition id used by Peer To Peer Reviews for this Team");
 
    public static void convertActionableItemsIfNeeded(IAtsChangeSet changes, ArtifactToken art, AtsApi atsApi) {
       // convert guids to id
@@ -99,6 +111,40 @@ public class ConvertAtsConfigGuidAttributesOperations {
             changes.setSoleAttributeValue(art, TeamDefinition, artifact.getGuid());
          }
       }
+   }
+
+   public static void convertWorkflowDefinitionIfNeeded(IAtsChangeSet changes, ArtifactToken art, AtsApi atsApi) {
+      // convert string to id
+      ArtifactId workDefArt = atsApi.getAttributeResolver().getSoleArtifactIdReference(art,
+         AtsAttributeTypes.WorkflowDefinitionReference, ArtifactId.SENTINEL);
+      if (workDefArt.isInvalid()) {
+         String workDefName = atsApi.getAttributeResolver().getSoleAttributeValue(art, WorkflowDefinition, null);
+         if (Strings.isValid(workDefName)) {
+            IAtsWorkDefinition workDef = atsApi.getWorkDefinitionService().getWorkDefinition(workDefName);
+            ArtifactId workDefArt2 = getWorkDefArt(workDef, atsApi);
+            changes.setSoleAttributeValue(art, AtsAttributeTypes.WorkflowDefinitionReference, workDefArt2);
+         }
+      }
+      // convert id to string
+      String teamDefGuid = atsApi.getAttributeResolver().getSoleAttributeValue(art, TeamDefinition, "");
+      if (!Strings.isValid(teamDefGuid)) {
+         ArtifactId teamDefArt = atsApi.getAttributeResolver().getSoleArtifactIdReference(art,
+            AtsAttributeTypes.TeamDefinitionReference, ArtifactId.SENTINEL);
+         ArtifactToken artifact = atsApi.getQueryService().getArtifact(teamDefArt);
+         if (artifact != null) {
+            changes.setSoleAttributeValue(art, TeamDefinition, artifact.getGuid());
+         }
+      }
+   }
+
+   private static final Map<IAtsWorkDefinition, ArtifactId> workDefToArt = new HashMap<>();
+
+   private static ArtifactId getWorkDefArt(IAtsWorkDefinition workDef, AtsApi atsApi) {
+      ArtifactId art = workDefToArt.get(workDef);
+      if (art == null) {
+         art = atsApi.getQueryService().getArtifact(workDef.getId());
+      }
+      return art;
    }
 
 }

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.task.IAtsTaskService;
@@ -46,6 +47,7 @@ import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.DemoUsers;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.util.Result;
@@ -65,14 +67,20 @@ import org.mockito.MockitoAnnotations;
 public class TransitionManagerTest {
 
    private static List<AbstractWorkflowArtifact> EMPTY_AWAS = new ArrayList<>();
-   public static String WORK_DEF_TARGETED_VERSION_NAME = "WorkDef_Team_TransitionManagerTest_TargetedVersion";
-   public static String WORK_DEF_WIDGET_REQUIRED_TRANSITION_NAME =
-      "WorkDef_Team_TransitionManagerTest_WidgetRequiredTransition";
-   private static String WORK_DEF_WIDGET_REQUIRED_COMPLETION_NAME =
-      "WorkDef_Team_TransitionManagerTest_WidgetRequiredCompletion";
+
+   public static ArtifactToken WorkDefTargetedVersionId = ArtifactToken.valueOf(340096461,
+      "WorkDef_Team_TransitionManagerTest_TargetedVersion", AtsArtifactTypes.WorkDefinition);
+
+   public static ArtifactToken WorkDefWidgetRequiredTransitionId = ArtifactToken.valueOf(16919464,
+      "WorkDef_Team_TransitionManagerTest_WidgetRequiredTransition", AtsArtifactTypes.WorkDefinition);
+
+   public static ArtifactToken WorkDefWidgetRequiredCompletionId = ArtifactToken.valueOf(7661159,
+      "WorkDef_Team_TransitionManagerTest_WidgetRequiredCompletion", AtsArtifactTypes.WorkDefinition);
+
+   public static ArtifactToken WorkDefTeamAtsTestUtil =
+      ArtifactToken.valueOf(946555776, "WorkDef_Team_AtsTestUtil", AtsArtifactTypes.WorkDefinition);
 
    // @formatter:off
-   @Mock private IAtsTeamWorkflow teamWf;
    @Mock private IAtsTask task;
    @Mock private IAtsStateDefinition toStateDef;
    @Mock private IAtsWorkItemService workItemService;
@@ -294,8 +302,11 @@ public class TransitionManagerTest {
 
       // test that estHours required fails validation
       results.clear();
-      teamArt.setSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, WORK_DEF_WIDGET_REQUIRED_TRANSITION_NAME);
-      teamArt.persist("TransitionManagerTest-1");
+
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      AtsClientService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamArt,
+         WorkDefWidgetRequiredTransitionId, changes);
+      changes.execute();
 
       // clear the team workflow to work definition cache, since we just changed the configured work definition for this workflow
       AtsClientService.get().getWorkDefinitionService().clearCaches();
@@ -337,8 +348,11 @@ public class TransitionManagerTest {
       // test that Work Package only widget required for normal transition
       results.clear();
       helper.setToStateName(AtsTestUtil.getCompletedStateDef().getName());
-      teamArt.setSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, WORK_DEF_WIDGET_REQUIRED_COMPLETION_NAME);
-      teamArt.persist("TransitionManagerTest-2");
+
+      IAtsChangeSet changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      AtsClientService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamArt,
+         WorkDefWidgetRequiredCompletionId, changes);
+      changes.execute();
 
       // clear the team workflow to work definition cache, since we just changed the configured work definition for this workflow
       AtsClientService.get().getWorkDefinitionService().clearCaches();
@@ -364,6 +378,7 @@ public class TransitionManagerTest {
 
    @org.junit.Test
    public void testIsStateTransitionable__ValidateTasks() {
+      IAtsTeamWorkflow teamWf = org.mockito.Mockito.mock(IAtsTeamWorkflow.class);
 
       TransitionResults results = new TransitionResults();
       when(teamWf.isTeamWorkflow()).thenReturn(true);
@@ -451,15 +466,19 @@ public class TransitionManagerTest {
       // validate that can transition
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.toString(), results.isEmpty());
+      changes.execute();
 
-      // validate that can't transition without targeted version when team def rule is set
-      teamArt.setSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, WORK_DEF_TARGETED_VERSION_NAME);
-      teamArt.persist("TransitionManagerTest-5");
+      changes = AtsClientService.get().createChangeSet(getClass().getSimpleName());
+      AtsClientService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamArt, WorkDefTargetedVersionId,
+         changes);
+      changes.execute();
 
       // clear the team workflow to work definition cache, since we just changed the configured work definition for this workflow
       AtsClientService.get().getWorkDefinitionService().clearCaches();
 
       results.clear();
+
+      // validate that can't transition without targeted version when team def rule is set
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.contains(teamArt, TransitionResult.MUST_BE_TARGETED_FOR_VERSION));
 

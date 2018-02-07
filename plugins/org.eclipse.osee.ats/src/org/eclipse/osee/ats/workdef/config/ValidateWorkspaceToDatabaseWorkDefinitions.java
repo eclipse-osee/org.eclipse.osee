@@ -60,8 +60,13 @@ public class ValidateWorkspaceToDatabaseWorkDefinitions extends XNavigateItemAct
             }
             Artifact workDefArt = null;
             try {
-               workDefArt = ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition, sheet.getName(),
-                  AtsClientService.get().getAtsBranch());
+               if (sheet.getArtifact() == null) {
+                  workDefArt = ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition,
+                     sheet.getName(), AtsClientService.get().getAtsBranch());
+               } else {
+                  workDefArt = (Artifact) AtsClientService.get().getQueryService().getArtifact(sheet.getArtifact(),
+                     AtsClientService.get().getAtsBranch());
+               }
             } catch (ArtifactDoesNotExist ex) {
                // do nothing;
             }

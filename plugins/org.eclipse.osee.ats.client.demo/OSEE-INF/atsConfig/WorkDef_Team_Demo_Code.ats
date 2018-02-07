@@ -1,5 +1,5 @@
 workDefinition "WorkDef_Team_Demo_Code" {
-   id "WorkDef_Team_Demo_Code"
+   id "48427403"
    startState "Endorse"
 
    widgetDefinition "Resolution" {  

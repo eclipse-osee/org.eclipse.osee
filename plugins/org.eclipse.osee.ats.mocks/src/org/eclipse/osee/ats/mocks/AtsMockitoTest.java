@@ -36,6 +36,8 @@ import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
+import org.eclipse.osee.ats.core.util.ConvertAtsConfigGuidAttributesOperations;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.junit.Before;
@@ -67,10 +69,11 @@ public class AtsMockitoTest {
    @Mock protected IAtsBranchService branchService;
    @Mock protected IAtsWorkDefinitionService workDefService;
    @Mock protected IAtsWorkItemService workItemService;
-   @Mock protected AtsApi atsServices;
+   @Mock protected AtsApi atsApi;
    // @formatter:on
 
    public String WORK_DEF_NAME = "Mock_Team_Workflow_Definition";
+   public ArtifactId WORK_DEF_ART = ArtifactId.valueOf(345L);
    private final String className;
    private String testName = "";
 
@@ -85,11 +88,11 @@ public class AtsMockitoTest {
    @Before
    public void setup() {
       MockitoAnnotations.initMocks(this);
-      when(atsServices.getAttributeResolver()).thenReturn(attrResolver);
-      when(atsServices.getVersionService()).thenReturn(versionService);
-      when(atsServices.getBranchService()).thenReturn(branchService);
-      when(atsServices.getWorkDefinitionService()).thenReturn(workDefService);
-      when(atsServices.getWorkItemService()).thenReturn(workItemService);
+      when(atsApi.getAttributeResolver()).thenReturn(attrResolver);
+      when(atsApi.getVersionService()).thenReturn(versionService);
+      when(atsApi.getBranchService()).thenReturn(branchService);
+      when(atsApi.getWorkDefinitionService()).thenReturn(workDefService);
+      when(atsApi.getWorkItemService()).thenReturn(workItemService);
 
       when(currentUser.getName()).thenReturn("User1");
       when(currentUser.getId()).thenReturn(Lib.generateId());
@@ -125,10 +128,13 @@ public class AtsMockitoTest {
 
       when(teamDef.getName()).thenReturn(getTitle("Test Team Def"));
       when(teamDef.getId()).thenReturn(Lib.generateId());
-      when(teamDef.getWorkflowDefinition()).thenReturn(WORK_DEF_NAME);
       when(teamDef.isActive()).thenReturn(true);
       when(teamDef.getLeads()).thenReturn(Arrays.asList(currentUser));
       when(teamDef.getActionableItems()).thenReturn(aias);
+      when(attrResolver.getSoleAttributeValue(teamDef, ConvertAtsConfigGuidAttributesOperations.WorkflowDefinition,
+         "")).thenReturn(WORK_DEF_NAME);
+      when(attrResolver.getSoleArtifactIdReference(teamDef, AtsAttributeTypes.WorkflowDefinitionReference,
+         ArtifactId.SENTINEL)).thenReturn(WORK_DEF_ART);
 
       inializeVersion(ver1, "ver 1.0");
       inializeVersion(ver2, "ver 2.0");

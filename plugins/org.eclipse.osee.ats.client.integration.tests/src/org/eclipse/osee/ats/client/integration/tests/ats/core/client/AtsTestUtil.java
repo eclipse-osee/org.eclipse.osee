@@ -34,9 +34,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewOption;
 import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
-import org.eclipse.osee.ats.api.workdef.JaxAtsWorkDef;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.model.ReviewBlockType;
 import org.eclipse.osee.ats.api.workflow.ActionResult;
@@ -45,8 +43,8 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.client.integration.AtsClientIntegrationTestSuite;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.client.integration.tests.ats.core.client.workflow.transition.TransitionManagerTest;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchUtil;
@@ -69,12 +67,9 @@ import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.QueryOption;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.core.util.OseeInf;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -103,12 +98,8 @@ public class AtsTestUtil {
    private static IAtsActionableItem testAi = null, testAi2 = null, testAi3 = null, testAi4 = null;
    private static ActionArtifact actionArt = null, actionArt2 = null, actionArt3 = null, actionArt4 = null;
    private static IAtsStateDefinition analyze, implement, completed, cancelled = null;
-   private static IAtsWorkDefinition workDef = null;
-   private static String WORK_DEF_NAME = "WorkDef_Team_AtsTestUtil";
    private static IAtsWidgetDefinition estHoursWidgetDef, workPackageWidgetDef;
    private static String postFixName;
-   private static String atsDsl;
-   private static String workDefName;
 
    public static void validateArtifactCache() {
       final Collection<Artifact> dirtyArtifacts = ArtifactCache.getDirtyArtifacts();
@@ -148,7 +139,6 @@ public class AtsTestUtil {
       validateObjectsNull("implement", implement);
       validateObjectsNull("completed", completed);
       validateObjectsNull("cancelled", cancelled);
-      validateObjectsNull("workDef", workDef);
       validateObjectsNull("estHoursWidgetDef", estHoursWidgetDef);
       validateObjectsNull("workPackageWidgetDef", workPackageWidgetDef);
    }
@@ -159,15 +149,10 @@ public class AtsTestUtil {
       }
    }
 
-   public static IAtsWorkDefinition getWorkDef() {
-      ensureLoaded();
-      return workDef;
-   }
-
    public static IAtsStateDefinition getAnalyzeStateDef() {
       ensureLoaded();
       if (analyze == null) {
-         analyze = workDef.getStateByName("Analyze");
+         analyze = teamWf.getWorkDefinition().getStateByName("Analyze");
       }
       return analyze;
    }
@@ -201,7 +186,7 @@ public class AtsTestUtil {
    public static IAtsStateDefinition getImplementStateDef() {
       ensureLoaded();
       if (implement == null) {
-         implement = workDef.getStateByName("Implement");
+         implement = teamWf.getWorkDefinition().getStateByName("Implement");
       }
       return implement;
    }
@@ -209,7 +194,7 @@ public class AtsTestUtil {
    public static IAtsStateDefinition getCompletedStateDef() {
       ensureLoaded();
       if (completed == null) {
-         completed = workDef.getStateByName("Completed");
+         completed = teamWf.getWorkDefinition().getStateByName("Completed");
       }
       return completed;
    }
@@ -217,28 +202,22 @@ public class AtsTestUtil {
    public static IAtsStateDefinition getCancelledStateDef() {
       ensureLoaded();
       if (cancelled == null) {
-         cancelled = workDef.getStateByName("Cancelled");
+         cancelled = teamWf.getWorkDefinition().getStateByName("Cancelled");
       }
       return cancelled;
    }
 
    private static void ensureLoaded() {
-      if (workDef == null) {
+      if (teamDef == null) {
          throw new OseeStateException("Must call cleanAndReset before using this method");
       }
    }
 
    private static void clearCaches() {
-      if (workDef != null) {
-         AtsClientService.get().getWorkDefinitionService().removeWorkDefinition(workDef);
-      }
-      atsDsl = null;
-      workDefName = null;
       analyze = null;
       implement = null;
       completed = null;
       cancelled = null;
-      workDef = null;
       estHoursWidgetDef = null;
       workPackageWidgetDef = null;
       teamWf = null;
@@ -296,8 +275,6 @@ public class AtsTestUtil {
 
       AtsTestUtil.postFixName = postFixName;
 
-      importWorkDefinition();
-
       IAtsChangeSet changes = AtsClientService.get().createChangeSet(AtsTestUtil.class.getSimpleName());
 
       IAtsActionableItem topAi = AtsClientService.get().getConfigItem(AtsArtifactToken.TopActionableItem);
@@ -328,7 +305,11 @@ public class AtsTestUtil {
 
       teamDef = AtsClientService.get().createTeamDefinition(getTitle("Team Def", postFixName),
          AtsUtilClient.createConfigObjectId(), changes, AtsClientService.get());
-      changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.WorkflowDefinition, workDefName);
+
+      // All tests use the same Work Definition so it doesn't have to be re-created and imported each time
+      AtsClientService.get().getWorkDefinitionService().setWorkDefinitionAttrs(teamDef,
+         TransitionManagerTest.WorkDefTeamAtsTestUtil, changes);
+
       changes.setSoleAttributeValue(teamDef, AtsAttributeTypes.Active, true);
       changes.relate(teamDef, AtsRelationTypes.TeamLead_Lead, AtsClientService.get().getUserService().getCurrentUser());
       changes.relate(teamDef, AtsRelationTypes.TeamActionableItem_ActionableItem, testAi);
@@ -362,41 +343,6 @@ public class AtsTestUtil {
       teamWf = (TeamWorkFlowArtifact) result.getFirstTeam().getStoreObject();
 
       changes.execute();
-   }
-
-   private static String getNextAtsDsl() throws Exception {
-      workDefName = WORK_DEF_NAME + "_" + AtsClientService.get().getClientUtils().getAtsDeveloperIncrementingNum();
-      if (atsDsl == null) {
-         atsDsl =
-            OseeInf.getResourceContents("atsConfig/" + WORK_DEF_NAME + ".ats", AtsClientIntegrationTestSuite.class);
-      }
-      return atsDsl.replaceAll("PUT_NAME_HERE", workDefName);
-   }
-
-   private static void importWorkDefinition() {
-      try {
-         // Since work defs are loaded by name, create a new named one on each iteration
-         String atsDsl = getNextAtsDsl();
-         JaxAtsWorkDef jaxWorkDef = new JaxAtsWorkDef();
-         jaxWorkDef.setName(workDefName);
-         jaxWorkDef.setWorkDefDsl(atsDsl);
-         importWorkDefinition(jaxWorkDef);
-      } catch (Exception ex) {
-         throw new OseeCoreException(ex, "Error importing " + workDefName);
-      }
-   }
-
-   public static void importWorkDefinition(JaxAtsWorkDef jaxWorkDef) throws Exception {
-      AtsClientService.getConfigEndpoint().storeWorkDef(jaxWorkDef);
-      Artifact workDefArt = ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition,
-         jaxWorkDef.getName(), AtsClientService.get().getAtsBranch());
-      workDefArt.reloadAttributesAndRelations();
-      AtsClientService.get().getWorkDefinitionService().clearCaches();
-      XResultData results = new XResultData();
-      workDef = AtsClientService.get().getWorkDefinitionService().getWorkDefinition(jaxWorkDef.getName(), results);
-      if (results.isErrors()) {
-         throw new OseeCoreException("Error importing " + jaxWorkDef.getName() + " - " + results.toString());
-      }
    }
 
    public static TaskArtifact getOrCreateTaskOffTeamWf1() {
@@ -539,17 +485,6 @@ public class AtsTestUtil {
             }
          }
       }
-
-      try {
-         Artifact workDefArt = ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition, workDefName,
-            AtsClientService.get().getAtsBranch());
-         if (workDefArt != null) {
-            workDefArt.deleteAndPersist(transaction);
-         }
-      } catch (ArtifactDoesNotExist ex) {
-         // do nothing
-      }
-
       transaction.execute();
 
       clearCaches();

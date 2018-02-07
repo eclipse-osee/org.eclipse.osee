@@ -41,15 +41,15 @@ public class AtsDslUtil {
       }
    }
 
-   public static AtsDsl getFromSheet(String modelName, WorkDefinitionSheet sheet) {
+   public static AtsDsl getFromSheet(WorkDefinitionSheet sheet) {
       try {
-         return getFromString(modelName, getString(sheet));
+         return getFromString(sheet.getName() + ".ats", getString(sheet));
       } catch (Exception ex) {
          throw new WrappedException(ex);
       }
    }
 
-   private static AtsDsl getFromString(String modelName, String dslString) {
+   public static AtsDsl getFromString(String modelName, String dslString) {
       try {
          AtsDsl atsDsl = ModelUtil.loadModel(modelName, dslString);
          return atsDsl;

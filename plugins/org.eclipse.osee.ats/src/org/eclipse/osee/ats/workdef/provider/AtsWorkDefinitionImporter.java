@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.workdef.provider;
 
 import java.io.File;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
@@ -26,18 +27,18 @@ import org.eclipse.osee.ats.dsl.atsDsl.WorkDef;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workdef.AtsDslUtil;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.OseeData;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.util.result.XResultData;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.ws.AWorkspace;
@@ -57,16 +58,17 @@ public class AtsWorkDefinitionImporter {
 
    /**
     * If sheet has WorkDef defined, create artifact and import string. Return artifact, else return null.
+    *
+    * @param sheetnametoartifactidmap
     */
-   public Artifact importWorkDefinitionSheetToDb(WorkDefinitionSheet sheet, XResultData resultData, Set<String> stateNames, IAtsChangeSet changes) {
-      String modelName = sheet.getName() + ".ats";
+   public Artifact importWorkDefinitionSheetToDb(WorkDefinitionSheet sheet, XResultData resultData, Set<String> stateNames, Map<String, ArtifactToken> sheetNameToArtifactIdMap, ArtifactToken artToken, IAtsChangeSet changes) {
       // Prove that can convert to atsDsl
-      AtsDsl atsDsl = AtsDslUtil.getFromSheet(modelName, sheet);
+      AtsDsl atsDsl = AtsDslUtil.getFromSheet(sheet);
       if (atsDsl.getWorkDef() != null) {
          // Use original xml to store in artifact so no conversion happens
          String workDefXml = AtsDslUtil.getString(sheet);
-         Artifact artifact = importWorkDefinitionToDb(workDefXml, sheet.getName(), sheet.getName(), sheet.getToken(),
-            resultData, changes);
+         Artifact artifact = importWorkDefinitionToDb(workDefXml, sheet.getName(), sheet.getName(), resultData,
+            sheetNameToArtifactIdMap, artToken, changes);
          if (resultData.getNumErrors() > 0) {
             throw new OseeStateException("Error importing WorkDefinitionSheet [%s] into database [%s]", sheet.getName(),
                resultData.toString());
@@ -81,36 +83,44 @@ public class AtsWorkDefinitionImporter {
       return null;
    }
 
-   public Artifact importWorkDefinitionToDb(String workDefXml, String workDefName, String sheetName, ArtifactToken token, XResultData resultData, IAtsChangeSet changes) {
-      Artifact artifact = null;
-      try {
-         if (token != null) {
-            artifact = ArtifactQuery.getArtifactFromToken(token);
-         } else {
-            artifact = ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition, sheetName,
-               AtsClientService.get().getAtsBranch());
-         }
-      } catch (ArtifactDoesNotExist ex) {
-         // do nothing; this is what we want
+   public Artifact importWorkDefinitionToDb(String workDefDsl, String workDefName, String sheetName, XResultData resultData, Map<String, ArtifactToken> sheetNameToArtifactIdMap, ArtifactToken artToken, IAtsChangeSet changes) {
+      AtsDsl atsDsl = AtsDslUtil.getFromString(sheetName + ".ats", workDefDsl);
+      if (atsDsl.getWorkDef().size() == 0) {
+         return null;
       }
-      if (artifact != null) {
+      String idStr = atsDsl.getWorkDef().iterator().next().getId().get(0);
+      if (!Strings.isNumeric(idStr)) {
+         throw new OseeArgumentException("Work Definition must be numeric.  Invalid [%s] for sheet [%s]", idStr,
+            sheetName);
+      }
+      Integer.valueOf(idStr);
+      ArtifactId artId = ArtifactId.valueOf(idStr);
+      if (artToken != null && artToken.isValid() && !artToken.equals(artId)) {
+         throw new OseeArgumentException("Sheet Id [%s] and Artifact Token id [%s] must match.", idStr,
+            artToken.getIdString());
+      }
+      Artifact resultArt = (Artifact) AtsClientService.get().getQueryService().getArtifact(artId);
+      if (resultArt != null) {
          String importStr = String.format("WorkDefinition [%s] already loaded into database", workDefName);
          if (!MessageDialog.openConfirm(AWorkbench.getActiveShell(), "Overwrite Work Definition",
             importStr + "\n\nOverwrite?")) {
             OseeLog.log(Activator.class, Level.INFO, importStr + "...skipping");
             resultData.log(importStr + "...skipping");
-            return artifact;
+            return resultArt;
          } else {
             resultData.log(importStr + "...overwriting");
          }
       } else {
          resultData.log(String.format("Imported new WorkDefinition [%s]", workDefName));
-         artifact = ArtifactTypeManager.addArtifact(AtsArtifactTypes.WorkDefinition,
-            AtsClientService.get().getAtsBranch(), sheetName);
+         resultArt = ArtifactTypeManager.addArtifact(AtsArtifactTypes.WorkDefinition,
+            AtsClientService.get().getAtsBranch(), sheetName, artId);
       }
-      artifact.setSoleAttributeValue(AtsAttributeTypes.DslSheet, workDefXml);
-      changes.add(artifact);
-      return artifact;
+      resultArt.setSoleAttributeValue(AtsAttributeTypes.DslSheet, workDefDsl);
+      changes.add(resultArt);
+      if (sheetNameToArtifactIdMap != null) {
+         sheetNameToArtifactIdMap.put(sheetName, resultArt);
+      }
+      return resultArt;
    }
 
    public void convertAndOpenAtsDsl(Artifact workDefArt, XResultData resultData) {

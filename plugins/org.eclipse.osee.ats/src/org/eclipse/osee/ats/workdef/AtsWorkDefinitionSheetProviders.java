@@ -14,8 +14,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -30,6 +32,7 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workdef.config.ImportAIsAndTeamDefinitionsToDb;
 import org.eclipse.osee.ats.workdef.provider.AtsWorkDefinitionImporter;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -45,6 +48,7 @@ public final class AtsWorkDefinitionSheetProviders {
 
    private static Set<IAtsWorkDefinitionSheetProvider> teamWorkflowExtensionItems;
    public static String WORK_DEF_TEAM_DEFAULT = "WorkDef_Team_Default";
+   private static final Map<String, ArtifactToken> sheetNameToArtifactIdMap = new HashMap<>();
 
    private AtsWorkDefinitionSheetProviders() {
       // Utility Class
@@ -67,8 +71,8 @@ public final class AtsWorkDefinitionSheetProviders {
    public static void importWorkDefinitionSheets(XResultData resultData, IAtsChangeSet changes, Artifact folder, Collection<WorkDefinitionSheet> sheets, Set<String> stateNames) {
       OseeLog.logf(Activator.class, Level.INFO, "Importing ATS Work Definitions");
       for (WorkDefinitionSheet sheet : sheets) {
-         Artifact artifact =
-            AtsWorkDefinitionImporter.get().importWorkDefinitionSheetToDb(sheet, resultData, stateNames, changes);
+         Artifact artifact = AtsWorkDefinitionImporter.get().importWorkDefinitionSheetToDb(sheet, resultData,
+            stateNames, sheetNameToArtifactIdMap, sheet.getArtifact(), changes);
          if (artifact != null) {
             folder.addChild(artifact);
             changes.add(artifact);
@@ -95,8 +99,9 @@ public final class AtsWorkDefinitionSheetProviders {
 
    public static void importAIsAndTeamsToDb(WorkDefinitionSheet sheet, IAtsChangeSet changes) {
       String modelName = sheet.getName() + ".ats";
-      AtsDsl atsDsl = AtsDslUtil.getFromSheet(modelName, sheet);
-      ImportAIsAndTeamDefinitionsToDb importer = new ImportAIsAndTeamDefinitionsToDb(modelName, atsDsl, changes);
+      AtsDsl atsDsl = AtsDslUtil.getFromSheet(sheet);
+      ImportAIsAndTeamDefinitionsToDb importer =
+         new ImportAIsAndTeamDefinitionsToDb(modelName, atsDsl, sheetNameToArtifactIdMap, changes);
       importer.execute();
    }
 

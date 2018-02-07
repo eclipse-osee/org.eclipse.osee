@@ -1,5 +1,5 @@
 workDefinition "WorkDef_Task_Default" {
-   id "WorkDef_Task_Default"
+   id "105373"
    startState "InWork"
 
    widgetDefinition "Title" {

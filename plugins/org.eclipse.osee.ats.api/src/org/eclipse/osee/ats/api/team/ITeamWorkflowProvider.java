@@ -12,19 +12,12 @@ package org.eclipse.osee.ats.api.team;
 
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**
  * @author Donald G. Dunne
  */
 public interface ITeamWorkflowProvider {
-
-   public default String getWorkflowDefinitionId(IAtsWorkItem workItem) {
-      return null;
-   }
-
-   public default String getRelatedTaskWorkflowDefinitionId(IAtsTeamWorkflow teamWf) {
-      return null;
-   }
 
    /**
     * Assigned or computed Id that will show at the top of the editor. Default is <ATS Id> - <Legacy PCR Id (if any)>
@@ -46,7 +39,15 @@ public interface ITeamWorkflowProvider {
 
    public boolean isResponsibleFor(IAtsWorkItem workItem);
 
-   public default String getOverrideWorkflowDefinitionId(IAtsTeamWorkflow teamWf) {
+   public default ArtifactToken getWorkflowDefinitionId(IAtsWorkItem workItem) {
+      return null;
+   }
+
+   public default ArtifactToken getRelatedTaskWorkflowDefinitionId(IAtsTeamWorkflow teamWf) {
+      return null;
+   }
+
+   public default ArtifactToken getOverrideWorkflowDefinitionId(IAtsTeamWorkflow teamWf) {
       return null;
    }
 }

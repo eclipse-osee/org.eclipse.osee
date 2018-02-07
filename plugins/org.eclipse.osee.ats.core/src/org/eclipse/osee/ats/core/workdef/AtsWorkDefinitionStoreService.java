@@ -37,8 +37,8 @@ public class AtsWorkDefinitionStoreService implements IAtsWorkDefinitionStringPr
       List<WorkDefData> results = new ArrayList<>();
       for (ArtifactToken workDefArt : atsApi.getQueryService().getArtifacts(atsApi.getAtsBranch(),
          AtsArtifactTypes.WorkDefinition)) {
-         results.add(
-            new WorkDefData(workDefArt.getId(), workDefArt.getName(), loadWorkDefinitionFromArtifact(workDefArt)));
+         results.add(new WorkDefData(workDefArt.getId(), workDefArt.getName(),
+            loadWorkDefinitionFromArtifact(workDefArt), workDefArt));
       }
       return results;
    }
@@ -60,7 +60,8 @@ public class AtsWorkDefinitionStoreService implements IAtsWorkDefinitionStringPr
    private WorkDefData loadWorkDefinitionFromArtifact(String name) {
       ArtifactToken artifact = atsApi.getQueryService().getArtifactByName(AtsArtifactTypes.WorkDefinition, name);
       if (artifact != null) {
-         return new WorkDefData(artifact.getId(), artifact.getName(), loadWorkDefinitionFromArtifact(artifact));
+         return new WorkDefData(artifact.getId(), artifact.getName(), loadWorkDefinitionFromArtifact(artifact),
+            artifact);
       }
       return null;
    }
@@ -83,7 +84,7 @@ public class AtsWorkDefinitionStoreService implements IAtsWorkDefinitionStringPr
    public WorkDefData loadWorkDefinitionString(Long id) {
       ArtifactToken artifact = atsApi.getQueryService().getArtifact(id);
       Conditions.checkNotNull(artifact, "Work Definition artifact");
-      return new WorkDefData(artifact.getId(), artifact.getName(), loadWorkDefinitionFromArtifact(artifact));
+      return new WorkDefData(artifact.getId(), artifact.getName(), loadWorkDefinitionFromArtifact(artifact), artifact);
    }
 
 }

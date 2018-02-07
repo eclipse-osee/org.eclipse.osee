@@ -18,10 +18,12 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.IAtsUserServiceClient;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
+import org.eclipse.osee.ats.core.util.ConvertAtsConfigGuidAttributesOperations;
 import org.eclipse.osee.ats.dsl.BooleanDefUtil;
 import org.eclipse.osee.ats.dsl.UserRefUtil;
 import org.eclipse.osee.ats.dsl.atsDsl.ActionableItemDef;
@@ -37,6 +39,7 @@ import org.eclipse.osee.ats.dsl.atsDsl.UserRef;
 import org.eclipse.osee.ats.dsl.atsDsl.VersionDef;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -64,10 +67,12 @@ public class ImportAIsAndTeamDefinitionsToDb {
    private final Map<String, Artifact> newVersions = new HashMap<>();
    private final String modelName;
    private final Map<String, Artifact> teamNameToTeamDefArt = new HashMap<>();
+   private final Map<String, ArtifactToken> sheetNameToArtifactIdMap;
 
-   public ImportAIsAndTeamDefinitionsToDb(String modelName, AtsDsl atsDsl, IAtsChangeSet changes) {
+   public ImportAIsAndTeamDefinitionsToDb(String modelName, AtsDsl atsDsl, Map<String, ArtifactToken> sheetNameToArtifactIdMap, IAtsChangeSet changes) {
       this.modelName = modelName;
       this.atsDsl = atsDsl;
+      this.sheetNameToArtifactIdMap = sheetNameToArtifactIdMap;
       this.changes = changes;
    }
 
@@ -147,15 +152,20 @@ public class ImportAIsAndTeamDefinitionsToDb {
             newTeam.addRelation(AtsRelationTypes.PrivilegedMember_Member, user);
          }
          if (Strings.isValid(dslTeamDef.getWorkDefinition())) {
-            newTeam.setSoleAttributeValue(AtsAttributeTypes.WorkflowDefinition, dslTeamDef.getWorkDefinition());
+            ArtifactToken workDefArt = sheetNameToArtifactIdMap.get(dslTeamDef.getWorkDefinition());
+            IAtsTeamDefinition newTeamDef = AtsClientService.get().getConfigItemFactory().getTeamDef(newTeam);
+            AtsClientService.get().getWorkDefinitionService().setWorkDefinitionAttrs(newTeamDef, workDefArt, changes);
          }
          if (Strings.isValid(dslTeamDef.getTeamWorkflowArtifactType())) {
             newTeam.setSoleAttributeValue(AtsAttributeTypes.TeamWorkflowArtifactType,
                dslTeamDef.getTeamWorkflowArtifactType());
          }
          if (Strings.isValid(dslTeamDef.getRelatedTaskWorkDefinition())) {
-            newTeam.setSoleAttributeValue(AtsAttributeTypes.RelatedTaskWorkDefinition,
+            newTeam.setSoleAttributeValue(ConvertAtsConfigGuidAttributesOperations.RelatedTaskWorkDefinition,
                dslTeamDef.getRelatedTaskWorkDefinition());
+
+            ArtifactId workDefArt = sheetNameToArtifactIdMap.get(dslTeamDef.getRelatedTaskWorkDefinition());
+            newTeam.setSoleAttributeValue(AtsAttributeTypes.WorkflowDefinitionReference, workDefArt);
          }
          if (dslTeamDef.getRules().size() > 0) {
             newTeam.setAttributeValues(AtsAttributeTypes.RuleDefinition, dslTeamDef.getRules());

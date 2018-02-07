@@ -178,4 +178,6 @@ public interface AtsApi extends IAtsEarnedValueServiceProvider, IAtsWorkDefiniti
 
    IAtsConfigurationsService getConfigService();
 
+   boolean isWorkDefAsName();
+
 }
