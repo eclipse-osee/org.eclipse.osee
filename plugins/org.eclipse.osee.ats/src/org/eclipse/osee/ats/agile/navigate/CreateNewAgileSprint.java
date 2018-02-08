@@ -88,7 +88,7 @@ public class CreateNewAgileSprint extends XNavigateItemAction {
                         long id = sprint.getId();
                         Artifact sprintArt = ArtifactQuery.getArtifactFromId(id, AtsClientService.get().getAtsBranch());
                         sprintArt.getParent().reloadAttributesAndRelations();
-                        AtsEditors.openArtifact(ArtifactId.valueOf(sprintArt.getId()), OseeCmEditor.CmPcrEditor);
+                        AtsEditors.openArtifactById(ArtifactId.valueOf(sprintArt.getId()), OseeCmEditor.CmPcrEditor);
                      } else {
                         AWorkbench.popup("Error creating Agile Team [%s]", response != null ? response.toString() : "");
                         return;

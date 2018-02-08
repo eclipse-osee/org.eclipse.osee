@@ -30,7 +30,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.artifact.TeamWorkflowLabelProvider;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
-import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsObjects;
@@ -75,14 +74,13 @@ public final class AtsEditors {
    /**
     * Only to be used by browser. Use open (artifact) instead.
     */
-   public static void openArtifact(ArtifactId artifact, OseeCmEditor editor) {
+   public static void openArtifactById(ArtifactId artifactId, OseeCmEditor editor) {
       try {
-         artifact = AtsArtifactQuery.getArtifactFromId(artifact.getId());
+         Artifact artifact = ArtifactQuery.getArtifactFromId(artifactId, AtsClientService.get().getAtsBranch());
+         openArtifact(artifact, editor);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-         return;
       }
-      openArtifact(artifact, editor);
    }
 
    public static void openArtifact(Artifact artifact, OseeCmEditor editor) {
@@ -118,7 +116,7 @@ public final class AtsEditors {
 
    public static void openATSAction(final ArtifactToken art, final AtsOpenOption atsOpenOption) {
       try {
-         Artifact artifact = (Artifact) AtsClientService.get().getQueryService().getArtifact(art);
+         Artifact artifact = ArtifactQuery.getArtifactFromId(art, AtsClientService.get().getAtsBranch());
          if (artifact.isOfType(AtsArtifactTypes.Action)) {
             ActionArtifact action = (ActionArtifact) artifact;
             Collection<IAtsTeamWorkflow> teams = AtsClientService.get().getWorkItemService().getTeams(artifact);
