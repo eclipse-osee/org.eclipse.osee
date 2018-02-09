@@ -12,12 +12,11 @@ package org.eclipse.osee.account.admin;
 
 import java.util.Map;
 import java.util.Set;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface AccountPreferences extends Identity<String> {
+public interface AccountPreferences {
 
    Long getId();
 

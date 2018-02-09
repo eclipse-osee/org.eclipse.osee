@@ -14,12 +14,12 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 
 /**
  * @author Andrew M. Finkbeiner
  */
-public class UserDefinedComparator implements Comparator<Identifiable<String>> {
+public class UserDefinedComparator implements Comparator<ArtifactToken> {
 
    private final Map<String, Integer> value;
 
@@ -31,7 +31,7 @@ public class UserDefinedComparator implements Comparator<Identifiable<String>> {
    }
 
    @Override
-   public int compare(Identifiable<String> object1, Identifiable<String> object2) {
+   public int compare(ArtifactToken object1, ArtifactToken object2) {
       Integer val1 = getIndex(object1);
       Integer val2 = getIndex(object2);
       if (val1 == null) {
@@ -43,7 +43,7 @@ public class UserDefinedComparator implements Comparator<Identifiable<String>> {
       return val1 - val2;
    }
 
-   private Integer getIndex(Identifiable<String> object) {
+   private Integer getIndex(ArtifactToken object) {
       Integer toReturn = null;
       if (object != null) {
          toReturn = value.get(object.getGuid());

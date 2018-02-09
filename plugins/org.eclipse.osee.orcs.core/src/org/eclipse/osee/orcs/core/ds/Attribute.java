@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.core.ds;
 
 import java.io.InputStream;
 import java.lang.ref.Reference;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeContainer;
 import org.eclipse.osee.orcs.core.internal.util.OrcsWriteable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
@@ -40,7 +40,7 @@ public interface Attribute<T> extends OrcsWriteable, AttributeReadable<T>, HasOr
 
    void internalInitialize(AttributeTypes attributeTypeCache, Reference<AttributeContainer> containerReference, AttributeData attributeData, boolean isDirty, boolean setDefaultValue);
 
-   Identifiable<String> getContainer();
+   ArtifactToken getContainer();
 
    String convertToStorageString(T rawValue);
 

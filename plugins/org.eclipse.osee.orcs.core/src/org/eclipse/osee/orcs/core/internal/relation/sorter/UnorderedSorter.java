@@ -12,8 +12,8 @@ package org.eclipse.osee.orcs.core.internal.relation.sorter;
 
 import static org.eclipse.osee.framework.core.enums.RelationSorter.UNORDERED;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -26,7 +26,7 @@ public class UnorderedSorter implements Sorter {
    }
 
    @Override
-   public void sort(List<? extends Identifiable<String>> relatives, List<String> relativeSequence) {
+   public void sort(List<? extends ArtifactToken> relatives, List<String> relativeSequence) {
       // do nothing
    }
 }

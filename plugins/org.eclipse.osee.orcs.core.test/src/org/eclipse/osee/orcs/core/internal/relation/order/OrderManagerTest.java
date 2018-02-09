@@ -27,10 +27,10 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.orcs.core.internal.relation.sorter.SorterProvider;
 import org.eclipse.osee.orcs.data.RelationTypes;
@@ -63,13 +63,13 @@ public class OrderManagerTest {
    @Mock private OrderData orderData2;
    @Mock private OrderData orderData3;
 
-   @Mock private Identifiable<String> mock1;
-   @Mock private Identifiable<String> mock2;
-   @Mock private Identifiable<String> mock3;
+   @Mock private ArtifactToken mock1;
+   @Mock private ArtifactToken mock2;
+   @Mock private ArtifactToken mock3;
    // @formatter:on
 
    private OrderManager orderManager;
-   private List<Identifiable<String>> items;
+   private List<ArtifactToken> items;
 
    @Before
    public void setUp() {
@@ -312,7 +312,7 @@ public class OrderManagerTest {
       orderManager.setOrder(typeSide1, USER_DEFINED, items);
       verify(accessor).store(orderManager, OrderChange.NoChange);
 
-      orderManager.setOrder(typeSide1, LEXICOGRAPHICAL_DESC, Collections.<Identifiable<String>> emptyList());
+      orderManager.setOrder(typeSide1, LEXICOGRAPHICAL_DESC, Collections.emptyList());
       verify(accessor).store(orderManager, OrderChange.OrderRequest);
       verify(orderData1).setSorterId(LEXICOGRAPHICAL_DESC);
       verify(orderData1).setOrderIds(Collections.<String> emptyList());
@@ -324,12 +324,11 @@ public class OrderManagerTest {
       assertEquals(0, orderManager.size());
    }
 
-   private void assertOrdered(List<Identifiable<String>> items, Identifiable<String>... expecteds) {
+   private void assertOrdered(List<ArtifactToken> items, ArtifactToken... expecteds) {
       int index = 0;
       assertEquals(expecteds.length, items.size());
-      for (Identifiable<String> identifiable : expecteds) {
+      for (Object identifiable : expecteds) {
          assertEquals(identifiable, items.get(index++));
       }
    }
-
 }

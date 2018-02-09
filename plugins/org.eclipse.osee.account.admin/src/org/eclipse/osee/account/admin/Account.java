@@ -11,14 +11,12 @@
 package org.eclipse.osee.account.admin;
 
 import org.eclipse.osee.account.rest.model.AccountWebPreferences;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface Account extends Identifiable<String> {
-
-   Long getId();
+public interface Account extends NamedId {
 
    boolean isActive();
 

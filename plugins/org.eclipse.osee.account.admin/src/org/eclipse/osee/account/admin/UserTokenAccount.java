@@ -80,9 +80,4 @@ public class UserTokenAccount extends BaseId implements Account, AccountPreferen
    public AccountWebPreferences getWebPreferences() {
       return null;
    }
-
-   @Override
-   public String getGuid() {
-      return null;
-   }
 }

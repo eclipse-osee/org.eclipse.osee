@@ -14,8 +14,8 @@ import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHIC
 import static org.eclipse.osee.framework.core.enums.RelationSorter.LEXICOGRAPHICAL_DESC;
 import java.util.Collections;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.util.NamedComparator;
 import org.eclipse.osee.framework.jdk.core.util.SortOrder;
 
@@ -43,7 +43,7 @@ public class LexicographicalSorter implements Sorter {
    }
 
    @Override
-   public void sort(List<? extends Identifiable<String>> relatives, List<String> relativeSequence) {
+   public void sort(List<? extends ArtifactToken> relatives, List<String> relativeSequence) {
       Collections.sort(relatives, comparator);
    }
 }

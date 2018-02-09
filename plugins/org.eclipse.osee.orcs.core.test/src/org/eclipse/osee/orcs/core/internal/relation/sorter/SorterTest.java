@@ -18,10 +18,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
-import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.SortOrder;
 import org.junit.Assert;
 import org.junit.Test;
@@ -43,9 +42,9 @@ public class SorterTest {
    private final RelationSorter expectedOrderId;
    private final List<Identifiable<String>> expectedOrder;
    private final List<String> currentItems;
-   private final List<Identifiable<String>> itemsToOrder;
+   private final List<ArtifactToken> itemsToOrder;
 
-   public SorterTest(String message, Sorter sorter, RelationSorter expectedOrderId, List<String> currentItems, List<Identifiable<String>> itemsToOrder, List<Identifiable<String>> expectedOrder) {
+   public SorterTest(String message, Sorter sorter, RelationSorter expectedOrderId, List<String> currentItems, List<ArtifactToken> itemsToOrder, List<Identifiable<String>> expectedOrder) {
       this.sorter = sorter;
       this.message = message;
       this.expectedOrderId = expectedOrderId;
@@ -62,7 +61,7 @@ public class SorterTest {
 
    @Test
    public void testSort() {
-      List<Identifiable<String>> actualToOrder = new ArrayList<>();
+      List<ArtifactToken> actualToOrder = new ArrayList<>();
       actualToOrder.addAll(itemsToOrder);
       sorter.sort(actualToOrder, currentItems);
 
@@ -91,20 +90,20 @@ public class SorterTest {
    }
 
    private static Object[] createUnorderedSortTest(String... names) {
-      Identifiable<String> art1 = createItem(names[0]);
-      Identifiable<String> art2 = createItem(names[1]);
-      Identifiable<String> art3 = createItem(names[2]);
-      Identifiable<String> art4 = createItem(names[3]);
+      ArtifactToken art1 = ArtifactToken.valueOf(1, names[0]);
+      ArtifactToken art2 = ArtifactToken.valueOf(2, names[1]);
+      ArtifactToken art3 = ArtifactToken.valueOf(3, names[2]);
+      ArtifactToken art4 = ArtifactToken.valueOf(4, names[3]);
 
-      List<Identifiable<String>> artifacts = Arrays.asList(art1, art2, art3, art4);
+      List<ArtifactToken> artifacts = Arrays.asList(art1, art2, art3, art4);
       return new Object[] {"Unordered Test", new UnorderedSorter(), UNORDERED, null, artifacts, artifacts};
    }
 
    private static Object[] createLexicographicalTest(SortOrder mode, String... names) {
-      Identifiable<String> art1 = createItem(names[0]);
-      Identifiable<String> art2 = createItem(names[1]);
-      Identifiable<String> art3 = createItem(names[2]);
-      Identifiable<String> art4 = createItem(names[3]);
+      ArtifactToken art1 = ArtifactToken.valueOf(1, names[0]);
+      ArtifactToken art2 = ArtifactToken.valueOf(2, names[1]);
+      ArtifactToken art3 = ArtifactToken.valueOf(3, names[2]);
+      ArtifactToken art4 = ArtifactToken.valueOf(4, names[3]);
 
       RelationSorter orderId;
       if (mode.isAscending()) {
@@ -113,8 +112,8 @@ public class SorterTest {
          orderId = LEXICOGRAPHICAL_DESC;
       }
 
-      List<Identifiable<String>> itemsToOrder = Arrays.asList(art3, art1, art4, art2);
-      List<Identifiable<String>> expectedOrder = Arrays.asList(art1, art2, art3, art4);
+      List<ArtifactToken> itemsToOrder = Arrays.asList(art3, art1, art4, art2);
+      List<ArtifactToken> expectedOrder = Arrays.asList(art1, art2, art3, art4);
       return new Object[] {
          "Lex Test " + mode.name(),
          new LexicographicalSorter(mode),
@@ -125,16 +124,16 @@ public class SorterTest {
    }
 
    private static Object[] createUserDefinedTest(String... names) {
-      Identifiable<String> art1 = createItem(names[0]);
-      Identifiable<String> art2 = createItem(names[1]);
-      Identifiable<String> art3 = createItem(names[2]);
-      Identifiable<String> art4 = createItem(names[3]);
+      ArtifactToken art1 = ArtifactToken.valueOf(1, names[0]);
+      ArtifactToken art2 = ArtifactToken.valueOf(2, names[1]);
+      ArtifactToken art3 = ArtifactToken.valueOf(3, names[2]);
+      ArtifactToken art4 = ArtifactToken.valueOf(4, names[3]);
 
-      List<Identifiable<String>> itemsToOrder = Arrays.asList(art2, art1, art3, art4);
-      List<Identifiable<String>> expectedOrder = Arrays.asList(art1, art2, art3, art4);
+      List<ArtifactToken> itemsToOrder = Arrays.asList(art2, art1, art3, art4);
+      List<ArtifactToken> expectedOrder = Arrays.asList(art1, art2, art3, art4);
 
       List<String> relatives = new ArrayList<>();
-      for (Identifiable<String> item : Arrays.asList(art1, art2, art3, art4)) {
+      for (ArtifactToken item : Arrays.asList(art1, art2, art3, art4)) {
          relatives.add(item.getGuid());
       }
       return new Object[] {
@@ -144,9 +143,5 @@ public class SorterTest {
          relatives,
          itemsToOrder,
          expectedOrder};
-   }
-
-   private static Identifiable<String> createItem(String name) {
-      return new NamedIdentity<String>(GUID.create(), name);
    }
 }

@@ -614,7 +614,6 @@ public abstract class AttributeManagerImpl extends BaseId implements HasOrcsData
       return toReturn;
    }
 
-   @Override
    public String getGuid() {
       return guid;
    }

@@ -13,14 +13,15 @@ package org.eclipse.osee.orcs.account.admin.internal;
 import org.eclipse.osee.account.admin.Account;
 import org.eclipse.osee.account.admin.AccountPreferences;
 import org.eclipse.osee.account.rest.model.AccountWebPreferences;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
+import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
  * @author Roberto E. Escobar
  */
-public class AccountArtifact extends BaseIdentity<String> implements Account {
+public class AccountArtifact extends BaseId implements Account, ArtifactId {
 
    private static final String NOT_AVAILABLE = "N/A";
 
@@ -28,16 +29,11 @@ public class AccountArtifact extends BaseIdentity<String> implements Account {
    private final AccountPreferences preferences;
    private final AccountWebPreferences webPreferences;
 
-   public AccountArtifact(String uuid, ArtifactReadable artifact, AccountPreferences preferences, AccountWebPreferences webPreferences) {
-      super(artifact.getGuid());
+   public AccountArtifact(ArtifactReadable artifact, AccountPreferences preferences, AccountWebPreferences webPreferences) {
+      super(artifact.getId());
       this.artifact = artifact;
       this.preferences = preferences;
       this.webPreferences = webPreferences;
-   }
-
-   @Override
-   public Long getId() {
-      return artifact.getUuid();
    }
 
    @Override
@@ -74,5 +70,4 @@ public class AccountArtifact extends BaseIdentity<String> implements Account {
    public String toString() {
       return "AccountArtifact [artifact=" + artifact + ", preferences=" + preferences + "]";
    }
-
 }

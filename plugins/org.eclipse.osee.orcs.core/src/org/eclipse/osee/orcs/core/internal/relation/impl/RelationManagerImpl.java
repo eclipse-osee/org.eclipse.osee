@@ -34,13 +34,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -438,7 +438,7 @@ public class RelationManagerImpl implements RelationManager {
       if (sorterIdToUse == PREEXISTING) {
          sorterIdToUse = orderManager.getSorterId(key);
       }
-      List<Identifiable<String>> relatives = Collections.emptyList();
+      List<ArtifactToken> relatives = Collections.emptyList();
       if (USER_DEFINED == sorterIdToUse) {
          ResultSet<Artifact> arts = getRelated(session, type, node1, side);
          relatives = new LinkedList<>();

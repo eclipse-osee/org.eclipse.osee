@@ -87,11 +87,6 @@ public interface UserToken extends ArtifactToken, UserId {
          public BranchId getBranch() {
             return CoreBranches.COMMON;
          }
-
-         @Override
-         public String getGuid() {
-            throw new UnsupportedOperationException("not supported");
-         }
       }
       return new UserTokenImpl(id, name, userId, active, admin, email, creationRequired);
    }

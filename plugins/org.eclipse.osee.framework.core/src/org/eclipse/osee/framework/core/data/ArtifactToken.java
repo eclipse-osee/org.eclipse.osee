@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.core.data;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdBase;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdSerializer;
@@ -22,9 +23,12 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
  * @author Donald G. Dunne
  */
 @JsonSerialize(using = NamedIdSerializer.class)
-public interface ArtifactToken extends ArtifactId, HasBranch, NamedId {
+public interface ArtifactToken extends ArtifactId, HasBranch, NamedId, Identity<String> {
 
-   String getGuid();
+   @Override
+   default String getGuid() {
+      throw new UnsupportedOperationException("getGuid() is not supported");
+   }
 
    default ArtifactTypeId getArtifactTypeId() {
       return ArtifactTypeId.SENTINEL;

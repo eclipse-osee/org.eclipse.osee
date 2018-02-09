@@ -34,7 +34,7 @@ public class AccountFactory {
    private Account newAccount(ArtifactReadable account) {
       AccountPreferences preferences = new AccountPreferencesArtifact(account.getGuid(), account);
       AccountWebPreferences webPreferences = newAccountWebPreferences(account);
-      return new AccountArtifact(account.getGuid(), account, preferences, webPreferences);
+      return new AccountArtifact(account, preferences, webPreferences);
    }
 
    public AccountPreferences newAccountPreferencesResultSet(ArtifactReadable account) {

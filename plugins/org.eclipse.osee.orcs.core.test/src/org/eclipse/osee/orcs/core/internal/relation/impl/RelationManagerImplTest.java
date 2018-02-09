@@ -39,6 +39,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeId;
@@ -47,7 +48,6 @@ import org.eclipse.osee.framework.core.data.RelationTypeToken;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -132,7 +132,7 @@ public class RelationManagerImplTest {
    @Mock private ResultSet<Relation> rSet2;
 
    @Mock private OrderManager orderManager1;
-   @Captor private ArgumentCaptor<List<? extends Identifiable<String>>> sortedListCaptor;
+   @Captor private ArgumentCaptor<List<? extends ArtifactToken>> sortedListCaptor;
    // @formatter:on
 
    private final RelationTypes relationTypes = new RelationTypesImpl(null);
@@ -603,7 +603,7 @@ public class RelationManagerImplTest {
       verify(orderManager1).sort(typeSide, nodesToOrder);
       verify(orderManager1).setOrder(eq(typeSide), eq(USER_DEFINED), sortedListCaptor.capture());
 
-      Iterator<? extends Identifiable<String>> iterator = sortedListCaptor.getValue().iterator();
+      Iterator<? extends ArtifactToken> iterator = sortedListCaptor.getValue().iterator();
       assertEquals(node3, iterator.next());
       assertEquals(node4, iterator.next());
       assertEquals(node5, iterator.next());
@@ -718,7 +718,7 @@ public class RelationManagerImplTest {
       verify(orderManager1).setOrder(eq(Default_Hierarchical__Child), eq(USER_DEFINED), sortedListCaptor.capture());
 
       assertEquals(3, sortedListCaptor.getValue().size());
-      Iterator<? extends Identifiable<String>> iterator = sortedListCaptor.getValue().iterator();
+      Iterator<? extends ArtifactToken> iterator = sortedListCaptor.getValue().iterator();
       assertEquals(node3, iterator.next());
       assertEquals(node5, iterator.next());
       assertEquals(node6, iterator.next());

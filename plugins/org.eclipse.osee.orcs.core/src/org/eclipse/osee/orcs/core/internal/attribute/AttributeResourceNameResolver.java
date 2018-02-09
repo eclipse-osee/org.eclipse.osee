@@ -12,9 +12,9 @@ package org.eclipse.osee.orcs.core.internal.attribute;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.AttributeTypeId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -40,7 +40,7 @@ public class AttributeResourceNameResolver implements ResourceNameResolver {
 
    @Override
    public String getStorageName() {
-      Identity<String> identity = attribute.getContainer();
+      ArtifactToken identity = attribute.getContainer();
       String guid = identity.getGuid();
       Conditions.checkExpressionFailOnTrue(!GUID.isValid(guid), "Artifact has an invalid guid [%s]", guid);
       return guid;

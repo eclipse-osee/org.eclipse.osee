@@ -19,10 +19,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationTypeSide;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.core.internal.relation.sorter.Sorter;
 import org.eclipse.osee.orcs.core.internal.relation.sorter.SorterProvider;
@@ -121,7 +121,7 @@ public class OrderManager implements HasOrderData {
       return sorterProvider.getDefaultSorterId(type);
    }
 
-   public void sort(RelationTypeSide typeAndSide, List<? extends Identifiable<String>> listToOrder) {
+   public void sort(RelationTypeSide typeAndSide, List<? extends ArtifactToken> listToOrder) {
       if (listToOrder.size() > 1) {
          RelationSorter sorterId = getSorterId(typeAndSide);
          List<String> relativeOrder = getOrderIds(typeAndSide);
@@ -131,16 +131,16 @@ public class OrderManager implements HasOrderData {
       }
    }
 
-   public void setOrder(RelationTypeSide typeAndSide, List<? extends Identifiable<String>> relativeSequence) {
+   public void setOrder(RelationTypeSide typeAndSide, List<? extends ArtifactToken> relativeSequence) {
       RelationSorter sorterId = getSorterId(typeAndSide);
       setOrder(typeAndSide, sorterId, relativeSequence);
    }
 
-   public void setOrder(RelationTypeSide typeAndSide, RelationSorter sorterId, List<? extends Identifiable<String>> relativeSequence) {
+   public void setOrder(RelationTypeSide typeAndSide, RelationSorter sorterId, List<? extends ArtifactToken> relativeSequence) {
       List<String> sequence;
       if (!relativeSequence.isEmpty()) {
          sequence = new ArrayList<>();
-         for (Identifiable<String> item : relativeSequence) {
+         for (ArtifactToken item : relativeSequence) {
             sequence.add(item.getGuid());
          }
       } else {

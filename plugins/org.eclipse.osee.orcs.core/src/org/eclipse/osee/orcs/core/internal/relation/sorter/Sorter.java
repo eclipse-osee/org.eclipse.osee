@@ -11,8 +11,8 @@
 package org.eclipse.osee.orcs.core.internal.relation.sorter;
 
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.RelationSorter;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -21,5 +21,5 @@ public interface Sorter {
 
    RelationSorter getId();
 
-   void sort(List<? extends Identifiable<String>> relatives, List<String> relativeSequence);
+   void sort(List<? extends ArtifactToken> relatives, List<String> relativeSequence);
 }
