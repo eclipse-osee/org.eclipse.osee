@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
-import org.eclipse.osee.ats.demo.api.DemoTeam;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.junit.Assert;
@@ -45,7 +44,7 @@ public class Pdd52CreateWorkingWithDiagramTreeActionsTest implements IPopulateDe
 
          testTeamContents(teamWf, teamWfArtToken.getName(), "3", version.getName(), getState(version).getName(),
             DemoArtifactToken.SAW_SW_Design_AI.getName(), getAssigneesStr(version), getArtifactType(),
-            DemoTestUtil.getTeamDef(DemoTeam.SAW_SW_Design));
+            DemoTestUtil.getTeamDef(DemoArtifactToken.SAW_SW_Design));
 
          DemoUtil.setPopulateDbSuccessful(true);
       }

@@ -12,9 +12,7 @@ package org.eclipse.osee.ats.client.integration.tests.ats.config;
 
 import org.codehaus.jackson.JsonNode;
 import org.eclipse.osee.ats.client.integration.tests.ats.resource.AbstractRestTest;
-import org.eclipse.osee.ats.demo.api.DemoTeam;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -44,17 +42,13 @@ public class TeamResourceTest extends AbstractRestTest {
 
    @Test
    public void testAtsTeamRestCall() {
-      JsonNode team = testTeamUrl("/ats/team/" + getSawSwTeamDef().getArtId(), 1, false);
+      JsonNode team = testTeamUrl("/ats/team/" + DemoArtifactToken.SAW_SW.getIdString(), 1, false);
       Assert.assertFalse(team.has("version"));
    }
 
    @Test
    public void testAtsTeamDetailsRestCall() {
-      JsonNode team = testTeamUrl("/ats/team/" + getSawSwTeamDef().getArtId() + "/details", 1, true);
+      JsonNode team = testTeamUrl("/ats/team/" + DemoArtifactToken.SAW_SW.getIdString() + "/details", 1, true);
       Assert.assertTrue(team.has("version"));
-   }
-
-   private Artifact getSawSwTeamDef() {
-      return ArtifactQuery.getArtifactFromToken(DemoTeam.SAW_SW.getTeamDefToken());
    }
 }

@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
-import org.eclipse.osee.ats.demo.api.DemoTeam;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -35,12 +34,13 @@ public class Pdd82CreateCantLoadDiagramTreeActionTest implements IPopulateDemoDa
       Pdd82CreateCantLoadDiagramTreeAction create = new Pdd82CreateCantLoadDiagramTreeAction();
       create.run();
 
-      IAtsTeamWorkflow teamWf = AtsClientService.get().getQueryService().getTeamWf(DemoArtifactToken.CantLoadDiagramTree_TeamWf);
+      IAtsTeamWorkflow teamWf =
+         AtsClientService.get().getQueryService().getTeamWf(DemoArtifactToken.CantLoadDiagramTree_TeamWf);
       Assert.assertNotNull(teamWf);
 
       testTeamContents(teamWf, DemoArtifactToken.CantLoadDiagramTree_TeamWf.getName(), "3", "",
          TeamState.Endorse.getName(), DemoArtifactToken.CIS_Test_AI.getName(), "Kay Jones",
-         DemoArtifactTypes.DemoTestTeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.CIS_Test));
+         DemoArtifactTypes.DemoTestTeamWorkflow, DemoTestUtil.getTeamDef(DemoArtifactToken.CIS_Test));
 
       DemoUtil.setPopulateDbSuccessful(true);
    }

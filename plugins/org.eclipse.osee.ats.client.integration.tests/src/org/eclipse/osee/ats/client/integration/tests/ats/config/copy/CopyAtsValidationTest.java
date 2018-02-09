@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.config.copy.ConfigData;
 import org.eclipse.osee.ats.config.copy.CopyAtsValidation;
 import org.eclipse.osee.ats.demo.api.DemoActionableItems;
-import org.eclipse.osee.ats.demo.api.DemoTeam;
+import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.framework.core.util.result.XResultData;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -64,7 +64,7 @@ public class CopyAtsValidationTest {
       ConfigData data = new ConfigData();
       data.setReplaceStr("CISv2");
       data.setSearchStr("CIS");
-      IAtsTeamDefinition tda = DemoTestUtil.getTeamDef(DemoTeam.CIS_SW);
+      IAtsTeamDefinition tda = DemoTestUtil.getTeamDef(DemoArtifactToken.CIS_SW);
       data.setTeamDef(tda);
       IAtsActionableItem aiArt = DemoTestUtil.getActionableItem(DemoActionableItems.CIS_CSCI);
       data.setActionableItem(aiArt);

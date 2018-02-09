@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
-import org.eclipse.osee.ats.demo.api.DemoTeam;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.junit.Assert;
 import org.junit.Test;
@@ -44,7 +43,7 @@ public class Pdd51CreateWorkaroundForGraphViewActionsTest implements IPopulateDe
 
          testTeamContents(teamWf, teamWfArtToken.getName(), "1", version.getName(), getState(version).getName(),
             DemoArtifactToken.Adapter_AI.getName(), getAssignees(version), DemoArtifactTypes.DemoReqTeamWorkflow,
-            DemoTestUtil.getTeamDef(DemoTeam.SAW_HW));
+            DemoTestUtil.getTeamDef(DemoArtifactToken.SAW_HW));
       }
 
       DemoUtil.setPopulateDbSuccessful(true);

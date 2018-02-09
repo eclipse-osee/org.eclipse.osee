@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
-import org.eclipse.osee.ats.demo.api.DemoTeam;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -41,7 +40,7 @@ public class Pdd81CreateButtonWDoesntWorkActionTest implements IPopulateDemoData
 
       testTeamContents(teamWf, DemoArtifactToken.ButtonWDoesntWorkOnSituationPage_TeamWf.getName(), "3", "",
          TeamState.Analyze.getName(), DemoArtifactToken.CIS_Test_AI.getName(), "Kay Jones",
-         DemoArtifactTypes.DemoTestTeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.CIS_Test));
+         DemoArtifactTypes.DemoTestTeamWorkflow, DemoTestUtil.getTeamDef(DemoArtifactToken.CIS_Test));
 
       DemoUtil.setPopulateDbSuccessful(true);
    }

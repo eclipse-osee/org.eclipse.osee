@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
-import org.eclipse.osee.ats.demo.api.DemoTeam;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -35,12 +34,13 @@ public class Pdd80CreateButtonSDoesntWorkActionTest implements IPopulateDemoData
       Pdd80CreateButtonSDoesntWorkAction create = new Pdd80CreateButtonSDoesntWorkAction();
       create.run();
 
-      IAtsTeamWorkflow teamWf = AtsClientService.get().getQueryService().getTeamWf(DemoArtifactToken.ButtonSDoesntWorkOnHelp_TeamWf);
+      IAtsTeamWorkflow teamWf =
+         AtsClientService.get().getQueryService().getTeamWf(DemoArtifactToken.ButtonSDoesntWorkOnHelp_TeamWf);
       Assert.assertNotNull(teamWf);
 
       testTeamContents(teamWf, DemoArtifactToken.ButtonSDoesntWorkOnHelp_TeamWf.getName(), "3", "",
          TeamState.Completed.getName(), DemoArtifactToken.Reader_AI.getName(), "", AtsArtifactTypes.TeamWorkflow,
-         DemoTestUtil.getTeamDef(DemoTeam.Tools_Team));
+         DemoTestUtil.getTeamDef(DemoArtifactToken.Tools_Team));
 
       DemoUtil.setPopulateDbSuccessful(true);
    }

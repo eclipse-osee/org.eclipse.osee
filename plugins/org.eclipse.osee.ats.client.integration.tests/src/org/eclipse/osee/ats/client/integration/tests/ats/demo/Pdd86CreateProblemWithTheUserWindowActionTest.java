@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
-import org.eclipse.osee.ats.demo.api.DemoTeam;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -35,14 +34,14 @@ public class Pdd86CreateProblemWithTheUserWindowActionTest implements IPopulateD
       Pdd86CreateProblemWithTheUserWindowAction create = new Pdd86CreateProblemWithTheUserWindowAction();
       create.run();
 
-      IAtsTeamWorkflow teamWf = AtsClientService.get().getQueryService().getTeamWf(DemoArtifactToken.ProblemWithTheUserWindow_TeamWf);
+      IAtsTeamWorkflow teamWf =
+         AtsClientService.get().getQueryService().getTeamWf(DemoArtifactToken.ProblemWithTheUserWindow_TeamWf);
       Assert.assertNotNull(teamWf);
 
       testTeamContents(teamWf, DemoArtifactToken.ProblemWithTheUserWindow_TeamWf.getName(), "4", "",
          TeamState.Implement.getName(), DemoArtifactToken.Timesheet_AI.getName(), "Jeffery Kay",
-         AtsArtifactTypes.TeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.Tools_Team));
+         AtsArtifactTypes.TeamWorkflow, DemoTestUtil.getTeamDef(DemoArtifactToken.Tools_Team));
 
       DemoUtil.setPopulateDbSuccessful(true);
    }
-
 }

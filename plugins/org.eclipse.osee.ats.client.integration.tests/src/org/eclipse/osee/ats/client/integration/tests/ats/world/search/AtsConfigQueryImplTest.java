@@ -25,7 +25,6 @@ import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
-import org.eclipse.osee.ats.demo.api.DemoTeam;
 import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -61,11 +60,11 @@ public class AtsConfigQueryImplTest {
       Collection<ArtifactToken> resultArtifacts = query.getArtifacts();
       assertEquals(18, resultArtifacts.size());
 
-      query.andAttr(CoreAttributeTypes.Name, DemoTeam.SAW_Code.getTeamDefToken().getName());
+      query.andAttr(CoreAttributeTypes.Name, DemoArtifactToken.SAW_Code.getName());
       IAtsTeamDefinition teamDef = (IAtsTeamDefinition) query.getConfigObjectResultSet().getOneOrNull();
 
       assertNotNull(teamDef);
-      assertEquals(DemoTeam.SAW_Code.getTeamDefToken().getName(), teamDef.getName());
+      assertEquals(DemoArtifactToken.SAW_Code.getName(), teamDef.getName());
 
       query = queryService.createQuery(AtsArtifactTypes.ActionableItem);
       ResultSet<IAtsActionableItem> ais = query.getConfigObjectResultSet();

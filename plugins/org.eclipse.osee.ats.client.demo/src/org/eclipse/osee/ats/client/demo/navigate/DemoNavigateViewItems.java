@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.client.demo.internal.Activator;
 import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
 import org.eclipse.osee.ats.config.ValidateAtsConfiguration;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
-import org.eclipse.osee.ats.demo.api.DemoTeam;
+import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
 import org.eclipse.osee.ats.navigate.IAtsNavigateItem;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
@@ -36,6 +36,7 @@ import org.eclipse.osee.ats.world.search.OpenWorkflowsByTeamDefSearchItem;
 import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.ArtifactToken;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemFolder;
@@ -54,12 +55,12 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
       super();
    }
 
-   private static IAtsTeamDefinition getTeamDef(DemoTeam team) {
+   private static IAtsTeamDefinition getTeamDef(ArtifactToken team) {
       IAtsTeamDefinition results = null;
       // Add check to keep exception from occurring for OSEE developers running against production
       if (!ClientSessionManager.isProductionDataStore()) {
          try {
-            results = AtsClientService.get().getCache().getAtsObject(team.getTeamDefToken());
+            results = AtsClientService.get().getCache().getAtsObject(team);
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
@@ -69,6 +70,20 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
 
    @Override
    public List<XNavigateItem> getNavigateItems(XNavigateItem parentItem) {
+      ArtifactToken[] teams = new ArtifactToken[] {
+         DemoArtifactToken.Process_Team,
+         DemoArtifactToken.Tools_Team,
+         DemoArtifactToken.SAW_HW,
+         DemoArtifactToken.SAW_Code,
+         DemoArtifactToken.SAW_Test,
+         DemoArtifactToken.SAW_SW_Design,
+         DemoArtifactToken.SAW_Requirements,
+         DemoArtifactToken.SAW_SW,
+         DemoArtifactToken.CIS_SW,
+         DemoArtifactToken.CIS_Code,
+         DemoArtifactToken.CIS_Test,
+         DemoArtifactToken.Facilities_Team};
+
       List<XNavigateItem> items = new ArrayList<>();
 
       if (DbConnectionUtility.areOSEEServicesAvailable().isFalse()) {
@@ -77,7 +92,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
 
       // If Demo Teams not configured, ignore these navigate items
       try {
-         if (getTeamDef(DemoTeam.Process_Team) == null) {
+         if (getTeamDef(DemoArtifactToken.Process_Team) == null) {
             return items;
          }
       } catch (Exception ex) {
@@ -90,10 +105,10 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
 
       items.add(jhuItem);
 
-      for (DemoTeam team : DemoTeam.values()) {
+      for (ArtifactToken team : teams) {
          try {
             IAtsTeamDefinition teamDef = getTeamDef(team);
-            XNavigateItem teamItems = new XNavigateItemFolder(jhuItem, "JHU " + team.name().replaceAll("_", " "));
+            XNavigateItem teamItems = new XNavigateItemFolder(jhuItem, "JHU " + team.getName().replaceAll("_", " "));
             new SearchNavigateItem(teamItems, new OpenWorkflowsByTeamDefSearchItem(
                "Show Open " + teamDef + " Workflows", new SimpleTeamDefinitionProvider(Arrays.asList(teamDef))));
             // Handle all children teams
@@ -103,9 +118,9 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
                      new SimpleTeamDefinitionProvider(Arrays.asList(childTeamDef))));
             }
             if (teamDef.isTeamUsesVersions()) {
-               if (team.name().contains("SAW")) {
+               if (team.getName().contains("SAW")) {
                   new XNavigateUrlItem(teamItems, "Open SAW Website", "http://www.cisst.org/cisst/saw/", false);
-               } else if (team.name().contains("CIS")) {
+               } else if (team.getName().contains("CIS")) {
                   new XNavigateUrlItem(teamItems, "Open CIS Website", "http://www.cisst.org/cisst/cis/", false);
                }
 

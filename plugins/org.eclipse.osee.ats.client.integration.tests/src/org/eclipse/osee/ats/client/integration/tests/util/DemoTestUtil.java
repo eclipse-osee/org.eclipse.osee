@@ -37,9 +37,9 @@ import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.demo.api.DemoActionableItems;
 import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
-import org.eclipse.osee.ats.demo.api.DemoTeam;
 import org.eclipse.osee.ats.demo.api.DemoWorkType;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.UserToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -168,12 +168,12 @@ public class DemoTestUtil {
       return committedWorkflows.get(demoWorkType);
    }
 
-   public static IAtsTeamDefinition getTeamDef(DemoTeam team) {
+   public static IAtsTeamDefinition getTeamDef(ArtifactId artifactId) {
       IAtsTeamDefinition results = null;
       // Add check to keep exception from occurring for OSEE developers running against production
       if (!ClientSessionManager.isProductionDataStore()) {
          try {
-            results = AtsClientService.get().getCache().getAtsObject(team.getTeamDefToken());
+            results = AtsClientService.get().getCache().getAtsObject(artifactId);
          } catch (Exception ex) {
             OseeLog.log(DemoTestUtil.class, Level.SEVERE, ex);
          }
