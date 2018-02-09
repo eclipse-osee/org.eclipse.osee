@@ -36,6 +36,8 @@ public interface QueryBuilder extends ArtifactQueryBuilder<QueryBuilder>, Query 
     */
    ResultSet<ArtifactReadable> getResults();
 
+   ArtifactReadable getArtifact();
+
    /**
     * @return artifact search results with match locations
     */

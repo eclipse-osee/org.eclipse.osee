@@ -32,7 +32,7 @@ public interface AccountStorage {
 
    ResultSet<Account> getAccountByName(String name);
 
-   ResultSet<AccountPreferences> getAccountPreferencesById(ArtifactId accountId);
+   AccountPreferences getAccountPreferencesById(ArtifactId accountId);
 
    ArtifactId createAccount(CreateAccountRequest request);
 

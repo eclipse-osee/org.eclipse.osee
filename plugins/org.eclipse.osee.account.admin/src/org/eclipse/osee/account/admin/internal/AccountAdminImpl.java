@@ -107,7 +107,7 @@ public class AccountAdminImpl implements AccountAdmin {
    }
 
    @Override
-   public ResultSet<AccountPreferences> getAccountPreferencesById(ArtifactId accountId) {
+   public AccountPreferences getAccountPreferencesById(ArtifactId accountId) {
       return getStorage().getAccountPreferencesById(accountId);
    }
 
@@ -143,8 +143,7 @@ public class AccountAdminImpl implements AccountAdmin {
    public boolean setAccountPreferences(ArtifactId accountId, Map<String, String> preferences) {
       boolean modified = false;
       Conditions.checkNotNull(preferences, "preferences");
-      ResultSet<AccountPreferences> result = getAccountPreferencesById(accountId);
-      AccountPreferences prefs = result.getExactlyOne();
+      AccountPreferences prefs = getAccountPreferencesById(accountId);
       Map<String, String> original = prefs.asMap();
       if (Compare.isDifferent(original, preferences)) {
          getStorage().setAccountPreferences(accountId, preferences);
@@ -158,8 +157,7 @@ public class AccountAdminImpl implements AccountAdmin {
       boolean modified = false;
       Conditions.checkNotNull(key, "account preference key");
       Conditions.checkNotNull(value, "account preference value", "Use delete account preference instead");
-      ResultSet<AccountPreferences> result = getAccountPreferencesById(accountId);
-      AccountPreferences prefs = result.getExactlyOne();
+      AccountPreferences prefs = getAccountPreferencesById(accountId);
       Map<String, String> original = prefs.asMap();
       HashMap<String, String> newPrefs = new HashMap<>(original);
       newPrefs.put(key, value);
@@ -190,8 +188,7 @@ public class AccountAdminImpl implements AccountAdmin {
    public boolean deleteAccountPreference(ArtifactId accountId, String key) {
       boolean modified = false;
       Conditions.checkNotNull(key, "account preference key");
-      ResultSet<AccountPreferences> result = getAccountPreferencesById(accountId);
-      AccountPreferences prefs = result.getExactlyOne();
+      AccountPreferences prefs = getAccountPreferencesById(accountId);
       Map<String, String> original = prefs.asMap();
       HashMap<String, String> newPrefs = new HashMap<>(original);
       newPrefs.remove(key);

@@ -73,6 +73,11 @@ public class QueryBuilderImpl extends ArtifactQueryBuilderImpl<QueryBuilder> imp
    }
 
    @Override
+   public ArtifactReadable getArtifact() {
+      return getResults().getExactlyOne();
+   }
+
+   @Override
    public ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> getMatches() {
       try {
          return createSearchWithMatches().call();

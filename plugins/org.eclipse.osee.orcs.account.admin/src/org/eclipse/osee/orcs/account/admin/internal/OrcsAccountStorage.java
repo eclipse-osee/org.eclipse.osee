@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.account.admin.internal;
 
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import java.io.StringWriter;
 import java.util.Collections;
 import java.util.Map;
@@ -32,8 +34,6 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
 
 /**
  * @author Roberto E. Escobar
@@ -97,10 +97,9 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
    }
 
    @Override
-   public ResultSet<AccountPreferences> getAccountPreferencesById(ArtifactId accountId) {
-      int id = Long.valueOf(accountId.getUuid()).intValue();
-      ResultSet<ArtifactReadable> results = newQuery().andIsOfType(CoreArtifactTypes.User).andUuid(id).getResults();
-      return getFactory().newAccountPreferencesResultSet(results);
+   public AccountPreferences getAccountPreferencesById(ArtifactId accountId) {
+      ArtifactReadable artifact = newQuery().andIsOfType(CoreArtifactTypes.User).andId(accountId).getArtifact();
+      return getFactory().newAccountPreferences(artifact);
    }
 
    @Override
